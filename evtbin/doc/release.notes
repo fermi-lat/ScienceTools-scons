@@ -11,6 +11,10 @@
                           f instead of s.
 29-sep-2004    v0r5p2 JP  Use improvements from tip to preserve underlying
                           character of keywords (string, numeric, bool etc.)
+06-oct-2004    v0r6p0 JP  Add gtbindef application. Change the format of the
+                          bin definition files to match GTI and EBOUNDS tables.
+                          Regenerate test data. Use st_facilities::Env for
+                          finding data files.
 --------------------------------------------------------------------------------
 \endverbatim
 
