@@ -4,10 +4,9 @@
     \author James Peachey, HEASARC
 */
 
-#include <exception>
 #include <iostream>
-
 #include <stdexcept>
+#include <typeinfo>
 
 #include "st_app/IApp.h"
 
@@ -15,20 +14,32 @@ int main(int argc, char ** argv) {
   int status = 0;
 
   try {
-    // Process command line arguments. This will throw if the real application code
-    // cannot/should not start.
-    st_app::IApp::processCommandLine(argc, argv);
+    try {
+      // Process command line arguments. This will throw if the real application code
+      // cannot/should not start.
+      st_app::IApp::processCommandLine(argc, argv);
 
-    // Get a pointer to the singleton application. Client code must have instantiated a static
-    // instance of a subclass of IApp.
-    st_app::IApp * app = st_app::IApp::getApp();
+      // Get a pointer to the singleton application. Client code must have instantiated a single
+      // instance of a subclass of IApp.
+      st_app::IApp * app = st_app::IApp::getApp();
 
-    // Run the application.
-    app->run();
+      // Run the application.
+      app->run();
 
-  } catch (std::exception & x) {
-    std::cerr << "Error: " << x.what() << std::endl;
-    status = 1;
+    } catch (const std::exception & x) {
+      // Return a non-zero exit code:
+      status = 1;
+
+      // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
+      const char * info = typeid(x).name();
+      std::cerr << "Caught " << info << " at the top level: " << x.what() << std::endl;
+    }
+  } catch (...) {
+    // Return a non-zero exit code:
+    status = 2;
+
+    // Report the error more generically:
+    std::cerr << "Caught unknown object at the top level." << std::endl;
   }
 
   return status;
