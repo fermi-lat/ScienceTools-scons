@@ -5,6 +5,7 @@
 
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
+ * 20-dec-04  v8r12  thb  add Earth
  * 10-nov-04  v8r11  jrb  Upgrade for Xerces 2.6.0
  * 04-jun-04  v8r9p1 THB  protect against linux STL behaviour 
  * 04-jun-04  v8r9   THB  add low energy muon source 
