@@ -10,7 +10,8 @@ main() {
   std::string name = std::string("{FACILITIESROOT}/src");
   std::string oDelim = std::string ("{");
   std::string cDelim = std::string ("}");
-  int ntrans = facilities::Util::expandEnvVar(&name, &oDelim, &cDelim);
+
+  int ntrans = facilities::Util::expandEnvVar(&name, oDelim, cDelim);
 
   cout << "Translated name is " << name << std::endl;
 
