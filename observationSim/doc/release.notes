@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r6p5 21-Mar-05   JC   remove dss keywords from ft1.tpl
     v5r6p4 07-Mar-05   JC   disable annoying banner method
     v5r6p3 07-Mar-05   JC   set mission start to MJDREF
     v5r6p2 21-Feb-05   JC   add SpectralTransient source
