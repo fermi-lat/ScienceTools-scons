@@ -58,8 +58,8 @@ namespace tip {
 
   // Construct without opening the file.
   RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
-    const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_branch_lookup(),
-    m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
+    const std::string & filter, bool): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter),
+    m_branch_lookup(), m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
 
   // Close file automatically while destructing.
   RootExtensionManager::~RootExtensionManager() { close(); }

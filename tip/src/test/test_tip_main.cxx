@@ -406,7 +406,7 @@ int main() {
       }
 
     } catch(const TipException & x) {
-      std::cerr << "Unexpected exsception while creating and populating a new table: " << x.what() << std::endl;
+      std::cerr << "Unexpected exception while creating and populating a new table: " << x.what() << std::endl;
       status = 1;
     }
     

@@ -20,8 +20,9 @@ namespace tip {
   template <typename ExtensionManager>
   class ExtensionData : public IExtensionData {
     public:
-      ExtensionData(const std::string & file_name, const std::string & extension_name, const std::string & filter = ""):
-        m_extension_manager(file_name, extension_name, filter) {}
+      ExtensionData(const std::string & file_name, const std::string & extension_name, const std::string & filter = "",
+        bool read_only = true):
+        m_extension_manager(file_name, extension_name, filter, read_only) {}
 
       virtual ~ExtensionData() {}
 

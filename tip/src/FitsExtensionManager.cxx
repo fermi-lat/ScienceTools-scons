@@ -14,8 +14,9 @@
 namespace tip {
 
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
-    const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
-    m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0), m_is_table(false), m_read_only(false) { open(); }
+    const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
+    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0),
+    m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { close(); }
@@ -33,10 +34,14 @@ namespace tip {
       if (!m_filter.empty()) s << "[" << m_filter << "]";
       std::string file_name = s.str();
 
-      // Open the fits file.
-      fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
+      // Try to open the fits file read-write, unless read-only mode was explicitly set before open
+      // was called.
+      if (!m_read_only)
+        fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
 
-      if (0 != status) {
+      // If opening read-write didn't work, or if read-only mode was explicitly set before open
+      // was called...
+      if (0 != status || m_read_only) {
         // Attempt to open the file read-only:
         status = 0;
         fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READONLY, &status);

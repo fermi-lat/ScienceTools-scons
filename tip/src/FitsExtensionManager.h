@@ -36,7 +36,7 @@ namespace tip {
           \param ext_name The name of the FITS extension.
       */
       FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
-        const std::string & filter = "");
+        const std::string & filter = "", bool read_only = true);
 
       /** \brief Destructor. Closes file if it is open.
       */

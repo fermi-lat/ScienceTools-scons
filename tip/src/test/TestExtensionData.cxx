@@ -258,7 +258,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    image = new FitsExtensionData(data_dir + "a1.pha", "");
+    image = new FitsExtensionData(data_dir + "a1.pha", "", "", false);
     ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
@@ -269,7 +269,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    table = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
+    table = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM", "", false);
     ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
@@ -430,46 +430,71 @@ namespace tip {
 
     const std::string & data_dir = getDataDir();
 
-    // Attempt to open a read-only file. This should be possible:
+    // There are two types of read-only access: 1) a file which is write-protected on disk may be opened
+    // without explicitly specifying read-only access to the object representing it. 2) A file which is
+    // writable on disk may be opened specifically for read-only access. In both cases the object should
+    // behave identically.
+
+    // Open read-write a file which is write-protected. This should be possible, but all non-const methods
+    // should throw:
     msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + data_dir + "a1_read_only.pha";
     try {
-      m_read_only_extension = new FitsExtensionData(data_dir + "a1_read_only.pha", "SPECTRUM");
+      m_read_only_extension = new FitsExtensionData(data_dir + "a1_read_only.pha", "SPECTRUM", "", false);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
+      ReportWarning("tests for proper read-only access to write-protected file will be skipped!");
     }
 
-    if (0 != m_read_only_extension) {
+    confirmReadOnly(m_read_only_extension);
+    delete m_read_only_extension; m_read_only_extension = 0;
+
+    // Open read-only a file which is not write-protected:
+    msg = std::string("attempt to open read-only extension SPECTRUM in a writable file ") + data_dir + "a1_read_only.pha";
+    try {
+      // With no filter and no read_only flag, read-only access will be the outcome, even if the file is writable.
+      m_read_only_extension = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+      ReportWarning("tests for proper read-only access to will be skipped!");
+    }
+
+    confirmReadOnly(m_read_only_extension);
+    delete m_read_only_extension; m_read_only_extension = 0;
+  }
+
+  void TestExtensionData::confirmReadOnly(IExtensionData * extension) {
+    if (0 != extension) {
+      std::string msg;
+
       // Now we have a non-const extension object whose underlying physical file is const (not writable).
       // Any non-const method we call should fail at this point:
-      msg = "attempt to write keyword in a non-const object whose file is open read-only";
+      msg = "attempt to write keyword in a non-const object whose file cannot be written to";
       try {
-        m_read_only_extension->setKeyword("telescop", "GLAST");
+        extension->setKeyword("telescop", "GLAST");
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
       }
 
-      msg = "attempt to resize a non-const table object whose file is open read-only";
+      msg = "attempt to resize a non-const table object whose file cannot be written to";
       try {
-        m_read_only_extension->setNumRecords(1000);
+        extension->setNumRecords(1000);
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
       }
 
-      msg = "attempt to write a value in a cell of a non-const table object whose file is open read-only";
+      msg = "attempt to write a value in a cell of a non-const table object whose file cannot be written to";
       try {
         double tmp_d[1] = { 137. };
-        m_read_only_extension->setCell(1, 0, 0, tmp_d, tmp_d + 1);
+        extension->setCell(1, 0, 0, tmp_d, tmp_d + 1);
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
       }
     }
-
-    delete m_read_only_extension;
-    m_read_only_extension = 0;
   }
 
 }

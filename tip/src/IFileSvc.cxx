@@ -56,7 +56,7 @@ namespace tip {
     TipException fits_exception;
     try {
       try {
-        data = new FitsExtensionData(file_name, table_name, filter);
+        data = new FitsExtensionData(file_name, table_name, filter, false);
       } catch(const TipException & x) {
         fits_exception = x;
         data = new RootExtensionData(file_name, table_name, filter);

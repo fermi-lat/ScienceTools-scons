@@ -32,6 +32,10 @@ namespace tip {
       */
       void testReadOnly();
 
+      /** \brief Confirm that the given object can only be accessed read-only.
+      */
+      void confirmReadOnly(IExtensionData * extension);
+
     private:
     IExtensionData * m_read_only_extension;
   };
