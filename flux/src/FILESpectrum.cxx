@@ -67,7 +67,7 @@ double FILESpectrum::flux (double time ) const{
 }
 
 
-float FILESpectrum::operator() (float r)const
+float FILESpectrum::operator() (float r)
 {
     /// Purpose: sample a single particle energy from the spectrum
     double target_flux = r * m_fileflux;

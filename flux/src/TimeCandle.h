@@ -24,7 +24,7 @@ public:
     TimeCandle();
     //void setPosition ( float /*lat*/, float /*lon*/ ){}
     //virtual double calculate_rate(double old_rate);
-    virtual float  operator()(float f)const;
+    virtual float  operator()(float f);
     virtual const char* particleName()const;
     virtual std::string title()const;
         

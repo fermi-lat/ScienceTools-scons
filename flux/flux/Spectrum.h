@@ -34,16 +34,18 @@ public:
     //        double phi()const {return this.second;}
     //    };
     
-    virtual float operator()(float /*r*/)const{return 0;};
+    virtual float operator()(float /*r*/){return 0;};
     // this is all that these objects do. Must be virtual for
     // polymorphism
     // returns kinetic energy for random number r in [0,1). 
     // requried that it be monatonic
     // NB. Default is to return zero, an indicator that the actual Spectrum object
     //     implements a method that makes direct use of the random generator
-    
-    //virtual double calculate_rate (double old_rate) = 0;
-    
+
+
+    /// new interface for Hirosima classes
+    virtual double energy( double time=0);
+
     /// subclasses need to specify correct particle type
     virtual const char * particleName()const=0;
     
@@ -56,20 +58,14 @@ public:
     
     /// return a title describing the spectrum	
     virtual std::string title()const=0;
-    
-    /// inverse of the operator: given a KE, return number in [0,1)
-    /// for choosing limits
-    float fraction(float energy);
-    
+  
     virtual ~Spectrum();
     
     /// a randomized interval to the next event - default is 1/rate()
     virtual double interval (double time);
-    
   
-    /// new interface for Hirosima classes
-    virtual double energy( double time=0);
-    
+  
+
     /*! 
     @param energy energy returned by previous call to energy
     \return dir direction is either in the format (cos theta, phi)

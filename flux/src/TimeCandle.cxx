@@ -33,7 +33,7 @@ std::string TimeCandle::title()const
 }
 
 float
-TimeCandle::operator()(float f)const
+TimeCandle::operator()(float f)
 {
     return 1.;
 }

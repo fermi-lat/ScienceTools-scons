@@ -62,7 +62,7 @@ public:
     virtual float flux(float lat, float lon) const;
     virtual float flux(std::pair<double, double> coords) const;
     
-    virtual float operator() (float)const;
+    virtual float operator() (float);
     
     float cutoff () const {return m_cutoff;};
     

@@ -104,7 +104,7 @@ std::string SimpleSpectrum::title()const
 
 
 float
-SimpleSpectrum::operator()(float f)const
+SimpleSpectrum::operator()(float f)
 {
     if( m_index == 0.0 )     return m_E0;
     

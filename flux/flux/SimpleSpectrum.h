@@ -32,7 +32,7 @@ public:
     /// This is required, but the implementation has never been used
     SimpleSpectrum(const std::string& params);
     
-    virtual float  operator()(float f)const;
+    virtual float  operator()(float f);
     virtual const char* particleName()const;
     virtual std::string title()const;
 

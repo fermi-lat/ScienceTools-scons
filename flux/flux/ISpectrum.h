@@ -91,9 +91,9 @@ public:
     /** dummy set methods that are actually defaulted in Spectrum class.
      * These are needed to parse info from the XML (see FluxSource class)
      */
-    virtual void setParticleName(const std::string& value){;}
-    virtual void setInGeV(const bool value){;}
-    virtual void setFlux(double value){;}
+    virtual void setParticleName(const std::string& ){;}
+    virtual void setInGeV(const bool ){;}
+    virtual void setFlux(double ){;}
 };
 
 

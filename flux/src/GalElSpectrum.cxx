@@ -61,7 +61,7 @@ float GalElSpectrum::flux(std::pair<double,double> coords) const {
     return flux(coords.first, coords.second);
 }
 
-float GalElSpectrum::operator() (float x) const{
+float GalElSpectrum::operator() (float x) {
     return m_cutoff * pow(1.-x, 1./m_expo);
 }
 

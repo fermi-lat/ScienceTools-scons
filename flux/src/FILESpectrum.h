@@ -39,7 +39,7 @@ public:
     double flux (double time ) const;
     
     /// sample a single particle energy from the spectrum
-    virtual float operator() (float)const;
+    virtual float operator() (float);
     
     virtual std::string title() const;
     virtual const char * particleName() const;
