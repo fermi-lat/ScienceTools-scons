@@ -9,7 +9,8 @@
 bool testSkyDir(){
     using namespace astro;
     bool ok = true;
-    for(double l = -175 ; l < 175 ; l += 5.){
+    double l;
+    for(l = -175 ; l < 175 ; l += 5.){
         for(double b = -85 ; b < 85 ; b +=5.){
             SkyDir sd4(l,b,SkyDir::GALACTIC);
             double test = fabs(l-sd4.l()) + fabs(b - sd4.b());

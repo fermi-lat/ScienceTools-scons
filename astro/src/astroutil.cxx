@@ -281,7 +281,8 @@ int InsideSAA(double lon, double lat)
 	double latmax=-0.1;
 	double diffx[7],diffy[7],diffd[7];
 	if((lon>=longmin)&&(lon<=longmax)&&(lat>=latmin)&&(lat<=latmax)){
-	for (int i=0;i<6;i++){
+	  int i;
+	for (i=0;i<6;i++){
 			diffx[i]=perim[i+1][0]-perim[i][0];
 			diffy[i]=perim[i+1][1]-perim[i][1];
 			//cout<<i<<"  "<<diffx[i]<<endl;
