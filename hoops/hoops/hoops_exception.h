@@ -51,14 +51,16 @@ namespace hoops {
       virtual ~Hexception() throw() {}
 
       Hexception(const int & code, const std::string & msg = std::string(),
-        const std::string & filename = std::string(), int line = 0):
-        mMsg(msg), mCode(code) {}
+                 const std::string & filename = std::string(), int line = 0):
+        mMsg(msg), mCode(code), mFileName(filename), mLine(line) {}
       int Code() const { return mCode; }
       const std::string & Msg() const { return mMsg; }
 
     private:
       std::string mMsg;
       int mCode;
+     std::string mFileName;
+     int mLine;
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -82,6 +84,9 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
+ * First import
+ *
  * Revision 1.1  2003/04/11 19:20:38  peachey
  * New component HOOPS, an object oriented parameter interface. Low
  * level access currently uses PIL, but this can be changed.
