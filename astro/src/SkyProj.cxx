@@ -6,11 +6,13 @@
 // Include files
 
 #include "astro/SkyProj.h"
+#include "wcslib/wcs.h"
 
 using namespace astro;
 #include <string>
 #include <string.h>
 #include <stdexcept>
+
 
 
 class SkyProj::Exception : public std::exception 
@@ -27,70 +29,90 @@ protected:
    std::string m_what;
 };
 
-/** @brief Default projection is Hammer-Aitoff
-*/
-SkyProj::SkyProj()
-{
-   m_spt = 1;
-   m_sxy = 1;
-   prjini(&prj);
-   std::string projName = "AIT";
-   SkyProj::setProjection(projName);
-}
 
-/** @brief Constructor specified by Projection Code
-@param projName String containing three char code
-            Valid codes are:
-            AZP: zenithal/azimuthal perspective 
-            SZP: slant zenithal perspective 
-            TAN: gnomonic 
-            STG: stereographic 
-            SIN: orthographic/synthesis 
-            ARC: zenithal/azimuthal equidistant 
-            ZPN: zenithal/azimuthal polynomial 
-            ZEA: zenithal/azimuthal equal area 
-            AIR: Airy 
-            CYP: cylindrical perspective
-            CEA: cylindrical equal area 
-            CAR: Plate carree 
-            MER: Mercator 
-            SFL: Sanson-Flamsteed 
-            PAR: parabolic 
-            MOL: Mollweide 
-            AIT: Hammer-Aitoff 
-            COP: conic perspective 
-            COE: conic equal area
-            COD: conic equidistant
-            COO: conic orthomorphic
-            BON: Bonne
-            PCO: polyconic
-            TSC: tangential spherical cube
-            CSC: COBE quadrilateralized spherical cube
-            QSC: quadrilateralized spherical cube
-*/
-SkyProj::SkyProj(const std::string &projName)
-{
-   m_spt = 1;
-   m_sxy = 1;
-   prjini(&prj);
-   SkyProj::setProjection(projName);
-}
 
-SkyProj::SkyProj(const std::string &projName, double phi0, double theta0, double sxy, double spt, std::vector<double> params)
-{
-   prjini(&prj);
-   prj.phi0 = phi0;
-   prj.theta0 = theta0;
-   m_sxy = sxy;
-   m_spt = spt;
 
-   for(int i = 0; i < params.size(); i++)
-   {
-      prj.pv[i] = params[i];
+
+SkyProj::SkyProj(const std::string &projName, 
+                 double crpix1,
+                 double crpix2,
+                 double crval1,
+                 double crval2,
+                 double cdelt1,
+                 double cdelt2,
+                 double crota1,
+                 double crota2
+                 )
+{
+   int i, j, status;
+   double *pcij;
+   char CTYPE[2][9] = {"XLAT-xxx", "XLON-xxx"};
+
+   double pc[2][2] = {{1,0},
+                      {0,1}};
+   int naxis = 2;
+
+   strncpy(&CTYPE[0][5], projName.c_str(), 3);
+   strncpy(&CTYPE[1][5], projName.c_str(), 3);
+
+   wcs = new wcsprm;
+   wcs->flag = -1;
+   wcsini(1, naxis, wcs);
+
+   wcs->crpix[0] = crpix1;
+   wcs->crpix[1] = crpix2;
+
+   pcij = wcs->pc;
+   for (i = 0; i < naxis; i++) {
+      for (j = 0; j < naxis; j++) {
+         *(pcij++) = pc[i][j];
+      }
    }
 
-   SkyProj::setProjection(projName);
+   wcs->cdelt[0] = cdelt1;
+   wcs->cdelt[1] = cdelt2;
+
+
+   strcpy(wcs->ctype[0], CTYPE[0]);
+   strcpy(wcs->ctype[1], CTYPE[1]);
+
+
+   wcs->crval[0] = crval1;
+   wcs->crval[1] = crval2;
+
+   // Default's specified in twcs1.c test program
+   // May need to be changed.
+   wcs->lonpole = 150.0;
+   wcs->latpole = 999.0;
+
+   // Setting the following to a default value.
+   // Might be unneccessary
+   wcs->restfrq = 1.42040575e9f;
+   wcs->restwav = 0.0f;
+
+   // Set wcs to use CROTA rotations instead of PC or CD 
+   // transformations
+   wcs->altlin &= 4;
+
+   wcs->crota[0] = crota1;
+   wcs->crota[1] = crota2;
+
+   // No PV cards
+   wcs->npv = 0;
+
+   /* Extract information from the FITS header. */
+   if (status = wcsset2(wcs)) {
+      printf("wcsset error%3d\n", status);
+   }
+
 }
+
+SkyProj::~SkyProj()
+{
+   wcsfree(wcs);
+   delete wcs;
+}
+
 
 /** @brief Do the projection with the given coordinates
 @param s1 ra or l, in degrees
@@ -98,23 +120,46 @@ SkyProj::SkyProj(const std::string &projName, double phi0, double theta0, double
 */
 std::pair<double,double> SkyProj::project(double s1, double s2)
 {
-   double xa1[1], xa2[1];  // Projection Coordinates
-   double sa1[1], sa2[1];
-   int dummy;
-
-   sa1[0] = s1;
-   sa2[0] = s2;
+   int ncoords = 1;
+   int nelem = 9;
+   double worldcrd[9], imgcrd[9], pixcrd[9];
+   double phi[1], theta[1];
+   int stat[1];
 
    // WCS projection routines require the input coordinates are in degrees
    // and in the range of [-90,90] for the lat and [-180,180] for the lon.
    // So correct for this effect.
-   if(sa1[0] > 180) sa1[0] -= 360.;
-   
-   // Unknown what parameters 4 and 5 do.  Probably something about scaling.
-   // Test later.
-   prjs2x(&prj,1,1,m_spt,m_sxy,sa1,sa2,xa1,xa2,&dummy);
+   if(s1 > 180) s1 -= 360.;
 
-   return std::make_pair<double,double>(xa1[0],xa2[0]);
+   worldcrd[wcs->lng] = s1;
+   worldcrd[wcs->lat] = s2;
+
+   wcss2p(wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
+
+   return std::make_pair<double,double>(pixcrd[wcs->lng],pixcrd[wcs->lat]);
+}
+
+std::pair<double,double> SkyProj::deproject(double x1, double x2)
+{
+   int ncoords = 1;
+   int nelem = 9;
+   double s1;
+   double worldcrd[9], imgcrd[9], pixcrd[9];
+   double phi[1], theta[1];
+   int stat[1];
+
+   pixcrd[wcs->lng] = x1;
+   pixcrd[wcs->lat] = x2;
+
+   wcsp2s(wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+
+   s1 = worldcrd[wcs->lng];
+
+   //fold RA into the range (0,360)
+   while(s1 < 0) s1 +=360.;
+   while(s1 > 360) s1 -= 360.;
+
+   return std::make_pair<double,double>(s1,worldcrd[wcs->lat]);
 }
 
 
@@ -131,42 +176,6 @@ std::pair<double,double> SkyProj::project(double x1, double x2, SkyProj otherPro
    s1 = s.first;
    s2 = s.second;
    return SkyProj::project(s1,s2);
-}
-
-/** @brief Does the inverse projection
-@param x1 projected equivalent to ra or l, in degrees
-@param x2 projected equivalent dec or b, in degrees
-*/
-std::pair<double,double> SkyProj::deproject(double x1, double x2)
-{
-   double sa1[1], sa2[1];  // Sky Coordinates
-   double xa1[1], xa2[1];
-   int dummy;
-
-   xa1[0] = x1;
-   xa2[0] = x2;
-
-   // Unknown what parameters 4 and 5 do.  Probably something about scaling.
-   // Test later.
-   prjx2s(&prj,1,1,m_sxy,m_spt,xa1,xa2,sa1,sa2,&dummy);
-
-    //fold RA into the range (0,360)
-    while(sa1[0] < 0) sa1[0] +=360.;
-    while(sa1[0] > 360) sa1[0] -= 360.;
-
-   return std::make_pair<double,double>(sa1[0],sa2[0]);
-}
-
-/** @brief Change the projection type
-@param projName String containing three char code
-*/
-void SkyProj::setProjection(const std::string& projName)
-{
-    strncpy(prj.code,projName.c_str(),4);
-
-    // Projection routine returns 2 if the projection type is not found.
-    if(2 == prjset(&prj))
-      throw Exception(std::string("Unrecognized SkyProj projection type: ")+projName);
 }
 
 

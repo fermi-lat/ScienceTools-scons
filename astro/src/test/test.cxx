@@ -223,6 +223,7 @@ int main(){
     //THB double sd4_ra= sd4.ra(), sd4_dec=sd4.dec();
     test += sd4.difference(sd);
 
+    /*
     const char prj_codes[26][4] =
     {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
     "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
@@ -258,7 +259,7 @@ int main(){
        }
        cout << prj_codes[currentcode] << "\t\t" << pass_high_lat << "\t\t" << pass_mid_lat << "\t\t" << pass_low_lat << endl;
     }
-
+    */
 
     if( fabs(test) < 1e-3 ) {
         cout << "tests ok " << endl;

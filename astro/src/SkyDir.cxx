@@ -250,7 +250,10 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
 // WCS based projection routine
 std::pair<double,double> SkyDir::project(SkyProj projection) const
 {
-   return projection.project(this->ra(),this->dec());
+   if(s_project_lb)
+      return projection.project(this->l(), this->b());
+   else
+      return projection.project(this->ra(),this->dec());
 }
 
 
