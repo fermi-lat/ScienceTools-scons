@@ -1,6 +1,6 @@
 package flux
 
-version v8r14
+version v8r14p1
 author Sean Robinson <srobinsn@u.washington.edu>
 # $Id$
 

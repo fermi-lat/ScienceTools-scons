@@ -91,7 +91,6 @@ std::string CompositeSource::fullTitle () const
         ++it;
         if (it != m_sourceList.end())    s << "+ ";
     }
-    s << '\0';
     std::string t(s.str());
     return t;
 }

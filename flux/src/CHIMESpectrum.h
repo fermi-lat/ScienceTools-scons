@@ -68,7 +68,7 @@ public:
     /// Linear interpolate in a table with a 5 degree sampling grid.
     virtual float flux() const;
     
-    virtual float operator() (float)const;
+    virtual float operator() (float);
     
     float cutoff () const {return m_cutoff;};
     

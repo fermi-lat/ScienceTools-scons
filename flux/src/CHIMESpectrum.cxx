@@ -181,7 +181,7 @@ float CHIMESpectrum::flux() const {
 
 //-------------------------- operator()  sample an energy value
 
-float CHIMESpectrum::operator() (float x)const {
+float CHIMESpectrum::operator() (float x) {
     // return a random value of energy sampled from the spectrum
     
     float join = (m_tot-m_upper)/m_tot;

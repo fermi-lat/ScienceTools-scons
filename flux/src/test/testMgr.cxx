@@ -156,6 +156,7 @@ int main(int argn, char * argc[]) {
         std::cout << "Source:  " << *abc << std::endl;
         out << "Source:  " << *abc <<std::endl;
         fm.test(out, (*abc), count);
+        fm.test(std::cout, (*abc), 10); // also example to stdout
         out << std::endl << std::endl << std::endl;
     }
 
