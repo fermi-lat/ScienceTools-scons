@@ -12,7 +12,6 @@ use st_stream *
 
 apply_pattern root_package headers="../st_graph/RootFrame.h" includes="-I. -I.."
 apply_pattern ST_library option=-no_share
-apply_pattern ST_pfiles
 
 # Root libs, including GUI libraries.
 macro st_graph_libs  "-L$(ROOT_PATH)/lib -lCore -lCint -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lGui -ldl " \
