@@ -9,7 +9,7 @@
 #endif
 
 #include <iostream>
-
+#include <cstdio>
 
 /** @file Util.cxx 
 @author J. Bogart
@@ -99,6 +99,27 @@ namespace facilities {
     if (!locStream) {return 0;}
     return val;
   }  
+
+  double Util::stringToDouble(const std::string& inStr) {
+    double val;
+    char  junk[3];
+    int nItem = sscanf(inStr.c_str(), "%lg %1s", &val, junk);
+    if (nItem != 1) {
+      throw WrongType(inStr, "double");
+    }
+    return val;
+  }
+
+
+  int Util::stringToInt(const std::string& inStr) {
+    int  val;
+    char junk[3];
+    int nItem = sscanf(inStr.c_str(), "%d %1s", &val, junk);
+    if (nItem != 1) {
+      throw WrongType(inStr, "int");
+    }
+    return val;
+  }
 
   void Util::stringTokenize(std::string input, const std::string& delimiters,
                             std::vector<std::string>& tokens, bool clear) {
