@@ -144,7 +144,7 @@ void Burst(int argc, char** argv)
       energy=_myGRB->Energy();
       deltae=_myGRB->DeltaE();
       
-      TApplication theApp("App", 0, 0);
+      TApplication theApp("App",0,0);
  
       
       //------------------------------------------------------//
@@ -188,7 +188,7 @@ void Burst(int argc, char** argv)
 	  // Compute the flux @ time
 	  spectrum.clear();
 	  spectrum=_myGRB->ComputeFlux(m_time[t]); // is in photons/s/MeV/m^2
-	  _myGRB->setSpectrum(spectrum);
+	  //	  _myGRB->setSpectrum(spectrum);
 	  for (int en=0;en<cst::enstep;en++)
 	    {
 	      m_flux[en][t]=spectrum[en]*energy[en]/(cst::erg2MeV*1.0e+6);  

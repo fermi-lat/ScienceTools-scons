@@ -202,6 +202,7 @@ int GRBTest::Start(std::vector<char*> argv)
   while(current_arg < argc)
     {
       arg_name = argv[current_arg];
+      cout<<arg_name<<endl;
       if("-help" == arg_name || "help" == arg_name) 
 	{ 
 	  help();
@@ -225,11 +226,12 @@ int GRBTest::Start(std::vector<char*> argv)
 	if (events_max<1) return 0;
       }
       else if("-root" == arg_name) {
-	//	cout<<" SAVE ROOT" <<endl;
+	cout<<" SAVE ROOT" <<endl;
 	savef_root=true;
 	m_run_number = argv[++current_arg];
       }
       else if("-ascii" == arg_name) {
+	cout<<" SAVE ASCII" <<endl;
 	savef_ascii=true;
       }
       
@@ -275,36 +277,37 @@ int GRBTest::Start(std::vector<char*> argv)
       cout<<" Source Name = "<<sources[i]<<endl;
       
       //name=const_cast<char *>(sources[i].c_str());
-      sprintf(name,"%s%s",sources[i].c_str(),m_run_number);
-      cout<<name<<endl;
       //      name=m_source_name;
-      if (savef_root==true){
-	events= new TTree(name,name);
-	events->Branch("energy",&energy,"energy/D");
-	events->Branch("time",&time,"time/D");
-	events->Branch("Rate",&Rate,"Rate/D");
-	events->Branch("cos_theta",&cos_theta,"cos_theta/D");
-	events->Branch("phi",&phi,"phi/D");
-	Forest.Add(events);
-      }
-      
+      if (savef_root==true)
+	{
+	  sprintf(name,"%s%s",sources[i].c_str(),m_run_number);
+	  events= new TTree(name,name);
+	  events->Branch("energy",&energy,"energy/D");
+	  events->Branch("time",&time,"time/D");
+	  events->Branch("Rate",&Rate,"Rate/D");
+	  events->Branch("cos_theta",&cos_theta,"cos_theta/D");
+	  events->Branch("phi",&phi,"phi/D");
+	  Forest.Add(events);
+	}
       //sb pair<double,double> loc=m_fsvc->location();
 
       //      cout << loc.first << "   " << loc.second <<endl;
-      time=1.0e-4;
+      time=0.0;
       double t1;
       t1=time;
       double dt=0.0;
       while(time<time_max && nume<=events_max)
 	{
-	  //	  cout<<"m_flux->generate()"<<endl;
+	  //	  cout<<"time = "<<time<<endl;
+	  //cout<<"m_flux->generate()"<<endl;
 	  m_flux->generate();  
-	  //  cout<<"m_flux->time()"<<endl;
+	  //cout<<"m_flux->time()"<<endl;
 	  time=m_flux->time();
 	  if (time>=1.0e+6) break;
 	  dir = m_flux->launchDir();
 	  // cout<<"m_flux->energy()"<<endl;
 	  energy = m_flux->energy(); // kinetic energy in MeV
+	  // cout<<"energy = "<<energy<<endl;
 	  Area=m_flux->targetArea(); 
 	  // cout<<"m_flux->rate()"<<endl;
 	  Rate= m_flux->rate();
