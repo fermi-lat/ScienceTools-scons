@@ -6,12 +6,9 @@ author  T. Burnett <tburnett@u.washington.edu>
 
 branches astro cmt src doc
 
-use GlastPolicy v5*
-use facilities   v2r*
-use CLHEP v2* IExternal
+use GlastPolicy  *
+use facilities   *
+use CLHEP * IExternal
 
 apply_pattern GLAST_static_library_package
 
-
-# this is the test program from G. Tosti -- enable it to run the test
-#application orbit test/orbit/*.cxx 
