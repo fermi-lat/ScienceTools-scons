@@ -2,6 +2,7 @@
     \brief Implementation of globally accessible stream setup and info methods.
     \author James Peachey, HEASARC/GSSC
 */
+#include <limits>
 #include "st_stream/st_stream.h"
 
 namespace st_stream {
@@ -13,7 +14,7 @@ namespace st_stream {
   static std::string s_exec_name;
 
   // Global chatter maximum.
-  static unsigned int s_global_max_chat = 0;
+  static unsigned int s_global_max_chat = std::numeric_limits<unsigned int>::max();
 
   void InitStdStreams(const std::string & exec_name, unsigned int max_chat, bool debug_mode) {
     // Perform initialization only once.
@@ -41,6 +42,18 @@ namespace st_stream {
 
   unsigned int GetMaximumChatter() {
     return s_global_max_chat;
+  }
+
+  void SetDebugMode(bool debug_mode) {
+    s_debug_mode = debug_mode;
+  }
+
+  void SetExecName(const std::string & exec_name) {
+    s_exec_name = exec_name;
+  }
+
+  void SetMaximumChatter(unsigned int max_chat) {
+    s_global_max_chat = max_chat;
   }
 
 }

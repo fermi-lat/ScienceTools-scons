@@ -31,6 +31,18 @@ namespace st_stream {
   /// \brief Return the maximum chatter which should be displayed.
   unsigned int GetMaximumChatter();
 
+  /// \func SetDebugMode
+  /// \brief Set state of the global debug state flag.
+  void SetDebugMode(bool debug_mode = true);
+
+  /// \func SetExecName
+  /// \brief Set the name of the current executable.
+  void SetExecName(const std::string & exec_name);
+
+  /// \func SetMaximumChatter
+  /// \brief Set the maximum chatter which should be displayed.
+  void SetMaximumChatter(unsigned int max_chat);
+
 }
 
 #endif
