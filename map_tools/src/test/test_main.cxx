@@ -18,7 +18,7 @@ $Header$
 #include <stdexcept>
 using namespace map_tools;
 
-class TestAeff { //: public Exposure::Aeff {
+class TestAeff { 
 public:
     TestAeff(double slope=0): m_slope(slope){}
     double operator()(double ct)const{
@@ -32,6 +32,7 @@ public:
 
 
 int main(int argc, char** argv ){
+    int rc=0;
     try{
     
         // read a pil file--and make sure that a few simple things work
@@ -90,7 +91,7 @@ int main(int argc, char** argv ){
         e2.write( par.outputFile());
 
         // create an image to access cells
-    #if 0
+    #if 0 // new healpix scheme does not create image files
         SkyImage exp3(par.inputFile(),"");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
         if( tt!=36.0) throw std::runtime_error("Fail pixelvalue test!"); 
@@ -99,12 +100,13 @@ int main(int argc, char** argv ){
         // now test cos
         TestCosineBinner();
 
+        std::cout << "tests OK" << std::endl;
+
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
             << e.what() << "\"" << std::endl;
-        return 1;
+        rc=1;
     }
-    std::cout << "tests OK" << std::endl;
-    return 0;
+    return rc;
 }
 

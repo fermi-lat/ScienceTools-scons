@@ -11,6 +11,10 @@
 #include "astro/SkyDir.h"
 #include "astro/HealpixArray.h"
 #include "map_tools/CosineBinner.h"
+namespace tip { class Table; class ConstTableRecord;}
+
+#include <utility> // for std::pair
+
 
 /** @class BasicExposure
 @brief template for differential exposure
@@ -59,7 +63,6 @@ namespace map_tools {
 
 It is a pixelated using Healpix binning, and the CosineBinner class
 
-
 */
 
 class Exposure : public SkyExposure {
@@ -72,21 +75,21 @@ public:
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);
 
-    //! for backward compatibility: deprecated
-    void add(const astro::SkyDir& dirz, double deltat){fill(dirz,deltat);}
-
     //! create object from the data file (FITS for now)
     Exposure(const std::string& inputfile, const std::string& tablename="Exposure");
 
     //! write out to a file.
     void write(const std::string& outputfile, const std::string& tablename="Exposure")const;
 
-    /// this is deprecated, here only for Likelihood
-    class Aeff {
-    public: 
-      virtual double operator()(double costh)const=0;
-    };
+    typedef std::vector<std::pair<double, double> > GTIvector;
+
+    //! load a set of history intervals from a table, qualified by a set of "good-time" intervals 
+    void load(const tip::Table * scData, 
+        const GTIvector & gti= GTIvector(), 
+                    bool verbose=true);
+
 private:
+    bool processEntry(const tip::ConstTableRecord & row, const GTIvector& gti);
 };
 
 

@@ -19,10 +19,35 @@ $Header$
 
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 #include <iostream>
 using namespace map_tools;
 
+#if 0
+class SimpleHistory : public std::vector< std::vector<double> >{
+public:
+    SimpleHistory() {}
+
+    void load(Exposure& exp){
+        exp.fill(begin(), end());
+    }
+    typedef td::vector< std::vector<double> >::const_iterator const_iterator;
+
+    class Iter  {
+    public:
+
+ 
+    };
+
+    Iter begin(){ return Iter( );}
+    Iter end() {  return Iter( );}
+
+private:
+    typedef 
+};
+#endif
 
 class ExposureCubeApp : public st_app::StApp {
 public:
@@ -83,15 +108,12 @@ public:
 
         // create the differential exposure object
         Exposure ex( m_pars["pixelsize"], m_pars["binsize"]);
-#if 0
-        m_f.info() << "Creating an exposure object from a pointing history file ...";
+        Exposure::GTIvector gti; 
+        gti.push_back(std::make_pair(m_pars["tstart"],m_pars["tstop"]));
+        m_f.info() << "Creating an exposure object from a pointing history file ..." << m_pars.inputFile() << std::endl;
+        tip::Table * scData = tip::IFileSvc::instance().editTable(m_pars.inputFile(), m_pars.table_name());
+        ex.load(scData, gti);
 
-        LoadExposureFromGlast(  m_pars, ex); 
-#else
-        m_f.info() << "Create exposure object from simple point" << std::endl;
-        ex.fill(astro::SkyDir(0,0), 1.0);
-        
-#endif
         // create the fits output file from the Exposure file
         m_f.info() 
             << "writing out the differential exposure file to "
