@@ -8,6 +8,7 @@ TELESCOP =                GLAST / Name of telescope generating data
 INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
 HISTORY                     $Id$
 END

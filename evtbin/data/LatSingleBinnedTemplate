@@ -8,6 +8,7 @@ TELESCOP =                GLAST / Name of telescope generating data
 INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
 HISTORY                   $Id$ 
 END
@@ -47,7 +48,7 @@ AREASCAL =                   1. / Area scaling factor
 BACKSCAL =                   1. / Scaling factor to be applied to Bkgdfile
 CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
 FILTER   =                      / Instrument filter in use (if any)
-OBJECT   =                      / Observed object
+OBJECT   = ''                   / Observed object
 EQUINOX  =                2000. / Equinox of RA & DEC specifications
 RADECSYS =                      / Coordinate frame used for EQUINOX
 DATE-OBS                        / Start Date and Time of the observation (UTC)
