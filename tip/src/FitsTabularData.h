@@ -7,14 +7,8 @@
 #ifndef table_FitsTabularData_h
 #define table_FitsTabularData_h
 
-#include <cassert>
-#include <map>
 #include <string>
 
-// This should be removed:
-#include "FitsExtensionUtils.h"
-
-#include "FitsPrimProps.h"
 #include "table/ITabularData.h"
 #include "table/table_types.h"
 
@@ -35,7 +29,8 @@ namespace table {
 
       virtual ~FitsTabularData() {}
 
-      /** \brief Return the number of records in the current tabular data object.
+      /** \brief Return the number of records in the current tabular data object (the number of rows
+          in the FITS file).
       */
       virtual Index_t getNumRecords() const;
 
@@ -44,6 +39,8 @@ namespace table {
       */
       virtual FieldIndex_t getFieldIndex(const std::string & field_name) const;
 
+      /** \brief Return the number of elements in the given field (the number of items in a vector column.
+      */
       virtual Index_t getFieldNumElements(FieldIndex_t field_index) const;
 
       /** \brief Get one or more values from the current tabular data object.
@@ -110,114 +107,10 @@ namespace table {
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end);
 
-      struct ColumnInfo {
-          std::string m_name;
-          long m_repeat;
-          int m_col_num;
-      };
-
-      static const FieldIndex_t s_max_scalar_len = 64;
-
-      /** \brief Templated function which can get any kind of data from a FITS table. This
-          method throws an exception if the extension is not a table.
-          \param field_index The index of the field (column) to get.
-          \param record_index The record index (row number) whose value to get.
-          \param src_begin Index of the first element within the Cell.
-          \param src_end Index of one element past the last element within the Cell.
-          \param dest_begin Pointer to the first element in the output sequence.
-      */
-      template <typename T>
-      void getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end, T * dest) const;
-
-      /** \brief Templated function which can set any kind of data in a FITS table. This
-          method throws an exception if the extension is not a table.
-          \param field_index The index of the field (column) to set.
-          \param record_index The record index (row number) whose value to set.
-          \param src_begin Index of the first element within the Cell to set.
-          \param dest_begin Pointer to the first element in the output sequence.
-          \param dest_end Pointer to one past the last element in the output sequence.
-      */
-      template <typename T>
-      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
-
     private:
-      std::map<std::string, ColumnInfo> m_col_name_lookup;
-      std::map<int, ColumnInfo> m_col_num_lookup;
-      Index_t m_num_records;
       FitsExtensionUtils * m_fits_utils;
 
   };
-
-  // Getting columns.
-  template <typename T>
-  inline void FitsTabularData::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
-    T * dest_begin) const {
-    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
-    int status = 0;
-    fitsfile * fp = m_fits_utils->getFitsFp();
-    fits_read_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, src_end - src_begin, 0,
-      dest_begin, 0, &status);
-    if (status) throw TableException();
-  }
-
-  // Getting column values as bools is a special case because Cfitsio gets them as ints.
-  template <>
-  inline void FitsTabularData::getCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
-    Index_t src_end, bool * dest) const {
-    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
-    int status = 0;
-    char tmp[1];
-    fitsfile * fp = m_fits_utils->getFitsFp();
-    for (Index_t ii = src_begin; ii != src_end; ++ii) {
-      fits_read_col(fp, data_type_code, col_num, record_index + 1, ii, 1, 0, tmp, 0, &status);
-      if (status) throw TableException();
-      *dest++ = *tmp;
-    }
-  }
-
-  // Getting column values as strings is a special case because Cfitsio gets them as char *.
-  // This is tricky and painful to get right because of Cfitsio's way of indicating the width
-  // of columns. Since there is no immediate need to manage strings, this is simply not supported
-  // for now.
-  template <>
-  inline void FitsTabularData::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    Index_t src_end, std::string * dest) const {
-    assert(0);
-  }
-
-  // Setting columns.
-  template <typename T>
-  inline void FitsTabularData::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
-    T * dest_begin, T * dest_end) {
-    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
-    int status = 0;
-    fitsfile * fp = m_fits_utils->getFitsFp();
-    fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
-      dest_begin, &status);
-    if (status) throw TableException();
-  }
-
-  // Setting column values as bools is a special case because Cfitsio treats them as ints.
-  template <>
-  inline void FitsTabularData::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
-    bool * dest_begin, bool * dest_end) {
-    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
-    int status = 0;
-    char tmp[1];
-    fitsfile * fp = m_fits_utils->getFitsFp();
-    for (; dest_begin != dest_end; ++dest_begin, ++src_begin) {
-      *tmp = *dest_begin;
-      fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);
-      if (status) throw TableException();
-    }
-  }
-
-  // Setting column values as strings is not supported. See note above getCellGeneric.
-  template <>
-  inline void FitsTabularData::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    std::string * dest_begin, std::string * dest_end) {
-    assert(0);
-  }
 
 }
 
