@@ -5,6 +5,9 @@
 $Id$
 
 \verbatim
+16-mar-2005    v0r1p2 JP  Add version information from cvs to the tool.
+                          Made gtpsearch case insensitive wrt choice of
+                          algorithm.
 16-mar-2005    v0r1p1 JP  Add enumerated range to algorithm parameter.
 07-mar-2005    v0r1p0 JP  Use utility classes defined in pulsarDb for
                           managing absolute times, and database access.
