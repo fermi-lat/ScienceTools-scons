@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r0   02-Oct-03   JC   use Goodi in EventContainer; waiting on FT2
+                            implementation for ScDataContainer
     v0r3p4 29-Sep-03   JC   use libMapFlux.so on Linux; final tag before
                             Goodi use
     v0r3p3 05-Sep-03   JC   re-organize observationSim.i; 
