@@ -140,7 +140,7 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const
    Hep3Vector rsrc = sourceDir.dir();
 
    // Angle of source-sun-observer
-   double costheta = - rsun.dot(rsrc) / (sqrt( rsun.dot(rsun) ) * sqrt( rsrc.dot(rsrc) ));
+   double costheta = - rsun.dot(rsrc) / ( rsun.mag() * rsrc.mag() );
 
    // m = G * Msun / c^3
    static double m = 4.9271e16;
@@ -156,7 +156,7 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir sourceDir) const
 
    Hep3Vector rsrc = sourceDir.dir();
 
-   return barycenter.dot(rsrc) / (sqrt(rsrc.dot(rsrc)) * 299792458.);
+   return barycenter.dot(rsrc) / (rsrc.mag() * 299792458.);
 }
 
 
