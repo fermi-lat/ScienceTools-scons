@@ -11,8 +11,8 @@ float SkyDir::s_refRA=0;  // Projection Center RA
 float SkyDir::s_refDEC=0; // Projection Center DEC
 SkyDir::ProjType SkyDir::s_projType=SkyDir::AIT; // Projection Type.  Valid values are CAR, SIN, 
 // TAN, ARC, NCP, GLS, MER, AIT, STG
-float SkyDir::s_refX=0.; // Projection Output Center X
-float SkyDir::s_refY=0.; // Projection Output Center Y
+float SkyDir::s_refX=180.5; // Projection Output Center X
+float SkyDir::s_refY=90.5; // Projection Output Center Y
 float SkyDir::s_scaleX=1.0; // Projection X Scaling 1/degrees
 float SkyDir::s_scaleY=1.0; // Projection Y Scaling 1/degrees
 float SkyDir::s_rot=0;;   // Projection Rotation Angle
@@ -25,7 +25,7 @@ namespace{
 /** @brief initialize from (ra, dec), or (l,b)
 @param param1 either ra or l, in degrees
 @param param2 either dec or b, in degrees
-@param inputType EQUATORIAL (default) or GALACTIC
+@param inputType EQUATORIAL (default) or GALACTIC or PROJECTION
 */
 SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
     if(inputType == GALACTIC){
@@ -47,10 +47,8 @@ SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
         //here we construct the cartesian celestial vector
         m_dir = Hep3Vector( cos(ra)*cos(dec), sin(ra)*cos(dec) , sin(dec) );        
     }else if(inputType == PROJECTION){
-        float x = static_cast<float>(param1),
-            y = static_cast<float>(param2);
-        float ra, dec;
-        inverseProjection(x,y, &ra, &dec);
+        double ra, dec;
+        inverseProjection(param1, param2, &ra, &dec);
 
         ra*=M_PI/180;
         dec*=M_PI/180.;
@@ -79,7 +77,6 @@ SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
     if(inputType!=EQUATORIAL){
         m_dir = s_equatorialToGalactic.inverse() * m_dir;
     }
-    initProjection();
 }
 
 HepRotation SkyDir::s_equatorialToGalactic = HepRotation().rotateZ(-282.8592*M_PI/180).rotateX(-62.8717*M_PI/180).rotateZ(32.93224*M_PI/180);
@@ -183,18 +180,7 @@ void SkyDir::setProjection(const float ref_ra, const float ref_dec,
     s_project_lb = use_lb;
 }
 
-void SkyDir::initProjection(void)
-{
-    s_refRA = 0.0;
-    s_refDEC = 0.0;
-    s_projType = TAN;
-    s_refX = 0.0;
-    s_refY = 0.0;
-    s_scaleX = float(2./180.);
-    s_scaleY = float(1./90.);
-    s_rot = 0.0;
-    s_project_lb = false;
-}
+
 
 std::pair<double,double> SkyDir::project() const
 {
@@ -393,8 +379,8 @@ double SkyDir::difference(const SkyDir& other)const
 //	point_ra    ra and dec of the point to 
 //	point_dec        be projected        
 
-int SkyDir::inverseProjection(  float point_x,   float point_y,
-                       float *point_ra, float *point_dec) 
+int SkyDir::inverseProjection(  double point_x,   double point_y,
+                       double *point_ra, double *point_dec) 
 
 {
     // Based on ffwldp(), Copyright (C) 1994 Associated Universities, Inc. 
