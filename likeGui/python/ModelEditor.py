@@ -34,7 +34,10 @@ class RootWindow(Tk.Tk):
         try:
             global ds9
             import ds9
-            ds9.cd(os.path.abspath(os.curdir))
+            try:
+                ds9.cd(os.path.abspath(os.curdir))
+            except RuntimeError:
+                pass
         except ImportError:
             showwarning(title="ds9 Access Warning",
                         message="Import error for ds9 package.")
