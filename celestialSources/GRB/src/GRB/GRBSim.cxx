@@ -2,7 +2,6 @@
 #include <iostream>
 //#include <stdio.h>
 #include <algorithm>
-//#include <function.h>
 #include <vector>
 #include <cmath>
 #include <cassert>
@@ -11,7 +10,7 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandGauss.h"
 #include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/RandGeneral.h"
+#include "CLHEP/Random/RandGeneral.h" 
 #include "CLHEP/Random/RandExponential.h"
 #include "CLHEP/Random/RanluxEngine.h"
 #include "GRBSim.h"

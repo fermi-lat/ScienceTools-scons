@@ -63,12 +63,16 @@ double GRBSpectrum::interval(double time)// const
   double t1=time;         // t1 is the integration variable...
   //  double temp=temp=m_grbsim->IRate(m_grbsim->ComputeFlux(time));
   double temp=rate(time); // The m_spectrum is already computed from energySrc()
-  double dt=1.0e-2;       // .. and dt is its integration step.
+  double dt=1.0e-2/6;       // .. and dt is its integration step.
   while (sum<1.0){ // It compute the integral of the rate...
     // The idea is to compute t1 for which the 
     // integral between time and t1 of the rate(t) dt =1.
   //  cout<<t1<<" "<<tmax<<endl;
-    if(t1>=tmax) break; // This exits the loop in the case af the burst is finished
+    if(t1>=tmax)
+     {
+       t1=time+1;
+       break; // This exits the loop in the case af the burst is finished
+     } 
       if (temp<=0.1) temp=0.1; // Minumum rate...
 //    if (temp>=1/cst::DeadTime) // If the rate is greater then 1/DeadTime...
 //      { 

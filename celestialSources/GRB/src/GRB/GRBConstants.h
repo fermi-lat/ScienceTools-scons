@@ -47,7 +47,7 @@ namespace cst
 //    const double enph      = 25.0e+3; // = 25 KeV BGO band
   //! Minimal Temporal separation between 2 photons
   const double DeadTime  = 1.0e-5; //sec
-  const double enmin     = 1.0e+1;
+  const double enmin     = 1.0e+3;
   const int nstep        = 200;
   const int enstep       = 100;
   //! flag =[0,1], if ==0, No inverse compton;
