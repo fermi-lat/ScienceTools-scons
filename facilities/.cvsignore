@@ -9,3 +9,4 @@ Makefile.in
 stamp-h*
 
 msdev
+Win32
