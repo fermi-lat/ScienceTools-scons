@@ -1,0 +1,38 @@
+
+<source_library>
+
+ 	<!-- the GRB spectrum at minimum flux. angular dependence and rate are from the GRBSpectrum object -->
+    <source name="grbspectrum" >
+        <spectrum> <SpectrumClass name="GRBSpectrum" params="10.00, 144.37"/> <use_spectrum/> </spectrum>
+    </source>
+
+
+ 	<!-- the GRB OBS spectrum at minimum flux. angular dependence and rate are from the GRBobsSpectrum object -->
+    <source name="grbobsspectrum" >
+        <spectrum> <SpectrumClass name="GRBobsSpectrum" params="10.00, 144.37"/> <use_spectrum/> </spectrum>
+    </source>
+
+
+	<!-- background mixture -->
+    <source name="grbbackgndmix">
+        <nestedSource sourceRef="grbobsspectrum"/>
+        <nestedSource sourceRef="chimeavg"/>
+        <nestedSource sourceRef="albedo_proton_avg"/>
+        <nestedSource sourceRef="albedo_gamma"/>
+        <nestedSource sourceRef="electronavg"/>
+    </source>
+
+	<!-- background mixture -->
+    <source name="GRBbckmix">
+        <nestedSource sourceRef="grbspectrum"/>
+        <nestedSource sourceRef="grbbackgndmix"/>
+    </source>
+
+	<!-- background mixture -->
+    <source name="GRBobsbckmix">
+        <nestedSource sourceRef="grbobsspectrum"/>
+        <nestedSource sourceRef="grbbackgndmix"/>
+    </source>
+
+
+</source_library>
