@@ -62,7 +62,7 @@ int main() {
   } catch (const std::exception & x) {
     std::cerr << "Caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
-  delete const_table;
+  delete const_table; const_table = 0;
 
   Table * table = 0;
   try {
@@ -96,7 +96,33 @@ int main() {
   } catch (const std::exception & x) {
     std::cerr << "Caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
-  delete table;
+  delete table; table = 0;
 
+  try {
+    // Example 6:
+    // Copy events extension.
+
+    // Open input and create output tables.
+    const_table = IFileSvc::instance().readTable("D1.fits", "EVENTS");
+    IFileSvc::instance().createFile("D1copy.fits", "D1.fits");
+    table = IFileSvc::instance().editTable("D1copy.fits", "EVENTS");
+
+    // Change size at the outset; this is more efficient than doing it row by row.
+    table->setNumRecords(const_table->getNumRecords());
+
+    // Start at beginning of each table.
+    Table::ConstIterator in_itor = const_table->begin();
+    Table::Iterator out_itor = table->end();
+
+    // Copy all records.
+    for (; in_itor != const_table->end(); ++in_itor, ++out_itor) {
+      *out_itor = *in_itor;
+    }
+
+  } catch (const std::exception & x) {
+    std::cerr << "Caught " << typeid(x).name() << ": " << x.what() << std::endl;
+  }
+  delete table; table = 0;
+  delete const_table; const_table = 0;
   return 0;
 }
