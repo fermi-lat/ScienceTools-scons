@@ -5,12 +5,13 @@ version v0
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 # $Id$
 
+use ROOT * IExternal
+use RootcintPolicy * GlastPolicy
 use STpolicy *
 use st_app *
 use st_stream *
-use tip *
-use ROOT * IExternal
 
+apply_pattern root_package headers="../st_graph/RootFrame.h" includes="-I. -I.."
 apply_pattern ST_library option=-no_share
 apply_pattern ST_pfiles
 
@@ -19,8 +20,6 @@ macro st_graph_libs  "-L$(ROOT_PATH)/lib -lCore -lCint -lHist -lGraf -lGraf3d -l
       WIN32      '/libpath:"$(ROOT_PATH)/lib" libCore.lib libCint.lib libHist.lib libGraf.lib libGraf3d.lib libGpad.lib libTree.lib libRint.lib libPostscript.lib libMatrix.lib libPhysics.lib libGui.lib '
 
 macro_append st_graph_linkopts ${st_graph_libs}
-
-application st_graph st_graph/*.cxx
 
 private
 macro_append st_graph_cppflags "" Linux "-DTRAP_FPE "
