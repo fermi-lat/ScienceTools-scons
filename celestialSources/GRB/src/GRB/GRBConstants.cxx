@@ -20,7 +20,7 @@ GRBConstants::GRBConstants()
 
 void GRBConstants::ReadParam(){
   char buf[100];
-  std::string paramFile = "$(FLUXSVCROOT)/src/test/GRBParam.txt";
+  std::string paramFile = "$(GRBROOT)/src/test/GRBParam.txt";
   facilities::Util::expandEnvVar(&paramFile);
   ifstream f1(paramFile.c_str());
   if (! f1.is_open()) 

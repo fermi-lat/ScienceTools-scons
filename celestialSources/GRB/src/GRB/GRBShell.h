@@ -2,6 +2,7 @@
  * \class GRBShell 
  * \brief Describes a spherical shell produced by the blast of the GRB inner engine.
  *
+ * The shells will be stacked in a vector.
  * \author Nicola Omodei       nicola.omodei@pi.infn.it 
  * \author Johann Cohen-Tanugi johann.cohen@pi.infn.it
  *
@@ -22,7 +23,7 @@ class GRBShell
    * \arg The Lorentz factor \c m_gamma is randomly drawn (see \c generateGamma). 
    * \arg The mass of the shell is computed as: \f$\displaystyle{E\over \Gamma c^2}\f$.
    * .
-   * \param E energy of the shell (units?). In practice, all created shells share
+   * \param E energy of the shell (in erg). In practice, all created shells share
    * the same fraction of the total energy released by the inner engine. 
    */
   GRBShell(double /*energy*/);
@@ -35,7 +36,7 @@ class GRBShell
   inline double Thickness() {return m_thickness;}
   inline double Radius()    {return m_radius;}
 
-  /*! \brief computes and returns the comoving volume (in \f$cm^{-3}\f$).
+  /*! \brief computes and returns the comoving volume (in \f$cm^3\f$).
    *
    * The comoving volume is defined as 
    *\f$\Large{4\pi\times{thickness}\times{radius}^2\times\Gamma}\f$
@@ -54,17 +55,20 @@ class GRBShell
   /*!
    * \brief generate a random Lorentz factor.
    *
-   * For a uniform random number \c u, the method returns \f$\Gamma_0+u\Gamma\f$.
+   * For a uniform random number \c u, the method returns \f$\Gamma_0+ud\Gamma\f$.
    *\param gamma0 \f$\Gamma_0\f$
    *\param dgamma \f$d\Gamma\f$
    */
   double    generateGamma(double gamma0, double dgamma);
 
-  //! \retval \f$\sqrt{1-1\over\Gamma^2}\f$
+  /*! 
+   * \retval  beta = \f$\sqrt{1-{1\over\Gamma^2}}\f$
+   * \param gamma (Lorentz factor of the shell) \f$\Gamma\f$
+   */
   double    beta(const double gamma);
 
   /*!
-   * \brief time evolution of the shell.
+   * \brief Time evolution of the shell.
    *
    * This method is used in GRBSim to evolve the shells prior to checking
    * for new shocks.

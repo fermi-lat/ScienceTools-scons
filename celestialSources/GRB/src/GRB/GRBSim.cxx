@@ -17,8 +17,8 @@ using namespace std;
 /*------------------------------------------------------*/
 
 /*!
- *  Utility class for the sort() algorithm of Schock vector: sort in 
- *  decreasing order with respect to the observer time of arrival.
+ *  Utility class for the sort() algorithm of Shock vector: sort in 
+ *  decreasing order with respect to the observer time (in the GLAST reference frame).
  */
 class ShockCmp{
 public:
@@ -87,17 +87,17 @@ void GRBSim::Start()
     iShell->setThickness(myParam->T0());
     iShell->setRadius(i*(myParam->R0())+myParam->T0());
    
-    cout << " Shell n: "<<myParam->Nshell()-(i-1)
-	 <<" Gamma= "<<iShell->Gamma()
+    cout <<" Shell n: "<<myParam->Nshell()-(i-1)
+    	 <<" Gamma= "<<iShell->Gamma()
 	 <<" Initiaml Radius "<<iShell->Radius()
-	 << " Initial Thickness= " <<iShell->Thickness()<< endl;
+    	 <<" Initial Thickness= " <<iShell->Thickness()<< endl;
+    
     theShells.push_back(iShell);
   }
   double ssum;
   double tmax = dt1*nstep; 
   double time = 0.0;
   int nshock=0;
-  
   //! Step 2: Calculation of the evolution
   while(time<tmax)
     {
@@ -149,20 +149,59 @@ void GRBSim::Start()
 	  for (int en=0;en<enstep;en++)
 	    {
 	      // Fsyn & Fic are in erg/s/eV ; sum is in ergs
-	      ssum += (theShocks[i]->Fsyn(m_energy[en],tt*dt)+flagIC
-		       *theShocks[i]->Fic(m_energy[en],tt*dt))*m_de[en]*dt;
+	      ssum += (
+		       theShocks[i]->Fsyn(m_energy[en],tt*dt)
+		       +flagIC
+		       *theShocks[i]->Fic(m_energy[en],tt*dt)
+		       )
+		*m_de[en]*dt;
 	    }
 	}
       theShocks[i]->setSum(ssum);
-      //      theShocks[i]->Write();
+      //   theShocks[i]->Write();
     }
+  //  cout<<"...Compute Intervals..."<<endl;
+  //ComputeIntervals();
+  //cout<<"...done..."<<endl;
+  m_DeadTime=1e-3;
+  //  TotalFlux();
+}
+
+void GRBSim::TotalFlux()
+{
+  cout<<"Compute the Total Flux !!"<<endl;
+  double ti=0;
+  int ii=0;
+  m_Fvt.clear();
+  
+  while (ti<=m_tmax)
+    {
+      if (ii%100==0) cout<<"Time Max / Time = "<<m_tmax<<" - "<<ti<<endl;
+      ComputeFlux2(ti);
+      m_Fvt.push_back(m_spectrum);
+      ti+=m_DeadTime;
+      ii++;
+    } 
+}
+void GRBSim::ComputeFlux2(double time)
+{
+  double ti=0.0;
+  int i=0;
+  if (time<=0) time=m_DeadTime;
+  if (time>=m_tmax) time=m_tmax-m_DeadTime;
+  while (ti<time) 
+    {
+      ti+=m_DeadTime;
+      i++;
+    }
+  m_spectrum=m_Fvt[i];
 }
 
 /*------------------------------------------------------*/
 void GRBSim::ComputeFlux(double time)
 {
-  if (time<=1.0e-6) time=1.0e-6;
-  double nshock=theShocks.size();
+  //  cout<<"ComputeFlux2(time)"<<endl;
+  int nshock=theShocks.size();
   double norma;
   double sum;
   double temp;
@@ -172,10 +211,21 @@ void GRBSim::ComputeFlux(double time)
     {
       m_spectrum.push_back(0.0);
     }
+  
+  // ATTENZIONE!!
+  if (time<=0.0) 
+    {
+      time=1.0e-6;
+      cout<<" Time can not be 0.0 !! Set time = "<<time<<" s"<<endl;
+    }
+  if (time>m_tmax) time=m_tmax;
+  //
   for (int j=0;j<nshock;j++)
     {
       sum = theShocks[j]->Sum(); /// erg
+      //ATTENZIONE:
       norma = (theShocks[j]->Eint())/(m_Area); //erg/cm^2
+      //norma=1.0;
       for (int en=0;en<enstep;en++)
 	{
 	  if(sum>0.0)
@@ -183,17 +233,18 @@ void GRBSim::ComputeFlux(double time)
 	      // temp is in erg/s/eV
 	      temp=(theShocks[j]->Fsyn(m_energy[en],time)+
 		    flagIC*theShocks[j]->Fic(m_energy[en],time));
-	      
 	      m_spectrum[en]+=(erg2MeV*1.0e+16)/m_energy[en]*(norma/sum)*temp;
 	      // (eV/erg) (1/eV) (erg/cm^2) (1/erg) (erg/s/eV) = 1/cm^2/s/eV
 	      // converted in ->photons/s/MeV/m^2
-	    }else
-	      {
-		cout<<" Sum <= 0  !! "<<endl;
-	      }
+	    }
 	}
     }
+  //  cout<<"Energy[0] = "<<m_energy[0]<<" Spectrum = "<<m_spectrum[0]<<endl;
+  //cout<<"Energy[1] = "<<m_energy[1]<<" Spectrum = "<<m_spectrum[1]<<endl;
+  //cout<<"Energy[2] = "<<m_energy[2]<<" Spectrum = "<<m_spectrum[2]<<endl;
+  //cout<<"Energy[3] = "<<m_energy[3]<<" Spectrum = "<<m_spectrum[3]<<endl;
 }
+
 /*------------------------------------------------------*/
 double GRBSim::IFlux(double enmin)
 {
@@ -222,6 +273,8 @@ double GRBSim::IRate(double enmin)
 	  //ph/s/m^2
 	}
     }
+  // ATTENZIONE!!
+  if (flux<=0.01) flux = 0.01;
   return flux;  
 }
 /*------------------------------------------------------*/
@@ -241,14 +294,53 @@ double GRBSim::IEnergy(double enmin)
     }
   return flux;  
 }
+/*-----------------------------------------------------
+void GRBSim::ComputeIntervals(){
+  //  std::vector<double> Intervals;
+  double sum;
+  double t0=1.0e-9;
+  double t1;
+  double dt=1.0e-2;
+  while (t0<=m_tmax){
+    sum=0.0;
+    t1=t0;
+    while (sum<1.0){
+      ComputeFlux(t1);
+      sum+=IRate()*dt;
+      t1+=dt;
+    }
+    cout<<t0<<"  "<<t1<<"   "<<m_tmax<<endl;
+    m_intervals.push_back(t1);
+    t0+=dt;
+  }
+  //  return Intervals;
+}
 
+double GRBSim::FindInterval(double time)
+{
+  int i=0;
+  double t=1.0e-9;
+  if (time >=m_tmax) 
+    {
+      return m_intervals.back();
+    }
+  else
+    {
+      while(t<time)
+	{
+	  t=+1.0e-3;
+	  i++;
+	}
+    }
+  return m_intervals[i];
+}
 /*------------------------------------------------------*/
 
 float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, double emin)
 {
   int nbins = spctrmVec.size();
   if(nbins==0) return 0.0;
-  
+    
   //STEP 1: we need to remove low energy part of the spectrum,
   // in order to avoid drawing photons of no interest to GLAST.
   // minbin: ebergy bin # after which the energy of a photon 
@@ -278,7 +370,7 @@ float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, dou
     {
       Integral[i] /= Integral.back(); //Normalizing to 1
     }
-  
+  if(Integral.back()!=1.0) return m_energy[0]*1.0e-9;
   
   //STEP 3: Find in the cumulative sum vector, the bin for which
   //the flat random variable u is closest to the value of Integral
@@ -304,7 +396,7 @@ float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, dou
   double ph = m_energy[ibin+minbin]+
     (m_energy[ibin+minbin+1]-m_energy[ibin+minbin])*
     (Integral[ibin+1] - u)/(Integral[ibin+1] - Integral[ibin]);
-  
+  //cout<< ph*1.0e-9<<endl;
   return ph*1.0e-9; //returns value in GeV
 }
 /*---------------------------------------------------------*/

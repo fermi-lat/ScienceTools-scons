@@ -1,7 +1,12 @@
 /*!
  * \class GRBShock
  *
- * \brief  This class implements the shock between 2 shells.
+ * \brief This class implements the shock between 2 shells.
+ * 
+ * All the parameters that are needed to calculate the emission are 
+ * calculated here. 
+ * This class calculates the shell which is the result after the shock, the magnetic field and the parameters that determine the distribution of the accelerated electrons.
+ * Than it calculates the synchrotron and the inverse Compton emission.   
  *
  * \author Nicola Omodei       nicola.omodei@pi.infn.it 
  * \author Johann Cohen-Tanugi johann.cohen@pi.infn.it
@@ -55,8 +60,7 @@ class GRBShock
   
   /*! \brief Returns the comoving volume associated to the resulting Shell.
    *
-   * The comoving volume is defined as 
-   *\f$\Large{4\pi\times{thickness}\times{radius}^2\times\Gamma}\f$
+   * This methods calls the VolCom() method of GRBShell
    */
   inline double VolCom() {return m_VolCom;}
 
@@ -77,20 +81,24 @@ class GRBShock
    *
    */
   inline double Beq() {return m_Beq;}
-  /*! This metod is used only for normalize the spectrum, and the value is 
-   * setted by GRBSim.
+  
+  /*!\brief Normalization to the correct emitted flux
+   *
+   * This metod is used only for normalize the spectrum, and the value is 
+   * set by GRBSim.
    */
   inline double Sum() {return m_sum;}
 
   //Set functions:
 
-  /*! \brief When the time is setted also the observed time is calculated. 
+  /*! \brief When the time is set also the observed time is calculated. 
    * 
    * The relation between the times in the two different reference frame is:
    * \f$t_{obs}=t-r(t)/c\f$
    */
   inline void setTime(double value) {m_time = value;m_tobs=m_time-m_radius/cst::c;}
-  //! Set the time in the observed frame(GLAST).
+  /*! \brief Set the observer time (in the GLAST frame)
+   */
   inline void setTobs(double value) {m_tobs = value;}
   inline void setSum(double value)  {m_sum=value;}
 
@@ -100,17 +108,18 @@ class GRBShock
   //! A printout utility.
   void Write();
   /*!\brief Calculates the synchrotron critical energy (in eV)
-   * for an electron travelling with a Lorentz factor gamme.
+   * for an electron.
    *
-   * \f$E_{syn}\propto\hbar(\Gamma_f B_{eq})(gammae)^2\f$ 
-   */
+   * \f$E_{syn}\propto(\Gamma_f B_{eq})(\gamma_e)^2\f$ 
+   * \param gammae is the Lorentz factor of the electron \f$\gamma_e\f$ 
+    */
   double Esyn(double gammae);
-  /*!\brief Calculates the Inverse Compton emission  energy (in eV)
+  /*!\brief Calculates the Inverse Compton emission energy (in eV)
    *
    * If \f$h\nu_{in}\f$ is the energy of the incoming photon, and \f$\gamma_e\f$
    * is the Lorentz factor of the incoming electron, the energy 
    * of the resulting photons will be:
-   * \f$h\nu_{fin}\approx h\nu_{in}\times \gamma_e\f$
+   * \f$h\nu_{fin}\approx h\nu_{in}\gamma_e\f$
    */
   double Eic(double gamme);
 
@@ -123,6 +132,7 @@ class GRBShock
    *
    * It depends on the energy  of the observed photon.
    * \f$t_{syn}\propto B_{eq}^{-5/2}\sqrt{\Gamma_f/phenergy}\f$
+   * \param phenergy is the energy of the observed photon
    */ 
   double tsyn(double phenergy);
 
@@ -163,6 +173,8 @@ class GRBShock
   double m_sum;
   
   double m_gf;
+  double m_gr;
+  double m_gi;
   double m_Beq;
   
 };

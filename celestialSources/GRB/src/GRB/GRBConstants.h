@@ -1,9 +1,10 @@
 /*! 
  * \class GRBConstants
  * \brief Class instantiated to access general parameters and constants.
+ *  
  *  This should be a temporary solution: we need to find a better way to deal
  *  with it!
- * \autor Nicola Omodei nicola.omodei@pi.infn.it
+ * \author Nicola Omodei nicola.omodei@pi.infn.it
  * \author Johann Cohen-Tanugi johann.cohen@pi.infn.it
  */
 
@@ -29,7 +30,7 @@ namespace cst
   const double Hubble    = 6.5e+1; 
   const double wzel      = 0.0;
   const double gamma0    = 100.;
-  const double dgamma    = 200.;
+  const double dgamma    = 500.;
   const double csi       = 0.1;
   const double alphae    = .33;
   const double alphab    = .33;
@@ -38,11 +39,11 @@ namespace cst
   /// Internal Parameters
   const double enmax     = 1.0e+12;
   //! Min. photon energy detectable by GLAST: set to 10 MeV
-  const double enph      = 1.0e+7; 
+  const double enph      = 1.0e+6; 
   const double enmin     = 1.0e+3;
   const double dt1       = 10000.;
   const int nstep        = 200;
-  const int enstep       = 100;
+  const int enstep       = 50;
   const double ch1L      = 2.0e+3;
   const double ch1H      = 5.0e+3;
   const double ch2L      = 5.0e+4;
@@ -52,33 +53,37 @@ namespace cst
   const double ch4L      = 2.0e+7;
   const double ch4H      = 3.0e+11;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 0.1; 
+  const float flagIC     = 0.05; 
 }
 
 class GRBConstants 
 { 
   
  public:
-  //! \brief Constructor calls method readParam wich gets an external file
+  //! Constructor calls method readParam wich gets an external file
   GRBConstants();
 
   ~GRBConstants() { }
   
   //! Parameters are read from a file using facilities::Util::expandEnvVar ethod
   void ReadParam();
-  
+  //! Number of shells generated from the source
   inline int Nshell() {return nshell;}
   inline void setNshell(int value=10){nshell=value;}
   
+  //! redshift of the source
   inline double Redshift() {return redshift;}
   inline void setRedshift(double value){redshift=value;}
   
+  //! Total Energy available (ergs)
   inline double Etot(){return etot;}
   inline void setEtot(double value){etot=value;}
   
+  //! Initial separation between shells (cm)
   inline double R0(){return r0;}
   inline void setR0(double value){r0=value;}
   
+  //! Initial thickness of the shells (cm)
   inline double T0(){return t0;}
   inline void setT0(double value){t0=value;}
 

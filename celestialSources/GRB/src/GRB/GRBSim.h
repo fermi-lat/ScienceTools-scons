@@ -1,6 +1,13 @@
 /*!
  * \class GRBSim
+ * \brief Simulator engine of a GRB source.
  *
+ * This class initializes the simulation generating shells with random Lorentz factor and stacks the shells in a vector.
+ * The evolution with the time is evaluated for all the shells and with two shells have the same radius they collide, and a GRBShock is created. 
+ * All the shocks are staked in a vector. For each shock is evaluated the observed time at which it occurs.
+ * This time is used to sort the vector. GRBsim compute the spectrum at a given time and returns it in a vector. 
+ * This class returns the energy of a photon (chosen from the spectrum), the flux and the rate.
+
  * \author Nicola Omodei       nicola.omodei@pi.infn.it 
  * \author Johann Cohen-Tanugi johann.cohen@pi.infn.it
  *
@@ -13,7 +20,6 @@
 #ifndef GRBSIM_H
 #define GRBSIM_H 1
 
-//!  Simulator engine of a GRB source
 class GRBSim 
 {
  public:
@@ -36,6 +42,8 @@ class GRBSim
    * \param time is the time in which the spectrum is calculated.
    */
   void ComputeFlux(double time);
+  void ComputeFlux2(double time);
+  void TotalFlux();
   
   //! The direction of the GRB is chosen randomly in the sky.
   std::pair<float,float> GRBdir()       {return m_grbdir;}
@@ -91,17 +99,24 @@ class GRBSim
    * is to avoid generation of low energy photons without interest to GLAST.
    */
   float DrawPhotonFromSpectrum(std::vector<double>, float u=0.0, double emin=cst::enph);
-  
+
+  //  void ComputeIntervals();
+  //double FindInterval(double time);
+
+
  private:
   //data member
   std::vector<GRBShell*> theShells;
   std::vector<GRBShock*> theShocks;
   std::vector<double>    m_energy, m_de, m_spectrum;
+  std::vector<double>    m_intervals;
   std::pair<float,float> m_grbdir;
+  std::vector<vector<double> > m_Fvt;
   double m_tmax;
   double m_ftot;
   double m_phtot;
   double m_Area;
+  double m_DeadTime;
 };
 
 #endif
