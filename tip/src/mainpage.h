@@ -10,8 +10,11 @@
 
     <hr>
     \section info Information For Clients
-    This section describes how client code can and should use the tip
-    classes to gain access to tabular data.
+    This section shows how client code can and should use the tip
+    classes to gain access to tabular data. The examples used to
+    illustrate these concepts are all taken from tip's sample.cxx
+    program, which can be compiled and run (provided you have the
+    appropriate input file!)
 
     \subsection read Reading Tabular Data
     The first step is for the client to create a data access object
@@ -226,7 +229,7 @@
     Client code can request from a Cell that it read data in any of these
     forms, and if possible, the request will be satisfied.
 
-    \subsection table Table::Scalar Class
+    \subsection scalar Table::Scalar Class
     WARNING: This class is deprecated. Don't start using it!
     Templated class which serves as an adaptor for the Cell class. It may
     be templated on any primitive type or string type (currently only type
