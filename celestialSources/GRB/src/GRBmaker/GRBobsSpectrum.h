@@ -35,7 +35,7 @@ class GRBobsSpectrum : public ISpectrum
 	// --- Overridden function ---
 	virtual std::string title() const   { return m_title; }
 
-    virtual const char * particleName() const   { return m_particleName.c_str(); }
+    const char * particleName() const   { return m_particleName.c_str(); }
 
     // calculate flux for the current cutoff
     //JCT pure virtual method takes time as argument
