@@ -45,13 +45,20 @@ public:
         @brief add a count to the map, using current SkyDir projection
         @param dir A SkyDir object
         @param delta incremental value (default 1 if not present)
-        @param layer for multi-layer app. 0 (default) means the first layer
+        @param layer for multi-layer app. 0 (default) means the first layer 
     */
     void addPoint(const astro::SkyDir& dir, double delta=1.0, unsigned int layer=0);
 
+ 
+     /** @brief direct access to the pixel at the given direction and current layer
+    */
+    float & operator[](const astro::SkyDir&  pixel);
+    const float & operator[](const astro::SkyDir&  pixel)const;
 
     ~SkyImage();
 
+    //! set default layer, return previous 
+    unsigned int setLayer(unsigned int newlayer);
  
     /**
     @brief loop over all internal bins, request the intensity from a functor derived
@@ -89,6 +96,7 @@ private:
     BaseImage* m_image;
     unsigned int m_pixelCount;
     bool m_save; 
+    unsigned int m_layer;
 
     
 };
