@@ -8,6 +8,7 @@
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #include "fitsio.h"
@@ -23,7 +24,7 @@ namespace tip {
   template <typename T>
   class FitsColumn : public IColumn {
     public:
-      FitsColumn(FitsExtensionManager * ext, FieldIndex_t field_index);
+      FitsColumn(FitsExtensionManager * ext, const std::string & id, FieldIndex_t field_index);
 
       virtual ~FitsColumn() throw() {}
 
@@ -267,8 +268,8 @@ namespace tip {
   };
 
   template <typename T>
-  inline FitsColumn<T>::FitsColumn(FitsExtensionManager * ext, FieldIndex_t field_index): m_ext(ext), m_field_index(field_index),
-    m_repeat(0), m_type_code(0), m_var_length(false), m_scalar(false) {
+  inline FitsColumn<T>::FitsColumn(FitsExtensionManager * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
+    m_ext(ext), m_field_index(field_index), m_repeat(0), m_type_code(0), m_var_length(false), m_scalar(false) {
     // Determine characteristics of this column.
     int status = 0;
     fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, 0, &status);

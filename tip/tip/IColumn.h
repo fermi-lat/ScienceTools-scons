@@ -18,6 +18,10 @@ namespace tip {
   */
   class IColumn {
     public:
+      /** \brief Construct a column with the given identifier.
+      */
+      IColumn(const std::string & id = std::string()): m_id(id) {}
+
       virtual ~IColumn() throw() {}
 
       /** \brief Get a value from this column. An implementation which just throws an exception is
@@ -111,6 +115,10 @@ namespace tip {
       */
       virtual void setNumElements(Index_t) { unsupported("setNumElements(Index_t)"); }
 
+      /** \brief Get a string which identifies this column.
+      */
+      virtual const std::string & getId() const { return m_id; }
+
     private:
       /** \brief Private helper class to simplify throwing exceptions for unsupported features.
           \param method The name of the method throwing the exception.
@@ -118,6 +126,8 @@ namespace tip {
       void unsupported(const std::string & method) const {
         throw TipException(std::string("Method ") + method + " is not supported for the " + implementation() + " implementation");
       }
+
+      std::string m_id;
   };
 
 }
