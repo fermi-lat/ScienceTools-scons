@@ -22,8 +22,8 @@ tnumbins,      i, a, , , , "Number of logarithmically uniform time bins"
 deltatime,     r, a, , , , "Width of linearly uniform time bins"
 timebinfile,   f, a, "NONE", , , "Name of the file containing the time bin definition"
 snratio,       r, a, , 1.e-8, , "Signal-to-noise ratio per time bin"
-lcemin         r, a, , 0., , "Lower bound of energy range"
-lcemax         r, a, , 0., , "Upper bound of energy range"
+lcemin,        r, a, , 0., , "Lower bound of energy range"
+lcemax,        r, a, , 0., , "Upper bound of energy range"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
