@@ -1,11 +1,13 @@
 /** \file LinearBinner.cxx
     \brief Implementation of a linearly uniform interval binner.
 */
+
 #include "evtbin/LinearBinner.h"
 
 namespace evtbin {
 
-  LinearBinner::LinearBinner(double interval_begin, double interval_end, long num_bins):
+  LinearBinner::LinearBinner(double interval_begin, double interval_end, long num_bins, const std::string & name):
+    Binner(name),
     m_interval_begin(interval_begin),
     m_interval_end(interval_end),
     m_num_bins(num_bins) {}

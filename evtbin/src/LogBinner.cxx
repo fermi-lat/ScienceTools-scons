@@ -8,7 +8,8 @@
 
 namespace evtbin {
 
-  LogBinner::LogBinner(double interval_begin, double interval_end, long num_bins):
+  LogBinner::LogBinner(double interval_begin, double interval_end, long num_bins, const std::string & name):
+    Binner(name),
     m_interval_begin(interval_begin),
     m_interval_end(interval_end),
     m_num_bins(num_bins) {}
