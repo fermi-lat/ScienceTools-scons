@@ -6,10 +6,20 @@
 
 /** @file Util.h
     @author J. Bogart
+
+    This file declares the class Util for basic static utilities 
+    and an associated exception class.
+    
 */
 namespace facilities {
   /// This class provides a home for utility functions with no need for
   /// any context (hence static)
+  class Untranslatable {
+  public:
+    Untranslatable(const std::string& toTrans) : badVar(toTrans) {}
+    std::string badVar;
+  };
+
   class Util {
   public:
     /** Given input string @a toExpand expand references to environment
