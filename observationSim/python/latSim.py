@@ -57,6 +57,7 @@ def run_test(argv):
                 useSimTime = 1    # count as seconds of simulation time
             else:
                 source_names.append(name)
+    print type(source_names)
     if len(source_names) == 0:
         source_names.append("all_3EG_sources")
 
