@@ -5,6 +5,8 @@
 #ifndef st_app_AppParGroup_h
 #define st_app_AppParGroup_h
 
+#include <map>
+#include <set>
 #include <string>
 
 #include "hoops/hoops_prompt_group.h"
@@ -45,7 +47,23 @@ namespace st_app {
 
       void suppressPrompts(bool suppress = true);
 
+      /** \brief Cause the parameter with the given name to be used as a switch.
+          \param switch_name The name of the parameter being used as a switch.
+      */
+      void setSwitch(const std::string & switch_name);
+
+      /** \brief Cause the parameter with the given name to be associated with the given case of the given switch.
+          \param switch_name The name of the parameter being used as a switch.
+          \param case_name The value of the switch parameter used to identify the case.
+          \param par_name The name of the parameter being associated with the case.
+      */
+      void setCase(const std::string & switch_name, const std::string & case_name, const std::string & par_name);
+
     private:
+      typedef std::set<std::string> Switch;
+      typedef std::multimap<std::string, std::pair<std::string, std::string> > Case;
+      Switch m_switch;
+      Case m_case;
       bool m_prompt_mode;
   };
 
