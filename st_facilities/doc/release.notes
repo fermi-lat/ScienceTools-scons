@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  04-Oct-04 v0r3   JC    add writeChecksum function
   28-Sep-04 v0r2p2 JC    make FitsImage methods virtual for subclassing
   21-Sep-04 v0r2p1 JP    add test file
   21-Sep-04 v0r2   JP    add Env, FileSys facilities
