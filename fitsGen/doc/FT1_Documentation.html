@@ -192,7 +192,7 @@ events that can be saved in one run. It is currently defaulted to 100000
     </tr>
     <tr>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">CALIB_VERSION</span><br>
+ style="color: rgb(0, 0, 0);">CALIB_VERSION</span><br>
       </td>
       <td style="vertical-align: top;"> NONE<br>
       </td>
@@ -204,8 +204,17 @@ events that can be saved in one run. It is currently defaulted to 100000
 </table>
 <span style="font-weight: bold;">Description:<span
  style="font-weight: bold;"><br>
-&nbsp;&nbsp;&nbsp; </span></span>Not yet Defined<br
- style="color: rgb(0, 51, 51);">
+&nbsp;&nbsp; &nbsp;</span></span>This entry is a vector of 3 elements.
+For DC1 it has been used to record the selection flags:<br>
+<ul>
+  <li>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; CALIB_VERSION[0] is 1 if
+the event passed the background cuts, 0 otherwise;</li>
+  <li>&nbsp; &nbsp; &nbsp; &nbsp; CALIB_VERSION[1] is 1 if the event
+passed the PSF&nbsp; filter cuts, 0 otherwise;</li>
+  <li>&nbsp; &nbsp; &nbsp; &nbsp; CALIB_VERSION[2] is 1 if the event
+passed the CAL filter cuts, 0 otherwise;</li>
+</ul>
+See irfAnalysis package for a definition of these cuts.<br>
 <h3> Reconstruction Data:</h3>
 &nbsp;&nbsp; These are the fields directly depending on the
 reconstructed information. It can happen that information from
@@ -249,7 +258,8 @@ reconstructed track, depending on the value of the following cut:<br>
 <span style="font-weight: bold;">Description:<span
  style="font-weight: bold;"><br>
 &nbsp;&nbsp;&nbsp; </span></span>This is the reconstructed energy of
-the photon.&nbsp; <span style="color: rgb(255, 0, 0);"></span><br>
+the photon.&nbsp; Currently it is the same entry as EvtEnergySumOpt in
+the merit ntuple.<span style="color: rgb(255, 0, 0);"></span><br>
 <br>
 <br>
 <table cellpadding="2" cellspacing="2" border="1"
