@@ -9,10 +9,8 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-#eventfile,s, a, "../../../data/pointing_history.txt", , , "Name of the Exposure File:"
-eventfile,  s, a, "../output/expcube_1_day.fits", , , "Name of the exposure cube input file:"
-outfile,  s, a, "exp_1_day_ait.fits", , , "Name of the exposure outptu file:"
-templatefile,  s, a, "$(TPLDIR)/CountMap", , , "Name of the template file:"
+infile,  s, a, "../output/expcube_1day.fits", , , "Name of the exposure cube input file:"
+outfile,  s, a, "exp_1_day_ait.fits", , , "Name of the exposure output file:"
 #
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning

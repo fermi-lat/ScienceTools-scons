@@ -7,10 +7,13 @@
 #ifndef TOOL_SKYIMAGE_H
 #define TOOL_SKYIMAGE_H
 
-class MapParameters;
 class BaseImage;
 
 namespace astro { class SkyDir; }
+
+namespace map_tools {
+class MapParameters;
+
 /**
     @class SkyImage
     @brief define an image for export to a FITS image
@@ -24,7 +27,7 @@ public:
 
     @param pars an object containing all the necessary parameters
     */
-    SkyImage(const MapParameters& pars);
+    SkyImage(const map_tools::MapParameters& pars);
     /**
         @brief add a count to the map, using current SkyDir projection
         @param dir A SkyDir object
@@ -66,6 +69,6 @@ private:
     BaseImage* m_image;
     unsigned int m_pixelCount;
 };
-
+} //namesace map_tools
 
 #endif

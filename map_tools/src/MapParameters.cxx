@@ -7,8 +7,10 @@
 
 #include "map_tools/MapParameters.h"
 
+using namespace map_tools;
 
 //! Constructor
+
 MapParameters::MapParameters( int argc, char *argv[])
 : Parameters(argc, argv)
 {

@@ -17,6 +17,7 @@ namespace {
     inline double sqr(double x){return x*x;}
 }
 
+namespace map_tools {
 /** @class Exposure
 @brief Manage an exposure database.
 
@@ -66,6 +67,7 @@ public:
         unsigned int m_index;
     };
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //! Constructor 
     Exposure(double skybin=Index::skybinsize, double costhetabin=Index::costhetabinsize); 
 
@@ -79,26 +81,12 @@ public:
 
     /** @class Exposure::Aeff
 
-    @brief abstract base class to describe effective area as a funcion of the cosine of the polar angle in GLAST coordinates
+    @brief abstract base class to describe effective area as a funcion of the cosine of the polar angle in spacecraft coordinates
     */
     class Aeff {
     public:
         virtual double operator()(double costheta) const =0;
     };
-
-    /** load the histogram from the text file
-        @param tstart start of interval
-        @param tend   end of interval to add
-    */
-    void load(const std::string& text_history_file, double tstart=0, double tend=0);
-
-    /** load the histogram from a tuple, assume column names 
-    "ra_scz", "dec_scz","start", "stop", "livetime"
-        @param tstart start of interval
-        @param tend   end of interval to add
-    */
-    void load(tuple::ITable& table, double tstart=0, double tend=0);
-
     /// return the exposure at the given ra, dec, and cos theta weighting
     double operator()(double ra, double dec, const Aeff& fun)const;
     double operator()(const astro::SkyDir& dir, const Aeff& fun)const;
@@ -109,10 +97,17 @@ public:
     //! access to the hypercube of exposure data
     const ExposureCube& data()const{return m_exposureMap;}
 
-    void findExposed(double ra, double dec, double delta);
+    /** @brief add a segment of the exposure history
+       @param dirz the direction of the spacecraft z-axis
+       @deltat the time (presumeably seconds)
+       */
+    void add(const astro::SkyDir& dirz, double deltat);
+
+
 private:   
 
     ExposureCube m_exposureMap;
     double m_total; //! total exposure
 };
+} // namespace map_tools
 #endif

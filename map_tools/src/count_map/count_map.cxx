@@ -13,6 +13,7 @@
 #include "image/Image.h" 
 
 #include <algorithm>
+using namespace map_tools;
 namespace cmap { // for count_map helper classes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class AddCount

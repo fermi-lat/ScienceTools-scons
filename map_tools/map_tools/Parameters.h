@@ -8,7 +8,8 @@
 #define PARAMETERS_H 
 
 #include <string>
-
+#include <map>
+namespace map_tools {
 /**
 * @class Parameters
 * @brief Input reader base class for tools
@@ -22,9 +23,6 @@
 *
 * $Header$
 */
-
-#include <map>
-
 class Parameters
 {
 public:
@@ -70,8 +68,6 @@ private:
     static bool        s_verboseMode;
     static bool        s_clobber;
     static int         s_chatter;
-
-
 };
-
+} // namespace map_tools
 #endif

@@ -3,13 +3,13 @@
 
 
 */
-
+#include "astro/SkyDir.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/Parameters.h"
 #include <iostream>
 #include <algorithm>
 #include <cassert>
-
+using namespace map_tools;
 class TestAeff : public Exposure::Aeff {
 public:
     TestAeff(double slope=0): m_slope(slope){}
@@ -43,7 +43,7 @@ int main(int argc, char** argv ){
         for( double ra=0.5; ra<360; ra+=1.0) {
             for (double st = -0.95; st < 1.0; st += 0.1){
                 double dec = asin(st)*180/M_PI;
-                e.findExposed( ra, dec, 1.0);
+                e.add( astro::SkyDir(ra, dec), 1.0);
                 total += 1.0;
             }
         }

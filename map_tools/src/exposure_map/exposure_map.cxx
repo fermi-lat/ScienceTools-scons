@@ -10,6 +10,7 @@
 #include "map_tools/MapParameters.h"
 #include "map_tools/Exposure.h"
 #include "astro/SkyDir.h"
+using namespace map_tools;
 
 namespace emap{ // for simple helper classes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

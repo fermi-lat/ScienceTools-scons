@@ -22,8 +22,10 @@ namespace {
     {image->addAttribute(StringAttr(name, value,unit,comment)); }
 
 }
+using namespace map_tools;
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SkyImage::SkyImage(const MapParameters& pars)
+SkyImage::SkyImage(const map_tools::MapParameters& pars)
 : m_naxis1(pars.npix())
 , m_naxis2(pars.npixY())
 , m_naxis3(1) // for future expansion

@@ -8,9 +8,12 @@
 
 #ifndef TOOLS_EXPOSUREHYPERCUBE_H
 #define TOOLS_EXPOSUREHYPERCUBE_H
-
 #include "Exposure.h"
 class BaseImage;
+
+namespace map_tools {
+
+
 /** @class ExposureHyperCube 
     @brief Set up an exposure map hypercube
 
@@ -36,4 +39,5 @@ private:
    BaseImage * m_image;
 
 };
+}// namespace map_tools
 #endif //TOOLS_EXPOSUREHYPERCUBE_H

@@ -8,6 +8,8 @@
 
 #include "map_tools/ExposureHyperCube.h"
 
+using namespace map_tools;
+
 ExposureHyperCube::ExposureHyperCube( const Exposure& exp, 
                                       std::string outfile) : m_image(0)
 {

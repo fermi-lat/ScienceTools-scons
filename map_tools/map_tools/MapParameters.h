@@ -10,7 +10,7 @@
 
 #include "Parameters.h"
 #include <string>
-
+namespace map_tools {
 
 /**
 * @class MapParameters
@@ -59,5 +59,6 @@ private:
     std::string     m_raName, m_decName;
 
 };
+}//namespace map_tools
 
 #endif

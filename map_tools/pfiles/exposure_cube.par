@@ -9,11 +9,10 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-#eventfile,s, a, "../../../data/pointing_history.txt", , , "Name of the Exposure File:"
-eventfile, s, a, "../../../data/D2_full_history.fits", , , "Name of the exposure file:" 
-outfile,   s, a, "expcube_1_day.fits", , , "Name of the output file:"
-#templatefile , s, a, "$(TPLDIR)/ExposureCube.txt", , , "Exposure cube template"
-#
+#eventfile, s, a, "../../../data/egret/d2e.fits", , , "Name of the exposure file:" 
+#outfile,   s, a, "egret_exposure.fits", , , "Name of the output file:"
+infile, s, a, "../../../data/D2_full_history.fits", , , "Name of the exposure file:" 
+outfile,   s, a, "expcube_1day.fits", , , "Name of the output file:"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #
@@ -29,8 +28,6 @@ uselb,    b, a, "NO",   , , "use l,b instead of ra,dec :"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
 costhetabinsize, b,a, 0.025, , , "binsize for the cos(theta) function 
-
-#---------------------------------------------------------------------------------------
 # Exposure generation parameters
 tstart,  r, a,   0 ,   , , "start time"
 tstop,   r, a,  86400,  , , "end time"  
