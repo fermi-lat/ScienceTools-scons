@@ -391,7 +391,7 @@ int main(int iargc, char * argv[]) {
      }
      //FOR DC1, now, IMgammaProb directly passes the background cut....
      //     if(!veto)           (calibVersion[i])[0] = 1.;
-     (calibVersion[i])[0] = imgoodcalprob[i];
+     (calibVersion[i])[0] = imgammaprob[i];
      if(psf_filter) 	 (calibVersion[i])[1] = 1.;
      if(global_cut) 	 (calibVersion[i])[2] = 1.;
      
