@@ -47,6 +47,8 @@
 // Tip Table access.
 #include "tip/Table.h"
 
+const std::string s_cvs_id("$Name$");
+
 /** \class EvtBinTest
     \brief Application singleton for evtbin test program.
 */
@@ -94,6 +96,8 @@ class EvtBinTest : public st_app::StApp {
 };
 
 EvtBinTest::EvtBinTest(): m_t_start(2.167442034386540E+06), m_t_stop(2.185939683959529E+06), m_e_min(30.), m_e_max(6000.) {
+  setName("test_evtbin");
+  setVersion(s_cvs_id);
   m_data_dir = st_facilities::Env::getDataDir("evtbin");
   m_ft1_file = st_facilities::Env::appendFileName(m_data_dir, "ft1tiny.fits");
   m_ft2_file = st_facilities::Env::appendFileName(m_data_dir, "ft2tiny.fits");
@@ -809,4 +813,4 @@ void EvtBinTest::testGti() {
 }
 
 /// \brief Create factory singleton object which will create the application:
-st_app::StAppFactory<EvtBinTest> g_app_factory;
+st_app::StAppFactory<EvtBinTest> g_app_factory("test_evtbin");
