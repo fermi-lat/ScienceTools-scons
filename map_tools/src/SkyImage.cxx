@@ -1,7 +1,7 @@
  /** @file SkyImage.cxx
 
 @brief implement the class SkyImage
-
+$Header$
 */
 
 #include "map_tools/SkyImage.h"
@@ -39,18 +39,6 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 {
     using namespace astro;
 
-#if 0
-    // set the skydir default projection
-    astro::SkyDir::setProjection(
-        pars.xref()*M_PI/180,  pars.yref()*M_PI/180, //value at reference            
-        pars.projType(),  
-        0.5*(m_naxis1),        0.5*(m_naxis2),   // reference in center of view
-        -pars.imgSizeX()/float(m_naxis1),   
-        pars.imgSizeY()/float(m_naxis2),    
-        pars.rot()*M_PI/180,              
-        pars.uselb()          
-        );
-#else
         /// arrays describing transformation; pointers passed to wcslib
     double 
         crval[2]={pars.xref(), pars.yref()},
@@ -58,7 +46,6 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         cdelt[2]={-pars.imgSizeX()/double(m_naxis1), pars.imgSizeY()/double(m_naxis2)},
         crota2=pars.rot();
     m_wcs = new astro::SkyProj(  pars.projType(),  crpix, crval, cdelt, crota2, m_galactic);
-#endif
 
     // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
@@ -69,7 +56,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     m_pixelCount = m_image->pixelCount();
 
     // fill the boundaries with NaN
-    if( pars.projType()=="AIT") clear();
+    if( pars.projType()!="CAR") clear();
 
     image=m_image; // set up the anonymous convenience functions
 
@@ -83,20 +70,17 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 
     setKey("CTYPE1", std::string(m_galactic?"GLON-":"RA---")+ pars.projType()
         ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
-    setKey("CRPIX1",  crpix[0],"","Reference pixel"); // note that FITS pixel reference is off by 0.5
+    setKey("CRPIX1",  crpix[0],"","Reference pixel"); 
     setKey("CRVAL1",  crval[0], "deg", "RA or GLON at the reference pixel");
     setKey("CDELT1",  cdelt[0],"",
-        "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
-    setKey("CUNIT1",  "deg", "", "Physical unit of X-axis");
 
     setKey("CTYPE2",  std::string(m_galactic?"GLAT-":"DEC--")+ pars.projType()
         ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
 
-    setKey("CRPIX2",  crpix[1],"","Reference pixel");// note that FITS pixel reference is off by 0.5
+    setKey("CRPIX2",  crpix[1],"","Reference pixel");
     setKey("CRVAL2",  crval[1], "deg", "DEC or GLAT at the reference pixel"); 
     setKey("CDELT2",  cdelt[1],"",
         "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
-    setKey("CUNIT2",  "deg", "", "Physical unit of Y-axis");
 
     setKey("CROTA2",  crota2, "", "Image rotation (deg)");
 }
@@ -137,19 +121,10 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 
     image.getValue("CRPIX2", crpix[1]);
     image.getValue("CRVAL2", crval[1]);
-    image.getValue("CDELT2",  cdelt[1] );
+    image.getValue("CDELT2", cdelt[1]);
     double crota2=0;
     try { image.getValue("CROTA2", crota2);}catch(const std::exception&){}
-#if 0 // the old version
-    astro::SkyDir::setProjection(
-        cr1[1]*M_PI/180, cr2[1]*M_PI/180, //! @todo verify units 
-        trans, 
-        cr1[0]-0.5,      cr2[0]-0.5, 
-        cr1[2],          cr2[2], 
-        crota2, uselb);
-#else
     m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, m_galactic);
-#endif
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)
