@@ -8,7 +8,7 @@
 #define MAP_TOOLS_EXPOSURE_H
 
 
-namespace astro { class SkyDir;}
+#include "astro/SkyDir.h"
 #include "astro/HealpixArray.h"
 #include "map_tools/CosineBinner.h"
 
