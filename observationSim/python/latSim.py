@@ -68,9 +68,9 @@ def run_test(argv):
 
     response = latResponse.Irfs(aeff, psf, edisp)
 
-    useA1fmt = 1
-    events = observationSim.EventContainer(root + "_events", useA1fmt)
-    scData = observationSim.ScDataContainer(root + "_scData", useA1fmt)
+    useGoodi = 0
+    events = observationSim.EventContainer(root + "_events", useGoodi)
+    scData = observationSim.ScDataContainer(root + "_scData", useGoodi)
 
     spacecraft = observationSim.LatSc();
 
