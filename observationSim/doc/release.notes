@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r4p1 03-Dec-04   JC   ensure GTI is included in DSS list
     v5r4   02-Dec-04   JC   use Cuts class to allow acceptance cone selection
     v5r3p3 30-Nov-04   JC   orbSim pointing_history patch; extend Crab_Pulsar
                             and Geminga energy ranges
