@@ -41,15 +41,16 @@
  Likelihood User's Guide page.  We describe each parameter entry in
  turn.
 
- - @b XML_source_file This file contains flux-style definitions of
+ - @b XML_source_file This file contains an @em ascii list of xml files of
+   flux-style definitions of
    sources to be available for simulation.  A description of the
    format for the flux-style source model entries can be found in the
    Doxygen documentation for the <a
    href="http://www.slac.stanford.edu/exp/glast/ground/software/RM/documentation/GlastRelease/GlastRelease-v3r3p7/flux/v8r2/">flux
    package</a>.
    \n\n 
-   Two xml source files are provide by default, <a
-   href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/source_library.xml?cvsroot=CVS_SLAC">source_library.xml</a>
+   If "none", then two xml source files are provide by default, <a
+   href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/obsSim_source_library.xml?cvsroot=CVS_SLAC&f=h">obsSim_source_library.xml</a>
    and <a
    href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/3EG_catalog_20-1e6MeV.xml?cvsroot=CVS_SLAC">3EG_catalog_20-1e6MeV.xml</a>.
    The former contains a variety of diagnostic sources, including some

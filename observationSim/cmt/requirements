@@ -1,5 +1,5 @@
 package observationSim
-version v2r9
+version v2r10
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -7,6 +7,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 branches observationSim cmt src doc
 
+use GlastPolicy v5r*
 use flux v*
 use latResponse v*
 use Goodi v*
@@ -26,8 +27,8 @@ use hoops v*
 
 # allow use of internal path
 macro observationSim_cppflags "" \
-Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D USE_GOODI " \
-#Linux "-I ../src -g -O -pedantic -D TRAP_FPE " \
+Linux "-I ../src -D TRAP_FPE -D USE_GOODI " \
+#Linux "-I ../src -D TRAP_FPE " \
 WIN32 '/I..\src /D"USE_GOODI" /wd4290'
 
 macro_prepend cflags "" Linux "-g -O"
