@@ -13,12 +13,50 @@
 #include <vector>
 #include <utility>
 
-#include "tip/Keyword.h"
+#include "tip/KeyRecord.h"
 #include "tip/TipException.h"
 
 namespace tip {
 
-  class IExtensionData;
+  class Header;
+
+  /** \class Keyword
+
+      \brief Encapsulation of a single keyword. The keyword may be get/set in any data type,
+  */
+  class Keyword {
+    public:
+      /** \brief Construct a Keyword object associated with a particular Header.
+          \param header_data Pointer to the referent IExtensionData object.
+          \param name The name of this Keyword.
+      */
+      Keyword(Header * header_data, const std::string & name): m_header_data(header_data),
+        m_name(name) {
+        if (0 == m_header_data) throw TipException("Keyword::Keyword(Header *, const std::string &): "
+          "Cannot create Keyword with a NULL IExtensionData pointer");
+      }
+
+      /** \brief Get the current value of this Keyword.
+          The type of the converted value is given by the template parameter.
+          \param value The current value.
+      */
+      template <typename T>
+      void get(T & value) const;
+
+      /** \brief Set the value of this Keyword.
+          \param value The value to set.
+      */
+      template <typename T>
+      void set(const T & value);
+
+      void getRecord(KeyRecord & rec) const;
+
+      void setRecord(const KeyRecord & rec);
+
+    private:
+      Header * m_header_data;
+      std::string m_name;
+  };
 
   /** \class Header
 
@@ -38,13 +76,7 @@ namespace tip {
       */
       typedef std::vector<KeyValPair_t> KeyValCont_t;
 
-      /** \brief Construct a new Header object from the given abstract header data.
-          \param header_data The header data. Concrete objects will be FITS or Root-specific.
-      */
-      Header(IExtensionData * header_data): m_keywords(), m_header_data(header_data) {
-        if (0 == m_header_data) throw TipException("Header::Header(IExtensionData *): Cannot create Header object "
-          "with NULL IExtensionData pointer");
-      }
+      virtual ~Header() {}
 
       /** \brief Random read/write keyword access.
           \param name The name of the keyword.
@@ -73,14 +105,92 @@ namespace tip {
       */
       std::string formatTime(const time_t & time) const;
 
+      /** \brief Get a keyword from this header data object.
+          \param name The name of the keyword to get from the header data object.
+          \param value The output value of the keyword, converted to the given type.
+      */
+      virtual void getKeyword(const std::string &, bool &) const
+        { unsupported("getKeyword(const std::string &, bool &) const"); }
+      virtual void getKeyword(const std::string &, double &) const
+        { unsupported("getKeyword(const std::string &, double &) const"); }
+      virtual void getKeyword(const std::string &, float &) const
+        { unsupported("getKeyword(const std::string &, float &) const"); }
+      virtual void getKeyword(const std::string &, char &) const
+        { unsupported("getKeyword(const std::string &, char &) const"); }
+      virtual void getKeyword(const std::string &, signed char &) const
+        { unsupported("getKeyword(const std::string &, signed char &) const"); }
+      virtual void getKeyword(const std::string &, signed short &) const
+        { unsupported("getKeyword(const std::string &, signed short &) const"); }
+      virtual void getKeyword(const std::string &, signed int &) const
+        { unsupported("getKeyword(const std::string &, signed int &) const"); }
+      virtual void getKeyword(const std::string &, signed long &) const
+        { unsupported("getKeyword(const std::string &, signed long &) const"); }
+      virtual void getKeyword(const std::string &, unsigned char &) const
+        { unsupported("getKeyword(const std::string &, unsigned char &) const"); }
+      virtual void getKeyword(const std::string &, unsigned short &) const
+        { unsupported("getKeyword(const std::string &, unsigned short &) const"); }
+      virtual void getKeyword(const std::string &, unsigned int &) const
+        { unsupported("getKeyword(const std::string &, unsigned int &) const"); }
+      virtual void getKeyword(const std::string &, unsigned long &) const
+        { unsupported("getKeyword(const std::string &, unsigned long &) const"); }
+      virtual void getKeyword(const std::string &, std::string &) const
+        { unsupported("getKeyword(const std::string &, std::string &) const"); }
+
+      virtual void getKeyRecord(const std::string &, std::string &) const
+        { unsupported("getKeyRecord(const std::string &, std::string &) const"); }
+
+      /** \brief Set a keyword in this header data object.
+          \param name The name of the keyword to set in the header data object.
+          \param value The input value of the keyword.
+      */
+      virtual void setKeyword(const std::string &, const bool &)
+        { unsupported("setKeyword(const std::string &, const bool &)"); }
+      virtual void setKeyword(const std::string &, const double &)
+        { unsupported("setKeyword(const std::string &, const double &)"); }
+      virtual void setKeyword(const std::string &, const float &)
+        { unsupported("setKeyword(const std::string &, const float &)"); }
+      virtual void setKeyword(const std::string &, const char &)
+        { unsupported("setKeyword(const std::string &, const char &)"); }
+      virtual void setKeyword(const std::string &, const signed char &)
+        { unsupported("setKeyword(const std::string &, const signed char &)"); }
+      virtual void setKeyword(const std::string &, const signed short &)
+        { unsupported("setKeyword(const std::string &, const signed short &)"); }
+      virtual void setKeyword(const std::string &, const signed int &)
+        { unsupported("setKeyword(const std::string &, const signed int &)"); }
+      virtual void setKeyword(const std::string &, const signed long &)
+        { unsupported("setKeyword(const std::string &, const signed long &)"); }
+      virtual void setKeyword(const std::string &, const unsigned char &)
+        { unsupported("setKeyword(const std::string &, const unsigned char &)"); }
+      virtual void setKeyword(const std::string &, const unsigned short &)
+        { unsupported("setKeyword(const std::string &, const unsigned short &)"); }
+      virtual void setKeyword(const std::string &, const unsigned int &)
+        { unsupported("setKeyword(const std::string &, const unsigned int &)"); }
+      virtual void setKeyword(const std::string &, const unsigned long &)
+        { unsupported("setKeyword(const std::string &, const unsigned long &)"); }
+      virtual void setKeyword(const std::string &, const std::string &)
+        { unsupported("setKeyword(const std::string &, const std::string &)"); }
+      virtual void setKeyword(const std::string &, const char * const &)
+        { unsupported("setKeyword(const std::string &, const char * const &)"); }
+
+      virtual void setKeyRecord(const std::string &, const std::string &)
+        { unsupported("setKeyRecord(const std::string &, const std::string &)"); }
+
+      /** \brief Return the name of the particular column implementation (subclass identifier).
+      */
+      virtual const std::string implementation() const = 0;
+
     protected:
       /** \brief Internal utility to add keywords when they are looked up.
       */
       Keyword & find_or_make(const std::string & name) const;
 
     private:
+      void unsupported(const std::string & method) const {
+        throw TipException(std::string("Header method ") + method + " is not supported for the " + implementation() +
+          " implementation");
+      }
+
       KeywordCont_t m_keywords;
-      IExtensionData * m_header_data;
   };
 
   inline Keyword & Header::find_or_make(const std::string & name) const {
@@ -93,10 +203,30 @@ namespace tip {
 
     // If not found, create a new one.
     if (header.m_keywords.end() == itor)
-      itor = header.m_keywords.insert(itor, std::make_pair(name, Keyword(header.m_header_data, name)));
+      itor = header.m_keywords.insert(itor, std::make_pair(name, Keyword(&header, name)));
 
     // Return the keyword.
     return itor->second;
+  }
+
+}
+
+namespace tip {
+
+  template <typename T>
+  inline void Keyword::get(T & value) const { m_header_data->getKeyword(m_name, value); }
+
+  template <typename T>
+  inline void Keyword::set(const T & value) { m_header_data->setKeyword(m_name, value); }
+
+  inline void Keyword::getRecord(KeyRecord & rec) const {
+    std::string rec_str;
+    m_header_data->getKeyRecord(m_name, rec_str);
+    rec.set(rec_str);
+  }
+
+  inline void Keyword::setRecord(const KeyRecord & rec) {
+    m_header_data->setKeyRecord(m_name, rec.get());
   }
 
 }

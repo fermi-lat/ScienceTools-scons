@@ -7,15 +7,13 @@
 
 #include <cassert>
 #include <cstdlib>
-#include <memory>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "fitsio.h"
 
-#include "FitsExtensionManager.h"
+#include "FitsTable.h"
 #include "FitsPrimProps.h"
 #include "tip/IColumn.h"
 #include "tip/TipException.h"
@@ -26,7 +24,7 @@ namespace tip {
   template <typename T>
   class FitsColumn : public IColumn {
     public:
-      FitsColumn(FitsExtensionManager * ext, const std::string & id, FieldIndex_t field_index);
+      FitsColumn(FitsTable * ext, const std::string & id, FieldIndex_t field_index);
 
       virtual ~FitsColumn() throw() {}
 
@@ -282,7 +280,7 @@ namespace tip {
         if (0 != status) throw FitsTipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
 
-      FitsExtensionManager * m_ext;
+      FitsTable * m_ext;
       FieldIndex_t m_field_index;
       long m_repeat;
       long m_width;
@@ -292,7 +290,7 @@ namespace tip {
   };
 
   template <typename T>
-  inline FitsColumn<T>::FitsColumn(FitsExtensionManager * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
+  inline FitsColumn<T>::FitsColumn(FitsTable * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
     m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0), m_var_length(false), m_scalar(false) {
     // Determine characteristics of this column.
     int status = 0;

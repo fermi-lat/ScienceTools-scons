@@ -2,14 +2,12 @@
     \brief Implementation of class to perform detailed testing of column abstractions.
     \author James Peachey, HEASARC
 */
-#include <iostream>
 #include <memory>
-#include <sstream>
 
 #include "fitsio.h"
 
 #include "FitsColumn.h"
-#include "FitsExtensionManager.h"
+#include "FitsTable.h"
 #include "TestColumn.h"
 
 #include "tip/IFileSvc.h"
@@ -30,7 +28,7 @@ namespace tip {
     copyDataFile(getDataDir() + "aeff_DC1.fits", "aeff_DC1-copy.fits");
 
     try {
-      FitsExtensionManager manager(getDataDir() + "aeff_DC1.fits", "EA_ALL");
+      FitsTable manager(getDataDir() + "aeff_DC1.fits", "EA_ALL");
 
       std::string units = manager.getColumn(0)->getUnits();
       if ("MeV" == units)
@@ -57,42 +55,48 @@ namespace tip {
     // Iterate over all extensions.
     for (FileSummary::const_iterator ext_itor = summary.begin(); ext_itor != summary.end(); ++ext_itor) {
       // Open input extension.
-      FitsExtensionManager in_manager(in_file, ext_itor->getExtId(), "", true);
+      std::auto_ptr<const Extension> in_ext(IFileSvc::instance().readExtension(in_file, ext_itor->getExtId(), ""));
 
       // Skip images for now.
-      if (!in_manager.isTable()) continue;
+      if (!in_ext->isTable()) continue;
+
+      // Cast into Table state.
+      const Table * in_table = dynamic_cast<const Table *>(in_ext.get());
 
       // Open output extension.
-      FitsExtensionManager out_manager(out_file, ext_itor->getExtId(), "", false);
+      std::auto_ptr<Table> out_table(IFileSvc::instance().editTable(out_file, ext_itor->getExtId(), ""));
 
       // Get number of fields in this extension.
-      long num_fields = in_manager.getValidFields().size();
+      long num_fields = in_table->getValidFields().size();
 
       // Get number of records in this extension.
-      Index_t num_records = in_manager.getNumRecords();
+      Index_t num_records = in_table->getNumRecords();
 
       // Resize the output table.
-      out_manager.setNumRecords(num_records);
+      out_table->setNumRecords(num_records);
 
       // Iterate over all records:
       for (Index_t record_index = 0; record_index != num_records; ++record_index) {
         // For each record, iterate over all fields.
         for (long field_index = 0; field_index < num_fields; ++field_index) {
-          const IColumn * in_col = in_manager.getColumn(field_index);
-          IColumn * out_col = out_manager.getColumn(field_index);
+          const IColumn * in_col = in_table->getColumn(field_index);
+          IColumn * out_col = out_table->getColumn(field_index);
 
           // Test copy column. This tests some of the overloaded get and set methods of FitsColumn as well.
           out_col->copy(in_col, record_index, record_index);
         }
       }
 
-      // A little ugliness to handle variable length columns.
-      fitsfile * out_fp = out_manager.getFp();
+      if (FitsTable * fits_table = dynamic_cast<FitsTable *>(out_table.get())) {
 
-      fits_compress_heap(out_fp, &status);
-      if (0 != status) {
-        setStatus(status);
-        throw std::runtime_error("Unexpected: TestColumn::copyDataFile could not compress heap");
+        // A little ugliness to handle variable length columns.
+        fitsfile * out_fp = fits_table->getFp();
+
+        fits_compress_heap(out_fp, &status);
+        if (0 != status) {
+          setStatus(status);
+          throw std::runtime_error("Unexpected: TestColumn::copyDataFile could not compress heap");
+        }
       }
 
     }

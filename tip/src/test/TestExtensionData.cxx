@@ -1,6 +1,5 @@
 /** \file TestExtensionData.cxx
-    \brief Test IExtensionData and its subclasses, as well as (indirectly) FitsExtensionManager and RootExtensionManager
-    and RootExtensionManager.
+    \brief Test FitsImage, FitsTable and RootTable.
     \author James Peachey, HEASARC
 */
 
@@ -14,10 +13,12 @@
 #include <sys/stat.h>
 #endif
 
-#include "FitsExtensionData.h"
-#include "RootExtensionData.h"
+#include "FitsImage.h"
+#include "FitsTable.h"
+#include "RootTable.h"
 #include "TestExtensionData.h"
-#include "tip/IExtensionData.h"
+#include "tip/Image.h"
+#include "tip/Table.h"
 #include "tip/TipException.h"
 
 #define MAKE_COMPILATION_FAIL (0)
@@ -105,16 +106,15 @@ void TestConstructorErrors(const std::string & class_name, const std::string & f
   }
 }
 
-// Perform operations on a valid const extension object which are expected to fail
-// regardless of the type (table or image).
-void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string & ext_type, int & status) {
+// Perform operations on a valid const Table object which are expected to fail.
+void TestCommonErrors(const tip::Table * const_ext, const std::string & ext_type, int & status) {
   using namespace tip;
   std::string msg;
   double tmp_d;
 
   try {
     // Get an unnamed keyword.
-    const_ext->getKeyword("", tmp_d);
+    const_ext->getHeader().getKeyword("", tmp_d);
     msg = "success reading unnamed keyword from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -125,7 +125,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
 
   try {
     // Get a non-existent keyword.
-    const_ext->getKeyword("fake_kwd", tmp_d);
+    const_ext->getHeader().getKeyword("fake_kwd", tmp_d);
     msg = "success reading non-existent keyword from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -190,8 +190,95 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
 
 }
 
+// Perform operations on a valid const Image object which are expected to fail.
+//void TestCommonErrors(const tip::Image * const_ext, const std::string & ext_type, int & status) {
+void TestCommonErrors(const tip::Image * , const std::string & , int & ) {
+#if 0
+  using namespace tip;
+  std::string msg;
+  double tmp_d;
+
+  try {
+    // Get an unnamed keyword.
+    const_ext->getHeader().getKeyword("", tmp_d);
+    msg = "success reading unnamed keyword from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading unnamed keyword from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get a non-existent keyword.
+    const_ext->getHeader().getKeyword("fake_kwd", tmp_d);
+    msg = "success reading non-existent keyword from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading non-existent keyword from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get index of a field from the image:
+    // This is only valid for tables.
+    const_ext->getFieldIndex("fake_fld");
+    msg = "success calling getFieldIndex(\"fake_fld\") from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure calling getFieldIndex(\"fake_fld\") from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get number of elements in a field from the image:
+    // This is only valid for tables.
+    const_ext->getColumn(-1)->getNumElements();
+    msg = "success calling getNumElements(-1) from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure calling getNumElements(-1) from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get a table cell from an image.
+    // This is only valid for tables.
+    const_ext->getColumn(-1)->get(0, tmp_d);
+    msg = "success reading a table cell from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading a table cell from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+#if MAKE_COMPILATION_FAIL
+  throw TipException("SHOULD NOT HAVE COMPILED! Calling setNumRecords(-1) for const image object");
+  try {
+    // Get number of records from the image:
+    // This is only valid for tables.
+    const_ext->setNumRecords(-1);
+  } catch(const TipException & x) {
+  }
+
+  throw TipException("SHOULD NOT HAVE COMPILED! Calling set(...) for const image object");
+  try {
+    // Set a table cell in an image.
+    // This is only valid for tables.
+    const_ext->getColumn(-1)->set(0, tmp_d);
+  } catch(const TipException & x) {
+  }
+#endif
+#endif
+
+}
+
 // Test reading an entire column from an extension, one row at a time:
-void TestReadField(const tip::IExtensionData * const_ext, const std::string & field_name, const std::string & ext_type, int & status) {
+void TestReadField(const tip::Table * const_ext, const std::string & field_name, const std::string & ext_type, int & status) {
   using namespace tip;
   std::string msg;
   try {
@@ -270,70 +357,59 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
   // Name of a message string, used in reporting errors:
   std::string msg;
 
-  // Test error cases for FitsExtensionData constructors:
-  TestConstructorErrors<FitsExtensionData>("FitsExtensionData", data_dir + "a1.pha", status);
+  // Test error cases for FitsTable constructors:
+  TestConstructorErrors<FitsTable>("FitsTable", data_dir + "a1.pha", status);
 
-  // BEGIN Test success cases for FitsExtensionData constructors.
+  // BEGIN Test success cases for FitsTable, FitsImage constructors.
   // This test object will be used in further tests below so create it at this scope:
-  IExtensionData * image = 0;
+  Image * image = 0;
 
   try {
     // Valid file name, valid extension name:
-    image = new FitsExtensionData(data_dir + "a1.pha", "", "", false);
-    ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
+    image = new FitsImage(data_dir + "a1.pha", "", "", false);
+    ReportBehavior("success creating FitsImage with valid file name and valid extension name", status);
   } catch(const TipException & x) {
-    ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
+    ReportError("failure creating FitsImage with valid file name and valid extension name", status, x);
   }
 
   // This test object will be used in further tests below so create it at this scope:
-  IExtensionData * table = 0;
+  Table * table = 0;
 
   try {
     // Valid file name, valid extension name:
-    table = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM", "", false);
-    ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
+    table = new FitsTable(data_dir + "a1.pha", "SPECTRUM", "", false);
+    ReportBehavior("success creating FitsTable with valid file name and valid extension name", status);
   } catch(const TipException & x) {
-    ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
+    ReportError("failure creating FitsTable with valid file name and valid extension name", status, x);
   }
-  // END Test success cases for FitsExtensionData constructors.
+  // END Test success cases for FitsTable, FitsImage constructors.
 
 
 
 
 
 
-  // BEGIN Test const FitsExtensionData methods for an image extension.
+  // BEGIN Test const FitsImage methods for an image extension.
   // Skip these tests if image object was not successfully opened above:
   if (0 == image) {
     ReportError("image pointer is null; skipping some tests", status);
   } else {
     // Note that image points to the primary HDU, which is an image.
     // Use a constant pointer from here on down:
-    const IExtensionData * const_ext = image;
+    const Image * const_ext = image;
 
     // Test operations which should fail for any/all extensions regardless of whether they are tables or images:
     // The following call generates some errors containing the string "from a const image object"
     TestCommonErrors(const_ext, "image", status);
 
-    // Another test which should fail: table specific methods
-    try {
-      // Get number of records from the image:
-      // This operation is only valid for tables, so it should fail:
-      const_ext->getNumRecords();
-      ReportError("success calling getNumRecords() from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure calling getNumRecords() from a const image object", status, x);
-    }
-
   }
-  // END Test const FitsExtensionData methods for an image extension.
+  // END Test const FitsImage methods for an image extension.
 
 
 
 
 
-  // BEGIN Test const FitsExtensionData methods for a table extension.
+  // BEGIN Test const FitsImage methods for a table extension.
   // Skip these tests if table object was not successfully opened above:
   if (0 == table) {
     ReportError("table pointer is null; skipping some tests", status);
@@ -343,7 +419,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
     // Note that table points to the primary HDU, which is an table.
     // Use a constant pointer from here on down:
-    const IExtensionData * const_ext = table;
+    const Table * const_ext = table;
 
     // Test operations which should fail for any/all extensions regardless of whether they are tables or tables:
     // The following call generates some errors containing the string "from a const table object"
@@ -355,7 +431,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
       double tmp_d;
 
       // Get a valid double keyword.
-      const_ext->getKeyword("src_thet", tmp_d);
+      const_ext->getHeader().getKeyword("src_thet", tmp_d);
       msg = "success calling getKeyword(\"src_thet\") from a const";
       ReportBehavior(msg + " " + ext_type + " object", status);
     } catch(const TipException & x) {
@@ -366,34 +442,34 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     // Read an entire column, which will involve calling all important functions:
     TestReadField(const_ext, "channel", "table", status);
   }
-  // END Test const FitsExtensionData methods for a table extension.
+  // END Test const FitsTable methods for a table extension.
 
 
 
 
 
-  // Test error cases for RootExtensionData constructors:
-  TestConstructorErrors<RootExtensionData>("RootExtensionData", data_dir + "merit.root", status);
+  // Test error cases for RootTable constructors:
+  TestConstructorErrors<RootTable>("RootTable", data_dir + "merit.root", status);
 
-  // BEGIN Test success cases for RootExtensionData constructors.
+  // BEGIN Test success cases for RootTable constructors.
   // This test object will be used in further tests below so create it at this scope:
   delete table; table = 0;
 
   try {
     // Valid file name, valid extension name:
-    table = new RootExtensionData(data_dir + "merit.root", "1");
-    ReportBehavior("success creating RootExtensionData with valid file name and valid extension name", status);
+    table = new RootTable(data_dir + "merit.root", "1");
+    ReportBehavior("success creating RootTable with valid file name and valid extension name", status);
   } catch(const TipException & x) {
-    ReportError("failure creating RootExtensionData with valid file name and valid extension name", status, x);
+    ReportError("failure creating RootTable with valid file name and valid extension name", status, x);
   }
-  // END Test success cases for RootExtensionData constructors.
+  // END Test success cases for RootTable constructors.
 
 
 
 
 
 
-  // BEGIN Test const RootExtensionData methods for a table extension.
+  // BEGIN Test const RootTable methods for a table extension.
   // Skip these tests if table object was not successfully opened above:
   if (0 == table) {
     ReportError("table pointer is null; skipping some tests", status);
@@ -403,7 +479,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
     // Note that table points to the primary HDU, which is an table.
     // Use a constant pointer from here on down:
-    const IExtensionData * const_ext = table;
+    const Table * const_ext = table;
 
     // Test operations which should fail for any/all extensions regardless of whether they are tables or tables:
     // The following call generates some errors containing the string "from a const table object"
@@ -415,7 +491,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     // Read an entire column, which will involve calling all important functions:
     TestReadField(const_ext, "McEnergy", "table", status);
   }
-  // END Test const RootExtensionData methods for a table extension.
+  // END Test const RootTable methods for a table extension.
 
 
 
@@ -472,7 +548,7 @@ namespace tip {
   
       msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + file_name;
       try {
-        m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM", "", false);
+        m_read_only_extension = new FitsTable(file_name, "SPECTRUM", "", false);
         ReportExpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -495,7 +571,7 @@ namespace tip {
     msg = std::string("attempt to open read-only extension SPECTRUM in a writable file ") + file_name;
     try {
       // With no filter and no read_only flag, read-only access will be the outcome, even if the file is writable.
-      m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM", "", true);
+      m_read_only_extension = new FitsTable(file_name, "SPECTRUM", "", true);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -505,7 +581,7 @@ namespace tip {
     confirmReadOnly(m_read_only_extension);
   }
 
-  void TestExtensionData::confirmReadOnly(IExtensionData * extension) {
+  void TestExtensionData::confirmReadOnly(Table * extension) {
     if (0 != extension) {
       std::string msg;
 
@@ -513,7 +589,7 @@ namespace tip {
       // Any non-const method we call should fail at this point:
       msg = "attempt to write keyword in a non-const object whose file cannot be written to";
       try {
-        extension->setKeyword("telescop", "GLAST");
+        extension->getHeader().setKeyword("telescop", "GLAST");
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
@@ -547,7 +623,7 @@ namespace tip {
     file_name = getDataDir() + "a1.pha";
     msg = std::string("attempt to open writable extension SPECTRUM in file ") + file_name;
     try {
-      m_writable_extension = new FitsExtensionData(file_name, "SPECTRUM", "#row > 0");
+      m_writable_extension = new FitsTable(file_name, "SPECTRUM", "#row > 0");
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -595,15 +671,15 @@ namespace tip {
   }
 
   void TestExtensionData::testCopy() {
-    const IExtensionData * input = 0;
-    IExtensionData * output = 0;
+    const Table * input = 0;
+    Table * output = 0;
     try {
       bool failed = false;
 
       // Copy cells from a source extension to an output extension.
       // Open input and create copy of input.
-      input = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "", true);
-      output = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
+      input = new FitsTable(getDataDir() + "a1.pha", "SPECTRUM", "", true);
+      output = new FitsTable(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
   
       // Get the number of records.
       Index_t num_rec = output->getNumRecords();

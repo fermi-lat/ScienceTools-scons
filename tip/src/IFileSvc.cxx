@@ -8,10 +8,10 @@
 #include <fstream>
 #include <memory>
 
-#include "FitsExtensionData.h"
 #include "FitsFileManager.h"
-#include "RootExtensionData.h"
-#include "RootExtensionManager.h"
+#include "FitsImage.h"
+#include "FitsTable.h"
+#include "RootTable.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
@@ -42,7 +42,7 @@ namespace tip {
 
   // Perform global initializations.
   void IFileSvc::globalInit() {
-    RootExtensionManager::resetSigHandlers();
+    RootTable::resetSigHandlers();
   }
 
   // Destructor for a file service.
@@ -73,16 +73,18 @@ namespace tip {
   // Open read-write an extension in a file, be it FITS or Root, table or image.
   Extension * IFileSvc::editExtension(const std::string & file_name, const std::string & ext_name,
     const std::string & filter) {
-    Extension * retval = 0;
-    IExtensionData * data = openExtension(file_name, ext_name, filter, false);
-
-    // Determine whether this extension is a table or an image, and return the appropriate
-    // type of object..
-    if (data->isTable())
-      retval = new Table(data);
-    else
-      retval = new Image(data);
-
+    Extension * ext = 0;
+    try {
+      ext = editTable(file_name, ext_name, filter);
+    } catch (const TipException & table_x) {
+      try {
+        ext = editImage(file_name, ext_name, filter);
+      } catch (const TipException & image_x) {
+        throw TipException(std::string("Could not edit extension as a table or an image:\n") + table_x.what() + "\n" +
+          image_x.what());
+      }
+    }
+    return ext;
     /*TODO 1: 4/2/2004: Memory management problem: Extension is base of Table. Extension
     has a IExtensionData and ~Extension deletes it. Currently editTable creates
     the IExtensionData and passes it to Table::Table(...) which passes it to
@@ -95,58 +97,70 @@ namespace tip {
 
     /* DONE 1: 4/21/2004: This is not an issue at present, because Table::Table doesn't
     throw under any circumstance. */
-    return retval;
   }
 
   // Edit a image in a file, be it FITS or Root.
   Image * IFileSvc::editImage(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Extension * ext = editExtension(file_name, table_name, filter);
-    Image * image = dynamic_cast<Image *>(ext);
-    if (0 == image) delete ext;
+    Image * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsImage(file_name, table_name, filter, false);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
     return image;
   }
 
   // Edit a table in a file, be it FITS or Root.
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Extension * ext = editExtension(file_name, table_name, filter);
-    Table * table = dynamic_cast<Table *>(ext);
-    if (0 == table) delete ext;
+    Table * table = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      table = new FitsTable(file_name, table_name, filter, false);
+    else if (file_type == "root")
+      table = new RootTable(file_name, table_name, filter, false);
     return table;
   }
 
   // Read-only an extension in a file, be it FITS or Root, table or image.
   const Extension * IFileSvc::readExtension(const std::string & file_name, const std::string & ext_name,
     const std::string & filter) {
-    Extension * retval = 0;
-    IExtensionData * data = openExtension(file_name, ext_name, filter, true);
-
-    // Determine whether this extension is a table or an image, and return the appropriate
-    // type of object.
-    if (data->isTable())
-      retval = new Table(data);
-    else
-      retval = new Image(data);
-
-    return retval;
+    const Extension * ext = 0;
+    try {
+      ext = readTable(file_name, ext_name, filter);
+    } catch (const TipException & table_x) {
+      try {
+        ext = readImage(file_name, ext_name, filter);
+      } catch (const TipException & image_x) {
+        throw TipException(std::string("Could not read extension as a table or an image:\n") + table_x.what() + "\n" +
+          image_x.what());
+      }
+    }
+    return ext;
   }
 
   // Read-only an image in a file, be it FITS or Root.
   const Image * IFileSvc::readImage(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    const Extension * ext = readExtension(file_name, table_name, filter);
-    const Image * image = dynamic_cast<const Image *>(ext);
-    if (0 == image) delete ext;
+    Image * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsImage(file_name, table_name, filter, true);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
     return image;
   }
 
   // Read-only a table in a file, be it FITS or Root.
   const Table * IFileSvc::readTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    const Extension * ext = readExtension(file_name, table_name, filter);
-    const Table * table = dynamic_cast<const Table *>(ext);
-    if (0 == table) delete ext;
+    Table * table = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      table = new FitsTable(file_name, table_name, filter, true);
+    else if (file_type == "root")
+      table = new RootTable(file_name, table_name, filter, true);
     return table;
   }
 
@@ -169,23 +183,23 @@ namespace tip {
     }
   }
 
-  IExtensionData * IFileSvc::openExtension(const std::string & file_name, const std::string & ext_name, const std::string & filter,
-    bool read_only) {
-    IExtensionData * retval = 0;
-    // First test whether file is a FITS file. This should be done first in case the file_name argument itself
+  std::string IFileSvc::classifyFile(const std::string & file_name) {
+    std::string file_type = "unknown";
+
+    // Test whether file is a FITS file. This should be done first in case the file_name argument itself
     // has any filtering expression in it. If it does, fileExists() will say it doesn't exist even if it does.
     if (FitsFileManager::isValid(file_name)) {
-      retval = new FitsExtensionData(file_name, ext_name, filter, read_only);
-    } else if (RootExtensionManager::isValid(file_name)) {
-      retval = new RootExtensionData(file_name, ext_name, filter, read_only);
+      file_type = "fits";
+    } else if (RootTable::isValid(file_name)) {
+      file_type = "root";
     } else if (fileExists(file_name)) {
-      throw TipException(std::string("File not in Fits or Root format: ") + file_name);
+      throw TipException(std::string("File not in FITS or Root format: ") + file_name);
     } else {
       throw TipException(std::string("File not found: ") + file_name);
     }
-    return retval;
+    return file_type;
   }
-  
+
   // Protected constructor which adds the current object to the registry of IFileSvc objects.
   IFileSvc::IFileSvc() {}
 

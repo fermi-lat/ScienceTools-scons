@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "FitsFileManager.h"
-#include "RootExtensionData.h"
+#include "RootTable.h"
 #include "TestFileManager.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
@@ -201,26 +201,26 @@ namespace tip {
       else
         ReportExpected(std::string("FitsFileManager::isValid correctly failed to recognize file ") + file);
 
-      // Test RootExtensionManager's ability to classify a Root file.
+      // Test RootTable's ability to classify a Root file.
       file = data_dir + "merit.root";
-      if (RootExtensionManager::isValid(file))
-        ReportExpected(std::string("RootExtensionManager::isValid correctly recognized Root file ") + file);
+      if (RootTable::isValid(file))
+        ReportExpected(std::string("RootTable::isValid correctly recognized Root file ") + file);
       else
-        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly failed to recognize Root file ") + file);
+        ReportUnexpected(std::string("RootTable::isValid incorrectly failed to recognize Root file ") + file);
 
       // Next try nonexistent file.
       file = data_dir + "non_existent.pha";
-      if (RootExtensionManager::isValid(file))
-        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly recognized file ") + file);
+      if (RootTable::isValid(file))
+        ReportUnexpected(std::string("RootTable::isValid incorrectly recognized file ") + file);
       else
-        ReportExpected(std::string("RootExtensionManager::isValid correctly failed to recognize file ") + file);
+        ReportExpected(std::string("RootTable::isValid correctly failed to recognize file ") + file);
 
       // Next try Fits file.
       file = data_dir + "a1.pha";
-      if (RootExtensionManager::isValid(file))
-        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly recognized file ") + file);
+      if (RootTable::isValid(file))
+        ReportUnexpected(std::string("RootTable::isValid incorrectly recognized file ") + file);
       else
-        ReportExpected(std::string("RootExtensionManager::isValid correctly failed to recognize file ") + file);
+        ReportExpected(std::string("RootTable::isValid correctly failed to recognize file ") + file);
 
     } catch (const TipException & x) {
       ReportUnexpected("TestFileManager::fileStatusTest caught unexpected exception while testing properties of " + file, x);

@@ -1,11 +1,9 @@
-/** \file RootExtensionManager.cxx
+/** \file RootTable.cxx
 
     \brief Implementation of utilities to help manage Root specific table access.
 
     \author James Peachey, HEASARC
 */
-
-#include <iostream>
 #include <utility>
 
 #include "TBranch.h"
@@ -16,14 +14,15 @@
 #include "TLeaf.h"
 #include "TString.h"
 #include "TSystem.h"
+#include "TTree.h"
 
 #include "RootColumn.h"
-#include "RootExtensionManager.h"
+#include "RootTable.h"
 #include "tip/TipException.h"
 
 namespace tip {
 
-  void RootExtensionManager::resetSigHandlers() {
+  void RootTable::resetSigHandlers() {
     gSystem->ResetSignal(kSigBus);
     gSystem->ResetSignal(kSigSegmentationViolation);
     gSystem->ResetSignal(kSigSystem);
@@ -41,7 +40,7 @@ namespace tip {
     gSystem->ResetSignal(kSigUser2);
   }
 
-  bool RootExtensionManager::isValid(const std::string & file_name) {
+  bool RootTable::isValid(const std::string & file_name) {
     // Save current error chattiness level:
     long root_err_level = gErrorIgnoreLevel;
 
@@ -61,15 +60,19 @@ namespace tip {
   }
 
   // Construct without opening the file.
-  RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
+  RootTable::RootTable(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter),
     m_branch_lookup(), m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
 
   // Close file automatically while destructing.
-  RootExtensionManager::~RootExtensionManager() { close(); }
+  RootTable::~RootTable() { close(); }
+
+  Header & RootTable::getHeader() { return m_header; } 
+
+  const Header & RootTable::getHeader() const { return m_header; }
 
   // Subclasses call this to open the file and position it to the desired extension.
-  void RootExtensionManager::open() {
+  void RootTable::open() {
     static bool first_time = true;
     // Most of the following block of code was taken from the tuple package, by Toby Burnett.
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
@@ -160,7 +163,7 @@ namespace tip {
   }
 
   // Close file.
-  void RootExtensionManager::close() {
+  void RootTable::close() {
     m_branch_lookup.clear();
     for (std::vector<IColumn *>::reverse_iterator it = m_leaves.rbegin(); it != m_leaves.rend(); ++it)
       delete *it;
@@ -169,27 +172,30 @@ namespace tip {
     delete m_fp;
   }
 
-  void RootExtensionManager::getKeyRecord(const std::string &, std::string &) const {
-    throw TipException("Getting a key record from a Root table is not currently supported.");
-  }
+  Index_t RootTable::getNumRecords() const { return m_num_records; }
 
-  void RootExtensionManager::setKeyRecord(const std::string &, const std::string &) {
-    throw TipException("Setting a key record from a Root table is not currently supported.");
-  }
-
-  void RootExtensionManager::openTable() {
-  }
-
-  void RootExtensionManager::setNumRecords(Index_t) {
+  void RootTable::setNumRecords(Index_t) {
     // Not supported for now.
     throw TipException("Changing the size of a Root table is not currently supported.");
   }
 
-  const IExtensionData::FieldCont & RootExtensionManager::getValidFields() const {
+  const Table::FieldCont & RootTable::getValidFields() const {
     return m_fields;
   }
 
-  FieldIndex_t RootExtensionManager::getFieldIndex(const std::string & field_name) const {
+  IColumn * RootTable::getColumn(FieldIndex_t field_index) {
+    if (0 > field_index || m_leaves.size() <= (unsigned int)(field_index))
+      throw TipException(formatWhat("RootTable::getColumn was passed invalid index"));
+    return m_leaves[field_index];
+  }
+
+  const IColumn * RootTable::getColumn(FieldIndex_t field_index) const {
+    if (0 > field_index || m_leaves.size() <= (unsigned int)(field_index))
+      throw TipException(formatWhat("RootTable::getColumn const was passed invalid index"));
+    return m_leaves[field_index];
+  }
+
+  FieldIndex_t RootTable::getFieldIndex(const std::string & field_name) const {
     // Look up the given field (branch) name:
     std::map<std::string, FieldIndex_t>::iterator itor = m_branch_lookup.find(field_name);
 
@@ -229,48 +235,24 @@ namespace tip {
     return itor->second;
   }
 
-  void RootExtensionManager::copyCell(const IExtensionData *, FieldIndex_t, Index_t, FieldIndex_t, Index_t) {
+  void RootTable::copyCell(const Table *, FieldIndex_t, Index_t, FieldIndex_t, Index_t) {
     throw TipException("Copying cells to a Root table is not supported");
   }
 
-  void RootExtensionManager::copyRecord(const IExtensionData *, Index_t, Index_t) {
+  void RootTable::copyRecord(const Table *, Index_t, Index_t) {
     throw TipException("Copying records to a Root table is not supported");
   }
 
   // Append field to a table extension.
-  void RootExtensionManager::appendField(const std::string &, const std::string &) {
+  void RootTable::appendField(const std::string &, const std::string &) {
     throw TipException("Adding fields to a Root table is not supported");
   }
 
-  void RootExtensionManager::filterRows(const std::string &) {
+  void RootTable::filterRows(const std::string &) {
     throw TipException("Row filtering a Root table is not supported");
   }
 
-  const std::vector<PixOrd_t> & RootExtensionManager::getImageDimensions() const {
-    throw TipException("Images in Root files not supported");
-  }
-
-  void RootExtensionManager::setImageDimensions(const std::vector<PixOrd_t> & ) {
-    throw TipException("Images in Root files not supported");
-  }
-
-  void RootExtensionManager::getPixel(const std::vector<PixOrd_t> &, double &) const {
-    throw TipException("Images in Root files not supported");
-  }
-
-  void RootExtensionManager::setPixel(const std::vector<PixOrd_t> &, const double &) {
-    throw TipException("Images in Root files not supported");
-  }
-
-  void RootExtensionManager::getImage(std::vector<float> &) const {
-    throw TipException("Images in Root files not supported");
-  }
-
-  void RootExtensionManager::setImage(const std::vector<float> &) {
-    throw TipException("Images in Root files not supported");
-  }
-
-  std::string RootExtensionManager::formatWhat(const std::string & msg) const {
+  std::string RootTable::formatWhat(const std::string & msg) const {
     std::string retval = msg;
     if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;
     retval += " in file " + m_file_name;

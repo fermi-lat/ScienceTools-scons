@@ -9,7 +9,8 @@
 
 namespace tip {
 
-  class IExtensionData;
+  class Image;
+  class Table;
 
   /** \class TestExtensionData
       \brief Declaration for class to perform detailed testing of extension data classes.
@@ -34,7 +35,7 @@ namespace tip {
 
       /** \brief Confirm that the given object can only be accessed read-only.
       */
-      void confirmReadOnly(IExtensionData * extension);
+      void confirmReadOnly(Table * extension);
 
       /** \brief Test functions which change the extension object..
       */
@@ -45,8 +46,8 @@ namespace tip {
       void testCopy();
 
     private:
-    IExtensionData * m_read_only_extension;
-    IExtensionData * m_writable_extension;
+    Table * m_read_only_extension;
+    Table * m_writable_extension;
   };
 
 }

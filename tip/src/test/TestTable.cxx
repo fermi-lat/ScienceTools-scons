@@ -3,13 +3,11 @@
     \author James Peachey, HEASARC
 */
 
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <limits>
+#include <string>
+#include <vector>
 
-#include "FitsExtensionData.h"
-#include "RootExtensionData.h"
+#include "FitsTable.h"
+#include "RootTable.h"
 #include "TestTable.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
@@ -53,14 +51,6 @@ namespace tip {
 
   void TestTable::TableTest() {
     std::string msg;
-    // Test constructor errors.
-    try {
-      m_fits_table = new Table(0);
-      ReportUnexpected("creating Table object with NULL pointer succeeded");
-      delete m_fits_table; m_fits_table = 0;
-    } catch(const TipException & x) {
-      ReportExpected("creating Table object with NULL pointer failed", x);
-    }
 
     // Find test data directory:
     std::string data_dir = getDataDir();
@@ -78,8 +68,8 @@ namespace tip {
     // Test constructing a Root table:
     msg = std::string("opening TTree \"1\" extension of ") + data_dir + "merit.root";
     try {
-      IExtensionData * data = new RootExtensionData(data_dir + "merit.root", "1");
-      m_root_table = new Table(data);
+      Table * data = new RootTable(data_dir + "merit.root", "1");
+      m_root_table = data;
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -352,8 +342,7 @@ namespace tip {
   }
 
   Table * TestTable::getTable() {
-    IExtensionData * data = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
-    return new Table(data);
+    return new FitsTable(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
   }
 
   // Test appending a field to an existing table.

@@ -8,6 +8,7 @@
 #define tip_IFileSvc_h
 
 #include <string>
+#include <vector>
 
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
@@ -15,7 +16,6 @@
 namespace tip {
 
   class Extension;
-  class IExtensionData;
   class Image;
   class Table;
 
@@ -123,15 +123,8 @@ namespace tip {
       */
       IFileSvc();
 
-      /** \brief Open and return an IExtensionData object for the given file specifier.
-          \param file_name The name of the file (any supported format OK).
-          \param ext_name The name of the extension.
-          \param filter Filtering string.
-          \param read_only Should the file be opened read-only.
-      */
-      virtual IExtensionData * openExtension(const std::string & file_name, const std::string & ext_name,
-        const std::string & filter = "", bool read_only = true);
-          
+      std::string classifyFile(const std::string & file_name);
+
     private:
       // Copying file service objects is not supported.
       IFileSvc(const IFileSvc & service) {}
