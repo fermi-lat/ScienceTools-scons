@@ -7,31 +7,17 @@
 */
 
 namespace facilities {
-  int Util::expandEnvVar(std::string* toExpand,
-                         const std::string* openDel,
-                         const std::string* closeDel) {
 
+  int Util::expandEnvVar(std::string* toExpand, 
+                         const std::string& openDel,
+                         const std::string& closeDel) {
+    unsigned opLen = openDel.size();
+    unsigned clLen = closeDel.size();
     int nSuccess = 0;
-
-    //now pull out and substitute for environment variables
-    // This routine, will modify the input string.
-    std::string op("$(");
-    unsigned opLen = 2;
-    std::string cl(")");
-    unsigned clLen = 1;
-    if (openDel) {
-      op = *openDel; 
-      opLen = openDel->size();
-    }
-
-    if (closeDel) {
-      cl = *closeDel;
-      clLen = closeDel->size();
-    }
-
-    int envStart = toExpand->find_first_of(op.c_str());
+                           
+    int envStart = toExpand->find_first_of(openDel.c_str());
     while (envStart != -1) {
-      int envEnd = toExpand->find_first_of(cl.c_str());
+      int envEnd = toExpand->find_first_of(closeDel.c_str());
             
       // add  characters to account for opening delimiter
       int afterBracket = envStart + opLen;
@@ -47,8 +33,9 @@ namespace facilities {
         }
         else nSuccess = -1;
       }
-      envStart = toExpand->find_first_of(op);
+      envStart = toExpand->find_first_of(openDel.c_str());
     }
     return nSuccess;
   }
+
 }

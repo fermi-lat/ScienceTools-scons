@@ -27,8 +27,8 @@ namespace facilities {
                delimiters.
     */
     static int expandEnvVar(std::string* toExpand, 
-                            const std::string* openDel = 0,
-                            const std::string* closeDel = 0);
+                            const std::string& openDel = std::string("$("),
+                            const std::string& closeDel = std::string(")"));
 
   };
 }
