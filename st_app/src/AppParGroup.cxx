@@ -10,7 +10,7 @@ namespace st_app {
 
   // Construct parameter group, getting arguments from the application and calling hoops base class.
   AppParGroup::AppParGroup(const std::string & comp_name):
-    hoops::ParPromptGroup(StApp::getArgc(), StApp::getArgv(), comp_name) {}
+    hoops::ParPromptGroup(StApp::getArgc() - 1, StApp::getArgv() + 1, comp_name) {}
 
   // Copy construct parameter group.
   AppParGroup::AppParGroup(const AppParGroup & group): hoops::ParPromptGroup(group) {}
