@@ -1,32 +1,29 @@
 # $Header$
 #---------------------------------------------------------------------------------------
-clobber,  b, a, "YES", , , "Overwrite existing output file?: "
-chatter,  i, a,   5,  , , , "Chatter: "
+clobber,b,a,yes,,,Overwrite existing output file?:
+chatter,i,a,5,,,
 #mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-mode,     s, a,  "ql",   , ,""
+mode,s,a,"ql",,,
 
 #
 #---------------------------------------------------------------------------------------
 #
-infile, f, a, "/common/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event Data File:"
-#filter,   s, a, "calib_version[1]==1&&calib_version[2]==1&&calib_version[3]==1", , , "filter expression:"
-#filter,   s, a, "", , , "filter expression:"
-filter,   s, a, "MC_src_Id==2200", , , "filter expression:"
-
-
-outfile,  f, a, "DC1_2200.fits", , , "Name of the output file:"
+infile,f,a,"/common/DC1/root_files/DC1_goodGamma.root",,,"Name of the Event Data File:"
+table_name,s,a,"MeritTuple",,,"name of the extension or ROOT tree"
+filter,s,a,,,,"filter expression:"
+outfile,f,a,"DC1_goodGamma.fits",,,"Name of the output file:"
 #
-ra_name,  s, a,  "FT1Ra", , , "name of the RA field" 
-dec_name, s, a,  "FT1Dec", , , "name of the DEC field"
+ra_name,s,a,"FT1Ra",,,"name of the RA field"
+dec_name,s,a,"FT1Dec",,,"name of the DEC field"
 #---------------------------------------------------------------------------------------
-#Parameter for Spatial binning - set here for 
+#Parameter for Spatial binning
 #
-npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
-npixy,    i, a,  180,   , , "Total pixel size of the image in y axis: "
-pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
-xref,     r, a,    0,   , , "RA at the image center: "
-yref,     r, a,    0,   , , "DEC at the image center: "
-rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
-projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
-uselb,    b, a,"YES",   , , "use l,b instead of ra,dec :"
+npix,i,a,720,,,Total pixel size of the image in each axis:
+npixy,i,a,360,,,Total pixel size of the image in y axis:
+pixelsize,r,a,0.5,,,Image size [degrees/pixel]
+xref,r,a,0,,,RA at the image center:
+yref,r,a,0,,,DEC at the image center:
+rot,r,a,0,,,Rotation angle of Y-axis relative to the physical coordinate:
+projtype,s,a,"AIT",,,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
+uselb,b,a,yes,,,use l,b instead of ra,dec :

@@ -51,6 +51,7 @@ public:
 
     // Accessor Methods
     const std::string &inputFile() const   { return m_inFile; }
+    const std::string &table_name() const   { return m_table_name; }
     const std::string &filter() const      { return m_filter; }
     const std::string &outputFile() const  { return m_outFile; }
     bool verboseMode()  const            { return m_verboseMode; }
@@ -63,6 +64,7 @@ private:
     std::string   m_inFile;
     std::string   m_outFile;
     std::string   m_filter;
+    std::string   m_table_name;
     bool        m_verboseMode;
     bool        m_clobber;
     int         m_chatter;

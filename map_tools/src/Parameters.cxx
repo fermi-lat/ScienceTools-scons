@@ -39,6 +39,7 @@ void Parameters::setup()
       // Prompt for all parameters in the order in the par file:
 
     dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
+     dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
     m_chatter = m_par["chatter"];
 
     m_clobber = m_par["clobber"];
@@ -54,6 +55,9 @@ void Parameters::setup()
     std::string outfile = m_par["outfile"];
     m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);
+
+    std::string table_name = m_par["table_name"];
+    m_table_name = table_name;
 
     if( m_clobber ) m_outFile= "!"+m_outFile;  // FITS convention to rewrite file
 
