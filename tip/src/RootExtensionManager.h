@@ -64,6 +64,7 @@ namespace tip {
       /** \brief Create an object to provide low-level access to the given Root extension.
           \param file_name The name of the Root file.
           \param ext_name The name of the Root extension.
+          \param filter Root compliant filtering expression.
       */
       RootExtensionManager(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "");
