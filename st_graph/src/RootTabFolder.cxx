@@ -21,6 +21,7 @@ namespace st_graph {
     m_tg_tab = new TGTab(tg_parent, 10, 10);
 
     m_frame = new RootFrame(parent, 0, m_tg_tab);
+    m_frame->setName("tab folder");
   }
 
   RootTabFolder::~RootTabFolder() {}
@@ -35,6 +36,8 @@ namespace st_graph {
       // Create a RootFrame with NULL TGFrame pointer, to prevent calling parent->addFrame().
       // The tab above will be assigned to the RootFrame below.
       RootFrame * root_frame = new RootFrame(m_frame, m_receiver, 0);
+
+      root_frame->setName("tab " + label);
 
       // Give tab_frame possession of the Root TGTab widget. This simply assigns the pointer.
       root_frame->setTGFrame(tab);

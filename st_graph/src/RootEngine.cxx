@@ -135,6 +135,8 @@ namespace st_graph {
     // Create the IFrame which refers to it.
     RootFrame * frame = new RootFrame(receiver, tg_widget);
 
+    frame->setName("main");
+
     // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
@@ -217,6 +219,8 @@ namespace st_graph {
     // Create the IFrame which refers to it.
     IFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
+    frame->setName("button " + label);
+
     // Connect appropriate Root Qt signals to this object's slot.
     tg_widget->Connect("Clicked()", "st_graph::RootFrame", frame, "clicked()");
 
@@ -236,6 +240,8 @@ namespace st_graph {
 
     IFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
+    frame->setName("label " + text);
+
     return frame;
   }
 
@@ -249,6 +255,8 @@ namespace st_graph {
     TGTextEntry * tg_widget  = new TGTextEntry(rf->getTGFrame(), content.c_str());
 
     IFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    frame->setName("text entry " + content);
 
     // Whenever text is changed, send the changes back to root frame.
     tg_widget->Connect("TextChanged(char *)", "st_graph::RootFrame", frame, "modified(const char *)");
@@ -267,6 +275,8 @@ namespace st_graph {
 
     RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
+    frame->setName("composite frame inside " + parent->getName());
+
     // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
@@ -283,6 +293,8 @@ namespace st_graph {
     TGGroupFrame * tg_widget  = new TGGroupFrame(rf->getTGFrame(), label.c_str());
 
     RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    frame->setName("group frame " + label);
 
     // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
