@@ -341,10 +341,10 @@
  <source_library title="galactic">
 
     <!-- the Map of the modeled galactic diffuse gamma-ray emission -->
-    <source name="galdiffusemap" flux="10">
+    <source name="galdiffusemap">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,/src/sources/gas_gal.fits"/> 
+             params="0.1,2.1,/src/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>

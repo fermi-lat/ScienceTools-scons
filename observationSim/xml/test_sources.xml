@@ -1,0 +1,1354 @@
+<source_library title="Simulated sources in Cygnus">
+<!-- Center of field (deg): l,b = 75.0000, 0.000000
+     Radius of field (deg):  30.0000
+     Flux limit (>100 MeV):  1.00000e-008
+     Number of sources:      134
+     Mean and dispersion of spectral index:  2.00000, 0.400000
+     Written by:  gen_xml.pro, Wed Jul 09 19:27:49 2003 UTC >
+-->
+
+<source name="cat_001" flux = "0.00418447">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.31319"/>
+        </particle>
+        <galactic_dir l="62.4900" b="20.1400"/>
+    </spectrum>
+</source>
+
+<source name="cat_002" flux = "0.0138446">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.15894"/>
+        </particle>
+        <galactic_dir l="56.7900" b="18.0300"/>
+    </spectrum>
+</source>
+
+<source name="cat_003" flux = "0.00978384">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.97358"/>
+        </particle>
+        <galactic_dir l="88.7400" b="25.0700"/>
+    </spectrum>
+</source>
+
+<source name="cat_004" flux = "0.0110450">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.28892"/>
+        </particle>
+        <galactic_dir l="88.9200" b="23.1800"/>
+    </spectrum>
+</source>
+
+<source name="cat_005" flux = "0.0416608">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.81057"/>
+        </particle>
+        <galactic_dir l="52.7100" b="0.0700000"/>
+    </spectrum>
+</source>
+
+<source name="cat_006" flux = "0.00924811">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.02567"/>
+        </particle>
+        <galactic_dir l="66.2300" b="-0.160000"/>
+    </spectrum>
+</source>
+
+<source name="cat_007" flux = "0.00139093">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.03720"/>
+        </particle>
+        <galactic_dir l="96.6100" b="17.1000"/>
+    </spectrum>
+</source>
+
+<source name="cat_008" flux = "0.0150022">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.21601"/>
+        </particle>
+        <galactic_dir l="74.7600" b="0.980000"/>
+    </spectrum>
+</source>
+
+<source name="cat_009" flux = "0.0490661">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.14244"/>
+        </particle>
+        <galactic_dir l="78.0500" b="2.08000"/>
+    </spectrum>
+</source>
+
+<source name="cat_010" flux = "0.0129497">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.65153"/>
+        </particle>
+        <galactic_dir l="75.5800" b="0.330000"/>
+    </spectrum>
+</source>
+
+<source name="cat_011" flux = "0.00757837">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.93115"/>
+        </particle>
+        <galactic_dir l="80.6300" b="3.62000"/>
+    </spectrum>
+</source>
+
+<source name="cat_012" flux = "0.00815206">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.95236"/>
+        </particle>
+        <galactic_dir l="74.0800" b="-2.36000"/>
+    </spectrum>
+</source>
+
+<source name="cat_013" flux = "0.0318504">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.22360"/>
+        </particle>
+        <galactic_dir l="80.2700" b="0.730000"/>
+    </spectrum>
+</source>
+
+<source name="cat_014" flux = "0.0209812">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.63795"/>
+        </particle>
+        <galactic_dir l="83.1700" b="2.50000"/>
+    </spectrum>
+</source>
+
+<source name="cat_015" flux = "0.00257033">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.54723"/>
+        </particle>
+        <galactic_dir l="56.1200" b="-17.1800"/>
+    </spectrum>
+</source>
+
+<source name="cat_016" flux = "0.00652888">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.95008"/>
+        </particle>
+        <galactic_dir l="55.7500" b="-20.2300"/>
+    </spectrum>
+</source>
+
+<source name="cat_017" flux = "0.0100812">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.35184"/>
+        </particle>
+        <galactic_dir l="97.7600" b="9.16000"/>
+    </spectrum>
+</source>
+
+<source name="cat_018" flux = "0.00822108">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.60044"/>
+        </particle>
+        <galactic_dir l="92.5600" b="-10.3900"/>
+    </spectrum>
+</source>
+
+<source name="cat_019" flux = "0.00611832">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.19010"/>
+        </particle>
+        <galactic_dir l="81.8300" b="-25.6500"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_001" flux = "0.00167830">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.03451"/>
+        </particle>
+        <galactic_dir l="46.7700" b="7.88000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_002" flux = "0.00486735">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.40658"/>
+        </particle>
+        <galactic_dir l="49.0400" b="-9.82000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_003" flux = "0.00613654">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.27630"/>
+        </particle>
+        <galactic_dir l="61.5500" b="-2.98000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_004" flux = "0.000869790">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.32378"/>
+        </particle>
+        <galactic_dir l="45.1700" b="2.26000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_005" flux = "0.00595879">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.17962"/>
+        </particle>
+        <galactic_dir l="60.7300" b="-2.97000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_006" flux = "0.00229302">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.84005"/>
+        </particle>
+        <galactic_dir l="61.6500" b="-3.42000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_007" flux = "0.000877183">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.71473"/>
+        </particle>
+        <galactic_dir l="70.0100" b="-2.61000"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_008" flux = "0.00209135">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.25598"/>
+        </particle>
+        <galactic_dir l="67.9400" b="11.1200"/>
+    </spectrum>
+</source>
+
+<source name="unid_halo_009" flux = "0.00208883">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.90806"/>
+        </particle>
+        <galactic_dir l="49.4100" b="10.9200"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_001" flux = "0.000320553">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.45656"/>
+        </particle>
+        <galactic_dir l="46.7700" b="7.88000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_002" flux = "0.000436240">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.70803"/>
+        </particle>
+        <galactic_dir l="49.0400" b="-9.82000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_003" flux = "0.00373643">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.01565"/>
+        </particle>
+        <galactic_dir l="61.5500" b="-2.98000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_004" flux = "0.00356540">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.20568"/>
+        </particle>
+        <galactic_dir l="45.1700" b="2.26000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_005" flux = "0.000440385">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.95781"/>
+        </particle>
+        <galactic_dir l="60.7300" b="-2.97000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_006" flux = "0.00165325">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.13415"/>
+        </particle>
+        <galactic_dir l="61.6500" b="-3.42000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_007" flux = "0.000869183">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.30783"/>
+        </particle>
+        <galactic_dir l="70.0100" b="-2.61000"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_008" flux = "0.00160777">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.67887"/>
+        </particle>
+        <galactic_dir l="67.9400" b="11.1200"/>
+    </spectrum>
+</source>
+
+<source name="unid_lowlat_009" flux = "0.000163874">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.08463"/>
+        </particle>
+        <galactic_dir l="49.4100" b="10.9200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_001" flux = "0.000176686">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.04187"/>
+        </particle>
+        <galactic_dir l="68.5700" b="-6.80000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_002" flux = "0.000367889">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.07366"/>
+        </particle>
+        <galactic_dir l="96.6500" b="1.61000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_003" flux = "0.000444515">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.91345"/>
+        </particle>
+        <galactic_dir l="98.4200" b="-4.79000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_004" flux = "0.000589533">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.23672"/>
+        </particle>
+        <galactic_dir l="61.2500" b="-25.2400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_005" flux = "0.000732903">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.64613"/>
+        </particle>
+        <galactic_dir l="71.4300" b="10.2000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_006" flux = "0.00111600">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.75254"/>
+        </particle>
+        <galactic_dir l="79.8200" b="4.64000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_007" flux = "0.000228132">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.62111"/>
+        </particle>
+        <galactic_dir l="72.2500" b="20.5200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_008" flux = "0.000850618">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.86839"/>
+        </particle>
+        <galactic_dir l="82.6900" b="7.58000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_009" flux = "0.000432237">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.96655"/>
+        </particle>
+        <galactic_dir l="66.8900" b="-6.02000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_010" flux = "0.000427499">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.20666"/>
+        </particle>
+        <galactic_dir l="97.4900" b="-4.75000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_011" flux = "0.00120942">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.99732"/>
+        </particle>
+        <galactic_dir l="51.1500" b="9.13000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_012" flux = "0.000480867">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.11241"/>
+        </particle>
+        <galactic_dir l="104.670" b="-2.51000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_013" flux = "0.000896008">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.26235"/>
+        </particle>
+        <galactic_dir l="74.5900" b="-10.4600"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_014" flux = "0.00219144">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.51417"/>
+        </particle>
+        <galactic_dir l="70.2400" b="1.97000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_015" flux = "0.000252715">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.42774"/>
+        </particle>
+        <galactic_dir l="63.3000" b="27.7600"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_016" flux = "0.000833671">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.06599"/>
+        </particle>
+        <galactic_dir l="52.2500" b="13.8800"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_017" flux = "0.000874083">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.14206"/>
+        </particle>
+        <galactic_dir l="75.9500" b="25.4100"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_018" flux = "0.000261429">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.66071"/>
+        </particle>
+        <galactic_dir l="100.540" b="-12.2000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_019" flux = "0.000521398">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.83847"/>
+        </particle>
+        <galactic_dir l="87.3100" b="11.4000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_020" flux = "0.000310001">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.74777"/>
+        </particle>
+        <galactic_dir l="67.1700" b="19.9500"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_021" flux = "0.00123150">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.47316"/>
+        </particle>
+        <galactic_dir l="87.4800" b="-16.5200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_022" flux = "0.000396155">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.88802"/>
+        </particle>
+        <galactic_dir l="76.2000" b="26.1300"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_023" flux = "0.000325911">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.52125"/>
+        </particle>
+        <galactic_dir l="82.1900" b="3.93000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_024" flux = "0.000153550">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.33975"/>
+        </particle>
+        <galactic_dir l="73.9000" b="-14.3700"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_025" flux = "0.000342647">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.99031"/>
+        </particle>
+        <galactic_dir l="83.0900" b="15.8700"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_026" flux = "0.00154527">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.08796"/>
+        </particle>
+        <galactic_dir l="66.2500" b="0.0500000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_027" flux = "0.000858447">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.82745"/>
+        </particle>
+        <galactic_dir l="50.5000" b="0.610000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_028" flux = "0.000393989">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.88347"/>
+        </particle>
+        <galactic_dir l="97.3700" b="-11.3200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_029" flux = "0.000366895">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.97085"/>
+        </particle>
+        <galactic_dir l="60.4500" b="-11.7900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_030" flux = "0.000748375">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.20220"/>
+        </particle>
+        <galactic_dir l="74.4200" b="-11.4500"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_031" flux = "0.000422900">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.10354"/>
+        </particle>
+        <galactic_dir l="63.1100" b="-7.75000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_032" flux = "0.00104402">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.55789"/>
+        </particle>
+        <galactic_dir l="100.310" b="13.2300"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_033" flux = "0.000614820">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.20561"/>
+        </particle>
+        <galactic_dir l="86.2900" b="-24.7400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_034" flux = "0.000615989">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.90176"/>
+        </particle>
+        <galactic_dir l="57.2800" b="1.95000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_035" flux = "0.000874509">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.64279"/>
+        </particle>
+        <galactic_dir l="65.5000" b="14.4400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_036" flux = "0.000916752">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.38985"/>
+        </particle>
+        <galactic_dir l="64.9200" b="15.1500"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_037" flux = "0.000442698">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.89890"/>
+        </particle>
+        <galactic_dir l="84.5000" b="-0.710000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_038" flux = "0.000583566">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.53349"/>
+        </particle>
+        <galactic_dir l="70.0600" b="9.88000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_039" flux = "0.000786350">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.42161"/>
+        </particle>
+        <galactic_dir l="86.9600" b="27.7000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_040" flux = "0.000452651">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.66606"/>
+        </particle>
+        <galactic_dir l="78.5700" b="-11.0000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_041" flux = "0.000507330">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.04599"/>
+        </particle>
+        <galactic_dir l="86.2400" b="-5.27000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_042" flux = "0.000290985">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.62567"/>
+        </particle>
+        <galactic_dir l="54.8600" b="-8.58000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_043" flux = "0.000335696">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.82720"/>
+        </particle>
+        <galactic_dir l="81.9900" b="-9.08000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_044" flux = "0.00130072">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.62893"/>
+        </particle>
+        <galactic_dir l="97.2200" b="8.52000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_045" flux = "0.000534225">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.63404"/>
+        </particle>
+        <galactic_dir l="95.9700" b="-7.83000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_046" flux = "0.000792730">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.58916"/>
+        </particle>
+        <galactic_dir l="78.6200" b="-14.1000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_047" flux = "0.000267894">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.68100"/>
+        </particle>
+        <galactic_dir l="60.4500" b="2.08000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_048" flux = "0.00154312">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.17498"/>
+        </particle>
+        <galactic_dir l="45.9600" b="-4.91000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_049" flux = "0.000270265">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.54633"/>
+        </particle>
+        <galactic_dir l="54.7800" b="-16.4900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_050" flux = "0.000459268">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.18703"/>
+        </particle>
+        <galactic_dir l="49.4200" b="-10.7700"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_051" flux = "0.00123527">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.51226"/>
+        </particle>
+        <galactic_dir l="84.6400" b="-15.7200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_052" flux = "0.000288928">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.55563"/>
+        </particle>
+        <galactic_dir l="102.780" b="-6.78000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_053" flux = "0.000764479">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.50409"/>
+        </particle>
+        <galactic_dir l="79.7000" b="28.5400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_054" flux = "0.000446304">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.06374"/>
+        </particle>
+        <galactic_dir l="55.1200" b="-1.43000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_055" flux = "0.000308237">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.28769"/>
+        </particle>
+        <galactic_dir l="66.4500" b="1.66000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_056" flux = "0.000541668">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.29443"/>
+        </particle>
+        <galactic_dir l="62.2400" b="20.2200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_057" flux = "0.000998225">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.36060"/>
+        </particle>
+        <galactic_dir l="74.0000" b="-18.7100"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_058" flux = "0.00161111">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.16553"/>
+        </particle>
+        <galactic_dir l="73.6400" b="-16.4900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_059" flux = "0.000424274">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.90912"/>
+        </particle>
+        <galactic_dir l="93.1800" b="-17.2700"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_060" flux = "0.000238871">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.60715"/>
+        </particle>
+        <galactic_dir l="56.9900" b="0.340000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_061" flux = "0.000302580">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.56638"/>
+        </particle>
+        <galactic_dir l="81.7300" b="-16.5100"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_062" flux = "0.000395005">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.03217"/>
+        </particle>
+        <galactic_dir l="69.5400" b="20.3100"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_063" flux = "0.000365141">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.00412"/>
+        </particle>
+        <galactic_dir l="100.690" b="-13.5300"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_064" flux = "0.000572469">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.56773"/>
+        </particle>
+        <galactic_dir l="78.3700" b="-9.89000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_065" flux = "0.000373022">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.73481"/>
+        </particle>
+        <galactic_dir l="79.0000" b="24.1600"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_066" flux = "0.000290935">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.55579"/>
+        </particle>
+        <galactic_dir l="94.0000" b="23.4000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_067" flux = "0.000167418">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.24268"/>
+        </particle>
+        <galactic_dir l="60.8300" b="-10.8300"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_068" flux = "0.00119013">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.77169"/>
+        </particle>
+        <galactic_dir l="61.0700" b="-13.8200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_069" flux = "0.000280910">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.81735"/>
+        </particle>
+        <galactic_dir l="57.1000" b="22.8900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_070" flux = "0.00191470">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.50961"/>
+        </particle>
+        <galactic_dir l="64.7600" b="15.1500"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_071" flux = "0.000329879">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.91977"/>
+        </particle>
+        <galactic_dir l="54.4800" b="0.990000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_072" flux = "0.000476492">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.19526"/>
+        </particle>
+        <galactic_dir l="77.7800" b="29.7000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_073" flux = "0.000788855">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.11523"/>
+        </particle>
+        <galactic_dir l="92.6500" b="-4.95000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_074" flux = "0.000897255">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.27632"/>
+        </particle>
+        <galactic_dir l="84.9000" b="0.680000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_075" flux = "0.000299643">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.69358"/>
+        </particle>
+        <galactic_dir l="54.9100" b="-10.6000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_076" flux = "0.000707997">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.21987"/>
+        </particle>
+        <galactic_dir l="87.6900" b="-8.09000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_077" flux = "0.000444728">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.89170"/>
+        </particle>
+        <galactic_dir l="90.2900" b="-6.11000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_078" flux = "0.000539724">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.34407"/>
+        </particle>
+        <galactic_dir l="80.2400" b="-20.7000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_079" flux = "0.00102244">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.76712"/>
+        </particle>
+        <galactic_dir l="53.3200" b="8.23000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_080" flux = "0.00113109">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.34126"/>
+        </particle>
+        <galactic_dir l="68.1300" b="16.8900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_081" flux = "0.00198185">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.19702"/>
+        </particle>
+        <galactic_dir l="82.4800" b="27.8900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_082" flux = "0.000224505">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.51339"/>
+        </particle>
+        <galactic_dir l="86.2100" b="25.6400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_083" flux = "0.000861486">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.95146"/>
+        </particle>
+        <galactic_dir l="47.4800" b="-5.26000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_084" flux = "0.000304184">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.73204"/>
+        </particle>
+        <galactic_dir l="95.4600" b="15.5400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_085" flux = "0.000174522">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.23826"/>
+        </particle>
+        <galactic_dir l="60.2100" b="16.4900"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_086" flux = "0.000528451">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.15846"/>
+        </particle>
+        <galactic_dir l="103.360" b="-4.37000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_087" flux = "0.000206765">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.45191"/>
+        </particle>
+        <galactic_dir l="83.7600" b="-16.5200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_088" flux = "0.000685106">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.14793"/>
+        </particle>
+        <galactic_dir l="98.5500" b="1.70000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_089" flux = "0.00102607">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.06690"/>
+        </particle>
+        <galactic_dir l="66.8400" b="5.34000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_090" flux = "0.000251128">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.45618"/>
+        </particle>
+        <galactic_dir l="67.4500" b="25.0400"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_091" flux = "0.00139869">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.67128"/>
+        </particle>
+        <galactic_dir l="72.8800" b="13.2200"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_092" flux = "0.000621605">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.26220"/>
+        </particle>
+        <galactic_dir l="73.9100" b="-10.1100"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_093" flux = "0.00148475">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.74339"/>
+        </particle>
+        <galactic_dir l="58.1800" b="10.0600"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_094" flux = "0.000807996">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.37678"/>
+        </particle>
+        <galactic_dir l="96.4100" b="-4.53000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_095" flux = "0.000356677">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.42820"/>
+        </particle>
+        <galactic_dir l="66.0400" b="23.6600"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_096" flux = "0.00126792">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="1.87341"/>
+        </particle>
+        <galactic_dir l="57.5400" b="-5.75000"/>
+    </spectrum>
+</source>
+
+<source name="faint_blazar_097" flux = "0.000771121">
+    <spectrum escale="MeV">
+        <particle name="gamma">
+            <power_law emin="30." emax="100000." gamma="2.39953"/>
+        </particle>
+        <galactic_dir l="70.8300" b="17.9000"/>
+    </spectrum>
+</source>
+
+<!-- All of the test sources -->
+<source name = "all_test_sources">
+   <nestedSource sourceRef="cat_001" />
+   <nestedSource sourceRef="cat_002" />
+   <nestedSource sourceRef="cat_003" />
+   <nestedSource sourceRef="cat_004" />
+   <nestedSource sourceRef="cat_005" />
+   <nestedSource sourceRef="cat_006" />
+   <nestedSource sourceRef="cat_007" />
+   <nestedSource sourceRef="cat_008" />
+   <nestedSource sourceRef="cat_009" />
+   <nestedSource sourceRef="cat_010" />
+   <nestedSource sourceRef="cat_011" />
+   <nestedSource sourceRef="cat_012" />
+   <nestedSource sourceRef="cat_013" />
+   <nestedSource sourceRef="cat_014" />
+   <nestedSource sourceRef="cat_015" />
+   <nestedSource sourceRef="cat_016" />
+   <nestedSource sourceRef="cat_017" />
+   <nestedSource sourceRef="cat_018" />
+   <nestedSource sourceRef="cat_019" />
+   <nestedSource sourceRef="unid_halo_001" />
+   <nestedSource sourceRef="unid_halo_002" />
+   <nestedSource sourceRef="unid_halo_003" />
+   <nestedSource sourceRef="unid_halo_004" />
+   <nestedSource sourceRef="unid_halo_005" />
+   <nestedSource sourceRef="unid_halo_006" />
+   <nestedSource sourceRef="unid_halo_007" />
+   <nestedSource sourceRef="unid_halo_008" />
+   <nestedSource sourceRef="unid_halo_009" />
+   <nestedSource sourceRef="unid_lowlat_001" />
+   <nestedSource sourceRef="unid_lowlat_002" />
+   <nestedSource sourceRef="unid_lowlat_003" />
+   <nestedSource sourceRef="unid_lowlat_004" />
+   <nestedSource sourceRef="unid_lowlat_005" />
+   <nestedSource sourceRef="unid_lowlat_006" />
+   <nestedSource sourceRef="unid_lowlat_007" />
+   <nestedSource sourceRef="unid_lowlat_008" />
+   <nestedSource sourceRef="unid_lowlat_009" />
+   <nestedSource sourceRef="faint_blazar_001" />
+   <nestedSource sourceRef="faint_blazar_002" />
+   <nestedSource sourceRef="faint_blazar_003" />
+   <nestedSource sourceRef="faint_blazar_004" />
+   <nestedSource sourceRef="faint_blazar_005" />
+   <nestedSource sourceRef="faint_blazar_006" />
+   <nestedSource sourceRef="faint_blazar_007" />
+   <nestedSource sourceRef="faint_blazar_008" />
+   <nestedSource sourceRef="faint_blazar_009" />
+   <nestedSource sourceRef="faint_blazar_010" />
+   <nestedSource sourceRef="faint_blazar_011" />
+   <nestedSource sourceRef="faint_blazar_012" />
+   <nestedSource sourceRef="faint_blazar_013" />
+   <nestedSource sourceRef="faint_blazar_014" />
+   <nestedSource sourceRef="faint_blazar_015" />
+   <nestedSource sourceRef="faint_blazar_016" />
+   <nestedSource sourceRef="faint_blazar_017" />
+   <nestedSource sourceRef="faint_blazar_018" />
+   <nestedSource sourceRef="faint_blazar_019" />
+   <nestedSource sourceRef="faint_blazar_020" />
+   <nestedSource sourceRef="faint_blazar_021" />
+   <nestedSource sourceRef="faint_blazar_022" />
+   <nestedSource sourceRef="faint_blazar_023" />
+   <nestedSource sourceRef="faint_blazar_024" />
+   <nestedSource sourceRef="faint_blazar_025" />
+   <nestedSource sourceRef="faint_blazar_026" />
+   <nestedSource sourceRef="faint_blazar_027" />
+   <nestedSource sourceRef="faint_blazar_028" />
+   <nestedSource sourceRef="faint_blazar_029" />
+   <nestedSource sourceRef="faint_blazar_030" />
+   <nestedSource sourceRef="faint_blazar_031" />
+   <nestedSource sourceRef="faint_blazar_032" />
+   <nestedSource sourceRef="faint_blazar_033" />
+   <nestedSource sourceRef="faint_blazar_034" />
+   <nestedSource sourceRef="faint_blazar_035" />
+   <nestedSource sourceRef="faint_blazar_036" />
+   <nestedSource sourceRef="faint_blazar_037" />
+   <nestedSource sourceRef="faint_blazar_038" />
+   <nestedSource sourceRef="faint_blazar_039" />
+   <nestedSource sourceRef="faint_blazar_040" />
+   <nestedSource sourceRef="faint_blazar_041" />
+   <nestedSource sourceRef="faint_blazar_042" />
+   <nestedSource sourceRef="faint_blazar_043" />
+   <nestedSource sourceRef="faint_blazar_044" />
+   <nestedSource sourceRef="faint_blazar_045" />
+   <nestedSource sourceRef="faint_blazar_046" />
+   <nestedSource sourceRef="faint_blazar_047" />
+   <nestedSource sourceRef="faint_blazar_048" />
+   <nestedSource sourceRef="faint_blazar_049" />
+   <nestedSource sourceRef="faint_blazar_050" />
+   <nestedSource sourceRef="faint_blazar_051" />
+   <nestedSource sourceRef="faint_blazar_052" />
+   <nestedSource sourceRef="faint_blazar_053" />
+   <nestedSource sourceRef="faint_blazar_054" />
+   <nestedSource sourceRef="faint_blazar_055" />
+   <nestedSource sourceRef="faint_blazar_056" />
+   <nestedSource sourceRef="faint_blazar_057" />
+   <nestedSource sourceRef="faint_blazar_058" />
+   <nestedSource sourceRef="faint_blazar_059" />
+   <nestedSource sourceRef="faint_blazar_060" />
+   <nestedSource sourceRef="faint_blazar_061" />
+   <nestedSource sourceRef="faint_blazar_062" />
+   <nestedSource sourceRef="faint_blazar_063" />
+   <nestedSource sourceRef="faint_blazar_064" />
+   <nestedSource sourceRef="faint_blazar_065" />
+   <nestedSource sourceRef="faint_blazar_066" />
+   <nestedSource sourceRef="faint_blazar_067" />
+   <nestedSource sourceRef="faint_blazar_068" />
+   <nestedSource sourceRef="faint_blazar_069" />
+   <nestedSource sourceRef="faint_blazar_070" />
+   <nestedSource sourceRef="faint_blazar_071" />
+   <nestedSource sourceRef="faint_blazar_072" />
+   <nestedSource sourceRef="faint_blazar_073" />
+   <nestedSource sourceRef="faint_blazar_074" />
+   <nestedSource sourceRef="faint_blazar_075" />
+   <nestedSource sourceRef="faint_blazar_076" />
+   <nestedSource sourceRef="faint_blazar_077" />
+   <nestedSource sourceRef="faint_blazar_078" />
+   <nestedSource sourceRef="faint_blazar_079" />
+   <nestedSource sourceRef="faint_blazar_080" />
+   <nestedSource sourceRef="faint_blazar_081" />
+   <nestedSource sourceRef="faint_blazar_082" />
+   <nestedSource sourceRef="faint_blazar_083" />
+   <nestedSource sourceRef="faint_blazar_084" />
+   <nestedSource sourceRef="faint_blazar_085" />
+   <nestedSource sourceRef="faint_blazar_086" />
+   <nestedSource sourceRef="faint_blazar_087" />
+   <nestedSource sourceRef="faint_blazar_088" />
+   <nestedSource sourceRef="faint_blazar_089" />
+   <nestedSource sourceRef="faint_blazar_090" />
+   <nestedSource sourceRef="faint_blazar_091" />
+   <nestedSource sourceRef="faint_blazar_092" />
+   <nestedSource sourceRef="faint_blazar_093" />
+   <nestedSource sourceRef="faint_blazar_094" />
+   <nestedSource sourceRef="faint_blazar_095" />
+   <nestedSource sourceRef="faint_blazar_096" />
+   <nestedSource sourceRef="faint_blazar_097" />
+</source>
+
+</source_library>
