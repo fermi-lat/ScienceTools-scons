@@ -55,12 +55,14 @@ public:
      */
     Hep3Vector getBarycenter(JulianDate jd);
 
+    Hep3Vector getSolarVector(JulianDate jd);
+
     /**
     * @brief conversion operator that returns the SkyDir 
     */
     operator SkyDir()const { return m_dir; }
 private:
-
+    bool s_ephemInitialized;
     SkyDir m_dir;
     SolSystem* m_ss;
 };

@@ -6,13 +6,15 @@
 #include "jplephem/bary.h"
 
 namespace astro {
-SolarSystem::SolarSystem(): m_ss(new SolSystem){}
+SolarSystem::SolarSystem(): m_ss(new SolSystem){
+s_ephemInitialized = false;
+}
 
 SolarSystem::SolarSystem( SolarSystem::Body body, JulianDate jd )
 : m_ss(new SolSystem)
 {
     direction(body, jd);
-
+   s_ephemInitialized = false;
 }
 
 SkyDir SolarSystem::direction(Body body, JulianDate jd)
@@ -38,19 +40,23 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
    jdt[0] = floor(jd);
    jdt[1] = jd - floor(jd) - 0.5;
    int nearth = 3; 
+   int nsun = 11;
    jdpointer = &jdt[0];
 
-   int ephnum = 405;
-   int denum;
-   double c, radsol, msol;
-   int j;
-    if ( j = initephem (ephnum, &denum, &c, &radsol, &msol) ) {
-      fprintf (stderr, "Error while initializing ephemeris; status: %d\n",
-	       j) ;
-      denum = 0 ;
-    }
+   if(!s_ephemInitialized) {
+      int ephnum = 405;
+      int denum;
+      double c, radsol, msol;
+      int j;
+      if ( j = initephem (ephnum, &denum, &c, &radsol, &msol) ) {
+         fprintf (stderr, "Error while initializing ephemeris; status: %d\n",
+	         j) ;
+         denum = 0 ;
+      }
+      s_ephemInitialized = true;
+   }
 
-   const double *eposn =  dpleph(jdpointer, nearth, nearth);
+   const double *eposn =  dpleph(jdpointer, nearth, nsun);
 
    // Position of barycenter
    double x = -eposn[0];
@@ -67,6 +73,49 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
    barycenter.setZ(z);
   
    return barycenter;
+}
+
+Hep3Vector SolarSystem::getSolarVector(JulianDate jd)
+{
+   double jdt[2], *jdpointer;
+   jdt[0] = floor(jd);
+   jdt[1] = jd - floor(jd) - 0.5;
+   int nearth = 3; 
+   int nsun = 11;
+   jdpointer = &jdt[0];
+
+   if(!s_ephemInitialized) {
+      int ephnum = 405;
+      int denum;
+      double c, radsol, msol;
+      int j;
+      if ( j = initephem (ephnum, &denum, &c, &radsol, &msol) ) {
+         fprintf (stderr, "Error while initializing ephemeris; status: %d\n",
+	         j) ;
+         denum = 0 ;
+      }
+      s_ephemInitialized = true;
+   }
+
+   const double *eposn =  dpleph(jdpointer, nearth, nsun);
+
+   // Position of sun with respect to the geocenter
+   double x = -eposn[0] + eposn[3];
+   double y = -eposn[1] + eposn[4];
+   double z = -eposn[2] + eposn[5];
+
+   double dist = sqrt(x*x + y*y + z*z);
+   double ra = atan2(y,x) * 180. / M_PI;
+   double dec = atan2(z,sqrt(x*x+y*y)) * 180. / M_PI;
+
+   Hep3Vector solarVector;
+   
+   solarVector.setX(x);
+   solarVector.setY(y);
+   solarVector.setZ(z);
+  
+   return solarVector;
+
 }
 
 SolarSystem::~SolarSystem(){ delete m_ss;}
