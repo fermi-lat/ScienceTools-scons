@@ -69,8 +69,7 @@
     may be unacceptable. Second, an algorithm may need to be able to modify
     a table which was read from a read-only file. In this case, it would
     be useful to have a memory-resident, modifiable table representing
-    the data which was in the file. Of course, this imposes the burden
-    of managing the memory on the client code.
+    the data which was in the file.
 
     The file-related interface shall also support the creation of new
     files and the modification of existing files from table objects.
