@@ -66,6 +66,10 @@ public:
     virtual const HepPoint3D&  launchPoint()const { return m_launchPoint;}
     virtual std::string particleName();
 
+	/// this function decides if the current incoming photon would be occulted
+	/// by the earth
+	bool occulted();
+
 
 private:
 
@@ -104,6 +108,9 @@ private:
     double explicitInterval (double time);
     ///    getLaunch - compute launch point, direction, & energy
     virtual void computeLaunch (double time=0);
+
+	///flag showing whether the current spectrum can be occulted by the earth.
+	bool m_occultable;
 
 
 };
