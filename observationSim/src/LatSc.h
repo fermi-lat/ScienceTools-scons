@@ -16,7 +16,7 @@ namespace observationSim {
 /**
  * @class LatSc
  *
- * @brief Provide spacecraft attitude and orbital position informatio
+ * @brief Provide spacecraft attitude and orbital position information
  * for the LAT.
  *
  * @author J. Chiang
