@@ -76,8 +76,8 @@ void ScDataContainer::addScData(EventSource *event, bool flush) {
 
       m_scData.push_back(ScData(time, gps->RAZ(), gps->DECZ(), 
                                 gps->lon(), gps->lat(), 
-								astro::SkyDir(zAxis,astro::SkyDir::CELESTIAL), 
-								astro::SkyDir(xAxis,astro::SkyDir::CELESTIAL),
+                                astro::SkyDir(zAxis,astro::SkyDir::CELESTIAL), 
+                                astro::SkyDir(xAxis,astro::SkyDir::CELESTIAL),
                                 static_cast<int>(earthCoord.insideSAA())));
    }
    if (flush) writeScData();
