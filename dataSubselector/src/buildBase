@@ -10,7 +10,7 @@ bindir = os.environ['BINDIR']
 install_dir = os.path.join(home, bindir)
 
 include_dirs = [home, os.path.join(home, 'src')]
-library_dirs = [os.path.join(home, bindir)]
+library_dirs = [install_dir]
 for lib in libraries.keys():
     if libraries[lib] is None:
         # remove ugly Lib kluge

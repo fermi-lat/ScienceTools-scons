@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r1    14-Jan-04   JC   move CutController code to src/dataSubselector
     v3r0p1  15-Dec-04   JC   remove unnecessary include in Cuts constructor
     v3      08-Dec-04   JC   interface using new CutBase hierarchy
     v2r4    07-Dec-04   JC   Exposed CutBase hierarchy to public interface 

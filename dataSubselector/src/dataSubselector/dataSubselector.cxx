@@ -17,7 +17,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
-#include "dataSubselector/CutController.h"
+#include "CutController.h"
 
 using dataSubselector::CutController;
 

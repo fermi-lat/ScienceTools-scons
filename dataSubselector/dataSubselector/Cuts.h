@@ -135,7 +135,7 @@ public:
    /// @brief The number of cuts contained herein.
    unsigned int size() const {return m_cuts.size();}
 
-   /// @brief Do a member-wise comparision of each cut in m_cuts.
+   /// @brief Do a member-wise comparison of each cut in m_cuts.
    /// The ordering of cuts must be the same.
    bool operator==(const Cuts & rhs) const;
 
@@ -157,6 +157,9 @@ private:
 
    unsigned int find(const CutBase * cut) const;
 
+   /// @brief Add a cut. The passed cut will not be added if an 
+   ///        existing cut supercedes it, but it will be deleted.  If
+   ///        added, this cut will be deleted by the destructor ~Cut().
    unsigned int addCut(CutBase * newCut);
 
 };
