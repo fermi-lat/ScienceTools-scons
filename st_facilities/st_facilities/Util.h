@@ -64,6 +64,11 @@ public:
    /// @return true if the filename ends in ".xml" extension
    static bool isXmlFile(std::string filename);
 
+   /// Linear interpolation.
+   static double interpolate(const std::vector<double> &x,
+                             const std::vector<double> &y,
+                             double xx);
+
    /// A zeroth order bilinear interpolater.
    static double bilinear(const std::vector<double> &xx, double x,
                           const std::vector<double> &yy, double y, 

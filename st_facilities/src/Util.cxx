@@ -77,6 +77,30 @@ namespace st_facilities {
       return false;
    }
 
+   double Util::interpolate(const std::vector<double> &x,
+                            const std::vector<double> &y,
+                            double xx) {
+      if (xx < x.front() || xx > x.back()) {
+         std::ostringstream message;
+         message << "Util::interpolate:\n"
+                 << "abscissa value out-of-range, "
+                 << xx << " is not in (" 
+                 << x.front() << ", "
+                 << x.back() << ")";
+         throw std::range_error(message.str());
+      }
+      std::vector<double>::const_iterator it 
+         = std::upper_bound(x.begin(), x.end(), xx) - 1;
+      unsigned int indx = it - x.begin();
+      double yy;
+      if (*(it+1) != *it) {
+         yy = (xx - *it)/(*(it+1) - *it)*(y[indx+1] - y[indx]) + y[indx];
+      } else {
+         yy = (y[indx+1] + y[indx])/2.;
+      }
+      return yy;
+   }
+
    double Util::bilinear(const std::vector<double> &xx, double x, 
                          const std::vector<double> &yy, double y, 
                          const std::vector<double> &z) {
