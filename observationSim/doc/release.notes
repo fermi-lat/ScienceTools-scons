@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r3  24-Aug-03   JC    1st attempt to get cmt to build python module
+                            on Linux
     v0r2  14-Jul-03   JC    tag for inclusion into ScienceTools
     v0r1  26-Jun-03   JC    Use latResponse instead of Likelihood
     v0    18-Jun-03   JC    Initial import
