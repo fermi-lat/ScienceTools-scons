@@ -10,6 +10,7 @@ branches cmt src doc
 use GlastPolicy v*
 use rootTuple v*
 use Goodi v*
+use astro v*
 
 apply_pattern package_include
 apply_pattern package_linkopts
@@ -43,6 +44,6 @@ set TPLDIR "$(GOODIROOT)/Templates"
 set INFILES "$(GOODIROOT)/Data"
 
 # The applications:
-application makeFT2 makeFT2.cxx
 application makeFT1 makeFT1.cxx
-application makeFT2a makeFT2a.cxx
+application makeFT2 makeFT2.cxx
+#application makeFT2a makeFT2a.cxx

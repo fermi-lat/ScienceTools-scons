@@ -7,6 +7,7 @@
  */
 
 #include <cmath>
+#include <cassert>
 
 #include <vector>
 #include <valarray>
@@ -15,7 +16,7 @@
 #include <functional>
 #include <sstream>
 
-#include "assert.h"
+#include "astro/JulianDate.h"
 
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
@@ -23,8 +24,6 @@
 #include "Goodi/IDataIOService.h"
 #include "Goodi/IData.h"
 #include "Goodi/IEventData.h"
-
-//#include "Goodi/../src/LatEventsData.h"    // meh.
 
 #include "rootTuple/RootTuple.h"
 
@@ -317,10 +316,12 @@ int main(int iargc, char * argv[]) {
    data->setGTI(gti);
 
    //HEADER KEYS in GTI for DC1
-   std::string date_start = "2005-07-18T00:00:00.0000";
-   std::string date_stop  = "2005-07-19T00:00:00.0000";
-   data->setKey("DATE-OBS", date_start);
-   data->setKey("DATE-END", date_stop);
+   astro::JulianDate mission_start(2005, 7, 18, 0.);
+   double secsPerDay = 8.64e4;
+   astro::JulianDate date_start(mission_start + gti.front().first/secsPerDay);
+   astro::JulianDate date_end(mission_start + gti.front().second/secsPerDay);
+   data->setKey("DATE-OBS", date_start.getGregorianDate());
+   data->setKey("DATE-END", date_end.getGregorianDate());
    double duration = gti.front().second - gti.front().first;
    data->setKey("TSTART", gti.front().first);
    data->setKey("TSTOP", gti.front().second);
@@ -333,10 +334,9 @@ int main(int iargc, char * argv[]) {
 //   data->setBaryOffset(baryOffset);
 //   data->setAcdTilesHit(acdTilesHit);
 
-
    std::vector<double> gltword        = meritTuple("GltWord");
    std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
-   std::vector<double> tkr1zdir      = meritTuple("Tkr1ZDir");
+   std::vector<double> tkr1zdir       = meritTuple("Tkr1ZDir");
    std::vector<double> calenergysum   = meritTuple("CalEnergySum");
    std::vector<double> calmipdiff     = meritTuple("CalMIPDiff");
    std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
@@ -345,7 +345,7 @@ int main(int iargc, char * argv[]) {
    std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
    std::vector<double> tkrnumtracks   = meritTuple("TkrNumTracks");
    std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
-   std::vector<double> imgammaprob     = meritTuple("IMgammaProb");
+   std::vector<double> imgammaprob    = meritTuple("IMgammaProb");
    std::vector<double> impsfprederr   = meritTuple("IMpsfErrPred");
 
    std::vector<double> acdtotalenergy = meritTuple("AcdTotalEnergy");
