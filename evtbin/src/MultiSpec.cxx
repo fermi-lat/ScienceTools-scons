@@ -36,7 +36,8 @@ namespace evtbin {
     std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SPECTRUM"));
 
     // Get number of bins in each dimension.
-    long num_time_bins = m_hist.getBinners().at(0)->getNumBins();
+    const Binner * time_binner = m_hist.getBinners().at(0);
+    long num_time_bins = time_binner->getNumBins();
     long num_energy_bins = m_hist.getBinners().at(1)->getNumBins();
 
     // Tweak the dimensionality of output table.
@@ -55,6 +56,13 @@ namespace evtbin {
 
     // Iterate over bin number and output table iterator, writing fields in order.
     for (long index = 0; index != num_time_bins; ++index, ++table_itor) {
+      // Get interval of this time bin.
+      const Binner::Interval & time_int = time_binner->getInterval(index);
+
+      // Record time binning information.
+      (*table_itor)["TSTART"].set(time_int.begin());
+      (*table_itor)["TELAPSE"].set(time_int.width());
+
       // Number the spectra.
       (*table_itor)["SPEC_NUM"].set(index + 1);
 
