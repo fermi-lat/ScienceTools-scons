@@ -46,8 +46,8 @@ namespace tip {
 
       /** \brief Return the number of elements in the given field (the number of items in a vector column.
       */
-      virtual Index_t getFieldNumElements(FieldIndex_t field_index) const
-        { return m_implementor.getFieldNumElements(field_index); }
+      virtual Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const
+        { return m_implementor.getFieldNumElements(field_index, record_index); }
 
 
       /** \brief Get one or more values from the current tabular data object.

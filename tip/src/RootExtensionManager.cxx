@@ -173,7 +173,7 @@ namespace tip {
     return itor->second;
   }
 
-  Index_t RootExtensionManager::getFieldNumElements(FieldIndex_t) const {
+  Index_t RootExtensionManager::getFieldNumElements(FieldIndex_t, Index_t) const {
     return 1;
   }
 

@@ -35,7 +35,7 @@ namespace tip {
       */
       virtual FieldIndex_t getFieldIndex(const std::string & field_name) const = 0;
 
-      virtual Index_t getFieldNumElements(FieldIndex_t field_index) const = 0;
+      virtual Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const = 0;
 
       /** \brief Get one or more values from the current tabular data object.
           \param field_index The index of the field (column) to get.

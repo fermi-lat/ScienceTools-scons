@@ -114,7 +114,7 @@ namespace tip {
 
       /** \brief Return the number of elements in the given field (the number of items in a vector column.
       */
-      Index_t getFieldNumElements(FieldIndex_t field_index) const;
+      Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const;
 
       /** \brief Templated function which can get any kind of data from a Root table. This
           method throws an exception if the extension is not a table.

@@ -232,7 +232,7 @@ namespace tip {
   inline Index_t TableCell::getNumElements() const {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
-    return m_record.getTabularData()->getFieldNumElements(m_field_index);
+    return m_record.getTabularData()->getFieldNumElements(m_field_index, m_record.getIndex());
   }
 
   // ConstTableRecord

@@ -78,6 +78,7 @@ namespace tip {
           std::string m_name;
           long m_repeat;
           int m_col_num;
+          int m_type_code;
       };
 
       /** \brief Open the FITS table. Exceptions will be thrown if the extension does not exist, or if
@@ -97,9 +98,9 @@ namespace tip {
       */
       FieldIndex_t getFieldIndex(const std::string & field_name) const;
 
-      /** \brief Return the number of elements in the given field (the number of items in a vector column.
+      /** \brief Return the number of elements in the given field (the number of items in a vector column.)
       */
-      Index_t getFieldNumElements(FieldIndex_t field_index) const;
+      Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const;
 
       /** \brief Templated function which can get any kind of data from a FITS table. This
           method throws an exception if the extension is not a table.
