@@ -114,6 +114,15 @@ class EvtBinAppBase : public st_app::StApp {
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) = 0;
 
   protected:
+    std::string getScFileName(const std::string & sc_file) const {
+      std::string real_sc_file = sc_file;
+      // Convert whole string to lowercase.
+      for (std::string::iterator itor = real_sc_file.begin(); itor != real_sc_file.end(); ++itor) *itor = tolower(*itor);
+      if (real_sc_file == "none") real_sc_file = "";
+
+      return real_sc_file;
+    }
+
     evtbin::BinConfig * m_bin_config;
 
   private:
@@ -171,8 +180,9 @@ class CountMapApp : public EvtBinAppBase {
       else throw std::logic_error(
         "CountMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
 
-      return new evtbin::CountMap(pars["evfile"], pars["evtable"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"],
-        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], use_lb, pars["rafield"], pars["decfield"], *gti);
+      return new evtbin::CountMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]),
+        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
+        use_lb, pars["rafield"], pars["decfield"], *gti);
     }
 };
 
@@ -201,7 +211,7 @@ class LightCurveApp : public EvtBinAppBase {
       std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data object from Binner.
-      return new LightCurve(pars["evfile"], pars["evtable"], pars["scfile"], *binner, *gti);
+      return new LightCurve(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *binner, *gti);
     }
 };
 
@@ -236,7 +246,7 @@ evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParG
   std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
   // Create data product.
-  return new SingleSpec(pars["evfile"], pars["evtable"], pars["scfile"], *binner, *ebounds, *gti);
+  return new SingleSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *binner, *ebounds, *gti);
 }
 
 /** \class MultiSpectraApp
@@ -273,7 +283,8 @@ class MultiSpectraApp : public EvtBinAppBase {
       std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data product.
-      return new MultiSpec(pars["evfile"], pars["evtable"], pars["scfile"], *time_binner, *energy_binner, *ebounds, *gti);
+      return new MultiSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *time_binner,
+        *energy_binner, *ebounds, *gti);
     }
 };
 
