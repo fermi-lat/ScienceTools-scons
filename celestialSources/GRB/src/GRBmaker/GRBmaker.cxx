@@ -60,7 +60,6 @@ using namespace grbobstypes;
 //		specnorm					:   calculates spectral normalization
 //		nphoton						:	uses specnorm and duration to calculate number of photons in the current burst
 
-
 GRBmaker::GRBmaker()
 	:m_univFWHM(0.0),
 	 m_duration(0.0),
@@ -87,12 +86,10 @@ GRBmaker::GRBmaker()
 	
 	// create base name for the output files to be generated
 	std::string base = baseFilename();
-	std::string::size_type baseSize = base.size();
 
 
 	// For each burst, create its attributes
 	for (long isim=0; isim<grbcst::nbsim; ++isim)
-//	for (long isim=0; isim<1; ++isim)
 	{
 		std::cout << "Processing Burst: " << isim << std::endl;
 
@@ -113,6 +110,8 @@ GRBmaker::GRBmaker()
 			std::string fname = outputFilename(base, isim);
 			std::ofstream os(fname.c_str());
 			os << *this;
+
+			//m_photonlist.clear();
 		}
 
 		else
@@ -122,7 +121,6 @@ GRBmaker::GRBmaker()
 		}
 	}
 }
-
 
 
 
@@ -249,7 +247,6 @@ GRBmaker *GRBmaker::clone() const
 {
 	return new GRBmaker(*this);
 }
-
 
 
 
@@ -535,15 +532,16 @@ double GRBmaker::evaluate(HepRandomEngine *engine, const long diff, const long m
 
 std::pair<float,float> GRBmaker::direction(HepRandomEngine *engine) const
 {
-	float cos_zenith = 1.0 - engine->flat() * grbcst::zenNorm;
+	float coszenith = 1.0 - engine->flat() * grbcst::zenNorm;
+	//float zenith     = acos(cos_zenith) * 180. / M_PI;
 
-	float zenith     = acos(cos_zenith) * 180. / M_PI;
-	float azimuth    = 2. * M_PI * engine->flat() * 180. / M_PI;
+	//float azimuth    = 2. * M_PI * engine->flat() * 180. / M_PI;
+	float azimuth    = 2. * M_PI * engine->flat();
 
-	return std::make_pair<float,float> (cos_zenith, azimuth);
+	return std::make_pair<float,float> (coszenith, azimuth);
 }
 
-
+ 
 
 	 
 // computeFlux(engine, diff, minval, in, v)
@@ -993,12 +991,10 @@ std::ifstream &operator>>(std::ifstream &is, GRBmaker &grbMaker)
 	double t, e;
 	for (long i=0; i<grbMaker.m_nphoton; ++i)
 	{
-		// don't know why compiler chokes on next line, so...
-		//is >> grbMaker.m_photonlist[i].time() >> grbMaker.m_photonlist[i].energy();
-
-		t = grbMaker.m_photonlist[i].time();
-		e = grbMaker.m_photonlist[i].energy();
 		is >> t >> e;
+
+		grbMaker.m_photonlist[i].setTime(t);
+		grbMaker.m_photonlist[i].setEnergy(e);
 	}
 
 	return is;
@@ -1034,23 +1030,11 @@ std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker)
 {
 	std::pair<double,double> grbdir = grbMaker.dir();
 
-	// check for WIN32 only until a fix can be found for std::fixed - it does not compile on Linux
-	// std::ios::fixed or os.setf(std::ios::fixed) compiles both on windows and linux, but does not work correctly
-#ifdef WIN32
-	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << std::fixed << grbMaker.flux() << "   " <<
+	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << std::setiosflags(std::ios::fixed) << 
+		grbMaker.flux() << "   " <<
 		grbMaker.duration() << "   " << grbMaker.powerLawIndex() << "   " << grbMaker.specnorm() << "   " << 
 		grbMaker.npuls() << "  " << grbMaker.univFWHM() << std::endl;
-#else
-	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << grbMaker.flux() << "   " <<
-		grbMaker.duration() << "   " << grbMaker.powerLawIndex() << "   " << grbMaker.specnorm() << "   " << 
-		grbMaker.npuls() << "  " << grbMaker.univFWHM() << std::endl;
-#endif
-
-#ifdef WIN32
-	os << "ZenAng, AziAng = " << std::setw(12) << std::fixed << grbdir.first << "   " << grbdir.second << std::endl;
-#else
-	os << "ZenAng, AziAng = " << std::setw(12) << grbdir.first << "   " << grbdir.second << std::endl;
-#endif
+	os << "ZenAng, AziAng = " << std::setw(12) << std::setiosflags(std::ios::fixed) << grbdir.first << "   " << grbdir.second << std::endl;
 
 	os << "nphotons = " << grbMaker.nphoton() << std::endl;
 
@@ -1060,14 +1044,8 @@ std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker)
 	if (grbMaker.nphoton() > 0)
 	{
 		std::vector<TimeEnergy> photonlist = grbMaker.photonlist();
-
-#ifdef WIN32
 		for (long i=0; i<grbMaker.nphoton(); ++i)
-			os << std::setw(12) << std::fixed << photonlist[i].time() << "   " << photonlist[i].energy() << std::endl;
-#else
-		for (long i=0; i<grbMaker.nphoton(); ++i)
-			os << std::setw(12) << photonlist[i].time() << "   " << photonlist[i].energy() << std::endl;
-#endif
+			os << std::setw(12) << std::setiosflags(std::ios::fixed) << photonlist[i].time() << "   " << photonlist[i].energy() << std::endl;
 	}
 
 	return os;
