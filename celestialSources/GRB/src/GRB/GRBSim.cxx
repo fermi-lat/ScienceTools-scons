@@ -3,8 +3,10 @@
 //#include <stdio.h>
 #include <algorithm>
 #include <vector>
-#include <math.h>
+#include <cmath>
+#include <cassert>
 #include <string>
+
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandGeneral.h"
@@ -67,7 +69,7 @@ void GRBSim::Start()
 	{
 	  myParam=new GRBConstants();
 	}
-      catch (char * s)
+      catch (char * )
 	{
 	  std::cout<< "Failure initializing the GRB constants \n";
 	  //TODO LIST: still need to remove this, without getting a core dump!
@@ -322,6 +324,10 @@ float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, dou
     {
       Integral[i] += Integral[i-1]; //Computing cumulative sum
     }
+  if( Integral.back() <= 0 ){
+      return -1; // invalid: seemss to happen sometimes (THB)??
+  }
+
   for(i=0;i<nbins-minbin;i++)
     {
       Integral[i] /= Integral.back(); //Normalizing to 1
