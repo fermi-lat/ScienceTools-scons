@@ -16,7 +16,7 @@ int main(int, char**) {
     ntrans = facilities::Util::expandEnvVar(&name, oDelim, cDelim);
     std::cout << "Translated name is " << name << std::endl;  }
   catch (facilities::Untranslatable err) {
-    std::cout << "Failed to translate " << err.badVar << std::endl;
+    std::cout << "Failed to completely translate " << name << std::endl;
   }
 
 
@@ -31,7 +31,7 @@ int main(int, char**) {
     std::cout << ntrans << " variables were translated." << std::endl;
   }
   catch (facilities::Untranslatable err) {
-    std::cout << "Failed to translate " << err.badVar << std::endl;
+    std::cout << "Failed to completely translate " << multi << std::endl;
   }
 
   // Test the new itoa routine
