@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r1   13-Oct-03   JC   applied photon direction fix for changes 
+                            in flux v8*
     v1r0p1 13-Oct-03   JC   tagging for ScienceTools.
     v1r0   02-Oct-03   JC   use Goodi in EventContainer; waiting on FT2
                             implementation for ScDataContainer
