@@ -30,6 +30,7 @@ namespace table {
       */
       class Iterator {
         public:
+          class Record;
 
           /** \class Cell
 
@@ -37,25 +38,21 @@ namespace table {
           */
           class Cell {
             public:
-              /** \brief Construct a Cell object, associated with the given Iterator.
-                  \param itor The Iterator object to which this Cell refers.
+              /** \brief Construct a Cell object, associated with the given Record.
+                  \param record The Record object to which this Cell refers.
                   \param field The name of this cell.
               */
-              Cell(Iterator & itor, const std::string & field): m_itor(itor), m_field(field) {}
+              Cell(Record & record, const std::string & field): m_record(record), m_field(field) {}
 
               virtual ~Cell() {}
 
               /** \brief Read the current value of this Cell from current Iterator position.
                   \param value The read value.
               */
-              void read(double & value) const { m_itor.getTable()->read(m_field, m_itor.getRowNum(), value); }
+              void read(double & value) const;
 
             private:
-              // Prevent assignment for now because it's not obvious what its behavior should be;
-              // Should it copy values from the source table into destination table? Or just copy
-              // the field name? Should it change which iterator the destination points to?
-              Cell & operator =(const Cell & cell) { return *this; }
-              Iterator & m_itor;
+              Record & m_record;
               std::string m_field;
           };
 
@@ -67,12 +64,23 @@ namespace table {
             public:
               typedef std::map<std::string, Cell> CellCont_t;
 
-              /** \brief Construct a Record object, associated with the given Iterator.
-                  \param itor The referent Iterator object.
+              /** \brief Construct a Record object, without association with any Table.
               */
-              Record(Iterator & itor): m_cells(), m_itor(itor) {}
+              Record(): m_cells(), m_table(0), m_index(0) {}
+
+              /** \brief Construct a Record object, associated with the given Table and record number.
+              */
+              Record(Table & table, Index_t index): m_cells(), m_table(&table), m_index(index) {}
 
               virtual ~Record() {}
+
+              Record & operator = (const Record & rec) {
+                if (this != &rec) {
+                  m_table = rec.m_table; // This should also confirm that the new table has the right fields.
+                  m_index = rec.m_index;
+                }
+                return *this;
+              }
 
               /** \brief Return a cell object for the given field. The Cell object will be created
                   if it does not already exist.
@@ -84,25 +92,26 @@ namespace table {
               Cell & operator [](const std::string & field) {
                 CellCont_t::iterator itor = m_cells.find(field);
                 if (m_cells.end() == itor) {
-                  itor = m_cells.insert(itor, std::make_pair(field, Cell(m_itor, field)));
+                  itor = m_cells.insert(itor, std::make_pair(field, Cell(*this, field)));
                 }
                 return itor->second;
               }
 
-            private:
-              // Prevent assignment for now because it's not obvious what its behavior should be;
-              // Should it copy values from the source table into destination table? Or just copy
-              // the cell container? Should it change which iterator the destination points to?
-              Record & operator = (const Record & rec) { return *this; }
+              // Get the current row number and table. Client code should not normally need to call these.
+              Index_t getRowNum() const { return m_index; }
+              void setRowNum(Index_t index) { m_index = index; }
+              Table * getTable() { assert(m_table); return m_table; }
 
+            private:
               CellCont_t m_cells;
-              Iterator & m_itor;
+              Table * m_table;
+              Index_t m_index;
           };
 
           /** \brief Create an Iterator object which is not associated directly to a table. Assignment
               to this Iterator will form such an association.
           */
-          Iterator(): m_record(*this), m_table(0), m_row_num(0) {}
+          Iterator(): m_record(), m_table(0), m_row_num(0) {}
 
           /** \brief Standard copy constructor.
 
@@ -110,13 +119,15 @@ namespace table {
               though it's not strictly true becase the Table * pointer is copied.
               \param itor The source object.
           */
-          Iterator(const Iterator & itor): m_record(*this), m_table(itor.m_table), m_row_num(itor.m_row_num) {}
+          Iterator(const Iterator & itor): m_record(), m_table(itor.m_table), m_row_num(itor.m_row_num)
+            { m_record = Record(*m_table, m_row_num); }
 
           /** \brief Create an Iterator which does refer to the given table and index.
-              \param table The referent Table object.
+              \param table Pointer to the referent Table object.
               \param row_num The index indicating the position of this iterator within the table.
           */
-          Iterator(Table * table, Index_t row_num): m_record(*this), m_table(table), m_row_num(row_num) {}
+          Iterator(Table * table, Index_t row_num): m_record(), m_table(table), m_row_num(row_num)
+            { m_record = Record(*m_table, m_row_num); }
 
           /** \brief Standard assignment, which makes this object refer to the same record in the same
               table as the source, but does not copy the source iterator's Record.
@@ -127,6 +138,7 @@ namespace table {
           */
           Iterator & operator =(const Iterator & itor) {
             if (this != &itor) {
+              m_record = itor.m_record;
               m_table = itor.m_table;
               m_row_num = itor.m_row_num;
             }
@@ -135,10 +147,10 @@ namespace table {
 
           /** \brief Go on to the next table position.
           */
-          Iterator & operator ++() { ++m_row_num; return *this; }
+          Iterator & operator ++() { m_record.setRowNum(++m_row_num); return *this; }
 
           /** \brief Compare iterator positions. They will agree iff they point to the same row of the same table.
-              \param it The iterator being compared.
+              \param itor The iterator being compared.
           */
           bool operator !=(const Iterator & itor) const
             { return (m_table != itor.m_table || m_row_num != itor.m_row_num); }
@@ -151,10 +163,6 @@ namespace table {
           */
           Record * operator ->() { return &m_record; }
 
-          // Get the current row number and table. Client code should not normally need to call these.
-          Index_t getRowNum() const { return m_row_num; }
-          Table * getTable() { assert(m_table); return m_table; }
-
         private:
           Record m_record;
           Table * m_table;
@@ -162,7 +170,7 @@ namespace table {
       };
 
       /** \brief Create a Table object from an ITabularData object.
-          \param tabular_data The underlying ITabularData object.
+          \param tabular_data Pointer to the underlying ITabularData object.
       */
       Table(ITabularData * tabular_data): m_tabular_data(tabular_data) {}
 
@@ -187,6 +195,9 @@ namespace table {
     private:
       ITabularData * m_tabular_data;
   };
+
+  inline void Table::Iterator::Cell::read(double & value) const
+    { m_record.getTable()->read(m_field, m_record.getRowNum(), value); }
 
   typedef Table::Iterator::Cell Cell;
   typedef Table::Iterator::Record Record;
