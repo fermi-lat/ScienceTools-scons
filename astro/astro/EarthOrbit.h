@@ -30,6 +30,12 @@ public:
       */
     Hep3Vector position(JulianDate jd)const;
 
+    ///return the inclination of orbit
+    double inclination(){return s_incl;}
+
+    ///return the orbital phase, in terms of 'phase since ascending node was passed'
+    double phase(JulianDate jd) const;
+
 private:
 
     /**

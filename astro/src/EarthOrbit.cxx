@@ -118,5 +118,13 @@ double EarthOrbit::Kepler(double MeanAnomaly,double Eccentricity)
     
     return TrueAnomaly;
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double EarthOrbit::phase(JulianDate jd) const
+{
+    double elapse = (jd - JDStart)*SecondsPerDay;
+    //double M=m_M0+m_dMdt*elapse;
+    return m_Omega0+m_dOmegadt*elapse;
+
+}
 
 }
