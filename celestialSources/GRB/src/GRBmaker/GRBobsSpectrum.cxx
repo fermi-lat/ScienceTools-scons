@@ -79,16 +79,16 @@ GRBobsSpectrum &GRBobsSpectrum::operator=(const GRBobsSpectrum &right)
 }
 
 
-std::string GRBobsSpectrum::title() const
-{
-	return m_title;
-}
+//std::string GRBobsSpectrum::title() const
+//{
+//	return m_title;
+//}
 
 
-const char *GRBobsSpectrum::particleName() const
-{
-	return m_particleName.c_str();
-}
+//const char *GRBobsSpectrum::particleName() const
+//{
+//	return m_particleName.c_str();
+//}
 
 
 double GRBobsSpectrum::flux(double time) const
@@ -104,6 +104,16 @@ float GRBobsSpectrum::fraction(float energy)
 }
 
 
+double GRBobsSpectrum::interval(double time)
+{
+	if (m_grbMaker->time().empty())
+		std::cout << "No more time values available to return" << std::endl;
+
+	else
+		return m_grbMaker->time().back() - time;
+}
+
+
     //JCT needs const to match pure virtual method
 float GRBobsSpectrum::operator () (float randomNumber) const
 {
@@ -114,29 +124,116 @@ float GRBobsSpectrum::operator () (float randomNumber) const
 }
 
 
+// returns next available energy
 double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const
 {
-	double energy = 0.0;
+	double energy = -1.0;
 
-	if (m_grbMaker->energy().empty())
-		std::cout << "No more energy values to pass back" << std::endl;
-
+	if (m_grbMaker->energy().empty())  // no more value left to return
+		std::cout << "No more energy values to return" << std::endl;
 	else
 	{
-	    std::cout<< "PIPPO: " << m_grbMaker->time().back() << std::endl;
+		if (m_grbMaker->time().empty())  // last energy will correspond to the last returned time
+		{
+			energy = m_grbMaker->energy().front();
+			m_grbMaker->energy().clear();
+		}
 
-		energy = m_grbMaker->energy().back();
-		m_grbMaker->energy().pop_back();
-		m_grbMaker->time().pop_back();
+		else  // pop energy corresponding to the last returned time
+		{
+			std::cout<< "PIPPO time: " << m_grbMaker->time().back() << std::endl;
+
+			DoubleSize sz = m_grbMaker->time().size();
+			if (m_grbMaker->energy().size() <= sz)  // more energies have been returned than time - return next energy
+			{
+				energy = m_grbMaker->energy().back();
+				m_grbMaker->energy().pop_back();
+			}
+
+			else  // more times have been returned than energies - find energy corresponding to last returned time
+			{
+				while (m_grbMaker->energy().size() > sz)
+				{
+					energy = m_grbMaker->energy().back();
+					m_grbMaker->energy().pop_back();
+				}
+			}
+		}
+
+
+//	if (m_currentEnergy < 0.0)  // get next energy from the m_grbMaker->energy vector
+//	{
+//		if (m_grbMaker->energy().empty())
+//			std::cout << "No more energy values to return" << std::endl;
+//
+//		else
+//		{
+//			std::cout<< "PIPPO: " << m_grbMaker->time().back() << std::endl;
+
+//			energy = m_grbMaker->energy().back();
+//			m_grbMaker->energy().pop_back();
+
+//			m_currentTime = m_grbMaker->time().back();
+//			m_grbMaker->time().pop_back();
+//		}
+//	}
+//
+//	else   // energy was already popped out of the m_grbMaker->energy vector in the nextTime method
+//	{
+//		energy = m_currentEnergy;
+//		m_currentEnergy = -1.0;  // reset currentEnergy
 	}
 
 	return energy;
 }
 
 
+// returns next available energy to the simulation
 double GRBobsSpectrum::energySrc(HepRandomEngine *engine, double time)
 {
 	return nextEnergy(engine);
+}
+
+
+// returns next available time
+// this method will be useful once time stamp is added to the Ispectrum interface
+double GRBobsSpectrum::nextTime(HepRandomEngine *engine) const
+{
+	double time = -1.0;
+
+	if (m_grbMaker->time().empty())  // no more value left to return
+		std::cout << "No more time values to return" << std::endl;
+	else
+	{
+		if (m_grbMaker->energy().empty())  // last time will correspond to the last returned energy
+		{
+			time = m_grbMaker->time().front();
+			m_grbMaker->time().clear();
+		}
+
+		else  // pop time corresponding to the last returned energy
+		{
+			std::cout<< "PIPPO energy: " << m_grbMaker->energy().back() << std::endl;
+
+			DoubleSize sz = m_grbMaker->energy().size();
+			if (m_grbMaker->time().size() <= sz)  // more times have been returned than energy - return next time
+			{
+				time = m_grbMaker->time().back();
+				m_grbMaker->time().pop_back();
+			}
+
+			else  // more energies have been returned than times - find time corresponding to last returned energy
+			{
+				while (m_grbMaker->time().size() > sz)
+				{
+					time = m_grbMaker->time().back();
+					m_grbMaker->time().pop_back();
+				}
+			}
+		}
+	}
+
+	return time;
 }
 
 
