@@ -20,8 +20,8 @@ private
 #macro pydir ../python/
 
 # allow use of internal path
-macro optimizers_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
-macro_prepend cflags "" Linux "-g"
+macro optimizers_cppflags "" Linux "-I ../src -g -O -pedantic " WIN32 "/I..\src  /wd4290"
+macro_prepend cflags "" Linux "-g -O "
 
 # make sure test application gets built when library changes
 macro test_optimizersstamps "optimizers.stamp"
