@@ -25,7 +25,6 @@
 // Binners used:
 #include "evtbin/LinearBinner.h"
 #include "evtbin/LogBinner.h"
-#include "evtbin/OrderedBinner.h"
 
 // Data product support classes.
 #include "evtbin/CountMap.h"
@@ -61,9 +60,9 @@ class EvtBinAppBase : public st_app::StApp {
     /** \brief Construct a binning application with the given name.
         \param app_name the name of the application.
     */
-    EvtBinAppBase(const std::string & app_name): m_app_name(app_name) {}
+    EvtBinAppBase(const std::string & app_name): m_bin_config(0), m_app_name(app_name) {}
 
-    virtual ~EvtBinAppBase() throw() {}
+    virtual ~EvtBinAppBase() throw() { delete m_bin_config; }
 
     /** \brief Standard "main" for an event binning application. This is the standard recipe for binning,
         with steps which vary between specific apps left to subclasses to define.
@@ -74,31 +73,28 @@ class EvtBinAppBase : public st_app::StApp {
       // Get parameter file object.
       st_app::AppParGroup & pars = getParGroup(m_app_name);
 
+      // Prompt for input event file and extension names.
+      pars.Prompt("evfile");
+      pars.Prompt("evtable");
+
+      // Create bin configuration object.
+      m_bin_config = BinConfig::create(pars["evfile"]);
+
       // Prompt for parameters necessary for this application. This will probably be overridden in subclasses.
       parPrompt(pars);
 
       // Save all parameters from this tool run now.
       pars.Save();
 
-      // Object to represent the data product being produced.
-      DataProduct * product = 0;
+      // Get data product. This is definitely overridden in subclasses to produce the correct type product
+      // for the specific application.
+      std::auto_ptr<DataProduct> product(createDataProduct(pars));
 
-      try {
-        // Get data product. This is definitely overridden in subclasses to produce the correct type product
-        // for the specific application.
-        product = createDataProduct(pars);
+      // Bin input data into product.
+      product->binInput();
 
-        // Bin input data into product.
-        product->binInput();
-
-        // Write the data product output.
-        product->writeOutput(m_app_name, pars["outfile"]);
-
-      } catch (...) {
-        delete product;
-        throw;
-      }
-      delete product;
+      // Write the data product output.
+      product->writeOutput(m_app_name, pars["outfile"]);
     }
 
     /** \brief Prompt for all parameters needed by a particular binner. The base class version prompts
@@ -107,8 +103,6 @@ class EvtBinAppBase : public st_app::StApp {
     */
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Prompt for input event file and output outfile. All binners need these.
-      pars.Prompt("evfile");
-      pars.Prompt("evtable");
       pars.Prompt("outfile");
       pars.Prompt("scfile");
     }
@@ -117,6 +111,9 @@ class EvtBinAppBase : public st_app::StApp {
         \param pars The parameter prompting object.
     */
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) = 0;
+
+  protected:
+    evtbin::BinConfig * m_bin_config;
 
   private:
     std::string m_app_name;
@@ -127,17 +124,19 @@ class EvtBinAppBase : public st_app::StApp {
 */
 class CountMapApp : public EvtBinAppBase {
   public:
-    CountMapApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
+    CountMapApp(const std::string & app_name): EvtBinAppBase(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
       // Call configuration object to prompt for spatial binning related parameters.
-      m_bin_config.spatialParPrompt(pars);
+      m_bin_config->spatialParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
+      using namespace evtbin;
+
       unsigned long num_x_pix = 0;
       unsigned long num_y_pix = 0;
 
@@ -159,12 +158,12 @@ class CountMapApp : public EvtBinAppBase {
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
       }
 
-      return new evtbin::CountMap(pars["evfile"], pars["evtable"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"],
-        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
-    }
+      // Create configuration-specific GTI.
+      std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
-  private:
-    evtbin::BinConfig m_bin_config;
+      return new evtbin::CountMap(pars["evfile"], pars["evtable"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"],
+        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"], *gti);
+    }
 };
 
 /** \class LightCurveApp
@@ -172,28 +171,28 @@ class CountMapApp : public EvtBinAppBase {
 */
 class LightCurveApp : public EvtBinAppBase {
   public:
-    LightCurveApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
+    LightCurveApp(const std::string & app_name): EvtBinAppBase(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
       // Call time binner to prompt for time binning related parameters.
-      m_bin_config.timeParPrompt(pars);
+      m_bin_config->timeParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
       using namespace evtbin;
 
-      // Call time binner to get Binner object.
-      std::auto_ptr<Binner> binner(m_bin_config.createTimeBinner(pars));
+      // Create configuration-specific time binner.
+      std::auto_ptr<Binner> binner(m_bin_config->createTimeBinner(pars));
+
+      // Create configuration-specific GTI.
+      std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data object from Binner.
-      return new LightCurve(pars["evfile"], pars["evtable"], pars["scfile"], *binner);
+      return new LightCurve(pars["evfile"], pars["evtable"], pars["scfile"], *binner, *gti);
     }
-
-  private:
-    evtbin::BinConfig m_bin_config;
 };
 
 /** \class SimpleSpectrumApp
@@ -201,30 +200,33 @@ class LightCurveApp : public EvtBinAppBase {
 */
 class SimpleSpectrumApp : public EvtBinAppBase {
   public:
-    SimpleSpectrumApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
+    SimpleSpectrumApp(const std::string & app_name): EvtBinAppBase(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
       // Call time binner to prompt for time binning related parameters.
-      m_bin_config.energyParPrompt(pars);
+      m_bin_config->energyParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars);
-
-  private:
-    evtbin::BinConfig m_bin_config;
 };
 
 evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParGroup & pars) {
   using namespace evtbin;
 
   // Create binner.
-  std::auto_ptr<Binner> binner(m_bin_config.createEnergyBinner(pars));
+  std::auto_ptr<Binner> binner(m_bin_config->createEnergyBinner(pars));
+
+  // Create ebounds binner.
+  std::auto_ptr<Binner> ebounds(m_bin_config->createEbounds(pars));
+
+  // Create configuration-specific GTI.
+  std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
   // Create data product.
-  return new SingleSpec(pars["evfile"], pars["evtable"], pars["scfile"], *binner);
+  return new SingleSpec(pars["evfile"], pars["evtable"], pars["scfile"], *binner, *ebounds, *gti);
 }
 
 /** \class MultiSpectraApp
@@ -232,34 +234,37 @@ evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParG
 */
 class MultiSpectraApp : public EvtBinAppBase {
   public:
-    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
+    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
       // Use configuration object to prompt for energy binning related parameters.
-      m_bin_config.energyParPrompt(pars);
+      m_bin_config->energyParPrompt(pars);
 
       // Use configuration object to prompt for time binning related parameters.
-      m_bin_config.timeParPrompt(pars);
+      m_bin_config->timeParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
       using namespace evtbin;
 
       // Get binner for time from time bin configuration object.
-      std::auto_ptr<const Binner> time_binner(m_bin_config.createTimeBinner(pars));
+      std::auto_ptr<Binner> time_binner(m_bin_config->createTimeBinner(pars));
 
       // Get binner for energy from energy application object.
-      std::auto_ptr<const Binner> energy_binner(m_bin_config.createEnergyBinner(pars));
+      std::auto_ptr<Binner> energy_binner(m_bin_config->createEnergyBinner(pars));
+
+      // Create ebounds binner.
+      std::auto_ptr<Binner> ebounds(m_bin_config->createEbounds(pars));
+
+      // Create configuration-specific GTI.
+      std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data product.
-      return new MultiSpec(pars["evfile"], pars["evtable"], pars["scfile"], *time_binner, *energy_binner);
+      return new MultiSpec(pars["evfile"], pars["evtable"], pars["scfile"], *time_binner, *energy_binner, *ebounds, *gti);
     }
-
-  private:
-    evtbin::BinConfig m_bin_config;
 };
 
 /** \class GtBinApp
@@ -282,6 +287,9 @@ class GtBinApp : public st_app::StApp {
       // Get parameter file object.
       st_app::AppParGroup & pars = getParGroup("gtbin");
 
+      // Load standard mission/instrument bin configurations.
+      evtbin::BinConfig::load();
+
       // Prompt for algorithm parameter, which determines which application is really used.
       pars.Prompt("algorithm");
 
@@ -291,26 +299,20 @@ class GtBinApp : public st_app::StApp {
       for (std::string::iterator itor = algorithm.begin(); itor != algorithm.end(); ++itor) *itor = toupper(*itor);
 
       // Based on this parameter, create the real application.
-      st_app::StApp * app = 0;
+      std::auto_ptr<st_app::StApp> app(0);
 
-      try {
-        if (0 == algorithm.compare("CMAP")) app = new CountMapApp("gtbin");
-        else if (0 == algorithm.compare("LC")) app = new LightCurveApp("gtbin");
-        else if (0 == algorithm.compare("PHA1")) app = new SimpleSpectrumApp("gtbin");
-        else if (0 == algorithm.compare("PHA2")) app = new MultiSpectraApp("gtbin");
-        else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
+      if (0 == algorithm.compare("CMAP")) app.reset(new CountMapApp("gtbin"));
+      else if (0 == algorithm.compare("LC")) app.reset(new LightCurveApp("gtbin"));
+      else if (0 == algorithm.compare("PHA1")) app.reset(new SimpleSpectrumApp("gtbin"));
+      else if (0 == algorithm.compare("PHA2")) app.reset(new MultiSpectraApp("gtbin"));
+      else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
 
-        // Pass on the algorithm parameter value to the application. This is so that that algorithm
-        // parameter will be learned.
-        app->getParGroup("gtbin")["algorithm"] = algorithm;
+      // Pass on the algorithm parameter value to the application. This is so that that algorithm
+      // parameter will be learned.
+      app->getParGroup("gtbin")["algorithm"] = algorithm;
 
-        // Run the real application.
-        app->run();
-      } catch (...) {
-        delete app;
-        throw;
-      }
-      delete app;
+      // Run the real application.
+      app->run();
     }
 
 };
