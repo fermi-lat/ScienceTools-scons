@@ -41,6 +41,12 @@ public:
       Function::getFreeDerivs(dummy, derivs);
    }
 
+protected:
+
+   virtual Rosen * clone() const {
+      return new Rosen(*this);
+   }
+
 private:
 
    double m_prefactor;

@@ -44,7 +44,7 @@ public:
    double value(Arg&) const {return m_parameter[0].getTrueValue();}
 
    double derivByParam(Arg &, const std::string &) const
-      {return 1;}
+      {return m_parameter[0].getScale();}
 
    virtual Function *clone() const {
       return new ConstantValue(*this);

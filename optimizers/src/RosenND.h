@@ -40,6 +40,12 @@ public:
       Function::getFreeDerivs(dummy, derivs);
    }
 
+protected:
+
+   virtual RosenND * clone() const {
+      return new RosenND(*this);
+   }
+
 private:
 
    int m_dim;

@@ -32,6 +32,12 @@ public:
 
    double derivByParam(Arg &x, const std::string &paramName) const;
 
+protected:
+
+   virtual MyFun * clone() const {
+      return new MyFun(*this);
+   }
+
 private:
 
 };
