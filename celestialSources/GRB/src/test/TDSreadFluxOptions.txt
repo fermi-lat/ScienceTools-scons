@@ -1,0 +1,36 @@
+//##############################################################
+//
+// Job options file for GRB test program
+//
+//==================================================
+// This will test the simulation program...
+// This will call TDSReadFluxalg
+//==================================================
+
+ApplicationMgr.DLLs +=    {"RootIo","GlastSvc"};
+ApplicationMgr.TopAlg +=  {"FluxAlg"};
+ApplicationMgr.ExtSvc = {"GlastEventSelector/EventSelector","EventCnvSvc"};
+    
+EventPersistencySvc.CnvServices = {"EventCnvSvc"};
+EventSelector.Input = "NONE";
+
+#include "$FLUXSVCROOT/src/defaultOptions.txt"
+
+FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
+
+// -->  Basic Options
+ApplicationMgr.DLLs +={ "GRB"};
+FluxSvc.source_lib += {"$(GRBROOT)/xml/GRB_user_library.xml"};
+ApplicationMgr.TopAlg +=  {"TDSReadFluxAlg"};
+// < --
+
+//FluxAlg.source_name = "GRBmanager_Gal";
+FluxAlg.source_name = "grbspectrum";
+MessageSvc.OutputLevel=2;
+ApplicationMgr.EvtMax = 1000;
+
+//==============================================================
+//
+// End of job options file
+//
+//##############################################################

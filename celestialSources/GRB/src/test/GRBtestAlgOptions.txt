@@ -1,0 +1,59 @@
+//##############################################################
+//
+// Job options file for GRB test program
+//
+//==================================================
+
+// This will call GRBtestAlg
+
+#include "$FLUXSVCROOT/src/defaultOptions.txt"
+
+ApplicationMgr.DLLs   += { "GRB" }; 
+ApplicationMgr.TopAlg = {"GRBTestAlg"};
+
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel      = 2;
+
+// Set the default for a source library document
+FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
+
+// Append to a list of source library documents
+FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
+
+// Append to a list of source library documents
+FluxSvc.source_lib += {"$(GRBROOT)/xml/GRB_user_library.xml"};
+
+//------------------------------------------------------------
+// Primary source name (default GRBSpectrum)
+// From here we can select one of the 2 models...
+GRBTestAlg.source_name="grbspectrum";
+//GRBTestAlg.source_name="chimeavg";
+//GRBTestAlg.source_name="GRBobsSpectrum";
+//------------------------------------------------------------
+// Background source name
+//GRBTestAlg.background_name={"electronavg"};
+//GRBTestAlg.background_name+={"chimeavg"};
+
+//Maximum observation time (default 10 s)
+GRBTestAlg.observation_time=10;
+// Maximum number of photons generated (default 100000)
+//GRBTestAlg.EvtMax=1000;
+
+// Is possible to save in root file
+//GRBTestAlg.savefile={"root"};
+   
+// Is possible to save also in an ascii file
+//GRBTestAlg.savefile+={"ascii"};   
+                               
+// No idea...
+ApplicationMgr.EvtSel = "NONE";
+
+// How many times the application will run...
+ApplicationMgr.EvtMax = 1;
+
+//==============================================================
+//==============================================================
+//
+// End of job options file
+//
+//##############################################################
