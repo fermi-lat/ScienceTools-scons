@@ -1,0 +1,6 @@
+#-------------------------------------------------------------------------------
+bintype,        s,a, E,,,"Type of bins, E -- energy or T -- time"
+binfile,        f,a,,,,"File containing the ascii bin definitions"
+outfile,        f,a,,,,"Output file containing FITS time or energy bins"
+energyunits,    s,a, "MeV",,,"Units of input energy bins: MeV, GeV, keV, or eV"
+mode,           s,h, "ql",,,"Mode"
