@@ -109,6 +109,8 @@ extern "C" {
   //! Execute a Minuit command
   void mnexcm_(mfcn * fcn, char * chcom, double * arglis, int * narg, 
 	       int * ierflg, void * futil, ftnlen strln);
+  //! Set I/O unit numbers
+  void mintio_(const int * iread, const int * iwrite, const int * isave);
   //! Get current value of a parameter
   void mnpout_(int * num, char * chnam, double * val, double * error, 
 	       double * bnd1, double * bnd2, int * ivarbl, ftnlen strln);

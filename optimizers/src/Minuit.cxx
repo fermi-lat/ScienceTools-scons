@@ -46,6 +46,10 @@ namespace optimizers {
     int errorFlag;
 
     int minuitVerbose = verbose - 1;
+    if (minuitVerbose >= 0) {
+      const int i5=5, i6=6, i7=7;
+      mintio_(&i5, &i6, &i7);
+    }
     std::ostringstream pline;
     pline << "SET PRINT " << minuitVerbose << std::endl;
     doCmd(pline.str()); // Set verbosity of Minuit
