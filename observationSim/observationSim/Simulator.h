@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "CLHEP/Geometry/Vector3D.h"
 #include "FluxSvc/../src/CompositeSource.h"
 #include "FluxSvc/../src/FluxMgr.h"
@@ -50,13 +51,13 @@ public:
    Simulator(const std::string &sourceName, 
              const std::vector<std::string> &fileList,
              double totalArea = 1.21,
-             double startTime = 0.) 
+             double startTime = 0.)
       {init(sourceName, fileList, totalArea, startTime);}
 
    Simulator(char *sourceName, 
              const std::vector<std::string> &fileList,
              double totalArea = 1.21,
-             double startTime = 0.) 
+             double startTime = 0.)
       {init(std::string(sourceName), fileList, totalArea, startTime);}
 
    ~Simulator() {delete m_fluxMgr; delete m_source;}
@@ -91,6 +92,8 @@ public:
                        latResponse::Irfs &response,
                        Spacecraft *spacecraft) {
       m_maxNumEvents = numberOfEvents;
+      std::cout << "Number of events to generate: "
+                << m_maxNumEvents << std::endl;
       makeEvents(events, scData, response, spacecraft, false);
    }
 
@@ -100,6 +103,9 @@ private:
 
    CompositeSource *m_source;
 
+   EventSource *m_newEvent;
+   double m_interval;
+   
    long m_numEvents;
    long m_maxNumEvents;
 

@@ -90,7 +90,7 @@ int EventContainer::addEvent(EventSource *event,
 // the LAT geometry as embodied in the various FluxSvc and astro
 // classes (e.g., GPS, EarthOrbit, EarthCoordinate), launchDir is
 // accessible only as a Hep3Vector in LAT coordinates.  Therefore, we
-// are forced to cheat and use an LatSc object explicitly in order to
+// are forced to cheat and use a LatSc object explicitly in order to
 // recover the source direction in J2000 coordinates.
    LatSc latSpacecraft;
    HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
