@@ -114,19 +114,20 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     image.getValue("NAXIS3", (m_naxis3));
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
-    std::string ctype, trans;
+    std::string ctype;
     image.getValue("CTYPE1", ctype);
     if( ctype.substr(0,2)=="RA") {
         m_galactic=false;
-        trans = ctype.substr(4,3);
     }else if( ctype.substr(0,4)=="GLON") {
         m_galactic=true;
-        // ctype is CAR if not present, otherwise last 3 chars.
-        trans = ctype.size()==4? "CAR" : ctype.substr(ctype.size()-3,3);
     }else {
         throw std::invalid_argument(
             std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
     }
+
+     // note that the ctype may be blank: wcslib treats this like CAR
+    std::string  trans = ctype.substr(ctype.size()-3,3);
+
     /// arrays describing transformation; pointers passed to wcslib
     double crpix[2], crval[2], cdelt[2];
 
