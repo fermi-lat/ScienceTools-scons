@@ -88,17 +88,40 @@ class celgal:
         sdlon = sin((longitude-self.zrot2)*pi/180.)
         return arcsin(clat*sdlon*self.sin_xrot+slat*self.cos_xrot)*180./pi
     
-def dist( a, b ):
+def dist(a, b):
     """Angular separation in degrees between two sky coordinates"""
-    (ra1, dec1) = a
-    (ra2, dec2) = b
+    ra1, dec1 = a
+    ra2, dec2 = b
     ra1 = ra1*pi/180.
     dec1 = dec1*pi/180.
     ra2 = ra2*pi/180.
     dec2 = dec2*pi/180.
     mu = (cos(dec1)*cos(ra1)*cos(dec2)*cos(ra2)
           + cos(dec1)*sin(ra1)*cos(dec2)*sin(ra2) + sin(dec1)*sin(dec2))
-    return arccos(mu)*180./pi
+    return Angdist(mu)*180./pi
+
+def SphCoords(u):
+    """Spherical coordinates in radians for a normalised 3Dvector u"""
+    if abs(u[2]) < 1:
+        theta_rad = math.asin(u[2])
+        if abs(u[0]) > 0.00001:
+            phi_rad = math.atan(u[1]/u[0]) + math.pi*(1 - u[0]/abs(u[0]))/2.
+        else:
+            phi_rad = (math.pi/2. - u[1]/cos(theta_rad))*u[1]/abs(u[1])  
+    else:
+        theta_rad = math.pi/2.*int(u[2])
+        phi_rad = 0
+    return phi_rad, theta_rad
+
+def Angdist(x):
+    """Angular distance in radians corresponding to a cosinus""" 
+    if abs(x) < 1:
+        angdist = arccos(x)
+    elif abs(x) < 1.00001:
+        angdist = math.pi/2.*(1 - int(x))
+    else:
+        raise ValueError, "x must be smaller than 1"
+    return angdist 
 
 if __name__ == "__main__":
     #
