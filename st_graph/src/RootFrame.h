@@ -29,13 +29,20 @@ namespace st_graph {
     public:
       static RootFrame * ancestor();
 
-      // Construct a RootFrame which encapsulates the given Root TGFrame.
-      RootFrame(IFrame * parent, TGFrame * frame);
+      /** \brief Construct a RootFrame which wraps the given Root TGFrame.
+          \param parent The parent frame in which to embed the constructed frame.
+          \param receiver The event receiver which will process events from the frame.
+          \param frame Already constructed Root object which the constructed frame will wrap.
+          \param delete_parent Flag indicating frame owns (and should delete) parent.
+      */
+      RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent = false);
 
-      // Construct a RootFrame which encapsulates the given Root TGFrame.
-      RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame);
-
-      RootFrame(IEventReceiver * receiver, TGFrame * frame);
+      /** \brief Construct a top level RootFrame which wraps the given Root TGFrame.
+          \param receiver The event receiver which will process events from the frame.
+          \param frame Already constructed Root object which the constructed frame will wrap.
+          \param delete_parent Flag indicating frame owns (and should delete) parent.
+      */
+      RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent = false);
 
       /// \brief Destruct the frame.
       virtual ~RootFrame();
@@ -57,10 +64,6 @@ namespace st_graph {
       */
       virtual void removeFrame(IFrame * frame);
 
-      virtual void clicked();
-
-      virtual void closeWindow();
-
       /// \brief Get the X position of the left edge of the frame.
       virtual long getL() const;
 
@@ -77,6 +80,14 @@ namespace st_graph {
       */
       virtual void setR(long r);
 
+      /** brief Handle mouse click event by forwarding it to receiver. Not part of the API.
+      */
+      virtual void clicked();
+
+      /** brief Handle closeWindow event by forwarding it to receiver. Not part of the API.
+      */
+      virtual void closeWindow();
+
       /// \brief Get underlying Root frame. Not part of the API.
       virtual TGFrame * getTGFrame();
 
@@ -85,6 +96,7 @@ namespace st_graph {
       RootFrame * m_parent;
       TGFrame * m_frame;
       IEventReceiver * m_receiver;
+      bool m_delete_parent;
 
     private:
       // Constructs a frame without any parents. This is a singleton.
