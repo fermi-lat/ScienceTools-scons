@@ -125,12 +125,12 @@ namespace tip {
     for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
 
     // Find (lowercased) field_name in container of columns. Complain if not found.
-    std::map<std::string, ColumnInfo>::const_iterator itor = m_col_name_lookup.find(lc_name);
+    std::map<std::string, FieldIndex_t>::const_iterator itor = m_col_name_lookup.find(lc_name);
     if (itor == m_col_name_lookup.end())
       throw TipException(formatWhat(std::string("Could not get field index for field ") + lc_name));
 
     // Get the number of the column.
-    return itor->second.m_col_num;
+    return itor->second;
   }
 
   Index_t FitsExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t record_index) const {
@@ -140,7 +140,7 @@ namespace tip {
     std::map<FieldIndex_t, ColumnInfo>::const_iterator itor = m_col_num_lookup.find(field_index);
     if (itor == m_col_num_lookup.end()) {
       std::ostringstream s;
-      s << "Could not get number of elements in field number " << field_index;
+      s << "getFieldNumElements could not find field number " << field_index;
       throw TipException(formatWhat(s.str()));
     }
     const ColumnInfo & info = itor->second;
@@ -161,6 +161,31 @@ namespace tip {
     return repeat;
   }
 
+  void FitsExtensionManager::setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t) {
+    // Confirm this is a table.
+    if (!m_is_table) throw TipException(formatWhat("setFieldNumElements called, but object is not a table"));
+
+    // Find field_index in container of columns. Complain if not found.
+    std::map<FieldIndex_t, ColumnInfo>::iterator itor = m_col_num_lookup.find(field_index);
+    if (itor == m_col_num_lookup.end()) {
+      std::ostringstream s;
+      s << "setFieldNumElements could not find field number " << field_index;
+      throw TipException(formatWhat(s.str()));
+    }
+    ColumnInfo & info = itor->second;
+    // Modify the field width, for fixed-width columns only.
+    if (0 <= info.m_type_code) {
+      int status = 0;
+      fits_modify_vector_len(m_fp, info.m_col_num, num_elements, &status);
+      if (0 != status) throw TipException(formatWhat(std::string("setFieldNumElements cannot modify field ") + info.m_name));
+
+      // Update column information objects.
+      info.m_repeat = num_elements;
+    } else {
+      throw TipException(std::string("setFieldNumElements cannot change the width of variable length column " + info.m_name));
+    }
+  }
+
   // Append field to a table extension.
   void FitsExtensionManager::appendField(const std::string & field_name, const std::string & format) {
     // Confirm this is a table:
@@ -173,7 +198,7 @@ namespace tip {
     // Do not append a new column with the same name as an existing column:
     if (m_fields.end() != std::find(m_fields.begin(), m_fields.end(), lc_name))
       throw TipException(formatWhat(std::string("Cannot add field ") + field_name + " because field " +
-        m_col_name_lookup[lc_name].m_name + " already exists"));
+        m_col_num_lookup[m_col_name_lookup[lc_name]].m_name + " already exists"));
 
     int status = 0;
     int col_num = m_fields.size() + 1;
@@ -286,8 +311,8 @@ namespace tip {
     info.m_repeat = repeat;
     info.m_type_code = type_code;
 
-    // Save column information indexed on the lowercased name:
-    m_col_name_lookup[lc_name] = info;
+    // Save column number indexed on lowercased column name:
+    m_col_name_lookup[lc_name] = col_num;
 
     // Save column information indexed on the column number:
     m_col_num_lookup[col_num] = info;

@@ -419,15 +419,19 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 namespace tip {
 
-  TestExtensionData::TestExtensionData(): m_read_only_extension(0) {}
+  TestExtensionData::TestExtensionData(): m_read_only_extension(0), m_writable_extension(0) {}
 
-  TestExtensionData::~TestExtensionData() throw() {}
+  TestExtensionData::~TestExtensionData() throw() { delete m_writable_extension; delete m_read_only_extension; }
 
   int TestExtensionData::test(int status) {
     setStatus(status);
 
     // Test read-only access:
     testReadOnly();
+
+    // Test read-write access:
+    //testReadWrite();
+
     return getStatus();
   }
 
@@ -473,7 +477,7 @@ namespace tip {
     msg = std::string("attempt to open read-only extension SPECTRUM in a writable file ") + file_name;
     try {
       // With no filter and no read_only flag, read-only access will be the outcome, even if the file is writable.
-      m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM");
+      m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM", "", true);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -481,7 +485,6 @@ namespace tip {
     }
 
     confirmReadOnly(m_read_only_extension);
-    delete m_read_only_extension; m_read_only_extension = 0;
   }
 
   void TestExtensionData::confirmReadOnly(IExtensionData * extension) {
@@ -517,4 +520,38 @@ namespace tip {
     }
   }
 
+  void TestExtensionData::testReadWrite() {
+    std::string msg;
+
+    std::string file_name = getDataDir() + "a1.pha";
+
+    // Open read-write a file with fixed width field to test correct function of setFieldNumElements.
+    file_name = getDataDir() + "a1.pha";
+    msg = std::string("attempt to open writable extension SPECTRUM in file ") + file_name;
+    try {
+      m_writable_extension = new FitsExtensionData(file_name, "SPECTRUM", "#row > 0");
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    msg = "attempt to change number of elements in a fixed width field";
+    try {
+      m_writable_extension->setFieldNumElements(1, 100);
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    msg = "attempt to confirm change to number of elements in a field";
+    try {
+      if (100 != m_writable_extension->getFieldNumElements(1)) {
+        ReportUnexpected(msg + " reported " + toString(m_writable_extension->getFieldNumElements(1)) + " elements, not 100");
+      } else {
+        ReportExpected(msg + " succeeded");
+      }
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+  }
 }

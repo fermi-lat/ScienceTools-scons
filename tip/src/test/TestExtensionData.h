@@ -36,8 +36,13 @@ namespace tip {
       */
       void confirmReadOnly(IExtensionData * extension);
 
+      /** \brief Test functions which change the extension object..
+      */
+      void testReadWrite();
+
     private:
     IExtensionData * m_read_only_extension;
+    IExtensionData * m_writable_extension;
   };
 
 }

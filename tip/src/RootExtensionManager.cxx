@@ -227,6 +227,10 @@ namespace tip {
     return 1;
   }
 
+  void RootExtensionManager::setFieldNumElements(FieldIndex_t, Index_t, Index_t) {
+    throw TipException("Setting width of fields in a Root table is not supported");
+  }
+
   // Append field to a table extension.
   void RootExtensionManager::appendField(const std::string &, const std::string &) {
     throw TipException("Adding fields to a Root table is not supported");

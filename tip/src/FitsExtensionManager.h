@@ -103,9 +103,21 @@ namespace tip {
       */
       FieldIndex_t getFieldIndex(const std::string & field_name) const;
 
-      /** \brief Return the number of elements in the given field (the number of items in a vector column.)
+      /** \brief Return the number of elements in the given cell. If the cell is a member of a fixed-size
+          field, the value returned will be independent of the record_index argument.
+          \param field_index The index of the field containing the cell.
+          \param record_index The record number of the cell.
       */
       Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const;
+
+      /** \brief Set the number of elements in a cell. If the cell is a member of a fixed-size
+          field, the change will affect all cells in the field. If the cell already contains
+          enough space for the requested number of elements, this method does nothing.
+          \param field_index The index of the field containing the cell.
+          \param num_elements The new number of elements the cell should hold.
+          \param record_index The record number of the cell.
+      */
+      void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0);
 
       /** \brief Templated function which can get any kind of data from a FITS table. This
           method throws an exception if the extension is not a table.
@@ -177,8 +189,8 @@ namespace tip {
       std::string m_file_name;
       std::string m_ext_name;
       std::string m_filter;
-      std::map<std::string, ColumnInfo> m_col_name_lookup;
-      std::map<int, ColumnInfo> m_col_num_lookup;
+      std::map<std::string, FieldIndex_t> m_col_name_lookup;
+      std::map<FieldIndex_t, ColumnInfo> m_col_num_lookup;
       IExtensionData::FieldCont m_fields;
       std::vector<PixOrd_t> m_image_dimensions;
       Index_t m_num_records;

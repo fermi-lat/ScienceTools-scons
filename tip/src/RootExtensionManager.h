@@ -125,9 +125,21 @@ namespace tip {
       */
       FieldIndex_t getFieldIndex(const std::string & field_name) const;
 
-      /** \brief Return the number of elements in the given field (the number of items in a vector column.
+      /** \brief Return the number of elements in the given cell. If the cell is a member of a fixed-size
+          field, the value returned will be independent of the record_index argument.
+          \param field_index The index of the field containing the cell.
+          \param record_index The record number of the cell.
       */
       Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const;
+
+      /** \brief Set the number of elements in a cell. If the cell is a member of a fixed-size
+          field, the change will affect all cells in the field. If the cell already contains
+          enough space for the requested number of elements, this method does nothing.
+          \param field_index The index of the field containing the cell.
+          \param num_elements The new number of elements the cell should hold.
+          \param record_index The record number of the cell.
+      */
+      void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0);
 
       /** \brief Templated function which can get any kind of data from a Root table. This
           method throws an exception if the extension is not a table.
