@@ -14,8 +14,6 @@
 #include "tip/Table.h"
 #include "tip/tip_types.h"
 
-// Temporarily needed:
-#include "tip/IFileSvc.h"
 #define MAKE_COMPILATION_FAIL (0)
 
 namespace tip {
