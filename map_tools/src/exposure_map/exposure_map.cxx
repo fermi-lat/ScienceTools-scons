@@ -29,6 +29,7 @@ public:
     class Aeff : public Exposure::Aeff{
     public:
         Aeff(double cutoff=0.25):m_cutoff(cutoff){}
+
         double operator()(double costh) const
         {
             if(m_cutoff==2.) return 1.0;
@@ -60,7 +61,7 @@ public:
 
     void run() {
         // read in, or prompt for, all necessary parameters
-        MapParameters pars( hoopsGetParGroup());
+        MapParameters pars( IApp::hoopsGetParGroup());
 
         // create the exposure, read it in from the FITS input file
         Exposure ex(pars.inputFile() ); 

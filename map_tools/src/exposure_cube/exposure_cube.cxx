@@ -80,7 +80,7 @@ public:
     void run()
     {
         // read in, or prompt for, all necessary parameters
-        MapParameters pars(this->hoopsGetParGroup());
+        MapParameters pars( IApp::hoopsGetParGroup());
 
         // create the exposure, and fill it from the history file
         Exposure ex( pars["pixelsize"], pars["costhetabinsize"]);
