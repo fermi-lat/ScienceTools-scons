@@ -38,6 +38,8 @@ public:
 
    Cuts() {}
 
+   Cuts(const std::string & eventFile, const std::string & extension="EVENTS");
+
    ~Cuts();
 
    bool accept(tip::ConstTableRecord & row) const;

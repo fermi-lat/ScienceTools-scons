@@ -19,6 +19,8 @@ private
 use hoops v0r*
 use st_app v1r*
 use facilities v*
+use st_facilities v*
+use cppunit v1r* IExternal
 
 macro dataSubselector_cppflags "" \
       Linux "-I ../src " \

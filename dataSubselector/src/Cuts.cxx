@@ -8,9 +8,20 @@
 
 #include <sstream>
 
+#include "tip/IFileSvc.h"
+
 #include "dataSubselector/Cuts.h"
 
 namespace dataSubselector {
+
+Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
+   const tip::Table * table =
+      tip::IFileSvc::instance().readTable(eventFile, extension);
+   const tip::Header & header = table->getHeader();
+   unsigned int nkeys;
+   header["NDSKEYS"].get(nkeys);
+// more to come...   
+}
 
 Cuts::~Cuts() {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
@@ -53,6 +64,7 @@ unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
 }
 
 void Cuts::writeDssKeywords(tip::Header & header) const {
+   header["NDSKEYS"].set(m_cuts.size());
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       m_cuts[i]->writeDssKeywords(header, i + 1);
    }
