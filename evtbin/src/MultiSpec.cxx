@@ -29,6 +29,11 @@ namespace evtbin {
   MultiSpec::~MultiSpec() throw() { delete m_ebounds; }
 
   void MultiSpec::writeOutput(const std::string & creator, const std::string & out_file) const {
+    const Binner * energy_binner = m_hist.getBinners().at(1);
+
+    // Add DETCHANS, which is just the number of bins in the energy binner.
+    updateKeyValue("DETCHANS", energy_binner->getNumBins(), "Total number of detector channels available.");
+
     // Standard file creation from base class.
     createFile(creator, out_file, st_facilities::Env::appendFileName(m_data_dir, "LatBinnedTemplate"));
 
