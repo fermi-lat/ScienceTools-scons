@@ -1,5 +1,5 @@
 package observationSim
-version v5r4p2
+version v5r4p3
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -17,7 +17,7 @@ use GRB v4r* celestialSources
 use genericSources v0* celestialSources
 use Pulsar v1* celestialSources
 use irfLoader v0* irfs
-use dataSubselector v2r*
+use dataSubselector v3*
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"
 
