@@ -24,7 +24,7 @@
 
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
   // intervals is a container of start/stop values for the histogram.
-  PlotHist1D * plot_hist_1 = engine.createPlotHist1D("Plot 1", 900, 600, intervals);
+  PlotHist * plot_hist_1 = engine.createPlotHist1D("Plot 1", 900, 600, intervals);
 
   // Fill plot with sinusoids.
   for (int ii = 0; ii < num_intervals; ++ii) {
@@ -38,7 +38,7 @@
 
     The class Engine is the abstract factory for plots. It is used
     to create a 1-d histogram plot, an object of a class named
-    PlotHist1D. This plot is then populated with
+    PlotHist. This plot is then populated with
     data. The display is created when Engine::run() is called.
     The above example is excerpted from src/test/test_st_graph.cxx.
     When the test code is run, it displays several plots of

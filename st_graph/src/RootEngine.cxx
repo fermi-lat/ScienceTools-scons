@@ -8,7 +8,7 @@
 #include "TSystem.h"
 
 #include "RootEngine.h"
-#include "RootPlotHist1D.h"
+#include "RootPlotHist.h"
 
 namespace st_graph {
 
@@ -44,23 +44,23 @@ namespace st_graph {
     gApplication->Run(kTRUE);
   }
 
-  PlotHist1D * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-    const PlotHist1D::IntervalCont_t & intervals) {
-    // Create Root-specific 1D plot object with the PlotHist1D interface.
-    return new RootPlotHist1D(this, title, width, height, intervals);
+  PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+    const PlotHist::IntervalCont_t & intervals) {
+    // Create Root-specific 1D plot object with the PlotHist interface.
+    return new RootPlotHist(this, title, width, height, intervals);
   }
 
-  PlotHist1D * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-    const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals) {
-    // Create Root-specific 2D plot object with the PlotHist1D interface.
-    return new RootPlotHist1D(this, title, width, height, x_intervals, y_intervals);
+  PlotHist * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+    const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) {
+    // Create Root-specific 2D plot object with the PlotHist interface.
+    return new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
   }
 
-  void RootEngine::addFrame(PlotHist1D * frame) {
+  void RootEngine::addFrame(PlotHist * frame) {
     m_frames.push_back(frame);
   }
 
-  void RootEngine::removeFrame(PlotHist1D * frame) {
+  void RootEngine::removeFrame(PlotHist * frame) {
     m_frames.remove(frame);
   }
 

@@ -1,9 +1,9 @@
-/** \file PlotHist1D.h
-    \brief Interface for base class plotter for 1D histograms.
+/** \file PlotHist.h
+    \brief Interface for base class plotter for all histograms.
     \author James Peachey, HEASARC/GSSC
 */
-#ifndef st_graph_PlotHist1D_h
-#define st_graph_PlotHist1D_h
+#ifndef st_graph_PlotHist_h
+#define st_graph_PlotHist_h
 
 #include <string>
 #include <utility>
@@ -11,10 +11,10 @@
 
 namespace st_graph {
 
-  /** \class PlotHist1D
-      \brief Interface for base class plotter for 1D histograms.
+  /** \class PlotHist
+      \brief Interface for base class plotter for all histograms.
   */
-  class PlotHist1D {
+  class PlotHist {
     public:
       /// \brief Convenience typedef for bin interval definitions.
       typedef std::pair<double, double> Interval_t;
@@ -22,15 +22,15 @@ namespace st_graph {
       /// \brief Convenience typedef for a container of bin interval definitions.
       typedef std::vector<Interval_t> IntervalCont_t;
 
-      /** \brief Create a 1-d histogram plotter.
+      /** \brief Create a 1D histogram plotter.
           \param title The title to display on the plot.
           \param width The width of the plot window.
           \param height The height of the plot window.
       */
-      PlotHist1D(const std::string & title, unsigned int width, unsigned int height);
+      PlotHist(const std::string & title, unsigned int width, unsigned int height);
 
       /// \brief Destruct the plotter.
-      virtual ~PlotHist1D();
+      virtual ~PlotHist();
 
       /// \brief Display this plot.
       virtual void display() = 0;

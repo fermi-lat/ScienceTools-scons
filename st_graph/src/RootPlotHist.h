@@ -1,13 +1,13 @@
-/** \file RootPlotHist1D.cxx
-    \brief Interface for Root plotter for 1D histograms.
+/** \file RootPlotHist.cxx
+    \brief Interface for Root plotter for all histograms.
     \author James Peachey, HEASARC/GSSC
 */
-#ifndef st_graph_RootPlotHist1D
-#define st_graph_RootPlotHist1D
+#ifndef st_graph_RootPlotHist
+#define st_graph_RootPlotHist
 
 #include <string>
 
-#include "st_graph/PlotHist1D.h"
+#include "st_graph/PlotHist.h"
 
 class TH1D;
 class TH2D;
@@ -18,10 +18,10 @@ namespace st_graph {
   class RootEngine;
   class STGMainFrame;
 
-  /** \class RootPlotHist1D
-      \brief Root plotter for 1D histograms.
+  /** \class RootPlotHist
+      \brief Root plotter for all histograms.
   */
-  class RootPlotHist1D : public PlotHist1D {
+  class RootPlotHist : public PlotHist {
     public:
       /** \brief Construct a 1D plotter.
           \param engine The top level application/engine object which controls this plot.
@@ -30,8 +30,8 @@ namespace st_graph {
           \param height The height of the plot window, in pixels
           \param intervals The interval definitions of the histogram to be displayed.
       */
-      RootPlotHist1D(RootEngine * engine, const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & intervals);
+      RootPlotHist(RootEngine * engine, const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & intervals);
 
       /** \brief Construct a 2D plotter.
           \param engine The top level application/engine object which controls this plot.
@@ -41,11 +41,11 @@ namespace st_graph {
           \param x_intervals The interval definitions of the histogram (X axis) to be displayed.
           \param y_intervals The interval definitions of the histogram (Y axis) to be displayed.
       */
-      RootPlotHist1D(RootEngine * engine, const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals);
+      RootPlotHist(RootEngine * engine, const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals);
 
       /// \brief Destruct a plot.
-      virtual ~RootPlotHist1D();
+      virtual ~RootPlotHist();
 
       /// \brief Display this plot.
       virtual void display();
@@ -68,7 +68,7 @@ namespace st_graph {
 
     private:
       void init();
-      double * createIntervals(const PlotHist1D::IntervalCont_t & intervals) const;
+      double * createIntervals(const PlotHist::IntervalCont_t & intervals) const;
 
       RootEngine * m_engine;
       double * m_x_intervals;

@@ -14,7 +14,7 @@
 #include "st_app/StAppFactory.h"
 
 #include "st_graph/Engine.h"
-#include "st_graph/PlotHist1D.h"
+#include "st_graph/PlotHist.h"
 
 /** \class StGraphTestApp
     \brief Test application class.
@@ -32,8 +32,8 @@ void StGraphTestApp::run() {
   int num_intervals = 200;
 
   // Create a set of interval definitions to use for the histogram plot. Make them equal linear bins.
-  PlotHist1D::IntervalCont_t intervals(num_intervals);
-  for (int ii = 0; ii < num_intervals; ++ii) intervals[ii] = PlotHist1D::Interval_t(ii, ii + 1);
+  PlotHist::IntervalCont_t intervals(num_intervals);
+  for (int ii = 0; ii < num_intervals; ++ii) intervals[ii] = PlotHist::Interval_t(ii, ii + 1);
 
   // Create an array containing a sinusoid with 25 extra points at the end to allow it to look like a cosine too.
   const double pi = asin(1) * 2.;
@@ -46,10 +46,10 @@ void StGraphTestApp::run() {
   Engine & engine(Engine::instance());
 
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
-  PlotHist1D * plot_hist_1 = engine.createPlotHist1D("Plot 1", 900, 600, intervals);
+  PlotHist * plot_hist_1 = engine.createPlotHist1D("Plot 1", 900, 600, intervals);
 
   // Create a histogram plot, size 600 x 400, with the (same) given bin definitions.
-  PlotHist1D * plot_hist_2 = engine.createPlotHist1D("Plot 2", 600, 400, intervals);
+  PlotHist * plot_hist_2 = engine.createPlotHist1D("Plot 2", 600, 400, intervals);
 
   // Fill plots with sinusoids.
   for (int ii = 0; ii < num_intervals; ++ii) {
@@ -58,7 +58,7 @@ void StGraphTestApp::run() {
   }
 
   // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  PlotHist1D * plot_hist_3 = engine.createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
+  PlotHist * plot_hist_3 = engine.createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
 
   double sigma_squared = 2. * num_intervals;
   for (int ii = 0; ii < num_intervals; ++ii) {

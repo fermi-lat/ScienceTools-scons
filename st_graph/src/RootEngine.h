@@ -12,7 +12,7 @@
 
 namespace st_graph {
 
-  class PlotHist1D;
+  class PlotHist;
 
   /** \class RootEngine
       \brief Declaration for class which encapsulates the Root graphics implementation.
@@ -20,7 +20,7 @@ namespace st_graph {
   class RootEngine : public Engine {
     public:
       /// \brief Container of plots registered with this engine.
-      typedef std::list<PlotHist1D *> FrameList_t;
+      typedef std::list<PlotHist *> FrameList_t;
 
       /// \brief Create the Root graphics engine. Creates a Root TApplication object.
       RootEngine();
@@ -36,8 +36,8 @@ namespace st_graph {
           \param height The height of the plot frame.
           \param intervals Set of intervals of the histogram, used to set the plot axes.
       */
-      virtual PlotHist1D * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & intervals);
+      virtual PlotHist * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & intervals);
 
       /** \brief Create a plotter for a two dimensional histogram.
           \param title The title of the plot.
@@ -46,20 +46,20 @@ namespace st_graph {
           \param x_intervals Set of intervals of the histogram, used to set the plot X axis.
           \param y_intervals Set of intervals of the histogram, used to set the plot Y axis.
       */
-      virtual PlotHist1D * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals);
+      virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals);
 
       /** \brief Register a frame with the engine. This allows the engine to display or hide
           its associated graphical frames (Root-implementation-specific)
           \param frame The graphical frame to register.
       */
-      virtual void addFrame(PlotHist1D * frame);
+      virtual void addFrame(PlotHist * frame);
 
       /** \brief Unregister a frame with the engine. Following a call to this, the given frame will
           not be displayed or hidden when the engine runs. (Root-implementation-specific)
           \param frame The graphical frame to unregister.
       */
-      virtual void removeFrame(PlotHist1D * frame);
+      virtual void removeFrame(PlotHist * frame);
 
       /// \brief Hide all frames from view.
       virtual void hideFrames();

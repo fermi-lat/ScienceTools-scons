@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "st_graph/PlotHist1D.h"
+#include "st_graph/PlotHist.h"
 
 namespace st_graph {
 
@@ -32,8 +32,8 @@ namespace st_graph {
           \param height The height of the plot window.
           \param intervals Set of intervals of the histogram, used to set the plot axes.
       */
-      virtual PlotHist1D * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & intervals) = 0;
+      virtual PlotHist * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & intervals) = 0;
 
       /** \brief Create a plotter for a two dimensional histogram.
           \param title The title of the plot.
@@ -42,8 +42,8 @@ namespace st_graph {
           \param x_intervals Set of intervals of the histogram, used to set the plot X axis.
           \param y_intervals Set of intervals of the histogram, used to set the plot Y axis.
       */
-      virtual PlotHist1D * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals) = 0;
+      virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) = 0;
 
     protected:
       /// \brief The singleton engine.
