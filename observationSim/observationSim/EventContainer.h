@@ -58,9 +58,7 @@ public:
       m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0), 
       m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
-   ~EventContainer() {
-      if (m_events.size() > 0) writeEvents();
-   }
+   ~EventContainer();
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.

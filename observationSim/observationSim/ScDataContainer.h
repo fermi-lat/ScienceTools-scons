@@ -49,7 +49,7 @@ public:
       m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0),
       m_maxNumEntries(maxNumEntries) {init();}
 
-   ~ScDataContainer() {if (m_scData.size() > 0) writeScData();}
+   ~ScDataContainer();
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.

@@ -93,6 +93,13 @@ namespace {
 
 namespace observationSim {
 
+EventContainer::~EventContainer() {
+   if (m_events.size() > 0) writeEvents();
+   if (m_useGoodi) {
+      delete m_goodiEventData;
+   }
+}
+
 void EventContainer::init() {
    m_events.clear();
 

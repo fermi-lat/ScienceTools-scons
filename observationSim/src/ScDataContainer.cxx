@@ -26,6 +26,13 @@
 
 namespace observationSim {
 
+ScDataContainer::~ScDataContainer() {
+   if (m_scData.size() > 0) writeScData();
+   if (m_useGoodi) {
+      delete m_goodiScData;
+   }
+}
+
 void ScDataContainer::init() {
    m_scData.clear();
 
