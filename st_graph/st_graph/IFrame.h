@@ -17,6 +17,9 @@ namespace st_graph {
       /// \brief Destruct the frame.
       virtual ~IFrame() {}
 
+      virtual std::string getName() const = 0;
+      virtual void setName(const std::string & name) = 0;
+
       /// \brief Display this frame and all it contains.
       virtual void display() = 0;
 
@@ -70,6 +73,9 @@ namespace st_graph {
 
       /// \brief Resize the frame to its natural dimensions.
       virtual void setNaturalSize() = 0;
+
+      /// \brief Position subframes.
+      virtual void layout(bool force_layout = false) = 0;
 
       /// \brief Get the horizontal center of the frame.
       virtual long getHCenter() const = 0;

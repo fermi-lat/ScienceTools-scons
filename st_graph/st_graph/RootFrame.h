@@ -50,6 +50,9 @@ namespace st_graph {
       /// \brief Destruct the frame.
       virtual ~RootFrame();
 
+      virtual std::string getName() const { return m_name; }
+      virtual void setName(const std::string & name) { m_name = name; }
+
       /// \brief Display this frame and all it contains.
       virtual void display();
 
@@ -104,6 +107,9 @@ namespace st_graph {
 
       /// \brief Resize the frame to its natural dimensions.
       virtual void setNaturalSize();
+
+      /// \brief Position subframes.
+      virtual void layout(bool force_layout = false);
 
       /// \brief Get the horizontal center of the frame.
       virtual long getHCenter() const;
@@ -184,7 +190,10 @@ namespace st_graph {
       virtual void setTGFrame(TGFrame * frame);
 
     protected:
+      void setLayoutBroken(TGFrame * frame);
+
       mutable std::string m_state;
+      std::string m_name;
       FrameCont m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;

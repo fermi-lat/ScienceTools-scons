@@ -22,9 +22,9 @@ namespace st_graph {
     return &s_ancestor;
   }
 
-  RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
-    m_parent(0), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent), m_minimum_width(0), m_minimum_height(0),
-    m_hidden(false) {
+  RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_name(),
+    m_subframes(), m_parent(0), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent), m_minimum_width(0),
+    m_minimum_height(0), m_hidden(false) {
     // Make sure the parent is a Root parent.
     m_parent = dynamic_cast<RootFrame *>(parent);
     if (0 == m_parent)
@@ -33,7 +33,7 @@ namespace st_graph {
     m_parent->addFrame(this);
   }
 
-  RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
+  RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_name(), m_subframes(),
     m_parent(RootFrame::ancestor()), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent),
     m_minimum_width(0), m_minimum_height(0), m_hidden(false) {
     m_parent->addFrame(this);
@@ -180,6 +180,11 @@ namespace st_graph {
 
   void RootFrame::setNaturalSize() {
     if (0 != m_frame) m_frame->SetSize(m_frame->GetDefaultSize());
+  }
+
+  void RootFrame::layout(bool force_layout) {
+    if (force_layout) setLayoutBroken(m_frame);
+    if (0 != m_receiver) m_receiver->layout(this);
   }
 
   /// \brief Get the horizontal center of the frame.
@@ -339,6 +344,17 @@ namespace st_graph {
   TGFrame * RootFrame::getTGFrame() { return m_frame; }
 
   void RootFrame::setTGFrame(TGFrame * frame) { m_frame = frame; }
+
+  void RootFrame::setLayoutBroken(TGFrame * frame) {
+    frame->SetLayoutBroken(kFALSE);
+    TGCompositeFrame * cf = dynamic_cast<TGCompositeFrame *>(frame);
+    if (0 != cf) {
+      TIter next(cf->GetList());
+      while(TGFrameElement * el = dynamic_cast<TGFrameElement *>(next())) {
+        setLayoutBroken(el->fFrame);
+      }
+    }
+  }
 
   RootFrame::RootFrame(): m_subframes(), m_parent(0), m_frame(0), m_receiver(0) {}
 
