@@ -1,11 +1,10 @@
 package dataSubselector
-version v1r1p0
+version v1r1p1
 
 use Goodi v2*
 use hoops v0r1p1
 
 macro cpp g++
-macro app_dataSubselector_cppflags "-g -Wall"
 
 macro headers "../include/*.h" WIN32 "../include/*.h"
 application dataSubselector  *.cxx

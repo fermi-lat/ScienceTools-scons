@@ -309,8 +309,8 @@ char *cutParameters::getFilterExpression(){
     } else {
       first=false;
     }
-    sprintf(m_query,"%sVERALL_QUALITY<= %f",m_query,m_gammaProbMax);
-    sprintf(m_headerString,"%sVERALL_QUALITY<=%f",m_headerString,m_gammaProbMax);
+    sprintf(m_query,"%sIMGAMMAPROB<= %f",m_query,m_gammaProbMax);
+    sprintf(m_headerString,"%sIMGAMMAPROB<=%f",m_headerString,m_gammaProbMax);
   }
   if(m_zmin){ // minimum ZENITH_ANGLE
     if(!first){
