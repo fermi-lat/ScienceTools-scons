@@ -12,7 +12,7 @@
 #include "table/Extension.h"
 #include "table/IExtensionManager.h"
 #include "table/Iterator.h"
-#include "table/Ref.h"
+#include "table/ScalarAdaptor.h"
 #include "table/TableException.h"
 #include "table/TableRecord.h"
 #include "table/table_types.h"
@@ -45,10 +45,10 @@ namespace table {
           but is connected to the table cell.
       */
       template <typename T>
-      class Ref : public ReferenceAdaptor<T, Cell> {
+      class Scalar : public ScalarAdaptor<T, Cell> {
         public:
-          Ref(Cell & cell): ReferenceAdaptor<T, Cell>(cell) {}
-          Ref & operator =(const T & data) { ReferenceAdaptor<T, Cell>::operator =(data); return *this; }
+          Scalar(Cell & cell): ScalarAdaptor<T, Cell>(cell) {}
+          Scalar & operator =(const T & data) { ScalarAdaptor<T, Cell>::operator =(data); return *this; }
       };
 
       /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,

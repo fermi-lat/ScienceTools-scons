@@ -97,11 +97,11 @@ int main() {
 
       // Make local aliases to hold the channel and counts. These variables are bound to the Iterator's
       // referent Table::Record object.
-      Table::Ref<double> channel = r["channel"];
-      Table::Ref<double> counts = r["counts"];
+      Table::Scalar<double> channel = r["channel"];
+      Table::Scalar<double> counts = r["counts"];
 
-      // Just for fun, verify that one can copy-contruct a Ref object.
-      Table::Ref<double> spud = counts;
+      // Just for fun, verify that one can copy-contruct a Scalar object.
+      Table::Scalar<double> spud = counts;
 
       // An aside: for completeness, make a const iterator.
       const Table::Iterator citor = my_table->begin();
@@ -113,7 +113,7 @@ int main() {
       const Table::Cell & cell = r1["channel"];
 
       // Now try getting the same value as a long.
-      Table::Ref<long> lchannel = r["channel"];
+      Table::Scalar<long> lchannel = r["channel"];
 
       for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
@@ -121,7 +121,7 @@ int main() {
         if (counts != counts_vec[ichan]) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more values read from counts mismatched following get using Ref." << std::endl;
+            std::cerr << "One or more values read from counts mismatched following get using Scalar." << std::endl;
             status = 1;
             first_time = false;
           }
@@ -132,18 +132,18 @@ int main() {
         if (channel != ichan++) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more channel numbers mismatched following get using Ref." << std::endl;
+            std::cerr << "One or more channel numbers mismatched following get using Scalar." << std::endl;
             status = 1;
             first_time = false;
           }
         }
 
-        // Verify assignment between two different Ref variables.
+        // Verify assignment between two different Scalar variables.
         spud = channel;
         if (spud != channel) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more assignments didn't work right for Ref." << std::endl;
+            std::cerr << "One or more assignments didn't work right for Scalar." << std::endl;
             std::cerr << spud << " is not equal to " << channel << std::endl;
             status = 1;
             first_time = false;
@@ -157,7 +157,7 @@ int main() {
         if (my_table->getNumRecords() - orig_channel != channel) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "Assignment from double or comparison to double didn't work right for Ref." << std::endl;
+            std::cerr << "Assignment from double or comparison to double didn't work right for Scalar." << std::endl;
             std::cerr << "channel == " << channel << " not " << my_table->getNumRecords() - orig_channel << std::endl;
             status = 1;
             first_time = false;
@@ -170,7 +170,7 @@ int main() {
         if (dcounts != counts) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "Assignment to double or comparison to double didn't work right for Ref." << std::endl;
+            std::cerr << "Assignment to double or comparison to double didn't work right for Scalar." << std::endl;
             std::cerr << "dcounts == " << dcounts << " not " << counts << std::endl;
             status = 1;
             first_time = false;
@@ -209,7 +209,7 @@ int main() {
       }
 
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while testing reading through the iterator into Ref: " <<
+      std::cerr << "Unexpected exception while testing reading through the iterator into Scalar: " <<
         x.what() << std::endl;
       status = 1;
     }
@@ -248,8 +248,8 @@ int main() {
 
       // Make local aliases to hold two fields from the file. These variables are bound to the Iterator's
       // referent Table::Record object.
-      Table::Ref<double> McEnergy = r["McEnergy"];
-      Table::Ref<double> McCharge = r["McCharge"];
+      Table::Scalar<double> McEnergy = r["McEnergy"];
+      Table::Scalar<double> McCharge = r["McCharge"];
 
       // Show the columns.
       for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
@@ -257,7 +257,7 @@ int main() {
       }
 
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while reading through the iterator into Ref for Root file: " <<
+      std::cerr << "Unexpected exception while reading through the iterator into Scalar for Root file: " <<
         x.what() << std::endl;
       status = 1;
     }

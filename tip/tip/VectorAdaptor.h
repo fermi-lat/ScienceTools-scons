@@ -9,7 +9,6 @@
 
 #include <cassert>
 
-#include "table/Ref.h"
 #include "table/table_types.h"
 
 namespace table {
