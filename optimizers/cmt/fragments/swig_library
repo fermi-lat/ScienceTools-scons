@@ -1,13 +1,10 @@
-SWIG = swig
+$(pydir)$(package).cxx: $(pydir)$(package).i
+	cd $(pydir); $(SWIG) -c -python -c++ -o $(package).cxx $(package).i
 
-${CONSTITUENT} :: $(pydir)_${CONSTITUENT}.so
+$(bin)$(package).o: $(pydir)$(package).cxx
+	cd $(pydir); $(cppcomp) $(swig_nowarn) -fpic -o $(package).o $(pydir)$(package).cxx
+	cd $(src); $(cppcomp) -c -o $(bin)$(package).o $(package).cxx
 
-$(pydir)$(package)_wrap.cxx: $(pydir)$(package).i
-	cd $(pydir); $(SWIG) -c -python -c++ $(package).i
-
-$(pydir)$(package)_wrap.o: $(pydir)$(package)_wrap.cxx
-	cd $(pydir); $(cppcomp) $(swig_nowarn) -fpic -o $(package)_wrap.o $(package)_wrap.cxx
-
-$(pydir)_$(package).so:: $(pydir)$(package)_wrap.o
-	cd $(pydir); $(cpplink) -shared $(package)_wrap.o $(use_linkopts) \
-	   -L$(PYLIB) -lswigpy -o _$(package).so
+${CONSTITUENT} ::
+	$(cpplink) -shared $(pydir)$(package).o $(use_linkopts) \
+	   -L$(PYLIB) -lswigpy -o $(pydir)_$(package).so

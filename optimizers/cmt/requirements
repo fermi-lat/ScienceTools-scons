@@ -19,6 +19,7 @@ macro pydir ../python/
 macro PYINCLUDE /usr/local/include/python2.2
 macro PYLIB /usr/local/lib
 
+macro SWIG swig
 macro swig_nowarn "" Linux "-w"
 include_dirs $(PYINCLUDE)
 language swig -suffix=i -linker=$(clink)
@@ -35,6 +36,7 @@ macro_prepend cflags "" Linux "-g"
 macro test_optimizersstamps "optimizers.stamp"
 
 macro my_headers "" WIN32 "../optimizers/*.h *.h"
-library optimizers -no_share $(my_headers) *.cxx *.f *.c $(pydir)*.i
+library optimizers -no_share $(my_headers) *.f *.c *.cxx $(pydir)*.i
+
 # test application
 application test_optimizers test/*.cxx

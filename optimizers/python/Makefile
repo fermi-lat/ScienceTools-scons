@@ -36,14 +36,14 @@ LIBS = -L../rh72_gcc2953/ -loptimizers\
 module_base = optimizers
 module_name = _${module_base}.so
 
-${module_name}: ${module_base}_wrap.o
+${module_name}: ${module_base}.o
 	${CXX} -shared $< ${LIBS} -o ${module_name}
 
-${module_base}_wrap.o: ${module_base}_wrap.cxx
+${module_base}.o: ${module_base}.cxx
 	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} -o $@ $<
 
-${module_base}_wrap.cxx: ${module_base}.i
-	${SWIG} -python -c++ ${module_base}.i
+${module_base}.cxx: ${module_base}.i
+	${SWIG} -python -c++ -o ${module_base}.cxx ${module_base}.i
 
 anew:
 	make clean
@@ -58,6 +58,8 @@ clean:
 	/bin/rm -f _*.so
 	/bin/rm -f *.trace
 	/bin/rm -f *wrap*
+	/bin/rm -f ${module_base}.cxx
+	/bin/rm -f ${module_base}.py*
 
 very_clean:
 	make clean
