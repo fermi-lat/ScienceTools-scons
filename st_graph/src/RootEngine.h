@@ -111,6 +111,9 @@ namespace st_graph {
       /// \brief Hide all frames from view.
       virtual void hideFrames();
 
+      /// \brief Return whether graphics engine was successfully initialized.
+      virtual bool initSucceeded() const { return m_init_succeeded; }
+
     private:
       FrameList_t m_frames;
       bool m_init_succeeded;
