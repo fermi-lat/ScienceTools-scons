@@ -58,8 +58,11 @@ int main(int iargc, char * argv[]) {
    std::vector<std::string> colNames;
    std::string query("");
    int nentries(0);
+// skip the first row (kludge for pointing_history.root that has
+// inconsistent first interval)
+   int first(1);
    colNames = exposure.branchNames();
-   exposure.readTree(colNames, query, nentries);
+   exposure.readTree(colNames, query, nentries, first);
 
 // Goodi setup.
 
@@ -82,19 +85,19 @@ int main(int iargc, char * argv[]) {
    scData->setKey("DATE-END", date_stop);
 
 
-// Read the columns into Goodi.
-   unsigned int npts = exposure.nrows();
+// Read the columns into Goodi.  Skip the first row so decrement by 1.
+   unsigned int npts = exposure.nrows()-1;
 
    std::cout << "Number of events: " << npts << std::endl;
 
 // Start and stop times.
    std::vector<double> startTime(npts);
    std::vector<double> stopTime(npts);
-   std::copy(exposure("elapsed_time").begin(), 
-             exposure("elapsed_time").end(), 
+   std::copy(exposure("time").begin(), 
+             exposure("time").end(), 
              startTime.begin());
-   std::copy(exposure("elapsed_time").begin()+1, 
-             exposure("elapsed_time").end(), 
+   std::copy(exposure("time").begin()+1, 
+             exposure("time").end(), 
              stopTime.begin());
    stopTime[npts-1] = startTime[npts-1] 
       + (startTime[npts-1] - startTime[npts-2]);
@@ -105,10 +108,11 @@ int main(int iargc, char * argv[]) {
        gti.push_back(std::make_pair<double,double>(startTime[i],stopTime[i]));
      }
        scData->setGTI(gti);
-       //   scData->setStartTime(startTime);
-       //   scData->setStopTime(stopTime);
 
-   std::vector<double> vect_times = exposure("elapsed_time");
+//        scData->setStartTime(startTime);
+//        scData->setStopTime(stopTime);
+
+   std::vector<double> vect_times = exposure("time");
    std::stable_sort(vect_times.begin(),vect_times.end());
    //   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
    //   scData->setGTI(gti);
