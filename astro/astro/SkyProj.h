@@ -22,8 +22,6 @@ namespace astro {
 
     class SkyProj
     {
-    private:
-        prjprm prj;
     public:
         ///Constructors
         ///Default Constructor is for Hammer Aitoff Projection
@@ -31,6 +29,7 @@ namespace astro {
 
         /** Constructor specified by Projection Code
             Valid codes are:
+            @verbatim
             AZP: zenithal/azimuthal perspective 
             SZP: slant zenithal perspective 
             TAN: gnomonic 
@@ -57,6 +56,7 @@ namespace astro {
             TSC: tangential spherical cube
             CSC: COBE quadrilateralized spherical cube
             QSC: quadrilateralized spherical cube
+            @endverbatim
             **/
         SkyProj(const std::string &projName);
 
@@ -74,6 +74,8 @@ namespace astro {
 
 
         class Exception; // forward declaration
+    private:
+        prjprm prj;
         
     };
 

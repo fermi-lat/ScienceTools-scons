@@ -17,12 +17,13 @@ private
 
 #the following prepend makes the includes and src folders available locally
 macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
-apply_pattern package_headers
 
 
-library astro -no_share  *.cxx  \
- ${astro_headers} \
- -s=wcslib  *.c *.h
+macro source *.cxx WIN32 "*.h *.cxx"
+library astro -no_share \
+ -s=../astro $(source) \
+ -s=../src $(source) \
+ -s=wcslib  $(source) *.c
 
 
 # this is the test program from G. Tosti
