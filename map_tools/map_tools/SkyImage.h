@@ -9,7 +9,7 @@
 #ifndef MAP_TOOLS_SKYIMAGE_H
 #define MAP_TOOLS_SKYIMAGE_H
 
-#include "map_tools/SkyFunction.h"
+#include "astro/SkyFunction.h"
 
 #include <string>
 #include <vector>
@@ -66,7 +66,7 @@ public:
     @param req a functor that returns a double for a SkyDir
     @param layer layer number to fill [default 0]
     */
-    void fill( const SkyFunction& req, unsigned int layer=0);
+    void fill( const astro::SkyFunction& req, unsigned int layer=0);
 
     /** brief clear the image, putting nulls around a AIT map
     */

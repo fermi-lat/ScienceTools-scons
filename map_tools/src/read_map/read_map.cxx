@@ -8,7 +8,7 @@
 
 #include "map_tools/SkyImage.h"
 #include "map_tools/MapParameters.h"
-#include "map_tools/SkyFunction.h"
+#include "astro/SkyFunction.h"
 #include "astro/SkyDir.h"
 #include <iostream>
 
@@ -25,7 +25,7 @@ public:
 /** @class Request 
     @brief function class requests a point from the image
 */
-class Request : public SkyFunction
+class Request : public astro::SkyFunction
 {
 public:
     Request(const SkyImage& image )

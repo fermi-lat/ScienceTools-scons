@@ -31,7 +31,7 @@ public:
 /** @class RequestExposure 
     @brief function class requests a point from the exposure
 */
-class RequestExposure : public SkyFunction
+class RequestExposure : public astro::SkyFunction
 {
 public:
     RequestExposure(const Exposure& exp, const Aeff& aeff, double norm=1.0)
