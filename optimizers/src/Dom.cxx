@@ -21,7 +21,7 @@ void Dom::checkTag(const DOM_Element &element,
                    const std::string &tagName, 
                    const std::string &callingRoutine) throw(Exception) {
    if (element == DOM_Element()) {
-      throw optimizers::Exception(
+      throw Exception(
          "optimizers::Dom::checkTag: Trying to read tag of DOM_Element().\n");
    }
    std::string myTagName( xml::Dom::transToChar(element.getTagName()) );
@@ -45,7 +45,7 @@ void Dom::getElements(const DOM_Element &parent, const std::string &tagName,
       try {
          Dom::checkTag(child, tagName, "optimizers::Dom::getElements");
          children.push_back(child);
-      } catch (optimizers::Exception &) {
+      } catch (Exception &) {
 // Tag doesn't match so do nothing.
       } catch (...) {
 // Rethrow all other exceptions.

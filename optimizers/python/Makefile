@@ -15,7 +15,7 @@ pypath = /usr/local
 #CFLAGS = -ansi -Wall -W -pedantic
 
 INCLUDE = -I$(CMTPATH)/optimizers/v0r1p1\
-	-I$(CMTPATH)/xml/v4r3p0/h\
+	-I$(CMTPATH)/xml/v4r3p0/\
 	-I$(CMTPATH)/facilities/v2r7p2\
 	-I$(CMTPATH)/f2c/v2\
 	-I$(GLAST_EXT)/cfitsio/v2410/include\
@@ -31,7 +31,7 @@ LIBS = -L../rh72_gcc2953/ -loptimizers\
 	-L$(GLAST_EXT)/cfitsio/v2410/lib -lcfitsio\
 	-L$(GLAST_EXT)/CLHEP/1.8.0.0/lib -lCLHEP\
 	-L$(GLAST_EXT)/xerces/1.7.0/lib/ -lxerces-c1_7_0 -lpthread\
-	-lg2c
+	-lg2c -lswigpy
 
 module_base = optimizers
 module_name = _${module_base}.so
@@ -43,7 +43,7 @@ ${module_base}.o: ${module_base}.cxx
 	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} -o $@ $<
 
 ${module_base}.cxx: ${module_base}.i
-	${SWIG} -python -c++ -o ${module_base}.cxx ${module_base}.i
+	${SWIG} -c -python -c++ -o ${module_base}.cxx ${module_base}.i
 
 anew:
 	make clean
