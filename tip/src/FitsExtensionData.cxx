@@ -15,7 +15,7 @@ namespace table {
 
   FitsExtensionData::~FitsExtensionData() { close(); }
 
-  void FitsExtensionData::readKeyword(const std::string & field, double & value) const {
+  void FitsExtensionData::getKeyword(const std::string & field, double & value) const {
     int status = 0;
     fits_read_key(m_fp, TDOUBLE, const_cast<char *>(field.c_str()), &value, 0, &status);
   }

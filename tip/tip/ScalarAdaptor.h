@@ -11,7 +11,8 @@ namespace table {
 
   /** \class ReferenceAdaptor
 
-      \brief Adaptor class which provides a convenient read/write interface to referents of data inside a table.
+      \brief Adaptor class which provides a convenient get/set interface to referents of data inside a table.
+      Client code should not normally need to use this directly, but only specific subclasses of it.
   */
   template <typename T, typename Referent>
   class ReferenceAdaptor {
@@ -34,7 +35,7 @@ namespace table {
 
       /** \brief Retrieve the current templated parameter data value of this object.
       */
-      operator T () const { T data; m_referent->read(data); return data; }
+      operator T () const { T data; m_referent->get(data); return data; }
 
     private:
       Referent * m_referent;

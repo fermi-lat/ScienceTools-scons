@@ -69,7 +69,7 @@ namespace table {
 
   Index_t FitsTabularData::getNumRecords() const { return m_num_records; }
 
-  void FitsTabularData::read(const std::string & field, Index_t record_index, double & value) const {
+  void FitsTabularData::getCell(const std::string & field, Index_t record_index, double & value) const {
     int status = 0;
     std::map<std::string, int>::const_iterator itor = m_col_info.find(field);
     if (itor == m_col_info.end()) throw TableException();
@@ -80,8 +80,8 @@ namespace table {
     fits_read_col(m_fp, TDOUBLE, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
   }
 
-  void FitsTabularData::readKeyword(const std::string & name, double & value) const {
-    m_extension.readKeyword(name, value);
+  void FitsTabularData::getKeyword(const std::string & name, double & value) const {
+    m_extension.getKeyword(name, value);
   }
 
 }

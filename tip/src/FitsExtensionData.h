@@ -25,11 +25,11 @@ namespace table {
 
       virtual ~FitsExtensionData();
 
-      /** \brief Read a keyword from the current header data object.
-          \param name The name of the keyword to read.
+      /** \brief Get a keyword from this extension object.
+          \param name The name of the keyword to get from the extension object.
           \param value The output value.
       */
-      virtual void readKeyword(const std::string & name, double & value) const;
+      virtual void getKeyword(const std::string & name, double & value) const;
 
       fitsfile * open();
 

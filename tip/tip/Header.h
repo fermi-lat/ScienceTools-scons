@@ -26,7 +26,7 @@ namespace table {
       virtual ~Header() {}
 
       // The following function is only temporary:
-      void read(const std::string & name, double & value) { m_extension_data->readKeyword(name, value); }
+      void getKeyword(const std::string & name, double & value) { m_extension_data->getKeyword(name, value); }
 
     private:
       IExtensionData * m_extension_data;

@@ -23,7 +23,7 @@ namespace table {
 
       \brief Encapsulation of a single table cell, which may contain (in principle) any type of object.
 
-      The read() method will need to be overloaded for every type the TableCell may in practice contain.
+      The get() method will need to be overloaded for every type the TableCell may in practice contain.
   */
   class TableCell {
     public:
@@ -35,10 +35,10 @@ namespace table {
 
       virtual ~TableCell() {}
 
-      /** \brief Read the current value of this TableCell from current iterator position.
+      /** \brief Get the current value of this TableCell from current iterator position.
           \param value The current value.
       */
-      void read(double & value) const;
+      void get(double & value) const;
 
     private:
       TableRecord & m_record;
@@ -117,8 +117,8 @@ namespace table {
   };
 
   // TableCell
-  inline void TableCell::read(double & value) const
-    { m_record.getTabularData()->read(m_field, m_record.getIndex(), value); }
+  inline void TableCell::get(double & value) const
+    { m_record.getTabularData()->getCell(m_field, m_record.getIndex(), value); }
 
   // TableRecord
   inline TableRecord & TableRecord::operator =(const TableRecord & rec) {

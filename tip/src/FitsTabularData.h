@@ -34,18 +34,18 @@ namespace table {
       */
       virtual Index_t getNumRecords() const;
 
-      /** \brief Read a value from the current tabular data object.
-          \param field The name of the field (column) to read.
-          \param record_index The index whose value to read.
+      /** \brief Get a value from the current tabular data object.
+          \param field The name of the field (column) to get.
+          \param record_index The index whose value to get.
           \param value The output value.
       */
-      virtual void read(const std::string & field, Index_t record_index, double & value) const;
+      virtual void getCell(const std::string & field, Index_t record_index, double & value) const;
 
-      /** \brief Read a keyword from this extension.
-          \param name The name of the keyword to read.
+      /** \brief Get a keyword from this extension object.
+          \param name The name of the keyword to get from the extension object.
           \param value The output value.
       */
-      virtual void readKeyword(const std::string & name, double & value) const;
+      virtual void getKeyword(const std::string & name, double & value) const;
 
     private:
       FitsExtensionData m_extension;

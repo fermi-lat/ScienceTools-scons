@@ -38,7 +38,7 @@ int main() {
     // First, use standard C++-style access.
     try {
       // Integer channel number, which will be incremented and used to verify that
-      // the Table reading methods are working.
+      // the Table access methods are working.
       int ichan = 0;
 
       for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
@@ -48,19 +48,19 @@ int main() {
         // For convenience, dereference the iterator.
         Table::Record & r = *itor;
 
-        // Explicitly read the "counts" field from the file into the counts_vec array, one value at
+        // Explicitly get the "counts" field from the file into the counts_vec array, one value at
         // a time.
-        r["counts"].read(counts_vec[ichan]);
+        r["counts"].get(counts_vec[ichan]);
 
-        // Similarly, read the channel number. Just put this in a scalar however.
-        r["channel"].read(channel);
+        // Similarly, get the channel number. Just put this in a scalar however.
+        r["channel"].get(channel);
 
-        // Confirm that the channel number read from the file matches what it should be.
+        // Confirm that the channel number obtained from the file matches what it should be.
         // Channels are numbered sequentially starting with 1.
         if (channel != ++ichan) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more channel numbers mismatched following read." << std::endl;
+            std::cerr << "One or more channel numbers mismatched following get." << std::endl;
             status = 1;
             first_time = false;
           }
@@ -68,7 +68,7 @@ int main() {
 
         try {
           double energy;
-          r["energy"].read(energy);
+          r["energy"].get(energy);
           std::cerr << "Getting a non-existent column didn't throw." << std::endl;
           status = 1;
         } catch(const TableException & x) {
@@ -77,7 +77,7 @@ int main() {
 
       }
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while testing reading through the iterator." << std::endl;
+      std::cerr << "Unexpected exception while testing TableIterator." << std::endl;
       status = 1;
     }
 
@@ -113,7 +113,7 @@ int main() {
         if (counts != counts_vec[ichan]) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more values read from counts mismatched following read using Ref." << std::endl;
+            std::cerr << "One or more values read from counts mismatched following get using Ref." << std::endl;
             status = 1;
             first_time = false;
           }
@@ -124,7 +124,7 @@ int main() {
         if (channel != ++ichan) {
           static bool first_time = true;
           if (first_time) {
-            std::cerr << "One or more channel numbers mismatched following read using Ref." << std::endl;
+            std::cerr << "One or more channel numbers mismatched following get using Ref." << std::endl;
             status = 1;
             first_time = false;
           }
@@ -179,7 +179,7 @@ int main() {
     try {
       Header & header = my_table->getHeader();
       double exposure = 0.;
-      header.read("exposure", exposure);
+      header.getKeyword("exposure", exposure);
       if (1.963e3 != exposure) {
         std::cerr << "Problem reading exposure keyword." << std::endl;
         status = 1;
