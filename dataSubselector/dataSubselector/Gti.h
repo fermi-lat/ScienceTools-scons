@@ -30,7 +30,6 @@ public:
    Gti(const tip::Table & gtiTable);
 
    bool accept(double time) const;
-
 };
 
 } // namespace dataSubselector

@@ -1,5 +1,5 @@
-input_file,f,a,"Crab_events_0000.fits",,,"Input FT1 file"
-output_file,f,a,"Crab_events_filtered.fits",,,"Output FT1 file"
+input_file,f,a,"test_events_0000.fits",,,"Input FT1 file"
+output_file,f,a,"filtered_events_0000.fits",,,"Output FT1 file"
 ra,r,a,86.4,0,360,RA for new search center (degrees)
 dec,r,a,28.9,-90,90,Dec for new search center (degrees)
 rad,r,a,20,0,180,radius of new search region (degrees)

@@ -30,8 +30,6 @@ default_libraries = ['astro', 'evtbinLib', 'tipLib',
 for lib in default_libraries:
     libraries[lib] = None
 
-libraries['g2c'] = ('','')
-
 def externalLibrary(libname, version):
     libdir = os.path.join(os.environ['GLAST_EXT'], libname, version)
     return [os.path.join(libdir, 'include'), os.path.join(libdir, 'lib')]
@@ -40,7 +38,7 @@ libraries['cfitsio'] = externalLibrary('cfitsio', 'v2470')
 libraries['CLHEP'] = externalLibrary('CLHEP', '1.8.0.0')
 libraries['cppunit'] = externalLibrary('cppunit', '1.9.14')
 libraries['Core'] = externalLibrary('ROOT', os.path.join('v3.10.02', 'root'))
-libraries['pil'] = externalLibrary('pil', '1.9.2')
+libraries['pil'] = externalLibrary('pil', '1.9.7')
 libraries['pil'][1] += (os.path.sep + 'linux-3.2')
 
 #cflags = ' -rdynamic -O2 '
