@@ -65,7 +65,8 @@ namespace tip {
           \param file_name The name of the Root file.
           \param ext_name The name of the Root extension.
       */
-      RootExtensionManager(const std::string & file_name, const std::string & ext_name);
+      RootExtensionManager(const std::string & file_name, const std::string & ext_name,
+        const std::string & filter = "");
 
       /** \brief Destructor. Closes file if it is open.
       */
@@ -146,6 +147,7 @@ namespace tip {
       std::string formatWhat(const std::string & msg) const;
       std::string m_file_name;
       std::string m_ext_name;
+      std::string m_filter;
       mutable std::map<std::string, FieldIndex_t> m_branch_lookup;
       mutable std::vector<LeafBuffer *> m_leaves;
       Index_t m_num_records;
