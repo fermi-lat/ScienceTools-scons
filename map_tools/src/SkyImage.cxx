@@ -34,9 +34,12 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_image(0)
 , m_save(true)
 , m_layer(0)
+, m_wcs(0)
+, m_galactic(pars.uselb())
 {
     using namespace astro;
 
+#if 0
     // set the skydir default projection
     astro::SkyDir::setProjection(
         pars.xref()*M_PI/180,  pars.yref()*M_PI/180, //value at reference            
@@ -47,9 +50,15 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         pars.rot()*M_PI/180,              
         pars.uselb()          
         );
-
-
-    bool galactic= pars.uselb();
+#else
+        /// arrays describing transformation; pointers passed to wcslib
+    double 
+        crval[2]={pars.xref(), pars.yref()},
+        crpix[2]={m_naxis1*0.5 +0.5, m_naxis2*0.5 +0.5},
+        cdelt[2]={-pars.imgSizeX()/double(m_naxis1), pars.imgSizeY()/double(m_naxis2)},
+        crota2=pars.rot();
+    m_wcs = new astro::SkyProj(  pars.projType(),  crpix, crval, cdelt, crota2, m_galactic);
+#endif
 
     // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
@@ -66,34 +75,35 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 
     setKey("TELESCOP", "GLAST");
 
-    setKey("INSTRUME", "SIMULATION");
+    setKey("INSTRUME", "LAT SIMULATION");
 
     setKey("DATE-OBS", "");
     setKey("DATE-END", "");
     setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
 
-    setKey("CTYPE1", std::string(galactic?"GLON--":"RA--")+ pars.projType()
+    setKey("CTYPE1", std::string(m_galactic?"GLON-":"RA---")+ pars.projType()
         ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
-    setKey("CRPIX1",  SkyDir::s_refX+0.5,"","Reference pixel"); // note that FITS pixel reference is off by 0.5
-    setKey("CRVAL1",  pars.xref(), "deg", "RA or GLON at the reference pixel");
-    setKey("CDELT1",  SkyDir::s_scaleX,"",
+    setKey("CRPIX1",  crpix[0],"","Reference pixel"); // note that FITS pixel reference is off by 0.5
+    setKey("CRVAL1",  crval[0], "deg", "RA or GLON at the reference pixel");
+    setKey("CDELT1",  cdelt[0],"",
         "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT1",  "deg", "", "Physical unit of X-axis");
 
-    setKey("CTYPE2",  std::string(galactic?"GLAT--":"DEC--")+ pars.projType()
+    setKey("CTYPE2",  std::string(m_galactic?"GLAT-":"DEC--")+ pars.projType()
         ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
 
-    setKey("CRPIX2",  SkyDir::s_refY+0.5,"","Reference pixel");// note that FITS pixel reference is off by 0.5
-    setKey("CRVAL2",  pars.yref(), "deg", "DEC or GLAT at the reference pixel"); 
-    setKey("CDELT2",  SkyDir::s_scaleY,"",
+    setKey("CRPIX2",  crpix[1],"","Reference pixel");// note that FITS pixel reference is off by 0.5
+    setKey("CRVAL2",  crval[1], "deg", "DEC or GLAT at the reference pixel"); 
+    setKey("CDELT2",  cdelt[1],"",
         "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT2",  "deg", "", "Physical unit of Y-axis");
 
-    setKey("CROTA2",  0, "", "Image rotation (deg)");
+    setKey("CROTA2",  crota2, "", "Image rotation (deg)");
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 :  m_save(false)
+, m_wcs(0)
 {
     FloatImg& image = *dynamic_cast<FloatImg*>(IOElement::readIOElement(fits_file, extension));
     m_image = &image;
@@ -105,43 +115,40 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     std::string ctype, trans;
-    bool uselb;
     image.getValue("CTYPE1", ctype);
     if( ctype.substr(0,2)=="RA") {
-        uselb=false;
+        m_galactic=false;
         trans = ctype.substr(4,3);
     }else if( ctype.substr(0,4)=="GLON") {
-        uselb=true;
-        trans = ctype.size()==4? "CAR" : ctype.substr(6,3);
+        m_galactic=true;
+        // ctype is CAR if not present, otherwise last 3 chars.
+        trans = ctype.size()==4? "CAR" : ctype.substr(ctype.size()-3,3);
     }else {
         throw std::invalid_argument(
             std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
     }
+    /// arrays describing transformation; pointers passed to wcslib
+    double crpix[2], crval[2], cdelt[2];
 
-    double cr1[3];
-    image.getValue("CRPIX1", cr1[0]);
-    image.getValue("CRVAL1", cr1[1]);
-    image.getValue("CDELT1", cr1[2]);
+    image.getValue("CRPIX1", crpix[0]);
+    image.getValue("CRVAL1", crval[0]);
+    image.getValue("CDELT1", cdelt[0] );
 
-    double cr2[3];
-    image.getValue("CRPIX2", cr2[0]);
-    image.getValue("CRVAL2", cr2[1]);
-    image.getValue("CDELT2", cr2[2]);
-#if 0 /// @todo: interpret layer info if present
-    double cr3[3];
-    image.getValue("CRPIX3", cr3[0]);
-    image.getValue("CRVAL3", cr3[1]);
-    image.getValue("CDELT3", cr3[2]);
-#endif
-    double crota2=0.;
+    image.getValue("CRPIX2", crpix[1]);
+    image.getValue("CRVAL2", crval[1]);
+    image.getValue("CDELT2",  cdelt[1] );
+    double crota2=0;
     try { image.getValue("CROTA2", crota2);}catch(const std::exception&){}
-    
+#if 0 // the old version
     astro::SkyDir::setProjection(
         cr1[1]*M_PI/180, cr2[1]*M_PI/180, //! @todo verify units 
         trans, 
         cr1[0]-0.5,      cr2[0]-0.5, 
         cr1[2],          cr2[2], 
         crota2, uselb);
+#else
+    m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, m_galactic);
+#endif
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)
@@ -155,7 +162,7 @@ unsigned int SkyImage::setLayer(unsigned int newlayer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
-    std::pair<double,double> p= dir.project();
+    std::pair<double,double> p= dir.project(*m_wcs, m_galactic);
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
@@ -172,12 +179,12 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
     int offset = m_naxis1* m_naxis2 * layer;
     for( size_t k = 0; k< (unsigned int)(m_naxis1* m_naxis2); ++k){
-        // determine the bin center
+        // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
-            x = static_cast<int>(k%m_naxis1)+0.5, 
-            y = static_cast<int>(k/m_naxis1)+0.5;
+            x = static_cast<int>(k%m_naxis1)+1.0, 
+            y = static_cast<int>(k/m_naxis1)+1.0;
         try{
-            astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
+            astro::SkyDir dir(x,y, *m_wcs, m_galactic);
             double t= req(dir);
             image->data()[k+offset] = t; 
             m_total += t;
@@ -197,10 +204,10 @@ void SkyImage::clear()
         size_t kk = k%pixels;
 
         double
-            x = static_cast<int>(kk%m_naxis1)+0.5, 
-            y = static_cast<int>(kk/m_naxis1)+0.5;
+            x = static_cast<int>(kk%m_naxis1)+1, 
+            y = static_cast<int>(kk/m_naxis1)+1;
         try{
-            astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
+            astro::SkyDir dir(x,y, *m_wcs);
             image->data()[k] = 0; 
         }catch(... ) { // any exception: just fill in a NaN
             image->data()[k]=dnan; 
@@ -216,12 +223,15 @@ SkyImage::~SkyImage()
         image->saveElement();
         delete image;
     }
+    delete m_wcs;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 {
     if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
-    std::pair<double,double> p= pos.project();
+    std::pair<double,double> p= pos.project(*m_wcs, m_galactic);
+    if( p.first<0) p.first+=m_naxis1;
+    if(p.second<0) p.second += m_naxis2;
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),

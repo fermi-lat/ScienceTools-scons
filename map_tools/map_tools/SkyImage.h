@@ -10,6 +10,7 @@
 #define MAP_TOOLS_SKYIMAGE_H
 
 #include "astro/SkyFunction.h"
+#include "astro/SkyProj.h"
 
 #include <string>
 #include <vector>
@@ -98,7 +99,9 @@ private:
     bool m_save; 
     unsigned int m_layer;
 
-    
+    /// associated projection object, initialized from a par file, or a FITS file
+    astro::SkyProj* m_wcs; 
+    bool m_galactic;  /// flag to interpret the image in galactic coords
 };
 } //namesace map_tools
 
