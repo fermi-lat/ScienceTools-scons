@@ -5,10 +5,13 @@
 */
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
+// Class encapsulating a binner configuration helper object.
+#include "evtbin/BinConfig.h"
 // Class encapsulating a count map.
 #include "evtbin/CountMap.h"
 // Class encapsulating a 1 dimensional histogram.
@@ -29,6 +32,8 @@
 #include "evtbin/MultiSpec.h"
 // Single spectrum abstractions.
 #include "evtbin/SingleSpec.h"
+// Application parameter class.
+#include "st_app/AppParGroup.h"
 // Application base class.
 #include "st_app/StApp.h"
 // Factory used by st_app's standard main to create application object.
@@ -69,6 +74,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testCountMap();
 
+    void testBinConfig();
+
   private:
     std::string m_data_dir;
     bool m_failed;
@@ -101,6 +108,8 @@ void EvtBinTest::run() {
   testMultiSpectra();
   // Test count map (using Tip):
   testCountMap();
+  // Test high level bin configuration object.
+  testBinConfig();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -282,6 +291,7 @@ void EvtBinTest::testOrderedBinner() {
     value = -.01;
     index = binner.computeIndex(value);
     if (0 <= index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
     
@@ -289,6 +299,7 @@ void EvtBinTest::testOrderedBinner() {
     value = 1.;
     index = binner.computeIndex(value);
     if (0 <= index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
     
@@ -296,6 +307,7 @@ void EvtBinTest::testOrderedBinner() {
     value = 0.;
     index = binner.computeIndex(value);
     if (0 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 0" << std::endl;
     }
 
@@ -303,6 +315,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .72;
     index = binner.computeIndex(value);
     if (0 <= index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
 
@@ -310,6 +323,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .05;
     index = binner.computeIndex(value);
     if (0 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 0" << std::endl;
     }
     
@@ -317,6 +331,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .17;
     index = binner.computeIndex(value);
     if (1 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 1" << std::endl;
     }
     
@@ -324,6 +339,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .30;
     index = binner.computeIndex(value);
     if (2 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 2" << std::endl;
     }
     
@@ -331,6 +347,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .55;
     index = binner.computeIndex(value);
     if (3 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 3" << std::endl;
     }
     
@@ -338,6 +355,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .60;
     index = binner.computeIndex(value);
     if (4 != index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not 4" << std::endl;
     }
     
@@ -345,6 +363,7 @@ void EvtBinTest::testOrderedBinner() {
     value = .25;
     index = binner.computeIndex(value);
     if (0 <= index) {
+      m_failed = true;
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
   
@@ -498,7 +517,7 @@ void EvtBinTest::testCountMap() {
   }
 
   // Create count map object.
-  CountMap count_map(60., 40., "AIT", 400, 400, .2, 0., true);
+  CountMap count_map(60., 40., "AIT", 400, 400, .1, 0., true);
 
   // Fill the count map.
   count_map.binInput(table->begin(), table->end());
@@ -511,6 +530,192 @@ void EvtBinTest::testCountMap() {
 
   // Clean up input.
   delete table;
+}
+
+void EvtBinTest::testBinConfig() {
+  using namespace evtbin;
+
+  // Get parameters.
+  st_app::AppParGroup & par_group = getParGroup("test_evtbin");
+
+  Binner * binner = 0;
+
+  try {
+    // Create a configuration object.
+    BinConfig config;
+
+    // Set name of time field to be something strange.
+    par_group["timefield"] = "WackyTime";
+
+    // First test the simple case.
+    par_group["timebinalg"] = "LIN";
+
+    // Use unlikely values for the other binning parameters.
+    par_group["tstart"] = -177.;
+    par_group["tstop"] = -100.;
+    par_group["deltatime"] = 7.;
+
+    // Save these parameters.
+    par_group.Save();
+
+    // Test prompting for time binner parameters. Since they're all hidden, their values should just be
+    // the same as the values just assigned above.
+    config.timeParPrompt(par_group);
+
+    // Make sure the value set above DID take.
+    if (0 != par_group["timefield"].Value().compare("WackyTime")) {
+      m_failed = true;
+      std::cerr << "BinConfig::timeParPrompt got name " << par_group["timefield"].Value() << ", not WackyTime" << std::endl;
+    }
+
+    // Test creating the time binner.
+    binner = config.createTimeBinner(par_group);
+
+    // Name of binner should be the value from the timefield parameter.
+    if (0 != binner->getName().compare("WackyTime")) {
+      m_failed = true;
+      std::cerr << "BinConfig::createTimeBinner created a binner named " << binner->getName() << ", not WackyTime" << std::endl;
+    }
+
+    // The number of bins should also be consistent with the parameter file.
+    if (11 != binner->getNumBins()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createTimeBinner created a binner with " << binner->getNumBins() << " bins, not 11" << std::endl;
+    }
+
+    // The first bin should begin with tstart.
+    if (-177. != binner->getInterval(0).begin()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createTimeBinner created a binner whose first bin begins with " <<
+        binner->getInterval(0).begin() << " not -177." << std::endl;
+    }
+
+    // The last bin should end with tstop.
+    if (-100. != binner->getInterval(binner->getNumBins() - 1).end()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createTimeBinner created a binner whose last bin ends with " <<
+        binner->getInterval(binner->getNumBins() - 1).end() << " not -100." << std::endl;
+    }
+
+    delete binner; binner = 0;
+
+    // Now test the logarithmic case with energy bins.
+    // Set name of energy field to be something strange.
+    par_group["energyfield"] = "WackyEnergy";
+
+    // First test the simple case.
+    par_group["energybinalg"] = "LOG";
+
+    // Use unlikely values for the other binning parameters.
+    par_group["emin"] = 1.e-7;
+    par_group["emax"] = 1.;
+    par_group["enumbins"] = 7;
+
+    // Save these parameters.
+    par_group.Save();
+
+    // Prompt for energy values. Again, they're all hidden.
+    config.energyParPrompt(par_group);
+
+    // Test creating the energy binner.
+    binner = config.createEnergyBinner(par_group);
+
+    // Name of binner should be the value from the energyfield parameter.
+    if (0 != binner->getName().compare("WackyEnergy")) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner named " << binner->getName() << ", not WackyEnergy" << std::endl;
+    }
+
+    // The number of bins should also be consistent with the parameter file.
+    if (7 != binner->getNumBins()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner with " << binner->getNumBins() << " bins, not 7" << std::endl;
+    }
+
+    // The first bin should begin with emin.
+    if (-7 != int(floor(log10(binner->getInterval(0).begin())))) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner whose first bin begins with " <<
+        binner->getInterval(0).begin() << " not 1.e-7" << std::endl;
+    }
+
+    // The first bin should end with one order of magnitude more than emin.
+    if (-6 != int(floor(log10(binner->getInterval(0).end())))) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner whose first bin ends with " <<
+        binner->getInterval(0).end() << " not 1.e-6" << std::endl;
+    }
+
+    // The last bin should begin with one order of magnitude less than emax.
+    if (-1 != int(floor(log10(binner->getInterval(binner->getNumBins() - 1).begin())))) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner whose last bin begins with " <<
+        binner->getInterval(binner->getNumBins() - 1).begin() << " not .1" << std::endl;
+    }
+
+    // The last bin should end with emax.
+    if (0 != int(floor(log10(binner->getInterval(binner->getNumBins() - 1).end())))) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner whose last bin ends with " <<
+        binner->getInterval(binner->getNumBins() - 1).end() << " not 1." << std::endl;
+    }
+
+    delete binner; binner = 0;
+
+    // Now test the bin file case with energy bins.
+    par_group["energybinalg"] = "FILE";
+    par_group["energybinfile"] = m_data_dir + "ChanEnergyBin.fits";
+
+    // Save these parameters.
+    par_group.Save();
+
+    // Prompt for energy values. Again, they're all hidden.
+    config.energyParPrompt(par_group);
+
+    // Test creating the energy binner.
+    binner = config.createEnergyBinner(par_group);
+
+    // The number of bins should also be consistent with the bin definition file.
+    if (1024 != binner->getNumBins()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner created a binner with " << binner->getNumBins() << " bins, not 1024" << std::endl;
+    }
+
+    // The beginning of the first bin should match the file contents.
+    if (30. != binner->getInterval(0).begin()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose first bin begins with " <<
+        binner->getInterval(0).begin() << " not 30." << std::endl;
+    }
+
+    // The end value of the first bin should match the file contents.
+    if (30.2030597787817 != binner->getInterval(0).end()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose first bin ends with " <<
+        binner->getInterval(0).end() << " not 30.2030597787817" << std::endl;
+    }
+
+    // The beginning value of the last bin should match the file contents.
+    if (29798.3054230906 != binner->getInterval(binner->getNumBins() - 1).begin()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose last bin begins with " <<
+        binner->getInterval(binner->getNumBins() - 1).begin() << " not 29798.3054230906" << std::endl;
+    }
+
+    // The end value of the last bin should match the file contents.
+    if (29999.9999999999 != binner->getInterval(binner->getNumBins() - 1).end()) {
+      m_failed = true;
+      std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose last bin ends with " <<
+        binner->getInterval(binner->getNumBins() - 1).end() << " not 29999.9999999999" << std::endl;
+    }
+
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "testBinConfig encountered an unexpected error: " << x.what() << std::endl;
+  }
+
+  delete binner;
+
 }
 
 /// \brief Create factory singleton object which will create the application:
