@@ -21,6 +21,19 @@
     - read_map, example executable showing how to copy an image from one file to another, redefining the 
     image parameters
     - map_stats Prints out statistics for a map.
+    - HealpixArray, defined in HealpixArray.h  Template used to associate an object with
+      each healpix pixel.
+    - CosineBinner, defined in CosineBinner.h.  Bins for storing values corresponding
+      to different values of cos(theta).
+    - BasicExposure, defined in Exposure.cxx.  A generic exposure class.
+    - SkyBinner, defined in Exposure.cxx.  A HealpixArray of CosineBinner objects.
+    - SkyExposure, defined in Exposure.cxx.  A BasicExposure constructed from a SkyBinner
+      and a CosineBinner.
+    - Exposure, defined in Exposure.cxx.  Derived from SkyExposure.
+      Adds I/O and other functions.
+    - HealpixArrayIO, Defined in HealpixArrayIO.cxx. A singleton used to manage I/O of
+      a HealpixArray object to/from a FITS file.
+      
     <br>
     Each application has an example  .par file in the pfiles folder.
     <hr>
@@ -88,6 +101,42 @@ This applicaton creates a FITS "hypercube" image file. Each layer is a bin in co
 
  A simple application that generates a new map from a SkyFunction object, a FITS image in this case.
  @verbinclude map_stats.par
+
+ @section HealpixArray HealpixArray
+
+ Used to associate a particular type of object with each pixel in a Healpix tesselation.
+ This is a convenient way to data with pixels.
+
+ @section CosineBinner CosineBinner
+
+ A set of bins that can be used to store numbers which correspond to different values of
+ cos(theta).  Use the setBinning function member to set static binning options, including
+ number of bins, min value for cos(theta), and whether to use sqrt weighting for the bins.
+
+ @section BasicExposure BasicExposure
+
+ A differential exposure template.  A sky pixelization class (such as HealpixArray or HTM)
+ and an angular binner class (such as CosineBinner) must be provided to create a
+ specific instance of BasicExposure.
+
+ @section SkyBinner SkyBinner
+
+ A HealpixArray of CosineBinner objects.
+
+ @section SkyExposure SkyExposure
+
+ A BasicExposure which uses HealpixArray<CosineBinner> as the sky pixelization and
+ CosineBinner as the angular binner class.
+
+ @section Exposure Exposure
+
+ A SkyExposure with methods for input and output to/from a FITS file.  (Uses 
+ HealpixArrayIO.)
+
+ @section HealpixArrayIO HealpixArrayIO
+
+ A singleton class used to manage I/O of a HealpixArray object to/from a FITS file.
+*/
 */
 /** @page devguide Developer's Guide
 
