@@ -9,12 +9,14 @@
 #include <utility>
 #include <vector>
 
+#include "st_graph/IFrame.h"
+
 namespace st_graph {
 
   /** \class PlotHist
       \brief Interface for base class plotter for all histograms.
   */
-  class PlotHist {
+  class PlotHist : public IFrame {
     public:
       /// \brief Convenience typedef for bin interval definitions.
       typedef std::pair<double, double> Interval_t;
@@ -31,12 +33,6 @@ namespace st_graph {
 
       /// \brief Destruct the plotter.
       virtual ~PlotHist();
-
-      /// \brief Display this plot.
-      virtual void display() = 0;
-
-      /// \brief Hide this plot.
-      virtual void unDisplay() = 0;
 
       /** \brief Set the given bin in the plot to have the given value. This throws an exception if
           the plotter is not 1D.
