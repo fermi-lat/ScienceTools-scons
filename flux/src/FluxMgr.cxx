@@ -184,8 +184,7 @@ EventSource*  FluxMgr::getSourceFromXML(const DOMElement* src)
         // Content model for nestedSource is EMPTY, so can omit check
         // for that in the code
 
-        CompositeSource* cs;
-        cs = new CompositeSource();
+        CompositeSource* cs = new CompositeSource();
         do { 
             DOMElement* selem = 
                 getLibrarySource(xmlBase::Dom::getAttribute(sname, "sourceRef"));
