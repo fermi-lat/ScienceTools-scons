@@ -16,6 +16,7 @@
 #include <cppunit/ui/text/TextTestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
@@ -155,6 +156,9 @@ void DssTests::compareCuts() {
    delete m_inputTable;
    delete m_outputTable;
    delete m_outputTable2;
+
+   st_facilities::FitsUtil::writeChecksums(m_outfile);
+   st_facilities::FitsUtil::writeChecksums(m_outfile2);
 }
 
 int main() {
