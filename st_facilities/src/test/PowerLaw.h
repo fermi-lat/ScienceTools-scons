@@ -18,6 +18,14 @@ public:
       return m_prefactor*std::pow(x, m_index);
    }
 
+   double index() const {
+      return m_index;
+   }
+
+   double prefactor() const {
+      return m_prefactor;
+   }
+
 private:
 
    double m_prefactor;

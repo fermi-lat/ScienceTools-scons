@@ -83,7 +83,14 @@ void st_facilitiesTests::test_dgaus8() {
    double result(0);
    long ierr;
    dgaus8_(&power_law, &xmin, &xmax, &err, &result, &ierr);
-   double true_value = 64./3.;
+   double true_value;
+   if (powerLaw.index() != 1.) {
+      true_value = powerLaw.prefactor()*(pow(xmax, powerLaw.index() + 1.) 
+                                         - pow(xmin, powerLaw.index() + 1.))
+                                         /(powerLaw.index() + 1.);
+   } else {
+      true_value = powerLaw.prefactor()*log(xmax/xmin);
+   }
    double tol(1e-4);
    CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
 }
