@@ -3,7 +3,9 @@
  
   @verbatim
   Coordinator: Toby Burnett
- 
+
+  v2r8    6-Jan-2004  jrb   Add new utilities Util::stringTokenize and
+                            Util::basename 
   v2r7p2 28-May-2003  thb   Add include needed for Windows
   v2r7p1 14-May-2003  jrb   Throw exception in Util::expandEnvVar if
                             encounter something untranslatable 
