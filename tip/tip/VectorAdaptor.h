@@ -25,32 +25,35 @@ namespace tip {
     public:
       class Entry {
         public:
-          Entry(VectorAdaptor & adaptor, Index_t current_index): m_adaptor(adaptor), m_index(current_index) {}
-          Entry & operator =(const T & data) { m_adaptor.set(m_index, data); return *this; }
-          operator const T &() const { return m_adaptor.get(m_index); }
+          Entry(VectorAdaptor * adaptor, Index_t current_index): m_adaptor(adaptor), m_index(current_index) {}
+          Entry & operator =(const T & data) { m_adaptor->set(m_index, data); return *this; }
+          operator const T &() const { return m_adaptor->get(m_index); }
           Index_t getIndex() { return m_index; }
           void setIndex(Index_t current_index) { m_index = current_index; }
           Entry & itorNext() { ++m_index; return *this; }
           Entry & itorPrev() { --m_index; return *this; }
           bool itorEquals(const Entry & entry) const
-            { return &m_adaptor == &entry.m_adaptor && m_index == entry.m_index; }
+            { return m_adaptor == entry.m_adaptor && m_index == entry.m_index; }
           bool itorLessThan(const Entry & entry) const
-            { return &m_adaptor == &entry.m_adaptor && m_index < entry.m_index; }
+            { return m_adaptor == entry.m_adaptor && m_index < entry.m_index; }
           bool itorGreaterThan(const Entry & entry) const
-            { return &m_adaptor == &entry.m_adaptor && m_index > entry.m_index; }
+            { return m_adaptor == entry.m_adaptor && m_index > entry.m_index; }
+          void setAdaptor(VectorAdaptor * adaptor) { m_adaptor = adaptor; }
 
         private:
-          VectorAdaptor & m_adaptor;
+          VectorAdaptor * m_adaptor;
           Index_t m_index;
       };
 
 //      typedef RandomAccessIterator<Entry, IndexDiff_t> Iterator;
 
-      VectorAdaptor(Referent & referent): m_referent(&referent), m_entry(*this, 0), m_begin(0), m_end(0) {}
+      VectorAdaptor(Referent & referent): m_referent(&referent), m_entry(0, 0), m_begin(0), m_end(0) {
+        m_entry.setAdaptor(this);
+      }
 
       // Need to fix this:
-      VectorAdaptor(const VectorAdaptor & adaptor): m_referent(adaptor.m_referent), m_entry(*this, 0), m_begin(0),
-        m_end(0) { assert(0); }
+      VectorAdaptor(const VectorAdaptor & adaptor): m_referent(adaptor.m_referent), m_entry(0, 0), m_begin(0),
+        m_end(0) { m_entry.setAdaptor(this); assert(0); }
 
       ~VectorAdaptor() { delete [] m_begin; }
 
