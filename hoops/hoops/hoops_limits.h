@@ -117,6 +117,7 @@ namespace hoops {
       static T const epsilon;
       static const bool is_integer;
       static const bool is_signed;
+      static const T round_error;
       static const T max;
       static const T min;
   };
@@ -225,8 +226,6 @@ namespace hoops {
   const int Lim<float>::digits10;
   template <>
   const int Lim<double>::digits10;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const int Lim<long double>::digits10;
   //////////////////////////////////////////////////////////////////////////////
@@ -257,8 +256,6 @@ namespace hoops {
   const float Lim<float>::epsilon;
   template <>
   const double Lim<double>::epsilon;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const long double Lim<long double>::epsilon;
   //////////////////////////////////////////////////////////////////////////////
@@ -289,8 +286,6 @@ namespace hoops {
   const bool Lim<float>::is_integer;
   template <>
   const bool Lim<double>::is_integer;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const bool Lim<long double>::is_integer;
   //////////////////////////////////////////////////////////////////////////////
@@ -321,10 +316,38 @@ namespace hoops {
   const bool Lim<float>::is_signed;
   template <>
   const bool Lim<double>::is_signed;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const bool Lim<long double>::is_signed;
+  //////////////////////////////////////////////////////////////////////////////
+
+  // Lim<T>::round_error static declarations.
+  //////////////////////////////////////////////////////////////////////////////
+  template <>
+  const bool Lim<bool>::round_error;
+  template <>
+  const char Lim<char>::round_error;
+  template <>
+  const signed char Lim<signed char>::round_error;
+  template <>
+  const short Lim<short>::round_error;
+  template <>
+  const int Lim<int>::round_error;
+  template <>
+  const long Lim<long>::round_error;
+  template <>
+  const unsigned char Lim<unsigned char>::round_error;
+  template <>
+  const unsigned short Lim<unsigned short>::round_error;
+  template <>
+  const unsigned int Lim<unsigned int>::round_error;
+  template <>
+  const unsigned long Lim<unsigned long>::round_error;
+  template <>
+  const float Lim<float>::round_error;
+  template <>
+  const double Lim<double>::round_error;
+  template <>
+  const long double Lim<long double>::round_error;
   //////////////////////////////////////////////////////////////////////////////
 
   // Lim<T>::max static declarations.
@@ -353,8 +376,6 @@ namespace hoops {
   const float Lim<float>::max;
   template <>
   const double Lim<double>::max;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const long double Lim<long double>::max;
   //////////////////////////////////////////////////////////////////////////////
@@ -387,8 +408,6 @@ namespace hoops {
   const float Lim<float>::min;
   template <>
   const double Lim<double>::min;
-  // On *expletive* Solaris, numeric_limits<long double> causes the 
-  // compiler to exit with assertion failures.
   template <>
   const long double Lim<long double>::min;
   //////////////////////////////////////////////////////////////////////////////
@@ -408,6 +427,9 @@ namespace hoops {
 
   template <>
   const bool Lim<long long>::is_integer;
+
+  template <>
+  const long long Lim<long long>::round_error;
 
   template <>
   const long long Lim<long long>::max;
@@ -433,6 +455,11 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.4  2003/12/02 14:39:43  peachey
+ * To support compilers which do not have limits, such as g++ 2.95.x,
+ * add round_error field to Lim class. This allows the test code to
+ * be compiled without the limits header.
+ *
  * Revision 1.3  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

@@ -1,5 +1,5 @@
 package hoops
-version v1r0p1
+version v0r1p1
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
@@ -35,7 +35,7 @@ library hoops -no_share $(my_headers) \
 set PFILES "$(HOOPSROOT)/data"
 
 # test application
-application test_hoops test/hoops_lim_test.cxx
+#application test_hoops test/hoops_lim_test.cxx
 #application test_hoops_simple test/main.cxx
-#application test_hoops_lim test/hoops_par_test.cxx
+application test_hoops_lim test/hoops_par_test.cxx
 #application test_hoops_par test/hoops_prim_test.cxx

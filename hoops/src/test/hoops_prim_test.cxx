@@ -262,9 +262,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -329,9 +329,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -396,9 +396,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -463,9 +463,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -530,9 +530,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -597,9 +597,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -664,9 +664,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -731,9 +731,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -798,9 +798,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -865,9 +865,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -932,9 +932,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -999,9 +999,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1066,9 +1066,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_bool->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1133,9 +1133,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1200,9 +1200,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1267,9 +1267,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1334,9 +1334,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1401,9 +1401,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1468,9 +1468,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1535,9 +1535,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1602,9 +1602,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1669,9 +1669,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1736,9 +1736,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1803,9 +1803,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1870,9 +1870,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -1937,9 +1937,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2004,9 +2004,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2071,9 +2071,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2138,9 +2138,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2205,9 +2205,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2272,9 +2272,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2339,9 +2339,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2406,9 +2406,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2473,9 +2473,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2540,9 +2540,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2607,9 +2607,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2674,9 +2674,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2741,9 +2741,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2808,9 +2808,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_signed_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2875,9 +2875,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -2942,9 +2942,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3009,9 +3009,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3076,9 +3076,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3143,9 +3143,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3210,9 +3210,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3277,9 +3277,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3344,9 +3344,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3411,9 +3411,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3478,9 +3478,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3545,9 +3545,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3612,9 +3612,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3679,9 +3679,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_short->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3746,9 +3746,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3813,9 +3813,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3880,9 +3880,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -3947,9 +3947,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4014,9 +4014,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4081,9 +4081,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4148,9 +4148,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4215,9 +4215,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4282,9 +4282,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4349,9 +4349,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4416,9 +4416,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4483,9 +4483,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4550,9 +4550,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_int->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4617,9 +4617,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4684,9 +4684,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4751,9 +4751,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4818,9 +4818,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4885,9 +4885,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -4952,9 +4952,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5019,9 +5019,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5086,9 +5086,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5153,9 +5153,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5220,9 +5220,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5287,9 +5287,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5354,9 +5354,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5421,9 +5421,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5488,9 +5488,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5555,9 +5555,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5622,9 +5622,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5689,9 +5689,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5756,9 +5756,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5823,9 +5823,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5890,9 +5890,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -5957,9 +5957,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6024,9 +6024,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6091,9 +6091,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6158,9 +6158,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6225,9 +6225,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6292,9 +6292,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6359,9 +6359,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6426,9 +6426,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6493,9 +6493,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6560,9 +6560,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6627,9 +6627,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6694,9 +6694,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6761,9 +6761,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6828,9 +6828,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6895,9 +6895,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -6962,9 +6962,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7029,9 +7029,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7096,9 +7096,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7163,9 +7163,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_short->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7230,9 +7230,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7297,9 +7297,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7364,9 +7364,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7431,9 +7431,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7498,9 +7498,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7565,9 +7565,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7632,9 +7632,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7699,9 +7699,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7766,9 +7766,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7833,9 +7833,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7900,9 +7900,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -7967,9 +7967,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8034,9 +8034,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_int->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8101,9 +8101,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8168,9 +8168,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8235,9 +8235,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8302,9 +8302,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8369,9 +8369,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8436,9 +8436,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8503,9 +8503,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8570,9 +8570,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8637,9 +8637,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8704,9 +8704,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8771,9 +8771,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8838,9 +8838,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8905,9 +8905,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_unsigned_long->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -8972,9 +8972,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9039,9 +9039,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9106,9 +9106,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9173,9 +9173,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9240,9 +9240,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9307,9 +9307,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9374,9 +9374,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9441,9 +9441,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9508,9 +9508,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9575,9 +9575,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9642,9 +9642,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9709,9 +9709,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9776,9 +9776,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_float->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9843,9 +9843,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9910,9 +9910,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -9977,9 +9977,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10044,9 +10044,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10111,9 +10111,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10178,9 +10178,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10245,9 +10245,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10312,9 +10312,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10379,9 +10379,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10446,9 +10446,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10513,9 +10513,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10580,9 +10580,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10647,9 +10647,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_double->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10714,9 +10714,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10781,9 +10781,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10848,9 +10848,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10915,9 +10915,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -10982,9 +10982,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11049,9 +11049,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11116,9 +11116,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11183,9 +11183,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11250,9 +11250,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11317,9 +11317,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11384,9 +11384,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11451,9 +11451,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11518,9 +11518,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from maximum, hd_prim_long_double->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11606,9 +11606,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11673,9 +11673,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11740,9 +11740,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11807,9 +11807,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11874,9 +11874,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -11941,9 +11941,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12008,9 +12008,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12075,9 +12075,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12142,9 +12142,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12209,9 +12209,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12276,9 +12276,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12343,9 +12343,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12410,9 +12410,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_bool->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12477,9 +12477,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12544,9 +12544,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12611,9 +12611,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12678,9 +12678,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12745,9 +12745,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12812,9 +12812,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12879,9 +12879,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -12946,9 +12946,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13013,9 +13013,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13080,9 +13080,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13147,9 +13147,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13214,9 +13214,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13281,9 +13281,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13348,9 +13348,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13415,9 +13415,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13482,9 +13482,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13549,9 +13549,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13616,9 +13616,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13683,9 +13683,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13750,9 +13750,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13817,9 +13817,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13884,9 +13884,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -13951,9 +13951,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14018,9 +14018,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14085,9 +14085,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14152,9 +14152,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_signed_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14219,9 +14219,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14286,9 +14286,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14353,9 +14353,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14420,9 +14420,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14487,9 +14487,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14554,9 +14554,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14621,9 +14621,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14688,9 +14688,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14755,9 +14755,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14822,9 +14822,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14889,9 +14889,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -14956,9 +14956,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15023,9 +15023,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_short->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15090,9 +15090,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15157,9 +15157,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15224,9 +15224,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15291,9 +15291,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15358,9 +15358,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15425,9 +15425,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15492,9 +15492,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15559,9 +15559,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15626,9 +15626,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15693,9 +15693,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15760,9 +15760,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15827,9 +15827,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15894,9 +15894,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_int->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -15961,9 +15961,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16028,9 +16028,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16095,9 +16095,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16162,9 +16162,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16229,9 +16229,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16296,9 +16296,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16363,9 +16363,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16430,9 +16430,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16497,9 +16497,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16564,9 +16564,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16631,9 +16631,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16698,9 +16698,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16765,9 +16765,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16832,9 +16832,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16899,9 +16899,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -16966,9 +16966,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17033,9 +17033,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17100,9 +17100,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17167,9 +17167,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17234,9 +17234,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17301,9 +17301,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17368,9 +17368,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17435,9 +17435,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17502,9 +17502,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17569,9 +17569,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17636,9 +17636,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_char->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17703,9 +17703,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17770,9 +17770,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17837,9 +17837,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17904,9 +17904,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -17971,9 +17971,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18038,9 +18038,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18105,9 +18105,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18172,9 +18172,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18239,9 +18239,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18306,9 +18306,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18373,9 +18373,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18440,9 +18440,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18507,9 +18507,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_short->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18574,9 +18574,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18641,9 +18641,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18708,9 +18708,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18775,9 +18775,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18842,9 +18842,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18909,9 +18909,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -18976,9 +18976,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19043,9 +19043,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19110,9 +19110,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19177,9 +19177,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19244,9 +19244,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19311,9 +19311,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19378,9 +19378,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_int->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19445,9 +19445,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19512,9 +19512,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19579,9 +19579,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19646,9 +19646,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19713,9 +19713,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19780,9 +19780,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19847,9 +19847,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19914,9 +19914,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -19981,9 +19981,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20048,9 +20048,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20115,9 +20115,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20182,9 +20182,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20249,9 +20249,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_unsigned_long->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20316,9 +20316,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20383,9 +20383,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20450,9 +20450,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20517,9 +20517,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20584,9 +20584,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20651,9 +20651,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20718,9 +20718,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20785,9 +20785,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20852,9 +20852,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20919,9 +20919,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -20986,9 +20986,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21053,9 +21053,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21120,9 +21120,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_float->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21187,9 +21187,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21254,9 +21254,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21321,9 +21321,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21388,9 +21388,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21455,9 +21455,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21522,9 +21522,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21589,9 +21589,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21656,9 +21656,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21723,9 +21723,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21790,9 +21790,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21857,9 +21857,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21924,9 +21924,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -21991,9 +21991,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_double->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22058,9 +22058,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_bool) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_bool << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22125,9 +22125,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22192,9 +22192,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_signed_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_signed_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22259,9 +22259,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_short) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22326,9 +22326,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_int) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22393,9 +22393,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_long) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22460,9 +22460,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_char) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_char << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22527,9 +22527,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_short) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_short << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22594,9 +22594,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_int) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_int << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22661,9 +22661,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_long) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_long << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22728,9 +22728,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_float) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_float << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22795,9 +22795,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_double) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22862,9 +22862,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             std::cerr << "WARNING: While converting from minimum, hd_prim_long_double->To(tmp_long_double) rounded incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long_double << " diff " << difference << " maxdiff " << maxdiff << std::endl;
@@ -22951,9 +22951,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_bool) rounded incorrectly from " <<
@@ -23012,9 +23012,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_char) rounded incorrectly from " <<
@@ -23073,9 +23073,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_signed_char) rounded incorrectly from " <<
@@ -23134,9 +23134,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_short) rounded incorrectly from " <<
@@ -23195,9 +23195,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_int) rounded incorrectly from " <<
@@ -23256,9 +23256,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_long) rounded incorrectly from " <<
@@ -23317,9 +23317,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -23378,9 +23378,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -23439,9 +23439,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -23500,9 +23500,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -23561,9 +23561,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_float) rounded incorrectly from " <<
@@ -23622,9 +23622,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_double) rounded incorrectly from " <<
@@ -23683,9 +23683,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<bool>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<bool>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_bool->To(tmp_long_double) rounded incorrectly from " <<
@@ -23744,9 +23744,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_bool) rounded incorrectly from " <<
@@ -23805,9 +23805,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_char) rounded incorrectly from " <<
@@ -23866,9 +23866,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_signed_char) rounded incorrectly from " <<
@@ -23927,9 +23927,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_short) rounded incorrectly from " <<
@@ -23988,9 +23988,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_int) rounded incorrectly from " <<
@@ -24049,9 +24049,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_long) rounded incorrectly from " <<
@@ -24110,9 +24110,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -24171,9 +24171,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -24232,9 +24232,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -24293,9 +24293,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -24354,9 +24354,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_float) rounded incorrectly from " <<
@@ -24415,9 +24415,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_double) rounded incorrectly from " <<
@@ -24476,9 +24476,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_char->To(tmp_long_double) rounded incorrectly from " <<
@@ -24537,9 +24537,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_bool) rounded incorrectly from " <<
@@ -24598,9 +24598,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_char) rounded incorrectly from " <<
@@ -24659,9 +24659,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_signed_char) rounded incorrectly from " <<
@@ -24720,9 +24720,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_short) rounded incorrectly from " <<
@@ -24781,9 +24781,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_int) rounded incorrectly from " <<
@@ -24842,9 +24842,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_long) rounded incorrectly from " <<
@@ -24903,9 +24903,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -24964,9 +24964,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -25025,9 +25025,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -25086,9 +25086,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -25147,9 +25147,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_float) rounded incorrectly from " <<
@@ -25208,9 +25208,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_double) rounded incorrectly from " <<
@@ -25269,9 +25269,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<signed char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<signed char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_signed_char->To(tmp_long_double) rounded incorrectly from " <<
@@ -25330,9 +25330,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_bool) rounded incorrectly from " <<
@@ -25391,9 +25391,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_char) rounded incorrectly from " <<
@@ -25452,9 +25452,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_signed_char) rounded incorrectly from " <<
@@ -25513,9 +25513,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_short) rounded incorrectly from " <<
@@ -25574,9 +25574,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_int) rounded incorrectly from " <<
@@ -25635,9 +25635,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_long) rounded incorrectly from " <<
@@ -25696,9 +25696,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -25757,9 +25757,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -25818,9 +25818,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -25879,9 +25879,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -25940,9 +25940,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_float) rounded incorrectly from " <<
@@ -26001,9 +26001,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_double) rounded incorrectly from " <<
@@ -26062,9 +26062,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_short->To(tmp_long_double) rounded incorrectly from " <<
@@ -26123,9 +26123,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_bool) rounded incorrectly from " <<
@@ -26184,9 +26184,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_char) rounded incorrectly from " <<
@@ -26245,9 +26245,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_signed_char) rounded incorrectly from " <<
@@ -26306,9 +26306,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_short) rounded incorrectly from " <<
@@ -26367,9 +26367,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_int) rounded incorrectly from " <<
@@ -26428,9 +26428,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_long) rounded incorrectly from " <<
@@ -26489,9 +26489,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -26550,9 +26550,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -26611,9 +26611,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -26672,9 +26672,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -26733,9 +26733,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_float) rounded incorrectly from " <<
@@ -26794,9 +26794,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_double) rounded incorrectly from " <<
@@ -26855,9 +26855,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_int->To(tmp_long_double) rounded incorrectly from " <<
@@ -26916,9 +26916,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_bool) rounded incorrectly from " <<
@@ -26977,9 +26977,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_char) rounded incorrectly from " <<
@@ -27038,9 +27038,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_signed_char) rounded incorrectly from " <<
@@ -27099,9 +27099,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_short) rounded incorrectly from " <<
@@ -27160,9 +27160,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_int) rounded incorrectly from " <<
@@ -27221,9 +27221,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_long) rounded incorrectly from " <<
@@ -27282,9 +27282,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -27343,9 +27343,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -27404,9 +27404,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -27465,9 +27465,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -27526,9 +27526,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_float) rounded incorrectly from " <<
@@ -27587,9 +27587,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_double) rounded incorrectly from " <<
@@ -27648,9 +27648,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long->To(tmp_long_double) rounded incorrectly from " <<
@@ -27709,9 +27709,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_bool) rounded incorrectly from " <<
@@ -27770,9 +27770,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_char) rounded incorrectly from " <<
@@ -27831,9 +27831,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_signed_char) rounded incorrectly from " <<
@@ -27892,9 +27892,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_short) rounded incorrectly from " <<
@@ -27953,9 +27953,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_int) rounded incorrectly from " <<
@@ -28014,9 +28014,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_long) rounded incorrectly from " <<
@@ -28075,9 +28075,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -28136,9 +28136,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -28197,9 +28197,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -28258,9 +28258,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -28319,9 +28319,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_float) rounded incorrectly from " <<
@@ -28380,9 +28380,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_double) rounded incorrectly from " <<
@@ -28441,9 +28441,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned char>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned char>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_char->To(tmp_long_double) rounded incorrectly from " <<
@@ -28502,9 +28502,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_bool) rounded incorrectly from " <<
@@ -28563,9 +28563,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_char) rounded incorrectly from " <<
@@ -28624,9 +28624,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_signed_char) rounded incorrectly from " <<
@@ -28685,9 +28685,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_short) rounded incorrectly from " <<
@@ -28746,9 +28746,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_int) rounded incorrectly from " <<
@@ -28807,9 +28807,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_long) rounded incorrectly from " <<
@@ -28868,9 +28868,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -28929,9 +28929,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -28990,9 +28990,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -29051,9 +29051,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -29112,9 +29112,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_float) rounded incorrectly from " <<
@@ -29173,9 +29173,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_double) rounded incorrectly from " <<
@@ -29234,9 +29234,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned short>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned short>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_short->To(tmp_long_double) rounded incorrectly from " <<
@@ -29295,9 +29295,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_bool) rounded incorrectly from " <<
@@ -29356,9 +29356,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_char) rounded incorrectly from " <<
@@ -29417,9 +29417,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_signed_char) rounded incorrectly from " <<
@@ -29478,9 +29478,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_short) rounded incorrectly from " <<
@@ -29539,9 +29539,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_int) rounded incorrectly from " <<
@@ -29600,9 +29600,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_long) rounded incorrectly from " <<
@@ -29661,9 +29661,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -29722,9 +29722,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -29783,9 +29783,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -29844,9 +29844,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -29905,9 +29905,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_float) rounded incorrectly from " <<
@@ -29966,9 +29966,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_double) rounded incorrectly from " <<
@@ -30027,9 +30027,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned int>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned int>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_int->To(tmp_long_double) rounded incorrectly from " <<
@@ -30088,9 +30088,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_bool) rounded incorrectly from " <<
@@ -30149,9 +30149,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_char) rounded incorrectly from " <<
@@ -30210,9 +30210,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_signed_char) rounded incorrectly from " <<
@@ -30271,9 +30271,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_short) rounded incorrectly from " <<
@@ -30332,9 +30332,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_int) rounded incorrectly from " <<
@@ -30393,9 +30393,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_long) rounded incorrectly from " <<
@@ -30454,9 +30454,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -30515,9 +30515,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -30576,9 +30576,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -30637,9 +30637,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -30698,9 +30698,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_float) rounded incorrectly from " <<
@@ -30759,9 +30759,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_double) rounded incorrectly from " <<
@@ -30820,9 +30820,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<unsigned long>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<unsigned long>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_unsigned_long->To(tmp_long_double) rounded incorrectly from " <<
@@ -30881,9 +30881,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_bool) rounded incorrectly from " <<
@@ -30942,9 +30942,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_char) rounded incorrectly from " <<
@@ -31003,9 +31003,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_signed_char) rounded incorrectly from " <<
@@ -31064,9 +31064,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_short) rounded incorrectly from " <<
@@ -31125,9 +31125,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_int) rounded incorrectly from " <<
@@ -31186,9 +31186,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_long) rounded incorrectly from " <<
@@ -31247,9 +31247,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -31308,9 +31308,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -31369,9 +31369,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -31430,9 +31430,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -31491,9 +31491,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_float) rounded incorrectly from " <<
@@ -31552,9 +31552,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_double) rounded incorrectly from " <<
@@ -31613,9 +31613,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<float>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<float>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_float->To(tmp_long_double) rounded incorrectly from " <<
@@ -31674,9 +31674,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_bool) rounded incorrectly from " <<
@@ -31735,9 +31735,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_char) rounded incorrectly from " <<
@@ -31796,9 +31796,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_signed_char) rounded incorrectly from " <<
@@ -31857,9 +31857,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_short) rounded incorrectly from " <<
@@ -31918,9 +31918,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_int) rounded incorrectly from " <<
@@ -31979,9 +31979,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_long) rounded incorrectly from " <<
@@ -32040,9 +32040,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -32101,9 +32101,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -32162,9 +32162,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -32223,9 +32223,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -32284,9 +32284,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_float) rounded incorrectly from " <<
@@ -32345,9 +32345,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_double) rounded incorrectly from " <<
@@ -32406,9 +32406,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_double->To(tmp_long_double) rounded incorrectly from " <<
@@ -32467,9 +32467,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_bool - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<bool>::round_error())
-            maxdiff = std::numeric_limits<bool>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<bool>::round_error)
+            maxdiff = Lim<bool>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_bool) rounded incorrectly from " <<
@@ -32528,9 +32528,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<char>::round_error())
-            maxdiff = std::numeric_limits<char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<char>::round_error)
+            maxdiff = Lim<char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_char) rounded incorrectly from " <<
@@ -32589,9 +32589,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_signed_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<signed char>::round_error())
-            maxdiff = std::numeric_limits<signed char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<signed char>::round_error)
+            maxdiff = Lim<signed char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_signed_char) rounded incorrectly from " <<
@@ -32650,9 +32650,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<short>::round_error())
-            maxdiff = std::numeric_limits<short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<short>::round_error)
+            maxdiff = Lim<short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_short) rounded incorrectly from " <<
@@ -32711,9 +32711,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<int>::round_error())
-            maxdiff = std::numeric_limits<int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<int>::round_error)
+            maxdiff = Lim<int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_int) rounded incorrectly from " <<
@@ -32772,9 +32772,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long>::round_error())
-            maxdiff = std::numeric_limits<long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long>::round_error)
+            maxdiff = Lim<long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_long) rounded incorrectly from " <<
@@ -32833,9 +32833,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_char - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned char>::round_error())
-            maxdiff = std::numeric_limits<unsigned char>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned char>::round_error)
+            maxdiff = Lim<unsigned char>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_unsigned_char) rounded incorrectly from " <<
@@ -32894,9 +32894,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_short - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned short>::round_error())
-            maxdiff = std::numeric_limits<unsigned short>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned short>::round_error)
+            maxdiff = Lim<unsigned short>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_unsigned_short) rounded incorrectly from " <<
@@ -32955,9 +32955,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_int - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned int>::round_error())
-            maxdiff = std::numeric_limits<unsigned int>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned int>::round_error)
+            maxdiff = Lim<unsigned int>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_unsigned_int) rounded incorrectly from " <<
@@ -33016,9 +33016,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_unsigned_long - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<unsigned long>::round_error())
-            maxdiff = std::numeric_limits<unsigned long>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<unsigned long>::round_error)
+            maxdiff = Lim<unsigned long>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_unsigned_long) rounded incorrectly from " <<
@@ -33077,9 +33077,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_float - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<float>::round_error())
-            maxdiff = std::numeric_limits<float>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<float>::round_error)
+            maxdiff = Lim<float>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_float) rounded incorrectly from " <<
@@ -33138,9 +33138,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<double>::round_error())
-            maxdiff = std::numeric_limits<double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<double>::round_error)
+            maxdiff = Lim<double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_double) rounded incorrectly from " <<
@@ -33199,9 +33199,9 @@ int main() {
             } catch (const Hexception & x) {}
             difference = tmp_long_double - difference;
           }
-          long double maxdiff = std::numeric_limits<long double>::round_error();
-          if (maxdiff < std::numeric_limits<long double>::round_error())
-            maxdiff = std::numeric_limits<long double>::round_error();
+          long double maxdiff = Lim<long double>::round_error;
+          if (maxdiff < Lim<long double>::round_error)
+            maxdiff = Lim<long double>::round_error;
           if (maxdiff < difference) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from 1, hd_prim_long_double->To(tmp_long_double) rounded incorrectly from " <<

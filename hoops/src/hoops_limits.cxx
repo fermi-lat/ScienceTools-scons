@@ -208,6 +208,44 @@ namespace hoops {
       numeric_limits<double>::is_signed;
   //////////////////////////////////////////////////////////////////////////////
 
+  // Lim<T>::round_error static initializations.
+  //////////////////////////////////////////////////////////////////////////////
+  template <>
+  const bool Lim<bool>::round_error = numeric_limits<bool>::round_error();
+  template <>
+  const char Lim<char>::round_error = numeric_limits<char>::round_error();
+  template <>
+  const signed char Lim<signed char>::round_error =
+      numeric_limits<signed char>::round_error();
+  template <>
+  const short Lim<short>::round_error = numeric_limits<short>::round_error();
+  template <>
+  const int Lim<int>::round_error = numeric_limits<int>::round_error();
+  template <>
+  const long Lim<long>::round_error = numeric_limits<long>::round_error();
+  template <>
+  const unsigned char Lim<unsigned char>::round_error =
+      numeric_limits<unsigned char>::round_error();
+  template <>
+  const unsigned short Lim<unsigned short>::round_error =
+      numeric_limits<unsigned short>::round_error();
+  template <>
+  const unsigned int Lim<unsigned int>::round_error =
+      numeric_limits<unsigned int>::round_error();
+  template <>
+  const unsigned long Lim<unsigned long>::round_error =
+      numeric_limits<unsigned long>::round_error();
+  template <>
+  const float Lim<float>::round_error = numeric_limits<float>::round_error();
+  template <>
+  const double Lim<double>::round_error = numeric_limits<double>::round_error();
+  // On *expletive* Solaris, numeric_limits<long double> causes the 
+  // compiler to exit with assertion failures.
+  template <>
+  const long double Lim<long double>::round_error =
+      numeric_limits<double>::round_error();
+  //////////////////////////////////////////////////////////////////////////////
+
   // Lim<T>::max static initializations.
   //////////////////////////////////////////////////////////////////////////////
   template <>
@@ -381,6 +419,11 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.3  2003/12/02 14:39:44  peachey
+ * To support compilers which do not have limits, such as g++ 2.95.x,
+ * add round_error field to Lim class. This allows the test code to
+ * be compiled without the limits header.
+ *
  * Revision 1.2  2003/11/10 18:16:12  peachey
  * Moved header files into hoops subdirectory.
  *

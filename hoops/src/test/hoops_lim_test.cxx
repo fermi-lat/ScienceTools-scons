@@ -1,13 +1,13 @@
 #include <iostream>
-#include <limits>
 /* If this implementation has <limits>, lie to hoops_numeric_limits.h
    so that it includes its own implementation anyway. */
 #ifdef HAVE_LIMITS
+#include <limits>
 #define REALLY_HAVE_LIMITS
 #undef HAVE_LIMITS
-#else
-/* This should be removed when HAVE_LIMITS is really being set by the build: */
-#define REALLY_HAVE_LIMITS
+//#else
+///* This should be removed when HAVE_LIMITS is really being set by the build: */
+//#define REALLY_HAVE_LIMITS
 #endif
 #include "hoops/hoops_numeric_limits.h"
 int main() {
