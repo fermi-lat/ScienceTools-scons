@@ -39,8 +39,8 @@ public:
    /// @param maxNumEntries The maximum number of entries in the ScData
    ///        buffer before a FITS file is written.
    ScDataContainer(const std::string &filename, 
-                   int maxNumEntries=20000) : 
-      ContainerBase(filename, maxNumEntries) {
+                   int maxNumEntries=20000, bool writeData=true) : 
+      ContainerBase(filename, maxNumEntries), m_writeData(writeData) {
       init();
    }
 
@@ -64,6 +64,9 @@ private:
 
    /// The ScData buffer.
    std::vector<ScData> m_scData;
+
+   /// Flag if ScData is to be written out to FT2 files.
+   bool m_writeData;
 
    /// This routine contains the constructor implementation.
    void init();

@@ -58,7 +58,7 @@ public:
              const std::vector<std::string> &fileList,
              double totalArea = 1.21,
              double startTime = 0.,
-             const std::string &pointingHistory = "") 
+             const std::string &pointingHistory = "")
       : m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceName, fileList, totalArea, startTime, pointingHistory);
    }
