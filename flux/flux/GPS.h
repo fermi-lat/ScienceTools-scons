@@ -43,7 +43,9 @@ public:
             UPDOWN, //! Satellite will be rocked toward the north pole in the northern hemisphere, opposite in the south.
             SLEWING, //! (experimental) like UPDOWN, except that rotation at equator happens gradually.
             ONEPERORBIT, //! LAT rocked northward for one orbit, southward for the next.
-            EXPLICIT //!  Explicit angles given - this is used only if rotAngles get set.
+            EXPLICIT, //!  Explicit angles given - this is used only if rotAngles get set.
+			POINT, //!  The Lat points in a given direction.  Here, m_rotangles is in (l,b) format for pointing.
+			HISTORY //! This setting is for using a previously generated pointing database to represent the orbit.
         };
 
     class Coords {
