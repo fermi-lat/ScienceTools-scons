@@ -4,6 +4,7 @@
             James Peachey, HEASARC
 */
 
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -16,16 +17,28 @@
 #include "evtbin/LinearBinner.h"
 // Class encapsulating description of a binner with logarithmically equal size bins.
 #include "evtbin/LogBinner.h"
+// Class for binning into Hist objects from tip objects:
+#include "evtbin/RecordBinFiller.h"
+// Class encapsulating histograms with Tip-access.
+#include "evtbin/TipHist.h"
 // Application base class.
 #include "st_app/StApp.h"
 // Factory used by st_app's standard main to create application object.
 #include "st_app/StAppFactory.h"
+// Tip File access.
+#include "tip/IFileSvc.h"
+// Tip Table access.
+#include "tip/Table.h"
 
 /** \class EvtBinTest
     \brief Application singleton for evtbin test program.
 */
 class EvtBinTest : public st_app::StApp {
   public:
+    EvtBinTest();
+
+    virtual ~EvtBinTest() throw() {}
+
     /** \brief Run all tests.
     */
     virtual void run();
@@ -38,9 +51,20 @@ class EvtBinTest : public st_app::StApp {
 
     void testHist2D();
 
+    void testLightCurve();
+
+    void testSimpleSpectrum();
+
   private:
+    std::string m_data_dir;
     bool m_failed;
 };
+
+EvtBinTest::EvtBinTest() {
+  const char * data_dir = getenv("EVTBINROOT");
+  if (0 != data_dir) m_data_dir = data_dir;
+  m_data_dir += "/data/";
+}
 
 void EvtBinTest::run() {
   m_failed = false;
@@ -53,6 +77,10 @@ void EvtBinTest::run() {
   testHist1D();
   // Test two dimensional histogram:
   testHist2D();
+  // Test light curve with no energy binning (using Tip):
+  testLightCurve();
+  // Test simple spectrum with no time binning (using Tip):
+  testSimpleSpectrum();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -193,7 +221,7 @@ void EvtBinTest::testHist2D() {
   // Create a log binner with 10 bins spanning the interval [1, exp(10.)):
   LogBinner binner2(1., exp(10.), 10);
 
-  // Create a histogram using this binner:
+  // Create a histogram using these binners:
   Hist2D hist(&binner1, &binner2);
 
   // Populate this histogram, starting from right of the right endpoint, going to left of left endpoint:
@@ -218,5 +246,86 @@ void EvtBinTest::testHist2D() {
   }
 }
 
-/// \brief Create factory object which can create the application:
+void EvtBinTest::testLightCurve() {
+  using namespace evtbin;
+
+  // Open input table:
+  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
+
+  // Create a linear binner (for time bins):
+  LinearBinner binner(0., 900000., 1000, "TIME");
+
+  // Create the histogram:
+  Hist1D hist(&binner);
+
+  // Fill the histogram, using helper class RecordBinFiller, which b
+  std::for_each(table->begin(), table->end(), RecordBinFiller(hist));
+
+  // Create output file, copying keywords from input events table:
+  tip::IFileSvc::instance().createFile("LC1.lc", m_data_dir + "LatLightCurveTemplate");
+
+  // Clean up:
+  delete table;
+
+  // Open output spectrum:
+  tip::Table * otable = tip::IFileSvc::instance().editTable("LC1.lc", "RATE");
+  
+  // Set table size:
+  otable->setNumRecords(binner.getNumBins());
+
+  // Set up output iterator:
+  tip::Table::Iterator table_itor = otable->begin();
+
+  // Iterate over histogram and output table, writing the output to the table and the screen:
+  for (long ii = 0; ii != binner.getNumBins(); ++ii, ++table_itor) {
+    std::cout << "Bin " << ii << " == " << hist[ii] << std::endl;
+    (*table_itor)["TIME"].set(binner.getInterval(ii).getMidpoint());
+    (*table_itor)["TIMEDEL"].set(binner.getBinWidth(ii));
+    (*table_itor)["COUNTS"].set(hist[ii]);
+  }
+
+  delete otable;
+}
+
+void EvtBinTest::testSimpleSpectrum() {
+  using namespace evtbin;
+
+  // Open input table:
+  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
+
+  // Create a linear binner (for time bins):
+  LogBinner binner(1., 90000., 1000, "ENERGY");
+
+  // Create the histogram:
+  Hist1D hist(&binner);
+
+  // Fill the histogram, using helper class RecordBinFiller, which b
+  std::for_each(table->begin(), table->end(), RecordBinFiller(hist));
+
+  // Create output file:
+  tip::IFileSvc::instance().createFile("PHA1.pha", m_data_dir + "LatSingleBinnedTemplate");
+
+  // Clean up:
+  delete table;
+
+  // Open output spectrum:
+  tip::Table * otable = tip::IFileSvc::instance().editTable("PHA1.pha", "SPECTRUM");
+  
+  // Set table size:
+  otable->setNumRecords(binner.getNumBins());
+
+  // Set up output iterator:
+  tip::Table::Iterator table_itor = otable->begin();
+
+  // Iterate over histogram and output table, writing the output to the table and the screen:
+  for (long ii = 0; ii != binner.getNumBins(); ++ii, ++table_itor) {
+    std::cout << "Bin " << ii << " == " << hist[ii] << std::endl;
+    (*table_itor)["CHANNEL"].set(ii + 1);
+    (*table_itor)["COUNTS"].set(hist[ii]);
+  }
+
+  delete otable;
+}
+
+/// \brief Create factory singleton object which will create the application:
 st_app::StAppFactory<EvtBinTest> g_app_factory;
