@@ -68,7 +68,7 @@ int main() {
         double channel = 0.;
 
         // For convenience, dereference the iterator.
-        Table::Record & r = *itor;
+        Table::Record r = *itor;
 
         // Explicitly get the "counts" field from the file into the counts_vec array, one value at
         // a time.
@@ -275,9 +275,7 @@ int main() {
     try {
       int recordNum = 0;
 
-      // Declare an iterator and dereference it outside the loop.
-      Table::Iterator itor;
-      Table::Record & r = *itor;
+      Table::Record r;
 
       // Make local aliases to hold two fields from the file. These variables are bound to the Iterator's
       // referent Table::Record object.
@@ -285,7 +283,8 @@ int main() {
       Table::Scalar<double> McCharge = r["McCharge"];
 
       // Show the columns.
-      for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
+      for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+        r = *itor;
         std::cout << "*     " << recordNum++ << " *      " << McEnergy << " *      " << McCharge << std::endl;
       }
 
