@@ -6,7 +6,12 @@
 
 #include "EventSource.h"
 // forward declarations
-class DOM_Element;
+
+#include <xercesc/util/XercesDefs.hpp>
+XERCES_CPP_NAMESPACE_BEGIN
+class  DOMElement;
+XERCES_CPP_NAMESPACE_END
+
 class ISpectrum;
 
 // 
@@ -22,7 +27,7 @@ public:
     /**  constructor
     @param xelem The xml description for this source
     */
-    FluxSource ( const DOM_Element& xelem );
+    FluxSource ( const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem );
 
     ///    destructor
     virtual ~FluxSource();

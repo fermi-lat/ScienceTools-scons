@@ -8,9 +8,10 @@
 
 #include "Spectrum.h"
 #include <string>
-
-class DOM_Element;
-
+#include <xercesc/util/XercesDefs.hpp>
+XERCES_CPP_NAMESPACE_BEGIN
+class  DOMElement;
+XERCES_CPP_NAMESPACE_END
 
 /** 
 * \class SimpleSpectrum
@@ -23,7 +24,8 @@ public:
 
     /// ctor for instantiation from XML element  "particle"
     /// @param xelem nested element, expect either "power_law or "energy"
-    SimpleSpectrum(const DOM_Element& xelem, bool useGeV=true);
+    SimpleSpectrum(const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem, 
+                   bool useGeV=true);
 
     /// ctor for instantiation from XML element "SpectrumClass"
     /// @param parameter string 
