@@ -27,8 +27,6 @@
 
 #include "MapSource.h"
 
-//namespace fluxSources {
-
 ISpectrumFactory &MapSourceFactory() {
    static SpectrumFactory<MapSource> myFactory;
    return myFactory;
@@ -150,5 +148,3 @@ void MapSource::readFitsFile(std::string fitsFile) {
       m_integralDist[i] /= m_integralDist[npix-1];
    }
 }
-
-//} // namespace fluxSources

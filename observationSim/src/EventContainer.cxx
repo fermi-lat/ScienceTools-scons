@@ -200,10 +200,10 @@ void EventContainer::writeEvents() {
             std::cout << eObj.what() << std::endl;
             std::exit(-1);
          }
-//          tip::Table::Vector<short> calibVersion = row["calib_version"];
-//          for (int i = 0; i < 3; i++) {
-//             calibVersion[i] = 1;
-//          }
+         tip::Table::Vector<short> calibVersion = row["calib_version"];
+         for (int i = 0; i < 3; i++) {
+            calibVersion[i] = 1;
+         }
       }
       it = my_table->begin();
       double start_time;

@@ -34,17 +34,25 @@
 // #include "GRB/GRBmanager.h"
 // static SpectrumFactory<GRBmanager> my_factory;
 
+ISpectrumFactory & GaussianSourceFactory();
 ISpectrumFactory & MapSourceFactory();
+ISpectrumFactory & PeriodicSourceFactory();
+ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
+ISpectrumFactory & TransientTemplateFactory();
 
 using Likelihood::Util;
 
 class ObsSim {
 public:
-   ObsSim(hoops::IParGroup & pars) : m_pars(pars) {
+   ObsSim(hoops::IParGroup & pars) : m_pars(pars), m_simulator(0) {
       m_count = m_pars["Number_of_events"];
+      GaussianSourceFactory();
       MapSourceFactory();
+      PeriodicSourceFactory();
+      PulsarFactory();
       SimpleTransientFactory();
+      TransientTemplateFactory();
    }
    ~ObsSim() {
       delete m_simulator;

@@ -554,4 +554,36 @@
       </spectrum>
    </source>
 
+   <source name="transient_template">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+          params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+         <celestial_dir ra="80" dec="20"/>
+      </spectrum>
+   </source>
+
+   <source name="periodic_source">
+      <spectrum escale="MeV">
+         <SpectrumClass name="PeriodicSource"
+                        params="0.1, 2.1, 1e3, 1, 0.75, 30., 2e5"/>
+         <galactic_dir l="0" b="0"/>
+      </spectrum>
+   </source>
+
+   <source name="Crab_Pulsar">
+      <spectrum escale="MeV">
+         <SpectrumClass name="Pulsar"
+         params="1e-3,2.,0.033,0,0,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+         <celestial_dir ra="83.57" dec="22.01"/>
+      </spectrum>
+   </source>
+
+   <source name="gaussian_source">
+      <spectrum escale="MeV">
+         <SpectrumClass name="GaussianSource"
+                        params="0.1, 2.1, 45., 30., 3., 0.5, 45, 30., 2e5"/>
+         <use_spectrum frame="galaxy"/>
+      </spectrum>
+   </source>
+
 </source_library>

@@ -14,8 +14,6 @@
 
 #include "flux/Spectrum.h"
 
-//namespace fluxSources {
-
 /**
  * @class MapSource
  *
@@ -93,7 +91,5 @@ private:
    void readFitsFile(std::string fitsFile);
 
 };
-
-//} // namespace fluxSources
 
 #endif // mySpectrum_MapSource_h
