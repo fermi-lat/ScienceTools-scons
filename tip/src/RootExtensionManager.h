@@ -100,6 +100,13 @@ namespace tip {
       template <typename T>
       void getKeywordGeneric(const std::string & name, T & value) const;
 
+      /** \brief Templated function which can set keywords in a FITS table.
+          \param name The name of the keyword.
+          \param value The value to be written.
+      */
+      template <typename T>
+      void setKeywordGeneric(const std::string & name, const T & value);
+
       // Table-specific support:
       /** \brief Open the Root table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table (TTree).
@@ -162,7 +169,14 @@ namespace tip {
   template <typename T>
 //  inline void RootExtensionManager::getKeywordGeneric(const std::string & name, T & value) const {
   inline void RootExtensionManager::getKeywordGeneric(const std::string &, T &) const {
-    throw TipException("Keyword access not yet implemented for Root files.");
+    throw TipException("Keyword reading not yet implemented for Root files.");
+  }
+
+  // Setting keywords.
+  template <typename T>
+//  inline void RootExtensionManager::setKeywordGeneric(const std::string & name, const T & value) {
+  inline void RootExtensionManager::setKeywordGeneric(const std::string &, const T &) {
+    throw TipException("Keyword writing not yet implemented for Root files.");
   }
 
   // Getting columns.
