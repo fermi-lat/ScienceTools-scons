@@ -62,7 +62,7 @@ namespace facilities {
 #endif
       locStream << val;
 #ifdef DEFECT_NO_STRINGSTREAM
-      locStream << std::endl;
+      locStream << std::ends;
 #endif
       outStr = locStream.str();
       return outStr.c_str();
