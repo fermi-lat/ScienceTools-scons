@@ -42,7 +42,6 @@ The (latitude,longitude) vertices for the SAA polygon are (in degrees):
 latv=(-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30,-30);
 lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
 
-@TODO: implement this
     */
     bool insideSAA()const;
 

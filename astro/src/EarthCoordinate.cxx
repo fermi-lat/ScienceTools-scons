@@ -75,88 +75,87 @@ double  EarthCoordinate::GetGMST(JulianDate jd)
     if (Tempo_Siderale_Ora >= 24.) Tempo_Siderale_Ora = Tempo_Siderale_Ora - 24.;
     return Tempo_Siderale_Ora*15.;  
 }  
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#if 0  // old version
-bool EarthCoordinate::insideSAA()const
-{
-    double perim[7][2] = {{-88.,-30.},{-88.,-12.},{-55.,-0.1},{-32.,-0.1},{-7,-12},
-    {50.,-25},{50.,-30.}};
-    double longmin=-88;
-    double longmax=50.;
-    double latmin=-30;
-    double latmax=-0.1;
-    double diffx[7],diffy[7],diffd[7];
-    double lon=longitude(), lat=latitude();
-    if((lon>=longmin)&&(lon<=longmax)&&(lat>=latmin)&&(lat<=latmax)){
-      int i;
-        for (i=0;i<6;i++){
-            diffx[i]=perim[i+1][0]-perim[i][0];
-            diffy[i]=perim[i+1][1]-perim[i][1];
-            //cout<<i<<"  "<<diffx[i]<<endl;
-        }
-        diffx[6]=perim[0][0]-perim[6][0];
-        diffy[6]=perim[0][1]-perim[6][1];
-        
-        for (i=0;i<7;i++){
-            diffd[i]=sqrt(sqr(diffx[i])+sqr(diffy[i]));
-        }
-        double xnew[7],ynew[7];
-        int inside[7];
-        int xtemp[7],txtemp=0,tins=0;
-        for (i=0;i<7;i++){
-            xnew[i]=((lon-perim[i][0])*diffx[i]+(lat-perim[i][1])*diffy[i])/diffd[i];
-            ynew[i]=(lat-perim[i][1])*diffx[i]-(lon-perim[i][0])*diffy[i];
-            xtemp[i]=((xnew[i] >=0.)&&(xnew[i]<=diffd[i]));
-            inside[i]=(xtemp[i] == 1) && (ynew[i]<0.);
-            txtemp+=xtemp[i];
-            tins+=inside[i];
-            //cout<<diffd[i]<<endl;
-        }
-        bool insaa=(txtemp==tins)&&(txtemp >0);
-        
-        return insaa;
-    }
-    else
-        return false;
-}
-#endif
+// Determine whether we are inside the SAA (South Atlantic Anomaly)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-bool EarthCoordinate::insideSAA()const
+bool EarthCoordinate::insideSAA() const
 {
-    typedef std::pair<float, float> coords;
+    /* These points are assumed to be in counter-clockwise order,
+       starting in the southeast */
+    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
+                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
+
+    typedef std::pair<double, double> coords;
     static std::vector<coords> corners;  // (latitude, longitude)
     static bool initialized = false;
-    static float lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
-    float my_lon=longitude(), my_lat=latitude();
+    static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
+    double my_lon = longitude(), my_lat =latitude();
     
     if (!initialized)
     {
-        corners.push_back(coords(-30., 45.));
-        corners.push_back(coords(-26., 41.));
-        corners.push_back(coords(-20., 31.));
-        corners.push_back(coords(-17., 9.));
-        corners.push_back(coords(-10., -11.));
-        corners.push_back(coords(1., -34.));
-        corners.push_back(coords(2., -46.));
-        corners.push_back(coords(-3., -62.));
-        corners.push_back(coords(-8., -79.));
-        corners.push_back(coords(-12., -85.));
-        corners.push_back(coords(-19., -89.));
-        corners.push_back(coords(-30., -87.));
-        for(std::vector<coords>::iterator it = corners.begin(); it != corners.end(); ++it)
+        for (int i = 0; i < sizeof(latv)/sizeof(double); ++i)
         {
-            if (it->first < lat_min) lat_min = it->first;
-            if (it->first > lat_max) lat_max = it->first;
-            if (it->second < lon_min) lon_min = it->second;
-            if (it->second > lon_max) lon_max = it->second;
+            corners.push_back(coords(latv[i], lonv[i]));
+            if (latv[i] < lat_min) lat_min = latv[i];
+            if (latv[i] > lat_max) lat_max = latv[i];
+            if (lonv[i] < lon_min) lon_min = lonv[i];
+            if (lonv[i] > lon_max) lon_max = lonv[i];
         }
         initialized = true;
     }
     
+    // If outside rectangular boundary
     if (my_lon < lon_min || my_lon > lon_max || my_lat < lat_min || my_lat > lat_max)
         return false;
-    else // Given my_lat, calculate min and max longitude to be considered inside SAA
-        return true;
+        
+    /* Find nearest 2 boundary points to the east whose
+        latitude straddles my_lat */
+    std::vector<coords>::const_iterator it = corners.begin();
+    std::vector<coords>::const_iterator prev = it;
+    for ( ; it->first < my_lat && it != corners.end(); prev = it, ++it) {}
+    
+    if (it == corners.end()) return false;
+    
+    // If my_lon is east of both boundary points
+    if (it->second < my_lon && prev->second < my_lon)
+        return false;
+    
+    // If my_lon is east of one of the two boundary points
+    if (it->second < my_lon || prev->second < my_lon)
+    {
+        double slope = (it->first - prev->first)/(it->second - prev->second);
+        double intersection = (my_lat - it->first)/slope + it->second;
+        if (intersection < my_lon)
+            return false;
+    }
+    
+    if (it->first == my_lat)
+    {
+        prev = it;
+        ++it;
+    }
+    
+    /* So far so good.  Now find nearest 2 boundary points to the west whose
+        latitude straddles my_lat */
+    for ( ; it->first > my_lat && it != corners.end(); prev = it, ++it) {}
+    
+    if (it == corners.end()) return false;
+    
+    // If my_lon is west of both boundary points
+    if (it->second > my_lon && prev->second > my_lon)
+        return false;
+    
+    // If my_lon is west of one of the two boundary points
+    if (it->second > my_lon || prev->second > my_lon)
+    {
+        double slope = (it->first - prev->first)/(it->second - prev->second);
+        double intersection = (my_lat - it->first)/slope + it->second;
+        if (intersection > my_lon)
+            return false;
+    }
+    
+    return true;
 }
 
 } // namespace astro
