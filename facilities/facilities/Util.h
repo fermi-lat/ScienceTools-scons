@@ -30,7 +30,16 @@ namespace facilities {
                             const std::string& openDel = std::string("$("),
                             const std::string& closeDel = std::string(")"));
 
-    static const char* itoa(int val);
+    /** Given an input integer @a val to convert and an output string @a outStr
+      converts val into a std::string.
+      This method duplicates the stdlib.h method itoa, except that it returns
+      std::string rather than char*.
+      @param   val
+      @param   outStr
+
+      @return outStr
+    */
+    static std::string itoa(int val, std::string &outStr);
 
   };
 }
