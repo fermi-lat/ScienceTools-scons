@@ -7,6 +7,7 @@
  * $Header$
  */
 
+#include <iostream>
 #include "observationSim/FitsTable.h"
 
 namespace observationSim {
