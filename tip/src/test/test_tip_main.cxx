@@ -30,7 +30,7 @@ int main() {
     // Use it to set name of data directory:
     if (0 != tiproot_cp) {
       tiproot = tiproot_cp;
-      data_dir = tiproot + "/src/test/";
+      data_dir = tiproot + "/data/";
     }
 
     try {
@@ -309,7 +309,6 @@ int main() {
 
     try {
       // Test creating a new (FITS) file using ft1.tpl:
-      data_dir = tiproot + "/data/";
       IFileSvc::instance().createFile("new_ft1.fits", data_dir + "ft1.tpl");
 
       delete my_table; my_table = 0;
