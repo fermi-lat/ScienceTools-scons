@@ -14,6 +14,7 @@
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist.h"
 #include "evtbin/RecordBinFiller.h"
+#include "st_facilities/Env.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
@@ -26,8 +27,7 @@ namespace evtbin {
   DataProduct::DataProduct(const std::string & event_file): m_key_value_pairs(), m_known_keys(), m_data_dir(),
     m_event_file(event_file), m_gti(event_file), m_hist_ptr(0) {
     // Find the directory containing templates.
-    const char * top_dir = getenv("EVTBINROOT");
-    if (0 != top_dir) m_data_dir = std::string(top_dir) + "/data/";
+    m_data_dir = st_facilities::Env::getDataDir("evtbin");
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).

@@ -7,6 +7,9 @@
 
 #include "evtbin/Binner.h"
 #include "evtbin/SingleSpec.h"
+
+#include "st_facilities/Env.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -32,7 +35,7 @@ namespace evtbin {
     updateKeyValue("DETCHANS", binner->getNumBins(), "Total number of detector channels available.");
 
     // Standard file creation from base class.
-    createFile(creator, out_file, m_data_dir + "LatSingleBinnedTemplate");
+    createFile(creator, out_file, st_facilities::Env::appendFileName(m_data_dir, "LatSingleBinnedTemplate"));
 
     // Open SPECTRUM extension of output PHA1 file. Use an auto_ptr so that the table object
     // will for sure be deleted, even if an exception is thrown.
