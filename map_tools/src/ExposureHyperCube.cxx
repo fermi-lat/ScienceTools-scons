@@ -69,7 +69,7 @@ void ExposureHyperCube::setKey(std::string name, std::string value,
 void ExposureHyperCube::save(std::string outfile){
 
    dynamic_cast<FloatImg*>(m_image)->saveElement(outfile);
-   m_image;
+   delete dynamic_cast<FloatImg*>(m_image);
    m_image=0;
 }
 

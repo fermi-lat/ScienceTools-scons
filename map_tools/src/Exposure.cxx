@@ -100,7 +100,7 @@ void Exposure::add(const astro::SkyDir& pos, double deltat){
     for(double lprime=-180.+0.5*Index::skybinsize; lprime <180. ; lprime += Index::skybinsize){
         for(double bprime=-90.+0.5*Index::skybinsize; bprime <90. ; bprime += Index::skybinsize){
             astro::SkyDir prime(lprime, bprime);
-            double cosdiff = pos()*prime();
+            double cosdiff = const_cast<astro::SkyDir&>(pos)()*prime();
             if( cosdiff> Index::cosmin)
                 m_exposureMap[Index(lprime, bprime, cosdiff)]+=deltat;
         }

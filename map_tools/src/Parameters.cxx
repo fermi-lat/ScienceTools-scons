@@ -44,28 +44,15 @@ Parameters::Parameters( int argc, char *argv[])
 
     s_clobber = getBool("clobber");
 
-    // Read name of the file containing events data
-    // if the name starts with "/", assume root. Otherwise assume it is in $INFILES
+    // Read name of the file containing events data and expand any
+    // environment variables.
     m_eventFile = getString("infile");
-    if( m_eventFile.substr(0,1)!="/" ){
-
-        std::string test= "$(INFILES)/" + m_eventFile;
-        try {
-            facilities::Util::expandEnvVar(&test);
-            m_eventFile = test;
-        }catch(...){}
-    }
+    facilities::Util::expandEnvVar(&m_eventFile);
 
     m_filter = getString("filter", "");
 
     m_oname = getString("outfile");
-
-    if( m_oname.substr(0,1)!="/" ){
-
-        m_oname = "$(OUTFILES)/" + m_oname;
-        facilities::Util::expandEnvVar(&m_oname);
-    }
-
+    facilities::Util::expandEnvVar(&m_oname);
 
     if( s_clobber ) m_oname= "!"+m_oname;  // FITS convention to rewrite file
 

@@ -9,9 +9,9 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-#eventfile,s, a, "../../../data/pointing_history.txt", , , "Name of the Exposure File:"
-eventfile,  s, a, "../output/expcube_1_day.fits", , , "Name of the exposure cube input file:"
-outfile,  s, a, "exp_1_day_ait.fits", , , "Name of the exposure outptu file:"
+#infile,s, a, "$(INFILES)/pointing_history.txt", , , "Name of the Exposure File:"
+infile,  s, a, "$(OUTFILES)/expcube_1_day.fits", , , "Name of the exposure cube input file:"
+outfile,  s, a, "$(OUTFILES)/exp_1_day_ait.fits", , , "Name of the exposure output file:"
 templatefile,  s, a, "$(TPLDIR)/CountMap", , , "Name of the template file:"
 #
 #---------------------------------------------------------------------------------------
