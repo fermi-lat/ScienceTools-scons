@@ -1,5 +1,5 @@
 package observationSim
-version v2r2
+version v2r3
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -7,7 +7,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 branches observationSim cmt src doc
 
-use MapFlux v0*
+#use MapFlux v0*
 use flux v8*
 use latResponse v1*
 use Goodi v2*
@@ -27,13 +27,16 @@ use hoops v*
 #use python v2* IExternal
 #macro pydir ../python/
 
-# MapFlux needs to be loaded dynamically.
-macro_append use_linkopts "" \
-Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
-WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
+## MapFlux needs to be loaded dynamically.
+#macro_append use_linkopts "" \
+#Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
+#WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
 
 # allow use of internal path
-macro observationSim_cppflags "" Linux "-I ../src -g -O -pedantic -D TRAP_FPE " WIN32 "/I..\src  /wd4290"
+macro observationSim_cppflags "" \
+#Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D HAVE_MAPFLUX " \
+Linux "-I ../src -g -O -pedantic -D TRAP_FPE " \
+WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O"
 
 # suppress warning messages (from flux, Goodi, etc.) on Linux:
@@ -63,7 +66,7 @@ library observationSim -no_share $(my_headers) \
 set INFILES "$(GOODIROOT)/Data"
 
 # test applications
-#application test_observationSim test/main.cxx
+application test_observationSim test/main.cxx
 #application testGoodiRead test/testGoodiRead.cxx
 
 # O2 prototype

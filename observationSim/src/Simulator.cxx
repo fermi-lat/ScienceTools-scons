@@ -29,12 +29,12 @@
 
 #include "flux/SpectrumFactory.h"
 
-//#if 0
+#if HAVE_MAPFLUX
 #include "src/MapSpectrum.h"
 
 static SpectrumFactory<MapSpectrum> factory;
 const ISpectrumFactory& MapSpectrumFactory = factory;
-//#endif
+#endif
 
 namespace observationSim {
 
