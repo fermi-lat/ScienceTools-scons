@@ -82,7 +82,7 @@ int main() {
 
       }
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while testing TableIterator." << std::endl;
+      std::cerr << "Unexpected exception while testing TableIterator: " << x.what() << std::endl;
       status = 1;
     }
 
@@ -209,7 +209,8 @@ int main() {
       }
 
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while testing reading through the iterator into Ref." << std::endl;
+      std::cerr << "Unexpected exception while testing reading through the iterator into Ref: " <<
+        x.what() << std::endl;
       status = 1;
     }
 
@@ -229,15 +230,44 @@ int main() {
         status = 1;
       }
     } catch(const TableException & x) {
-      std::cerr << "Unexpected exception while testing direct keyword access." << std::endl;
+      std::cerr << "Unexpected exception while testing direct keyword access: " << x.what() << std::endl;
       status = 1;
     }
 
+    delete my_table; my_table = 0;
+
+    // Now test Root file access.
+    my_table = IFileSvc::getSvc().editTable("merit.root", "1");
+
+    try {
+      int recordNum = 0;
+
+      // Declare an iterator and dereference it outside the loop.
+      Table::Iterator itor;
+      Table::Record & r = *itor;
+
+      // Make local aliases to hold two fields from the file. These variables are bound to the Iterator's
+      // referent Table::Record object.
+      Table::Ref<double> McEnergy = r["McEnergy"];
+      Table::Ref<double> McCharge = r["McCharge"];
+
+      // Show the columns.
+      for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
+        std::cout << "*     " << recordNum++ << " *      " << McEnergy << " *      " << McCharge << std::endl;
+      }
+
+    } catch(const TableException & x) {
+      std::cerr << "Unexpected exception while reading through the iterator into Ref for Root file: " <<
+        x.what() << std::endl;
+      status = 1;
+    }
+
+
   } catch(const TableException & x) {
-    std::cerr << "Unhandled TableException." << std::endl;
+    std::cerr << "Unhandled TableException:" << x.what() << std::endl;
     status = 1;
   } catch(const std::exception & x) {
-    std::cerr << "Unhandled std::exception." << std::endl;
+    std::cerr << "Unhandled std::exception." << x.what() << std::endl;
   } catch(...) {
     std::cerr << "Unhandled unknown thrown object." << std::endl;
   }
