@@ -14,39 +14,54 @@ import copy
 import string
 import Tkinter as Tk
 
-sys.path.insert(0, '..')
+sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
 
-from FileDialog import Dialog, LoadFileDialog, SaveFileDialog
+from FileDialog import LoadFileDialog
 from tkMessageBox import showwarning
-import mySimpleDialog
 
 from SourceLibrary import SourceLibrary
-import FuncFactory as funcFactory
-import findSrcs
+from ParamDialog import ParamDialog
+from pil import Pil
+
 ds9 = None
 
+# @todo replace this with a GtApp object
+obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
+                      os.environ["BINDIR"], 'obsSim.exe')
+
 class RootWindow(Tk.Tk):
-    def __init__(self):
+    def __init__(self, file=None):
         Tk.Tk.__init__(self)
+        self.title("obsSim GUI")
         menuBar = MenuBar(self)
+
+        inputFrames = Tk.Frame(self)
+        inputFrames.pack(side=Tk.LEFT, fill=Tk.BOTH)
+        self.srcLibs = SourceLibraries(self, inputFrames)
+        self.candidates = CandidateSources(self, inputFrames)
 
         outputFrame = Tk.Frame(self)
         outputFrame.pack(side=Tk.RIGHT, fill=Tk.BOTH)
         self.sourceList = SourceList(self, outputFrame)
 
-        inputFrames = Tk.Frame(self)
-        inputFrames.pack()
-        self.srcLibs = SourceLibraries(self, inputFrames)
-        self.candidates = CandidateSources(self, inputFrames)
-
+        if file is not None:
+            self.srcLibs.addLibs(file)
     def open(self, xmlFile=None):
         if xmlFile is None:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         self.srcLibs.addLibs(xmlFile)
-    def save(self):
-        pass
-    def saveAs(self):
-        pass
+    def run(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
+        self.srcLibs.writeXmlFileList(xmlList)
+        self.sourceList.writeSourceNames(sourceNames)
+        pars = Pil('obsSim.par')
+        pars['xml_source_file'] = xmlList
+        pars['source_list'] = sourceNames
+        pfile = 'obsSim.par'
+        pars.write(pfile)   # create a local copy
+        dialog = ParamDialog(self, pfile)
+        if dialog.paramString:
+            command = " ".join((obsSim, dialog.paramString))
+            os.system(command)
         
 class MenuBar(Tk.Menu):
     def __init__(self, parent):
@@ -61,8 +76,7 @@ class FileMenu(Tk.Menu):
         Tk.Menu.__init__(self, tearoff=0)
         self.root = root
         self.add_command(label="Open...", underline=0, command=root.open)
-        self.add_command(label="Save", underline=0, command=root.save)
-        self.add_command(label="Save as...", command=root.saveAs)
+        self.add_command(label="Run obsSim...", command=root.run)
         self.add_command(label="Quit", underline=0, command=root.quit)
 
 class SourceLibraries(Tk.Frame):
@@ -93,21 +107,38 @@ class SourceLibraries(Tk.Frame):
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
         self.libs = {}
+        self.files = []
     def fill(self):
         self.listBox.delete(0, Tk.END)
         for lib in self.libs:
             self.listBox.insert(Tk.END, lib)
     def addLibs(self, file):
         srcLibs = SourceLibrary(file)
+        file = os.path.abspath(file)
         for lib in srcLibs:
             if lib not in self.libs:
-                self.libs[lib] = srcLibs[lib]
+                self.libs[lib] = (srcLibs[lib], file)
         self.fill()
+        if file not in self.files:
+            self.files.append(file)
     def selectLibrary(self, event=None):
         libname = self.listBox.get('active')
-        self.root.candidates.setSrcLib(self.libs[libname])
+        self.root.candidates.setSrcLib(self.libs[libname][0])
     def deleteSelected(self):
-        pass
+        name = self.listBox.get('active')
+        targetfile = self.libs[name][1]
+        self.files.remove(targetfile)
+        targets = self.libs.keys()
+        for lib in targets:
+            if self.libs[lib][1] == targetfile:
+                del self.libs[lib]
+        self.fill()
+        self.root.candidates.clearAll()
+    def writeXmlFileList(self, file='xmlFiles.dat'):
+        outfile = open(file, 'w')
+        for item in self.files:
+            outfile.write(item + "\n")
+        outfile.close()
 
 class SourceLibMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
@@ -141,7 +172,7 @@ class CandidateSources(Tk.Frame):
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
         self.listBox.bindtags(btags[1:] + btags[:1])
-#        self.listBox.bind('<ButtonRelease-1>', self.selectSource)
+        self.listBox.bind('<Double-ButtonRelease-1>', self.addSource)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
     def setSrcLib(self, srcLib):
@@ -152,6 +183,9 @@ class CandidateSources(Tk.Frame):
         self.listBox.delete(0, Tk.END)
         for src in self.sources:
             self.listBox.insert(Tk.END, src)
+    def addSource(self, event):
+        src = self.listBox.get('active')
+        self.root.sourceList.addSource(src)
     def addSelected(self):
         indices = self.listBox.curselection()
         for indx in indices:
@@ -160,6 +194,8 @@ class CandidateSources(Tk.Frame):
         self.listBox.selection_set(0, self.listBox.size())
     def unSelectAll(self):
         self.listBox.selection_clear(0, self.listBox.size())
+    def clearAll(self):
+        self.listBox.delete(0, Tk.END)
 
 class CandidateMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
@@ -213,6 +249,11 @@ class SourceList(Tk.Frame):
         self.listBox.selection_set(0, self.listBox.size())
     def unSelectAll(self):
         self.listBox.selection_clear(0, self.listBox.size())
+    def writeSourceNames(self, file='source_names.dat'):
+        outfile = open(file, 'w')
+        for src in self.srcs.ordered_keys:
+            outfile.write(src + "\n")
+        outfile.close()
 
 class ModelMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
@@ -237,5 +278,8 @@ class map(dict):
         del self[key]
 
 if __name__ == "__main__":
-    root = RootWindow()
+    if sys.argv[1:]:
+        root = RootWindow(sys.argv[1])
+    else:
+        root = RootWindow()
     root.mainloop()
