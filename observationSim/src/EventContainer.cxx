@@ -85,7 +85,7 @@ int EventContainer::addEvent(EventSource *event,
 // recover the source direction in J2000 coordinates.
    LatSc latSpacecraft;
    HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
-   astro::SkyDir sourceDir(rotMatrix(launchDir), astro::SkyDir::CELESTIAL);
+   astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::CELESTIAL);
 
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
