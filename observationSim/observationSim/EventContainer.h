@@ -14,6 +14,13 @@
 
 #include "FluxSvc/../src/EventSource.h"
 #include "FluxSvc/../src/FluxMgr.h"
+
+#include "astro/SkyDir.h"
+
+#include "latResponse/ResponseFiles.h"
+#include "latResponse/../src/AeffGlast25.h"
+#include "latResponse/../src/PsfGlast25.h"
+
 #include "observationSim/Container.h"
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
@@ -34,10 +41,22 @@ class EventContainer : public Container {
 public:
 
    /// @param filename The name of the output FITS file.
+   /// @param glast25Data Object containing the full paths to the GLAST25
+   ///        instrument response files.
    /// @param useA1fmt A flag to use the format that the A1 tool expects.
-   EventContainer(const std::string &filename, bool useA1fmt=false);
+   EventContainer(const std::string &filename, 
+                  const latResponse::ResponseFiles &glast25Data,
+                  bool useA1fmt=false) : 
+      m_useA1fmt(useA1fmt) {init(filename, glast25Data);}
 
-   ~EventContainer() {writeEvents(); delete m_eventTable;}
+   EventContainer(char *filename, 
+                  const latResponse::ResponseFiles &glast25Data,
+                  bool useA1fmt=false) : 
+      m_useA1fmt(useA1fmt) {init(filename, glast25Data);}
+
+   ~EventContainer() 
+      {writeEvents(); delete m_eventTable; 
+      delete m_aeff; delete m_psf;}
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
@@ -50,18 +69,19 @@ private:
    bool m_useA1fmt;
 
    long m_fileNum;
+
+   latResponse::AeffGlast25 *m_aeff;
+   latResponse::PsfGlast25 *m_psf;
    
    FitsTable *m_eventTable;
 
    std::vector<Event> m_events;
 
-   /// Return the apparent direction of a detected event by drawing
-   /// from the distribution representing the PSF.
-   Hep3Vector apparentDir(double energy, const Hep3Vector &srcDir, 
-                          const Hep3Vector &zAxis);
+   void init(const std::string &filename, 
+             const latResponse::ResponseFiles &glast25Data);
 
    /// Return the zenith for the current spacecraft location.
-   Hep3Vector ScZenith(double time);
+   astro::SkyDir ScZenith(double time);
 
    void writeEvents();
 

@@ -37,7 +37,11 @@ public:
 
    /// @param filename The name of the output FITS file.
    /// @param useA1fmt A flag to use the format that the A1 tool expects.
-   ScDataContainer(const std::string &filename, bool useA1fmt=false);
+   ScDataContainer(const std::string &filename, bool useA1fmt=false) :
+      m_useA1fmt(useA1fmt) {init(filename);}
+
+   ScDataContainer(char *filename, bool useA1fmt=false) :
+      m_useA1fmt(useA1fmt) {init(std::string(filename));}
 
    ~ScDataContainer() {writeScData(); delete m_scDataTable;}
 
@@ -56,6 +60,8 @@ private:
    FitsTable *m_scDataTable;
    
    std::vector<ScData> m_scData;
+
+   void init(const std::string &filename);
 
    void writeScData();
 

@@ -10,9 +10,9 @@
 #include <iostream>
 #include <algorithm>
 
-#include "Likelihood/Aeff.h"
-#include "Likelihood/Psf.h"
-#include "Likelihood/LikelihoodException.h"
+// #include "Likelihood/Aeff.h"
+// #include "Likelihood/Psf.h"
+// #include "Likelihood/LikelihoodException.h"
 
 #include "FluxSvc/../src/EventSource.h"
 #include "FluxSvc/../src/CompositeSource.h"
@@ -25,7 +25,7 @@
 
 namespace observationSim {
 
-Simulator::Simulator(const std::string &sourceName,
+void Simulator::init(const std::string &sourceName,
                      const std::vector<std::string> &fileList,
                      double totalArea, double startTime) {
 
@@ -101,16 +101,16 @@ void Simulator::listSpectra() const {
    }
 }
 
-void Simulator::readResponseData(const std::string &caldbPath, int hdu) {
+// void Simulator::readResponseData(const std::string &caldbPath, int hdu) {
 
-   Likelihood::Psf *psf = Likelihood::Psf::instance();
-   std::string psf_file = caldbPath + "/psf_lat.fits";
-   psf->readPsfData(psf_file, hdu);
+//    Likelihood::Psf *psf = Likelihood::Psf::instance();
+//    std::string psf_file = caldbPath + "/psf_lat.fits";
+//    psf->readPsfData(psf_file, hdu);
 
-   Likelihood::Aeff *aeff = Likelihood::Aeff::instance();
-   std::string aeff_file = caldbPath + "/aeff_lat.fits";
-   aeff->readAeffData(aeff_file, hdu);
-}
+//    Likelihood::Aeff *aeff = Likelihood::Aeff::instance();
+//    std::string aeff_file = caldbPath + "/aeff_lat.fits";
+//    aeff->readAeffData(aeff_file, hdu);
+// }
 
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
                            bool useSimTime) {

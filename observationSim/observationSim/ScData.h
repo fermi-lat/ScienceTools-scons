@@ -8,7 +8,6 @@
 #ifndef observationSim_ScData_h
 #define observationSim_ScData_h
 
-//#include "CLHEP/Geometry/Vector3D.h"
 #include "astro/SkyDir.h"
 
 namespace observationSim {

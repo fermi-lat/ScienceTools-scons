@@ -13,21 +13,17 @@
 #include "FluxSvc/../src/EventSource.h"
 #include "FluxSvc/../src/GPS.h"
 
-#include "Likelihood/Aeff.h"
-#include "Likelihood/Psf.h"
-
 #include "observationSim/ScDataContainer.h"
 
 namespace observationSim {
 
-ScDataContainer::ScDataContainer(const std::string &filename, bool useA1fmt) :
-   m_useA1fmt(useA1fmt) {
+void ScDataContainer::init(const std::string &filename) {
 
    std::vector<std::string> colName;
    std::vector<std::string> fmt;
    std::vector<std::string> unit;
 
-   if (!useA1fmt) { // the default
+   if (!m_useA1fmt) { // the default
       colName.push_back("time");fmt.push_back("1E");unit.push_back("seconds");
       colName.push_back("RA_z");fmt.push_back("1E");unit.push_back("degrees");
       colName.push_back("Dec_z");fmt.push_back("1E");unit.push_back("degrees");
@@ -99,6 +95,10 @@ void ScDataContainer::writeScData() {
       m_scDataTable->writeTableData(data);
    } else {
       std::vector<std::vector<double> > data(10);
+// pre-allocate the memory for each vector
+      for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
+           vec_it != data.end(); vec_it++)
+         vec_it->reserve(m_scData.size());
       for (std::vector<ScData>::const_iterator it = m_scData.begin();
            it != m_scData.end(); it++) {
          data[0].push_back(it->xAxis().dir().x());

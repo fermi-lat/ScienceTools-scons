@@ -46,7 +46,14 @@ public:
    Simulator(const std::string &sourceName, 
              const std::vector<std::string> &fileList,
              double totalArea = 1.21,
-             double startTime = 0.);
+             double startTime = 0.) 
+      {init(sourceName, fileList, totalArea, startTime);}
+
+   Simulator(char *sourceName, 
+             const std::vector<std::string> &fileList,
+             double totalArea = 1.21,
+             double startTime = 0.) 
+      {init(std::string(sourceName), fileList, totalArea, startTime);}
 
    ~Simulator() {delete m_fluxMgr; delete m_source;}
 
@@ -79,11 +86,11 @@ public:
       makeEvents(events, scData, false);
    }
 
-   /// @param caldbPath File path to the files psf_lat.fits and aeff_lat.fits.
-   /// @param hdu FITS HDU for the desired response data.  Valid
-   ///        values are 2 = Front, 3 = Back, 4 = Combined.  One can also
-   ///        enter the Likelihood::Response::HDU enums.
-   void readResponseData(const std::string &caldbPath, int hdu);
+//    /// @param caldbPath File path to the files psf_lat.fits and aeff_lat.fits.
+//    /// @param hdu FITS HDU for the desired response data.  Valid
+//    ///        values are 2 = Front, 3 = Back, 4 = Combined.  One can 
+//    ///        also enter the latResponse::Glast25::HDU enums.
+//    void readResponseData(const std::string &caldbPath, int hdu);
 
 private:
 
@@ -98,6 +105,10 @@ private:
    double m_simTime;
    double m_elapsedTime;
    bool m_useSimTime;
+
+   void init(const std::string &sourceName, 
+             const std::vector<std::string> &fileList,
+             double totalArea, double startTime);
 
    void makeEvents(EventContainer &, ScDataContainer &, bool useSimTime=true);
 

@@ -11,11 +11,7 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Geometry/Vector3D.h"
 
-#include "astro/SkyDir.h"
 #include "astro/EarthCoordinate.h"
-
-#include "Likelihood/Aeff.h"
-#include "Likelihood/Psf.h"
 
 #include "observationSim/EventContainer.h"
 
@@ -33,8 +29,8 @@ namespace {
 
 namespace observationSim {
 
-EventContainer::EventContainer(const std::string &filename, bool useA1fmt) 
-   : m_useA1fmt(useA1fmt) {
+void EventContainer::init(const std::string &filename,
+                          const latResponse::ResponseFiles &glast25Data) {
 
    std::vector<std::string> colName;
    std::vector<std::string> fmt;
@@ -67,6 +63,11 @@ EventContainer::EventContainer(const std::string &filename, bool useA1fmt)
    m_eventTable = new FitsTable(filename, "LAT_event_summary", 
                                 colName, fmt, unit);
    m_events.clear();
+
+   m_aeff = 
+      new latResponse::AeffGlast25(glast25Data.aeffFile(), glast25Data.hdu());
+   m_psf = 
+      new latResponse::PsfGlast25(glast25Data.psfFile(), glast25Data.hdu());
 }
 
 int EventContainer::addEvent(EventSource *event, bool flush) {
@@ -80,29 +81,28 @@ int EventContainer::addEvent(EventSource *event, bool flush) {
 // Create the rotation matrix from instrument to "Celestial" (J2000?)
 // coordinates.
       HepRotation rotationMatrix = glastToCelestial(time);
-      Hep3Vector sourceDir = rotationMatrix(launchDir);
-      Hep3Vector zAxis = rotationMatrix(Hep3Vector(0., 0., 1.));
-      Hep3Vector xAxis = rotationMatrix(Hep3Vector(1., 0., 0.));
+      astro::SkyDir sourceDir(rotationMatrix(launchDir),
+                              astro::SkyDir::CELESTIAL);
+      astro::SkyDir zAxis(rotationMatrix(Hep3Vector(0., 0., 1.)),
+                          astro::SkyDir::CELESTIAL);
+      astro::SkyDir xAxis(rotationMatrix(Hep3Vector(1., 0., 0.)),
+                          astro::SkyDir::CELESTIAL);
    
-      Likelihood::Aeff *aeff = Likelihood::Aeff::instance();
       GPS *gps = GPS::instance();
       gps->getPointingCharacteristics(time);
       astro::EarthCoordinate earthCoord(gps->lon(), gps->lat());
 
-      double inclination = sourceDir.angle(zAxis)*180./M_PI;
-      if ( inclination < Likelihood::Response::incMax() 
+      double inclination = sourceDir.difference(zAxis)*180./M_PI;
+      if ( inclination < m_aeff->incMax() 
            && energy > 31.623 
-           && RandFlat::shoot() < ((*aeff)(energy, inclination)
-                                   /event->totalArea()/1e4)
+           && RandFlat::shoot() < (*m_aeff)(energy, sourceDir, zAxis, xAxis)
+                                   /event->totalArea()/1e4
            && !earthCoord.insideSAA() ) {
-         Hep3Vector appDir = apparentDir(energy, sourceDir, zAxis); 
+         astro::SkyDir appDir = m_psf->appDir(energy, sourceDir, zAxis, xAxis);
                                                         
-         m_events.push_back(Event(time, energy, 
-                                  astro::SkyDir(appDir), 
-                                  astro::SkyDir(sourceDir),
-                                  astro::SkyDir(zAxis), 
-                                  astro::SkyDir(xAxis),
-                                  astro::SkyDir(ScZenith(time))));
+         m_events.push_back( Event(time, energy, 
+                                   appDir, sourceDir, zAxis, xAxis,
+                                   ScZenith(time)) );
          if (flush) writeEvents();
          return 1;
       }
@@ -111,65 +111,15 @@ int EventContainer::addEvent(EventSource *event, bool flush) {
    return 0;
 }
 
-Hep3Vector EventContainer::ScZenith(double time) {
+astro::SkyDir EventContainer::ScZenith(double time) {
    GPS *gps = GPS::instance();
    gps->getPointingCharacteristics(time);
    double lon_zenith = gps->RAZenith()*M_PI/180.;
    double lat_zenith = gps->DECZenith()*M_PI/180.;
-   return Hep3Vector(cos(lat_zenith)*cos(lon_zenith),
-                     cos(lat_zenith)*sin(lon_zenith),
-                     sin(lat_zenith));
-}
-
-Hep3Vector EventContainer::apparentDir(double energy, 
-                                       const Hep3Vector &sourceDir, 
-                                       const Hep3Vector &zAxis) {
-// This routine returns the apparent photon direction in the same
-// coordinate system used by sourceDir and zAxis.
-
-// Access the Psf data
-   Likelihood::Psf *psf = Likelihood::Psf::instance();
-
-// Compute the inclination of the source wrt the instrument axis.
-   double inclination = sourceDir.angle(zAxis)*180./M_PI;
-
-// The GLAST25 PSF parameters:
-   std::vector<double> psfParams;
-   try {
-      psf->fillPsfParams(energy, inclination, psfParams);
-   } catch(Likelihood::LikelihoodException &eObj) {
-      std::cerr << eObj.what() << std::endl;
-      std::cerr << energy << "  "
-                << inclination << std::endl;
-   }
-   double sig1 = psfParams[0];
-   double sig2 = psfParams[1];
-   double wt = psfParams[2];
-
-// Draw the apparent direction in photon coordinates.
-   double xi = RandFlat::shoot();
-   double sig;
-   if (xi <= wt) {
-      sig = sig1*M_PI/180.;
-   } else {
-      sig = sig2*M_PI/180.;
-   }
-   xi = RandFlat::shoot();
-   double mu = 1. + sig*sig*log(1. - xi*(1. - exp(-2./sig/sig)));
-   double theta = my_acos(mu);
-
-   xi = RandFlat::shoot();
-   double phi = 2.*M_PI*xi;
-
-// Create an arbitrary x-direction about which to perform the theta
-// rotation.
-   Hep3Vector xDir = sourceDir.cross(zAxis);
-
-   Hep3Vector appDir = sourceDir;
-
-   appDir.rotate(theta, xDir).rotate(phi, sourceDir);
-
-   return appDir;
+   return astro::SkyDir(Hep3Vector(cos(lat_zenith)*cos(lon_zenith),
+                                   cos(lat_zenith)*sin(lon_zenith),
+                                   sin(lat_zenith)),
+                        astro::SkyDir::CELESTIAL);
 }
 
 void EventContainer::writeEvents() {
@@ -190,6 +140,10 @@ void EventContainer::writeEvents() {
       m_eventTable->writeTableData(data);
    } else {
       std::vector<std::vector<double> > data(11);
+// pre-allocate the memory for each vector
+      for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
+           vec_it != data.end(); vec_it++)
+         vec_it->reserve(m_events.size());
       for (std::vector<Event>::const_iterator it = m_events.begin();
            it != m_events.end(); it++) {
          data[0].push_back(it->appDir().ra());
