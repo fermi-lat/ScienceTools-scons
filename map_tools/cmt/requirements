@@ -17,14 +17,15 @@ set OUTFILES "$(MAP_TOOLSROOT)/output"
 set TPLDIR   "$(MAP_TOOLSROOT)/Templates"
 
 
-apply_pattern GLAST_static_library_package
-
 library table -no_share -s=table $(source)
-macro_append map_tools_linkopts " -l table" Win32 "$(map_toolsDir)/table.lib"
 
+
+apply_pattern GLAST_static_library_package
+macro_append map_tools_linkopts " -l table " Win32 "$(map_toolsDir)/table.lib"
+		
 pattern ST_app \
   macro <name>_par "" WIN32 "<name>.par" ; \ 
-  application <name> -s=<name> $(source) -s=../pfiles $(<name>_par)
+  application <name> -s=<name> *.cxx  -s=../pfiles $(<name>_par)
 
 
 apply_pattern ST_app name=count_map
