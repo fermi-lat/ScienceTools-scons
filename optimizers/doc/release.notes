@@ -3,8 +3,10 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
-    v0r1  11-Aug-03   JC  Add FunctionFactory, model xml files, and python
-                          subdirectory
-    v0    02-Aug-03   JC  Initial import.
+    v0r1p1 13-Aug-03   JC  Clean up FunctionFactory implementation;
+                           add Dom class.
+    v0r1   11-Aug-03   JC  Add FunctionFactory, model xml files, and python
+                           subdirectory
+    v0     02-Aug-03   JC  Initial import.
     @endverbatim
 */
