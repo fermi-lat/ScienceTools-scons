@@ -168,6 +168,8 @@ public:
         static GPS* s_instance;
         astro::EarthOrbit* m_earthOrbit; //orbital position object, from the astro package.
          
+		void setInterpPoint(double time);
+
         double  m_expansion;    // orbit expansion factor
         GPStime m_time;	    // global time
         double  m_sampleintvl;  // interval to sample for each pt. in the orbit - to normalize spectra
@@ -179,7 +181,8 @@ public:
         double m_rockDegrees; //number of degrees to "rock" the spacecraft, along the local x axis.  
         RockType m_rockType;//current rocking scheme
 		std::string m_pointingHistoryFile;//pointing/livetime database history file to use.
-		std::map<double,POINTINFO> m_pointingHistory;
+		std::map<double,POINTINFO> m_pointingHistory;//pointing/livetime database history
+		POINTINFO m_currentInterpPoint; //holder object for currently interpotated pointing information
 };
 
 inline std::istream&    operator>>(std::istream& i, GPS::Coords& c) {
