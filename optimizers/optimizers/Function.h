@@ -19,9 +19,11 @@
 
 namespace optimizers {
 
+#ifndef SWIG
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMNode;
+#endif // SWIG
 
 class Arg;
 
@@ -184,11 +186,13 @@ public:
    /// same as the class name.
    std::string &genericName() {return m_genericName;}
 
+#ifndef SWIG
    /// Append Parameter DOMElements to a DOMNode.
    void appendParamDomElements(DOMDocument * doc, DOMNode * node);
 
    /// Set the Parameters from a Function DOM_Element.
    void setParams(const DOMElement * elt);
+#endif
 
 protected:
 

@@ -33,11 +33,11 @@ src_files.extend(glob.glob(os.path.join(home, 'src', '*.c')))
 test_app_files = glob.glob(os.path.join(home, 'src', 'test/*.cxx'))
 
 libNames = libraries.keys()
-libNames.insert(0, package)
+libNames.insert(0, package + "Lib")
 libNames.remove('f2c')
 libNames.append('pthread')
 
-library = env.Library(package, src_files, CPPPATH=include_dirs)
+library = env.Library(package + "Lib", src_files, CPPPATH=include_dirs)
 test_program = env.Program(app, test_app_files, CPPPATH=include_dirs,
                            LIBS=libNames, LIBPATH=library_dirs)
 

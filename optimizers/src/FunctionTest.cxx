@@ -62,6 +62,10 @@ void FunctionTest::parameters(const std::vector<Parameter> &params)
    m_func->getParamValues(paramValues);
    for (unsigned int i = 0; i < paramValues.size(); i++) {
       double value = params[i].getValue()/10.;
+      if (paramValues[i] != value) {
+         std::cout << paramValues[i] << "  "
+                   << value << std::endl;
+      }
       assert(paramValues[i] == value);
       assert(m_func->getParamValue(paramNames[i]) == value);
    }

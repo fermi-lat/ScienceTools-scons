@@ -7,31 +7,29 @@
 # $Header$
 #
 
-SWIG = swig
 #SWIG_DIR = /scratch/local
 #PYTHONDIR = $(GLAST_EXT)/python/2.3/Linux
 #PYINCLUDE = -I$(PYTHONDIR)/include
-SWIG_DIR = /usr/local
-PYINCLUDE = -I/usr/local/include/python2.3
+#SWIG_DIR = /usr/local
+PYINCLUDE = -I/scratch/local/include/python2.3
+SWIG = ${SWIG_DIR}/bin/swig -w401 -w402
 
-#CFLAGS = -ansi -Wall -W -pedantic
 CFLAGS = -g -fPIC
 
 INCLUDE = -I$(OPTIMIZERSROOT)\
 	-I$(XMLROOT)\
 	-I$(FACILITIESROOT)\
 	-I$(F2CROOT)\
-	-I$(CFITSIO_DIR)/include\
-	-I$(CLHEP_DIR)/1.8.0.0/include\
-	-I$(GLAST_EXT)/xerces/1.7.0/include\
-	-I$(GLAST_EXT)/xerces/1.7.0/include/xercesc
+	-I$(GLAST_EXT)/cfitsio/v2470/include\
+	-I$(GLAST_EXT)/CLHEP/1.8.0.0/include\
+	-I$(GLAST_EXT)/xerces/2.6.0/include
 
 LIBS = -L../$(BINDIR)/ -loptimizersLib\
 	-L$(XMLROOT)/$(BINDIR) -lxml\
 	-L$(FACILITIESROOT)/$(BINDIR) -lfacilities\
-	-L$(CFITSIO_DIR)/lib -lcfitsio\
-	-L$(CLHEP_DIR)/1.8.0.0/lib -lCLHEP\
-	-L$(GLAST_EXT)/xerces/1.7.0/lib/ -lxerces-c1_7_0 -lpthread\
+	-L$(GLAST_EXT)/cfitsio/v2470/lib -lcfitsio\
+	-L$(GLAST_EXT)/CLHEP/1.8.0.0/lib -lCLHEP\
+	-L$(GLAST_EXT)/xerces/2.6.0/lib/ -lxerces-c -lpthread\
 	-lg2c -L$(SWIG_DIR)/lib -lswigpy -fPIC
 
 module_base = optimizers
@@ -41,7 +39,7 @@ ${module_name}: ${module_base}.o
 	${CXX} -shared $< ${LIBS} -o ${module_name}
 
 ${module_base}.o: ${module_base}.cxx
-	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} -o $@ $<
+	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} $<
 
 ${module_base}.cxx: ${module_base}.i
 	${SWIG} -runtime -python -c++ -o ${module_base}.cxx ${module_base}.i

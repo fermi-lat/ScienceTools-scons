@@ -20,8 +20,10 @@
 
 namespace optimizers {
 
+#ifndef SWIG
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
+#endif
 
 /** 
  * @class Parameter
@@ -105,6 +107,7 @@ public:
    void setError(double error) {m_error = error;}
    double error() const {return m_error;}
 
+#ifndef SWIG
    /// Extract data from an xml parameter element defined using the
    /// FunctionModels.dtd.
    void extractDomData(const DOMElement * elt);
@@ -112,6 +115,7 @@ public:
    /// Add a parameter DomElement that contains the current data
    /// member values.
    DOMElement * createDomElement(DOMDocument * doc) const;
+#endif
 
 private:
 
