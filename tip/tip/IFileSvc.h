@@ -40,7 +40,7 @@ namespace tip {
           \param file_name The name of the new file.
           \param template_name The name of the template file.
       */
-      virtual void createFile(const std::string & file_name, const std::string & template_name);
+      virtual void createFile(const std::string & file_name, const std::string & template_name = "");
 
       /** \brief Open an existing table with modification access.
           \param file_name The name of the file (any supported format OK).
