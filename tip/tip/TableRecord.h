@@ -33,6 +33,8 @@ namespace tip {
 
       virtual ~TableCell() {}
 
+      TableCell & operator =(const TableCell & cell);
+
       /** \brief Get a single value from this TableCell at the current iterator position.
           The type of the converted value is given by the template parameter.
           \param value The current value.
@@ -117,7 +119,9 @@ namespace tip {
           but does not affect which fields were selected in this ConstTableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this ConstTableRecord.
       */
+protected:
       ConstTableRecord & operator =(const ConstTableRecord & rec);
+public:
 
       /** \brief Return a const TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
@@ -187,7 +191,9 @@ namespace tip {
           but does not affect which fields were selected in this TableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
+private:
       TableRecord & operator =(const TableRecord & rec);
+public:
 
       /** \brief Return a TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
@@ -210,14 +216,27 @@ namespace tip {
   };
 
   // TableCell
+  inline TableCell & TableCell::operator =(const TableCell & cell) {
+    if (this != &cell) {
+      const IExtensionData * src_ext = cell.m_record.getExtensionData();
+      IExtensionData * dest_ext = m_record.getExtensionData();
+      if (m_field_index < 0) {
+        m_field_index = dest_ext->getFieldIndex(m_field);
+      }
+      dest_ext->copyCell(src_ext, src_ext->getFieldIndex(m_field), cell.m_record.getIndex(), m_field_index, m_record.getIndex());
+    }
+    return *this;
+  }
+
   // get method overloads:
   template <typename T>
   inline void TableCell::get(T & value) const {
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
-    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
+//    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
+//    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
+    m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), value);
   }
 
   template <typename T>
@@ -225,8 +244,11 @@ namespace tip {
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
-    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
+//    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
+//    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
+    std::vector<T> tmp_dest(src_end);
+    m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), tmp_dest);
+    for (long ii = 0; ii < src_end - src_begin; ++ii) dest_begin[ii] = tmp_dest[src_begin + ii];
   }
 
   inline double TableCell::get() const {
@@ -238,22 +260,26 @@ namespace tip {
   // set method overloads:
   template <typename T>
   inline void TableCell::set(const T & value) {
-    T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
-    tmp[0] = value;
+//     T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
+//     tmp[0] = value;
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
-    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
+//    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
+//    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
+    m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), value);
   }
 
   template <typename T>
   inline void TableCell::set(const T * src_begin, const T * src_end, Index_t dest_begin) {
+    if (0 != dest_begin) throw TipException("BIIIIIIIIIIGGG PROBLEM");
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
-    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
+//    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
+//    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
+    std::vector<T> tmp_src(src_begin, src_end);
+    m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), tmp_src);
   }
 
   inline Index_t TableCell::getNumElements() const {
@@ -271,9 +297,7 @@ namespace tip {
   // ConstTableRecord
   inline ConstTableRecord & ConstTableRecord::operator =(const ConstTableRecord & rec) {
     if (this != &rec) {
-      // Note: do *not* assign m_cells! This is important to how TableRecords work!
-      m_tab_data = rec.m_tab_data; // This should also confirm that the new table has the right fields.
-      m_index = rec.m_index;
+    //  m_tab_data->copyRecord(rec.m_index, m_index);
     }
     return *this;
   }
