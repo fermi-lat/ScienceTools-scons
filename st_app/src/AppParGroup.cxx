@@ -4,6 +4,7 @@
 */
 
 #include "st_app/AppParGroup.h"
+#include "st_app/IApp.h"
 
 namespace st_app {
 

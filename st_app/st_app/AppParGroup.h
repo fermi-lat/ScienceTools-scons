@@ -8,7 +8,6 @@
 #include <string>
 
 #include "hoops/hoops_prompt_group.h"
-#include "st_app/IApp.h"
 
 namespace st_app {
 
