@@ -1,15 +1,26 @@
-
 <source_library>
+ 	<!-- the GRB spectrum in Galactic Frame the GRBs are concatenated-->
+	<source name=" GRBmanager_Gal" >
+	<spectrum> <SpectrumClass name="GRBmanager"/> 
+	<!--This will fix the direction -->
+	<!--galactic_dir l="50" b="-60"/-->
+        <!--This will live the direction free-->
+	<use_spectrum frame="galaxy"/>
+	</spectrum> </source>
 
  	<!-- the GRB spectrum at minimum flux. angular dependence and rate are from the GRBSpectrum object -->
-    <source name="grbspectrum" >
-        <spectrum> <SpectrumClass name="GRBSpectrum" params="10.00, 144.37"/> <use_spectrum/> </spectrum>
-    </source>
+	<source name=" grbspectrum" >
+	<spectrum> <SpectrumClass name="GRBSpectrum"/> 
+	<!--This will fix the direction -->
+	<galactic_dir l="50" b="-10"/>
+        <!--This will live the direction free-->
+	<!--use_spectrum frame="galaxy"/-->
+	</spectrum> </source>
 
 
  	<!-- the GRB OBS spectrum at minimum flux. angular dependence and rate are from the GRBobsSpectrum object -->
-    <source name="grbobsspectrum" >
-        <spectrum> <SpectrumClass name="GRBobsSpectrum" params="10.00, 144.37"/> <use_spectrum/> </spectrum>
+    <source name=" grbobsspectrum" >
+        <spectrum> <SpectrumClass name="GRBobsSpectrum" params="10.00, 144.37"/> <use_spectrum frame="galaxy"/> </spectrum>
     </source>
 
 
