@@ -48,7 +48,6 @@ ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
 ISpectrumFactory & TransientTemplateFactory();
 ISpectrumFactory & PulsarSpectrumFactory();
-//ISpectrumFactory & Magrathea();
 
 using st_facilities::Util;
 
@@ -165,7 +164,6 @@ void ObsSim::createFactories() {
    SimpleTransientFactory();
    TransientTemplateFactory();
    PulsarSpectrumFactory();
-//   Magrathea();
 }
 
 void ObsSim::setXmlFiles() {

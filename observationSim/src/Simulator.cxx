@@ -7,10 +7,10 @@
  * $Header$
  */
 
-#include <string>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
+#include <string>
 
 #include "CLHEP/Geometry/Vector3D.h"
 
@@ -28,9 +28,9 @@
 
 #include "flux/SpectrumFactory.h"
 
-#include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
+#include "observationSim/Simulator.h"
 #include "LatSc.h"
 #include "Verbosity.h"
 
@@ -196,48 +196,49 @@ void Simulator::makeEvents(EventContainer &events,
 // Enclose loop in outer try block, catching a GPS-thrown exception when
 // time exceeds pointing history database.
    try {
- // Loop over event generation steps until done.
-   while (!done()) {
+// Loop over event generation steps until done.
+      while (!done()) {
 
 // Check if we need a new event from m_source.
-      if (m_newEvent == 0) {
-         m_newEvent = m_source->event(m_absTime);
-         m_interval = m_source->interval(m_absTime);
-      }
+         if (m_newEvent == 0) {
+// The following line is where the "Time out of Range!" exception is 
+// thrown by astro's GPS class:
+            m_newEvent = m_source->event(m_absTime);
+            m_interval = m_source->interval(m_absTime);
+         }
 
 // Process m_newEvent either if we are accumulating counts or if the
 // event arrives within the present observing window given by
 // m_simTime.
-      if ( !m_useSimTime ||  (m_elapsedTime+m_interval < m_simTime) ) {
-         m_absTime += m_interval;
-         m_elapsedTime += m_interval;
-         m_fluxMgr->pass(m_interval);
+         if ( !m_useSimTime ||  (m_elapsedTime+m_interval < m_simTime) ) {
+            m_absTime += m_interval;
+            m_elapsedTime += m_interval;
+            m_fluxMgr->pass(m_interval);
 
-         std::string name = m_newEvent->fullTitle();
-         if (name.find("TimeTick") != std::string::npos) {
-            scData.addScData(m_newEvent, spacecraft);
-         } else {
-            if (allEvents != 0) {
-               allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
-                                   false, true);
+            std::string name = m_newEvent->fullTitle();
+            if (name.find("TimeTick") != std::string::npos) {
+               scData.addScData(m_newEvent, spacecraft);
+            } else {
+               if (allEvents != 0) {
+                  allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
+                                      false, true);
+               }
+               if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
+                  m_numEvents++;
+               }
             }
-            if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
-               m_numEvents++;
-            }
-         }
 // EventSource::event(...) does not generate a pointer to a new object
 // (as of 07/02/03), so there's no need to delete m_newEvent.
-         m_newEvent = 0;
+            m_newEvent = 0;
 
-      } else if (m_useSimTime) {
+         } else if (m_useSimTime) {
 // No more events to process for this observation window, so advance
 // to the end of the window, updating all of the time accumlators.
-         m_absTime += (m_simTime - m_elapsedTime);
-         m_fluxMgr->pass(m_simTime - m_elapsedTime);
-         m_elapsedTime = m_simTime;
-      }
-   } // while (!done())
-
+            m_absTime += (m_simTime - m_elapsedTime);
+            m_fluxMgr->pass(m_simTime - m_elapsedTime);
+            m_elapsedTime = m_simTime;
+         }
+      } // while (!done())
    } catch (std::exception & eObj) {
       if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")) {
          throw;
