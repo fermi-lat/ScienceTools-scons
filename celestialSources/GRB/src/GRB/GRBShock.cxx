@@ -15,7 +15,7 @@ GRBShock::GRBShock(GRBShell Sh1, GRBShell Sh2, double time)
   Sh1.setRadius(Sh2.getRadius());
   m_radius    = Sh1.getRadius();
   m_tobs      = time - m_radius/cst::c;
-  cout<<"radius = "<<m_radius<<endl;
+  //  cout<<"radius = "<<m_radius<<endl;
   //Kinematics:
   double m1 = Sh1.getMass();
   double m2 = Sh2.getMass();

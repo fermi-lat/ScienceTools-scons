@@ -40,51 +40,68 @@ double GRBSpectrum::solidAngle() const
 ///return flux, given a time
 double GRBSpectrum::flux(double time) const
 {
-  //  double rateout;
-  m_grbsim->ComputeFlux(time);
+  //  cout<<"FLUX"<<endl;
+  //m_grbsim->ComputeFlux(time);
   /// test to implement the right rate...
-  // if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
-  //  cout<< " time ="<<time<<" Rate = "<<m_grbsim->IRate()<< endl;
-  return m_grbsim->IRate(); // in ph/(m^2 s) 
+  return m_grbsim->IRate(m_spectrum); // in ph/(m^2 s) 
 }
 
 double GRBSpectrum::rate(double time) const
 {
-  m_grbsim->ComputeFlux(time);
+  //cout<<"RATE"<<endl;
+  //m_grbsim->ComputeFlux(time);
   /// test to implement the right rate...
-  //  cout<< " time ="<<time<<" Rate = "<<m_grbsim->IRate()<< endl;
-  return m_grbsim->IRate(); // in ph/(m^2 s) 
+  return m_grbsim->IRate(m_spectrum); // in ph/(m^2 s) 
 }
 
 double GRBSpectrum::interval(double time)// const
 {
-  //cout<<" INTERVAL!<<endl;
+  //  cout<<" INTERVAL @ TIME ="<<time<<endl;
   /// test to implement the right rate...
-  double sum=0.0;
-  double temp;
-  double t1=time;
-  double dt;
-  if(time>m_grbsim->Tmax()) return -1; //this stops the execution of GRBtestAlg...
-  while (sum<1.0){
-    dt=1.0e-2;
-    temp=rate(t1);
-    if (temp>1/cst::DeadTime){return t1-time+cst::DeadTime;}
-    if (temp<=1.0) {temp=1.0;}
-    else if (temp>1.0/dt) {return t1-time+1/temp;}
-    sum+=temp*dt;
-    t1+=dt;
-  }
+  double sum=0.0;         // Initialize the integral=0
+  double temp=rate(time); // The m_spectrum is already computed from energySrc()
+  
+  double t1=time;         // t1 is the integration variable...
+  double dt=1.0e-2;       // .. and dt is its integration step.
+
+  if(time>m_grbsim->Tmax()) return 1.0e+6; //this stops the execution of GRBtestAlg...(See GRBTest.cxx)
+  while (sum<1.0){ // It compute the integral of the rate...
+    // The idea is to compute t1 for which the 
+    // integral between time and t1 of the rate(t) dt =1.
+    
+    if (temp<=1.0) temp=1.0; // Minumum rate...
+    
+    if (temp>=1/cst::DeadTime) // If the rate is greater then 1/DeadTime...
+      { 
+	// ... then the minimum time separation between two photons is the dead time...
+	if(t1==time) return cst::DeadTime; 
+	return t1-time; // it returns  t1-time;
+      }
+    else if (temp>=1.0/dt)  // the sum will be > 1, and I can stop the while loop...
+      {
+    	return t1-time+1.0/temp;
+      }
+    else
+      {
+	sum+=temp*dt; //...integrate...
+	t1+=dt;       // ... and  incrase the time...
+	temp=m_grbsim->IRate(m_grbsim->ComputeFlux(t1)); // is the rate at t1...
+      }
+  }//end of while
   return t1-time; // in Seconds 
 }
 
 double GRBSpectrum::energySrc(HepRandomEngine* engine, double time)
 {
+  // cout<<"energySrc @ time = "<<time<<endl;
+
   //return the flux in photons/(m^2 sec)
   /// Use time to update the spectrum
   m_spectrum.clear();
-  m_grbsim->ComputeFlux(time);
-  m_spectrum =m_grbsim->Spectrum();
-  /// Then returns a uniform random value, to be used by operator()
+  //  m_grbsim->ComputeFlux(time);
+  m_spectrum = m_grbsim->ComputeFlux(time);//;m_grbsim->Spectrum();
+  m_grbsim->setSpectrum( m_spectrum);
+    /// Then returns a uniform random value, to be used by operator()
   return (*this)(engine->flat());
 }
 

@@ -178,8 +178,7 @@ int GRBTest::Start(std::vector<char*> argv)
   int argc = argv.size();
   //  cout<<argc<<endl;
   int nume,i;
-  double dt;
-  int num_sources=0;
+   int num_sources=0;
   double time_max=TIME;  //time to use for flux and rate functions
   int events_max=EVENTS;
   double time,energy,Rate,Area;
@@ -226,7 +225,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	if (events_max<1) return 0;
       }
       else if("-root" == arg_name) {
-	cout<<" SAVE ROOT" <<endl;
+	//	cout<<" SAVE ROOT" <<endl;
 	savef_root=true;
 	m_run_number = argv[++current_arg];
       }
@@ -260,7 +259,7 @@ int GRBTest::Start(std::vector<char*> argv)
     {  
       int signal=1;     
       if(i>0) signal=0;
-      nume=0;
+      nume=1;
       fluence1=0.0;
       fluence2=0.0;
       fluence3=0.0;
@@ -295,17 +294,22 @@ int GRBTest::Start(std::vector<char*> argv)
       time=1.0e-4;
       double t1;
       t1=time;
-      while(time<time_max && nume<events_max)
+      double dt=0.0;
+      while(time<time_max && nume<=events_max)
 	{
+	  //	  cout<<"m_flux->generate()"<<endl;
 	  m_flux->generate();  
+	  //  cout<<"m_flux->time()"<<endl;
 	  time=m_flux->time();
-	  if (time<0) break;
+	  if (time>=1.0e+6) break;
 	  dir = m_flux->launchDir();
+	  // cout<<"m_flux->energy()"<<endl;
 	  energy = m_flux->energy(); // kinetic energy in MeV
-	  Area=m_flux->targetArea();
+	  Area=m_flux->targetArea(); 
+	  // cout<<"m_flux->rate()"<<endl;
 	  Rate= m_flux->rate();
 	  dt=time-t1;
-	  t1=time;
+
 	  // Calculate the Fluences 
 	  fluence1+=CalculateFluence(energy);
 	  fluence2+=CalculateFluence(energy,0.05,0.3);
@@ -325,7 +329,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	      DataOut myData;
        
 	      myData.setEnergy(energy);
-	      myData.setTime(time);
+	      myData.setTime(t1);
 	      myData.setPhi(phi);
 	      myData.setTheta(acos(cos_theta)*180.0/M_PI); //in degrees
 	      myData.setSignal(signal); 
@@ -335,9 +339,8 @@ int GRBTest::Start(std::vector<char*> argv)
 	  if (nume%10==0){
 	    cout<<
 	      "-------- Event Number: "<<nume<<"\n"<<
-	      " Time [s] = "<<time<<"\n"<<
+	      " Time [s] = "<<t1<<"\n"<<
 	      " Rate [ph/(s)]= "<<Rate<<"\n"<<
-	      // " Flux [ph/(m^2 s)]= "<<e->flux(time)<<"\n"<<
 	      " 1/Rate [s]= "<<1/Rate<<"\n"<<
 	      " Interval [s]= "<<dt<<"\n"<<
 	      " Area [m^2]= "<<Area<<"\n"<<
@@ -346,6 +349,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	      " Direction: Cos(theta) = " << cos_theta <<", phi = "<<phi<<"\n"<<
 	      endl;
 	  }
+	  t1=time;
 	  nume++;
 	}
       cout<<"Time final="<<t1<<endl;

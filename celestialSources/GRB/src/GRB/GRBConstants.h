@@ -35,24 +35,24 @@ namespace cst
   const double alphae    = .33;
   const double alphab    = .33;
   const double p         = 2.5;
-  const double viscosity = 0.;
+  const double viscosity = 0.0;
   /// Internal Parameters
   const double enmax     = 1.0e+12;
   //! Min. photon energy detectable by GLAST: set to 1 MeV
   //  const double enph      = 1.0e+6; 
-  const double enph      = 5.0e+4; //BATSE band
+  const double enph      = 5.0e+4; // = 50 KeV BATSE band
   //! Minimal Temporal separation between 2 photons
   const double DeadTime  = 1.0e-5; //sec
   const double enmin     = 1.0e+3;
   const int nstep        = 200;
-  const int enstep       = 100;
+  const int enstep       = 50;
   //! flag =[0,1], if ==0, No inverse compton;
   const float flagIC     = 1;
   //! If some of the constants in the GRBParam.txt file is ==0, it will be choosen randomly, accoding the to kind of burst selected.
   //!  The possibilities are:
   //! 'Short' or 'Long' to select the kind of burst will be generated.
   //!  Everything else to select short or long burst whith different prop=bability.
-  const bool savef=false;
+  const bool savef=true;
   const std::string paramFile= "GRBdata.txt";
 }
 

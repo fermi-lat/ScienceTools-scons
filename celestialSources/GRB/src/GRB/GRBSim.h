@@ -49,13 +49,12 @@ class GRBSim
   * \arg Step 3: Sorting the Shocks with respect to \c tobs. 
   */
   void Start();
-  /*! \arg Step 4:Compute the Flux (m_spectrum), at given time.
+  /*! \arg Step 4:Compute the Flux, at given time.
    * \param time is the time in which the spectrum is calculated.
    */
-  void ComputeFlux(double time);
-  void ComputeFlux2(double time);
-  void TotalFlux();
-  
+  std::vector<double> ComputeFlux(double time);
+  //! Set the private data member m_spectrum to the \param value.
+  void setSpectrum(std::vector<double> value) {m_spectrum=value;}
   //! The direction of the GRB is chosen randomly in the sky.
   std::pair<float,float> GRBdir()       {return m_grbdir;}
   //! The Spectrum() vector contains the flux \f$\phi\f$ in \f$ph/s/MeV/m^2\f$
@@ -86,8 +85,10 @@ class GRBSim
    * \param emin minimal energy below which no photon energy is drawn. This 
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
-  double              IFlux(double enmin=cst::enph); 
-
+  double              IFlux( std::vector<double>,
+			     double enmin=cst::enph,
+			     double enmax=cst::enmax);
+  
   /*! \brief Return the integrated photon rate (\f$ ph/(m^2 s)\f$) for energy greather than enmin.
    *
    * It calculates the following integral:
@@ -95,16 +96,8 @@ class GRBSim
    * \param emin minimal energy below which no photon energy is drawn. This 
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
-  double              IRate(double enmin=cst::enph);
-
-  /*! \brief Integrated flux of energy for energy > enmin that flows in a time step dt
-   *
-   * \f[ \int_{enmin}^{enmax} \phi(E) E dE*dt\f], is in (\f$eV/m^2\f$)
-   * \param emin minimal energy below which no photon energy is drawn. This 
-   * is to avoid generation of low energy photons without interest to GLAST. 
-
-   */
-  double              IEnergy(double enmin=cst::enph,double enmax=cst::enmax);
+  double              IRate(std::vector<double>,
+			    double enmin=cst::enph);
 
   /*!
    * \brief returns a photon energy sampled from the current spectrum vector.

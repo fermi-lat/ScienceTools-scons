@@ -158,13 +158,23 @@ void Burst(int argc, char** argv)
       double fluence5=0.0;
       std::vector<double> m_time;
       
-      TH1D *h1 = new TH1D("h1","h1",cst::enstep,log10(cst::enmin)-6,log10(cst::enmax)-6);
+      // Logaritmic Binning
+      double e_delta=pow(cst::enmax/cst::enmin,1.0/cst::enstep);
+      double *e_bins;
+      e_bins=(double*)malloc(sizeof(double)*(cst::enstep+1));
+  
+      for(int i = 0;i<=cst::enstep;i++)
+	{
+	  e_bins[i]=cst::enmin*pow(e_delta,1.0*i)*1.0e-6;
+	}
+      
+      TH1D *h1 = new TH1D("h1","h1",cst::enstep,e_bins);//log10(cst::enmin)-6,log10(cst::enmax)-6);
       
       TCanvas *cc2;
       if(video_out)
 	{
 	  cc2 = new TCanvas();
-	  h1->GetXaxis()->SetTitle("Log(Energy [eV])");
+	  h1->GetXaxis()->SetTitle("Energy [MeV]");
 	  h1->GetXaxis()->SetLabelSize(0.05);
 	  h1->GetXaxis()->SetTitleOffset(1.5);
 	  //  h1->GetYaxis()->SetTitle("flux[ph/s/eV/m^2]");  
@@ -177,8 +187,8 @@ void Burst(int argc, char** argv)
 	  m_time.push_back(t*m_dt+m_dt);
 	  // Compute the flux @ time
 	  spectrum.clear();
-	  _myGRB->ComputeFlux(m_time[t]);    
-	  spectrum=_myGRB->Spectrum(); // is in photons/s/MeV/m^2
+	  spectrum=_myGRB->ComputeFlux(m_time[t]); // is in photons/s/MeV/m^2
+	  _myGRB->setSpectrum(spectrum);
 	  for (int en=0;en<cst::enstep;en++)
 	    {
 	      m_flux[en][t]=spectrum[en]*energy[en]/(cst::erg2MeV*1.0e+6);  
@@ -194,9 +204,9 @@ void Burst(int argc, char** argv)
 		  //	h1->SetBinContent(en+1,Flux(en)); //ph/m^2/s/eV
 		}
 	      cc2->cd();
-	      //cc2->SetLogx();
+	      cc2->SetLogx();
 	      h1->Draw("AL");
-	      h1->GetXaxis()->SetTitle("Log(Energy[MeV])");
+	      h1->GetXaxis()->SetTitle("Energy[MeV]");
 	      h1->GetXaxis()->SetTitleSize(0.035);
 	      h1->GetXaxis()->SetLabelSize(0.035);
 	      h1->GetXaxis()->SetTitleOffset(1.4);
@@ -208,14 +218,15 @@ void Burst(int argc, char** argv)
 	      h1->SetLineColor(4);
 	      cc2->Update();   
 	    }
-	  fluence1+=_myGRB->IEnergy(cst::enmin)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
-	  fluence2+=_myGRB->IEnergy(ch1L,ch1H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
-	  fluence3+=_myGRB->IEnergy(ch2L,ch2H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
-	  fluence4+=_myGRB->IEnergy(ch3L,ch3H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
-	  fluence5+=_myGRB->IEnergy(ch4L,ch4H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+	  fluence1+=_myGRB->IFlux(spectrum,cst::enmin,cst::enmax)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
+	  fluence2+=_myGRB->IFlux(spectrum,ch1L,ch1H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
+	  fluence3+=_myGRB->IFlux(spectrum,ch2L,ch2H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
+	  fluence4+=_myGRB->IFlux(spectrum,ch3L,ch3H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
+	  fluence5+=_myGRB->IFlux(spectrum,ch4L,ch4H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
 	  //erg
 	  cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<fluence1<<endl;
 	}
+      cout<<"**************************************************"<<endl;
       cout<<"Fluence [erg/cm^2] = "<<fluence1/_myGRB->Area()<<endl;
       cout<<"Fluence ("<<ch1L*1.0e-6<<" MeV - "<<ch1H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence2/_myGRB->Area()<<endl;
       cout<<"Fluence ("<<ch2L*1.0e-6<<" MeV - "<<ch2H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence3/_myGRB->Area()<<endl;
@@ -347,30 +358,29 @@ void Burst(int argc, char** argv)
 		  
 		  if (energyx[en]<ch1H &&energyx[en]>=ch1L)
 		    {
-		      ch1[t]+=(m_flux[en][t])*(cst::erg2MeV)
+		      ch1[t]+=(m_flux[en][t])*(cst::erg2MeV);
 			//		/energyx[en]
-			*m_dt; /// is in ph/m^2
+			//			*m_dt; /// is in ph/m^2/s
 		    }
 		  if (energyx[en]<ch2H &&energyx[en]>=ch2L)
 		    {
-		      ch2[t]+=(m_flux[en][t])*(cst::erg2MeV)
+		      ch2[t]+=(m_flux[en][t])*(cst::erg2MeV);
 			//		/energyx[en]
-			*m_dt; /// is in ph/m^2
+			//	*m_dt; /// is in ph/m^2/s
 		    }
 		  if (energyx[en]<ch3H &&energyx[en]>=ch3L)
 		    {
-		      ch3[t]+=(m_flux[en][t])*(cst::erg2MeV)
+		      ch3[t]+=(m_flux[en][t])*(cst::erg2MeV);
 			//		/energyx[en]
-			*m_dt; /// is in ph/m^2
+			//		*m_dt; /// is in ph/m^2/s
 		    }
 		  if (energyx[en]<ch4H &&energyx[en]>=ch4L)
 		    {
-		      ch4[t]+=(m_flux[en][t])*(cst::erg2MeV)
+		      ch4[t]+=(m_flux[en][t])*(cst::erg2MeV);
 			//		/energyx[en]
-			*m_dt; /// is in ph/m^2
+			//		*m_dt; /// is in ph/m^2/s
 		    }
 		  h2->Fill(loge[en],timex[t],m_flux[en][t]);
-		  //      cout<<log10(energyx[en])<<timex[t]<<log10(m_flux[en][t])<<endl;
 		}
 	    }
 	  
@@ -433,7 +443,7 @@ void Burst(int argc, char** argv)
 	  gch1->GetXaxis()->SetTitleSize(0.035);
 	  gch1->GetXaxis()->SetLabelSize(0.035);
 	  gch1->GetXaxis()->SetTitleOffset(1.4);
-	  gch1->GetYaxis()->SetTitle("Counts [ph/m^2]");
+	  gch1->GetYaxis()->SetTitle("Counts [ph/m^2/s]");
 	  gch1->GetYaxis()->SetTitleSize(0.035);
 	  gch1->GetYaxis()->SetLabelSize(0.035);
 	  gch1->GetYaxis()->SetTitleOffset(1.4);

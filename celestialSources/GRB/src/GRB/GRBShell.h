@@ -41,7 +41,8 @@ class GRBShell
   //! Returns the Thickness
   inline double getThickness() {return m_thickness;}
   //! Returns the Radius of the shell
-  inline double getRadius()    {return m_radius;}
+  inline double getRadius()    {return m_radius;} 
+  //! Returns the beta of the shell
   inline double getBeta()      {return beta(m_gamma);}
   /*! \brief computes and returns the comoving volume (in \f$cm^3\f$).
    *

@@ -21,18 +21,25 @@ double GRBShell::beta(const double gamma)
 {
   if(gamma<1.0)
     {
-      //      cout << "warning: gamma undefined (= "<<gamma<<"), returning beta=0" << endl;
       return 0;
-    } else 
-      {
-	return sqrt(1. - 1./(gamma*gamma));  
-      }
+    }
+  else 
+    {
+      return sqrt(1. - 1./(gamma*gamma));  
+    }
 }
 
 
-void GRBShell::evolve(double time) 
+void GRBShell::evolve(double dt) 
 {
-  m_radius += beta(m_gamma)*cst::c*time;
+  //Interaction with the Inter Stellar Medium: 
+  if(m_radius>1.0e+17)
+    {
+      m_gamma=cst::viscosity+m_gamma*(1.0-cst::viscosity);
+    }
+  if(m_gamma<1.0) m_gamma=1.0;
+  m_radius += beta(m_gamma)*cst::c*dt;
   // Expanding sells...
   //  m_thickness=m_radius/pow(m_gamma,2)>m_thickness?m_radius/pow(m_gamma,2):m_thickness;
+  
 }

@@ -89,11 +89,12 @@ void GRBSim::Start()
       double tmax = myParam->Nshell()*2.0*time_em*(gmax2*gmax2/(gmax2-gmin2));
       double ddt= time_em/10.0;
       int shell_created=0;
+
       while (time<tmax && nshock<myParam->Nshell()-1)
 	{
-	  if(shell_created<myParam->Nshell())
+	  if(shell_created<myParam->Nshell()) 
 	    {
-	      if (ttee==0)
+	      if (ttee==0)      // if true-> it is time to create a shell
 		{
 		  double gi = generateGamma(myParam->GammaMin(),myParam->GammaMax()); 
 		  
@@ -110,8 +111,6 @@ void GRBSim::Start()
 		  GRBShell iShell(gi,m,myParam->T0(),0.0);
 		  theShells.push_back(iShell);
 		  shell_created++;
-		  
-		  cout<<"Shell created ="<<shell_created<<" Shell size ="<<theShells.size()<<endl;
 		}
 	    }
 	  else
@@ -139,7 +138,7 @@ void GRBSim::Start()
 		      theShocks.push_back(iShock);	
 		      theShells.erase(&theShells[i]);
 		      nshock++;
-		      //iShock.Write();
+		      //		      iShock.Write();
 		    }
 		}
 	    }
@@ -176,7 +175,7 @@ void GRBSim::Start()
      (-1.0+sqrt(2.0*qo*myParam->Redshift()+1.0)))*cst::mpc2cm;
   m_Area=(4.*cst::pi)*pow(Dist,2); // [cm^2]
   
-  cout<<"Dist  of the source = "<<Dist<<endl;
+  cout<<"Dist  of the source = "<<Dist<<" cm "<<endl;
   cout<< "Number of Shocks = " <<theShocks.size()<< endl;
   /*------------------------------------------------------*/
   /// Step 3: Sorting the shocks and setting t min=0
@@ -197,6 +196,7 @@ void GRBSim::Start()
   //Now compute the Flux sum produced in each Shock
   m_tmax=1.2*(last.tobs()+last.duration());
   //if (m_tmax>1000.0) m_tmax=1000.0;
+  cout<<"Duration of the Burst : "<<m_tmax<<endl;
   if (m_tmax<2.)
     {cout<<"The burst is Short "<<endl;}
   else
@@ -209,45 +209,14 @@ void GRBSim::Start()
   m_DeadTime=1e-4;
 }
 
-void GRBSim::TotalFlux()
-{
-  cout<<"Compute the Total Flux !!"<<endl;
-  double ti=0;
-  int ii=0;
-  m_Fvt.clear();
-  
-  while (ti<=m_tmax)
-    {
-      if (ii%100==0) cout<<"Time Max / Time = "
-			 <<m_tmax<<" - "<<ti<<endl;
-      ComputeFlux2(ti);
-      m_Fvt.push_back(m_spectrum);
-      ti += m_DeadTime;
-      ii++;
-    } 
-}
-
-void GRBSim::ComputeFlux2(double time)
-{
-  double ti=0.0;
-  int i=0;
-  if (time<=0) time=m_DeadTime;
-  while (ti<time) 
-    {
-      ti+=m_DeadTime;
-      i++;
-    }
-  m_spectrum=m_Fvt[i];
-}
-
 /*------------------------------------------------------*/
-void GRBSim::ComputeFlux(double time)
+std::vector<double> GRBSim::ComputeFlux(double time)
 {
+  //  cout<<"Compute the flux @ time ="<<time<<endl;
   double norma;
   double temp;
-  m_spectrum.clear();
-  m_spectrum.resize(enstep,0.);
-  // ATTENZIONE!!
+  std::vector<double> spectrum(enstep,0.);
+ 
   if (time<=0.0) 
     {
       time=1.0e-6;
@@ -260,7 +229,7 @@ void GRBSim::ComputeFlux(double time)
       norma = ((*itr).Eint())/(m_Area); //erg/cm^2
       std::vector<double>::iterator it;
       int en=0;
-      for (it = m_spectrum.begin();it!=m_spectrum.end();++it)
+      for (it = spectrum.begin();it!=spectrum.end();++it)
 	{
 	  // temp is in erg/s/eV
 	  temp = (*itr).FluxAtT(m_energy[en],time,true);
@@ -271,56 +240,59 @@ void GRBSim::ComputeFlux(double time)
 	  en++;
 	}
     }
+   return spectrum;
 }
 
 /*------------------------------------------------------*/
-double GRBSim::IFlux(double enmin)
+double GRBSim::IFlux(std::vector<double> spctrmVec,double enmin,double enmax)
 {
-  // gives the integrated flux of energy (eV/s/m^2) for energy > enmin 
+  if(spctrmVec.size()==0) return 0.0;
+  std::vector<double>::iterator it_spec;
+  std::vector<double>::iterator it_ene;
+  std::vector<double>::iterator it_de;
+  
+  // rate of particle arrivals for energy > enmin
   double flux=0.0;
-  for (int en=0;en<enstep;en++)
+  it_ene=m_energy.begin();
+  it_de=m_de.begin();
+  for(it_spec= spctrmVec.begin();it_spec != spctrmVec.end();++it_spec)
+    // for (int en=0;en<enstep;en++)
     {
-      if(m_energy[en]>=enmin)
-	{
-	  flux +=m_energy[en]*m_spectrum[en]*(m_de[en])*(1.0e-6);
+      if((*it_ene)>=enmin)
+	{  
+	  flux += (*it_ene)*(*it_spec)*(*it_de)*(1.0e-6);
 	  //eV/s/m^2
 	}
-    }
-  return flux;
-}
-/*------------------------------------------------------*/
-double GRBSim::IRate(double enmin)
-{
-  // rate of particle arrivals for energy > enmin
-  double rate=0.0;
-  for (int en=0;en<enstep;en++)
-    {
-      if(m_energy[en]>=enmin)
-	{  
-	  rate += m_spectrum[en]*(m_de[en])*(1.0e-6);
-	  //ph/s/m^2
-	}
-    }
-  // ATTENZIONE!!
-  if (rate<=0.01) rate = 0.01;
-  return rate;  
-}
-/*------------------------------------------------------*/
-double GRBSim::IEnergy(double enmin,double enmax)
-{
-  // Integrated flux of energy for energy > enmin
-  // that flows in a time step dt .
-  double flux=0.0;
-  double dt=m_tmax/nstep;
-  for (int en=0;en<enstep;en++)
-    {
-      if(m_energy[en]>=enmin && m_energy[en]<=enmax)
-	{  
-	  flux +=m_energy[en]*m_spectrum[en]*(m_de[en])*(1.0e-6)*dt;
-	  //eV/m^2
-	}
+      it_ene++;
+      it_de++;
     }
   return flux;  
+}
+
+/*------------------------------------------------------*/
+double GRBSim::IRate(std::vector<double> spctrmVec,double enmin)
+{
+  if(spctrmVec.size()==0) return 0.0;
+  std::vector<double>::iterator it_spec;
+  std::vector<double>::iterator it_ene;
+  std::vector<double>::iterator it_de;
+  
+  // rate of particle arrivals for energy > enmin
+  double rate=0.0;
+  it_ene=m_energy.begin();
+  it_de=m_de.begin();
+  for(it_spec= spctrmVec.begin();it_spec != spctrmVec.end();++it_spec)
+    // for (int en=0;en<enstep;en++)
+    {
+      if((*it_ene)>=enmin && (*it_ene)<=enmax)
+	{  
+	  rate += (*it_spec)*(*it_de)*(1.0e-6);
+	  //ph/s/m^2
+	}
+      it_ene++;
+      it_de++;
+    }
+  return rate;  
 }
 
 /*------------------------------------------------------*/
