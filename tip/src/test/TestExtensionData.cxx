@@ -149,12 +149,12 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   try {
     // Get number of elements in a field from the image:
     // This is only valid for tables.
-    const_ext->getFieldNumElements(-1);
-    msg = "success calling getFieldNumElements(-1) from a const";
+    const_ext->getColumn(-1)->getNumElements();
+    msg = "success calling getNumElements(-1) from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
     // This exception should have been thrown.
-    msg = "failure calling getFieldNumElements(-1) from a const";
+    msg = "failure calling getNumElements(-1) from a const";
     ReportBehavior(msg + " " + ext_type + " object", status, x);
   }
 
@@ -208,8 +208,8 @@ void TestReadField(const tip::IExtensionData * const_ext, const std::string & fi
 
       try {
         // Next, get the number of elements in each cell for this field:
-        msg = std::string("getFieldNumElements(\"") + ToString(field_index) + "\")";
-        Index_t num_elements = const_ext->getFieldNumElements(field_index);
+        msg = std::string("getNumElements(\"") + ToString(field_index) + "\")";
+        Index_t num_elements = const_ext->getColumn(field_index)->getNumElements();
         ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
 
         if (0 >= num_elements) {
@@ -217,11 +217,20 @@ void TestReadField(const tip::IExtensionData * const_ext, const std::string & fi
           msg += " returned a non-positive number of elements";
           ReportError(msg + " from a const " + ext_type + " object", status);
         } else {
+          const IColumn * column = const_ext->getColumn(field_index);
+          if (1 == num_elements && !column->isScalar())
+            ReportError("number of elements in column is 1, but IColumn::isScalar() returned false", status);
+          else if (1 != num_elements && column->isScalar())
+            ReportError("number of elements in column is not 1, but IColumn::isScalar() returned true", status);
+          else if (1 == num_elements && column->isScalar())
+            ReportBehavior("number of elements is 1, and IColumn::isScalar() returned true", status);
+          else if (1 != num_elements && !column->isScalar())
+            ReportBehavior("number of elements is not 1, and IColumn::isScalar() returned false", status);
+
           // Allocate an array to hold the values read from a single cell of this field:
           std::vector<double> tmp_dv(num_elements);
           double tmp_d;
           try {
-            const IColumn * column = const_ext->getColumn(field_index);
             // Iterate over all records, reading them:
             for (Index_t ii = 0; ii < num_rec; ++ii) {
               if (column->isScalar()) {
@@ -436,7 +445,7 @@ namespace tip {
     testReadOnly();
 
     // Test read-write access:
-    //testReadWrite();
+    testReadWrite();
 
     // Test copying:
     testCopy();
@@ -534,7 +543,7 @@ namespace tip {
 
     std::string file_name = getDataDir() + "a1.pha";
 
-    // Open read-write a file with fixed width field to test correct function of setFieldNumElements.
+    // Open read-write a file with fixed width field to test correct function of setNumElements.
     file_name = getDataDir() + "a1.pha";
     msg = std::string("attempt to open writable extension SPECTRUM in file ") + file_name;
     try {
@@ -544,9 +553,19 @@ namespace tip {
       ReportUnexpected(msg + " failed", x);
     }
 
+    msg = "attempt to confirm vector field is not considered a scalar";
+    try {
+      if (m_writable_extension->getColumn(1)->isScalar())
+        ReportUnexpected(msg + " failed");
+      else
+        ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
     msg = "attempt to change number of elements in a fixed width field";
     try {
-      m_writable_extension->setFieldNumElements(1, 100);
+      m_writable_extension->getColumn(1)->setNumElements(1);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -554,11 +573,22 @@ namespace tip {
 
     msg = "attempt to confirm change to number of elements in a field";
     try {
-      if (100 != m_writable_extension->getFieldNumElements(1)) {
-        ReportUnexpected(msg + " reported " + toString(m_writable_extension->getFieldNumElements(1)) + " elements, not 100");
+      if (1 != m_writable_extension->getColumn(1)->getNumElements()) {
+        ReportUnexpected(msg + " reported " + toString(m_writable_extension->getColumn(1)->getNumElements()) +
+          " elements, not 1");
       } else {
         ReportExpected(msg + " succeeded");
       }
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    msg = "attempt to confirm that a field which used to be a vector is now a scalar";
+    try {
+      if (m_writable_extension->getColumn(1)->isScalar())
+        ReportExpected(msg + " succeeded");
+      else
+        ReportUnexpected(msg + " failed");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
     }
