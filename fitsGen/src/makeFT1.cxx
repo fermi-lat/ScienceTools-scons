@@ -43,9 +43,8 @@ int main(int iargc, char * argv[]) {
       }
    }
 
-// Create the RootTuple objects, one each for the FT1 and Exposure
+// Create the RootTuple object, for the Exposure
 // branches in the merit file.
-   RootTuple::RootTuple ft1Tuple(rootFile, "FT1");
    RootTuple::RootTuple exposureTuple(rootFile, "Exposure");
 
 // Need the MeritTuple tree for the IM variables
@@ -65,12 +64,12 @@ int main(int iargc, char * argv[]) {
    colNames.push_back("CalEnergySum");
    colNames.push_back("CalTotRLn");
    colNames.push_back("GltLayer");
-   colNames.push_back("FilterStatus_HI");
+   colNames.push_back("GltFilterStatusHI");
    meritTuple.readTree(colNames, query, nentries);
 
 // Read in all of the columns for the FT1 and Exposure branches.
-   colNames = ft1Tuple.branchNames();
-   ft1Tuple.readTree(colNames, query, nentries);
+   colNames = meritTuple.branchNames();
+   meritTuple.readTree(colNames, query, nentries);
 
    colNames = exposureTuple.branchNames();
    exposureTuple.readTree(colNames, query, nentries);
@@ -92,7 +91,7 @@ int main(int iargc, char * argv[]) {
       dynamic_cast<Goodi::LatEventsData *>
       (dataCreator.create(datatype, mission));
 
-   std::vector<double> vect_times = ft1Tuple("time");
+   std::vector<double> vect_times = meritTuple("EvtTime");
    std::stable_sort(vect_times.begin(),vect_times.end());
    std::vector<std::pair<double,double> > gti;
    gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
@@ -103,7 +102,7 @@ int main(int iargc, char * argv[]) {
 // Fill the EventData object with data from the FT1 tree:
    
 // ENERGY
-   std::vector<double> energy = ft1Tuple("energy");
+   std::vector<double> energy = meritTuple("FT1Energy");
 // Convert from MeV to eV, which is what Goodi wants.
    std::transform( energy.begin(), energy.end(), energy.begin(), 
                    std::bind2nd(std::multiplies<double>(), 1e6) );
@@ -112,56 +111,56 @@ int main(int iargc, char * argv[]) {
 // Goodi wants angles in radians.
    std::vector<double> angles(nevts);
 // RA
-   std::transform( ft1Tuple("ra").begin(), 
-                   ft1Tuple("ra").end(), 
+   std::transform( meritTuple("FT1Ra").begin(), 
+                   meritTuple("FT1Ra").end(), 
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setRA(angles);
-//   data->setRA(ft1Tuple("ra"));
+//   data->setRA(meritTuple("ra"));
 
 // DEC
-   std::transform( ft1Tuple("dec").begin(), 
-                   ft1Tuple("dec").end(), 
+   std::transform( meritTuple("FT1Dec").begin(), 
+                   meritTuple("FT1Dec").end(), 
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setDec(angles);
-//   data->setDec(ft1Tuple("dec"));
+//   data->setDec(meritTuple("dec"));
 
 // Colatitude and azimuthal angle in instrument coordinates.
 // THETA
-   std::transform( ft1Tuple("theta").begin(), 
-                   ft1Tuple("theta").end(), 
+   std::transform( meritTuple("FT1Theta").begin(), 
+                   meritTuple("FT1Theta").end(), 
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setTheta(angles);
-//   data->setTheta( ft1Tuple("theta") );
+//   data->setTheta( meritTuple("theta") );
 
 // PHI
-   std::transform( ft1Tuple("phi").begin(), 
-                   ft1Tuple("phi").end(), 
+   std::transform( meritTuple("FT1Phi").begin(), 
+                   meritTuple("FT1Phi").end(), 
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setPhi(angles);
-//   data->setPhi(ft1Tuple("phi"));
+//   data->setPhi(meritTuple("phi"));
 
 // ZENITH_ANGLE
-   std::transform( ft1Tuple("zenith_angle").begin(), 
-                   ft1Tuple("zenith_angle").end(),
+   std::transform( meritTuple("FT1ZenithTheta").begin(), 
+                   meritTuple("FT1ZenithTheta").end(),
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setZenithAngle(angles);
-//   data->setZenithAngle(ft1Tuple("zenith_angle"));
+//   data->setZenithAngle(meritTuple("zenith_angle"));
 
 // EARTH_AZIMUTH
-   std::transform( ft1Tuple("earth_azimuth").begin(), 
-                   ft1Tuple("earth_azimuth").end(),
+   std::transform( meritTuple("FT1EarthAzimuth").begin(), 
+                   meritTuple("FT1EarthAzimuth").end(),
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
    data->setAzimuth(angles);
-//   data->setAzimuth(ft1Tuple("earth_azimuth"));
+//   data->setAzimuth(meritTuple("earth_azimuth"));
 
 // TIME
-   data->setTime(ft1Tuple("time"));
+   data->setTime(meritTuple("EvtTime"));
 
 // EVENT_ID
 // Using std::copy complains about type conversion; passing
@@ -169,8 +168,8 @@ int main(int iargc, char * argv[]) {
 // compile under gcc 2.95.3.  This kludge seems to work without
 // complaint.
    std::vector<long> eventId(nevts);
-   std::transform( ft1Tuple("event_id").begin(), 
-                   ft1Tuple("event_id").end(),
+   std::transform( meritTuple("FT1EventId").begin(), 
+                   meritTuple("FT1EventId").end(),
                    eventId.begin(), 
                    std::bind2nd(std::multiplies<long>(), 1) );
    data->setEventID(eventId);
@@ -192,11 +191,11 @@ int main(int iargc, char * argv[]) {
    
 // CONVERSION_POINT
    std::vector<double>::const_iterator pConvPtX 
-      = ft1Tuple("convPointX").begin();
+      = meritTuple("FT1ConvPointX").begin();
    std::vector<double>::const_iterator pConvPtY 
-      = ft1Tuple("convPointY").begin();
+      = meritTuple("FT1ConvPointY").begin();
    std::vector<double>::const_iterator pConvPtZ 
-      = ft1Tuple("convPointZ").begin();
+      = meritTuple("FT1ConvPointZ").begin();
    std::vector< std::valarray<float> >::iterator pConvPoint 
       = convPoint.begin();
    while (pConvPoint != convPoint.end()) {
@@ -213,8 +212,8 @@ int main(int iargc, char * argv[]) {
 
 // CONVERSION_LAYER
    std::vector<int> convLayer(nevts);
-   std::transform( ft1Tuple("convLayer").begin(), 
-                   ft1Tuple("convLayer").end(),
+   std::transform( meritTuple("FT1ConvLayer").begin(), 
+                   meritTuple("FT1ConvLayer").end(),
                    convLayer.begin(), 
                    std::bind2nd(std::multiplies<int>(), 1) );
    data->setConvLayer( convLayer );
@@ -304,3 +303,7 @@ int main(int iargc, char * argv[]) {
 
    delete ioService;
 }
+
+
+
+
