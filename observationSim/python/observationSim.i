@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 %}
+%include stl.i
 %include ../observationSim/Spacecraft.h
 %include ../src/LatSc.h
 %include ../src/EgretSc.h
@@ -24,7 +25,6 @@
 %include ../observationSim/ScDataContainer.h
 %include ../observationSim/Simulator.h
 %include ../observationSim/Roi.h
-%include stl.i
 %template(DoubleVector) std::vector<double>;
 %template(StringVector) std::vector<std::string>;
 %extend observationSim::Simulator {

@@ -21,6 +21,8 @@ apply_pattern package_include
 
 private
 
+use Goodi v1*
+
 #use python v2* IExternal
 #macro pydir ../python/
 #macro_append use_linkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
