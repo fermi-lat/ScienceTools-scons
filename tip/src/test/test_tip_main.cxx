@@ -285,6 +285,24 @@ int main() {
     // Now test Root file access.
     my_table = IFileSvc::instance().editTable(data_dir + "merit.root", "1", "McEnergy < 2000. && McEnergy > 50.");
 
+    // This should work:
+    Header & header = my_table->getHeader();
+
+    // Accessing keywords should not work:
+    try {
+      double x;
+      header["keyword"].get(x);
+    } catch(const TipException &) {
+      // This is as it should be.
+    }
+
+    try {
+      double x = 7.;
+      header["keyword"].set(x);
+    } catch(const TipException &) {
+      // This is as it should be.
+    }
+
     try {
       int recordNum = 0;
 
