@@ -17,14 +17,25 @@ namespace table {
 
   // Construct without opening the file.
   FitsExtensionUtils::FitsExtensionUtils(const std::string & file_name, const std::string & ext_name):
-    m_file_name(file_name), m_ext_name(ext_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0), m_fp(0) {}
+    m_file_name(file_name), m_ext_name(ext_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0), m_fp(0),
+    m_header(0), m_data(0) {}
 
   // Close file automatically while destructing.
-  FitsExtensionUtils::~FitsExtensionUtils() { close(); }
+  FitsExtensionUtils::~FitsExtensionUtils() { delete m_data; delete m_header; close(); }
 
-  IHeaderData * FitsExtensionUtils::createHeader() { return new FitsHeaderData(this); }
+  IHeaderData * FitsExtensionUtils::getHeaderData() {
+    if (!m_header) m_header = new FitsHeaderData(this);
+    return m_header;
+  }
 
-  IData * FitsExtensionUtils::createData() { return new FitsTabularData(this); }
+  ITabularData * FitsExtensionUtils::getTabularData() {
+    ITabularData * retval = 0;
+    if (!m_data) {
+      retval = new FitsTabularData(this);
+      m_data = retval;
+    }
+    return retval;
+  }
 
   // Subclasses call this to open the file and position it to the desired extension.
   void FitsExtensionUtils::open() {

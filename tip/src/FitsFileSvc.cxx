@@ -5,7 +5,7 @@
 
     \author James Peachey, HEASARC
 */
-#include "FitsExtensionData.h"
+#include "FitsExtensionUtils.h"
 #include "FitsFileSvc.h"
 #include "RootExtensionData.h"
 #include "table/Table.h"
@@ -23,7 +23,7 @@ namespace table {
     IExtensionData * data = 0;
     try {
       try {
-        data = new FitsExtensionData(file_name, table_name);
+        data = new FitsExtensionUtils(file_name, table_name);
       } catch(TableException & x) {
         data = new RootExtensionData(file_name, table_name);
       }

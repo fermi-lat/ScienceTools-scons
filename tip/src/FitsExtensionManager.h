@@ -15,6 +15,7 @@
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
+#include "table/IExtensionData.h"
 #include "table/TableException.h"
 #include "table/table_types.h"
 
@@ -31,7 +32,7 @@ namespace table {
       acts as a factory for creating FITS-specific header and data objects, which refer back to the
       FitsExtensionUtils object which created them.
   */
-  class FitsExtensionUtils {
+  class FitsExtensionUtils : public IExtensionData {
     public:
       /** \brief Create an object to provide low-level access to the given FITS extension.
           \param file_name The name of the FITS file.
@@ -41,17 +42,17 @@ namespace table {
 
       /** \brief Destructor. Closes file if it is open.
       */
-      ~FitsExtensionUtils();
+      virtual ~FitsExtensionUtils();
 
       /** \brief Create a header object which refers to this file. Caller is responsible for deleting
           the header object.
       */
-      IHeaderData * createHeader();
+      virtual IHeaderData * getHeaderData();
 
       /** \brief Create a data object (table or image) which refers to this file. Caller is responsible
           for deleting the header object.
       */
-      IData * createData();
+      virtual ITabularData * getTabularData();
 
       // General support for FITS files:
       /** \brief Open the FITS file and return Cfitsio's fitsfile pointer.
@@ -131,6 +132,8 @@ namespace table {
       std::map<int, ColumnInfo> m_col_num_lookup;
       Index_t m_num_records;
       fitsfile * m_fp;
+      IHeaderData * m_header;
+      IData * m_data;
   };
 
   // Getting keywords.
