@@ -562,6 +562,14 @@
       </spectrum>
    </source>
 
+   <source name="_3C279_June1991_flare">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+        params="0.425,1.89,0.,1.07e6,$(OBSERVATIONSIMROOT)/data/3c279Template.dat"/>
+         <celestial_dir ra="193.98" dec="-5.82"/>
+      </spectrum>
+   </source>
+
    <source name="periodic_source">
       <spectrum escale="MeV">
          <SpectrumClass name="PeriodicSource"
