@@ -28,17 +28,19 @@ namespace table {
         m_name(name) {}
 
       /** \brief Get the current value of this Keyword.
+          The type of the converted value is given by the template parameter.
           \param value The current value.
       */
-      void get(double & value) const;
+      template <typename T>
+      void get(T & value) const;
 
     private:
       IExtensionData * m_extension_data;
       std::string m_name;
   };
 
-  // Keyword
-  inline void Keyword::get(double & value) const { m_extension_data->getKeyword(m_name, value); }
+  template <typename T>
+  inline void Keyword::get(T & value) const { m_extension_data->getKeyword(m_name, value); }
 
 }
 

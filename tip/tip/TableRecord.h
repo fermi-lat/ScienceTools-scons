@@ -22,8 +22,6 @@ namespace table {
   /** \class TableCell
 
       \brief Encapsulation of a single table cell, which may contain (in principle) any type of object.
-
-      The get() method will need to be overloaded for every type the TableCell may in practice contain.
   */
   class TableCell {
     public:
@@ -36,9 +34,11 @@ namespace table {
       virtual ~TableCell() {}
 
       /** \brief Get the current value of this TableCell from current iterator position.
+          The type of the converted value is given by the template parameter.
           \param value The current value.
       */
-      void get(double & value) const;
+      template <typename T>
+      void get(T & value) const;
 
     private:
       ConstTableRecord & m_record;
@@ -182,7 +182,8 @@ namespace table {
   };
 
   // TableCell
-  inline void TableCell::get(double & value) const
+  template <typename T>
+  inline void TableCell::get(T & value) const
     { m_record.getTabularData()->getCell(m_field, m_record.getIndex(), value); }
 
   // ConstTableRecord
