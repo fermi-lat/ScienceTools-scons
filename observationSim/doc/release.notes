@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r0p2 30-Sep-04   JC   fix zenith angle access in Spacecraft class
     v5r0p1 27-Sep-04   JC   write spacecraft zenith to FT2
     v5r0   27-Sep-04   JC   add orbSim application; ensure spacecraft
                             position data is written to FT2 output.
