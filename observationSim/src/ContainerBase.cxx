@@ -57,11 +57,6 @@ void ContainerBase::writeDateKeywords(tip::Extension * table,
       header["TSTOP"].set(stop_time);
    } catch (...) {
    }
-   try {
-      header["ONTIME"].set(duration);
-      header["TELAPSE"].set(duration);
-   } catch (...) {
-   }
 }
 
 astro::JulianDate ContainerBase::currentTime() {

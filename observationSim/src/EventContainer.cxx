@@ -36,6 +36,7 @@
 #include "irfInterface/Irfs.h"
 
 #include "dataSubselector/Cuts.h"
+#include "dataSubselector/Gti.h"
 
 #include "observationSim/EventContainer.h"
 #include "observationSim/Spacecraft.h"
@@ -243,12 +244,12 @@ void EventContainer::writeEvents() {
    writeDateKeywords(my_table, m_startTime, stop_time);
 
 // Fill the GTI extension, with the entire observation in a single GTI.
+   dataSubselector::Gti gti;
+   gti.insertInterval(m_startTime, stop_time);
+   gti.writeExtension(ft1File);
+
    tip::Table * gti_table = 
       tip::IFileSvc::instance().editTable(ft1File, "GTI");
-   gti_table->setNumRecords(1);
-   it = gti_table->begin();
-   row["start"].set(m_startTime);
-   row["stop"].set(stop_time);
    writeDateKeywords(gti_table, m_startTime, stop_time);
 
    dataSubselector::Cuts * cuts;

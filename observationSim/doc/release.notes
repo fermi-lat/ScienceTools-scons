@@ -3,7 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
-    v5r6p6 04-Mar-05   JC   provide default strings for ft*.tpl keywords not
+    v5r6p7 06-Apr-05   JC   Set ONTIME and TELAPSE in GTI extension according
+                            to FT1 definition.
+    v5r6p6 04-Apr-05   JC   provide default strings for ft*.tpl keywords not
                             explicitly set
     v5r6p5 21-Mar-05   JC   remove dss keywords from ft1.tpl
     v5r6p4 07-Mar-05   JC   disable annoying banner method
