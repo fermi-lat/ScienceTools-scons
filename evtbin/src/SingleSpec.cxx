@@ -13,7 +13,15 @@
 
 namespace evtbin {
 
-  SingleSpec::SingleSpec(const Binner & binner): DataProduct(), m_hist(binner) { m_hist_ptr = &m_hist; }
+  SingleSpec::SingleSpec(const std::string & event_file, const std::string & sc_file, const Binner & binner):
+    DataProduct(event_file), m_hist(binner) {
+    m_hist_ptr = &m_hist;
+
+    harvestKeywords(event_file, "EVENTS");
+
+    // Update tstart/tstop etc.
+    adjustTimeKeywords(sc_file);
+  }
 
   SingleSpec::~SingleSpec() throw() {}
 
@@ -26,7 +34,6 @@ namespace evtbin {
     os << binner->getNumBins();
     m_key_value_pairs["DETCHANS"] = os.str();
 
-    m_key_value_pairs["EXPOSURE"] = "1000.";
 //    m_key_value_pairs["ONTIME"] = 1000.;
 
     // Standard file creation from base class.
@@ -53,31 +60,9 @@ namespace evtbin {
 
     // Write the EBOUNDS extension.
     writeEbounds(out_file, binner);
-  }
 
-  void SingleSpec::writeEbounds(const std::string & out_file, const Binner * binner) const {
-    // Open EBOUNDS extension of output PHA1 file. Use an auto_ptr so that the table object
-    // will for sure be deleted, even if an exception is thrown.
-    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "EBOUNDS"));
-
-    // Resize table: number of records in output file must == the number of bins in the binner.
-    output_table->setNumRecords(binner->getNumBins());
-
-    // Need output table iterator.
-    tip::Table::Iterator table_itor = output_table->begin();
-
-    // Iterate over bin number and output table iterator, writing fields in order.
-    for (long index = 0; index != binner->getNumBins(); ++index, ++table_itor) {
-      // From the binner, get the interval.
-      Binner::Interval interval = binner->getInterval(index);
-
-      // Write channel number.
-      (*table_itor)["CHANNEL"].set(index + 1);
-
-      // Write beginning/ending value of interval into E_MIN/E_MAX, converting from MeV to keV.
-      (*table_itor)["E_MIN"].set(1000. * interval.begin());
-      (*table_itor)["E_MAX"].set(1000. * interval.end());
-    }
+    // Write GTI extension.
+    writeGti(out_file);
   }
 
 }
