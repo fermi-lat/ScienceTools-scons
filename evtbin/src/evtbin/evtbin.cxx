@@ -284,8 +284,6 @@ class EvtBin : public st_app::StApp {
       // Prompt for algorithm parameter, which determines which application is really used.
       pars.Prompt("algorithm");
 
-      pars.Save();
-
       std::string algorithm = pars["algorithm"];
 
       // Based on this parameter, create the real application.
@@ -297,6 +295,10 @@ class EvtBin : public st_app::StApp {
         else if (0 == algorithm.compare("PHA1")) app = new SimpleSpectrumApp("evtbin");
         else if (0 == algorithm.compare("PHA2")) app = new MultiSpectraApp("evtbin");
         else throw std::logic_error(std::string("Algorithm ") + algorithm + " is not supported");
+
+        // Pass on the algorithm parameter value to the application. This is so that that algorithm
+        // parameter will be learned.
+        app->getParGroup("evtbin")["algorithm"] = algorithm;
 
         // Run the real application.
         app->run();
