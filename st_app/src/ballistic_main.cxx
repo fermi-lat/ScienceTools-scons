@@ -49,8 +49,15 @@ int main(int argc, char ** argv) {
         throw std::logic_error("Failed to get an StAppFactory singleton: client must define one");
       }
 
-      // Run the application. Check debug status again in case the application constructor changed it.
-      if (0 != this_st_app && !debug) this_st_app->run();
+      // Check debug status again in case the application constructor changed it, and defer running if
+      // debug mode is currently selected.
+      if (0 != this_st_app && !debug) {
+        // Display startup banner.
+        this_st_app->banner();
+
+        // Run the application. Check debug status again in case the application constructor changed it.
+        this_st_app->run();
+      }
     }
 
   } catch (const std::exception & x) {
@@ -79,8 +86,13 @@ int main(int argc, char ** argv) {
       this_st_app->setName(st_app::IStAppFactory::instance().getAppName());
     }
 
-    // Run the application.
-    if (0 != this_st_app) this_st_app->run();
+    if (0 != this_st_app) {
+      // Display startup banner.
+      this_st_app->banner();
+
+      // Run the application.
+      this_st_app->run();
+    }
   }
 
   // Clean up:
