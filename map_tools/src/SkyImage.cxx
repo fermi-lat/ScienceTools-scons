@@ -10,7 +10,7 @@
 #include "astro/SkyDir.h"
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
-    static double& nan = *( double* )lnan;
+    static double& dnan = *( double* )lnan;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const MapParameters& pars)
@@ -99,7 +99,7 @@ void SkyImage::fill(Requester& req)
             m_data[k] = t; 
             m_total += t;
         }catch(... ) { // any exception: just fill in a NaN
-            m_data[k]=nan; 
+            m_data[k]=dnan; 
         }
     }
 }
@@ -116,7 +116,7 @@ void SkyImage::clear()
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
             m_data[k] = 0; 
         }catch(... ) { // any exception: just fill in a NaN
-            m_data[k]=nan; 
+            m_data[k]=dnan; 
         }
     }
 }
