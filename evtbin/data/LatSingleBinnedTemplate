@@ -61,20 +61,20 @@ TTYPE#  COUNTS                  / Count rate in each bin
 TFORM#  J                       / Data format of this field
 TUNIT#  Counts                  / Unit of this field
 
-TTYPE#  SYS_ERR                 / Fractional systematic error
-TFORM#  E                       / Data format of this field
+#TTYPE#  SYS_ERR                 / Fractional systematic error
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  QUALITY                 / Data quality flag for each channel
-TFORM#  I                       / Data format of this field
+#TTYPE#  QUALITY                 / Data quality flag for each channel
+#TFORM#  I                       / Data format of this field
 
-TTYPE#  GROUPING                / Data grouping flag for each channel
-TFORM#  I                       / Data format of this field
+#TTYPE#  GROUPING                / Data grouping flag for each channel
+#TFORM#  I                       / Data format of this field
 
-TTYPE#  AREASCAL                / Area scaling factor
-TFORM#  E                       / Data format of this field
+#TTYPE#  AREASCAL                / Area scaling factor
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  BACKSCAL                / Scaling factor to be applied to Bkgdfile
-TFORM#  E                       / Data format of this field
+#TTYPE#  BACKSCAL                / Scaling factor to be applied to Bkgdfile
+#TFORM#  E                       / Data format of this field
 
 
 ################################################################################
@@ -136,7 +136,6 @@ MJDREF   =                      / MJD for reference time
 TSTART   =                      / Lower bound of first GTI
 TSTOP    =                      / Upper bound of last GTI
 EXPOSURE =                      / Total Livetime in seconds
-TIMEZERO =                    0 / Clock correction (if not zero)
 TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / All times are in seconds unless specified otherwise
 DATE-OBS                        / Start Date and Time of the observation (UTC)
@@ -152,29 +151,3 @@ TUNIT#  s                       / Unit of this field
 TTYPE#  STOP                    / Stop time of an interval
 TFORM#  D                       / Data format of this field
 TUNIT#  s                       / Unit of this field
-
-
-
-################################################################################
-XTENSION =             BINTABLE / Binary table extension
-BITPIX   =                    8 / Bits per pixel
-NAXIS    =                    2 / Required value
-NAXIS1   =                    0 / Number of bytes per row
-NAXIS2   =                    0 / Number of rows
-PCOUNT   =                    0 / Normally 0 (no varying arrays)
-GCOUNT   =                    1 / Required value
-TFIELDS  =                    0 / Number of columns in table
-EXTNAME  =              DRM-DBS / Extension name
-TELESCOP =                GLAST / Telescope or mission name
-INSTRUME =                  LAT / Instrument name
-NMODEL   =                      / Number of source model
-DATE-OBS                        / Start Date and Time of the observation (UTC)
-DATE-END                        / End Date and Time of the observation (UTC)
-CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
-
-TTYPE#  SPEC_NUM                / Source model number
-TFORM#  I                       / Data format of this field
-
-TTYPE#  DRM_S1                  / DRM for spectrum #1
-TFORM#  64A                     / Data format of this field
