@@ -8,9 +8,13 @@
 #include <cstdlib>
 #include <vector>
 
+#include "TestTable.h"
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
+// Thorough test of IExtensionData and its subclasses.
+int TestExtensionData(const std::string & data_dir, int currentStatus);
 
 int main() {
   int status = 0;
@@ -32,6 +36,15 @@ int main() {
       tiproot = tiproot_cp;
       data_dir = tiproot + "/data/";
     }
+
+    // Perform startup initialization.
+    IFileSvc::globalInit();
+
+    // Thorough test of IExtensionData and its subclasses.
+    status = TestExtensionData(data_dir, status);
+
+    TestTable table_test;
+    status = table_test.test(status);
 
     try {
       // Opening a non-existent file should throw an exception.
