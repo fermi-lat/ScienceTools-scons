@@ -26,4 +26,4 @@ xref,r,a,0,,,RA at the image center:
 yref,r,a,0,,,DEC at the image center:
 rot,r,a,0,,,Rotation angle of Y-axis relative to the physical coordinate:
 projtype,s,a,"AIT",,,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
-uselb,b,a,yes,,,use l,b instead of ra,dec :
+uselb,b,a,yes,,,"use l, b instead of ra,dec"

@@ -38,8 +38,8 @@ void Parameters::setup()
 {
       // Prompt for all parameters in the order in the par file:
 
-    dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
-     dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
+  dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
+   dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
     m_chatter = m_par["chatter"];
 
     m_clobber = m_par["clobber"];

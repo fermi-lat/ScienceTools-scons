@@ -27,12 +27,10 @@ public:
      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /** \brief Create AppExample2 object, performing initializations needed for running the application.
     */
-    ExposureMapApp(): st_app::StApp(), m_par_group(st_app::StApp::getParGroup("exposure_map")) {
-      // Prompt for all parameters.
-      m_par_group.Prompt();
-
-      // Save the values just prompted for.
-      m_par_group.Save();
+    ExposureMapApp()
+        : st_app::StApp()
+        , m_pars(st_app::StApp::getParGroup("exposure_map")) 
+    {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,14 +70,11 @@ public:
     };
  
     void run() {
-        // read in, or prompt for, all necessary parameters
-        MapParameters pars( m_par_group);
-
         // create the exposure, read it in from the FITS input file
-        Exposure ex(pars.inputFile() ); 
+        Exposure ex(m_pars.inputFile() ); 
 
         // create the image object, fill it from the exposure, write out
-        SkyImage image(pars); 
+        SkyImage image(m_pars); 
 
         RequestExposure req(ex, Aeff(), 1.0);
         image.fill(req);
@@ -87,9 +82,7 @@ public:
     }
 
 private:
-    st_app::AppParGroup & m_par_group;
-
-
+    MapParameters m_pars;
 };
 // Factory which can create an instance of the class above.
 st_app::StAppFactory<ExposureMapApp> g_factory;
