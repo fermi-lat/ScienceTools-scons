@@ -22,6 +22,8 @@
 #include "Goodi/IData.h"
 #include "Goodi/IEventData.h"
 
+#include "Goodi/../src/LatEventsData.h"    // meh.
+
 #include "rootTuple/RootTuple.h"
 
 int main(int iargc, char * argv[]) {
@@ -46,10 +48,25 @@ int main(int iargc, char * argv[]) {
    RootTuple::RootTuple ft1Tuple(rootFile, "FT1");
    RootTuple::RootTuple exposureTuple(rootFile, "Exposure");
 
+// Need the MeritTuple tree for the IM variables
+   RootTuple::RootTuple meritTuple(rootFile, "MeritTuple");
+
    std::vector<std::string> colNames;
 
    std::string query("");
    int nentries(0);
+
+// Read in the IM columns, CalEnergySum, CalTotRLn, GltLayer, FilterStatus_HI
+   colNames.push_back("IMgoodCalProb");
+   colNames.push_back("IMvertexProb");
+   colNames.push_back("IMcoreProb");
+   colNames.push_back("IMpsfErrPred");
+   colNames.push_back("IMgammaProb");
+   colNames.push_back("CalEnergySum");
+   colNames.push_back("CalTotRLn");
+   colNames.push_back("GltLayer");
+   colNames.push_back("FilterStatus_HI");
+   meritTuple.readTree(colNames, query, nentries);
 
 // Read in all of the columns for the FT1 and Exposure branches.
    colNames = ft1Tuple.branchNames();
@@ -68,9 +85,12 @@ int main(int iargc, char * argv[]) {
    Goodi::DataType datatype = Goodi::Evt;
    Goodi::Mission  mission  = Goodi::Lat;
 
-// Create the EventData object.
-   Goodi::IEventData *data =
-      dynamic_cast<Goodi::IEventData *>(dataCreator.create(datatype, mission));
+// Create the EventData object and explicitly down-cast to
+// LatEventsData since the IEventData interface does not have all of
+// the methods required to access LAT data.
+   Goodi::LatEventsData *data =
+      dynamic_cast<Goodi::LatEventsData *>
+      (dataCreator.create(datatype, mission));
 
    std::vector<double> vect_times = ft1Tuple("time");
    std::stable_sort(vect_times.begin(),vect_times.end());
@@ -199,6 +219,52 @@ int main(int iargc, char * argv[]) {
                    std::bind2nd(std::multiplies<int>(), 1) );
    data->setConvLayer( convLayer );
 
+// IM variables
+   std::vector<float> floatVector(nevts);
+   std::copy( meritTuple("IMgoodCalProb").begin(),
+              meritTuple("IMgoodCalProb").end(),
+              floatVector.begin() );
+   data->setGoodCalProb( floatVector );
+
+   std::copy( meritTuple("IMvertexProb").begin(),
+              meritTuple("IMvertexProb").end(),
+              floatVector.begin() );
+   data->setVertexProb( floatVector );
+
+   std::copy( meritTuple("IMcoreProb").begin(),
+              meritTuple("IMcoreProb").end(),
+              floatVector.begin() );
+   data->setCoreProb( floatVector );
+
+   std::copy( meritTuple("IMpsfErrPred").begin(),
+              meritTuple("IMpsfErrPred").end(),
+              floatVector.begin() );
+   data->setPsferrpred( floatVector );
+
+   std::copy( meritTuple("IMgammaProb").begin(),
+              meritTuple("IMgammaProb").end(),
+              floatVector.begin() );
+   data->setGammaProb( floatVector );
+
+// GltLayer (no doubt the same as ConvLayer)
+   std::vector<short> gltLayer(nevts);
+   std::transform( meritTuple("GltLayer").begin(), 
+                   meritTuple("GltLayer").end(),
+                   gltLayer.begin(), 
+                   std::bind2nd(std::multiplies<short>(), 1) );
+    data->setGltLayer( gltLayer );
+
+// CalEnergySum and CalTotRLn
+   std::copy( meritTuple("CalEnergySum").begin(),
+              meritTuple("CalEnergySum").end(),
+              floatVector.begin() );
+   data->setCalEnergySum( floatVector );
+
+   std::copy( meritTuple("CalTotRLn").begin(),
+              meritTuple("CalTotRLn").end(),
+              floatVector.begin() );
+   data->setCalToTrln( floatVector );
+
 // Set methods in IEventData that have no corresponding branches in
 // the FT1 tree:
 //    data->setWeight();
@@ -210,17 +276,14 @@ int main(int iargc, char * argv[]) {
 //    data->setBaryTime();
 //    data->setQuality();
 //    data->setQualParams();
-//    data->setConvLayer();
 //    data->setReconVersion();
 //    data->setMultiplicity();
 //    data->setSubsysFlag();
 //    data->setStartTime();
 //    data->setStopTime();
    
-
 // GTI infos: START and STOP times
    data->setGTI(gti);
-
 
 // These also are not implemented in the FT1 tree, but Goodi seems to
 // want these columns set.
@@ -233,6 +296,9 @@ int main(int iargc, char * argv[]) {
    std::string latFile("!myLatData.fits");
    Goodi::IDataIOService *ioService = iosvcCreator.create();
 
-   data->write(ioService, latFile);
+// Need to "up"-cast to have access to the write(...) method we need.
+   Goodi::IEventData *idata = data;
+   idata->write(ioService, latFile);
+
    delete ioService;
 }

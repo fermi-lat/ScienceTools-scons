@@ -140,7 +140,7 @@ int main(int iargc, char * argv[]) {
    scData->setStartTime(startTime);
    scData->setStopTime(stopTime);
 //    scData->setGTI(gti);
-//    scData->setSCposition(scPosition);
+   scData->setSCposition(scPosition);
    scData->setLatGeo(latGeo);
    scData->setLonGeo(lonGeo);
    scData->setRadGeo(radGeo);
@@ -176,5 +176,9 @@ int main(int iargc, char * argv[]) {
    scData->write(goodiIoService, outputFile);
 
    delete goodiIoService;
+
+// Test for consistency: read in the data just written out and ensure
+// that it is the same.
+
 
 }
