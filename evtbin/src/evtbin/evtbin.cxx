@@ -91,9 +91,6 @@ class EvtBinAppBase : public st_app::StApp {
         // for the specific application.
         product = createDataProduct(pars);
 
-        // Copy keywords from input events table.
-        product->harvestKeywords(events->getHeader());
-
         // Bin input data into product.
         product->binInput(events->begin(), events->end());
 
@@ -117,6 +114,7 @@ class EvtBinAppBase : public st_app::StApp {
       // Prompt for input eventfile and output outfile. All binners need these.
       pars.Prompt("eventfile");
       pars.Prompt("outfile");
+      pars.Prompt("scfile");
     }
 
     /** \brief Create a specific data product object using the given parameters.
@@ -165,8 +163,8 @@ class CountMapApp : public EvtBinAppBase {
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
       }
 
-      return new evtbin::CountMap(pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"],
-        pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
+      return new evtbin::CountMap(pars["eventfile"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix,
+        pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
     }
 
   private:
@@ -195,7 +193,7 @@ class LightCurveApp : public EvtBinAppBase {
       std::auto_ptr<Binner> binner(m_bin_config.createTimeBinner(pars));
 
       // Create data object from Binner.
-      return new LightCurve(*binner);
+      return new LightCurve(pars["eventfile"], pars["scfile"], *binner);
     }
 
   private:
@@ -230,7 +228,7 @@ evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParG
   std::auto_ptr<Binner> binner(m_bin_config.createEnergyBinner(pars));
 
   // Create data product.
-  return new SingleSpec(*binner);
+  return new SingleSpec(pars["eventfile"], pars["scfile"], *binner);
 }
 
 /** \class MultiSpectraApp
@@ -261,7 +259,7 @@ class MultiSpectraApp : public EvtBinAppBase {
       std::auto_ptr<const Binner> energy_binner(m_bin_config.createEnergyBinner(pars));
 
       // Create data product.
-      return new MultiSpec(*time_binner, *energy_binner);
+      return new MultiSpec(pars["eventfile"], pars["scfile"], *time_binner, *energy_binner);
     }
 
   private:
@@ -312,11 +310,7 @@ class EvtBin : public st_app::StApp {
 };
 
 // TODO for light curve:
-// 1. Copy GTI from event file (anding with the range [tstart, tstop])
-// 2. Get bin defs (non const) from timebinalg or timebinfile
 // 3. Need different template which has no TIME_DEL column in uniform case.
-// 4. Livetime (applies for all binners) from ft2 file gets written in header of histogram.
-//    Recompute iff GTI changed (in step 1).
 
 // TODO for Spectra
 // 1. Energy units: Xspec needs keV, input is MeV but could be anything (read keyword)
