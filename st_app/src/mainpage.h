@@ -71,6 +71,21 @@ st_app::StAppFactory<TestApp1> g_factory;
     method to perform the work of the application, in this case,
     the ever popular "Hello world" program.
 
+    \subsection exception Exception handling
+    Client application code is free to handle any/all exceptions thrown
+    during the course of execution. However, as a last line of defense,
+    st_app's standard main() calls the client's run() method inside
+    a try-catch block. This way, st_app handles any exception which is not
+    caught by the client, and is therefore fatal. When it catches such
+    an exception, the standard main() displays the type of the exception,
+    and the description provided by the exception's what() method. Then it
+    exits with a non-0 status.
+
+    To assist in debugging, if st_app is compiled with the preprocessor symbol
+    ST_APP_DEBUG defined, the client's run() method will be run outside the try-catch block.
+    If run directly from the command line, the program will abort when the uncaught
+    exception is thrown, with no information provided. But this makes it possible for some
+    debuggers to stop at the point where the exception is thrown.
     <hr>
     \section notes Release Notes
     \section requirements Requirements
