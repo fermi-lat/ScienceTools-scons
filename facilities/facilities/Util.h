@@ -15,10 +15,28 @@
 namespace facilities {
   /// This class provides a home for utility functions with no need for
   /// any context (hence static)
+
+  /// Exception class used by expandEnvVar
   class Untranslatable {
   public:
-    Untranslatable(const std::string& toTrans) : badVar(toTrans) {}
-    std::string badVar;
+    Untranslatable(const std::string& toTrans) : m_badVar(toTrans) {}
+    std::string m_badVar;
+  };
+
+  /// Exception class used when converting from string to numeric type
+
+  class WrongType {
+  public:
+    WrongType(const std::string& toConvert, const std::string& typeName) : 
+      m_toConvert(toConvert), m_typeName(typeName) {}
+    std::string getMsg() {
+      std::string msg = "Cannot convert '" + m_toConvert + "' to type "
+        + m_typeName;
+      return msg;
+    }
+  private:
+    std::string m_toConvert;
+    std::string m_typeName;
   };
 
   class Util {
@@ -54,6 +72,17 @@ namespace facilities {
 
     /// converts an std::string to an integer
     static int atoi(const std::string& InStr);
+
+
+    /// converts a std::string to a double.  If string contents are not
+    /// of proper form, throws facilities::WrongType
+    static double stringToDouble(const std::string& InStr);
+
+    /// converts a std::string to an int.  If string contents are not
+    /// of proper form, throws facilities::WrongType
+    static int stringToInt(const std::string& InStr);
+
+
 
     /** This routine breaksdown a string into tokens, based on the
         characters appearing in the string @a delimiters.
