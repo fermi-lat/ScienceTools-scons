@@ -21,6 +21,10 @@ namespace st_graph {
       /** \brief Handle mouse click. Parameter is the frame which was clicked.
       */
       virtual void clicked(IFrame *) {}
+
+      /** \brief Handle close window event. Parameter is the frame which was closed.
+      */
+      virtual void closeWindow(IFrame *) {}
   };
 
 }
