@@ -283,8 +283,8 @@ void GPS::getPointingCharacteristics(double inputTime){
     double lZ,bZ,raX,decX;
     //before rotation, the z axis points along the zenith:
     if(m_rockType == POINT){
-        lZ=m_rotangles.first;
-        bZ=m_rotangles.second;
+        lZ=m_rotangles.first*(180./M_PI);
+        bZ=m_rotangles.second*(180./M_PI);
         SkyDir tempDirZ(lZ,bZ,astro::SkyDir::GALACTIC);
         raX = tempDirZ.ra()-90.0;
         decX = 0.;

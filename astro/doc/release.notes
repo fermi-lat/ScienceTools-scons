@@ -3,6 +3,7 @@
 @verbatim
   Package coordinators: T.Burnett, G.Tosti
 
+  v0r12p3 13-may-04 SMR fix to angular units in specifying POINT rocking in GPS
   v0r12p2 20-apr-04 THB disable planets to avoid Linux warnings, try 2
   v0r12p1 19-apr-04 THB disable planets to avoid Linux warnings
   v0r12   29-mar-04 THB add HTM class
