@@ -8,10 +8,10 @@
 #include <math.h>
 
 // define a factory for anonymous instantiation
-#include "FluxSvc/ISpectrumFactory.h"
+#include "FluxSvc/SpectrumFactory.h"
 
-//static SpectrumFactory<GRBSpectrum> factory;
-//const ISpectrumFactory& GRBSpectrumFactory = factory;
+static SpectrumFactory<GRBSpectrum> factory;
+const ISpectrumFactory& GRBSpectrumFactory = factory;
 
 GRBSpectrum::GRBSpectrum(const std::string& params) 
 {
@@ -47,19 +47,57 @@ double GRBSpectrum::solidAngle() const
 ///return flux, given a time
 double GRBSpectrum::flux(double time) const
 {
-  double rateout;
+  //    cout<<"Flux!!"<<endl;
+  //  double rateout;
   m_grbsim->ComputeFlux(time);
-  if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
+  /// test to implement the right rate...
+  // if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
   return m_grbsim->IRate(); // in ph/(m^2 s) 
 }
 
-///testing rate return flux, given a time
 double GRBSpectrum::rate(double time) const
 {
-  double rateout;
+  //  cout<<"Rate!!"<<endl;
   m_grbsim->ComputeFlux(time);
-  if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
+  /// test to implement the right rate...
+  // if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
+  //  cout<< m_grbsim->IRate()<< endl;
   return m_grbsim->IRate(); // in ph/(m^2 s) 
+  // return 1; // in ph/(m^2 s) 
+}
+/*
+double GRBSpectrum::interval(double time) const
+{
+  return  m_grbsim->FindInterval(time);
+}
+*/
+double GRBSpectrum::interval(double time) const
+{
+  //  cout<<"INTERVAL !!"<<endl;
+  /// test to implement the right rate...
+  double sum=0.0;
+  double temp;
+  double t1=time;
+  double dt;
+  double r1;
+  
+  while (sum<1.0){
+    dt=1.0e-2;
+    temp=rate(t1);
+    if (temp<=1.0) 
+      {
+	//	cout<<" sum 1= "<<sum<<endl;
+	temp=1.0;
+      }
+    else if (temp>1.0/dt) 
+      {
+	//	cout<<" sum 2= "<<sum<<endl;
+	return 1/temp;
+      }
+    sum+=temp*dt;
+    t1+=dt;
+  }
+  return t1-time; // in Seconds 
 }
 
 double GRBSpectrum::energySrc(HepRandomEngine* engine, double time)

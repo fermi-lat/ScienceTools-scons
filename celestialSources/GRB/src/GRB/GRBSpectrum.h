@@ -17,14 +17,14 @@
 #include <map>
 #include <cmath>
 #include "FluxSvc/mainpage.h"
-#include "FluxSvc/ISpectrum.h"
+#include "FluxSvc/Spectrum.h"
 #include "facilities/Observer.h"
 #include "src/GPS.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "GRBSim.h"
 
 //! Class interfacing the framework with the GRB generation.
-class GRBSpectrum : public ISpectrum
+class GRBSpectrum : public Spectrum
 {
  public:
 
@@ -41,7 +41,10 @@ class GRBSpectrum : public ISpectrum
 
   //! returns rate, for a given time;
   double rate(double time)const;
-  
+
+  //! return the time interval
+  double interval(double time)const;
+  // {return 1/rate(time);}
   //! returns the solid angle spanned by the source: set to 1.0 for GRBs.
   double solidAngle() const;
   
