@@ -139,7 +139,39 @@ namespace facilities {
      stringTokenize(path, "\\/", names);
      return *(names.end() - 1);
   }
-  
+
+  unsigned Util::trimTrailing(std::string* toTrim) {
+    static const char blank=' ';
+    static const char LF=0xA;    // new line
+    static const char FF=0xC;    // form feed
+    static const char CR=0xD;    // carriage return
+
+    unsigned orig = toTrim->size();
+    unsigned last = orig - 1;
+    bool notDone = true;
+    unsigned nTrimmed = 0;
+
+
+    while (notDone) {
+      char lastChar = (*toTrim)[last];
+      switch (lastChar) {
+      case blank:
+      case LF:
+      case FF:
+      case CR:
+        last--;
+        nTrimmed++;
+        break;
+      default:
+        notDone=false;
+        break;
+      }
+    }
+    if (nTrimmed)  toTrim->resize(orig - nTrimmed);
+
+    return nTrimmed;
+  }
+
 }
 
 

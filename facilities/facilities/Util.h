@@ -103,6 +103,13 @@ namespace facilities {
         @param path        string assumed to be a file identifier. 
     */
     static std::string basename(const std::string &path);
+
+    /**
+       Trim trailing white space characters from the supplied string.
+       White space characters for this purpose are blank, carriage return,
+       line feed and form feed.  Return # of characters trimmed.
+    */
+    static unsigned trimTrailing(std::string* toTrim);
   };
 }
 
