@@ -67,7 +67,7 @@ namespace table {
     fits_get_num_rows(m_fp, &nrows, &status);
 
     // Check for success and if not, do not continue.
-    if (status || nrows < 0) {
+    if (status || nrows <= 0) {
       close();
       throw TableException(formatWhat("Cannot get number of rows"));
     }
