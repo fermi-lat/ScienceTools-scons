@@ -41,7 +41,7 @@ int main(int iargc, char* argv[]) {
 
    while (!done) {
       const Goodi::Event evt = eventData->nextEvent(ioService, done);
-      if (!done) {
+      if (!done && i < 20) {
          std::cout << i++ << "  "
                    << evt.time() << "  "
                    << evt.energy() << "  "

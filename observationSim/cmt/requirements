@@ -26,7 +26,7 @@ macro pydir ../python/
 macro_append use_linkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
 
 # allow use of internal path
-macro observationSim_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
+macro observationSim_cppflags "" Linux "-I ../src -g -pedantic -D TRAP_FPE " WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g "
 #
 # suppress warning messages (from flux package) on linux:
@@ -65,7 +65,7 @@ set INFILES "$(GOODIROOT)/Data"
 
 # test applications
 application test_observationSim test/main.cxx
-#application testGoodiRead test/testGoodiRead.cxx
+application testGoodiRead test/testGoodiRead.cxx
 
 # exposure map calculator
 #application exposureMap test/exposureMap.cxx

@@ -5,6 +5,9 @@
  * @author J. Chiang
  * $Header$
  */
+#ifdef TRAP_FPE
+#include <fenv.h>
+#endif
 
 #include "astro/SkyDir.h"
 
@@ -22,6 +25,9 @@
 void help();
 
 int main(int argn, char * argc[]) {
+#ifdef TRAP_FPE
+   feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
+#endif
    
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
