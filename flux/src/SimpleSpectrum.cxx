@@ -72,6 +72,13 @@ SimpleSpectrum::SimpleSpectrum(const DOM_Element& xelem, bool useGeV)
         m_emax = 100.0;
         m_index = 0.0;
     }
+    else if (spectrum.getTagName().equals(DOMString("exponential"))) {
+        m_E0 = atof(xml::Dom::getAttribute(spectrum, "emin").c_str());
+        m_index = atof(xml::Dom::getAttribute(spectrum, "exponent").c_str());
+        m_emax = 100.0;
+        m_index = 0.0;
+        FATAL_MACRO("exponential spectral component not implemented yet");
+    }
     else {
         std::cerr << "Unknown name: " << m_name << std::endl;
         FATAL_MACRO("Unknown particle spectrum!");
