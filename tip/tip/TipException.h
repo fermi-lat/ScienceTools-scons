@@ -8,6 +8,7 @@
 #define table_TableException_h
 
 #include <exception>
+#include <string>
 
 namespace table {
 
@@ -17,7 +18,12 @@ namespace table {
   */
   class TableException : public std::exception {
     public:
-      virtual const char * what() const throw() { return "Table component exception"; }
+      TableException(const std::string & msg = "Table component exception"): std::exception(), m_msg(msg) {}
+      virtual ~TableException() throw() {}
+      virtual const char * what() const throw() { return m_msg.c_str(); }
+
+    private:
+      std::string m_msg;
   };
 
 }
