@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <vector>
 
+#include "TestFileManager.h"
 #include "TestTable.h"
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -39,12 +40,6 @@ int main() {
 
     // Perform startup initialization.
     IFileSvc::globalInit();
-
-    // Thorough test of IExtensionData and its subclasses.
-    status = TestExtensionData(data_dir, status);
-
-    TestTable table_test;
-    status = table_test.test(status);
 
     try {
       // Opening a non-existent file should throw an exception.
@@ -414,6 +409,17 @@ int main() {
       status = 1;
     }
     
+    // Test IExtensionData and its subclasses.
+    status = TestExtensionData(data_dir, status);
+
+    // Test table interface-related classes.
+    TestTable table_test;
+    status = table_test.test(status);
+
+    // Test file management-related classes.
+    TestFileManager file_manager_test;
+    status = file_manager_test.test(status);
+
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
     status = 1;
