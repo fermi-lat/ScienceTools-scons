@@ -2,6 +2,7 @@
     \brief Test code for plotting/graphics
     \author James Peachey, HEASARC/GSSC
 */
+#include <iostream>
 #include <cmath>
 #include <vector>
 
@@ -43,13 +44,20 @@ void StGraphTestApp::run() {
   for (int ii = 0; ii < num_intervals + 25; ++ii) sine_wave[ii] = sin(ii * 2 * pi / 100.);
 
   // Create local reference to engine singleton. This engine is an abstract factory for graphical objects.
-  Engine & engine(Engine::instance());
+  Engine * engine = 0;
+  try {
+    engine = &(Engine::instance());
+  } catch (const std::exception & x) {
+    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    return;
+  }
 
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
-  PlotHist * plot_hist_1 = engine.createPlotHist1D("Plot 1", 900, 600, intervals);
+  PlotHist * plot_hist_1 = engine->createPlotHist1D("Plot 1", 900, 600, intervals);
 
   // Create a histogram plot, size 600 x 400, with the (same) given bin definitions.
-  PlotHist * plot_hist_2 = engine.createPlotHist1D("Plot 2", 600, 400, intervals);
+  PlotHist * plot_hist_2 = engine->createPlotHist1D("Plot 2", 600, 400, intervals);
 
   // Fill plots with sinusoids.
   for (int ii = 0; ii < num_intervals; ++ii) {
@@ -58,7 +66,7 @@ void StGraphTestApp::run() {
   }
 
   // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  PlotHist * plot_hist_3 = engine.createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
+  PlotHist * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
 
   double sigma_squared = 2. * num_intervals;
   for (int ii = 0; ii < num_intervals; ++ii) {
@@ -70,7 +78,7 @@ void StGraphTestApp::run() {
   }
 
   // Display all graphical objects.
-  engine.run();
+  engine->run();
 
 #ifndef WIN32
   sleep(1); // All windows should disappear briefly.
@@ -83,7 +91,7 @@ void StGraphTestApp::run() {
   }
 
   // Display all graphical objects (again).
-  engine.run();
+  engine->run();
 
   // Remove one plot.
   delete plot_hist_3;
@@ -93,7 +101,7 @@ void StGraphTestApp::run() {
 #endif
 
   // Display all graphical objects (again).
-  engine.run();
+  engine->run();
 
   // Remove the other plots.
   delete plot_hist_2;
@@ -108,7 +116,7 @@ void StGraphTestApp::run() {
 #endif
 
   // Display all graphical objects (in this case because all plots were deleted, this will just hang).
-  engine.run();
+  engine->run();
 #endif
 
 }

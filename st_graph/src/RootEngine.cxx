@@ -2,6 +2,13 @@
     \brief Implementation of class which encapsulates the Root graphics implementation.
     \author James Peachey, HEASARC/GSSC
 */
+#include <cstdlib>
+#include <csignal>
+#include <stdexcept>
+#include <vector>
+
+#include <iostream>
+
 #include "TApplication.h"
 #include "TGClient.h"
 #include "TGWindow.h"
@@ -31,8 +38,25 @@ namespace st_graph {
 
     // If no TApplication already exists, create one.
     if (0 == gApplication) {
+      // Ignore signals when creating the application.
+      std::vector<sighandler_t> handlers(16);
+      for (int ii = 0; ii < 16; ++ii) {
+        handlers[ii] = signal(ii, SIG_IGN);
+      }
+
+      // Create application.
       int argc = 0;
       gApplication = new TApplication("st_graph", &argc, 0);
+
+      // Restore signal handlers.
+      for (int ii = 0; ii < 16; ++ii) {
+        signal(ii, handlers[ii]);
+      }
+
+      // Now test for success: if virtual X was set up
+      // correctly, gClient will be non-0.
+      if (0 == gClient)
+        throw std::runtime_error("RootEngine::RootEngine could not create Root graphical TApplication");
     }
   }
 
