@@ -21,9 +21,9 @@ namespace table {
   template <> int FitsPrimProps<float>::dataTypeCode() { return TFLOAT; }
   template <> int FitsPrimProps<char>::dataTypeCode() { return TBYTE; }
   template <> int FitsPrimProps<signed char>::dataTypeCode() { return TBYTE; }
-  template <> int FitsPrimProps<short>::dataTypeCode() { return TSHORT; }
-  template <> int FitsPrimProps<int>::dataTypeCode() { return TINT; }
-  template <> int FitsPrimProps<long>::dataTypeCode() { return TLONG; }
+  template <> int FitsPrimProps<signed short>::dataTypeCode() { return TSHORT; }
+  template <> int FitsPrimProps<signed int>::dataTypeCode() { return TINT; }
+  template <> int FitsPrimProps<signed long>::dataTypeCode() { return TLONG; }
   template <> int FitsPrimProps<unsigned char>::dataTypeCode() { return TBYTE; }
   template <> int FitsPrimProps<unsigned short>::dataTypeCode() { return TUSHORT; }
   template <> int FitsPrimProps<unsigned int>::dataTypeCode() { return TUINT; }
