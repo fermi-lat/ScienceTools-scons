@@ -1,0 +1,22 @@
+<?xml version='1.0' standalone='no'?>
+<!DOCTYPE function_library SYSTEM "FunctionModels.dtd" >
+<!-- A "bad" Function Object specification to test for failure of
+     the FunctionFactory::readXml() method -->
+<function_library title="prototype Functions">
+   <function name="Bad Power-law" type="Power-Law">
+      <parameter name="Prefactor" 
+                 value="1"
+                 unit="cm^-2s^-1MeV^-1"
+                 min ="0"
+                 max="10"
+                 free="true"
+                 scale="1e-6"/>
+      <parameter name="Index"
+                 value="-2"
+                 unit="none"
+                 min="-10"
+                 max="10"
+                 free="true"
+                 scale="1"/>
+   </function>
+</function_library>

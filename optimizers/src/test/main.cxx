@@ -88,6 +88,21 @@ void test_FunctionFactory() {
                 << (*gaussObj)(xarg) << std::endl;
    }
 
+   std::cout << "\n*** Test for failure of readXml() method. ***\n" 
+             << std::endl;
+   if (!root) {
+      xmlFile = "../xml/BadModel.xml";
+   } else {
+      xmlFile = std::string(root) + "/xml/BadModel.xml";
+   }
+
+   try {
+      funcFactory.readXml(xmlFile);
+   } catch (Exception &eObj) {
+      std::cout << eObj.what() << std::endl;
+      std::cout << "*** End of readXml() failure test. ***\n" << std::endl;
+   }
+
    std::cout << "*** test_FunctionFactory: all tests completed ***\n" 
              << std::endl;
 

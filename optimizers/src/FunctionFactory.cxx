@@ -82,7 +82,7 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
 
    if (doc == 0) { // xml file not parsed successfully
       std::ostringstream errorMessage;
-      errorMessage << "PrototypeFactory::PrototypeFactory: "
+      errorMessage << "FunctionFactory::FunctionFactory: "
                    << "Input xml file, " << xmlFile 
                    << " not parsed successfully.\n";
       throw Exception(errorMessage.str());
@@ -99,9 +99,16 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
 // factory to create a pointer to the appropriate Function object.
       std::string type = xml::Dom::getAttribute(func, "type");
 
-// Since PrototypeFactory inherits from FunctionFactory, the generic
-// Function objects are already available.
-      Function *funcObj = create(type);
+// The generic Function objects should already available.
+      Function *funcObj;
+      try {
+         funcObj = create(type);
+      } catch (Exception &eObj) {
+         std::cerr << "FunctionFactory::readXml: "
+                   << "Failed to create Function object "
+                   << type << std::endl;
+         throw;
+      }
 
 // Set the name of this function prototype.
       std::string name = xml::Dom::getAttribute(func, "name");
