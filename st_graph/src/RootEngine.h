@@ -9,7 +9,6 @@
 #include <string>
 
 #include "st_graph/Engine.h"
-
 #include "st_graph/PlotHist.h"
 
 namespace st_graph {
@@ -36,10 +35,11 @@ namespace st_graph {
       virtual void stop();
 
       /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
+          \param receiver The receiver of GUI signals.
           \param width The width of the plot window.
           \param height The height of the plot window.
       */
-      virtual IFrame * createMainFrame(unsigned int width, unsigned int height);
+      virtual IFrame * createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height);
 
       /** \brief Create a plotter for a one dimensional histogram.
           \param title The title of the plot.
@@ -71,7 +71,7 @@ namespace st_graph {
           \param y The second dimension being plotted.
           \param z The third dimension being plotted.
       */
-      virtual IFrame * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
         const ValueSet & y, const ValueSet & z = ValueSet());
 
       /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
