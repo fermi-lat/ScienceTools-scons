@@ -68,7 +68,7 @@ void OrbSim::run() {
    observationSim::Verbosity::instance(m_pars["chatter"]);
    createSimulator();
    generateData();
-   if (observationSim::verbosity() > 1) {
+   if (observationSim::print_output()) {
       std::cout << "Done." << std::endl;
    }
 }
@@ -141,10 +141,10 @@ void OrbSim::createSimulator() {
 void OrbSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-   observationSim::EventContainer events(prefix + "_events", nMaxRows);
+   observationSim::EventContainer events(prefix + "_events", 0, nMaxRows);
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
-   if (observationSim::verbosity() > 1) {
+   if (observationSim::print_output()) {
       std::cout << "Generating pointing history for a simulation time of "
                 << m_count << " seconds...." << std::endl;
    }

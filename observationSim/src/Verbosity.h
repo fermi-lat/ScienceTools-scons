@@ -35,7 +35,7 @@ private:
    bool m_clobber;
 };
 
-unsigned int verbosity();
+bool print_output(unsigned int local_verbosity=2);
 
 bool clobber();
 

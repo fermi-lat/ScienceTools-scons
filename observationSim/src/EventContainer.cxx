@@ -35,6 +35,8 @@
 
 #include "irfInterface/Irfs.h"
 
+#include "dataSubselector/Cuts.h"
+
 #include "observationSim/EventContainer.h"
 #include "observationSim/Spacecraft.h"
 #include "Verbosity.h"
@@ -144,20 +146,25 @@ int EventContainer::addEvent(EventSource *event,
    if ( RandFlat::shoot() < m_prob
         && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
                                     energy, sourceDir, zAxis, xAxis))
+      ) {
 // Turn off SAA for DC1.
 //         && !spacecraft->inSaa(time) ) {
-      ) {
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);
       double appEnergy 
          = respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis);
-                                                        
-      m_events.push_back( Event(time, appEnergy, 
-                                appDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time), respPtr->irfID(), 
-                                energy, flux_theta, flux_phi) );
+
+      std::map<std::string, double> evtParams;
+      evtParams["RA"] = appDir.ra();
+      evtParams["DEC"] = appDir.dec();
+      if (m_cuts == 0 || m_cuts->accept(evtParams)) {
+         m_events.push_back( Event(time, appEnergy, 
+                                   appDir, sourceDir, zAxis, xAxis,
+                                   ScZenith(time), respPtr->irfID(), 
+                                   energy, flux_theta, flux_phi) );
 //      std::cout << "adding an event: " << m_events.size() << std::endl;
+      }
       if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
       return 1;
    }
@@ -166,7 +173,6 @@ int EventContainer::addEvent(EventSource *event,
 }
 
 astro::SkyDir EventContainer::ScZenith(double time) {
-//   astro::GPS *gps = astro::GPS::instance();
    GPS *gps = GPS::instance();
    gps->getPointingCharacteristics(time);
    double lon_zenith = gps->RAZenith()*M_PI/180.;
@@ -198,7 +204,7 @@ void EventContainer::writeEvents() {
       try {
          row["conversion_layer"].set(evt->convLayer());
       } catch (std::exception &eObj) {
-         if (verbosity() > 1) {
+         if (print_output()) {
             std::cout << eObj.what() << std::endl;
          }
          std::exit(-1);
@@ -216,6 +222,9 @@ void EventContainer::writeEvents() {
    double stop_time;
    row["time"].get(stop_time);
    writeDateKeywords(my_table, start_time, stop_time);
+   if (m_cuts) {
+      m_cuts->writeDssKeywords(my_table->getHeader());
+   }
    delete my_table;
 
 // Fill the GTI extension, with the entire observation (as ascertained

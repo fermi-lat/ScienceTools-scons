@@ -30,9 +30,12 @@
 
 #include "st_facilities/Util.h"
 
+#include "dataSubselector/Cuts.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
+
 #include "LatSc.h"
 #include "Verbosity.h"
 
@@ -97,7 +100,7 @@ void ObsSim::run() {
    createResponseFuncs();
    createSimulator();
    generateData();
-   if (observationSim::verbosity() > 1) {
+   if (observationSim::print_output()) {
       std::cout << "Done." << std::endl;
    }
 }
@@ -108,6 +111,12 @@ void ObsSim::promptForParameters() {
    m_pars.Prompt("scfile");
    m_pars.Prompt("outfile_prefix");
    m_pars.Prompt("simulation_time");
+   m_pars.Prompt("use_acceptance_cone");
+   if (m_pars["use_acceptance_cone"]) {
+      m_pars.Prompt("ra");
+      m_pars.Prompt("dec");
+      m_pars.Prompt("radius");
+   }
    m_pars.Prompt("rspfunc");
    m_pars.Prompt("random_seed");
    m_pars.Save();
@@ -179,7 +188,7 @@ void ObsSim::setXmlFiles() {
             if (Util::fileExists(files[i])) {
                m_xmlSourceFiles.push_back(files[i]);
             } else {
-               if (observationSim::verbosity() > 1) {
+               if (observationSim::print_output()) {
                   std::cout << "File not found: " 
                             << files[i] << std::endl;
                }
@@ -242,20 +251,25 @@ void ObsSim::createSimulator() {
 void ObsSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-   observationSim::EventContainer events(prefix + "_events", nMaxRows);
+   dataSubselector::Cuts * cuts(0);
+   if (m_pars["use_acceptance_cone"]) {
+      cuts = new dataSubselector::Cuts;
+      cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
+   }
+   observationSim::EventContainer events(prefix + "_events", cuts, nMaxRows);
    std::string pointingHistory = m_pars["scfile"];
    bool writeScData = (pointingHistory == "" || pointingHistory == "none");
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows,
                                           writeScData);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    if (m_pars["use_as_numevents"]) {
-      if (observationSim::verbosity() > 1) {
+      if (observationSim::print_output()) {
          std::cout << "Generating " << m_count << " events...." << std::endl;
       }
       m_simulator->generateEvents(static_cast<long>(m_count), events, 
                                   scData, m_respPtrs, spacecraft);
    } else {
-      if (observationSim::verbosity() > 1) {
+      if (observationSim::print_output()) {
          std::cout << "Generating events for a simulation time of "
                    << m_count << " seconds...." << std::endl;
       }

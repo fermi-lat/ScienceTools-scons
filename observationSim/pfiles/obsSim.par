@@ -8,6 +8,11 @@ start_time,r,h,0,,,Simulation start time (seconds)
 use_as_numevents,b,h,no,,,Use simulation time as number of events
 max_simulation_time,r,h,3.155e8,,,Maximum simulation time (seconds)
 
+use_acceptance_cone,b,a,no,,,Apply acceptance cone?
+ra,r,a,0,-360,360,RA of cone center (degrees)
+dec,r,a,0,-90,90,Dec of cone center (degrees)
+radius,r,a,20,0,180,Acceptance cone radius (degrees)
+
 rspfunc,s,a,"DC1",DC1|DC1F|DC1B|G25|G25F|G25B|TEST|TESTF|TESTB,,"Response functions"
 max_effarea,r,h,1.21,,,Maximum effective area value
 

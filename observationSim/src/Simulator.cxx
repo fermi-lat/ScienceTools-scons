@@ -12,6 +12,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "CLHEP/Geometry/Vector3D.h"
+
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"
@@ -29,7 +31,6 @@
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
-#include "observationSim/Roi.h"
 #include "LatSc.h"
 #include "Verbosity.h"
 
@@ -74,7 +75,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
          setRocking(5, 0);
          setPointingHistoryFile(pointingHistory);
       } else {
-         if (verbosity() > 0) {
+         if (print_output()) {
             std::cout << "Pointing history file not found: \n"
                       << pointingHistory << "\n"
                       << "Using default rocking strategy." << std::endl;
@@ -107,11 +108,11 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       if ( (source = m_fluxMgr->source(*name)) ) {
          m_source->addSource(source);
          nsrcs++;
-         if (verbosity() > 1) {
+         if (print_output()) {
             std::cout << "added source \"" << *name << "\"" << std::endl;
          }
       } else {
-         if (verbosity() > 1) {
+         if (print_output()) {
             std::cout << "Simulator::init: \n"
                       << "FluxMgr failed to find a source named \""
                       << *name << "\"" << std::endl;
@@ -119,7 +120,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       }
    }
    if (nsrcs == 0) {
-      if (verbosity() > 1) {
+      if (print_output()) {
          std::cout << "Simulator::init: \n"
                    << "FluxMgr has failed to add any valid "
                    << "photon sources to the model."
@@ -173,12 +174,11 @@ void Simulator::listSpectra() const {
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
                            irfInterface::Irfs &response,
                            Spacecraft *spacecraft,
-                           bool useSimTime, EventContainer *allEvents, 
-                           Roi *inAcceptanceCone) {
+                           bool useSimTime, EventContainer *allEvents) {
    std::vector<irfInterface::Irfs *> respPtrs;
    respPtrs.push_back(&response);
    makeEvents(events, scData, respPtrs, spacecraft, useSimTime, 
-              allEvents, inAcceptanceCone);
+              allEvents);
 }
 
 void Simulator::makeEvents(EventContainer &events, 
@@ -186,8 +186,7 @@ void Simulator::makeEvents(EventContainer &events,
                            std::vector<irfInterface::Irfs *> &respPtrs, 
                            Spacecraft *spacecraft,
                            bool useSimTime, 
-                           EventContainer *allEvents, 
-                           Roi *inAcceptanceCone) {
+                           EventContainer *allEvents) {
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
 
@@ -197,8 +196,7 @@ void Simulator::makeEvents(EventContainer &events,
 // Enclose loop in outer try block, catching a GPS-thrown exception when
 // time exceeds pointing history database.
    try {
-
-// Loop over event generation steps until done.
+ // Loop over event generation steps until done.
    while (!done()) {
 
 // Check if we need a new event from m_source.
@@ -219,15 +217,12 @@ void Simulator::makeEvents(EventContainer &events,
          if (name.find("TimeTick") != std::string::npos) {
             scData.addScData(m_newEvent, spacecraft);
          } else {
-            if (allEvents != 0) 
+            if (allEvents != 0) {
                allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
                                    false, true);
-            if (inAcceptanceCone == 0 || (*inAcceptanceCone)(m_newEvent)) {
-               if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
-                  m_numEvents++;
-//                if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
-//                    m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
-               }
+            }
+            if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
+               m_numEvents++;
             }
          }
 // EventSource::event(...) does not generate a pointer to a new object

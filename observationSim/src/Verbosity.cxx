@@ -4,8 +4,8 @@ namespace observationSim {
 
 Verbosity * Verbosity::s_instance(0);
 
-unsigned int verbosity() {
-   return Verbosity::instance()->value();
+bool print_output(unsigned int local_verbosity) {
+   return Verbosity::instance()->value() >= local_verbosity;
 }
 
 bool clobber() {
