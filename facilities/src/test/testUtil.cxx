@@ -77,7 +77,7 @@ int main(int, char**) {
               << result << std::endl;
   }
   catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception WrongType:  " << ex.getMsg() 
+    std::cout << "Failed with exception   " << ex.getMsg() 
               << std::endl;
   }
 
@@ -87,7 +87,7 @@ int main(int, char**) {
               << result << std::endl;
   }
   catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+    std::cout << "Failed with exception   " << ex.getMsg() 
               << std::endl;
   }
 
@@ -104,7 +104,7 @@ int main(int, char**) {
               << intResult << std::endl;
   }
   catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception WrongType:  " << ex.getMsg() 
+    std::cout << "Failed with exception   " << ex.getMsg() 
               << std::endl;
   }
 
@@ -114,7 +114,7 @@ int main(int, char**) {
               << intResult << std::endl;
   }
   catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+    std::cout << "Failed with exception  " << ex.getMsg() 
               << std::endl;
   }
 
@@ -124,7 +124,7 @@ int main(int, char**) {
               << intResult << std::endl;
   }
   catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+    std::cout << "Failed with exception  " << ex.getMsg() 
               << std::endl;
   }
 
