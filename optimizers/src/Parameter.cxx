@@ -31,7 +31,12 @@ namespace {
 namespace optimizers {
 
 void Parameter::setValue(double value) throw(OutOfBounds) {
-   if (value >= m_minValue && value <= m_maxValue) {
+   static double tol(1e-8);
+   if (fabs(value - m_minValue) < tol) {
+      m_value = m_minValue;
+   } else if (fabs(value - m_maxValue) < tol) {
+      m_value = m_maxValue;
+   } else if (value >= m_minValue && value <= m_maxValue) {
       m_value = value;
    } else {
       throw OutOfBounds(

@@ -194,6 +194,9 @@ static integer c__10 = 10;
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -260,6 +263,9 @@ COND CALL.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -282,6 +288,9 @@ COND CALL.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -510,6 +519,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -541,6 +553,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -567,6 +582,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -609,6 +627,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -645,6 +666,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -760,6 +784,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -790,6 +817,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -816,6 +846,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -877,6 +910,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -906,6 +942,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -930,6 +969,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -979,6 +1021,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1049,6 +1094,9 @@ IGNORED.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1073,6 +1121,9 @@ IGNORED.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1349,6 +1400,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1399,6 +1453,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1439,6 +1496,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1548,6 +1608,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1621,6 +1684,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -1653,6 +1719,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2071,6 +2140,9 @@ L2000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2126,6 +2198,9 @@ AND HAS INPUT\002,i5,\002 NUMERIC FIELDS, BUT MINUIT CAN ACCEPT ONLY\002,i3)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2342,6 +2417,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2421,6 +2499,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2450,6 +2531,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -2971,6 +3055,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3010,6 +3097,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3036,6 +3126,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3113,6 +3206,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3187,6 +3283,9 @@ T.  MNDERI'/        ' PAR    DERIV     STEP      MINSTEP   OPTSTEP ',       \
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3214,6 +3313,9 @@ T.  MNDERI'/        ' PAR    DERIV     STEP      MINSTEP   OPTSTEP ',       \
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3413,6 +3515,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3442,6 +3547,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3467,6 +3575,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3501,6 +3612,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3535,6 +3649,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3843,6 +3960,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3883,6 +4003,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -3907,6 +4030,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4022,6 +4148,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4055,6 +4184,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4085,6 +4217,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4156,6 +4291,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4179,6 +4317,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4207,6 +4348,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4261,6 +4405,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4385,6 +4532,9 @@ GIVES UP'/)", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -4411,6 +4561,9 @@ GIVES UP'/)", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5067,6 +5220,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5095,6 +5251,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5120,6 +5279,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5160,6 +5322,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5196,6 +5361,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5221,6 +5389,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5338,6 +5509,9 @@ L300:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5390,6 +5564,9 @@ ESTORED TO VARIABLE.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5416,6 +5593,9 @@ ESTORED TO VARIABLE.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5574,6 +5754,9 @@ L300:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5631,6 +5814,9 @@ LATIONS BY FCN\002/\002 TO FORCE ACCEPTANCE, ENTER \"SET GRAD    1\"\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5659,6 +5845,9 @@ LATIONS BY FCN\002/\002 TO FORCE ACCEPTANCE, ENTER \"SET GRAD    1\"\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -5762,6 +5951,9 @@ L2000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6506,6 +6698,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6564,6 +6759,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6589,6 +6787,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6723,6 +6924,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6799,6 +7003,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -6828,6 +7035,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7186,6 +7396,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7259,6 +7472,9 @@ AL MINIMUM\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7287,6 +7503,9 @@ AL MINIMUM\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7598,6 +7817,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7626,6 +7848,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7651,6 +7876,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7695,6 +7923,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7756,6 +7987,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7782,6 +8016,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7894,16 +8131,16 @@ L35:
     mn7cns_1.vlimlo = -piby2 + distnn;
     mncler_();
     io___592.ciunit = mn7iou_1.isyswr;
-    s_wsfe(&io___592);
-    do_fio(&c__1, "  MINUIT RELEASE ", (ftnlen)17);
-    do_fio(&c__1, mn7tit_1.cvrsn, (ftnlen)6);
-    do_fio(&c__1, " INITIALIZED.   DIMENSIONS ", (ftnlen)27);
-    do_fio(&c__1, (char *)&c__100, (ftnlen)sizeof(integer));
-    do_fio(&c__1, "/", (ftnlen)1);
-    do_fio(&c__1, (char *)&c__100, (ftnlen)sizeof(integer));
-    do_fio(&c__1, "  EPSMAC=", (ftnlen)9);
-    do_fio(&c__1, (char *)&mn7cns_1.epsmac, (ftnlen)sizeof(doublereal));
-    e_wsfe();
+/*     s_wsfe(&io___592); */
+/*     do_fio(&c__1, "  MINUIT RELEASE ", (ftnlen)17); */
+/*     do_fio(&c__1, mn7tit_1.cvrsn, (ftnlen)6); */
+/*     do_fio(&c__1, " INITIALIZED.   DIMENSIONS ", (ftnlen)27); */
+/*     do_fio(&c__1, (char *)&c__100, (ftnlen)sizeof(integer)); */
+/*     do_fio(&c__1, "/", (ftnlen)1); */
+/*     do_fio(&c__1, (char *)&c__100, (ftnlen)sizeof(integer)); */
+/*     do_fio(&c__1, "  EPSMAC=", (ftnlen)9); */
+/*     do_fio(&c__1, (char *)&mn7cns_1.epsmac, (ftnlen)sizeof(doublereal)); */
+/*     e_wsfe(); */
     return 0;
 } /* mninit_ */
 
@@ -7911,6 +8148,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7939,6 +8179,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -7966,6 +8209,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8029,6 +8275,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8059,6 +8308,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8084,6 +8336,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8119,6 +8374,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8188,6 +8446,9 @@ g15.5)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8213,6 +8474,9 @@ g15.5)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8408,6 +8672,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8470,6 +8737,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8498,6 +8768,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8823,6 +9096,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8874,6 +9150,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -8900,6 +9179,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9030,6 +9312,9 @@ L500:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9119,6 +9404,9 @@ i2,\002.  CONVERGENCE WHEN EDM .LT.\002,e9.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9145,6 +9433,9 @@ i2,\002.  CONVERGENCE WHEN EDM .LT.\002,e9.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9652,6 +9943,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9699,6 +9993,9 @@ V\002/57x,\002VVVVVVV\002/58x,\002VVVVV\002/59x,\002VVV\002/60x,\002V\002//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9724,6 +10021,9 @@ V\002/57x,\002VVVVVVV\002/58x,\002VVVVV\002/59x,\002VVV\002/60x,\002V\002//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9847,6 +10147,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9926,6 +10229,9 @@ PARAMETER\002,i4/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -9953,6 +10259,9 @@ PARAMETER\002,i4/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10227,6 +10536,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10323,6 +10635,9 @@ ARAMETERS.\002/\002 THIS VERSION OF MINUIT DIMENSIONED FOR\002,i4//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10356,6 +10671,9 @@ ARAMETERS.\002/\002 THIS VERSION OF MINUIT DIMENSIONED FOR\002,i4//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10648,6 +10966,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10703,6 +11024,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10734,6 +11058,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10910,6 +11237,9 @@ L210:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -10939,6 +11269,9 @@ L210:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11047,6 +11380,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11092,6 +11428,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11117,6 +11456,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11187,6 +11529,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11248,6 +11593,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11501,6 +11849,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11528,6 +11879,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11564,6 +11918,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11638,6 +11995,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11720,6 +12080,9 @@ ER IS AT LIMIT.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -11754,6 +12117,9 @@ ER IS AT LIMIT.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12076,6 +12442,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12153,6 +12522,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12177,6 +12549,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12316,6 +12691,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12359,6 +12737,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12385,6 +12766,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12473,6 +12857,9 @@ L45:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12549,6 +12936,9 @@ a/\002 **********\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12593,6 +12983,9 @@ a/\002 **********\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12884,6 +13277,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12909,6 +13305,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12954,6 +13353,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -12982,6 +13384,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13009,6 +13414,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13063,6 +13471,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13137,6 +13548,9 @@ ARIANCE MATRIX.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13163,6 +13577,9 @@ ARIANCE MATRIX.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13407,6 +13824,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13481,6 +13901,9 @@ ETER \002,i3/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13507,6 +13930,9 @@ ETER \002,i3/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13663,6 +14089,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13723,6 +14152,9 @@ UL TRIALS.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13754,6 +14186,9 @@ UL TRIALS.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -13908,6 +14343,9 @@ L600:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14059,6 +14497,9 @@ ORED')", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14084,6 +14525,9 @@ ORED')", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14715,6 +15159,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14737,6 +15184,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14761,6 +15211,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14790,6 +15243,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14873,6 +15329,9 @@ E WHEN EDM .LT.\002,e10.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -14898,6 +15357,9 @@ E WHEN EDM .LT.\002,e10.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15217,6 +15679,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15237,6 +15702,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15273,6 +15741,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15315,6 +15786,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15389,6 +15863,9 @@ M UNIT NO.\002,i3/\002 FILENAME: \002,a)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15425,6 +15902,9 @@ M UNIT NO.\002,i3/\002 FILENAME: \002,a)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15776,6 +16256,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15795,6 +16278,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15825,6 +16311,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15879,6 +16368,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15901,6 +16393,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15925,6 +16420,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -15954,6 +16452,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16000,6 +16501,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16026,6 +16530,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16156,6 +16663,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16208,6 +16718,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16230,6 +16743,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16367,6 +16883,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16401,6 +16920,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16427,6 +16949,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16512,6 +17037,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
@@ -16531,6 +17059,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
+/* First import
+/*
 /* Revision 1.2  2003/05/21 21:31:14  pln
 /* Change #include line for f2c.h to aid compilation on Windows.
 /*
