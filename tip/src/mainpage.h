@@ -9,6 +9,160 @@
     level data format (e.g. FITS or ROOT).
 
     <hr>
+    \section info Information For Clients
+    This section describes how client code can and should use the table
+    classes to gain access to tabular data.
+
+\subsection read Reading Tabular Data (First Method)
+The first step is for the client to create a data access object
+representing the table:
+
+\verbatim
+  using namespace table;
+  Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
+\endverbatim
+
+Table is the name of the main class clients need to worry about.
+The expression on the right ("IFileSvc::get()::editTable(...)")
+calls a function which opens the given file, moves to the indicated
+extension and returns a pointer to a Table object which may
+subsequently be used to access the data. (Note to developers:
+IFileSvc is a singleton abstract factory, and get() returns a
+reference to this factory.)
+
+Next, one might want to read keywords from the header of the table:
+
+\verbatim
+  Header & header = my_table->getHeader();
+  double tstart;
+  header["tstart"].get(tstart);
+\endverbatim
+
+The first line creates a reference to my_table's header object.
+The second creates a local variable to hold the value of
+the TSTART keyword. The third line causes the value of the
+TSTART keyword in the table to be copied into the local tstart
+variable. (Note to developers: Header::operator [] looks up the
+keyword in the header's container and returns a Keyword object.
+Keyword's get() method is templated and supported for all primitive
+types.)
+
+Another operation of interest is to read values from one or more
+columns (or leaves in Root parlance):
+
+\verbatim
+  double ph_time_dbl;
+  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Read the current value.
+    itor->get("ph_time", ph_time_dbl);
+    // Do something with the current value of ph_time_dbl here.
+  }
+\endverbatim
+
+The first clause of the for loop declares an object (itor) which
+acts as a pointer to a sequence of rows in the table. This
+object is initialized to point to the first row of the table
+by the second half of the expression ("= my_table->begin()").
+The second clause of the for loop ("itor != my_table->end()")
+causes the loop to terminate after processing the last row.
+The last clause ("++itor") causes the iterator (itor) to go on
+to the next value.
+
+Inside the loop, the get method is called to fill the current
+value of the ph_time column into the local ph_time_dbl variable.
+
+\subsection read2 Reading Tabular Data (Second Method)
+The method above is obviously straightforward. However, there
+is a performance penalty associated with the body of the for
+loop. Each time a value is filled into the local variable,
+the column (or TLeaf) containing the data must be looked up
+by name. For many applications this will not matter, but when
+performance becomes an issue there is a more efficient way
+of implementing the for loop:
+
+\verbatim
+  Table::Iterator itor = my_table->begin();
+  Table::Scalar<double> & ph_time_ref = (*itor)["ph_time"];
+  for (; itor != my_table->end(); ++itor) {
+    // Do something with the current value of ph_time_ref here.
+  }
+\endverbatim
+
+The first line creates an iterator pointing to the beginning
+of the table, just like the previous example. The second line
+creates a local object (ph_time_ref) which refers to the
+iterator's ph_time field. The lookup of which column contains
+the ph_time information thus occurs only once, outside the loop.
+Inside the loop, each time ph_time_ref is referred to, it will
+magically have the correct current value without needing to
+search for it again.
+
+\subsection using_values How To Use Tabular Values
+In both examples above, the body of the loop did not
+include any useful code. In the first case, it is manifestly
+clear that one could compute (with built-in double precision
+math operators) whatever one wished in the loop using the
+ph_time_dbl variable. In the second example, one might
+reasonably ask how to compute anything with ph_time_ref. The
+answer is that ph_time_ref is an object of a type (class) which
+behaves mathematically just like a built-in double type. So
+in the for loop in the first example, if one had:
+
+\verbatim
+    // Assume corrected_time and offset are both of type double:
+    corrected_time = ph_time_dbl - offset;
+\endverbatim
+
+one could replace that in the for loop in the second example
+by: 
+
+\verbatim
+    // corrected_time and offset are both still type double:
+    corrected_time = ph_time_ref - offset;
+    //                       ^^^
+\endverbatim
+
+\subsection read_write Reading and Writing Tabular Data (First Method)
+The Table class also supports write access to keywords
+using a "set" method:
+
+\verbatim
+  using namespace table;
+  double offset = 100000.;
+  Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
+
+  Header & header = my_table->getHeader();
+  double tstart;
+  // Get current value:
+  header["tstart"].get(tstart);
+
+  // Subtract offset:
+  tstart -= offset;
+
+  // Write the modified value back into the table:
+  header["tstart"].set(tstart);
+\endverbatim
+
+and columns, also using "set":
+
+\verbatim
+  double ph_time_dbl;
+  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Read the current value.
+    itor->get("ph_time", ph_time_dbl);
+
+    // Subtract an offset.
+    ph_time_dbl -= offset;
+
+    // Write the corrected value:
+    itor->set("ph_time", ph_time_dbl);
+  }
+\endverbatim
+
+\subsection read_write2 Reading and Writing Tabular Data (Second Method)
+The second method for reading above also supports writing:
+
+    <hr>
     \section notes Release Notes
     \section requirements Requirements
     There shall be one or more abstractions which manage data files.
@@ -98,13 +252,13 @@
     Client code can request from a Cell that it read data in any of these
     forms, and if possible, the request will be satisfied.
 
-    \subsection table Ref Class
+    \subsection table Table::Scalar Class
     Templated class which serves as an adaptor for the Cell class. It may
     be templated on any primitive type or string type (currently only type
-    double will work.) A Ref<T> object binds itself to a Cell reference, and
+    double will work.) A Scalar<T> object binds itself to a Cell reference, and
     provides a conversion operator to type T, and assignment from type T. This
-    allows client code to use a Ref<T> object as if it were of type T, but the
-    Ref<T> object will read/write values from the table.
+    allows client code to use a Scalar<T> object as if it were of type T, but the
+    Scalar<T> object will read/write values from the table.
 
     \section jobOptions jobOptions
 */
