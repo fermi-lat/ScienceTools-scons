@@ -13,6 +13,7 @@
 
 #include "TestColumn.h"
 #include "TestExtensionData.h"
+#include "TestException.h"
 #include "TestFileManager.h"
 #include "TestFileSummary.h"
 #include "TestFilter.h"
@@ -629,6 +630,10 @@ int main() {
     // Test filter capabilities.
     TestFilter filter_test;
     status = filter_test.test(status);
+
+    // Test Tip exception classes.
+    TestException exception_test;
+    status = exception_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
