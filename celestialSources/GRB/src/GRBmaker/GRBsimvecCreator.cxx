@@ -87,10 +87,11 @@ void GRBsimvecCreator::load_dur_long()
 	int dur_long[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,4,0,0,10,20,11,11,28,35,44,61,60,83,120,117,
 		98,82,70,53,50,32,22,20,5,9,5,4,0,0,0};
 
+
 	long sz = sizeof(dur_long)/sizeof(int);
 
 	m_dur_long.resize(sz);
-	std::copy(&dur_long[0], &dur_long[sz], m_dur_long.begin());
+	std::copy(dur_long, dur_long+sz, m_dur_long.begin());
 }
 
 
@@ -102,7 +103,7 @@ void GRBsimvecCreator::load_dur_short()
 	long sz = sizeof(dur_short)/sizeof(int);
 
 	m_dur_short.resize(sz);
-	std::copy(&dur_short[0], &dur_short[sz], m_dur_short.begin());
+	std::copy(dur_short, dur_short+sz, m_dur_short.begin());
 }
 
 
@@ -119,7 +120,7 @@ void GRBsimvecCreator::load_flux_n()
 	long sz = sizeof(flux_n)/sizeof(long);
 
 	m_flux_n.resize(sz);
-	std::copy(&flux_n[0], &flux_n[sz], m_flux_n.begin());
+	std::copy(flux_n, flux_n+sz, m_flux_n.begin());
 }
 
 
@@ -130,7 +131,7 @@ void GRBsimvecCreator::load_flux_m()
 	long sz = sizeof(flux_m)/sizeof(long);
 
 	m_flux_m.resize(sz);
-	std::copy(&flux_m[0], &flux_m[sz], m_flux_m.begin());
+	std::copy(flux_m, flux_m+sz, m_flux_m.begin());
 }
 
 
@@ -143,7 +144,7 @@ void GRBsimvecCreator::load_flux_p()
 	long sz = sizeof(flux_p)/sizeof(double);
 
 	m_flux_p.resize(sz);
-	std::copy(&flux_p[0], &flux_p[sz], m_flux_p.begin());
+	std::copy(flux_p, flux_p+sz, m_flux_p.begin());
 }
 
 
@@ -155,7 +156,7 @@ void GRBsimvecCreator::load_flux_q()
 	long sz = sizeof(flux_q)/sizeof(double);
 
 	m_flux_q.resize(sz);
-	std::copy(&flux_q[0], &flux_q[sz], m_flux_q.begin());
+	std::copy(flux_q, flux_q+sz, m_flux_q.begin());
 }
 
 
@@ -181,5 +182,5 @@ void GRBsimvecCreator::load_pl_histplaw()
 	long sz = sizeof(pl_histplaw)/sizeof(int);
 
 	m_pl_histplaw.resize(sz);
-	std::copy(&pl_histplaw[0], &pl_histplaw[sz], m_pl_histplaw.begin());
+	std::copy(pl_histplaw, pl_histplaw+sz, m_pl_histplaw.begin());
 }
