@@ -45,15 +45,24 @@ namespace tip {
       /** \brief Use a FITS template to create a new file. Clobber existing files.
           \param file_name The name of the new file.
           \param template_name The name of the template file.
+          \param clobber Should existing files be overwritten?
       */
-      virtual void createFile(const std::string & file_name, const std::string & template_name = "");
+      virtual void createFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
 
-      /** \brief Create a new image extension in a file.
+      /** \brief Append a new image extension in a file. If the file does not exist, it will be created with
+                 its primary image extension named with the image name.
           \param file_name The name of the new file.
           \param image_name The name of the new image extension.
           \param dims Set of dimensions of each axis of the image.
       */
-      virtual void createImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+      virtual void appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+
+      /** \brief Append a new table extension in a file. If the file does not exist, it will be created with
+                 an empty primary image extension.
+          \param file_name The name of the new file.
+          \param table_name The name of the new table extension.
+      */
+      virtual void appendTable(const std::string & file_name, const std::string & table_name);
 
       /** \brief Open an existing extension with modification access. The actual object returned
           may be a subclass of Extension, depending on whether the object is a table or image extension.
