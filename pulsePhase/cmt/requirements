@@ -1,5 +1,9 @@
 package pulsePhase
-version v0
+
+version v0r1p2
+
+author James Peachey <peachey@lheamail.gsfc.nasa.gov>
+# $Id$
 
 use STpolicy *
 use st_app *
@@ -7,9 +11,10 @@ use st_facilities *
 use tip *
 
 apply_pattern ST_library option=-no_share
+apply_pattern ST_pfiles
 
 private
 
-macro_append st_app_cppflags "" Linux "-I.. -I../src"
-#application test_pulsePhase test/*.cxx
+macro_append pulsePhase_cppflags "" Linux "-I.. -I../src"
 application pulsePhase pulsePhase/*.cxx
+#application test_pulsePhase test/*.cxx
