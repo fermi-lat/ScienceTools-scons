@@ -1,8 +1,11 @@
 /** \file release.notes
     \brief st_app definition
     \author James Peachey
+$Id$
 
 \verbatim
+
+02-apr-04  v1r2  THB convert to STpolicy, add test program
 \endverbatim
 
 */
