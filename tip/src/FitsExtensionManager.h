@@ -7,6 +7,7 @@
 #ifndef tip_FitsExtensionManager_h
 #define tip_FitsExtensionManager_h
 
+#include <cstring>
 #include <map>
 #include <sstream>
 #include <string>
@@ -71,6 +72,13 @@ namespace tip {
       */
       template <typename T>
       void getKeywordGeneric(const std::string & name, T & value) const;
+
+      /** \brief Templated function which can set keywords in a FITS table.
+          \param name The name of the keyword.
+          \param value The value to be written.
+      */
+      template <typename T>
+      void setKeywordGeneric(const std::string & name, const T & value);
 
       // Table-specific support:
       /** Struct holding information about the FITS columns.
@@ -148,7 +156,7 @@ namespace tip {
     if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
   }
 
-  // Getting keywords as bool is a special case because Cfitsio gets them as ints.
+  // Getting keywords as bool is a special case because Cfitsio treats them as ints.
   template <>
   inline void FitsExtensionManager::getKeywordGeneric<bool>(const std::string & name, bool & value) const {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
@@ -159,7 +167,7 @@ namespace tip {
     value = tmp;
   }
 
-  // Getting keywords as strings is a special case because Cfitsio gets them as char *.
+  // Getting keywords as strings is a special case because Cfitsio treats them as char *.
   template <>
   inline void FitsExtensionManager::getKeywordGeneric<std::string>(const std::string & name, std::string & value) const {
     static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
@@ -168,6 +176,48 @@ namespace tip {
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
     if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
     value = tmp;
+  }
+
+  // Setting keywords.
+  template <typename T>
+  inline void FitsExtensionManager::setKeywordGeneric(const std::string & name, const T & value) {
+    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
+    int status = 0;
+    T tmp = value;
+    fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
+  }
+
+  // Setting keywords as bool is a special case because Cfitsio treats them as ints.
+  template <>
+  inline void FitsExtensionManager::setKeywordGeneric<bool>(const std::string & name, const bool & value) {
+    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
+    int status = 0;
+    int tmp = value;
+    fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
+  }
+
+  // Setting keywords as strings is a special case because Cfitsio treats them as char *.
+  template <>
+  inline void FitsExtensionManager::setKeywordGeneric<std::string>(const std::string & name, const std::string & value) {
+    static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
+    int status = 0;
+    char tmp[FLEN_KEYWORD];
+    strncpy(tmp, value.c_str(), FLEN_KEYWORD - 1);
+    fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
+  }
+
+  // Setting keywords as strings is a special case because Cfitsio treats them as char *.
+  template <>
+  inline void FitsExtensionManager::setKeywordGeneric<const char *>(const std::string & name, const char * const & value) {
+    static int data_type_code = FitsPrimProps<const char *>::dataTypeCode();
+    int status = 0;
+    char tmp[FLEN_KEYWORD];
+    strncpy(tmp, value, FLEN_KEYWORD - 1);
+    fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
   }
 
   // Getting columns.
