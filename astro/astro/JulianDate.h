@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <string>
-#include "stdio.h"
 
 namespace astro {
 /**
