@@ -5,9 +5,9 @@
 #ifndef st_graph_Placer_h
 #define st_graph_Placer_h
 
-namespace st_graph {
+#include "st_graph/IFrame.h"
 
-  class IFrame;
+namespace st_graph {
 
   /** \class HPlacer
   */
