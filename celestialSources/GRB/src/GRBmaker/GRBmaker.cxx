@@ -642,8 +642,9 @@ void GRBmaker::getFlux(HepRandomEngine *engine, long nlong, std::vector<double> 
 	long diff = *it2 - *it3;
 
 	double f=0;
+	long isim;
 
-	for (long isim=0; isim<nlong; ++isim)
+	for (isim=0; isim<nlong; ++isim)
 	{
 		flux[isim]     = (f=computeFlux(engine, diff, *it3, n, p));
 		fraction[isim] = (f/maxP);
@@ -1006,11 +1007,22 @@ std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker)
 {
 	std::pair<double,double> grbdir = grbMaker.dir();
 
+	// check for WIN32 only until a fix can be found for std::fixed - it does not compile on Linux
+#ifdef WIN32
 	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << std::fixed << grbMaker.flux() << "   " <<
 		grbMaker.duration() << "   " << grbMaker.powerLawIndex() << "   " << grbMaker.specnorm() << "   " << 
 		grbMaker.npuls() << "  " << grbMaker.univFWHM() << std::endl;
+#else
+	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << grbMaker.flux() << "   " <<
+		grbMaker.duration() << "   " << grbMaker.powerLawIndex() << "   " << grbMaker.specnorm() << "   " << 
+		grbMaker.npuls() << "  " << grbMaker.univFWHM() << std::endl;
+#endif
 
+#ifdef WIN32
 	os << "ZenAng, AziAng = " << std::setw(12) << std::fixed << grbdir.first << "   " << grbdir.second << std::endl;
+#else
+	os << "ZenAng, AziAng = " << std::setw(12) << grbdir.first << "   " << grbdir.second << std::endl;
+#endif
 
 	os << "nphotons = " << grbMaker.nphoton() << std::endl;
 
@@ -1022,8 +1034,13 @@ std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker)
 		std::vector<double> time   = grbMaker.time();
 		std::vector<double> energy = grbMaker.energy();
 
+#ifdef WIN32
 		for (long i=0; i<grbMaker.nphoton(); ++i)
 			os << std::setw(12) << std::fixed << time[i] << "   " << energy[i]<< std::endl;
+#else
+		for (long i=0; i<grbMaker.nphoton(); ++i)
+			os << std::setw(12) << time[i] << "   " << energy[i]<< std::endl;
+#endif
 	}
 
 	return os;
