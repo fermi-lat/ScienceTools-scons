@@ -37,6 +37,8 @@ namespace evtbin {
       */
       void fillBin(double value);
 
+      const unsigned long & operator [](Cont_t::size_type index) const;
+
       ConstIterator begin() const;
 
       ConstIterator end() const;
@@ -44,6 +46,8 @@ namespace evtbin {
     private:
       Cont_t m_data;
   };
+
+  inline const unsigned long & Hist1D::operator [](Cont_t::size_type index) const { return m_data[index]; }
 
   inline Hist1D::ConstIterator Hist1D::begin() const { return m_data.begin(); }
 
