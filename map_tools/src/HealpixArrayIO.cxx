@@ -16,6 +16,7 @@ $Header$
 #include <sstream>
 #include <string>
 #include <typeinfo>
+#include <stdexcept>
 
 using namespace map_tools;
 
