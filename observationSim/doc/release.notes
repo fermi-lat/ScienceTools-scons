@@ -3,7 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
-    v0e3p3 05-Sep-03   JC   re-organize observationSim.i; 
+    v0r3p4 29-Sep-03   JC   use libMapFlux.so on Linux; final tag before
+                            Goodi use
+    v0r3p3 05-Sep-03   JC   re-organize observationSim.i; 
                             add (RA, DEC) back into EventContainer.cxx
     v0r3p2 26-Aug-03   JC   comment out MapFlux dependencies
     v0r3p1 25-Aug-03   JC   enable module build using IExternal/python on Linux

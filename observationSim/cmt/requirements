@@ -1,5 +1,5 @@
 package observationSim
-version v0r3p3
+version v0r3p4
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -8,7 +8,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 branches observationSim cmt src doc
 
 use flux v7*
-#use MapFlux v0*
+use MapFlux v0*
 use astro v0*
 use latResponse v0*
 use Likelihood v*
@@ -23,14 +23,14 @@ private
 
 #use python v2* IExternal
 #macro pydir ../python/
+#macro_append use_linkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
 
 # allow use of internal path
 macro observationSim_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g "
 
-#macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
-#macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux "
-     
+macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
+
 apply_pattern package_linkopts
 
 # make sure test application gets built when library changes
