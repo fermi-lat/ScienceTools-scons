@@ -4,6 +4,9 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+16-dec-2004 v0r2p0    JP  Improve interface, particularly shift ops, making
+                          the classes behave more like std::ostream. Improve
+                          sample code.
 09-nov-2004 v0r1p0    JP  Add globally accessible methods to set name of
                           executable, debug mode, and maximum chatter.
 26-oct-2004 v0        JP  Initial import.
