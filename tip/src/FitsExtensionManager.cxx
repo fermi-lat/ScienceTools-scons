@@ -13,25 +13,6 @@
 
 namespace tip {
 
-  // Create a FITS file using a template.
-  void FitsExtensionManager::createFile(const std::string & file_name, const std::string & template_name) {
-    // Concatenate the file name with the template name:
-    std::ostringstream s;
-    s << "!" << file_name << "(" << template_name << ")";
-    std::string full_name = s.str();
-
-    fitsfile * fp = 0;
-    int status = 0;
-
-    // Create the file, and complain if it doesn't work:
-    fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
-    if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
-
-    // Close the file; not interested in it anymore.
-    fits_close_file(fp, &status);
-  }
-
-  // Construct without opening the file.
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
     m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0), m_is_table(false) { open(); }

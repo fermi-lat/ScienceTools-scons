@@ -31,12 +31,6 @@ namespace tip {
   */
   class FitsExtensionManager {
     public:
-      /** \brief Use a FITS template to create a new file. Clobber existing files.
-          \param file_name The name of the new file.
-          \param template_name The name of the template file.
-      */
-      static void createFile(const std::string & file_name, const std::string & template_name);
-
       /** \brief Create an object to provide low-level access to the given FITS extension.
           \param file_name The name of the FITS file.
           \param ext_name The name of the FITS extension.
