@@ -23,7 +23,8 @@ void PulsePhaseApp::run() {
   st_app::AppParGroup & par_group = getParGroup("pulsePhase"); // getParGroup is in base class st_app::StApp
 
   // par_group.Prompt(); // Prompts for all parameters.
-  par_group.Prompt("eventfile");
+  par_group.Prompt("evfile");
+  par_group.Prompt("evtable");
   par_group.Save();
 
   par_group.Prompt("ephstyle");
@@ -47,7 +48,7 @@ void PulsePhaseApp::run() {
   par_group.Save(); // Save the values of the parameters.
 
   // Open the event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["eventfile"], "EVENTS");
+  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
   // Get model parameters.
   double epoch = par_group["epoch"];
@@ -87,4 +88,4 @@ void PulsePhaseApp::run() {
   delete events;
 }
 
-st_app::StAppFactory<PulsePhaseApp> g_factory;
+st_app::StAppFactory<PulsePhaseApp> g_factory("pulsePhase");
