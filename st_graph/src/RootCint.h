@@ -45,6 +45,6 @@ extern G__linked_taginfo G__RootCintLN_st_graphcLcLIFrame;
 extern G__linked_taginfo G__RootCintLN_TGFrame;
 extern G__linked_taginfo G__RootCintLN_st_graphcLcLIEventReceiver;
 extern G__linked_taginfo G__RootCintLN_st_graphcLcLRootFrame;
-extern G__linked_taginfo G__RootCintLN_listlEst_graphcLcLIFramemUcOallocatorlEst_graphcLcLIFramemUgRsPgR;
+extern G__linked_taginfo G__RootCintLN_setlEst_graphcLcLIFramemUcOlesslEst_graphcLcLIFramemUgRcOallocatorlEst_graphcLcLIFramemUgRsPgR;
 
 /* STUB derived class for protected member access */
