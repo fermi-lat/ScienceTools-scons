@@ -85,16 +85,15 @@ namespace tip {
       try {
         // Get container of field names:
         const Table::FieldCont & fields = m_fits_table->getValidFields();
-        ReportExpected(msg + " succeeded");
 
+        int num_fields = 0;
         for (Table::FieldCont::const_iterator it = fields.begin(); it != fields.end(); ++it) {
-std::cout << "*************** field " << *it << std::endl;
+          ++num_fields;
         }
 
-        try {
-        } catch (const TipException & x) {
-          ReportUnexpected(msg + " failed", x);
-        }
+        // Test file has 2 fields:
+        if (2 == num_fields) ReportExpected(msg + " succeeded");
+        else ReportUnexpected(msg + " got " + toString(num_fields) + " fields, not 2");
 
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -105,16 +104,15 @@ std::cout << "*************** field " << *it << std::endl;
       try {
         // Get container of field names:
         const Table::FieldCont & fields = m_root_table->getValidFields();
-        ReportExpected(msg + " succeeded");
 
+        int num_fields = 0;
         for (Table::FieldCont::const_iterator it = fields.begin(); it != fields.end(); ++it) {
-std::cout << "*************** field " << *it << std::endl;
+          ++num_fields;
         }
 
-        try {
-        } catch (const TipException & x) {
-          ReportUnexpected(msg + " failed", x);
-        }
+        // Test file has 224 fields:
+        if (224 == num_fields) ReportExpected(msg + " succeeded");
+        else ReportUnexpected(msg + " got " + toString(num_fields) + " fields, not 224");
 
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -123,16 +121,31 @@ std::cout << "*************** field " << *it << std::endl;
   }
 
   void TestTable::readWriteFieldTest() {
+    // Test FITS field read/write for channel field:
+    readWriteFieldTest(m_fits_table, "FITS", "channel");
+
+    // Test Root field read only for McEnergy field; note that this doesn't test whether the
+    // values were read correctly.
+    std::vector<double> mc_energy;
+    try {
+      readFieldTest(m_root_table, "McEnergy", mc_energy);
+      ReportExpected("reading McEnergy field from Root file succeeded");
+    } catch (const TipException & x) {
+      ReportUnexpected("reading McEnergy field from Root file failed", x);
+    }
+  }
+
+  void TestTable::readWriteFieldTest(Table * table, const std::string & format, const std::string & field_name) {
     std::string msg;
     std::vector<double> orig;
     std::vector<double> modified;
     std::vector<double> read_modified;
     bool no_error = true;
-    if (0 != m_fits_table) {
+    if (0 != table) {
       // Read original values from table into orig array:
-      msg = "testing reading FITS table";
+      msg = std::string("testing reading ") + format + " table";
       try {
-        readFieldTest(m_fits_table, "channel", orig);
+        readFieldTest(table, field_name, orig);
         ReportExpected(msg + " succeeded");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -149,9 +162,9 @@ std::cout << "*************** field " << *it << std::endl;
       }
 
       // Write new array to the table:
-      msg = "testing writing FITS table";
+      msg = std::string("testing writing ") + format + " table";
       try {
-        writeFieldTest(m_fits_table, "channel", modified);
+        writeFieldTest(table, field_name, modified);
         ReportExpected(msg + " succeeded");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -161,9 +174,9 @@ std::cout << "*************** field " << *it << std::endl;
 
       if (no_error) {
         // Read and check new values from table:
-        msg = "testing reading FITS table which was just written";
+        msg = std::string("testing reading ") + format + " table values which were just written";
         try {
-          readFieldTest(m_fits_table, "channel", read_modified);
+          readFieldTest(table, field_name, read_modified);
 
           if (modified == read_modified) ReportExpected(msg + " succeeded");
           else {
@@ -178,9 +191,9 @@ std::cout << "*************** field " << *it << std::endl;
       }
 
       // Rewrite orig array to the table:
-      msg = "testing restoring FITS table to its original state";
+      msg = std::string("testing restoring ") + format + " table to its original state";
       try {
-        writeFieldTest(m_fits_table, "channel", orig);
+        writeFieldTest(table, field_name, orig);
         ReportExpected(msg + " succeeded");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
@@ -192,7 +205,7 @@ std::cout << "*************** field " << *it << std::endl;
         // Read and check whether original values were successfully restored to the table:
         msg = "testing reading restored values";
         try {
-          readFieldTest(m_fits_table, "channel", read_modified);
+          readFieldTest(table, field_name, read_modified);
 
           if (orig == read_modified) ReportExpected(msg + " succeeded");
           else {

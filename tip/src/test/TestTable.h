@@ -37,8 +37,11 @@ namespace tip {
       /// \brief Test Table's method for getting list of fields in table:
       void getValidFieldsTest();
 
-      /// \brief Test iterator access:
+      /// \brief Test reading and writing of FITS and Root files.
       void readWriteFieldTest();
+
+      /// \brief Test reading and writing of an arbitrary file.
+      void readWriteFieldTest(Table * table, const std::string & format, const std::string & field_name);
 
       /** \brief Test reading one field from a table.
           \param table The table.
