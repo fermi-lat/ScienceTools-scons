@@ -19,6 +19,7 @@
 #include "st_graph/Engine.h"
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
+#include "st_graph/IPlot.h"
 #include "st_graph/PlotHist.h"
 #include "st_graph/ValueSet.h"
 
@@ -52,9 +53,8 @@ void StGraphTestApp::run() {
   using namespace st_graph;
 
   testValueSet();
-  testPlots();
   testGuis();
-return;
+  testPlots();
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -199,13 +199,13 @@ void StGraphTestApp::testPlots() {
   }
 
   // Create a top level main frame in which to place graphical objects.
-  IFrame * mf = engine.createMainFrame(600, 400);
+  IFrame * mf = engine.createMainFrame(0, 600, 400);
 
   // Create a new subframe in which to display the plots.
   IFrame * pf1 = engine.createPlotFrame(mf, 600, 400);
   
   // Create a scatter plot of this data set, in the subframe.
-  IFrame * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+  IPlot * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
   // Modify the data set; double the spreads and shift the plot down.
   for (int ii = 0; ii < num_pts; ++ii) {
@@ -219,7 +219,7 @@ void StGraphTestApp::testPlots() {
   delta_x1[num_pts / 2 + 1] = 1.4;
 
   // Create a histogram plot of this data set, in the subframe.
-  IFrame * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+  IPlot * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
   // Run the graphics engine to display everything.
   engine.run();
@@ -238,7 +238,7 @@ void StGraphTestApp::testGuis() {
     public:
       MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0) {
         // Create a top level main frame in which to place graphical objects.
-        m_main_frame = m_engine.createMainFrame(600, 400);
+        m_main_frame = m_engine.createMainFrame(this, 600, 400);
 
         // Create a couple test buttons.
         m_cancel_button = m_engine.createButton(m_main_frame, this, "text", "Cancel");
@@ -254,8 +254,14 @@ void StGraphTestApp::testGuis() {
       virtual void clicked(IFrame * f) {
         if (f == m_cancel_button) {
           m_engine.stop();
-          std::cout << "Cancel button was clicked" << std::endl;
         } else if (f == m_ok_button) std::cout << "OK button was clicked" << std::endl;
+        else std::cout << "Something unknown clicked" << std::endl;
+      }
+
+      virtual void closeWindow(IFrame * f) {
+        if (f == m_main_frame) {
+          m_engine.stop();
+        }
       }
 
     private:
