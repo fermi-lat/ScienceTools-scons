@@ -15,7 +15,7 @@
 #include "TLeaf.h"
 #include "TKey.h"
 
-#include "RootExtensionUtils.h"
+#include "RootExtensionManager.h"
 #include "table/HeaderData.h"
 #include "table/IData.h"
 #include "table/TableException.h"

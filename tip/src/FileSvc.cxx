@@ -7,7 +7,7 @@
 */
 #include "FitsExtensionManager.h"
 #include "FitsFileSvc.h"
-#include "RootExtensionUtils.h"
+#include "RootExtensionManager.h"
 #include "table/Table.h"
 
 namespace table {
