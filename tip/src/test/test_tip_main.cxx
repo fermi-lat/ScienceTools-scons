@@ -109,6 +109,9 @@ int main() {
       // An aside concluded: get a const Cell from the const Record:
       const Table::Cell & cell = r1["channel"];
 
+      // Now try getting the same value as a long.
+      Table::Ref<long> lchannel = r["channel"];
+
       for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
         // Note that the iterator is never deferenenced; that was done once and for all above.
@@ -166,6 +169,15 @@ int main() {
           if (first_time) {
             std::cerr << "Assignment to double or comparison to double didn't work right for Ref." << std::endl;
             std::cerr << "dcounts == " << dcounts << " not " << counts << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+
+        if (lchannel != channel) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "Same value obtained as a double and a long got different results" << std::endl;
             status = 1;
             first_time = false;
           }
