@@ -10,8 +10,9 @@
 #include <string>
 #include <functional>  // for unary_function and plus
 
+#include "GRBobsConstants.h"
 
-
+using namespace grbobstypes;
 
 class HepRandomEngine;
 
@@ -19,14 +20,6 @@ class GRBobsUtilities
 {
  public:
 
-	 // some typedefs...
-//	 typedef std::vector<long>::const_iterator LongConstIter;
-//	 typedef std::vector<double>::const_iterator DoubleConstIter;
-//	 typedef std::vector<double>::size_type DoubleSize;
-  //LIN
-	 typedef std::vector<long>::size_type LongSize;
-
-	
 	 // utility functions
 
 	 // returns the interpolated value from hi and lo
