@@ -26,7 +26,7 @@
 
 namespace st_graph {
 
-  RootEngine::RootEngine() {
+  RootEngine::RootEngine(): m_frames(), m_init_succeeded(false) {
     gSystem->ResetSignal(kSigBus);
     gSystem->ResetSignal(kSigSegmentationViolation);
     gSystem->ResetSignal(kSigSystem);
@@ -59,16 +59,19 @@ namespace st_graph {
       for (int ii = 0; ii < 16; ++ii) {
         signal(ii, handlers[ii]);
       }
-
-      // Now test for success: if virtual X was set up
-      // correctly, gClient will be non-0.
-      if (0 == gClient)
-        throw std::runtime_error("RootEngine::RootEngine could not create Root graphical TApplication");
-
     }
+
+    // Now test for success: if virtual X was set up
+    // correctly, gClient will be non-0.
+    if (0 == gClient)
+      throw std::runtime_error("RootEngine::RootEngine could not initialize graphical environment");
+
+    m_init_succeeded = true;
   }
 
   void RootEngine::run() {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::run: graphical environment not initialized");
+
     // Display all frames currently linked to the top-level frame.
     RootFrame::ancestor()->display();
     for (FrameList_t::iterator itor = m_frames.begin(); itor != m_frames.end(); ++itor) (*itor)->display();
@@ -78,6 +81,8 @@ namespace st_graph {
   }
 
   void RootEngine::stop() {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::stop: graphical environment not initialized");
+
     hideFrames();
     gApplication->Terminate(0);
   }
@@ -96,6 +101,8 @@ namespace st_graph {
     };
 
     static DefaultReceiver s_default_receiver(*this);
+
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createMainFrame: graphical environment not initialized");
 
     // If client did not supply a receiver, use the default one.
     if (0 == receiver) receiver = &s_default_receiver;
@@ -118,6 +125,8 @@ namespace st_graph {
 
   PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist::IntervalCont_t & intervals) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist1D: graphical environment not initialized");
+
     // Create Root-specific 1D plot object with the PlotHist interface.
     RootPlotHist * hist = new RootPlotHist(this, title, width, height, intervals);
     m_frames.push_back(hist);
@@ -126,6 +135,8 @@ namespace st_graph {
 
   PlotHist * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist2D: graphical environment not initialized");
+
     // Create Root-specific 2D plot object with the PlotHist interface.
     RootPlotHist * hist = new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
     m_frames.push_back(hist);
@@ -134,20 +145,28 @@ namespace st_graph {
 
   IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
     const ValueSet & y, const ValueSet & z) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
+
     return new RootPlot(parent, style, title, x, y, z);
   }
 
   IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
     const ValueSet & y, const std::vector<std::vector<double> > & z) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
+
     return new RootPlot(parent, style, title, x, y, z);
   }
 
   IFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotFrame: graphical environment not initialized");
+
     return new RootPlotFrame(parent, width, height);
   }
 
   IFrame * RootEngine::createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
     const std::string & label) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createButton: graphical environment not initialized");
+
     // Need the Root frame of the parent object.
     RootFrame * rf = dynamic_cast<RootFrame *>(parent);
     if (0 == rf) throw std::logic_error("RootEngine::createButton was passed an invalid parent frame pointer");
@@ -174,14 +193,20 @@ namespace st_graph {
   }
 
   void RootEngine::addFrame(IFrame * frame) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::addFrame: graphical environment not initialized");
+
     m_frames.push_back(frame);
   }
 
   void RootEngine::removeFrame(IFrame * frame) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::removeFrame: graphical environment not initialized");
+
     m_frames.remove(frame);
   }
 
   void RootEngine::hideFrames() {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::hideFrames: graphical environment not initialized");
+
     for (FrameList_t::iterator itor = m_frames.begin(); itor != m_frames.end(); ++itor) (*itor)->unDisplay();
     // Hide all frames currently linked to the top-level frame.
     RootFrame::ancestor()->unDisplay();

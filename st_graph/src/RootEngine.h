@@ -113,6 +113,7 @@ namespace st_graph {
 
     private:
       FrameList_t m_frames;
+      bool m_init_succeeded;
   };
 
 }
