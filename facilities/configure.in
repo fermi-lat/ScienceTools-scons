@@ -13,18 +13,7 @@ AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
 dnl Check for location of installed GLAST libraries
-AC_ARG_WITH(glast, --with-glast=DIR (path to GLAST libraries),
-	glast_prefix=$withval, glast_prefix="/usr/local/glast")
-AC_SUBST(glast_prefix)
-AC_MSG_RESULT( GLAST installation at $glast_prefix assumed)
-
-dnl Check that it is really there
-AC_CHECK_PROG(MERIT, merit, merit, no, $glast_prefix/bin)
-if test "$MERIT" = no; then
-   AC_MSG_WARN([
-	GLAST installation not found in $glast_prefix
-   ])
-fi
+glast_CHECK_ROOT
 
 AC_OUTPUT(Makefile facilities/Makefile src/Makefile)
 
