@@ -15,14 +15,6 @@
 
 #define MAKE_COMPILATION_FAIL (0)
 
-void ReportError(const std::string & context, int & status, const tip::TipException & x = tip::TipException("")) {
-  if (0 == status) status = 1;
-  std::cerr << "Unexpected error: " << context;
-  const char * what = x.what();
-  if (0 != what && '\0' != *what) std::cerr << "\n\twhat() == " << what;
-  std::cerr << "\n" << std::endl;
-}
-
 void ReportBehavior(const std::string & context, const int &, const tip::TipException & x = tip::TipException("")) {
 #if 1
   std::cerr << "Expected behavior: " << context;
@@ -30,6 +22,25 @@ void ReportBehavior(const std::string & context, const int &, const tip::TipExce
   if (0 != what && '\0' != *what) std::cerr << "\n\twhat() == " << what;
   std::cerr << "\n" << std::endl;
 #endif
+}
+
+void ReportError(const std::string & context, int & status, const tip::TipException & x = tip::TipException("")) {
+  if (0 == status) status = 1;
+  std::cerr << "Unexpected behavior: " << context;
+  const char * what = x.what();
+  if (0 != what && '\0' != *what) std::cerr << "\n\twhat() == " << what;
+  std::cerr << "\n" << std::endl;
+}
+
+void ReportWarning(const std::string & msg) {
+  std::cerr << "WARNING: " << msg << std::endl;
+}
+
+template <typename T>
+std::string ToString(const T & value) {
+  std::ostringstream os;
+  os << value;
+  return os.str();
 }
 
 template <typename ExtData>
@@ -177,6 +188,8 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   int status = 0;
 
+  // Name of a message string, used in reporting errors:
+  std::string msg;
 
   // Test error cases for FitsExtensionData constructors:
   TestConstructorErrors<FitsExtensionData>("FitsExtensionData", data_dir + "a1.pha", status);
@@ -210,34 +223,122 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
 
-  // BEGIN Test error cases for const FitsExtensionData methods for an image extension.
+  // BEGIN Test const FitsExtensionData methods for an image extension.
   // Skip these tests if image object was not successfully opened above:
   if (0 == image) {
     ReportError("image pointer is null; skipping some tests", status);
   } else {
     // Note that image points to the primary HDU, which is an image.
     // Use a constant pointer from here on down:
-    const IExtensionData * const_image = image;
+    const IExtensionData * const_ext = image;
 
     // Test operations which should fail for any/all extensions regardless of whether they are tables or images:
     // The following call generates some errors containing the string "from a const image object"
-    TestCommonErrors(const_image, "image", status);
+    TestCommonErrors(const_ext, "image", status);
 
+    // Another test which should fail: table specific methods
     try {
       // Get number of records from the image:
       // This operation is only valid for tables, so it should fail:
-      Index_t tmp_num_rec = const_image->getNumRecords();
-      std::ostringstream tmp_msg;
-      tmp_msg << "success calling getNumRecords() from a const image object";
-      tmp_msg << ", number of records is " << tmp_num_rec;
-      ReportError(tmp_msg.str(), status);
+      const_ext->getNumRecords();
+      ReportError("success calling getNumRecords() from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
       ReportBehavior("failure calling getNumRecords() from a const image object", status, x);
     }
 
   }
-  // END Test error cases for const FitsExtensionData methods.
+  // END Test const FitsExtensionData methods for an image extension.
+
+
+
+
+
+  // BEGIN Test const FitsExtensionData methods for a table extension.
+  // Skip these tests if table object was not successfully opened above:
+  if (0 == table) {
+    ReportError("table pointer is null; skipping some tests", status);
+  } else {
+    // Name of the extension type, used in reporting errors:
+    std::string ext_type = "table";
+
+    // Note that table points to the primary HDU, which is an table.
+    // Use a constant pointer from here on down:
+    const IExtensionData * const_ext = table;
+
+    // Test operations which should fail for any/all extensions regardless of whether they are tables or tables:
+    // The following call generates some errors containing the string "from a const table object"
+    TestCommonErrors(const_ext, ext_type, status);
+
+    // Test table operations which should succeed.
+    try {
+      // Dummy variable for holding double values obtained from the table.
+      double tmp_d;
+
+      // Get a valid double keyword.
+      const_ext->getKeyword("src_thet", tmp_d);
+      msg = "success calling getKeyword(\"src_thet\") from a const";
+      ReportBehavior(msg + " " + ext_type + " object", status);
+    } catch(const TipException & x) {
+      msg = "failure calling getKeyword(\"src_thet\") from a const";
+      ReportError(msg + " " + ext_type + " object", status, x);
+    }
+
+    // Read an entire column, which will involve calling all important functions:
+    std::string field_name = "channel";
+    try {
+      // First, get the position of the field in the table:
+      msg = std::string("getFieldIndex(\"") + field_name + "\")";
+      Index_t field_index = const_ext->getFieldIndex(field_name);
+      ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+      try {
+        // Next, get the number of records in the table:
+        msg = "getNumRecords()";
+        Index_t num_rec = const_ext->getNumRecords();
+        ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+        try {
+          // Next, get the number of elements in each cell for this field:
+          msg = std::string("getFieldNumElements(\"") + ToString(field_index) + "\")";
+          Index_t num_elements = const_ext->getFieldNumElements(field_index);
+          ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+          if (0 >= num_elements) {
+            // Something's wrong, so don't try to allocate an array with non-positive number of elements!
+            msg += " returned a non-positive number of elements";
+            ReportError(msg + " from a const " + ext_type + " object", status);
+          } else {
+            try {
+              // Allocate an array to hold the values read from a single cell of this field:
+              double * tmp_dv = new double[num_elements];
+
+              // Iterate over all records, reading them:
+              for (Index_t ii = 0; ii < num_rec; ++ii) {
+                msg = std::string("getCell(") + ToString(field_index) + ", " + ToString(ii) + ", 0, " + ToString(num_elements) + ", tmp_dv)";
+                const_ext->getCell(field_index, ii, 0, num_elements, tmp_dv);
+              }
+              msg = std::string("getCell(") + ToString(field_index) + ", ii , 0, " + ToString(num_elements) + ", tmp_dv)";
+              ReportBehavior(msg + " succeeded for all records in const " + ext_type + " object", status);
+              
+            } catch(const TipException & x) {
+              ReportError(msg + " failed for const " + ext_type + " object", status, x);
+            }
+          }
+
+        } catch(const TipException & x) {
+          ReportError(msg + " failed for const " + ext_type + " object", status, x);
+        }
+
+      } catch(const TipException & x) {
+        ReportError(msg + " failed for const " + ext_type + " object", status, x);
+      }
+
+    } catch(const TipException & x) {
+      ReportError(msg + " failed for const " + ext_type + " object", status, x);
+    }
+  }
+  // END Test const FitsExtensionData methods for a table extension.
 
 
 
