@@ -26,16 +26,8 @@ class BasicExposure {
 public:
     BasicExposure(S sky):m_sky(sky), m_total(0){}
 
-    void fill(const astro::SkyDir& dirz, double deltat){
-        S::iterator is = m_sky.begin();
-        for( ; is != m_sky.end(); ++is){ // loop over all pixels
-            C & pixeldata= *is; // get the contents of this pixel
-            astro::SkyDir pdir = m_sky.dir(is); // dir() is defined in HealpixArray.h
-            double costh = pdir().dot(dirz());
-            pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
-        }
-        m_total += deltat;
-    }
+    virtual void fill(const astro::SkyDir& dirz, double deltat)=0;
+
     template<class F>
         double operator()(const astro::SkyDir& dir, const F& fun)const
     {
@@ -45,6 +37,7 @@ public:
     const S& data()const{return m_sky;}
     S& data(){return m_sky;}
     double total()const{return m_total;}
+    void addtotal(double t){ m_total+=t;}
 
     void setData(const S& data){m_sky=data;}
 private:
@@ -73,6 +66,9 @@ public:
     //! @param pixelsize (deg) Approximate pixel size, in degrees
     //! @param cosbinsize bin size in the cos(theta) binner
     Exposure(double pixelsize, double cosbinsize);
+
+    //! add a time interval at the given position
+    virtual void fill(const astro::SkyDir& dirz, double deltat);
 
     //! create object from the data file (FITS for now)
     Exposure(const std::string& inputfile, const std::string& tablename="Exposure");
