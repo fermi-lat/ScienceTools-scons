@@ -51,6 +51,7 @@ namespace tip {
       if (0 != status) {
         // TODO 9. 4/2/2004: Bug in cfitsio 2.48: Check for it and warn about it. The bug causes
         // the parser not to move to the correct extension.
+        // DONE 9: 4/21/2004: A warning is issued for this specific version. Nothing more can be done, really.
         float cfitsio_version = 0.;
         fits_get_version(&cfitsio_version);
         // This is surreal. A FLOATING POINT VERSION NUMBER! Checking for == doesn't work -- I tried it.
