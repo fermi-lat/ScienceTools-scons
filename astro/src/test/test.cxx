@@ -253,17 +253,7 @@ int main(){
     try {
         // test EarthCoordinate::insideSAA
 
-        test_insideSAA();
-
-        if( !testSkyDir() )rc=1;
-
-        if( !testHTM() ) rc= 1;
-
-        if(! testSkyProj() ) rc= 1;
-
-        TestHealpix();
-        TestHealpixArray();
-
+ 
 // One needs the test data to run this.
 //        if (!test_GPS_readFitsData()) return 1;
 
@@ -284,16 +274,25 @@ int main(){
         test += fabs(l-sd3.l()) + fabs(b - sd3.b());
         test += fabs(ra-sd.ra()) +fabs(dec-sd.dec());
 
-        double lat=40, lon=45;
         EarthOrbit abcd;
         double juliandate = abcd.dateFromSeconds(0.0);
+
+
+        std::cout << "EarthCoordinate:\n";
         EarthCoordinate xyza(abcd.position(juliandate),juliandate);
-        std::cout << "latitude at t0 = " << xyza.latitude()
+        
+        std::cout << std::setprecision(6) << "\tlatitude at t0 = " << xyza.latitude()
             << " , longitude at t0 = " << xyza.longitude() << std::endl;
 
+        double lat=25, lon=45;
+        std::cout << "EarthCoordinate("<<lat<<","<<lon<<")\n";
         EarthCoordinate ec(lat, lon);
 
         test += fabs(lat-ec.latitude()) + fabs(lon-ec.longitude());
+        double L = ec.L(), B=ec.B();
+        std::cout << "\tL=\t"<< ec.L() 
+            << "\n\tB=\t"<< ec.B() 
+            << std::endl;
 
         // test the SkyDir difference function
         SkyDir sd2(ra+1,dec);
@@ -346,6 +345,20 @@ int main(){
             // run the sun and moon
             rc= 1;
         }
+
+        // other tests
+        test_insideSAA();
+
+        if( !testSkyDir() )rc=1;
+
+        if( !testHTM() ) rc= 1;
+
+        if(! testSkyProj() ) rc= 1;
+
+        TestHealpix();
+        TestHealpixArray();
+
+
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
             << e.what() << "\"" << std::endl;

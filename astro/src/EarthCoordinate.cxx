@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "astro/EarthCoordinate.h"
+#include "Geomag.h"
 
 namespace {
     
@@ -33,6 +34,18 @@ EarthCoordinate::EarthCoordinate(Hep3Vector pos, JulianDate jd)
         -s_EarthRadius / (1000.*sqrt(1.-sqr(0.00669454*sin(m_lat))));
 
 }
+    //!  McIlwain L
+double EarthCoordinate::L()const
+{
+    return Geomag::L(latitude(), longitude());
+
+}
+    //! McIlwain B
+double EarthCoordinate::B()const
+{
+    return Geomag::B(latitude(), longitude());
+}
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EarthCoordinate::EarthCoordinate(double latDeg, double lonDeg, double alt)
