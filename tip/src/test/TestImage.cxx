@@ -254,6 +254,23 @@ namespace tip {
     } catch (const TipException & x) {
       ReportUnexpected("TestImage::test caught exception ", x);
     }
+
+    // Test creating an image/file without a template.
+    try {
+      std::vector<PixOrd_t> dims(2);
+      dims[0] = 25;
+      dims[1] = 55;
+
+      remove("new_image4.fits");
+
+      IFileSvc::instance().appendImage("new_image4.fits", "myimage1", dims);
+      IFileSvc::instance().appendImage("new_image4.fits", "myimage2", dims);
+
+      ReportExpected("TestImage::test was able to create a file and append an image to it without a template");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestImage::test caught exception ", x);
+    }
+
     return getStatus();
 
   }
