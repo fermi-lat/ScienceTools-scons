@@ -97,6 +97,45 @@ void test_insideSAA() {
    std::cout << "EarthCoordinate::insideSAA tests passed." << std::endl;
 }
 
+void testJD()
+{
+   astro::JulianDate JD2000 = astro::JulianDate(2000,1,1,12.); //2451545
+
+   int year, year2, month, month2, day, day2;
+   double utc = 12.0, utc2;
+   bool passed = true;
+
+   for(year = 2002; year <= 2022; year++) {
+      for(month = 1; month <= 12; month++) {
+         for(day = 1; day < 28; day++)
+         {
+            for(utc = 0; utc < 24 && passed; utc=utc+1/3600.){
+               JD2000 = astro::JulianDate(year, month, day, utc);
+               JD2000.getGregorianDate(year2, month2, day2, utc2);
+               
+               if(year-year2!=0 || month-month2!=0 || day-day2!=0)
+               {
+                  std::cout << "Year, month, or day conversion error!" << std::endl;
+                  std::cout << year << "  " << month << "  " << day << "   " << utc << std::endl;
+                  std::cout << year2 << "  " << month2 << "  " << day2 << "   " << utc2 << std::endl;
+                  passed = false;
+               }
+               if(utc-utc2 > 0.00000001)
+               {
+                  std::cout << "Time error!"  << std::endl;
+                  passed = false;
+               }
+//               std::cout << JD2000.getGregorianDate() << std::endl;
+            }
+         }
+      }
+   }
+   if(passed)
+   {
+      std::cout << "JD Conversions passed!" << std::endl;
+      std::cout << JD2000.getGregorianDate() << std::endl;
+   }
+}
 
 int main(){
 
@@ -110,6 +149,8 @@ using namespace std;
     if( !testSkyDir() )return 1;
 
     JulianDate JD2000 = JulianDate(2000,1,1,12.); //2451545
+
+ //   testJD();
     
     double test=0;
 
