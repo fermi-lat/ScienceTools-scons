@@ -34,7 +34,7 @@ namespace evtbin {
   double Gti::getFraction(double tstart, double tstop, ConstIterator & gti_pos) const {
     double fraction = 0.;
 
-    for (; gti_pos != m_intervals.end(); ++gti_pos) { 
+    for (; gti_pos != m_intervals.end(); ++gti_pos) {
       // Check if this interval ends before GTI starts and return 0. fraction if it does.
       if (tstop <= gti_pos->first) break;
 
