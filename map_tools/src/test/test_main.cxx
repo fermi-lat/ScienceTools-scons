@@ -5,6 +5,7 @@
 */
 
 #include "map_tools/Exposure.h"
+#include "map_tools/Parameters.h"
 #include <iostream>
 #include <algorithm>
 #include <cassert>
@@ -19,8 +20,22 @@ public:
     double m_slope;
 };
 
-int main(int , char** ){
+class TestPar : public Parameters {
+public:
+    TestPar(int argc, char** argv): Parameters(argc, argv){
+        getDouble("xref");
+    }
+};
+
+int main(int argc, char** argv ){
     try{
+        // read a pil file--and make sure that a few simple things work
+        TestPar par(argc, argv);
+        if( par["xref"] != 0) {
+            std::cerr << "Read wrong value for parameter xref" << std::endl;
+            return 1;
+        }
+
         Exposure e( 10,  0.1);
         double total=0;
 

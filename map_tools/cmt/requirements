@@ -17,11 +17,12 @@ set OUTFILES "$(MAP_TOOLSROOT)/output"
 set TPLDIR   "$(MAP_TOOLSROOT)/Templates"
 
 
+#temporary code for FITS table I/O and keyword handling
 library table -no_share -s=table $(source)
 
 
 apply_pattern GLAST_static_library_package
-macro_append map_tools_linkopts " -l table " Win32 "$(map_toolsDir)/table.lib"
+macro_append map_tools_linkopts " -l table " Win32 " $(map_toolsDir)/table.lib "
 		
 pattern ST_app \
   macro <name>_par "" WIN32 "<name>.par" ; \ 
