@@ -69,6 +69,7 @@ void GPS::synch ()
 double GPS::lat()const{return m_lat;}     
 /// present longitude    
 double GPS::lon()const{return m_lon;}  	
+double GPS::altitude()const {return m_altitude;}
 /// pointing characteristics	
 double GPS::RAX()const{return m_RAX;}    
 double GPS::RAZ()const{return m_RAZ;}    
@@ -294,6 +295,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         astro::EarthCoordinate earthpos(m_position,time);
         m_lat = earthpos.latitude();
         m_lon = earthpos.longitude();
+        m_altitude = earthpos.altitude();
         //now set the zenith direction before the rocking.
         m_RAZenith = tempDirZ.ra();
         m_DECZenith = tempDirZ.dec();
@@ -308,6 +310,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         decX=dirX.dec();
         m_lat = m_currentInterpPoint.lat;
         m_lon = m_currentInterpPoint.lon;
+        m_altitude = m_currentInterpPoint.altitude;
         //now set the zenith direction before the rocking.
         m_RAZenith = dirZenith.ra();
         m_DECZenith = dirZenith.dec();
@@ -321,6 +324,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         astro::EarthCoordinate earthpos(m_position,time);
         m_lat = earthpos.latitude();
         m_lon = earthpos.longitude();
+        m_altitude = earthpos.altitude();
         //now set the zenith direction before the rocking.
         m_RAZenith = tempDirZ.ra();
         m_DECZenith = tempDirZ.dec();
@@ -452,6 +456,7 @@ void GPS::readFitsData() {
    std::vector<float> decx(stride);
    std::vector<float> lat_geo(stride);
    std::vector<float> lon_geo(stride);
+   std::vector<float> rad_geo(stride);
 
 // map of pointers to the data and type, keyed by column name.
    std::map<std::string, std::pair<void *, int> > columns;
@@ -464,6 +469,7 @@ void GPS::readFitsData() {
    columns["DEC_SCX"] = std::make_pair(&decx[0], TFLOAT);
    columns["LAT_GEO"] = std::make_pair(&lat_geo[0], TFLOAT);
    columns["LON_GEO"] = std::make_pair(&lon_geo[0], TFLOAT);
+   columns["RAD_GEO"] = std::make_pair(&rad_geo[0], TFLOAT);
 
    std::map<std::string, std::pair<void *, int> >::iterator column;
 
@@ -565,6 +571,7 @@ void GPS::setUpHistory(){
             temp.lat=lat;
             temp.lon=lon;
             temp.position=Hep3Vector(posx,posy,posz);
+            temp.altitude = alt;
 
             m_pointingHistory[intrvalstart]=temp;
          }
@@ -591,29 +598,19 @@ void GPS::setInterpPoint(double time){
                << std::endl;
        throw std::runtime_error(message.str());
     }
-#if 0 //THB
-    //get the point after "time"
-    double rax2=(*iter).second.dirX.ra();
-    double decx2=(*iter).second.dirX.dec();
-    double raz2=(*iter).second.dirZ.ra();
-    double decz2=(*iter).second.dirZ.dec();
-#endif
     double lat2=(*iter).second.lat;
     double lon2=(*iter).second.lon;
     Hep3Vector pos2=(*iter).second.position;
     double time2=(*iter).first;
     astro::SkyDir dirZ2=(*iter).second.dirZ;
     astro::SkyDir dirX2=(*iter).second.dirX;
+    double alt2 =(*iter).second.altitude;
+
     //then get the details from the previous point:
     iter--;
-#if 0 //THB--unused
-    double rax1=(*iter).second.dirX.ra();
-    double decx1=(*iter).second.dirX.dec();
-    double raz1=(*iter).second.dirZ.ra();
-    double decz1=(*iter).second.dirZ.dec();
-#endif
     double lat1=(*iter).second.lat;
     double lon1=(*iter).second.lon;
+    double alt1=(*iter).second.altitude;
     Hep3Vector pos1=(*iter).second.position;
     double time1=(*iter).first;
     astro::SkyDir dirZ1=(*iter).second.dirZ;
@@ -637,6 +634,7 @@ void GPS::setInterpPoint(double time){
 
     m_currentInterpPoint.lat=lat1+((lat2-lat1)*prop);
     m_currentInterpPoint.lon=lon1+((lon2-lon1)*prop);	
+    m_currentInterpPoint.altitude=0.5*(alt1+alt2);
 
     //this piece of code should just handle the "wraparound" cases:
     if(fabs(lon1-lon2) >= 330.){

@@ -54,6 +54,7 @@ public:
         astro::SkyDir dirX;
         double lat,lon;
         Hep3Vector position;
+        double altitude;
     }POINTINFO;
 
     typedef std::map<double,GPS::POINTINFO> HistoryMap;
@@ -74,6 +75,7 @@ public:
     private:
         GPStime m_time;
         double m_lat, m_lon, m_pitch, m_yaw, m_roll, m_phase;
+        double m_altitude;
     };
 
     // const access
@@ -84,6 +86,7 @@ public:
     double lat()const;//{getPointingCharacteristics(time);return m_lat;} 
     /// present longitude
     double lon()const;//{getPointingCharacteristics(time);return m_lon;}  
+    double altitude()const; // rad_geo
     /// pointing characteristics
     double RAX()const;//{getPointingCharacteristics(time);return m_RAX;}
     double RAZ()const;//{getPointingCharacteristics(time);return m_RAZ;}
@@ -190,6 +193,7 @@ private:
     double m_lastQueriedTime; //the last time that was asked for
     double  m_sampleintvl;  // interval to sample for each pt. in the orbit - to normalize spectra
     double m_lat,m_lon; //position characteristics
+    double m_altitude; 
     double m_RAX,m_RAZ,m_DECX,m_DECZ; //pointing characteristics.
     double m_RAZenith,m_DECZenith,m_RAXZenith,m_DECXZenith; //pointing characteristic of the zenith direction.
     Hep3Vector m_position; //current vector position of the LAT.

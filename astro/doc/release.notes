@@ -5,6 +5,7 @@
   Package coordinators: T.Burnett
 
 @verbatim
+  v1r6     19-mar-05 THB GPS fixes to transmit altitude properly
   v1r5p3   07-mar-05 THB gcc behavior work-around 
   v1r5p2   05-mar-05 THB gcc difference. 
   v1r5p1   05-mar-05 THB correct date for jpl ephemeris 
