@@ -22,13 +22,13 @@ namespace astro {
     {
     public:
         enum CoordSystem { 
-            GALACTIC,  //!  fixed direction with respect to the galactic coordinate system (l,b)
-                CELESTIAL //! fixed direction with respect to the celestial coordinate system (ra,dec) in the J2000 epoch.
+            GALACTIC=0,  //!  fixed direction with respect to the galactic coordinate system (l,b)
+                CELESTIAL=1, EQUATORIAL=1 //! fixed direction with respect to the celestial coordinate system (ra,dec) in the J2000 epoch.
         };
         ///Constructors
         ///(l,b) or (Ra, Dec) instantiation
         SkyDir(double param1=0, double param2=0, CoordSystem inputType = CELESTIAL);
-        SkyDir(Hep3Vector);
+        SkyDir(Hep3Vector, CoordSystem inputType = CELESTIAL);
         
         ///return methods
         Hep3Vector& operator () () {return m_dir;}

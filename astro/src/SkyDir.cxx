@@ -4,6 +4,12 @@
 #include "astro/SkyDir.h"
 
 namespace astro {
+
+/** @brief initialize from (ra, dec), or (l,b)
+    @param param1 either ra or l, in degrees
+    @param param2 either dec or b, in degrees
+    @param inputType EQUATORIAL (default) or GALACTIC
+    */
     SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
         if(inputType == GALACTIC){
             double  l = param1*M_PI/180;
@@ -32,8 +38,14 @@ namespace astro {
         }
     }
     
-    SkyDir::SkyDir(Hep3Vector dir):
-    m_dir(dir){
+    /** @brief initialize from direction
+    */
+    SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
+        : m_dir(dir)
+    {
+        if(inputType!=EQUATORIAL){
+            m_dir = s_celestialToGalactic.inverse() * m_dir;
+        }
     }
     
     HepRotation SkyDir::s_celestialToGalactic = HepRotation().rotateZ(-282.25*M_PI/180).rotateX(-62.6*M_PI/180).rotateZ(33.*M_PI/180);
