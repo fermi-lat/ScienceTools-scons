@@ -6,7 +6,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 # $Id$
 
 use STpolicy v1r*
-use tip v2*
+use tip v*
 use astro v*
 use facilities v*
 use evtbin v0r*

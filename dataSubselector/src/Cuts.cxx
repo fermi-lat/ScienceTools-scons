@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <cctype>
 #include <cstdlib>
 
 #include <algorithm>

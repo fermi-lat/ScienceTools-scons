@@ -77,7 +77,8 @@ void DataFilter::run() {
    std::string outputFile = m_pars["output_file"];
    m_outputFile = outputFile;
    facilities::Util::expandEnvVar(&m_outputFile);
-   if (!m_pars["clobber"] && st_facilities::Util::fileExists(m_outputFile)) {
+   bool clobber = m_pars["clobber"];
+   if (!clobber && st_facilities::Util::fileExists(m_outputFile)) {
       std::cout << "Output file, " << outputFile << ", already exists, "
                 << "and you have specified 'clobber' as 'no'.\n"
                 << "Please provide a different file name." << std::endl;

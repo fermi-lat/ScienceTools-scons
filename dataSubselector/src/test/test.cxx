@@ -85,6 +85,7 @@ void DssTests::compareGtis() {
    CPPUNIT_ASSERT(!(gti1 != gti2));
 
    gti1.insertInterval(0, 10.);
+
    CPPUNIT_ASSERT(gti1 != gti2);
 }
 
@@ -212,6 +213,7 @@ void DssTests::compareCuts() {
 }
 
 int main() {
+
    CppUnit::TextTestRunner runner;
    
    runner.addTest(DssTests::suite());
