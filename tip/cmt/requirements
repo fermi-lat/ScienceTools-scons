@@ -10,3 +10,4 @@ use ROOT * IExternal
 use cfitsio * IExternal
 
 apply_pattern ST_library option=-no_share
+application sample sample/sample.cxx
