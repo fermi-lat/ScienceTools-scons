@@ -52,7 +52,7 @@ class RootWindow(Tk.Tk):
 
         menuBar = MenuBar(self)
         
-        self.modelEditor = ModelEditor(self)
+        self.modelEditor = _ModelEditor(self)
         self.modelEditor.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
 
         componentFrames = Tk.Frame(self)
@@ -225,7 +225,7 @@ class FileMenu(Tk.Menu):
         self.add_command(label="Save as...", command=root.saveAs)
         self.add_command(label="Quit", underline=0, command=root.quit)
     def stat(self):
-        if root.srcModel == None:
+        if self.root.srcModel == None:
             self.entryconfigure(1, state=Tk.DISABLED)
             self.entryconfigure(2, state=Tk.DISABLED)
         else:
@@ -304,7 +304,7 @@ def read_coords(regfile="ds9.reg"):
             coords.append(x)
     return coords            
 
-class ModelEditor(Tk.Frame):
+class _ModelEditor(Tk.Frame):
     def __init__(self, parent):
         Tk.Frame.__init__(self)
         self.parent = parent
@@ -474,12 +474,19 @@ class FunctionItem(object):
         self.name = name
         self.parameters = params
 
-spectralFuncs = funcFactory.Spectra()
-spatialFuncs = funcFactory.SpatialModels()
+_spectralFuncs = funcFactory.Spectra()
+_spatialFuncs = funcFactory.SpatialModels()
+
+def ModelEditor(filename=None):
+    if filename is not None:
+        root = RootWindow(_spectralFuncs, _spatialFuncs, filename)
+    else:
+        root = RootWindow(_spectralFuncs, _spatialFuncs)
+    root.mainloop()
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
-        root = RootWindow(spectralFuncs, spatialFuncs, sys.argv[1])
+        root = RootWindow(_spectralFuncs, _spatialFuncs, sys.argv[1])
     else:
-        root = RootWindow(spectralFuncs, spatialFuncs)
+        root = RootWindow(_spectralFuncs, _spatialFuncs)
     root.mainloop()
