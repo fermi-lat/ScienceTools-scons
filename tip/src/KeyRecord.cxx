@@ -90,7 +90,7 @@ namespace tip {
       // Does not look like a logical, so see if it looks like a number.
       char * remainder = 0;
       errno = 0;
-      double tmp = strtod(value.c_str(), &remainder);
+      strtod(value.c_str(), &remainder);
       if (0 == errno && (0 == remainder || '\0' == *remainder)) is_new_string = false;
     }
 
