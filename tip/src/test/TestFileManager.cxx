@@ -4,12 +4,14 @@
 */
 
 #include <cstdlib>
+#include <memory>
 #include <iostream>
 
 #include "FitsFileManager.h"
 #include "RootExtensionData.h"
 #include "TestFileManager.h"
 #include "tip/Extension.h"
+#include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
@@ -34,6 +36,9 @@ namespace tip {
 
     // Test fileStatus method.
     fileStatusTest();
+
+    // Test updateKeywords.
+    updateKeywordsTest();
 
     return getStatus();
   }
@@ -220,4 +225,38 @@ namespace tip {
     }
   }
 
+  void TestFileManager::updateKeywordsTest() {
+    try {
+      std::string file_name = "ft1_kwtest.fits";
+
+      IFileSvc & fs = IFileSvc::instance();
+
+      // Create a new fake ft1 file.
+      fs.createFile(file_name, getDataDir() + "ft1.tpl");
+
+      // Change the "telescop" key.
+      Header::KeyValCont_t kwds;
+      kwds.push_back(Header::KeyValPair_t("TELESCOP", "SLOTHROP"));
+
+      // Update all telescop keys, file-wide.
+      fs.updateKeywords(file_name, kwds);
+
+      // Verify that this took effect. Get a file summary.
+      FileSummary summary;
+      fs.getFileSummary(file_name, summary);
+
+      // Iterate over extensions.
+      for (FileSummary::iterator itor = summary.begin(); itor != summary.end(); ++itor) {
+        std::auto_ptr<const tip::Extension> ext(fs.readExtension(file_name, itor->getExtId()));
+
+        std::string telescop;
+        ext->getHeader()["TELESCOP"].get(telescop);
+        if (0 != telescop.compare("SLOTHROP")) throw TipException("IFileSvc::updateKeywords failed to update TELESOP");
+      }
+
+      ReportExpected("IFileSvc::updateKeywords worked correctly");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestFileManager::updateKeywordsTest caught unexpected exception", x);
+    }
+  }
 }

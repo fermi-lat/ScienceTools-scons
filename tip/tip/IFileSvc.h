@@ -10,6 +10,7 @@
 #include <string>
 
 #include "tip/FileSummary.h"
+#include "tip/Header.h"
 
 namespace tip {
 
@@ -107,6 +108,8 @@ namespace tip {
           \param file_name The file name.
       */
       virtual bool fileExists(const std::string & file_name);
+
+      virtual void updateKeywords(const std::string & file_name, const Header::KeyValCont_t & kwds);
 
     protected:
       /** \brief For singleton pattern, limit creation of IFileSvc objects to derived classes.

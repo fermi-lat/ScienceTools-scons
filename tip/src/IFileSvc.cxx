@@ -6,6 +6,7 @@
 */
 
 #include <fstream>
+#include <memory>
 
 #include "FitsExtensionData.h"
 #include "FitsFileManager.h"
@@ -153,6 +154,15 @@ namespace tip {
     std::ifstream file(file_name.c_str());
     if (!file.is_open()) return false;
     return true;
+  }
+
+  void IFileSvc::updateKeywords(const std::string & file_name, const Header::KeyValCont_t & kwds) {
+    FileSummary summary;
+    getFileSummary(file_name, summary);
+    for (FileSummary::iterator itor = summary.begin(); itor != summary.end(); ++itor) {
+      std::auto_ptr<Extension> ext(editExtension(file_name, itor->getExtId()));
+      ext->getHeader().update(kwds);
+    }
   }
 
   IExtensionData * IFileSvc::openExtension(const std::string & file_name, const std::string & ext_name, const std::string & filter,

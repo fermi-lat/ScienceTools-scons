@@ -34,6 +34,9 @@ namespace tip {
 
       /// \brief Test file status/attributes methods.
       void fileStatusTest();
+
+      /// \brief Test updating all keywords in a file.
+      void updateKeywordsTest();
   };
 
 }
