@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 #include "facilities/Util.h"

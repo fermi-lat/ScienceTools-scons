@@ -6,6 +6,8 @@
  * $Header$
  */
 
+#include <sstream>
+
 #include "tip/Header.h"
 
 #include "dataSubselector/CutBase.h"
