@@ -292,6 +292,8 @@ int main(){
         double L = ec.L(), B=ec.B();
         std::cout << "\tL=\t"<< ec.L() 
             << "\n\tB=\t"<< ec.B() 
+            << "\n\tgeolat=\t"<< ec.geolat() 
+            << "\n\tgeolon=\t"<< ec.geolon() 
             << std::endl;
 
         // test the SkyDir difference function
