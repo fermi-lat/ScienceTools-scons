@@ -14,6 +14,17 @@ use CLHEP v2* IExternal
 apply_pattern package_include
 apply_pattern package_linkopts
 
+# Kluge. Python isn't a package yet, so this is machine-dependent
+macro pydir ../python/
+macro PYINCLUDE /usr/local/include/python2.2
+macro PYLIB /usr/local/lib
+
+macro swig_nowarn "" Linux "-w"
+include_dirs $(PYINCLUDE)
+language swig -suffix=i -linker=$(clink)
+#make_fragment swig 
+make_fragment swig_library
+
 private
 
 # allow use of internal path
@@ -24,7 +35,6 @@ macro_prepend cflags "" Linux "-g"
 macro test_optimizersstamps "optimizers.stamp"
 
 macro my_headers "" WIN32 "../optimizers/*.h *.h"
-library optimizers -no_share $(my_headers) *.cxx *.f *.c
-
+library optimizers -no_share $(my_headers) *.cxx *.f *.c *.i
 # test application
 application test_optimizers test/*.cxx
