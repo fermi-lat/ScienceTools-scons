@@ -9,6 +9,7 @@ use tuple *
 
 use astro *
 use pil   * IExternal
+use facilities *
 
 set INFILES  "$(MAP_TOOLSROOT)/data"
 set PFILES   "$(MAP_TOOLSROOT)/pfiles"

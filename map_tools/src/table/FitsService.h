@@ -419,7 +419,6 @@ void FitsService::readImage(long firstElem, long nelements, std::vector<T> &data
         FitsValueType datatype = dtype();
 
         int anynul=0;
-        size_t sz = data.size();
         T nulval;
         if (fits_read_img(m_fptr, datatype, firstElem, nelements, &nulval, 
             &*data.begin(), &anynul, &status))

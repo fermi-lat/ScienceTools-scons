@@ -186,11 +186,9 @@ void FitsService::createNewFile(const std::string &fname, const std::string &tem
     std::string tfile(templateFile);
     facilities::Util::expandEnvVar(&tfile);
 
-    m_it = &m_filename.back();
-
     facilities::Util::expandEnvVar(& m_filename.back());
 
-    std::string oname = *m_it + "(" + tfile + ")";
+    std::string oname = m_filename.back() + "(" + tfile + ")";
     createFile(oname);
 }
 
@@ -529,7 +527,7 @@ std::string FitsService::findAndReadKey(const std::string &key, const std::strin
 {
     // Find a key containing specified keyword
     char **inclist=new char*[1];
-    char **exclist=NULL;
+    //THB, not used    char **exclist=NULL;
     inclist[0] = new char[FLEN_KEYWORD];
     strcpy(inclist[0], key.c_str());
 
@@ -1451,7 +1449,7 @@ void FitsService::readStringKey(const std::string &key, std::string &value, std:
     comment = comm;
 }
 
-
+#if 0 //THB, temp to see if it helps
 void FitsService::write(const std::string &key, const std::vector<std::string> &data, long firstRow) const
 {
     writeData<>(key, data, firstRow);
@@ -1488,7 +1486,7 @@ void FitsService::write(const std::string &key, const std::vector<short> &data, 
 }
 
 
-
+#endif
 
 
 

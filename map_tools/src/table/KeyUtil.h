@@ -63,7 +63,7 @@ namespace table
             const std::string &valueString, const std::string &comment);
     };
 
-
+#if 0 //THB not needed?
     template <typename T>
         void KeyUtil::getKey(const std::map<std::string, Keyword *> &hdrKeyMap, 
         const std::string &key, T &value)
@@ -98,7 +98,7 @@ namespace table
         }
     }
 
-
+#endif
     template <typename T>
         void KeyUtil::insertKey(std::map<std::string, Keyword *> &hdrKeyMap, 
         const std::string &key, const T &value, const std::string &comment)
