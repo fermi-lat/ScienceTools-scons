@@ -163,7 +163,6 @@
        4.  5/24/2004: Currently there are only two binning methods: LinearBinner and LogBinner. New
            subclasses of Binner should be added to support User-defined binners, Constant Signal-to-Noise
            binners and Bayesian Block binners.
-       5.  5/24/2004: The LightCurve class currently does not write GTIs.
        6.  5/24/2004: TIMEDEL column is always written even for constant-size time bins.
        7.  5/24/2004: SingleSpec and MultiSpec write only channel and counts. There are plenty of other
            fields which need to be populated.
@@ -186,5 +185,7 @@
           for different similar binning situations. This should naturally be consolidated.
           5/20/2004: Resolved. A helper class hierarchy EvtBinAppBase was developed to
           allow distinct binning applications to share the common bits of their algorithms.
+       5.  8/16/2004: Resolved. All binners now write GTIs. (Original issue was: The LightCurve class currently
+          does not write GTIs.
 \endverbatim
 */
