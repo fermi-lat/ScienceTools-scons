@@ -17,9 +17,6 @@
 #include "tip/Table.h"
 #include "tip/Header.h"
 
-// flag for debug printing
-#define DEBUG 0
-
 namespace st_app {
    class AppParGroup;
 }
