@@ -34,6 +34,7 @@ class RootWindow(Tk.Tk):
         try:
             global ds9
             import ds9
+            ds9.cd(os.path.abspath(os.curdir))
         except ImportError:
             showwarning(title="ds9 Access Warning",
                         message="Import error for ds9 package.")
@@ -234,9 +235,9 @@ class EditMenu(Tk.Menu):
 class ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="Display point sources", underline="0",
+        self.add_command(label="Display sources", underline="0",
                          command=ds9Display(root))
-        self.add_command(label="Import region sources", underline="0",
+        self.add_command(label="Import sources", underline="0",
                          command=ds9Import(root))
 
 class ds9Display(object):
