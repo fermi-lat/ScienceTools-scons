@@ -51,7 +51,8 @@ public:
             "      '-graph <log | semilogx | semilogy | linear>'\n"
             "      '-longsrc <sourcename>' for long-term energy averaging\n"
             "      '-time <time in seconds>' for the flux at time\n"
-            "      '-stationary' keeps the satellite from moving\n"
+            "      '-stationary' keeps the satellite from moving (doesn't work for sources\n"
+            "                    that use interval to determine the flux)\n"
             "      '-help' for this help"
             << std::endl;
     }
@@ -73,15 +74,6 @@ public:
         }
     }
     
-// TODO: use FluxMgr for this
-//#define DLL_DECL_SPECTRUM(x)   extern const ISpectrumFactory& x##Factory; x##Factory.addRef();
-    
-    void flux_load() {
-        
-        // these are the spectra that we want to make available
-  //      DLL_DECL_SPECTRUM( FILESpectrum);
-        
-    }
       
 private:
     void init(std::vector<const char*> argv);
