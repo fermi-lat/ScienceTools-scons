@@ -144,6 +144,11 @@ namespace tip {
 //    }
     if( ! m_filter.empty() ){ // apply filter expression
         TFile * dummy = new TFile("dummy.root", "recreate");
+        // JP added this check:
+        if (!dummy->IsOpen()) {
+          delete dummy;
+          throw TipException("Could not create temporary filtered ROOT file");
+        }
         TTree * tnew = m_tree->CopyTree(m_filter.c_str() );
         Index_t size = Index_t(tnew->GetEntries());
         if( size == 0) {
@@ -152,6 +157,8 @@ namespace tip {
         m_tree = tnew;
 //        std::cout << "\t " << size << "/" << m_num_records << " events" << std::endl;
         m_num_records = size;
+        delete m_fp;
+        m_fp = dummy;
     }
     // turn off all branches: enable them as requested for the event loop
     m_tree->SetBranchStatus("*", 0);
@@ -173,7 +180,7 @@ namespace tip {
 
   }
 
-  void RootExtensionManager::setNumRecords(Index_t num_records) {
+  void RootExtensionManager::setNumRecords(Index_t) {
     // Not supported for now.
     throw TipException("Changing the size of a Root table is not currently supported.");
   }
