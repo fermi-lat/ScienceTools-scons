@@ -64,6 +64,70 @@ int main(int, char**) {
 
   std::cout << "basename is " << facilities::Util::basename(wname) << std::endl;
 
+
+  // Test stringToDouble routine
+  std::string okDouble("3.14159");
+  std::string badDouble("3.garbage56");
+
+  double result = -1;
+
+  try {
+    result = facilities::Util::stringToDouble(okDouble);
+    std::cout << "Converted (string) " << okDouble << " to (double) " 
+              << result << std::endl;
+  }
+  catch (facilities::WrongType ex) {
+    std::cout << "Failed with exception WrongType:  " << ex.getMsg() 
+              << std::endl;
+  }
+
+  try {
+    result = facilities::Util::stringToDouble(badDouble);
+    std::cout << "Converted (string) " << badDouble << " to (double) " 
+              << result << std::endl;
+  }
+  catch (facilities::WrongType ex) {
+    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+              << std::endl;
+  }
+
+  // Test stringToInt routine
+  std::string okInt("33550");
+  std::string badInt1("3garbage56");
+  std::string badInt2("garbage356");
+
+  int intResult = -1;
+
+  try {
+    intResult = facilities::Util::stringToInt(okInt);
+    std::cout << "Converted (string) " << okInt << " to (int) " 
+              << intResult << std::endl;
+  }
+  catch (facilities::WrongType ex) {
+    std::cout << "Failed with exception WrongType:  " << ex.getMsg() 
+              << std::endl;
+  }
+
+  try {
+    intResult = facilities::Util::stringToInt(badInt1);
+    std::cout << "Converted (string) " << badInt1 << " to (int) " 
+              << intResult << std::endl;
+  }
+  catch (facilities::WrongType ex) {
+    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+              << std::endl;
+  }
+
+  try {
+    intResult = facilities::Util::stringToInt(badInt2);
+    std::cout << "Converted (string) " << badInt2 << " to (int) " 
+              << intResult << std::endl;
+  }
+  catch (facilities::WrongType ex) {
+    std::cout << "Failed with exception WrongType: " << ex.getMsg() 
+              << std::endl;
+  }
+
   return 0;
 }
 
