@@ -77,19 +77,15 @@ int main(int argc, char** argv ){
         }
 
 // Write out the cube...
-        std::string cubefile("$(OUTFILES)/testCube.fits");
-        facilities::Util::expandEnvVar(&cubefile);
-        ExposureHyperCube cube(e, cubefile);
-        cube.save("!" + cubefile);
+        ExposureHyperCube cube(e, par.inputFile());
+        cube.save();
 
 // Check the Exposure(fitsfile) constructor.
-        Exposure e2(cubefile);
+        Exposure e2(par.inputFile());
 
 // Write this out as a separate file for an external diff.
-        std::string cube2file("$(OUTFILES)/testCube2.fits");
-        facilities::Util::expandEnvVar(&cube2file);
-        ExposureHyperCube cube2(e2, cube2file);
-        cube2.save("!" + cube2file);
+        ExposureHyperCube cube2(e2, par.outputFile());
+        cube2.save();
 
         test_Header();
 
