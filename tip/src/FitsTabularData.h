@@ -106,8 +106,6 @@ namespace table {
       FitsExtension m_extension;
       std::map<std::string, ColumnInfo> m_col_name_lookup;
       std::map<int, ColumnInfo> m_col_num_lookup;
-      std::string m_file_name;
-      std::string m_table_name;
       Index_t m_num_records;
   };
 

@@ -13,8 +13,7 @@
 namespace table {
 
   FitsTabularData::FitsTabularData(const std::string & file_name, const std::string & table_name): ITabularData(),
-    m_extension(file_name, table_name), m_col_name_lookup(), m_col_num_lookup(), m_file_name(file_name),
-    m_table_name(table_name), m_num_records(0) {
+    m_extension(file_name, table_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0) {
     int column_status = 0;
     int status = 0;
     long nrows = 0;
@@ -65,9 +64,8 @@ namespace table {
   }
 
   FitsTabularData::FitsTabularData(const FitsTabularData & table): ITabularData(), 
-    m_extension(table.m_file_name, table.m_table_name), m_col_name_lookup(table.m_col_name_lookup),
-    m_col_num_lookup(table.m_col_num_lookup), m_file_name(table.m_file_name), m_table_name(table.m_table_name),
-    m_num_records(table.m_num_records) {
+    m_extension(table.m_extension), m_col_name_lookup(table.m_col_name_lookup),
+    m_col_num_lookup(table.m_col_num_lookup), m_num_records(table.m_num_records) {
     // Copy construction requires that the new table opens the file itself separately.
     try {
       m_extension.open();
