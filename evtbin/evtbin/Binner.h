@@ -72,6 +72,10 @@ namespace evtbin {
       std::string m_name;
   };
 
+  inline bool operator < (const double & value, const Binner::Interval & interval) { return value < interval.begin(); }
+
+  inline bool operator < (const Binner::Interval & interval, const double & value) { return interval.end() < value; }
+
 }
 
 #endif

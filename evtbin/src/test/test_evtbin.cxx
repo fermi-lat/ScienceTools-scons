@@ -21,6 +21,8 @@
 #include "evtbin/LinearBinner.h"
 // Class encapsulating description of a binner with logarithmically equal size bins.
 #include "evtbin/LogBinner.h"
+// Class encapsulating description of a binner with ordered but otherwise arbitrary bins.
+#include "evtbin/OrderedBinner.h"
 // Class for binning into Hist objects from tip objects:
 #include "evtbin/RecordBinFiller.h"
 // Multiple spectra abstractions.
@@ -53,6 +55,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testLogBinner();
 
+    void testOrderedBinner();
+
     void testHist1D();
 
     void testHist2D();
@@ -83,6 +87,8 @@ void EvtBinTest::run() {
   testLinearBinner();
   // Test logarithmic binner:
   testLogBinner();
+  // Test ordered binner:
+  testOrderedBinner();
   // Test one dimensional histogram:
   testHist1D();
   // Test two dimensional histogram:
@@ -215,6 +221,121 @@ void EvtBinTest::testLogBinner() {
   index = binner.computeIndex(1.000001 * exp(15.));
   if (0 <= index) {
     std::cerr << msg << "1.000001 * exp(15.)) returned " << index << ", which is >= 0" << std::endl;
+    m_failed = true;
+  }
+}
+
+void EvtBinTest::testOrderedBinner() {
+  using namespace evtbin;
+
+  std::string msg = "OrderedBinner::OrderedBinner(...)";
+
+  OrderedBinner::IntervalCont_t intervals;
+
+  // Create intervals with bad ordering within a given interval.
+  intervals.push_back(Binner::Interval(0., .1));
+  intervals.push_back(Binner::Interval(.15, .25));
+  intervals.push_back(Binner::Interval(.25, .24));
+  intervals.push_back(Binner::Interval(.30, .45));
+
+  try {
+    OrderedBinner binner(intervals);
+    std::cerr << msg << " did not throw when given an interval whose beginning value is > ending value" << std::endl;
+    m_failed = true;
+  } catch (const std::exception & x) {
+  }
+
+  intervals.clear();
+
+  // Create intervals with bad ordering between two subsequent intervals.
+  intervals.push_back(Binner::Interval(0., .1));
+  intervals.push_back(Binner::Interval(.15, .25));
+  intervals.push_back(Binner::Interval(.24, .29));
+  intervals.push_back(Binner::Interval(.30, .45));
+
+  try {
+    OrderedBinner binner(intervals);
+    std::cerr << msg << " did not throw when given two sequential intervals which are not in order" << std::endl;
+    m_failed = true;
+  } catch (const std::exception & x) {
+  }
+
+  // Finally, create a legitimate set of intervals.
+  intervals.clear();
+
+  intervals.push_back(Binner::Interval(0., .1));
+  intervals.push_back(Binner::Interval(.15, .25));
+  intervals.push_back(Binner::Interval(.30, .45));
+  intervals.push_back(Binner::Interval(.50, .60));
+  intervals.push_back(Binner::Interval(.60, .72));
+
+  try {
+    OrderedBinner binner(intervals);
+
+    msg = "OrderedBinner::computeIndex(";
+
+    double value;
+    long index;
+
+    // Make sure all values are classified correctly.
+    // A value less than the first bin.
+    value = -.01;
+    index = binner.computeIndex(value);
+    if (0 <= index) {
+      std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
+    }
+    
+    // A value greater than the last bin.
+    value = 1.;
+    index = binner.computeIndex(value);
+    if (0 <= index) {
+      std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
+    }
+    
+    // A value in the 0th bin.
+    value = .05;
+    index = binner.computeIndex(value);
+    if (0 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 0" << std::endl;
+    }
+    
+    // A value in the 1st bin.
+    value = .17;
+    index = binner.computeIndex(value);
+    if (1 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 1" << std::endl;
+    }
+    
+    // A value in the 2st bin.
+    value = .30;
+    index = binner.computeIndex(value);
+    if (2 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 2" << std::endl;
+    }
+    
+    // A value in the 3rd bin.
+    value = .55;
+    index = binner.computeIndex(value);
+    if (3 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 3" << std::endl;
+    }
+    
+    // A value in the 4th bin.
+    value = .60;
+    index = binner.computeIndex(value);
+    if (4 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 4" << std::endl;
+    }
+    
+    // A value between bins.
+    value = .25;
+    index = binner.computeIndex(value);
+    if (0 <= index) {
+      std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
+    }
+  
+  } catch (const std::exception & x) {
+    std::cerr << msg << " threw when given a set of intervals which are legal (i.e. in order)" << std::endl;
     m_failed = true;
   }
 }
