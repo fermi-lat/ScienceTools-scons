@@ -77,7 +77,7 @@ int main(int iargc, char * argv[]) {
       std::string line;
       std::vector<std::string> dataFields;
       while (std::getline(d2, line, '\n')) {
-         facilities::Util::stringTokenize(line, "\t", dataFields);
+         facilities::Util::stringTokenize(line, "\t ", dataFields);
          ft2["start"].set(std::atof(dataFields[0].c_str()));
          tip::Table::Vector<float> scPosition = ft2["sc_position"];
          scPosition[0] = std::atof(dataFields[1].c_str());
