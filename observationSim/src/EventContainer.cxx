@@ -187,8 +187,11 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
                                          double time) const {
    astro::SkyDir appDir(ra, dec);
    astro::SkyDir zen_z = ScZenith(time);
-   astro::SkyDir zen_x = astro::SkyDir(-zen_z.ra(), 90. - zen_z.dec());
-   astro::SkyDir zen_y = astro::SkyDir(zen_x().rotate(zen_z(), M_PI/2.));
+   astro::SkyDir tmp = astro::SkyDir(zen_z.ra(), zen_z.dec() - 90.);
+   astro::SkyDir zen_x = astro::SkyDir(-tmp());
+   astro::SkyDir zen_y = zen_x;
+   zen_y().rotate(zen_z(), M_PI/2.);
+   double cosxy = zen_x().dot(zen_y());
    double azimuth = std::atan2(zen_y().dot(appDir()), zen_x().dot(appDir()));
    return azimuth*180./M_PI;
 }
