@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 #include <iostream>
+#include <memory>
 #include <sstream>
 
 #include "fitsio.h"
@@ -22,8 +23,23 @@ namespace tip {
   int TestColumn::test(int status) {
     setStatus(status);
 
+    // Test copying a file containing scalars and fixed-width vectors.
     copyDataFile(getDataDir() + "a1.pha", "a1-copy.pha");
+
+    // Test copying a file containing variable-width vectors.
     copyDataFile(getDataDir() + "aeff_DC1.fits", "aeff_DC1-copy.fits");
+
+    try {
+      FitsExtensionManager manager(getDataDir() + "aeff_DC1.fits", "EA_ALL");
+
+      std::string units = manager.getColumn(0)->getUnits();
+      if ("MeV" == units)
+        ReportExpected("TestColumn::test(): ENERGY_LO has units of MeV");
+      else
+        ReportUnexpected("TestColumn::test(): ENERGY_LO has units of " + units + ", not MeV");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestColumn::test() caught unexpected exception while testing FitsColumn::getUnits", x);
+    }
 
     return getStatus();
   }
@@ -48,7 +64,7 @@ namespace tip {
 
       // Open output extension.
       FitsExtensionManager out_manager(out_file, ext_itor->getExtId(), "", false);
-     
+
       // Get number of fields in this extension.
       long num_fields = in_manager.getValidFields().size();
 

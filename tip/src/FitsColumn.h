@@ -283,6 +283,14 @@ namespace tip {
 
     // Determine whether this is a scalar column.
     if (1 == m_repeat && !m_var_length) m_scalar = true;
+
+    // Get units.
+    std::ostringstream os;
+    os << "TUNIT" << m_field_index;
+    char units[FLEN_CARD] = "";
+    fits_read_key(m_ext->getFp(), TSTRING, const_cast<char *>(os.str().c_str()), units, 0, &status);
+    if (0 == status) m_units = units;
+    else if (KEY_NO_EXIST != status) throw FitsTipException(status, "FitsColumn::FitsColumn failed to get units of field");
   }
 
 }
