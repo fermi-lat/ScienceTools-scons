@@ -7,7 +7,6 @@
  *
  */
 
-#include <cassert>
 #include <cmath>
 
 #include <iostream>
@@ -81,8 +80,8 @@ void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
          int indx = i + j*m_axes[0].size;
          double thetamin = (m_axisVectors[1][j] - m_axes[1].step/2.)*M_PI/180;
          double thetamax = (m_axisVectors[1][j] + m_axes[1].step/2.)*M_PI/180;
-         solidAngles[indx] = m_axes[0].step*M_PI/180
-            *(sin(thetamax) - sin(thetamin));
+         solidAngles[indx] = std::fabs(m_axes[0].step*M_PI/180
+                                       *(sin(thetamax) - sin(thetamin)));
       }
    }
 }
