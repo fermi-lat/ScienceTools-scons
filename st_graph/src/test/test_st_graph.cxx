@@ -19,6 +19,7 @@
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
 #include "st_graph/IPlot.h"
+#include "st_graph/ITabFolder.h"
 #include "st_graph/Placer.h"
 #include "st_graph/Sequence.h"
 
@@ -306,18 +307,35 @@ void StGraphTestApp::testGuis() {
 
   class MyGui : public IEventReceiver {
     public:
-      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0), m_enable_button(0),
-        m_plot_frame(0), m_data(100) {
+      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_open_button(0), m_enable_button(0),
+        m_click_me(0), m_plot_frame(0), m_data(100), m_file_name("./requirements") {
         // Create a top level main frame in which to place graphical objects.
         m_main_frame = m_engine.createMainFrame(this, 600, 400);
 
         // Create a couple test buttons.
         m_cancel_button = m_engine.createButton(m_main_frame, this, "text", "Cancel");
-        m_ok_button = m_engine.createButton(m_main_frame, this, "text", "OK");
-        m_enable_button = m_engine.createButton(m_main_frame, this, "check", "enable");
+        m_open_button = m_engine.createButton(m_main_frame, this, "text", "Open");
+        m_enable_button = m_engine.createButton(m_main_frame, this, "check", "Enable");
+
+        // Add a tabbed folder.
+        m_tab_folder = m_engine.createTabFolder(m_main_frame, this);
+        IFrame * f = m_tab_folder->addTab("Folder 1");
+        m_click_me = m_engine.createButton(f, this, "text", "Click me");
+
+        f = m_tab_folder->addTab("Folder 2");
+        m_engine.createButton(f, this, "text", "Me too");
+        m_engine.createButton(f, this, "text", "And me");
+
+        m_tab_folder->select(m_tab_folder->addTab("Folder 3"));
+
+        // Put in some tool tips.
+        m_cancel_button->setToolTipText("Cancel this part of the test and go on to the rest");
+        m_open_button->setToolTipText("Open a file dialog box to select a file name");
+        m_enable_button->setToolTipText("Demonstrate that a check button works");
 
         // Create a frame to hold a plot.
         m_plot_frame = m_engine.createPlotFrame(m_main_frame, "Linear Function", 520, 400);
+        m_plot_frame->setToolTipText("This is a frame which holds plots");
 
         // Create a linear test array.
         for (std::vector<double>::size_type idx = 0; idx != m_data.size(); ++idx) m_data[idx] = idx + 100;
@@ -341,8 +359,10 @@ void StGraphTestApp::testGuis() {
           m_engine.stop();
         } else if (f == m_enable_button) {
           std::cout << "Enable button is " << m_enable_button->getState() << std::endl;
-        } else if (f == m_ok_button) {
-          std::cout << "OK button was clicked" << std::endl;
+        } else if (f == m_open_button) {
+          std::cout << "Open button was clicked" << std::endl;
+          m_file_name = m_engine.fileDialog(m_main_frame, m_file_name);
+          std::cout << "Chosen file was " << m_file_name << std::endl;
         } else {
           std::cout << "Something unforeseen clicked" << std::endl;
         }
@@ -358,20 +378,28 @@ void StGraphTestApp::testGuis() {
         // Button justifiers.
         LeftEdge le_main(m_main_frame);
         RightEdge re_main(m_main_frame);
-        RightEdge re_ok(m_ok_button);
+        RightEdge re_ok(m_open_button);
         RightEdge re_cancel(m_cancel_button);
 
         // Place buttons in row, ok, cancel, enable.
-        LeftEdge(m_ok_button).rightOf(le_main);
+        LeftEdge(m_open_button).rightOf(le_main);
         LeftEdge(m_cancel_button).rightOf(re_ok);
         TopEdge(m_enable_button).below(BottomEdge(m_cancel_button));
+
+        // Place tabbed folder to right of first row of buttons.
+        TopEdge(m_tab_folder->getFrame()).below(BottomEdge(m_enable_button));
+        LeftEdge(m_tab_folder->getFrame()).rightOf(RightEdge(m_cancel_button));
+//        RightEdge(m_tab_folder->getFrame()).stretchTo(RightEdge(m_main_frame));
+//        BottomEdge(m_tab_folder->getFrame()).stretchTo(BottomEdge(m_click_me));
+
+        m_tab_folder->getFrame()->setNaturalSize();
 
         // Place plot to right of cancel.
         LeftEdge(m_plot_frame).rightOf(re_cancel, 5);
         RightEdge(m_plot_frame).stretchTo(re_main);
 
-        // Place plot below cancel too.
-        TopEdge(m_plot_frame).below(BottomEdge(m_cancel_button), 5);
+        // Place plot below tab folder.
+        TopEdge(m_plot_frame).below(BottomEdge(m_tab_folder->getFrame()), 5);
         BottomEdge(m_plot_frame).stretchTo(BottomEdge(m_main_frame));
       }
 
@@ -379,10 +407,13 @@ void StGraphTestApp::testGuis() {
       Engine & m_engine;
       IFrame * m_main_frame;
       IFrame * m_cancel_button;
-      IFrame * m_ok_button;
+      IFrame * m_open_button;
       IFrame * m_enable_button;
+      IFrame * m_click_me;
       IFrame * m_plot_frame;
+      ITabFolder * m_tab_folder;
       std::vector<double> m_data;
+      std::string m_file_name;
   };
 
   try {
