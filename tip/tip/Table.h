@@ -15,6 +15,7 @@
 #include "table/TableException.h"
 #include "table/TableRecord.h"
 #include "table/table_types.h"
+#include "table/VectorAdaptor.h"
 
 namespace table {
 
@@ -47,6 +48,16 @@ namespace table {
         public:
           Ref(Cell & cell): ReferenceAdaptor<T, Cell>(cell) {}
           Ref & operator =(const T & data) { ReferenceAdaptor<T, Cell>::operator =(data); return *this; }
+      };
+
+      /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,
+          but is connected to the table cell.
+      */
+      template <typename T>
+      class Vector : public VectorAdaptor<T, Cell> {
+        public:
+          Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
+          Vector & operator =(const std::vector<T> & data) { VectorAdaptor<T, Cell>::operator =(data); return *this; }
       };
 
       Table(ITabularData * tab_data): Extension(tab_data), m_tab_data(tab_data) {}
