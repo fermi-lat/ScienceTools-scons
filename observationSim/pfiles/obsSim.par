@@ -14,7 +14,7 @@ max_effarea,r,h,1.21,,,Maximum effective area value
 max_numrows,i,h,200000,,,Maximum number of rows in FITS files
 random_seed,i,a,293049,,,Random number seed
 
-chatter,        i, h, 0, 0, 4, "Output verbosity"
+chatter,        i, h, 2, 0, 4, "Output verbosity"
 clobber,        b, h, yes, , , "Overwrite existing output files"
 debug,          b, h, no, , , "Activate debugging mode"
 mode,           s, h, "ql", , , "Mode of automatic parameters"

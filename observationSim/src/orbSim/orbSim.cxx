@@ -34,7 +34,7 @@
 class OrbSim : public st_app::StApp {
 public:
    OrbSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("orbSim")),
-              m_simulator(0), m_verbosity(1) {
+              m_simulator(0) {
    }
    virtual ~OrbSim() throw() {
       try {
@@ -51,7 +51,6 @@ private:
    observationSim::Simulator * m_simulator;
    std::map<std::string, int> m_rockTypes;
    std::vector<irfInterface::Irfs *> m_respPtrs;
-   unsigned int m_verbosity;
 
    void defineRockTypes();
    void promptForParameters();

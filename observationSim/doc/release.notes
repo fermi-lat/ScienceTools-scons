@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r3p2 27-Nov-04   JC   delete unnecessary OrbSim data member
     v5r3p1 27-Nov-04   JC   add Verbosity class
     v5r3   27-Nov-04   JC   canonicalize parameter interface
     v5r2p1 29-Oct-04   JC   use tip v2*
