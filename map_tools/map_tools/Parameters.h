@@ -46,7 +46,7 @@ public:
          return default_value;
       }
    }
-   //! @brief bracket operator for numberic values only
+   //! @brief bracket operator for numeric values only
    double operator[](const std::string& name)const {return m_par[name];} 
 
     // Accessor Methods
@@ -69,6 +69,7 @@ private:
     bool        m_clobber;
     int         m_chatter;
     bool      m_own_ppg;
+    bool    m_debug;
 };
 } // namespace map_tools
 #endif

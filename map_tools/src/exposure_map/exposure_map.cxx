@@ -20,6 +20,10 @@ $Header$
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 #include "st_app/AppParGroup.h"
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/st_stream.h"
+
+
 
 #include "astro/SkyDir.h"
 
@@ -86,16 +90,17 @@ public:
     */
     ExposureMapApp()
         : st_app::StApp()
+        , m_f("ExposureMapApp", "", 2)
         , m_pars(st_app::StApp::getParGroup("exposure_map")) 
     {
     }
-    ~ExposureMapApp() throw() {} // needed since StApp has empty throw
     /**
     */
 
     irfInterface::IAeff* findAeff(std::string rspfunc)
     {
         using namespace irfInterface;
+        m_f.setMethod("findAeff");
 
         class AeffSum : public irfInterface::IAeff {
         public:  
@@ -127,22 +132,22 @@ public:
         // set up irf stuff, and translate the IRF name        
         dc1Response::loadIrfs();
 
-        std::clog << "Using Aeff " ;
+        m_f.info() << "Using Aeff " ;
         std::string irfname;
         if(      rspfunc=="DC1F") irfname="DC1::Front";
         else if( rspfunc=="DC1B") irfname="DC1::Back";
         else if( rspfunc=="DC1FB") {
             // special case handled by custom class above.
-            std::clog << "DC1::Front + DC1::Back" << std::endl;
+            m_f.info() << "DC1::Front + DC1::Back" << std::endl;
             return new AeffSum();
         }else if( rspfunc=="SIMPLE" ){
-            std::clog << "Simple linear form " << std::endl;
+            m_f.info() << "Simple linear form " << std::endl;
             return 0;
         }else { 
             throw std::invalid_argument(
                 std::string("Response function not implemented here: "+rspfunc));
         }
-        std::clog << irfname << std::endl;
+        m_f.info() << irfname << std::endl;
         Irfs* dc1 = IrfsFactory::instance()->create(irfname);
         return dc1->aeff();
 
@@ -150,12 +155,14 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void run() {
 
+        m_f.setMethod("run()");
+
         // create the exposure, read it in from the FITS input file
-        std::clog << "Creating an Exposure object from file " << m_pars.inputFile() << std::endl;
+        m_f.info() << "Creating an Exposure object from file " << m_pars.inputFile() << std::endl;
 
         Exposure ex(m_pars.inputFile() ); 
         double total_elaspsed = ex.total();
-        std::clog << "\ttotal elapsed time: " << total_elaspsed << std::endl;
+        m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
 
         irfInterface::IAeff* aeff = findAeff(m_pars.getValue<std::string>("rspfunc"));
 
@@ -180,9 +187,11 @@ public:
 
 private:
     MapParameters m_pars;
+    st_stream::StreamFormatter m_f;
+
 };
 // Factory which can create an instance of the class above.
-st_app::StAppFactory<ExposureMapApp> g_factory;
+st_app::StAppFactory<ExposureMapApp> g_factory("exposure_map");
 
 /** @page exposure_map_guide exposure_map users's Guide
 

@@ -1,6 +1,6 @@
 package map_tools
 
-version v5r7
+version v5r9	
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -12,6 +12,7 @@ use tip  *
 use st_app *
 use irfInterface * irfs
 use dc1Response * irfs 
+use cfitsio * IExternal 
 
 
 apply_pattern ST_library option=-no_share
@@ -22,10 +23,6 @@ apply_pattern ST_pfiles
 #---------------------------------------------------------------
 private
 macro_append test_source "" WIN32 " -s=..\pfiles test_map_tools.par"
-
-
-# add separate image code to the library
-apply_pattern ST_add_to_lib name=image
 
 set OUTFILES "$(MAP_TOOLSROOT)/output"
 

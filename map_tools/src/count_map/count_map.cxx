@@ -14,38 +14,46 @@ $Header$
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
-
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/st_stream.h"
+#include "TSystem.h" // ROOT, for gSystem
 #include <algorithm>
 using namespace map_tools;
 
-/** @class CountMap 
+/** @class CountMapApp 
 @brief The count_map application
 */
-class CountMap : public st_app::StApp {
+class CountMapApp : public st_app::StApp {
 public:
 
     /** @brief ctor sets up parameter object
 
     Note that Parameters will prompt and save when created
     */
-    CountMap()
+    CountMapApp()
         : st_app::StApp()
+        , m_f("CountMapApp", "", 2)
         , m_pars( st_app::StApp::getParGroup("count_map")) 
-    { }
-
-    ~CountMap() throw() {}  // needed since StApp has empty throw.
+    { 
+#ifdef WIN32 // needed for ROOT on windows
+        gSystem->Load("libTree.dll");
+//        gSystem->Load("libHist.dll");
+#endif
+    }
 
     void run(){
         using tip::Table;
+        // For output streams, set name of method, which will be used in messages when tool is run in debug mode.
+        m_f.setMethod("run()");
+
 
         // connect to  input data, specifying filter
         const Table & table = *tip::IFileSvc::instance().readTable(m_pars.inputFile(), m_pars.table_name(), m_pars.filter() );
-        if( m_pars.chatter()>0) {
-            std::cout << "Reading file " << m_pars.inputFile() ;
-            if( ! m_pars.filter().empty() ) std::cout << "\n\tfiltered by " << m_pars.filter() ;
-            std::cout<< std::endl;
-        }
+        m_f.info() << "Reading file " << m_pars.inputFile() ;
+        if( ! m_pars.filter().empty() ) m_f.out() << "\n\tfiltered by " << m_pars.filter() ;
+        m_f.info() << "\n\tevents: " << table.getNumRecords() << std::endl;
 
+ 
         // create the image object
         SkyImage image(m_pars);
 
@@ -59,12 +67,13 @@ public:
 
             image.addPoint(astro::SkyDir(ra, dec) );
         }
-        if( m_pars.chatter()>0) {
-            std::cout << "Total added to image: " << image.total() 
-                <<" at file\n\t" << m_pars.outputFile() << std::endl; }
+        m_f.info() << "Total added to image: " << image.total() 
+                <<" at file\n\t" << m_pars.outputFile() << std::endl; 
     }
 private:
     MapParameters m_pars;
+    st_stream::StreamFormatter m_f;
+
 };
 
-st_app::StAppFactory<CountMap> g_factory;
+st_app::StAppFactory<CountMapApp> g_factory("count_map");

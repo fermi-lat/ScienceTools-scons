@@ -18,6 +18,8 @@ $Header$
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 #include "st_app/AppParGroup.h"
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/st_stream.h"
 
 #include <iostream>
 using namespace map_tools;
@@ -30,10 +32,10 @@ public:
     */
     ExposureCubeApp()
         : st_app::StApp()
-        , m_pars(st_app::StApp::getParGroup("exposure_cube")) {
-    }
-           
-     ~ExposureCubeApp() throw() {}  // needed since StApp has empty throw.
+        , m_pars(st_app::StApp::getParGroup("exposure_cube"))
+        , m_f("ExposureCubeApp", "", 2)
+
+    {}
 
     //--------------------------------------------------------------------------
     void LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
@@ -45,8 +47,10 @@ public:
             tstop = pars["tstop"];
 
         bool isText = pars.inputFile().find(".txt") >0;
+        bool avoid_saa = pars["avoid_saa"];
+
         if( isText) {
-            std::clog << "Opening textformat pointing history file " 
+            m_f.info() << "Opening text format pointing history file " 
                 << pars.inputFile() << std::endl;
             // read from text file here
             GPS& gps = *GPS::instance();
@@ -55,24 +59,23 @@ public:
             GPS::history_iterator mit = history.begin(), next=mit;
             double begintime=mit->first;
             double endtime = (--(history.end()))->first;
-            
+          
             double deltat = (++next)->first-begintime; 
 
             int added=0, total=0;
-            for( ; mit!=history.end(); ++mit)
-            {
+            for( ; mit!=history.end(); ++mit) {
                 const GPS::POINTINFO& pt = mit->second;
                 double t = mit->first;
                 if( t < tstart) continue;
                 if( t > tstop) break;
                 total++;
-                if( astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
+                if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
                 added++;
                 exp.add( pt.dirZ, deltat);
             }
 
-            std::clog << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
-            std::clog << "Total elapsed time: " << deltat*(total-added) << " seconds." << std::endl;
+            m_f.info() << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
+            m_f.info() << "Total elapsed time: " << deltat*(total-added) << " seconds." << std::endl;
             return;
 
         }
@@ -102,7 +105,8 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void run()
     {
-        std::clog << "Creating an exposure object ...";
+        m_f.setMethod("run()");
+        m_f.info() << "Creating an exposure object ...";
         // create the exposure, and fill it from the history file
         Exposure ex( m_pars["pixelsize"], m_pars["binsize"]);
 
@@ -112,11 +116,13 @@ public:
         ExposureHyperCube cube(ex, m_pars.outputFile());
 
     }
-    private:
-        MapParameters m_pars;
+private:
+    MapParameters m_pars;
+    st_stream::StreamFormatter m_f;
+
 };
 // Factory which can create an instance of the class above.
-st_app::StAppFactory<ExposureCubeApp> g_factory;
+st_app::StAppFactory<ExposureCubeApp> g_factory("exposure_cube");
 
 /** @page exposure_cube_guide exposure_cube users guide
 

@@ -5,9 +5,8 @@
 */
 #include "map_tools/Exposure.h"
 #include "astro/SkyDir.h"
-
-#include "image/Fits_IO.h"
-#include "image/Image.h"
+#include "tip/Image.h"
+#include "tip/IFileSvc.h"
 
 #include <iostream>
 #include <fstream>
@@ -57,17 +56,18 @@ Exposure::Exposure(const ExposureCube& cube, double total)
 //------------------------------------------------------------------------------
 Exposure::Exposure(const std::string& fits_file)
 {
-    FloatImg & cube = *dynamic_cast<FloatImg *>(Fits_IO::read(fits_file, "hypercube"));
-    m_exposureMap = cube.data();
+    const tip::Image& cube = *tip::IFileSvc::instance().readImage(fits_file, "");
+    cube.get(m_exposureMap);
 
 // Obtain Index static variables from FITS header keywords. Assume a
 // standard ordering for ra, dec, cos(theta).
-    cube.getValue("NAXIS1", Index::ra_factor);
-    cube.getValue("NAXIS2", Index::dec_factor);
-    cube.getValue("NAXIS3", Index::cosfactor);
+    const tip::Header& header = cube.getHeader();
+    header["NAXIS1"].get(Index::ra_factor);
+    header["NAXIS2"].get(Index::dec_factor);
+    header["NAXIS3"].get( Index::cosfactor);
     double rastep, decstep;
-    cube.getValue("CDELT1", rastep);
-    cube.getValue("CDELT2", decstep);
+    header["CDELT1"].get(rastep);
+    header["CDELT2"].get(decstep);
     if (fabs(rastep) == fabs(decstep)) {
        Index::skybinsize = fabs(decstep);
     } else {
@@ -75,10 +75,9 @@ Exposure::Exposure(const std::string& fits_file)
                               + "step sizes in RA and Dec do not match.");
     }
 // @todo Check for cos(theta) weighting.
-    cube.getValue("CDELT3", Index::costhetabinsize);
-    cube.getValue("CRVAL3", Index::cosmin);
-    cube.getValue("TOTAL", m_total);
-
+    header["CDELT3"].get( Index::costhetabinsize);
+    header["CRVAL3"].get( Index::cosmin);
+    header["TOTAL"].get( m_total);
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
 
     std::cout << "Loaded exposure map from a FITS file " 

@@ -1,43 +1,33 @@
 /** @file ExposureHyperCube.h
-    @brief declare class ExposureHyperCube 
+@brief declare class ExposureHyperCube 
 
-    @author Toby Burnett
-    $Header$
+@author Toby Burnett
+$Header$
 
 */
 
 #ifndef TOOLS_EXPOSUREHYPERCUBE_H
 #define TOOLS_EXPOSUREHYPERCUBE_H
 #include "Exposure.h"
-class BaseImage;
+namespace tip { class Image; }
 
 namespace map_tools {
 
 
-/** @class ExposureHyperCube 
+    /** @class ExposureHyperCube 
     @brief Set up an exposure map hypercube
 
     It is defined as a hypercube in ra, dec, sqrt(1-costheta) bins.
+    @todo: allow other binning function
 
     */
-class ExposureHyperCube  {
-public:
-    ExposureHyperCube( const Exposure& exp, std::string outfile);
-   
-   //! @brief add a string or douuble key to the image 
-   void setKey(std::string name, double value, std::string unit="", 
-               std::string comment="");
+    class ExposureHyperCube  {
+    public:
+        ExposureHyperCube( const Exposure& exp, std::string outfile);
 
-   void setKey(std::string name, std::string value,
-               std::string unit="", std::string comment="");
-
-   void save(std::string outfile="");
-
-   ~ExposureHyperCube();
-
-private:
-   BaseImage * m_image;
-
-};
+    private:
+        //! pointer to the associated tip Image class
+        tip::Image* m_image;
+    };
 }// namespace map_tools
 #endif //TOOLS_EXPOSUREHYPERCUBE_H

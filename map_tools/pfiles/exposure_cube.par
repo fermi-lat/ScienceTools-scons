@@ -1,7 +1,8 @@
 # $Header$
 #---------------------------------------------------------------------------------------
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
-chatter,  i, a,   10,  , , , "Chatter: "
+chatter,  i, h,   2,0,4 , , "Chattiness of output"
+debug, b, h, no,,,Debugging mode activated
 mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
 #mode,     s, a,  "ql",   , ,""
@@ -12,7 +13,7 @@ mode,     s, a,  "h",   , ,""
 #infile,   f, a, "/common/DC1/history/D2_full_history.fits", , , "Name of the exposure file:" 
 infile,   f, a, "/common/DC2/history/Gleam42.txt", , , "Name of the exposure file:" 
 table,s,h,"Ext1",,,"name of the extension or ROOT tree"
-outfile,  f, a, "$(OUTFILES)/expcube_Gleam42_1day_noSAA.fits", , , "Name of the output file:"
+outfile,  f, a, "$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits", , , "Name of the output file:"
 filter,   s, h, "", , , "filter expression:"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
@@ -31,4 +32,4 @@ binsize, r,a, 0.025, , , binsize for the function of theta
 # Exposure generation parameters
 tstart,  r, a,   0 ,   , , "start time"
 tstop,   r, a,  86400,  , , "end time"  
-avoid_saa, b,a, "YES", "NO|YES",,avoid the SAA
+avoid_saa, b,a, "NO", "NO|YES",,avoid the SAA

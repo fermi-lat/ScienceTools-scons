@@ -18,19 +18,13 @@
     in ra, dec, costheta, save as a multi-image FITS file.
     - exposure_map, defined in exposure_map.cxx. Also uses SkyImage, MapParameters, Exposure. 
     Read in a hypercube, make a sky map using a basic function to describe the effective area vs. angle.
-<br>
+    - read_map, example executable showing how to copy an image from one file to another, redefining the 
+    image parameters
+    - map_stats Prints out statistics for a map.
+    <br>
     Each application has an example  .par file in the pfiles folder.
     <hr>
 
-    \section fits FITS Image interface
-
-    The package contains a folder src/image which has a subset of the 
-    <a href="http://isdc.unige.ch/Soft/AstroRoot/">astroroot</a> 
-    TFcontainer code, written by Reiner Rohlfs.
-    It has been stripped of ROOT dependence and simplified. 
-    It does not support tables, or any IO except for FITS. Base classes are BaseAttr, VirtualIO and Header.
-    
-    The interface is not made public, since it will be eventually replaced by James Peachy's table package.
   
   \section notes release notes
   release.notes
@@ -90,6 +84,10 @@ This applicaton creates a FITS "hypercube" image file. Each layer is a bin in co
  A simple application that reads a value from a map.
  @verbinclude read_map.par
 
+ @section statmap map_stats
+
+ A simple application that generates a new map from a SkyFunction object, a FITS image in this case.
+ @verbinclude map_stats.par
 */
 /** @page devguide Developer's Guide
 
