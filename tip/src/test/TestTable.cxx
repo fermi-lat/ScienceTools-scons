@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 
@@ -10,6 +11,9 @@
 #include "RootExtensionData.h"
 #include "TestTable.h"
 #include "tip/Table.h"
+#include "tip/tip_types.h"
+
+#define MAKE_COMPILATION_FAIL (0)
 
 namespace tip {
 
@@ -28,7 +32,7 @@ namespace tip {
     getValidFieldsTest();
 
     // Test iterator access:
-    iteratorTest();
+    readWriteFieldTest();
 
     // Clean up.
     delete m_root_table; m_root_table = 0;
@@ -54,7 +58,7 @@ namespace tip {
     // Test constructing a FITS table:
     msg = std::string("opening SPECTRUM extension of ") + data_dir + "a1.pha";
     try {
-      IExtensionData * data = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
+      IExtensionData * data = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM", "", false);
       m_fits_table = new Table(data);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
@@ -118,35 +122,150 @@ std::cout << "*************** field " << *it << std::endl;
     }
   }
 
-  void TestTable::iteratorTest() {
+  void TestTable::readWriteFieldTest() {
     std::string msg;
+    std::vector<double> orig;
+    std::vector<double> modified;
+    std::vector<double> read_modified;
+    bool no_error = true;
     if (0 != m_fits_table) {
-      msg = "using Table::Iterator to access the table";
-      Table * table = m_fits_table;
+      // Read original values from table into orig array:
+      msg = "testing reading FITS table";
       try {
-        bool no_error = true;
-        int ichan = 0;
-        // Loop through all records:
-        for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor, ++ichan) {
-
-          // Get the channel from the table cell.
-          double channel = (*itor)["channel"].get();
-
-          // The channel column is known to run from 0 to N, the number of records, in steps of 1:
-          if (ichan != channel) {
-            if (no_error) {
-              std::string tmp_msg = "channel number obtained from Table::Iterator is " + toString(channel) +
-                " not " + toString(ichan);
-              ReportUnexpected(tmp_msg);
-              no_error = false;
-            }
-          }
-        }
-        if (no_error) ReportExpected(msg + " succeeded"); else ReportUnexpected(msg + " had errors");
+        readFieldTest(m_fits_table, "channel", orig);
+        ReportExpected(msg + " succeeded");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
+        ReportWarning("readWriteFieldTest is skipping the rest of its tests");
+        return;
+      }
+
+      // Fill modified array, trying to make sure the contents are distinct from the orig array:
+      modified.reserve(orig.size());
+      srand(1023);
+      for (std::vector<double>::iterator itor = orig.begin(); itor != orig.end(); ++itor) {
+        double new_val = short(double(rand()) * std::numeric_limits<short>::max() / RAND_MAX);
+        modified.push_back(new_val);
+      }
+
+      // Write new array to the table:
+      msg = "testing writing FITS table";
+      try {
+        writeFieldTest(m_fits_table, "channel", modified);
+        ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+        ReportWarning("readWriteFieldTest is skipping some tests");
+        no_error = false;
+      }
+
+      if (no_error) {
+        // Read and check new values from table:
+        msg = "testing reading FITS table which was just written";
+        try {
+          readFieldTest(m_fits_table, "channel", read_modified);
+
+          if (modified == read_modified) ReportExpected(msg + " succeeded");
+          else {
+            ReportUnexpected("discrepancies found between values which were written and then read");
+            ReportWarning("TEST DATA FILE MAY HAVE BEEN CORRUPTED!");
+          }
+        } catch (const TipException & x) {
+          ReportUnexpected(msg + " failed", x);
+          ReportWarning("readWriteFieldTest is skipping some tests");
+          no_error = false;
+        }
+      }
+
+      // Rewrite orig array to the table:
+      msg = "testing restoring FITS table to its original state";
+      try {
+        writeFieldTest(m_fits_table, "channel", orig);
+        ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+        ReportWarning("readWriteFieldTest is skipping some tests");
+        no_error = false;
+      }
+
+      if (no_error) {
+        // Read and check whether original values were successfully restored to the table:
+        msg = "testing reading restored values";
+        try {
+          readFieldTest(m_fits_table, "channel", read_modified);
+
+          if (orig == read_modified) ReportExpected(msg + " succeeded");
+          else {
+            ReportUnexpected("discrepancies found between original values and those which were restored");
+            ReportWarning("TEST DATA FILE MAY HAVE BEEN CORRUPTED!");
+          }
+        } catch (const TipException & x) {
+          ReportUnexpected(msg + " failed", x);
+          ReportWarning("TEST DATA FILE MAY HAVE BEEN CORRUPTED!");
+        }
+      }
+
+    }
+  }
+
+  void TestTable::readFieldTest(const Table * table, const std::string & field_name, std::vector<double> & field_values) {
+    if (0 != table) {
+      // Find out how many records are in the table:
+      Index_t num_records = -1;
+      try {
+        num_records = table->getNumRecords();
+      } catch (const TipException & x) {
+        // Don't report this exception: not testing getNumRecords here.
+      }
+
+      if (0 > num_records) {
+        ReportWarning("readFieldTest had trouble preparing to run; test will be skipped!");
+      } else if (0 == num_records) {
+        ReportWarning("readfieldTest called for a table with no records; test will be skipped!");
+      } else {
+        // Clear out whatever's in field_values before filling it.
+        field_values.clear();
+
+        // Resize the output array so it has enough room:
+        field_values.reserve(num_records);
+
+        // Loop over table, copying all values into output array:
+        for (Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
+          field_values.push_back((*itor)[field_name].get());
+
+#if MAKE_COMPILATION_FAIL
+          throw TipException("SHOULD NOT HAVE COMPILED! Assigning to a const Table::Cell object");
+          (*itor)[field_name].set(1.);
+#endif
+
+        }
       }
     }
   }
 
+  void TestTable::writeFieldTest(Table * table, const std::string & field_name, const std::vector<double> & field_values) {
+    if (0 != table) {
+      // Set the number of records in the table to match the array:
+      Index_t num_records = -1;
+      try {
+        Index_t tmp_num = field_values.size();
+        table->setNumRecords(tmp_num);
+        num_records = tmp_num;
+      } catch (const TipException & x) {
+        // Don't report this exception: not testing setNumRecords here.
+      }
+
+      if (0 > num_records) {
+        ReportWarning("writeFieldTest had trouble preparing to run; test will be skipped!");
+      } else if (0 == num_records) {
+        ReportWarning("writefieldTest called to write an array with no elements; test will be skipped!");
+      } else {
+        // Loop over array and table, copying input array into table:
+        Table::Iterator out = table->begin();
+        for (std::vector<double>::const_iterator itor = field_values.begin(); itor != field_values.end(); ++itor, ++out) {
+          (*out)[field_name].set(*itor);
+        }
+      }
+    }
+  }
 }

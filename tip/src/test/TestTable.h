@@ -5,6 +5,8 @@
 #ifndef tip_TestTable_h
 #define tip_TestTable_h
 
+#include <vector>
+
 #include "TestHarness.h"
 
 namespace tip {
@@ -36,7 +38,21 @@ namespace tip {
       void getValidFieldsTest();
 
       /// \brief Test iterator access:
-      void iteratorTest();
+      void readWriteFieldTest();
+
+      /** \brief Test reading one field from a table.
+          \param table The table.
+          \param field_name The name of the field.
+          \param field_values Array holding the output values.
+      */
+      void readFieldTest(const Table * table, const std::string & field_name, std::vector<double> & field_values);
+
+      /** \brief Test reading one field from a table.
+          \param field_name The name of the field.
+          \param field_values Array holding the input values.
+          \param table The output table.
+      */
+      void writeFieldTest(Table * table, const std::string & field_name, const std::vector<double> & field_values);
 
     private:
       Table * m_fits_table;

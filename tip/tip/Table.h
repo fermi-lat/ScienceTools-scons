@@ -38,6 +38,15 @@ namespace tip {
       */
       typedef RandomAccessIterator<TableRecord, IndexDiff_t> Iterator;
 
+      /** \brief Helper type: const encapsulation of a record, containing cells of data in this table.
+      */
+      typedef ConstTableRecord ConstRecord;
+
+      /** \brief Helper type: const table iterator. This currently does not work for random access.
+          See TODO 7 in the source code.
+      */
+      typedef RandomAccessIterator<TableRecord, IndexDiff_t, ConstTableRecord *, ConstTableRecord &> ConstIterator;
+
       /** \brief Container of field names.
       */
       typedef IExtensionData::FieldCont FieldCont;
@@ -74,6 +83,14 @@ namespace tip {
       /** \brief Return an iterator pointing past the last record in the table.
       */
       Iterator end() { return Iterator(Record(m_extension_data, m_extension_data->getNumRecords())); }
+
+      /** \brief Return an iterator pointing to the first record in the table.
+      */
+      ConstIterator begin() const { return ConstIterator(Record(m_extension_data, 0)); }
+
+      /** \brief Return an iterator pointing past the last record in the table.
+      */
+      ConstIterator end() const { return ConstIterator(Record(m_extension_data, m_extension_data->getNumRecords())); }
 
       /** \brief Return the number of records contained in this table.
       */
