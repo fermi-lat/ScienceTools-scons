@@ -19,7 +19,7 @@ namespace {
     
     
     inline double sqr(double x){return x*x;}
-
+    
     astro::JulianDate JD_missionStart =astro::JulianDate(2005, 1, 1,0.0);
     astro::JulianDate JDStart =        astro::JulianDate(2005.,7,18,0.0);
 }
@@ -78,7 +78,7 @@ Hep3Vector EarthOrbit::position(JulianDate JD) const
     double M=m_M0+m_dMdt*elapse;
     
     double Omega = m_Omega0+m_dOmegadt*elapse;
-
+    
     // only for comparison with orbit.cpp -- should be 2pi
     range(&M,6.28);
     range(&Omega,6.28);
@@ -86,11 +86,32 @@ Hep3Vector EarthOrbit::position(JulianDate JD) const
     double w = m_w0+m_dwdt*elapse;
     double Enew =Kepler(M,s_e); 
     
-       
+    
     Hep3Vector pos= Hep3Vector( cos(Enew)-s_e, sqrt(1.-sqr(s_e))*sin(Enew), 0 ).unit()*m_alt;
     pos.rotateZ(w).rotateX(s_incl).rotateZ(Omega);
- 
+    
     return pos;  
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HepRotation EarthOrbit::CelestialToLocal(JulianDate JD) const
+{
+    double elapse = (JD - JDStart)*SecondsPerDay;
+    
+    double M=m_M0+m_dMdt*elapse;
+    
+    double Omega = m_Omega0+m_dOmegadt*elapse;
+    
+    // only for comparison with orbit.cpp -- should be 2pi
+    range(&M,6.28);
+    range(&Omega,6.28);
+    
+    double w = m_w0+m_dwdt*elapse; 
+    
+    HepRotation rot;
+    
+    rot.rotateZ(w).rotateX(s_incl).rotateZ(Omega);
+    
+    return rot;  
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double EarthOrbit::Kepler(double MeanAnomaly,double Eccentricity)
@@ -119,12 +140,16 @@ double EarthOrbit::Kepler(double MeanAnomaly,double Eccentricity)
     return TrueAnomaly;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+JulianDate EarthOrbit::dateFromSeconds(double seconds)const{
+    return JDStart+(seconds/SecondsPerDay);
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double EarthOrbit::phase(JulianDate jd) const
 {
     double elapse = (jd - JDStart)*SecondsPerDay;
     //double M=m_M0+m_dMdt*elapse;
     return m_Omega0+m_dOmegadt*elapse;
-
+    
 }
 
 }
