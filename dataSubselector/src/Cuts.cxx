@@ -28,15 +28,14 @@ bool Cuts::accept(tip::ConstTableRecord & row) const {
 
 unsigned int Cuts::addRangeCut(const std::string & keyword,
                                const std::string & unit,
-                               double minVal, double maxVal) {
-   m_cuts.push_back(new Cuts::RangeCut(keyword, unit, minVal, maxVal));
+                               double minVal, double maxVal, 
+                               RangeType type) {
+   m_cuts.push_back(new Cuts::RangeCut(keyword, unit, minVal, maxVal, type));
    return m_cuts.size();
 }
 
-unsigned int Cuts::addTableCut(const std::string & keyword,
-                               const std::string & unit,
-                               const tip::Table & table) {
-   m_cuts.push_back(new Cuts::TableCut(keyword, unit, table));
+unsigned int Cuts::addGtiCut(const tip::Table & table) {
+   m_cuts.push_back(new Cuts::GtiCut(table));
    return m_cuts.size();
 }
 
@@ -51,10 +50,12 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
    }
 }      
 
-void Cuts::CutBase::writeDssKeywords(tip::Header & header, unsigned int keynum,
+void Cuts::CutBase::writeDssKeywords(tip::Header & header, 
+                                     unsigned int keynum,
                                      const std::string & type, 
                                      const std::string & unit,
-                                     const std::string & value) const {
+                                     const std::string & value,
+                                     const std::string & ref) const {
    std::ostringstream key1, key2, key3;
    key1 << "DSTYP" << keynum;
    header[key1.str()].set(type);
@@ -62,34 +63,59 @@ void Cuts::CutBase::writeDssKeywords(tip::Header & header, unsigned int keynum,
    header[key2.str()].set(unit);
    key3 << "DSVAL" << keynum;
    header[key3.str()].set(value);
+   if (ref != "") {
+      std::ostringstream key4;
+      key4 << "DSREF" << keynum;
+      header[key4.str()].set(ref);
+   }
 }
 
 bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
    double value;
    row[m_keyword].get(value);
+   if (m_type == Cuts::MINONLY) {
+      return m_min <= value;
+   } else if (m_type == Cuts::MAXONLY) {
+      return value <= m_max;
+   }
    return m_min <= value && value <= m_max;
 }
 
 void Cuts::RangeCut::writeDssKeywords(tip::Header & header, 
                                       unsigned int keynum) const {
    std::ostringstream value;
-   value << m_min << ":" << m_max;
+   if (m_type == Cuts::MINONLY) {
+      value << m_min << ":";
+   } else if (m_type == Cuts::MAXONLY) {
+      value << ":" << m_max;
+   } else {
+      value << m_min << ":" << m_max;
+   }
    CutBase::writeDssKeywords(header, keynum, m_keyword, m_unit, value.str());
 }
 
-bool Cuts::TableCut::accept(tip::ConstTableRecord & row) const {
-   double value;
-   row[m_keyword].get(value);
-/// @todo implement this
-   return true;
+bool Cuts::GtiCut::accept(tip::ConstTableRecord & row) const {
+   double time;
+   row["TIME"].get(time);
+   tip::Table::ConstIterator it = m_table.begin();
+   tip::ConstTableRecord & interval = *it;
+   for ( ; it != m_table.end(); ++it) {
+      double start, stop;
+      interval["START"].get(start);
+      interval["STOP"].get(stop);
+      if (start <= time && time <= stop) {
+         return true;
+      }
+   }
+   return false;
 }
 
-void Cuts::TableCut::writeDssKeywords(tip::Header & header,
-                                      unsigned int keynum) const {
+void Cuts::GtiCut::writeDssKeywords(tip::Header & header,
+                                    unsigned int keynum) const {
    const tip::Header & table_header = m_table.getHeader();
    std::string table_name;
    table_header["EXTNAME"].get(table_name);
-   CutBase::writeDssKeywords(header, keynum, m_keyword, m_unit, table_name);
+   CutBase::writeDssKeywords(header, keynum, "TIME", "s", "TABLE", ":GTI");
 }
 
 bool Cuts::SkyConeCut::accept(tip::ConstTableRecord & row) const {

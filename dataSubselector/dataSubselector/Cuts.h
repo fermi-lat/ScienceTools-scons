@@ -41,13 +41,14 @@ public:
 
    bool accept(tip::ConstTableRecord & row) const;
 
+   typedef enum {CLOSED=0, MINONLY=1, MAXONLY=2} RangeType;
+
    unsigned int addRangeCut(const std::string & keyword, 
                             const std::string & unit,
-                            double minVal, double maxVal);
+                            double minVal, double maxVal,
+                            RangeType type=CLOSED);
 
-   unsigned int addTableCut(const std::string & keyword,
-                            const std::string & unit,
-                            const tip::Table & table);
+   unsigned int addGtiCut(const tip::Table & gtiTable);
 
    unsigned int addSkyConeCut(double ra, double dec, double radius);
 
@@ -66,15 +67,18 @@ private:
                                     unsigned int keynum) const = 0;
    protected:
       void writeDssKeywords(tip::Header & header, unsigned int keynum,
-                            const std::string & type, const std::string & unit,
-                            const std::string & value) const;
+                            const std::string & type,
+                            const std::string & unit,
+                            const std::string & value,
+                            const std::string & ref="") const;
    };
 
    class RangeCut : public CutBase {
    public:
       RangeCut(const std::string & keyword, const std::string & unit,
-               double minVal, double maxVal) :
-         m_keyword(keyword), m_unit(unit), m_min(minVal), m_max(maxVal) {}
+               double minVal, double maxVal, RangeType type=CLOSED) :
+         m_keyword(keyword), m_unit(unit), m_min(minVal), m_max(maxVal),
+         m_type(type) {}
       virtual ~RangeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual void writeDssKeywords(tip::Header & header, 
@@ -84,20 +88,17 @@ private:
       std::string m_unit;
       double m_min;
       double m_max;
+      RangeType m_type;
    };
 
-   class TableCut : public CutBase {
+   class GtiCut : public CutBase {
    public:
-      TableCut(const std::string & keyword, const std::string & unit,
-               const tip::Table & table) :
-         m_keyword(keyword), m_unit(unit), m_table(table) {}
-      virtual ~TableCut() {}
+      GtiCut(const tip::Table & gtiTable) : m_table(gtiTable) {}
+      virtual ~GtiCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
    private:
-      std::string m_keyword;
-      std::string m_unit;
       const tip::Table & m_table;
    };
 
