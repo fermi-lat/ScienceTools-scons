@@ -37,12 +37,18 @@ namespace tip {
       fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
 
       if (0 != status) {
+        // Attempt to open the file read-only:
+        status = 0;
+        fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READONLY, &status);
+      }
+
+      if (0 != status) {
         // TODO 9. 4/2/2004: Bug in cfitsio 2.48: Check for it and warn about it. The bug causes
         // the parser not to move to the correct extension.
         float cfitsio_version = 0.;
         fits_get_version(&cfitsio_version);
         // This is surreal. A FLOATING POINT VERSION NUMBER! Checking for == doesn't work -- I tried it.
-        if (2.47 < cfitsio_version && 2.49 > cfitsio_version)
+        if (2.4795 < cfitsio_version && 2.4805 > cfitsio_version)
           throw TipException(std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
             "syntax parser!\nCould not open FITS file ") + file_name);
         throw TipException(std::string("Could not open FITS file \"") + file_name + '"');
