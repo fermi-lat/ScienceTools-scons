@@ -171,7 +171,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   }
 
 #if MAKE_COMPILATION_FAIL
-  ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(-1) for const image object", status);
+  throw TipException("SHOULD NOT HAVE COMPILED! Calling setNumRecords(-1) for const image object");
   try {
     // Get number of records from the image:
     // This is only valid for tables.
@@ -179,7 +179,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   } catch(const TipException & x) {
   }
 
-  ReportError("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object", status);
+  throw TipException("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object");
   try {
     // Set a table cell in an image.
     // This is only valid for tables.
