@@ -1,4 +1,4 @@
-/** @file SkyStat.cpp
+/** @file SkyStat.cxx
 @brief Implement SkyStat methods
 
 @author Bruce Lesnick

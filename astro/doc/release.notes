@@ -1,9 +1,11 @@
 /** @file release.notes
+@brief astro package relase notes
 
   package astro
   Package coordinators: T.Burnett
 
 @verbatim
+  v1r4p4  23-jan-05 THB Remove ephemeris data 
   v1r4p3  22-jan-05 THB Fix Healpix 
   v1r4p1  22-jan-05 THB Fix to compile test program with gcc
   v1r4    20-jan-05 THB New class Healpix to manage a HEALPix sky tesselazation 
@@ -30,5 +32,5 @@
   v0r3  06-may-03 THB Minor fixes in SkyDir
   v0r2  20-sep-02 THB Initial position set for Canaveral launch; H-A calculation
   v0    12-aug-02 THB Initial checkin
-#endverbatim
+@endverbatim
 */

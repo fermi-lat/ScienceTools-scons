@@ -1,5 +1,6 @@
 /** @file SkyProj.cxx
 @brief implementation of the class SkyProj
+
 $Header$
 */
 

@@ -289,7 +289,6 @@ int main(){
         std::cout << "latitude at t0 = " << xyza.latitude()
             << " , longitude at t0 = " << xyza.longitude() << std::endl;
 
-
         EarthCoordinate ec(lat, lon);
 
         test += fabs(lat-ec.latitude()) + fabs(lon-ec.longitude());
@@ -310,6 +309,11 @@ int main(){
         test += trans.gDir(vertical).l()-20.0;
         test += trans.gDir(vertical).b();
 
+        // make sure can set ephemeris
+        SolarSystem ss(SolarSystem::Sun, juliandate);
+        Hep3Vector bary = ss.getBarycenter(juliandate);
+
+        /// @todo: some test of the barycenter calculation.
         /*
         // test projection (use default)
 

@@ -15,6 +15,8 @@
   - astro::SolarSystem Sky positions of Moon and Sun
   - astro::PointingTransform Transformation between GLAST and Celestial coordinate systems
   - astro::SkyProj Image projections to/from celestial coordinates (wrapper of wcslib)
+  - astro::Healpix manage transformation to/from Healpix pixels, as an STL container
+  - astro::HTM   same for HTM pixels
 
   
 

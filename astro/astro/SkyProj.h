@@ -1,10 +1,11 @@
 /** @file SkyProj.h
 @brief declaration of the class SkyProj
+
 $Header$
 */
 
-#ifndef OrbitModel_SkyProj_H
-#define OrbitModel_SkyProj_H
+#ifndef astro_SkyProj_H
+#define astro_SkyProj_H
 
 
 // Include files
@@ -83,8 +84,15 @@ namespace astro {
             double* crpix, double* crval, double* cdelt, double crota2=0, bool galactic=false);
 
         /** @brief Alternate constructor with 2 additional parameters
+        @param crpix corresponds to the FITS keyword CRPIXi (coordinate reference point)
+        @param crval corresponds to the FITS keyword CRVALi (coordinate value at reference point)
+        @param cdelt corresponds to the FITS keyword CDELTi
+        @param crota2 [default 0] corresponds to the FITS keyword CROTA2
+        @param galactic if coords are to be interpreted as galactic
         @param lonpole corresponds to the FITS keyword LONPOLE (native coordinates of celestial pole)
-        @param latpole corresponds to the FITS keyword LATPOLE */
+        @param latpole corresponds to the FITS keyword LATPOLE 
+
+        */
         SkyProj(const std::string &projName, 
             double* crpix, double* crval, double* cdelt, double lonpole, double latpole,
             double crota2=0, bool galactic=false);
@@ -103,13 +111,15 @@ namespace astro {
         @param x1 projected equivalent to ra or l, in degrees
         @param x2 projected equivalent dec or b, in degrees
         @param projection used to deproject these coordinates
+        @return pair(x,y) in new pixel coordinates
         */
         std::pair<double,double> pix2pix(double x1, double x2, SkyProj otherProjection)const;
 
         /** @brief Does the inverse projection
         @param x1 projected equivalent to ra or l, in degrees
         @param x2 projected equivalent dec or b, in degrees
-        */
+         @return pair(x,y) in spherical coordinates
+       */
         std::pair<double,double> pix2sph(double x1, double x2) const;
 
         /** @brief is this galactic? */
@@ -131,6 +141,6 @@ namespace astro {
 
 
 } // namespace astro
-#endif    // LHCBEVENT_SKYPROJ_H
+#endif    // astro_SKYPROJ_H
 
 

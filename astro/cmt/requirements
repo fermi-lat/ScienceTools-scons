@@ -1,6 +1,6 @@
 package astro
 
-version v1r4p3	
+version v1r4p4	
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -8,9 +8,9 @@ branches astro cmt src doc
 
 use GlastPolicy  *
 use facilities   *
-use cfitsio * IExternal
+use cfitsio * IExternal 
 use CLHEP * IExternal
-use cfitsio * IExternal
+use extFiles * IExternal # for jphephem data
 
 apply_pattern package_include
 apply_pattern package_linkopts
@@ -28,8 +28,9 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library astro -no_share \
  -s=../astro $(source) \
  -s=../src $(source) \
- -s=jplephem $(source) \
- -s=wcslib  $(source) *.c
+ -s=wcslib  $(source) *.c\
+ -s=jplephem $(source) 
+
 
 # simple program to test basic functionality
 

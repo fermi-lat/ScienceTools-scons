@@ -1,5 +1,6 @@
 /** @file EarthOrbit.h
     @brief definition of EarthOrbit class
+
     $Header$
 */
 #ifndef astro_EarthOrbit_H
