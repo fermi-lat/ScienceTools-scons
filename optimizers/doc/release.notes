@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v0r3   18-Oct-03   JC  Tag for m_genericName data member (used by 
+                           Likelihood)
     v0r2p1 05-Sep-03   JC  Move DOM reader to Parameter class; clean up
                            Python/SWIG interface file.
     v0r2   25-Aug-03   JC  Enable python module build on linux.
