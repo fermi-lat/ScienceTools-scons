@@ -211,24 +211,6 @@
     
 <!-- ************************************************************************** -->
 
-<source_library title="cosmic ray surface protons" >
-    <source name="surface_protons_xml" flux="0.9">
-        <spectrum escale="GeV">
-            <particle name="p"> <power_law emin="1.37" gamma="2.9"  emax="100" /> </particle>
-            <solid_angle mincos="0" maxcos="1.0"/>
-	</spectrum>
-    </source>
-
-    
-    <source name="surface_protons">
-       <spectrum escale="MeV"> <SpectrumClass name="SurfaceProtons" params=""/> <use_spectrum/> </spectrum>
-    </source>
-    
-    
-</source_library>
-
-<!-- ************************************************************************** -->
-
 <source_library title="clocks" >
 
     <!-- the TimeCandle spectrum  -->
