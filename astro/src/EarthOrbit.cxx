@@ -25,7 +25,7 @@ namespace {
     astro::JulianDate JDStart =        astro::JulianDate(2005 ,7,18,0.0);
 }
 
-// static constants relfecting orbit parameters
+// static constants reflecting orbit parameters
 
 namespace astro {
 double EarthOrbit::s_altitude = 550.e3  ; //m
@@ -147,20 +147,13 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir &sourceDir) cons
 }
 
 // Takes a Julian Date and a source direction and computes the light travel time to the
-// sun.  (Todo: This should give light travel time to the barycenter instead of the sun)
+// solar system barycenter.
 double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 {
-   //SolarSystem solsys;
-   //Hep3Vector barycenter = solsys.getBarycenter(jd);
-
-   SolarSystem::Body sunID = (SolarSystem::Body) 8;
-   SolarSystem sun;
-   SkyDir sunDir = sun.direction(sunID,jd);
-   Hep3Vector rsun = sunDir.dir();
-
+   SolarSystem solsys;
+   Hep3Vector barycenter = solsys.getBarycenter(jd);
    Hep3Vector rsrc = sourceDir.dir();
-
-   return -1. * rsun.dot(rsrc) / (rsrc.mag() * 299792458.);
+   return -1. * barycenter.dot(rsrc) / (rsrc.mag() /** 299792458.*/);
 }
 
 
@@ -188,6 +181,7 @@ double EarthOrbit::tdb_minus_tt(JulianDate jd) const
 
 /*  Taken from FTOOLS AXBARY
  *  This function computes the correction for TDB-TT.
+ *  Modification by T. Hierath:  removed unused variable t31
  *----------------------------------------------------------------------
  *
  *     Routine name: CTATV
@@ -246,7 +240,7 @@ double EarthOrbit::tdb_minus_tt(JulianDate jd) const
 double EarthOrbit::ctatv(int long jdno, double fjdno) const
 {
 
-  double t, tt, t1, t2, t3, t4, t5, t24, t25, t29, t30, t31 ;
+  double t, tt, t1, t2, t3, t4, t5, t24, t25, t29, t30;
 
       t = ((jdno-2451545) + fjdno)/(365250.0) ;
       tt = t*t ;

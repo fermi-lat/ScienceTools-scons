@@ -9,6 +9,7 @@ branches astro cmt src doc
 use GlastPolicy  *
 use facilities   *
 use CLHEP * IExternal
+use cfitsio * IExternal
 
 apply_pattern package_include
 apply_pattern package_linkopts
@@ -26,6 +27,7 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library astro -no_share \
  -s=../astro $(source) \
  -s=../src $(source) \
+ -s=jplephem $(source) \
  -s=wcslib  $(source) *.c
 
 # simple program to test basic functionality
