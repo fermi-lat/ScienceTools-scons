@@ -5,7 +5,7 @@
     \author James Peachey, HEASARC
 */
 
-#include "FitsFileSvc.h"
+#include "FileSvc.h"
 #include "table/IFileSvc.h"
 #include "table/TableException.h"
 
@@ -16,12 +16,12 @@ namespace table {
   // Singleton registry (container) of IFileSvc objects.
   IFileSvc::FileSvcCont_t IFileSvc::m_file_services;
 
-  // Create the FITS-specific factory.
-  static FitsFileSvc s_fits_file_factory;
+  // Create the factory.
+  static FileSvc s_file_factory;
 
   IFileSvc & IFileSvc::getSvc() {
-    // Look for the master file service (presently hard-wired to be fits).
-    FileSvcCont_t::iterator it = m_file_services.find("fits");
+    // Look for the master file service, which currently can handle either FITS or Root format.
+    FileSvcCont_t::iterator it = m_file_services.find("default");
 
     // If found, return it. Otherwise complain.
     if (m_file_services.end() != it) return *it->second;
