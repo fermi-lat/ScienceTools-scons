@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <vector>
 
+#include "TestColumn.h"
 #include "TestExtensionData.h"
 #include "TestFileManager.h"
 #include "TestFileSummary.h"
@@ -167,8 +168,10 @@ int main() {
       // the functor's operator more efficient. But this doesn't work because for_each
       // copy constructs the functor. Solution is not known at present.
 
+      Table::Iterator itor = my_table->begin();
+
       // Define a table record object.
-      Table::Record r;
+      Table::Record & r = *itor;
 
       // Make local aliases to hold the channel and counts. These variables are bound to the record object.
       Table::Scalar<double> channel = r["channel"];
@@ -195,10 +198,10 @@ int main() {
       // Now try getting the same value as a long.
       Table::Scalar<long> lchannel = r["channel"];
 
-      for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+      for (; itor != my_table->end(); ++itor) {
 
         // Dereference the iterator. After this, channel and counts both refer to the current record.
-        r = *itor;
+//        r = *itor;
 
         // Confirm that the channel number read from the file matches what it should be.
         // Channels are numbered sequentially starting with 0.
@@ -350,7 +353,9 @@ int main() {
     try {
       int recordNum = 0;
 
-      Table::Record r;
+      Table::Iterator itor = my_table->begin();
+
+      Table::Record & r = *itor;
 
       // Make local aliases to hold two fields from the file. These variables are bound to the Iterator's
       // referent Table::Record object.
@@ -358,8 +363,7 @@ int main() {
       Table::Scalar<double> McCharge = r["McCharge"];
 
       // Show the columns.
-      for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
-        r = *itor;
+      for (;itor != my_table->end(); ++itor) {
         std::cout << "*     " << recordNum++ << " *      " << McEnergy << " *      " << McCharge << std::endl;
       }
 
@@ -446,6 +450,10 @@ int main() {
     // Test file access.
     TestFileSummary file_summary_test;
     status = file_summary_test.test(status);
+
+    // Test column abstractions.
+    TestColumn column_test;
+    status = column_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
