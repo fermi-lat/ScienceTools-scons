@@ -92,7 +92,7 @@ float GRBobsSpectrum::fraction(float energy)
 
 double GRBobsSpectrum::interval(double time)
 {
-	if (m_grbMaker->time().empty())
+	if (m_grbMaker->photonlist().empty())
 	{
 		std::cout << "No more time values available to return" << std::endl;
 		return -1.0;
@@ -100,16 +100,12 @@ double GRBobsSpectrum::interval(double time)
 
 	else
 		return nextTime() - time;
-		//return m_grbMaker->time().back() - time;
 }
 
 
     //JCT needs const to match pure virtual method
 float GRBobsSpectrum::operator () (float randomNumber) const
 {
-	//HepRandomEngine *engine = HepRandom::getTheEngine();
-	//HepRandom::setTheSeed(grbcst::seed);
-
 	return (float) nextEnergy();
 }
 
@@ -117,46 +113,9 @@ float GRBobsSpectrum::operator () (float randomNumber) const
 // returns next available energy
 double GRBobsSpectrum::nextEnergy() const
 {
-	double energy = -1.0;
-	static DoubleIter it = m_grbMaker->energy().begin();
+	static std::vector<TimeEnergy>::iterator it = m_grbMaker->photonlist().begin();
 
-
-
-	if (m_grbMaker->energy().empty())  // no more value left to return
-		std::cout << "No more energy values to return" << std::endl;
-	else
-	{
-		if (m_grbMaker->time().empty())  // last energy will correspond to the last returned time
-		{
-			energy = m_grbMaker->energy().back();
-			m_grbMaker->energy().clear();
-		}
-
-		else  // pop energy corresponding to the last returned time
-		{
-			//std::cout<< "PIPPO time: " << m_grbMaker->time().front() << std::endl;
-
-			DoubleSize sz = m_grbMaker->time().size();
-			if (m_grbMaker->energy().size() <= sz)  // more energies have been returned than time - return next energy
-			{
-				energy = *it++;
-				//energy = m_grbMaker->energy().back();
-				//m_grbMaker->energy().pop_back();
-			}
-
-			else  // more times have been returned than energies - find energy corresponding to last returned time
-			{
-				while (m_grbMaker->energy().size() > sz)
-				{
-					energy = *it++;
-					//energy = m_grbMaker->energy().back();
-					//m_grbMaker->energy().pop_back();
-				}
-			}
-		}
-	}
-
-	return energy;
+	return (*it++).energy();
 }
 
 
@@ -171,46 +130,9 @@ double GRBobsSpectrum::energySrc(HepRandomEngine *engine, double time)
 // this method will be useful once time stamp is added to the Ispectrum interface
 double GRBobsSpectrum::nextTime() const
 {
-	double time = -1.0;
-	static DoubleIter it = m_grbMaker->time().begin();
+	static std::vector<TimeEnergy>::iterator it = m_grbMaker->photonlist().begin();
 
-
-
-	if (m_grbMaker->time().empty())  // no more value left to return
-		std::cout << "No more time values to return" << std::endl;
-	else
-	{
-		if (m_grbMaker->energy().empty())  // last time will correspond to the last returned energy
-		{
-			time = m_grbMaker->time().back();
-			m_grbMaker->time().clear();
-		}
-
-		else  // pop time corresponding to the last returned energy
-		{
-			//std::cout<< "PIPPO energy: " << m_grbMaker->energy().front() << std::endl;
-
-			DoubleSize sz = m_grbMaker->energy().size();
-			if (m_grbMaker->time().size() <= sz)  // more times have been returned than energy - return next time
-			{
-				time = *it++;
-				//time = m_grbMaker->time().back();
-				//m_grbMaker->time().pop_back();
-			}
-
-			else  // more energies have been returned than times - find time corresponding to last returned energy
-			{
-				while (m_grbMaker->time().size() > sz)
-				{
-					time = *it++;
-					//time = m_grbMaker->time().back();
-					//m_grbMaker->time().pop_back();
-				}
-			}
-		}
-	}
-
-	return time;
+	return (*it++).time();
 }
 
 
