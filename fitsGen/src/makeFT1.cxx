@@ -1,449 +1,231 @@
 /**
  * @file makeFT1.cxx
- * @brief Convert merit ntuple to FT1 format using Goodi.
+ * @brief Convert merit ntuple to FT1 format.
  * @author J. Chiang
  *
  * $Header$
  */
 
 #include <cmath>
-#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
-#include <vector>
-#include <valarray>
+#include <iostream>
+#include <stdexcept>
 #include <string>
-#include <algorithm>
-#include <functional>
-#include <sstream>
 
 #include "astro/JulianDate.h"
 
-#include "Goodi/GoodiConstants.h"
-#include "Goodi/DataIOServiceFactory.h"
-#include "Goodi/DataFactory.h"
-#include "Goodi/IDataIOService.h"
-#include "Goodi/IData.h"
-#include "Goodi/IEventData.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
+#include "tip/Header.h"
 
-#include "rootTuple/RootTuple.h"
+void getEventFlags(tip::Table::Record & merit, short & isGamma, 
+                   short & goodPsf, short & goodEnergy);
+
+void writeDateKeywords(tip::Table * table, double start_time, 
+                       double stop_time);
+
+astro::JulianDate currentTime();
 
 int main(int iargc, char * argv[]) {
 
+   try {
+      std::string rootFile;
+      std::string fitsFile("myLatData.fits");
 
-   std::string rootFile;
-   std::string fitsFile("!myLatData.fits");
+      if (iargc == 1) {
+         std::string fitsGenRoot = std::getenv("FITSGENROOT");
+         rootFile = fitsGenRoot + "/data/merit.root";
+      } else if (iargc == 2) {
+         if (!std::strcmp(argv[1], "-h")) {
+            std::cout << "usage: " << argv[0] << ": "
+                      << "<root input file> " 
+                      << "<fits input file> " << std::endl;
+            return 0;
+         } else {
+            rootFile = std::string(argv[1]);
+         }
+      } else if (iargc == 3) {
+         rootFile = std::string(argv[1]);
+         fitsFile = std::string(argv[2]);     
+      }
 
-   if (iargc == 1) 
-     {
-       std::string fitsGenRoot = ::getenv("FITSGENROOT");
-       rootFile = fitsGenRoot + "/data/merit.root";
-     } 
-   else if (iargc == 2) 
-       {
-	 if (!strcmp(argv[1],"-h")) {
-	   std::cout << "usage: " << argv[0] << ": "
-		     << "<root input file>" 
-		     << "<fits input file>" << std::endl;
-	   return 0;
-	 } else {
-	     rootFile = std::string(argv[1]);
-	 }
-       } 
-   else if (iargc == 3) 
-	 {
-	   rootFile   = std::string(argv[1]);
-	   fitsFile   = std::string(argv[2]);     
-	 }
+      tip::Table * meritTable = 
+         tip::IFileSvc::instance().editTable(rootFile, "MeritTuple");
+      long nrows = meritTable->getNumRecords();
+      tip::Table::Iterator merit_iter = meritTable->begin();
+      tip::Table::Record & merit = *merit_iter;
 
-// Merit tuple is read to retrieve general and FT1 info
-   RootTuple::RootTuple meritTuple(rootFile, "MeritTuple");
-
-   std::vector<std::string> colNames;
-
-   colNames.push_back("elapsed_time");
-   colNames.push_back("FT1Energy");
-   colNames.push_back("FT1Ra");
-   colNames.push_back("FT1Dec");
-   colNames.push_back("FT1Theta");
-   colNames.push_back("FT1Phi");
-   colNames.push_back("FT1ZenithTheta");
-   colNames.push_back("FT1EarthAzimuth");
-   colNames.push_back("FT1EventId");
-   colNames.push_back("FT1ConvPointX");
-   colNames.push_back("FT1ConvPointY");
-   colNames.push_back("FT1ConvPointZ");
-   colNames.push_back("FT1ConvLayer");
-   colNames.push_back("IMgoodCalProb");
-   colNames.push_back("IMvertexProb");
-   colNames.push_back("IMcoreProb");
-   colNames.push_back("IMpsfErrPred");
-   colNames.push_back("IMgammaProb");
-   colNames.push_back("GltWord");
-   colNames.push_back("CalEnergySum");
-   colNames.push_back("CalTotRLn");
-   colNames.push_back("CalMIPDiff");
-   colNames.push_back("CalCsIRLn");
-   colNames.push_back("CalLRmsRatio");
-   colNames.push_back("Tkr1ZDir");
-   colNames.push_back("Tkr1FirstLayer");
-   colNames.push_back("Tkr1ToTFirst");
-   colNames.push_back("Tkr1ToTAve");
-   colNames.push_back("TkrNumTracks");
-   colNames.push_back("AcdTotalEnergy");
-   colNames.push_back("AcdRibbonActDist");
-   colNames.push_back("AcdTileCount");
-   colNames.push_back("FilterStatus_HI");
-   colNames.push_back("EvtEnergySumOpt");
-   colNames.push_back("EvtTkrEComptonRatio");
-   colNames.push_back("VtxAngle");
-
-   std::string query("");
-   int nentries(0);
-
-// Read in all of the columns for the FT1 and Exposure branches.
-//   colNames = meritTuple.branchNames();
-   meritTuple.readTree(colNames, query, nentries);
-
-   std::cout<<"colName size "<<colNames.size()<<std::endl;
-// Goodi setup.
-
-// Create the IOService and Data factories.
-   Goodi::DataIOServiceFactory iosvcCreator;
-   Goodi::DataFactory dataCreator;
-
-// Set the type of data to be generated and the mission.
-   Goodi::DataType datatype = Goodi::Evt;
-   Goodi::Mission  mission  = Goodi::Lat;
-
-   Goodi::IEventData *data = 
-     dynamic_cast<Goodi::IEventData *>(dataCreator.create(datatype, mission));
-
-   std::vector<double> vect_times = meritTuple("elapsed_time");
-   std::stable_sort(vect_times.begin(),vect_times.end());
-   std::vector<std::pair<double,double> > gti;
-   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
-
-   unsigned int nevts = vect_times.size();
-   std::cout << "Number of events: " << nevts << std::endl;
-
-// Fill the EventData object with data from the FT1 tree:
+// Create the FT1 file.
+      std::string ft1Template = std::getenv("TIPROOT") 
+         + std::string("/data/ft1.tpl");
+      tip::IFileSvc::instance().createFile(fitsFile, ft1Template);
+      tip::Table * eventTable =
+         tip::IFileSvc::instance().editTable(fitsFile, "EVENTS");
+      eventTable->setNumRecords(nrows);
+      tip::Table::Iterator ft1_iter = eventTable->begin();
+      tip::Table::Record & ft1 = *ft1_iter;
    
-// ENERGY
-   std::vector<double> energy = meritTuple("FT1Energy");
-// Convert from MeV to eV, which is what Goodi wants.
-   std::transform( energy.begin(), energy.end(), energy.begin(), 
-                   std::bind2nd(std::multiplies<double>(), 1e6) );
-   data->setEnergy(energy);
+      for ( ; merit_iter != meritTable->end(); ++merit_iter, ++ft1_iter) {
+         ft1["energy"].set(merit["FT1Energy"].get());
+         ft1["ra"].set(merit["FT1Ra"].get());
+         ft1["dec"].set(merit["FT1Dec"].get());
+         ft1["theta"].set(merit["FT1Theta"].get());
+         ft1["phi"].set(merit["FT1Phi"].get());
+         ft1["zenith_angle"].set(merit["FT1ZenithTheta"].get());
+         ft1["earth_azimuth_angle"].set(merit["FT1EarthAzimuth"].get());
+         ft1["time"].set(merit["elapsed_time"].get());
+         ft1["event_id"].set(static_cast<int>(merit["FT1EventId"].get()));
+         ft1["conversion_layer"].
+            set(static_cast<short>(merit["FT1ConvLayer"].get()));
+         ft1["imgoodcalprob"].set(merit["IMgoodCalProb"].get());
+         ft1["imvertexprob"].set(merit["IMvertexProb"].get());
+         ft1["imcoreprob"].set(merit["IMcoreProb"].get());
+         ft1["impsferrpred"].set(merit["IMpsfErrPred"].get());
+         ft1["calenergysum"].set(merit["CalEnergySum"].get());
+         ft1["caltotrln"].set(merit["CalTotRLn"].get());
+         ft1["imgammaprob"].set(merit["IMgammaProb"].get());
 
-// Goodi wants angles in radians.
-   std::vector<double> angles(nevts);
-// RA
-   std::transform( meritTuple("FT1Ra").begin(), 
-                   meritTuple("FT1Ra").end(), 
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setRA(angles);
-//   data->setRA(meritTuple("ra"));
+         short isGamma, goodPsf, goodEnergy;
+         getEventFlags(merit, isGamma, goodPsf, goodEnergy);
+      }
 
-// DEC
-   std::transform( meritTuple("FT1Dec").begin(), 
-                   meritTuple("FT1Dec").end(), 
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setDec(angles);
-//   data->setDec(meritTuple("dec"));
+      merit_iter = meritTable->begin();
+      double start_time = merit["elapsed_time"].get();
+      merit_iter = meritTable->end();
+      --merit_iter;
+      double stop_time = merit["elapsed_time"].get();
+      tip::Table * gtiTable = 
+         tip::IFileSvc::instance().editTable(fitsFile, "GTI");
+      gtiTable->setNumRecords(1);
+      tip::Table::Iterator it = gtiTable->begin();
+      (*it)["start"].set(start_time);
+      (*it)["stop"].set(stop_time);
 
-// Colatitude and azimuthal angle in instrument coordinates.
-// THETA
-  std::transform( meritTuple("FT1Theta").begin(), 
-                   meritTuple("FT1Theta").end(), 
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setTheta(angles);
-//   data->setTheta( meritTuple("theta") );
+      writeDateKeywords(eventTable, start_time, stop_time);
+      writeDateKeywords(gtiTable, start_time, stop_time);
 
-// PHI
-   std::transform( meritTuple("FT1Phi").begin(), 
-                   meritTuple("FT1Phi").end(), 
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setPhi(angles);
-//   data->setPhi(meritTuple("phi"));
-
-// ZENITH_ANGLE
-   std::transform( meritTuple("FT1ZenithTheta").begin(), 
-                   meritTuple("FT1ZenithTheta").end(),
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setZenithAngle(angles);
-//   data->setZenithAngle(meritTuple("zenith_angle"));
-
-// EARTH_AZIMUTH
-   std::transform( meritTuple("FT1EarthAzimuth").begin(), 
-                   meritTuple("FT1EarthAzimuth").end(),
-                   angles.begin(), 
-                   std::bind2nd(std::multiplies<double>(), M_PI/180.) );
-   data->setAzimuth(angles);
-//   data->setAzimuth(meritTuple("earth_azimuth"));
-
-// TIME
-   data->setTime(meritTuple("elapsed_time"));
-
-// EVENT_ID
-// Using std::copy complains about type conversion; passing
-// static_cast<long>() as the unary function to transform does not to
-// compile under gcc 2.95.3.  This kludge seems to work without
-// complaint.
-   std::vector<long> eventId(nevts);
-   std::transform( meritTuple("FT1EventId").begin(), 
-                   meritTuple("FT1EventId").end(),
-                   eventId.begin(), 
-                   std::bind2nd(std::multiplies<long>(), 1) );
-   data->setEventID(eventId);
-
-// Set the sizes of the valarray data for the multiword columns,
-    std::vector< std::valarray<float>  >      convPoint(nevts);
-// GEO_OFFSET, BARY_OFFSET, etc.. and fill where possible.
-//    std::vector< std::valarray<double> >      geoOffset(nevts);
-//    std::vector< std::valarray<double> >     baryOffset(nevts);
-//    std::vector< std::valarray<long>   >    acdTilesHit(nevts);
-    std::vector< std::valarray<int>    >   calibVersion(nevts);
-    for (unsigned int i = 0; i < nevts; i++) {
-       convPoint[i].resize(3);
-//       geoOffset[i].resize(3);
-//       baryOffset[i].resize(3);
-//       acdTilesHit[i].resize(3);
-       calibVersion[i].resize(3);
-    }
-   
-// CONVERSION_POINT
-   std::vector<double>::const_iterator pConvPtX 
-      = meritTuple("FT1ConvPointX").begin();
-   std::vector<double>::const_iterator pConvPtY 
-      = meritTuple("FT1ConvPointY").begin();
-   std::vector<double>::const_iterator pConvPtZ 
-      = meritTuple("FT1ConvPointZ").begin();
-   std::vector< std::valarray<float> >::iterator pConvPoint 
-      = convPoint.begin();
-   while (pConvPoint != convPoint.end()) {
-       (*pConvPoint)[0] = static_cast<float>(*pConvPtX);
-       (*pConvPoint)[1] = static_cast<float>(*pConvPtY);
-       (*pConvPoint)[2] = static_cast<float>(*pConvPtZ);
-
-       pConvPoint++;
-       pConvPtX++;
-       pConvPtY++;
-       pConvPtZ++;
+      delete meritTable;
+      delete gtiTable;
+   } catch (std::exception & eObj) {
+      std::cout << eObj.what() << std::endl;
+      return 1;
    }
-   data->setConvPoint(convPoint);
-
-// CONVERSION_LAYER
-   std::vector<int> convLayer(nevts);
-   std::transform( meritTuple("FT1ConvLayer").begin(), 
-                   meritTuple("FT1ConvLayer").end(),
-                   convLayer.begin(), 
-                   std::bind2nd(std::multiplies<int>(), 1) );
-   data->setConvLayer( convLayer );
-
-// IM variables
-   assert(meritTuple("IMgoodCalProb").size() == nevts);
-
-   std::vector<float> floatVector(nevts);
-   std::copy( meritTuple("IMgoodCalProb").begin(),
-              meritTuple("IMgoodCalProb").end(),
-              floatVector.begin() );
-   data->setGoodCalProb( floatVector );
-
-   std::copy( meritTuple("IMvertexProb").begin(),
-              meritTuple("IMvertexProb").end(),
-              floatVector.begin() );
-   data->setVertexProb( floatVector );
-
-   std::copy( meritTuple("IMcoreProb").begin(),
-              meritTuple("IMcoreProb").end(),
-              floatVector.begin() );
-   data->setCoreProb( floatVector );
-
-   std::copy( meritTuple("IMpsfErrPred").begin(),
-              meritTuple("IMpsfErrPred").end(),
-              floatVector.begin() );
-   data->setPsferrpred( floatVector );
-
-   std::copy( meritTuple("IMgammaProb").begin(),
-              meritTuple("IMgammaProb").end(),
-              floatVector.begin() );
-
-   // ignore IMgammaProb at this point  12/6/2003 RD.
-   data->setGammaProb( floatVector );
-
-// // GltLayer (no doubt the same as ConvLayer)
-//    std::vector<short> gltLayer(nevts);
-//    std::transform( meritTuple("GltLayer").begin(), 
-//                    meritTuple("GltLayer").end(),
-//                    gltLayer.begin(), 
-//                    std::bind2nd(std::multiplies<short>(), 1) );
-//     data->setGltLayer( gltLayer );
-
-// CalEnergySum and CalTotRLn
-   std::copy( meritTuple("CalEnergySum").begin(),
-              meritTuple("CalEnergySum").end(),
-              floatVector.begin() );
-   data->setCalEnergySum( floatVector );
-
-   std::copy( meritTuple("CalTotRLn").begin(),
-              meritTuple("CalTotRLn").end(),
-              floatVector.begin() );
-   data->setCalToTrln( floatVector );
-
-// Set methods in IEventData that have no corresponding branches in
-// the FT1 tree:
-//    data->setWeight();
-//    data->setMJD();
-//    data->setTimeOfDay();
-//    data->setEnergyUncert();
-//    data->setPulsePhase();
-//    data->setGeoTime();
-//    data->setBaryTime();
-//    data->setQuality();
-//    data->setQualParams();
-//    data->setReconVersion();
-//    data->setMultiplicity();
-//    data->setSubsysFlag();
-//    data->setStartTime();
-//    data->setStopTime();
-   
-// GTI infos: START and STOP times
-   data->setGTI(gti);
-
-   //HEADER KEYS in GTI for DC1
-   astro::JulianDate mission_start(2005, 7, 18, 0.);
-   double secsPerDay = 8.64e4;
-   astro::JulianDate date_start(mission_start + gti.front().first/secsPerDay);
-   astro::JulianDate date_end(mission_start + gti.front().second/secsPerDay);
-   data->setKey("DATE-OBS", date_start.getGregorianDate());
-   data->setKey("DATE-END", date_end.getGregorianDate());
-   double duration = gti.front().second - gti.front().first;
-   data->setKey("TSTART", gti.front().first);
-   data->setKey("TSTOP", gti.front().second);
-   data->setKey("ONTIME", duration);
-   data->setKey("TELAPSE", duration);
-
-// These also are not implemented in the FT1 tree, but Goodi seems to
-// want these columns set.
-//   data->setGeoOffset(geoOffset);
-//   data->setBaryOffset(baryOffset);
-//   data->setAcdTilesHit(acdTilesHit);
-
-   std::vector<double> gltword        = meritTuple("GltWord");
-   std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
-   std::vector<double> tkr1zdir       = meritTuple("Tkr1ZDir");
-   std::vector<double> calenergysum   = meritTuple("CalEnergySum");
-   std::vector<double> calmipdiff     = meritTuple("CalMIPDiff");
-   std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
-   std::vector<double> caltotrln      = meritTuple("CalTotRLn");
-   std::vector<double> callrmsratio   = meritTuple("CalLRmsRatio");
-   std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
-   std::vector<double> tkrnumtracks   = meritTuple("TkrNumTracks");
-   std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
-   std::vector<double> imgammaprob    = meritTuple("IMgammaProb");
-   std::vector<double> impsfprederr   = meritTuple("IMpsfErrPred");
-
-   std::vector<double> acdtotalenergy = meritTuple("AcdTotalEnergy");
-   std::vector<double> acdribbonactdist = meritTuple("AcdRibbonActDist");
-
-   std::vector<double> tkr1totfirst = meritTuple("Tkr1ToTFirst");
-   std::vector<double> tkr1totave = meritTuple("Tkr1ToTAve");
-
-   std::vector<double> filterstatus_hi = meritTuple("FilterStatus_HI");
-
-   std::vector<double> evtenergysumopt = meritTuple("EvtEnergySumOpt");
-   std::vector<double> evttkrecomptonratio = meritTuple("EvtTkrEComptonRatio");
-   std::vector<double> vtxangle       = meritTuple("VtxAngle");
-   std::vector<double> acdtilecount    = meritTuple("AcdTileCount");
-
-   for (unsigned int i = 0; i < nevts; i++) {
-
-     (calibVersion[i])[0] = 0.;
-     (calibVersion[i])[1] = 0.;
-     (calibVersion[i])[2] = 0.;
-
-
-     bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
-     bool zdir_cut          = (tkr1zdir[i]<-0.2);      
-     bool no_cal_cut        = (calenergysum[i]<5.0)||(caltotrln[i]<2.0);
-     bool thin_cut          = (tkr1firstlayer[i] != 0.0) && (tkr1firstlayer[i]<15.0);
-
-     bool global_cut = good_energy_cut && zdir_cut && !(no_cal_cut);
-     
-     bool psf_filter =   (imcoreprob[i]>0.2) && (impsfprederr[i]<3.0);
-
-     bool background_cut = (tkrnumtracks[i]>0) && (gltword[i]>3) && (imcoreprob[i]>0.2);
-     bool veto = 1;
-     if(background_cut){
-       if(vtxangle[i]>0.0)
-	 {
-	   if( evtenergysumopt[i]>3500.0)
-	     {
-	       veto=0.0;
-	     }
-	   if( evtenergysumopt[i]>350.0 && evtenergysumopt[i]<3500.0)
-	     {
-	       veto=0.0;
-	     }
- 	   if(evtenergysumopt[i]<=350.0) 
-	      if(tkr1totfirst[i]>4.5||tkr1totave[i]>3.5||
-		 acdtotalenergy[i]>0.25||vtxangle[i]>0.4)
-		{
-		  veto=1.0;
-		}
-	      else {
-		veto = 0.0;
-	      }
-	 }
-       else
-	 {
-	   if( evtenergysumopt[i]>3500.0)
-	     {
-	       veto=0.0;
-	     }
-
- 	   if( evtenergysumopt[i]>350.0 && evtenergysumopt[i]<=3500.0)
-	       if (tkr1totave[i]>3.0||acdtotalenergy[i]>5.0||
-		   evttkrecomptonratio[i]<1.0) {
-		 veto = 1.0;
-	       }
-	       else veto=0.0;
-		
-	   if(evtenergysumopt[i]<=350.0) 
-	     if (tkr1totave[i]>3.0 || acdtilecount[i]>0.0 || 
-		 acdribbonactdist[i]>-300.0 ||
-		 evttkrecomptonratio[i]<1.05 || filterstatus_hi[i]>3.0) 
-	     {  
-	       veto=1.0;
-	     }
-	   else veto = 0.0; 
-	   
-	 }
-     }
-     //FOR DC1, now, IMgammaProb directly passes the background cut....
-     //     if(!veto)           (calibVersion[i])[0] = 1.;
-     (calibVersion[i])[0] = imgammaprob[i];
-     if(psf_filter) 	 (calibVersion[i])[1] = 1.;
-     if(global_cut) 	 (calibVersion[i])[2] = 1.;
-     
-   }
-
-   data->setCalibVersion(calibVersion);
-
-
-// Write the data to a FITS file.
-   Goodi::IDataIOService *ioService = iosvcCreator.create();
-
-   data->write(ioService, fitsFile);
-
-   delete ioService;
 }
 
+void getEventFlags(tip::Table::Record & merit, short & isGamma, 
+                   short & goodPsf, short & goodEnergy) {
+   
+   isGamma = 0;
+   goodPsf = 0;
+   goodEnergy = 0;
 
+   bool good_energy_cut = merit["IMgoodCalProb"].get() > 0.2;
+   bool zdir_cut = merit["Tkr1ZDir"].get() < -0.2;
+   bool no_cal_cut = (merit["CalEnergySum"].get() < 5. 
+                      || merit["CalTotRLn"].get() < 2.);
+   bool thin_cut = (merit["Tkr1FirstLayer"].get() != 0 
+                    && merit["Tkr1FirstLayer"].get() < 15);
 
+   bool global_cut = good_energy_cut && zdir_cut && !no_cal_cut;
 
+   bool psf_filter = (merit["IMcoreProb"].get() > 0.2 
+                      && merit["IMpsfErrPred"].get() < 3.);
+
+//    bool background_cut = (merit["TkrNumTracks"].get() > 0 
+//                           && merit["GltWord"].get() > 3
+//                           && merit["IMcoreProb"].get() > 0.2);
+//    bool veto(true);
+
+//    if (background_cut) {
+//       if (merit["VtxAngle"].get() > 0) {
+//          if (merit["EvtEnergySumOpt"].get() > 3500.) {
+//             veto = false;
+//          } else if (merit["EvtEnergySumOpt"].get() > 350.) {
+//             veto = false;
+//          } else {
+//             if (merit["Tkr1TotFirst"].get() > 4.5 
+//                 || merit["Tkr1TotAve"].get() > 3.5
+//                 || merit["AcdTotalEnergy"] > 0.25
+//                 || merit["VtxAngle"] > 0.4) {
+//                veto = true;
+//             } else {
+//                veto = false;
+//             }
+//          }
+//       } else {
+//          if (merit["EvtEnergySumOpt"].get() > 3500.) {
+//             veto = false;
+//          } else if (merit["EvtEnergySumOpt"].get() > 350.) {
+//             if (merit["Tkr1TotAve"] > 3. 
+//                 || merit["AcdTotalEnergy"] > 5.
+//                 || merit["EvtTkrEComptonRatio"] < 1) {
+//                veto = true;
+//             } else {
+//                veto = false;
+//             }
+//          } else {
+//             if (merit["Tkr1TotAve"] > 3. 
+//                 || merit["AcdTileCount"] > 0
+//                 || merit["AcdRibbonActDist"] > -300.
+//                 || merit["EvtTkrEComptonRatio"] < 1.05
+//                 || merit["FilterStatus_HI"] > 3.) {
+//                veto = true;
+//             } else {
+//                veto = false;
+//             }
+//          } // if EvtEnergySumOpt > 3500
+//       } // if VtxAngle > 0
+//    } // if background_cut
+
+// For DC1, IMgammaProb directly passes the background cut.
+   if (merit["IMgammaProb"].get() > 0.5) isGamma = 1;
+   if (psf_filter) goodPsf = 1;
+   if (global_cut) goodEnergy = 1;
+}
+
+void writeDateKeywords(tip::Table * table, double start_time, 
+                       double stop_time) {
+   static double secsPerDay(8.64e4);
+   tip::Header & header = table->getHeader();
+   astro::JulianDate current_time = currentTime();
+   try {
+      header["DATE"].set(current_time.getGregorianDate());
+   } catch (...) {
+   }
+   astro::JulianDate mission_start(2005, 7, 18, 0);
+   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
+   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
+   try {
+      header["DATE-OBS"].set(date_start.getGregorianDate());
+      header["DATE-END"].set(date_stop.getGregorianDate());
+   } catch (...) {
+   }
+   double duration = stop_time - start_time;
+   try {
+      header["TSTART"].set(start_time);
+      header["TSTOP"].set(stop_time);
+   } catch (...) {
+   }
+   try {
+      header["ONTIME"].set(duration);
+      header["TELAPSE"].set(duration);
+   } catch (...) {
+   }
+}
+
+astro::JulianDate currentTime() {
+   std::time_t my_time = std::time(0);
+   std::tm * now = std::gmtime(&my_time);
+   if (now != 0) {
+      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
+      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
+                                     now->tm_mday, hours);
+      return current_time;
+   } else {
+      throw std::runtime_error("currentTime:\n"
+                               + std::string("cannot be ascertained, ")
+                               + "std::time returns a null value.");
+   }
+}

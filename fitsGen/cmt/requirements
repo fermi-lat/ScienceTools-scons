@@ -10,6 +10,7 @@ branches cmt src doc
 use GlastPolicy v*
 use rootTuple v*
 use Goodi v*
+use tip v*
 use astro v*
 
 apply_pattern package_include
