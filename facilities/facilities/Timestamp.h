@@ -109,6 +109,16 @@ namespace facilities {
       return (other < (*this));
         
     }
+
+    bool operator<=(const Timestamp& other) const {
+      return ( !(other < (*this)) );
+    }
+
+    bool operator>=(const Timestamp& other) const {
+      return ( !( (*this) < other ) );
+    }
+
+
     Timestamp& operator= (const Timestamp& other) {
       m_time = other.m_time; m_nano = other.m_nano; 
       m_isDelta = other.m_isDelta; 
@@ -159,6 +169,7 @@ namespace facilities {
     /// Assemble string rep. from count of seconds
     static void toString(time_t bin, std::string& strTime);
 
+  protected:
     /// internal binary rep of time; count seconds from Jan 1, 1970
     time_t m_time;
 
