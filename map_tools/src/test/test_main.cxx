@@ -9,6 +9,7 @@
 #include "image/Header.h"
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include <cassert>
 using namespace map_tools;
 class TestAeff : public Exposure::Aeff {
@@ -73,10 +74,33 @@ int main(int argc, char** argv ){
 
         Header header;
         std::string name("my_attr");
+// Test for success.
         header.addAttribute(DoubleAttr(name, 3.14));
         double value;
         header.getValue(name, value);
         assert(value == 3.14);
+
+// Test for failure of template instantiation.
+        int ivalue;
+        try {
+           header.getValue(name, ivalue);
+        } catch (std::runtime_error &eObj) {}
+
+// Test for access failure.
+        try {
+           header.getValue("wrong name", value);
+        } catch (std::invalid_argument &eObj) {}
+
+// Test for re-insertion.
+        header.addAttribute(FloatAttr(name, 2.718));
+        float floatValue;
+        header.getValue(name, floatValue);
+        assert(fabs((floatValue - 2.718)/2.718) < 1e-4);
+
+// Test for insertion failure.
+        try {
+           header.addAttribute(IntAttr(name, 3), false);
+        } catch (std::runtime_error &eObj) {}
 
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;

@@ -18,12 +18,19 @@ Header::~Header() {
 
 void Header::addAttribute(const BaseAttr& attribute, bool replace) {
    std::string name = attribute.name();
-   if (~count(name) || replace) {
+   BaseAttrMap::iterator it = find(name);
+   if (it == end()) {
       insert(BaseAttrMap::value_type(name, attribute.clone()));
-   } else {
       return;
+   } 
+   if (replace) {
+      delete it->second;
+      it->second = attribute.clone();
+      return;
+   } else {
+      throw std::runtime_error("Header::addAttribute: attribute "
+                               + name + " already exists.");
    }
-   return;
 }
 
 const BaseAttr * Header::operator[](const std::string & name) const {
