@@ -1,26 +1,21 @@
-/** \file FitsExtensionData.cxx
+/** \file FitsExtension.cxx
 
     \brief Low level implementation for Fits format tabular data.
 
     \author James Peachey, HEASARC
 */
 
+#include "FitsExtension.h"
 #include "table/TableException.h"
-#include "FitsExtensionData.h"
 
 namespace table {
 
-  FitsExtensionData::FitsExtensionData(const std::string & file_name, const std::string & ext_name):
+  FitsExtension::FitsExtension(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_fp(0) {}
 
-  FitsExtensionData::~FitsExtensionData() { close(); }
+  FitsExtension::~FitsExtension() { close(); }
 
-  void FitsExtensionData::getKeyword(const std::string & field, double & value) const {
-    int status = 0;
-    fits_read_key(m_fp, TDOUBLE, const_cast<char *>(field.c_str()), &value, 0, &status);
-  }
-
-  fitsfile * FitsExtensionData::open() {
+  fitsfile * FitsExtension::open() {
     fitsfile * fp = 0;
     int status = 0;
 
@@ -30,7 +25,7 @@ namespace table {
     if (status) throw TableException();
 
     // Move to the indicated extension.
-    fits_movnam_hdu(fp, BINARY_TBL, const_cast<char *>(m_ext_name.c_str()), 0, &status);
+    fits_movnam_hdu(fp, ANY_HDU, const_cast<char *>(m_ext_name.c_str()), 0, &status);
 
     if (status) {
       fits_close_file(fp, &status);
@@ -43,7 +38,7 @@ namespace table {
     return m_fp;
   }
 
-  void FitsExtensionData::close() {
+  void FitsExtension::close() {
     int status = 0;
     if (m_fp) fits_close_file(m_fp, &status);
     m_fp = 0;
