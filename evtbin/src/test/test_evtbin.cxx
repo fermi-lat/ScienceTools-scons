@@ -13,14 +13,14 @@
 #include "evtbin/Hist1D.h"
 // Class encapsulating a 2 dimensional histogram.
 #include "evtbin/Hist2D.h"
+// Light curve abstractions.
+#include "evtbin/LightCurve.h"
 // Class encapsulating description of a binner with linear equal size bins.
 #include "evtbin/LinearBinner.h"
 // Class encapsulating description of a binner with logarithmically equal size bins.
 #include "evtbin/LogBinner.h"
 // Class for binning into Hist objects from tip objects:
 #include "evtbin/RecordBinFiller.h"
-// Class encapsulating histograms with Tip-access.
-#include "evtbin/TipHist.h"
 // Application base class.
 #include "st_app/StApp.h"
 // Factory used by st_app's standard main to create application object.
@@ -252,39 +252,20 @@ void EvtBinTest::testLightCurve() {
   // Open input table:
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
-  // Create a linear binner (for time bins):
-  LinearBinner binner(0., 900000., 1000, "TIME");
+  // Create light curve object.
+  LightCurve lc(LinearBinner(0., 900000., 1000, "TIME"));
 
-  // Create the histogram:
-  Hist1D hist(binner);
+  // Fill the light curve.
+  lc.binInput(table->begin(), table->end());
 
-  // Fill the histogram, using helper class RecordBinFiller, which b
-  std::for_each(table->begin(), table->end(), RecordBinFiller(hist));
+  // Cull keywords from input table.
+  lc.harvestKeywords(table->getHeader());
 
-  // Create output file, copying keywords from input events table:
-  tip::IFileSvc::instance().createFile("LC1.lc", m_data_dir + "LatLightCurveTemplate");
+  // Write the light curve to an output file.
+  lc.writeOutput("test_evtbin", "LC1.lc");
 
-  // Clean up:
+  // Clean up input.
   delete table;
-
-  // Open output spectrum:
-  tip::Table * otable = tip::IFileSvc::instance().editTable("LC1.lc", "RATE");
-  
-  // Set table size:
-  otable->setNumRecords(binner.getNumBins());
-
-  // Set up output iterator:
-  tip::Table::Iterator table_itor = otable->begin();
-
-  // Iterate over histogram and output table, writing the output to the table and the screen:
-  for (long ii = 0; ii != binner.getNumBins(); ++ii, ++table_itor) {
-    std::cout << "Bin " << ii << " == " << hist[ii] << std::endl;
-    (*table_itor)["TIME"].set(binner.getInterval(ii).getMidpoint());
-    (*table_itor)["TIMEDEL"].set(binner.getBinWidth(ii));
-    (*table_itor)["COUNTS"].set(hist[ii]);
-  }
-
-  delete otable;
 }
 
 void EvtBinTest::testSimpleSpectrum() {
