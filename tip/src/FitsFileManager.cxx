@@ -90,6 +90,15 @@ namespace tip {
       throw TipException(std::string("FitsFileManager::getFileSummary had trouble making summary of file ") + file_name);
   }
 
+  bool FitsFileManager::isValid(const std::string & file_name) {
+    fitsfile * fp = 0;
+    int status = 0;
+    fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READONLY, &status);
+    if (0 != status) return false;
+    fits_close_file(fp, &status);
+    return true;
+  }
+
   void FitsFileManager::getExtId(fitsfile * fp, std::string & ext_id) {
     int status = 0;
 

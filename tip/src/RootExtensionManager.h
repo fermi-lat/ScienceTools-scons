@@ -57,6 +57,11 @@ namespace tip {
       */
       static void resetSigHandlers();
 
+      /** \brief Determine whether given file is a Root file.
+          \param file_name The name of the file.
+      */
+      static bool isValid(const std::string & file_name);
+
       /** \brief Create an object to provide low-level access to the given Root extension.
           \param file_name The name of the Root file.
           \param ext_name The name of the Root extension.

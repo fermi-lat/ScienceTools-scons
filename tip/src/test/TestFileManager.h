@@ -31,6 +31,9 @@ namespace tip {
 
       /// \brief Test readTable method.
       void readTableTest();
+
+      /// \brief Test file status/attributes methods.
+      void fileStatusTest();
   };
 
 }

@@ -85,6 +85,11 @@ namespace tip {
       */
       virtual void getFileSummary(const std::string & file_name, FileSummary & summary);
 
+      /** \brief Check for existence of the named file.
+          \param file_name The file name.
+      */
+      virtual bool fileExists(const std::string & file_name);
+
     protected:
       /** \brief For singleton pattern, limit creation of IFileSvc objects to derived classes.
       */

@@ -37,6 +37,11 @@ namespace tip {
       */
       static void getFileSummary(const std::string & file_name, FileSummary & summary);
 
+      /** \brief Determine if the given file name is the name of a FITS file.
+          \param file_name The name of the file.
+      */
+      static bool isValid(const std::string & file_name);
+
     private:
       // Get the extsnsion identifier (name or number).
       static void getExtId(fitsfile * fp, std::string & ext_id);

@@ -31,7 +31,10 @@ namespace tip {
     
     // Test opening table read-only:
     readTableTest();
-    
+
+    // Test fileStatus method.
+    fileStatusTest();
+
     return getStatus();
   }
 
@@ -146,6 +149,75 @@ namespace tip {
     }
 
     delete table;
+  }
+
+  void TestFileManager::fileStatusTest() {
+    // Find test data directory:
+    std::string data_dir = getDataDir();
+
+    // Test file name.
+    std::string file;
+
+    try {
+      // First try existing file.
+      file = data_dir + "a1.pha";
+      if (IFileSvc::instance().fileExists(file))
+        ReportExpected(std::string("IFileSvc::fileExists found file ") + file);
+      else
+        ReportUnexpected(std::string("IFileSvc::fileExists did not find file ") + file);
+
+      // Next try nonexistent file.
+      file = data_dir + "non_existent.pha";
+      if (IFileSvc::instance().fileExists(file))
+        ReportUnexpected(std::string("IFileSvc::fileExists found file ") + file);
+      else
+        ReportExpected(std::string("IFileSvc::fileExists did not find file ") + file);
+
+      // Test FitsFileManager's ability to classify a FITS file.
+      file = data_dir + "a1.pha";
+      if (FitsFileManager::isValid(file))
+        ReportExpected(std::string("FitsFileManager::isValid correctly recognized FITS file ") + file);
+      else
+        ReportUnexpected(std::string("FitsFileManager::isValid incorrectly failed to recognize FITS file ") + file);
+
+      // Next try nonexistent file.
+      file = data_dir + "non_existent.pha";
+      if (FitsFileManager::isValid(file))
+        ReportUnexpected(std::string("FitsFileManager::isValid incorrectly recognized file ") + file);
+      else
+        ReportExpected(std::string("FitsFileManager::isValid correctly failed to recognize file ") + file);
+
+      // Next try Root file.
+      file = data_dir + "merit.root";
+      if (FitsFileManager::isValid(file))
+        ReportUnexpected(std::string("FitsFileManager::isValid incorrectly recognized file ") + file);
+      else
+        ReportExpected(std::string("FitsFileManager::isValid correctly failed to recognize file ") + file);
+
+      // Test RootExtensionManager's ability to classify a Root file.
+      file = data_dir + "merit.root";
+      if (RootExtensionManager::isValid(file))
+        ReportExpected(std::string("RootExtensionManager::isValid correctly recognized Root file ") + file);
+      else
+        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly failed to recognize Root file ") + file);
+
+      // Next try nonexistent file.
+      file = data_dir + "non_existent.pha";
+      if (RootExtensionManager::isValid(file))
+        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly recognized file ") + file);
+      else
+        ReportExpected(std::string("RootExtensionManager::isValid correctly failed to recognize file ") + file);
+
+      // Next try Fits file.
+      file = data_dir + "a1.pha";
+      if (RootExtensionManager::isValid(file))
+        ReportUnexpected(std::string("RootExtensionManager::isValid incorrectly recognized file ") + file);
+      else
+        ReportExpected(std::string("RootExtensionManager::isValid correctly failed to recognize file ") + file);
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestFileManager::fileStatusTest caught unexpected exception while testing properties of " + file, x);
+    }
   }
 
 }

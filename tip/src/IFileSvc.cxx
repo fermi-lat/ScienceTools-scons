@@ -5,6 +5,8 @@
     \author James Peachey, HEASARC
 */
 
+#include <fstream>
+
 #include "FitsExtensionData.h"
 #include "FitsFileManager.h"
 #include "RootExtensionData.h"
@@ -188,6 +190,12 @@ namespace tip {
 
   void IFileSvc::getFileSummary(const std::string & file_name, FileSummary & summary) {
     FitsFileManager::getFileSummary(file_name, summary);
+  }
+
+  bool IFileSvc::fileExists(const std::string & file_name) {
+    std::ifstream file(file_name.c_str());
+    if (!file.is_open()) return false;
+    return true;
   }
 
   // Protected constructor which adds the current object to the registry of IFileSvc objects.

@@ -56,6 +56,25 @@ namespace tip {
     gSystem->ResetSignal(kSigUser2);
   }
 
+  bool RootExtensionManager::isValid(const std::string & file_name) {
+    // Save current error chattiness level:
+    long root_err_level = gErrorIgnoreLevel;
+
+    // Tell root to ignore problems opening the file instead of issuing an annoying warning.
+    gErrorIgnoreLevel = 3000;
+
+    // Try to open the file.
+    TFile file(file_name.c_str());
+
+    // Restore Root chattiness level.
+    gErrorIgnoreLevel = root_err_level;
+
+    // Test whether file was opened successfully.
+    if (!file.IsZombie()) return true;
+
+    return false;
+  }
+
   // Construct without opening the file.
   RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter),
