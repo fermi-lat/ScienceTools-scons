@@ -42,14 +42,15 @@ namespace tip {
   }
 
   // Edit a table in a file, be it FITS or Root.
-  Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
+  Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
     Table * retval = 0;
     IExtensionManager * data = 0;
     try {
       try {
         data = new FitsExtensionManager(file_name, table_name);
       } catch(TipException & x) {
-        data = new RootExtensionManager(file_name, table_name);
+        data = new RootExtensionManager(file_name, table_name, filter);
       }
       retval = new Table(data);
     } catch(...) {

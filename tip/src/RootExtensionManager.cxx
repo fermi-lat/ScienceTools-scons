@@ -87,8 +87,13 @@ namespace tip {
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
     // cvs revision 1.8
     // Begin theft:
+// The following block are similar idiosyncrasies probably resulting from using incomplete Root link lines.
+// Really this should be resolved by correcting this behavior in the requirements file.
 #ifdef WIN32 // needed for windows.
     gSystem->Load("libTree.dll");
+// JP added:
+#else
+    gSystem->Load("libHist.so");
 #endif
 
     // JP added: Prevent Root warning about file from being logged:

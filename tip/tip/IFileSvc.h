@@ -40,7 +40,8 @@ namespace tip {
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
       */
-      virtual Table * editTable(const std::string & file_name, const std::string & table_name);
+      virtual Table * editTable(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
 
     protected:
       /** \brief For singleton pattern, limit creation of IFileSvc objects to derived classes.

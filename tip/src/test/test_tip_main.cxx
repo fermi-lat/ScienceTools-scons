@@ -260,7 +260,7 @@ int main() {
     delete my_table; my_table = 0;
 
     // Now test Root file access.
-    my_table = IFileSvc::getSvc().editTable(data_dir + "merit.root", "1");
+    my_table = IFileSvc::getSvc().editTable(data_dir + "merit.root", "1", "McEnergy < 2000. && McEnergy > 50.");
 
     try {
       int recordNum = 0;
