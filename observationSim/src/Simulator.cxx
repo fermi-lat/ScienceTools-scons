@@ -43,15 +43,17 @@ Simulator::~Simulator() {
 
 void Simulator::init(const std::string &sourceName,
                      const std::vector<std::string> &fileList,
-                     double totalArea, double startTime) {
+                     double totalArea, double startTime,
+                     const std::string &pointingHistory) {
    std::vector<std::string> sourceNames;
    sourceNames.push_back(sourceName);
-   init(sourceNames, fileList, totalArea, startTime);
+   init(sourceNames, fileList, totalArea, startTime, pointingHistory);
 }
 
 void Simulator::init(const std::vector<std::string> &sourceNames,
                      const std::vector<std::string> &fileList,
-                     double totalArea, double startTime) {
+                     double totalArea, double startTime, 
+                     const std::string &pointingHistory) {
    m_absTime = startTime;
    m_numEvents = 0;
    m_newEvent = 0;
@@ -62,8 +64,13 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    m_fluxMgr = new FluxMgr(fileList);
    m_fluxMgr->setExpansion(1.);    // is this already the default?
 
+   if (pointingHistory != "none" && pointingHistory != "") {
+// Use pointing history file.
+      setPointingHistoryFile(pointingHistory);
+   } else {
 // Use the default rocking strategy.
-   setRocking();
+      setRocking();
+   }
 
 // Set the LAT sphere cross-sectional area.
    try {

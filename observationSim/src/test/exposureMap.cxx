@@ -8,9 +8,8 @@
 
 #include "astro/SkyDir.h"
 
+#include "latResponse/../src/Table.h"
 #include "latResponse/../src/AeffGlast25.h"
-
-#include "Likelihood/Table.h"
 
 void writeExposureFile(const std::string &filename, 
                        const std::vector<double> &glon,
@@ -98,7 +97,7 @@ int main(int argc, char *argv[]) {
    std::valarray<double> exposure(glon.size()*glat.size()*energies.size());
 
 // Read in the spacecraft data. (Use Likelihood::Table for now.)
-   Likelihood::Table scData;
+   latResponse::Table scData;
 
    int hdu = 2;   
    scData.add_columns("time SC_x0 SC_x1 SC_x2 SC_x SC_y SC_z");

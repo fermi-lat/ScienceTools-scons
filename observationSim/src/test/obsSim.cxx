@@ -10,10 +10,6 @@
 #include <fenv.h>
 #endif
 
-#include <fstream>
-
-#include "facilities/Util.h"
-
 #include "astro/SkyDir.h"
 
 #include "latResponse/Irfs.h"
@@ -25,8 +21,6 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/../src/LatSc.h"
-
-void readLines(std::string inputFile, std::vector<std::string> &lines);
 
 int main(int iargc, char * argv[]) {
 
@@ -45,12 +39,12 @@ int main(int iargc, char * argv[]) {
 // flux-style source definitions.
    std::string xmlInputFiles = params.string_par("XML_source_filenames");
    std::vector<std::string> fileList;
-   readLines(xmlInputFiles, fileList);
+   Likelihood::RunParams::readLines(xmlInputFiles, fileList);
 
 // Read the file containing the list of sources.
    std::string srcListFile = params.string_par("Source_list");
    std::vector<std::string> srcNames;
-   readLines(srcListFile, srcNames);
+   Likelihood::RunParams::readLines(srcListFile, srcNames);
    
 // Get the number of events.
    long count = static_cast<long>(params.double_par("Number_of_events"));
@@ -74,13 +68,20 @@ int main(int iargc, char * argv[]) {
    }
 
 // Create the Simulator object
-   observationSim::Simulator my_simulator(srcNames, fileList);
+   double totalArea = params.double_par("Maximum_effective_area");
+   double startTime = params.double_par("Start_time");
+   std::string pointingHistory = params.string_par("Pointing_history_file");
+   observationSim::Simulator my_simulator(srcNames, fileList, totalArea,
+                                          startTime, pointingHistory);
 
 // Generate the events and spacecraft data.
    bool useGoodi = false;
+   long nMaxRows = params.long_par("Maximum_number_of_rows");
    std::string prefix = params.string_par("Output_file_prefix");
-   observationSim::EventContainer events(prefix + "_events", useGoodi);
-   observationSim::ScDataContainer scData(prefix + "_scData", useGoodi);
+   observationSim::EventContainer events(prefix + "_events", 
+                                         useGoodi, nMaxRows);
+   observationSim::ScDataContainer scData(prefix + "_scData", 
+                                          useGoodi, nMaxRows);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
@@ -96,16 +97,4 @@ int main(int iargc, char * argv[]) {
       my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
-}
-
-void readLines(std::string inputFile, std::vector<std::string> &lines) {
-
-   facilities::Util::expandEnvVar(&inputFile);
-
-   std::ifstream file(inputFile.c_str());
-   lines.clear();
-   std::string line;
-   while (std::getline(file, line, '\n')) {
-      lines.push_back(line);
-   }
 }

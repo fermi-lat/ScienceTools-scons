@@ -1,3 +1,3 @@
 $(OBSERVATIONSIMROOT)/xml/source_library.xml
-$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml
+$(OBSERVATIONSIMROOT)/xml/3EG_catalog_30MeV.xml
 $(OBSERVATIONSIMROOT)/xml/test_sources.xml

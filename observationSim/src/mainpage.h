@@ -26,15 +26,12 @@
  @section obsSim Using the obsSim application
 
  Since all user interaction is handled by HOOPS, one must have the
- IRAF-style parameter file, called "obsSim.par", prepared first.  This
+ IRAF-style parameter file, called <a href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/data/obsSim.par?cvsroot=CVS_SLAC">obsSim.par</a>, prepared first.  This
  file must either be in the current working directory or it must sit
  in a directory specified by the PFILES environment variable.  Here's
  an example obsSim.par file:
 
  @verbinclude obsSim.par
-
- A recent version of this file can be obtained from the 
- <a href="http://www-glast.stanford.edu/cgi-bin/cvsweb-SLAC/observationSim/data/obsSim.par?sortby=date"> GLAST CVS repository</a>.
 
  Note that each entry in XML_source_filenames must provide the
  complete path.  Relative paths will not be resolved properly.
@@ -42,7 +39,7 @@
  file in the current working directory can be specified as
  "$(PWD)/my_model.xml".  A description of the format for the
  flux-style source model entries can be found in the Doxygen
- documentation for the flux package.
+ documentation for the <a href="http://www.slac.stanford.edu/exp/glast/ground/software/RM/documentation/GlastRelease/GlastRelease-v3r3p7/flux/v8r2/">flux package</a>.
 
  The source names in the Source_list refer to sources appearing in the
  files listed in XML_source_filenames.  If a name appears more than
@@ -57,7 +54,7 @@
  second source yields Galactic diffuse emission extrapolated down to
  30 MeV using the EGRET model in the flux package.  The third source
  provides isotropic emission that models the extragalactic diffuse as
- reported by Sreekumar et al. 1999.
+ reported by <a href="http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=1998ApJ...494..523S&amp;db_key=AST&amp;high=3e6fc354ed13604">Sreekumar et al.\ 1998</a>.
 
  Here's a sample session using the above obsSim.par file:
 

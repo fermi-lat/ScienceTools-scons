@@ -29,8 +29,8 @@ use Goodi v2*
 macro_append use_linkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
 
 # allow use of internal path
-macro observationSim_cppflags "" Linux "-I ../src -g -pedantic -D TRAP_FPE " WIN32 "/I..\src  /wd4290"
-macro_prepend cflags "" Linux "-g "
+macro observationSim_cppflags "" Linux "-I ../src -g -O -pedantic -D TRAP_FPE " WIN32 "/I..\src  /wd4290"
+macro_prepend cflags "" Linux "-g -O"
 #
 # suppress warning messages (from flux package) on linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
@@ -61,13 +61,12 @@ library observationSim -no_share $(my_headers) \
  EgretSc.cxx\
  Roi.cxx\
  $(pydir)/*.i
-# trapfpe.c
 
 set INFILES "$(GOODIROOT)/Data"
 set PFILES "$(OBSERVATIONSIMROOT)/data"
 
 # test applications
-#application test_observationSim test/main.cxx
+application test_observationSim test/main.cxx
 #application testGoodiRead test/testGoodiRead.cxx
 
 # O2 prototype
