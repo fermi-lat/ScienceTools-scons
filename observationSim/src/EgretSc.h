@@ -56,6 +56,8 @@ public:
 
    virtual void getScPosition(double time, std::vector<double> & scPosition);
 
+   virtual void getZenith(double time, double & ra, double & dec);
+
 private:
 
    astro::SkyDir m_zAxis;

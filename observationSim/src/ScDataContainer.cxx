@@ -54,12 +54,14 @@ void ScDataContainer::addScData(double time, Spacecraft * spacecraft,
       astro::SkyDir xAxis = spacecraft->xAxis(time);
       std::vector<double> scPosition;
       spacecraft->getScPosition(time, scPosition);
+      double raZenith, decZenith;
+      spacecraft->getZenith(time, raZenith, decZenith);
 
       m_scData.push_back(ScData(time, zAxis.ra(), zAxis.dec(), 
                                 spacecraft->EarthLon(time), 
                                 spacecraft->EarthLat(time),
                                 zAxis, xAxis, spacecraft->inSaa(time),
-                                scPosition));
+                                scPosition, raZenith, decZenith));
    } catch (std::exception & eObj) {
       if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")) {
          throw;
@@ -97,6 +99,8 @@ void ScDataContainer::writeScData() {
       row["ra_scx"].set(sc->xAxis().ra());
       row["dec_scx"].set(sc->xAxis().dec());
       row["sc_position"].set(sc->position());
+      row["ra_zenith"].set(sc->raZenith());
+      row["dec_zenith"].set(sc->decZenith());
    }
    writeDateKeywords(my_table, start_time, stop_time);
    delete my_table;

@@ -64,4 +64,9 @@ void LatSc::getScPosition(double time, std::vector<double> & position) {
    position.push_back(pos.z());
 }
 
+void LatSc::getZenith(double time, double & ra, double & dec) {
+   ra = GPS::instance()->RAZenith();
+   dec = GPS::instance()->DECZenith();
+}
+
 } // namespace observationSim

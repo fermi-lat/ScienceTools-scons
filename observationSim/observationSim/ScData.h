@@ -26,10 +26,11 @@ public:
 
    ScData(double time, double RAz, double Decz, double lon, 
           double lat, const astro::SkyDir &zAxis, const astro::SkyDir &xAxis,
-          int inSAA, const std::vector<double> & position) :
+          int inSAA, const std::vector<double> & position,
+          double raZenith, double decZenith) :
       m_time(time), m_RAz(RAz), m_Decz(Decz), m_lon(lon), 
       m_lat(lat), m_zAxis(zAxis), m_xAxis(xAxis), m_inSaa(inSAA),
-      m_position(position) {}
+      m_position(position), m_raZenith(raZenith), m_decZenith(decZenith) {}
 
    /// Time in seconds (referenced to the zero time of the orbit
    /// calculation in astro::EarthOrbit).
@@ -59,6 +60,9 @@ public:
    /// The spacecraft position in geocentric coordinates (km).
    const std::vector<double> & position() const {return m_position;}
 
+   double raZenith() const {return m_raZenith;}
+   double decZenith() const {return m_decZenith;}
+
 private:
 
    double m_time;
@@ -70,6 +74,8 @@ private:
    astro::SkyDir m_xAxis;
    int m_inSaa;
    std::vector<double> m_position;
+   double m_raZenith;
+   double m_decZenith;
 };
 
 } // namespace observationSim
