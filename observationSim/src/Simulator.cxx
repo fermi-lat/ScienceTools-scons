@@ -30,13 +30,6 @@
 
 #include "flux/SpectrumFactory.h"
 
-#if HAVE_MAPFLUX
-#include "src/MapSpectrum.h"
-
-static SpectrumFactory<MapSpectrum> factory;
-const ISpectrumFactory& MapSpectrumFactory = factory;
-#endif
-
 namespace {
    bool fileExists(const std::string &filename) {
       std::ifstream file(filename.c_str());
@@ -104,16 +97,25 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
 
 // Create a new pointer to the desired source from m_fluxMgr.
    m_source = new CompositeSource();
+   int nsrcs(0);
    for (std::vector<std::string>::const_iterator name = sourceNames.begin();
         name != sourceNames.end(); name++) {
       EventSource * source;
       if (source = m_fluxMgr->source(*name)) {
          m_source->addSource(source);
+         nsrcs++;
       } else {
          std::cout << "Simulator::init: \n"
                    << "FluxMgr failed to find a source named \""
                    << *name << "\"" << std::endl;
       }
+   }
+   if (nsrcs == 0) {
+      std::cout << "Simulator::init: \n"
+                << "FluxMgr has failed to add any valid "
+                << "photon sources to the model."
+                << std::endl;
+      exit(-1);
    }
 
 // Add a "timetick30s" source to the m_source object.

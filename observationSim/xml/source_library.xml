@@ -345,7 +345,7 @@
     <source name="galdiffusemap">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,2.1,/src/sources/gas_gal.fits"/> 
+             params="0.1,0.03,1e5,2.1,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>
@@ -355,8 +355,20 @@
     <source name="galdiffusemap30">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.03,2.1,/src/sources/gas_gal.fits,17.0"/> 
+             params="0.1,0.03,1e5,2.1,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
+        </spectrum>
+    </source>
+
+    <!-- diffuse extraglactic from20 MeV to 1 TeV: from APJ 494:523
+            1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4
+            cm^2/m^2)*(100/20)^1.1 = 0.85 /s/sr/m^2 -->
+ 
+    <source name="diffuse-20mev" flux="0.85">
+        <spectrum escale="GeV">
+            <particle name="gamma">  
+            <power_law emin="0.02" emax="1e3" gamma="2.1"/></particle>
+            <solid_angle mincos="-0.4" maxcos="1.0"/>
         </spectrum>
     </source>
 
@@ -448,6 +460,19 @@
                 <power_law emin="100.0" emax="100000." gamma="1.69"/>
             </particle>
             <celestial_dir ra="128.73" dec="-45.20"/>
+        </spectrum>
+    </source>
+
+    <!--Vela, off-pulse portion, with pointed observation, for photons
+        above 30 MeV, based on astro-ph/9709123 from arXiv.org. The
+        flux above 100 MeV was 4.4*10^-7 (cm^-2*s^-1), and the flux
+        was extrapolated down to 30 MeV with the same index.  -->
+    <source name="vela" flux="0.00928">
+        <spectrum escale="MeV">
+            <particle name="gamma">
+                 <power_law emin="30.0" emax="100000." gamma="1.62"/>
+            </particle>
+            <celestial_dir ra="128.73" dec="-45.2"/>
         </spectrum>
     </source>
 
