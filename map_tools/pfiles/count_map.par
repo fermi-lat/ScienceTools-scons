@@ -9,12 +9,13 @@ mode,     s, a,  "ql",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile, f, a, "/glast/DC1/data/DC1_goodGamma.root", , , "Name of the Event Data File:"
+infile, f, a, "/common/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event Data File:"
 #filter,   s, a, "calib_version[1]==1&&calib_version[2]==1&&calib_version[3]==1", , , "filter expression:"
-filter,   s, a, "", , , "filter expression:"
+#filter,   s, a, "", , , "filter expression:"
+filter,   s, a, "MC_src_Id==2200", , , "filter expression:"
 
 
-outfile,  f, a, "$(TMP)/DC1_image_GAL_CAR.fits", , , "Name of the output file:"
+outfile,  f, a, "DC1_2200.fits", , , "Name of the output file:"
 #
 ra_name,  s, a,  "FT1Ra", , , "name of the RA field" 
 dec_name, s, a,  "FT1Dec", , , "name of the DEC field"

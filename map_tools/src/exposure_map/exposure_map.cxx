@@ -9,7 +9,11 @@ $Header$
 #include "map_tools/SkyImage.h"
 #include "map_tools/MapParameters.h"
 #include "map_tools/Exposure.h"
-#include "st_app/IApp.h"
+
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+#include "st_app/AppParGroup.h"
+
 #include "astro/SkyDir.h"
 using namespace map_tools;
 
@@ -18,9 +22,18 @@ using namespace map_tools;
 
 */
 
-class ExposureMapApp : public st_app::IApp {
+class ExposureMapApp : public  st_app::StApp  {
 public:
-    ExposureMapApp():st_app::IApp("exposure_map"){}
+     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /** \brief Create AppExample2 object, performing initializations needed for running the application.
+    */
+    ExposureMapApp(): st_app::StApp(), m_par_group(st_app::StApp::getParGroup("exposure_map")) {
+      // Prompt for all parameters.
+      m_par_group.Prompt();
+
+      // Save the values just prompted for.
+      m_par_group.Save();
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /** @class Aeff
@@ -57,11 +70,10 @@ public:
         const Aeff& m_aeff;
         double m_norm;
     };
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+ 
     void run() {
         // read in, or prompt for, all necessary parameters
-        MapParameters pars( IApp::hoopsGetParGroup());
+        MapParameters pars( m_par_group);
 
         // create the exposure, read it in from the FITS input file
         Exposure ex(pars.inputFile() ); 
@@ -74,4 +86,11 @@ public:
 
     }
 
-} application;
+private:
+    st_app::AppParGroup & m_par_group;
+
+
+};
+// Factory which can create an instance of the class above.
+st_app::StAppFactory<ExposureMapApp> g_factory;
+

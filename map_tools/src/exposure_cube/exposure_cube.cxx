@@ -12,16 +12,27 @@ $Header$
 #include "astro/SkyDir.h"
 #include "tip/Table.h"
 #include "tip/IFileSvc.h"
-#include "st_app/IApp.h"
+
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+#include "st_app/AppParGroup.h"
 
 #include <iostream>
 using namespace map_tools;
 
 
-class ExposureCubeApp : public st_app::IApp {
+class ExposureCubeApp : public st_app::StApp {
 public:
-    ExposureCubeApp() : st_app::IApp("exposure_cube"){}
+     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /** \brief Create AppExample2 object, performing initializations needed for running the application.
+    */
+    ExposureCubeApp(): st_app::StApp(), m_par_group(st_app::StApp::getParGroup("exposure_cube")) {
+      // Prompt for all parameters.
+      m_par_group.Prompt();
 
+      // Save the values just prompted for.
+      m_par_group.Save();
+    }
     //--------------------------------------------------------------------------
     void LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
     {
@@ -57,7 +68,7 @@ public:
     void run()
     {
         // read in, or prompt for, all necessary parameters
-        MapParameters pars( IApp::hoopsGetParGroup());
+        MapParameters pars(m_par_group);
 
         // create the exposure, and fill it from the history file
         Exposure ex( pars["pixelsize"], pars["costhetabinsize"]);
@@ -68,4 +79,9 @@ public:
         ExposureHyperCube cube(ex, pars.outputFile());
 
     }
-}application;
+    private:
+    st_app::AppParGroup & m_par_group;
+
+};
+// Factory which can create an instance of the class above.
+st_app::StAppFactory<ExposureCubeApp> g_factory;
