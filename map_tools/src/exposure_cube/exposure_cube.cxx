@@ -62,7 +62,7 @@ public:
             for( ; mit!=history.end(); ++mit)
             {
                 const GPS::POINTINFO& pt = mit->second;
-                double t = mit->first, fraction= (t-begintime)/(endtime-begintime);
+                double t = mit->first;
                 if( t < tstart) continue;
                 if( t > tstop) break;
                 total++;
@@ -104,7 +104,7 @@ public:
     {
         std::clog << "Creating an exposure object ...";
         // create the exposure, and fill it from the history file
-        Exposure ex( m_pars["pixelsize"], m_pars["costhetabinsize"]);
+        Exposure ex( m_pars["pixelsize"], m_pars["binsize"]);
 
         LoadExposureFromGlast(  m_pars, ex); 
 

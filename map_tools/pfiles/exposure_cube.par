@@ -27,7 +27,7 @@ projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, M
 uselb,    b, a, "NO",   , , "use l,b instead of ra,dec :"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
-costhetabinsize, r,a, 0.025, , , "binsize for the cos(theta) function 
+binsize, r,a, 0.025, , , binsize for the function of theta
 # Exposure generation parameters
 tstart,  r, a,   0 ,   , , "start time"
 tstop,   r, a,  86400,  , , "end time"  

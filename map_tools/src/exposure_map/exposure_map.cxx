@@ -22,6 +22,8 @@ $Header$
 #include "st_app/AppParGroup.h"
 
 #include "astro/SkyDir.h"
+
+#include <stdexcept>
 using namespace map_tools;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,8 +50,8 @@ public:
         return m_aeff->value(m_energy, acos(costh)*180/M_PI, 0);
     }
     const irfInterface::IAeff* m_aeff;
-    double m_cutoff;
     double m_energy;
+    double m_cutoff;
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class RequestExposure 

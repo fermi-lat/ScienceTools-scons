@@ -35,7 +35,7 @@ Exposure::Exposure(double skybin, double costhetabin) : m_total(0)
     //total size to reserve
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
     m_exposureMap.resize(size);
-    std::cout << "Creating a exposure hypercube, size " << size 
+    std::clog << "Creating a exposure hypercube, size " << size 
         << "="<< Index::ra_factor << " x "<< Index::dec_factor << " x "<< Index::cosfactor << std::endl;
     std::fill(m_exposureMap.begin(), m_exposureMap.end(), 0);
 }
