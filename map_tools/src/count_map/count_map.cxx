@@ -1,7 +1,7 @@
 /** @file count_map.cxx
-    @brief build the count_map application
+@brief build the count_map application
 
-    $Header$
+$Header$
 */
 
 #include "map_tools/SkyImage.h"
@@ -17,37 +17,23 @@
 using namespace map_tools;
 
 /** @class CountMap 
-    @brief The count_map application
+@brief The count_map application
 
 */
 class CountMap : public st_app::IApp {
 public:
     CountMap():st_app::IApp("count_map"){}
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    /** @class AddCount
-    @brief Function object to apply to a tuple. fill the image with counts of (ra, dec) pairs
-    */
-    class AddCount { 
-    public:
+    void process( const MapParameters& pars,  tuple::ITable & t,  SkyImage& image)
+    {
+        const double&  ra = t.selectColumn(pars.raName());
+        const double& dec = t.selectColumn(pars.decName());
 
-        AddCount( const MapParameters& pars, tuple::ITable & t, SkyImage& image)
-            : m_image(image)
-        {
-            t.selectColumn(pars.raName());
-            t.selectColumn(pars.decName());
+        for( tuple::Iterator it = t.begin(); it !=t.end(); ++it){
+            image.addPoint(astro::SkyDir(ra, dec), 1.0); 
         }
+    }
 
-        void operator()(std::vector<double> tuple){
-            double ra = tuple[0], dec=tuple[1], intensity=1.0; 
-            m_image.addPoint(astro::SkyDir(ra, dec), intensity); 
-        }
-
-    private:
-        SkyImage& m_image;
-    };
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     void run(){
         // read in, or prompt for, all necessary parameters
@@ -60,11 +46,11 @@ public:
         // create the image object
         SkyImage image(pars);
 
-        // define a function opject to analyze each row, then apply it to all selected rows
-        AddCount count(pars, table, image);
-        std::for_each( table.begin(), table.end(), count);
+        // process the table and image
+        process(pars, table, image);
 
-        std::cout << "Total added to image: " << image.total() << std::endl;
+        std::cout << "Total added to image: " << image.total() 
+            <<" at file\n\t" << pars.outputFile() << std::endl;
     }
 
 } app;

@@ -168,7 +168,7 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int lay
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
 {
-    if( layer >= (unsigned int)m_naxis3|| layer<0) throw std::out_of_range("SkyImage::fill, layer out of range");
+    if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
     int offset = m_naxis1* m_naxis2 * layer;
     for( size_t k = 0; k< (unsigned int)(m_naxis1* m_naxis2); ++k){

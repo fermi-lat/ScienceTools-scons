@@ -14,7 +14,7 @@ infile, f, a, "/common/DC1/root_files/DC1_goodGamma.root", , , "Name of the Even
 filter,   s, a, "", , , "filter expression:"
 
 
-outfile,  f, a, "$(OUTFILES)/DC1_image_GAL_CAR.fits", , , "Name of the output file:"
+outfile,  f, a, "$(TMP)/DC1_image_GAL_CAR.fits", , , "Name of the output file:"
 #
 ra_name,  s, a,  "FT1Ra", , , "name of the RA field" 
 dec_name, s, a,  "FT1Dec", , , "name of the DEC field"
