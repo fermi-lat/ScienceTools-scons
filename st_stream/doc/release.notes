@@ -4,7 +4,9 @@
 
 \verbatim
 --------------------------------------------------------------------------------
-26-oct-2004    v0     JP  Initial import.
+09-nov-2004 v0r1p0    JP  Add globally accessible methods to set name of
+                          executable, debug mode, and maximum chatter.
+26-oct-2004 v0        JP  Initial import.
 --------------------------------------------------------------------------------
 \endverbatim
 
