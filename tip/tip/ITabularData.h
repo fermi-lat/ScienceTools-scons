@@ -9,6 +9,7 @@
 
 #include <string>
 
+#include "table/IExtensionData.h"
 #include "table/table_types.h"
 
 namespace table {
@@ -17,7 +18,7 @@ namespace table {
 
       \brief Low level abstract interface to tabular data.
   */
-  class ITabularData {
+  class ITabularData : public IExtensionData {
     public:
       virtual ~ITabularData() {}
 
