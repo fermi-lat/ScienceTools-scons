@@ -7,8 +7,11 @@
 #include <stdexcept>
 #include <string>
 
+#include "GlastGbmBinConfig.h"
+#include "GlastLatBinConfig.h"
 #include "evtbin/BinConfig.h"
 #include "evtbin/ConstSnBinner.h"
+#include "evtbin/Gti.h"
 #include "evtbin/LinearBinner.h"
 #include "evtbin/LogBinner.h"
 #include "evtbin/OrderedBinner.h"
@@ -16,18 +19,78 @@
 // Interactive parameter file access from st_app.
 #include "st_app/AppParGroup.h"
 
-// File access from tip.
+#include "tip/Extension.h"
+#include "tip/FileSummary.h"
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
-// Table access from tip.
 #include "tip/Table.h"
 
 namespace evtbin {
 
-  void BinConfig::energyParPrompt(st_app::AppParGroup & par_group) {
+  BinConfig::ConfigCont BinConfig::s_config_cont;
+
+  void BinConfig::load() {
+    GlastGbmBinConfig::load();
+    GlastLatBinConfig::load();
+  }
+
+  BinConfig * BinConfig::create(const std::string & ev_file_name) {
+    BinConfig * config = 0;
+    // Get container of all extensions in file.
+    tip::FileSummary summary;
+    tip::IFileSvc::instance().getFileSummary(ev_file_name, summary);
+
+    std::string mission;
+    std::string instrument;
+    // Read all extensions in input file, looking for mission and instrument names.
+    for (tip::FileSummary::const_iterator itor = summary.begin(); itor != summary.end(); ++itor) {
+      // Open extension.
+      std::auto_ptr<const tip::Extension> table(tip::IFileSvc::instance().readExtension(ev_file_name, itor->getExtId()));
+
+      try {
+        if (mission.empty()) table->getHeader()["TELESCOP"].get(mission);
+        if (instrument.empty()) table->getHeader()["INSTRUME"].get(instrument);
+        break;
+      } catch (const tip::TipException &) {
+        // Read each extension until these keywords are found.
+        continue;
+      }
+    }
+
+    if (!mission.empty() && !instrument.empty()) {
+      // Find a prototype for a bin configuration appropriate for this mission/instrument.
+      ConfigCont::iterator found = s_config_cont.find(mission + "::" + instrument);
+      if (s_config_cont.end() != found) {
+        config = found->second->clone();
+      } else {
+        throw std::runtime_error("BinConfig::create was unable to find a configuration for mission \"" + mission +
+          "\", instrument \"" + instrument + "\" while processing file \"" +
+          ev_file_name + "\"");
+      }
+    }
+
+    if (0 == config)
+      throw std::runtime_error("BinConfig::create was unable to determine the mission/instrument in file \"" +
+        ev_file_name + "\"");
+
+    return config;
+  }
+
+  BinConfig::~BinConfig() {
+    // This object is going away. Remove it from the container of prototypes if it is there.
+    for (ConfigCont::iterator itor = s_config_cont.begin(); itor != s_config_cont.end(); ++itor) {
+      if (this == itor->second) {
+        s_config_cont.erase(itor);
+        break;
+      }
+    }
+  }
+
+  void BinConfig::energyParPrompt(st_app::AppParGroup & par_group) const {
     parPrompt(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile");
   }
 
-  void BinConfig::spatialParPrompt(st_app::AppParGroup & par_group) {
+  void BinConfig::spatialParPrompt(st_app::AppParGroup & par_group) const {
     par_group.Prompt("numxpix");
     par_group.Prompt("numypix");
     par_group.Prompt("pixscale");
@@ -40,8 +103,9 @@ namespace evtbin {
     par_group.Prompt("uselb");
   }
 
-  void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) {
-    parPrompt(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile");
+  void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) const {
+    parPrompt(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile", "snratio",
+      "lcemin", "lcemax");
   }
 
   Binner * BinConfig::createEnergyBinner(const st_app::AppParGroup & par_group) const {
@@ -51,12 +115,21 @@ namespace evtbin {
 
   Binner * BinConfig::createTimeBinner(const st_app::AppParGroup & par_group) const {
     return createBinner(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile",
-      "TIMEBINS", "START", "STOP");
+      "TIMEBINS", "START", "STOP", "snratio", "lcemin", "lcemax");
+  }
+
+  Binner * BinConfig::createEbounds(const st_app::AppParGroup & par_group) const {
+    return createBinner(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile",
+      "ENERGYBINS", "E_MIN", "E_MAX");
+  }
+
+  Gti * BinConfig::createGti(const st_app::AppParGroup & par_group) const {
+    return new Gti(par_group["evfile"]);
   }
 
   void BinConfig::parPrompt(st_app::AppParGroup & par_group, const std::string & alg, const std::string & in_field,
     const std::string & bin_begin, const std::string & bin_end, const std::string & bin_size, const std::string & num_bins,
-    const std::string & bin_file) {
+    const std::string & bin_file, const std::string & sn_ratio, const std::string & lc_emin, const std::string & lc_emax) const {
     // Determine the time binning algorithm.
     par_group.Prompt(alg);
     par_group.Prompt(in_field);
@@ -80,6 +153,10 @@ namespace evtbin {
     } else if (bin_type == "FILE") {
       // Get remaining parameters needed for user defined bins from a bin file.
       par_group.Prompt(bin_file);
+    } else if (bin_type == "SNR") {
+      par_group.Prompt(sn_ratio);
+      par_group.Prompt(lc_emin);
+      par_group.Prompt(lc_emax);
     } else throw std::runtime_error(std::string("Unknown binning algorithm ") + par_group[alg].Value());
   }
 
@@ -128,9 +205,9 @@ namespace evtbin {
       // Create binner from these intervals.
       binner = new OrderedBinner(intervals, par_group[in_field]);
 
-    } else if (bin_type == "SN") {
+    } else if (bin_type == "SNR") {
       binner = new ConstSnBinner(par_group[bin_begin], par_group[bin_end], par_group[sn_ratio], par_group[lc_emin],
-        par_group[lc_emax]);
+        par_group[lc_emax], std::vector<double>(), par_group[in_field]);
     } else throw std::runtime_error(std::string("Unknown binning algorithm ") + par_group[alg].Value());
 
     return binner;
