@@ -10,9 +10,9 @@
 #include <string>
 
 #include "table/Extension.h"
+#include "table/Iterator.h"
 #include "table/Ref.h"
 #include "table/TableException.h"
-#include "table/TableIterator.h"
 #include "table/TableRecord.h"
 #include "table/table_types.h"
 
@@ -37,7 +37,7 @@ namespace table {
 
       /** \brief Helper type: table iterator.
       */
-      typedef TableIterator Iterator;
+      typedef RandomAccessIterator<TableRecord, IndexDiff_t> Iterator;
 
       /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,
           but is connected to the table cell.
@@ -55,11 +55,11 @@ namespace table {
 
       /** \brief Return an iterator pointing to the first record in the table.
       */
-      Iterator begin() { return Iterator(m_tab_data, 0); }
+      Iterator begin() { return Iterator(Record(m_tab_data, 0)); }
 
       /** \brief Return an iterator pointing past the last record in the table.
       */
-      Iterator end() { return Iterator(m_tab_data, m_tab_data->getNumRecords()); }
+      Iterator end() { return Iterator(Record(m_tab_data, m_tab_data->getNumRecords())); }
 
       Index_t getNumRecords() const { return m_tab_data->getNumRecords(); }
 
