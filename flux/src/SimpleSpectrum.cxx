@@ -52,14 +52,6 @@ SimpleSpectrum::SimpleSpectrum(const DOM_Element& xelem, bool useGeV)
     
     const DOM_Element spectrum = xml::Dom::findFirstChildByName(xelem, "*");
     
-#if 0
-    if (spectrum.getTagName().equals(DOMString("power_law"))) {
-        m_E0 = atof(xml::Dom::getAttribute(spectrum, "emin").c_str());
-        m_emax = atof(xml::Dom::getAttribute(spectrum, "emax").c_str());
-        m_index = atof(xml::Dom::getAttribute(spectrum, "gamma").c_str());
-        m_ebreak = atof(xml::Dom::getAttribute(spectrum, "ebreak").c_str());
-        m_index2 =atof(xml::Dom::getAttribute(spectrum, "gamma2").c_str());
-#else
     std::string tagName = xml::Dom::getTagName(spectrum);
     if( tagName == "power_law" ){
         m_E0 =      xml::Dom::getDoubleAttribute(spectrum, "emin");
@@ -68,7 +60,6 @@ SimpleSpectrum::SimpleSpectrum(const DOM_Element& xelem, bool useGeV)
         m_ebreak = xml::Dom::getDoubleAttribute(spectrum, "ebreak");
         m_index2 =xml::Dom::getDoubleAttribute(spectrum, "gamma2");
 
-#endif
         if( m_ebreak==0) {
             m_ebreak=m_emax;
             m_a = 1.0; 
@@ -79,24 +70,13 @@ SimpleSpectrum::SimpleSpectrum(const DOM_Element& xelem, bool useGeV)
             m_a = a1/(a1+a2);
         }
     }
-#if 0
-    else if (spectrum.getTagName().equals(DOMString("energy"))) {
-        m_E0 = atof(xml::Dom::getAttribute(spectrum, "e").c_str());
-#else
     else if(tagName=="energy") {
-#endif
         m_emax = 100.0;
         m_index = 0.0;
     }
-#if 0
-    else if (spectrum.getTagName().equals(DOMString("exponential"))) {
-        m_E0 = atof(xml::Dom::getAttribute(spectrum, "emin").c_str());
-        m_index = atof(xml::Dom::getAttribute(spectrum, "exponent").c_str());
-#else
     else if( tagName == "exponential") {
         m_E0 = xml::Dom::getDoubleAttribute(spectrum, "exponential");
         m_index = xml::Dom::getDoubleAttribute(spectrum,"exponent");
-#endif
         m_emax = 100.0;
         m_index = 0.0;
         FATAL_MACRO("exponential spectral component not implemented yet");
