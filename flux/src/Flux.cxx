@@ -37,7 +37,7 @@ std::string Flux::name() const
 /// full title of the flux
 std::string Flux::title()const 
 {
-    return m_event->fullTitle();
+    return m_event!=0? m_event->fullTitle() : "?";
 }
 
 
@@ -96,7 +96,7 @@ HepVector3D Flux::launchDir()const
 // rate ( /mm**2 /s)
 double Flux::rate()const
 {
-    return m_event->rate(time());
+   return  m_event!=0?  m_event->rate(time()) : -1;;
 }
 
 /// set the area of the target
