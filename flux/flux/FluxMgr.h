@@ -107,8 +107,11 @@ private:
     
     /// source library lookup.  Each source is uniquely identified
     /// by its "name" attribute because "name" is of type ID
+#if 0
     DOM_Element  getLibrarySource(const DOMString& id);
-    
+#else
+    DOM_Element  getLibrarySource(const std::string& id);
+#endif
     
     
     void defaultFile();
