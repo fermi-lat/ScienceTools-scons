@@ -22,6 +22,7 @@
 #include "PowerLaw.h"
 
 #include "st_facilities/Env.h"
+#include "st_facilities/FileSys.h"
 #include "st_facilities/Util.h"
 
 using namespace st_facilities;
@@ -38,6 +39,7 @@ class st_facilitiesTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_Env_appendNames);
    CPPUNIT_TEST(test_Env_expandEnvVar);
    CPPUNIT_TEST(test_Env_getDataDir);
+   CPPUNIT_TEST(test_FileSys_expandFileList);
 
    CPPUNIT_TEST_SUITE_END();
 
@@ -54,6 +56,7 @@ public:
    void test_Env_appendNames();
    void test_Env_expandEnvVar();
    void test_Env_getDataDir();
+   void test_FileSys_expandFileList();
 
 private:
 
@@ -269,6 +272,36 @@ void st_facilitiesTests::test_Env_getDataDir() {
       // Unexpected.
       CPPUNIT_ASSERT(false);
    }
+}
+
+void st_facilitiesTests::test_FileSys_expandFileList() {
+  std::string list_file;
+  FileSys::FileNameCont cont;
+
+  // Expansion of a file which doesn't exist should throw.
+  try {
+    list_file = "@a-non-existent-file";
+    cont = FileSys::expandFileList(list_file);
+    CPPUNIT_ASSERT(false);
+  } catch (const std::exception &) {
+  }
+
+  // Non-expansion case: no leading @.
+  list_file = Env::appendFileName(Env::appendFileName("$ST_FACILITIESROOT", "data"), "list_file");
+  cont = FileSys::expandFileList(list_file);
+  // Container should hold just the original file name because no expansion occurred.
+  CPPUNIT_ASSERT(1 == cont.size());
+  std::string expanded_list;
+  Env::expandEnvVar(list_file, expanded_list);
+  CPPUNIT_ASSERT(*cont.begin() == expanded_list);
+
+  // Expansion of a file which exists and contains a list of files should be done correctly.
+  // The test file contains itself, as well as a second line with an arbitrary name.
+  list_file = "@" + list_file;
+  cont = FileSys::expandFileList(list_file);
+  CPPUNIT_ASSERT(2 == cont.size());
+  CPPUNIT_ASSERT(*cont.begin() == expanded_list);
+  CPPUNIT_ASSERT(cont.back() == "fits_file1.fits");
 }
 
 int main() {
