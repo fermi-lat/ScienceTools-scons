@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r3p0 04-Nov-03   JCT  Windows fix for DC1
     v0r2p3 02-Nov-03   JCT  Patch tag with fixed makeFT1
     v0r1   10-Nov-03   JC   Separate makeFT2 versions for root and ascii input
     v0     15-Oct-03   JC   Initial import
