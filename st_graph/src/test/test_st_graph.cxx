@@ -317,8 +317,8 @@ void StGraphTestApp::testGuis() {
         m_open_button = m_engine.createButton(m_main_frame, this, "text", "Open");
         m_enable_button = m_engine.createButton(m_main_frame, this, "check", "Enable");
 
-        // Add a tabbed folder.
-        m_tab_folder = m_engine.createTabFolder(m_main_frame, this);
+        // Add a tabbed folder. Do not use this event receiver for the layout for now.
+        m_tab_folder = m_engine.createTabFolder(m_main_frame, 0);
         IFrame * f = m_tab_folder->addTab("Folder 1");
         m_click_me = m_engine.createButton(f, this, "text", "Click me");
 
@@ -348,7 +348,7 @@ void StGraphTestApp::testGuis() {
       }
 
       // Not necessary to delete children widgets, because they will be deleted by main frame's destructor.
-      virtual ~MyGui() { delete m_main_frame; }
+      virtual ~MyGui() { delete m_tab_folder; delete m_main_frame; }
 
       virtual void run() {
         m_engine.run();
