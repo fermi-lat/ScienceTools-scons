@@ -1,0 +1,34 @@
+# $Header$
+#---------------------------------------------------------------------------------------
+clobber,  b, a, "YES", , , "Overwrite existing output file?: "
+chatter,  i, a,   10,  , , , "Chatter: "
+mode,     s, a,  "h",   , ,""
+# uncomment the following for interactive/replacement mode
+#mode,     s, a,  "ql",   , ,""
+
+#
+#---------------------------------------------------------------------------------------
+#
+#eventfile,s, a, "/glast/DC1/data/DC1AllSky-FT1-v2.fits", , , "Name of the Event Data File:"
+eventfile,s, a, "/glast/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event Data File:"
+#filter,   s, a, "calib_version[1]==1&&calib_version[2]==1&&calib_version[3]==1", , , "filter expression:"
+#filter,   s, a, "FT1Energy>100", , , "filter expression:"
+
+
+outfile,  s, a, "test_center.fits", , , "Name of the output file:"
+templatefile, s, a, "$(TPLDIR)/CountMap", , , "name of the template file: "
+#
+ra_name,  s, a,  "FT1Ra", , , "name of the RA field" 
+dec_name, s, a,  "FT1Dec", , , "name of the DEC field"
+#---------------------------------------------------------------------------------------
+#Parameter for Spatial binning - set here for 
+#
+npix,     i, a,  720,   , , "Total pixel size of the image in each axis: "
+npixy,    i, a,  360,   , , "Total pixel size of the image in y axis: "
+imgsize,  i, a,  360,   , , "Total physical size of the image(x): "
+imgsizey, i, a,  180,   , , "Total physical size of the image (y): "
+xref,     r, a,    0,   , , "RA at the image center: "
+yref,     r, a,    0,   , , "DEC at the image center: "
+rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
+projtype, s, a,"AIT",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
+uselb,    b, a,"YES",   , , "use l,b instead of ra,dec :"
