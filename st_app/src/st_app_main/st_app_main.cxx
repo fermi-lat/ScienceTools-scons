@@ -4,6 +4,11 @@
     \author James Peachey, HEASARC
 */
 
+// Add floating point exception traps if requested.
+#ifdef TRAP_FPE
+#include <fenv.h>
+#endif
+
 #include <iostream>
 #include <stdexcept>
 #include <typeinfo>
@@ -16,6 +21,11 @@ int main(int argc, char ** argv) {
   st_app::StApp * app = 0;
 
   try {
+#ifdef TRAP_FPE
+    // Add floating point exception traps.
+    feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+#endif
+
     // Process command line arguments. This will throw if the real application code
     // cannot/should not start.
     st_app::StApp::processCommandLine(argc, argv);
