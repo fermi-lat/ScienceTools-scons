@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r5   04-Dec-03   JC   DC1 Release (no MapFlux)
     v2r4   25-Nov-03   JC   use Goodi for standard build
     v2r3   22-Nov-03   JC   user guide, obsSim updates
     v2r2   14-Nov-03   JC   apply energy dispersion; update user guide

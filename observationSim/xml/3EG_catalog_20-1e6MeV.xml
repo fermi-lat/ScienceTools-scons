@@ -526,19 +526,6 @@
    </spectrum>
 </source>
 
-<!-- Commented out in favor of broken-power-law version
-<!-- 3EG J0534+2200, also known as
-     2EG J0534+2158 GEV J0534+2159 PSR B0531+21 Crab pulsar -->
-<source name="_3EG_J0534p2200" flux="0.153555647624">
-   <spectrum escale="MeV">
-       <particle name="gamma">
-           <power_law emin="20.0" emax="1000000.0" gamma="2.19"/>
-       </particle>
-       <celestial_dir ra="83.57" dec="22.01"/>
-   </spectrum>
-</source>
--->
-
 <!-- 3EG J0534+2200, also known as
      2EG J0534+2158 GEV J0534+2159 PSR B0531+21 Crab pulsar -->
 <source name="_3EG_J0534p2200" flux="0.154">
@@ -680,19 +667,6 @@
        <celestial_dir ra="97.92" dec="6.72"/>
    </spectrum>
 </source>
-
-<!-- Commented out in favor of broken-power-law version
-<!-- 3EG J0633+1751, also known as
-     2EG J0633+1745 GEV J0634+1746 PSR J0633+1746 Geminga pulsar -->
-<source name="_3EG_J0633p1751" flux="0.102006489001">
-   <spectrum escale="MeV">
-       <particle name="gamma">
-           <power_law emin="20.0" emax="1000000.0" gamma="1.66"/>
-       </particle>
-       <celestial_dir ra="98.49" dec="17.86"/>
-   </spectrum>
-</source>
--->
 
 <!-- 3EG J0633+1751, also known as
      2EG J0633+1745 GEV J0634+1746 PSR J0633+1746 Geminga pulsar -->
@@ -877,19 +851,6 @@
        <celestial_dir ra="127.49" dec="24.22"/>
    </spectrum>
 </source>
-
-<!-- Commented out in favor of broken-power-law version
-<!-- 3EG J0834-4511, also known as
-     2EG J0835-4513 GEV J0835-4512 PSR B0833-45 Vela pulsar -->
-<source name="_3EG_J0834m4511" flux="0.25314122587">
-   <spectrum escale="MeV">
-       <particle name="gamma">
-           <power_law emin="20.0" emax="1000000.0" gamma="1.69"/>
-       </particle>
-       <celestial_dir ra="128.73" dec="-45.2"/>
-   </spectrum>
-</source>
--->
 
 <!-- 3EG J0834-4511, also known as
      2EG J0835-4513 GEV J0835-4512 PSR B0833-45 Vela pulsar -->
