@@ -196,7 +196,10 @@ namespace st_graph {
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
     TGButton * tg_widget = 0;
-    if (std::string::npos != lc_style.find("text")) {
+    if (std::string::npos != lc_style.find("check")) {
+      // Create the Root widget.
+      tg_widget = new TGCheckButton(rf->getTGFrame(), label.c_str());
+    } else if (std::string::npos != lc_style.find("text")) {
       // Create the Root widget.
       tg_widget = new TGTextButton(rf->getTGFrame(), label.c_str());
     } else { 
