@@ -112,6 +112,9 @@ private:
 	///flag showing whether the current spectrum can be occulted by the earth.
 	bool m_occultable;
 
+	///cosine of angle between zenith direction and incoming particle direction.
+	double m_zenithCosTheta;
+
 
 };
 #endif
