@@ -2,6 +2,7 @@
  * Package facilities
  * Coordinator: Toby Burnett
  *
+ * v2r6   19-sep-2002  thb   move cmt directory; minor gcc compilation fixes.
  * v2r5   29-aug-2002  thb   JRB Timestamp class
  * v2r4   15-Apr-2002  thb   hmk fixes
  * v2r3   09-Apr-2002  hmk   add new itoa routine

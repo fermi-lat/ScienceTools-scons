@@ -6,7 +6,7 @@
  *  Caller should have an environment variable SRC with some
  *  sensible definition.
  */
-void main() {
+int main(int, char**) {
   std::string name = std::string("{FACILITIESROOT}/src");
   std::string oDelim = std::string ("{");
   std::string cDelim = std::string ("}");
@@ -27,6 +27,7 @@ void main() {
   std::string intStr;
   facilities::Util::itoa(12, intStr);
   std::cout << "My String is " << intStr << std::endl;
+  return 0;
 }
 
   
