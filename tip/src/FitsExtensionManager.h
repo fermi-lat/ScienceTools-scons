@@ -74,9 +74,6 @@ namespace tip {
       */
       struct ColumnInfo {
           std::string m_name;
-          long m_repeat;
-          int m_col_num;
-          int m_type_code;
       };
 
       // Non-virtual helper functions for data object interface:
