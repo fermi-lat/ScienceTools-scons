@@ -1,6 +1,8 @@
 /** @file test_main.cxx
 @brief test various classes
 
+$Header$
+
 */
 #include "facilities/Util.h"
 #include "astro/SkyDir.h"
