@@ -47,6 +47,7 @@ ISpectrumFactory & MapCubeFactory();
 ISpectrumFactory & PeriodicSourceFactory();
 ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
+ISpectrumFactory & SpectralTransientFactory();
 ISpectrumFactory & TransientTemplateFactory();
 ISpectrumFactory & PulsarSpectrumFactory();
 
@@ -164,6 +165,7 @@ void ObsSim::createFactories() {
    PeriodicSourceFactory();
    PulsarFactory();
    SimpleTransientFactory();
+   SpectralTransientFactory();
    TransientTemplateFactory();
    PulsarSpectrumFactory();
 }
