@@ -17,8 +17,8 @@
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOM.hpp>
 
-#include "xml/Dom.h"
-#include "xml/XmlParser.h"
+#include "xmlBase/Dom.h"
+#include "xmlBase/XmlParser.h"
 
 #include "optimizers/Dom.h"
 #include "optimizers/OutOfBounds.h"
@@ -67,19 +67,19 @@ std::pair<double, double> Parameter::getBounds() const {
 }
 
 void Parameter::extractDomData(const DOMElement * elt) {
-   m_name = xml::Dom::getAttribute(elt, "name");
-   m_value = std::atof(xml::Dom::getAttribute(elt, "value").c_str());
-   m_minValue = std::atof(xml::Dom::getAttribute(elt, "min").c_str());
-   m_maxValue = std::atof(xml::Dom::getAttribute(elt, "max").c_str());
-   if (std::string(xml::Dom::getAttribute(elt, "free")) == "true" ||
-       std::string(xml::Dom::getAttribute(elt, "free")) == "1" ) {
+   m_name = xmlBase::Dom::getAttribute(elt, "name");
+   m_value = std::atof(xmlBase::Dom::getAttribute(elt, "value").c_str());
+   m_minValue = std::atof(xmlBase::Dom::getAttribute(elt, "min").c_str());
+   m_maxValue = std::atof(xmlBase::Dom::getAttribute(elt, "max").c_str());
+   if (std::string(xmlBase::Dom::getAttribute(elt, "free")) == "true" ||
+       std::string(xmlBase::Dom::getAttribute(elt, "free")) == "1" ) {
       m_free = true;
    } else {
       m_free = false;
    }
-   m_scale = std::atof(xml::Dom::getAttribute(elt, "scale").c_str());
-   if (xml::Dom::hasAttribute(elt, "error")) {
-      m_error = std::atof(xml::Dom::getAttribute(elt, "error").c_str());
+   m_scale = std::atof(xmlBase::Dom::getAttribute(elt, "scale").c_str());
+   if (xmlBase::Dom::hasAttribute(elt, "error")) {
+      m_error = std::atof(xmlBase::Dom::getAttribute(elt, "error").c_str());
    } else {
       m_error = 0;
    }
@@ -90,14 +90,14 @@ DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
    DOMElement * paramElt = Dom::createElement(doc, "parameter");
 
 // Add the appropriate attributes.
-   xml::Dom::addAttribute(paramElt, "name", m_name.c_str());
-   xml::Dom::addAttribute(paramElt, std::string("value"), m_value);
-   xml::Dom::addAttribute(paramElt, std::string("min"), m_minValue);
-   xml::Dom::addAttribute(paramElt, std::string("max"), m_maxValue);
-   xml::Dom::addAttribute(paramElt, std::string("free"), m_free);
-   xml::Dom::addAttribute(paramElt, std::string("scale"), m_scale);
+   xmlBase::Dom::addAttribute(paramElt, "name", m_name.c_str());
+   xmlBase::Dom::addAttribute(paramElt, std::string("value"), m_value);
+   xmlBase::Dom::addAttribute(paramElt, std::string("min"), m_minValue);
+   xmlBase::Dom::addAttribute(paramElt, std::string("max"), m_maxValue);
+   xmlBase::Dom::addAttribute(paramElt, std::string("free"), m_free);
+   xmlBase::Dom::addAttribute(paramElt, std::string("scale"), m_scale);
    if (m_error > 0) {
-      xml::Dom::addAttribute(paramElt, std::string("error"), m_error);
+      xmlBase::Dom::addAttribute(paramElt, std::string("error"), m_error);
    }
 
    return paramElt;

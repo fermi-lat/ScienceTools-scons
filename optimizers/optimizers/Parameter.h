@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "xml/Dom.h"
+#include "xmlBase/Dom.h"
 
 namespace optimizers {
 

@@ -16,8 +16,8 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
 
-#include "xml/Dom.h"
-#include "xml/XmlParser.h"
+#include "xmlBase/Dom.h"
+#include "xmlBase/XmlParser.h"
 
 #include "optimizers/Dom.h"
 #include "optimizers/Exception.h"
@@ -81,7 +81,7 @@ void FunctionFactory::getFunctionNames(std::vector<std::string> &funcNames) {
 }
 
 void FunctionFactory::readXml(const std::string &xmlFile) {
-   xml::XmlParser * parser = new xml::XmlParser();
+   xmlBase::XmlParser * parser = new xmlBase::XmlParser();
 
    DOMDocument * doc = parser->parse(xmlFile.c_str());
 
@@ -93,7 +93,7 @@ void FunctionFactory::readXml(const std::string &xmlFile) {
 
 // Direct Xerces API call.
    DOMElement * function_library = doc->getDocumentElement();
-   if (!xml::Dom::checkTagName(function_library, "function_library")) {
+   if (!xmlBase::Dom::checkTagName(function_library, "function_library")) {
       throw Exception(std::string("FunctionFactory::readXml:\n")
                       + "function_library not found in "
                       + xmlFile);
@@ -102,14 +102,14 @@ void FunctionFactory::readXml(const std::string &xmlFile) {
 // Loop through function child elements, and add each as a Function
 // object to the prototype factory.
    std::vector<DOMElement *> funcs;
-   xml::Dom::getChildrenByTagName(function_library, "function", funcs);
+   xmlBase::Dom::getChildrenByTagName(function_library, "function", funcs);
 
    std::vector<DOMElement *>::const_iterator funcIt = funcs.begin();
    for ( ; funcIt != funcs.end(); funcIt++) {
 
 // Get the type of this function, which should be an existing 
 // (generic) Function in the factory.
-      std::string type = xml::Dom::getAttribute(*funcIt, "type");
+      std::string type = xmlBase::Dom::getAttribute(*funcIt, "type");
       Function *funcObj;
       try {
          funcObj = create(type);
@@ -121,14 +121,14 @@ void FunctionFactory::readXml(const std::string &xmlFile) {
       }
 
 // Set the name of this function prototype.
-      std::string name = xml::Dom::getAttribute(*funcIt, "name");
+      std::string name = xmlBase::Dom::getAttribute(*funcIt, "name");
 // Use the type attribute as the name for use by writeXml as the type
 // information.
       funcObj->setName(type);
 
 // Fetch the parameter elements and set the Parameter data members.
       std::vector<DOMElement *> params;
-      xml::Dom::getChildrenByTagName(*funcIt, "parameter", params);
+      xmlBase::Dom::getChildrenByTagName(*funcIt, "parameter", params);
       
       std::vector<DOMElement *>::const_iterator paramIt = params.begin();
       for (; paramIt != params.end(); paramIt++) {
@@ -145,21 +145,21 @@ void FunctionFactory::writeXml(const std::string &xmlFile) {
    DOMDocument * doc = Dom::createDocument();
 
    DOMElement * funcLib = Dom::createElement(doc, "function_library");
-   xml::Dom::addAttribute(funcLib, "title", "prototype Functions");
+   xmlBase::Dom::addAttribute(funcLib, "title", "prototype Functions");
 
 // Loop over the Function prototypes, keeping only the derived prototypes.
    std::map<std::string, Function *>::iterator funcIt = m_prototypes.begin();
    for ( ; funcIt != m_prototypes.end(); funcIt++) {
       DOMElement * funcElt = Dom::createElement(doc, "function");
       std::string name = funcIt->first;
-      xml::Dom::addAttribute(funcElt, "name", name.c_str());
+      xmlBase::Dom::addAttribute(funcElt, "name", name.c_str());
       std::string type = funcIt->second->getName();
       if (type == std::string("")) {
 // Skip this Function since a lack of type implies a base prototype.
          continue;
       } else {
 // Use the generic name of the Function object as the type attribute.
-         xml::Dom::addAttribute(funcElt, "type", 
+         xmlBase::Dom::addAttribute(funcElt, "type", 
                                 funcIt->second->genericName().c_str());
       }
 
@@ -173,7 +173,7 @@ void FunctionFactory::writeXml(const std::string &xmlFile) {
    outFile << "<?xml version='1.0' standalone='no'?>\n"
            << "<!DOCTYPE function_library SYSTEM "
            << "\"$(OPTIMIZERSROOT)/xml/FunctionModels.dtd\" >\n";
-   xml::Dom::prettyPrintElement(funcLib, outFile, "");
+   xmlBase::Dom::prettyPrintElement(funcLib, outFile, "");
    doc->release();
 }
 

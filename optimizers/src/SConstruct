@@ -17,7 +17,7 @@ home = os.environ[package.upper() + 'ROOT']
 OptPP_dir = os.environ['OPTPP_DIR']
 
 libraries = map()
-libraries["xml"] = None
+libraries["xmlBase"] = None
 libraries["f2c"] = None
 libraries["facilities"] = None
 libraries["g2c"] = ('', '')
