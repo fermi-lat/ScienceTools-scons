@@ -134,4 +134,5 @@ void DataFilter::run() {
 
    delete inputTable;
    delete outputTable;
+   std::cout << "Done." << std::endl;
 }
