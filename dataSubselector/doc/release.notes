@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v2r0p2  14-Jun-04   JC   tag for ST release
     v2r0    09-Jun-04   JC   convert to use tip and st_app
     @endverbatim
 */
