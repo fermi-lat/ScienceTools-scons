@@ -25,13 +25,13 @@ namespace st_graph {
     // Sanity check.
     if (x.size() != y.size()) throw std::logic_error("RootPlot constructor: x and y sequence do not have same size");
 
+    // Add this plot to parent's container of plots, allowing for auto-delete.
+    m_parent->addPlot(this);
+
     setStyle(style);
 
     m_seq_cont.push_back(x.clone());
     m_seq_cont.push_back(y.clone());
-
-    // Add this plot to parent's container of plots, allowing for auto-delete.
-    m_parent->addPlot(this);
   }
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
@@ -47,13 +47,13 @@ namespace st_graph {
     if (y.size() != z.begin()->size())
       throw std::logic_error("RootPlot constructor: y sequence and second data dimension do not have same size");
 
+    // Add this plot to parent's container of plots, allowing for auto-delete.
+    m_parent->addPlot(this);
+
     setStyle(style);
 
     m_seq_cont.push_back(x.clone());
     m_seq_cont.push_back(y.clone());
-
-    // Add this plot to parent's container of plots, allowing for auto-delete.
-    m_parent->addPlot(this);
   }
 
   RootPlot::~RootPlot() {

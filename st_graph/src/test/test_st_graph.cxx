@@ -175,6 +175,8 @@ void StGraphTestApp::run() {
 void StGraphTestApp::testPlots() {
   using namespace st_graph;
 
+  m_out.setMethod("testPlots()");
+
   // Create local reference to engine singleton. This engine is an abstract factory for graphical objects.
   Engine * engine_p = 0;
   try {
@@ -268,6 +270,16 @@ void StGraphTestApp::testPlots() {
   // Plot the data as a histogram, using previous 1D bin defs for second dimension, new defs for first.
   plot1 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
     ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
+
+  try {
+    // Attempt to create a second plot, but overlays are not supported for 3d plots.
+    engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
+      ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
+    m_failed = true;
+    m_out.err() << "Creating more than one 3D plot did not throw an exception." << std::endl;
+  } catch (const std::exception &) {
+    // Expected.
+  }
 
   // Set axes titles.
   axes = &plot1->getAxes();

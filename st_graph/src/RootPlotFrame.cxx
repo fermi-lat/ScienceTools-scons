@@ -130,6 +130,8 @@ namespace st_graph {
     if (m_plots.empty()) m_dimensionality = root_plot->getDimensionality();
     else if (m_dimensionality != root_plot->getDimensionality())
       throw std::logic_error("RootPlotFrame::addPlot cannot overlay plots with different numbers of dimensions");
+    else if (m_dimensionality > 2)
+      throw std::logic_error("RootPlotFrame::addPlot cannot overlay 3d plots");
 
     // Make certain plot is not added more than once.
     if (m_plots.end() == std::find(m_plots.begin(), m_plots.end(), root_plot)) {
@@ -196,7 +198,6 @@ namespace st_graph {
     axes.assign(3, 0);
 
     if (m_plots.empty()) return;
-    else if (1 != m_plots.size()) throw std::logic_error("RootPlotFrame::display3d overlaying 3d plots not supported");
     std::list<RootPlot *>::iterator itor = m_plots.begin();
 
     // Get numeric sequences from data.
