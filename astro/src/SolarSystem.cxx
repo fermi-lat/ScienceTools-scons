@@ -64,7 +64,8 @@ double * SolarSystem::jplSetup(JulianDate jd)
                    where -0.5 <= jd[1] < 0.5
 */
 
-    static double jdt[]={ floor(jd+0.5), jd-jdt[0] };
+    double j0 = floor(jd+0.5);
+    static double jdt[]={ j0, jd-j0 };
     return jdt;
 }
 
