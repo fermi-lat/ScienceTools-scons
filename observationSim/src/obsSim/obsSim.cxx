@@ -26,7 +26,7 @@
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
 
-#include "Likelihood/Util.h"
+#include "st_facilities/Util.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -42,7 +42,7 @@ ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
 ISpectrumFactory & TransientTemplateFactory();
 
-using Likelihood::Util;
+using st_facilities::Util;
 
 class ObsSim : public st_app::StApp {
 public:

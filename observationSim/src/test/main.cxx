@@ -91,7 +91,7 @@ int main(int iargc, char * argv[]) {
       }
    } else {
       sourceNames.push_back("all_3EG_sources");
-      sourceNames.push_back("One_GRB_each_10Minutes");
+//      sourceNames.push_back("One_GRB_each_10Minutes");
 //      sourceNames.push_back("galdiffusemap");
    }
 
