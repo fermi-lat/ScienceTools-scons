@@ -54,7 +54,7 @@ namespace tip {
           \param value Object to convert. Type is that of the template parameter.
       */
       template <typename T>
-      std::string ToString(const T & value) {
+      std::string toString(const T & value) {
         std::ostringstream os;
         os << value;
         return os.str();
