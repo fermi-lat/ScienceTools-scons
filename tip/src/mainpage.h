@@ -262,7 +262,19 @@
     allows client code to use a Scalar<T> object as if it were of type T, but the
     Scalar<T> object will read/write values from the table.
 
+    \subsection image Image Class
+    The Image class offers access to FITS images (the interface could
+    also support Root but this is currently not implemented.)
+    There are getPixel/setPixel methods which allow read/write
+    access to individual pixels in an image, and also get/set
+    methods to read/write entire images as a std::vector<float>.
+
+    Clients may obtain Image objects using IFileSvc's readImage and
+    editImage methods, which are similar to readTable and editTable,
+    respectively.
+
     \section jobOptions jobOptions
+    Not applicable.
 
     \section todo Open Issues
 \verbatim
