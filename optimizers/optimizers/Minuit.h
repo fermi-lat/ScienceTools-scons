@@ -70,7 +70,7 @@ namespace optimizers {
 
     //! One-sigma confidence regions based on Hessian, assuming 
     // that this function is a likelihood
-    std::vector<double> & getUncertainty(void);
+    virtual std::vector<double> & getUncertainty(void);
 
     //! Symbolic form of the return codes for readability 
     enum MinuitQuality {MINUIT_NOTCALC, MINUIT_DIAG, MINUIT_FORCEDPOS, 
@@ -78,13 +78,13 @@ namespace optimizers {
 
   private:
     
-    Function *m_stat;
+//    Function *m_stat;
     //! Pass a command string to Minuit
     int doCmd(std::string command);
     int m_maxEval;
     int m_quality;
     double m_distance;
-    std::vector<double> m_uncertainty;
+//    std::vector<double> m_uncertainty;
   };
   
   //! The function which Minuit will minimize

@@ -18,9 +18,9 @@ namespace optimizers {
   typedef std::vector<double>::iterator dptr;
   typedef std::vector<Parameter>::iterator pptr;
 
-  std::vector<double> & Drmngb::getUncertainty(void) {
-    return m_uncertainty;
-  }
+//   std::vector<double> & Drmngb::getUncertainty(void) {
+//     return m_uncertainty;
+//   }
 
   int Drmngb::getRetCode(void) const {
     return m_retCode;

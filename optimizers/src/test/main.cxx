@@ -300,6 +300,27 @@ void test_Optimizers() {
       std::cout << i << "  " << sig[i] << std::endl;
    }
 
+   std::cout 
+      << "\nTest Minuit method using 5 dimensional Rosenbrock function\n" 
+      << std::endl;
+//    rosenND.getParams(params);
+//    for (unsigned int i = 0; i < params.size(); i++) {
+//       params[i].setValue(2.);
+//       params[i].setBounds(-10., 10.);
+//    }
+//    rosenND.setParams(params);
+   Minuit my_Minuit(rosenND);
+   try {
+      my_Minuit.find_min(verbose, .0001);
+   } catch (Exception &eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
+   sig = my_Minuit.getUncertainty();
+   std::cout << "Uncertainties:" << std::endl;
+   for (unsigned int i=0; i < sig.size(); i++) {
+      std::cout << i << "  " << sig[i] << std::endl;
+   }
+
 #ifdef HAVE_OPT_PP
 // now restart and try OptPP
    params[0].setValue(2.);

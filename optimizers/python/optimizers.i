@@ -21,6 +21,7 @@
 #include "../src/AbsEdge.h"
 #include "../src/Gaussian.h"
 #include "../src/MyFun.h"
+#include "../src/ConstantValue.h"
 #include "../src/PowerLaw.h"
 #include "../src/Rosen.h"
 #include <vector>
@@ -47,6 +48,7 @@
 %include ../src/Gaussian.h
 %include ../src/MyFun.h
 %include ../src/PowerLaw.h
+%include ../src/ConstantValue.h
 %include ../src/Rosen.h
 %include ../optimizers/FunctionFactory.h
 %template(DoubleVector) std::vector<double>;

@@ -16,8 +16,8 @@
 namespace optimizers {
 
 
-  Minuit::Minuit(Function& stat) : m_maxEval(200) {
-    m_stat = &stat;
+  Minuit::Minuit(Function& stat) : Optimizer(stat), m_maxEval(200) {
+//    m_stat = &stat;
     const int i5=5, i6=6, i7=7;
     mninit_(&i5, &i6, &i7);
   }

@@ -56,7 +56,7 @@ namespace optimizers {
     
   public:
     
-    Lbfgs(Function &stat) : m_maxVarMetCorr(5),
+    Lbfgs(Function &stat) : Optimizer(stat), m_maxVarMetCorr(5),
       m_maxIterations(100),
       m_pgtol(1.e+20),
       m_retCode(0)
@@ -78,7 +78,7 @@ namespace optimizers {
     
   private:
     
-    Function *m_stat;
+//    Function *m_stat;
 
     //! Number of variable metric corrections to save
     int m_maxVarMetCorr; 
