@@ -100,11 +100,15 @@ int main(int argn, char * argc[]) {
 
 // Use simulation time rather than total counts if desired.
    if (useSimTime) {
+      std::cout << "Generating events for a simulation time of "
+                << count << " seconds....";
       my_simulator.generateEvents(static_cast<double>(count), events, 
                                   scData, response, spacecraft);
    } else {
+      std::cout << "Generating " << count << " events....";
       my_simulator.generateEvents(count, events, scData, response, spacecraft);
    }
+   std::cout << "Done." << std::endl;
 }
 
 void help() {
