@@ -29,7 +29,7 @@ namespace tip {
           WARNING: This class is deprecated. Don't start using it!
           \param referent The new referent Referent object.
       */
-      ScalarAdaptor & operator =(Referent & referent) { m_referent = &referent; }
+      ScalarAdaptor & operator =(Referent & referent) { m_referent = &referent; return *this; }
 
       /** \brief Assignment from templated parameter type. This will write the assigned value into the
           referent to which this object refers. This does not change the Referent object this ScalarAdaptor
