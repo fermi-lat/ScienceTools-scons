@@ -8,8 +8,8 @@
 #include <cctype>
 
 #include "FitsExtensionUtils.h"
-#include "FitsHeaderData.h"
 #include "FitsTabularData.h"
+#include "table/HeaderData.h"
 #include "table/IData.h"
 #include "table/TableException.h"
 
@@ -18,13 +18,13 @@ namespace table {
   // Construct without opening the file.
   FitsExtensionUtils::FitsExtensionUtils(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0), m_fp(0),
-    m_header(0), m_data(0) {}
+    m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionUtils::~FitsExtensionUtils() { delete m_data; delete m_header; close(); }
 
   IHeaderData * FitsExtensionUtils::getHeaderData() {
-    if (!m_header) m_header = new FitsHeaderData(this);
+    if (!m_header) m_header = new HeaderData<FitsExtensionUtils>(*this);
     return m_header;
   }
 
