@@ -4,19 +4,14 @@
 </head>
 <body>
 <h1 style="text-align: center;">Class SkyProj</h1>
+<div style="text-align: center;">Author:&nbsp; Theodore Hierath<br>
+</div>
 <br>
 This class acts as a wrapper for WCSLIB, a library written for handling
 transformations between celestial and projection coordinate
 systems.&nbsp; This is intended to replace the projection capabilities
-that were in SkyDir.&nbsp; This implementation differs in one respect
-from the version available from Mark Calabretta, the function wcsset
-and all references to it were changed to wcsset2.&nbsp; This was the
-least intrusive way to resolve a naming conflict with a Windows
-function of the same name.&nbsp; So any future upgrades to new versions
-of WCSLIB should incorporate this change.&nbsp; WCSLIB is currently
-included with the astro package.<br>
-<br>
-For celestial coordinates, SkyProj does input and output in degrees
+that were in SkyDir.&nbsp; For celestial coordinates, SkyProj does
+input and output in degrees
 with the latitude in the range [-90,90] and longitudes in the range
 [0,360).&nbsp; This is the same convention that is used in
 SkyDir.&nbsp; <br>
@@ -163,7 +158,12 @@ function of the SkyProj object.<br>
 running map_tools on the file gas_gal.fits that comes in the flux
 package.&nbsp; The read_image program in map_tools was used to create a
 fits file using a transformation and fv was used to display the
-file.&nbsp; <br>
+file.&nbsp; These projections were created in a way that wouldn't
+normally be done.&nbsp; The generating program in map_tools assumed
+that if it gave a bad pixel coordinate that the wcslib would return an
+error code.&nbsp; This was the case for some but not all
+projections.&nbsp; As a result the Sanson-Flamsteed projection and the
+Mollweide projection lack the null area at the corners.<br>
 <br>
 <span style="font-weight: bold;">Original FITS image for reference</span><br>
 <img style="width: 563px; height: 376px;" alt="gas_gal.fits"
@@ -196,6 +196,22 @@ file.&nbsp; <br>
 <img style="width: 565px; height: 377px;"
  alt="Quadrilateralized Spherical Cube" src="qsc.jpg"><br>
 <br>
+<br>
+<div style="text-align: center;">
+<h2>Notes</h2>
+<div style="text-align: left;">This implementation uses WCSLIB 3.4, but
+it differs in one respect
+from the version available from Mark Calabretta, the function wcsset
+and all references to it were changed to wcsset2.&nbsp; This was the
+least intrusive way to resolve a naming conflict with a Windows
+function of the same name.&nbsp; So any future upgrades to new versions
+of WCSLIB should incorporate this change.&nbsp; WCSLIB is currently
+included with the astro package.<br>
+<br>
+<br>
+</div>
+<br>
+</div>
 <br>
 &nbsp;The WCSLIB website is:&nbsp;
 http://www.atnf.csiro.au/people/mcalabre/WCS/index.html<br>
