@@ -304,13 +304,15 @@ void StGraphTestApp::testGuis() {
 
   class MyGui : public IEventReceiver {
     public:
-      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0), m_plot_frame(0), m_data(100) {
+      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0), m_enable_button(0),
+        m_plot_frame(0), m_data(100) {
         // Create a top level main frame in which to place graphical objects.
         m_main_frame = m_engine.createMainFrame(this, 600, 400);
 
         // Create a couple test buttons.
         m_cancel_button = m_engine.createButton(m_main_frame, this, "text", "Cancel");
         m_ok_button = m_engine.createButton(m_main_frame, this, "text", "OK");
+        m_enable_button = m_engine.createButton(m_main_frame, this, "check", "enable");
 
         // Create a frame to hold a plot.
         m_plot_frame = m_engine.createPlotFrame(m_main_frame, "Linear Function", 520, 400);
@@ -335,8 +337,13 @@ void StGraphTestApp::testGuis() {
       virtual void clicked(IFrame * f) {
         if (f == m_cancel_button) {
           m_engine.stop();
-        } else if (f == m_ok_button) std::cout << "OK button was clicked" << std::endl;
-        else std::cout << "Something unforeseen clicked" << std::endl;
+        } else if (f == m_enable_button) {
+          std::cout << "Enable button is " << m_enable_button->getState() << std::endl;
+        } else if (f == m_ok_button) {
+          std::cout << "OK button was clicked" << std::endl;
+        } else {
+          std::cout << "Something unforeseen clicked" << std::endl;
+        }
       }
 
       virtual void closeWindow(IFrame * f) {
@@ -352,9 +359,10 @@ void StGraphTestApp::testGuis() {
         RightEdge re_ok(m_ok_button);
         RightEdge re_cancel(m_cancel_button);
 
-        // Place buttons in row, ok, cancel.
+        // Place buttons in row, ok, cancel, enable.
         LeftEdge(m_ok_button).rightOf(le_main);
         LeftEdge(m_cancel_button).rightOf(re_ok);
+        TopEdge(m_enable_button).below(BottomEdge(m_cancel_button));
 
         // Place plot to right of cancel.
         LeftEdge(m_plot_frame).rightOf(re_cancel, 5);
@@ -370,6 +378,7 @@ void StGraphTestApp::testGuis() {
       IFrame * m_main_frame;
       IFrame * m_cancel_button;
       IFrame * m_ok_button;
+      IFrame * m_enable_button;
       IFrame * m_plot_frame;
       std::vector<double> m_data;
   };
