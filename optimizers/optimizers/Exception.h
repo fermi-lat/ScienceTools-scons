@@ -8,7 +8,7 @@
 
 #ifndef optimizers_EXCEPTION_H
 #define optimizers_EXCEPTION_H
-//#include <exception>
+#include <exception>
 #include <string>
 
 namespace optimizers {
@@ -22,8 +22,7 @@ namespace optimizers {
  * $Header$
  */
 
-//  class Exception: public std::exception {
-  class Exception {
+  class Exception: public std::exception {
   public:
     Exception() {}
     Exception(std::string errorString, int code=0) : 
