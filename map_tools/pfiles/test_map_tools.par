@@ -10,7 +10,7 @@ mode,     s, a,  "h",   , ,""
 #---------------------------------------------------------------------------------------
 #
 infile,  f, a, "$(TMP)/testCube.fits", , , "Name of the exposure cube input file:"
-table_name, s,a,"",,,"name of tree or extension"
+table,   s, a,"",,,"name of tree or extension"
 outfile, f, a, "$(TMP)/testCube2.fits", , , "Name of the exposure output file:"
 filter,  s, a, "", , , "filter expression"
 #
