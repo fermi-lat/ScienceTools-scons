@@ -4,6 +4,8 @@
 */
 #include <iostream>
 #include <cmath>
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 #ifndef WIN32
@@ -16,6 +18,7 @@
 
 #include "st_graph/Engine.h"
 #include "st_graph/PlotHist.h"
+#include "st_graph/ValueSet.h"
 
 /** \class StGraphTestApp
     \brief Test application class.
@@ -24,10 +27,29 @@ class StGraphTestApp : public st_app::StApp {
   public:
     /// \brief Perform all tests.
     virtual void run();
+
+    /// \brief Test the ValueSet class.
+    virtual void testValueSet();
+
+    void reportUnexpected(const std::string & text) const;
+
+  private:
+    static bool m_failed;
 };
+
+void StGraphTestApp::reportUnexpected(const std::string & text) const {
+  m_failed = true;
+  std::cerr << "Unexpected: " << text << std::endl;
+}
+
+bool StGraphTestApp::m_failed = false;
 
 void StGraphTestApp::run() {
   using namespace st_graph;
+
+  testValueSet();
+
+return;
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -119,6 +141,37 @@ void StGraphTestApp::run() {
   engine->run();
 #endif
 
+  if (m_failed) throw std::runtime_error("Unit test failed");
 }
 
+void StGraphTestApp::testValueSet() {
+  using namespace st_graph;
+
+  std::vector<double> values1(100, 10.);
+  std::vector<double> spreads1(100, 1.);
+  std::vector<double> values2(200, 20.);
+  std::vector<double> spreads2(200, 2.);
+
+  ValueSet v1(values1, spreads1);
+  if (values1 != v1.getValues()) reportUnexpected("testValueSet() found values were not the same after creating v1");
+  if (spreads1 != v1.getSpreads()) reportUnexpected("testValueSet() found spreads were not the same after creating v1");
+
+  ValueSet v2(values2, spreads1);
+  if (values2 != v2.getValues()) reportUnexpected("testValueSet() found values were not the same after creating v2");
+
+  const std::vector<double> & spreads(v2.getSpreads());
+  for (unsigned int ii = 0; ii < spreads1.size(); ++ii) {
+    if (spreads[ii] != spreads1[ii]) {
+      reportUnexpected("testValueSet() found value of spread which disagreed with original value");
+      break;
+    }
+  }
+
+  for (unsigned int ii = spreads1.size(); ii < spreads.size(); ++ii) {
+    if (0. != spreads[ii]) {
+      reportUnexpected("testValueSet() found padded spread value which was not 0.");
+      break;
+    }
+  }
+}
 st_app::StAppFactory<StGraphTestApp> g_factory;
