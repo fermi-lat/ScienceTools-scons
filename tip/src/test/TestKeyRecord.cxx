@@ -34,7 +34,7 @@ namespace tip {
       hh["BOZO"].setRecord(string_rec);
       ReportExpected("setting key record did not fail");
     } catch (const std::exception & x) {
-      ReportUnexpected("setting key record failed", x);
+      ReportUnexpected("setting key record threw exception", x);
     }
 
     try {
@@ -44,7 +44,7 @@ namespace tip {
       if (read_rec.get() == string_rec.get()) ReportExpected("key record read matched key record written");
       else ReportUnexpected("key record read was\n" + read_rec.get() + ",\nnot\n" + string_rec.get() + ".");
     } catch (const std::exception & x) {
-      ReportUnexpected("getting key record failed", x);
+      ReportUnexpected("getting key record threw exception", x);
     }
 
     // Assign a number to string key record.
@@ -58,7 +58,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of number to a string key record failed", x);
+      ReportUnexpected("assignment of number to a string key record threw exception", x);
     }
 
     // Assign a boolean to string key record.
@@ -72,7 +72,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of number to a string key record failed", x);
+      ReportUnexpected("assignment of number to a string key record threw exception", x);
     }
 
     // Assign a short string with long comment to the same ol' key record.
@@ -88,7 +88,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of short string, long comment to a key record failed", x);
+      ReportUnexpected("assignment of short string, long comment to a key record threw exception", x);
     }
 
     // Assign a medium string with long comment to the same ol' key record.
@@ -102,7 +102,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of medium string, long comment to a key record failed", x);
+      ReportUnexpected("assignment of medium string, long comment to a key record threw exception", x);
     }
 
     // Assign a long string with long comment to the same ol' key record.
@@ -117,7 +117,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of long string, long comment to a key record failed", x);
+      ReportUnexpected("assignment of long string, long comment to a key record threw exception", x);
     }
 
     // Assign a short string with short comment to the same ol' key record.
@@ -131,7 +131,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of short string, short comment to a key record failed", x);
+      ReportUnexpected("assignment of short string, short comment to a key record threw exception", x);
     }
 
     // Assign a medium string with short comment to the same ol' key record.
@@ -145,7 +145,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of medium string, short comment to a key record failed", x);
+      ReportUnexpected("assignment of medium string, short comment to a key record threw exception", x);
     }
 
     // Assign a long string with short comment to the same ol' key record.
@@ -159,7 +159,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of long string, short comment to a key record failed", x);
+      ReportUnexpected("assignment of long string, short comment to a key record threw exception", x);
     }
 
     // Assign a number to existing numeric record.
@@ -173,7 +173,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of number to numeric key record failed", x);
+      ReportUnexpected("assignment of number to numeric key record threw exception", x);
     }
 
     // Assign a boolean to existing numeric record.
@@ -187,7 +187,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of boolean to numeric key record failed", x);
+      ReportUnexpected("assignment of boolean to numeric key record threw exception", x);
     }
 
     // Assign a string to existing numeric record.
@@ -210,7 +210,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of number to blank key record failed", x);
+      ReportUnexpected("assignment of number to blank key record threw exception", x);
     }
 
     // Assign a string to blank record.
@@ -224,7 +224,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of string to blank key record failed", x);
+      ReportUnexpected("assignment of string to blank key record threw exception", x);
     }
 
     // Assign a bool to blank record.
@@ -238,7 +238,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of boolean to blank key record failed", x);
+      ReportUnexpected("assignment of boolean to blank key record threw exception", x);
     }
 
     // Assign a primitive bool to blank record.
@@ -252,7 +252,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of primitive bool to blank key record failed", x);
+      ReportUnexpected("assignment of primitive bool to blank key record threw exception", x);
     }
 
     // Assign a primitive bool to numeric record.
@@ -266,7 +266,7 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of primitive bool to numeric key record failed", x);
+      ReportUnexpected("assignment of primitive bool to numeric key record threw exception", x);
     }
 
     // Assign a primitive bool to string record.
@@ -280,9 +280,20 @@ namespace tip {
         correct_rec + ".");
 
     } catch (const std::exception & x) {
-      ReportUnexpected("assignment of primitive bool to string key record failed", x);
+      ReportUnexpected("assignment of primitive bool to string key record threw exception", x);
     }
 
+    // Create a record from name, value, comment.
+    try {
+      KeyRecord rec("BOZO", true, "Bozo is a fine clown");
+      std::string correct_rec = formatRec("BOZO", "T", "Bozo is a fine clown");
+
+      if (rec.get() == correct_rec) ReportExpected("creation of boolean key record from name, value, comment worked");
+      else ReportUnexpected("creation of boolean key record from name, value, comment failed");
+
+    } catch (const std::exception & x) {
+      ReportUnexpected("creation of boolean key record from name, value, comment threw exception", x);
+    }
     return getStatus();
   }
 
