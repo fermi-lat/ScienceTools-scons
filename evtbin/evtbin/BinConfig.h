@@ -36,7 +36,8 @@ namespace evtbin {
       virtual Binner * createBinner(const st_app::AppParGroup & par_group, const std::string & alg,
         const std::string & in_field,  const std::string & bin_begin, const std::string & bin_end, const std::string & bin_size,
         const std::string & num_bins, const std::string & bin_file, const std::string & bin_ext, const std::string & start_field,
-        const std::string & stop_field) const;
+        const std::string & stop_field, const std::string & sn_ratio = "", const std::string & lc_emin = "",
+        const std::string & lc_emax = "") const;
   
   };
 

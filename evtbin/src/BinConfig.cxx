@@ -8,6 +8,7 @@
 #include <string>
 
 #include "evtbin/BinConfig.h"
+#include "evtbin/ConstSnBinner.h"
 #include "evtbin/LinearBinner.h"
 #include "evtbin/LogBinner.h"
 #include "evtbin/OrderedBinner.h"
@@ -85,7 +86,7 @@ namespace evtbin {
   Binner * BinConfig::createBinner(const st_app::AppParGroup & par_group, const std::string & alg,
     const std::string & in_field, const std::string & bin_begin, const std::string & bin_end, const std::string & bin_size,
     const std::string & num_bins, const std::string & bin_file, const std::string & bin_ext, const std::string & start_field,
-    const std::string & stop_field) const {
+    const std::string & stop_field, const std::string & sn_ratio, const std::string & lc_emin, const std::string & lc_emax) const {
     using namespace evtbin;
 
     Binner * binner = 0;
@@ -127,6 +128,9 @@ namespace evtbin {
       // Create binner from these intervals.
       binner = new OrderedBinner(intervals, par_group[in_field]);
 
+    } else if (bin_type == "SN") {
+      binner = new ConstSnBinner(par_group[bin_begin], par_group[bin_end], par_group[sn_ratio], par_group[lc_emin],
+        par_group[lc_emax]);
     } else throw std::runtime_error(std::string("Unknown binning algorithm ") + par_group[alg].Value());
 
     return binner;
