@@ -105,7 +105,7 @@ namespace tip {
   inline void VectorAdaptor<T, Referent>::set(Index_t entry_index, const T & value) {
     if (0 == m_begin) allocate();
     m_begin[entry_index] = value;
-    m_referent->set(m_begin + entry_index, m_begin + entry_index + 1, entry_index);
+    m_referent->set(m_begin, m_end, 0);
   }
 
 }
