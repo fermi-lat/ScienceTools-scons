@@ -275,13 +275,13 @@ public:
   inline Index_t TableCell::getNumElements() const {
     if (m_field_index < 0)
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    return m_record.getExtensionData()->getFieldNumElements(m_field_index, m_record.getIndex());
+    return m_record.getExtensionData()->getColumn(m_field_index)->getNumElements(m_record.getIndex());
   }
 
   inline void TableCell::setNumElements(Index_t num_elements) {
     if (m_field_index < 0)
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    m_record.getExtensionData()->setFieldNumElements(m_field_index, num_elements, m_record.getIndex());
+    m_record.getExtensionData()->getColumn(m_field_index)->setNumElements(num_elements);
   }
 
   // ConstTableRecord
