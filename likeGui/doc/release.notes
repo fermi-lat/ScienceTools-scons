@@ -3,6 +3,7 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r0p2   22-Oct-04    JC    Pil.write() method preserves parfile comments
    v7r0p1   22-Oct-04    JC    add Pil.write() method
    v7       22-Oct-04    JC    tag in prep to add to ST
    v6       25-May-04    JC    move to main repository
