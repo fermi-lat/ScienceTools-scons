@@ -58,6 +58,10 @@ namespace evtbin {
 
   CountMap::~CountMap() throw() { delete m_proj; }
 
+  void CountMap::binInput() {
+    DataProduct::binInput();
+  }
+
   void CountMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIterator end) {
     // Get binners for the two dimensions.
     const Hist::BinnerCont_t & binners = m_hist.getBinners();

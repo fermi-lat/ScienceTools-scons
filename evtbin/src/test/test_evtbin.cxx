@@ -447,66 +447,45 @@ void EvtBinTest::testHist2D() {
 void EvtBinTest::testLightCurve() {
   using namespace evtbin;
 
-  // Open input table:
-  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
-
   // Create light curve object.
   LightCurve lc(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 900., "TIME"));
 
   // Fill the light curve.
-  lc.binInput(table->begin(), table->end());
+  lc.binInput();
 
   // Write the light curve to an output file.
   lc.writeOutput("test_evtbin", "LC1.lc");
-
-  // Clean up input.
-  delete table;
 }
 
 void EvtBinTest::testSingleSpectrum() {
   using namespace evtbin;
 
-  // Open input table:
-  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
-
   // Create spectrum object.
   SingleSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LogBinner(1., 90000., 1000, "ENERGY"));
 
   // Fill the spectrum.
-  spectrum.binInput(table->begin(), table->end());
+  spectrum.binInput();
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA1.pha");
-
-  // Clean up input.
-  delete table;
 }
 
 void EvtBinTest::testMultiSpectra() {
   using namespace evtbin;
-
-  // Open input table:
-  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create spectrum object.
   MultiSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 300000., "TIME"),
     LogBinner(1., 90000., 1000, "ENERGY"));
 
   // Fill the spectrum.
-  spectrum.binInput(table->begin(), table->end());
+  spectrum.binInput();
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA2.pha");
-
-  // Clean up input.
-  delete table;
 }
 
 void EvtBinTest::testCountMap() {
   using namespace evtbin;
-
-  // Open input table:
-  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create map object with invalid projection.
   try {
@@ -522,13 +501,10 @@ void EvtBinTest::testCountMap() {
   CountMap count_map(m_data_dir + "D1.fits", m_data_dir + "D2.fits", 60., 50., "AIT", 400, 400, .1, 0., true, "RA", "DEC");
 
   // Fill the count map.
-  count_map.binInput(table->begin(), table->end());
+  count_map.binInput();
 
   // Write the count map to an output file.
   count_map.writeOutput("test_evtbin", "CM2.fits");
-
-  // Clean up input.
-  delete table;
 }
 
 void EvtBinTest::testBinConfig() {

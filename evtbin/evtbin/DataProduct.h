@@ -36,6 +36,10 @@ namespace evtbin {
 
       virtual ~DataProduct() throw();
 
+      /** \brief Bin input from input file/files passed to the constructor.
+      */
+      virtual void binInput();
+
       /** \brief Bin input from tip table.
           \param begin Table iterator pointing to the first record to be binned.
           \param end Table iterator pointing to one past the last record to be binned.
@@ -128,6 +132,7 @@ namespace evtbin {
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::string m_data_dir;
+      std::string m_event_file;
       Gti m_gti;
       Hist * m_hist_ptr;
   };

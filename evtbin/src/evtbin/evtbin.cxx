@@ -77,33 +77,25 @@ class EvtBinAppBase : public st_app::StApp {
       // Save all parameters from this tool run now.
       pars.Save();
 
-      // Object to represent the input event file.
-      const tip::Table * events = 0;
-
       // Object to represent the data product being produced.
       DataProduct * product = 0;
 
       try {
-        // Open input file for reading only.
-        events = tip::IFileSvc::instance().readTable(pars["eventfile"], "EVENTS");
-
         // Get data product. This is definitely overridden in subclasses to produce the correct type product
         // for the specific application.
         product = createDataProduct(pars);
 
         // Bin input data into product.
-        product->binInput(events->begin(), events->end());
+        product->binInput();
 
         // Write the data product output.
         product->writeOutput(m_app_name, pars["outfile"]);
 
       } catch (...) {
         delete product;
-        delete events;
         throw;
       }
       delete product;
-      delete events;
     }
 
     /** \brief Prompt for all parameters needed by a particular binner. The base class version prompts

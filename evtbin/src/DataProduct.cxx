@@ -21,8 +21,8 @@
 
 namespace evtbin {
 
-  DataProduct::DataProduct(const std::string & event_file): m_key_value_pairs(), m_known_keys(), m_data_dir(), m_gti(),
-    m_hist_ptr(0) {
+  DataProduct::DataProduct(const std::string & event_file): m_key_value_pairs(), m_known_keys(), m_data_dir(),
+    m_event_file(event_file), m_gti(), m_hist_ptr(0) {
     // Find the directory containing templates.
     const char * top_dir = getenv("EVTBINROOT");
     if (0 != top_dir) m_data_dir = std::string(top_dir) + "/data/";
@@ -38,6 +38,13 @@ namespace evtbin {
   }
 
   DataProduct::~DataProduct() throw() {}
+
+  void DataProduct::binInput() {
+    using namespace tip;
+    std::auto_ptr<const Table> events(IFileSvc::instance().readTable(m_event_file, "EVENTS"));
+
+    binInput(events->begin(), events->end());
+  }
 
   void DataProduct::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIterator end) {
     if (0 == m_hist_ptr) throw std::logic_error("DataProduct::binInput cannot bin a NULL histogram");

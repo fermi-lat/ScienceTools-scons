@@ -29,6 +29,10 @@ namespace evtbin {
 
       virtual ~CountMap() throw();
 
+      /** \brief Bin input from input file/files passed to the constructor.
+      */
+      virtual void binInput();
+
       /** \brief Bin input from tip table.
           \param begin Table iterator pointing to the first record to be binned.
           \param end Table iterator pointing to one past the last record to be binned.
