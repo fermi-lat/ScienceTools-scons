@@ -33,7 +33,7 @@ namespace tip {
       */
       Header & getHeader();
 
-    private:
+    protected:
       Header m_header;
       IExtensionData * m_extension_data;
   };

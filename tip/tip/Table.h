@@ -63,37 +63,31 @@ namespace tip {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
-      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(extension_data) {
-        if (0 == m_tab_data) throw TipException("Table::Table(IExtensionData *): "
-          "Cannot create Table with NULL IExtensionData pointer.");
-      }
+      Table(IExtensionData * extension_data): Extension(extension_data) {}
 
       virtual ~Table() {}
 
       /** \brief Return an iterator pointing to the first record in the table.
       */
-      Iterator begin() { return Iterator(Record(m_tab_data, 0)); }
+      Iterator begin() { return Iterator(Record(m_extension_data, 0)); }
 
       /** \brief Return an iterator pointing past the last record in the table.
       */
-      Iterator end() { return Iterator(Record(m_tab_data, m_tab_data->getNumRecords())); }
+      Iterator end() { return Iterator(Record(m_extension_data, m_extension_data->getNumRecords())); }
 
       /** \brief Return the number of records contained in this table.
       */
-      Index_t getNumRecords() const { return m_tab_data->getNumRecords(); }
+      Index_t getNumRecords() const { return m_extension_data->getNumRecords(); }
 
       /* \brief Change the number of records in the current table, adding or deleting
          rows as needed.
          \param num_records The new value for the number of records in the table.
       */
-      void setNumRecords(Index_t num_records) { m_tab_data->setNumRecords(num_records); }
+      void setNumRecords(Index_t num_records) { m_extension_data->setNumRecords(num_records); }
 
       /** \brief Return a container of all field names valid for this table:
       */
-      const Table::FieldCont & getValidFields() const { return m_tab_data->getValidFields(); }
-
-    private:
-      IExtensionData * m_tab_data;
+      const Table::FieldCont & getValidFields() const { return m_extension_data->getValidFields(); }
   };
 
   /* TODO 7: 4/2/2004: 2 problems with random access: 1. operator * needs to return a
