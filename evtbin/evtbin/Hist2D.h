@@ -43,6 +43,8 @@ namespace evtbin {
       */
       void fillBin(double value1, double value2);
 
+      const std::vector<unsigned long> & operator [](Cont_t::size_type index) const;
+
       ConstIterator1 begin() const;
 
       ConstIterator1 end() const;
@@ -50,6 +52,8 @@ namespace evtbin {
     private:
       Cont_t m_data;
   };
+
+  inline const std::vector<unsigned long> & Hist2D::operator [](Cont_t::size_type index) const { return m_data[index]; }
 
   inline Hist2D::ConstIterator1 Hist2D::begin() const { return m_data.begin(); }
 
