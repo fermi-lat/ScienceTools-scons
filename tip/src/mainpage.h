@@ -241,6 +241,7 @@
     \section jobOptions jobOptions
 
     \section todo Open Issues
+\verbatim
        2. 4/2/2004: Access should also be possible by extension number as well as name.
        5. 4/2/2004: In RootExtensionManager::open() there are calls to Root's
           dynamic loader, which should be eliminated if possible by a requirements pattern.
@@ -249,8 +250,10 @@
        8. 4/2/2004: Use of Record within a functor used with a for_each is problematic.
           See src/test/test_tip_main.cxx: TODO 8.
       10. 4/21/2004: Add capability to insert a field (column) in a table.
+\endverbatim
 
     \section done Resolved Issues
+\verbatim
        1. 4/2/2004: Memory leak in IFileSvc::editTable. 4/21/2004: See IFileSvc.cxx: DONE 1.
        3. 4/2/2004: For read-only access, need const Table * IFileSvc::readTable() and
           typedef Table::ConstIterator begin() const etc. Implemented in version v1r4p0.
@@ -261,5 +264,6 @@
           4/21/2004: This capability was added in v1r3p0.
        9. 4/2/2004: Bug in certain versions of cfitsio may prevent filtering syntax from
           working. See FitsExtensionManager.cxx: DONE 9.
+\endverbatim
 
 */
