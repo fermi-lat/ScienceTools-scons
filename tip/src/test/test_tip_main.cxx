@@ -143,6 +143,9 @@ int main() {
           }
         }
 
+        // Verify other assignments.
+        channel = 7.;
+        double dcounts = counts;
       }
 
     } catch(const TableException & x) {
