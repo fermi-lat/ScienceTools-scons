@@ -32,7 +32,7 @@ public:
       Exception(errorString, code), m_value(value), 
       m_minValue(minValue), m_maxValue(maxValue) {}
 
-   ~OutOfBounds() {}
+   ~OutOfBounds() throw() {}
    
    double value() {return m_value;}
    double minValue() {return m_minValue;}
