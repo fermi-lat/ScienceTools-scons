@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+07-mar-2005 v2r2p0 JP Added ITipFile and subclasses to support file-wide access.
 01-mar-2005 v2r1p2 JP Fixed some bugs: 1) Infinite loop when table with one column accessed,
                       2) Writing a string containing a number to a numeric field didn't work.
                       3) TipException::code was returning 1 for all errors.
