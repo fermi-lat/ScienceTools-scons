@@ -1,28 +1,35 @@
 # $Header$
 #---------------------------------------------------------------------------------------
-clobber,  b, a, "YES", , , "Overwrite existing output file?: "
-chatter,  i, a,   10,  , , , "Chatter: "
-mode,     s, a,  "h",   , ,""
+clobber,  b, h, "YES", , , "Overwrite existing output files with new output files"
+chatter,  i, h,   2,0,4 , , "Chattiness of output"
+debug,    b, h, "no", , , , "Debugging mode activated"
+mode,     s, h,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,     s, a,  "ql",   , ,""
-
+#mode,     s, h,  "ql",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile,  f, a, "$(OUTFILES)/expcube_1day.fits", , , "Name of the exposure cube input file:"
-table_name,s,a,"",,,"name of the extension or ROOT tree"
-filter,   s, a, "", , , "filter expression:"
-outfile,  f, a, "$(OUTFILES)/exp_1_day_ait.fits", , , "Name of the exposure output file:"
+infile,f,a,"$(OUTFILES)/expcube_Gleam42.fits",,,"Name of the exposure cube input file:"
+table,s,a,,,,"name of the extension or ROOT tree"
+filter,s,h,,,,"filter expression:"
+outfile,f,a,"simple.fits",,,"output file name"
 #
+#------------ describe the effective area -------
+rspfunc, s, a, "simple", "SIMPLE|DC1F|DC1B|DC1FB|DC2|G25","","response function type"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #
-npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
-npixy,    i, a,  180,   , , "Total pixel size of the image in y axis: "
-pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
-xref,     r, a,    0,   , , "RA/L at the image center: "
-yref,     r, a,    0,   , , "DEC/B at the image center: "
-rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
-projtype, s, a, "AIT",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
-uselb,    b, a, "YES",   , , "use l,b instead of ra,dec :"
+npix,i,h,0,,,Total pixel size of the image in each axis: (0 for all sky auto)
+npixy,i,h,0,,,Total pixel size of the image in y axis: (0 for automatic)
+pixelsize,r,a,1,,,Image size [degrees/pixel]
+xref,r,a,0,,,RA/L at the image center:
+yref,r,a,0,,,DEC/B at the image center:
+rot,r,a,0,,,Rotation angle of Y-axis relative to the physical coordinate:
+projtype,s,a,"CAR","CAR|AIT",,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
+uselb,b,a,no,,,use galactic coords:
 #---------------------------------------------------------------------------------------
+#Parameters for layers
+layers,i,a,8,,,layers
+emin,r,a,31.6227766, 30, 0, Minimium energy
+eratio,r,a,3.16227766, 2, 0, ratio betwee energies
+ 

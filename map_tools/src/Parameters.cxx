@@ -21,7 +21,7 @@ Parameters::Parameters( int argc, char *argv[])
 :  m_par(*new hoops::ParPromptGroup(argc, argv))
 ,  m_own_ppg(true)
 {  
-     setup();
+    setup();
 }
 //! Constructor
 Parameters::Parameters( hoops::IParGroup & par) 
@@ -36,10 +36,10 @@ Parameters::~Parameters() throw() {
 
 void Parameters::setup()
 {
-      // Prompt for all parameters in the order in the par file:
+    // Prompt for all parameters in the order in the par file:
 
-  dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
-   dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
+    dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
+    dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
     m_chatter = m_par["chatter"];
 
     m_clobber = m_par["clobber"];
@@ -56,7 +56,7 @@ void Parameters::setup()
     m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);
 
-    std::string table_name = m_par["table_name"];
+    std::string table_name = m_par["table"];
     m_table_name = table_name;
 
     if( m_clobber ) m_outFile= "!"+m_outFile;  // FITS convention to rewrite file

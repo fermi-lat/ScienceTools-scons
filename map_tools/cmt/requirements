@@ -10,6 +10,8 @@ use astro v1*
 use hoops * 
 use tip  *
 use st_app *
+use irfInterface * irfs
+use dc1Response * irfs 
 
 
 apply_pattern ST_library option=-no_share
@@ -23,7 +25,9 @@ macro_append test_source "" WIN32 " -s=..\pfiles test_map_tools.par"
 
 
 # add separate image code to the library
-#apply_pattern ST_add_to_lib name=image
+apply_pattern ST_add_to_lib name=image
+
+set OUTFILES "$(MAP_TOOLSROOT)/output"
 
 public
 # applications
