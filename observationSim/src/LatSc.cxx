@@ -7,6 +7,7 @@
  */
 
 #include "astro/EarthCoordinate.h"
+#include "astro/PointingTransform.h"
 #include "flux/GPS.h"
 #include "LatSc.h"
 
@@ -53,6 +54,15 @@ HepRotation LatSc::InstrumentToCelestial(double time) {
 
 // Return the desired rotation matrix.
    return HepRotation(xAxisCel(), yAxisCel(), zAxisCel());
+
+// // Try to use astro::PointingTransform class.
+
+//    GPS *gps = GPS::instance();
+//    astro::SkyDir xAxis(gps->RAX(), gps->DECX());
+//    astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
+
+//    astro::PointingTransform transform(zAxis, xAxis);
+//    return transform.localToCelestial();
 }
 
 int LatSc::inSaa(double time) {

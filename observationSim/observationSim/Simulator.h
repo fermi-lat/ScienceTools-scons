@@ -12,12 +12,13 @@
 #include <string>
 #include <iostream>
 #include "CLHEP/Geometry/Vector3D.h"
-#include "flux/CompositeSource.h"
 #include "flux/FluxMgr.h"
 
 #include "latResponse/Irfs.h"
 
 #include "observationSim/Spacecraft.h"
+
+class CompositeSource;
 
 namespace observationSim {
 
@@ -69,7 +70,7 @@ public:
              double startTime = 0.)
       {init(sourceNames, fileList, totalArea, startTime);}
 
-   ~Simulator() {delete m_fluxMgr; delete m_source;}
+   ~Simulator();
 
    /// Specify the rocking strategy from among those defined by
    /// FluxSvc::GPS::RockType.  

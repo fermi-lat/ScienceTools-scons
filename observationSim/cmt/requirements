@@ -1,5 +1,5 @@
 package observationSim
-version v1r0
+version v1r0p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -42,6 +42,8 @@ macro test_observationSimstamps "observationSim.stamp"
 # make sure exposureMap application gets built when library changes
 macro exposureMapstamps "exposureMap.stamp"
 
+macro testGoodiReadstamps "testGoodiRead.stamp"
+
 # standard package library
 macro my_headers "" WIN32 "../observationSim/*.h *.h"
 library observationSim -no_share $(my_headers) \
@@ -55,8 +57,9 @@ library observationSim -no_share $(my_headers) \
  $(pydir)/*.i
 # trapfpe.c
 
-# test application
+# test applications
 application test_observationSim test/main.cxx
+#application testGoodiRead test/testGoodiRead.cxx
 
 # exposure map calculator
-application exposureMap test/exposureMap.cxx
+#application exposureMap test/exposureMap.cxx

@@ -11,7 +11,7 @@
 #include <algorithm>
 
 #include "flux/EventSource.h"
-//#include "flux/../src/CompositeSource.h"
+#include "flux/CompositeSource.h"
 #include "flux/SpectrumFactoryTable.h"
 #include "flux/FluxMgr.h"
 #include "flux/ISpectrumFactory.h"
@@ -55,6 +55,11 @@ const ISpectrumFactory& MapSpectrumFactory = factory;
 // }
 
 namespace observationSim {
+
+Simulator::~Simulator() {
+   delete m_fluxMgr;
+   delete m_source;
+}
 
 void Simulator::init(const std::string &sourceName,
                      const std::vector<std::string> &fileList,

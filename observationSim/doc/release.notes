@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r0p1 13-Oct-03   JC   tagging for ScienceTools.
     v1r0   02-Oct-03   JC   use Goodi in EventContainer; waiting on FT2
                             implementation for ScDataContainer
     v0r3p4 29-Sep-03   JC   use libMapFlux.so on Linux; final tag before
