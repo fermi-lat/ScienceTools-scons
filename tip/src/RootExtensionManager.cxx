@@ -259,6 +259,10 @@ namespace tip {
     throw TipException("Images in Root files not supported");
   }
 
+  void RootExtensionManager::setImageDimensions(const std::vector<PixOrd_t> & ) {
+    throw TipException("Images in Root files not supported");
+  }
+
   void RootExtensionManager::getPixel(PixOrd_t, PixOrd_t, double &) const {
     throw TipException("Images in Root files not supported");
   }

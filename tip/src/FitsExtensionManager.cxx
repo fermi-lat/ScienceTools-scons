@@ -106,11 +106,11 @@ namespace tip {
     int status = 0;
     if (m_num_records < num_records) {
       fits_insert_rows(m_fp, m_num_records, num_records - m_num_records, &status);
-      if (0 != status) throw TipException("Could not insert rows in FITS table");
+      if (0 != status) throw TipException(formatWhat("setNumRecords could not insert rows in FITS table"));
       m_num_records = num_records;
     } else if (m_num_records > num_records) {
       fits_delete_rows(m_fp, num_records + 1, m_num_records - num_records, &status);
-      if (0 != status) throw TipException("Could not delete rows from FITS table");
+      if (0 != status) throw TipException(formatWhat("setNumRecords could not delete rows from FITS table"));
       m_num_records = num_records;
     }
   }
@@ -182,7 +182,7 @@ namespace tip {
       // Update column information objects.
       info.m_repeat = num_elements;
     } else {
-      throw TipException(std::string("setFieldNumElements cannot change the width of variable length column " + info.m_name));
+      throw TipException(std::string(formatWhat("setFieldNumElements cannot change the width of variable length column " + info.m_name)));
     }
   }
 
@@ -215,7 +215,33 @@ namespace tip {
     getColumnInfo(field_name, col_num);
   }
 
-  const std::vector<PixOrd_t> & FitsExtensionManager::getImageDimensions() const { return m_image_dimensions; }
+  const std::vector<PixOrd_t> & FitsExtensionManager::getImageDimensions() const {
+    if (m_is_table) throw TipException(formatWhat("getImageDimensions called but object is not an image"));
+    return m_image_dimensions;
+  }
+
+  void FitsExtensionManager::setImageDimensions(const std::vector<PixOrd_t> & dims) {
+    if (m_is_table) throw TipException(formatWhat("setImageDimensions called but object is not an image"));
+
+    // Make C primitive copy of array to pass to Cfitsio.
+    std::vector<PixOrd_t>::size_type naxis = dims.size();
+    long * naxes = new long[naxis];
+
+    // Reverse order of axes.
+    for (std::vector<PixOrd_t>::size_type ii = 0; ii < naxis; ++ii)
+      naxes[ii] = dims[naxis - 1 - ii];
+
+    int status = 0;
+    int bitpix = 0;
+
+    // Get current image type, which will not be changed by the resize operation.
+    fits_get_img_type(m_fp, &bitpix, &status);
+    if (0 != status) throw TipException(formatWhat("setImageDimensions cannot determine image type"));
+
+    // Resize the image.
+    fits_resize_img(m_fp, bitpix, naxis, naxes, &status);
+    if (0 != status) throw TipException(formatWhat("setImageDimensions cannot change image dimensions"));
+  }
 
   void FitsExtensionManager::getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const {
     if (m_is_table) throw TipException(formatWhat("getPixel called, but object is not an image"));
@@ -240,7 +266,7 @@ namespace tip {
     double array[2] = { pixel, 0. };
 
     // Write the copy to the output file:
-    fits_write_pix(m_fp, DOUBLE_IMG, coord, 1, array, &status);
+    fits_write_pix(m_fp, TDOUBLE, coord, 1, array, &status);
     if (0 != status) throw TipException(formatWhat("setPixel could not write a double to a pixel"));
   }
 

@@ -176,6 +176,11 @@ namespace tip {
       */
       virtual const std::vector<PixOrd_t> & getImageDimensions() const = 0;
 
+      /** \brief Set the dimensionality of an image.
+          \param dims Array holding the sizes in each dimension.
+      */
+      virtual void setImageDimensions(const std::vector<PixOrd_t> & dims) = 0;
+
       /** \brief Get a specific pixel from an image extension.
           \param x The x ordinate of the pixel.
           \param y The y ordinate of the pixel.
