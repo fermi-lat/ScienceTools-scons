@@ -15,7 +15,7 @@ namespace astro {
 	HepRotation PointingTransform::localToGalactic () const{
 		const Hep3Vector& xd(m_xDir.dir());
 		const Hep3Vector& zd(m_zDir.dir());
-		const Hep3Vector& yd( (m_zDir.dir())*( m_xDir.dir() ) );
+		const Hep3Vector& yd( -(m_xDir.dir()).cross( m_zDir.dir() ) );
 		HepRotation ret(xd,yd,zd);
 		return ret;
 	}
