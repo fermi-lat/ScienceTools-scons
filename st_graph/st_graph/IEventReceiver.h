@@ -29,6 +29,10 @@ namespace st_graph {
       /** \brief Layout subframes of the given frame.
       */
       virtual void layout(IFrame *) {}
+
+      /** \brief Handle frame modified event.
+      */
+      virtual void modified(IFrame *, const std::string &) {}
   };
 
 }
