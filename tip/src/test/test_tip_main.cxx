@@ -539,6 +539,43 @@ int main() {
       status = 1;
     }
     
+    // Test reading and writing string valued columns.
+    try {
+      // Create an output file using a file for the template which has some string-valued columns.
+      IFileSvc::instance().createFile("new_groD4-dc2v1.fits", data_dir + "groD4-dc2v1.fits");
+
+      // Open the input file for reading.
+      const Table * in_table = IFileSvc::instance().readTable(data_dir + "groD4-dc2v1.fits", "SPIN_PARAMETERS");
+
+      // Open the output file for writing.
+      Table * out_table = IFileSvc::instance().editTable("new_groD4-dc2v1.fits", "SPIN_PARAMETERS");
+
+      // Populate the output file with the contents of the input file.
+      Table::Iterator out_itor = out_table->begin();
+      for (Table::ConstIterator in_itor = in_table->begin(); in_itor != in_table->end(); ++in_itor, ++out_itor) {
+        std::string ipsrname;
+        std::string opsrname;
+        (*in_itor)["PSRNAME"].get(ipsrname);
+        (*out_itor)["PSRNAME"].set(ipsrname);
+
+        // Compare the two values to make sure the one written matches the one read.
+        (*out_itor)["PSRNAME"].get(opsrname);
+        if (ipsrname != opsrname) {
+          status = 1;
+          std::cerr << "Unexpected: input string \"" << ipsrname << "\" was written as \"" << opsrname << "\"" << std::endl;
+        }
+      }
+
+      // Clean up.
+      delete out_table;
+      delete in_table;
+      
+    } catch(const TipException & x) {
+      status = 1;
+      std::cerr << "Unexpected exception while creating or populating a new table to test column string access: "
+        << x.what() << std::endl;
+    }
+
     // Test IExtensionData and its subclasses. New tests should not be added here, but rather
     // to the test object class below. The tests in the TestExtensionData function should be
     // eventually superceded by the tests in tip::TestExtensionData class.
