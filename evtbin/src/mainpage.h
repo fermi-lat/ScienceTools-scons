@@ -65,6 +65,41 @@
                binners.
                Application: 11) Add capability of using these new
                binners.
+
+    6/22/2004  12) For DC2: Add ability to write a bin definition file.
+               Add a generic template for writing bin definition files
+               for energy and time bins (generic format preferred).
+               Add a boolean parameter asking user whether bin def file
+               should be written, then what name to give it.
+               13) For DC2: GTI extension from input file should be written in
+               all output files. If time binning was performed, the GTIs
+               need to be the intersection of the original GTIs with the
+               tstart/tstop given by the binning. Open issue: Does U2
+               tool exclude events which are in gaps when U2 creates the GTI?
+               If so, then evtbin need not worry about this case. Otherwise,
+               evtbin needs to prefilter events based on GTI before binning.
+               Open issue: in PHA2 case need to know which GTI extension applies
+               to which spectrum. This is not standardized, but see what other
+               missions do. Drop PHA2 support until after DC2?
+               14) Post-DC2: evtbin needs to compute livetime from
+               GTI and FT2 data. FT2 gives every 30 seconds the fraction of
+               live time, so evtbin does sum (GTI/30 * live fraction) over all GTIs.
+               etc. etc. Tedious!
+               15) For DC2: Ebounds extension needs to be filled for pha1 and pha2.
+               16) For DC2: Count map needs WCS (CR*) keywords.
+               17) For DC2: Keywords: DETCHANS keyword == # channels in spectrum (pha1 & pha2).
+               TSTART/TSTOP taken from left/right edge of first/last GTI.
+               EXPOSURE keyword is == livetime from point 14. ONTIME is sum of all GTI.
+               For DC2, write EXPOSURE == ONTIME, but eventually EXPOSURE needs to be
+               computed properly. Copy TIMESYS, MJDREF, EQUINOX and RADECSYS from event file! Set
+               FILENAME keyword. For now, write TIMEZERO == 0.
+               18) Post DC2: Spatial/energy binning, multiple spectra for a single GTI,
+               using Ciao library?
+               19) For DC2: ALL SPECTRA in keV, no matter what!
+               20) For DC2?? TIMEZERO hidden parameter, subtract offset from times, and
+               write TIMEZERO accordingly.
+               21) GTI is always written for all output file types.
+
 \endverbatim
 
     \subsection status Status of Development
@@ -79,6 +114,10 @@
                template for PHA2 files.
 
     5/20/2004  Point 5 has now been completely addressed. This version was tagged v0r2p0.
+
+    6/22/2004  Points 6, 7, 8, 9 were addressed some time ago. Points 17 and 15 were completed
+               today.
+
 \endverbatim
 
     \section library_details Library Design Details
