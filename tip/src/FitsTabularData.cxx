@@ -12,7 +12,11 @@
 namespace table {
 
   FitsTabularData::FitsTabularData(FitsExtensionUtils * fits_utils): ITabularData(),
-    m_fits_utils(fits_utils) { m_fits_utils->openTable(); }
+    m_fits_utils(fits_utils) {
+    if (!m_fits_utils) throw TableException("FitsTabularData::FitsTabularData(FitsExtensionUtils *): "
+      "Cannot create FitsTabularData object with NULL FitsExtensionUtils pointer");
+    m_fits_utils->openTable();
+  }
 
   Index_t FitsTabularData::getNumRecords() const { return m_fits_utils->getNumRecords(); }
 

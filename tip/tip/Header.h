@@ -12,6 +12,7 @@
 
 #include "table/Keyword.h"
 #include "table/Header.h"
+#include "table/TableException.h"
 #include "table/table_types.h"
 
 namespace table {
@@ -31,7 +32,10 @@ namespace table {
       /** \brief Construct a new Header object from the given abstract header data.
           \param header_data The header data. Concrete objects will be FITS or Root-specific.
       */
-      Header(IHeaderData * header_data): m_keywords(), m_header_data(header_data) {}
+      Header(IHeaderData * header_data): m_keywords(), m_header_data(header_data) {
+        if (!m_header_data) throw TableException("Header::Header(IHeaderData *): Cannot create Header object "
+          "with NULL IHeaderData pointer");
+      }
 
       /** \brief Random read/write keyword access.
           \param name The name of the keyword.

@@ -24,7 +24,7 @@ namespace table {
       /** \brief Create a FitsHeaderData object which refers to the given utility object.
           \param fits_utils Pointer to the FITS utility object.
       */
-      FitsHeaderData(FitsExtensionUtils * fits_utils): m_fits_utils(fits_utils) {}
+      FitsHeaderData(FitsExtensionUtils * fits_utils);
 
       virtual ~FitsHeaderData() {}
 

@@ -60,7 +60,11 @@ namespace table {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
-      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(extension_data->getTabularData()) {}
+      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(0) {
+        if (extension_data) m_tab_data = extension_data->getTabularData();
+        else throw TableException("Table::Table(IExtensionData *): "
+          "Cannot create Table with NULL IExtensionData pointer.");
+      }
 
       virtual ~Table() {}
 
