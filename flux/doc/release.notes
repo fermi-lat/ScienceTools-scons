@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
     EOH
 
+   v8r16   26-mar-2005 thb Move geomag away, add dependency on new astro; increase backoff distance
    v8r15p1 20-mar-2005 thb change instantly from 1e-6 to 1e-30
    v8r15   19-mar-2005 thb 
    v8r14p5 17-mar-2005 thb have the tick start instantly

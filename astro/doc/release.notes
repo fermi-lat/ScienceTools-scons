@@ -3,8 +3,10 @@
 
   package astro
   Package coordinators: T.Burnett
+$Id$
 
 @verbatim
+  v1r7     26-mar-05 THB GPS move P.Nolan's table for geomagnetic stuff here, access via EarthCoordinate
   v1r6     19-mar-05 THB GPS fixes to transmit altitude properly
   v1r5p3   07-mar-05 THB gcc behavior work-around 
   v1r5p2   05-mar-05 THB gcc difference. 
