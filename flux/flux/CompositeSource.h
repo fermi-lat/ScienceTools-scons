@@ -54,7 +54,7 @@ public:
     std::string findSource()const;
     
     /// return a unique number correcponding to that spectrum
-    int numSource()const;
+    virtual  int numSource()const;
     
     
     ///	    list of sources which make up this composite
@@ -74,9 +74,8 @@ public:
     /// return how many sources are in the sourcelist
     int howManySources(){return m_sourceList.size();}
 
-	/// is the most recent photon occulted?
-	bool occulted(){return m_occulted;}
-
+    /// is the most recent photon occulted?
+    bool occulted(){return m_occulted;}
     
 protected:
     

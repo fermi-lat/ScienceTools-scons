@@ -67,10 +67,8 @@ public:
     ///    area 
     static double	totalArea ();
     static void	totalArea ( double value );
-
 	/// Is the current particle occulted?
 	virtual bool occulted() = 0;
-    
     /// virtual event number: should be filled in by subclass
     virtual int eventNumber()const{return -1;} 
     
@@ -79,7 +77,7 @@ public:
     
     
     /// return a unique number correcponding to that spectrum
-    virtual int numSource()const{return -1;}
+    virtual int  numSource()const{return -1;}
     
     virtual double time()const{return m_time;}
     virtual void setTime(double time){m_time=time;}

@@ -139,9 +139,11 @@ std::string CompositeSource::findSource()const
     return m_recent->fullTitle();
 }
 
-int CompositeSource::numSource()const
+int  CompositeSource::numSource()const
 {
     ///Purpose: Return a unique number correcponding to the current spectrum.
-    return m_numofiters;
+    // if selected source is composite itself, (id=-1)  add its id as an integer
+    int t=m_recent->numSource();
+    return 1000*m_numofiters + (t==-1? 0:  t/1000);
 }
 
