@@ -16,23 +16,25 @@ int main() {
 
   using namespace table;
 
+  Table * my_table = 0;
+
   try {
     try {
       // Opening a non-existent file should throw an exception.
-      Table * my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
+      my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
       std::cerr << "Opening non-existent.pha didn't throw a TableException." << std::endl;
-
-      delete my_table;
 
       status = 1;
     } catch(const TableException & x) {
       // This is as it should be
     }
 
+    delete my_table;
+
     // The following test file should be present.
-    Table * my_table = IFileSvc::getSvc().editTable("a1.pha", "SPECTRUM");
+    my_table = IFileSvc::getSvc().editTable("a1.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
@@ -239,6 +241,8 @@ int main() {
   } catch(...) {
     std::cerr << "Unhandled unknown thrown object." << std::endl;
   }
+
+  delete my_table;
 
   return status;
 }
