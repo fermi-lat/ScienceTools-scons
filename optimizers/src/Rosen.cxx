@@ -21,6 +21,8 @@ void Rosen::init() {
    addParam(std::string("x"), 1, true);
    addParam(std::string("y"), 1, true);
 //   std::cout << "Rosen::init: " << m_parameter.size() << std::endl;
+
+   m_genericName = "Rosen";
 }
 
 double Rosen::value(Arg &) const {

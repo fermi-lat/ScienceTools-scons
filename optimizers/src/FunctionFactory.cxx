@@ -130,7 +130,6 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
       std::vector<DOM_Element>::const_iterator paramIt = params.begin();
       for (; paramIt != params.end(); paramIt++) {
          Parameter parameter;
-//         Dom::readParamData(*paramIt, parameter);
          parameter.extractDomData(*paramIt);
          funcObj->setParam(parameter);
       }
@@ -140,17 +139,17 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
 }
 
 void FunctionFactory::writeXml(const std::string &xmlFile) {
+// This DOM_Document object doesn't get written out directly; it is
+// used to create DOM_Elements, since the DOM_Element constructors do
+// not allow the tag names to be specified.
    DOM_Document doc = DOM_Document::createDocument();
 
+// The base DOM_Element.
    DOM_Element funcLib;
-   try {
-      funcLib = doc.createElement("function_library");
-      funcLib.setAttribute("title", "prototype Functions");
-   } catch (DOM_DOMException &eObj) {
-      std::cout << "DOMException: "
-                << eObj.code << std::endl;
-   }
+   funcLib = doc.createElement("function_library");
+   funcLib.setAttribute("title", "prototype Functions");
 
+// Loop over the Function prototypes, keeping only the derived prototypes.
    std::map<std::string, Function *>::iterator funcIt = m_prototypes.begin();
    for ( ; funcIt != m_prototypes.end(); funcIt++) {
       DOM_Element funcElt = doc.createElement("function");
@@ -161,46 +160,21 @@ void FunctionFactory::writeXml(const std::string &xmlFile) {
 // Skip this Function since a lack of type implies a base prototype.
          continue;
       } else {
-         funcElt.setAttribute("type", type.c_str());
+//         funcElt.setAttribute("type", type.c_str());
+// Use the generic name of the Function object as the type attribute.
+         funcElt.setAttribute("type", funcIt->second->genericName().c_str());
       }
 
-      std::vector<Parameter> params;
-      funcIt->second->getParams(params);
-      std::vector<Parameter>::iterator paramIt = params.begin();
-      for ( ; paramIt != params.end(); paramIt++) {
-         try {
-            DOM_Element paramElt = paramIt->createDomElement(doc);
-            funcElt.appendChild(paramElt);
-         } catch (DOM_DOMException &eObj) {
-            std::cout << "DOMException: "
-                      << eObj.code << std::endl;
-         } catch (...) {
-            std::cout << "other exception while appending paramElt" 
-                      << std::endl;
-         }
-      }
-      try {
-         funcLib.appendChild(funcElt);
-      } catch (DOM_DOMException &eObj) {
-         std::cout << "DOMException: "
-                   << eObj.code << std::endl;
-      } catch (...) {
-         std::cout << "other exception while appending funcElt" 
-                   << std::endl;
-      }
+      funcIt->second->appendParamDomElements(doc, funcElt);
+
+      funcLib.appendChild(funcElt);
    }
+
+// Write the XML file using the static function.
    std::ofstream outFile(xmlFile.c_str());
    outFile << "<?xml version='1.0' standalone='no'?>\n"
            << "<!DOCTYPE function_library SYSTEM \"FunctionModels.dtd\" >\n";
-   try {
-      xml::Dom::prettyPrintElement(funcLib, outFile, "");
-   } catch (DOM_DOMException &eObj) {
-      std::cout << "DOMException: "
-                << eObj.code << std::endl;
-   } catch (...) {
-      std::cout << "other exception while calling prettyPrint" 
-                << std::endl;
-   }
+   xml::Dom::prettyPrintElement(funcLib, outFile, "");
 }
 
 } // namespace optimizers

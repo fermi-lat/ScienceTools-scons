@@ -9,6 +9,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <xercesc/dom/DOM_Node.hpp>
+#include <xercesc/dom/DOM_Element.hpp>
+#include <xercesc/dom/DOM_Document.hpp>
+
 #include "optimizers/Function.h"
 
 namespace optimizers {
@@ -264,6 +268,14 @@ void Function::fetchDerivs(Arg &x, std::vector<double> &derivs,
    for (unsigned int i = 0; i < m_parameter.size(); i++) {
       if (!getFree || m_parameter[i].isFree())
          derivs.push_back(derivByParam(x, m_parameter[i].getName()));
+   }
+}
+
+void Function::appendParamDomElements(DOM_Document &doc, DOM_Node &node) {
+   std::vector<Parameter>::iterator paramIt = m_parameter.begin();
+   for ( ; paramIt != m_parameter.end(); paramIt++) {
+      DOM_Element paramElt = paramIt->createDomElement(doc);
+      node.appendChild(paramElt);
    }
 }
 

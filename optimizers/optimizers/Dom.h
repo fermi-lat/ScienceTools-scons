@@ -43,8 +43,6 @@ public:
                            const std::string &tagName,
                            std::vector<DOM_Element> &children);
 
-//   static void readParamData(const DOM_Element &elt, Parameter &param);
-
 };
 
 } // namespace optimizers

@@ -28,9 +28,11 @@ void Gaussian::init(double Prefactor, double Mean, double Sigma) {
    addParam(std::string("Mean"), Mean, true);
    addParam(std::string("Sigma"), Sigma, true);
 
-// set FuncType and ArgType for use with CompositeFunction hierarchy
+// Set FuncType and ArgType for use with CompositeFunction hierarchy.
    m_funcType = Addend;
    m_argType = "dArg";
+
+   m_genericName = "Gaussian";
 }
 
 double Gaussian::integral(Arg &xargmin, Arg &xargmax) const {

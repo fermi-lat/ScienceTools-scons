@@ -29,9 +29,12 @@ void AbsEdge::init(double Tau0, double E0, double Index) {
    addParam(std::string("E0"), E0, true);
    addParam(std::string("Index"), Index, true);
 
-// set FuncType and ArgType for use with CompositeFunction hierarchy
+// Set FuncType and ArgType for use with CompositeFunction hierarchy
    m_funcType = Factor;
    m_argType = "dArg";
+
+// The generic type of this Function object.
+   m_genericName = "AbsEdge";
 }
 
 double AbsEdge::value(Arg &xarg) const {
