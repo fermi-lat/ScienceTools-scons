@@ -345,7 +345,7 @@
     <source name="galdiffusemap">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.03,1e5,2.1,/sources/gas_gal.fits"/> 
+             params="0.1,0.03,2e5,2.1,1.,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>
@@ -355,7 +355,7 @@
     <source name="galdiffusemap30">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.03,1e5,2.1,/sources/gas_gal.fits"/> 
+             params="0.1,0.03,2e5,2.1,1.,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>
@@ -365,7 +365,7 @@
     <source name="galdiffusemap20">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.02,1e3,2.1,/sources/gas_gal.fits"/> 
+             params="0.1,0.02,2e3,2.1,1.,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>
@@ -533,6 +533,12 @@
 <!-- MapSource version of the Galactic Diffuse model -->
    <source name="Galactic_diffuse">
       <spectrum escale="MeV">
+<!-- Total photon flux from the map (#/m^2/s) = 17.
+     Photon spectral index = 2.1
+     Fits file (plate-carree only) = $(FLUXROOT)/sources/gas_gal.fits
+     Minimum photon energy (MeV) = 30.
+     Maximum photon energy (MeV) = 2e5
+-->
          <SpectrumClass name="MapSource"
          params="17.,2.1,$(FLUXROOT)/sources/gas_gal.fits,30.,2e5"/>
          <use_spectrum frame="galaxy"/>
