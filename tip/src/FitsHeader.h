@@ -99,6 +99,20 @@ namespace tip {
       */
       virtual void setKeyUnit(const std::string & name, const std::string & unit);
 
+      /** \brief Add a descriptive comment message to the header.
+          \param comment The comment string to add.
+      */
+      virtual void addComment(const std::string & comment);
+
+      /** \brief Add a descriptive history message to the header.
+          \param history The history string to add.
+      */
+      virtual void addHistory(const std::string & history);
+
+      const std::string & getName() const;
+
+      void setName(const std::string & name);
+
     private:
       /** \brief Templated function which can get keywords from a FITS table, converted to any data type.
           \param name The name of the keyword.
@@ -120,6 +134,7 @@ namespace tip {
       std::string m_ext_name;
       std::string m_filter;
       fitsfile * m_fp;
+      bool m_is_primary;
       bool m_is_table;
       bool m_read_only;
   };

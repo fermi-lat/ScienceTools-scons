@@ -14,7 +14,7 @@ namespace tip {
 
   FitsHeader::FitsHeader(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_fp(0), m_is_table(false), m_read_only(read_only) { open(); }
+    m_filter(filter), m_fp(0), m_is_primary(false), m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
   FitsHeader::~FitsHeader() { close(); }
@@ -62,6 +62,26 @@ namespace tip {
       // Success: save the pointer.
       m_fp = fp;
 
+      // See whether this is the primary extension.
+      int hdu_num = 0;
+      fits_get_hdu_num(m_fp, &hdu_num);
+      m_is_primary = (1 == hdu_num);
+
+      // Get the name of the extension. Do it this way, and not just by relying on m_ext_name in case
+      // the user specified a wildcard.
+      if (!m_is_primary) {
+        try {
+          getKeyword("EXTNAME", m_ext_name);
+        } catch (const TipException &) {
+        }
+      }
+      if (m_ext_name.empty()) {
+        try {
+          getKeyword("HDUNAME", m_ext_name);
+        } catch (const TipException &) {
+        }
+      }
+
       // Check whether the file pointer is pointing at a table:
       int hdu_type = 0;
       fits_get_hdu_type(m_fp, &hdu_type, &status);
@@ -90,6 +110,8 @@ namespace tip {
   }
 
   void FitsHeader::setKeyComment(const std::string & name, const std::string & comment) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write comment for keyword \"") + name + "\"; object is not writable"));
     int status = 0;
     fits_modify_comment(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(comment.c_str()), &status);
     if (0 != status) throw TipException(formatWhat(std::string("Cannot write comment for keyword \"") + name + '"'));
@@ -104,9 +126,36 @@ namespace tip {
   }
 
   void FitsHeader::setKeyUnit(const std::string & name, const std::string & unit) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write unit for keyword \"") + name + "\"; object is not writable"));
     int status = 0;
     fits_write_key_unit(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(unit.c_str()), &status);
     if (0 != status) throw TipException(formatWhat(std::string("Cannot write unit for keyword \"") + name + '"'));
+  }
+
+  void FitsHeader::addComment(const std::string & comment) {
+    if (m_read_only)
+      throw TipException(formatWhat("Cannot add comment string; object is not writable"));
+    int status = 0;
+    fits_write_comment(m_fp, const_cast<char *>(comment.c_str()), &status);
+    if (0 != status) throw TipException(formatWhat("Cannot add comment string"));
+  }
+
+  void FitsHeader::addHistory(const std::string & history) {
+    if (m_read_only)
+      throw TipException(formatWhat("Cannot add history string; object is not writable"));
+    int status = 0;
+    fits_write_history(m_fp, const_cast<char *>(history.c_str()), &status);
+    if (0 != status) throw TipException(formatWhat("Cannot add history string"));
+  }
+
+  const std::string & FitsHeader::getName() const { return m_ext_name; }
+
+  void FitsHeader::setName(const std::string & name) {
+    if (m_read_only)
+      throw TipException(formatWhat("Cannot set extension name; object is not writable"));
+    if (m_is_primary) setKeyword("HDUNAME", name); else setKeyword("EXTNAME", name);
+    m_ext_name = name;
   }
 
   std::string FitsHeader::formatWhat(const std::string & msg) const {
