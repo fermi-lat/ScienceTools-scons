@@ -13,6 +13,7 @@
 #include "fitsio.h"
 
 #include "FitsExtension.h"
+#include "FitsPrimProps.h"
 #include "table/ITabularData.h"
 #include "table/table_types.h"
 
@@ -66,6 +67,8 @@ namespace table {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const;
 
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, std::vector<double> & value) const;
+
       /** \brief Get a keyword from this extension object.
           \param name The name of the keyword to get from the extension object.
           \param value The output value.
@@ -74,14 +77,89 @@ namespace table {
       virtual void getKeyword(const std::string & name, std::string & value) const;
 
     private:
-      // The real FITS-specific stuff is hidden in the utility class FitsExtension, accessed
-      // through the m_extension member.
+      struct ColumnInfo {
+          std::string m_name;
+          long m_repeat;
+          int m_col_num;
+      };
+
+      static const FieldIndex_t s_max_scalar_len = 64;
+
+      /** \brief Templated function which can get any kind of data from a FITS table. This
+          method throws an exception if the extension is not a table.
+          \param col_num The number of the column.
+          \param record_index The record (row) number.
+          \param value The variable in which the read value is placed.
+      */
+      template <typename T>
+      void getCellGeneric(int col_num, Index_t record_index, T & value) const;
+
+      /** \brief Templated function which can get any kind of vector data from a FITS table. This
+          method throws an exception if the extension is not a table.
+          \param col_num The number of the column.
+          \param record_index The record (row) number.
+          \param value The variable in which the read value is placed.
+      */
+      template <typename T>
+      void getVectorCellGeneric(int col_num, Index_t record_index, T & value) const;
+
       FitsExtension m_extension;
-      std::map<std::string, int> m_col_info;
+      std::map<std::string, ColumnInfo> m_col_name_lookup;
+      std::map<int, ColumnInfo> m_col_num_lookup;
       std::string m_file_name;
       std::string m_table_name;
       Index_t m_num_records;
   };
+
+  // Getting columns.
+  template <typename T>
+  inline void FitsTabularData::getCellGeneric(int col_num, Index_t record_index, T & value) const {
+    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
+    int status = 0;
+    fitsfile * fp = m_extension.getFitsFp();
+    fits_read_col(fp, data_type_code, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
+    if (status) throw TableException();
+  }
+
+  // Getting column values as bools is a special case because Cfitsio gets them as ints.
+  template <>
+  inline void FitsTabularData::getCellGeneric<bool>(int col_num, Index_t record_index, bool & value) const {
+    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
+    int status = 0;
+    int tmp = 0;
+    fitsfile * fp = m_extension.getFitsFp();
+    fits_read_col(fp, data_type_code, col_num, record_index + 1, 1, 1, 0, &tmp, 0, &status);
+    if (status) throw TableException();
+    value = tmp;
+  }
+
+  // Getting column values as strings is a special case because Cfitsio gets them as char *.
+  template <>
+  inline void FitsTabularData::getCellGeneric<std::string>(int col_num, Index_t record_index, std::string & value) const {
+    static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
+    int status = 0;
+    char tmp[s_max_scalar_len];
+    fitsfile * fp = m_extension.getFitsFp();
+    fits_read_col(fp, data_type_code, col_num, record_index + 1, 1, 1, 0, tmp, 0, &status);
+    if (status) throw TableException();
+    value = tmp;
+  }
+
+  // Getting vector-valued columns.
+  // T must be a vector type.
+  template <typename T>
+  inline void FitsTabularData::getVectorCellGeneric(int col_num, Index_t record_index, T & vec) const {
+    static int data_type_code = FitsPrimProps<typename T::value_type>::dataTypeCode();
+    int status = 0;
+    long repeat = m_col_num_lookup.find(col_num)->second.m_repeat;
+    fitsfile * fp = m_extension.getFitsFp();
+    vec.reserve(repeat);
+    // Note the following depends on vectors being contiguous in memory. The address of the first vector
+    // item is passed directly to fitsio. The C++ standard does not guarantee this, however, so this should
+    // be rewritten to use a native primitive array somehow.
+    fits_read_col(fp, data_type_code, col_num, record_index + 1, 1, repeat, 0, &*vec.begin(), 0, &status);
+    if (status) throw TableException();
+  }
 
 }
 
