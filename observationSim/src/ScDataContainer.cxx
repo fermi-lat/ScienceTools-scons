@@ -7,6 +7,7 @@
  */
 
 #include <sstream>
+#include <stdexcept>
 
 #include "CLHEP/Geometry/Vector3D.h"
 
@@ -29,8 +30,12 @@ ScDataContainer::~ScDataContainer() {
 void ScDataContainer::init() {
    m_scData.clear();
 
-   std::string rootPath(std::getenv("OBSERVATIONSIMROOT"));
-   m_ft2Template = rootPath + "/data/ft2.tpl";
+   char * root_path = std::getenv("OBSERVATIONSIMROOT");
+   if (root_path != 0) {
+      m_ft2Template = std::string(root_path) + "/data/ft2.tpl";
+   } else {
+      throw std::runtime_error("Environment variable OBSERVATIONSIMROOT not set.");
+   }
 }
 
 void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,

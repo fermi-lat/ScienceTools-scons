@@ -11,11 +11,10 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <utility>
-#include <sstream>
-#include <algorithm>
 #include <numeric>
+#include <sstream>
 #include <stdexcept>
+#include <utility>
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
@@ -101,8 +100,12 @@ void EventContainer::init() {
    m_events.clear();
    
    if (m_useFT1) {
-      std::string rootPath(std::getenv("OBSERVATIONSIMROOT"));
-      m_ft1Template = rootPath + "/data/ft1.tpl";
+      char * root_path = std::getenv("OBSERVATIONSIMROOT");
+      if (root_path != 0) {
+         m_ft1Template = std::string(root_path) + "/data/ft1.tpl";
+      } else {
+         throw std::runtime_error("Environment variable OBSERVATIONSIMROOT not set.");
+      }
    }
 }
 
