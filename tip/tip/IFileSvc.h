@@ -45,8 +45,17 @@ namespace tip {
       /** \brief Open an existing table with modification access.
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
+          \param filter Filtering string.
       */
       virtual Table * editTable(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing table without modification access.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual const Table * readTable(const std::string & file_name, const std::string & table_name,
         const std::string & filter = "");
 
     protected:

@@ -82,6 +82,31 @@ namespace tip {
     return retval;
   }
 
+  // Read-only a table in a file, be it FITS or Root.
+  const Table * IFileSvc::readTable(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    Table * retval = 0;
+    IExtensionData * data = 0;
+    TipException fits_exception;
+    try {
+      try {
+        // Open file with read-only mode enabled.
+        data = new FitsExtensionData(file_name, table_name, filter, true);
+      } catch(const TipException & x) {
+        fits_exception = x;
+        data = new RootExtensionData(file_name, table_name, filter);
+      }
+      retval = new Table(data);
+    } catch(const TipException & x) {
+      delete retval; // If retval is non-0, Table was created, so it will delete data.
+      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
+    } catch(...) {
+      delete retval; // If retval is non-0, Table was created, so it will delete data.
+      throw;
+    }
+    return retval;
+  }
+
   // Protected constructor which adds the current object to the registry of IFileSvc objects.
   IFileSvc::IFileSvc() {}
 
