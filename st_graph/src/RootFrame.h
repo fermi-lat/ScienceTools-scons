@@ -64,6 +64,18 @@ namespace st_graph {
       */
       virtual void removeFrame(IFrame * frame);
 
+      /// \brief Get the horizontal center of the frame.
+      virtual long getHCenter() const;
+
+      /// \brief Set the horizontal center of the frame.
+      virtual void setHCenter(long center);
+
+      /// \brief Get the vertical center of the frame.
+      virtual long getVCenter() const;
+
+      /// \brief Set the vertical center of the frame.
+      virtual void setVCenter(long center);
+
       /// \brief Get the X position of the left edge of the frame.
       virtual long getL() const;
 
@@ -80,27 +92,66 @@ namespace st_graph {
       */
       virtual void setR(long r);
 
+      /// \brief Get the Y position of the top edge of the frame.
+      virtual long getT() const;
+
+      /** \brief Set the Y position of the top edge of the frame.
+          \param t The new position of the top edge.
+      */
+      virtual void setT(long t);
+
+      /// \brief Get the Y position of the bottom edge of the frame.
+      virtual long getB() const;
+
+      /** \brief Set the Y position of the bottom edge of the frame.
+          \param b The new position of the bottom edge.
+      */
+      virtual void setB(long b);
+
       virtual long getWidth() const;
+
+      virtual void setWidth(long width);
 
       virtual long getHeight() const;
 
-      /** brief Handle mouse click event by forwarding it to receiver. Not part of the API.
+      virtual void setHeight(long height);
+
+      virtual long getMinimumWidth() const;
+
+      virtual void setMinimumWidth(long width);
+
+      virtual long getMinimumHeight() const;
+
+      virtual void setMinimumHeight(long height);
+
+      /** \brief Handle mouse click event by forwarding it to receiver. Not part of the API.
       */
       virtual void clicked();
 
-      /** brief Handle closeWindow event by forwarding it to receiver. Not part of the API.
+      /** \brief Handle closeWindow event by forwarding it to receiver. Not part of the API.
       */
       virtual void closeWindow();
+
+      /** \brief Handle modified event by forwarding it to receiver. Not part of the API.
+      */
+      virtual void modified(const char * text);
+
+      /** brief Set text owned by frame. Not part of the API.
+          \param text The new text.
+      */
+      virtual void setText(const char * text);
 
       /// \brief Get underlying Root frame. Not part of the API.
       virtual TGFrame * getTGFrame();
 
     protected:
-      std::list<IFrame *> m_subframes;
+      std::list<RootFrame *> m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;
       IEventReceiver * m_receiver;
       bool m_delete_parent;
+      long m_minimum_width;
+      long m_minimum_height;
 
     private:
       // Constructs a frame without any parents. This is a singleton.
