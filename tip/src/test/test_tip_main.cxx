@@ -79,10 +79,6 @@ int main() {
         // For convenience, dereference the iterator.
         Table::Record r = *itor;
 
-        // Explicitly get the "counts" field from the file into the counts_vec array, one value at
-        // a time.
-        r["counts"].get(counts_vec[ichan]);
-
         // Similarly, get the channel number. Just put this in a scalar however.
         // Get this field using mixed case to verify case insensitivity.
         r["CHANnel"].get(channel);
@@ -129,10 +125,9 @@ int main() {
 
       // Make local aliases to hold the channel and counts. These variables are bound to the record object.
       Table::Scalar<double> channel = r["channel"];
-      Table::Scalar<double> counts = r["counts"];
 
       // Just for fun, verify that one can copy-contruct a Scalar object.
-      Table::Scalar<double> spud = counts;
+      Table::Scalar<double> spud = channel;
 
       // An aside: for completeness, make a const iterator.
       const Table::Iterator citor = my_table->begin();
@@ -157,15 +152,6 @@ int main() {
 
         // Dereference the iterator. After this, channel and counts both refer to the current record.
         r = *itor;
-
-        if (counts != counts_vec[ichan]) {
-          static bool first_time = true;
-          if (first_time) {
-            std::cerr << "One or more values read from counts mismatched following get using Scalar." << std::endl;
-            status = 1;
-            first_time = false;
-          }
-        }
 
         // Confirm that the channel number read from the file matches what it should be.
         // Channels are numbered sequentially starting with 0.
@@ -204,19 +190,6 @@ int main() {
           }
         }
 
-        double dcounts = 1000.;
-        dcounts = counts;
-
-        if (dcounts != counts) {
-          static bool first_time = true;
-          if (first_time) {
-            std::cerr << "Assignment to double or comparison to double didn't work right for Scalar." << std::endl;
-            std::cerr << "dcounts == " << dcounts << " not " << counts << std::endl;
-            status = 1;
-            first_time = false;
-          }
-        }
-
         if (lchannel != channel) {
           static bool first_time = true;
           if (first_time) {
@@ -237,15 +210,7 @@ int main() {
             first_time = false;
           }
         }
-        if (counts != vcounts[0]) {
-          static bool first_time = true;
-          if (first_time) {
-            std::cerr << "First Counts value when read into a vector is " <<
-              double(vcounts[0]) << " not " << counts << std::endl;
-            status = 1;
-            first_time = false;
-          }
-        }
+
         double save_counts = vcounts[37];
         vcounts[37] = save_counts + 37.; 
         if (save_counts + 37. != vcounts[37]) {

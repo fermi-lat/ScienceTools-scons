@@ -37,6 +37,9 @@ namespace tip {
     // Test iterator access:
     readWriteFieldTest();
 
+    // Test iterator access to vector columns:
+    readWriteVectorFieldTest();
+
     // Test appending a field to an existing table.
     appendFieldTest();
 
@@ -229,6 +232,19 @@ namespace tip {
 
   void TestTable::readFieldTest(const Table * table, const std::string & field_name, std::vector<double> & field_values) {
     if (0 != table) {
+      std::string msg;
+
+      // Test error cases:
+      msg = std::string("getting scalar-valued \"") + field_name + "\" cell into a local vector variable";
+      try {
+        // Try to read scalar-valued column into a vector.
+        double vec[1];
+        (*table->begin())[field_name].get(0, 1, vec);
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
       // Find out how many records are in the table:
       Index_t num_records = -1;
       try {
@@ -264,6 +280,19 @@ namespace tip {
 
   void TestTable::writeFieldTest(Table * table, const std::string & field_name, const std::vector<double> & field_values) {
     if (0 != table) {
+      std::string msg;
+
+      // Test error cases:
+      msg = std::string("writing scalar-valued \"") + field_name + "\" cell from a local vector variable";
+      try {
+        // Try to write scalar-valued column into a vector.
+        double vec[1];
+        (*table->begin())[field_name].set(vec, vec + 1, 0);
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
       // Set the number of records in the table to match the array:
       Index_t num_records = -1;
       try {
@@ -285,6 +314,39 @@ namespace tip {
           (*out)[field_name].set(*itor);
         }
       }
+    }
+  }
+
+  void TestTable::readWriteVectorFieldTest() {
+    if (m_fits_table) {
+      Table * table = m_fits_table;
+      const Table * const_table = m_fits_table;
+
+      std::string msg;
+      std::string vector_field = "cOUnts";
+
+      // Test error cases:
+      msg = std::string("getting vector-valued \"") + vector_field + "\" cell into a local scalar variable";
+      try {
+        // Try to read vector-valued column into a scalar.
+        double scalar;
+        (*const_table->begin())[vector_field].get(scalar);
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
+      msg = std::string("setting vector-valued \"") + vector_field + "\" cell from a local scalar variable";
+      try {
+        // Try to write vector-valued column from a scalar.
+        double scalar;
+        (*table->begin())[vector_field].set(scalar);
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
+      // Todo: Test success and remove old-style tests.
     }
   }
 

@@ -57,6 +57,9 @@ namespace tip {
       */
       void writeFieldTest(Table * table, const std::string & field_name, const std::vector<double> & field_values);
 
+      /// \brief Test reading and writing vector-valued fields (just for FITS case for now).
+      void readWriteVectorFieldTest();
+
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();

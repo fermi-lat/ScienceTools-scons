@@ -29,7 +29,7 @@ namespace tip {
           \param field The name of this TableCell (the field in the ConstTableRecord).
       */
       TableCell(ConstTableRecord & record, const std::string & field): m_record(record), m_field(field),
-        m_field_index(s_field_unknown) {}
+        m_field_index(s_field_unknown), m_scalar(false) {}
 
       virtual ~TableCell() {}
 
@@ -79,7 +79,8 @@ namespace tip {
       static const FieldIndex_t s_field_unknown = -1;
       ConstTableRecord & m_record;
       std::string m_field;
-      FieldIndex_t m_field_index;
+      mutable FieldIndex_t m_field_index;
+      mutable bool m_scalar;
   };
 
   /** \class ConstTableRecord
@@ -208,15 +209,21 @@ namespace tip {
   // get method overloads:
   template <typename T>
   inline void TableCell::get(T & value) const {
-    if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+    if (m_field_index < 0) {
+      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+      if (1 == getNumElements()) m_scalar = true;
+    }
+    if (!m_scalar) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
     m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
   }
 
   template <typename T>
   inline void TableCell::get(Index_t src_begin, Index_t src_end, T * dest_begin) const {
-    if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+    if (m_field_index < 0) {
+      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+      if (1 == getNumElements()) m_scalar = true;
+    }
+    if (m_scalar) throw TipException(std::string("Field named ") + m_field + " is not a vector");
     m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
   }
 
@@ -231,19 +238,27 @@ namespace tip {
   inline void TableCell::set(const T & value) {
     T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
     tmp[0] = value;
-    if (m_field_index < 0) m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+    if (m_field_index < 0) {
+      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+      if (1 == getNumElements()) m_scalar = true;
+    }
+    if (!m_scalar) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
     m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
   }
 
   template <typename T>
   inline void TableCell::set(T * src_begin, T * src_end, Index_t dest_begin) {
-    if (m_field_index < 0) m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+    if (m_field_index < 0) {
+      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+      if (1 == getNumElements()) m_scalar = true;
+    }
+    if (m_scalar) throw TipException(std::string("Field named ") + m_field + " is not a vector");
     m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
   }
 
   inline Index_t TableCell::getNumElements() const {
     if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     return m_record.getExtensionData()->getFieldNumElements(m_field_index, m_record.getIndex());
   }
 
