@@ -49,7 +49,7 @@ int main(int argc, char ** argv) {
 
         // Set application name.
         this_st_app->setName(st_app::IStAppFactory::instance().getAppName());
-      } catch(const std::logic_error & x) {
+      } catch(const std::logic_error &) {
         throw std::logic_error("Failed to get an StAppFactory singleton: client must define one");
       }
 
