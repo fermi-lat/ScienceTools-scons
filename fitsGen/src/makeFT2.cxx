@@ -79,7 +79,7 @@ int main(int iargc, char * argv[]) {
 //    std::vector<double> livetime;
 //    std::vector<double> deadtime;
 
-   ifstream d2(d2File.c_str());
+   std::ifstream d2(d2File.c_str());
    std::string line;
    std::vector<std::string> dataFields;
    std::valarray<float> pos(3);
