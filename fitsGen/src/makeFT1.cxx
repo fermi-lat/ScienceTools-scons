@@ -281,11 +281,13 @@ int main(int iargc, char * argv[]) {
 //   data->setAcdTilesHit(acdTilesHit);
 
 
+   std::vector<double> gltword        = meritTuple("GltWord");
    std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
    std::vector<double> reconzdir      = meritTuple("ReconZDir");
    std::vector<double> calenergysum   = meritTuple("CalEnergySum");
    std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
    std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
+   std::vector<double> tkrnumtracks   = meritTuple("TkrNumTracks");
    std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
    std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
 
@@ -299,10 +301,12 @@ int main(int iargc, char * argv[]) {
      
      bool psf_filter =   (imcoreprob[i]>0.2) && (impsfprederr[i]<3.0);
 
-     if(global_cut && psf_filter) 
-       {
-	 (calibVersion[i])[0] = 1;
-       }
+     bool background_cut = (tkrnumtracks[i]>0) && (gltword[i]>3);
+
+     if(background_cut)  (calibVersion[i])[0] = 1.;
+     if(psf_filter) 	 (calibVersion[i])[1] = 1.;
+     if(global_cut) 	 (calibVersion[i])[2] = 1.;
+
    }
    data->setCalibVersion(calibVersion);
 
