@@ -66,15 +66,15 @@ int main(int iargc, char * argv[]) {
 
          short isGamma, goodPsf, goodEnergy;
          getEventFlags(merit, isGamma, goodPsf, goodEnergy);
-//          tip::Table::Vector<short> calibVersion = ft1["calib_version"];
-//          calibVersion[0] = isGamma;
-//          calibVersion[1] = goodPsf;
-//          calibVersion[2] = goodEnergy;
+         tip::Table::Vector<short> calibVersion = ft1["calib_version"];
+         calibVersion[0] = isGamma;
+         calibVersion[1] = goodPsf;
+         calibVersion[2] = goodEnergy;
 
-//          tip::Table::Vector<double> convPoint = ft1["conversion_point"];
-//          convPoint[0] = merit["FT1ConvPointX"].get();
-//          convPoint[1] = merit["FT1ConvPointY"].get();
-//          convPoint[2] = merit["FT1ConvPointZ"].get();
+         tip::Table::Vector<double> convPoint = ft1["conversion_point"];
+         convPoint[0] = merit["FT1ConvPointX"].get();
+         convPoint[1] = merit["FT1ConvPointY"].get();
+         convPoint[2] = merit["FT1ConvPointZ"].get();
       }
 
       merit_iter = meritTable->begin();

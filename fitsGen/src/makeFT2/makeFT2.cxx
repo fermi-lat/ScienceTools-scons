@@ -43,11 +43,11 @@ int main(int iargc, char * argv[]) {
       for (; pointing_iter != pointingTable->end(); 
            ++pointing_iter, ++ft2_iter) {
          ft2["start"].set(pointing["elapsed_time"].get());
-//       tip::Table::Vector<float> scPosition = ft2["sc_position"];
-// // @todo check units (FT2 specifies sc_position in m)
-//       scPosition[0] = pointing["posx"].get();
-//       scPosition[1] = pointing["posy"].get();
-//       scPosition[2] = pointing["posz"].get();
+         tip::Table::Vector<float> scPosition = ft2["sc_position"];
+// @todo check units (FT2 specifies sc_position in m)
+         scPosition[0] = pointing["posx"].get();
+         scPosition[1] = pointing["posy"].get();
+         scPosition[2] = pointing["posz"].get();
          ft2["lat_geo"].set(pointing["lat"].get());
          ft2["lon_geo"].set(pointing["lon"].get());
 // @todo check units (FT2 specifies rad_geo in km)
