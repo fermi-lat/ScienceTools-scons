@@ -42,10 +42,13 @@ namespace evtbin {
     output_table->setNumRecords(num_time_bins);
 
     long * channel = new long[num_energy_bins];
-    for (long index = 0; index != num_energy_bins; ++index) channel[index] = index;
+    for (long index = 0; index != num_energy_bins; ++index) channel[index] = index + 1;
 
     // Iterate over bin number and output table iterator, writing fields in order.
     for (long index = 0; index != num_time_bins; ++index, ++table_itor) {
+      // Number the spectra.
+      (*table_itor)["SPEC_NUM"].set(index + 1);
+
       // Channel of each bin.
       (*table_itor)["CHANNEL"].set(channel, channel + num_energy_bins, 0);
 
