@@ -14,7 +14,8 @@
 namespace st_graph {
 
   /** \class PlotHist
-      \brief Interface for base class plotter for all histograms.
+      \brief Interface for base class plotter for all histograms. Soon to be removed in favor of a more
+             general implementation.
   */
   class PlotHist : public IFrame {
     public:
