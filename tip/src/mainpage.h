@@ -21,14 +21,13 @@
     representing the table:
 
 \verbatim
-#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
   using namespace tip;
   const Table * const_table = 0;
 
-    // Example 1: Read-only access
+    // Example 1: Opening a table for read-only access.
     const_table = IFileSvc::instance().readTable("day023.fits", "LAT_Event_Summary");
 \endverbatim
 
@@ -44,6 +43,7 @@
     Next, one might want to read keywords from the header of the table:
 
 \verbatim
+#include "tip/Header.h"
     // Example 2:
     const Header & header = const_table->getHeader();
     double tstart;

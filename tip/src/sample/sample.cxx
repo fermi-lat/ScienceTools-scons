@@ -19,7 +19,7 @@ int main() {
     // Dummy variable used to silence warning about local variables not being used.
     double silence_warning = 0.;
 
-    // Example 1:
+    // Example 1: Opening a table for read-only access.
     const_table = IFileSvc::instance().readTable("day023.fits", "LAT_Event_Summary");
 
     // Example 2:
