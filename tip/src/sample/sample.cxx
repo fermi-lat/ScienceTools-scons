@@ -112,7 +112,7 @@ int main() {
 
     // Start at beginning of each table.
     Table::ConstIterator in_itor = const_table->begin();
-    Table::Iterator out_itor = table->end();
+    Table::Iterator out_itor = table->begin();
 
     // Copy all records.
     for (; in_itor != const_table->end(); ++in_itor, ++out_itor) {
