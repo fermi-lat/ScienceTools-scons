@@ -41,14 +41,15 @@ namespace st_app {
           bool do_prompt = true;
 
           // Find out if this parameter depends on any switch/cases.
-          std::pair<Case::iterator, Case::iterator> range = m_case.equal_range(par_name);
-          for (Case::iterator case_itor = range.first; case_itor != range.second; ++case_itor) {
+          CaseList case_cont;
+          getCase(par_name, case_cont);
+          for (CaseList::iterator case_itor = case_cont.begin(); case_itor != case_cont.end(); ++case_itor) {
             // Get the switched parameter.
-            const std::string & switch_name = case_itor->second.first;
+            const std::string & switch_name = case_itor->first;
             hoops::IPar & switch_par = Find(switch_name);
 
             // Get the case value for the switch, and make it all upper case.
-            const std::string & case_name = case_itor->second.second;
+            const std::string & case_name = case_itor->second;
             std::string value = switch_par.Value();
             for (std::string::iterator s_itor = value.begin(); s_itor != value.end(); ++s_itor) *s_itor = toupper(*s_itor);
 
@@ -70,6 +71,18 @@ namespace st_app {
   }
 
   void AppParGroup::suppressPrompts(bool suppress) { m_prompt_mode = !suppress; }
+
+  bool AppParGroup::isSwitch(const std::string & par_name) const {
+    return (m_switch.end() != m_switch.find(par_name));
+  }
+
+  void AppParGroup::getCase(const std::string & par_name, CaseList & case_cont) const {
+    case_cont.clear();
+    std::pair<Case::const_iterator, Case::const_iterator> range = m_case.equal_range(par_name);
+    for (Case::const_iterator itor = range.first; itor != range.second; ++itor) {
+      case_cont.push_back(ParValuePair(itor->second.first, itor->second.second));
+    }
+  }
 
   void AppParGroup::setSwitch(const std::string & switch_name) {
     // See if this group contains the given "switch" parameter. This throws if there is no such parameter.

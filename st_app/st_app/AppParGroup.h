@@ -5,6 +5,7 @@
 #ifndef st_app_AppParGroup_h
 #define st_app_AppParGroup_h
 
+#include <list>
 #include <map>
 #include <set>
 #include <string>
@@ -18,6 +19,9 @@ namespace st_app {
   */
   class AppParGroup : public hoops::ParPromptGroup {
     public:
+      typedef std::pair<std::string, std::string> ParValuePair;
+      typedef std::list<ParValuePair> CaseList;
+
       /** \brief Create parameter group, using StApp to get the command line arguments.
           \param comp_name The required name of this application.
       */
@@ -47,6 +51,16 @@ namespace st_app {
 
       void suppressPrompts(bool suppress = true);
 
+      /** \brief Returns whether or not the named parameter is being used as a switch.
+          \param par_name The parameter in question.
+      */
+      bool isSwitch(const std::string & par_name) const;
+
+      /** \brief Returns whether or not the named parameter is being used as a switch.
+          \param par_name The parameter in question.
+      */
+      void getCase(const std::string & par_name, CaseList & case_cont) const;
+
       /** \brief Cause the parameter with the given name to be used as a switch.
           \param switch_name The name of the parameter being used as a switch.
       */
@@ -61,7 +75,7 @@ namespace st_app {
 
     private:
       typedef std::set<std::string> Switch;
-      typedef std::multimap<std::string, std::pair<std::string, std::string> > Case;
+      typedef std::multimap<std::string, ParValuePair> Case;
       Switch m_switch;
       Case m_case;
       bool m_prompt_mode;
