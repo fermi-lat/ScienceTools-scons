@@ -56,6 +56,9 @@ public:
     /// set the angular (off-zenith) values of the GLAST satellite
     void setExplicitRockingAngles(std::pair<double,double> ang);
 
+	/// set the desired pointing history file to use:
+	void setPointingHistoryFile(std::string fileName);
+
     /// get the angular values of the satellite
     std::pair<double,double> getExplicitRockingAngles();
 

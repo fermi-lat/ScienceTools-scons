@@ -48,6 +48,12 @@ public:
 			HISTORY //! This setting is for using a previously generated pointing database to represent the orbit.
         };
 
+	typedef struct{
+		astro::SkyDir dirZ;
+		astro::SkyDir dirX;
+		double lat,lon;
+	}POINTINFO;
+
     class Coords {
     public:
         Coords( double alat, double alon, double apitch
@@ -99,6 +105,12 @@ public:
     void    ascendingLon(double);   
     /// set m_rotangles
     void    rotateAngles(std::pair<double,double> coords); 
+
+	/// set the desired pointing history file to use:
+    void setPointingHistoryFile(std::string fileName);
+
+	/// write the explicit history data for re-creation of orbit.
+	void setUpHistory();
     
     /// print time & position
     void    printOn(std::ostream& out) const; 
@@ -165,6 +177,8 @@ public:
         Subject    m_notification; 
         double m_rockDegrees; //number of degrees to "rock" the spacecraft, along the local x axis.  
         RockType m_rockType;//current rocking scheme
+		std::string m_pointingHistoryFile;//pointing/livetime database history file to use.
+		std::map<double,POINTINFO> m_pointingHistory;
 };
 
 inline std::istream&    operator>>(std::istream& i, GPS::Coords& c) {

@@ -314,6 +314,11 @@ std::pair<double,double> FluxMgr::getExplicitRockingAngles(){
     return GPS::instance()->rotateAngles();
 }
 
+/// set the desired pointing history file to use:
+void FluxMgr::setPointingHistoryFile(std::string fileName){
+	GPS::instance()->setPointingHistoryFile(fileName);
+}
+
 void FluxMgr::setExpansion (double p){
     // set the expansion factor for the orbit (-1) = random
     GPS::instance()->expansion(p);
