@@ -129,6 +129,7 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
       }
       addFunc(name, funcObj, false);
    }
+   delete parser;
 }
 
 } // namespace optimizers
