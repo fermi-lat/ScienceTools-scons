@@ -85,7 +85,7 @@ std::pair<double, double> Isotropic::dir(double energy) {
          theta = M_PI;
       }
    }
-   double lat = M_PI/2. - theta;
+   double lat = (M_PI/2. - theta)*180./M_PI;
 
    return std::make_pair(lon, lat);
 }
