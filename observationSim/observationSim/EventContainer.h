@@ -72,10 +72,10 @@ public:
    /// @param alwaysAccept If true, the event is accepted without
    ///        regard to the response info, i.e., true energies and 
    ///        directions are saved.
-   int addEvent(EventSource *event, 
-                std::vector<irfInterface::Irfs *> &respPtrs, 
-                Spacecraft *spacecraft, bool flush=false, 
-                bool alwaysAccept=false);
+   bool addEvent(EventSource *event, 
+                 std::vector<irfInterface::Irfs *> &respPtrs, 
+                 Spacecraft *spacecraft, bool flush=false, 
+                 bool alwaysAccept=false);
 
    /// The number of events in the container.
    long numEvents() {return m_events.size();}

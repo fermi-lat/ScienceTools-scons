@@ -43,6 +43,7 @@ ISpectrumFactory & GaussianSourceFactory();
 ISpectrumFactory & GRBmanagerFactory();
 ISpectrumFactory & IsotropicFactory();
 ISpectrumFactory & MapSourceFactory();
+ISpectrumFactory & MapCubeFactory();
 ISpectrumFactory & PeriodicSourceFactory();
 ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
@@ -159,6 +160,7 @@ void ObsSim::createFactories() {
    GRBmanagerFactory();
    IsotropicFactory();
    MapSourceFactory();
+   MapCubeFactory();
    PeriodicSourceFactory();
    PulsarFactory();
    SimpleTransientFactory();
