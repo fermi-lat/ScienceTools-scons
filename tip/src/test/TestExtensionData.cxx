@@ -1,5 +1,5 @@
 /** \file TestExtensionData.cxx
-    \brief Test IExtensionData and its subclasses, as well as (indirectly) FitsExtensionManager
+    \brief Test IExtensionData and its subclasses, as well as (indirectly) FitsExtensionManager and RootExtensionManager
     and RootExtensionManager.
     \author James Peachey, HEASARC
 */
@@ -142,19 +142,19 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   try {
     // Get number of elements in a field from the image:
     // This is only valid for tables.
-    const_ext->getFieldNumElements(100);
-    msg = "success calling getFieldnumElements(100) from a const";
+    const_ext->getFieldNumElements(-1);
+    msg = "success calling getFieldNumElements(-1) from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
     // This exception should have been thrown.
-    msg = "failure calling getFieldnumElements(100) from a const";
+    msg = "failure calling getFieldNumElements(-1) from a const";
     ReportBehavior(msg + " " + ext_type + " object", status, x);
   }
 
   try {
     // Get a table cell from an image.
     // This is only valid for tables.
-    const_ext->getCell(100, 0, 0, 1, tmp_d);
+    const_ext->getCell(-1, 0, 0, 1, tmp_d);
     msg = "success reading a table cell from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -164,11 +164,11 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   }
 
 #if MAKE_COMPILATION_FAIL
-  ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(100) for const image object", status);
+  ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(-1) for const image object", status);
   try {
     // Get number of records from the image:
     // This is only valid for tables.
-    const_ext->setNumRecords(100);
+    const_ext->setNumRecords(-1);
   } catch(const TipException & x) {
   }
 
@@ -176,7 +176,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   try {
     // Set a table cell in an image.
     // This is only valid for tables.
-    const_ext->setCell(100, 0, 0, tmp_d, tmp_d + 1);
+    const_ext->setCell(-1, 0, 0, tmp_d, tmp_d + 1);
   } catch(const TipException & x) {
   }
 #endif
@@ -256,22 +256,22 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
   IExtensionData * image = 0;
 
   try {
-    // Valid file name, blank extension name:
+    // Valid file name, valid extension name:
     image = new FitsExtensionData(data_dir + "a1.pha", "");
-    ReportBehavior("success creating FitsExtensionData with valid file name and blank extension name", status);
+    ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
   } catch(const TipException & x) {
-    ReportError("failure creating FitsExtensionData with valid file name and blank extension name", status, x);
+    ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
   }
 
   // This test object will be used in further tests below so create it at this scope:
   IExtensionData * table = 0;
 
   try {
-    // Valid file name, blank extension name:
+    // Valid file name, valid extension name:
     table = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
-    ReportBehavior("success creating FitsExtensionData with valid file name and blank extension name", status);
+    ReportBehavior("success creating FitsExtensionData with valid file name and valid extension name", status);
   } catch(const TipException & x) {
-    ReportError("failure creating FitsExtensionData with valid file name and blank extension name", status, x);
+    ReportError("failure creating FitsExtensionData with valid file name and valid extension name", status, x);
   }
   // END Test success cases for FitsExtensionData constructors.
 
@@ -345,6 +345,56 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     TestReadField(const_ext, "channel", "table", status);
   }
   // END Test const FitsExtensionData methods for a table extension.
+
+
+
+
+
+  // Test error cases for RootExtensionData constructors:
+  TestConstructorErrors<RootExtensionData>("RootExtensionData", data_dir + "merit.root", status);
+
+  // BEGIN Test success cases for RootExtensionData constructors.
+  // This test object will be used in further tests below so create it at this scope:
+  delete table; table = 0;
+
+  try {
+    // Valid file name, valid extension name:
+    table = new RootExtensionData(data_dir + "merit.root", "1");
+    ReportBehavior("success creating RootExtensionData with valid file name and valid extension name", status);
+  } catch(const TipException & x) {
+    ReportError("failure creating RootExtensionData with valid file name and valid extension name", status, x);
+  }
+  // END Test success cases for RootExtensionData constructors.
+
+
+
+
+
+
+  // BEGIN Test const RootExtensionData methods for a table extension.
+  // Skip these tests if table object was not successfully opened above:
+  if (0 == table) {
+    ReportError("table pointer is null; skipping some tests", status);
+  } else {
+    // Name of the extension type, used in reporting errors:
+    std::string ext_type = "table";
+
+    // Note that table points to the primary HDU, which is an table.
+    // Use a constant pointer from here on down:
+    const IExtensionData * const_ext = table;
+
+    // Test operations which should fail for any/all extensions regardless of whether they are tables or tables:
+    // The following call generates some errors containing the string "from a const table object"
+    TestCommonErrors(const_ext, ext_type, status);
+
+    // Test table operations which should succeed.
+    // Note that keyword access is not supported for Root files.
+
+    // Read an entire column, which will involve calling all important functions:
+    TestReadField(const_ext, "McEnergy", "table", status);
+  }
+  // END Test const RootExtensionData methods for a table extension.
+
 
 
 
