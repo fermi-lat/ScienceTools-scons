@@ -329,8 +329,6 @@ int main(int iargc, char * argv[]) {
      (calibVersion[i])[1] = 0.;
      (calibVersion[i])[2] = 0.;
 
-     //DC1 FIX:
-     imgammaprob[i]=1.;
 
      bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
      bool zdir_cut          = (tkr1zdir[i]<-0.2);      
