@@ -11,10 +11,12 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
+#include "tip/IColumn.h"
 #include "tip/IExtensionData.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
@@ -98,6 +100,10 @@ namespace tip {
       */
       const IExtensionData::FieldCont & getValidFields() const;
 
+      IColumn * getColumn(FieldIndex_t field_index);
+
+      const IColumn * getColumn(FieldIndex_t field_index) const;
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
@@ -118,6 +124,16 @@ namespace tip {
           \param record_index The record number of the cell.
       */
       void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0);
+
+      /** \brief Copy a cell from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_field The field identifier in the source data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_field The field identifier in this object (the destination data object).
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
+        Index_t dest_record);
 
       /** \brief Templated function which can get any kind of data from a FITS table. This
           method throws an exception if the extension is not a table.
@@ -198,6 +214,7 @@ namespace tip {
       std::map<FieldIndex_t, ColumnInfo> m_col_num_lookup;
       IExtensionData::FieldCont m_fields;
       std::vector<PixOrd_t> m_image_dimensions;
+      std::vector<IColumn *> m_columns;
       Index_t m_num_records;
       fitsfile * m_fp;
       bool m_is_table;
@@ -283,6 +300,12 @@ namespace tip {
     strncpy(tmp, value, FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
     if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+  }
+
+  // Copying cells.
+  inline void FitsExtensionManager::copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record,
+    FieldIndex_t dest_field, Index_t dest_record) {
+    getColumn(dest_field)->copy(src_ext->getColumn(src_field), src_record, dest_record);
   }
 
   // Getting columns.
