@@ -37,6 +37,8 @@ namespace tip {
       RandomAccessIterator(): m_data() {}
       RandomAccessIterator(const T & data): m_data(data) {}
 
+      RandomAccessIterator & operator =(const RandomAccessIterator & itor) { m_data.itorAssign(itor.m_data); return *this; }
+
       // In the following, the itorUpdate call is a placeholder. If e.g. Table
       // ever has a way to fill an entire row, this is how that would be accomplished.
       reference operator *() const { /* m_data.itorUpdate(); */ return m_data; }
