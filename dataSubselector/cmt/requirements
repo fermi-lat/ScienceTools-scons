@@ -16,6 +16,8 @@ apply_pattern ST_pfiles
 
 apply_pattern ST_app name=dataSubselector
 
+application viewCuts viewCuts/*.cxx
+
 private
 
 use hoops v0r*
