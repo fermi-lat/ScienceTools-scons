@@ -4,16 +4,16 @@
 #ifndef evtbin_Hist2D_h
 #define evtbin_Hist2D_h
 
-#include <stdexcept>
 #include <vector>
 
 #include "evtbin/Binner.h"
+#include "evtbin/Hist.h"
 
 namespace evtbin {
   /** \class Hist2D
       \brief One dimensional histogram.
   */
-  class Hist2D {
+  class Hist2D : public Hist {
     public:
       typedef std::vector< std::vector<unsigned long> > Cont_t;
       typedef Cont_t::const_iterator ConstIterator1;
@@ -29,10 +29,17 @@ namespace evtbin {
       virtual ~Hist2D() throw();
 
       /** \brief Increment the bin appropriate for the given value.
+                 This is generic for N-dimensional histograms.
+          \param value Vector giving the value being binned. The vector must have at least as
+                 many values as the dimensionality of the histogram.
+      */
+      virtual void fillBin(const std::vector<double> & value);
+
+      /** \brief Increment the bin appropriate for the given value.
           \param value1 The value being binned by the first binner.
           \param value2 The value being binned by the second binner.
       */
-      virtual void fillBin(double value1, double value2);
+      void fillBin(double value1, double value2);
 
       ConstIterator1 begin() const;
 
@@ -40,8 +47,6 @@ namespace evtbin {
 
     private:
       Cont_t m_data;
-      const Binner * m_binner1;
-      const Binner * m_binner2;
   };
 
   inline Hist2D::ConstIterator1 Hist2D::begin() const { return m_data.begin(); }
