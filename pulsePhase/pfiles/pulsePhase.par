@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 evfile,        f, a, , , , "Event data file name"
 evtable,       s, h, "EVENTS", , , "Table containing event data"
-ephstyle,      s, a, , , , "How will timing model be specified? (FREQ, PER)"
+ephstyle,      s, a, "FREQ", "FREQ|PER|FILE", , "How will timing model be specified?"
 epoch,         r, a, , , , "Enter value of epoch of timing model"
 phi0,          r, a, , , , "Enter base value of phase at this epoch"
 f0,            r, a, , , , "Enter pulse frequency at this epoch"
@@ -14,5 +14,6 @@ timefield,     s, h, "TIME", , , "Name of time field in event data file"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
 debug,         b, h, no, , , "Debugging mode activated"
+gui,           b, h, no, , , "GUI mode activated"
 mode,          s, h, "ql", , ,"Mode of automatic parameters"
 #-------------------------------------------------------------------------------
