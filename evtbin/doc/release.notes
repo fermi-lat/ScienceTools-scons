@@ -9,6 +9,8 @@
                           plus calculation of EXPOSURE and ONTIME keywords.
 18-aug-2004    v0r5p1 JP  Change parameters which give file names to have type
                           f instead of s.
+29-sep-2004    v0r5p2 JP  Use improvements from tip to preserve underlying
+                          character of keywords (string, numeric, bool etc.)
 --------------------------------------------------------------------------------
 \endverbatim
 
