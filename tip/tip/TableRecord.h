@@ -50,6 +50,11 @@ namespace tip {
       template <typename T>
       void get(Index_t src_begin, Index_t src_end, T * dest_begin) const;
 
+      /** \brief Get a single value from this TableCell at the current iterator position as a double.
+          (One can also use the templated get(double & value) above).
+      */
+      double get() const;
+
       /** \brief Set a single value in this TableCell at the current iterator position.
           The type of the source value is given by the template parameter.
           \param value The current value.
@@ -218,6 +223,12 @@ namespace tip {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
     m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
+  }
+
+  inline double TableCell::get() const {
+    double retval;
+    get(retval);
+    return retval;
   }
 
   // set method overloads:

@@ -134,6 +134,13 @@ int main() {
       // An aside concluded: get a const Cell from the const Record:
       const Table::Cell & cell = r1["channel"];
 
+      // Confirm that another way of reading the channel number matches what it should be.
+      double cell_channel = cell.get();
+      if (0. != cell_channel) {
+        std::cerr << "Cell::get() returned " << cell_channel << ", not 0" << std::endl;
+        status = 1;
+      }
+
       // Now try getting the same value as a long.
       Table::Scalar<long> lchannel = r["channel"];
 
