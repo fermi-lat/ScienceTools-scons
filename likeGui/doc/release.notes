@@ -3,6 +3,7 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r2     14-Dec-04    JC    add ObsSim.py GUI
    v7r1p1   27-Nov-04    JC    add -no_auto_imports to requirements
    v7r1     16-Nov-04    JC    ModelEditor upgrades: 3EG extraction, 
                                ds9 interaction

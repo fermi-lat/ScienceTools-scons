@@ -62,7 +62,7 @@ class ParamEntry:
         elif self.fields[4].find("|") > 0:
             self.makeOptionsMenu(row)
             entryState = Tkinter.DISABLED
-        elif self.fields[0] == "Random_seed":
+        elif self.fields[0] == "random_seed":
             self.makeRandomSeed(row)
             entryState = Tkinter.NORMAL
         else:

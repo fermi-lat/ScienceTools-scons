@@ -13,11 +13,10 @@ import sys
 import copy
 import string
 import Tkinter as Tk
-
-sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
-
 from FileDialog import LoadFileDialog
 from tkMessageBox import showwarning
+
+sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
 
 from SourceLibrary import SourceLibrary
 from ParamDialog import ParamDialog
@@ -149,7 +148,7 @@ class SourceLibraries(Tk.Frame):
             self.files.append(file)
     def selectLibrary(self, event=None):
         libname = self.listBox.get('active')
-        self.root.candidates.setSrcLib(self.libs[libname][0])
+        self.root.candidates.setSrcLib(self.libs[libname][0], libname)
     def deleteSelected(self):
         name = self.listBox.get('active')
         targetfile = self.libs[name][1]
@@ -160,6 +159,7 @@ class SourceLibraries(Tk.Frame):
                 del self.libs[lib]
         self.fill()
         self.root.candidates.clearAll()
+        self.root.candidates.menuButton.config(text='Candidate Sources')
     def writeXmlFileList(self, file='xmlFiles.dat'):
         outfile = open(file, 'w')
         for item in self.files:
@@ -201,21 +201,26 @@ class CandidateSources(Tk.Frame):
         self.listBox.bind('<Double-ButtonRelease-1>', self.addSource)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
-    def setSrcLib(self, srcLib):
+    def setSrcLib(self, srcLib, libName):
+        if len(libName) > 30:
+            libName = libName[:30]
+        self.menuButton.config(text=libName)
         srcElts = srcLib.getElementsByTagName('source')
-        self.sources = []
+        self.sources = map()
         for src in srcElts:
-            self.sources.append(src.getAttribute('name').encode())
+            name = src.getAttribute('name').encode()
+            self.sources[name] = src
         self.listBox.delete(0, Tk.END)
-        for src in self.sources:
+        for src in self.sources.ordered_keys:
             self.listBox.insert(Tk.END, src)
     def addSource(self, event):
         src = self.listBox.get('active')
-        self.root.sourceList.addSource(src)
+        self.root.sourceList.addSource((src, self.sources[src]))
     def addSelected(self):
         indices = self.listBox.curselection()
         for indx in indices:
-            self.root.sourceList.addSource(self.sources[int(indx)])
+            srcName = self.sources.ordered_keys[int(indx)]
+            self.root.sourceList.addSource(srcName)
     def addAll(self):
         self.selectAll()
         self.addSelected()
@@ -262,12 +267,13 @@ class SourceList(Tk.Frame):
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
         self.listBox.bindtags(btags[1:] + btags[:1])
+        self.listBox.bind('<Double-ButtonRelease-1>', self.printXml)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
         self.srcs = map()
     def addSource(self, src):
-        if src not in self.srcs:
-            self.srcs[src] = src
+        if src[0] not in self.srcs:
+            self.srcs[src[0]] = src[1]
         self.fill()
     def fill(self):
         self.listBox.delete(0, Tk.END)
@@ -279,7 +285,7 @@ class SourceList(Tk.Frame):
         for indx in indices:
             targets.append(self.srcs.ordered_keys[int(indx)])
         for target in targets:
-            self.srcs.delete(self.srcs[target])
+            self.srcs.delete(target)
         self.fill()
     def deleteAll(self):
         self.selectAll()
@@ -293,6 +299,9 @@ class SourceList(Tk.Frame):
         for src in self.srcs.ordered_keys:
             outfile.write(src + "\n")
         outfile.close()
+    def printXml(self, event):
+        name = self.listBox.get('active')
+        print self.srcs[name].toxml() + '\n'
 
 class ModelMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
