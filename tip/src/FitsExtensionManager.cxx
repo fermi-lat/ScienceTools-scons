@@ -15,7 +15,7 @@ namespace tip {
 
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
-    m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0), m_is_table(false) { open(); }
+    m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0), m_is_table(false), m_read_only(false) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { close(); }
@@ -40,6 +40,7 @@ namespace tip {
         // Attempt to open the file read-only:
         status = 0;
         fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READONLY, &status);
+        m_read_only = true;
       }
 
       if (0 != status) {
@@ -89,7 +90,8 @@ namespace tip {
 
   // Resize the FITS table, adding or deleting rows as necessary.
   void FitsExtensionManager::setNumRecords(Index_t num_records) {
-    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+    if (!m_is_table) throw TipException(formatWhat("setNumRecords called, but object is not a table"));
+    if (m_read_only) throw TipException(formatWhat("setNumRecords called, but object is not writable"));
     int status = 0;
     if (m_num_records < num_records) {
       fits_insert_rows(m_fp, m_num_records, num_records - m_num_records, &status);
@@ -105,7 +107,7 @@ namespace tip {
   const IExtensionData::FieldCont & FitsExtensionManager::getValidFields() const { return m_fields; }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
-    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+    if (!m_is_table) throw TipException(formatWhat("getFieldIndex called, but object is not a table"));
 
     // Copy field name and make it lowercase.
     std::string tmp = field_name;
@@ -121,7 +123,7 @@ namespace tip {
   }
 
   Index_t FitsExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t record_index) const {
-    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+    if (!m_is_table) throw TipException(formatWhat("getFieldNumElements called, but object is not a table"));
 
     // Find field_index in container of columns. Complain if not found.
     std::map<FieldIndex_t, ColumnInfo>::const_iterator itor = m_col_num_lookup.find(field_index);

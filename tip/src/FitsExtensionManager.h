@@ -147,6 +147,7 @@ namespace tip {
       Index_t m_num_records;
       fitsfile * m_fp;
       bool m_is_table;
+      bool m_read_only;
   };
 
   // Getting keywords.
@@ -183,43 +184,51 @@ namespace tip {
   // Setting keywords.
   template <typename T>
   inline void FitsExtensionManager::setKeywordGeneric(const std::string & name, const T & value) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + "\"; object is not writable"));
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     T tmp = value;
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as bool is a special case because Cfitsio treats them as ints.
   template <>
   inline void FitsExtensionManager::setKeywordGeneric<bool>(const std::string & name, const bool & value) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + "\"; object is not writable"));
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
     int tmp = value;
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as strings is a special case because Cfitsio treats them as char *.
   template <>
   inline void FitsExtensionManager::setKeywordGeneric<std::string>(const std::string & name, const std::string & value) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + "\"; object is not writable"));
     static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
     int status = 0;
     char tmp[FLEN_KEYWORD];
     strncpy(tmp, value.c_str(), FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as strings is a special case because Cfitsio treats them as char *.
   template <>
   inline void FitsExtensionManager::setKeywordGeneric<const char *>(const std::string & name, const char * const & value) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + "\"; object is not writable"));
     static int data_type_code = FitsPrimProps<const char *>::dataTypeCode();
     int status = 0;
     char tmp[FLEN_KEYWORD];
     strncpy(tmp, value, FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Getting columns.
@@ -272,6 +281,11 @@ namespace tip {
   template <typename T>
   inline void FitsExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
     T * dest_begin, T * dest_end) {
+    if (m_read_only) {
+      std::ostringstream s;
+      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      throw TipException(formatWhat(s.str()));
+    }
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
@@ -289,6 +303,11 @@ namespace tip {
   inline void FitsExtensionManager::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
     bool * dest_begin, bool * dest_end) {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
+    if (m_read_only) {
+      std::ostringstream s;
+      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      throw TipException(formatWhat(s.str()));
+    }
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
     char tmp[1];
@@ -308,6 +327,11 @@ namespace tip {
   inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     std::string * dest_begin, std::string * dest_end) {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
+    if (m_read_only) {
+      std::ostringstream s;
+      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      throw TipException(formatWhat(s.str()));
+    }
     throw TipException("String valued columns not yet implemented for FITS files.");
   }
 
