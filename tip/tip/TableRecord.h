@@ -41,6 +41,9 @@ namespace table {
       template <typename T>
       void get(T & value) const;
 
+      template <typename T>
+      void get(Index_t src_begin, Index_t src_end, T * dest_begin) const;
+
       Index_t getNumElements() const;
 
     private:
@@ -192,6 +195,13 @@ namespace table {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
     m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), value);
+  }
+
+  template <typename T>
+  inline void TableCell::get(Index_t src_begin, Index_t src_end, T * dest_begin) const {
+    if (m_field_index < 0)
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
+    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
   }
 
   inline Index_t TableCell::getNumElements() const {
