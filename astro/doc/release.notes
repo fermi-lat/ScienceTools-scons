@@ -1,8 +1,11 @@
-/* package astro
+/** @file release.notes
+
+  package astro
+  Package coordinators: T.Burnett
 
 @verbatim
-  Package coordinators: T.Burnett, G.Tosti
 
+  v1r0    05-jun-04 THB Added new SkyProj class; changed SkyDir to use it.
   v0r12p3 13-may-04 SMR fix to angular units in specifying POINT rocking in GPS
   v0r12p2 20-apr-04 THB disable planets to avoid Linux warnings, try 2
   v0r12p1 19-apr-04 THB disable planets to avoid Linux warnings

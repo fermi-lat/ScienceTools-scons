@@ -64,11 +64,11 @@ double test_one(double lon, double lat, const astro::SkyProj& t){
     SkyDir dir(lon, lat);
     std::pair<double, double> pixel = dir.project(t );
   //  std::cout <<  "(" << lon << ", " << lat << ") \t-> (" << pixel.first << ", " << pixel.second << ") \n";
-  std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
+  //std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
     return SkyDir(pixel.first,pixel.second,t).difference(dir);
 }
 
-/** @brief test a single point, transforming from world to pixel and back
+/** @brief test a group of directions
 */
 bool testSkyProj(){
     using namespace astro;
@@ -81,11 +81,11 @@ bool testSkyProj(){
     if( proj.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
 
     // create another one to verify that it is possible to have more than one
-    /*
+    
     double zcrpix[]={180.5,90.5},  zcrval[]={0,0}, zcdelt[]={-1,1}; // 1-degree CAR all sky
     SkyProj other("AIT", zcrpix, zcrval, zcdelt,0, true);
     if( !other.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
-*/
+
     double delta = 20;
     for( double dec =-90+delta/2; dec<90 ; dec+= delta){
         for( double ra = 0+delta/2; ra<360; ra+=delta){
