@@ -4,6 +4,7 @@
 $Id$
 
 \verbatim
+06-dec-2004    v1r5p2 JP  Disable prompts so that automatic unit tests run.
 02-dec-2004    v1r5p1 JP  Improve example code.
 09-nov-2004    v1r5p0 JP  Changes to allow automatic handling of univeral parameters
                           to set up debug mode, and chattiness.
