@@ -1,0 +1,86 @@
+#
+# $Header$
+#
+
+Here is Pat's recollection of the changes he needed to implement for the
+port of likeGui to Windows:
+
+--------------------------------------------------------------------------
+
+From: "Toby Burnett" <tburnett@u.washington.edu>
+To: "Patrick L. Nolan" <pln@razzle.Stanford.EDU>
+
+wow, I'm very impressed. Could we get this summary saved somewhere?
+Like in the documentation of Jim's package? I guess this needs to be
+more public.
+
+--Toby
+
+	-----Original Message----- 
+	From: Patrick L. Nolan [mailto:pln@razzle.Stanford.EDU] 
+	Sent: Tue 3/9/2004 16:27 
+	To: Toby Burnett 
+	Cc: pln@razzle.Stanford.EDU 
+	Subject: Re: likeGui
+	
+	> Hi Pat,
+	> 
+	> Jim tells me that you have ported his likeGui to windows. I
+        > would like to use the parameter dialog for all tools. Can you 
+        > share some of your secrets with me?
+        >
+
+	I think all my changes are committed in users/jchiang/likeGui/python/
+	
+	I will exercise my memory to see if I can remember the major points,
+	probably not in logical order.
+	
+	*  I created a function called cleanPathName() which converts a long
+	path name, which might contain spaces, to the Windows short path
+	name (DOCUME~1 and so forth).  It's made to be harmless on Linux.
+	It could be used on every file path, but the results might be
+	unpleasing to the eye.  Thus some care is required to use it only
+	when needed.
+	
+	*  Oh, yeah.  cleanPathName() also expands strings like $(FOO) which
+	refer to environmental variables.  At the moment I can't recall why
+	this was necessary here.
+	
+	*  There's a menu item which invokes an editor so the user can revise
+	a parameter file.  On Linux the name of the user's favorite editor
+	is available through $EDITOR.  On Windows I found that "start wordpad"
+	would do the job quite nicely.  This may seem trivial, but it took
+	a long time to discover the magical properties of the "start" command.
+	It's necessary because Wordpad isn't in the usual PATH.
+	Notepad won't do the job because it doesn't handle lines with the
+	Linux <cr> ending.  Wordpad doesn't care about <cr> or <cr><lf>.
+	
+	*  This isn't specific to Windows:  In the original version, the script
+	wouldn't run if $GLAST_EXT and $ST_INST aren't defined.  I added
+	popup dialogs to let the user point to these locations.  This was
+	a bit difficult because the GUI isn't running yet at this point of
+	the execution.  I think tkFileDialog.askdirectory() has a clean look
+	for this job.
+	
+	*  For quite a while I was frustrated because os.path.join() sometimes
+	didn't work.  It's too smart.  If the second argument begins with '/',
+	it won't do anything, because that's an absolute path.  It was
+	necessary to do things with os.sep.join() if there was a possibility
+	of having a slash in the wrong place.  Windows will take either forward
+	or backward slashes.
+	
+	*  Windows has no concept of LD_LIBRARY_PATH.  The same PATH is used
+	for both executables and libraries. 
+	
+	*  To run the underlying .exe, win32pipe.popen4() is used on Windows.
+	To keep the stdin and stdout pipes from blocking, it seems to
+	be necessary to have a separate thread speaking to each.  When a
+	command is to be sent to the program, it is put in a queue and a
+	thread started.  The thread copies from the queue to the pipe and
+	then dies.  For output from the program, there's a thread which
+	contains an infinite loop to copy from the pipe to a queue.  There is
+	another infinite loop which polls the queue with a time delay.
+	I'm not sure this is the best way to accomplish the job.
+
+
+------------- End Forwarded Message -------------
