@@ -52,6 +52,8 @@ public:
         astro::Healpix::Pixel pix = m_hp.pixel(dir);
         return at(pix.index());
     }
+    //! access the Healpix configuration object
+    Healpix healpix()const{return m_hp;}
     void setHealpix(astro::Healpix hp){m_hp=hp; resize(hp.size());}
 
 private:
