@@ -31,6 +31,11 @@ namespace evtbin {
       */
       virtual long getNumBins() const;
 
+      /** \brief Return the interval spanned by the given bin.
+          \param index The index indicating the bin number.
+      */
+      virtual Binner::Interval getInterval(long index) const;
+
     private:
       double m_interval_begin;
       double m_interval_end;
