@@ -29,12 +29,13 @@ class GRBobsSpectrum : public ISpectrum
 
 	 // --- Need a destructor, copy constrctor and assignement operator to manage memory ---
 	 ~GRBobsSpectrum();
+	 GRBobsSpectrum(const GRBobsSpectrum &right);   // private copy constructor
 	 GRBobsSpectrum &operator=(const GRBobsSpectrum &right);
 
 	// --- Overridden function ---
-    virtual std::string title() const;
+	virtual std::string title() const   { return m_title; }
 
-    virtual const char * particleName() const;
+    virtual const char * particleName() const   { return m_particleName.c_str(); }
 
     // calculate flux for the current cutoff
     //JCT pure virtual method takes time as argument
@@ -60,13 +61,14 @@ class GRBobsSpectrum : public ISpectrum
     int askGPS();
     
     //JCT pure virtual method 	double ISpectrum::interval(double) missing
-    virtual double interval(double time) {return 0.5 /*dummy*/;}
+    virtual double interval(double time);
 
  private:
-	 GRBobsSpectrum(const GRBobsSpectrum &right);   // private copy constructor
 
 
-	 double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const;
+	 double nextEnergy(HepRandomEngine *engine) const;
+
+	 double nextTime(HepRandomEngine *engine) const;
 
 	 void swap(GRBobsSpectrum &other) throw();
 
@@ -85,24 +87,6 @@ class GRBobsSpectrum : public ISpectrum
 		double m_value;
 	};
 
-
-	// The following definition is now in facilities package
-	//template<class InputIterator,
-	//		 class OutputIterator,
-	//		 class Predicate>
-	//OutputIterator copy_if(InputIterator begin,
-	//					   InputIterator end,
-	//					   OutputIterator destBegin,
-	//					   Predicate p)
-	//{
-	//	while (begin != end)
-	//	{
-	//		if (p(*begin)) *destBegin++ = *begin;
-	//		++begin;
-	//	}
-//
-//		return destBegin;
-//	}
 
 
 
