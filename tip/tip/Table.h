@@ -12,13 +12,14 @@
 #include <string>
 
 #include "table/Ref.h"
+#include "table/ITabularData.h"
 #include "table/table_types.h"
 
 namespace table {
 
   /** \class TableException
 
-      \brief Exceptions thrown by FitsTable.
+      \brief Exceptions thrown by table objects.
   */
   class TableException : public std::exception {
     public:
@@ -78,14 +79,14 @@ namespace table {
         public:
           typedef std::map<std::string, Cell> CellCont_t;
 
-          /** \brief Construct a Record object, without immediate association with any Table.
+          /** \brief Construct a Record object, without immediate association with any ITabularData.
               Such an association may be formed later by assignment.
           */
-          Record(): m_cells(), m_table(0), m_index(0) {}
+          Record(): m_cells(), m_tab_data(0), m_index(0) {}
 
-          /** \brief Construct a Record object, associated with the given Table and record index.
+          /** \brief Construct a Record object, associated with the given ITabularData and record index.
           */
-          Record(Table & table, Index_t index): m_cells(), m_table(&table), m_index(index) {}
+          Record(ITabularData & tab_data, Index_t index): m_cells(), m_tab_data(&tab_data), m_index(index) {}
 
           virtual ~Record() {}
 
@@ -93,7 +94,7 @@ namespace table {
 
               This assignment does not change this Record's container of Cell objects.
               This is necessary in order to preserve the selected content of this Record. The
-              idea is that assignment changes which Table and record index this Record points to
+              idea is that assignment changes which ITabularData and record index this Record points to
               but does not affect which fields were selected in this Record. This way client code
               can be certain of the continued validity of references to Cells contained in this Record.
           */
@@ -102,7 +103,7 @@ namespace table {
           /** \brief Return a Cell object for the given field. The Cell object will be created
               if it does not already exist.
 
-              Note that there is no check at this point whether the underlying Table actually
+              Note that there is no check at this point whether the underlying ITabularData actually
               has a field with this name.
               \param field The name of the Cell object (the field in this Record).
           */
@@ -111,7 +112,7 @@ namespace table {
           /** \brief Return a const Cell object for the given field. The Cell object will be created
               if it does not already exist.
 
-              Note that there is no check at this point whether the underlying Table actually
+              Note that there is no check at this point whether the underlying ITabularData actually
               has a field with this name.
               \param field The name of the Cell object (the field in this Record).
           */
@@ -122,14 +123,14 @@ namespace table {
           }
 
           // Client code should not normally need to call methods below here.
-          // Get the current record index and table.
+          // Get the current record index and tab_data.
           Index_t getIndex() const { return m_index; }
 
-          // Get the current Table pointer.
-          Table * getTable() { assert(m_table); return m_table; }
+          // Get the current ITabularData pointer.
+          ITabularData * getTabularData() { assert(m_tab_data); return m_tab_data; }
 
-          // Get the current Table pointer.
-          const Table * getTable() const { assert(m_table); return m_table; }
+          // Get the current ITabularData pointer.
+          const ITabularData * getTabularData() const { assert(m_tab_data); return m_tab_data; }
 
           // Go on to the next record. Not operator ++ because this behavior might be unexpected.
           void nextRecord() { ++m_index; }
@@ -137,26 +138,26 @@ namespace table {
         private:
           Cell & find_or_make(const std::string & field);
           CellCont_t m_cells;
-          Table * m_table;
+          ITabularData * m_tab_data;
           Index_t m_index;
       };
 
       /** \class Iterator
 
-          \brief STL-style iterator which points to a position (record index) within the Table.
+          \brief STL-style iterator which points to a position (record index) within the ITabularData.
       */
       class Iterator {
         public:
           /** \brief Create an Iterator object which is not immediately associated with a table. Assignment
               to this Iterator can form such an association.
           */
-          Iterator(): m_record(), m_table(0) {}
+          Iterator(): m_record() {}
 
           /** \brief Create an Iterator which does refer to the given table and index.
-              \param table Pointer to the referent Table object.
+              \param tab_data Pointer to the referent ITabularData object.
               \param record_index The index indicating the position of this iterator within the table.
           */
-          Iterator(Table * table, Index_t record_index): m_record(*table, record_index), m_table(table) {}
+          Iterator(ITabularData * tab_data, Index_t record_index): m_record(*tab_data, record_index) {}
 
           /** \brief Standard assignment, which makes this object refer to the same record in the same
               table as the source, but does not copy the source iterator's Record.
@@ -173,7 +174,8 @@ namespace table {
               \param itor The iterator being compared.
           */
           bool operator !=(const Iterator & itor) const
-            { return (m_table != itor.m_table || m_record.getIndex() != itor.m_record.getIndex()); }
+            { return (m_record.getTabularData() != itor.m_record.getTabularData() ||
+              m_record.getIndex() != itor.m_record.getIndex()); }
 
           /** \brief Get the Record object this Iterator contains.
           */
@@ -193,40 +195,34 @@ namespace table {
 
         private:
           Record m_record;
-          Table * m_table;
+          ITabularData * m_tab_data;
       };
 
-      virtual ~Table() {}
+      Table(ITabularData * tab_data): m_tab_data(tab_data) {}
+
+      virtual ~Table() { delete m_tab_data; }
 
       /** \brief Return an iterator pointing to the first record in the table.
       */
-      Iterator begin() { return Iterator(this, 0); }
+      Iterator begin() { return Iterator(m_tab_data, 0); }
 
       /** \brief Return an iterator pointing past the last record in the table.
       */
-      Iterator end() { return Iterator(this, getNumRecords()); }
+      Iterator end() { return Iterator(m_tab_data, m_tab_data->getNumRecords()); }
 
-      /** \brief Return the number of records in the current tabular data object.
-      */
-      virtual Index_t getNumRecords() const = 0;
-
-      /** \brief Read a value from the current tabular data object.
-          \param field The name of the field (column) to read.
-          \param record_index The index whose value to read.
-          \param value The output value.
-      */
-      virtual void read(const std::string & field, Index_t record_index, double & value) const = 0;
+      Index_t getNumRecords() const { return m_tab_data->getNumRecords(); }
 
     private:
+      ITabularData * m_tab_data;
   };
 
   inline void Table::Cell::read(double & value) const
-    { m_record.getTable()->read(m_field, m_record.getIndex(), value); }
+    { m_record.getTabularData()->read(m_field, m_record.getIndex(), value); }
 
   inline Table::Record & Table::Record::operator =(const Table::Record & rec) {
     if (this != &rec) {
       // Note: do *not* assign m_cells! This is important to how Records work!
-      m_table = rec.m_table; // This should also confirm that the new table has the right fields.
+      m_tab_data = rec.m_tab_data; // This should also confirm that the new table has the right fields.
       m_index = rec.m_index;
     }
     return *this;
@@ -241,7 +237,7 @@ namespace table {
   inline Table::Iterator & Table::Iterator::operator =(const Table::Iterator & itor) {
     if (this != &itor) {
       m_record = itor.m_record;
-      m_table = itor.m_table;
+      m_tab_data = itor.m_tab_data;
     }
     return *this;
   }

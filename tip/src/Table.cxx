@@ -6,7 +6,7 @@
 */
 
 #include "table/Table.h"
-#include "FitsTable.h"
+#include "FitsTabularData.h"
 
 namespace table {
 
@@ -14,7 +14,9 @@ namespace table {
     Table * retval = 0;
 
     // For now, just try to open a FITS table.
-    retval = new FitsTable(file_name, table_name);
+    FitsTabularData * data = new FitsTabularData(file_name, table_name);
+
+    if (data) retval = new Table(data);
 
     return retval;
   }
