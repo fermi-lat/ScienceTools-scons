@@ -39,6 +39,7 @@ namespace st_app {
 
   // Destructor:
   IApp::~IApp() throw() {
+    delete m_hoops_par_group;
     // Make sure getApp will not try to return this application after it's gone:
     if (this == s_application) s_application = 0;
   }
