@@ -41,6 +41,8 @@ namespace table {
       template <typename T>
       void get(T & value) const;
 
+      Index_t getNumElements() const;
+
     private:
       static const FieldIndex_t s_field_unknown = -1;
       ConstTableRecord & m_record;
@@ -190,6 +192,12 @@ namespace table {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
     m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), value);
+  }
+
+  inline Index_t TableCell::getNumElements() const {
+    if (m_field_index < 0)
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
+    return m_record.getTabularData()->getFieldNumElements(m_field_index);
   }
 
   // ConstTableRecord
