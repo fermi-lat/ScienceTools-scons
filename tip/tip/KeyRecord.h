@@ -1,0 +1,87 @@
+/** \file KeyRecord.h
+    \brief Interface for KeyRecord class.
+    \authors Lawrence Brown, HEASARC/GSSC
+             James Peachey, HEASARC/GSSC
+*/
+#ifndef tip_KeyRecord_h
+#define tip_KeyRecord_h
+
+#include <iosfwd>
+#include <string>
+
+namespace tip {
+
+  /** \class KeyRecord
+      \brief Encapsulation of a keyword, considered as a record with name, value and comment fields.
+  */
+  class KeyRecord {
+    public:
+      /** \brief Construct a key record object from the given full record.
+          \param record String containing the full key record, in form name = value / comment.
+      */
+      KeyRecord(const std::string & record = "");
+  
+      /** \brief Construct a key record object from each field specified separately.
+          \param name The name of the keyword.
+          \param value The value of the parameter.
+          \param comment The comment string.
+      */
+      template <typename T>
+      KeyRecord(const std::string & name, const T & value, const std::string & comment);
+
+      /// \brief Returns whether the value in the record is undefined.
+      bool empty() const;
+
+      /// \brief Retrieve the record as a string.
+      const std::string & get() const;
+
+      /** \brief Assign the given input to the record.
+          \param record The input record.
+      */
+      void set(const std::string & record);
+
+      /// \brief Retrieve the value field of the record as a string.
+      std::string getValue() const;
+
+      /** \brief Assign the given value to the record's value field.
+          \param value The new value.
+      */
+      void setValue(const std::string & value);
+
+      /** \brief Assign the given value to the record's value field.
+          \param value The new value.
+      */
+      template <typename T>
+      void setValue(const T & value);
+
+    private:
+      std::string m_record;
+  };
+
+  template <typename T>
+  inline KeyRecord::KeyRecord(const std::string & name, const T & value, const std::string & comment): m_record() {
+    // Create blank keyword, then assign a value to it.
+    std::ostringstream os;
+    os.width(11);
+    os << std::left << name << "/ " << comment;
+    m_record = os.str();
+    setValue(value);
+  }
+
+  template <typename T>
+  inline void KeyRecord::setValue(const T & value) {
+    std::ostringstream os;
+    os.precision(24);
+    os << value;
+    setValue(os.str());
+  }
+
+  template <>
+  inline void KeyRecord::setValue<bool>(const bool & value) {
+    if (value) setValue("T");
+    else setValue("F");
+  }
+
+}
+
+#endif

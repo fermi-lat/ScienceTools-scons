@@ -10,6 +10,7 @@
 #include <string>
 
 #include "tip/IExtensionData.h"
+#include "tip/KeyRecord.h"
 #include "tip/TipException.h"
 
 namespace tip {
@@ -43,6 +44,10 @@ namespace tip {
       template <typename T>
       void set(const T & value);
 
+      void getRecord(KeyRecord & rec) const;
+
+      void setRecord(const KeyRecord & rec);
+
     private:
       IExtensionData * m_header_data;
       std::string m_name;
@@ -53,6 +58,16 @@ namespace tip {
 
   template <typename T>
   inline void Keyword::set(const T & value) { m_header_data->setKeyword(m_name, value); }
+
+  inline void Keyword::getRecord(KeyRecord & rec) const {
+    std::string rec_str;
+    m_header_data->getKeyRecord(m_name, rec_str);
+    rec.set(rec_str);
+  }
+
+  inline void Keyword::setRecord(const KeyRecord & rec) {
+    m_header_data->setKeyRecord(m_name, rec.get());
+  }
 
 }
 

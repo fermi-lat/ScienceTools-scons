@@ -169,6 +169,14 @@ namespace tip {
     delete m_fp;
   }
 
+  void RootExtensionManager::getKeyRecord(const std::string &, std::string &) const {
+    throw TipException("Getting a key record from a Root table is not currently supported.");
+  }
+
+  void RootExtensionManager::setKeyRecord(const std::string &, const std::string &) {
+    throw TipException("Setting a key record from a Root table is not currently supported.");
+  }
+
   void RootExtensionManager::openTable() {
   }
 

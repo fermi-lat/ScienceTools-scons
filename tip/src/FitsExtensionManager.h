@@ -69,6 +69,18 @@ namespace tip {
       template <typename T>
       void setKeywordGeneric(const std::string & name, const T & value);
 
+      /** \brief Get the full key record as a single string, in the form name = value / comment
+          \param name The name of the key record.
+          \param record The output record string.
+      */
+      void getKeyRecord(const std::string & name, std::string & record) const;
+
+      /** \brief Set the full key record as a single string, in the form name = value / comment
+          \param name The name of the key record.
+          \param record The new record string.
+      */
+      void setKeyRecord(const std::string & name, const std::string & record);
+
       // Table-specific support:
       // Non-virtual helper functions for data object interface:
 
@@ -277,6 +289,24 @@ namespace tip {
     strncpy(tmp, value, FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
     if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+  }
+
+  inline void FitsExtensionManager::getKeyRecord(const std::string & name, std::string & record) const {
+    int status = 0;
+    char tmp[FLEN_CARD];
+    fits_read_card(m_fp, const_cast<char *>(name.c_str()), tmp, &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot read key record \"") + name + '"'));
+    record = tmp;
+  }
+
+  inline void FitsExtensionManager::setKeyRecord(const std::string & name, const std::string & record) {
+    if (m_read_only)
+      throw TipException(formatWhat(std::string("Cannot write key record\"") + name + "\"; object is not writable"));
+    int status = 0;
+    char tmp[FLEN_CARD];
+    strncpy(tmp, record.c_str(), FLEN_CARD - 1);
+    fits_update_card(m_fp, const_cast<char *>(name.c_str()), tmp, &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write key record\"") + name + '"'));
   }
 
   // Copying cells.

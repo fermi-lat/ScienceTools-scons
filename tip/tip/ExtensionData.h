@@ -56,6 +56,9 @@ namespace tip {
         { m_extension_manager.getKeywordGeneric(name, value); }
       virtual void getKeyword(const std::string & name, std::string & value) const
         { m_extension_manager.getKeywordGeneric(name, value); }
+      virtual void getKeyRecord(const std::string & name, std::string & value) const
+        { m_extension_manager.getKeyRecord(name, value); }
+
 
       /** \brief Set a keyword in this header object.
           \param name The name of the keyword to get from the header object.
@@ -89,6 +92,8 @@ namespace tip {
         { m_extension_manager.setKeywordGeneric(name, value); }
       virtual void setKeyword(const std::string & name, const char * const & value)
         { m_extension_manager.setKeywordGeneric(name, value); }
+      virtual void setKeyRecord(const std::string & name, const std::string & value)
+        { m_extension_manager.setKeyRecord(name, value); }
 
       /** \brief Return a flag indicating whether the given data object is a table.
       */

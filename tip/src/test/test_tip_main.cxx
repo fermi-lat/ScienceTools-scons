@@ -18,6 +18,7 @@
 #include "TestFilter.h"
 #include "TestImage.h"
 #include "TestInterpolation.h"
+#include "TestKeyRecord.h"
 #include "TestTable.h"
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -609,6 +610,10 @@ int main() {
     // Test interpolation abstractions.
     TestInterpolation interpolation_test;
     status = interpolation_test.test(status);
+
+    // Test key record abstraction.
+    TestKeyRecord key_record_test;
+    status = key_record_test.test(status);
 
     // Test filter capabilities.
     TestFilter filter_test;

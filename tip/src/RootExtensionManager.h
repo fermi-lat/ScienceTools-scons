@@ -80,6 +80,18 @@ namespace tip {
       template <typename T>
       void setKeywordGeneric(const std::string & name, const T & value);
 
+      /** \brief Get the full key record as a single string, in the form name = value / comment
+          \param name The name of the key record.
+          \param record The output record string.
+      */
+      void getKeyRecord(const std::string & name, std::string & record) const;
+
+      /** \brief Set the full key record as a single string, in the form name = value / comment
+          \param name The name of the key record.
+          \param record The new record string.
+      */
+      void setKeyRecord(const std::string & name, const std::string & record);
+
       // Table-specific support:
       /** \brief Open the Root table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table (TTree).

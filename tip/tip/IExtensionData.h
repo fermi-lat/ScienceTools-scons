@@ -41,6 +41,7 @@ namespace tip {
       virtual void getKeyword(const std::string & name, unsigned int & value) const = 0;
       virtual void getKeyword(const std::string & name, unsigned long & value) const = 0;
       virtual void getKeyword(const std::string & name, std::string & value) const = 0;
+      virtual void getKeyRecord(const std::string & name, std::string & value) const = 0;
 
       /** \brief Set a keyword in this extension object.
           \param name The name of the keyword to get from the extension object.
@@ -60,6 +61,7 @@ namespace tip {
       virtual void setKeyword(const std::string & name, const unsigned long & value) = 0;
       virtual void setKeyword(const std::string & name, const std::string & value) = 0;
       virtual void setKeyword(const std::string & name, const char * const & value) = 0;
+      virtual void setKeyRecord(const std::string & name, const std::string & value) = 0;
 
       /** \brief Return a flag indicating whether the given data object is a table.
       */
