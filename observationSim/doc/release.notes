@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r5   15-Jan-05   JC   Windows fixes; Earth azimuth angle computed
     v5r4p6 21-Dec-04   JC   Earth code has been *copied* (!) to flux
                             package, so we need to remove it here.
     v5r4p5 20-Dec-04   JC   add terrestrialSources/Earth to obsSim.cxx

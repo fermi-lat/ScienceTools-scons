@@ -1,5 +1,5 @@
 package observationSim
-version v5r4p6
+version v5r5
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -18,7 +18,6 @@ use genericSources v1* celestialSources
 use Pulsar v1* celestialSources
 use irfLoader v0* irfs
 use dataSubselector v3*
-#use Earth v0* terrestrialSources 
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"
 
