@@ -14,6 +14,8 @@
 #include "evtbin/BinConfig.h"
 // Class encapsulating a count map.
 #include "evtbin/CountMap.h"
+// Glass encapsulating GTIs
+#include "evtbin/Gti.h"
 // Class encapsulating a 1 dimensional histogram.
 #include "evtbin/Hist1D.h"
 // Class encapsulating a 2 dimensional histogram.
@@ -76,6 +78,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testBinConfig();
 
+    void testGti();
+
   private:
     std::string m_data_dir;
     bool m_failed;
@@ -89,6 +93,9 @@ EvtBinTest::EvtBinTest() {
 
 void EvtBinTest::run() {
   m_failed = false;
+
+  std::cerr.precision(24);
+  std::cout.precision(24);
 
   // Test linear binner:
   testLinearBinner();
@@ -104,12 +111,14 @@ void EvtBinTest::run() {
   testLightCurve();
   // Test single spectrum with no time binning (using Tip):
   testSingleSpectrum();
-  // Test multiple spectra with no time binning (using Tip):
+  // Test multiple spectra with time binning (using Tip):
   testMultiSpectra();
   // Test count map (using Tip):
   testCountMap();
   // Test high level bin configuration object.
   testBinConfig();
+  // Test high level bin configuration object.
+  testGti();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -442,13 +451,10 @@ void EvtBinTest::testLightCurve() {
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create light curve object.
-  LightCurve lc(LinearBinner(0., 900000., 900., "TIME"));
+  LightCurve lc(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 900., "TIME"));
 
   // Fill the light curve.
   lc.binInput(table->begin(), table->end());
-
-  // Cull keywords from input table.
-  lc.harvestKeywords(table->getHeader());
 
   // Write the light curve to an output file.
   lc.writeOutput("test_evtbin", "LC1.lc");
@@ -464,13 +470,10 @@ void EvtBinTest::testSingleSpectrum() {
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create spectrum object.
-  SingleSpec spectrum(LogBinner(1., 90000., 1000, "ENERGY"));
+  SingleSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LogBinner(1., 90000., 1000, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput(table->begin(), table->end());
-
-  // Cull keywords from input table.
-  spectrum.harvestKeywords(table->getHeader());
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA1.pha");
@@ -486,13 +489,11 @@ void EvtBinTest::testMultiSpectra() {
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create spectrum object.
-  MultiSpec spectrum(LinearBinner(0., 900000., 300000., "TIME"), LogBinner(1., 90000., 1000, "ENERGY"));
+  MultiSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 300000., "TIME"),
+    LogBinner(1., 90000., 1000, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput(table->begin(), table->end());
-
-  // Cull keywords from input table.
-  spectrum.harvestKeywords(table->getHeader());
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA2.pha");
@@ -518,13 +519,10 @@ void EvtBinTest::testCountMap() {
   }
 
   // Create count map object.
-  CountMap count_map(60., 50., "AIT", 400, 400, .1, 0., true, "RA", "DEC");
+  CountMap count_map(m_data_dir + "D1.fits", m_data_dir + "D2.fits", 60., 50., "AIT", 400, 400, .1, 0., true, "RA", "DEC");
 
   // Fill the count map.
   count_map.binInput(table->begin(), table->end());
-
-  // Cull keywords from input table.
-  count_map.harvestKeywords(table->getHeader());
 
   // Write the count map to an output file.
   count_map.writeOutput("test_evtbin", "CM2.fits");
@@ -717,6 +715,104 @@ void EvtBinTest::testBinConfig() {
 
   delete binner;
 
+}
+
+void EvtBinTest::testGti() {
+  using namespace evtbin;
+
+  Gti gti1;
+  gti1.insertInterval(1., 2.);
+
+  Gti gti2;
+  gti2.insertInterval(2., 3.);
+
+  Gti result = gti1 & gti2;
+  if (result.begin() != result.end()) std::cerr << "testGti found gti1 overlaps gti2 but they should be disjoint" << std::endl;
+
+  result = Gti();
+  result = gti2 & gti1;
+  if (result.begin() != result.end()) std::cerr << "testGti found gti2 overlaps gti1 but they should be disjoint" << std::endl;
+
+  Gti gti3;
+  gti3.insertInterval(1.5, 1.75);
+
+  result = Gti();
+  result = gti1 & gti3;
+  if (result.begin() == result.end()) std::cerr << "testGti found gti1 does not overlap gti3 but they should overlap" << std::endl;
+  else if (result.begin()->first != 1.5 || result.begin()->second != 1.75)
+    std::cerr << "testGti found gti1 & gti3 == [" << result.begin()->first << ", " << result.begin()->second <<
+    "], not [1.5, 1.75]" << std::endl;
+
+  result = Gti();
+  result = gti3 & gti1;
+  if (result.begin() == result.end()) std::cerr << "testGti found gti3 does not overlap gti1 but they should overlap" << std::endl;
+  else if (result.begin()->first != 1.5 || result.begin()->second != 1.75)
+    std::cerr << "testGti found gti3 & gti1 == [" << result.begin()->first << ", " << result.begin()->second <<
+    "], not [1.5, 1.75]" << std::endl;
+
+  Gti gti4;
+  gti4.insertInterval(1.5, 2.5);
+
+  result = Gti();
+  result = gti1 & gti4;
+  if (result.begin() == result.end()) std::cerr << "testGti found gti1 does not overlap gti4 but they should overlap" << std::endl;
+  else if (result.begin()->first != 1.5 || result.begin()->second != 2.0)
+    std::cerr << "testGti found gti1 & gti4 == [" << result.begin()->first << ", " << result.begin()->second <<
+    "], not [1.5, 2.0]" << std::endl;
+
+  result = Gti();
+  result = gti4 & gti1;
+  if (result.begin() == result.end()) std::cerr << "testGti found gti4 does not overlap gti1 but they should overlap" << std::endl;
+  else if (result.begin()->first != 1.5 || result.begin()->second != 2.0)
+    std::cerr << "testGti found gti4 & gti1 == [" << result.begin()->first << ", " << result.begin()->second <<
+    "], not [1.5, 2.0]" << std::endl;
+
+  // Now two GTIs with multiple entries.
+  Gti gti5;
+  gti5.insertInterval(1., 2.);
+  gti5.insertInterval(3., 4.);
+  gti5.insertInterval(5., 6.);
+  gti5.insertInterval(9., 10.);
+
+  Gti gti6;
+  gti6.insertInterval(2.5, 3.5);
+  gti6.insertInterval(3.75, 5.1);
+  gti6.insertInterval(5.3, 5.5);
+  gti6.insertInterval(6.5, 7.5);
+  gti6.insertInterval(8.5, 9.5);
+  gti6.insertInterval(10.5, 11.5);
+
+  Gti correct_result;
+  correct_result.insertInterval(3., 3.5);
+  correct_result.insertInterval(3.75, 4.);
+  correct_result.insertInterval(5., 5.1);
+  correct_result.insertInterval(5.3, 5.5);
+  correct_result.insertInterval(9., 9.5);
+
+  result = Gti();
+  result = gti5 & gti6;
+  if (result != correct_result) std::cerr << "testGti found gti5 & gti6 did not return expected result" << std::endl;
+
+  result = Gti();
+  result = gti6 & gti5;
+  if (result != correct_result) std::cerr << "testGti found gti6 & gti5 did not return expected result" << std::endl;
+
+  // Create light curve object.
+  LightCurve lc(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 900., "TIME"));
+
+  const Gti & lc_gti = lc.getGti();
+  if (1 != lc_gti.getNumIntervals())
+    std::cerr << "testGti read GTI from D1.fits with " << lc_gti.getNumIntervals() << ", not 1" << std::endl;
+  else if (1.0744726657867401 != lc_gti.begin()->first || 886347.5625 != lc_gti.begin()->second)
+    std::cerr << "testGti read GTI from D1.fits with values [" << lc_gti.begin()->first << ", " << lc_gti.begin()->second <<
+      ", not [1.0744726657867401, 886347.5625]" << std::endl;
+
+  // Check ONTIME computation.
+  double on_time = correct_result.computeOntime();
+  const double expected_on_time = 1.55;
+  const double tolerance = 1.e-12;
+  if (tolerance < fabs(expected_on_time - on_time))
+    std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
 }
 
 /// \brief Create factory singleton object which will create the application:
