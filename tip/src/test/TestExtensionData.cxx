@@ -110,11 +110,11 @@ void TestConstructorErrors(const std::string & class_name, const std::string & f
 void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string & ext_type, int & status) {
   using namespace tip;
   std::string msg;
-  double tmp_d[1];
+  double tmp_d;
 
   try {
     // Get an unnamed keyword.
-    const_ext->getKeyword("", *tmp_d);
+    const_ext->getKeyword("", tmp_d);
     msg = "success reading unnamed keyword from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -125,7 +125,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
 
   try {
     // Get a non-existent keyword.
-    const_ext->getKeyword("fake_kwd", *tmp_d);
+    const_ext->getKeyword("fake_kwd", tmp_d);
     msg = "success reading non-existent keyword from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -161,7 +161,7 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   try {
     // Get a table cell from an image.
     // This is only valid for tables.
-    const_ext->getCell(-1, 0, 0, 1, tmp_d);
+    const_ext->getColumn(-1)->get(0, tmp_d);
     msg = "success reading a table cell from a const";
     ReportError(msg + " " + ext_type + " object", status);
   } catch(const TipException & x) {
@@ -179,11 +179,11 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
   } catch(const TipException & x) {
   }
 
-  throw TipException("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object");
+  throw TipException("SHOULD NOT HAVE COMPILED! Calling set(...) for const image object");
   try {
     // Set a table cell in an image.
     // This is only valid for tables.
-    const_ext->setCell(-1, 0, 0, tmp_d, tmp_d + 1);
+    const_ext->getColumn(-1)->set(0, tmp_d);
   } catch(const TipException & x) {
   }
 #endif
@@ -520,8 +520,8 @@ namespace tip {
 
       msg = "attempt to write a value in a cell of a non-const table object whose file cannot be written to";
       try {
-        double tmp_d[1] = { 137. };
-        extension->setCell(1, 0, 0, tmp_d, tmp_d + 1);
+        double tmp_d = 137.;
+        extension->getColumn(1)->set(0, tmp_d);
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
