@@ -57,6 +57,18 @@ void StGraphTestApp::run() {
     plot_hist_2->set(ii, sine_wave[ii + 25]); // cosine
   }
 
+  // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
+  PlotHist1D * plot_hist_3 = engine.createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
+
+  double sigma_squared = 2. * num_intervals;
+  for (int ii = 0; ii < num_intervals; ++ii) {
+    double x_squared = (ii - num_intervals / 2.) * (ii - num_intervals / 2.);
+    for (int jj = 0; jj < num_intervals; ++jj) {
+      double y_squared = (jj - num_intervals / 2.) * (jj - num_intervals / 2.);
+      plot_hist_3->set(ii, jj, 100. * exp(-(x_squared + y_squared) / (2. * sigma_squared)));
+    }
+  }
+
   // Display all graphical objects.
   engine.run();
 
@@ -74,7 +86,7 @@ void StGraphTestApp::run() {
   engine.run();
 
   // Remove one plot.
-  delete plot_hist_2;
+  delete plot_hist_3;
 
 #ifndef WIN32
   sleep(1); // All windows should disappear briefly.
@@ -82,6 +94,9 @@ void StGraphTestApp::run() {
 
   // Display all graphical objects (again).
   engine.run();
+
+  // Remove the other plots.
+  delete plot_hist_2;
 
   // Remove the other plot.
   delete plot_hist_1;
