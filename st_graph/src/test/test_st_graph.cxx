@@ -188,7 +188,7 @@ void StGraphTestApp::testPlots() {
   for (int ii = 0; ii < num_pts; ++ii) {
     x1[ii] = ii;
     delta_x1[ii] = .2;
-    y1[ii] = .3 * (100. - (ii + .3) * (ii + .3));
+    y1[ii] = .3 * (180. - (ii - .1) * (ii - .1));
     delta_y1[ii] = sqrt(fabs(y1[ii]));
   }
 
@@ -196,23 +196,30 @@ void StGraphTestApp::testPlots() {
   IFrame * mf = engine.createMainFrame(600, 400);
 
   // Create a new subframe in which to display the plots.
-  IFrame * pf1 = engine.createPlotFrame(mf, 600, 200);
+  IFrame * pf1 = engine.createPlotFrame(mf, 600, 400);
   
   // Create a scatter plot of this data set, in the subframe.
   IFrame * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
-  // Create a new subframe in which to display the plots.
-  IFrame * pf2 = engine.createPlotFrame(mf, 600, 200);
-  
+  // Modify the data set; double the spreads and shift the plot down.
+  for (int ii = 0; ii < num_pts; ++ii) {
+    x1[ii] = ii;
+    delta_x1[ii] = .4;
+    y1[ii] = .3 * (140. - (ii + .3) * (ii + .3));
+    delta_y1[ii] = sqrt(fabs(y1[ii]));
+  }
+
+  delta_x1[num_pts / 2] = .6;
+  delta_x1[num_pts / 2 + 1] = 1.4;
+
   // Create a histogram plot of this data set, in the subframe.
-  IFrame * plot2 = engine.createPlot(pf2, "Hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+  IFrame * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
   // Run the graphics engine to display everything.
   engine.run();
 
   // Clean up.
   delete plot2;
-  delete pf2;
   delete plot1;
   delete pf1;
   delete mf;

@@ -10,9 +10,7 @@
 #include "st_graph/IFrame.h"
 #include "st_graph/ValueSet.h"
 
-class TCanvas;
 class TGraph;
-class TH1;
 
 namespace st_graph {
 
@@ -67,18 +65,13 @@ namespace st_graph {
       */
       virtual void setR(long r);
 
-      /** \brief Associate this plot with the given canvas. Not API call.
-          \param canvas The canvas.
-      */
-      virtual void setCanvas(TCanvas * canvas);
-
       /** \brief Create histogram plot as a Root object. Not part of API.
           \param title The plot title.
           \param x The first dimension.
           \param y The second dimension.
           \param z The third dimension.
       */
-      TH1 * createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
+      TGraph * createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
 
       /** \brief Create scatter plot as a Root object. Not part of API.
           \param title The plot title.
@@ -88,11 +81,13 @@ namespace st_graph {
       */
       TGraph * createScatterPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
 
+      /** \brief Return current Root graphical object. Not part of API.
+      */
+      TGraph * getTGraph();
+
     private:
       IFrame * m_parent;
-      TCanvas * m_canvas;
       TGraph * m_graph;
-      TH1 * m_hist;
   };
 }
 

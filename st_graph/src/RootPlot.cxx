@@ -6,17 +6,25 @@
 #include <stdexcept>
 #include <vector>
 
-#include "TCanvas.h"
+#include "TGraph.h"
 #include "TGraphErrors.h"
-#include "TH1D.h"
-#include "TPad.h"
+#include "TMultiGraph.h"
 
 #include "RootPlot.h"
+#include "RootPlotFrame.h"
+
+#include "st_graph/IFrame.h"
 
 namespace st_graph {
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-    const ValueSet & y, const ValueSet & z): m_parent(parent), m_canvas(0), m_graph(0), m_hist(0) {
+    const ValueSet & y, const ValueSet & z): m_parent(parent), m_graph(0) {
+// TODO 1. Make m_parent a RootPlotFrame, do the cast one time here.
+// TODO 2. Alter RootPlotFrame::addFrame so it calls back to this class. That allows this class to call
+//         TMultiGraph::Add(graph, opt) with display options when addFrame is called.
+// TODO 3. Remove call to addFrame in the constructor?
+// TODO 4. Change unDisplay to call TMultiGraph::RecursiveRemove or whatever.
+    if (0 == m_parent) throw std::logic_error("RootPlot: cannot create a plot without a parent window");
 
     // Sanity check.
     if (x.size() != y.size()) throw std::logic_error("RootPlot: x and y ValueSets do not have same size");
@@ -25,50 +33,36 @@ namespace st_graph {
     std::string lc_style = style;
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
+    // Get the parent multi frame so that the plot can be added with desired style.
+    RootPlotFrame * frame = dynamic_cast<RootPlotFrame *>(m_parent);
+    if (0 == frame) throw std::logic_error("RootPlot: parent must be a RootPlotFrame");
+
+    TMultiGraph * multi_graph = frame->getMultiGraph();
+
     if (z.empty()) {
       if (0 == lc_style.find("hist")) {
-        m_hist = createHistPlot(title, x, y, z);
+        m_graph = createHistPlot(title, x, y, z);
+        multi_graph->Add(m_graph, "L");
       } else if (0 == lc_style.find("scat")) {
         m_graph = createScatterPlot(title, x, y, z);
+        multi_graph->Add(m_graph, "");
       } else {
         throw std::logic_error("RootPlot: unknown plot style \"" + style + "\"");
       }
     } else {
       throw std::logic_error("RootPlot: plots with more than 2 dimensions not yet supported");
     }
-    if (0 != m_parent) m_parent->addFrame(this);
+    m_parent->addFrame(this);
   }
 
   RootPlot::~RootPlot() {
-    if (0 != m_parent) m_parent->removeFrame(this);
+    m_parent->removeFrame(this);
     delete m_graph;
-    delete m_hist;
   }
 
-  void RootPlot::display() {
-    if (0 == m_canvas) throw std::logic_error("RootPlot::display is not attached to a RootPlotFrame");
+  void RootPlot::display() {}
 
-    // Save current pad.
-    TVirtualPad * save_pad = gPad;
-
-    // Select embedded canvas for drawing.
-    gPad = m_canvas->GetCanvas();
-
-    // Draw the graph.
-    if (0 != m_graph) m_graph->Draw("ALP");
-    if (0 != m_hist) m_hist->Draw("H");
-
-    // Update the display.
-    gPad->Update();
-
-    // Restore current pad.
-    gPad = save_pad;
-
-  }
-
-  void RootPlot::unDisplay() {
-    // ?
-  }
+  void RootPlot::unDisplay() { m_parent->removeFrame(this); }
 
   void RootPlot::addFrame(IFrame *) { throw std::logic_error("RootPlot::addFrame cannot add frames to a plot"); }
   void RootPlot::removeFrame(IFrame *) { throw std::logic_error("RootPlot::removeFrame cannot remove frames from a plot"); }
@@ -79,66 +73,60 @@ namespace st_graph {
   long RootPlot::getR() const { return 0; }
   void RootPlot::setR(long) {}
 
-  void RootPlot::setCanvas(TCanvas * canvas) {
-    m_canvas = canvas;
-  }
+  TGraph * RootPlot::createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z) {
+    TGraph * retval = 0;
+    // Get arrays of values.
+    const std::vector<double> & x_pts = x.getValues();
+    const std::vector<double> & x_err = x.getSpreads();
+    const std::vector<double> & y_pts = y.getValues();
+    //const std::vector<double> & y_err = y.getSpreads(); // ignored
 
-  TH1 * RootPlot::createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z) {
-    TH1 * retval = 0;
+    std::vector<double> x_vals(x_pts.size() * 4);
+    std::vector<double> y_vals(x_pts.size() * 4);
+
     if (z.empty()) {
-      // For convenience, make aliases to vectors containing bins and data.
-      const std::vector<double> & bc(x.getValues()); // Bin centers.
-      const std::vector<double> & bw(x.getSpreads()); // Bin widths.
-      const std::vector<double> & dc(y.getValues()); // Data values.
+      // Use input arrays to create graphable data.
+      unsigned long idx = 0;
+      unsigned long ii = 0;
+      x_vals[idx] = x_pts[ii] - x_err[ii] * .5;
+      y_vals[idx] = 0.;
+      ++idx;
+      for (ii = 0; ii < x_pts.size(); ++ii, ++idx) {
+        x_vals[idx] = x_pts[ii] - x_err[ii] * .5;
+        y_vals[idx] = y_pts[ii];
 
-      // Create new vectors which will hold the bins and data in the form Root TH1 wants.
-      std::vector<double> bins(2 * x.size() + 1); // One extra bin for the end of the last interval.
-      std::vector<double> data(2 * x.size());
+        ++idx;
+        x_vals[idx] = x_pts[ii] + x_err[ii] * .5;
+        y_vals[idx] = y_pts[ii];
 
-      // Create indices to iterate through the bins and data.
-      unsigned int in_idx = 0;
-      unsigned int out_idx = 0;
+        if (ii != x_pts.size() - 1) {
+          double next = x_pts[ii + 1] - x_err[ii + 1] * .5;
 
-      // Bin 0 is different, so it is handled specially outside the loop.
-      // Bin 0 for Root TH1 is the underflow bin, which has 0 counts.
-      data[out_idx] = 0.;
-
-      // Bin 0 is the bin center minus the half-width.
-      bins[out_idx] = bc[in_idx] - bw[in_idx] * .5;
-      ++out_idx;
-
-      // Iterate over input bins, stopping *before the last bin.
-      for (;in_idx < x.size() - 1; ++in_idx, ++out_idx) {
-        // Set current data.
-        data[out_idx] = dc[in_idx];
-        bins[out_idx] = bc[in_idx] + bw[in_idx] * .5;
-
-        // See whether the lower bound of the next bin is distinct from the upper bound of the current bin.
-        double next_bin = bc[in_idx + 1] - bw[in_idx + 1] * .5;
-        if (next_bin > bins[out_idx]) {
-          // There is a gap in the histogram, so add a bin with content == 0.
-          ++out_idx;
-          bins[out_idx] = next_bin;
-          data[out_idx] = 0.;
+          if (next > x_vals[idx]) {
+            ++idx;
+            x_vals[idx] = x_vals[idx - 1];
+            y_vals[idx] = 0.;
+            ++idx;
+            x_vals[idx] = next;
+            y_vals[idx] = 0.;
+          }
+        } else {
+          // Last input point.
+          ++idx;
+          x_vals[idx] = x_vals[idx - 1];
+          y_vals[idx] = 0.;
         }
       }
 
-      // Fill last data, and penultimate bin.
-      data[out_idx] = dc[in_idx];
-      bins[out_idx] = bc[in_idx] + bw[in_idx] * .5;
-
-      // Last bin is the overflow bin. width is arbitrarily same as last bin width.
-      bins[out_idx + 1] = bins[out_idx] + bw[in_idx] * .5;
-      
-      // Create the Root histogram, and fill it from the data.
-      TH1D * hist = new TH1D(title.c_str(), title.c_str(), out_idx + 1, &*bins.begin());
-      for (unsigned int ii = 0; ii < data.size(); ++ii) hist->SetBinContent(ii, data[ii]);
-
-      retval = hist;
-
+      // Create the graph.
+      retval = new TGraph(idx, &*x_vals.begin(), &*y_vals.begin());
+      retval->SetEditable(kFALSE);
     } else {
-      throw std::logic_error("RootPlot::createHistPlot: not supported for more than 2 dimensions");
+      throw std::logic_error("RootPlot::createScatterPlot: not supported for more than 2 dimensions");
     }
+
+    // Set title.
+    retval->SetTitle(title.c_str());
     return retval;
   }
 
@@ -153,6 +141,7 @@ namespace st_graph {
     if (z.empty()) {
       // Create the graph.
       retval = new TGraphErrors(x.size(), x_pts, y_pts, x_err, y_err);
+      retval->SetEditable(kFALSE);
     } else {
       throw std::logic_error("RootPlot::createScatterPlot: not supported for more than 2 dimensions");
     }
@@ -162,5 +151,7 @@ namespace st_graph {
     
     return retval;
   }
+
+  TGraph * RootPlot::getTGraph() { return m_graph; }
 
 }

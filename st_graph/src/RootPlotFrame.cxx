@@ -5,6 +5,8 @@
 
 #include <stdexcept>
 
+#include "TCanvas.h"
+#include "TMultiGraph.h"
 #include "TRootEmbeddedCanvas.h"
 
 #include "RootPlot.h"
@@ -13,7 +15,7 @@
 namespace st_graph {
 
   RootPlotFrame::RootPlotFrame(IFrame * parent, unsigned int width, unsigned int height):
-    RootFrame(parent, 0), m_canvas(0) {
+    RootFrame(parent, 0), m_canvas(0), m_multi_graph(0) {
     
     // Hook together Root primitives.
     TGCompositeFrame * root_frame = dynamic_cast<TGCompositeFrame *>(m_parent->getTGFrame());
@@ -22,17 +24,22 @@ namespace st_graph {
 
     m_canvas = new TRootEmbeddedCanvas("", root_frame, width, height);
     root_frame->AddFrame(m_canvas);
+    m_canvas->GetCanvas()->SetFillColor(0);
+
+    m_multi_graph = new TMultiGraph("tmultigraph", "TMultiGraph");
 
     m_frame = m_canvas;
   }
 
-  RootPlotFrame::~RootPlotFrame() {}
+  // Note m_frame is deleted in the base class destructor.
+  RootPlotFrame::~RootPlotFrame() { delete m_multi_graph; }
 
   void RootPlotFrame::addFrame(IFrame * frame) {
     RootPlot * root_plot = dynamic_cast<RootPlot*>(frame);
     if (0 == root_plot) throw std::logic_error("RootPlotFrame::addFrame was passed a frame which is not a Root plot");
 
-    root_plot->setCanvas(m_canvas->GetCanvas());
+    //m_multi_graph->Add(root_plot->getTGraph(), "L");
+
     RootFrame::addFrame(frame);
   }
 
@@ -41,7 +48,27 @@ namespace st_graph {
     if (0 == root_plot) throw std::logic_error("RootPlotFrame::removeFrame was passed a frame which is not a Root plot");
 
     RootFrame::removeFrame(frame);
-    root_plot->setCanvas(0);
   }
+
+  void RootPlotFrame::display() {
+    RootFrame::display();
+
+    // Save current pad.
+    TVirtualPad * save_pad = gPad;
+
+    // Select embedded canvas for drawing.
+    gPad = m_canvas->GetCanvas();
+
+    m_multi_graph->Draw("A");
+
+    // Update the display.
+    gPad->Update();
+
+    // Restore current pad.
+    gPad = save_pad;
+
+  }
+
+  TMultiGraph * RootPlotFrame::getMultiGraph() { return m_multi_graph; }
 
 }

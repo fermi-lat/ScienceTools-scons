@@ -12,6 +12,7 @@
 #include "st_graph/IFrame.h"
 
 class TGMainFrame;
+class TMultiGraph;
 class TRootEmbeddedCanvas;
 
 namespace st_graph {
@@ -44,8 +45,14 @@ namespace st_graph {
       */
       virtual void removeFrame(IFrame * frame);
 
+      virtual void display();
+
+      /// \brief Get the underlying Root graphical object. Not part of the API.
+      virtual TMultiGraph * getMultiGraph();
+
     private:
       TRootEmbeddedCanvas * m_canvas;
+      TMultiGraph * m_multi_graph;
   };
 
 }
