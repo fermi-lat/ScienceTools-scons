@@ -26,10 +26,12 @@ namespace tip {
 
     // Create the file, and complain if it doesn't work:
     fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
-    if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
 
     // Close the file; not interested in it anymore.
-    fits_close_file(fp, &status);
+    int ignored_status = status;
+    fits_close_file(fp, &ignored_status);
+
+    if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
   }
 
   void FitsFileManager::appendTable(const std::string & file_name, const std::string & table_name) {
