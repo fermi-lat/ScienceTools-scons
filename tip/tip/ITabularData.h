@@ -8,6 +8,7 @@
 #define table_ITabularData_h
 
 #include <string>
+#include <vector>
 
 #include "table/IExtensionData.h"
 #include "table/table_types.h"
@@ -48,6 +49,8 @@ namespace table {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned short & value) const = 0;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const = 0;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const = 0;
+
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, std::vector<double> & value) const = 0;
   };
 
 }
