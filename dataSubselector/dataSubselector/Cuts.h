@@ -53,10 +53,10 @@ public:
 
    typedef enum {CLOSED=0, MINONLY=1, MAXONLY=2} RangeType;
 
-   unsigned int addRangeCut(const std::string & keyword, 
+   unsigned int addRangeCut(const std::string & colname, 
                             const std::string & unit,
                             double minVal, double maxVal,
-                            RangeType type=CLOSED);
+                            RangeType type=CLOSED, unsigned int indx=0);
 
    unsigned int addGtiCut(const tip::Table & gtiTable);
 
@@ -73,7 +73,10 @@ public:
 private:
 
    std::vector<CutBase *> m_cuts;
-   
+
+   unsigned int Cuts::parseColname(const std::string & colname,
+                                   std::string & col) const;
+
    class CutBase {
    public:
       CutBase() {}
@@ -99,12 +102,13 @@ private:
 
    class RangeCut : public CutBase {
    public:
-      RangeCut(const std::string & keyword, const std::string & unit,
-               double minVal, double maxVal, RangeType type=CLOSED) :
-         m_keyword(keyword), m_unit(unit), m_min(minVal), m_max(maxVal),
-         m_type(type) {}
+      RangeCut(const std::string & colname, const std::string & unit,
+               double minVal, double maxVal, RangeType type=CLOSED, 
+               unsigned int indx=0)
+         : m_colname(colname), m_unit(unit), m_min(minVal), m_max(maxVal),
+           m_type(type), m_index(indx) {}
       RangeCut(const std::string & type, const std::string & unit, 
-               const std::string & value);
+               const std::string & value, unsigned int indx);
       virtual ~RangeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual bool accept(const std::map<std::string, double> & params) const;
@@ -114,12 +118,14 @@ private:
       virtual void getKeyValues(std::string & type, std::string & unit,
                                 std::string & value, std::string & ref) const;
    private:
-      std::string m_keyword;
+      std::string m_colname;
       std::string m_unit;
       double m_min;
       double m_max;
       RangeType m_type;
+      unsigned int m_index;
       bool accept(double value) const;
+      double extractValue(tip::ConstTableRecord & row) const;
    };
 
    class GtiCut : public CutBase {

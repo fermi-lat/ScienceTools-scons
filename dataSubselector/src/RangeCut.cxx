@@ -11,8 +11,9 @@ namespace dataSubselector {
 
 Cuts::RangeCut::RangeCut(const std::string & type,
                          const std::string & unit, 
-                         const std::string & value) 
-   : m_keyword(type), m_unit(unit) {
+                         const std::string & value,
+                         unsigned int indx) 
+   : m_colname(type), m_unit(unit), m_index(indx) {
    std::vector<std::string> tokens;
    facilities::Util::stringTokenize(value, ":", tokens);
    if (tokens.size() == 2) {
@@ -29,16 +30,24 @@ Cuts::RangeCut::RangeCut(const std::string & type,
 }
 
 bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
-   double value;
-   row[m_keyword].get(value);
+   double value = extractValue(row);
    return accept(value);
 }
 
 bool Cuts::
 RangeCut::accept(const std::map<std::string, double> & params) const {
    std::map<std::string, double>::const_iterator it;
-   if ( (it = params.find(m_keyword)) != params.end()) {
-      return accept(it->second);
+   std::string colname;
+   if (m_index) {
+      std::ostringstream col;
+      col << m_colname << "[" << m_index << "]";
+      colname = col.str();
+   } else {
+      colname = m_colname;
+   }
+   if ( (it = params.find(colname)) != params.end()) {
+      double value = it->second;
+      return accept(value);
    }
    return true;
 }
@@ -46,7 +55,7 @@ RangeCut::accept(const std::map<std::string, double> & params) const {
 bool Cuts::RangeCut::operator==(const CutBase & arg) const {
    try {
       RangeCut & rhs = dynamic_cast<RangeCut &>(const_cast<CutBase &>(arg));
-      return (m_keyword == rhs.m_keyword && m_unit == rhs.m_unit &&
+      return (m_colname == rhs.m_colname && m_unit == rhs.m_unit &&
               m_min == rhs.m_min && m_max == rhs.m_max &&
               m_type == rhs.m_type);
    } catch (...) {
@@ -66,7 +75,13 @@ getKeyValues(std::string & type, std::string & unit,
    } else {
       val << m_min << ":" << m_max;
    }
-   type = m_keyword;
+   if (m_index) {
+      std::ostringstream typeval;
+      typeval << m_colname << "[" << m_index << "]";
+      type = typeval.str();
+   } else {
+      type = m_colname;
+   }
    unit = m_unit;
    value = val.str();
 }
@@ -78,6 +93,17 @@ bool Cuts::RangeCut::accept(double value) const {
       return value <= m_max;
    }
    return m_min <= value && value <= m_max;
+}
+
+double Cuts::RangeCut::extractValue(tip::ConstTableRecord & row) const {
+   if (m_index) {
+      std::vector<double> tableVector;
+      row[m_colname].get(tableVector);
+      return tableVector.at(m_index-1);
+   }
+   double value;
+   row[m_colname].get(value);
+   return value;
 }
 
 } // namespace dataSubselector

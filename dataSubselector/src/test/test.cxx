@@ -157,6 +157,8 @@ void DssTests::compareCuts() {
       
    my_cuts.addRangeCut("RA", "deg", 83, 93);
    my_cuts.addSkyConeCut(83., 22., 20);
+   my_cuts.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                       dataSubselector::Cuts::CLOSED, 1);
       
    long npts(0);
    long npts2(0);
@@ -169,14 +171,22 @@ void DssTests::compareCuts() {
          ++m_outputIt;
          npts++;
       }
+      input["ENERGY"].get(params["ENERGY"]);
+      input["TIME"].get(params["TIME"]);
       input["RA"].get(params["RA"]);
       input["DEC"].get(params["DEC"]);
+      params["CALIB_VERSION[1]"] = 1;
       if (my_cuts.accept(params)) {
          output2 = input;
          ++m_output2It;
          npts2++;
       }
       CPPUNIT_ASSERT(my_cuts.accept(input) == my_cuts.accept(params));
+
+      if (my_cuts.accept(input)) {
+         params["CALIB_VERSION[1]"] = 0;
+         CPPUNIT_ASSERT(my_cuts.accept(input) != my_cuts.accept(params));
+      }
    }
 
    m_outputTable->setNumRecords(npts);

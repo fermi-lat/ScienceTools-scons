@@ -11,7 +11,7 @@ class map(dict):
 
 package = 'dataSubselector'
 home = os.environ[package.upper() + 'ROOT']
-apps = ['dataSubselector']
+apps = ['dataSubselector', 'viewCuts']
 
 libraries = map()
 

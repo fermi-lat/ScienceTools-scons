@@ -1,13 +1,7 @@
 /**
  * @file CutParameters.cxx
- * 
  * @brief  Method definitions for the CutParameters class
- * 
- * @author Tom Stephens
- * @date Created:  17 Oct 2003
- * @date Last Modified:  $Date$
- * @version $Revision$
- * 
+ *
  * $Header$
  */
 
@@ -16,24 +10,9 @@
 #include "st_app/AppParGroup.h"
 
 #include "dataSubselector/CutParameters.h"
+// #include "dataSubselector/Cuts.h"
+// namespace dataSubselector {
 
-/**
- * @brief Primary constructor
- * 
- * This is main constructor function for the CutParameters class.  It
- * creates an empty structure with the values all set to zero and then
- * reads the parameter file using hoops and fills in the data values.
- * 
- * @param argc the number of command line arguments
- * @param argv array of pointers holding the individual arguments
- * 
- * @author Tom Stephens
- * @date Created:  17 Oct 2003
- * @date Last Modified:  15 Dec 2003
- * 
- * Revisions:
- *   - 15/12/03 - Added hoops functionality
- */
 CutParameters::CutParameters(st_app::AppParGroup & pars) : 
    m_query(""),  m_headerString("") {
    
@@ -106,7 +85,7 @@ void CutParameters::setFilterExpression() {
         << m_radius*DEG_TO_RAD << ")";
       m_query = q.str();
 
-      hs << "circle(" << m_RA << "," << m_Dec << "," << m_radius << ",RA,DEC)";
+      hs << "CIRCLE(" << m_RA << "," << m_Dec << "," << m_radius << ",RA,DEC)";
       m_headerString = hs.str();
    }
    
@@ -173,7 +152,7 @@ void CutParameters::addDataSubspaceKeywords(tip::Table * table) {
       std::string type("POS(RA,DEC)");
       std::string unit("deg");
       std::ostringstream val, key1, key2, key3;
-      val << "circle(" << m_RA << "," << m_Dec << "," << m_radius << ")";
+      val << "CIRCLE(" << m_RA << "," << m_Dec << "," << m_radius << ")";
       nKeys++;
       key1 << "DSTYP" << nKeys;
       key2 << "DSUNI" << nKeys;
@@ -209,3 +188,5 @@ void CutParameters::addDataSubspaceKeywords(tip::Table * table) {
    // update the NDSKEYS keyword with the new value
    header["NDSKEYS"].set(nKeys);
 }
+
+//}

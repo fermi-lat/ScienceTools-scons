@@ -13,16 +13,23 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "facilities/Util.h"
+
 #include "tip/IFileSvc.h"
 
 #include "dataSubselector/Cuts.h"
 
 namespace {
-void toLower(std::string & name) {
-   for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
-      *it = std::tolower(*it);
+   void toLower(std::string & name) {
+      for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
+         *it = std::tolower(*it);
+      }
    }
-}
+   void toUpper(std::string & name) {
+      for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
+         *it = std::toupper(*it);
+      }
+   }
 }
 
 namespace dataSubselector {
@@ -30,12 +37,18 @@ namespace dataSubselector {
 Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
    const tip::Table * table =
       tip::IFileSvc::instance().readTable(eventFile, extension);
-   const std::vector<std::string> & colnames = table->getValidFields();
+
+   std::vector<std::string> colnames = table->getValidFields();
+// FITS column names are in CAPS, not lowercase, so undo the damage
+// wrought by tip:
+   for (unsigned int i = 0; i < colnames.size(); i++) {
+      ::toUpper(colnames[i]);
+   }
 
    const tip::Header & header = table->getHeader();
    double nkeys_value;
    header["NDSKEYS"].get(nkeys_value);
-// This is incredibly lame....might as well use CCFits.
+// This is incredibly lame....one might as well use CCFits.
    unsigned int nkeys = static_cast<unsigned int>(nkeys_value);
 
    std::string type, unit, value, ref("");
@@ -52,11 +65,11 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
          key4 << "DSREF" << keynum;
          header[key4.str()].get(ref);
       }
-      std::string mytype(type); // more foolishness
-      ::toLower(mytype);
-      if (std::find(colnames.begin(), colnames.end(), mytype)
+      std::string colname;
+      unsigned int indx = parseColname(type, colname);
+      if (std::find(colnames.begin(), colnames.end(), colname) 
           != colnames.end() && value != "TABLE") {
-         m_cuts.push_back(new RangeCut(type, unit, value));
+         m_cuts.push_back(new RangeCut(colname, unit, value, indx));
       } else if (value.find("CIRCLE") == 0) {
          m_cuts.push_back(new SkyConeCut(type, unit, value));
       } else if (type == "TIME" && value == "TABLE") {
@@ -74,6 +87,18 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
          throw std::runtime_error(message.str());
       }
    }
+}
+
+unsigned int Cuts::parseColname(const std::string & colname,
+                                std::string & col) const {
+   if (colname.find("[") == std::string::npos) {
+      col = colname;
+      return 0;
+   }
+   std::vector<std::string> tokens;
+   facilities::Util::stringTokenize(colname, "[]", tokens);
+   col = tokens.at(0);
+   return std::atoi(tokens.at(1).c_str());
 }
 
 Cuts::Cuts(const Cuts & rhs) {
@@ -105,11 +130,12 @@ bool Cuts::accept(const std::map<std::string, double> & params) const {
    return ok;
 }
 
-unsigned int Cuts::addRangeCut(const std::string & keyword,
+unsigned int Cuts::addRangeCut(const std::string & colname,
                                const std::string & unit,
                                double minVal, double maxVal, 
-                               RangeType type) {
-   m_cuts.push_back(new Cuts::RangeCut(keyword, unit, minVal, maxVal, type));
+                               RangeType type, unsigned int indx) {
+   m_cuts.push_back(new Cuts::RangeCut(colname, unit, minVal, maxVal, 
+                                       type, indx));
    return m_cuts.size();
 }
 
