@@ -13,13 +13,6 @@
 #define SECDAY	86400			/* Seconds per day */
 #define EPHEM     "JPLEPH"
 
-typedef struct {
-  enum TimeSys ts ;
-  long MJDint ;
-  double MJDfr ;
-} MJDTime ;
-
-
 /*  Internally referenced functions  */
 int initephem (int, int *, double *, double *, double *) ;
 const double *dpleph (double *, int, int) ;
