@@ -87,6 +87,9 @@ namespace st_graph {
     // Display all frames currently linked to the top-level frame.
     RootFrame::ancestor()->display();
 
+    // Hide all frames which need to be hidden at the outset.
+    hideHidden(RootFrame::ancestor());
+
     // Run the Root event loop to handle the graphical displays.
     gApplication->Run(kTRUE);
   }
@@ -94,7 +97,9 @@ namespace st_graph {
   void RootEngine::stop() {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::stop: graphical environment not initialized");
 
+    // Hide all frames currently linked to the top-level frame.
     RootFrame::ancestor()->unDisplay();
+
     gApplication->Terminate(0);
   }
 
@@ -344,6 +349,15 @@ namespace st_graph {
     delete [] buf;
 
     return file_name;
+  }
+
+  void RootEngine::hideHidden(IFrame * frame) {
+    std::list<IFrame *> subframes;
+    frame->getSubframes(subframes);
+    for (std::list<IFrame *>::iterator itor = subframes.begin(); itor != subframes.end(); ++itor) {
+      hideHidden(*itor);
+    }
+    if (frame->isHidden()) frame->unDisplay(); // Will hide all children too.
   }
 
 }

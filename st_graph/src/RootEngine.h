@@ -118,6 +118,8 @@ namespace st_graph {
       virtual bool initSucceeded() const { return m_init_succeeded; }
 
     private:
+      void hideHidden(IFrame * frame);
+
       bool m_init_succeeded;
   };
 
