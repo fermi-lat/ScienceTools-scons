@@ -7,7 +7,6 @@
 #include <iostream>
 #include <vector>
 
-#include "table/Ref.h"
 #include "table/Table.h"
 
 int main() {
@@ -47,7 +46,7 @@ int main() {
         double channel = 0.;
 
         // For convenience, dereference the iterator.
-        Record & r = *itor;
+        Table::Record & r = *itor;
 
         // Explicitly read the "counts" field from the file into the counts_vec array, one value at
         // a time.
@@ -89,21 +88,21 @@ int main() {
 
       // Declare the iterator and dereference it outside the loop.
       Table::Iterator itor;
-      Record & r = *itor;
+      Table::Record & r = *itor;
 
       // Make local aliases to hold the channel and counts. These variables are bound to the Iterator's
-      // referent Record object.
-      Ref<double> channel = r["channel"];
-      Ref<double> counts = r["counts"];
+      // referent Table::Record object.
+      Table::Ref<double> channel = r["channel"];
+      Table::Ref<double> counts = r["counts"];
 
       // Just for fun, verify that one can copy-contruct a Ref object.
-      Ref<double> spud = counts;
+      Table::Ref<double> spud = counts;
 
       // An aside: for completeness, make a const iterator.
       const Table::Iterator citor = my_table->begin();
 
       // An aside continued: dereference the const iterator.
-      const Record & r1 = *citor;
+      const Table::Record & r1 = *citor;
 
       // An aside concluded: get a const Cell from the const Record:
       const Table::Cell & cell = r1["channel"];
@@ -145,7 +144,31 @@ int main() {
 
         // Verify other assignments.
         channel = 7.;
-        double dcounts = counts;
+
+        if (7. != channel) {
+          static bool first_time = true;
+          if (first_time) {
+// This is broken because write isn't implemented yet.
+//            std::cerr << "Assignment from double or comparison to double didn't work right for Ref." << std::endl;
+//            std::cerr << "channel == " << channel << " not " << 7. << std::endl;
+//            status = 1;
+//            first_time = false;
+          }
+        }
+
+        double dcounts = 1000.;
+        dcounts = counts;
+
+        if (dcounts != counts) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "Assignment to double or comparison to double didn't work right for Ref." << std::endl;
+            std::cerr << "dcounts == " << dcounts << " not " << counts << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+
       }
 
     } catch(const TableException & x) {
