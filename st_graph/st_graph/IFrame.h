@@ -32,6 +32,18 @@ namespace st_graph {
       */
       virtual void removeFrame(IFrame * frame) = 0;
 
+      /// \brief Get the horizontal center of the frame.
+      virtual long getHCenter() const = 0;
+
+      /// \brief Set the horizontal center of the frame.
+      virtual void setHCenter(long center) = 0;
+
+      /// \brief Get the vertical center of the frame.
+      virtual long getVCenter() const = 0;
+
+      /// \brief Set the vertical center of the frame.
+      virtual void setVCenter(long center) = 0;
+
       /// \brief Get the X position of the left edge of the frame.
       virtual long getL() const = 0;
 
@@ -43,14 +55,43 @@ namespace st_graph {
       /// \brief Get the X position of the right edge of the frame.
       virtual long getR() const = 0;
 
-      /** \brief Set the X position of the left edge of the frame.
-          \param l The new position of the left edge.
+      /** \brief Set the X position of the right edge of the frame.
+          \param l The new position of the right edge.
       */
       virtual void setR(long r) = 0;
 
+      /// \brief Get the Y position of the top edge of the frame.
+      virtual long getT() const = 0;
+
+      /** \brief Set the Y position of the top edge of the frame.
+          \param t The new position of the top edge.
+      */
+      virtual void setT(long t) = 0;
+
+      /// \brief Get the Y position of the bottom edge of the frame.
+      virtual long getB() const = 0;
+
+      /** \brief Set the Y position of the bottom edge of the frame.
+          \param b The new position of the bottom edge.
+      */
+      virtual void setB(long b) = 0;
+
       virtual long getWidth() const = 0;
 
+      virtual void setWidth(long width) = 0;
+
       virtual long getHeight() const = 0;
+
+      virtual void setHeight(long height) = 0;
+
+      virtual long getMinimumWidth() const = 0;
+
+      virtual void setMinimumWidth(long width) = 0;
+
+      virtual long getMinimumHeight() const = 0;
+
+      virtual void setMinimumHeight(long height) = 0;
+
   };
 
 }
