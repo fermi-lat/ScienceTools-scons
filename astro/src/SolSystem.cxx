@@ -30,7 +30,7 @@ void range (double *v, double r);
 int Conv_GST_UT(double jd,double gst,double *tu);
 int Sun_Pos(double jd,double *ra,double *decs,double *lon,double *r);
 int Conv_lb_ad(double jd,double l,double b,double *ra,double *dec);
-void riset (double ra, double dec, double lat, double dis, double *lstr,double * lsts,
+void riset (double ra, double dec, double lat, double dis,double *lstr,double * lsts,
 	   double *azr, double *azs, int *status);
 int vsop87 (double mjd, int obj, double prec, double *ret);
 void sunpos (double mjd, double *lsn, double *rsn, double *bsn);

@@ -3,6 +3,7 @@
 @verbatim
   Package coordinators: T.Burnett, G.Tosti
 
+  v0r12p1 19-apr-04 THB disable planets to avoid Linux warnings
   v0r12   29-mar-04 THB add HTM class
   v0r10p8 19-mar-04 THB fix gcc 2.95 error, and test program for positive longitude.
   v0r10p7 19-mar-04 THB gcc needed const operator, fix SkyDir::l() to be positive.
