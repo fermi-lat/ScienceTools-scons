@@ -7,6 +7,7 @@ $Header$
 """
 import os, sys, string
 from xml.dom import minidom
+from cleanXml import cleanXml
 
 defaultModel = '\n'.join( ('<?xml version="1.0"?>',
                            '<source_library title="source library">',
@@ -50,8 +51,9 @@ class SourceModel:
             #
             filename = self.filename
         self.setAttributes()
+        doc = cleanXml(self.doc)
         file = open(filename, 'w')
-        file.write(self.doc.toxml() + '\n')
+        file.write(doc.toxml() + '\n')
         file.close()
 
 class DomElement:
@@ -62,7 +64,7 @@ class DomElement:
             if converter and key != "name" and key != "free":
                 attributes[key] = converter(node.getAttribute(key))
 # An ugly kludge here since each Parameter's "free" flag needs to be int.
-            elif key == "free":  
+            elif key == "free":
                 attributes[key] = string.atoi(node.getAttribute(key))
             else:
                 attributes[key] = node.getAttribute(key).encode("ascii")

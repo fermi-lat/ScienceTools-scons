@@ -42,7 +42,7 @@ class RootWindow(Tkinter.Tk):
         Tkinter.Tk.__init__(self)
         self.executable = executable
         self.debug = debug
-        self.title("likelihood: " + os.path.abspath(''))
+        self.title("likeGui: " + os.path.abspath(''))
         self.menuBar = MenuBar(self)
         self.textPanel = TextPanel(self)
         self.likeThread = None

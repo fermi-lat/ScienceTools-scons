@@ -307,8 +307,8 @@ class AttributeDialog(mySimpleDialog.Dialog):
                         value = 1
                 else:
                     value = string.atof(attribute.variable.get())
-                    self.parameter.__dict__[attribute.name] = value
-                    self.parameter.setAttributes()
+                self.parameter.__dict__[attribute.name] = value
+                self.parameter.setAttributes()
             except:
                 pass
             
