@@ -151,7 +151,7 @@ void GRBpulse::fillVector(std::vector<long> &ngtwid) const
 
 	long temp[] = {430,427,424,421,417,410,388,334,248,178,119,81,46,15,2};
 
-	grbobstypes::LongSize sz = sizeof(temp)/sizeof(long);
+	LongSize sz = sizeof(temp)/sizeof(long);
 
 	ngtwid.resize(sz);
 	std::copy(&temp[0], &temp[sz], ngtwid.begin());
@@ -287,7 +287,7 @@ void GRBpulse::pickWidth(HepRandomEngine *engine, const double duration)
 
 		fillVector(ngtwid);
 
-		grbobstypes::LongConstIter it = std::max_element(ngtwid.begin(), ngtwid.end());
+		LongConstIter it = std::max_element(ngtwid.begin(), ngtwid.end());
 		long maxNgtwid = std::max(*it, 0L);
 
 		it = std::min_element(ngtwid.begin(), ngtwid.end());
@@ -460,7 +460,7 @@ void GRBpulse::getTmax(HepRandomEngine *engine, const int npuls, const double du
 
 void GRBpulse::getPulse(const int npuls)
 {
-	grbobstypes::DoubleSize sz = m_tdiff.size();
+	DoubleSize sz = m_tdiff.size();
 
 	std::vector<double> temp(sz);
 

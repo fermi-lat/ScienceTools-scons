@@ -3,7 +3,7 @@
 #include "GRBobsUtilities.h"
 #include <fstream>
 #include <iomanip>
-#include "GRBobsConstants.h"
+//#include "GRBobsConstants.h"
 #include "GRBsimvecCreator.h"
 #include <algorithm>  // for transform
 #include <numeric>  // for accumulate
@@ -134,7 +134,7 @@ double GRBobsUtilities::randGen::operator () (double x)
 void GRBobsUtilities::sortVector(const long index, const std::vector<double> &in, const std::vector<double> &sorted, 
 								 std::vector<double> &out) 
 {
-	grbobstypes::DoubleSize sz = in.size();
+	DoubleSize sz = in.size();
 
 	std::deque<bool> flag(sz,0);
 	std::vector<double> temp(out);

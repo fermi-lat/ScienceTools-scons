@@ -13,12 +13,14 @@
 #include "GRBmaker.h"
 #include "GRBpulse.h"
 #include <fstream>
-#include <iomanip>
 #include "GRBobsConstants.h"
 #include "GRBsimvecCreator.h"
 #include <algorithm>              // for transform
 #include <numeric>                // for accumulate
 #include "CLHEP/Random/RandFlat.h"
+
+
+
 
 using namespace grbobstypes;
 
@@ -633,12 +635,12 @@ void GRBmaker::getFlux(HepRandomEngine *engine, long nlong, std::vector<double> 
 	std::vector<double>  p = GRBsimvecCreator::instance()->flux_p();
 	std::vector<double>  q = GRBsimvecCreator::instance()->flux_q();
 
-	grbobstypes::DoubleConstIter it0 = std::max_element(p.begin(), p.end());
-	grbobstypes::DoubleConstIter it1 = std::max_element(q.begin(), q.end());
+	DoubleConstIter it0 = std::max_element(p.begin(), p.end());
+	DoubleConstIter it1 = std::max_element(q.begin(), q.end());
 	double maxP = std::max<double> (*it0, *it1);
 
-	grbobstypes::LongConstIter it2 = std::max_element(n.begin(), n.end());
-	grbobstypes::LongConstIter it3 = std::min_element(n.begin(), n.end());
+	LongConstIter it2 = std::max_element(n.begin(), n.end());
+	LongConstIter it3 = std::min_element(n.begin(), n.end());
 	long diff = *it2 - *it3;
 
 	double f=0;
@@ -739,7 +741,7 @@ void GRBmaker::getTimes(HepRandomEngine *engine, const long nphots, const long d
 
 	for (int iphot=0; iphot<nphots; ++iphot)
 	{
-		grbobstypes::DoubleIter it = cumpulse.end();
+		DoubleIter it = cumpulse.end();
 		while (it == cumpulse.end())
 			it = std::find_if(cumpulse.begin(), cumpulse.end(), std::bind2nd(std::greater_equal<double>(), engine->flat()));
 
@@ -1008,6 +1010,7 @@ std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker)
 	std::pair<double,double> grbdir = grbMaker.dir();
 
 	// check for WIN32 only until a fix can be found for std::fixed - it does not compile on Linux
+	// std::ios::fixed or os.setf(std::ios::fixed) compiles both on windows and linux, but does not work correctly
 #ifdef WIN32
 	os << "Fp, dur, beta, Specnorm, Npulses, UnivFWHM= " << std::setw(12) << std::fixed << grbMaker.flux() << "   " <<
 		grbMaker.duration() << "   " << grbMaker.powerLawIndex() << "   " << grbMaker.specnorm() << "   " << 
