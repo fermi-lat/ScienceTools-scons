@@ -5,7 +5,11 @@
 #ifndef st_app_StApp_h
 #define st_app_StApp_h
 
+#include <string>
+
 namespace st_app {
+
+  class AppParGroup;
 
   /** \class StApp
       \brief Application of standard type.
@@ -26,15 +30,27 @@ namespace st_app {
       */
       static char ** getArgv();
 
-      virtual ~StApp() throw() {}
+      /** \brief Default constructor.
+      */
+      StApp();
+
+      /** \brief Virtual constructor.
+      */
+      virtual ~StApp() throw();
 
       /** \brief Perform the action needed by this application. This will be called by the standard main.
       */
       virtual void run() = 0;
 
+      /** \brief Return an object which provides the most typical kinds of parameter access.
+          \param app_name The name of this application, used to find the parameter file.
+      */
+      virtual AppParGroup & getParGroup(const std::string & app_name);
+
     private:
       static int s_argc;
       static char ** s_argv;
+      AppParGroup * m_par_group;
   };
 
 }

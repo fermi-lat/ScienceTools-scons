@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 
 namespace st_app {
@@ -25,5 +26,18 @@ namespace st_app {
 
   // Accessor for command line arguments.
   char ** StApp::getArgv() { return s_argv; }
+
+  // Construct application object:
+  StApp::StApp(): m_par_group(0) {}
+
+  // Destruct application object:
+  StApp::~StApp() throw() { delete m_par_group; }
+
+  // Return an object which provides the most typical kinds of parameter access.
+  AppParGroup & StApp::getParGroup(const std::string & app_name) {
+    // Create if necessary:
+    if (0 == m_par_group) m_par_group = new AppParGroup(app_name);
+    return *m_par_group;
+  }
 
 }
