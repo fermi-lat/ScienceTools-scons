@@ -77,10 +77,10 @@ def run_test(argv):
     edispCombined = latResponse.EdispGlast25()
     respCombined = latResponse.Irfs(aeffCombined, psfCombined, edispCombined,4)
 
-#    respVector = latResponse.IrfVector((respCombined, ))
+    respVector = latResponse.IrfVector((respCombined, ))
 #    respVector = latResponse.IrfVector((respFront, ))
 #    respVector = latResponse.IrfVector((respBack, ))
-    respVector = latResponse.IrfVector((respFront, respBack))
+#    respVector = latResponse.IrfVector((respFront, respBack))
 
     useGoodi = 0
     events = observationSim.EventContainer(root + "_events", useGoodi)
