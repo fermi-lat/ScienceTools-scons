@@ -192,7 +192,7 @@ void ObsSim::generateData() {
    std::string prefix = m_pars["Output_file_prefix"];
    observationSim::EventContainer events(prefix + "_events", nMaxRows);
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows);
-   observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
+   observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    if (m_pars["Use_as_sim_time"]) {
       std::cout << "Generating events for a simulation time of "
                 << m_count << " seconds...." << std::endl;
@@ -203,4 +203,8 @@ void ObsSim::generateData() {
       m_simulator->generateEvents(static_cast<long>(m_count), events, 
                                   scData, m_respPtrs, spacecraft);
    }
+
+// Pad with one more row of ScData.
+   double time = scData.simTime() + 30.;
+   scData.addScData(time, spacecraft);
 }

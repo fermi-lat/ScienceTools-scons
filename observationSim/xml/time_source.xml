@@ -7,4 +7,12 @@
       <launch_point />
       </spectrum>
    </source>
+   <source name="null_source" flux="1e-11">
+      <spectrum escale="GeV"> 
+         <particle name="gamma">
+                <power_law emin="100." emax="100000." gamma="2.19"/>
+            </particle>
+            <celestial_dir ra="83.57" dec="22.01"/>
+        </spectrum>
+    </source>
 </source_library>

@@ -14,6 +14,8 @@
 
 #include "facilities/Util.h"
 
+#include "st_facilities/Util.h"
+
 #include "flux/EventSource.h"
 #include "flux/CompositeSource.h"
 #include "flux/SpectrumFactoryTable.h"
@@ -185,6 +187,10 @@ void Simulator::makeEvents(EventContainer &events,
 // Insert the very first entry in the scData file.
    scData.addScData(m_absTime, spacecraft);
 
+// Enclose loop in outer try block, catching a GPS-thrown exception when
+// time exceeds pointing history database.
+   try {
+
 // Loop over event generation steps until done.
    while (!done()) {
 
@@ -229,6 +235,12 @@ void Simulator::makeEvents(EventContainer &events,
          m_elapsedTime = m_simTime;
       }
    } // while (!done())
+
+   } catch (std::exception & eObj) {
+      if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")) {
+         throw;
+      }
+   }
 //    if (!m_useSimTime) std::cerr << "!" << std::endl;
 }
 
