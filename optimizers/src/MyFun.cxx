@@ -39,7 +39,7 @@ double MyFun::value(Arg &xarg) const {
    getParams(params);
 
    for (unsigned int i = 0; i < params.size(); i++) {
-      my_val += params[i].getTrueValue()*pow(x, i);
+      my_val += params[i].getTrueValue()*pow(x, int(i));
    }
    
    return my_val;
@@ -54,7 +54,7 @@ double MyFun::derivByParam(Arg &xarg, const std::string &paramName) const
 
    for (unsigned int i = 0; i < params.size(); i++) {
       if (paramName == params[i].getName()) 
-         return params[i].getScale()*pow(x, i);
+         return params[i].getScale()*pow(x, int(i));
    }
    throw ParameterNotFound(paramName, getName(), "MyFun::deriveByParam");
 }

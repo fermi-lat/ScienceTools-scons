@@ -25,7 +25,7 @@ std::vector<double> & Optimizer::getUncertainty(void) {
    choleskyDecompose(hess);
 
 // Repack in compact form.
-   int npars = static_cast<int>(sqrt(hess.size())+0.1);
+   int npars = static_cast<int>(sqrt(double(hess.size()))+0.1);
    std::valarray<double> compactHess(npars*(npars+1)/2);
    int indx(0);
    for (int j = 0; j < npars; j++) {
@@ -94,7 +94,7 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
 void Optimizer::choleskyDecompose(std::valarray<double> &array) {
 // This implementation is based on NR's choldc().
 
-   int npts = static_cast<int>(sqrt(array.size())+0.1);
+   int npts = static_cast<int>(sqrt(double(array.size()))+0.1);
    std::valarray<double> p(npts);
 
    for (int i = 0; i < npts; i++) {
