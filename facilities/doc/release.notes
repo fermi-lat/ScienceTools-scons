@@ -4,6 +4,8 @@
   @verbatim
   Coordinator: Toby Burnett
 
+  v2r9    12-Jan-2004  jrb  Add new utilities Util::stringToDouble and
+                            Util::stringToInt
   v2r8    6-Jan-2004  jrb   Add new utilities Util::stringTokenize and
                             Util::basename 
   v2r7p2 28-May-2003  thb   Add include needed for Windows
