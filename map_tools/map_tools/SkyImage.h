@@ -7,8 +7,8 @@
 #ifndef TOOL_SKYIMAGE_H
 #define TOOL_SKYIMAGE_H
 
-#include "image/Image.h"
 class MapParameters;
+class BaseImage;
 
 namespace astro { class SkyDir; }
 /**
@@ -17,7 +17,7 @@ namespace astro { class SkyDir; }
 
 
 */
-class SkyImage //table::PrimaryHDU<float>
+class SkyImage 
 {
 public:
     /** @brief constructor set up the map
@@ -58,16 +58,12 @@ public:
     //! @brief return the sum of all pixel values in the image
     double total()const{return m_total;}
 
-    //! @brief add a string or douuble key to the image 
-    void setKey(std::string name, double value, std::string unit="", std::string comment=""){
-        m_image->addAttribute(DoubleAttr(name, value, unit, comment)); }
-    void setKey(std::string name, std::string value,std::string unit="", std::string comment="")
-    {m_image->addAttribute(StringAttr(name, value,unit,comment)); }
     
 private:
     int m_naxis1, m_naxis2, m_naxis3;
     double m_total;
-    FloatImg* m_image;
+    //! pointer to the BaseImage abstract class, which is cast in the implementation.
+    BaseImage* m_image;
     unsigned int m_pixelCount;
 };
 

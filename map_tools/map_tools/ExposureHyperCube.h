@@ -9,9 +9,8 @@
 #ifndef TOOLS_EXPOSUREHYPERCUBE_H
 #define TOOLS_EXPOSUREHYPERCUBE_H
 
-//#include "image/Image.h"
 #include "Exposure.h"
-
+class BaseImage;
 /** @class ExposureHyperCube 
     @brief Set up an exposure map hypercube
 
@@ -34,8 +33,7 @@ public:
    ~ExposureHyperCube();
 
 private:
-//    FloatImg* m_image;
-   void * m_image;
+   BaseImage * m_image;
 
 };
 #endif //TOOLS_EXPOSUREHYPERCUBE_H

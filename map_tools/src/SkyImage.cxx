@@ -1,4 +1,4 @@
-/** @file SkyImage.cxx
+ /** @file SkyImage.cxx
 
 @brief implement the class SkyImage
 
@@ -8,10 +8,19 @@
 #include "map_tools/MapParameters.h"
 
 #include "astro/SkyDir.h"
+#include "image/Image.h"
 
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
+        //! @brief add a string or douuble key to the image 
+
+    BaseImage* image;
+    void setKey(std::string name, double value, std::string unit="", std::string comment=""){
+        image->addAttribute(DoubleAttr(name, value, unit, comment)); }
+    void setKey(std::string name, std::string value,std::string unit="", std::string comment="")
+    {image->addAttribute(StringAttr(name, value,unit,comment)); }
+
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const MapParameters& pars)
@@ -47,6 +56,8 @@ SkyImage::SkyImage(const MapParameters& pars)
 
     // fill the boundaries with NaN
     if( pars.projType()=="AIT") clear();
+
+    image=m_image; // set up the anonymous convenience functions
 
     setKey("TELESCOP", "GLAST");
 
@@ -85,13 +96,15 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
     if(  k< m_pixelCount){
-        m_image->data()[k]+=delta;
+        reinterpret_cast<FloatImg*>(m_image)->data()[k]+=delta;
         m_total += delta;
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::fill(Requester& req)
 {
+
+    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
 
     for( size_t k = 0; k< m_pixelCount; ++k){
         // determine the bin center
@@ -101,17 +114,18 @@ void SkyImage::fill(Requester& req)
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
             double t= req(dir);
-            m_image->data()[k] = t; 
+            image->data()[k] = t; 
             m_total += t;
         }catch(... ) { // any exception: just fill in a NaN
-            m_image->data()[k]=dnan; 
+            image->data()[k]=dnan; 
         }
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::clear()
 {
-    size_t s = m_image->data().size();
+    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
+    size_t s = image->data().size();
     for( size_t k = 0; k< s; ++k){
         // determine the bin center
         float 
@@ -119,17 +133,18 @@ void SkyImage::clear()
             y = static_cast<int>(k/m_naxis1)+0.5;
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
-            m_image->data()[k] = 0; 
+            image->data()[k] = 0; 
         }catch(... ) { // any exception: just fill in a NaN
-            m_image->data()[k]=dnan; 
+            image->data()[k]=dnan; 
         }
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::~SkyImage()
 {
-    if(m_image!=0){
-        m_image->saveElement();
-        delete m_image;
+    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
+    if(image!=0){
+        image->saveElement();
+        delete image;
     }
 }
