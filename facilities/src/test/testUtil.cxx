@@ -13,15 +13,15 @@ main() {
 
   int ntrans = facilities::Util::expandEnvVar(&name, oDelim, cDelim);
 
-  cout << "Translated name is " << name << std::endl;
+  std::cout << "Translated name is " << name << std::endl;
 
   // Process running this must have environment variable SRC
   std::string multi = std::string("$(FACILITIESROOT)/$(SRC)");
 
   ntrans = facilities::Util::expandEnvVar(&multi);
 
-  cout << "Translated name is " << multi << std::endl;
-  cout << ntrans << " variables were translated." << std::endl;
+  std::cout << "Translated name is " << multi << std::endl;
+  std::cout << ntrans << " variables were translated." << std::endl;
 }
 
   
