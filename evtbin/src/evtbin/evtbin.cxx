@@ -28,10 +28,14 @@
 #include "evtbin/OrderedBinner.h"
 
 // Data product support classes.
+#include "evtbin/CountMap.h"
 #include "evtbin/DataProduct.h"
 #include "evtbin/LightCurve.h"
 #include "evtbin/MultiSpec.h"
 #include "evtbin/SingleSpec.h"
+
+// Hoops exceptions.
+#include "hoops/hoops_exception.h"
 
 // Interactive parameter file access from st_app.
 #include "st_app/AppParGroup.h"
@@ -122,6 +126,51 @@ class EvtBinAppBase : public st_app::StApp {
 
   private:
     std::string m_app_name;
+};
+
+/** \class CountMapApp
+    \brief Light curve specific binning application.
+*/
+class CountMapApp : public EvtBinAppBase {
+  public:
+    CountMapApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
+
+    virtual void parPrompt(st_app::AppParGroup & pars) {
+      // Call base class prompter for standard universal parameters.
+      EvtBinAppBase::parPrompt(pars);
+
+      // Call configuration object to prompt for spatial binning related parameters.
+      m_bin_config.spatialParPrompt(pars);
+    }
+
+    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
+      unsigned long num_x_pix = 0;
+      unsigned long num_y_pix = 0;
+
+      // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
+      try {
+        // The conversion will work even if the exception is thrown.
+        pars["numxpix"].To(num_x_pix);
+      } catch (const hoops::Hexception & x) {
+        // Ignore just the "signedness" error.
+        if (hoops::P_SIGNEDNESS != x.Code()) throw;
+      }
+
+      // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
+      try {
+        // The conversion will work even if the exception is thrown.
+        pars["numypix"].To(num_y_pix);
+      } catch (const hoops::Hexception & x) {
+        // Ignore just the "signedness" error.
+        if (hoops::P_SIGNEDNESS != x.Code()) throw;
+      }
+
+      return new evtbin::CountMap(pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"],
+        pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
+    }
+
+  private:
+    evtbin::BinConfig m_bin_config;
 };
 
 /** \class LightCurveApp
@@ -245,7 +294,8 @@ class EvtBin : public st_app::StApp {
       st_app::StApp * app = 0;
 
       try {
-        if (0 == algorithm.compare("LC")) app = new LightCurveApp("evtbin");
+        if (0 == algorithm.compare("CMAP")) app = new CountMapApp("evtbin");
+        else if (0 == algorithm.compare("LC")) app = new LightCurveApp("evtbin");
         else if (0 == algorithm.compare("PHA1")) app = new SimpleSpectrumApp("evtbin");
         else if (0 == algorithm.compare("PHA2")) app = new MultiSpectraApp("evtbin");
         else throw std::logic_error(std::string("Algorithm ") + algorithm + " is not supported");
