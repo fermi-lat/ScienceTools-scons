@@ -1,6 +1,6 @@
 package GRB
 
-version v0
+version v1
 
 # $Header$
 
@@ -8,6 +8,7 @@ use GlastSvc
 use FluxSvc v5*
 use GuiSvc
 use geomrep 
+use ROOT
 
 #need the following for run-time access to its DLL
 use xmlUtil
@@ -38,14 +39,16 @@ macro_prepend gui_linkopts "$(GuiSvc_lib) ${guiapp_linkopts} -u GuiSvc_loadRef -
 #set JOBOPTIONS ${FLUXDISPLAYROOT}/src/test/jobOptions.txt
 
 macro_append FluxSvc_headers "" WIN32 "GRB/*.h"
+#macro_append GRB_headers "" WIN32 "GRB/*.h"
 #macro_append FluxDisplay_headers "" WIN32 "test/*.txt test/*.xml"
 #application FluxDisplayTest *.cxx  ${FluxDisplay_headers} ${GlastMain} ${Win32Resource}
 
-application GRBTest  test/GRBTest.cxx GRB/*.cxx
-# ${GRBROOT}/src/GRB/GRBSh*.cxx\
-# ${GRBROOT}/src/GRB/GRBCo*.cxx\
-# ${GRBROOT}/src/GRB/GRBSi*.cxx
-
+application GRBTest  test/GRBTest.cxx\
+ ${GRBROOT}/src/GRB/GRBSh*.cxx\
+ ${GRBROOT}/src/GRB/GRBCo*.cxx\
+ ${GRBROOT}/src/GRB/GRBSi*.cxx\
+ ${GRBROOT}/src/GRB/GRBSp*.cxx\	
+ ${FLUXSVCROOT}/src/*.cxx	
 macro_append ROOT_libs  " -lHist  -lMatrix -lGraf -lGraf3d -lGpad" \
                WIN32    "$(ROOT_PATH)/lib/libHist.lib $(ROOT_PATH)/lib/libMatrix.lib \
 			$(ROOT_PATH)/lib/libGraf.lib $(ROOT_PATH)/lib/libGraf3d.lib \
