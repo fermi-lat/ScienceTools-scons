@@ -23,24 +23,24 @@ StreamFormatter & formatter1() {
 
 void sample1() {
   std::cout << "----------------------------------------" << std::endl;
-  std::cout << "The following is the output of sample1()" << std::endl;
+  std::cout << "The following two lines on clog are the output of sample1()" << std::endl;
 
   // Optional: set name of current function.
   formatter1().setMethod("sample1()");
 
   formatter1().info() << "Wrote to formatter1().info() (with implicit default chatter of 3)" << std::endl;
   formatter1().info(1) << "Wrote to formatter1().info(1)" << std::endl;
-  formatter1().info(4) << "Wrote to formatter1().info(4). This should not be displayed because the chatter is " <<
+  formatter1().info(4) << "Wrote to formatter1().info(4). THIS SHOULD NOT APPEAR because the chatter is " <<
     "higher than the global maximum chatter level." << std::endl;
 }
 
 void sample2() {
   std::cout << "----------------------------------------" << std::endl;
-  std::cout << "The following is the output of sample2()" << std::endl;
+  std::cout << "The following two lines on clog are the output of sample2()" << std::endl;
 
   // A formatter specific to this function.
   StreamFormatter formatter2("", "sample2()", 4);
-  formatter2.warn() << "Wrote to formatter2.warn(). This should not be displayed because formatter2's " <<
+  formatter2.warn() << "Wrote to formatter2.warn(). THIS SHOULD NOT APPEAR because formatter2's " <<
     "default chatter is higher than the global maximum chatter level." << std::endl;
   formatter2.warn(3) << "Wrote to formatter2.warn(3). This should appear. " <<
     "Note that the prefix repeats at the" << std::endl << "beginning of each new line." << std::endl;
@@ -48,7 +48,7 @@ void sample2() {
 
 void sample3() {
   std::cout << "----------------------------------------" << std::endl;
-  std::cout << "The following is the output of sample3()" << std::endl;
+  std::cout << "The following six lines on cout/clog/cerr are the output of sample3()" << std::endl;
 
   // A formatter used throughout a class instance.
   class MyClass {
@@ -59,16 +59,22 @@ void sample3() {
         m_formatter3.setMethod("myDebug");
         m_formatter3.debug() << "Wrote to m_formatter3.debug(). If debugging were disabled, this would not appear." << std::endl;
 
-        // Explicitly enable debugging for this object. Useful, but only during development.
+        // Get current debugging state.
+        bool debug_mode = GetDebugMode();
+
+        // Explicitly enable debugging. Useful, but only during development.
         m_formatter3.setDebugMode();
         m_formatter3.debug() << "Wrote to m_formatter3.debug(). This would appear even if debugging were initially disabled." <<
           std::endl;
 
-        // Explicitly disable debugging for this object. Useful, but only during development.
+        // Explicitly disable debugging. Useful, but only during development.
         m_formatter3.setDebugMode(false);
-        m_formatter3.debug() << "Wrote to m_formatter3.debug(). This should not appear because debugging was locally disabled." <<
+        m_formatter3.debug() << "Wrote to m_formatter3.debug(). THIS SHOULD NOT APPEAR because debugging was locally disabled." <<
           std::endl;
         m_formatter3.debug() << "This would not affect the debug setting of any other objects." << std::endl;
+
+        // Restore debugging state.
+        m_formatter3.setDebugMode(debug_mode);
       }
 
       void myErr() {
@@ -105,7 +111,7 @@ void sample3() {
 
 void sample4() {
   std::cout << "----------------------------------------" << std::endl;
-  std::cout << "The following is the output of sample4()" << std::endl;
+  std::cout << "The following eight lines on cout/clog/cerr are the output of sample4()" << std::endl;
 
   using namespace std;
 
@@ -174,7 +180,7 @@ void sample4() {
 
 int main() {
   // Before initializing standard streams, write to stout. This should have no effect.
-  stout << "This was written before initializing standard streams, so it should not appear anywhere!" << std::endl;
+  stout << "This was written before initializing standard streams, so THIS SHOULD NOT APPEAR on any stream!" << std::endl;
 
   // Set max_chat used for tests.
   unsigned int max_chat = 3;
@@ -226,8 +232,8 @@ int main() {
   stlog << Chat(max_chat + 1) << "Despite Chat(" << max_chat + 1 << ") this was written to stlog." << std::endl;
   stout << Chat(max_chat + 1) << "Despite Chat(" << max_chat + 1 << ") this was written to stout." << std::endl;
 
-  // Create a stream which forwards to stout, but has a maximum chatter, which can be used to suppress some output.
-  OStream my_out(max_chat);
+  // Create a stream which forwards to stout, but uses chatter, which can be used to suppress some output.
+  OStream my_out(true);
   my_out.connect(stout);
 
   // Test that this works correctly with different chat levels.
@@ -293,10 +299,16 @@ int main() {
   sf2.out() << Chat(std::numeric_limits<unsigned int>::max()) <<
     "This was written to sf2.out(), and should always appear despite its highest possible chatter level." << std::endl;
 
+  // Get current debugging state.
+  bool debug_mode = GetDebugMode();
+
   // Turn off debug statements. Verify that debug statements no longer appear no matter what.
   sf2.setDebugMode(false);
-  sf2.debug() << Chat(0) << "THIS SHOULD NOT APPEAR! This was written to sf2.debug() after setDebugMode(false)." <<
+  sf2.debug() << Chat(0) << "THIS SHOULD NOT APPEAR! This was written to sf2.debug() after sf2.setDebugMode(false)." <<
     std::endl;
+
+  // Disable debugging.
+  sf2.setDebugMode(false);
 
   // Test info method with debugging disabled.
   std_os << "A line with prefix \"test_st_stream: INFO: \" should follow this line." << std::endl;
@@ -311,6 +323,9 @@ int main() {
   std_os << "A line with prefix \"test_st_stream: \" should follow this line." << std::endl;
   sf2.out() << Chat(std::numeric_limits<unsigned int>::max()) <<
     "This was written to sf2.out(), and should always appear despite its highest possible chatter level." << std::endl;
+
+  // Restore debugging state.
+  sf2.setDebugMode(debug_mode);
 
   // Test setting stream precision.
   double a_double = 1.23456789012;
