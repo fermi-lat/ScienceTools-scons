@@ -9,28 +9,24 @@
 
 namespace st_graph {
 
-  class RootEngine;
-
   /** \class STGMainFrame
       \brief Modified TGMainFrame for internal use only by Root graphics classes.
   */
   class STGMainFrame : public TGMainFrame {
     public:
       /** \brief Construct a main frame.
-          \param engine The top level application/engine object which controls this frame.
           \param width The width of the frame, in pixels
           \param height The height of the frame, in pixels
       */
-      STGMainFrame(RootEngine * engine, unsigned int width, unsigned int height);
+      STGMainFrame(unsigned int width, unsigned int height);
 
-      /** \brief This is the method called when the user closes a window. This method causes
-          *all* frames to be hidden before terminating the Root event loop.
-          Overridden from the Root base class.
+      virtual ~STGMainFrame();
+
+      /** \brief This is the method called when the user closes a window.
+          Overridden from the Root base class to be a no-op, because otherwise the underlying
+          windows owned by the window manager are destroyed, resulting in a zombie TGMainFrame.
       */
       virtual void CloseWindow();
-
-    private:
-      RootEngine * m_engine;
   };
 
 }
