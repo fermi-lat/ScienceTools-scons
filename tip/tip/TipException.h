@@ -8,6 +8,7 @@
 #define tip_TipException_h
 
 #include <exception>
+#include <sstream>
 #include <string>
 
 namespace tip {
@@ -22,10 +23,26 @@ namespace tip {
       virtual ~TipException() throw() {}
       virtual const char * what() const throw() { return m_msg.c_str(); }
 
-    private:
+    protected:
       std::string m_msg;
   };
 
+  class FitsTipException : public TipException {
+    public:
+      FitsTipException(int status, const std::string & msg = "FITS Table component exception"): TipException(msg),
+        m_status(status) {
+        std::ostringstream os;
+        os << m_msg << " (CFITSIO status is " << m_status << ")";
+        m_msg = os.str();
+      }
+
+      virtual ~FitsTipException() throw() {}
+
+      int code() const { return m_status; }
+
+    private:
+      int m_status;
+  };
 }
 
 #endif
