@@ -120,6 +120,7 @@ def PtSrc(indx=0):
     name = "point source %i" % indx
     src = '\n'.join( (('<source name= "%s" ' % name) + 'type="PointSource">',
                       '   <spectrum type="PowerLaw"/>',
+                      '   <!-- point source units are cm^-2 s^-1 MeV^-1 -->',
                       '   <spatialModel type="SkyDirFunction"/>',
                       '</source>\n') )
     (src, ) = minidom.parseString(src).getElementsByTagName('source')
@@ -139,6 +140,8 @@ def DiffuseSrc(indx=0):
     src = '\n'.join( (('<source name="%s" ' % name)
                       + 'type="DiffuseSource">',
                       '   <spectrum type="PowerLaw"/>',
+                      '   <!-- diffuse source units are ' +
+                      'cm^-2 s^-1 MeV^-1 sr^-1 -->',
                       '   <spatialModel type="ConstantValue"/>', 
                       '</source>\n') )
     (src, ) = minidom.parseString(src).getElementsByTagName('source')
