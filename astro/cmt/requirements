@@ -1,6 +1,6 @@
 package astro
 
-version v0r10p5
+version v0r10p6
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -13,5 +13,5 @@ use CLHEP v2* IExternal
 apply_pattern GLAST_static_library_package
 
 
-# this is the test program from G. Tosti
-application orbit test/orbit/*.cxx 
+# this is the test program from G. Tosti -- enable it to run the test
+#application orbit test/orbit/*.cxx 
