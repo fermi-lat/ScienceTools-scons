@@ -1,9 +1,14 @@
-// $Header$
+/** @file SolarSystem.cxx
+@brief implementation of SolarSystem 
 
+
+ $Header$
+*/
 #include "astro/SolarSystem.h"
 
 #include "SolSystem.h"
-#include "jplephem/bary.h"
+#include "jplephem/bary.h" //local interface to the JPL ephemeris
+#include <stdexcept>
 
 namespace astro {
 SolarSystem::SolarSystem(): m_ss(new SolSystem){
@@ -47,12 +52,10 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
       int ephnum = 405;
       int denum;
       double c, radsol, msol;
-      int j;
-      if ( (j = initephem (ephnum, &denum, &c, &radsol, &msol))!=0 ) {
-         fprintf (stderr, "Error while initializing ephemeris; status: %d\n",
-	         j) ;
-         denum = 0 ;
-      }
+      int j= initephem (ephnum, &denum, &c, &radsol, &msol);
+      if ( j !=0 ) {
+          throw std::runtime_error("SolarSytem::getBarycenter: could not initilze JPL ephemeris");
+       }
       s_ephemInitialized = true;
    }
 
@@ -66,12 +69,12 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
 //   double ra = atan2(y,x) * 180. / M_PI;
 //   double dec = atan2(z,sqrt(x*x+y*y)) * 180. / M_PI;
 
-   Hep3Vector barycenter;
-   
+   Hep3Vector barycenter(x,y,z);
+   /*
    barycenter.setX(x);
    barycenter.setY(y);
    barycenter.setZ(z);
-  
+  */
    return barycenter;
 }
 
@@ -104,12 +107,12 @@ Hep3Vector SolarSystem::getSolarVector(JulianDate jd)
    double y = -eposn[1] + eposn[4];
    double z = -eposn[2] + eposn[5];
 
-    Hep3Vector solarVector;
-   
+    Hep3Vector solarVector(x,y,z);
+   /*
    solarVector.setX(x);
    solarVector.setY(y);
    solarVector.setZ(z);
-  
+  */
    return solarVector;
 
 }
