@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r2p1 29-Oct-04   JC   use tip v2*
     v5r2   29-Oct-04   JC   disable writing of FT2 file by obsSim 
                             if pointingHistory is specified; add parameter
                             maximum_simulation_time
