@@ -61,21 +61,26 @@ class celgal:
             
     def RA(self, longitude, latitude) :
         """Right ascension as a function of Galactic coordinates"""
-        clat = cos(float(latitude)*pi/180.)
-        slat = sin(float(latitude)*pi/180.)
-        cdlon = cos((float(longitude)-self.zrot2)*pi/180.)
-        sdlon = sin((float(longitude)-self.zrot2)*pi/180.)
+        clat = cos(latitude*pi/180.)
+        slat = sin(latitude*pi/180.)
+        cdlon = cos((longitude-self.zrot2)*pi/180.)
+        sdlon = sin((longitude-self.zrot2)*pi/180.)
         ra = self.zrot1 + arctan2(clat*sdlon*self.cos_xrot-slat*self.sin_xrot,
                                   clat*cdlon)*180./pi
-        if ra < 0. : ra = ra + 360.
-        if ra > 360. : ra = ra - 360.
+        try:
+            if ra < 0. : ra = ra + 360.
+            if ra > 360. : ra = ra - 360.
+        except RuntimeError:
+            for i in xrange(len(ra)):
+                if ra[i] < 0.: ra[i] += 360.
+                if ra[i] > 360.: ra[i] -= 360.
         return ra
 
     def DEC(self, longitude, latitude) :
         """Declination as a function of Galactic coordinates"""
-        clat = cos(float(latitude)*pi/180.)
-        slat = sin(float(latitude)*pi/180.)
-        sdlon = sin((float(longitude)-self.zrot2)*pi/180.)
+        clat = cos(latitude*pi/180.)
+        slat = sin(latitude*pi/180.)
+        sdlon = sin((longitude-self.zrot2)*pi/180.)
         return arcsin(clat*sdlon*self.sin_xrot+slat*self.cos_xrot)*180./pi
     
 def dist( a, b ):
