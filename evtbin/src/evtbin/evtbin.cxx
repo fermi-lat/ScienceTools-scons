@@ -1,6 +1,17 @@
 /** \file EvtBin.cxx
     \brief Event binning executable. Really this is a shell application whose run() method creates and
     runs one of several specialized binning applications.
+
+    Some explanations of the classes. The evtbin application behaves like a number of similar tasks.
+    For example, it can create light curves as well as single and multiple spectra. Each one of these tasks
+    could itself be a separate application, albeit with similar input parameters and algorithms. Therefore, for
+    each specific task behavior of evtbin, there is a specific application class: LightCurveApp, SimpleSpectrumApp,
+    etc. However, these have a great deal in common, so they derive from a common base class EvtBinAppBase,
+    to reduce redundancy. (EvtBinAppBase in turn derives from st_app::StApp.) In addition, there is a master
+    application class, EvtBin, which derives directly from st_app::StApp, but merely determines which of the other
+    application objects is appropriate, instantiates and runs the application object. This master class, EvtBin,
+    is the one which is used by the singleton st_app::StAppFactory to create the application.
+
     \author Yasushi Ikebe, GSSC
             James Peachey, HEASARC
 */
@@ -51,20 +62,24 @@ class EvtBinAppBase : public st_app::StApp {
       // Get parameter file object.
       st_app::AppParGroup & pars = getParGroup(m_app_name);
 
-      // Prompt for parameters necessary for this application.
+      // Prompt for parameters necessary for this application. This will probably be overridden in subclasses.
       parPrompt(pars);
 
       // Save all parameters from this tool run now.
       pars.Save();
 
+      // Object to represent the input event file.
       const tip::Table * events = 0;
+
+      // Object to represent the data product being produced.
       DataProduct * product = 0;
-      
+
       try {
         // Open input file for reading only.
         events = tip::IFileSvc::instance().readTable(pars["eventfile"], "EVENTS");
 
-        // Get data object.
+        // Get data product. This is definitely overridden in subclasses to produce the correct type product
+        // for the specific application.
         product = createDataProduct(pars);
 
         // Copy keywords from input events table.
@@ -73,7 +88,7 @@ class EvtBinAppBase : public st_app::StApp {
         // Bin input data into product.
         product->binInput(events->begin(), events->end());
 
-        // Write the data object output.
+        // Write the data product output.
         product->writeOutput(m_app_name, pars["outfile"]);
 
       } catch (...) {
@@ -90,7 +105,7 @@ class EvtBinAppBase : public st_app::StApp {
         \param pars The parameter prompting object.
     */
     virtual void parPrompt(st_app::AppParGroup & pars) {
-      //
+      // Prompt for input eventfile and output outfile. All binners need these.
       pars.Prompt("eventfile");
       pars.Prompt("outfile");
     }
@@ -161,15 +176,15 @@ class MultiSpectraApp : public EvtBinAppBase {
       // Get ranges:
       double energy_min = pars["emin"];
       double energy_max = pars["emax"];
-      double energy_num_bins = pars["enumbins"];
+      long energy_num_bins = pars["enumbins"];
 
       double tstart = pars["tstart"];
       double tstop = pars["tstop"];
       double width = pars["deltatime"];
 
-      // Create data object.
-      return new MultiSpec obj(LinearBinner(tstart, tstop, long((tstop - tstart)/width), "TIME"),
-        LogBinner(energy_min, energy_max, enum_bins, "ENERGY"));
+      // Create data product.
+      return new MultiSpec(LinearBinner(tstart, tstop, long((tstop - tstart)/width), "TIME"),
+        LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
     }
 };
 
@@ -196,15 +211,17 @@ class SimpleSpectrumApp : public EvtBinAppBase {
       // Get ranges:
       double energy_min = pars["emin"];
       double energy_max = pars["emax"];
-      double energy_num_bins = pars["enumbins"];
+      long energy_num_bins = pars["enumbins"];
 
-      // Create data object.
-      return new SingleSpectrum(LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
+      // Create data product.
+      return new SingleSpec(LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
     }
 };
 
 /** \class EvtBin
-    \brief Application singleton for evtbin.
+    \brief Application singleton for evtbin. Main application object, which just determines which
+    of the several tasks the user wishes to perform, and creates and runs a specific application to perform
+    this task.
 */
 class EvtBin : public st_app::StApp {
   public:
@@ -213,11 +230,12 @@ class EvtBin : public st_app::StApp {
     virtual void run() {
       using namespace std;
 
-      // Get parameter file object:
+      // Get parameter file object.
       st_app::AppParGroup & pars = getParGroup("evtbin");
 
       // Prompt for algorithm parameter, which determines which application is really used.
       pars.Prompt("algorithm");
+
       pars.Save();
 
       std::string algorithm = pars["algorithm"];
@@ -241,7 +259,6 @@ class EvtBin : public st_app::StApp {
     }
 
 };
-
 
 // TODO for light curve:
 // 1. Copy GTI from event file (anding with the range [tstart, tstop])
