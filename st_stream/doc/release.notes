@@ -1,0 +1,11 @@
+/** \file release.notes
+    \brief Package for formatting and manipulating output streams.
+    \author James Peachey, HEASARC/GSSC
+
+\verbatim
+--------------------------------------------------------------------------------
+26-oct-2004    v0     JP  Initial import.
+--------------------------------------------------------------------------------
+\endverbatim
+
+*/
