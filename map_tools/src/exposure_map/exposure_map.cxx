@@ -32,7 +32,7 @@ public:
         , m_pars(st_app::StApp::getParGroup("exposure_map")) 
     {
     }
-
+    ~ExposureMapApp() throw() {} // needed since StApp has empty throw
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /** @class Aeff
     @brief function class implements effective area

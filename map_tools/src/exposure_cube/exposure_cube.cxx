@@ -30,6 +30,9 @@ public:
         : st_app::StApp()
         , m_pars(st_app::StApp::getParGroup("exposure_cube")) {
     }
+           
+     ~ExposureCubeApp() throw() {}  // needed since StApp has empty throw.
+
     //--------------------------------------------------------------------------
     void LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
     {

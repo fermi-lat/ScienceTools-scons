@@ -34,6 +34,8 @@ public:
         , m_pars( st_app::StApp::getParGroup("count_map")) 
     { }
 
+    ~CountMap() throw() {}  // needed since StApp has empty throw.
+
     void run(){
         using tip::Table;
 
