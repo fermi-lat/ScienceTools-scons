@@ -6,12 +6,11 @@
 #include <cctype>
 #include <error.h>
 #include <cstdlib>
-#include <iostream>
 #include <sstream>
 
 #include "fitsio.h"
-#include "tip/TipException.h"
 #include "tip/KeyRecord.h"
+#include "tip/TipException.h"
 
 // Cfitsio doesn't define this, so we will:
 #define FLEN_KEYNAME 9
