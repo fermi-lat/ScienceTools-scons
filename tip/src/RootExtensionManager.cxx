@@ -42,14 +42,27 @@ namespace tip {
   }
 
   void RootExtensionManager::resetSigHandlers() {
-    for (int sig = kSigBus; sig <= kSigUser2; ++sig)
-      gSystem->ResetSignal(sig);
+    gSystem->ResetSignal(kSigBus);
+    gSystem->ResetSignal(kSigSegmentationViolation);
+    gSystem->ResetSignal(kSigSystem);
+    gSystem->ResetSignal(kSigPipe);
+    gSystem->ResetSignal(kSigIllegalInstruction);
+    gSystem->ResetSignal(kSigQuit);
+    gSystem->ResetSignal(kSigInterrupt);
+    gSystem->ResetSignal(kSigWindowChanged);
+    gSystem->ResetSignal(kSigAlarm);
+    gSystem->ResetSignal(kSigChild);
+    gSystem->ResetSignal(kSigUrgent);
+    gSystem->ResetSignal(kSigFloatingException);
+    gSystem->ResetSignal(kSigTermination);
+    gSystem->ResetSignal(kSigUser1);
+    gSystem->ResetSignal(kSigUser2);
   }
 
   // Construct without opening the file.
-  RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name):
-    m_file_name(file_name), m_ext_name(ext_name), m_branch_lookup(), m_leaves(), m_num_records(0), m_fp(0),
-    m_tree(0), m_header(0), m_data(0) { open(); }
+  RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
+    const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_branch_lookup(),
+    m_leaves(), m_num_records(0), m_fp(0), m_tree(0), m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
   RootExtensionManager::~RootExtensionManager() { delete m_data; delete m_header; close(); }
@@ -119,17 +132,17 @@ namespace tip {
 //    if( !filter.empty() ) {
 //        std::cout << "\t  filter \""<< filter << "\" ..." << std::endl;
 //    }
-//    if( ! filter.empty() ){ // apply filter expression
-//        TFile * dummy = new TFile("dummy.root", "recreate");
-//        TTree * tnew = m_tree->CopyTree(filter.c_str() );
-//        int size = tnew->GetEntries();
-//        if( size == 0) {
-//            throw Exception(std::string("Filter expression \"")+filter+"\" yielded no events");
-//        }
-//        m_tree = tnew;
+    if( ! m_filter.empty() ){ // apply filter expression
+        TFile * dummy = new TFile("dummy.root", "recreate");
+        TTree * tnew = m_tree->CopyTree(m_filter.c_str() );
+        Index_t size = Index_t(tnew->GetEntries());
+        if( size == 0) {
+            throw TipException(std::string("Filter expression \"")+m_filter+"\" yielded no events");
+        }
+        m_tree = tnew;
 //        std::cout << "\t " << size << "/" << m_num_records << " events" << std::endl;
-//        m_num_records = size;
-//    }
+        m_num_records = size;
+    }
     // turn off all branches: enable them as requested for the event loop
     m_tree->SetBranchStatus("*", 0);
     // End theft.
