@@ -29,6 +29,7 @@ namespace ecube{
     };
 }
 //--------------------------------------------------------------------------
+#if 0 // development example, @todo: use if requested 
 class LoadExposureFromEgret
 {
 public:
@@ -47,14 +48,14 @@ public:
         const double & livetime = tup.selectColumn("livetime");
 
         for( tuple::Iterator it=tup.begin(); it!=tup.end(); ++it){
-#if 0
             if( start < elapsed_time ) continue;
             if( stop!=0 && stop > elapsed_time ) break;
-#endif
             exp.add( astro::SkyDir(ra, dec), livetime); 
         }
     }
-};//--------------------------------------------------------------------------
+};
+#endif
+//--------------------------------------------------------------------------
 class LoadExposureFromGlast
 {
 public:

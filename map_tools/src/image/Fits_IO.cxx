@@ -391,7 +391,6 @@ void Fits_IO::writeFitsHeader()
         BaseAttr& attr = *(*it);
         void * pval = attr.valuePtr();
         int fitsType=0;
-        char cbuf[120];
 
         if (typeid(attr).name() == doubleAttrClassName)      { fitsType = TDOUBLE; 
         } else if (typeid(attr).name() == floatAttrClassName){ fitsType = TFLOAT; 
@@ -401,13 +400,16 @@ void Fits_IO::writeFitsHeader()
         } else if (typeid(attr).name() == stringAttrClassName){fitsType = TSTRING; 
 
             // special case: need to make a copy of the character string
+            static char cbuf[120];
             pval = (void*) cbuf;  // and override the pointer
 
             StringAttr & my_attr = dynamic_cast<StringAttr&>(attr); 
             strncpy(cbuf, my_attr.value().c_str(), sizeof(cbuf));
 
         } else {
-            throw std::runtime_error(std::string("HeaderRoot2Fits: unexpected attribute type ")+ typeid(attr).name());
+            throw std::runtime_error(
+                std::string("Fits_IO::writeFitsHeader: unexpected attribute type: ")
+                + typeid(attr).name());
         }
 
         // now write out the key

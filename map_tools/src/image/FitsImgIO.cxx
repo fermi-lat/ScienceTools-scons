@@ -5,7 +5,7 @@
      Code orginally written by Riener Rohlfs
 
      $Header$
-    (TODO: make them static in the Fits_IO class)
+    (@todo: make them static in the Fits_IO class)
 */
 #include "Fits_IO.h"
 #include "IOElement.h"
@@ -23,7 +23,7 @@
 #include <stdexcept>
 #include "fitsio.h"
 
-static IOElement * ReadIntImage(fitsfile *fptr, std::vector<long> axes, int * status);
+//THB static IOElement * ReadIntImage(fitsfile *fptr, std::vector<long> axes, int * status);
 static IOElement * ReadFloatImage(fitsfile *fptr, std::vector<long> axes, int * status);
 static IOElement * ReadDoubleImage(fitsfile *fptr, std::vector<long> axes, int * status);
 
@@ -137,14 +137,10 @@ IOElement * MakeImage(fitsfile * fptr, int * status)
 }
 
 
+#if 0 // still need to convert
 //_____________________________________________________________________________
 static IOElement * ReadIntImage(fitsfile *fptr, std::vector<long> axes, int * status)
 {
-    if (*status != 0) return NULL;
-#if 1 // still need to convert
-    throw std::invalid_argument("Reading int image not fully implemented");
-    return 0;
-#else
     long tfSize[9];
     long   firstPixel[9];
     long   numPixel = 1;
@@ -223,9 +219,9 @@ static IOElement * ReadIntImage(fitsfile *fptr, std::vector<long> axes, int * st
 
         return image;
     }
-#endif
 
 }
+#endif
 //_____________________________________________________________________________
 static IOElement * ReadFloatImage(fitsfile *fptr,  std::vector<long> axes, int * status)
 {

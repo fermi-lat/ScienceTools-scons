@@ -89,14 +89,16 @@ int main(int argc, char** argv ){
         cube2.save();
 
         // create an image to access cells
-        SkyImage exp3(par.inputFile());
+        SkyImage exp3(par.inputFile(),"hypercube");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
+        assert(tt=36.0); 
 
 
         test_Header();
 
     }catch( const std::exception& e){
-        std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
+        std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
+            << e.what() << "\"" << std::endl;
         return 1;
     }
     std::cout << "tests OK" << std::endl;
@@ -140,7 +142,8 @@ void test_Header() {
    std::string name_check(attr); 
    assert(name==name_check);
    try {
-       const BaseAttr & attr2 = header["wrong"];//should not
+       const BaseAttr & attr = header["wrong"];//should not
+       std::string name_check(attr); 
        assert(false);
    } catch (const std::runtime_error &){}
 

@@ -72,9 +72,8 @@ void IOElement::saveElement(const std::string & fileName)
     if (!m_fio || !m_fio->isOpen() )
         return;
 
-    int err = 0;
     if (m_fileAccess == VirtualIO::Read) {
-        throw std::runtime_error(std::string("wrong access mode to save file")+fileName);
+        throw std::runtime_error(std::string("IOElement::saveElement--wrong access mode to save file")+fileName);
     }else if (m_fileAccess == VirtualIO::ReadWrite){
          m_fio->saveElement();
     }
