@@ -44,6 +44,7 @@ class Arg;
 class Function {
 
    friend class FunctionTest;
+   friend class FunctionFactory;
 
 public:
 
@@ -169,13 +170,13 @@ public:
 #endif // SWIG
 
    /// The argType must match for Composite Function objects.
-   std::string &argType() {
+   const std::string & argType() const {
       return m_argType;
    }
 
    /// Return the generic name of the Function. This should be the
    /// same as the class name.
-   std::string &genericName() {
+   const std::string & genericName() const {
       return m_genericName;
    }
 
@@ -218,6 +219,11 @@ protected:
                             bool getFree) const;
 
    Parameter & parameter(const std::string & name);
+
+   void setParamAlwaysFixed(const std::string & name) {
+      parameter(name).m_alwaysFixed = true;
+      parameter(name).setFree(false);
+   }
 
 };
 

@@ -134,7 +134,8 @@ void FunctionFactory::readXml(const std::string &xmlFile) {
       for (; paramIt != params.end(); paramIt++) {
          Parameter parameter;
          parameter.extractDomData(*paramIt);
-         funcObj->setParam(parameter);
+//         funcObj->setParam(parameter);
+         funcObj->parameter(parameter.getName()).extractDomData(*paramIt);
       }
       addFunc(name, funcObj, false);
    }

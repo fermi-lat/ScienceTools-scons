@@ -27,4 +27,5 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library optimizers -no_share $(source) *.c
 
 application test_optimizers test/main.cxx
+application xmlSandBox xmlSandBox/*.cxx
 

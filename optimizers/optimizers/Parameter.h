@@ -41,10 +41,12 @@ using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
 
 class Parameter {
 
+   friend class Function;
+
 public:
 
    Parameter() : m_name(""), m_value(0), m_minValue(-HUGE), m_maxValue(HUGE),
-                 m_free(true), m_scale(1.), m_error(0) {}
+                 m_free(true), m_scale(1.), m_error(0), m_alwaysFixed(false) {}
 
    /// @param name The name of the Parameter
    /// @param value The (scaled) value of the Parameter
@@ -55,11 +57,12 @@ public:
    Parameter(const std::string & name, double value, double minValue,
              double maxValue, bool isFree=true, double error=0) 
       : m_name(name), m_value(value), m_minValue(minValue), 
-        m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error) {}
+        m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error),
+        m_alwaysFixed(false) {}
 
    Parameter(const std::string & name, double value, bool isFree=true)
       : m_name(name), m_value(value), m_minValue(-HUGE), m_maxValue(HUGE),
-        m_free(isFree), m_scale(1.), m_error(0) {}
+        m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false) {}
 
    ~Parameter() {}
 
@@ -100,10 +103,18 @@ public:
 
    /// free flag access
    void setFree(bool free) {
-      m_free = free;
+      if (m_alwaysFixed) {
+         m_free = false;
+      } else {
+         m_free = free;
+      }
    }
    bool isFree() const {
       return m_free;
+   }
+
+   bool alwaysFixed() const {
+      return m_alwaysFixed;
    }
 
    /// error access
@@ -138,6 +149,9 @@ private:
 
    /// estimated error on value
    double m_error;
+
+   /// If true, then m_free is always false and cannot be changed.
+   bool m_alwaysFixed;
 
 };
 
