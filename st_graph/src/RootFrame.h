@@ -154,11 +154,6 @@ namespace st_graph {
       */
       virtual void modified(const char * text);
 
-      /** brief Set text owned by frame. Not part of the API.
-          \param text The new text.
-      */
-      virtual void setText(const char * text);
-
       /// \brief Get underlying Root frame. Not part of the API.
       virtual TGFrame * getTGFrame();
 
