@@ -35,12 +35,12 @@ public:
     int npixX() const                   { return m_npix; }
     int npixY() const                   { return m_npix_y; }
     int npixZ() const                   { return m_npix_z; }
-    int imgSize() const                { return m_imgSizeX; }
-    int imgSizeX() const                { return m_imgSizeX; }
-    int imgSizeY() const                { return m_imgSizeY; }
-    float xref() const                 { return m_xref; }
-    float yref() const                 { return m_yref; }
-    float rot() const                  { return m_rot; }
+    double imgSize() const                { return m_imgSizeX; }
+    double imgSizeX() const                { return m_imgSizeX; }
+    double imgSizeY() const                { return m_imgSizeY; }
+    double xref() const                 { return m_xref; }
+    double yref() const                 { return m_yref; }
+    double rot() const                  { return m_rot; }
     std::string projType() const        { return m_projType; }
     std::string raName() const          { return m_raName; }
     std::string decName() const         { return m_decName; }
@@ -51,10 +51,9 @@ public:
 private:
 
     int             m_npix, m_npix_y, m_npix_z;
-    int             m_imgSizeX, m_imgSizeY;
-    float           m_xref;
-    float           m_yref;
-    float           m_rot;
+    double         m_imgSizeX, m_imgSizeY;
+    double         m_xref,    m_yref;
+    double          m_rot;
     std::string     m_projType;
     bool            m_use_lb;
     std::string     m_raName, m_decName;

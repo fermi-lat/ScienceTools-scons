@@ -25,13 +25,13 @@ MapParameters::MapParameters( int argc, char *argv[])
     m_npix_z= getValue<long>("layers", 1);
 
     // Read image size (presumably degrees--don't know why it is integer)
-    m_imgSizeX= getValue<long>( "imgsize" );
+    m_imgSizeX= getValue<double>( "imgsize" );
     // if y not specified, assume square
-    m_imgSizeY= getValue<long>( "imgsizey", m_imgSizeX);
+    m_imgSizeY= getValue<double>( "imgsizey", m_imgSizeX);
 
-    // Read xref, yref
-    m_xref = getValue<double>("xref");
-    m_yref = getValue<double>("yref");
+    // Read xref, yref (standard is center)
+    m_xref = getValue<double>("xref",0.);
+    m_yref = getValue<double>("yref", 0.);
 
     // rotation angle defaults to zero.
     m_rot = getValue<double>("rot",0.);
