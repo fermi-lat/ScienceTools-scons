@@ -237,6 +237,29 @@ int main() {
             first_time = false;
           }
         }
+        double save_counts = vcounts[37];
+        vcounts[37] = save_counts + 37.; 
+        if (save_counts + 37. != vcounts[37]) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "37th counts value as a vector after assignment is " <<
+              double(vcounts[37]) << " not " << save_counts + 37. << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+
+        // And reset them:
+        vcounts[37] = save_counts;
+        if (save_counts != vcounts[37]) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "37th counts value as a vector after being reset to original value is " <<
+              double(vcounts[37]) << " not " << save_counts << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
 
 #ifdef print_vector
         if (itor == my_table->begin()) {
