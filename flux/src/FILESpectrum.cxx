@@ -94,7 +94,7 @@ float FILESpectrum::operator() (float r)const
 //    if(!m_inGeV) scale = 0.001;
     if(m_inLog)
       {
-        return scale*pow(10, raw_e);
+        return scale*pow(10., raw_e);
       }
     else
       {
