@@ -1,0 +1,180 @@
+SIMPLE   =                    T / File conforms to NOST standard
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    0 / No data is associated with this header
+EXTEND   =                    T / Extensions may be present
+DATE     =                      / Date file was made
+FILENAME =                      / Name of this file
+TELESCOP =                GLAST / Name of telescope generating data
+INSTRUME =                  LAT / Name of instrument generating data
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                     $Id$
+END
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =             SPECTRUM / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+HDUCLASS =                 OGIP / Format confirms to OGIP standard
+HDUCLAS1 =             SPECTRUM / PHA dataset (OGIP memo OGIP-92-007)
+HDUCLAS2 =                TOTAL / Type of data stored
+HDUCLAS3 =                COUNT / Further details of type of data stored
+HDUCLAS4 =               PHA:II / Single PHA dataset
+HDUVERS  =                1.2.0 / Version number of the format
+DETCHANS =                    0 / Total number of detector channels available
+POISSERR =                    T / Whether Poissonian errors are appropriate to the data
+EXPOSURE =                      / Total livetime in seconds
+CORRSCAL =                    1 / Correction scaling factor.
+SYS_ERR  =                    0 / Fractional systematic error
+QUALITY  =                    0 / Data quality flag
+GROUPING =                    0 / Data grouping flag
+AREASCAL =                    1 / Area scaling factor
+BACKSCAL =                    1 / Scaling factor to be applied to Bkgdfile
+CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
+FILTER   =                      / Instrument filter in use
+OBJECT   =                      / Observed object
+EQUINOX  =                 2000 / Equinox of RA & DEC specifications
+RADECSYS =                      / Nominal U.T. date when integration of this PHA data started
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+NDSKEYS =                     0 / Number of data subspace keywords in header
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+
+
+TTYPE#  TSTART                  / Label for this field
+TFORM#  D                       / Data format of this field
+
+TTYPE#  TELAPSE                 / Label for this field
+TFORM#  D                       / Data format of this field
+
+TTYPE#  EXPOSURE                / Label for this field
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+TTYPE#  SPEC_NUM                / Label for this field
+TFORM#  I                       / Data format of this field
+
+TTYPE#  CHANNEL                 / Label for this field
+TFORM#  I                       / Data format of this field
+
+TTYPE#  COUNTS                  / Counts in each bin
+TFORM#  J                       / Data format of this field
+TUNIT#  Counts                  / Unit of this field
+
+TTYPE#  SYS_ERR                 / Fractional systematic error
+TFORM#  E                       / Data format of this field
+
+TTYPE#  QUALITY                 / Data quality flag for each channel
+TFORM#  I                       / Data format of this field
+
+TTYPE#  GROUPING                / Data grouping flag for each channel
+TFORM#  I                       / Data format of this field
+
+TTYPE#  AREASCAL                / Area scaling factor
+TFORM#  E                       / Data format of this field
+
+TTYPE#  BACKSCAL                / Scaling factor to be applied to Bkgdfile
+TFORM#  E                       / Data format of this field
+
+TTYPE#  CORRSCAL                / Scaling factor to be applied to CORRFILE
+TFORM#  E                       / Data format of this field
+
+TTYPE#  BACKFILE                / Name of the background file
+TFORM#  A                       / Data format of this field
+
+TTYPE#  CORRFILE                / Name of the correction file
+TFORM#  A                       / Data format of this field
+
+TTYPE#  RESPFILE                / Name of the RMF/RSP file
+TFORM#  A                       / Data format of this field
+
+TTYPE#  ANCRFILE                / Name of the ARF file
+TFORM#  A                       / Data format of this field
+
+TTYPE#  ROWID                   / Unique identifier for each spectrum
+TFORM#  A                       / Data format of this field
+
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =              EBOUNDS / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+FILTER   =                      / Instrument filter in use (if any)
+CHANTYPE =                   PI / Energy channel type
+DETCHANS =                      / Total number of detector channels available. 
+HDUCLASS =                 OGIP / Format confirms to OGIP standard
+HDUCLAS1 =             RESPONSE / Extension contains response data
+HDUCLAS2 =              EBOUNDS / Extension contains response matrix
+HDUVERS  =                1.2.0 / Version number of the format
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+
+TTYPE#  CHANNEL        / Raw channel number
+TFORM#  I              / Data format of this field
+
+TTYPE#  E_MIN          / Lower boundary of the detector channel
+TFORM#  1E             / Data format of this field
+TUNIT#  keV            / Unit of this field
+
+TTYPE#  E_MAX          / Upper boundary of the detector channel
+TFORM#  1E             / Data format of this field
+TUNIT#  keV            / Unit of this field
+
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =                  GTI / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+HDUCLASS =                 OGIP / File format is OGIP standard
+HDUCLAS1 =                  GTI / Contains Good Time Intervals
+HDUVERS  =                1.2.0 / Version of file format
+ONTIME   =                      / Sum of all Good Time Intervals
+MJDREF   =                      / MJD for reference time
+TSTART   =                      / Lower bound of first GTI
+TSTOP    =                      / Upper bound of last GTI
+EXPOSURE =                      / Total Livetime in seconds
+TIMEZERO =                    0 / Clock correction (if not zero)
+TIMESYS  =                  MJD / Time system used to define time
+TIMEUNIT =                    s / All times are in seconds unless specified otherwise
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+
+
+TTYPE#  START          / Start time of an interval
+TFORM#  D              / Data format of this field
+
+TTYPE#  STOP           / Stop time of an interval
+TFORM#  D              / Data format of this field
