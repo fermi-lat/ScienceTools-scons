@@ -5,6 +5,8 @@
 $Id$
 
 \verbatim
+18-mar-2005    v0r1p1 JP  Add version number from cvs tag. Add units to prompts for
+                          start/stop time filter.
 07-mar-2005    v0r1p0 JP  Add AbsoluteTime and subclasses for handling
                           different time systems. Add TextPulsarDb class for
                           handling ephemerides contained in text files.
