@@ -78,6 +78,8 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       header[key2.str()].get(unit);
       key3 << "DSVAL" << keynum;
       header[key3.str()].get(value);
+      ::toUpper(value);
+
       if (value == "TABLE") {
          key4 << "DSREF" << keynum;
          header[key4.str()].get(ref);
