@@ -922,40 +922,107 @@ void EvtBinTest::testGti() {
 }
 
 void EvtBinTest::testConstSnBinner() {
+  m_os.setMethod("testConstSnBinner()");
+
   // Create test binner object.
   ConstSnBinner binner(1., 101., 5., 1., 25.);
 
-  // Loop over some times.
-  for (double ev_time = 0.; ev_time < 103.; ++ev_time) {
-    long index = binner.computeIndex(ev_time);
-  //  std::cout << "For event time == " << ev_time << " index == " << index << std::endl;
+  // Check value before first bin.
+  long index = binner.computeIndex(0.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In first binner test, index of 0. was " << index << ", not -1" << std::endl;
   }
 
+  // Check value exactly at the first bin.
+  index = binner.computeIndex(1.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In first binner test, index of 1. was " << index << ", not -1" << std::endl;
+  }
+
+  // Check values up through and including the end of the last bin.
+  for (double ev_time = 2.; ev_time <= 101.; ++ev_time) {
+    index = binner.computeIndex(ev_time);
+    long correct_index = long((ev_time - 2.)/25.);
+    if (index != correct_index) {
+      m_failed = true;
+      m_os.err() << "In first binner test, index of " << ev_time << " was " << index << ", not " << correct_index << std::endl;
+    }
+  }
+
+  // Check value after last bin.
+  index = binner.computeIndex(102.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In first binner test, index of 102. was " << index << ", not -1" << std::endl;
+  }
+
+  // Reset the binner.
   binner = ConstSnBinner(1., 101., 5., 1., 25.);
 
-  // Loop over some more times.
-  for (double ev_time = 0.; ev_time < 103.; ev_time += 2.) {
-    long index = binner.computeIndex(ev_time);
-//    std::cout << "For event time == " << ev_time << " index == " << index << std::endl;
+  // Loop over some more times with larger step between each one.
+  for (double ev_time = 2.; ev_time <= 101.; ev_time += 2.) {
+    index = binner.computeIndex(ev_time);
+    long correct_index = long((ev_time - 2.)/50.);
+    if (index != correct_index) {
+      m_failed = true;
+      m_os.err() << "In second binner test, index of " << ev_time << " was " << index << ", not " << correct_index << std::endl;
+    }
   }
 
+  // Check value after last bin.
+  index = binner.computeIndex(102.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In second binner test, index of 102. was " << index << ", not -1" << std::endl;
+  }
+
+  // Reset the binner.
   binner = ConstSnBinner(1., 101., 5., 1., 25.);
 
-  // Loop over some more times.
-  for (double ev_time = 0.; ev_time < 103.; ++ev_time) {
-    long index = binner.computeIndex(ev_time + .1 * sin(ev_time));
-//    std::cout << "Event time[" << ev_time << "] == " << ev_time + .1 * sin(ev_time) << ", index == " << index << std::endl;
+  // Loop over some times which are not uniformly distributed. Note upper cutoff is different from earlier tests
+  // because adding the sine to the event time makes the last times later than the binner's upper bound.
+  for (double ev_time = 2.; ev_time < 101.; ++ev_time) {
+    double true_ev_time = ev_time + .1 * sin(ev_time);
+    index = binner.computeIndex(true_ev_time);
+    long correct_index = long((ev_time - 2.)/25.);
+    if (index != correct_index) {
+      m_failed = true;
+      m_os.err() << "In third binner test, index of " << true_ev_time << " was " << index << ", not " << correct_index << std::endl;
+    }
   }
 
-  // Now try a background.
+  // Reset the binner, this time with a uniform background.
   std::vector<double> background_coeffs(1, 1.);
   binner = ConstSnBinner(1., 101., 5., 1., 25., background_coeffs);
 
-  // Loop over double the times.
-  for (double ev_time = 0.; ev_time < 103.; ev_time += .5) {
-    long index = binner.computeIndex(ev_time);
-//    std::cout << "Event time[" << ev_time << "] == " << ev_time << ", index == " << index << std::endl;
+  // Loop over twice as many times, but with the background of 1, the results will be the same as the second test.
+
+  // Check value before first bin.
+  index = binner.computeIndex(0.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In fourth binner test, index of 0. was " << index << ", not -1" << std::endl;
   }
+
+  // Loop over some more times with smaller step between each one.
+  for (double ev_time = 1.5; ev_time <= 101.; ev_time += .5) {
+    index = binner.computeIndex(ev_time);
+    long correct_index = long((ev_time - 1.5)/50.);
+    if (index != correct_index) {
+      m_failed = true;
+      m_os.err() << "In fourth binner test, index of " << ev_time << " was " << index << ", not " << correct_index << std::endl;
+    }
+  }
+
+  // Check value after last bin.
+  index = binner.computeIndex(102.);
+  if (-1 != index) {
+    m_failed = true;
+    m_os.err() << "In fourth binner test, index of 102. was " << index << ", not -1" << std::endl;
+  }
+
 }
 
 /// \brief Create factory singleton object which will create the application:
