@@ -1,6 +1,7 @@
 /** @file SkyImage.h
 
     @brief declare  the class SkyImage
+
     @author Toby Burnett <tburnett@u.washington.edu>
     $Header$
 
@@ -26,7 +27,7 @@ class MapParameters;
     @brief define an image for export to a FITS image
 
 */
-class SkyImage 
+class SkyImage : public astro::SkyFunction
 {
 public:
     /** @brief constructor set up the map
@@ -54,7 +55,8 @@ public:
      /** @brief direct access to the pixel at the given direction and current layer
     */
     float & operator[](const astro::SkyDir&  pixel);
-    const float & operator[](const astro::SkyDir&  pixel)const;
+
+     const float & operator[](const astro::SkyDir&  dir)const;
 
     ~SkyImage();
 
@@ -88,6 +90,11 @@ public:
     @param nlist list of neighbor values to set
     */
     void getNeighbors(const astro::SkyDir& pos, std::vector<double>& neighbors)const ;
+    
+    /// @brief implement SkyFunction interface by returning value at the selected pixel
+    /// @param dir the direction
+    /// note that if there are multiple layers, it will choose the selected layer, set setLayer.
+    double operator()(const astro::SkyDir& s)const;
 
 private:
     //! @brief internal routine to convert SkyDir to pixel index

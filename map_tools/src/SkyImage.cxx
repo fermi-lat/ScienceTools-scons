@@ -8,6 +8,7 @@ $Header$
 #include "map_tools/MapParameters.h"
 
 #include "astro/SkyDir.h"
+#include "astro/SkyFunction.h"
 #include "image/Image.h"
 #include "image/IOElement.h"
 
@@ -111,6 +112,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 :  m_save(false)
 , m_wcs(0)
+, m_layer(0)
 {
     FloatImg& image = *dynamic_cast<FloatImg*>(IOElement::readIOElement(fits_file, extension));
     m_image = &image;
@@ -253,6 +255,11 @@ const float &  SkyImage::operator[](const astro::SkyDir&  pixel)const
 {
     unsigned int k = pixel_index(pixel);
     return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double SkyImage::operator()(const astro::SkyDir& s)const
+{
+    return pixelValue(s, m_layer);        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighbors)const
