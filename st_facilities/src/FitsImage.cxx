@@ -31,14 +31,14 @@ FitsImage::FitsImage(const std::string &fitsfile) {
    }
 }
 
-void FitsImage::getAxisDims(std::vector<int> &axisDims) {
+void FitsImage::getAxisDims(std::vector<int> &axisDims) const {
    axisDims.clear();
    for (unsigned int i = 0; i < m_axes.size(); i++) {
       axisDims.push_back(m_axes[i].size);
    }
 }
 
-void FitsImage::getAxisNames(std::vector<std::string> &axisNames) {   
+void FitsImage::getAxisNames(std::vector<std::string> &axisNames) const {
    axisNames.clear();
    for (unsigned int i = 0; i < m_axes.size(); i++) {
       axisNames.push_back(m_axes[i].axisType);
@@ -46,7 +46,7 @@ void FitsImage::getAxisNames(std::vector<std::string> &axisNames) {
 }
 
 void FitsImage::getAxisVector(unsigned int naxis,
-                              std::vector<double> &axisVector) {
+                              std::vector<double> &axisVector) const {
    if (naxis >= m_axes.size()) {
       std::ostringstream message;
       message << "FitsImage::getAxisVector: Invalid axis number " << naxis;
@@ -56,7 +56,7 @@ void FitsImage::getAxisVector(unsigned int naxis,
 }
 
 void FitsImage::getCelestialArrays(std::vector<double> &lonArray,
-                                   std::vector<double> &latArray) {
+                                   std::vector<double> &latArray) const {
    unsigned int npixels = m_axes[0].size*m_axes[1].size;
    lonArray.resize(npixels);
    latArray.resize(npixels);
@@ -69,7 +69,7 @@ void FitsImage::getCelestialArrays(std::vector<double> &lonArray,
    }
 }
          
-void FitsImage::getSolidAngles(std::vector<double> &solidAngles){
+void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
 // This solid angle calculation *assumes* that m_axes[0] is a
 // longitudinal coordinate and that m_axes[1] is a latitudinal one.
 // Furthermore, the axis units are assumed to be degrees, while the
@@ -87,7 +87,7 @@ void FitsImage::getSolidAngles(std::vector<double> &solidAngles){
    }
 }
 
-void FitsImage::getImageData(std::vector<double> &imageData) {
+void FitsImage::getImageData(std::vector<double> &imageData) const {
    imageData.resize(m_image.size());
    imageData = m_image;
 }
