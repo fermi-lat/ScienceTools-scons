@@ -9,6 +9,8 @@
 #include <cmath>
 #include <cstdlib>
 
+#include <algorithm>
+
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"

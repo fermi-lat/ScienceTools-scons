@@ -35,6 +35,7 @@
 // static SpectrumFactory<GRBmanager> my_factory;
 
 ISpectrumFactory & MapSourceFactory();
+ISpectrumFactory & SimpleTransientFactory();
 
 using Likelihood::Util;
 
@@ -43,6 +44,7 @@ public:
    ObsSim(hoops::IParGroup & pars) : m_pars(pars) {
       m_count = m_pars["Number_of_events"];
       MapSourceFactory();
+      SimpleTransientFactory();
    }
    ~ObsSim() {
       delete m_simulator;
