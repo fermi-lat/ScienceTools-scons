@@ -5,6 +5,8 @@
 #ifndef evtbin_LightCurve_h
 #define evtbin_LightCurve_h
 
+#include <string>
+
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist1D.h"
 
@@ -20,7 +22,7 @@ namespace evtbin {
       /** \brief Create the light curve object.
           \param binner The binner used to create the histogram.
       */
-      LightCurve(const Binner & binner);
+      LightCurve(const std::string & event_file, const std::string & sc_file, const Binner & binner);
 
       virtual ~LightCurve() throw();
 

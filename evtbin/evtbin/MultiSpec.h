@@ -5,6 +5,8 @@
 #ifndef evtbin_MultiSpec_h
 #define evtbin_MultiSpec_h
 
+#include <string>
+
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist2D.h"
 
@@ -21,7 +23,8 @@ namespace evtbin {
           \param time_binner The binner used to bin the time dimension.
           \param energy_binner The binner used to create the energy dimension.
       */
-      MultiSpec(const Binner & time_binner, const Binner & energy_binner);
+      MultiSpec(const std::string & event_file, const std::string & sc_file, const Binner & time_binner,
+        const Binner & energy_binner);
 
       virtual ~MultiSpec() throw();
 
