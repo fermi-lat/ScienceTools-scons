@@ -109,7 +109,7 @@ namespace tip {
       /** \brief Get number of elements in the given cell. Default implementation assumes
           that only scalar valued cells are supported.
       */
-      virtual long getNumElements(Index_t) const { return 1; }
+      virtual long getNumElements(Index_t = 0) const { return 1; }
 
       /** \brief Set number of elements in the given cell.
       */
