@@ -15,12 +15,14 @@
     \author Yasushi Ikebe, GSSC
             James Peachey, HEASARC
 */
+#include <memory>
 #include <stdexcept>
 #include <string>
 
 // Binners used:
 #include "evtbin/LinearBinner.h"
 #include "evtbin/LogBinner.h"
+#include "evtbin/OrderedBinner.h"
 
 // Data product support classes.
 #include "evtbin/DataProduct.h"
@@ -199,24 +201,60 @@ class SimpleSpectrumApp : public EvtBinAppBase {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
-      // Prompt for remaining parameters needed for light curve.
-      pars.Prompt("emin");
-      pars.Prompt("emax");
-      pars.Prompt("enumbins");
+      // Next determine the energy binning algorithm.
+      pars.Prompt("energybinalg");
+      if (0 == pars["energybinalg"].Value().compare("UNIFORM")) {
+        // Get remaining parameters needed for uniform interval binner.
+        pars.Prompt("emin");
+        pars.Prompt("emax");
+        pars.Prompt("enumbins");
+      } else if (0 == pars["energybinalg"].Value().compare("USERBINS")) {
+        // Get remaining parameters needed for user defined bins from a bin file.
+        pars.Prompt("energybinfile");
+      } else throw std::runtime_error(std::string("Unknown energy binning algorithm ") + pars["energybinalg"].Value());
     }
 
-    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
-      using namespace evtbin;
+    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars);
 
-      // Get ranges:
-      double energy_min = pars["emin"];
-      double energy_max = pars["emax"];
-      long energy_num_bins = pars["enumbins"];
-
-      // Create data product.
-      return new SingleSpec(LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
-    }
+    virtual evtbin::Binner * getBinner(const st_app::AppParGroup & pars);
 };
+
+evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParGroup & pars) {
+  using namespace evtbin;
+
+  // Create binner.
+  std::auto_ptr<Binner> binner(getBinner(pars));
+
+  // Create data product.
+  return new SingleSpec(*binner);
+}
+
+evtbin::Binner * SimpleSpectrumApp::getBinner(const st_app::AppParGroup & pars) {
+  using namespace evtbin;
+
+  Binner * binner = 0;
+
+  if (0 == pars["energybinalg"].Value().compare("UNIFORM")) {
+    binner = new LogBinner(pars["emin"], pars["emax"], pars["enumbins"], "ENERGY");
+  } else if (0 == pars["energybinalg"].Value().compare("USERBINS")) {
+    // Create interval container for user defined bin intervals.
+    OrderedBinner::IntervalCont_t intervals;
+
+    // Open the data file.
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(pars["energybinfile"], "ENERGYBINS"));
+
+    // Iterate over the file, saving the relevant values into the interval array.
+    for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
+      intervals.push_back(Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get()));
+    }
+
+    // Create binner from these intervals.
+    binner = new OrderedBinner(intervals, "ENERGY");
+
+  } else throw std::runtime_error(std::string("Unknown energy binning algorithm ") + pars["energybinalg"].Value());
+
+  return binner;
+}
 
 /** \class EvtBin
     \brief Application singleton for evtbin. Main application object, which just determines which
