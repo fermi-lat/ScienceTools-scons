@@ -6,6 +6,9 @@
 */
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 #include "TestColumn.h"
@@ -15,6 +18,7 @@
 #include "TestImage.h"
 #include "TestInterpolation.h"
 #include "TestTable.h"
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -340,6 +344,99 @@ int main() {
 
     } catch(const TipException & x) {
       std::cerr << "Unexpected exception while testing direct keyword access: " << x.what() << std::endl;
+      status = 1;
+    }
+
+    try {
+      const Header & const_header = my_table->getHeader();
+      
+      // Test getting key-value pairs from header. All should be found except NON_EXIS.
+      const char * keys [] = { "POISSERR", "GROUPING", "NON_EXIS", "QUALITY", 0 };
+      Header::KeyValCont_t key_vals;
+
+      // Get the container of key-value pairs from the const_header.
+      const_header.get(keys, key_vals);
+
+      // Make sure the correct number were found.
+      if (3 != key_vals.size()) {
+        status = 1;
+        std::cerr << "Unexpected: got " << key_vals.size() << " key-value pairs, instead of 3" << std::endl;
+      }
+
+      std::string s;
+      for (Header::KeyValCont_t::iterator itor = key_vals.begin(); itor != key_vals.end(); ++itor)
+        s += "\t" + itor->first + " = " + itor->second + "\n";
+
+      std::string s_should_be("\tPOISSERR = T\n\tGROUPING = 0\n\tQUALITY = 0\n");
+      if (0 != s_should_be.compare(s)) {
+        status = 1;
+        std::cerr << "Unexpected: matching key-value pairs were:\n" << s << "not\n" << s_should_be << std::endl;
+      }
+
+      // Add a keyword which was not in the original file.
+      key_vals.push_back(Header::KeyValPair_t("NON_EXIS", "this should not get written"));
+
+      // Modify a keyword.
+      key_vals[0].second = "F"; 
+
+      Header & header = my_table->getHeader();
+      header.update(key_vals); // Should update existing keywords only.
+
+      // Check whether update had the correct effect.
+      try {
+        std::string value;
+        header[key_vals[0].first].get(value);
+        if (0 != value.compare("F")) {
+          status = 1;
+          std::cerr << "Unexpected: key-value pair did not modify value of keyword " << key_vals[0].first << std::endl;
+        }
+      } catch (const TipException & x) {
+        status = 1;
+        std::cerr << "Unexpected exception while retrieving an existing keyword: " << x.what() << std::endl;
+      }
+      
+      try {
+        std::string value;
+        header["NON_EXIS"].get(value);
+        status = 1;
+        std::cerr << "Unexpected: exception not thrown after a non-existent keyword was updated using key-value pair." << std::endl;
+      } catch (const TipException &) {
+        // This should happen, actually!
+      }
+      
+      try {
+        struct tm some_time;
+        some_time.tm_sec = 12;
+        some_time.tm_min = 12;
+        some_time.tm_hour = 11;
+        some_time.tm_mday = 14;
+        some_time.tm_mon = 6;
+        some_time.tm_year = 104;
+        some_time.tm_wday = 3;
+        some_time.tm_yday = 195;
+        some_time.tm_isdst = 0;
+        
+        time_t made_time = mktime(&some_time);
+        if (-1 == made_time) {
+          throw std::runtime_error("mktime returned -1 when trying to construct a test time");
+        }
+
+        std::string formatted_time = header.formatTime(made_time);
+        if (0 != formatted_time.compare("2004-07-14T12:12:12")) {
+          status = 1;
+          std::cerr << "Unexpected: Header::formatTime formatted time string as " << formatted_time <<
+            ", not 2004-07-14T12:12:12" << std::endl;
+        } else {
+          std::cerr << "Expected: Header::formatTime formatted a time correctly" << std::endl;
+        }
+
+      } catch (const std::exception & x) {
+        status = 1;
+        std::cerr << "Unexpected exception while testing Header::formatTime: " << x.what() << std::endl;
+      }
+  
+    } catch(const TipException & x) {
+      std::cerr << "Unexpected exception while testing direct key-value pair access: " << x.what() << std::endl;
       status = 1;
     }
 
