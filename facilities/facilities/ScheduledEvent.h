@@ -7,7 +7,7 @@
 
 class Scheduler;
 
-class facilities_APIDECL ScheduledEvent 
+class ScheduledEvent 
 {
     // abstract base class for an event that is scheduled by the ScheduledEvent class
 public:

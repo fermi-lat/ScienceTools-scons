@@ -21,7 +21,7 @@ typedef double ClockWord;
 //  This is a general class for representing a clock value in terms
 //  of some integral number of counts (ie. CPU cycles).
 //
-class facilities_APIDECL Clock 
+class Clock 
 {
   public:
       Clock ()

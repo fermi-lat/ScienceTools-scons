@@ -12,7 +12,7 @@
 class ScheduledEvent;
 
 
-class facilities_APIDECL GPStime {
+class GPStime {
     // Represent absolute time. Units seconds.
 public:
     GPStime(double t=0):m_t(t){}
@@ -30,7 +30,7 @@ inline GPStime& operator += (GPStime& t, const double& dt)
 }
 
 
-class facilities_APIDECL Scheduler : private std::multimap<double, ScheduledEvent*>
+class Scheduler : private std::multimap<double, ScheduledEvent*>
 {
     //create a sequence of call backs to a list of ScheduledEvent
     // instances, in time order. Delete each after running 
