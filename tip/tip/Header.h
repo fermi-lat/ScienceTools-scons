@@ -224,6 +224,18 @@ namespace tip {
       virtual void setKeyUnit(const std::string &, const std::string &)
         { unsupported("setKeyUnit(const std::string &, const std::string &)"); } 
 
+      /** \brief Add a descriptive comment message to the header.
+          \param comment The comment string to add.
+      */
+      virtual void addComment(const std::string & /* comment */)
+        { unsupported("addComment(const std::string & comment)"); }
+
+      /** \brief Add a descriptive history message to the header.
+          \param history The history string to add.
+      */
+      virtual void addHistory(const std::string & /* history */)
+        { unsupported("addHistory(const std::string & history)"); }
+
     protected:
       /** \brief Internal utility to add keywords when they are looked up.
       */
