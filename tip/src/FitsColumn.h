@@ -178,7 +178,7 @@ namespace tip {
       */
       virtual void copy(const IColumn * src, Index_t src_index, Index_t dest_index) {
         if (m_scalar) {
-          T val(0);
+          T val;
           src->get(src_index, val);
           set(dest_index, val);
         } else {
