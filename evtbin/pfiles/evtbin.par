@@ -17,6 +17,20 @@ deltatime,     r, a, , , , "Width of linearly uniform time bins"
 timebinfile,   s, a, , , , "Name of the file containing the time bin definition"
 
 #-------------------------------------------------------------------------------
+# Spatial binning parameters.
+numxpix,       i, a, , , , "Size of the X axis in pixels"
+numypix,       i, a, , , , "Size of the Y axis in pixels"
+pixscale,      r, a, , , , "Image scale (in degrees/pixel)"
+xref,          r, a, 0., , , "RA at the image center in degrees"
+yref,          r, a, 0., , , "DEC at the image center in degrees"
+rafield,       s, h, "RA", , ,"Name of RA field to bin"
+decfield,      s, h, "DEC", , ,"Name of DEC field to bin"
+axisrot,       r, a, 0., , , "Rotation angle of image axis, in degrees"
+proj,          s, h, "AIT", , , "Projection method (AIT, ARC, CAR, GLS, MER, NCP, SIN, STG, TAN)"
+uselb,         b, h, yes, , ,"Use galactic coordinates"
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
 # Energy binning parameters.
 energybinalg,  s, a, "LOG", , , "Algorithm for defining energy bins (FILE, LIN, LOG)"
 energyfield,   s, h, "ENERGY", , ,"Name of energy field to bin"
