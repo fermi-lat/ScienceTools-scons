@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <string>
+#include <typeinfo>
 #include <vector>
 
 #include "fitsio.h"
