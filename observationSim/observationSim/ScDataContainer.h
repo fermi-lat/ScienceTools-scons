@@ -60,9 +60,6 @@ public:
 
 private:
 
-   /// The maximum number of entries in the m_scData vector.
-   unsigned int m_maxNumEntries;
-
    /// The ScData buffer.
    std::vector<ScData> m_scData;
 
