@@ -55,7 +55,7 @@ public:
     @param coordsys equatorial (ra,dec) or galactic (l,b)
 
     */
-    Healpix(long nside, Ordering ord = NESTED, 
+    Healpix(long nside=2, Ordering ord = NESTED, 
         astro::SkyDir::CoordSystem coordsys = astro::SkyDir::EQUATORIAL);
 
     ///@brief the number of sides per dodecahedron

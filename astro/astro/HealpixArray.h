@@ -32,6 +32,9 @@ public:
     { resize(hp.size());
     }
 
+    //! default ctor, need to set the healpix
+    HealpixArray():m_hp(1){resize(m_hp.size());}
+
     //! return the direction associated with an iterator
     astro::SkyDir dir(const_iterator it){
         astro::Healpix::Pixel px(it-begin(), m_hp);
@@ -49,6 +52,7 @@ public:
         astro::Healpix::Pixel pix = m_hp.pixel(dir);
         return at(pix.index());
     }
+    void setHealpix(astro::Healpix hp){m_hp=hp; resize(hp.size());}
 
 private:
     astro::Healpix m_hp;
