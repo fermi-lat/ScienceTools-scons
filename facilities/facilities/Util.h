@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 /** @file Util.h
     @author J. Bogart
@@ -95,6 +96,19 @@ namespace facilities {
     */
     static void stringTokenize(std::string input, const std::string &delimiters,
                                std::vector<std::string> &tokens,
+                               bool clear = true);
+
+    /** This routine breaksdown a string into tokens, based on the
+        characters appearing in the string @a delimiters.
+        @param input       string to be tokenized
+        @param delimiters  string containing one or more delimiter characters
+        @param tokens      map of strings to hold resulting tokens
+        @param clear       if true (default) @a tokens will be cleared
+                           at the start of processing
+    */
+    static void stringTokenize(std::string input, const std::string &delimiters,
+			       const std::string &equal_delimiters,
+                               std::map<std::string,std::string> &tokens,
                                bool clear = true);
 
     /** return the "non-directory" part of a (supposed) file identifier, @a path.

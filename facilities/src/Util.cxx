@@ -134,6 +134,26 @@ namespace facilities {
     if (tokens.back() == "") tokens.pop_back();
   }
 
+
+  void Util::stringTokenize(std::string input, const std::string& delimiters,
+                            const std::string &equal_delimiters,
+			    std::map<std::string,std::string>& tokens, bool clear) {
+    if (clear) tokens.clear();
+
+    std::vector<std::string> strvec;
+    stringTokenize(input,delimiters,strvec,true);
+
+    std::vector<std::string>::const_iterator input_itr = strvec.begin();
+    while(input_itr!=strvec.end())
+      {
+	std::string current = *input_itr++;
+	std::string::size_type j = current.find_first_of(equal_delimiters);
+	std::string key   = current.substr(0, j);
+	std::string value = current.substr(j+1);
+	tokens[key] = value;
+      } 
+  }
+  
   std::string Util::basename(const std::string& path) {
      std::vector<std::string> names;
      stringTokenize(path, "\\/", names);

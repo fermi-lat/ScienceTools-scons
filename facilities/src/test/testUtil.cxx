@@ -70,6 +70,36 @@ int main(int, char**) {
 
   std::cout << "basename is " << facilities::Util::basename(wname) << std::endl;
 
+  //test stringTokenize to map routine
+  std::string input1("apple=green,lemon=yellow,blueberry=blue");
+  std::map<std::string,std::string> maptokens;
+  facilities::Util::stringTokenize(input1,",","=",maptokens,false);
+  std::map<std::string,std::string>::const_iterator tokens_itr=maptokens.begin();
+  while (tokens_itr!=maptokens.end()) {
+    std::cout << "Token key " <<(*tokens_itr).first  << " and value: " 
+	      << (*tokens_itr).second << std::endl;
+    tokens_itr++;
+  }
+
+  std::cout <<"appending to previous map:"<<std::endl;
+  std::string input2("apple2/green2,lemon2/yellow2,blueberry2/blue2");
+  facilities::Util::stringTokenize(input2,",","/",maptokens,false);
+  tokens_itr=maptokens.begin();
+  while (tokens_itr!=maptokens.end()) {
+    std::cout << "Token key " <<(*tokens_itr).first  << " and value: " 
+	      << (*tokens_itr).second << std::endl;
+    tokens_itr++;
+  }
+  
+  std::cout <<"clearing the map first:"<<std::endl;
+  facilities::Util::stringTokenize(input2,",","/",maptokens,true);
+  tokens_itr=maptokens.begin();
+  while (tokens_itr!=maptokens.end()) {
+    std::cout << "Token key " <<(*tokens_itr).first  << " and value: " 
+	      << (*tokens_itr).second << std::endl;
+    tokens_itr++;
+  }
+
 
   // Test stringToDouble routine
   std::string okDouble("3.14159");
