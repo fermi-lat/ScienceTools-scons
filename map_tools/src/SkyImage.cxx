@@ -35,9 +35,9 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_save(true)
 , m_layer(0)
 , m_wcs(0)
-, m_galactic(pars.uselb())
 {
     using namespace astro;
+    bool galactic = pars.uselb();
 
         /// arrays describing transformation; pointers passed to wcslib
     double 
@@ -45,7 +45,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         crpix[2]={m_naxis1*0.5 +0.5, m_naxis2*0.5 +0.5},
         cdelt[2]={-pars.imgSizeX()/double(m_naxis1), pars.imgSizeY()/double(m_naxis2)},
         crota2=pars.rot();
-    m_wcs = new astro::SkyProj(  pars.projType(),  crpix, crval, cdelt, crota2, m_galactic);
+    m_wcs = new astro::SkyProj(  pars.projType(),  crpix, crval, cdelt, crota2, galactic);
 
     // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
@@ -68,13 +68,14 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     setKey("DATE-END", "");
     setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
 
-    setKey("CTYPE1", std::string(m_galactic?"GLON-":"RA---")+ pars.projType()
+    setKey("CTYPE1", std::string(galactic?"GLON-":"RA---")+ pars.projType()
         ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
     setKey("CRPIX1",  crpix[0],"","Reference pixel"); 
     setKey("CRVAL1",  crval[0], "deg", "RA or GLON at the reference pixel");
     setKey("CDELT1",  cdelt[0],"",
+        "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
 
-    setKey("CTYPE2",  std::string(m_galactic?"GLAT-":"DEC--")+ pars.projType()
+    setKey("CTYPE2",  std::string(galactic?"GLAT-":"DEC--")+ pars.projType()
         ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
 
     setKey("CRPIX2",  crpix[1],"","Reference pixel");
@@ -100,10 +101,11 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 
     std::string ctype;
     image.getValue("CTYPE1", ctype);
+    bool galactic;
     if( ctype.substr(0,2)=="RA") {
-        m_galactic=false;
+        galactic=false;
     }else if( ctype.substr(0,4)=="GLON") {
-        m_galactic=true;
+        galactic=true;
     }else {
         throw std::invalid_argument(
             std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
@@ -124,7 +126,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     image.getValue("CDELT2", cdelt[1]);
     double crota2=0;
     try { image.getValue("CROTA2", crota2);}catch(const std::exception&){}
-    m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, m_galactic);
+    m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)
@@ -138,7 +140,7 @@ unsigned int SkyImage::setLayer(unsigned int newlayer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
-    std::pair<double,double> p= dir.project(*m_wcs, m_galactic);
+    std::pair<double,double> p= dir.project(*m_wcs);
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
@@ -160,7 +162,7 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
             x = static_cast<int>(k%m_naxis1)+1.0, 
             y = static_cast<int>(k/m_naxis1)+1.0;
         try{
-            astro::SkyDir dir(x,y, *m_wcs, m_galactic);
+            astro::SkyDir dir(x,y, *m_wcs);
             double t= req(dir);
             image->data()[k+offset] = t; 
             m_total += t;
@@ -205,56 +207,29 @@ SkyImage::~SkyImage()
 double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 {
     if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
-    std::pair<double,double> p= pos.project(*m_wcs, m_galactic);
-    if( p.first<0) p.first+=m_naxis1;
-    if(p.second<0) p.second += m_naxis2;
-    unsigned int 
-        i = static_cast<unsigned int>(p.first),
-        j = static_cast<unsigned int>(p.second),
-        k = i+m_naxis1*(j + layer*m_naxis2);
-
-    if(  k< m_pixelCount){
-        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
-    }else{
-        throw std::range_error("SkyImage::pixelValue-- outside image hyper cube");
-    }
+    unsigned int k = pixel_index(pos,layer);
+    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 float &  SkyImage::operator[](const astro::SkyDir&  pixel)
  {
-    std::pair<double,double> p= pixel.project();
-    unsigned int 
-        i = static_cast<unsigned int>(p.first),
-        j = static_cast<unsigned int>(p.second),
-        k = i+m_naxis1*(j + m_layer*m_naxis2);
-
-    if(  k< m_pixelCount){
-        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
-    }else{
-        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
-    }
+    unsigned int k = pixel_index(pixel);
+    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
  }
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const float &  SkyImage::operator[](const astro::SkyDir&  pixel)const
 {
-    std::pair<double,double> p= pixel.project();
-    unsigned int 
-        i = static_cast<unsigned int>(p.first),
-        j = static_cast<unsigned int>(p.second),
-        k = i+m_naxis1*(j + m_layer*m_naxis2);
-
-    if(  k< m_pixelCount){
-        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
-    }else{
-        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
-    }
+    unsigned int k = pixel_index(pixel);
+    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighbors)const
 {
     int layer = 0; ///@todo: get neighbors on a different layer
     FloatImg& image =  *dynamic_cast<FloatImg*>(m_image); 
-    std::pair<double,double> p= pos.project();
+    std::pair<double,double> p= pos.project(*m_wcs);
+    if( p.first<0) p.first += m_naxis1;
+    if(p.second<0) p.second += m_naxis2;
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
@@ -264,3 +239,24 @@ void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighb
     if(j+1<(unsigned int)m_naxis2)neighbors.push_back(image[k+m_naxis1]);
     if(j>0)neighbors.push_back(image[k-m_naxis1]);
 }
+
+// internal routine to convert a SkyDir to a pixel index
+unsigned int SkyImage::pixel_index(const astro::SkyDir& pos, int layer) const
+{
+    // if not specified, use the data member
+    if( layer<0 ) layer = m_layer;
+
+    // project using wcslib interface, then adjust to be positive
+    std::pair<double,double> p= pos.project(*m_wcs);
+    if( p.first<0) p.first += m_naxis1;
+    if(p.second<0) p.second += m_naxis2;
+    unsigned int 
+        i = static_cast<unsigned int>(p.first),
+        j = static_cast<unsigned int>(p.second),
+        k = i+m_naxis1*(j + layer*m_naxis2);
+    if( k >= m_pixelCount ) {
+        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
+    }
+    return k;
+}
+
