@@ -259,6 +259,7 @@ double GRBShock::FluxAtT(double energy,
 			 double time, bool flagIC)
 {
   if(m_sum <= 0.) return 0.0;
+  if(time <= 0.) return 0.0;
   double temp=0.0;
 
   // Fsyn & Fic are in erg/s/eV ; sum is in ergs

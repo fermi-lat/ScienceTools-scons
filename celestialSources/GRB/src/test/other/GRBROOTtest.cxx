@@ -184,7 +184,7 @@ void Burst(int argc, char** argv)
       
       for (int t=0;t<cst::nstep;t++)
 	{
-	  m_time.push_back(t*m_dt+m_dt);
+	  m_time.push_back(t*m_dt);
 	  // Compute the flux @ time
 	  spectrum.clear();
 	  spectrum=_myGRB->ComputeFlux(m_time[t]); // is in photons/s/MeV/m^2

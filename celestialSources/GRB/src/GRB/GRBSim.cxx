@@ -216,13 +216,7 @@ std::vector<double> GRBSim::ComputeFlux(double time)
   double norma;
   double temp;
   std::vector<double> spectrum(enstep,0.);
- 
-  if (time<=0.0) 
-    {
-      time=1.0e-6;
-      //      cout<<" Time can not be 0.0 !! Set time = "<<time<<" s"<<endl;
-    }
-  //
+  if (time<=0) return spectrum;
   std::vector<GRBShock>::iterator itr;
   for(itr=theShocks.begin();itr != theShocks.end();++itr)
     {
