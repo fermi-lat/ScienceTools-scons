@@ -28,7 +28,7 @@ namespace st_app {
   char ** StApp::getArgv() { return s_argv; }
 
   // Construct application object:
-  StApp::StApp(): m_par_group(0) {}
+  StApp::StApp(): m_name("Unknown application"), m_version("unknown"), m_par_group(0) {}
 
   // Destruct application object:
   StApp::~StApp() throw() { delete m_par_group; }
@@ -38,6 +38,22 @@ namespace st_app {
     // Create if necessary:
     if (0 == m_par_group) m_par_group = new AppParGroup(app_name);
     return *m_par_group;
+  }
+
+  const std::string & StApp::getName() const { return m_name; }
+
+  const std::string & StApp::getVersion() const { return m_version; }
+
+  void StApp::setName(const std::string & name) { m_name = name; }
+
+  void StApp::setVersion(const std::string & version) {
+    static const std::string cvs_prefix("$Name: ");
+
+    // If cvs was used to assign the version automatically, chop out the prefix and suffix ($) it uses.
+    if (0 == version.find(cvs_prefix))
+      m_version = version.substr(cvs_prefix.size(), m_version.size() - cvs_prefix.size());
+    else
+      m_version = version;
   }
 
 }

@@ -47,9 +47,19 @@ namespace st_app {
       */
       virtual AppParGroup & getParGroup(const std::string & app_name);
 
+      const std::string & getName() const;
+
+      const std::string & getVersion() const;
+
+      void setName(const std::string & name);
+
+      void setVersion(const std::string & version);
+
     private:
       static int s_argc;
       static char ** s_argv;
+      std::string m_name;
+      std::string m_version;
       AppParGroup * m_par_group;
   };
 
