@@ -8,6 +8,7 @@
 #define tip_IExtensionData_h
 
 #include <string>
+#include <vector>
 
 #include "tip/tip_types.h"
 
@@ -18,6 +19,8 @@ namespace tip {
   */
   class IExtensionData {
     public:
+      typedef std::vector<std::string> FieldCont;
+
       virtual ~IExtensionData() {}
 
       /** \brief Get a keyword from this extension object.
@@ -70,6 +73,10 @@ namespace tip {
          \param num_records The new value for the number of records in the table.
       */
       virtual void setNumRecords(Index_t num_records) = 0;
+
+      /** \brief Return a container of all field names valid for this table:
+      */
+      virtual const FieldCont & getValidFields() const = 0;
 
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.

@@ -28,13 +28,19 @@ namespace tip {
       virtual ~TestTable() throw();
 
       /** \brief Perform the detailed test needed by the subobject.
-          \param status Error status inherited from caller.
       */
       virtual int test(int status);
+
+      /// \brief Test Table's constructors:
+      void TableTest();
+
+      /// \brief Test Table's method for getting list of fields in table:
+      void getValidFieldsTest();
 
     private:
       std::string m_data_dir;
       Table * m_fits_table;
+      Table * m_root_table;
   };
 
 }

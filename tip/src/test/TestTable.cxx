@@ -1,17 +1,36 @@
-/** \file testTable.cxx
+/** \file TestTable.cxx
     \brief Definition of class to perform detailed testing of Table class.
     \author James Peachey, HEASARC
 */
 
 #include <cstdlib>
+#include <iostream>
 
 #include "FitsExtensionData.h"
+#include "RootExtensionData.h"
 #include "TestTable.h"
 #include "tip/Table.h"
 
 namespace tip {
 
-  TestTable::TestTable(): m_data_dir(), m_fits_table(0) {
+  TestTable::TestTable(): m_data_dir(), m_fits_table(0), m_root_table(0) {}
+
+  TestTable::~TestTable() throw() { delete m_root_table; delete m_fits_table; }
+
+  int TestTable::test(int status) {
+    // Use inherited status to set initial status
+    setStatus(status);
+
+    // Test Table's constructors:
+    TableTest();
+
+    // Test new browsing capabilities:
+    getValidFieldsTest();
+
+    return getStatus();
+  }
+
+  void TestTable::TableTest() {
     std::string msg;
     // Test constructor errors.
     try {
@@ -34,15 +53,63 @@ namespace tip {
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed");
-      ReportWarning("skipping FITS table tests!");
+      ReportWarning("FITS table tests will be skipped!");
+    }
+
+    // Test constructing a Root table:
+    msg = std::string("opening TTree \"1\" extension of ") + m_data_dir + "merit.root";
+    try {
+      IExtensionData * data = new RootExtensionData(m_data_dir + "merit.root", "1");
+      m_root_table = new Table(data);
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed");
+      ReportWarning("Root table tests will be skipped!");
     }
   }
 
-  TestTable::~TestTable() throw() { delete m_fits_table; }
+  void TestTable::getValidFieldsTest() {
+    std::string msg;
+    if (0 != m_fits_table) {
+      msg = "getting field container from FITS file";
+      try {
+        // Get container of field names:
+        const Table::FieldCont & fields = m_fits_table->getValidFields();
+        ReportExpected(msg + " succeeded");
 
-  int TestTable::test(int status) {
-    setStatus(status);
-    return getStatus();
+        for (Table::FieldCont::const_iterator it = fields.begin(); it != fields.end(); ++it) {
+std::cout << "*************** field " << *it << std::endl;
+        }
+
+        try {
+        } catch (const TipException & x) {
+          ReportUnexpected(msg + " failed");
+        }
+
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed");
+      }
+    }
+    if (0 != m_root_table) {
+      msg = "getting field container from Root file";
+      try {
+        // Get container of field names:
+        const Table::FieldCont & fields = m_root_table->getValidFields();
+        ReportExpected(msg + " succeeded");
+
+        for (Table::FieldCont::const_iterator it = fields.begin(); it != fields.end(); ++it) {
+std::cout << "*************** field " << *it << std::endl;
+        }
+
+        try {
+        } catch (const TipException & x) {
+          ReportUnexpected(msg + " failed");
+        }
+
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed");
+      }
+    }
   }
 
 }

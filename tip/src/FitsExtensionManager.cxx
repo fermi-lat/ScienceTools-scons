@@ -34,7 +34,7 @@ namespace tip {
   // Construct without opening the file.
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
-    m_col_num_lookup(), m_num_records(0), m_fp(0), m_is_table(false) { open(); }
+    m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0), m_is_table(false) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { close(); }
@@ -89,6 +89,9 @@ namespace tip {
   // Close file.
   void FitsExtensionManager::close(int status) {
     if (0 != m_fp) fits_close_file(m_fp, &status);
+    m_fields.clear();
+    m_col_num_lookup.clear();
+    m_col_name_lookup.clear();
     m_fp = 0;
   }
 
@@ -111,6 +114,8 @@ namespace tip {
       m_num_records = num_records;
     }
   }
+
+  const IExtensionData::FieldCont & FitsExtensionManager::getValidFields() const { return m_fields; }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
     if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
@@ -208,6 +213,9 @@ namespace tip {
         m_col_num_lookup[col_num].m_col_num = col_num;
         m_col_num_lookup[col_num].m_repeat = repeat;
         m_col_num_lookup[col_num].m_type_code = type_code;
+
+        // Save name of field in sequential container of field names:
+        m_fields.push_back(name);
       }
     }
   }

@@ -59,7 +59,7 @@ namespace tip {
   // Construct without opening the file.
   RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_branch_lookup(),
-    m_leaves(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
+    m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
 
   // Close file automatically while destructing.
   RootExtensionManager::~RootExtensionManager() { close(); }
@@ -146,6 +146,13 @@ namespace tip {
     // turn off all branches: enable them as requested for the event loop
     m_tree->SetBranchStatus("*", 0);
     // End theft.
+
+    // Get names of all leaves in this tree:
+    TIter nextLeaf(m_tree->GetListOfBranches());
+    TKey * leafKey;
+    while (0 != (leafKey = (TKey *) nextLeaf())) {
+      m_fields.push_back(leafKey->GetName());
+    }
   }
 
   // Close file.
@@ -153,19 +160,21 @@ namespace tip {
     m_branch_lookup.clear();
     for (std::vector<LeafBuffer *>::reverse_iterator it = m_leaves.rbegin(); it != m_leaves.rend(); ++it)
       delete *it;
+    m_fields.clear();
     m_leaves.clear();
     delete m_fp;
   }
 
   void RootExtensionManager::openTable() {
-    // Open the actual file and move to the right extension.
-    if (0 == m_fp) open();
-
   }
 
   void RootExtensionManager::setNumRecords(Index_t) {
     // Not supported for now.
     throw TipException("Changing the size of a Root table is not currently supported.");
+  }
+
+  const IExtensionData::FieldCont & RootExtensionManager::getValidFields() const {
+    return m_fields;
   }
 
   FieldIndex_t RootExtensionManager::getFieldIndex(const std::string & field_name) const {

@@ -38,6 +38,10 @@ namespace tip {
       */
       typedef RandomAccessIterator<TableRecord, IndexDiff_t> Iterator;
 
+      /** \brief Container of field names.
+      */
+      typedef IExtensionData::FieldCont FieldCont;
+
       /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,
           but is connected to the table cell.
           WARNING: This class is deprecated. Don't start using it!
@@ -83,6 +87,10 @@ namespace tip {
          \param num_records The new value for the number of records in the table.
       */
       void setNumRecords(Index_t num_records) { m_tab_data->setNumRecords(num_records); }
+
+      /** \brief Return a container of all field names valid for this table:
+      */
+      const Table::FieldCont & getValidFields() const { return m_tab_data->getValidFields(); }
 
     private:
       IExtensionData * m_tab_data;

@@ -103,6 +103,10 @@ namespace tip {
       */
       virtual void setNumRecords(Index_t num_records) { m_extension_manager.setNumRecords(num_records); }
 
+      /** \brief Return a container of all field names valid for this table:
+      */
+      virtual const IExtensionData::FieldCont & getValidFields() const { return m_extension_manager.getValidFields(); }
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */

@@ -14,6 +14,7 @@
 
 #include "TTree.h"
 
+#include "tip/IExtensionData.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
 
@@ -115,6 +116,10 @@ namespace tip {
       */
       void setNumRecords(Index_t num_records);
 
+      /** \brief Return a container of all field names valid for this table:
+      */
+      const IExtensionData::FieldCont & getValidFields() const;
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
@@ -153,6 +158,7 @@ namespace tip {
       std::string m_filter;
       mutable std::map<std::string, FieldIndex_t> m_branch_lookup;
       mutable std::vector<LeafBuffer *> m_leaves;
+      IExtensionData::FieldCont m_fields;
       Index_t m_num_records;
       TFile * m_fp;
       mutable TTree * m_tree;
