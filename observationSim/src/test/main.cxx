@@ -54,8 +54,8 @@ int main(int argn, char * argc[]) {
    my_simulator.readResponseData(caldbPath, Likelihood::Response::Combined);
 
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events.dat");
-   observationSim::ScDataContainer scData("test_scData.dat");
+   observationSim::EventContainer events("test_events.dat", true);
+   observationSim::ScDataContainer scData("test_scData.dat", true);
    my_simulator.generateEvents(count, events, scData);
 
 }

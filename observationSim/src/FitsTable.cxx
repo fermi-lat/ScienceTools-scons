@@ -67,7 +67,7 @@ FitsTable::~FitsTable() {
 
 void FitsTable::writeTableData(const std::vector<std::vector<double> > &data) {
    
-// Ensure that the size of the data vector is consistent in both dimesions.
+// Ensure that the size of the data vector is consistent with m_tfields.
    if (static_cast<int>(data.size()) != m_tfields) {
       std::cerr << "FitsTable::writeTableData:\n"
                 << "The number of columns in data, " << data.size()

@@ -72,7 +72,7 @@ Simulator::Simulator(const std::string &sourceName,
       dynamic_cast<CompositeSource *>(m_source)->addSource(clock);
    } catch(...) {
       std::cerr << "Failed to add a timetick30s source to "
-                << sourceName << ".  Is it a CompsiteSource?"
+                << sourceName << ".  Is it a CompositeSource?"
                 << std::endl;
       listSources();
       exit(-1);
@@ -121,7 +121,7 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
       m_absTime += interval;
       m_elapsedTime += interval;
       m_fluxMgr->pass(interval);
-      scData.addScData(f);
+      scData.addScData(f, *m_fluxMgr);
       if (events.addEvent(f, *m_fluxMgr)) {
          m_numEvents++;
          if (m_maxNumEvents/20 > 0 &&
