@@ -5,6 +5,8 @@
 $Id$
 
 \verbatim
-24-jan-2005        v0 JP Initial version, converted from stpsearch v0r2p2
+07-mar-2005    v0r1p0 JP  Use utility classes defined in pulsarDb for
+                          managing absolute times, and database access.
+24-jan-2005        v0 JP  Initial version, converted from stpsearch v0r2p2
 \endverbatim
 */
