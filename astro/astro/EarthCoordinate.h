@@ -27,14 +27,13 @@ class EarthCoordinate   {
 public:
 
     //! initialize with latitude and longitude, in deg, optional altitude 
-    EarthCoordinate( double latDeg, double lonDeg , double altitude=0);
+    EarthCoordinate( double latDeg=0, double lonDeg=0 , double altitude=0);
 
     //! initialize with orbit position (in km), current date
     EarthCoordinate( Hep3Vector position, JulianDate jd);
 
+    /** @brief true if inside the SAA
 
-    //! true if inside the SAA 
-    /**
 Some work on defining a realistic SAA boundary for the LAT is described at
 http://www.slac.stanford.edu/~rac/SAA/
 A contour plot of the SAA, showing a 12-segment polygon fit for the section of the SAA north of -30 degrees latitude is at http://www.slac.stanford.edu/~rac/SAA/saacode/saaplot.png
@@ -43,8 +42,7 @@ The (latitude,longitude) vertices for the SAA polygon are (in degrees):
 latv=(-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30,-30);
 lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
 
-TODO: implement this
-
+@TODO: implement this
     */
     bool insideSAA()const;
 
@@ -60,6 +58,8 @@ TODO: implement this
     //! magnetic field in gauss
     double B()const;
 
+    double geolat()const;///< geomagnetic latitude (deg)
+    double geolon()const;///< geomagnetic longitude (deg)
 
 private:
 
