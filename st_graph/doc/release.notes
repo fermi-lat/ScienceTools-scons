@@ -11,5 +11,8 @@ $Id$
 24-nov-2004    v1r0p0 JP  Completely revamp interface used to create plots.
 16-dec-2004    v1r1p0 JP  Add Axis class, and other niceties for plots.
                           Add some basic geometry management for GUIs.
+21-jan-2005    v1r2p0 JP  Use RootcintPolicy instead of hand-generated LinkDef files.
+                          Remove (circular) dependency on st_app, and move st_graph
+                          application to the new gtgraph package.
 \endverbatim
 */
