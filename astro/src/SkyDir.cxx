@@ -213,7 +213,7 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
 
     ProjType type=BAD;
 
-    for( int i = 0; i< sizeof(names)/sizeof(void*); ++i){
+    for( size_t i = 0; i< sizeof(names)/sizeof(void*); ++i){
         if( projName != std::string(names[i])) continue;
             type=static_cast<ProjType>(i); break;
     }

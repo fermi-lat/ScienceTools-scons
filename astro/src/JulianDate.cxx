@@ -71,7 +71,7 @@ namespace astro{
       second = int(floor(60*(60*(utc-hour) - minute)));
       sec_deci = int(floor((60*(60*(utc-hour) - minute) - floor(60*(60*(utc-hour) - minute)))*10000));
 
-      sprintf(buffer, "%04d-%02d-%02dT%02d:%02d:%02d.%04d\0", year, month, day, hour, minute, second, sec_deci);   
+      sprintf(buffer, "%04d-%02d-%02dT%02d:%02d:%02d.%04d", year, month, day, hour, minute, second, sec_deci);   
 
       return std::string(buffer);
    }

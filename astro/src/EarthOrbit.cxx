@@ -21,7 +21,7 @@ namespace {
     inline double sqr(double x){return x*x;}
     
     astro::JulianDate JD_missionStart =astro::JulianDate(2005, 1, 1,0.0);
-    astro::JulianDate JDStart =        astro::JulianDate(2005.,7,18,0.0);
+    astro::JulianDate JDStart =        astro::JulianDate(2005 ,7,18,0.0);
 }
 
 // static constants relfecting orbit parameters

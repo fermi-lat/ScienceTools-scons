@@ -244,9 +244,6 @@ HepRotation GPS::transformCelToGlast(double seconds){
     // set the needed pointing/location variables:
     getPointingCharacteristics(seconds);
 
-    double time = m_earthOrbit->dateFromSeconds(seconds);
-
-    //m_position = m_earthOrbit->position(time);
 
     SkyDir dirZ(m_RAZ,m_DECZ,SkyDir::EQUATORIAL);
     SkyDir dirX(m_RAX,m_DECX);
