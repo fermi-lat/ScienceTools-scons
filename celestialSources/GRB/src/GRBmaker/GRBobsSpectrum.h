@@ -47,7 +47,6 @@ class GRBobsSpectrum : public ISpectrum
     std::pair<float,float> dir(float energy) const;
     std::pair<double,double> dir(double energy, HepRandomEngine *engine);
 
-    //double energySrc(HepRandomEngine *engine);
     double energySrc(HepRandomEngine *engine, double time=0);
 
 
@@ -65,10 +64,9 @@ class GRBobsSpectrum : public ISpectrum
 
  private:
 
+	 double nextEnergy() const;
 
-	 double nextEnergy(HepRandomEngine *engine) const;
-
-	 double nextTime(HepRandomEngine *engine) const;
+	 double nextTime() const;
 
 	 void swap(GRBobsSpectrum &other) throw();
 
