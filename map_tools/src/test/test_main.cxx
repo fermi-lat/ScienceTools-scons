@@ -16,6 +16,7 @@ $Header$
 #include <cmath>
 #include <cstdio>
 #include <cassert>
+#include <stdexcept>
 using namespace map_tools;
 
 class TestAeff : public Exposure::Aeff {
