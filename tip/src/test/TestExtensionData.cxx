@@ -37,6 +37,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   int status = 0;
 
+
   // BEGIN Test error cases for FitsExtensionData constructors.
   try {
     // Blank file name, blank extension name:
@@ -88,6 +89,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
 
+
   // BEGIN Test success cases for FitsExtensionData constructors.
   // This test object will be used in further tests below so create it at this scope:
   IExtensionData * image = 0;
@@ -116,7 +118,8 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
 
-  // BEGIN Test error cases for const FitsExtensionData methods.
+
+  // BEGIN Test error cases for const FitsExtensionData methods for an image extension.
   // Skip these tests if image object was not successfully opened above:
   if (0 != image) {
     // Note that image points to the primary HDU, which is an image.
@@ -127,20 +130,20 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
       // Get a blank keyword.
       double tmp_d;
       const_image->getKeyword("", tmp_d);
-      ReportError("success reading unnamed keyword from a valid const FitsExtensionData object", status);
+      ReportError("success reading unnamed keyword from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure reading unnamed keyword from a valid const FitsExtensionData object", status, x);
+      ReportBehavior("failure reading unnamed keyword from a const image object", status, x);
     }
 
     try {
       // Get a non-existent keyword.
       double tmp_d;
       const_image->getKeyword("FAKE_KEY", tmp_d);
-      ReportError("success reading non-existent keyword from a valid const FitsExtensionData object", status);
+      ReportError("success reading non-existent keyword from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure reading non-existent keyword from a valid const FitsExtensionData object", status, x);
+      ReportBehavior("failure reading non-existent keyword from a const image object", status, x);
     }
 
     // Note that const_image points to the primary HDU, which is an image.
@@ -159,7 +162,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     }
 
 #if MAKE_COMPILATION_FAIL
-    ReportError("SHOULD NOT HAVE COMPILED! setNumRecords(100) called for const IExtensionData object", status);
+    ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(100) for const image object", status);
     try {
       // Get number of records from the image:
       // This is only valid for tables.
@@ -172,20 +175,20 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
       // Get index of a field from the image:
       // This is only valid for tables.
       const_image->getFieldIndex("fake_fld");
-      ReportError("success calling getFieldIndex(\"fake_fld\") from an image", status);
+      ReportError("success calling getFieldIndex(\"fake_fld\") from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure calling getFieldIndex(\"fake_fld\") from an image", status, x);
+      ReportBehavior("failure calling getFieldIndex(\"fake_fld\") from a const image object", status, x);
     }
 
     try {
       // Get number of elements in a field from the image:
       // This is only valid for tables.
       const_image->getFieldNumElements(1);
-      ReportError("success calling getFieldnumElements(1) from an image", status);
+      ReportError("success calling getFieldnumElements(1) from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure calling getFieldnumElements(1) from an image", status, x);
+      ReportBehavior("failure calling getFieldnumElements(1) from a const image object", status, x);
     }
 
     try {
@@ -193,14 +196,14 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
       // This is only valid for tables.
       double tmp_d[1];
       const_image->getCell(1, 0, 0, 1, tmp_d);
-      ReportError("success reading a table cell from an image", status);
+      ReportError("success reading a table cell from a const image object", status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure reading a table cell from an image", status, x);
+      ReportBehavior("failure reading a table cell from a const image object", status, x);
     }
 
 #if MAKE_COMPILATION_FAIL
-    ReportError("SHOULD NOT HAVE COMPILED! setCell(...) called for const IExtensionData object", status);
+    ReportError("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object", status);
     try {
       // Set a table cell in an image.
       // This is only valid for tables.
@@ -212,6 +215,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   }
   // END Test error cases for const FitsExtensionData methods.
+
 
 
 
