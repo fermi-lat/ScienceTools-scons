@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7       22-Oct-04    JC    tag in prep to add to ST
+   v6       25-May-04    JC    move to main repository
    v5       23-Jan-04    JC    completed port to Windows.
    v4r1     15-Jan-04    JC    remove extraneous '\'s added by PIL;
                                refactor to use ThreadedClient's input and
