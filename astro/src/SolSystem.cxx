@@ -6,7 +6,7 @@
 #include <cmath>
 #include <string>
 #include "vsop87_data.h"
-#include "chap95_data.h"
+//#include "chap95_data.h"
 //#include "CTimeClass.h"
 
 
@@ -346,6 +346,7 @@ int SolSystem::ephi_moon()
 	return (0);
 }
 
+#if 0
 void SolSystem::ephi_planet()
 {
 	double el;		/* elongation */
@@ -394,7 +395,7 @@ void SolSystem::ephi_planet()
 	//op->s_sdist = rp;
 }
 
-
+#endif
 
 void SolSystem::ephi_pos(double mjd,int obj, double bet, double lam, double *rho, double *ra1, double *dec1)
 //cir_pos (np, bet, lam, rho, op)
@@ -1678,6 +1679,7 @@ double *ret;	ecliptic coordinates {l,b,r} at equinox of date */
  */
 static void planpos (double mjd, int obj, double prec, double *ret)
 {
+#if 0
 	if (mjd >= CHAP_BEGIN && mjd <= CHAP_END) {
 	    if (obj >= JUPITER) {		/* prefer Chapront */
 		chap95(mjd, obj, prec, ret);
@@ -1692,6 +1694,9 @@ static void planpos (double mjd, int obj, double prec, double *ret)
 		pluto_ell(mjd, ret);
 	    }
 	}
+#else
+		vsop87(mjd, obj, prec, ret);
+#endif
 }
 
 /*************************************************************/
@@ -1869,7 +1874,7 @@ void anomaly (double ma, double s, double *nu, double *ea)
 
 
 #define CHAP_MAXTPOW	2	/* NB: valid for all 5 outer planets */
-
+#if 0
 /* chap95()
  *
  * input:
@@ -2014,7 +2019,7 @@ int chap95 (double mjd, int obj, double prec, double *ret)
 
     return (0);
 }
-
+#endif
 void zero_mem (void *loc, unsigned len)
 {
 	(void) memset (loc, 0, len);
