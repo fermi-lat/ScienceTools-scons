@@ -146,11 +146,30 @@ std::pair<double,double> SkyDir::project(const SkyProj& projection, bool galacti
 }
 
 
+// This function does a default Hammer-Aitoff projection of the ra and dec
+std::pair<double,double> SkyDir::project() const
+{	
+	double crpix[]={0,0},  crval[]={0,0}, cdelt[]={-1,1}; // 1-degree AIT all sky
+    std::string ctype("AIT");
+	SkyProj proj(ctype, crpix, crval, cdelt);
+
+	return proj.sph2pix(this->ra(),this->dec());
+}
 
 double SkyDir::difference(const SkyDir& other)const
 {
+	double x = 0.5*(m_dir-other.dir()).mag();
+
+	if(fabs(x) < 0.1)
+	{
+		// Approximation good to 4e-4 radians or 0.02 degrees
+		return 2. * x;
+	}
+	else
+        return 2.*asin(x);
+
     // TODO: make this computationally efficient, avoid sqrt and asin at least for small angles
-    return 2.*asin(0.5*(m_dir-other.dir()).mag());
+	//return 2.*asin(0.5*(m_dir-other.dir()).mag());
 }
 
 

@@ -82,6 +82,9 @@ namespace astro {
 
         std::pair<double,double> project(const SkyProj& projection, bool galactic=false) const;
 
+		/** @brief Does a default Hammer-Aitoff projection of the ra and dec */
+		std::pair<double,double> project() const;
+
         /** @brief inverse projection function for reference: units are degrees
 
      	@param point_x     coordinates of the projected point
