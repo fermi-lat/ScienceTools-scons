@@ -70,12 +70,6 @@ namespace tip {
       void setKeywordGeneric(const std::string & name, const T & value);
 
       // Table-specific support:
-      /** Struct holding information about the FITS columns.
-      */
-      struct ColumnInfo {
-          std::string m_name;
-      };
-
       // Non-virtual helper functions for data object interface:
 
       /** \brief Return a flag indicating whether the given data object is a table.
@@ -190,7 +184,6 @@ namespace tip {
       std::string m_ext_name;
       std::string m_filter;
       std::map<std::string, FieldIndex_t> m_col_name_lookup;
-      std::map<FieldIndex_t, ColumnInfo> m_col_num_lookup;
       IExtensionData::FieldCont m_fields;
       std::vector<PixOrd_t> m_image_dimensions;
       std::vector<IColumn *> m_columns;

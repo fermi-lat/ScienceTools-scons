@@ -17,7 +17,7 @@ namespace tip {
 
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_image_dimensions(), m_columns(),
+    m_filter(filter), m_col_name_lookup(), m_fields(), m_image_dimensions(), m_columns(),
     m_num_records(0), m_fp(0), m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
@@ -91,7 +91,6 @@ namespace tip {
     for (std::vector<IColumn *>::reverse_iterator itor = m_columns.rbegin(); itor != m_columns.rend(); ++itor) delete *itor;
     m_image_dimensions.clear();
     m_fields.clear();
-    m_col_num_lookup.clear();
     m_col_name_lookup.clear();
     m_fp = 0;
   }
@@ -172,7 +171,7 @@ namespace tip {
     // Do not append a new column with the same name as an existing column:
     if (m_fields.end() != std::find(m_fields.begin(), m_fields.end(), lc_name))
       throw TipException(formatWhat(std::string("Cannot add field ") + field_name + " because field " +
-        m_col_num_lookup[m_col_name_lookup[lc_name]].m_name + " already exists"));
+        getColumn(m_col_name_lookup[lc_name])->getId() + " already exists"));
 
     int status = 0;
     int col_num = m_fields.size() + 1;
@@ -306,15 +305,8 @@ namespace tip {
     std::string lc_name = col_name;
     for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
 
-    // Populate an info structure with all the particulars:
-    ColumnInfo info;
-    info.m_name = col_name;
-
     // Save column number indexed on lowercased column name:
     m_col_name_lookup[lc_name] = col_num;
-
-    // Save column information indexed on the column number:
-    m_col_num_lookup[col_num] = info;
 
     // Save lower cased name of field in sequential container of field names:
     m_fields.push_back(lc_name);
@@ -325,37 +317,37 @@ namespace tip {
     // Create column abstraction for this column.
     switch (type_code) {
       case TLOGICAL:
-        m_columns.push_back(new FitsColumn<bool>(this, col_num));
+        m_columns.push_back(new FitsColumn<bool>(this, col_name, col_num));
         break;
       case TDOUBLE:
-        m_columns.push_back(new FitsColumn<double>(this, col_num));
+        m_columns.push_back(new FitsColumn<double>(this, col_name, col_num));
         break;
       case TFLOAT:
-        m_columns.push_back(new FitsColumn<float>(this, col_num));
+        m_columns.push_back(new FitsColumn<float>(this, col_name, col_num));
         break;
       case TBYTE:
-        m_columns.push_back(new FitsColumn<char>(this, col_num));
+        m_columns.push_back(new FitsColumn<char>(this, col_name, col_num));
         break;
       case TSHORT:
-        m_columns.push_back(new FitsColumn<signed short>(this, col_num));
+        m_columns.push_back(new FitsColumn<signed short>(this, col_name, col_num));
         break;
       case TINT:
-        m_columns.push_back(new FitsColumn<signed int>(this, col_num));
+        m_columns.push_back(new FitsColumn<signed int>(this, col_name, col_num));
         break;
       case TLONG:
-        m_columns.push_back(new FitsColumn<signed long>(this, col_num));
+        m_columns.push_back(new FitsColumn<signed long>(this, col_name, col_num));
         break;
       case TUSHORT:
-        m_columns.push_back(new FitsColumn<unsigned short>(this, col_num));
+        m_columns.push_back(new FitsColumn<unsigned short>(this, col_name, col_num));
         break;
       case TUINT:
-        m_columns.push_back(new FitsColumn<unsigned int>(this, col_num));
+        m_columns.push_back(new FitsColumn<unsigned int>(this, col_name, col_num));
         break;
       case TULONG:
-        m_columns.push_back(new FitsColumn<unsigned long>(this, col_num));
+        m_columns.push_back(new FitsColumn<unsigned long>(this, col_name, col_num));
         break;
       case TSTRING:
-        m_columns.push_back(new FitsColumn<std::string>(this, col_num));
+        m_columns.push_back(new FitsColumn<std::string>(this, col_name, col_num));
         break;
       default: {
           std::ostringstream os;
