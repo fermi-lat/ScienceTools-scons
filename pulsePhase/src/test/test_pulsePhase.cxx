@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 
 #include "pulsePhase/TimingModel.h"
@@ -7,6 +8,16 @@
 
 int main() {
   int status = 0;
+
+  // Get top directory.
+  const char * root_dir = getenv("PULSEPHASEROOT");
+  if (0 == root_dir) {
+    std::cerr << "Set PULSEPHASEROOT before running the test." << std::endl;
+    return 1;
+  }
+
+  // Set the data directory.
+  std::string data_dir = std::string(root_dir) + "/data/";
 
   // Simple test of timing model computation.
   TimingModel model(123456781.234564, 0.15, 29.9256509592326, -3.76909e-10, 1.29e-20);
@@ -21,7 +32,7 @@ int main() {
   }
 
   // Next test: read event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable("D1.fits", "EVENTS");
+  tip::Table * events = tip::IFileSvc::instance().editTable(data_dir + "D1.fits", "EVENTS");
   
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
