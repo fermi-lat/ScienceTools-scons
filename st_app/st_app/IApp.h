@@ -7,6 +7,11 @@
 
 #include <string>
 
+namespace hoops {
+  class IParGroup;
+  class ParPromptGroup;
+}
+
 namespace st_app {
 
   /** \class IApp
@@ -30,6 +35,18 @@ namespace st_app {
       */
       virtual void run() = 0;
 
+      /** \brief Get the group of parameters from hoops.
+      */
+      hoops::IParGroup & hoopsGetParGroup();
+
+      /** \brief Use hoops to prompt for parameters for this application.
+      */
+      void hoopsPrompt();
+
+      /** \brief Save the current parameters.
+      */
+      void hoopsSave();
+
     protected:
       /** \brief Create application object. The first application created has special significance
           as the top-level singleton application.
@@ -42,6 +59,7 @@ namespace st_app {
       static int s_argc;
       static char ** s_argv;
       std::string m_app_name;
+      hoops::ParPromptGroup * m_hoops_par_group;
   };
 
 }

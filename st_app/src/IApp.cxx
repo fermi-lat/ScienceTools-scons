@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <string>
 
+#include "hoops/hoops.h"
+#include "hoops/hoops_prompt_group.h"
+
 #include "st_app/IApp.h"
 
 namespace st_app {
@@ -35,11 +38,29 @@ namespace st_app {
   }
 
   // Constructor:
-  IApp::IApp(const std::string & app_name): m_app_name(app_name) {
+  IApp::IApp(const std::string & app_name): m_app_name(app_name), m_hoops_par_group(0) {
     // It's OK in principle to have more than one application, but only one is the top-level singleton
     // object returned by getApp(). If no singleton application is already playing that role, this is it.
     if (0 == s_application) s_application = this;
 
+  }
+
+  // Methods which use hoops:
+  // Return the group, creating it first if necessary.
+  hoops::IParGroup & IApp::hoopsGetParGroup() {
+    if (0 == m_hoops_par_group) m_hoops_par_group = new hoops::ParPromptGroup(s_argc, s_argv);
+    return *m_hoops_par_group;
+  }
+
+  // Prompt for all parameters, in the order given in the .par file.
+  void IApp::hoopsPrompt() {
+    hoopsGetParGroup();
+    m_hoops_par_group->Prompt();
+  }
+
+  // Save the current parameter set.
+  void IApp::hoopsSave() {
+    if (0 != m_hoops_par_group) m_hoops_par_group->Save();
   }
 
 }
