@@ -3,7 +3,6 @@
     \author James Peachey, HEASARC/GSSC
 */
 #include <iostream>
-#include <limits>
 
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
@@ -11,23 +10,18 @@
 namespace st_stream {
 
   StreamFormatter::StreamFormatter(const std::string & class_name, const std::string & method_name,
-    unsigned int default_chat_level):
-    m_class_name(class_name), m_method_name(method_name), m_debug_stream(std::numeric_limits<unsigned int>::max()),
-    m_err_stream(std::numeric_limits<unsigned int>::max()), m_info_stream(GetMaximumChatter()),
-    m_out_stream(std::numeric_limits<unsigned int>::max()), m_warn_stream(GetMaximumChatter()),
+    unsigned int default_chat_level): m_class_name(class_name), m_method_name(method_name), m_debug_stream(false),
+    m_err_stream(false), m_info_stream(true), m_out_stream(false), m_warn_stream(true),
     m_default_chat_level(default_chat_level), m_debug_mode(false) {
     // Make any mandatory connections for all streams.
+    m_debug_stream.connect(sterr);
     m_err_stream.connect(sterr);
     m_info_stream.connect(stlog);
     m_out_stream.connect(stout);
     m_warn_stream.connect(stlog);
 
-    // Initialize prefixes for all streams.
-    setPrefix();
-
-    // Set up the debug stream, using global debug mode for initial setting.
-    if (GetDebugMode()) setDebugMode(true);
-    else setDebugMode(false);
+    // Set debugging mode based on the global debugging setting. This will also set up the prefixes for all stream output.
+    setDebugMode(GetDebugMode());
   }
 
   StreamFormatter::~StreamFormatter() throw() {}
@@ -38,7 +32,6 @@ namespace st_stream {
   }
 
   OStream & StreamFormatter::debug() {
-    // Debug stream ignores chatter.
     return m_debug_stream;
   }
 
@@ -69,18 +62,14 @@ namespace st_stream {
   }
 
   void StreamFormatter::setDebugMode(bool debug_mode) {
-    // If debug mode is changed, the debug stream needs to be connected/disconnected.
-    if (debug_mode) m_debug_stream.connect(sterr);
-    else m_debug_stream.disconnect(sterr);
+    // Reset flag indicating local debug mode.
+    m_debug_mode = debug_mode;
 
-    if (m_debug_mode != debug_mode) {
-      // Reset flag indicating debug mode.
-      m_debug_mode = debug_mode;
+    // Enable/disable debug stream.
+    m_debug_stream.enable(debug_mode);
 
-      // Reset prefixes, which may be different if debugging mode changed.
-      setPrefix();
-    }
-
+    // Reset prefixes, which may be different if debugging mode changed.
+    setPrefix();
   }
 
   void StreamFormatter::setPrefix() {
