@@ -36,7 +36,7 @@
 
 
 // GRB includes
-#include "../GRB/GRBSpectrum.h"
+#include "../GRB/GRBConstants.h"
 //include files for ROOT...
 #include "TTree.h"
 #include "TBranch.h"
