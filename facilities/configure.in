@@ -15,7 +15,7 @@ AM_PROG_LIBTOOL
 dnl Check for location of installed GLAST libraries
 glast_CHECK_ROOT
 
-AC_OUTPUT(Makefile facilities/Makefile src/Makefile)
+AC_OUTPUT(Makefile facilities.spec facilities/Makefile src/Makefile)
 
 
 AC_MSG_RESULT([
