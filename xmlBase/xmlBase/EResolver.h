@@ -1,8 +1,8 @@
 // $Header$
 // Author: J. Bogart
 
-#ifndef  xmlBase_EResolver.h
-#define  xmlBase_EResolver.h
+#ifndef  xmlBase_EResolver_h
+#define  xmlBase_EResolver_h
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/util/XMLEntityResolver.hpp>
