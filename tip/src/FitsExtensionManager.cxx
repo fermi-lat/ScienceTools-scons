@@ -59,8 +59,8 @@ namespace tip {
         // This is surreal. A FLOATING POINT VERSION NUMBER! Checking for == doesn't work -- I tried it.
         if (2.4795 < cfitsio_version && 2.4805 > cfitsio_version)
           throw TipException(std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
-            "syntax parser!\nCould not open FITS file ") + file_name);
-        throw TipException(std::string("Could not open FITS file \"") + file_name + '"');
+            "syntax parser!\nCould not open FITS extension ") + file_name);
+        throw TipException(std::string("Could not open FITS extension \"") + file_name + '"');
       }
 
       // Success: save the pointer.
@@ -119,9 +119,19 @@ namespace tip {
 
   const IExtensionData::FieldCont & FitsExtensionManager::getValidFields() const { return m_fields; }
 
-  IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) { return m_columns.at(field_index - 1); }
+  IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) {
+    if (!m_is_table) throw TipException(formatWhat("getColumn called, but object is not a table"));
+    if (0 >= field_index || m_columns.size() < std::vector<IColumn*>::size_type(field_index))
+      throw TipException(formatWhat("FitsExtensionManager::getColumn called with invalid index"));
+    return m_columns[field_index - 1];
+  }
 
-  const IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) const { return m_columns.at(field_index - 1); }
+  const IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) const {
+    if (!m_is_table) throw TipException(formatWhat("getColumn const called, but object is not a table"));
+    if (0 >= field_index || m_columns.size() < std::vector<IColumn*>::size_type(field_index))
+      throw TipException(formatWhat("FitsExtensionManager::getColumn const called with invalid index"));
+    return m_columns[field_index - 1];
+  }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
     if (!m_is_table) throw TipException(formatWhat("getFieldIndex called, but object is not a table"));
@@ -354,40 +364,43 @@ namespace tip {
     // Save lower cased name of field in sequential container of field names:
     m_fields.push_back(lc_name);
 
+    // Handle variable-length column specifiers.
+    if (0 > type_code) type_code *= -1;
+
     // Create column abstraction for this column.
     switch (type_code) {
       case TLOGICAL:
-        m_columns.push_back(new FitsColumn<bool>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<bool>(this, col_num));
         break;
       case TDOUBLE:
-        m_columns.push_back(new FitsColumn<double>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<double>(this, col_num));
         break;
       case TFLOAT:
-        m_columns.push_back(new FitsColumn<float>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<float>(this, col_num));
         break;
       case TBYTE:
-        m_columns.push_back(new FitsColumn<char>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<char>(this, col_num));
         break;
       case TSHORT:
-        m_columns.push_back(new FitsColumn<signed short>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<signed short>(this, col_num));
         break;
       case TINT:
-        m_columns.push_back(new FitsColumn<signed int>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<signed int>(this, col_num));
         break;
       case TLONG:
-        m_columns.push_back(new FitsColumn<signed long>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<signed long>(this, col_num));
         break;
       case TUSHORT:
-        m_columns.push_back(new FitsColumn<unsigned short>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<unsigned short>(this, col_num));
         break;
       case TUINT:
-        m_columns.push_back(new FitsColumn<unsigned int>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<unsigned int>(this, col_num));
         break;
       case TULONG:
-        m_columns.push_back(new FitsColumn<unsigned long>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<unsigned long>(this, col_num));
         break;
       case TSTRING:
-        m_columns.push_back(new FitsColumn<std::string>(m_fp, col_num));
+        m_columns.push_back(new FitsColumn<std::string>(this, col_num));
         break;
       default: {
           std::ostringstream os;
