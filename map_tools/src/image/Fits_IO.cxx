@@ -313,12 +313,13 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
     for (int num = 0; num < nkeys && *status == 0; num++)
     {
         fits_read_keyn(fptr, num + 1, name, value, comment, status);
+        std::string my_value(value);
         if (strncmp(name, "TTYPE", 5) == 0  || 
             strncmp(name, "TFORM", 5) == 0  || 
             strncmp(name, "TNULL", 5) == 0  ||
             strncmp(name, "TZERO", 5) == 0  ||
             strncmp(name, "TSCAL", 5) == 0  ||
-            strncmp(name, "NAXIS", 5) == 0  ||
+//            strncmp(name, "NAXIS", 5) == 0  ||
             strcmp (name, "XTENSION") == 0  ||
             strcmp (name, "TFIELDS") == 0   ||
             strcmp (name, "BITPIX") == 0    ||
@@ -353,16 +354,16 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
             element->addAttribute(BoolAttr(name, true, unit, comment), false);
         else if (strcmp(value, "F") == 0)
             element->addAttribute(BoolAttr(name, false, unit, comment), false);
-        else if (strlen(value) < 9 && value[0] != 0 && strchr(value, '.') == NULL)
-            element->addAttribute(IntAttr(name, atoi(value), unit, comment), false);
-        else if (strlen(value) < 9 && value[0] != 0)
-        {
-            double val;
-            sscanf(value, "%lg", &val);
-            element->addAttribute(DoubleAttr(name, val, unit, comment), false);
-        }
-        else
-            element->addAttribute(StringAttr(name, std::string(value), unit, comment), false);
+        else if (my_value.find_first_of("'") != std::string::npos) 
+           element->addAttribute(StringAttr(name, my_value, unit, comment), 
+                                 false);
+        else if (my_value.find_first_of(".") != std::string::npos) {
+           double val;
+           sscanf(value, "%lg", &val);
+           element->addAttribute(DoubleAttr(name, val, unit, comment), false);
+        } else 
+           element->addAttribute(IntAttr(name, atoi(value), unit, comment), false);
+
     }
 
 }

@@ -49,6 +49,8 @@ public:
       }         
    }
 
+   void getAttributeNames(std::vector<std::string> & names) const;
+
    void setName(const std::string name){m_name=name;}
 
 private:

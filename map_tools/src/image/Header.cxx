@@ -59,3 +59,11 @@ const BaseAttr & Header::operator[](const std::string & name) const {
    throw std::runtime_error("Header::::operator[]: attribute "
                                + name + " not found.");
 }
+
+void Header::getAttributeNames(std::vector<std::string> & names) const {
+   names.clear();
+   Header::const_iterator it = begin();
+   for ( ; it != end(); ++it) {
+      names.push_back((*it)->name());
+   }
+}

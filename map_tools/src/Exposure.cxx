@@ -22,7 +22,7 @@ int     Exposure::Index::ra_factor=360;
 int     Exposure::Index::dec_factor=180;
 int     Exposure::Index::cosfactor=40;
 double  Exposure::Index::cosmin = 0;
-
+double  Exposure::Index::costhetabinsize;
 
 //------------------------------------------------------------------------------
 Exposure::Exposure(double skybin, double costhetabin) : m_total(0)
@@ -60,6 +60,28 @@ Exposure::Exposure(const std::string& fits_file)
 {
     FloatImg & cube = *dynamic_cast<FloatImg *>(Fits_IO::read(fits_file, "hypercube"));
     m_exposureMap = cube.data();
+
+// Obtain Index static variables from FITS header keywords. Assume a
+// standard ordering for ra, dec, cos(theta).
+    cube.getValue("NAXIS1", Index::ra_factor);
+    cube.getValue("NAXIS2", Index::dec_factor);
+    cube.getValue("NAXIS3", Index::cosfactor);
+    double rastep, decstep;
+    cube.getValue("CDELT1", rastep);
+    cube.getValue("CDELT2", decstep);
+    if (fabs(rastep) == fabs(decstep)) {
+       Index::skybinsize = fabs(decstep);
+    } else {
+       throw std::range_error(std::string("Exposure::Exposure(fitsfile): ")
+                              + "step sizes in RA and Dec do not match.");
+    }
+// @todo Check for cos(theta) weighting.
+    double cdelt3;
+    cube.getValue("CDELT3", cdelt3);
+    Index::costhetabinsize = cdelt3;  // applying getValue directly here gives 
+                                      // a bad cast for some reason.
+    cube.getValue("CRVAL3", Index::cosmin);
+
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
 
     std::cout << "Loaded exposure map from a FITS file " 

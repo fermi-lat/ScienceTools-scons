@@ -3,9 +3,11 @@
 
 
 */
+#include "facilities/Util.h"
 #include "astro/SkyDir.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/Parameters.h"
+#include "map_tools/ExposureHyperCube.h"
 #include "image/Header.h"
 #include <iostream>
 #include <algorithm>
@@ -32,7 +34,7 @@ public:
 void test_Header();
 
 int main(int argc, char** argv ){
-    try{
+//    try{
         // read a pil file--and make sure that a few simple things work
         TestPar par(argc, argv);
         if( par["xref"] != 0) {
@@ -74,12 +76,28 @@ int main(int argc, char** argv ){
             return 1;
         }
 
+// Write out the cube...
+        std::string cubefile("$(OUTFILES)/testExposureCube.fits");
+        facilities::Util::expandEnvVar(&cubefile);
+        cubefile = cubefile;
+        ExposureHyperCube cube(e, cubefile);
+        cube.save("!" + cubefile);
+
+// Check the Exposure(fitsfile) constructor.
+        Exposure e2(cubefile);
+
+// Write this out as a separate file for an external diff.
+        std::string cube2file("$(OUTFILES)/testExposureCube2.fits");
+        facilities::Util::expandEnvVar(&cube2file);
+        ExposureHyperCube cube2(e2, cube2file);
+        cube2.save("!" + cube2file);
+
         test_Header();
 
-    }catch( const std::exception& e){
-        std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
-        return 1;
-    }
+//     }catch( const std::exception& e){
+//         std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
+//         return 1;
+//     }
     std::cout << "tests OK" << std::endl;
     return 0;
 }
@@ -131,7 +149,7 @@ void test_Header() {
        assert(false);
    } catch (const std::runtime_error &){}
 
-   double * test = reinterpret_cast<double*>(attr.valuePtr()); // check alternate return
-   assert (*test == dvalue0);
+   float * test = reinterpret_cast<float*>(attr.valuePtr()); // check alternate return
+   assert (*test == fvalue0);
    std::cout << "header tests ok\n";
 }
