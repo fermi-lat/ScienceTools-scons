@@ -17,7 +17,7 @@
 
 #include "astro/SkyDir.h"
 
-#include "latResponse/Irfs.h"
+//#include "latResponse/Irfs.h"
 
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
@@ -26,6 +26,10 @@
 namespace Goodi {
    class IEventData;
    class IDataIOService;
+}
+
+namespace latResponse {
+   class Irfs;
 }
 
 namespace observationSim {
@@ -70,6 +74,11 @@ public:
    ///        regard to the response info, i.e., true energies and 
    ///        directions are saved.
    int addEvent(EventSource *event, latResponse::Irfs &respObj, 
+                Spacecraft *spacecraft, bool flush=false, 
+                bool alwaysAccept=false);
+
+   int addEvent(EventSource *event, 
+                std::vector<latResponse::Irfs *> &respPtrs, 
                 Spacecraft *spacecraft, bool flush=false, 
                 bool alwaysAccept=false);
 

@@ -3,6 +3,7 @@
  * @brief Implementation for the interface class to flux::FluxMgr for
  * generating LAT photon events.
  * @author J. Chiang
+ *
  * $Header$
  */
 
@@ -33,27 +34,6 @@ static SpectrumFactory<MapSpectrum> factory;
 const ISpectrumFactory& MapSpectrumFactory = factory;
 //#endif
 
-// The following routine seems not to be necessary (for now) since
-// CHIMESpectrum, et al. are provided by FluxSvc, and MapSpectrum
-// is provided by the above lines.
-//
-// // "As ever, macros are best avoided."  Stroustrup 1999
-// #define DLL_DECL_SPECTRUM(x)   extern const ISpectrumFactory& x##Factory; x##Factory.addRef();
-
-// void fluxLoad() {
-// // These are the spectra that we want to make available.
-//    DLL_DECL_SPECTRUM( MapSpectrum);
-//    DLL_DECL_SPECTRUM( CHIMESpectrum);
-//    DLL_DECL_SPECTRUM( AlbedoPSpectrum);
-//    DLL_DECL_SPECTRUM( FILESpectrum);
-//    DLL_DECL_SPECTRUM( GalElSpectrum);
-// //    DLL_DECL_SPECTRUM( SurfaceMuons);
-// //    DLL_DECL_SPECTRUM( CrElectron);
-// //    DLL_DECL_SPECTRUM( CrProton);
-// //    DLL_DECL_SPECTRUM( GRBSpectrum);
-// //    DLL_DECL_SPECTRUM( CREMESpectrum);
-// }
-
 namespace observationSim {
 
 Simulator::~Simulator() {
@@ -76,10 +56,6 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    m_numEvents = 0;
    m_newEvent = 0;
    m_interval = 0;
-
-// This isn't needed (for now).
-// // Make the various spectra available.
-// //   fluxLoad();
 
 // Create the FluxMgr object, providing access to the sources in the
 // various xml files.
@@ -108,8 +84,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       m_source->addSource(m_fluxMgr->source(*name));
    }
 
-// Add a "timetick30s" source to the m_source object, assuming that
-// m_source is pointing to a CompositeSource....
+// Add a "timetick30s" source to the m_source object.
    EventSource *clock;
    try {
       clock = m_fluxMgr->source("timetick30s");
@@ -122,7 +97,6 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    }
    try {
       m_source->addSource(clock);
-//      dynamic_cast<CompositeSource *>(m_source)->addSource(clock);
    } catch(...) {
       std::cerr << "Failed to add a timetick30s source to the "
                 << "CompositeSource object."
@@ -185,6 +159,63 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
                                    false, true);
             if (inAcceptanceCone == 0 || (*inAcceptanceCone)(m_newEvent)) {
                if (events.addEvent(m_newEvent, response, spacecraft)) {
+                  m_numEvents++;
+//                if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
+//                    m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
+               }
+            }
+         }
+// EventSource::event(...) does not generate a pointer to a new object
+// (as of 07/02/03), so there's no need to delete m_newEvent.
+         m_newEvent = 0;
+
+      } else if (m_useSimTime) {
+// No more events to process for this observation window, so advance
+// to the end of the window, updating all of the time accumlators.
+         m_absTime += (m_simTime - m_elapsedTime);
+         m_fluxMgr->pass(m_simTime - m_elapsedTime);
+         m_elapsedTime = m_simTime;
+      }
+   } // while (!done())
+//    if (!m_useSimTime) std::cerr << "!" << std::endl;
+}
+
+void Simulator::makeEvents(EventContainer &events, 
+                           ScDataContainer &scData, 
+                           std::vector<latResponse::Irfs *> &respPtrs, 
+                           Spacecraft *spacecraft,
+                           bool useSimTime, 
+                           EventContainer *allEvents, 
+                           Roi *inAcceptanceCone) {
+   m_useSimTime = useSimTime;
+   m_elapsedTime = 0.;
+
+// Loop over event generation steps until done.
+   while (!done()) {
+
+// Check if we need a new event from m_source.
+      if (m_newEvent == 0) {
+         m_newEvent = m_source->event(m_absTime);
+         m_interval = m_source->interval(m_absTime);
+      }
+
+// Process m_newEvent either if we are accumulating counts or if the
+// event arrives within the present observing window given by
+// m_simTime.
+      if ( !m_useSimTime ||  (m_elapsedTime+m_interval < m_simTime) ) {
+         m_absTime += m_interval;
+         m_elapsedTime += m_interval;
+         m_fluxMgr->pass(m_interval);
+
+         std::string name = m_newEvent->fullTitle();
+         if (name.find("TimeTick") != std::string::npos) {
+            scData.addScData(m_newEvent, spacecraft);
+         } else {
+            if (allEvents != 0) 
+               allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
+                                   false, true);
+            if (inAcceptanceCone == 0 || (*inAcceptanceCone)(m_newEvent)) {
+               if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
                   m_numEvents++;
 //                if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
 //                    m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";

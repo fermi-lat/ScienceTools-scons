@@ -12,6 +12,7 @@
 #include "latResponse/../src/AeffGlast25.h"
 #include "latResponse/../src/PsfGlast25.h"
 #include "latResponse/../src/EdispGlast25.h"
+#include "latResponse/Irfs.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -79,23 +80,40 @@ int main(int argn, char * argc[]) {
       caldbPath = std::string(root) + "/data/CALDB";
    }
 
+// Use multiple IRFs.
+   std::vector<latResponse::Irfs *> respPtrs;
+
 // Create pointers to the GLAST25 response function objects.  Note
 // that there is no GLAST25 energy dispersion file.
    latResponse::IAeff *aeff 
       = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                     latResponse::Glast25::Combined);
+                                     latResponse::Glast25::Combined, 0.3);
    latResponse::IPsf *psf 
       = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
                                     latResponse::Glast25::Combined);
    latResponse::IEdisp *edisp = new latResponse::EdispGlast25();
 
-   latResponse::Irfs response(aeff, psf, edisp);
+   latResponse::Irfs resp1(aeff, psf, edisp);
+
+   respPtrs.push_back(&resp1);
+
+   latResponse::IAeff *aeff2
+      = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
+                                     latResponse::Glast25::Combined, 0.7);
+   latResponse::IPsf *psf2
+      = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
+                                    latResponse::Glast25::Combined);
+   latResponse::IEdisp *edisp2 = new latResponse::EdispGlast25();
+
+   latResponse::Irfs resp2(aeff2, psf2, edisp2);
+
+   respPtrs.push_back(&resp2);
 
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events", true);
 // // For SC data, don't use Goodi until FT2 output is ready
-//   observationSim::ScDataContainer scData("test_scData", false);
-   observationSim::ScDataContainer scData("test_scData", true);
+   observationSim::ScDataContainer scData("test_scData", false);
+//   observationSim::ScDataContainer scData("test_scData", true);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
@@ -105,10 +123,10 @@ int main(int argn, char * argc[]) {
       std::cout << "Generating events for a simulation time of "
                 << count << " seconds....";
       my_simulator.generateEvents(static_cast<double>(count), events, 
-                                  scData, response, spacecraft);
+                                  scData, respPtrs, spacecraft);
    } else {
       std::cout << "Generating " << count << " events....";
-      my_simulator.generateEvents(count, events, scData, response, spacecraft);
+      my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
 }

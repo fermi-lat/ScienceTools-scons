@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <sstream>
+#include <algorithm>
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
@@ -46,6 +47,46 @@ namespace {
          return acos(mu);
       }
    }
+
+   latResponse::Irfs* drawRespPtr(std::vector<latResponse::Irfs*> &respPtrs,
+                                  double area, double energy, 
+                                  astro::SkyDir &sourceDir,
+                                  astro::SkyDir &zAxis,
+                                  astro::SkyDir &xAxis) {
+   
+// Build a vector of effective area accumulated over the vector
+// of response object pointers.
+//
+// First, fill a vector with the individual values.
+      std::vector<double> effAreas(respPtrs.size());
+      std::vector<double>::iterator eaIt = effAreas.begin();
+      std::vector<latResponse::Irfs *>::iterator respIt = respPtrs.begin();
+      while (eaIt != effAreas.end() && respIt != respPtrs.end()) {
+         *eaIt = (*respIt)->aeff()->value(energy, sourceDir, zAxis, xAxis);
+         eaIt++;
+         respIt++;
+      }
+
+// Compute the cumulative distribution.
+      std::partial_sum(effAreas.begin(), effAreas.end(), effAreas.begin());
+
+// The total effective area.
+      double effAreaTot = *(effAreas.end() - 1);
+   
+// Generate a random deviate from the interval [0, area) to ascertain
+// which response object to use.
+      double xi = RandFlat::shoot()*area;
+
+      if (xi < effAreaTot) {
+// Success. Find the appropriate response function.
+         eaIt = std::lower_bound(effAreas.begin(), effAreas.end(), xi);
+         return *respPtrs.begin() + (eaIt - effAreas.begin());
+      } else {
+// Do not accept this event.
+         return 0;
+      }
+   }
+
 } // unnamed namespace
 
 namespace observationSim {
@@ -90,8 +131,6 @@ int EventContainer::addEvent(EventSource *event,
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
-//   double inclination = sourceDir.difference(zAxis)*180./M_PI;
-
    if (alwaysAccept) {
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
@@ -107,6 +146,54 @@ int EventContainer::addEvent(EventSource *event,
         && !spacecraft->inSaa(time) ) {
       astro::SkyDir appDir = response.psf()->appDir(energy, sourceDir, 
                                                     zAxis, xAxis);
+                                                        
+      m_events.push_back( Event(time, energy, 
+                                appDir, sourceDir, zAxis, xAxis,
+                                ScZenith(time)) );
+//      std::cout << "adding an event: " << m_events.size() << std::endl;
+      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
+      return 1;
+   }
+   if (flush) writeEvents();
+   return 0;
+}
+
+int EventContainer::addEvent(EventSource *event, 
+                             std::vector<latResponse::Irfs *> &respPtrs, 
+                             Spacecraft *spacecraft,
+                             bool flush, bool alwaysAccept) {
+   
+   std::string particleType = event->particleName();
+   double time = event->time();
+   double energy = event->energy();
+   Hep3Vector launchDir = event->launchDir();
+
+   LatSc latSpacecraft;
+   HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
+   astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::CELESTIAL);
+
+   astro::SkyDir zAxis = spacecraft->zAxis(time);
+   astro::SkyDir xAxis = spacecraft->xAxis(time);
+
+   if (alwaysAccept) {
+      m_events.push_back( Event(time, energy, 
+                                sourceDir, sourceDir, zAxis, xAxis,
+                                ScZenith(time)) );
+      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
+      return 1;
+   }
+
+   latResponse::Irfs *respPtr;
+
+// Apply the acceptance criteria.
+   if ( energy > 31.623 
+        && RandFlat::shoot() < m_prob
+        && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()/1e4, 
+                                    energy, sourceDir, zAxis, xAxis))
+        && !spacecraft->inSaa(time) ) {
+
+      astro::SkyDir appDir 
+         = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);
                                                         
       m_events.push_back( Event(time, energy, 
                                 appDir, sourceDir, zAxis, xAxis,

@@ -14,7 +14,11 @@
 #include "CLHEP/Geometry/Vector3D.h"
 #include "flux/FluxMgr.h"
 
-#include "latResponse/Irfs.h"
+//#include "latResponse/Irfs.h"
+
+namespace latResponse {
+   class Irfs;
+}
 
 #include "observationSim/Spacecraft.h"
 
@@ -56,12 +60,6 @@ public:
              double startTime = 0.)
       {init(sourceName, fileList, totalArea, startTime);}
 
-   Simulator(char *sourceName, 
-             const std::vector<std::string> &fileList,
-             double totalArea = 1.21,
-             double startTime = 0.)
-      {init(std::string(sourceName), fileList, totalArea, startTime);}
-
    /// @param sourceNames A vector of source names as they appear in 
    ///        the xml file.
    Simulator(const std::vector<std::string> &sourceNames,
@@ -73,7 +71,7 @@ public:
    ~Simulator();
 
    /// Specify the rocking strategy from among those defined by
-   /// FluxSvc::GPS::RockType.  
+   /// flux::GPS::RockType.  
    /// @param rockType Integer representation of the desired strategy.
    ///        The default value of 3 corresponds to step-rocking, once
    ///        per orbit.
@@ -109,9 +107,33 @@ public:
                        EventContainer *allEvents=0,
                        Roi *roi=0) {
       m_maxNumEvents = numberOfEvents;
-//       std::cout << "Number of events to generate: "
-//                 << m_maxNumEvents << std::endl;
       makeEvents(events, scData, response, spacecraft, false, 
+                 allEvents, roi);
+   }
+
+   /// Generate photon events for a given elapsed simulation time.
+   void generateEvents(double simulationTime, 
+                       EventContainer &events,
+                       ScDataContainer &scData, 
+                       std::vector<latResponse::Irfs*> &respPtrs,
+                       Spacecraft *spacecraft, 
+                       EventContainer *allEvents=0,
+                       Roi *roi=0) {
+      m_simTime = simulationTime;
+      makeEvents(events, scData, respPtrs, spacecraft, true, 
+                 allEvents, roi);
+   }
+
+   /// Generate a specified number of events.
+   void generateEvents(long numberOfEvents, 
+                       EventContainer &events,
+                       ScDataContainer &scData, 
+                       std::vector<latResponse::Irfs*> &respPtrs,
+                       Spacecraft *spacecraft,
+                       EventContainer *allEvents=0,
+                       Roi *roi=0) {
+      m_maxNumEvents = numberOfEvents;
+      makeEvents(events, scData, respPtrs, spacecraft, false, 
                  allEvents, roi);
    }
 
@@ -144,7 +166,10 @@ private:
                    latResponse::Irfs &, Spacecraft *spacecraft,
                    bool useSimTime, EventContainer *allEvents, Roi *roi);
 
-//   void fluxLoad();
+   void makeEvents(EventContainer &, ScDataContainer &, 
+                   std::vector<latResponse::Irfs *> &, 
+                   Spacecraft *spacecraft,
+                   bool useSimTime, EventContainer *allEvents, Roi *roi);
 
    bool done();
 

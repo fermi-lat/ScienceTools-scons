@@ -11,6 +11,7 @@
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/Simulator.h"
 #include "observationSim/Roi.h"
+#include "latResponse/Irfs.h"
 #include <vector>
 #include <string>
 %}
@@ -40,6 +41,28 @@
                      Spacecraft *spacecraft, 
                      Roi *roi=0) {
       self->generateEvents(numEvents, events, scData, response, 
+                           spacecraft, 0, roi);
+   }
+   void generate_events(double simulationTime, EventContainer &events,
+                        ScDataContainer &scData, 
+                        std::vector<latResponse::Irfs> &respObjs,
+                        Spacecraft *spacecraft, 
+                        Roi *roi=0) {
+      std::vector<latResponse::Irfs *> respPtrs;
+      for (unsigned int i = 0; i < respObjs.size(); i++)
+         respPtrs.push_back(&respObjs[i]);
+      self->generateEvents(simulationTime, events, scData, respPtrs,
+                           spacecraft, 0, roi);
+   }
+   void genNumEvents(long numEvents, EventContainer &events,
+                     ScDataContainer &scData,
+                     std::vector<latResponse::Irfs> &respObjs,
+                     Spacecraft *spacecraft, 
+                     Roi *roi=0) {
+      std::vector<latResponse::Irfs *> respPtrs;
+      for (unsigned int i = 0; i < respObjs.size(); i++)
+         respPtrs.push_back(&respObjs[i]);
+      self->generateEvents(numEvents, events, scData, respPtrs, 
                            spacecraft, 0, roi);
    }
 }
