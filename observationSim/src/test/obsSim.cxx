@@ -70,26 +70,37 @@ int main(int iargc, char * argv[]) {
       long seed;
       params.getParam("Random_seed", seed);
       HepRandom hepRandom(seed);
-         
-// Here are the default xml files for flux-style sources.
+
+// observationSim::Simulator requires a specific "TimeCandle" source,
+// so time_source.xml must always be loaded.
       std::vector<std::string> xmlSourceFiles;
-      xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/source_library.xml");
-      std::string egretCatalog 
-         = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_20-1e6MeV.xml";
-      xmlSourceFiles.push_back(egretCatalog);
+      xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/time_source.xml");
 
-// Fetch any user-specified xml file of flux-style source definitions.
-      std::string xmlFile;
-      params.getParam("XML_source_file", xmlFile);
-      if (xmlFile != "" && xmlFile != "none") {
-         if (::fileExists(xmlFile)) {
-            xmlSourceFiles.push_back(xmlFile);
-         } else {
-            std::cout << "File not found: " 
-                      << xmlFile << std::endl;
-         }
+// Fetch any user-specified xml file of flux-style source definitions,
+// replacing the default list.
+      std::string xmlFiles;
+      params.getParam("XML_source_file", xmlFiles);
+      if (xmlFiles == "none" || xmlFiles == "") { // use the default
+         xmlFiles = "$(OBSERVATIONSIMROOT)/xml/xmlFiles.dat";
       }
-
+      facilities::Util::expandEnvVar(&xmlFiles);
+      if (::fileExists(xmlFiles)) {
+         std::vector<std::string> files;
+         ::readLines(xmlFiles, files);
+         for (unsigned int i=0; i < files.size(); i++) {
+            facilities::Util::expandEnvVar(&files[i]);
+            if (::fileExists(files[i])) {
+               xmlSourceFiles.push_back(files[i]);
+            } else {
+               std::cout << "File not found: " 
+                         << files[i] << std::endl;
+            }
+         }
+      } else {
+         std::cout << "List of XML files not found: " 
+                   <<  xmlFiles << std::endl;
+         exit(-1);
+      }
 // Read the file containing the list of sources.
       std::string srcListFile;
       params.getParam("Source_list", srcListFile);
@@ -146,6 +157,9 @@ int main(int iargc, char * argv[]) {
       observationSim::Simulator my_simulator(srcNames, xmlSourceFiles, 
                                              totalArea, startTime, 
                                              pointingHistory);
+// Turn off rocking.
+//      my_simulator.setRocking(0);
+      
 // Generate the events and spacecraft data.
 #ifdef USE_GOODI
       bool useGoodi(true);

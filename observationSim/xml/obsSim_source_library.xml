@@ -17,10 +17,10 @@
           </spectrum>
      </source>
 
-     <!-- E^-1 spectrum from 18 MeV to 18 GeV and 0-90 degrees to weight all gammas-->
+     <!-- E^-1 spectrum from 18 MeV to 180 GeV and 0-90 degrees to weight all gammas-->
     <source name="all_gamma" flux="1.0">
         <spectrum escale="GeV">
-            <particle name="gamma"> <power_law emin="0.01778" emax="17.78" gamma="1"/>
+            <particle name="gamma"> <power_law emin="0.01778" emax="177.8" gamma="1"/>
             </particle>
             <solid_angle mincos="0" maxcos="1.0"/>
         </spectrum>

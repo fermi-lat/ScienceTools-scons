@@ -104,6 +104,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       if (source = m_fluxMgr->source(*name)) {
          m_source->addSource(source);
          nsrcs++;
+         std::cout << "added source \"" << *name << "\"" << std::endl;
       } else {
          std::cout << "Simulator::init: \n"
                    << "FluxMgr failed to find a source named \""
@@ -121,10 +122,10 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
 // Add a "timetick30s" source to the m_source object.
    EventSource *clock;
    try {
-      clock = m_fluxMgr->source("timetick30s");
+      clock = m_fluxMgr->source("obsSim_timetick30s");
    } catch(...) {
       std::cerr << "Simulator::Simulator: \n"
-                << "Failed to create a timetick30s source." 
+                << "Failed to create a obsSim_timetick30s source." 
                 << std::endl;
       listSources();
       exit(-1);

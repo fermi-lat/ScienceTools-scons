@@ -8,7 +8,6 @@
 #ifndef observationSim_Event_h
 #define observationSim_Event_h
 
-//#include "CLHEP/Geometry/Vector3D.h"
 #include "astro/SkyDir.h"
 
 namespace observationSim {
@@ -28,10 +27,12 @@ public:
    Event(double time, double energy, const astro::SkyDir &appDir, 
          const astro::SkyDir &srcDir, const astro::SkyDir &zAxis, 
          const astro::SkyDir &xAxis, const astro::SkyDir &zenith, 
-         int eventType=4) :
+         int eventType=4, double trueEnergy = 0., double flux_theta=0.,
+         double flux_phi=0.) :
       m_time(time), m_energy(energy), m_appDir(appDir), m_srcDir(srcDir),
-      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), m_eventType(eventType) 
-      {}
+      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), m_eventType(eventType),
+      m_trueEnergy(trueEnergy), m_flux_theta(flux_theta), 
+      m_flux_phi(flux_phi) {}
 
    /// Time in seconds (referenced to the zero time of the orbit
    /// calculation in astro::EarthOrbit).
@@ -58,6 +59,12 @@ public:
    /// Event type (for ascertaining which set of IRFs to use).
    int eventType() const {return m_eventType;}
 
+   /// True photon energy in MeV.
+   double trueEnergy() const {return m_trueEnergy;}
+
+   double fluxTheta() const {return m_flux_theta;}
+   double fluxPhi() const {return m_flux_phi;}
+
 private:
 
    double m_time;
@@ -70,6 +77,10 @@ private:
    astro::SkyDir m_zenith;
 
    int m_eventType;
+
+   double m_trueEnergy;
+   double m_flux_theta;
+   double m_flux_phi;
 
 };
 

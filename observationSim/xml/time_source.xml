@@ -1,0 +1,10 @@
+<source_library title="clocks" >
+   <!-- the TimeCandle spectrum  -->
+   <source name="obsSim_timetick30s">
+      <spectrum escale="GeV"> 
+      <SpectrumClass name="TimeCandle" params="30.0"/>  
+      <use_spectrum/>
+      <launch_point />
+      </spectrum>
+   </source>
+</source_library>

@@ -133,6 +133,9 @@ int EventContainer::addEvent(EventSource *event,
    double energy = event->energy();
    Hep3Vector launchDir = event->launchDir();
 
+   double flux_theta = acos(launchDir.z());
+   double flux_phi = atan2(launchDir.y(), launchDir.x());
+
    LatSc latSpacecraft;
    HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
    astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::CELESTIAL);
@@ -163,7 +166,8 @@ int EventContainer::addEvent(EventSource *event,
                                                         
       m_events.push_back( Event(time, appEnergy, 
                                 appDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time), respPtr->irfID()) );
+                                ScZenith(time), respPtr->irfID(), 
+                                energy, flux_theta, flux_phi) );
 //      std::cout << "adding an event: " << m_events.size() << std::endl;
       if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
       return 1;
@@ -278,7 +282,7 @@ void EventContainer::writeEvents() {
 #endif
    } else { // Use the old A1 format.
       makeFitsTable();
-      std::vector<std::vector<double> > data(14);
+      std::vector<std::vector<double> > data(20);
 // pre-allocate the memory for each vector
       for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
            vec_it != data.end(); vec_it++)
@@ -300,6 +304,19 @@ void EventContainer::writeEvents() {
          data[12].push_back(
             it->zenith().dir().angle(it->appDir().dir())*180./M_PI);
          data[13].push_back(static_cast<double>(it->eventType()));
+// Append some columns for all_gamma/IRF tests.
+         double theta = it->srcDir().difference(it->zAxis());
+         double xhat = it->srcDir().dir().dot(it->xAxis().dir());
+         Hep3Vector yAxis = it->zAxis().dir().cross(it->xAxis().dir());
+         double yhat = it->srcDir().dir().dot(yAxis);
+         double phi = atan2(yhat, xhat);
+         data[14].push_back(theta*180./M_PI);
+         data[15].push_back(phi*180./M_PI);
+         data[16].push_back(it->trueEnergy());
+         double separation = it->srcDir().difference(it->appDir());
+         data[17].push_back(separation*180./M_PI);
+         data[18].push_back(it->fluxTheta()*180./M_PI);
+         data[19].push_back(it->fluxPhi()*180./M_PI);
       }
       m_eventTable->writeTableData(data);
 
@@ -339,6 +356,14 @@ void EventContainer::makeFitsTable() {
    colName.push_back("SC_z");fmt.push_back("1E");unit.push_back("dir cos");
    colName.push_back("zenith_angle");fmt.push_back("1E");unit.push_back("deg");
    colName.push_back("event_type");fmt.push_back("1I");unit.push_back("int");
+
+// Columns for all_gamma/IRF tests.
+   colName.push_back("theta");fmt.push_back("1E"),unit.push_back("deg");
+   colName.push_back("phi");fmt.push_back("1E"),unit.push_back("deg");
+   colName.push_back("true_energy");fmt.push_back("1E"),unit.push_back("MeV");
+   colName.push_back("separation");fmt.push_back("1E"),unit.push_back("deg");
+   colName.push_back("flux_theta");fmt.push_back("1E"),unit.push_back("deg");
+   colName.push_back("flux_phi");fmt.push_back("1E"),unit.push_back("deg");
 
    std::string outputFile = outputFileName();
    m_eventTable = new FitsTable(outputFile, "LAT_event_summary", 

@@ -29,15 +29,13 @@ use hoopsUtil v*
 # allow use of internal path
 macro observationSim_cppflags "" \
 Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D USE_GOODI " \
+#Linux "-I ../src -g -O -pedantic -D TRAP_FPE " \
 WIN32 '/I..\src /D"USE_GOODI" /wd4290'
 
 macro_prepend cflags "" Linux "-g -O"
 
 # suppress warning messages (from flux, Goodi, etc.) on Linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
-
-# this package uses obsolete C function names, beware	
-macro_append cpplinkflags "" WIN32 " oldnames.lib"
 
 macro_append ROOT_libs ""  WIN32 " libHisT.lib "
 
