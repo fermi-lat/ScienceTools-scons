@@ -5,15 +5,30 @@
 #include "TApplication.h"
 #include "TGClient.h"
 #include "TGWindow.h"
+#include "TSystem.h"
 
 #include "RootEngine.h"
 #include "RootPlotHist1D.h"
 
-#include "st_graph/PlotHist1D.h"
-
 namespace st_graph {
 
   RootEngine::RootEngine() {
+    gSystem->ResetSignal(kSigBus);
+    gSystem->ResetSignal(kSigSegmentationViolation);
+    gSystem->ResetSignal(kSigSystem);
+    gSystem->ResetSignal(kSigPipe);
+    gSystem->ResetSignal(kSigIllegalInstruction);
+    gSystem->ResetSignal(kSigQuit);
+    gSystem->ResetSignal(kSigInterrupt);
+    gSystem->ResetSignal(kSigWindowChanged);
+    gSystem->ResetSignal(kSigAlarm);
+    gSystem->ResetSignal(kSigChild);
+    gSystem->ResetSignal(kSigUrgent);
+    gSystem->ResetSignal(kSigFloatingException);
+    gSystem->ResetSignal(kSigTermination);
+    gSystem->ResetSignal(kSigUser1);
+    gSystem->ResetSignal(kSigUser2);
+
     // If no TApplication already exists, create one.
     if (0 == gApplication) {
       int argc = 0;
@@ -31,8 +46,14 @@ namespace st_graph {
 
   PlotHist1D * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist1D::IntervalCont_t & intervals) {
-    // Create Root-specific concrete object with the PlotHist1D interface.
+    // Create Root-specific 1D plot object with the PlotHist1D interface.
     return new RootPlotHist1D(this, title, width, height, intervals);
+  }
+
+  PlotHist1D * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+    const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals) {
+    // Create Root-specific 2D plot object with the PlotHist1D interface.
+    return new RootPlotHist1D(this, title, width, height, x_intervals, y_intervals);
   }
 
   void RootEngine::addFrame(PlotHist1D * frame) {

@@ -39,6 +39,16 @@ namespace st_graph {
       virtual PlotHist1D * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
         const PlotHist1D::IntervalCont_t & intervals);
 
+      /** \brief Create a plotter for a two dimensional histogram.
+          \param title The title of the plot.
+          \param width The width of the plot window.
+          \param height The height of the plot window.
+          \param x_intervals Set of intervals of the histogram, used to set the plot X axis.
+          \param y_intervals Set of intervals of the histogram, used to set the plot Y axis.
+      */
+      virtual PlotHist1D * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+        const PlotHist1D::IntervalCont_t & x_intervals, const PlotHist1D::IntervalCont_t & y_intervals);
+
       /** \brief Register a frame with the engine. This allows the engine to display or hide
           its associated graphical frames (Root-implementation-specific)
           \param frame The graphical frame to register.
