@@ -11,7 +11,9 @@
 #endif
 
 #include <cassert>
+
 #include <fstream>
+#include <stdexcept>
 
 #include "CLHEP/Random/Random.h"
 
