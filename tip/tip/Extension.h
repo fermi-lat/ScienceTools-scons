@@ -24,11 +24,12 @@ namespace table {
       /** \brief Create a new extension object from the given abstract extension data encapsulation.
           \param extension_data The extension data (concrete instances are FITS or Root specific).
       */
-      Extension(IExtensionData * extension_data): m_header(extension_data->getHeaderData()) {}
+      Extension(IExtensionData * extension_data): m_header(extension_data->getHeaderData()),
+        m_extension_data(extension_data) {}
 
       /** \brief Destruct an extension object.
       */
-      virtual ~Extension() {}
+      virtual ~Extension() { delete m_extension_data; }
 
       /** \brief Retrieve Header object, which is a container of FITS-like keywords.
       */
@@ -36,6 +37,7 @@ namespace table {
 
     private:
       Header m_header;
+      IExtensionData * m_extension_data;
   };
 
 }
