@@ -22,7 +22,7 @@ FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
 
 // Append to a list of source library documents
-//FluxSvc.source_lib += {"$(GRBROOT)/xml/GRB_user_library.xml"};
+FluxSvc.source_lib += {"$(GRBROOT)/xml/GRB_user_library.xml"};
 
 //------------------------------------------------------------
 // Primary source name (default GRBSpectrum)
@@ -31,18 +31,19 @@ GRBTestAlg.source_name="GRBSpectrum";
 //GRBTestAlg.source_name="GRBobsSpectrum";
 //------------------------------------------------------------
 // Background source name
-GRBTestAlg.background_name="GalElSpectrum";
+GRBTestAlg.background_name={"electronavg"};
+GRBTestAlg.background_name+={"chimeavg"};
 
 //Maximum observation time (default 10 s)
-GRBTestAlg.observation_time=30;
+GRBTestAlg.observation_time=1;
 // Maximum number of photons generated (default 100000)
-GRBTestAlg.EvtMax=1000;
+GRBTestAlg.EvtMax=100000;
 
 // Is possible to save in root file
-//GRBTestAlg.savefile="root";
+GRBTestAlg.savefile={"root"};
    
 // Is possible to save also in an ascii file
-GRBTestAlg.savefile="ascii";   
+GRBTestAlg.savefile+={"ascii"};   
 			       
 // No idea...
 ApplicationMgr.EvtSel = "NONE";

@@ -61,8 +61,9 @@ private:
   int m_events;
 
   std::string m_source_name;
-  std::string m_background_name;
-  std::string m_save_file;
+  //std::string  m_background_name;
+  std::vector<std::string> m_background_name;
+  std::vector<std::string> m_save_file;
   double m_observation_time;
   
 };
@@ -75,7 +76,7 @@ const IAlgFactory& GRBTestAlgFactory = Factory;
 //
 GRBTestAlg::GRBTestAlg(const std::string& name, ISvcLocator* pSvcLocator) :
   Algorithm(name, pSvcLocator),m_time(10.0),m_events(100000),
-  m_source_name("GRBSpectrum"),m_background_name(" "),m_save_file("no"){
+  m_source_name("GRBSpectrum"){
   
   declareProperty("source_name", m_source_name);
   declareProperty("background_name",  m_background_name);
@@ -100,6 +101,17 @@ StatusCode GRBTestAlg::initialize() {
   // Use the Job options service to set the Algorithm's parameters
   setProperties();
   
+  if( m_save_file.empty() )
+    {
+      m_save_file.push_back("no");
+    } 
+  
+  /*
+    if( m_background_name.empty() )
+    {
+    m_background_name.push_back(" ");
+    }
+  */
   // get the service
   StatusCode sc = service("FluxSvc", m_fsvc);
   m_loop=0;
@@ -127,24 +139,38 @@ StatusCode GRBTestAlg::execute() {
   sprintf(arg2,"%d",m_events);
   sprintf(arg3,"%s%d",m_source_name.c_str(),m_loop);
   
-  if(m_background_name!=" ") cout<<" background  = "<<m_background_name.c_str()<<endl;
-  
   arguments.push_back("-time");
   arguments.push_back(arg1);
   arguments.push_back("-events");
   arguments.push_back(arg2);
-  if(m_save_file=="root") 
+  
+  std::vector<std::string>::iterator itr;
+    
+  for(itr=m_save_file.begin();itr != m_save_file.end();++itr)
     {
-      arguments.push_back("-root");
-      arguments.push_back(arg3);
-    }
-  else if(m_save_file=="ascii") 
-    {
-      arguments.push_back("-ascii");
+      if((*itr)=="root") 
+	{
+	  arguments.push_back("-root");
+	  arguments.push_back(arg3);
+	  cout<<" Saving the events in a root file..."<<endl;
+	}
+      if((*itr)=="ascii") 
+	{
+	  arguments.push_back("-ascii");
+	  cout<<" Saving the events in an ascii file..."<<endl;
+	}
     }
   
-  arguments.push_back(m_source_name.c_str());
-  if(m_background_name!=" ") arguments.push_back(m_background_name.c_str());
+  arguments.push_back(const_cast<char *>(m_source_name.c_str()));
+  cout<<"Primary Source Name = "<<m_source_name.c_str()<<endl;
+  if( !m_background_name.empty() ){
+    for(itr=m_background_name.begin();itr !=m_background_name.end();++itr)
+      {
+	arguments.push_back(const_cast<char *>((*itr).c_str()));
+	cout<<" Background Source Name = "<<const_cast<char *>((*itr).c_str())<<endl;
+      }
+  }
+  
   
   GRBTest* m_GRBTest = new GRBTest();
   

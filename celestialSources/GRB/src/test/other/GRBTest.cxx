@@ -72,7 +72,8 @@ private:
 
 class TimeCmp{
 public:
-  bool operator()(const DataOut& data1,const DataOut& data2)
+//  bool operator()(const DataOut& data1,const DataOut& data2)
+  bool operator()(DataOut& data1, DataOut& data2)
   {
     return data1.Time() < data2.Time();    
   }
@@ -225,6 +226,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	if (events_max<1) return 0;
       }
       else if("-root" == arg_name) {
+	cout<<" SAVE ROOT" <<endl;
 	savef_root=true;
 	m_source_name = argv[++current_arg];
       }
@@ -267,13 +269,13 @@ int GRBTest::Start(std::vector<char*> argv)
       StatusCode sc =  m_fsvc->source(sources[i], m_flux);
       if( sc.isFailure()) 
 	{
-	  std::cout << "Could not find flux " << endl;
+	  std::cout << "Could not find flux " <<sources[i]<<endl;
 	  return sc;
 	}
       cout<<" Source Name = "<<sources[i]<<endl;
       
-      //name=sources[i].c_str();
-      name=m_source_name;
+      name=const_cast<char *>(sources[i].c_str());
+      //name=m_source_name;
       if (savef_root==true){
 	events= new TTree(name,name);
 	events->Branch("energy",&energy,"energy/D");
@@ -294,6 +296,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	{
 	  m_flux->generate();  
 	  time=m_flux->time();
+	  if (time<0) break;
 	  dir = m_flux->launchDir();
 	  energy = m_flux->energy(); // kinetic energy in MeV
 	  Area=m_flux->targetArea();
@@ -342,7 +345,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	  }
 	  nume++;
 	}
-      cout<<"Time final="<<time<<endl;
+      cout<<"Time final="<<t1<<endl;
       cout<<"Number of events processed for this source= "<<nume<<endl;
       if (savef_root==true) events->Print();
       cout<<"Fluence [erg/cm^2]="<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
@@ -355,7 +358,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	std::string paramFile = "GRBdata.txt";
 	facilities::Util::expandEnvVar(&paramFile);
 	std::ofstream fout(paramFile.c_str(),ios::app);
-	fout<<time<<endl;
+	fout<<t1<<endl;
 	fout<<(Area*1.0e+4)<<endl;
 	fout<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;

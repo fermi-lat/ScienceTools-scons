@@ -64,7 +64,7 @@ double GRBSpectrum::interval(double time)// const
   double temp;
   double t1=time;
   double dt;
-  if(time>m_grbsim->Tmax()) return 1.0e+6; //this stops the execution of GRBtestAlg...
+  if(time>m_grbsim->Tmax()) return -1; //this stops the execution of GRBtestAlg...
   while (sum<1.0){
     dt=1.0e-2;
     temp=rate(t1);
