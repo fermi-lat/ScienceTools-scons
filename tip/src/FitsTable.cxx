@@ -76,12 +76,12 @@ namespace tip {
     for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
 
     // Find (lowercased) field_name in container of columns. Complain if not found.
-    std::map<std::string, FieldIndex_t>::const_iterator itor = m_col_name_lookup.find(lc_name);
-    if (itor == m_col_name_lookup.end())
+    std::map<std::string, FieldIndex_t>::const_iterator field_itor = m_col_name_lookup.find(lc_name);
+    if (field_itor == m_col_name_lookup.end())
       throw TipException(formatWhat(std::string("Could not get field index for field ") + lc_name));
 
     // Get the number of the column.
-    return itor->second;
+    return field_itor->second;
   }
 
   // Append field to a table extension.
