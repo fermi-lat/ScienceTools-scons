@@ -30,6 +30,12 @@ namespace evtbin {
       */
       virtual void writeOutput(const std::string & creator, const std::string & out_file) const;
 
+      /** \brief Write ebounds extension.
+          \param out_file The output file name.
+          \param binner The binner used to write the output.
+      */
+      virtual void writeEbounds(const std::string & out_file, const Binner * binner) const;
+
     private:
       Hist1D m_hist;
   };
