@@ -47,6 +47,10 @@ namespace st_graph {
           \param l The new position of the left edge.
       */
       virtual void setR(long r) = 0;
+
+      virtual long getWidth() const = 0;
+
+      virtual long getHeight() const = 0;
   };
 
 }
