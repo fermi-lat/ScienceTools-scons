@@ -168,13 +168,13 @@ int main(int iargc, char * argv[]) {
 //    std::vector< std::valarray<double> >      geoOffset(nevts);
 //    std::vector< std::valarray<double> >     baryOffset(nevts);
 //    std::vector< std::valarray<long>   >    acdTilesHit(nevts);
-//    std::vector< std::valarray<int>    >   calibVersion(nevts);
+    std::vector< std::valarray<int>    >   calibVersion(nevts);
     for (unsigned int i = 0; i < nevts; i++) {
        convPoint[i].resize(3);
 //       geoOffset[i].resize(3);
 //       baryOffset[i].resize(3);
 //       acdTilesHit[i].resize(3);
-//       calibVersion[i].resize(3);
+       calibVersion[i].resize(3);
     }
    
 // CONVERSION_POINT
@@ -279,7 +279,33 @@ int main(int iargc, char * argv[]) {
 //   data->setGeoOffset(geoOffset);
 //   data->setBaryOffset(baryOffset);
 //   data->setAcdTilesHit(acdTilesHit);
-//   data->setCalibVersion(calibVersion);
+
+
+   std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
+   std::vector<double> reconzdir      = meritTuple("ReconZDir");
+   std::vector<double> calenergysum   = meritTuple("CalEnergySum");
+   std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
+   std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
+   std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
+   std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
+
+   for (unsigned int i = 0; i < nevts; i++) {
+     bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
+     bool zdir_cut          = (reconzdir[i]<-0.2);      
+     bool no_cal_cut        = (calenergysum[i]<5.0)||(calcsirln[i]<2.0);
+     bool thin_cut          = (tkr1firstlayer[i]<12.0);
+
+     bool global_cut = good_energy_cut && zdir_cut && !(no_cal_cut);
+     
+     bool psf_filter =   (imcoreprob[i]>0.2) && (impsfprederr[i]<3.0);
+
+     if(global_cut && psf_filter) 
+       {
+	 (calibVersion[i])[0] = 1;
+       }
+   }
+   data->setCalibVersion(calibVersion);
+
 
 // Write the data to a FITS file.
    Goodi::IDataIOService *ioService = iosvcCreator.create();
