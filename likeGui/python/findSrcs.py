@@ -22,6 +22,7 @@ inputXmlFile, = (os.environ['OBSERVATIONSIMROOT']
 def ptSrc():
     src = "\n".join( ('<source name=" " type="PointSource">',
                       '  <spectrum type="PowerLaw">',
+                      '   <!-- point source units are cm^-2 s^-1 MeV^-1 -->',
                       '    <parameter free="1" max="1000.0" min="0.001" ' +
                       'name="Prefactor" scale="1e-09" value="1"/>',
                       '    <parameter free="1" max="-1.0" min="-5." ' +
@@ -43,6 +44,8 @@ def EGDiffuse():
     src = "\n".join( ('<source name="Extragalactic Diffuse" ' + 
                       'type="DiffuseSource">',
                       '  <spectrum type="PowerLaw">',
+                      '    <!-- diffuse source units are ' +
+                      'cm^-2 s^-1 MeV^-1 sr^-1 -->',
                       '    <parameter max="100" min="1e-05" free="1" ' + 
                       'name="Prefactor" scale="1e-07" value="1.45" />',
                       '    <parameter max="-1" min="-3.5" free="0" ' + 
@@ -61,6 +64,8 @@ def EGDiffuse():
 def GalDiffuse():
     src = "\n".join( ('<source name="Galactic Diffuse" type="DiffuseSource">',
                       '  <spectrum type="PowerLaw">',
+                      '    <!-- diffuse source units are ' +
+                      'cm^-2 s^-1 MeV^-1 sr^-1 -->',
                       '    <parameter max="1000" min="0.001" free="1" ' +
                       'name="Prefactor" scale="0.001" value="11." />',
                       '    <parameter max="-1" min="-3.5" free="0" ' +

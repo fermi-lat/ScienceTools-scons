@@ -37,9 +37,12 @@ class RootWindow(Tk.Tk):
             try:
                 ds9.cd(os.path.abspath(os.curdir))
             except RuntimeError:
-                version = ds9.xpaget("version")
-                if version.find("3.0.3") == -1:
-                    showwarning("ds9 version", "using " + version.strip())
+                try:
+                    version = ds9.xpaget("version")
+                    if version.find("3.0.3") == -1:
+                        showwarning("ds9 version", "using " + version.strip())
+                except RuntimeError:
+                    pass
         except ImportError:
             showwarning(title="ds9 Access Warning",
                         message="Import error for ds9 package.")
