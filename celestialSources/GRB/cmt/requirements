@@ -4,51 +4,41 @@ version v1
 
 # $Header$
 
-use GlastSvc
-use FluxSvc v5*
-use GuiSvc
-use geomrep 
+use FluxSvc
 use ROOT
-
-#need the following for run-time access to its DLL
-use xmlUtil
-
 
 # this is only a shareable package
 apply_pattern packageShr
-
+apply_pattern package_include
 
 #=============================================================
 private
 
 # get flags to build shared library
 
-#apply_pattern package_Cshlibflags
-
+apply_pattern package_Cshlibflags
 apply_pattern package_headers
 
-# define when ready to export the DLL: library Flight *.cxx ${Flight_headers}
-
 public
-#apply_pattern guiapp
-macro_prepend gui_linkopts "$(GuiSvc_lib) ${guiapp_linkopts} -u GuiSvc_loadRef -ldl "\
-                 WIN32     "$(GuiSvc_lib) ${guiapp_linkopts} /include:_GuiSvc_loadRef "
 
+library GRB \
+ ${GRBROOT}/src/GRB/*.cxx
+
+macro GRB_lib " -L ${GRBROOT}/${CMTCONFIG} -lGRB "\
+    WIN32 "${GRBROOT}/${BINDIR}/GRB.lib "
 
 #non-share test program for development
-#set JOBOPTIONS ${FLUXDISPLAYROOT}/src/test/jobOptions.txt
 
-macro_append FluxSvc_headers "" WIN32 "GRB/*.h"
-#macro_append GRB_headers "" WIN32 "GRB/*.h"
-#macro_append FluxDisplay_headers "" WIN32 "test/*.txt test/*.xml"
-#application FluxDisplayTest *.cxx  ${FluxDisplay_headers} ${GlastMain} ${Win32Resource}
+application GRBTest  test/GRBTest.cxx
 
-application GRBTest  test/GRBTest.cxx\
- ${GRBROOT}/src/GRB/GRBSh*.cxx\
- ${GRBROOT}/src/GRB/GRBCo*.cxx\
- ${GRBROOT}/src/GRB/GRBSi*.cxx\
- ${GRBROOT}/src/GRB/GRBSp*.cxx\	
- ${FLUXSVCROOT}/src/*.cxx	
+macro_append GRBTestlinkopts  "$(GRB_lib) -L${FLUXSVCROOT}/${CMTCONFIG} -lFluxSvc "\
+      WIN32 " $(GRB_lib) -L${FLUXSVCROOT}/${BINDIR}/FluxSvc.lib "
+
+macro_append GRBTest1linkopts  "$(GRB_lib) -L${FLUXSVCROOT}/${CMTCONFIG} -lFluxSvc "\
+      WIN32 " $(GRB_lib) -L${FLUXSVCROOT}/${BINDIR}/FluxSvc.lib "
+
+application GRBTest1  test/GRBTest1.cxx
+
 macro_append ROOT_libs  " -lHist  -lMatrix -lGraf -lGraf3d -lGpad" \
                WIN32    "$(ROOT_PATH)/lib/libHist.lib $(ROOT_PATH)/lib/libMatrix.lib \
 			$(ROOT_PATH)/lib/libGraf.lib $(ROOT_PATH)/lib/libGraf3d.lib \
