@@ -73,7 +73,7 @@ astro::JulianDate ContainerBase::currentTime() {
                                      now->tm_mday, hours);
       return current_time;
    } else {
-      throw std::runtime_error("EventContainer::currentTime:\n"
+      throw std::runtime_error("ContainerBase::currentTime:\n"
                                + std::string("cannot be ascertained, ")
                                + "std::time returns a null value.");
    }
