@@ -24,9 +24,11 @@ from EditFileDialog import *
 from ThreadedClient import runInThread
 from pil import Pil
 
-# @todo replace this with a GtApp object
+# @todo replace these with GtApp objects
 obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
                       os.environ["BINDIR"], 'obsSim.exe')
+orbSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
+                      os.environ["BINDIR"], 'orbSim.exe')
 
 class RootWindow(Tk.Tk):
     def __init__(self, file=None):
@@ -55,8 +57,9 @@ class RootWindow(Tk.Tk):
     def open(self, xmlFile=None):
         if xmlFile is None:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
-        self.srcLibs.addLibs(xmlFile)
-    def run(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
+        if xmlFile is not None:
+            self.srcLibs.addLibs(xmlFile)
+    def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)
         pars = Pil('obsSim.par')
@@ -67,6 +70,14 @@ class RootWindow(Tk.Tk):
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((obsSim, dialog.paramString))
+            runInThread(commandApp(command))
+    def orbSim(self):
+        pars = Pil('orbSim.par')
+        pfile = 'orbSim.par'
+        pars.write(pfile)   # create a local copy
+        dialog = ParamDialog(self, pfile)
+        if dialog.paramString:
+            command = " ".join((orbSim, dialog.paramString))
             runInThread(commandApp(command))
         
 class MenuBar(Tk.Menu):
@@ -79,15 +90,19 @@ class MenuBar(Tk.Menu):
 class FileMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.root = root
         self.add_command(label="Open...", underline=0, command=root.open)
-        self.add_command(label="Run obsSim...", command=root.run, underline=0)
+        self.add_cascade(label="Run", underline=0, menu=SimMenu(root))
         self.add_command(label="Quit", underline=0, command=root.quit)
+        
+class SimMenu(Tk.Menu):
+    def __init__(self, root):
+        Tk.Menu.__init__(self, tearoff=0)
+        self.add_command(label="obsSim...", command=root.obsSim, underline=1)
+        self.add_command(label="orbSim...", command=root.orbSim, underline=1)
 
 class Ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.root = root
         self.add_command(label="Events...", underline=0, command=Ds9(root, 1))
         self.add_command(label="Image...", underline=0, command=Ds9(root))
 
@@ -198,6 +213,7 @@ class CandidateSources(Tk.Frame):
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
         self.listBox.bindtags(btags[1:] + btags[:1])
+        self.listBox.bind('<Button-3>', self.printXml)
         self.listBox.bind('<Double-ButtonRelease-1>', self.addSource)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
@@ -217,10 +233,16 @@ class CandidateSources(Tk.Frame):
         src = self.listBox.get('active')
         self.root.sourceList.addSource((src, self.sources[src]))
     def addSelected(self):
-        indices = self.listBox.curselection()
-        for indx in indices:
+        selected = self.selectedSources()
+        for srcName in selected:
             srcName = self.sources.ordered_keys[int(indx)]
-            self.root.sourceList.addSource(srcName)
+            self.root.sourceList.addSource((srcName, self.sources[srcName]))
+    def selectedSources(self):
+        indices = self.listBox.curselection()
+        selected = []
+        for indx in indices:
+            selected.append(self.sources.ordered_keys[int(indx)])
+        return selected        
     def addAll(self):
         self.selectAll()
         self.addSelected()
@@ -231,18 +253,23 @@ class CandidateSources(Tk.Frame):
     def clearAll(self):
         self.listBox.delete(0, Tk.END)
         self.root.sourceList.deleteAll()
+    def printXml(self):
+        selected = self.selectedSources()
+        for name in selected:
+            print self.sources[name].toxml() + '\n'
 
 class CandidateMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
         Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Add selected', underline=0,
                          command=root.addSelected)
-        self.add_command(label='Add all', underline=0,
-                         command=root.addAll)
+        self.add_command(label='Add all', command=root.addAll)
         self.add_command(label='Select all', underline=0,
                          command=root.selectAll)
         self.add_command(label='Un-select all', underline=0,
                          command=root.unSelectAll)
+        self.add_command(label='Print xml', underline=0,
+                         command=root.printXml)
 
 class SourceList(Tk.Frame):
     def __init__(self, root, parentFrame):
