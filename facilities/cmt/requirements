@@ -1,5 +1,5 @@
 package facilities
-version v2r6
+version v2r7p0
 
 use GlastPolicy
 
