@@ -1,6 +1,7 @@
 /** \file FitsFileSvc.cxx
 
-    \brief Factory for handling Fits objects.
+    \brief Implementation of FITS-specific I/O class. This functions as a factory for creating
+    data objects which are associated with FITS files.
 
     \author James Peachey, HEASARC
 */
@@ -11,7 +12,8 @@
 
 namespace table {
 
-  FitsFileSvc::FitsFileSvc(const std::string & name): IFileSvc(name) {}
+  // Create a new I/O class, setting the format_name to be "fits".
+  FitsFileSvc::FitsFileSvc(): IFileSvc("fits") {}
 
   Table * FitsFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
     Table * retval = 0;
