@@ -4,9 +4,9 @@
 $Id$
 
 \verbatim
-
-02-apr-04  v1r2p1 THB change a name
-02-apr-04  v1r2   THB convert to STpolicy, add test program
+20-aug-2004    v1r4p2 JP Add debug mode, in which exceptions are not caught at
+                         the top level. This is triggered by compiling with the ST_APP_DEBUG
+                         macro defined.
 \endverbatim
 
 */
