@@ -7,4 +7,5 @@ macro cpp g++
 macro app_dataSubSelector_cppflags "-g -Wall"
 
 macro headers "../include/*.h" WIN32 "../include/*.h"
-application dataSubselector  *.cxx $(headers)
+#application dataSubselector  *.cxx $(headers)
+application dataSubselector  *.cxx
