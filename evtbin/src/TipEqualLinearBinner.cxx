@@ -52,6 +52,11 @@ void TipEqualLinearBinner::writeHistogram(tip::Table * out_table) const {
 }
 
 void TipEqualLinearBinner::binRecord(const tip::Table::ConstRecord & record) {
+  long index = computeIndex(record);
+  if (index >= 0) ++m_histogram[index];
+}
+
+long TipEqualLinearBinner::computeIndex(const tip::Table::ConstRecord & record) const {
   double value;
 
   // Get the input value of the field we are binning:
@@ -59,5 +64,13 @@ void TipEqualLinearBinner::binRecord(const tip::Table::ConstRecord & record) {
 
   // Exclude values outside of [interval_begin, interval_end)
   if (value >= m_interval_begin && value < m_interval_end)
-    ++m_histogram[long((value - m_interval_begin) / m_interval_width)];
+    return long((value - m_interval_begin) / m_interval_width);
+
+  return -1;
 }
+
+long TipEqualLinearBinner::getNumBins() const { return m_histogram.size(); }
+
+const std::string & TipEqualLinearBinner::getInputField() const { return m_input_field; }
+
+const std::string & TipEqualLinearBinner::getOutputField() const { return m_output_field; }

@@ -35,6 +35,23 @@ class TipEqualLinearBinner : public TipBinner {
     */
     virtual void binRecord(const tip::Table::ConstRecord & record);
 
+    /** \brief Determine which bin this record belongs to in the histogram.
+        \param record The record.
+    */
+    virtual long computeIndex(const tip::Table::ConstRecord & record) const;
+
+    /** \brief Return the number of bins currently defined.
+    */
+    virtual long getNumBins() const;
+
+    /** \brief Return the name of the input field.
+    */
+    virtual const std::string & getInputField() const;
+
+    /** \brief Return the name of the output field.
+    */
+    virtual const std::string & getOutputField() const;
+
   private:
     std::vector<double> m_histogram;
     std::string m_input_field;

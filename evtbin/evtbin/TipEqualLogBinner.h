@@ -22,8 +22,8 @@ class TipEqualLogBinner : public TipBinner {
         \param interval_end The right-hand boundary of the interval.
         \param num_bins The number of bins.
     */
-    TipEqualLogBinner(const std::string & input_field, const std::string & output_index,
-      const std::string & output_field, double interval_begin, double interval_end, unsigned long num_bins);
+    TipEqualLogBinner(const std::string & input_field, const std::string & output_field,
+      double interval_begin, double interval_end, unsigned long num_bins);
 
     /** \brief Write the current histogram to the output table, starting at the
         given position.
@@ -35,6 +35,23 @@ class TipEqualLogBinner : public TipBinner {
         \param record The record.
     */
     virtual void binRecord(const tip::Table::ConstRecord & record);
+
+    /** \brief Determine which bin this record belongs to in the histogram.
+        \param record The record.
+    */
+    virtual long computeIndex(const tip::Table::ConstRecord & record) const;
+
+    /** \brief Return the number of bins currently defined.
+    */
+    virtual long getNumBins() const;
+
+    /** \brief Return the name of the input field.
+    */
+    virtual const std::string & getInputField() const;
+
+    /** \brief Return the name of the output field.
+    */
+    virtual const std::string & getOutputField() const;
 
   private:
     std::vector<double> m_histogram;

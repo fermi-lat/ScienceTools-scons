@@ -7,7 +7,7 @@
 #include "tip/Table.h"
 
 /** \class TipBinner
-    \brief Base class for different binners which operate on Tip objects.
+    \brief Base class for different one dimensional binners which operate on Tip objects.
 */
 class TipBinner {
   public:
@@ -29,6 +29,23 @@ class TipBinner {
         \param record The record.
     */
     virtual void binRecord(const tip::Table::ConstRecord & record) = 0;
+
+    /** \brief Determine which bin this record belongs to in the histogram.
+        \param record The record.
+    */
+    virtual long computeIndex(const tip::Table::ConstRecord & record) const = 0;
+
+    /** \brief Return the number of bins currently defined.
+    */
+    virtual long getNumBins() const = 0;
+
+    /** \brief Return the name of the input field.
+    */
+    virtual const std::string & getInputField() const = 0;
+
+    /** \brief Return the name of the output field.
+    */
+    virtual const std::string & getOutputField() const = 0;
 };
 
 #endif

@@ -4,12 +4,12 @@
 
 #include "evtbin/TipEqualLogBinner.h"
 
-TipEqualLogBinner::TipEqualLogBinner(const std::string & input_field, const std::string & output_index,
-  const std::string & output_field, double interval_begin, double interval_end, unsigned long num_bins):
+TipEqualLogBinner::TipEqualLogBinner(const std::string & input_field, const std::string & output_field,
+  double interval_begin, double interval_end, unsigned long num_bins):
   m_histogram(),
   m_bins(),
   m_input_field(input_field),
-  m_output_index(output_index),
+  m_output_index("CHANNEL"),
   m_output_field(output_field),
   m_interval_begin(interval_begin),
   m_interval_end(interval_end),
@@ -48,7 +48,7 @@ void TipEqualLogBinner::writeHistogram(tip::Table * out_table) const {
     // Print the value for now:
     std::cout << ii + 1 << '\t' << m_histogram[ii] << std::endl;
 
-    // Write the interval into the output table:
+    // Write the index into the output table:
     (*table_itor)[m_output_index].set(ii + 1);
 
     // Write the histogram bin to the selected field of the output file:
@@ -57,6 +57,11 @@ void TipEqualLogBinner::writeHistogram(tip::Table * out_table) const {
 }
 
 void TipEqualLogBinner::binRecord(const tip::Table::ConstRecord & record) {
+  long index = computeIndex(record);
+  if (index >= 0) ++m_histogram[index];
+}
+
+long TipEqualLogBinner::computeIndex(const tip::Table::ConstRecord & record) const {
   double value;
 
   // Get the input value of the field we are binning:
@@ -66,5 +71,14 @@ void TipEqualLogBinner::binRecord(const tip::Table::ConstRecord & record) {
   double bin_number = log(value / m_interval_begin) / m_log_width;
 
   // Make sure bin is in range of histogram, then add the count to the proper bin.
-  if (bin_number >= 0. && bin_number < m_num_bins) ++m_histogram[long(bin_number)];
+  if (bin_number >= 0. && bin_number < m_num_bins)
+    return long(bin_number);
+
+  return -1;
 }
+
+long TipEqualLogBinner::getNumBins() const { return m_num_bins; }
+
+const std::string & TipEqualLogBinner::getInputField() const { return m_input_field; }
+
+const std::string & TipEqualLogBinner::getOutputField() const { return m_output_field; }
