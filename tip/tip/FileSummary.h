@@ -16,7 +16,6 @@ namespace tip {
     public:
       /** \brief Create ExtSummary object for the given extension.
           \param ext_id The id of the extension.
-          \param is_table Flag: true == table, false == image.
       */
       ExtSummary(const std::string & ext_id);
 
