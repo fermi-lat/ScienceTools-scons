@@ -17,6 +17,7 @@
 #include "st_app/StAppFactory.h"
 
 #include "st_graph/Engine.h"
+#include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
 #include "st_graph/PlotHist.h"
 #include "st_graph/ValueSet.h"
@@ -35,6 +36,9 @@ class StGraphTestApp : public st_app::StApp {
     /// \brief Test scatter plots.
     virtual void testPlots();
 
+    /// \brief Test GUI widgets.
+    virtual void testGuis();
+
     /// \brief Report failed tests, and set a flag used to exit with non-0 status if an error occurs.
     void reportUnexpected(const std::string & text) const;
 
@@ -49,6 +53,8 @@ void StGraphTestApp::run() {
 
   testValueSet();
   testPlots();
+  testGuis();
+return;
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -223,6 +229,45 @@ void StGraphTestApp::testPlots() {
   delete plot1;
   delete pf1;
   delete mf;
+}
+
+void StGraphTestApp::testGuis() {
+  using namespace st_graph;
+
+  class MyGui : public IEventReceiver {
+    public:
+      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0) {
+        // Create a top level main frame in which to place graphical objects.
+        m_main_frame = m_engine.createMainFrame(600, 400);
+
+        // Create a couple test buttons.
+        m_cancel_button = m_engine.createButton(m_main_frame, this, "text", "Cancel");
+        m_ok_button = m_engine.createButton(m_main_frame, this, "text", "OK");
+      }
+
+      virtual ~MyGui() { delete m_ok_button; delete m_cancel_button; delete m_main_frame; }
+
+      virtual void run() {
+        m_engine.run();
+      }
+
+      virtual void clicked(IFrame * f) {
+        if (f == m_cancel_button) {
+          m_engine.stop();
+          std::cout << "Cancel button was clicked" << std::endl;
+        } else if (f == m_ok_button) std::cout << "OK button was clicked" << std::endl;
+      }
+
+    private:
+      Engine & m_engine;
+      IFrame * m_main_frame;
+      IFrame * m_cancel_button;
+      IFrame * m_ok_button;
+  };
+
+  MyGui gui(Engine::instance());
+
+  gui.run();
 }
 
 void StGraphTestApp::reportUnexpected(const std::string & text) const {
