@@ -2,7 +2,7 @@
 
 #include "facilities/Util.h"
 
-#if DEFECT_NO_STRINGSTREAM
+#ifdef DEFECT_NO_STRINGSTREAM
 #include <strstream>
 #else
 #include <sstream>
@@ -55,6 +55,8 @@ namespace facilities {
         //    The method used is determined by the DEFECT_NO_STRINGSTREAM
         //    macro, defined in the facilities requirements file.
 
+       static char outCharPtr[20];
+
 #ifdef DEFECT_NO_STRINGSTREAM
         // Using static buffer to avoid problems with memory allocation
         char a[100]=""; 
@@ -68,7 +70,8 @@ namespace facilities {
         locStream << std::ends;
 #endif
         outStr = locStream.str();
-        return outStr.c_str();
+        strcpy(outCharPtr, outStr.c_str());
+        return outCharPtr;
     }
     
     int Util::atoi(const std::string& inStr) {
