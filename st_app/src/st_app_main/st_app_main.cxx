@@ -16,32 +16,29 @@ int main(int argc, char ** argv) {
   st_app::StApp * app = 0;
 
   try {
-    try {
-      // Process command line arguments. This will throw if the real application code
-      // cannot/should not start.
-      st_app::StApp::processCommandLine(argc, argv);
+    // Process command line arguments. This will throw if the real application code
+    // cannot/should not start.
+    st_app::StApp::processCommandLine(argc, argv);
 
-      // Create an application using the singleton factory. Client code must have instantiated a single
-      // instance of a subclass of IAppFactory.
-      app = st_app::IStAppFactory::instance().createApp();
+    // Create an application using the singleton factory. Client code must have instantiated a single
+    // instance of a subclass of IAppFactory.
+    app = st_app::IStAppFactory::instance().createApp();
 
-      // Run the application.
-      app->run();
+    // Run the application.
+    app->run();
 
-    } catch (const std::exception & x) {
-      // Return a non-zero exit code:
-      status = 1;
-
-      // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
-      const char * info = typeid(x).name();
-      std::cerr << "Caught " << info << " at the top level: " << x.what() << std::endl;
-    }
-  } catch (...) {
+  } catch (const std::exception & x) {
     // Return a non-zero exit code:
-    status = 2;
+    status = 1;
 
-    // Report the error more generically:
-    std::cerr << "Caught unknown object at the top level." << std::endl;
+    // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
+    const char * type_name = "std::exception";
+    try {
+      type_name = typeid(x).name();
+    } catch (...) {
+      // Ignore problem with typeids.
+    }
+    std::cerr << "Caught " << type_name << " at the top level: " << x.what() << std::endl;
   }
 
   delete app;
