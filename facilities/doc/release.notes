@@ -2,6 +2,7 @@
  * Package facilities
  * Coordinator: Toby Burnett
  *
+ * v2r7p2 28-May-2003  thb   Add include needed for Windows
  * v2r7p1 14-May-2003  jrb   Throw exception in Util::expandEnvVar if
  *                           encounter something untranslatable 
  * v2r7p0 14-Feb-2003  hmk   Use static char* in Util::itoa
