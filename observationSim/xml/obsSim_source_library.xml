@@ -530,4 +530,13 @@
         <nestedSource sourceRef="high_bpl" />
     </source>
 
+<!-- MapSource version of the Galactic Diffuse model -->
+   <source name="Galactic_diffuse">
+      <spectrum escale="MeV">
+         <SpectrumClass name="MapSource"
+         params="17.,2.1,$(FLUXROOT)/sources/gas_gal.fits,30.,2e5"/>
+         <use_spectrum frame="galaxy"/>
+      </spectrum>
+   </source>
+
 </source_library>

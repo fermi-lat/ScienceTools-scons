@@ -30,12 +30,15 @@
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
 
+ISpectrumFactory & MapSourceFactory();
+
 using Likelihood::Util;
 
 class ObsSim {
 public:
    ObsSim(hoops::IParGroup & pars) : m_pars(pars) {
       m_count = m_pars["Number_of_events"];
+      MapSourceFactory();
    }
    ~ObsSim() {
       delete m_simulator;

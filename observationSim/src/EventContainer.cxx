@@ -104,8 +104,8 @@ void EventContainer::init() {
    m_events.clear();
    
    if (m_useFT1) {
-      std::string tipRoot(std::getenv("TIPROOT"));
-      m_ft1Template = tipRoot + "/data/ft1.tpl";
+      std::string rootPath(std::getenv("OBSERVATIONSIMROOT"));
+      m_ft1Template = rootPath + "/data/ft1.tpl";
    }
 }
 
@@ -198,7 +198,7 @@ void EventContainer::writeEvents() {
             row["conversion_layer"].set(evt->convLayer());
          } catch (std::exception &eObj) {
             std::cout << eObj.what() << std::endl;
-            exit(-1);
+            std::exit(-1);
          }
 //          tip::Table::Vector<short> calibVersion = row["calib_version"];
 //          for (int i = 0; i < 3; i++) {
@@ -327,7 +327,7 @@ std::string EventContainer::outputFileName() const {
       outputfile << "_0";
    } else {
       std::cerr << "Too many Event output files." << std::endl;
-      exit(-1);
+      std::exit(-1);
    }
    outputfile << m_fileNum << ".fits";
    return outputfile.str();
