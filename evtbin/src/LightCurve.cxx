@@ -16,7 +16,7 @@
 namespace evtbin {
 
   LightCurve::LightCurve(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-    const Binner & binner): DataProduct(event_file, event_table), m_hist(binner) {
+    const Binner & binner, const Gti & gti): DataProduct(event_file, event_table, gti), m_hist(binner) {
     m_hist_ptr = &m_hist;
 
     // Get all keywords.
