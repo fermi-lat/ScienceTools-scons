@@ -8,10 +8,7 @@
 
 #include "map_tools/SkyImage.h"
 #include "map_tools/MapParameters.h"
-
 #include "map_tools/Exposure.h"
-
-#include "image/Image.h"
 #include "astro/SkyDir.h"
 
 namespace emap{ // for simple helper classes
