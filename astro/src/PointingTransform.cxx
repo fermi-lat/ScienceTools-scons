@@ -26,7 +26,7 @@ namespace astro {
     */
     SkyDir PointingTransform::gDir(Hep3Vector localDir) const{
         Hep3Vector dir(localDir);
-        SkyDir ret(localToCelestial()*dir,SkyDir::CELESTIAL);
+        SkyDir ret(localToCelestial()*dir,SkyDir::EQUATORIAL);
         return ret;
     }
 
