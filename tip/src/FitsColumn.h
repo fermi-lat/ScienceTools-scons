@@ -104,7 +104,7 @@ namespace tip {
       virtual void get(Index_t record_index, std::vector<bool> & dest) const {
         if (m_scalar) throw TipException("FitsColumn::get(Index_t, std::vector<bool> &) was called but field is not a vector");
         int status = 0;
-        long num_els = getCellSize(record_index);
+        long num_els = getNumElements(record_index);
         char * tmp_dest = new char[num_els];
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           0, tmp_dest, 0, &status);
@@ -172,6 +172,33 @@ namespace tip {
       */
       virtual const std::string implementation() const  { return "FITS"; }
 
+      /** \brief Get number of elements in the given cell.
+          \param record_index The record number identifying the cell.
+      */
+      virtual long getNumElements(Index_t record_index) const {
+        if (!m_var_length) return m_repeat;
+        int status = 0;
+        long num_els = 0;
+        // Get number of elements in this particular field.
+        fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
+        if (0 != status) throw FitsTipException(status, "FitsColumn::getNumElements failed to get size of variable length cell");
+
+        return num_els;
+      }
+
+      /** \brief Set number of elements in the given cell.
+      */
+      virtual void setNumElements(Index_t num_elements) {
+        if (m_var_length) throw TipException("FitsColumn::setNumElements cannot change the width of variable length column");
+        int status = 0;
+        fits_modify_vector_len(m_ext->getFp(), m_field_index, num_elements, &status);
+        if (0 != status) throw FitsTipException(status, "FitsColumn::setNumElements failed to modify field");
+
+        // Update column information.
+        m_repeat = num_elements;
+        if (1 < m_repeat) m_scalar = true; else m_scalar = false;
+      }
+
     private:
       template <typename U>
       void getScalar(Index_t record_index, U & dest) const {
@@ -190,7 +217,7 @@ namespace tip {
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (m_scalar) throw TipException("FitsColumn::getVector was called but field is not a vector");
         int status = 0;
-        long num_els = getCellSize(record_index);
+        long num_els = getNumElements(record_index);
         dest.resize(num_els);
         U * dest_begin = &dest.front();
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0,
@@ -229,17 +256,6 @@ namespace tip {
         fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           const_cast<void *>(static_cast<const void *>(src_begin)), &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::setVector failed to write vector cell value");
-      }
-
-      long getCellSize(Index_t record_index) const {
-        if (!m_var_length) return m_repeat;
-        int status = 0;
-        long num_els = 0;
-        // Get number of elements in this particular field.
-        fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::getCellSize failed to get size of variable length cell");
-
-        return num_els;
       }
 
       FitsExtensionManager * m_ext;
