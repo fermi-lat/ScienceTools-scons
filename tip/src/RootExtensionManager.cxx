@@ -83,18 +83,22 @@ namespace tip {
 
   // Subclasses call this to open the file and position it to the desired extension.
   void RootExtensionManager::open() {
+    static bool first_time = true;
     // Most of the following block of code was taken from the tuple package, by Toby Burnett.
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
     // cvs revision 1.8
     // Begin theft:
 // The following block are similar idiosyncrasies probably resulting from using incomplete Root link lines.
 // Really this should be resolved by correcting this behavior in the requirements file.
+    if (first_time) {
+      first_time = false;
 #ifdef WIN32 // needed for windows.
-    gSystem->Load("libTree.dll");
+      gSystem->Load("libTree.dll");
 // JP added:
 #else
-    gSystem->Load("libHist.so");
+      gSystem->Load("libHist.so");
 #endif
+    }
 
     // JP added: Prevent Root warning about file from being logged:
     // Save current error chattiness level:
