@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v4r0   26-Aug-04   JC   refactored container classes; remove old FITS
+                            table class
     v3r8   25-Aug-04   JC   use st_facilities; add includes for windows.
     v3r7p4 12-Aug-04   JC   add checks for environment variable
     v3r7p3 11-Aug-04   JC   use irfLoader
