@@ -11,6 +11,7 @@ desired .par file.
 
 import os, sys
 
+ParFileError = 'ParFileError'
 def pfilesPath(parfile):
     try:
         paths = os.environ['PFILES'].split(os.pathsep)
@@ -23,7 +24,7 @@ def pfilesPath(parfile):
                 return path
         except OSError:
             pass
-    raise 'ParFileError', ".par file " + parfile + " not found."
+    raise ParFileError, ".par file " + parfile + " not found."
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:

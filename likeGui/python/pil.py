@@ -8,6 +8,8 @@ Interface to .par files.
 #$Header$
 #
 
+import string
+
 def accept(line):
     if (line.find('#') == 0 or len(line.split()) == 0):
         return 0
@@ -31,7 +33,13 @@ class Pil(object):
     def keys(self):
         return self.names
     def __getitem__(self, name):
-        return (self.params[name][2]).strip('"').strip("'")
+        value = (self.params[name][2]).strip('"').strip("'")
+        if self.params[name][0] == 'r':
+            return string.atof(value)
+        elif self.params[name][0] == 'i':
+            return string.atoi(value)
+        else:
+            return value
     def __setitem__(self, name, value):
         self.params[name][2] = `value`
     def __call__(self):

@@ -285,6 +285,16 @@ class ParamFileEntry:
             self.variable.set(file)
 
 if __name__ == '__main__':
-    root = Tkinter.Tk()
-    dialog = SourceRegionDialog(root)
-    root.mainloop()
+    from pil import Pil
+    from pfilesPath import *
+    try:
+        pfile = os.path.join(pfilesPath("findSrcs.par"), "findSrcs.par")
+        pars = Pil(pfile)
+        if pars['input_file'] == 'DEFAULT':
+            input_file = inputXmlFile
+        else:
+            input_file = pars['input_file']
+        extractFrom3EG(pars['ra0'], pars['dec0'], pars['radius'],
+                       pars['flux_limit'], pars['output_file'], input_file)
+    except ParFileError:
+        SourceRegionDialog(Tkinter.Tk())
