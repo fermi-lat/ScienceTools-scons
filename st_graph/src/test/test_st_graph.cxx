@@ -14,9 +14,6 @@
 #include <unistd.h>
 #endif
 
-#include "st_app/StApp.h"
-#include "st_app/StAppFactory.h"
-
 #include "st_graph/Axis.h"
 #include "st_graph/Engine.h"
 #include "st_graph/IEventReceiver.h"
@@ -31,10 +28,12 @@
 /** \class StGraphTestApp
     \brief Test application class.
 */
-class StGraphTestApp : public st_app::StApp {
+class StGraphTestApp {
   public:
     /// \brief Construct the test application.
-    StGraphTestApp(): m_out("test_st_graph", "", 2) {}
+    StGraphTestApp(int argc, char ** argv): m_out("test_st_graph", "", 2) {}
+
+    virtual ~StGraphTestApp() throw() {}
 
     /// \brief Perform all tests.
     virtual void run();
@@ -50,6 +49,9 @@ class StGraphTestApp : public st_app::StApp {
 
     /// \brief Report failed tests, and set a flag used to exit with non-0 status if an error occurs.
     void reportUnexpected(const std::string & text) const;
+
+    /// \brief Return 0 if no errors occurred, 1 otherwise.
+    int status() const { return int(m_failed); }
 
   protected:
     void testSequence(const st_graph::ISequence & iseq, const std::string & test_name, const double * value,
@@ -544,4 +546,15 @@ void StGraphTestApp::reportUnexpected(const std::string & text) const {
   std::cerr << "Unexpected: " << text << std::endl;
 }
 
-st_app::StAppFactory<StGraphTestApp> g_factory("test_st_graph");
+int main(int argc, char ** argv) {
+  int status = 1;
+  try {
+    StGraphTestApp app(argc, argv);
+    app.run();
+    status = app.status();
+  } catch (const std::exception & x) {
+    std::cerr << x.what() << std::endl;
+  }
+
+  return status;
+}

@@ -8,7 +8,6 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 use ROOT * IExternal
 use RootcintPolicy * GlastPolicy
 use STpolicy *
-use st_app *
 use st_stream *
 
 apply_pattern root_package headers="../st_graph/RootFrame.h" includes="-I. -I.."
