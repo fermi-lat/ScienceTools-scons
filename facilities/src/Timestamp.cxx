@@ -20,12 +20,17 @@ namespace facilities {
     m_time = time(0);
   }
 
-  // time specified as seconds since 1970
-  Timestamp::Timestamp(long int seconds, int nano)
+  // time specified as seconds since 1970 in the timezone corresponding
+  // to tzOffset (measured in seconds) west of GMT.  So, for example, 
+  // a local time PST should have tzOffset = 28800; PDT would be 25200;
+  // EST is 18000 and so forth. This offset can be read from the
+  // system variable __timezone
+  Timestamp::Timestamp(long int seconds, int nano, int tzOffset)
     : m_time((time_t) seconds), m_nano(nano)
   {
     if  ((nano >= inverseNanoInt)  || (nano < 0) || (seconds < 0))
       throw BadTimeInput("facilities::Timestamp bad nano argument");
+    seconds += tzOffset;
   }
 
   // time specified as Julian date
@@ -45,8 +50,9 @@ namespace facilities {
   } 
 
   // Time specified as string
-  Timestamp::Timestamp(const std::string& str) : m_nano(0) {
+  Timestamp::Timestamp(const std::string& str, int tzOffset) : m_nano(0) {
     m_time = toBinary(str);
+    m_time += tzOffset;
   }
 
   // Time specified with independent fields

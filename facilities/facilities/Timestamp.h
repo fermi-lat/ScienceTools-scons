@@ -48,13 +48,16 @@ namespace facilities {
   */
   class Timestamp {
   public:
-    /// Default constructor builds object representing current time
+    /// Default constructor builds object representing current time,
+    /// expressed in GMT
     Timestamp();
 
     /// Count seconds from the creation-according-to-unix, start of 1970
-    Timestamp(long int seconds, int nano = 0);
+    /// Optional third argument is offset in seconds from GMT 
+    /// (e.g., PST is +28800)
+    Timestamp(long int seconds, int nano = 0, int tzOffset = 0);
 
-    /// Constructor for Julian date 
+    /// Constructor for Julian date.  Must be GMT 
     Timestamp(double julian);
 
 
@@ -63,10 +66,12 @@ namespace facilities {
         where only the first three fields are required.   
 
         If the string is invalid, object will represent unix creation time.
-
-        Assume for now -- and preferably forever -- that all times are GMT.
+        If the string represents a time in a timezone other than GMT,
+        tzOffset should represent time zone offset relative to GMT in 
+        seconds so if local time is, for example, PST, tzOffset should
+        be 28800
     */
-    Timestamp(const std::string& str);
+    Timestamp(const std::string& str, int tzOffset = 0);
 
     /// Construct absolute time with specified fields
     Timestamp(int year, int month, int day, 

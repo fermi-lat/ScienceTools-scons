@@ -17,5 +17,5 @@ library  facilities -no_share *.cxx \
 application test_Util test/testUtil.cxx Util.cxx
 
 # uncomment for development
-#application test_time test/test_time.cxx Timestamp.cxx
+application test_time test/test_time.cxx Timestamp.cxx
 

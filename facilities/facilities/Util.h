@@ -86,7 +86,7 @@ namespace facilities {
 
 
 
-    /** This routine breaksdown a string into tokens, based on the
+    /** This routine breaks down a string into tokens, based on the
         characters appearing in the string @a delimiters.
         @param input       string to be tokenized
         @param delimiters  string containing one or more delimiter characters
@@ -98,21 +98,32 @@ namespace facilities {
                                std::vector<std::string> &tokens,
                                bool clear = true);
 
-    /** This routine breaksdown a string into tokens, based on the
-        characters appearing in the string @a delimiters.
-        @param input       string to be tokenized
-        @param delimiters  string containing one or more delimiter characters
-        @param tokens      map of strings to hold resulting tokens
-        @param clear       if true (default) @a tokens will be cleared
-                           at the start of processing
+    /** This routine breaks down a string into key/value token pairs and
+        stores them in the user-supplied map. , based on the
+        characters appearing in the string @a delimiters and the value
+        of @a pairDelimiter.  In a typical example, @a input could be
+        "key1=val1,key2=val2,key3=val3".  In this case invoke with
+        delimiters=std::string(",") and pairDelimiter=std::string("=")
+        (or omit pairDelimiter since it has the default value) 
+        @param input         string to be tokenized
+        @param delimiters    string containing one or more delimiter 
+                             characters
+        @param tokenMap      map of strings to hold resulting tokens
+        @param pairDelimiter string separating key and value; defaults
+                             to "=" 
+        @param clear         if true (default) @a tokens will be cleared
+                             at the start of processing
     */
-    static void stringTokenize(std::string input, const std::string &delimiters,
-			       const std::string &equal_delimiters,
-                               std::map<std::string,std::string> &tokens,
+    static void keyValueTokenize(std::string input, 
+                               const std::string &delimiters,
+                               std::map<std::string,std::string> &tokenMap,
+			       const std::string& pairDelimiter = 
+                                 std::string("="),
                                bool clear = true);
 
-    /** return the "non-directory" part of a (supposed) file identifier, @a path.
-        Environment variable translation should be done before calling @a basename.
+    /** return the "non-directory" part of a (supposed) file identifier, 
+        @a path.  Environment variable translation should be done before 
+        calling @a basename.
         @sa { Util::expandEnvVar }
         @param path        string assumed to be a file identifier. 
     */
