@@ -207,20 +207,6 @@ namespace tip {
     delete [] naxes;
   }
 
-  void FitsExtensionManager::getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const {
-    if (m_is_table) throw TipException(formatWhat("getPixel called, but object is not an image"));
-    int status = 0;
-    long coord[2] = { x + 1, y + 1 };
-    double array[2] = { 0., 0. };
-
-    // Read the given pixel:
-    fits_read_pix(m_fp, TDOUBLE, coord, 1, 0, array, 0, &status);
-    if (0 != status) throw TipException(formatWhat("getPixel could not read pixel as a double"));
-
-    // Copy the value just read:
-    pixel = *array;
-  }
-
   void FitsExtensionManager::getPixel(const std::vector<PixOrd_t> & x, double & pixel) const {
     if (m_is_table) throw TipException(formatWhat("getPixel called, but object is not an image"));
     int status = 0;
@@ -234,19 +220,6 @@ namespace tip {
 
     // Copy the value just read:
     pixel = *array;
-  }
-
-  void FitsExtensionManager::setPixel(PixOrd_t x, PixOrd_t y, const double & pixel) {
-    if (m_is_table) throw TipException(formatWhat("setPixel called, but object is not an image"));
-    if (m_read_only) throw TipException(formatWhat("setPixel called for read-only image"));
-    int status = 0;
-    long coord[2] = { x + 1, y + 1 };
-    // Copy pixel into temporary array:
-    double array[2] = { pixel, 0. };
-
-    // Write the copy to the output file:
-    fits_write_pix(m_fp, TDOUBLE, coord, 1, array, &status);
-    if (0 != status) throw TipException(formatWhat("setPixel could not write a double to a pixel"));
   }
 
   void FitsExtensionManager::setPixel(const std::vector<PixOrd_t> & x, const double & pixel) {

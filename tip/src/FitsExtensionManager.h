@@ -134,24 +134,10 @@ namespace tip {
       virtual void setImageDimensions(const std::vector<PixOrd_t> & dims);
 
       /** \brief Get a specific pixel from an image extension.
-          \param x The x ordinate of the pixel.
-          \param y The y ordinate of the pixel.
-          \param pixel The pixel value.
-      */
-      virtual void getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const;
-
-      /** \brief Get a specific pixel from an image extension.
           \param x Vector of coordinates of the pixel.
           \param pixel The pixel value.
       */
       virtual void getPixel(const std::vector<PixOrd_t> & x, double & pixel) const;
-
-      /** \brief Set a specific pixel in an image extension.
-          \param x The x ordinate of the pixel.
-          \param y The y ordinate of the pixel.
-          \param pixel The pixel value.
-      */
-      virtual void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel);
 
       /** \brief Set a specific pixel in an image extension.
           \param x Vector of coordinates of the pixel.
