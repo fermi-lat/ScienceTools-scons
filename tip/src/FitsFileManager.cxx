@@ -44,14 +44,16 @@ namespace tip {
     // Open the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
     if (0 != status) {
-      // Opening didn't work, so create file.
-      createFile(file_name);
       fp = 0; // Paranoid.
 
-      // Try again to open it.
-      fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
-      if (0 != status)
-        throw TipException(std::string("Unable to open file named \"") + file_name + "\" with read/write access");
+      status = 0;
+
+      // Opening didn't work, so create file.
+      fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
+      if (0 != status) {
+        fits_close_file(fp, &status);
+        throw TipException(std::string("Unable to create file named \"") + file_name + "\"");
+      }
     }
 
     // Create new image extension at end of file.
