@@ -59,7 +59,7 @@ void MapParameters::setup()
     m_use_lb = getValue<bool>("uselb", false);
 
     // name of FITS extension or ROOT TTree
-    m_tableName =getValue<std::string>("table_name");
+    m_tableName =getValue<std::string>("table_name", "");
 
     // names for ra and dec columns, with defaults
     m_raName= getValue<std::string>("ra_name", "ra");
