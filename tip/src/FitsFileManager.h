@@ -54,6 +54,8 @@ namespace tip {
     private:
       // Get the extsnsion identifier (name or number).
       static void getExtId(fitsfile * fp, std::string & ext_id);
+
+      static void closeFile(fitsfile *fp, int status);
   };
 
 }

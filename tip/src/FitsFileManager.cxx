@@ -33,7 +33,7 @@ namespace tip {
     // Create the file.
     fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
     if (0 != status) {
-      fits_close_file(fp, &status);
+      closeFile(fp, status);
       throw TipException(status, "Unable to create file named \"" + full_name + '"');
     }
 
@@ -43,13 +43,13 @@ namespace tip {
       // No template: need to create primary image explicitly.
       fits_create_img(fp, FLOAT_IMG, 0, dims, &status);
       if (0 != status) {
-        fits_close_file(fp, &status);
+        closeFile(fp, status);
         throw TipException(status, "Unable to create primary image in file named \"" + full_name + '"');
       }
     }
 
     // Close the file.
-    fits_close_file(fp, &status);
+    closeFile(fp, status);
     if (0 != status)
       throw TipException(status, "Unable to close newly created file named \"" + file_name + "\"");
   }
@@ -65,7 +65,7 @@ namespace tip {
       status = 0;
       fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
       if (0 != status) {
-        fits_close_file(fp, &status);
+        closeFile(fp, status);
         throw TipException(status, "Unable to open or create file named \"" + file_name + "\"");
       }
     }
@@ -73,7 +73,7 @@ namespace tip {
     // Create new image extension at end of file.
     fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
     if (0 != status) {
-      fits_close_file(fp, &status);
+      closeFile(fp, status);
       throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
     }
 
@@ -81,7 +81,7 @@ namespace tip {
     int hdu_num = 0;
     fits_get_hdu_num(fp, &hdu_num);
     if (0 != status) {
-      fits_close_file(fp, &status);
+      closeFile(fp, status);
       throw TipException(status, std::string("Unable to determine the extension number of image \"") + image_name + "\" in file \"" +
         file_name + "\"");
     }
@@ -92,12 +92,12 @@ namespace tip {
     else strcpy(key_name, "EXTNAME");
     fits_update_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
     if (0 != status) {
-      fits_close_file(fp, &status);
+      closeFile(fp, status);
       throw TipException(status, std::string("Unable to name image in file \"") + file_name + "\"");
     }
 
     // Close the file; not interested in it anymore.
-    fits_close_file(fp, &status);
+    closeFile(fp, status);
     if (0 != status)
       throw TipException(status, "Unable to close appended image named \"" + image_name + "\" in file \"" + file_name + "\"");
   }
@@ -113,7 +113,7 @@ namespace tip {
       status = 0;
       fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
       if (0 != status) {
-        fits_close_file(fp, &status);
+        closeFile(fp, status);
         throw TipException(status, "Unable to open or create file named \"" + file_name + "\"");
       }
     }
@@ -122,7 +122,7 @@ namespace tip {
     fits_create_tbl(fp, BINARY_TBL, 0, 0, 0, 0, 0, const_cast<char *>(table_name.c_str()), &status);
 
     // Close the file; not interested in it anymore.
-    fits_close_file(fp, &status);
+    closeFile(fp, status);
 
     if (0 != status)
       throw TipException(status, "Unable to create table named \"" + table_name + "\" in file \"" + file_name + "\"");
@@ -143,7 +143,7 @@ namespace tip {
     // Make sure we scan starting from the first extension, regardless of the full file name used.
     fits_movabs_hdu(fp, 1, 0, &status);
     if (0 != status) {
-      fits_close_file(fp, &status);
+      closeFile(fp, status);
       throw TipException(status, std::string("Unable to move to primary HDU in file named \"") + file_name);
     }
 
@@ -159,7 +159,7 @@ namespace tip {
       fits_movrel_hdu(fp, 1, 0, &status);
     }
     // Clean up.
-    fits_close_file(fp, &status);
+    closeFile(fp, status);
 
     // Flag any condition other than 0 and EOF.
     if (0 != status && END_OF_FILE != status)
@@ -171,7 +171,7 @@ namespace tip {
     int status = 0;
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READONLY, &status);
     if (0 != status) return false;
-    fits_close_file(fp, &status);
+    closeFile(fp, status);
     return true;
   }
 
@@ -197,4 +197,7 @@ namespace tip {
     ext_id = tmp_id;
   }
 
+  void FitsFileManager::closeFile(fitsfile *fp, int status) {
+    fits_close_file(fp, &status);
+  }
 }
