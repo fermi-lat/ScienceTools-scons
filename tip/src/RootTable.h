@@ -80,6 +80,14 @@ namespace tip {
       */
       virtual bool isTable() const { return true; }
 
+      /** \brief Return name of this extension.
+      */
+      virtual const std::string & getName() const;
+
+      /** \brief Set name of this extension.
+      */
+      virtual void setName(const std::string & name);
+
       // Non-virtual helper functions for ITabularData interface:
 
       /** \brief Return the number of records in the current tabular data object (the number of rows

@@ -15,8 +15,7 @@ namespace tip {
 
   FitsTable::FitsTable(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_header(file_name, ext_name, filter, read_only),
-    m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_col_name_lookup(), m_fields(), m_columns(),
+    m_file_name(file_name), m_filter(filter), m_col_name_lookup(), m_fields(), m_columns(),
     m_num_records(0) { openTable(); }
 
   // Close file automatically while destructing.
@@ -33,6 +32,10 @@ namespace tip {
   Header & FitsTable::getHeader() { return m_header; }
 
   const Header & FitsTable::getHeader() const { return m_header; }
+
+  const std::string & FitsTable::getName() const { return m_header.getName(); }
+
+  void FitsTable::setName(const std::string & name) { m_header.setName(name); }
 
   Index_t FitsTable::getNumRecords() const {
     return m_num_records;
@@ -247,7 +250,8 @@ namespace tip {
   std::string FitsTable::formatWhat(const std::string & msg) const {
     std::ostringstream msg_str;
     msg_str << msg;
-    if (!m_ext_name.empty()) msg_str << " in extension \"" << m_ext_name << '"';
+    const std::string & ext_name(getName());
+    if (!ext_name.empty()) msg_str << " in extension \"" << ext_name << '"';
     msg_str << " in file \"" << m_file_name << '"';
     return msg_str.str();
   }

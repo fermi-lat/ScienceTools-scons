@@ -62,6 +62,14 @@ namespace tip {
       */
       virtual bool isTable() const { return true; }
 
+      /** \brief Return name of this extension.
+      */
+      virtual const std::string & getName() const;
+
+      /** \brief Set name of this extension.
+      */
+      virtual void setName(const std::string & name);
+
       /** \brief Return the number of records in the current tabular data object (the number of rows
           in the FITS file).
       */
@@ -137,7 +145,6 @@ namespace tip {
 
       FitsHeader m_header;
       std::string m_file_name;
-      std::string m_ext_name;
       std::string m_filter;
       std::map<std::string, FieldIndex_t> m_col_name_lookup;
       FieldCont m_fields;

@@ -36,6 +36,14 @@ namespace tip {
       /** \brief Returns true if the extension is a table, false otherwise.
       */
       virtual bool isTable() const = 0;
+
+      /** \brief Return name of this extension.
+      */
+      virtual const std::string & getName() const = 0;
+
+      /** \brief Set name of this extension.
+      */
+      virtual void setName(const std::string & name) = 0;
   };
 
 }

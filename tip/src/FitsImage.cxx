@@ -13,8 +13,7 @@ namespace tip {
 
   FitsImage::FitsImage(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_header(file_name, ext_name, filter, read_only),
-    m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_image_dimensions() { openImage(); }
+    m_file_name(file_name), m_filter(filter), m_image_dimensions() { openImage(); }
 
   // Close file automatically while destructing.
   FitsImage::~FitsImage() { close(); }
@@ -28,6 +27,10 @@ namespace tip {
   Header & FitsImage::getHeader() { return m_header; }
 
   const Header & FitsImage::getHeader() const { return m_header; }
+
+  const std::string & FitsImage::getName() const { return m_header.getName(); }
+
+  void FitsImage::setName(const std::string & name) { m_header.setName(name); }
 
   const std::vector<PixOrd_t> & FitsImage::getImageDimensions() const {
     return m_image_dimensions;
@@ -152,7 +155,8 @@ namespace tip {
   std::string FitsImage::formatWhat(const std::string & msg) const {
     std::ostringstream msg_str;
     msg_str << msg;
-    if (!m_ext_name.empty()) msg_str << " in extension \"" << m_ext_name << '"';
+    const std::string & ext_name(getName());
+    if (!ext_name.empty()) msg_str << " in extension \"" << ext_name << '"';
     msg_str << " in file \"" << m_file_name << '"';
     return msg_str.str();
   }

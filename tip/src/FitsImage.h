@@ -58,6 +58,14 @@ namespace tip {
       */
       virtual bool isTable() const { return false; }
 
+      /** \brief Return name of this extension.
+      */
+      virtual const std::string & getName() const;
+
+      /** \brief Set name of this extension.
+      */
+      virtual void setName(const std::string & name);
+
       /** \brief Get the dimensionality of an image.
       */
       virtual const std::vector<PixOrd_t> & getImageDimensions() const;
@@ -104,7 +112,6 @@ namespace tip {
 
       FitsHeader m_header;
       std::string m_file_name;
-      std::string m_ext_name;
       std::string m_filter;
       std::vector<PixOrd_t> m_image_dimensions;
   };
