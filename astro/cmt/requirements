@@ -1,6 +1,6 @@
 package astro
 
-version v1r0p1	
+version v1r0p2	
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -12,6 +12,7 @@ use CLHEP * IExternal
 
 apply_pattern package_include
 apply_pattern package_linkopts
+apply_pattern package_stamps
 
 private
 
@@ -25,6 +26,13 @@ library astro -no_share \
  -s=wcslib  $(source) *.c
 
 # simple program to test basic functionality
+
+pattern package_test \
+ private ; \
+ macro test_source "test/*.cxx " WIN32 "-s=../src/test *.h *.cxx " ; \
+ application test_<package> -group=test $(test_source) <extra>; \
+ public
+
 apply_pattern package_test
 
 # this is the test program from G. Tosti
