@@ -49,7 +49,7 @@ public:
     /**
     @brief loop over all internal bins, request the intensity from a functor
     */
-    void fill( Requester& req);
+    void fill( const Requester& req);
 
     /** brief clear the image, putting nulls around a AIT map
     */

@@ -101,7 +101,7 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SkyImage::fill(Requester& req)
+void SkyImage::fill(const Requester& req)
 {
 
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
