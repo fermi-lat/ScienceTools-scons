@@ -12,6 +12,10 @@
 
 #include "evtbin/Gti.h"
 
+namespace tip {
+   class Table;
+}
+
 namespace dataSubselector {
 
 /**

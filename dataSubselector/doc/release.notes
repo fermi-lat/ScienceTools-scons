@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3      08-Dec-04   JC   interface using new CutBase hierarchy
     v2r4    07-Dec-04   JC   Exposed CutBase hierarchy to public interface 
                              and added introspection for use by Likelihood
     v2r3    04-Dec-04   JC   Add CutController and modify dataSubselector app

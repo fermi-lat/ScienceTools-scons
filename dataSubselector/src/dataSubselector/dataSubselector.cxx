@@ -15,6 +15,7 @@
 #include "st_app/StAppFactory.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 #include "dataSubselector/CutController.h"
 

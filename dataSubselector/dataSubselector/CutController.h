@@ -10,6 +10,7 @@
 #define dataSubselector_CutController_h
 
 #include <string>
+
 #include "dataSubselector/Cuts.h"
 
 namespace st_app {
@@ -24,6 +25,10 @@ namespace dataSubselector {
 
 /**
  * @class CutController
+ * @brief Controller interface between application and CutBase hierarchy.
+ * @author J. Chiang
+ *
+ * $Header$
  */
 
 class CutController {

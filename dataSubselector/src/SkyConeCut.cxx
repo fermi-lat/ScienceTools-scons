@@ -6,20 +6,22 @@
  * $Header$
  */
 
+#include <iostream>
 #include <stdexcept>
 
 #include "facilities/Util.h"
 
-#include "dataSubselector/Cuts.h"
+#include "tip/Table.h"
+
+#include "dataSubselector/SkyConeCut.h"
 
 namespace dataSubselector {
 
-Cuts::SkyConeCut::SkyConeCut(const std::string & type,
-                             const std::string & unit, 
-                             const std::string & value) 
-   : Cuts::CutBase("SkyCone") {
+SkyConeCut::SkyConeCut(const std::string & type,
+                       const std::string & unit, 
+                       const std::string & value) : CutBase("SkyCone") {
    if (unit.find("deg") != 0) {
-      throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
+      throw std::runtime_error("dataSubselector::SkyConeCut:\n" +
                                std::string("Unsupported unit: ") + unit);
    }
    std::vector<std::string> coordSys;
@@ -38,27 +40,26 @@ Cuts::SkyConeCut::SkyConeCut(const std::string & type,
       m_ra = m_coneCenter.ra();
       m_dec = m_coneCenter.dec();
    } else {
-      throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
+      throw std::runtime_error("dataSubselector::SkyConeCut:\n" +
                                std::string("Unsupported type: ") + type);
    }
 }
 
-void Cuts::SkyConeCut::getArgs(const std::string & value, 
-                               std::vector<std::string> & args) const {
+void SkyConeCut::getArgs(const std::string & value, 
+                         std::vector<std::string> & args) const {
    std::vector<std::string> tokens;
    facilities::Util::stringTokenize(value, "()", tokens);
    facilities::Util::stringTokenize(tokens.at(1), ",", args);
 }
 
-bool Cuts::SkyConeCut::accept(tip::ConstTableRecord & row) const {
+bool SkyConeCut::accept(tip::ConstTableRecord & row) const {
    double ra, dec;
    row["RA"].get(ra);
    row["DEC"].get(dec);
    return accept(ra, dec);
 }
 
-bool Cuts::
-SkyConeCut::accept(const std::map<std::string, double> & params) const {
+bool SkyConeCut::accept(const std::map<std::string, double> & params) const {
    std::map<std::string, double>::const_iterator ra;
    std::map<std::string, double>::const_iterator dec;
    if ( (ra = params.find("RA")) != params.end() &&
@@ -68,7 +69,7 @@ SkyConeCut::accept(const std::map<std::string, double> & params) const {
    return true;
 }
 
-bool Cuts::SkyConeCut::operator==(const CutBase & arg) const {
+bool SkyConeCut::operator==(const CutBase & arg) const {
    try {
       SkyConeCut & rhs = 
          dynamic_cast<SkyConeCut &>(const_cast<CutBase &>(arg));
@@ -79,7 +80,7 @@ bool Cuts::SkyConeCut::operator==(const CutBase & arg) const {
    }
 }
 
-bool Cuts::SkyConeCut::supercedes(const CutBase & cut) const {
+bool SkyConeCut::supercedes(const CutBase & cut) const {
    if (cut.type() != "SkyCone") {
       return false;
    }
@@ -92,9 +93,8 @@ bool Cuts::SkyConeCut::supercedes(const CutBase & cut) const {
    return false;
 }
 
-void Cuts::SkyConeCut::
-getKeyValues(std::string & type, std::string & unit,
-             std::string & value, std::string & ref) const {
+void SkyConeCut::getKeyValues(std::string & type, std::string & unit,
+                              std::string & value, std::string & ref) const {
    (void)(ref);
    std::ostringstream val;
    val << "CIRCLE(" 
@@ -106,7 +106,7 @@ getKeyValues(std::string & type, std::string & unit,
    value = val.str();
 }
 
-bool Cuts::SkyConeCut::accept(double ra, double dec) const {
+bool SkyConeCut::accept(double ra, double dec) const {
    double separation = m_coneCenter.difference(astro::SkyDir(ra, dec));
    return separation*180./M_PI <= m_radius;
 }

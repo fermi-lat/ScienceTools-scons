@@ -20,6 +20,7 @@
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
@@ -158,7 +159,7 @@ void DssTests::compareCuts() {
    my_cuts.addRangeCut("RA", "deg", 83, 93);
    my_cuts.addSkyConeCut(83., 22., 20);
    my_cuts.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
-                       dataSubselector::Cuts::CLOSED, 1);
+                       dataSubselector::RangeCut::CLOSED, 1);
       
    long npts(0);
    long npts2(0);

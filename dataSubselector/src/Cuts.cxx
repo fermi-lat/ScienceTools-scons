@@ -20,8 +20,12 @@
 
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
+#include "tip/Table.h"
 
 #include "dataSubselector/Cuts.h"
+#include "dataSubselector/GtiCut.h"
+#include "dataSubselector/RangeCut.h"
+#include "dataSubselector/SkyConeCut.h"
 
 namespace {
    void toUpper(std::string & name) {
@@ -168,7 +172,8 @@ bool Cuts::accept(const std::map<std::string, double> & params) const {
 unsigned int Cuts::addRangeCut(const std::string & colname,
                                const std::string & unit,
                                double minVal, double maxVal, 
-                               RangeType type, unsigned int indx) {
+                               RangeCut::IntervalType type,
+                               unsigned int indx) {
    return addCut(new RangeCut(colname, unit, minVal, maxVal, type, indx));
 }
 
@@ -240,46 +245,6 @@ bool Cuts::operator==(const Cuts & rhs) const {
 void Cuts::writeCuts(std::ostream & stream) const {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       m_cuts.at(i)->writeCut(stream, i + 1);
-   }
-}
-
-void Cuts::CutBase::
-writeCut(std::ostream & stream, unsigned int keynum) const {
-   std::string type, unit, value, ref("");
-   getKeyValues(type, unit, value, ref);
-   stream << "DSTYP" << keynum << ": " << type << "\n"
-          << "DSUNI" << keynum << ": " << unit << "\n"
-          << "DSVAL" << keynum << ": " << value << "\n";
-   if (ref != "") {
-      stream << "DSREF" << keynum << ": " << ref << "\n";
-   }
-   stream << std::endl;
-}
-
-void Cuts::CutBase::writeDssKeywords(tip::Header & header,
-                                     unsigned int keynum) const {
-   std::string type, unit, value, ref("");
-   getKeyValues(type, unit, value, ref);
-   writeDssKeywords(header, keynum, type, unit, value, ref);
-}
-
-void Cuts::CutBase::writeDssKeywords(tip::Header & header, 
-                                     unsigned int keynum,
-                                     const std::string & type, 
-                                     const std::string & unit,
-                                     const std::string & value,
-                                     const std::string & ref) const {
-   std::ostringstream key1, key2, key3;
-   key1 << "DSTYP" << keynum;
-   header[key1.str()].set(type);
-   key2 << "DSUNI" << keynum;
-   header[key2.str()].set(unit);
-   key3 << "DSVAL" << keynum;
-   header[key3.str()].set(value);
-   if (ref != "") {
-      std::ostringstream key4;
-      key4 << "DSREF" << keynum;
-      header[key4.str()].set(ref);
    }
 }
 

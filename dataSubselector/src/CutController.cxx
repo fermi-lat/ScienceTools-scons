@@ -67,16 +67,16 @@ void CutController::addRangeCut(const std::string & colname,
                                 const std::string & unit,
                                 double minVal, double maxVal, 
                                 unsigned int indx) {
-   Cuts::RangeType type;
+   RangeCut::IntervalType type;
    if (minVal == 0 && maxVal == 0) {
       return;
    }
    if (minVal != 0 && maxVal != 0) {
-      type = Cuts::CLOSED;
+      type = RangeCut::CLOSED;
    } else if (minVal != 0 && maxVal == 0) {
-      type = Cuts::MINONLY;
+      type = RangeCut::MINONLY;
    } else if (minVal == 0 && maxVal != 0) {
-      type = Cuts::MAXONLY;
+      type = RangeCut::MAXONLY;
    }
    std::vector<std::string> tokens;
    facilities::Util::stringTokenize(colname, "[]", tokens);

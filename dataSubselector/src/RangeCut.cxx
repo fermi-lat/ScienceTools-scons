@@ -6,14 +6,18 @@
  * $Header$
  */
 
+#include <iostream>
+
 #include "facilities/Util.h"
 
-#include "dataSubselector/Cuts.h"
+#include "tip/Table.h"
+
+#include "dataSubselector/RangeCut.h"
 
 namespace dataSubselector {
 
-Cuts::RangeCut::RangeCut(const std::string & colname, const std::string & unit,
-                         double minVal, double maxVal, RangeType type,
+RangeCut::RangeCut(const std::string & colname, const std::string & unit,
+                         double minVal, double maxVal, IntervalType type,
                          unsigned int indx)
    : CutBase("range"), m_colname(colname), m_unit(unit),
      m_min(minVal), m_max(maxVal), m_type(type), m_index(indx),
@@ -21,7 +25,7 @@ Cuts::RangeCut::RangeCut(const std::string & colname, const std::string & unit,
    setFullName();
 }
 
-Cuts::RangeCut::RangeCut(const std::string & type,
+RangeCut::RangeCut(const std::string & type,
                          const std::string & unit, 
                          const std::string & value,
                          unsigned int indx) 
@@ -43,13 +47,12 @@ Cuts::RangeCut::RangeCut(const std::string & type,
    setFullName();
 }
 
-bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
+bool RangeCut::accept(tip::ConstTableRecord & row) const {
    double value = extractValue(row);
    return accept(value);
 }
 
-bool Cuts::
-RangeCut::accept(const std::map<std::string, double> & params) const {
+bool RangeCut::accept(const std::map<std::string, double> & params) const {
    std::map<std::string, double>::const_iterator it;
    if ( (it = params.find(m_fullName)) != params.end()) {
       double value = it->second;
@@ -58,7 +61,7 @@ RangeCut::accept(const std::map<std::string, double> & params) const {
    return true;
 }
 
-bool Cuts::RangeCut::operator==(const CutBase & arg) const {
+bool RangeCut::operator==(const CutBase & arg) const {
    try {
       RangeCut & rhs = dynamic_cast<RangeCut &>(const_cast<CutBase &>(arg));
       return (m_colname == rhs.m_colname && m_unit == rhs.m_unit &&
@@ -69,7 +72,7 @@ bool Cuts::RangeCut::operator==(const CutBase & arg) const {
    }
 }
 
-bool Cuts::RangeCut::supercedes(const CutBase & cut) const {
+bool RangeCut::supercedes(const CutBase & cut) const {
    if (cut.type() != "range") {
       return false;
    }
@@ -84,14 +87,13 @@ bool Cuts::RangeCut::supercedes(const CutBase & cut) const {
    return false;
 }
 
-void Cuts::RangeCut::
-getKeyValues(std::string & type, std::string & unit,
-             std::string & value, std::string & ref) const {
+void RangeCut::getKeyValues(std::string & type, std::string & unit,
+                            std::string & value, std::string & ref) const {
    (void)(ref);
    std::ostringstream val;
-   if (m_type == Cuts::MINONLY) {
+   if (m_type == MINONLY) {
       val << m_min << ":";
-   } else if (m_type == Cuts::MAXONLY) {
+   } else if (m_type == MAXONLY) {
       val << ":" << m_max;
    } else {
       val << m_min << ":" << m_max;
@@ -101,16 +103,16 @@ getKeyValues(std::string & type, std::string & unit,
    value = val.str();
 }
 
-bool Cuts::RangeCut::accept(double value) const {
-   if (m_type == Cuts::MINONLY) {
+bool RangeCut::accept(double value) const {
+   if (m_type == MINONLY) {
       return m_min <= value;
-   } else if (m_type == Cuts::MAXONLY) {
+   } else if (m_type == MAXONLY) {
       return value <= m_max;
    }
    return m_min <= value && value <= m_max;
 }
 
-double Cuts::RangeCut::extractValue(tip::ConstTableRecord & row) const {
+double RangeCut::extractValue(tip::ConstTableRecord & row) const {
    if (m_index) {
       std::vector<double> tableVector;
       row[m_colname].get(tableVector);
@@ -121,7 +123,7 @@ double Cuts::RangeCut::extractValue(tip::ConstTableRecord & row) const {
    return value;
 }
 
-void Cuts::RangeCut::setFullName() {
+void RangeCut::setFullName() {
    if (m_index) {
       std::ostringstream name;
       name << m_colname << "[" << m_index << "]";
