@@ -21,7 +21,8 @@ namespace astro {
     class EarthOrbit   {
     public:
         
-        EarthOrbit();
+        //! specify launch date in constructor
+        EarthOrbit(JulianDate launch= JulianDate(2005 ,7,18,0.0));
         
         /** 
         * set up for calculation, with orbital parameters currently wired in
@@ -95,6 +96,7 @@ namespace astro {
         double m_dwdt;
         
         double m_a, m_alt;
+        JulianDate m_launch;
         
         static double s_altitude; //<! nominal altitude (km)
         static double s_incl;     //<! orbit inclination in degrees

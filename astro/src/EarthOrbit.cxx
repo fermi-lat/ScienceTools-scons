@@ -24,8 +24,6 @@ namespace {
     
     inline double sqr(double x){return x*x;}
     
-    astro::JulianDate JD_missionStart =astro::JulianDate(2001, 1, 1,0.0);
-    astro::JulianDate JDStart =        astro::JulianDate(2005 ,7,18,0.0);
 }
 
 // static constants reflecting orbit parameters
@@ -40,7 +38,7 @@ double EarthOrbit::s_radius = 6378145.; //m
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-EarthOrbit::EarthOrbit()
+EarthOrbit::EarthOrbit(JulianDate launch) : m_launch(launch)
 {
     initialize();
 }
@@ -77,7 +75,7 @@ void EarthOrbit::initialize()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Hep3Vector EarthOrbit::position(JulianDate JD) const
 {
-    double elapse = (JD - JDStart)*SecondsPerDay;
+    double elapse = (JD - m_launch)*SecondsPerDay;
     
     double M=m_M0+m_dMdt*elapse;
     
@@ -120,17 +118,17 @@ double EarthOrbit::Kepler(double MeanAnomaly,double Eccentricity)
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 JulianDate EarthOrbit::dateFromSeconds(double seconds)const{
-    return JDStart+(seconds/SecondsPerDay);
+    return m_launch+(seconds/SecondsPerDay);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 JulianDate EarthOrbit::mjdFromSeconds(double seconds)const{
-   double MJDStart = JDStart - 2400000.5;
+   double MJDStart = m_launch - 2400000.5;
    return MJDStart+(seconds/SecondsPerDay);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double EarthOrbit::phase(JulianDate jd) const
 {
-    double elapse = (jd - JDStart)*SecondsPerDay;
+    double elapse = (jd - m_launch)*SecondsPerDay;
     return m_M0+m_dMdt*elapse;
 }
 
