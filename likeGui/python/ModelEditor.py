@@ -20,7 +20,7 @@ import mySimpleDialog
 
 import readXml
 import FuncFactory as funcFactory
-import findSrcs
+import extractSources
 ds9 = None
 
 class RootWindow(Tk.Tk):
@@ -151,7 +151,7 @@ class RootWindow(Tk.Tk):
             self.srcModel[src] = new_srcModel[src]
         self.modelEditor.fill()
     def extract(self):
-        sources = findSrcs.SourceRegionDialog(self)
+        sources = extractSources.SourceRegionDialog(self)
         if sources.haveSources:
             self.open(sources.filename.value())
     def save(self):
@@ -266,7 +266,7 @@ class ds9Display(object):
                 os.remove(self.file)
             except OSError:
                 pass
-            region_file = findSrcs.ds9_region_file(self.file, fk5=1)
+            region_file = extractSources.ds9_region_file(self.file, fk5=1)
             for srcName in self.root.srcModel.names():
                 src = self.root.srcModel[srcName]
                 if src.type == "PointSource":
@@ -285,7 +285,7 @@ class ds9Import(object):
             ds9.cd(os.path.abspath(os.curdir))
             ds9.save_regions(self.file)
             for coords in read_coords(self.file):
-                src = readXml.Source(copy.deepcopy(findSrcs.ptSrc()))
+                src = readXml.Source(copy.deepcopy(extractSources.ptSrc()))
                 src.name = "point source %i" % self.root.ptsrcs
                 self.root.ptsrcs += 1
                 src.spatialModel.RA.value = coords[0]
