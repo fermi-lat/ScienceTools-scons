@@ -14,6 +14,7 @@
 #include "FluxSvc/../src/CompositeSource.h"
 #include "FluxSvc/../src/SpectrumFactoryTable.h"
 #include "FluxSvc/../src/FluxMgr.h"
+#include "FluxSvc/ISpectrumFactory.h"
 
 #include "latResponse/Irfs.h"
 
@@ -153,7 +154,7 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
 #define DLL_DECL_SPECTRUM(x)   extern const ISpectrumFactory& x##Factory; x##Factory.addRef();
 
 void Simulator::fluxLoad() {
-   // These are the spectra that we want to make available.
+// These are the spectra that we want to make available.
 //    DLL_DECL_SPECTRUM( CHIMESpectrum);
 //    DLL_DECL_SPECTRUM( AlbedoPSpectrum);
 //    DLL_DECL_SPECTRUM( FILESpectrum);
