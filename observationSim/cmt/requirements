@@ -34,7 +34,7 @@ WIN32 '/I..\src /D"USE_GOODI" /wd4290'
 
 macro_prepend cflags "" Linux "-g -O"
 
-macro_append ROOT_libs ""  WIN32 " libHisT.lib "
+macro_append ROOT_linkopts " -lHist"  WIN32 " libHisT.lib "
 
 apply_pattern package_linkopts
 
