@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r1p0   27-Nov-03   JCT  Tagging James' new import, for definiteness
     v0r0p1   10-Nov-03   JC   Use James' test program as package unit test.
     v0       03-Nov-03   JC   Initial import
     @endverbatim
