@@ -22,10 +22,10 @@ double  Exposure::Index::cosmin = 0;
 Exposure::Exposure(double skybin, double costhetabin) : m_total(0)
 {
     // set binsizes in the key
-    Index::skybinsize = skybin;
-    Index::ra_factor  = 360./skybin;
-    Index::dec_factor = 180./skybin;
-    Index::cosfactor  = (1.-Index::cosmin)/costhetabin;
+    Index::skybinsize = int(skybin);
+    Index::ra_factor  = int(360./skybin);
+    Index::dec_factor = int(180./skybin);
+    Index::cosfactor  = int((1.-Index::cosmin)/costhetabin);
 
     //total size to reserve
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
@@ -42,7 +42,7 @@ Exposure::Exposure(const ExposureCube& cube, double total)
 
     std::cout << "Loaded exposure map from a hypercube, size is " << m_exposureMap.size();
     if( size != m_exposureMap.size() ) {
-        throw std::runtime_error("wrong size");
+        throw std::invalid_argument("wrong size");
     }
 #if 0
     double tot = std::accumulate(m_exposureMap.begin(), m_exposureMap.end(), 0.0);
@@ -59,7 +59,7 @@ void Exposure::load(const std::string& textInputFilename, double tfirst, double 
         input_file.open(textInputFilename.c_str());
         if(! input_file.is_open())
         {
-            throw std::runtime_error(std::string("Unable to open file:  ")+ textInputFilename);
+            throw std::invalid_argument(std::string("Unable to open file:  ")+ textInputFilename);
             exit(0);
         }
         //ok, the file is open - now, get all the data while the file still has more:
