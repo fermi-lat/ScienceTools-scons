@@ -15,7 +15,7 @@ namespace tip {
 
   TestTable::TestTable(): m_fits_table(0), m_root_table(0) {}
 
-  TestTable::~TestTable() throw() { delete m_root_table; delete m_fits_table; }
+  TestTable::~TestTable() throw() {}
 
   int TestTable::test(int status) {
     // Use inherited status to set initial status
@@ -27,6 +27,10 @@ namespace tip {
     // Test new browsing capabilities:
     getValidFieldsTest();
 
+    // Clean up.
+    delete m_root_table; m_root_table = 0;
+    delete m_fits_table; m_fits_table = 0;
+
     return getStatus();
   }
 
@@ -36,6 +40,7 @@ namespace tip {
     try {
       m_fits_table = new Table(0);
       ReportUnexpected("creating Table object with NULL pointer succeeded");
+      delete m_fits_table; m_fits_table = 0;
     } catch(const TipException & x) {
       ReportExpected("creating Table object with NULL pointer failed", x);
     }
@@ -50,7 +55,7 @@ namespace tip {
       m_fits_table = new Table(data);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
       ReportWarning("FITS table tests will be skipped!");
     }
 
@@ -61,7 +66,7 @@ namespace tip {
       m_root_table = new Table(data);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
       ReportWarning("Root table tests will be skipped!");
     }
   }
@@ -81,11 +86,11 @@ std::cout << "*************** field " << *it << std::endl;
 
         try {
         } catch (const TipException & x) {
-          ReportUnexpected(msg + " failed");
+          ReportUnexpected(msg + " failed", x);
         }
 
       } catch (const TipException & x) {
-        ReportUnexpected(msg + " failed");
+        ReportUnexpected(msg + " failed", x);
       }
     }
     if (0 != m_root_table) {
@@ -101,11 +106,11 @@ std::cout << "*************** field " << *it << std::endl;
 
         try {
         } catch (const TipException & x) {
-          ReportUnexpected(msg + " failed");
+          ReportUnexpected(msg + " failed", x);
         }
 
       } catch (const TipException & x) {
-        ReportUnexpected(msg + " failed");
+        ReportUnexpected(msg + " failed", x);
       }
     }
   }
