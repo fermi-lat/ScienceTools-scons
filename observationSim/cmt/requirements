@@ -12,7 +12,6 @@ use latResponse v*
 use Goodi v*
 use astro v0*
 use facilities v*
-use xml v*
 use cfitsio v1* IExternal
 use CLHEP v2* IExternal
 
@@ -21,7 +20,6 @@ apply_pattern package_include
 private
 
 use hoops v*
-use hoopsUtil v*
 
 #use python v2* IExternal
 #macro pydir ../python/
@@ -41,9 +39,6 @@ apply_pattern package_linkopts
 # make sure various applications get built when library changes
 macro test_observationSimstamps "observationSim.stamp"
 macro obsSimstamps "obsSim.stamp"
-macro exposureMapstamps "exposureMap.stamp"
-macro testGoodiReadstamps "testGoodiRead.stamp"
-macro testScDataReadstamps "testScDataRead.stamp"
 
 # standard package library
 macro my_headers "" WIN32 "../observationSim/*.h *.h"
@@ -57,18 +52,8 @@ library observationSim -no_share $(my_headers) \
  Roi.cxx\
  $(pydir)/*.i
 
-# These needed for FITS templates.
-set INFILES "$(GOODIROOT)/Data"
-set TPLDIR "$(GOODIROOT)/Templates"
-
 # test applications
 application test_observationSim test/main.cxx
-#application testGoodiWrite test/testGoodiWrite.cxx
-#application testGoodiRead test/testGoodiRead.cxx
-#application testScDataRead test/testScDataRead.cxx
 
 # O2 prototype
 application obsSim test/obsSim.cxx
-
-# exposure map calculator
-#application exposureMap test/exposureMap.cxx

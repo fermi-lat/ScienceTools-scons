@@ -17,7 +17,8 @@
 
 #include "facilities/Util.h"
 
-#include "hoopsUtil/RunParams.h"
+#include "hoops/hoops.h"
+#include "hoops/hoops_prompt_group.h"
 
 #include "astro/SkyDir.h"
 
@@ -58,13 +59,13 @@ int main(int iargc, char * argv[]) {
 #endif
    
    try {
-      hoopsUtil::RunParams params(iargc, argv);
+      hoops::ParPromptGroup pars(iargc, argv);
+      pars.Prompt();
 
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
-      long seed = params.getParam<long>("Random_seed");
-      HepRandom hepRandom(seed);
+      HepRandom hepRandom(pars["Random_seed"]);
 
 // observationSim::Simulator requires a specific "TimeCandle" source,
 // so time_source.xml must always be loaded.
@@ -73,7 +74,7 @@ int main(int iargc, char * argv[]) {
 
 // Fetch any user-specified xml file of flux-style source definitions,
 // replacing the default list.
-      std::string xmlFiles = params.getParam<std::string>("XML_source_file");
+      std::string xmlFiles = pars["XML_source_file"];
       if (xmlFiles == "none" || xmlFiles == "") { // use the default
          xmlFiles = "$(OBSERVATIONSIMROOT)/xml/xmlFiles.dat";
       }
@@ -96,7 +97,7 @@ int main(int iargc, char * argv[]) {
          exit(-1);
       }
 // Read the file containing the list of sources.
-      std::string srcListFile = params.getParam<std::string>("Source_list");
+      std::string srcListFile = pars["Source_list"];
       std::vector<std::string> srcNames;
       if (::fileExists(srcListFile)) { 
          ::readLines(srcListFile, srcNames);
@@ -111,14 +112,10 @@ int main(int iargc, char * argv[]) {
       }
    
 // Get the number of events.
-      double count = params.getParam<double>("Number_of_events");
-
-// Get the flag to interpret nevents as simulation time in seconds.
-      bool useSimTime = params.getParam<bool>("Use_as_sim_time");
+      double count = pars["Number_of_events"];
 
 // Ascertain which response functions to use.
-      std::string responseFuncs 
-         = params.getParam<std::string>("Response_functions");
+      std::string responseFuncs = pars["Response_functions"];
       
       std::vector<latResponse::Irfs *> respPtrs;
 
@@ -144,10 +141,9 @@ int main(int iargc, char * argv[]) {
       }
 
 // Create the Simulator object
-      double totalArea = params.getParam<double>("Maximum_effective_area");
-      double startTime = params.getParam<double>("Start_time");
-      std::string pointingHistory
-         = params.getParam<std::string>("Pointing_history_file");
+      double totalArea = pars["Maximum_effective_area"];
+      double startTime = pars["Start_time"];
+      std::string pointingHistory = pars["Pointing_history_file"];
       observationSim::Simulator my_simulator(srcNames, xmlSourceFiles, 
                                              totalArea, startTime, 
                                              pointingHistory);
@@ -160,8 +156,8 @@ int main(int iargc, char * argv[]) {
 #else
       bool useGoodi(false);
 #endif
-      long nMaxRows = params.getParam<long>("Maximum_number_of_rows");
-      std::string prefix = params.getParam<std::string>("Output_file_prefix");
+      long nMaxRows = pars["Maximum_number_of_rows"];
+      std::string prefix = pars["Output_file_prefix"];
       observationSim::EventContainer events(prefix + "_events", 
                                             useGoodi, nMaxRows);
       observationSim::ScDataContainer scData(prefix + "_scData", 
@@ -170,7 +166,7 @@ int main(int iargc, char * argv[]) {
       observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
       
 // Use simulation time rather than total counts if desired.
-      if (useSimTime) {
+      if (pars["Use_as_sim_time"]) {
          std::cout << "Generating events for a simulation time of "
                    << count << " seconds...." << std::endl;
          my_simulator.generateEvents(count, events, scData, respPtrs, 
