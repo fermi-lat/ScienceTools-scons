@@ -12,7 +12,7 @@
 
 #include "fitsio.h"
 
-#include "FitsExtensionData.h"
+#include "FitsExtension.h"
 #include "table/ITabularData.h"
 #include "table/table_types.h"
 
@@ -48,7 +48,7 @@ namespace table {
       virtual void getKeyword(const std::string & name, double & value) const;
 
     private:
-      FitsExtensionData m_extension;
+      FitsExtension m_extension;
       std::map<std::string, int> m_col_info;
       std::string m_file_name;
       std::string m_table_name;

@@ -67,18 +67,16 @@ namespace table {
   Index_t FitsTabularData::getNumRecords() const { return m_num_records; }
 
   void FitsTabularData::getCell(const std::string & field, Index_t record_index, double & value) const {
-    int status = 0;
     std::map<std::string, int>::const_iterator itor = m_col_info.find(field);
     if (itor == m_col_info.end()) throw TableException();
 
     int col_num = itor->second;
 
-    // Read one value at a time.
-    fits_read_col(m_extension.getFitsFp(), TDOUBLE, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
+    m_extension.getCellGeneric(col_num, record_index, value);
   }
 
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {
-    m_extension.getKeyword(name, value);
+    m_extension.getKeywordGeneric<double>(name, value);
   }
 
 }
