@@ -264,16 +264,11 @@ namespace tip {
 
     char * match_all = "*";
     char name[128]; // jp fix this: what is the maximum length of a FITS column name?
-    int col_num;
-    int type_code;
-    long repeat;
 
     // Iterate over columns, putting the name of each in the column container.
     while (COL_NOT_FOUND != column_status) {
       *name = '\0';
-      col_num = 0;
-      type_code = 0;
-      repeat = 0;
+      int col_num = 0;
       // Get each column's name.
       fits_get_colname(m_fp, CASESEN, match_all, name, &col_num, &column_status);
       if (0 == column_status || COL_NOT_UNIQUE == column_status) {
@@ -290,11 +285,10 @@ namespace tip {
 
   void FitsExtensionManager::getColumnInfo(const std::string & col_name, Index_t col_num) {
     int type_code = 0;
-    long repeat = 0;
     int status = 0;
 
-    // Get column type and repeat count:
-    fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
+    // Get column type for this column number.
+    fits_get_coltype(m_fp, col_num, &type_code, 0, 0, &status);
     if (0 != status) {
       std::ostringstream s;
       s << "Could not get type information for column number " << col_num;
