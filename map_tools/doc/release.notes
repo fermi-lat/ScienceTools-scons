@@ -5,6 +5,7 @@
 $Id$
 @verbatim
 
+ 04-mar-04 v4r1   THB switch from hoopsUtil to hoops for parameters
  04-mar-04 v4r0   THB switch from PIL to hoopsUtil for parameters. Additional SkyImage functionality,
                       new interface SkyFunction
  04-mar-04 v3r1p2 THB new read_map application

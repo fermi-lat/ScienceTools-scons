@@ -1,6 +1,6 @@
 package map_tools
 
-version v4r0
+version v4r1
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -11,7 +11,7 @@ use hoops *
 use tuple *
 
 #suppress annoying warnings from hoops: "illegal conversion" and "forcing value to bool" 
-macro_append cppflags "" WIN32 " /wd4800 /wd4927 "
+macro_append cppflags "" WIN32 " /wd4800 /wd4927 /wd4251 "
 
 #builds an internal library for FITS image I/O and keyword handling (from astroroot)
 library image -no_share -s=image $(source)
