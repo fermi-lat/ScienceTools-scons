@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v1r0p1 29-Jan-04   JC   added casts for pow.
     v1r0   07-Jan-04   JC   restore refactored Statistic class
     v0r7   04-Dec-03   JC   DC1 Release
     v0r6   19-Nov-03   PLN  make convergence criteria consistent among 

@@ -1,12 +1,12 @@
 package optimizers
-version v1r0
+version v1r0p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
 
 # $Id$
 
-use xml
+use xml v*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
