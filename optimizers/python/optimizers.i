@@ -16,6 +16,7 @@
 #include "../optimizers/Parameter.h"
 #include "../optimizers/ParameterNotFound.h"
 #include "../optimizers/ProductFunction.h"
+#include "../optimizers/Statistic.h"
 #include "../optimizers/SumFunction.h"
 #include "../optimizers/dArg.h"
 #include "../src/AbsEdge.h"
@@ -39,6 +40,7 @@
 %include ../optimizers/ProductFunction.h
 %include ../optimizers/SumFunction.h
 %include ../optimizers/FunctionTest.h
+%include ../optimizers/Statistic.h
 %include ../optimizers/Mcmc.h
 %include ../optimizers/Optimizer.h
 %include ../optimizers/Lbfgs.h

@@ -168,11 +168,13 @@ public:
    /// The clone function, with default.
    virtual Function *clone() const {return 0;}
 
+#ifndef SWIG
    /// These type fields are used by the Composite Function hierarchy
    /// to determine how Function objects may be combined.
    enum FuncType {None, Addend, Factor};
 
    FuncType funcType() {return m_funcType;}
+#endif
 
    /// The argType must match for Composite Function objects.
    std::string &argType() {return m_argType;}

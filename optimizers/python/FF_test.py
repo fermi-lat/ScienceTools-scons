@@ -2,6 +2,12 @@
 
 import optimizers
 
+def listFunctions(factory):
+    funcNames = optimizers.StringVector()
+    factory.getFunctionNames(funcNames)
+    for name in funcNames:
+        print name
+
 if __name__ == "__main__":
     file = "../xml/FunctionModels.xml"
     funcFactory = optimizers.FunctionFactory()
@@ -9,9 +15,9 @@ if __name__ == "__main__":
     funcFactory.addFunc("PowerLaw", optimizers.PowerLaw(), fromClone)
     funcFactory.addFunc("Gaussian", optimizers.Gaussian(), fromClone)
     funcFactory.addFunc("AbsEdge", optimizers.AbsEdge(), fromClone)
-    funcFactory.listFunctions()
+    listFunctions(funcFactory)
     funcFactory.readXml(file)
-    funcFactory.listFunctions()
+    listFunctions(funcFactory)
     gaussObj = funcFactory.create("Generic Gaussian")
     dArg = optimizers.dArg
     gauss = lambda x:gaussObj(dArg(x))

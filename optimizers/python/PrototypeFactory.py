@@ -39,7 +39,10 @@ class PrototypeFactory:
             self.funcFactory.addFunc(funcObj.getName(), funcObj)
 
     def listFunctions(self):
-        self.funcFactory.listFunctions()
+        funcNames = optimizers.StringVector()
+        self.funcFactory.getFunctionNames(funcNames)
+        for name in funcNames:
+            print name
 
     def create(self, name):
         return self.funcFactory.create(name)
