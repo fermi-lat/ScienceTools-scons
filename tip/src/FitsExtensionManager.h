@@ -1,11 +1,11 @@
-/** \file FitsExtensionUtils.h
+/** \file FitsExtensionManager.h
 
     \brief Utilities to help manage FITS specific table access. These classes are not part of the API.
 
     \author James Peachey, HEASARC
 */
-#ifndef table_FitsExtensionUtils_h
-#define table_FitsExtensionUtils_h
+#ifndef table_FitsExtensionManager_h
+#define table_FitsExtensionManager_h
 
 #include <cassert>
 #include <map>
@@ -24,25 +24,25 @@ namespace table {
   class IData;
   class IHeaderData;
 
-  /** \class FitsExtensionUtils
+  /** \class FitsExtensionManager
 
       \brief Low level interface to FITS format extensions. This is not part of the API.
 
       This class is a standalone utility class which encapsulates Cfitsio (fitsfile *) access. It also
       acts as a factory for creating FITS-specific header and data objects, which refer back to the
-      FitsExtensionUtils object which created them.
+      FitsExtensionManager object which created them.
   */
-  class FitsExtensionUtils : public IExtensionData {
+  class FitsExtensionManager : public IExtensionData {
     public:
       /** \brief Create an object to provide low-level access to the given FITS extension.
           \param file_name The name of the FITS file.
           \param ext_name The name of the FITS extension.
       */
-      FitsExtensionUtils(const std::string & file_name, const std::string & ext_name);
+      FitsExtensionManager(const std::string & file_name, const std::string & ext_name);
 
       /** \brief Destructor. Closes file if it is open.
       */
-      virtual ~FitsExtensionUtils();
+      virtual ~FitsExtensionManager();
 
       /** \brief Create a header object which refers to this file. Caller is responsible for deleting
           the header object.
@@ -138,7 +138,7 @@ namespace table {
 
   // Getting keywords.
   template <typename T>
-  inline void FitsExtensionUtils::getKeywordGeneric(const std::string & name, T & value) const {
+  inline void FitsExtensionManager::getKeywordGeneric(const std::string & name, T & value) const {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &value, 0, &status);
@@ -147,7 +147,7 @@ namespace table {
 
   // Getting keywords as bool is a special case because Cfitsio gets them as ints.
   template <>
-  inline void FitsExtensionUtils::getKeywordGeneric<bool>(const std::string & name, bool & value) const {
+  inline void FitsExtensionManager::getKeywordGeneric<bool>(const std::string & name, bool & value) const {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
     int tmp = 0;
@@ -158,7 +158,7 @@ namespace table {
 
   // Getting keywords as strings is a special case because Cfitsio gets them as char *.
   template <>
-  inline void FitsExtensionUtils::getKeywordGeneric<std::string>(const std::string & name, std::string & value) const {
+  inline void FitsExtensionManager::getKeywordGeneric<std::string>(const std::string & name, std::string & value) const {
     static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
     int status = 0;
     char tmp[FLEN_KEYWORD];
@@ -169,7 +169,7 @@ namespace table {
 
   // Getting columns.
   template <typename T>
-  inline void FitsExtensionUtils::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
+  inline void FitsExtensionManager::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
     T * dest_begin) const {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
@@ -184,7 +184,7 @@ namespace table {
 
   // Getting column values as bools is a special case because Cfitsio gets them as ints.
   template <>
-  inline void FitsExtensionUtils::getCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
+  inline void FitsExtensionManager::getCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
     Index_t src_end, bool * dest) const {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
@@ -205,14 +205,14 @@ namespace table {
   // of columns. Since there is no immediate need to manage strings, this is simply not supported
   // for now.
   template <>
-  inline void FitsExtensionUtils::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
+  inline void FitsExtensionManager::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     Index_t src_end, std::string * dest) const {
     assert(0);
   }
 
   // Setting columns.
   template <typename T>
-  inline void FitsExtensionUtils::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
+  inline void FitsExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
     T * dest_begin, T * dest_end) {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
@@ -227,7 +227,7 @@ namespace table {
 
   // Setting column values as bools is a special case because Cfitsio treats them as ints.
   template <>
-  inline void FitsExtensionUtils::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
+  inline void FitsExtensionManager::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
     bool * dest_begin, bool * dest_end) {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
@@ -245,7 +245,7 @@ namespace table {
 
   // Setting column values as strings is not supported. See note above getCellGeneric.
   template <>
-  inline void FitsExtensionUtils::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
+  inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     std::string * dest_begin, std::string * dest_end) {
     assert(0);
   }

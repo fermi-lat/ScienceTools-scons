@@ -1,4 +1,4 @@
-/** \file FitsExtensionUtils.cxx
+/** \file FitsExtensionManager.cxx
 
     \brief Implementation of utilities to help manage FITS specific table access.
 
@@ -16,29 +16,29 @@
 namespace table {
 
   // Construct without opening the file.
-  FitsExtensionUtils::FitsExtensionUtils(const std::string & file_name, const std::string & ext_name):
+  FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0), m_fp(0),
     m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
-  FitsExtensionUtils::~FitsExtensionUtils() { delete m_data; delete m_header; close(); }
+  FitsExtensionManager::~FitsExtensionManager() { delete m_data; delete m_header; close(); }
 
-  IHeaderData * FitsExtensionUtils::getHeaderData() {
-    if (!m_header) m_header = new HeaderData<FitsExtensionUtils>(*this);
+  IHeaderData * FitsExtensionManager::getHeaderData() {
+    if (!m_header) m_header = new HeaderData<FitsExtensionManager>(*this);
     return m_header;
   }
 
-  ITabularData * FitsExtensionUtils::getTabularData() {
+  ITabularData * FitsExtensionManager::getTabularData() {
     ITabularData * retval = 0;
     if (!m_data) {
-      retval = new TabularData<FitsExtensionUtils>(*this);
+      retval = new TabularData<FitsExtensionManager>(*this);
       m_data = retval;
     }
     return retval;
   }
 
   // Subclasses call this to open the file and position it to the desired extension.
-  void FitsExtensionUtils::open() {
+  void FitsExtensionManager::open() {
     if (!m_fp) {
       fitsfile * fp = 0;
       int status = 0;
@@ -62,13 +62,13 @@ namespace table {
   }
 
   // Close file.
-  void FitsExtensionUtils::close() {
+  void FitsExtensionManager::close() {
     int status = 0;
     if (m_fp) fits_close_file(m_fp, &status);
     m_fp = 0;
   }
 
-  void FitsExtensionUtils::openTable() {
+  void FitsExtensionManager::openTable() {
     // Open the actual file and move to the right extension.
     if (0 == m_fp) open();
 
@@ -123,7 +123,7 @@ namespace table {
     }
   }
 
-  FieldIndex_t FitsExtensionUtils::getFieldIndex(const std::string & field_name) const {
+  FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
     // Copy field name and make it lowercase.
     std::string tmp = field_name;
     for (std::string::iterator itor = tmp.begin(); itor != tmp.end(); ++itor) *itor = tolower(*itor);
@@ -137,7 +137,7 @@ namespace table {
     return itor->second.m_col_num;
   }
 
-  Index_t FitsExtensionUtils::getFieldNumElements(FieldIndex_t field_index) const {
+  Index_t FitsExtensionManager::getFieldNumElements(FieldIndex_t field_index) const {
     // Find field_index in container of columns. Complain if not found.
     std::map<FieldIndex_t, ColumnInfo>::const_iterator itor = m_col_num_lookup.find(field_index);
     if (itor == m_col_num_lookup.end()) {
@@ -148,7 +148,7 @@ namespace table {
     return itor->second.m_repeat;
   }
 
-  std::string FitsExtensionUtils::formatWhat(const std::string & msg) const {
+  std::string FitsExtensionManager::formatWhat(const std::string & msg) const {
     std::string retval = msg;
     if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;
     retval += " in file " + m_file_name;

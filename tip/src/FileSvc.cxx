@@ -23,7 +23,7 @@ namespace table {
     IExtensionData * data = 0;
     try {
       try {
-        data = new FitsExtensionUtils(file_name, table_name);
+        data = new FitsExtensionManager(file_name, table_name);
       } catch(TableException & x) {
         data = new RootExtensionData(file_name, table_name);
       }
