@@ -12,7 +12,19 @@
 
 namespace evtbin {
 
-  LightCurve::LightCurve(const Binner & binner): DataProduct(), m_hist(binner) { m_hist_ptr = &m_hist; }
+  LightCurve::LightCurve(const std::string & event_file, const std::string & sc_file, const Binner & binner):
+    DataProduct(event_file), m_hist(binner) {
+    m_hist_ptr = &m_hist;
+
+    // Get all keywords.
+    harvestKeywords(event_file, "EVENTS");
+
+    // Adjust the GTI based on binning information.
+    adjustGti(&binner);
+
+    // Update tstart/tstop etc.
+    adjustTimeKeywords(sc_file, &binner);
+  }
 
   LightCurve::~LightCurve() throw() {}
 
@@ -44,6 +56,9 @@ namespace evtbin {
       // Number of counts in each bin, from the histogram.
       (*table_itor)["COUNTS"].set(m_hist[index]);
     }
+
+    // Write GTI extension.
+    writeGti(out_file);
   }
 
 }

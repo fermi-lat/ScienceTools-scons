@@ -25,9 +25,9 @@ static const double pi = 3.14159265358979323846;
 
 namespace evtbin {
 
-  CountMap::CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix,
-    double pix_scale, double axis_rot, bool use_lb, const std::string & ra_field, const std::string & dec_field): DataProduct(),
-    m_hist(
+  CountMap::CountMap(const std::string & event_file, const std::string & sc_file, double ref_ra, double ref_dec,
+    const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix, double pix_scale, double axis_rot, bool use_lb,
+    const std::string & ra_field, const std::string & dec_field): DataProduct(event_file), m_hist(
       //LinearBinner(- (long)(num_x_pix) / 2., num_x_pix / 2., 1., ra_field),
       //LinearBinner(- (long)(num_y_pix) / 2., num_y_pix / 2., 1., dec_field)
       LinearBinner(0.5, num_x_pix + 0.5, 1., ra_field),
@@ -48,6 +48,12 @@ namespace evtbin {
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
     //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
     //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
+
+    // Collect any/all needed keywords from the event file.
+    harvestKeywords(event_file, "EVENTS");
+
+    // Correct time keywords.
+    adjustTimeKeywords(sc_file);
   }
 
   CountMap::~CountMap() throw() { delete m_proj; }
@@ -119,6 +125,9 @@ namespace evtbin {
         output_image->setPixel(x_index, y_index, m_hist[x_index][y_index]);
       }
     }
+
+    // Write the GTI extension.
+    writeGti(out_file);
   }
 
 }

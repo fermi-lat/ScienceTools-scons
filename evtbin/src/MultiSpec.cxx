@@ -12,8 +12,14 @@
 
 namespace evtbin {
 
-  MultiSpec::MultiSpec(const Binner & time_binner, const Binner & energy_binner): DataProduct(), m_hist(time_binner, energy_binner){
+  MultiSpec::MultiSpec(const std::string & event_file, const std::string & sc_file, const Binner & time_binner,
+    const Binner & energy_binner): DataProduct(event_file), m_hist(time_binner, energy_binner) {
     m_hist_ptr = &m_hist;
+
+    harvestKeywords(event_file, "EVENTS");
+
+    // Update tstart/tstop etc.
+    adjustTimeKeywords(sc_file, &time_binner);
   }
 
   MultiSpec::~MultiSpec() throw() {}
@@ -57,6 +63,12 @@ namespace evtbin {
     }
 
     delete [] channel;
+
+    // Write the EBOUNDS extension.
+    writeEbounds(out_file, m_hist.getBinners().at(1));
+
+    // Write GTI extension.
+    writeGti(out_file);
   }
 
 }
