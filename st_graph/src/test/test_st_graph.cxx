@@ -17,6 +17,9 @@
 #include "st_app/StAppFactory.h"
 
 #include "st_graph/Engine.h"
+#include "st_graph/IFrame.h"
+#include "st_graph/IPlotFrame.h"
+#include "st_graph/IPlot.h"
 #include "st_graph/PlotHist.h"
 #include "st_graph/ValueSet.h"
 
@@ -31,16 +34,14 @@ class StGraphTestApp : public st_app::StApp {
     /// \brief Test the ValueSet class.
     virtual void testValueSet();
 
+    /// \brief Test scatter plots.
+    virtual void testPlots();
+
     void reportUnexpected(const std::string & text) const;
 
   private:
     static bool m_failed;
 };
-
-void StGraphTestApp::reportUnexpected(const std::string & text) const {
-  m_failed = true;
-  std::cerr << "Unexpected: " << text << std::endl;
-}
 
 bool StGraphTestApp::m_failed = false;
 
@@ -48,6 +49,7 @@ void StGraphTestApp::run() {
   using namespace st_graph;
 
   testValueSet();
+  testPlots();
 
 return;
 
@@ -174,4 +176,46 @@ void StGraphTestApp::testValueSet() {
     }
   }
 }
+
+void StGraphTestApp::testPlots() {
+  using namespace st_graph;
+
+  Engine & engine(Engine::instance());
+
+  // Set up some fake data.
+  int num_pts = 10;
+  std::vector<double> x1(num_pts);
+  std::vector<double> delta_x1(num_pts);
+  std::vector<double> y1(num_pts);
+  std::vector<double> delta_y1(num_pts);
+  for (int ii = 0; ii < num_pts; ++ii) {
+    x1[ii] = ii;
+    delta_x1[ii] = .25;
+    y1[ii] = .3 * (25. - (ii - .3) * (ii - .3));
+    delta_y1[ii] = sqrt(fabs(y1[ii]));
+  }
+
+  // Create a top level main frame in which to place graphical objects.
+  IFrame * mf = engine.createMainFrame(600, 400);
+
+  // Create a new subframe in which to display the plots.
+  IPlotFrame * pf = engine.createPlotFrame(mf, 600, 400);
+  
+  // Create a plot of this data set, in the subframe.
+  IPlot * plot = engine.createPlot(pf, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+
+  // Run the graphics engine to display everything.
+  engine.run();
+
+  // Clean up.
+  delete plot;
+  delete pf;
+  delete mf;
+}
+
+void StGraphTestApp::reportUnexpected(const std::string & text) const {
+  m_failed = true;
+  std::cerr << "Unexpected: " << text << std::endl;
+}
+
 st_app::StAppFactory<StGraphTestApp> g_factory;
