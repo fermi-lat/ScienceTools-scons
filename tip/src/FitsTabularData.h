@@ -7,6 +7,7 @@
 #ifndef table_FitsTabularData_h
 #define table_FitsTabularData_h
 
+#include <cassert>
 #include <map>
 #include <string>
 
@@ -83,6 +84,38 @@ namespace table {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned long * dest_begin) const;
 
+      /** \brief Set one or more values in the current tabular data object.
+          \param field_index The index of the field (column) to set.
+          \param record_index The record index (row number) whose value to set.
+          \param src_begin Index of the first element within the Cell.
+          \param dest_begin Pointer to the first element in the output sequence.
+          \param dest_end Pointer to the first element in the output sequence.
+      */
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        bool * dest_begin, bool * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        double * dest_begin, double * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        float * dest_begin, float * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        char * dest_begin, char * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed char * dest_begin, signed char * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed short * dest_begin, signed short * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed int * dest_begin, signed int * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed long * dest_begin, signed long * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned char * dest_begin, unsigned char * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned short * dest_begin, unsigned short * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned int * dest_begin, unsigned int * dest_end);
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned long * dest_begin, unsigned long * dest_end);
+
       /** \brief Get a keyword from this extension object.
           \param name The name of the keyword to get from the extension object.
           \param value The output value.
@@ -110,6 +143,17 @@ namespace table {
       template <typename T>
       void getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end, T * dest) const;
 
+      /** \brief Templated function which can set any kind of data in a FITS table. This
+          method throws an exception if the extension is not a table.
+          \param field_index The index of the field (column) to set.
+          \param record_index The record index (row number) whose value to set.
+          \param src_begin Index of the first element within the Cell to set.
+          \param dest_begin Pointer to the first element in the output sequence.
+          \param dest_end Pointer to one past the last element in the output sequence.
+      */
+      template <typename T>
+      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
+
       FitsExtension m_extension;
       std::map<std::string, ColumnInfo> m_col_name_lookup;
       std::map<int, ColumnInfo> m_col_num_lookup;
@@ -134,28 +178,57 @@ namespace table {
     Index_t src_end, bool * dest) const {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
-    int tmp = 0;
-    fitsfile * fp = m_extension.getFitsFp();
-    for (Index_t ii = src_begin; ii != src_end; ++ii) {
-      fits_read_col(fp, data_type_code, col_num, record_index + 1, ii, 1, 0, &tmp, 0, &status);
-      if (status) throw TableException();
-      *dest++ = tmp;
-    }
-  }
-
-  // Getting column values as strings is a special case because Cfitsio gets them as char *.
-  template <>
-  inline void FitsTabularData::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    Index_t src_end, std::string * dest) const {
-    static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
-    int status = 0;
-    char tmp[s_max_scalar_len];
+    char tmp[1];
     fitsfile * fp = m_extension.getFitsFp();
     for (Index_t ii = src_begin; ii != src_end; ++ii) {
       fits_read_col(fp, data_type_code, col_num, record_index + 1, ii, 1, 0, tmp, 0, &status);
       if (status) throw TableException();
-      *dest++ = tmp;
+      *dest++ = *tmp;
     }
+  }
+
+  // Getting column values as strings is a special case because Cfitsio gets them as char *.
+  // This is tricky and painful to get right because of Cfitsio's way of indicating the width
+  // of columns. Since there is no immediate need to manage strings, this is simply not supported
+  // for now.
+  template <>
+  inline void FitsTabularData::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
+    Index_t src_end, std::string * dest) const {
+    assert(0);
+  }
+
+  // Setting columns.
+  template <typename T>
+  inline void FitsTabularData::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
+    T * dest_begin, T * dest_end) {
+    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
+    int status = 0;
+    fitsfile * fp = m_extension.getFitsFp();
+    fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
+      dest_begin, &status);
+    if (status) throw TableException();
+  }
+
+  // Setting column values as bools is a special case because Cfitsio treats them as ints.
+  template <>
+  inline void FitsTabularData::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
+    bool * dest_begin, bool * dest_end) {
+    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
+    int status = 0;
+    char tmp[1];
+    fitsfile * fp = m_extension.getFitsFp();
+    for (; dest_begin != dest_end; ++dest_begin, ++src_begin) {
+      *tmp = *dest_begin;
+      fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);
+      if (status) throw TableException();
+    }
+  }
+
+  // Setting column values as strings is not supported. See note above getCellGeneric.
+  template <>
+  inline void FitsTabularData::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
+    std::string * dest_begin, std::string * dest_end) {
+    assert(0);
   }
 
 }
