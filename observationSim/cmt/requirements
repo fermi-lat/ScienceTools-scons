@@ -21,7 +21,6 @@ apply_pattern ST_app name=obsSim
 
 private
 
-use hoops v0r*
 use st_app v1r*
 
 #use python v2* IExternal

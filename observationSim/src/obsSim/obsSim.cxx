@@ -15,6 +15,10 @@
 
 #include "CLHEP/Random/Random.h"
 
+#include "st_app/AppParGroup.h"
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+
 #include "facilities/Util.h"
 
 #include "astro/SkyDir.h"
@@ -23,7 +27,6 @@
 #include "latResponse/IrfsFactory.h"
 
 #include "Likelihood/Util.h"
-#include "Likelihood/StApp.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -43,9 +46,12 @@ ISpectrumFactory & TransientTemplateFactory();
 
 using Likelihood::Util;
 
-class ObsSim {
+class ObsSim : public st_app::StApp {
 public:
-   ObsSim(hoops::IParGroup & pars) : m_pars(pars), m_simulator(0) {
+   ObsSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("obsSim")),
+              m_simulator(0) {
+      m_pars.Prompt();
+      m_pars.Save();
       m_count = m_pars["Number_of_events"];
       GaussianSourceFactory();
       MapSourceFactory();
@@ -54,15 +60,20 @@ public:
       SimpleTransientFactory();
       TransientTemplateFactory();
    }
-   ~ObsSim() {
-      delete m_simulator;
-      for (unsigned int i = 0; i < m_respPtrs.size(); i++) {
-         delete m_respPtrs[i];
+   virtual ~ObsSim() throw() {
+      try {
+         delete m_simulator;
+         for (unsigned int i = 0; i < m_respPtrs.size(); i++) {
+            delete m_respPtrs[i];
+         }
+      } catch (std::exception &eObj) {
+         std::cerr << eObj.what() << std::endl;
+      } catch (...) { 
       }
    }
-   void run();
+   virtual void run();
 private:
-   hoops::IParGroup & m_pars;
+   st_app::AppParGroup & m_pars;
    double m_count;
    std::vector<std::string> m_xmlSourceFiles;
    std::vector<std::string> m_srcNames;
@@ -77,7 +88,7 @@ private:
    void generateData();
 };
 
-Likelihood::StApp<ObsSim> my_application("obsSim");
+st_app::StAppFactory<ObsSim> myAppFactory;
 
 void ObsSim::run() {
    setRandomSeed();
