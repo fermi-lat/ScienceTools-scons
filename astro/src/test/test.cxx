@@ -12,6 +12,9 @@
 #include "astro/SkyProj.h"
 #include "CLHEP/Vector/ThreeVector.h"
 
+// local test classes
+#include "TestHealpix.h"
+
 #include <stdexcept>
 
 bool testSkyDir(){
@@ -256,6 +259,8 @@ int main(){
         if( !testHTM() ) return 1;
 
         if(! testSkyProj() ) return 1;
+
+        TestHealpix();
 
 // One needs the test data to run this.
 //        if (!test_GPS_readFitsData()) return 1;
