@@ -38,6 +38,15 @@ namespace st_app {
           \param group The right hand side of the assignment.
       */
       virtual hoops::IParGroup & operator =(const hoops::IParGroup & group);
+
+      virtual void Prompt();
+
+      virtual void Prompt(const std::string & par_name);
+
+      void suppressPrompts(bool suppress = true);
+
+    private:
+      bool m_prompt_mode;
   };
 
 }
