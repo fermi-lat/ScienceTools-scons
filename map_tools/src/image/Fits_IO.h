@@ -69,6 +69,10 @@ private:
     void writeFitsHeader();
     //! helper to attach fits headers to an element
     void readFitsHeader();
+   
+   /// HISTORY and COMMENT cards need to be read differently than
+   /// (other) FITS header keywords.
+   void readFitsCards(std::string keyname);
 
    void  * m_fptr;
    int   m_cycle;

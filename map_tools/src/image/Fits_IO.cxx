@@ -11,6 +11,8 @@ Code orginally written by Riener Rohlfs
 #include "IOElement.h"
 #include "Image.h"
 
+#include "facilities/Util.h"
+
 #include "fitsio.h"
 #include <stdexcept>
 #include <sstream>
@@ -312,6 +314,10 @@ void Fits_IO::readFitsHeader()
 
     char name[30], value[100], comment[100], unit[40];
 
+// Read HISTORY and COMMENT keywords....need to do this before looping
+// through the others.
+    readFitsCards("COMMENT");
+    readFitsCards("HISTORY");
 
     int nkeys;
     fits_get_hdrspace(fptr, &nkeys, NULL, &status);
@@ -324,7 +330,6 @@ void Fits_IO::readFitsHeader()
             strncmp(name, "TNULL", 5) == 0  ||
             strncmp(name, "TZERO", 5) == 0  ||
             strncmp(name, "TSCAL", 5) == 0  ||
-//            strncmp(name, "NAXIS", 5) == 0  ||
             strcmp (name, "XTENSION") == 0  ||
             strcmp (name, "TFIELDS") == 0   ||
             strcmp (name, "BITPIX") == 0    ||
@@ -373,6 +378,56 @@ void Fits_IO::readFitsHeader()
     }
 
 }
+
+void Fits_IO::readFitsCards(std::string keyname) {
+   fitsfile* fptr = reinterpret_cast<fitsfile*>(m_fptr);
+
+   int status(0);
+
+   char *include[] = {const_cast<char *>(keyname.c_str())};
+   int ninc = 1;
+   char *exclude[] = {};
+   int nexc = 0;
+   char card[80];
+
+// First, reset to beginning of header.
+   int keynum(0);
+   fits_read_record(fptr, keynum, card, &status);
+   if (status != 0) report_error(status);
+
+   std::ostringstream my_history;
+   while (status == 0) {
+      fits_find_nextkey(fptr, include, ninc, exclude, nexc, card, &status);
+      if (status == 0) {
+         my_history << &card[8] << std::endl;
+      } else {
+         break;
+      }
+   }
+   if (status != 202) {  // This code indicates that a next instance of 
+                         // keyname wasn't found.
+      report_error(status);
+   }
+
+
+   if (my_history.str() != "") {
+// Remove newlines.
+      std::vector<std::string> tokens;
+      facilities::Util::stringTokenize(my_history.str(), "\n", tokens);
+      std::ostringstream history;
+      for (std::vector<std::string>::iterator it = tokens.begin();
+           it != tokens.end(); it++) {
+         history << *it;
+      }
+      char * unit = "";
+      char * comment = "";
+      m_element->addAttribute(StringAttr(keyname, history.str(), unit,comment),
+                              false);
+   }
+
+   return;
+}
+
 //_____________________________________________________________________________
 void Fits_IO::writeFitsHeader()
 {
@@ -437,4 +492,3 @@ void Fits_IO::writeFitsHeader()
     }
 
 }
-

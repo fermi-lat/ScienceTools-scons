@@ -11,6 +11,8 @@ $Header$
 #include "map_tools/ExposureHyperCube.h"
 #include "map_tools/SkyImage.h"
 #include "image/Header.h"
+#include "image/Fits_IO.h"
+#include "image/Image.h"
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -80,6 +82,8 @@ int main(int argc, char** argv ){
 
 // Write out the cube...
         ExposureHyperCube cube(e, par.inputFile());
+        cube.setKey("HISTORY", "This is a history header card.");
+        cube.setKey("COMMENT", "This is a comment header card.");
         cube.save();
 
 // Check the Exposure(fitsfile) constructor.
@@ -87,9 +91,16 @@ int main(int argc, char** argv ){
 
 // Write this out as a separate file for an external diff.
         ExposureHyperCube cube2(e2, par.outputFile());
-        cube2.setKey("HISTORY", "This is a history header card.");
-        cube2.setKey("COMMENT", "This is a comment header card.");
         cube2.save();
+
+// Re-read as FloatImg and check HISTORY and COMMENT and header cards.
+        FloatImg * imageCube = dynamic_cast<FloatImg *>(Fits_IO::read(par.inputFile(), "hypercube"));
+        std::string history;
+        imageCube->getValue("HISTORY", history);
+        assert(history == "This is a history header card.");
+        imageCube->getValue("COMMENT", history);
+        assert(history == "This is a comment header card.");
+        delete imageCube;
 
         // create an image to access cells
         SkyImage exp3(par.inputFile(),"hypercube");
