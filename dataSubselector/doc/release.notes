@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r3    04-Apr-05   JC   update GTIs to incorporate time range cuts in
+                             gtselect
     v3r2p3  24-Mar-05   JC   increase precision for range cuts to
                              accommodate large MET values
     v3r2p2  21-Mar-05   JC   convert DSS keywords to upper case

@@ -50,7 +50,7 @@ bool Gti::accept(double time) const {
 
 void Gti::writeExtension(const std::string & filename) const {
    try {
-// If the extension exists already, do nothing.
+// Check if the extension exists already. If not, add it.
       std::auto_ptr<const tip::Table> 
          gtiTable(tip::IFileSvc::instance().readTable(filename, "GTI"));
    } catch (tip::TipException & eObj) {
@@ -72,18 +72,48 @@ void Gti::writeExtension(const std::string & filename) const {
          
       fits_close_file(fptr, &status);
       ::fitsReportError(status);
-         
-      std::auto_ptr<tip::Table> 
-         gtiTable(tip::IFileSvc::instance().editTable(filename, "GTI"));
-      gtiTable->setNumRecords(getNumIntervals());
-      tip::Table::Iterator it = gtiTable->begin();
-      tip::Table::Record & row = *it;
-      Gti::ConstIterator interval = begin();
-      for ( ; it != gtiTable->end(); ++it, ++interval) {
-         row["START"].set(interval->first);
-         row["STOP"].set(interval->second);
+   }
+   std::auto_ptr<tip::Table> 
+      gtiTable(tip::IFileSvc::instance().editTable(filename, "GTI"));
+
+// Assume that setting the number of records to zero erases the current
+// data.
+   gtiTable->setNumRecords(0);
+
+   gtiTable->setNumRecords(getNumIntervals());
+   tip::Table::Iterator it = gtiTable->begin();
+   tip::Table::Record & row = *it;
+   Gti::ConstIterator interval = begin();
+   for ( ; it != gtiTable->end(); ++it, ++interval) {
+      row["START"].set(interval->first);
+      row["STOP"].set(interval->second);
+   }
+}
+
+Gti Gti::applyTimeRangeCut(double start, double stop) const {
+   Gti my_Gti;
+   my_Gti.insertInterval(start, stop);
+   return Gti(*this & my_Gti);
+}
+
+double Gti::minValue() const {
+   double min_val = begin()->first;
+   for (ConstIterator interval = begin(); interval != end(); ++interval) {
+      if (interval->first < min_val) {
+         min_val = interval->first;
       }
    }
+   return min_val;
+}
+
+double Gti::maxValue() const {
+   double max_val = begin()->first;
+   for (ConstIterator interval = begin(); interval != end(); ++interval) {
+      if (interval->first > max_val) {
+         max_val = interval->first;
+      }
+   }
+   return max_val;
 }
 
 } // namespace dataSubselector

@@ -59,6 +59,11 @@ public:
    /// @brief The maximum value of the accepted range.
    double maxVal() const {return m_max;}
 
+   /// @brief The interval type.
+   IntervalType intervalType() const {
+      return m_type;
+   }
+
 protected:
 
    virtual void getKeyValues(std::string & type, std::string & unit,

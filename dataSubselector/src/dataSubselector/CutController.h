@@ -63,6 +63,8 @@ private:
 
    bool CutController::withinCoordLimits(double ra, double dec) const;
 
+   void updateGti(const std::string & filename) const;
+
 };
 
 } // namespace dataSubselector
