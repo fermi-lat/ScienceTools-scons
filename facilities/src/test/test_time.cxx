@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
     long int       zero = 0;
     long int       negValue = -2000;
     Timestamp unixCreation(zero);
-    Timestamp negTimestamp(negValue);
-    double    longAgo = 2420000.0;
-    Timestamp longAgoTime(longAgo);
+    //    Timestamp negTimestamp(negValue);
+    //    double    longAgo = 2420000.0;
+    //    Timestamp longAgoTime(longAgo);
     //    Timestamp veryLongAgo(2200000.0);
     long int        aTime = 4000;
 
@@ -31,14 +31,14 @@ int main(int argc, char* argv[]) {
     std::cout << "unix creation time is " << unixCreation.getString()
               << std::endl;
 
-    std::cout << "neg input time is " << negTimestamp.getString()
-              << std::endl;
+    //    std::cout << "neg input time is " << negTimestamp.getString()
+    //              << std::endl;
 
     std::cout << "aTimestamp is " << aTimestamp.getString()
               << std::endl;
 
-    std::cout << "long ago is " << longAgoTime.getString()
-              << std::endl;
+    //    std::cout << "long ago is " << longAgoTime.getString()
+    //              << std::endl;
   }
   catch (const BadTimeInput e) {
     std::cout << "Exception message:  " << e.complaint << std::endl;

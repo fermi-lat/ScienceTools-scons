@@ -128,11 +128,11 @@ namespace facilities {
     // See the U.S. Naval Observatory site, 
     //   http://aa.usno.navy.mil/data/docs/JulianDate.html,
     // used to compute Julian date for Jan 1, 1970
-    static const double julian1970 = 2440587.5;
-    static const int    secPerDay =  (24*60*60);
-    static const double  inverseNano = 1000 * 1000 * 1000;
-    static const int     inverseNanoInt = 1000 * 1000 * 1000;
-    static const long int maxInt = 0x7fffffff;
+    static const double julian1970;
+    static const int    secPerDay;
+    static const double  inverseNano;
+    static const int     inverseNanoInt;
+    static const long int maxInt;
 
     /// Return "standard" binary time: count in seconds since 1 jan 1970
     static time_t toBinary(const std::string& strTime); 
