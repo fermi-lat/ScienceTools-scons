@@ -1,5 +1,5 @@
 package observationSim
-version v2r3
+version v2r4
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -35,7 +35,8 @@ use hoops v*
 # allow use of internal path
 macro observationSim_cppflags "" \
 #Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D HAVE_MAPFLUX " \
-Linux "-I ../src -g -O -pedantic -D TRAP_FPE " \
+Linux "-I ../src -g -pedantic -D TRAP_FPE -D USE_GOODI " \
+#Linux "-I ../src -g -pedantic -D TRAP_FPE " \
 WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O"
 
@@ -49,6 +50,7 @@ macro test_observationSimstamps "observationSim.stamp"
 macro obsSimstamps "obsSim.stamp"
 macro exposureMapstamps "exposureMap.stamp"
 macro testGoodiReadstamps "testGoodiRead.stamp"
+macro testScDataReadstamps "testScDataRead.stamp"
 
 # standard package library
 macro my_headers "" WIN32 "../observationSim/*.h *.h"
@@ -68,9 +70,10 @@ set INFILES "$(GOODIROOT)/Data"
 # test applications
 application test_observationSim test/main.cxx
 #application testGoodiRead test/testGoodiRead.cxx
+#application testScDataRead test/testScDataRead.cxx
 
 # O2 prototype
 application obsSim test/obsSim.cxx
 
 # exposure map calculator
-#application exposureMap test/exposureMap.cxx
+application exposureMap test/exposureMap.cxx

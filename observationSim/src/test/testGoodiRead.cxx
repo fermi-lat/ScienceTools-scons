@@ -40,17 +40,17 @@ int main(int iargc, char* argv[]) {
    int i = 0;
 
    while (!done) {
-      const Goodi::Event evt = eventData->nextEvent(ioService, done);
+      const Goodi::Event *evt = eventData->nextEvent(ioService, done);
       if (!done && i < 20) {
          std::cout << i++ << "  "
-                   << evt.time() << "  "
-                   << evt.energy() << "  "
-                   << evt.ra() << "  "
-                   << evt.dec() << "  "
-                   << evt.phi() << "  "
-                   << evt.theta() << "  "
-                   << evt.zenithAngle() << "  "
-                   << evt.azimuth() << "  "
+                   << evt->time() << "  "
+                   << evt->energy() << "  "
+                   << evt->ra() << "  "
+                   << evt->dec() << "  "
+                   << evt->phi() << "  "
+                   << evt->theta() << "  "
+                   << evt->zenithAngle() << "  "
+                   << evt->azimuth() << "  "
                    << std::endl;
       }
    }

@@ -99,7 +99,11 @@ int main(int argn, char * argc[]) {
    }
 
 // Generate the events and spacecraft data.
-   bool useGoodi = false;
+#ifdef USE_GOODI
+   bool useGoodi(true);
+#else
+   bool useGoodi(false);
+#endif
    observationSim::EventContainer events("test_events", useGoodi);
    observationSim::ScDataContainer scData("test_scData", useGoodi);
 

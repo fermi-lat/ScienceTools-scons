@@ -10,6 +10,8 @@
 #include <fenv.h>
 #endif
 
+#include "hoops/hoops_exception.h"
+
 #include "astro/SkyDir.h"
 
 #include "latResponse/Irfs.h"
@@ -34,7 +36,7 @@ int main(int iargc, char * argv[]) {
    argv[0] = strdup(filename.c_str());
 
    Likelihood::RunParams params(iargc, argv);
-
+         
 // Here are the default xml files for flux-style sources.
    std::vector<std::string> xmlSourceFiles;
    xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/source_library.xml");
@@ -93,7 +95,11 @@ int main(int iargc, char * argv[]) {
                                           startTime, pointingHistory);
 
 // Generate the events and spacecraft data.
-   bool useGoodi = false;
+#ifdef USE_GOODI
+   bool useGoodi(true);
+#else
+   bool useGoodi(false);
+#endif
    long nMaxRows;
    params.getParam("Maximum_number_of_rows", nMaxRows);
    std::string prefix;

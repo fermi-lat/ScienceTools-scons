@@ -1,6 +1,6 @@
-XML_source_file,s,hl,"none",,,"File of flux-style source definitions"
+XML_source_file,s,hl,"$(OBSERVATIONSIMROOT)/xml/test_sources.xml",,,"File of flux-style source definitions"
 Source_list,s,ql,"source_names.dat",,,"File containing source names"
-Number_of_events,r,ql,5000,1,4e7,"Number of events (or simulation time in seconds)"
+Number_of_events,r,ql,20000,1,4e7,"Number of events (or simulation time in seconds)"
 Use_as_sim_time,b,ql,no,,,"Use number of events as simulation time?"
 Response_functions,s,ql,"FRONT/BACK",FRONT/BACK|COMBINED|FRONT/BACK_10|COMBINED_10,,"Response functions to use"
 Output_file_prefix,s,ql,"test",,,"Prefix for output files"

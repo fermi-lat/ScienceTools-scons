@@ -74,19 +74,22 @@ void ScDataContainer::writeScData() {
 
       std::vector<ScData>::const_iterator scIt = m_scData.begin();
       for (unsigned int i = 0; scIt != m_scData.end(); scIt++, i++) {
-         startTime[i] = scIt->time();
-         gti[i].first = startTime[i];
+         stopTime[i] = scIt->time();
+         gti[i].second = stopTime[i];
          if (i > 0) {
-            stopTime[i] = startTime[i-1];
-            gti[i].second = stopTime[i];
+            startTime[i] = stopTime[i-1];
+            gti[i].first = startTime[i];
          }
-         latGeo[i] = scIt->lat();
-         lonGeo[i] = scIt->lon();
-         raSCZ[i] = scIt->zAxis().ra();
-         decSCZ[i] = scIt->zAxis().dec();
-         raSCX[i] = scIt->xAxis().ra();
-         decSCX[i] = scIt->xAxis().dec();
+// Convert all angles to radians.
+         latGeo[i] = scIt->lat()*M_PI/180.;
+         lonGeo[i] = scIt->lon()*M_PI/180.;
+         raSCZ[i] = scIt->zAxis().ra()*M_PI/180.;
+         decSCZ[i] = scIt->zAxis().dec()*M_PI/180.;
+         raSCX[i] = scIt->xAxis().ra()*M_PI/180.;
+         decSCX[i] = scIt->xAxis().dec()*M_PI/180.;
       }
+      startTime[0] = 2.*stopTime[0] - stopTime[1];
+      gti[0].first = startTime[0];
       m_goodiScData->setStartTime(startTime);
       m_goodiScData->setStopTime(stopTime);
       m_goodiScData->setGTI(gti);
