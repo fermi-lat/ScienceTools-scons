@@ -47,7 +47,10 @@ library observationSim -no_share $(my_headers) \
 # trapfpe.c
 
 # test application
-application test_observationSim test/*.cxx
+application test_observationSim test/main.cxx
+
+# exposure map calculator
+application exposureMap test/exposureMap.cxx
 
 ## Python/SWIG interface
 #
