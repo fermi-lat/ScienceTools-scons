@@ -24,9 +24,9 @@ namespace facilities {
     unsigned clLen = closeDel.size();
     int nSuccess = 0;
         
-    int envStart = toExpand->find_first_of(openDel.c_str());
+    int envStart = toExpand->find(openDel.c_str());
     while (envStart != -1) {
-      int envEnd = toExpand->find_first_of(closeDel.c_str());
+      int envEnd = toExpand->find(closeDel.c_str());
             
       // add  characters to account for opening delimiter
       int afterBracket = envStart + opLen;
@@ -46,7 +46,7 @@ namespace facilities {
           throw Untranslatable(envVariable);
         }
       }
-      envStart = toExpand->find_first_of(openDel.c_str());
+      envStart = toExpand->find(openDel.c_str());
     }
     return nSuccess;
   }
