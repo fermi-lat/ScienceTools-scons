@@ -149,16 +149,16 @@ int main() {
         }
 
         // Verify other assignments.
-        channel = 7.;
+        long orig_channel = channel;
+        channel = my_table->getNumRecords() - channel;
 
-        if (7. != channel) {
+        if (my_table->getNumRecords() - orig_channel != channel) {
           static bool first_time = true;
           if (first_time) {
-// This is broken because write isn't implemented yet.
-//            std::cerr << "Assignment from double or comparison to double didn't work right for Ref." << std::endl;
-//            std::cerr << "channel == " << channel << " not " << 7. << std::endl;
-//            status = 1;
-//            first_time = false;
+            std::cerr << "Assignment from double or comparison to double didn't work right for Ref." << std::endl;
+            std::cerr << "channel == " << channel << " not " << my_table->getNumRecords() - orig_channel << std::endl;
+            status = 1;
+            first_time = false;
           }
         }
 
