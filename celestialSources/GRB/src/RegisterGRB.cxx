@@ -9,6 +9,7 @@
 // GRB includes
 
 #include "GRB/GRBSpectrum.h"
+#include "GRB/GRBmanager.h"
 #include "GRBmaker/GRBobsSpectrum.h"
 
 
@@ -51,6 +52,9 @@ StatusCode RegisterGRB::registerMe(IFluxSvc* fsvc)
     MsgStream  log(msgSvc(), name());
     log << MSG::INFO << "Register GRB Spectra..." << endreq;
     static RemoteSpectrumFactory<GRBSpectrum> factory(fsvc);
+
+    log << MSG::INFO << "Register GRB Manager..." << endreq;
+    static RemoteSpectrumFactory<GRBmanager> factory1(fsvc);
     
     log << MSG::INFO << "Register  Sandhia GRB Spectra..." << endreq;
     static RemoteSpectrumFactory<GRBobsSpectrum> factory2(fsvc);
