@@ -4,6 +4,7 @@
 
     \author James Peachey, HEASARC
 */
+#include <algorithm>
 #include <sstream>
 
 #include "FitsColumn.h"
