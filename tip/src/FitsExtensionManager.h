@@ -122,7 +122,13 @@ namespace tip {
           \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
            See Cfitsio documentation for details.
       */
-      void appendField(const std::string & field_name, const std::string & format);
+      virtual void appendField(const std::string & field_name, const std::string & format);
+
+      /** \brief Select rows in current table which match the given filtering criteria.
+                 Note that this actualy changes the underlying table.
+          \param filter The string containing the filtering expression.
+      */
+      virtual void filterRows(const std::string & filter);
 
       /** \brief Get the dimensionality of an image.
       */
