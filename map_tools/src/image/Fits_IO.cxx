@@ -39,6 +39,7 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status);
 static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status);
 static void writeBoolAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
+static void writeFloatAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 static void writeIntAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 static void writeStringAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 
@@ -375,13 +376,28 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 {
     if (*status != 0)
         return;
+
+// Create some Attr objects for typeid comparisons.
+    std::string boolAttr = typeid(BoolAttr("boolAttr", true)).name();
+    std::string stringAttr = typeid(StringAttr("stringAttr", "")).name();
+    std::string intAttr = typeid(IntAttr("intAttr", 1)).name();
+    std::string floatAttr = typeid(FloatAttr("floatAttr", 1.)).name();
+    std::string doubleAttr = typeid(DoubleAttr("doubleAttr", 1.)).name();
+
     for( Header::const_iterator it = element->begin(); it != element->end(); ++it){
         const BaseAttr& attr = *(*it);
 
-       writeBoolAttr(attr, fptr, *status);
-       writeDoubleAttr(attr, fptr, *status);
-       writeIntAttr(attr, fptr, *status);
-       writeStringAttr(attr, fptr, *status);
+        if (typeid(attr).name() == doubleAttr) {
+           writeDoubleAttr(attr, fptr, *status);
+        } else if (typeid(attr).name() == stringAttr) {
+           writeStringAttr(attr, fptr, *status);
+        } else if (typeid(attr).name() == intAttr) {
+           writeIntAttr(attr, fptr, *status);
+        } else if (typeid(attr).name() == boolAttr) {
+           writeBoolAttr(attr, fptr, *status);
+        } else if (typeid(attr).name() == floatAttr) {
+           writeFloatAttr(attr, fptr, *status);
+        }           
 
         if (! attr.unit().empty() ) {
             fits_write_key_unit(fptr, (char*)attr.name().c_str(), 
@@ -408,6 +424,15 @@ static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status)
    if (my_attr) {
       double val = my_attr->value();
       fits_update_key(fptr, TDOUBLE, (char*)attr.name().c_str(), 
+                      &val, (char*)attr.comment().c_str(), &status);
+   }
+}
+
+static void writeFloatAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
+   const FloatAttr * my_attr = dynamic_cast<const FloatAttr*>(&attr);
+   if (my_attr) {
+      float val = my_attr->value();
+      fits_update_key(fptr, TFLOAT, (char*)attr.name().c_str(), 
                       &val, (char*)attr.comment().c_str(), &status);
    }
 }
