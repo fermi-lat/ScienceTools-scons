@@ -25,8 +25,8 @@
  */
 cutParameters::cutParameters(){
 
-  strcpy(m_inFile,"");
-  strcpy(m_outFile,"");
+  m_inFile="";
+  m_outFile="";
   m_RA = -1;
   m_Dec = 0;
   m_radius = 0;
@@ -45,6 +45,8 @@ cutParameters::cutParameters(){
   m_calibVersion[0]=0;
   m_calibVersion[1]=0;
   m_calibVersion[2]=0;
+  m_query="";
+  m_headerString="";
   if(DEBUG) std::cout << "cutParameters initalized\n";
 }
 
@@ -67,8 +69,8 @@ cutParameters::cutParameters(){
  */
 cutParameters::cutParameters(int argc, char **argv){
 
-  strcpy(m_inFile,"");
-  strcpy(m_outFile,"");
+  m_inFile="";
+  m_outFile="";
   m_RA = -1;
   m_Dec = 0;
   m_radius = 0;
@@ -87,6 +89,8 @@ cutParameters::cutParameters(int argc, char **argv){
   m_calibVersion[0]=0;
   m_calibVersion[1]=0;
   m_calibVersion[2]=0;
+  m_query="";
+  m_headerString="";
   
   strcpy(argv[0],"dataSubselector");
   // start using hoops here  - stole this straight from likelihood
@@ -110,10 +114,10 @@ cutParameters::cutParameters(int argc, char **argv){
   // Parameters are read in, not let's set the data values
   std::string tstring;
   getParam("input_file",tstring);
-  strcpy(m_inFile,tstring.c_str());
+  m_inFile=tstring;
   std::cout << m_inFile << " is the filename" << std::endl;
   getParam("output_file",tstring);
-  strcpy(m_outFile,tstring.c_str());
+  m_outFile=tstring;
   std::cout << m_outFile << " is the filename" << std::endl;
   getParam("ra",m_RA);
   getParam("dec",m_Dec);
@@ -195,163 +199,47 @@ cutParameters::~cutParameters() {
  *   25/11/03 - Changed OVERALL_QUALITY keyword to IMGAMMAPROB keyword -TS
  *   03/12/03 - Added cuts on CALIB_VERSION - TS
  */
-char *cutParameters::getFilterExpression(){
-  char *expression=(char *)malloc(FLEN_FILENAME);
+std::string *cutParameters::getFilterExpression(){
   bool first=true;
-  char tmp[FLEN_FILENAME];
-  int i;
   
-  m_query[0]='\0';
-  m_headerString[0]='\0';
-
+  m_query="";
+  m_headerString="";
   if(m_RA>=0){  // we have a new area so apply haversine search on the area
-    sprintf(m_query,"((2*asin(min(1,sqrt(max(0,(sin((DEC-%g)*%g)*sin((DEC-%g)*%g))+(cos(DEC*%g)*%g*sin((RA-%g)*%g)*sin((RA-%g)*%g)))))))<%g)"
-      ,m_Dec,DEG_TO_RAD/2,m_Dec,DEG_TO_RAD/2,DEG_TO_RAD,std::cos(m_Dec*DEG_TO_RAD)
-      ,m_RA,DEG_TO_RAD/2,m_RA,DEG_TO_RAD/2,m_radius*DEG_TO_RAD);
-    sprintf(m_headerString,"circle(%g,%g,%g,RA,DEC)",m_RA,m_Dec,m_radius);
-    printf("%s\n",m_headerString);
+    std::ostringstream q,hs;
+    q << "((2*asin(min(1,sqrt(max(0,(sin((DEC-" << m_Dec << ")*" << DEG_TO_RAD/2;
+    q << ")*sin((DEC-" << m_Dec << ")*" << DEG_TO_RAD/2 << "))+(cos(DEC*" <<DEG_TO_RAD;
+    q << ")*" << std::cos(m_Dec*DEG_TO_RAD) << "*sin((RA-" << m_RA << ")*" << DEG_TO_RAD/2;
+    q << ")*sin((RA-" << m_RA << ")*" << DEG_TO_RAD/2 << ")))))))<" << m_radius*DEG_TO_RAD << ")";
+    m_query=q.str();
+    if(DEBUG) std::cout << m_query << std::endl;
+  
+    hs << "circle(" << m_RA << "," << m_Dec << "," << m_radius << ",RA,DEC)";
+    m_headerString=hs.str();
+    if(DEBUG) std::cout << m_headerString << std::endl;
+
     first=false;
   }
-  if(m_tmin){ // minimum time
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sTIME>=%.6f",m_query,m_tmin);
-    sprintf(m_headerString,"%sTIME>=%.6f",m_headerString,m_tmin);
-  }
-  if(m_tmax){ // maximum time
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sTIME<=%.6f",m_query,m_tmax);
-    sprintf(m_headerString,"%sTIME<=%.6f",m_headerString,m_tmax);
-  }
-  if(m_emin){ // minimum enegy
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sENERGY>=%g",m_query,m_emin);
-    sprintf(m_headerString,"%sENERGY>=%g",m_headerString,m_emin);
-  }
-  if(m_emax){ // maximum energy
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sENERGY<=%g",m_query,m_emax);
-    sprintf(m_headerString,"%sENERGY<=%g",m_headerString,m_emax);
-  }
-  if(m_phimin){ // minimum phi
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sPHI>=%g",m_query,m_phimin);
-    sprintf(m_headerString,"%sPHI>=%g",m_headerString,m_phimin);
-  }
-  if(m_phimax){ // maximum phi
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sPHI<=%g",m_query,m_phimax);
-    sprintf(m_headerString,"%sPHI<=%g",m_headerString,m_phimax);
-  }
-  if(m_thetamin){ // minimum theta
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sTHETA>=%g",m_query,m_thetamin);
-    sprintf(m_headerString,"%sTHETA>=%g",m_headerString,m_thetamin);
-  }
-  if(m_thetamax){ // maximum theta
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sTHETA<=%g",m_query,m_thetamax);
-    sprintf(m_headerString,"%sTHETA<=%g",m_headerString,m_thetamax);
-  }
-  if(m_gammaProbMin){ // minimum IMGAMMAPROB
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sIMGAMMAPROB>= %f",m_query,m_gammaProbMin);
-    sprintf(m_headerString,"%sIMGAMMAPROB>=%f",m_headerString,m_gammaProbMin);
-  }
-  if(m_gammaProbMax){ // maximum IMGAMMAPROB
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sIMGAMMAPROB<= %f",m_query,m_gammaProbMax);
-    sprintf(m_headerString,"%sIMGAMMAPROB<=%f",m_headerString,m_gammaProbMax);
-  }
-  if(m_zmin){ // minimum ZENITH_ANGLE
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sZENITH_ANGLE>= %f",m_query,m_zmin);
-    sprintf(m_headerString,"%sZENITH_ANGLE>=%f",m_headerString,m_zmin);
-  }
-  if(m_zmax){ // maximum ZENITH_ANGLE
-    if(!first){
-      strcat(m_query,"&&");
-      strcat(m_headerString,"&&");
-    } else {
-      first=false;
-    }
-    sprintf(m_query,"%sZENITH_ANGLE<= %f",m_query,m_zmax);
-    sprintf(m_headerString,"%sZENITH_ANGLE<=%f",m_headerString,m_zmax);
-  }
-  for (i=0;i<3;i++){ // loop over the three possilble calib_version entries
-    if(m_calibVersion[i]){ // if !=0 use this entry in CALIB_VERSION to select (DC1 edition)
-      if(!first){
-        strcat(m_query,"&&");
-        strcat(m_headerString,"&&");
-      } else {
-        first=false;
-      }
-      sprintf(m_query,"%sCALIB_VERSION[%d]== 1",m_query,i+1);
-      sprintf(m_headerString,"%sCALIB_VERSION[%d]== 1",m_headerString,i+1);
-    }
-  }
   
-//  sprintf(tmp,"(%s)",m_query);
-//  strcpy(m_query,tmp);
-  sprintf(tmp,"@%s@",m_headerString);  // add query delimiters
-  strcpy(m_headerString,tmp);
+  if(m_tmin) first = addParameterToQuery(first,"TIME>=",m_tmin); 
+  if(m_tmax) first = addParameterToQuery(first,"TIME<=",m_tmax); 
+  if(m_emin) first = addParameterToQuery(first,"ENERGY>=",m_emin); 
+  if(m_emax) first = addParameterToQuery(first,"ENERGY<=",m_emax);
+  if(m_phimin) first = addParameterToQuery(first,"PHI>=",m_phimin); 
+  if(m_phimax) first = addParameterToQuery(first,"PHI<=",m_phimax);
+  if(m_thetamin) first = addParameterToQuery(first,"THETA>=",m_thetamin); 
+  if(m_thetamax) first = addParameterToQuery(first,"THETA<=",m_thetamax);
+  if(m_gammaProbMin) first = addParameterToQuery(first,"IMGAMMAPROB>=",m_gammaProbMin); 
+  if(m_gammaProbMax) first = addParameterToQuery(first,"IMGAMMAPROB>=",m_gammaProbMax);
+  if(m_zmin) first = addParameterToQuery(first,"ZENITH_ANGLE>=",m_zmin); 
+  if(m_zmax) first = addParameterToQuery(first,"ZENITH_ANGLE<=",m_zmax);
+  // these check the background cuts
+  if(m_calibVersion[0]) first = addParameterToQuery(first,"CALIB_VERSION[1]== ",m_calibVersion[0]);
+  if(m_calibVersion[1]) first = addParameterToQuery(first,"CALIB_VERSION[2]== ",m_calibVersion[1]);
+  if(m_calibVersion[2]) first = addParameterToQuery(first,"CALIB_VERSION[3]== ",m_calibVersion[2]);
   
-  strcpy (expression,m_query);
-  return expression;
+  m_headerString="@"+m_headerString+"@";  // add query delimiters
+  
+  return new std::string(m_query);
 }
 
 /**
@@ -369,10 +257,9 @@ char *cutParameters::getFilterExpression(){
  * @date Last Modified:  3 Dec 2003
  */
 void cutParameters::addDataSubspaceKeywords(Goodi::IDataIOService *ios){
-  std::string type,unit,val;
-  char value[80];
-  char key1[10],key2[10],key3[10];
-  int i,nKeys=0;
+  std::string type,unit;
+  std::ostringstream val,key1,key2,key3;
+  int nKeys=0;
   std::string comment,test="NDSKEYS";
   
   // first read in the number of DS keys already in the fits file
@@ -389,165 +276,31 @@ void cutParameters::addDataSubspaceKeywords(Goodi::IDataIOService *ios){
   if (m_RA>=0){  // position header keyword
     type=std::string("POS(RA,DEC)");
     unit=std::string("deg");
-    sprintf(value,"circle(%g,%g,%g)",m_RA,m_Dec,m_radius);
-    val=std::string(value);
+    val << "circle(" << m_RA << "," << m_Dec << "," << m_radius << ")";
     nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
+    key1 << "DSTYP" << nKeys;
+    key2 << "DSUNI" << nKeys;
+    key3 << "DSVAL" << nKeys;
+    if(DEBUG) std::cout << "******KEYS are: "<< key1.str() << "," << key2.str() 
+                        << "," << key3.str();
+    ios->writeKey(key1.str(),type);
+    ios->writeKey(key2.str(),unit);
+    ios->writeKey(key3.str(),val.str());
   }
-  if(m_tmin||m_tmax){  // time header keyword
-    type=std::string("TIME");
-    unit=std::string("s");
-    if(m_tmin&&m_tmax){
-      sprintf(value,"%.6f:%.6f",m_tmin,m_tmax);
-    } else {
-      if(m_tmin){
-        sprintf(value,"%.6f:",m_tmin);
-      } else {
-        sprintf(value,":%.6f",m_tmax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
-  }
-  if(m_emin||m_emax){  // energy header keyword
-    type=std::string("ENERGY");
-    unit=std::string("MeV");
-    if(m_emin&&m_emax){
-      sprintf(value,"%f:%f",m_emin,m_emax);
-    } else {
-      if(m_emin){
-        sprintf(value,"%f:",m_emin);
-      } else {
-        sprintf(value,":%f",m_emax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
-  }
-  if(m_phimin||m_phimax){  // PHI header keyword
-    type=std::string("PHI");
-    unit=std::string("deg");
-    if(m_phimin&&m_phimax){
-      sprintf(value,"%f:%f",m_phimin,m_phimax);
-    } else {
-      if(m_phimin){
-        sprintf(value,"%f:",m_phimin);
-      } else {
-        sprintf(value,":%f",m_phimax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
-  }
-  if(m_thetamin||m_thetamax){  // theta header keyword
-    type=std::string("THETA");
-    unit=std::string("deg");
-    if(m_thetamin&&m_thetamax){
-      sprintf(value,"%f:%f",m_thetamin,m_thetamax);
-    } else {
-      if(m_thetamin){
-        sprintf(value,"%f:",m_thetamin);
-      } else {
-        sprintf(value,":%f",m_thetamax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
-  }
-  if(m_gammaProbMin||m_gammaProbMax){  // IMGAMMAPROB header keyword
-    type=std::string("IMGAMMAPROB");
-    unit=std::string("dimensionless");
-    if(m_gammaProbMin&&m_gammaProbMax){
-      sprintf(value,"%f:%f",m_gammaProbMin,m_gammaProbMax);
-    } else {
-      if(m_gammaProbMin){
-        sprintf(value,"%f:",m_gammaProbMin);
-      } else {
-        sprintf(value,":%f",m_gammaProbMax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
-  }
-  if(m_zmin||m_zmax){  // ZENTIH_ANGLE header keyword
-    type=std::string("ZENTIH_ANGLE");
-    unit=std::string("deg");
-    if(m_zmin&&m_zmax){
-      sprintf(value,"%f:%f",m_zmin,m_zmax);
-    } else {
-      if(m_zmin){
-        sprintf(value,"%f:",m_zmin);
-      } else {
-        sprintf(value,":%f",m_zmax);
-      }
-    }
-    val=std::string(value);
-    nKeys++;
-    sprintf(key1,"DSTYP%d",nKeys);
-    sprintf(key2,"DSUNI%d",nKeys);
-    sprintf(key3,"DSVAL%d",nKeys);
-    if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-    ios->writeKey(key1,type);
-    ios->writeKey(key2,unit);
-    ios->writeKey(key3,val);
- } 
- for(i=0;i<3;i++){
-   if(m_calibVersion[i]){  // CALIB_VERSION header keyword
-     sprintf(value,"CALIB_VERSION[%d]",i+1);
-     type=std::string(value);
-     unit=std::string("dimensionless");
-     val=std::string("1:1");
-     nKeys++;
-     sprintf(key1,"DSTYP%d",nKeys);
-     sprintf(key2,"DSUNI%d",nKeys);
-     sprintf(key3,"DSVAL%d",nKeys);
-     if(DEBUG) fprintf(stdout,"******KEYS are: %s, %s, %s\n",key1,key2,key3);
-     ios->writeKey(key1,type);
-     ios->writeKey(key2,unit);
-     ios->writeKey(key3,val);
-   } 
- }
+  if(m_tmin||m_tmax) addDSKeywordEntry("TIME","s",m_tmin,m_tmax,nKeys,ios);
+  if(m_emin||m_emax) addDSKeywordEntry("ENERGY","MeV",m_emin,m_emax,nKeys,ios);
+  if(m_phimin||m_phimax) addDSKeywordEntry("PHI","deg",m_phimin,m_phimax,nKeys,ios);
+  if(m_thetamin||m_thetamax) addDSKeywordEntry("THETA","deg",m_thetamin,m_thetamax,nKeys
+      ,ios);
+  if(m_gammaProbMin||m_gammaProbMax) addDSKeywordEntry("IMGAMMAPROB","dimensionless"
+      ,m_gammaProbMin,m_gammaProbMax,nKeys,ios);
+  if(m_zmin||m_zmax) addDSKeywordEntry("ZENTIH_ANGLE","deg",m_zmin,m_zmax,nKeys,ios);
+  if(m_calibVersion[0]) addDSKeywordEntry("CALIB_VERSION[1]","dimensionless"
+      ,m_calibVersion[0],nKeys,ios);
+  if(m_calibVersion[1]) addDSKeywordEntry("CALIB_VERSION[2]","dimensionless"
+      ,m_calibVersion[1],nKeys,ios);
+  if(m_calibVersion[2]) addDSKeywordEntry("CALIB_VERSION[3]","dimensionless"
+      ,m_calibVersion[2],nKeys,ios);
   
   // update the NDSKEYS keyword with the new value
   ios->writeKey("NDSKEYS",nKeys,"Number of data subspace keywords in header");

@@ -17,9 +17,13 @@
  * $ID$
  */
 
+#ifndef CUTPARAMETERS_H
+#define CUTPARAMETERS_H
+
 #include "fitsio.h"
 #include <iostream>
-#include <string.h>
+#include <string>
+#include <sstream>
 #include <cmath>
 #include "Goodi/IDataIOService.h"
 #include "hoops/hoops.h"
@@ -37,9 +41,9 @@ class cutParameters {
   
 private:
   /// File name of input FT1 file
-  char m_inFile[FLEN_FILENAME];
+  std::string m_inFile;
   /// File name of output FT1 file
-  char m_outFile[FLEN_FILENAME];
+  std::string m_outFile;
   /// RA of new search center
   float m_RA;
   /// Dec of new search center
@@ -71,9 +75,9 @@ private:
   /// maximum ZENITH_ANGLE value desired
   float m_zmax;
   /// string to hold fits row filtering query command
-  char m_query[FLEN_FILENAME];
+  std::string m_query;
   /// string to hold header comment for search parameters
-  char m_headerString[FLEN_FILENAME];
+  std::string m_headerString;
   /// calib version entries to check for cuts
   short m_calibVersion[3];
   /// pointer to hoops IParPrompter object
@@ -83,14 +87,16 @@ public:
   cutParameters();
   cutParameters(int argc, char **argv);
   ~cutParameters();
-  char *getFilterExpression();
+  std::string *getFilterExpression();
   void addDataSubspaceKeywords(Goodi::IDataIOService *ios);
   // inline function go here
-  inline char *getInputFilename();
-  inline char *getOutputFilename();
-  inline char *getFITSQueryString();
-  inline char *getHeaderString();
+  std::string *getInputFilename() {return new std::string(m_inFile);}
+  std::string *getOutputFilename() {return new std::string(m_outFile);}
+  std::string *getFITSQueryString() {return new std::string(m_query);}
+  std::string *getHeaderString() {return new std::string(m_headerString);}
   
+/****** Templated Function Definitions ***********/
+
 /**
  * @brief Returns the parameter values from parameter file
  * 
@@ -119,58 +125,130 @@ public:
       assert(false);
     }
   }
+
+/**
+ * @ brief adds the condition for the given parameter to the query and header string
+ * 
+ * The addParameterToQuery() function adds the input text and cut parameter to the
+ * cfitsio query string and header string.  It is a template function so it can handle
+ * and type of parameter value
+ * 
+ * @param first boolean flag to signify if this is the first parameter in the string
+ * @param text string holding the FITS column name to test against
+ * @param param the cutParameters data member to include in the cut
+ * 
+ * @author Tom Stephens
+ * @date Created:  Jan 02, 2004
+ * @date Last Modified:  Jan 02, 2004
+ * 
+ */  
+  template <typename T>
+  bool addParameterToQuery(bool first, std::string text, T &param) {
+    // make a pair of stringstreams to facilitate writing out the data
+    std::ostringstream q;
+    std::ostringstream hs;
+    
+    if(!first){  // if we're not the first we need to add an "and"
+      q << "&&";
+      hs << "&&";
+    } else {
+      first=false;
+    }
+    // add the text and parameter value to the stream
+    q << text << param;
+    hs << text << param;
+    // append the values of the stringstreams back to the data strings
+    m_query+=q.str();
+    m_headerString+=hs.str();
+    
+    return first;
+  }
+
+/**
+ * @brief Adds the Data Subspace keywords for the given parameters
+ *   to the FITS header
+ * 
+ * The addDSKeywordEntry() function adds the individual lines of the Data Subspace
+ * Keyword entry into the FITS header.  It determines the ranges based on the
+ * values of the cut parameters, build the data strings and writes them to the file.
+ * 
+ * @param type The keyword that was selected on
+ * @param unit The unit of that keyword
+ * @param min The minimum value from the cuts
+ * @param max The maximum value from the cuts
+ * @param nKeys The number of DS Keys currently in the file.  <b>Note: this value is
+ * updated in the fuction.</b>
+ * @param ios The Goodi IO Service that points to the file
+ * 
+ * @author Tom Stephens
+ * @date Created:  Jan 02, 2004
+ * @date Last Modified:  Jan 02, 2004
+ * 
+ */  
+  template <typename T>
+  void addDSKeywordEntry(std::string type, std::string unit, T min, T max,
+                         int& nKeys, Goodi::IDataIOService *ios){
+    std::ostringstream val,key1,key2,key3;
+    
+    if(min&&max){
+      val << min << ":" << max;
+    } else {
+      if(min){
+        val << min << ":";
+      } else {
+        val << ":" << max;
+      }
+    }
+    nKeys++;
+    key1 << "DSTYP" << nKeys;
+    key2 << "DSUNI" << nKeys;
+    key3 << "DSVAL" << nKeys;
+    if(DEBUG) std::cout << "******KEYS are: "<< key1.str() << "," << key2.str() 
+                        << "," << key3.str();
+    ios->writeKey(key1.str(),type);
+    ios->writeKey(key2.str(),unit);
+    ios->writeKey(key3.str(),val.str());
+
+  }  
+/**
+ * @brief Overloaded version to handle only one input parameter
+ * 
+ * The addDSKeywordEntry() function adds the individual lines of the Data Subspace
+ * Keyword entry into the FITS header.  This version simply takes a single input parameter
+ * and uses it to set the min and max values.
+ * 
+ * @param type The keyword that was selected on
+ * @param unit The unit of that keyword
+ * @param min The minimum value from the cuts
+ * @param nKeys The number of DS Keys currently in the file.  <b>Note: this value is
+ * updated in the fuction.</b>
+ * @param ios The Goodi IO Service that points to the file
+ * 
+ * @author Tom Stephens
+ * @date Created:  Jan 02, 2004
+ * @date Last Modified:  Jan 02, 2004
+ * 
+ */  
+  template <typename T>
+  void addDSKeywordEntry(std::string type, std::string unit, T min,
+                         int& nKeys, Goodi::IDataIOService *ios){
+    std::ostringstream key1,key2,key3;
+    std::ostringstream val;
+    // set up the limits
+    val << min << ':' << min;
+    // build the keynames
+    nKeys++;
+    key1 << "DSTYP" << nKeys;
+    key2 << "DSUNI" << nKeys;
+    key3 << "DSVAL" << nKeys;
+    if(DEBUG) std::cout << "******KEYS are: "<< key1.str() << "," << key2.str() 
+                        << "," << key3.str();
+    ios->writeKey(key1.str(),type);
+    ios->writeKey(key2.str(),unit);
+    ios->writeKey(key3.str(),val.str());
+
+  }  
   
 };
 
-// **********  INLINE FUNCTION DEFINITIONS  ********************
-
-/**
- * @brief Returns the input filename
- * 
- * @author Tom Stephens
- * @date Created:  17 Oct 2003
- * @date Last Modified 17 Oct 2003
- */
-inline char *cutParameters::getInputFilename(){
-  char *name=(char *)malloc(sizeof(m_inFile));
-  strcpy(name,m_inFile);
-  return name;
-}
-/**
- * @brief Returns the output filename
- * 
- * @author Tom Stephens
- * @date Created:  17 Oct 2003
- * @date Last Modified 17 Oct 2003
- */
-inline char *cutParameters::getOutputFilename(){
-  char *name=(char *)malloc(sizeof(m_outFile));
-  strcpy(name,m_outFile);
-  return name;
-}
-
-/**
- * @brief Returns the FITS row filtering string
- * 
- * @author Tom Stephens
- * @date Created:  20 Oct 2003
- * @date Last Modified 20 Oct 2003
- */
-inline char *cutParameters::getFITSQueryString(){
-  char *name=(char *)malloc(sizeof(m_query));
-  strcpy(name,m_query);
-  return name;
-}
-
-/**
- * @brief Returns the header string for FITS file
- * 
- * @author Tom Stephens
- * @date Created:  20 Oct 2003
- * @date Last Modified 20 Oct 2003
- */
-inline char *cutParameters::getHeaderString(){
-  char *name=(char *)malloc(sizeof(m_headerString));
-  strcpy(name,m_headerString);
-  return name;
-}
+#endif CUTPARAMETERS_H
