@@ -13,8 +13,8 @@ private
 library  facilities -no_share *.cxx \
 			${facilities_headers}
 
-# uncomment these for development
-#application test_Util test/testUtil.cxx Util.cxx
+application test_Util test/testUtil.cxx Util.cxx
 
+# uncomment for development
 #application test_time test/test_time.cxx Timestamp.cxx
 
