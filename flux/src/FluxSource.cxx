@@ -203,7 +203,7 @@ public:
     LaunchDirection(astro::SkyDir sky)
         :m_skydir(true)
     {
-        m_dir = sky.dir();
+        m_dir = -sky.dir();
     }
     /** @brief choose a direction
         @param KE kinetic energy
