@@ -17,5 +17,4 @@ libfacilities_la_SOURCES = \
 
 libfacilities_la_LDFLAGS = -version-info 1
 
-INCLUDES = -I$(top_srcdir) \
-	-I$(glast_prefix)/include
+INCLUDES = -I$(top_srcdir)
