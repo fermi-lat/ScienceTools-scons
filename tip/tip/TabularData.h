@@ -28,7 +28,7 @@ namespace tip {
           \param implementor Pointer to the object which does the real work.
       */
       TabularData(Implementor & implementor): ITabularData(), m_implementor(implementor) {
-        m_implementor.openTable();
+        m_implementor.open();
       }
 
       virtual ~TabularData() {}
