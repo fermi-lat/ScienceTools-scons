@@ -7,9 +7,12 @@
  */
 
 #include <cassert>
+#include <sstream>
 
-#include "optimizers/Function.h"
+//#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 #include "optimizers/dArg.h"
+#include "optimizers/Exception.h"
 #include "optimizers/Optimizer.h"
 
 namespace optimizers {
@@ -59,9 +62,10 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
 
 // Dummy argument required by Function objects (to be refactored away
 // one day).
-   dArg dummy(1.);
+//   dArg dummy(1.);
    std::vector<double> firstDerivs;
-   m_stat->getFreeDerivs(dummy, firstDerivs);
+//   m_stat->getFreeDerivs(dummy, firstDerivs);
+   m_stat->getFreeDerivs(firstDerivs);
 
 // Obtain the full Hessian matrix.
    int npars = params.size();
@@ -75,7 +79,8 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
       new_params[irow] = params[irow] + delta;
       m_stat->setFreeParamValues(new_params);
       std::vector<double> derivs;
-      m_stat->getFreeDerivs(dummy, derivs);
+//      m_stat->getFreeDerivs(dummy, derivs);
+      m_stat->getFreeDerivs(derivs);
       for (int icol = 0; icol < npars; icol++) {
          hess[indx] = -(derivs[icol] - firstDerivs[icol])/delta;
 //          hess[indx] = -derivs[icol]/delta;
@@ -102,9 +107,10 @@ void Optimizer::choleskyDecompose(std::valarray<double> &array) {
          }
          if (i == j) {
             if (sum <= 0) {
-               std::cout << sum << "  "
-                         << i << ", " << j << std::endl;
-               assert(sum > 0);
+               std::ostringstream errorMessage;
+               errorMessage << "Optimizer::choleskyDecompose:\n"
+                            << "Imaginary diagonal element.";
+               throw Exception(errorMessage.str());
             }
             p[i] = sqrt(sum);
          } else {

@@ -6,7 +6,8 @@
  * $Header$
  */
 
-#include "optimizers/Function.h"
+//#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 
 namespace optimizers {
 /** 
@@ -19,7 +20,8 @@ namespace optimizers {
  * $Header$
  */
     
-class RosenND : public Function {
+class RosenND : public Statistic {
+
 public:
 
    RosenND(int ndim=3, double prefactor=100) : 
@@ -27,8 +29,18 @@ public:
       
    virtual double value(Arg&) const;
 
+   virtual double value() const {
+      Arg dummy;
+      return value(dummy);
+   }
+
    virtual double derivByParam(Arg &, const std::string &paramName) const
       throw(ParameterNotFound);
+
+   virtual void getFreeDerivs(std::vector<double> &derivs) const {
+      Arg dummy;
+      Function::getFreeDerivs(dummy, derivs);
+   }
 
 private:
 

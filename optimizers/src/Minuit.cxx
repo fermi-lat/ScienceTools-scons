@@ -16,8 +16,7 @@
 namespace optimizers {
 
 
-  Minuit::Minuit(Function& stat) : Optimizer(stat), m_maxEval(200) {
-//    m_stat = &stat;
+  Minuit::Minuit(Statistic& stat) : Optimizer(stat), m_maxEval(200) {
     const int i5=5, i6=6, i7=7;
     mninit_(&i5, &i6, &i7);
   }
@@ -74,8 +73,7 @@ namespace optimizers {
     if (tolType == ABSOLUTE) {
       tolerance = 2000. * tol;
     } else if (tolType == RELATIVE) {
-      dArg dummy(1.);
-      tolerance = 2000. * tol * abs(m_stat->value(dummy));
+      tolerance = 2000. * tol * abs(m_stat->value());
     }
     std::ostringstream mline;
     mline << "MIGRAD " << m_maxEval << " " << tolerance << std::endl;
@@ -112,7 +110,7 @@ namespace optimizers {
       }
     }
 
-    // Put new parameter values back into the Function
+    // Put new parameter values back into the Statistic
     std::vector<double> paramValues;
     for (unsigned int i = 0; i < params.size(); i++) {
       paramValues.push_back(params[i].getValue());
@@ -164,7 +162,7 @@ namespace optimizers {
     // pointer.  It's been hijacked to be a pointer to
     // m_stat, so this non-member function can use it.
 
-    Function * statp = static_cast<Function *>(futil);
+    Statistic * statp = static_cast<Statistic *>(futil);
     try {statp->setFreeParamValues(parameters);}
     catch (OutOfBounds& e) {
       std::cerr << e.what() << std::endl;
@@ -176,11 +174,11 @@ namespace optimizers {
       std::cerr << e.what() << std::endl;
       exit(e.code());
     }
-    dArg dummy(1.);
-    *fcnval = -statp->value(dummy);
+
+    *fcnval = -statp->value();
     if (*iflag == 2) { // Return gradient values
       std::vector<double> gradient;
-      statp->getFreeDerivs(dummy, gradient);
+      statp->getFreeDerivs(gradient);
       for (int i=0; i < *npar; i++) {
 	grad[i] = -gradient[i];
       }

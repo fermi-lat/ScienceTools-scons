@@ -33,9 +33,6 @@ namespace optimizers {
 
   void Lbfgs::find_min(int verbose, double tol, int tolType) {
 
-// dummy Arg object needed by Function methods
-     dArg dummy(1.);
-
     m_numEvals = 0;
     m_errorString.erase();
 
@@ -99,8 +96,8 @@ namespace optimizers {
 	// Request for values of function and gradient.
 	// LBFGS is a minimizer, so we must flip the signs to maximize.
 	m_stat->setFreeParamValues(paramVals);
-	funcVal = -m_stat->value(dummy);
-	m_stat->getFreeDerivs(dummy, gradient);
+	funcVal = -m_stat->value();
+	m_stat->getFreeDerivs(gradient);
 	for (int i = 0; i < nparams; i++) {
 	  gradient[i] = -gradient[i];
 	}
@@ -161,7 +158,6 @@ namespace optimizers {
       p->setValue(paramVals[j]);
     }
     // Put parameter values back into the objective Function
-//    (*m_stat)(paramVals);
     m_stat->setFreeParamValues(paramVals);
   } // End of find_min
 }

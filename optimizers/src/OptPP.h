@@ -10,7 +10,8 @@
 #define optimizers_OptPP_h
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Function.h"
+//#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 
 #ifdef HAVE_OPT_PP
 #include "Opt.h"
@@ -36,7 +37,8 @@ class OptPP : public Optimizer {
     
 public:
     
-   OptPP(Function &stat) : Optimizer(stat) {s_stat = &stat;}
+//   OptPP(Function &stat) : Optimizer(stat) {s_stat = &stat;}
+   OptPP(Statistic &stat) : Optimizer(stat) {s_stat = &stat;}
    virtual ~OptPP() {}
 
    void find_min(int verbose = 0, double tol = 1e-5);

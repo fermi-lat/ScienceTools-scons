@@ -9,7 +9,7 @@
 #define optimizers_MINUIT_H
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 #include "optimizers/f2c_types.h"
 
 namespace optimizers {
@@ -53,7 +53,7 @@ namespace optimizers {
     
   public:
     
-    Minuit(Function &stat);
+    Minuit(Statistic &stat);
     
     virtual ~Minuit() {}
     
@@ -78,13 +78,11 @@ namespace optimizers {
 
   private:
     
-//    Function *m_stat;
     //! Pass a command string to Minuit
     int doCmd(std::string command);
     int m_maxEval;
     int m_quality;
     double m_distance;
-//    std::vector<double> m_uncertainty;
   };
   
   //! The function which Minuit will minimize

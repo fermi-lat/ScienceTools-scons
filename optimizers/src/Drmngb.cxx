@@ -32,9 +32,6 @@ namespace optimizers {
   
   void Drmngb::find_min(int verbose, double tol, int tolType) {
 
-    // A dummy Arg object that is needed by Function methods.
-    dArg dummy(1);
-
     /// Unpack model parameters into the arrays needed by Drmngb
     
     std::vector<Parameter> params;
@@ -88,11 +85,11 @@ namespace optimizers {
 	catch (Exception e) {
 	  std::cerr << e.what() << std::endl;
 	}
-	funcVal = -m_stat->value(dummy);
+	funcVal = -m_stat->value();
       }
       else if (rcode == 2) { /// request for the gradient
 	m_stat->setFreeParamValues(paramVals);
-	m_stat->getFreeDerivs(dummy, gradient);
+	m_stat->getFreeDerivs(gradient);
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}

@@ -20,7 +20,8 @@ namespace optimizers {
 
 enum TOLTYPE {RELATIVE, ABSOLUTE};
 
-class Function;
+//class Function;
+class Statistic;
 
 /** 
  * @class Optimizer
@@ -36,7 +37,7 @@ class Optimizer {
     
 public:
     
-   Optimizer(Function &stat) {m_stat = &stat;}
+   Optimizer(Statistic &stat) {m_stat = &stat;}
 
    virtual ~Optimizer() {}
 
@@ -48,7 +49,7 @@ public:
 
 protected:
 
-   Function *m_stat;
+   Statistic *m_stat;
 
    /// A vector to contain the estimated uncertainties of the free 
    /// parameters.

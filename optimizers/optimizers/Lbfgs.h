@@ -10,7 +10,8 @@
 #define optimizers_lbfgs_h
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Function.h"
+//#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 #include "optimizers/f2c_types.h"
 #include <string>
 
@@ -56,7 +57,7 @@ namespace optimizers {
     
   public:
     
-    Lbfgs(Function &stat) : Optimizer(stat), m_maxVarMetCorr(5),
+    Lbfgs(Statistic &stat) : Optimizer(stat), m_maxVarMetCorr(5),
       m_maxIterations(100),
       m_pgtol(1.e+20),
       m_retCode(0)
@@ -78,8 +79,6 @@ namespace optimizers {
     
   private:
     
-//    Function *m_stat;
-
     //! Number of variable metric corrections to save
     int m_maxVarMetCorr; 
 

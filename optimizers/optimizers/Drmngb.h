@@ -9,7 +9,7 @@
 #define optimizers_drmngb_h
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Function.h"
+#include "optimizers/Statistic.h"
 #include "optimizers/f2c_types.h"
 #include <string>
 
@@ -48,7 +48,7 @@ namespace optimizers {
     
   public:
     
-    Drmngb(Function &stat) : Optimizer(stat), m_NeedCovariance(true) {}
+    Drmngb(Statistic &stat) : Optimizer(stat), m_NeedCovariance(true) {}
     
     virtual ~Drmngb() {}
     
@@ -74,8 +74,6 @@ namespace optimizers {
 
   private:
     
-//    Function *m_stat;
-//    std::vector<double> m_uncertainty;
     int m_retCode;
     bool m_NeedCovariance;
 
