@@ -62,7 +62,9 @@ public:
     */
     operator SkyDir()const { return m_dir; }
 private:
-    bool s_ephemInitialized;
+    //! setup the jpl ephemeris database if needed, return jd in correct form
+    double * jplSetup(JulianDate jd);
+
     SkyDir m_dir;
     SolSystem* m_ss;
 };

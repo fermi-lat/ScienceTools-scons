@@ -11,15 +11,16 @@
 #include <stdexcept>
 
 namespace astro {
-SolarSystem::SolarSystem(): m_ss(new SolSystem){
-s_ephemInitialized = false;
+
+SolarSystem::SolarSystem()
+: m_ss(new SolSystem)
+{
 }
 
 SolarSystem::SolarSystem( SolarSystem::Body body, JulianDate jd )
 : m_ss(new SolSystem)
 {
     direction(body, jd);
-   s_ephemInitialized = false;
 }
 
 SkyDir SolarSystem::direction(Body body, JulianDate jd)
@@ -38,17 +39,10 @@ double SolarSystem::distance(Body body, JulianDate jd)
    return m_ss->Edist;
 }
 
-// Returns an Hep3Vector with light seconds as distance units
-Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
+double * SolarSystem::jplSetup(JulianDate jd)
 {
-   double jdt[2], *jdpointer;
-   jdt[0] = floor(jd);
-   jdt[1] = jd - floor(jd) - 0.5;
-   int nearth = 3; 
-   int nsun = 11;
-   jdpointer = &jdt[0];
-
-   if(!s_ephemInitialized) {
+    static bool ephemInit=false;
+    if(!ephemInit) {
       int ephnum = 405;
       int denum;
       double c, radsol, msol;
@@ -56,65 +50,50 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
       if ( j !=0 ) {
           throw std::runtime_error("SolarSytem::getBarycenter: could not initilze JPL ephemeris");
        }
-      s_ephemInitialized = true;
+      ephemInit = true;
    }
+/*    the JPL takes 
+ an array with two elements: a floored integer number of days since 
+ noon -4712, and a fractional part between -0.5 and 0.5 which gets 
+ added to produce any time between the midnight of the integer day to 
+ the midnight of the next day.
 
-   const double *eposn =  dpleph(jdpointer, nearth, nsun);
+                   jd[0]-.5      jd[0]       jd[0]+.5
+                     mid          noon          mid
+
+                   where -0.5 <= jd[1] < 0.5
+*/
+
+    static double jdt[]={ floor(jd+0.5), jd-jdt[0] };
+    return jdt;
+}
+
+// Returns an Hep3Vector with light seconds as distance units
+Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
+{
+    enum {EARTHx=3, SUNx=11};
+    const double *eposn =  dpleph(jplSetup(jd), EARTHx, SUNx);
 
    // Position of barycenter
    double x = -eposn[0];
    double y = -eposn[1];
    double z = -eposn[2];
-//   double dist = sqrt(x*x + y*y + z*z);
-//   double ra = atan2(y,x) * 180. / M_PI;
-//   double dec = atan2(z,sqrt(x*x+y*y)) * 180. / M_PI;
+   return Hep3Vector(x,y,z);
 
-   Hep3Vector barycenter(x,y,z);
-   /*
-   barycenter.setX(x);
-   barycenter.setY(y);
-   barycenter.setZ(z);
-  */
-   return barycenter;
 }
 
 Hep3Vector SolarSystem::getSolarVector(JulianDate jd)
 {
-   double jdt[2], *jdpointer;
-   jdt[0] = floor(jd);
-   jdt[1] = jd - floor(jd) - 0.5;
-   int nearth = 3; 
-   int nsun = 11;
-   jdpointer = &jdt[0];
+   enum {EARTHx=3, SUNx=11};
 
-   if(!s_ephemInitialized) {
-      int ephnum = 405;
-      int denum;
-      double c, radsol, msol;
-      int j;
-      if ( (j = initephem (ephnum, &denum, &c, &radsol, &msol))!=0 ) {
-         fprintf (stderr, "Error while initializing ephemeris; status: %d\n",
-	         j) ;
-         denum = 0 ;
-      }
-      s_ephemInitialized = true;
-   }
-
-   const double *eposn =  dpleph(jdpointer, nearth, nsun);
+   const double *eposn =  dpleph(jplSetup(jd), EARTHx, SUNx);
 
    // Position of sun with respect to the geocenter
    double x = -eposn[0] + eposn[3];
    double y = -eposn[1] + eposn[4];
    double z = -eposn[2] + eposn[5];
 
-    Hep3Vector solarVector(x,y,z);
-   /*
-   solarVector.setX(x);
-   solarVector.setY(y);
-   solarVector.setZ(z);
-  */
-   return solarVector;
-
+   return Hep3Vector(x,y,z);
 }
 
 SolarSystem::~SolarSystem(){ delete m_ss;}
