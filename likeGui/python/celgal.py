@@ -7,8 +7,13 @@ Class for transforming between Equatorial and Galactic coordinates.
 $Header$
 """
 
-#from math import *
-from numarray import *
+try:
+    from numarray import *
+except ImportError:
+    from math import *
+    arcsin = asin
+    arccos = acos
+    arctan2 = atan2
 
 class celgal:
     def __init__(self, J2000=1):

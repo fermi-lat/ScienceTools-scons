@@ -23,17 +23,17 @@ import readXml
 import findSrcs
 
 likePath = '/'.join( (os.environ['LIKELIHOODROOT'],
-                      os.environ['CMTCONFIG'], '') )
+                      os.environ['BINDIR'], '') )
 likeProgram = likePath + "likelihood.exe"
 likeProgram = cleanPathName(likeProgram)
 TsMapProgram = likePath + "TsMap.exe"
 expMapProgram = likePath + "expMap.exe"
 expCubeProgram = likePath + "makeExposureCube.exe"
 obsSimProgram = '/'.join( (os.environ['OBSERVATIONSIMROOT'],
-                           os.environ['CMTCONFIG'],
+                           os.environ['BINDIR'],
                            'obsSim.exe') )
 #dataSubselectorProgram = '/'.join( (os.environ['DATASUBSELECTORROOT'],
-#                                    os.environ['CMTCONFIG'],
+#                                    os.environ['BINDIR'],
 #                                    'dataSubselector.exe') )
 
 class RootWindow(Tkinter.Tk):
