@@ -23,9 +23,9 @@ int main() {
       FitsTable table("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
-      std::cerr << "Opening non-existent.pha didn't throw a FitsException." << std::endl;
+      std::cerr << "Opening non-existent.pha didn't throw a TableException." << std::endl;
       status = 1;
-    } catch(const FitsException & x) {
+    } catch(const TableException & x) {
       // This is as it should be
     }
 
@@ -71,12 +71,12 @@ int main() {
           r["energy"].read(energy);
           std::cerr << "Getting a non-existent column didn't throw." << std::endl;
           status = 1;
-        } catch(const FitsException & x) {
+        } catch(const TableException & x) {
           // This should have thrown.
         }
 
       }
-    } catch(const FitsException & x) {
+    } catch(const TableException & x) {
       std::cerr << "Unexpected exception while testing reading through the iterator." << std::endl;
       status = 1;
     }
@@ -136,14 +136,18 @@ int main() {
 
       }
 
-    } catch(const FitsException & x) {
+    } catch(const TableException & x) {
       std::cerr << "Unexpected exception while testing reading through the iterator into Ref." << std::endl;
       status = 1;
     }
 
-  } catch(const FitsException & x) {
-    std::cerr << "Unhandled FitsException." << std::endl;
+  } catch(const TableException & x) {
+    std::cerr << "Unhandled TableException." << std::endl;
     status = 1;
+  } catch(const std::exception & x) {
+    std::cerr << "Unhandled std::exception." << std::endl;
+  } catch(...) {
+    std::cerr << "Unhandled unknown thrown object." << std::endl;
   }
 
   return status;

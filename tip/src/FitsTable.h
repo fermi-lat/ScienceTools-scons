@@ -18,15 +18,6 @@
 
 namespace table {
 
-  /** \class FitsException
-
-      \brief Exceptions thrown by FitsTable.
-  */
-  class FitsException : public std::exception {
-    public:
-      virtual const char * what() const throw() { return "FitsError"; }
-  };
-
   /** \class FitsTable
       \brief Low level abstract interface to Fits format tabular data.
   */

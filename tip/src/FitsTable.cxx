@@ -25,7 +25,7 @@ namespace table {
     // Check for success and if not, do not continue.
     if (status || nrows < 0) {
       close();
-      throw FitsException();
+      throw TableException();
     }
 
     // Save the number of rows.
@@ -51,7 +51,7 @@ namespace table {
     // Copy construction requires that the new table opens the file itself separately.
     try {
       open();
-    } catch(FitsException & x) {
+    } catch(TableException & x) {
       m_col_info.clear();
       m_num_records = 0;
       throw;
@@ -67,7 +67,7 @@ namespace table {
   void FitsTable::read(const std::string & field, Index_t record_index, double & value) const {
     int status = 0;
     std::map<std::string, int>::const_iterator itor = m_col_info.find(field);
-    if (itor == m_col_info.end()) throw FitsException();
+    if (itor == m_col_info.end()) throw TableException();
 
     int col_num = itor->second;
 
@@ -82,14 +82,14 @@ namespace table {
     // Open the fits file.
     fits_open_file(&fp, const_cast<char *>(m_file_name.c_str()), READWRITE, &status);
 
-    if (status) throw FitsException();
+    if (status) throw TableException();
 
     // Move to the indicated extension.
     fits_movnam_hdu(fp, BINARY_TBL, const_cast<char *>(m_table_name.c_str()), 0, &status);
 
     if (status) {
       fits_close_file(fp, &status);
-      throw FitsException();
+      throw TableException();
     }
 
     // Success: save the pointer.

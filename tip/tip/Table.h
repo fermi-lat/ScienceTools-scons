@@ -15,6 +15,15 @@
 
 namespace table {
 
+  /** \class TableException
+
+      \brief Exceptions thrown by FitsTable.
+  */
+  class TableException : public std::exception {
+    public:
+      virtual const char * what() const throw() { return "Table component exception"; }
+  };
+
   /** \class Table
 
       \brief High level encapsulation of tabular data, viewed as a container of Records. Access is mainly
