@@ -49,6 +49,8 @@ namespace table {
       */
       virtual FieldIndex_t getFieldIndex(const std::string & field_name) const;
 
+      virtual Index_t getFieldNumElements(FieldIndex_t field_index) const;
+
       /** \brief Get a value from the current tabular data object.
           \param field The name of the field (column) to get.
           \param record_index The index whose value to get.

@@ -95,6 +95,13 @@ namespace table {
     return itor->second.m_col_num;
   }
 
+  Index_t FitsTabularData::getFieldNumElements(FieldIndex_t field_index) const {
+    // Find field_index in container of columns. Complain if not found.
+    std::map<FieldIndex_t, ColumnInfo>::const_iterator itor = m_col_num_lookup.find(field_index);
+    if (itor == m_col_num_lookup.end()) throw TableException();
+    return itor->second.m_repeat;
+  }
+
   // getCell overloads.
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const {
     getCellGeneric(field_index, record_index, value);
