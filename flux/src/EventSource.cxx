@@ -6,8 +6,8 @@
 
 #include "flux/EventSource.h"
 
-#include <xercesc/dom/DOM_Element.hpp>
-#include "xml/Dom.h"
+//#include <xercesc/dom/DOM_Element.hpp>  // unused
+//#include "xml/Dom.h"                    // unused
 #include "flux/FluxException.h"
 
 #include <sstream>
