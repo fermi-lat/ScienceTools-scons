@@ -61,13 +61,51 @@ int main(int iargc, char * argv[]) {
 
    std::vector<std::string> colNames;
 
+   colNames.push_back("elapsed_time");
+   colNames.push_back("FT1Energy");
+   colNames.push_back("FT1Ra");
+   colNames.push_back("FT1Dec");
+   colNames.push_back("FT1Theta");
+   colNames.push_back("FT1Phi");
+   colNames.push_back("FT1ZenithTheta");
+   colNames.push_back("FT1EarthAzimuth");
+   colNames.push_back("FT1EventId");
+   colNames.push_back("FT1ConvPointX");
+   colNames.push_back("FT1ConvPointY");
+   colNames.push_back("FT1ConvPointZ");
+   colNames.push_back("FT1ConvLayer");
+   colNames.push_back("IMgoodCalProb");
+   colNames.push_back("IMvertexProb");
+   colNames.push_back("IMcoreProb");
+   colNames.push_back("IMpsfErrPred");
+   colNames.push_back("IMgammaProb");
+   colNames.push_back("GltWord");
+   colNames.push_back("CalEnergySum");
+   colNames.push_back("CalTotRLn");
+   colNames.push_back("CalMIPDiff");
+   colNames.push_back("CalCsIRLn");
+   colNames.push_back("CalLRmsRatio");
+   colNames.push_back("Tkr1ZDir");
+   colNames.push_back("Tkr1FirstLayer");
+   colNames.push_back("Tkr1ToTFirst");
+   colNames.push_back("Tkr1ToTAve");
+   colNames.push_back("TkrNumTracks");
+   colNames.push_back("AcdTotalEnergy");
+   colNames.push_back("AcdRibbonActDist");
+   colNames.push_back("AcdTileCount");
+   colNames.push_back("FilterStatus_HI");
+   colNames.push_back("EvtEnergySumOpt");
+   colNames.push_back("EvtTkrEComptonRatio");
+   colNames.push_back("VtxAngle");
+
    std::string query("");
    int nentries(0);
 
 // Read in all of the columns for the FT1 and Exposure branches.
-   colNames = meritTuple.branchNames();
+//   colNames = meritTuple.branchNames();
    meritTuple.readTree(colNames, query, nentries);
 
+   std::cout<<"colName size "<<colNames.size()<<std::endl;
 // Goodi setup.
 
 // Create the IOService and Data factories.
