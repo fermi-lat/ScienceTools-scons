@@ -10,7 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "tip/Table.h"
+#include "tip/Extension.h"
 #include "tip/Header.h"
 
 #include "observationSim/ContainerBase.h"
@@ -33,7 +33,8 @@ std::string ContainerBase::outputFileName() const {
    return outputfile.str();
 }
 
-void ContainerBase::writeDateKeywords(tip::Table * table, double start_time, 
+void ContainerBase::writeDateKeywords(tip::Extension * table, 
+                                      double start_time, 
                                       double stop_time) {
    static double secsPerDay(8.64e4);
    tip::Header & header = table->getHeader();

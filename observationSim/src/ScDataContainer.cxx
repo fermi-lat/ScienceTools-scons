@@ -12,8 +12,10 @@
 #include "CLHEP/Geometry/Vector3D.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 
+#include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
 #include "astro/EarthCoordinate.h"
@@ -104,6 +106,13 @@ void ScDataContainer::writeScData() {
    }
    writeDateKeywords(my_table, start_time, stop_time);
    delete my_table;
+
+// Take care of date keywords in primary header.
+   tip::Image * phdu = tip::IFileSvc::instance().editImage(ft2File, "");
+   writeDateKeywords(phdu, start_time, stop_time);
+   delete phdu;
+
+   st_facilities::FitsUtil::writeChecksums(ft2File);
 
 // Flush the buffer...
    m_scData.clear();
