@@ -6,6 +6,7 @@
 #include <cmath>
 #include <utility> // for pair
 #include <string>
+#include <vector>
 #include "wcslib/prj.h"
 
 namespace astro {
@@ -24,10 +25,12 @@ namespace astro {
     {
     public:
         ///Constructors
-        ///Default Constructor is for Hammer Aitoff Projection
+        /** @brief Default projection is Hammer-Aitoff
+        */
         SkyProj();
 
-        /** Constructor specified by Projection Code
+        /** @brief Constructor specified by Projection Code
+            @param projName String containing three char code
             Valid codes are:
             @verbatim
             AZP: zenithal/azimuthal perspective 
@@ -60,22 +63,52 @@ namespace astro {
             **/
         SkyProj(const std::string &projName);
 
-        // Parameter s1 corresponds to lon coordinate, s2 to lat coordinate 
-        std::pair<double,double> Project(double s1, double s2);
+        /** @brief Constructor specified by Projection Code
+            @param projName String containing three char code
+            @param x0 reference x coordinate
+            @param y0 reference y coordinate
+            @param phi0 fiducial native longitude coordinate
+            @param theta0 fiducial native latitude coordinate
+            @param sxy XY Scaling?
+            @param spt ?
+            @param params vector of doubles containing any projection specific parameters
+            **/
+        SkyProj(const std::string &projName, double phi0, double theta0, double sxy, double spt, std::vector<double> params);
 
-        // Allows conversion from one projection to another
-        // x1, x2 are lon and lat coordinates for the other projection
-        std::pair<double,double> Project(double x1, double x2, SkyProj otherProjection);
+        /** @brief Do the projection with the given coordinates
+            @param s1 ra or l, in degrees
+            @param s2 dec or b, in degrees
+        */
+        std::pair<double,double> project(double s1, double s2);
 
-        // Parameter x1 corresponds to lon coordinate, x2 to lat coordinate 
-        std::pair<double,double> Deproject(double x1, double x2);
+        /** @brief Convert from one projection to another
+            @param x1 projected equivalent to ra or l, in degrees
+            @param x2 projected equivalent dec or b, in degrees
+            @param projection used to deproject these coordinates
+        */
+        std::pair<double,double> project(double x1, double x2, SkyProj otherProjection);
 
-        void SetProjection(const std::string& projName);
-
+        /** @brief Does the inverse projection
+            @param x1 projected equivalent to ra or l, in degrees
+            @param x2 projected equivalent dec or b, in degrees
+        */
+        std::pair<double,double> deproject(double x1, double x2);
 
         class Exception; // forward declaration
     private:
+        /** @brief Change the projection type
+            @param projName String containing three char code
+        */
+        void setProjection(const std::string& projName);
+
+
+       /* Structure defined in WCSLIB prj.c.  This contains all
+          projection information. */
         prjprm prj;
+
+        /* Scaling parameters ? */
+        double m_spt;
+        double m_sxy;
         
     };
 

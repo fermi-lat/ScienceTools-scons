@@ -31,9 +31,11 @@ protected:
 */
 SkyProj::SkyProj()
 {
+   m_spt = 1;
+   m_sxy = 1;
    prjini(&prj);
    std::string projName = "AIT";
-   SkyProj::SetProjection(projName);
+   SkyProj::setProjection(projName);
 }
 
 /** @brief Constructor specified by Projection Code
@@ -68,15 +70,33 @@ SkyProj::SkyProj()
 */
 SkyProj::SkyProj(const std::string &projName)
 {
+   m_spt = 1;
+   m_sxy = 1;
    prjini(&prj);
-   SkyProj::SetProjection(projName);
+   SkyProj::setProjection(projName);
+}
+
+SkyProj::SkyProj(const std::string &projName, double phi0, double theta0, double sxy, double spt, std::vector<double> params)
+{
+   prjini(&prj);
+   prj.phi0 = phi0;
+   prj.theta0 = theta0;
+   m_sxy = sxy;
+   m_spt = spt;
+
+   for(int i = 0; i < params.size(); i++)
+   {
+      prj.pv[i] = params[i];
+   }
+
+   SkyProj::setProjection(projName);
 }
 
 /** @brief Do the projection with the given coordinates
 @param s1 ra or l, in degrees
 @param s2 dec or b, in degrees
 */
-std::pair<double,double> SkyProj::Project(double s1, double s2)
+std::pair<double,double> SkyProj::project(double s1, double s2)
 {
    double xa1[1], xa2[1];  // Projection Coordinates
    double sa1[1], sa2[1];
@@ -92,7 +112,7 @@ std::pair<double,double> SkyProj::Project(double s1, double s2)
    
    // Unknown what parameters 4 and 5 do.  Probably something about scaling.
    // Test later.
-   prjs2x(&prj,1,1,1,1,sa1,sa2,xa1,xa2,&dummy);
+   prjs2x(&prj,1,1,m_spt,m_sxy,sa1,sa2,xa1,xa2,&dummy);
 
    return std::make_pair<double,double>(xa1[0],xa2[0]);
 }
@@ -103,21 +123,21 @@ std::pair<double,double> SkyProj::Project(double s1, double s2)
 @param x2 projected equivalent dec or b, in degrees
 @param projection used to deproject these coordinates
 */
-std::pair<double,double> SkyProj::Project(double x1, double x2, SkyProj otherProjection)
+std::pair<double,double> SkyProj::project(double x1, double x2, SkyProj otherProjection)
 {
    double s1, s2; // Sky Coordinates
    std::pair<double,double> s;
-   s = otherProjection.Deproject(x1,x2);
+   s = otherProjection.deproject(x1,x2);
    s1 = s.first;
    s2 = s.second;
-   return SkyProj::Project(s1,s2);
+   return SkyProj::project(s1,s2);
 }
 
 /** @brief Does the inverse projection
 @param x1 projected equivalent to ra or l, in degrees
 @param x2 projected equivalent dec or b, in degrees
 */
-std::pair<double,double> SkyProj::Deproject(double x1, double x2)
+std::pair<double,double> SkyProj::deproject(double x1, double x2)
 {
    double sa1[1], sa2[1];  // Sky Coordinates
    double xa1[1], xa2[1];
@@ -128,7 +148,7 @@ std::pair<double,double> SkyProj::Deproject(double x1, double x2)
 
    // Unknown what parameters 4 and 5 do.  Probably something about scaling.
    // Test later.
-   prjx2s(&prj,1,1,1,1,xa1,xa2,sa1,sa2,&dummy);
+   prjx2s(&prj,1,1,m_sxy,m_spt,xa1,xa2,sa1,sa2,&dummy);
 
     //fold RA into the range (0,360)
     while(sa1[0] < 0) sa1[0] +=360.;
@@ -140,29 +160,13 @@ std::pair<double,double> SkyProj::Deproject(double x1, double x2)
 /** @brief Change the projection type
 @param projName String containing three char code
 */
-void SkyProj::SetProjection(const std::string& projName)
+void SkyProj::setProjection(const std::string& projName)
 {
-   int i;
-   bool code_found = false;
+    strncpy(prj.code,projName.c_str(),4);
 
-   // Valid Projection Codes
-   const char prj_codes[26][4] =
-   {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
-   "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
-   "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
-
-   for(i = 0; i < 26 && code_found != true; i++)
-   {
-      if(0 == strncmp(prj_codes[i],projName.c_str(),4))
-      {
-         code_found = true;
-         strncpy(prj.code,projName.c_str(),4);
-         prjset(&prj);
-      }                  
-   }
-
-   if(code_found != true)
-      throw Exception(std::string("Unrecognized SkyDir projection type: ")+projName);
+    // Projection routine returns 2 if the projection type is not found.
+    if(2 == prjset(&prj))
+      throw Exception(std::string("Unrecognized SkyProj projection type: ")+projName);
 }
 
 

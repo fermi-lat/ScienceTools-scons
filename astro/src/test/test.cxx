@@ -223,6 +223,40 @@ int main(){
     //THB double sd4_ra= sd4.ra(), sd4_dec=sd4.dec();
     test += sd4.difference(sd);
 
+    const char prj_codes[26][4] =
+    {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
+    "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
+    "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
+    std::pair<double,double> newcoord;
+    double weps;
+    bool pass_low_lat, pass_mid_lat, pass_high_lat;
+    cout << "Projection/Deprojection Closure Test (0.5 degree or better = pass)" << endl;
+    cout << "Projection   Pass High Lat    Pass Mid Lat    Pass Low Lat" << endl;
+    for(int currentcode = 0; currentcode < 26; currentcode++)
+    {
+       pass_low_lat = true;
+       pass_mid_lat = true;
+       pass_high_lat = true;
+       SkyProj Projection(prj_codes[currentcode]);
+       for(int lat = -90; lat <= 90; lat++) {
+          for(int lon = 0; lon <=360; lon++) {
+             newcoord = Projection.project(lon,lat);
+             newcoord = Projection.deproject(newcoord.first,newcoord.second);
+             weps = newcoord.first - lon + newcoord.second - lat;
+             if(weps > 0.5)
+             {
+                if(fabs((double) lat) > 60)
+                   pass_high_lat = false;
+                else if(fabs((double) lat) > 30)
+                   pass_mid_lat = false;
+                else
+                   pass_low_lat = false;
+             }
+          }
+       }
+       cout << prj_codes[currentcode] << "\t\t" << pass_high_lat << "\t\t" << pass_mid_lat << "\t\t" << pass_low_lat << endl;
+    }
+
 
     if( fabs(test) < 1e-3 ) {
         cout << "tests ok " << endl;

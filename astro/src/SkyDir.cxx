@@ -109,7 +109,7 @@ SkyDir::SkyDir(double param1, double param2, SkyProj projection)
    double ra_rad, dec_rad;
    std::pair<double,double> s;
    // Deproject the coordinates to find ra/dec (or l/b)
-   s = projection.Deproject(param1, param2);
+   s = projection.deproject(param1, param2);
 
    ra_rad = s.first * M_PI/180.;
    dec_rad = s.second * M_PI/180.;
@@ -250,7 +250,7 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
 // WCS based projection routine
 std::pair<double,double> SkyDir::project(SkyProj projection) const
 {
-   return projection.Project(this->ra(),this->dec());
+   return projection.project(this->ra(),this->dec());
 }
 
 
