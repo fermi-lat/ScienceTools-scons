@@ -11,8 +11,7 @@
 
 namespace optimizers {
 
-void FunctionTest::parameters(const std::vector<Parameter> &params) 
-   throw(Exception) {
+void FunctionTest::parameters(const std::vector<Parameter> &params) {
 
    std::vector<std::string> paramNames;
    m_func->getParamNames(paramNames);
@@ -74,8 +73,7 @@ void FunctionTest::parameters(const std::vector<Parameter> &params)
    m_func->setParams(m_originalParameters);
 }
 
-void FunctionTest::freeParameters(const std::vector<Parameter> &params) 
-   throw(Exception) {
+void FunctionTest::freeParameters(const std::vector<Parameter> &params) {
 
 // Create a local copy of the test Parameters
    std::vector<Parameter> my_params = params;
@@ -137,8 +135,7 @@ void FunctionTest::freeParameters(const std::vector<Parameter> &params)
 }
 
 void FunctionTest::funcEvaluations(const std::vector<Arg*> &arguments,
-                                   const std::vector<double> &returnValues) 
-   throw(Exception) {
+                                   const std::vector<double> &returnValues) {
    if (arguments.size() != returnValues.size()) {
       throw Exception(
          std::string("FunctionTest::funcEvaluations:\n") + 
@@ -157,7 +154,7 @@ void FunctionTest::funcEvaluations(const std::vector<Arg*> &arguments,
 }
 
 void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
-                               double eps) throw(Exception) {
+                               double eps) {
 // loop over all Parameters
    for (unsigned int k = 0; k < arguments.size(); k++) {
       Arg *my_arg = arguments[k];

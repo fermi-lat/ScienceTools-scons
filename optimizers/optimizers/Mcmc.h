@@ -25,14 +25,14 @@ namespace optimizers {
  *
  * The transition probability distributions are specified along each
  * dimension by top-hat functions.  The widths of these top-hats may
- * either estimated, by default, as the rough 1-sigma error using an
- * approximate Hessian at the starting point via e.g., Minuit; or they
- * may be specified by hand through the setTransitionWidths method.
- * Because the Parameters are generally bounded, the transition
- * probabilities must be renormalized at each trial point by the
- * fraction of the top-hat contained within the boudaries, hence the
- * need for Metropolis-Hastings rather than simply the Metropolis
- * algorithm.
+ * either be estimated, by default, as the rough 1-sigma error using
+ * an approximate Hessian at the starting point via e.g., Minuit; or
+ * they may be specified by hand through the setTransitionWidths
+ * method.  Because the Parameters are generally bounded, the
+ * transition probabilities must be renormalized at each trial point
+ * by the fraction of the top-hat contained within the boudaries,
+ * hence the need for Metropolis-Hastings rather than simply the
+ * Metropolis algorithm.
  *
  * Priors that are functions of the same set of Parameters in the form
  * of other Function objects can be applied.  As with the Statistic
@@ -47,30 +47,36 @@ class Mcmc {
 
 public:
 
-   Mcmc(Function &stat);
+   Mcmc(Function &stat, bool verbose=true);
+
    ~Mcmc() {}
 
-   void addPriors(std::vector<Function *> &priors) {m_priors = priors;}
+   void addPriors(std::vector<Function *> & priors) {
+      m_priors = priors;
+   }
 
    void generateSamples(std::vector< std::vector<double> > &samples,
                         unsigned long nsamp=1e4);
 
-   //! Set the transition probablity widths by hand
-   void setTransitionWidths(std::vector<double> &transitionWidths)
-      {m_transitionWidths = transitionWidths;}
+   /// Set the transition probablity widths by hand
+   void setTransitionWidths(std::vector<double> &transitionWidths) {
+      m_transitionWidths = transitionWidths;
+   }
 
-   //! Useful for restarting the MCMC
-   void getTransitionWidths(std::vector<double> &transitionWidths)
-      {transitionWidths = m_transitionWidths;}
+   /// Useful for restarting the MCMC
+   void getTransitionWidths(std::vector<double> &transitionWidths) {
+      transitionWidths = m_transitionWidths;
+   }
 
-   //! write samples to a FITS binary table
-   static void writeSamples(std::string filename, 
-                            std::vector< std::vector<double> > &samples)
-      throw(Exception);
+   /// write samples to a FITS binary table
+   void writeSamples(std::string filename, 
+                     std::vector< std::vector<double> > &samples) const;
 
 private:
 
-   Function *m_stat;
+   Function * m_stat;
+
+   bool m_verbose;
 
    std::vector<Function *> m_priors;
 

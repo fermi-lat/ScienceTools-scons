@@ -31,8 +31,7 @@ class FunctionTest {
 
 public:
 
-   FunctionTest(Function &func, const std::string &name) {
-      m_func = &func;
+   FunctionTest(Function &func, const std::string &name) : m_func(&func) {
       m_func->setName(name);
       assert(m_func->getName() == name);
       m_func->getParams(m_originalParameters);
@@ -40,22 +39,19 @@ public:
 
    ~FunctionTest() {}
 
-   void parameters(const std::vector<Parameter> &params) 
-      throw(Exception);
+   void parameters(const std::vector<Parameter> & params);
 
-   void freeParameters(const std::vector<Parameter> &params) 
-      throw(Exception);
+   void freeParameters(const std::vector<Parameter> & params);
 
-   void funcEvaluations(const std::vector<Arg*> &arguments,
-                        const std::vector<double> &returnValues)
-      throw(Exception);
+   void funcEvaluations(const std::vector<Arg *> & arguments,
+                        const std::vector<double> & returnValues);
 
-   void derivatives(const std::vector<Arg*> &arguments,
-                    double eps = 1e-5) throw(Exception);
+   void derivatives(const std::vector<Arg *> & arguments,
+                    double eps = 1e-5);
       
 private:
 
-   Function *m_func;
+   Function * m_func;
    std::vector<Parameter> m_originalParameters;
 
 };

@@ -76,7 +76,6 @@ public:
    double getValue() const {
       return m_value;
    }
-
    
    /// scale access
    void setScale(double scale) {

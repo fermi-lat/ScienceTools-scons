@@ -3,7 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
-    v1r4   10-Nov-04   JC   xerces 2.6.0 conversion
+    v2     29-Dec-04   JC   refactored Function and Parameter classes
+    v1r4   10-Nov-04   JC   Xerces 2.6.0 conversion
     v1r3   10-Jun-04   JC   enable Opt++ builds on linux with SCons
     v1r2   05-apr-04   THB  convert requirements file to use STpolicy 
     v1r1   18-Mar-04   JC   stage 1 Xerces migration; fabs instead of abs; 

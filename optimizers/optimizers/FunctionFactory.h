@@ -9,8 +9,8 @@
 #ifndef optimizers_FunctionFactory_h
 #define optimizers_FunctionFactory_h
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "optimizers/Function.h"
 #include "optimizers/Exception.h"
@@ -37,16 +37,16 @@ public:
 
    virtual ~FunctionFactory();
 
-   Function *create(const std::string &name) throw(Exception);
+   Function * create(const std::string & name);
 
-   void addFunc(const std::string &name, Function *func,
+   void addFunc(const std::string & name, Function * func,
                 bool fromClone=true);
 
-   void getFunctionNames(std::vector<std::string> &funcNames);
+   void getFunctionNames(std::vector<std::string> & funcNames);
 
-   void readXml(const std::string &xmlFile) throw(Exception);
+   void readXml(const std::string & xmlFile);
 
-   void writeXml(const std::string &outputFile);
+   void writeXml(const std::string & outputFile);
 
 private:
 

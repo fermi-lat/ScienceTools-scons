@@ -216,7 +216,6 @@ protected:
 
    virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
                             bool getFree) const;
-private:
 
    Parameter & parameter(const std::string & name);
 

@@ -8,23 +8,26 @@
  */
 
 #include <cmath>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
+
+#include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <algorithm>
-#include "fitsio.h"
-#include "optimizers/Mcmc.h"
-#include "optimizers/dArg.h"
-#include "optimizers/Exception.h"
-#include "CLHEP/Random/RandomEngine.h"
+
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
+
+#include "optimizers/dArg.h"
+#include "optimizers/Exception.h"
+#include "optimizers/Mcmc.h"
 
 namespace optimizers {
 
-Mcmc::Mcmc(Function &stat) {
-   m_stat = &stat;
+#include "fitsio.h"
+
+Mcmc::Mcmc(Function &stat, bool verbose) : m_stat(&stat), m_verbose(verbose) {
    estimateTransWidths();
 }
 
@@ -43,9 +46,11 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
 
    samples.clear();
 
-   std::cerr << "Mcmc generating samples";
+   if (m_verbose) {
+      std::cerr << "Mcmc generating samples";
+   }
    while (samples.size() < nsamp) {
-      if (samples.size() % nsamp/20 == 0) {
+      if (m_verbose && samples.size() % nsamp/20 == 0) {
          std::cerr << ".";
       }
 // Loop over parameters, treating each update step as a trial
@@ -60,9 +65,7 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
          m_stat->setFreeParamValues(paramValues);
          double statValue = m_stat->value(dummy);
          double alpha = transProbRatio*exp(statValueNew - statValue);
-// Metropolis rejection criterion (Use CLHEP call here?)
-//          double drand = static_cast<double>(rand())
-//             /static_cast<double>(RAND_MAX);
+// Metropolis rejection criterion
          double drand = RandFlat::shoot();
          if (drand < alpha) {
 // Accept the new point in Parameter space
@@ -73,18 +76,21 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
          samples.push_back(paramValues);
       }
    }
-   std::cerr << "!" << std::endl;
+   if (m_verbose) {
+      std::cerr << "!" << std::endl;
+   }
 }
 
 void Mcmc::writeSamples(std::string filename, 
-                        std::vector< std::vector<double> > &samples) 
-   throw(Exception) {
+                        std::vector< std::vector<double> > &samples) const {
 
    fitsfile *fptr;
    int status = 0;
 
-   std::cout << filename << std::endl;
-// create the file
+   if (m_verbose) {
+      std::cout << filename << std::endl;
+   }
+// Create the file.
    remove(filename.c_str());
    fits_create_file(&fptr, filename.c_str(), &status);
    if (status != 0) {
@@ -92,25 +98,28 @@ void Mcmc::writeSamples(std::string filename,
       throw Exception("Mcmc::writeSamples: cfitsio errors.");
    }
 
-// create the binary table, with the labels identifying the content of
+// Create the binary table, with the labels identifying the content of
 // each column
 
    int tfields = static_cast<int>(samples[0].size());
-//   static int tfields_max = 100;
    char *ttype[100];
    char *tform[100];
    char *tunit[100];
 
-   std::cout << "creating binary table" << std::endl;
+   if (m_verbose) {
+      std::cout << "Creating binary table" << std::endl;
+   }
    for (int i = 0; i < tfields; i++) {
       std::ostringstream type;
       type << "param" << i;
       ttype[i] = strdup(std::string(type.str()).c_str());
       tform[i] = strdup("1E");
       tunit[i] = strdup("None");
-      std::cout << ttype[i] << "  "
-                << tform[i] << "  "
-                << tunit[i] << std::endl;
+      if (m_verbose) {
+         std::cout << ttype[i] << "  "
+                   << tform[i] << "  "
+                   << tunit[i] << std::endl;
+      }
    }
    char *extname = strdup("Mcmc data");
    int nrows = samples.size();
@@ -186,7 +195,6 @@ double Mcmc::drawValue(Parameter &param, double dx, double &transProbRatio) {
    double width = std::min(xu, x0 + dx) - std::max(xl, x0 - dx);
 
 // Draw the trial value...
-//   double drand = static_cast<double>(rand())/static_cast<double>(RAND_MAX);
    double drand = RandFlat::shoot();
    double y = drand*width + std::max(xl, x0 - dx);
 

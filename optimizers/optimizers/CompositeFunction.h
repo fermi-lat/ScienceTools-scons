@@ -8,10 +8,13 @@
 #ifndef optimizers_CompositeFunction_h
 #define optimizers_CompositeFunction_h
 
-#include <cassert>
+#include <sstream>
+#include <stdexcept>
+
 #include "optimizers/Function.h"
 
 namespace optimizers {
+
 /** 
  * @class CompositeFunction
  *
@@ -30,10 +33,14 @@ class CompositeFunction : public Function {
 public:
 
    CompositeFunction(Function &a, Function &b) {
-      if (a.argType() != b.argType())
-         std::cerr << a.argType() << "  "
-                   << b.argType() << std::endl;
-      assert(a.argType() == b.argType());
+      if (a.argType() != b.argType()) {
+         std::ostringstream message;
+         message << "CompositeFunction:\n"
+                 << "Type mismatch: "
+                 << a.argType() << " vs "
+                 << b.argType();
+         throw std::runtime_error(message.str());
+      }
       m_argType = a.argType();
    }
    CompositeFunction(const CompositeFunction&);
@@ -43,11 +50,11 @@ public:
       delete m_b;
    }
 
-   //! setParam method to include function name checking
+   /// setParam method to include function name checking
    virtual void setParam(const Parameter &param, const std::string &funcName);
 
-   //! group parameter access (note name mangling for inheritance 
-   //! from Function)
+   /// group parameter access (note name mangling for inheritance 
+   /// from Function)
    virtual std::vector<double>::const_iterator setParamValues_(
       std::vector<double>::const_iterator it) {
       it = m_a->setParamValues_(it);
@@ -62,22 +69,22 @@ public:
       return it;
    }
 
-   //! Parameter access including Function name specification
+   /// Parameter access including Function name specification
    virtual const Parameter & getParam(const std::string &paramName, 
                                       const std::string &funcName) const;
    
 protected:
 
    // pointers to the Functions forming the composite
-   Function *m_a;
-   Function *m_b;
+   Function * m_a;
+   Function * m_b;
 
-   //! method to sync the m_parameter vector with those of the two Functions
+   /// method to sync the m_parameter vector with those of the two Functions
    void syncParams();
 
 private:
 
-   //! disable this since Parameters may no longer have unique names
+   /// disable this since Parameters may no longer have unique names
    double derivByParam(Arg &, const std::string &) const {return 0;}
 
 };

@@ -8,9 +8,9 @@
  * $Header$
  */
 
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -61,7 +61,7 @@ void FunctionFactory::addFunc(const std::string &name,
    }
 }
 
-Function *FunctionFactory::create(const std::string &name) throw(Exception) {
+Function *FunctionFactory::create(const std::string &name) {
    if (!m_prototypes.count(name)) {
       std::ostringstream errorMessage;
       errorMessage << "FunctionFactory::create: "
@@ -80,7 +80,7 @@ void FunctionFactory::getFunctionNames(std::vector<std::string> &funcNames) {
    }
 }
 
-void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
+void FunctionFactory::readXml(const std::string &xmlFile) {
    xml::XmlParser * parser = new xml::XmlParser();
 
    DOMDocument * doc = parser->parse(xmlFile.c_str());

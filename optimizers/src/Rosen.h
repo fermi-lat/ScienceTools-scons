@@ -6,10 +6,10 @@
  * $Header$
  */
 
-//#include "optimizers/Function.h"
 #include "optimizers/Statistic.h"
 
 namespace optimizers {
+
 /** 
  * @class Rosen
  *
