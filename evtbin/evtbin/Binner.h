@@ -18,7 +18,9 @@ namespace evtbin {
 
           /** \brief Compute and return the midpoint of the interval.
           */
-          double getMidpoint() const { return (m_begin + m_end) / 2.; }
+          double midpoint() const { return (m_begin + m_end) / 2.; }
+
+          double width() const { return (m_end - m_begin); }
 
           double begin() const { return m_begin; }
 
