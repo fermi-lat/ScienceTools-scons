@@ -135,28 +135,6 @@ namespace tip {
       virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
         Index_t dest_record);
 
-      /** \brief Templated function which can get any kind of data from a FITS table. This
-          method throws an exception if the extension is not a table.
-          \param field_index The index of the field (column) to get.
-          \param record_index The record index (row number) whose value to get.
-          \param src_begin Index of the first element within the Cell.
-          \param src_end Index of one element past the last element within the Cell.
-          \param dest_begin Pointer to the first element in the output sequence.
-      */
-      template <typename T>
-      void getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end, T * dest) const;
-
-      /** \brief Templated function which can set any kind of data in a FITS table. This
-          method throws an exception if the extension is not a table.
-          \param field_index The index of the field (column) to set.
-          \param record_index The record index (row number) whose value to set.
-          \param src_begin Index of the first element within the Cell to set.
-          \param dest_begin Pointer to the first element in the output sequence.
-          \param dest_end Pointer to one past the last element in the output sequence.
-      */
-      template <typename T>
-      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, const T * dest_begin, const T * dest_end);
-
       /** \brief Append a field to the table.
           \param field_name The name of the field to append.
           \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
@@ -186,6 +164,10 @@ namespace tip {
           \param pixel The pixel value.
       */
       void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel);
+
+      fitsfile * getFp() const { return m_fp; }
+
+      bool readOnly() const { return m_read_only; }
 
     protected:
       /** \brief Open the FITS table. Exceptions will be thrown if the extension does not exist, or if
@@ -306,110 +288,6 @@ namespace tip {
   inline void FitsExtensionManager::copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record,
     FieldIndex_t dest_field, Index_t dest_record) {
     getColumn(dest_field)->copy(src_ext->getColumn(src_field), src_record, dest_record);
-  }
-
-  // Getting columns.
-  template <typename T>
-  inline void FitsExtensionManager::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
-    T * dest_begin) const {
-    if (!m_is_table) throw TipException(formatWhat("getCellGeneric called, but object is not a table"));
-    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
-    int status = 0;
-    fits_read_col(m_fp, data_type_code, col_num, record_index + 1, src_begin + 1, src_end - src_begin, 0,
-      dest_begin, 0, &status);
-    if (0 != status) {
-      std::ostringstream s;
-      s << "Cannot read record number " << record_index << " from column number " << col_num;
-      throw TipException(formatWhat(s.str()));
-    }
-  }
-
-  // Getting column values as bools is a special case because Cfitsio gets them as ints.
-  template <>
-  inline void FitsExtensionManager::getCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
-    Index_t src_end, bool * dest) const {
-    if (!m_is_table) throw TipException(formatWhat("getCellGeneric called, but object is not a table"));
-    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
-    int status = 0;
-    char tmp[1];
-    for (Index_t ii = src_begin; ii != src_end; ++ii) {
-      fits_read_col(m_fp, data_type_code, col_num, record_index + 1, ii, 1, 0, tmp, 0, &status);
-      if (0 != status) {
-        std::ostringstream s;
-        s << "Cannot read record number " << record_index << " from column number " << col_num;
-        throw TipException(formatWhat(s.str()));
-      }
-      *dest++ = *tmp;
-    }
-  }
-
-  // Getting column values as strings is a special case because Cfitsio gets them as char *.
-  // This is tricky and painful to get right because of Cfitsio's way of indicating the width
-  // of columns. Since there is no immediate need to manage strings, this is simply not supported
-  // for now.
-  template <>
-  inline void FitsExtensionManager::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    Index_t src_end, std::string * dest) const {
-    if (!m_is_table) throw TipException(formatWhat("getCellGeneric called, but object is not a table"));
-    throw TipException("String valued columns not yet implemented for FITS table.");
-  }
-
-  // Setting columns.
-  template <typename T>
-  inline void FitsExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
-    const T * dest_begin, const T * dest_end) {
-    if (m_read_only) {
-      std::ostringstream s;
-      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
-      throw TipException(formatWhat(s.str()));
-    }
-    if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
-    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
-    int status = 0;
-    fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
-      const_cast<void *>(static_cast<const void *>(dest_begin)), &status);
-    if (0 != status) {
-      std::ostringstream s;
-      s << "Cannot write record number " << record_index << " in column number " << col_num;
-      throw TipException(formatWhat(s.str()));
-    }
-  }
-
-  // Setting column values as bools is a special case because Cfitsio treats them as ints.
-  template <>
-  inline void FitsExtensionManager::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
-    const bool * dest_begin, const bool * dest_end) {
-    if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
-    if (m_read_only) {
-      std::ostringstream s;
-      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
-      throw TipException(formatWhat(s.str()));
-    }
-    static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
-    int status = 0;
-    char tmp[1];
-    for (; dest_begin != dest_end; ++dest_begin, ++src_begin) {
-      *tmp = *dest_begin;
-      fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);
-      if (0 != status) {
-        std::ostringstream s;
-        s << "Cannot write record number " << record_index << " in column number " << col_num;
-        throw TipException(formatWhat(s.str()));
-      }
-    }
-  }
-
-  // Setting column values as strings is not supported. See note above getCellGeneric.
-  template <>
-  inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    const std::string * dest_begin, const std::string * dest_end) {
-    if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
-    if (m_read_only) {
-      std::ostringstream s;
-      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
-      throw TipException(formatWhat(s.str()));
-    }
-    throw TipException("String valued columns not yet implemented for FITS table.");
   }
 
 }
