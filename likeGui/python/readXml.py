@@ -45,10 +45,7 @@ class SourceModel:
         return self.srcList.keys()
 
     def writeTo(self, filename=None):
-        if filename == None:
-            #
-            # Overwrite the existing file.
-            #
+        if filename == None:  # Overwrite the existing file.
             filename = self.filename
         self.setAttributes()
         doc = cleanXml(self.doc)
@@ -130,4 +127,3 @@ class Function(DomElement):
 class Parameter(DomElement):
     def __init__(self, node):
         DomElement.__init__(self, node, string.atof)
-

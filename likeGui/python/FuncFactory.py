@@ -42,6 +42,18 @@ def BrokenPowerLaw():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def Gaussian():
+    func = '\n'.join( ('<spectrum type="Gaussian">',
+                       '   <parameter free="1" max="1000.0" min="0.001" '
+                       + 'name="Prefactor" scale="1e-09" value="1"/>',
+                       '   <parameter free="1" max="1e5" min="1e3" '
+                       + 'name="Mean" scale="1.0" value="7e4"/>',
+                       '   <parameter free="1" max="30" min="1e4" '
+                       + 'name="Sigma" scale="1.0" value="1e3"/>',
+                       '</spectrum>\n') )
+    (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
+    return Function(func)
+
 #
 # Spatial Models
 #
@@ -92,6 +104,7 @@ class Spectra(FuncContainer):
         FuncContainer.__init__(self)
         self.funcs['PowerLaw'] = PowerLaw()
         self.funcs['BrokenPowerLaw'] = BrokenPowerLaw()
+        self.funcs['Gaussian'] = Gaussian()
 
 class SpatialModels(FuncContainer):
     def __init__(self):
