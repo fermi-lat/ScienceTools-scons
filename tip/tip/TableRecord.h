@@ -17,7 +17,7 @@
 
 namespace table {
 
-  class TableRecord;
+  class ConstTableRecord;
 
   /** \class TableCell
 
@@ -27,11 +27,11 @@ namespace table {
   */
   class TableCell {
     public:
-      /** \brief Construct a TableCell object associated with a particular field in the given TableRecord.
-          \param record The referent TableRecord object.
-          \param field The name of this TableCell (the field in the TableRecord).
+      /** \brief Construct a TableCell object associated with a particular field in the given ConstTableRecord.
+          \param record The referent ConstTableRecord object.
+          \param field The name of this TableCell (the field in the ConstTableRecord).
       */
-      TableCell(TableRecord & record, const std::string & field): m_record(record), m_field(field) {}
+      TableCell(ConstTableRecord & record, const std::string & field): m_record(record), m_field(field) {}
 
       virtual ~TableCell() {}
 
@@ -41,28 +41,103 @@ namespace table {
       void get(double & value) const;
 
     private:
-      TableRecord & m_record;
+      ConstTableRecord & m_record;
       std::string m_field;
+  };
+
+  /** \class ConstTableRecord
+
+      \brief Encapsulation of a single table record.
+  */
+  class ConstTableRecord {
+    public:
+      typedef std::map<std::string, TableCell> CellCont_t;
+
+      /** \brief Construct a ConstTableRecord object, without immediate association with any ITabularData.
+          Such an association may be formed later by assignment.
+      */
+      ConstTableRecord(): m_cells(), m_tab_data(0), m_index(0) {}
+
+      /** \brief Construct a ConstTableRecord object, without immediate association with any ITabularData.
+          Such an association may be formed later by assignment.
+      */
+      ConstTableRecord(const ConstTableRecord & rec): m_cells(), m_tab_data(rec.m_tab_data), m_index(rec.m_index) {}
+
+      /** \brief Construct a ConstTableRecord object, associated with the given ITabularData and record index.
+      */
+      ConstTableRecord(ITabularData * tab_data, Index_t index): m_cells(), m_tab_data(tab_data), m_index(index) {}
+
+      /** \brief Assignment operator. Note that this behaves somewhat unusually!
+
+          This assignment does not change this ConstTableRecord's container of TableCell objects.
+          This is necessary in order to preserve the selected content of this ConstTableRecord. The
+          idea is that assignment changes which ITabularData and record index this ConstTableRecord points to
+          but does not affect which fields were selected in this ConstTableRecord. This way client code
+          can be certain of the continued validity of references to TableCells contained in this ConstTableRecord.
+      */
+      ConstTableRecord & operator =(const ConstTableRecord & rec);
+
+      /** \brief Return a const TableCell object for the given field. The TableCell object will be created
+          if it does not already exist.
+
+          Note that there is no check at this point whether the underlying ITabularData actually
+          has a field with this name.
+          \param field The name of the TableCell object (the field in this ConstTableRecord).
+      */
+      const TableCell & operator [](const std::string & field) const { return find_or_make(field); }
+
+      // Client code should not normally need to call methods below here, but they are
+      // public because cell and iterator abstractions need to call them.
+      // Get the current record index and tab_data.
+      Index_t getIndex() const { return m_index; }
+
+      // Get the current ITabularData pointer.
+      ITabularData * getTabularData() { assert(m_tab_data); return m_tab_data; }
+
+      // Get the current ITabularData pointer.
+      const ITabularData * getTabularData() const { assert(m_tab_data); return m_tab_data; }
+
+      ConstTableRecord & itorNext() { ++m_index; return *this; }
+      ConstTableRecord & itorPrev() { --m_index; return *this; }
+      bool itorEquals(const ConstTableRecord & record) const
+        { return m_tab_data == record.m_tab_data && m_index == record.m_index; }
+      bool itorLessThan(const ConstTableRecord & record) const
+        { return m_tab_data == record.m_tab_data && m_index < record.m_index; }
+      bool itorGreaterThan(const ConstTableRecord & record) const
+        { return m_tab_data == record.m_tab_data && m_index > record.m_index; }
+
+    protected:
+      TableCell & find_or_make(const std::string & field) const;
+
+      CellCont_t m_cells;
+      ITabularData * m_tab_data;
+      Index_t m_index;
   };
 
   /** \class TableRecord
 
       \brief Encapsulation of a single table record.
   */
-  class TableRecord {
+  class TableRecord : public ConstTableRecord {
     public:
-      typedef std::map<std::string, TableCell> CellCont_t;
+      typedef ConstTableRecord::CellCont_t CellCont_t;
 
       /** \brief Construct a TableRecord object, without immediate association with any ITabularData.
           Such an association may be formed later by assignment.
       */
-      TableRecord(): m_cells(), m_tab_data(0), m_index(0) {}
+      TableRecord(): ConstTableRecord() {}
 
       /** \brief Construct a TableRecord object, associated with the given ITabularData and record index.
       */
-      TableRecord(ITabularData & tab_data, Index_t index): m_cells(), m_tab_data(&tab_data), m_index(index) {}
+      TableRecord(ITabularData * tab_data, Index_t index): ConstTableRecord(tab_data, index) {}
 
-      virtual ~TableRecord() {}
+      /** \brief Copy construct a TableRecord object.
+      */
+      TableRecord(const TableRecord & rec): ConstTableRecord(rec) {}
+
+      /** \brief Construct a TableRecord object from a ConstTableRecord object.
+      */
+      TableRecord(const ConstTableRecord & rec): ConstTableRecord(rec) {}
 
       /** \brief Assignment operator. Note that this behaves somewhat unusually!
 
@@ -73,6 +148,16 @@ namespace table {
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
       TableRecord & operator =(const TableRecord & rec);
+
+      /** \brief Assignment operator. Note that this behaves somewhat unusually!
+
+          This assignment does not change this TableRecord's container of TableCell objects.
+          This is necessary in order to preserve the selected content of this TableRecord. The
+          idea is that assignment changes which ITabularData and record index this TableRecord points to
+          but does not affect which fields were selected in this TableRecord. This way client code
+          can be certain of the continued validity of references to TableCells contained in this TableRecord.
+      */
+      TableRecord & operator =(const ConstTableRecord & rec);
 
       /** \brief Return a TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
@@ -87,41 +172,19 @@ namespace table {
           if it does not already exist.
 
           Note that there is no check at this point whether the underlying ITabularData actually
-          has a field with this name.
-          \param field The name of the TableCell object (the field in this TableRecord).
+          has a field with this name. Note also that this duplicates the method in the base class
+          but this is necessary because the above operator [] hides the base class method.
+          \param field The name of the TableCell object (the field in this ConstTableRecord).
       */
-      const TableCell & operator [](const std::string & field) const {
-        TableRecord * This = const_cast<TableRecord *>(this);
-        if (!This) throw TableException();
-        return This->find_or_make(field);
-      }
-
-      // Client code should not normally need to call methods below here.
-      // Get the current record index and tab_data.
-      Index_t getIndex() const { return m_index; }
-
-      // Get the current ITabularData pointer.
-      ITabularData * getTabularData() { assert(m_tab_data); return m_tab_data; }
-
-      // Get the current ITabularData pointer.
-      const ITabularData * getTabularData() const { assert(m_tab_data); return m_tab_data; }
-
-      // Go on to the next record. Not operator ++ because this behavior might be unexpected.
-      void nextRecord() { ++m_index; }
-
-    private:
-      TableCell & find_or_make(const std::string & field);
-      CellCont_t m_cells;
-      ITabularData * m_tab_data;
-      Index_t m_index;
+      const TableCell & operator [](const std::string & field) const { return find_or_make(field); }
   };
 
   // TableCell
   inline void TableCell::get(double & value) const
     { m_record.getTabularData()->getCell(m_field, m_record.getIndex(), value); }
 
-  // TableRecord
-  inline TableRecord & TableRecord::operator =(const TableRecord & rec) {
+  // ConstTableRecord
+  inline ConstTableRecord & ConstTableRecord::operator =(const ConstTableRecord & rec) {
     if (this != &rec) {
       // Note: do *not* assign m_cells! This is important to how TableRecords work!
       m_tab_data = rec.m_tab_data; // This should also confirm that the new table has the right fields.
@@ -130,10 +193,22 @@ namespace table {
     return *this;
   }
 
-  inline TableCell & TableRecord::find_or_make(const std::string & field) {
-    CellCont_t::iterator itor = m_cells.find(field);
-    if (m_cells.end() == itor) itor = m_cells.insert(itor, std::make_pair(field, TableCell(*this, field)));
+  inline TableCell & ConstTableRecord::find_or_make(const std::string & field) const {
+    ConstTableRecord & rec = const_cast<ConstTableRecord &>(*this);
+    CellCont_t::iterator itor = rec.m_cells.find(field);
+    if (rec.m_cells.end() == itor) itor = rec.m_cells.insert(itor, std::make_pair(field, TableCell(rec, field)));
     return itor->second;
+  }
+
+  // TableRecord
+  inline TableRecord & TableRecord::operator =(const TableRecord & rec) {
+    ConstTableRecord::operator =(rec);
+    return *this;
+  }
+
+  inline TableRecord & TableRecord::operator =(const ConstTableRecord & rec) {
+    ConstTableRecord::operator =(rec);
+    return *this;
   }
 
 }
