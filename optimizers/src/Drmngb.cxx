@@ -93,7 +93,7 @@ namespace optimizers {
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}
-	if (tolType == ABSOLUTE && iv[28] == 3 && abs(funcVal-oldVal) < tol) {
+	if (tolType == ABSOLUTE && iv[28] == 3 && fabs(funcVal-oldVal) < tol) {
 	  // check after a successful line search
 	  m_retCode = 6;
 	  if (verbose != 0)

@@ -1,12 +1,13 @@
 package optimizers
-version v1r0p1
+version v1r1
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
 
 # $Id$
 
-use xml v*
+use GlastPolicy v5r*
+use xml v4r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
@@ -20,7 +21,7 @@ private
 #macro pydir ../python/
 
 # allow use of internal path
-macro optimizers_cppflags "" Linux "-I ../src -g -O -pedantic " \
+macro optimizers_cppflags "" Linux "-I ../src -D TRAP_FPE" \
 WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O "
 

@@ -118,7 +118,7 @@ namespace optimizers {
 	  m_errorString = "Exceeded Specified Number of Iterations";
 	  break;
 	}
-	if (tolType == ABSOLUTE && abs(funcVal-oldVal) < tol) {
+	if (tolType == ABSOLUTE && fabs(funcVal-oldVal) < tol) {
 	  m_retCode = LBFGS_NORMAL;
 	  m_errorString = "Absolute Convergence";
 	  break;

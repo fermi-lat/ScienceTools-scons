@@ -1,5 +1,9 @@
 // test program for optimizers
 
+#ifdef TRAP_FPE
+#include <fenv.h>
+#endif // TRAP_FPE
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -40,6 +44,9 @@ void test_Mcmc();
 std::string test_path;
 
 int main() {
+#ifdef TRAP_FPE
+   feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
+#endif
    test_FunctionFactory();
    test_Parameter_class();
    test_Function_class();

@@ -73,7 +73,7 @@ namespace optimizers {
     if (tolType == ABSOLUTE) {
       tolerance = 2000. * tol;
     } else if (tolType == RELATIVE) {
-      tolerance = 2000. * tol * abs(m_stat->value());
+      tolerance = 2000. * tol * fabs(m_stat->value());
     }
     std::ostringstream mline;
     mline << "MIGRAD " << m_maxEval << " " << tolerance << std::endl;
