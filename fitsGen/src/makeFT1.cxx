@@ -15,6 +15,8 @@
 #include <functional>
 #include <sstream>
 
+#include "assert.h"
+
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
 #include "Goodi/DataFactory.h"
