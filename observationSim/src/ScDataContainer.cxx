@@ -54,8 +54,6 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
    
    double time = event->time();
 
-// Get the rotation matrix from instrument to "Celestial" (J2000?)
-// coordinates.
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
