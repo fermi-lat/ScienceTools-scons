@@ -1,0 +1,29 @@
+/** \file TestFileManager.h
+    \brief Declaration for class to perform detailed testing of file manager-related classes.
+    \author James Peachey, HEASARC
+*/
+#ifndef tip_TestFileManager_h
+#define tip_TestFileManager_h
+
+#include <string>
+
+#include "TestHarness.h"
+
+namespace tip {
+
+  /** \class TestFileManager
+      \brief Declaration for class to perform detailed testing of file manager-related classes.
+  */
+  class TestFileManager : public TestHarness {
+    public:
+      /** \brief Perform the detailed test needed by the subobject.
+      */
+      virtual int test(int status);
+
+      /// \brief Test createFile method.
+      void createFileTest();
+  };
+
+}
+
+#endif
