@@ -16,6 +16,12 @@
 #include "TSystem.h"
 #include "TTree.h"
 
+#ifdef WIN32
+// Prevent problems with Root's dynamic loader in 4.0x.yy by instantiating a tree.
+// This may not be necessary after Root 4.02.00.
+TTree g_tip_windows_dynamic_loader_bug_4_02_00;
+#endif
+
 #include "RootColumn.h"
 #include "RootTable.h"
 #include "tip/TipException.h"
@@ -71,6 +77,10 @@ namespace tip {
 
   const Header & RootTable::getHeader() const { return m_header; }
 
+  const std::string & RootTable::getName() const { return m_ext_name; }
+
+  void RootTable::setName(const std::string & name) { m_tree->SetName(name.c_str()); }
+
   // Subclasses call this to open the file and position it to the desired extension.
   void RootTable::open() {
     static bool first_time = true;
@@ -84,7 +94,7 @@ namespace tip {
     if (first_time) {
       first_time = false;
 #ifdef WIN32 // needed for windows.
-      gSystem->Load("libTree.dll");
+//      gSystem->Load("libTree.dll");
 // JP added:
 #else
       gSystem->Load("libHist.so");
