@@ -10,14 +10,23 @@
 #include <string>
 #include <sstream>
 
-#include "xml/XmlParser.h"
 #include "xml/Dom.h"
-#include <xercesc/dom/DOMString.hpp>
-#include <xercesc/dom/DOM_Element.hpp>
-#include <xercesc/dom/DOM_Document.hpp>
-#include <xercesc/dom/DOM_NodeList.hpp>
+#include "xml/XmlParser.h"
 
 #include "optimizers/Parameter.h"
+
+namespace {
+   DomDocument * createDocument() {
+      DomDocument * doc = new DOM_Document();
+      *doc = DOM_Document::createDocument();
+      return doc;
+   }
+   DomElement * createElement(DomDocument * doc, const std::string & name) {
+      DomElement * elt = new DOM_Element();
+      *elt = doc->createElement(name.c_str());
+      return elt;
+   }
+}
 
 namespace optimizers {
 
@@ -50,7 +59,6 @@ void Parameter::setBounds(double minValue, double maxValue)
    }
 }
 
-// return bounds as a pair
 std::pair<double, double> Parameter::getBounds() const {
    std::pair<double, double> my_Bounds(m_minValue, m_maxValue);
    return my_Bounds;
@@ -70,34 +78,19 @@ void Parameter::extractDomData(const DOM_Element &elt) {
    m_scale = ::atof( xml::Dom::getAttribute(elt, "scale").c_str() );
 }
 
-DOM_Element Parameter::createDomElement(DOM_Document &doc) const {
+DomElement Parameter::createDomElement(DomDocument &doc) const {
 
-   DOM_Element paramElt = doc.createElement("parameter");
+   DomElement * paramElt = ::createElement(&doc, "parameter");
 
 // Add the appropriate attributes.
-   paramElt.setAttribute(DOMString("name"), DOMString(m_name.c_str()));
+   xml::Dom::addAttribute(*paramElt, "name", m_name.c_str());
+   xml::Dom::addAttribute(*paramElt, std::string("value"), m_value);
+   xml::Dom::addAttribute(*paramElt, std::string("min"), m_minValue);
+   xml::Dom::addAttribute(*paramElt, std::string("max"), m_maxValue);
+   xml::Dom::addAttribute(*paramElt, std::string("free"), m_free);
+   xml::Dom::addAttribute(*paramElt, std::string("scale"), m_scale);
 
-   std::ostringstream value;
-   value << m_value;
-   paramElt.setAttribute(DOMString("value"), DOMString(value.str().c_str()));
-
-   std::ostringstream minValue;
-   minValue << m_minValue;
-   paramElt.setAttribute(DOMString("min"), DOMString(minValue.str().c_str()));
-
-   std::ostringstream maxValue;
-   maxValue << m_maxValue;
-   paramElt.setAttribute(DOMString("max"), DOMString(maxValue.str().c_str()));
-
-   std::ostringstream free;
-   free << m_free;
-   paramElt.setAttribute(DOMString("free"), DOMString(free.str().c_str()));
-
-   std::ostringstream scale;
-   scale << m_scale;
-   paramElt.setAttribute(DOMString("scale"), DOMString(scale.str().c_str()));
-
-   return paramElt;
+   return *paramElt;
 }
 
 } // namespace optimizers

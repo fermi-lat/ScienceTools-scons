@@ -10,9 +10,7 @@
 #include <sstream>
 
 #include "xml/Dom.h"
-#include <xercesc/dom/DOM_Element.hpp>
 
-#include "optimizers/Dom.h"
 #include "optimizers/Function.h"
 
 namespace optimizers {
@@ -29,7 +27,6 @@ void Function::setParam(const Parameter &param) throw(ParameterNotFound) {
                            "setParam(Parameter&)"));
 }
 
-// Return the value for the named Parameter.
 double Function::getParamValue(const std::string &paramName) const
    throw(ParameterNotFound) {
    std::vector<Parameter>::const_iterator it = m_parameter.begin();
@@ -41,7 +38,6 @@ double Function::getParamValue(const std::string &paramName) const
    throw(ParameterNotFound(paramName, getName(), "getParamValue"));
 }
 
-// Return named Parameter
 Parameter Function::getParam(const std::string &paramName) const
    throw(ParameterNotFound) {
    std::vector<Parameter>::iterator it = m_parameter.begin();
@@ -194,7 +190,7 @@ void Function::addParam(const std::string &paramName,
 			double paramValue, 
 			bool isFree) throw(Exception) {
 
-// Check if paramName is already present
+// Check if paramName is already present.
    for (unsigned int i=0; i < m_parameter.size(); i++) {
       if (paramName == m_parameter[i].getName()) {
          std::ostringstream errorMessage;
@@ -205,7 +201,7 @@ void Function::addParam(const std::string &paramName,
          throw(Exception(errorMessage.str()));
       }
    }
-// if there's room, add this guy onto the vector
+// If there's room, add this onto the vector.
    if (m_parameter.size() < m_maxNumParams) {
       Parameter my_param(paramName, paramValue, isFree);
       m_parameter.push_back(my_param);
@@ -272,17 +268,17 @@ void Function::fetchDerivs(Arg &x, std::vector<double> &derivs,
    }
 }
 
-void Function::appendParamDomElements(DOM_Document &doc, DOM_Node &node) {
+void Function::appendParamDomElements(DomDocument &doc, DomNode &node) {
    std::vector<Parameter>::iterator paramIt = m_parameter.begin();
    for ( ; paramIt != m_parameter.end(); paramIt++) {
-      DOM_Element paramElt = paramIt->createDomElement(doc);
+      DomElement paramElt = paramIt->createDomElement(doc);
       node.appendChild(paramElt);
    }
 }
 
-void Function::setParams(const DOM_Element &elt) {
-   std::vector<DOM_Element> parElts;
-   Dom::getElements(elt, "parameter", parElts);
+void Function::setParams(const DomElement &elt) {
+   std::vector<DomElement> parElts;
+   xml::Dom::getChildrenByTagName(elt, "parameter", parElts);
    for (unsigned int i = 0; i < parElts.size(); i++) {
       std::string name = xml::Dom::getAttribute(parElts[i], "name");
       for (unsigned int j = 0; j < m_parameter.size(); j++) {
