@@ -25,25 +25,10 @@ namespace st_graph {
   */
   class RootPlotFrame : public RootFrame {
     public:
-      typedef std::set<RootPlot *> PlotCont_t;
-
       RootPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
 
       /// \brief Destruct the frame.
       virtual ~RootPlotFrame();
-
-      /** \brief Add the given (sub) frame to this container frame. The IFrame must really contain a plot, not some other widget.
-                 This will go away soon.
-          \param frame The frame being added.
-      */
-      virtual void addFrame(IFrame * frame);
-
-      /** \brief Remove the given (sub) frame to this container frame. If the frame is not currently in the container,
-                 no harm done. The IFrame must really contain a plot, not some other widget.
-                 This will go away soon.
-          \param frame The frame being removed.
-      */
-      virtual void removeFrame(IFrame * frame);
 
       virtual void display();
 

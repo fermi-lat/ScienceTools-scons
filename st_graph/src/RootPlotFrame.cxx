@@ -34,22 +34,6 @@ namespace st_graph {
   // Note m_frame is deleted in the base class destructor.
   RootPlotFrame::~RootPlotFrame() { delete m_multi_graph; }
 
-  void RootPlotFrame::addFrame(IFrame * frame) {
-    RootPlot * root_plot = dynamic_cast<RootPlot*>(frame);
-    if (0 == root_plot) throw std::logic_error("RootPlotFrame::addFrame was passed a frame which is not a Root plot");
-
-    //m_multi_graph->Add(root_plot->getTGraph(), "L");
-
-    RootFrame::addFrame(frame);
-  }
-
-  void RootPlotFrame::removeFrame(IFrame * frame) {
-    RootPlot * root_plot = dynamic_cast<RootPlot*>(frame);
-    if (0 == root_plot) throw std::logic_error("RootPlotFrame::removeFrame was passed a frame which is not a Root plot");
-
-    RootFrame::removeFrame(frame);
-  }
-
   void RootPlotFrame::display() {
     RootFrame::display();
 
