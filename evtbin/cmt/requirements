@@ -4,6 +4,7 @@ version v0
 use STpolicy *
 use astro *
 use st_app *
+use st_facilities *
 use tip *
 
 apply_pattern ST_library option=-no_share
@@ -14,3 +15,4 @@ private
 macro_append st_app_cppflags "" Linux "-I.."
 application test_evtbin evtbin/test/*.cxx
 application evtbin evtbin/*.cxx
+application gtbindef gtbindef/*.cxx
