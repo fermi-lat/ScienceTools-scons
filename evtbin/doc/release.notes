@@ -28,6 +28,9 @@
                           coordsys to determine whether coordinates are celestial
                           or galactic.
 15-mar-2005    v0r8p1 JP  Use enumerated parameter ranges where appropriate.
+23-mar-2005    v0r9p0 JP  Write DETCHANS keyword in PHA2 files. Write OBJECT
+                          and OBSERVER keywords in all files. Read keywords from
+                          the primary extension as well as events extension.
 --------------------------------------------------------------------------------
 \endverbatim
 
