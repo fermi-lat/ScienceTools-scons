@@ -16,6 +16,8 @@
 #include "xml/Dom.h"
 #include "xml/IFile.h"
 
+#include "astro/PointingTransform.h"
+
 #include <sstream>
 
 #define DLL_DECL_SPECTRUM(x)   extern const ISpectrumFactory& x##Factory; x##Factory.addRef();
@@ -372,7 +374,18 @@ HepRotation FluxMgr::CELTransform(double time){
 
 //get the transformation matrix.
 HepRotation FluxMgr::orientTransform(double time){
-    return GPS::instance()->rockingAngleTransform(time);
+	//make the transformtion that turns zenith coordinates into local coordinates.
+	//note:  this transformation is only used by FluxDisplay to tell where the earth's horizon is.
+	//it will rotate zenith coordinates into a frame where the "upwards direction" becomes the direction of the
+	//zenith in spacecraft coordinates, but is not more specific than that.
+	astro::SkyDir dirZ( GPS::instance()->RAZ() , GPS::instance()->DECZ() );
+	astro::SkyDir dirX( GPS::instance()->RAX() , GPS::instance()->DECX() );
+	astro::SkyDir dirZenith( GPS::instance()->RAZenith() , GPS::instance()->DECZenith() );
+	astro::PointingTransform point(dirZ,dirX);
+	Hep3Vector localZenith((point.localToCelestial().inverse())*dirZenith());
+	Hep3Vector perp1(localZenith.orthogonal());
+	HepRotation ret(perp1,localZenith.cross(perp1),localZenith);
+	return ret;
 }
 
 ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors

@@ -397,7 +397,7 @@
     -->
     <source name="vela" flux="0.00928">
         <spectrum escale="MeV">
-            <particle name="gamma"> <power_law emin="100.0" emax="100000." gamma="1.62"/>
+            <particle name="gamma"> <power_law emin="30.0" emax="100000." gamma="1.62"/>
             </particle>
             <celestial_dir ra="45.4." dec="26.2."/>
         </spectrum>
