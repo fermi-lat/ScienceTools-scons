@@ -71,12 +71,12 @@ void GRBobsSpectrum::swap(GRBobsSpectrum &other) throw()
 
 
 // Assignment Operator
-//GRBobsSpectrum &GRBobsSpectrum::operator=(const GRBobsSpectrum &right)
-//{
-//	GRBobsSpectrum temp(right);   // does all the work
-//	swap(temp);   // this can't throw
-//	return *this;
-//}
+GRBobsSpectrum &GRBobsSpectrum::operator=(const GRBobsSpectrum &right)
+{
+	GRBobsSpectrum temp(right);   // does all the work
+	swap(temp);   // this can't throw
+	return *this;
+}
 
 
 std::string GRBobsSpectrum::title() const

@@ -134,7 +134,7 @@ double GRBobsUtilities::randGen::operator () (double x)
 void GRBobsUtilities::sortVector(const long index, const std::vector<double> &in, const std::vector<double> &sorted, 
 								 std::vector<double> &out) 
 {
-	DoubleSize sz = in.size();
+	grbobstypes::DoubleSize sz = in.size();
 
 	std::deque<bool> flag(sz,0);
 	std::vector<double> temp(out);

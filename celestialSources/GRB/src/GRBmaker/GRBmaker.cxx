@@ -633,12 +633,12 @@ void GRBmaker::getFlux(HepRandomEngine *engine, long nlong, std::vector<double> 
 	std::vector<double>  p = GRBsimvecCreator::instance()->flux_p();
 	std::vector<double>  q = GRBsimvecCreator::instance()->flux_q();
 
-	DoubleConstIter it0 = std::max_element(p.begin(), p.end());
-	DoubleConstIter it1 = std::max_element(q.begin(), q.end());
+	grbobstypes::DoubleConstIter it0 = std::max_element(p.begin(), p.end());
+	grbobstypes::DoubleConstIter it1 = std::max_element(q.begin(), q.end());
 	double maxP = std::max<double> (*it0, *it1);
 
-	LongConstIter it2 = std::max_element(n.begin(), n.end());
-	LongConstIter it3 = std::min_element(n.begin(), n.end());
+	grbobstypes::LongConstIter it2 = std::max_element(n.begin(), n.end());
+	grbobstypes::LongConstIter it3 = std::min_element(n.begin(), n.end());
 	long diff = *it2 - *it3;
 
 	double f=0;
@@ -738,7 +738,7 @@ void GRBmaker::getTimes(HepRandomEngine *engine, const long nphots, const long d
 
 	for (int iphot=0; iphot<nphots; ++iphot)
 	{
-		DoubleIter it = cumpulse.end();
+		grbobstypes::DoubleIter it = cumpulse.end();
 		while (it == cumpulse.end())
 			it = std::find_if(cumpulse.begin(), cumpulse.end(), std::bind2nd(std::greater_equal<double>(), engine->flat()));
 
