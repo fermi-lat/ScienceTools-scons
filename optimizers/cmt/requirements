@@ -1,5 +1,5 @@
 package optimizers
-version v2
+version v2r0p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
@@ -7,7 +7,7 @@ author Pat Nolan <pln@razzle.stanford.edu>
 # $Id$
 
 use GlastPolicy *
-use xml v5r*
+use xmlBase v5r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal

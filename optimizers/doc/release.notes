@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r0p1 03-Jan-04   JC   use xmlBase instead of xml 
     v2     29-Dec-04   JC   refactored Function and Parameter classes
     v1r4   10-Nov-04   JC   Xerces 2.6.0 conversion
     v1r3   10-Jun-04   JC   enable Opt++ builds on linux with SCons
