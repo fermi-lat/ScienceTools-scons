@@ -25,6 +25,19 @@ namespace evtbin {
     parPrompt(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile");
   }
 
+  void BinConfig::spatialParPrompt(st_app::AppParGroup & par_group) {
+    par_group.Prompt("numxpix");
+    par_group.Prompt("numypix");
+    par_group.Prompt("pixscale");
+    par_group.Prompt("xref");
+    par_group.Prompt("yref");
+    par_group.Prompt("rafield");
+    par_group.Prompt("decfield");
+    par_group.Prompt("axisrot");
+    par_group.Prompt("proj");
+    par_group.Prompt("uselb");
+  }
+
   void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) {
     parPrompt(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile");
   }

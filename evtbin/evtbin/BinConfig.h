@@ -21,6 +21,8 @@ namespace evtbin {
     public:
       virtual void energyParPrompt(st_app::AppParGroup & par_group);
   
+      virtual void spatialParPrompt(st_app::AppParGroup & par_group);
+  
       virtual void timeParPrompt(st_app::AppParGroup & par_group);
   
       virtual Binner * createEnergyBinner(const st_app::AppParGroup & par_group) const;
