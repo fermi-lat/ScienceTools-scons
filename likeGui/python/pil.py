@@ -37,7 +37,7 @@ class Pil(object):
     def __call__(self):
         args = ''
         for name in self.keys():
-            args += ' ' + self.__getitem__(name)
+            args += ' ' + ''.join(('', name, '=', self.__getitem__(name)))
         return args
 
 if __name__ == '__main__':
