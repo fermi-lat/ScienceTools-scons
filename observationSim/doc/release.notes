@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v4r1   14-Sep-04   JC   add first entry to scData file as simulation
+                            start time
     v4r0   26-Aug-04   JC   refactored container classes; remove old FITS
                             table class
     v3r8   25-Aug-04   JC   use st_facilities; add includes for windows.
