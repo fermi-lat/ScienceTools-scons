@@ -17,7 +17,7 @@ $Header$
 #include "flux/SimpleSpectrum.h"
 
 #include "flux/FluxException.h" // for FATAL_MACRO
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 
 #include <algorithm>
 #include <sstream>

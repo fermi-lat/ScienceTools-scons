@@ -19,7 +19,7 @@
 * $Header $
 */
 
-#include "GPS.h"
+#include "astro/GPS.h"
 
 #include "FluxSource.h"
 

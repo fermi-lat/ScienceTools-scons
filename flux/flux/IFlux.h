@@ -8,7 +8,7 @@
 #include "CLHEP/Geometry/Point3D.h"
 #include "CLHEP/Geometry/Vector3D.h"
 #include "CLHEP/Vector/Rotation.h"
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 
 class ParticleProperty;
 class EventSource;

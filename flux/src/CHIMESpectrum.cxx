@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <functional>
 #include "CLHEP/Random/Random.h"
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 
 // this is needed to include in the executable or dll
 #include "flux/SpectrumFactory.h"

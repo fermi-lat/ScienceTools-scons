@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <functional>
 #include "CLHEP/Random/Random.h"
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 #include "Geomag.h"
 #include "flux/SpectrumFactory.h"
 

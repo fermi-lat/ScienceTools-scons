@@ -6,7 +6,7 @@
 #endif
 
 #include "GalElSpectrum.h"
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 
 #include <cmath>
 #include "CLHEP/Random/Random.h"

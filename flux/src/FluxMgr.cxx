@@ -7,7 +7,7 @@
 #include "flux/FluxMgr.h"
 #include "flux/EventSource.h"
 #include "flux/SpectrumFactoryTable.h"
-#include "flux/GPS.h"
+#include "astro/GPS.h"
 #include "flux/FluxException.h" // defines FATAL_MACRO
 #include "flux/CompositeSource.h"
 
