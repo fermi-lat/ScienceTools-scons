@@ -23,6 +23,9 @@ namespace tip {
       /// \brief Test createFile method.
       void createFileTest();
 
+      /// \brief Test editExtension method.
+      void editExtensionTest();
+
       /// \brief Test readExtension method.
       void readExtensionTest();
 

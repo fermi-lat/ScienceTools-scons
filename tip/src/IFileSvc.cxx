@@ -51,6 +51,47 @@ namespace tip {
     FitsFileManager::createFile(file_name, template_name);
   }
 
+  // TODO 11: read/edit Extension/Table/Image is getting cumbersome; lots of similar methods,
+  // duplicated code. In addition, error messages for files which cannot be opened tend to be
+  // confusing. For instance, if bozo.fits is not present, one sees two errors: Fits file bozo.fits
+  // can't be opened, and Root file bozo.fits can't be opened.
+  // So: 1) Add a method which determines whether a file exists, and what type it is, and change
+  // editTable so it only tries to open the correct file type. 2) Find some reasonable way to merge
+  // the various edit/read methods so that there is no duplicate code, and preferably so that there
+  // are fewer methods overall.
+
+  // Open read-write an extension in a file, be it FITS or Root, table or image.
+  Extension * IFileSvc::editExtension(const std::string & file_name, const std::string & ext_name,
+    const std::string & filter) {
+    Extension * retval = 0;
+    IExtensionData * data = 0;
+    TipException fits_exception;
+    try {
+      try {
+        // Open file with read-only mode enabled.
+        data = new FitsExtensionData(file_name, ext_name, filter, false);
+      } catch(const TipException & x) {
+        fits_exception = x;
+        data = new RootExtensionData(file_name, ext_name, filter);
+      }
+
+      // Determine whether this extension is a table or an image, and return the appropriate
+      // type of object..
+      if (data->isTable())
+        retval = new Table(data);
+      else
+        retval = new Image(data);
+
+    } catch(const TipException & x) {
+      delete retval; // If retval is non-0, Extension was created, so it will delete data.
+      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
+    } catch(...) {
+      delete retval; // If retval is non-0, Extension was created, so it will delete data.
+      throw;
+    }
+    return retval;
+  }
+
   // Edit a table in a file, be it FITS or Root.
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
