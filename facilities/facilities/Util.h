@@ -30,7 +30,8 @@ namespace facilities {
     WrongType(const std::string& toConvert, const std::string& typeName) : 
       m_toConvert(toConvert), m_typeName(typeName) {}
     std::string getMsg() {
-      std::string msg = "Cannot convert '" + m_toConvert + "' to type "
+      std::string msg =
+        "facilities::WrongType.  Cannot convert '" + m_toConvert + "' to type "
         + m_typeName;
       return msg;
     }
