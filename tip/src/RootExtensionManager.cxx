@@ -224,6 +224,10 @@ namespace tip {
     throw TipException("Copying cells to a Root table is not supported");
   }
 
+  void RootExtensionManager::copyRecord(const IExtensionData *, Index_t, Index_t) {
+    throw TipException("Copying records to a Root table is not supported");
+  }
+
   // Append field to a table extension.
   void RootExtensionManager::appendField(const std::string &, const std::string &) {
     throw TipException("Adding fields to a Root table is not supported");
