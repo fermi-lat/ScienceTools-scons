@@ -22,9 +22,9 @@ typedef void (*sighandler_t) (int);
 
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
+#include "st_graph/RootFrame.h"
 
 #include "RootEngine.h"
-#include "RootFrame.h"
 #include "RootPlot.h"
 #include "RootPlotFrame.h"
 #include "STGLayoutManager.h"

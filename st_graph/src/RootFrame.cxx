@@ -10,8 +10,7 @@
 #include "TGLayout.h"
 
 #include "st_graph/IEventReceiver.h"
-
-#include "RootFrame.h"
+#include "st_graph/RootFrame.h"
 
 ClassImp(st_graph::RootFrame)
 

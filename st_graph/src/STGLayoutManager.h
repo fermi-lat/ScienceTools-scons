@@ -7,8 +7,8 @@
 #include "TGFrame.h"
 #include "TGLayout.h"
 
-#include "RootFrame.h"
 #include "st_graph/IEventReceiver.h"
+#include "st_graph/RootFrame.h"
 
 namespace st_graph {
 
