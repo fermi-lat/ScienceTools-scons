@@ -15,8 +15,7 @@ apps = ['dataSubselector']
 
 libraries = map()
 
-default_libraries = ['astro', 
-                     'tipLib', 
+default_libraries = ['astro', 'evtbinLib', 'tipLib', 
                      'st_appLib', 'st_streamLib', 'hoopsLib', 'f2c',
                      'st_facilitiesLib', 'facilities']
 

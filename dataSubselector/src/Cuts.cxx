@@ -34,9 +34,6 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
       tip::IFileSvc::instance().readTable(eventFile, extension);
    const std::vector<std::string> & colnames = table->getValidFields();
 
-   const tip::Table * gtiTable = 
-      tip::IFileSvc::instance().readTable(eventFile, "GTI");
-
    const tip::Header & header = table->getHeader();
    double nkeys_value;
    header["NDSKEYS"].get(nkeys_value);
@@ -57,7 +54,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
          key4 << "DSREF" << keynum;
          header[key4.str()].get(ref);
       }
-      std::string mytype(type); // more tip-inspired foolishness
+      std::string mytype(type); // more foolishness
       ::toLower(mytype);
       if (std::find(colnames.begin(), colnames.end(), mytype)
           != colnames.end() && value != "TABLE") {
@@ -65,7 +62,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
       } else if (value.find("CIRCLE") == 0) {
          m_cuts.push_back(new SkyConeCut(type, unit, value));
       } else if (type == "TIME" && value == "TABLE") {
-         m_cuts.push_back(new GtiCut(*gtiTable));
+         m_cuts.push_back(new GtiCut(eventFile));
       } else {
          std::ostringstream message;
          message << "FITS extension contains an unrecognized DSS filtering "
@@ -127,6 +124,20 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
       m_cuts[i]->writeDssKeywords(header, i + 1);
    }
 }      
+
+bool Cuts::operator==(const Cuts & rhs) const {
+   if (size() != rhs.size()) {
+      return false;
+   }
+
+// Note that the ordering of the cuts must be the same.
+   for (unsigned int i = 0; i < size(); i++) {
+      if (!(*m_cuts.at(i) == *rhs.m_cuts.at(i))) {
+         return false;
+      }
+   }
+   return true;
+}
 
 void Cuts::CutBase::writeDssKeywords(tip::Header & header, 
                                      unsigned int keynum,
@@ -204,6 +215,19 @@ void Cuts::RangeCut::writeDssKeywords(tip::Header & header,
    CutBase::writeDssKeywords(header, keynum, m_keyword, m_unit, value.str());
 }
 
+bool Cuts::RangeCut::operator==(const CutBase & arg) const {
+   try {
+      CutBase & rhs = const_cast<CutBase &>(arg);
+      return (m_keyword == dynamic_cast<RangeCut &>(rhs).m_keyword &&
+              m_unit == dynamic_cast<RangeCut &>(rhs).m_unit &&
+              m_min == dynamic_cast<RangeCut &>(rhs).m_min &&
+              m_max == dynamic_cast<RangeCut &>(rhs).m_max &&
+              m_type == dynamic_cast<RangeCut &>(rhs).m_type);
+   } catch (...) {
+      return false;
+   }
+}
+
 bool Cuts::GtiCut::accept(tip::ConstTableRecord & row) const {
    double time;
    row["TIME"].get(time);
@@ -219,25 +243,21 @@ bool Cuts::GtiCut::accept(const std::map<std::string, double> & params) const {
 }
 
 bool Cuts::GtiCut::accept(double time) const {
-   tip::Table::ConstIterator it = m_table.begin();
-   tip::ConstTableRecord & interval = *it;
-   for ( ; it != m_table.end(); ++it) {
-      double start, stop;
-      interval["START"].get(start);
-      interval["STOP"].get(stop);
-      if (start <= time && time <= stop) {
-         return true;
-      }
-   }
-   return false;
+   return m_gti.accept(time);
 }
 
 void Cuts::GtiCut::writeDssKeywords(tip::Header & header,
                                     unsigned int keynum) const {
-   const tip::Header & table_header = m_table.getHeader();
-   std::string table_name;
-   table_header["EXTNAME"].get(table_name);
    CutBase::writeDssKeywords(header, keynum, "TIME", "s", "TABLE", ":GTI");
+}
+
+bool Cuts::GtiCut::operator==(const CutBase & arg) const {
+   try {
+      CutBase & rhs = const_cast<CutBase &>(arg);
+      return !(m_gti != dynamic_cast<GtiCut &>(rhs).m_gti);
+   } catch (...) {
+      return false;
+   }
 }
 
 Cuts::SkyConeCut::SkyConeCut(const std::string & type,
@@ -256,8 +276,12 @@ Cuts::SkyConeCut::SkyConeCut(const std::string & type,
    m_radius = std::atof(coords.at(2).c_str());
    if (coordSys.at(0) == "RA") {
       m_coneCenter = astro::SkyDir(lon, lat, astro::SkyDir::EQUATORIAL);
+      m_ra = lon;
+      m_dec = lat;
    } else if (coordSys.at(0) == "GLON") {
       m_coneCenter = astro::SkyDir(lon, lat, astro::SkyDir::GALACTIC);
+      m_ra = m_coneCenter.ra();
+      m_dec = m_coneCenter.dec();
    } else {
       throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
                                std::string("Unsupported type: ") + type);
@@ -303,6 +327,17 @@ void Cuts::SkyConeCut::writeDssKeywords(tip::Header & header,
          << m_radius << ")";
    CutBase::writeDssKeywords(header, keynum, "POS(RA,DEC)", "deg", 
                              value.str());
+}
+
+bool Cuts::SkyConeCut::operator==(const CutBase & arg) const {
+   try {
+      CutBase & rhs = const_cast<CutBase &>(arg);
+      return (m_ra == dynamic_cast<SkyConeCut &>(rhs).m_ra &&
+              m_dec == dynamic_cast<SkyConeCut &>(rhs).m_dec &&
+              m_radius == dynamic_cast<SkyConeCut &>(rhs).m_radius);
+   } catch (...) {
+      return false;
+   }
 }
 
 } // namespace dataSubselector

@@ -22,11 +22,13 @@
 #include "tip/IFileSvc.h"
 
 #include "dataSubselector/Cuts.h"
+#include "dataSubselector/Gti.h"
 
 class DssTests : public CppUnit::TestFixture {
 
    CPPUNIT_TEST_SUITE(DssTests);
 
+   CPPUNIT_TEST(compareGtis);
    CPPUNIT_TEST(compareCuts);
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
@@ -37,6 +39,7 @@ public:
 
    void setUp();
    void tearDown();
+   void compareGtis();
    void compareCuts();
    void cutsConstructor();
    void test_SkyCone();
@@ -69,6 +72,19 @@ void DssTests::setUp() {
 }
 
 void DssTests::tearDown() {
+}
+
+void DssTests::compareGtis() {
+   const tip::Table * gtiTable = 
+      tip::IFileSvc::instance().readTable(m_infile, "GTI");
+
+   dataSubselector::Gti gti1(*gtiTable);
+   dataSubselector::Gti gti2(m_infile);
+
+   CPPUNIT_ASSERT(!(gti1 != gti2));
+
+   gti1.insertInterval(0, 10.);
+   CPPUNIT_ASSERT(gti1 != gti2);
 }
 
 void DssTests::cutsConstructor() {
@@ -175,6 +191,13 @@ void DssTests::compareCuts() {
 
    st_facilities::FitsUtil::writeChecksums(m_outfile);
    st_facilities::FitsUtil::writeChecksums(m_outfile2);
+
+   dataSubselector::Cuts cuts1(m_outfile);
+   dataSubselector::Cuts cuts2(m_outfile2);
+   CPPUNIT_ASSERT(cuts1 == cuts2);
+
+   dataSubselector::Cuts cuts(m_infile);
+   CPPUNIT_ASSERT(!(cuts == cuts1));
 }
 
 int main() {

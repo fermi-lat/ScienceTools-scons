@@ -9,6 +9,7 @@ use STpolicy v1r*
 use tip v2*
 use astro v*
 use facilities v*
+use evtbin v0r*
 
 apply_pattern ST_library option="-no_share "
 apply_pattern ST_pfiles
