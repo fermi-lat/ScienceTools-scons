@@ -13,15 +13,25 @@ namespace st_graph {
 
   /** \class IPlotFrame
       \brief Interface for base class frame for all graphical frames.
+             This is not currently used, and for the moment, deprecated.
   */
   class IPlotFrame {
     public:
       /// \brief Destruct the frame.
       virtual ~IPlotFrame() {}
 
-      virtual void addPlot(IPlot * plot) = 0;
+      /** \brief Add the given (sub) frame to this container frame. The IFrame must really contain a plot, not some other widget.
+                 This will go away soon.
+          \param frame The frame being added.
+      */
+      virtual void addFrame(IFrame * frame);
 
-      virtual void removePlot(IPlot * plot) = 0;
+      /** \brief Remove the given (sub) frame to this container frame. If the frame is not currently in the container,
+                 no harm done. The IFrame must really contain a plot, not some other widget.
+                 This will go away soon.
+          \param frame The frame being removed.
+      */
+      virtual void removeFrame(IFrame * frame);
 
   };
 
