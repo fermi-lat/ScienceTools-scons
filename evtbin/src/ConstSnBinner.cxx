@@ -19,15 +19,19 @@ namespace evtbin {
     m_lc_emax(lc_emax),
     m_counts(0.),
     m_background(0.),
-    m_previous_value(interval_begin) {}
+    m_previous_value(interval_begin) {
+  }
 
   long ConstSnBinner::computeIndex(double value) const {
     // First make sure value is within the range.
     // Note that this interval is (] unlike all other binners which are [).
     if (m_interval_begin >= value || m_interval_end < value) return -1;
 
-    // See if this energy is in the range being used for S/N.
+    // See if this energy is in the range being used to define S/N bins.
     // if (m_lc_emin > energy || m_lc_emax <= energy) return m_intervals.size() - 1;
+
+    // This value will for sure go in the last bin defined so far.
+    long index = m_intervals.size() - 1;
 
     // Calculate the change in the background at this time.
     double delta_back = 0.;
@@ -51,20 +55,21 @@ namespace evtbin {
     // Compute amount by which background was exceeded.
     double differential_counts = m_counts > m_background ? m_counts - m_background : 0.;
 
-    // Test whether S/N threshold has been exceeded.
-    if (m_sn_ratio_squared * m_counts > differential_counts * differential_counts) return m_intervals.size() - 1;
+    // Test whether S/N threshold has been exceeded. If so, set up the next bin.
+    if (m_sn_ratio_squared * m_counts <= differential_counts * differential_counts) {
 
-    // Threshold was exceeded, so start a new S/N bin with no counts, no bg, and new interval.
-    m_counts = 0.;
-    m_background = 0.;
+      // Threshold was exceeded, so start a new S/N bin with no counts, no bg, and new interval.
+      m_counts = 0.;
+      m_background = 0.;
 
-    // Current interval terminates with this value.
-    m_intervals.back() = Interval(m_intervals.back().begin(), value);
+      // Terminate the current bin with the current value.
+      m_intervals.back() = Interval(m_intervals.back().begin(), value);
 
-    // Next interval starts with this value and ends with the interval_end supplied to the constructor.
-    m_intervals.push_back(Interval(value, m_interval_end));
+      // Next interval starts with this value and ends with the interval_end supplied to the constructor.
+      m_intervals.push_back(Interval(value, m_interval_end));
+    }
 
-    return m_intervals.size() - 2;
+    return index;
   }
 
   long ConstSnBinner::getNumBins() const { return m_intervals.size(); }
