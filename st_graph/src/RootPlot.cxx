@@ -4,6 +4,7 @@
 */
 #include <algorithm>
 #include <cctype>
+#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -205,9 +206,13 @@ namespace st_graph {
     // Last bin is overflow.
     y_bins[y.size()] = upper[y.size() - 1];
 
+    // The Root name of the object (by which it may be looked up) is its address, converted 
+    // to a string. This should prevent collisions.
+    std::ostringstream os;
+    os << this;
+
     // Create the histogram used to draw the plot.
-    hist = new TH2D(m_parent->getTitle().c_str(), m_parent->getTitle().c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1,
-      &y_bins[0]);
+    hist = new TH2D(os.str().c_str(), m_parent->getTitle().c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1, &y_bins[0]);
 
     // Populate the histogram.
     for (unsigned int ii = 0; ii < x.size(); ++ii)

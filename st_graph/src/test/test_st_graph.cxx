@@ -245,6 +245,10 @@ void StGraphTestApp::testPlots() {
   plot1 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
     ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
 
+  // Making a second identical plot with same title should not result in a warning about replacing existing histogram.
+  plot2 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
+    ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
+
   // Run the graphics engine to display everything.
   engine.run();
 

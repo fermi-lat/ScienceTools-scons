@@ -2,7 +2,7 @@
     \brief Implementation for RootPlotFrame class.
     \author James Peachey, HEASARC/GSSC
 */
-
+#include <sstream>
 #include <stdexcept>
 
 #include "TCanvas.h"
@@ -22,7 +22,12 @@ namespace st_graph {
     if (0 == root_frame)
       throw std::logic_error("RootPlotFrame constructor was passed a parent frame which is not associated with a Root frame");
 
-    m_canvas = new TRootEmbeddedCanvas("", root_frame, width, height);
+    // The Root name of the object (by which it may be looked up) is its address, converted 
+    // to a string. This should prevent collisions.
+    std::ostringstream os;
+    os << this;
+    m_canvas = new TRootEmbeddedCanvas(os.str().c_str(), root_frame, width, height);
+
     root_frame->AddFrame(m_canvas);
     m_canvas->GetCanvas()->SetFillColor(0);
 
@@ -52,7 +57,13 @@ namespace st_graph {
   }
 
   TMultiGraph * RootPlotFrame::getMultiGraph() {
-    if (0 == m_multi_graph) m_multi_graph = new TMultiGraph("tmultigraph", m_title.c_str());
+    if (0 == m_multi_graph) {
+      // The Root name of the object (by which it may be looked up) is its address, converted 
+      // to a string. This should prevent collisions.
+      std::ostringstream os;
+      os << this;
+      m_multi_graph = new TMultiGraph(os.str().c_str(), m_title.c_str());
+    }
     return m_multi_graph;
   }
 
