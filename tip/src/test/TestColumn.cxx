@@ -61,7 +61,7 @@ namespace tip {
       // Iterate over all records:
       for (Index_t record_index = 0; record_index != num_records; ++record_index) {
         // For each record, iterate over all fields.
-        for (long field_index = 1; field_index <= num_fields; ++field_index) {
+        for (long field_index = 0; field_index < num_fields; ++field_index) {
           const IColumn * in_col = in_manager.getColumn(field_index);
           IColumn * out_col = out_manager.getColumn(field_index);
 

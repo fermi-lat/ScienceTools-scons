@@ -521,7 +521,7 @@ namespace tip {
       msg = "attempt to write a value in a cell of a non-const table object whose file cannot be written to";
       try {
         double tmp_d = 137.;
-        extension->getColumn(1)->set(0, tmp_d);
+        extension->getColumn(0)->set(0, tmp_d);
         ReportUnexpected(msg + " succeeded");
       } catch(const TipException & x) {
         ReportExpected(msg + " failed", x);
@@ -581,8 +581,8 @@ namespace tip {
   
       // Invert the column in the copy of the input.
       for (Index_t ii = 0; ii < num_rec; ++ii) {
+        output->copyCell(input, 0, ii, 0, num_rec - ii - 1);
         output->copyCell(input, 1, ii, 1, num_rec - ii - 1);
-        output->copyCell(input, 2, ii, 2, num_rec - ii - 1);
       }
   
       // Confirm success.
@@ -593,16 +593,16 @@ namespace tip {
         std::vector<double> dest_counts(4096);
 
         // Check channel.
-        input->getColumn(1)->get(num_rec - ii - 1, src_chan);
-        output->getColumn(1)->get(ii, dest_chan);
+        input->getColumn(0)->get(num_rec - ii - 1, src_chan);
+        output->getColumn(0)->get(ii, dest_chan);
         if (src_chan != dest_chan) {
           ReportUnexpected("TestExtensionData::testCopy: one or more scalar values do not match after copying Cells");
           failed = true;
         }
 
         // Check counts.
-        input->getColumn(2)->get(num_rec - ii - 1, src_counts);
-        output->getColumn(2)->get(ii, dest_counts);
+        input->getColumn(1)->get(num_rec - ii - 1, src_counts);
+        output->getColumn(1)->get(ii, dest_counts);
         for (int jj = 0; jj < 4096; ++jj) {
           if (src_counts[jj] != dest_counts[jj]) {
             ReportUnexpected("TestExtensionData::testCopy: one or more vector values do not match after copying Cells");
