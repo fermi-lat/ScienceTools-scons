@@ -41,7 +41,7 @@ namespace astro {
         double SkyDir::difference(const SkyDir& other)const;
 
         //hammer-aitoff equal-area projection.
-        void hammerAitoff(double &l,double &b);
+        std::pair<double,double> hammerAitoff();
         
     private:
         static HepRotation s_celestialToGalactic;

@@ -58,13 +58,21 @@ void EarthOrbit::initialize()
     
     m_dOmegadt = -n1*3.*J2/2./(m_a*m_a)/pow((1. - s_e*s_e),2)*cosi;
     m_dMdt = n1;
-    
+    //debug outputs
+    std::cout << "dwdt = " << m_dwdt
+        << " , dOmegadt = " << m_dOmegadt
+        << " , dMdt = " << m_dMdt << std::endl;
+
     // phases for launch start
     // this is really the elapsed time in seconds since the MissionStart
     double StartSimDate = (JDStart-JD_missionStart) * SecondsPerDay;
-    m_M0     = m_dMdt*StartSimDate;
-    m_Omega0 = m_dOmegadt*StartSimDate;
-    m_w0     = m_dwdt*StartSimDate;
+    //m_M0     = m_dMdt*StartSimDate;
+    //m_Omega0 = m_dOmegadt*StartSimDate;
+    //m_w0     = m_dwdt*StartSimDate;
+    // these defaults should put the satellite at cape canaveral at t=mission start + 0 seconds.
+    m_M0     = M_PI/2.;
+    m_Omega0 = 4.8775;
+    m_w0     = 0.0;
     
     range(&m_M0,6.28); // should be 2pi
     
@@ -76,6 +84,7 @@ Hep3Vector EarthOrbit::position(JulianDate JD) const
     double elapse = (JD - JDStart)*SecondsPerDay;
     
     double M=m_M0+m_dMdt*elapse;
+    //std::cout << "elapse = " << elapse << std::endl;
     
     double Omega = m_Omega0+m_dOmegadt*elapse;
     

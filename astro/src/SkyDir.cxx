@@ -78,7 +78,9 @@ namespace astro {
     *  will be in internal Aitoff units where "l" is in the range [-2, 2]
     *  and "b" is in the range [-1, 1].
     */
-    void SkyDir::hammerAitoff(double &l,double &b){
+    std::pair<double,double> SkyDir::hammerAitoff(){
+        double l = this->l();
+        double b = this->b();
         float lover2, den;
         float radl, radb;
         
@@ -100,7 +102,7 @@ namespace astro {
         b = sin(radb) / den;
         // "x" is now in the range [-2, 2] and "y" in the range [-1, 1]. 
         
-        return;
+        return std::make_pair<double,double>(l,b);
     }
     
     
