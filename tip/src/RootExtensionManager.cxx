@@ -42,10 +42,8 @@ namespace tip {
   }
 
   void RootExtensionManager::resetSigHandlers() {
-    gSystem->ResetSignal(kSigBus);
-    gSystem->ResetSignal(kSigSegmentationViolation);
-    gSystem->ResetSignal(kSigIllegalInstruction);
-    gSystem->ResetSignal(kSigFloatingException);
+    for (int sig = kSigBus; sig <= kSigUser2; ++sig)
+      gSystem->ResetSignal(sig);
   }
 
   // Construct without opening the file.
