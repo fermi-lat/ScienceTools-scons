@@ -26,10 +26,12 @@
 
 #include "flux/SpectrumFactory.h"
 
-// #include "src/MapSpectrum.h"
+#if 0
+#include "src/MapSpectrum.h"
 
-// static SpectrumFactory<MapSpectrum> factory;
-// const ISpectrumFactory& MapSpectrumFactory = factory;
+static SpectrumFactory<MapSpectrum> factory;
+const ISpectrumFactory& MapSpectrumFactory = factory;
+#endif
 
 // The following routine seems not to be necessary (for now) since
 // CHIMESpectrum, et al. are provided by FluxSvc, and MapSpectrum

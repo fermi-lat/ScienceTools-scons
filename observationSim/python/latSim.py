@@ -28,12 +28,12 @@ def run_test(argv):
     #
     # One needs to provide the full path to the xml files
     #
-    xml_files = observationSim.StringVector([observationSimRoot
-                                             + "/xml/source_library.xml",
-                                             observationSimRoot
-                                             + "/xml/3EG_catalog_32MeV.xml",
-                                             observationSimRoot
-                                             + "/xml/test_sources.xml"])
+    xml_files = latResponse.StringVector([observationSimRoot
+                                          + "/xml/source_library.xml",
+                                          observationSimRoot
+                                          + "/xml/3EG_catalog_32MeV.xml",
+                                          observationSimRoot
+                                          + "/xml/test_sources.xml"])
 
     if (len(argv) == 2 and argv[1] == "-h"):
         print "usage: test.py rootname counts [source_names]"
@@ -49,7 +49,7 @@ def run_test(argv):
     else:
         count = 1000
         
-    source_names = observationSim.StringVector()
+    source_names = latResponse.StringVector()
     useSimTime = 0                # Generate a number of counts by default
     if (len(argv) > 3):
         for name in argv[3:]:
@@ -57,7 +57,6 @@ def run_test(argv):
                 useSimTime = 1    # count as seconds of simulation time
             else:
                 source_names.append(name)
-    print type(source_names)
     if len(source_names) == 0:
         source_names.append("all_3EG_sources")
 

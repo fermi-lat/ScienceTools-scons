@@ -3,6 +3,7 @@
  * @brief Implementation for class that keeps track of events and when they
  * get written to a FITS file.
  * @author J. Chiang
+ *
  * $Header$
  */
 
@@ -128,26 +129,26 @@ void EventContainer::writeEvents() {
       }
       m_eventTable->writeTableData(data);
    } else {
-      std::vector<std::vector<double> > data(11);
+      std::vector<std::vector<double> > data(13);
 // pre-allocate the memory for each vector
       for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
            vec_it != data.end(); vec_it++)
          vec_it->reserve(m_events.size());
       for (std::vector<Event>::const_iterator it = m_events.begin();
            it != m_events.end(); it++) {
-//          data[0].push_back(it->appDir().ra());
-//          data[1].push_back(it->appDir().dec());
-         data[0].push_back(it->appDir().l());
-         data[1].push_back(it->appDir().b());
-         data[2].push_back(it->energy());
-         data[3].push_back(it->time());
-         data[4].push_back(it->xAxis().dir().x());
-         data[5].push_back(it->xAxis().dir().y());
-         data[6].push_back(it->xAxis().dir().z());
-         data[7].push_back(it->zAxis().dir().x());
-         data[8].push_back(it->zAxis().dir().y());
-         data[9].push_back(it->zAxis().dir().z());
-         data[10].push_back(
+         data[0].push_back(it->appDir().ra());
+         data[1].push_back(it->appDir().dec());
+         data[2].push_back(it->appDir().l());
+         data[3].push_back(it->appDir().b());
+         data[4].push_back(it->energy());
+         data[5].push_back(it->time());
+         data[6].push_back(it->xAxis().dir().x());
+         data[7].push_back(it->xAxis().dir().y());
+         data[8].push_back(it->xAxis().dir().z());
+         data[9].push_back(it->zAxis().dir().x());
+         data[10].push_back(it->zAxis().dir().y());
+         data[11].push_back(it->zAxis().dir().z());
+         data[12].push_back(
             it->zenith().dir().angle(it->appDir().dir())*180./M_PI);
       }
       m_eventTable->writeTableData(data);
@@ -182,8 +183,8 @@ void EventContainer::makeFitsTable() {
       colName.push_back("src_y");fmt.push_back("1E");unit.push_back("dir_cos");
       colName.push_back("src_z");fmt.push_back("1E");unit.push_back("dir_cos");
    } else {
-//       colName.push_back("RA"); fmt.push_back("1E"); unit.push_back("deg");
-//       colName.push_back("DEC"); fmt.push_back("1E"); unit.push_back("deg");
+      colName.push_back("RA"); fmt.push_back("1E"); unit.push_back("deg");
+      colName.push_back("DEC"); fmt.push_back("1E"); unit.push_back("deg");
       colName.push_back("GLON"); fmt.push_back("1E"); unit.push_back("deg");
       colName.push_back("GLAT"); fmt.push_back("1E"); unit.push_back("deg");
       colName.push_back("energy"); fmt.push_back("1E"); unit.push_back("MeV");
