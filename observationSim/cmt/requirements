@@ -1,5 +1,5 @@
 package observationSim
-version v5r5
+version v5r5p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -30,9 +30,6 @@ private
 
 use hoops v0r*
 use st_app v1r*
-
-#use python v2* IExternal
-#macro pydir ../python/
 
 macro observationSim_cppflags "" \
       Linux "-I ../src " \

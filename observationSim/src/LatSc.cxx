@@ -59,9 +59,12 @@ int LatSc::inSaa(double time) {
 void LatSc::getScPosition(double time, std::vector<double> & position) {
    Hep3Vector pos = GPS::instance()->position(time);
    position.clear();
-   position.push_back(pos.x());
-   position.push_back(pos.y());
-   position.push_back(pos.z());
+// GPS returns the position in units of km, but FT2 wants meters so
+// we multiply by 10^3.
+   double mperkm(1e3);
+   position.push_back(pos.x()*mperkm);
+   position.push_back(pos.y()*mperkm);
+   position.push_back(pos.z()*mperkm);
 }
 
 void LatSc::getZenith(double time, double & ra, double & dec) {

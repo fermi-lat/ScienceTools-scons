@@ -250,9 +250,11 @@ void EventContainer::writeEvents() {
    row["stop"].set(stop_time);
    writeDateKeywords(gti_table, m_startTime, stop_time);
 
-   dataSubselector::Cuts * cuts = new dataSubselector::Cuts();
+   dataSubselector::Cuts * cuts;
    if (m_cuts) {
       cuts = new dataSubselector::Cuts(*m_cuts);
+   } else {
+      cuts = new dataSubselector::Cuts();
    }
    cuts->addGtiCut(*gti_table);
    cuts->writeDssKeywords(my_table->getHeader());
