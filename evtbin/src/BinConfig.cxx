@@ -98,7 +98,7 @@ namespace evtbin {
       double factor = 1.;
 
       // For the moment, energy bins are in keV, period, so in the case of an energy binner, convert keV to MeV.
-      if (bin_ext == "ENERGYBINS") factor = 1.e-3;
+      if (bin_ext == "EBOUNDS" || bin_ext == "ENERGYBINS") factor = 1.e-3;
 
       // Iterate over the file, saving the relevant values into the interval array.
       for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
