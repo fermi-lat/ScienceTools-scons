@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  28-Sep-04 v0r2p2 JC    make FitsImage methods virtual for subclassing
   21-Sep-04 v0r2p1 JP    add test file
   21-Sep-04 v0r2   JP    add Env, FileSys facilities
   25-Aug-04 v0r1   JC    add linear interpolater
