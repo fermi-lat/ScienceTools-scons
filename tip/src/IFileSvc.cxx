@@ -50,12 +50,16 @@ namespace tip {
   }
 
   // Create a file, for now FITS only.
-  void IFileSvc::createFile(const std::string & file_name, const std::string & template_name) {
-    FitsFileManager::createFile(file_name, template_name);
+  void IFileSvc::createFile(const std::string & file_name, const std::string & template_name, bool clobber) {
+    FitsFileManager::createFile(file_name, template_name, clobber);
   }
 
-  void IFileSvc::createImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
+  void IFileSvc::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
     FitsFileManager::appendImage(file_name, image_name, dims);
+  }
+
+  void IFileSvc::appendTable(const std::string & file_name, const std::string & table_name) {
+    FitsFileManager::appendTable(file_name, table_name);
   }
 
   // TODO 11: read/edit Extension/Table/Image is getting cumbersome; lots of similar methods,
