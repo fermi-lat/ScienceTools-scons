@@ -44,7 +44,6 @@ class Arg;
 class Function {
 
    friend class FunctionTest;
-   friend class FunctionFactory;
 
 public:
 
@@ -72,6 +71,9 @@ public:
 
    /// Return the Parameter object by name.
    virtual const Parameter & getParam(const std::string &paramName) const;
+
+   /// Unsafe version.
+   Parameter & parameter(const std::string & name);
    
    /// Return the total number of Parameters.
    unsigned int getNumParams() const {
@@ -217,8 +219,6 @@ protected:
 
    virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
                             bool getFree) const;
-
-   Parameter & parameter(const std::string & name);
 
    void setParamAlwaysFixed(const std::string & name) {
       parameter(name).m_alwaysFixed = true;
