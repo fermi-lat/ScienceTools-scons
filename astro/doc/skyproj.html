@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h1 style="text-align: center;">Class SkyProj</h1>
+<br>
+This class acts as a wrapper for WCSLIB, a library written for handling
+transformations between celestial and projection coordinate
+systems.&nbsp; This is intended to replace the projection capabilities
+that were in SkyDir.&nbsp; This implementation differs in one respect
+from the version available from Mark Calabretta, the function wcsset
+and all references to it were changed to wcsset2.&nbsp; This was the
+least intrusive way to resolve a naming conflict with a Windows
+function of the same name.&nbsp; So any future upgrades to new versions
+of WCSLIB should incorporate this change.&nbsp; WCSLIB is currently
+included with the astro package.<br>
+<br>
+For celestial coordinates, SkyProj does input and output in degrees
+with the latitude in the range [-90,90] and longitudes in the range
+[0,360).&nbsp; This is the same convention that is used in
+SkyDir.&nbsp; <br>
+<br>
+<div style="text-align: center;">
+<h2>SkyProj Constructors and FITS keywords</h2>
+</div>
+The constructor for SKyProj takes several parameters which correspond
+to FITS keywords.&nbsp; For crpix, crval, and cdelt the convention used
+is
+that longitude coordinate is specified first.&nbsp; An alternate
+constructor
+also allows the specification of LONPOLE and LATPOLE.&nbsp;&nbsp; <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SkyProj(const std::string
+&amp;projName, double* crpix, double* crval, double* cdelt, double
+crota2=0, bool galactic=false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SkyProj(const std::string
+&amp;projName, double* crpix, double* crval, double* cdelt, double
+lonpole, double latpole, double crota2=0, bool galactic=false);<br>
+<br>
+const std::string &amp;projName<br>
+<div style="margin-left: 40px;">This is a 3 character code that
+specifies the projection to use.&nbsp; The allowed values are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AZP:
+zenithal/azimuthal perspective <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SZP:
+slant zenithal perspective <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TAN:
+gnomonic <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; STG:
+stereographic <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SIN:
+orthographic/synthesis <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ARC:
+zenithal/azimuthal equidistant <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ZPN:
+zenithal/azimuthal polynomial <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ZEA:
+zenithal/azimuthal equal area <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AIR:
+Airy <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CYP:
+cylindrical perspective<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CEA:
+cylindrical equal area <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CAR:
+Plate carree<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MER:
+Mercator <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SFL:
+Sanson-Flamsteed <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PAR:
+parabolic <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MOL:
+Mollweide <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AIT:
+Hammer-Aitoff <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; COP:
+conic perspective <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; COE:
+conic equal area<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; COD:
+conic equidistant<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; COO:
+conic orthomorphic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BON:
+Bonne<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PCO:
+polyconic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TSC:
+tangential spherical cube<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CSC:
+COBE quadrilateralized spherical cube<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QSC:
+quadrilateralized spherical cube<br>
+</div>
+double* crpix
+<div style="margin-left: 40px;">This two element array corresponds to
+the FITS keywords CRPIX1 and CRPIX2.&nbsp; These are the pixel
+coordinates of the reference point.&nbsp; <br>
+</div>
+double* crval<br>
+<div style="margin-left: 40px;">This two element array corresponds to
+the FITS keywords CRVAL1 and CRVAL2.&nbsp; These are the celestial
+coordinates of the reference point.<br>
+</div>
+double* cdelt<br>
+<div style="margin-left: 40px;">This two element array corresponds to
+the FITS keywords CDELT1 and CDELT2.&nbsp; These are the coordinate
+increments at the location of the reference point.<br>
+</div>
+double lonpole<br>
+double latpole<br>
+<div style="text-align: left; margin-left: 40px;">These two parameters
+correspond the LONPOLE and LATPOLE.&nbsp; These are the coordinates of
+the celestial pole given in native coordinates.&nbsp; If not specified,<br>
+WCSLIB sets these automatically.<br>
+</div>
+double crota2<br>
+<div style="margin-left: 40px;">This corresponds to the FITS keyword
+CROTA2, which represents a rotation at the reference point.&nbsp; If
+this parameter is not specified this is set to zero.<br>
+</div>
+bool galactic<br>
+<div style="margin-left: 40px;">If true use galactic coordinates.&nbsp;
+If this parameter is not specified this is set to false.<br>
+<br>
+</div>
+<div style="text-align: center;">
+<h2>How to do a projection</h2>
+</div>
+The member functions sph2pix and pix2sph allow transformations between
+spherical (celestial) coordinates and pixel (projection) coordinates
+and vice versa.&nbsp; The following two examples do the exact same
+projection but are called in different ways.&nbsp; The first four lines
+just specify parameters that set up the projection.&nbsp; <br>
+<br>
+<span style="font-weight: bold;"><br>
+Doing a projection directly using SkyProj</span><br>
+<br>
+std::string projType("AIT");<br>
+double crpix[] = {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};<br>
+SkyProj projection(projType, crpix, crval, cdelt);<br>
+double lon = 10, lat = 15;<br>
+std::pair&lt;double,double&gt; prjcoords1 = projection.sph2pix(lon,lat);<br>
+<br>
+<br>
+<span style="font-weight: bold;">Doing a projection through SkyDir</span><br>
+<br>
+std::string projType("AIT");<br>
+double crpix[] = {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};<br>
+SkyProj projection(projType, crpix, crval, cdelt);<br>
+double lon = 10, lat = 15;<br>
+SkyDir sd(lon,lat);<br>
+std::pair&lt;double,double&gt; prjcoords2 = sd.project(projection);<br>
+<br>
+The inverse projection can be obtained by calling the pix2sph member
+function of the SkyProj object.<br>
+<br>
+<div style="text-align: center;">
+<h2>A Few Sample Projections</h2>
+<div style="text-align: left;">The following images were obtained by
+running map_tools on the file gas_gal.fits that comes in the flux
+package.&nbsp; The read_image program in map_tools was used to create a
+fits file using a transformation and fv was used to display the
+file.&nbsp; <br>
+<br>
+<span style="font-weight: bold;">Original FITS image for reference</span><br>
+<img style="width: 563px; height: 376px;" alt="gas_gal.fits"
+ src="original.jpg"><br>
+<br>
+<span style="font-weight: bold;">Zenithal Equal Area Projection</span><br>
+<br>
+<img style="width: 574px; height: 493px;"
+ alt="Zenithal Equal Area Projection" src="zea.jpg"><br>
+<br>
+<span style="font-weight: bold;">Hammer-Aitoff Projection</span><br>
+<br>
+<img style="width: 561px; height: 375px;" alt="Hammer-Aitoff Projection"
+ src="ait.jpg"><br>
+<br>
+<span style="font-weight: bold;">Sanson-Flamsteed Projection</span><br>
+<br>
+<img style="width: 563px; height: 376px;"
+ alt="Sanson-Flamsteed Projection" src="sfl.jpg"><br>
+<br>
+<span style="font-weight: bold;">Mollweide's Projection<br>
+<br>
+<img style="width: 564px; height: 376px;" alt="Mollweide's Projection"
+ src="mol.jpg"><br>
+</span></div>
+</div>
+<br>
+<span style="font-weight: bold;">Quadrilateralized Spherical Cube</span><br>
+<br>
+<img style="width: 565px; height: 377px;"
+ alt="Quadrilateralized Spherical Cube" src="qsc.jpg"><br>
+<br>
+<br>
+&nbsp;The WCSLIB website is:&nbsp;
+http://www.atnf.csiro.au/people/mcalabre/WCS/index.html<br>
+<br>
+<br>
+</body>
+</html>
