@@ -7,8 +7,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include <iostream>
-
 #include "TApplication.h"
 #include "TGClient.h"
 #include "TGWindow.h"
@@ -63,6 +61,8 @@ namespace st_graph {
       // correctly, gClient will be non-0.
       if (0 == gClient)
         throw std::runtime_error("RootEngine::RootEngine could not create Root graphical TApplication");
+
+      m_frames.push_back(RootFrame::ancestor());
     }
   }
 
@@ -75,7 +75,8 @@ namespace st_graph {
   }
 
   IFrame * RootEngine::createMainFrame(unsigned int width, unsigned int height) {
-    return new RootFrame(this, RootFrame::ancestor(), new STGMainFrame(this, width, height));
+    RootFrame * main_frame = new RootFrame(RootFrame::ancestor(), new STGMainFrame(this, width, height));
+    return main_frame;
   }
 
   PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
@@ -90,13 +91,13 @@ namespace st_graph {
     return new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
   }
 
-  IPlot * RootEngine::createPlot(IPlotFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+  IFrame * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
     const ValueSet & y, const ValueSet & z) {
     return new RootPlot(parent, style, title, x, y, z);
   }
 
-  IPlotFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
-    return new RootPlotFrame(this, parent, width, height);
+  IFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
+    return new RootPlotFrame(parent, width, height);
   }
 
   void RootEngine::addFrame(IFrame * frame) {

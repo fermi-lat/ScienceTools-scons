@@ -15,7 +15,6 @@
 namespace st_graph {
 
   class IFrame;
-  class IPlotFrame;
 
   /** \class RootEngine
       \brief Declaration for class which encapsulates the Root graphics implementation.
@@ -33,6 +32,10 @@ namespace st_graph {
       */
       virtual void run();
 
+      /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
+          \param width The width of the plot window.
+          \param height The height of the plot window.
+      */
       virtual IFrame * createMainFrame(unsigned int width, unsigned int height);
 
       /** \brief Create a plotter for a one dimensional histogram.
@@ -54,10 +57,27 @@ namespace st_graph {
       virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
         const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals);
 
-      virtual IPlot * createPlot(IPlotFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+      /** \brief Create a plot which may be displayed in a plot frame.
+          \param parent The parent frame in which the plot will be displayed.
+          \param style The plot style: currently hist* or scat* will be recognized, case insensitive, to mean
+                 histogram or scatter plot, respectively. Note that for histogram plots, the "spreads" vector
+                 from ValueSet is interpreted as the full bin widths. However, for scatter plots, the "spreads"
+                 vector represents the absolute size of the symmetric errror (+/-). Thus, for the same ValueSet,
+                 a scatter plot will have total spread (max - min) twice as large as for a histogram plot.
+          \param x The first dimension being plotted.
+          \param y The second dimension being plotted.
+          \param z The third dimension being plotted.
+      */
+      virtual IFrame * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
         const ValueSet & y, const ValueSet & z = ValueSet());
 
-      virtual IPlotFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
+      /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
+                 because a new technique is planned to support plots within any frame.
+          \param parent The frame in which to embed the plot frame.
+          \param width The width of the frame in pixels.
+          \param height The height of the frame in pixels.
+      */
+      virtual IFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
 
       /** \brief Register a frame with the engine. This allows the engine to display or hide
           its associated graphical frames (Root-implementation-specific)
