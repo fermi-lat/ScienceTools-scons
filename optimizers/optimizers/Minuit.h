@@ -70,7 +70,7 @@ namespace optimizers {
 
     //! One-sigma confidence regions based on Hessian, assuming 
     // that this function is a likelihood
-    virtual std::vector<double> & getUncertainty(void);
+    virtual const std::vector<double> & getUncertainty(void);
 
     //! Symbolic form of the return codes for readability 
     enum MinuitQuality {MINUIT_NOTCALC, MINUIT_DIAG, MINUIT_FORCEDPOS, 

@@ -33,7 +33,7 @@ namespace optimizers {
     return m_distance;
   }
 
-  std::vector<double> & Minuit::getUncertainty(void) {
+  const std::vector<double> & Minuit::getUncertainty(void) {
     return m_uncertainty;
   }
 

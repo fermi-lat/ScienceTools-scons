@@ -16,7 +16,7 @@
 
 namespace optimizers {
 
-std::vector<double> & Optimizer::getUncertainty(void) {
+const std::vector<double> & Optimizer::getUncertainty(void) {
    double eps(1e-7);
    std::valarray<double> hess;
    computeHessian(hess, eps);

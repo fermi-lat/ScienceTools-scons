@@ -42,7 +42,7 @@ public:
 
    /// Returns the one-sigma confidence regions based on the Hessian,
    /// assuming that the statistic is a log-likelihood.
-   virtual std::vector<double> & getUncertainty(void);
+   virtual const std::vector<double> & getUncertainty(void);
 
 protected:
 
