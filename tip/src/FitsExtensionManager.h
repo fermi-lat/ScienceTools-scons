@@ -110,6 +110,13 @@ namespace tip {
       virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
         Index_t dest_record);
 
+      /** \brief Copy a record from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyRecord(const IExtensionData * src_ext, Index_t src_record, Index_t dest_record);
+
       /** \brief Append a field to the table.
           \param field_name The name of the field to append.
           \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
@@ -264,6 +271,12 @@ namespace tip {
     getColumn(dest_field)->copy(src_ext->getColumn(src_field), src_record, dest_record);
   }
 
+  // Copying records.
+  inline void FitsExtensionManager::copyRecord(const IExtensionData * src_ext, Index_t src_record, Index_t dest_record) {
+    for (IExtensionData::FieldCont::iterator itor = m_fields.begin(); itor != m_fields.end(); ++itor) {
+      copyCell(src_ext, src_ext->getFieldIndex(*itor), src_record, getFieldIndex(*itor), dest_record);
+    }
+  }
 }
 
 #endif
