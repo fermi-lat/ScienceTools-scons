@@ -28,26 +28,47 @@ int main(int argn, char * argc[]) {
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml";
    fileList.push_back(xml_list);
+   xml_list = "$(OBSERVATIONSIMROOT)/xml/test_sources.xml";
+   fileList.push_back(xml_list);
    
 // Parse the command line arguments.
-// Obtain the source name (or request for help).
-   std::string source_name = "all_3EG_sources";
-   if (argn > 1) source_name = argc[1];
-   if (source_name == "help") { 
-      help();
-      return 0;
-   }
-
-// Create the Simulator object
-   observationSim::Simulator my_simulator(source_name, fileList);
-
-// Get the number of photons to accumulate or use the default value of 10.
+//
+// The first argument will be the total number of photons or the total
+// simulation time in seconds.
+//
    long count;
-   if (argn > 2) {
-      count = static_cast<long>(::atof(argc[2]));
+   if (argn > 1) {
+      count = static_cast<long>(::atof(argc[1]));
    } else {
       count = 10;
    }
+
+// All subsequent arguments are either option flags or the names of
+// sources.
+//
+   bool useSimTime(false);
+   std::vector<std::string> sourceNames;
+   if (argn > 2) {
+      for (int i = 2; i < argn; i++) {
+         std::string argString = argc[i];
+         if (argString == "-t") {  // This is the only option, so far.
+            useSimTime = true;
+         } else {
+// Assume the next argument is a source name or a request for help.
+            if (argString == "help") {
+               help();
+               return 0;
+            }
+            sourceNames.push_back(argString);
+         }
+      }
+   } else {
+      sourceNames.push_back("all_3EG_sources");
+      sourceNames.push_back("galdiffusemap");
+   }
+
+// Create the Simulator object
+   observationSim::Simulator my_simulator(sourceNames, fileList);
 
 // Ascertain paths to GLAST25 response files.
    const char *root = ::getenv("LATRESPONSEROOT");
@@ -78,7 +99,7 @@ int main(int argn, char * argc[]) {
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
 
 // Use simulation time rather than total counts if desired.
-   if (argn == 4 && std::string(argc[3]) == "-t") {
+   if (useSimTime) {
       my_simulator.generateEvents(static_cast<double>(count), events, 
                                   scData, response, spacecraft);
    } else {
@@ -87,8 +108,6 @@ int main(int argn, char * argc[]) {
 }
 
 void help() {
-   std::cerr << 
-      "   Simple test program to create a particle source, then run it.\n"
-      "   Command line args are \n"
-      "      <source name> <count>\n" << std::endl;
+   std::cerr << "usage: <program name> <counts> [<options> <sourceNames>]"
+             << std::endl;
 }
