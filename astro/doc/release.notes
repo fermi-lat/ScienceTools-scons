@@ -2,6 +2,8 @@
 
 @verbatim
   Package coordinators: T.Burnett, G.Tosti
+
+  v0r10p8 19-mar-04 THB fix gcc 2.95 error, and test program for positive longitude.
   v0r10p7 19-mar-04 THB gcc needed const operator, fix SkyDir::l() to be positive.
   v0r10p6 14-feb-04 THB gcc warnings, disable the Orbit test program
   v0r10p5 13-feb-04 THB out of range exception for inverse projection

@@ -13,6 +13,7 @@
 #include "CLHEP/Vector/ThreeVector.h"
 #include <cmath>
 #include <utility> // for pair
+#include <string>
 
 namespace astro {
 
