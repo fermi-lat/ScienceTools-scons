@@ -1,4 +1,13 @@
-// $Header$
+/*!\class GRBTest.cxx
+ * \brief Test class for GRB simulation studies.
+ * 
+ * This class is called from GRB Gaudi Algorithm.
+ * It basically compute the spectrum and returns a photons for the montecarlo.
+ * It calls the GRBSim class as kernel of the simulation.
+ * Some quantities are also calculated to help people understanding 
+ * GRB physics.
+ *
+ */
 
 // Include files
 #include "FluxSvc/IFluxSvc.h"
@@ -19,7 +28,7 @@
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/AlgFactory.h"
 #include "GaudiKernel/Algorithm.h"
-
+#include "facilities/Util.h"
 #include <list>
 #include <string>
 #include <vector>
@@ -34,46 +43,35 @@
 #include "TObjArray.h"
 #include "TFile.h"
 
-/*! \class GRBTestAlg
-\brief 
-
-*/
-
 using namespace std;
-
-//! The size of the energy array is taken from GRBConstant.h
-#define ENERGYSIZE cst::enstep
-//! The size of the time array is taken from GRBConstant.h
-#define TIMESIZE cst::nstep
-/*! the flux is a bidimentional array (matrix?) funtion of energy and time.
- * Its Unities are 
- *
- */
 
 class GRBTest{
     
 public:
+  //! Constructor
   GRBTest();
   ~GRBTest(){}
+  //! Return the pointer to flux service
   inline void setService(IFluxSvc* ptr){m_fsvc = ptr;}
-  
+  //! Calculate the fluence in the energy band between e1 and e2.
   double CalculateFluence(double ee/* MeV */,
 			  double e1=cst::enmin*1e-6/* MeV */,
 			  double e2=cst::enmax*1e-6/* MeV */);
-  
+  //! Generate a GRB
   int Start(std::vector<char*> argv);
-  
+  //! Help printout utility
   void help();
+  //! List all the sources available
   void listSources(const std::list<std::string>& source_list );
+  //! List of loaded spectrum objects
   void listSpectra();
   
 private:  
-  IFlux* m_flux;    /// pointer the a flux object
-  IFluxSvc* m_fsvc; /// pointer to the flux Service 
-
+  IFlux* m_flux;    // pointer the a flux object
+  IFluxSvc* m_fsvc; // pointer to the flux Service 
   
   char *m_source_name;
-  
+  bool savef;
   double TIME;
   int EVENTS;
   const char * default_arg;//="GRBSpectrum";
@@ -103,14 +101,15 @@ double GRBTest::CalculateFluence(double ee/* MeV */,
 
 //------------------------------------------------------------------------------
 void GRBTest::help() {
-   std::cout << 
-      "   Simple test program for Transient Sources.\n"
-      "   Command line args are \n"
-      "      '-events <number of events to create>'\n"
-      "      '-time <time in seconds>'    for the maximum time\n"
-      "      '-list' lists the available spectra\n"
-      "      '-help' for this help"
-      << std::endl;
+  std::cout << 
+    "   Simple test program for Transient Sources.\n"
+    "   Command line args are \n"
+    "      '-events <number of events to create>'\n"
+    "      '-time <time in seconds>'    for the maximum time\n"
+    "      '-list' lists the available spectra\n"
+    "      '-save' <name of the source> to save the events in a ROOT tree"
+    "      '-help' for this help"
+	    << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +136,7 @@ void GRBTest::listSpectra() {
 int GRBTest::Start(std::vector<char*> argv)
 {
   int argc = argv.size();
-  cout<<argc<<endl;
+  //  cout<<argc<<endl;
   int nume,i;
   double dt;
   int num_sources=0;
@@ -153,12 +152,13 @@ int GRBTest::Start(std::vector<char*> argv)
   default_arg="GRBSpectrum";
   std::string arg_name(default_arg);
   vector<std::string> sources;
-  
-  cout << "------------------------------------------------------" <<endl;
-  cout << " Flux test program: type 'GRBTest.exe -help' for help" <<endl;
-  cout << ( ( argc == 1)?  " No command line args, using defaults"
-	    :  "") <<endl;
-  
+  /*
+    cout << "------------------------------------------------------" <<endl;
+    cout << " Flux test program: type 'GRBTest.exe -help' for help" <<endl;
+    cout << ( ( argc == 1)?  " No command line args, using defaults"
+    :  "") <<endl;
+  */
+  savef=false;
   while(current_arg < argc)
     {
       arg_name = argv[current_arg];
@@ -177,16 +177,16 @@ int GRBTest::Start(std::vector<char*> argv)
 
       else if("-time" == arg_name) {
 	time_max =atof(argv[++current_arg]);
-	cout<<" MAX TIME = "<<time_max<<endl;
+	//cout<<" MAX TIME = "<<time_max<<endl;
       }
       else if("-events" == arg_name) {
 	events_max = atoi(argv[++current_arg]);
-	cout<<" MAX NUM OF EVENTS = "<<events_max<<endl;
+	//cout<<" MAX NUM OF EVENTS = "<<events_max<<endl;
 	if (events_max<1) return 0;
       }
-      else if("-name" == arg_name) {
+      else if("-save" == arg_name) {
+	savef=true;
 	m_source_name = argv[++current_arg];
-	//m_source_name=arg_name.c_str();
       }
       else if('-' == arg_name[0]) {
 	std::cerr << "Unrecognized option "<< arg_name << ", -help for help" << std::endl;}
@@ -202,15 +202,13 @@ int GRBTest::Start(std::vector<char*> argv)
       sources.push_back(default_arg);
       num_sources++;
     }
-  cout<<"Num Sources = "<<num_sources<<endl;
+  //  cout<<"Num Sources = "<<num_sources<<endl;
   // Create the file, the tree and the branches...
-  TObjArray Forest(0);
   TTree* events;        
+  TObjArray Forest(0);
   
   const char* name;
-  // Here you can set the DeadTime of the instrument:
-  //DeadTime=1.0e-5; //Sec
-  //
+  
   for(i = 0; i < num_sources; i++)
     {      
       nume=0;
@@ -230,28 +228,24 @@ int GRBTest::Start(std::vector<char*> argv)
       
       //name=sources[i].c_str();
       name=m_source_name;
+      if (savef==true){
+	events= new TTree(name,name);
+	events->Branch("energy",&energy,"energy/D");
+	events->Branch("time",&time,"time/D");
+	events->Branch("Rate",&Rate,"Rate/D");
+	events->Branch("cos_theta",&cos_theta,"cos_theta/D");
+	events->Branch("phi",&phi,"phi/D");
+	Forest.Add(events);
+      }
       
-      events= new TTree(name,name);
-      events->Branch("energy",&energy,"energy/D");
-      events->Branch("time",&time,"time/D");
-      events->Branch("Rate",&Rate,"Rate/D");
-      events->Branch("cos_theta",&cos_theta,"cos_theta/D");
-      events->Branch("phi",&phi,"phi/D");
-      Forest.Add(events);
-      
-
       pair<double,double> loc=m_fsvc->location();
 
       //      cout << loc.first << "   " << loc.second <<endl;
       time=1.0e-4;
-      //EventSource* e = m_flux->currentEvent();
       double t1;
       t1=time;
       while(time<=time_max && nume<=events_max)
 	{
-	  FluxSource* f = m_flux->currentFlux();
-	  //	  f=e->event(time);
-	  //	  energy = f->energy();
 	  m_flux->generate();  
 	  time=m_flux->time();
 	  dir = m_flux->launchDir();
@@ -260,7 +254,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	  Rate= m_flux->rate();
 	  dt=time-t1;
 	  t1=time;
-
+	  // Calculate the Fluences 
 	  fluence1+=CalculateFluence(energy);
 	  fluence2+=CalculateFluence(energy,0.05,0.3);
 	  fluence3+=CalculateFluence(energy,2.5,5.0);
@@ -273,13 +267,7 @@ int GRBTest::Start(std::vector<char*> argv)
 
 	  phi=180*phi/M_PI; //degrees
 
-	  //dt=(f->interval(time))/(Area);
-	  
-	  //if (dt<cst::DeadTime) dt=cst::DeadTime;
-
-	  fluence1+=CalculateFluence(energy);
-	  fluence2+=CalculateFluence(energy,10.0,100.0);
-	  events->Fill();
+	  if (savef==true) events->Fill();
 	  if (nume%10==0){
 	    cout<<
 	      "-------- Event Number: "<<nume<<"\n"<<
@@ -294,23 +282,35 @@ int GRBTest::Start(std::vector<char*> argv)
 	      " Direction: Cos(theta) = " << cos_theta <<", phi = "<<phi<<"\n"<<
 	      endl;
 	  }
-	  //	  time+=dt;
 	  nume++;
 	}
-	cout<<"Time final="<<time<<endl;
-	cout<<"Number of events processed ="<<nume<<endl;
-	events->Print();
-	cout<<"Fluence [erg/cm^2]="<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-	cout<<"Fluence (0.05 MeV - 0.3 MeV) [erg/cm^2]="<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-	cout<<"Fluence (2.5 - 5 MeV) [erg/cm^2]="<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-	cout<<"Fluence (5 MeV - 10 MeV)[erg/cm^2]="<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-	cout<<"Fluence (10 MeV - 1GeV)[erg/cm^2]="<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-	//	events->Scan("energy:time:Rate:cos_theta:phi");
+      cout<<"Time final="<<time<<endl;
+      cout<<"Number of events processed ="<<nume<<endl;
+      if (savef==true) events->Print();
+      cout<<"Fluence [erg/cm^2]="<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence (0.05 MeV - 0.3 MeV) [erg/cm^2]="<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence (2.5 - 5 MeV) [erg/cm^2]="<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence (5 MeV - 10 MeV)[erg/cm^2]="<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence (10 MeV - 1GeV)[erg/cm^2]="<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      // if (savef==true) events->Scan("energy:time:Rate:cos_theta:phi");
     } // For all the sources...
-  //  Uncomment the following 2 lines if you whant to save the tree in a root file
-
-  //  TFile f("Events.root","UPDATE");
-  //  Forest.Write();
-  //  f.Close();
+  
+  if (savef==true){
+    std::string paramFile2 = "$(GRBROOT)/src/test/GRBdata.txt";
+    facilities::Util::expandEnvVar(&paramFile2);
+    ofstream f2(paramFile2.c_str(),ios::app);
+    f2<<time<<endl;
+    f2<<(Area*1.0e+4)<<endl;
+    f2<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+    f2<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+    f2<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+    f2<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+    f2<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+    f2.close();
+    
+    TFile f("Events.root","UPDATE");
+    Forest.Write();
+    f.Close();
+  }
 }
 

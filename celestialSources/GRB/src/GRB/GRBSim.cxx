@@ -249,10 +249,6 @@ void GRBSim::ComputeFlux(double time)
 	    }
 	}
     }
-  //cout<<"Energy[0] = "<<m_energy[0]<<" Spectrum = "<<m_spectrum[0]<<endl;
-  //cout<<"Energy[1] = "<<m_energy[1]<<" Spectrum = "<<m_spectrum[1]<<endl;
-  //cout<<"Energy[2] = "<<m_energy[2]<<" Spectrum = "<<m_spectrum[2]<<endl;
-  //cout<<"Energy[3] = "<<m_energy[3]<<" Spectrum = "<<m_spectrum[3]<<endl;
 }
 
 /*------------------------------------------------------*/

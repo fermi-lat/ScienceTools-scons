@@ -1,6 +1,6 @@
 //##############################################################
 //
-// Job options file for FluxSvc test program
+// Job options file for GRB test program
 //
 
 
@@ -21,21 +21,16 @@ FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 // Append to a list of source library documents
 FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
 
-// ask for a source that is in the user_library
-//FluxTestAlg.source_name="default";
-//FluxTestAlg.source_name="GRBSpectrum";
-//FluxAlg.source_name="chime";
-
-// Primary source name
+//------------------------------------------------------------
+// Primary source name (default GRBSpectrum)	
 GRBTestAlg.source_name="GRBSpectrum";
-// Secondary source
-//GRBTestAlg.background_name="CHIMESpectrum";	
-//Maximum observation time
+//Maximum observation time (default 10 s)
 GRBTestAlg.observation_time=10;
-// OR Maximum number of photons generated
-GRBTestAlg.EvtMax=1000;
-
+// OR Maximum number of photons generated (default 100000)
+GRBTestAlg.EvtMax=10000;
+// No idea...
 ApplicationMgr.EvtSel = "NONE";
+
 // How many times the application will run...
 ApplicationMgr.EvtMax = 1;
 

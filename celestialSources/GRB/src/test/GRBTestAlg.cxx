@@ -1,4 +1,10 @@
-// $Header$
+/*!\class GRBTestAlg.cxx
+ * \brief Test the GRB Gaudi algorithm.
+ * 
+ * It contains the structure of a general flux algorithm of Gaudi.
+ * All the option available are declered in the joboptions file.
+ * 
+ */
 
 // Include files
 #include "FluxSvc/IFluxSvc.h"
@@ -21,7 +27,7 @@
 #include <list>
 #include <string>
 #include <vector>
-#include "GaudiKernel/ParticleProperty.h"
+//#include "GaudiKernel/ParticleProperty.h"
 
 
 // GRB includes
@@ -33,26 +39,13 @@
 #include "TObjArray.h"
 #include "TFile.h"
 
-/*! \class GRBTestAlg
-  \brief 
-  
-*/
 
 using namespace std;
-
-//! The size of the energy array is taken from GRBConstant.h
-#define ENERGYSIZE cst::enstep
-//! The size of the time array is taken from GRBConstant.h
-#define TIMESIZE cst::nstep
-/*! the flux is a bidimentional array (matrix?) funtion of energy and time.
- * Its Unities are 
- *
- */
 
 class GRBTestAlg : public Algorithm {
   
 public:
-  //! Constructor of this form must be provided
+  //! Constructor of this form must be provided 
   GRBTestAlg(const std::string& name, ISvcLocator* pSvcLocator);   
   
   StatusCode initialize();
@@ -60,19 +53,18 @@ public:
   StatusCode finalize();
   
 private:
-  IFluxSvc* m_fsvc; /// pointer to the flux Service 
-  IParticlePropertySvc * m_partSvc;
-  
-  int pippo;
-  
-  double TIME;
-  int EVENTS;
-  
+  //! pointer to the flux Service 
+  IFluxSvc* m_fsvc;
+    
+  int m_loop;
+  double m_time;
+  int m_events;
+
   std::string m_source_name;
   std::string m_background_name;
+  std::string m_save_file;
   double m_observation_time;
-  //  char* flux_source;
-  //std::string flux_source;//="GRBSpectrum";
+  
 };
 
 
@@ -82,18 +74,23 @@ const IAlgFactory& GRBTestAlgFactory = Factory;
 //------------------------------------------------------------------------------
 //
 GRBTestAlg::GRBTestAlg(const std::string& name, ISvcLocator* pSvcLocator) :
-  Algorithm(name, pSvcLocator),TIME(10.0),EVENTS(100000),
-  m_source_name("GRBSpectrumSpectrum"),m_background_name(" "){
+  Algorithm(name, pSvcLocator),m_time(10.0),m_events(100000),
+  m_source_name("GRBSpectrumSpectrum"),m_background_name(" "),m_save_file("no"){
   
   declareProperty("source_name", m_source_name);
-  declareProperty("background_name", m_background_name);
-  declareProperty("observation_time", TIME);
-  declareProperty("EvtMax",EVENTS);
+  declareProperty("background_name",  m_background_name);
+  declareProperty("observation_time", m_time);
+  declareProperty("EvtMax",   m_events);
+  declareProperty("savefile", m_save_file);
+
 }
 
 
 //------------------------------------------------------------------------------
-/*! */
+/*! 
+ * Initialize the algorithm, use the Job options service to set the 
+ * Algorithm's parameters, and points to flux service 
+ */
 StatusCode GRBTestAlg::initialize() {
   
   
@@ -105,48 +102,46 @@ StatusCode GRBTestAlg::initialize() {
   
   // get the service
   StatusCode sc = service("FluxSvc", m_fsvc);
-  pippo=0;
+  m_loop=0;
   return sc;
 }
 
 
 //------------------------------------------------------------------------------
+/*! 
+ * Execute the algorithm, calling GRBTest.
+ */
 StatusCode GRBTestAlg::execute() {
-  pippo++;
+  m_loop++;
   StatusCode  sc = StatusCode::SUCCESS;
   MsgStream   log( msgSvc(), name() );    
   
   std::vector<char*> arguments;
   arguments.push_back(" ");
   
-  char o1[100];
-  char o2[100];
-  char o3[100];
+  char arg1[50];
+  char arg2[50];
+  char arg3[50];
 
-  sprintf(o1,"%f",TIME);
-  sprintf(o2,"%d",EVENTS);
-  sprintf(o3,"%s%d",m_source_name.c_str(),pippo);
+  sprintf(arg1,"%f",m_time);
+  sprintf(arg2,"%d",m_events);
+  sprintf(arg3,"%s%d",m_source_name.c_str(),m_loop);
   
-  char* time_max= o1;
-  char* events_max= o2;
-  //  char* source_name=
-  //char* source_name=m_source_name.c_str();
-  /*
-  cout<<"Time = "<<time_max
-      <<" events = "<<events_max
-      <<" source name = "<<o3<<endl;
-  */
   if(m_background_name!=" ") cout<<" background  = "<<m_background_name.c_str()<<endl;
   
   arguments.push_back("-time");
-  arguments.push_back(time_max);
+  arguments.push_back(arg1);
   arguments.push_back("-events");
-  arguments.push_back(events_max);
-  arguments.push_back("-name");
-  arguments.push_back(o3);
+  arguments.push_back(arg2);
+  if(m_save_file=="yes") 
+    {
+      arguments.push_back("-save");
+      arguments.push_back(arg3);
+    }
+  
   arguments.push_back(m_source_name.c_str());
   if(m_background_name!=" ") arguments.push_back(m_background_name.c_str());
-
+  
   GRBTest* m_GRBTest = new GRBTest();
   
   m_GRBTest->setService(m_fsvc);
@@ -159,6 +154,9 @@ StatusCode GRBTestAlg::execute() {
 
 
 //------------------------------------------------------------------------------
+/*!
+ * Finalize the algorithm.
+ */
 StatusCode GRBTestAlg::finalize() {
     
     return StatusCode::SUCCESS;

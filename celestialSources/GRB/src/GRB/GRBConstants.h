@@ -30,25 +30,25 @@ namespace cst
   const double Hubble    = 6.5e+1; 
   const double wzel      = 0.0;
 
-  const double csi       = 0.1;
+  const double csi       = 1.0;
   const double alphae    = .33;
   const double alphab    = .33;
   const double p         = 2.5;
   const double viscosity = 0.;
   /// Internal Parameters
-  const double enmax     = 1.0e+20;
+  const double enmax     = 1.0e+12;
   //! Min. photon energy detectable by GLAST: set to 1 MeV
-  const double enph      = 1.0e+6; 
- //! Minimal Temporal separation between 2 photons
+  //  const double enph      = 1.0e+6; 
+  const double enph      = 5.0e+4; //BATSE band
+  //! Minimal Temporal separation between 2 photons
   const double DeadTime  = 1.0e-5; //sec
   const double enmin     = 1.0e+3;
   const double dt1       = 10000.;
   const int nstep        = 200;
   const int enstep       = 100;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 0.01;
+  const float flagIC     = 1;
   //RandomFlag==1 -> the parameters are choosing random 
-  const int RandomFlag   =    0; 
 }
 
 class GRBConstants 
@@ -67,32 +67,38 @@ class GRBConstants
   double SelectRandom(double min=0.0, double max=1.0);
   //! Number of shells generated from the source
   inline int Nshell() {return nshell;}
-  inline void setNshell(int value=10){nshell=value;}
+  //  inline void setNshell(int value=10){nshell=value;}
+  void setNshell(int value=10);
   
   //! redshift of the source
   inline double Redshift() {return redshift;}
-  inline void setRedshift(double value=1.0){redshift=value;}
+  //  inline void setRedshift(double value=1.0){redshift=value;}
+  void setRedshift(double value=1.0);
   
   //! Total Energy available (ergs)
   inline double Etot(){return etot;}
-  inline void setEtot(double value){etot=value;}
+  //  inline void setEtot(double value){etot=value;}
+  void setEtot(double value);
   
   //! Initial separation between shells (cm)
   inline double R0(){return r0;}
-  inline void setR0(double value){r0=value;}
+  //  inline void setR0(double value){r0=value;}
+  void setR0(double value);
   
   //! Initial thickness of the shells (cm)
   inline double T0(){return t0;}
-  inline void setT0(double value){t0=value;}
+  inline void setT0(double value);
   
   //! Minimum Lorentz factor of the shells
   inline double Gamma0(){return g0;}
-  inline void setGamma0(double value=100.0){g0=value;}
+  //inline void setGamma0(double value=100.0){g0=value;}
+  void setGamma0(double value=100.0);
   
   //! Maximum Lorentz factor of the shells
   inline double DGamma(){return g1;}
-  inline void setDGamma(double value=100.0){g1=value;}
-  
+  //inline void setDGamma(double value=100.0){g1=value;}
+  void setDGamma(double value=100.0);
+ 
   
   int nshell;
   double redshift;

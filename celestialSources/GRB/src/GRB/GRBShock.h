@@ -121,12 +121,12 @@ class GRBShock
    * of the resulting photons will be:
    * \f$h\nu_{fin}\approx h\nu_{in}\gamma_e\f$
    */
-  double Eic(double gamme);
+  double Eic(double gamme,double nic=1.0/* order of IC*/);
 
   /*!
    * Not yet implemented!
    */
-  double OpticalDepht();
+  double OpticalDepht(double energy);
   
   /*! \brief The synchrotron cooling time.
    *
@@ -159,10 +159,12 @@ class GRBShock
   double m_tobs;
   double m_radius;
   double m_mass;
+  double m_thickness;
   double m_Eint;
   double m_gsh;
   double m_VolCom;
   double m_npart;
+  double m_n1;
   
   double m_gemin;
   double m_gemax;

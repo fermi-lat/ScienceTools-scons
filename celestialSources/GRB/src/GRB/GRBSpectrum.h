@@ -31,11 +31,14 @@ class GRBSpectrum : public ISpectrum
   /*! \param params file of parameters 
    */
   GRBSpectrum(const std::string& params);
-  //! Destructor
+  /*! Destructor
+   */
   ~GRBSpectrum();  
-  //! Computes the flux, in \b photons/m^2/s, for a given time
+  /*! Computes the flux, in \b photons/m^2/s, for a given time
+   */
   double flux(double time)const;
-  //! returns rate, for a given time;
+  /*! returns rate, for a given time;
+   */
   double rate(double time)const;
   /*! \brief Returns the time interval
    *

@@ -1,5 +1,5 @@
-/*!\file GRBROOTTest.cxx
- * \brief test program for GRB simulation studies.
+/*!\class GRBROOTTest.cxx
+ * \brief Test program for GRB simulation studies.
  * 
  * This executable uses ROOT to display several histograms at run time.
  * To use it, type on the prompt ./test_GRBROOT.exe
@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include "facilities/Util.h"
 //Include files for spectrum...
 
 //include files for ROOT...
@@ -44,10 +45,6 @@ using namespace std;
 #define ENERGYSIZE cst::enstep
 //! The size of the time array is taken from GRBConstant.h file in FluxSvc
 #define TIMESIZE cst::nstep
-/*! the flux is a bidimentional array (matrix?) funtion of energy and time.
- * Its Unities are 
- *
- */
 ////////////////////////////////////////////////////////////
 // Channel for the output Light Curves
 // BATSE TRIGGER:
@@ -71,8 +68,8 @@ double timex[TIMESIZE];
 double energyx[ENERGYSIZE];
 
 static const char * default_arg="GRBSpectrum";
+//! It starts the simulation of a new Gamma-Ray Burst
 void Burst(int argc, char** argv);
-
 int main(int argc, char** argv)
 {
   Burst(argc,argv);
@@ -95,6 +92,9 @@ double CalculateFluence(double ee,double e1=cst::enmin*1e-9,double e2=cst::enmax
 
 void Burst(int argc, char** argv)
 {
+  bool savef=false;
+  char buf[100];
+ 
   static const char * default_arg="GRBSpectrum";
   int current_arg = 1;
   int flag=1;
@@ -107,6 +107,7 @@ void Burst(int argc, char** argv)
   static const   TROOT root("GRB", "GRB Simulator");
   _myGRB->Start();
   double tmax=_myGRB->Tmax();
+  
   while(current_arg < argc)
     {
       arg_name = argv[current_arg]; 
@@ -114,8 +115,13 @@ void Burst(int argc, char** argv)
 	{
 	  tmax = atof(argv[++current_arg]);
 	}
+      else if("-save"==arg_name)
+	{
+	  savef=true;
+	}
       current_arg++;
     }
+  
   cout<<" MAX TIME = "<<tmax<<endl;
   double m_dt=tmax/cst::nstep;
   
@@ -210,7 +216,6 @@ void Burst(int argc, char** argv)
   double fluence4=0.0;
   double fluence5=0.0;
   std::vector<double> m_time;
-  //Baggio//
   
   TH1D *h1 = new TH1D("h1","h1",cst::enstep,log10(cst::enmin)-6,log10(cst::enmax)-6);
   
@@ -280,8 +285,49 @@ void Burst(int argc, char** argv)
   cout<<"Fluence ("<<ch2L*1.0e-6<<" MeV - "<<ch2H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence3/_myGRB->Area()<<endl;
   cout<<"Fluence ("<<ch3L*1.0e-6<<" MeV - "<<ch3H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence4/_myGRB->Area()<<endl;
   cout<<"Fluence ("<<ch4L*1.0e-6<<" MeV - "<<ch4H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence5/_myGRB->Area()<<endl;
-  
-  //////////////////////////////////////////////////////////
+  if(savef==true)
+    {
+      //////////////////////////////////////////////////
+      // Save the results in the GRBlogfile...        //
+      /////////////////////////////////////////////////////
+      std::string paramFile = "$(GRBROOT)/src/test/GRBlog.txt";
+      std::string paramFile2 = "$(GRBROOT)/src/test/GRBdata.txt";
+      
+      facilities::Util::expandEnvVar(&paramFile);
+      facilities::Util::expandEnvVar(&paramFile2);
+      
+      ofstream f1(paramFile.c_str(),ios::app);
+      ofstream f2(paramFile2.c_str(),ios::app);
+      
+      if (! f1.is_open()) 
+	{
+	  cout<<"Error Opening $(GRBROOT)/src/test/GRBlog.txt\n";
+	  //TODO LIST: still need to remove this exit, without gwtting a core dump!
+	  exit(1);
+	}
+      cout<<"Save into the file: "<<paramFile.c_str()<<endl;
+      cout<<"*******************************************"<<endl;
+      
+      f1<<"Tmax = "<<tmax<<" Ftot [erg]= "<<fluence1<<endl;
+      f1<<"Fluence [erg/cm^2] = "<<fluence1/_myGRB->Area()<<endl;
+      f1<<"Fluence ("<<ch1L*1.0e-6<<" MeV - "<<ch1H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence2/_myGRB->Area()<<endl;
+      f1<<"Fluence ("<<ch2L*1.0e-6<<" MeV - "<<ch2H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence3/_myGRB->Area()<<endl;
+      f1<<"Fluence ("<<ch3L*1.0e-6<<" MeV - "<<ch3H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence4/_myGRB->Area()<<endl;
+      f1<<"Fluence ("<<ch4L*1.0e-6<<" MeV - "<<ch4H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence5/_myGRB->Area()<<endl;
+      f1.close();
+      
+      f2<<tmax<<endl;
+      f2<<_myGRB->Area()<<endl;
+      f2<<fluence1/_myGRB->Area()<<endl;
+      f2<<fluence2/_myGRB->Area()<<endl;
+      f2<<fluence3/_myGRB->Area()<<endl;
+      f2<<fluence4/_myGRB->Area()<<endl;
+      f2<<fluence5/_myGRB->Area()<<endl;
+      f2.close();
+    }
+  //////////////////////////////////////////////////
+  //               Plot - Graphics - Histograms   //
+  //////////////////////////////////////////////////
   for (int t=0;t<cst::nstep;t++)
     {
       timex[t]=m_time[t];
