@@ -130,7 +130,7 @@ namespace st_graph {
     // Create the IFrame which refers to it.
     RootFrame * frame = new RootFrame(receiver, tg_widget);
 
-    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     // Connect appropriate Root Qt signals to this object's slot.
@@ -227,6 +227,8 @@ namespace st_graph {
 
     TGLabel * tg_widget  = new TGLabel(rf->getTGFrame(), text.c_str());
 
+    tg_widget->SetTextJustify(kTextRight);
+
     IFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
     return frame;
@@ -260,7 +262,7 @@ namespace st_graph {
 
     RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
-    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     return frame;
@@ -277,7 +279,7 @@ namespace st_graph {
 
     RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
 
-    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    // Create a layout manager for the Root widget which uses the receiver to manage the layout.
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     return frame;
@@ -291,7 +293,7 @@ namespace st_graph {
     if (0 == rf) throw std::logic_error("RootEngine::createTabFolder was passed an invalid parent frame pointer");
 
     RootTabFolder * folder = new RootTabFolder(rf, receiver);
-
+    
     return folder;
   }
 
@@ -321,8 +323,8 @@ namespace st_graph {
     strcpy(info->fIniDir, dir.c_str());
 
     // Set the widget's initial file name.
-    // This doesn't seem to work: Root ignores the file name part.
-    info->fFilename = new char[file.size() + 1];
+    char * buf = new char[file.size() + 1];
+    info->fFilename = buf;
     strcpy(info->fFilename, file.c_str());
 
     // Set up style.
@@ -337,8 +339,9 @@ namespace st_graph {
     std::string file_name = initial_file_name;
     if (0 != info->fFilename) file_name = info->fFilename;
 
-    // Clean up. TGFileInfo's destructor deletes the string(s) created above.
+    // Clean up.
     delete info;
+    delete [] buf;
 
     return file_name;
   }
