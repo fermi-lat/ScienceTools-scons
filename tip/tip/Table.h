@@ -78,14 +78,7 @@ namespace table {
               but does not affect which fields were selected in this Record. This way client code
               can be certain of the continued validity of references to Cells contained in this Record.
           */
-          Record & operator = (const Record & rec) {
-            if (this != &rec) {
-              // Note: do *not* assign m_cells! This is important to how Records work!
-              m_table = rec.m_table; // This should also confirm that the new table has the right fields.
-              m_index = rec.m_index;
-            }
-            return *this;
-          }
+          Record & operator = (const Record & rec);
 
           /** \brief Return a cell object for the given field. The Cell object will be created
               if it does not already exist.
@@ -94,13 +87,7 @@ namespace table {
               has a field with this name.
               \param field The name of the Cell object (the field in this Record).
           */
-          Cell & operator [](const std::string & field) {
-            CellCont_t::iterator itor = m_cells.find(field);
-            if (m_cells.end() == itor) {
-              itor = m_cells.insert(itor, std::make_pair(field, Cell(*this, field)));
-            }
-            return itor->second;
-          }
+          Cell & operator [](const std::string & field);
 
           // Client code should not normally need to call methods below here.
           // Get the current record index and table.
@@ -139,13 +126,7 @@ namespace table {
               table as the source, but does not copy the source iterator's Record.
               \param itor The source iterator object.
           */
-          Iterator & operator =(const Iterator & itor) {
-            if (this != &itor) {
-              m_record = itor.m_record;
-              m_table = itor.m_table;
-            }
-            return *this;
-          }
+          Iterator & operator =(const Iterator & itor);
 
           /** \brief Go on to the next table position.
           */
@@ -200,6 +181,31 @@ namespace table {
 
   inline void Table::Cell::read(double & value) const
     { m_record.getTable()->read(m_field, m_record.getIndex(), value); }
+
+  inline Table::Record & Table::Record::operator =(const Table::Record & rec) {
+    if (this != &rec) {
+      // Note: do *not* assign m_cells! This is important to how Records work!
+      m_table = rec.m_table; // This should also confirm that the new table has the right fields.
+      m_index = rec.m_index;
+    }
+    return *this;
+  }
+
+  inline Table::Cell & Table::Record::operator [](const std::string & field) {
+    CellCont_t::iterator itor = m_cells.find(field);
+    if (m_cells.end() == itor) {
+      itor = m_cells.insert(itor, std::make_pair(field, Cell(*this, field)));
+    }
+    return itor->second;
+  }
+
+  inline Table::Iterator & Table::Iterator::operator =(const Table::Iterator & itor) {
+    if (this != &itor) {
+      m_record = itor.m_record;
+      m_table = itor.m_table;
+    }
+    return *this;
+  }
 
   typedef Table::Cell Cell;
   typedef Table::Record Record;
