@@ -2,6 +2,7 @@
     \brief Implementation of helper class which uses standard sets of parameters to configure binners for standard applications.
     \author James Peachey, HEASARC
 */
+#include <cctype>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -58,20 +59,27 @@ namespace evtbin {
     // Determine the time binning algorithm.
     par_group.Prompt(alg);
     par_group.Prompt(in_field);
-    if (0 == par_group[alg].Value().compare("LIN")) {
+
+    // Get the type of bin specification.
+    std::string bin_type = par_group[alg].Value();
+
+    // Make all upper case for case-insensitive comparisons.
+    for (std::string::iterator itor = bin_type.begin(); itor != bin_type.end(); ++itor) *itor = toupper(*itor);
+
+    if (bin_type == "LIN") {
       // Get remaining parameters needed for linearly uniform interval binner.
       par_group.Prompt(bin_begin);
       par_group.Prompt(bin_end);
       par_group.Prompt(bin_size);
-    } else if (0 == par_group[alg].Value().compare("LOG")) {
+    } else if (bin_type == "LOG") {
       // Get remaining parameters needed for logarithmically uniform interval binner.
       par_group.Prompt(bin_begin);
       par_group.Prompt(bin_end);
       par_group.Prompt(num_bins);
-    } else if (0 == par_group[alg].Value().compare("FILE")) {
+    } else if (bin_type == "FILE") {
       // Get remaining parameters needed for user defined bins from a bin file.
       par_group.Prompt(bin_file);
-    } else throw std::runtime_error(std::string("Unknown time binning algorithm ") + par_group[alg].Value());
+    } else throw std::runtime_error(std::string("Unknown binning algorithm ") + par_group[alg].Value());
   }
 
   Binner * BinConfig::createBinner(const st_app::AppParGroup & par_group, const std::string & alg,
@@ -82,13 +90,24 @@ namespace evtbin {
 
     Binner * binner = 0;
 
-    if (0 == par_group[alg].Value().compare("LIN")) {
+    // Get the type of bin specification.
+    std::string bin_type = par_group[alg].Value();
+
+    // Make all upper case for case-insensitive comparisons.
+    for (std::string::iterator itor = bin_type.begin(); itor != bin_type.end(); ++itor) *itor = toupper(*itor);
+
+    if (bin_type == "LIN") {
       binner = new LinearBinner(par_group[bin_begin], par_group[bin_end], par_group[bin_size], par_group[in_field]);
-    } else if (0 == par_group[alg].Value().compare("LOG")) {
+    } else if (bin_type == "LOG") {
       binner = new LogBinner(par_group[bin_begin], par_group[bin_end], par_group[num_bins], par_group[in_field]);
-    } else if (0 == par_group[alg].Value().compare("FILE")) {
+    } else if (bin_type == "FILE") {
       // Create interval container for user defined bin intervals.
       OrderedBinner::IntervalCont_t intervals;
+
+      std::string bin_ext_uc = bin_ext;
+
+      // Make all upper case for case-insensitive comparisons.
+      for (std::string::iterator itor = bin_ext_uc.begin(); itor != bin_ext_uc.end(); ++itor) *itor = toupper(*itor);
 
       // Open the data file.
       std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(par_group[bin_file], bin_ext));
@@ -98,7 +117,7 @@ namespace evtbin {
       double factor = 1.;
 
       // For the moment, energy bins are in keV, period, so in the case of an energy binner, convert keV to MeV.
-      if (bin_ext == "EBOUNDS" || bin_ext == "ENERGYBINS") factor = 1.e-3;
+      if (bin_ext_uc == "EBOUNDS" || bin_ext_uc == "ENERGYBINS") factor = 1.e-3;
 
       // Iterate over the file, saving the relevant values into the interval array.
       for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
@@ -108,7 +127,7 @@ namespace evtbin {
       // Create binner from these intervals.
       binner = new OrderedBinner(intervals, par_group[in_field]);
 
-    } else throw std::runtime_error(std::string("Unknown time binning algorithm ") + par_group[alg].Value());
+    } else throw std::runtime_error(std::string("Unknown binning algorithm ") + par_group[alg].Value());
 
     return binner;
   }

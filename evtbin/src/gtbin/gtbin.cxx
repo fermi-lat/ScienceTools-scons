@@ -287,6 +287,9 @@ class GtBinApp : public st_app::StApp {
 
       std::string algorithm = pars["algorithm"];
 
+      // Make all upper case for case-insensitive comparisons.
+      for (std::string::iterator itor = algorithm.begin(); itor != algorithm.end(); ++itor) *itor = toupper(*itor);
+
       // Based on this parameter, create the real application.
       st_app::StApp * app = 0;
 
@@ -295,7 +298,7 @@ class GtBinApp : public st_app::StApp {
         else if (0 == algorithm.compare("LC")) app = new LightCurveApp("gtbin");
         else if (0 == algorithm.compare("PHA1")) app = new SimpleSpectrumApp("gtbin");
         else if (0 == algorithm.compare("PHA2")) app = new MultiSpectraApp("gtbin");
-        else throw std::logic_error(std::string("Algorithm ") + algorithm + " is not supported");
+        else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
 
         // Pass on the algorithm parameter value to the application. This is so that that algorithm
         // parameter will be learned.
