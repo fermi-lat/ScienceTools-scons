@@ -1,0 +1,41 @@
+//##############################################################
+//
+// Job options file for Gleam test
+// $Header$
+
+// just run the "default" job with mods below
+#include "$GLEAMROOT/src/default.txt"
+
+
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+second.OutputLevel=4; // too much info from second CalClustersAlg
+CalClustersAlg.OutputLevel=4; // too much info from second CalClustersAlg
+TkrVertexAlg.OutputLevel=4; // supress INFO message "Vertexing performed with: TkrComboVtxRecon(not a tool)"
+Output.Members={}; // turn off any root ouptut
+
+// how to set a different source
+//FluxAlg.source_name="gamma_1_gev_normal";
+//FluxAlg.source_name="Crab_timetick";
+FluxAlg.source_name="crab-galactic";
+
+// rocking
+FluxAlg.pointing_mode=3;
+FluxAlg.rocking_angle=35;
+
+// Set the name of the pointing history file
+ExposureAlg.pointing_history_output_file="pointingHistory.dat";
+
+// Number of events to process
+ApplicationMgr.EvtMax = 5000;
+MeritAlg.generated = 5000; // for estimation of Aeff--must be the same
+
+ApplicationMgr.DLLs += {"ntupleWriterSvc"};
+ApplicationMgr.ExtSvc += {"RootTupleSvc"};
+
+
+//==============================================================
+//
+// End of job options file
+//
+//##############################################################
+
