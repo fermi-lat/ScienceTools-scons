@@ -53,7 +53,7 @@ namespace astro {
           * @param sourceDir SkyDir giving the location of the source
           * @return Correction in seconds added to correct for the Shapiro delay
           */
-        double calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const;
+        double calcShapiroDelay(JulianDate jd, const SkyDir &sourceDir) const;
 
 
         /** Return the timing correction for light travel time to solar system barycenter
@@ -61,7 +61,7 @@ namespace astro {
           * @param sourceDir SkyDir giving location of the source
           * @return Correction in seconds added to correct for light travel time
           */
-        double calcTravelTime(JulianDate jd, const SkyDir sourceDir) const;
+        double calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const;
 
 
         /** Return the correction that is added to TT to obtain TDB time

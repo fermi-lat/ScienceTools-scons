@@ -124,12 +124,11 @@ double EarthOrbit::phase(JulianDate jd) const
 {
     double elapse = (jd - JDStart)*SecondsPerDay;
     return m_M0+m_dMdt*elapse;
-    
 }
 
 // Calculates the Shapiro delay due to gravitational relativistic effects on the 
 // photon arrival times.
-double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const
+double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir &sourceDir) const
 {
    SolarSystem::Body sunID = (SolarSystem::Body) 8;
 
@@ -148,15 +147,20 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const
 }
 
 // Takes a Julian Date and a source direction and computes the light travel time to the
-// solar system barycenter.
-double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir sourceDir) const
+// sun.  (Todo: This should give light travel time to the barycenter instead of the sun)
+double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 {
-   SolarSystem solsys;
-   Hep3Vector barycenter = solsys.getBarycenter(jd);
+   //SolarSystem solsys;
+   //Hep3Vector barycenter = solsys.getBarycenter(jd);
+
+   SolarSystem::Body sunID = (SolarSystem::Body) 8;
+   SolarSystem sun;
+   SkyDir sunDir = sun.direction(sunID,jd);
+   Hep3Vector rsun = sunDir.dir();
 
    Hep3Vector rsrc = sourceDir.dir();
 
-   return barycenter.dot(rsrc) / (rsrc.mag() * 299792458.);
+   return -1. * rsun.dot(rsrc) / (rsrc.mag() * 299792458.);
 }
 
 
