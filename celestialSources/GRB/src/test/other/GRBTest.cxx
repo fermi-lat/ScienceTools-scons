@@ -43,7 +43,27 @@
 #include "TObjArray.h"
 #include "TFile.h"
 
+namespace channel
+{
+  // BATSE 1 Channel (MeV):
+  const double ch1L      = 50.0e-3;
+  const double ch1H      = 100.0e-3;
+  // BATSE 2 Channel
+  const double ch2L      = 100.0e-3;
+  const double ch2H      = 300.0e-3;
+  // GBM Energy Range:
+  const double ch3L      = 25.0e-3;
+  const double ch3H      = 10.0;
+  // LAT Energy Range
+  const double ch4L      = 20.0;
+  const double ch4H      = 1.0e+3;
+  const double ch5L      = 1.0e+3;
+  const double ch5H      = 300.0e+3;
+  //////////////////////////////////////////////////
+}
+
 using namespace std;
+using namespace channel;
 
 class DataOut{
 public:
@@ -51,22 +71,38 @@ public:
   //! destructor
   //  ~DataOut();
 
-  inline void setEnergy(double value) {o_energy=value;}
   inline void setTime(double value)   {o_time=value;}
+  inline void setEnergy(double value) {o_energy=value;}
+  
   inline void setPhi(double value)    {o_phi=value;}
   inline void setTheta(double value)  {o_theta=value;}
-  inline void setSignal(int value)   {o_signal=value;}
+  
+  inline void setGal_l(double value)  {o_l=value;}
+  inline void setGal_b(double value)  {o_b=value;}
+  
+  inline void setSignal(int value)    {o_signal=value;}
 public:
-  inline double Energy() {return o_energy;}
+
   inline double Time()   {return o_time;}
+  inline double Energy() {return o_energy;}
+  
   inline double Phi()    {return o_phi;}
   inline double Theta()  {return o_theta;}
+  
+  inline double Gal_l()  {return o_l;}
+  inline double Gal_b()  {return o_b;}
+  
   inline int   Signal() {return o_signal;}
 private:
-  double o_energy;
   double o_time;
+  double o_energy;
+  
   double o_phi;
   double o_theta;
+  
+  double o_l;
+  double o_b;
+  
   int o_signal;
 };
 
@@ -102,15 +138,13 @@ public:
   
 private:  
   IFlux* m_flux;    // pointer the a flux object
-  IFluxSvc* m_fsvc; // pointer to the flux Service 
- 
+  IFluxSvc* m_fsvc; // pointer to the flux Service  
   int m_loop;
   bool savef_root;
   bool savef_ascii;
   double TIME;
   int EVENTS;
   const char * default_arg;//="GRBSpectrum";
-
   std::vector<DataOut> theData;  
 };
 
@@ -178,19 +212,22 @@ int GRBTest::Start(std::vector<char*> argv)
   int argc = argv.size();
   //  cout<<argc<<endl;
   int nume,i;
-   int num_sources=0;
+  int num_sources=0;
   double time_max=TIME;  //time to use for flux and rate functions
   int events_max=EVENTS;
   double time,energy,Rate,Area;
   // Vector dir;
-  HepVector3D dir;
+  HepVector3D dir,GalDir;
 
   double cos_theta,phi;
+  double b,l;
   int current_arg = 1;
+  double fluenceTot;
   double fluence1,fluence2,fluence3,fluence4,fluence5;
   default_arg="GRBSpectrum";
   std::string arg_name(default_arg);
   vector<std::string> sources;
+
   /*
     cout << "------------------------------------------------------" <<endl;
     cout << " Flux test program: type 'GRBTest.exe -help' for help" <<endl;
@@ -264,12 +301,15 @@ int GRBTest::Start(std::vector<char*> argv)
       int signal=1;     
       if(i>0) signal=0;
       nume=1;
+      
+      fluenceTot=0.0;
       fluence1=0.0;
       fluence2=0.0;
       fluence3=0.0;
       fluence4=0.0;
       fluence5=0.0;
-  
+      
+      
       StatusCode sc =  m_fsvc->source(sources[i], m_flux);
       if( sc.isFailure()) 
 	{
@@ -277,6 +317,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	  return sc;
 	}
       cout<<" Source Name = "<<sources[i]<<endl;
+      number = new char(20);
       
       if (m_loop<10) 
 	{
@@ -302,6 +343,8 @@ int GRBTest::Start(std::vector<char*> argv)
 	  events->Branch("Rate",&Rate,"Rate/D");
 	  events->Branch("cos_theta",&cos_theta,"cos_theta/D");
 	  events->Branch("phi",&phi,"phi/D");
+	  events->Branch("l",&l,"l/D");
+	  events->Branch("b",&b,"b/D");
 	  Forest.Add(events);
 	}
       //sb pair<double,double> loc=m_fsvc->location();
@@ -311,15 +354,35 @@ int GRBTest::Start(std::vector<char*> argv)
       double t1;
       t1=time;
       double dt=0.0;
-      cout<<"pippo"<<endl;
+
       while(time<time_max && nume<=events_max)
 	{
-	  //cout<<"m_flux->generate()"<<endl;
-	  m_flux->generate();  
-	  //cout<<"m_flux->time()"<<endl;
+	  //	  cout<<"GPS = "<<m_flux->gpsTime()<<endl;
+	  // cout<<"m_flux->generate()"<<endl;
+	  m_flux->generate(); 
+	  // cout<<"m_flux->time()"<<endl;
 	  time=m_flux->time();
+	  // cout<<"time = "<<time<<endl;
+
 	  if (time>=1.0e+6) break;
 	  dir = m_flux->launchDir();
+	  //////////////////////////////////////////////////
+	  GalDir=m_flux->transformGlastToGalactic(time)*dir;
+	  double x_g,y_g,z_g;
+
+	  x_g=GalDir.x();
+	  y_g=GalDir.y();
+	  z_g=GalDir.z();
+
+	  if(abs(x_g)<=1e-10) x_g=0.0;
+	  if(abs(y_g)<=1e-10) y_g=0.0;
+	  if(abs(z_g)<=1e-10) z_g=0.0;
+	  
+	  b = 360/M_2PI*asin(y_g);
+	  l = 360/M_2PI*atan2(x_g,z_g);
+	  if(abs(b)<1.0e-10) b=0.;
+	  if(abs(l)<1.0e-10) l=0.;
+	  
 	  // cout<<"m_flux->energy()"<<endl;
 	  energy = m_flux->energy(); // kinetic energy in MeV
 	  // cout<<"energy = "<<energy<<endl;
@@ -328,30 +391,35 @@ int GRBTest::Start(std::vector<char*> argv)
 	  Rate= m_flux->rate();
 	  dt=time-t1;
 
-	  // Calculate the Fluences 
-	  fluence1+=CalculateFluence(energy);
-	  fluence2+=CalculateFluence(energy,0.05,0.3);
-	  fluence3+=CalculateFluence(energy,2.5,5.0);
-	  fluence4+=CalculateFluence(energy,5.0,10.0);
-	  fluence5+=CalculateFluence(energy,10.0,1000.0);
-
+	  // Calculate the Fluences
+	  
+	  fluenceTot+=CalculateFluence(energy);
+	  fluence1+=CalculateFluence(energy,ch1L,ch1H);
+	  fluence2+=CalculateFluence(energy,ch2L,ch2H);
+	  fluence3+=CalculateFluence(energy,ch3L,ch3H);
+	  fluence4+=CalculateFluence(energy,ch4L,ch4H);
+	  fluence5+=CalculateFluence(energy,ch5L,ch5H);
+	  
 	  cos_theta = dir.z();
 	  phi = atan2(dir.y(),dir.x());
 	  if(phi < 0) phi = 2*M_PI + phi;
-
 	  phi=180*phi/M_PI; //degrees
 
 	  if (savef_root==true) events->Fill();
 	  if (savef_ascii==true)
 	    {
 	      DataOut myData;
-       
+     
 	      myData.setEnergy(energy);
 	      myData.setTime(t1);
 	      myData.setPhi(phi);
 	      myData.setTheta(acos(cos_theta)*180.0/M_PI); //in degrees
-	      myData.setSignal(signal); 
+	     
+	      myData.setGal_l(l); 
+	      myData.setGal_b(b); 
 	      
+	      myData.setSignal(signal); 
+
 	      theData.push_back(myData);
 	    }
 	  if (nume%1==0){
@@ -364,32 +432,37 @@ int GRBTest::Start(std::vector<char*> argv)
 	      " Area [m^2]= "<<Area<<"\n"<<
 	      // " --------------------------------\n"<<
 	      " Energy of Photon Extracted [ MeV ]= "<<energy<<"\n"<<
-	      " Direction: Cos(theta) = " << cos_theta <<", phi = "<<phi<<"\n"<<
+	      " Direction: GLAST :Cos(theta) = " << cos_theta <<", phi = "<<phi<<"\n"<<
+	      "            GALACTIC :      l = "<<l<<" b = "<<b<<
 	      endl;
 	  }
 	  t1=time;
 	  nume++;
 	}
       cout<<"Time final="<<t1<<endl;
-      cout<<"Number of events processed for this source= "<<nume<<endl;
+      cout<<"Number of events processed for this source= "<<nume-1<<endl;
       if (savef_root==true) events->Print();
-      cout<<"Fluence [erg/cm^2]="<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-      cout<<"Fluence (0.05 MeV - 0.3 MeV) [erg/cm^2]="<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-      cout<<"Fluence (2.5 - 5 MeV) [erg/cm^2]="<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-      cout<<"Fluence (5 MeV - 10 MeV)[erg/cm^2]="<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
-      cout<<"Fluence (10 MeV - 1GeV)[erg/cm^2]="<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Total Fluence [erg/cm^2]="<<fluenceTot/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      
+      cout<<"Fluence ("<<ch1L<<"  MeV - "<<ch1H<<" MeV) [erg/cm^2]="<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence ("<<ch2L<<"  MeV - "<<ch2H<<" MeV) [erg/cm^2]="<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence ("<<ch3L<<"  MeV - "<<ch3H<<" MeV) [erg/cm^2]="<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence ("<<ch4L<<"  MeV - "<<ch4H<<" MeV) [erg/cm^2]="<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+      cout<<"Fluence ("<<ch5L<<"  MeV - "<<ch5H<<" MeV) [erg/cm^2]="<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
       
       if (savef_root==true){
 	std::string paramFile = "GRBdata.txt";
 	facilities::Util::expandEnvVar(&paramFile);
 	std::ofstream fout(paramFile.c_str(),ios::app);
 	fout<<t1<<endl;
-	fout<<(fluence1)*(1.0/cst::erg2MeV)<<endl;
+	
+	fout<<(fluenceTot)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence4/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence5/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+	
 	fout.close();
       }
       
@@ -422,6 +495,7 @@ int GRBTest::Start(std::vector<char*> argv)
 		  (*itr).Phi(),
 		  (*itr).Theta(),
 		  (*itr).Signal());
+	  cout<<(*itr).Energy()<<endl;
 	  /*
 	    phout<<(*itr).Time()<<"\t"
 	    <<(*itr).Energy()<<"\t"
@@ -437,4 +511,3 @@ int GRBTest::Start(std::vector<char*> argv)
   
 }
 
-  
