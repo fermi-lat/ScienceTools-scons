@@ -8,6 +8,10 @@
 #include <stdexcept>
 #include <vector>
 
+#ifdef WIN32
+typedef void (*sighandler_t) (int);
+#endif
+
 #include "TApplication.h"
 #include "TGButton.h"
 #include "TGClient.h"
