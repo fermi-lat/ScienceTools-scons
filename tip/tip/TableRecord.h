@@ -234,8 +234,6 @@ public:
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-//    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
-//    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
     m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), value);
   }
 
@@ -244,8 +242,6 @@ public:
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-//    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
-//    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
     std::vector<T> tmp_dest(src_end);
     m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), tmp_dest);
     for (long ii = 0; ii < src_end - src_begin; ++ii) dest_begin[ii] = tmp_dest[src_begin + ii];
@@ -260,13 +256,9 @@ public:
   // set method overloads:
   template <typename T>
   inline void TableCell::set(const T & value) {
-//     T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
-//     tmp[0] = value;
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-//    if (1 != getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a scalar");
-//    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
     m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), value);
   }
 
@@ -276,8 +268,6 @@ public:
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }
-//    if (1 == getNumElements()) throw TipException(std::string("Field named ") + m_field + " is not a vector");
-//    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
     std::vector<T> tmp_src(src_begin, src_end);
     m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), tmp_src);
   }
