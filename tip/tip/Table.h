@@ -27,20 +27,22 @@ namespace table {
 
       /** \class Cell
 
-          \brief Encapsulation of a single table cell, which may contain (in principle) any type of information.
+          \brief Encapsulation of a single table cell, which may contain (in principle) any type of object.
+
+          The read() method will need to be overloaded for every type the Cell may in practice contain.
       */
       class Cell {
         public:
-          /** \brief Construct a Cell object, associated with the given Record.
-              \param record The Record object to which this Cell refers.
-              \param field The name of this cell.
+          /** \brief Construct a Cell object associated with a particular field in the given Record.
+              \param record The referent Record object.
+              \param field The name of this cell (the field in the Record).
           */
           Cell(Record & record, const std::string & field): m_record(record), m_field(field) {}
 
           virtual ~Cell() {}
 
           /** \brief Read the current value of this Cell from current Iterator position.
-              \param value The read value.
+              \param value The current value.
           */
           void read(double & value) const;
 
@@ -57,16 +59,25 @@ namespace table {
         public:
           typedef std::map<std::string, Cell> CellCont_t;
 
-          /** \brief Construct a Record object, without association with any Table.
+          /** \brief Construct a Record object, without immediate association with any Table.
+              Such an association may be formed later by assignment.
           */
           Record(): m_cells(), m_table(0), m_index(0) {}
 
-          /** \brief Construct a Record object, associated with the given Table and record number.
+          /** \brief Construct a Record object, associated with the given Table and record index.
           */
           Record(Table & table, Index_t index): m_cells(), m_table(&table), m_index(index) {}
 
           virtual ~Record() {}
 
+          /** \brief Assignment operator. Note that this behaves somewhat unusually!
+
+              This assignment does not change this Record's container of Cell objects.
+              This is necessary in order to preserve the selected content of this Record. The
+              idea is that assignment changes which Table and record index this Record points to
+              but does not affect which fields were selected in this Record. This way client code
+              can be certain of the continued validity of references to Cells contained in this Record.
+          */
           Record & operator = (const Record & rec) {
             if (this != &rec) {
               // Note: do *not* assign m_cells! This is important to how Records work!
@@ -81,7 +92,7 @@ namespace table {
 
               Note that there is no check at this point whether the underlying Table actually
               has a field with this name.
-              \param field The name of the Cell object.
+              \param field The name of the Cell object (the field in this Record).
           */
           Cell & operator [](const std::string & field) {
             CellCont_t::iterator itor = m_cells.find(field);
@@ -97,6 +108,8 @@ namespace table {
 
           // Get the current Table pointer.
           Table * getTable() { assert(m_table); return m_table; }
+
+          // Go on to the next record. Not operator ++ because this behavior might be unexpected.
           void nextRecord() { ++m_index; }
 
         private:
@@ -124,9 +137,6 @@ namespace table {
 
           /** \brief Standard assignment, which makes this object refer to the same record in the same
               table as the source, but does not copy the source iterator's Record.
-
-              The source object is not type const Iterator & because the destination will hereafter refer
-              to (and potentially modify) the table to which the source object points.
               \param itor The source iterator object.
           */
           Iterator & operator =(const Iterator & itor) {
