@@ -130,6 +130,13 @@ namespace tip {
       virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
         Index_t dest_record) { m_extension_manager.copyCell(src_ext, src_field, src_record, dest_field, dest_record); }
 
+      /** \brief Copy a record from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyRecord(const IExtensionData * src_ext, Index_t src_record, Index_t dest_record)
+        { m_extension_manager.copyRecord(src_ext, src_record, dest_record); }
 
       /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
           \param field_name The name of the field to append.

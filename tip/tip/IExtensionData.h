@@ -100,6 +100,13 @@ namespace tip {
       virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
         Index_t dest_record) = 0;
 
+      /** \brief Copy a record from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyRecord(const IExtensionData * src_ext, Index_t src_record, Index_t dest_record) = 0;
+
       /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
           \param field_name The name of the field to append.
           \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
