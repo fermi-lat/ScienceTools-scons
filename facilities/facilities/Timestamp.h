@@ -77,11 +77,7 @@ namespace facilities {
     std::string getString() const;
 
     /// Return julian date
-    double      getJulian() const {
-      double julian = (m_time +  m_nano/inverseNano)/secPerDay;
-      julian += julian1970;
-      return julian;
-    }
+    double      getJulian() const;
 
     double      getNano() const {return m_nano;}
     long int    getClibTime() const {return m_time;}

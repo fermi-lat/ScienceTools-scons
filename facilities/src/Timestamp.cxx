@@ -90,6 +90,12 @@ namespace facilities {
     return str;
   }
 
+  double  Timestamp::getJulian() const {
+    double julian = (m_time +  m_nano/inverseNano)/secPerDay;
+    julian += julian1970;
+    return julian;
+  }
+
 
   time_t Timestamp::toBinary(const std::string& strTime) {
     // Break out fields
