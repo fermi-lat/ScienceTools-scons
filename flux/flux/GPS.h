@@ -53,6 +53,7 @@ public:
 		astro::SkyDir dirZ;
 		astro::SkyDir dirX;
 		double lat,lon;
+		Hep3Vector position;
 	}POINTINFO;
 
     class Coords {
@@ -149,6 +150,10 @@ public:
     double DECZenith()const{return m_DECZenith;}
 
     Hep3Vector position(double seconds)const{
+		if(m_rockType == HISTORY){
+			instance()->setInterpPoint(seconds);
+			return m_currentInterpPoint.position;
+		}
         double time = m_earthOrbit->dateFromSeconds(seconds);
         return m_earthOrbit->position(time);
         /*return m_position;*/} //interface to EarthOrbit::position()
