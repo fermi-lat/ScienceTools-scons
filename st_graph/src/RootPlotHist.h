@@ -19,7 +19,7 @@ namespace st_graph {
   class STGMainFrame;
 
   /** \class RootPlotHist
-      \brief Root plotter for all histograms.
+      \brief Root plotter for all histograms. Soon to be removed in favor of a more general implementation.
   */
   class RootPlotHist : public PlotHist {
     public:
@@ -52,6 +52,33 @@ namespace st_graph {
 
       /// \brief Hide this plot.
       virtual void unDisplay();
+
+      /** \brief Add the given (sub) frame to this container frame.
+          \param frame The frame being added.
+      */
+      virtual void addFrame(IFrame *) {}
+
+      /** \brief Remove the given (sub) frame to this container frame. If the frame is not currently in the container,
+                 no harm done.
+          \param frame The frame being removed.
+      */
+      virtual void removeFrame(IFrame *) {}
+
+      /// \brief Get the X position of the left edge of the frame.
+      virtual long getL() const { return 0; }
+
+      /** \brief Set the X position of the left edge of the frame.
+          \param l The new position of the left edge.
+      */
+      virtual void setL(long) {}
+
+      /// \brief Get the X position of the right edge of the frame.
+      virtual long getR() const { return 0; }
+
+      /** \brief Set the X position of the left edge of the frame.
+          \param l The new position of the left edge.
+      */
+      virtual void setR(long) {}
 
       /** \brief Set the given bin in the plot to have the given value.
           \param index The index of the plot bin.
