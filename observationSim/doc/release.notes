@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r1p2 08-Oct-04   JC   temporary FT2 template file until astro
+                            v1r1p2 gets new tag for GPS::readFitsData imp.
     v5r1p1 04-Oct-04   JC   give full version to st_facilities
     v5r1   04-Oct-04   JC   write checksum and datasum keyword values;
                             update the FT1 and FT2 template files.
