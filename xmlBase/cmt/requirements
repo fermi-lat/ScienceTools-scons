@@ -22,7 +22,7 @@ library xmlBase  \
      XmlErrorHandler.cxx   XmlParser.cxx  \
      EResolver.cxx      \
      docMan/DocMan.cxx            \
-     ${xml_headers} 
+     ${xmlBase_headers} 
 
 
 application entity_test test/entity_test.cxx
