@@ -7,21 +7,33 @@
 
 #include <list>
 
+#include "RQ_OBJECT.h"
+#include "Rtypes.h"
+#include "TQObject.h"
+
 #include "st_graph/IFrame.h"
 
 class TGFrame;
 
 namespace st_graph {
 
+  class IEventReceiver;
+
   /** \class RootFrame
       \brief Interface for base class frame for all graphical frames.
   */
   class RootFrame : public IFrame {
+      RQ_OBJECT("st_graph::RootFrame")
+      ClassDef(RootFrame, 0)
+
     public:
       static RootFrame * ancestor();
 
       // Construct a RootFrame which encapsulates the given Root TGFrame.
       RootFrame(IFrame * parent, TGFrame * frame);
+
+      // Construct a RootFrame which encapsulates the given Root TGFrame.
+      RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame);
 
       /// \brief Destruct the frame.
       virtual ~RootFrame();
@@ -42,6 +54,8 @@ namespace st_graph {
           \param frame The frame being removed.
       */
       virtual void removeFrame(IFrame * frame);
+
+      virtual void clicked();
 
       /// \brief Get the X position of the left edge of the frame.
       virtual long getL() const;
@@ -66,6 +80,7 @@ namespace st_graph {
       std::list<IFrame *> m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;
+      IEventReceiver * m_receiver;
 
     private:
       // Constructs a frame without any parents. This is a singleton.

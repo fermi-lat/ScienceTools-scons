@@ -7,7 +7,11 @@
 
 #include "TGFrame.h"
 
+#include "st_graph/IEventReceiver.h"
+
 #include "RootFrame.h"
+
+ClassImp(st_graph::RootFrame)
 
 namespace st_graph {
 
@@ -16,12 +20,24 @@ namespace st_graph {
     return &s_ancestor;
   }
 
-  RootFrame::RootFrame(IFrame * parent, TGFrame * frame): m_subframes(), m_parent(0),
-    m_frame(frame) {
+  RootFrame::RootFrame(IFrame * parent, TGFrame * frame): m_subframes(), m_parent(0), m_frame(frame), m_receiver(0) {
     // Make sure the parent is a Root parent.
     m_parent = dynamic_cast<RootFrame *>(parent);
     if (0 == m_parent)
       throw std::logic_error("RootFrame constructor was passed a parent IFrame which is not a RootFrame");
+
+    m_parent->addFrame(this);
+  }
+
+  RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame): m_subframes(), m_parent(0), m_frame(frame),
+    m_receiver(receiver) {
+    // Make sure the parent is a Root parent.
+    m_parent = dynamic_cast<RootFrame *>(parent);
+    if (0 == m_parent)
+      throw std::logic_error("RootFrame constructor was passed a parent IFrame which is not a RootFrame");
+
+    // Connect Root Q signal to this object's slot.
+    frame->Connect("Clicked()", "st_graph::RootFrame", this, "clicked()");
 
     m_parent->addFrame(this);
   }
@@ -54,6 +70,10 @@ namespace st_graph {
 
   void RootFrame::removeFrame(IFrame * frame) {
     m_subframes.remove(frame);
+  }
+
+  void RootFrame::clicked() {
+    m_receiver->clicked(this);
   }
 
   long RootFrame::getL() const {
