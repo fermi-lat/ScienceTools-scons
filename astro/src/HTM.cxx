@@ -7,6 +7,9 @@ $Header$
 
 #include "astro/HTM.h"
 #include <algorithm>
+#include <stdexcept>
+
+using namespace astro;
 
 HTM::HTM(int maxlevel)
 : m_maxid( 2*size(maxlevel)-1 ) 

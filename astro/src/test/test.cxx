@@ -139,8 +139,9 @@ void testJD()
 }
 bool testHTM()
 {
+    using astro::HTM;
     size_t maxlevel = 6;
-    HTM h(maxlevel);
+    astro::HTM h(maxlevel);
     //      h.dump(std::cout);
     for( size_t level = 0; level <= maxlevel; ++level) {
         double area = 0;

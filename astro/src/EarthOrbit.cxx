@@ -49,7 +49,7 @@ void EarthOrbit::initialize()
     m_alt=(s_radius + s_altitude)/1000.; //altitude in km
     m_a = 1.0 + s_altitude/s_radius; 
     
-    double T = M_PI/2*pow(m_a,1.5)/sqrt(5.98e24*6.67e-11)*pow(s_radius,1.5)  ; 	
+    //THB double T = M_PI/2*pow(m_a,1.5)/sqrt(5.98e24*6.67e-11)*pow(s_radius,1.5)  ; 	
     
     double u = 3.9860044e14/pow(s_radius,3)  ; 
     double n = sqrt(u / pow(m_a,3));
@@ -60,7 +60,7 @@ void EarthOrbit::initialize()
     m_dMdt = n1;
     // phases for launch start
     // this is really the elapsed time in seconds since the MissionStart
-    double StartSimDate = (JDStart-JD_missionStart) * SecondsPerDay;
+    //THB double StartSimDate = (JDStart-JD_missionStart) * SecondsPerDay;
 
     // these defaults should put the satellite at cape canaveral at t=mission start + 0 seconds.
     m_M0     = M_PI/2.;

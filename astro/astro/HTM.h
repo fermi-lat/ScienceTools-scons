@@ -10,8 +10,10 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include <vector>
-#include <ostream>
+#include <iostream>
 
+
+namespace astro {
 /**
 @class HTM
 @brief Create a Hierarchical Triangle Mesh (HTM)
@@ -23,12 +25,12 @@ of vertices. This is applied recusively to the desired depth.
 
 
 @verbatim
-/\
-/  \
-/____\
-/\    /\
-/  \  /  \
-/____\/____\
+.          /\
+.         /  \
+.        /____\
+.       /\    /\
+.      /  \  /  \
+.     /____\/____\
 @endverbatim
 The result is a vector of nodes describing each triangle, sorted by id.
 Access is via special begin() and end() functions, delimiting each level.
@@ -103,4 +105,5 @@ private:
     NodeList m_nodes;
     unsigned int m_maxid;
 };
+}// namespace
 #endif

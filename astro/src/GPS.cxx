@@ -175,7 +175,7 @@ HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
     }else{
         throw "index out of range in GPS transformtaion matrix function!";
     }
-    
+
     return trans;
 }
 
@@ -199,14 +199,14 @@ HepRotation GPS::rockingAngleTransform(double seconds){
         SkyDir dirZenith(m_RAZenith,m_DECZenith,SkyDir::EQUATORIAL);
         SkyDir dirXZenith(m_RAXZenith,m_DECXZenith);
 
-    // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
-    Hep3Vector xhat = dirXZenith() -  (dirXZenith().dot(dirZenith())) * dirZenith() ;
-    //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
-    //what we want now is to make cel, where
-    //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
-    HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
-    HepRotation temp = transformCelToGlast(seconds) * cel;
-    rockRot=temp;
+        // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
+        Hep3Vector xhat = dirXZenith() -  (dirXZenith().dot(dirZenith())) * dirZenith() ;
+        //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
+        //what we want now is to make cel, where
+        //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
+        HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
+        HepRotation temp = transformCelToGlast(seconds) * cel;
+        rockRot=temp;
     }
 
     return rockRot;
@@ -470,30 +470,33 @@ void GPS::setInterpPoint(double time){
         std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
         throw "Time out of Range!";
     }
+#if 0 //THB
     //get the point after "time"
     double rax2=(*iter).second.dirX.ra();
     double decx2=(*iter).second.dirX.dec();
     double raz2=(*iter).second.dirZ.ra();
     double decz2=(*iter).second.dirZ.dec();
+#endif
     double lat2=(*iter).second.lat;
     double lon2=(*iter).second.lon;
     Hep3Vector pos2=(*iter).second.position;
     double time2=(*iter).first;
-	astro::SkyDir dirZ2=(*iter).second.dirZ;
-	astro::SkyDir dirX2=(*iter).second.dirX;
-
+    astro::SkyDir dirZ2=(*iter).second.dirZ;
+    astro::SkyDir dirX2=(*iter).second.dirX;
     //then get the details from the previous point:
     iter--;
+#if 0 //THB--unused
     double rax1=(*iter).second.dirX.ra();
     double decx1=(*iter).second.dirX.dec();
     double raz1=(*iter).second.dirZ.ra();
     double decz1=(*iter).second.dirZ.dec();
+#endif
     double lat1=(*iter).second.lat;
     double lon1=(*iter).second.lon;
     Hep3Vector pos1=(*iter).second.position;
     double time1=(*iter).first;
-	astro::SkyDir dirZ1=(*iter).second.dirZ;
-	astro::SkyDir dirX1=(*iter).second.dirX;
+    astro::SkyDir dirZ1=(*iter).second.dirZ;
+    astro::SkyDir dirX1=(*iter).second.dirX;
 
     //the proportional distance between the first point and the interpolated point
     double prop;
@@ -508,24 +511,24 @@ void GPS::setInterpPoint(double time){
         prop= 1.0 - ((time2-time)/(time2-time1));
     }
 
-	double averageAlt=(pos1.mag()+pos2.mag())/2.;
+    double averageAlt=(pos1.mag()+pos2.mag())/2.;
     m_currentInterpPoint.position=(pos1+((pos2-pos1)*prop)).unit() * averageAlt;
 
     m_currentInterpPoint.lat=lat1+((lat2-lat1)*prop);
     m_currentInterpPoint.lon=lon1+((lon2-lon1)*prop);	
 
-	//this piece of code should just handle the "wraparound" cases:
-	if(fabs(lon1-lon2) >= 330.){
-		//we have gone off one end of the longitude scale.
-		double lonlesser=std::max(lon1,lon2);
-		double longreater=std::min(lon1,lon2)+360.;
-		double interpLon = lonlesser+((longreater-lonlesser)*prop);
-		while(interpLon > 360.)interpLon -= 360.;
-		m_currentInterpPoint.lon=interpLon;
-	}
+    //this piece of code should just handle the "wraparound" cases:
+    if(fabs(lon1-lon2) >= 330.){
+        //we have gone off one end of the longitude scale.
+        double lonlesser=std::max(lon1,lon2);
+        double longreater=std::min(lon1,lon2)+360.;
+        double interpLon = lonlesser+((longreater-lonlesser)*prop);
+        while(interpLon > 360.)interpLon -= 360.;
+        m_currentInterpPoint.lon=interpLon;
+    }
 
-	//now, find dirZ and X between the two nearest cases.
-	m_currentInterpPoint.dirZ=astro::SkyDir(dirZ1()+((dirZ2()-dirZ1())*prop));
+    //now, find dirZ and X between the two nearest cases.
+    m_currentInterpPoint.dirZ=astro::SkyDir(dirZ1()+((dirZ2()-dirZ1())*prop));
     m_currentInterpPoint.dirX=astro::SkyDir(dirX1()+((dirX2()-dirX1())*prop));
 
     //now regenerate X to be perpindicular to Z (ir should be almost there anyway).
