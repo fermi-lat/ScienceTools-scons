@@ -5,8 +5,6 @@
 #ifndef tip_TestInterpolation_h
 #define tip_TestInterpolation_h
 
-#include <string>
-
 #include "TestHarness.h"
 
 namespace tip {

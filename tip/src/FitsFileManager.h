@@ -8,6 +8,7 @@
 #define tip_FitsFileManager_h
 
 #include <string>
+#include <vector>
 #include "fitsio.h"
 #include "tip/FileSummary.h"
 

@@ -6,7 +6,6 @@
 #ifndef tip_KeyRecord_h
 #define tip_KeyRecord_h
 
-#include <iosfwd>
 #include <sstream>
 #include <string>
 

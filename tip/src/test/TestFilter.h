@@ -5,8 +5,6 @@
 #ifndef tip_TestFilter_h
 #define tip_TestFilter_h
 
-#include <string>
-
 #include "TestHarness.h"
 
 namespace tip {

@@ -3,7 +3,6 @@
     \author James Peachey, HEASARC
 */
 #include <string>
-#include <vector>
 
 #include "tip/FileSummary.h"
 

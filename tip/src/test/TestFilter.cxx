@@ -2,9 +2,8 @@
     \brief Implementation of class to perform detailed testing of Filter abstractions.
     \author James Peachey, HEASARC
 */
-
-#include <iostream>
 #include <memory>
+#include <string>
 
 #include "TestFilter.h"
 

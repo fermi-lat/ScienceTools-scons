@@ -5,6 +5,7 @@
 #ifndef tip_TestTable_h
 #define tip_TestTable_h
 
+#include <string>
 #include <vector>
 
 #include "TestHarness.h"

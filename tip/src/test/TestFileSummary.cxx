@@ -2,6 +2,8 @@
     \brief Implementation for class to perform detailed testing of data file abstractions.
     \author James Peachey, HEASARC
 */
+#include <string>
+
 #include "TestFileSummary.h"
 #include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"

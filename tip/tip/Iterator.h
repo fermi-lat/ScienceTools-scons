@@ -10,6 +10,8 @@
 #ifndef tip_Iterator_h
 #define tip_Iterator_h
 
+#include <iterator>
+
 namespace tip {
 
   /** \class RandomAccessIterator

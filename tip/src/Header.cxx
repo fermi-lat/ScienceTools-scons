@@ -4,7 +4,7 @@
 
     \author James Peachey, HEASARC
 */
-#include <iostream>
+#include <exception>
 #include "tip/Header.h"
 
 namespace tip {

@@ -5,8 +5,6 @@
 #ifndef tip_TestFileManager_h
 #define tip_TestFileManager_h
 
-#include <string>
-
 #include "TestHarness.h"
 
 namespace tip {

@@ -2,6 +2,7 @@
     \brief Implementation of class to perform detailed testing of Interpolation abstractions.
     \author James Peachey, HEASARC
 */
+#include <exception>
 #include <memory>
 #include <vector>
 

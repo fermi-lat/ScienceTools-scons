@@ -5,6 +5,8 @@
 #ifndef tip_TestKeyRecord_h
 #define tip_TestKeyRecord_h
 
+#include <string>
+
 #include "TestHarness.h"
 
 namespace tip {

@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include "TestImage.h"
 #include "tip/IFileSvc.h"
