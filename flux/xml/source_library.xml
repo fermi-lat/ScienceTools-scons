@@ -169,14 +169,24 @@
     </source>
     
     <!-- 
-       SurfaceMuons based off of Caprice data
+       SurfaceMuons based off of Caprice 94 data (Manitoba)
     -->
-    <source name="caprice_surface_muons">
+    <source name="caprice94_surface_muons">
        <spectrum escale="GeV">
 	      <SpectrumClass name="SurfaceMuons" params="0.0,1.0, 2.0"/>
 	      <use_spectrum/>
 	   </spectrum>
 	</source>   
+	
+	<!-- 
+       SurfaceMuons based off of Caprice 97 data (New Mexico)
+    -->
+    <source name="caprice_surface_muons">
+       <spectrum escale="GeV">
+	      <SpectrumClass name="SurfaceMuons" params="0.0,1.0, 3.0"/>
+	      <use_spectrum/>
+	   </spectrum>
+	</source> 
     
     <!--
         vertical muons only
