@@ -195,9 +195,9 @@ public:
 
     virtual ~LaunchDirection(){}
 
-    LaunchDirection(double theta, double phi, double radius=0)
+    LaunchDirection(double theta, double phi, std::string frame,double radius=0)
         :m_skydir(false)
-        , m_radius(radius*M_PI/180)
+        , m_radius(radius*M_PI/180),m_frame(frame)
     {
         HepVector3D dir(sin(theta)*cos(phi),sin(theta)*sin(phi),cos(theta));
         setDir(-dir); // minus due to z axis pointing UP!
@@ -217,8 +217,13 @@ public:
             //here, we have a SkyDir, so we need the transformation from a SkyDir to GLAST.
             m_rottoglast = GPS::instance()->transformToGlast(time,GPS::CELESTIAL);//->transformCelToGlast(time);
         }else{
-            //otherwise, the direction is in the zenith system, and the rotation to GLAST is needed:
-            m_rottoglast = GPS::instance()->transformToGlast(time,GPS::ZENITH);
+            if(m_frame=="zenith"){
+                //The direction is in the earth zenith system, and the rotation to GLAST is needed:
+                m_rottoglast = GPS::instance()->transformToGlast(time,GPS::ZENITH);
+            }else{
+                //otherwise, the direction is in the spacecraft system, and the rotation to GLAST is the identity:
+                m_rottoglast = GPS::instance()->transformToGlast(time,GPS::GLAST);
+            }
         }
     }
 
@@ -272,6 +277,7 @@ private:
     bool  m_skydir;
     HepVector3D m_t;
     double m_radius;
+    std::string m_frame;
 
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -503,10 +509,13 @@ FluxSource::FluxSource(const DOM_Element& xelem )
         }
         else if (anglesTag == "direction") 
         {
-            m_occultable=false;
+            //m_occultable=false;
+            std::string frame = xml::Dom::transToChar(angles.getAttribute("frame"));
+            m_occultable=(frame=="zenith");
             m_launch_dir = new LaunchDirection(
                 xml::Dom::getDoubleAttribute(angles, "theta") * d2r,
-                xml::Dom::getDoubleAttribute(angles, "phi")*d2r);
+                xml::Dom::getDoubleAttribute(angles, "phi")*d2r,
+                frame);
         }
         else if (anglesTag == "use_spectrum")
         {
