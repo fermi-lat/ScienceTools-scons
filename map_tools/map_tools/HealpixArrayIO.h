@@ -9,7 +9,7 @@ $Header$
 #ifndef map_tools_HealpixArrayIO_h
 #define map_tools_HealpixArrayIO_h
 
-#include "astro/HealPix.h"
+#include "astro/Healpix.h"
 #include "astro/HealpixArray.h"
 
 #include "map_tools/CosineBinner.h"
