@@ -6,7 +6,7 @@
 */
 
 #include "FitsExtensionData.h"
-#include "FitsExtensionManager.h"
+#include "FitsFileManager.h"
 #include "RootExtensionData.h"
 #include "RootExtensionManager.h"
 #include "tip/IFileSvc.h"
@@ -45,7 +45,7 @@ namespace tip {
 
   // Create a file, for now FITS only.
   void IFileSvc::createFile(const std::string & file_name, const std::string & template_name) {
-    FitsExtensionManager::createFile(file_name, template_name);
+    FitsFileManager::createFile(file_name, template_name);
   }
 
   // Edit a table in a file, be it FITS or Root.
