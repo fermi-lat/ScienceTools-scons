@@ -22,17 +22,12 @@ namespace table {
       /** \brief Construct a Ref object which refers to the given Cell object.
           \param cell The referent Cell object.
       */
-      Ref(Cell & cell): m_cell(&cell) {}
-
-      /** \brief Assignment. This does not change which Cell object the Ref refers to.
-          \param ref The source object for the assignment.
-      */
-      Ref & operator =(const Ref & ref) { m_cell = ref.m_cell; /* m_cell->write(data); */ return *this; }
+      Ref(Table::Cell & cell): m_cell(&cell) {}
 
       /** \brief Assignment from Cell. This changes which Cell object the Ref refers to.
           \param cell The new referent Cell object.
       */
-      Ref & operator =(Cell & cell) { m_cell = &cell; }
+      Ref & operator =(Table::Cell & cell) { m_cell = &cell; }
 
       /** \brief Assignment from templated parameter type. This will write the assigned value into the
           cell to which this object refers.
@@ -45,7 +40,7 @@ namespace table {
       operator T () const { T data; m_cell->read(data); return data; }
 
     private:
-      Cell * m_cell;
+      Table::Cell * m_cell;
   };
 
 }

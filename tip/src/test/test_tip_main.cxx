@@ -106,7 +106,7 @@ int main() {
       const Record & r1 = *citor;
 
       // An aside concluded: get a const Cell from the const Record:
-      const Cell & cell = r1["channel"];
+      const Table::Cell & cell = r1["channel"];
 
       for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
@@ -132,14 +132,13 @@ int main() {
         }
 
         // Verify assignment between two different Ref variables.
-// This is broken for now because write doesn't work yet!
         spud = channel;
         if (spud != channel) {
           static bool first_time = true;
           if (first_time) {
-//            std::cerr << "One or more assignments didn't work right for Ref." << std::endl;
-//            std::cerr << spud << " is not equal to " << channel << std::endl;
-//            status = 1;
+            std::cerr << "One or more assignments didn't work right for Ref." << std::endl;
+            std::cerr << spud << " is not equal to " << channel << std::endl;
+            status = 1;
             first_time = false;
           }
         }

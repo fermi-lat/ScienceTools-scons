@@ -245,7 +245,6 @@ namespace table {
     return *this;
   }
 
-  typedef Table::Cell Cell;
   typedef Table::Record Record;
 
 }
