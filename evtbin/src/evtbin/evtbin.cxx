@@ -145,7 +145,7 @@ class LightCurveApp : public EvtBinAppBase {
       double width = pars["deltatime"];
 
       // Create data object.
-      return new LightCurve(LinearBinner(tstart, tstop, long((tstop - tstart) / width), "TIME"));
+      return new LightCurve(LinearBinner(tstart, tstop, width, "TIME"));
     }
 };
 
@@ -183,7 +183,7 @@ class MultiSpectraApp : public EvtBinAppBase {
       double width = pars["deltatime"];
 
       // Create data product.
-      return new MultiSpec(LinearBinner(tstart, tstop, long((tstop - tstart)/width), "TIME"),
+      return new MultiSpec(LinearBinner(tstart, tstop, width, "TIME"),
         LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
     }
 };

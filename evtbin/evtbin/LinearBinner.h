@@ -17,10 +17,10 @@ namespace evtbin {
       /** \brief Construct a linear binner object.
           \param interval_begin Left boundary of the binning interval.
           \param interval_end Right boundary of the binning interval.
-          \param num_bins The number of bins to create.
+          \param bin_size The size of the bins.
           \param name Optional name of the quantity being binned.
       */
-      LinearBinner(double interval_begin, double interval_end, long num_bins, const std::string & name = std::string());
+      LinearBinner(double interval_begin, double interval_end, double bin_size, const std::string & name = std::string());
 
       /** \brief Return the bin number for the given value.
           \param value The value being binned.
@@ -43,6 +43,7 @@ namespace evtbin {
     private:
       double m_interval_begin;
       double m_interval_end;
+      double m_bin_size;
       long m_num_bins;
   };
 

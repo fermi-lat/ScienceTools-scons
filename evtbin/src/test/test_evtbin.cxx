@@ -98,17 +98,17 @@ void EvtBinTest::testLinearBinner() {
   using namespace evtbin;
   std::string msg;
 
-  // Create a linear binner with 10 bins spanning the interval [0, 100):
-  LinearBinner binner(0., 100., 10);
+  // Create a linear binner with bin width == 15. spanning the interval [0, 100):
+  LinearBinner binner(0., 100., 15.);
 
-  // Make sure there are really 10 bins:
+  // Make sure there are 7 bins:
   msg = "LinearBinner::getNumBins()";
-  if (10 != binner.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+  if (7 != binner.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 7" << std::endl;
 
   // Make sure values are correctly classified:
   msg = "LinearBinner::computeIndex(";
-  for (long ii = 0; ii < 10; ++ii) {
-    int value = 9 + ii * 10;
+  for (long ii = 0; ii < 7; ++ii) {
+    int value = 9 + ii * 15;
     long index = binner.computeIndex(value);
     if (index != ii) {
       std::cerr << msg << value << ") returned " << index << ", not " << ii << std::endl;
@@ -143,14 +143,22 @@ void EvtBinTest::testLinearBinner() {
     std::cerr << msg << "101) returned " << index << ", which is >= 0" << std::endl;
     m_failed = true;
   }
+
+  // Make sure nice symmetric intervals are also handled correctly.
+  LinearBinner binner2(0., 100., 10.);
+
+  // Make sure there are 10 bins:
+  msg = "LinearBinner::getNumBins()";
+  if (10 != binner2.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+
 }
 
 void EvtBinTest::testLogBinner() {
   using namespace evtbin;
   std::string msg;
 
-  // Create a log binner with 10 bins spanning the interval [1, exp(10.)):
-  LogBinner binner(1., exp(10.), 10);
+  // Create a log binner with 10 bins spanning the interval [1, exp(15.)):
+  LogBinner binner(1., exp(15.), 10);
 
   // Make sure there are really 10 bins:
   msg = "LogBinner::getNumBins()";
@@ -159,7 +167,7 @@ void EvtBinTest::testLogBinner() {
   // Make sure values are correctly classified:
   msg = "LogBinner::computeIndex(";
   for (long ii = 0; ii < 10; ++ii) {
-    double value = .9999999 * exp(ii + 1);
+    double value = .9999999 * exp((ii + 1) * 15. / 10.);
     long index = binner.computeIndex(value);
     if (index != ii) {
       std::cerr << msg << value << ") returned " << index << ", not " << ii << std::endl;
@@ -175,9 +183,9 @@ void EvtBinTest::testLogBinner() {
   }
 
   // Right endpoint should be excluded:
-  index = binner.computeIndex(exp(10.));
+  index = binner.computeIndex(exp(15.));
   if (-1 != index) {
-    std::cerr << msg << "exp(10.) returned " << index << ", not -1" << std::endl;
+    std::cerr << msg << "exp(15.) returned " << index << ", not -1" << std::endl;
     m_failed = true;
   }
 
@@ -189,9 +197,9 @@ void EvtBinTest::testLogBinner() {
   }
 
   // Right of right endpoint should return index < 0:
-  index = binner.computeIndex(1.000001 * exp(10.));
+  index = binner.computeIndex(1.000001 * exp(15.));
   if (0 <= index) {
-    std::cerr << msg << "1.000001 * exp(10.)) returned " << index << ", which is >= 0" << std::endl;
+    std::cerr << msg << "1.000001 * exp(15.)) returned " << index << ", which is >= 0" << std::endl;
     m_failed = true;
   }
 }
@@ -200,8 +208,8 @@ void EvtBinTest::testHist1D() {
   using namespace evtbin;
   std::string msg = "Hist1D";
 
-  // Create a linear binner with 10 bins spanning the interval [0, 100):
-  LinearBinner binner(0., 100., 10);
+  // Create a linear binner with bin width == 15. spanning the interval [0, 100):
+  LinearBinner binner(0., 100., 15.);
 
   // Create a histogram using this binner:
   Hist1D lin_hist(binner);
@@ -209,11 +217,15 @@ void EvtBinTest::testHist1D() {
   // Populate this histogram, starting from right of the right endpoint, going to left of left endpoint:
   for (int ii = 100; ii >= -1; --ii) lin_hist.fillBin(ii);
 
+  // Last bin has 5 fewer values because the interval is not an integer multiple of the bin size.
+  // Below it will be checked that each bin has the same number of counts, so pad it out here.
+  for (int ii = 0; ii < 5; ++ii) lin_hist.fillBin(97.);
+
   // Check whether each bin has the right number:
   int bin_num = 0;
   for (Hist1D::ConstIterator itor = lin_hist.begin(); itor != lin_hist.end(); ++itor, ++bin_num) {
-    if (10. != *itor) {
-      std::cerr << msg << "'s bin number " << bin_num << " has " << *itor << " counts, not 10" << std::endl;
+    if (15 != *itor) {
+      std::cerr << msg << "'s bin number " << bin_num << " has " << *itor << " counts, not 15" << std::endl;
       m_failed = true;
     }
   }
@@ -223,8 +235,8 @@ void EvtBinTest::testHist2D() {
   using namespace evtbin;
   std::string msg = "Hist2D";
 
-  // Create a linear binner with 10 bins spanning the interval [0, 100):
-  LinearBinner binner1(0., 100., 10);
+  // Create a linear binner with bin width == 10 spanning the interval [0, 100):
+  LinearBinner binner1(0., 100., 10.);
 
   // Create a log binner with 10 bins spanning the interval [1, exp(10.)):
   LogBinner binner2(1., exp(10.), 10);
@@ -245,7 +257,7 @@ void EvtBinTest::testHist2D() {
   for (Hist2D::ConstIterator1 itor1 = hist.begin(); itor1 != hist.end(); ++itor1, ++bin_num1) {
     int bin_num2 = 0;
     for (Hist2D::ConstIterator2 itor2 = itor1->begin(); itor2 != itor1->end(); ++itor2, ++bin_num2) {
-      if (10. != *itor2) {
+      if (10 != *itor2) {
         std::cerr << msg << "'s bin number (" << bin_num1 << ", " << bin_num2 << ") has " <<
           *itor2 << " counts, not 10" << std::endl;
         m_failed = true;
@@ -261,7 +273,7 @@ void EvtBinTest::testLightCurve() {
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create light curve object.
-  LightCurve lc(LinearBinner(0., 900000., 1000, "TIME"));
+  LightCurve lc(LinearBinner(0., 900000., 900., "TIME"));
 
   // Fill the light curve.
   lc.binInput(table->begin(), table->end());
@@ -305,7 +317,7 @@ void EvtBinTest::testMultiSpectra() {
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
   // Create spectrum object.
-  MultiSpec spectrum(LinearBinner(0., 900000., 3, "TIME"), LogBinner(1., 90000., 1000, "ENERGY"));
+  MultiSpec spectrum(LinearBinner(0., 900000., 300000., "TIME"), LogBinner(1., 90000., 1000, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput(table->begin(), table->end());
