@@ -33,7 +33,7 @@ namespace evtbin {
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).
     const char * keys[] = { "TELESCOP", "INSTRUME", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREF",
-      "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP" };
+      "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
   }
 
@@ -134,8 +134,8 @@ namespace evtbin {
   }
 
   void DataProduct::harvestKeywords(const std::string & file_name, const std::string & ext_name) {
-    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(file_name, ext_name));
-    harvestKeywords(table->getHeader());
+    std::auto_ptr<const tip::Extension> ext(tip::IFileSvc::instance().readExtension(file_name, ext_name));
+    harvestKeywords(ext->getHeader());
   }
 
   void DataProduct::harvestKeywords(const tip::Header & header) {
@@ -203,10 +203,16 @@ namespace evtbin {
 
     file_service.getFileSummary(file_name, summary);
 
-    // If DATE keyword is present, set it to the current date/time.
-    KeyValuePairCont_t::iterator date_itor = m_key_value_pairs.find("DATE");
-    if (m_key_value_pairs.end() != date_itor)
-      date_itor->second.setValue(formatDateKeyword(time(0)));
+    // Update DATE keyword
+    updateKeyValue("DATE", formatDateKeyword(time(0)));
+
+    // Find position of last / or \ in file name.
+    std::string::size_type last_slash = file_name.find_last_of("/\\");
+    // If no slash found, just use whole file name, otherwise assume the file name starts after the /.
+    last_slash = std::string::npos == last_slash ? 0 : last_slash + 1;
+
+    // Add FILENAME keyword, set to the file-only portion of the file name.
+    updateKeyValue("FILENAME", file_name.substr(last_slash));
 
     // Pointer to each extension in turn.
     tip::Extension * ext = 0;
