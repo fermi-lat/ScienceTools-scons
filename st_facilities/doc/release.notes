@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  25-Aug-04 v0r1   JC    add linear interpolater
   24-Aug-04 v0     JC    initial import
  
   @endverbatim
