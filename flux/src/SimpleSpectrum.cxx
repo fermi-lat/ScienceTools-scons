@@ -71,6 +71,7 @@ SimpleSpectrum::SimpleSpectrum(const DOM_Element& xelem, bool useGeV)
         }
     }
     else if(tagName=="energy") {
+        m_E0 =xml::Dom::getDoubleAttribute(spectrum, "e");
         m_emax = 100.0;
         m_index = 0.0;
     }
