@@ -84,12 +84,10 @@ void ang2pix_nest( const long nside, double theta, double phi, long *ipix) {
   static char setup_done = 0;
   
   if( nside<1 || nside>ns_max ) {
-    fprintf(stderr, "nside out of range\n");
-    exit(0);
+    throw std::runtime_error("nside out of range");
   }
   if( theta<0 || theta>pi ) {
-    fprintf(stderr, "theta out of range\n");
-    exit(0);
+    throw std::runtime_error("theta out of range");
   }
   if( !setup_done ) {
     mk_xy2pix(x2pix,y2pix);
@@ -191,13 +189,11 @@ void ang2pix_ring( const long nside, double theta, double phi, long *ipix) {
   long ns_max=8192;
   
   if( nside<1 || nside>ns_max ) {
-    fprintf(stderr, "nside out of range\n");
-    exit(0);
+    throw std::runtime_error("nside out of range");
   }
   
   if( theta<0. || theta>PI) {
-    fprintf(stderr, "theta out of range\n");
-    exit(0);
+    throw std::runtime_error("theta out of range");
   }
   
   z = cos(theta);
@@ -342,13 +338,11 @@ void nest2ring( long nside, long int ipnest, long *ipring) {
       jpll[11]=7;
 
       if( nside<1 || nside>ns_max ) {
-	fprintf(stderr, "nside = %ld out of range\n", nside);
-	exit(0);
+	throw std::runtime_error("nside out of range");
       }
       npix = 12 * nside*nside;
       if( ipnest<0 || ipnest>npix-1 ) {
-	fprintf(stderr, "ipnest out of range\n");
-	exit(0);
+	throw std::runtime_error("ipnest out of range");
       }
 
       //c     initiates the array for the pixel number -> (x,y) mapping
@@ -470,13 +464,11 @@ void pix2ang_nest( long nside, long ipix, double *theta, double *phi) {
       
       
       if( nside<1 || nside>ns_max ) {
-	fprintf(stderr, "nside out of range\n");
-	exit(0);
+	throw std::runtime_error("nside out of range");
       }
       npix = 12 * nside*nside;
       if( ipix<0 || ipix>npix-1 ) {
-	fprintf(stderr, "ipix out of range\n");
-	exit(0);
+	throw std::runtime_error("ipx out of range");
       }
 
       /* initiates the array for the pixel number -> (x,y) mapping */
@@ -560,13 +552,11 @@ void pix2ang_ring( long nside, long ipix, double *theta, double *phi) {
   int ns_max=8192;
   
   if( nside<1 || nside>ns_max ) {
-    fprintf(stderr, "nside out of range\n");
-    exit(0);
+    throw std::runtime_error("nside out of range");
   }
   npix = 12*nside*nside;      // ! total number of points
   if( ipix<0 || ipix>npix-1 ) {
-    fprintf(stderr, "ipix out of range\n");
-    exit(0);
+    throw std::runtime_error("ipx out of range");
   }
   
   ipix1 = ipix + 1; // in {1, npix}
@@ -657,13 +647,11 @@ void ring2nest( long nside, long ipring, long *ipnest) {
   jpll[11]=7;
   
   if( nside<1 || nside>ns_max ) {
-    fprintf(stderr, "nside out of range\n");
-    exit(0);
+    throw std::runtime_error("nside out of range");
   }
   npix = 12 * nside*nside;
   if( ipring<0 || ipring>npix-1 ) {
-    fprintf(stderr, "ipring out of range\n");
-    exit(0);
+    throw std::runtime_error("ipring out of range");
   }
   if( x2pix[127]<=0 ) mk_xy2pix(x2pix,y2pix);
   

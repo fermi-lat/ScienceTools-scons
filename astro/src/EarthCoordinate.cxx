@@ -1,5 +1,6 @@
 // $Header$
 #include <cmath>
+#include <vector>
 
 #include "astro/EarthCoordinate.h"
 #include "Geomag.h"
@@ -75,6 +76,7 @@ double  EarthCoordinate::GetGMST(JulianDate jd)
     return Tempo_Siderale_Ora*15.;  
 }  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#if 0  // old version
 bool EarthCoordinate::insideSAA()const
 {
     double perim[7][2] = {{-88.,-30.},{-88.,-12.},{-55.,-0.1},{-32.,-0.1},{-7,-12},
@@ -116,6 +118,50 @@ bool EarthCoordinate::insideSAA()const
     }
     else
         return false;
+}
+#endif
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bool EarthCoordinate::insideSAA()const
+{
+
+    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
+                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
+
+    std::vector<double> dlat(latv,latv+sizeof(latv));
+    typedef std::pair<float, float> coords;
+    static std::vector<coords> corners;  // (latitude, longitude)
+    static bool initialized = false;
+    static float lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
+    float my_lon=longitude(), my_lat=latitude();
+    
+    if (!initialized)
+    {
+        corners.push_back(coords(-30., 45.));
+        corners.push_back(coords(-26., 41.));
+        corners.push_back(coords(-20., 31.));
+        corners.push_back(coords(-17., 9.));
+        corners.push_back(coords(-10., -11.));
+        corners.push_back(coords(1., -34.));
+        corners.push_back(coords(2., -46.));
+        corners.push_back(coords(-3., -62.));
+        corners.push_back(coords(-8., -79.));
+        corners.push_back(coords(-12., -85.));
+        corners.push_back(coords(-19., -89.));
+        corners.push_back(coords(-30., -87.));
+        for(std::vector<coords>::iterator it = corners.begin(); it != corners.end(); ++it)
+        {
+            if (it->first < lat_min) lat_min = it->first;
+            if (it->first > lat_max) lat_max = it->first;
+            if (it->second < lon_min) lon_min = it->second;
+            if (it->second > lon_max) lon_max = it->second;
+        }
+        initialized = true;
+    }
+    
+    if (my_lon < lon_min || my_lon > lon_max || my_lat < lat_min || my_lat > lat_max)
+        return false;
+    else // Given my_lat, calculate min and max longitude to be considered inside SAA
+        return true;
 }
 
 } // namespace astro
