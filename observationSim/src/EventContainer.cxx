@@ -9,10 +9,13 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <ctime>
+
 #include <utility>
 #include <sstream>
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
@@ -21,10 +24,12 @@
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+#include "tip/Header.h"
 
 #include "astro/SkyDir.h"
 #include "astro/EarthCoordinate.h"
 #include "astro/GPS.h"
+#include "astro/JulianDate.h"
 
 #include "flux/EventSource.h"
 
@@ -33,10 +38,7 @@
 #include "latResponse/IEdisp.h"
 #include "latResponse/Irfs.h"
 
-#include "latResponse/../src/Glast25.h"
-
 #include "observationSim/Spacecraft.h"
-#include "observationSim/../src/LatSc.h"
 #include "observationSim/EventContainer.h"
 
 namespace {
@@ -120,8 +122,7 @@ int EventContainer::addEvent(EventSource *event,
    double flux_theta = acos(launchDir.z());
    double flux_phi = atan2(launchDir.y(), launchDir.x());
 
-   LatSc latSpacecraft;
-   HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
+   HepRotation rotMatrix = spacecraft->InstrumentToCelestial(time);
    astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::EQUATORIAL);
 
    astro::SkyDir zAxis = spacecraft->zAxis(time);
@@ -199,24 +200,31 @@ void EventContainer::writeEvents() {
             std::cout << eObj.what() << std::endl;
             exit(-1);
          }
-         tip::Table::Vector<int> calibVersion = row["calib_version"];
-         for (int i = 0; i < 3; i++) {
-//            calibVersion[i] = 1;
-         }
+//          tip::Table::Vector<short> calibVersion = row["calib_version"];
+//          for (int i = 0; i < 3; i++) {
+//             calibVersion[i] = 1;
+//          }
       }
+      it = my_table->begin();
+      double start_time;
+      row["time"].get(start_time);
+      it = my_table->end();
+      --it;
+      double stop_time;
+      row["time"].get(stop_time);
+      writeDateKeywords(my_table, start_time, stop_time);
       delete my_table;
 
-// // // Header keywords for the GTI extension.
-// //       std::string date_start = "2005-07-18T00:00:00.0000";
-// // // This needs to be computed....we need a date class.
-// //       std::string date_stop  = "2005-07-19T00:00:00.0000";
-// //       m_goodiEventData->setKey("DATE-OBS", date_start);
-// //       m_goodiEventData->setKey("DATE-END", date_stop);
-// //       double duration = gti.front().second - gti.front().first;
-// //       m_goodiEventData->setKey("TSTART", gti.front().first);
-// //       m_goodiEventData->setKey("TSTOP", gti.front().second);
-// //       m_goodiEventData->setKey("ONTIME", duration);
-// //       m_goodiEventData->setKey("TELAPSE", duration);
+// Fill the GTI extension, with the entire observation (as ascertained
+// from the first and last events) in a single GTI.
+      tip::Table * gti_table = 
+         tip::IFileSvc::instance().editTable(ft1File, "GTI");
+      it = gti_table->begin();
+      row["start"].set(m_events.begin()->time());
+      row["stop"].set((m_events.end()-1)->time());
+      writeDateKeywords(gti_table, start_time, stop_time);
+      delete gti_table;
+
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(20);
@@ -322,6 +330,51 @@ std::string EventContainer::outputFileName() const {
    }
    outputfile << m_fileNum << ".fits";
    return outputfile.str();
+}
+
+void EventContainer::writeDateKeywords(tip::Table * table, double start_time, 
+                                       double stop_time) {
+   static double secsPerDay(8.64e4);
+   tip::Header & header = table->getHeader();
+   astro::JulianDate current_time = currentTime();
+   try {
+      header["DATE"].set(current_time.getGregorianDate());
+   } catch (...) {
+   }
+   astro::JulianDate mission_start(2005, 7, 18, 0);
+   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
+   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
+   try {
+      header["DATE-OBS"].set(date_start.getGregorianDate());
+      header["DATE-END"].set(date_stop.getGregorianDate());
+   } catch (...) {
+   }
+   double duration = stop_time - start_time;
+   try {
+      header["TSTART"].set(start_time);
+      header["TSTOP"].set(stop_time);
+   } catch (...) {
+   }
+   try {
+      header["ONTIME"].set(duration);
+      header["TELAPSE"].set(duration);
+   } catch (...) {
+   }
+}
+
+astro::JulianDate EventContainer::currentTime() {
+   std::time_t my_time = std::time(0);
+   std::tm * now = std::gmtime(&my_time);
+   if (now != 0) {
+      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
+      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
+                                     now->tm_mday, hours);
+      return current_time;
+   } else {
+      throw std::runtime_error("EventContainer::currentTime:\n"
+                               + std::string("cannot be ascertained, ")
+                               + "std::time returns a null value.");
+   }
 }
 
 } // namespace observationSim

@@ -17,6 +17,7 @@
 
 #include "flux/EventSource.h"
 
+#include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 
 namespace observationSim {
@@ -59,13 +60,14 @@ void ScDataContainer::writeScData() {
       tip::Table::Iterator it = my_table->begin();
       tip::Table::Record & row = *it;
       std::vector<ScData>::const_iterator sc = m_scData.begin();
+      double start_time = m_scData.begin()->time();
+      double stop_time = 2.*m_scData[npts-1].time() - m_scData[npts-2].time();
       for ( ; it != my_table->end(), sc != m_scData.end(); ++it, ++sc) {
          row["start"].set(sc->time());
          if (sc+1 != m_scData.end()) {
             row["stop"].set((sc+1)->time());
          } else {
-            row["stop"].set(2.*m_scData[npts-1].time() 
-                            - m_scData[npts-2].time());
+            row["stop"].set(stop_time);
          }
          row["lat_geo"].set(sc->lat());
          row["lon_geo"].set(sc->lon());
@@ -74,6 +76,7 @@ void ScDataContainer::writeScData() {
          row["ra_scx"].set(sc->xAxis().ra());
          row["dec_scx"].set(sc->xAxis().dec());
       }
+      EventContainer::writeDateKeywords(my_table, start_time, stop_time);
       delete my_table;
    } else { // Use the old A1 format.
       makeFitsTable();

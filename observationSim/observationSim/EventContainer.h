@@ -13,12 +13,17 @@
 #include <vector>
 
 #include "astro/SkyDir.h"
+#include "astro/JulianDate.h"
 
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
 #include "observationSim/Spacecraft.h"
 
-class EventSource;
+class EventSource;  // from flux package
+
+namespace tip {
+   class Table;
+}
 
 namespace latResponse {
    class Irfs;
@@ -79,6 +84,14 @@ public:
    /// Return a const reference to m_events for processing by Python
    /// of the data contained therein.
    const std::vector<Event> &getEvents() {return m_events;}  
+
+   /// Set the date keywords in a given header, accesses via the
+   /// tip::Table and tip::Header interface.
+   static void writeDateKeywords(tip::Table * table, double start_time,
+                                 double stop_time);
+
+   /// Return an astro::JulianDate object for the current time.
+   static astro::JulianDate currentTime();
 
 private:
 

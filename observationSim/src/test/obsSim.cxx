@@ -28,7 +28,7 @@
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
-#include "observationSim/../src/LatSc.h"
+#include "LatSc.h"
 
 namespace {
    void readLines(std::string inputFile, 
@@ -61,6 +61,7 @@ int main(int iargc, char * argv[]) {
    try {
       hoops::ParPromptGroup pars(iargc, argv);
       pars.Prompt();
+      pars.Save();
 
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
