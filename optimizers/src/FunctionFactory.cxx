@@ -23,6 +23,32 @@
 // #include "Gaussian.h"
 // #include "AbsEdge.h"
 
+namespace {
+
+/// The functionality of this routine is largely already provided by
+/// the XML parser, but for cases where more than one tag name is
+/// possible, this provides a check against expectations.
+void checkTag(DOM_Element &element, const std::string &tagName, 
+              const std::string callingRoutine="") 
+   throw(optimizers::Exception) {
+   if (element == DOM_Element()) {
+      throw optimizers::Exception(
+         "::checkTag: Trying to read tag of DOM_Element().\n");
+   }
+   std::string myTagName( xml::Dom::transToChar(element.getTagName()) );
+   if (myTagName != tagName) {
+      std::ostringstream errorMessage;
+      errorMessage << callingRoutine << ": "
+                   << "Bad tag name "
+                   << myTagName << ".\n"
+                   << "Expected "
+                   << tagName << ".\n";
+      throw optimizers::Exception(errorMessage.str());
+   }
+}
+
+} // unnamed namespace
+
 namespace optimizers {
 
 FunctionFactory::FunctionFactory() {
@@ -89,17 +115,18 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
    }
 
    DOM_Element function_library = doc.getDocumentElement();
+   ::checkTag(function_library, "function_library", 
+              "FunctionFactory::readXml");
 
 // Loop through child elements, and add each as a Function object to
 // the prototype factory.
    DOM_Element func = xml::Dom::getFirstChildElement(function_library);
    while (func != DOM_Element()) {
+      ::checkTag(func, "function", "FunctionFactory::readXml");
 
-// Get the type of this function, then use the generic function
-// factory to create a pointer to the appropriate Function object.
+// Get the type of this function, which should be an existing 
+// (generic) Function in the factory.
       std::string type = xml::Dom::getAttribute(func, "type");
-
-// The generic Function objects should already available.
       Function *funcObj;
       try {
          funcObj = create(type);
@@ -118,6 +145,7 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
 // Parameter data members.
       DOM_Element param = xml::Dom::getFirstChildElement(func);
       while (param != DOM_Element()) {
+         ::checkTag(param, "parameter", "FunctionFactory::readXml");
          std::string paramName = xml::Dom::getAttribute(param, "name");
          double paramValue = 
             ::atof( xml::Dom::getAttribute(param, "value").c_str() );

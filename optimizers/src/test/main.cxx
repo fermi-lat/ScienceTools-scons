@@ -70,7 +70,14 @@ void test_FunctionFactory() {
    funcFactory.listFunctions();
 
 // Read in the customized prototypes.
-   funcFactory.readXml(xmlFile);
+   try {
+      funcFactory.readXml(xmlFile);
+   } catch (Exception &eObs) {
+      std::cerr << eObs.what() << std::endl;
+   } catch (...) {
+      std::cerr << "other exception caught while reading "
+                << xmlFile << std::endl;
+   }
 
    funcFactory.listFunctions();
 
@@ -101,6 +108,9 @@ void test_FunctionFactory() {
    } catch (Exception &eObj) {
       std::cout << eObj.what() << std::endl;
       std::cout << "*** End of readXml() failure test. ***\n" << std::endl;
+   } catch (...) {
+      std::cerr << "other exception caught while reading "
+                << xmlFile << std::endl;
    }
 
    std::cout << "*** test_FunctionFactory: all tests completed ***\n" 

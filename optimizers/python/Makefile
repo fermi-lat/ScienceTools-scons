@@ -12,7 +12,7 @@
 SWIG = swig
 pypath = /usr/local
 
-INCLUDE = -I$(CMTPATH)/optimizers/v0\
+INCLUDE = -I$(CMTPATH)/optimizers/v0r1\
 	-I$(CMTPATH)/xml/v4r3p0/h\
 	-I$(CMTPATH)/facilities/v2r7p2\
 	-I$(CMTPATH)/f2c/v2\
