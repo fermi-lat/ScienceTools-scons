@@ -22,6 +22,8 @@
 #include "evtbin/Hist2D.h"
 // Light curve abstractions.
 #include "evtbin/LightCurve.h"
+// Class encapsulating description of a const s/n binner.
+#include "evtbin/ConstSnBinner.h"
 // Class encapsulating description of a binner with linear equal size bins.
 #include "evtbin/LinearBinner.h"
 // Class encapsulating description of a binner with logarithmically equal size bins.
@@ -84,6 +86,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testGti();
 
+    void testConstSnBinner();
+
   private:
     std::string m_data_dir;
     std::string m_ft1_file;
@@ -131,6 +135,8 @@ void EvtBinTest::run() {
   testBinConfig();
   // Test high level bin configuration object.
   testGti();
+  // Test const s/n binner:
+  testConstSnBinner();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -717,45 +723,67 @@ void EvtBinTest::testGti() {
   gti2.insertInterval(2., 3.);
 
   Gti result = gti1 & gti2;
-  if (result.begin() != result.end()) std::cerr << "testGti found gti1 overlaps gti2 but they should be disjoint" << std::endl;
+  if (result.begin() != result.end()) {
+    std::cerr << "testGti found gti1 overlaps gti2 but they should be disjoint" << std::endl;
+    m_failed = true;
+  }
 
   result = Gti();
   result = gti2 & gti1;
-  if (result.begin() != result.end()) std::cerr << "testGti found gti2 overlaps gti1 but they should be disjoint" << std::endl;
+  if (result.begin() != result.end()) {
+    std::cerr << "testGti found gti2 overlaps gti1 but they should be disjoint" << std::endl;
+    m_failed = true;
+  }
 
   Gti gti3;
   gti3.insertInterval(1.5, 1.75);
 
   result = Gti();
   result = gti1 & gti3;
-  if (result.begin() == result.end()) std::cerr << "testGti found gti1 does not overlap gti3 but they should overlap" << std::endl;
-  else if (result.begin()->first != 1.5 || result.begin()->second != 1.75)
+  if (result.begin() == result.end()) {
+    std::cerr << "testGti found gti1 does not overlap gti3 but they should overlap" << std::endl;
+    m_failed = true;
+  } else if (result.begin()->first != 1.5 || result.begin()->second != 1.75) {
     std::cerr << "testGti found gti1 & gti3 == [" << result.begin()->first << ", " << result.begin()->second <<
-    "], not [1.5, 1.75]" << std::endl;
+      "], not [1.5, 1.75]" << std::endl;
+    m_failed = true;
+  }
 
   result = Gti();
   result = gti3 & gti1;
-  if (result.begin() == result.end()) std::cerr << "testGti found gti3 does not overlap gti1 but they should overlap" << std::endl;
-  else if (result.begin()->first != 1.5 || result.begin()->second != 1.75)
+  if (result.begin() == result.end()) {
+    std::cerr << "testGti found gti3 does not overlap gti1 but they should overlap" << std::endl;
+    m_failed = true;
+  } else if (result.begin()->first != 1.5 || result.begin()->second != 1.75) {
     std::cerr << "testGti found gti3 & gti1 == [" << result.begin()->first << ", " << result.begin()->second <<
-    "], not [1.5, 1.75]" << std::endl;
+      "], not [1.5, 1.75]" << std::endl;
+    m_failed = true;
+  }
 
   Gti gti4;
   gti4.insertInterval(1.5, 2.5);
 
   result = Gti();
   result = gti1 & gti4;
-  if (result.begin() == result.end()) std::cerr << "testGti found gti1 does not overlap gti4 but they should overlap" << std::endl;
-  else if (result.begin()->first != 1.5 || result.begin()->second != 2.0)
+  if (result.begin() == result.end()) {
+    std::cerr << "testGti found gti1 does not overlap gti4 but they should overlap" << std::endl;
+    m_failed = true;
+  } else if (result.begin()->first != 1.5 || result.begin()->second != 2.0) {
     std::cerr << "testGti found gti1 & gti4 == [" << result.begin()->first << ", " << result.begin()->second <<
     "], not [1.5, 2.0]" << std::endl;
+    m_failed = true;
+  }
 
   result = Gti();
   result = gti4 & gti1;
-  if (result.begin() == result.end()) std::cerr << "testGti found gti4 does not overlap gti1 but they should overlap" << std::endl;
-  else if (result.begin()->first != 1.5 || result.begin()->second != 2.0)
+  if (result.begin() == result.end()) {
+    std::cerr << "testGti found gti4 does not overlap gti1 but they should overlap" << std::endl;
+    m_failed = true;
+  } else if (result.begin()->first != 1.5 || result.begin()->second != 2.0) {
     std::cerr << "testGti found gti4 & gti1 == [" << result.begin()->first << ", " << result.begin()->second <<
-    "], not [1.5, 2.0]" << std::endl;
+      "], not [1.5, 2.0]" << std::endl;
+    m_failed = true;
+  }
 
   // Now two GTIs with multiple entries.
   Gti gti5;
@@ -781,35 +809,87 @@ void EvtBinTest::testGti() {
 
   result = Gti();
   result = gti5 & gti6;
-  if (result != correct_result) std::cerr << "testGti found gti5 & gti6 did not return expected result" << std::endl;
+  if (result != correct_result) {
+    std::cerr << "testGti found gti5 & gti6 did not return expected result" << std::endl;
+    m_failed = true;
+  }
 
   result = Gti();
   result = gti6 & gti5;
-  if (result != correct_result) std::cerr << "testGti found gti6 & gti5 did not return expected result" << std::endl;
+  if (result != correct_result) {
+    std::cerr << "testGti found gti6 & gti5 did not return expected result" << std::endl;
+    m_failed = true;
+  }
 
   // Check ONTIME computation.
   double on_time = correct_result.computeOntime();
   double expected_on_time = 1.55;
   const double tolerance = 1.e-12;
-  if (tolerance < fabs(expected_on_time - on_time))
+  if (tolerance < fabs(expected_on_time - on_time)) {
     std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
+    m_failed = true;
+  }
 
   // Create light curve object.
   LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
 
   const Gti & lc_gti = lc.getGti();
-  if (1 != lc_gti.getNumIntervals())
+  if (1 != lc_gti.getNumIntervals()) {
     std::cerr << "testGti read GTI from test ft1 file with " << lc_gti.getNumIntervals() << ", not 1" << std::endl;
-  else if (m_t_start != lc_gti.begin()->first || m_t_stop != lc_gti.begin()->second)
+    m_failed = true;
+  } else if (m_t_start != lc_gti.begin()->first || m_t_stop != lc_gti.begin()->second) {
     std::cerr << "testGti read GTI from test ft1 file with values [" << lc_gti.begin()->first << ", " << lc_gti.begin()->second <<
       ", not [" << m_t_start << ", " << m_t_stop << "]" << std::endl;
+    m_failed = true;
+  }
 
   // Check ONTIME computation from light curve.
   on_time = lc_gti.computeOntime();
   expected_on_time = m_t_stop - m_t_start;
-  if (tolerance < fabs(expected_on_time - on_time))
+  if (tolerance < fabs(expected_on_time - on_time)) {
     std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
+    m_failed = true;
+  }
 
+}
+
+void EvtBinTest::testConstSnBinner() {
+  using namespace evtbin;
+
+  // Create test binner object.
+  ConstSnBinner binner(1., 101., 5., 1., 25.);
+
+  // Loop over some times.
+  for (double ev_time = 0.; ev_time < 103.; ++ev_time) {
+    long index = binner.computeIndex(ev_time);
+  //  std::cout << "For event time == " << ev_time << " index == " << index << std::endl;
+  }
+
+  binner = ConstSnBinner(1., 101., 5., 1., 25.);
+
+  // Loop over some more times.
+  for (double ev_time = 0.; ev_time < 103.; ev_time += 2.) {
+    long index = binner.computeIndex(ev_time);
+//    std::cout << "For event time == " << ev_time << " index == " << index << std::endl;
+  }
+
+  binner = ConstSnBinner(1., 101., 5., 1., 25.);
+
+  // Loop over some more times.
+  for (double ev_time = 0.; ev_time < 103.; ++ev_time) {
+    long index = binner.computeIndex(ev_time + .1 * sin(ev_time));
+//    std::cout << "Event time[" << ev_time << "] == " << ev_time + .1 * sin(ev_time) << ", index == " << index << std::endl;
+  }
+
+  // Now try a background.
+  std::vector<double> background_coeffs(1, 1.);
+  binner = ConstSnBinner(1., 101., 5., 1., 25., background_coeffs);
+
+  // Loop over double the times.
+  for (double ev_time = 0.; ev_time < 103.; ev_time += .5) {
+    long index = binner.computeIndex(ev_time);
+    std::cout << "Event time[" << ev_time << "] == " << ev_time << ", index == " << index << std::endl;
+  }
 }
 
 /// \brief Create factory singleton object which will create the application:
