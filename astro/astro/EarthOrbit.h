@@ -4,7 +4,7 @@
 
 
 #include "astro/JulianDate.h"
-
+#include "astro/SkyDir.h"
 #include "CLHEP/Vector/ThreeVector.h"
 #include "CLHEP/Vector/Rotation.h"
 namespace astro {
@@ -47,7 +47,28 @@ namespace astro {
         */ 
         ///this is for interfacing with FluxSvc, which uses "elapsed seconds" as the time parameter.
         JulianDate dateFromSeconds(double seconds) const;
-        
+
+        /** Return the timing correction for Shapiro delay due to the gravitational well of the sun
+          * @param jd JulianDate of observation
+          * @param sourceDir SkyDir giving the location of the source
+          * @return Correction in seconds added to correct for the Shapiro delay
+          */
+        double calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const;
+
+
+        /** Return the timing correction for light travel time to solar system barycenter
+          * @param jd JulianDate of observation
+          * @param sourceDir SkyDir giving location of the source
+          * @return Correction in seconds added to correct for light travel time
+          */
+        double calcTravelTime(JulianDate jd, const SkyDir sourceDir) const;
+
+
+        /** Return the correction that is added to TT to obtain TDB time
+          * @param jd Julian Date in TT
+          * @return Correction in seconds added to TT to obtain TDB
+          */
+        double tdb_minus_tt(JulianDate jd) const;
         
     private:
         
@@ -55,6 +76,9 @@ namespace astro {
     @brief calculate correction to phase for eccentricity 
         */
         static double Kepler(double MeanAnomaly,double Eccentricity);
+
+
+        double ctatv(int long jdno, double fjdno) const;
         
         double m_M0;
         double m_dMdt;

@@ -26,9 +26,9 @@ public:
     /**
      * index of body that corresponds to the #define's in SolSystem  
      */
-    enum Body{ 
-        //VENUS=1, MARS=2, JUPITER=3,SATURN=4, 
-        //URANUS=5,NEPTUNE=6, PLUTO=7, 
+    enum Body{ MERCURY=0,
+        VENUS=1, MARS=2, JUPITER=3,SATURN=4, 
+        URANUS=5,NEPTUNE=6, PLUTO=7, 
             Sun=8, Moon=9 };
     SolarSystem();
 
@@ -43,6 +43,18 @@ public:
     * @brief set the body and date; retun the SkyDir 
     */
     SkyDir direction(Body body, JulianDate date) ;
+
+    /**
+     * @brief set the body and date; return the distance of the body from Earth
+     */
+    double distance(Body body, JulianDate date);
+
+
+    /**
+     * @brief set the date and return the distance vector to solar system barycenter.
+     */
+    Hep3Vector getBarycenter(JulianDate jd);
+
 
     /**
     * @brief conversion operator that returns the SkyDir 
