@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 
 #include "FitsExtensionData.h"
 #include "RootExtensionData.h"
@@ -58,8 +59,7 @@ namespace tip {
     // Test constructing a FITS table:
     msg = std::string("opening SPECTRUM extension of ") + data_dir + "a1.pha";
     try {
-      IExtensionData * data = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM", "", false);
-      m_fits_table = new Table(data);
+      m_fits_table = getTable();
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
@@ -280,5 +280,10 @@ namespace tip {
         }
       }
     }
+  }
+
+  Table * TestTable::getTable() {
+    IExtensionData * data = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "", false);
+    return new Table(data);
   }
 }
