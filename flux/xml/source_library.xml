@@ -167,6 +167,17 @@
             <use_spectrum/>
         </spectrum>
     </source>
+    
+    <!-- 
+       SurfaceMuons based off of Caprice data
+    -->
+    <source name="caprice_surface_muons">
+       <spectrum escale="GeV">
+	      <SpectrumClass name="SurfaceMuons" params="0.0,1.0, 2.0"/>
+	      <use_spectrum/>
+	   </spectrum>
+	</source>   
+    
     <!--
         vertical muons only
     -->
@@ -205,7 +216,7 @@
 <!-- ************************************************************************** -->
 <source_library title="background">
 
-  
+ 
     <!-- the CHIME spectrum. angular dependence and rate are from the CHIME spectrum object 
          This is deprecated, since it is not supported, and gives wrong angular distributions.
       -->
