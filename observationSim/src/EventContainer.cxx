@@ -8,6 +8,7 @@
  */
 
 #include <cmath>
+#include <utility>
 #include <sstream>
 #include <algorithm>
 #include <numeric>
@@ -195,6 +196,7 @@ void EventContainer::writeEvents() {
       std::vector<double> phi(npts);
       std::vector<double> zenithAngle(npts);
       std::vector<int> convLayer(npts);
+      std::vector<std::pair<double, double> > gti;
 
       std::vector<Event>::iterator evtIt = m_events.begin();
       for (int i = 0; evtIt != m_events.end(); evtIt++, i++) {
@@ -217,6 +219,8 @@ void EventContainer::writeEvents() {
             convLayer[i] = static_cast<int>(RandFlat::shoot()*16);
          }
       }
+      gti.push_back(std::make_pair(*time.begin(), *time.end()));
+
       m_goodiEventData->setTime(time);
       m_goodiEventData->setEnergy(energy);
       m_goodiEventData->setRA(ra);
@@ -225,6 +229,7 @@ void EventContainer::writeEvents() {
       m_goodiEventData->setPhi(phi);
       m_goodiEventData->setZenithAngle(zenithAngle);
       m_goodiEventData->setConvLayer(convLayer);
+      m_goodiEventData->setGTI(gti);
 
 // Set the sizes of the valarray data for the multiword columns,
 // GEO_OFFSET, BARY_OFFSET, etc..
