@@ -9,7 +9,7 @@ branches observationSim cmt src doc
 
 #use MapFlux v0*
 use flux v8*
-use latResponse v1*
+use latResponse v*
 use Goodi v*
 use astro v0*
 use facilities v*
@@ -21,8 +21,8 @@ apply_pattern package_include
 
 private
 
-use Likelihood v*
 use hoops v*
+use hoopsUtil v*
 
 #use python v2* IExternal
 #macro pydir ../python/
@@ -72,9 +72,6 @@ library observationSim -no_share $(my_headers) \
 # These needed for FITS templates.
 set INFILES "$(GOODIROOT)/Data"
 set TPLDIR "$(GOODIROOT)/Templates"
-
-# Needed for .par files
-set PFILES "$(OBSERVATIONSIMROOT)/data/"
 
 # test applications
 application test_observationSim test/main.cxx

@@ -11,22 +11,47 @@
 #endif
 
 #include <cassert>
+#include <fstream>
 
 #include "CLHEP/Random/Random.h"
 
+#include "facilities/Util.h"
+
 #include "hoops/hoops_exception.h"
+
+#include "hoopsUtil/RunParams.h"
 
 #include "astro/SkyDir.h"
 
 #include "latResponse/Irfs.h"
 #include "latResponse/IrfsFactory.h"
 
-#include "Likelihood/RunParams.h"
-
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/../src/LatSc.h"
+
+namespace {
+   void readLines(std::string inputFile, 
+                  std::vector<std::string> &lines) {
+
+      facilities::Util::expandEnvVar(&inputFile);
+
+      std::ifstream file(inputFile.c_str());
+      lines.clear();
+      std::string line;
+      while (std::getline(file, line, '\n')) {
+         if (line != "" && line != " ") { //skip (most) blank lines
+            lines.push_back(line);
+         }
+      }
+   }
+
+   bool fileExists(const std::string &filename) {
+      std::ifstream file(filename.c_str());
+      return file.is_open();
+   }
+} // unnamed namespace
 
 int main(int iargc, char * argv[]) {
 
@@ -37,7 +62,7 @@ int main(int iargc, char * argv[]) {
 // Read in the command-line parameters using HOOPS
    strcpy(argv[0], "obsSim");
    try {
-      Likelihood::RunParams params(iargc, argv);
+      hoopsUtil::RunParams params(iargc, argv);
 
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
@@ -57,17 +82,28 @@ int main(int iargc, char * argv[]) {
       std::string xmlFile;
       params.getParam("XML_source_file", xmlFile);
       if (xmlFile != "" && xmlFile != "none") {
-         xmlSourceFiles.push_back(xmlFile);
+         if (::fileExists(xmlFile)) {
+            xmlSourceFiles.push_back(xmlFile);
+         } else {
+            std::cout << "File not found: " 
+                      << xmlFile << std::endl;
+         }
       }
 
 // Read the file containing the list of sources.
       std::string srcListFile;
       params.getParam("Source_list", srcListFile);
       std::vector<std::string> srcNames;
-      Likelihood::RunParams::readLines(srcListFile, srcNames);
-      if (srcNames.size() == 0) {
-         std::cout << "No sources given in " << srcListFile;
-         assert(srcNames.size() != 0);
+      if (::fileExists(srcListFile)) { 
+         ::readLines(srcListFile, srcNames);
+         if (srcNames.size() == 0) {
+            std::cout << "No sources given in " << srcListFile;
+            assert(srcNames.size() != 0);
+         }
+      } else {
+         std::cout << "Source_list file " << srcListFile
+                   << " doesn't exist." << std::endl;
+         assert(::fileExists(srcListFile));
       }
    
 // Get the number of events.
@@ -82,7 +118,6 @@ int main(int iargc, char * argv[]) {
       std::string responseFuncs;
       params.getParam("Response_functions", responseFuncs);
       std::vector<latResponse::Irfs *> respPtrs;
-      latResponse::IrfsFactory irfsFactory;
 
       std::map< std::string, std::vector<std::string> > responseIds;
       responseIds["FRONT"].push_back("DC1::Front");
@@ -93,7 +128,7 @@ int main(int iargc, char * argv[]) {
       if (responseIds.count(responseFuncs)) {
          std::vector<std::string> &resps = responseIds[responseFuncs];
          for (unsigned int i = 0; i < resps.size(); i++) {
-            respPtrs.push_back(irfsFactory.create(resps[i]));
+            respPtrs.push_back(latResponse::irfsFactory().create(resps[i]));
          }
       } else {
          std::cerr << "Invalid response function choice: "

@@ -8,6 +8,7 @@
  */
 
 #include <string>
+#include <fstream>
 #include <iostream>
 #include <algorithm>
 
@@ -35,6 +36,13 @@
 static SpectrumFactory<MapSpectrum> factory;
 const ISpectrumFactory& MapSpectrumFactory = factory;
 #endif
+
+namespace {
+   bool fileExists(const std::string &filename) {
+      std::ifstream file(filename.c_str());
+      return file.is_open();
+   }
+}
 
 namespace observationSim {
 
@@ -69,7 +77,14 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    if (pointingHistory != "none" && pointingHistory != "") {
 // Use pointing history file.
       facilities::Util::expandEnvVar(&pointingHistory);
-      setPointingHistoryFile(pointingHistory);
+      if (::fileExists(pointingHistory)) {
+         setPointingHistoryFile(pointingHistory);
+      } else {
+         std::cout << "Pointing history file not found: \n"
+                   << pointingHistory << "\n"
+                   << "Using default rocking strategy." << std::endl;
+         setRocking();
+      }
    } else {
 // Use the default rocking strategy.
       setRocking();
@@ -91,7 +106,14 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    m_source = new CompositeSource();
    for (std::vector<std::string>::const_iterator name = sourceNames.begin();
         name != sourceNames.end(); name++) {
-      m_source->addSource(m_fluxMgr->source(*name));
+      EventSource * source;
+      if (source = m_fluxMgr->source(*name)) {
+         m_source->addSource(source);
+      } else {
+         std::cout << "Simulator::init: \n"
+                   << "FluxMgr failed to find a source named \""
+                   << *name << "\"" << std::endl;
+      }
    }
 
 // Add a "timetick30s" source to the m_source object.
