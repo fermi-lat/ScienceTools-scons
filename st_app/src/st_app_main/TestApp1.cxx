@@ -20,4 +20,4 @@ class TestApp1 : public st_app::StApp {
 };
 
 /// \brief Create factory object which can create the application:
-st_app::StAppFactory<TestApp1> g_app_factory;
+st_app::StAppFactory<TestApp1> g_app_factory("test_st_app");
