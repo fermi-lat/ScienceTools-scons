@@ -11,6 +11,7 @@
 
 #include <string>
 class BaseImage;
+#include "map_tools/SkyFunction.h"
 
 namespace astro { class SkyDir; }
 
@@ -49,21 +50,12 @@ public:
 
     ~SkyImage();
 
-    /** @class SkyImage::Requester 
-        @brief virtual base class for requesting data to fill a given pixel
-       
-    */
-    class Requester {
-    public:
-        //! @param coordinates of the center of a bin
-        virtual float operator()(const astro::SkyDir& bincenter)const=0;
-    };
-
+ 
     /**
     @brief loop over all internal bins, request the intensity from a functor derived
-    from SkyImage::Requester
+    from SkyFunction
     */
-    void fill( const Requester& req);
+    void fill( const SkyFunction& req);
 
     /** brief clear the image, putting nulls around a AIT map
     */
