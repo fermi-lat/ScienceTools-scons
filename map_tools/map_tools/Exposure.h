@@ -81,7 +81,7 @@ public:
     /// this is deprecated, here only for Likelihood
     class Aeff {
     public: 
-      double operator()(double costh)const=0;
+      virtual double operator()(double costh)const=0;
     };
 private:
 };
