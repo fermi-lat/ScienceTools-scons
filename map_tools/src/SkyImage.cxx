@@ -53,7 +53,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     naxes[0]=m_naxis1;
     naxes[1]=m_naxis2;
     naxes[2]=m_naxis3;
-    m_image = new FloatImg("skympap", pars.outputFile(), naxes);
+    m_image = new FloatImg("skymap", pars.outputFile(), naxes);
     m_pixelCount = m_image->pixelCount();
 
     // fill the boundaries with NaN
