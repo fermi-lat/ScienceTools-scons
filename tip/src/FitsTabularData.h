@@ -51,6 +51,8 @@ namespace table {
       virtual void getCell(const std::string & field, Index_t record_index, double & value) const;
       virtual void getCell(const std::string & field, Index_t record_index, signed long & value) const;
 
+      virtual FieldIndex_t getFieldIndex(const std::string & field) const;
+
       /** \brief Get a keyword from this extension object.
           \param name The name of the keyword to get from the extension object.
           \param value The output value.
