@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r1p1 04-Oct-04   JC   give full version to st_facilities
     v5r1   04-Oct-04   JC   write checksum and datasum keyword values;
                             update the FT1 and FT2 template files.
     v5r0p2 30-Sep-04   JC   fix zenith angle access in Spacecraft class
