@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "hoops/hoops.h"
+#include "hoops/hoops_par.h"
 #include "hoops/hoops_prompt_group.h"
 
 int main(int argc, char * argv[]) {
@@ -64,12 +65,16 @@ int main(int argc, char * argv[]) {
     // the parameters from the original file again:
     // pars.Load();
 
-    // You can save them explicitly if you want, but ~ParPromptGroup()
-    // will also save them.
-    // pars.Save(); // Not wrong, but not necessary.
-
+    // You must explicitly save the parameters:
+    pars.Save();
   } catch (Hexception & x) {
     std::cerr << "Error " << x.Code() << ": " << x.Msg() << std::endl;
+    status = 1;
+  } catch (std::exception & x) {
+    std::cerr << "Error " << ": " << x.what() << std::endl;
+    status = 1;
+  } catch (...) {
+    std::cerr << "Unknown Error " << std::endl;
     status = 1;
   }
 
@@ -77,6 +82,10 @@ int main(int argc, char * argv[]) {
 }
 
 /******************************************************************************
+ * Revision 1.5  2004/03/26 22:30:04  peachey
+ * It is now necessary to save parameters explicitly. Also it wouldn't
+ * hurt to be more careful at the top-level catch.
+ *
  * Revision 1.4  2004/03/16 15:03:29  peachey
  * Do not throw exceptions any more when converting from one type to a
  * potentially smaller type.

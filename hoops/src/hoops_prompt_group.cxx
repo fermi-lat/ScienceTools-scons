@@ -54,8 +54,6 @@ namespace hoops {
   }
 
   ParPromptGroup::~ParPromptGroup() {
-    Save();
-
     // DON'T delete mGroup! It is owned by mPrompter!
     delete mPrompter;
     delete mFile;
@@ -85,16 +83,19 @@ namespace hoops {
   }
 
   IParGroup & ParPromptGroup::Add(IPar * p) {
+    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Add(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(IPar * p) {
+    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(const std::string & pname) {
+    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(pname);
     return *this;
   }
@@ -152,6 +153,11 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.3  2004/03/26 22:31:54  peachey
+ * Prevent client from shooting self in the foot: don't allow
+ * them to add/remove parameters, because PIL can't handle that. What's more,
+ * don't call Save() from the destructor: Save() can throw!
+ *
  * Revision 1.2  2004/03/16 20:50:57  peachey
  * Explicitly invoke constructors for base classes to shut up compiler
  * warnings in the SLAC build.

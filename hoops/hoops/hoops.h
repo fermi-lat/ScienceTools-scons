@@ -38,6 +38,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   enum ParErrorCode_e {
     PAR_NONE = 0,
+    PAR_UNSUPPORTED = 101,
     PAR_INVALID_TYPE = 102,
     PAR_ILLEGAL_CONVERSION = 103,
     PAR_NOT_FOUND = 104,
@@ -297,6 +298,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.14  2004/03/26 22:32:15  peachey
+ * Add new error code for unsupported features.
+ *
  * Revision 1.13  2004/03/16 14:36:58  peachey
  * Remove default construction option for ParFile and ParPrompt.
  *

@@ -14,6 +14,7 @@
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
 // stdio.h is needed only because pil.h neglects to include it.
+#include <sstream>
 #include <stdio.h>
 #include "hoops/hoops.h"
 #include "hoops/hoops_group.h"
@@ -49,7 +50,7 @@ namespace hoops {
 
   void PILException::format(const std::string & msg) {
     const char * pil_msg = PIL_err_handler(mCode);
-    if (0 != pil_msg) {
+    if (msg.empty() && 0 != pil_msg) {
       Hexception::format(std::string("pil error: ") + pil_msg);
     } else Hexception::format(msg);
   }
@@ -111,7 +112,8 @@ namespace hoops {
       // Get number of parameters.
       int nPar = 0;
       status = PILGetNumParameters(&nPar);
-      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
+      if (PIL_OK != status)
+        throw PILException(status, "Could not get the number of parameters in the file", __FILE__, __LINE__);
 
       // Make space to store parameter array.
       pp = new PIL_PARAM[nPar];
@@ -123,21 +125,23 @@ namespace hoops {
       for (int ii = 0; ii < nPar; ++ii) {
         memset(pp + ii, 0, sizeof(PIL_PARAM));
         status = PILGetParameter(ii, pp + ii, &minmaxok, &vmin, &vmax);
-        if (PIL_OK != status) break;
-      }
-      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
+        if (PIL_OK != status) {
+          std::ostringstream s;
+          s << "Problem reading the " << ii + 1 << "th line in the parameter file for " << mComponent;
+          throw PILException(status, s.str(), __FILE__, __LINE__);
+        }
 
-      // Loop over local copy of parameters, making sure they are all valid.
-      for (int ii = 0; ii < nPar; ++ii) {
+        // Make sure parameters are valid:
         if (!IPrim::IsBlank(pp[ii].strline) &&
             PIL_FORMAT_BLANK != pp[ii].format &&
             PIL_FORMAT_COMMENT != pp[ii].format &&
             PIL_FORMAT_OK != pp[ii].format) {
           status = PAR_FILE_CORRUPT;
-          break;
+          std::ostringstream s;
+          s << "The " << ii + 1 << "th line in the parameter file for " << mComponent << " is invalid";
+          throw PILException(status, s.str(), __FILE__, __LINE__);
         }
       }
-      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
 
       // At this point, no further problems _should_ happen, so go
       // ahead and clear the current parameter group.
@@ -178,7 +182,7 @@ namespace hoops {
       }
     } catch (...) {
       delete [] pp;
-      CloseParFile();
+      CloseParFile(-1);
       throw;
     }
 
@@ -197,6 +201,7 @@ namespace hoops {
         // Loop over parameter group in memory, and save each parameter.
         const IPar * par;
         ConstGenParItor it;
+        std::ostringstream err_stream;
         for (it = constGroup->begin(); it != constGroup->end(); ++it) {
           par = *it;
           if (par->Name().empty()) continue;
@@ -204,25 +209,46 @@ namespace hoops {
           if (std::string::npos != type.find("b")) {
             bool p = *par;
             status = PILPutBool(par->Name().c_str(), p);
+            if (PIL_OK != status) {
+              err_stream << "Could not write boolean parameter " << par->Name() << " for " << mComponent;
+              throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+            }
           } else if (std::string::npos != type.find("f")) {
             status = PILPutFname(par->Name().c_str(), *par);
+            if (PIL_OK != status) {
+              err_stream << "Could not write file name parameter " << par->Name() << " for " << mComponent;
+              throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+            }
           } else if (std::string::npos != type.find("i")) {
             long p = *par;
             status = PILPutInt(par->Name().c_str(), p);
+            if (PIL_OK != status) {
+              err_stream << "Could not write int parameter " << par->Name() << " for " << mComponent;
+              throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+            }
           } else if (std::string::npos != type.find("r")) {
             status = PILPutReal(par->Name().c_str(), *par);
+            if (PIL_OK != status) {
+              err_stream << "Could not write real parameter " << par->Name() << " for " << mComponent;
+              throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+            }
           } else if (std::string::npos != type.find("s")) {
             status = PILPutString(par->Name().c_str(), *par);
+            if (PIL_OK != status) {
+              err_stream << "Could not write string parameter " << par->Name() << " for " << mComponent;
+              throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+            }
           } else {
             status = PAR_INVALID_TYPE;
+            err_stream << "Parameter " << par->Name() << " has invalid type " << type;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
-          if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
         }
       } else {
-        throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
+        throw PILException(PAR_NULL_PTR, "Attempt to save a NULL group of parameters", __FILE__, __LINE__);
       }
     } catch (...) {
-      CloseParFile();
+      CloseParFile(-1);
       throw;
     }
     CloseParFile();
@@ -246,19 +272,39 @@ namespace hoops {
   IParGroup * PILParFile::SetGroup(IParGroup * group)
     { IParGroup * retval = mGroup; mGroup = group; return retval; }
 
-  GenParItor PILParFile::begin()
-    { if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__); return mGroup->begin(); }
+  GenParItor PILParFile::begin() {
+    if (!mGroup) {
+      std::ostringstream s;
+      s << "Attempt to find the beginning of a NULL group of parameters for " << mComponent;
+      throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+    }
+    return mGroup->begin();
+  }
 
   ConstGenParItor PILParFile::begin() const {
-    if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
+    if (!mGroup) {
+      std::ostringstream s;
+      s << "Attempt to find the beginning of a NULL group of parameters for " << mComponent << " (const)";
+      throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+    }
     return static_cast<const IParGroup *>(mGroup)->begin();
   }
 
-  GenParItor PILParFile::end()
-    { if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__); return mGroup->end(); }
+  GenParItor PILParFile::end() {
+    if (!mGroup) {
+      std::ostringstream s;
+      s << "Attempt to find the end of a NULL group of parameters for " << mComponent;
+      throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+    }
+    return mGroup->end();
+  }
 
   ConstGenParItor PILParFile::end() const {
-    if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
+    if (!mGroup) {
+      std::ostringstream s;
+      s << "Attempt to find the end of a NULL group of parameters for " << mComponent << " (const)";
+      throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+    }
     return static_cast<const IParGroup *>(mGroup)->end();
   }
 
@@ -305,7 +351,11 @@ namespace hoops {
     delete [] new_argv[0];
     delete [] new_argv;
 
-    if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
+    if (PIL_OK != status) {
+      std::ostringstream s;
+      s << "Could not open parameter file for " << mComponent;
+      throw PILException(status, s.str(), __FILE__, __LINE__);
+    }
   }
 
   void PILParFile::CloseParFile(int status) const {
@@ -344,9 +394,6 @@ namespace hoops {
   }
 
   PILParPrompt & PILParPrompt::Prompt() {
-    // Must have defined at least one argument.
-    if (!mArgv) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
-
     const IParGroup & g = mFile->Group();
 
     // Make a list of all the parameters which may need prompting.
@@ -374,6 +421,10 @@ namespace hoops {
 
     int status = PIL_OK;
 
+    // Must have defined at least one argument.
+    if (mArgc < 1 || !mArgv)
+      throw PILException(PAR_NULL_PTR, "Cannot prompt with NULL argument", __FILE__, __LINE__);
+
     try {
       mFile->OpenParFile(mArgc - 1, mArgv + 1);
 
@@ -390,33 +441,51 @@ namespace hoops {
         // Prompt using the appropriate PILGet function.
         type = par.Type();
 
+        std::ostringstream err_stream;
         if (std::string::npos != type.find("b")) {
           int r = 0;
           status = PILGetBool(it->c_str(), &r);
-          if (PIL_OK != status) break;
+          if (PIL_OK != status) {
+            err_stream << "Cannot get boolean parameter " << *it;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+          }
           par = (bool) r;
         } else if (std::string::npos != type.find("f")) {
           char r[PIL_LINESIZE] = "";
           status = PILGetFname(it->c_str(), r);
-          if (PIL_OK != status) break;
+          if (PIL_OK != status) {
+            err_stream << "Cannot get file name parameter " << *it;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+          }
           par = r;
         } else if (std::string::npos != type.find("i")) {
           int r = 0;
           status = PILGetInt(it->c_str(), &r);
-          if (PIL_OK != status) break;
+          if (PIL_OK != status) {
+            err_stream << "Cannot get int parameter " << *it;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+          }
           par = r;
         } else if (std::string::npos != type.find("r")) {
           double r = 0.;
           status = PILGetReal(it->c_str(), &r);
-          if (PIL_OK != status) break;
+          if (PIL_OK != status) {
+            err_stream << "Cannot get real parameter " << *it;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+          }
           par = r;
         } else if (std::string::npos != type.find("s")) {
           char r[PIL_LINESIZE] = "";
           status = PILGetString(it->c_str(), r);
-          if (PIL_OK != status) break;
+          if (PIL_OK != status) {
+            err_stream << "Cannot get string parameter " << *it;
+            throw PILException(status, err_stream.str(), __FILE__, __LINE__);
+          }
           par = r;
         } else {
-          status = PAR_INVALID_TYPE; break;
+          status = PAR_INVALID_TYPE;
+          err_stream << "Cannot prompt for parameter of unknown type " << type;
+          throw PILException(status, err_stream.str(), __FILE__, __LINE__);
         }
 
       }
@@ -429,6 +498,8 @@ namespace hoops {
     // Clean up.
     mFile->CloseParFile(-1); // Don't save parameters at this point.
 
+    // This non-specific error message is just in case something didn't
+    // get handled more specifically above.
     if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
     return *this;
   }
@@ -477,7 +548,8 @@ namespace hoops {
       mFile = new PILParFile(mArgv[0]);
 
       std::string comp = mFile->Component();
-      if (comp.empty()) throw PILException(PAR_COMP_UNDEF, "", __FILE__, __LINE__);
+      if (comp.empty())
+        throw PILException(PAR_COMP_UNDEF, "Cannot initialize prompter for unspecified component", __FILE__, __LINE__);
       PILSetModuleName(comp.c_str());
 
       mFile->Load();
@@ -548,6 +620,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.17  2004/03/26 22:30:37  peachey
+ * Improve (make more specific) exception messages.
+ *
  * Revision 1.16  2004/03/16 20:50:57  peachey
  * Explicitly invoke constructors for base classes to shut up compiler
  * warnings in the SLAC build.
