@@ -1,5 +1,5 @@
 package hoops
-version v0r4
+version v0r4p1
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
@@ -15,10 +15,10 @@ apply_pattern ST_library option=-no_share
 
 private
 #-------------------------------------
+
 set PFILES "$(HOOPSROOT)/data" # for testing
 
 macro test_source "test/hoops_lim_test.cxx" #override pattern 
-macro hoops_cppflags "" WIN32 " /wd4251 " # suppress "needs to have dll-interface" 
 
 # supplemental test applications
 #application test_hoops_simple test/main.cxx
