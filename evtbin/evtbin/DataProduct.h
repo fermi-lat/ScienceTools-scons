@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "evtbin/Gti.h"
+
 #include "tip/Table.h"
 
 namespace tip {
@@ -17,6 +19,7 @@ namespace tip {
 }
 
 namespace evtbin {
+  class Binner;
   class Hist;
 
   /** \class DataProduct
@@ -27,9 +30,9 @@ namespace evtbin {
       typedef std::vector<std::string> KeyCont_t;
       typedef std::map<std::string, std::string> KeyValuePairCont_t;
 
-      /** \brief Construct data product object.
+      /** \brief Construct data product object from the given event and spacecraft file.
       */
-      DataProduct();
+      DataProduct(const std::string & event_file);
 
       virtual ~DataProduct() throw();
 
@@ -52,18 +55,69 @@ namespace evtbin {
       */
       virtual void writeOutput(const std::string & creator, const std::string & out_file) const = 0;
 
-      /** \brief Read values for all known keywords from the given header object.
+      /** \brief Read the GTI extension from an input file. The resulting GTI information is stored
+          internally.
+          \param in_file The input file name.
+      */
+      virtual void readGti(const std::string & in_file);
 
+      /** \brief Write the current GTI information to the given file's GTI extension. The extension must
+          exist.
+          \param out_file The output file name.
+      */
+      virtual void writeGti(const std::string & out_file) const;
+
+      /** \brief Returns this object's current set of GTIs (read-only).
+      */
+      virtual const Gti & getGti() const;
+
+      /** \brief Use the given (time) binner to modify the Gti by finding the overlap.
+          Returns true if the Gti was actually changed by this operation, false if the
+          Gti was unchanged.
+          \param binner The binner.
+      */
+      virtual bool adjustGti(const Binner * binner);
+
+      /** \brief Write ebounds extension.
+          \param out_file The output file name.
+          \param binner The binner used to write the output.
+      */
+      virtual void writeEbounds(const std::string & out_file, const Binner * binner) const;
+
+      /** \brief Read values for all known keywords from the given file and extension.
+           Any keywords missing from the header will simply be omitted in this object's
+           container of key-value pairs.
+      */
+      void harvestKeywords(const std::string & file_name, const std::string & ext_name);
+
+      /** \brief Read values for all known keywords from the given header object.
            Any keywords missing from the header will simply be omitted in this object's
            container of key-value pairs.
            \param header The input header to scan for keywords.
       */
       void harvestKeywords(const tip::Header & header);
 
-      /** \brief Update keywords from this object's current set of keywords in every extension of a file.
+      /** \brief Adjust and/or compute time-related key-value pairs for this data product. This method does not
+                 directly modify keywords in any file. However, the modified values will be written if/when
+                 this data product is written.
+
+                 Keywords TSTART, TSTOP are modified only if the binner has a tighter range than the values in the original file.
+                 Keywords EXPOSURE, ONTIME are computed from the spacecraft file.
+          \param sc_file The spacecraft data file used to compute time keywords.
+          \param binner Optional binner used to adjust TSTART and TSTOP if necessary. 
+      */
+      void adjustTimeKeywords(const std::string & sc_file, const Binner * binner = 0);
+
+      /** \brief Update keywords in the given file, using this object's current set of key-value pairs. Every extension
+                 of the file will be updated.
           \param file_name The name of the file to update.
       */
       void updateKeywords(const std::string & file_name) const;
+
+      /** \brief Compute the total exposure.
+          \param sc_file The name of the spacecraft data file to be used as input.
+      */
+      virtual double computeExposure(const std::string & sc_file) const;
 
       /** \brief Convert time object into a string representation suitable for storage in a date-like keyword.
           \param time The time to convert.
@@ -74,6 +128,7 @@ namespace evtbin {
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::string m_data_dir;
+      Gti m_gti;
       Hist * m_hist_ptr;
   };
 
