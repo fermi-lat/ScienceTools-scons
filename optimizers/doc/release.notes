@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v0r2   25-Aug-03   JC  Enable python module build on linux.
     v0r1p1 13-Aug-03   JC  Clean up FunctionFactory implementation;
                            add Dom class.
     v0r1   11-Aug-03   JC  Add FunctionFactory, model xml files, and python
