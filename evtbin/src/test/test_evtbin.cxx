@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -44,10 +45,15 @@
 #include "st_app/StAppFactory.h"
 // Utility used to find test data for this application.
 #include "st_facilities/Env.h"
+// Message utilities.
+#include "st_stream/st_stream.h"
+#include "st_stream/StreamFormatter.h"
 // Tip File access.
 #include "tip/IFileSvc.h"
 // Tip Table access.
 #include "tip/Table.h"
+
+using namespace evtbin;
 
 const std::string s_cvs_id("$Name$");
 
@@ -89,22 +95,28 @@ class EvtBinTest : public st_app::StApp {
     void testConstSnBinner();
 
   private:
+    st_stream::StreamFormatter m_os;
     std::string m_data_dir;
     std::string m_ft1_file;
     std::string m_ft2_file;
+    std::string m_gbm_file;
     double m_t_start;
     double m_t_stop;
     double m_e_min;
     double m_e_max;
+    double m_gbm_t_start;
+    double m_gbm_t_stop;
     bool m_failed;
 };
 
-EvtBinTest::EvtBinTest(): m_t_start(2.167442034386540E+06), m_t_stop(2.185939683959529E+06), m_e_min(30.), m_e_max(6000.) {
+EvtBinTest::EvtBinTest(): m_os("EvtBinTest", "EvtBinTest", 2), m_t_start(2.167442034386540E+06), m_t_stop(2.185939683959529E+06),
+  m_e_min(30.), m_e_max(6000.), m_gbm_t_start(-4.193924833089113E-03), m_gbm_t_stop(1.368369758129120E-01), m_failed(false) {
   setName("test_evtbin");
   setVersion(s_cvs_id);
   m_data_dir = st_facilities::Env::getDataDir("evtbin");
   m_ft1_file = st_facilities::Env::appendFileName(m_data_dir, "ft1tiny.fits");
   m_ft2_file = st_facilities::Env::appendFileName(m_data_dir, "ft2tiny.fits");
+  m_gbm_file = st_facilities::Env::appendFileName(m_data_dir, "gbmtiny.fits");
 }
 
 void EvtBinTest::run() {
@@ -113,6 +125,8 @@ void EvtBinTest::run() {
   std::cerr.precision(24);
   std::cout.precision(24);
 
+  // Test high level bin configuration object first, as it tests some things which need to be done first.
+  testBinConfig();
   // Test linear binner:
   testLinearBinner();
   // Test logarithmic binner:
@@ -132,8 +146,6 @@ void EvtBinTest::run() {
   // Test count map (using Tip):
   testCountMap();
   // Test high level bin configuration object.
-  testBinConfig();
-  // Test high level bin configuration object.
   testGti();
   // Test const s/n binner:
   testConstSnBinner();
@@ -143,7 +155,6 @@ void EvtBinTest::run() {
 }
 
 void EvtBinTest::testLinearBinner() {
-  using namespace evtbin;
   std::string msg;
 
   // Create a linear binner with bin width == 15. spanning the interval [0, 100):
@@ -208,7 +219,6 @@ void EvtBinTest::testLinearBinner() {
 }
 
 void EvtBinTest::testLogBinner() {
-  using namespace evtbin;
   std::string msg;
 
   // Create a log binner with 10 bins spanning the interval [1, exp(15.)):
@@ -262,8 +272,6 @@ void EvtBinTest::testLogBinner() {
 }
 
 void EvtBinTest::testOrderedBinner() {
-  using namespace evtbin;
-
   std::string msg = "OrderedBinner::OrderedBinner(...)";
 
   OrderedBinner::IntervalCont_t intervals;
@@ -401,7 +409,6 @@ void EvtBinTest::testOrderedBinner() {
 }
 
 void EvtBinTest::testHist1D() {
-  using namespace evtbin;
   std::string msg = "Hist1D";
 
   // Create a linear binner with bin width == 15. spanning the interval [0, 100):
@@ -428,7 +435,6 @@ void EvtBinTest::testHist1D() {
 }
 
 void EvtBinTest::testHist2D() {
-  using namespace evtbin;
   std::string msg = "Hist2D";
 
   // Create a linear binner with bin width == 10 spanning the interval [0, 100):
@@ -463,37 +469,81 @@ void EvtBinTest::testHist2D() {
 }
 
 void EvtBinTest::testLightCurve() {
-  using namespace evtbin;
+  // Good time interval from event file.
+  Gti gti(m_ft1_file);
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   // Fill the light curve.
   lc.binInput();
 
   // Write the light curve to an output file.
   lc.writeOutput("test_evtbin", "LC1.lc");
+
+  // Good time interval for GBM data.
+  Gti gbm_gti;
+  gbm_gti.insertInterval(m_gbm_t_start, m_gbm_t_stop);
+
+  // Create light curve object for GBD data.
+  LightCurve gbm_lc(m_gbm_file, "EVENTS", "",
+    LinearBinner(m_gbm_t_start, m_gbm_t_stop, (m_gbm_t_stop - m_gbm_t_start) * .01, "TIME"), gbm_gti);
+
+  // Fill the light curve.
+  gbm_lc.binInput();
+
+  // Write the light curve to an output file.
+  gbm_lc.writeOutput("test_evtbin", "GBMLC1.lc");
+
 }
 
 void EvtBinTest::testSingleSpectrum() {
-  using namespace evtbin;
+  // Test creating spectrum from LAT data.
+  // Create binner used both for energy bins and for ebounds definition.
+  LogBinner energy_binner(m_e_min, m_e_max, 100, "ENERGY");
+
+  // Good time interval from event file.
+  Gti gti(m_ft1_file);
 
   // Create spectrum object.
-  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, LogBinner(m_e_min, m_e_max, 100, "ENERGY"));
+  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
   spectrum.binInput();
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA1.pha");
+
+  // Test creating spectrum from GBM data.
+  // Start with GBM configuration.
+  std::auto_ptr<BinConfig> config(BinConfig::create(m_gbm_file));
+
+  // Set parameters.
+  st_app::AppParGroup & pars(getParGroup());
+  pars["evfile"] = m_gbm_file;
+  std::auto_ptr<Binner> gbm_energy_binner(config->createEnergyBinner(pars));
+  std::auto_ptr<Binner> gbm_ebounds(config->createEbounds(pars));
+  std::auto_ptr<Gti> gbm_gti(config->createGti(pars));
+
+  SingleSpec gbm_spectrum(m_gbm_file, "EVENTS", "", *gbm_energy_binner, *gbm_ebounds, *gbm_gti);
+
+  // Fill the spectrum.
+  gbm_spectrum.binInput();
+
+  // Write the spectrum to an output file.
+  gbm_spectrum.writeOutput("test_evtbin", "GBMPHA1.pha");
 }
 
 void EvtBinTest::testMultiSpectra() {
-  using namespace evtbin;
+  // Create binner used both for energy bins and for ebounds definition.
+  LogBinner energy_binner(m_e_min, m_e_max, 100, "ENERGY"), LogBinner(m_e_min, m_e_max, 100, "ENERGY");
+
+  // Good time interval from event file.
+  Gti gti(m_ft1_file);
 
   // Create spectrum object.
   MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"),
-    LogBinner(m_e_min, m_e_max, 100, "ENERGY"));
+    energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -503,8 +553,6 @@ void EvtBinTest::testMultiSpectra() {
 }
 
 void EvtBinTest::testCountMap() {
-  using namespace evtbin;
-
   // Create map object with invalid projection.
   try {
 // Disabling this test because currently astro doesn't detect the error.
@@ -515,8 +563,12 @@ void EvtBinTest::testCountMap() {
     // OK, supposed to fail.
   }
 
+  // Good time interval from event file.
+  Gti gti(m_ft1_file);
+
   // Create count map object.
-  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false, "RA", "DEC");
+  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false,
+    "RA", "DEC", gti);
 
   // Fill the count map.
   count_map.binInput();
@@ -526,7 +578,7 @@ void EvtBinTest::testCountMap() {
 }
 
 void EvtBinTest::testBinConfig() {
-  using namespace evtbin;
+  m_os.setMethod("testBinConfig");
 
   // Get parameters.
   st_app::AppParGroup & par_group = getParGroup("test_evtbin");
@@ -534,8 +586,9 @@ void EvtBinTest::testBinConfig() {
   Binner * binner = 0;
 
   try {
-    // Create a configuration object.
-    BinConfig config;
+    // Set the input file/table.
+    par_group["evfile"] = m_ft1_file;
+    par_group["evtable"] = "EVENTS";
 
     // Set name of time field to be something strange.
     par_group["timefield"] = "WackyTime";
@@ -551,9 +604,24 @@ void EvtBinTest::testBinConfig() {
     // Save these parameters.
     par_group.Save();
 
+    // Try to find a binner configuration. This should fail because no prototypes were loaded yet.
+    try {
+      std::auto_ptr<BinConfig> config(BinConfig::create(par_group["evfile"]));
+      m_failed = true;
+      m_os.err() << "Unexpected: created a BinConfig before prototypes were loaded." << std::endl;
+    } catch (const std::exception & x) {
+      m_os.info() << "Expected: failed to create a BinConfig before prototypes were loaded: " << x.what() << std::endl;
+    }
+
+    // Load standard mission/instrument configurations.
+    BinConfig::load();
+
+    // Create a configuration object.
+    std::auto_ptr<BinConfig> config(BinConfig::create(par_group["evfile"]));
+
     // Test prompting for time binner parameters. Since they're all hidden, their values should just be
     // the same as the values just assigned above.
-    config.timeParPrompt(par_group);
+    config->timeParPrompt(par_group);
 
     // Make sure the value set above DID take.
     if (0 != par_group["timefield"].Value().compare("WackyTime")) {
@@ -562,7 +630,7 @@ void EvtBinTest::testBinConfig() {
     }
 
     // Test creating the time binner.
-    binner = config.createTimeBinner(par_group);
+    binner = config->createTimeBinner(par_group);
 
     // Name of binner should be the value from the timefield parameter.
     if (0 != binner->getName().compare("WackyTime")) {
@@ -608,10 +676,10 @@ void EvtBinTest::testBinConfig() {
     par_group.Save();
 
     // Prompt for energy values. Again, they're all hidden.
-    config.energyParPrompt(par_group);
+    config->energyParPrompt(par_group);
 
     // Test creating the energy binner.
-    binner = config.createEnergyBinner(par_group);
+    binner = config->createEnergyBinner(par_group);
 
     // Name of binner should be the value from the energyfield parameter.
     if (0 != binner->getName().compare("WackyEnergy")) {
@@ -663,10 +731,10 @@ void EvtBinTest::testBinConfig() {
     par_group.Save();
 
     // Prompt for energy values. Again, they're all hidden.
-    config.energyParPrompt(par_group);
+    config->energyParPrompt(par_group);
 
     // Test creating the energy binner.
-    binner = config.createEnergyBinner(par_group);
+    binner = config->createEnergyBinner(par_group);
 
     // The number of bins should also be consistent with the bin definition file.
     if (1024 != binner->getNumBins()) {
@@ -714,8 +782,6 @@ void EvtBinTest::testBinConfig() {
 }
 
 void EvtBinTest::testGti() {
-  using namespace evtbin;
-
   Gti gti1;
   gti1.insertInterval(1., 2.);
 
@@ -830,8 +896,10 @@ void EvtBinTest::testGti() {
     m_failed = true;
   }
 
+  Gti gti(m_ft1_file);
+
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   const Gti & lc_gti = lc.getGti();
   if (1 != lc_gti.getNumIntervals()) {
@@ -854,8 +922,6 @@ void EvtBinTest::testGti() {
 }
 
 void EvtBinTest::testConstSnBinner() {
-  using namespace evtbin;
-
   // Create test binner object.
   ConstSnBinner binner(1., 101., 5., 1., 25.);
 
@@ -888,7 +954,7 @@ void EvtBinTest::testConstSnBinner() {
   // Loop over double the times.
   for (double ev_time = 0.; ev_time < 103.; ev_time += .5) {
     long index = binner.computeIndex(ev_time);
-    std::cout << "Event time[" << ev_time << "] == " << ev_time << ", index == " << index << std::endl;
+//    std::cout << "Event time[" << ev_time << "] == " << ev_time << ", index == " << index << std::endl;
   }
 }
 
