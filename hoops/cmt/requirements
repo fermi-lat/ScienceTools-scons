@@ -33,6 +33,8 @@ macro my_headers "" WIN32 "../hoops/*.h *.h"
 library hoops -no_share $(my_headers) \
  *.cxx
 
+set PFILES "$(HOOPSROOT)/data"
+
 # test application
 application test_hoops test/main.cxx
 #application test_hoops_prim test/hoops_prim_test.cxx
