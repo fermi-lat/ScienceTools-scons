@@ -9,7 +9,8 @@
 
 namespace table {
 
-  typedef unsigned long Index_t;
+  typedef long IndexDiff_t;
+  typedef long Index_t;
 
 }
 
