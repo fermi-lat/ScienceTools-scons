@@ -31,6 +31,12 @@ namespace st_app {
     s_argv = argv;
   }
 
+  // Accessor for number of command line arguments.
+  int IApp::getArgc() { return s_argc; }
+
+  // Accessor for command line arguments.
+  char ** IApp::getArgv() { return s_argv; }
+
   // Destructor:
   IApp::~IApp() throw() {
     // Make sure getApp will not try to return this application after it's gone:
@@ -44,6 +50,9 @@ namespace st_app {
     if (0 == s_application) s_application = this;
 
   }
+
+  // Get the name of this application.
+  const std::string & IApp::name() const { return m_app_name; }
 
   // Methods which use hoops:
   // Return the group, creating it first if necessary.

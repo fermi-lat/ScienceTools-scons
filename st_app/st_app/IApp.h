@@ -29,7 +29,19 @@ namespace st_app {
       */
       static void processCommandLine(int argc, char ** argv);
 
+      /** \brief Get number of command line arguments.
+      */
+      static int getArgc();
+
+      /** \brief Get command line arguments.
+      */
+      static char ** getArgv();
+
       virtual ~IApp() throw();
+
+      /** \brief Get name of this component.
+      */
+      const std::string & name() const;
 
       /** \brief Perform the action needed by this application. This will be called by the standard main.
       */
