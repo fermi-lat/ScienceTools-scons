@@ -10,6 +10,7 @@
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
+#include "st_app/StGui.h"
 
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
@@ -21,7 +22,25 @@ const std::string s_cvs_tag("$Name$");
 */
 class TestApp1 : public st_app::StApp {
   public:
-    TestApp1(): m_f("TestApp1", "", 2) { setName("test_st_app"); setVersion(s_cvs_tag); }
+    TestApp1(): m_f("TestApp1", "", 2) {
+      setName("test_st_app");
+      setVersion(s_cvs_tag);
+
+      // For parameter file access, use the AppParGroup class, which is derived from a Hoops class.
+      st_app::AppParGroup & pars(getParGroup());
+
+      pars.setSwitch("switch");
+      pars.setSwitch("usedeltae");
+
+      pars.setCase("switch", "EnERGY", "emin");
+      pars.setCase("switch", "energy", "emax");
+      pars.setCase("switch", "ENergy", "usedeltae");
+      pars.setCase("usedeltae", "true", "deltae");
+      pars.setCase("switch", "ENergy", "deltae");
+      pars.setCase("switch", "Time", "tstart");
+      pars.setCase("switch", "TIME", "tstop");
+      pars.setCase("switch", "timE", "deltat");
+    }
 
     /** \brief Perform the demo action needed by this application. This will be called by the standard main.
     */
@@ -46,6 +65,7 @@ class TestApp1 : public st_app::StApp {
 
       // Extract the string from the parameter.
       std::string user_string = pars["string"];
+      std::string in_file = pars["infile"];
 
       // Next Demonstrate how st_stream formats output.
       // The "info" stream is for optional output.
@@ -66,6 +86,13 @@ class TestApp1 : public st_app::StApp {
       // The "out" stream is for tool output.
       m_f.out() << "The string the user entered was:" << std::endl;
       m_f.out() << user_string << std::endl;
+      m_f.out() << "The infile the user entered was:" << std::endl;
+      m_f.out() << in_file << std::endl;
+    }
+
+    virtual void runGui() {
+      st_app::StAppGui gui(st_graph::Engine::instance(), getParGroup(), this);
+      gui.run();
     }
 
   private:
