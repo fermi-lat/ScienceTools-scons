@@ -14,6 +14,7 @@
 #include "TGWindow.h"
 #include "TSystem.h"
 
+#include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
 
 #include "RootEngine.h"
@@ -64,12 +65,12 @@ namespace st_graph {
       if (0 == gClient)
         throw std::runtime_error("RootEngine::RootEngine could not create Root graphical TApplication");
 
-      m_frames.push_back(RootFrame::ancestor());
     }
   }
 
   void RootEngine::run() {
-    // Display all frames currently registered with this engine.
+    // Display all frames currently linked to the top-level frame.
+    RootFrame::ancestor()->display();
     for (FrameList_t::iterator itor = m_frames.begin(); itor != m_frames.end(); ++itor) (*itor)->display();
 
     // Run the Root event loop to handle the graphical displays.
@@ -77,27 +78,58 @@ namespace st_graph {
   }
 
   void RootEngine::stop() {
+    hideFrames();
     gApplication->Terminate(0);
   }
 
-  IFrame * RootEngine::createMainFrame(unsigned int width, unsigned int height) {
-    RootFrame * main_frame = new RootFrame(RootFrame::ancestor(), new STGMainFrame(this, width, height));
-    return main_frame;
+  IFrame * RootEngine::createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height) {
+    // Receiver which terminates the application -- sensible default behavior for a main frame.
+    class DefaultReceiver : public IEventReceiver {
+      public:
+        DefaultReceiver(Engine & engine): m_engine(engine) {}
+        virtual void closeWindow(IFrame *) {
+          m_engine.stop();
+        }
+
+      private:
+        Engine & m_engine;
+    };
+
+    static DefaultReceiver s_default_receiver(*this);
+
+    // If client did not supply a receiver, use the default one.
+    if (0 == receiver) receiver = &s_default_receiver;
+
+    // Create the Root widget.
+    STGMainFrame * tg_widget = new STGMainFrame(this, width, height);
+
+    // Create the IFrame which refers to it.
+    RootFrame * frame = new RootFrame(receiver, tg_widget);
+
+    // Connect appropriate Root Qt signals to this object's slot.
+    tg_widget->Connect("CloseWindow()", "st_graph::RootFrame", frame, "closeWindow()");
+
+    //m_frames.push_back(frame);
+    return frame;
   }
 
   PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist::IntervalCont_t & intervals) {
     // Create Root-specific 1D plot object with the PlotHist interface.
-    return new RootPlotHist(this, title, width, height, intervals);
+    RootPlotHist * hist = new RootPlotHist(this, title, width, height, intervals);
+    m_frames.push_back(hist);
+    return hist;
   }
 
   PlotHist * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) {
     // Create Root-specific 2D plot object with the PlotHist interface.
-    return new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
+    RootPlotHist * hist = new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
+    m_frames.push_back(hist);
+    return hist;
   }
 
-  IFrame * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
     const ValueSet & y, const ValueSet & z) {
     return new RootPlot(parent, style, title, x, y, z);
   }
@@ -108,21 +140,29 @@ namespace st_graph {
 
   IFrame * RootEngine::createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
     const std::string & label) {
+    // Need the Root frame of the parent object.
     RootFrame * rf = dynamic_cast<RootFrame *>(parent);
     if (0 == rf) throw std::logic_error("RootEngine::createButton was passed an invalid parent frame pointer");
-
-    IFrame * retval = 0;
 
     // Make style check case insensitive.
     std::string lc_style = style;
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
+    TGButton * tg_widget = 0;
     if (std::string::npos != lc_style.find("text")) {
-      retval = new RootFrame(parent, receiver, new TGTextButton(rf->getTGFrame(), label.c_str()));
+      // Create the Root widget.
+      tg_widget = new TGTextButton(rf->getTGFrame(), label.c_str());
     } else { 
       throw std::logic_error("RootEngine::createButton cannot create a button with style " + style);
     }
-    return retval;
+
+    // Create the IFrame which refers to it.
+    IFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    // Connect appropriate Root Qt signals to this object's slot.
+    tg_widget->Connect("Clicked()", "st_graph::RootFrame", frame, "clicked()");
+
+    return frame;
   }
 
   void RootEngine::addFrame(IFrame * frame) {
@@ -134,8 +174,9 @@ namespace st_graph {
   }
 
   void RootEngine::hideFrames() {
-    // Undisplay all frames currently registered with this engine.
-    for (FrameList_t::reverse_iterator itor = m_frames.rbegin(); itor != m_frames.rend(); ++itor) (*itor)->unDisplay();
+    for (FrameList_t::iterator itor = m_frames.begin(); itor != m_frames.end(); ++itor) (*itor)->unDisplay();
+    // Hide all frames currently linked to the top-level frame.
+    RootFrame::ancestor()->unDisplay();
   }
 
 }
