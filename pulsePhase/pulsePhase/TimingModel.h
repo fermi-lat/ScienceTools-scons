@@ -76,6 +76,10 @@ class TimingModel {
       return phase;
     }
 
+    double getF0() const { return m_f0; }
+    double getF1() const { return m_f1; }
+    double getF2() const { return m_f2; }
+
   private:
     double m_epoch;
     double m_phi0;
