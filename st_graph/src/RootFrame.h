@@ -5,7 +5,7 @@
 #ifndef st_graph_RootFrame_h
 #define st_graph_RootFrame_h
 
-#include <list>
+#include <set>
 
 #include "RQ_OBJECT.h"
 #include "Rtypes.h"
@@ -35,6 +35,8 @@ namespace st_graph {
       // Construct a RootFrame which encapsulates the given Root TGFrame.
       RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame);
 
+      RootFrame(IEventReceiver * receiver, TGFrame * frame);
+
       /// \brief Destruct the frame.
       virtual ~RootFrame();
 
@@ -57,6 +59,8 @@ namespace st_graph {
 
       virtual void clicked();
 
+      virtual void closeWindow();
+
       /// \brief Get the X position of the left edge of the frame.
       virtual long getL() const;
 
@@ -77,7 +81,7 @@ namespace st_graph {
       virtual TGFrame * getTGFrame();
 
     protected:
-      std::list<IFrame *> m_subframes;
+      std::set<IFrame *> m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;
       IEventReceiver * m_receiver;
