@@ -5,7 +5,6 @@
 */
 #include "map_tools/Exposure.h"
 #include "astro/SkyDir.h"
-#include "tuple/ITable.h"
 
 #include "image/Fits_IO.h"
 #include "image/Image.h"

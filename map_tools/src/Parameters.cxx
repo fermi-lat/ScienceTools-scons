@@ -50,10 +50,10 @@ void Parameters::setup()
     m_inFile = infile;
 
     facilities::Util::expandEnvVar(&m_inFile);
-
+#if 0
     std::string filter = m_par["filter"];
     m_filter = filter;
-
+#endif
     std::string outfile = m_par["outfile"];
     m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);

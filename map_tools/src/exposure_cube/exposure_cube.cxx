@@ -4,13 +4,14 @@
 @author Toby Burnett
 $Header$
 */
-#include "tuple/ITable.h"
 
 #include "map_tools/MapParameters.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/ExposureHyperCube.h"
 #include "astro/SkyDir.h"
 #include "astro/SkyDir.h"
+#include "tip/Table.h"
+#include "tip/IFileSvc.h"
 #include "st_app/IApp.h"
 
 #include <iostream>
@@ -22,61 +23,38 @@ public:
     ExposureCubeApp() : st_app::IApp("exposure_cube"){}
 
     //--------------------------------------------------------------------------
-#if 0 // development example, @todo: use if requested 
-    class LoadExposureFromEgret
+    void LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
     {
-    public:
-        LoadExposureFromEgret( Exposure& exp ){}
-        LoadExposureFromEgret( const MapParameters& pars,   Exposure& exp )
-        {
-            double 
-                start = pars["tstart"], 
-                stop = pars["tstop"];
-            tuple::ITable::Factory& factory = *tuple::ITable::Factory::instance();
-            tuple::ITable &tup = *factory(pars.eventFile(),"d2e");
+        using tip::Table;
 
-            const double & ra = tup.selectColumn("ra_scz");
-            const double & dec = tup.selectColumn("dec_scz");
-            const double & elapsed_time = tup.selectColumn("elapsed_time");
-            const double & livetime = tup.selectColumn("livetime");
+        double 
+            tstart = pars["tstart"], 
+            tstop = pars["tstop"];
 
-            for( tuple::Iterator it=tup.begin(); it!=tup.end(); ++it){
-                if( start < elapsed_time ) continue;
-                if( stop!=0 && stop > elapsed_time ) break;
-                exp.add( astro::SkyDir(ra, dec), livetime); 
-            }
+        // connect to  input data
+        Table & table = *tip::IFileSvc::getSvc().editTable(pars.inputFile(), "Ext1");
+
+        for (Table::Iterator it = table.begin(); it != table.end(); ++it) {
+
+            const Table::Record & record = *it;
+
+            double start, stop;
+            record["start"].get(start);
+            record["stop"].get(stop);
+
+            if( start < tstart ) continue;
+            if( stop > tstop ) break;
+
+            double ra, dec, livetime;
+            record["ra_scz"].get(ra);
+            record["dec_scz"].get(dec);
+            record["livetime"].get(livetime);
+
+            double deltat = livetime > 0 ? livetime : stop-start;
+            exp.add(astro::SkyDir(ra, dec), deltat); 
         }
-    };
-#endif
-    //--------------------------------------------------------------------------
-    class LoadExposureFromGlast
-    {
-    public:
-        LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
-        {
-            double 
-                tstart = pars["tstart"], 
-                tstop = pars["tstop"];
-            tuple::ITable::Factory& factory = *tuple::ITable::Factory::instance();
-            tuple::ITable &tuple = *factory(pars.inputFile(),"Ext1");
-
-            const double & ra = tuple.selectColumn("ra_scz");
-            const double & dec = tuple.selectColumn("dec_scz");
-            const double & start = tuple.selectColumn("start");
-            const double & stop = tuple.selectColumn("stop");
-            const double & livetime = tuple.selectColumn("livetime");
-
-
-            for( tuple::Iterator it=tuple.begin(); it!=tuple.end(); ++it){
-                if( start < tstart ) continue;
-                if( stop > tstop ) break;
-                double deltat = livetime > 0 ? livetime : stop-start;
-                exp.add(astro::SkyDir(ra, dec), deltat); 
-            }
-        }
-    };
+    }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     void run()
     {
         // read in, or prompt for, all necessary parameters
@@ -89,7 +67,6 @@ public:
 
         // create the fits output file from the Exposure file
         ExposureHyperCube cube(ex, pars.outputFile());
-
 
     }
 }application;

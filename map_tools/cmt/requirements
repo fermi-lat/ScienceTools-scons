@@ -1,6 +1,6 @@
 package map_tools
 
-version v5r0p1
+version v5r2
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -8,11 +8,11 @@ author T. Burnett <tburnett@u.washington.edu>
 use STpolicy *
 use astro *
 use hoops * 
-use tuple  *
+use tip  *
 use st_app *
 
 
-apply_pattern ST_library share=-no_share
+apply_pattern ST_library option=-no_share
 apply_pattern ST_pfiles
 #---------------------------------------------------------------
 private
@@ -22,11 +22,10 @@ macro_append test_source "" WIN32 " -s=..\pfiles test_map_tools.par"
 # add separate image code to the library
 apply_pattern ST_add_to_lib name=image
 
-
+public
 # applications
 
 apply_pattern ST_app name=count_map
 apply_pattern ST_app name=exposure_cube
 apply_pattern ST_app name=exposure_map
 apply_pattern ST_app name=read_map
-
