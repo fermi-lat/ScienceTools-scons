@@ -92,6 +92,7 @@ void RangeCut::getKeyValues(std::string & type, std::string & unit,
                             std::string & value, std::string & ref) const {
    (void)(ref);
    std::ostringstream val;
+   val.precision(20);
    if (m_type == MINONLY) {
       val << m_min << ":";
    } else if (m_type == MAXONLY) {
