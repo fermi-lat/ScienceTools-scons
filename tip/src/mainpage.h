@@ -4,7 +4,7 @@
     \author  James Peachey peachey@lheamail.gsfc.nasa.gov
 
     \section intro Introduction
-    Provides a generic, iterator-based abstract interface to tabular data.
+    Provides a generic, iterator-based interface to tabular data.
     Includes file-related abstractions which are independent of the low
     level data format (e.g. FITS or ROOT).
 
@@ -13,49 +13,58 @@
     This section describes how client code can and should use the tip
     classes to gain access to tabular data.
 
-    \subsection read Reading Tabular Data (First Method)
+    \subsection read Reading Tabular Data
     The first step is for the client to create a data access object
     representing the table:
 
 \verbatim
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
+
+  // Example 1:
   using namespace tip;
-  Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
+  Table * my_table = IFileSvc::instance().editTable("my_file.fits", "LAT_Event_Sum");
 \endverbatim
 
-    Table is the name of the main class clients need to worry about.
-    The expression on the right ("IFileSvc::get()::editTable(...)")
-    calls a function which opens the given file, moves to the indicated
-    extension and returns a pointer to a Table object which may
-    subsequently be used to access the data. (Note to developers:
-    IFileSvc is a singleton abstract factory, and get() returns a
-    reference to this factory.)
+    Table is the name of the main tip class clients need to worry about.
+    The expression on the right ("IFileSvc::instance()::editTable(...)")
+    calls a function which opens the given file, selects the indicated
+    extension (or TTree in Root parlance) and returns a pointer to a Table
+    object which may subsequently be used to access the data. (Some details
+    for the curious: IFileSvc is a singleton abstract factory, and instance()
+    returns a reference to this factory.)
 
     Next, one might want to read keywords from the header of the table:
 
 \verbatim
+  // Example 2:
   Header & header = my_table->getHeader();
   double tstart;
   header["tstart"].get(tstart);
 \endverbatim
 
     The first line creates a reference to my_table's header object.
-    The second creates a local variable to hold the value of
+    The next creates a local variable to hold the value of
     the TSTART keyword. The third line causes the value of the
     TSTART keyword in the table to be copied into the local tstart
-    variable. (Note to developers: Header::operator [] looks up the
+    variable. (Some details: Header::operator [] looks up the
     keyword in the header's container and returns a Keyword object.
     Keyword's get() method is templated and supported for all primitive
     types.)
 
     Another operation of interest is to read values from one or more
-    columns (or leaves in Root parlance):
+    columns (or TLeafs in Root parlance):
 
 \verbatim
-  double ph_time_dbl;
+  // Example 3:
+  // Loop over all records (rows) and extract values of ph_time column.
   for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
-    // Read the current value.
-    (*itor)["ph_time"].get(ph_time_dbl);
-    // Do something with the current value of ph_time_dbl here.
+
+    // Local double variable to hold the value of the field for each row:
+    double ph_time_dbl = (*itor)["ph_time"].get();
+
+    // Do something useful with ph_time_dbl's value here ...
   }
 \endverbatim
 
@@ -66,105 +75,66 @@
     The second clause of the for loop ("itor != my_table->end()")
     causes the loop to terminate after processing the last row.
     The last clause ("++itor") causes the iterator (itor) to go on
-    to the next value.
+    to the next value. Inside the loop, the iterator is dereferenced and
+    then the value of the field of interest for the current record
+    is obtained as a double ("(*itor)["ph_time"].get()").
 
-    Inside the loop, the iterator is dereferenced "(*itor)" and
-    the resulting object's get method is called to fill the current
-    value of the ph_time column into the local ph_time_dbl variable.
-
-    \subsection read2 Reading Tabular Data (Second Method)
-    The method above is obviously straightforward. However, there
-    is a performance penalty associated with the body of the for
-    loop. Each time a value is filled into the local variable,
-    the column (or TLeaf) containing the data must be looked up
-    by name. For many applications this will not matter, but when
-    performance becomes an issue there is a more efficient way
-    of implementing the for loop:
+    In greater detail, the Iterator object dereferences to an object
+    of a type named Record (within the Table class namespace). The Record
+    type encapsulates the concept of a single record (i.e. row) in the
+    table. The Record type has an operator [](const std::string &) which
+    returns an object of a type named Cell (again, within the Table class
+    namespace) representing a particular cell in the table. Finally, the
+    Cell type contains a get() method to return the value as a double.
+    The following alternate implementation of the for loop above makes
+    these details more explicit:
 
 \verbatim
-  Table::Iterator itor = my_table->begin();
-  Table::Scalar<double> & ph_time_ref = (*itor)["ph_time"];
-  for (; itor != my_table->end(); ++itor) {
-    // Do something with the current value of ph_time_ref here.
+  // Example 4:
+  // Completely equivalent to Example 3:
+  // Loop over all records (rows) and extract values of ph_time column.
+  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+
+    // Dereference the iterator and bind it to a local reference:
+    Table::Record & record = *itor;
+
+    // Create a local reference representing the field (ph_time_cell) of
+    // interest:
+    Table::Cell & ph_time_cell(record["ph_time"]);
+
+    // Get the current value:
+    double ph_time_dbl = ph_time_cell.get();
+
+    // Do something useful with the value here ...
   }
 \endverbatim
 
-    The first line creates an iterator pointing to the beginning
-    of the table, just like the previous example. The second line
-    creates a local object (ph_time_ref) which refers to the
-    iterator's ph_time field. The lookup of which column contains
-    the ph_time information thus occurs only once, outside the loop.
-    Inside the loop, each time ph_time_ref is referred to, it will
-    magically have the correct current value without needing to
-    search for it again.
-
-    \subsection using_values How To Use Tabular Values
-    In both examples above, the body of the loop did not
-    include any useful code. In the first case, it is manifestly
-    clear that one could compute (with built-in double precision
-    math operators) whatever one wished in the loop using the
-    ph_time_dbl variable. In the second example, one might
-    reasonably ask how to compute anything with ph_time_ref. The
-    answer is that ph_time_ref is an object of a type (class) which
-    behaves mathematically just like a built-in double type. So
-    in the for loop in the first example, if one had:
+    \subsection modify Modifying Tabular Data
+    In examples 2 - 4, keyword and column values were read using "get"
+    methods. It is also poasible to modify table values using "set"
+    methods, such as:
 
 \verbatim
-    // Assume corrected_time and offset are both of type double:
-    corrected_time = ph_time_dbl - offset;
-\endverbatim
-
-    one could replace that in the for loop in the second example
-    by:
-
-\verbatim
-    // corrected_time and offset are both still type double:
-    corrected_time = ph_time_ref - offset;
-    //                       ^^^
-\endverbatim
-
-    \subsection read_write Reading and Writing Tabular Data (First Method)
-    The Table class also supports write access to keywords
-    using a "set" method:
-
-\verbatim
-  using namespace tip;
-  double offset = 100000.;
-  Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
-
-  Header & header = my_table->getHeader();
-  double tstart;
-  // Get current value:
-  header["tstart"].get(tstart);
-
-  // Subtract offset:
+  // Example 5:
+  // Modify tstart keyword:
+  double offset = 86400.;
   tstart -= offset;
-
-  // Write the modified value back into the table:
   header["tstart"].set(tstart);
-\endverbatim
 
-    and columns, also using "set":
-
-\verbatim
-  double ph_time_dbl;
+  // Modify ph_time column:
+  // Loop over all records (rows), extract and modify values of ph_time column.
   for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
-    // Get the cell containing the ph_time field from the iterator:
-    Table::Cell & ph_time_cell = (*itor)["ph_time"];
 
-    // Read the current value.
-    ph_time_cell.get(ph_time_dbl);
+    // Local double variable to hold the value of the field for each row:
+    double ph_time_dbl = (*itor)["ph_time"].get();
 
-    // Subtract an offset.
+    // Modify value:
     ph_time_dbl -= offset;
 
-    // Write the corrected value to the table:
-    ph_time_cell.set(ph_time_dbl);
+    // Write it back to the table:
+    (*itor)["ph_time"].set(offset);
   }
 \endverbatim
-
-    \subsection read_write2 Reading and Writing Tabular Data (Second Method)
-    The second method for reading above also supports writing:
 
     <hr>
     \section notes Release Notes
@@ -257,6 +227,7 @@
     forms, and if possible, the request will be satisfied.
 
     \subsection table Table::Scalar Class
+    WARNING: This class is deprecated. Don't start using it!
     Templated class which serves as an adaptor for the Cell class. It may
     be templated on any primitive type or string type (currently only type
     double will work.) A Scalar<T> object binds itself to a Cell reference, and
@@ -266,13 +237,11 @@
 
     \section jobOptions jobOptions
 
-    \section todo To do list:
+    \section todo Open Issues
     1. 4/2/2004: Memory leak in IFileSvc::editTable. See IFileSvc.cxx: TODO 1.
     2. 4/2/2004: Access should also be possible by extension number as well as name.
     3. 4/2/2004: For read-only access, need const Table * IFileSvc::readTable() and
        typedef Table::ConstIterator begin() const etc.
-    4. 4/2/2004: This document's examples include some mistakes! They should be redone
-       based on current live sample code.
     5. 4/2/2004: In RootExtensionManager::open() there are calls to Root's
        dynamic loader, which should be eliminated if possible by a requirements pattern.
        See RootExtensionManager:cxx: TODO 5.
@@ -283,5 +252,9 @@
        See src/test/test_tip_main.cxx: TODO 8.
     9. 4/2/2004: Bug in certain versions of cfitsio may prevent filtering syntax from
        working. See FitsExtensionManager.cxx: TODO 9.
+
+    \section done Resolved Issues
+    4. 4/2/2004: This document's examples include some mistakes! They should be redone
+       based on current live sample code. Done 4/6/2004.
 
 */
