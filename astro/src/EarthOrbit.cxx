@@ -122,7 +122,7 @@ JulianDate EarthOrbit::dateFromSeconds(double seconds)const{
 double EarthOrbit::phase(JulianDate jd) const
 {
     double elapse = (jd - JDStart)*SecondsPerDay;
-    return m_Omega0+m_dOmegadt*elapse;
+    return m_M0+m_dMdt*elapse;
     
 }
 
