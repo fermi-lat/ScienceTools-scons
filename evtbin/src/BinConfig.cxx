@@ -154,6 +154,8 @@ namespace evtbin {
       // Get remaining parameters needed for user defined bins from a bin file.
       par_group.Prompt(bin_file);
     } else if (bin_type == "SNR") {
+      par_group.Prompt(bin_begin);
+      par_group.Prompt(bin_end);
       par_group.Prompt(sn_ratio);
       par_group.Prompt(lc_emin);
       par_group.Prompt(lc_emax);
