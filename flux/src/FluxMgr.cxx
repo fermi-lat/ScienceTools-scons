@@ -20,6 +20,7 @@ $Header$
 
 #include <sstream>
 #include <map>
+#include <stdexcept>
 #define DECLARE_SPECTRUM(x)   extern const ISpectrumFactory& x##Factory; x##Factory.addRef();
 
 
@@ -256,6 +257,10 @@ std::vector<std::pair< std::string ,std::list<std::string> > > FluxMgr::sourceOr
 void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
 {   
     EventSource* e = source(source_name);
+    if( e==0 ) { 
+            throw std::invalid_argument(std::string("Did not find source ")+source_name);
+        }
+
     setExpansion(1.);
     double time=0.;
 
