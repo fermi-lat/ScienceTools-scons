@@ -8,8 +8,12 @@
 #include <string>
 
 #include "st_graph/PlotHist.h"
+#include "st_graph/ValueSet.h"
 
 namespace st_graph {
+
+  class IPlot;
+  class IPlotFrame;
 
   /** \class Engine
       \brief Interface which encapsulates a particular graphics implementation. This singleton has two purposes:
@@ -25,6 +29,8 @@ namespace st_graph {
 
       /// \brief Run the graphics engine, displaying all graphical objects currently constructed.
       virtual void run() = 0;
+
+      virtual IFrame * createMainFrame(unsigned int width, unsigned int height) = 0;
 
       /** \brief Create a plotter for a one dimensional histogram.
           \param title The title of the plot.
@@ -45,10 +51,12 @@ namespace st_graph {
       virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
         const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) = 0;
 
-    protected:
-      /// \brief The singleton engine.
-      static Engine * m_engine;
+      virtual IPlot * createPlot(IPlotFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+        const ValueSet & y, const ValueSet & z = ValueSet()) = 0;
 
+      virtual IPlotFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) = 0;
+
+    protected:
       /// \brief Create an engine.
       Engine();
 

@@ -14,8 +14,14 @@
 #include "TGWindow.h"
 #include "TSystem.h"
 
+#include "st_graph/IFrame.h"
+
 #include "RootEngine.h"
+#include "RootFrame.h"
+#include "RootPlot.h"
 #include "RootPlotHist.h"
+#include "RootPlotFrame.h"
+#include "STGMainFrame.h"
 
 namespace st_graph {
 
@@ -68,6 +74,10 @@ namespace st_graph {
     gApplication->Run(kTRUE);
   }
 
+  IFrame * RootEngine::createMainFrame(unsigned int width, unsigned int height) {
+    return new RootFrame(this, RootFrame::ancestor(), new STGMainFrame(this, width, height));
+  }
+
   PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
     const PlotHist::IntervalCont_t & intervals) {
     // Create Root-specific 1D plot object with the PlotHist interface.
@@ -80,11 +90,20 @@ namespace st_graph {
     return new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
   }
 
-  void RootEngine::addFrame(PlotHist * frame) {
+  IPlot * RootEngine::createPlot(IPlotFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+    const ValueSet & y, const ValueSet & z) {
+    return new RootPlot(parent, style, title, x, y, z);
+  }
+
+  IPlotFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
+    return new RootPlotFrame(this, parent, width, height);
+  }
+
+  void RootEngine::addFrame(IFrame * frame) {
     m_frames.push_back(frame);
   }
 
-  void RootEngine::removeFrame(PlotHist * frame) {
+  void RootEngine::removeFrame(IFrame * frame) {
     m_frames.remove(frame);
   }
 
