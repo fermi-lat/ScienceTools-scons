@@ -352,7 +352,7 @@ public:
                 =GPS::instance()->transformCelToGlast(time);
 
             //and do the transform:
-            setDir(celtoglast*unrotated());
+            setDir(celtoglast*(-unrotated()));
         }
     }
 
