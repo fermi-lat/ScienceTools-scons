@@ -3,6 +3,7 @@
 #define FACILITIES_UTIL_H
 
 #include <string>
+#include <vector>
 
 /** @file Util.h
     @author J. Bogart
@@ -52,7 +53,26 @@ namespace facilities {
     static const char* itoa(int val, std::string &outStr);
 
     /// converts an std::string to an integer
-    static int         atoi(const std::string& InStr);
+    static int atoi(const std::string& InStr);
+
+    /** This routine breaksdown a string into tokens, based on the
+        characters appearing in the string @a delimiters.
+        @param input       string to be tokenized
+        @param delimiters  string containing one or more delimiter characters
+        @param tokens      vector of strings to hold resulting tokens
+        @param clear       if true (default) @a tokens will be cleared
+                           at the start of processing
+    */
+    static void stringTokenize(std::string input, const std::string &delimiters,
+                               std::vector<std::string> &tokens,
+                               bool clear = true);
+
+    /** return the "non-directory" part of a (supposed) file identifier, @a path.
+        Environment variable translation should be done before calling @a basename.
+        @sa { Util::expandEnvVar }
+        @param path        string assumed to be a file identifier. 
+    */
+    static std::string basename(const std::string &path);
   };
 }
 
