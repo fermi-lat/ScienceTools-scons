@@ -183,7 +183,17 @@ void StGraphTestApp::testValueSet() {
 void StGraphTestApp::testPlots() {
   using namespace st_graph;
 
-  Engine & engine(Engine::instance());
+  // Create local reference to engine singleton. This engine is an abstract factory for graphical objects.
+  Engine * engine_p = 0;
+  try {
+    engine_p = &(Engine::instance());
+  } catch (const std::exception & x) {
+    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    return;
+  }
+
+  Engine & engine(*engine_p);
 
   // Set up some fake data.
   int num_pts = 10;
@@ -304,9 +314,15 @@ void StGraphTestApp::testGuis() {
       IFrame * m_ok_button;
   };
 
-  MyGui gui(Engine::instance());
+  try {
+    MyGui gui(Engine::instance());
 
-  gui.run();
+    gui.run();
+  } catch (const std::exception & x) {
+    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    return;
+  }
 }
 
 void StGraphTestApp::reportUnexpected(const std::string & text) const {
