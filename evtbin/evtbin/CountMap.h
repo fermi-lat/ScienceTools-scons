@@ -19,8 +19,8 @@ namespace evtbin {
     public:
       /** \brief Create the count map object.
       */
-      CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_pix_x, unsigned long num_pix_y, double pix_size,
-        double axis_rot, bool use_lb);
+      CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix,
+        double pix_scale, double axis_rot, bool use_lb, const std::string & ra_field, const std::string & dec_field);
 
       virtual ~CountMap() throw();
 

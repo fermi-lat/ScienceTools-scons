@@ -22,10 +22,11 @@ static const double pi = 3.14159265358979323846;
 
 namespace evtbin {
 
-  CountMap::CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_pix_x, unsigned long num_pix_y,
-    double pix_size, double axis_rot, bool use_lb): DataProduct(), m_hist(
-      LinearBinner(pix_size * ref_ra - num_pix_x / 2., pix_size * ref_ra + num_pix_x / 2., 1., "RA"), 
-      LinearBinner(pix_size * ref_dec - num_pix_y / 2., pix_size * ref_dec + num_pix_y / 2., 1., "DEC")
+  CountMap::CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix,
+    double pix_scale, double axis_rot, bool use_lb, const std::string & ra_field, const std::string & dec_field): DataProduct(),
+    m_hist(
+      LinearBinner(pix_scale * ref_ra - num_x_pix / 2., pix_scale * ref_ra + num_x_pix / 2., 1., ra_field), 
+      LinearBinner(pix_scale * ref_dec - num_y_pix / 2., pix_scale * ref_dec + num_y_pix / 2., 1., dec_field)
     ) {
     m_hist_ptr = &m_hist;
 
@@ -43,8 +44,8 @@ namespace evtbin {
     else throw std::runtime_error(std::string("CountMap::CountMap cannot handle projection type ") + proj);
 
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
-    astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_size,
-      ref_dec * pix_size, -pix_size, pix_size, axis_rot * pi / 180., use_lb);
+    astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
+      ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
   }
 
   CountMap::~CountMap() throw() {}
