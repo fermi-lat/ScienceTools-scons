@@ -31,7 +31,7 @@ namespace table {
   ITabularData * FitsExtensionUtils::getTabularData() {
     ITabularData * retval = 0;
     if (!m_data) {
-      retval = new TabularData<FitsExtensionUtils>(this);
+      retval = new TabularData<FitsExtensionUtils>(*this);
       m_data = retval;
     }
     return retval;

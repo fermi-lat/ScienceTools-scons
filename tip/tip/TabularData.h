@@ -27,29 +27,27 @@ namespace table {
       /** \brief Create a TabularData object which refers to the given utility object.
           \param implementor Pointer to the object which does the real work.
       */
-      TabularData(Implementor * implementor): ITabularData(), m_implementor(implementor) {
-        if (!m_implementor) throw TableException("TabularData::TabularData(Implementor *): "
-          "Cannot create TabularData object with NULL Implementor pointer");
-        m_implementor->openTable();
+      TabularData(Implementor & implementor): ITabularData(), m_implementor(implementor) {
+        m_implementor.openTable();
       }
 
       virtual ~TabularData() {}
 
       /** \brief Return the number of records in the current tabular data object.
       */
-      virtual Index_t getNumRecords() const { return m_implementor->getNumRecords(); }
+      virtual Index_t getNumRecords() const { return m_implementor.getNumRecords(); }
 
 
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
       virtual FieldIndex_t getFieldIndex(const std::string & field_name) const
-        { return m_implementor->getFieldIndex(field_name); }
+        { return m_implementor.getFieldIndex(field_name); }
 
       /** \brief Return the number of elements in the given field (the number of items in a vector column.
       */
       virtual Index_t getFieldNumElements(FieldIndex_t field_index) const
-        { return m_implementor->getFieldNumElements(field_index); }
+        { return m_implementor.getFieldNumElements(field_index); }
 
 
       /** \brief Get one or more values from the current tabular data object.
@@ -61,40 +59,40 @@ namespace table {
       */
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         bool * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         double * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         float * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         char * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         signed char * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         signed short * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         signed int * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         signed long * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned char * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned short * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned int * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned long * dest_begin) const
-        { m_implementor->getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
+        { m_implementor.getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin); }
 
       /** \brief Set one or more values in the current tabular data object.
           \param field_index The index of the field (column) to set.
@@ -105,43 +103,43 @@ namespace table {
       */
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         bool * dest_begin, bool * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         double * dest_begin, double * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         float * dest_begin, float * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         char * dest_begin, char * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         signed char * dest_begin, signed char * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         signed short * dest_begin, signed short * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         signed int * dest_begin, signed int * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         signed long * dest_begin, signed long * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned char * dest_begin, unsigned char * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned short * dest_begin, unsigned short * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned int * dest_begin, unsigned int * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end)
-        { m_implementor->setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+        { m_implementor.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
 
     private:
-      Implementor * m_implementor;
+      Implementor & m_implementor;
 
   };
 
