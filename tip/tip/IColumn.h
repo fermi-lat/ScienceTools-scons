@@ -1,0 +1,116 @@
+/** \file IColumn.h
+    \brief Generic abstract interface to columnar data.
+    \author James Peachey, HEASARC
+*/
+#ifndef tip_IColumn_h
+#define tip_IColumn_h
+
+#include <string>
+#include <vector>
+
+#include "tip/TipException.h"
+#include "tip/tip_types.h"
+
+namespace tip {
+
+  /** \class IColumn
+      \brief Generic abstract interface to columnar data.
+  */
+  class IColumn {
+    public:
+      virtual ~IColumn() throw() {}
+
+      /** \brief Get a value from this column. An implementation which just throws an exception is
+          provided in the base class to simplify derived classes which need only a small number of
+          the methods to function.
+      */
+      virtual void get(Index_t, bool &) const { unsupported("get(Index_t, bool &) "); }
+      virtual void get(Index_t, double &) const { unsupported("get(Index_t, double &) "); }
+      virtual void get(Index_t, float &) const { unsupported("get(Index_t, float &) "); }
+      virtual void get(Index_t, char &) const { unsupported("get(Index_t, char &) "); }
+      virtual void get(Index_t, signed char &) const { unsupported("get(Index_t, signed char &) "); }
+      virtual void get(Index_t, signed short &) const { unsupported("get(Index_t, signed short &) "); }
+      virtual void get(Index_t, signed int &) const { unsupported("get(Index_t, signed int &) "); }
+      virtual void get(Index_t, signed long &) const { unsupported("get(Index_t, signed long &) "); }
+      virtual void get(Index_t, unsigned char &) const { unsupported("get(Index_t, unsigned char &) "); }
+      virtual void get(Index_t, unsigned short &) const { unsupported("get(Index_t, unsigned short &) "); }
+      virtual void get(Index_t, unsigned int &) const { unsupported("get(Index_t, unsigned int &) "); }
+      virtual void get(Index_t, unsigned long &) const { unsupported("get(Index_t, unsigned long &) "); }
+      virtual void get(Index_t, std::string &) const { unsupported("get(Index_t, std::string &) "); }
+
+      virtual void get(Index_t, std::vector<bool> &) const { unsupported("get(Index_t, std::vector<bool> &) "); }
+      virtual void get(Index_t, std::vector<double> &) const { unsupported("get(Index_t, std::vector<double> &) "); }
+      virtual void get(Index_t, std::vector<float> &) const { unsupported("get(Index_t, std::vector<float> &) "); }
+      virtual void get(Index_t, std::vector<char> &) const { unsupported("get(Index_t, std::vector<char> &) "); }
+      virtual void get(Index_t, std::vector<signed char> &) const { unsupported("get(Index_t, std::vector<signed char> &) "); }
+      virtual void get(Index_t, std::vector<signed short> &) const { unsupported("get(Index_t, std::vector<signed short> &) "); }
+      virtual void get(Index_t, std::vector<signed int> &) const { unsupported("get(Index_t, std::vector<signed int> &) "); }
+      virtual void get(Index_t, std::vector<signed long> &) const { unsupported("get(Index_t, std::vector<signed long> &) "); }
+      virtual void get(Index_t, std::vector<unsigned char> &) const { unsupported("get(Index_t, std::vector<unsigned char> &) "); }
+      virtual void get(Index_t, std::vector<unsigned short> &) const { unsupported("get(Index_t, std::vector<unsigned short> &) ");}
+      virtual void get(Index_t, std::vector<unsigned int> &) const { unsupported("get(Index_t, std::vector<unsigned int> &) "); }
+      virtual void get(Index_t, std::vector<unsigned long> &) const { unsupported("get(Index_t, std::vector<unsigned long> &) "); }
+      virtual void get(Index_t, std::vector<std::string> &) const { unsupported("get(Index_t, std::vector<std::string> &) "); }
+
+      virtual void set(Index_t, const bool &) { unsupported("get(Index_t, bool &)"); }
+      virtual void set(Index_t, const double &) { unsupported("set(Index_t, const double &)"); }
+      virtual void set(Index_t, const float &) { unsupported("set(Index_t, const float &)"); }
+      virtual void set(Index_t, const char &) { unsupported("set(Index_t, const char &)"); }
+      virtual void set(Index_t, const signed char &) { unsupported("set(Index_t, const signed char &)"); }
+      virtual void set(Index_t, const signed short &) { unsupported("set(Index_t, const signed short &)"); }
+      virtual void set(Index_t, const signed int &) { unsupported("set(Index_t, const signed int &)"); }
+      virtual void set(Index_t, const signed long &) { unsupported("set(Index_t, const signed long &)"); }
+      virtual void set(Index_t, const unsigned char &) { unsupported("set(Index_t, const unsigned char &)"); }
+      virtual void set(Index_t, const unsigned short &) { unsupported("set(Index_t, const unsigned short &)"); }
+      virtual void set(Index_t, const unsigned int &) { unsupported("set(Index_t, const unsigned int &)"); }
+      virtual void set(Index_t, const unsigned long &) { unsupported("set(Index_t, const unsigned long &)"); }
+      virtual void set(Index_t, const std::string &) { unsupported("set(Index_t, const std::string &)"); }
+
+      virtual void set(Index_t, const std::vector<bool> &) { unsupported("set(Index_t, const std::vector<bool> &)"); }
+      virtual void set(Index_t, const std::vector<double> &) { unsupported("set(Index_t, const std::vector<double> &)"); }
+      virtual void set(Index_t, const std::vector<float> &) { unsupported("set(Index_t, const std::vector<float> &)"); }
+      virtual void set(Index_t, const std::vector<char> &) { unsupported("set(Index_t, const std::vector<char> &)"); }
+      virtual void set(Index_t, const std::vector<signed char> &)
+        { unsupported("set(Index_t, const std::vector<signed char> &)"); }
+      virtual void set(Index_t, const std::vector<signed short> &)
+        { unsupported("set(Index_t, const std::vector<signed short> &)"); }
+      virtual void set(Index_t, const std::vector<signed int> &)
+        { unsupported("set(Index_t, const std::vector<signed int> &)"); }
+      virtual void set(Index_t, const std::vector<signed long> &)
+        { unsupported("set(Index_t, const std::vector<signed long> &)"); }
+      virtual void set(Index_t, const std::vector<unsigned char> &)
+        { unsupported("set(Index_t, const std::vector<unsigned char> &)"); }
+      virtual void set(Index_t, const std::vector<unsigned short> &)
+        { unsupported("set(Index_t, const std::vector<unsigned short> &)"); }
+      virtual void set(Index_t, const std::vector<unsigned int> &)
+        { unsupported("set(Index_t, const std::vector<unsigned int> &)"); }
+      virtual void set(Index_t, const std::vector<unsigned long> &)
+        { unsupported("set(Index_t, const std::vector<unsigned long> &)"); }
+      virtual void set(Index_t, const std::vector<std::string> &)
+        { unsupported("set(Index_t, const std::vector<std::string> &)"); }
+
+      /** \brief Copy a cell from another column to this column. An implementation which just throws an exception is
+          provided in the base class to simplify derived classes which need only a small number of the methods to function.
+      */
+      virtual void copy(const IColumn *, Index_t, Index_t) { unsupported("copy(const IColumn *, Index_t, Index_t)"); }
+
+      /** \brief Return a flag indicating whether this column holds scalar data.
+      */
+      virtual bool isScalar() const { return true; }
+
+      /** \brief Return the name of the particular column implementation (subclass identifier).
+      */
+      virtual const std::string implementation() const = 0;
+
+    private:
+      /** \brief Private helper class to simplify throwing exceptions for unsupported features.
+          \param method The name of the method throwing the exception.
+      */
+      void unsupported(const std::string & method) const {
+        throw TipException(std::string("Method ") + method + " is not supported for the " + implementation() + " implementation");
+      }
+  };
+
+}
+
+#endif
