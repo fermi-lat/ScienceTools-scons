@@ -7,6 +7,7 @@ use st_app *
 use tip *
 
 apply_pattern ST_library option=-no_share
+apply_pattern ST_pfiles
 
 private
 
