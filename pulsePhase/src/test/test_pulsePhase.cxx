@@ -10,6 +10,7 @@ int main() {
   int status = 0;
 
   std::cerr.precision(16);
+  std::cout.precision(16);
 
   // Get top directory.
   const char * root_dir = getenv("PULSEPHASEROOT");
@@ -53,13 +54,19 @@ int main() {
     std::cerr << "ERROR: calc_phase using FrequencyCoeff produced phase == " << phase2 << " not " << phase << std::endl;
   }
 
+  TimingModel::FrequencyCoeff fc(29.9256509592326, -3.76909e-10, 1.29e-20);
+  TimingModel::PeriodCoeff pc = fc.invert();
+  // std::cout << pc.m_term[0] << std::endl;
+  // std::cout << pc.m_term[1] << std::endl;
+  // std::cout << pc.m_term[2] << std::endl;
+
   // Test PeriodCoeff class:
   // TODO: (Masa) Get correct coefficients here to make this test meaningful.
-  TimingModel model3(123456781.234564, 0.15, TimingModel::PeriodCoeff(29.9256509592326, -3.76909e-10, 1.29e-20));
+  TimingModel model3(123456781.234564, 0.15, pc);
   double phase3 = model3.calcPhase(987654321.456987);
-  if (phase3 != phase) {
+  if (phase2 != phase3) {
     status = 1;
-    std::cerr << "ERROR: calc_phase using PeriodCoeff produced phase == " << phase3 << " not " << phase << std::endl;
+    std::cerr << "ERROR: calc_phase using PeriodCoeff produced phase == " << phase3 << " not " << phase2 << std::endl;
   }
   
   delete events;
