@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+06-apr-2005 v2r2p2 JP Change code to eliminate compiler warnings on Windows.
 05-apr-2005 v2r2p1 JP Write floating-point keywords so they look like floating-point
                       values, even if they happen to convert to integer values. Some
                       internal refactoring concerning FITS file creation.
