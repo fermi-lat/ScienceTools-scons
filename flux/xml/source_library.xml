@@ -98,9 +98,10 @@
           </spectrum>
      </source>    
 
-    <!-- Test source, an AGN with extreme parameters -->
-    <!-- AGN source parameters are as follows:
-    l,b, flux, index, flareMult, flareAdd,flareDuty,flarePeriod, Emin, Emax -->
+    <!-- Test source, an AGN with extreme parameters
+    AGN source parameters are as follows:
+    l,b, flux, index, flareMult, flareAdd,flareDuty,flarePeriod, Emin, Emax 
+    NOTE: you can use Ra,Dec coordinates instead by specifying frame="equatorial" -->
 	<source name="AGN">
         <spectrum escale="GeV"> 
             <SpectrumClass name="AGNSpectrum" params="10 , 10 , 0.001 , 2.0 , 100.0 , 0.1 , 0.05 , 0.1 , 0.1 , 100"/> 

@@ -141,6 +141,8 @@ int main(int argn, char * argc[]) {
         galacticTest(&fm,"spread101010",count);
         std::cout << std::endl << "testing the galactic diffuse map: these photons should be mostly around b=0" << std::endl;
         galacticTest(&fm,"galdiffusemap",count);
+        std::cout << std::endl << "testing the AGN Source:" << std::endl;
+        galacticTest(&fm,"AGN",count);
         return 0;
     }
     std::string testfilename("testMgrOutput.out");

@@ -59,7 +59,8 @@
 
 <!-- if this element exists, the Spectrum object will generate the angles 
      - "earth" means we expect the spectrum to send an earth-based direction (costh,phi), 
-     and "galaxy" means we expect galactic coordinates (l,b) -->
+     and "galaxy" means we expect galactic coordinates (l,b),
+     and "equatorial" means we expect equatorial coordinates (Ra,Dec) -->
 <!ELEMENT use_spectrum EMPTY>
 <!ATTLIST use_spectrum frame CDATA "earth">
 
