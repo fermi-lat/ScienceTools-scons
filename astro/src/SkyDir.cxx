@@ -9,18 +9,19 @@
 #include "astro/SkyDir.h"
 
 using namespace astro;
+#include <string>
+#include <exception>
 
 bool  SkyDir::s_project_lb=false;  // If true, project uses l, b coords instead of RA, DEC
-float SkyDir::s_refRA=0;  // Projection Center RA
-float SkyDir::s_refDEC=0; // Projection Center DEC
+float SkyDir::s_refRA=0;  // Projection Center RA (radians)
+float SkyDir::s_refDEC=0; // Projection Center DEC (radians)
 SkyDir::ProjType SkyDir::s_projType=SkyDir::AIT; // Projection Type.  Valid values are CAR, SIN, 
 // TAN, ARC, NCP, GLS, MER, AIT, STG
 float SkyDir::s_refX=180.5; // Projection Output Center X
 float SkyDir::s_refY=90.5; // Projection Output Center Y
-float SkyDir::s_scaleX=1.0; // Projection X Scaling 1/degrees
+float SkyDir::s_scaleX=-1.0; // Projection X Scaling 1/degrees
 float SkyDir::s_scaleY=1.0; // Projection Y Scaling 1/degrees
 float SkyDir::s_rot=0;;   // Projection Rotation Angle
-
 namespace{
         static double DEGTORAD=M_PI/180.;
 }
@@ -166,10 +167,12 @@ std::pair<double,double> SkyDir::hammerAitoff()const{
 //                    coordinates instead of ra/dec.  Also it is implicit that 
 //                    ref_ra and ref_dec now refer to the projection center's 
 //                    coordinates in terms of l, b instead of ra, dec.
-void SkyDir::setProjection(const float ref_ra, const float ref_dec,
-                           const ProjType projType, const float myRef_x, const float myRef_y, 
-                           const float myScale_x, const float myScale_y, const float rot,
-                           const bool use_lb)
+void SkyDir::setProjection( float ref_ra,  float ref_dec,
+                            ProjType projType, 
+                            float myRef_x,  float myRef_y, 
+                            float myScale_x,  float myScale_y, 
+                            float rot,
+                            bool use_lb)
 {
     s_refRA = ref_ra;
     s_refDEC = ref_dec;
@@ -182,6 +185,24 @@ void SkyDir::setProjection(const float ref_ra, const float ref_dec,
     s_project_lb = use_lb;
 }
 
+void SkyDir::setProjection( float ref_ra,  float ref_dec,
+            const std::string& projName,  float myRef_x,  float myRef_y, 
+            float myScale_x,  float myScale_y,  float rot,
+            bool use_lb)
+{
+    const char * names[]={
+    "CAR", "SIN", "TAN", "ARC", "NCP", "GLS", "MER", "AIT", "STG"};
+
+    ProjType type=BAD;
+
+    for( int i = 0; i< sizeof(names)/sizeof(void*); ++i){
+        if( projName != std::string(names[i])) continue;
+            type=static_cast<ProjType>(i); break;
+    }
+    if( type==BAD) throw std::exception(("Unrecognized projection type: "+projName).c_str());
+    setProjection(ref_ra, ref_dec, type, myRef_x, myRef_y, myScale_x, myScale_y, rot, use_lb);
+
+}
 
 
 std::pair<double,double> SkyDir::project() const

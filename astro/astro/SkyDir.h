@@ -38,7 +38,7 @@ namespace astro {
         } CoordSystem ;
 
         //! projection types: MER is mercator, AIT, is Hammer-Aitoff...
-        typedef enum { CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG } ProjType; 
+        typedef enum { CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG, BAD } ProjType; 
 
         ///Constructors
         ///(l,b) or (Ra, Dec) or projection instanciation
@@ -94,6 +94,13 @@ namespace astro {
 
         /// General Projection Function: return projection for the object, given an object. 
         /// depends on static projection attributes
+
+        /** @brief version that just takes a 3-character name */
+        static void setProjection( float ref_ra,  float ref_dec,
+            const std::string& projTypeName,  float myRef_x,  float myRef_y, 
+            float myScale_x,  float myScale_y,  float rot,
+            bool use_lb);
+
         std::pair<double,double> project() const;
 
         /** @brief inverse projection function for reference: units are degrees
@@ -105,13 +112,7 @@ namespace astro {
         */
         static int inverseProjection( double point_x, double point_y, double *point_ra, double *point_dec);
 
-    private:
-        static HepRotation s_equatorialToGalactic;
-
-        Hep3Vector m_dir;
-        //  std::pair<double,double> setGalCoordsFromDir() const;
-        void setGalCoordsFromDir(double&, double &) const;
-
+        // access to all the projection coordinates
         static bool  s_project_lb;  // If true, project uses l, b coords instead of RA, DEC
         static float s_refRA;  // Projection Center RA
         static float s_refDEC; // Projection Center DEC
@@ -122,6 +123,14 @@ namespace astro {
         static float s_scaleX; // Projection X Scaling 1/degrees
         static float s_scaleY; // Projection Y Scaling 1/degrees
         static float s_rot;   // Projection Rotation Angle
+
+    private:
+        static HepRotation s_equatorialToGalactic;
+
+        Hep3Vector m_dir;
+        //  std::pair<double,double> setGalCoordsFromDir() const;
+        void setGalCoordsFromDir(double&, double &) const;
+
 
     };
 
