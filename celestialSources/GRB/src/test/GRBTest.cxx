@@ -107,7 +107,9 @@ int main(int argc, char** argv)
   return 0;
 }
 
-double CalculateFluence(double ee,double e1=cst::enmin*1e-6,double e2=cst::enmax*1e-6)
+double CalculateFluence(double ee/* MeV */,
+			double e1=cst::enmin*1e-6/* MeV */,
+			double e2=cst::enmax*1e-6/* MeV */)
 {
   double fluence;
   if (ee>=e1 && ee<=e2) 
@@ -132,7 +134,7 @@ int test1(int argc, char** argv)
   Vector dir;
   double cos_theta,phi;
   int current_arg = 1;
-  double fluence1;
+  double fluence1,fluence2;
   std::string arg_name(default_arg);
   vector<std::string> sources;
   
@@ -197,6 +199,7 @@ int test1(int argc, char** argv)
     {
       nume=0;
       fluence1=0.0;
+      fluence2=0.0;
       EventSource *e = fm.source(sources[i]);
       cout<<" Source Name = "<<sources[i]<<endl;
       name=sources[i].c_str();
@@ -230,6 +233,7 @@ int test1(int argc, char** argv)
 	  if (dt<DeadTime) dt=DeadTime;
 	  energy = f->energy();
 	  fluence1+=CalculateFluence(energy);
+	  fluence2+=CalculateFluence(energy,10.0,100.0);
 	  events->Fill();
 	  if (nume%1==0){
 	    cout<<
@@ -253,6 +257,7 @@ int test1(int argc, char** argv)
 	events->Print();
 	delete e;
 	cout<<"Fluence [erg/cm^2]="<<fluence1/(e->totalArea()*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
+	cout<<"Fluence (10-100MeV) [erg/cm^2]="<<fluence2/(e->totalArea()*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	//	events->Scan("energy:time:Rate:cos_theta:phi");
     } // For all the sources...
   TFile f("Events.root","recreate");

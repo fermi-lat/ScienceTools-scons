@@ -46,7 +46,7 @@ class GRBSpectrum : public Spectrum
    * Given \f$t_0\f$, it computes \f$t_1\f$ for which \f$\int_{t_0}^{t_1}1/Rate(t)dt=1\f$
    * and returns the time interval \f$t_1-t_0\f$
    */
-  double interval(double time)const;
+  double interval(double time);//const;
   // {return 1/rate(time);}
 
   //! returns the solid angle spanned by the source: set to 1.0 for GRBs.

@@ -38,8 +38,8 @@ namespace cst
   const double viscosity = 0.;
   /// Internal Parameters
   const double enmax     = 1.0e+20;
-  //! Min. photon energy detectable by GLAST: set to 10 MeV
-  const double enph      = 1.0e+7; 
+  //! Min. photon energy detectable by GLAST: set to 1 MeV
+  const double enph      = 1.0e+6; 
   const double enmin     = 1.0e+3;
   const double dt1       = 10000.;
   const int nstep        = 200;
@@ -53,7 +53,7 @@ namespace cst
   const double ch4L      = 0.01e+9;
   const double ch4H      = 1.00e+9;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 1.0; 
+  const float flagIC     = 0.0; 
 }
 
 class GRBConstants 

@@ -117,7 +117,8 @@ double GRBShock::fred(double ee,double tt)
   //  cout<<m_riset<<"  "<<Emin<<"  "<<Emax<<"  "<<m_gf<<endl;
   //riset=(m_riset*(m_gf/(ee)));
   riset=(m_riset*sqrt(1.0e+10/pow(ee,2.0)));
-  if (riset<5e-2) riset=5e-2;
+  //This is a control...
+  //  if (riset<1.0e-5) riset=1.0e-5;
   //  cout<<riset<<endl;
   double tp=m_tobs+riset;
   

@@ -199,6 +199,7 @@ void test2()
   ////////////////  Compute the Total Flux ////////////////
   //------------------------------------------------------//  
   double ftottot=0.0;
+  double ftot1=0.0;
   std::vector<double> m_time;
   TH1D *h1 = new TH1D("h1","h1",cst::enstep,log10(cst::enmin),log10(cst::enmax));
   
@@ -255,10 +256,12 @@ void test2()
 	  cc2->Update();   
 	}
       ftottot+=_myGRB->IEnergy(cst::enmin)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      ftot1+=_myGRB->IEnergy(5.0e+4,3.0e+5)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
       //erg
       cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<ftottot<<endl;
     }
   cout<<"Fluence [erg/cm^2] = "<<ftottot/_myGRB->Area()<<endl;
+  cout<<"Fluence (50 KeV - 300 KeV) [erg/cm^2] = "<<ftot1/_myGRB->Area()<<endl;
   
   //////////////////////////////////////////////////////////
   for (int t=0;t<cst::nstep;t++)

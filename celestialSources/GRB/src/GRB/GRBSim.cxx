@@ -51,8 +51,8 @@ GRBSim::GRBSim()
   imax=myParam->Nshell();
   for (i=0;i<=imax;i++)
     {
-      cout<<imax<<endl;
-      cout<<RandFlat::shoot(1.0)<<endl;
+      //      cout<<imax<<endl;
+      RandFlat::shoot(1.0);
     }
   m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)-0.4,(RandFlat::shoot(1.0))*2*M_PI);
   
@@ -98,7 +98,6 @@ void GRBSim::Start()
     GRBShell* iShell = new GRBShell();
     
     gi=iShell->generateGamma(myParam->Gamma0(),myParam->DGamma()); 
-    cout<<gi<<endl;
     iShell->setGamma(gi);
 
     iShell->setMass(ei/(iShell->Gamma()*cst::c2));
@@ -169,7 +168,7 @@ void GRBSim::Start()
 	      // Fsyn & Fic are in erg/s/eV ; sum is in ergs
 	      ssum += (
 		       theShocks[i]->Fsyn(m_energy[en],tt*dt)
-		       +flagIC
+		       +0.0*flagIC
 		       *theShocks[i]->Fic(m_energy[en],tt*dt)
 		       )
 		*m_de[en]*dt;
@@ -181,7 +180,7 @@ void GRBSim::Start()
   //  cout<<"...Compute Intervals..."<<endl;
   //ComputeIntervals();
   //cout<<"...done..."<<endl;
-  m_DeadTime=1e-3;
+  m_DeadTime=1e-4;
   //  TotalFlux();
 }
 
@@ -295,7 +294,7 @@ double GRBSim::IRate(double enmin)
   return flux;  
 }
 /*------------------------------------------------------*/
-double GRBSim::IEnergy(double enmin)
+double GRBSim::IEnergy(double enmin,double enmax)
 {
   // Integrated flux of energy for energy > enmin
   // that flows in a time step dt .
@@ -303,7 +302,7 @@ double GRBSim::IEnergy(double enmin)
   double dt=m_tmax/nstep;
   for (int en=0;en<enstep;en++)
     {
-      if(m_energy[en]>=enmin)
+      if(m_energy[en]>=enmin && m_energy[en]<=enmax)
 	{  
 	  flux +=m_energy[en]*m_spectrum[en]*(m_de[en])*(1.0e-6)*dt;
 	  //eV/m^2
@@ -312,50 +311,10 @@ double GRBSim::IEnergy(double enmin)
   return flux;  
 }
 /*-----------------------------------------------------
-void GRBSim::ComputeIntervals(){
-  //  std::vector<double> Intervals;
-  double sum;
-  double t0=1.0e-9;
-  double t1;
-  double dt=1.0e-2;
-  while (t0<=m_tmax){
-    sum=0.0;
-    t1=t0;
-    while (sum<1.0){
-      ComputeFlux(t1);
-      sum+=IRate()*dt;
-      t1+=dt;
-    }
-    cout<<t0<<"  "<<t1<<"   "<<m_tmax<<endl;
-    m_intervals.push_back(t1);
-    t0+=dt;
-  }
-  //  return Intervals;
-}
-
-double GRBSim::FindInterval(double time)
-{
-  int i=0;
-  double t=1.0e-9;
-  if (time >=m_tmax) 
-    {
-      return m_intervals.back();
-    }
-  else
-    {
-      while(t<time)
-	{
-	  t=+1.0e-3;
-	  i++;
-	}
-    }
-  return m_intervals[i];
-}
-/*------------------------------------------------------*/
 
 float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, double emin)
 {
-  cout<<" Energy Min ="<<emin<<endl;
+  //  cout<<" Energy Min ="<<emin<<endl;
   int nbins = spctrmVec.size();
   if(nbins==0) return 0.0;
     

@@ -60,9 +60,7 @@ void GRBConstants::ReadParam(){
   f1.getline(buf,100);
   sscanf(buf,"%lf",&g1);
   setDGamma(g1);
-  cout<<g0<<"  "<<g1<<endl;
-  
-      
+        
   f1.close();
 
 }

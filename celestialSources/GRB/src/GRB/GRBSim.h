@@ -87,7 +87,7 @@ class GRBSim
    * is to avoid generation of low energy photons without interest to GLAST. 
 
    */
-  double              IEnergy(double enmin=cst::enph);
+  double              IEnergy(double enmin=cst::enph,double enmax=cst::enmax);
 
   /*!
    * \brief returns a photon energy sampled from the current spectrum vector.

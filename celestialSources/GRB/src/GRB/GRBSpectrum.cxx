@@ -15,7 +15,6 @@ const ISpectrumFactory& GRBSpectrumFactory = factory;
 
 GRBSpectrum::GRBSpectrum(const std::string& params) 
 {
-  std::cout<<"FUCK"<<std::endl;
   m_grbsim = new GRBSim();
   int flag=0;
   while(flag==0)
@@ -63,14 +62,10 @@ double GRBSpectrum::rate(double time) const
   return m_grbsim->IRate(); // in ph/(m^2 s) 
   // return 1; // in ph/(m^2 s) 
 }
-/*
-double GRBSpectrum::interval(double time) const
+
+double GRBSpectrum::interval(double time)// const
 {
-  return  m_grbsim->FindInterval(time);
-}
-*/
-double GRBSpectrum::interval(double time) const
-{
+  //  cout<<"INTERVAL"<<endl;
   /// test to implement the right rate...
   double sum=0.0;
   double temp;
