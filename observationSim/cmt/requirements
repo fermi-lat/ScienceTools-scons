@@ -41,8 +41,8 @@ library observationSim -no_share $(my_headers) \
  ScDataContainer.cxx\
  FitsTable.cxx\
  LatSc.cxx\
- EgretSc.cxx\
- trapfpe.c
+ EgretSc.cxx
+# trapfpe.c
 
 # test application
 application test_observationSim test/*.cxx
