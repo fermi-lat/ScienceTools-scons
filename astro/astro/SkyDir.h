@@ -41,7 +41,7 @@ namespace astro {
         typedef enum { CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG } ProjType; 
 
         ///Constructors
-        ///(l,b) or (Ra, Dec) instantiation
+        ///(l,b) or (Ra, Dec) or projection instanciation
         SkyDir(double param1=0, double param2=0, CoordSystem inputType = EQUATORIAL);
 
         //! initialize from a vector direction
@@ -100,7 +100,7 @@ namespace astro {
 
      	@param point_x     coordinates of the projected point
 	@param point_y          in the projection coordinate system
-	@param point_ra    ra and dec of the point to 
+	@param point_ra    ra and dec (radians) of the point to 
 	@param point_dec        be projected        
         */
         static int inverseProjection( double point_x, double point_y, double *point_ra, double *point_dec);

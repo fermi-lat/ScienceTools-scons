@@ -51,13 +51,11 @@ SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
         //here we construct the cartesian celestial vector
         m_dir = Hep3Vector( cos(ra)*cos(dec), sin(ra)*cos(dec) , sin(dec) );        
     }else if(inputType == PROJECTION){
-        double ra, dec;
-        inverseProjection(param1, param2, &ra, &dec);
+        double ra_rad, dec_rad;
+        inverseProjection(param1, param2, &ra_rad, &dec_rad);
 
-        ra*=M_PI/180;
-        dec*=M_PI/180.;
-        Hep3Vector t = Hep3Vector( cos(ra)*cos(dec), sin(ra)*cos(dec) , sin(dec) );        
-        if( s_project_lb){
+        Hep3Vector t = Hep3Vector( cos(ra_rad)*cos(dec_rad), sin(ra_rad)*cos(dec_rad) , sin(dec_rad) );        
+        if( !s_project_lb){
             m_dir = t;
         }else{
             m_dir = s_equatorialToGalactic.inverse()* t;
