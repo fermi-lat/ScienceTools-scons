@@ -1,4 +1,4 @@
-/** \file RootExtensionUtils.cxx
+/** \file RootExtensionManager.cxx
 
     \brief Implementation of utilities to help manage Root specific table access.
 
@@ -41,29 +41,29 @@ namespace table {
   }
 
   // Construct without opening the file.
-  RootExtensionUtils::RootExtensionUtils(const std::string & file_name, const std::string & ext_name):
+  RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_branch_lookup(), m_leaves(), m_num_records(0), m_fp(0),
     m_tree(0), m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
-  RootExtensionUtils::~RootExtensionUtils() { delete m_data; delete m_header; close(); }
+  RootExtensionManager::~RootExtensionManager() { delete m_data; delete m_header; close(); }
 
-  IHeaderData * RootExtensionUtils::getHeaderData() {
-    if (!m_header) m_header = new HeaderData<RootExtensionUtils>(*this);
+  IHeaderData * RootExtensionManager::getHeaderData() {
+    if (!m_header) m_header = new HeaderData<RootExtensionManager>(*this);
     return m_header;
   }
 
-  ITabularData * RootExtensionUtils::getTabularData() {
+  ITabularData * RootExtensionManager::getTabularData() {
     ITabularData * retval = 0;
     if (!m_data) {
-      retval =  new TabularData<RootExtensionUtils>(*this);
+      retval =  new TabularData<RootExtensionManager>(*this);
       m_data = retval;
     }
     return retval;
   }
 
   // Subclasses call this to open the file and position it to the desired extension.
-  void RootExtensionUtils::open() {
+  void RootExtensionManager::open() {
     // Most of the following block of code was taken from the tuple package, by Toby Burnett.
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
     // cvs revision 1.8
@@ -120,7 +120,7 @@ namespace table {
   }
 
   // Close file.
-  void RootExtensionUtils::close() {
+  void RootExtensionManager::close() {
     m_branch_lookup.clear();
     for (std::vector<LeafBuffer *>::reverse_iterator it = m_leaves.rbegin(); it != m_leaves.rend(); ++it)
       delete *it;
@@ -128,13 +128,13 @@ namespace table {
     delete m_fp;
   }
 
-  void RootExtensionUtils::openTable() {
+  void RootExtensionManager::openTable() {
     // Open the actual file and move to the right extension.
     if (0 == m_fp) open();
 
   }
 
-  FieldIndex_t RootExtensionUtils::getFieldIndex(const std::string & field_name) const {
+  FieldIndex_t RootExtensionManager::getFieldIndex(const std::string & field_name) const {
     // Look up the given field (branch) name:
     std::map<std::string, FieldIndex_t>::iterator itor = m_branch_lookup.find(field_name);
 
@@ -174,11 +174,11 @@ namespace table {
     return itor->second;
   }
 
-  Index_t RootExtensionUtils::getFieldNumElements(FieldIndex_t) const {
+  Index_t RootExtensionManager::getFieldNumElements(FieldIndex_t) const {
     return 1;
   }
 
-  std::string RootExtensionUtils::formatWhat(const std::string & msg) const {
+  std::string RootExtensionManager::formatWhat(const std::string & msg) const {
     std::string retval = msg;
     if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;
     retval += " in file " + m_file_name;

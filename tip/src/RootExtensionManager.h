@@ -1,11 +1,11 @@
-/** \file RootExtensionUtils.h
+/** \file RootExtensionManager.h
 
     \brief Utilities to help manage Root specific table access. These classes are not part of the API.
 
     \author James Peachey, HEASARC
 */
-#ifndef table_RootExtensionUtils_h
-#define table_RootExtensionUtils_h
+#ifndef table_RootExtensionManager_h
+#define table_RootExtensionManager_h
 
 #include <map>
 #include <sstream>
@@ -14,7 +14,7 @@
 
 #include "TTree.h"
 
-#include "table/IExtensionData.h"
+#include "table/IExtensionManager.h"
 #include "table/TableException.h"
 #include "table/table_types.h"
 
@@ -46,25 +46,25 @@ namespace table {
   template <typename T>
   inline void LeafBuffer::get(T & val) const { val = T(*static_cast<const double *>(m_buf)); };
 
-  /** \class RootExtensionUtils
+  /** \class RootExtensionManager
 
       \brief Low level interface to Root format extensions. This is not part of the API.
 
       This class is a standalone utility class which encapsulates Root access. It also
       acts as a factory for creating Root-specific header and data objects, which refer back to the
-      RootExtensionUtils object which created them.
+      RootExtensionManager object which created them.
   */
-  class RootExtensionUtils : public IExtensionData {
+  class RootExtensionManager : public IExtensionManager {
     public:
       /** \brief Create an object to provide low-level access to the given Root extension.
           \param file_name The name of the Root file.
           \param ext_name The name of the Root extension.
       */
-      RootExtensionUtils(const std::string & file_name, const std::string & ext_name);
+      RootExtensionManager(const std::string & file_name, const std::string & ext_name);
 
       /** \brief Destructor. Closes file if it is open.
       */
-      virtual ~RootExtensionUtils();
+      virtual ~RootExtensionManager();
 
       /** \brief Create a header object which refers to this file. Caller is responsible for deleting
           the header object.
@@ -152,14 +152,14 @@ namespace table {
 
   // Getting keywords.
   template <typename T>
-//  inline void RootExtensionUtils::getKeywordGeneric(const std::string & name, T & value) const {
-  inline void RootExtensionUtils::getKeywordGeneric(const std::string &, T &) const {
+//  inline void RootExtensionManager::getKeywordGeneric(const std::string & name, T & value) const {
+  inline void RootExtensionManager::getKeywordGeneric(const std::string &, T &) const {
     throw TableException("Keyword access not yet implemented for Root files.");
   }
 
   // Getting columns.
   template <typename T>
-  inline void RootExtensionUtils::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
+  inline void RootExtensionManager::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
     T * dest_begin) const {
     m_tree->GetEntry(record_index);
     if (src_begin + 1 != src_end) throw TableException("Getting vectors from Root files not working yet.");
@@ -168,9 +168,9 @@ namespace table {
 
   // Setting columns.
   template <typename T>
-//  inline void RootExtensionUtils::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
+//  inline void RootExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
 //    T * dest_begin, T * dest_end) {
-  inline void RootExtensionUtils::setCellGeneric(int , Index_t , Index_t ,
+  inline void RootExtensionManager::setCellGeneric(int , Index_t , Index_t ,
     T *, T *) {
     throw TableException("Write access not yet implemented for Root files.");
   }

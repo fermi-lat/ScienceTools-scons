@@ -1,11 +1,11 @@
-/** \file IExtensionData.h
+/** \file IExtensionManager.h
 
     \brief Abstract interface to a FITS-like extension, containing a header and some sort of data (table or image).
 
     \author James Peachey, HEASARC
 */
-#ifndef table_IExtensionData_h
-#define table_IExtensionData_h
+#ifndef table_IExtensionManager_h
+#define table_IExtensionManager_h
 
 #include <string>
 
@@ -14,13 +14,13 @@ namespace table {
   class IHeaderData;
   class ITabularData;
 
-  /** \class IExtensionData
+  /** \class IExtensionManager
 
       \brief Abstract interface to a FITS-like extension, containing a header and some sort of data (table or image).
   */
-  class IExtensionData {
+  class IExtensionManager {
     public:
-      virtual ~IExtensionData() {}
+      virtual ~IExtensionManager() {}
 
       /** \brief Return an interface for accessing this extensions header properties (i.e. keywords).
       */

@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "table/IExtensionData.h"
+#include "table/IExtensionManager.h"
 #include "table/Header.h"
 #include "table/TableException.h"
 #include "table/table_types.h"
@@ -25,10 +25,10 @@ namespace table {
       /** \brief Create a new extension object from the given abstract extension data encapsulation.
           \param extension_data The extension data (concrete instances are FITS or Root specific).
       */
-      Extension(IExtensionData * extension_data): m_header(0), m_extension_data(extension_data) {
+      Extension(IExtensionManager * extension_data): m_header(0), m_extension_data(extension_data) {
         if (m_extension_data) m_header = new Header(m_extension_data->getHeaderData());
-        else throw TableException("Extension::Extension(IExtensionData *): Cannot create Extension object "
-          "with NULL IExtensionData pointer.");
+        else throw TableException("Extension::Extension(IExtensionManager *): Cannot create Extension object "
+          "with NULL IExtensionManager pointer.");
       }
 
       /** \brief Destruct an extension object.
@@ -43,7 +43,7 @@ namespace table {
 
     private:
       Header * m_header;
-      IExtensionData * m_extension_data;
+      IExtensionManager * m_extension_data;
   };
 
 }

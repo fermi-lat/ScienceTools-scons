@@ -10,8 +10,8 @@
 #include <string>
 
 #include "table/Extension.h"
+#include "table/IExtensionManager.h"
 #include "table/Iterator.h"
-#include "table/IExtensionData.h"
 #include "table/Ref.h"
 #include "table/TableException.h"
 #include "table/TableRecord.h"
@@ -60,10 +60,10 @@ namespace table {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
-      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(0) {
+      Table(IExtensionManager * extension_data): Extension(extension_data), m_tab_data(0) {
         if (extension_data) m_tab_data = extension_data->getTabularData();
-        else throw TableException("Table::Table(IExtensionData *): "
-          "Cannot create Table with NULL IExtensionData pointer.");
+        else throw TableException("Table::Table(IExtensionManager *): "
+          "Cannot create Table with NULL IExtensionManager pointer.");
       }
 
       virtual ~Table() {}

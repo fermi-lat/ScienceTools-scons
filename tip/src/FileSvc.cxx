@@ -20,12 +20,12 @@ namespace table {
 
   Table * FitsFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
     Table * retval = 0;
-    IExtensionData * data = 0;
+    IExtensionManager * data = 0;
     try {
       try {
         data = new FitsExtensionManager(file_name, table_name);
       } catch(TableException & x) {
-        data = new RootExtensionUtils(file_name, table_name);
+        data = new RootExtensionManager(file_name, table_name);
       }
       retval = new Table(data);
     } catch(...) {

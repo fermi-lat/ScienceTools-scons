@@ -14,7 +14,7 @@
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
-#include "table/IExtensionData.h"
+#include "table/IExtensionManager.h"
 #include "table/TableException.h"
 #include "table/table_types.h"
 
@@ -31,7 +31,7 @@ namespace table {
       acts as a factory for creating FITS-specific header and data objects, which refer back to the
       FitsExtensionManager object which created them.
   */
-  class FitsExtensionManager : public IExtensionData {
+  class FitsExtensionManager : public IExtensionManager {
     public:
       /** \brief Create an object to provide low-level access to the given FITS extension.
           \param file_name The name of the FITS file.
