@@ -20,6 +20,12 @@ namespace tip {
 
   // Get the instance of thie factory.
   IFileSvc & IFileSvc::instance() {
+    static bool first_time = true;
+    if (first_time) {
+      // Make sure global initialization has been performed:
+      globalInit();
+    }
+
     // Create the singleton factory.
     static IFileSvc s_file_factory;
 
@@ -28,7 +34,7 @@ namespace tip {
 
   // Perform global initializations.
   void IFileSvc::globalInit() {
-     RootExtensionManager::resetSigHandlers();
+    RootExtensionManager::resetSigHandlers();
   }
 
   // Destructor for a file service.
