@@ -12,7 +12,8 @@ namespace facilities {
   const double Timestamp::inverseNano = 1000 * 1000 * 1000;
   const int    Timestamp::inverseNanoInt = 1000 * 1000 * 1000;
   const long int Timestamp::maxInt = 0x7fffffff;
-
+  
+  Timestamp::TZOffset Timestamp::s_tz;
 
   // return current time (resolution of 1 second)
   Timestamp::Timestamp() : m_nano(0), m_isDelta(false) {
@@ -23,7 +24,7 @@ namespace facilities {
   Timestamp::Timestamp(long int seconds, int nano, bool isDelta)
     : m_time((time_t) seconds), m_nano(nano), m_isDelta(isDelta)
   {
-    if  ((nano >= inverseNanoInt)  || (nano < 0))
+    if  ((nano >= inverseNanoInt)  || (nano < 0) || (seconds < 0))
       throw BadTimeInput("facilities::Timestamp bad nano argument");
   
     if (m_isDelta) {
@@ -38,15 +39,14 @@ namespace facilities {
     if (!isDelta) {
       secs = (julian - julian1970) * secPerDay;
 
-      if ((fabs(secs) > maxInt)) 
-        throw BadTimeInput("Julian time not in range [1902, 2037]");
+      if ((fabs(secs) > maxInt) || (secs < 0) )
+        throw BadTimeInput("Julian time not in range [1970, 2037]");
     }
     else {
       secs = julian * secPerDay;
       if ((secs > maxInt)  || (secs < 0) )
         throw BadTimeInput("Julian delta time negative or too large");
       m_time = (long int) secs;
-      //      m_strTime.clear();
     }
     m_time = (long int) secs;
 
@@ -75,7 +75,7 @@ namespace facilities {
         (hour < 0) || (hour > 23) || 
         (minute < 0) || (minute > 59) || 
         (second < 0 ) || (second >= 60) ||
-        (year < 1902) || (year > 2037) || 
+        (year < 1970) || (year > 2037) || 
         (nano < 0 ) || (nano >= inverseNanoInt) ) 
       throw BadTimeInput("facilities::Timestamp Bad subfield");
 
@@ -88,10 +88,11 @@ namespace facilities {
     fields.tm_wday = -1;
     fields.tm_yday = -1;
     
-    fields.tm_isdst = 0;   // daylight savings time?
+    // let system figure out whether daylight savings time is in effect
+    fields.tm_isdst = 0;
 
     //    m_time = timegm(&fields);
-    m_time = mktime(&fields);
+    m_time = mktime(&fields) - Timestamp::s_tz.m_tzseconds;
   }
 
   std::string Timestamp::getString() const {
@@ -119,7 +120,7 @@ namespace facilities {
     if (pos >= strTime.size()) return 0;
 
     fields.tm_year = atoi((strTime.substr(oldPos, pos)).c_str()) - 1900;
-    if ((fields.tm_year < 2) || (fields.tm_year > 137)) 
+    if ((fields.tm_year < 70) || (fields.tm_year > 137)) 
       throw BadTimeInput("facilities::Timestamp  bad year");
     oldPos = pos + 1;
     pos = strTime.find(delim, oldPos);
@@ -178,8 +179,7 @@ namespace facilities {
     fields.tm_wday = -1;
     fields.tm_yday = -1;
     fields.tm_isdst = 0;
-    //    return timegm(&fields);
-    return mktime(&fields);
+    return mktime(&fields)  - Timestamp::s_tz.m_tzseconds;
   }
   
   void Timestamp::toString(time_t bin, std::string& strTime) {
@@ -235,10 +235,11 @@ namespace facilities {
     }
     else {         // absolute time minus a delta
       double diff = m_time - delta.m_time;
-      if (-diff > maxInt) {
+      //      if (-diff > maxInt) {
+      if (diff < 0) {
         throw BadTimeInput("facilities::Timestamp out of range");
       }
-      if ((-diff == maxInt) && (m_nano < delta.m_nano)) {
+      if ((diff == 0) && (m_nano < delta.m_nano)) {
         throw BadTimeInput("facilities::Timestamp out of range");
       }
     }
@@ -250,4 +251,26 @@ namespace facilities {
     }
     return *this;
   }
+
+  Timestamp::TZOffset::TZOffset() {
+    struct tm fields;
+
+    // Set it up for Jan 1, 1970 at 12:00
+    fields.tm_year = 70;
+    fields.tm_mon = 0;
+    fields.tm_mday = 1;
+    fields.tm_hour = 12;
+    fields.tm_min = 0;
+    fields.tm_sec = 0;
+    fields.tm_isdst = 0;
+
+    m_tzseconds = mktime(&fields) - 12*60*60;
+    m_isDst = fields.tm_isdst;
+  }
 }
+
+
+
+
+
+

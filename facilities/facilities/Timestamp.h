@@ -20,20 +20,20 @@ namespace facilities {
   }; 
 
 
-  /** Timestamp class, valid for dates from 1902 through 2037 and for
+  /** Timestamp class, valid for dates from 1970 through 2037 and for
       non-negative delta times of up to about 68 years 
 
       Supports comparisons, addition and subtraction where sensible
 
       Input to constructors may be
               Julian date      
-              seconds before or since start of 1970, Jan. 1 with optional
+              seconds since start of 1970, Jan. 1 with optional
                   nanosecond field
               individual fields (year, month, etc.)
               string format            
 
            yyyy-mm-dd hh:mm:ss
-                             1901 < yyyy < 2038
+                             1969 < yyyy < 2038
                           where 0 < mm < 13
                                 0 < dd < 32
                                -1 < hh < 24
@@ -133,6 +133,18 @@ namespace facilities {
     static const double  inverseNano;
     static const int     inverseNanoInt;
     static const long int maxInt;
+
+    /// Representation of nominal start of time -- Jan 1, 1970 --
+    /// will change between Visual Studio V6 and V7.  Time zone
+    /// also has to be discovered dynamically, but only once.
+    /// Do the computation in the constructor of a private class.
+    class TZOffset {
+    public:
+      TZOffset();          
+      long int m_tzseconds;     // 0 for GMT, 28800 for PDT, etc.
+      int      m_isDst;   // Not yet sure if we need it
+    };
+    static  TZOffset s_tz;
 
     /// Return "standard" binary time: count in seconds since 1 jan 1970
     static time_t toBinary(const std::string& strTime); 
