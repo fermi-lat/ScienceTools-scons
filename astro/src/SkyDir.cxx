@@ -17,19 +17,6 @@ namespace{
         static double DEGTORAD=M_PI/180.;
 }
 
-class SkyDir::Exception : public std::exception 
-    {
-    public:
-        Exception() {}
-        Exception(std::string errorString) 
-            : m_what(errorString)
-        {}
-
-        virtual ~Exception() throw() {}
-        virtual const char *what() const throw() {return m_what.c_str();}
-    protected:
-        std::string m_what;
-    };
 
 
 /** @brief initialize from (ra, dec), or (l,b)
@@ -58,9 +45,7 @@ SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
         m_dir = Hep3Vector( cos(ra)*cos(dec), sin(ra)*cos(dec) , sin(dec) );        
     }else{
         //improper coordinate system declaration - default things and say so.
-        throw("Improper coordinate System declaration in SkyDir" );
-
-        m_dir = Hep3Vector(0,0,1);
+        throw std::invalid_argument("Improper coordinate System declaration in SkyDir" );
     }
 
 }
@@ -76,30 +61,35 @@ SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
 }
 
 /** @brief initialize from projected coordinates
+
 @param param1 projected equivalent to ra or l, in degrees
 @param param2 projected equivalent dec or b, in degrees
 @param projection used to deproject these coordinates
 */
-SkyDir::SkyDir(double param1, double param2, const SkyProj& projection, bool galactic)
+SkyDir::SkyDir(double param1, double param2, const SkyProj& projection)
 {
-   double ra_rad, dec_rad;
-   std::pair<double,double> s;
-   // Deproject the coordinates to find ra/dec (or l/b)
-   s = projection.pix2sph(param1, param2);
+   // convert from pixel to ra/dec (or l/b)
+   std::pair<double,double> s = projection.pix2sph(param1, param2);
 
-   ra_rad = s.first * M_PI/180.;
-   dec_rad = s.second * M_PI/180.;
+   double ra_rad = s.first * M_PI/180.;
+   double dec_rad = s.second * M_PI/180.;
 
    Hep3Vector t = Hep3Vector( cos(ra_rad)*cos(dec_rad), sin(ra_rad)*cos(dec_rad) , sin(dec_rad) );        
-   if( !galactic){
+   if( !projection.isGalactic()){
+       // ctype1 specified RA
       m_dir = t;
    }else{
+       // ctype1 specified GLON: convert to galactic
       m_dir = s_equatorialToGalactic.inverse()* t;
    }
 
 }
 
-HepRotation SkyDir::s_equatorialToGalactic = HepRotation().rotateZ(-282.8592*M_PI/180).rotateX(-62.8717*M_PI/180).rotateZ(32.93224*M_PI/180);
+HepRotation SkyDir::s_equatorialToGalactic 
+= HepRotation()
+    .rotateZ(-282.8592*M_PI/180)
+    .rotateX(-62.8717 *M_PI/180)
+    .rotateZ( 32.93224*M_PI/180);
 
 void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
 
@@ -112,7 +102,6 @@ void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
     l = atan2(pointingin.y(), pointingin.x())*180/M_PI;
     if( l<0) l+=360;
     b = asin(pointingin.z())*180/M_PI;
-
 }
 
 
@@ -146,15 +135,6 @@ std::pair<double,double> SkyDir::project(const SkyProj& projection, bool galacti
 }
 
 
-// This function does a default Hammer-Aitoff projection of the ra and dec
-std::pair<double,double> SkyDir::project() const
-{	
-	double crpix[]={0,0},  crval[]={0,0}, cdelt[]={-1,1}; // 1-degree AIT all sky
-    std::string ctype("AIT");
-	SkyProj proj(ctype, crpix, crval, cdelt);
-
-	return proj.sph2pix(this->ra(),this->dec());
-}
 
 double SkyDir::difference(const SkyDir& other)const
 {
