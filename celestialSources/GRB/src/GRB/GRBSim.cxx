@@ -310,7 +310,8 @@ double GRBSim::IEnergy(double enmin,double enmax)
     }
   return flux;  
 }
-/*-----------------------------------------------------
+
+/*------------------------------------------------------*/
 
 float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, double emin)
 {
