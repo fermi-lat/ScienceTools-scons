@@ -28,11 +28,13 @@ int main(int argn, char * argc[]) {
    
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
-   std::string xml_list("$(OBSERVATIONSIMROOT)/xml/source_library.xml");
+   std::string xml_list("$(OBSERVATIONSIMROOT)/xml/obsSim_source_library.xml");
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml";
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/test_sources.xml";
+   fileList.push_back(xml_list);
+   xml_list = "$(OBSERVATIONSIMROOT)/xml/time_source.xml";
    fileList.push_back(xml_list);
    
 // Parse the command line arguments.
