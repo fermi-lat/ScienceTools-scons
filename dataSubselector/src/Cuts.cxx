@@ -169,16 +169,19 @@ unsigned int Cuts::addRangeCut(const std::string & colname,
                                const std::string & unit,
                                double minVal, double maxVal, 
                                RangeType type, unsigned int indx) {
-   return addCut(new Cuts::RangeCut(colname, unit, minVal, maxVal, 
-                                    type, indx));
+   return addCut(new RangeCut(colname, unit, minVal, maxVal, type, indx));
 }
 
 unsigned int Cuts::addGtiCut(const tip::Table & table) {
-   return addCut(new Cuts::GtiCut(table));
+   return addCut(new GtiCut(table));
+}
+
+unsigned int Cuts::addGtiCut(const Gti & gti) {
+   return addCut(new GtiCut(gti));
 }
 
 unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
-   return addCut(new Cuts::SkyConeCut(ra, dec, radius));
+   return addCut(new SkyConeCut(ra, dec, radius));
 }
 
 unsigned int Cuts::addCut(CutBase * newCut) {

@@ -40,7 +40,6 @@ Gti::Gti(const tip::Table & gtiTable) : evtbin::Gti() {
 }
 
 bool Gti::accept(double time) const {
-//   evtbin::Gti::ConstIterator it;
    for (ConstIterator it = begin(); it != end(); ++it) {
       if (it->first <= time && time <= it->second) {
          return true;
