@@ -145,8 +145,10 @@ int EventContainer::addEvent(EventSource *event,
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);
+      double appEnergy 
+         = respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis);
                                                         
-      m_events.push_back( Event(time, energy, 
+      m_events.push_back( Event(time, appEnergy, 
                                 appDir, sourceDir, zAxis, xAxis,
                                 ScZenith(time), respPtr->irfID()) );
 //      std::cout << "adding an event: " << m_events.size() << std::endl;

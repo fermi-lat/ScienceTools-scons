@@ -33,19 +33,24 @@
 
  @verbinclude obsSim.par
 
- Note that each entry in XML_source_filenames must provide the
- complete path.  Relative paths will not be resolved properly.
- Fortunately, one can use environment variables, so that a source xml
- file in the current working directory can be specified as
- "$(PWD)/my_model.xml".  A description of the format for the
- flux-style source model entries can be found in the Doxygen
- documentation for the <a href="http://www.slac.stanford.edu/exp/glast/ground/software/RM/documentation/GlastRelease/GlastRelease-v3r3p7/flux/v8r2/">flux package</a>.
+ Note that each entry in the file referred to by <a href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/data/xml_files.dat?cvsroot=CVS_SLAC">XML_source_filenames</a> must provide the
+ complete path:
+
+ @verbinclude xml_files.dat
+
+ Relative paths will not be resolved properly.  One can use
+ environment variables, so that a source xml file in the current
+ working directory can be specified as "$(PWD)/my_model.xml".  A
+ description of the format for the flux-style source model entries can
+ be found in the Doxygen documentation for the <a
+ href="http://www.slac.stanford.edu/exp/glast/ground/software/RM/documentation/GlastRelease/GlastRelease-v3r3p7/flux/v8r2/">flux
+ package</a>.
 
  The source names in the Source_list refer to sources appearing in the
  files listed in XML_source_filenames.  If a name appears more than
  once, either explicitly or because it is included as a nested source
  in a composite, its flux contribution will be multiplied by the
- number of occurrences.  The file source_names.dat might contain
+ number of occurrences.  The file <a href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/data/source_names.dat?cvsroot=CVS_SLAC">source_names.dat</a> might contain
 
  @verbinclude source_names.dat
 
@@ -72,10 +77,5 @@
  all_sky_hour_events_0000.fits  all_sky_hour_scData_0000.fits
  glast-guess1[jchiang] 
  @endverbatim
-
- The maximum number of entries per FITS file is 20000, so several
- files may be produced for both events and spacecraft data, depending
- on the sources that are simulated and the total simulation time.
- Spacecraft data are written out every 30 seconds.
 
 */

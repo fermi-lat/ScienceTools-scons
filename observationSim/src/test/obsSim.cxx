@@ -35,25 +35,35 @@ int main(int iargc, char * argv[]) {
 
    Likelihood::RunParams params(iargc, argv);
 
-// Fetch the filenames for the xml input files containing the
-// flux-style source definitions.
-   std::string xmlInputFiles = params.string_par("XML_source_filenames");
-   std::vector<std::string> fileList;
-   Likelihood::RunParams::readLines(xmlInputFiles, fileList);
+// Here are the default xml files for flux-style sources.
+   std::vector<std::string> xmlSourceFiles;
+   xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/source_library.xml");
+   xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/3EG_catalog_30MeV.xml");
+
+// Fetch any user-specified xml file of flux-style source definitions.
+   std::string xmlFile;
+   params.getParam("XML_source_file", xmlFile);
+   if (xmlFile != "" && xmlFile != "none") {
+      xmlSourceFiles.push_back(xmlFile);
+   }
 
 // Read the file containing the list of sources.
-   std::string srcListFile = params.string_par("Source_list");
+   std::string srcListFile;
+   params.getParam("Source_list", srcListFile);
    std::vector<std::string> srcNames;
    Likelihood::RunParams::readLines(srcListFile, srcNames);
    
 // Get the number of events.
-   long count = static_cast<long>(params.double_par("Number_of_events"));
+   double count;
+   params.getParam("Number_of_events", count);
 
 // Get the flag to interpret nevents as simulation time in seconds.
-   bool useSimTime = params.bool_par("Use_as_sim_time");
+   bool useSimTime;
+   params.getParam("Use_as_sim_time", useSimTime);
 
 // Ascertain which response functions to use.
-   std::string responseFuncs = params.string_par("Response_functions");
+   std::string responseFuncs;
+   params.getParam("Response_functions", responseFuncs);
    std::vector<latResponse::Irfs *> respPtrs;
    latResponse::IrfsFactory irfsFactory;
    if (responseFuncs == "COMBINED") {
@@ -61,6 +71,11 @@ int main(int iargc, char * argv[]) {
    } else if (responseFuncs == "FRONT/BACK") {
       respPtrs.push_back(irfsFactory.create("Glast25::Front"));
       respPtrs.push_back(irfsFactory.create("Glast25::Back"));
+   } else if (responseFuncs == "COMBINED_10") {
+      respPtrs.push_back(irfsFactory.create("Glast25::Combined_10"));
+   } else if (responseFuncs == "FRONT/BACK_10") {
+      respPtrs.push_back(irfsFactory.create("Glast25::Front_10"));
+      respPtrs.push_back(irfsFactory.create("Glast25::Back_10"));
    } else {
       std::cerr << "Invalid response function choice: "
                 << responseFuncs << std::endl;
@@ -68,16 +83,21 @@ int main(int iargc, char * argv[]) {
    }
 
 // Create the Simulator object
-   double totalArea = params.double_par("Maximum_effective_area");
-   double startTime = params.double_par("Start_time");
-   std::string pointingHistory = params.string_par("Pointing_history_file");
-   observationSim::Simulator my_simulator(srcNames, fileList, totalArea,
+   double totalArea;
+   params.getParam("Maximum_effective_area", totalArea);
+   double startTime;
+   params.getParam("Start_time", startTime);
+   std::string pointingHistory;
+   params.getParam("Pointing_history_file", pointingHistory);
+   observationSim::Simulator my_simulator(srcNames, xmlSourceFiles, totalArea,
                                           startTime, pointingHistory);
 
 // Generate the events and spacecraft data.
    bool useGoodi = false;
-   long nMaxRows = params.long_par("Maximum_number_of_rows");
-   std::string prefix = params.string_par("Output_file_prefix");
+   long nMaxRows;
+   params.getParam("Maximum_number_of_rows", nMaxRows);
+   std::string prefix;
+   params.getParam("Output_file_prefix", prefix);
    observationSim::EventContainer events(prefix + "_events", 
                                          useGoodi, nMaxRows);
    observationSim::ScDataContainer scData(prefix + "_scData", 
@@ -90,11 +110,11 @@ int main(int iargc, char * argv[]) {
    if (useSimTime) {
       std::cout << "Generating events for a simulation time of "
                 << count << " seconds...." << std::endl;
-      my_simulator.generateEvents(static_cast<double>(count), events, 
-                                  scData, respPtrs, spacecraft);
+      my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    } else {
       std::cout << "Generating " << count << " events...." << std::endl;
-      my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
+      my_simulator.generateEvents(static_cast<long>(count), events, 
+                                  scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
 }

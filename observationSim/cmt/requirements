@@ -7,11 +7,13 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 branches observationSim cmt src doc
 
+#use MapFlux v0*
 use flux v8*
-use MapFlux v0*
-use astro v0*
 use latResponse v1*
-use xml
+use Goodi v2*
+use astro v0*
+use facilities v*
+use xml v*
 use cfitsio v1* IExternal
 use CLHEP v2* IExternal
 
@@ -21,33 +23,28 @@ private
 
 use Likelihood v*
 use hoops v*
-use Goodi v2*
 
 #use python v2* IExternal
 #macro pydir ../python/
 
-macro_append use_linkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
+## MapFlux needs to be loaded dynamically.
+#macro_append use_linkopts "" \
+#Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
+#WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
 
 # allow use of internal path
 macro observationSim_cppflags "" Linux "-I ../src -g -O -pedantic -D TRAP_FPE " WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O"
-#
-# suppress warning messages (from flux package) on linux:
-macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
-macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
- WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
+# suppress warning messages (from flux, Goodi, etc.) on Linux:
+macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
 apply_pattern package_linkopts
 
-# make sure test application gets built when library changes
+# make sure various applications get built when library changes
 macro test_observationSimstamps "observationSim.stamp"
-
-# make sure exposureMap application gets built when library changes
-macro exposureMapstamps "exposureMap.stamp"
-
 macro obsSimstamps "obsSim.stamp"
-
+macro exposureMapstamps "exposureMap.stamp"
 macro testGoodiReadstamps "testGoodiRead.stamp"
 
 # standard package library
@@ -62,8 +59,8 @@ library observationSim -no_share $(my_headers) \
  Roi.cxx\
  $(pydir)/*.i
 
+# This needed for FITS templates.
 set INFILES "$(GOODIROOT)/Data"
-set PFILES "$(OBSERVATIONSIMROOT)/data"
 
 # test applications
 application test_observationSim test/main.cxx

@@ -40,30 +40,31 @@ double LatSc::EarthLat(double time) {
 HepRotation LatSc::InstrumentToCelestial(double time) {
 // Get the rotation matrix from instrument to Galactic coordinates
 // from GPS.
-   GPS *gps = GPS::instance();
-   gps->getPointingCharacteristics(time);
-   HepRotation glastToGalactic(gps->transformGlastToGalactic(time));
-
-// Create astro::SkyDir objects for the instrument axes. 
-   astro::SkyDir xAxisCel(glastToGalactic(Hep3Vector(1, 0, 0)),
-                          astro::SkyDir::GALACTIC);
-   astro::SkyDir yAxisCel(glastToGalactic(Hep3Vector(0, 1, 0)),
-                          astro::SkyDir::GALACTIC);
-   astro::SkyDir zAxisCel(glastToGalactic(Hep3Vector(0, 0, 1)),
-                          astro::SkyDir::GALACTIC);
-
-// Return the desired rotation matrix.
-   return HepRotation(xAxisCel(), yAxisCel(), zAxisCel());
-
-// // Try to use astro::PointingTransform class.
-
 //    GPS *gps = GPS::instance();
 //    gps->getPointingCharacteristics(time);
-//    astro::SkyDir xAxis(gps->RAX(), gps->DECX());
-//    astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
+//    HepRotation glastToGalactic(gps->transformGlastToGalactic(time));
 
-//    astro::PointingTransform transform(zAxis, xAxis);
-//    return transform.localToCelestial();
+// // Create astro::SkyDir objects for the instrument axes. 
+//    astro::SkyDir xAxisCel(glastToGalactic(Hep3Vector(1, 0, 0)),
+//                           astro::SkyDir::GALACTIC);
+//    astro::SkyDir yAxisCel(glastToGalactic(Hep3Vector(0, 1, 0)),
+//                           astro::SkyDir::GALACTIC);
+//    astro::SkyDir zAxisCel(glastToGalactic(Hep3Vector(0, 0, 1)),
+//                           astro::SkyDir::GALACTIC);
+
+// // Return the desired rotation matrix.
+//    return HepRotation(xAxisCel(), yAxisCel(), zAxisCel());
+
+// Use astro::PointingTransform class.  Let's hope this continues to
+// work as the flux package changes.
+
+   GPS *gps = GPS::instance();
+   gps->getPointingCharacteristics(time);
+   astro::SkyDir xAxis(gps->RAX(), gps->DECX());
+   astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
+
+   astro::PointingTransform transform(zAxis, xAxis);
+   return transform.localToCelestial();
 }
 
 int LatSc::inSaa(double time) {

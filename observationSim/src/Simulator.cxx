@@ -11,6 +11,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "facilities/Util.h"
+
 #include "flux/EventSource.h"
 #include "flux/CompositeSource.h"
 #include "flux/SpectrumFactoryTable.h"
@@ -27,12 +29,12 @@
 
 #include "flux/SpectrumFactory.h"
 
-//#if 0
+#if 0
 #include "src/MapSpectrum.h"
 
 static SpectrumFactory<MapSpectrum> factory;
 const ISpectrumFactory& MapSpectrumFactory = factory;
-//#endif
+#endif
 
 namespace observationSim {
 
@@ -53,7 +55,7 @@ void Simulator::init(const std::string &sourceName,
 void Simulator::init(const std::vector<std::string> &sourceNames,
                      const std::vector<std::string> &fileList,
                      double totalArea, double startTime, 
-                     const std::string &pointingHistory) {
+                     std::string pointingHistory) {
    m_absTime = startTime;
    m_numEvents = 0;
    m_newEvent = 0;
@@ -66,6 +68,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
 
    if (pointingHistory != "none" && pointingHistory != "") {
 // Use pointing history file.
+      facilities::Util::expandEnvVar(&pointingHistory);
       setPointingHistoryFile(pointingHistory);
    } else {
 // Use the default rocking strategy.

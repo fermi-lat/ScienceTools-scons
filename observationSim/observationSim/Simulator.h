@@ -166,7 +166,7 @@ private:
    void init(const std::vector<std::string> &sourceNames, 
              const std::vector<std::string> &fileList,
              double totalArea, double startTime,
-             const std::string &);
+             std::string);
 
    void makeEvents(EventContainer &, ScDataContainer &, 
                    latResponse::Irfs &, Spacecraft *spacecraft,
