@@ -17,10 +17,11 @@
 #include "optimizers/Parameter.h"
 #include "optimizers/ParameterNotFound.h"
 
-class DOM_Node;
-class DOM_Document;
-
 namespace optimizers {
+
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMNode;
 
 class Arg;
 
@@ -34,7 +35,7 @@ class Arg;
  *
  * This class uses the Parameter and Arg classes.
  *
- * @authors J. Chiang, P. Nolan, T. Burnett 
+ * @authors J. Chiang, P. Nolan
  *
  * $Header$
  */
@@ -183,11 +184,11 @@ public:
    /// same as the class name.
    std::string &genericName() {return m_genericName;}
 
-   /// Append Parameter DOM_Elements to a DOM_Node.
-   void appendParamDomElements(DOM_Document &doc, DOM_Node &node);
+   /// Append Parameter DOMElements to a DOMNode.
+   void appendParamDomElements(DOMDocument * doc, DOMNode * node);
 
    /// Set the Parameters from a Function DOM_Element.
-   void setParams(const DOM_Element &elt);
+   void setParams(const DOMElement * elt);
 
 protected:
 

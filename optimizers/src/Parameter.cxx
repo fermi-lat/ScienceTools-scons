@@ -6,29 +6,26 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
+#include <cstdlib>
+
 #include <sstream>
+#include <string>
+#include <vector>
+
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/dom/DOM.hpp>
 
 #include "xml/Dom.h"
 #include "xml/XmlParser.h"
 
+#include "optimizers/Dom.h"
 #include "optimizers/Parameter.h"
 
-namespace {
-   DomDocument * createDocument() {
-      DomDocument * doc = new DOM_Document();
-      *doc = DOM_Document::createDocument();
-      return doc;
-   }
-   DomElement * createElement(DomDocument * doc, const std::string & name) {
-      DomElement * elt = new DOM_Element();
-      *elt = doc->createElement(name.c_str());
-      return elt;
-   }
-}
-
 namespace optimizers {
+
+XERCES_CPP_NAMESPACE_USE
 
 void Parameter::setValue(double value) throw(OutOfBounds) {
    static double tol(1e-8);
@@ -69,33 +66,41 @@ std::pair<double, double> Parameter::getBounds() const {
    return my_Bounds;
 }
 
-void Parameter::extractDomData(const DOM_Element &elt) {
+void Parameter::extractDomData(const DOMElement * elt) {
    m_name = xml::Dom::getAttribute(elt, "name");
-   m_value = ::atof( xml::Dom::getAttribute(elt, "value").c_str() );
-   m_minValue = ::atof( xml::Dom::getAttribute(elt, "min").c_str() );
-   m_maxValue = ::atof( xml::Dom::getAttribute(elt, "max").c_str() );
+   m_value = std::atof(xml::Dom::getAttribute(elt, "value").c_str());
+   m_minValue = std::atof(xml::Dom::getAttribute(elt, "min").c_str());
+   m_maxValue = std::atof(xml::Dom::getAttribute(elt, "max").c_str());
    if (std::string(xml::Dom::getAttribute(elt, "free")) == "true" ||
        std::string(xml::Dom::getAttribute(elt, "free")) == "1" ) {
       m_free = true;
    } else {
       m_free = false;
    }
-   m_scale = ::atof( xml::Dom::getAttribute(elt, "scale").c_str() );
+   m_scale = std::atof(xml::Dom::getAttribute(elt, "scale").c_str());
+   if (xml::Dom::hasAttribute(elt, "error")) {
+      m_error = std::atof(xml::Dom::getAttribute(elt, "error").c_str());
+   } else {
+      m_error = 0;
+   }
 }
 
-DomElement Parameter::createDomElement(DomDocument &doc) const {
+DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
 
-   DomElement * paramElt = ::createElement(&doc, "parameter");
+   DOMElement * paramElt = Dom::createElement(doc, "parameter");
 
 // Add the appropriate attributes.
-   xml::Dom::addAttribute(*paramElt, "name", m_name.c_str());
-   xml::Dom::addAttribute(*paramElt, std::string("value"), m_value);
-   xml::Dom::addAttribute(*paramElt, std::string("min"), m_minValue);
-   xml::Dom::addAttribute(*paramElt, std::string("max"), m_maxValue);
-   xml::Dom::addAttribute(*paramElt, std::string("free"), m_free);
-   xml::Dom::addAttribute(*paramElt, std::string("scale"), m_scale);
+   xml::Dom::addAttribute(paramElt, "name", m_name.c_str());
+   xml::Dom::addAttribute(paramElt, std::string("value"), m_value);
+   xml::Dom::addAttribute(paramElt, std::string("min"), m_minValue);
+   xml::Dom::addAttribute(paramElt, std::string("max"), m_maxValue);
+   xml::Dom::addAttribute(paramElt, std::string("free"), m_free);
+   xml::Dom::addAttribute(paramElt, std::string("scale"), m_scale);
+   if (m_error > 0) {
+      xml::Dom::addAttribute(paramElt, std::string("error"), m_error);
+   }
 
-   return *paramElt;
+   return paramElt;
 }
 
 } // namespace optimizers

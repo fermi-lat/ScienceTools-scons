@@ -10,7 +10,6 @@
 #define optimizers_OptPP_h
 
 #include "optimizers/Optimizer.h"
-//#include "optimizers/Function.h"
 #include "optimizers/Statistic.h"
 
 #ifdef HAVE_OPT_PP
@@ -37,7 +36,6 @@ class OptPP : public Optimizer {
     
 public:
     
-//   OptPP(Function &stat) : Optimizer(stat) {s_stat = &stat;}
    OptPP(Statistic &stat) : Optimizer(stat) {s_stat = &stat;}
    virtual ~OptPP() {}
 
@@ -48,14 +46,14 @@ protected:
    static int s_verbose;
 
 #ifdef HAVE_OPT_PP
-   //! interface to the objective function that OPT++ expects
+   /// interface to the objective function that OPT++ expects
    static void statInterface(int mode, int ndim, const ColumnVector &x,
                              double &fx, ColumnVector &gx, int &result);
 
-   //! returns the initial parameter values to the OPT++ routines
+   /// returns the initial parameter values to the OPT++ routines
    static void statInit(int ndim, ColumnVector &x);
 
-   //! do-nothing helper function for use with OptBCQNewton
+   /// do-nothing helper function for use with OptBCQNewton
    static void update_model(int, int, ColumnVector) {}
 #endif
 

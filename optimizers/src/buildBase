@@ -25,7 +25,7 @@ app = ''.join(('test_', package, '.exe'))
 
 SourceSignatures('timestamp')
 
-env = Environment(CCFLAGS='-g -pedantic' + cflags)
+env = Environment(CCFLAGS='-g ' + cflags)
 
 src_files = glob.glob(os.path.join(home, 'src', '*.cxx'))
 src_files.extend(glob.glob(os.path.join(home, 'src', '*.c')))

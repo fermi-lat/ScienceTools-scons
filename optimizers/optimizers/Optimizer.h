@@ -14,13 +14,10 @@
 #include <valarray>
 #include <iostream>
 
-//#define HAVE_OPT_PP
-
 namespace optimizers {
 
 enum TOLTYPE {RELATIVE, ABSOLUTE};
 
-//class Function;
 class Statistic;
 
 /** 

@@ -11,6 +11,7 @@
 
 #include "xml/Dom.h"
 
+#include "optimizers/Dom.h"
 #include "optimizers/Function.h"
 
 namespace optimizers {
@@ -268,16 +269,17 @@ void Function::fetchDerivs(Arg &x, std::vector<double> &derivs,
    }
 }
 
-void Function::appendParamDomElements(DomDocument &doc, DomNode &node) {
+void Function::appendParamDomElements(DOMDocument * doc, DOMNode * node) {
    std::vector<Parameter>::iterator paramIt = m_parameter.begin();
-   for ( ; paramIt != m_parameter.end(); paramIt++) {
-      DomElement paramElt = paramIt->createDomElement(doc);
-      node.appendChild(paramElt);
+   for ( ; paramIt != m_parameter.end(); ++paramIt) {
+      DOMElement * paramElt = paramIt->createDomElement(doc);
+//      node->appendChild(reinterpret_cast<DOMNode *>(paramElt));
+      Dom::appendChild(node, paramElt);
    }
 }
 
-void Function::setParams(const DomElement &elt) {
-   std::vector<DomElement> parElts;
+void Function::setParams(const DOMElement * elt) {
+   std::vector<DOMElement *> parElts;
    xml::Dom::getChildrenByTagName(elt, "parameter", parElts);
    for (unsigned int i = 0; i < parElts.size(); i++) {
       std::string name = xml::Dom::getAttribute(parElts[i], "name");

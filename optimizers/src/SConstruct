@@ -1,5 +1,14 @@
 # -*- python -*-
 import os
+
+class map(dict):
+    def __init__(self):
+        dict.__init__(self)
+        self.ordered_keys = []
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.ordered_keys.append(key)
+
 package = 'optimizers'
 home = os.environ[package.upper() + 'ROOT']
 #OptPP_dir = '/home/jchiang/data/OPT++2.1'
@@ -7,24 +16,26 @@ home = os.environ[package.upper() + 'ROOT']
 
 OptPP_dir = os.environ['OPTPP_DIR']
 
-libraries = {'xml': None,
-             'cfitsio': (os.path.join(os.environ['CFITSIO_DIR'], 'include'),
-                         os.path.join(os.environ['CFITSIO_DIR'], 'lib')),
-             'CLHEP': (os.path.join(os.environ['CLHEP_DIR'], '1.8.0.0',
-                                    'include'),
-                       os.path.join(os.environ['CLHEP_DIR'], '1.8.0.0','lib')),
-             'f2c': None,
-             'facilities': None,
-             'xerces-c1_7_0': (os.path.join(os.environ['XMLEXT_DIR'],
-                                            'include'),
-                               os.path.join(os.environ['XMLEXT_DIR'], 'lib')),
-             'g2c': ('',''),
-             'opt-linux': (os.path.join(OptPP_dir, 'include'),
-                           os.path.join(OptPP_dir, 'lib')),
-             'newmat-linux': (os.path.join(OptPP_dir, 'newmat09'),
-                              os.path.join(OptPP_dir, 'lib')),
-             }
+libraries = map()
+libraries["xml"] = None
+libraries["f2c"] = None
+libraries["facilities"] = None
+libraries["g2c"] = ('', '')
 
-cflags = ' -DHAVE_OPT_PP'
+def externalLibrary(libname, version):
+    libdir = os.path.join(os.environ['GLAST_EXT'], libname, version)
+    return [os.path.join(libdir, 'include'), os.path.join(libdir, 'lib')]
+    
+libraries['cfitsio'] = externalLibrary('cfitsio', 'v2470')
+libraries['CLHEP'] = externalLibrary('CLHEP', '1.8.0.0')
+#libraries['xerces-c1_7_0'] = externalLibrary('xerces', '1.7.0')
+libraries['xerces-c1_7_0'] = externalLibrary('xerces', '1.7.0')
+
+libraries['opt-linux'] = (os.path.join(OptPP_dir, 'include'),
+                          os.path.join(OptPP_dir, 'lib'))
+libraries['newmat-linux'] = (os.path.join(OptPP_dir, 'newmat09'),
+                             os.path.join(OptPP_dir, 'lib'))
+
+cflags = ' -DHAVE_OPT_PP -g '
 Export(['package', 'home', 'libraries', 'cflags'])
 SConscript('buildBase')

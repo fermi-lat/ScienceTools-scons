@@ -9,7 +9,6 @@
 #include <cassert>
 #include <sstream>
 
-//#include "optimizers/Function.h"
 #include "optimizers/Statistic.h"
 #include "optimizers/dArg.h"
 #include "optimizers/Exception.h"
@@ -60,11 +59,7 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
    std::vector<double> params;
    m_stat->getFreeParamValues(params);
 
-// Dummy argument required by Function objects (to be refactored away
-// one day).
-//   dArg dummy(1.);
    std::vector<double> firstDerivs;
-//   m_stat->getFreeDerivs(dummy, firstDerivs);
    m_stat->getFreeDerivs(firstDerivs);
 
 // Obtain the full Hessian matrix.
@@ -79,7 +74,6 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
       new_params[irow] = params[irow] + delta;
       m_stat->setFreeParamValues(new_params);
       std::vector<double> derivs;
-//      m_stat->getFreeDerivs(dummy, derivs);
       m_stat->getFreeDerivs(derivs);
       for (int icol = 0; icol < npars; icol++) {
          hess[indx] = -(derivs[icol] - firstDerivs[icol])/delta;
