@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
    astro::SkyDir xaxis;
 
 // Loop over time intervals.
-   ntimes = 100;
+//   ntimes = 100;
    for (int it=1; it < ntimes; it++) {
       if (it % (ntimes/20) == 0) std::cerr << ".";
       double dt = times[it] - times[it-1];

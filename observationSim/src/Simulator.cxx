@@ -10,12 +10,6 @@
 #include <iostream>
 #include <algorithm>
 
-// #include "FluxSvc/../src/EventSource.h"
-// #include "FluxSvc/../src/CompositeSource.h"
-// #include "FluxSvc/../src/SpectrumFactoryTable.h"
-// #include "FluxSvc/../src/FluxMgr.h"
-// #include "FluxSvc/ISpectrumFactory.h"
-
 #include "flux/EventSource.h"
 #include "flux/../src/CompositeSource.h"
 #include "flux/SpectrumFactoryTable.h"
@@ -30,12 +24,12 @@
 #include "observationSim/Roi.h"
 #include "LatSc.h"
 
-#include "src/MapSpectrum.h"
-//#include "FluxSvc/../src/SpectrumFactory.h"
 #include "flux/SpectrumFactory.h"
 
-static SpectrumFactory<MapSpectrum> factory;
-const ISpectrumFactory& MapSpectrumFactory = factory;
+// #include "src/MapSpectrum.h"
+
+// static SpectrumFactory<MapSpectrum> factory;
+// const ISpectrumFactory& MapSpectrumFactory = factory;
 
 // The following routine seems not to be necessary (for now) since
 // CHIMESpectrum, et al. are provided by FluxSvc, and MapSpectrum

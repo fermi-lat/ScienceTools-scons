@@ -7,7 +7,6 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 branches observationSim cmt src doc
 
-#use FluxSvc v6*
 use flux v7*
 use MapFlux v0*
 use astro v0*
@@ -20,6 +19,18 @@ use CLHEP v2* IExternal
 
 #apply_pattern packageShr
 apply_pattern package_include
+
+# Kluge. Python isn't a package yet, so this is machine-dependent
+macro pydir ../python/
+macro PYINCLUDE /usr/local/include/python2.2
+macro PYLIB /usr/local/lib
+
+macro SWIG swig
+macro swig_nowarn "" Linux "-w"
+include_dirs $(PYINCLUDE)
+language swig -suffix=i -linker=$(clink)
+#make_fragment swig 
+make_fragment swig_library
 
 private
 
@@ -34,6 +45,9 @@ apply_pattern package_linkopts
 # make sure test application gets built when library changes
 macro test_observationSimstamps "observationSim.stamp"
 
+# make sure exposureMap application gets built when library changes
+macro exposureMapstamps "exposureMap.stamp"
+
 # standard package library
 macro my_headers "" WIN32 "../observationSim/*.h *.h"
 library observationSim -no_share $(my_headers) \
@@ -43,7 +57,8 @@ library observationSim -no_share $(my_headers) \
  FitsTable.cxx\
  LatSc.cxx\
  EgretSc.cxx\
- Roi.cxx
+ Roi.cxx\
+ $(pydir)*.i
 # trapfpe.c
 
 # test application
@@ -51,15 +66,3 @@ application test_observationSim test/main.cxx
 
 # exposure map calculator
 application exposureMap test/exposureMap.cxx
-
-## Python/SWIG interface
-#
-#macro libs "" WIN32 "$(observationSimDir)/observationSim.lib"
-#
-#macro obsSim_cppflags "" Linux "-I ../src -g -pedantic -I/usr/local/include/python2.2 "
-#
-#macro obsSim_linkopts "-L $(observationSimDir) -lobservationSim " WIN32 ""
-#
-#library obsSim\
-# obsSim_wrap.cxx\
-# $(libs)
