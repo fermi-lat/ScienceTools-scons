@@ -19,6 +19,9 @@
 #include <stdexcept>
 #include <string>
 
+// Helper class for creating binners based on standard parameter values.
+#include "evtbin/BinConfig.h"
+
 // Binners used:
 #include "evtbin/LinearBinner.h"
 #include "evtbin/LogBinner.h"
@@ -126,29 +129,28 @@ class EvtBinAppBase : public st_app::StApp {
 */
 class LightCurveApp : public EvtBinAppBase {
   public:
-    LightCurveApp(const std::string & app_name): EvtBinAppBase(app_name) {}
+    LightCurveApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config() {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
-      // Prompt for remaining parameters needed for product.
-      pars.Prompt("tstart");
-      pars.Prompt("tstop");
-      pars.Prompt("deltatime");
+      // Call time binner to prompt for time binning related parameters.
+      m_bin_config.timeParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
       using namespace evtbin;
 
-      // Get ranges:
-      double tstart = pars["tstart"];
-      double tstop = pars["tstop"];
-      double width = pars["deltatime"];
+      // Call time binner to get Binner object.
+      std::auto_ptr<Binner> binner(m_bin_config.createTimeBinner(pars));
 
-      // Create data object.
-      return new LightCurve(LinearBinner(tstart, tstop, width, "TIME"));
+      // Create data object from Binner.
+      return new LightCurve(*binner);
     }
+
+  private:
+    evtbin::BinConfig m_bin_config;
 };
 
 /** \class SimpleSpectrumApp
@@ -164,12 +166,12 @@ class SimpleSpectrumApp : public EvtBinAppBase {
 
       // Next determine the energy binning algorithm.
       pars.Prompt("energybinalg");
-      if (0 == pars["energybinalg"].Value().compare("UNIFORM")) {
+      if (0 == pars["energybinalg"].Value().compare("LOG")) {
         // Get remaining parameters needed for uniform interval binner.
         pars.Prompt("emin");
         pars.Prompt("emax");
         pars.Prompt("enumbins");
-      } else if (0 == pars["energybinalg"].Value().compare("USERBINS")) {
+      } else if (0 == pars["energybinalg"].Value().compare("FILE")) {
         // Get remaining parameters needed for user defined bins from a bin file.
         pars.Prompt("energybinfile");
       } else throw std::runtime_error(std::string("Unknown energy binning algorithm ") + pars["energybinalg"].Value());
@@ -195,9 +197,9 @@ evtbin::Binner * SimpleSpectrumApp::getBinner(const st_app::AppParGroup & pars) 
 
   Binner * binner = 0;
 
-  if (0 == pars["energybinalg"].Value().compare("UNIFORM")) {
+  if (0 == pars["energybinalg"].Value().compare("LOG")) {
     binner = new LogBinner(pars["emin"], pars["emax"], pars["enumbins"], "ENERGY");
-  } else if (0 == pars["energybinalg"].Value().compare("USERBINS")) {
+  } else if (0 == pars["energybinalg"].Value().compare("FILE")) {
     // Create interval container for user defined bin intervals.
     OrderedBinner::IntervalCont_t intervals;
 
@@ -222,32 +224,32 @@ evtbin::Binner * SimpleSpectrumApp::getBinner(const st_app::AppParGroup & pars) 
 */
 class MultiSpectraApp : public EvtBinAppBase {
   public:
-    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name), m_energy_app(app_name) {}
+    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name), m_bin_config(),
+      m_energy_app(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call energy application prompter for standard universal parameters.
       m_energy_app.parPrompt(pars);
 
-      pars.Prompt("tstart");
-      pars.Prompt("tstop");
-      pars.Prompt("deltatime");
+      // Call time binner to prompt for time binning related parameters.
+      m_bin_config.timeParPrompt(pars);
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
       using namespace evtbin;
 
-      double tstart = pars["tstart"];
-      double tstop = pars["tstop"];
-      double width = pars["deltatime"];
+      // Get binner for time from time bin configuration object.
+      std::auto_ptr<const Binner> time_binner(m_bin_config.createTimeBinner(pars));
 
       // Get binner for energy from energy application object.
       std::auto_ptr<const Binner> energy_binner(m_energy_app.getBinner(pars));
 
       // Create data product.
-      return new MultiSpec(LinearBinner(tstart, tstop, width, "TIME"), *energy_binner);
+      return new MultiSpec(*time_binner, *energy_binner);
     }
 
   private:
+    evtbin::BinConfig m_bin_config;
     SimpleSpectrumApp m_energy_app;
 };
 
@@ -278,8 +280,8 @@ class EvtBin : public st_app::StApp {
 
       try {
         if (0 == algorithm.compare("LC")) app = new LightCurveApp("evtbin");
+        else if (0 == algorithm.compare("PHA1")) app = new SimpleSpectrumApp("evtbin");
         else if (0 == algorithm.compare("PHA2")) app = new MultiSpectraApp("evtbin");
-        else if (0 == algorithm.compare("SPEC")) app = new SimpleSpectrumApp("evtbin");
         else throw std::logic_error(std::string("Algorithm ") + algorithm + " is not supported");
 
         // Run the real application.
