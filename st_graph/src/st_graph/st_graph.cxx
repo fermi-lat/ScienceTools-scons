@@ -7,7 +7,8 @@
 #include "st_app/StAppFactory.h"
 
 #include "st_graph/Engine.h"
-#include "st_graph/PlotHist.h"
+#include "st_graph/IFrame.h"
+#include "st_graph/Sequence.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
@@ -20,13 +21,13 @@ class StGraphApp : public st_app::StApp {
     virtual void prompt();
     virtual void plot();
     virtual void readBins(const std::string & file, const std::string & table, const std::string & low_bin,
-      const std::string & high_bin, st_graph::PlotHist::IntervalCont_t & intervals) const;
+      const std::string & high_bin, std::vector<double> & low, std::vector<double> & high) const;
 
     virtual void readData(const std::string & file, const std::string & table, const std::string & data_field,
-      st_graph::PlotHist * plot) const;
+      bool is_vector, std::vector<std::vector<double> > & data) const;
 
   private:
-    st_graph::PlotHist * m_hist_plot;
+    st_graph::IFrame * m_hist_plot;
 };
 
 StGraphApp::StGraphApp(): m_hist_plot(0) {}
@@ -49,73 +50,95 @@ void StGraphApp::plot() {
 
   st_app::AppParGroup & pars = getParGroup("st_graph");
 
-  // Create intervals for histogram plot, first dimension.
-  PlotHist::IntervalCont_t intervals1;
+  typedef std::vector<double> Vec_t;
+  typedef IntervalSequence<Vec_t::iterator> IntervalSeq_t;
+  typedef PointSequence<Vec_t::iterator> PointSeq_t;
+
+  // Vectors to hold bins.
+  Vec_t low1;
+  Vec_t high1;
 
   // Read intervals for first dimension from bin definition file.
-  readBins(pars["binfile1"], pars["bintable1"], pars["lowbin1"], pars["highbin1"], intervals1);
+  readBins(pars["binfile1"], pars["bintable1"], pars["lowbin1"], pars["highbin1"], low1, high1);
 
-  PlotHist * plot = 0;
+  // Array to hold the data being plotted.
+  std::vector<Vec_t> data;
+
+  // Read the data into the array.
+  readData(pars["datafile1"], pars["datatable1"], pars["data1"], pars["vector1"], data);
+
+  IFrame * plot = 0;
   if (bool(pars["vector1"])) {
-    // Create intervals for histogram plot, second dimension.
-    PlotHist::IntervalCont_t intervals2;
+    Vec_t low2;
+    Vec_t high2;
 
     // Read intervals for second dimension from bin definition file.
-    readBins(pars["binfile2"], pars["bintable2"], pars["lowbin2"], pars["highbin2"], intervals2);
+    readBins(pars["binfile2"], pars["bintable2"], pars["lowbin2"], pars["highbin2"], low2, high2);
 
     // Create 2D plot.
-    plot = Engine::instance().createPlotHist2D(pars["data1"], 800, 600, intervals1, intervals2);
+    plot = Engine::instance().createPlotHist2D(pars["data1"], 800, 600, IntervalSeq_t(low1.begin(), low1.end(), high1.begin()),
+      IntervalSeq_t(low2.begin(), low2.end(), high2.begin()), data);
   } else {
     // Create 1D plot.
-    plot = Engine::instance().createPlotHist1D(pars["data1"], 800, 600, intervals1);
+    plot = Engine::instance().createPlotHist1D(pars["data1"], 800, 600, IntervalSeq_t(low1.begin(), low1.end(), high1.begin()),
+      PointSeq_t(data[0].begin(), data[0].end()));
   }
-
-  // Read data from data file.
-  readData(pars["datafile1"], pars["datatable1"], pars["data1"], plot);
 
   // Display the plot.
   Engine::instance().run();
 }
 
 void StGraphApp::readBins(const std::string & file, const std::string & table, const std::string & low_bin,
-  const std::string & high_bin, st_graph::PlotHist::IntervalCont_t & intervals) const {
+  const std::string & high_bin, std::vector<double> & low, std::vector<double> & high) const {
   using namespace st_graph;
 
   // Open bin definition file.
   std::auto_ptr<const tip::Table> table_ptr(tip::IFileSvc::instance().readTable(file, table));
 
   // Change size of output intervals to match file's size.
-  intervals.resize(table_ptr->getNumRecords());
+  low.resize(table_ptr->getNumRecords());
+  high.resize(table_ptr->getNumRecords());
 
-  PlotHist::IntervalCont_t::iterator intv_itor = intervals.begin();
+  // Output iterators.
+  std::vector<double>::iterator low_itor = low.begin();
+  std::vector<double>::iterator high_itor = high.begin();
 
   // Fill intervals using given fields for low/high.
-  for (tip::Table::ConstIterator itor = table_ptr->begin(); itor != table_ptr->end(); ++itor, ++intv_itor)
-    *intv_itor = PlotHist::Interval_t((*itor)[low_bin].get(), (*itor)[high_bin].get());
+  for (tip::Table::ConstIterator itor = table_ptr->begin(); itor != table_ptr->end(); ++itor, ++low_itor, ++high_itor) {
+    *low_itor = (*itor)[low_bin].get();
+    *high_itor = (*itor)[high_bin].get();
+  }
 }
 
 void StGraphApp::readData(const std::string & file, const std::string & table, const std::string & data_field,
-  st_graph::PlotHist * plot) const {
+  bool is_vector, std::vector<std::vector<double> > & data) const {
   using namespace st_graph;
 
   // Open data file.
   std::auto_ptr<const tip::Table> table_ptr(tip::IFileSvc::instance().readTable(file, table));
 
-  int index = 0;
+  // Resize output vector.
+  std::vector<double>::size_type num_rec = table_ptr->getNumRecords();
+
+  // Vector columns will utilize the full data vector of vectors.
+  if (is_vector) data.resize(num_rec);
+  else {
+    // Scalar columns use just the first vector within the data vector of vectors.
+    data.resize(1);
+    data[0].resize(num_rec);
+  }
+
+  // Use index to fill vector of vectors.
+  std::vector<double>::size_type index = 0;
 
   // Fill plot using given field.
   for (tip::Table::ConstIterator itor = table_ptr->begin(); itor != table_ptr->end(); ++itor, ++index) {
-    if (1 == plot->dimensionality()) {
+    if (!is_vector) {
       // Scalar field.
-      double value;
-      (*itor)[data_field].get(value);
-      plot->set(index, value);
+      data[0][index] = (*itor)[data_field].get();
     } else {
       // Vector field.
-      std::vector<double> value;
-      (*itor)[data_field].get(value);
-      for (unsigned int ii = 0; ii < value.size(); ++ii)
-        plot->set(index, ii, value[ii]);
+      (*itor)[data_field].get(data[index]);
     }
   }
 }

@@ -8,9 +8,6 @@
 #include <string>
 #include <vector>
 
-#include "st_graph/PlotHist.h"
-#include "st_graph/Sequence.h"
-
 namespace st_graph {
 
   class IEventReceiver;
@@ -48,20 +45,22 @@ namespace st_graph {
           \param title The title of the plot.
           \param width The width of the plot window.
           \param height The height of the plot window.
-          \param intervals Set of intervals of the histogram, used to set the plot axes.
+          \param x The first dimension being plotted, giving the bin definitions.
+          \param y The second dimension being plotted, giving the bin values.
       */
-      virtual PlotHist * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist::IntervalCont_t & intervals) = 0;
+      virtual IFrame * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+        const ISequence & x, const ISequence & y) = 0;
 
       /** \brief Create a plotter for a two dimensional histogram.
           \param title The title of the plot.
           \param width The width of the plot window.
           \param height The height of the plot window.
-          \param x_intervals Set of intervals of the histogram, used to set the plot X axis.
-          \param y_intervals Set of intervals of the histogram, used to set the plot Y axis.
+          \param x The first dimension being plotted, giving the x bin definitions.
+          \param y The second dimension being plotted, giving the y bin definitions.
+          \param z The third dimension being plotted.
       */
-      virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) = 0;
+      virtual IFrame * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+        const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) = 0;
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.

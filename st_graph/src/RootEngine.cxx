@@ -16,6 +16,7 @@ typedef void (*sighandler_t) (int);
 #include "TGButton.h"
 #include "TGClient.h"
 #include "TGWindow.h"
+#include "TStyle.h"
 #include "TSystem.h"
 
 #include "st_graph/IEventReceiver.h"
@@ -24,7 +25,6 @@ typedef void (*sighandler_t) (int);
 #include "RootEngine.h"
 #include "RootFrame.h"
 #include "RootPlot.h"
-#include "RootPlotHist.h"
 #include "RootPlotFrame.h"
 #include "STGMainFrame.h"
 
@@ -69,6 +69,9 @@ namespace st_graph {
     // correctly, gClient will be non-0.
     if (0 == gClient)
       throw std::runtime_error("RootEngine::RootEngine could not initialize graphical environment");
+
+    // Turn off "stats box".
+    if (0 != gStyle) gStyle->SetOptStat("");
 
     m_init_succeeded = true;
   }
@@ -127,24 +130,36 @@ namespace st_graph {
     return frame;
   }
 
-  PlotHist * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-    const PlotHist::IntervalCont_t & intervals) {
+  IFrame * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+    const ISequence & x, const ISequence & y) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist1D: graphical environment not initialized");
 
-    // Create Root-specific 1D plot object with the PlotHist interface.
-    RootPlotHist * hist = new RootPlotHist(this, title, width, height, intervals);
-    m_frames.push_back(hist);
-    return hist;
+    // Create parent main frame.
+    IFrame * mf = createMainFrame(0, width, height);
+
+    // Create frame to hold plot.
+    IFrame * pf = createPlotFrame(mf, title, width, height);
+
+    // Create histogram plot. Discard return value to suppress warning. No memory leak because pf owns plot.
+    createPlot(pf, "hist", x, y);
+
+    return mf;
   }
 
-  PlotHist * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-    const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals) {
+  IFrame * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+    const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist2D: graphical environment not initialized");
 
-    // Create Root-specific 2D plot object with the PlotHist interface.
-    RootPlotHist * hist = new RootPlotHist(this, title, width, height, x_intervals, y_intervals);
-    m_frames.push_back(hist);
-    return hist;
+    // Create parent main frame.
+    IFrame * mf = createMainFrame(0, width, height);
+
+    // Create frame to hold plot.
+    IFrame * pf = createPlotFrame(mf, title, width, height);
+
+    // Create histogram plot. Discard return value to suppress warning. No memory leak because pf owns plot.
+    createPlot(pf, "hist", x, y, z);
+
+    return mf;
   }
 
   IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y) {

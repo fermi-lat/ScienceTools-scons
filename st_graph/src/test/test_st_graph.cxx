@@ -21,7 +21,6 @@
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
 #include "st_graph/IPlot.h"
-#include "st_graph/PlotHist.h"
 #include "st_graph/Sequence.h"
 
 #include "st_stream/StreamFormatter.h"
@@ -72,8 +71,8 @@ void StGraphTestApp::run() {
   int num_intervals = 200;
 
   // Create a set of interval definitions to use for the histogram plot. Make them equal linear bins.
-  PlotHist::IntervalCont_t intervals(num_intervals);
-  for (int ii = 0; ii < num_intervals; ++ii) intervals[ii] = PlotHist::Interval_t(ii, ii + 1);
+  std::vector<double> intervals(num_intervals);
+  for (int ii = 0; ii < num_intervals; ++ii) intervals[ii] = ii;
 
   // Create an array containing a sinusoid with 25 extra points at the end to allow it to look like a cosine too.
   std::vector<double> sine_wave(num_intervals + 25);
@@ -91,36 +90,35 @@ void StGraphTestApp::run() {
     return;
   }
 
+  // Make a couple typedefs to improve readability.
+  typedef LowerBoundSequence<std::vector<double>::iterator> LowerBoundSeq_t;
+  typedef PointSequence<std::vector<double>::iterator> PointSeq_t;
+
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
-  PlotHist * plot_hist_1 = engine->createPlotHist1D("Plot 1", 900, 600, intervals);
+  IFrame * plot_hist_1 = engine->createPlotHist1D("Plot 1", 900, 600, LowerBoundSeq_t(intervals.begin(), intervals.end()),
+    PointSeq_t(sine_wave.begin(), sine_wave.begin() + num_intervals));
 
-  // Create a histogram plot, size 600 x 400, with the (same) given bin definitions.
-  PlotHist * plot_hist_2 = engine->createPlotHist1D("Plot 2", 600, 400, intervals);
-
-  // Fill plots with sinusoids.
-  for (int ii = 0; ii < num_intervals; ++ii) {
-    plot_hist_1->set(ii, sine_wave[ii]);
-    plot_hist_2->set(ii, sine_wave[ii + 25]); // cosine
-  }
+  // Create a histogram plot, size 600 x 400, with the (same) given bin definitions, but displaying a cosine.
+  IFrame * plot_hist_2 = engine->createPlotHist1D("Plot 1", 600, 400, LowerBoundSeq_t(intervals.begin(), intervals.end()),
+    PointSeq_t(sine_wave.end() - num_intervals, sine_wave.end()));
 
   // Reduce size of 2-d plot.
   num_intervals = 50;
 
-  // Create a set of interval definitions to use for the histogram plot. Make them equal linear bins.
-  PlotHist::IntervalCont_t intervals2d(num_intervals);
-  for (int ii = 0; ii < num_intervals; ++ii) intervals2d[ii] = PlotHist::Interval_t(ii, ii + 1);
-
-  // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  PlotHist * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, intervals2d, intervals2d);
+  // Create 2d fake data.
+  std::vector<std::vector<double> > data2d(num_intervals, std::vector<double>(num_intervals));
 
   double sigma_squared = 2. * num_intervals;
   for (int ii = 0; ii < num_intervals; ++ii) {
     double x_squared = (ii - num_intervals / 2.) * (ii - num_intervals / 2.);
     for (int jj = 0; jj < num_intervals; ++jj) {
       double y_squared = (jj - num_intervals / 2.) * (jj - num_intervals / 2.);
-      plot_hist_3->set(ii, jj, 100. * exp(-(x_squared + y_squared) / (2. * sigma_squared)));
+      data2d[ii][jj] = 100. * exp(-(x_squared + y_squared) / (2. * sigma_squared));
     }
   }
+
+  // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
+  IFrame * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), data2d);
 
   // Display all graphical objects.
   engine->run();
@@ -128,15 +126,6 @@ void StGraphTestApp::run() {
 #ifndef WIN32
   sleep(1); // All windows should disappear briefly.
 #endif
-
-  // Reverse the plots , so sine -> cosine and vice versa on the two plots.
-  for (int ii = 0; ii < num_intervals; ++ii) {
-    plot_hist_1->set(ii, sine_wave[ii + 25]); // cosine
-    plot_hist_2->set(ii, sine_wave[ii]);
-  }
-
-  // Display all graphical objects (again).
-  engine->run();
 
   // Remove one plot.
   delete plot_hist_3;

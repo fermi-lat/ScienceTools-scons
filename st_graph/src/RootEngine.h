@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "st_graph/Engine.h"
-#include "st_graph/PlotHist.h"
 
 namespace st_graph {
 
@@ -47,20 +46,22 @@ namespace st_graph {
           \param title The title of the plot.
           \param width The width of the plot frame.
           \param height The height of the plot frame.
-          \param intervals Set of intervals of the histogram, used to set the plot axes.
+          \param x The first dimension being plotted, giving the bin definitions.
+          \param y The second dimension being plotted, giving the bin values.
       */
-      virtual PlotHist * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist::IntervalCont_t & intervals);
+      virtual IFrame * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+        const ISequence & x, const ISequence & y);
 
       /** \brief Create a plotter for a two dimensional histogram.
           \param title The title of the plot.
           \param width The width of the plot window.
           \param height The height of the plot window.
-          \param x_intervals Set of intervals of the histogram, used to set the plot X axis.
-          \param y_intervals Set of intervals of the histogram, used to set the plot Y axis.
+          \param x The first dimension being plotted, giving the x bin definitions.
+          \param y The second dimension being plotted, giving the y bin definitions.
+          \param z The third dimension being plotted.
       */
-      virtual PlotHist * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-        const PlotHist::IntervalCont_t & x_intervals, const PlotHist::IntervalCont_t & y_intervals);
+      virtual IFrame * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+        const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z);
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.
