@@ -11,6 +11,8 @@
 #include <string>
 
 #include "fitsio.h"
+
+#include "FitsExtensionData.h"
 #include "table/ITabularData.h"
 #include "table/table_types.h"
 
@@ -39,14 +41,14 @@ namespace table {
       */
       virtual void read(const std::string & field, Index_t record_index, double & value) const;
 
-    protected:
-      // Iternal method to open the FITS file.
-      void open();
-
-      // Iternal method to close the FITS file.
-      void close();
+      /** \brief Read a keyword from this extension.
+          \param name The name of the keyword to read.
+          \param value The output value.
+      */
+      virtual void readKeyword(const std::string & name, double & value) const;
 
     private:
+      FitsExtensionData m_extension;
       std::map<std::string, int> m_col_info;
       std::string m_file_name;
       std::string m_table_name;
