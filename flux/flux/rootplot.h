@@ -51,6 +51,7 @@ public:
             "      '-graph <log | semilogx | semilogy | linear>'\n"
             "      '-longsrc <sourcename>' for long-term energy averaging\n"
             "      '-time <time in seconds>' for the flux at time\n"
+            "      '-stationary' keeps the satellite from moving\n"
             "      '-help' for this help"
             << std::endl;
     }
