@@ -5,6 +5,7 @@
   Package coordinators: T.Burnett
 
 @verbatim
+  v1r5    03-mar-05 THB fix gcc warning, that might be messing up clients 
   v1r5    06-feb-05 THB add class HealpixArray 
   v1r4p4  23-jan-05 THB Remove ephemeris data 
   v1r4p3  22-jan-05 THB Fix Healpix 
