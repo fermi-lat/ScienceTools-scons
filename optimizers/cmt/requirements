@@ -6,16 +6,24 @@ author Pat Nolan <pln@razzle.stanford.edu>
 
 # $Id$
 
-use STpolicy *
+use GlastPolicy *
 use xml v5r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
 
-apply_pattern ST_library option=" -no_share *.c "
+apply_pattern package_include
+apply_pattern package_linkopts
+apply_pattern package_stamps
 
 private
 
-macro_append cppflags "" Linux " -DTRAP_FPE " 
-macro_prepend cflags "" Linux "-g -O "
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
+macro_prepend cflags "" Linux " -g -O "
+
+macro source *.cxx WIN32 "*.h *.cxx"
+
+library optimizers -no_share $(source) *.c
+
+application test_optimizers test/main.cxx
 

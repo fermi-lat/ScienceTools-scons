@@ -43,6 +43,8 @@ class Arg;
 
 class Function {
 
+   friend class FunctionTest;
+
 public:
 
    Function() {}
@@ -50,7 +52,7 @@ public:
    virtual ~Function() {}
 
    /// Provide a string identifier.
-   void setName(const std::string &functionName) {
+   void setName(const std::string & functionName) {
       m_functionName = functionName;
    }
 
@@ -59,9 +61,7 @@ public:
    }
 
    /// Set the Parameter value
-   virtual void setParam(const std::string &paramName, double paramValue) {
-      setParameter(paramName, paramValue);
-   }
+   virtual void setParam(const std::string &paramName, double paramValue);
 
    /// Set a Parameter using a Parameter object.
    virtual void setParam(const Parameter &param);
@@ -72,17 +72,6 @@ public:
    /// Return the Parameter object by name.
    virtual const Parameter & getParam(const std::string &paramName) const;
    
-   /// Set the bounds of a Parameter.
-   virtual void setParamBounds(const std::string &paramName, double lower,
-                               double upper);
-   
-   /// Set the scale of a Parameter.
-   virtual void setParamScale(const std::string &paramName, double scale);
-
-   /// Set the true value of the Parameter, regardless of its scale.
-   virtual void setParamTrueValue(const std::string &paramName, 
-                                  double paramValue);
-
    /// Return the total number of Parameters.
    unsigned int getNumParams() const {
       return m_parameter.size();
@@ -215,9 +204,6 @@ protected:
    void setMaxNumParams(int nParams) {
       m_maxNumParams = nParams;
    }
-
-   void setParameter(const std::string &paramName, double paramValue, 
-                     int isFree = -1);
 
    /// for subclass constructor use
    void addParam(const std::string &paramName, 

@@ -35,20 +35,6 @@ const Parameter & Function::getParam(const std::string &paramName) const {
    throw ParameterNotFound(paramName, getName(), "getParam");
 }
 
-void Function::setParamBounds(const std::string &paramName, double lower,
-                              double upper) {
-   parameter(paramName).setBounds(lower, upper);
-}
-
-void Function::setParamScale(const std::string &paramName, double scale) {
-   parameter(paramName).setScale(scale);
-}
-
-void Function::setParamTrueValue(const std::string &paramName, 
-                                 double paramValue) {
-   parameter(paramName).setTrueValue(paramValue);
-}
-
 void Function::setParamValues(const std::vector<double> &paramVec) {
    if (paramVec.size() != m_parameter.size()) {
       std::ostringstream errorMessage;
@@ -121,14 +107,10 @@ void Function::getFreeParams(std::vector<Parameter> &params) const {
    }
 }
 
-void Function::setParameter(const std::string &paramName, 
-			    double paramValue,
-                            int isFree) {
+void Function::setParam(const std::string &paramName, 
+                        double paramValue) {
    Parameter & par = parameter(paramName);
    par.setValue(paramValue);
-   if (isFree > -1) {
-      par.setFree(isFree);
-   }
 }
 
 void Function::addParam(const std::string & paramName,

@@ -22,8 +22,8 @@ void FunctionTest::parameters(const std::vector<Parameter> &params)
 // set the Parameter values
    for (unsigned int i = 0; i < numParams && i < params.size(); i++) {
       m_func->setParam(paramNames[i], params[i].getValue());
-      m_func->setParamBounds(paramNames[i], params[i].getBounds().first,
-                             params[i].getBounds().second);
+      m_func->parameter(paramNames[i]).setBounds(params[i].getBounds().first,
+                                                 params[i].getBounds().second);
    }
 
 // and test in groups and individually

@@ -43,26 +43,23 @@ class Parameter {
 
 public:
 
-   Parameter() {
-      init(std::string(""), 0., -HUGE, HUGE, true);
-   }
+   Parameter() : m_name(""), m_value(0), m_minValue(-HUGE), m_maxValue(HUGE),
+                 m_free(true), m_scale(1.), m_error(0) {}
 
-   /// @param paramName The name of the Parameter
-   /// @param paramValue The (scaled) value of the Parameter
+   /// @param name The name of the Parameter
+   /// @param value The (scaled) value of the Parameter
    /// @param minValue Parameter value lower bound
    /// @param maxValue Parameter value upper bound
    /// @param isFree true if the Parameter value is allowed to vary in a fit
    /// @param error estimated error on Parameter value.
-   Parameter(const std::string & paramName, double paramValue, 
-             double minValue, double maxValue, bool isFree = true, 
-             double error=0) {
-      init(paramName, paramValue, minValue, maxValue, isFree, error);
-   }
+   Parameter(const std::string & name, double value, double minValue,
+             double maxValue, bool isFree=true, double error=0) 
+      : m_name(name), m_value(value), m_minValue(minValue), 
+        m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error) {}
 
-   Parameter(const std::string & paramName, double paramValue, 
-             bool isFree=true) {
-      init(paramName, paramValue, -HUGE, HUGE, isFree, 0);
-   }
+   Parameter(const std::string & name, double value, bool isFree=true)
+      : m_name(name), m_value(value), m_minValue(-HUGE), m_maxValue(HUGE),
+        m_free(isFree), m_scale(1.), m_error(0) {}
 
    ~Parameter() {}
 
@@ -130,36 +127,15 @@ public:
 
 private:
 
-   /// set all the Parameter values (with default scaling)
-   void init(const std::string &paramName, double paramValue, 
-             double minValue, double maxValue, bool isFree = true,
-             double error=0) {
-      m_name = paramName; 
-      m_value = paramValue;
-      m_minValue = minValue;
-      m_maxValue = maxValue;
-      m_free = isFree;
-      m_scale = 1;
-      m_error = error;
-   }
-
-   /// parameter name
    std::string m_name;
-
-   /// its value
    double m_value;
-
-   /// its scale factor
-   double m_scale;
-
-   /// lower bound
    double m_minValue;
-
-   /// upper bound
    double m_maxValue;
 
    /// flag to indicate free or fixed
    bool m_free;
+
+   double m_scale;
 
    /// estimated error on value
    double m_error;
