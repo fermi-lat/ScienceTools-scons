@@ -16,7 +16,8 @@
 namespace evtbin {
 
   SingleSpec::SingleSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-    const Binner & binner): DataProduct(event_file, event_table), m_hist(binner) {
+    const Binner & binner, const Binner & ebounds, const Gti & gti): DataProduct(event_file, event_table, gti),
+    m_hist(binner), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
     harvestKeywords(m_event_file, m_event_table);
@@ -25,7 +26,7 @@ namespace evtbin {
     adjustTimeKeywords(sc_file);
   }
 
-  SingleSpec::~SingleSpec() throw() {}
+  SingleSpec::~SingleSpec() throw() { delete m_ebounds; }
 
   void SingleSpec::writeOutput(const std::string & creator, const std::string & out_file) const {
     // The binner from the histogram will be used below.
@@ -57,7 +58,7 @@ namespace evtbin {
     }
 
     // Write the EBOUNDS extension.
-    writeEbounds(out_file, binner);
+    writeEbounds(out_file, m_ebounds);
 
     // Write GTI extension.
     writeGti(out_file);

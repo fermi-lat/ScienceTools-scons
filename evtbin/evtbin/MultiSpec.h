@@ -21,10 +21,11 @@ namespace evtbin {
     public:
       /** \brief Create the spectra object, using the given bins.
           \param time_binner The binner used to bin the time dimension.
-          \param energy_binner The binner used to create the energy dimension.
+          \param energy_binner The binner used to perform spectral binning.
+          \param ebounds The binner which describes the energy intervals associated with the defined bins.
       */
       MultiSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        const Binner & time_binner, const Binner & energy_binner);
+        const Binner & time_binner, const Binner & energy_binner, const Binner & ebounds, const Gti & gti);
 
       virtual ~MultiSpec() throw();
 
@@ -36,6 +37,7 @@ namespace evtbin {
 
     private:
       Hist2D m_hist;
+      Binner * m_ebounds;
   };
 
 }

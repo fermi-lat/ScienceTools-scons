@@ -21,9 +21,10 @@ namespace evtbin {
     public:
       /** \brief Create the spectrum object.
           \param binner The binner used to create the histogram.
+          \param ebounds The binner which describes the energy intervals associated with the defined bins.
       */
       SingleSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        const Binner & binner);
+        const Binner & binner, const Binner & ebounds, const Gti & gti);
 
       virtual ~SingleSpec() throw();
 
@@ -35,6 +36,7 @@ namespace evtbin {
 
     private:
       Hist1D m_hist;
+      Binner * m_ebounds;
   };
 
 }

@@ -16,8 +16,8 @@
 namespace evtbin {
 
   MultiSpec::MultiSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-    const Binner & time_binner, const Binner & energy_binner): DataProduct(event_file, event_table),
-    m_hist(time_binner, energy_binner) {
+    const Binner & time_binner, const Binner & energy_binner, const Binner & ebounds, const Gti & gti):
+    DataProduct(event_file, event_table, gti), m_hist(time_binner, energy_binner), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
     harvestKeywords(m_event_file, m_event_table);
@@ -26,7 +26,7 @@ namespace evtbin {
     adjustTimeKeywords(sc_file, &time_binner);
   }
 
-  MultiSpec::~MultiSpec() throw() {}
+  MultiSpec::~MultiSpec() throw() { delete m_ebounds; }
 
   void MultiSpec::writeOutput(const std::string & creator, const std::string & out_file) const {
     // Standard file creation from base class.
@@ -77,7 +77,7 @@ namespace evtbin {
     delete [] channel;
 
     // Write the EBOUNDS extension.
-    writeEbounds(out_file, m_hist.getBinners().at(1));
+    writeEbounds(out_file, m_ebounds);
 
     // Write GTI extension.
     writeGti(out_file);
