@@ -311,9 +311,9 @@ int GRBTest::Start(std::vector<char*> argv)
       double t1;
       t1=time;
       double dt=0.0;
+      cout<<"pippo"<<endl;
       while(time<time_max && nume<=events_max)
 	{
-	  //	  cout<<"time = "<<time<<endl;
 	  //cout<<"m_flux->generate()"<<endl;
 	  m_flux->generate();  
 	  //cout<<"m_flux->time()"<<endl;
@@ -412,7 +412,7 @@ int GRBTest::Start(std::vector<char*> argv)
       phout=fopen(ascii_name,"w");
       cout<<" Total Number Of Events = "<<theData.size()<<endl;
       std::vector<DataOut>::iterator itr;
-      cout<<"Soting The Photon List..."<<endl;
+      cout<<"Sorting The Photon List..."<<endl;
       std::sort(theData.begin(), theData.end(), TimeCmp());
       for(itr=theData.begin();itr != theData.end();++itr)
 	{

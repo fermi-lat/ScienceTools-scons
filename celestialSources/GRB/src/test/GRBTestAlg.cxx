@@ -9,7 +9,7 @@
 // Include files
 #include "FluxSvc/IFluxSvc.h"
 #include "FluxSvc/IFlux.h"
-
+#include <fstream>
 // GlastEvent for creating the McEvent stuff
 #include "Event/TopLevel/Event.h"
 #include "Event/TopLevel/MCEvent.h"
@@ -115,6 +115,9 @@ StatusCode GRBTestAlg::initialize() {
   // get the service
   StatusCode sc = service("FluxSvc", m_fsvc);
   m_loop=0;
+  std::ofstream ofs("GRBtemp.txt");
+  ofs<<0<<std::endl;
+  ofs.close();
   return sc;
 }
 
