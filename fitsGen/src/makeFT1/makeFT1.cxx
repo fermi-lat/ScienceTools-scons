@@ -113,6 +113,7 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
                       || merit["CalTotRLn"].get() < 2.);
    bool thin_cut = (merit["Tkr1FirstLayer"].get() != 0 
                     && merit["Tkr1FirstLayer"].get() < 15);
+   (void)(thin_cut);
 
    bool global_cut = good_energy_cut && zdir_cut && !no_cal_cut;
 
