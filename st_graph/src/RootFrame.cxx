@@ -119,6 +119,10 @@ namespace st_graph {
     }
   }
 
+  void RootFrame::getSubframes(std::list<IFrame *> & frame_cont) {
+    frame_cont.assign(m_subframes.begin(), m_subframes.end());
+  }
+
   const std::string & RootFrame::getState() const {
     for (bool one_time_only = true; one_time_only ; one_time_only = false) {
       m_state.clear();

@@ -67,6 +67,9 @@ namespace st_graph {
       */
       virtual void removeFrame(IFrame * frame);
 
+      /// Note that the full qualification of IFrame is for the benefit of Cint.
+      virtual void getSubframes(std::list<st_graph::IFrame *> & frame_cont);
+
       /** \brief Get a string describing the state of the widget. The possible values of the state string depend
                  on the exact type of widget being represented by the IFrame.
 

@@ -4,6 +4,7 @@
 */
 #ifndef st_graph_IFrame_h
 #define st_graph_IFrame_h
+#include <list>
 #include <string>
 
 namespace st_graph {
@@ -32,6 +33,8 @@ namespace st_graph {
           \param frame The frame being removed.
       */
       virtual void removeFrame(IFrame * frame) = 0;
+
+      virtual void getSubframes(std::list<IFrame *> & frame_cont) = 0;
 
       /** \brief Get a string describing the state of the widget. The possible values of the state string depend
                  on the exact type of widget being represented by the IFrame.
