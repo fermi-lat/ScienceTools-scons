@@ -46,9 +46,8 @@ public:
             // Create local reference to the record to which the iterator refers:
             const Table::Record & record = *it;
             // Get the current values
-            double ra, dec;
-            record[pars.raName()].get(ra);
-            record[pars.decName()].get(dec);
+            double ra = record[pars.raName()].get(), 
+                dec=record[pars.decName()].get();
 
             image.addPoint(astro::SkyDir(ra, dec) );
         }

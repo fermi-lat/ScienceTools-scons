@@ -45,10 +45,9 @@ public:
             if( start < tstart ) continue;
             if( stop > tstop ) break;
 
-            double ra, dec, livetime;
-            record["ra_scz"].get(ra);
-            record["dec_scz"].get(dec);
-            record["livetime"].get(livetime);
+            double ra =record["ra_scz"].get(), 
+                dec=record["dec_scz"].get(),
+                livetime=  record["livetime"].get();
 
             double deltat = livetime > 0 ? livetime : stop-start;
             exp.add(astro::SkyDir(ra, dec), deltat); 
