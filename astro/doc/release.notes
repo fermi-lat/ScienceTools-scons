@@ -5,6 +5,7 @@
 
 @verbatim
 
+  v1r0p1  06-jun-04 THB SkyDir projection to pixel coords fixed to transform to galactic if appropriate
   v1r0    05-jun-04 THB Added new SkyProj class; changed SkyDir to use it.
   v0r12p3 13-may-04 SMR fix to angular units in specifying POINT rocking in GPS
   v0r12p2 20-apr-04 THB disable planets to avoid Linux warnings, try 2

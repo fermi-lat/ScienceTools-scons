@@ -34,9 +34,7 @@ namespace astro {
             //!  fixed direction with respect to the galactic coordinate system (l,b)
             GALACTIC=0,  
             //! fixed direction with respect to the equatorial coordinate system (ra,dec) in the J2000 epoch.
-            EQUATORIAL=1,
-            //! a projection, e.g. AIT. For the constructor, the projection parameters must be set properly
-            PROJECTION=2 
+            EQUATORIAL=1
         } CoordSystem ;
 
 
@@ -76,8 +74,10 @@ namespace astro {
         /** @brief Routine that returns a projection
 
         @param projection The projection transfomation to apply. 
-        @param galactic [false] if true, generate transformation in galactic coords
         @return (pixelx,pixely)
+
+        Note that if the projection specificies galactic coordinates, the 
+        projection will be applied to (l,b) rather than (ra,dec)
         */
         std::pair<double,double> project(const SkyProj& projection) const;
 

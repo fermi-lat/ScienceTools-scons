@@ -13,12 +13,6 @@ using namespace astro;
 #include <stdexcept>
 
 
-namespace{
-        static double DEGTORAD=M_PI/180.;
-}
-
-
-
 /** @brief initialize from (ra, dec), or (l,b)
 @param param1 either ra or l, in degrees
 @param param2 either dec or b, in degrees
@@ -41,7 +35,7 @@ SkyDir::SkyDir(double param1, double param2, CoordSystem inputType){
         double ra = param1*M_PI/180;
         double dec = param2*M_PI/180;
 
-        //here we construct the cartesian celestial vector
+        //here we construct the cartesian equatorial vector
         m_dir = Hep3Vector( cos(ra)*cos(dec), sin(ra)*cos(dec) , sin(dec) );        
     }else{
         //improper coordinate system declaration - default things and say so.
@@ -150,9 +144,6 @@ double SkyDir::difference(const SkyDir& other)const
 	}
 	else
         return 2.*asin(x);
-
-    // TODO: make this computationally efficient, avoid sqrt and asin at least for small angles
-	//return 2.*asin(0.5*(m_dir-other.dir()).mag());
 }
 
 
