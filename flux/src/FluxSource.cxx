@@ -387,7 +387,7 @@ public:
             double  l = direction.first,
                 b = direction.second;
             //then set up this direction, either in galactic or celestial coordinates:    
-            astro::SkyDir unrotated(l,b,m_galactic? astro::SkyDir::GALACTIC : astro::SkyDir::CELESTIAL);
+            astro::SkyDir unrotated(l,b,m_galactic? astro::SkyDir::GALACTIC : astro::SkyDir::EQUATORIAL);
 
             //get the zenith cosine:
             astro::SkyDir zenDir(GPS::instance()->RAZenith(),GPS::instance()->DECZenith());
@@ -537,7 +537,7 @@ FluxSource::FluxSource(const DOM_Element& xelem )
                 astro::SkyDir(
                 atof(xml::Dom::transToChar(angles.getAttribute("ra"))),
                 atof(xml::Dom::transToChar(angles.getAttribute("dec"))), 
-                astro::SkyDir::CELESTIAL 
+                astro::SkyDir::EQUATORIAL 
                 ),
 
                 atof(xml::Dom::getAttribute(angles, "radius").c_str())

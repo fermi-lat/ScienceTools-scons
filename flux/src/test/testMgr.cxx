@@ -75,7 +75,7 @@ void galacticTest(FluxMgr* fm, std::string sourceName,double count){
         time+=interval;
         fm->pass(interval);
         Hep3Vector abc(fm->transformToGlast(time,GPS::CELESTIAL).inverse()*(-(f->launchDir())));
-        astro::SkyDir dir(abc,astro::SkyDir::CELESTIAL);
+        astro::SkyDir dir(abc,astro::SkyDir::EQUATORIAL);
         std::cout << "particle "<< i << " located at (l,b) = " << dir.l() << "," << dir.b() << std::endl;
         lavg +=dir.l();
         bavg +=dir.b();
