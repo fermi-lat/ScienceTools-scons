@@ -6,6 +6,7 @@
 */
 
 #include <cctype>
+#include <sstream>
 
 #include "FitsExtensionManager.h"
 #include "tip/HeaderData.h"
@@ -27,7 +28,7 @@ namespace tip {
 
     // Create the file, and complain if it doesn't work:
     fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
-    if (0 != status) throw TipException(std::string("Unable to create file ") + full_name);
+    if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
 
     // Close the file; not interested in it anymore.
     fits_close_file(fp, &status);
@@ -36,7 +37,7 @@ namespace tip {
   // Construct without opening the file.
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
-    m_col_num_lookup(), m_num_records(0), m_fp(0), m_header(0), m_data(0) { open(); }
+    m_col_num_lookup(), m_num_records(0), m_fp(0), m_header(0), m_data(0), m_is_table(false) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { delete m_data; delete m_header; close(); }
@@ -71,7 +72,7 @@ namespace tip {
       // Open the fits file.
       fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
 
-      if (status) {
+      if (0 != status) {
         // TODO 9. 4/2/2004: Bug in cfitsio 2.48: Check for it and warn about it. The bug causes
         // the parser not to move to the correct extension.
         float cfitsio_version = 0.;
@@ -80,33 +81,36 @@ namespace tip {
         if (2.47 < cfitsio_version && 2.49 > cfitsio_version)
           throw TipException(std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
             "syntax parser!\nCould not open FITS file ") + file_name);
-        throw TipException(std::string("Could not open FITS file ") + file_name);
+        throw TipException(std::string("Could not open FITS file \"") + file_name + '"');
       }
 
       // Success: save the pointer.
       m_fp = fp;
+
+      // Check whether the file pointer is pointing at a table:
+      int hdu_type = 0;
+      fits_get_hdu_type(m_fp, &hdu_type, &status);
+      if (0 != status) {
+        close(status);
+        throw TipException(formatWhat("Could not determine the type of the HDU"));
+      }
+      if (ASCII_TBL == hdu_type || BINARY_TBL == hdu_type) {
+        m_is_table = true;
+
+        // If this is a table, perform other table-specific initializations:
+        openTable();
+      }
     }
   }
 
   // Close file.
-  void FitsExtensionManager::close() {
-    int status = 0;
+  void FitsExtensionManager::close(int status) {
     if (m_fp) fits_close_file(m_fp, &status);
     m_fp = 0;
   }
 
   void FitsExtensionManager::openTable() {
-    // Open the actual file and move to the right extension.
-    if (0 == m_fp) open();
-
     int status = 0;
-
-    // Check whether the file pointer is pointing at a table:
-    int hdu_type = 0;
-    fits_get_hdu_type(m_fp, &hdu_type, &status);
-    if (0 != status) throw TipException(formatWhat("Could not determine the type of the HDU"));
-    if (ASCII_TBL != hdu_type && BINARY_TBL != hdu_type) throw TipException(formatWhat("Extension is not a table"));
-
     int column_status = 0;
     long nrows = 0;
 
@@ -115,7 +119,7 @@ namespace tip {
 
     // Check for success and if not, do not continue.
     if (0 != status) {
-      close();
+      close(status);
       throw TipException(formatWhat("Cannot get number of rows"));
     }
 
@@ -137,18 +141,18 @@ namespace tip {
       // Get each column's name.
       fits_get_colname(m_fp, CASEINSEN, match_all, name, &col_num, &column_status);
       if (0 == column_status || COL_NOT_UNIQUE == column_status) {
-        for (char * itor = name; *itor; ++itor) *itor = tolower(*itor);
-
         // Also get its type and repeat count.
         fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
         if (0 != status) {
-          close();
+          close(status);
           std::ostringstream s;
           s << "Could not get type information for column number " << col_num;
           throw TipException(formatWhat(s.str()));
         }
 
         // Save values iff successful getting all the information.
+        // Convert name to lover case.
+        for (char * itor = name; *itor; ++itor) *itor = tolower(*itor);
         m_col_name_lookup[name].m_name = name;
         m_col_name_lookup[name].m_col_num = col_num;
         m_col_name_lookup[name].m_repeat = repeat;
@@ -161,8 +165,14 @@ namespace tip {
     }
   }
 
+  Index_t FitsExtensionManager::getNumRecords() const {
+    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+    return m_num_records;
+  }
+
   // Resize the FITS table, adding or deleting rows as necessary.
   void FitsExtensionManager::setNumRecords(Index_t num_records) {
+    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
     int status = 0;
     if (m_num_records < num_records) {
       fits_insert_rows(m_fp, m_num_records, num_records - m_num_records, &status);
@@ -176,6 +186,8 @@ namespace tip {
   }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
+    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+
     // Copy field name and make it lowercase.
     std::string tmp = field_name;
     for (std::string::iterator itor = tmp.begin(); itor != tmp.end(); ++itor) *itor = tolower(*itor);
@@ -190,6 +202,8 @@ namespace tip {
   }
 
   Index_t FitsExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t record_index) const {
+    if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
+
     // Find field_index in container of columns. Complain if not found.
     std::map<FieldIndex_t, ColumnInfo>::const_iterator itor = m_col_num_lookup.find(field_index);
     if (itor == m_col_num_lookup.end()) {
@@ -216,10 +230,11 @@ namespace tip {
   }
 
   std::string FitsExtensionManager::formatWhat(const std::string & msg) const {
-    std::string retval = msg;
-    if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;
-    retval += " in file " + m_file_name;
-    return retval;
+    std::ostringstream msg_str;
+    msg_str << msg;
+    if (!m_ext_name.empty()) msg_str << " in extension \"" << m_ext_name << '"';
+    msg_str << " in file \"" << m_file_name << '"';
+    return msg_str.str();
   }
 
 }
