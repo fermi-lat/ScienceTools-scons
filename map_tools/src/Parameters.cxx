@@ -28,12 +28,16 @@ Parameters::Parameters( int argc, char *argv[])
 
     // Read name of the file containing events data and expand any
     // environment variables.
-    m_inFile = std::string( (*this)["infile"] );
+    std::string infile = (*this)["infile"];
+    m_inFile = infile;
+
     facilities::Util::expandEnvVar(&m_inFile);
 
-  //  m_filter = std::string( (*this)["filter"]);
+    std::string filter = (*this)["filter"];
+    m_filter = filter;
 
-    m_outFile =std::string( (*this)["outfile"]);
+    std::string outfile = (*this)["outfile"];
+    m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);
 
     if( m_clobber ) m_outFile= "!"+m_outFile;  // FITS convention to rewrite file
