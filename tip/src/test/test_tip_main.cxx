@@ -25,7 +25,7 @@ int main() {
     std::string data_dir;
 
     // Read TIPROOT environment variable.
-    const char * tiproot_cp = ::getenv("TIPROOT");
+    const char * tiproot_cp = getenv("TIPROOT");
 
     // Use it to set name of data directory:
     if (0 != tiproot_cp) {
@@ -269,6 +269,12 @@ int main() {
         std::cerr << "Keyword telescop was read to be " << telescop << " not " << "SWIFT" << std::endl;
         status = 1;
       }
+
+      // Test keyword writing.
+      header["new_bool"].set(true);
+      header["new_double"].set(137.);
+      header["new_string"].set("a string keyword");
+
     } catch(const TipException & x) {
       std::cerr << "Unexpected exception while testing direct keyword access: " << x.what() << std::endl;
       status = 1;
