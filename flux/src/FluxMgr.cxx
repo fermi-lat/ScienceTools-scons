@@ -14,7 +14,7 @@
 #include <xercesc/dom/DOM_Document.hpp>
 #include <xercesc/dom/DOM_Element.hpp>
 #include "xml/Dom.h"
-#include "xml/IFile.h"
+#include "facilities/Util.h"     // for expandEnvVar
 
 #include "astro/PointingTransform.h"
 
@@ -444,7 +444,7 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
     //the default DTD file
     inFileName=m_dtd;
     //replace $(FLUXROOT) by its system variable
-    xml::IFile::extractEnvVar(&inFileName);
+    facilities::Util::expandEnvVar(&inFileName);
     
     //this stuff goes in the beginnning of the XML file to be read into the parser
     fileString << "<?xml version='1.0' ?>" << std::endl << "<!DOCTYPE source_library" 
@@ -455,7 +455,7 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
         
         // get the file name, and evaluate any system variables in it
         inFileName=(*iter).c_str();
-        xml::IFile::extractEnvVar(&inFileName);
+        facilities::Util::expandEnvVar(&inFileName);
         
         //then make an ENTITY entry specifying where the file is
         fileString << "<!ENTITY " << "library" << libchar << " SYSTEM " << '"' 
