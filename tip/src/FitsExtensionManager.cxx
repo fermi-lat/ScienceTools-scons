@@ -204,6 +204,9 @@ namespace tip {
     fits_resize_img(m_fp, bitpix, naxis, naxes, &status);
     if (0 != status) throw TipException(formatWhat("setImageDimensions cannot change image dimensions"));
 
+    // Save the dimensions in the dimension member.
+    m_image_dimensions = dims;
+
     delete [] naxes;
   }
 

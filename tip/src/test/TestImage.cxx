@@ -52,6 +52,10 @@ namespace tip {
       // Resize image.
       image->setImageDimensions(dims);
 
+      // Verify that the size was changed.
+      if (image->getImageDimensions() != dims)
+        ReportUnexpected("TestImage::test: after setImageDimensions, getImageDimensions returned a different set of dimensions");
+
       // Copy pixel by pixel from input. Output image will be rotated about the upper-left - lower-right diagonal
       for (int ii = 0; ii < dims[0]; ++ii) {
         for (int jj = 0; jj < dims[1]; ++jj) {
