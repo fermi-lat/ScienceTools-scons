@@ -266,7 +266,7 @@ void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
     cout << " --------------------------------" << std::endl;
     
     //testing rotateangles function
-    GPS::instance()->rotateAngles(std::make_pair<double,double>(0.0,0.3));
+    GPS::instance()->rotateAngles(std::make_pair<double,double>(0.0,0.0));
     EventSource* f;
     double totalinterval=0;
     for( int i = 0; i< count; ++i) {
