@@ -254,11 +254,11 @@ int main(){
 
         test_insideSAA();
 
-        if( !testSkyDir() )return 1;
+        if( !testSkyDir() )rc=1;
 
-        if( !testHTM() ) return 1;
+        if( !testHTM() ) rc= 1;
 
-        if(! testSkyProj() ) return 1;
+        if(! testSkyProj() ) rc= 1;
 
         TestHealpix();
 
@@ -322,7 +322,7 @@ int main(){
 
         if( fabs(test) < 1e-3 ) {
             cout << "tests ok " << endl;
-            return 0;
+            
         } else {
             cout << "failed a test" << endl;
             cout << "Mission start" << start << endl;  
@@ -331,12 +331,13 @@ int main(){
             cout << "EarthCoordinate("<<lat<<","<<lon<<") " << ec.latitude() << ", " << ec.longitude() << endl;
 
             // run the sun and moon
-            return 1;
+            rc= 1;
         }
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
             << e.what() << "\"" << std::endl;
-        return 1;
+        rc= 1;
     }
+    return rc;
 }
 

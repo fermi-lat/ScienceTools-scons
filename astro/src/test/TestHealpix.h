@@ -1,6 +1,8 @@
 /** @file TestHealpix.h
 @brief code to test the class Healpix
 
+$Header$
+
 */
 
 #include "astro/Healpix.h"
