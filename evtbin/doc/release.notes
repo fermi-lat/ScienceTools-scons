@@ -7,6 +7,8 @@
 --------------------------------------------------------------------------------
 16-aug-2004    v0r5p0 JP  Add support for reading, modifying and writing GTIs,
                           plus calculation of EXPOSURE and ONTIME keywords.
+18-aug-2004    v0r5p1 JP  Change parameters which give file names to have type
+                          f instead of s.
 --------------------------------------------------------------------------------
 \endverbatim
 
