@@ -15,6 +15,7 @@
 namespace tip {
 
   // Currently these codes are not defined for complex and double complex cfitsio types.
+  template <> int FitsPrimProps<const char *>::dataTypeCode() { return TSTRING; }
   template <> int FitsPrimProps<std::string>::dataTypeCode() { return TSTRING; }
   template <> int FitsPrimProps<bool>::dataTypeCode() { return TLOGICAL; }
   template <> int FitsPrimProps<double>::dataTypeCode() { return TDOUBLE; }
