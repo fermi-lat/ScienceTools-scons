@@ -3,6 +3,8 @@
     \author James Peachey, HEASARC
 */
 
+#include <cstdlib>
+#include <limits>
 #include <string>
 #include <vector>
 
