@@ -11,6 +11,7 @@ use astro *
 use evtbin *
 use irfs *
 use st_app *
+use st_facilities *
 use tip *
 
 apply_pattern ST_library option=-no_share
