@@ -34,7 +34,7 @@ public:
 void test_Header();
 
 int main(int argc, char** argv ){
-//    try{
+   try{
         // read a pil file--and make sure that a few simple things work
         TestPar par(argc, argv);
         if( par["xref"] != 0) {
@@ -77,9 +77,8 @@ int main(int argc, char** argv ){
         }
 
 // Write out the cube...
-        std::string cubefile("$(OUTFILES)/testExposureCube.fits");
+        std::string cubefile("$(OUTFILES)/testCube.fits");
         facilities::Util::expandEnvVar(&cubefile);
-        cubefile = cubefile;
         ExposureHyperCube cube(e, cubefile);
         cube.save("!" + cubefile);
 
@@ -87,17 +86,17 @@ int main(int argc, char** argv ){
         Exposure e2(cubefile);
 
 // Write this out as a separate file for an external diff.
-        std::string cube2file("$(OUTFILES)/testExposureCube2.fits");
+        std::string cube2file("$(OUTFILES)/testCube2.fits");
         facilities::Util::expandEnvVar(&cube2file);
         ExposureHyperCube cube2(e2, cube2file);
         cube2.save("!" + cube2file);
 
         test_Header();
 
-//     }catch( const std::exception& e){
-//         std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
-//         return 1;
-//     }
+    }catch( const std::exception& e){
+        std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
+        return 1;
+    }
     std::cout << "tests OK" << std::endl;
     return 0;
 }

@@ -76,10 +76,7 @@ Exposure::Exposure(const std::string& fits_file)
                               + "step sizes in RA and Dec do not match.");
     }
 // @todo Check for cos(theta) weighting.
-    double cdelt3;
-    cube.getValue("CDELT3", cdelt3);
-    Index::costhetabinsize = cdelt3;  // applying getValue directly here gives 
-                                      // a bad cast for some reason.
+    cube.getValue("CDELT3", Index::costhetabinsize);
     cube.getValue("CRVAL3", Index::cosmin);
     cube.getValue("TOTAL", m_total);
 
