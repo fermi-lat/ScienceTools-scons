@@ -14,7 +14,8 @@
 
 #include <string>
 #include <vector>
-class BaseImage;
+
+namespace tip { class Image; }
 
 namespace astro { class SkyDir; }
 
@@ -93,11 +94,18 @@ private:
     //! @brief internal routine to convert SkyDir to pixel index
     unsigned int pixel_index(const astro::SkyDir& pos, int layer=-1) const;
 
+    //! access to the data array
+    std::vector<float>& data();
+
     //! sizes of the respective axes.
     int   m_naxis1, m_naxis2, m_naxis3;
     double m_total;
-    //! pointer to the BaseImage abstract class, which is cast in the implementation.
-    BaseImage* m_image;
+    //! pointer to the associated tip Image class
+    tip::Image* m_image;
+
+    //! the actual image data
+    std::vector<float>m_imageData;
+
     unsigned int m_pixelCount;
     bool m_save; 
     unsigned int m_layer;

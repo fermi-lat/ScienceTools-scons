@@ -11,7 +11,6 @@ $Header$
 #include "tip/IFileSvc.h"
 #include "astro/SkyDir.h"
 
-#include "image/Image.h" 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"

@@ -8,24 +8,25 @@ $Header$
 #include "map_tools/MapParameters.h"
 
 #include "astro/SkyDir.h"
-#include "image/Image.h"
-#include "image/IOElement.h"
+#include "tip/Image.h"
+#include "tip/IFileSvc.h"
 
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
     //! @brief add a string or douuble key to the image 
 
-    BaseImage* image;
+    tip::Header* header;
     void setKey(std::string name, double value, std::string unit="", std::string comment=""){
-        image->addAttribute(DoubleAttr(name, value, unit, comment)); }
+        (*header)[name].set( value); }
     void setKey(std::string name, std::string value,std::string unit="", std::string comment="")
-    {image->addAttribute(StringAttr(name, value,unit,comment)); }
-
+    {      (*header)[name].set(value); }
+ 
 }
 using namespace map_tools;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//   constructor that creates a new image
 SkyImage::SkyImage(const map_tools::MapParameters& pars)
 : m_naxis1(pars.npix())
 , m_naxis2(pars.npixY())
@@ -72,14 +73,15 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     naxes[0]=m_naxis1;
     naxes[1]=m_naxis2;
     naxes[2]=m_naxis3;
-    m_image = new FloatImg("skymap", pars.outputFile(), naxes);
-    m_pixelCount = m_image->pixelCount();
+    tip::IFileSvc::instance().createImage(pars.outputFile(), "Primary", naxes);
+    m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), "Primary");
+
+    m_imageData.resize(m_pixelCount);
 
     // fill the boundaries with NaN
     if( pars.projType()!="CAR") clear();
 
-    image=m_image; // set up the anonymous convenience functions
-
+    header = &m_image->getHeader();// set up the anonymous convenience functions
     setKey("TELESCOP", "GLAST");
 
     setKey("INSTRUME", "LAT SIMULATION");
@@ -110,17 +112,17 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 :  m_save(false)
 , m_wcs(0)
 {
-    FloatImg& image = *dynamic_cast<FloatImg*>(IOElement::readIOElement(fits_file, extension));
-    m_image = &image;
+    m_image = const_cast<tip::Image*>(tip::IFileSvc::instance().readImage(fits_file, extension));
+    tip::Header& header = m_image->getHeader();
 
     // standard ordering for ra, dec, cos(theta).
-    image.getValue("NAXIS1", ( m_naxis1));
-    image.getValue("NAXIS2", (m_naxis2));
-    image.getValue("NAXIS3", (m_naxis3));
+    header["NAXIS1"].get(m_naxis1);
+    header["NAXIS2"].get(m_naxis2);
+    header["NAXIS3"].get(m_naxis3);
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     std::string ctype;
-    image.getValue("CTYPE1", ctype);
+    header["CTYPE1"].get(ctype);
     bool galactic;
     if( ctype.substr(0,2)=="RA") {
         galactic=false;
@@ -137,16 +139,19 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     /// arrays describing transformation; pointers passed to wcslib
     double crpix[2], crval[2], cdelt[2];
 
-    image.getValue("CRPIX1", crpix[0]);
-    image.getValue("CRVAL1", crval[0]);
-    image.getValue("CDELT1", cdelt[0] );
+    header["CRPIX1"].get( crpix[0]);
+    header["CRVAL1"].get( crval[0]);
+    header["CDELT1"].get( cdelt[0]);
 
-    image.getValue("CRPIX2", crpix[1]);
-    image.getValue("CRVAL2", crval[1]);
-    image.getValue("CDELT2", cdelt[1]);
+    header["CRPIX2"].get( crpix[1]);
+    header["CRVAL2"].get( crval[1]);
+    header["CDELT2"].get( cdelt[1]);
     double crota2=0;
-    try { image.getValue("CROTA2", crota2);}catch(const std::exception&){}
+    try { header["CROTA2"].get(crota2);}catch(const std::exception&){}
     m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
+
+    // finally, read in the image
+    m_image->get(m_imageData);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)
@@ -166,7 +171,7 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int lay
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
     if(  k< m_pixelCount){
-        reinterpret_cast<FloatImg*>(m_image)->data()[k]+=delta;
+        m_imageData[k] += delta;
         m_total += delta;
     }
 }
@@ -174,28 +179,29 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int lay
 void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
 {
     if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
-    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
+
     int offset = m_naxis1* m_naxis2 * layer;
+
     for( size_t k = 0; k< (unsigned int)(m_naxis1* m_naxis2); ++k){
         // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
             x = static_cast<int>(k%m_naxis1)+1.0, 
             y = static_cast<int>(k/m_naxis1)+1.0;
         try{
+
             astro::SkyDir dir(x,y, *m_wcs);
             double t= req(dir);
-            image->data()[k+offset] = t; 
+            m_imageData[k+offset] = t;
             m_total += t;
         }catch(... ) { // any exception: just fill in a NaN
-            image->data()[k]=dnan; 
+            m_imageData[k+offset]=dnan; 
         }
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::clear()
 {
-    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
-    size_t s = image->data().size();
+    size_t s = m_imageData.size();
     size_t pixels = size_t(m_naxis1*m_naxis2);
     for( size_t k = 0; k< s; ++k){
         // determine the bin center
@@ -206,21 +212,19 @@ void SkyImage::clear()
             y = static_cast<int>(kk/m_naxis1)+1;
         try{
             astro::SkyDir dir(x,y, *m_wcs);
-            image->data()[k] = 0; 
+            m_imageData[k] = 0; 
         }catch(... ) { // any exception: just fill in a NaN
-            image->data()[k]=dnan; 
+            m_imageData[k]=dnan; 
         }
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::~SkyImage()
 {
-    if( !m_save) { delete m_image; return;}
-    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
-    if(image!=0){
-        image->saveElement();
-        delete image;
+    if( m_save) {
+        m_image->set(m_imageData);
     }
+    delete m_image; 
     delete m_wcs;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -228,25 +232,24 @@ double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 {
     if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
     unsigned int k = pixel_index(pos,layer);
-    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    return m_imageData[k];        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 float &  SkyImage::operator[](const astro::SkyDir&  pixel)
 {
     unsigned int k = pixel_index(pixel);
-    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    return m_imageData[k];        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const float &  SkyImage::operator[](const astro::SkyDir&  pixel)const
 {
     unsigned int k = pixel_index(pixel);
-    return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    return  m_imageData[k];        
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighbors)const
 {
     int layer = 0; ///@todo: get neighbors on a different layer
-    FloatImg& image =  *dynamic_cast<FloatImg*>(m_image); 
     std::pair<double,double> p= pos.project(*m_wcs);
     if( p.first<0) p.first += m_naxis1;
     if(p.second<0) p.second += m_naxis2;
@@ -254,12 +257,13 @@ void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighb
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
-    if(i+1<(unsigned int)m_naxis1)neighbors.push_back(image[k+1]); 
-    if(i>0) neighbors.push_back(image[k-1]);
-    if(j+1<(unsigned int)m_naxis2)neighbors.push_back(image[k+m_naxis1]);
-    if(j>0)neighbors.push_back(image[k-m_naxis1]);
+    if(i+1<(unsigned int)m_naxis1)neighbors.push_back(m_imageData[k+1]); 
+    if(i>0) neighbors.push_back(m_imageData[k-1]);
+    if(j+1<(unsigned int)m_naxis2)neighbors.push_back(m_imageData[k+m_naxis1]);
+    if(j>0)neighbors.push_back(m_imageData[k-m_naxis1]);
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // internal routine to convert a SkyDir to a pixel index
 unsigned int SkyImage::pixel_index(const astro::SkyDir& pos, int layer) const
 {
