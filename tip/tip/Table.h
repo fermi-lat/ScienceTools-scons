@@ -311,10 +311,6 @@ namespace tip {
 // TODO Get rid of const_cast
       ConstIterator end() const { return ConstIterator(Record(const_cast<Table *>(this), getNumRecords())); }
 
-      /** \brief Return a flag indicating whether the given data object is a table.
-      */
-      virtual bool isTable() const = 0;
-
       /** \brief Return the number of records contained in this table.
       */
       virtual Index_t getNumRecords() const = 0;
