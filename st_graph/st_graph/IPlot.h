@@ -5,17 +5,12 @@
 #ifndef st_graph_IPlot_h
 #define st_graph_IPlot_h
 
-#include <string>
-#include <utility>
-#include <vector>
-
-#include "st_graph/ValueSet.h"
+#include <map>
 
 namespace st_graph {
 
   /** \class IPlot
-      \brief Base class for all plots which can be displayed in a plotting frame. This is not used and currently
-             is deprecated.
+      \brief Base class for all plots which can be displayed in a plotting frame.
   */
   class IPlot {
     public:
