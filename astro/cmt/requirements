@@ -1,7 +1,7 @@
 package astro
 
-version v0r3
-#$Id;$
+version v0r6p1
+#$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
 branches astro cmt src doc

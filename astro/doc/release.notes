@@ -1,6 +1,7 @@
 /* package astro
 
   Package coordinators: T.Burnett, G.Tosti
+  v0r6p1 24-nov-03 SMR unit vector for SkyDir constructor
   v0r6  29-sep-03 SMR PointingTransform added
   v0r3  06-may-03 THB Minor fixes in SkyDir
   v0r2  20-sep-02 THB Initial position set for Canaveral launch; H-A calculation
