@@ -18,6 +18,7 @@ use genericSources v1* celestialSources
 use Pulsar v1* celestialSources
 use irfLoader v0* irfs
 use dataSubselector v3*
+use Earth v0* terrestrialSources 
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"
 
