@@ -33,7 +33,7 @@ namespace evtbin {
 
       /** \brief Construct data product object from the given event and spacecraft file.
       */
-      DataProduct(const std::string & event_file, const std::string & event_table);
+      DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti);
 
       virtual ~DataProduct() throw();
 
@@ -144,8 +144,9 @@ namespace evtbin {
   template <typename T>
   inline void DataProduct::updateKeyValue(const std::string & name, const T & value, const std::string & comment) const {
     // See if it is present.
-    if (m_key_value_pairs.end() == m_key_value_pairs.find(name)) {
-      // Not present so add it.
+    KeyValuePairCont_t::iterator found = m_key_value_pairs.find(name);
+    if (m_key_value_pairs.end() == found || found->second.empty()) {
+      // Not present or blank, so add it.
       m_key_value_pairs[name] = tip::KeyRecord(name, value, comment);
     } else {
       // Already present, so only update it.

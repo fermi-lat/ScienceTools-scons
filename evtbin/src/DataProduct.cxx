@@ -24,8 +24,9 @@
 
 namespace evtbin {
 
-  DataProduct::DataProduct(const std::string & event_file, const std::string & event_table): m_key_value_pairs(), m_known_keys(),
-    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_gti(event_file), m_hist_ptr(0) {
+  DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
+    m_key_value_pairs(), m_known_keys(), m_data_dir(), m_event_file(event_file), m_event_table(event_table),
+    m_gti(gti), m_hist_ptr(0) {
     // Find the directory containing templates.
     m_data_dir = st_facilities::Env::getDataDir("evtbin");
 
@@ -158,35 +159,32 @@ namespace evtbin {
     std::stringstream ss;
     ss.precision(24);
     if (0 != binner) {
-      // Update TSTART and TSTOP keywords to reflect the new boundaries of the binning interval,
-      // only if they are more restrictive than the original TSTART/TSTOP.
-      if (m_key_value_pairs["TSTART"].empty()) {
-        // TSTART keyword was blank, so set it.
-        updateKeyValue("TSTART", binner->getInterval(0).begin());
-      } else {
-        // Fetch TSTART value and only update it if interval's value is later.
+      // Get the start of the valid time range from the start of the first bin of the binner.
+      double new_tstart = binner->getInterval(0).begin();
+      // Find the current value of TSTART, if it is defined.
+      KeyValuePairCont_t::iterator found = m_key_value_pairs.find("TSTART");
+      if (m_key_value_pairs.end() != found && !found->second.empty()) {
+        // Fetch current TSTART value.
         double tstart;
-        m_key_value_pairs["TSTART"].getValue(tstart);
+        found->second.getValue(tstart);
 
-        if (binner->getInterval(0).begin() > tstart) {
-          // Binner has later start time, so change TSTART to match it.
-          updateKeyValue("TSTART", binner->getInterval(0).begin());
-        }
+        // Use current TSTART or tstart defined by the binner, whichever is later.
+        new_tstart = (tstart > new_tstart) ? tstart : new_tstart;
       }
+      updateKeyValue("TSTART", new_tstart);
 
-      if (m_key_value_pairs["TSTOP"].empty()) {
-        // TSTOP keyword was blank, so set it.
-        updateKeyValue("TSTOP", binner->getInterval(binner->getNumBins() - 1).end());
-      } else {
-        // Fetch TSTOP value and only update it if interval's value is earlier.
+      // Get the stop of the valid time range from the stop of the last bin of the binner.
+      double new_tstop = binner->getInterval(binner->getNumBins() - 1).end();
+      found = m_key_value_pairs.find("TSTOP");
+      if (m_key_value_pairs.end() != found && !found->second.empty()) {
+        // Fetch current TSTOP value.
         double tstop;
-        m_key_value_pairs["TSTOP"].getValue(tstop);
+        found->second.getValue(tstop);
 
-        if (binner->getInterval(binner->getNumBins() - 1).end() < tstop) {
-          // Binner has earlier stop time, so change TSTOP to match it.
-          updateKeyValue("TSTOP", binner->getInterval(binner->getNumBins() - 1).end());
-        }
+        // Use current TSTOP or tstop defined by the binner, whichever is earlier.
+        new_tstop = (tstop < new_tstop) ? tstop : new_tstop;
       }
+      updateKeyValue("TSTOP", new_tstop);
     }
 
     // Compute the EXPOSURE keyword.
@@ -256,6 +254,9 @@ namespace evtbin {
   }
 
   double DataProduct::computeExposure(const std::string & sc_file) const {
+    // If no spacecraft file is available, return the total ontime.
+    if (sc_file.empty()) return m_gti.computeOntime();
+
     // Open the spacecraft data table.
     std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(sc_file, "Ext1"));
 
