@@ -29,7 +29,7 @@ public:
 
    template<typename T> void getValue(const std::string & name,
                                       T &value) {
-      BaseAttrMap::iterator it = find(name);
+      Header::iterator it = find(name);
       BaseAttr * my_attr = 0;
       if (it != end()) {
          my_attr = it->second;
@@ -50,8 +50,6 @@ public:
    void setName(const std::string name){m_name=name;}
 
 private:
-
-   typedef std::map<std::string, BaseAttr*> BaseAttrMap;
 
    std::string m_name;
 };

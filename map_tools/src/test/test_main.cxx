@@ -29,6 +29,8 @@ public:
     }
 };
 
+void test_Header();
+
 int main(int argc, char** argv ){
     try{
         // read a pil file--and make sure that a few simple things work
@@ -72,35 +74,7 @@ int main(int argc, char** argv ){
             return 1;
         }
 
-        Header header;
-        std::string name("my_attr");
-// Test for success.
-        header.addAttribute(DoubleAttr(name, 3.14));
-        double value;
-        header.getValue(name, value);
-        assert(value == 3.14);
-
-// Test for failure of template instantiation.
-        int ivalue;
-        try {
-           header.getValue(name, ivalue);
-        } catch (std::runtime_error &eObj) {}
-
-// Test for access failure.
-        try {
-           header.getValue("wrong name", value);
-        } catch (std::invalid_argument &eObj) {}
-
-// Test for re-insertion.
-        header.addAttribute(FloatAttr(name, 2.718));
-        float floatValue;
-        header.getValue(name, floatValue);
-        assert(fabs((floatValue - 2.718)/2.718) < 1e-4);
-
-// Test for insertion failure.
-        try {
-           header.addAttribute(IntAttr(name, 3), false);
-        } catch (std::runtime_error &eObj) {}
+        test_Header();
 
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;
@@ -108,4 +82,41 @@ int main(int argc, char** argv ){
     }
     std::cout << "tests OK" << std::endl;
     return 0;
+}
+
+void test_Header() {
+   Header header;
+   std::string name("my_attr");
+   double dvalue0(3.14);
+// Test for success.
+   header.addAttribute(DoubleAttr(name, dvalue0));
+   double value;
+   header.getValue(name, value);
+   assert(value == dvalue0);
+
+// Test for failure of template instantiation.
+   int ivalue;
+   try {
+      header.getValue(name, ivalue);
+      assert(false);
+   } catch (std::runtime_error &eObj) {}
+
+// Test for access failure.
+   try {
+      header.getValue("wrong name", value);
+      assert(false);
+   } catch (std::invalid_argument &eObj) {}
+
+// Test for re-insertion.
+   float fvalue0(2.718);
+   header.addAttribute(FloatAttr(name, fvalue0));
+   float floatValue;
+   header.getValue(name, floatValue);
+   assert(floatValue == fvalue0);
+
+// Test for insertion failure.
+   try {
+      header.addAttribute(IntAttr(name, 3), false);
+      assert(false);
+   } catch (std::runtime_error &eObj) {}
 }

@@ -10,7 +10,7 @@
 #include "Header.h"
 
 Header::~Header() {
-   BaseAttrMap::iterator it = this->begin();
+   Header::iterator it = this->begin();
    for ( ; it!= this->end(); ++it) {
       delete it->second;
    }
@@ -18,9 +18,9 @@ Header::~Header() {
 
 void Header::addAttribute(const BaseAttr& attribute, bool replace) {
    std::string name = attribute.name();
-   BaseAttrMap::iterator it = find(name);
+   Header::iterator it = find(name);
    if (it == end()) {
-      insert(BaseAttrMap::value_type(name, attribute.clone()));
+      insert(Header::value_type(name, attribute.clone()));
       return;
    } 
    if (replace) {
@@ -34,7 +34,7 @@ void Header::addAttribute(const BaseAttr& attribute, bool replace) {
 }
 
 const BaseAttr * Header::operator[](const std::string & name) const {
-   BaseAttrMap::const_iterator it = find(name);
+   Header::const_iterator it = find(name);
    if (it != end()) {
       return it->second;
    } else {
