@@ -80,6 +80,10 @@ namespace st_graph {
       */
       virtual void setR(long r);
 
+      virtual long getWidth() const;
+
+      virtual long getHeight() const;
+
       /** brief Handle mouse click event by forwarding it to receiver. Not part of the API.
       */
       virtual void clicked();
