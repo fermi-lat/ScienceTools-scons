@@ -1,6 +1,6 @@
 package st_app
 
-version v1r2
+version v1r2p1
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 # $Id$
@@ -8,7 +8,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 use STpolicy *
 use hoops *
 
-apply_pattern ST_library share=-no_share
+apply_pattern ST_library option=-no_share
 private
 #------------------------------------------------------------------------------
 macro st_app_cppflags "" WIN32 " /wd4251 " # suppress "needs to have dll-interface" 

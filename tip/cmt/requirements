@@ -4,21 +4,8 @@ version v0
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
-use GlastPolicy *
+use STpolicy *
 use ROOT * IExternal
 use cfitsio * IExternal
 
-apply_pattern package_include
-apply_pattern package_linkopts
-
-#--------------------------------------------
-private
-
-macro tip_cppflags  ""\
-  Linux "-I ../src -g "\
-  WIN32 " /I ..\src /wd4305"
-
-macro source *.cxx WIN32 "*.h *.cxx ../tip/*.h"
-library tip -no_share $(source)
-
-application test_tip test/*.cxx
+apply_pattern ST_library share=-no_share
