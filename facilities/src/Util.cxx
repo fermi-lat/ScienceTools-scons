@@ -13,25 +13,25 @@ namespace facilities {
 
     int nSuccess = 0;
 
-    //now pull out and substitute for environment vaiables
+    //now pull out and substitute for environment variables
     // This routine, will modify the input string.
-    char* op = "$(";
+    std::string op("$(");
     unsigned opLen = 2;
-    char* cl = ")";
+    std::string cl(")");
     unsigned clLen = 1;
     if (openDel) {
-      op = openDel->c_str();
+      op = *openDel; 
       opLen = openDel->size();
     }
 
     if (closeDel) {
-      cl = closeDel->c_str();
+      cl = *closeDel;
       clLen = closeDel->size();
     }
 
-    int envStart = toExpand->find_first_of(op);
+    int envStart = toExpand->find_first_of(op.c_str());
     while (envStart != -1) {
-      int envEnd = toExpand->find_first_of(cl);
+      int envEnd = toExpand->find_first_of(cl.c_str());
             
       // add  characters to account for opening delimiter
       int afterBracket = envStart + opLen;
