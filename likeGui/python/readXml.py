@@ -28,25 +28,19 @@ class SourceModel:
                 self.srcList[src.getAttribute("name").encode()] = Source(src)
         except ValueError:
             pass
-            
     def setAttributes(self):
         for src in self.srcList.values():
             src.setAttributes()
-        
     def __getitem__(self, name):
         return self.srcList[name]
-
     def __setitem__(self, name, value):
         self.srcList[name] = value
         self.doc.childNodes[0].appendChild(value.node)
-
     def __delitem__(self, name):
         self.doc.childNodes[0].removeChild(self.srcList[name].node)
         del self.srcList[name]
-
     def names(self):
         return self.srcList.keys()
-
     def writeTo(self, filename=None):
         if filename == None:  # Overwrite the existing file.
             filename = self.filename
@@ -72,12 +66,10 @@ class DomElement:
             else:
                 attributes[key] = node.getAttribute(key).encode("ascii")
         self.__dict__.update(attributes)
-
     def deleteChildElements(self, tagName):
         children = self.node.getElementsByTagName(tagName)
         for child in children:
             self.node.removeChild(child)
-
     def setAttributes(self):
         for key in self.node.attributes.keys():
             self.node.setAttribute(key, "%s" % self.__dict__[key])
@@ -92,12 +84,10 @@ class Source(DomElement):
         self.functions["spatialModel"] = Function(spatialModel)
         self.__dict__.update(self.functions)
         self.show = 1
-
     def setAttributes(self):
         DomElement.setAttributes(self)
         for func in self.functions.values():
             func.setAttributes()
-            
     def summary(self):
         if self.type == "PointSource":
             (line, ) = ("%s: %.2f; (RA, Dec) = (%.2f, %.2f)"
@@ -107,7 +97,6 @@ class Source(DomElement):
         else:
             line = "%s: %.2f" % (self.name, self.spectrum.Prefactor.value)
         return line
-
     def flux(self, emin=30):
         (prefactor, ) = (self.spectrum.Prefactor.value
                          *self.spectrum.Prefactor.scale, )
@@ -124,7 +113,6 @@ class Function(DomElement):
             name = param.getAttribute("name").encode("ascii")
             self.parameters[name] = Parameter(param)
         self.__dict__.update(self.parameters)
-
     def setAttributes(self):
         DomElement.setAttributes(self)
         for param in self.parameters.values():

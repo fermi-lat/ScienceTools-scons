@@ -7,14 +7,9 @@ Prototype GUI for obsSim
 #
 # $Header$
 #
-
-import os
-import sys
-import copy
-import string
+import os, sys
 import Tkinter as Tk
 from FileDialog import LoadFileDialog
-from tkMessageBox import showwarning
 
 sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
 
@@ -84,6 +79,7 @@ class MenuBar(Tk.Menu):
     def __init__(self, parent):
         Tk.Menu.__init__(self)
         self.add_cascade(label="File", menu=FileMenu(parent), underline=0)
+        self.add_cascade(label="Run", menu=SimMenu(parent), underline=0)
         self.add_cascade(label="ds9", menu=Ds9Menu(parent), underline=0)
         parent.config(menu=self)
 
@@ -91,7 +87,6 @@ class FileMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
         self.add_command(label="Open...", underline=0, command=root.open)
-        self.add_cascade(label="Run", underline=0, menu=SimMenu(root))
         self.add_command(label="Quit", underline=0, command=root.quit)
         
 class SimMenu(Tk.Menu):
@@ -122,9 +117,8 @@ class Ds9(object):
 class SourceLibraries(Tk.Frame):
     def __init__(self, root, parentFrame):
         self.root = root
-        self.parentFrame = parentFrame
         Tk.Frame.__init__(self)
-        libFrame = Tk.Frame(self.parentFrame)
+        libFrame = Tk.Frame(parentFrame)
         libFrame.pack(side=Tk.TOP, fill=Tk.BOTH)
 
         self.menuButton = Tk.Menubutton(libFrame, text='Source Libraries',
@@ -146,11 +140,11 @@ class SourceLibraries(Tk.Frame):
         self.listBox.bind('<ButtonRelease-1>', self.selectLibrary)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
-        self.libs = {}
+        self.libs = map()
         self.files = []
     def fill(self):
         self.listBox.delete(0, Tk.END)
-        for lib in self.libs:
+        for lib in self.libs.ordered_keys:
             self.listBox.insert(Tk.END, lib)
     def addLibs(self, file):
         srcLibs = SourceLibrary(file)
@@ -172,6 +166,7 @@ class SourceLibraries(Tk.Frame):
         for lib in targets:
             if self.libs[lib][1] == targetfile:
                 del self.libs[lib]
+                self.libs.ordered_keys.remove(lib)
         self.fill()
         self.root.candidates.clearAll()
         self.root.candidates.menuButton.config(text='Candidate Sources')
@@ -192,9 +187,8 @@ class SourceLibMenu(Tk.Menu):
 class CandidateSources(Tk.Frame):
     def __init__(self, root, parentFrame):
         self.root = root
-        self.parentFrame = parentFrame
         Tk.Frame.__init__(self)
-        srcFrame = Tk.Frame(self.parentFrame)
+        srcFrame = Tk.Frame(parentFrame)
         srcFrame.pack(side=Tk.TOP, fill=Tk.BOTH)
 
         self.menuButton = Tk.Menubutton(srcFrame, text='Candidate Sources',
@@ -235,7 +229,6 @@ class CandidateSources(Tk.Frame):
     def addSelected(self):
         selected = self.selectedSources()
         for srcName in selected:
-            srcName = self.sources.ordered_keys[int(indx)]
             self.root.sourceList.addSource((srcName, self.sources[srcName]))
     def selectedSources(self):
         indices = self.listBox.curselection()
@@ -253,7 +246,7 @@ class CandidateSources(Tk.Frame):
     def clearAll(self):
         self.listBox.delete(0, Tk.END)
         self.root.sourceList.deleteAll()
-    def printXml(self):
+    def printXml(self, event=None):
         selected = self.selectedSources()
         for name in selected:
             print self.sources[name].toxml() + '\n'
@@ -326,7 +319,7 @@ class SourceList(Tk.Frame):
         for src in self.srcs.ordered_keys:
             outfile.write(src + "\n")
         outfile.close()
-    def printXml(self, event):
+    def printXml(self, event=None):
         name = self.listBox.get('active')
         print self.srcs[name].toxml() + '\n'
 

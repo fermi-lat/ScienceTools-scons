@@ -1,16 +1,11 @@
 package likeGui
-version v7r2
+version v7r3
 
 #$Id$
 
 author J. Chiang <jchiang@slac.stanford.edu>
 
-use Likelihood v* -no_auto_imports
-use observationSim v* -no_auto_imports
-use map_tools v* -no_auto_imports
-use dataSubselector v* -no_auto_imports
-use evtbin v* -no_auto_imports
-use rspgen v* -no_auto_imports
+use sane v*
 
 application run_likeGui run_likeGui.cxx
 

@@ -27,7 +27,10 @@ class RootWindow(Tk.Tk):
     def __init__(self, spectralFuncs, spatialFuncs, xmlFile=None):
         Tk.Tk.__init__(self)
         self.srcModel = readXml.SourceModel(xmlFile)
-        self.title("Source Model Editor")
+        if xmlFile is not None:
+            self.title("Source Model Editor: " + xmlFile)
+        else:
+            self.title("Source Model Editor")
         self.ptsrcs = 0
         self.difsrcs = 0
 

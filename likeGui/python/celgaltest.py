@@ -9,11 +9,11 @@ web page: <http://nedwww.ipac.caltech.edu/>
 #$Header$
 
 import unittest
-import celgal_new as celgal
+import celgal as celgal
 
 class CelgalTestCases(unittest.TestCase):
     def testJ2000Conversions(self):
-        converter = celgal.celgal
+        converter = celgal.celgal(1)
         sources = {}
         sources["Crab"] = ( (83.5665, 22.0078), (184.53, -5.84) )
         sources["Geminga"] = ( (98.4909, 17.8605), (195.06, 4.32) )
@@ -26,7 +26,7 @@ class CelgalTestCases(unittest.TestCase):
             assert dist(sources[key][0], converter.cel(sources[key][1])) < tol
             assert dist(converter.gal(sources[key][0]), sources[key][1]) <tol
     def testB1950Conversions(self):
-        converter = celgal.Celgal(0)
+        converter = celgal.celgal(0)
         sources = {}
         sources["Crab"] = ( (82.8143, 21.9748), (184.53, -5.84) )
         sources["Geminga"] = ( (97.7614, 17.8998), (195.06, 4.32) )
