@@ -6,6 +6,7 @@
 #include "astro/SkyDir.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/Parameters.h"
+#include "image/Header.h"
 #include <iostream>
 #include <algorithm>
 #include <cassert>
@@ -70,6 +71,12 @@ int main(int argc, char** argv ){
             return 1;
         }
 
+        Header header;
+        std::string name("my_attr");
+        header.addAttribute(DoubleAttr(name, 3.14));
+        double value;
+        header.getValue(name, value);
+        assert(value == 3.14);
 
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;

@@ -372,7 +372,7 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
     if (*status != 0)
         return;
     for( Header::iterator it = element->begin(); it != element->end(); ++it){
-        BaseAttr& attr = **it;
+        BaseAttr& attr = *(it->second);
 
            std::string tname(typeid(attr).name());
            int k = tname.find_first_of("<")+1;

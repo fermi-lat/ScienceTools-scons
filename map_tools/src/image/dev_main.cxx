@@ -59,7 +59,7 @@ int main()
 
     std::cout << "\tkeyword, value" << std:: endl;
     for(Header::const_iterator it=f.begin(); it!=f.end(); ++it) {
-        const BaseAttr& a = **it;
+        const BaseAttr& a = *(it->second);
         std::cout << "\t\t" << a.name() << "\t =" << a << std::endl; 
     }
 
@@ -67,10 +67,13 @@ int main()
     std::string outfile("!/glast/DC1/data/DC1_image_copy.fits");
 
     FloatImg image("output",  f.getAxisSize() );
-    std::copy(f.begin(), f.end(), std::back_insert_iterator<Header>(image));
+//    std::copy(f.begin(), f.end(), std::insert_iterator<Header>(image));
+    for (Header::const_iterator it=f.begin(); it!=f.end(); ++it) {
+       image.addAttribute(*(it->second));
+    }
     std::cout << "Keywords in new element"<< std::endl;
     for(Header::const_iterator it=image.begin(); it!=image.end(); ++it) {
-        const BaseAttr& a = **it;
+        const BaseAttr& a = *(it->second);
         std::cout << "\t\t" << a.name() << "\t =" << a << std::endl; 
     }
     const std::vector<float>& image_data = f.data();

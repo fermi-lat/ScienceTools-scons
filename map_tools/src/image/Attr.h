@@ -36,6 +36,7 @@ public:
     virtual void print(std::ostream&)const=0;
 
     //virtual operator double()const = 0;
+
 private:
     std::string m_name;
     std::string m_unit;
