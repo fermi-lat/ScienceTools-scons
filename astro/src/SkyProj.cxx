@@ -169,7 +169,8 @@ void SkyProj::init(const std::string &projName,
     std::pair<double, double> s = pix2sph(t.first, t.second);
     check = fabs(s.first-crval[0]-s.second-crval[1]);
 
-    wcsprt(m_wcs);// temp
+    // enable this to see a nice formatted dump
+    //wcsprt(m_wcs);
 
 
 };
