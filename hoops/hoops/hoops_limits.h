@@ -139,35 +139,35 @@ namespace hoops {
 
   template <>
   inline bool Lim<char>::maybe_smaller_than(PrimTypeCode_e typecode) throw ()
-    { return !((BOOL_TYPE | CHAR_TYPE) & typecode); }
+    { return 0 == ((BOOL_TYPE | CHAR_TYPE) & typecode); }
 
   template <>
   inline bool Lim<signed char>::maybe_smaller_than(PrimTypeCode_e typecode)
       throw ()
-    { return !((BOOL_TYPE | CHAR_TYPE) & typecode); }
+    { return 0 == ((BOOL_TYPE | CHAR_TYPE) & typecode); }
 
   template <>
   inline bool Lim<short>::maybe_smaller_than(PrimTypeCode_e typecode) throw ()
-    { return (INT_TYPE | LONG_TYPE) & typecode; }
+    { return 0 != ((INT_TYPE | LONG_TYPE) & typecode); }
 
   template <>
   inline bool Lim<int>::maybe_smaller_than(PrimTypeCode_e typecode) throw ()
-    { return LONG_TYPE & typecode; }
+    { return 0 != (LONG_TYPE & typecode); }
 
   template <>
   inline bool Lim<unsigned char>::maybe_smaller_than(PrimTypeCode_e typecode)
       throw ()
-    { return !((BOOL_TYPE | CHAR_TYPE) & typecode); }
+    { return 0 == ((BOOL_TYPE | CHAR_TYPE) & typecode); }
 
   template <>
   inline bool Lim<unsigned short>::maybe_smaller_than(PrimTypeCode_e typecode)
       throw ()
-    { return (INT_TYPE | LONG_TYPE) & typecode; }
+    { return 0 != ((INT_TYPE | LONG_TYPE) & typecode); }
 
   template <>
   inline bool Lim<unsigned int>::maybe_smaller_than(PrimTypeCode_e typecode)
       throw ()
-    { return LONG_TYPE & typecode; }
+    { return 0 != (LONG_TYPE & typecode); }
 
 #ifdef FOO
   // Lim<T>::code static declarations.
@@ -454,6 +454,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.5  2004/03/31 16:20:52  peachey
+ * Make proper boolean expressions instead of using implicit conversion to
+ * bool, to silence VC7 performance warnings on Windows.
+ *
  * Revision 1.4  2003/12/02 14:39:43  peachey
  * To support compilers which do not have limits, such as g++ 2.95.x,
  * add round_error field to Lim class. This allows the test code to

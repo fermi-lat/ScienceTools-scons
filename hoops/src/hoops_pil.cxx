@@ -449,7 +449,7 @@ namespace hoops {
             err_stream << "Cannot get boolean parameter " << *it;
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
-          par = (bool) r;
+          par = 0 != r;
         } else if (std::string::npos != type.find("f")) {
           char r[PIL_LINESIZE] = "";
           status = PILGetFname(it->c_str(), r);
@@ -621,6 +621,10 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.19  2004/03/31 16:20:33  peachey
+ * Make proper boolean expressions instead of using implicit conversion to
+ * bool, to silence VC7 performance warnings on Windows.
+ *
  * Revision 1.18  2004/03/30 21:14:46  peachey
  * Allow PILParPrompt and ParPromptGroup constructors to accept optional
  * component name which is then used in lieu of argv[0]

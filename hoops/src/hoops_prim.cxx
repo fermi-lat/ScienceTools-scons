@@ -77,7 +77,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > char(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, char & d) { d = s; }
       static void Convert(const char & s, signed char & d) {
@@ -140,7 +140,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > char(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, char & d) {
         if (!Lim<char>::is_signed && s < (signed char) Lim<char>::min) {
@@ -185,7 +185,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > (signed short)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, char & d) {
         if (s < (signed short) Lim<char>::min) {
@@ -240,7 +240,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > (signed int)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, char & d) {
         if (s < (signed int) Lim<char>::min) {
@@ -303,7 +303,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > (signed long)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, char & d) {
         if (s < (signed long) Lim<char>::min) {
@@ -372,7 +372,7 @@ namespace hoops {
       static void Convert(const unsigned char & s, bool & d) {
         if (s > (unsigned char)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, char & d) {
         if (Lim<char>::is_signed && s > (unsigned char) Lim<char>::max) {
@@ -416,7 +416,7 @@ namespace hoops {
       static void Convert(const unsigned short & s, bool & d) {
         if (s > (unsigned short)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, char & d) {
         if (Lim<char>::is_signed && s > (unsigned short) Lim<char>::max) {
@@ -465,7 +465,7 @@ namespace hoops {
       static void Convert(const unsigned int & s, bool & d) {
         if (s > (unsigned int)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, char & d) {
         if (Lim<char>::is_signed && s > (unsigned int) Lim<char>::max) {
@@ -516,7 +516,7 @@ namespace hoops {
       static void Convert(const unsigned long & s, bool & d) {
         if (s > (unsigned long)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
+        } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, char & d) {
         if (Lim<char>::is_signed && s > (unsigned long) Lim<char>::max) {
@@ -574,7 +574,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > float(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
+        } else { d = (0.f != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, char & d) {
         if (s < Lim<char>::min) {
@@ -650,7 +650,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > double(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
+        } else { d = (0. != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, char & d) {
         if (s < Lim<char>::min) {
@@ -732,7 +732,7 @@ namespace hoops {
           d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else if (s > (long double)(Lim<bool>::max)) {
           d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
-        } else { d = bool(s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
+        } else { d = (0.L != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, char & d) {
         if (s < Lim<char>::min) {
@@ -1168,6 +1168,10 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.12  2004/03/31 16:20:33  peachey
+ * Make proper boolean expressions instead of using implicit conversion to
+ * bool, to silence VC7 performance warnings on Windows.
+ *
  * Revision 1.11  2004/03/16 15:03:29  peachey
  * Do not throw exceptions any more when converting from one type to a
  * potentially smaller type.
