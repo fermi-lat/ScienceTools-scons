@@ -40,7 +40,7 @@ ${module_name}: ${module_base}_wrap.o
 ${module_base}_wrap.o: ${module_base}_wrap.cxx
 	${CXX} -c ${INCLUDE} ${PYINCLUDE} -o $@ $<
 
-${module_base}_wrap.cxx: ${module_base}.i ${HFILES}
+${module_base}_wrap.cxx: ${module_base}.i
 	${SWIG} -python -c++ ${module_base}.i
 
 anew:
