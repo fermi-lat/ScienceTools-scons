@@ -1,6 +1,6 @@
 package astro
 
-version v0
+version v0r1p2
 
 branches astro cmt src doc
 

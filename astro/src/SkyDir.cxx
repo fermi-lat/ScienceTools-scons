@@ -49,15 +49,15 @@ namespace astro {
         l = atan2(pointingin.y(), pointingin.x())*180/M_PI;
         b = asin(pointingin.z())*180/M_PI;
         
-      }
+    }
     
     
     double SkyDir::l ()const{
-      double xl, xb; setGalCoordsFromDir(xl,xb); return xl;
+        double xl, xb; setGalCoordsFromDir(xl,xb); return xl;
     }
     
     double SkyDir::b ()const{
-      double xl, xb; setGalCoordsFromDir(xl,xb); return xb;
+        double xl, xb; setGalCoordsFromDir(xl,xb); return xb;
     }
     
     double SkyDir::ra ()const{
@@ -71,5 +71,39 @@ namespace astro {
     double SkyDir::dec ()const{
         return asin(m_dir.z())*180/M_PI;
     }
+    
+    /*
+    *  This routine will convert galactic longitude and latitude values ("l" and "b")
+    *  into equivalent cartesian coordinates.  The values
+    *  will be in internal Aitoff units where "l" is in the range [-2, 2]
+    *  and "b" is in the range [-1, 1].
+    */
+    void SkyDir::hammerAitoff(double &l,double &b){
+        float lover2, den;
+        float radl, radb;
+        
+        //Force "l" to be in the range (-180 <= l <= +180) and
+        //"b" to be in the range (-90 <= b <= +90).    
+        while (l < -180.0) l += 360;
+        while (l >  180.0) l -= 360;
+        while (b <  -90.0) b += 180;
+        while (b >   90.0) b -= 180;
+        
+        // Convert l and b to radians.
+        double RadPerDeg = M_PI/180.;
+        radl = l * RadPerDeg;
+        radb = b * RadPerDeg;
+        
+        lover2 = radl / 2.0;
+        den = sqrt(1.0 + (cos(radb) * cos(lover2)));
+        l = 2.0 * cos(radb) * sin(lover2) / den;
+        b = sin(radb) / den;
+        // "x" is now in the range [-2, 2] and "y" in the range [-1, 1]. 
+        
+        return;
+    }
+    
+    
+    
     
 } //namespace astro

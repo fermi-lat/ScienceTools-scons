@@ -39,6 +39,9 @@ namespace astro {
         
         //!to return the opening angle (in radians) between two objects:
         double SkyDir::difference(const SkyDir& other)const;
+
+        //hammer-aitoff equal-area projection.
+        void hammerAitoff(double &l,double &b);
         
     private:
         static HepRotation s_celestialToGalactic;
