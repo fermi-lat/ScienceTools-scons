@@ -1,51 +1,16 @@
 package fitsGen
-version v0r5
+version v1r0
 
 author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
-branches cmt src doc
+use STpolicy v1r*
+use facilities v2r*
+use tip v1r*
+use astro v0r*
 
-use GlastPolicy v*
-#use rootTuple v*
-#use Goodi v*
-use tip v*
-use astro v*
-use facilities v*
+apply_pattern ST_library option="-no_share "
 
-apply_pattern package_include
-apply_pattern package_linkopts
-
-private
-
-# Allow use of internal path.
-macro_append fitsGen_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
-
-# suppress warning messages (from Goodi package) on linux:
-macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
-
-#macro_append ROOT_linkopts "$(ROOT_GUI_libs)"
-#
-#macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreePlayer.lib libProof.lib "
-
-# Make sure test applications gets built when library changes.
-macro makeFT1stamps "makeFT1.stamp"
-macro makeFT2stamps "makeFT2.stamp"
-macro makeFT2astamps "makeFT2a.stamp"
-
-# Standard package library (It's empty so one should be able to 
-# get rid of this):
-macro my_headers "" WIN32 "../fitsGen/*.h *.h"
-library fitsGen -no_share $(my_headers) Util.cxx
-
-##
-## Need this environment variable for Goodi templates.
-##
-#set TPLDIR "$(GOODIROOT)/Templates"
-#set INFILES "$(GOODIROOT)/Data"
-
-# The applications:
 application makeFT1 makeFT1/makeFT1.cxx
 application makeFT2 makeFT2/makeFT2.cxx
-#application makeFT2a makeFT2a.cxx
