@@ -78,6 +78,13 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
    }
 }
 
+Cuts::Cuts(const Cuts & rhs) {
+   m_cuts.reserve(rhs.size());
+   for (unsigned int i = 0; i < rhs.size(); i++) {
+      m_cuts.push_back(rhs.m_cuts[i]->clone());
+   }
+}
+
 Cuts::~Cuts() {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       delete m_cuts[i];

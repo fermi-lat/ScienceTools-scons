@@ -42,6 +42,8 @@ public:
 
    Cuts(const std::string & eventFile, const std::string & extension="EVENTS");
 
+   Cuts(const Cuts & rhs);
+
    ~Cuts();
 
    bool accept(tip::ConstTableRecord & row) const;
@@ -65,11 +67,6 @@ public:
 
    bool operator==(const Cuts & rhs) const;
 
-protected:
-   
-   /// Disable the copy constructor.
-   Cuts(const Cuts & rhs) {}
-
 private:
 
    std::vector<CutBase *> m_cuts;
@@ -84,6 +81,7 @@ private:
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const = 0;
       virtual bool operator==(const CutBase & rhs) const = 0;
+      virtual CutBase * clone() const = 0;
    protected:
       void writeDssKeywords(tip::Header & header, unsigned int keynum,
                             const std::string & type,
@@ -106,6 +104,7 @@ private:
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
       virtual bool operator==(const CutBase & rhs) const;
+      virtual CutBase * clone() const {return new RangeCut(*this);}
    private:
       std::string m_keyword;
       std::string m_unit;
@@ -127,6 +126,7 @@ private:
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
       virtual bool operator==(const CutBase & rhs) const;
+      virtual CutBase * clone() const {return new GtiCut(*this);}
    private:
       const Gti m_gti;
       bool accept(double value) const;
@@ -149,6 +149,7 @@ private:
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
       virtual bool operator==(const CutBase & rhs) const;
+      virtual CutBase * clone() const {return new SkyConeCut(*this);}
    private:
       double m_ra;
       double m_dec;
