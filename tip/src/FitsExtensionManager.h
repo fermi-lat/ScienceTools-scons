@@ -35,6 +35,12 @@ namespace tip {
   */
   class FitsExtensionManager : public IExtensionManager {
     public:
+      /** \brief Use a FITS template to create a new file. Clobber existing files.
+          \param file_name The name of the new file.
+          \param template_name The name of the template file.
+      */
+      static void createFile(const std::string & file_name, const std::string & template_name);
+
       /** \brief Create an object to provide low-level access to the given FITS extension.
           \param file_name The name of the FITS file.
           \param ext_name The name of the FITS extension.
@@ -101,6 +107,12 @@ namespace tip {
           in the FITS file).
       */
       Index_t getNumRecords() const { return m_num_records; }
+
+      /* \brief Change the number of records in the current table, adding or deleting
+         rows as needed.
+         \param num_records The new value for the number of records in the table.
+      */
+      void setNumRecords(Index_t num_records);
 
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.

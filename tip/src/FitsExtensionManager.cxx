@@ -15,6 +15,24 @@
 
 namespace tip {
 
+  // Create a FITS file using a template.
+  void FitsExtensionManager::createFile(const std::string & file_name, const std::string & template_name) {
+    // Concatenate the file name with the template name:
+    std::ostringstream s;
+    s << "!" << file_name << "(" << template_name << ")";
+    std::string full_name = s.str();
+
+    fitsfile * fp = 0;
+    int status = 0;
+
+    // Create the file, and complain if it doesn't work:
+    fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
+    if (0 != status) throw TipException(std::string("Unable to create file ") + full_name);
+
+    // Close the file; not interested in it anymore.
+    fits_close_file(fp, &status);
+  }
+
   // Construct without opening the file.
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
@@ -96,7 +114,7 @@ namespace tip {
     fits_get_num_rows(m_fp, &nrows, &status);
 
     // Check for success and if not, do not continue.
-    if (status || nrows <= 0) {
+    if (0 != status) {
       close();
       throw TipException(formatWhat("Cannot get number of rows"));
     }
@@ -140,6 +158,20 @@ namespace tip {
         m_col_num_lookup[col_num].m_repeat = repeat;
         m_col_num_lookup[col_num].m_type_code = type_code;
       }
+    }
+  }
+
+  // Resize the FITS table, adding or deleting rows as necessary.
+  void FitsExtensionManager::setNumRecords(Index_t num_records) {
+    int status = 0;
+    if (m_num_records < num_records) {
+      fits_insert_rows(m_fp, m_num_records, num_records - m_num_records, &status);
+      if (0 != status) throw TipException("Could not insert rows in FITS table");
+      m_num_records = num_records;
+    } else if (m_num_records > num_records) {
+      fits_delete_rows(m_fp, num_records + 1, m_num_records - num_records, &status);
+      if (0 != status) throw TipException("Could not delete rows from FITS table");
+      m_num_records = num_records;
     }
   }
 
