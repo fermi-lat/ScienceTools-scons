@@ -13,6 +13,5 @@ apply_pattern ST_pfiles
 private
 
 macro_append st_app_cppflags "" Linux "-I.."
-application test_evtbin evtbin/test/*.cxx
-application evtbin evtbin/*.cxx
+application gtbin gtbin/*.cxx
 application gtbindef gtbindef/*.cxx
