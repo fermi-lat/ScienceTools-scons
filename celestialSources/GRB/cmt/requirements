@@ -20,6 +20,9 @@ apply_pattern package_headers
 macro_append GRB_headers "" WIN32 "../xml/*.xml test/*.xml GRBmaker/*.h GRB/*.h"
 library GRB *.cxx GRB/*.cxx  Dll/*.cxx   GRBmaker/*.cxx  ${GRB_headers}
 
+#the following prepend makes package root available locally: avoid the package_include
+#apply_pattern package_include
+macro_prepend includes "-I $(GRBROOT) " WIN32 "/I $(GRBROOT) "
 
 
 macro GRB_lib " -L ${GRBROOT}/${CMTCONFIG} -lGRB "\
