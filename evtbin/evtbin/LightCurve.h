@@ -5,6 +5,7 @@
 #ifndef evtbin_LightCurve_h
 #define evtbin_LightCurve_h
 
+#include <ctime>
 #include <map>
 #include <string>
 #include <vector>
@@ -52,8 +53,17 @@ namespace evtbin {
       */
       void harvestKeywords(const tip::Header & header);
 
+      /** \brief Update keywords from this light curve's current set of keywords in every extension of a file.
+          \param file_name The name of the file to update.
+      */
+      void updateKeywords(const std::string & file_name) const;
+
+      /** \brief Convert time object into a string representation suitable for storage in a date-like keyword.
+          \param time The time to convert.
+      */
+      std::string formatDateKeyword(const time_t & time) const;
     private:
-      KeyValuePairCont_t m_key_value_pairs;
+      mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::string m_data_dir;
       Hist1D m_hist;
