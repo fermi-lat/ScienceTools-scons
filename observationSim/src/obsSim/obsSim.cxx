@@ -23,8 +23,12 @@
 
 #include "astro/SkyDir.h"
 
-#include "latResponse/Irfs.h"
-#include "latResponse/IrfsFactory.h"
+// #include "latResponse/Irfs.h"
+// #include "latResponse/IrfsFactory.h"
+
+#include "irfInterface/IrfsFactory.h"
+#include "g25Response/loadIrfs.h"
+#include "dc1Response/loadIrfs.h"
 
 #include "Likelihood/Util.h"
 
@@ -77,7 +81,8 @@ private:
    double m_count;
    std::vector<std::string> m_xmlSourceFiles;
    std::vector<std::string> m_srcNames;
-   std::vector<latResponse::Irfs *> m_respPtrs;
+//    std::vector<latResponse::Irfs *> m_respPtrs;
+   std::vector<irfInterface::Irfs *> m_respPtrs;
    observationSim::Simulator * m_simulator;
 
    void setRandomSeed();
@@ -154,6 +159,10 @@ void ObsSim::readSrcNames() {
 }   
 
 void ObsSim::createResponseFuncs() {
+   g25Response::loadIrfs();
+   dc1Response::loadIrfs();
+   irfInterface::IrfsFactory * myFactory 
+      = irfInterface::IrfsFactory::instance();
    std::string responseFuncs = m_pars["Response_functions"];
    std::map< std::string, std::vector<std::string> > responseIds;
    responseIds["FRONT"].push_back("DC1::Front");
@@ -167,7 +176,8 @@ void ObsSim::createResponseFuncs() {
    if (responseIds.count(responseFuncs)) {
       std::vector<std::string> &resps = responseIds[responseFuncs];
       for (unsigned int i = 0; i < resps.size(); i++) {
-         m_respPtrs.push_back(latResponse::irfsFactory().create(resps[i]));
+//          m_respPtrs.push_back(latResponse::irfsFactory().create(resps[i]));
+         m_respPtrs.push_back(myFactory->create(resps[i]));
       }
    } else {
       throw std::invalid_argument("Invalid response function choice: "
