@@ -4,8 +4,6 @@
 #include "GRBobsSpectrum.h"
 #include "GRBobsConstants.h"
 #include "src/GPS.h"
-//#include "CLHEP/Random/RandEngine.h"
-//#include "CLHEP/Random/Random.h"
 #include "src/SpectrumFactory.h"
 #include "CLHEP/Random/RandFlat.h"
 
@@ -79,18 +77,6 @@ GRBobsSpectrum &GRBobsSpectrum::operator=(const GRBobsSpectrum &right)
 }
 
 
-//std::string GRBobsSpectrum::title() const
-//{
-//	return m_title;
-//}
-
-
-//const char *GRBobsSpectrum::particleName() const
-//{
-//	return m_particleName.c_str();
-//}
-
-
 double GRBobsSpectrum::flux(double time) const
 { 
 	return m_grbMaker->flux();
@@ -107,7 +93,10 @@ float GRBobsSpectrum::fraction(float energy)
 double GRBobsSpectrum::interval(double time)
 {
 	if (m_grbMaker->time().empty())
+	{
 		std::cout << "No more time values available to return" << std::endl;
+		return -1.0;
+	}
 
 	else
 		return m_grbMaker->time().back() - time;
@@ -159,29 +148,6 @@ double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const
 				}
 			}
 		}
-
-
-//	if (m_currentEnergy < 0.0)  // get next energy from the m_grbMaker->energy vector
-//	{
-//		if (m_grbMaker->energy().empty())
-//			std::cout << "No more energy values to return" << std::endl;
-//
-//		else
-//		{
-//			std::cout<< "PIPPO: " << m_grbMaker->time().back() << std::endl;
-
-//			energy = m_grbMaker->energy().back();
-//			m_grbMaker->energy().pop_back();
-
-//			m_currentTime = m_grbMaker->time().back();
-//			m_grbMaker->time().pop_back();
-//		}
-//	}
-//
-//	else   // energy was already popped out of the m_grbMaker->energy vector in the nextTime method
-//	{
-//		energy = m_currentEnergy;
-//		m_currentEnergy = -1.0;  // reset currentEnergy
 	}
 
 	return energy;
@@ -247,10 +213,3 @@ std::pair<double,double> GRBobsSpectrum::dir(double energy, HepRandomEngine *eng
 {
   return dir(energy);
 }
-
-
-//int GRBobsSpectrum::askGPS()
-//{
-//    setPosition(GPS::instance()->lat(), GPS::instance()->lon());
-//    return 0; // can't be void in observer pattern
-//}
