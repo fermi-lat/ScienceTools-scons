@@ -6,6 +6,7 @@
 */
 
 #include <cstdio>
+#include <cstring>
 #include <sstream>
 
 #include "FitsFileManager.h"
@@ -34,6 +35,53 @@ namespace tip {
     fits_close_file(fp, &ignored_status);
 
     if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
+  }
+
+  void FitsFileManager::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
+    fitsfile * fp = 0;
+    int status = 0;
+
+    // Open the file.
+    fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
+    if (0 != status) {
+      // Opening didn't work, so create file.
+      createFile(file_name);
+      fp = 0; // Paranoid.
+
+      // Try again to open it.
+      fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
+      if (0 != status)
+        throw TipException(std::string("Unable to open file named \"") + file_name + "\" with read/write access");
+    }
+
+    // Create new image extension at end of file.
+    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
+    if (0 != status) {
+      fits_close_file(fp, &status);
+      throw TipException(std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
+    }
+
+    // Get the current extension number, because the primary extension is handled slightly differently.
+    int hdu_num = 0;
+    fits_get_hdu_num(fp, &hdu_num);
+    if (0 != status) {
+      fits_close_file(fp, &status);
+      throw TipException(std::string("Unable to determine the extension number of image \"") + image_name + "\" in file \"" +
+        file_name + "\"");
+    }
+
+    // For primary array, write name in HDUNAME keyword, otherwise in the EXTNAME keyword.
+    char key_name[16];
+    if (1 == hdu_num) strcpy(key_name, "HDUNAME");
+    else strcpy(key_name, "EXTNAME");
+    fits_write_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
+    if (0 != status) {
+      fits_close_file(fp, &status);
+      throw TipException(std::string("Unable to name image in file \"") + file_name + "\"");
+    }
+
+    // Close the file; not interested in it anymore.
+    fits_close_file(fp, &status);
   }
 
   void FitsFileManager::appendTable(const std::string & file_name, const std::string & table_name) {

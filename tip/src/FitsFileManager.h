@@ -25,6 +25,13 @@ namespace tip {
       */
       static void createFile(const std::string & file_name, const std::string & template_name = "");
 
+      /** \brief Append an image extension to a fits file.
+          \param file_name The name of the file to which to append.
+          \param image_name The name of the new table.
+          \param dims The set of sizes for each dimension of the image.
+      */
+      static void appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+
       /** \brief Append a table extension to a file.
           \param file_name The name of the file to which to append.
           \param table_name The name of the new table.

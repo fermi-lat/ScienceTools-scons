@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <cstdio>
 #include <cstdlib>
 #include <memory>
 #include <iostream>
@@ -13,6 +14,7 @@
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
 
@@ -259,4 +261,34 @@ namespace tip {
       ReportUnexpected("TestFileManager::updateKeywordsTest caught unexpected exception", x);
     }
   }
+
+  void TestFileManager::createImageTest() {
+    try {
+      std::vector<long> dims(3);
+      dims[0] = 512;
+      dims[1] = 512;
+      dims[2] = 2;
+
+      // Make sure no image is already there.
+      remove("created_image.fits");
+
+      // Try to create image when the file does not exist.
+      IFileSvc::instance().createImage("created_image.fits", "TEST_IMAGE", dims);
+
+      // Try to open this new image.
+      const Image * image = IFileSvc::instance().readImage("created_image.fits", "TEST_IMAGE");
+      delete image; image = 0;
+
+      // Try to create new image when the file does exist.
+      IFileSvc::instance().createImage("created_image.fits", "TEST_IMAGE2", dims);
+
+      // Try to open this new image.
+      image = IFileSvc::instance().readImage("created_image.fits", "TEST_IMAGE2");
+      delete image;
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestFileManager::createImageTest caught unexpected exception", x);
+    }
+  }
+
 }

@@ -54,6 +54,10 @@ namespace tip {
     FitsFileManager::createFile(file_name, template_name);
   }
 
+  void IFileSvc::createImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
+    FitsFileManager::appendImage(file_name, image_name, dims);
+  }
+
   // TODO 11: read/edit Extension/Table/Image is getting cumbersome; lots of similar methods,
   // duplicated code. In addition, error messages for files which cannot be opened tend to be
   // confusing. For instance, if bozo.fits is not present, one sees two errors: Fits file bozo.fits

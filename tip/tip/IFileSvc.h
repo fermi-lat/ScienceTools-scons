@@ -48,6 +48,13 @@ namespace tip {
       */
       virtual void createFile(const std::string & file_name, const std::string & template_name = "");
 
+      /** \brief Create a new image extension in a file.
+          \param file_name The name of the new file.
+          \param image_name The name of the new image extension.
+          \param dims Set of dimensions of each axis of the image.
+      */
+      virtual void createImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+
       /** \brief Open an existing extension with modification access. The actual object returned
           may be a subclass of Extension, depending on whether the object is a table or image extension.
           \param file_name The name of the file (any supported format OK).
