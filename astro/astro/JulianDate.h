@@ -2,6 +2,7 @@
 #ifndef OrbitModel_JulianDate_H
 #define OrbitModel_JulianDate_H
 
+#include <stdio.h>
 #include <math.h>
 #include <string>
 
@@ -84,7 +85,7 @@ inline void JulianDate::getGregorianDate(int &An, int &Me, int &Gio, double &utc
    }
 
    hr = frac*24.0;
-   l = jd + 68569;
+   l = int(jd + 68569);
    n = 4*l / 146097l;
    l = l - (146097*n + 3l) / 4;
    yr = 4000*(l+1) / 1461001;
