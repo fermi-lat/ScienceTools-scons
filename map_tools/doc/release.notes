@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 04-mar-05 v5r11p1THB little fix to obsolete class for Likelihood
  04-mar-05 v5r11  THB temporary stuff to support old interface elements expected by Likelihood 
  03-mar-05 v5r10p4THB gcc bug fix #4 
  03-mar-05 v5r10p3THB gcc bug fix #3 
