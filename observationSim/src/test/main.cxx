@@ -40,7 +40,7 @@ int main(int argn, char * argc[]) {
    if (argn > 1) {
       count = static_cast<long>(::atof(argc[1]));
    } else {
-      count = 10;
+      count = 1000;
    }
 
 // All subsequent arguments are either option flags or the names of
@@ -64,7 +64,7 @@ int main(int argn, char * argc[]) {
       }
    } else {
       sourceNames.push_back("all_3EG_sources");
-      sourceNames.push_back("galdiffusemap");
+//      sourceNames.push_back("galdiffusemap");
    }
 
 // Create the Simulator object

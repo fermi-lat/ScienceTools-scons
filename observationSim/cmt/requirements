@@ -28,7 +28,7 @@ private
 macro observationSim_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g "
 
-macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
+#macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ "
      
 apply_pattern package_linkopts
 

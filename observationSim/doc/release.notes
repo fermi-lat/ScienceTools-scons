@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r3p2 26-Aug-03   JC   comment out MapFlux dependencies
     v0r3p1 25-Aug-03   JC   enable module build using IExternal/python on Linux
     v0r3   24-Aug-03   JC   1st attempt to get cmt to build python module
                             on Linux
