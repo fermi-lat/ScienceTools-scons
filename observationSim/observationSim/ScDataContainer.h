@@ -14,9 +14,9 @@
 
 #include "astro/SkyDir.h"
 
-#include "observationSim/Container.h"
 #include "observationSim/ScData.h"
 #include "observationSim/FitsTable.h"
+#include "observationSim/Spacecraft.h"
 
 class EventSource;
 
@@ -31,7 +31,7 @@ namespace observationSim {
  * $Header$
  */
 
-class ScDataContainer : public Container {
+class ScDataContainer {
 
 public:
 
@@ -47,9 +47,15 @@ public:
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
+   /// @param spacecraft A pointer to the object that provides methods
+   ///        for accessing spacecraft orbit and attitude info.
    /// @param flush A flag to indicate whether to write the accumulated
    ///        ScData and then flush the buffers.
-   void addScData(EventSource *event, bool flush=false);
+   void addScData(EventSource *event, Spacecraft *spacecraft, 
+                  bool flush=false);
+
+   /// The simulation time of the most recently added data.
+   double simTime() {return m_scData[m_scData.size()-1].time();}
 
 private:
 

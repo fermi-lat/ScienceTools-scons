@@ -49,33 +49,19 @@ void ScDataContainer::init(const std::string &filename) {
    m_scData.clear();
 }
 
-void ScDataContainer::addScData(EventSource *event, bool flush) {
+void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
+                                bool flush) {
    
-   std::string name = event->fullTitle();
-   if (name.find("TimeTick") != std::string::npos) {
-      double time = event->time();
+   double time = event->time();
 
 // Get the rotation matrix from instrument to "Celestial" (J2000?)
 // coordinates.
-      HepRotation rotationMatrix = glastToCelestial(time);
-      Hep3Vector zAxis = rotationMatrix(Hep3Vector(0., 0., 1.));
-      Hep3Vector xAxis = rotationMatrix(Hep3Vector(1., 0., 0.));
+   astro::SkyDir zAxis = spacecraft->zAxis();
+   astro::SkyDir xAxis = spacecraft->xAxis();
 
-// The GPS instance keeps track of spacecraft data.
-      GPS *gps = GPS::instance();
-      gps->getPointingCharacteristics(time);
-
-// Determine if the spacecraft is in the SAA.  GPS should provide this
-// since it has a m_earthOrbit data member, but it doesn't, so we must
-// do it by hand using an astro::EarthCoordinate object.
-      astro::EarthCoordinate earthCoord(gps->lon(), gps->lat());
-
-      m_scData.push_back(ScData(time, gps->RAZ(), gps->DECZ(), 
-                                gps->lon(), gps->lat(), 
-                                astro::SkyDir(zAxis,astro::SkyDir::CELESTIAL), 
-                                astro::SkyDir(xAxis,astro::SkyDir::CELESTIAL),
-                                static_cast<int>(earthCoord.insideSAA())));
-   }
+   m_scData.push_back(ScData(time, zAxis.ra(), zAxis.dec(), 
+                             spacecraft->EarthLon(), spacecraft->EarthLat(),
+                             zAxis, xAxis, spacecraft->inSaa()));
    if (flush) writeScData();
 }
 

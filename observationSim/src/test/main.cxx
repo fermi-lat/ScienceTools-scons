@@ -30,7 +30,7 @@ int main(int argn, char * argc[]) {
    
 // Parse the command line arguments.
 // Obtain the source name (or request for help).
-   std::string source_name;
+   std::string source_name = "all_3EG_sources";
    if (argn > 1) source_name = argc[1];
    if (source_name == "help") { 
       help();
@@ -52,7 +52,7 @@ int main(int argn, char * argc[]) {
    const char *root = ::getenv("LATRESPONSEROOT");
    std::string caldbPath;
    if (!root) {
-      caldbPath = "/u1/jchiang/SciTools/O2/dev/latResponse/v0/data/CALDB";
+      caldbPath = "/u1/jchiang/SciTools/dev/latResponse/v0r1/data/CALDB";
    } else {
       caldbPath = std::string(root) + "/data/CALDB";
    }

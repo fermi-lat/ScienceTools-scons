@@ -36,10 +36,10 @@ macro test_observationSimstamps "observationSim.stamp"
 macro my_headers "" WIN32 "../observationSim/*.h *.h"
 library observationSim -no_share $(my_headers) \
  Simulator.cxx\
- Container.cxx\
  EventContainer.cxx\
  ScDataContainer.cxx\
- FitsTable.cxx
+ FitsTable.cxx\
+ LatSc.cxx
 
 # test application
 application test_observationSim test/*.cxx

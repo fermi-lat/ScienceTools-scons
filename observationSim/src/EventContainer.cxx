@@ -21,6 +21,7 @@
 
 #include "latResponse/../src/Glast25.h"
 
+#include "observationSim/Spacecraft.h"
 #include "observationSim/EventContainer.h"
 
 namespace {
@@ -75,44 +76,40 @@ void EventContainer::init(const std::string &filename) {
 
 int EventContainer::addEvent(EventSource *event, 
                              latResponse::Irfs &response, 
+                             Spacecraft *spacecraft,
                              bool flush) {
    
-   std::string name = event->fullTitle();
-   if (name.find("TimeTick") == std::string::npos) {
-      std::string particleType = event->particleName();
-      double time = event->time();
-      double energy = event->energy();
-      Hep3Vector launchDir = event->launchDir();
+   std::string particleType = event->particleName();
+   double time = event->time();
+   double energy = event->energy();
+   Hep3Vector launchDir = event->launchDir();
+
 // Create the rotation matrix from instrument to "Celestial" (J2000?)
 // coordinates.
-      HepRotation rotationMatrix = glastToCelestial(time);
-      astro::SkyDir sourceDir(rotationMatrix(launchDir),
-                              astro::SkyDir::CELESTIAL);
-      astro::SkyDir zAxis(rotationMatrix(Hep3Vector(0., 0., 1.)),
-                          astro::SkyDir::CELESTIAL);
-      astro::SkyDir xAxis(rotationMatrix(Hep3Vector(1., 0., 0.)),
-                          astro::SkyDir::CELESTIAL);
-   
-      GPS *gps = GPS::instance();
-      gps->getPointingCharacteristics(time);
-      astro::EarthCoordinate earthCoord(gps->lon(), gps->lat());
+   HepRotation rotationMatrix = spacecraft->InstrumentToCelestial();
 
-      double inclination = sourceDir.difference(zAxis)*180./M_PI;
-      if ( inclination < latResponse::Glast25::incMax()
-           && energy > 31.623 
-           && RandFlat::shoot() < (*response.aeff())(energy, sourceDir, 
-                                                     zAxis, xAxis)
-                                   /event->totalArea()/1e4
-           && !earthCoord.insideSAA() ) {
-         astro::SkyDir appDir = response.psf()->appDir(energy, sourceDir, 
-                                                       zAxis, xAxis);
+   astro::SkyDir sourceDir(rotationMatrix(launchDir),
+                           astro::SkyDir::CELESTIAL);
+
+   astro::SkyDir zAxis = spacecraft->zAxis();
+   astro::SkyDir xAxis = spacecraft->xAxis();
+
+   double inclination = sourceDir.difference(zAxis)*180./M_PI;
+   if ( inclination < latResponse::Glast25::incMax()
+        && energy > 31.623 
+        && RandFlat::shoot() < m_prob
+        && RandFlat::shoot() < ( (*response.aeff())(energy, sourceDir, 
+                                                  zAxis, xAxis)
+                                 /event->totalArea()/1e4 )
+        && !spacecraft->inSaa() ) {
+      astro::SkyDir appDir = response.psf()->appDir(energy, sourceDir, 
+                                                    zAxis, xAxis);
                                                         
-         m_events.push_back( Event(time, energy, 
-                                   appDir, sourceDir, zAxis, xAxis,
-                                   ScZenith(time)) );
-         if (flush) writeEvents();
-         return 1;
-      }
+      m_events.push_back( Event(time, energy, 
+                                appDir, sourceDir, zAxis, xAxis,
+                                ScZenith(time)) );
+      if (flush) writeEvents();
+      return 1;
    }
    if (flush) writeEvents();
    return 0;

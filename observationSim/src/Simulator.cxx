@@ -20,6 +20,7 @@
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
+#include "LatSc.h"
 
 namespace observationSim {
 
@@ -110,12 +111,19 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
       m_absTime += interval;
       m_elapsedTime += interval;
       m_fluxMgr->pass(interval);
-      scData.addScData(f);
-      if (events.addEvent(f, response)) {
-         m_numEvents++;
-         if (m_maxNumEvents/20 > 0 &&
-             m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
+      Spacecraft *spacecraft = new LatSc(m_absTime);
+
+      std::string name = f->fullTitle();
+      if (name.find("TimeTick") != std::string::npos) {
+         scData.addScData(f, spacecraft);
+      } else {
+         if (events.addEvent(f, response, spacecraft)) {
+            m_numEvents++;
+            if (m_maxNumEvents/20 > 0 &&
+                m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
+         }
       }
+      delete spacecraft;
    }
    std::cerr << "!" << std::endl;
 }

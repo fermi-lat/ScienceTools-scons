@@ -19,13 +19,11 @@
 
 #include "latResponse/Irfs.h"
 
-#include "observationSim/Container.h"
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
+#include "observationSim/Spacecraft.h"
 
 namespace observationSim {
-
-class latResponse::Irfs;
 
 /**
  * @class EventContainer
@@ -36,17 +34,17 @@ class latResponse::Irfs;
  * $Header$
  */
 
-class EventContainer : public Container {
+class EventContainer {
 
 public:
 
    /// @param filename The name of the output FITS file.
    /// @param useA1fmt A flag to use the format that the A1 tool expects.
    EventContainer(const std::string &filename, bool useA1fmt=false) : 
-      m_useA1fmt(useA1fmt) {init(filename);}
+      m_useA1fmt(useA1fmt) {init(filename); m_prob = 1;}
 
    EventContainer(char *filename, bool useA1fmt=false) : 
-      m_useA1fmt(useA1fmt) {init(filename);}
+      m_useA1fmt(useA1fmt) {init(filename); m_prob = 1;}
 
    ~EventContainer() 
       {writeEvents(); delete m_eventTable;}
@@ -55,16 +53,28 @@ public:
    ///        that was provided by the FluxMgr object.
    /// @param respObj A container of pointers to the standard response 
    ///        functions.
+   /// @param spacecraft A pointer to an object that provides methods 
+   ///        for accessing spacecraft orbit and attitude information.
    /// @param flush A flag to indicate whether to write the accumulated
    ///        Event data and then flush the buffers.
    int addEvent(EventSource *event, latResponse::Irfs &respObj, 
-                bool flush=false);
+                Spacecraft *spacecraft, bool flush=false);
+
+   /// The number of events in the container.
+   long numEvents() {return m_events.size();}
+
+   /// The acceptance probability for any event is typically the ratio
+   /// of the livetime to elapsed time for a given observation
+   /// interval.
+   void setAcceptanceProb(double prob) {m_prob = prob;}
 
 private:
 
    bool m_useA1fmt;
 
    long m_fileNum;
+
+   double m_prob;
    
    FitsTable *m_eventTable;
 
