@@ -61,6 +61,8 @@ int main() {
    return 0;
 }
 
+using namespace optimizers;   // for testing purposes only
+
 void test_FunctionFactory() {
    std::cout << "*** testing FunctionFactory ***" << std::endl;
 
@@ -334,13 +336,18 @@ void test_Optimizers() {
 
 #ifdef HAVE_OPT_PP
 // now restart and try OptPP
-   my_rosen.getParams(params);
-   for (unsigned int i = 0; i < params.size(); i++) {
-      params[i].setValue(2.);
+   try {
+      my_rosen.getParams(params);
+      for (unsigned int i = 0; i < params.size(); i++) {
+         params[i].setValue(2.);
+      }
+      my_rosen.setParams(params);
+      OptPP my_OptppObj(my_rosen);
+      my_OptppObj.find_min(verbose);
+      std::cout << "Tested OptPP:" << std::endl;
+   } catch (std::exception & eObj) {
+      std::cout << eObj.what() << std::endl;
    }
-   my_rosen.setParams(params);
-   OptPP my_OptppObj(my_rosen);
-   my_OptppObj.find_min(verbose);
 #endif  //HAVE_OPT_PP
    
    rosenND.getParams(params);

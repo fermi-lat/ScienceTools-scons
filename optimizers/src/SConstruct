@@ -2,6 +2,8 @@
 import os
 package = 'optimizers'
 home = os.environ[package.upper() + 'ROOT']
+#OptPP_dir = '/home/jchiang/data/OPT++2.1'
+OptPP_dir = '/scratch/jchiang/OPT++2.1'
 libraries = {'xml': None,
              'cfitsio': (os.path.join(os.environ['CFITSIO_DIR'], 'include'),
                          os.path.join(os.environ['CFITSIO_DIR'], 'lib')),
@@ -14,10 +16,10 @@ libraries = {'xml': None,
                                             'include'),
                                os.path.join(os.environ['XMLEXT_DIR'], 'lib')),
              'g2c': ('',''),
-             'opt-linux': ('/home/jchiang/data/OPT++2.1/include',
-                           '/home/jchiang/data/OPT++2.1/lib'),
-             'newmat-linux': ('/home/jchiang/data/OPT++2.1/newmat09',
-                              '/home/jchiang/data/OPT++2.1/lib')
+             'opt-linux': (os.path.join(OptPP_dir, 'include'),
+                           os.path.join(OptPP_dir, 'lib')),
+             'newmat-linux': (os.path.join(OptPP_dir, 'newmat09'),
+                              os.path.join(OptPP_dir, 'lib')),
              }
 
 cflags = ' -DHAVE_OPT_PP'

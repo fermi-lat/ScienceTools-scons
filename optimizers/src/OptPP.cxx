@@ -54,7 +54,7 @@ void OptPP::statInterface(int mode, int ndim, const ColumnVector &x,
 
    if (mode & NLPGradient) {
       std::vector<double> derivsVec;
-      s_stat->getFreeDerivs(derivsVec);
+      const_cast<Statistic *>(s_stat)->getFreeDerivs(derivsVec);
       if (s_verbose) std::cout << "gradients: ";
       for (int i = 0; i < ndim; i++) {
          gx(i+1) = -derivsVec[i];
