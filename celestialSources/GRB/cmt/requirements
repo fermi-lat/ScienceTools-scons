@@ -11,6 +11,12 @@ use ROOT
 apply_pattern packageShr
 apply_pattern package_include
 
+pattern ld_library_path \
+path_append LD_LIBRARY_PATH ${GRBROOT}/${CMTCONFIG}
+path_append LD_LIBRARY_PATH ${FLUXSVCROOT}/${CMTCONFIG}
+apply_pattern ld_library_path
+
+
 #=============================================================
 private
 
