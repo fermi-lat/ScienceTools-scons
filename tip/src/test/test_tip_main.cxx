@@ -186,41 +186,20 @@ int main() {
 
         // Try getting counts as a vector-valued column.
         Table::Vector<double> vcounts = r["Counts"];
-        if (4096 != ((const std::vector<double> &) vcounts).capacity()) {
+        if (4096 != vcounts.getNumElements()) {
           static bool first_time = true;
           if (first_time) {
             std::cerr << "Size of counts when read into a vector is " <<
-              ((const std::vector<double> &) vcounts).capacity() << " not " << 1 << std::endl;
+              vcounts.getNumElements() << " not " << 4096 << std::endl;
             status = 1;
             first_time = false;
           }
         }
-        if (counts != *((const std::vector<double> &) vcounts).begin()) {
+        if (counts != vcounts[0]) {
           static bool first_time = true;
           if (first_time) {
             std::cerr << "First Counts value when read into a vector is " <<
-              *((const std::vector<double> &) vcounts).begin() << " not " << counts << std::endl;
-            status = 1;
-            first_time = false;
-          }
-        }
-
-        // Try getting counts as a vector-valued column.
-        VectorAdaptorMM<double> vcounts_mm = r["Counts"];
-        if (4096 != vcounts_mm.getNumElements()) {
-          static bool first_time = true;
-          if (first_time) {
-            std::cerr << "Size of counts when read into a vector is " <<
-              vcounts_mm.getNumElements() << " not " << 4096 << std::endl;
-            status = 1;
-            first_time = false;
-          }
-        }
-        if (counts != vcounts_mm[0]) {
-          static bool first_time = true;
-          if (first_time) {
-            std::cerr << "First Counts value when read into a vector is " <<
-              double(vcounts_mm[0]) << " not " << counts << std::endl;
+              double(vcounts[0]) << " not " << counts << std::endl;
             status = 1;
             first_time = false;
           }

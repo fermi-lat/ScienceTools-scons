@@ -21,35 +21,11 @@ namespace table {
       Client code should not normally need to use this directly, but only specific subclasses of it.
   */
   template <typename T, typename Referent>
-  class VectorAdaptor : public ReferenceAdaptor<std::vector<T>, Referent> {
-    public:
-      typedef ReferenceAdaptor<std::vector<T>, Referent> ScalarAdaptor;
-      /** \brief Construct a VectorAdaptor object which refers to the given Referent object.
-          \param referent The Referent object.
-      */
-      VectorAdaptor(Referent & referent): ScalarAdaptor(referent) {}
-
-      /** \brief Assignment from Referent. This changes which Referent object this ReferenceAdpator refers to.
-          \param referent The new referent Referent object.
-      */
-      VectorAdaptor & operator =(Referent & referent) { ScalarAdaptor::operator =(referent); }
-
-      /** \brief Assignment from templated parameter type. This will write the assigned value into the
-          referent to which this object refers. This does not change the Referent object this VectorAdaptor
-          refers to.
-          \param data The source value for the assignment.
-      */
-      VectorAdaptor & operator =(const std::vector<T> & data)
-        { ScalarAdaptor::operator =(data); /* m_referent->write(data); */ return *this; }
-
-  };
-
-  template <typename T>
-  class VectorAdaptorMM {
+  class VectorAdaptor {
     public:
       class Entry {
         public:
-          Entry(VectorAdaptorMM & adaptor, T * current): m_adaptor(adaptor), m_current(current) {}
+          Entry(VectorAdaptor & adaptor, T * current): m_adaptor(adaptor), m_current(current) {}
           Entry & operator =(const T & data) { *m_current = data; m_adaptor.setModified(); return *this; }
           operator const T &() const { return *m_current; }
           T * getCurrent() { return m_current; }
@@ -62,27 +38,27 @@ namespace table {
           bool itorGreaterThan(const Entry & entry) const { return m_current > entry; }
 
         private:
-          VectorAdaptorMM & m_adaptor;
+          VectorAdaptor & m_adaptor;
           T * m_current;
       };
 
 //      typedef RandomAccessIterator<Entry, IndexDiff_t> Iterator;
 
-      VectorAdaptorMM(TableCell & cell): m_cell(cell), m_entry(*this, 0), m_begin(0), m_end(0), m_modified(false) {}
+      VectorAdaptor(Referent & referent): m_referent(&referent), m_entry(*this, 0), m_begin(0), m_end(0), m_modified(false) {}
 
       // Need to fix this:
-      VectorAdaptorMM(const VectorAdaptorMM & adaptor): m_cell(adaptor.m_cell), m_entry(*this, 0), m_begin(0),
+      VectorAdaptor(const VectorAdaptor & adaptor): m_referent(adaptor.m_referent), m_entry(*this, 0), m_begin(0),
         m_end(0), m_modified(false) { assert(0); }
 
-      ~VectorAdaptorMM() { delete [] m_begin; }
+      ~VectorAdaptor() { delete [] m_begin; }
 
       // Need to fix this:
-      VectorAdaptorMM & operator =(const VectorAdaptorMM & adaptor) { assert(0); return *this; }
+      VectorAdaptor & operator =(const VectorAdaptor & adaptor) { assert(0); return *this; }
 
       Entry & operator [](Index_t entry_index) { return getEntry(entry_index); }
 
       const Entry & operator [](Index_t entry_index) const
-        { VectorAdaptorMM & self = const_cast<VectorAdaptorMM &>(*this); return self.getEntry(entry_index); }
+        { VectorAdaptor & self = const_cast<VectorAdaptor &>(*this); return self.getEntry(entry_index); }
 
       void setModified(bool modified = true) { m_modified = modified; }
 
@@ -90,27 +66,27 @@ namespace table {
 
       Entry & getEntry(Index_t entry_index);
 
-      Index_t getNumElements() const { return m_cell.getNumElements(); }
+      Index_t getNumElements() const { return m_referent->getNumElements(); }
 
     private:
-      TableCell & m_cell;
+      Referent * m_referent;
       Entry m_entry;
       T * m_begin;
       T * m_end;
       bool m_modified;
   };
 
-  template <typename T>
-  void VectorAdaptorMM<T>::allocate() {
-    Index_t vec_size = m_cell.getNumElements();
+  template <typename T, typename Referent>
+  void VectorAdaptor<T, Referent>::allocate() {
+    Index_t vec_size = m_referent->getNumElements();
     m_begin = new T[vec_size];
     m_end = m_begin + vec_size;
   }
 
-  template <typename T>
-  typename VectorAdaptorMM<T>::Entry & VectorAdaptorMM<T>::getEntry(Index_t entry_index) {
+  template <typename T, typename Referent>
+  typename VectorAdaptor<T, Referent>::Entry & VectorAdaptor<T, Referent>::getEntry(Index_t entry_index) {
     if (!m_begin) allocate();
-    m_cell.get(0, m_end - m_begin, m_begin);
+    m_referent->get(0, m_end - m_begin, m_begin);
     m_entry.setCurrent(m_begin + entry_index);
     return m_entry;
   }
