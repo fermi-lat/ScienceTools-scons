@@ -29,6 +29,8 @@ int main(int argc, char ** argv) {
     // cannot/should not start.
     st_app::StApp::processCommandLine(argc, argv);
 
+#ifndef ST_APP_DEBUG
+    // Not in debug mode, so create and run the application here, inside the top-level try block.
     try {
       // Try using the singleton StAppFactory to create the application:
       this_st_app = st_app::IStAppFactory::instance().createApp();
@@ -38,6 +40,7 @@ int main(int argc, char ** argv) {
 
     // Run the application.
     if (0 != this_st_app) this_st_app->run();
+#endif
 
   } catch (const std::exception & x) {
     // Return a non-zero exit code:
@@ -52,6 +55,16 @@ int main(int argc, char ** argv) {
     }
     std::cerr << "Caught " << type_name << " at the top level: " << x.what() << std::endl;
   }
+
+#ifdef ST_APP_DEBUG
+  // In debug mode, so create and run the application here, outside of any try-catch,
+  // so that the debugger is more useful for finding exceptions at their source.
+  // Use the singleton StAppFactory to create the application:
+  this_st_app = st_app::IStAppFactory::instance().createApp();
+
+  // Run the application.
+  if (0 != this_st_app) this_st_app->run();
+#endif
 
   // Clean up:
   delete this_st_app;
