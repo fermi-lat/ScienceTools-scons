@@ -41,7 +41,7 @@ public:
             value = dynamic_cast<Attr<T> *>(my_attr)->value();
          } else {
             throw std::runtime_error("Header::getValue: bad cast of type "
-                                     + std::string(typeid(value).name()));
+                + std::string(typeid(value).name()) );
          }
       } else {
          throw std::invalid_argument("Header::getValue: attribute " 

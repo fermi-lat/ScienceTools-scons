@@ -231,8 +231,8 @@ void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighb
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
-    if(i<(unsigned int)m_naxis1)neighbors.push_back(image[k+1]); 
+    if(i+1<(unsigned int)m_naxis1)neighbors.push_back(image[k+1]); 
     if(i>0) neighbors.push_back(image[k-1]);
-    if(j<(unsigned int)m_naxis2)neighbors.push_back(image[k+m_naxis1]);
+    if(j+1<(unsigned int)m_naxis2)neighbors.push_back(image[k+m_naxis1]);
     if(j>0)neighbors.push_back(image[k-m_naxis1]);
 }

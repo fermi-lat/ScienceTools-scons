@@ -5,6 +5,8 @@
 $Id$
 @verbatim
 
+ 04-mar-04 v4r0   THB switch from PIL to hoopsUtil for parameters. Additional SkyImage functionality,
+                      new interface SkyFunction
  04-mar-04 v3r1p2 THB new read_map application
  04-mar-04 v3r1p1 THB fix for test program
  04-mar-04 v3r1  THB allow constructing SkyImage from fits file, and access to pixel values

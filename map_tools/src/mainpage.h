@@ -31,8 +31,7 @@
     It does not support tables, or any IO except for FITS. Base classes are BaseAttr, VirtualIO and Header.
     
     The interface is not made public, since it will be eventually replaced by James Peachy's table package.
-    
-
+  
   \section notes release notes
   release.notes
   \section requirements requirements
