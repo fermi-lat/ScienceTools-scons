@@ -9,7 +9,7 @@ mode,     s, a,  "h",   , ,""
 #---------------------------------------------------------------------------------------
 #
 infile,f,a,"$(FLUXROOT)/sources/gas_gal.fits",,,"input file name:"
-table_name,s,a,,,,"Table name"
+table,s,a,,,,"Table name"
 #outfile,f,a,"$(TMP)/gas_gal_copy.fits",,,"Name of the  output file:"
 outfile,f,a,"gas_gal_copy.fits",,,"Name of the  output file:"
 filter,s,a,,,,"filter expression:"
