@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r1p1 01-Dec-04   JC   all space as well as tab delimiters in input to
+                            makeFT2a
     v1r1   15-Nov-04   JC   reimplement makeFT2a
     v1r0p3 29-Oct-04   JC   use tip v2*
     v1r0   13-Apr-04   JC   convert to tip, STpolicy
