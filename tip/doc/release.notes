@@ -3,6 +3,9 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+18-jan-2005 v2r1   JP Add support for history and comments in extensions,
+                      for creation of files without templates, and
+                      access to slices of images.
 16-dec-2004 v2r0p1 JP Changes to fix problems compiling on Windows.
 29-oct-2004 v2     JP Major structural refactoring.
 29-sep-2004 v1r9p0 JP Add KeyRecord class for getting the whole keyword
