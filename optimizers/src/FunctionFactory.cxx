@@ -174,6 +174,7 @@ void FunctionFactory::writeXml(const std::string &xmlFile) {
            << "<!DOCTYPE function_library SYSTEM "
            << "\"$(OPTIMIZERSROOT)/xml/FunctionModels.dtd\" >\n";
    xml::Dom::prettyPrintElement(funcLib, outFile, "");
+   doc->release();
 }
 
 } // namespace optimizers
