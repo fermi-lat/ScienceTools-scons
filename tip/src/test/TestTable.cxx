@@ -27,6 +27,9 @@ namespace tip {
     // Test new browsing capabilities:
     getValidFieldsTest();
 
+    // Test iterator access:
+    iteratorTest();
+
     // Clean up.
     delete m_root_table; m_root_table = 0;
     delete m_fits_table; m_fits_table = 0;
@@ -109,6 +112,37 @@ std::cout << "*************** field " << *it << std::endl;
           ReportUnexpected(msg + " failed", x);
         }
 
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
+    }
+  }
+
+  void TestTable::iteratorTest() {
+    std::string msg;
+    if (0 != m_fits_table) {
+      msg = "using Table::Iterator to access the table";
+      Table * table = m_fits_table;
+      try {
+        bool no_error = true;
+        int ichan = 0;
+        // Loop through all records:
+        for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor, ++ichan) {
+
+          // Get the channel from the table cell.
+          double channel = (*itor)["channel"].get();
+
+          // The channel column is known to run from 0 to N, the number of records, in steps of 1:
+          if (ichan != channel) {
+            if (no_error) {
+              std::string tmp_msg = "channel number obtained from Table::Iterator is " + toString(channel) +
+                " not " + toString(ichan);
+              ReportUnexpected(tmp_msg);
+              no_error = false;
+            }
+          }
+        }
+        if (no_error) ReportExpected(msg + " succeeded"); else ReportUnexpected(msg + " had errors");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
       }

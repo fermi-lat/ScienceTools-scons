@@ -5,8 +5,6 @@
 #ifndef tip_TestTable_h
 #define tip_TestTable_h
 
-#include <string>
-
 #include "TestHarness.h"
 
 namespace tip {
@@ -36,6 +34,9 @@ namespace tip {
 
       /// \brief Test Table's method for getting list of fields in table:
       void getValidFieldsTest();
+
+      /// \brief Test iterator access:
+      void iteratorTest();
 
     private:
       Table * m_fits_table;
