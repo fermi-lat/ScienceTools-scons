@@ -1,12 +1,12 @@
 package map_tools
 
-version v5r4p4
+version v5r5
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
 use STpolicy *
-use astro *
+use astro v1*
 use hoops * 
 use tip  *
 use st_app *
