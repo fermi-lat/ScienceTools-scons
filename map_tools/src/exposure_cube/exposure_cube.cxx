@@ -5,7 +5,7 @@
 $Header$
 */
 
-#include "map_tools/MapParameters.h"
+#include "map_tools/Parameters.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/ExposureHyperCube.h"
 #include "astro/SkyDir.h"
@@ -38,7 +38,7 @@ public:
     {}
 
     //--------------------------------------------------------------------------
-    void LoadExposureFromGlast( const MapParameters& pars,   Exposure& exp )
+    void LoadExposureFromGlast( const Parameters& pars,   Exposure& exp )
     {
         using tip::Table;
 
@@ -117,7 +117,7 @@ public:
 
     }
 private:
-    MapParameters m_pars;
+    Parameters m_pars;
     st_stream::StreamFormatter m_f;
 
 };

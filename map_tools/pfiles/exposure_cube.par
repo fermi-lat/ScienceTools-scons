@@ -2,34 +2,23 @@
 #---------------------------------------------------------------------------------------
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
 chatter,  i, h,   2,0,4 , , "Chattiness of output"
-debug, b, h, no,,,Debugging mode activated
+debug,    b, h, no,,,Debugging mode activated
 mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
 #mode,     s, a,  "ql",   , ,""
 
-#
 #---------------------------------------------------------------------------------------
 #
-#infile,   f, a, "/common/DC1/history/D2_full_history.fits", , , "Name of the exposure file:" 
+#infile,  f, a, "/common/DC1/history/D2_full_history.fits", , , "Name of the exposure file:" 
 infile,   f, a, "/common/DC2/history/Gleam42.txt", , , "Name of the exposure file:" 
-table,s,h,"Ext1",,,"name of the extension or ROOT tree"
+table,    s, h, "Ext1",,,"name of the extension or ROOT tree"
 outfile,  f, a, "$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits", , , "Name of the output file:"
 filter,   s, h, "", , , "filter expression:"
 #---------------------------------------------------------------------------------------
-#Parameters for Spatial binning
-#
-npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
-npixy,    i, h,  0,   , , "Total pixel size of the image in y axis: "
+# Exposure generation parameters
+binsize,  r,a, 0.025, , , binsize for the function of theta
 pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
-xref,     r, a,    0,   , , "RA/L at the image center: "
-yref,     r, a,    0,   , , "DEC/B at the image center: "
-rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
-projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
-uselb,    b, a, "NO",   , , "use l,b instead of ra,dec :"
-#---------------------------------------------------------------------------------------
-# Exposure generation parameters
-binsize, r,a, 0.025, , , binsize for the function of theta
-# Exposure generation parameters
-tstart,  r, a,   0 ,   , , "start time"
-tstop,   r, a,  86400,  , , "end time"  
+ 
+tstart,   r, a,   0 ,   , , "start time"
+tstop,    r, a,  86400,  , , "end time"  
 avoid_saa, b,a, "NO", "NO|YES",,avoid the SAA

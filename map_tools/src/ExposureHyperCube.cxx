@@ -25,9 +25,8 @@ ExposureHyperCube::ExposureHyperCube( const Exposure& exp,
     naxes[1]= Exposure::Index::dec_factor;
     naxes[2] =Exposure::Index::cosfactor;
 
-    tip::IFileSvc::instance().createImage(outfile, "", naxes);
-    m_image = tip::IFileSvc::instance().editImage(outfile, "");
-    m_image->set( exp.data() );
+    tip::IFileSvc::instance().createImage(outfile, "exposure", naxes);
+    m_image = tip::IFileSvc::instance().editImage(outfile, "exposure");
     header = &m_image->getHeader();// set up the anonymous convenience functions
 
 
@@ -38,19 +37,19 @@ ExposureHyperCube::ExposureHyperCube( const Exposure& exp,
     setKey("DATE-END", "");
     setKey("EQUINOX", 2000.0);
 
-    setKey("CTYPE1", "RA---CAR");
+    setKey("CTYPE1", "RA");
     setKey("CRPIX1",  0.5*(1+naxes[0]));
     setKey("CRVAL1",  0);
     setKey("CDELT1",  -1.);
     setKey("CUNIT1",  "deg");
 
-    setKey("CTYPE2",  "DEC--CAR");
+    setKey("CTYPE2",  "DEC");
     setKey("CRPIX2",  0.5*(1+naxes[1]));
     setKey("CRVAL2",  0.);
     setKey("CDELT2",  1.0);
     setKey("CUNIT2",  "deg");
 
-    setKey("CTYPE3",  "SQRT(1-COSTHETA)");
+    setKey("CTYPE3",  Exposure::Index::thetaBinning()); //"SQRT(1-COSTHETA)");
     setKey("CRPIX3",   0.5*(1+naxes[2]) );
     setKey("CRVAL3",  0.);
     setKey("CDELT3",  1./naxes[2] );
@@ -62,6 +61,15 @@ ExposureHyperCube::ExposureHyperCube( const Exposure& exp,
     // record total exposure as a key
     setKey("TOTAL", exp.total());
 
+    m_image->set( exp.data() );
 
 }
-
+void ExposureHyperCube::save()
+{
+    delete m_image;
+    m_image=0;
+}
+ExposureHyperCube::~ExposureHyperCube()
+{
+    delete m_image;
+}

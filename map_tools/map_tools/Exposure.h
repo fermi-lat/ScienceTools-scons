@@ -49,6 +49,7 @@ public:
         static double costheta_value(int bin){ 
             return 1. - sqr((bin+0.5)/cosfactor)*(1.-cosmin); 
         }
+        static std::string thetaBinning(){ return "SQRT(1-COSTHETA)";}
 #else // uniform cos theta
         static int costheta_bin(double costheta){ 
             return static_cast<int>( (1.-costheta)/(1-cosmin)* cosfactor); 
@@ -56,6 +57,7 @@ public:
         static double costheta_value(int bin){ 
             return 1. - (bin+0.5)/cosfactor*(1.-cosmin); 
         }
+        static std::string thetaBinning(){ return "COSTHETA";}
 #endif
 
         // statics, define binning

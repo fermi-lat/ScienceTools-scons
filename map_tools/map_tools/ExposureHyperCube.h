@@ -15,7 +15,8 @@ namespace map_tools {
 
 
     /** @class ExposureHyperCube 
-    @brief Set up an exposure map hypercube
+    @brief Set up an exposure map hypercube, wrapping an Exposure object
+    as a multilayer FITS image
 
     It is defined as a hypercube in ra, dec, sqrt(1-costheta) bins.
     @todo: allow other binning function
@@ -23,8 +24,14 @@ namespace map_tools {
     */
     class ExposureHyperCube  {
     public:
+        //! ctor
         ExposureHyperCube( const Exposure& exp, std::string outfile);
 
+        //! dtor updates the image file
+        ~ExposureHyperCube();
+
+        //! saves the image
+        void save();
     private:
         //! pointer to the associated tip Image class
         tip::Image* m_image;

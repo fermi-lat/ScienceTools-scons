@@ -38,6 +38,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 {
     using namespace astro;
     std::string ptype(pars.projType());
+    std::string extension("skyimage"); // maybe a parameter?
     double pixelsize = pars["pixelsize"];
 
     if( m_naxis1==0){
@@ -80,8 +81,8 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     }
 #endif
     // now add an image to the file
-    tip::IFileSvc::instance().createImage(pars.outputFile(), "skyimage", naxes);
-    m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), "");
+    tip::IFileSvc::instance().createImage(pars.outputFile(), extension, naxes);
+    m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), extension);
 
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
     m_imageData.resize(m_pixelCount);
@@ -144,7 +145,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     }
 
     // note that the ctype may be blank: wcslib treats this like CAR
-    std::string  trans = ctype.substr(ctype.size()-3,3);
+    std::string  trans(ctype.size()==8?ctype.substr(5,3): "");
 
     /// arrays describing transformation; pointers passed to wcslib
     double crpix[2], crval[2], cdelt[2];
