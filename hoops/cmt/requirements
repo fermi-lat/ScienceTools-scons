@@ -10,13 +10,14 @@ branches hoops cmt src doc
 use STpolicy *
 use pil * IExternal
 
-apply_pattern ST_library share=-no_share
+apply_pattern ST_library option=-no_share
  
 
 private
 #-------------------------------------
-set PFILES "$(HOOPSROOT)/data"
-macro test_source "test/hoops_lim_test.cxx" #override pattern
+set PFILES "$(HOOPSROOT)/data" # for testing
+
+macro test_source "test/hoops_lim_test.cxx" #override pattern 
 macro hoops_cppflags "" WIN32 " /wd4251 " # suppress "needs to have dll-interface" 
 
 # supplemental test applications
