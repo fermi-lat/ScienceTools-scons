@@ -79,7 +79,7 @@ namespace astro {
         @param galactic [false] if true, generate transformation in galactic coords
         @return (pixelx,pixely)
         */
-        std::pair<double,double> project(const SkyProj& projection, bool galactic=false) const;
+        std::pair<double,double> project(const SkyProj& projection) const;
 
     private:
         static HepRotation s_equatorialToGalactic;
