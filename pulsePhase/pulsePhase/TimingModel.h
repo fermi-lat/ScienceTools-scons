@@ -9,7 +9,7 @@
 class TimingModel {
   public:
     struct Coeff {
-        Coeff(): m_term(3) {}
+        Coeff(): m_term() {}
 
         Coeff(double c0, double c1, double c2): m_term() {
           m_term.push_back(c0);
@@ -21,9 +21,9 @@ class TimingModel {
           double term0squared = m_term[0] * m_term[0];
           Coeff new_coeff;
           // Invert the Taylor series coefficients.
-          new_coeff.m_term[0] = 1.0 / m_term[0];
-          new_coeff.m_term[1] = - m_term[1] / term0squared;
-          new_coeff.m_term[2] = 2.0 * m_term[1] * m_term[1] / (m_term[0] * term0squared) - m_term[2] / term0squared;
+          new_coeff.m_term.push_back(1.0 / m_term[0]);
+          new_coeff.m_term.push_back(- m_term[1] / term0squared);
+          new_coeff.m_term.push_back(2.0 * m_term[1] * m_term[1] / (m_term[0] * term0squared) - m_term[2] / term0squared);
 
           return new_coeff;
         }
@@ -32,10 +32,14 @@ class TimingModel {
     };
 
     struct FrequencyCoeff : Coeff {
+        FrequencyCoeff(const Coeff & coeff): Coeff(coeff) {}
+
         FrequencyCoeff(double f0, double f1, double f2): Coeff(f0, f1, f2) {}
     };
 
     struct PeriodCoeff : Coeff {
+        PeriodCoeff(const Coeff & coeff): Coeff(coeff) {}
+
         PeriodCoeff(double p0, double p1, double p2): Coeff(p0, p1, p2) {}
     };
 
@@ -51,7 +55,7 @@ class TimingModel {
 
     TimingModel(double epoch, double phi0, const PeriodCoeff & period_coeff): m_epoch(epoch), m_phi0(phi0), m_f0(0), m_f1(0),
       m_f2(0) {
-      Coeff freq_coeff = period_coeff.invert();
+      FrequencyCoeff freq_coeff = period_coeff.invert();
       m_f0 = freq_coeff.m_term[0];
       m_f1 = freq_coeff.m_term[1];
       m_f2 = freq_coeff.m_term[2];
