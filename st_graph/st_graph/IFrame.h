@@ -20,8 +20,17 @@ namespace st_graph {
       /// \brief Display this frame and all it contains.
       virtual void display() = 0;
 
-      /// \brief Hide this frame and all it contains.
+      /// \brief Remove this frame and all it contains from the display.
       virtual void unDisplay() = 0;
+
+      /** \brief Get flag indicating whether frame is hidden.
+      */
+      virtual bool isHidden() const = 0;
+
+      /** \brief Set flag indicating whether frame should be hidden. If hidden, calls to display() will have no effect.
+          \param hidden If true, frame will not be displayed if display() is called.
+      */
+      virtual void setHidden(bool hidden = true) = 0;
 
       /** \brief Add the given (sub) frame to this container frame.
           \param frame The frame being added.

@@ -23,7 +23,8 @@ namespace st_graph {
   }
 
   RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
-    m_parent(0), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent), m_minimum_width(0), m_minimum_height(0) {
+    m_parent(0), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent), m_minimum_width(0), m_minimum_height(0),
+    m_hidden(false) {
     // Make sure the parent is a Root parent.
     m_parent = dynamic_cast<RootFrame *>(parent);
     if (0 == m_parent)
@@ -34,7 +35,7 @@ namespace st_graph {
 
   RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
     m_parent(RootFrame::ancestor()), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent),
-    m_minimum_width(0), m_minimum_height(0) {
+    m_minimum_width(0), m_minimum_height(0), m_hidden(false) {
     m_parent->addFrame(this);
   }
 
@@ -68,13 +69,17 @@ namespace st_graph {
   }
 
   void RootFrame::display() {
+    if (m_hidden) {
+      unDisplay();
+      return;
+    }
+    for (std::list<RootFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
+      (*itor)->display();
     if (0 != m_frame) {
       m_frame->MapSubwindows();
       m_frame->Layout();
       m_frame->MapWindow();
     }
-    for (std::list<RootFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
-      (*itor)->display();
   }
 
   void RootFrame::unDisplay() {
@@ -84,7 +89,14 @@ namespace st_graph {
       (*itor)->unDisplay();
   }
 
+  bool RootFrame::isHidden() const { return m_hidden; }
+
+  void RootFrame::setHidden(bool hidden) { m_hidden = hidden; }
+
   void RootFrame::addFrame(IFrame * frame) {
+    // Make certain this frame is not added to itself.
+    if (this == frame) return;
+
     // Make certain Root frame is not added more than once.
     if (m_subframes.end() == std::find(m_subframes.begin(), m_subframes.end(), frame)) {
       RootFrame * rf = dynamic_cast<RootFrame *>(frame);

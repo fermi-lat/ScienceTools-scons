@@ -56,6 +56,15 @@ namespace st_graph {
       /// \brief Hide this frame and all it contains.
       virtual void unDisplay();
 
+      /** \brief Get flag indicating whether frame is hidden.
+      */
+      virtual bool isHidden() const;
+
+      /** \brief Set flag indicating whether frame should be hidden. If hidden, calls to display() will have no effect.
+          \param hidden If true, frame will not be displayed if display() is called.
+      */
+      virtual void setHidden(bool hidden = true);
+
       /** \brief Add the given (sub) frame to this container frame.
           \param frame The frame being added.
       */
@@ -183,6 +192,7 @@ namespace st_graph {
       bool m_delete_parent;
       long m_minimum_width;
       long m_minimum_height;
+      bool m_hidden;
 
     private:
       // Constructs a frame without any parents. This is a singleton.
