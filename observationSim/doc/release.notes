@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r1p3 12-Oct-04   JC   add PulsarSpectrum
     v5r1p2 08-Oct-04   JC   temporary FT2 template file until astro
                             v1r1p2 gets new tag for GPS::readFitsData imp.
     v5r1p1 04-Oct-04   JC   give full version to st_facilities
