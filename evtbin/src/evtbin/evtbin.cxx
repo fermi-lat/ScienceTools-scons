@@ -151,45 +151,6 @@ class LightCurveApp : public EvtBinAppBase {
     }
 };
 
-/** \class MultiSpectraApp
-    \brief Multiple spectra-specific binning application.
-*/
-class MultiSpectraApp : public EvtBinAppBase {
-  public:
-    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name) {}
-
-    virtual void parPrompt(st_app::AppParGroup & pars) {
-      // Call base class prompter for standard universal parameters.
-      EvtBinAppBase::parPrompt(pars);
-
-      // Prompt for remaining parameters needed for product.
-      pars.Prompt("emin");
-      pars.Prompt("emax");
-      pars.Prompt("enumbins");
-
-      pars.Prompt("tstart");
-      pars.Prompt("tstop");
-      pars.Prompt("deltatime");
-    }
-
-    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
-      using namespace evtbin;
-
-      // Get ranges:
-      double energy_min = pars["emin"];
-      double energy_max = pars["emax"];
-      long energy_num_bins = pars["enumbins"];
-
-      double tstart = pars["tstart"];
-      double tstop = pars["tstop"];
-      double width = pars["deltatime"];
-
-      // Create data product.
-      return new MultiSpec(LinearBinner(tstart, tstop, width, "TIME"),
-        LogBinner(energy_min, energy_max, energy_num_bins, "ENERGY"));
-    }
-};
-
 /** \class SimpleSpectrumApp
     \brief Single spectrum-specific binning application.
 */
@@ -255,6 +216,40 @@ evtbin::Binner * SimpleSpectrumApp::getBinner(const st_app::AppParGroup & pars) 
 
   return binner;
 }
+
+/** \class MultiSpectraApp
+    \brief Multiple spectra-specific binning application.
+*/
+class MultiSpectraApp : public EvtBinAppBase {
+  public:
+    MultiSpectraApp(const std::string & app_name): EvtBinAppBase(app_name), m_energy_app(app_name) {}
+
+    virtual void parPrompt(st_app::AppParGroup & pars) {
+      // Call energy application prompter for standard universal parameters.
+      m_energy_app.parPrompt(pars);
+
+      pars.Prompt("tstart");
+      pars.Prompt("tstop");
+      pars.Prompt("deltatime");
+    }
+
+    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
+      using namespace evtbin;
+
+      double tstart = pars["tstart"];
+      double tstop = pars["tstop"];
+      double width = pars["deltatime"];
+
+      // Get binner for energy from energy application object.
+      std::auto_ptr<const Binner> energy_binner(m_energy_app.getBinner(pars));
+
+      // Create data product.
+      return new MultiSpec(LinearBinner(tstart, tstop, width, "TIME"), *energy_binner);
+    }
+
+  private:
+    SimpleSpectrumApp m_energy_app;
+};
 
 /** \class EvtBin
     \brief Application singleton for evtbin. Main application object, which just determines which
