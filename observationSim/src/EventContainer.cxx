@@ -10,6 +10,7 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
+#include <numeric>
 
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
