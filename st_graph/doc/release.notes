@@ -14,5 +14,8 @@ $Id$
 21-jan-2005    v1r2p0 JP  Use RootcintPolicy instead of hand-generated LinkDef files.
                           Remove (circular) dependency on st_app, and move st_graph
                           application to the new gtgraph package.
+07-mar-2005    v1r3p0 JP  Add tab folder and file dialog box. Allow widgets
+                          to be hidden and restored. Add tool tips and more
+                          layout options.
 \endverbatim
 */
