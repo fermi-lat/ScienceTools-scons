@@ -1,12 +1,12 @@
 package st_facilities
-version v0r3
+version v0r3p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
 use f2c v2r*
-use tip v1r*
+use tip v2*
 use facilities v2r*
 use cfitsio v1r* IExternal
 
