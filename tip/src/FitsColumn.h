@@ -6,6 +6,8 @@
 #define tip_FitsColumn_h
 
 #include <cassert>
+#include <cstdlib>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -76,16 +78,37 @@ namespace tip {
       virtual void set(Index_t record_index, const std::vector<unsigned int> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<unsigned long> & src) { setVector(record_index, src); }
 
-      // TODO: Specialize these so that strings can be supported.
-      // virtual void get(Index_t record_index, std::string & dest) const
-      virtual void get(Index_t , std::string & ) const
-        { throw TipException("FitsColumn::get(Index_t, std::string &) not yet supported"); }
+      virtual void get(Index_t record_index, std::string & dest) const {
+        char * buf = 0;
+        try {
+          // For strings, make a buffer to hold the value.
+          buf = new char[m_width + 1];
+
+          // Set the buffer contents to 0.
+          memset(buf, '\0', m_width + 1);
+
+          // Now call fitsio to fill the buffer with the string.
+          getScalar(record_index, buf);
+
+          // Copy this to the input.
+          dest = buf;
+        } catch (...) {
+          delete [] buf;
+          throw;
+        }
+        delete [] buf;
+      }
+
+      // TODO: Specialize this so that vectors of strings can be supported.
       // virtual void get(Index_t record_index, std::vector<std::string> & dest) const
       virtual void get(Index_t , std::vector<std::string> &) const
         { throw TipException("FitsColumn::get(Index_t, std::vector<std::string> &) not yet supported"); }
-      // virtual void set(Index_t record_index, const std::string & src)
-      virtual void set(Index_t , const std::string &)
-        { throw TipException("FitsColumn::set(Index_t, const std::string &) not yet supported"); }
+
+      virtual void set(Index_t record_index, const std::string & src) {
+        setScalar(record_index, src.c_str());
+      }
+
+      // TODO: Specialize this so that vectors of strings can be supported.
       // virtual void set(Index_t record_index, const std::vector<std::string> & src)
       virtual void set(Index_t , const std::vector<std::string> &)
         { throw TipException("FitsColumn::set(Index_t, const std::vector<std::string> &) not yet supported"); }
@@ -262,6 +285,7 @@ namespace tip {
       FitsExtensionManager * m_ext;
       FieldIndex_t m_field_index;
       long m_repeat;
+      long m_width;
       int m_type_code;
       bool m_var_length;
       bool m_scalar;
@@ -269,11 +293,17 @@ namespace tip {
 
   template <typename T>
   inline FitsColumn<T>::FitsColumn(FitsExtensionManager * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
-    m_ext(ext), m_field_index(field_index), m_repeat(0), m_type_code(0), m_var_length(false), m_scalar(false) {
+    m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0), m_var_length(false), m_scalar(false) {
     // Determine characteristics of this column.
     int status = 0;
-    fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, 0, &status);
+    fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
     if (0 != status) throw FitsTipException(status, "FitsColumn::FitsColumn failed to get information about field");
+
+    // Handle special case of strings, for which the info returned by fits_get_coltype means something different.
+    if (TSTRING == m_type_code) {
+      m_repeat /= m_width;
+      if (0 == m_repeat) m_repeat = 1;
+    }
 
     // Handle variable length columns.
     if (m_type_code < 0) {
