@@ -9,6 +9,7 @@ branches cmt src doc
 
 use GlastPolicy v*
 use rootTuple v*
+use Goodi v*
 
 apply_pattern package_include
 apply_pattern package_linkopts
@@ -16,7 +17,6 @@ apply_pattern package_linkopts
 private
 
 use RootPolicy v2*
-use Goodi v*
 
 # Allow use of internal path.
 macro_append fitsGen_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
