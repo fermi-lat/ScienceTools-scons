@@ -4,6 +4,8 @@
 $Id$
 
 \verbatim
+08-mar-2005    v1r6p1 JP  Change test code to run correctly in non-interactive
+                          enviroment.
 07-mar-2005    v1r6p0 JP  Add switch/case mechanism to handle parameter logic.
                           Add standard GUI support.
 06-dec-2004    v1r5p2 JP  Disable prompts so that automatic unit tests run.
