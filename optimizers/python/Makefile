@@ -12,7 +12,9 @@
 SWIG = swig
 pypath = /usr/local
 
-INCLUDE = -I$(CMTPATH)/optimizers/v0r1\
+#CFLAGS = -ansi -Wall -W -pedantic
+
+INCLUDE = -I$(CMTPATH)/optimizers/v0r1p1\
 	-I$(CMTPATH)/xml/v4r3p0/h\
 	-I$(CMTPATH)/facilities/v2r7p2\
 	-I$(CMTPATH)/f2c/v2\
@@ -38,7 +40,7 @@ ${module_name}: ${module_base}_wrap.o
 	${CXX} -shared $< ${LIBS} -o ${module_name}
 
 ${module_base}_wrap.o: ${module_base}_wrap.cxx
-	${CXX} -c ${INCLUDE} ${PYINCLUDE} -o $@ $<
+	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} -o $@ $<
 
 ${module_base}_wrap.cxx: ${module_base}.i
 	${SWIG} -python -c++ ${module_base}.i

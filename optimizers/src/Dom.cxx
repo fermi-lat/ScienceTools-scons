@@ -22,7 +22,7 @@ void Dom::checkTag(const DOM_Element &element,
                    const std::string &callingRoutine) throw(Exception) {
    if (element == DOM_Element()) {
       throw optimizers::Exception(
-         "::checkTag: Trying to read tag of DOM_Element().\n");
+         "optimizers::Dom::checkTag: Trying to read tag of DOM_Element().\n");
    }
    std::string myTagName( xml::Dom::transToChar(element.getTagName()) );
    if (myTagName != tagName) {
@@ -43,7 +43,7 @@ void Dom::getElements(const DOM_Element &parent, const std::string &tagName,
    DOM_Element child = xml::Dom::getFirstChildElement(parent);
    while (child != DOM_Element()) {
       try {
-         Dom::checkTag(child, tagName, "::getElementsByTagName");
+         Dom::checkTag(child, tagName, "optimizers::Dom::getElements");
          children.push_back(child);
       } catch (optimizers::Exception &) {
 // Tag doesn't match so do nothing.
