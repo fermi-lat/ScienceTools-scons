@@ -3,6 +3,7 @@
 algorithm,     s, a, "PHA2", , , "Type of output file (CMAP, LC, PHA1, PHA2)"
 eventfile,     s, a, , , , "Name of the input file"
 outfile,       s, a, , , , "Name of the output file"
+scfile,        s, a, , , , "Name of the spacecraft file (needed for exposure calculation)"
 mode,          s, h, "ql", , ,"Behavior for automatic parameters"
 #-------------------------------------------------------------------------------
 
