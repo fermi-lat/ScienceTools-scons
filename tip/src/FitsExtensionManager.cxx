@@ -120,16 +120,16 @@ namespace tip {
 
   IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) {
     if (!m_is_table) throw TipException(formatWhat("getColumn called, but object is not a table"));
-    if (0 >= field_index || m_columns.size() < std::vector<IColumn*>::size_type(field_index))
+    if (0 > field_index || m_columns.size() <= std::vector<IColumn*>::size_type(field_index))
       throw TipException(formatWhat("FitsExtensionManager::getColumn called with invalid index"));
-    return m_columns[field_index - 1];
+    return m_columns[field_index];
   }
 
   const IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) const {
     if (!m_is_table) throw TipException(formatWhat("getColumn const called, but object is not a table"));
-    if (0 >= field_index || m_columns.size() < std::vector<IColumn*>::size_type(field_index))
+    if (0 > field_index || m_columns.size() <= std::vector<IColumn*>::size_type(field_index))
       throw TipException(formatWhat("FitsExtensionManager::getColumn const called with invalid index"));
-    return m_columns[field_index - 1];
+    return m_columns[field_index];
   }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
@@ -295,16 +295,6 @@ namespace tip {
       throw TipException(formatWhat(s.str()));
     }
 
-    // Make a lowercase copy of field name for comparison purposes:
-    std::string lc_name = col_name;
-    for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
-
-    // Save column number indexed on lowercased column name:
-    m_col_name_lookup[lc_name] = col_num;
-
-    // Save lower cased name of field in sequential container of field names:
-    m_fields.push_back(lc_name);
-
     // Handle variable-length column specifiers.
     if (0 > type_code) type_code *= -1;
 
@@ -350,6 +340,17 @@ namespace tip {
           break;
         }
     }
+
+    // Make a lowercase copy of field name for comparison and lookup purposes:
+    std::string lc_name = col_name;
+    for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
+
+    // Save column number indexed on lowercased column name:
+    m_col_name_lookup[lc_name] = m_columns.size() - 1;
+
+    // Save lower cased name of field in sequential container of field names:
+    m_fields.push_back(lc_name);
+
   }
 
   void FitsExtensionManager::openImage() {
