@@ -177,6 +177,29 @@ namespace tip {
     getColumnInfo(field_name, col_num);
   }
 
+  void FitsExtensionManager::filterRows(const std::string & filter) {
+    // A blank filter is treated as a no-op.
+    if (std::string::npos == filter.find_first_not_of(" \t\n")) return;
+
+    int status = 0;
+    fits_select_rows(m_fp, m_fp, const_cast<char *>(filter.c_str()), &status);
+    if (0 != status) throw TipException(formatWhat("filterRows had an error applying the filtering expression " + filter));
+
+    // Read the number of rows present in the table.
+    long nrows = 0;
+    fits_get_num_rows(m_fp, &nrows, &status);
+
+    // Check for success and if not, do not continue.
+    if (0 != status) {
+      close(status);
+      throw TipException(formatWhat("Cannot get number of rows"));
+    }
+
+    // Save the number of rows.
+    m_num_records = (Index_t) nrows;
+
+  }
+
   const std::vector<PixOrd_t> & FitsExtensionManager::getImageDimensions() const {
     if (m_is_table) throw TipException(formatWhat("getImageDimensions called but object is not an image"));
     return m_image_dimensions;
