@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "FitsFileManager.h"
+#include "FitsTipFile.h"
 #include "RootTable.h"
 #include "TestFileManager.h"
 #include "tip/Extension.h"
@@ -47,6 +48,9 @@ namespace tip {
 
     // Test table creation.
     appendTableTest();
+
+    // Test file access.
+    tipFileTest();
 
     return getStatus();
   }
@@ -360,6 +364,33 @@ namespace tip {
 
     } catch (const TipException & x) {
       ReportUnexpected("TestFileManager::appendTableTest caught unexpected exception", x);
+    }
+  }
+
+  void TestFileManager::tipFileTest() {
+    try {
+      // Find test data directory:
+      std::string data_dir = getDataDir();
+
+      // Create a Fits-specific ITipFile.
+      FitsTipFile fits_file("tipfile.fits", data_dir + "ft1.tpl", true);
+
+      // Create a generic TipFile which forwards to a clone of this Fits-specific ITipFile.
+      TipFile tip_file(fits_file.clone());
+
+      // Test copy-construction.
+      TipFile tip_file_copy(tip_file);
+
+      // Create another TipFile which points to a TipFile to make sure there is no infinite loop.
+      TipFile tip_file_ptr_adopt(tip_file.clone());
+
+      // Clone the TipFile which points to another TipFile.
+      std::auto_ptr<ITipFile> itip_file_p(tip_file_ptr_adopt.clone());
+
+      ReportExpected("TestFileManager::tipFileTest was able to construct and clone ITipFiles as expected");
+      
+    } catch (const TipException & x) {
+      ReportUnexpected("TestFileManager::tipFileTest caught unexpected exception", x);
     }
   }
 

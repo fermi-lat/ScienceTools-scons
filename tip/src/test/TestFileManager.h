@@ -41,6 +41,9 @@ namespace tip {
 
       /// \brief Test appendImage method.
       void appendTableTest();
+
+      /// \brief Test ITipFile and subclasses.
+      void tipFileTest();
   };
 
 }
