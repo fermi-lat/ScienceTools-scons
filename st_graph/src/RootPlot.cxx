@@ -18,7 +18,7 @@
 namespace st_graph {
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-    const ValueSet & y, const ValueSet & z): m_parent(parent), m_graph(0) {
+    const ValueSet & y, const ValueSet & z): m_parent(parent), m_multi_graph(0), m_graph(0) {
 // TODO 1. Make m_parent a RootPlotFrame, do the cast one time here.
 // TODO 2. Alter RootPlotFrame::addFrame so it calls back to this class. That allows this class to call
 //         TMultiGraph::Add(graph, opt) with display options when addFrame is called.
@@ -37,41 +37,32 @@ namespace st_graph {
     RootPlotFrame * frame = dynamic_cast<RootPlotFrame *>(m_parent);
     if (0 == frame) throw std::logic_error("RootPlot: parent must be a RootPlotFrame");
 
-    TMultiGraph * multi_graph = frame->getMultiGraph();
+    m_multi_graph = frame->getMultiGraph();
 
+//if (0 == m_multi_graph) return;
     if (z.empty()) {
-      if (0 == lc_style.find("hist")) {
+      if (std::string::npos != lc_style.find("hist")) {
         m_graph = createHistPlot(title, x, y, z);
-        multi_graph->Add(m_graph, "L");
-      } else if (0 == lc_style.find("scat")) {
+        m_multi_graph->Add(m_graph, "L");
+      } else if (std::string::npos != lc_style.find("scat")) {
         m_graph = createScatterPlot(title, x, y, z);
-        multi_graph->Add(m_graph, "");
+        m_multi_graph->Add(m_graph, "");
       } else {
         throw std::logic_error("RootPlot: unknown plot style \"" + style + "\"");
       }
     } else {
       throw std::logic_error("RootPlot: plots with more than 2 dimensions not yet supported");
     }
-    m_parent->addFrame(this);
   }
 
   RootPlot::~RootPlot() {
-    m_parent->removeFrame(this);
+//if (0 != m_multi_graph) m_multi_graph->RecursiveRemove(m_graph);
     delete m_graph;
   }
 
   void RootPlot::display() {}
 
-  void RootPlot::unDisplay() { m_parent->removeFrame(this); }
-
-  void RootPlot::addFrame(IFrame *) { throw std::logic_error("RootPlot::addFrame cannot add frames to a plot"); }
-  void RootPlot::removeFrame(IFrame *) { throw std::logic_error("RootPlot::removeFrame cannot remove frames from a plot"); }
-
-  long RootPlot::getL() const { return 0; }
-  void RootPlot::setL(long) {}
-
-  long RootPlot::getR() const { return 0; }
-  void RootPlot::setR(long) {}
+  void RootPlot::unDisplay() {}
 
   TGraph * RootPlot::createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z) {
     TGraph * retval = 0;

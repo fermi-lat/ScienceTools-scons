@@ -7,17 +7,20 @@
 
 #include <string>
 
-#include "st_graph/IFrame.h"
+#include "st_graph/IPlot.h"
 #include "st_graph/ValueSet.h"
 
 class TGraph;
+class TMultiGraph;
 
 namespace st_graph {
+
+  class IFrame;
 
   /** \class RootPlot
       \brief A Root implementation of the IFrame interface. This specific class displays a plot in its frame.
   */
-  class RootPlot : public IFrame {
+  class RootPlot : public IPlot {
     public:
       /** \brief Construct a RootPlot object.
           \param parent The parent frame.
@@ -37,33 +40,6 @@ namespace st_graph {
 
       /// \brief Hide this plot.
       virtual void unDisplay();
-
-      /** \brief Add the given (sub) frame to this container frame.
-          \param frame The frame being added.
-      */
-      virtual void addFrame(IFrame * frame);
-
-      /** \brief Remove the given (sub) frame to this container frame. If the frame is not currently in the container,
-                 no harm done.
-          \param frame The frame being removed.
-      */
-      virtual void removeFrame(IFrame * frame);
-
-      /// \brief Get the X position of the left edge of the frame.
-      virtual long getL() const;
-
-      /** \brief Set the X position of the left edge of the frame.
-          \param l The new position of the left edge.
-      */
-      virtual void setL(long l);
-
-      /// \brief Get the X position of the right edge of the frame.
-      virtual long getR() const;
-
-      /** \brief Set the X position of the left edge of the frame.
-          \param l The new position of the left edge.
-      */
-      virtual void setR(long r);
 
       /** \brief Create histogram plot as a Root object. Not part of API.
           \param title The plot title.
@@ -87,6 +63,7 @@ namespace st_graph {
 
     private:
       IFrame * m_parent;
+      TMultiGraph * m_multi_graph;
       TGraph * m_graph;
   };
 }
