@@ -9,6 +9,8 @@
 #include <cmath>
 #include <vector>
 
+namespace pulsePhase {
+
 class TimingModel {
   public:
     struct Coeff {
@@ -76,6 +78,15 @@ class TimingModel {
       return phase;
     }
 
+    /** \brief Compute event time with correction to effect pdot cancellation.
+        \param ev_time Time of the event.
+    */
+    double calcPdotCorr(double ev_time) {
+      double dt = ev_time - m_epoch;
+      double dt_squared = dt * dt;
+      return ev_time + m_f1/m_f0/2.0 * dt_squared + m_f2/m_f0/6.0 * dt * dt_squared;
+    }
+
     double getF0() const { return m_f0; }
     double getF1() const { return m_f1; }
     double getF2() const { return m_f2; }
@@ -87,5 +98,7 @@ class TimingModel {
     double m_f1;
     double m_f2;
 };
+
+}
 
 #endif

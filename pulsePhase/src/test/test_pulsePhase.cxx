@@ -3,10 +3,12 @@
 #include <iostream>
 #include <limits>
 
-#include "TimingModel.h"
+#include "pulsePhase/TimingModel.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
+using namespace pulsePhase;
 
 int main() {
   int status = 0;
@@ -71,5 +73,17 @@ int main() {
 
   delete events;
 
+  // Test calcPdotCorr method.
+  // Change coefficients to produce a visible effect.
+  TimingModel model4(123.4567891234567, .11, 1.125e-2, -2.25e-4, 13.5e-6);
+  double evt_time = 223.4567891234567;
+  double pdot_t = model4.calcPdotCorr(evt_time);
+  double correct_t = 323.4567891234567;
+  // For this test, time difference between these two values must be << 1.e-6.
+  if (fabs(pdot_t - correct_t) > epsilon) {
+    status = 1;
+    std::cerr << "ERROR: calcPdotCorr produced pdot-corrected time == " << pdot_t << " not " << correct_t << std::endl;
+  }
+  
   return status;
 }

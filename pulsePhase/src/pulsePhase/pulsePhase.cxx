@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "TimingModel.h"
+#include "pulsePhase/TimingModel.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
@@ -11,6 +11,8 @@
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
+
+using namespace pulsePhase;
 
 class PulsePhaseApp : public st_app::StApp {
   public:
