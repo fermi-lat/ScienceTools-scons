@@ -122,7 +122,12 @@ namespace st_graph {
     return l;
   }
 
-  void RootFrame::setL(long l) { if (0 != m_frame) m_frame->Move(l, l + m_frame->GetWidth()); }
+  void RootFrame::setL(long l) {
+    if (0 != m_frame) {
+      l = l > 0 ? l : 0;
+      m_frame->Move(l, m_frame->GetY());
+    }
+  }
 
   long RootFrame::getR() const {
     long r = 0;
@@ -132,10 +137,15 @@ namespace st_graph {
 
   void RootFrame::setR(long r) {
     if (0 != m_frame) {
-      r -= m_frame->GetX();
-      if (r >= 0) m_frame->SetWidth(r);
+      r -= m_frame->GetWidth();
+      r = r > 0 ? r : 0;
+      m_frame->Move(r, m_frame->GetY());
     }
   }
+
+  long RootFrame::getWidth() const { return m_frame->GetWidth(); }
+
+  long RootFrame::getHeight() const { return m_frame->GetHeight(); }
 
   void RootFrame::clicked() {
     m_receiver->clicked(this);
