@@ -1,6 +1,6 @@
 package astro
 
-version v0r10p3
+version v0r10p4
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -10,22 +10,8 @@ use GlastPolicy v5*
 use facilities   v2r*
 use CLHEP v2* IExternal
 
-apply_pattern package_include
-apply_pattern package_linkopts
-
-private
-
-#the following prepend makes the includes and src folders available locally
-macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
-apply_pattern package_headers
-
-
-library astro -no_share  *.cxx  \
- ${astro_headers}
+apply_pattern GLAST_static_library_package
 
 
 # this is the test program from G. Tosti
-#application orbit test/Orbit.cxx 
-
-# simple program to test basic functionality
-application test_astro test/test.cxx
+application orbit test/orbit/*.cxx 

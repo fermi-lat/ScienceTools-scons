@@ -10,7 +10,7 @@
 
 using namespace astro;
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 bool  SkyDir::s_project_lb=false;  // If true, project uses l, b coords instead of RA, DEC
 float SkyDir::s_refRA=0;  // Projection Center RA (radians)

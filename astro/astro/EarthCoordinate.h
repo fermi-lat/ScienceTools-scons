@@ -1,4 +1,6 @@
-// 
+/** @file EarthCoordinate.h
+
+*/
 #ifndef astro_EarthCoordinate_H
 #define astro_EarthCoordinate_H
 
@@ -57,6 +59,8 @@ private:
     static double  GetGMST(JulianDate J_D);
     static double s_EarthRadius;
 };
+
+
 
 inline double EarthCoordinate::latitude()const{ return m_lat*180/M_PI;}
 inline double EarthCoordinate::longitude()const{ return m_lon*180/M_PI;}
