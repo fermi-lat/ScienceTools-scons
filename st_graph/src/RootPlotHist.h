@@ -66,6 +66,9 @@ namespace st_graph {
       */
       virtual void set(int x_index, int y_index, double value);
 
+      /// \brief Return the number of dimensions in this plot.
+      virtual int dimensionality() const;
+
     private:
       void init();
       double * createIntervals(const PlotHist::IntervalCont_t & intervals) const;

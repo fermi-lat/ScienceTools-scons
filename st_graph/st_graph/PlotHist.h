@@ -53,6 +53,9 @@ namespace st_graph {
       */
       virtual void set(int x_index, int y_index, double value) = 0;
 
+      /// \brief Return the number of dimensions in this plot.
+      virtual int dimensionality() const = 0;
+
     protected:
       std::string m_title;
       unsigned int m_width;

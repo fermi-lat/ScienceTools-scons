@@ -130,4 +130,9 @@ namespace st_graph {
     m_engine->addFrame(this);
   }
 
+  int RootPlotHist::dimensionality() const {
+    if (m_hist2) return 2;
+    return 1;
+  }
+
 }
