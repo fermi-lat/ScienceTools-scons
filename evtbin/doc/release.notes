@@ -1,8 +1,13 @@
 /** \file release.notes
     \brief Description of binner
-    \author Yasushi Ikebe, James Peachey
+    \author Yasushi Ikebe, GSSC,
+            James Peachey, HEASARC/GSSC
 
 \verbatim
+--------------------------------------------------------------------------------
+16-aug-2004    v0r5p0 JP  Add support for reading, modifying and writing GTIs,
+                          plus calculation of EXPOSURE and ONTIME keywords.
+--------------------------------------------------------------------------------
 \endverbatim
 
 */
