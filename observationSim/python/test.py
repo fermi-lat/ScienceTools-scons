@@ -33,7 +33,7 @@ def run_test(argv):
                                           observationSimRoot
                                           + "/xml/3EG_catalog_32MeV.xml",
                                           observationSimRoot
-                                          + "/xml/test_sources.xml"])
+                                          + "/xml/test_sources_v2.xml"])
 
     if (len(argv) == 2 and argv[1] == "-h"):
         print "usage: test.py rootname counts [source_names]"
@@ -58,29 +58,16 @@ def run_test(argv):
             else:
                 source_names.append(name)
     if len(source_names) == 0:
-        source_names.append("all_3EG_sources")
+#        source_names.append("all_3EG_sources")
+        source_names.append("anticenter")
 
     my_simulator = observationSim.Simulator(source_names, xml_files)
 
-    aeffFront = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 2)
-    psfFront = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 2)
-    edispFront = latResponse.EdispGlast25()
-    respFront = latResponse.Irfs(aeffFront, psfFront, edispFront, 2)
-
-    aeffBack = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 3)
-    psfBack = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 3)
-    edispBack = latResponse.EdispGlast25()
-    respBack = latResponse.Irfs(aeffBack, psfBack, edispBack, 3)
-
-    aeffCombined = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 4)
-    psfCombined = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 4)
-    edispCombined = latResponse.EdispGlast25()
-    respCombined = latResponse.Irfs(aeffCombined, psfCombined, edispCombined,4)
-
-    respVector = latResponse.IrfVector((respCombined, ))
-#    respVector = latResponse.IrfVector((respFront, ))
-#    respVector = latResponse.IrfVector((respBack, ))
-#    respVector = latResponse.IrfVector((respFront, respBack))
+    irfsFactory = latResponse.IrfsFactory()
+    respVector = latResponse.IrfVector()
+#    respVector.append(irfsFactory.create("Glast25::Combined"))
+    respVector.append(irfsFactory.create("Glast25::Front"))
+    respVector.append(irfsFactory.create("Glast25::Back"))
 
     useGoodi = 0
     events = observationSim.EventContainer(root + "_events", useGoodi)

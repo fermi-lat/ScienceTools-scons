@@ -1,5 +1,5 @@
 package observationSim
-version v2r0p1
+version v2r1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -8,7 +8,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 branches observationSim cmt src doc
 
 use flux v8*
-use MapFlux v0*
+#use MapFlux v0*
 use astro v0*
 use latResponse v1*
 use xml
@@ -32,8 +32,8 @@ macro_prepend cflags "" Linux "-g "
 # suppress warning messages (from flux package) on linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
-macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
- WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
+#macro_append test_observationSimlinkopts "" Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
+# WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
 
 apply_pattern package_linkopts
 
@@ -65,7 +65,7 @@ set INFILES "$(GOODIROOT)/Data"
 
 # test applications
 application test_observationSim test/main.cxx
-application testGoodiRead test/testGoodiRead.cxx
+#application testGoodiRead test/testGoodiRead.cxx
 
 # exposure map calculator
 #application exposureMap test/exposureMap.cxx

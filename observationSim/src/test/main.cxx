@@ -11,11 +11,8 @@
 
 #include "astro/SkyDir.h"
 
-#include "latResponse/../src/Glast25.h"
-#include "latResponse/../src/AeffGlast25.h"
-#include "latResponse/../src/PsfGlast25.h"
-#include "latResponse/../src/EdispGlast25.h"
 #include "latResponse/Irfs.h"
+#include "latResponse/IrfsFactory.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -91,52 +88,20 @@ int main(int argn, char * argc[]) {
       caldbPath = std::string(root) + "/data/CALDB";
    }
 
-// Use multiple IRFs.
+// Allow for multiple IRFs.
    std::vector<latResponse::Irfs *> respPtrs;
-
-// Create pointers to the GLAST25 response function objects.  Note
-// that there is no GLAST25 energy dispersion file.
-//
+   latResponse::IrfsFactory irfsFactory;
    if (useCombined) {
-
-      latResponse::IAeff *aeff_c
-         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                        latResponse::Glast25::Combined);
-      latResponse::IPsf *psf_c
-         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
-                                       latResponse::Glast25::Combined);
-      latResponse::IEdisp *edisp_c = new latResponse::EdispGlast25();
-      latResponse::Irfs resp_c(aeff_c, psf_c, edisp_c);
-      respPtrs.push_back(&resp_c);
-   } else {
-// Front
-      latResponse::IAeff *aeff_f
-         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                        latResponse::Glast25::Front);
-      latResponse::IPsf *psf_f
-         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
-                                       latResponse::Glast25::Front);
-      latResponse::IEdisp *edisp_f = new latResponse::EdispGlast25();
-      latResponse::Irfs resp_f(aeff_f, psf_f, edisp_f);
-      respPtrs.push_back(&resp_f);
-
-// Back
-      latResponse::IAeff *aeff_b
-         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                        latResponse::Glast25::Back);
-      latResponse::IPsf *psf_b
-         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
-                                       latResponse::Glast25::Back);
-      latResponse::IEdisp *edisp_b = new latResponse::EdispGlast25();
-      latResponse::Irfs resp_b(aeff_b, psf_b, edisp_b);
-      respPtrs.push_back(&resp_b);
+      respPtrs.push_back(irfsFactory.create("Glast25::Combined"));
+   } else { // use Front & Back
+      respPtrs.push_back(irfsFactory.create("Glast25::Front"));
+      respPtrs.push_back(irfsFactory.create("Glast25::Back"));
    }
 
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events", true);
-// // For SC data, don't use Goodi until FT2 output is ready
-   observationSim::ScDataContainer scData("test_scData", false);
-//   observationSim::ScDataContainer scData("test_scData", true);
+   bool useGoodi = false;
+   observationSim::EventContainer events("test_events", useGoodi);
+   observationSim::ScDataContainer scData("test_scData", useGoodi);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
