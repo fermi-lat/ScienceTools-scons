@@ -78,8 +78,9 @@ int main(int iargc, char * argv[]) {
 
 // Generate the events and spacecraft data.
    bool useGoodi = false;
-   observationSim::EventContainer events("test_events", useGoodi);
-   observationSim::ScDataContainer scData("test_scData", useGoodi);
+   std::string prefix = params.string_par("Output_file_prefix");
+   observationSim::EventContainer events(prefix + "_events", useGoodi);
+   observationSim::ScDataContainer scData(prefix + "_scData", useGoodi);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
@@ -87,11 +88,11 @@ int main(int iargc, char * argv[]) {
 // Use simulation time rather than total counts if desired.
    if (useSimTime) {
       std::cout << "Generating events for a simulation time of "
-                << count << " seconds....";
+                << count << " seconds...." << std::endl;
       my_simulator.generateEvents(static_cast<double>(count), events, 
                                   scData, respPtrs, spacecraft);
    } else {
-      std::cout << "Generating " << count << " events....";
+      std::cout << "Generating " << count << " events...." << std::endl;
       my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
