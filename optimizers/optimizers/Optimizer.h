@@ -33,7 +33,7 @@ public:
    Optimizer() {}
    virtual ~Optimizer() {}
 
-   virtual void find_min(int verbose, double tol, int tolType) = 0;
+   virtual void find_min(int verbose, double tol, int tolType = 0) = 0;
     
 };
 

@@ -24,6 +24,7 @@
 #include "PowerLaw.h"
 #include "Gaussian.h"
 #include "Rosen.h"
+#include "RosenND.h"
 #include "AbsEdge.h"
 
 using namespace optimizers;   // for testing purposes only
@@ -40,12 +41,12 @@ std::string test_path;
 
 int main() {
    test_FunctionFactory();
-//    test_Parameter_class();
-//    test_Function_class();
-//    test_PowerLaw_class();
-//    test_CompositeFunction();
-//    test_Optimizers();
-//    test_Mcmc();
+   test_Parameter_class();
+   test_Function_class();
+   test_PowerLaw_class();
+   test_CompositeFunction();
+   test_Optimizers();
+   test_Mcmc();
    return 0;
 }
 
@@ -271,19 +272,27 @@ void test_Optimizers() {
      std::cout << i << "  " << sig[i] << std::endl;
    }
 
-   std::cout << "\nTest DRMNGB method:\n" << std::endl;
-   params[0].setValue(2.);
-   params[0].setBounds(-10., 10.);
-   params[1].setValue(2.);
-   params[1].setBounds(-4., 10.);
-   my_rosen.setParams(params);
-   Drmngb my_Drmngb(my_rosen);
-   my_Drmngb.find_min(verbose, .0001);
+   std::cout 
+      << "\nTest DRMNGB method using 5 dimensional Rosenbrock function\n" 
+      << std::endl;
+   RosenND rosenND(5);
+   rosenND.getParams(params);
+   for (unsigned int i = 0; i < params.size(); i++) {
+      params[i].setValue(2.);
+      params[i].setBounds(-10., 10.);
+   }
+   rosenND.setParams(params);
+   Drmngb my_Drmngb(rosenND);
+   try {
+      my_Drmngb.find_min(verbose, .0001);
+   } catch (Exception &eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
    std::cout << "Drmngb exit code: " << my_Drmngb.getRetCode() << std::endl;
    sig = my_Drmngb.getUncertainty();
    std::cout << "Uncertainties:" << std::endl;
    for (unsigned int i=0; i < sig.size(); i++) {
-     std::cout << i << "  " << sig[i] << std::endl;
+      std::cout << i << "  " << sig[i] << std::endl;
    }
 
 #ifdef HAVE_OPT_PP
@@ -295,7 +304,7 @@ void test_Optimizers() {
    my_OptppObj.find_min(verbose);
 #endif  //HAVE_OPT_PP
    
-   my_rosen.getParams(params);
+   rosenND.getParams(params);
    for (unsigned int i = 0; i < params.size(); i++) 
       std::cout << params[i].getName() << ": "
                 << params[i].getValue() << std::endl;
