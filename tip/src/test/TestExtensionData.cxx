@@ -15,7 +15,7 @@
 
 #define MAKE_COMPILATION_FAIL (0)
 
-static void ReportError(const std::string & context, int & status, const tip::TipException & x = tip::TipException("")) {
+void ReportError(const std::string & context, int & status, const tip::TipException & x = tip::TipException("")) {
   if (0 == status) status = 1;
   std::cerr << "Unexpected error: " << context;
   const char * what = x.what();
@@ -23,13 +23,98 @@ static void ReportError(const std::string & context, int & status, const tip::Ti
   std::cerr << "\n" << std::endl;
 }
 
-static void ReportBehavior(const std::string & context, const int &, const tip::TipException & x = tip::TipException("")) {
+void ReportBehavior(const std::string & context, const int &, const tip::TipException & x = tip::TipException("")) {
 #if 1
   std::cerr << "Expected behavior: " << context;
   const char * what = x.what();
   if (0 != what && '\0' != *what) std::cerr << "\n\twhat() == " << what;
   std::cerr << "\n" << std::endl;
 #endif
+}
+
+// Perform operations on a valid const extension object which are expected to fail
+// regardless of the type (table or image).
+void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string & ext_type, int & status) {
+  using namespace tip;
+  std::string msg;
+  double tmp_d[1];
+
+  try {
+    // Get an unnamed keyword.
+    const_ext->getKeyword("", *tmp_d);
+    msg = "success reading unnamed keyword from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading unnamed keyword from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get a non-existent keyword.
+    const_ext->getKeyword("fake_kwd", *tmp_d);
+    msg = "success reading non-existent keyword from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading non-existent keyword from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get index of a field from the image:
+    // This is only valid for tables.
+    const_ext->getFieldIndex("fake_fld");
+    msg = "success calling getFieldIndex(\"fake_fld\") from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure calling getFieldIndex(\"fake_fld\") from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get number of elements in a field from the image:
+    // This is only valid for tables.
+    const_ext->getFieldNumElements(100);
+    msg = "success calling getFieldnumElements(100) from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure calling getFieldnumElements(100) from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+  try {
+    // Get a table cell from an image.
+    // This is only valid for tables.
+    const_ext->getCell(100, 0, 0, 1, tmp_d);
+    msg = "success reading a table cell from a const";
+    ReportError(msg + " " + ext_type + " object", status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    msg = "failure reading a table cell from a const";
+    ReportBehavior(msg + " " + ext_type + " object", status, x);
+  }
+
+#if MAKE_COMPILATION_FAIL
+  ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(100) for const image object", status);
+  try {
+    // Get number of records from the image:
+    // This is only valid for tables.
+    const_ext->setNumRecords(100);
+  } catch(const TipException & x) {
+  }
+
+  ReportError("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object", status);
+  try {
+    // Set a table cell in an image.
+    // This is only valid for tables.
+    const_ext->setCell(100, 0, 0, tmp_d, tmp_d + 1);
+  } catch(const TipException & x) {
+  }
+#endif
+
 }
 
 int TestExtensionData(const std::string & data_dir, int currentStatus) {
@@ -121,97 +206,29 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   // BEGIN Test error cases for const FitsExtensionData methods for an image extension.
   // Skip these tests if image object was not successfully opened above:
-  if (0 != image) {
+  if (0 == image) {
+    ReportError("image pointer is null; skipping some tests", status);
+  } else {
     // Note that image points to the primary HDU, which is an image.
     // Use a constant pointer from here on down:
     const IExtensionData * const_image = image;
 
-    try {
-      // Get a blank keyword.
-      double tmp_d;
-      const_image->getKeyword("", tmp_d);
-      ReportError("success reading unnamed keyword from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure reading unnamed keyword from a const image object", status, x);
-    }
+    // Test operations which should fail for any/all extensions regardless of whether they are tables or images:
+    // The following call generates some errors containing the string "from a const image object"
+    TestCommonErrors(const_image, "image", status);
 
-    try {
-      // Get a non-existent keyword.
-      double tmp_d;
-      const_image->getKeyword("FAKE_KEY", tmp_d);
-      ReportError("success reading non-existent keyword from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure reading non-existent keyword from a const image object", status, x);
-    }
-
-    // Note that const_image points to the primary HDU, which is an image.
-    // The following block of tests try calling table-related methods, which should throw exceptions.
     try {
       // Get number of records from the image:
-      // This is only valid for tables.
+      // This operation is only valid for tables, so it should fail:
       Index_t tmp_num_rec = const_image->getNumRecords();
       std::ostringstream tmp_msg;
-      tmp_msg << "success calling getNumRecords() from an image";
+      tmp_msg << "success calling getNumRecords() from a const image object";
       tmp_msg << ", number of records is " << tmp_num_rec;
       ReportError(tmp_msg.str(), status);
     } catch(const TipException & x) {
       // This exception should have been thrown.
-      ReportBehavior("failure calling getNumRecords() from an image", status, x);
+      ReportBehavior("failure calling getNumRecords() from a const image object", status, x);
     }
-
-#if MAKE_COMPILATION_FAIL
-    ReportError("SHOULD NOT HAVE COMPILED! Calling setNumRecords(100) for const image object", status);
-    try {
-      // Get number of records from the image:
-      // This is only valid for tables.
-      const_image->setNumRecords(100);
-    } catch(const TipException & x) {
-    }
-#endif
-
-    try {
-      // Get index of a field from the image:
-      // This is only valid for tables.
-      const_image->getFieldIndex("fake_fld");
-      ReportError("success calling getFieldIndex(\"fake_fld\") from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure calling getFieldIndex(\"fake_fld\") from a const image object", status, x);
-    }
-
-    try {
-      // Get number of elements in a field from the image:
-      // This is only valid for tables.
-      const_image->getFieldNumElements(1);
-      ReportError("success calling getFieldnumElements(1) from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure calling getFieldnumElements(1) from a const image object", status, x);
-    }
-
-    try {
-      // Get a table cell from an image.
-      // This is only valid for tables.
-      double tmp_d[1];
-      const_image->getCell(1, 0, 0, 1, tmp_d);
-      ReportError("success reading a table cell from a const image object", status);
-    } catch(const TipException & x) {
-      // This exception should have been thrown.
-      ReportBehavior("failure reading a table cell from a const image object", status, x);
-    }
-
-#if MAKE_COMPILATION_FAIL
-    ReportError("SHOULD NOT HAVE COMPILED! Calling setCell(...) for const image object", status);
-    try {
-      // Set a table cell in an image.
-      // This is only valid for tables.
-      double tmp_d[1];
-      const_image->setCell(1, 0, 0, tmp_d, tmp_d + 1);
-    } catch(const TipException & x) {
-    }
-#endif
 
   }
   // END Test error cases for const FitsExtensionData methods.
