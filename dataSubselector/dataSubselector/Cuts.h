@@ -10,6 +10,7 @@
 #ifndef dataSubselector_Cuts_h
 #define dataSubselector_Cuts_h
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -41,6 +42,8 @@ public:
 
    bool accept(tip::ConstTableRecord & row) const;
 
+   bool accept(const std::map<std::string, double> & params) const;
+
    typedef enum {CLOSED=0, MINONLY=1, MAXONLY=2} RangeType;
 
    unsigned int addRangeCut(const std::string & keyword, 
@@ -63,6 +66,8 @@ private:
       CutBase() {}
       virtual ~CutBase() {}
       virtual bool accept(tip::ConstTableRecord & row) const = 0;
+      virtual bool accept(const std::map<std::string, double> & params) 
+         const=0;
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const = 0;
    protected:
@@ -81,6 +86,7 @@ private:
          m_type(type) {}
       virtual ~RangeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
+      virtual bool accept(const std::map<std::string, double> & params) const;
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
    private:
@@ -89,6 +95,7 @@ private:
       double m_min;
       double m_max;
       RangeType m_type;
+      bool accept(double value) const;
    };
 
    class GtiCut : public CutBase {
@@ -96,10 +103,12 @@ private:
       GtiCut(const tip::Table & gtiTable) : m_table(gtiTable) {}
       virtual ~GtiCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
+      virtual bool accept(const std::map<std::string, double> & params) const;
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
    private:
       const tip::Table & m_table;
+      bool accept(double value) const;
    };
 
    class SkyConeCut : public CutBase {
@@ -110,11 +119,13 @@ private:
          m_coneCenter(dir), m_radius(radius) {}
       virtual ~SkyConeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
+      virtual bool accept(const std::map<std::string, double> & params) const;
       virtual void writeDssKeywords(tip::Header & header, 
                                     unsigned int keynum) const;
    private:
       astro::SkyDir m_coneCenter;
       double m_radius;
+      bool accept(double ra, double dec) const;
    };
 };
 } // namespace dataSubselector
