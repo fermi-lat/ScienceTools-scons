@@ -7,7 +7,7 @@ author Pat Nolan <pln@razzle.stanford.edu>
 # $Id$
 
 use STpolicy *
-use xml v4r*
+use xml v5r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
