@@ -157,7 +157,7 @@ std::vector<std::pair<double,double> > FILESpectrum::readFile(std::ifstream& inp
     {
       std::string line(buffer);
       std::vector<std::string> entries;
-      if(line.find('\%')!= std::string::npos)
+      if(line.find('%')!= std::string::npos)
       	{
 	  //This is taken to be a comment line
 	  continue;

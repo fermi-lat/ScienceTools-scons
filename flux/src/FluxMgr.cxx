@@ -105,6 +105,7 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( GalPulsars);
     DECLARE_SPECTRUM( VdgGamma);
+    DECLARE_SPECTRUM( Earth);
 
     // these are deprecated, will be replaced by Hiroshima group
     DECLARE_SPECTRUM( AlbedoPSpectrum);
