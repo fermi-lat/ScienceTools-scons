@@ -26,6 +26,10 @@ namespace st_app {
       */
       AppParGroup(const AppParGroup & group);
 
+      /** \brief Virtual destructor.
+      */
+      virtual ~AppParGroup() throw() {}
+
       /** \brief Assignments.
           \param group The right hand side of the assignment.
       */
