@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "TBranch.h"
+#include "TError.h"
 #include "TFile.h"
 #include "TIterator.h"
 #include "TKey.h"
@@ -71,7 +72,17 @@ namespace tip {
     gSystem->Load("libTree.dll");
 #endif
 
+    // JP added: Prevent Root warning about file from being logged:
+    // Save current error chattiness level:
+    long root_err_level = gErrorIgnoreLevel;
+
+    // Set root to ignore a recoverable problem opening the file:
+    gErrorIgnoreLevel = 3000;
     m_fp = new TFile(m_file_name.c_str());
+
+    // Restore root chattiness level:
+    gErrorIgnoreLevel = root_err_level;
+
     if( !m_fp->IsOpen()){
         delete m_fp; m_fp = 0; // JP Added.
         throw TipException(std::string("Could not open ROOT file ")+m_file_name);
