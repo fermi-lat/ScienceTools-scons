@@ -29,6 +29,8 @@ namespace st_app {
 
       virtual void layout(IFrame *);
 
+      virtual void clicked(IFrame *);
+
       virtual void modified(IFrame *, const std::string & text);
 
       operator IFrame *();
@@ -59,7 +61,13 @@ namespace st_app {
 
     m_frame = engine.createComposite(parent, this);
     m_label = engine.createLabel(m_frame, this, m_par->Name());
-    m_value = engine.createTextEntry(m_frame, this, m_value_string);
+    if (std::string::npos != m_par->Type().find("b")) {
+      m_value = engine.createButton(m_frame, this, "check", "");
+      bool state = *m_par;
+      if (state) m_value->setState("down"); else m_value->setState("up");
+    } else {
+      m_value = engine.createTextEntry(m_frame, this, m_value_string);
+    }
 
     // Make certain widget will not shrink smaller than the label size.
     m_frame->setMinimumWidth(m_label->getWidth());
@@ -78,6 +86,16 @@ namespace st_app {
     LeftEdge(m_label).rightOf(LeftEdge(m_frame));
     LeftEdge(m_value).rightOf(RightEdge(m_label), 3);
     RightEdge(m_value).stretchTo(RightEdge(m_frame));
+  }
+
+  void ParWidget::clicked(IFrame *) {
+    if (std::string::npos != m_par->Type().find("b")) {
+      const std::string & state = m_value->getState();
+      if (state == "down") m_value_string = "true";
+      else if (state == "up") m_value_string = "false";
+    } else {
+      m_value_string = m_value->getState();
+    }
   }
 
   void ParWidget::modified(IFrame *, const std::string & text) {
@@ -145,6 +163,7 @@ namespace st_app {
     for (hoops::GenParItor itor = pars.begin(); itor != pars.end(); ++itor) {
       // Changing from GUI to command line mode is not permitted.
       if ((*itor)->Name() == "gui") continue;
+      else if (0 == (*itor)->Name().size()) continue;
 
       ParWidget * widget = new ParWidget(m_engine, m_group_frame, *itor);
       m_par_widget.push_back(widget);
@@ -243,7 +262,8 @@ namespace st_app {
 
   StAppGui::StAppGui(const std::string & app_name, StApp * app): m_app(app) {
     if (0 == m_app) throw std::logic_error("StAppGui constructor was passed a null application pointer");
-    m_app->setName(app_name);
+    setName(m_app->getName());
+    setVersion(m_app->getVersion());
   }
 
   StAppGui::~StAppGui() throw() { delete m_app; }
