@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r4p4 13-Dec-04   JC   use celestialSources/genericSources v1
     v5r4p3 08-Dec-04   JC   use dataSubselector v3
     v5r4p2 03-Dec-04   JC   fix GTI writing for test program
     v5r4p1 03-Dec-04   JC   ensure GTI is included in DSS list
