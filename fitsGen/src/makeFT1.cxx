@@ -298,16 +298,17 @@ int main(int iargc, char * argv[]) {
 
    std::vector<double> gltword        = meritTuple("GltWord");
    std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
-   std::vector<double> reconzdir      = meritTuple("ReconZDir");
+   std::vector<double> tkr1zdir      = meritTuple("Tkr1ZDir");
    std::vector<double> calenergysum   = meritTuple("CalEnergySum");
    std::vector<double> calmipdiff     = meritTuple("CalMIPDiff");
    std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
+   std::vector<double> caltotrln      = meritTuple("CalTotRLn");
    std::vector<double> callrmsratio   = meritTuple("CalLRmsRatio");
    std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
    std::vector<double> tkrnumtracks   = meritTuple("TkrNumTracks");
    std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
    std::vector<double> imgammaprob     = meritTuple("IMgammaProb");
-   std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
+   std::vector<double> impsfprederr   = meritTuple("IMpsfErrPred");
 
    std::vector<double> acdtotalenergy = meritTuple("AcdTotalEnergy");
    std::vector<double> acdribbonactdist = meritTuple("AcdRibbonActDist");
@@ -332,8 +333,8 @@ int main(int iargc, char * argv[]) {
      imgammaprob[i]=1.;
 
      bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
-     bool zdir_cut          = (reconzdir[i]<-0.2);      
-     bool no_cal_cut        = (calenergysum[i]<5.0)||(calcsirln[i]<2.0);
+     bool zdir_cut          = (tkr1zdir[i]<-0.2);      
+     bool no_cal_cut        = (calenergysum[i]<5.0)||(caltotrln[i]<2.0);
      bool thin_cut          = (tkr1firstlayer[i] != 0.0) && (tkr1firstlayer[i]<15.0);
 
      bool global_cut = good_energy_cut && zdir_cut && !(no_cal_cut);
