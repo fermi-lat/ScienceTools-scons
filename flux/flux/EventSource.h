@@ -97,7 +97,7 @@ public:
     virtual double energy()const { return 0;}
     virtual const HepVector3D& launchDir()const { static HepVector3D dummy; return dummy;}
     virtual const HepPoint3D&  launchPoint()const { static HepPoint3D dummy; return dummy;}
-
+    virtual const HepVector3D& skyDirection()const{ static HepVector3D dummy; return dummy;}
     
 private:
     double m_time;    // elapsed time, really only needed for EventSource

@@ -64,6 +64,8 @@ public:
     virtual double energy()const { return m_energy;}
     virtual const HepVector3D& launchDir()const {return m_correctedDir;}
     virtual const HepPoint3D&  launchPoint()const { return m_launchPoint;}
+    virtual const HepVector3D& skyDirection()const;
+
     virtual std::string particleName();
     /// this function decides if the current incoming photon would be occulted
     /// by the earth

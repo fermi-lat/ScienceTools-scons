@@ -264,6 +264,8 @@ public:
         return 1.0;
     }
 
+    virtual const HepVector3D& skyDirection()const { return m_dir; }
+
 private:
     HepRotation m_rottoglast;
     HepVector3D m_dir;
@@ -715,4 +717,8 @@ bool FluxSource::occulted(){
 
     return (m_occultable) && (m_zenithCosTheta < minCosTheta);
 
+}
+const HepVector3D& FluxSource::skyDirection()const
+{
+    return m_launch_dir->skyDirection();
 }

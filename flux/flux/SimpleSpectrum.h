@@ -34,6 +34,12 @@ public:
     virtual const char* particleName()const;
     virtual std::string title()const;
 
+    // convenient access methods
+    double ebase()const{return m_E0;}
+    double index()const{return m_index;}
+    double ebreak()const{return m_ebreak;}
+    double index2()const{return m_index2;}
+
 private:
     float parseParamList(std::string input, int index);
     float m_E0;		// energy base
