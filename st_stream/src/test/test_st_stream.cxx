@@ -22,6 +22,9 @@ StreamFormatter & formatter1() {
 }
 
 void sample1() {
+  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "The following is the output of sample1()" << std::endl;
+
   // Optional: set name of current function.
   formatter1().setMethod("sample1()");
 
@@ -32,6 +35,9 @@ void sample1() {
 }
 
 void sample2() {
+  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "The following is the output of sample2()" << std::endl;
+
   // A formatter specific to this function.
   StreamFormatter formatter2("", "sample2()", 4);
   formatter2.warn() << "Wrote to formatter2.warn(). This should not be displayed because formatter2's " <<
@@ -41,6 +47,9 @@ void sample2() {
 }
 
 void sample3() {
+  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "The following is the output of sample3()" << std::endl;
+
   // A formatter used throughout a class instance.
   class MyClass {
     public:
@@ -94,6 +103,75 @@ void sample3() {
   object.myWarn();
 }
 
+void sample4() {
+  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "The following is the output of sample4()" << std::endl;
+
+  using namespace std;
+
+  // First, a class is presented which does not use st_stream's stream formatting capabilities.
+  class A {
+    public:
+      A(): m_stat(5.) {}
+
+      void write() {
+        // Unsuppressible output.
+        cout << "test_st_stream: The statistic was " << m_stat << endl;
+
+        // Unsuppressible error.
+        cerr << "test_st_stream: ERROR: A::A(): The statistic was " << m_stat << endl;
+
+        // Suppressible information. Note that this test program's chatter level is hardwired to be 3.
+        if (GetMaximumChatter() >= 2)
+          clog << "test_st_stream: INFO: A::A(): The statistic was " << m_stat << endl;
+
+        // Suppressible warning.
+        if (GetMaximumChatter() >= 2)
+          clog << "test_st_stream: WARNING: A::A(): The statistic was " << m_stat << endl;
+      }
+
+    private:
+      double m_stat;
+  };
+
+  // Second, a class which produces equivalent output using st_stream's stream formatting capabilities:
+  class B {
+    public:
+      // Arguments to StreamFormatter's constructor are name of class, name of method, default chat level.
+      B(): m_os("B", "", 2), m_stat(5.) {}
+
+      void write() {
+        m_os.setMethod("B()");
+
+        // Unsuppressible output.
+        m_os.out() << "The statistic was " << m_stat << endl;
+
+        // Unsuppressible error.
+        m_os.err() << "The statistic was " << m_stat << endl;
+
+        // Suppressible information.
+        // Note that this will not display anything if the chatter level is too low (although for this test program the
+        // chatter level is fixed at 3). Note also that the name of class and method is only displayed because st_stream
+        // is in debug mode.
+        m_os.info() << "The statistic was " << m_stat << endl;
+
+        // Suppressible warning.
+        // Notes above the use of info() also apply to warn().
+        m_os.warn() << "The statistic was " << m_stat << endl;
+      }
+
+    private:
+      st_stream::StreamFormatter m_os;
+      double m_stat;
+  };
+
+  A a;
+  a.write();
+
+  B b;
+  b.write();
+}
+
 int main() {
   // Before initializing standard streams, write to stout. This should have no effect.
   stout << "This was written before initializing standard streams, so it should not appear anywhere!" << std::endl;
@@ -108,6 +186,9 @@ int main() {
   sample1();
   sample2();
   sample3();
+  sample4();
+
+  std::cout << "----------------------------------------" << std::endl;
 
   // Initialize standard streams again with max_chat == 0 -- should have no effect.
   InitStdStreams("wrong_executable", 0, false);
