@@ -1,22 +1,9 @@
-#include "GaudiKernel/DllMain.icpp"
+/*
 
-void GaudiDll::initialize(void* /* hinstDLL */ )    {
-}
+** @file GRB_dll.cxx
 
-void GaudiDll::finalize(void* /* hinstDLL */ )      {
-}
+  $Header$
+*/
 
-extern void GRB_load();
-
-#include "GaudiKernel/FactoryTable.h"
-
-extern "C" FactoryTable::EntryList* getFactoryEntries() {
-    static bool first = true;
-    if ( first ) {
-        GRB_load();
-        first = false;
-    }
-    return FactoryTable::instance()->getEntries();
-} 
-
-
+#include "GaudiKernel/LoadFactoryEntries.h"
+LOAD_FACTORY_ENTRIES(GRB)
