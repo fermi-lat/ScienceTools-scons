@@ -10,8 +10,8 @@
 
 #include "TestExtensionData.h"
 #include "TestFileManager.h"
+#include "TestImage.h"
 #include "TestTable.h"
-#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -391,6 +391,10 @@ int main() {
     // Test file management-related classes.
     TestFileManager file_manager_test;
     status = file_manager_test.test(status);
+
+    // Test image access.
+    TestImage image_test;
+    status = image_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;

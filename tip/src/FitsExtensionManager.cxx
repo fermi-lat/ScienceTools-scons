@@ -16,8 +16,8 @@ namespace tip {
 
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_num_records(0), m_fp(0),
-    m_is_table(false), m_read_only(read_only) { open(); }
+    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_image_dimensions(),
+    m_num_records(0), m_fp(0), m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { close(); }
@@ -77,6 +77,9 @@ namespace tip {
 
         // If this is a table, perform other table-specific initializations:
         openTable();
+      } else {
+        // Perform image-specific initializations:
+        openImage();
       }
     }
   }
@@ -84,6 +87,7 @@ namespace tip {
   // Close file.
   void FitsExtensionManager::close(int status) {
     if (0 != m_fp) fits_close_file(m_fp, &status);
+    m_image_dimensions.clear();
     m_fields.clear();
     m_col_num_lookup.clear();
     m_col_name_lookup.clear();
@@ -186,6 +190,35 @@ namespace tip {
     getColumnInfo(field_name, col_num);
   }
 
+  const std::vector<PixOrd_t> & FitsExtensionManager::getImageDimensions() const { return m_image_dimensions; }
+
+  void FitsExtensionManager::getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const {
+    if (m_is_table) throw TipException(formatWhat("getPixel called, but object is not an image"));
+    int status = 0;
+    long coord[2] = { y + 1, x + 1 }; // Reverse the order!
+    double array[2] = { 0., 0. };
+
+    // Read the given pixel:
+    fits_read_pix(m_fp, TDOUBLE, coord, 1, 0, array, 0, &status);
+    if (0 != status) throw TipException(formatWhat("getPixel could not read pixel as a double"));
+
+    // Copy the value just read:
+    pixel = *array;
+  }
+
+  void FitsExtensionManager::setPixel(PixOrd_t x, PixOrd_t y, const double & pixel) {
+    if (m_is_table) throw TipException(formatWhat("setPixel called, but object is not an image"));
+    if (m_read_only) throw TipException(formatWhat("setPixel called for read-only image"));
+    int status = 0;
+    long coord[2] = { y + 1, x + 1 };
+    // Copy pixel into temporary array:
+    double array[2] = { pixel, 0. };
+
+    // Write the copy to the output file:
+    fits_write_pix(m_fp, DOUBLE_IMG, coord, 1, array, &status);
+    if (0 != status) throw TipException(formatWhat("setPixel could not write a double to a pixel"));
+  }
+
   void FitsExtensionManager::openTable() {
     int status = 0;
     int column_status = 0;
@@ -261,6 +294,27 @@ namespace tip {
 
     // Save lower cased name of field in sequential container of field names:
     m_fields.push_back(lc_name);
+  }
+
+  void FitsExtensionManager::openImage() {
+    int naxis = 0;
+    int status = 0;
+
+    // Get number of axes:
+    fits_get_img_dim(m_fp, &naxis, &status);
+    if (0 != status) throw TipException(formatWhat("Cannot get number of dimensions of image"));
+
+    // Get naxes:
+    long * naxes = new long[naxis];
+    fits_get_img_size(m_fp, naxis, naxes, &status);
+    if (0 != status) {
+      delete [] naxes;
+      throw TipException(formatWhat("Cannot get dimensions of each degree of freedom of image"));
+    }
+
+    // If we got here, we obtained all information successfully, so store it in member:
+    for (int ii = naxis - 1; ii >= 0; --ii) m_image_dimensions.push_back(naxes[ii]);
+    delete [] naxes;
   }
 
   std::string FitsExtensionManager::formatWhat(const std::string & msg) const {

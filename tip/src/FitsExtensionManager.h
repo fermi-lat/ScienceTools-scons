@@ -136,6 +136,24 @@ namespace tip {
       */
       void appendField(const std::string & field_name, const std::string & format);
 
+      /** \brief Get the dimensionality of an image.
+      */
+      virtual const std::vector<PixOrd_t> & getImageDimensions() const;
+
+      /** \brief Get a specific pixel from an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const;
+
+      /** \brief Set a specific pixel in an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel);
+
     protected:
       /** \brief Open the FITS table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table. Normally this is called by open()
@@ -148,6 +166,11 @@ namespace tip {
       */
       void getColumnInfo(const std::string & col_name, Index_t col_num);
 
+      /** \brief Open a FITS image. Exceptions will be thrown if the extension does not exist, or if
+          the extension is not an image. Normally this is called by open()
+      */
+      void openImage();
+
     private:
       std::string formatWhat(const std::string & msg) const;
 
@@ -157,6 +180,7 @@ namespace tip {
       std::map<std::string, ColumnInfo> m_col_name_lookup;
       std::map<int, ColumnInfo> m_col_num_lookup;
       IExtensionData::FieldCont m_fields;
+      std::vector<PixOrd_t> m_image_dimensions;
       Index_t m_num_records;
       fitsfile * m_fp;
       bool m_is_table;

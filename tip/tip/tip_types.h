@@ -20,6 +20,10 @@ namespace tip {
   /** \brief Type used for table row numbers.
   */
   typedef signed long Index_t;
+
+  /** \brief Type used to identify pixel ordinates.
+  */
+  typedef signed long PixOrd_t;
 }
 
 #endif

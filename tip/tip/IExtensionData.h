@@ -157,6 +157,24 @@ namespace tip {
            See Cfitsio documentation for details.
       */
       virtual void appendField(const std::string & field_name, const std::string & format) = 0;
+
+      /** \brief Get the dimensionality of an image.
+      */
+      virtual const std::vector<PixOrd_t> & getImageDimensions() const = 0;
+
+      /** \brief Get a specific pixel from an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      virtual void getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const = 0;
+
+      /** \brief Set a specific pixel in an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      virtual void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel) = 0;
   };
 
 }

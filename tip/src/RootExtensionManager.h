@@ -158,6 +158,24 @@ namespace tip {
       */
       void appendField(const std::string & field_name, const std::string & format);
 
+      /** \brief Get the dimensionality of an image.
+      */
+      virtual const std::vector<PixOrd_t> & getImageDimensions() const;
+
+      /** \brief Get a specific pixel from an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const;
+
+      /** \brief Set a specific pixel in an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel);
+
     private:
       std::string formatWhat(const std::string & msg) const;
       std::string m_file_name;

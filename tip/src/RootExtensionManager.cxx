@@ -232,6 +232,18 @@ namespace tip {
     throw TipException("Adding fields to a Root table is not supported");
   }
 
+  const std::vector<PixOrd_t> & RootExtensionManager::getImageDimensions() const {
+    throw TipException("Images in Root files not supported");
+  }
+
+  void RootExtensionManager::getPixel(PixOrd_t, PixOrd_t, double &) const {
+    throw TipException("Images in Root files not supported");
+  }
+
+  void RootExtensionManager::setPixel(PixOrd_t, PixOrd_t, const double &) {
+    throw TipException("Images in Root files not supported");
+  }
+
   std::string RootExtensionManager::formatWhat(const std::string & msg) const {
     std::string retval = msg;
     if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;
