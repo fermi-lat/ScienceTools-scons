@@ -28,8 +28,7 @@ def externalLibrary(libname, version):
     
 libraries['cfitsio'] = externalLibrary('cfitsio', 'v2470')
 libraries['CLHEP'] = externalLibrary('CLHEP', '1.8.0.0')
-#libraries['xerces-c1_7_0'] = externalLibrary('xerces', '1.7.0')
-libraries['xerces-c1_7_0'] = externalLibrary('xerces', '1.7.0')
+libraries['xerces-c'] = externalLibrary('xerces', '2.6.0')
 
 libraries['opt-linux'] = (os.path.join(OptPP_dir, 'include'),
                           os.path.join(OptPP_dir, 'lib'))
