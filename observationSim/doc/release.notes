@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r0p1 18-Oct-03   JC   remove dependence on Likelihood package
     v2r0   17-Oct-03   JC   allow multiple irfs to be handled at once
     v1r1   13-Oct-03   JC   applied photon direction fix for changes 
                             in flux v8*
