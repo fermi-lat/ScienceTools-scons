@@ -74,7 +74,9 @@ namespace tip {
       */
       virtual void setNumRecords(Index_t num_records) = 0;
 
-      /** \brief Return a container of all field names valid for this table:
+      /** \brief Return a container of all field names valid for this table. Note that these names
+          will automatically be converted to lower case, and all lookup of field names is case
+          insensitive.
       */
       virtual const FieldCont & getValidFields() const = 0;
 
@@ -148,6 +150,13 @@ namespace tip {
         unsigned int * dest_begin, unsigned int * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end) = 0;
+
+      /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
+          \param field_name The name of the field to append.
+          \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
+           See Cfitsio documentation for details.
+      */
+      virtual void appendField(const std::string & field_name, const std::string & format) = 0;
   };
 
 }

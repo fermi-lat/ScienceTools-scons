@@ -151,6 +151,13 @@ namespace tip {
       template <typename T>
       void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
 
+      /** \brief Append a field to the table.
+          \param field_name The name of the field to append.
+          \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
+           See Cfitsio documentation for details.
+      */
+      void appendField(const std::string & field_name, const std::string & format);
+
     private:
       std::string formatWhat(const std::string & msg) const;
       std::string m_file_name;
@@ -168,14 +175,14 @@ namespace tip {
   template <typename T>
 //  inline void RootExtensionManager::getKeywordGeneric(const std::string & name, T & value) const {
   inline void RootExtensionManager::getKeywordGeneric(const std::string &, T &) const {
-    throw TipException("Keyword reading not yet implemented for Root files.");
+    throw TipException("Keyword reading not yet implemented for Root extensions.");
   }
 
   // Setting keywords.
   template <typename T>
 //  inline void RootExtensionManager::setKeywordGeneric(const std::string & name, const T & value) {
   inline void RootExtensionManager::setKeywordGeneric(const std::string &, const T &) {
-    throw TipException("Keyword writing not yet implemented for Root files.");
+    throw TipException("Keyword writing not yet implemented for Root extensions.");
   }
 
   // Getting columns.
@@ -184,12 +191,12 @@ namespace tip {
     T * dest_begin) const {
     if (0 > col_num || m_leaves.size() <= (unsigned int)(col_num)) {
       std::ostringstream os;
-      os << "Requested field index " << col_num << " not found in file.";
+      os << "Requested field index " << col_num << " not found";
       std::string msg = os.str();
       throw TipException(formatWhat(msg));
     }
     m_tree->GetEntry(record_index);
-    if (src_begin + 1 != src_end) throw TipException("Getting vectors from Root files not working yet.");
+    if (src_begin + 1 != src_end) throw TipException("Getting vectors from Root extensions not working yet.");
     m_leaves[col_num]->get(*dest_begin);
   }
 
@@ -199,7 +206,7 @@ namespace tip {
 //    T * dest_begin, T * dest_end) {
   inline void RootExtensionManager::setCellGeneric(int , Index_t , Index_t ,
     T *, T *) {
-    throw TipException("Write access not yet implemented for Root files.");
+    throw TipException("Write access not supported for Root extensions.");
   }
 
 }

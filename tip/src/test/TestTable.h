@@ -37,10 +37,10 @@ namespace tip {
       /// \brief Test Table's method for getting list of fields in table:
       void getValidFieldsTest();
 
-      /// \brief Test reading and writing of FITS and Root files.
+      /// \brief Test reading and writing of FITS and Root table.
       void readWriteFieldTest();
 
-      /// \brief Test reading and writing of an arbitrary file.
+      /// \brief Test reading and writing of an arbitrary table.
       void readWriteFieldTest(Table * table, const std::string & format, const std::string & field_name);
 
       /** \brief Test reading one field from a table.
@@ -60,6 +60,10 @@ namespace tip {
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();
+
+      /** \brief Test appending a field to an existing table.
+      */
+      void appendFieldTest();
 
     private:
       Table * m_fits_table;

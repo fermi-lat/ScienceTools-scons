@@ -129,11 +129,24 @@ namespace tip {
       template <typename T>
       void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
 
+      /** \brief Append a field to the table.
+          \param field_name The name of the field to append.
+          \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
+           See Cfitsio documentation for details.
+      */
+      void appendField(const std::string & field_name, const std::string & format);
+
     protected:
       /** \brief Open the FITS table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table. Normally this is called by open()
       */
       void openTable();
+
+      /** \brief Get all pertinent information about a column, and store it:
+          \param col_name The name of the column.
+          \param col_num The number of the column in the FITS file.
+      */
+      void getColumnInfo(const std::string & col_name, Index_t col_num);
 
     private:
       std::string formatWhat(const std::string & msg) const;
@@ -274,7 +287,7 @@ namespace tip {
   inline void FitsExtensionManager::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     Index_t src_end, std::string * dest) const {
     if (!m_is_table) throw TipException(formatWhat("getCellGeneric called, but object is not a table"));
-    throw TipException("String valued columns not yet implemented for FITS files.");
+    throw TipException("String valued columns not yet implemented for FITS table.");
   }
 
   // Setting columns.
@@ -332,7 +345,7 @@ namespace tip {
       s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
       throw TipException(formatWhat(s.str()));
     }
-    throw TipException("String valued columns not yet implemented for FITS files.");
+    throw TipException("String valued columns not yet implemented for FITS table.");
   }
 
 }

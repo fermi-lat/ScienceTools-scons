@@ -5,6 +5,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <algorithm>
 #include <cctype>
 #include <sstream>
 
@@ -116,13 +117,13 @@ namespace tip {
     if (!m_is_table) throw TipException(formatWhat("getFieldIndex called, but object is not a table"));
 
     // Copy field name and make it lowercase.
-    std::string tmp = field_name;
-    for (std::string::iterator itor = tmp.begin(); itor != tmp.end(); ++itor) *itor = tolower(*itor);
+    std::string lc_name = field_name;
+    for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
 
     // Find (lowercased) field_name in container of columns. Complain if not found.
-    std::map<std::string, ColumnInfo>::const_iterator itor = m_col_name_lookup.find(tmp);
+    std::map<std::string, ColumnInfo>::const_iterator itor = m_col_name_lookup.find(lc_name);
     if (itor == m_col_name_lookup.end())
-      throw TipException(formatWhat(std::string("Could not get field index for field ") + field_name));
+      throw TipException(formatWhat(std::string("Could not get field index for field ") + lc_name));
 
     // Get the number of the column.
     return itor->second.m_col_num;
@@ -156,6 +157,35 @@ namespace tip {
     return repeat;
   }
 
+  // Append field to a table extension.
+  void FitsExtensionManager::appendField(const std::string & field_name, const std::string & format) {
+    // Confirm this is a table:
+    if (!m_is_table) throw TipException(formatWhat("Cannot append field if object is not a table"));
+
+    // Make a lowercase copy of field name for comparison purposes:
+    std::string lc_name = field_name;
+    for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
+
+    // Do not append a new column with the same name as an existing column:
+    if (m_fields.end() != std::find(m_fields.begin(), m_fields.end(), lc_name))
+      throw TipException(formatWhat(std::string("Cannot add field ") + field_name + " because field " +
+        m_col_name_lookup[lc_name].m_name + " already exists"));
+
+    int status = 0;
+    int col_num = m_fields.size() + 1;
+
+    // Call cfitsio to insert the field (column). Note: respect original case of client:
+    fits_insert_col(m_fp, col_num, const_cast<char *>(field_name.c_str()), const_cast<char *>(format.c_str()), &status);
+    if (0 != status) {
+      std::ostringstream os;
+      os << "Could not insert field " << field_name << " with form " << format;
+      throw TipException(formatWhat(os.str()));
+    }
+
+    // Get all pertinent info about the new column:
+    getColumnInfo(field_name, col_num);
+  }
+
   void FitsExtensionManager::openTable() {
     int status = 0;
     int column_status = 0;
@@ -186,33 +216,51 @@ namespace tip {
       type_code = 0;
       repeat = 0;
       // Get each column's name.
-      fits_get_colname(m_fp, CASEINSEN, match_all, name, &col_num, &column_status);
+      fits_get_colname(m_fp, CASESEN, match_all, name, &col_num, &column_status);
       if (0 == column_status || COL_NOT_UNIQUE == column_status) {
-        // Also get its type and repeat count.
-        fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
-        if (0 != status) {
+        try {
+          // Get all other pertinent info about the column:
+          getColumnInfo(name, col_num);
+        } catch(...) {
           close(status);
-          std::ostringstream s;
-          s << "Could not get type information for column number " << col_num;
-          throw TipException(formatWhat(s.str()));
+          throw;
         }
-
-        // Save values iff successful getting all the information.
-        // Convert name to lover case.
-        for (char * itor = name; *itor; ++itor) *itor = tolower(*itor);
-        m_col_name_lookup[name].m_name = name;
-        m_col_name_lookup[name].m_col_num = col_num;
-        m_col_name_lookup[name].m_repeat = repeat;
-        m_col_name_lookup[name].m_type_code = type_code;
-        m_col_num_lookup[col_num].m_name = name;
-        m_col_num_lookup[col_num].m_col_num = col_num;
-        m_col_num_lookup[col_num].m_repeat = repeat;
-        m_col_num_lookup[col_num].m_type_code = type_code;
-
-        // Save name of field in sequential container of field names:
-        m_fields.push_back(name);
       }
     }
+  }
+
+  void FitsExtensionManager::getColumnInfo(const std::string & col_name, Index_t col_num) {
+    int type_code = 0;
+    long repeat = 0;
+    int status = 0;
+
+    // Get column type and repeat count:
+    fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
+    if (0 != status) {
+      std::ostringstream s;
+      s << "Could not get type information for column number " << col_num;
+      throw TipException(formatWhat(s.str()));
+    }
+
+    // Make a lowercase copy of field name for comparison purposes:
+    std::string lc_name = col_name;
+    for (std::string::iterator itor = lc_name.begin(); itor != lc_name.end(); ++itor) *itor = tolower(*itor);
+
+    // Populate an info structure with all the particulars:
+    ColumnInfo info;
+    info.m_name = col_name;
+    info.m_col_num = col_num;
+    info.m_repeat = repeat;
+    info.m_type_code = type_code;
+
+    // Save column information indexed on the lowercased name:
+    m_col_name_lookup[lc_name] = info;
+
+    // Save column information indexed on the column number:
+    m_col_num_lookup[col_num] = info;
+
+    // Save lower cased name of field in sequential container of field names:
+    m_fields.push_back(lc_name);
   }
 
   std::string FitsExtensionManager::formatWhat(const std::string & msg) const {

@@ -14,6 +14,8 @@
 #include "tip/Table.h"
 #include "tip/tip_types.h"
 
+// Temporarily needed:
+#include "tip/IFileSvc.h"
 #define MAKE_COMPILATION_FAIL (0)
 
 namespace tip {
@@ -34,6 +36,9 @@ namespace tip {
 
     // Test iterator access:
     readWriteFieldTest();
+
+    // Test appending a field to an existing table.
+    appendFieldTest();
 
     // Clean up.
     delete m_root_table; m_root_table = 0;
@@ -81,14 +86,15 @@ namespace tip {
   void TestTable::getValidFieldsTest() {
     std::string msg;
     if (0 != m_fits_table) {
-      msg = "getting field container from FITS file";
+      msg = "getting field container from FITS table";
       try {
         // Get container of field names:
         const Table::FieldCont & fields = m_fits_table->getValidFields();
 
         int num_fields = 0;
         for (Table::FieldCont::const_iterator it = fields.begin(); it != fields.end(); ++it) {
-          ++num_fields;
+          // Don't count "new_chan" which is a field added during the test process.
+          if (0 != it->compare("new_chan")) ++num_fields;
         }
 
         // Test file has 2 fields:
@@ -100,7 +106,7 @@ namespace tip {
       }
     }
     if (0 != m_root_table) {
-      msg = "getting field container from Root file";
+      msg = "getting field container from Root table";
       try {
         // Get container of field names:
         const Table::FieldCont & fields = m_root_table->getValidFields();
@@ -122,16 +128,16 @@ namespace tip {
 
   void TestTable::readWriteFieldTest() {
     // Test FITS field read/write for channel field:
-    readWriteFieldTest(m_fits_table, "FITS", "channel");
+    readWriteFieldTest(m_fits_table, "FITS", "chaNNel");
 
     // Test Root field read only for McEnergy field; note that this doesn't test whether the
     // values were read correctly.
     std::vector<double> mc_energy;
     try {
       readFieldTest(m_root_table, "McEnergy", mc_energy);
-      ReportExpected("reading McEnergy field from Root file succeeded");
+      ReportExpected("reading McEnergy field from Root table succeeded");
     } catch (const TipException & x) {
-      ReportUnexpected("reading McEnergy field from Root file failed", x);
+      ReportUnexpected("reading McEnergy field from Root table failed", x);
     }
   }
 
@@ -283,7 +289,41 @@ namespace tip {
   }
 
   Table * TestTable::getTable() {
-    IExtensionData * data = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "", false);
+    IExtensionData * data = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
     return new Table(data);
   }
+
+  // Test appending a field to an existing table.
+  void TestTable::appendFieldTest() {
+    std::string msg;
+    if (0 != m_root_table) {
+      msg = "appending field to Root table";
+      try {
+        m_root_table->appendField("new_chan", "1I");
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+    }
+
+    if (0 != m_fits_table) {
+      msg = "appending field to FITS table";
+      try {
+        m_fits_table->appendField("NEW_chan", "1I");
+        ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
+
+      // Error case:
+      msg = "appending field which already exists to FITS table";
+      try {
+        m_fits_table->appendField("new_Chan", "1D");
+        ReportUnexpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+    }
+  }
+
 }

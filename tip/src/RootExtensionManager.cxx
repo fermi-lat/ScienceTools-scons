@@ -220,11 +220,16 @@ namespace tip {
   Index_t RootExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t) const {
     if (0 > field_index || m_leaves.size() <= (unsigned int)(field_index)) {
       std::ostringstream os;
-      os << "Requested field index " << field_index << " not found in file.";
+      os << "Requested field index " << field_index << " not found";
       std::string msg = os.str();
       throw TipException(formatWhat(msg));
     }
     return 1;
+  }
+
+  // Append field to a table extension.
+  void RootExtensionManager::appendField(const std::string &, const std::string &) {
+    throw TipException("Adding fields to a Root table is not supported");
   }
 
   std::string RootExtensionManager::formatWhat(const std::string & msg) const {

@@ -104,7 +104,9 @@ namespace tip {
       */
       virtual void setNumRecords(Index_t num_records) { m_extension_manager.setNumRecords(num_records); }
 
-      /** \brief Return a container of all field names valid for this table:
+      /** \brief Return a container of all field names valid for this table. Note that these names
+          will automatically be converted to lower case, and all lookup of field names is case
+          insensitive.
       */
       virtual const IExtensionData::FieldCont & getValidFields() const { return m_extension_manager.getValidFields(); }
 
@@ -204,6 +206,14 @@ namespace tip {
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end)
         { m_extension_manager.setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end); }
+
+      /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
+          \param field_name The name of the field to append.
+          \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
+           See Cfitsio documentation for details.
+      */
+      virtual void appendField(const std::string & field_name, const std::string & format)
+        { m_extension_manager.appendField(field_name, format); }
 
     private:
       ExtensionManager m_extension_manager;

@@ -102,9 +102,19 @@ namespace tip {
       */
       void setNumRecords(Index_t num_records) { m_extension_data->setNumRecords(num_records); }
 
-      /** \brief Return a container of all field names valid for this table:
+      /** \brief Return a container of all field names valid for this table. Note that these names
+          will automatically be converted to lower case, and all lookup of field names is case
+          insensitive.
       */
       const Table::FieldCont & getValidFields() const { return m_extension_data->getValidFields(); }
+
+      /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
+          \param field_name The name of the field to append.
+          \param format The format of the field to append, e.g. 1D for scalar double, 8J for vector long, etc.
+           See Cfitsio documentation for details.
+      */
+      void appendField(const std::string & field_name, const std::string & format)
+        { m_extension_data->appendField(field_name, format); }
   };
 
   /* TODO 7: 4/2/2004: 2 problems with random access: 1. operator * needs to return a
