@@ -26,7 +26,7 @@
 #include "irfInterface/IrfsFactory.h"
 #include "g25Response/loadIrfs.h"
 #include "dc1Response/loadIrfs.h"
-#include "dc2Response/loadIrfs.h"
+// #include "dc2Response/loadIrfs.h"
 
 #include "Likelihood/Util.h"
 
@@ -158,7 +158,7 @@ void ObsSim::readSrcNames() {
 void ObsSim::createResponseFuncs() {
    g25Response::loadIrfs();
    dc1Response::loadIrfs();
-   dc2Response::loadIrfs();
+//    dc2Response::loadIrfs();
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
    std::string responseFuncs = m_pars["Response_functions"];
@@ -167,8 +167,8 @@ void ObsSim::createResponseFuncs() {
    responseIds["BACK"].push_back("DC1::Back");
    responseIds["FRONT/BACK"].push_back("DC1::Front");
    responseIds["FRONT/BACK"].push_back("DC1::Back");
-   responseIds["DC2"].push_back("DC2::Front");
-   responseIds["DC2"].push_back("DC2::Back");
+//    responseIds["DC2"].push_back("DC2::Front");
+//    responseIds["DC2"].push_back("DC2::Back");
    responseIds["GLAST25"].push_back("Glast25::Front");
    responseIds["GLAST25"].push_back("Glast25::Back");
    if (responseIds.count(responseFuncs)) {
