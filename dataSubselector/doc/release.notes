@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v2r2p3  03-Dec-04   JC   add clone methods and Cuts copy constructor
     v2r2p2  03-Dec-04   JC   FITS constructor for Cuts::SkyConeCut 
     v2r2p1  03-Dec-04   JC   FITS constructor for Cuts 
     v2r2    02-Dec-04   JC   add Cuts class
