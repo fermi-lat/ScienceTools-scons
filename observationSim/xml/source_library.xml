@@ -349,6 +349,27 @@
         </spectrum>
     </source>
 
+    <!-- Extragalactic diffuse assuming isotropic extragalactic 
+         sources with fluxes 1e-8 cm^-2 s^-1 (E > 100 MeV) comprise
+         the balance of the extragalatic diffuse emission -->
+    <source name="extragalactic_test" flux="5.90">
+       <spectrum escale="MeV">
+          <particle name="gamma">
+             <power_law emin="30" gamma="2.1"/>
+          </particle>
+          <solid_angle mincos="-1." maxcos="1."/>
+       </spectrum>
+    </source>
+
+    <!-- Extragalactic diffuse inferred by EGRET -->
+    <source name="extragalactic" flux="6.85">
+       <spectrum escale="MeV">
+          <particle name="gamma">
+             <power_law emin="30" gamma="2.1"/>
+          </particle>
+          <solid_angle mincos="-1." maxcos="1."/>
+       </spectrum>
+    </source>
 
     <!-- diffuse extraglactic from 10 MeV: from APJ 494:523
             1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4 cm^2/m^2)*(100/10)^1.1 = 1.83
