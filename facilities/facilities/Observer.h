@@ -92,7 +92,7 @@ class Subject
 
       //## Operation: detach%892143868
       //	Detach an observer from this subject.
-      void detach (Observer* anObserver)
+      void detach (Observer* )
       {
         //## begin Subject::detach%892143868.body preserve=yes
 	  //std::vector<Observer*>::const_iterator	it = m_observers.find(anObserver);
