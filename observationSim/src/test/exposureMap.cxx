@@ -73,6 +73,17 @@ int main(int argc, char *argv[]) {
       glat.push_back(degstep*i + bmin);
    }
 
+// Prepare unit vectors of source positions.
+   std::vector<astro::SkyDir> srcDirs;
+   std::vector<double>::const_iterator glonIt = glon.begin();
+   for (int i=0; glonIt != glon.end(); glonIt++, i++) {
+      std::vector<double>::const_iterator glatIt = glat.begin();
+      for (int j=0; glatIt != glat.end(); glatIt++, j++) {
+         srcDirs.push_back( astro::SkyDir(*glonIt, *glatIt, 
+                                          astro::SkyDir::GALACTIC) );
+      }
+   }
+
 // Assume a standard set of energy bands.
    double emin = 30.;
    double emax = 1e5;
@@ -117,24 +128,22 @@ int main(int argc, char *argv[]) {
       xaxis = astro::SkyDir( Hep3Vector(SC_x0[it], SC_x1[it], SC_x2[it]) );
 
       int indx = 0;
+      int src_indx = 0;
 // Loop over longitude coordinate.
-      std::vector<double>::const_iterator glonIt = glon.begin();
-      for (int i=0; glonIt != glon.end(); glonIt++, i++) {
-
+      for (unsigned int i=0; i < glon.size(); i++) {
 // Loop over latitude coordinate.
-         std::vector<double>::const_iterator glatIt = glat.begin();
-         for (int j=0; glatIt != glat.end(); glatIt++, j++) {
-
-            astro::SkyDir srcDir( *glonIt, *glatIt, astro::SkyDir::GALACTIC );
+         for (unsigned int j=0; j < glat.size(); j++) {
+            src_indx++;
 
 // Apply the hard-wired maximum inclination for GLAST25 response functions.
-            if (srcDir.difference(zaxis)*180./M_PI < 70.) {
+            if (srcDirs[src_indx].difference(zaxis)*180./M_PI < 70.) {
 
 // Loop over enerigies.
                std::vector<double>::const_iterator energyIt = energies.begin();
                for (int k=0; energyIt != energies.end(); energyIt++, k++) {
                   indx = glon.size()*(glat.size()*k + j) + i;
-                  exposure[indx] += dt*aeff(*energyIt, srcDir, zaxis, xaxis);
+                  exposure[indx] += dt*aeff(*energyIt, srcDirs[src_indx], 
+                                            zaxis, xaxis);
                } // energyIt
             } // if (srcDir.difference(...))
          } // glatIt
