@@ -31,7 +31,7 @@ public:
         MapParameters pars(hoopsGetParGroup());
 
         // connect to  input data, specifying filter
-        Table & table = *tip::IFileSvc::instance().editTable(pars.inputFile(), "", pars.filter() );
+        const Table & table = *tip::IFileSvc::instance().readTable(pars.inputFile(), "", pars.filter() );
         if( pars.chatter()>0) {
             std::cout << "Reading file " << pars.inputFile() ;
             if( ! pars.filter().empty() ) std::cout << "\n\tfiltered by " << pars.filter() ;
@@ -41,7 +41,7 @@ public:
         // create the image object
         SkyImage image(pars);
 
-        for (Table::Iterator it = table.begin(); it != table.end(); ++it) {
+        for (Table::ConstIterator it = table.begin(); it != table.end(); ++it) {
 
             // Create local reference to the record to which the iterator refers:
             const Table::Record & record = *it;

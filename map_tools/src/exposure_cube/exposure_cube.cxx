@@ -32,9 +32,9 @@ public:
             tstop = pars["tstop"];
 
         // connect to  input data
-        Table & table = *tip::IFileSvc::getSvc().editTable(pars.inputFile(), "Ext1");
+        const Table & table = *tip::IFileSvc::getSvc().readTable(pars.inputFile(), "Ext1");
 
-        for (Table::Iterator it = table.begin(); it != table.end(); ++it) {
+        for (Table::ConstIterator it = table.begin(); it != table.end(); ++it) {
 
             const Table::Record & record = *it;
 
