@@ -1,5 +1,5 @@
 PROJECT_NAME           = "Observation Simulator Prototype"
-PROJECT_NUMBER         = "v3r2"
+PROJECT_NUMBER         = "v3r3"
 FILE_PATTERNS          = *.h *.cxx
 STRIP_CODE_COMMENTS    = NO
 EXAMPLE_PATH           = "../cmt" "." "../data"
