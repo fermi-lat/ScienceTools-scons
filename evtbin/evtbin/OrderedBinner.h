@@ -21,7 +21,7 @@ namespace evtbin {
           \param intervals Container of bin definitions.
           \param name Optional name of the quantity being binned.
       */
-      OrderedBinner(const IntervalCont_t & intervsls, const std::string & name = std::string());
+      OrderedBinner(const IntervalCont_t & intervals, const std::string & name = std::string());
 
       virtual ~OrderedBinner() throw();
 
