@@ -1,16 +1,19 @@
 /** @file release.notes
- * Package facilities
- * Coordinator: Toby Burnett
- *
- * v2r7p2 28-May-2003  thb   Add include needed for Windows
- * v2r7p1 14-May-2003  jrb   Throw exception in Util::expandEnvVar if
- *                           encounter something untranslatable 
- * v2r7p0 14-Feb-2003  hmk   Use static char* in Util::itoa
- * v2r7   03-Jan-2003  jrb   Simplify Timestamp class
- * v2r6   19-sep-2002  thb   move cmt directory; minor gcc compilation fixes.
- * v2r5   29-aug-2002  thb   JRB Timestamp class
- * v2r4   15-Apr-2002  thb   hmk fixes
- * v2r3   09-Apr-2002  hmk   add new itoa routine
- * v2r2p1 20-Mar-2002  jrb   Fix for Windows compile
- * v2r2   19-Mar-2002  jrb   Add Util class
+  @brief Package facilities
+ 
+  @verbatim
+  Coordinator: Toby Burnett
+ 
+  v2r7p2 28-May-2003  thb   Add include needed for Windows
+  v2r7p1 14-May-2003  jrb   Throw exception in Util::expandEnvVar if
+                            encounter something untranslatable 
+  v2r7p0 14-Feb-2003  hmk   Use static char* in Util::itoa
+  v2r7   03-Jan-2003  jrb   Simplify Timestamp class
+  v2r6   19-sep-2002  thb   move cmt directory; minor gcc compilation fixes.
+  v2r5   29-aug-2002  thb   JRB Timestamp class
+  v2r4   15-Apr-2002  thb   hmk fixes
+  v2r3   09-Apr-2002  hmk   add new itoa routine
+  v2r2p1 20-Mar-2002  jrb   Fix for Windows compile
+  v2r2   19-Mar-2002  jrb   Add Util class
+  @endverbatim
  */

@@ -5,11 +5,15 @@
        Util, is a place for static routines with no other logical home.
     </p>
 
-<p>See release.notes for recent activity.</p>
 <hr>
   @section requirements requirements
   @verbinclude requirements
 
+<hr>
+ @section notes Release Notes
+  release.notes
+
+<hr>
   @todo Determine whether some of the classes in this package are obsolete.
         If so, remove them.
 
