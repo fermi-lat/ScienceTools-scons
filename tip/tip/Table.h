@@ -37,11 +37,6 @@ namespace table {
           */
           class Cell {
             public:
-              /** \brief Copy-construct a Cell object.
-                  \param cell The source Cell object.
-              */
-              Cell(const Cell & cell): m_itor(cell.m_itor), m_field(cell.m_field) {}
-
               /** \brief Construct a Cell object, associated with the given Iterator.
                   \param itor The Iterator object to which this Cell refers.
                   \param field The name of this cell.
@@ -71,11 +66,6 @@ namespace table {
           class Record {
             public:
               typedef std::map<std::string, Cell> CellCont_t;
-
-              /** \brief Copy construct a Record object, associated with the given Iterator.
-                  \param rec The source record.
-              */
-              Record(const Record & rec): m_cells(rec.m_cells), m_itor(rec.m_itor) {}
 
               /** \brief Construct a Record object, associated with the given Iterator.
                   \param itor The referent Iterator object.
@@ -136,8 +126,10 @@ namespace table {
               \param itor The source iterator object.
           */
           Iterator & operator =(const Iterator & itor) {
-            m_table = itor.m_table;
-            m_row_num = itor.m_row_num;
+            if (this != &itor) {
+              m_table = itor.m_table;
+              m_row_num = itor.m_row_num;
+            }
             return *this;
           }
 
