@@ -43,9 +43,18 @@ namespace st_app {
       virtual void run() = 0;
 
       /** \brief Return an object which provides the most typical kinds of parameter access.
+                 The name used to find the parameter file is taken from the name member.
+      */
+      virtual AppParGroup & getParGroup();
+
+      /** \brief Return an object which provides the most typical kinds of parameter access.
           \param app_name The name of this application, used to find the parameter file.
       */
       virtual AppParGroup & getParGroup(const std::string & app_name);
+
+      /** \brief Display startup banner, with name and version of the tool.
+      */
+      virtual void banner() const;
 
       const std::string & getName() const;
 
