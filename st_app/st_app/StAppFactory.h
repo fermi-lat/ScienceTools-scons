@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "st_app/StAppGui.h"
+
 namespace st_app {
 
   class StApp;
@@ -32,9 +34,17 @@ namespace st_app {
       */
       virtual void configureApp();
 
+      virtual int getMaximumChatter() const;
+
+      virtual void setMaximumChatter(int maximum_chatter);
+
       /** \brief Return true if debugging mode is enabled, false if not.
       */
       virtual bool getDebugMode() const;
+
+      virtual void setDebugMode(bool debug_mode);
+
+      const std::string & getAppName() const;
 
     protected:
       /** \brief Create factory with no application name. Universal parameters will not be read.
@@ -48,14 +58,16 @@ namespace st_app {
 
     private:
       static IStAppFactory * s_factory;
+
+    protected:
       std::string m_app_name;
-      bool m_debug_mode;
+      bool m_gui_mode;
   };
 
   /** \class StAppFactory
       \brief Factory which creates objects of a specific subclass of StApp.
   */
-  template <typename App>
+  template <typename App, typename GuiApp = StAppGui>
   class StAppFactory : public IStAppFactory {
     public:
       /** \brief Create factory for an unnamed application.
@@ -69,7 +81,14 @@ namespace st_app {
       /** \brief Create an application object.
       */
       virtual StApp * createApp() const {
-        return new App;
+        StApp * app = 0;
+        if (m_gui_mode) {
+          app = new GuiApp(getAppName(), new App);
+        } else {
+          app = new App;
+          if (0 != app) app->setName(getAppName());
+        }
+        return app;
       }
   };
 

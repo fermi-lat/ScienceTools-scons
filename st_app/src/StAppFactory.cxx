@@ -26,14 +26,14 @@ namespace st_app {
   }
 
   // Construct IStAppFactory, setting singleton if it's not already defined.
-  IStAppFactory::IStAppFactory(): m_app_name(), m_debug_mode(false) { if (0 == s_factory) s_factory = this; }
+  IStAppFactory::IStAppFactory(): m_app_name(), m_gui_mode(false) { if (0 == s_factory) s_factory = this; }
 
   // Construct IStAppFactory, setting singleton if it's not already defined.
-  IStAppFactory::IStAppFactory(const std::string & app_name): m_app_name(app_name), m_debug_mode(false) {
+  IStAppFactory::IStAppFactory(const std::string & app_name): m_app_name(app_name), m_gui_mode(false) {
     if (0 == s_factory) s_factory = this;
   }
 
-  // Destruct IStAppFactory, unsetting singleton if this is is.
+  // Destruct IStAppFactory, unsetting singleton if this is it.
   IStAppFactory::~IStAppFactory() throw() { if (this == s_factory) s_factory = 0; }
 
   void IStAppFactory::configureApp() {
@@ -50,23 +50,34 @@ namespace st_app {
         try {
           // Try to get chatter parameter, and use it to set the maximum tool chatter. Ignore problems.
           int chat = pars["chatter"];
-          st_stream::SetMaximumChatter(chat);
+          setMaximumChatter(chat);
         } catch (hoops::Hexception &) {}
         try {
+#ifdef ST_APP_DEBUG
+          // Compile-time debugging trumps debug parameter.
+          setDebugMode(true);
+#else
           // Try to get debug parameter, and use it to enable/disable debug behavior. Ignore problems.
-          m_debug_mode = pars["debug"];
+          bool debug_mode = pars["debug"];
+          setDebugMode(debug_mode);
+#endif
+        } catch (hoops::Hexception &) {}
+        try {
+          // Try to get gui parameter, and use it to enable/disable Gui. Ignore problems.
+          m_gui_mode = pars["gui"];
         } catch (hoops::Hexception &) {}
       } catch (hoops::Hexception &) {}
     }
-
-    // Compile-time debugging trumps debug parameter.
-#ifdef ST_APP_DEBUG
-    m_debug_mode = true;
-#endif
-
-    // Set up streams for debugging.
-    st_stream::SetDebugMode(m_debug_mode);
   }
 
-  bool IStAppFactory::getDebugMode() const { return m_debug_mode; }
+  int IStAppFactory::getMaximumChatter() const { return st_stream::GetMaximumChatter(); }
+
+  void IStAppFactory::setMaximumChatter(int maximum_chatter) { st_stream::SetMaximumChatter(maximum_chatter); }
+
+  bool IStAppFactory::getDebugMode() const { return st_stream::GetDebugMode(); }
+
+  void IStAppFactory::setDebugMode(bool debug_mode) { st_stream::SetDebugMode(debug_mode); }
+
+  const std::string & IStAppFactory::getAppName() const { return m_app_name; }
+
 }
