@@ -22,9 +22,10 @@ namespace tip {
       /** \brief Create a new file, using an optional FITS template file. Clobber existing files.
           \param file_name The name of the new file.
           \param template_name The name of the template file. If omitted, the file created will
-          be pretty useless.
+                 be created with an empty primary image.
+          \param clobber Should existing files be overwritten?
       */
-      static void createFile(const std::string & file_name, const std::string & template_name = "");
+      static void createFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
 
       /** \brief Append an image extension to a fits file.
           \param file_name The name of the file to which to append.

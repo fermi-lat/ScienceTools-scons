@@ -7,7 +7,6 @@
 
 #include <cstdio>
 #include <cstring>
-#include <sstream>
 
 #include "FitsFileManager.h"
 #include "fitsio.h"
@@ -16,49 +15,60 @@
 
 namespace tip {
 
-  // Create a FITS file using a template. File is closed afterwards.
-  void FitsFileManager::createFile(const std::string & file_name, const std::string & template_name) {
-    // Concatenate the file name with the template name:
-    std::ostringstream s;
-    s << "!" << file_name;
-    if (!template_name.empty()) s << "(" << template_name << ")";
-    std::string full_name = s.str();
+  // Create a FITS file optionally using a template. File is closed afterwards.
+  void FitsFileManager::createFile(const std::string & file_name, const std::string & template_name, bool clobber) {
+    std::string full_name;
 
+    // Handle clobber by prepending a bang or not.
+    if (clobber) full_name = "!" + file_name;
+    else full_name = file_name;
+
+    // Concatenate the file name with the template name so that cfitsio can use it.
+    if (!template_name.empty()) full_name += "(" + template_name + ")";
+
+    // Fitsio stuff.
     fitsfile * fp = 0;
     int status = 0;
 
-    // Create the file, and complain if it doesn't work:
+    // Create the file.
     fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
-
-    if (template_name.empty()) {
-      // Create primary extension so that file is valid.
-      long naxes[1] = { 1 };
-      fits_create_img(fp, FLOAT_IMG, 1, naxes, &status);
+    if (0 != status) {
+      fits_close_file(fp, &status);
+      throw TipException("Unable to create file named \"" + full_name + '"');
     }
 
-    // Close the file; not interested in it anymore.
+    if (template_name.empty()) {
+      long dims[1] = { 0 };
+
+      // No template: need to create primary image explicitly.
+      fits_create_img(fp, FLOAT_IMG, 0, dims, &status);
+      if (0 != status) {
+        fits_close_file(fp, &status);
+        throw TipException("Unable to create primary image in file named \"" + full_name + '"');
+      }
+    }
+
+    // Close the file, and do not allow status to change.
     int ignored_status = status;
     fits_close_file(fp, &ignored_status);
 
-    if (0 != status) throw TipException(std::string("Unable to create file named \"") + full_name + '"');
+    // Report any problems.
+    if (0 != status) throw TipException("Unable to create file named \"" + full_name + '"');
   }
 
   void FitsFileManager::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
     fitsfile * fp = 0;
     int status = 0;
 
-    // Open the file.
+    // Open or create the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
     if (0 != status) {
-      fp = 0; // Paranoid.
-
+      fp = 0;
       status = 0;
-
-      // Opening didn't work, so create file.
       fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
       if (0 != status) {
         fits_close_file(fp, &status);
-        throw TipException(std::string("Unable to create file named \"") + file_name + "\"");
+        throw TipException("Unable to open or create file named \"" + file_name + "\"");
       }
     }
 
@@ -82,7 +92,7 @@ namespace tip {
     char key_name[16];
     if (1 == hdu_num) strcpy(key_name, "HDUNAME");
     else strcpy(key_name, "EXTNAME");
-    fits_write_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
+    fits_update_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
     if (0 != status) {
       fits_close_file(fp, &status);
       throw TipException(std::string("Unable to name image in file \"") + file_name + "\"");
@@ -96,16 +106,26 @@ namespace tip {
     fitsfile * fp = 0;
     int status = 0;
 
-    // Open the file, and complain if it doesn't work:
+    // Open or create the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
-    if (0 != status)
-      throw TipException(std::string("Unable to open file named \"") + file_name + "\" with read/write access");
+    if (0 != status) {
+      fp = 0;
+      status = 0;
+      fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
+      if (0 != status) {
+        fits_close_file(fp, &status);
+        throw TipException("Unable to open or create file named \"" + file_name + "\"");
+      }
+    }
 
     // Create new table extension at end of file.
     fits_create_tbl(fp, BINARY_TBL, 0, 0, 0, 0, 0, const_cast<char *>(table_name.c_str()), &status);
 
     // Close the file; not interested in it anymore.
     fits_close_file(fp, &status);
+
+    if (0 != status)
+      throw TipException("Unable to create table named \"" + table_name + "\" in file \"" + file_name + "\"");
   }
 
   void FitsFileManager::getFileSummary(const std::string & file_name, FileSummary & summary) {
@@ -176,4 +196,5 @@ namespace tip {
     }
     ext_id = tmp_id;
   }
+
 }
