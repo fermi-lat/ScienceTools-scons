@@ -1,4 +1,9 @@
-// $Header$
+/** @file SkyDir.h
+    @brief declaration of the class SkyDir
+
+   $Header$
+
+*/
 #ifndef OrbitModel_SkyDir_H
 #define OrbitModel_SkyDir_H
 
@@ -20,16 +25,19 @@ namespace astro {
     * Note that units associated with sky coordinates (ra, dec, l, b) are consistently in degrees
     */
 
-
     class SkyDir
     {
     public:
         typedef enum  { 
-            GALACTIC=0,  //!  fixed direction with respect to the galactic coordinate system (l,b)
-            EQUATORIAL=1, //! fixed direction with respect to the celestial coordinate system (ra,dec) in the J2000 epoch.
-            PROJECTION=2 //! a projection, e.g. AIT
+            //!  fixed direction with respect to the galactic coordinate system (l,b)
+            GALACTIC=0,  
+            //! fixed direction with respect to the equatorial coordinate system (ra,dec) in the J2000 epoch.
+            EQUATORIAL=1,
+            //! a projection, e.g. AIT. For the constructor, the projection parameters must be set properly
+            PROJECTION=2 
         } CoordSystem ;
 
+        //! projection types: MER is mercator, AIT, is Hammer-Aitoff...
         typedef enum { CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG } ProjType; 
 
         ///Constructors

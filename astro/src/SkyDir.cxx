@@ -1,4 +1,8 @@
-// $Header$
+/** @file SkyDir.cxx
+    @brief implementation of the class SkyDir
+
+   $Header$
+*/
 
 // Include files
 
