@@ -48,16 +48,21 @@ namespace optimizers {
     
   public:
     
-    Drmngb(Function &stat) 
+    Drmngb(Function &stat) : m_NeedCovariance(true)
       {m_stat = &stat;}
     
     virtual ~Drmngb() {}
     
-    void find_min(int verbose = 0, double tol = 1e-8);
+    void find_min(int verbose = 0, double tol = 1e-8, 
+		  int tolType = RELATIVE);
 
     //! One-sigma confidence regions based on Hessian, assuming 
     // that this function is a likelihood
     std::vector<double> & getUncertainty(void);
+
+    //! Switch on the covariance matrix calculation. 
+    // Save time by not doing this, if covariance is not needed.
+    void setNeedCovariance(bool);
 
     int getRetCode(void) const;
 
@@ -73,16 +78,18 @@ namespace optimizers {
     Function *m_stat;
     std::vector<double> m_uncertainty;
     int m_retCode;
+    bool m_NeedCovariance;
 
   };
 
+  //! Fortran routines
   extern "C" {
     void drmngb_(const double * bounds, double * scale, double * funcval,
 		 double * grad, int * iv, const int * liv, const int *lv, 
 		 const int * n, double * v, double *x);
     void divset_(const int * kind, int * iv, const int * liv, const int * lv, 
 		double * v);
-    void dpptri_(const char * uplo, const int * n, double * array,
+    int dpptri_(const char * uplo, const int * n, double * array,
 		 int * info, int strlen);
   }
   

@@ -71,7 +71,7 @@ namespace optimizers {
     int getRetCode(void) const;
     std::string getErrorString(void) const;
     
-    void find_min(int verbose = 0, double tol = 1e-5);
+    void find_min(int verbose = 0, double tol = 1.e-5, int tolType = RELATIVE);
     
     enum LbfgsReturnCodes {LBFGS_NORMAL, LBFGS_ABNO, LBFGS_ERROR,
 			   LBFGS_TOOMANY, LBFGS_UNKNOWN};

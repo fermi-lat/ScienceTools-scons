@@ -33,9 +33,11 @@ public:
    Optimizer() {}
    virtual ~Optimizer() {}
 
-   virtual void find_min(int verbose, double tol) = 0;
+   virtual void find_min(int verbose, double tol, int tolType) = 0;
     
 };
+
+ enum TOLTYPE {RELATIVE, ABSOLUTE, DISTANCE};
 
 } // namespace optimizers
 

@@ -25,13 +25,17 @@ namespace optimizers {
   int Drmngb::getRetCode(void) const {
     return m_retCode;
   }
+
+  void Drmngb::setNeedCovariance(bool b) {
+    m_NeedCovariance = b;
+  }
   
-  void Drmngb::find_min(int verbose, double tol) {
+  void Drmngb::find_min(int verbose, double tol, int tolType) {
 
-// A dummy Arg object that is needed by Function methods.
-     dArg dummy(1);
+    // A dummy Arg object that is needed by Function methods.
+    dArg dummy(1);
 
-    // Unpack model parameters into the arrays needed by Drmngb
+    /// Unpack model parameters into the arrays needed by Drmngb
     
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
@@ -45,10 +49,10 @@ namespace optimizers {
       paramBounds.push_back(p->getBounds().second);
     }
     
-    // Create the variables and arrays used by DRMNGB.
-    // These serve as storage between calls to drmngb
-    // so they must be declared outside the loop.
-    // Most of them don't need to be initialized.
+    /// Create the variables and arrays used by DRMNGB.
+    /// These serve as storage between calls to drmngb_
+    /// so they must be declared outside the loop.
+    /// Most of them don't need to be initialized.
 
     double funcVal;
     const int liv = 59 + nparams;
@@ -61,57 +65,82 @@ namespace optimizers {
     const int kind = 2;
     divset_(&kind, &iv[0], &liv, &lv, &v[0]);
     if (verbose == 0) {iv[20] = 0;}
-    v[31] = tol;
+    if (tolType == RELATIVE) v[32] = tol;
+    //    v[32] = 1.e-6;
+    //    v[31] = 1.e-6;
 
-    // Call the optimizing function in an infinite loop.
+    /// Call the optimizing function in an infinite loop.
+    double oldVal = 1.e+30;
     for (;;) {
-      drmngb_(&paramBounds[0], &scale[0], &funcVal, &gradient[0], &iv[0], &liv,
-	     &lv, &nparams, &v[0], &paramVals[0]);
-      int value = iv[0];
-      if (value == 1) { // request for a function value
-         m_stat->setFreeParamValues(paramVals);
+      drmngb_(&paramBounds[0], &scale[0], &funcVal, &gradient[0], &iv[0], 
+	      &liv,&lv, &nparams, &v[0], &paramVals[0]);
+      int rcode = iv[0];
+      if (rcode == 1) { /// request for a function value
+	try {m_stat->setFreeParamValues(paramVals);}
+	catch (OutOfBounds e) {
+	  std::cerr << "Drmngb::find_min error" << std::endl;
+	  std::cerr << e.what() << std::endl;
+	  std::cerr << "Value " << e.value() << " is not between "
+		    << e.minValue() << " and " << e.maxValue() << std::endl;
+	}
+	catch (Exception e) {
+	  std::cerr << e.what() << std::endl;
+	}
 	funcVal = -m_stat->value(dummy);
+	if (tolType == ABSOLUTE && abs(funcVal-oldVal) < tol) { 
+	  m_retCode = 6;  // Hijack this for our purposes
+	  oldVal = funcVal;
+	  if (verbose != 0)
+	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE *****" 
+		      << std::endl;
+	  break;
+	}
       }
-      else if (value == 2) { // request for the gradient
+      else if (rcode == 2) { /// request for the gradient
+	m_stat->setFreeParamValues(paramVals);
 	m_stat->getFreeDerivs(dummy, gradient);
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}
       }
-      else {  // Finished.  Exit loop.
-	m_retCode = value;
-	if (value > 6) {throw Exception("DRMNGB error", value);}
+      else {  /// Finished.  Exit loop.
+	m_retCode = rcode;
+	if (rcode > 6) {throw Exception("DRMNGB error", rcode);}
 	break;
       }
     }
 
-    // Get parameter values and put them back into the Function
-    int j = 0;
-    for (pptr p = params.begin(); p != params.end(); p++, j++) {
-      p->setValue(paramVals[j]);
-    }
-//    (*m_stat)(paramVals);
+    /// Get parameter values and put them back into the Function
     m_stat->setFreeParamValues(paramVals);
 
-    // Get the Cholesky factor of the Hessian.  It's a lower triangular
-    // matrix stored in compact fashion, so we treat it as 1-dimensional.
-    const dptr vp = v.begin() + iv[41] - 1;
-    std::vector<double> hess(vp, vp + nparams*(nparams+1)/2);
+    if (m_NeedCovariance) {
+      /// Get the Cholesky factor of the Hessian.  It's a lower triangular
+      /// matrix stored in compact fashion, so we treat it as 1-dimensional.
+      const dptr vp = v.begin() + iv[41] - 1;
+      std::vector<double> hess(vp, vp + nparams*(nparams+1)/2);
+      
+      /// Invert the Hessian to produce the covariance matrix.  The result 
+      /// is also stored as a compact triangular matrix.
+      /// Dpptri and drmngb have opposite definitions of "lower" and
+      /// "upper" triangular matrices.  Drmngb says it produces a lower
+      /// matrix.  If we tell dpptri that it's upper, all is OK.
 
-    // Invert the Hessian to produce the covariance matrix.  The result 
-    //is also stored as a compact lower triangular matrix.
-    int info;
-    const char uplo = 'L';
-    dpptri_(&uplo, &nparams, &hess[0], &info, 1);
-
-    // Extract the diagonal elements of the covariance matrix.
-    // Their square roots are the parameter uncertainties.
-    m_uncertainty.clear();
-    for (int i = 0; i < nparams; i++) {
-      m_uncertainty.push_back(sqrt(hess[i*(i+3)/2]));
+      int info;
+      const char uplo = 'U';
+      dpptri_(&uplo, &nparams, &hess[0], &info, 1);
+      if (info < 0) 
+	throw Exception("DPPTRI: illegal argument value", -info);
+      else if (info > 0) 
+	throw Exception("DPPTRI: Zero diagonal element in Cholesky factor",
+			info);
+      
+      /// Extract the diagonal elements of the covariance matrix.
+      /// Their square roots are the parameter uncertainties.
+      m_uncertainty.clear();
+      for (int i = 0; i < nparams; i++) {
+	m_uncertainty.push_back(sqrt(hess[i*(i+3)/2]));
+      }
     }
 
   } // End of find_min
-}
-
-
+} // namespace optimizers

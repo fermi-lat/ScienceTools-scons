@@ -126,7 +126,8 @@ void Function::setFreeParamValues(const std::vector<double> &paramVec)
    if (paramVec.size() != getNumFreeParams()) {
       std::ostringstream errorMessage;
       errorMessage << "Function::setFreeParamValues: "
-                   << "The input vector size does not match "
+                   << "The input vector size " << paramVec.size() 
+		   << "  does not match " << getNumFreeParams() << " , " 
                    << "the number of free parameters.\n";
       throw(Exception(errorMessage.str()));
    } else {

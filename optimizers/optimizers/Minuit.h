@@ -57,7 +57,7 @@ namespace optimizers {
     
     virtual ~Minuit() {}
     
-    void find_min(int verbose = 0, double tol = 1e-3);
+    void find_min(int verbose = 0, double tol = 1e-3, int tolType = RELATIVE);
 
     //! Override the default maximum number of function evaluations
     void setMaxEval(int);

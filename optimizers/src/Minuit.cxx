@@ -11,6 +11,7 @@
 #include "optimizers/Minuit.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
+#include "optimizers/OutOfBounds.h"
 
 namespace optimizers {
 
@@ -37,7 +38,7 @@ namespace optimizers {
     return m_uncertainty;
   }
 
-  void Minuit::find_min(int verbose, double tol) {
+  void Minuit::find_min(int verbose, double tol, int tolType) {
 
     typedef std::vector<Parameter>::iterator pptr;
 
@@ -155,9 +156,19 @@ namespace optimizers {
     // What a hack!  Minuit thinks futil is a function 
     // pointer.  It's been hijacked to be a pointer to
     // m_stat, so this non-member function can use it.
+
     Function * statp = static_cast<Function *>(futil);
-//    *fcnval = -statp->value(parameters);
-    statp->setFreeParamValues(parameters);
+    try {statp->setFreeParamValues(parameters);}
+    catch (OutOfBounds& e) {
+      std::cerr << e.what() << std::endl;
+      std::cerr << "Value " << e.value() << " is not between " 
+		<< e.minValue() << " and " << e.maxValue() << std::endl;
+      exit(e.code());
+    }
+    catch (Exception& e) {
+      std::cerr << e.what() << std::endl;
+      exit(e.code());
+    }
     dArg dummy(1.);
     *fcnval = -statp->value(dummy);
     if (*iflag == 2) { // Return gradient values

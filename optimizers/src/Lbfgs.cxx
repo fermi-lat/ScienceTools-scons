@@ -31,7 +31,7 @@ namespace optimizers {
   std::string Lbfgs::getErrorString(void) const
   {return m_errorString;}
 
-  void Lbfgs::find_min(int verbose, double tol) {
+  void Lbfgs::find_min(int verbose, double tol, int tolType) {
 
 // dummy Arg object needed by Function methods
      dArg dummy(1.);
@@ -96,8 +96,8 @@ namespace optimizers {
       if (taskString.substr(0,2) == "FG") {
 	// Request for values of function and gradient.
 	// LBFGS is a minimizer, so we must flip the signs to maximize.
-         m_stat->setFreeParamValues(paramVals);
-         funcVal = -m_stat->value(dummy);
+	m_stat->setFreeParamValues(paramVals);
+	funcVal = -m_stat->value(dummy);
 	m_stat->getFreeDerivs(dummy, gradient);
 	for (int i = 0; i < nparams; i++) {
 	  gradient[i] = -gradient[i];
