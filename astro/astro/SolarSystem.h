@@ -56,12 +56,6 @@ public:
     Hep3Vector getBarycenter(JulianDate jd);
 
     /**
-     * @brief given a date, returns the velocity of the Earth with respect to barycenter in
-     *        inertial coordinates (m/s)
-     */
-    Hep3Vector getEarthVelocity(JulianDate jd);
-
-    /**
     * @brief conversion operator that returns the SkyDir 
     */
     operator SkyDir()const { return m_dir; }

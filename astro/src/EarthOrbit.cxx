@@ -148,7 +148,7 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir &sourceDir) cons
 
    // m = G * Msun / c^3
    static double m = 4.9271e-6;
-   return 2 * m * log(1+costheta);
+   return -2 * m * log(1+costheta);
 }
 
 // Takes a Julian Date and a source direction and computes the light travel time to the
@@ -159,7 +159,7 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
    Hep3Vector barycenter;
    double correction = 0;
    double last_correction = 1e20; // impossible value to force loop to iterate more than once
-   double eps = 1e-6;  // 1 microsecond precision
+   double eps = 1e-7;  // 100 nanosecond precision
    bool precision_not_met = true;
 
    for(int i = 0; precision_not_met && i < 10; i++)
@@ -171,7 +171,7 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 
       Hep3Vector rsrc = sourceDir.dir();
 
-      correction = -1. * barycenter.dot(rsrc) / (rsrc.mag() /** 299792458.*/);
+      correction = -1. * barycenter.dot(rsrc) / rsrc.mag();
 
       if(fabs(correction - last_correction) < eps)
          precision_not_met = false;
