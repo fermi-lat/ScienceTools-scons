@@ -1,11 +1,11 @@
-//#include <iostream.h>
-//#include <fstream.h>
 #include <iostream>
-#include <fstream>
 #include <stdio.h>
 #include <string>
-#include <math.h>
-#include "src/FluxException.h" // defines FATAL_MACRO
+
+//#include <time.h>
+#include <ctime>
+
+//#include "src/FluxException.h" // defines FATAL_MACRO
 #include "GRBConstants.h"
 #include "facilities/Util.h"
 #include "CLHEP/Random/RandFlat.h"
@@ -91,12 +91,12 @@ void GRBConstants::ReadParam(){  // It determines if, in case of random selectio
   //  if (cst::savef) Save();
 }
 
-double GRBConstants::SelectFlatRandom(double min=0.0, double max=1.0)
+double GRBConstants::SelectFlatRandom(double min, double max)
 {
   return min+(max-min)*RandFlat::shoot(1.0);
 }
 
-double GRBConstants::SelectGaussRandom(double min=0.0, double max=2.0)
+double GRBConstants::SelectGaussRandom(double min, double max)
 {
   double temp=0.0;
   while (temp<=0)
