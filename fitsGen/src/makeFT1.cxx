@@ -118,7 +118,7 @@ int main(int iargc, char * argv[]) {
 
 // Colatitude and azimuthal angle in instrument coordinates.
 // THETA
-   std::transform( meritTuple("FT1Theta").begin(), 
+  std::transform( meritTuple("FT1Theta").begin(), 
                    meritTuple("FT1Theta").end(), 
                    angles.begin(), 
                    std::bind2nd(std::multiplies<double>(), M_PI/180.) );
@@ -276,6 +276,17 @@ int main(int iargc, char * argv[]) {
 // GTI infos: START and STOP times
    data->setGTI(gti);
 
+   //HEADER KEYS in GTI for DC1
+   std::string date_start = "2005-07-18T00:00:00.0000";
+   std::string date_stop  = "2005-07-19T00:00:00.0000";
+   data->setKey("DATE-OBS", date_start);
+   data->setKey("DATE-END", date_stop);
+   double duration = gti.front().second - gti.front().first;
+   data->setKey("TSTART", gti.front().first);
+   data->setKey("TSTOP", gti.front().second);
+   data->setKey("ONTIME", duration);
+   data->setKey("TELAPSE", duration);
+
 // These also are not implemented in the FT1 tree, but Goodi seems to
 // want these columns set.
 //   data->setGeoOffset(geoOffset);
@@ -306,6 +317,9 @@ int main(int iargc, char * argv[]) {
      (calibVersion[i])[0] = 0.;
      (calibVersion[i])[1] = 0.;
      (calibVersion[i])[2] = 0.;
+
+     //DC1 FIX:
+     imgammaprob[i]=1.;
 
      bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
      bool zdir_cut          = (reconzdir[i]<-0.2);      

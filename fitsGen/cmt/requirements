@@ -39,9 +39,10 @@ library fitsGen -no_share $(my_headers) fitsGen.cxx
 #
 # Need this environment variable for Goodi templates.
 #
+set TPLDIR "$(GOODIROOT)/Templates"
 set INFILES "$(GOODIROOT)/Data"
 
 # The applications:
-application makeFT1 makeFT1.cxx
 application makeFT2 makeFT2.cxx
+application makeFT1 makeFT1.cxx
 application makeFT2a makeFT2a.cxx

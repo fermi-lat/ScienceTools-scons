@@ -75,6 +75,13 @@ int main(int iargc, char * argv[]) {
    Goodi::ISpacecraftData *scData = dynamic_cast<Goodi::ISpacecraftData *>
       (dataCreator.create(datatype, mission));
 
+   // Set some general header entries:
+   std::string date_start = "2005-07-18T00:00:00.0000";
+   std::string date_stop  = "2005-07-19T00:00:00.0000";
+   scData->setKey("DATE-OBS", date_start);
+   scData->setKey("DATE-END", date_stop);
+
+
 // Read the columns into Goodi.
    unsigned int npts = exposure.nrows();
 
@@ -91,14 +98,24 @@ int main(int iargc, char * argv[]) {
              stopTime.begin());
    stopTime[npts-1] = startTime[npts-1] 
       + (startTime[npts-1] - startTime[npts-2]);
-   scData->setStartTime(startTime);
-   scData->setStopTime(stopTime);
+
+   std::vector<std::pair<double,double> > gti;
+   for(int i=0;i<npts;i++)
+     {
+       gti.push_back(std::make_pair<double,double>(startTime[i],stopTime[i]));
+     }
+       scData->setGTI(gti);
+       //   scData->setStartTime(startTime);
+       //   scData->setStopTime(stopTime);
 
    std::vector<double> vect_times = exposure("elapsed_time");
    std::stable_sort(vect_times.begin(),vect_times.end());
-   std::vector<std::pair<double,double> > gti;
-   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
-   scData->setGTI(gti);
+   //   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
+   //   scData->setGTI(gti);
+
+   std::cout<<vect_times.front()<<" "<<vect_times.back()<<std::endl;
+   scData->setKey("TSTART", vect_times.front());
+   scData->setKey("TSTOP", vect_times.back());
 
 // Spacecraft position.
    std::vector< std::valarray<float> > scPosition(npts);
