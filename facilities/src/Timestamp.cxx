@@ -16,38 +16,26 @@ namespace facilities {
   Timestamp::TZOffset Timestamp::s_tz;
 
   // return current time (resolution of 1 second)
-  Timestamp::Timestamp() : m_nano(0), m_isDelta(false) {
+  Timestamp::Timestamp() : m_nano(0) {
     m_time = time(0);
   }
 
   // time specified as seconds since 1970
-  Timestamp::Timestamp(long int seconds, int nano, bool isDelta)
-    : m_time((time_t) seconds), m_nano(nano), m_isDelta(isDelta)
+  Timestamp::Timestamp(long int seconds, int nano)
+    : m_time((time_t) seconds), m_nano(nano)
   {
     if  ((nano >= inverseNanoInt)  || (nano < 0) || (seconds < 0))
       throw BadTimeInput("facilities::Timestamp bad nano argument");
-  
-    if (m_isDelta) {
-      if (seconds < 0) 
-        throw BadTimeInput("facilities::Timestamp bad delta time");
-    }
   }
 
   // time specified as Julian date
-  Timestamp::Timestamp(double julian, bool isDelta) : m_isDelta(isDelta) {
+  Timestamp::Timestamp(double julian) {
     double secs;
-    if (!isDelta) {
-      secs = (julian - julian1970) * secPerDay;
+    secs = (julian - julian1970) * secPerDay;
 
-      if ((fabs(secs) > maxInt) || (secs < 0) )
-        throw BadTimeInput("Julian time not in range [1970, 2037]");
-    }
-    else {
-      secs = julian * secPerDay;
-      if ((secs > maxInt)  || (secs < 0) )
-        throw BadTimeInput("Julian delta time negative or too large");
-      m_time = (long int) secs;
-    }
+    if ((fabs(secs) > maxInt) || (secs < 0) )
+      throw BadTimeInput("Julian time not in range [1970, 2037]");
+
     m_time = (long int) secs;
 
     // In case time is negative, truncation will go the "wrong way".
@@ -57,7 +45,7 @@ namespace facilities {
   } 
 
   // Time specified as string
-  Timestamp::Timestamp(const std::string& str) : m_nano(0), m_isDelta(false){
+  Timestamp::Timestamp(const std::string& str) : m_nano(0) {
     m_time = toBinary(str);
   }
 
@@ -65,7 +53,7 @@ namespace facilities {
   Timestamp::Timestamp(int year, int month, 
                        int day, int hour, 
                        int minute, int second,
-                       int nano) :  m_nano(nano), m_isDelta(false) {
+                       int nano) :  m_nano(nano) {
     struct tm fields;
 
     // check input   
@@ -203,58 +191,6 @@ namespace facilities {
     strTime += bufPtr;
   }
 
-
-  // Supported addition operands are (absolute + delta) or (delta + delta)
-  Timestamp& Timestamp::operator+=(const Timestamp delta) {
-    if (!delta.isDelta()) 
-      throw BadTimeInput("facilities::Timestamp need delta time");
-    
-    double sum = m_time + delta.m_time;
-    if (sum > maxInt) 
-      throw BadTimeInput("facilities::Timestamp result out of range");
-
-    m_time += delta.m_time;
-    m_nano += delta.m_nano;
-    if (m_nano >= inverseNanoInt) {
-      if (m_time == maxInt) {
-        throw BadTimeInput("facilities::Timestamp out of range");
-      }
-      m_time++;
-      m_nano -= inverseNanoInt;
-    }
-    return *this;
-  }
-
-  Timestamp& Timestamp::operator-=(const Timestamp toSubtract) {
-
-    if (isDelta())  {
-      if (!toSubtract.isDelta())   // can't subtract absolute from delta
-        throw BadTimeInput("facilities::Timestamp need delta time");
-
-      if (*this < toSubtract) // result is delta. No negative deltas allowed
-        throw BadTimeInput("facilities::Timestamp result out of range");
-    }
-    else {         // absolute time minus something
-      double diff = m_time - toSubtract.m_time;
-      if (diff < 0) {
-        throw BadTimeInput("facilities::Timestamp out of range");
-      }
-      if ((diff == 0) && (m_nano < toSubtract.m_nano)) {
-        throw BadTimeInput("facilities::Timestamp out of range");
-      }
-
-      // Result of subtracting absolute from absolute is delta
-      if (!toSubtract.isDelta()) m_isDelta = true;
-
-    }
-    m_time -= toSubtract.m_time;
-    m_nano -= toSubtract.m_nano;
-    if (m_nano < 0) {
-      m_time--;
-      m_nano += inverseNanoInt;
-    }
-    return *this;
-  }
 
   Timestamp::TZOffset::TZOffset() {
     struct tm fields;

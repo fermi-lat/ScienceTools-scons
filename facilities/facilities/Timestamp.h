@@ -20,17 +20,9 @@ namespace facilities {
   }; 
 
 
-  /** Timestamp class, valid for dates from 1970 through 2037 and for
-      non-negative delta times of up to about 68 years 
+  /** Timestamp class, valid for dates from 1970 through 2037
 
-      Supports comparisons, addition and subtraction where sensible:
-          compare two delta times
-          compare two dates
-          date + delta ==> date
-          delta + delta ==> delta
-          date - delta ==> date
-          date - date ==> delta
-
+      Supports comparisons
 
       Input to constructors may be
               Julian date      
@@ -60,10 +52,10 @@ namespace facilities {
     Timestamp();
 
     /// Count seconds from the creation-according-to-unix, start of 1970
-    Timestamp(long int seconds, int nano = 0, bool isDelta = false);
+    Timestamp(long int seconds, int nano = 0);
 
     /// Constructor for Julian date 
-    Timestamp(double julian, bool isDelta = false);
+    Timestamp(double julian);
 
 
     /** Create a timestamp from an ascii string of standard form
@@ -82,25 +74,19 @@ namespace facilities {
               int second = 0, int nano = 0);
 
     /// Return string representation of time, not including nanoseconds;
-    /// valid for absolute times only
     std::string getString() const;
 
-    /// Return julian date or, for delta times, just time interval
-    /// measured in days.
+    /// Return julian date
     double      getJulian() const {
       double julian = (m_time +  m_nano/inverseNano)/secPerDay;
-      if (!m_isDelta) julian += julian1970;
+      julian += julian1970;
       return julian;
     }
 
     double      getNano() const {return m_nano;}
     long int    getClibTime() const {return m_time;}
 
-    bool        isDelta() const {return m_isDelta;}
-
     bool operator<(const Timestamp& other) const {
-      if (m_isDelta != other.m_isDelta) 
-        throw BadTimeInput("facilities::Timestamp incompatible comparison");
       return ((m_time < other.m_time) || 
               ((m_time == other.m_time) && (m_nano < other.m_nano)));
     }
@@ -121,13 +107,10 @@ namespace facilities {
 
     Timestamp& operator= (const Timestamp& other) {
       m_time = other.m_time; m_nano = other.m_nano; 
-      m_isDelta = other.m_isDelta; 
       return *this;
     }
 
     bool operator==(const Timestamp& other) const{
-      if (m_isDelta != other.m_isDelta) 
-        throw BadTimeInput("facilities::Timestamp incompatible comparison");
       return ((m_time == other.m_time) && (m_nano == other.m_nano));
     }
 
@@ -135,11 +118,6 @@ namespace facilities {
       return (!(*this == other));
     }
 
-    Timestamp&  operator+=(const Timestamp delta);
-
-    Timestamp&  operator-=(const Timestamp delta);
-
-    // To come:  operator+   operator- 
     //             << (for debugging)
   private:
     // See the U.S. Naval Observatory site, 
@@ -175,25 +153,7 @@ namespace facilities {
 
     /// Save fractional seconds separately (associated with m_time)
     int  m_nano;
-
-    /// Flag to distinguish delta times from dates
-    bool m_isDelta;
   };
-
-  /// Addition
-  inline Timestamp operator+ (Timestamp a, 
-                              Timestamp b) {
-    Timestamp t = a;
-    return t += b;
-  }
-
-
-  /// Subtraction
-  inline Timestamp operator- (Timestamp a, 
-                              Timestamp b) {
-    Timestamp t = a;
-    return t -= b;
-  }
 
 }
 
