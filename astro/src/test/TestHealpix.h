@@ -14,13 +14,22 @@ class TestHealpix {
 public:
     TestHealpix(){
         using astro::Healpix;
+        test(256, Healpix::NESTED, astro::SkyDir::GALACTIC);
+        test(256, Healpix::NESTED, astro::SkyDir::EQUATORIAL);
+        test(256, Healpix::RING, astro::SkyDir::GALACTIC);
+        test(256, Healpix::RING, astro::SkyDir::EQUATORIAL);
+    }
+    void test(long nside, astro::Healpix::Ordering ord, astro::SkyDir::CoordSystem coord)
+    {
+        using astro::Healpix;
 
         // create basic Healpix object to define the pixelization level nside
-        Healpix hp(256, Healpix::RING);
+        Healpix hp(nside, ord, coord);
 
         std::cout << "\nCreated a " << (hp.nested()? "NESTED":"RING") 
-            << " Healpix object with " << hp.npix() << " pixels" 
-            << " (nside="<<hp.nside()<<")"<< std::endl;
+            << " Healpix object with " << hp.npix() << " pixels"  
+            << " (nside="<<hp.nside()<<")"
+            << " in " << (hp.galactic()? "GALACTIC":"EQUATORIAL") << " coords"<< std::endl;
 
 #if 0
         // make a table of index, ra, dec 
@@ -35,7 +44,7 @@ public:
         // test doing an integral
         std::cout << "\nTesting integral with even powers of cos(theta)\n"
             << "n\tintegral/4PI\texpect\t\t relative error\n";
-        for( int i =2; i<4; i+=2){
+        for( int i =2; i<6; i+=2){
             double integral = hp.integrate(CosinePower(i))/(4.*M_PI),
                 expect = ((i&1)==1)? 0 : 1./(i+1.);
             std::cout << i << "\t" 
@@ -44,6 +53,8 @@ public:
                 << std::setw(15) << expect
                 << std::setw(12) << std::setprecision(1)<< integral/expect -1
                 << std::endl;
+            if( fabs(integral-expect)> 1e-6) throw std::runtime_error("Failed integration test"); 
+
         }
     }
 

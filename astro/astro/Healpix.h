@@ -67,6 +67,8 @@ public:
     ///@brief the value of the ordering parameter: either NESTED or RING
     Ordering ord()const{return m_ord;}
     bool nested()const{return m_ord==NESTED;}
+    astro::SkyDir::CoordSystem coordsys()const{return m_coordsys;}
+    bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
     /**@class Pixel
     @brief represent a Healpix pixel

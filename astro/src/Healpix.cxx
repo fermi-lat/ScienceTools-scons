@@ -775,9 +775,16 @@ void Healpix::ang2pix(double theta, double phi, long &index)const
 Healpix::Pixel::Pixel(const astro::SkyDir &dir, const Healpix& hp)
 : m_healpix(&hp)
 {
-    double theta = M_PI/2- dir.dec()*M_PI/180.;
-    double phi = dir.ra()*M_PI/180;
-    
+    // get theta, phi (radians) in appropriate coordinate system
+    double theta, phi;
+    if( hp.coordsys()==astro::SkyDir::EQUATORIAL){
+        theta = M_PI/2- dir.dec()*M_PI/180.;
+        phi = dir.ra()*M_PI/180;
+    }else{  // galactic
+        theta = M_PI/2- dir.b()*M_PI/180.;
+        phi = dir.l()*M_PI/180;
+    }
+    // and look up the pixel number
     m_healpix->ang2pix( theta, phi, m_index);
 }
 
@@ -786,7 +793,7 @@ Healpix::Pixel::operator astro::SkyDir ()const
     double theta, phi;  
     m_healpix->pix2ang( m_index, theta, phi);
     // convert to ra, dec (or l,b)
-    return astro::SkyDir( phi*180/M_PI, (M_PI/2-theta)*180/M_PI );
+    return astro::SkyDir( phi*180/M_PI, (M_PI/2-theta)*180/M_PI, m_healpix->coordsys() );
 }
 
 double Healpix::integrate(const astro::SkyFunction& f)const
