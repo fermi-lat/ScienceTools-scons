@@ -14,10 +14,8 @@
 class BaseImage;
 
 //_____________________________________________________________________________
-// Fits_IO and FitsFileIter
-//    These classes are internal classes and should not by used directly 
-//    by an application or in an interactive session.
-//    These classes are used by IOElement to read and store data into
+// Fits_IO 
+//    This class is  internal,  used by IOElement to read and store data into
 //    FITS files.
 
 static const char* errMsg[] = {
@@ -89,7 +87,7 @@ Fits_IO::~Fits_IO()
 }
 //_____________________________________________________________________________
 IOElement * Fits_IO::read(const std::string & fileName, const std::string & name,
-                          int cycle, FMode mode, TClass * classType)
+                          int cycle, FMode mode)
 {
     // tries to open an element in a FITS file and converts it into IOElement
     // or one of its derived classes.
@@ -276,7 +274,7 @@ int Fits_IO::deleteElement()
     return 0;
 }
 //_____________________________________________________________________________
-int Fits_IO::saveElement(int compLevel)
+int Fits_IO::saveElement()
 {
     // saves the current element into the FITS file
 
@@ -350,7 +348,7 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
             value[len+1] = 0;
             std::string svalue(value+1);
             if (strcmp("EXTNAME", name) != 0 && strcmp("GRPNAME", name) != 0)
-                element->addAttribute(Attr<std::string>(name, svalue, unit, comment), false);
+                element->addAttribute(StringAttr(name, svalue, unit, comment), false);
 
             // set the element name
             if (strcmp("EXTNAME", name) == 0 && strcmp("GROUPING", value+1) != 0)
@@ -360,19 +358,19 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
 
         }
         else if (strcmp(value, "T") == 0)
-            element->addAttribute(Attr<bool>(name, true, unit, comment), false);
+            element->addAttribute(BoolAttr(name, true, unit, comment), false);
         else if (strcmp(value, "F") == 0)
-            element->addAttribute(Attr<bool>(name, false, unit, comment), false);
+            element->addAttribute(BoolAttr(name, false, unit, comment), false);
         else if (strlen(value) < 9 && value[0] != 0 && strchr(value, '.') == NULL)
-            element->addAttribute(Attr<int>(name, atoi(value), unit, comment), false);
+            element->addAttribute(IntAttr(name, atoi(value), unit, comment), false);
         else if (strlen(value) < 9 && value[0] != 0)
         {
             double val;
             sscanf(value, "%lg", &val);
-            element->addAttribute(Attr<double>(name, val, unit, comment), false);
+            element->addAttribute(DoubleAttr(name, val, unit, comment), false);
         }
         else
-            element->addAttribute(Attr<std::string>(name, std::string(value), unit, comment), false);
+            element->addAttribute(StringAttr(name, std::string(value), unit, comment), false);
     }
 
 }
@@ -383,8 +381,8 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
         return;
     for( Header::iterator it = element->begin(); it != element->end(); ++it){
         BaseAttr& attr = **it;
-           const type_info& t = typeid(attr);
-           std::string tname(t.name());
+
+           std::string tname(typeid(attr).name());
            int k = tname.find_first_of("<")+1;
 
            if (tname.substr(k,4)=="bool") {
@@ -401,7 +399,7 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 
            }else if (tname.substr(k,3)=="int") {
 
-               int val = (dynamic_cast< Attr<double>& >(attr)).value();
+               int val = (int)(dynamic_cast< Attr<double>& >(attr)).value();
                fits_update_key(fptr, TINT, (char*)attr.name().c_str(), 
                    &val, (char*)attr.comment().c_str(), status);
     
@@ -435,7 +433,7 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 
 }
 
-
+#if 0 //do we really need this?
 namespace {
 // this unused function ensures that the cfitsio function ffgiwcs and ffgtwcs are linked
 // into the libtf.so library.
@@ -449,3 +447,4 @@ static void never_used()
     ffgtwcs(fptr, 1, 2, &header, &status);
 }
 }
+#endif

@@ -18,8 +18,7 @@ public:
    ~Fits_IO();
 
    static   IOElement *  read(const std::string & fileName, const std::string & name, 
-       int cycle = 0, VirtualIO::FMode mode = kFRead, 
-                                  TClass * classType = NULL);
+			      int cycle = 0, VirtualIO::FMode mode = kFRead);
 
    virtual  bool         isOpen();
    virtual  const std::string    getFileName();
@@ -27,7 +26,7 @@ public:
 
    virtual  void         createElement();
    virtual  int          deleteElement();
-   virtual  int          saveElement(int compLevel = -1);
+   virtual  int          saveElement();
 
    static void report_error(int status);
 private:

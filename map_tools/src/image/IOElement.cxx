@@ -5,6 +5,7 @@
 #include "IOElement.h"
 #include "Fits_IO.h"
 
+#include <stdexcept>
 //_____________________________________________________________________________
 IOElement *  IOElement::readIOElement(const std::string & fileName, const std::string & name,  
                                       unsigned int cycle, VirtualIO::FMode mode)

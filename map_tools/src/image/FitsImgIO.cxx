@@ -14,7 +14,7 @@
 #else
 #include <values.h>
 #endif
-
+#include <stdexcept>
 #include "fitsio.h"
 
 static IOElement * ReadIntImage(fitsfile *fptr, std::vector<long> axes, int * status);
@@ -301,11 +301,11 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
 
     int status = 0;
     unsigned int numPixel = image->pixelCount();
-
+#ifdef WIN32 // this does not work on Linux, assume only float for now
     const type_info& t = typeid(*image);
 
     if( strcmp(t.raw_name(), typeid(FloatImg).raw_name())==0 ) {
-
+#endif
         FloatImg * fimg = dynamic_cast<FloatImg*>(image);
         float nullval = fimg->getNull();
         float* data = &*fimg->data().begin();
@@ -313,7 +313,7 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
             data, 
             fimg->nullDefined() ? &nullval : 0,
             &status);
-
+#ifdef WIN32
     } else if( strcmp(t.raw_name(), typeid(DoubleImg).raw_name())==0 ) {
 
         DoubleImg * fimg = dynamic_cast<DoubleImg*>(image);
@@ -337,7 +337,7 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
     } else {
         throw std::invalid_argument(std::string("Attempt to write unsupported image type")+t.name());
     }
-
+#endif
     return status;
 }
 

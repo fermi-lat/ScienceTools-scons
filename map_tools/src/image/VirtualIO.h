@@ -19,10 +19,9 @@ class VirtualIO
 public:
     typedef enum {kFUndefined = 0, kFRead = 1, kFReadWrite = 2} FMode;
 
-    VirtualIO() {}
-    VirtualIO( IOElement * element):m_element(element){}
+   VirtualIO( IOElement * element=0);
  
-   virtual ~VirtualIO() {}
+   virtual ~VirtualIO();
 
    virtual  bool         isOpen() = 0;
    virtual  const std::string   getFileName() = 0;
@@ -30,7 +29,7 @@ public:
 
    virtual  void         createElement() = 0;
    virtual  int          deleteElement() = 0;
-   virtual  int          saveElement(int compLevel = -1) = 0;
+   virtual  int          saveElement()=0;
 
    IOElement* element()const{return m_element;}
 

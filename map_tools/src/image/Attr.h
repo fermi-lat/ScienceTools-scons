@@ -31,8 +31,8 @@ public:
     //virtual operator double()const = 0;
 private:
     std::string m_name;
-    std::string m_comment; 
     std::string m_unit;
+    std::string m_comment; 
 };
 
 //_____________________________________________________________________________
@@ -62,7 +62,7 @@ typedef Attr<int> IntAttr;
 typedef Attr<unsigned int> UintAttr;
 typedef Attr<double> DoubleAttr;
 typedef Attr<float> FloatAttr;
-
+typedef Attr<bool> BoolAttr;
 
 inline std::ostream& operator<<(std::ostream& out, const BaseAttr & attr){ attr.print(out); return out;}
 #endif

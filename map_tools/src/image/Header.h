@@ -16,7 +16,7 @@ class Header : public std::vector< BaseAttr*>
 public:
     Header()  {}
     virtual ~Header(){}; //TODO: delete objects in vector
-    void addAttribute(BaseAttr& attribute, bool replace=true){
+    void addAttribute(const BaseAttr& attribute, bool /*replace*/=true){ //TODO: implement replace?
         push_back(attribute.clone());
     }
     void setName(const std::string name){m_name=name;}
