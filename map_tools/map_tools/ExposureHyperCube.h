@@ -33,7 +33,7 @@ namespace map_tools {
         //! saves the image
         void save();
     private:
-        //! pointer to the associated tip Image class
+        //! pointer to the associated tip Image object
         tip::Image* m_image;
     };
 }// namespace map_tools

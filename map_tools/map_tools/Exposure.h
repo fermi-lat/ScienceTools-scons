@@ -96,14 +96,29 @@ public:
     /** @class Exposure::Aeff
 
     @brief abstract base class to describe effective area as a funcion of the cosine of the polar angle in spacecraft coordinates
-    */
+    (deprecated since not needed) 
+ */
     class Aeff {
     public:
         virtual double operator()(double costheta) const =0;
     };
-    /// return the exposure at the given ra, dec, and cos theta weighting
-    double operator()(double ra, double dec, const Aeff& fun)const;
-    double operator()(const astro::SkyDir& dir, const Aeff& fun)const;
+
+    /// return the exposure in the given direction, and cos theta weighting
+    template<class T>
+    double operator()(const astro::SkyDir& dir, const T& fun)const{
+            ///integrate the exposure at dir:
+
+    double currentExposure = 0.;
+    int index = Index(dir.ra(), dir.dec()); 
+    for( int i=0; i< Index::cosfactor; ++i){
+        double cosTheta = Index::costheta_value(i), 
+            aeff_val = fun(cosTheta),
+            map_val =  m_exposureMap[index];
+        currentExposure += map_val * aeff_val;
+        index+= Index::ra_factor*Index::dec_factor;
+    }
+    return currentExposure;
+    }
 
     //! total interval (sec)
     double total()const{return m_total;}

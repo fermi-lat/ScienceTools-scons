@@ -95,40 +95,24 @@ Exposure::Exposure(const std::string& fits_file)
         << fits_file << ", size is " << m_exposureMap.size() << std::endl;
 
     if( size != m_exposureMap.size() ) {
-        throw std::invalid_argument("wrong size");
+        throw std::invalid_argument("Exposure::Exposure -- FITS image wrong");
     }
 }
 
-
-//------------------------------------------------------------------------------
-double Exposure::operator()(double ra, double dec, const Aeff& fun)const
-{
-    ///integrate the exposure at (ra,dec):
-
-    double currentExposure = 0.;
-    int index = Index(ra,dec); 
-    for( int i=0; i< Index::cosfactor; ++i){
-        double cosTheta = Index::costheta_value(i), 
-            aeff_val = fun(cosTheta),
-            map_val =  m_exposureMap[index];
-        currentExposure += map_val * aeff_val;
-        index+= Index::ra_factor*Index::dec_factor;
-    }
-    return currentExposure;
-}
-//------------------------------------------------------------------------------
-double Exposure::operator()(const astro::SkyDir& dir, const Aeff& fun)const
-{ 
-    return operator()(dir.ra(), dir.dec(), fun);
-}
 
 //------------------------------------------------------------------------------
 void Exposure::add(const astro::SkyDir& pos, double deltat){ 
 
     if(deltat<=0) return;
-    for(double lprime=-180.+0.5*Index::skybinsize; lprime <180. ; lprime += Index::skybinsize){
-        for(double bprime=-90.+0.5*Index::skybinsize; bprime <90. ; bprime += Index::skybinsize){
+    ///@ todo: replace this double loop with iterator that dereferences to a SkyDir.
+    for(double lprime=-180.+0.5*Index::skybinsize; lprime <180. ;
+          lprime += Index::skybinsize)
+    {
+        for(double bprime=-90.+0.5*Index::skybinsize; bprime <90. ;
+                 bprime += Index::skybinsize)
+        {
             astro::SkyDir prime(lprime, bprime);
+
             double cosdiff = const_cast<astro::SkyDir&>(pos)()*prime();
             if( cosdiff> Index::cosmin)
                 m_exposureMap[Index(lprime, bprime, cosdiff)]+=deltat;

@@ -9,7 +9,7 @@ $Header$
 #include "map_tools/ExposureHyperCube.h"
 #include "map_tools/SkyImage.h"
 
-
+#include "TestCosineBinner.h"
 
 #include <iostream>
 #include <algorithm>
@@ -56,22 +56,22 @@ int main(int argc, char** argv ){
             }
         }
 
-        double test = e(0,0, TestAeff()) / total;
+        double test = e(astro::SkyDir(0,0), TestAeff()) / total;
         if ( fabs(test-0.5)> 0.01 ){
             std::cerr << "bad cosine integral: " << test << std::endl;
             return 1;
         }
-        test = e(0,89, TestAeff()) / total;
+        test = e(astro::SkyDir(0,89), TestAeff()) / total;
         if ( fabs(test-0.5)> 0.01 ){
             std::cerr << "bad cosine integral: " << test << std::endl;
             return 1;
         }
-        test = e(180, 89, TestAeff()) / total;
+        test = e(astro::SkyDir(180, 89), TestAeff()) / total;
         if ( fabs(test-0.5)> 0.01 ){
             std::cerr << "bad cosine integral: " << test << std::endl;
             return 1;
         }
-        test = e(0,0, TestAeff(1.0) ) /total;
+        test = e(astro::SkyDir(0,0), TestAeff(1.0) ) /total;
 
         if ( fabs(test-0.25)> 0.01 ){
             std::cerr << "bad cosine integral: " << test << std::endl;
@@ -94,6 +94,8 @@ int main(int argc, char** argv ){
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
         if( tt!=36.0) throw std::runtime_error("Fail pixelvalue test!"); 
 
+        // now test cos
+        TestCosineBinner();
 
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  

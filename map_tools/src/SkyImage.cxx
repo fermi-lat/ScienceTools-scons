@@ -221,7 +221,7 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
             double t= req(dir);
             m_imageData[k+offset] = t;
             m_total += t;
-        }catch(const std::exception& ex){ 
+        }catch(const std::exception& ){ 
             // any exception: just fill in a NaN
             m_imageData[k+offset]=dnan; 
         }
