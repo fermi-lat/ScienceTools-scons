@@ -8,7 +8,6 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
 use STpolicy *
 use pulsarDb *
-use pulsePhase *
 use st_app *
 use st_facilities *
 use st_graph *
