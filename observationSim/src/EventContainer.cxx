@@ -164,7 +164,7 @@ void EventContainer::writeEvents() {
       m_goodiEventData->setRA(ra);
       m_goodiEventData->setDec(dec);
       m_goodiEventData->setTheta(theta);
-      m_goodiEventData->setPsi(phi);
+      m_goodiEventData->setPhi(phi);
       m_goodiEventData->setZenithAngle(zenithAngle);
 
 // Set the sizes of the valarray data for the multiword columns,

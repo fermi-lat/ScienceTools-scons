@@ -21,7 +21,7 @@ apply_pattern package_include
 
 private
 
-use Goodi v1*
+use Goodi v2*
 
 #use python v2* IExternal
 #macro pydir ../python/
