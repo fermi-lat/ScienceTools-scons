@@ -86,23 +86,27 @@ public:
    void listSpectra() const;
 
    /// Generate photon events for a given elapsed simulation time.
-   void generateEvents(double simulationTime, EventContainer &events,
+   void generateEvents(double simulationTime, 
+                       EventContainer &events,
                        ScDataContainer &scData, 
                        latResponse::Irfs &response,
-                       Spacecraft *spacecraft) {
+                       Spacecraft *spacecraft, 
+                       EventContainer *allEvents=0) {
       m_simTime = simulationTime;
-      makeEvents(events, scData, response, spacecraft);
+      makeEvents(events, scData, response, spacecraft, true, allEvents);
    }
 
    /// Generate a specified number of events.
-   void generateEvents(long numberOfEvents, EventContainer &events,
+   void generateEvents(long numberOfEvents, 
+                       EventContainer &events,
                        ScDataContainer &scData, 
                        latResponse::Irfs &response,
-                       Spacecraft *spacecraft) {
+                       Spacecraft *spacecraft,
+                       EventContainer *allEvents=0) {
       m_maxNumEvents = numberOfEvents;
-      std::cout << "Number of events to generate: "
-                << m_maxNumEvents << std::endl;
-      makeEvents(events, scData, response, spacecraft, false);
+//       std::cout << "Number of events to generate: "
+//                 << m_maxNumEvents << std::endl;
+      makeEvents(events, scData, response, spacecraft, false, allEvents);
    }
 
 private:
@@ -132,7 +136,7 @@ private:
 
    void makeEvents(EventContainer &, ScDataContainer &, 
                    latResponse::Irfs &, Spacecraft *spacecraft,
-                   bool useSimTime=true);
+                   bool useSimTime, EventContainer *allEvents);
 
 //   void fluxLoad();
 

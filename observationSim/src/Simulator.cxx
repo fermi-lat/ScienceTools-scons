@@ -144,7 +144,7 @@ void Simulator::listSpectra() const {
 
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
                            latResponse::Irfs &response, Spacecraft *spacecraft,
-                           bool useSimTime) {
+                           bool useSimTime, EventContainer *allEvents) {
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
 
@@ -169,10 +169,13 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
          if (name.find("TimeTick") != std::string::npos) {
             scData.addScData(m_newEvent, spacecraft);
          } else {
+            if (allEvents != 0) 
+               allEvents->addEvent(m_newEvent, response, spacecraft, 
+                                   false, true);
             if (events.addEvent(m_newEvent, response, spacecraft)) {
                m_numEvents++;
-               if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
-                   m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
+//                if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
+//                    m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
             }
          }
 // EventSource::event(...) does not generate a pointer to a new object
@@ -187,7 +190,7 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
          m_elapsedTime = m_simTime;
       }
    } // while (!done())
-   if (!m_useSimTime) std::cerr << "!" << std::endl;
+//    if (!m_useSimTime) std::cerr << "!" << std::endl;
 }
 
 bool Simulator::done() {

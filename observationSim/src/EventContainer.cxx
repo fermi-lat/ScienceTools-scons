@@ -48,7 +48,7 @@ void EventContainer::init() {
 int EventContainer::addEvent(EventSource *event, 
                              latResponse::Irfs &response, 
                              Spacecraft *spacecraft,
-                             bool flush) {
+                             bool flush, bool alwaysAccept) {
    
    std::string particleType = event->particleName();
    double time = event->time();
@@ -69,7 +69,16 @@ int EventContainer::addEvent(EventSource *event,
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
-   double inclination = sourceDir.difference(zAxis)*180./M_PI;
+//   double inclination = sourceDir.difference(zAxis)*180./M_PI;
+
+   if (alwaysAccept) {
+      m_events.push_back( Event(time, energy, 
+                                sourceDir, sourceDir, zAxis, xAxis,
+                                ScZenith(time)) );
+      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
+      return 1;
+   }
+      
    double effArea = (*response.aeff())(energy, sourceDir, zAxis, xAxis);
    if ( energy > 31.623 
         && RandFlat::shoot() < m_prob
@@ -126,8 +135,10 @@ void EventContainer::writeEvents() {
          vec_it->reserve(m_events.size());
       for (std::vector<Event>::const_iterator it = m_events.begin();
            it != m_events.end(); it++) {
-         data[0].push_back(it->appDir().ra());
-         data[1].push_back(it->appDir().dec());
+//          data[0].push_back(it->appDir().ra());
+//          data[1].push_back(it->appDir().dec());
+         data[0].push_back(it->appDir().l());
+         data[1].push_back(it->appDir().b());
          data[2].push_back(it->energy());
          data[3].push_back(it->time());
          data[4].push_back(it->xAxis().dir().x());
@@ -171,8 +182,10 @@ void EventContainer::makeFitsTable() {
       colName.push_back("src_y");fmt.push_back("1E");unit.push_back("dir_cos");
       colName.push_back("src_z");fmt.push_back("1E");unit.push_back("dir_cos");
    } else {
-      colName.push_back("RA"); fmt.push_back("1E"); unit.push_back("deg");
-      colName.push_back("DEC"); fmt.push_back("1E"); unit.push_back("deg");
+//       colName.push_back("RA"); fmt.push_back("1E"); unit.push_back("deg");
+//       colName.push_back("DEC"); fmt.push_back("1E"); unit.push_back("deg");
+      colName.push_back("GLON"); fmt.push_back("1E"); unit.push_back("deg");
+      colName.push_back("GLAT"); fmt.push_back("1E"); unit.push_back("deg");
       colName.push_back("energy"); fmt.push_back("1E"); unit.push_back("MeV");
       colName.push_back("time"); fmt.push_back("1D"); unit.push_back("s");
       colName.push_back("SC_x0");fmt.push_back("1E");unit.push_back("dir cos");
