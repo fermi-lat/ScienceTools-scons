@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 
 #include "pulsePhase/TimingModel.h"
@@ -17,7 +18,28 @@ class PulsePhaseApp : public st_app::StApp {
 void PulsePhaseApp::run() {
   st_app::AppParGroup & par_group = getParGroup("pulsePhase"); // getParGroup is in base class st_app::StApp
 
-  par_group.Prompt(); // Prompts for all parameters.
+  // par_group.Prompt(); // Prompts for all parameters.
+  par_group.Prompt("eventfile");
+  par_group.Save();
+
+  par_group.Prompt("ephstyle");
+  std::string eph_style = par_group["ephstyle"];
+  if (eph_style == "FREQ") {
+    par_group.Prompt("epoch");
+    par_group.Prompt("phi0");
+    par_group.Prompt("f0");
+    par_group.Prompt("f1");
+    par_group.Prompt("f2");
+  } else if (eph_style == "PER") {
+    par_group.Prompt("epoch");
+    par_group.Prompt("phi0");
+    par_group.Prompt("p0");
+    par_group.Prompt("p1");
+    par_group.Prompt("p2");
+  } else {
+    std::cerr << "Ephemeris style \"" << par_group["ephstyle"].Value() << "\" is not supported." << std::endl;
+    return;
+  }
 
   par_group.Save(); // Save the values of the parameters.
 
@@ -27,9 +49,22 @@ void PulsePhaseApp::run() {
   // Get model parameters.
   double epoch = par_group["epoch"];
   double phi0 = par_group["phi0"];
-  double f0 = par_group["f0"];
-  double f1 = par_group["f1"];
-  double f2 = par_group["f2"];
+  double f0;
+  double f1;
+  double f2;
+  if (eph_style == "FREQ") {
+    f0 = par_group["f0"];
+    f1 = par_group["f1"];
+    f2 = par_group["f2"];
+  } else if (eph_style == "PER") {
+    double p0 = par_group["p0"];
+    double p1 = par_group["p1"];
+    double p2 = par_group["p2"];
+    double p0squared = p0 * p0;
+    f0 = 1.0 / p0;
+    f1 = - p1 / p0squared;
+    f2 = 2.0 * p1 * p1 / (p0 * p0squared) - p2 / p0squared;
+  }
   std::string time_field = par_group["timefield"];
 
   // Create the model.
@@ -47,7 +82,6 @@ void PulsePhaseApp::run() {
 
   // Clean up.
   delete events;
-
 }
 
 st_app::StAppFactory<PulsePhaseApp> g_factory;
