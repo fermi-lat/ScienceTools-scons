@@ -30,7 +30,7 @@ EarthCoordinate::EarthCoordinate(Hep3Vector pos, JulianDate jd)
     // this is also such a correction: the number 0.00669454 is the geodetic eccentricity squared?
     // see http://www.cage.curtin.edu.au/~will/gra64_05.pdf
     // or http://www.colorado.edu/geography/gcraft/notes/datum/gif/ellipse.gif
-    m_altitude=sqrt(sqr(pos.x())+sqr(pos.y())/cos(m_lat) )
+    m_altitude=sqrt(sqr(pos.x())+sqr(pos.y()))/cos(m_lat)
         -s_EarthRadius / (1000.*sqrt(1.-sqr(0.00669454*sin(m_lat))));
 
 }
