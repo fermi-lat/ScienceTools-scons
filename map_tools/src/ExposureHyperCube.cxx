@@ -10,6 +10,7 @@
 #include "tip/IFileSvc.h"
 
 #include <errno.h>
+#include <stdexcept>
 
 
 using namespace map_tools;
