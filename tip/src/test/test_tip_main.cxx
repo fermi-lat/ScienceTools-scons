@@ -9,6 +9,7 @@
 
 #include "table/IFileSvc.h"
 #include "table/Table.h"
+#include "table/VectorAdaptor.h"
 
 int main() {
   int status = 0;
@@ -203,6 +204,29 @@ int main() {
             first_time = false;
           }
         }
+
+        // Try getting counts as a vector-valued column.
+        VectorAdaptorMM<double> vcounts_mm = r["Counts"];
+        if (4096 != vcounts_mm.getNumElements()) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "Size of counts when read into a vector is " <<
+              vcounts_mm.getNumElements() << " not " << 4096 << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+#ifdef foo
+        if (counts != *((const std::vector<double> &) vcounts).begin()) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "First Counts value when read into a vector is " <<
+              *((const std::vector<double> &) vcounts).begin() << " not " << counts << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+#endif
       }
 
     } catch(const TableException & x) {
