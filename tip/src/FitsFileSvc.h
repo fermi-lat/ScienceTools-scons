@@ -15,6 +15,9 @@ namespace table {
   /** \class FitsFileSvc
 
       \brief Singleton factory for creating, editing and reading tables and images from files.
+      Note that despite the FITS-specific name, this will (for now at least) also try to open
+      Root files! This class should thus be renamed eventually, or else a Root-specific FileSvc
+      developed
   */
   class FitsFileSvc : public IFileSvc {
     public:
@@ -23,7 +26,7 @@ namespace table {
       */
       FitsFileSvc();
 
-      /** \brief Open an existing FITS table with modification access.
+      /** \brief Open an existing FITS table or Root table (for now) with modification access.
           \param file_name The name of the FITS file.
           \param table_name The name of the FITS table.
       */
