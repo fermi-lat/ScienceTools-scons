@@ -4,8 +4,9 @@
 #ifndef LATTRIGGER_CONSTANTS_H
 #define LATTRIGGER_CONSTANTS_H 
 
-
-
+#ifndef WIN32
+#include <math.h>
+#endif
 
 
 

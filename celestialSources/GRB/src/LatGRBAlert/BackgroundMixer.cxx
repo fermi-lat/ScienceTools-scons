@@ -5,7 +5,9 @@
 #include <iostream>
 #include <algorithm>              // for sort
 #include <iomanip>
-
+#ifndef WIN32
+#include <stdio.h>
+#endif
 #include "facilities/Util.h"
 
 
