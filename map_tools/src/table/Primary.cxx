@@ -150,7 +150,7 @@ Primary::~Primary()
 }
 
 
-void Primary::setImageHeader(bool simple, bool extend, long naxis,
+void Primary::setImageHeader(bool, bool extend, long naxis,
                              const std::vector<long> &naxes, int bitpix, double zero, double scale)
 {
     setExtend(extend);
@@ -199,6 +199,8 @@ void Primary::loadHeaderKeys()
                     m_headerKeys[keys[i]] = new KeyData<double>(keys[i], keyType[i], 0.);
                     break;
                 }
+	    default: // see if this helps the gcc warning
+	      ;
             }
         }
     }      

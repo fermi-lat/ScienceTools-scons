@@ -19,7 +19,7 @@ public:
     double m_slope;
 };
 
-int main(int argc, char* argv[]){
+int main(int , char** ){
     try{
         Exposure e( 10,  0.1);
         double total=0;
