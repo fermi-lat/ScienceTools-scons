@@ -31,18 +31,22 @@ namespace astro {
         */
         Hep3Vector position(JulianDate jd)const;
         
-        ///return the inclination of orbit
+        /**
+        * return the inclination of orbit
+        */
         double inclination(){return s_incl;}
         
-        ///return the orbital phase, in terms of 'phase since ascending node was passed'
+        /**
+        * return the orbital phase, in terms of 'phase since ascending node was passed'
+        * @param jd the Julian Date for the orbit calculation
+        */
         double phase(JulianDate jd) const;
         
-        ///method to return the julian date represented by a number of "elapsed seconds"
+        /** Return the julian date
+        * @param seconds number of "elapsed seconds", as exist in FluxSvc
+        */ 
         ///this is for interfacing with FluxSvc, which uses "elapsed seconds" as the time parameter.
         JulianDate dateFromSeconds(double seconds) const;
-        
-        ///return the rotation which rotates celestial coordinates into LAT-local ones.
-        HepRotation CelestialToLocal(JulianDate JD) const;
         
     private:
         

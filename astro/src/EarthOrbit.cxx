@@ -92,28 +92,7 @@ Hep3Vector EarthOrbit::position(JulianDate JD) const
     
     return pos;  
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-HepRotation EarthOrbit::CelestialToLocal(JulianDate JD) const
-{
-    double elapse = (JD - JDStart)*SecondsPerDay;
-    
-    double M=m_M0+m_dMdt*elapse;
-    
-    double Omega = m_Omega0+m_dOmegadt*elapse;
-    
-    // only for comparison with orbit.cpp -- should be 2pi
-    range(&M,6.28);
-    range(&Omega,6.28);
-    
-    double w = m_w0+m_dwdt*elapse; 
-    
-    HepRotation rot;
-    
-    rot.rotateZ(w).rotateX(s_incl).rotateZ(Omega);
-    
-    return rot;  
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 double EarthOrbit::Kepler(double MeanAnomaly,double Eccentricity)
 {
     double E = MeanAnomaly;    // Initial guess to Eccentric Anomaly
