@@ -54,9 +54,9 @@ namespace hoops {
   template <typename T, typename Iterator_t>
   class EXPSYM BiDirItor : public IBiDirItor<T> {
     public:
-      BiDirItor(): mItor() {}
-      BiDirItor(const BiDirItor & other): mItor(other.mItor) {}
-      BiDirItor(const Iterator_t & other): mItor(other) {}
+      BiDirItor(): IBiDirItor<T>(), mItor() {}
+      BiDirItor(const BiDirItor & other): IBiDirItor<T>(), mItor(other.mItor) {}
+      BiDirItor(const Iterator_t & other): IBiDirItor<T>(), mItor(other) {}
 
       virtual ~BiDirItor() {}
 
@@ -83,10 +83,10 @@ namespace hoops {
   template <typename T>
   class EXPSYM GenBiDirItor : public IBiDirItor<T> {
     public:
-      GenBiDirItor(): mItor(0) {}
-      GenBiDirItor(const GenBiDirItor & other): mItor(0)
+      GenBiDirItor(): IBiDirItor<T>(), mItor(0) {}
+      GenBiDirItor(const GenBiDirItor & other): IBiDirItor<T>(), mItor(0)
         { if (other.mItor) mItor = other.mItor->Clone(); }
-      GenBiDirItor(const IBiDirItor<T> & other): mItor(0)
+      GenBiDirItor(const IBiDirItor<T> & other): IBiDirItor<T>(), mItor(0)
         { mItor = other.Clone(); }
 
       virtual ~GenBiDirItor() { delete mItor; }
@@ -148,10 +148,10 @@ namespace hoops {
   template <typename T, typename Iterator_t>
   class EXPSYM ConstBiDirItor : public IConstBiDirItor<T> {
     public:
-      ConstBiDirItor(): mConstItor() {}
+      ConstBiDirItor(): IConstBiDirItor<T>(), mConstItor() {}
       ConstBiDirItor(const ConstBiDirItor & other):
-        mConstItor(other.mConstItor) {}
-      ConstBiDirItor(const Iterator_t & other): mConstItor(other) {}
+        IConstBiDirItor<T>(), mConstItor(other.mConstItor) {}
+      ConstBiDirItor(const Iterator_t & other): IConstBiDirItor<T>(), mConstItor(other) {}
 
       virtual ~ConstBiDirItor() {}
 
@@ -178,10 +178,10 @@ namespace hoops {
   template <typename T>
   class EXPSYM ConstGenBiDirItor : public IConstBiDirItor<T> {
     public:
-      ConstGenBiDirItor(): mItor(0) {}
-      ConstGenBiDirItor(const ConstGenBiDirItor & other): mItor(0)
+      ConstGenBiDirItor(): IConstBiDirItor<T>(), mItor(0) {}
+      ConstGenBiDirItor(const ConstGenBiDirItor & other): IConstBiDirItor<T>(), mItor(0)
         { if (other.mItor) mItor = other.mItor->Clone(); }
-      ConstGenBiDirItor(const IConstBiDirItor<T> & other): mItor(0)
+      ConstGenBiDirItor(const IConstBiDirItor<T> & other): IConstBiDirItor<T>(), mItor(0)
         { mItor = other.Clone(); }
 
       virtual ~ConstGenBiDirItor() { delete mItor; }
@@ -240,6 +240,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.5  2004/03/16 20:50:48  peachey
+ * Explicitly invoke constructors for base classes to shut up compiler
+ * warnings in the SLAC build.
+ *
  * Revision 1.4  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

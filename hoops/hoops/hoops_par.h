@@ -40,17 +40,16 @@ namespace hoops {
   class EXPSYM Par : public IPar {
     public:
       // Constructors.
-      Par() throw();
-      Par(const Par & p) throw(std::bad_alloc);
-      Par(const IPar & p) throw(std::bad_alloc);
+      Par();
+      Par(const Par & p);
+      Par(const IPar & p);
       Par(const std::string & name, const std::string & type,
           const std::string & mode, const std::string & value,
           const std::string & min = "", const std::string & max = "",
-          const std::string & prompt = "", const std::string & comment = "")
-          throw(std::bad_alloc);
+          const std::string & prompt = "", const std::string & comment = "");
 
       // Destructor.
-      virtual ~Par() throw();
+      virtual ~Par();
 
       // Assignments.
       //! Assign value only of parameter.
@@ -58,137 +57,128 @@ namespace hoops {
       // exactly the same as for Par, and override From method(s)
       // to change the assignment behavior (if necessary).
       virtual Par & operator =(const Par & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const IPar & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const IPrim & p)
-         throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const bool & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const char & p)
-        throw(std::bad_alloc, Hexception)  { From(p); return *this; }
+         { From(p); return *this; }
       virtual Par & operator =(const signed char & p)
-        throw(std::bad_alloc, Hexception)  { From(p); return *this; }
+         { From(p); return *this; }
       virtual Par & operator =(const short & p)
-        throw(std::bad_alloc, Hexception)  { From(p); return *this; }
+         { From(p); return *this; }
       virtual Par & operator =(const int & p)
-        throw(std::bad_alloc, Hexception)  { From(p); return *this; }
+         { From(p); return *this; }
       virtual Par & operator =(const long & p)
-        throw(std::bad_alloc, Hexception)  { From(p); return *this; }
+         { From(p); return *this; }
       virtual Par & operator =(const unsigned char & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const unsigned short & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const unsigned int & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const unsigned long & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const float & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const double & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const long double & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const char * p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
       virtual Par & operator =(const std::string & p)
-        throw(std::bad_alloc, Hexception) { From(p); return *this; }
+        { From(p); return *this; }
 
-      virtual void From(const IPar & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const IPrim & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const bool & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const char & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const signed char & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const short & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const int & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const long & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const unsigned char & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const unsigned short & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const unsigned int & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const unsigned long & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const float & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const double & p) throw(std::bad_alloc, Hexception);
-      virtual void From(const long double & p)
-        throw(std::bad_alloc, Hexception);
-      virtual void From(const char * p) throw(std::bad_alloc, Hexception);
-      virtual void From(const std::string & p)
-        throw(std::bad_alloc, Hexception);
+      virtual void From(const IPar & p);
+      virtual void From(const IPrim & p);
+      virtual void From(const bool & p);
+      virtual void From(const char & p);
+      virtual void From(const signed char & p);
+      virtual void From(const short & p);
+      virtual void From(const int & p);
+      virtual void From(const long & p);
+      virtual void From(const unsigned char & p);
+      virtual void From(const unsigned short & p);
+      virtual void From(const unsigned int & p);
+      virtual void From(const unsigned long & p);
+      virtual void From(const float & p);
+      virtual void From(const double & p);
+      virtual void From(const long double & p);
+      virtual void From(const char * p);
+      virtual void From(const std::string & p);
 
       // Conversions.
-      virtual operator bool () const throw(Hexception);
-      virtual operator char () const throw(Hexception);
-      virtual operator signed char () const throw(Hexception);
-      virtual operator short () const throw(Hexception);
-      virtual operator int () const throw(Hexception);
-      virtual operator long () const throw(Hexception);
-      virtual operator unsigned char () const throw(Hexception);
-      virtual operator unsigned short () const throw(Hexception);
-      virtual operator unsigned int () const throw(Hexception);
-      virtual operator unsigned long () const throw(Hexception);
-      virtual operator float () const throw(Hexception);
-      virtual operator double () const throw(Hexception);
-      virtual operator long double () const throw(Hexception);
-      virtual operator const char *() const throw(std::bad_alloc, Hexception);
-      virtual operator const std::string &() const
-        throw(std::bad_alloc, Hexception);
+      virtual operator bool () const;
+      virtual operator char () const;
+      virtual operator signed char () const;
+      virtual operator short () const;
+      virtual operator int () const;
+      virtual operator long () const;
+      virtual operator unsigned char () const;
+      virtual operator unsigned short () const;
+      virtual operator unsigned int () const;
+      virtual operator unsigned long () const;
+      virtual operator float () const;
+      virtual operator double () const;
+      virtual operator long double () const;
+      virtual operator const char *() const;
+      virtual operator const std::string &() const;
 
-      virtual void To(bool & p) const throw(Hexception);
-      virtual void To(char & p) const throw(Hexception);
-      virtual void To(signed char & p) const throw(Hexception);
-      virtual void To(short & p) const throw(Hexception);
-      virtual void To(int & p) const throw(Hexception);
-      virtual void To(long & p) const throw(Hexception);
-      virtual void To(unsigned char & p) const throw(Hexception);
-      virtual void To(unsigned short & p) const throw(Hexception);
-      virtual void To(unsigned int & p) const throw(Hexception);
-      virtual void To(unsigned long & p) const throw(Hexception);
-      virtual void To(float & p) const throw(Hexception);
-      virtual void To(double & p) const throw(Hexception);
-      virtual void To(long double & p) const throw(Hexception);
-      virtual void To(std::string & p) const throw(std::bad_alloc, Hexception);
+      virtual void To(bool & p) const;
+      virtual void To(char & p) const;
+      virtual void To(signed char & p) const;
+      virtual void To(short & p) const;
+      virtual void To(int & p) const;
+      virtual void To(long & p) const;
+      virtual void To(unsigned char & p) const;
+      virtual void To(unsigned short & p) const;
+      virtual void To(unsigned int & p) const;
+      virtual void To(unsigned long & p) const;
+      virtual void To(float & p) const;
+      virtual void To(double & p) const;
+      virtual void To(long double & p) const;
+      virtual void To(std::string & p) const;
 
-      virtual Par * Clone() const throw(std::bad_alloc)
+      virtual Par * Clone() const
         { return new Par(*this); }
 
       // Member access.
-      virtual const std::string & Name() const throw() { return mName; }
-      virtual const std::string & Type() const throw() { return mType; }
-      virtual const std::string & Mode() const throw() { return mMode; }
-      virtual const std::string & Value() const throw(std::bad_alloc);
-      virtual const std::string & Min() const throw(std::bad_alloc)
+      virtual const std::string & Name() const { return mName; }
+      virtual const std::string & Type() const { return mType; }
+      virtual const std::string & Mode() const { return mMode; }
+      virtual const std::string & Value() const;
+      virtual const std::string & Min() const
         { return mMin; }
-      virtual const std::string & Max() const throw(std::bad_alloc)
+      virtual const std::string & Max() const
         { return mMax; }
-      virtual const std::string & Prompt() const throw() { return mPrompt; }
-      virtual const std::string & Comment() const throw() { return mComment; }
-      virtual const IPrim * PrimValue() const throw() { return mValue; }
+      virtual const std::string & Prompt() const { return mPrompt; }
+      virtual const std::string & Comment() const { return mComment; }
+      virtual const IPrim * PrimValue() const { return mValue; }
 
-      virtual Par & SetName(const std::string & s) throw()
+      virtual Par & SetName(const std::string & s)
         { mName = s; return *this; }
-      virtual Par & SetType(const std::string & s) throw()
+      virtual Par & SetType(const std::string & s)
         { mType = s; return *this; }
-      virtual Par & SetMode(const std::string & s) throw()
+      virtual Par & SetMode(const std::string & s)
         { mMode = s; return *this; }
       virtual Par & SetValue(const std::string & s)
-        throw(std::bad_alloc, Hexception) { From(s); return *this; }
+        { From(s); return *this; }
       virtual Par & SetMin(const std::string & s)
-        throw(std::bad_alloc, Hexception) { mMin = s; return *this; }
+        { mMin = s; return *this; }
       virtual Par & SetMax(const std::string & s)
-        throw(std::bad_alloc, Hexception) { mMax = s; return *this; }
-      virtual Par & SetPrompt(const std::string & s) throw()
+        { mMax = s; return *this; }
+      virtual Par & SetPrompt(const std::string & s)
         { mPrompt = s; return *this; }
-      virtual Par & SetComment(const std::string & s) throw()
+      virtual Par & SetComment(const std::string & s)
         { mComment = s; return *this; }
 
     protected:
       template <typename T>
-      static void ConvertFrom(T p, IPrim *& dest, const std::string & type)
-        throw(std::bad_alloc, Hexception) {
+      static void ConvertFrom(T p, IPrim *& dest, const std::string & type) {
         PrimFactory Factory;
         if (dest) dest->From(p);
         // In general is find the best thing to be using here???
@@ -204,15 +194,12 @@ namespace hoops {
           dest = Factory.NewIPrim(std::string()); dest->From(p);
         } else if (std::string::npos != type.find("r")) {
           dest = Factory.NewIPrim(double()); dest->From(p);
-        } else throw Hexception(PAR_INVALID_TYPE);
+        } else throw Hexception(PAR_INVALID_TYPE, "", __FILE__, __LINE__);
       }
 
       template <typename T>
       static void ConvertTo (IPrim * const src, T & p)
-        throw(std::bad_alloc, Hexception) {
-        if (src) src->To(p);
-        else { p = T(); throw Hexception(PAR_UNDEFINED); }
-      }
+        { if (src) src->To(p); else p = T(); }
 
     private:
       std::string mName;
@@ -228,10 +215,10 @@ namespace hoops {
 
   class EXPSYM ParFactory : public IParFactory {
     public:
-      virtual ~ParFactory() throw() {}
+      virtual ~ParFactory() {}
 
-      virtual Par * NewIPar() throw(std::bad_alloc) { return new Par(); }
-      virtual Par * NewIPar(const IPar & p) throw(std::bad_alloc)
+      virtual Par * NewIPar() { return new Par(); }
+      virtual Par * NewIPar(const IPar & p)
         { return new Par(p); }
       virtual Par * NewIPar(const std::string & name, const std::string & type,
         const std::string & mode, const std::string & value,
@@ -239,7 +226,6 @@ namespace hoops {
         const std::string & max = std::string(),
         const std::string & prompt = std::string(),
         const std::string & comment = std::string())
-        throw(std::bad_alloc, Hexception)
         { return new Par(name, type, mode, value, min, max, prompt, comment); }
   };
   //////////////////////////////////////////////////////////////////////////////
@@ -257,6 +243,16 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.12  2004/03/12 15:40:42  peachey
+ * When throwing exceptions, include the file name and
+ * line number where the exception was thrown.
+ *
+ * Revision 1.11  2004/03/11 17:35:11  peachey
+ * Remove an unneccessary error condition.
+ *
+ * Revision 1.10  2004/03/10 19:35:19  peachey
+ * Remove throw specifications.
+ *
  * Revision 1.9  2004/01/15 15:21:30  peachey
  * Bug fix: a parameter of type "fr" was being classified as a real
  * (float/double) value. This led to unexpected exceptions eventually

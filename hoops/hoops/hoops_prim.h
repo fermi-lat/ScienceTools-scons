@@ -66,13 +66,13 @@ namespace hoops {
       virtual void To(long double & x) const = 0;
       virtual void To(std::string & x) const = 0;
 
-      virtual std::string StringData() const throw() = 0;
+      virtual std::string StringData() const = 0;
 
       virtual IPrim * Clone() const = 0;
 
       // Utility IsBlank: determine whether a given string has
       // any non-blank characters.
-      static bool IsBlank(const char *s) throw () {
+      static bool IsBlank(const char *s) {
         if (s) while (*s) if(!isspace(*s++)) return false;
         return true;
       }
@@ -100,7 +100,7 @@ namespace hoops {
 
   class EXPSYM PrimFactory: public IPrimFactory {
     public:
-      virtual ~PrimFactory() throw() {}
+      virtual ~PrimFactory() {}
 
       virtual IPrim * NewIPrim(const bool & p) const;
       virtual IPrim * NewIPrim(const char & p) const;
@@ -137,6 +137,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.7  2004/03/10 19:35:19  peachey
+ * Remove throw specifications.
+ *
  * Revision 1.6  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

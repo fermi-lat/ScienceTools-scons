@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include "hoops/hoops.h"
+#include "hoops/hoops_exception.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -37,9 +38,17 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
+  class PILException : public Hexception {
+    public:
+      PILException(const int & code, const std::string & msg = std::string(),
+                   const std::string & filename = std::string(), int line = 0);
+
+    protected:
+      virtual void format(const std::string & msg);
+  };
+
   class EXPSYM PILParFile : public IParFile {
     public:
-      PILParFile();
       PILParFile(const PILParFile & pf);
       PILParFile(const IParFile & pf);
       PILParFile(const std::string & comp);
@@ -50,41 +59,41 @@ namespace hoops {
       virtual PILParFile & operator =(const IParFile & pf);
 
       // Synchronize memory image with parameter file and vice versa.
-      virtual void Load() throw (Hexception);
-      virtual void Save() const throw (Hexception);
+      virtual void Load();
+      virtual void Save() const;
 
       // Read member access.
       virtual const std::string & Component() const { return mComponent; }
-      virtual IParGroup & Group() throw (Hexception)
-        { if (!mGroup) throw Hexception(PAR_NULL_PTR); return *mGroup; }
-      virtual const IParGroup & Group() const throw (Hexception)
-        { if (!mGroup) throw Hexception(PAR_NULL_PTR); return *mGroup; }
+      virtual IParGroup & Group();
+      virtual const IParGroup & Group() const;
 
       // Write member access.
       virtual PILParFile & SetComponent(const std::string & comp);
       virtual IParGroup * SetGroup(IParGroup * group = 0);
 
-      virtual GenParItor begin() throw (Hexception);
-      virtual ConstGenParItor begin() const throw (Hexception);
-      virtual GenParItor end() throw (Hexception);
-      virtual ConstGenParItor end() const throw (Hexception);
+      virtual GenParItor begin();
+      virtual ConstGenParItor begin() const;
+      virtual GenParItor end();
+      virtual ConstGenParItor end() const;
+
+      virtual IParFile * Clone() const;
+
+      void OpenParFile(int argc = 0, char * argv[] = 0) const;
+      void CloseParFile(int status = 0) const;
 
     protected:
       std::string mComponent;
-      IParGroup * mGroup;
-      void OpenParFile(int argc = 0, char * argv[] = 0) const;
-      void CloseParFile(int status = 0) const;
+      mutable IParGroup * mGroup;
       void CleanComponent(const std::string & comp, std::string & clean) const;
   };
 
   class EXPSYM PILParPrompt : public IParPrompt {
     public:
-      PILParPrompt();
       PILParPrompt(const PILParPrompt & prompt);
       PILParPrompt(const IParPrompt & prompt);
       PILParPrompt(int argc, char ** argv);
 
-      virtual ~PILParPrompt() throw();
+      virtual ~PILParPrompt();
 
       virtual PILParPrompt & operator =(const PILParPrompt & p);
       virtual PILParPrompt & operator =(const IParPrompt & p);
@@ -95,15 +104,18 @@ namespace hoops {
 
       virtual int Argc() const { return mArgc; }
       virtual char ** const Argv() const { return mArgv; }
-      virtual IParGroup & Group() throw (Hexception);
-      virtual const IParGroup & Group() const throw (Hexception);
+      virtual IParGroup & Group();
+      virtual const IParGroup & Group() const;
 
       virtual PILParPrompt & SetArgc(int argc) { mArgc = argc; return *this; }
       virtual PILParPrompt & SetArgv(char ** argv);
       virtual IParGroup * SetGroup(IParGroup * group = 0);
 
+      virtual IParPrompt * Clone() const;
+
     protected:
-      IParGroup * mGroup;
+      void Init(char ** argv);
+      mutable PILParFile * mFile;
       int mArgc;
       char ** mArgv;
       void DeleteArgv();
@@ -124,6 +136,28 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.12  2004/03/16 20:11:20  peachey
+ * Change PILParFile so that it can be used by PILParPrompt to open/
+ * close the parameter file excplicitly. Change PILParPrompt so that it
+ * uses its member PILParFile to manage calls to PILInit. All this is
+ * so that PILParFile's code which handles stripping path and extension
+ * can be used by PILParPrompt.
+ *
+ * Revision 1.11  2004/03/16 14:36:58  peachey
+ * Remove default construction option for ParFile and ParPrompt.
+ *
+ * Revision 1.10  2004/03/15 13:58:31  peachey
+ * Add Clone method to IParFile and IParPrompt and subclasses.
+ * Have PILParFile::Group() create a group if it doesn't have
+ * one rather than throw an exception.
+ *
+ * Revision 1.9  2004/03/12 15:40:42  peachey
+ * When throwing exceptions, include the file name and
+ * line number where the exception was thrown.
+ *
+ * Revision 1.8  2004/03/10 19:35:19  peachey
+ * Remove throw specifications.
+ *
  * Revision 1.7  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

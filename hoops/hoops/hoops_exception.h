@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <exception>
 #include <string>
+#include <vector>
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -56,15 +57,18 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   class EXPSYM Hexception: public std::exception {
     public:
+      Hexception(const int & code, const std::string & msg = std::string(),
+                 const std::string & filename = std::string(), int line = 0);
       virtual ~Hexception() throw() {}
 
-      Hexception(const int & code, const std::string & msg = std::string(),
-                 const std::string & filename = std::string(), int line = 0):
-        mMsg(msg), mFileName(filename), mCode(code), mLine(line) {}
       int Code() const { return mCode; }
       const std::string & Msg() const { return mMsg; }
+      virtual const char * what() const throw();
 
-    private:
+    protected:
+      Hexception(const int & code, const std::string & filename = std::string(),
+                 int line = 0);
+      virtual void format(const std::string & msg);
       std::string mMsg;
       std::string mFileName;
       int mCode;
@@ -91,6 +95,18 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.7  2004/03/12 15:39:38  peachey
+ * Add more flexible formatting, to allow subclasses to
+ * change the way the message is constructed. Construct the message during
+ * construction of the exception object.
+ *
+ * Revision 1.6  2004/03/11 17:36:58  peachey
+ * Change implementation of Hexception::what() so that it determines
+ * a message from the error code.
+ *
+ * Revision 1.5  2004/03/10 19:34:40  peachey
+ * Add what() method.
+ *
  * Revision 1.4  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

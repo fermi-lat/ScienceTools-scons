@@ -85,23 +85,38 @@ int main() {
   int status = P_OK;
 
   // Declare one variable of each Prim type, and initialize them to maximum.
+  IPrim * hd_prim_bool = 0;
+  IPrim * hd_prim_char = 0;
+  IPrim * hd_prim_signed_char = 0;
+  IPrim * hd_prim_short = 0;
+  IPrim * hd_prim_int = 0;
+  IPrim * hd_prim_long = 0;
+  IPrim * hd_prim_unsigned_char = 0;
+  IPrim * hd_prim_unsigned_short = 0;
+  IPrim * hd_prim_unsigned_int = 0;
+  IPrim * hd_prim_unsigned_long = 0;
+  IPrim * hd_prim_float = 0;
+  IPrim * hd_prim_double = 0;
+  IPrim * hd_prim_long_double = 0;
+
+  IPrim * hd_prim_std_string;
 
   // Catch-all try block:
   try {
     PrimFactory factory;
-    IPrim * hd_prim_bool = factory.NewIPrim(Lim<bool>::max);
-    IPrim * hd_prim_char = factory.NewIPrim(Lim<char>::max);
-    IPrim * hd_prim_signed_char = factory.NewIPrim(Lim<signed char>::max);
-    IPrim * hd_prim_short = factory.NewIPrim(Lim<short>::max);
-    IPrim * hd_prim_int = factory.NewIPrim(Lim<int>::max);
-    IPrim * hd_prim_long = factory.NewIPrim(Lim<long>::max);
-    IPrim * hd_prim_unsigned_char = factory.NewIPrim(Lim<unsigned char>::max);
-    IPrim * hd_prim_unsigned_short = factory.NewIPrim(Lim<unsigned short>::max);
-    IPrim * hd_prim_unsigned_int = factory.NewIPrim(Lim<unsigned int>::max);
-    IPrim * hd_prim_unsigned_long = factory.NewIPrim(Lim<unsigned long>::max);
-    IPrim * hd_prim_float = factory.NewIPrim(Lim<float>::max);
-    IPrim * hd_prim_double = factory.NewIPrim(Lim<double>::max);
-    IPrim * hd_prim_long_double = factory.NewIPrim(Lim<long double>::max);
+    hd_prim_bool = factory.NewIPrim(Lim<bool>::max);
+    hd_prim_char = factory.NewIPrim(Lim<char>::max);
+    hd_prim_signed_char = factory.NewIPrim(Lim<signed char>::max);
+    hd_prim_short = factory.NewIPrim(Lim<short>::max);
+    hd_prim_int = factory.NewIPrim(Lim<int>::max);
+    hd_prim_long = factory.NewIPrim(Lim<long>::max);
+    hd_prim_unsigned_char = factory.NewIPrim(Lim<unsigned char>::max);
+    hd_prim_unsigned_short = factory.NewIPrim(Lim<unsigned short>::max);
+    hd_prim_unsigned_int = factory.NewIPrim(Lim<unsigned int>::max);
+    hd_prim_unsigned_long = factory.NewIPrim(Lim<unsigned long>::max);
+    hd_prim_float = factory.NewIPrim(Lim<float>::max);
+    hd_prim_double = factory.NewIPrim(Lim<double>::max);
+    hd_prim_long_double = factory.NewIPrim(Lim<long double>::max);
 
     // Test whether construction from maximum value worked
     {
@@ -35207,7 +35222,7 @@ int main() {
         break;
     }
     std::string tmp_std_string = "A non-numeric string";
-    IPrim * hd_prim_std_string = factory.NewIPrim(tmp_std_string);
+    hd_prim_std_string = factory.NewIPrim(tmp_std_string);
     if (hd_prim_std_string->StringData().compare(tmp_std_string)) {
       SetGlobalStatus(P_UNEXPECTED);
       std::cerr << "ERROR: After initialization from std::string, hd_prim_char is " << *hd_prim_std_string << ", not " << tmp_std_string << std::endl;
@@ -35652,6 +35667,22 @@ int main() {
     std::cerr << "A completely unexpected exception was caught at the top level!" << std::endl;
     SetGlobalStatus(-1);
   }
+
+  delete hd_prim_std_string;
+
+  delete hd_prim_long_double;
+  delete hd_prim_double;
+  delete hd_prim_float;
+  delete hd_prim_unsigned_long;
+  delete hd_prim_unsigned_int;
+  delete hd_prim_unsigned_short;
+  delete hd_prim_unsigned_char;
+  delete hd_prim_long;
+  delete hd_prim_int;
+  delete hd_prim_short;
+  delete hd_prim_signed_char;
+  delete hd_prim_char;
+  delete hd_prim_bool;
 
   // Final status check and report.
   if (P_OK == sStatus)

@@ -25,8 +25,8 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type definitions.
   //////////////////////////////////////////////////////////////////////////////
-  ParGroup::ParGroup(): mPars() {}
-  ParGroup::ParGroup(const ParGroup & g): mPars() {
+  ParGroup::ParGroup(): IParGroup(), mPars() {}
+  ParGroup::ParGroup(const ParGroup & g): IParGroup(), mPars() {
     std::vector<IPar *>::const_iterator it;
     for (it = g.mPars.begin(); it != g.mPars.end(); ++it) 
       mPars.push_back((*it)->Clone());
@@ -58,7 +58,7 @@ namespace hoops {
       if (!pname.compare((*it)->Name())) break;
 
     // If not found, throw an exception to indicate this fact.
-    if (it == mPars.end()) throw Hexception(PAR_NOT_FOUND);
+    if (it == mPars.end()) throw Hexception(PAR_NOT_FOUND, "", __FILE__, __LINE__);
 
     // Otherwise, return the found parameter.
     return *(*it);
@@ -111,6 +111,14 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.8  2004/03/16 20:50:57  peachey
+ * Explicitly invoke constructors for base classes to shut up compiler
+ * warnings in the SLAC build.
+ *
+ * Revision 1.7  2004/03/12 15:40:42  peachey
+ * When throwing exceptions, include the file name and
+ * line number where the exception was thrown.
+ *
  * Revision 1.6  2003/11/26 18:50:02  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

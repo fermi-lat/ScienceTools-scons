@@ -33,7 +33,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Static function declarations.
   //////////////////////////////////////////////////////////////////////////////
-  static char *CpyStr(const char *s) throw ();
+  static char *CpyStr(const char *s);
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
@@ -41,21 +41,38 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
+  // Begin PILException implementation.
+  //////////////////////////////////////////////////////////////////////////////
+  PILException::PILException(const int & code, const std::string & msg,
+    const std::string & filename, int line):
+    Hexception(code, filename, line) { format(msg); }
+
+  void PILException::format(const std::string & msg) {
+    const char * pil_msg = PIL_err_handler(mCode);
+    if (0 != pil_msg) {
+      Hexception::format(std::string("pil error: ") + pil_msg);
+    } else Hexception::format(msg);
+  }
+  //////////////////////////////////////////////////////////////////////////////
+  // End PILException implementation.
+  //////////////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////////////////
   // Begin PILParFile implementation.
   //////////////////////////////////////////////////////////////////////////////
-  PILParFile::PILParFile(): mComponent(), mGroup(0) {}
-
-  PILParFile::PILParFile(const PILParFile & pf):
+  PILParFile::PILParFile(const PILParFile & pf): IParFile(),
     mComponent(pf.mComponent), mGroup(0)
     { if (pf.mGroup) mGroup = pf.mGroup->Clone(); }
 
-  PILParFile::PILParFile(const IParFile & pf):
+  PILParFile::PILParFile(const IParFile & pf): IParFile(),
     mComponent(pf.Component()), mGroup(0) {
     mGroup = pf.Group().Clone();
   }
 
-  PILParFile::PILParFile(const std::string & comp): mComponent(), mGroup(0)
-    { SetComponent(comp); }
+  PILParFile::PILParFile(const std::string & comp): IParFile(), mComponent(),
+    mGroup(0) {
+    SetComponent(comp);
+  }
 
   PILParFile::~PILParFile() { delete mGroup; }
 
@@ -81,7 +98,7 @@ namespace hoops {
   }
 
   // Synchronize memory image with parameter file and vice versa.
-  void PILParFile::Load() throw (Hexception) {
+  void PILParFile::Load() {
     PIL_PARAM * pp = 0;
 
     try {
@@ -94,7 +111,7 @@ namespace hoops {
       // Get number of parameters.
       int nPar = 0;
       status = PILGetNumParameters(&nPar);
-      if (PIL_OK != status) throw Hexception(status);
+      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
 
       // Make space to store parameter array.
       pp = new PIL_PARAM[nPar];
@@ -108,7 +125,7 @@ namespace hoops {
         status = PILGetParameter(ii, pp + ii, &minmaxok, &vmin, &vmax);
         if (PIL_OK != status) break;
       }
-      if (PIL_OK != status) throw Hexception(status);
+      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
 
       // Loop over local copy of parameters, making sure they are all valid.
       for (int ii = 0; ii < nPar; ++ii) {
@@ -120,7 +137,7 @@ namespace hoops {
           break;
         }
       }
-      if (PIL_OK != status) throw Hexception(status);
+      if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
 
       // At this point, no further problems _should_ happen, so go
       // ahead and clear the current parameter group.
@@ -169,7 +186,7 @@ namespace hoops {
     CloseParFile();
   }
 
-  void PILParFile::Save() const throw (Hexception) {
+  void PILParFile::Save() const {
     try {
       if (mGroup) {
         int status = PIL_OK;
@@ -199,16 +216,26 @@ namespace hoops {
           } else {
             status = PAR_INVALID_TYPE;
           }
-          if (PIL_OK != status) throw Hexception(status);
+          if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
         }
       } else {
-        throw Hexception(PAR_NULL_PTR);
+        throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
       }
     } catch (...) {
       CloseParFile();
       throw;
     }
     CloseParFile();
+  }
+
+  IParGroup & PILParFile::Group() {
+    if (!mGroup) mGroup = new ParGroup;
+    return *mGroup;
+  }
+
+  const IParGroup & PILParFile::Group() const {
+    if (!mGroup) mGroup = new ParGroup;
+    return *mGroup;
   }
 
   PILParFile & PILParFile::SetComponent(const std::string & comp) {
@@ -219,21 +246,23 @@ namespace hoops {
   IParGroup * PILParFile::SetGroup(IParGroup * group)
     { IParGroup * retval = mGroup; mGroup = group; return retval; }
 
-  GenParItor PILParFile::begin() throw (Hexception)
-    { if (!mGroup) throw Hexception(PAR_NULL_PTR); return mGroup->begin(); }
+  GenParItor PILParFile::begin()
+    { if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__); return mGroup->begin(); }
 
-  ConstGenParItor PILParFile::begin() const throw (Hexception) {
-    if (!mGroup) throw Hexception(PAR_NULL_PTR);
+  ConstGenParItor PILParFile::begin() const {
+    if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
     return static_cast<const IParGroup *>(mGroup)->begin();
   }
 
-  GenParItor PILParFile::end() throw (Hexception)
-    { if (!mGroup) throw Hexception(PAR_NULL_PTR); return mGroup->end(); }
+  GenParItor PILParFile::end()
+    { if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__); return mGroup->end(); }
 
-  ConstGenParItor PILParFile::end() const throw (Hexception) {
-    if (!mGroup) throw Hexception(PAR_NULL_PTR);
+  ConstGenParItor PILParFile::end() const {
+    if (!mGroup) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
     return static_cast<const IParGroup *>(mGroup)->end();
   }
+
+  IParFile * PILParFile::Clone() const { return new PILParFile(*this); }
 
   void PILParFile::CleanComponent(const std::string & comp, std::string & clean)
     const {
@@ -247,21 +276,36 @@ namespace hoops {
     if (std::string::npos != pos) clean.erase(pos);
   }
 
+  // Note: in this method, argc and argv must *not* include
+  // the name of the tool (traditionally argv[0])
   void PILParFile::OpenParFile(int argc, char * argv[]) const {
     int status = PIL_OK;
-    char * pil_comp = 0;
-    if (!argc || !argv) {
-      if (mComponent.empty()) throw Hexception(PAR_COMP_UNDEF);
-      pil_comp = CpyStr(mComponent.c_str());
-      argc = 1;
-      argv = &pil_comp;
-    }
 
-    // Open the par file using PIL.
-    status = PILInit(argc, argv);
-    delete [] pil_comp;
+    // If arguments were given, the component name will be
+    // prepended to the arguments and then the whole list will
+    // be passed to PIL, so increment argc. If no arguments,
+    // only the component name will be passed, so set argc = 1.
+    if (0 < argc && 0 != argv) ++argc;
+    else argc = 1;
 
-    if (PIL_OK != status) throw Hexception(status);
+    // Create new arguments which are same as original arguments
+    // except for argv[0], which is taken from the component name.
+    char ** new_argv = new char *[argc];
+    new_argv[0] = CpyStr(mComponent.c_str());
+    for (int ii = 1; ii < argc; ++ii) new_argv[ii] = argv[ii - 1];
+
+    // Use PIL to open the par file with the new arguments.
+    // Don't throw an exception (if necessary) until after the
+    // clean up block.
+    status = PILInit(argc, new_argv);
+
+    if (PIL_OK == status) status = PILVerifyCmdLine();
+
+    // Clean up.
+    delete [] new_argv[0];
+    delete [] new_argv;
+
+    if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
   }
 
   void PILParFile::CloseParFile(int status) const {
@@ -274,18 +318,16 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Begin PILParPrompt implementation.
   //////////////////////////////////////////////////////////////////////////////
-  PILParPrompt::PILParPrompt(): mGroup(0), mArgc(), mArgv(0) {}
-
   PILParPrompt::PILParPrompt(const PILParPrompt & prompt):
-    mGroup(0), mArgc(prompt.mArgc), mArgv(0) { SetArgv(prompt.mArgv); }
+    IParPrompt(), mFile(0), mArgc(prompt.mArgc), mArgv(0) { Init(prompt.mArgv); }
 
   PILParPrompt::PILParPrompt(const IParPrompt & prompt):
-    mGroup(0), mArgc(prompt.Argc()), mArgv(0) { SetArgv(prompt.Argv()); }
+    IParPrompt(), mFile(0), mArgc(prompt.Argc()), mArgv(0) { Init(prompt.Argv()); }
 
   PILParPrompt::PILParPrompt(int argc, char ** argv):
-    mGroup(0), mArgc(argc), mArgv(0) { SetArgv(argv); }
+    IParPrompt(), mFile(0), mArgc(argc), mArgv(0) { Init(argv); }
 
-  PILParPrompt::~PILParPrompt() throw() { delete mGroup; DeleteArgv(); }
+  PILParPrompt::~PILParPrompt() { delete mFile; DeleteArgv(); }
 
   PILParPrompt & PILParPrompt::operator =(const PILParPrompt & p) {
     DeleteArgv();
@@ -303,17 +345,14 @@ namespace hoops {
 
   PILParPrompt & PILParPrompt::Prompt() {
     // Must have defined at least one argument.
-    if (!mArgv) throw Hexception(PAR_NULL_PTR);
+    if (!mArgv) throw PILException(PAR_NULL_PTR, "", __FILE__, __LINE__);
 
-    // Get group of parameters from a temporary file object.
-    PILParFile f(mArgv[0]);
-    f.Load();
-    const IParGroup * g = &f.Group();
+    const IParGroup & g = mFile->Group();
 
     // Make a list of all the parameters which may need prompting.
     std::vector<std::string> plist;
     ConstGenParItor it;
-    for (it = g->begin(); it != g->end(); ++it) {
+    for (it = g.begin(); it != g.end(); ++it) {
       const std::string & name = (*it)->Name();
       if (!name.empty()) plist.push_back(name);
     }
@@ -335,23 +374,8 @@ namespace hoops {
 
     int status = PIL_OK;
 
-    // Must have defined at least one argument.
-    if (!mArgv) throw Hexception(PAR_NULL_PTR);
-
-    // Use a temporary file object to get the parameter group.
-    PILParFile f(mArgv[0]);
     try {
-      f.Load();
-
-      std::string comp = f.Component();
-      if (comp.empty()) throw Hexception(PAR_COMP_UNDEF);
-      PILSetModuleName(comp.c_str());
-
-      status = PILInit(mArgc, mArgv);
-      if (PIL_OK != status) throw Hexception(status);
-
-      status = PILVerifyCmdLine();
-      if (PIL_OK != status) throw Hexception(status);
+      mFile->OpenParFile(mArgc - 1, mArgv + 1);
 
       std::string type;
       std::vector<std::string>::const_iterator it;
@@ -361,7 +385,7 @@ namespace hoops {
         if(it->empty()) continue; // Skip blank/comment lines.
 
         // Find the corresponding parameter in the group.
-        IPar & par = f.Group().Find(*it);
+        IPar & par = mFile->Group().Find(*it);
 
         // Prompt using the appropriate PILGet function.
         type = par.Type();
@@ -398,31 +422,25 @@ namespace hoops {
       }
     } catch (...) {
       // Clean up: make sure PIL is closed, and file object cleaned.
-      PILClose(-1); // Call with non-0 argument so pars wont be saved.
+      mFile->CloseParFile(-1); // Call with non-0 argument so pars wont be saved.
       throw;
     }
 
-    if (PIL_OK == status) {
-      // Save parameters which were just prompted for to this object's
-      // group object.
-      if (mGroup) *mGroup = f.Group(); else mGroup = f.Group().Clone();
-    }
-
     // Clean up.
-    PILClose(-1); // Don't save parameters.
+    mFile->CloseParFile(-1); // Don't save parameters at this point.
 
-    if (PIL_OK != status) throw Hexception(status);
+    if (PIL_OK != status) throw PILException(status, "", __FILE__, __LINE__);
     return *this;
   }
 
-  IParGroup & PILParPrompt::Group() throw (Hexception) {
-    if (!mGroup) mGroup = new ParGroup;
-    return *mGroup;
+  IParGroup & PILParPrompt::Group() {
+    if (!mFile) mFile = new PILParFile(mArgv[0]);
+    return mFile->Group();
   }
 
-  const IParGroup & PILParPrompt::Group() const throw (Hexception) {
-    if (!mGroup) throw Hexception(PAR_NULL_PTR);
-    return *mGroup;
+  const IParGroup & PILParPrompt::Group() const {
+    if (!mFile) mFile = new PILParFile(mArgv[0]);
+    return mFile->Group();
   }
 
   PILParPrompt & PILParPrompt::SetArgv(char ** argv) {
@@ -443,11 +461,27 @@ namespace hoops {
   }
 
   IParGroup * PILParPrompt::SetGroup(IParGroup * group)
-    { IParGroup * retval = mGroup; mGroup = group; return retval; }
+    { IParGroup * retval = &mFile->Group(); mFile->SetGroup(group); return retval; }
+
+  IParPrompt * PILParPrompt::Clone() const { return new PILParPrompt(*this); }
 
   void PILParPrompt::DeleteArgv() {
     for (int ii = 0; ii < mArgc; ++ii) delete [] mArgv[ii];
-    delete mArgv;
+    delete [] mArgv;
+  }
+
+  void PILParPrompt::Init(char ** argv) {
+    SetArgv(argv);
+
+    if (0 < mArgc) {
+      mFile = new PILParFile(mArgv[0]);
+
+      std::string comp = mFile->Component();
+      if (comp.empty()) throw PILException(PAR_COMP_UNDEF, "", __FILE__, __LINE__);
+      PILSetModuleName(comp.c_str());
+
+      mFile->Load();
+    }
   }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParPrompt implementation.
@@ -456,9 +490,6 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Begin PILParFileFactory implementation.
   //////////////////////////////////////////////////////////////////////////////
-  IParFile * PILParFileFactory::NewIParFile()
-    { return new PILParFile(); }
-
   IParFile * PILParFileFactory::NewIParFile(const IParFile & p)
     { return new PILParFile(p); }
 
@@ -471,10 +502,6 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Begin PILParPromptFactory implementation.
   //////////////////////////////////////////////////////////////////////////////
-
-  IParPrompt * PILParPromptFactory::NewIParPrompt()
-    { return new PILParPrompt(); }
-
   IParPrompt * PILParPromptFactory::NewIParPrompt(const IParPrompt & p)
     { return new PILParPrompt(p); }
 
@@ -482,8 +509,6 @@ namespace hoops {
     { return new PILParPrompt(argc, argv); }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParPromptFactory implementation.
-  //////////////////////////////////////////////////////////////////////////////
-
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
@@ -501,7 +526,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Utility CpyStr: copy a string, allocating a new string
   // just large enough to hold the string being copied.
-  static char *CpyStr(const char *s) throw () {
+  static char *CpyStr(const char *s) {
     char *r = 0;
     if (s) {
       char *ptr;
@@ -523,6 +548,38 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.16  2004/03/16 20:50:57  peachey
+ * Explicitly invoke constructors for base classes to shut up compiler
+ * warnings in the SLAC build.
+ *
+ * Revision 1.15  2004/03/16 20:11:20  peachey
+ * Change PILParFile so that it can be used by PILParPrompt to open/
+ * close the parameter file excplicitly. Change PILParPrompt so that it
+ * uses its member PILParFile to manage calls to PILInit. All this is
+ * so that PILParFile's code which handles stripping path and extension
+ * can be used by PILParPrompt.
+ *
+ * Revision 1.14  2004/03/16 14:39:25  peachey
+ * Remove default constructor option for PILParFile and PILParPrompt.
+ * Restructure PILParPrompt so that it owns a PILParFile object and
+ * uses that for access to its group. Streamline the main Prompt method.
+ *
+ * Revision 1.13  2004/03/15 13:58:34  peachey
+ * Add Clone method to IParFile and IParPrompt and subclasses.
+ * Have PILParFile::Group() create a group if it doesn't have
+ * one rather than throw an exception.
+ *
+ * Revision 1.12  2004/03/12 15:40:42  peachey
+ * When throwing exceptions, include the file name and
+ * line number where the exception was thrown.
+ *
+ * Revision 1.11  2004/03/10 19:35:29  peachey
+ * Remove throw specifications.
+ *
+ * Revision 1.10  2004/02/25 18:37:29  peachey
+ * Remove the extension (.*) from the component name, so that parameter files
+ * can be named <application>.par instead of <application>.exe.par.
+ *
  * Revision 1.9  2003/11/26 18:50:02  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

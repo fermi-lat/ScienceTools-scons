@@ -1,7 +1,7 @@
 /******************************************************************************
- *   File name: hoops_pil_factory.h                                           *
+ *   File name: hoops_prompt_group.h                                          *
  *                                                                            *
- * Description: Declaration of factory to create PIL-based parameter objects. *
+ * Description: Conveniece prompter for simple parameter file needs.          *
  *                                                                            *
  *    Language: C++                                                           *
  *                                                                            *
@@ -9,12 +9,14 @@
  *                                                                            *
  *  Change log: see CVS Change log at the end of the file.                    *
  ******************************************************************************/
-#ifndef HOOPS_PIL_FACTORY_H
-#define HOOPS_PIL_FACTORY_H
+#ifndef HOOPS_PROMPT_GROUP_H
+#define HOOPS_PROMPT_GROUP_H
+
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include "hoops/hoops.h"
+#include "hoops/hoops_group.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -35,20 +37,43 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  class EXPSYM PILParFileFactory : public IParFileFactory {
+  class EXPSYM ParPromptGroup : public IParGroup {
     public:
-      virtual ~PILParFileFactory() {}
+      ParPromptGroup(int argc, char * argv[]);
+      ParPromptGroup(const ParPromptGroup & group);
 
-      virtual IParFile * NewIParFile(const IParFile & p);
-      virtual IParFile * NewIParFile(const char * argv);
-  };
+      virtual ~ParPromptGroup();
 
-  class EXPSYM PILParPromptFactory : public IParPromptFactory {
-    public:
-      virtual ~PILParPromptFactory() {}
+      virtual IParGroup & operator =(const ParPromptGroup & g);
+      virtual IParGroup & operator =(const IParGroup & g);
 
-      virtual IParPrompt * NewIParPrompt(const IParPrompt & p);
-      virtual IParPrompt * NewIParPrompt(int argc, char * argv[]);
+      virtual IPar & operator [](const std::string & pname) const;
+
+      virtual IPar & Find(const std::string & pname) const;
+      virtual IParGroup & Clear();
+      virtual IParGroup & Add(IPar * p);
+      virtual IParGroup & Remove(IPar * p);
+      virtual IParGroup & Remove(const std::string & pname);
+
+      virtual GenParItor begin();
+      virtual ConstGenParItor begin() const;
+      virtual GenParItor end();
+      virtual ConstGenParItor end() const;
+
+      virtual IParGroup * Clone() const;
+
+      // File-like methods:
+      void Load();
+      void Save() const;
+
+      // Prompt-like methods:
+      ParPromptGroup & Prompt();
+      ParPromptGroup & Prompt(const std::string & pname);
+
+    private:
+      IParFile * mFile;
+      IParPrompt * mPrompter;
+      IParGroup * mGroup;
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -66,30 +91,7 @@ namespace hoops {
 #endif
 
 /******************************************************************************
- * Revision 1.7  2004/03/16 14:36:58  peachey
- * Remove default construction option for ParFile and ParPrompt.
- *
- * Revision 1.6  2003/11/26 18:50:03  peachey
- * Merging changes made to SLAC repository into Goddard repository.
- *
- * Revision 1.5  2003/11/13 19:29:29  peachey
- * Add preprocessor macro needed on Windows to export symbols.
- *
- * Revision 1.4  2003/11/10 18:19:45  peachey
- * Moved header files into hoops subdirectory.
- *
- * Revision 1.3  2003/07/17 13:58:51  peachey
- * PILParPromptFactory should publically inherit from IParPromptFactory.
- *
- * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
- * First import
- *
- * Revision 1.2  2003/06/06 20:51:20  peachey
- * Add new virtual constructor to PILParPromptFactory, to be
- * consistent with PILParPrompt constructors. Similar change
- * also to PILParFileFactory.
- *
- * Revision 1.1  2003/06/05 15:46:08  peachey
- * Move PIL-related factories into a separate header.
+ * Revision 1.1  2004/03/15 15:00:52  peachey
+ * New wrapper class which handles simplest use case for getting parameters.
  *
  ******************************************************************************/

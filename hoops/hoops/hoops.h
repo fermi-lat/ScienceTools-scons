@@ -38,7 +38,6 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   enum ParErrorCode_e {
     PAR_NONE = 0,
-    PAR_UNDEFINED = 101,
     PAR_INVALID_TYPE = 102,
     PAR_ILLEGAL_CONVERSION = 103,
     PAR_NOT_FOUND = 104,
@@ -215,6 +214,8 @@ namespace hoops {
       virtual ConstGenParItor begin() const = 0;
       virtual GenParItor end() = 0;
       virtual ConstGenParItor end() const = 0;
+
+      virtual IParFile * Clone() const = 0;
   };
 
   class EXPSYM IParPrompt {
@@ -235,6 +236,8 @@ namespace hoops {
       virtual IParPrompt & SetArgc(int argc) = 0;
       virtual IParPrompt & SetArgv(char ** argv) = 0;
       virtual IParGroup * SetGroup(IParGroup * group) = 0;
+
+      virtual IParPrompt * Clone() const = 0;
   };
 
   class EXPSYM IParFactory {
@@ -261,7 +264,6 @@ namespace hoops {
     public:
       virtual ~IParFileFactory() {}
 
-      virtual IParFile * NewIParFile() = 0;
       virtual IParFile * NewIParFile(const IParFile & p) = 0;
   };
 
@@ -269,7 +271,6 @@ namespace hoops {
     public:
       virtual ~IParPromptFactory() {}
 
-      virtual IParPrompt * NewIParPrompt() = 0;
       virtual IParPrompt * NewIParPrompt(const IParPrompt & p) = 0;
   };
 
@@ -289,13 +290,27 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Function declarations.
   //////////////////////////////////////////////////////////////////////////////
-  EXPSYM std::ostream & operator <<(std::ostream & os, const IPar & p) throw();
+  EXPSYM std::ostream & operator <<(std::ostream & os, const IPar & p);
   //////////////////////////////////////////////////////////////////////////////
 
 }
 #endif
 
 /******************************************************************************
+ * Revision 1.13  2004/03/16 14:36:58  peachey
+ * Remove default construction option for ParFile and ParPrompt.
+ *
+ * Revision 1.12  2004/03/15 13:58:31  peachey
+ * Add Clone method to IParFile and IParPrompt and subclasses.
+ * Have PILParFile::Group() create a group if it doesn't have
+ * one rather than throw an exception.
+ *
+ * Revision 1.11  2004/03/11 17:35:11  peachey
+ * Remove an unneccessary error condition.
+ *
+ * Revision 1.10  2004/03/10 19:35:19  peachey
+ * Remove throw specifications.
+ *
  * Revision 1.9  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *
