@@ -72,18 +72,18 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
 
     setKey("CTYPE1", std::string(galactic?"GLON--":"RA--")+ pars.projType()
-        ,"","RA---%%%, %%% represents the projection method such as AIT");
+        ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
     setKey("CRPIX1",  SkyDir::s_refX+0.5,"","Reference pixel"); // note that FITS pixel reference is off by 0.5
-    setKey("CRVAL1",  SkyDir::s_refRA, "", "RA at the reference pixel");
+    setKey("CRVAL1",  pars.xref(), "deg", "[RA|GLON] at the reference pixel");
     setKey("CDELT1",  SkyDir::s_scaleX,"",
         "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT1",  "deg", "", "Physical unit of X-axis");
 
     setKey("CTYPE2",  std::string(galactic?"GLAT--":"DEC--")+ pars.projType()
-        ,"","DEC---%%%, %%% represents the projection method such as AIT");
+        ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
 
     setKey("CRPIX2",  SkyDir::s_refY+0.5,"","Reference pixel");// note that FITS pixel reference is off by 0.5
-    setKey("CRVAL2",  SkyDir::s_refDEC, "", "DEC at the reference pixel"); 
+    setKey("CRVAL2",  pars.yref(), "deg", "[DEC|GLAT] at the reference pixel"); 
     setKey("CDELT2",  SkyDir::s_scaleY,"",
         "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT2",  "deg", "", "Physical unit of Y-axis");
