@@ -14,8 +14,7 @@ namespace st_graph {
     TGMainFrame(gClient->GetRoot(), width, height), m_engine(engine) {}
 
   void STGMainFrame::CloseWindow() {
-    m_engine->hideFrames();
-    gApplication->Terminate(0);
+    m_engine->stop();
   }
 
 }
