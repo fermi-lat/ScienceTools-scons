@@ -66,8 +66,10 @@ void ScDataContainer::writeScData() {
          row["start"].set(sc->time());
          if (sc+1 != m_scData.end()) {
             row["stop"].set((sc+1)->time());
+            row["livetime"].set((sc+1)->time() - sc->time());
          } else {
             row["stop"].set(stop_time);
+            row["livetime"].set(stop_time - sc->time());
          }
          row["lat_geo"].set(sc->lat());
          row["lon_geo"].set(sc->lon());
