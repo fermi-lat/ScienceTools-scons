@@ -16,7 +16,8 @@ int main() {
   using namespace tip;
   const Table * const_table = 0;
   try {
-    double silence_warning;
+    // Dummy variable used to silence warning about local variables not being used.
+    double silence_warning = 0.;
 
     // Example 1:
     const_table = IFileSvc::instance().readTable("day023.fits", "LAT_Event_Summary");
