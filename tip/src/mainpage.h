@@ -12,8 +12,8 @@
     \section info Information For Clients
     This section shows how client code can and should use the tip
     classes to gain access to tabular data. The examples used to
-    illustrate these concepts are all taken from tip's sample.cxx
-    program, which can be compiled and run (provided you have the
+    illustrate these concepts are all excerpted from tip's sample.cxx
+    program, which can be compiled and run (provided you have an
     appropriate input file!)
 
     \subsection read Reading Tabular Data
@@ -25,33 +25,37 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
-  // Example 1:
   using namespace tip;
-  Table * my_table = IFileSvc::instance().editTable("my_file.fits", "LAT_Event_Summary");
+  const Table * const_table = 0;
+
+    // Example 1: Read-only access
+    const_table = IFileSvc::instance().readTable("day023.fits", "LAT_Event_Summary");
 \endverbatim
 
     Table is the name of the main tip class clients need to worry about.
-    The expression on the right ("IFileSvc::instance()::editTable(...)")
+    The expression on the right ("IFileSvc::instance()::readTable(...)")
     calls a function which opens the given file, selects the indicated
-    extension (or TTree in Root parlance) and returns a pointer to a Table
-    object which may subsequently be used to access the data. (Some details
+    extension (or TTree in Root parlance) and returns a pointer to a const Table
+    object which may subsequently be used to read the data. Writing is also
+    supported, as described in another example below. (Some details
     for the curious: IFileSvc is a singleton abstract factory, and instance()
     returns a reference to this factory.)
 
     Next, one might want to read keywords from the header of the table:
 
 \verbatim
-  // Example 2:
-  Header & header = my_table->getHeader();
-  double tstart;
-  header["tstart"].get(tstart);
+    // Example 2:
+    const Header & header = const_table->getHeader();
+    double tstart;
+    header["tstart"].get(tstart);
 \endverbatim
 
-    The first line creates a reference to my_table's header object.
+    The first line creates a reference to const_table's const header object.
     The next creates a local variable to hold the value of
     the TSTART keyword. The third line causes the value of the
     TSTART keyword in the table to be copied into the local tstart
-    variable. (Some details: Header::operator [] looks up the
+    variable. This action may also be completed in one step, but for
+    clarity it is shown here in two. (Some details: Header::operator [] looks up the
     keyword in the header's container and returns a Keyword object.
     Keyword's get() method is templated and supported for all primitive
     types.)
@@ -60,84 +64,104 @@
     columns (or TLeafs in Root parlance):
 
 \verbatim
-  // Example 3:
-  // Loop over all records (rows) and extract values of ph_time column.
-  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Example 3:
+    // Loop over all records (rows) and extract values of ph_time column.
+    for (Table::ConstIterator itor = const_table->begin(); itor != const_table->end(); ++itor) {
 
-    // Local double variable to hold the value of the field for each row:
-    double ph_time_dbl = (*itor)["ph_time"].get();
+      // Local double variable to hold the value of the field for each row:
+      double ph_time_dbl = (*itor)["ph_time"].get();
 
-    // Do something useful with ph_time_dbl's value here ...
-  }
+      // Do something useful with ph_time_dbl's value here ...
+    }
 \endverbatim
 
     The first clause of the for loop declares an object (itor) which
     acts as a pointer to a sequence of rows in the table. This
     object is initialized to point to the first row of the table
-    by the second half of the expression ("= my_table->begin()").
-    The second clause of the for loop ("itor != my_table->end()")
+    by the second half of the expression ("= const_table->begin()").
+    The second clause of the for loop ("itor != const_table->end()")
     causes the loop to terminate after processing the last row.
     The last clause ("++itor") causes the iterator (itor) to go on
     to the next value. Inside the loop, the iterator is dereferenced and
     then the value of the field of interest for the current record
-    is obtained as a double ("(*itor)["ph_time"].get()").
+    is obtained as a double ("(*itor)["ph_time"].get()") and stored in
+    the local variable ph_time_dbl.
 
-    In greater detail, the Iterator object dereferences to an object
-    of a type named Record (within the Table class namespace). The Record
+    In greater detail, the ConstIterator object dereferences to an object
+    of a type named ConstRecord (within the Table class namespace). The ConstRecord
     type encapsulates the concept of a single record (i.e. row) in the
-    table. The Record type has an operator [](const std::string &) which
-    returns an object of a type named Cell (again, within the Table class
-    namespace) representing a particular cell in the table. Finally, the
+    table. The ConstRecord type has an operator [](const std::string &) which
+    returns a reference to a const object of a type named Cell (again, within the
+    Table class namespace) representing a particular cell in the table. Finally, the
     Cell type contains a get() method to return the value as a double.
     The following alternate implementation of the for loop above makes
     these details more explicit:
 
 \verbatim
-  // Example 4:
-  // Completely equivalent to Example 3:
-  // Loop over all records (rows) and extract values of ph_time column.
-  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Example 4:
+    // Completely equivalent to Example 3, just provides explicit typenames.
+    // Loop over all records (rows) and extract values of ph_time column.
+    for (Table::ConstIterator itor = const_table->begin(); itor != const_table->end(); ++itor) {
 
-    // Dereference the iterator and bind it to a local reference:
-    Table::Record & record = *itor;
+      // Dereference the iterator and bind it to a local reference:
+      Table::ConstRecord & record = *itor;
 
-    // Create a local reference representing the field (ph_time_cell) of
-    // interest:
-    Table::Cell & ph_time_cell(record["ph_time"]);
+      // Create a local reference representing the field (ph_time_cell) of
+      // interest:
+      const Table::Cell & ph_time_cell(record["ph_time"]);
 
-    // Get the current value:
-    double ph_time_dbl = ph_time_cell.get();
+      // Get the current value:
+      double ph_time_dbl = ph_time_cell.get();
 
-    // Do something useful with ph_time_dbl's value here ...
-  }
+      // Do something useful with ph_time_dbl's value here ...
+    }
 \endverbatim
 
     \subsection modify Modifying Tabular Data
-    In examples 2 - 4, keyword and column values were read using "get"
-    methods. It is also poasible to modify table values using "set"
-    methods, such as:
+    The examples above demonstrate the process of opening a table in a
+    file for read-only access and then iterating through it using objects
+    and methods which specifically do not modify the object representing
+    the Table nor the file whence it came. It is also possible to perform
+    parallel actions to these which can modify the table:
 
 \verbatim
-  // Example 5:
-  // Modify tstart keyword:
-  double offset = 86400.;
-  tstart -= offset;
-  header["tstart"].set(tstart);
+  Table * table = 0;
 
-  // Modify ph_time column:
-  // Loop over all records (rows), extract and modify values of ph_time column.
-  for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Example 5:
+    using namespace tip;
+    table = IFileSvc::instance().editTable("day023.fits", "LAT_Event_Summary");
 
-    // Local double variable to hold the value of the field for each row:
-    double ph_time_dbl = (*itor)["ph_time"].get();
+    Header & header = table->getHeader();
+    double tstart;
+    header["tstart"].get(tstart);
 
-    // Modify value:
-    ph_time_dbl -= offset;
+    // Modify tstart keyword:
+    double offset = 86400.;
+    tstart -= offset;
+    header["tstart"].set(tstart);
 
-    // Write it back to the table:
-    (*itor)["ph_time"].set(ph_time_dbl);
-  }
+    // Modify ph_time column:
+    // Loop over all records (rows), extract and modify values of ph_time column.
+    for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor) {
+
+      // Local double variable to hold the value of the field for each row:
+      double ph_time_dbl = (*itor)["ph_time"].get();
+
+      // Modify value:
+      ph_time_dbl -= offset;
+
+      // Write it back to the table:
+      (*itor)["ph_time"].set(ph_time_dbl);
+    }
 \endverbatim
+
+    Note that the object used to access the table is now declared
+    as type Table *, not const Table *, and it is created using
+    a method called editTable, instead of readTable. A reference to
+    a Header object (instead of const Header) is obtained and then
+    used to modify the tstart keyword. Next an iterative loop is shown
+    which uses types which ultimately provide modify access to the
+    table's cells.
 
     <hr>
     \section notes Release Notes
