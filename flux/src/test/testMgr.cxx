@@ -14,6 +14,7 @@
 static int default_count = 10 ;
 //Testing
 static const char * default_source="default";
+//static const char * default_source="galdiffusemap";
 //Default
 //static const char * default_source="CrElectron";
 
@@ -55,6 +56,7 @@ void flux_load() {
     DECLARE_SPECTRUM( FILESpectrum);
     DECLARE_SPECTRUM( GalElSpectrum);
     DECLARE_SPECTRUM( SurfaceMuons);
+    DECLARE_SPECTRUM( MapSpectrum);
  }
 
 int main(int argn, char * argc[]) {
