@@ -21,6 +21,8 @@ using namespace astro;
 
 
 namespace {
+#define NS_MAX 8172  // Max allowed value for nside.
+
 void mk_xy2pix(int *x2pix, int *y2pix) {
   /* =======================================================================
    * subroutine mk_xy2pix
@@ -749,6 +751,566 @@ void ring2nest( long nside, long ipring, long *ipnest) {
   
 }
 
+    /*=======================================================================
+    !     gives the x, y coords in a face from pixel number within the face (NESTED) 
+    !
+    !     Benjamin D. Wandelt 13/10/97
+    !     
+    !     using code from HEALPIX toolkit by K.Gorski and E. Hivon
+    !======================================================================= */
+void pix2xy_nest(long nside, long ipf, long * ix, long * iy)
+{
+    long  ip_low, ip_trunc, ip_med, ip_hi;
+
+    if (nside < 1 || nside > NS_MAX)
+        throw std::runtime_error("nside out of range");
+ 
+    if (ipf < 0 || ipf > (nside*nside) -1)
+        throw std::runtime_error("input pixel out of range"); 
+
+    static int pix2x[1024], pix2y[1024];
+    static char setup_done = 0;
+    
+    if( !setup_done )
+    {
+        mk_pix2xy(pix2x, pix2y);
+        setup_done = 1;
+    }
+
+    ip_low = ipf % 1024;      // content of the last 10 bits
+    ip_trunc = ipf/1024;       // truncation of the last 10 bits
+    ip_med = ip_trunc % 1024; // content of the next 10 bits
+    ip_hi = ip_trunc/1024;    // content of the high weight 10 bits
+
+    *ix = 1024*pix2x[ip_hi] + 32*pix2x[ip_med] + pix2x[ip_low];
+    *iy = 1024*pix2y[ip_hi] + 32*pix2y[ip_med] + pix2y[ip_low];
+}
+void
+xy2pix_nest(long nside, long ix, long iy, long face_num, long * ipix)
+{
+    /*=======================================================================
+    !     gives the pixel number ipix (NESTED) 
+    !     corresponding to ix, iy and face_num
+    !
+    !     Benjamin D. Wandelt 13/10/97
+    !     using code from HEALPIX toolkit by K.Gorski and E. Hivon
+    !======================================================================= */
+    int  ix_low, ix_hi, iy_low, iy_hi, ipf;
+
+    if (nside < 1 || nside > NS_MAX)
+        throw std::runtime_error("nside out of range");
+    if (ix < 0 || ix > (nside-1))
+        throw std::runtime_error("ix out of range");
+    if (iy < 0 || iy > (nside-1))
+        throw std::runtime_error("iy out of range");
+    
+    static int x2pix[128], y2pix[128];
+    static bool setup_done = false;
+    
+    if( !setup_done )
+    {
+        mk_xy2pix(x2pix, y2pix);
+        setup_done = true;
+    }
+
+    ix_low = ix % 128;
+    ix_hi  = ix/128;
+    iy_low = iy % 128;
+    iy_hi  = iy/128;
+
+    ipf =  (x2pix[ix_hi]+y2pix[iy_hi]) * (128 * 128) 
+              + (x2pix[ix_low]+y2pix[iy_low]);
+
+    * ipix = (long) (ipf + (face_num * nside * nside));    // in {0, 12*nside**2 - 1}
+}
+
+int swapLSBMSB(int i)
+{
+  /* ====================================================================
+  !     Returns i with even and odd bit positions interchanged
+  ! Benjamin D. Wandelt October 1997
+  !==================================================================== */
+    int msb,lsb, magic1=89478485, magic2=178956970;
+    
+    lsb = i & magic1;
+    msb = i & magic2;
+
+    return((msb/2)+(lsb*2));
+}
+int invLSB( int i)
+{
+  /* ====================================================================
+  !     Returns i with even (0,2,4,...) bits inverted
+  ! Benjamin D. Wandelt October 1997
+  !==================================================================== */
+    int magic1=89478485;
+    
+    return(i ^ magic1);
+}
+int invMSB( int i)
+{
+  /* ====================================================================
+  !     Returns i with odd (1,3,5,...) bits inverted
+  ! Benjamin D. Wandelt October 1997
+  !==================================================================== */
+    int magic2=178956970;
+    
+    return(i ^ magic2);
+}  
+ //=======================================================================
+// The following is a routine which finds the 7 or 8 neighbours of 
+// any pixel in the nested scheme of the HEALPIX pixelisation.
+//====================================================================
+//====================================================================
+//   Returns list n(8) of neighbours of pixel ipix (in NESTED scheme)
+//   the neighbours are ordered in the following way:
+//   First pixel is the one to the south (the one west of the south
+// direction is taken
+// for the pixels which don't have a southern neighbour). From
+// then on the neighbours are ordered in the clockwise direction
+// about the pixel with number ipix.
+//     
+//   nneigh is the number of neighbours (mostly 8, 8 pixels have 7 neighbours)
+//
+//   Benjamin D. Wandelt October 1997
+//   Added to pix_tools in March 1999
+//====================================================================
+void neighbours_nest(long nside, long ipix, long * n, int * nneigh)
+{
+    long npix, ipf, ipo, ix, ixm, ixp, iy, iym, iyp, ixo, iyo;
+    long face_num, other_face;
+    long ia, ib, ibp, ibm, ib2, icase, nsidesq;
+    long local_magic1, local_magic2;
+
+    if (nside < 1 || nside > NS_MAX)
+        throw std::runtime_error("nside out of range");
+    
+    nsidesq = nside * nside;
+    npix = 12 * nsidesq;       // total number of points
+    if (ipix < 0 || ipix > npix-1)
+        throw std::runtime_error("input pixel out of range");
+
+    //     initiates array for (x,y)-> pixel number -> (x,y) mapping
+    static int x2pix[128], y2pix[128];
+    static bool setup_done = false;
+    
+    if( !setup_done )
+    {
+        mk_xy2pix(x2pix, y2pix);
+        setup_done = true;
+    }
+
+    local_magic1 = (nsidesq-1)/3;
+    local_magic2 = 2* local_magic1;
+    face_num = ipix / nsidesq;
+
+    // ipf = modulo (ipix,nsidesq)   // Pixel number in face
+    ipf = ipix % nsidesq;
+
+    pix2xy_nest(nside, ipf, &ix, &iy);
+    ixm=ix-1;
+    ixp=ix+1;
+    iym=iy-1;
+    iyp=iy+1;
+
+    *nneigh=8;                 // Except in special cases below
+    bool special = false;
+
+    //     Exclude corners
+    if(ipf==local_magic2)      // WestCorner
+    {
+       icase=5;             
+       special = true;
+    }
+    else if(ipf==(nsidesq-1))  // NorthCorner
+    {
+       icase=6;             
+       special = true;
+    }
+    else if(ipf==0)            // SouthCorner
+    {
+       icase=7;                
+       special = true;
+    }
+    else if(ipf==local_magic1)      // EastCorner
+    {
+       icase=8;      
+       special = true;
+    }
+
+    //     Detect edges
+    else if((ipf & local_magic1)==local_magic1)  // NorthEast
+    {
+       icase=1; 
+       special = true;
+    }
+    else if((ipf & local_magic1)==0)       // SouthWest
+    {
+       icase=2;    
+       special = true;
+    }
+    else if((ipf & local_magic2)==local_magic2)  // NorthWest
+    {
+       icase=3;                 
+       special = true;
+    }
+    else if((ipf & local_magic2)==0)       // SouthEast
+    {
+       icase=4;                   
+       special = true;
+    }
+
+    //     Inside a face
+    if (! special)
+    {
+        xy2pix_nest(nside, ixm, iym, face_num, n);
+        xy2pix_nest(nside, ixm, iy , face_num, n + 1);  
+        xy2pix_nest(nside, ixm, iyp, face_num, n + 2);
+        xy2pix_nest(nside, ix , iyp, face_num, n + 3);
+        xy2pix_nest(nside, ixp, iyp, face_num, n + 4);
+        xy2pix_nest(nside, ixp, iy , face_num, n + 5);
+        xy2pix_nest(nside, ixp, iym, face_num, n + 6);
+        xy2pix_nest(nside, ix , iym, face_num, n + 7);
+    }
+
+    else  // Handle special cases.
+    {
+        ia= face_num/4;            // in {0,2}
+        ib= face_num % 4;       // in {0,3}
+        ibp=(ib+1) % 4;
+        ibm=(ib+4-1) % 4;
+        ib2=(ib+2) % 4;
+
+        if(ia==0)           // North Pole region
+        {
+            switch (icase)
+            {
+                case 1:              // NorthEast edge
+                    other_face=0+ibp;
+                    xy2pix_nest(nside, ix , iym, face_num, n + 7);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n + 1);
+                    xy2pix_nest(nside, ixm, iyp, face_num, n + 2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n + 3);        
+                    ipo = swapLSBMSB(ipf) % nsidesq;    // East-West flip
+                    pix2xy_nest(nside,ipo, & ixo, & iyo);
+                    xy2pix_nest(nside, ixo+1 , iyo, other_face, n + 4);
+                    *(n + 5)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n + 6);
+                break;
+                case 2:              // SouthWest edge
+                    other_face=4+ib;
+                    ipo = invLSB(ipf) % nsidesq;        // SW-NE flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n);
+                    *(n + 1)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo+1, other_face, n + 2);
+                    xy2pix_nest(nside, ix , iym, face_num, n + 7);
+                    xy2pix_nest(nside, ix , iyp, face_num, n + 3);
+                    xy2pix_nest(nside, ixp, iym, face_num, n + 6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n + 5);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n + 4);
+                break;
+                case 3:              // NorthWest edge
+                    other_face=0+ibm;
+                    ipo = swapLSBMSB(ipf) % nsidesq;    // East-West flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n + 2);
+                    *(n + 3)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo+1, other_face, n + 4);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n + 1);
+                    xy2pix_nest(nside, ix , iym, face_num, n + 7);
+                    xy2pix_nest(nside, ixp, iym, face_num, n + 6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n + 5);
+                break;
+                case 4:              //SouthEast edge
+                    other_face=4+ibp;
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);   
+                    xy2pix_nest(nside, ixm, iyp, face_num, n+2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n+4);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                    ipo = invMSB(ipf) % nsidesq; // SE-NW flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo+1, iyo, other_face, n+6);
+                    *(n + 7)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n);
+                break;
+                case 5:              //West corner
+                    *nneigh=7;
+                    other_face=4+ib;
+                    *(n + 1)=other_face*nsidesq+nsidesq-1;
+                    *n =*(n + 1)-2;
+                    other_face=0+ibm;
+                    *(n + 2)=other_face*nsidesq+local_magic1;
+                    *(n + 3)=*(n + 2)+2;
+                    *(n + 4)=ipix+1;
+                    *(n + 5)=ipix-1;
+                    *(n + 6)=ipix-2;
+                break;
+                case 6:              //North corner
+                    *n=ipix-3;
+                    *(n + 1)=ipix-1;
+                    *(n + 7)=ipix-2;
+                    other_face=0+ibm;
+                    *(n + 3)=other_face*nsidesq+nsidesq-1;
+                    *(n + 2)=*(n + 3)-2;
+                    other_face=0+ib2;
+                    *(n + 4)=other_face*nsidesq+nsidesq-1;
+                    other_face=0+ibp;
+                    *(n + 5)=other_face*nsidesq+nsidesq-1;
+                    *(n + 6)=*(n + 5)-1;
+                break;
+                case 7:              //South corner
+                    other_face=8+ib;
+                    *n = other_face*nsidesq+nsidesq-1;
+                    other_face=4+ib;
+                    *(n + 1)=other_face*nsidesq+local_magic1;
+                    *(n + 2)=*(n + 1)+2;
+                    *(n + 3)=ipix+2;
+                    *(n + 4)=ipix+3;
+                    *(n + 5)=ipix+1;
+                    other_face=4+ibp;
+                    *(n + 7)=other_face*nsidesq+local_magic2;
+                    *(n + 6)=*(n + 7)+1;
+                break;
+                case 8:              // East corner
+                    *nneigh=7;
+                    *(n + 1)=ipix-1;
+                    *(n + 2)=ipix+1;
+                    *(n + 3)=ipix+2;
+                    other_face=0+ibp;
+                    *(n + 5)=other_face*nsidesq+local_magic2;
+                    *(n + 4)=*(n + 5)+1;
+                    other_face=4+ibp;
+                    *(n + 6)=other_face*nsidesq+nsidesq-1;
+                    *n=*(n + 6)-1;
+                break;
+            } // End switch
+        } //  North pole region
+
+        else if(ia==1)       // Equatorial region
+        {
+            switch (icase)
+            {
+                case 1:              // NorthEast edge
+                    other_face=0+ib;
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);
+                    xy2pix_nest(nside, ixm, iyp, face_num, n+2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    ipo = invLSB(ipf) % nsidesq;    // NE-SW flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo , iyo+1, other_face, n+4);
+                    *(n + 5)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n+6);
+                break;
+                case 2:              // SouthWest edge
+                    other_face=8+ibm;
+                    ipo = invLSB(ipf) % nsidesq;        // SW-NE flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n);
+                    *(n + 1)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo+1, other_face, n+2);
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    xy2pix_nest(nside, ixp, iym, face_num, n+6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n+4);
+                break;
+                case 3:              // NorthWest edge
+                    other_face=0+ibm;
+                    ipo = invMSB(ipf) % nsidesq;    // NW-SE flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n+2);
+                    *(n + 3)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo+1, iyo, other_face, n+4);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ixp, iym, face_num, n+6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                break;
+                case 4:              // SouthEast edge
+                    other_face=8+ib;
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1)   ;
+                    xy2pix_nest(nside, ixm, iyp, face_num, n+2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n+4);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                    ipo = invMSB(ipf) % nsidesq; // SE-NW flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo+1, iyo, other_face, n+6);
+                    *(n + 7)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n);
+                break;
+                case 5:              // West corner
+                    other_face=8+ibm;
+                    *(n + 1)=other_face*nsidesq+nsidesq-1;
+                    *n=*(n + 1)-2;
+                    other_face=4+ibm;
+                    *(n + 2)=other_face*nsidesq+local_magic1;
+                    other_face=0+ibm;
+                    *(n + 3)=other_face*nsidesq;
+                    *(n + 4)=*(n + 3)+1;
+                    *(n + 5)=ipix+1;
+                    *(n + 6)=ipix-1;
+                    *(n + 7)=ipix-2;
+                break;
+                case 6:             // North corner
+                    *nneigh=7;
+                    *n=ipix-3;
+                    *(n + 1)=ipix-1;
+                    other_face=0+ibm;
+                    *(n + 3)=other_face*nsidesq+local_magic1;
+                    *(n + 2)=*(n + 3)-1;
+                    other_face=0+ib;
+                    *(n + 4)=other_face*nsidesq+local_magic2;
+                    *(n + 5)=*(n + 4)-2;
+                    *(n + 6)=ipix-2;
+                break;
+                case 7:              // South corner
+                    *nneigh=7;
+                    other_face=8+ibm;
+                    *n=other_face*nsidesq+local_magic1;
+                    *(n + 1)=(*n) +2;
+                    *(n + 2)=ipix+2;
+                    *(n + 3)=ipix+3;
+                    *(n + 4)=ipix+1;
+                    other_face=8+ib;
+                    *(n + 6)=other_face*nsidesq+local_magic2;
+                    *(n + 5)=*(n + 6)+1;
+                break;
+                case 8:              // East corner
+                    other_face=8+ib;
+                    *(n + 7)=other_face*nsidesq+nsidesq-1;
+                    *n=*(n + 7)-1;
+                    *(n + 1)=ipix-1;
+                    *(n + 2)=ipix+1;
+                    *(n + 3)=ipix+2;
+                    other_face=0+ib;
+                    *(n + 5)=other_face*nsidesq;
+                    *(n + 4)=*(n + 5)+2;
+                    other_face=4+ibp;
+                    *(n + 6)=other_face*nsidesq+local_magic2;
+                break;
+            } // End switch
+        }
+        
+        else                    // South Pole region
+        {
+            switch (icase)
+            {
+                case 1:              // NorthEast edge
+                    other_face=4+ibp;
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);
+                    xy2pix_nest(nside, ixm, iyp, face_num, n+2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    ipo = invLSB(ipf) % nsidesq;    // NE-SW flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo , iyo+1, other_face, n+4);
+                    *(n + 5)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n+6);
+                break;
+                case 2:              // SouthWest edge
+                    other_face=8+ibm;
+                    ipo = swapLSBMSB(ipf) % nsidesq;        // W-E flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n);
+                    *(n + 1)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo+1, iyo, other_face, n+2);
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    xy2pix_nest(nside, ixp, iym, face_num, n+6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n+4);
+                break;
+                case 3:              // NorthWest edge
+                    other_face=4+ib;
+                    ipo = invMSB(ipf) % nsidesq;    // NW-SE flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo-1, iyo, other_face, n+2);
+                    *(n + 3)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo+1, iyo, other_face, n+4);
+                    xy2pix_nest(nside, ixm, iym, face_num, n);
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);
+                    xy2pix_nest(nside, ix , iym, face_num, n+7);
+                    xy2pix_nest(nside, ixp, iym, face_num, n+6);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                break;
+                case 4:              // SouthEast edge
+                    other_face=8+ibp;
+                    xy2pix_nest(nside, ixm, iy , face_num, n+1);
+                    xy2pix_nest(nside, ixm, iyp, face_num, n+2);
+                    xy2pix_nest(nside, ix , iyp, face_num, n+3);
+                    xy2pix_nest(nside, ixp, iyp, face_num, n+4);
+                    xy2pix_nest(nside, ixp, iy , face_num, n+5);
+                    ipo = swapLSBMSB(ipf) % nsidesq; // E-W flip
+                    pix2xy_nest(nside,ipo,&ixo,&iyo);
+                    xy2pix_nest(nside, ixo, iyo+1, other_face, n+6);
+                    *(n + 7)=other_face*nsidesq+ipo;
+                    xy2pix_nest(nside, ixo, iyo-1, other_face, n);
+                break;
+                case 5:              // West corner
+                    *nneigh=7;
+                    other_face=8+ibm;
+                    *(n + 1)=other_face*nsidesq+local_magic1;
+                    *n=*(n + 1)-1;
+                    other_face=4+ib;
+                    *(n + 2)=other_face*nsidesq;
+                    *(n + 3)=*(n + 2)+1;
+                    *(n + 4)=ipix+1;
+                    *(n + 5)=ipix-1;
+                    *(n + 6)=ipix-2;
+                break;
+                case 6:              // North corner
+                    *n=ipix-3;
+                    *(n + 1)=ipix-1;
+                    other_face=4+ib;
+                    *(n + 3)=other_face*nsidesq+local_magic1;
+                    *(n + 2)=*(n + 3)-1;
+                    other_face=0+ib;
+                    *(n + 4)=other_face*nsidesq;
+                    other_face=4+ibp;
+                    *(n + 5)=other_face*nsidesq+local_magic2;
+                    *(n + 6)=*(n + 5)-2;
+                    *(n + 7)=ipix-2;
+                break;
+                case 7:              // South corner
+                    other_face=8+ib2;
+                    *n=other_face*nsidesq;
+                    other_face=8+ibm;
+                    *(n + 1)=other_face*nsidesq;
+                    *(n + 2)=*(n + 1)+1;
+                    *(n + 3)=ipix+2;
+                    *(n + 4)=ipix+3;
+                    *(n + 5)=ipix+1;
+                    other_face=8+ibp;
+                    *(n + 7)=other_face*nsidesq;
+                    *(n + 6)=*(n + 7)+2;
+                break;
+                case 8:              // East corner
+                    *nneigh=7;
+                    other_face=8+ibp;
+                    *(n + 6)=other_face*nsidesq+local_magic2;
+                    *n=*(n + 6)-2;
+                    *(n + 1)=ipix-1;
+                    *(n + 2)=ipix+1;
+                    *(n + 3)=ipix+2;
+                    other_face=4+ibp;
+                    *(n + 5)=other_face*nsidesq;
+                    *(n + 4)=*(n + 5)+2;
+                break;
+            } // End switch
+        }
+
+    } // Specail cases
+}
+
 } // anonymous namespace
 //=========================================================================================
 //  C++ interface funtions
@@ -794,6 +1356,22 @@ Healpix::Pixel::operator astro::SkyDir ()const
     m_healpix->pix2ang( m_index, theta, phi);
     // convert to ra, dec (or l,b)
     return astro::SkyDir( phi*180/M_PI, (M_PI/2-theta)*180/M_PI, m_healpix->coordsys() );
+}
+
+void Healpix::Pixel::neighbors(std::vector<Healpix::Pixel> & p) const
+{
+    long n[8];
+    int nbr_neighbors;
+    
+    p.clear();
+    if (!(this->m_healpix->nested()))
+        throw std::runtime_error("Nested ordering required to determine neighbors.");
+    
+    neighbours_nest(this->m_healpix->m_nside, m_index, n, &nbr_neighbors);
+    for (int i = 0; i < nbr_neighbors; ++i)
+    {
+        p.push_back(Healpix::Pixel(n[i], *(this->m_healpix)));
+    }
 }
 
 double Healpix::integrate(const astro::SkyFunction& f)const

@@ -11,6 +11,7 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
+#include <vector>
 
 namespace astro{
 /**
@@ -91,6 +92,7 @@ public:
         operator astro::SkyDir()const;
         astro::SkyDir operator()()const{ return *this;}
         long index()const{return m_index;}
+        void neighbors(std::vector<Pixel> & p) const;
 
     private:
         long m_index;

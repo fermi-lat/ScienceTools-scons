@@ -41,6 +41,12 @@ public:
         return px();
     }
 
+    //! return the pixel associated with an iterator
+    astro::Healpix::Pixel pixel(typename std::vector<C>::const_iterator it)const{
+        astro::Healpix::Pixel px(it-begin(), m_hp);
+        return px;
+    }
+
     //! @brief access a content object by direction, for modificaion
     C& operator[](const astro::SkyDir& dir){
         astro::Healpix::Pixel pix = m_hp.pixel(dir);

@@ -9,8 +9,20 @@ $Header$
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
+#include <fstream>
 
 
+// simple insertion operator to print a vector<int> object
+std::ostream& operator<<(std::ostream& out, const std::vector<int> v)
+{
+
+    for (std::vector<int>::const_iterator it = v.begin(); it < v.end(); ++it)
+    {
+        out << *it << "\t";
+    }
+    out << std::endl;
+    return out;
+}
 
 class TestHealpix {
 public:
@@ -20,6 +32,9 @@ public:
         test(256, Healpix::NESTED, astro::SkyDir::EQUATORIAL);
         test(256, Healpix::RING, astro::SkyDir::GALACTIC);
         test(256, Healpix::RING, astro::SkyDir::EQUATORIAL);
+        
+        Healpix hp(8);
+        TestNeighbors(hp);
     }
     void test(long nside, astro::Healpix::Ordering ord, astro::SkyDir::CoordSystem coord)
     {
@@ -88,5 +103,49 @@ public:
         int m_n;
     };
 
-
+    void TestNeighbors(const astro::Healpix & hp)
+    {
+        typedef std::map<long, long> SORTMAP;
+        std::cout << "\nTesting neighbors logic...";
+        std::ifstream f("../src/test/Healpix Neighbors Nside=8.txt"); // File provided by Healpix developers
+           
+        for (astro::Healpix::Iterator it = hp.begin(); it < hp.end(); ++it)
+        {
+            // std::cout << "Checking neighbors for pixel " << (*it).index() << std::endl;
+            std::vector<astro::Healpix::Pixel> pv;
+            (*it).neighbors(pv);  // Get neighbors as vector of pixels
+            
+            // Convert to vector of integers
+            std::vector<int> calculated;
+            for(std::vector<astro::Healpix::Pixel>::iterator it2 = pv.begin();
+                it2 != pv.end(); ++it2)
+            {
+                calculated.push_back(it2->index());
+            }
+            
+            // Get entry from file 
+            int pixel_nbr;
+            f >> pixel_nbr;  
+            std::vector<int> from_file;
+            for (int i = 0; i < 8; i++)
+            {
+                int neighbor;
+                f >> neighbor;
+                if (neighbor >= 0)
+                    from_file.push_back(neighbor);
+            }
+            
+            if (calculated != from_file)
+            {
+                std::cout << "Neighbor mismatch for pixel " << pixel_nbr << std::endl;
+            }
+            #if 0 // Run this block to see detailed results.
+            else
+            {
+                std::cout << calculated << from_file << std::endl ;
+            }
+            #endif
+        }
+        std::cout << "Done.\n";
+    }
 };
