@@ -146,7 +146,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)
 {
-    if( newlayer>= m_naxis3)
+    if( newlayer>=static_cast<unsigned int>( m_naxis3))
         throw std::invalid_argument("SkyImage::setLayer-- invalid layer number");
     unsigned int t = m_layer;
     m_layer = newlayer;
@@ -191,11 +191,14 @@ void SkyImage::clear()
 {
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
     size_t s = image->data().size();
+    size_t pixels = size_t(m_naxis1*m_naxis2);
     for( size_t k = 0; k< s; ++k){
         // determine the bin center
+        size_t kk = k%pixels;
+
         double
-            x = static_cast<int>(k%m_naxis1)+0.5, 
-            y = static_cast<int>(k/m_naxis1)+0.5;
+            x = static_cast<int>(kk%m_naxis1)+0.5, 
+            y = static_cast<int>(kk/m_naxis1)+0.5;
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
             image->data()[k] = 0; 
