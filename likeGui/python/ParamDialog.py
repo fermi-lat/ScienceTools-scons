@@ -113,6 +113,11 @@ class ParamEntry:
         dialog = EditFileDialog(self.parent, label)
         file = dialog.go(self.variable.get())
         if file:
+            try:
+                if os.path.samefile(file, os.path.basename(file)):
+                    file = os.path.basename(file)
+            except OSError:
+                pass
             self.variable.set(file)
     def getRandomInt(self):
         my_int = int(random.random()*sys.maxint/1e3)
