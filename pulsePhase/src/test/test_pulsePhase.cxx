@@ -5,6 +5,8 @@
 
 #include "pulsePhase/TimingModel.h"
 
+#include "st_facilities/Env.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -16,15 +18,8 @@ int main() {
   std::cerr.precision(20);
   std::cout.precision(20);
 
-  // Get top directory.
-  const char * root_dir = getenv("PULSEPHASEROOT");
-  if (0 == root_dir) {
-    std::cerr << "Set PULSEPHASEROOT before running the test." << std::endl;
-    return 1;
-  }
-
   // Set the data directory.
-  std::string data_dir = std::string(root_dir) + "/data/";
+  std::string data_dir = st_facilities::Env::getDataDir("pulsePhase");
 
   // Simple test of timing model computation.
   TimingModel model(123.456789, .11, 1.125e-2, -2.25e-4, 6.75e-6);
@@ -59,7 +54,7 @@ int main() {
   }
  
   // Next test: read event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable(data_dir + "D1.fits", "EVENTS");
+  tip::Table * events = tip::IFileSvc::instance().editTable(st_facilities::Env::appendFileName(data_dir, "D1.fits"), "EVENTS");
  
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
