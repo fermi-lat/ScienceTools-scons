@@ -5,7 +5,7 @@ version v0
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
 use GlastPolicy *
-use ROOT v2r30507p0 IExternal
+use ROOT * IExternal
 use cfitsio * IExternal
 
 apply_pattern package_include
