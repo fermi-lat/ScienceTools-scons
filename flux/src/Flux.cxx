@@ -11,8 +11,7 @@
 #include "flux/SpectrumFactory.h"
 
 Flux::Flux(std::string name) 
-: m_time(0)
-, m_flux(0)
+:  m_flux(0)
 {
     m_event = s_mgr->source(name);
 }
@@ -39,12 +38,11 @@ std::string Flux::title()const
 
 void Flux::generate()
 {
-    // Purpose and Method: generate a new entry trajectory, set FluxSource, increment local time
+    // Purpose and Method: generate a new entry trajectory, set FluxSource, time
     // Inputs  - none
     // Outputs - none
     m_flux = m_event->event(time());
     double timepass = m_event->interval(time());
-    m_time+= timepass;
     pass(timepass);
 }
 
@@ -67,7 +65,7 @@ HepPoint3D Flux::launchPoint()const
 
 double Flux::time()const 
 {
-    return m_time ;
+    return s_mgr->time();
 }
 
 

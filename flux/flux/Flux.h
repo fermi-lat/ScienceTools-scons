@@ -63,8 +63,8 @@ public:
     /// pass a specific amount of time
     virtual void pass ( double t);
     
-    /// Get the time as held by GPS
-    /*GPStime*//*int*/double gpsTime () const;
+    /// Get the time as held by GPS (same: here for backward compatibility
+    double gpsTime () const;
     
     /// rate ( /mm**2 /s)
     virtual double rate()const;
@@ -107,7 +107,6 @@ public:
 private:
     
     EventSource* m_event;  
-    double m_time;  // elapsed time: here for now.
     EventSource* m_flux; // actual FluxSource used 
 
     static FluxMgr* s_mgr;
