@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r7   22-Jan-04   JC   make specification of flux-style xml files
+                            more flexible
     v2r6   15-Jan-04   JC   add safety checks for files and sources;
                             use new flux package that includes MapFlux
     v2r5p4 15-Dec-03   JC   add random seed access to obsSim
