@@ -22,7 +22,7 @@ namespace astro {
     operator[] with a SkyDir.
 */
 
-template< class C>
+template< typename C>
 class HealpixArray : public std::vector<C> {
 public:
 
