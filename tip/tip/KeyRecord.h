@@ -94,8 +94,8 @@ namespace tip {
   template <typename T>
   inline void KeyRecord::setValue(const T & value) {
     std::ostringstream os;
-    os.precision(24);
-    os << value;
+    os.precision(15);
+    os << std::showpoint << value;
     setValue(os.str());
   }
 
