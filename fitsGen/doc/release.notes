@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r1p3 07-Mar-05   JC   set mission start = MJDREF = 54101.0
     v1r1p2 27-Jan-05   JC   convert from km to meters in makeFT2a for 
                             spacecraft position vector
     v1r1p1 01-Dec-04   JC   all space as well as tab delimiters in input to
