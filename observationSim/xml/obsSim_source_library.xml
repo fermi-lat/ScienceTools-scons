@@ -570,6 +570,14 @@
       </spectrum>
    </source>
 
+   <source name="PKS1622m297_flare">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+        params="0.118,1.9,0.,3.95e6,$(OBSERVATIONSIMROOT)/data/pks1622-297_Template.dat"/>
+         <celestial_dir ra="246.36" dec="-29.92"/>
+      </spectrum>
+   </source>
+
    <source name="periodic_source">
       <spectrum escale="MeV">
          <SpectrumClass name="PeriodicSource"
