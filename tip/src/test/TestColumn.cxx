@@ -39,6 +39,24 @@ namespace tip {
       ReportUnexpected("TestColumn::test() caught unexpected exception while testing FitsColumn::getUnits", x);
     }
 
+    // Write a string containing a number to a numeric column.
+    try {
+      FitsTable manager("a1-copy.pha", "SPECTRUM", "#row>0", false);
+      manager.getColumn(0)->set(0, "123");
+      ReportExpected("TestColumn::test() was able to write a numeric string to a double column");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestColumn::test() was not able to write a numeric string to a double column", x);
+    }
+
+    // Write a string which does not contain a number to a numeric column.
+    try {
+      FitsTable manager("a1-copy.pha", "SPECTRUM", "#row>0", false);
+      manager.getColumn(0)->set(0, "not num");
+      ReportUnexpected("TestColumn::test() was able to write a non-numeric string to a double column");
+    } catch (const TipException & x) {
+      ReportExpected("TestColumn::test() was not able to write a non-numeric string to a double column", x);
+    }
+
     return getStatus();
   }
 

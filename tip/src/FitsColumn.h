@@ -103,8 +103,37 @@ namespace tip {
       virtual void get(Index_t , std::vector<std::string> &) const
         { throw TipException("FitsColumn::get(Index_t, std::vector<std::string> &) not yet supported"); }
 
+      virtual void set(Index_t record_index, const char * src) { set(record_index, std::string(src)); }
+
       virtual void set(Index_t record_index, const std::string & src) {
-        setScalar(record_index, src.c_str());
+        // Writing strings must be handled carefully, because cfitsio only converts strings to numbers when reading.
+        switch (m_type_code) {
+          case TSTRING:
+            // String data -> string column.
+            setScalar(record_index, src.c_str());
+            break;
+          case TLOGICAL: {
+              // String data -> boolean column.
+              bool logical_val = false;
+              std::string src_copy(src);
+              for (std::string::iterator itor = src_copy.begin(); itor != src_copy.end(); ++itor) *itor = tolower(*itor);
+              if (src_copy == "t" || src_copy == "true") logical_val = true;
+              else if (src_copy == "f" || src_copy == "false") logical_val = false;
+              else throw TipException(
+                "FitsColumn::set(Index_t, const std::string &) could not convert string \"" + src + "\" to bool");
+              set(record_index, logical_val);
+              break;
+            }
+          default: {
+              // String data -> numeric column. Use double for everything.
+              char * remainder = 0;
+              double dval = strtod(src.c_str(), &remainder);
+              if (0 != remainder && '\0' != *remainder) throw TipException(
+                "FitsColumn::set(Index_t, const std::string &) could not convert string \"" + src + "\" to double");
+              set(record_index, dval);
+              break;
+            }
+        }
       }
 
       // TODO: Specialize this so that vectors of strings can be supported.

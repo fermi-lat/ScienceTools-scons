@@ -68,6 +68,7 @@ namespace tip {
       virtual void set(Index_t, const unsigned short &) { unsupported("set(Index_t, const unsigned short &)"); }
       virtual void set(Index_t, const unsigned int &) { unsupported("set(Index_t, const unsigned int &)"); }
       virtual void set(Index_t, const unsigned long &) { unsupported("set(Index_t, const unsigned long &)"); }
+      virtual void set(Index_t, const char *) { unsupported("set(Index_t, const char *)"); }
       virtual void set(Index_t, const std::string &) { unsupported("set(Index_t, const std::string &)"); }
 
       virtual void set(Index_t, const std::vector<bool> &) { unsupported("set(Index_t, const std::vector<bool> &)"); }
