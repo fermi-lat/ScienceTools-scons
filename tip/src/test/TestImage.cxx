@@ -212,12 +212,44 @@ namespace tip {
           } else {
             m_const_image->getPixel(ii, jj, orig_pixel);
             if (orig_pixel != copy_pixel)
-              throw TipException("Part of the image was incorrectly changed by writting a slice");
+              throw TipException("Part of the image was incorrectly changed by writing a slice");
           }
         }
       }
 
       ReportExpected("TestImage::test did not encounter exception while changing a slice of an image");
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestImage::test caught exception ", x);
+    }
+
+    // Test copying slices a row at a time.
+    try {
+      // Open old image for writing.
+      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image2.fits", ""));
+
+      // Reset dimensions.
+      dims = image->getImageDimensions();
+
+      for (PixOrd_t index = 0; index != dims[0]; ++index) {
+        std::vector<float> image_vec;
+        m_const_image->get(index, image_vec);
+        image->set(index, image_vec);
+      }
+
+      // Confirm that output is the same as input.
+      for (int ii = 0; ii < dims[0]; ++ii) {
+        for (int jj = 0; jj < dims[1]; ++jj) {
+          double orig_pixel = 0.;
+          double copy_pixel = 0.;
+          image->getPixel(ii, jj, copy_pixel);
+          m_const_image->getPixel(ii, jj, orig_pixel);
+          if (orig_pixel != copy_pixel)
+            throw TipException("Copy of image does not match origianl after copying a row at a time");
+        }
+      }
+
+      ReportExpected("TestImage::test did not encounter exception while copying an image a row at a time");
 
     } catch (const TipException & x) {
       ReportUnexpected("TestImage::test caught exception ", x);

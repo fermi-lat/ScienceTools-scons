@@ -78,6 +78,22 @@ namespace tip {
       virtual void get(std::vector<float> & image) const = 0;
 
       /** \brief Get a slice of an image as a one-dimensional array.
+          \param index The index of the first dimension of the array being read.
+          \param image The array in which to store the image slice.
+      */
+      void get(const PixOrd_t & index, std::vector<float> & image) const {
+        const std::vector<PixOrd_t> & dims(getImageDimensions());
+        PixelCoordRange range(dims.size());
+        range[0].first = index;
+        range[0].second = index + 1;
+        for (std::vector<PixOrd_t>::size_type ii = 1; ii < dims.size(); ++ii) {
+          range[ii].first = 0;
+          range[ii].second = dims[ii];
+        }
+        get(range, image);
+      }
+
+      /** \brief Get a slice of an image as a one-dimensional array.
           \param range A container of intervals which give the range of pixels in each image dimension.
           \param image The array in which to store the image.
       */
@@ -87,6 +103,22 @@ namespace tip {
           \param image The array which stores the image to be written.
       */
       virtual void set(const std::vector<float> & image) = 0;
+
+      /** \brief Set a slice of an image as a one-dimensional array.
+          \param index The index of the first dimension of the array being written.
+          \param image The array in which the image slice is stored.
+      */
+      void set(const PixOrd_t & index, const std::vector<float> & image) {
+        const std::vector<PixOrd_t> & dims(getImageDimensions());
+        PixelCoordRange range(dims.size());
+        range[0].first = index;
+        range[0].second = index + 1;
+        for (std::vector<PixOrd_t>::size_type ii = 1; ii < dims.size(); ++ii) {
+          range[ii].first = 0;
+          range[ii].second = dims[ii];
+        }
+        set(range, image);
+      }
 
       /** \brief Set a slice of an image as a one-dimensional array.
           \param range A container of intervals which give the range of pixels in each image dimension.
