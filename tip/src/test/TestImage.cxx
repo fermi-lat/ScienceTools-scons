@@ -25,8 +25,10 @@ namespace tip {
 
     std::vector<PixOrd_t> dims = m_const_image->getImageDimensions();
 
-    for (int ii = dims[0] - 1; ii >= 0; --ii) {
-      for (int jj = 0; jj < dims[1]; ++jj) {
+    // Write the pixel values to the screen. Go row-by-row, so use dims1 for outer loop.
+    // Reverse the order of the rows, because FITS images have row 1 at the bottom.
+    for (int jj = dims[1] - 1; jj >= 0; --jj) {
+      for (int ii = 0; ii < dims[0]; ++ii) {
         double pixel = 0;
         m_const_image->getPixel(ii, jj, pixel);
         std::cout << pixel << ' ';

@@ -227,9 +227,9 @@ namespace tip {
     std::vector<PixOrd_t>::size_type naxis = dims.size();
     long * naxes = new long[naxis];
 
-    // Reverse order of axes.
+    // Copy dimensions to C array.
     for (std::vector<PixOrd_t>::size_type ii = 0; ii < naxis; ++ii)
-      naxes[ii] = dims[naxis - 1 - ii];
+      naxes[ii] = dims[ii];
 
     int status = 0;
     int bitpix = 0;
@@ -241,12 +241,14 @@ namespace tip {
     // Resize the image.
     fits_resize_img(m_fp, bitpix, naxis, naxes, &status);
     if (0 != status) throw TipException(formatWhat("setImageDimensions cannot change image dimensions"));
+
+    delete [] naxes;
   }
 
   void FitsExtensionManager::getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const {
     if (m_is_table) throw TipException(formatWhat("getPixel called, but object is not an image"));
     int status = 0;
-    long coord[2] = { y + 1, x + 1 }; // Reverse the order!
+    long coord[2] = { x + 1, y + 1 };
     double array[2] = { 0., 0. };
 
     // Read the given pixel:
@@ -261,7 +263,7 @@ namespace tip {
     if (m_is_table) throw TipException(formatWhat("setPixel called, but object is not an image"));
     if (m_read_only) throw TipException(formatWhat("setPixel called for read-only image"));
     int status = 0;
-    long coord[2] = { y + 1, x + 1 };
+    long coord[2] = { x + 1, y + 1 };
     // Copy pixel into temporary array:
     double array[2] = { pixel, 0. };
 
@@ -364,7 +366,7 @@ namespace tip {
     }
 
     // If we got here, we obtained all information successfully, so store it in member:
-    for (int ii = naxis - 1; ii >= 0; --ii) m_image_dimensions.push_back(naxes[ii]);
+    for (int ii = 0; ii < naxis; ++ii) m_image_dimensions.push_back(naxes[ii]);
     delete [] naxes;
   }
 
