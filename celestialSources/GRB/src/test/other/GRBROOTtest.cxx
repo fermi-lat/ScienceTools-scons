@@ -33,10 +33,10 @@
 #include "TFile.h" 
 
 //GRB include files...
-#include "src/GRB/GRBShell.h"
-#include "src/GRB/GRBShock.h"
-#include "src/GRB/GRBConstants.h"
-#include "src/GRB/GRBSim.h"
+#include "../../GRB/GRBShell.h"
+#include "../../GRB/GRBShock.h"
+#include "../../GRB/GRBConstants.h"
+#include "../../GRB/GRBSim.h"
 //#include "../../src/GRB/GRBSpectrum.h"
 #include "CLHEP/Random/RandFlat.h"
 using namespace std;
@@ -47,18 +47,29 @@ using namespace std;
 #define TIMESIZE cst::nstep
 ////////////////////////////////////////////////////////////
 // Channel for the output Light Curves
-// BATSE TRIGGER:
+// BATSE 1 Channel:
 const double ch1L      = 50.0e+3;
-const double ch1H      = 300.0e+3;
+const double ch1H      = 100.0e+3;
+// BATSE 2 Channel
+const double ch2L      = 100.0e+3;
+const double ch2H      = 300.0e+3;
+
 // GLAST Energies ?
 //const double ch1L      = 0.001e+9;
 //const double ch1H      = 0.0025e+9;
-const double ch2L      = 0.0025e+9;
-const double ch2H      = 0.005e+9;
-const double ch3L      = 0.005e+9;
-const double ch3H      = 0.01e+9;
-const double ch4L      = 0.01e+9;
-const double ch4H      = 1.00e+9;
+//const double ch2L      = 0.0025e+9;
+//const double ch2H      = 0.005e+9;
+//const double ch3L      = 0.005e+9;
+//const double ch3H      = 0.01e+9;
+//const double ch4L      = 0.01e+9;
+//const double ch4H      = 1.00e+9;
+
+// GBM Energy Range:
+const double ch3L      = 25.0e+3;
+const double ch3H      = 10.0e+6;
+// LAT Energy Range
+const double ch4L      = 20.0e+6;
+const double ch4H      = 300.0e+9;
 ////////////////////////////////////////////////////////////
 
 const double TIME=10.0;
@@ -134,7 +145,7 @@ void Burst(int argc, char** argv)
       cout<<"******     Initializing ROOT    ******"<<endl;
       static const   TROOT root("GRB", "GRB Simulator");
       
-      _myGRB->Start();
+      _myGRB->MakeGRB();
       
       if (!set_tmax) tmax=_myGRB->Tmax();
       
@@ -150,14 +161,6 @@ void Burst(int argc, char** argv)
       //------------------------------------------------------//
       ////////////////  Compute the Total Flux /////////////////
       //------------------------------------------------------//
-      
-      double fluence1=0.0;
-      double fluence2=0.0;
-      double fluence3=0.0;
-      double fluence4=0.0;
-      double fluence5=0.0;
-      std::vector<double> m_time;
-      
       // Logaritmic Binning
       double e_delta=pow(cst::enmax/cst::enmin,1.0/cst::enstep);
       double *e_bins;
@@ -181,6 +184,13 @@ void Burst(int argc, char** argv)
 	  h1->GetYaxis()->SetTitle("flux[erg/s/cm^2]");  
 	  //  h1->SetFillColor(5);
 	}
+      
+      double fluence1=0.0;
+      double fluence2=0.0;
+      double fluence3=0.0;
+      double fluence4=0.0;
+      double fluence5=0.0;
+      std::vector<double> m_time;
       
       for (int t=0;t<cst::nstep;t++)
 	{
@@ -219,14 +229,16 @@ void Burst(int argc, char** argv)
 	      cc2->Update();   
 	    }
 	  fluence1+=_myGRB->IFlux(spectrum,cst::enmin,cst::enmax)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
-	  fluence2+=_myGRB->IFlux(spectrum,ch1L,ch1H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
-	  fluence3+=_myGRB->IFlux(spectrum,ch2L,ch2H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
-	  fluence4+=_myGRB->IFlux(spectrum,ch3L,ch3H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
-	  fluence5+=_myGRB->IFlux(spectrum,ch4L,ch4H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;;
+	  fluence2+=_myGRB->IFlux(spectrum,ch1L,ch1H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
+	  fluence3+=_myGRB->IFlux(spectrum,ch2L,ch2H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
+	  fluence4+=_myGRB->IFlux(spectrum,ch3L,ch3H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
+	  fluence5+=_myGRB->IFlux(spectrum,ch4L,ch4H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area()*m_dt;
 	  //erg
-	  cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<fluence1<<endl;
+	  if (video_out) cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<fluence1<<endl;
 	}
       cout<<"**************************************************"<<endl;
+      if (fluence2!=0) 
+	      cout<<" HardNess Ratio =  "<<fluence3/fluence2<<endl;
       cout<<"Fluence [erg/cm^2] = "<<fluence1/_myGRB->Area()<<endl;
       cout<<"Fluence ("<<ch1L*1.0e-6<<" MeV - "<<ch1H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence2/_myGRB->Area()<<endl;
       cout<<"Fluence ("<<ch2L*1.0e-6<<" MeV - "<<ch2H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence3/_myGRB->Area()<<endl;
@@ -437,20 +449,20 @@ void Burst(int argc, char** argv)
 	  //char legendName5[100];
 	  
 	  c2->cd();
-	  gch1->Draw("ALP");
-	  gch1->SetTitle("Light Curves");
-	  gch1->GetXaxis()->SetTitle("Time [sec]");
-	  gch1->GetXaxis()->SetTitleSize(0.035);
-	  gch1->GetXaxis()->SetLabelSize(0.035);
-	  gch1->GetXaxis()->SetTitleOffset(1.4);
-	  gch1->GetYaxis()->SetTitle("Counts [ph/m^2/s]");
-	  gch1->GetYaxis()->SetTitleSize(0.035);
-	  gch1->GetYaxis()->SetLabelSize(0.035);
-	  gch1->GetYaxis()->SetTitleOffset(1.4);
+	  gch3->Draw("ALP");
+	  gch3->SetTitle("Light Curves");
+	  gch3->GetXaxis()->SetTitle("Time [sec]");
+	  gch3->GetXaxis()->SetTitleSize(0.035);
+	  gch3->GetXaxis()->SetLabelSize(0.035);
+	  gch3->GetXaxis()->SetTitleOffset(1.4);
+	  gch3->GetYaxis()->SetTitle("Counts [ph/m^2/s]");
+	  gch3->GetYaxis()->SetTitleSize(0.035);
+	  gch3->GetYaxis()->SetLabelSize(0.035);
+	  gch3->GetYaxis()->SetTitleOffset(1.4);
 	  //glc->Draw("ALP");
-	  gch1->Draw("ALP");
+	  gch3->Draw("ALP");
 	  gch2->Draw("LP");
-	  gch3->Draw("LP");
+	  gch1->Draw("LP");
 	  gch4->Draw("LP");
 	  
 	  
