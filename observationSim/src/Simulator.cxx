@@ -32,13 +32,6 @@
 
 #include "flux/SpectrumFactory.h"
 
-namespace {
-   bool fileExists(const std::string &filename) {
-      std::ifstream file(filename.c_str());
-      return file.is_open();
-   }
-}
-
 namespace observationSim {
 
 Simulator::~Simulator() {
@@ -72,7 +65,8 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    if (pointingHistory != "none" && pointingHistory != "") {
 // Use pointing history file.
       facilities::Util::expandEnvVar(&pointingHistory);
-      if (::fileExists(pointingHistory)) {
+      if (st_facilities::Util::fileExists(pointingHistory)) {
+         setRocking(5, 0);
          setPointingHistoryFile(pointingHistory);
       } else {
          std::cout << "Pointing history file not found: \n"

@@ -116,7 +116,8 @@ int EventContainer::addEvent(EventSource *event,
    double energy = event->energy();
    Hep3Vector launchDir = event->launchDir();
 
-   double flux_theta = acos(launchDir.z());
+   double arg = launchDir.z();
+   double flux_theta = ::my_acos(arg);
    double flux_phi = atan2(launchDir.y(), launchDir.x());
 
    HepRotation rotMatrix = spacecraft->InstrumentToCelestial(time);

@@ -183,7 +183,7 @@ void ObsSim::createSimulator() {
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
                                                totalArea, startTime, 
                                                pointingHistory);
-// // Turn off rocking.
+// // Turn off rocking with pointing history
 //    my_simulator.setRocking(0);
 }
 
