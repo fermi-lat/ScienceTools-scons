@@ -18,18 +18,18 @@ namespace evtbin {
 
   Hist1D::~Hist1D() throw() {}
 
-  void Hist1D::fillBin(const std::vector<double> & value) {
-    fillBin(value[0]);
+  void Hist1D::fillBin(const std::vector<double> & value, double weight) {
+    fillBin(value[0], weight);
   }
 
-  void Hist1D::fillBin(double value) {
+  void Hist1D::fillBin(double value, double weight) {
     // Use the binner to determine the index for the data:
     long index = m_binners[0]->computeIndex(value);
 
     // Make sure index is valid:
     if (0 <= index) {
       // Increment the appropriate bin:
-      ++m_data[index];
+      m_data[index] += weight;
     }
   }
 

@@ -17,7 +17,7 @@ namespace evtbin {
   */
   class Hist1D : public Hist {
     public:
-      typedef std::vector<unsigned long> Cont_t;
+      typedef std::vector<double> Cont_t;
       typedef Cont_t::const_iterator ConstIterator;
 
       /** \brief Create a one dimensional histogram which uses the given binner object:
@@ -32,14 +32,14 @@ namespace evtbin {
           \param value Vector giving the value being binned. The vector must have at least as
                  many values as the dimensionality of the histogram.
       */
-      virtual void fillBin(const std::vector<double> & value);
+      virtual void fillBin(const std::vector<double> & value, double weight = 1.);
 
       /** \brief Increment the bin appropriate for the given value.
           \param value The value being binned.
       */
-      void fillBin(double value);
+      void fillBin(double value, double weight = 1.);
 
-      const unsigned long & operator [](Cont_t::size_type index) const;
+      const double & operator [](Cont_t::size_type index) const;
 
       ConstIterator begin() const;
 
@@ -49,7 +49,7 @@ namespace evtbin {
       Cont_t m_data;
   };
 
-  inline const unsigned long & Hist1D::operator [](Cont_t::size_type index) const { return m_data[index]; }
+  inline const double & Hist1D::operator [](Cont_t::size_type index) const { return m_data[index]; }
 
   inline Hist1D::ConstIterator Hist1D::begin() const { return m_data.begin(); }
 

@@ -24,7 +24,7 @@ namespace evtbin {
           \param value Vector giving the value being binned. The vector must have at least as
                  many values as the dimensionality of the histogram.
       */
-      virtual void fillBin(const std::vector<double> & value) = 0;
+      virtual void fillBin(const std::vector<double> & value, double weight = 1.) = 0;
 
       /** \brief Return the collection of binners being used by this histogram.
       */

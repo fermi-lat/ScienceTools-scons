@@ -17,9 +17,9 @@ namespace evtbin {
   */
   class Hist2D : public Hist {
     public:
-      typedef std::vector< std::vector<unsigned long> > Cont_t;
+      typedef std::vector< std::vector<double> > Cont_t;
       typedef Cont_t::const_iterator ConstIterator1;
-      typedef std::vector<unsigned long>::const_iterator ConstIterator2;
+      typedef std::vector<double>::const_iterator ConstIterator2;
 
       /** \brief Create a one dimensional histogram which uses the given binner objects
           to determine the indices.
@@ -35,15 +35,15 @@ namespace evtbin {
           \param value Vector giving the value being binned. The vector must have at least as
                  many values as the dimensionality of the histogram.
       */
-      virtual void fillBin(const std::vector<double> & value);
+      virtual void fillBin(const std::vector<double> & value, double weight = 1.);
 
       /** \brief Increment the bin appropriate for the given value.
           \param value1 The value being binned by the first binner.
           \param value2 The value being binned by the second binner.
       */
-      void fillBin(double value1, double value2);
+      void fillBin(double value1, double value2, double weight = 1.);
 
-      const std::vector<unsigned long> & operator [](Cont_t::size_type index) const;
+      const std::vector<double> & operator [](Cont_t::size_type index) const;
 
       ConstIterator1 begin() const;
 
@@ -53,7 +53,7 @@ namespace evtbin {
       Cont_t m_data;
   };
 
-  inline const std::vector<unsigned long> & Hist2D::operator [](Cont_t::size_type index) const { return m_data[index]; }
+  inline const std::vector<double> & Hist2D::operator [](Cont_t::size_type index) const { return m_data[index]; }
 
   inline Hist2D::ConstIterator1 Hist2D::begin() const { return m_data.begin(); }
 

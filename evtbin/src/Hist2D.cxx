@@ -23,11 +23,11 @@ namespace evtbin {
 
   Hist2D::~Hist2D() throw() {}
 
-  void Hist2D::fillBin(const std::vector<double> & value) {
-    fillBin(value[0], value[1]);
+  void Hist2D::fillBin(const std::vector<double> & value, double weight) {
+    fillBin(value[0], value[1], weight);
   }
 
-  void Hist2D::fillBin(double value1, double value2) {
+  void Hist2D::fillBin(double value1, double value2, double weight) {
     // Use the binners to determine the indices for the data:
     long index1 = m_binners[0]->computeIndex(value1);
     long index2 = m_binners[1]->computeIndex(value2);
@@ -35,7 +35,7 @@ namespace evtbin {
     // Make sure indices are valid:
     if (0 <= index1 && 0 <= index2) {
       // Increment the appropriate bin:
-      ++m_data[index1][index2];
+      m_data[index1][index2] += weight;
     }
   }
 
