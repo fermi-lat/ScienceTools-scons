@@ -36,8 +36,11 @@ namespace tip {
       /// \brief Test updating all keywords in a file.
       void updateKeywordsTest();
 
-      /// \brief Test createImage method.
-      void createImageTest();
+      /// \brief Test appendImage method.
+      void appendImageTest();
+
+      /// \brief Test appendImage method.
+      void appendTableTest();
   };
 
 }

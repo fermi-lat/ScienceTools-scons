@@ -42,6 +42,12 @@ namespace tip {
     // Test updateKeywords.
     updateKeywordsTest();
 
+    // Test image creation.
+    appendImageTest();
+
+    // Test table creation.
+    appendTableTest();
+
     return getStatus();
   }
 
@@ -71,12 +77,50 @@ namespace tip {
 
     // Success cases:
     // Test creating file with template:
-    msg = std::string("creating file new_ft1.fits using template\n\t") + data_dir + "ft1.tpl";
+    msg = std::string("creating file IFileSvc_success.fits using template\n\t") + data_dir + "ft1.tpl";
     try {
       IFileSvc::instance().createFile("IFileSvc_success.fits", data_dir + "ft1.tpl");
+      std::auto_ptr<const Table> table(IFileSvc::instance().readTable("IFileSvc_success.fits", "EVENTS"));
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
+    }
+
+    // Test clobbering file with template:
+    msg = std::string("creating file IFileSvc_success.fits using template\n\t") + data_dir + "ft1.tpl";
+    try {
+      IFileSvc::instance().createFile("IFileSvc_success.fits", data_dir + "ft1.tpl");
+      std::auto_ptr<const Table> table(IFileSvc::instance().readTable("IFileSvc_success.fits", "EVENTS"));
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    // Test creating file without template:
+    msg = std::string("creating file new.fits using no template");
+    try {
+      IFileSvc::instance().createFile("IFileSvc_no_template.fits", "");
+      std::auto_ptr<const Image> image(IFileSvc::instance().readImage("IFileSvc_no_template.fits", "PRIMARY"));
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    // More failure cases:
+    msg = "re-creating file IFileSvc_success.fits with clobber false using template\n\t" + data_dir + "ft1.tpl";
+    try {
+      IFileSvc::instance().createFile("IFileSvc_success.fits", data_dir + "ft1.tpl", false);
+      ReportUnexpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportExpected(msg + " failed", x);
+    }
+
+    msg = "re-creating file IFileSvc_success.fits with clobber false without template";
+    try {
+      IFileSvc::instance().createFile("IFileSvc_no_template.fits", "", false);
+      ReportUnexpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportExpected(msg + " failed", x);
     }
 
   }
@@ -262,7 +306,7 @@ namespace tip {
     }
   }
 
-  void TestFileManager::createImageTest() {
+  void TestFileManager::appendImageTest() {
     try {
       std::vector<long> dims(3);
       dims[0] = 512;
@@ -272,22 +316,50 @@ namespace tip {
       // Make sure no image is already there.
       remove("created_image.fits");
 
-      // Try to create image when the file does not exist.
-      IFileSvc::instance().createImage("created_image.fits", "TEST_IMAGE", dims);
+      // Try to append image when the file does not exist.
+      IFileSvc::instance().appendImage("created_image.fits", "TEST_IMAGE", dims);
 
       // Try to open this new image.
       const Image * image = IFileSvc::instance().readImage("created_image.fits", "TEST_IMAGE");
       delete image; image = 0;
 
-      // Try to create new image when the file does exist.
-      IFileSvc::instance().createImage("created_image.fits", "TEST_IMAGE2", dims);
+      // Try to create new image when the file does exist. Clobber should not be
+      // relevant because the first image exists, so test that setting clobber to false
+      // does not cause failure.
+      IFileSvc::instance().appendImage("created_image.fits", "TEST_IMAGE2", dims);
 
-      // Try to open this new image.
+      // Try to open this new image to verify basic function.
       image = IFileSvc::instance().readImage("created_image.fits", "TEST_IMAGE2");
       delete image;
 
     } catch (const TipException & x) {
-      ReportUnexpected("TestFileManager::createImageTest caught unexpected exception", x);
+      ReportUnexpected("TestFileManager::appendImageTest caught unexpected exception", x);
+    }
+  }
+
+  void TestFileManager::appendTableTest() {
+    try {
+      // Make sure no table is already there.
+      remove("created_table.fits");
+
+      // Try to append table when the file does not exist.
+      IFileSvc::instance().appendTable("created_table.fits", "TEST_TABLE");
+
+      // Try to open this new table.
+      const Table * table = IFileSvc::instance().readTable("created_table.fits", "TEST_TABLE");
+      delete table; table = 0;
+
+      // Try to create new table when the file does exist. Clobber should not be
+      // relevant because the first image exists, so test that setting clobber to false
+      // does not cause failure.
+      IFileSvc::instance().appendTable("created_table.fits", "TEST_TABLE2");
+
+      // Try to open this new table.
+      table = IFileSvc::instance().readTable("created_table.fits", "TEST_TABLE2");
+      delete table;
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestFileManager::appendTableTest caught unexpected exception", x);
     }
   }
 
