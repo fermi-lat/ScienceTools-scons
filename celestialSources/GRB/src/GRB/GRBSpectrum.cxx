@@ -93,7 +93,6 @@ double GRBSpectrum::interval(double time)// const
 
 double GRBSpectrum::energySrc(HepRandomEngine* engine, double time)
 {
-  // cout<<"energySrc @ time = "<<time<<endl;
 
   //return the flux in photons/(m^2 sec)
   /// Use time to update the spectrum

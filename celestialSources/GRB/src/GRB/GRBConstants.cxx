@@ -34,9 +34,9 @@ void GRBConstants::InitializeRandom()
 
 void GRBConstants::ReadParam(){  // It determines if, in case of random selection of the parameters,
   // the burst is long or short...
-  //  burst_type="Short";
+  burst_type="Short";
   // burst_type="Long";
-  burst_type="both";
+  //burst_type="both";
   //    cst::kind_of_burst;
   if (burst_type!="Short" && burst_type!="Long")
     {
@@ -150,7 +150,7 @@ void GRBConstants::setNshell(int value){
       nshell=0;
       while(nshell<2)
 	{
-	  if (burst_type=="Short"){nshell=int(SelectGaussRandom(2,10));}
+	  if (burst_type=="Short"){nshell=int(SelectGaussRandom(4,10));}
 	  else {nshell=int(SelectGaussRandom(75,125));}
 	}
     }
@@ -184,8 +184,9 @@ void GRBConstants::setR0(double value){
     {
       if(burst_type=="Short")
 	{
-	  double temp=SelectGaussRandom(9.,10.);
-	  r0=pow(10,temp);
+	  double temp=SelectGaussRandom(pow(10,8.5),pow(10,9.5));
+	  r0=temp;
+	  //	  r0=pow(10,temp);
 	}
       else
 	{
@@ -204,7 +205,7 @@ void GRBConstants::setT0(double value){
     {
       if(burst_type=="Short")
 	{
-	  double temp=SelectGaussRandom(8,9);
+	  double temp=SelectGaussRandom(8.0,9.0);
 	  t0=pow(10,temp);
 	}
       else
@@ -224,7 +225,7 @@ void GRBConstants::setGammaMin(double value){
     {
       if(burst_type=="Short")
 	{
-	  g0=SelectGaussRandom(90,110);
+	  g0=SelectGaussRandom(50,200);
 	}
       else
 	{
@@ -240,5 +241,5 @@ void GRBConstants::setGammaMin(double value){
 
 
 void GRBConstants::setGammaMax(double value){
-  value==0 ? g1=SelectGaussRandom(10*g0,100*g0):g1=value;
+  value==0 ? g1=SelectGaussRandom(2*g0,100*g0):g1=value;
 }
