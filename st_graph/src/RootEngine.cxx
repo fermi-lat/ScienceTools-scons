@@ -103,6 +103,9 @@ namespace st_graph {
     // Create the Root widget.
     STGMainFrame * tg_widget = new STGMainFrame(this, width, height);
 
+    // Give window manager a hint about where to display it.
+    tg_widget->SetWMPosition(100, 50);
+
     // Create the IFrame which refers to it.
     RootFrame * frame = new RootFrame(receiver, tg_widget);
 

@@ -120,6 +120,9 @@ namespace st_graph {
     // Create main frame in which to display this plot.
     m_main_frame = new STGMainFrame(m_engine, m_width, m_height);
 
+    // Give window manager a hint about where to display it.
+    m_main_frame->SetWMPosition(100, 50);
+
     // Create an embedded canvas object in which to draw the histogram.
     m_canvas = new TRootEmbeddedCanvas("", m_main_frame, m_width, m_height);
 
