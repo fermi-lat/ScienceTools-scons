@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 01-jan-05 v5r8p2 THB gcc warnings, bypass problem with st_stream and manipulators
  01-jan-05 v5r8p1 THB Make Exposure costh binning user-selectable
  01-jan-05 v5r8   THB convert from astroroot-based image processing to tip::Image
  23-dec-04 v5r7   THB Add application map_stats to analyze a map, using astro::SkyStat 

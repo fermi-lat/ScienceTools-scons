@@ -30,8 +30,8 @@ class MapStats : public st_app::StApp {
 public:
     MapStats()
         : st_app::StApp()
-        , m_f("MapStats", "", 2)
         , m_pars(st_app::StApp::getParGroup("map_stats")) 
+        , m_f("MapStats", "", 2)
     {
     }
     
@@ -48,12 +48,21 @@ public:
         // pass the image to the SkyStat guy
         astro::SkyStat ss(image, 8); 
         m_f.out() 
+#ifdef WIN32
             << std::setw(12) << "average: " << ss.ave() << std::endl
             << std::setw(12) <<   "sigma: " << ss.sigma() << std::endl
             << std::setw(12) << "minimum: " << ss.min() << std::endl
             << std::setw(12) << "maximum: " << ss.max() << std::endl;
-        m_f.warn() 
-            << " rejected  " << ss.rejected() << " points in average." << std::endl;
+#else // since gcc can't handle iomanips?
+            << "\t" << "average: " << ss.ave() << std::endl
+            << "\t" << "  sigma: " << ss.sigma() << std::endl
+            << "\t" << "minimum: " << ss.min() << std::endl
+            << "\t" << "maximum: " << ss.max() << std::endl;
+#endif
+        if( ss.rejected()>0){
+            m_f.warn() 
+                << " rejected  " << ss.rejected() << " points in average." << std::endl;
+        }
 
     }
 private:

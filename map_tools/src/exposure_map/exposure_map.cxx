@@ -113,10 +113,10 @@ public:
                 m_back = dc1->aeff();
             }
 
-            virtual double value(double energy, 
-                const astro::SkyDir &srcDir, 
-                const astro::SkyDir &scZAxis,
-                const astro::SkyDir &scXAxis) const 
+            virtual double value(double /*energy*/, 
+                const astro::SkyDir & /*srcDir*/, 
+                const astro::SkyDir &/*scZAxis*/,
+                const astro::SkyDir &/*scXAxis*/) const 
             {return 0;}
 
             virtual double value(double energy, double theta, double phi) const 
@@ -171,7 +171,7 @@ public:
         // create the image object, fill it from the exposure, write out
         std::clog << "Creating an Image, will write to file " << m_pars.outputFile() << std::endl;
         SkyImage image(m_pars); 
-        double ratio = sqrt(10.),emin= 100/ratio, emax = 1e5;
+        double ratio = sqrt(10.); //,emin= 100/ratio, emax = 1e5;
         int layer = 0;
         double energy = m_pars["emin"], eratio = m_pars["eratio"];
         int layers = m_pars.getValue<int>("layers");
@@ -188,8 +188,8 @@ public:
     }
 
 private:
-    MapParameters m_pars;
     st_stream::StreamFormatter m_f;
+    MapParameters m_pars;
 
 };
 // Factory which can create an instance of the class above.
