@@ -33,34 +33,35 @@ namespace st_graph {
       /// \brief Stop the graphics engine, undisplaying all graphical objects currently constructed.
       virtual void stop() = 0;
 
+      /** \brief Create a self-contained two dimensional plot window.
+          \param title The title of the plot.
+          \param width The width of the plot window.
+          \param height The height of the plot window.
+          \param style The type of plot, e.g. hist, scat.
+          \param x The first dimension being plotted, giving the bin definitions.
+          \param y The second dimension being plotted, giving the bin values.
+      */
+      virtual IFrame * createPlot(const std::string & title, unsigned int width, unsigned int height, const std::string & style,
+        const ISequence & x, const ISequence & y) = 0;
+
+      /** \brief Create a self-contained three dimensional plot window.
+          \param title The title of the plot.
+          \param width The width of the plot window.
+          \param height The height of the plot window.
+          \param style The type of plot, e.g. hist, scat.
+          \param x The first dimension being plotted, giving the x bin definitions.
+          \param y The second dimension being plotted, giving the y bin definitions.
+          \param z The third dimension being plotted.
+      */
+      virtual IFrame * createPlot(const std::string & title, unsigned int width, unsigned int height, const std::string & style,
+        const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) = 0;
+
       /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
           \param receiver The receiver of GUI signals.
           \param width The width of the plot window.
           \param height The height of the plot window.
       */
       virtual IFrame * createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height) = 0;
-
-      /** \brief Create a plotter for a one dimensional histogram. This method will be removed soon in favor
-                 of the more generic createPlot method.
-          \param title The title of the plot.
-          \param width The width of the plot window.
-          \param height The height of the plot window.
-          \param x The first dimension being plotted, giving the bin definitions.
-          \param y The second dimension being plotted, giving the bin values.
-      */
-      virtual IFrame * createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
-        const ISequence & x, const ISequence & y) = 0;
-
-      /** \brief Create a plotter for a two dimensional histogram.
-          \param title The title of the plot.
-          \param width The width of the plot window.
-          \param height The height of the plot window.
-          \param x The first dimension being plotted, giving the x bin definitions.
-          \param y The second dimension being plotted, giving the y bin definitions.
-          \param z The third dimension being plotted.
-      */
-      virtual IFrame * createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
-        const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) = 0;
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.

@@ -76,12 +76,12 @@ void StGraphApp::plot() {
     readBins(pars["binfile2"], pars["bintable2"], pars["lowbin2"], pars["highbin2"], low2, high2);
 
     // Create 2D plot.
-    plot = Engine::instance().createPlotHist2D(pars["data1"], 800, 600, IntervalSeq_t(low1.begin(), low1.end(), high1.begin()),
-      IntervalSeq_t(low2.begin(), low2.end(), high2.begin()), data);
+    plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
+      IntervalSeq_t(low1.begin(), low1.end(), high1.begin()), IntervalSeq_t(low2.begin(), low2.end(), high2.begin()), data);
   } else {
     // Create 1D plot.
-    plot = Engine::instance().createPlotHist1D(pars["data1"], 800, 600, IntervalSeq_t(low1.begin(), low1.end(), high1.begin()),
-      PointSeq_t(data[0].begin(), data[0].end()));
+    plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
+      IntervalSeq_t(low1.begin(), low1.end(), high1.begin()), PointSeq_t(data[0].begin(), data[0].end()));
   }
 
   // Display the plot.

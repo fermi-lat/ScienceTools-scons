@@ -95,11 +95,11 @@ void StGraphTestApp::run() {
   typedef PointSequence<std::vector<double>::iterator> PointSeq_t;
 
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
-  IFrame * plot_hist_1 = engine->createPlotHist1D("Plot 1", 900, 600, LowerBoundSeq_t(intervals.begin(), intervals.end()),
+  IFrame * plot_hist_1 = engine->createPlot("Plot 1", 900, 600, "hist", LowerBoundSeq_t(intervals.begin(), intervals.end()),
     PointSeq_t(sine_wave.begin(), sine_wave.begin() + num_intervals));
 
-  // Create a histogram plot, size 600 x 400, with the (same) given bin definitions, but displaying a cosine.
-  IFrame * plot_hist_2 = engine->createPlotHist1D("Plot 1", 600, 400, LowerBoundSeq_t(intervals.begin(), intervals.end()),
+  // Create a scatter plot, size 600 x 400, with the (same) given bin definitions, but displaying a cosine.
+  IFrame * plot_hist_2 = engine->createPlot("Plot 2", 600, 400, "scat", PointSeq_t(intervals.begin(), intervals.end()),
     PointSeq_t(sine_wave.end() - num_intervals, sine_wave.end()));
 
   // Reduce size of 2-d plot.
@@ -118,7 +118,9 @@ void StGraphTestApp::run() {
   }
 
   // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  IFrame * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), data2d);
+  IFrame * plot_hist_3 = engine->createPlot("Plot 3", 600, 400, "hist",
+    LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals),
+    LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), data2d);
 
   // Display all graphical objects.
   engine->run();

@@ -130,9 +130,9 @@ namespace st_graph {
     return frame;
   }
 
-  IFrame * RootEngine::createPlotHist1D(const std::string & title, unsigned int width, unsigned int height,
+  IFrame * RootEngine::createPlot(const std::string & title, unsigned int width, unsigned int height, const std::string & style,
     const ISequence & x, const ISequence & y) {
-    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist1D: graphical environment not initialized");
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
     // Create parent main frame.
     IFrame * mf = createMainFrame(0, width, height);
@@ -141,14 +141,14 @@ namespace st_graph {
     IFrame * pf = createPlotFrame(mf, title, width, height);
 
     // Create histogram plot. Discard return value to suppress warning. No memory leak because pf owns plot.
-    createPlot(pf, "hist", x, y);
+    createPlot(pf, style, x, y);
 
     return mf;
   }
 
-  IFrame * RootEngine::createPlotHist2D(const std::string & title, unsigned int width, unsigned int height,
+  IFrame * RootEngine::createPlot(const std::string & title, unsigned int width, unsigned int height, const std::string & style,
     const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) {
-    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotHist2D: graphical environment not initialized");
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
     // Create parent main frame.
     IFrame * mf = createMainFrame(0, width, height);
@@ -157,7 +157,7 @@ namespace st_graph {
     IFrame * pf = createPlotFrame(mf, title, width, height);
 
     // Create histogram plot. Discard return value to suppress warning. No memory leak because pf owns plot.
-    createPlot(pf, "hist", x, y, z);
+    createPlot(pf, style, x, y, z);
 
     return mf;
   }
