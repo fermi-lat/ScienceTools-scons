@@ -35,7 +35,8 @@ namespace tip {
       */
       typedef TableRecord Record;
 
-      /** \brief Helper type: table iterator.
+      /** \brief Helper type: table iterator. This currently does not work for random access.
+          See TODO 7 in the source code.
       */
       typedef RandomAccessIterator<TableRecord, IndexDiff_t> Iterator;
 
@@ -82,6 +83,13 @@ namespace tip {
       ITabularData * m_tab_data;
   };
 
+  /* TODO 7: 4/2/2004: 2 problems with random access: 1. operator * needs to return a
+     reference to Record, but because there isn't an actual array of Records, it's not
+     easy to return such a reference without leaking memory. 2. Even if 1 is solved,
+     random access to Table wont be in amortized constant time, because Table may be
+     seeking between calls to widely separated records (rows). Worst case: for some order
+     of input, a sort could be O(N^2).
+  */
 }
 
 #endif
