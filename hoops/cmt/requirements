@@ -15,18 +15,17 @@ apply_pattern package_linkopts
 
 private
 
-#
 # suppress warning messages on linux:
-macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
+#macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
 # allow use of internal path
 macro_append hoops_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
 
 # make sure test applications gets built when library changes
 macro test_hoopsstamps "hoops.stamp"
-#macro test_hoops_primstamps "hoops_prim.stamp"
-#macro test_hoops_parstamps "hoops_par.stamp"
-#macro test_hoops_limstamps "hoops_lim.stamp"
+macro test_hoops_simplestamps "hoops_simple.stamp"
+macro test_hoops_parstamps "hoops_par.stamp"
+macro test_hoops_limstamps "hoops_lim.stamp"
 
 # standard package library
 macro my_headers "" WIN32 "../hoops/*.h *.h"
@@ -36,7 +35,7 @@ library hoops -no_share $(my_headers) \
 set PFILES "$(HOOPSROOT)/data"
 
 # test application
-application test_hoops test/main.cxx
-#application test_hoops_prim test/hoops_prim_test.cxx
+application test_hoops test/hoops_prim_test.cxx
+#application test_hoops_simple test/main.cxx
 #application test_hoops_par test/hoops_par_test.cxx
 #application test_hoops_lim test/hoops_lim_test.cxx
