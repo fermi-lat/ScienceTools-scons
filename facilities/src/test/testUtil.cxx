@@ -6,7 +6,7 @@
  *  Caller should have an environment variable SRC with some
  *  sensible definition.
  */
-main() {
+void main() {
   std::string name = std::string("{FACILITIESROOT}/src");
   std::string oDelim = std::string ("{");
   std::string cDelim = std::string ("}");
