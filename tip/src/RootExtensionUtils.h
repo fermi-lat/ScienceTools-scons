@@ -11,17 +11,40 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
+
+#include "TTree.h"
 
 #include "table/TableException.h"
 #include "table/table_types.h"
 
+class TBranch;
 class TFile;
-class TTree;
+class TLeaf;
 
 namespace table {
 
   class IData;
   class IHeaderData;
+
+  class LeafBuffer {
+    public:
+      LeafBuffer(TTree * tree, const std::string & leaf_name, const std::string & leaf_type);
+
+      ~LeafBuffer();
+
+      template <typename T>
+      void get(T & val) const;
+
+    private:
+      LeafBuffer(const LeafBuffer &); // Make sure nobody copies one of these.
+      std::string m_leaf_name;
+      TTree * m_tree;
+      void * m_buf;
+  };
+
+  template <typename T>
+  inline void LeafBuffer::get(T & val) const { val = T(*static_cast<const double *>(m_buf)); };
 
   /** \class RootExtensionUtils
 
@@ -63,16 +86,6 @@ namespace table {
       void close();
 
       // Table-specific support:
-      /** Struct holding information about a Branch.
-      */
-      struct ColumnInfo {
-          std::string m_name;
-          long m_repeat;
-          int m_col_num;
-          int m_type;
-          double m_value;
-      };
-
       /** \brief Open the Root table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table (TTree).
       */
@@ -120,32 +133,20 @@ namespace table {
       std::string formatWhat(const std::string & msg) const;
       std::string m_file_name;
       std::string m_ext_name;
-      std::map<std::string, ColumnInfo> m_col_name_lookup;
-      std::map<int, ColumnInfo> m_col_num_lookup;
+      mutable std::map<std::string, FieldIndex_t> m_branch_lookup;
+      mutable std::vector<LeafBuffer *> m_leaves;
       Index_t m_num_records;
       TFile * m_fp;
-      TTree * m_tree;
+      mutable TTree * m_tree;
   };
 
   // Getting columns.
   template <typename T>
-//  inline void RootExtensionUtils::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
-//    T * dest_begin) const {
-  inline void RootExtensionUtils::getCellGeneric(int, Index_t, Index_t, Index_t,
-    T *) const {
-    assert(0);
-  }
-
-  // Getting column values as strings is a special case because Cfitsio gets them as char *.
-  // This is tricky and painful to get right because of Cfitsio's way of indicating the width
-  // of columns. Since there is no immediate need to manage strings, this is simply not supported
-  // for now.
-  template <>
-//  inline void RootExtensionUtils::getCellGeneric<double>(int col_num, Index_t record_index, Index_t src_begin,
-//    Index_t src_end, double * dest) const {
-  inline void RootExtensionUtils::getCellGeneric<double>(int, Index_t, Index_t,
-    Index_t, double *) const {
-    
+  inline void RootExtensionUtils::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
+    T * dest_begin) const {
+    m_tree->GetEntry(record_index);
+    if (src_begin + 1 != src_end) throw TableException("Getting vectors from Root files not working yet.");
+    m_leaves[col_num]->get(*dest_begin);
   }
 
   // Setting columns.
