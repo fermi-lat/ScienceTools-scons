@@ -108,7 +108,10 @@ private:
    void init();
 
    /// Return the zenith for the current spacecraft location.
-   astro::SkyDir ScZenith(double time);
+   astro::SkyDir ScZenith(double time) const;
+
+   /// Return the Earth azimuth angle of the apparent event direction.
+   double earthAzimuthAngle(double ra, double dec, double time) const;
 
    /// A routine to unpack and write the Event buffer to an FT1 file.
    void writeEvents();

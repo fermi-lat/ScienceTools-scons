@@ -172,7 +172,7 @@ int EventContainer::addEvent(EventSource *event,
    return 0;
 }
 
-astro::SkyDir EventContainer::ScZenith(double time) {
+astro::SkyDir EventContainer::ScZenith(double time) const {
    GPS *gps = GPS::instance();
    gps->getPointingCharacteristics(time);
    double lon_zenith = gps->RAZenith()*M_PI/180.;
@@ -181,6 +181,16 @@ astro::SkyDir EventContainer::ScZenith(double time) {
                                    cos(lat_zenith)*sin(lon_zenith),
                                    sin(lat_zenith)),
                         astro::SkyDir::EQUATORIAL);
+}
+
+double EventContainer::earthAzimuthAngle(double ra, double dec, 
+                                         double time) const {
+   astro::SkyDir appDir(ra, dec);
+   astro::SkyDir zen_z = ScZenith(time);
+   astro::SkyDir zen_x = astro::SkyDir(-zen_z.ra(), 90. - zen_z.dec());
+   astro::SkyDir zen_y = astro::SkyDir(zen_x().rotate(zen_z(), M_PI/2.));
+   double azimuth = std::atan2(zen_y().dot(appDir()), zen_x().dot(appDir()));
+   return azimuth*180./M_PI;
 }
 
 void EventContainer::writeEvents() {
@@ -194,13 +204,18 @@ void EventContainer::writeEvents() {
    tip::Table::Record & row = *it;
    std::vector<Event>::iterator evt = m_events.begin();
    for ( ; it != my_table->end(), evt != m_events.end(); ++it, ++evt) {
-      row["time"].set(evt->time());
+      double time = evt->time();
+      double ra = evt->appDir().ra();
+      double dec = evt->appDir().dec();
+
+      row["time"].set(time);
       row["energy"].set(evt->energy());
-      row["ra"].set(evt->appDir().ra());
-      row["dec"].set(evt->appDir().dec());
+      row["ra"].set(ra);
+      row["dec"].set(dec);
       row["theta"].set(evt->theta());
       row["phi"].set(evt->phi());
       row["zenith_angle"].set(evt->zenAngle());
+      row["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
       try {
          row["conversion_layer"].set(evt->convLayer());
       } catch (std::exception &eObj) {
