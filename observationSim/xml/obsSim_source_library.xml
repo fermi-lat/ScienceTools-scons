@@ -586,4 +586,12 @@
       </spectrum>
    </source>
 
+   <source name="Extragalactic_diffuse">
+      <spectrum escale="MeV">
+         <SpectrumClass name="Isotropic"
+                        params="6.85, 2.1, 30, 2e5"/>
+         <use_spectrum frame="galaxy"/>
+      </spectrum>
+   </source>
+
 </source_library>

@@ -38,6 +38,7 @@
 // static SpectrumFactory<GRBmanager> my_factory;
 
 ISpectrumFactory & GaussianSourceFactory();
+ISpectrumFactory & IsotropicFactory();
 ISpectrumFactory & MapSourceFactory();
 ISpectrumFactory & PeriodicSourceFactory();
 ISpectrumFactory & PulsarFactory();
@@ -54,6 +55,7 @@ public:
       m_pars.Save();
       m_count = m_pars["Number_of_events"];
       GaussianSourceFactory();
+      IsotropicFactory();
       MapSourceFactory();
       PeriodicSourceFactory();
       PulsarFactory();

@@ -149,11 +149,15 @@ glast-guess1[jchiang]
 
  @section obsSim_sources Available Sources
 
- These sources all derive from the Spectrum class of the flux package.
- Accordingly, their xml entries all have the same form (see below).
- The <tt>params</tt> string provides a means of circumventing the DTD
- and thereby allows essentially free-format data to be passed to the
- Spectrum class.
+ In addition to the sources that are already available from the flux
+ package (e.g., constant point sources with power-law or broken
+ power-law spectra, isotropic diffuse, MapSpectrum's Galactic
+ diffuse), there are serveral additional sources within this package
+ that are available to obsSim.  These sources all derive from the
+ Spectrum class of the flux package.  Accordingly, their xml entries
+ all have the same form (see below).  The <tt>params</tt> string
+ provides a means of circumventing the DTD and thereby allows
+ essentially free-format data to be passed to the Spectrum class.
 
  For each source, we describe the entries in the <tt>param</tt>
  string.  Optional parameters have their default values given in
