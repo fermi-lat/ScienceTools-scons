@@ -49,7 +49,8 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
    if (m_verbose) {
       std::cerr << "Mcmc generating samples";
    }
-   while (samples.size() < nsamp) {
+   unsigned long sample_size(0);
+   while (sample_size < nsamp) {
       if (m_verbose && samples.size() % nsamp/20 == 0) {
          std::cerr << ".";
       }
@@ -74,6 +75,7 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
          }
 // We always append the current point after the update step
          samples.push_back(paramValues);
+         sample_size++;
       }
    }
    if (m_verbose) {

@@ -156,10 +156,8 @@ public:
       return 0;
    }
 
-   /// The clone function, with default.
-   virtual Function * clone() const {
-      return 0;
-   }
+   /// The clone function
+   virtual Function * clone() const = 0;
 
 #ifndef SWIG
    /// These type fields are used by the Composite Function hierarchy
@@ -190,6 +188,11 @@ public:
    void setParams(const DOMElement * elt);
 #endif // SWIG
 
+   void setParamAlwaysFixed(const std::string & name) {
+      parameter(name).m_alwaysFixed = true;
+      parameter(name).setFree(false);
+   }
+
 protected:
 
    std::string m_genericName;
@@ -219,11 +222,6 @@ protected:
 
    virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
                             bool getFree) const;
-
-   void setParamAlwaysFixed(const std::string & name) {
-      parameter(name).m_alwaysFixed = true;
-      parameter(name).setFree(false);
-   }
 
 };
 

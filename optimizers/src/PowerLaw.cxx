@@ -28,9 +28,7 @@ void PowerLaw::init(double Prefactor, double Index, double Scale) {
 
    addParam(std::string("Prefactor"), Prefactor, true);
    addParam(std::string("Index"), Index, true);
-// Scale should always be fixed.
    addParam(std::string("Scale"), Scale, false);
-//   setParamAlwaysFixed("Scale");
 
 // Set FuncType and ArgType for use with CompositeFunction hierarchy.
    m_funcType = Addend;
@@ -42,7 +40,7 @@ void PowerLaw::init(double Prefactor, double Index, double Scale) {
 double PowerLaw::value(Arg &xarg) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
-//! assume a standard ordering for the parameters
+// assume a standard ordering for the parameters
    enum ParamTypes {Prefactor, Index, Scale};
 
    std::vector<Parameter> my_params;
@@ -79,7 +77,7 @@ double PowerLaw::derivByParam(Arg &xarg, const std::string &paramName) const {
       return value(xarg)*log(x/my_params[Scale].getTrueValue())
          *my_params[Index].getScale();
       break;
-   case Scale:  // shouldn't ever need this, nonetheless....
+   case Scale:
       return -value(xarg)*(my_params[Index].getTrueValue())
          /(my_params[Scale].getTrueValue())
          *my_params[Scale].getScale();

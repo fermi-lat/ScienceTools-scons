@@ -31,7 +31,6 @@ public:
    ConstantValue(double value=1) {
       setMaxNumParams(1);
       addParam("Value", value, true);
-      setParamAlwaysFixed("Value");
 
 // Need to double-check these...
       m_funcType = Factor;

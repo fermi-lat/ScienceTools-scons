@@ -187,10 +187,10 @@ void test_Mcmc() {
       std::vector< std::vector<double> > mcmc_samples;
       long nsamp = 100000;
 // Do a "burn in"...
-      myMcmcObj.generateSamples(mcmc_samples, nsamp);
+      myMcmcObj.generateSamples(mcmc_samples, nsamp, true);
 // then the real thing...
       nsamp = 10000;
-      myMcmcObj.generateSamples(mcmc_samples, nsamp);
+      myMcmcObj.generateSamples(mcmc_samples, nsamp, true);
       
 // generate "fake" samples to test cfitsio
 

@@ -9,6 +9,7 @@
 #include <cstdlib>
 
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -71,6 +72,14 @@ void Parameter::extractDomData(const DOMElement * elt) {
    m_value = std::atof(xmlBase::Dom::getAttribute(elt, "value").c_str());
    m_minValue = std::atof(xmlBase::Dom::getAttribute(elt, "min").c_str());
    m_maxValue = std::atof(xmlBase::Dom::getAttribute(elt, "max").c_str());
+   if (m_value < m_minValue || m_value > m_maxValue) {
+      std::ostringstream message;
+      message << "Parameter::extractDomData:\n"
+              << "In the XML description of parameter "<< m_name << ", "
+              << "An attempt has been made to set the parameter value "
+              << "outside of the specified bounds.";
+      throw std::out_of_range(message.str());
+   }
    if (std::string(xmlBase::Dom::getAttribute(elt, "free")) == "true" ||
        std::string(xmlBase::Dom::getAttribute(elt, "free")) == "1" ) {
       m_free = true;
