@@ -7,7 +7,7 @@
 #ifndef MAP_TOOLS_PARAMETERS_H
 #define MAP_TOOLS_PARAMETERS_H 
 
-#include "hoopsUtil/ParametersBase.h"
+#include "hoops/hoops_prompt_group.h" // for hoops::ParPromptGroup
 
 #include <string>
 
@@ -16,7 +16,7 @@ namespace map_tools {
 * @class Parameters
 * @brief Input reader base class for tools
 *
-* It uses hoopsUtil to read parameters from the par file.
+* It uses hoops to read parameters from the par file.
 * The description of pil format is available at
 * <a href="http://www-glast.slac.stanford.edu/sciencetools/userInterface/doc/pil.pdf">PIL user
 * manual</a>.
@@ -26,13 +26,24 @@ namespace map_tools {
 * $Header$
 */
 
-class Parameters : public hoopsUtil::ParametersBase
+    class Parameters : public hoops::ParPromptGroup
 {
 public:
     // Constructors
     Parameters( int argc, char *argv[]);
     ~Parameters(){};
 
+    template< typename T>
+     T getValue(const std::string & name){ return (*this)[name];}
+
+     template <typename T>
+   T getValue(const std::string & name, const T & default_value) {
+      try {
+         return getValue<T>(name);
+      } catch (...) {
+         return default_value;
+      }
+   }
 
     // Accessor Methods
     const std::string &inputFile() const   { return m_inFile; }

@@ -31,7 +31,7 @@ public:
 class TestPar : public Parameters {
 public:
     TestPar(int argc, char** argv): Parameters(argc, argv){
-        getValue<double>("xref");
+     //   getValue<double>("xref");
     }
 };
 
@@ -42,7 +42,8 @@ int main(int argc, char** argv ){
     try{
         // read a pil file--and make sure that a few simple things work
         TestPar par(argc, argv);
-        if( par["xref"] != 0) {
+        double xref = par["xref"] ;
+        if(  xref !=0 ) {
             std::cerr << "Read wrong value for parameter xref" << std::endl;
             return 1;
         }

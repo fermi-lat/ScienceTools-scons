@@ -385,7 +385,7 @@ void Fits_IO::readFitsCards(std::string keyname) {
 
    char *include[] = {const_cast<char *>(keyname.c_str())};
    int ninc = 1;
-   char *exclude[] = {};
+   char *exclude[] = {""};
    int nexc = 0;
    char card[80];
 

@@ -10,7 +10,7 @@ mode,     s, a,  "h",   , ,""
 #---------------------------------------------------------------------------------------
 #
 #infile,s, a, "/glast/DC1/data/DC1AllSky-FT1-v2.fits", , , "Name of the Event Data File:"
-infile,s, a, "/glast/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event Data File:"
+infile,s, a, "/common/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event Data File:"
 #filter,   s, a, "calib_version[1]==1&&calib_version[2]==1&&calib_version[3]==1", , , "filter expression:"
 #filter,   s, a, "FT1Energy>100", , , "filter expression:"
 
@@ -24,8 +24,7 @@ dec_name, s, a,  "FT1Dec", , , "name of the DEC field"
 #
 npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
 npixy,    i, a,  180,   , , "Total pixel size of the image in y axis: "
-imgsize,  i, a,  360,   , , "Total physical size of the image(x): "
-imgsizey, i, a,  180,   , , "Total physical size of the image (y): "
+pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
 xref,     r, a,    0,   , , "RA at the image center: "
 yref,     r, a,    0,   , , "DEC at the image center: "
 rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "

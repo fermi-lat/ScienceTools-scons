@@ -91,7 +91,7 @@ int main(int argc, char * argv[]) {
         ExposureMapParameters pars(argc, argv);
 
         // create the exposure, and fill it from the history file
-        Exposure ex( pars["skybinsize"], pars["costhetabinsize"]);
+        Exposure ex( pars["pixelsize"], pars["costhetabinsize"]);
 
         LoadExposureFromGlast(  pars, ex); 
 

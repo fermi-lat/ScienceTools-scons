@@ -7,7 +7,7 @@ author T. Burnett <tburnett@u.washington.edu>
 
 
 use astro *
-use hoopsUtil * 
+use hoops * 
 use tuple *
 
 #suppress annoying warnings from hoops: "illegal conversion" and "forcing value to bool" 

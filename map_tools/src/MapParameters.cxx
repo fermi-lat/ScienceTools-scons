@@ -6,7 +6,7 @@
 */
 
 #include "map_tools/MapParameters.h"
-
+#include <iostream>
 using namespace map_tools;
 
 //! Constructor
