@@ -20,7 +20,6 @@
 #include "flux/FluxMgr.h"
 #include "flux/ISpectrumFactory.h"
 
-//#include "latResponse/Irfs.h"
 #include "irfInterface/Irfs.h"
 
 #include "observationSim/Simulator.h"
@@ -163,11 +162,10 @@ void Simulator::listSpectra() const {
 }
 
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
-//                           latResponse::Irfs &response, Spacecraft *spacecraft,
-                           irfInterface::Irfs &response, Spacecraft *spacecraft,
+                           irfInterface::Irfs &response,
+                           Spacecraft *spacecraft,
                            bool useSimTime, EventContainer *allEvents, 
                            Roi *inAcceptanceCone) {
-//   std::vector<latResponse::Irfs *> respPtrs;
    std::vector<irfInterface::Irfs *> respPtrs;
    respPtrs.push_back(&response);
    makeEvents(events, scData, respPtrs, spacecraft, useSimTime, 
@@ -176,7 +174,6 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
 
 void Simulator::makeEvents(EventContainer &events, 
                            ScDataContainer &scData, 
-//                           std::vector<latResponse::Irfs *> &respPtrs, 
                            std::vector<irfInterface::Irfs *> &respPtrs, 
                            Spacecraft *spacecraft,
                            bool useSimTime, 

@@ -13,8 +13,6 @@
 
 #include "astro/SkyDir.h"
 
-// #include "latResponse/Irfs.h"
-// #include "latResponse/IrfsFactory.h"
 #include "irfInterface/IrfsFactory.h"
 #include "g25Response/loadIrfs.h"
 
@@ -22,8 +20,6 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
-
-//using latResponse::irfsFactory;
 
 ISpectrumFactory & GaussianSourceFactory();
 ISpectrumFactory & GRBmanagerFactory();

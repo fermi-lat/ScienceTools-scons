@@ -23,9 +23,6 @@
 
 #include "astro/SkyDir.h"
 
-// #include "latResponse/Irfs.h"
-// #include "latResponse/IrfsFactory.h"
-
 #include "irfInterface/IrfsFactory.h"
 #include "g25Response/loadIrfs.h"
 #include "dc1Response/loadIrfs.h"
@@ -81,7 +78,6 @@ private:
    double m_count;
    std::vector<std::string> m_xmlSourceFiles;
    std::vector<std::string> m_srcNames;
-//    std::vector<latResponse::Irfs *> m_respPtrs;
    std::vector<irfInterface::Irfs *> m_respPtrs;
    observationSim::Simulator * m_simulator;
 
@@ -176,7 +172,6 @@ void ObsSim::createResponseFuncs() {
    if (responseIds.count(responseFuncs)) {
       std::vector<std::string> &resps = responseIds[responseFuncs];
       for (unsigned int i = 0; i < resps.size(); i++) {
-//          m_respPtrs.push_back(latResponse::irfsFactory().create(resps[i]));
          m_respPtrs.push_back(myFactory->create(resps[i]));
       }
    } else {

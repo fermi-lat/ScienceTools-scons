@@ -25,7 +25,6 @@ namespace tip {
    class Table;
 }
 
-//namespace latResponse {
 namespace irfInterface {
    class Irfs;
 }
@@ -70,7 +69,6 @@ public:
    ///        regard to the response info, i.e., true energies and 
    ///        directions are saved.
    int addEvent(EventSource *event, 
-//                std::vector<latResponse::Irfs *> &respPtrs, 
                 std::vector<irfInterface::Irfs *> &respPtrs, 
                 Spacecraft *spacecraft, bool flush=false, 
                 bool alwaysAccept=false);

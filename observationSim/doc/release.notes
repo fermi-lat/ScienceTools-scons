@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r7   20-Jul-04   JC   use irfs/irfInterface
     v3r6   29-Jun-04   JC   use celestialSources/genericSources package,
                             which now contains sources added in v3r2
     v3r5   30-Apr-04   JC   allow user to specify single xml file or a list

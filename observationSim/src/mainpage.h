@@ -7,7 +7,7 @@
  @section intro Introduction
 
  This package uses the flux package to generate photon events from
- astrophysical sources and the latResponse package to process those
+ astrophysical sources and the irfInterface package to process those
  photons according to a specified set of instrument response
  functions.
 
