@@ -64,7 +64,7 @@ public:
 
    void writeDssKeywords(tip::Header & header) const;
 
-   void Cuts::writeGtiExtension(const std::string & filename) const;
+   void writeGtiExtension(const std::string & filename) const;
 
    unsigned int size() const {return m_cuts.size();}
 
