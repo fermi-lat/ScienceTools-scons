@@ -7,10 +7,10 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 branches observationSim cmt src doc
 
-#use MapFlux v0*
+use MapFlux v0*
 use flux v8*
 use latResponse v1*
-use Goodi v2*
+use Goodi v*
 use astro v0*
 use facilities v*
 use xml v*
@@ -27,21 +27,24 @@ use hoops v*
 #use python v2* IExternal
 #macro pydir ../python/
 
-## MapFlux needs to be loaded dynamically.
-#macro_append use_linkopts "" \
-#Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
-#WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
+# MapFlux needs to be loaded dynamically.
+macro_append use_linkopts "" \
+Linux " -L$(MAPFLUXROOT)/$(CMTCONFIG)/ -lMapFlux -Wl,-rpath,$(MAPFLUXROOT)/$(CMTCONFIG)/ " \
+WIN32 " /LIBPATH:$(MAPFLUXROOT)\$(CMTCONFIG) "
 
 # allow use of internal path
 macro observationSim_cppflags "" \
-#Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D HAVE_MAPFLUX " \
-Linux "-I ../src -g -pedantic -D TRAP_FPE -D USE_GOODI " \
+Linux "-I ../src -g -pedantic -D TRAP_FPE -D HAVE_MAPFLUX -D USE_GOODI " \
+#Linux "-I ../src -g -pedantic -D TRAP_FPE -D USE_GOODI " \
 #Linux "-I ../src -g -pedantic -D TRAP_FPE " \
 WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O"
 
 # suppress warning messages (from flux, Goodi, etc.) on Linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
+
+# this package uses obsolete C function names, beware	
+macro_append cpplinkflags "" WIN32 " oldnames.lib"
 
 apply_pattern package_linkopts
 

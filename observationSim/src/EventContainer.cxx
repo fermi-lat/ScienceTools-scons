@@ -137,8 +137,7 @@ int EventContainer::addEvent(EventSource *event,
    latResponse::Irfs *respPtr;
 
 // Apply the acceptance criteria.
-   if ( energy > 31.623 
-        && RandFlat::shoot() < m_prob
+   if ( RandFlat::shoot() < m_prob
         && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
                                     energy, sourceDir, zAxis, xAxis))
         && !spacecraft->inSaa(time) ) {
@@ -181,11 +180,13 @@ void EventContainer::writeEvents() {
       std::vector<double> theta(npts);
       std::vector<double> phi(npts);
       std::vector<double> zenithAngle(npts);
+      std::vector<int> convLayer(npts);
 
       std::vector<Event>::iterator evtIt = m_events.begin();
       for (int i = 0; evtIt != m_events.end(); evtIt++, i++) {
          time[i] = evtIt->time();
-         energy[i] = evtIt->energy();
+// Goodi wants energies in ergs.
+         energy[i] = evtIt->energy()*1e6;
 // Goodi wants angles in radians.
          ra[i] = evtIt->appDir().ra()*M_PI/180.;
          dec[i] = evtIt->appDir().dec()*M_PI/180.;
@@ -194,6 +195,13 @@ void EventContainer::writeEvents() {
          phi[i] = atan2( evtIt->appDir().dir().dot(yAxis),
                          evtIt->appDir().dir().dot(evtIt->xAxis().dir()) );
          zenithAngle[i] = evtIt->zenith().difference(evtIt->appDir());
+         if (evtIt->eventType() == 0) { // Front
+            convLayer[i] = 0;
+         } else if (evtIt->eventType() == 1) { // Back
+            convLayer[i] = 15;
+         } else { // pick at random
+            convLayer[i] = static_cast<int>(RandFlat::shoot()*16);
+         }
       }
       m_goodiEventData->setTime(time);
       m_goodiEventData->setEnergy(energy);
@@ -202,6 +210,7 @@ void EventContainer::writeEvents() {
       m_goodiEventData->setTheta(theta);
       m_goodiEventData->setPhi(phi);
       m_goodiEventData->setZenithAngle(zenithAngle);
+      m_goodiEventData->setConvLayer(convLayer);
 
 // Set the sizes of the valarray data for the multiword columns,
 // GEO_OFFSET, BARY_OFFSET, etc..

@@ -51,7 +51,7 @@
    Two xml source files are provide by default, <a
    href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/source_library.xml?cvsroot=CVS_SLAC">source_library.xml</a>
    and <a
-   href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/3EG_catalog_30MeV.xml?cvsroot=CVS_SLAC">3EG_catalog_30MeV.xml</a>.
+   href="http://glast.stanford.edu/cgi-bin/cvsweb/observationSim/xml/3EG_catalog_20-1e6MeV.xml?cvsroot=CVS_SLAC">3EG_catalog_20-1e6MeV.xml</a>.
    The former contains a variety of diagnostic sources, including some
    that should only be to be used by Gleam such as cosmic ray sources.
    It also contains sources that are useful for @b obsSim such as

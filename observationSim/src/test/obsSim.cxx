@@ -40,7 +40,9 @@ int main(int iargc, char * argv[]) {
 // Here are the default xml files for flux-style sources.
    std::vector<std::string> xmlSourceFiles;
    xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/source_library.xml");
-   xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/3EG_catalog_30MeV.xml");
+   std::string egretCatalog 
+      = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_20-1e6MeV.xml";
+   xmlSourceFiles.push_back(egretCatalog);
 
 // Fetch any user-specified xml file of flux-style source definitions.
    std::string xmlFile;
@@ -68,9 +70,9 @@ int main(int iargc, char * argv[]) {
    params.getParam("Response_functions", responseFuncs);
    std::vector<latResponse::Irfs *> respPtrs;
    latResponse::IrfsFactory irfsFactory;
-   if (responseFuncs == "COMBINED") {
+   if (responseFuncs == "COMBINED_G25") {
       respPtrs.push_back(irfsFactory.create("Glast25::Combined"));
-   } else if (responseFuncs == "FRONT/BACK") {
+   } else if (responseFuncs == "FRONT/BACK_G25") {
       respPtrs.push_back(irfsFactory.create("Glast25::Front"));
       respPtrs.push_back(irfsFactory.create("Glast25::Back"));
    } else if (responseFuncs == "COMBINED_10") {
@@ -78,6 +80,15 @@ int main(int iargc, char * argv[]) {
    } else if (responseFuncs == "FRONT/BACK_10") {
       respPtrs.push_back(irfsFactory.create("Glast25::Front_10"));
       respPtrs.push_back(irfsFactory.create("Glast25::Back_10"));
+   } else if (responseFuncs == "TESTDC1") {
+      respPtrs.push_back(irfsFactory.create("DC1::test"));
+   } else if (responseFuncs == "FRONT") {
+      respPtrs.push_back(irfsFactory.create("DC1::Front"));
+   } else if (responseFuncs == "BACK") {
+      respPtrs.push_back(irfsFactory.create("DC1::Back"));
+   } else if (responseFuncs == "FRONT/BACK") {
+      respPtrs.push_back(irfsFactory.create("DC1::Front"));
+      respPtrs.push_back(irfsFactory.create("DC1::Back"));
    } else {
       std::cerr << "Invalid response function choice: "
                 << responseFuncs << std::endl;
