@@ -35,7 +35,7 @@ int main() {
 
     try {
       // Opening a non-existent file should throw an exception.
-      my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
+      my_table = IFileSvc::instance().editTable("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
       std::cerr << "Opening non-existent.pha didn't throw a TipException." << std::endl;
@@ -45,10 +45,10 @@ int main() {
       // This is as it should be
     }
 
-    delete my_table;
+    delete my_table; my_table = 0;
 
     // The following test file should be present.
-    my_table = IFileSvc::getSvc().editTable(data_dir + "a1.pha", "SPECTRUM", "#row < 100");
+    my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM", "#row < 100");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
@@ -283,7 +283,7 @@ int main() {
     delete my_table; my_table = 0;
 
     // Now test Root file access.
-    my_table = IFileSvc::getSvc().editTable(data_dir + "merit.root", "1", "McEnergy < 2000. && McEnergy > 50.");
+    my_table = IFileSvc::instance().editTable(data_dir + "merit.root", "1", "McEnergy < 2000. && McEnergy > 50.");
 
     try {
       int recordNum = 0;
@@ -307,7 +307,60 @@ int main() {
       status = 1;
     }
 
+    try {
+      // Test creating a new (FITS) file using ft1.tpl:
+      data_dir = tiproot + "/data/";
+      IFileSvc::instance().createFile("new_ft1.fits", data_dir + "ft1.tpl");
 
+      delete my_table; my_table = 0;
+
+      // Open the newly created table:
+      my_table = IFileSvc::instance().editTable("new_ft1.fits", "EVENTS");
+
+      // Insert some records:
+      Index_t num_rec = 128;
+      my_table->setNumRecords(num_rec);
+
+      // Confirm that this worked.
+      num_rec = my_table->getNumRecords();
+
+      if (128 != num_rec) {
+        std::cerr << "Number of records after resizing table is " << num_rec << " not 128" << std::endl;
+      }
+
+      // Write something into the records:
+      double time = 0.;
+      for (Table::Iterator it = my_table->begin(); it != my_table->end(); ++it) {
+        (*it)["time"].set(++time);
+      }
+
+      // Truncate the table:
+      my_table->setNumRecords(64);
+
+      // Then increase its size:
+      my_table->setNumRecords(128);
+
+      // Write something else into the records:
+      long event_id = 0;
+      for (Table::Iterator it = my_table->begin(); it != my_table->end(); ++it) {
+        (*it)["event_id"].set(++event_id);
+      }
+
+      // Confirm that this worked: time should only be set for first 64 records, but event_id for all 128 records.
+      for (Table::Iterator it = my_table->begin(); it != my_table->end(); ++it) {
+        (*it)["event_id"].get(event_id);
+        (*it)["time"].get(time);
+        if (event_id > 64 && time != 0.) {
+          std::cerr << "After truncating and then augmenting table, event number " << event_id <<
+            " showed a time of " << time << ", not 0." << std::endl;
+        }
+      }
+
+    } catch(const TipException & x) {
+      std::cerr << "Unexpected exsception while creating and populating a new table: " << x.what() << std::endl;
+      status = 1;
+    }
+    
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
     status = 1;
