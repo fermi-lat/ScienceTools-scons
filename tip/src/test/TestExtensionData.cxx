@@ -218,20 +218,26 @@ void TestReadField(const tip::IExtensionData * const_ext, const std::string & fi
           ReportError(msg + " from a const " + ext_type + " object", status);
         } else {
           // Allocate an array to hold the values read from a single cell of this field:
-          double * tmp_dv = new double[num_elements];
+          std::vector<double> tmp_dv(num_elements);
+          double tmp_d;
           try {
+            const IColumn * column = const_ext->getColumn(field_index);
             // Iterate over all records, reading them:
             for (Index_t ii = 0; ii < num_rec; ++ii) {
-              msg = std::string("getCell(") + ToString(field_index) + ", " + ToString(ii) + ", 0, " + ToString(num_elements) + ", tmp_dv)";
-              const_ext->getCell(field_index, ii, 0, num_elements, tmp_dv);
+              if (column->isScalar()) {
+                msg = std::string("getColumn(") + ToString(field_index) + ")->get(" + ToString(ii) + ", tmp_d)";
+                column->get(ii, tmp_d);
+              } else {
+                msg = std::string("getColumn(") + ToString(field_index) + ")->get(" + ToString(ii) + ", tmp_dv)";
+                column->get(ii, tmp_dv);
+              }
             }
-            msg = std::string("getCell(") + ToString(field_index) + ", ii , 0, " + ToString(num_elements) + ", tmp_dv)";
+            msg = std::string("getColumn(") + ToString(field_index) + ")->get(ii, tmp_dv)";
             ReportBehavior(msg + " succeeded for all " + ToString(num_rec) + " records in const " + ext_type + " object", status);
 
           } catch(const TipException & x) {
             ReportError(msg + " failed for const " + ext_type + " object", status, x);
           }
-          delete [] tmp_dv;
         }
 
       } catch(const TipException & x) {
@@ -432,6 +438,9 @@ namespace tip {
     // Test read-write access:
     //testReadWrite();
 
+    // Test copying:
+    testCopy();
+
     return getStatus();
   }
 
@@ -554,4 +563,65 @@ namespace tip {
       ReportUnexpected(msg + " failed", x);
     }
   }
+
+  void TestExtensionData::testCopy() {
+    const IExtensionData * input = 0;
+    IExtensionData * output = 0;
+    try {
+      bool failed = false;
+
+      // Copy cells from a source extension to an output extension.
+      // Open input and create copy of input.
+      input = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "", true);
+      output = new FitsExtensionData(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
+  
+      // Get the number of records.
+      Index_t num_rec = output->getNumRecords();
+      if (0 >= num_rec) ReportUnexpected("TestExtensionData::testCopy could not get valid input");
+  
+      // Invert the column in the copy of the input.
+      for (Index_t ii = 0; ii < num_rec; ++ii) {
+        output->copyCell(input, 1, ii, 1, num_rec - ii - 1);
+        output->copyCell(input, 2, ii, 2, num_rec - ii - 1);
+      }
+  
+      // Confirm success.
+      for (Index_t ii = 0; ii < num_rec; ++ii) {
+        double src_chan;
+        double dest_chan;
+        std::vector<double> src_counts(4096);
+        std::vector<double> dest_counts(4096);
+
+        // Check channel.
+        input->getColumn(1)->get(num_rec - ii - 1, src_chan);
+        output->getColumn(1)->get(ii, dest_chan);
+        if (src_chan != dest_chan) {
+          ReportUnexpected("TestExtensionData::testCopy: one or more scalar values do not match after copying Cells");
+          failed = true;
+        }
+
+        // Check counts.
+        input->getColumn(2)->get(num_rec - ii - 1, src_counts);
+        output->getColumn(2)->get(ii, dest_counts);
+        for (int jj = 0; jj < 4096; ++jj) {
+          if (src_counts[jj] != dest_counts[jj]) {
+            ReportUnexpected("TestExtensionData::testCopy: one or more vector values do not match after copying Cells");
+            break;
+          }
+        }
+        if (failed) break;
+      }
+
+      if (!failed)
+        ReportExpected("TestExtensionData::testCopy: using copyCell to copy cells from input to output ITabularData succeeded.");
+
+    } catch(const TipException & x) {
+      delete output;
+      delete input;
+      ReportUnexpected("TestExtensionData::testCopy failed", x);
+    }
+    delete output;
+    delete input;
+  }
+
 }

@@ -40,6 +40,10 @@ namespace tip {
       */
       void testReadWrite();
 
+      /** \brief Test copying an extension object.
+      */
+      void testCopy();
+
     private:
     IExtensionData * m_read_only_extension;
     IExtensionData * m_writable_extension;
