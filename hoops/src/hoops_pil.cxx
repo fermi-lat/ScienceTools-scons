@@ -20,6 +20,7 @@
 #include "hoops/hoops_par.h"
 #include "hoops/hoops_pil.h"
 #include "hoops/hoops_pil_factory.h"
+#include "hoops/hoops_prim.h"
 #include "pil.h"
 ////////////////////////////////////////////////////////////////////////////////
 namespace hoops {
@@ -30,24 +31,30 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
+  // Static function declarations.
+  //////////////////////////////////////////////////////////////////////////////
+  static char *CpyStr(const char *s) throw ();
+  //////////////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////////////////////
   // Type definitions.
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
   // Begin PILParFile implementation.
   //////////////////////////////////////////////////////////////////////////////
-  PILParFile::PILParFile(): mComponent(), mGroup() {}
+  PILParFile::PILParFile(): mComponent(), mGroup(0) {}
 
   PILParFile::PILParFile(const PILParFile & pf):
-    mComponent(pf.mComponent), mGroup()
+    mComponent(pf.mComponent), mGroup(0)
     { if (pf.mGroup) mGroup = pf.mGroup->Clone(); }
 
   PILParFile::PILParFile(const IParFile & pf):
-    mComponent(pf.Component()), mGroup() {
+    mComponent(pf.Component()), mGroup(0) {
     mGroup = pf.Group().Clone();
   }
 
-  PILParFile::PILParFile(const std::string & comp): mComponent(), mGroup()
+  PILParFile::PILParFile(const std::string & comp): mComponent(), mGroup(0)
     { SetComponent(comp); }
 
   PILParFile::~PILParFile() { delete mGroup; }
@@ -240,7 +247,7 @@ namespace hoops {
     char * pil_comp = 0;
     if (!argc || !argv) {
       if (mComponent.empty()) throw Hexception(PAR_COMP_UNDEF);
-      pil_comp = IPrim::CpyStr(mComponent.c_str());
+      pil_comp = CpyStr(mComponent.c_str());
       argc = 1;
       argv = &pil_comp;
     }
@@ -262,16 +269,16 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Begin PILParPrompt implementation.
   //////////////////////////////////////////////////////////////////////////////
-  PILParPrompt::PILParPrompt(): mGroup(), mArgc(), mArgv() {}
+  PILParPrompt::PILParPrompt(): mGroup(0), mArgc(), mArgv(0) {}
 
   PILParPrompt::PILParPrompt(const PILParPrompt & prompt):
-    mGroup(), mArgc(prompt.mArgc), mArgv() { SetArgv(prompt.mArgv); }
+    mGroup(0), mArgc(prompt.mArgc), mArgv(0) { SetArgv(prompt.mArgv); }
 
   PILParPrompt::PILParPrompt(const IParPrompt & prompt):
-    mGroup(), mArgc(prompt.Argc()), mArgv() { SetArgv(prompt.Argv()); }
+    mGroup(0), mArgc(prompt.Argc()), mArgv(0) { SetArgv(prompt.Argv()); }
 
   PILParPrompt::PILParPrompt(int argc, char ** argv):
-    mGroup(), mArgc(argc), mArgv() { SetArgv(argv); }
+    mGroup(0), mArgc(argc), mArgv(0) { SetArgv(argv); }
 
   PILParPrompt::~PILParPrompt() throw() { delete mGroup; DeleteArgv(); }
 
@@ -413,7 +420,7 @@ namespace hoops {
     if (argv) {
       mArgv = new char *[mArgc];
       for (int ii = 0; ii < mArgc; ++ii) {
-        mArgv[ii] = IPrim::CpyStr(argv[ii]);
+        mArgv[ii] = CpyStr(argv[ii]);
         if (!argv[ii]) {
           mArgc = ii;
           break;
@@ -483,6 +490,20 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Static function definitions.
   //////////////////////////////////////////////////////////////////////////////
+  // Utility CpyStr: copy a string, allocating a new string
+  // just large enough to hold the string being copied.
+  static char *CpyStr(const char *s) throw () {
+    char *r = 0;
+    if (s) {
+      char *ptr;
+      const char *c_ptr = s;
+      while (*c_ptr) ++c_ptr;
+      r = new char[c_ptr - s + 1];
+      ptr = r;
+      while (0 != (*ptr = *s)) { ++s; ++ptr; }
+    }
+    return r;
+  }
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
@@ -494,6 +515,22 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.9  2003/11/26 18:50:02  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.8  2003/11/26 17:54:09  peachey
+ * Explicitly zero-initialize all pointers, as VS does not adhere to
+ * the ISO standard for default-initialized pointers.
+ *
+ * Revision 1.7  2003/11/10 18:16:12  peachey
+ * Moved header files into hoops subdirectory.
+ *
+ * Revision 1.6  2003/06/18 18:19:59  peachey
+ * CpyStr facility moved to IPrim.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:29  jchiang
+ * First import
+ *
  * Revision 1.5  2003/06/06 20:50:21  peachey
  * From PILParFile, remove Open() and Close(), which are actually
  * redundant with Load() and Save(). Change PILParPrompt::SetGroup

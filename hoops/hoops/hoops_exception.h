@@ -19,6 +19,14 @@
 #include <string>
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef EXPSYM
+#ifdef WIN32
+#define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+#endif
+
 namespace hoops {
 
   //////////////////////////////////////////////////////////////////////////////
@@ -46,21 +54,21 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  class Hexception: public std::exception {
+  class EXPSYM Hexception: public std::exception {
     public:
       virtual ~Hexception() throw() {}
 
       Hexception(const int & code, const std::string & msg = std::string(),
                  const std::string & filename = std::string(), int line = 0):
-        mMsg(msg), mCode(code), mFileName(filename), mLine(line) {}
+        mMsg(msg), mFileName(filename), mCode(code), mLine(line) {}
       int Code() const { return mCode; }
       const std::string & Msg() const { return mMsg; }
 
     private:
       std::string mMsg;
+      std::string mFileName;
       int mCode;
-     std::string mFileName;
-     int mLine;
+      int mLine;
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -84,6 +92,19 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.4  2003/11/26 18:50:03  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.3  2003/11/13 20:52:33  peachey
+ * Remove unnecessary export of enum.
+ *
+ * Revision 1.2  2003/11/13 19:29:29  peachey
+ * Add preprocessor macro needed on Windows to export symbols.
+ *
+ * Revision 1.2  2003/11/10 19:24:02  jchiang
+ * add mFileName and mLine data members and initialize in constructor to avoid
+ * warnings on linux
+ *
  * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
  * First import
  *

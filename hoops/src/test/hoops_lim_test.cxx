@@ -1,9 +1,18 @@
 #include <iostream>
 #include <limits>
-#include "hoops/hoops_limits.h"
+/* If this implementation has <limits>, lie to hoops_numeric_limits.h
+   so that it includes its own implementation anyway. */
+#ifdef HAVE_LIMITS
+#define REALLY_HAVE_LIMITS
+#undef HAVE_LIMITS
+#else
+/* This should be removed when HAVE_LIMITS is really being set by the build: */
+#define REALLY_HAVE_LIMITS
+#endif
+#include "hoops/hoops_numeric_limits.h"
 int main() {
   int status = 0;
-
+#ifdef REALLY_HAVE_LIMITS
   if (std::numeric_limits<bool>::is_specialized != hoops::numeric_limits<bool>::is_specialized) {
     status = 1;
     std::cerr << "numeric_limits<bool>::is_specialized == " << std::numeric_limits<bool>::is_specialized << " not " << hoops::numeric_limits<bool>::is_specialized << std::endl;
@@ -420,6 +429,9 @@ int main() {
     status = 1;
     std::cerr << "numeric_limits<long double>::round_error() == " << std::numeric_limits<long double>::round_error() << " not " << hoops::numeric_limits<long double>::round_error() << std::endl;
   }
+#else
+  std::cout << "This implementation doesn't have <limits>; not really testing anything!" << std::endl;
+#endif
 
   if (0 == status) std::cout << "Test succeeded." << std::endl;
   return status;

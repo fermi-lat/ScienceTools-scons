@@ -18,6 +18,14 @@
 #include <cassert>
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef EXPSYM
+#ifdef WIN32
+#define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+#endif
+
 namespace hoops {
 
   //////////////////////////////////////////////////////////////////////////////
@@ -29,7 +37,7 @@ namespace hoops {
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
   template <typename T>
-  class IBiDirItor {
+  class EXPSYM IBiDirItor {
     public:
       typedef T Value_t;
       virtual ~IBiDirItor() {}
@@ -44,7 +52,7 @@ namespace hoops {
   };
 
   template <typename T, typename Iterator_t>
-  class BiDirItor : public IBiDirItor<T> {
+  class EXPSYM BiDirItor : public IBiDirItor<T> {
     public:
       BiDirItor(): mItor() {}
       BiDirItor(const BiDirItor & other): mItor(other.mItor) {}
@@ -73,12 +81,12 @@ namespace hoops {
   };
 
   template <typename T>
-  class GenBiDirItor : public IBiDirItor<T> {
+  class EXPSYM GenBiDirItor : public IBiDirItor<T> {
     public:
-      GenBiDirItor(): mItor() {}
-      GenBiDirItor(const GenBiDirItor & other): mItor()
+      GenBiDirItor(): mItor(0) {}
+      GenBiDirItor(const GenBiDirItor & other): mItor(0)
         { if (other.mItor) mItor = other.mItor->Clone(); }
-      GenBiDirItor(const IBiDirItor<T> & other): mItor()
+      GenBiDirItor(const IBiDirItor<T> & other): mItor(0)
         { mItor = other.Clone(); }
 
       virtual ~GenBiDirItor() { delete mItor; }
@@ -123,7 +131,7 @@ namespace hoops {
   };
 
   template <typename T>
-  class IConstBiDirItor {
+  class EXPSYM IConstBiDirItor {
     public:
       typedef T Value_t;
       virtual ~IConstBiDirItor() {}
@@ -138,7 +146,7 @@ namespace hoops {
   };
 
   template <typename T, typename Iterator_t>
-  class ConstBiDirItor : public IConstBiDirItor<T> {
+  class EXPSYM ConstBiDirItor : public IConstBiDirItor<T> {
     public:
       ConstBiDirItor(): mConstItor() {}
       ConstBiDirItor(const ConstBiDirItor & other):
@@ -168,12 +176,12 @@ namespace hoops {
   };
 
   template <typename T>
-  class ConstGenBiDirItor : public IConstBiDirItor<T> {
+  class EXPSYM ConstGenBiDirItor : public IConstBiDirItor<T> {
     public:
-      ConstGenBiDirItor(): mItor() {}
-      ConstGenBiDirItor(const ConstGenBiDirItor & other): mItor()
+      ConstGenBiDirItor(): mItor(0) {}
+      ConstGenBiDirItor(const ConstGenBiDirItor & other): mItor(0)
         { if (other.mItor) mItor = other.mItor->Clone(); }
-      ConstGenBiDirItor(const IConstBiDirItor<T> & other): mItor()
+      ConstGenBiDirItor(const IConstBiDirItor<T> & other): mItor(0)
         { mItor = other.Clone(); }
 
       virtual ~ConstGenBiDirItor() { delete mItor; }
@@ -233,6 +241,19 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.4  2003/11/26 18:50:03  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.3  2003/11/26 17:54:09  peachey
+ * Explicitly zero-initialize all pointers, as VS does not adhere to
+ * the ISO standard for default-initialized pointers.
+ *
+ * Revision 1.2  2003/11/13 19:29:29  peachey
+ * Add preprocessor macro needed on Windows to export symbols.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
+ * First import
+ *
  * Revision 1.1  2003/04/23 17:40:36  peachey
  * Inline definitions of iterator classes to be used by ParGroup family.
  *

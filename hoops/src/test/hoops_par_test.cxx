@@ -24,7 +24,6 @@ int SetGlobalStatus (int status) {
 int main(int argc, char * argv[]) {
   using namespace hoops;
   const char *code[1024];
-  char * cp = 0;
   std::string std_string;
 
   for (int ii = 0; ii < 1024; ++ii) code[ii] = "";
@@ -51,7 +50,7 @@ int main(int argc, char * argv[]) {
   std::cerr.precision(32);
   try {
     // Test default constructor.
-    std_string = "";;
+    std_string = "";
     try {
       Par par_default; std_string = par_default.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -63,7 +62,7 @@ int main(int argc, char * argv[]) {
       SetGlobalStatus(P_UNEXPECTED);
     }
     // Test constructors for each par type.
-    std_string = "";;
+    std_string = "";
     try {
       Par par_bool("par_bool", "b", "a", "yes"); std_string = par_bool.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -74,7 +73,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_bool(\"par_bool\", \"b\", \"a\", \"yes\"); std_string = par_bool.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "true" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    std_string = "";;
+    std_string = "";
     try {
       Par par_char_p("par_char_p", "s", "a", "Valid"); std_string = par_char_p.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -85,7 +84,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_char_p(\"par_char_p\", \"s\", \"a\", \"Valid\"); std_string = par_char_p.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "Valid" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    std_string = "";;
+    std_string = "";
     try {
       Par par_int("par_int", "i", "a", "-2000000000"); std_string = par_int.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -96,7 +95,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_int(\"par_int\", \"i\", \"a\", \"-2000000000\"); std_string = par_int.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "-2000000000" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    std_string = "";;
+    std_string = "";
     try {
       Par par_real("par_real", "r", "a", "-1.2345678e3"); std_string = par_real.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -108,7 +107,7 @@ int main(int argc, char * argv[]) {
       SetGlobalStatus(P_UNEXPECTED);
     }
     // Test copy constructor.
-    Par par_bool1("par_bool", "b", "a", "1"); std_string = "";;
+    Par par_bool1("par_bool", "b", "a", "1"); std_string = "";
     try {
       Par par_bool2 = par_bool1; std_string = par_bool2.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -119,7 +118,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_bool2 = par_bool1; std_string = par_bool2.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "true" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    Par par_char_p1("par_char_p", "s", "a", "Valid"); std_string = "";;
+    Par par_char_p1("par_char_p", "s", "a", "Valid"); std_string = "";
     try {
       Par par_char_p2 = par_char_p1; std_string = par_char_p2.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -130,7 +129,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_char_p2 = par_char_p1; std_string = par_char_p2.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "Valid" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    Par par_int1("par_int", "i", "a", "-2000000000"); std_string = "";;
+    Par par_int1("par_int", "i", "a", "-2000000000"); std_string = "";
     try {
       Par par_int2 = par_int1; std_string = par_int2.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -141,7 +140,7 @@ int main(int argc, char * argv[]) {
       std::cout << "ERROR: Test Par par_int2 = par_int1; std_string = par_int2.Value() at line " << sLine << " produced result \"" << std_string << "\", not \"" << "-2000000000" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    Par par_real1("par_real", "r", "a", "-1.2345678e3"); std_string = "";;
+    Par par_real1("par_real", "r", "a", "-1.2345678e3"); std_string = "";
     try {
       Par par_real2 = par_real1; std_string = par_real2.Value(); sLine = __LINE__;
     } catch (const Hexception & x) {
@@ -239,52 +238,50 @@ int main(int argc, char * argv[]) {
       SetGlobalStatus(P_UNEXPECTED);
     }
     // Test "To" methods.
-    delete [] cp; cp = 0;
+    std_string = "";
     try {
-      par_bool1.To(cp); sLine = __LINE__;
+      par_bool1.To(std_string); sLine = __LINE__;
     } catch (const Hexception & x) {
-      std::cout << "ERROR: Test par_bool1.To(cp) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cout << "ERROR: Test par_bool1.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
       SetGlobalStatus(x.Code());
     }
-    if (!cp || strcmp(cp, "false")) {
-      std::cout << "ERROR: Test par_bool1.To(cp) at line " << sLine << " produced result \"" << cp << "\", not \"" << "false" << "\"." << std::endl;
+    if (std_string.compare("false")) {
+      std::cout << "ERROR: Test par_bool1.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "false" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    delete [] cp; cp = 0;
+    std_string = "";
     try {
-      par_char_p1.To(cp); sLine = __LINE__;
+      par_char_p1.To(std_string); sLine = __LINE__;
     } catch (const Hexception & x) {
-      std::cout << "ERROR: Test par_char_p1.To(cp) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cout << "ERROR: Test par_char_p1.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
       SetGlobalStatus(x.Code());
     }
-    if (!cp || strcmp(cp, "Invalid")) {
-      std::cout << "ERROR: Test par_char_p1.To(cp) at line " << sLine << " produced result \"" << cp << "\", not \"" << "Invalid" << "\"." << std::endl;
+    if (std_string.compare("Invalid")) {
+      std::cout << "ERROR: Test par_char_p1.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "Invalid" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    delete [] cp; cp = 0;
+    std_string = "";
     try {
-      par_int1.To(cp); sLine = __LINE__;
+      par_int1.To(std_string); sLine = __LINE__;
     } catch (const Hexception & x) {
-      std::cout << "ERROR: Test par_int1.To(cp) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cout << "ERROR: Test par_int1.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
       SetGlobalStatus(x.Code());
     }
-    if (!cp || strcmp(cp, "-1000000000")) {
-      std::cout << "ERROR: Test par_int1.To(cp) at line " << sLine << " produced result \"" << cp << "\", not \"" << "-1000000000" << "\"." << std::endl;
+    if (std_string.compare("-1000000000")) {
+      std::cout << "ERROR: Test par_int1.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "-1000000000" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    delete [] cp; cp = 0;
+    std_string = "";
     try {
-      par_real1.To(cp); sLine = __LINE__;
+      par_real1.To(std_string); sLine = __LINE__;
     } catch (const Hexception & x) {
-      std::cout << "ERROR: Test par_real1.To(cp) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cout << "ERROR: Test par_real1.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
       SetGlobalStatus(x.Code());
     }
-    if (!cp || strcmp(cp, "-8765.4321")) {
-      std::cout << "ERROR: Test par_real1.To(cp) at line " << sLine << " produced result \"" << cp << "\", not \"" << "-8765.4321" << "\"." << std::endl;
+    if (std_string.compare("-8765.4321")) {
+      std::cout << "ERROR: Test par_real1.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "-8765.4321" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    // Prevent memory leak.
-    delete [] cp; cp = 0;
     // Test assignment methods from primitives. (Not exhaustive).
     par_bool3.From("0");
     try {
@@ -349,9 +346,9 @@ int main(int argc, char * argv[]) {
     for (it = prompt->Group().begin(); it != prompt->Group().end(); ++it) {
       name = (*it)->Name();
       if (name.empty()) continue;
-      if (std::string((*it)->Value()).compare(file->Group()[name].Value())) {
-        std::cout << "Before prompting, value was :" <<
-          file->Group()[name].Value() << ":" << std::endl <<
+      if ((*it)->Value().compare(file->Group()[name].Value())) {
+        std::cout << "Before prompting, parameter " << name <<
+          " was :" << file->Group()[name].Value() << ":" << std::endl <<
           "After prompting, value is :" << (*it)->Value() << ":" << std::endl;
       }
     }

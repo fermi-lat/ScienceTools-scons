@@ -16,8 +16,16 @@
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include <string>
-#include "hoops.h"
+#include "hoops/hoops.h"
 ////////////////////////////////////////////////////////////////////////////////
+
+#ifndef EXPSYM
+#ifdef WIN32
+#define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+#endif
 
 namespace hoops {
 
@@ -29,7 +37,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  class Par : public IPar {
+  class EXPSYM Par : public IPar {
     public:
       // Constructors.
       Par() throw();
@@ -142,7 +150,6 @@ namespace hoops {
       virtual void To(float & p) const throw(Hexception);
       virtual void To(double & p) const throw(Hexception);
       virtual void To(long double & p) const throw(Hexception);
-      virtual void To(char *& p) const throw(std::bad_alloc, Hexception);
       virtual void To(std::string & p) const throw(std::bad_alloc, Hexception);
 
       virtual Par * Clone() const throw(std::bad_alloc)
@@ -192,7 +199,7 @@ namespace hoops {
           dest = Factory.NewIPrim(double()); dest->From(p);
         } else if (std::string::npos != type.find("f") ||
           std::string::npos != type.find("s")) {
-          dest = Factory.NewIPrim((const char *) 0); dest->From(p);
+          dest = Factory.NewIPrim(std::string()); dest->From(p);
         } else throw Hexception(PAR_INVALID_TYPE);
       }
 
@@ -215,7 +222,7 @@ namespace hoops {
       mutable std::string mValString;
   };
 
-  class ParFactory : public IParFactory {
+  class EXPSYM ParFactory : public IParFactory {
     public:
       virtual ~ParFactory() throw() {}
 
@@ -247,6 +254,22 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.8  2003/11/26 18:50:03  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.7  2003/11/13 19:29:29  peachey
+ * Add preprocessor macro needed on Windows to export symbols.
+ *
+ * Revision 1.6  2003/11/10 18:19:45  peachey
+ * Moved header files into hoops subdirectory.
+ *
+ * Revision 1.5  2003/06/18 18:17:30  peachey
+ * Remove method to return char * because IPrim no longer supports
+ * char * as a specializable type.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
+ * First import
+ *
  * Revision 1.4  2003/06/06 13:25:37  peachey
  * Restructure the header files. The files hoops_exception.h, hoops.h,
  * hoops_itor.h, hoops_pil_factory.h, and hoops_prim.h are now the

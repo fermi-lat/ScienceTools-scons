@@ -18,10 +18,18 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
-#include "hoops_exception.h"
-#include "hoops_itor.h"
-#include "hoops_prim.h"
+#include "hoops/hoops_exception.h"
+#include "hoops/hoops_itor.h"
+#include "hoops/hoops_prim.h"
 ////////////////////////////////////////////////////////////////////////////////
+
+#ifndef EXPSYM
+#ifdef WIN32
+#define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+#endif
 
 namespace hoops {
 
@@ -57,7 +65,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  class IPar {
+  class EXPSYM IPar {
     public:
       // Destructor.
       virtual ~IPar() {}
@@ -131,7 +139,6 @@ namespace hoops {
       virtual void To(float & p) const = 0;
       virtual void To(double & p) const = 0;
       virtual void To(long double & p) const = 0;
-      virtual void To(char *& p) const = 0;
       virtual void To(std::string & p) const = 0;
 
       virtual IPar * Clone() const = 0;
@@ -157,12 +164,12 @@ namespace hoops {
       virtual IPar & SetComment(const std::string & s) = 0;
   };
 
-  typedef IBiDirItor<IPar *> IParItor;
-  typedef IConstBiDirItor<IPar *> IConstParItor;
-  typedef GenBiDirItor<IPar *> GenParItor;
-  typedef ConstGenBiDirItor<IPar *> ConstGenParItor;
+  EXPSYM typedef IBiDirItor<IPar *> IParItor;
+  EXPSYM typedef IConstBiDirItor<IPar *> IConstParItor;
+  EXPSYM typedef GenBiDirItor<IPar *> GenParItor;
+  EXPSYM typedef ConstGenBiDirItor<IPar *> ConstGenParItor;
 
-  class IParGroup {
+  class EXPSYM IParGroup {
     public:
       virtual ~IParGroup() {}
 
@@ -184,7 +191,7 @@ namespace hoops {
       virtual IParGroup * Clone() const = 0;
   };
 
-  class IParFile {
+  class EXPSYM IParFile {
     public:
       virtual ~IParFile() {}
 
@@ -210,7 +217,7 @@ namespace hoops {
       virtual ConstGenParItor end() const = 0;
   };
 
-  class IParPrompt {
+  class EXPSYM IParPrompt {
     public:
       virtual ~IParPrompt() {}
 
@@ -230,7 +237,7 @@ namespace hoops {
       virtual IParGroup * SetGroup(IParGroup * group) = 0;
   };
 
-  class IParFactory {
+  class EXPSYM IParFactory {
     public:
       virtual ~IParFactory() {}
 
@@ -242,7 +249,7 @@ namespace hoops {
         const std::string & prompt, const std::string & comment) = 0;
   };
 
-  class IIParGroupFactory {
+  class EXPSYM IIParGroupFactory {
     public:
       virtual ~IIParGroupFactory() {}
 
@@ -250,7 +257,7 @@ namespace hoops {
       virtual IParGroup * NewIIParGroup(const IParGroup & p) = 0;
   };
 
-  class IParFileFactory {
+  class EXPSYM IParFileFactory {
     public:
       virtual ~IParFileFactory() {}
 
@@ -258,7 +265,7 @@ namespace hoops {
       virtual IParFile * NewIParFile(const IParFile & p) = 0;
   };
 
-  class IParPromptFactory {
+  class EXPSYM IParPromptFactory {
     public:
       virtual ~IParPromptFactory() {}
 
@@ -282,7 +289,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Function declarations.
   //////////////////////////////////////////////////////////////////////////////
-  std::ostream & operator <<(std::ostream & os, const IPar & p) throw();
+  EXPSYM std::ostream & operator <<(std::ostream & os, const IPar & p) throw();
   //////////////////////////////////////////////////////////////////////////////
 
 }
@@ -290,6 +297,22 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.9  2003/11/26 18:50:03  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.8  2003/11/13 19:29:29  peachey
+ * Add preprocessor macro needed on Windows to export symbols.
+ *
+ * Revision 1.7  2003/11/10 18:19:45  peachey
+ * Moved header files into hoops subdirectory.
+ *
+ * Revision 1.6  2003/06/18 18:10:03  peachey
+ * Remove method to return char * because IPrim no longer supports
+ * char * as a specializable type.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
+ * First import
+ *
  * Revision 1.5  2003/06/06 20:44:23  peachey
  * From IParFile, remove Open() and Close(), which are actually
  * redundant with Load() and Save(). Add assignment operator

@@ -112,6 +112,15 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.6  2003/11/26 18:50:02  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.5  2003/11/10 18:16:12  peachey
+ * Moved header files into hoops subdirectory.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:29  jchiang
+ * First import
+ *
  * Revision 1.4  2003/06/06 20:44:05  peachey
  * Add assignment operator from IParGroup reference.
  *

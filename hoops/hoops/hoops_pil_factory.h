@@ -14,8 +14,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
-#include "hoops.h"
+#include "hoops/hoops.h"
 ////////////////////////////////////////////////////////////////////////////////
+
+#ifndef EXPSYM
+#ifdef WIN32
+#define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+#endif
 
 namespace hoops {
 
@@ -27,7 +35,7 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  class PILParFileFactory : public IParFileFactory {
+  class EXPSYM PILParFileFactory : public IParFileFactory {
     public:
       virtual ~PILParFileFactory() {}
 
@@ -36,7 +44,7 @@ namespace hoops {
       virtual IParFile * NewIParFile(const char * argv);
   };
 
-  class PILParPromptFactory : IParPromptFactory {
+  class EXPSYM PILParPromptFactory : public IParPromptFactory {
     public:
       virtual ~PILParPromptFactory() {}
 
@@ -61,6 +69,21 @@ namespace hoops {
 
 /******************************************************************************
  * $Log$
+ * Revision 1.6  2003/11/26 18:50:03  peachey
+ * Merging changes made to SLAC repository into Goddard repository.
+ *
+ * Revision 1.5  2003/11/13 19:29:29  peachey
+ * Add preprocessor macro needed on Windows to export symbols.
+ *
+ * Revision 1.4  2003/11/10 18:19:45  peachey
+ * Moved header files into hoops subdirectory.
+ *
+ * Revision 1.3  2003/07/17 13:58:51  peachey
+ * PILParPromptFactory should publically inherit from IParPromptFactory.
+ *
+ * Revision 1.1.1.1  2003/11/04 01:48:30  jchiang
+ * First import
+ *
  * Revision 1.2  2003/06/06 20:51:20  peachey
  * Add new virtual constructor to PILParPromptFactory, to be
  * consistent with PILParPrompt constructors. Similar change
