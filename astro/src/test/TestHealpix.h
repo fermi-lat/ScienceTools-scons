@@ -6,6 +6,7 @@
 #include "astro/Healpix.h"
 #include <algorithm>
 #include <iomanip>
+#include <stdexcept>
 
 
 
@@ -31,7 +32,6 @@ public:
         std::cout << "\nTesting pixels...";
         std::for_each(hp.begin(), hp.end(), TestPixel(hp));
         std::cout << "done!"<< std::endl;
-#ifdef WIN323 // gcc complainds about setiosflags
         // test doing an integral
         std::cout << "\nTesting integral with even powers of cos(theta)\n"
             << "n\tintegral/4PI\texpect\t\t relative error\n";
@@ -39,13 +39,12 @@ public:
             double integral = hp.integrate(CosinePower(i))/(4.*M_PI),
                 expect = ((i&1)==1)? 0 : 1./(i+1.);
             std::cout << i << "\t" 
-                << std::setiosflags(4096) << std::setprecision(6)
+                << std::setiosflags(std::ios_base::scientific) << std::setprecision(6)
                 << std::setw(10) << integral
                 << std::setw(15) << expect
                 << std::setw(12) << std::setprecision(1)<< integral/expect -1
                 << std::endl;
         }
-#endif
     }
 
 
