@@ -1214,6 +1214,20 @@
 </source>
 
 <!-- All of the test sources -->
+<source name = "first_ten_test_Cygnus_region">
+   <nestedSource sourceRef="cat_001" />
+   <nestedSource sourceRef="cat_002" />
+   <nestedSource sourceRef="cat_003" />
+   <nestedSource sourceRef="cat_004" />
+   <nestedSource sourceRef="cat_005" />
+   <nestedSource sourceRef="cat_006" />
+   <nestedSource sourceRef="cat_007" />
+   <nestedSource sourceRef="cat_008" />
+   <nestedSource sourceRef="cat_009" />
+   <nestedSource sourceRef="cat_010" />
+</source>
+
+<!-- All of the test sources -->
 <source name = "all_test_sources">
    <nestedSource sourceRef="cat_001" />
    <nestedSource sourceRef="cat_002" />
