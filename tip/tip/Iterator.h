@@ -39,8 +39,8 @@ namespace tip {
 
       // In the following, the itorUpdate call is a placeholder. If e.g. Table
       // ever has a way to fill an entire row, this is how that would be accomplished.
-      reference operator *() const { /* m_data.itorUpdate(); */ return const_cast<reference>(m_data); }
-      pointer operator ->() const { /* m_data.itorUpdate(); */ return const_cast<pointer>(&m_data); }
+      reference operator *() const { /* m_data.itorUpdate(); */ return m_data; }
+      pointer operator ->() const { /* m_data.itorUpdate(); */ return &m_data; }
 
       Itor & operator ++() { m_data.itorNext(); return *this; }
       Itor operator ++(int) { Itor tmp = *this; m_data.itorNext(); return tmp; }
@@ -65,7 +65,7 @@ namespace tip {
       Itor & operator -=(difference_type diff) { m_data.itorPlusEquals(-diff); return *this; }
 
     private:
-      T m_data;
+      mutable T m_data;
   };
 
 }
