@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import optimizers
-string = optimizers.Function.string
 
 class PrototypeFactory:
     def __init__(self, xmlFile):
@@ -9,9 +8,9 @@ class PrototypeFactory:
         #
         # Supply the generic Functions to the factory.
         #
-        self.funcFactory.addFunc(string("PowerLaw"), optimizers.PowerLaw(), 1)
-        self.funcFactory.addFunc(string("Gaussian"), optimizers.Gaussian(), 1)
-        self.funcFactory.addFunc(string("AbsEdge"), optimizers.AbsEdge(), 1)
+        self.funcFactory.addFunc("PowerLaw", optimizers.PowerLaw(), 1)
+        self.funcFactory.addFunc("Gaussian", optimizers.Gaussian(), 1)
+        self.funcFactory.addFunc("AbsEdge", optimizers.AbsEdge(), 1)
         #
         # Parse the xml file data.
         #
@@ -19,12 +18,11 @@ class PrototypeFactory:
         library = minidom.parse(xmlFile)
         funcs = library.getElementsByTagName("function")
         for func in funcs:
-            funcObj = self.funcFactory.create(
-                string(func.getAttribute("type")) )
-            funcObj.setName( string(func.getAttribute("name")) )
+            funcObj = self.funcFactory.create( str(func.getAttribute("type")) )
+            funcObj.setName( str(func.getAttribute("name")) )
             params = func.getElementsByTagName("parameter")
             for param in params:
-                paramName = param.getAttribute("name")
+                paramName = str(param.getAttribute("name"))
                 paramValue = float( param.getAttribute("value") )
                 paramMin = float( param.getAttribute("min") )
                 paramMax = float( param.getAttribute("max") )
@@ -33,7 +31,7 @@ class PrototypeFactory:
                 else:
                     isFree = 0
                 paramScale = float( param.getAttribute("scale") )
-                paramObj = optimizers.Parameter(string(paramName),
+                paramObj = optimizers.Parameter(paramName,
                                                 paramValue, paramMin,
                                                 paramMax, isFree)
                 paramObj.setScale(paramScale)
@@ -44,7 +42,7 @@ class PrototypeFactory:
         self.funcFactory.listFunctions()
 
     def create(self, name):
-        return self.funcFactory.create(string(name))
+        return self.funcFactory.create(name)
 
 if __name__ == "__main__":
     #

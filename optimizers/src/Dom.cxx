@@ -61,20 +61,20 @@ void Dom::getElements(const DOM_Element &parent, const std::string &tagName,
    }
 }
 
-void Dom::readParamData(const DOM_Element &elt, Parameter &param) {
-   std::string paramName = xml::Dom::getAttribute(elt, "name");
-   double paramValue = ::atof( xml::Dom::getAttribute(elt, "value").c_str() );
-   double paramMin = ::atof( xml::Dom::getAttribute(elt, "min").c_str() );
-   double paramMax = ::atof( xml::Dom::getAttribute(elt, "max").c_str() );
-   bool isFree;
-   if (std::string(xml::Dom::getAttribute(elt, "free")) == "true") {
-      isFree = true;
-   } else {
-      isFree = false;
-   }
-   double paramScale = ::atof( xml::Dom::getAttribute(elt, "scale").c_str() );
-   param = Parameter(paramName, paramValue, paramMin, paramMax, isFree);
-   param.setScale(paramScale);
-}
+// void Dom::readParamData(const DOM_Element &elt, Parameter &param) {
+//    std::string paramName = xml::Dom::getAttribute(elt, "name");
+//    double paramValue = ::atof( xml::Dom::getAttribute(elt, "value").c_str() );
+//    double paramMin = ::atof( xml::Dom::getAttribute(elt, "min").c_str() );
+//    double paramMax = ::atof( xml::Dom::getAttribute(elt, "max").c_str() );
+//    bool isFree;
+//    if (std::string(xml::Dom::getAttribute(elt, "free")) == "true") {
+//       isFree = true;
+//    } else {
+//       isFree = false;
+//    }
+//    double paramScale = ::atof( xml::Dom::getAttribute(elt, "scale").c_str() );
+//    param = Parameter(paramName, paramValue, paramMin, paramMax, isFree);
+//    param.setScale(paramScale);
+// }
 
 } // namespace optimizers

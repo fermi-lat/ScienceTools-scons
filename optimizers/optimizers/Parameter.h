@@ -12,7 +12,10 @@
 #include <vector>
 #include <string>
 #include <cmath>
+
 #include "optimizers/OutOfBounds.h"
+
+class DOM_Element;
 
 namespace optimizers {
 
@@ -91,6 +94,10 @@ public:
    //! free flag access
    void setFree(bool free) {m_free = free;}
    bool isFree() const {return m_free;}
+
+   /// Extract data from an xml parameter element defined using the
+   /// FunctionModels.dtd.
+   void extractDomData(const DOM_Element &elt);
 
 private:
 

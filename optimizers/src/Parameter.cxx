@@ -9,6 +9,11 @@
 #include <vector>
 #include <string>
 
+#include "xml/XmlParser.h"
+#include "xml/Dom.h"
+#include <xercesc/dom/DOM_Element.hpp>
+#include <xercesc/dom/DOM_NodeList.hpp>
+
 #include "optimizers/Parameter.h"
 
 namespace optimizers {
@@ -46,6 +51,19 @@ void Parameter::setBounds(double minValue, double maxValue)
 std::pair<double, double> Parameter::getBounds() const {
    std::pair<double, double> my_Bounds(m_minValue, m_maxValue);
    return my_Bounds;
+}
+
+void Parameter::extractDomData(const DOM_Element &elt) {
+   m_name = xml::Dom::getAttribute(elt, "name");
+   m_value = ::atof( xml::Dom::getAttribute(elt, "value").c_str() );
+   m_minValue = ::atof( xml::Dom::getAttribute(elt, "min").c_str() );
+   m_maxValue = ::atof( xml::Dom::getAttribute(elt, "max").c_str() );
+   if (std::string(xml::Dom::getAttribute(elt, "free")) == "true") {
+      m_free = true;
+   } else {
+      m_free = false;
+   }
+   m_scale = ::atof( xml::Dom::getAttribute(elt, "scale").c_str() );
 }
 
 } // namespace optimizers

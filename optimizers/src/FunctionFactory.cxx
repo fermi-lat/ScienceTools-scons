@@ -124,7 +124,8 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
       std::vector<DOM_Element>::const_iterator paramIt = params.begin();
       for (; paramIt != params.end(); paramIt++) {
          Parameter parameter;
-         Dom::readParamData(*paramIt, parameter);
+//         Dom::readParamData(*paramIt, parameter);
+         parameter.extractDomData(*paramIt);
          funcObj->setParam(parameter);
       }
       addFunc(name, funcObj, false);
