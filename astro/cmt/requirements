@@ -1,6 +1,6 @@
 package astro
 
-version v1r7
+version v1r7p1
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -29,7 +29,7 @@ library astro -no_share \
  -s=../astro $(source) \
  -s=../src $(source) \
  -s=wcslib  $(source) *.c\
- -s=jplephem $(source) 
+ -s=jplephem $(source) \
 
 
 # simple program to test basic functionality
