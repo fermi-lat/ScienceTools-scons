@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 #include "CLHEP/Geometry/Vector3D.h"
-#include "flux/../src/CompositeSource.h"
+#include "flux/CompositeSource.h"
 #include "flux/FluxMgr.h"
 
 #include "latResponse/Irfs.h"

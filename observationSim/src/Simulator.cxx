@@ -11,7 +11,7 @@
 #include <algorithm>
 
 #include "flux/EventSource.h"
-#include "flux/../src/CompositeSource.h"
+//#include "flux/../src/CompositeSource.h"
 #include "flux/SpectrumFactoryTable.h"
 #include "flux/FluxMgr.h"
 #include "flux/ISpectrumFactory.h"
