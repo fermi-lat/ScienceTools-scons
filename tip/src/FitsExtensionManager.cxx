@@ -8,9 +8,9 @@
 #include <cctype>
 
 #include "FitsExtensionUtils.h"
-#include "FitsTabularData.h"
 #include "table/HeaderData.h"
 #include "table/IData.h"
+#include "table/TabularData.h"
 #include "table/TableException.h"
 
 namespace table {
@@ -31,7 +31,7 @@ namespace table {
   ITabularData * FitsExtensionUtils::getTabularData() {
     ITabularData * retval = 0;
     if (!m_data) {
-      retval = new FitsTabularData(this);
+      retval = new TabularData<FitsExtensionUtils>(this);
       m_data = retval;
     }
     return retval;
