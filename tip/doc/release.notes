@@ -3,6 +3,9 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+01-mar-2005 v2r1p2 JP Fixed some bugs: 1) Infinite loop when table with one column accessed,
+                      2) Writing a string containing a number to a numeric field didn't work.
+                      3) TipException::code was returning 1 for all errors.
 21-jan-2005 v2r1p1 JP Link against libHist to prevent problems loading libTreePlayer.so
                       on Linux with Root 4.x.
 18-jan-2005 v2r1   JP Add support for history and comments in extensions,
