@@ -7,6 +7,7 @@
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 #include "astro/PointingTransform.h"
+#include "astro/HTM.h"
 #include "CLHEP/Vector/ThreeVector.h"
 
 bool testSkyDir(){
@@ -136,6 +137,25 @@ void testJD()
         std::cout << JD2000.getGregorianDate() << std::endl;
     }
 }
+bool testHTM()
+{
+    size_t maxlevel = 6;
+    HTM h(maxlevel);
+    //      h.dump(std::cout);
+    for( size_t level = 0; level <= maxlevel; ++level) {
+        double area = 0;
+        for( HTM::const_iterator it = h.begin(level); it!=h.end(level); ++it){
+            const HTM::Node & n = *it;
+            area += n.area();
+        }
+        double check =  fabs(area/(4*M_PI) -1);
+        if( check >1e-8) { 
+            std::cout << "HTM area did not add up"<< std::endl; return false; 
+        }
+    }
+    std::cout << "HTM check OK" << std::endl; 
+    return true;
+}
 
 int main(){
 
@@ -147,6 +167,8 @@ int main(){
     test_insideSAA();
 
     if( !testSkyDir() )return 1;
+
+    if( !testHTM() ) return 1;
 
     JulianDate JD2000 = JulianDate(2000,1,1,12.); //2451545
 
@@ -199,7 +221,7 @@ int main(){
     SkyDir sd4(proj.first, proj.second, astro::SkyDir::PROJECTION);
     double sd4_ra= sd4.ra(), sd4_dec=sd4.dec();
     test += sd4.difference(sd);
-        
+
 
     if( fabs(test) < 1e-3 ) {
         cout << "tests ok " << endl;
