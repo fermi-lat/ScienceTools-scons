@@ -9,12 +9,12 @@
 #include <sstream>
 
 #include "facilities/Util.h"
-#include "table/Exception.h"
 
 #include "map_tools/Parameters.h"
 
 #include "pil.h"
 #include <stdexcept>
+#include <cmath>
 
 bool Parameters::s_verboseMode = false;
 bool Parameters::s_clobber = 0;
@@ -25,14 +25,18 @@ int  Parameters::s_chatter = 10;
 Parameters::Parameters( int argc, char *argv[])
 {
     int status = 0;
- //   argv[0]="count_map";
+    std::string exename(argv[0]);
+    int first = std::max(exename.find_last_of("/"),exename.find_last_of("\\"))+1;
+    int last = exename.find_last_of(".");
+    std::string short_name=exename.substr(first, last-first);
+    std::strcpy(argv[0], short_name.c_str()); // assume space
     status = PILInit(argc, argv);
 
     if (status != 0)  {
         std::ostringstream os;
         os << "Could not initialte PIL...check that file '" 
-            << argv[0] << "' exists in the path $PFILES\nerror code:"<<  status;
-        throw table::Exception(os.str());
+            << argv[0] << ".par' exists in the path $PFILES\nerror code:"<<  status;
+        throw std::invalid_argument(os.str());
     }
     s_chatter = getInt("chatter");
 
