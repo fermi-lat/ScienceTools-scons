@@ -36,7 +36,7 @@ namespace tip {
       std::cout << std::endl;
     }
 
-    // Test creating a new image and copying the read-only image to it.
+    // Test creating a new image and copying the read-only image to it, pixel by pixel.
     try {
       // Create new image.
       IFileSvc::instance().createFile(std::string("new_image.fits(") + getDataDir() + "arlac.pha)");
@@ -61,7 +61,56 @@ namespace tip {
         }
       }
 
-      ReportExpected("TestImage::test did not encounter exception while copying an image");
+      // Confirm that output is the same as input.
+      for (int ii = 0; ii < dims[0]; ++ii) {
+        for (int jj = 0; jj < dims[1]; ++jj) {
+          double orig_pixel = 0.;
+          double copy_pixel = 0.;
+          m_const_image->getPixel(jj, ii, orig_pixel);
+          image->getPixel(dims[0] - 1 - ii, dims[1] - 1 - jj, copy_pixel);
+          if (orig_pixel != copy_pixel) throw TipException("After copying an image pixel-by-pixel, copy does not agree with orig");
+        }
+      }
+
+      ReportExpected("TestImage::test did not encounter exception while copying an image pixel by pixel");
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestImage::test caught exception ", x);
+    }
+
+    // Test creating a new image and copying the read-only image to it in one fell swoop.
+    try {
+      // Create new image.
+      IFileSvc::instance().createFile(std::string("new_image.fits(") + getDataDir() + "arlac.pha)");
+
+      // Open new image for writing.
+      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image.fits", ""));
+
+      // Create array for read image.
+      std::vector<float> image_vec;
+
+      // Read entire image from input.
+      m_const_image->get(image_vec);
+
+      // Copy it to the output.
+      image->set(image_vec);
+
+      // Re-read the image dimensions.
+      dims = m_const_image->getImageDimensions();
+
+      // Confirm that output is the same as input.
+      for (int ii = 0; ii < dims[0]; ++ii) {
+        for (int jj = 0; jj < dims[1]; ++jj) {
+          double orig_pixel = 0.;
+          double copy_pixel = 0.;
+          m_const_image->getPixel(ii, jj, orig_pixel);
+          image->getPixel(ii, jj, copy_pixel);
+          if (orig_pixel != copy_pixel)
+throw TipException("After copying a whole image, copy does not agree with orig");
+        }
+      }
+
+      ReportExpected("TestImage::test did not encounter exception while copying a whole image at one time");
 
     } catch (const TipException & x) {
       ReportUnexpected("TestImage::test caught exception ", x);

@@ -171,6 +171,18 @@ namespace tip {
       virtual void setPixel(const std::vector<PixOrd_t> & x, const double & pixel)
         { m_extension_manager.setPixel(x, pixel); }
 
+      /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
+          \param image The array in which to store the image.
+      */
+      virtual void getImage(std::vector<float> & image) const
+        { m_extension_manager.getImage(image); }
+
+      /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
+          \param image The array which stores the image.
+      */
+      virtual void setImage(const std::vector<float> & image)
+        { m_extension_manager.setImage(image); }
+
     private:
       ExtensionManager m_extension_manager;
   };

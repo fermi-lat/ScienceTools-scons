@@ -250,6 +250,14 @@ namespace tip {
     throw TipException("Images in Root files not supported");
   }
 
+  void RootExtensionManager::getImage(std::vector<float> &) const {
+    throw TipException("Images in Root files not supported");
+  }
+
+  void RootExtensionManager::setImage(const std::vector<float> &) {
+    throw TipException("Images in Root files not supported");
+  }
+
   std::string RootExtensionManager::formatWhat(const std::string & msg) const {
     std::string retval = msg;
     if (!m_ext_name.empty()) retval += std::string(" in extension ") + m_ext_name;

@@ -236,6 +236,44 @@ namespace tip {
     if (0 != status) throw TipException(formatWhat("setPixel could not write a double to a pixel"));
   }
 
+  void FitsExtensionManager::getImage(std::vector<float> & image) const {
+    if (m_is_table) throw TipException(formatWhat("getImage called, but object is not an image"));
+    int status = 0;
+
+    // Compute overall size of image.
+    unsigned long image_size = 1;
+    for (std::vector<PixOrd_t>::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
+      image_size *= *itor;
+
+    // Make sure image is large enough to accomodate the image.
+    image.resize(image_size);
+
+    // Starting coordinate is the first pixel in each dimension.
+    std::vector<long> coord(m_image_dimensions.size(), 1);
+
+    // Get the image itself.
+    fits_read_pix(m_fp, TFLOAT, &*coord.begin(), image_size, 0, &*image.begin(), 0, &status);
+  }
+
+  void FitsExtensionManager::setImage(const std::vector<float> & image) {
+    if (m_is_table) throw TipException(formatWhat("setImage called, but object is not an image"));
+    int status = 0;
+
+    // Compute overall size of image.
+    unsigned long image_size = 1;
+    for (std::vector<PixOrd_t>::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
+      image_size *= *itor;
+
+    // Make sure no more than the image_size elements are written.
+    image_size = (image_size < image.size()) ? image_size : image.size();
+
+    // Starting coordinate is the first pixel in each dimension.
+    std::vector<long> coord(m_image_dimensions.size(), 1);
+
+    // Write the image itself.
+    fits_write_pix(m_fp, TFLOAT, &*coord.begin(), image_size, const_cast<float *>(&*image.begin()), &status);
+  }
+
   void FitsExtensionManager::openTable() {
     int status = 0;
     int column_status = 0;
