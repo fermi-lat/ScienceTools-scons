@@ -18,6 +18,7 @@ namespace tip {
   class Extension;
   class Image;
   class Table;
+  class TipFile;
 
   /** \class IFileSvc
 
@@ -48,6 +49,13 @@ namespace tip {
           \param clobber Should existing files be overwritten?
       */
       virtual void createFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
+
+      /** \brief Use a FITS template to create a new file in memory.
+          \param file_name The name of the new file.
+          \param template_name The name of the template file.
+          \param clobber Should existing files be overwritten?
+      */
+      virtual TipFile createMemFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
 
       /** \brief Append a new image extension in a file. If the file does not exist, it will be created with
                  its primary image extension named with the image name.

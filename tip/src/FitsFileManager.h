@@ -9,8 +9,10 @@
 
 #include <string>
 #include <vector>
+
 #include "fitsio.h"
 #include "tip/FileSummary.h"
+#include "tip/TipFile.h"
 
 namespace tip {
   /** \class FitsFileManager
@@ -26,6 +28,13 @@ namespace tip {
           \param clobber Should existing files be overwritten?
       */
       static void createFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
+
+      /** \brief Use a FITS template to create a new file in memory.
+          \param file_name The name of the new file.
+          \param template_name The name of the template file.
+          \param clobber Should existing files be overwritten?
+      */
+      static TipFile createMemFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
 
       /** \brief Append an image extension to a fits file.
           \param file_name The name of the file to which to append.

@@ -54,6 +54,10 @@ namespace tip {
     FitsFileManager::createFile(file_name, template_name, clobber);
   }
 
+  TipFile IFileSvc::createMemFile(const std::string & file_name, const std::string & template_name, bool clobber) {
+    return FitsFileManager::createMemFile(file_name, template_name, clobber);
+  }
+
   void IFileSvc::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
     FitsFileManager::appendImage(file_name, image_name, dims);
   }

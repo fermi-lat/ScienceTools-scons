@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include "FitsFileManager.h"
+#include "FitsTipFile.h"
 #include "fitsio.h"
 #include "tip/FileSummary.h"
 #include "tip/TipException.h"
@@ -52,6 +53,10 @@ namespace tip {
     closeFile(fp, status);
     if (0 != status)
       throw TipException(status, "Unable to close newly created file named \"" + file_name + "\"");
+  }
+
+  TipFile FitsFileManager::createMemFile(const std::string & file_name, const std::string & template_name, bool clobber) {
+    return TipFile(new FitsTipFile("mem://" + file_name, template_name, clobber));
   }
 
   void FitsFileManager::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
