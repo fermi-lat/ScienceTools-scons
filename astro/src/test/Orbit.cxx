@@ -5,7 +5,7 @@
 #include <fstream> 
 
 #include "astroutil.h"
-#include "solsystem.h"
+#include "SolSystem.h"
 
 #define comparison
 #ifdef comparison // for comparison

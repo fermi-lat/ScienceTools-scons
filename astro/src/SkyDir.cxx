@@ -38,7 +38,7 @@ namespace astro {
     
     HepRotation SkyDir::s_celestialToGalactic = HepRotation().rotateZ(-282.25*M_PI/180).rotateX(-62.6*M_PI/180).rotateZ(33.*M_PI/180);
     
-    std::pair<double,double> SkyDir::setGalCoordsFromDir() const{
+    void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
         
         //do the transform to get the galactic celestial vector
         Hep3Vector pointingin(s_celestialToGalactic*m_dir);
@@ -46,22 +46,18 @@ namespace astro {
         // pointingin is the galactic cartesian pointing vector,
         //where yhat points at the galactic origin.
         // we want to make this into l and b now.
-        double l = atan2(pointingin.y(), pointingin.x());
-        double b = asin(pointingin.z());
+        l = atan2(pointingin.y(), pointingin.x())*180/M_PI;
+        b = asin(pointingin.z())*180/M_PI;
         
-        l *= 360./M_2PI;
-        b *= 360./M_2PI;
-        
-        return std::make_pair<double,double>(l,b);
-    }
+      }
     
     
     double SkyDir::l ()const{
-        return setGalCoordsFromDir().first;
+      double xl, xb; setGalCoordsFromDir(xl,xb); return xl;
     }
     
     double SkyDir::b ()const{
-        return setGalCoordsFromDir().second;
+      double xl, xb; setGalCoordsFromDir(xl,xb); return xb;
     }
     
     double SkyDir::ra ()const{

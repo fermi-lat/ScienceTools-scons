@@ -1,5 +1,5 @@
 // $Header$
-
+#include <cmath>
 
 #include "astro/EarthCoordinate.h"
 
