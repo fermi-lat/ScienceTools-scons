@@ -219,6 +219,7 @@ void EventContainer::writeEvents() {
 // from the first and last events) in a single GTI.
       tip::Table * gti_table = 
          tip::IFileSvc::instance().editTable(ft1File, "GTI");
+      gti_table->setNumRecords(1);
       it = gti_table->begin();
       row["start"].set(m_events.begin()->time());
       row["stop"].set((m_events.end()-1)->time());
