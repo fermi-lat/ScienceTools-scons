@@ -519,12 +519,6 @@
 		</spectrum>
     </source>
     
-    <source name="crab-galactic2">
-		<spectrum escale="GeV">
-			<SpectrumClass name="GalPulsars" params="$(FLUXROOT)/sources/crab.txt"/> <use_spectrum frame="galaxy"/>
-		</spectrum>
-    </source>
-    
     <!-- Random population of pulsars simulated using GalPulsars class.
     -->
     <source name="galactic-pulsars">
