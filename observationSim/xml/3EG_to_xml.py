@@ -17,32 +17,37 @@ def read_3EG_catalog():
     names = []
     for line in lines:
         if line.find("#") == 0:
-            break
-        data = line.split(',')
-        if data[0][:3] == '3EG':
-            true_name.append(data[0])
-            if (data[0][9] == '+'):
-                name.append('_' + data[0][:3] + '_' + data[0][4:9] + 'p' + data[0][10:])
-            else:
-                name.append('_' + data[0][:3] + '_' + data[0][4:9] + 'm' + data[0][10:])
-            ra.append(string.atof(data[1]))
-            dec.append(string.atof(data[2]))
-            if (string.strip(data[8]) != '---'):
-                gamma.append(string.atof(string.strip(data[8])))
-            else:
-                # use default index
-                gamma.append(2.1)
-            # use the first F100 flux that's listed...
-            flux = string.atof(data[6])*1e-4
-        if len(data) == 17 and string.strip(data[11]) == 'P1234':
-            # but replace with the P1234 average value if it's available
-            flux = string.atof(data[6])*1e-4
-        if len(data) == 17 and string.strip(data[13]) != '':
-            names.append(string.strip(data[13]))
-        if len(data) == 1 and string.strip(data[0]) == '':
-            F100.append(flux)
-            other_names.append(names)
-            names = []
+            pass
+        else:
+            data = line.split(',')
+            if data[0][:3] == '3EG':
+                true_name.append(data[0])
+                if (data[0][9] == '+'):
+                    name.append('_' + data[0][:3] + '_' + data[0][4:9] + 'p' + data[0][10:])
+                else:
+                    name.append('_' + data[0][:3] + '_' + data[0][4:9] + 'm' + data[0][10:])
+                ra.append(string.atof(data[1]))
+                dec.append(string.atof(data[2]))
+                if (string.strip(data[8]) != '---'):
+                    gamma.append(string.atof(string.strip(data[8])))
+                else:
+                    # use default index
+                    gamma.append(2.1)
+                # use the first F100 flux that's listed...
+                flux = string.atof(data[6])*1e-4
+                #
+                # apply ad hoc scaling to make this closer to a true P1234 average value
+                # 
+                flux /= 2.
+            if len(data) == 17 and string.strip(data[11]) == 'P1234':
+                # but replace with the P1234 average value if it's available
+                flux = string.atof(data[6])*1e-4
+            if len(data) == 17 and string.strip(data[13]) != '':
+                names.append(string.strip(data[13]))
+            if len(data) == 1 and string.strip(data[0]) == '':
+                F100.append(flux)
+                other_names.append(names)
+                names = []
     return (true_name, name, ra, dec, F100, gamma, other_names)
 
 (true_name, name, ra, dec, F100, gamma, other_names) = read_3EG_catalog()
