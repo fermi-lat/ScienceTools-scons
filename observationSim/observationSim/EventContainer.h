@@ -54,7 +54,9 @@ public:
       m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0), 
       m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
-   ~EventContainer() {if (m_events.size() > 0) writeEvents();}
+   ~EventContainer() {
+      if (m_events.size() > 0) writeEvents();
+   }
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
@@ -111,9 +113,6 @@ private:
 
    /// Goodi Event data object pointer.
    Goodi::IEventData *m_goodiEventData;
-
-   /// Goodi I/O service object pointer.
-   Goodi::IDataIOService *m_goodiIoService;
 
    /// The Event buffer.
    std::vector<Event> m_events;

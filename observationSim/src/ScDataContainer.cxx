@@ -30,7 +30,6 @@ void ScDataContainer::init() {
    m_scData.clear();
 
    if (m_useGoodi) {
-      Goodi::DataIOServiceFactory iosvcCreator;
       Goodi::DataFactory dataCreator;
 
 // Set the type of data to be generated and the mission.
@@ -41,8 +40,6 @@ void ScDataContainer::init() {
       m_goodiScData = dynamic_cast<Goodi::ISpacecraftData *>
          (dataCreator.create(datatype, mission));
 
-// Goodi I/O service object.
-      m_goodiIoService = iosvcCreator.create();
    }
 }
 
@@ -100,8 +97,14 @@ void ScDataContainer::writeScData() {
       m_goodiScData->setRAscx(raSCX);
       m_goodiScData->setDECscx(decSCX);
 
+// Goodi I/O service object.
+      Goodi::DataIOServiceFactory iosvcCreator;
+      Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
+
       std::string outputFile = "!" + outputFileName();
-      m_goodiScData->write(m_goodiIoService, outputFile);
+      m_goodiScData->write(goodiIoService, outputFile);
+      delete goodiIoService;
+
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(10);

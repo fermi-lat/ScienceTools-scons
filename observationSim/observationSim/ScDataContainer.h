@@ -84,9 +84,6 @@ private:
    /// Goodi Spacecraft data object pointer.
    Goodi::ISpacecraftData *m_goodiScData;
 
-   /// Goodi I/O service object pointer.
-   Goodi::IDataIOService *m_goodiIoService;
-
    /// The ScData buffer.
    std::vector<ScData> m_scData;
 

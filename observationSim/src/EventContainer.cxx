@@ -54,7 +54,6 @@ void EventContainer::init() {
    m_events.clear();
 
    if (m_useGoodi) {
-      Goodi::DataIOServiceFactory iosvcCreator;
       Goodi::DataFactory dataCreator;
 
 // Set the type of data to be generated and the mission.
@@ -64,9 +63,6 @@ void EventContainer::init() {
 // Create the EventData object.
       m_goodiEventData = dynamic_cast<Goodi::IEventData *>
          (dataCreator.create(datatype, mission));
-
-// Goodi I/O service object.
-      m_goodiIoService = iosvcCreator.create();
    }
 }
 
@@ -188,8 +184,12 @@ void EventContainer::writeEvents() {
       m_goodiEventData->setAcdTilesHit(acdTilesHit);
       m_goodiEventData->setCalibVersion(calibVersion);
 
+      Goodi::DataIOServiceFactory iosvcCreator;
+      Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
+
       std::string outputFile = "!" + outputFileName();
-      m_goodiEventData->write(m_goodiIoService, outputFile);
+      m_goodiEventData->write(goodiIoService, outputFile);
+      delete goodiIoService;
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(13);
