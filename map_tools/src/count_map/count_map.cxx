@@ -53,7 +53,7 @@ public:
         for (Table::ConstIterator it = table.begin(); it != table.end(); ++it) {
 
             // Create local reference to the record to which the iterator refers:
-            const Table::Record & record = *it;
+            Table::ConstRecord & record = *it;
             // Get the current values
             double ra = record[m_pars.raName()].get(), 
                 dec=record[m_pars.decName()].get();

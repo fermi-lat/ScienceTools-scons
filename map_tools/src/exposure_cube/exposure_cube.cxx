@@ -47,7 +47,7 @@ public:
 
         for (Table::ConstIterator it = table.begin(); it != table.end(); ++it) {
 
-            const Table::Record & record = *it;
+            Table::ConstRecord & record = *it;
 
             double start, stop;
             record["start"].get(start);
