@@ -4,6 +4,7 @@
 */
 #ifndef st_graph_IFrame_h
 #define st_graph_IFrame_h
+#include <string>
 
 namespace st_graph {
 
@@ -31,6 +32,23 @@ namespace st_graph {
           \param frame The frame being removed.
       */
       virtual void removeFrame(IFrame * frame) = 0;
+
+      /** \brief Get a string describing the state of the widget. The possible values of the state string depend
+                 on the exact type of widget being represented by the IFrame.
+
+                 For buttons, possible states are "up" and "down".
+                 For text entry frames, the state gives the text the user has currently entered.
+      */
+      virtual const std::string & getState() const = 0;
+
+      /** \brief Change the internal state of the widget using the state description given by the argument.
+                 Valid values of the state string depend on the exact type of widget being represented by the IFrame.
+
+                 For buttons, possible states are "up" and "down".
+                 For text entry frames, the state gives the text the user has currently entered.
+          \param state The new state of widget being set.
+      */
+      virtual void setState(const std::string & state) = 0;
 
       /// \brief Get the horizontal center of the frame.
       virtual long getHCenter() const = 0;

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "TGButton.h"
 #include "TGFrame.h"
 #include "TGLayout.h"
 
@@ -21,7 +22,7 @@ namespace st_graph {
     return &s_ancestor;
   }
 
-  RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_subframes(),
+  RootFrame::RootFrame(IFrame * parent, IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
     m_parent(0), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent), m_minimum_width(0), m_minimum_height(0) {
     // Make sure the parent is a Root parent.
     m_parent = dynamic_cast<RootFrame *>(parent);
@@ -31,7 +32,7 @@ namespace st_graph {
     m_parent->addFrame(this);
   }
 
-  RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_subframes(),
+  RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame, bool delete_parent): m_state(), m_subframes(),
     m_parent(RootFrame::ancestor()), m_frame(frame), m_receiver(receiver), m_delete_parent(delete_parent),
     m_minimum_width(0), m_minimum_height(0) {
     m_parent->addFrame(this);
@@ -115,6 +116,33 @@ namespace st_graph {
 
       TGCompositeFrame * parent_tg_f = dynamic_cast<TGCompositeFrame *>(m_frame);
       if (0 != parent_tg_f && 0 != child_tg_f) parent_tg_f->RemoveFrame(child_tg_f);
+    }
+  }
+
+  const std::string & RootFrame::getState() const {
+    for(bool one_time_only = true; one_time_only ; one_time_only = false) {
+      m_state.clear();
+      const TGButton * button = dynamic_cast<const TGButton *>(m_frame);
+      if (0 != button) {
+        EButtonState state = button->GetState();
+        if (kButtonDown == state) m_state = "down";
+        else if (kButtonUp == state) m_state = "up";
+        // else // TODO issue debug warning.
+        continue;
+      }
+    }
+    return m_state;
+  }
+
+  void RootFrame::setState(const std::string & state) {
+    for(bool one_time_only = true; one_time_only ; one_time_only = false) {
+      TGButton * button = dynamic_cast<TGButton *>(m_frame);
+      if (0 != button) {
+        if (state == "down") button->SetState(kButtonDown);
+        else if (state == "up") button->SetState(kButtonUp);
+        // else // TODO issue debug warning.
+        continue;
+      }
     }
   }
 
