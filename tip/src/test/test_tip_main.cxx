@@ -48,11 +48,57 @@ int main() {
       my_table = IFileSvc::instance().editTable("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
-      std::cerr << "Opening non-existent.pha didn't throw a TipException." << std::endl;
+      std::cerr << "Unexpected: opening non-existent.pha didn't throw a TipException." << std::endl;
 
       status = 1;
     } catch(const TipException & x) {
       // This is as it should be
+      std::cerr << "Expected: opening non-existent.pha threw exception: " << x.what() << std::endl;
+    }
+
+    delete my_table; my_table = 0;
+
+    try {
+      // Opening an existent file which is neither FITS nor Root should throw an exception.
+      my_table = IFileSvc::instance().editTable(data_dir + "ft1.tpl", "");
+
+      // If we got here, it didn't throw!
+      std::cerr << "Unexpected: opening ft1.tpl didn't throw a TipException." << std::endl;
+
+      status = 1;
+    } catch(const TipException & x) {
+      // This is as it should be
+      std::cerr << "Expected: opening ft1.tpl threw exception: " << x.what() << std::endl;
+    }
+
+    delete my_table; my_table = 0;
+
+    try {
+      // Opening an existent FITS file but asking for a non-existent extension should throw an exception.
+      my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "NON_EXIS");
+
+      // If we got here, it didn't throw!
+      std::cerr << "Unexpected: opening extension NON_EXIS in a1.pha didn't throw a TipException." << std::endl;
+
+      status = 1;
+    } catch(const TipException & x) {
+      // This is as it should be
+      std::cerr << "Expected: opening extension NON_EXIS in a1.pha threw exception: " << x.what() << std::endl;
+    }
+
+    delete my_table; my_table = 0;
+
+    try {
+      // Opening an existent Root file but asking for a non-existent extension should throw an exception.
+      my_table = IFileSvc::instance().editTable(data_dir + "merit.root", "NON_EXIS");
+
+      // If we got here, it didn't throw!
+      std::cerr << "Unexpected: opening extension NON_EXIS in merit.root didn't throw a TipException." << std::endl;
+
+      status = 1;
+    } catch(const TipException & x) {
+      // This is as it should be
+      std::cerr << "Expected: opening extension NON_EXIS in merit.root threw exception: " << x.what() << std::endl;
     }
 
     delete my_table; my_table = 0;

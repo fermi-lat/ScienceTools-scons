@@ -273,8 +273,6 @@
        7. 4/2/2004: Table's iterator has problems with random access. See Table.h: TODO 7.
        8. 4/2/2004: Use of Record within a functor used with a for_each is problematic.
           See src/test/test_tip_main.cxx: TODO 8.
-      11. 5/17/2004:  Refactor IFileSvc and FitsFileManager/FitsExtensionManager to remove
-          reduncancy and improve error messages. See src/IFileSvc.cxx: TODO 11.
           
 \endverbatim
 
@@ -291,6 +289,8 @@
        9. 4/2/2004: Bug in certain versions of cfitsio may prevent filtering syntax from
           working. See FitsExtensionManager.cxx: DONE 9.
       10. 4/21/2004: Add capability to insert a field (column) in a table. Done 4/23/2004.
+      11. 5/17/2004:  Refactor IFileSvc and FitsFileManager/FitsExtensionManager to remove
+          redundancy and improve error messages. See src/IFileSvc.cxx: TODO 11. Done 5/25/2004.
 \endverbatim
 
 */

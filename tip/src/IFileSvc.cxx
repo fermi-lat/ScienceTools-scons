@@ -62,130 +62,75 @@ namespace tip {
   // the various edit/read methods so that there is no duplicate code, and preferably so that there
   // are fewer methods overall.
 
+  // 5/25/2004: DONE 11: Added fileExists() method to confirm existence, and added FITS-and-Root
+  // specific tests isValid(string) to FitsFileManager and RootExtensionManager, respectively.
+
   // Open read-write an extension in a file, be it FITS or Root, table or image.
   Extension * IFileSvc::editExtension(const std::string & file_name, const std::string & ext_name,
     const std::string & filter) {
     Extension * retval = 0;
-    IExtensionData * data = 0;
-    TipException fits_exception;
-    try {
-      try {
-        // Open file with read-only mode enabled.
-        data = new FitsExtensionData(file_name, ext_name, filter, false);
-      } catch(const TipException & x) {
-        fits_exception = x;
-        data = new RootExtensionData(file_name, ext_name, filter);
-      }
+    IExtensionData * data = openExtension(file_name, ext_name, filter, false);
 
-      // Determine whether this extension is a table or an image, and return the appropriate
-      // type of object..
-      if (data->isTable())
-        retval = new Table(data);
-      else
-        retval = new Image(data);
+    // Determine whether this extension is a table or an image, and return the appropriate
+    // type of object..
+    if (data->isTable())
+      retval = new Table(data);
+    else
+      retval = new Image(data);
 
-    } catch(const TipException & x) {
-      delete retval; // If retval is non-0, Extension was created, so it will delete data.
-      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
-    } catch(...) {
-      delete retval; // If retval is non-0, Extension was created, so it will delete data.
-      throw;
-    }
+    /*TODO 1: 4/2/2004: Memory management problem: Extension is base of Table. Extension
+    has a IExtensionData and ~Extension deletes it. Currently editTable creates
+    the IExtensionData and passes it to Table::Table(...) which passes it to
+    Extension::Extension(...). If something throws along the way, catch 22: If
+    Extension throws, editTable should delete the IExtensionData because
+    ~Extension wont be called. If Table throws, editTable shouldn't delete it
+    because ~Extension *will* be called. FOR NOW: take out editTable's delete,
+    which may cause a memory leak in case of error, but will at least not cause
+    a seg fault. */
+
+    /* DONE 1: 4/21/2004: This is not an issue at present, because Table::Table doesn't
+    throw under any circumstance. */
     return retval;
+  }
+
+  // Edit a image in a file, be it FITS or Root.
+  Image * IFileSvc::editImage(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    return dynamic_cast<Image *>(editExtension(file_name, table_name, filter));
   }
 
   // Edit a table in a file, be it FITS or Root.
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Table * retval = 0;
-    IExtensionData * data = 0;
-    TipException fits_exception;
-    try {
-      try {
-        data = new FitsExtensionData(file_name, table_name, filter, false);
-      } catch(const TipException & x) {
-        fits_exception = x;
-        data = new RootExtensionData(file_name, table_name, filter);
-      }
-      retval = new Table(data);
-    } catch(const TipException & x) {
-      delete retval; // If retval is non-0, Table was created, so it will delete data.
-      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
-    } catch(...) {
-      delete retval; // If retval is non-0, Table was created, so it will delete data.
-
-      /*TODO 1: 4/2/2004: Memory management problem: Extension is base of Table. Extension
-      has a IExtensionData and ~Extension deletes it. Currently editTable creates
-      the IExtensionData and passes it to Table::Table(...) which passes it to
-      Extension::Extension(...). If something throws along the way, catch 22: If
-      Extension throws, editTable should delete the IExtensionData because
-      ~Extension wont be called. If Table throws, editTable shouldn't delete it
-      because ~Extension *will* be called. FOR NOW: take out editTable's delete,
-      which may cause a memory leak in case of error, but will at least not cause
-      a seg fault. */
-
-      /* DONE 1: 4/21/2004: This is not an issue at present, because Table::Table doesn't
-      throw under any circumstance. */
-      throw;
-    }
-    return retval;
+    return dynamic_cast<Table *>(editExtension(file_name, table_name, filter));
   }
 
   // Read-only an extension in a file, be it FITS or Root, table or image.
-  const Extension * IFileSvc::readExtension(const std::string & file_name, const std::string & table_name,
+  const Extension * IFileSvc::readExtension(const std::string & file_name, const std::string & ext_name,
     const std::string & filter) {
     Extension * retval = 0;
-    IExtensionData * data = 0;
-    TipException fits_exception;
-    try {
-      try {
-        // Open file with read-only mode enabled.
-        data = new FitsExtensionData(file_name, table_name, filter, true);
-      } catch(const TipException & x) {
-        fits_exception = x;
-        data = new RootExtensionData(file_name, table_name, filter);
-      }
+    IExtensionData * data = openExtension(file_name, ext_name, filter, true);
 
-      // Determine whether this extension is a table or an image, and return the appropriate
-      // type of object..
-      if (data->isTable())
-        retval = new Table(data);
-      else
-        retval = new Image(data);
+    // Determine whether this extension is a table or an image, and return the appropriate
+    // type of object..
+    if (data->isTable())
+      retval = new Table(data);
+    else
+      retval = new Image(data);
 
-    } catch(const TipException & x) {
-      delete retval; // If retval is non-0, Extension was created, so it will delete data.
-      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
-    } catch(...) {
-      delete retval; // If retval is non-0, Extension was created, so it will delete data.
-      throw;
-    }
     return retval;
+  }
+
+  // Read-only an image in a file, be it FITS or Root.
+  const Image * IFileSvc::readImage(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    return dynamic_cast<const Image *>(readExtension(file_name, table_name, filter));
   }
 
   // Read-only a table in a file, be it FITS or Root.
   const Table * IFileSvc::readTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Table * retval = 0;
-    IExtensionData * data = 0;
-    TipException fits_exception;
-    try {
-      try {
-        // Open file with read-only mode enabled.
-        data = new FitsExtensionData(file_name, table_name, filter, true);
-      } catch(const TipException & x) {
-        fits_exception = x;
-        data = new RootExtensionData(file_name, table_name, filter);
-      }
-      retval = new Table(data);
-    } catch(const TipException & x) {
-      delete retval; // If retval is non-0, Table was created, so it will delete data.
-      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
-    } catch(...) {
-      delete retval; // If retval is non-0, Table was created, so it will delete data.
-      throw;
-    }
-    return retval;
+    return dynamic_cast<const Table *>(readExtension(file_name, table_name, filter));
   }
 
   void IFileSvc::getFileSummary(const std::string & file_name, FileSummary & summary) {
@@ -198,6 +143,23 @@ namespace tip {
     return true;
   }
 
+  IExtensionData * IFileSvc::openExtension(const std::string & file_name, const std::string & ext_name, const std::string & filter,
+    bool read_only) {
+    IExtensionData * retval = 0;
+    // First test whether file is a FITS file. This should be done first in case the file_name argument itself
+    // has any filtering expression in it. If it does, fileExists() will say it doesn't exist even if it does.
+    if (FitsFileManager::isValid(file_name)) {
+      retval = new FitsExtensionData(file_name, ext_name, filter, read_only);
+    } else if (RootExtensionManager::isValid(file_name)) {
+      retval = new RootExtensionData(file_name, ext_name, filter, read_only);
+    } else if (fileExists(file_name)) {
+      throw TipException(std::string("File not in Fits or Root format: ") + file_name);
+    } else {
+      throw TipException(std::string("File not found: ") + file_name);
+    }
+    return retval;
+  }
+  
   // Protected constructor which adds the current object to the registry of IFileSvc objects.
   IFileSvc::IFileSvc() {}
 

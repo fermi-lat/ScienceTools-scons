@@ -29,10 +29,10 @@ namespace tip {
 
       /** \brief Get test image.
       */
-      Image * getImage() const;
+      const Image * getConstImage() const;
 
     private:
-      Image * m_image;
+      const Image * m_const_image;
   };
 
 }

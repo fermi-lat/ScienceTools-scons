@@ -14,6 +14,8 @@
 namespace tip {
 
   class Extension;
+  class IExtensionData;
+  class Image;
   class Table;
 
   /** \class IFileSvc
@@ -54,6 +56,14 @@ namespace tip {
       virtual Extension * editExtension(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "");
 
+      /** \brief Open an existing image with modification access.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual Image * editImage(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
       /** \brief Open an existing table with modification access.
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
@@ -69,6 +79,14 @@ namespace tip {
           \param filter Filtering string.
       */
       virtual const Extension * readExtension(const std::string & file_name, const std::string & ext_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing image without modification access.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual const Image * readImage(const std::string & file_name, const std::string & table_name,
         const std::string & filter = "");
 
       /** \brief Open an existing table without modification access.
@@ -95,6 +113,15 @@ namespace tip {
       */
       IFileSvc();
 
+      /** \brief Open and return an IExtensionData object for the given file specifier.
+          \param file_name The name of the file (any supported format OK).
+          \param ext_name The name of the extension.
+          \param filter Filtering string.
+          \param read_only Should the file be opened read-only.
+      */
+      virtual IExtensionData * openExtension(const std::string & file_name, const std::string & ext_name,
+        const std::string & filter = "", bool read_only = true);
+          
     private:
       // Copying file service objects is not supported.
       IFileSvc(const IFileSvc & service) {}
