@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r1   15-Feb-05   JC   make Function::clone pure virtual; check parameter
+                            value to be within bounds for xml ingest
     v2r0p4 09-Feb-05   JC   allow some parameters to be always fixed
     v2r0p3 15-Jan-05   JC   req file mod for include path used by test program
     v2r0p2 03-Jan-05   JC   change internal references from xml to xmlBase

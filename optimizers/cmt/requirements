@@ -1,5 +1,5 @@
 package optimizers
-version v2r0p4
+version v2r1
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
@@ -27,5 +27,3 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library optimizers -no_share $(source) *.c
 
 application test_optimizers test/main.cxx
-#application xmlSandBox xmlSandBox/*.cxx
-
