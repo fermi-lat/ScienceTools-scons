@@ -99,7 +99,7 @@ public:
 
     /** @brief add a segment of the exposure history
        @param dirz the direction of the spacecraft z-axis
-       @deltat the time (presumeably seconds)
+       @param deltat the time (presumeably seconds)
        */
     void add(const astro::SkyDir& dirz, double deltat);
 

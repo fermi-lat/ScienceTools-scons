@@ -22,7 +22,7 @@ class SkyFunction
 {
 public:
 
-    //! @param coordinates of a point in the sky
+    //! @brief  coordinates of a point in the sky
     //! @return value at that point
     virtual double operator()(const astro::SkyDir& bincenter)const=0;
     virtual ~SkyFunction(){}

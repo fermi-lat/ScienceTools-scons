@@ -64,7 +64,7 @@ public:
 
     /** @brief create a memory-only image 
         @param name name
-        @paam axes description of axis dimensions
+        @param axes description of axis dimensions
         */
     Image(const std::string & name, const std::vector<long>& axes) 
         : BaseImage(name, axes)                   

@@ -16,6 +16,9 @@ set INFILES  "$(MAP_TOOLSROOT)/data"
 set PFILES   "$(MAP_TOOLSROOT)/pfiles"
 set OUTFILES "$(MAP_TOOLSROOT)/output"
 
+#suppress annoying warnings: "illegal conversion" and "forcing value to bool" 
+macro_append cppflags "" WIN32 " /wd4800 /wd4927 "
+
 #internal library for FITS image I/O and keyword handling (from astroroot)
 library image -no_share -s=image $(source)
 

@@ -34,7 +34,7 @@ public:
 
     /** @brief load an image from a file.
         @param filename name of the file, only FITS for now
-        @param Name of an extension: if blank, assume primary
+        @param extension Name of an extension: if blank, assume primary
 
     */
     SkyImage(const std::string& filename, const std::string& extension="");
@@ -64,7 +64,7 @@ public:
     //! @brief return the sum of all pixel values in the image
     double total()const{return m_total;}
 
-    /** @get value of the pixel at given skydir location
+    /** @brief get value of the pixel at given skydir location
         @param pos position in the sky
         @param layer number
         @return value of the pixel corresponding to the given direction
