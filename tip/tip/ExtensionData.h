@@ -146,6 +146,12 @@ namespace tip {
       virtual void appendField(const std::string & field_name, const std::string & format)
         { m_extension_manager.appendField(field_name, format); }
 
+      /** \brief Select rows in current table which match the given filtering criteria.
+                 Note that this actualy changes the underlying table.
+          \param filter The string containing the filtering expression.
+      */
+      virtual void filterRows(const std::string & filter) { m_extension_manager.filterRows(filter); }
+
       /** \brief Get the dimensionality of an image.
       */
       virtual const std::vector<PixOrd_t> & getImageDimensions() const

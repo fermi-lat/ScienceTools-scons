@@ -115,6 +115,13 @@ namespace tip {
       */
       void appendField(const std::string & field_name, const std::string & format)
         { m_extension_data->appendField(field_name, format); }
+
+      /** \brief Select rows in current table which match the given filtering criteria.
+                 Note that this actualy changes the underlying table.
+          \param filter The string containing the filtering expression.
+      */
+      void filterRows(const std::string & filter) { m_extension_data->filterRows(filter); }
+
   };
 
   /* TODO 7: 4/2/2004: 2 problems with random access: 1. operator * needs to return a
