@@ -8,18 +8,18 @@
 #include "facilities/Timestamp.h"
 
 
-int main(int argc, char* argv[]) {
+int main(int, char**) {
   using facilities::Timestamp;
   using facilities::BadTimeInput;
 
 
   try {
-    Timestamp t_ok("2001-11-10 08:00");
-    Timestamp t_none("2000-09-08 10:00");
+    //    Timestamp t_ok("2001-11-10 08:00");
+    //    Timestamp t_none("2000-09-08 10:00");
     long int       zero = 0;
-    long int       negValue = -2000;
+    //    long int       negValue = -2000;
     Timestamp unixCreation(zero);
-    Timestamp gmttest("1970-01-01 00:00");
+    //    Timestamp gmttest("1970-01-01 00:00");
     long int        aTime = 4000;
 
     Timestamp aTimestamp(aTime);
