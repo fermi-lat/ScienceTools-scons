@@ -38,7 +38,6 @@ DATE-END                        / End Date and Time of the observation (UTC)
 MJDREF   =                      / MJD for reference time
 TSTART   =                      / Start time of the light curve
 TSTOP    =                      / Stop time of the light curve
-TIMEZERO =                      / Zero time from which time is measured
 TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / Unit for TSTART, TSTOP and TIMEZERO
 NDSKEYS  =                    0 / Number of data subspace keywords in header
