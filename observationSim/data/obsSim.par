@@ -1,0 +1,5 @@
+XML_source_filenames,s,ql,"$(OBSERVATIONSIMROOT)/data/xml_files.dat",,,"File containing XML file names"
+Source_list,s,ql,"$(OBSERVATIONSIMROOT)/data/source_names.dat",,,"File containing source names"
+Number_of_events,r,ql,1000,1,4e7,"Number of events (or simulation time in seconds)"
+Use_as_sim_time,b,ql,no,,,"Use number of events as simulation time?"
+Response_functions,s,ql,"FRONT/BACK",FRONT/BACK|COMBINED,,"Response functions to use"

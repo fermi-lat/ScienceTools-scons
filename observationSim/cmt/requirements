@@ -9,6 +9,7 @@ branches observationSim cmt src doc
 
 use flux v8*
 #use MapFlux v0*
+use Likelihood v*
 use astro v0*
 use latResponse v1*
 use xml
@@ -19,6 +20,7 @@ apply_pattern package_include
 
 private
 
+use hoops v*
 use Goodi v2*
 
 #use python v2* IExternal
@@ -43,6 +45,8 @@ macro test_observationSimstamps "observationSim.stamp"
 # make sure exposureMap application gets built when library changes
 macro exposureMapstamps "exposureMap.stamp"
 
+macro obsSimstamps "obsSim.stamp"
+
 macro testGoodiReadstamps "testGoodiRead.stamp"
 
 # standard package library
@@ -58,14 +62,15 @@ library observationSim -no_share $(my_headers) \
  $(pydir)/*.i
 # trapfpe.c
 
-#
-# Having to set this environment variable is not so goodi.
-#
 set INFILES "$(GOODIROOT)/Data"
+set PFILES "$(OBSERVATIONSIMROOT)/data"
 
 # test applications
 application test_observationSim test/main.cxx
 #application testGoodiRead test/testGoodiRead.cxx
+
+# O2 prototype
+application obsSim test/obsSim.cxx
 
 # exposure map calculator
 #application exposureMap test/exposureMap.cxx
