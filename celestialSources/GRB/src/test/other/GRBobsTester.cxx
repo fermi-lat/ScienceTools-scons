@@ -1,6 +1,6 @@
 // $Header$
 
-#include "src/GRBmaker/GRBmaker.h"
+#include "../../GRBmaker/GRBmaker.h"
 #include "src/FluxMgr.h"
 //#include "flux/EventSource.h"
 //#include "flux/ISpectrumFactory.h"
