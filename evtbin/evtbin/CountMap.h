@@ -5,8 +5,14 @@
 #ifndef evtbin_CountMap_h
 #define evtbin_CountMap_h
 
+#include <string>
+
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist2D.h"
+
+namespace astro {
+  class SkyProj;
+}
 
 namespace evtbin {
 
@@ -38,6 +44,12 @@ namespace evtbin {
 
     private:
       Hist2D m_hist;
+      std::string m_proj_name;
+      double m_crpix[2];
+      double m_crval[2];
+      double m_cdelt[2];
+      double m_axis_rot;
+      astro::SkyProj * m_proj;
   };
 
 }

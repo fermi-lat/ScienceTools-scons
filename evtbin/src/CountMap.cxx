@@ -10,9 +10,12 @@
 #include <vector>
 
 #include "astro/SkyDir.h"
+#include "astro/SkyProj.h"
+
 #include "evtbin/LinearBinner.h"
 #include "evtbin/Hist2D.h"
 #include "evtbin/CountMap.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Table.h"
@@ -25,30 +28,29 @@ namespace evtbin {
   CountMap::CountMap(double ref_ra, double ref_dec, const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix,
     double pix_scale, double axis_rot, bool use_lb, const std::string & ra_field, const std::string & dec_field): DataProduct(),
     m_hist(
-      LinearBinner(pix_scale * ref_ra - num_x_pix / 2., pix_scale * ref_ra + num_x_pix / 2., 1., ra_field), 
-      LinearBinner(pix_scale * ref_dec - num_y_pix / 2., pix_scale * ref_dec + num_y_pix / 2., 1., dec_field)
-    ) {
+      //LinearBinner(- (long)(num_x_pix) / 2., num_x_pix / 2., 1., ra_field),
+      //LinearBinner(- (long)(num_y_pix) / 2., num_y_pix / 2., 1., dec_field)
+      LinearBinner(0.5, num_x_pix + 0.5, 1., ra_field),
+      LinearBinner(0.5, num_y_pix + 0.5, 1., dec_field)
+    ), m_proj_name(proj), m_crpix(), m_crval(), m_cdelt(), m_axis_rot(axis_rot), m_proj(0) {
     m_hist_ptr = &m_hist;
 
-    astro::SkyDir::ProjType type;
-    if (0 == proj.compare("AIT")) type = astro::SkyDir::AIT;
-    else if (0 == proj.compare("ARC")) type = astro::SkyDir::ARC;
-    else if (0 == proj.compare("BAD")) type = astro::SkyDir::BAD;
-    else if (0 == proj.compare("CAR")) type = astro::SkyDir::CAR;
-    else if (0 == proj.compare("GLS")) type = astro::SkyDir::GLS;
-    else if (0 == proj.compare("MER")) type = astro::SkyDir::MER;
-    else if (0 == proj.compare("NCP")) type = astro::SkyDir::NCP;
-    else if (0 == proj.compare("SIN")) type = astro::SkyDir::SIN;
-    else if (0 == proj.compare("STG")) type = astro::SkyDir::STG;
-    else if (0 == proj.compare("TAN")) type = astro::SkyDir::TAN;
-    else throw std::runtime_error(std::string("CountMap::CountMap cannot handle projection type ") + proj);
+    m_crpix[0] = (num_x_pix + 1.) / 2.;
+    m_crpix[1] = (num_y_pix + 1.) / 2.;
+//    m_crpix[0] = 0;
+//    m_crpix[1] = 0;
+    m_crval[0] = ref_ra;
+    m_crval[1] = ref_dec;
+    m_cdelt[0] = -pix_scale;
+    m_cdelt[1] = pix_scale;
 
+    m_proj = new astro::SkyProj(proj, m_crpix, m_crval, m_cdelt, m_axis_rot, use_lb);
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
-    astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
-      ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
+    //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
+    //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
   }
 
-  CountMap::~CountMap() throw() {}
+  CountMap::~CountMap() throw() { delete m_proj; }
 
   void CountMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIterator end) {
     // Get binners for the two dimensions.
@@ -65,7 +67,7 @@ namespace evtbin {
       double dec = (*itor)[dec_field].get();
 
       // Convert to sky coordinates.
-      std::pair<double, double> coord = astro::SkyDir(ra, dec).project();
+      std::pair<double, double> coord = astro::SkyDir(ra, dec).project(*m_proj);
 
       // Bin the value.
       m_hist.fillBin(coord.first, coord.second);
@@ -90,6 +92,18 @@ namespace evtbin {
 
     // Get the binners.
     const Hist::BinnerCont_t & binners = m_hist.getBinners();
+
+    // Write c* keywords
+    tip::Header & header = output_image->getHeader();
+    header["CRPIX1"].set(m_crpix[0]);
+    header["CRPIX2"].set(m_crpix[1]);
+    header["CRVAL1"].set(m_crval[0]);
+    header["CRVAL2"].set(m_crval[1]);
+    header["CDELT1"].set(m_cdelt[0]);
+    header["CDELT2"].set(m_cdelt[1]);
+    header["CROTA2"].set(m_axis_rot);
+    header["CTYPE1"].set(binners[0]->getName() + "---" + m_proj_name);
+    header["CTYPE2"].set(binners[1]->getName() + "---" + m_proj_name);
 
     // Resize image dimensions to conform to the binner dimensions.
     for (DimCont_t::size_type index = 0; index != num_dims; ++index) {
