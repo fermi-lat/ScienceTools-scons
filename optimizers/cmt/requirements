@@ -35,6 +35,6 @@ macro_prepend cflags "" Linux "-g"
 macro test_optimizersstamps "optimizers.stamp"
 
 macro my_headers "" WIN32 "../optimizers/*.h *.h"
-library optimizers -no_share $(my_headers) *.cxx *.f *.c *.i
+library optimizers -no_share $(my_headers) *.cxx *.f *.c $(pydir)*.i
 # test application
 application test_optimizers test/*.cxx
