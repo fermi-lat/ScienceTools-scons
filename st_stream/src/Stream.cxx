@@ -2,17 +2,16 @@
     \brief Implementation of OStream class.
     \author James Peachey, HEASARC/GSSC
 */
-#include <limits>
-
 #include "st_stream/Stream.h"
+#include "st_stream/st_stream.h"
 
 namespace st_stream {
 
   // Define standard streams with maximum chatter set to the highest possible value so that
   // all output sent directly to them will always be displayed.
-  OStream sterr(std::numeric_limits<unsigned int>::max());
-  OStream stlog(std::numeric_limits<unsigned int>::max());
-  OStream stout(std::numeric_limits<unsigned int>::max());
+  OStream sterr(false);
+  OStream stlog(false);
+  OStream stout(false);
 
   void OStream::initStdStreams() {
     // Connect standard streams to their natural STL counterparts.
@@ -21,8 +20,14 @@ namespace st_stream {
     stout.connect(std::cout);
   }
 
-  OStream::OStream(unsigned int max_chat): m_std_stream_cont(), m_stream_cont(), m_prefix(), m_max_chat(max_chat),
-    m_chat_level(max_chat), m_begin_new_line(true) {}
+  OStream::OStream(bool use_chatter): m_std_stream_cont(), m_stream_cont(), m_prefix(), m_chat_level(0),
+    m_begin_new_line(true), m_enabled(true), m_use_chatter(use_chatter) { setChatLevel(m_chat_level); }
+
+  OStream& OStream::setChatLevel(unsigned int chat_level) {
+    m_chat_level = chat_level;
+    if (m_use_chatter) enable(m_chat_level <= GetMaximumChatter());
+    return *this;
+  }
 
   const std::string & OStream::getPrefix() const { return m_prefix; }
 
@@ -53,7 +58,7 @@ namespace st_stream {
     std::ios_base::fmtflags orig_flags = flags();
 
     // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
-    if (m_chat_level <= m_max_chat) {
+    if (m_enabled) {
       // Call setf for all std::ostream objects.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
         (*itor)->setf(fmtfl, mask);
@@ -69,7 +74,7 @@ namespace st_stream {
   // Note that the following method has an unusal signature and thus can't use setStreamState.
   void OStream::unsetf(std::ios_base::fmtflags mask) {
     // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
-    if (m_chat_level <= m_max_chat) {
+    if (m_enabled) {
       // Call unsetf for all std::ostream objects.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
         (*itor)->unsetf(mask);

@@ -28,9 +28,9 @@ namespace st_stream {
       static void initStdStreams();
 
       /** \brief Create an OStream with the given client maximum chatter.
-          \param max_chat The maximum chatter level of output selected by the user/client.
+          \param use_chatter Determines whether or not chatter is respected by the stream.
       */
-      OStream(unsigned int max_chat);
+      OStream(bool use_chatter);
 
       /** \brief Shift the given object to the destination stream(s), but only if the current
                  message chatter level is less than or equal to the maximum chatter level.
@@ -158,6 +158,9 @@ namespace st_stream {
       OStream & operator <<(double x) { return write(x); }
       OStream & operator <<(long double x) { return write(x); }
 
+      // Enable/disable the stream. When enabled, equivalent to chatter > maximum chatter for that stream.
+      void enable(bool enable_state = true) { m_enabled = enable_state; }
+
     private:
       /** \brief Utility method to assist with the family of methods which get stream formatting information,
                  e.g. precision() const, flags() const, etc.
@@ -171,7 +174,7 @@ namespace st_stream {
       */
       template <typename T, typename Stream_t>
       T getStreamState(T (Stream_t::*stdMethod)() const, T (OStream::*method)() const) const;
-      
+
       /** \brief Utility method to assist with the family of methods which set stream formatting information,
                  e.g. precision(std::streamsize), flags(std::ios_base::fmtflags), etc.
 
@@ -186,13 +189,14 @@ namespace st_stream {
       */
       template <typename T, typename Stream_t>
       T setStreamState(T (Stream_t::*stdMethod)(T), T (OStream::*method)(T), T (OStream::*getMethod)() const, T arg);
-      
+
       StdStreamCont_t m_std_stream_cont;
       OStreamCont_t m_stream_cont;
       std::string m_prefix;
-      unsigned int m_max_chat;
       unsigned int m_chat_level;
       bool m_begin_new_line;
+      bool m_enabled;
+      bool m_use_chatter;
   };
 
   /** \class Chat
@@ -224,7 +228,7 @@ namespace st_stream {
   template <typename T>
   inline OStream & OStream::write(const T & t) {
     // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
-    if (m_chat_level <= m_max_chat) {
+    if (m_enabled) {
       // Iterate over std::ostreams, shifting object to each in turn.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
         // Prepend prefix if this is the first object being shifted at the beginning of a new line.
@@ -247,7 +251,7 @@ namespace st_stream {
 
   inline OStream & OStream::operator <<(std::ostream & (*func)(std::ostream &)) {
     // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
-    if (m_chat_level <= m_max_chat) {
+    if (m_enabled) {
       // Iterate over std::ostreams, shifting object to each in turn.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
         *(*itor) << func;
@@ -260,11 +264,6 @@ namespace st_stream {
       if (static_cast<std::ostream &(*)(std::ostream&)>(std::endl<std::ostream::char_type, std::ostream::traits_type>) == func)
         m_begin_new_line = true;
     }
-    return *this;
-  }
-
-  inline OStream& OStream::setChatLevel(unsigned int chat_level) {
-    m_chat_level = chat_level;
     return *this;
   }
 
@@ -285,7 +284,7 @@ namespace st_stream {
     T orig = (this->*getMethod)();
 
     // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
-    if (m_chat_level <= m_max_chat) {
+    if (m_enabled) {
       // Call stdMethod for each std::ostream object.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
         ((*itor)->*stdMethod)(arg);
