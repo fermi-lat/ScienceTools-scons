@@ -20,24 +20,26 @@ namespace table {
       /** \brief Construct a ReferenceAdaptor object which refers to the given Referent object.
           \param referent The Referent object.
       */
-      ReferenceAdaptor(Referent & referent): m_referent(&referent) {}
+      ReferenceAdaptor(Referent & referent): m_data(), m_referent(&referent) {}
 
-      /** \brief Assignment from Referent. This changes which Referent object the ReferenceAdpator refers to.
+      /** \brief Assignment from Referent. This changes which Referent object this ReferenceAdpator refers to.
           \param referent The new referent Referent object.
       */
       ReferenceAdaptor & operator =(Referent & referent) { m_referent = &referent; }
 
       /** \brief Assignment from templated parameter type. This will write the assigned value into the
-          referent to which this object refers.
+          referent to which this object refers. This does not change the Referent object this ReferenceAdaptor
+          refers to.
           \param data The source value for the assignment.
       */
-      ReferenceAdaptor & operator =(const T & data) { /* m_referent->write(data); */ return *this; }
+      ReferenceAdaptor & operator =(const T & data) { m_data = data; /* m_referent->write(data); */ return *this; }
 
       /** \brief Retrieve the current templated parameter data value of this object.
       */
-      operator T () const { T data; m_referent->get(data); return data; }
+      operator const T & () const { m_referent->get(const_cast<T &>(m_data)); return m_data; }
 
     private:
+      T m_data;
       Referent * m_referent;
   };
 
