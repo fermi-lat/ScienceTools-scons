@@ -48,6 +48,7 @@ namespace astro {
         ///this is for interfacing with FluxSvc, which uses "elapsed seconds" as the time parameter.
         JulianDate dateFromSeconds(double seconds) const;
         
+        
     private:
         
     /**
@@ -63,7 +64,6 @@ namespace astro {
         double m_dwdt;
         
         double m_a, m_alt;
-        
         
         static double s_altitude; //<! nominal altitude (km)
         static double s_incl;     //<! orbit inclination in degrees
