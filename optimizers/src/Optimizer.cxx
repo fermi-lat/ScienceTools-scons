@@ -37,11 +37,12 @@ std::vector<double> & Optimizer::getUncertainty(void) {
    int info;
    const char uplo = 'U';
    dpptri_(&uplo, &npars, &compactHess[0], &info, 1);
-   if (info < 0)
+   if (info < 0) {
       throw Exception("DPPTRI: illegal argument value", -info);
-   else if (info > 0)
+   } else if (info > 0) {
       throw Exception("DPPTRI: Zero diagonal element in Cholesky factor",
                       info);
+   }
 
 // Extract the error estimates as the square-roots of the diagonal
 // elements.
@@ -77,7 +78,6 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
       m_stat->getFreeDerivs(derivs);
       for (int icol = 0; icol < npars; icol++) {
          hess[indx] = -(derivs[icol] - firstDerivs[icol])/delta;
-//          hess[indx] = -derivs[icol]/delta;
          indx++;
       }
    }
