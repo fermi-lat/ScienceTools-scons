@@ -41,9 +41,11 @@ void Flux::generate()
     // Purpose and Method: generate a new entry trajectory, set FluxSource, time
     // Inputs  - none
     // Outputs - none
+	do{
     m_flux = m_event->event(time());
     double timepass = m_event->interval(time());
     pass(timepass);
+	}while(m_event->occulted());
 }
 
 // the particle generated 

@@ -67,7 +67,9 @@ public:
     ///    area 
     static double	totalArea ();
     static void	totalArea ( double value );
-    
+
+	/// Is the current particle occulted?
+	virtual bool occulted() = 0;
     
     /// virtual event number: should be filled in by subclass
     virtual int eventNumber()const{return -1;} 

@@ -74,6 +74,9 @@ public:
     /// return how many sources are in the sourcelist
     int howManySources(){return m_sourceList.size();}
 
+	/// is the most recent photon occulted?
+	bool occulted(){return m_occulted;}
+
     
 protected:
     
@@ -90,6 +93,8 @@ protected:
     //vector of recorded arrival times of held sources.
     std::vector<double> m_sourceTime;
     EventSource*  m_recent;
+	//is the photon from the most recent source occulted?
+	bool m_occulted;
 };
 
 inline std::vector< EventSource* >& CompositeSource::sourceList ()
