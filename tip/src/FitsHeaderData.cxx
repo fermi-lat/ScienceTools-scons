@@ -14,6 +14,7 @@ namespace table {
   FitsHeaderData::FitsHeaderData(FitsExtensionUtils * fits_utils): m_fits_utils(fits_utils) {
     if (!m_fits_utils) throw TableException("FitsHeaderData::FitsHeaderData(FitsExtensionUtils *): "
       "Cannot create FitsHeaderData with NULL FitsExtensionUtils pointer");
+    m_fits_utils->open();
   }
 
   void FitsHeaderData::getKeyword(const std::string & name, double & value) const {
