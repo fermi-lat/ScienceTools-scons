@@ -20,7 +20,6 @@
 #include <vector>
 #include <string>
 #include <functional>  // for unary_function and plus
-//LIN
 #include <fstream>
 
 
@@ -74,13 +73,6 @@ class GRBmaker
 
  
  private:
-	 // some typedefs...
-//	 typedef std::vector<long>::iterator LongIter;
-//	 typedef std::vector<double>::iterator DoubleIter;
-//	 typedef std::vector<int>::iterator IntIter;
-//	 typedef std::vector<int>::size_type IntSize;
-
-
 	 // private accessor functions
 	 std::vector<double> &time()   { return m_time; };
 	 std::vector<double> &energy()  { return m_energy; };
