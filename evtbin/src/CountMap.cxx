@@ -52,7 +52,10 @@ namespace evtbin {
     //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
     //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
 
-    // Collect any/all needed keywords from the event file.
+    // Collect any/all needed keywords from the primary extension.
+    harvestKeywords(m_event_file);
+
+    // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file, m_event_table);
 
     // Correct time keywords.

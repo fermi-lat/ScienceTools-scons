@@ -20,6 +20,10 @@ namespace evtbin {
     DataProduct(event_file, event_table, gti), m_hist(time_binner, energy_binner), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
+    // Collect any/all needed keywords from the primary extension.
+    harvestKeywords(m_event_file);
+
+    // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file, m_event_table);
 
     // Update tstart/tstop etc.

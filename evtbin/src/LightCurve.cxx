@@ -19,7 +19,10 @@ namespace evtbin {
     const Binner & binner, const Gti & gti): DataProduct(event_file, event_table, gti), m_hist(binner) {
     m_hist_ptr = &m_hist;
 
-    // Get all keywords.
+    // Collect any/all needed keywords from the primary extension.
+    harvestKeywords(m_event_file);
+
+    // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file, m_event_table);
 
     // Adjust the GTI based on binning information.
