@@ -21,6 +21,10 @@
 #include "evtbin/LogBinner.h"
 // Class for binning into Hist objects from tip objects:
 #include "evtbin/RecordBinFiller.h"
+// Multiple spectra abstractions.
+#include "evtbin/MultiSpec.h"
+// Single spectrum abstractions.
+#include "evtbin/SingleSpec.h"
 // Application base class.
 #include "st_app/StApp.h"
 // Factory used by st_app's standard main to create application object.
@@ -53,7 +57,9 @@ class EvtBinTest : public st_app::StApp {
 
     void testLightCurve();
 
-    void testSimpleSpectrum();
+    void testSingleSpectrum();
+
+    void testMultiSpectra();
 
   private:
     std::string m_data_dir;
@@ -79,8 +85,10 @@ void EvtBinTest::run() {
   testHist2D();
   // Test light curve with no energy binning (using Tip):
   testLightCurve();
-  // Test simple spectrum with no time binning (using Tip):
-  testSimpleSpectrum();
+  // Test single spectrum with no time binning (using Tip):
+  testSingleSpectrum();
+  // Test multiple spectra with no time binning (using Tip):
+  testMultiSpectra();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -268,44 +276,48 @@ void EvtBinTest::testLightCurve() {
   delete table;
 }
 
-void EvtBinTest::testSimpleSpectrum() {
+void EvtBinTest::testSingleSpectrum() {
   using namespace evtbin;
 
   // Open input table:
   const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
-  // Create a linear binner (for time bins):
-  LogBinner binner(1., 90000., 1000, "ENERGY");
+  // Create spectrum object.
+  SingleSpec spectrum(LogBinner(1., 90000., 1000, "ENERGY"));
 
-  // Create the histogram:
-  Hist1D hist(binner);
+  // Fill the spectrum.
+  spectrum.binInput(table->begin(), table->end());
 
-  // Fill the histogram, using helper class RecordBinFiller, which b
-  std::for_each(table->begin(), table->end(), RecordBinFiller(hist));
+  // Cull keywords from input table.
+  spectrum.harvestKeywords(table->getHeader());
 
-  // Create output file:
-  tip::IFileSvc::instance().createFile("PHA1.pha", m_data_dir + "LatSingleBinnedTemplate");
+  // Write the spectrum to an output file.
+  spectrum.writeOutput("test_evtbin", "PHA1.pha");
 
-  // Clean up:
+  // Clean up input.
   delete table;
+}
 
-  // Open output spectrum:
-  tip::Table * otable = tip::IFileSvc::instance().editTable("PHA1.pha", "SPECTRUM");
-  
-  // Set table size:
-  otable->setNumRecords(binner.getNumBins());
+void EvtBinTest::testMultiSpectra() {
+  using namespace evtbin;
 
-  // Set up output iterator:
-  tip::Table::Iterator table_itor = otable->begin();
+  // Open input table:
+  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
 
-  // Iterate over histogram and output table, writing the output to the table and the screen:
-  for (long ii = 0; ii != binner.getNumBins(); ++ii, ++table_itor) {
-    std::cout << "Bin " << ii << " == " << hist[ii] << std::endl;
-    (*table_itor)["CHANNEL"].set(ii + 1);
-    (*table_itor)["COUNTS"].set(hist[ii]);
-  }
+  // Create spectrum object.
+  MultiSpec spectrum(LinearBinner(0., 900000., 3, "TIME"), LogBinner(1., 90000., 1000, "ENERGY"));
 
-  delete otable;
+  // Fill the spectrum.
+  spectrum.binInput(table->begin(), table->end());
+
+  // Cull keywords from input table.
+  spectrum.harvestKeywords(table->getHeader());
+
+  // Write the spectrum to an output file.
+  spectrum.writeOutput("test_evtbin", "PHA2.pha");
+
+  // Clean up input.
+  delete table;
 }
 
 /// \brief Create factory singleton object which will create the application:
