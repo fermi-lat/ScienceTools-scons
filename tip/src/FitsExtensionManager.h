@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <map>
+#include <sstream>
 #include <string>
 
 #include "fitsio.h"
@@ -122,6 +123,8 @@ namespace table {
       void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
 
     private:
+      std::string formatWhat(const std::string & msg) const;
+
       std::string m_file_name;
       std::string m_ext_name;
       std::map<std::string, ColumnInfo> m_col_name_lookup;
@@ -136,7 +139,7 @@ namespace table {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &value, 0, &status);
-    if (status) throw TableException();
+    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
   }
 
   // Getting keywords as bool is a special case because Cfitsio gets them as ints.
@@ -146,7 +149,7 @@ namespace table {
     int status = 0;
     int tmp = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (status) throw TableException();
+    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
     value = tmp;
   }
 
@@ -157,7 +160,7 @@ namespace table {
     int status = 0;
     char tmp[FLEN_KEYWORD];
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (status) throw TableException();
+    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
     value = tmp;
   }
 
@@ -169,7 +172,11 @@ namespace table {
     int status = 0;
     fits_read_col(m_fp, data_type_code, col_num, record_index + 1, src_begin + 1, src_end - src_begin, 0,
       dest_begin, 0, &status);
-    if (status) throw TableException();
+    if (status) {
+      std::ostringstream s;
+      s << "Cannot read record number " << record_index << " from column number " << col_num;
+      throw TableException(formatWhat(s.str()));
+    }
   }
 
   // Getting column values as bools is a special case because Cfitsio gets them as ints.
@@ -181,7 +188,11 @@ namespace table {
     char tmp[1];
     for (Index_t ii = src_begin; ii != src_end; ++ii) {
       fits_read_col(m_fp, data_type_code, col_num, record_index + 1, ii, 1, 0, tmp, 0, &status);
-      if (status) throw TableException();
+      if (status) {
+        std::ostringstream s;
+        s << "Cannot read record number " << record_index << " from column number " << col_num;
+        throw TableException(formatWhat(s.str()));
+      }
       *dest++ = *tmp;
     }
   }
@@ -204,7 +215,11 @@ namespace table {
     int status = 0;
     fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
       dest_begin, &status);
-    if (status) throw TableException();
+    if (status) {
+      std::ostringstream s;
+      s << "Cannot write record number " << record_index << " from column number " << col_num;
+      throw TableException(formatWhat(s.str()));
+    }
   }
 
   // Setting column values as bools is a special case because Cfitsio treats them as ints.
@@ -217,7 +232,11 @@ namespace table {
     for (; dest_begin != dest_end; ++dest_begin, ++src_begin) {
       *tmp = *dest_begin;
       fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);
-      if (status) throw TableException();
+      if (status) {
+        std::ostringstream s;
+        s << "Cannot write record number " << record_index << " from column number " << col_num;
+        throw TableException(formatWhat(s.str()));
+      }
     }
   }
 

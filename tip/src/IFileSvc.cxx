@@ -25,7 +25,7 @@ namespace table {
 
     // If found, return it. Otherwise complain.
     if (m_file_services.end() != it) return *it->second;
-    else throw TableException();
+    else throw TableException("Cannot find a file service object");
   }
 
   // Destructor for a file service removes it from the registry (container) m_file_services.
