@@ -25,7 +25,7 @@
 
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
-#include "xml/XmlParser.h"
+#include "xmlBase/XmlParser.h"
 #include "ISpectrumFactory.h"
 #include <map>
 #include <list>
