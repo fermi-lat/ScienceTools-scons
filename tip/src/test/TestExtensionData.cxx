@@ -430,13 +430,42 @@ namespace tip {
 
     const std::string & data_dir = getDataDir();
 
-    // Attempt to open a read-only file:
+    // Attempt to open a read-only file. This should be possible:
     msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + data_dir + "a1_read_only.pha";
     try {
       m_read_only_extension = new FitsExtensionData(data_dir + "a1_read_only.pha", "SPECTRUM");
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
+    }
+
+    if (0 != m_read_only_extension) {
+      // Now we have a non-const extension object whose underlying physical file is const (not writable).
+      // Any non-const method we call should fail at this point:
+      msg = "attempt to write keyword in a non-const object whose file is open read-only";
+      try {
+        m_read_only_extension->setKeyword("telescop", "GLAST");
+        ReportUnexpected(msg + " succeeded");
+      } catch(const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
+      msg = "attempt to resize a non-const table object whose file is open read-only";
+      try {
+        m_read_only_extension->setNumRecords(1000);
+        ReportUnexpected(msg + " succeeded");
+      } catch(const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
+
+      msg = "attempt to write a value in a cell of a non-const table object whose file is open read-only";
+      try {
+        double tmp_d[1] = { 137. };
+        m_read_only_extension->setCell(1, 0, 0, tmp_d, tmp_d + 1);
+        ReportUnexpected(msg + " succeeded");
+      } catch(const TipException & x) {
+        ReportExpected(msg + " failed", x);
+      }
     }
   }
 
