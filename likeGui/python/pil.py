@@ -21,7 +21,10 @@ def name(line):
     return line.split(',')[0].strip()
 
 def fields(line):
-    return [item.strip() for item in line.split(',')[1:]]
+    tokens = [item.strip() for item in line.split(',')[1:]]
+    x = tokens[:5]
+    x.append(', '.join(tokens[5:]))
+    return x
 
 def havePathToFile(file):
     basename = os.path.basename(file)

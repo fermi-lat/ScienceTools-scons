@@ -1,6 +1,8 @@
 package likeGui
 version v7r1p1
 
+#$Id$
+
 author J. Chiang <jchiang@slac.stanford.edu>
 
 use Likelihood v* -no_auto_imports
