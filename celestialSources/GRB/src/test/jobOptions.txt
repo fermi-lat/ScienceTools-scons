@@ -21,17 +21,21 @@ FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 // Append to a list of source library documents
 FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
 
-//------------------------------------------------------------
-// Primary source name (default is GRBSpectrum)	
-// To run the Physical Simulator (GRBSpectrum)
-GRBTestAlg.source_name="GRBSpectrum";
-// ... or the phenomenological one (GRBobsSpectrum)
-//GRBTestAlg.source_name="GRBobsSpectrum";
+// Append to a list of source library documents
+//FluxSvc.source_lib += {"$(GRBROOT)/xml/GRB_user_library.xml"};
 
-// Set the maximum observation time (default 10 s)
+//------------------------------------------------------------
+// Primary source name (default GRBSpectrum)
+// From here we can select one of the 2 models...
+//GRBTestAlg.source_name="GRBSpectrum";
+GRBTestAlg.source_name="GRBobsSpectrum";
+//GRBTestAlg.source_name="GRBobsbckmix";
+	
+//Maximum observation time (default 10 s)
 GRBTestAlg.observation_time=30;
 // Maximum number of photons generated (default 100000)
 GRBTestAlg.EvtMax=10000;
+
 // Is possible to save in root file
 GRBTestAlg.savefile="no";	
 
@@ -46,4 +50,3 @@ ApplicationMgr.EvtMax = 1;
 // End of job options file
 //
 //##############################################################
-
