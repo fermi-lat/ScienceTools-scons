@@ -114,7 +114,7 @@ std::pair<double,double> SkyProj::pix2sph(double x1, double x2) const
 @param x2 projected equivalent dec or b, in degrees
 @param projection used to deproject these coordinates
 */
-std::pair<double,double> SkyProj::pix2pix(double x1, double x2, SkyProj otherProjection)
+std::pair<double,double> SkyProj::pix2pix(double x1, double x2, SkyProj otherProjection)const
 {
     std::pair<double,double> s = otherProjection.pix2sph(x1,x2);
     return SkyProj::sph2pix(s.first,s.second);
