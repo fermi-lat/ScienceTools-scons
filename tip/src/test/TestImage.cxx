@@ -119,6 +119,109 @@ namespace tip {
     } catch (const TipException & x) {
       ReportUnexpected("TestImage::test caught exception ", x);
     }
+
+    // Test reading a slice of an image, roughly one half the image cut from the center.
+    try {
+      // Create new image.
+      IFileSvc::instance().createFile("new_image3.fits",  getDataDir() + "arlac.pha");
+
+      // Open new image for writing.
+      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image3.fits", ""));
+
+      // Create array to read image slice.
+      std::vector<float> image_vec;
+
+      // Set limits of slice.
+      Image::PixelCoordRange range(2);
+      range[0].first = dims[0] / 4;
+      range[1].first = dims[1] / 4;
+      range[0].second = range[0].first + dims[0] / 2;
+      range[1].second = range[1].first + dims[1] / 2;
+
+      // Read slice from input image.
+      m_const_image->get(range, image_vec);
+
+      // Recompute dimensions of output image from the slice specification.
+      std::vector<PixOrd_t>::iterator d_itor = dims.begin();
+      Image::PixelCoordRange::iterator r_itor = range.begin();
+      for (; d_itor != dims.end(); ++d_itor, ++r_itor) {
+        *d_itor = r_itor->second - r_itor->first;
+      }
+
+      // Resize output image.
+      image->setImageDimensions(dims);
+
+      // Write slice to output image.
+      image->set(image_vec);
+
+      // Confirm that they match up as expected with original image.
+      for (int ii = range[0].first; ii < range[0].second; ++ii) {
+        for (int jj = range[1].first; jj < range[1].second; ++jj) {
+          double orig_pixel = 0.;
+          double copy_pixel = 0.;
+          m_const_image->getPixel(ii, jj, orig_pixel);
+          image->getPixel(ii - range[0].first, jj - range[1].first, copy_pixel);
+          if (orig_pixel != copy_pixel)
+            throw TipException("After copying a slice of an image, copy does not agree with orig");
+        }
+      }
+
+      ReportExpected("TestImage::test did not encounter exception while extracting a slice of an image and writing it to a new image");
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestImage::test caught exception ", x);
+    }
+
+    // Test writing a slice of an image to have contrived values, roughly one half the image cut from the center.
+    try {
+      // Open old image for writing.
+      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image2.fits", ""));
+
+      // Reset dimensions.
+      dims = image->getImageDimensions();
+
+      // Set limits of slice.
+      Image::PixelCoordRange range(2);
+      range[0].first = dims[0] / 4;
+      range[1].first = dims[1] / 4;
+      range[0].second = range[0].first + dims[0] / 2;
+      range[1].second = range[1].first + dims[1] / 2;
+
+      // Compute dimensions of slice from the slice specification.
+      long slice_size = 1;
+      for (Image::PixelCoordRange::iterator r_itor = range.begin(); r_itor != range.end(); ++r_itor) {
+        slice_size *= r_itor->second - r_itor->first;
+      }
+
+      // Create array of constant counts to make a square in the center of the image.
+      float square_pix = 5.;
+      std::vector<float> image_vec(slice_size, square_pix);
+
+      // Write slice to output image.
+      image->set(range, image_vec);
+
+      // Confirm that output is the same as input.
+      for (int ii = 0; ii < dims[0]; ++ii) {
+        for (int jj = 0; jj < dims[1]; ++jj) {
+          double orig_pixel = 0.;
+          double copy_pixel = 0.;
+          image->getPixel(ii, jj, copy_pixel);
+          if (ii >= range[0].first && ii < range[0].second && jj >= range[1].first && jj < range[1].second) {
+            if (square_pix != copy_pixel)
+              throw TipException("A slice of image was not completely overwritten");
+          } else {
+            m_const_image->getPixel(ii, jj, orig_pixel);
+            if (orig_pixel != copy_pixel)
+              throw TipException("Part of the image was incorrectly changed by writting a slice");
+          }
+        }
+      }
+
+      ReportExpected("TestImage::test did not encounter exception while changing a slice of an image");
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestImage::test caught exception ", x);
+    }
     return getStatus();
 
   }

@@ -76,26 +76,38 @@ namespace tip {
       virtual void setImageDimensions(const std::vector<PixOrd_t> & dims);
 
       /** \brief Get a specific pixel from an image extension.
-          \param x Vector of coordinates of the pixel.
+          \param coord The coordinates of the pixel.
           \param pixel The pixel value.
       */
-      virtual void getPixel(const std::vector<PixOrd_t> & x, double & pixel) const;
+      virtual void getPixel(const PixelCoordinate & coord, double & pixel) const;
 
       /** \brief Set a specific pixel in an image extension.
-          \param x Vector of coordinates of the pixel.
+          \param coord The coordinates of the pixel.
           \param pixel The pixel value.
       */
-      virtual void setPixel(const std::vector<PixOrd_t> & x, const double & pixel);
+      virtual void setPixel(const PixelCoordinate & x, const double & pixel);
 
       /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
           \param image The array in which to store the image.
       */
       virtual void get(std::vector<float> & image) const;
 
+      /** \brief Get a slice of an image as a one-dimensional array.
+          \param range A container of intervals which give the range of pixels in each image dimension.
+          \param image The array in which to store the image.
+      */
+      virtual void get(const PixelCoordRange & range, std::vector<float> & image) const;
+
       /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
-          \param image The array which stores the image.
+          \param image The array which stores the image to be written.
       */
       virtual void set(const std::vector<float> & image);
+
+      /** \brief Set a slice of an image as a one-dimensional array.
+          \param range A container of intervals which give the range of pixels in each image dimension.
+          \param image The array which stores the slice of the image to be written.
+      */
+      virtual void set(const PixelCoordRange & range, const std::vector<float> & image);
 
       fitsfile * getFp() const { return m_header.getFp(); }
 

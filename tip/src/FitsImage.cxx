@@ -39,11 +39,7 @@ namespace tip {
   void FitsImage::setImageDimensions(const std::vector<PixOrd_t> & dims) {
     // Make C primitive copy of array to pass to Cfitsio.
     std::vector<PixOrd_t>::size_type naxis = dims.size();
-    long * naxes = new long[naxis];
-
-    // Copy dimensions to C array.
-    for (std::vector<PixOrd_t>::size_type ii = 0; ii < naxis; ++ii)
-      naxes[ii] = dims[ii];
+    std::vector<long> naxes(dims.begin(), dims.end());
 
     int status = 0;
     int bitpix = 0;
@@ -53,39 +49,45 @@ namespace tip {
     if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot determine image type"));
 
     // Resize the image.
-    fits_resize_img(m_header.getFp(), bitpix, naxis, naxes, &status);
+    fits_resize_img(m_header.getFp(), bitpix, naxis, &*naxes.begin(), &status);
     if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot change image dimensions"));
 
     // Save the dimensions in the dimension member.
     m_image_dimensions = dims;
-
-    delete [] naxes;
   }
 
-  void FitsImage::getPixel(const std::vector<PixOrd_t> & x, double & pixel) const {
+  void FitsImage::getPixel(const PixelCoordinate & coord, double & pixel) const {
     int status = 0;
-    std::vector<PixOrd_t> coord = x;
-    for (std::vector<PixOrd_t>::iterator itor = coord.begin(); itor != coord.end(); ++itor) ++(*itor);
+    // Make a copy of coordinates for cfitsio to use.
+    std::vector<long> cf_coord(coord.size());
+
+    // Cfitsio starts numbering at 1 not 0.
+    for (PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+
     double array[2] = { 0., 0. };
 
     // Read the given pixel:
-    fits_read_pix(m_header.getFp(), TDOUBLE, &*coord.begin(), 1, 0, array, 0, &status);
+    fits_read_pix(m_header.getFp(), TDOUBLE, &*cf_coord.begin(), 1, 0, array, 0, &status);
     if (0 != status) throw TipException(status, formatWhat("getPixel could not read pixel as a double"));
 
     // Copy the value just read:
     pixel = *array;
   }
 
-  void FitsImage::setPixel(const std::vector<PixOrd_t> & x, const double & pixel) {
+  void FitsImage::setPixel(const PixelCoordinate & coord, const double & pixel) {
     if (m_header.readOnly()) throw TipException(formatWhat("setPixel called for read-only image"));
     int status = 0;
-    std::vector<PixOrd_t> coord = x;
-    for (std::vector<PixOrd_t>::iterator itor = coord.begin(); itor != coord.end(); ++itor) ++(*itor);
+    // Make a copy of coordinates for cfitsio to use.
+    std::vector<long> cf_coord(coord.size());
+
+    // Cfitsio starts numbering at 1 not 0.
+    for (PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+
     // Copy pixel into temporary array:
     double array[2] = { pixel, 0. };
 
     // Write the copy to the output file:
-    fits_write_pix(m_header.getFp(), TDOUBLE, &*coord.begin(), 1, array, &status);
+    fits_write_pix(m_header.getFp(), TDOUBLE, &*cf_coord.begin(), 1, array, &status);
     if (0 != status) throw TipException(status, formatWhat("setPixel could not write a double to a pixel"));
   }
 
@@ -107,6 +109,37 @@ namespace tip {
     fits_read_pix(m_header.getFp(), TFLOAT, &*coord.begin(), image_size, 0, &*image.begin(), 0, &status);
   }
 
+  void FitsImage::get(const PixelCoordRange & range, std::vector<float> & image) const {
+    int status = 0;
+
+    // Create arrays which contain first and last pixel in cfitsio's indexing scheme.
+    std::vector<long> fpixel(range.size());
+    std::vector<long> lpixel(range.size());
+
+    // Interpret range to get arrays of first and last pixels, as well as the total image size.
+    // Note: Correct for fact that lpixel is indexed starting with 1 not 0:
+    //   fpixel = begin_pixel + 1 (offset for indexing)
+    // However, for lpixel there is a second correction because end_pixel is defined as one past the last pixel. So:
+    //   lpixel = end_pixel + 1 (offset for indexing) - 1 (end_pixel is one pixel past last pixel) = end_pixel
+    // Thus, these corrections offset, and so there is no correction for lpixel.
+    long slice_size = 1;
+    for (PixelCoordRange::size_type index = 0; index != range.size(); ++index) {
+      fpixel[index] = range[index].first + 1; // Cfitsio indexes image coordinates starting with 1 not 0.
+      lpixel[index] = range[index].second; // DO NOT add 1, because range already is 1 past the last pixel.
+      slice_size *= range[index].second - range[index].first;
+    }
+
+    // Resize image array.
+    image.resize(slice_size);
+
+    // Set up the down sampling array: skip no pixels.
+    std::vector<long> inc(fpixel.size(), 1);
+
+    // Get the image.
+    fits_read_subset(m_header.getFp(), TFLOAT, &*fpixel.begin(), &*lpixel.begin(), &*inc.begin(), 0, &*image.begin(), 0, &status);
+    if (0 != status) throw TipException(status, formatWhat("could not read image subset"));
+  }
+
   void FitsImage::set(const std::vector<float> & image) {
     int status = 0;
 
@@ -125,6 +158,28 @@ namespace tip {
     fits_write_pix(m_header.getFp(), TFLOAT, &*coord.begin(), image_size, const_cast<float *>(&*image.begin()), &status);
   }
 
+  void FitsImage::set(const PixelCoordRange & range, const std::vector<float> & image) {
+    int status = 0;
+
+    // Create arrays which contain first and last pixel in cfitsio's indexing scheme.
+    std::vector<long> fpixel(range.size());
+    std::vector<long> lpixel(range.size());
+
+    // Interpret range to get arrays of first and last pixels, as well as the total image size.
+    // Note: Correct for fact that lpixel is indexed starting with 1 not 0:
+    //   fpixel = begin_pixel + 1 (offset for indexing)
+    // However, for lpixel there is a second correction because end_pixel is defined as one past the last pixel. So:
+    //   lpixel = end_pixel + 1 (offset for indexing) - 1 (end_pixel is one pixel past last pixel) = end_pixel
+    // Thus, these corrections offset, and so there is no correction for lpixel.
+    for (PixelCoordRange::size_type index = 0; index != range.size(); ++index) {
+      fpixel[index] = range[index].first + 1; // Cfitsio indexes image coordinates starting with 1 not 0.
+      lpixel[index] = range[index].second; // DO NOT add 1, because range already is 1 past the last pixel.
+    }
+
+    // Write the image itself.
+    fits_write_subset(m_header.getFp(), TFLOAT, &*fpixel.begin(), &*lpixel.begin(), const_cast<float *>(&*image.begin()), &status);
+  }
+
   void FitsImage::openImage() {
     // Check whether the file pointer is pointing at a table:
     if (m_header.isTable()) {
@@ -139,17 +194,16 @@ namespace tip {
     fits_get_img_dim(m_header.getFp(), &naxis, &status);
     if (0 != status) throw TipException(status, formatWhat("Cannot get number of dimensions of image"));
 
+    m_image_dimensions.clear();
+
     // Get naxes:
-    long * naxes = new long[naxis];
-    fits_get_img_size(m_header.getFp(), naxis, naxes, &status);
+    std::vector<long> naxes(naxis);
+    fits_get_img_size(m_header.getFp(), naxis, &*naxes.begin(), &status);
     if (0 != status) {
-      delete [] naxes;
       throw TipException(status, formatWhat("Cannot get dimensions of each degree of freedom of image"));
     }
 
-    // If we got here, we obtained all information successfully, so store it in member:
-    for (int ii = 0; ii < naxis; ++ii) m_image_dimensions.push_back(naxes[ii]);
-    delete [] naxes;
+    m_image_dimensions.assign(naxes.begin(), naxes.end());
   }
 
   std::string FitsImage::formatWhat(const std::string & msg) const {
