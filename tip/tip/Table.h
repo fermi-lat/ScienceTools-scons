@@ -53,7 +53,7 @@ namespace table {
         public:
           /** \brief Construct a Cell object associated with a particular field in the given Record.
               \param record The referent Record object.
-              \param field The name of this cell (the field in the Record).
+              \param field The name of this Cell (the field in the Record).
           */
           Cell(Record & record, const std::string & field): m_record(record), m_field(field) {}
 
@@ -96,16 +96,29 @@ namespace table {
               but does not affect which fields were selected in this Record. This way client code
               can be certain of the continued validity of references to Cells contained in this Record.
           */
-          Record & operator = (const Record & rec);
+          Record & operator =(const Record & rec);
 
-          /** \brief Return a cell object for the given field. The Cell object will be created
+          /** \brief Return a Cell object for the given field. The Cell object will be created
               if it does not already exist.
 
               Note that there is no check at this point whether the underlying Table actually
               has a field with this name.
               \param field The name of the Cell object (the field in this Record).
           */
-          Cell & operator [](const std::string & field);
+          Cell & operator [](const std::string & field) { return find_or_make(field); }
+
+          /** \brief Return a const Cell object for the given field. The Cell object will be created
+              if it does not already exist.
+
+              Note that there is no check at this point whether the underlying Table actually
+              has a field with this name.
+              \param field The name of the Cell object (the field in this Record).
+          */
+          const Cell & operator [](const std::string & field) const {
+            Record * This = const_cast<Record *>(this);
+            if (!This) throw TableException();
+            return This->find_or_make(field);
+          }
 
           // Client code should not normally need to call methods below here.
           // Get the current record index and table.
@@ -114,10 +127,14 @@ namespace table {
           // Get the current Table pointer.
           Table * getTable() { assert(m_table); return m_table; }
 
+          // Get the current Table pointer.
+          const Table * getTable() const { assert(m_table); return m_table; }
+
           // Go on to the next record. Not operator ++ because this behavior might be unexpected.
           void nextRecord() { ++m_index; }
 
         private:
+          Cell & find_or_make(const std::string & field);
           CellCont_t m_cells;
           Table * m_table;
           Index_t m_index;
@@ -157,13 +174,21 @@ namespace table {
           bool operator !=(const Iterator & itor) const
             { return (m_table != itor.m_table || m_record.getIndex() != itor.m_record.getIndex()); }
 
-          /** \brief Dereference to get the Record object this Iterator contains.
+          /** \brief Get the Record object this Iterator contains.
           */
           Record & operator *() { return m_record; }
 
-          /** \brief Dereference to get the Record object this Iterator contains.
+          /** \brief Get the const Record object this Iterator contains.
+          */
+          const Record & operator *() const { return m_record; }
+
+          /** \brief Get a pointer to the Record object this Iterator contains.
           */
           Record * operator ->() { return &m_record; }
+
+          /** \brief Get a pointer to the const Record this Iterator contains.
+          */
+          const Record * operator ->() const { return &m_record; }
 
         private:
           Record m_record;
@@ -206,11 +231,9 @@ namespace table {
     return *this;
   }
 
-  inline Table::Cell & Table::Record::operator [](const std::string & field) {
+  inline Table::Cell & Table::Record::find_or_make(const std::string & field) {
     CellCont_t::iterator itor = m_cells.find(field);
-    if (m_cells.end() == itor) {
-      itor = m_cells.insert(itor, std::make_pair(field, Cell(*this, field)));
-    }
+    if (m_cells.end() == itor) itor = m_cells.insert(itor, std::make_pair(field, Cell(*this, field)));
     return itor->second;
   }
 

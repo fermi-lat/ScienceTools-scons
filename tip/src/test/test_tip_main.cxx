@@ -99,6 +99,15 @@ int main() {
       // Just for fun, verify that one can copy-contruct a Ref object.
       Ref<double> spud = counts;
 
+      // An aside: for completeness, make a const iterator.
+      const Table::Iterator citor = my_table->begin();
+
+      // An aside continued: dereference the const iterator.
+      const Record & r1 = *citor;
+
+      // An aside concluded: get a const Cell from the const Record:
+      const Cell & cell = r1["channel"];
+
       for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
         // Note that the iterator is never deferenenced; that was done once and for all above.
