@@ -7,7 +7,7 @@
 
 #include <cctype>
 
-#include "table/Table.h"
+#include "table/TableException.h"
 #include "FitsTabularData.h"
 
 namespace table {
