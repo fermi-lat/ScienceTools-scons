@@ -102,6 +102,8 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
 
     DLL_DECL_SPECTRUM( SurfaceMuons);
 
+    DLL_DECL_SPECTRUM( VdgGamma);
+
     // these are deprecated, will be replaced by Hiroshima group
     DLL_DECL_SPECTRUM( AlbedoPSpectrum);
     DLL_DECL_SPECTRUM( CHIMESpectrum );
