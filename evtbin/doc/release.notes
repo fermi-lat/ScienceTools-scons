@@ -24,6 +24,9 @@
 07-mar-2005    v0r7p0 JP  Add GBM support and const signal-noise ratio binner.
 08-mar-2005    v0r7p1 JP  Use cast to prevent ambiguity with overloaded exp()
                           function. Rationalize ConstSnBinner test.
+14-mar-2005    v0r8p0 JP  Replace hidden parameter uselb with auto. parameter
+                          coordsys to determine whether coordinates are celestial
+                          or galactic.
 --------------------------------------------------------------------------------
 \endverbatim
 
