@@ -23,6 +23,7 @@
 #include "tip/Table.h"
 
 // Binners used:
+#include "evtbin/TipBinner2D.h"
 #include "evtbin/TipEqualLinearBinner.h"
 #include "evtbin/TipEqualLogBinner.h"
 
@@ -47,6 +48,7 @@ class EvtBin : public st_app::StApp {
 
       std::string algorithm = pars["algorithm"];
       if (0 == algorithm.compare("LC")) makeLightCurve(pars);
+      else if (0 == algorithm.compare("PHA2")) makePha2(pars);
       else if (0 == algorithm.compare("SPEC")) makeSimpleSpectrum(pars);
       else throw std::logic_error("Only Light Curve is currently supported");
     }
@@ -72,7 +74,7 @@ class EvtBin : public st_app::StApp {
       if (0 >= enum_bins) throw std::runtime_error("Number of bins (enumbins parameter) must be positive");
 
       // Create binner object:
-      TipEqualLogBinner binner("ENERGY", "CHANNEL", "COUNTS", energy_min, energy_max, (unsigned long)(enum_bins));
+      TipEqualLogBinner binner("ENERGY", "COUNTS", energy_min, energy_max, (unsigned long)(enum_bins));
 
       // Fill the histogram:
       binner.fillBins(table->begin(), table->end());
@@ -129,6 +131,55 @@ class EvtBin : public st_app::StApp {
 
       delete table;
     }
+
+    void makePha2(const st_app::AppParGroup & pars) {
+      std::string event_file = pars["eventfile"];
+      std::string out_file = pars["outfile"];
+      
+      // Get the IFileSvc singleton and use it to create the output file:
+      // tip == namespace, IFileSvc == class, instance() is static method returning the singleton
+      // createFile is a normal method:
+      tip::IFileSvc::instance().createFile(out_file, "LatSingleBinnedTemplate");
+ 
+      // Open input file for reading only:
+      const tip::Table * table = tip::IFileSvc::instance().readTable(event_file, "EVENTS");
+
+      // Now get time ranges:
+      double tstart = pars["tstart"];
+      double tstop = pars["tstop"];
+      double width = pars["deltatime"];
+
+      // Now get energy ranges:
+      double energy_min = pars["emin"];
+      double energy_max = pars["emax"];
+      long enum_bins = pars["enumbins"];
+
+      // Make sure a positive number of bins was entered.
+      if (0 >= enum_bins) throw std::runtime_error("Number of bins (enumbins parameter) must be positive");
+
+      // Create one-dim binner objects:
+      TipEqualLinearBinner time_binner("TIME", "COUNTS", tstart, tstop, width);
+      TipEqualLogBinner energy_binner("ENERGY", "COUNTS", energy_min, energy_max, (unsigned long)(enum_bins));
+
+      // Create two-dim gestalt binner which uses both the above binners:
+      TipBinner2D binner(&time_binner, &energy_binner);
+
+      // Fill the histogram:
+      binner.fillBins(table->begin(), table->end());
+
+      // Open output table for writing:
+      tip::Table * out_table = tip::IFileSvc::instance().editTable(out_file, "SPECTRUM");
+
+      // Write the output table:
+      binner.writeHistogram(out_table);
+
+// TODO:
+// 1. Energy units: Xspec needs keV, input is MeV but could be anything (read keyword)
+      delete out_table;
+
+      delete table;
+    }
+
 };
 
 /// \brief Create factory object which can create the application:
