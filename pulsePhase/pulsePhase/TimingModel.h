@@ -3,6 +3,9 @@
     \author Masaharu Hirayama, GSSC
             James Peachey, HEASARC
 */
+#ifndef pulsePhase_TimingModel_h
+#define pulsePhase_TimingModel_h
+
 #include <cmath>
 #include <vector>
 
@@ -80,3 +83,5 @@ class TimingModel {
     double m_f1;
     double m_f2;
 };
+
+#endif
