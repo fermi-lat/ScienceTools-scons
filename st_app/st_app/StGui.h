@@ -38,6 +38,8 @@ namespace st_app {
 
       const std::string & getValue() const;
 
+      void display(bool disp_flag = true);
+
     protected:
       long entryWidth(hoops::IPar * par) const;
 
@@ -50,11 +52,12 @@ namespace st_app {
       st_graph::IFrame * m_open;
       hoops::IPar * m_par;
       bool m_stretch;
+      bool m_display;
   };
 
   class StEventReceiver : public st_graph::IEventReceiver {
     public:
-      typedef std::map<std::string, ParWidget *> ParWidgetCont;
+      typedef std::multimap<std::string, ParWidget *> ParWidgetCont;
       typedef std::map<std::string, st_graph::ITabFolder *> TabFolderCont;
 
       StEventReceiver(st_graph::Engine & engine, AppParGroup & par_group, StApp * m_app);
@@ -87,6 +90,7 @@ namespace st_app {
       st_graph::IFrame * m_group_frame;
       st_graph::IFrame * m_run;
       st_graph::IFrame * m_cancel;
+      st_graph::IFrame * m_show_advanced;
       StApp * m_app;
       ParWidget * m_widest;
       long m_tab_height;
