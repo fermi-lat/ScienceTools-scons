@@ -1,35 +1,21 @@
 package optimizers
-version v1r1
+version v1r1p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
 
 # $Id$
 
-use GlastPolicy v5r*
+use STpolicy *
 use xml v4r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
 
-apply_pattern package_include
-apply_pattern package_linkopts
-
+apply_pattern ST_library option=" -no_share *.c "
 private
 
-#use python v2* IExternal
-#macro pydir ../python/
+macro optimizersLib_cppflags "" Linux " -D TRAP_FPE" 
 
-# allow use of internal path
-macro optimizers_cppflags "" Linux "-I ../src -D TRAP_FPE" \
-WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O "
 
-# make sure test application gets built when library changes
-macro test_optimizersstamps "optimizers.stamp"
-
-macro my_headers "" WIN32 "../optimizers/*.h *.h"
-library optimizers -no_share $(my_headers) *.f *.c *.cxx $(pydir)*.i
-
-# test application
-application test_optimizers test/*.cxx
