@@ -1,10 +1,26 @@
 package dataSubselector
-version v1r1p2
+version v2r0
 
-use Goodi v2*
-use hoops v*
+author James Chiang <jchiang@slac.stanford.edu>
 
-macro cpp g++
+# $Id$
 
-macro headers "../include/*.h" WIN32 "../include/*.h"
-application dataSubselector  *.cxx
+use STpolicy v1r*
+use tip v1r*
+
+apply_pattern ST_library option="-no_share "
+apply_pattern ST_pfiles
+
+apply_pattern ST_app name=dataSubselector
+
+private
+
+use hoops v0r*
+use st_app v1r*
+use facilities v*
+
+macro dataSubselector_cppflags "" \
+      Linux "-I ../src " \
+      WIN32 '/I..\src /wd4290'
+
+macro makeLinkMap ""
