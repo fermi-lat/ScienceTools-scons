@@ -14,6 +14,8 @@ namespace evtbin {
     public:
       class Interval {
         public:
+          Interval(): m_begin(0.), m_end(0.) {}
+
           Interval(double begin, double end): m_begin(begin), m_end(end) {}
 
           /** \brief Compute and return the midpoint of the interval.
