@@ -5,6 +5,8 @@
 <body>
 <h1 style="text-align: center;">Class SkyProj</h1>
 <div style="text-align: center;">Author:&nbsp; Theodore Hierath<br>
+Last updated:&nbsp; 28 June 2004<br>
+<br>
 </div>
 <br>
 This class acts as a wrapper for WCSLIB, a library written for handling
@@ -33,7 +35,7 @@ crota2=0, bool galactic=false);<br>
 &amp;projName, double* crpix, double* crval, double* cdelt, double
 lonpole, double latpole, double crota2=0, bool galactic=false);<br>
 <br>
-const std::string &amp;projName<br>
+<span style="font-weight: bold;">const std::string &amp;projName</span><br>
 <div style="margin-left: 40px;">This is a 3 character code that
 specifies the projection to use.&nbsp; The allowed values are:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AZP:
@@ -88,35 +90,38 @@ tangential spherical cube<br>
 COBE quadrilateralized spherical cube<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QSC:
 quadrilateralized spherical cube<br>
+Note:&nbsp; CAR is not the same as cartesian.&nbsp; An empty string for
+this parameter corresponds to a simple cartesian transformation.&nbsp; <br>
 </div>
-double* crpix
+<span style="font-weight: bold;">double* crpix</span>
 <div style="margin-left: 40px;">This two element array corresponds to
 the FITS keywords CRPIX1 and CRPIX2.&nbsp; These are the pixel
 coordinates of the reference point.&nbsp; <br>
 </div>
-double* crval<br>
+<span style="font-weight: bold;">double* crval</span><br>
 <div style="margin-left: 40px;">This two element array corresponds to
 the FITS keywords CRVAL1 and CRVAL2.&nbsp; These are the celestial
 coordinates of the reference point.<br>
 </div>
-double* cdelt<br>
+<span style="font-weight: bold;">double* cdelt</span><br>
 <div style="margin-left: 40px;">This two element array corresponds to
 the FITS keywords CDELT1 and CDELT2.&nbsp; These are the coordinate
 increments at the location of the reference point.<br>
 </div>
-double lonpole<br>
-double latpole<br>
+<span style="font-weight: bold;">double lonpole</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">double latpole</span><br>
 <div style="text-align: left; margin-left: 40px;">These two parameters
 correspond the LONPOLE and LATPOLE.&nbsp; These are the coordinates of
 the celestial pole given in native coordinates.&nbsp; If not specified,<br>
 WCSLIB sets these automatically.<br>
 </div>
-double crota2<br>
+<span style="font-weight: bold;">double crota2</span><br>
 <div style="margin-left: 40px;">This corresponds to the FITS keyword
 CROTA2, which represents a rotation at the reference point.&nbsp; If
 this parameter is not specified this is set to zero.<br>
 </div>
-bool galactic<br>
+<span style="font-weight: bold;">bool galactic</span><br>
 <div style="margin-left: 40px;">If true use galactic coordinates.&nbsp;
 If this parameter is not specified this is set to false.<br>
 <br>
@@ -158,40 +163,26 @@ function of the SkyProj object.<br>
 running map_tools on the file gas_gal.fits that comes in the flux
 package.&nbsp; The read_map program in map_tools was used to create a
 fits file using a transformation and fv was used to display the
-file.&nbsp; These projections were created in a way that wouldn't
-normally be done.&nbsp; The generating program in map_tools assumed
-that if it gave a bad pixel coordinate that the wcslib would return an
-error code.&nbsp; This was the case for some but not all
-projections.&nbsp; As a result the Sanson-Flamsteed projection and the
-Mollweide projection lack the null area at the corners.<br>
+file.&nbsp; <br>
 <br>
 <span style="font-weight: bold;">Original FITS image for reference</span><br>
 <img style="width: 563px; height: 376px;" alt="gas_gal.fits"
  src="original.jpg"><br>
 <br>
-<span style="font-weight: bold;">Zenithal Equal Area Projection</span><br>
+<span style="font-weight: bold;">Zenithal Equal Area Projection (ZEA)</span><br>
 <br>
 <img style="width: 574px; height: 493px;"
  alt="Zenithal Equal Area Projection" src="zea.jpg"><br>
 <br>
-<span style="font-weight: bold;">Hammer-Aitoff Projection</span><br>
+<span style="font-weight: bold;">Hammer-Aitoff Projection (AIT)</span><br>
 <br>
 <img style="width: 561px; height: 375px;" alt="Hammer-Aitoff Projection"
- src="ait.jpg"><br>
-<br>
-<span style="font-weight: bold;">Sanson-Flamsteed Projection</span><br>
-<br>
-<img style="width: 563px; height: 376px;"
- alt="Sanson-Flamsteed Projection" src="sfl.jpg"><br>
-<br>
-<span style="font-weight: bold;">Mollweide's Projection<br>
-<br>
-<img style="width: 564px; height: 376px;" alt="Mollweide's Projection"
- src="mol.jpg"><br>
+ src="ait.jpg"><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"><br>
 </span></div>
 </div>
 <br>
-<span style="font-weight: bold;">Quadrilateralized Spherical Cube</span><br>
+<span style="font-weight: bold;">Quadrilateralized Spherical Cube (QSC)</span><br>
 <br>
 <img style="width: 565px; height: 377px;"
  alt="Quadrilateralized Spherical Cube" src="qsc.jpg"><br>
