@@ -12,6 +12,7 @@ use rootTuple v*
 use Goodi v*
 use tip v*
 use astro v*
+use facilities v*
 
 apply_pattern package_include
 apply_pattern package_linkopts

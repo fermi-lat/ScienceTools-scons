@@ -16,9 +16,14 @@
 
 #include "astro/JulianDate.h"
 
+#include "facilities/Util.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/Header.h"
+
+void getFileNames(int iargc, char * argv[], std::string & rootFile, 
+                  std::string & fitsFile);
 
 void getEventFlags(tip::Table::Record & merit, short & isGamma, 
                    short & goodPsf, short & goodEnergy);
@@ -29,27 +34,11 @@ void writeDateKeywords(tip::Table * table, double start_time,
 astro::JulianDate currentTime();
 
 int main(int iargc, char * argv[]) {
-
    try {
       std::string rootFile;
       std::string fitsFile("myLatData.fits");
 
-      if (iargc == 1) {
-         std::string fitsGenRoot = std::getenv("FITSGENROOT");
-         rootFile = fitsGenRoot + "/data/merit.root";
-      } else if (iargc == 2) {
-         if (!std::strcmp(argv[1], "-h")) {
-            std::cout << "usage: " << argv[0] << ": "
-                      << "<root input file> " 
-                      << "<fits input file> " << std::endl;
-            return 0;
-         } else {
-            rootFile = std::string(argv[1]);
-         }
-      } else if (iargc == 3) {
-         rootFile = std::string(argv[1]);
-         fitsFile = std::string(argv[2]);     
-      }
+      getFileNames(iargc, argv, rootFile, fitsFile);
 
       tip::Table * meritTable = 
          tip::IFileSvc::instance().editTable(rootFile, "MeritTuple");
@@ -89,6 +78,15 @@ int main(int iargc, char * argv[]) {
 
          short isGamma, goodPsf, goodEnergy;
          getEventFlags(merit, isGamma, goodPsf, goodEnergy);
+//          tip::Table::Vector<short> calibVersion = ft1["calib_version"];
+//          calibVersion[0] = isGamma;
+//          calibVersion[1] = goodPsf;
+//          calibVersion[2] = goodEnergy;
+
+//          tip::Table::Vector<double> convPoint = ft1["conversion_point"];
+//          convPoint[0] = merit["FT1ConvPointX"].get();
+//          convPoint[1] = merit["FT1ConvPointY"].get();
+//          convPoint[2] = merit["FT1ConvPointZ"].get();
       }
 
       merit_iter = meritTable->begin();
@@ -111,6 +109,28 @@ int main(int iargc, char * argv[]) {
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
       return 1;
+   }
+}
+
+void getFileNames(int iargc, char * argv[], std::string & rootFile, 
+                  std::string & fitsFile) {
+   if (iargc == 1) {
+      std::string fitsGenRoot = std::getenv("FITSGENROOT");
+      rootFile = fitsGenRoot + "/data/merit.root";
+   } else if (iargc == 2) {
+      std::string app_name = argv[0];
+      if (!std::strcmp(argv[1], "-h")) {
+         std::cout << "usage: " 
+                   << facilities::Util::basename(argv[0]) << " "
+                   << "<root input file> " 
+                   << "<fits input file> " << std::endl;
+         std::exit(0);
+      } else {
+         rootFile = std::string(argv[1]);
+      }
+   } else if (iargc == 3) {
+      rootFile = std::string(argv[1]);
+      fitsFile = std::string(argv[2]);     
    }
 }
 
