@@ -124,7 +124,7 @@ private:
       SkyConeCut(const astro::SkyDir & dir, double radius) :
          m_coneCenter(dir), m_radius(radius) {}
       SkyConeCut(const std::string & type, const std::string & unit, 
-                 const std::string & value) {}
+                 const std::string & value);
       virtual ~SkyConeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual bool accept(const std::map<std::string, double> & params) const;
@@ -134,6 +134,8 @@ private:
       astro::SkyDir m_coneCenter;
       double m_radius;
       bool accept(double ra, double dec) const;
+      void getArgs(const std::string & value, 
+                   std::vector<std::string> & args) const;
    };
 
 };
