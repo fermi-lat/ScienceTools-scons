@@ -12,6 +12,8 @@ use cfitsio v1r* IExternal
 
 apply_pattern ST_library option="-no_share *.c "
 
+set STTEST "sttest"
+
 private
 
 use cppunit v1* IExternal
