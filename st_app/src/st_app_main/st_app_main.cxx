@@ -1,6 +1,5 @@
 /** \file st_app_main.cxx
-    \brief Standard main for ballistic Science Tools applications. Applications should #include this
-    file, but precede the inclusion by a static definition of an object of a subclass of IApp.
+    \brief Standard main for ballistic Science Tools applications.
     \author James Peachey, HEASARC
 */
 
