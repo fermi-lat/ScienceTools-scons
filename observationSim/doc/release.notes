@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r1   15-Apr-04   JC   add MapSource
     v3r0   12-Apr-04   JC   use st_app
     v2r11  12-Apr-04   JC   convert to use tip
     v2r10  18-Mar-04   JC   use hoops directly instead of hoopsUtil

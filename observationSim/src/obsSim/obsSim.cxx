@@ -30,6 +30,10 @@
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
 
+// #include "flux/SpectrumFactory.h"
+// #include "GRB/GRBmanager.h"
+// static SpectrumFactory<GRBmanager> my_factory;
+
 ISpectrumFactory & MapSourceFactory();
 
 using Likelihood::Util;
