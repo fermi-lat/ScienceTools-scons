@@ -33,7 +33,7 @@ public:
     //! @brief ctor with hoops already set up
     Parameters( hoops::IParGroup& par);
 
-    ~Parameters();
+    ~Parameters() throw() ;
 
     template< typename T>
         T getValue(const std::string & name){ return m_par[name];}

@@ -30,7 +30,7 @@ Parameters::Parameters( hoops::IParGroup & par)
     setup();
 }
 
-Parameters::~Parameters(){
+Parameters::~Parameters() throw() {
     if( m_own_ppg) delete &m_par;
 }
 
