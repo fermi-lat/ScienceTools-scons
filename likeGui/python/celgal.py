@@ -7,7 +7,8 @@ Class for transforming between Equatorial and Galactic coordinates.
 $Header$
 """
 
-from math import *
+#from math import *
+from numarray import *
 
 class celgal:
     def __init__(self, J2000=1):
@@ -40,8 +41,8 @@ class celgal:
         cdec = cos(float(dec)*pi/180.)
         sdra = sin((float(ra)-self.zrot1)*pi/180.)
         cdra = cos((float(ra)-self.zrot1)*pi/180.)
-        glon = self.zrot2 + atan2(cdec*sdra*self.cos_xrot+sdec*self.sin_xrot,
-                                  cdec*cdra)*180./pi
+        glon = self.zrot2 + arctan2(cdec*sdra*self.cos_xrot+sdec*self.sin_xrot,
+                                    cdec*cdra)*180./pi
         if glon < 0. : glon = glon + 360.
         if glon > 360. : glon = glon - 360.
         return glon
@@ -51,7 +52,7 @@ class celgal:
         sdec = sin(float(dec)*pi/180.)
         cdec = cos(float(dec)*pi/180.)
         sdra = sin((float(ra)-self.zrot1)*pi/180.)
-        return asin(sdec*self.cos_xrot-cdec*sdra*self.sin_xrot)*180./pi
+        return arcsin(sdec*self.cos_xrot-cdec*sdra*self.sin_xrot)*180./pi
             
     def RA(self, longitude, latitude) :
         """Right ascension as a function of Galactic coordinates"""
@@ -59,8 +60,8 @@ class celgal:
         slat = sin(float(latitude)*pi/180.)
         cdlon = cos((float(longitude)-self.zrot2)*pi/180.)
         sdlon = sin((float(longitude)-self.zrot2)*pi/180.)
-        ra = self.zrot1 + atan2(clat*sdlon*self.cos_xrot-slat*self.sin_xrot,
-                                clat*cdlon)*180./pi
+        ra = self.zrot1 + arctan2(clat*sdlon*self.cos_xrot-slat*self.sin_xrot,
+                                  clat*cdlon)*180./pi
         if ra < 0. : ra = ra + 360.
         if ra > 360. : ra = ra - 360.
         return ra
@@ -70,7 +71,7 @@ class celgal:
         clat = cos(float(latitude)*pi/180.)
         slat = sin(float(latitude)*pi/180.)
         sdlon = sin((float(longitude)-self.zrot2)*pi/180.)
-        return asin(clat*sdlon*self.sin_xrot+slat*self.cos_xrot)*180./pi
+        return arcsin(clat*sdlon*self.sin_xrot+slat*self.cos_xrot)*180./pi
     
 def dist( a, b ):
     """Angular separation in degrees between two sky coordinates"""
@@ -82,7 +83,7 @@ def dist( a, b ):
     dec2 = dec2*pi/180.
     mu = (cos(dec1)*cos(ra1)*cos(dec2)*cos(ra2)
           + cos(dec1)*sin(ra1)*cos(dec2)*sin(ra2) + sin(dec1)*sin(dec2))
-    return acos(mu)*180./pi
+    return arccos(mu)*180./pi
 
 if __name__ == "__main__":
     #
