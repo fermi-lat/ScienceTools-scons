@@ -41,7 +41,8 @@ public:
 
    Cuts() {}
 
-   Cuts(const std::string & eventFile, const std::string & extension="EVENTS");
+   Cuts(const std::string & eventFile, const std::string & extension="EVENTS",
+        bool check_columns=true);
 
    Cuts(const Cuts & rhs);
 

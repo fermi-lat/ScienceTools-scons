@@ -19,21 +19,14 @@
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 
 #include "dataSubselector/Cuts.h"
 
 namespace {
-#include "fitsio.h"
    void toUpper(std::string & name) {
       for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
          *it = std::toupper(*it);
-      }
-   }
-
-   void fitsReportError(int status) {
-      fits_report_error(stderr, status);
-      if (status != 0) {
-         throw std::string("Cuts::writeGtiExtension: cfitsio error.");
       }
    }
 }
@@ -42,18 +35,31 @@ namespace dataSubselector {
 
 #include "fitsio.h"
 
-Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
-   const tip::Table * table =
-      tip::IFileSvc::instance().readTable(eventFile, extension);
-
-   std::vector<std::string> colnames = table->getValidFields();
-// FITS column names are in CAPS, not lowercase, so undo the damage
-// wrought by tip:
-   for (unsigned int i = 0; i < colnames.size(); i++) {
-      ::toUpper(colnames[i]);
+Cuts::Cuts(const std::string & eventFile, const std::string & extname,
+           bool check_columns) {
+   const tip::Extension * ext(0);
+   try {
+      ext = tip::IFileSvc::instance().readTable(eventFile, extname);
+   } catch (tip::TipException & eObj) {
+      if (!st_facilities::Util::expectedException(eObj, "HDU is not a")) {
+         throw;
+      }
+      ext = tip::IFileSvc::instance().readImage(eventFile, extname);
    }
 
-   const tip::Header & header = table->getHeader();
+   std::vector<std::string> colnames;
+   if (check_columns) {
+      const tip::Table * table 
+         = dynamic_cast<tip::Table *>(const_cast<tip::Extension *>(ext));
+      colnames = table->getValidFields();
+// FITS column names are in CAPS, not lowercase, so undo the damage
+// wrought by tip:
+      for (unsigned int i = 0; i < colnames.size(); i++) {
+         ::toUpper(colnames[i]);
+      }
+   }
+
+   const tip::Header & header = ext->getHeader();
    double nkeys_value;
    header["NDSKEYS"].get(nkeys_value);
 // This is incredibly lame....one might as well use CCFits.
@@ -75,8 +81,10 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
       }
       std::string colname;
       unsigned int indx = parseColname(type, colname);
-      if (std::find(colnames.begin(), colnames.end(), colname) 
-          != colnames.end() && value != "TABLE") {
+      if ( (!check_columns || 
+            std::find(colnames.begin(), colnames.end(), colname) 
+            != colnames.end())
+           && value != "TABLE" ) {
          m_cuts.push_back(new RangeCut(colname, unit, value, indx));
       } else if (value.find("CIRCLE") == 0) {
          m_cuts.push_back(new SkyConeCut(type, unit, value));
@@ -95,7 +103,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
          throw std::runtime_error(message.str());
       }
    }
-   delete table;
+   delete ext;
 }
 
 unsigned int Cuts::parseColname(const std::string & colname,
@@ -207,49 +215,15 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
 }      
 
 void Cuts::writeGtiExtension(const std::string & filename) const {
-   try {
-// If the extension exists already, do nothing.
-      std::auto_ptr<const tip::Table> 
-         gtiTable(tip::IFileSvc::instance().readTable(filename, "GTI"));
-   } catch (tip::TipException & eObj) {
-      if (!st_facilities::Util::
-          expectedException(eObj, "Could not open FITS extension")) {
-         throw;
+   const dataSubselector::Gti * gti(0);
+   for (unsigned int i = 0; i < size(); i++) {
+      if (m_cuts[i]->type() == "GTI") {
+         gti = &(dynamic_cast<GtiCut *>(m_cuts[i])->gti());
+         break;  // assume there is at most one GTI
       }
-      const dataSubselector::Gti * gti(0);
-      for (unsigned int i = 0; i < size(); i++) {
-         if (m_cuts[i]->type() == "GTI") {
-            gti = &(dynamic_cast<GtiCut *>(m_cuts[i])->gti());
-            break;  // assume there is at most one GTI
-         }
-      }
-      if (gti) {
-         int status(0);
-         fitsfile * fptr;
-         fits_open_file(&fptr, filename.c_str(), READWRITE, &status);
-         ::fitsReportError(status);
-         
-         char *ttype[] = {"START", "STOP"};
-         char *tform[] = {"D", "D"};
-         char *tunit[] = {"s", "s"};
-         fits_create_tbl(fptr, BINARY_TBL, 0, 2, ttype, tform, tunit,
-                         "GTI", &status);
-         ::fitsReportError(status);
-         
-         fits_close_file(fptr, &status);
-         ::fitsReportError(status);
-         
-         std::auto_ptr<tip::Table> 
-            gtiTable(tip::IFileSvc::instance().editTable(filename, "GTI"));
-         gtiTable->setNumRecords(gti->getNumIntervals());
-         tip::Table::Iterator it = gtiTable->begin();
-         tip::Table::Record & row = *it;
-         Gti::ConstIterator gti_it = gti->begin();
-         for ( ; it != gtiTable->end(); ++it, ++gti_it) {
-            row["START"].set(gti_it->first);
-            row["STOP"].set(gti_it->second);
-         }
-      }
+   }
+   if (gti) {
+      gti->writeExtension(filename);
    }
 }
 

@@ -22,6 +22,7 @@ namespace dataSubselector {
 class Gti : public evtbin::Gti {
 
 public:
+
    Gti() : evtbin::Gti() {}
 
    Gti(const std::string & filename, const std::string & extension="GTI") 
@@ -30,6 +31,9 @@ public:
    Gti(const tip::Table & gtiTable);
 
    bool accept(double time) const;
+
+   void writeExtension(const std::string & filename) const;
+
 };
 
 } // namespace dataSubselector
