@@ -1,5 +1,8 @@
-#Template file for FT1 files - Aug 14, 2003 Definition
-
+# Template file for FT1 files - Aug 2, 2004 Definition
+# See http://glast.gsfc.nasa.gov/ssc/dev/fits_def/definitionFT1.html
+#
+# $Id$
+#
 #########################
 #Primary HDU template
 SIMPLE   = T / file does conform to FITS standard
@@ -18,7 +21,7 @@ DATE-END = 'yyyy-mm-ddThh:mm:ss.ssss' / end date and time of the observation (UT
 FILENAME = 'GLL_EVSUM_YYMMDD_C#_V##.FIT' / name of this file
 ORIGIN   = 'LIOC' / name of organization making file
 AUTHOR   = 'NAME_OF_PERSON' / name of person responsible for file generation
-CREATOR  = 'EVENT_SUMMARY_MAKER_V##' / software and version creating file
+CREATOR  = 'obsSim' / software and version creating file
 VERSION  = 0.0 / integer? string? (TBD)  release version of the file
 SOFTWARE = 0 / version of the processing software
 
@@ -43,7 +46,7 @@ HDUCLAS1 = 'EVENTS' / extension contains events
 HDUCLAS2 = 'ALL' / extension contains all events detected
 TSTART   = 0. / mission time of the start of the observation
 TSTOP    = 0. / mission time of the end of the observation
-MJDREF   = 58300. / MJD corresponding to SC clock start
+MJDREF   = 54101.0 / MJD corresponding to SC clock start
 TIMEUNIT = 's' / units for the time related keywords
 TIMESYS  = 'TT' / type of time system that is used
 TIMEREF  = 'LOCAL' / reference frame used for times
@@ -52,7 +55,6 @@ CLOCKAPP = F / whether a clock drift correction has been applied
 GPS_OUT  = F / whether GPS time was unavailable at any time during this interval
 OBS_ID   = 0 / observation ID number
 OBJECT   = 'sky' / observed object
-PSR_COLS = F / whether columns for pulsar analyses are included in this file
 MC_TRUTH = F / whether the Monte Carlo truth columns are included in this file
 NDSKEYS  = 0 / number of data subspace keywords in header
 
@@ -159,11 +161,11 @@ TLMAX# = 18   /  maximum value
 
 #Optional columns for pulsar analyses:
 #Set PSR_COLS = T (header keyword of this extension) when those columns are included in a file.
-#TTYPE# = 'PULSE_PHASE' /   pulse phase of event arrival time
-#TFORM# = 'D'   / data format of field: 8-byte DOUBLE
-#TUNIT# = ''    / physical unit of field
-#TLMIN# = 0.0   / minimum value
-#TLMAX# = 1.0   / maximum value
+TTYPE# = 'PULSE_PHASE' /   pulse phase of event arrival time
+TFORM# = 'D'   / data format of field: 8-byte DOUBLE
+TUNIT# = ''    / physical unit of field
+TLMIN# = 0.0   / minimum value
+TLMAX# = 1.0   / maximum value
 #TTYPE# = 'GEOTIME' /       event arrival time at geocenter
 #TFORM# = 'D'   / data format of field: 8-byte DOUBLE
 #TUNIT# = 's'   / physical unit of field
@@ -210,7 +212,7 @@ HDUCLAS1 = 'GTI' / extension contains good time intervals
 HDUCLAS2 = 'ALL' / extension contains all science time
 TSTART   = 0.0 / mission time of the start of the observation
 TSTOP    = 0.0 / mission time of the end of the observation
-MJDREF   = 58300. / MJD corresponding to SC clock start
+MJDREF   = 54101. / MJD corresponding to SC clock start
 TIMEUNIT = 's' / units for the time related keywords
 TIMESYS  = 'TT' / type of time system that is used
 TIMEREF  = 'LOCAL' / reference frame used for times
