@@ -11,7 +11,7 @@
 #include <string>
 
 #include "Keyword.h"
-#include <typeinfo.h>
+//#include <typeinfo.h>
 
 
 namespace table
@@ -24,9 +24,11 @@ namespace table
             const std::string &comment = "")
             : Keyword(keyname, keytype, comment), 
             m_keyval(value)
-        {   // example of how to simplify the interface -- not finished
+        {  
+#if 0            // example of how to simplify the interface -- not finished
             if(typeid(value)==typeid(std::string)) keytype=Tstring;
             else if(typeid(value)==typeid(double)) keytype = Tdouble;
+#endif
         }
 
 
