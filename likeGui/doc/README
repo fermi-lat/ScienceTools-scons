@@ -1,0 +1,131 @@
+This code is provided as unsupported software for driving the
+likelihood, obsSim, and dataSubselector applications, as well as ds9.
+It was developed to drive these applications on Linux, and has been
+ported to Windows, but it may still need work on both platforms (send
+bug reports!).
+
+Required software for both platforms includes Python 2.1 or later and
+the xml.dom Python modules.
+
+On Windows, one needs Mark Hammond's win32 modules, which come with
+the ActiveState Python distribution
+(http://www.activestate.com/Products/ActivePython/) or can be
+downloaded from www.python.org (http://www.python.org/windows/win32/).
+
+Notes on usage
+--------------
+
+* The .py files in this distribution should be placed in some
+  directory lying in the Python path, e.g.,
+
+> python
+Python 2.2.3 (#1, Jun 20 2003, 13:57:38) 
+[GCC 2.95.3 20010315 (release)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> print sys.path
+['/u1/local/lib/python2.2/site-packages', '/u1/jchiang/python', '/u1/jchiang/plplot-5.1.0/tmp', '', '/u1/local/lib/python2.2/site-packages', '/u1/jchiang/python', '/u1/local/lib/python', '/u1/jchiang/HippoDev/hippodraw/python', '/usr/local/lib/python2.2', '/usr/local/lib/python2.2/plat-linux2', '/usr/local/lib/python2.2/lib-tk', '/usr/local/lib/python2.2/lib-dynload', '/usr/local/lib/python2.2/site-packages', '/usr/local/lib/python2.2/site-packages/HippoDraw', '/usr/local/lib/python2.2/site-packages/numarray']
+>>> 
+
+  or in the current working directory.
+
+* Before launching, the ST_INST and GLAST_EXT environment variables
+  must be set.  The paths to all the executables are set using the
+  code in findPaths.py which simply traverses the ST_INST directory
+  tree, picking the out latest versions.  This means that you can
+  update your Science Tools packages, and likeGui will try to use the
+  most recent versions.
+ 
+* If you forget to set PFILES, or want to change it mid-session, it
+  can be set using "File->Execute a Python Command..." from the top
+  menubar.  To set PFILES, enter
+
+  os.environ["PFILES"] = "<full PFILES path>"
+
+  and to unset it, enter
+
+  del os.environ["PFILES"]
+
+  With PFILES unset, the applications will look in the current working
+  directory for the .par files.  To see what the CWD is use
+  "File->cd..." (or more obscurely, enter 
+  "print os.path.abspath(os.curdir)" in the Python command window).
+  
+* "Likelihood->Create source model..." from the main window menubar
+  will launch a dialog box in which one can specify the "source
+  region" as an acceptance cone about some location on the sky.  The
+  input file should be a flux-style xml file, e.g.,
+  $ST_INST/observationSim/v*/xml/3EG_catalog_20-1e6MeV.xml.  Hitting
+  "OK" will result in all point sources with "celestial_dir" tags in
+  that file being searched and included in the model if they lie
+  within the acceptance cone.  "Likelihood->Modify source model..."
+  from the main window menubar reads in an existing source model xml
+  file, by-passing the "Source Extraction Region" dialog.
+
+  After hitting "OK", a list box will appear with the point sources
+  and default entries for the extragalactic diffuse and Galactic
+  diffuse.  Note that the point source names from the flux-style xml
+  file are modified by prepending "my_" to each name.  The numbers
+  beside the point source names are the integral photon fluxes above
+  30 MeV, assuming that they are specified in the input xml file as
+  having power-law spectra.  For the diffuse sources, those numbers
+  are the "Prefactors" in the spectrum power-law model.  
+
+  The output file specified in the dialog box will contain the source
+  model xml entries, readable by likelihood, for all of these sources.
+  The "Save Selected" button will overwrite that file to contain just
+  the selected sources.  By contrast, the "View/Modify Selected..."
+  button will display the selected sources in a separate dialog box,
+  but the source model xml file will be unchanged.  In this way, one
+  can monitor and adjust by hand sources of particular interest while
+  still retaining the complete model provided by the acceptance cone
+  cut.
+
+  The dialog box displaying the sources of interest allows one to
+  alter source locations and adjust spectral parameters with radio
+  buttons to indicate whether a source is free or fixed in the fit.
+  Here are descriptions of its various buttons:
+
+  "Save and Run" writes the changes to the xml file and launches or
+  re-runs the likelihood calculation.
+
+  "Save as..." opens a file dialog for saving the parameters after
+  they have been adjusted or fit.
+
+  "Reload" re-reads the parameters from the file.
+
+  "OK" closes the dialog and launches or re-runs the application.
+
+  "Cancel" closes the dialog without launching or re-running the
+  application.
+
+  If the likelihood application has not yet been launched, then
+  commands that try to run it will open a dialog box allowing the
+  values given in the likelihood.par file to be set.
+
+* Since the helper applications are run under separate threads, one
+  can in fact have serveral instances of the obsSim, TsMap, expMap,
+  and dataSubselector applications running at once.  However, there
+  can only be one likelihood thread running at any given time.
+
+Bugs and misfeatures
+--------------------
+
+  The application captures the output for likelihood and prints it in
+  the text window in the main screen.  To do this, it receives a
+  carriage return to signal the reading of the next line of data.
+  Some tasks performed by likelihood take a while to run and so will
+  not generate a carriage return right away.  The computations
+  themselves should be continuing just fine.
+
+  Terminating a run-away process must be done outside the GUI.
+  Killing a likelihood process may break the threading control, so
+  restarting the GUI would be required.  The Helper Apps run
+  ballistically in isolated threads, so killing them should cause no
+  problems.
+ 
+  Send bug reports, code fixes, suggestions, etc., to
+  jchiang@slac.stanford.edu.
+
+$Header$
+

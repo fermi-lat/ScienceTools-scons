@@ -1,0 +1,22 @@
+/**@file release.notes
+   @brief package likeGui
+   @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
+
+   @verbatim
+   v5       23-Jan-04    JC    completed port to Windows.
+   v4r1     15-Jan-04    JC    remove extraneous '\'s added by PIL;
+                               refactor to use ThreadedClient's input and
+                               output queues
+   v4       12-Jan-04    JC    Merge Pat's changes for win32
+   v3       26-Dec-03    JC    findPaths module; run .exe's directly
+   v2       23-Dec-03    JC    Use ThreadedClient module; capture text
+                               output of obsSim and expMap.
+   v1r1     23-Dec-03    JC    Improved file I/O and dialogs.
+   v1       21-Dec-03    JC    All GUI control kept in main thread;
+                               refactorings of SourceEntry; added
+                               EditFileDialog module
+   v0r1     20-Dec-03    JC    Threading added
+   v0       20-Dec-03    JC    Initial version without threading
+   @endverbatim
+*/
+
