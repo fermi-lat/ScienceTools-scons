@@ -23,7 +23,7 @@ namespace table {
   class Extension {
     public:
 
-      Extension(IExtensionData * header_data): m_header(header_data) {}
+      Extension(IExtensionData * extension_data): m_header(extension_data) {}
 
       virtual ~Extension() {}
 

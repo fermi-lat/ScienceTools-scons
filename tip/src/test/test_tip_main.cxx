@@ -181,7 +181,7 @@ int main() {
     try {
       Header & header = my_table->getHeader();
       double exposure = 0.;
-      header.getKeyword("exposure", exposure);
+      header["exposure"].get(exposure);
       if (1.963e3 != exposure) {
         std::cerr << "Problem reading exposure keyword." << std::endl;
         status = 1;
