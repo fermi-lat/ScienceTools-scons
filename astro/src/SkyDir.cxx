@@ -48,7 +48,7 @@ namespace astro {
         }
     }
     
-    HepRotation SkyDir::s_celestialToGalactic = HepRotation().rotateZ(-282.25*M_PI/180).rotateX(-62.6*M_PI/180).rotateZ(33.*M_PI/180);
+    HepRotation SkyDir::s_celestialToGalactic = HepRotation().rotateZ(-282.8592*M_PI/180).rotateX(-62.8717*M_PI/180).rotateZ(32.93224*M_PI/180);
     
     void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
         
