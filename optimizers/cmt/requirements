@@ -18,6 +18,7 @@ apply_pattern package_stamps
 
 private
 
+macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
 macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
 macro_prepend cflags "" Linux " -g -O "
 
