@@ -11,6 +11,7 @@
 
 #include "table/Extension.h"
 #include "table/Iterator.h"
+#include "table/IExtensionData.h"
 #include "table/Ref.h"
 #include "table/TableException.h"
 #include "table/TableRecord.h"
@@ -59,9 +60,9 @@ namespace table {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
-      Table(ITabularData * tab_data): Extension(tab_data), m_tab_data(tab_data) {}
+      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(extension_data->getTabularData()) {}
 
-      virtual ~Table() { delete m_tab_data; }
+      virtual ~Table() {}
 
       /** \brief Return an iterator pointing to the first record in the table.
       */

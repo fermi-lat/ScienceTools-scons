@@ -9,13 +9,11 @@
 
 #include <string>
 
+#include "table/IExtensionData.h"
 #include "table/Header.h"
 #include "table/table_types.h"
 
 namespace table {
-
-  // Abstract interface which is subclassed for actual file formats (e.g. FITS, Root, etc.)
-  class IExtensionData;
 
   /** \class Extension
 
@@ -26,7 +24,7 @@ namespace table {
       /** \brief Create a new extension object from the given abstract extension data encapsulation.
           \param extension_data The extension data (concrete instances are FITS or Root specific).
       */
-      Extension(IExtensionData * extension_data): m_header(extension_data) {}
+      Extension(IExtensionData * extension_data): m_header(extension_data->getHeaderData()) {}
 
       /** \brief Destruct an extension object.
       */

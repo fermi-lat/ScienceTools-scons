@@ -7,24 +7,22 @@
 #ifndef table_Keyword_h
 #define table_Keyword_h
 
-#include "table/IExtensionData.h"
+#include "table/IHeaderData.h"
 #include "table/TableException.h"
 
 namespace table {
 
   /** \class Keyword
 
-      \brief Encapsulation of a single keyword.
-
-      The get() method will need to be overloaded for every type the Keyword may in practice contain.
+      \brief Encapsulation of a single keyword. The keyword may be get/set in any data type,
   */
   class Keyword {
     public:
       /** \brief Construct a Keyword object associated with a particular Header.
-          \param extension_data Pointer to the referent IExtensionData object.
+          \param header_data Pointer to the referent IHeaderData object.
           \param name The name of this Keyword.
       */
-      Keyword(IExtensionData * extension_data, const std::string & name): m_extension_data(extension_data),
+      Keyword(IHeaderData * header_data, const std::string & name): m_header_data(header_data),
         m_name(name) {}
 
       /** \brief Get the current value of this Keyword.
@@ -35,12 +33,12 @@ namespace table {
       void get(T & value) const;
 
     private:
-      IExtensionData * m_extension_data;
+      IHeaderData * m_header_data;
       std::string m_name;
   };
 
   template <typename T>
-  inline void Keyword::get(T & value) const { m_extension_data->getKeyword(m_name, value); }
+  inline void Keyword::get(T & value) const { m_header_data->getKeyword(m_name, value); }
 
 }
 

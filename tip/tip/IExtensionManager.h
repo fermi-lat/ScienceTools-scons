@@ -1,6 +1,6 @@
 /** \file IExtensionData.h
 
-    \brief Low level abstract interface to information common to all extension types, e.g. keywords.
+    \brief Abstract interface to a FITS-like extension, containing a header and some sort of data (table or image).
 
     \author James Peachey, HEASARC
 */
@@ -11,20 +11,25 @@
 
 namespace table {
 
+  class IHeaderData;
+  class ITabularData;
+
   /** \class IExtensionData
 
-      \brief Low level abstract interface to information common to all extension types, e.g. keywords.
+      \brief Abstract interface to a FITS-like extension, containing a header and some sort of data (table or image).
   */
   class IExtensionData {
     public:
       virtual ~IExtensionData() {}
 
-      /** \brief Get a keyword from this extension object.
-          \param name The name of the keyword to get from the extension object.
-          \param value The output value of the keyword, converted to the given type.
+      /** \brief Return an interface for accessing this extensions header properties (i.e. keywords).
       */
-      virtual void getKeyword(const std::string & name, double & value) const = 0;
-      virtual void getKeyword(const std::string & name, std::string & value) const = 0;
+      virtual IHeaderData * getHeaderData() = 0;
+
+      /** \brief Return an interface for accessing this extensions table properties. If the underlying
+          object does not contain a table, the implmementation for this method must return a NULL pointer.
+      */
+      virtual ITabularData * getTabularData() = 0;
   };
 
 }

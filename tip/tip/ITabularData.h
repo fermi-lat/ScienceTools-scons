@@ -1,6 +1,6 @@
 /** \file ITabularData.h
 
-    \brief Low level abstract interface to tabular data.
+    \brief Low-level abstract interface to a FITS-like table, viewed as a collection of cells.
 
     \author James Peachey, HEASARC
 */
@@ -9,16 +9,20 @@
 
 #include <string>
 
-#include "table/IExtensionData.h"
+#include "table/IData.h"
 #include "table/table_types.h"
 
 namespace table {
 
   /** \class ITabularData
 
-      \brief Low level abstract interface to tabular data.
+      \brief Low-level abstract interface to a FITS-like table, viewed as a collection of cells. The cells are
+      located by a field index (column number in the FITS case) and a record index (row number). A facility
+      is provided for determining the field index from the name of the field (column). To support vector-valued
+      columns, each cell is seen as a container. Consequently the basic access methods use iterator-like
+      access.
   */
-  class ITabularData : public IExtensionData {
+  class ITabularData : public IData {
     public:
       virtual ~ITabularData() {}
 

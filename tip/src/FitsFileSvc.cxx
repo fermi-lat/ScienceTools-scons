@@ -6,8 +6,8 @@
     \author James Peachey, HEASARC
 */
 
+#include "FitsExtensionData.h"
 #include "FitsFileSvc.h"
-#include "FitsTabularData.h"
 #include "table/Table.h"
 
 namespace table {
@@ -17,7 +17,7 @@ namespace table {
 
   Table * FitsFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
     Table * retval = 0;
-    FitsTabularData * data = new FitsTabularData(file_name, table_name);
+    FitsExtensionData * data = new FitsExtensionData(file_name, table_name);
 
     if (data) retval = new Table(data);
     return retval;

@@ -12,21 +12,21 @@
 
 namespace table {
 
-  FitsTabularData::FitsTabularData(const std::string & file_name, const std::string & table_name): ITabularData(),
-    m_extension(file_name, table_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0) {
+  FitsTabularData::FitsTabularData(FitsExtensionUtils * fits_utils): ITabularData(), m_col_name_lookup(),
+    m_col_num_lookup(), m_num_records(0), m_fits_utils(fits_utils) {
     int column_status = 0;
     int status = 0;
     long nrows = 0;
 
     // Open the actual file and move to the right table.
-    fitsfile * fp = m_extension.open();
+    fitsfile * fp = m_fits_utils->open();
 
     // Read the number of rows present in the table.
     fits_get_num_rows(fp, &nrows, &status);
 
     // Check for success and if not, do not continue.
     if (status || nrows < 0) {
-      m_extension.close();
+      m_fits_utils->close();
       throw TableException();
     }
 
@@ -48,7 +48,7 @@ namespace table {
         // Also get its repeat count.
         fits_get_coltype(fp, col_num, 0, &repeat, 0, &status);
         if (0 != status) {
-          m_extension.close();
+          m_fits_utils->close();
           throw TableException();
         }
 
@@ -61,23 +61,6 @@ namespace table {
         m_col_num_lookup[col_num].m_repeat = repeat;
       }
     }
-  }
-
-  FitsTabularData::FitsTabularData(const FitsTabularData & table): ITabularData(), 
-    m_extension(table.m_extension), m_col_name_lookup(table.m_col_name_lookup),
-    m_col_num_lookup(table.m_col_num_lookup), m_num_records(table.m_num_records) {
-    // Copy construction requires that the new table opens the file itself separately.
-    try {
-      m_extension.open();
-    } catch(TableException & x) {
-      m_col_name_lookup.clear();
-      m_col_num_lookup.clear();
-      m_num_records = 0;
-      throw;
-    }
-  }
-
-  FitsTabularData::~FitsTabularData() {
   }
 
   Index_t FitsTabularData::getNumRecords() const { return m_num_records; }
@@ -200,14 +183,6 @@ namespace table {
   void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
     unsigned long * dest_begin, unsigned long * dest_end) {
     setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
-  }
-
-  void FitsTabularData::getKeyword(const std::string & name, double & value) const {
-    m_extension.getKeywordGeneric<double>(name, value);
-  }
-
-  void FitsTabularData::getKeyword(const std::string & name, std::string & value) const {
-    m_extension.getKeywordGeneric<std::string>(name, value);
   }
 
 }

@@ -1,6 +1,6 @@
 /** \file FitsTabularData.h
 
-    \brief Low level abstract interface to Fits tabular data.
+    \brief FITS-specific implmentation of the ITabularData interface.
 
     \author James Peachey, HEASARC
 */
@@ -11,35 +11,29 @@
 #include <map>
 #include <string>
 
-#include "fitsio.h"
+// This should be removed:
+#include "FitsExtensionUtils.h"
 
-#include "FitsExtension.h"
 #include "FitsPrimProps.h"
 #include "table/ITabularData.h"
 #include "table/table_types.h"
 
 namespace table {
 
+  class FitsExtensionUtils;
+
   /** \class FitsTabularData
 
-      \brief Low level abstract interface to Fits tabular data.
+      \brief FITS-specific implmentation of the ITabularData interface.
   */
   class FitsTabularData : public ITabularData {
     public:
-      /** \brief Create a new FitsTabularData object for the given table.
-          \param file_name The name of the FITS file.
-          \param table_name The name of the FITS table.
+      /** \brief Create a FitsTabularData object which refers to the given utility object.
+          \param fits_utils Pointer to the FITS utility object.
       */
-      FitsTabularData(const std::string & file_name, const std::string & table_name);
+      FitsTabularData(FitsExtensionUtils * fits_utils);
 
-      /** \brief Copy contructor. Reopens its own copy of the FITS file.
-          \param fits_data The source object being copied.
-      */
-      FitsTabularData(const FitsTabularData & fits_data);
-
-      /** \brief Destructor. Closes the FITS file.
-      */
-      virtual ~FitsTabularData();
+      virtual ~FitsTabularData() {}
 
       /** \brief Return the number of records in the current tabular data object.
       */
@@ -116,14 +110,6 @@ namespace table {
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end);
 
-      /** \brief Get a keyword from this extension object.
-          \param name The name of the keyword to get from the extension object.
-          \param value The output value.
-      */
-      virtual void getKeyword(const std::string & name, double & value) const;
-      virtual void getKeyword(const std::string & name, std::string & value) const;
-
-    private:
       struct ColumnInfo {
           std::string m_name;
           long m_repeat;
@@ -154,10 +140,12 @@ namespace table {
       template <typename T>
       void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
 
-      FitsExtension m_extension;
+    private:
       std::map<std::string, ColumnInfo> m_col_name_lookup;
       std::map<int, ColumnInfo> m_col_num_lookup;
       Index_t m_num_records;
+      FitsExtensionUtils * m_fits_utils;
+
   };
 
   // Getting columns.
@@ -166,7 +154,7 @@ namespace table {
     T * dest_begin) const {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
-    fitsfile * fp = m_extension.getFitsFp();
+    fitsfile * fp = m_fits_utils->getFitsFp();
     fits_read_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, src_end - src_begin, 0,
       dest_begin, 0, &status);
     if (status) throw TableException();
@@ -179,7 +167,7 @@ namespace table {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
     char tmp[1];
-    fitsfile * fp = m_extension.getFitsFp();
+    fitsfile * fp = m_fits_utils->getFitsFp();
     for (Index_t ii = src_begin; ii != src_end; ++ii) {
       fits_read_col(fp, data_type_code, col_num, record_index + 1, ii, 1, 0, tmp, 0, &status);
       if (status) throw TableException();
@@ -203,7 +191,7 @@ namespace table {
     T * dest_begin, T * dest_end) {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
-    fitsfile * fp = m_extension.getFitsFp();
+    fitsfile * fp = m_fits_utils->getFitsFp();
     fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
       dest_begin, &status);
     if (status) throw TableException();
@@ -216,7 +204,7 @@ namespace table {
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
     int status = 0;
     char tmp[1];
-    fitsfile * fp = m_extension.getFitsFp();
+    fitsfile * fp = m_fits_utils->getFitsFp();
     for (; dest_begin != dest_end; ++dest_begin, ++src_begin) {
       *tmp = *dest_begin;
       fits_write_col(fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);

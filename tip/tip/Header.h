@@ -12,10 +12,11 @@
 
 #include "table/Keyword.h"
 #include "table/Header.h"
-#include "table/IExtensionData.h"
 #include "table/table_types.h"
 
 namespace table {
+
+  class IHeaderData;
 
   /** \class Header
 
@@ -27,10 +28,10 @@ namespace table {
       */
       typedef std::map<std::string, Keyword> KeywordCont_t;
 
-      /** \brief Construct a new Header object from the given abstract extension data.
-          \param extension_data The extension data. Concrete objects will be FITS or Root-specific.
+      /** \brief Construct a new Header object from the given abstract header data.
+          \param header_data The header data. Concrete objects will be FITS or Root-specific.
       */
-      Header(IExtensionData * extension_data): m_keywords(), m_extension_data(extension_data) {}
+      Header(IHeaderData * header_data): m_keywords(), m_header_data(header_data) {}
 
       /** \brief Random read/write keyword access.
           \param name The name of the keyword.
@@ -49,7 +50,7 @@ namespace table {
 
     private:
       KeywordCont_t m_keywords;
-      IExtensionData * m_extension_data;
+      IHeaderData * m_header_data;
   };
 
   inline Keyword & Header::find_or_make(const std::string & name) const {
@@ -62,7 +63,7 @@ namespace table {
 
     // If not found, create a new one.
     if (header.m_keywords.end() == itor)
-      itor = header.m_keywords.insert(itor, std::make_pair(name, Keyword(header.m_extension_data, name)));
+      itor = header.m_keywords.insert(itor, std::make_pair(name, Keyword(header.m_header_data, name)));
 
     // Return the keyword.
     return itor->second;
