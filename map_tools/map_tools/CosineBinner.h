@@ -10,6 +10,8 @@ $Header$
 #define map_toos_CosineBinner_h
 
 #include <vector>
+#include <string>
+
 namespace map_tools {
 
     /** @class CosineBinner
