@@ -220,20 +220,6 @@ namespace tip {
     return itor->second;
   }
 
-  Index_t RootExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t) const {
-    if (0 > field_index || m_leaves.size() <= (unsigned int)(field_index)) {
-      std::ostringstream os;
-      os << "Requested field index " << field_index << " not found";
-      std::string msg = os.str();
-      throw TipException(formatWhat(msg));
-    }
-    return 1;
-  }
-
-  void RootExtensionManager::setFieldNumElements(FieldIndex_t, Index_t, Index_t) {
-    throw TipException("Setting width of fields in a Root table is not supported");
-  }
-
   void RootExtensionManager::copyCell(const IExtensionData *, FieldIndex_t, Index_t, FieldIndex_t, Index_t) {
     throw TipException("Copying cells to a Root table is not supported");
   }

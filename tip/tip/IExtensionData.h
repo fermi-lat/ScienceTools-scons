@@ -90,22 +90,6 @@ namespace tip {
       */
       virtual FieldIndex_t getFieldIndex(const std::string & field_name) const = 0;
 
-      /** \brief Return the number of elements in the given cell. If the cell is a member of a fixed-size
-          field, the value returned will be independent of the record_index argument.
-          \param field_index The index of the field containing the cell.
-          \param record_index The record number of the cell.
-      */
-      virtual Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const = 0;
-
-      /** \brief Set the number of elements in a cell. If the cell is a member of a fixed-size
-          field, the change will affect all cells in the field. If the cell already contains
-          enough space for the requested number of elements, this method does nothing.
-          \param field_index The index of the field containing the cell.
-          \param num_elements The new number of elements the cell should hold.
-          \param record_index The record number of the cell.
-      */
-      virtual void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0) = 0;
-
       /** \brief Copy a cell from a source extension data object to a cell in this object.
           \param src_ext The source extension data object.
           \param src_field The field identifier in the source data object.

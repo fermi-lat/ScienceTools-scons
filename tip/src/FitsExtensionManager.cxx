@@ -148,17 +148,6 @@ namespace tip {
     return itor->second;
   }
 
-  Index_t FitsExtensionManager::getFieldNumElements(FieldIndex_t field_index, Index_t record_index) const {
-    if (!m_is_table) throw TipException(formatWhat("getFieldNumElements called, but object is not a table"));
-    return getColumn(field_index)->getNumElements(record_index);
-  }
-
-  void FitsExtensionManager::setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t) {
-    // Confirm this is a table.
-    if (!m_is_table) throw TipException(formatWhat("setFieldNumElements called, but object is not a table"));
-    getColumn(field_index)->setNumElements(num_elements);
-  }
-
   // Append field to a table extension.
   void FitsExtensionManager::appendField(const std::string & field_name, const std::string & format) {
     // Confirm this is a table:
