@@ -174,10 +174,6 @@ namespace tip {
       */
       TableRecord(const TableRecord & rec): ConstTableRecord(rec) {}
 
-      /** \brief Construct a TableRecord object from a ConstTableRecord object.
-      */
-      TableRecord(const ConstTableRecord & rec): ConstTableRecord(rec) {}
-
       /** \brief Assignment operator. Note that this behaves somewhat unusually!
 
           This assignment does not change this TableRecord's container of TableCell objects.
@@ -187,16 +183,6 @@ namespace tip {
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
       TableRecord & operator =(const TableRecord & rec);
-
-      /** \brief Assignment operator. Note that this behaves somewhat unusually!
-
-          This assignment does not change this TableRecord's container of TableCell objects.
-          This is necessary in order to preserve the selected content of this TableRecord. The
-          idea is that assignment changes which data object and record index this TableRecord points to
-          but does not affect which fields were selected in this TableRecord. This way client code
-          can be certain of the continued validity of references to TableCells contained in this TableRecord.
-      */
-      TableRecord & operator =(const ConstTableRecord & rec);
 
       /** \brief Return a TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
@@ -280,11 +266,6 @@ namespace tip {
 
   // TableRecord
   inline TableRecord & TableRecord::operator =(const TableRecord & rec) {
-    ConstTableRecord::operator =(rec);
-    return *this;
-  }
-
-  inline TableRecord & TableRecord::operator =(const ConstTableRecord & rec) {
     ConstTableRecord::operator =(rec);
     return *this;
   }
