@@ -246,7 +246,7 @@ void writeExposureFile(const std::string &filename,
    fitsReportError(stderr, status);
    
    fits_write_col(fptr, TDOUBLE, 1, firstrow, firstelem, nrows, 
-                  &energies[0], &status);
+                  const_cast<double *>(&energies[0]), &status);
    fitsReportError(stderr, status);
    
    fits_close_file(fptr, &status);

@@ -8,7 +8,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 branches observationSim cmt src doc
 
 use flux v7*
-use MapFlux v0*
+#use MapFlux v0*
 use astro v0*
 use latResponse v0*
 use Likelihood v*
