@@ -7,8 +7,11 @@
 #ifndef tip_Header_h
 #define tip_Header_h
 
+#include <ctime>
 #include <map>
 #include <string>
+#include <vector>
+#include <utility>
 
 #include "tip/Keyword.h"
 #include "tip/TipException.h"
@@ -27,6 +30,14 @@ namespace tip {
       */
       typedef std::map<std::string, Keyword> KeywordCont_t;
 
+      /** \brief Adaptor for keywords in a form separate from the Header structure.
+      */
+      typedef std::pair<std::string, std::string> KeyValPair_t;
+
+      /** \brief Container of key-value pairs.
+      */
+      typedef std::vector<KeyValPair_t> KeyValCont_t;
+
       /** \brief Construct a new Header object from the given abstract header data.
           \param header_data The header data. Concrete objects will be FITS or Root-specific.
       */
@@ -44,6 +55,23 @@ namespace tip {
           \param name The name of the keyword.
       */
       const Keyword & operator [](const std::string & name) const { return find_or_make(name); }
+
+      /** \brief Obtain a list of keywords in a container of key-value pairs.
+          \param keys The list of keys to obtain. MUST BE NULL TERMINATED!
+          \param key_vals The output container of key-value pairs
+      */
+      void get(const char ** keys, KeyValCont_t & key_vals) const;
+
+      /** \brief Update header's keywords using the container of key-value pairs.
+          New keywords are not added; only keywords which already exist will be updated.
+          \param key_vals The input container of key-value pairs
+      */
+      void update(const KeyValCont_t & key_vals);
+
+      /** \brief Return a time in the standard format for use as a keyword.
+          \param time The time to format.
+      */
+      std::string formatTime(const time_t & time);
 
     protected:
       /** \brief Internal utility to add keywords when they are looked up.
