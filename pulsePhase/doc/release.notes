@@ -1,43 +1,10 @@
 /** @file release.notes
-    @brief package latResponse
-    @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
+    @brief package pulsePhase
+    @brief Package coordinators:
+           Masaharu Hirayama <hirayama@milkyway.gsfc.nasa.gov>
+           James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
     @verbatim
-    v2r0    02-Apr-04   JC    use tip instead of Table, rootTuple, Goodi;
-                              make IrfsFactory Singleton
-    v1r12   18-Mar-04   JC    add access to IPsf::angularIntegrals in 
-                              instrument coordinates.
-    v1r11   27-Feb-04   JC    add code to test ROI integrals; expect
-                              degrees in value(...) method interface
-                              for instrument coordinates
-    v1r10   09-Jan-04   JC    fix AeffDC1::value method; add test code
-    v1r9p1  29-Jan-04   JC    *should* be v1p8p2
-    v1r8    09-Jan-04   JC    add energy dispersion integrals
-    v1r7    08-Jan-04   JC    implement CALDB access; refactor IrfsFactory
-                              and clean up memory management
-    v1r6    07-Jan-04   JC    extend interface to use instrument coordinates
-    v1r5p3  07-Dec-03   JC    fix PsfDC1::angularIntegrals
-    v1r5p2  05-Dec-03   JC    patch *of* latest irfs
-    v1r5p1  05-Dec-03   JC    patch for latest irfs
-    v1r5    04-Dec-03   JC    DC1 Release
-    v1r4p4  24-Nov-03   JCT   fix ROOT linking for win
-    v1r4p4  24-Nov-03   JCT   fix of Aeff
-    v1r4p1  24-Nov-03   JC    add patch for Windows
-    v1r4    11-Nov-03   JC    add finite energy resolution to EdispGlast25
-    v1r3p1  27-Oct-03   JC    remove Table data members
-    v1r3    26-Oct-03   JC    add clone methods, PsfGlast25 copy constructor.
-    v1r2    26-Oct-03   JC    add IrfsFactory class.
-    v1r1    25-Oct-03   JC    angular integrals now working for PsfGlast25
-    v1r0p1  23-Oct-03   JC    add dgaus8.c
-    v1r0    23-Oct-03   JC    add angular integrals interface to IPsf and
-                              implement for PsfGlast25
-    v0r4    18-Oct-03   JC    move Table class from Likelihood package
-    v0r3p2  05-Sep-03   JC    reorganize latResponse.i
-    v0r3p1  25-Aug-03   JC    add missing file
-    v0r3    25-Aug-03   JC    enable module build using IExternal/python
-    v0r2    14-Jul-03   JC    tag for inclusion in ScienceTools
-    v0r1    26-Jun-03   JC    Abstract interface and Glast25 concrete 
-                              implementation are completed
-    v0      25-Jun-03   JC    Initial import
+    v0r1p1  09-oct-04   JP    Use st_facilities::Env to locate data files.
     @endverbatim
 */
