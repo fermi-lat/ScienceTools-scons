@@ -81,6 +81,7 @@ Exposure::Exposure(const std::string& fits_file)
     Index::costhetabinsize = cdelt3;  // applying getValue directly here gives 
                                       // a bad cast for some reason.
     cube.getValue("CRVAL3", Index::cosmin);
+    cube.getValue("TOTAL", m_total);
 
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
 
