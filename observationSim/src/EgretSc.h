@@ -54,6 +54,8 @@ public:
 
    virtual int inSaa(double) {return m_inSaa;}
 
+   virtual void getScPosition(double time, std::vector<double> & scPosition);
+
 private:
 
    astro::SkyDir m_zAxis;

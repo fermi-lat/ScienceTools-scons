@@ -7,7 +7,8 @@
  */
 
 #include <iostream>
-#include "observationSim/../src/EgretSc.h"
+#include <vector>
+#include "EgretSc.h"
 
 namespace observationSim {
 

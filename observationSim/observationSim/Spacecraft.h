@@ -9,6 +9,7 @@
 #ifndef observationSim_Spacecraft_h
 #define observationSim_Spacecraft_h
 
+#include <vector>
 #include "astro/SkyDir.h"
 
 namespace observationSim {
@@ -48,6 +49,10 @@ public:
 
    /// Unity if in SAA, zero otherwise.
    virtual int inSaa(double time) = 0;
+
+   /// Spacecraft position in geocentric coordinates (km)
+   virtual void getScPosition(double time,
+                              std::vector<double> & scPosition) = 0;
 
 };
 

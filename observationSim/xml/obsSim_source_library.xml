@@ -370,7 +370,7 @@
         </spectrum>
     </source>
 
-    <!-- diffuse extraglactic from20 MeV to 1 TeV: from APJ 494:523
+    <!-- diffuse extraglactic from 20 MeV to 1 TeV: from APJ 494:523
             1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4
             cm^2/m^2)*(100/20)^1.1 = 0.85 /s/sr/m^2 -->
  
@@ -541,6 +541,20 @@
 -->
          <SpectrumClass name="MapSource"
           params="17.,2.1,$(FLUXROOT)/sources/gas_gal.fits,30.,2e5"/>
+         <use_spectrum frame="galaxy"/>
+      </spectrum>
+   </source>
+
+   <source name="Galactic_diffuse_20">
+      <spectrum escale="MeV">
+<!-- Total photon flux from the map (#/m^2/s) = 26.56.
+     Photon spectral index = 2.1
+     Fits file (plate-carree only) = $(FLUXROOT)/sources/gas_gal.fits
+     Minimum photon energy (MeV) = 20.
+     Maximum photon energy (MeV) = 2e5
+-->
+         <SpectrumClass name="MapSource"
+          params="26.56,2.1,$(FLUXROOT)/sources/gas_gal.fits,20.,2e5"/>
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>

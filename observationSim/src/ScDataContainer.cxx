@@ -14,6 +14,8 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include "st_facilities/Util.h"
+
 #include "astro/EarthCoordinate.h"
 
 #include "flux/EventSource.h"
@@ -47,13 +49,22 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 
 void ScDataContainer::addScData(double time, Spacecraft * spacecraft, 
                                 bool flush) {
-   astro::SkyDir zAxis = spacecraft->zAxis(time);
-   astro::SkyDir xAxis = spacecraft->xAxis(time);
+   try {
+      astro::SkyDir zAxis = spacecraft->zAxis(time);
+      astro::SkyDir xAxis = spacecraft->xAxis(time);
+      std::vector<double> scPosition;
+      spacecraft->getScPosition(time, scPosition);
 
-   m_scData.push_back(ScData(time, zAxis.ra(), zAxis.dec(), 
-                             spacecraft->EarthLon(time), 
-                             spacecraft->EarthLat(time),
-                             zAxis, xAxis, spacecraft->inSaa(time)));
+      m_scData.push_back(ScData(time, zAxis.ra(), zAxis.dec(), 
+                                spacecraft->EarthLon(time), 
+                                spacecraft->EarthLat(time),
+                                zAxis, xAxis, spacecraft->inSaa(time),
+                                scPosition));
+   } catch (std::exception & eObj) {
+      if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")) {
+         throw;
+      }
+   }
    if (flush || m_scData.size() >= m_maxNumEntries) writeScData();
 }
 
@@ -85,6 +96,7 @@ void ScDataContainer::writeScData() {
       row["dec_scz"].set(sc->zAxis().dec());
       row["ra_scx"].set(sc->xAxis().ra());
       row["dec_scx"].set(sc->xAxis().dec());
+      row["sc_position"].set(sc->position());
    }
    writeDateKeywords(my_table, start_time, stop_time);
    delete my_table;

@@ -42,6 +42,8 @@ public:
 
    virtual int inSaa(double time);
 
+   virtual void getScPosition(double time, std::vector<double> & scPosition);
+
 };
 
 } // namespace observationSim
