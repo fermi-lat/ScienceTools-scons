@@ -74,9 +74,9 @@ namespace evtbin {
       // Write channel number.
       (*table_itor)["CHANNEL"].set(index + 1);
 
-      // Write beginning/ending value of interval into E_MIN/E_MAX.
-      (*table_itor)["E_MIN"].set(interval.begin());
-      (*table_itor)["E_MAX"].set(interval.end());
+      // Write beginning/ending value of interval into E_MIN/E_MAX, converting from MeV to keV.
+      (*table_itor)["E_MIN"].set(1000. * interval.begin());
+      (*table_itor)["E_MAX"].set(1000. * interval.end());
     }
   }
 
