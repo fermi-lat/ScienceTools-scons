@@ -6,6 +6,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 # $Id$
 
 use STpolicy *
+use pulsarDb *
 use st_app *
 use st_facilities *
 use tip *

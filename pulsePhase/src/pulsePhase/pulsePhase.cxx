@@ -1,10 +1,17 @@
+#include <cctype>
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
-#include "pulsePhase/TimingModel.h"
+#include "pulsarDb/AbsoluteTime.h"
+#include "pulsarDb/GlastTime.h"
+#include "pulsarDb/PulsarDb.h"
+#include "pulsarDb/PulsarEph.h"
+#include "pulsarDb/TimingModel.h"
 
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -12,7 +19,7 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
-using namespace pulsePhase;
+using namespace pulsarDb;
 
 const std::string s_cvs_id("$Name$");
 
@@ -37,6 +44,9 @@ void PulsePhaseApp::run() {
 
   par_group.Prompt("ephstyle");
   std::string eph_style = par_group["ephstyle"];
+
+  for (std::string::iterator itor = eph_style.begin(); itor != eph_style.end(); ++itor) *itor = toupper(*itor);
+
   if (eph_style == "FREQ") {
     par_group.Prompt("epoch");
     par_group.Prompt("phi0");
@@ -49,6 +59,9 @@ void PulsePhaseApp::run() {
     par_group.Prompt("p0");
     par_group.Prompt("p1");
     par_group.Prompt("p2");
+  } else if (eph_style == "FILE") {
+    par_group.Prompt("psrdbfile");
+    par_group.Prompt("psrname");
   } else {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
@@ -60,8 +73,42 @@ void PulsePhaseApp::run() {
 
   // Get model parameters.
   double epoch = par_group["epoch"];
-  double users_phi0 = par_group["phi0"];
-  TimingModel * model = 0;
+  double user_phi0 = par_group["phi0"];
+
+  // Get keywords.
+  double valid_since = 0.;
+  double valid_until = 0.;
+  std::string telescope;
+  std::string time_sys;
+
+  const tip::Header & header(events->getHeader());
+  header["TSTART"].get(valid_since);
+  header["TSTOP"].get(valid_until);
+  header["TELESCOP"].get(telescope);
+  header["TIMESYS"].get(time_sys);
+
+  if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
+
+  std::auto_ptr<AbsoluteTime> abs_epoch(0);
+  std::auto_ptr<AbsoluteTime> abs_valid_since(0);
+  std::auto_ptr<AbsoluteTime> abs_valid_until(0);
+  if (time_sys == "TDB") {
+    abs_epoch.reset(new GlastTdbTime(epoch));
+    abs_valid_since.reset(new GlastTdbTime(valid_since));
+    abs_valid_until.reset(new GlastTdbTime(valid_until));
+  } else if (time_sys == "TT") {
+    abs_epoch.reset(new GlastTtTime(epoch));
+    abs_valid_since.reset(new GlastTtTime(valid_since));
+    abs_valid_until.reset(new GlastTtTime(valid_until));
+  } else {
+    throw std::runtime_error("Only TDB or TT time systems are supported for now");
+  }
+
+  // Container for ephemrides.
+  pulsarDb::PulsarEphCont ephemerides;
+
+  // This phi0 is the phase of the ephemeris itself. The user supplied user_phi0 is a phase offset applied to the whole event file.
+  double phi0 = 0.;
 
   if (eph_style == "FREQ") {
     double f0 = par_group["f0"];
@@ -70,8 +117,7 @@ void PulsePhaseApp::run() {
 
     if (0. >= f0) throw std::runtime_error("Frequency must be positive.");
 
-    TimingModel::FrequencyCoeff coeff(f0, f1, f2);
-    model = new TimingModel(epoch, 0., coeff);
+    ephemerides.insertEph(FrequencyEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, f0, f1, f2));
   } else if (eph_style == "PER") {
     double p0 = par_group["p0"];
     double p1 = par_group["p1"];
@@ -79,26 +125,50 @@ void PulsePhaseApp::run() {
 
     if (0. >= p0) throw std::runtime_error("Period must be positive.");
 
-    TimingModel::PeriodCoeff coeff(p0, p1, p2);
-    model = new TimingModel(epoch, 0., coeff);
+    ephemerides.insertEph(PeriodEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, p0, p1, p2));
+  } else if (eph_style == "FILE") {
+    std::string psrdb_file = par_group["psrdbfile"];
+    std::string psr_name = par_group["psrname"];
+
+    // Open the database.
+    PulsarDb database(psrdb_file);
+
+    // Select only ephemerides for this pulsar.
+    database.filterName(psr_name);
+
+    // Get candidate ephemerides.
+    database.getEph(ephemerides);
   } else {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
+
   std::string time_field = par_group["timefield"];
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
-    tip::Table::Record & rec = *itor;
-    // Calculate phase.
+    pulsarDb::TimingModel model;
+
+    // Get value from the table.
+    double evt_time = (*itor)[time_field].get();
+
+    std::auto_ptr<const AbsoluteTime> abs_evt_time(0);
+
+    if (time_sys == "TDB") {
+      abs_evt_time.reset(new GlastTdbTime(evt_time));
+    } else {
+      abs_evt_time.reset(new GlastTtTime(evt_time));
+    }
+
+    // Choose the best ephemeris.
+    const PulsarEph & chosen_eph(ephemerides.chooseEph(*abs_evt_time, true));
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(model->calcPhase(rec[time_field].get()) + users_phi0, &int_part);
+    double phase = modf(model.calcPhase(chosen_eph, *abs_evt_time) + user_phi0, &int_part);
 
     // Write phase into output column.
-    rec["PULSE_PHASE"].set(phase);
+    (*itor)["PULSE_PHASE"].set(phase);
   }
 
   // Clean up.
-  delete model;
   delete events;
 }
 
