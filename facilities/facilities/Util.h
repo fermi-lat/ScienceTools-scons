@@ -41,6 +41,8 @@ namespace facilities {
     */
     static const char* itoa(int val, std::string &outStr);
 
+    /// converts an std::string to an integer
+    static int         atoi(const std::string& InStr);
   };
 }
 
