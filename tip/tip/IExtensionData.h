@@ -141,29 +141,29 @@ namespace tip {
           \param dest_end Pointer to the first element in the output sequence.
       */
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        bool * dest_begin, bool * dest_end) = 0;
+        const bool * dest_begin, const bool * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        double * dest_begin, double * dest_end) = 0;
+        const double * dest_begin, const double * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        float * dest_begin, float * dest_end) = 0;
+        const float * dest_begin, const float * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        char * dest_begin, char * dest_end) = 0;
+        const char * dest_begin, const char * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        signed char * dest_begin, signed char * dest_end) = 0;
+        const signed char * dest_begin, const signed char * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        signed short * dest_begin, signed short * dest_end) = 0;
+        const signed short * dest_begin, const signed short * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        signed int * dest_begin, signed int * dest_end) = 0;
+        const signed int * dest_begin, const signed int * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        signed long * dest_begin, signed long * dest_end) = 0;
+        const signed long * dest_begin, const signed long * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        unsigned char * dest_begin, unsigned char * dest_end) = 0;
+        const unsigned char * dest_begin, const unsigned char * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        unsigned short * dest_begin, unsigned short * dest_end) = 0;
+        const unsigned short * dest_begin, const unsigned short * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        unsigned int * dest_begin, unsigned int * dest_end) = 0;
+        const unsigned int * dest_begin, const unsigned int * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
-        unsigned long * dest_begin, unsigned long * dest_end) = 0;
+        const unsigned long * dest_begin, const unsigned long * dest_end) = 0;
 
       /** \brief Append a field to the table. This will fail if a field of the same name (case insensitive) already exists.
           \param field_name The name of the field to append.

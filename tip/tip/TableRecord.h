@@ -62,7 +62,7 @@ namespace tip {
           \param dest_begin Index of the first element in the destination sequence in the table.
       */
       template <typename T>
-      void set(T * src_begin, T * src_end, Index_t dest_begin);
+      void set(const T * src_begin, const T * src_end, Index_t dest_begin);
 
       /** \brief Set a single value in this TableCell at the current iterator position.
           The type of the source value is given by the template parameter.
@@ -248,7 +248,7 @@ namespace tip {
   }
 
   template <typename T>
-  inline void TableCell::set(T * src_begin, T * src_end, Index_t dest_begin) {
+  inline void TableCell::set(const T * src_begin, const T * src_end, Index_t dest_begin) {
     if (m_field_index < 0) {
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
     }

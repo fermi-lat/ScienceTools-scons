@@ -161,7 +161,7 @@ namespace tip {
           \param dest_end Pointer to one past the last element in the output sequence.
       */
       template <typename T>
-      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
+      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, const T * dest_begin, const T * dest_end);
 
       /** \brief Append a field to the table.
           \param field_name The name of the field to append.
@@ -235,7 +235,7 @@ namespace tip {
 //  inline void RootExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
 //    T * dest_begin, T * dest_end) {
   inline void RootExtensionManager::setCellGeneric(int , Index_t , Index_t ,
-    T *, T *) {
+    const T *, const T *) {
     throw TipException("Write access not supported for Root extensions.");
   }
 

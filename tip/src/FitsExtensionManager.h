@@ -139,7 +139,7 @@ namespace tip {
           \param dest_end Pointer to one past the last element in the output sequence.
       */
       template <typename T>
-      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, T * dest_begin, T * dest_end);
+      void setCellGeneric(int col_num, Index_t record_index, Index_t src_begin, const T * dest_begin, const T * dest_end);
 
       /** \brief Append a field to the table.
           \param field_name The name of the field to append.
@@ -329,7 +329,7 @@ namespace tip {
   // Setting columns.
   template <typename T>
   inline void FitsExtensionManager::setCellGeneric(int col_num, Index_t record_index, Index_t src_begin,
-    T * dest_begin, T * dest_end) {
+    const T * dest_begin, const T * dest_end) {
     if (m_read_only) {
       std::ostringstream s;
       s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
@@ -339,7 +339,7 @@ namespace tip {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin + 1, dest_end - dest_begin,
-      dest_begin, &status);
+      const_cast<void *>(static_cast<const void *>(dest_begin)), &status);
     if (0 != status) {
       std::ostringstream s;
       s << "Cannot write record number " << record_index << " in column number " << col_num;
@@ -350,7 +350,7 @@ namespace tip {
   // Setting column values as bools is a special case because Cfitsio treats them as ints.
   template <>
   inline void FitsExtensionManager::setCellGeneric<bool>(int col_num, Index_t record_index, Index_t src_begin,
-    bool * dest_begin, bool * dest_end) {
+    const bool * dest_begin, const bool * dest_end) {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
     if (m_read_only) {
       std::ostringstream s;
@@ -374,7 +374,7 @@ namespace tip {
   // Setting column values as strings is not supported. See note above getCellGeneric.
   template <>
   inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
-    std::string * dest_begin, std::string * dest_end) {
+    const std::string * dest_begin, const std::string * dest_end) {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
     if (m_read_only) {
       std::ostringstream s;
