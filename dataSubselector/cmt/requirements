@@ -1,5 +1,5 @@
 package dataSubselector
-version v3r3
+version v3r3p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -8,6 +8,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 use STpolicy v1r*
 use tip v*
 use astro v*
+use st_facilities v*
 use facilities v*
 use evtbin v0r*
 

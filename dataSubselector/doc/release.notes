@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r3p1  04-Apr-05   JC   update checksum keywords
     v3r3    04-Apr-05   JC   update GTIs to incorporate time range cuts in
                              gtselect
     v3r2p3  24-Mar-05   JC   increase precision for range cuts to

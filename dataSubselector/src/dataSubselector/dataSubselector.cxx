@@ -14,6 +14,8 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "st_facilities/FitsUtil.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -96,6 +98,8 @@ void DataFilter::run() {
       std::cout << "Done." << std::endl;
    }
    CutController::delete_instance();
+
+   st_facilities::FitsUtil::writeChecksums(m_outputFile);
 }
 
 void DataFilter::copyTable(const std::string & extension,
