@@ -1,11 +1,7 @@
 /** @file count_map.cxx
 @brief build the count_map application
 
-<<<<<<< count_map.cxx
 $Header$
-=======
-$Header$
->>>>>>> 1.7
 */
 
 #include "map_tools/SkyImage.h"
@@ -23,7 +19,6 @@ using namespace map_tools;
 
 /** @class CountMap 
 @brief The count_map application
-
 */
 class CountMap : public st_app::IApp {
 public:
@@ -37,6 +32,11 @@ public:
 
         // connect to  input data, specifying filter
         Table & table = *tip::IFileSvc::instance().editTable(pars.inputFile(), "", pars.filter() );
+        if( pars.chatter()>0) {
+            std::cout << "Reading file " << pars.inputFile() ;
+            if( ! pars.filter().empty() ) std::cout << "\n\tfiltered by " << pars.filter() ;
+            std::cout<< std::endl;
+        }
 
         // create the image object
         SkyImage image(pars);
@@ -46,14 +46,15 @@ public:
             // Create local reference to the record to which the iterator refers:
             const Table::Record & record = *it;
             // Get the current values
-           double ra, dec;
+            double ra, dec;
             record[pars.raName()].get(ra);
             record[pars.decName()].get(dec);
 
             image.addPoint(astro::SkyDir(ra, dec) );
         }
-        std::cout << "Total added to image: " << image.total() 
-            <<" at file\n\t" << pars.outputFile() << std::endl;
+        if( pars.chatter()>0) {
+            std::cout << "Total added to image: " << image.total() 
+                <<" at file\n\t" << pars.outputFile() << std::endl; }
     }
 
 } app;

@@ -11,10 +11,9 @@
 #include "facilities/Util.h"
 
 #include "map_tools/Parameters.h"
-
 #include "hoops/hoops_prompt_group.h"
 
-using namespace map_tools;
+using  map_tools::Parameters;
 
 
 //! Constructor
@@ -22,10 +21,7 @@ Parameters::Parameters( int argc, char *argv[])
 :  m_par(*new hoops::ParPromptGroup(argc, argv))
 ,  m_own_ppg(true)
 {  
-  // Prompt for all parameters in the order in the par file:
-    dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
-
-    setup();
+     setup();
 }
 //! Constructor
 Parameters::Parameters( hoops::IParGroup & par) 
@@ -40,6 +36,9 @@ Parameters::~Parameters(){
 
 void Parameters::setup()
 {
+      // Prompt for all parameters in the order in the par file:
+
+    dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
     m_chatter = m_par["chatter"];
 
     m_clobber = m_par["clobber"];
@@ -50,10 +49,8 @@ void Parameters::setup()
     m_inFile = infile;
 
     facilities::Util::expandEnvVar(&m_inFile);
-#if 0
     std::string filter = m_par["filter"];
     m_filter = filter;
-#endif
     std::string outfile = m_par["outfile"];
     m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);
