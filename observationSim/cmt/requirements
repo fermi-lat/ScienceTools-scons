@@ -32,5 +32,5 @@ use st_app v1r*
 #macro pydir ../python/
 
 macro observationSim_cppflags "" \
-      Linux "-I ../src -D USE_FT1 " \
-      WIN32 '/I..\src /D"USE_FT1" /wd4290'
+      Linux "-I ../src " \
+      WIN32 '/I..\src /wd4290'

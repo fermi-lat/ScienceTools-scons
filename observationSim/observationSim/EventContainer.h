@@ -16,7 +16,6 @@
 #include "astro/JulianDate.h"
 
 #include "observationSim/Event.h"
-#include "observationSim/FitsTable.h"
 #include "observationSim/Spacecraft.h"
 
 class EventSource;  // from flux package
@@ -45,14 +44,11 @@ class EventContainer {
 public:
 
    /// @param filename The root name of the output FITS file.
-   /// @param useFT1 A flag to write the data in 
-   /// <a href="http://glast.gsfc.nasa.gov/ssc/dev/fits_def/definitionFT1.html">
-   /// FT1</a> format. If set to false, the old A1 format is used.
    /// @param maxNumEvents The maximum size of the Event buffer before
    ///        a FITS file is written.
-   EventContainer(const std::string &filename, bool useFT1=true, 
+   EventContainer(const std::string &filename, 
                   unsigned int maxNumEvents=20000) : 
-      m_filename(filename), m_useFT1(useFT1), m_fileNum(0), 
+      m_filename(filename), m_fileNum(0), 
       m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
    ~EventContainer();
@@ -98,9 +94,6 @@ private:
    /// Root name for the FITS binary table output files.
    std::string m_filename;
 
-   /// Flag to indicate that the FT1 format will be used.
-   bool m_useFT1;
-
    /// Name of the FT1 template file.
    std::string m_ft1Template;
 
@@ -118,9 +111,6 @@ private:
    /// time for a given observation interval.
    double m_prob;
 
-   /// The FITS binary table object that steers the cfitsio routines.
-   FitsTable *m_eventTable;
-
    /// The Event buffer.
    std::vector<Event> m_events;
 
@@ -128,15 +118,10 @@ private:
    /// it is).
    void init();
 
-   /// A routine to create the FITS binary table object.
-   void makeFitsTable();
-
    /// Return the zenith for the current spacecraft location.
    astro::SkyDir ScZenith(double time);
 
-   /// A routine to unpack the Event buffer, m_events, into an
-   /// appropriate data vector.  After unpacking, this routine calls
-   /// the writeTableData(...) method of the m_eventTable object.
+   /// A routine to unpack and write the Event buffer to an FT1 file.
    void writeEvents();
 
    /// Return an output filename, based on the root name, m_filename,

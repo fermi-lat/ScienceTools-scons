@@ -188,16 +188,10 @@ void ObsSim::createSimulator() {
 }
 
 void ObsSim::generateData() {
-#ifdef USE_FT1
-   bool useFT1(true);
-#else
-   bool useFT1(false);
-#endif
    long nMaxRows = m_pars["Maximum_number_of_rows"];
    std::string prefix = m_pars["Output_file_prefix"];
-   observationSim::EventContainer events(prefix + "_events", useFT1, nMaxRows);
-   observationSim::ScDataContainer scData(prefix + "_scData", useFT1, 
-                                          nMaxRows);
+   observationSim::EventContainer events(prefix + "_events", nMaxRows);
+   observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows);
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
    if (m_pars["Use_as_sim_time"]) {
       std::cout << "Generating events for a simulation time of "

@@ -114,13 +114,8 @@ int main(int iargc, char * argv[]) {
    }
 
 // Generate the events and spacecraft data.
-#ifdef USE_FT1
-   bool useFT1(true);
-#else
-   bool useFT1(false);
-#endif
-   observationSim::EventContainer events("test_events", useFT1);
-   observationSim::ScDataContainer scData("test_scData", useFT1);
+   observationSim::EventContainer events("test_events");
+   observationSim::ScDataContainer scData("test_scData");
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
