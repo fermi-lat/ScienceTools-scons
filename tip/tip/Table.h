@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 
+#include "table/Ref.h"
 #include "table/table_types.h"
 
 namespace table {
@@ -246,6 +247,14 @@ namespace table {
   }
 
   typedef Table::Record Record;
+
+  template <typename T>
+  class Ref : public ReferenceAdaptor<T, Table::Cell> {
+    public:
+      Ref(Table::Cell & cell): ReferenceAdaptor<T, Table::Cell>(cell) {}
+
+      Ref & operator =(const T & data) { ReferenceAdaptor<T, Table::Cell>::operator =(data); return *this; }
+  };
 
 }
 

@@ -7,40 +7,37 @@
 #ifndef table_Ref_h
 #define table_Ref_h
 
-#include "table/table_types.h"
-#include "table/Table.h"
-
 namespace table {
 
-  /** \class Ref
+  /** \class ReferenceAdaptor
 
-      \brief Adaptor class which provides a convenient read/write interface to cells of data inside a table.
+      \brief Adaptor class which provides a convenient read/write interface to referents of data inside a table.
   */
-  template <typename T>
-  class Ref {
+  template <typename T, typename Referent>
+  class ReferenceAdaptor {
     public:
-      /** \brief Construct a Ref object which refers to the given Cell object.
-          \param cell The referent Cell object.
+      /** \brief Construct a ReferenceAdaptor object which refers to the given Referent object.
+          \param referent The Referent object.
       */
-      Ref(Table::Cell & cell): m_cell(&cell) {}
+      ReferenceAdaptor(Referent & referent): m_referent(&referent) {}
 
-      /** \brief Assignment from Cell. This changes which Cell object the Ref refers to.
-          \param cell The new referent Cell object.
+      /** \brief Assignment from Referent. This changes which Referent object the ReferenceAdpator refers to.
+          \param referent The new referent Referent object.
       */
-      Ref & operator =(Table::Cell & cell) { m_cell = &cell; }
+      ReferenceAdaptor & operator =(Referent & referent) { m_referent = &referent; }
 
       /** \brief Assignment from templated parameter type. This will write the assigned value into the
-          cell to which this object refers.
+          referent to which this object refers.
           \param data The source value for the assignment.
       */
-      Ref & operator =(T data) { /* m_cell->write(data); */ return *this; }
+      ReferenceAdaptor & operator =(const T & data) { /* m_referent->write(data); */ return *this; }
 
       /** \brief Retrieve the current templated parameter data value of this object.
       */
-      operator T () const { T data; m_cell->read(data); return data; }
+      operator T () const { T data; m_referent->read(data); return data; }
 
     private:
-      Table::Cell * m_cell;
+      Referent * m_referent;
   };
 
 }
