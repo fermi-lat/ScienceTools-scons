@@ -87,7 +87,7 @@ namespace evtbin {
            Any keywords missing from the header will simply be omitted in this object's
            container of key-value pairs.
       */
-      void harvestKeywords(const std::string & file_name, const std::string & ext_name);
+      void harvestKeywords(const std::string & file_name, const std::string & ext_name = "");
 
       /** \brief Read values for all known keywords from the given header object.
            Any keywords missing from the header will simply be omitted in this object's
