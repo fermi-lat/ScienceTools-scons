@@ -88,6 +88,7 @@ const ISpectrumFactory& SurfaceMuonsFactory = factory;
 SurfaceMuons::SurfaceMuons(const std::string& paramstring)
 : m_index(2.71)
 , m_emax(1000)
+, m_total(0)
 {
     //Purpose: Initializes parameters during construction
     
