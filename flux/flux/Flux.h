@@ -98,6 +98,9 @@ public:
     
     ///get the transformation matrix due to orientation of the spacecraft.
     virtual HepRotation orientTransform(double time)const;
+
+    /// get the transformtation matrix - the rest of these functions are now deprecated
+    virtual HepRotation transformToGlast(double seconds,GPS::CoordSystem index)const;
     
     ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
     HepRotation Flux::transformGlastToGalactic(double time)const;

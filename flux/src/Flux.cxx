@@ -141,6 +141,13 @@ HepRotation Flux::transformGlastToGalactic(double time)const{
     return s_mgr->transformGlastToGalactic(time);
 }
 
+//get the transformtation matrix - the rest of these functions are now deprecated
+HepRotation Flux::transformToGlast(double seconds,GPS::CoordSystem index)const{
+    return s_mgr->transformToGlast(seconds, index);
+}
+  
+
+
 void Flux::writeSourceCharacteristic(std::ostream& out){
     m_event->writeSourceCharacteristic(out);
 }

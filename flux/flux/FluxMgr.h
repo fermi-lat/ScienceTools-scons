@@ -89,6 +89,7 @@ public:
     /// get the current satellite location
     std::pair<double,double> location();
     
+    HepRotation transformToGlast(double seconds,GPS::CoordSystem index);
     
     ///get the transformation matrix due to orientation of the Galaxy
     HepRotation CELTransform(double time);

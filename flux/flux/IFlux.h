@@ -8,6 +8,7 @@
 #include "CLHEP/Geometry/Point3D.h"
 #include "CLHEP/Geometry/Vector3D.h"
 #include "CLHEP/Vector/Rotation.h"
+#include "flux/GPS.h"
 
 class ParticleProperty;
 class EventSource;
@@ -93,6 +94,9 @@ public:
 
     /// write the characteristics of the current source distribution to a stream
     virtual void writeSourceCharacteristic(std::ostream& out)=0;
+
+    /// get the transformtation matrix - the rest of these functions are now deprecated
+    virtual HepRotation transformToGlast(double seconds,GPS::CoordSystem index)const=0;
     
 };
 

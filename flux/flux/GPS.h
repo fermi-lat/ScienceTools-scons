@@ -39,6 +39,12 @@ class GPS
 {
 public:
 
+    enum CoordSystem { 
+            GLAST=0,  //! 0: The original direction is in the GLAST frame already
+                ZENITH=1, //! 1: rotate from the earth-zenith frame to GLAST
+                CELESTIAL=2 //! 2: rotate from the cartesian celestial coordinate system (like a SkyDir)
+        };
+
     enum RockType { 
             NONE,  //!  No rocking rotation done at all.
             UPDOWN, //! Satellite will be rocked toward the north pole in the northern hemisphere, opposite in the south.
@@ -131,6 +137,11 @@ public:
     // static access/destruction
     static GPS*	instance();
     static void     kill ();
+
+    //this is the only external rotation function that should survive.
+    //all the others are being phased out outside of GPS, whiule this one should
+    //take care of the various necessary rotations.
+    HepRotation transformToGlast(double seconds,CoordSystem index);
     
     /// return the rotation for compensation for the rocking angles.
     HepRotation rockingAngleTransform(double seconds);
@@ -182,11 +193,12 @@ public:
         double  m_sampleintvl;  // interval to sample for each pt. in the orbit - to normalize spectra
 		double m_lat,m_lon; //position characteristics
         double m_RAX,m_RAZ,m_DECX,m_DECZ; //pointing characteristics.
-        double m_RAZenith,m_DECZenith;  //pointing characteristic of the zenith direction.
+        double m_RAZenith,m_DECZenith,m_RAXZenith,m_DECXZenith; //pointing characteristic of the zenith direction.
         Hep3Vector m_position; //current vector position of the LAT.
         // notification
         Subject    m_notification; 
-        double m_rockDegrees; //number of degrees to "rock" the spacecraft, along the local x axis.  
+        double m_rockDegrees; //number of degrees to "rock" the spacecraft, along the local x axis. 
+        double m_rockNorth; //internal value for the current number of degrees the craft is rotated at the time.
         RockType m_rockType;//current rocking scheme
 		std::string m_pointingHistoryFile;//pointing/livetime database history file to use.
 		std::map<double,POINTINFO> m_pointingHistory;//pointing/livetime database history
