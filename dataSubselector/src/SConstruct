@@ -1,4 +1,12 @@
 # -*- python -*-
+#
+# @file SConstruct
+# @brief Build script for dataSubselector
+# @author J. Chiang
+#
+# $Header$
+#
+
 import os
 
 class map(dict):

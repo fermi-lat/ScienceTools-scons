@@ -1,6 +1,9 @@
 /**
  * @file GtiCut.cxx
+ * @brief Encapsulate a GTI.
+ * @author J. Chiang
  *
+ * $Header$
  */
 
 #include "dataSubselector/Cuts.h"

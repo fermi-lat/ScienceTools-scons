@@ -77,6 +77,11 @@ private:
    unsigned int Cuts::parseColname(const std::string & colname,
                                    std::string & col) const;
 
+   /**
+    * @class CutBase
+    * @brief Nested base class for cuts to be applied to FITS data.
+    * @author J. Chiang
+    */
    class CutBase {
    public:
       CutBase() {}
@@ -100,6 +105,11 @@ private:
                             const std::string & ref="") const;
    };
 
+   /**
+    * @class RangeCut
+    * @brief Cut on FITS binary table column values.
+    * @author J. Chiang
+    */
    class RangeCut : public CutBase {
    public:
       RangeCut(const std::string & colname, const std::string & unit,
@@ -128,6 +138,11 @@ private:
       double extractValue(tip::ConstTableRecord & row) const;
    };
 
+   /**
+    * @class GtiCut
+    * @brief Encapsulation of GTI cuts.
+    * @author J. Chiang
+    */
    class GtiCut : public CutBase {
    public:
       GtiCut(const std::string & filename, const std::string & ext="GTI") 
@@ -147,6 +162,11 @@ private:
       bool accept(double value) const;
    };
 
+   /**
+    * @class SkyConeCut
+    * @brief Acceptance cone on the sky.
+    * @author J. Chiang
+    */
    class SkyConeCut : public CutBase {
    public:
       SkyConeCut(double ra, double dec, double radius) : m_ra(ra), m_dec(dec),
@@ -177,6 +197,7 @@ private:
    };
 
 };
+
 } // namespace dataSubselector
 
 #endif // dataSubselector_Cuts_h

@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v2r3    04-Dec-04   JC   Add CutController and modify dataSubselector app
+                             to use it
     v2r2p4  03-Dec-04   JC   handle cuts on vector quanties
     v2r2p3  03-Dec-04   JC   add clone methods and Cuts copy constructor
     v2r2p2  03-Dec-04   JC   FITS constructor for Cuts::SkyConeCut 

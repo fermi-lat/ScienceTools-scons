@@ -1,6 +1,9 @@
 /**
  * @file RangeCut.cxx
+ * @brief Cut on a column value in a given range of values.
+ * @author J. Chiang
  *
+ * $Header$
  */
 
 #include "facilities/Util.h"

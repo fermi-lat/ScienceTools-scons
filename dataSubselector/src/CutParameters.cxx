@@ -10,8 +10,6 @@
 #include "st_app/AppParGroup.h"
 
 #include "dataSubselector/CutParameters.h"
-// #include "dataSubselector/Cuts.h"
-// namespace dataSubselector {
 
 CutParameters::CutParameters(st_app::AppParGroup & pars) : 
    m_query(""),  m_headerString("") {
@@ -188,5 +186,3 @@ void CutParameters::addDataSubspaceKeywords(tip::Table * table) {
    // update the NDSKEYS keyword with the new value
    header["NDSKEYS"].set(nKeys);
 }
-
-//}

@@ -20,11 +20,6 @@
 #include "dataSubselector/Cuts.h"
 
 namespace {
-   void toLower(std::string & name) {
-      for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
-         *it = std::tolower(*it);
-      }
-   }
    void toUpper(std::string & name) {
       for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
          *it = std::toupper(*it);

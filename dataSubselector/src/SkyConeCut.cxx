@@ -1,6 +1,9 @@
 /**
  * @file SkyConeCut.cxx
+ * @brief Acceptance cone selection.
+ * @author J. Chiang
  *
+ * $Header$
  */
 
 #include <stdexcept>

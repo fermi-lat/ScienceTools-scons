@@ -1,6 +1,9 @@
 /**
  * @file viewCuts.cxx
+ * @brief Simple app to print the DSS keywords in an event extension.
+ * @author J. Chiang
  *
+ * $Header$
  */
 
 #include <iostream>
