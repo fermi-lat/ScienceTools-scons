@@ -42,6 +42,7 @@ namespace tip {
 
       /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,
           but is connected to the table cell.
+          WARNING: This class is deprecated. Don't start using it!
       */
       template <typename T>
       class Scalar : public ScalarAdaptor<T, Cell> {
@@ -52,6 +53,7 @@ namespace tip {
 
       /** \brief Helper type: auxilliary Cell access through a type which behaves like a primitive,
           but is connected to the table cell.
+          WARNING: This class is deprecated. Don't start using it!
       */
       template <typename T>
       class Vector : public VectorAdaptor<T, Cell> {

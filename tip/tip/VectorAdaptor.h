@@ -1,6 +1,7 @@
 /** \file VectorAdaptor.h
 
     \brief Utilities to streamline access to vector-valued cells of data inside a table.
+    WARNING: This class is deprecated. Don't start using it!
 
     \author James Peachey, HEASARC
 */
@@ -17,6 +18,7 @@ namespace tip {
 
       \brief Adaptor class which provides a convenient get/set interface to referents of data inside a table.
       Client code should not normally need to use this directly, but only specific subclasses of it.
+      WARNING: This class is deprecated. Don't start using it!
   */
   template <typename T, typename Referent>
   class VectorAdaptor {
