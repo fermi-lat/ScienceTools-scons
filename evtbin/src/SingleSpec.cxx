@@ -3,7 +3,6 @@
     \author James Peachey, HEASARC
 */
 #include <memory>
-#include <sstream>
 #include <string>
 
 #include "evtbin/Binner.h"
@@ -30,11 +29,7 @@ namespace evtbin {
     const Binner * binner = m_hist.getBinners().at(0);
 
     // Add DETCHANS, which is just the number of bins in the binner.
-    std::ostringstream os;
-    os << binner->getNumBins();
-    m_key_value_pairs["DETCHANS"] = os.str();
-
-//    m_key_value_pairs["ONTIME"] = 1000.;
+    updateKeyValue("DETCHANS", binner->getNumBins(), "Total number of detector channels available.");
 
     // Standard file creation from base class.
     createFile(creator, out_file, m_data_dir + "LatSingleBinnedTemplate");

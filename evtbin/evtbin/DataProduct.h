@@ -12,6 +12,7 @@
 
 #include "evtbin/Gti.h"
 
+#include "tip/KeyRecord.h"
 #include "tip/Table.h"
 
 namespace tip {
@@ -28,7 +29,7 @@ namespace evtbin {
   class DataProduct {
     public:
       typedef std::vector<std::string> KeyCont_t;
-      typedef std::map<std::string, std::string> KeyValuePairCont_t;
+      typedef std::map<std::string, tip::KeyRecord> KeyValuePairCont_t;
 
       /** \brief Construct data product object from the given event and spacecraft file.
       */
@@ -123,6 +124,14 @@ namespace evtbin {
       std::string formatDateKeyword(const time_t & time) const;
 
     protected:
+      /** \brief Update a key-value pair, or add a new pair to the container of key-value pairs if it is not already present.
+          \param name The name of the key-value pair to update.
+          \param value The value to add to the key-value pair.
+          \param comment The comment, which is only used if a new key-value pair needs to be added.
+      */
+      template <typename T>
+      void updateKeyValue(const std::string & name, const T & value, const std::string & comment = "") const;
+
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::string m_data_dir;
@@ -130,6 +139,18 @@ namespace evtbin {
       Gti m_gti;
       Hist * m_hist_ptr;
   };
+
+  template <typename T>
+  inline void DataProduct::updateKeyValue(const std::string & name, const T & value, const std::string & comment) const {
+    // See if it is present.
+    if (m_key_value_pairs.end() == m_key_value_pairs.find(name)) {
+      // Not present so add it.
+      m_key_value_pairs[name] = tip::KeyRecord(name, value, comment);
+    } else {
+      // Already present, so only update it.
+      m_key_value_pairs[name].setValue(value);
+    }
+  }
 
 }
 

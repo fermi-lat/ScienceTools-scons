@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 #include <string>
 
 #include "evtbin/Binner.h"
@@ -17,6 +18,7 @@
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
+#include "tip/KeyRecord.h"
 #include "tip/Table.h"
 
 namespace evtbin {
@@ -54,7 +56,7 @@ namespace evtbin {
     tip::IFileSvc::instance().createFile(out_file, fits_template);
 
     // Add CREATOR keyword to the hash of keywords.
-    m_key_value_pairs["CREATOR"] = creator;
+    updateKeyValue("CREATOR", creator, "Software and version creating file");
 
     // Update newly created file with keywords which were harvested from input data.
     updateKeywords(out_file);
@@ -139,13 +141,12 @@ namespace evtbin {
     // Iterate over keywords which are known to be useful in this case.
     for (KeyCont_t::const_iterator itor = m_known_keys.begin(); itor != m_known_keys.end(); ++itor) {
       try {
-        // Read each keyword as a string.
-        std::string value;
-        header[*itor].get(value);
+        // Read each key record as a whole.
+        tip::KeyRecord record;
+        header[*itor].getRecord(record);
 
-        // Write each keyword name-value pair into the container of pairs.
-        m_key_value_pairs[*itor] = value;
-
+        // This record was found, so save it in the container of records.
+        m_key_value_pairs[*itor] = record;
       } catch (...) {
         // Ignore errors. Keywords are obtained on a best effort basis, but missing them shouldn't
         // cause the software to fail.
@@ -161,42 +162,38 @@ namespace evtbin {
       // only if they are more restrictive than the original TSTART/TSTOP.
       if (m_key_value_pairs["TSTART"].empty()) {
         // TSTART keyword was blank, so set it.
-        ss << binner->getInterval(0).begin() << std::endl;
-        ss >> m_key_value_pairs["TSTART"];
+        updateKeyValue("TSTART", binner->getInterval(0).begin());
       } else {
-        ss << m_key_value_pairs["TSTART"] << std::endl;
+        // Fetch TSTART value and only update it if interval's value is later.
         double tstart;
-        ss >> tstart;
+        m_key_value_pairs["TSTART"].getValue(tstart);
+
         if (binner->getInterval(0).begin() > tstart) {
           // Binner has later start time, so change TSTART to match it.
-          ss << binner->getInterval(0).begin() << std::endl;
-          ss >> m_key_value_pairs["TSTART"];
+          updateKeyValue("TSTART", binner->getInterval(0).begin());
         }
       }
 
       if (m_key_value_pairs["TSTOP"].empty()) {
         // TSTOP keyword was blank, so set it.
-        ss << binner->getInterval(binner->getNumBins() - 1).end() << std::endl;
-        ss >> m_key_value_pairs["TSTOP"];
+        updateKeyValue("TSTOP", binner->getInterval(binner->getNumBins() - 1).end());
       } else {
-        ss << m_key_value_pairs["TSTOP"] << std::endl;
+        // Fetch TSTOP value and only update it if interval's value is earlier.
         double tstop;
-        ss >> tstop;
+        m_key_value_pairs["TSTOP"].getValue(tstop);
+
         if (binner->getInterval(binner->getNumBins() - 1).end() < tstop) {
           // Binner has earlier stop time, so change TSTOP to match it.
-          ss << binner->getInterval(binner->getNumBins() - 1).end() << std::endl;
-          ss >> m_key_value_pairs["TSTOP"];
+          updateKeyValue("TSTOP", binner->getInterval(binner->getNumBins() - 1).end());
         }
       }
     }
 
     // Compute the EXPOSURE keyword.
-    ss << computeExposure(sc_file) << std::endl;
-    ss >> m_key_value_pairs["EXPOSURE"];
+    updateKeyValue("EXPOSURE", computeExposure(sc_file), "Integration time (in seconds) for the PHA data");
 
     // Compute the ONTIME keyword.
-    ss << m_gti.computeOntime() << std::endl;
-    ss >> m_key_value_pairs["ONTIME"];
+    updateKeyValue("ONTIME", m_gti.computeOntime(), "Sum of all Good Time Intervals");
   }
 
   void DataProduct::updateKeywords(const std::string & file_name) const {
@@ -211,7 +208,7 @@ namespace evtbin {
     // If DATE keyword is present, set it to the current date/time.
     KeyValuePairCont_t::iterator date_itor = m_key_value_pairs.find("DATE");
     if (m_key_value_pairs.end() != date_itor)
-      date_itor->second = formatDateKeyword(time(0));
+      date_itor->second.setValue(formatDateKeyword(time(0)));
 
     // Pointer to each extension in turn.
     tip::Extension * ext = 0;
@@ -246,7 +243,7 @@ namespace evtbin {
           }
 
           // If keyword is already present, update it with the value from the key-value pair.
-          if (update_key) keyword.set(key_itor->second);
+          if (update_key) keyword.setRecord(key_itor->second);
         }
         delete ext;
       }
