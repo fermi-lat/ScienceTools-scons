@@ -1,5 +1,5 @@
 package fitsGen
-version v1r0
+version v1r0p2
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -8,7 +8,7 @@ author James Chiang <jchiang@slac.stanford.edu>
 use STpolicy v1r*
 use facilities v2r*
 use tip v1r*
-use astro v0r*
+use astro v1r*
 
 apply_pattern ST_library option="-no_share "
 
