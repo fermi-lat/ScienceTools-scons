@@ -51,7 +51,10 @@ class SourceModel:
         if filename == None:  # Overwrite the existing file.
             filename = self.filename
         self.setAttributes()
-        doc = cleanXml(self.doc)
+        try:
+            doc = cleanXml(self.doc)
+        except:
+            doc = self.doc
         file = open(filename, 'w')
         file.write(doc.toxml() + '\n')
         file.close()
