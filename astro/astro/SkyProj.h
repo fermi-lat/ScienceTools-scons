@@ -104,6 +104,13 @@ namespace astro {
         class Exception; // forward declaration
     private:
 
+       /** @brief Checks the return codes for the wcs projection routines
+           @param returncode The return value for the wcs projection routines
+           @param stat The stat parameter returned by the wcs projection routines
+           @return 0 if ok, 1 if problem exists 
+       */
+       int checkForError(int returncode, int stat[1]);
+
        /* Structure defined in WCSLIB wcs.h.  This contains all
           projection information. */
         wcsprm *wcs;

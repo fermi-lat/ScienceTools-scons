@@ -125,6 +125,7 @@ std::pair<double,double> SkyProj::project(double s1, double s2)
    double worldcrd[9], imgcrd[9], pixcrd[9];
    double phi[1], theta[1];
    int stat[1];
+   int returncode;
 
    // WCS projection routines require the input coordinates are in degrees
    // and in the range of [-90,90] for the lat and [-180,180] for the lon.
@@ -134,7 +135,9 @@ std::pair<double,double> SkyProj::project(double s1, double s2)
    worldcrd[wcs->lng] = s1;
    worldcrd[wcs->lat] = s2;
 
-   wcss2p(wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
+   returncode = wcss2p(wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
+
+   checkForError(returncode, stat);
 
    return std::make_pair<double,double>(pixcrd[wcs->lng],pixcrd[wcs->lat]);
 }
@@ -147,11 +150,14 @@ std::pair<double,double> SkyProj::deproject(double x1, double x2)
    double worldcrd[9], imgcrd[9], pixcrd[9];
    double phi[1], theta[1];
    int stat[1];
+   int returncode;
 
    pixcrd[wcs->lng] = x1;
    pixcrd[wcs->lat] = x2;
 
-   wcsp2s(wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+   returncode = wcsp2s(wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+
+   checkForError(returncode, stat);
 
    s1 = worldcrd[wcs->lng];
 
@@ -178,5 +184,35 @@ std::pair<double,double> SkyProj::project(double x1, double x2, SkyProj otherPro
    return SkyProj::project(s1,s2);
 }
 
+int SkyProj::checkForError(int returncode, int stat[1])
+{
+   int returnvalue = 0;
 
+   if(stat[0] != 0 || returncode != 0)
+   {
+      if(stat[0])
+         throw("SkyProj Error:  Invalid world coordinate");
+      else if(returncode == 1)
+         throw("SkyProj Error:  Null wcsprm pointer passed");
+      else if(returncode == 2)
+         throw("SkyProj Error:  Memory allocation error");
+      else if(returncode == 3)
+         throw("SkyProj Error:  Linear transformation matrix is singular");
+      else if(returncode == 4)
+         throw("SkyProj Error:  Inconsistent or unrecognized coordinate axis types");
+      else if(returncode == 5)
+         throw("SkyProj Error:  Invalid parameter value");
+      else if(returncode == 6)
+         throw("SkyProj Error:  Invalid coordinate transformation parameters");
+      else 
+         throw("SkyProj Error:  Ill-conditioned coordinate transformation parameters");
+
+      returnvalue = 1;
+   }
+
+   return returnvalue;
+
+
+
+}
 
