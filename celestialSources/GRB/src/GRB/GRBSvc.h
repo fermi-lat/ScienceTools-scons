@@ -25,6 +25,7 @@
 
 // GRB includes
 #include "GRBSpectrum.h"
+#include "../GRBmaker/GRBobsSpectrum.h"
 
 //forward declarations
 template <class TYPE> class SvcFactory;
@@ -65,6 +66,10 @@ public:
         log << MSG::INFO << "Adding GRB Spectra..." << endreq;
         static RemoteSpectrumFactory<GRBSpectrum> factory(m_fsvc);
         const ISpectrumFactory& GRBSpectrumFactory = factory;
+
+        log << MSG::INFO << "Adding Sandhia GRB Spectra..." << endreq;
+        static RemoteSpectrumFactory<GRBobsSpectrum> factory2(m_fsvc);
+        const ISpectrumFactory& GRBobsSpectrumFactory = factory2;
 	
 	return status;
     }
