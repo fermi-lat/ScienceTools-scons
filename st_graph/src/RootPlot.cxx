@@ -41,17 +41,18 @@ namespace st_graph {
 
     m_multi_graph = m_parent->getMultiGraph();
 
-    if (0 == m_multi_graph) return;
+    if (0 == m_multi_graph) throw std::runtime_error("RootPlot constructor: cannot get embedding Root frame from parent");
 
     if (std::string::npos != lc_style.find("hist")) {
       m_graph = createHistPlot(x, y);
-      m_multi_graph->Add(m_graph, "L");
     } else if (std::string::npos != lc_style.find("scat")) {
       m_graph = createScatterPlot(x, y);
-      m_multi_graph->Add(m_graph, "L");
     } else {
       throw std::logic_error("RootPlot constructor: unknown plot style \"" + style + "\"");
     }
+
+    // Add this plot to parent's container of plots, allowing for auto-delete.
+    m_parent->addPlot(this);
   }
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
@@ -71,17 +72,24 @@ namespace st_graph {
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
     m_th2d = createHistPlot2D(x, y, z);
+
+    // Add this plot to parent's container of plots, allowing for auto-delete.
+    m_parent->addPlot(this);
   }
 
   RootPlot::~RootPlot() {
-    if (0 != m_multi_graph) m_multi_graph->RecursiveRemove(m_graph);
+    m_parent->removePlot(this);
     delete m_th2d;
     delete m_graph;
   }
 
-  void RootPlot::display() {}
+  void RootPlot::display() {
+    if (0 != m_multi_graph && 0 != m_graph) m_multi_graph->Add(m_graph, "L");
+  }
 
-  void RootPlot::unDisplay() {}
+  void RootPlot::unDisplay() {
+    if (0 != m_multi_graph && 0 != m_graph) m_multi_graph->RecursiveRemove(m_graph);
+  }
 
   TGraph * RootPlot::createHistPlot(const ISequence & x, const ISequence & y) {
     TGraph * retval = 0;

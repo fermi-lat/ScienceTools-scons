@@ -103,8 +103,15 @@ void StGraphTestApp::run() {
     plot_hist_2->set(ii, sine_wave[ii + 25]); // cosine
   }
 
+  // Reduce size of 2-d plot.
+  num_intervals = 50;
+
+  // Create a set of interval definitions to use for the histogram plot. Make them equal linear bins.
+  PlotHist::IntervalCont_t intervals2d(num_intervals);
+  for (int ii = 0; ii < num_intervals; ++ii) intervals2d[ii] = PlotHist::Interval_t(ii, ii + 1);
+
   // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  PlotHist * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, intervals, intervals);
+  PlotHist * plot_hist_3 = engine->createPlotHist2D("Plot 3", 600, 400, intervals2d, intervals2d);
 
   double sigma_squared = 2. * num_intervals;
   for (int ii = 0; ii < num_intervals; ++ii) {
@@ -213,9 +220,11 @@ void StGraphTestApp::testPlots() {
   // Run the graphics engine to display everything.
   engine.run();
 
-  // Clean up.
-  delete plot2; plot2 = 0;
-  delete plot1; plot1 = 0;
+  // Clean up. It would not hurt to delete the plots, but pf1's destructor will delete them automatically,
+  // if they were not already deleted.
+  // delete plot2; plot2 = 0;
+  // delete plot1; plot1 = 0;
+  // It *is* necessary to delete pf1, because otherwise this plot would be displayed again below.
   delete pf1; pf1 = 0;
 
   // Create rectangular 2d data.
@@ -252,10 +261,11 @@ void StGraphTestApp::testPlots() {
   // Run the graphics engine to display everything.
   engine.run();
 
-  // Clean up.
-  delete plot2;
-  delete plot1;
-  delete pf1;
+  // Clean up. It would not hurt to delete objects owned by mf, but mf's destructor will delete pf1 automatically,
+  // which in turn will delete the plots if they were not already deleted.
+  // delete plot2;
+  // delete plot1;
+  // delete pf1; pf1 = 0;
   delete mf;
 }
 
@@ -273,7 +283,8 @@ void StGraphTestApp::testGuis() {
         m_ok_button = m_engine.createButton(m_main_frame, this, "text", "OK");
       }
 
-      virtual ~MyGui() { delete m_ok_button; delete m_cancel_button; delete m_main_frame; }
+      // Not necessary to delete children widgets, because they will be deleted by main frame's destructor.
+      virtual ~MyGui() { delete m_main_frame; }
 
       virtual void run() {
         m_engine.run();
