@@ -4,13 +4,13 @@
 */
 
 #include "st_app/AppParGroup.h"
-#include "st_app/IApp.h"
+#include "st_app/StApp.h"
 
 namespace st_app {
 
-  // Construct parameter group, getting arguments from IApp and calling hoops base class.
+  // Construct parameter group, getting arguments from the application and calling hoops base class.
   AppParGroup::AppParGroup(const std::string & comp_name):
-    hoops::ParPromptGroup(IApp::getArgc(), IApp::getArgv(), comp_name) {}
+    hoops::ParPromptGroup(StApp::getArgc(), StApp::getArgv(), comp_name) {}
 
   // Copy construct parameter group.
   AppParGroup::AppParGroup(const AppParGroup & group): hoops::ParPromptGroup(group) {}
