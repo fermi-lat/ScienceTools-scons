@@ -29,7 +29,8 @@ namespace table {
           \param record The referent ConstTableRecord object.
           \param field The name of this TableCell (the field in the ConstTableRecord).
       */
-      TableCell(ConstTableRecord & record, const std::string & field): m_record(record), m_field(field) {}
+      TableCell(ConstTableRecord & record, const std::string & field): m_record(record), m_field(field),
+        m_field_index(s_field_unknown) {}
 
       virtual ~TableCell() {}
 
@@ -41,8 +42,10 @@ namespace table {
       void get(T & value) const;
 
     private:
+      static const FieldIndex_t s_field_unknown = -1;
       ConstTableRecord & m_record;
       std::string m_field;
+      FieldIndex_t m_field_index;
   };
 
   /** \class ConstTableRecord
@@ -183,8 +186,11 @@ namespace table {
 
   // TableCell
   template <typename T>
-  inline void TableCell::get(T & value) const
-    { m_record.getTabularData()->getCell(m_field, m_record.getIndex(), value); }
+  inline void TableCell::get(T & value) const {
+    if (m_field_index < 0)
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
+    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), value);
+  }
 
   // ConstTableRecord
   inline ConstTableRecord & ConstTableRecord::operator =(const ConstTableRecord & rec) {
