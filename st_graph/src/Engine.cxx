@@ -7,14 +7,11 @@
 
 namespace st_graph {
 
-  Engine * Engine::m_engine = 0;
-
   Engine::~Engine() {}
 
   Engine & Engine::instance() {
-    // The first time this is called, create the engine.
-    if (0 == m_engine) m_engine = new RootEngine;
-    return *m_engine;
+    static RootEngine s_engine;
+    return s_engine;
   }
 
   Engine::Engine() {}
