@@ -28,19 +28,27 @@ namespace st_graph {
     // Hook together Root primitives.
     TGCompositeFrame * root_frame = dynamic_cast<TGCompositeFrame *>(m_parent->getTGFrame());
     if (0 == root_frame)
-      throw std::logic_error("RootPlotFrame constructor was passed a parent frame which does not possess a Root frame");
+      throw std::logic_error("RootPlotFrame constructor was passed a parent frame which cannot contain other Root frames");
 
-    // Create Root TGCanvas which is suitable for embedding plots.
-    // The canvas *is* the m_frame -- will be deleted by the base class destructor.
-    m_canvas = new TRootEmbeddedCanvas(createRootName("TRootEmbeddedCanvas", this).c_str(), root_frame, width, height);
+    TGCanvas * top_canvas = new TGCanvas(root_frame, width, height);
 
-    root_frame->AddFrame(m_canvas);
-    m_canvas->GetCanvas()->SetFillColor(0);
+    TGViewPort * vp = top_canvas->GetViewPort();
 
-    m_frame = m_canvas;
+    root_frame->AddFrame(top_canvas);
+
+    // Create a special Root TGCanvas which is suitable for embedding plots.
+    TRootEmbeddedCanvas * plot_canvas = new TRootEmbeddedCanvas(createRootName("TRootEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight(), kFixedSize);
+
+    top_canvas->SetContainer(plot_canvas);
+
+    plot_canvas->SetAutoFit(kFALSE);
+
+    m_canvas = plot_canvas;
+
+    m_frame = top_canvas;
   }
 
-  // Note m_frame is deleted in the base class destructor.
+  // Note m_frame will be deleted in the base class destructor.
   RootPlotFrame::~RootPlotFrame() {
     // Note: This appears more complicated than necessary, but be careful changing it. Under some circumstances,
     // a RootPlot needs to delete its parent, but the parent will always attempt to delete the RootPlot in the
@@ -57,6 +65,7 @@ namespace st_graph {
       // Delete the child.
       delete *itor;
     }
+
     // Delete Root widgets.
     delete m_multi_graph;
     delete m_th2d;
