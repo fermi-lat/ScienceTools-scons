@@ -4,7 +4,7 @@ version v8r9p1
 author Sean Robinson <srobinsn@u.washington.edu>
 # $Id$
 
-use xml  v4r*
+use xml  v5r*
 use CLHEP v2* IExternal
 use astro v*
 use cfitsio * IExternal
