@@ -104,7 +104,7 @@ private:
   IFlux* m_flux;    // pointer the a flux object
   IFluxSvc* m_fsvc; // pointer to the flux Service 
  
-  char *m_run_number;
+  int m_loop;
   bool savef_root;
   bool savef_ascii;
   double TIME;
@@ -147,7 +147,7 @@ void GRBTest::help() {
     "      '-time <time in seconds>'    for the maximum time\n"
     "      '-list' lists the available spectra\n"
     "      '-root' <number of the run> to save the events in a ROOT tree"
-    "      '-ascii' to save the events in an asciifile"
+    "      '-ascii'<number of the run> to save the events in an asciifile"
     "      '-help' for this help"
 	    << std::endl;
 }
@@ -228,11 +228,12 @@ int GRBTest::Start(std::vector<char*> argv)
       else if("-root" == arg_name) {
 	cout<<" SAVE ROOT" <<endl;
 	savef_root=true;
-	m_run_number = argv[++current_arg];
+	m_loop = atoi(argv[++current_arg]);//argv[++current_arg];
       }
       else if("-ascii" == arg_name) {
 	cout<<" SAVE ASCII" <<endl;
 	savef_ascii=true;
+	m_loop = atoi(argv[++current_arg]);//argv[++current_arg];
       }
       
       else if('-' == arg_name[0]) {
@@ -254,8 +255,9 @@ int GRBTest::Start(std::vector<char*> argv)
   TTree* events;        
   TObjArray Forest(0);
   
-  //const char* name;
-  char name[50];
+  char* number;
+  char root_name[50];
+  char ascii_name[50];
   
   for(i = 0; i < num_sources; i++)
     {  
@@ -276,12 +278,25 @@ int GRBTest::Start(std::vector<char*> argv)
 	}
       cout<<" Source Name = "<<sources[i]<<endl;
       
+      if (m_loop<10) 
+	{
+	  sprintf(number,"00%d",m_loop);
+	}
+      else if (m_loop<100) 
+	{
+	  sprintf(number,"0%d",m_loop);
+	}
+      else
+	{
+	  sprintf(number,"%d",m_loop);
+	}
+      
       //name=const_cast<char *>(sources[i].c_str());
       //      name=m_source_name;
       if (savef_root==true)
 	{
-	  sprintf(name,"%s%s",sources[i].c_str(),m_run_number);
-	  events= new TTree(name,name);
+	  sprintf(root_name,"%s%s",sources[i].c_str(),number);
+	  events= new TTree(root_name,root_name);
 	  events->Branch("energy",&energy,"energy/D");
 	  events->Branch("time",&time,"time/D");
 	  events->Branch("Rate",&Rate,"Rate/D");
@@ -339,7 +354,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	      
 	      theData.push_back(myData);
 	    }
-	  if (nume%10==0){
+	  if (nume%1==0){
 	    cout<<
 	      "-------- Event Number: "<<nume<<"\n"<<
 	      " Time [s] = "<<t1<<"\n"<<
@@ -369,7 +384,7 @@ int GRBTest::Start(std::vector<char*> argv)
 	facilities::Util::expandEnvVar(&paramFile);
 	std::ofstream fout(paramFile.c_str(),ios::app);
 	fout<<t1<<endl;
-	fout<<(Area*1.0e+4)<<endl;
+	fout<<(fluence1)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence1/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence2/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
 	fout<<fluence3/(Area*1.0e+4)*(1.0/cst::erg2MeV)<<endl;
@@ -388,11 +403,13 @@ int GRBTest::Start(std::vector<char*> argv)
   
   if (savef_ascii==true)
     {
-      std::string photonList = "PhotonList.txt";
+      sprintf(ascii_name,"PhotonList%s.txt",number);
+      //      std::string photonList = "PhotonList.txt";
       //      std::ofstream phout(photonList.c_str(),ios::out);
       FILE *phout;
       
-      phout=fopen(photonList.c_str(),"w");
+      //      phout=fopen(photonList.c_str(),"w");
+      phout=fopen(ascii_name,"w");
       cout<<" Total Number Of Events = "<<theData.size()<<endl;
       std::vector<DataOut>::iterator itr;
       cout<<"Soting The Photon List..."<<endl;

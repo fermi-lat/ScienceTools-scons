@@ -158,6 +158,7 @@ StatusCode GRBTestAlg::execute() {
       if((*itr)=="ascii") 
 	{
 	  arguments.push_back("-ascii");
+	  arguments.push_back(arg3);
 	  cout<<" Saving the events in an ascii file..."<<endl;
 	}
     }
