@@ -154,7 +154,7 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
    Hep3Vector barycenter;
    double correction = 0;
    double last_correction = 1e20; // impossible value to force loop to iterate more than once
-   double eps = 0.000001;  // 1 nanosecond precision
+   double eps = 1e-6;  // 1 microsecond precision
    bool precision_not_met = true;
 
    for(int i = 0; precision_not_met && i < 10; i++)
