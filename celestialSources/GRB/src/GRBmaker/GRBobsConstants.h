@@ -12,7 +12,8 @@ namespace grbcst
 	const int     ndecs       = 3;
 	const int     binsperdec  = 5;
 	const int     nbins       = ndecs * binsperdec;
-	const int     ntotal      = 810;
+//	const int     ntotal      = 810;
+	const int     ntotal      = 667;
 
 	const double  dynrange    = 3;
 	const double  ethres      = 0.03;
