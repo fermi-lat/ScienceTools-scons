@@ -12,5 +12,6 @@
                               to standards.
     v0r3p0  07-mar-05   JP    Use utility classes from pulsarDb for handling
                               absolute times, and for database access.
+    v0r3p1  07-mar-05   JP    Requirements file was out-of-sync.
     @endverbatim
 */
