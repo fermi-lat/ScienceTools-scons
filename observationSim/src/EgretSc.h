@@ -38,8 +38,8 @@ public:
 
    EgretSc(double raz, double decz, double rax, double decx,
            double earthLon, double earthLat, int inSaa) :
-      m_zAxis(astro::SkyDir(raz, decz, astro::SkyDir::CELESTIAL)), 
-      m_xAxis(astro::SkyDir(rax, decx, astro::SkyDir::CELESTIAL)), 
+      m_zAxis(astro::SkyDir(raz, decz, astro::SkyDir::EQUATORIAL)), 
+      m_xAxis(astro::SkyDir(rax, decx, astro::SkyDir::EQUATORIAL)), 
       m_earthLon(earthLon), m_earthLat(earthLat), m_inSaa(inSaa) {}
 
    virtual ~EgretSc() {}

@@ -142,7 +142,7 @@ int EventContainer::addEvent(EventSource *event,
 
    LatSc latSpacecraft;
    HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
-   astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::CELESTIAL);
+   astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::EQUATORIAL);
 
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
@@ -189,7 +189,7 @@ astro::SkyDir EventContainer::ScZenith(double time) {
    return astro::SkyDir(Hep3Vector(cos(lat_zenith)*cos(lon_zenith),
                                    cos(lat_zenith)*sin(lon_zenith),
                                    sin(lat_zenith)),
-                        astro::SkyDir::CELESTIAL);
+                        astro::SkyDir::EQUATORIAL);
 }
 
 void EventContainer::writeEvents() {

@@ -11,7 +11,6 @@
 
 #include "astro/SkyDir.h"
 
-//#include "FluxSvc/../src/EventSource.h"
 #include "flux/EventSource.h"
 
 #include "observationSim/../src/LatSc.h"
@@ -33,7 +32,7 @@ bool Roi::operator()(EventSource *event) {
 // recover the source direction in J2000 coordinates.
    LatSc latSpacecraft;
    HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
-   astro::SkyDir sourceDir(rotMatrix(launchDir), astro::SkyDir::CELESTIAL);
+   astro::SkyDir sourceDir(rotMatrix(launchDir), astro::SkyDir::EQUATORIAL);
 
    double separation = sourceDir.difference(m_center)*180./M_PI;
 
