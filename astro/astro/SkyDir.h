@@ -50,6 +50,7 @@ namespace astro {
 
         //! function operator returns the direction
         Hep3Vector& operator () () {return m_dir;}
+        const Hep3Vector& operator () ()const  {return m_dir;}
         //! glactic l in degrees
         double l () const;
         //! glactic b in degrees
