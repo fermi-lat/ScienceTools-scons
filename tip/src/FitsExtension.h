@@ -35,6 +35,8 @@ namespace table {
 
       void close();
 
+      fitsfile * getFitsFp() const { return m_fp; }
+
     private:
       std::string m_file_name;
       std::string m_ext_name;

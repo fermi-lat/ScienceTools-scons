@@ -14,7 +14,7 @@ namespace table {
 
   FitsTabularData::FitsTabularData(const std::string & file_name, const std::string & table_name): ITabularData(),
     m_extension(file_name, table_name), m_col_info(), m_file_name(file_name), m_table_name(table_name),
-    m_fp(0), m_num_records(0) {
+    m_num_records(0) {
     int status = 0;
     long nrows = 0;
 
@@ -46,17 +46,14 @@ namespace table {
       }
     }
     // Note: status variable is non-0 here, but that is OK -- just remember that if any code gets added here!
-
-    m_fp = fp;
   }
 
   FitsTabularData::FitsTabularData(const FitsTabularData & table): ITabularData(), 
     m_extension(table.m_file_name, table.m_table_name), m_col_info(table.m_col_info), m_file_name(table.m_file_name),
-    m_table_name(table.m_table_name), m_fp(0), m_num_records(table.m_num_records) {
+    m_table_name(table.m_table_name), m_num_records(table.m_num_records) {
     // Copy construction requires that the new table opens the file itself separately.
     try {
-      fitsfile * fp = m_extension.open();
-      m_fp = fp;
+      m_extension.open();
     } catch(TableException & x) {
       m_col_info.clear();
       m_num_records = 0;
@@ -77,7 +74,7 @@ namespace table {
     int col_num = itor->second;
 
     // Read one value at a time.
-    fits_read_col(m_fp, TDOUBLE, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
+    fits_read_col(m_extension.getFitsFp(), TDOUBLE, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
   }
 
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {

@@ -52,7 +52,6 @@ namespace table {
       std::map<std::string, int> m_col_info;
       std::string m_file_name;
       std::string m_table_name;
-      fitsfile * m_fp;
       Index_t m_num_records;
   };
 
