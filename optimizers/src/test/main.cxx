@@ -13,7 +13,6 @@
 #include "optimizers/dArg.h"
 #include "optimizers/SumFunction.h"
 #include "optimizers/ProductFunction.h"
-#include "optimizers/Statistic.h"
 #include "optimizers/Optimizer.h"
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Minuit.h"

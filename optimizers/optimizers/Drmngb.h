@@ -9,7 +9,7 @@
 #define optimizers_drmngb_h
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Statistic.h"
+#include "optimizers/Function.h"
 #include <string>
 
 namespace optimizers {
@@ -57,7 +57,7 @@ namespace optimizers {
     
   public:
     
-    Drmngb(Statistic &stat) 
+    Drmngb(Function &stat) 
       {m_stat = &stat;}
     
     virtual ~Drmngb() {}
@@ -79,7 +79,7 @@ namespace optimizers {
 
   private:
     
-    Statistic *m_stat;
+    Function *m_stat;
     std::vector<double> m_uncertainty;
     int m_retCode;
 

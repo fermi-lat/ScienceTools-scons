@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 #include "optimizers/Parameter.h"
-#include "optimizers/Statistic.h"
+#include "optimizers/Function.h"
 #include "optimizers/Exception.h"
 
 namespace optimizers {
@@ -21,7 +21,7 @@ namespace optimizers {
  * @class Mcmc
  *
  * @brief Apply the Variable-at-a-Time Metropolis-Hastings algorthim
- * to the (free) Parameters of a Statistic object.
+ * to the (free) Parameters of a Function object.
  *
  * The transition probability distributions are specified along each
  * dimension by top-hat functions.  The widths of these top-hats may
@@ -35,7 +35,7 @@ namespace optimizers {
  * algorithm.
  *
  * Priors that are functions of the same set of Parameters in the form
- * of other Statistic objects can be applied.  As with the Statistic
+ * of other Function objects can be applied.  As with the Statistic
  * itself, these priors need not be normalized to unity.
  *
  * @author J. Chiang
@@ -47,10 +47,10 @@ class Mcmc {
 
 public:
 
-   Mcmc(Statistic &stat);
+   Mcmc(Function &stat);
    ~Mcmc() {}
 
-   void addPriors(std::vector<Statistic *> &priors) {m_priors = priors;}
+   void addPriors(std::vector<Function *> &priors) {m_priors = priors;}
 
    void generateSamples(std::vector< std::vector<double> > &samples,
                         unsigned long nsamp=1e4);
@@ -70,9 +70,9 @@ public:
 
 private:
 
-   Statistic *m_stat;
+   Function *m_stat;
 
-   std::vector<Statistic *> m_priors;
+   std::vector<Function *> m_priors;
 
    std::vector<double> m_transitionWidths;
 

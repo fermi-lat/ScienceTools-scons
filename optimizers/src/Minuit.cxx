@@ -7,6 +7,7 @@
  */
 
 #include <sstream>
+#include "optimizers/dArg.h"
 #include "optimizers/Minuit.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
@@ -14,7 +15,7 @@
 namespace optimizers {
 
 
-  Minuit::Minuit(Statistic& stat) : m_maxEval(200) {
+  Minuit::Minuit(Function& stat) : m_maxEval(200) {
     m_stat = &stat;
     const int i5=5, i6=6, i7=7;
     mninit_(&i5, &i6, &i7);
@@ -98,12 +99,13 @@ namespace optimizers {
       }
     }
 
-    // Put new parameter values back into the Statistic
+    // Put new parameter values back into the Function
     std::vector<double> paramValues;
     for (unsigned int i = 0; i < params.size(); i++) {
       paramValues.push_back(params[i].getValue());
     }
-    (*m_stat)(paramValues);
+//    (*m_stat)(paramValues);
+    m_stat->setFreeParamValues(paramValues);
 
     // Get information about quality of minimization
     int nVariable, nparx, minStat;
@@ -149,11 +151,14 @@ namespace optimizers {
     // What a hack!  Minuit thinks futil is a function 
     // pointer.  It's been hijacked to be a pointer to
     // m_stat, so this non-member function can use it.
-    Statistic * statp = static_cast<Statistic *>(futil);
-    *fcnval = -statp->value(parameters);
+    Function * statp = static_cast<Function *>(futil);
+//    *fcnval = -statp->value(parameters);
+    statp->setFreeParamValues(parameters);
+    dArg dummy(1.);
+    *fcnval = -statp->value(dummy);
     if (*iflag == 2) { // Return gradient values
       std::vector<double> gradient;
-      statp->getFreeDerivs(gradient);
+      statp->getFreeDerivs(dummy, gradient);
       for (int i=0; i < *npar; i++) {
 	grad[i] = -gradient[i];
       }

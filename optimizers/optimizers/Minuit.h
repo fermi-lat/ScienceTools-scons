@@ -9,7 +9,7 @@
 #define optimizers_MINUIT_H
 
 #include "optimizers/Optimizer.h"
-#include "optimizers/Statistic.h"
+#include "optimizers/Function.h"
 
 // These typedefs are copied from f2c.h.  Including f2c.h in 
 // C++ code is problematic.  Some of its macros have weird
@@ -62,7 +62,7 @@ namespace optimizers {
     
   public:
     
-    Minuit(Statistic &stat);
+    Minuit(Function &stat);
     
     virtual ~Minuit() {}
     
@@ -87,7 +87,7 @@ namespace optimizers {
 
   private:
     
-    Statistic *m_stat;
+    Function *m_stat;
     //! Pass a command string to Minuit
     int doCmd(std::string command);
     int m_maxEval;

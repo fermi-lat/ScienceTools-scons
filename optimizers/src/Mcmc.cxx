@@ -15,6 +15,7 @@
 #include <algorithm>
 #include "fitsio.h"
 #include "optimizers/Mcmc.h"
+#include "optimizers/dArg.h"
 #include "optimizers/Exception.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/JamesRandom.h"
@@ -22,13 +23,16 @@
 
 namespace optimizers {
 
-Mcmc::Mcmc(Statistic &stat) {
+Mcmc::Mcmc(Function &stat) {
    m_stat = &stat;
    estimateTransWidths();
 }
 
 void Mcmc::generateSamples(std::vector< std::vector<double> > &samples, 
                            unsigned long nsamp) {
+// Dummy Arg object required by Function methods:
+   dArg dummy(1.);
+
 // Get initial values of Parameters... 
    std::vector<double> paramValues;
    m_stat->getFreeParamValues(paramValues);
@@ -47,8 +51,11 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
          newParamValues[i] = drawValue(params[i], m_transitionWidths[i],
                                        transProbRatio);
 // Hastings ratio
-         double alpha = transProbRatio*exp(m_stat->value(newParamValues)
-                                           - m_stat->value(paramValues));
+         m_stat->setFreeParamValues(newParamValues);
+         double statValueNew = m_stat->value(dummy);
+         m_stat->setFreeParamValues(paramValues);
+         double statValue = m_stat->value(dummy);
+         double alpha = transProbRatio*exp(statValueNew - statValue);
 // Metropolis rejection criterion (Use CLHEP call here?)
 //          double drand = static_cast<double>(rand())
 //             /static_cast<double>(RAND_MAX);
@@ -136,7 +143,10 @@ void Mcmc::writeSamples(std::string filename,
 }
 
 void Mcmc::estimateTransWidths() {
-                               
+
+// Dummy Arg object for Function methods.
+   dArg dummy(1.);
+
    m_transitionWidths.clear();
 
 // Use an approximate Hessian to get estimates of each Parameters'
@@ -144,7 +154,7 @@ void Mcmc::estimateTransWidths() {
    std::vector<double> params;
    m_stat->getFreeParamValues(params);
    std::vector<double> derivs;
-   m_stat->getFreeDerivs(derivs);
+   m_stat->getFreeDerivs(dummy, derivs);
    double eps = 1e-5;
 
 // Estimate the diagonal elements of the Hessian
@@ -152,9 +162,10 @@ void Mcmc::estimateTransWidths() {
       std::vector<double> new_params = params;
       double delta = eps*params[i];
       new_params[i] += delta;
-      m_stat->value(new_params);
+      m_stat->setFreeParamValues(new_params);
+      m_stat->value(dummy);
       std::vector<double> new_derivs;
-      m_stat->getFreeDerivs(new_derivs);
+      m_stat->getFreeDerivs(dummy, new_derivs);
       double hessian = fabs((new_derivs[i] - derivs[i])/delta);
       m_transitionWidths.push_back(sqrt(1./hessian));
    }

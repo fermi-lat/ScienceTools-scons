@@ -9,6 +9,7 @@
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
+#include "optimizers/dArg.h"
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -31,6 +32,9 @@ namespace optimizers {
   {return m_errorString;}
 
   void Lbfgs::find_min(int verbose, double tol) {
+
+// dummy Arg object needed by Function methods
+     dArg dummy(1.);
 
     m_numEvals = 0;
     m_errorString.erase();
@@ -92,8 +96,9 @@ namespace optimizers {
       if (taskString.substr(0,2) == "FG") {
 	// Request for values of function and gradient.
 	// LBFGS is a minimizer, so we must flip the signs to maximize.
-	funcVal = -m_stat->value(paramVals);
-	m_stat->getFreeDerivs(gradient);
+         m_stat->setFreeParamValues(paramVals);
+         funcVal = -m_stat->value(dummy);
+	m_stat->getFreeDerivs(dummy, gradient);
 	for (int i = 0; i < nparams; i++) {
 	  gradient[i] = -gradient[i];
 	}
@@ -147,8 +152,9 @@ namespace optimizers {
 	 p != params.end(); p++, j++) {
       p->setValue(paramVals[j]);
     }
-    // Put parameter values back into the Statistic
-    (*m_stat)(paramVals);
+    // Put parameter values back into the objective Function
+//    (*m_stat)(paramVals);
+    m_stat->setFreeParamValues(paramVals);
   } // End of find_min
 }
 

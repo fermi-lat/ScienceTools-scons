@@ -6,8 +6,7 @@
  * $Header$
  */
 
-#include "optimizers/Statistic.h"
-#include "optimizers/Arg.h"
+#include "optimizers/Function.h"
 
 namespace optimizers {
 /** 
@@ -20,25 +19,16 @@ namespace optimizers {
  * $Header$
  */
     
-class Rosen : public Statistic {
+class Rosen : public Function {
 public:
 
    Rosen() : m_prefactor(100) {init();}
    Rosen(double prefactor) : m_prefactor(prefactor) {init();}
       
-   double value(const std::vector<double> &paramVec);
+   virtual double value(Arg&) const;
 
-   void getFreeDerivs(std::vector<double> &freeDerivs);
-
-   double derivByParam(Arg &, const std::string &paramName)
+   virtual double derivByParam(Arg &, const std::string &paramName) const
       throw(ParameterNotFound);
-
-   //! must re-implement here since this Statistic does not
-   //! comprise individual Sources
-   void setParams(std::vector<Parameter> &params) 
-      throw(Exception, ParameterNotFound) {
-      Function::setParams(params);
-   }
 
 private:
 

@@ -8,6 +8,7 @@
 #include "optimizers/Drmngb.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
+#include "optimizers/dArg.h"
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -26,6 +27,9 @@ namespace optimizers {
   }
   
   void Drmngb::find_min(int verbose, double tol) {
+
+// A dummy Arg object that is needed by Function methods.
+     dArg dummy(1);
 
     // Unpack model parameters into the arrays needed by Drmngb
     
@@ -65,10 +69,11 @@ namespace optimizers {
 	     &lv, &nparams, &v[0], &paramVals[0]);
       int value = iv[0];
       if (value == 1) { // request for a function value
-	funcVal = -m_stat->value(paramVals);
+         m_stat->setFreeParamValues(paramVals);
+	funcVal = -m_stat->value(dummy);
       }
       else if (value == 2) { // request for the gradient
-	m_stat->getFreeDerivs(gradient);
+	m_stat->getFreeDerivs(dummy, gradient);
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}
@@ -80,12 +85,13 @@ namespace optimizers {
       }
     }
 
-    // Get parameter values and put them back into the Statistic
+    // Get parameter values and put them back into the Function
     int j = 0;
     for (pptr p = params.begin(); p != params.end(); p++, j++) {
       p->setValue(paramVals[j]);
     }
-    (*m_stat)(paramVals);
+//    (*m_stat)(paramVals);
+    m_stat->setFreeParamValues(paramVals);
 
     // Get the Cholesky factor of the Hessian.  It's a lower triangular
     // matrix stored in compact fashion, so we treat it as 1-dimensional.
