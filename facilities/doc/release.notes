@@ -2,6 +2,7 @@
  * Package facilities
  * Coordinator: Toby Burnett
  *
+ * v2r4   15-Apr-2002  thb   hmk fixes
  * v2r3   09-Apr-2002  hmk   add new itoa routine
  * v2r2p1 20-Mar-2002  jrb   Fix for Windows compile
  * v2r2   19-Mar-2002  jrb   Add Util class
