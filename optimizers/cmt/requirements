@@ -1,5 +1,5 @@
 package optimizers
-version v0r6
+version v0r7
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
@@ -20,7 +20,8 @@ private
 #macro pydir ../python/
 
 # allow use of internal path
-macro optimizers_cppflags "" Linux "-I ../src -g -O -pedantic " WIN32 "/I..\src  /wd4290"
+macro optimizers_cppflags "" Linux "-I ../src -g -O -pedantic " \
+WIN32 "/I..\src  /wd4290"
 macro_prepend cflags "" Linux "-g -O "
 
 # this package uses obsolete C function names, beware	
