@@ -1,10 +1,9 @@
-/** \file ballistic_main.cxx
-    \brief Standard main for ballistic Science Tools applications. Applications should #include this
-    file, but precede the inclusion by a static definition of an object of a subclass of IApp.
+/** \file st_app_main.cxx
+    \brief Standard main for ballistic Science Tools applications.
     \author James Peachey, HEASARC
 */
 
-// Add floating point exception traps.
+// Add floating point exception traps if requested.
 #ifdef TRAP_FPE
 #include <fenv.h>
 #endif
@@ -14,12 +13,15 @@
 #include <typeinfo>
 
 #include "st_app/IApp.h"
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
 
 int main(int argc, char ** argv) {
   int status = 0;
+  st_app::IApp * this_i_app = 0;
+  st_app::StApp * this_st_app = 0;
 
   try {
-
 #ifdef TRAP_FPE
     // Add floating point exception traps.
     feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
@@ -29,31 +31,43 @@ int main(int argc, char ** argv) {
     // cannot/should not start.
     st_app::IApp::processCommandLine(argc, argv);
 
-    // Get a pointer to the singleton application. Client code must have instantiated a single
-    // instance of a subclass of IApp.
-    st_app::IApp * app = st_app::IApp::getApp();
+    // Process command line arguments. This will throw if the real application code
+    // cannot/should not start.
+    st_app::StApp::processCommandLine(argc, argv);
 
-    // Run application's setup code, if any.
-    app->setUp();
+    try {
+      // First, try getting the singleton IApp object:
+      this_i_app = st_app::IApp::getApp();
+    } catch(const std::logic_error & x) {
+      // OK, maybe the client is using StApp, not IApp:
+      try {
+        // Try using the singleton StAppFactory to create the application:
+        this_st_app = st_app::IStAppFactory::instance().createApp();
+      } catch(const std::logic_error & x) {
+        throw std::logic_error("Failed to get an IApp or StAppFactory singleton: client must define one");
+      }
+    }
 
     // Run the application.
-    app->run();
-
-    // Run application clean-up code, if any.
-    app->tearDown();
+    if (0 != this_i_app) this_i_app->run();
+    else if (0 != this_st_app) this_st_app->run();
 
   } catch (const std::exception & x) {
     // Return a non-zero exit code:
     status = 1;
 
     // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
+    const char * type_name = "std::exception";
     try {
-      const char * info = typeid(x).name();
-      std::cerr << "Caught " << info << " at the top level: " << x.what() << std::endl;
+      type_name = typeid(x).name();
     } catch (...) {
-      std::cerr << "Caught std::exception at the top level: " << x.what() << std::endl;
+      // Ignore problem with typeids.
     }
+    std::cerr << "Caught " << type_name << " at the top level: " << x.what() << std::endl;
   }
+
+  // Clean up:
+  delete this_st_app;
 
   return status;
 }
