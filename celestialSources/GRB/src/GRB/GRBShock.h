@@ -13,6 +13,7 @@
  *
  */
 
+#include <vector>
 #include "GRBShell.h"
 
 #ifndef GRBSHOCK_H
@@ -31,15 +32,16 @@ class GRBShock
    * to the first one. It also initializes several variables.
    * \param Sh1 front shell, the only one remaining after shock  
    * \param Sh2 back shell, deleted after shock.
+   * \param time instant of the shock in the local frame
    */
-  GRBShock(GRBShell*, GRBShell*);
+  GRBShock(GRBShell, GRBShell, double time);
 
   //! destructor
   ~GRBShock() { }
   
   //Accessors:
   //! The time is evaluated in the Shell reference frame
-  inline double time() {return m_time;}
+  //  inline double time() {return m_time;}
   //! This is the time seen by GLAST
   inline double tobs() {return m_tobs;}
   //! Radius of the resulting Shell 
@@ -91,12 +93,6 @@ class GRBShock
 
   //Set functions:
 
-  /*! \brief When the time is set also the observed time is calculated. 
-   * 
-   * The relation between the times in the two different reference frame is:
-   * \f$t_{obs}=t-r(t)/c\f$
-   */
-  inline void setTime(double value) {m_time = value;m_tobs=m_time-m_radius/cst::c;}
   /*! \brief Set the observer time (in the GLAST frame)
    */
   inline void setTobs(double value) {m_tobs = value;}
@@ -107,6 +103,7 @@ class GRBShock
 
   //! A printout utility.
   void Write();
+
   /*!\brief Calculates the synchrotron critical energy (in eV)
    * for an electron.
    *
@@ -114,6 +111,7 @@ class GRBShock
    * \param gammae is the Lorentz factor of the electron \f$\gamma_e\f$ 
     */
   double Esyn(double gammae);
+
   /*!\brief Calculates the Inverse Compton emission energy (in eV)
    *
    * If \f$h\nu_{in}\f$ is the energy of the incoming photon, and \f$\gamma_e\f$
@@ -126,15 +124,16 @@ class GRBShock
   /*!
    * Not yet implemented!
    */
-  double OpticalDepht(double energy);
+  double OpticalDepth(double energy);
   
   /*! \brief The synchrotron cooling time.
    *
    * It depends on the energy  of the observed photon.
    * \f$t_{syn}\propto B_{eq}^{-5/2}\sqrt{\Gamma_f/phenergy}\f$
    * \param phenergy is the energy of the observed photon
+   * \param B_field is the equipartition magnetic field
    */ 
-  double tsyn(double phenergy);
+  double tsyn(double phenergy, double B_field);
 
   /*! \brief Fast Rise Exponential Decay.
    *
@@ -151,11 +150,19 @@ class GRBShock
   double Fsyn(double ee, double tt);
   //! Calculate the Inverse compton part of the spectrum.
   double Fic(double ee, double tt);
+
+  void FluxSum(std::vector<double> energy_step,std::vector<double> energy,
+		 double time_step, bool flagIC);
+  
+  double FluxAtT(double energy, double time, bool flagIC);
   
  private:
-  GRBShell* Sh1;
-  GRBShell* Sh2;
-  double m_time;
+  //  double m_time;
+  /*! \brief When the time is set also the observed time is calculated. 
+   * 
+   * The relation between the times in the two different reference frame is:
+   * \f$t_{obs}=t-r(t)/c\f$
+   */
   double m_tobs;
   double m_radius;
   double m_mass;

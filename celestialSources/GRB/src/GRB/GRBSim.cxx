@@ -6,6 +6,10 @@
 #include <math.h>
 #include <string>
 #include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGeneral.h"
+#include "CLHEP/Random/RandExponential.h"
+#include "CLHEP/Random/RanluxEngine.h"
 #include "GRBSim.h"
 
 //for windows to know about exit()
@@ -22,9 +26,9 @@ using namespace std;
  */
 class ShockCmp{
 public:
-  bool operator()(GRBShock* Sho1, GRBShock* Sho2)
+  bool operator()(const GRBShock& Sho1, const GRBShock& Sho2)
   {
-    return Sho1->tobs()<Sho2->tobs();    
+    return Sho1.tobs() < Sho2.tobs();    
   }
 };
 /*------------------------------------------------------*/
@@ -39,12 +43,12 @@ GRBSim::GRBSim()
     {
       myParam=new GRBConstants();
     }
-      catch (char * s)
-	{
-	  std::cout<< "Failure initializing the GRB constants \n";
-	  //TODO LIST: still need to remove this, without getting a core dump!
-	  exit(1);
-	}  
+  catch (char * s)
+    {
+      std::cout<< "Failure initializing the GRB constants \n";
+      //TODO LIST: still need to remove this, without getting a core dump!
+      exit(1);
+    }  
   int i,imax;
   myParam->Print();
   //
@@ -53,7 +57,8 @@ GRBSim::GRBSim()
     {
       RandFlat::shoot(1.0);
     }
-  m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)-0.4,(RandFlat::shoot(1.0))*2*M_PI);
+  m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)
+			  -0.4,(RandFlat::shoot(1.0))*2*M_PI);
   
   double qo=(1.0+3.0*cst::wzel)/2.0;
   double Dist=(cst::c/(Hubble*1.0e+5)/pow(qo,2.0))*
@@ -80,37 +85,41 @@ GRBSim::GRBSim()
 /*------------------------------------------------------*/
 GRBSim::~GRBSim()
 {
-  //  delete theShells;
-  //  delete theShocks;
+  delete myParam;
   
   cout<<"*******Exiting The GRB Simulation ******"<<endl;
 }
 /*------------------------------------------------------*/
 
+
+double GRBSim::generateGamma(double gamma0,double dgamma) 
+{
+  HepRandom::setTheEngine(new RanluxEngine);
+  double gamma = gamma0 + (double (RandFlat::shoot(1.0)))*dgamma;
+  return gamma;
+}
+
 void GRBSim::Start() 
 {
    //! Step 1: Creation of the shells
   double ei = myParam->Etot()/myParam->Nshell(); //erg
-  double gi;
   int i;
   for(i=myParam->Nshell();i>0;i--) {
-    GRBShell* iShell = new GRBShell();
     
-    gi=iShell->generateGamma(myParam->Gamma0(),myParam->DGamma()); 
-    iShell->setGamma(gi);
+    double gi = generateGamma(myParam->Gamma0(),myParam->DGamma()); 
+    double m = ei/(gi*cst::c2); // Shell mass
+    double r = i*(myParam->R0())+myParam->T0(); //radius
+    GRBShell iShell(gi,m,myParam->T0(),r);
+    theShells.push_back(iShell);
 
-    iShell->setMass(ei/(iShell->Gamma()*cst::c2));
-    iShell->setThickness(myParam->T0());
-    iShell->setRadius(i*(myParam->R0())+myParam->T0());
     /*
       cout <<" Shell n: "<<myParam->Nshell()-(i-1)
       <<" Gamma= "<<iShell->Gamma()
       <<" Initiaml Radius "<<iShell->Radius()
       <<" Initial Thickness= " <<iShell->Thickness()<< endl;
     */
-    theShells.push_back(iShell);
   }
-  double ssum;
+
   double tmax = dt1*nstep; 
   double time = 0.0;
   int nshock=0;
@@ -119,16 +128,16 @@ void GRBSim::Start()
     {
       for(i=1;i<myParam->Nshell()-nshock;i++)
 	{
-	  theShells[i]->evolve(dt1);      
+	  theShells[i].evolve(dt1);      
 	}
       for(i=2;i<myParam->Nshell()-nshock;i++) 
 	{
-	  GRBShell* Sh1=theShells[i-1];
-	  GRBShell* Sh2=theShells[i];
-	  if(Sh1->Radius()<=(Sh2->Radius()+Sh2->Thickness())) 
+	  GRBShell Sh1 = theShells[i-1];
+	  GRBShell Sh2 = theShells[i];
+	  if(Sh1.getRadius()
+	     <= (Sh2.getRadius()+Sh2.getThickness())) 
 	    {
-	      GRBShock* iShock = new GRBShock(Sh1, Sh2);
-	      iShock->setTime(time);
+	      GRBShock iShock(Sh1, Sh2, time);
 	      theShocks.push_back(iShock);	
 	      theShells.erase(&theShells[i]);
 	      nshock++;
@@ -136,46 +145,33 @@ void GRBSim::Start()
 	}
       time+=dt1;
     }
-  cout<< "Number of Shocks = " <<nshock<< endl;
+  cout<< "Number of Shocks = " <<theShocks.size()<< endl;
   if (nshock==0) throw "No shock event created!";
   /*------------------------------------------------------*/
   /// Step 3: Sorting the shocks and setting t min=0
   std::sort(theShocks.begin(), theShocks.end(), ShockCmp());
-  double t0 = theShocks[0]->tobs();
-  
-  for(i=0;i<nshock;i++)
+
+  double t0 = (theShocks.front()).tobs();
+  std::vector<GRBShock>::iterator itr;
+  for(itr=theShocks.begin();itr != theShocks.end();++itr)
     {
-      double temp=theShocks[i]->tobs();
-      theShocks[i]->setTobs(temp-t0);
-      /*
-	cout<<"Shock num " << i << " @ time obs = " << theShocks[i]->tobs()<<endl;
-      */
+      //shift of the shock observeed times, so that first 
+      //is at tobs=0.
+      (*itr).setTobs( (*itr).tobs() - t0);
+    }
+  
+  // Warning: tmax redeclared here!!
+  GRBShock last = theShocks.back();
+
+  //Now compute the Flux sum produced in each Shock
+  m_tmax=1.2*last.tobs()+0.1;
+  double dt=m_tmax/nstep;
+  for(itr=theShocks.begin();itr != theShocks.end();++itr)
+    {
+      (*itr).FluxSum(m_de,m_energy,dt,false);
     }
 
-  // Warning: tmax redeclared here!!
-  m_tmax=1.2*theShocks[nshock-1]->tobs()+0.1;
-  double dt=m_tmax/nstep;
-  for(i=0;i<nshock;i++)
-    {
-      ssum=0.0;
-      for (int tt=0;tt<nstep;tt++)
-	{
-	  for (int en=0;en<enstep;en++)
-	    {
-	      // Fsyn & Fic are in erg/s/eV ; sum is in ergs
-	      ssum += (
-		       theShocks[i]->Fsyn(m_energy[en],tt*dt)
-		       +0.0*flagIC
-		       *theShocks[i]->Fic(m_energy[en],tt*dt)
-		       )
-		*m_de[en]*dt;
-	    }
-	}
-      theShocks[i]->setSum(ssum);
-      //   theShocks[i]->Write();
-    }
   m_DeadTime=1e-4;
-  //  TotalFlux();
 }
 
 void GRBSim::TotalFlux()
@@ -187,13 +183,15 @@ void GRBSim::TotalFlux()
   
   while (ti<=m_tmax)
     {
-      if (ii%100==0) cout<<"Time Max / Time = "<<m_tmax<<" - "<<ti<<endl;
+      if (ii%100==0) cout<<"Time Max / Time = "
+			 <<m_tmax<<" - "<<ti<<endl;
       ComputeFlux2(ti);
       m_Fvt.push_back(m_spectrum);
-      ti+=m_DeadTime;
+      ti += m_DeadTime;
       ii++;
     } 
 }
+
 void GRBSim::ComputeFlux2(double time)
 {
   double ti=0.0;
@@ -216,11 +214,11 @@ void GRBSim::ComputeFlux(double time)
   double sum;
   double temp;
   m_spectrum.clear();
-  
-  for (int en=0;en<enstep;en++)
-    {
-      m_spectrum.push_back(0.0);
-    }
+  m_spectrum.resize(enstep,0.);
+  //    for (int en=0;en<enstep;en++)
+  //{
+  // m_spectrum.push_back(0.0);
+  //}
   
   // ATTENZIONE!!
   if (time<=0.0) 
@@ -230,23 +228,21 @@ void GRBSim::ComputeFlux(double time)
     }
   if (time>m_tmax) time=m_tmax;
   //
-  for (int j=0;j<nshock;j++)
+  std::vector<GRBShock>::const_iterator itr;
+  for(itr=theShocks.begin();itr != theShocks.end();++itr)
     {
-      sum = theShocks[j]->Sum(); /// erg
-      //ATTENZIONE:
-      norma = (theShocks[j]->Eint())/(m_Area); //erg/cm^2
-      //norma=1.0;
-      for (int en=0;en<enstep;en++)
+      norma = ((*itr).Eint())/(m_Area); //erg/cm^2
+      std::vector<double>::iterator it;
+      int en=0;
+      for (it = m_spectrum.begin();it!=m_spectrum.end();++it)
 	{
-	  if(sum>0.0)
-	    {
-	      // temp is in erg/s/eV
-	      temp=(theShocks[j]->Fsyn(m_energy[en],time)+
-		    flagIC*theShocks[j]->Fic(m_energy[en],time));
-	      m_spectrum[en]+=(erg2MeV*1.0e+16)/m_energy[en]*(norma/sum)*temp;
-	      // (eV/erg) (1/eV) (erg/cm^2) (1/erg) (erg/s/eV) = 1/cm^2/s/eV
-	      // converted in ->photons/s/MeV/m^2
-	    }
+	  // temp is in erg/s/eV
+	  temp = (*itr).FluxAtT(m_energy[en],time,true);
+	  *it += (erg2MeV*1.0e+16)/m_energy[en]
+	    *norma*temp;
+	  // (eV/erg) (1/eV) (erg/cm^2) (1/erg) (erg/s/eV) = 1/cm^2/s/eV
+	  // converted in ->photons/s/MeV/m^2
+	  en++;
 	}
     }
 }
@@ -269,19 +265,19 @@ double GRBSim::IFlux(double enmin)
 /*------------------------------------------------------*/
 double GRBSim::IRate(double enmin)
 {
-  // flux of particles for energy > enmin
-  double flux=0.0;
+  // rate of particle arrivals for energy > enmin
+  double rate=0.0;
   for (int en=0;en<enstep;en++)
     {
       if(m_energy[en]>=enmin)
 	{  
-	  flux += m_spectrum[en]*(m_de[en])*(1.0e-6);
+	  rate += m_spectrum[en]*(m_de[en])*(1.0e-6);
 	  //ph/s/m^2
 	}
     }
   // ATTENZIONE!!
-  if (flux<=0.01) flux = 0.01;
-  return flux;  
+  if (rate<=0.01) rate = 0.01;
+  return rate;  
 }
 /*------------------------------------------------------*/
 double GRBSim::IEnergy(double enmin,double enmax)

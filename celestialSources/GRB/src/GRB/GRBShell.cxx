@@ -7,25 +7,16 @@
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
-#include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/RandGeneral.h"
-#include "CLHEP/Random/RandExponential.h"
-#include "CLHEP/Random/RandFlat.h"
-#include "CLHEP/Random/RanluxEngine.h"
 
 using namespace std;
 
-GRBShell::GRBShell() 
+GRBShell::GRBShell(double gamma, double mass,
+		   double thickness, double radius) 
+  : m_gamma(gamma), m_mass(mass),
+    m_thickness(thickness),m_radius(radius)
 { 
 }
 
-
-double GRBShell::generateGamma(double gamma0,double dgamma) 
-{
-  HepRandom::setTheEngine(new RanluxEngine);
-  double gamma = gamma0 + (double (RandFlat::shoot(1.0)))*dgamma;
-  return gamma;
-}
 
 
 double GRBShell::beta(const double gamma) 

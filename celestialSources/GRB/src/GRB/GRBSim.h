@@ -32,6 +32,15 @@ class GRBSim
   ~GRBSim();
 
   /*!
+   * \brief generate a random Lorentz factor.
+   *
+   * For a uniform random number \c u, the method returns \f$\Gamma_0+ud\Gamma\f$.
+   *\param gamma0 \f$\Gamma_0\f$
+   *\param dgamma \f$d\Gamma\f$
+   */
+  double    generateGamma(double gamma0, double dgamma);
+
+  /*!
   * \brief Starts the GRB simulation
   *
   * \arg Step 1: Creation of the shells
@@ -54,16 +63,21 @@ class GRBSim
   std::vector<double>    Energy()       {return m_energy;}
   //! Is the energy bin size in \f$eV\f$ (the energy is in log scale!)
   std::vector<double>    DeltaE()       {return m_de;}
+
   //! It conresponds to the time (in the GLAST frame) in which the burst ends
   double                 Tmax()         {return m_tmax;}
+
   /*! Is the Area of sphere having as radius 
    * the distance of the source (in \f$cm^2\f$)
    */ 
   double                 Area()         {return m_Area;}
+
   //!  Return the value of the flux (\f$ph/s/MeV/m^2\f$)
   double                 Flux(int en)   {return m_spectrum[en];}
+
   //! Return the \c en energy bin.
   double                 Energy(int en) {return m_energy[en];}
+
   /*! \brief Return the integrated flux (\f$eV/(m^2 s)\f$ for energy greather than \en enmin.
    *
    * It calculates the following integral:
@@ -71,8 +85,8 @@ class GRBSim
    * \param emin minimal energy below which no photon energy is drawn. This 
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
-
   double              IFlux(double enmin=cst::enph); 
+
   /*! \brief Return the integrated photon rate (\f$ ph/(m^2 s)\f$) for energy greather than enmin.
    *
    * It calculates the following integral:
@@ -81,6 +95,7 @@ class GRBSim
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
   double              IRate(double enmin=cst::enph);
+
   /*! \brief Integrated flux of energy for energy > enmin that flows in a time step dt
    *
    * \f[ \int_{enmin}^{enmax} \phi(E) E dE*dt\f], is in (\f$eV/m^2\f$)
@@ -101,14 +116,11 @@ class GRBSim
    */
   float DrawPhotonFromSpectrum(std::vector<double>, float u=0.0, double emin=cst::enph);
 
-  //  void ComputeIntervals();
-  //double FindInterval(double time);
-
 
  private:
   //data member
-  std::vector<GRBShell*> theShells;
-  std::vector<GRBShock*> theShocks;
+  std::vector<GRBShell> theShells;
+  std::vector<GRBShock> theShocks;
   std::vector<double>    m_energy, m_de, m_spectrum;
   std::vector<double>    m_intervals;
   std::pair<float,float> m_grbdir;

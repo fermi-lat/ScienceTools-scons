@@ -27,22 +27,23 @@ class GRBShell
    * the same fraction of the total energy released by the inner engine. 
    */
   //  GRBShell(double /*energy*/);
-  GRBShell();
+  GRBShell(double gamma, double mass, 
+	   double thickness, double radius);
 
   ~GRBShell() { }
   
   // Accessors to data member values:
-  inline double Mass()      {return m_mass;}
-  inline double Gamma()     {return m_gamma;}
-  inline double Thickness() {return m_thickness;}
-  inline double Radius()    {return m_radius;}
+  inline double getMass()      {return m_mass;}
+  inline double getGamma()     {return m_gamma;}
+  inline double getThickness() {return m_thickness;}
+  inline double getRadius()    {return m_radius;}
 
   /*! \brief computes and returns the comoving volume (in \f$cm^3\f$).
    *
    * The comoving volume is defined as 
    *\f$\Large{4\pi\times{thickness}\times{radius}^2\times\Gamma}\f$
    */
-  inline double VolCom()    {return 4.0*cst::pi*m_thickness*m_radius*m_radius*m_gamma;}
+  inline double getVolCom()    {return 4.0*cst::pi*m_thickness*m_radius*m_radius*m_gamma;}
   
   //Set functions: Should be more protected!!
   inline void setMass(double value)      {m_mass = value;}
@@ -52,15 +53,6 @@ class GRBShell
  
   //Higher  level functions:
 
-
-  /*!
-   * \brief generate a random Lorentz factor.
-   *
-   * For a uniform random number \c u, the method returns \f$\Gamma_0+ud\Gamma\f$.
-   *\param gamma0 \f$\Gamma_0\f$
-   *\param dgamma \f$d\Gamma\f$
-   */
-  double    generateGamma(double gamma0, double dgamma);
 
   /*! 
    * \retval  beta = \f$\sqrt{1-{1\over\Gamma^2}}\f$
