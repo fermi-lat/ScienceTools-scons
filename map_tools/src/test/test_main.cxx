@@ -1,7 +1,6 @@
 /** @file test_main.cxx
 @brief test various classes
 
-
 */
 #include "facilities/Util.h"
 #include "astro/SkyDir.h"
@@ -28,7 +27,7 @@ public:
 class TestPar : public Parameters {
 public:
     TestPar(int argc, char** argv): Parameters(argc, argv){
-        getDouble("xref");
+        getValue<double>("xref");
     }
 };
 

@@ -17,8 +17,8 @@ using namespace map_tools;
 class ReadPars : public MapParameters{
 public:
     ReadPars(int argc, char * argv[]): MapParameters(argc,argv){
-        getDouble("ra", 0);
-        getDouble("dec", 0);
+        getValue<double>("ra", 0);
+        getValue<double>("dec", 0);
     }
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

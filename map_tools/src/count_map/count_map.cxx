@@ -49,7 +49,7 @@ int main(int argc, char * argv[]) {
 
         // connect to  input data, specifying filter
         tuple::ITable::Factory& tableFactory = * tuple::ITable::Factory::instance();
-        tuple::ITable& table = *tableFactory( pars.eventFile() , "", pars.filter());
+        tuple::ITable& table = *tableFactory( pars.inputFile() , "", pars.filter());
 
         // create the image object
         SkyImage image(pars);

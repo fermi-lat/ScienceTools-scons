@@ -65,7 +65,7 @@ public:
             tstart = pars["tstart"], 
             tstop = pars["tstop"];
         tuple::ITable::Factory& factory = *tuple::ITable::Factory::instance();
-        tuple::ITable &tuple = *factory(pars.eventFile(),"Ext1");
+        tuple::ITable &tuple = *factory(pars.inputFile(),"Ext1");
 
         const double & ra = tuple.selectColumn("ra_scz");
         const double & dec = tuple.selectColumn("dec_scz");
