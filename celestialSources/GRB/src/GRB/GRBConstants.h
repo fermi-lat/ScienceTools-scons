@@ -29,31 +29,31 @@ namespace cst
   const double pi        = 3.1415926535897932385;
   const double Hubble    = 6.5e+1; 
   const double wzel      = 0.0;
-  const double gamma0    = 100.;
-  const double dgamma    = 500.;
+  //  const double gamma0    = 100.;
+  //  const double dgamma    = 500.;
   const double csi       = 0.1;
   const double alphae    = .33;
   const double alphab    = .33;
   const double p         = 2.5;
   const double viscosity = 0.;
   /// Internal Parameters
-  const double enmax     = 1.0e+12;
+  const double enmax     = 1.0e+20;
   //! Min. photon energy detectable by GLAST: set to 10 MeV
-  const double enph      = 1.0e+6; 
+  const double enph      = 1.0e+7; 
   const double enmin     = 1.0e+3;
   const double dt1       = 10000.;
   const int nstep        = 200;
-  const int enstep       = 50;
-  const double ch1L      = 2.0e+3;
-  const double ch1H      = 5.0e+3;
-  const double ch2L      = 5.0e+4;
-  const double ch2H      = 3.0e+5;
-  const double ch3L      = 2.5e+5;
-  const double ch3H      = 1.8e+6;
-  const double ch4L      = 2.0e+7;
-  const double ch4H      = 3.0e+11;
+  const int enstep       = 100;
+  const double ch1L      = 0.001e+9;
+  const double ch1H      = 0.0025e+9;
+  const double ch2L      = 0.0025e+9;
+  const double ch2H      = 0.005e+9;
+  const double ch3L      = 0.005e+9;
+  const double ch3H      = 0.01e+9;
+  const double ch4L      = 0.01e+9;
+  const double ch4H      = 1.00e+9;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 0.05; 
+  const float flagIC     = 1.0; 
 }
 
 class GRBConstants 
@@ -73,7 +73,7 @@ class GRBConstants
   
   //! redshift of the source
   inline double Redshift() {return redshift;}
-  inline void setRedshift(double value){redshift=value;}
+  inline void setRedshift(double value=1.0){redshift=value;}
   
   //! Total Energy available (ergs)
   inline double Etot(){return etot;}
@@ -86,12 +86,22 @@ class GRBConstants
   //! Initial thickness of the shells (cm)
   inline double T0(){return t0;}
   inline void setT0(double value){t0=value;}
-
+  
+  //! Minimum Lorentz factor of the shells (cm)
+  inline double Gamma0(){return g0;}
+  inline void setGamma0(double value=100.0){g0=value;}
+  
+  //! Maximum Lorentz factor of the shells (cm)
+  inline double DGamma(){return g1;}
+  inline void setDGamma(double value=100.0){g1=value;}
+  
+  
   int nshell;
   double redshift;
   double etot;
   double r0;
   double t0;
+  double g0,g1;
 
 };
 

@@ -111,9 +111,6 @@ double GRBShock::fred(double ee,double tt)
 {
   double decayt;
   double riset;
-  // ATTENZIONE!!
-  //riset=5.0e-2;
-  //
   double Emax=Esyn(m_gemax);
   double Emin=Esyn(m_gecoo);
   //riset=(m_riset);//*(1.0+(Emax-ee)/(Emax-Emin)));
@@ -149,55 +146,11 @@ double GRBShock::fred(double ee,double tt)
 	  return (exp(-(tt-tp)/decayt))/norma;
 	}
 }
-/*
-// questa e` una prova
-double GRBShock::fred(double ee,double tt)
-{
-  double decayt;
-  double riset;
-  // ATTENZIONE!!
-  riset=1.0e-1;
-  //
-  //riset=(m_riset*sqrt(1.0e+10/pow(ee,2.0)));
-  
-  double tp=m_tobs+riset;
-  
-  if (tsyn(ee)>riset){
-    decayt=tsyn(ee);
-  }  else {
-    decayt=riset;
-  } 
-  double norma=(riset/2.0+decayt);
-  //  double norma=decayt+riset-(riset*exp((m_tobs-tp)/riset));
-  
-  //  cout<<" "<<decayt<<" "<<riset<<" "<<tp<<" "<<norma<<endl;
-  if (norma <=0) 
-    {
-      return 0.0;
-    }  
-  
-  else if (tt<=m_tobs)
-    {
-      return 0.0;
-    } else if (tt<=tp)
-      {
-	return 1.0;
-	//	return (exp(-(tp-tt)/riset))/norma;
-	//	return (tt-m_tobs)/(riset*norma);
-      } else 
-	{
-	  return 0.0;
-	  //	  return (exp(-(tt-tp)/decayt))/norma;
-	}
-}
-*/
 
 double GRBShock::Fsyn(double ee,double tt)
 {
   if (m_sum<=0) return 0.0;
   double fmax=m_Beq*pow(m_gf,2);
-  //ATTENZIONE:
-  //fmax=1.0;
   //erg/s/eV
   double flux;
   if (Esyn(m_gemin)>=Esyn(m_gecoo))
@@ -213,7 +166,7 @@ double GRBShock::Fsyn(double ee,double tt)
 	flux = 0.0;
     } else 
       { 
-	cout<<"Slow Cooling"<<endl;
+	//	cout<<"Slow Cooling"<<endl;
 	if (ee<=Esyn(m_gemin))   
 	  flux = pow(ee/Esyn(m_gemin),1/3);
 	else if (ee<=Esyn(m_gecoo)) 
@@ -260,7 +213,7 @@ double GRBShock::Fic(double ee,double tt)
     } 
   else 
     {
-      cout<<"IC SLOW Cooling"<<endl;
+      //      cout<<"IC SLOW Cooling"<<endl;
       
       if (ee<=Eic(m_gemin))
 	flux = pow(ee/Eic(m_gemin),1/3);

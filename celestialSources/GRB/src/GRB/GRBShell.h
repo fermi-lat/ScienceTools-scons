@@ -26,7 +26,8 @@ class GRBShell
    * \param E energy of the shell (in erg). In practice, all created shells share
    * the same fraction of the total energy released by the inner engine. 
    */
-  GRBShell(double /*energy*/);
+  //  GRBShell(double /*energy*/);
+  GRBShell();
 
   ~GRBShell() { }
   

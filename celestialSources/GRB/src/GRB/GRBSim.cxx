@@ -32,6 +32,8 @@ public:
 
 GRBSim::GRBSim()
 {
+  //  time_t ctime;
+  // tm* gt=gmtime(&ctime);
   cout<<"******Staring The GRB Simulation******"<<endl;
   try
     {
@@ -43,7 +45,15 @@ GRBSim::GRBSim()
 	  //TODO LIST: still need to remove this, without getting a core dump!
 	  exit(1);
 	}  
-
+  //  cout<<"Current time = "<<gt->tm_hour-1<<":"<<gt->tm_min<<":"<<gt->tm_sec<<endl;
+  int i,imax;
+  //  imax=(gt->tm_hour-1+gt->tm_min+gt->tm_sec);
+  imax=myParam->Nshell();
+  for (i=0;i<=imax;i++)
+    {
+      cout<<imax<<endl;
+      cout<<RandFlat::shoot(1.0)<<endl;
+    }
   m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)-0.4,(RandFlat::shoot(1.0))*2*M_PI);
   
   double qo=(1.0+3.0*cst::wzel)/2.0;
@@ -73,6 +83,7 @@ GRBSim::~GRBSim()
 {
   //  delete theShells;
   //  delete theShocks;
+  
   cout<<"*******Exiting The GRB Simulation ******"<<endl;
 }
 /*------------------------------------------------------*/
@@ -81,9 +92,16 @@ void GRBSim::Start()
 {
    //! Step 1: Creation of the shells
   double ei = myParam->Etot()/myParam->Nshell(); //erg
+  double gi;
   int i;
   for(i=myParam->Nshell();i>0;i--) {
-    GRBShell* iShell = new GRBShell(ei);
+    GRBShell* iShell = new GRBShell();
+    
+    gi=iShell->generateGamma(myParam->Gamma0(),myParam->DGamma()); 
+    cout<<gi<<endl;
+    iShell->setGamma(gi);
+
+    iShell->setMass(ei/(iShell->Gamma()*cst::c2));
     iShell->setThickness(myParam->T0());
     iShell->setRadius(i*(myParam->R0())+myParam->T0());
    
@@ -200,7 +218,6 @@ void GRBSim::ComputeFlux2(double time)
 /*------------------------------------------------------*/
 void GRBSim::ComputeFlux(double time)
 {
-  //  cout<<"ComputeFlux2(time)"<<endl;
   int nshock=theShocks.size();
   double norma;
   double sum;
@@ -338,6 +355,7 @@ double GRBSim::FindInterval(double time)
 
 float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, double emin)
 {
+  cout<<" Energy Min ="<<emin<<endl;
   int nbins = spctrmVec.size();
   if(nbins==0) return 0.0;
     
@@ -350,7 +368,7 @@ float GRBSim::DrawPhotonFromSpectrum(std::vector<double> spctrmVec, float u, dou
     {
       if(m_energy[ebin] > emin)
         {
-          minbin = ebin;
+          minbin = ebin; 
           break;
         }
     }

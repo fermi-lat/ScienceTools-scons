@@ -19,7 +19,9 @@ GRBConstants::GRBConstants()
 }
 
 void GRBConstants::ReadParam(){
+  cout<<"read parameters"<<endl;
   char buf[100];
+  double g0,g1;
   std::string paramFile = "$(GRBROOT)/src/test/GRBParam.txt";
   facilities::Util::expandEnvVar(&paramFile);
   ifstream f1(paramFile.c_str());
@@ -50,6 +52,18 @@ void GRBConstants::ReadParam(){
   f1.getline(buf,100);
   sscanf(buf,"%lf",&t0);
   setT0(t0);
+  
+  f1.getline(buf,100);
+  sscanf(buf,"%lf",&g0);
+  setGamma0(g0);
+  
+  f1.getline(buf,100);
+  sscanf(buf,"%lf",&g1);
+  setDGamma(g1);
+  cout<<g0<<"  "<<g1<<endl;
+  
+      
   f1.close();
+
 }
 

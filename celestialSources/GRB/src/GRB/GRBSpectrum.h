@@ -16,8 +16,7 @@
 #include <string>
 #include <map>
 #include <cmath>
-#include "FluxSvc/mainpage.h"
-#include "FluxSvc/Spectrum.h"
+#include "src/Spectrum.h"
 #include "facilities/Observer.h"
 #include "src/GPS.h"
 #include "CLHEP/Random/RandomEngine.h"
@@ -42,9 +41,14 @@ class GRBSpectrum : public Spectrum
   //! returns rate, for a given time;
   double rate(double time)const;
 
-  //! return the time interval
+  /*! \brief Returns the time interval
+   *
+   * Given \f$t_0\f$, it computes \f$t_1\f$ for which \f$\int_{t_0}^{t_1}1/Rate(t)dt=1\f$
+   * and returns the time interval \f$t_1-t_0\f$
+   */
   double interval(double time)const;
   // {return 1/rate(time);}
+
   //! returns the solid angle spanned by the source: set to 1.0 for GRBs.
   double solidAngle() const;
   

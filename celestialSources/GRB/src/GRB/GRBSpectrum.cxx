@@ -8,15 +8,15 @@
 #include <math.h>
 
 // define a factory for anonymous instantiation
-#include "FluxSvc/SpectrumFactory.h"
+#include "src/SpectrumFactory.h"
 
 static SpectrumFactory<GRBSpectrum> factory;
 const ISpectrumFactory& GRBSpectrumFactory = factory;
 
 GRBSpectrum::GRBSpectrum(const std::string& params) 
 {
+  std::cout<<"FUCK"<<std::endl;
   m_grbsim = new GRBSim();
-  
   int flag=0;
   while(flag==0)
     {
@@ -47,7 +47,6 @@ double GRBSpectrum::solidAngle() const
 ///return flux, given a time
 double GRBSpectrum::flux(double time) const
 {
-  //    cout<<"Flux!!"<<endl;
   //  double rateout;
   m_grbsim->ComputeFlux(time);
   /// test to implement the right rate...
@@ -57,7 +56,6 @@ double GRBSpectrum::flux(double time) const
 
 double GRBSpectrum::rate(double time) const
 {
-  //  cout<<"Rate!!"<<endl;
   m_grbsim->ComputeFlux(time);
   /// test to implement the right rate...
   // if (m_grbsim->IRate()<=0.1?rateout=0.1:rateout=m_grbsim->IRate());
@@ -73,7 +71,6 @@ double GRBSpectrum::interval(double time) const
 */
 double GRBSpectrum::interval(double time) const
 {
-  //  cout<<"INTERVAL !!"<<endl;
   /// test to implement the right rate...
   double sum=0.0;
   double temp;
@@ -113,6 +110,7 @@ double GRBSpectrum::energySrc(HepRandomEngine* engine, double time)
 
 float GRBSpectrum::operator() (float u) const
 {
+ 
   float energy = m_grbsim->DrawPhotonFromSpectrum(m_spectrum, u);
   return (float) energy;
 }
