@@ -15,7 +15,6 @@ typedef void (*sighandler_t) (int);
 #include "TApplication.h"
 #include "TGButton.h"
 #include "TGClient.h"
-#include "TGWindow.h"
 #include "TStyle.h"
 #include "TSystem.h"
 
@@ -26,6 +25,7 @@ typedef void (*sighandler_t) (int);
 #include "RootFrame.h"
 #include "RootPlot.h"
 #include "RootPlotFrame.h"
+#include "STGLayoutManager.h"
 #include "STGMainFrame.h"
 
 namespace st_graph {
@@ -114,13 +114,16 @@ namespace st_graph {
     if (0 == receiver) receiver = &s_default_receiver;
 
     // Create the Root widget.
-    STGMainFrame * tg_widget = new STGMainFrame(this, width, height);
+    STGMainFrame * tg_widget = new STGMainFrame(width, height);
 
     // Give window manager a hint about where to display it.
     tg_widget->SetWMPosition(100, 50);
 
     // Create the IFrame which refers to it.
     RootFrame * frame = new RootFrame(receiver, tg_widget);
+
+    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     // Connect appropriate Root Qt signals to this object's slot.
     tg_widget->Connect("CloseWindow()", "st_graph::RootFrame", frame, "closeWindow()");
