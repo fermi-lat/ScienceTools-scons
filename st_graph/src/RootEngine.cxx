@@ -2,12 +2,14 @@
     \brief Implementation of class which encapsulates the Root graphics implementation.
     \author James Peachey, HEASARC/GSSC
 */
+#include <cctype>
 #include <cstdlib>
 #include <csignal>
 #include <stdexcept>
 #include <vector>
 
 #include "TApplication.h"
+#include "TGButton.h"
 #include "TGClient.h"
 #include "TGWindow.h"
 #include "TSystem.h"
@@ -74,6 +76,10 @@ namespace st_graph {
     gApplication->Run(kTRUE);
   }
 
+  void RootEngine::stop() {
+    gApplication->Terminate(0);
+  }
+
   IFrame * RootEngine::createMainFrame(unsigned int width, unsigned int height) {
     RootFrame * main_frame = new RootFrame(RootFrame::ancestor(), new STGMainFrame(this, width, height));
     return main_frame;
@@ -98,6 +104,25 @@ namespace st_graph {
 
   IFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
     return new RootPlotFrame(parent, width, height);
+  }
+
+  IFrame * RootEngine::createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
+    const std::string & label) {
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createButton was passed an invalid parent frame pointer");
+
+    IFrame * retval = 0;
+
+    // Make style check case insensitive.
+    std::string lc_style = style;
+    for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
+
+    if (std::string::npos != lc_style.find("text")) {
+      retval = new RootFrame(parent, receiver, new TGTextButton(rf->getTGFrame(), label.c_str()));
+    } else { 
+      throw std::logic_error("RootEngine::createButton cannot create a button with style " + style);
+    }
+    return retval;
   }
 
   void RootEngine::addFrame(IFrame * frame) {

@@ -12,6 +12,8 @@
 
 namespace st_graph {
 
+  class IEventReceiver;
+
   /** \class Engine
       \brief Interface which encapsulates a particular graphics implementation. This singleton has two purposes:
       1. It is an abstract factory for graphical objects, and 2. It has a run() method which causes the graphical
@@ -26,6 +28,9 @@ namespace st_graph {
 
       /// \brief Run the graphics engine, displaying all graphical objects currently constructed.
       virtual void run() = 0;
+
+      /// \brief Stop the graphics engine, undisplaying all graphical objects currently constructed.
+      virtual void stop() = 0;
 
       /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
           \param width The width of the plot window.
@@ -74,6 +79,9 @@ namespace st_graph {
           \param height The height of the frame in pixels.
       */
       virtual IFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) = 0;
+
+      virtual IFrame * createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
+        const std::string & text) = 0;
 
     protected:
       /// \brief Create an engine.

@@ -32,6 +32,9 @@ namespace st_graph {
       */
       virtual void run();
 
+      /// \brief Stop the graphics engine, undisplaying all graphical objects currently constructed.
+      virtual void stop();
+
       /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
           \param width The width of the plot window.
           \param height The height of the plot window.
@@ -78,6 +81,9 @@ namespace st_graph {
           \param height The height of the frame in pixels.
       */
       virtual IFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
+
+      virtual IFrame * createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
+        const std::string & label);
 
       /** \brief Register a frame with the engine. This allows the engine to display or hide
           its associated graphical frames (Root-implementation-specific)
