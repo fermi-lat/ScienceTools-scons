@@ -70,7 +70,7 @@ public:
     //! create object with specified binning
     //! @param pixelsize (deg) Approximate pixel size, in degrees
     //! @param cosbinsize bin size in the cos(theta) binner
-    Exposure(double pixelsize=1., double cosbinsize=1/40);
+    Exposure(double pixelsize=1., double cosbinsize=1./CosineBinner::s_nbins);
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);

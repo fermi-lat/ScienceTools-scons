@@ -63,21 +63,16 @@ public:
     ~ExposureCubeApp() throw() {} // required by StApp with gcc
 
     //--------------------------------------------------------------------------
-    void LoadExposureFromGlast( const Parameters& pars,   Exposure& exp )
+    void loadExposureWithGPS(Exposure& exp, const std::string& inputFile, const Exposure::GTIvector& gti )
     {
 
         double 
-            tstart = pars["tstart"], 
-            tstop = pars["tstop"];
+            tstart = gti.front().first,
+            tstop = gti.front().second;
 
-        bool isText = pars.inputFile().find(".txt") != std::string::npos;
-        bool avoid_saa = pars["avoid_saa"]!=0;
-
-        m_f.info() << "Opening " << (isText? "text":"FITS") << " format pointing history file " 
-                << pars.inputFile() << std::endl;
         // read from text or FITS file here
         GPS& gps = *GPS::instance();
-        gps.setPointingHistoryFile(pars.inputFile());
+        gps.setPointingHistoryFile(inputFile);
         const std::map<double,GPS::POINTINFO>& history = gps.getHistory();
         GPS::history_iterator mit = history.begin(), next=mit;
         double begintime=mit->first;
@@ -92,12 +87,12 @@ public:
             if( t < tstart) continue;
             if( t > tstop) break;
             total++;
-            if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
+//            if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
             added++;
             exp.fill( pt.dirZ, deltat);
         }
 
-        m_f.info() << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
+        m_f.info() << "Number of steps added: " << added << ", rejected: "<< (total-added) << std::endl;
         m_f.info() << "Total elapsed time: " << deltat*total << " seconds." << std::endl;
         return;
     }
@@ -111,8 +106,18 @@ public:
         Exposure::GTIvector gti; 
         gti.push_back(std::make_pair(m_pars["tstart"],m_pars["tstop"]));
         m_f.info() << "Creating an exposure object from a pointing history file ..." << m_pars.inputFile() << std::endl;
-        tip::Table * scData = tip::IFileSvc::instance().editTable(m_pars.inputFile(), m_pars.table_name());
-        ex.load(scData, gti);
+
+        bool isText = m_pars.inputFile().find(".txt") != std::string::npos;
+
+        m_f.info() << "Opening " << (isText? "text":"FITS") << " format pointing history file " 
+                << m_pars.inputFile() << std::endl;
+
+        if( isText ) {
+            loadExposureWithGPS(ex, m_pars.inputFile(), gti);
+        }else{
+            tip::Table * scData = tip::IFileSvc::instance().editTable(m_pars.inputFile(), m_pars.table_name());
+            ex.load(scData, gti);
+        }
 
         // create the fits output file from the Exposure file
         m_f.info() 
@@ -143,7 +148,8 @@ Create a special "exposure cube".
   - (lat, lon)
   - altitude (m)
 
--Output: a FITS hypercube, defined by the parameter file, 
+-Output: a FITS table with HEALpix pixelization, defined by the parameter file, to be read by
+the exposure_map utility.
 
 @verbinclude exposure_cube.par
 
