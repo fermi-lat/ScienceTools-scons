@@ -8,12 +8,9 @@
 #include <string>
 #include <vector>
 
+#include "st_graph/Axis.h"
 #include "st_graph/IPlot.h"
 #include "st_graph/Sequence.h"
-
-class TGraph;
-class TH2D;
-class TMultiGraph;
 
 namespace st_graph {
 
@@ -32,8 +29,9 @@ namespace st_graph {
                  a histogram or scatter plot, respectively.
           \param x The first dimension.
           \param y The second dimension.
+          \param delete_parent Flag indicating plot owns (and should delete) parent.
       */
-      RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y);
+      RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent = false);
 
       /** \brief Construct a RootPlot object.
           \param parent The parent frame.
@@ -41,42 +39,51 @@ namespace st_graph {
           \param x The first dimension.
           \param y The second dimension.
           \param z The third dimension.
+          \param delete_parent Flag indicating plot owns (and should delete) parent.
       */
       RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
-        const std::vector<std::vector<double> > & z);
+        const std::vector<std::vector<double> > & z, bool delete_parent = false);
 
       virtual ~RootPlot();
 
-      /// \brief Display this plot.
-      virtual void display();
+      /// \brief Get the sequences this plot represents.
+      virtual const std::vector<const ISequence *> getSequences() const;
 
-      /// \brief Hide this plot.
-      virtual void unDisplay();
+      /// \brief Get the data represented by this plot. If plot does not have this type of data an exception will be thrown.
+      virtual const std::vector<std::vector<double> > & getZData() const;
 
-      /** \brief Create histogram plot as a Root object. Not part of API.
-          \param x The first dimension.
-          \param y The second dimension.
+      /// \brief Get the number of dimensions of the plot, currently either 2 or 3.
+      virtual unsigned int getDimensionality() const { return m_dimensionality; }
+
+      /// \brief Get this plot's axes objects, with modification rights.
+      virtual std::vector<Axis> & getAxes();
+
+      /// \brief Get this plot's axes objects, without modification rights.
+      virtual const std::vector<Axis> & getAxes() const;
+
+      /// \brief Return a string describing the plot style, e.g. hist, scat, lego, surf, etc.
+      const std::string & getStyle() const;
+
+      /** \brief Set the plot style.
+          \param style The new style. This string will be converted to all lower case, and rationalized.
       */
-      TGraph * createHistPlot(const ISequence & x, const ISequence & y);
+      void setStyle(const std::string & style);
 
-      /** \brief Create scatter plot as a Root object. Not part of API.
-          \param x The first dimension.
-          \param y The second dimension.
+      /** \brief Set the frame which is parent to this plot.
+          \param parent The new parent.
       */
-      TGraph * createScatterPlot(const ISequence & x, const ISequence & y);
-
-      TH2D * createHistPlot2D(const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z);
-
-      /** \brief Return current Root graphical object. Not part of API.
-      */
-      TGraph * getTGraph();
+      void setParent(RootPlotFrame * parent);
 
     private:
+      std::vector<Axis> m_axes;
+      std::vector<const ISequence *> m_seq_cont;
+      std::string m_style;
+      unsigned int m_dimensionality;
       RootPlotFrame * m_parent;
-      TMultiGraph * m_multi_graph;
-      TGraph * m_graph;
-      TH2D * m_th2d;
+      const std::vector<std::vector<double> > * m_z_data;
+      bool m_delete_parent;
   };
+
 }
 
 #endif

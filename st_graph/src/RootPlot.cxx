@@ -8,12 +8,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include "TGraph.h"
-#include "TGraphAsymmErrors.h"
-#include "TGraphErrors.h"
-#include "TH2.h"
-#include "TMultiGraph.h"
-
 #include "RootPlot.h"
 #include "RootPlotFrame.h"
 
@@ -22,12 +16,8 @@
 
 namespace st_graph {
 
-  RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y): m_parent(0),
-    m_multi_graph(0), m_graph(0), m_th2d(0) {
-// TODO 2. Alter RootPlotFrame::addFrame so it calls back to this class. That allows this class to call
-//         TMultiGraph::Add(graph, opt) with display options when addFrame is called.
-// TODO 3. Remove call to addFrame in the constructor?
-// TODO 4. Change unDisplay to call TMultiGraph::RecursiveRemove or whatever.
+  RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent):
+    m_axes(3), m_seq_cont(0), m_style(), m_dimensionality(2), m_parent(0), m_z_data(0), m_delete_parent(delete_parent) {
     // Get the parent multi frame so that the plot can be added with desired style.
     m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
@@ -35,28 +25,18 @@ namespace st_graph {
     // Sanity check.
     if (x.size() != y.size()) throw std::logic_error("RootPlot constructor: x and y sequence do not have same size");
 
-    // Convert style string to lower case.
-    std::string lc_style = style;
-    for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
+    setStyle(style);
 
-    m_multi_graph = m_parent->getMultiGraph();
-
-    if (0 == m_multi_graph) throw std::runtime_error("RootPlot constructor: cannot get embedding Root frame from parent");
-
-    if (std::string::npos != lc_style.find("hist")) {
-      m_graph = createHistPlot(x, y);
-    } else if (std::string::npos != lc_style.find("scat")) {
-      m_graph = createScatterPlot(x, y);
-    } else {
-      throw std::logic_error("RootPlot constructor: unknown plot style \"" + style + "\"");
-    }
+    m_seq_cont.push_back(x.clone());
+    m_seq_cont.push_back(y.clone());
 
     // Add this plot to parent's container of plots, allowing for auto-delete.
     m_parent->addPlot(this);
   }
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
-    const std::vector<std::vector<double> > & z): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
+    const std::vector<std::vector<double> > & z, bool delete_parent): m_axes(3), m_seq_cont(0), m_style(), m_dimensionality(3),
+    m_parent(0), m_z_data(&z), m_delete_parent(delete_parent) {
     // Get the parent multi frame so that the plot can be added with desired style.
     m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
@@ -67,172 +47,68 @@ namespace st_graph {
     if (y.size() != z.begin()->size())
       throw std::logic_error("RootPlot constructor: y sequence and second data dimension do not have same size");
 
-    // Convert style string to lower case.
-    std::string lc_style = style;
-    for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
+    setStyle(style);
 
-    m_th2d = createHistPlot2D(x, y, z);
+    m_seq_cont.push_back(x.clone());
+    m_seq_cont.push_back(y.clone());
 
     // Add this plot to parent's container of plots, allowing for auto-delete.
     m_parent->addPlot(this);
   }
 
   RootPlot::~RootPlot() {
-    m_parent->removePlot(this);
-    delete m_th2d;
-    delete m_graph;
+    // Note: This appears more complicated than necessary, but be careful changing it. Under some circumstances,
+    // a RootPlot needs to delete its parent, but the parent will always attempt to delete the RootPlot in the
+    // process. Thus it is important to ensure the child is detached at the right times to prevent deleting
+    // the parent and/or the child twice.
+
+    // Save pointer to parent in case delete parent was selected.
+    IFrame * parent = m_parent;
+
+    // Break all links between this and its parent. After this, m_parent == 0.
+    if (0 != m_parent) m_parent->removePlot(this);
+
+    // Delete sequences.
+    for (std::vector<const ISequence *>::reverse_iterator itor = m_seq_cont.rbegin(); itor != m_seq_cont.rend(); ++itor)
+      delete (*itor);
+
+    // In special case where the plot owns its parent frame, delete that as well.
+    if (m_delete_parent) delete parent;
   }
 
-  void RootPlot::display() {
-    if (0 != m_multi_graph && 0 != m_graph) m_multi_graph->Add(m_graph, "L");
+  const std::vector<const ISequence *> RootPlot::getSequences() const { return m_seq_cont; }
+
+  const std::vector<std::vector<double> > & RootPlot::getZData() const {
+    if (0 == m_z_data) throw std::logic_error("RootPlot::getZData() called for a plot which has null Z data");
+    return *m_z_data;
   }
 
-  void RootPlot::unDisplay() {
-    if (0 != m_multi_graph && 0 != m_graph) m_multi_graph->RecursiveRemove(m_graph);
-  }
+  std::vector<Axis> & RootPlot::getAxes() { return m_axes; }
 
-  TGraph * RootPlot::createHistPlot(const ISequence & x, const ISequence & y) {
-    TGraph * retval = 0;
+  const std::vector<Axis> & RootPlot::getAxes() const { return m_axes; }
 
-    // Get arrays of values.
-    std::vector<double> x_low;
-    std::vector<double> x_high;
-    std::vector<double> y_value;
+  const std::string & RootPlot::getStyle() const { return m_style; }
 
-    // Interpret x as a set of intervals.
-    x.getIntervals(x_low, x_high);
+  void RootPlot::setStyle(const std::string & style) {
+    m_style = style;
 
-    // Interpret y as the value in each interval.
-    y.getValues(y_value);
+    // Convert style string to lower case.
+    for (std::string::iterator itor = m_style.begin(); itor != m_style.end(); ++itor) *itor = tolower(*itor);
 
-    // Combine ranges and values into one array for axis and one array for the data; needed for TGraph.
-    std::vector<double> x_vals(x_low.size() * 4);
-    std::vector<double> y_vals(x_low.size() * 4);
-
-    // Use input arrays to create graphable data.
-    unsigned long idx = 0;
-    unsigned long ii = 0;
-
-    // First point plotted is at the base of the first bin.
-    x_vals[idx] = x_low[ii];
-    y_vals[idx] = 0.;
-
-    ++idx;
-    for (ii = 0; ii < x_low.size(); ++ii, ++idx) {
-      // Plot the y value at the left edge.
-      x_vals[idx] = x_low[ii];
-      y_vals[idx] = y_value[ii];
-
-      // Next plot the y value at the right edge.
-      ++idx;
-      x_vals[idx] = x_high[ii];
-      y_vals[idx] = y_value[ii];
-
-      // Exclude the last bin, which requires special handling.
-      if (ii != x_low.size() - 1) {
-        // See if the next bin's left edge is > than the right edge which was just plotted.
-        double next = x_low[ii + 1];
-        if (next > x_vals[idx]) {
-          // There is a gap in the data, so plot a value of 0. in the gap.
-          ++idx;
-          x_vals[idx] = x_vals[idx - 1];
-          y_vals[idx] = 0.;
-          ++idx;
-          x_vals[idx] = next;
-          y_vals[idx] = 0.;
-        }
-      } else {
-        // Last input point is the last right edge, which should drop to 0.
-        ++idx;
-        x_vals[idx] = x_vals[idx - 1];
-        y_vals[idx] = 0.;
-      }
+    if (std::string::npos != m_style.find("h")) {
+      m_style = "hist";
+    } else if (std::string::npos != m_style.find("l")) {
+      m_style = "lego";
+    } else if (std::string::npos != m_style.find("sc")) {
+      m_style = "scat";
+    } else if (std::string::npos != m_style.find("su")) {
+      m_style = "surf";
+    } else {
+      throw std::logic_error("RootPlot::setStyle: unknown plot style \"" + style + "\"");
     }
 
-    // Create the graph.
-    retval = new TGraph(idx, &*x_vals.begin(), &*y_vals.begin());
-
-    retval->SetEditable(kFALSE);
-
-    return retval;
   }
 
-  TGraph * RootPlot::createScatterPlot(const ISequence & x, const ISequence & y) {
-    TGraph * retval = 0;
-    // Get arrays of values.
-    std::vector<double> x_pts;
-    std::vector<double> x_low_err;
-    std::vector<double> x_high_err;
-    std::vector<double> y_pts;
-    std::vector<double> y_low_err;
-    std::vector<double> y_high_err;
-
-    x.getValues(x_pts);
-    x.getSpreads(x_low_err, x_high_err);
-
-    y.getValues(y_pts);
-    y.getSpreads(y_low_err, y_high_err);
-
-    // Create the graph.
-    retval = new TGraphAsymmErrors(x.size(), &x_pts[0], &y_pts[0], &x_low_err[0], &x_high_err[0], &y_low_err[0], &y_high_err[0]);
-    retval->SetEditable(kFALSE);
-
-    return retval;
-  }
-
-  TH2D * RootPlot::createHistPlot2D(const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) {
-
-    TH2D * hist = 0;
-
-    typedef std::vector<double> Vec_t;
-
-    // Set up x bins. There is one extra for Root's upper cutoff.
-    Vec_t x_bins(x.size() + 1);
-
-    // Set up intervals, big enough to hold either x or y bins.
-    Vec_t lower(std::max(x.size(), y.size()));
-    Vec_t upper(std::max(x.size(), y.size()));
-    
-    // Get intervals of x axis.
-    x.getIntervals(lower, upper);
-
-    // Use low edges of input sequence for all but the last bin.
-    for (Vec_t::size_type ii = 0; ii < x.size(); ++ii) x_bins[ii] = lower[ii];
-
-    // Last bin is taken from upper bound of last element in sequence.
-    x_bins[x.size()] = upper[x.size() - 1];
-
-    // Set up y bins. There is one extra for Root's upper cutoff.
-    Vec_t y_bins(y.size() + 1);
-
-    // Get intervals of y axis.
-    y.getIntervals(lower, upper);
-
-    // Use low edges of all bins.
-    for (Vec_t::size_type ii = 0; ii < y.size(); ++ii) y_bins[ii] = lower[ii];
-
-    // Last bin is overflow.
-    y_bins[y.size()] = upper[y.size() - 1];
-
-    // The Root name of the object (by which it may be looked up) is its address, converted 
-    // to a string. This should prevent collisions.
-    std::ostringstream os;
-    os << this;
-
-    // Create the histogram used to draw the plot.
-    hist = new TH2D(os.str().c_str(), m_parent->getTitle().c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1, &y_bins[0]);
-
-    // Populate the histogram.
-    for (unsigned int ii = 0; ii < x.size(); ++ii)
-      for (unsigned int jj = 0; jj < y.size(); ++jj)
-        hist->SetBinContent(ii + 1, jj + 1, z[ii][jj]);
-
-    // Draw the histogram.
-    hist->Draw("lego");
-
-    return hist;
-  }
-
-  TGraph * RootPlot::getTGraph() { return m_graph; }
+  void RootPlot::setParent(RootPlotFrame * parent) { m_parent = parent; }
 
 }
