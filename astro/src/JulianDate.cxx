@@ -1,4 +1,13 @@
+/** @file JulianDate.cxx
+    @brief JulianDate implementation 
+
+    $Header$
+*/
 #include "astro/JulianDate.h"
+
+#include <stdio.h>
+#include <cmath>
+
 
 namespace astro{
 
@@ -25,7 +34,7 @@ namespace astro{
    //
    // Appears to give better than .00004 second consistency with JulianDate() over time 
    // interval 2002 to 2020.
-   void JulianDate::getGregorianDate(int &An, int &Me, int &Gio, double &utc)
+   void JulianDate::getGregorianDate(int &An, int &Me, int &Gio, double &utc) const
    {
       double jd;
       double frac, hr;
@@ -58,7 +67,7 @@ namespace astro{
       utc = hr;
    }
 
-   std::string JulianDate::getGregorianDate(void)
+   std::string JulianDate::getGregorianDate(void) const
    {
       int year, month, day, hour, minute, second, sec_deci;
       double utc;
