@@ -104,11 +104,8 @@ int main(int iargc, char * argv[]) {
       = irfInterface::IrfsFactory::instance();
    std::vector<irfInterface::Irfs *> respPtrs;
    if (useCombined) {
-//      respPtrs.push_back(irfsFactory().create("Glast25::Combined"));
       respPtrs.push_back(myFactory->create("Glast25::Combined"));
    } else { // use Front & Back
-//       respPtrs.push_back(irfsFactory().create("Glast25::Front"));
-//       respPtrs.push_back(irfsFactory().create("Glast25::Back"));
       respPtrs.push_back(myFactory->create("Glast25::Front"));
       respPtrs.push_back(myFactory->create("Glast25::Back"));
    }

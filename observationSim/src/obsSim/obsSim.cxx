@@ -34,6 +34,7 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
+#include "Verbosity.h"
 
 ISpectrumFactory & GaussianSourceFactory();
 ISpectrumFactory & GRBmanagerFactory();
@@ -51,11 +52,6 @@ class ObsSim : public st_app::StApp {
 public:
    ObsSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("obsSim")),
               m_simulator(0) {
-      m_pars.Prompt();
-      m_pars.Save();
-      m_count = m_pars["Number_of_events"];
-      setRandomSeed();
-      createFactories();
    }
    virtual ~ObsSim() throw() {
       try {
@@ -77,6 +73,8 @@ private:
    std::vector<irfInterface::Irfs *> m_respPtrs;
    observationSim::Simulator * m_simulator;
 
+   void promptForParameters();
+   void checkOutputFiles();
    void setRandomSeed();
    void createFactories();
    void setXmlFiles();
@@ -89,21 +87,61 @@ private:
 st_app::StAppFactory<ObsSim> myAppFactory;
 
 void ObsSim::run() {
-//    setRandomSeed();
-//    createFactories();
+   promptForParameters();
+   checkOutputFiles();
+   observationSim::Verbosity::instance(m_pars["chatter"]);
+   setRandomSeed();
+   createFactories();
    setXmlFiles();
    readSrcNames();
    createResponseFuncs();
    createSimulator();
    generateData();
-   std::cout << "Done." << std::endl;
+   if (observationSim::verbosity() > 1) {
+      std::cout << "Done." << std::endl;
+   }
 }
+
+void ObsSim::promptForParameters() {
+   m_pars.Prompt("xml_source_file");
+   m_pars.Prompt("source_list");
+   m_pars.Prompt("scfile");
+   m_pars.Prompt("outfile_prefix");
+   m_pars.Prompt("simulation_time");
+   m_pars.Prompt("rspfunc");
+   m_pars.Prompt("random_seed");
+   m_pars.Save();
+   m_count = m_pars["simulation_time"];
+}
+
+void ObsSim::checkOutputFiles() {
+   if (!m_pars["clobber"]) {
+      std::string prefix = m_pars["outfile_prefix"];
+      std::string file = prefix + "_events_0000.fits";
+      if (st_facilities::Util::fileExists(file)) {
+         std::cout << "Output file " << file 
+                   << " already exists and you have set 'clobber' to 'no'.\n"
+                   << "Please provide a different output file prefix." 
+                   << std::endl;
+         std::exit(1);
+      }
+      file = prefix + "_scData_0000.fits";
+      if (st_facilities::Util::fileExists(file)) {
+         std::cout << "Output file " << file 
+                   << " already exists and you have set 'clobber' to 'no'.\n"
+                   << "Please provide a different output file prefix." 
+                   << std::endl;
+         std::exit(1);
+      }
+   }
+}
+
 
 void ObsSim::setRandomSeed() {
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
-   HepRandom hepRandom(m_pars["Random_seed"]);
+   HepRandom hepRandom(m_pars["random_seed"]);
 }
 
 void ObsSim::createFactories() {
@@ -125,7 +163,7 @@ void ObsSim::setXmlFiles() {
 
 // Fetch any user-specified xml file of flux-style source definitions,
 // replacing the default list.
-   std::string xmlFiles = m_pars["XML_source_file"];
+   std::string xmlFiles = m_pars["xml_source_file"];
    if (xmlFiles == "none" || xmlFiles == "") { // use the default
       xmlFiles = "$(OBSERVATIONSIMROOT)/xml/xmlFiles.dat";
    }
@@ -141,8 +179,10 @@ void ObsSim::setXmlFiles() {
             if (Util::fileExists(files[i])) {
                m_xmlSourceFiles.push_back(files[i]);
             } else {
-               std::cout << "File not found: " 
-                         << files[i] << std::endl;
+               if (observationSim::verbosity() > 1) {
+                  std::cout << "File not found: " 
+                            << files[i] << std::endl;
+               }
             }
          }
       } 
@@ -152,7 +192,7 @@ void ObsSim::setXmlFiles() {
 }
 
 void ObsSim::readSrcNames() {
-   std::string srcListFile = m_pars["Source_list"];
+   std::string srcListFile = m_pars["source_list"];
    if (Util::fileExists(srcListFile)) { 
       Util::readLines(srcListFile, m_srcNames);
       if (m_srcNames.size() == 0) {
@@ -169,7 +209,7 @@ void ObsSim::createResponseFuncs() {
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
 
-   std::string responseFuncs = m_pars["Response_functions"];
+   std::string responseFuncs = m_pars["rspfunc"];
 
    typedef std::map< std::string, std::vector<std::string> > respMap;
    const respMap & responseIds = irfLoader::Loader::respIds();
@@ -186,12 +226,12 @@ void ObsSim::createResponseFuncs() {
 }   
 
 void ObsSim::createSimulator() {
-   double totalArea = m_pars["Maximum_effective_area"];
-   double startTime = m_pars["Start_time"];
-   std::string pointingHistory = m_pars["Pointing_history_file"];
+   double totalArea = m_pars["max_effarea"];
+   double startTime = m_pars["start_time"];
+   std::string pointingHistory = m_pars["scfile"];
    double maxSimTime = 3.155e8;
    try {
-      maxSimTime = m_pars["maximum_simulation_time"];
+      maxSimTime = m_pars["max_simulation_time"];
    } catch (std::exception & eObj) {
    }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
@@ -200,23 +240,27 @@ void ObsSim::createSimulator() {
 }
 
 void ObsSim::generateData() {
-   long nMaxRows = m_pars["Maximum_number_of_rows"];
-   std::string prefix = m_pars["Output_file_prefix"];
+   long nMaxRows = m_pars["max_numrows"];
+   std::string prefix = m_pars["outfile_prefix"];
    observationSim::EventContainer events(prefix + "_events", nMaxRows);
-   std::string pointingHistory = m_pars["Pointing_history_file"];
+   std::string pointingHistory = m_pars["scfile"];
    bool writeScData = (pointingHistory == "" || pointingHistory == "none");
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows,
                                           writeScData);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
-   if (m_pars["Use_as_sim_time"]) {
-      std::cout << "Generating events for a simulation time of "
-                << m_count << " seconds...." << std::endl;
-      m_simulator->generateEvents(m_count, events, scData, m_respPtrs, 
-                                  spacecraft);
-   } else {
-      std::cout << "Generating " << m_count << " events...." << std::endl;
+   if (m_pars["use_as_numevents"]) {
+      if (observationSim::verbosity() > 1) {
+         std::cout << "Generating " << m_count << " events...." << std::endl;
+      }
       m_simulator->generateEvents(static_cast<long>(m_count), events, 
                                   scData, m_respPtrs, spacecraft);
+   } else {
+      if (observationSim::verbosity() > 1) {
+         std::cout << "Generating events for a simulation time of "
+                   << m_count << " seconds...." << std::endl;
+      }
+      m_simulator->generateEvents(m_count, events, scData, m_respPtrs, 
+                                  spacecraft);
    }
 
 // Pad with one more row of ScData.

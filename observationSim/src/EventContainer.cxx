@@ -35,8 +35,9 @@
 
 #include "irfInterface/Irfs.h"
 
-#include "observationSim/Spacecraft.h"
 #include "observationSim/EventContainer.h"
+#include "observationSim/Spacecraft.h"
+#include "Verbosity.h"
 
 namespace {
    double my_acos(double mu) {
@@ -197,7 +198,9 @@ void EventContainer::writeEvents() {
       try {
          row["conversion_layer"].set(evt->convLayer());
       } catch (std::exception &eObj) {
-         std::cout << eObj.what() << std::endl;
+         if (verbosity() > 1) {
+            std::cout << eObj.what() << std::endl;
+         }
          std::exit(-1);
       }
       tip::Table::Vector<short> calibVersion = row["calib_version"];

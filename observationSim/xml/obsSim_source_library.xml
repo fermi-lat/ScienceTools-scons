@@ -345,7 +345,7 @@
     <source name="galdiffusemap">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.03,2e5,2.1,1.,/sources/gas_gal.fits"/> 
+             params="0.1,0.1,2e5,2.1,1.,/sources/gas_gal.fits"/> 
             <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>

@@ -24,13 +24,14 @@
 
 #include "irfInterface/Irfs.h"
 
+#include "flux/SpectrumFactory.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/Roi.h"
 #include "LatSc.h"
-
-#include "flux/SpectrumFactory.h"
+#include "Verbosity.h"
 
 namespace observationSim {
 
@@ -73,9 +74,11 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
          setRocking(5, 0);
          setPointingHistoryFile(pointingHistory);
       } else {
-         std::cout << "Pointing history file not found: \n"
-                   << pointingHistory << "\n"
-                   << "Using default rocking strategy." << std::endl;
+         if (verbosity() > 0) {
+            std::cout << "Pointing history file not found: \n"
+                      << pointingHistory << "\n"
+                      << "Using default rocking strategy." << std::endl;
+         }
          setRocking();
       }
    } else {
@@ -104,18 +107,24 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       if ( (source = m_fluxMgr->source(*name)) ) {
          m_source->addSource(source);
          nsrcs++;
-         std::cout << "added source \"" << *name << "\"" << std::endl;
+         if (verbosity() > 1) {
+            std::cout << "added source \"" << *name << "\"" << std::endl;
+         }
       } else {
-         std::cout << "Simulator::init: \n"
-                   << "FluxMgr failed to find a source named \""
-                   << *name << "\"" << std::endl;
+         if (verbosity() > 1) {
+            std::cout << "Simulator::init: \n"
+                      << "FluxMgr failed to find a source named \""
+                      << *name << "\"" << std::endl;
+         }
       }
    }
    if (nsrcs == 0) {
-      std::cout << "Simulator::init: \n"
-                << "FluxMgr has failed to add any valid "
-                << "photon sources to the model."
-                << std::endl;
+      if (verbosity() > 1) {
+         std::cout << "Simulator::init: \n"
+                   << "FluxMgr has failed to add any valid "
+                   << "photon sources to the model."
+                   << std::endl;
+      }
       exit(-1);
    }
 
