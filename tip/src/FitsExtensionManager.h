@@ -283,7 +283,7 @@ namespace tip {
     T * dest_begin, T * dest_end) {
     if (m_read_only) {
       std::ostringstream s;
-      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
       throw TipException(formatWhat(s.str()));
     }
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
@@ -293,7 +293,7 @@ namespace tip {
       dest_begin, &status);
     if (0 != status) {
       std::ostringstream s;
-      s << "Cannot write record number " << record_index << " from column number " << col_num;
+      s << "Cannot write record number " << record_index << " in column number " << col_num;
       throw TipException(formatWhat(s.str()));
     }
   }
@@ -305,7 +305,7 @@ namespace tip {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
     if (m_read_only) {
       std::ostringstream s;
-      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
       throw TipException(formatWhat(s.str()));
     }
     static int data_type_code = FitsPrimProps<bool>::dataTypeCode();
@@ -316,7 +316,7 @@ namespace tip {
       fits_write_col(m_fp, data_type_code, col_num, record_index + 1, src_begin, 1, tmp, &status);
       if (0 != status) {
         std::ostringstream s;
-        s << "Cannot write record number " << record_index << " from column number " << col_num;
+        s << "Cannot write record number " << record_index << " in column number " << col_num;
         throw TipException(formatWhat(s.str()));
       }
     }
@@ -329,7 +329,7 @@ namespace tip {
     if (!m_is_table) throw TipException(formatWhat("setCellGeneric called, but object is not a table"));
     if (m_read_only) {
       std::ostringstream s;
-      s << "Cannot write record number " << record_index << " from column number " << col_num << "; object is not writable";
+      s << "Cannot write record number " << record_index << " in column number " << col_num << "; object is not writable";
       throw TipException(formatWhat(s.str()));
     }
     throw TipException("String valued columns not yet implemented for FITS files.");
