@@ -102,6 +102,15 @@ namespace tip {
       */
       virtual const std::string implementation() const = 0;
 
+      /** \brief Get number of elements in the given cell. Default implementation assumes
+          that only scalar valued cells are supported.
+      */
+      virtual long getNumElements(Index_t) const { return 1; }
+
+      /** \brief Set number of elements in the given cell.
+      */
+      virtual void setNumElements(Index_t) { unsupported("setNumElements(Index_t)"); }
+
     private:
       /** \brief Private helper class to simplify throwing exceptions for unsupported features.
           \param method The name of the method throwing the exception.
