@@ -55,6 +55,8 @@ public:
    void addScData(EventSource *event, Spacecraft *spacecraft, 
                   bool flush=false);
 
+   void addScData(double time, Spacecraft *spacecraft, bool flush=false);
+
    /// The simulation time of the most recently added entry.
    double simTime() {return m_scData[m_scData.size()-1].time();}
 

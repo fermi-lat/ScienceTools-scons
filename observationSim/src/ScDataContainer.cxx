@@ -41,9 +41,12 @@ void ScDataContainer::init() {
 
 void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
                                 bool flush) {
-   
    double time = event->time();
+   addScData(time, spacecraft, flush);
+}
 
+void ScDataContainer::addScData(double time, Spacecraft * spacecraft, 
+                                bool flush) {
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
