@@ -61,6 +61,8 @@ namespace table {
       */
       Iterator end() { return Iterator(Record(m_tab_data, m_tab_data->getNumRecords())); }
 
+      /** \brief Return the number of records contained in this table.
+      */
       Index_t getNumRecords() const { return m_tab_data->getNumRecords(); }
 
     private:

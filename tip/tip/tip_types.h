@@ -9,7 +9,12 @@
 
 namespace table {
 
+  /** \brief Type used for differences in table row numbers.
+  */
   typedef long IndexDiff_t;
+
+  /** \brief Type used for table row numbers.
+  */
   typedef long Index_t;
 
 }

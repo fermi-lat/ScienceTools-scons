@@ -1,6 +1,6 @@
 /** \file Header.h
 
-    \brief High level encapsulation of a Fits-like header.
+    \brief High level encapsulation of a FITS-like header.
 
     \author James Peachey, HEASARC
 */
@@ -19,19 +19,32 @@ namespace table {
 
   /** \class Header
 
-      \brief High level encapsulation of a Fits-like header.
+      \brief High level encapsulation of a FITS-like header.
   */
   class Header {
     public:
+      /** \brief For convenience typedef the underlying keyword container.
+      */
       typedef std::map<std::string, Keyword> KeywordCont_t;
 
+      /** \brief Construct a new Header object from the given abstract extension data.
+          \param extension_data The extension data. Concrete objects will be FITS or Root-specific.
+      */
       Header(IExtensionData * extension_data): m_keywords(), m_extension_data(extension_data) {}
 
+      /** \brief Random read/write keyword access.
+          \param name The name of the keyword.
+      */
       Keyword & operator [](const std::string & name) { return find_or_make(name); }
 
+      /** \brief Random read only keyword access.
+          \param name The name of the keyword.
+      */
       const Keyword & operator [](const std::string & name) const { return find_or_make(name); }
 
     protected:
+      /** \brief Internal utility to add keywords when they are looked up.
+      */
       Keyword & find_or_make(const std::string & name) const;
 
     private:
@@ -40,10 +53,18 @@ namespace table {
   };
 
   inline Keyword & Header::find_or_make(const std::string & name) const {
+    // Because inquiries for keywords for a constant object can still add them to the Header, need to
+    // get rid of const.
     Header & header = const_cast<Header &>(*this);
+
+    // Look for keyword.
     KeywordCont_t::iterator itor = header.m_keywords.find(name);
+
+    // If not found, create a new one.
     if (header.m_keywords.end() == itor)
       itor = header.m_keywords.insert(itor, std::make_pair(name, Keyword(header.m_extension_data, name)));
+
+    // Return the keyword.
     return itor->second;
   }
 

@@ -24,10 +24,19 @@ namespace table {
   */
   class FitsTabularData : public ITabularData {
     public:
+      /** \brief Create a new FitsTabularData object for the given table.
+          \param file_name The name of the FITS file.
+          \param table_name The name of the FITS table.
+      */
       FitsTabularData(const std::string & file_name, const std::string & table_name);
 
+      /** \brief Copy contructor. Reopens its own copy of the FITS file.
+          \param fits_data The source object being copied.
+      */
       FitsTabularData(const FitsTabularData & fits_data);
 
+      /** \brief Destructor. Closes the FITS file.
+      */
       virtual ~FitsTabularData();
 
       /** \brief Return the number of records in the current tabular data object.
@@ -48,6 +57,8 @@ namespace table {
       virtual void getKeyword(const std::string & name, double & value) const;
 
     private:
+      // The real FITS-specific stuff is hidden in the utility class FitsExtension, accessed
+      // through the m_extension member.
       FitsExtension m_extension;
       std::map<std::string, int> m_col_info;
       std::string m_file_name;

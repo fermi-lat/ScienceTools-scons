@@ -1,7 +1,6 @@
 /** \file FitsExtension.h
 
-    \brief Low level interface to Fits format extensions. This is not part of the API and should not
-    be of interest to table clients.
+    \brief utilities to help manage FITS specific table access. These classes are not part of the API.
 
     \author James Peachey, HEASARC
 */
@@ -20,24 +19,49 @@ namespace table {
 
   /** \class FitsExtension
 
-      \brief Low level interface to Fits format extensions. This is not part of the API and should not
-      be of interest to table clients. Note that despite similarities to the IExtensionData interface,
-      this class need not and should not derive from IExtensionData.
+      \brief Low level interface to FITS format extensions. This is not part of the API.
+
+      Despite similarities to the IExtensionData interface and to the Extension class, this class
+      properly is a standalone utility class.
   */
   class FitsExtension {
     public:
+      /** \brief Create an object to provide low-level access to the given FITS extension.
+          \param file_name The name of the FITS file.
+          \param ext_name The name of the FITS extension.
+      */
       FitsExtension(const std::string & file_name, const std::string & ext_name);
 
-      virtual ~FitsExtension();
+      /** \brief Destructor. Closes file if it is open.
+      */
+      ~FitsExtension();
 
+      /** \brief Templated function which can get any kind of data from a FITS table. This
+          method throws an exception if the extension is not a table.
+          \param col_num The number of the column.
+          \param record_index The record (row) number.
+          \param value The variable in which the read value is placed.
+      */
       template <typename T>
       void getCellGeneric(int col_num, Index_t record_index, T & value) const;
 
+      /** \brief Templated function which can get keywords from a FITS table, converted to any data type.
+          \param name The name of the keyword.
+          \param value The variable in which the read value is placed.
+      */
       template <typename T>
       void getKeywordGeneric(const std::string & name, T & value) const;
 
+      /** \brief Open the FITS file and return Cfitsio's fitsfile pointer.
+      */
       fitsfile * open();
+
+      /** \brief Close the FITS file.
+      */
       void close();
+
+      /** \brief Return Cfitsio's fitsfile pointer.
+      */
       fitsfile * getFitsFp() const { return m_fp; }
 
     private:
@@ -60,6 +84,7 @@ namespace table {
     if (status) throw TableException();
   }
 
+  // Bool keywords are a special case because Cfitsio gets them as ints.
   template <>
   inline void FitsExtension::getKeywordGeneric<bool>(const std::string & name, bool & value) const {
     int status = 0;

@@ -97,6 +97,8 @@ namespace table {
       // Get the current ITabularData pointer.
       const ITabularData * getTabularData() const { assert(m_tab_data); return m_tab_data; }
 
+      // The following methods are needed to support access to this class by the
+      // iterator class.
       ConstTableRecord & itorNext() { ++m_index; return *this; }
       ConstTableRecord & itorPrev() { --m_index; return *this; }
       bool itorEquals(const ConstTableRecord & record) const

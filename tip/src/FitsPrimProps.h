@@ -11,7 +11,7 @@ namespace table {
 
   /** \struct FitsPrimProps
       \brief Templated utility class holding type-specific information to simplify calling cfitsio functions
-      from templated functions. This class is not part of the API and should not be of interest to table clients.
+      from templated functions. This class is not part of the API and should not be of interest to clients.
   */
   template <typename T>
   struct FitsPrimProps {

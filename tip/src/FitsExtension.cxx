@@ -1,6 +1,6 @@
 /** \file FitsExtension.cxx
 
-    \brief Low level implementation for Fits format tabular data.
+    \brief Implementation of utilities to help manage FITS specific table access.
 
     \author James Peachey, HEASARC
 */
@@ -10,11 +10,14 @@
 
 namespace table {
 
+  // Construct without opening the file.
   FitsExtension::FitsExtension(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_fp(0) {}
 
+  // Close file automatically while destructing.
   FitsExtension::~FitsExtension() { close(); }
 
+  // Subclasses call this to open the file and position it to the desired extension.
   fitsfile * FitsExtension::open() {
     fitsfile * fp = 0;
     int status = 0;
@@ -38,6 +41,7 @@ namespace table {
     return m_fp;
   }
 
+  // Close file.
   void FitsExtension::close() {
     int status = 0;
     if (m_fp) fits_close_file(m_fp, &status);
