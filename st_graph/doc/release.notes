@@ -8,5 +8,6 @@ $Id$
                           exceptions if Root initialization failed.
 12-oct-2004    v0r1p3 JP  Fix unit test to work in batch mode.
 13-oct-2004    v0r1p4 JP  Make some changes to support Windows.
+24-nov-2004    v0r2p0 JP  Completely revamp interface used to create plots.
 \endverbatim
 */
