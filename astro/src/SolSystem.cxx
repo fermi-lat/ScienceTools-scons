@@ -346,9 +346,10 @@ int SolSystem::ephi_moon()
 	return (0);
 }
 
-#if 0
 void SolSystem::ephi_planet()
 {
+#if 0
+    
 	double el;		/* elongation */
 	double f;		/* fractional phase from earth */
 	double mjd, mjed;
@@ -393,9 +394,10 @@ void SolSystem::ephi_planet()
 	/* set earth/planet and sun/planet distance */
 	Edist = rho;
 	//op->s_sdist = rp;
+#endif
 }
 
-#endif
+
 
 void SolSystem::ephi_pos(double mjd,int obj, double bet, double lam, double *rho, double *ra1, double *dec1)
 //cir_pos (np, bet, lam, rho, op)
