@@ -104,7 +104,8 @@ namespace tip {
   template <typename T, typename Referent>
   inline void VectorAdaptor<T, Referent>::set(Index_t entry_index, const T & value) {
     if (!m_begin) allocate();
-    m_referent->set(entry_index, entry_index + 1, m_begin + entry_index);
+    m_begin[entry_index] = value;
+    m_referent->set(m_begin + entry_index, m_begin + entry_index + 1, entry_index);
   }
 
 }

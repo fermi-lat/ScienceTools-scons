@@ -55,6 +55,15 @@ namespace tip {
       */
       double get() const;
 
+      /** \brief Set a sequence of values in this TableCell at the current iterator position.
+          The type of the converted sequence is given by the template parameter.
+          \param src_begin Pointer to the first input element.
+          \param src_end Pointer to one element past the last input element.
+          \param dest_begin Index of the first element in the destination sequence in the table.
+      */
+      template <typename T>
+      void set(T * src_begin, T * src_end, Index_t dest_begin);
+
       /** \brief Set a single value in this TableCell at the current iterator position.
           The type of the source value is given by the template parameter.
           \param value The current value.
@@ -238,6 +247,12 @@ namespace tip {
     tmp[0] = value;
     if (m_field_index < 0) m_field_index = m_record.getTabularData()->getFieldIndex(m_field);
     m_record.getTabularData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
+  }
+
+  template <typename T>
+  inline void TableCell::set(T * src_begin, T * src_end, Index_t dest_begin) {
+    if (m_field_index < 0) m_field_index = m_record.getTabularData()->getFieldIndex(m_field);
+    m_record.getTabularData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
   }
 
   inline Index_t TableCell::getNumElements() const {
