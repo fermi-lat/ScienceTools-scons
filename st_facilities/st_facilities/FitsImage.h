@@ -38,31 +38,32 @@ public:
    virtual ~FitsImage() {}
 
    /// A vector of the image axes dimensions
-   void getAxisDims(std::vector<int> &axisDims);
+   virtual void getAxisDims(std::vector<int> &axisDims);
 
    /// The names (CTYPEs) of the image axes
-   void getAxisNames(std::vector<std::string> &axisNames);
+   virtual void getAxisNames(std::vector<std::string> &axisNames);
 
    /// Get a vector filled with axis abscissa points for the naxis-th
    /// coordinate.
-   void getAxisVector(unsigned int naxis, std::vector<double> &axisVector);
+   virtual void getAxisVector(unsigned int naxis, 
+                              std::vector<double> &axisVector);
 
    /// This method computes arrays of longitude and latitude obtained
    /// by traversing the image plane by column number then row.
-   void getCelestialArrays(std::vector<double> &lonArray,
-                           std::vector<double> &latArray);
+   virtual void getCelestialArrays(std::vector<double> &lonArray,
+                                   std::vector<double> &latArray);
    
    /// Get the pixel values.  They will be indexed by column, row,
    /// then plane, i.e., indx = i + j*NAXIS1 + k*NAXIS1*NAXIS2.  Note
    /// that each image plane is indexed starting at the lower left
    /// (South-East) corner.
-   void getImageData(std::vector<double> &imageData);
+   virtual void getImageData(std::vector<double> &imageData);
 
    /// This returns the pixel solid angles.  Use of this method assumes
    /// that m_axis[0] represents a longitudinal coordinate and that
    /// m_axis[1] represents a latitudinal coordinate.  The pixel values
    /// will be indexed by column then row, indx = i + j*NAXIS1.
-   void getSolidAngles(std::vector<double> &solidAngles);
+   virtual void getSolidAngles(std::vector<double> &solidAngles);
 
 protected:
 
