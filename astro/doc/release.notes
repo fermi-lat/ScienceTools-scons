@@ -2,7 +2,7 @@
 
 @verbatim
   Package coordinators: T.Burnett, G.Tosti
-  v0r10p3 13-feb-04 THB out of range exception for inverse projection
+  v0r10p5 13-feb-04 THB out of range exception for inverse projection
   v0r10p2 07-feb-04 THB add exception class
   v0r10  5-Feb-2004 THB standard projetion functions implemented in SkyDir 
   v0r6p1 24-nov-03 SMR unit vector for SkyDir constructor
