@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r5p2 06-Dec-03   JC   argv fixes
     v2r5p1 05-Dec-03   JC   patch for TPLDIR environment variable;
                             comment out build of exposureMap
     v2r5   04-Dec-03   JC   DC1 Release (no MapFlux)

@@ -1,5 +1,5 @@
 package observationSim
-version v2r5p1
+version v2r5p2
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -36,8 +36,8 @@ use hoops v*
 macro observationSim_cppflags "" \
 #Linux "-I ../src -g -pedantic -D TRAP_FPE -D HAVE_MAPFLUX -D USE_GOODI " \
 Linux "-I ../src -g -O -pedantic -D TRAP_FPE -D USE_GOODI " \
-#Linux "-I ../src -g -pedantic -D TRAP_FPE " \
-WIN32 "/I..\src  /wd4290"
+WIN32 '/I..\src /D"USE_GOODI" /wd4290'
+
 macro_prepend cflags "" Linux "-g -O"
 
 # suppress warning messages (from flux, Goodi, etc.) on Linux:
@@ -72,6 +72,9 @@ library observationSim -no_share $(my_headers) \
 # These needed for FITS templates.
 set INFILES "$(GOODIROOT)/Data"
 set TPLDIR "$(GOODIROOT)/Templates"
+
+# Needed for .par files
+set PFILES "$(OBSERVATIONSIMROOT)/data/"
 
 # test applications
 application test_observationSim test/main.cxx
