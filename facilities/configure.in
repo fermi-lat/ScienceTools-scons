@@ -5,6 +5,7 @@ AC_REVISION($Revision$)
 AC_INIT(src/Clock.cxx)
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(facilities, 1.0)
+AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs.
 AC_PROG_CXX

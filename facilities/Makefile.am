@@ -8,6 +8,15 @@
 # The following set,  else would follow GNU conventions
 AUTOMAKE_OPTIONS = foreign
 
+EXTRA_DIST = config
+
 SUBDIRS = facilities src
 
-EXTRA_DIST = config
+lib_LTLIBRARIES = libfacilities.la
+
+libfacilities_la_SOURCES = version.cxx
+
+libfacilities_la_LIBADD = src/libfacilities.la
+
+libfacilities_la_LDFLAGS = -version-info 1
+
