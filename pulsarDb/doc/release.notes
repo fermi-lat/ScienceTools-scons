@@ -5,6 +5,7 @@
 $Id$
 
 \verbatim
+06-apr-2005    v0r1p3 JP  Fix a non-standard C++ construct which broke on Windows.
 05-apr-2005    v0r1p2 JP  Added missing include <algorithm>
 18-mar-2005    v0r1p1 JP  Add version number from cvs tag. Add units to prompts for
                           start/stop time filter.
