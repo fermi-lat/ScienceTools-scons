@@ -8,6 +8,12 @@
 #include <sstream>
 #include <string>
 
+// The following are needed for chmod:
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
 #include "FitsExtensionData.h"
 #include "RootExtensionData.h"
 #include "TestExtensionData.h"
@@ -428,7 +434,7 @@ namespace tip {
   void TestExtensionData::testReadOnly() {
     std::string msg;
 
-    const std::string & data_dir = getDataDir();
+    std::string file_name = getDataDir() + "a1.pha";
 
     // There are two types of read-only access: 1) a file which is write-protected on disk may be opened
     // without explicitly specifying read-only access to the object representing it. 2) A file which is
@@ -437,23 +443,37 @@ namespace tip {
 
     // Open read-write a file which is write-protected. This should be possible, but all non-const methods
     // should throw:
-    msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + data_dir + "a1_read_only.pha";
+#ifndef WIN32
     try {
-      m_read_only_extension = new FitsExtensionData(data_dir + "a1_read_only.pha", "SPECTRUM", "", false);
-      ReportExpected(msg + " succeeded");
-    } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed", x);
-      ReportWarning("tests for proper read-only access to write-protected file will be skipped!");
+      // Make sure file is not writable for this test:
+      chmod(file_name.c_str(), S_IRUSR | S_IRGRP | S_IROTH);
+  
+      msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + file_name;
+      try {
+        m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM", "", false);
+        ReportExpected(msg + " succeeded");
+      } catch(const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+        ReportWarning("tests for proper read-only access to write-protected file will be skipped!");
+      }
+  
+      confirmReadOnly(m_read_only_extension);
+      delete m_read_only_extension; m_read_only_extension = 0;
+    } catch (...) {
+      // Make sure file is writable after this test, even if the test failed in some unexpected way:
+      chmod(file_name.c_str(), S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR);
+      throw;
     }
 
-    confirmReadOnly(m_read_only_extension);
-    delete m_read_only_extension; m_read_only_extension = 0;
+    // Make sure file is writable after this test:
+    chmod(file_name.c_str(), S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR);
+#endif
 
     // Open read-only a file which is not write-protected:
-    msg = std::string("attempt to open read-only extension SPECTRUM in a writable file ") + data_dir + "a1_read_only.pha";
+    msg = std::string("attempt to open read-only extension SPECTRUM in a writable file ") + file_name;
     try {
       // With no filter and no read_only flag, read-only access will be the outcome, even if the file is writable.
-      m_read_only_extension = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
+      m_read_only_extension = new FitsExtensionData(file_name, "SPECTRUM");
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
       ReportUnexpected(msg + " failed", x);
