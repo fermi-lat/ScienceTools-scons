@@ -32,7 +32,7 @@ int main(int argn, char * argc[]) {
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml";
    fileList.push_back(xml_list);
-   xml_list = "$(OBSERVATIONSIMROOT)/xml/test_sources_v2.xml";
+   xml_list = "$(OBSERVATIONSIMROOT)/xml/test_sources.xml";
    fileList.push_back(xml_list);
    
 // Parse the command line arguments.

@@ -369,7 +369,7 @@
           <particle name="gamma">
              <power_law emin="30." emax="100000." gamma="2.1"/>
           </particle>
-          <solid_angle mincos="-1." maxcos="1."/>
+          <solid_angle mincos="-0.4" maxcos="1."/>
        </spectrum>
     </source>
 
@@ -379,7 +379,7 @@
           <particle name="gamma">
              <power_law emin="30." emax="100000." gamma="2.1"/>
           </particle>
-          <solid_angle mincos="-1." maxcos="1."/>
+          <solid_angle mincos="-0.4" maxcos="1."/>
        </spectrum>
     </source>
 
@@ -457,6 +457,17 @@
         <nestedSource sourceRef="Geminga" />
         <nestedSource sourceRef="PKS0528" />
     </source>
+
+<source name="multipower" flux="0.1">
+    <spectrum escale="GeV">
+        <particle name="gamma"> 
+        <power_law emin="0.03" emax="100.0" ebreak="0.3" 
+                   gamma="1.6" gamma2="2.5"/>
+        </particle>
+        <celestial_dir ra="0." dec="0."/>
+    </spectrum>
+</source>
+
 
     <!-- Low energy part of a broken power-law source -->
     <source name="low_bpl" flux="0.0417">
