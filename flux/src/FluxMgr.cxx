@@ -102,6 +102,7 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     DECLARE_SPECTRUM( TimeCandle);
 
     DECLARE_SPECTRUM( SurfaceMuons);
+    DECLARE_SPECTRUM( GalPulsars);
     DECLARE_SPECTRUM( VdgGamma);
 
     // these are deprecated, will be replaced by Hiroshima group
