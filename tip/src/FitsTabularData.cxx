@@ -79,11 +79,51 @@ namespace table {
     return itor->second;
   }
 
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, double & value) const {
     m_extension.getCellGeneric(field_index, record_index, value);
   }
 
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, float & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, char & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed char & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed short & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed int & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed long & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned char & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned short & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const {
+    m_extension.getCellGeneric(field_index, record_index, value);
+  }
+
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const {
     m_extension.getCellGeneric(field_index, record_index, value);
   }
 

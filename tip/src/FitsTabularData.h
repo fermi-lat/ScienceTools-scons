@@ -53,8 +53,18 @@ namespace table {
           \param record_index The index whose value to get.
           \param value The output value.
       */
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, double & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, float & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, char & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed char & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed short & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed int & value) const;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed long & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned char & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned short & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const;
 
       /** \brief Get a keyword from this extension object.
           \param name The name of the keyword to get from the extension object.
