@@ -81,6 +81,12 @@ namespace tip {
       */
       Index_t getNumRecords() const { return m_tab_data->getNumRecords(); }
 
+      /* \brief Change the number of records in the current table, adding or deleting
+         rows as needed.
+         \param num_records The new value for the number of records in the table.
+      */
+      void setNumRecords(Index_t num_records) { m_tab_data->setNumRecords(num_records); }
+
     private:
       ITabularData * m_tab_data;
   };

@@ -30,6 +30,12 @@ namespace tip {
       */
       virtual Index_t getNumRecords() const = 0;
 
+      /* \brief Change the number of records in the current table, adding or deleting
+         rows as needed.
+         \param num_records The new value for the number of records in the table.
+      */
+      virtual void setNumRecords(Index_t num_records) = 0;
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
