@@ -83,5 +83,4 @@ class TestApp1 : public st_app::IApp {
     \section notes Release Notes
     \section requirements Requirements
     \section jobOptions jobOptions
-    \section footnote Footnote
 */
