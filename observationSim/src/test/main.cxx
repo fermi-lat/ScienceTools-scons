@@ -92,8 +92,8 @@ int main(int argn, char * argc[]) {
    latResponse::Irfs response(aeff, psf, edisp);
 
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events.dat", true);
-   observationSim::ScDataContainer scData("test_scData.dat", true);
+   observationSim::EventContainer events("test_events", true);
+   observationSim::ScDataContainer scData("test_scData", true);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();

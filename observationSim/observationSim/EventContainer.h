@@ -38,16 +38,23 @@ class EventContainer {
 
 public:
 
-   /// @param filename The name of the output FITS file.
+   /// @param filename The root name of the output FITS file.
    /// @param useA1fmt A flag to use the format that the A1 tool expects.
-   EventContainer(const std::string &filename, bool useA1fmt=false) : 
-      m_useA1fmt(useA1fmt) {init(filename); m_prob = 1;}
+   /// @param maxNumEvents The maximum size of the Event buffer before
+   ///        a FITS file is written.
+   EventContainer(const std::string &filename, bool useA1fmt=false,
+                  int maxNumEvents=20000) : 
+      m_filename(filename), m_useA1fmt(useA1fmt), m_fileNum(0), 
+      m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
-   EventContainer(char *filename, bool useA1fmt=false) : 
-      m_useA1fmt(useA1fmt) {init(filename); m_prob = 1;}
+   /// This version is provided for SWIG since it does not presently
+   /// have full support for std::string.
+   EventContainer(char *filename, bool useA1fmt=false,
+                  int maxNumEvents=20000) : 
+      m_filename(filename), m_useA1fmt(useA1fmt), m_fileNum(0), 
+      m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
-   ~EventContainer() 
-      {writeEvents(); delete m_eventTable;}
+   ~EventContainer() {if (m_events.size() > 0) writeEvents();}
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
@@ -70,21 +77,46 @@ public:
 
 private:
 
+   /// Root name for the FITS binary table output files.
+   std::string m_filename;
+
+   /// Flag to indicate that A1 (Likelihood prototype) formatting of
+   /// the FITS file will be used.
    bool m_useA1fmt;
 
+   /// The current index number of the FITS file to be written.  This
+   /// number is formatted appropriately and appended to the root
+   /// filename given in the constructor.
    long m_fileNum;
 
+   /// The maximum number of Events to accumulate before the Events
+   /// are written to a FITS file and the Event buffer is flushed.
+   int m_maxNumEvents;
+
+   /// The prior probability that an event will be accepted.
+   /// Typically this is set to be the ratio of livetime to elapsed
+   /// time for a given observation interval.
    double m_prob;
-   
+
+   /// The FITS binary table object that steers the cfitsio routines.
    FitsTable *m_eventTable;
 
+   /// The Event buffer.
    std::vector<Event> m_events;
 
-   void init(const std::string &filename);
+   /// This routine contains the constructor implementation (such as
+   /// it is).
+   void init();
+
+   /// A routine to create the FITS binary table object.
+   void makeFitsTable();
 
    /// Return the zenith for the current spacecraft location.
    astro::SkyDir ScZenith(double time);
 
+   /// A routine to unpack the Event buffer, m_events, into an
+   /// appropriate data vector.  After unpacking, this routine calls
+   /// the writeTableData(...) method of the m_eventTable object.
    void writeEvents();
 
 };
