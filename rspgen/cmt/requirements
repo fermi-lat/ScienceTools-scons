@@ -9,7 +9,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 use STpolicy *
 use astro *
 use evtbin *
-use latResponse *
+use irfs *
 use st_app *
 use tip *
 
