@@ -1,0 +1,3 @@
+# $Header$
+# add additional files to the standard path
+EXAMPLE_PATH                  = "../xml/" "../cmt"
