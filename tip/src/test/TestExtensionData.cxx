@@ -183,6 +183,63 @@ void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string &
 
 }
 
+// Test reading an entire column from an extension, one row at a time:
+void TestReadField(const tip::IExtensionData * const_ext, const std::string & field_name, const std::string & ext_type, int & status) {
+  using namespace tip;
+  std::string msg;
+  try {
+    // First, get the position of the field in the table:
+    msg = std::string("getFieldIndex(\"") + field_name + "\")";
+    Index_t field_index = const_ext->getFieldIndex(field_name);
+    ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+    try {
+      // Next, get the number of records in the table:
+      msg = "getNumRecords()";
+      Index_t num_rec = const_ext->getNumRecords();
+      ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+      try {
+        // Next, get the number of elements in each cell for this field:
+        msg = std::string("getFieldNumElements(\"") + ToString(field_index) + "\")";
+        Index_t num_elements = const_ext->getFieldNumElements(field_index);
+        ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
+
+        if (0 >= num_elements) {
+          // Something's wrong, so don't try to allocate an array with non-positive number of elements!
+          msg += " returned a non-positive number of elements";
+          ReportError(msg + " from a const " + ext_type + " object", status);
+        } else {
+          // Allocate an array to hold the values read from a single cell of this field:
+          double * tmp_dv = new double[num_elements];
+          try {
+            // Iterate over all records, reading them:
+            for (Index_t ii = 0; ii < num_rec; ++ii) {
+              msg = std::string("getCell(") + ToString(field_index) + ", " + ToString(ii) + ", 0, " + ToString(num_elements) + ", tmp_dv)";
+              const_ext->getCell(field_index, ii, 0, num_elements, tmp_dv);
+            }
+            msg = std::string("getCell(") + ToString(field_index) + ", ii , 0, " + ToString(num_elements) + ", tmp_dv)";
+            ReportBehavior(msg + " succeeded for all " + ToString(num_rec) + " records in const " + ext_type + " object", status);
+
+          } catch(const TipException & x) {
+            ReportError(msg + " failed for const " + ext_type + " object", status, x);
+          }
+          delete [] tmp_dv;
+        }
+
+      } catch(const TipException & x) {
+        ReportError(msg + " failed for const " + ext_type + " object", status, x);
+      }
+
+    } catch(const TipException & x) {
+      ReportError(msg + " failed for const " + ext_type + " object", status, x);
+    }
+
+  } catch(const TipException & x) {
+    ReportError(msg + " failed for const " + ext_type + " object", status, x);
+  }
+}
+
 int TestExtensionData(const std::string & data_dir, int currentStatus) {
   using namespace tip;
 
@@ -285,58 +342,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     }
 
     // Read an entire column, which will involve calling all important functions:
-    std::string field_name = "channel";
-    try {
-      // First, get the position of the field in the table:
-      msg = std::string("getFieldIndex(\"") + field_name + "\")";
-      Index_t field_index = const_ext->getFieldIndex(field_name);
-      ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
-
-      try {
-        // Next, get the number of records in the table:
-        msg = "getNumRecords()";
-        Index_t num_rec = const_ext->getNumRecords();
-        ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
-
-        try {
-          // Next, get the number of elements in each cell for this field:
-          msg = std::string("getFieldNumElements(\"") + ToString(field_index) + "\")";
-          Index_t num_elements = const_ext->getFieldNumElements(field_index);
-          ReportBehavior(msg + " succeeded for const " + ext_type + " object", status);
-
-          if (0 >= num_elements) {
-            // Something's wrong, so don't try to allocate an array with non-positive number of elements!
-            msg += " returned a non-positive number of elements";
-            ReportError(msg + " from a const " + ext_type + " object", status);
-          } else {
-            try {
-              // Allocate an array to hold the values read from a single cell of this field:
-              double * tmp_dv = new double[num_elements];
-
-              // Iterate over all records, reading them:
-              for (Index_t ii = 0; ii < num_rec; ++ii) {
-                msg = std::string("getCell(") + ToString(field_index) + ", " + ToString(ii) + ", 0, " + ToString(num_elements) + ", tmp_dv)";
-                const_ext->getCell(field_index, ii, 0, num_elements, tmp_dv);
-              }
-              msg = std::string("getCell(") + ToString(field_index) + ", ii , 0, " + ToString(num_elements) + ", tmp_dv)";
-              ReportBehavior(msg + " succeeded for all records in const " + ext_type + " object", status);
-              
-            } catch(const TipException & x) {
-              ReportError(msg + " failed for const " + ext_type + " object", status, x);
-            }
-          }
-
-        } catch(const TipException & x) {
-          ReportError(msg + " failed for const " + ext_type + " object", status, x);
-        }
-
-      } catch(const TipException & x) {
-        ReportError(msg + " failed for const " + ext_type + " object", status, x);
-      }
-
-    } catch(const TipException & x) {
-      ReportError(msg + " failed for const " + ext_type + " object", status, x);
-    }
+    TestReadField(const_ext, "channel", "table", status);
   }
   // END Test const FitsExtensionData methods for a table extension.
 
