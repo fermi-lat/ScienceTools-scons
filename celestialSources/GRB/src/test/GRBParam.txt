@@ -1,7 +1,9 @@
-10		// Nshell
+10	      	// Nshell
 1.0		// Redshift
-1.0e+52         // Etot
+1.0e+54		// Etot
 1.0e+9		// Radius of the shells [cm]
-1.0e+8		// Thickness of the shells[cm]
+1.0e+9		// Thickness of the shells[cm]
 100		// Minumum Lorenz Factor
-1000		// Maximum Lorenz Factor
+10000		// Maximum Lorenz Factor
+2		// Duration of the Burst.
+1.0e+6          // Minimum Energy Extracted
