@@ -28,8 +28,8 @@ int main(int iargc, char * argv[]) {
 
    std::string rootFile;
    if (iargc == 1) {
-      std::string fitsGenRoot = ::getenv("FITSGENROOT");
-      rootFile = fitsGenRoot + "/data/merit.root";
+      std::string rootTupleRoot = ::getenv("ROOTTUPLEROOT");
+      rootFile = rootTupleRoot + "/data/new_merit.root";
    } else if (iargc == 2) {
       if (argv[1] == "-h") {
          std::cout << "usage: " 
@@ -72,7 +72,12 @@ int main(int iargc, char * argv[]) {
    Goodi::IEventData *data =
       dynamic_cast<Goodi::IEventData *>(dataCreator.create(datatype, mission));
 
-   unsigned int nevts = ft1Tuple("time").size();
+   std::vector<double> vect_times = ft1Tuple("time");
+   std::stable_sort(vect_times.begin(),vect_times.end());
+   std::vector<std::pair<double,double> > gti;
+   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
+
+   unsigned int nevts = vect_times.size();
    std::cout << "Number of events: " << nevts << std::endl;
 
 // Fill the EventData object with data from the FT1 tree:
@@ -151,19 +156,19 @@ int main(int iargc, char * argv[]) {
    data->setEventID(eventId);
 
 // Set the sizes of the valarray data for the multiword columns,
+    std::vector< std::valarray<float>  >      convPoint(nevts);
 // GEO_OFFSET, BARY_OFFSET, etc.. and fill where possible.
-   std::vector< std::valarray<double> >      geoOffset(nevts);
-   std::vector< std::valarray<double> >     baryOffset(nevts);
-   std::vector< std::valarray<float>  >      convPoint(nevts);
-   std::vector< std::valarray<long>   >    acdTilesHit(nevts);
-   std::vector< std::valarray<int>    >   calibVersion(nevts);
-   for (unsigned int i = 0; i < nevts; i++) {
-      geoOffset[i].resize(3);
-      baryOffset[i].resize(3);
-      convPoint[i].resize(3);
-      acdTilesHit[i].resize(3);
-      calibVersion[i].resize(3);
-   }
+//    std::vector< std::valarray<double> >      geoOffset(nevts);
+//    std::vector< std::valarray<double> >     baryOffset(nevts);
+//    std::vector< std::valarray<long>   >    acdTilesHit(nevts);
+//    std::vector< std::valarray<int>    >   calibVersion(nevts);
+    for (unsigned int i = 0; i < nevts; i++) {
+       convPoint[i].resize(3);
+//       geoOffset[i].resize(3);
+//       baryOffset[i].resize(3);
+//       acdTilesHit[i].resize(3);
+//       calibVersion[i].resize(3);
+    }
    
 // CONVERSION_POINT
    std::vector<double>::const_iterator pConvPtX 
@@ -211,14 +216,18 @@ int main(int iargc, char * argv[]) {
 //    data->setSubsysFlag();
 //    data->setStartTime();
 //    data->setStopTime();
-//    data->setGTI();
+   
+
+// GTI infos: START and STOP times
+   data->setGTI(gti);
+
 
 // These also are not implemented in the FT1 tree, but Goodi seems to
 // want these columns set.
-   data->setGeoOffset(geoOffset);
-   data->setBaryOffset(baryOffset);
-   data->setAcdTilesHit(acdTilesHit);
-   data->setCalibVersion(calibVersion);
+//   data->setGeoOffset(geoOffset);
+//   data->setBaryOffset(baryOffset);
+//   data->setAcdTilesHit(acdTilesHit);
+//   data->setCalibVersion(calibVersion);
 
 // Write the data to a FITS file.
    std::string latFile("!myLatData.fits");
