@@ -80,9 +80,10 @@ int main(int iargc, char * argv[]) {
          facilities::Util::stringTokenize(line, "\t ", dataFields);
          ft2["start"].set(std::atof(dataFields[0].c_str()));
          tip::Table::Vector<float> scPosition = ft2["sc_position"];
-         scPosition[0] = std::atof(dataFields[1].c_str());
-         scPosition[1] = std::atof(dataFields[2].c_str());
-         scPosition[2] = std::atof(dataFields[3].c_str());
+// convert the spacecraft position from km to meters.
+         scPosition[0] = std::atof(dataFields[1].c_str())*1e3;
+         scPosition[1] = std::atof(dataFields[2].c_str())*1e3;
+         scPosition[2] = std::atof(dataFields[3].c_str())*1e3;
          ft2["ra_scz"].set(std::atof(dataFields[4].c_str()));
          ft2["dec_scz"].set(std::atof(dataFields[5].c_str()));
          ft2["ra_scx"].set(std::atof(dataFields[6].c_str()));
