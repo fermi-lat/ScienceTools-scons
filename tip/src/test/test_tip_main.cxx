@@ -1,6 +1,6 @@
 /** \file test_table_main.cxx
 
-    \brief Test program.
+    \brief Test/sample program.
 
     \author James Peachey, HEASARC
 */
@@ -10,8 +10,6 @@
 #include "table/Ref.h"
 #include "table/Table.h"
 
-#include "src/FitsTable.h"
-
 int main() {
   int status = 0;
 
@@ -20,20 +18,23 @@ int main() {
   try {
     try {
       // Opening a non-existent file should throw an exception.
-      FitsTable table("non-existent.pha", "SPECTRUM");
+      Table * my_table = Table::openReadWrite("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
       std::cerr << "Opening non-existent.pha didn't throw a TableException." << std::endl;
+
+      delete my_table;
+
       status = 1;
     } catch(const TableException & x) {
       // This is as it should be
     }
 
     // The following test file should be present.
-    FitsTable table("arlac.pha", "SPECTRUM");
+    Table * my_table = Table::openReadWrite("arlac.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
-    std::vector<double> counts_vec(table.getNumRecords());
+    std::vector<double> counts_vec(my_table->getNumRecords());
 
     // First, use standard C++-style access.
     try {
@@ -41,7 +42,7 @@ int main() {
       // the Table reading methods are working.
       int ichan = 0;
 
-      for (Table::Iterator itor = table.begin(); itor != table.end(); ++itor) {
+      for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
         // Variable used to hold the channel at each point in the loop.
         double channel = 0.;
 
@@ -98,7 +99,7 @@ int main() {
       // Just for fun, verify that one can copy-contruct a Ref object.
       Ref<double> spud = counts;
 
-      for (itor = table.begin(); itor != table.end(); ++itor) {
+      for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
         // Note that the iterator is never deferenenced; that was done once and for all above.
         if (counts != counts_vec[ichan]) {

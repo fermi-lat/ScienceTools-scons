@@ -31,6 +31,16 @@ namespace table {
   */
   class Table {
     public:
+      /** \brief Open a file for reading and writing. An appropriate subobject of Table for supported
+          file formats will be returned.
+
+          If no file of any supported format can be opened, a TableException is thrown.
+
+          \param file_name Name of any supported file type.
+          \param table_name Name of desired table within the file.
+      */
+      static Table * openReadWrite(const std::string & file_name, const std::string & table_name);
+
       class Record;
 
       /** \class Cell
@@ -214,6 +224,7 @@ namespace table {
 
   typedef Table::Cell Cell;
   typedef Table::Record Record;
+
 }
 
 #endif
