@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 #include "CLHEP/Geometry/Vector3D.h"
-#include "FluxSvc/../src/EventSource.h"
+#include "FluxSvc/../src/CompositeSource.h"
 #include "FluxSvc/../src/FluxMgr.h"
 
 namespace observationSim {
@@ -89,7 +89,7 @@ private:
 
    FluxMgr *m_fluxMgr;
 
-   EventSource *m_source;
+   CompositeSource *m_source;
 
    long m_numEvents;
    long m_maxNumEvents;
