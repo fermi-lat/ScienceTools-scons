@@ -497,6 +497,17 @@ int main() {
       // Open the newly created table:
       my_table = IFileSvc::instance().editTable("new_ft1.fits", "EVENTS");
 
+      // Test history and comment facilities.
+      try {
+        my_table->getHeader().addComment("This comment was added by test_tip");
+        std::cerr << "Expected: writing a comment string to a newly created header succeeded" << std::endl;
+
+        my_table->getHeader().addHistory("This history was added by test_tip");
+        std::cerr << "Expected: writing a history string to a newly created header succeeded" << std::endl;
+      } catch (const TipException & x) {
+        std::cerr << "Unexpected exception while writing comment or history to a newly created header: " << x.what() << std::endl;
+      }
+
       // Insert some records:
       Index_t num_rec = 128;
       my_table->setNumRecords(num_rec);
