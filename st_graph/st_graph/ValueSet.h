@@ -39,6 +39,10 @@ namespace st_graph {
       /// \brief Returns whether this value set is empty.
       bool empty() const;
 
+      double getHighVal(unsigned int index) const { return m_values[index] + .5 * m_spreads[index]; }
+
+      double getLowVal(unsigned int index) const { return m_values[index] - .5 * m_spreads[index]; }
+
     private:
       std::vector<double> m_values;
       std::vector<double> m_spreads;

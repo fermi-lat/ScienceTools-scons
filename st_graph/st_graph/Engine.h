@@ -6,6 +6,7 @@
 #define st_graph_Engine_h
 
 #include <string>
+#include <vector>
 
 #include "st_graph/PlotHist.h"
 #include "st_graph/ValueSet.h"
@@ -74,6 +75,16 @@ namespace st_graph {
       */
       virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
         const ValueSet & y, const ValueSet & z = ValueSet()) = 0;
+
+      /** \brief Create a plot which may be displayed in a plot frame.
+          \param parent The parent frame in which the plot will be displayed.
+          \param style The plot style:
+          \param x The first dimension being plotted.
+          \param y The second dimension being plotted.
+          \param z The third dimension being plotted.
+      */
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+        const ValueSet & y, const std::vector<std::vector<double> > & z) = 0;
 
       /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
                  because a new technique is planned to support plots within any frame.

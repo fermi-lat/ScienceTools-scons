@@ -6,16 +6,19 @@
 #define st_graph_RootPlot_h
 
 #include <string>
+#include <vector>
 
 #include "st_graph/IPlot.h"
 #include "st_graph/ValueSet.h"
 
 class TGraph;
+class TH2D;
 class TMultiGraph;
 
 namespace st_graph {
 
   class IFrame;
+  class RootPlotFrame;
 
   /** \class RootPlot
       \brief A Root implementation of the IFrame interface. This specific class displays a plot in its frame.
@@ -32,6 +35,16 @@ namespace st_graph {
       */
       RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x, const ValueSet & y,
         const ValueSet & z = ValueSet());
+
+      /** \brief Construct a RootPlot object.
+          \param parent The parent frame.
+          \param style The style of the plot.
+          \param x The first dimension.
+          \param y The second dimension.
+          \param z The third dimension.
+      */
+      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x, const ValueSet & y,
+        const std::vector<std::vector<double> > & z);
 
       virtual ~RootPlot();
 
@@ -57,14 +70,18 @@ namespace st_graph {
       */
       TGraph * createScatterPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
 
+      TH2D * createHistPlot2D(const std::string & title, const ValueSet & x, const ValueSet & y,
+        const std::vector<std::vector<double> > & z);
+
       /** \brief Return current Root graphical object. Not part of API.
       */
       TGraph * getTGraph();
 
     private:
-      IFrame * m_parent;
+      RootPlotFrame * m_parent;
       TMultiGraph * m_multi_graph;
       TGraph * m_graph;
+      TH2D * m_th2d;
   };
 }
 

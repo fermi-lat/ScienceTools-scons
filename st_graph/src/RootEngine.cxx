@@ -134,6 +134,11 @@ namespace st_graph {
     return new RootPlot(parent, style, title, x, y, z);
   }
 
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+    const ValueSet & y, const std::vector<std::vector<double> > & z) {
+    return new RootPlot(parent, style, title, x, y, z);
+  }
+
   IFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
     return new RootPlotFrame(parent, width, height);
   }

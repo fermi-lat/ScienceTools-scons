@@ -8,6 +8,7 @@
 
 #include "TGraph.h"
 #include "TGraphErrors.h"
+#include "TH2.h"
 #include "TMultiGraph.h"
 
 #include "RootPlot.h"
@@ -18,28 +19,26 @@
 namespace st_graph {
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-    const ValueSet & y, const ValueSet & z): m_parent(parent), m_multi_graph(0), m_graph(0) {
-// TODO 1. Make m_parent a RootPlotFrame, do the cast one time here.
+    const ValueSet & y, const ValueSet & z): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
 // TODO 2. Alter RootPlotFrame::addFrame so it calls back to this class. That allows this class to call
 //         TMultiGraph::Add(graph, opt) with display options when addFrame is called.
 // TODO 3. Remove call to addFrame in the constructor?
 // TODO 4. Change unDisplay to call TMultiGraph::RecursiveRemove or whatever.
-    if (0 == m_parent) throw std::logic_error("RootPlot: cannot create a plot without a parent window");
+    // Get the parent multi frame so that the plot can be added with desired style.
+    RootPlotFrame * m_parent = dynamic_cast<RootPlotFrame *>(parent);
+    if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
 
     // Sanity check.
-    if (x.size() != y.size()) throw std::logic_error("RootPlot: x and y ValueSets do not have same size");
+    if (x.size() != y.size()) throw std::logic_error("RootPlot constructor: x and y ValueSets do not have same size");
 
     // Convert style string to lower case.
     std::string lc_style = style;
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
-    // Get the parent multi frame so that the plot can be added with desired style.
-    RootPlotFrame * frame = dynamic_cast<RootPlotFrame *>(m_parent);
-    if (0 == frame) throw std::logic_error("RootPlot: parent must be a RootPlotFrame");
+    m_multi_graph = m_parent->getMultiGraph();
 
-    m_multi_graph = frame->getMultiGraph();
+    if (0 == m_multi_graph) return;
 
-//if (0 == m_multi_graph) return;
     if (z.empty()) {
       if (std::string::npos != lc_style.find("hist")) {
         m_graph = createHistPlot(title, x, y, z);
@@ -48,15 +47,35 @@ namespace st_graph {
         m_graph = createScatterPlot(title, x, y, z);
         m_multi_graph->Add(m_graph, "");
       } else {
-        throw std::logic_error("RootPlot: unknown plot style \"" + style + "\"");
+        throw std::logic_error("RootPlot constructor: unknown plot style \"" + style + "\"");
       }
     } else {
-      throw std::logic_error("RootPlot: plots with more than 2 dimensions not yet supported");
+      throw std::logic_error("RootPlot constructor: plots with more than 2 dimensions not yet supported");
     }
   }
 
+  RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+    const ValueSet & y, const std::vector<std::vector<double> > & z): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
+    // Get the parent multi frame so that the plot can be added with desired style.
+    RootPlotFrame * m_parent = dynamic_cast<RootPlotFrame *>(parent);
+    if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
+
+    // Sanity check.
+    if (x.size() != z.size())
+      throw std::logic_error("RootPlot constructor: x ValueSets and first data dimension do not have same size");
+    if (y.size() != z.begin()->size())
+      throw std::logic_error("RootPlot constructor: y ValueSets and second data dimension do not have same size");
+
+    // Convert style string to lower case.
+    std::string lc_style = style;
+    for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
+
+    m_th2d = createHistPlot2D(title, x, y, z);
+  }
+
   RootPlot::~RootPlot() {
-//if (0 != m_multi_graph) m_multi_graph->RecursiveRemove(m_graph);
+    if (0 != m_multi_graph) m_multi_graph->RecursiveRemove(m_graph);
+    delete m_th2d;
     delete m_graph;
   }
 
@@ -143,6 +162,42 @@ namespace st_graph {
     return retval;
   }
 
+  TH2D * RootPlot::createHistPlot2D(const std::string & title, const ValueSet & x, const ValueSet & y,
+    const std::vector<std::vector<double> > & z) {
+
+    TH2D * hist = 0;
+
+    // Set up x bins. There is one extra for Root's upper cutoff.
+    std::vector<double> x_bins(x.size() + 1);
+
+    // Use low edges of all bins.
+    for (unsigned int ii = 0; ii < x.size(); ++ii) x_bins[ii] = x.getLowVal(ii);
+
+    // Last bin is overflow.
+    x_bins[x.size()] = x.getHighVal(x.size() - 1);
+
+    // Set up y bins. There is one extra for Root's upper cutoff.
+    std::vector<double> y_bins(y.size() + 1);
+
+    // Use low edges of all bins.
+    for (unsigned int ii = 0; ii < y.size(); ++ii) y_bins[ii] = y.getLowVal(ii);
+
+    // Last bin is overflow.
+    y_bins[y.size()] = y.getHighVal(y.size() - 1);
+
+    // Create the histogram used to draw the plot.
+    hist = new TH2D(title.c_str(), title.c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1, &y_bins[0]);
+
+    // Populate the histogram.
+    for (unsigned int ii = 0; ii < x.size(); ++ii)
+      for (unsigned int jj = 0; jj < y.size(); ++jj)
+        hist->SetBinContent(ii + 1, jj + 1, z[ii][jj]);
+
+    // Draw the histogram.
+    hist->Draw("lego");
+
+    return hist;
+  }
   TGraph * RootPlot::getTGraph() { return m_graph; }
 
 }

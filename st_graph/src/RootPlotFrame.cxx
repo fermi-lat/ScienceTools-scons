@@ -26,8 +26,6 @@ namespace st_graph {
     root_frame->AddFrame(m_canvas);
     m_canvas->GetCanvas()->SetFillColor(0);
 
-    m_multi_graph = new TMultiGraph("tmultigraph", "TMultiGraph");
-
     m_frame = m_canvas;
   }
 
@@ -43,7 +41,7 @@ namespace st_graph {
     // Select embedded canvas for drawing.
     gPad = m_canvas->GetCanvas();
 
-    m_multi_graph->Draw("A");
+    if (0 != m_multi_graph) m_multi_graph->Draw("A");
 
     // Update the display.
     gPad->Update();
@@ -53,6 +51,9 @@ namespace st_graph {
 
   }
 
-  TMultiGraph * RootPlotFrame::getMultiGraph() { return m_multi_graph; }
+  TMultiGraph * RootPlotFrame::getMultiGraph() {
+    if (0 == m_multi_graph) m_multi_graph = new TMultiGraph("tmultigraph", "TMultiGraph");
+    return m_multi_graph;
+  }
 
 }

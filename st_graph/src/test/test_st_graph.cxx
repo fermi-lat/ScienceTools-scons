@@ -53,8 +53,8 @@ void StGraphTestApp::run() {
   using namespace st_graph;
 
   testValueSet();
-  testGuis();
   testPlots();
+  testGuis();
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -209,7 +209,6 @@ void StGraphTestApp::testPlots() {
 
   // Modify the data set; double the spreads and shift the plot down.
   for (int ii = 0; ii < num_pts; ++ii) {
-    x1[ii] = ii;
     delta_x1[ii] = .4;
     y1[ii] = .3 * (140. - (ii + .3) * (ii + .3));
     delta_y1[ii] = sqrt(fabs(y1[ii]));
@@ -220,6 +219,40 @@ void StGraphTestApp::testPlots() {
 
   // Create a histogram plot of this data set, in the subframe.
   IPlot * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+
+  // Run the graphics engine to display everything.
+  engine.run();
+
+  // Clean up.
+  delete plot2; plot2 = 0;
+  delete plot1; plot1 = 0;
+  delete pf1; pf1 = 0;
+
+  // Create rectangular 2d data.
+  std::vector<std::vector<double> > hist(2 * num_pts, std::vector<double>(num_pts));
+  double x0 = -.5 * num_pts;
+  double y0 = 9. - num_pts / 3.;
+  for (int ii = 0; ii < num_pts * 2; ++ii) {
+    for (int jj = 0; jj < num_pts; ++jj) {
+      double x = .5 * (ii - num_pts);
+      double y = (jj - num_pts/3.);
+      hist[ii][jj] = exp(-(x * x + y * y) / (2. * num_pts)) - exp(-(x0 * x0 + y0 * y0) / (2. * num_pts));
+    }
+  }
+  
+  // Create bin definition for second dimension.
+  std::vector<double> x2(num_pts * 2);
+  std::vector<double> delta_x2(num_pts * 2);
+  for (int ii = 0; ii < num_pts * 2; ++ii) {
+    x2[ii] = ii;
+    delta_x2[ii] = .2;
+  }
+
+  // Create a new subframe in which to display new plots.
+  pf1 = engine.createPlotFrame(mf, 600, 400);
+  
+  // Plot the data as a histogram, using previous 1D bin defs for second dimension, new defs for first.
+  plot1 = engine.createPlot(pf1, "surf", "2D Gaussian", ValueSet(x2, delta_x2), ValueSet(x1, delta_x1), hist);
 
   // Run the graphics engine to display everything.
   engine.run();
