@@ -1,6 +1,8 @@
 /** \file TipBinner.h
     \brief Base class for different binners which operate on Tip objects.
 */
+#ifndef evtbin_TipBinner_h
+#define evtbin_TipBinner_h
 
 #include "tip/Table.h"
 
@@ -28,3 +30,5 @@ class TipBinner {
     */
     virtual void binRecord(const tip::Table::ConstRecord & record) = 0;
 };
+
+#endif

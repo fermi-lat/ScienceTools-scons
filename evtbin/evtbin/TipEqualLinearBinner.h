@@ -1,6 +1,8 @@
 /** \file TipEqualLinearBinner.h
     \brief Binner which uses equal linear intervals for its bin definitions.
 */
+#ifndef evtbin_TipEqualLinearBinner_h
+#define evtbin_TipEqualLinearBinner_h
 
 #include <string>
 #include <vector>
@@ -41,3 +43,5 @@ class TipEqualLinearBinner : public TipBinner {
     double m_interval_end;
     double m_interval_width;
 };
+
+#endif
