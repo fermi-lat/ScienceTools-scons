@@ -2,7 +2,7 @@ package dataSubselector
 version v1r1p2
 
 use Goodi v2*
-use hoops v0r1p1
+use hoops v*
 
 macro cpp g++
 
