@@ -295,7 +295,7 @@ void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
 
         totalinterval+=interval;
         cout << f->particleName()
-            << "(" << f->energy()<< " GeV)"
+            << "(" << f->energy()<< " MeV)"
             << ", Launch: "  << f->launchPoint() 
             << ", Dir "      << f->launchDir() 
             << ", Flux="     << f->flux(time) 
