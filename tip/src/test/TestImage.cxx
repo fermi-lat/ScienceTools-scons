@@ -40,11 +40,10 @@ namespace tip {
     // Test creating a new image and copying the read-only image to it, pixel by pixel.
     try {
       // Create new image.
-      IFileSvc::instance().createFile(std::string("new_image.fits(") + getDataDir() + "arlac.pha)");
+      IFileSvc::instance().createFile("new_image.fits",  getDataDir() + "arlac.pha");
 
       // Open new image for writing.
       std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image.fits", ""));
-
       // Flip image X and Y.
       PixOrd_t tmp_dim = dims[0];
       dims[0] = dims[1];
@@ -86,10 +85,10 @@ namespace tip {
     // Test creating a new image and copying the read-only image to it in one fell swoop.
     try {
       // Create new image.
-      IFileSvc::instance().createFile(std::string("new_image.fits(") + getDataDir() + "arlac.pha)");
+      IFileSvc::instance().createFile("new_image2.fits",  getDataDir() + "arlac.pha");
 
       // Open new image for writing.
-      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image.fits", ""));
+      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image2.fits", ""));
 
       // Create array for read image.
       std::vector<float> image_vec;
@@ -111,7 +110,7 @@ namespace tip {
           m_const_image->getPixel(ii, jj, orig_pixel);
           image->getPixel(ii, jj, copy_pixel);
           if (orig_pixel != copy_pixel)
-throw TipException("After copying a whole image, copy does not agree with orig");
+            throw TipException("After copying a whole image, copy does not agree with orig");
         }
       }
 
