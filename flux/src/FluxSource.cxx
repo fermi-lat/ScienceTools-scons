@@ -524,7 +524,8 @@ FluxSource::FluxSource(const DOM_Element& xelem )
                 atof(xml::Dom::transToChar(angles.getAttribute("l"))),
                 atof(xml::Dom::transToChar(angles.getAttribute("b"))), 
                 astro::SkyDir::GALACTIC
-                ) 
+                ),
+                atof(xml::Dom::getAttribute(angles, "radius").c_str())
                 );
         }
         else if(anglesTag.equals("celestial_dir")){

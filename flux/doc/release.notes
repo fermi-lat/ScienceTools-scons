@@ -4,6 +4,7 @@
 
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
+ * 06-jan-04  v8r5p1 SMR THB's "radius" parameter added to galactic sources.
  * 06-jan-04  v8r5   SMR migrate MapSpectrum into flux.
  * 12-dec-03  v8r4p2 jrb Replace xml::IFile::extractEnvVar call with one to
  *                       facilities::Util::expandEnvVar in FluxMgr.cxx
