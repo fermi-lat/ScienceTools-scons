@@ -9,7 +9,7 @@
 
 #include "RootFrame.h"
 
-#include "st_graph/IPlotFrame.h"
+#include "st_graph/IFrame.h"
 
 class TGMainFrame;
 class TRootEmbeddedCanvas;
@@ -22,27 +22,29 @@ namespace st_graph {
   /** \class RootPlotFrame
       \brief Interface for base class frame for all graphical frames.
   */
-  class RootPlotFrame : public IPlotFrame, public RootFrame {
+  class RootPlotFrame : public RootFrame {
     public:
       typedef std::set<RootPlot *> PlotCont_t;
 
-      RootPlotFrame(RootEngine * engine, IFrame * parent, unsigned int width, unsigned int height);
+      RootPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
 
       /// \brief Destruct the frame.
       virtual ~RootPlotFrame();
 
-      /// \brief Add a plot to the window. Not an API call.
-      virtual void addPlot(IPlot * plot);
+      /** \brief Add the given (sub) frame to this container frame. The IFrame must really contain a plot, not some other widget.
+                 This will go away soon.
+          \param frame The frame being added.
+      */
+      virtual void addFrame(IFrame * frame);
 
-      /// \brief Remove a plot from the window. Not an API call.
-      virtual void removePlot(IPlot * plot);
-
-      virtual void display();
-
-      virtual void unDisplay();
+      /** \brief Remove the given (sub) frame to this container frame. If the frame is not currently in the container,
+                 no harm done. The IFrame must really contain a plot, not some other widget.
+                 This will go away soon.
+          \param frame The frame being removed.
+      */
+      virtual void removeFrame(IFrame * frame);
 
     private:
-      PlotCont_t m_plot_cont;
       TRootEmbeddedCanvas * m_canvas;
   };
 
