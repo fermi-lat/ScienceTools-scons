@@ -5,36 +5,56 @@
     \author James Peachey, HEASARC
 */
 
-#include "FileSvc.h"
+#include "FitsExtensionManager.h"
+#include "RootExtensionManager.h"
 #include "tip/IFileSvc.h"
+#include "tip/Table.h"
 #include "tip/TipException.h"
 
 namespace tip {
 
-  // Static initializations.
-  // Singleton registry (container) of IFileSvc objects.
-  IFileSvc::FileSvcCont_t IFileSvc::m_file_services;
-
-  // Create the factory.
-  static FileSvc s_file_factory;
-
+  // Deprecated.
   IFileSvc & IFileSvc::getSvc() {
-    // Look for the master file service, which currently can handle either FITS or Root format.
-    FileSvcCont_t::iterator it = m_file_services.find("default");
-
-    // If found, return it. Otherwise complain.
-    if (m_file_services.end() != it) return *it->second;
-    else throw TipException("Cannot find a file service object");
+    return instance();
   }
 
-  // Destructor for a file service removes it from the registry (container) m_file_services.
+  // Get the instance of thie factory.
+  IFileSvc & IFileSvc::instance() {
+    // Create the singleton factory.
+    static IFileSvc s_file_factory;
+
+    return s_file_factory;
+  }
+
+  // Perform global initializations.
+  void IFileSvc::globalInit() {
+     RootExtensionManager::resetSigHandlers();
+  }
+
+  // Destructor for a file service.
   IFileSvc::~IFileSvc() {
-    for (FileSvcCont_t::iterator it = m_file_services.begin(); it != m_file_services.end(); ++it)
-      if (this == it->second) m_file_services.erase(it);
+  }
+
+  // Edit a table in a file, be it FITS or Root.
+  Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
+    Table * retval = 0;
+    IExtensionManager * data = 0;
+    try {
+      try {
+        data = new FitsExtensionManager(file_name, table_name);
+      } catch(TipException & x) {
+        data = new RootExtensionManager(file_name, table_name);
+      }
+      retval = new Table(data);
+    } catch(...) {
+      if (retval) delete retval; // If retval is non-0, Table was created, so it will delete data.
+      else delete data; // Thus, don't delete it twice.
+      throw;
+    }
+    return retval;
   }
 
   // Protected constructor which adds the current object to the registry of IFileSvc objects.
-  IFileSvc::IFileSvc(const std::string & format_name): m_format_name(format_name)
-    { m_file_services[format_name] = this; }
+  IFileSvc::IFileSvc() {}
 
 }

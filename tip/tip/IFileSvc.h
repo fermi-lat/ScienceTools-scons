@@ -7,7 +7,6 @@
 #ifndef tip_IFileSvc_h
 #define tip_IFileSvc_h
 
-#include <map>
 #include <string>
 
 namespace tip {
@@ -20,13 +19,18 @@ namespace tip {
   */
   class IFileSvc {
     public:
-      /** \brief For convenience, typedef FileSvc container.
+      /** \brief Singleton access to I/O service objects. Deprecated: used instance() instead!
       */
-      typedef std::map<std::string, IFileSvc *> FileSvcCont_t;
+      static IFileSvc & getSvc();
 
       /** \brief Singleton access to I/O service objects.
       */
-      static IFileSvc & getSvc();
+      static IFileSvc & instance();
+
+      /** \brief Perform initializations which are necessary at startup, mainly to handle tweaks to
+          Root's global variables.
+      */
+      static void globalInit();
 
       /** \brief Destruct an I/O service object.
       */
@@ -36,19 +40,14 @@ namespace tip {
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
       */
-      virtual Table * editTable(const std::string & file_name, const std::string & table_name) = 0;
+      virtual Table * editTable(const std::string & file_name, const std::string & table_name);
 
     protected:
       /** \brief For singleton pattern, limit creation of IFileSvc objects to derived classes.
-          \param format_name The name of the file format, set by subclass.
       */
-      IFileSvc(const std::string & format_name);
+      IFileSvc();
 
     private:
-      // Container of supported file services.
-      static FileSvcCont_t m_file_services;
-      std::string m_format_name;
-
       // Copying file service objects is not supported.
       IFileSvc(const IFileSvc & service) {}
   };
