@@ -10,6 +10,7 @@ mode,     s, a,  "h",   , ,""
 #---------------------------------------------------------------------------------------
 #
 infile,  f, a, "$(OUTFILES)/expcube_1day.fits", , , "Name of the exposure cube input file:"
+table_name,s,a,"",,,"name of the extension or ROOT tree"
 filter,   s, a, "", , , "filter expression:"
 outfile,  f, a, "$(OUTFILES)/exp_1_day_ait.fits", , , "Name of the exposure output file:"
 #
