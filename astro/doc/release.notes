@@ -2,6 +2,7 @@
 
 @verbatim
   Package coordinators: T.Burnett, G.Tosti
+  v0r10p7 19-mar-04 THB gcc needed const operator, fix SkyDir::l() to be positive.
   v0r10p6 14-feb-04 THB gcc warnings, disable the Orbit test program
   v0r10p5 13-feb-04 THB out of range exception for inverse projection
   v0r10p2 07-feb-04 THB add exception class
