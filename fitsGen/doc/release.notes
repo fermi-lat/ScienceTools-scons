@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r0   13-Apr-04   JC   convert to tip, STpolicy
     v0r5   22-Jan-04   JC   Use astro::JulianDate for DATE-OBS, DATE-END
                             keywords
     v0r4p6 12-Dec-03   JCT  updated doc
