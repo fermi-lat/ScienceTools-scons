@@ -5,7 +5,6 @@
 #define tip_RootExtensionData_h
 
 #include "RootExtensionManager.h"
-#include "tip/IExtensionData.h"
 #include "tip/ExtensionData.h"
 
 namespace tip {

@@ -6,8 +6,8 @@
 */
 
 #include "FitsExtensionData.h"
-#include "RootExtensionData.h"
 #include "FitsExtensionManager.h"
+#include "RootExtensionData.h"
 #include "RootExtensionManager.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"

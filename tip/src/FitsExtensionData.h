@@ -5,7 +5,6 @@
 #define tip_FitsExtensionData_h
 
 #include "FitsExtensionManager.h"
-#include "tip/IExtensionData.h"
 #include "tip/ExtensionData.h"
 
 namespace tip {

@@ -23,7 +23,7 @@ namespace tip {
 
   LeafBuffer::LeafBuffer(TTree * tree, const std::string & leaf_name, const std::string &): m_leaf_name(leaf_name),
     m_tree(tree), m_buf(0) {
-    if (!m_tree) throw TipException("LeafBuffer::LeafBuffer(TTree *, string, string): "
+    if (0 == m_tree) throw TipException("LeafBuffer::LeafBuffer(TTree *, string, string): "
       "Cannot create LeafBuffer object with a NULL TTree pointer");
     m_buf = new double[1];
     *static_cast<double *>(m_buf) = 137.;
@@ -33,7 +33,7 @@ namespace tip {
 
   LeafBuffer::~LeafBuffer() {
     TBranch * branch = m_tree->GetBranch(m_leaf_name.c_str());
-    if (branch) branch->ResetAddress();
+    if (0 != branch) branch->ResetAddress();
     m_tree->SetBranchStatus(m_leaf_name.c_str(), 0);
     delete [] static_cast<double *>(m_buf);
   }

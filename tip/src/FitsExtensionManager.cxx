@@ -41,7 +41,7 @@ namespace tip {
 
   // Subclasses call this to open the file and position it to the desired extension.
   void FitsExtensionManager::open() {
-    if (!m_fp) {
+    if (0 == m_fp) {
       fitsfile * fp = 0;
       int status = 0;
 
@@ -88,7 +88,7 @@ namespace tip {
 
   // Close file.
   void FitsExtensionManager::close(int status) {
-    if (m_fp) fits_close_file(m_fp, &status);
+    if (0 != m_fp) fits_close_file(m_fp, &status);
     m_fp = 0;
   }
 

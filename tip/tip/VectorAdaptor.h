@@ -88,14 +88,14 @@ namespace tip {
 
   template <typename T, typename Referent>
   inline const T & VectorAdaptor<T, Referent>::get(Index_t entry_index) {
-    if (!m_begin) allocate();
+    if (0 == m_begin) allocate();
     m_referent->get(0, m_end - m_begin, m_begin);
     return m_begin[entry_index];
   }
 
   template <typename T, typename Referent>
   inline typename VectorAdaptor<T, Referent>::Entry & VectorAdaptor<T, Referent>::getEntry(Index_t entry_index) {
-    if (!m_begin) allocate();
+    if (0 == m_begin) allocate();
     m_referent->get(0, m_end - m_begin, m_begin);
     m_entry.setIndex(entry_index);
     return m_entry;
@@ -103,7 +103,7 @@ namespace tip {
 
   template <typename T, typename Referent>
   inline void VectorAdaptor<T, Referent>::set(Index_t entry_index, const T & value) {
-    if (!m_begin) allocate();
+    if (0 == m_begin) allocate();
     m_begin[entry_index] = value;
     m_referent->set(m_begin + entry_index, m_begin + entry_index + 1, entry_index);
   }

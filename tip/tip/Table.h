@@ -11,8 +11,8 @@
 #include "tip/IExtensionData.h"
 #include "tip/Iterator.h"
 #include "tip/ScalarAdaptor.h"
-#include "tip/TipException.h"
 #include "tip/TableRecord.h"
+#include "tip/TipException.h"
 #include "tip/VectorAdaptor.h"
 #include "tip/tip_types.h"
 

@@ -301,7 +301,7 @@ int main() {
 
       std::string telescop;
       header["telescop"].get(telescop);
-      if (telescop.compare("SWIFT")) {
+      if (0 != telescop.compare("SWIFT")) {
         std::cerr << "Keyword telescop was read to be " << telescop << " not " << "SWIFT" << std::endl;
         status = 1;
       }

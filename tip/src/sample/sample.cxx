@@ -12,6 +12,8 @@
 
 int main() {
   try {
+    double silence_warning;
+
     // Example 1:
     using namespace tip;
     Table * my_table = IFileSvc::instance().editTable("day023.fits", "LAT_Event_Summary");
@@ -29,6 +31,8 @@ int main() {
       double ph_time_dbl = (*itor)["ph_time"].get();
   
       // Do something useful with ph_time_dbl's value here ...
+      // (The following is just to silence a compiler warning:)
+      silence_warning += ph_time_dbl;
     }
   
     // Example 4:
@@ -47,6 +51,8 @@ int main() {
       double ph_time_dbl = ph_time_cell.get();
   
       // Do something useful with ph_time_dbl's value here ...
+      // (The following is just to silence a compiler warning:)
+      silence_warning += ph_time_dbl;
     }
   
     // Example 5:
