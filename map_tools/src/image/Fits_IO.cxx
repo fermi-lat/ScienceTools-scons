@@ -1,8 +1,8 @@
 /**  @file  Fits_IO.cxx
-    @brief Implementaion of Fits_IO 
+@brief Implementaion of Fits_IO 
 
-    @author Toby Burnett
-    Code orginally written by Riener Rohlfs
+@author Toby Burnett
+Code orginally written by Riener Rohlfs
 
     $Header$
 */
@@ -35,8 +35,6 @@ static const char* errMsg[] = {
         "Neither name nor HDU number is defined. Cannot open an element in file %s"
 };
 
-static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status);
-static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status);
 
 IOElement * MakeImage(fitsfile * fptr, int * status);
 int           CreateFitsImage(fitsfile* fptr, IOElement* image);
@@ -171,12 +169,13 @@ IOElement * Fits_IO::read(const std::string & fileName, const std::string & name
     }
 
     // copy the header and set the element name
-    HeaderFits2Root(fptr, element, &status);
-
+    //readFitsHeader(fptr, element);
 
     if (element) {
-        element->setIO(new Fits_IO(element, fptr, cycle));
-        element->setFileAccess(mode);
+        Fits_IO* fio = new Fits_IO(element, fptr, cycle);
+        fio->readFitsHeader();
+        element->setIO(fio);
+        element->setFileAccess(mode);       
     }
     return element;
 
@@ -266,11 +265,11 @@ int Fits_IO::deleteElement()
     return 0;
 }
 //_____________________________________________________________________________
-int Fits_IO::saveElement()
+void Fits_IO::saveElement()
 {
     // saves the current element into the FITS file
 
-    if (m_fptr == 0) return 0;
+    if (m_fptr == 0) return; // throw an exception?
 
     fitsfile * fptr = (fitsfile*)m_fptr;
     int status = 0;
@@ -281,13 +280,13 @@ int Fits_IO::saveElement()
         throw std::runtime_error("table writing not yet implemented");
     }
 
-    HeaderRoot2Fits( element(), fptr, &status);
+    writeFitsHeader();
 
     fits_write_chksum(fptr, &status);
     //   if (status == 232)
     //      status = 0;   // this happens with a new table
 
-    return status == 0 ? 0 : -1;
+    report_error(status);
 }
 //_____________________________________________________________________________
 void Fits_IO::report_error(int status)
@@ -301,18 +300,21 @@ void Fits_IO::report_error(int status)
 }
 
 //_____________________________________________________________________________
-static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
+void Fits_IO::readFitsHeader()
 {
-    if (*status != 0)  return;
+    int status = 0;
+    fitsfile* fptr = reinterpret_cast<fitsfile*>(m_fptr);
+    IOElement* element = m_element;
+
 
     char name[30], value[100], comment[100], unit[40];
 
 
     int nkeys;
-    fits_get_hdrspace(fptr, &nkeys, NULL, status);
-    for (int num = 0; num < nkeys && *status == 0; num++)
+    fits_get_hdrspace(fptr, &nkeys, NULL, &status);
+    for (int num = 0; num < nkeys; num++)
     {
-        fits_read_keyn(fptr, num + 1, name, value, comment, status);
+        fits_read_keyn(fptr, num + 1, name, value, comment, &status);
         std::string my_value(value);
         if (strncmp(name, "TTYPE", 5) == 0  || 
             strncmp(name, "TFORM", 5) == 0  || 
@@ -332,7 +334,7 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
             strcmp (name, "DATASUM") == 0      )
             continue;
 
-        fits_read_key_unit(fptr, name, unit, status);
+        fits_read_key_unit(fptr, name, unit, &status);
 
         if (value[0] == '\'' && value[strlen(value) - 1] == '\'')
         {
@@ -364,50 +366,56 @@ static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status)
         } else 
            element->addAttribute(IntAttr(name, atoi(value), unit, comment), false);
 
+        report_error(status);
     }
 
 }
 //_____________________________________________________________________________
-static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
+void Fits_IO::writeFitsHeader()
 {
-    if (*status != 0)
-        return;
+    int status = 0;
+    fitsfile* fptr = reinterpret_cast<fitsfile*>(m_fptr);
 
-// Create some Attr objects for typeid comparisons.
-    static std::string boolAttr = typeid(BoolAttr).name();
-    static std::string stringAttr = typeid(StringAttr).name();
-    static std::string intAttr = typeid(IntAttr).name();
-    static std::string floatAttr = typeid(FloatAttr).name();
-    static std::string doubleAttr = typeid(DoubleAttr).name();
+    // Create some Attr objects for typeid comparisons.
+    static std::string boolAttrClassName(typeid(BoolAttr).name());
+    static std::string stringAttrClassName(typeid(StringAttr).name());
+    static std::string intAttrClassName(typeid(IntAttr).name());
+    static std::string floatAttrClassName(typeid(FloatAttr).name());
+    static std::string doubleAttrClassName(typeid(DoubleAttr).name());
+    static std::string uintAttrClassName(typeid(UintAttr).name());
 
-    void* val = 0; // actual value cast to this pointer
-    char cbuf[120];
-    int fitsType=0;
-    for( Header::iterator it = element->begin(); it != element->end(); ++it){
+    for( Header::iterator it = m_element->begin(); it != m_element->end(); ++it){
         BaseAttr& attr = *(*it);
+        void * pval = attr.valuePtr();
+        int fitsType=0;
 
-        if (typeid(attr).name() == doubleAttr) { fitsType = TDOUBLE; val = attr.valuePtr();
-        } else if (typeid(attr).name() == stringAttr) { fitsType = TSTRING; 
-           StringAttr & my_attr = dynamic_cast<StringAttr&>(attr); val = (void*)cbuf;
-           strncpy(cbuf, my_attr.value().c_str(), sizeof(cbuf));
- 
-        } else if (typeid(attr).name() == intAttr) { fitsType = TINT; val = attr.valuePtr();
-        } else if (typeid(attr).name() == boolAttr) { fitsType = TLOGICAL;val = attr.valuePtr();
-        } else if (typeid(attr).name() == floatAttr) { fitsType = TFLOAT;val = attr.valuePtr();
+        if (typeid(attr).name() == doubleAttrClassName)      { fitsType = TDOUBLE; 
+        } else if (typeid(attr).name() == floatAttrClassName){ fitsType = TFLOAT; 
+        } else if (typeid(attr).name() == intAttrClassName)  { fitsType = TINT; 
+        } else if (typeid(attr).name() == boolAttrClassName) { fitsType = TLOGICAL;
+        } else if (typeid(attr).name() == uintAttrClassName) { fitsType = TUINT;
+        } else if (typeid(attr).name() == stringAttrClassName){fitsType = TSTRING; 
+
+            // special case: need to make a copy of the character string
+            char cbuf[120];
+            pval = (void*) cbuf;  // and override the pointer
+
+            StringAttr & my_attr = dynamic_cast<StringAttr&>(attr); 
+            strncpy(cbuf, my_attr.value().c_str(), sizeof(cbuf));
+
         } else {
             throw std::runtime_error(std::string("HeaderRoot2Fits: unexpected attribute type ")+ typeid(attr).name());
         }
 
+        // now write out the key
         fits_update_key(fptr, fitsType, (char*)attr.name().c_str(), 
-                      val, (char*)attr.comment().c_str(), status);
+            pval, (char*)attr.comment().c_str(), &status);
 
         if (! attr.unit().empty() ) {
             fits_write_key_unit(fptr, (char*)attr.name().c_str(), 
-            (char*)attr.unit().c_str(), status);
+                (char*)attr.unit().c_str(), &status);
         }
-        if (*status != 0) {
-            Fits_IO::report_error(*status);
-        }
+        report_error(status);
     }
 
 }

@@ -85,7 +85,7 @@ public:
     This function without any parameter has to be used to update the
     file with any change of the element in memory.
     */
-    virtual  int          saveElement(const std::string & fileName = "");
+    virtual  void          saveElement(const std::string & fileName = "");
 
     /** @brief    Deletes the element in the file, but not in memory.
 

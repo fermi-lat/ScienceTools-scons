@@ -53,7 +53,7 @@ void IOElement::newFile(const std::string & fileName)
         m_fileAccess    = VirtualIO::ReadWrite;
 }
 //_____________________________________________________________________________
-int IOElement::saveElement(const std::string & fileName)
+void IOElement::saveElement(const std::string & fileName)
 {
 
     if (!fileName.empty()) {
@@ -64,22 +64,22 @@ int IOElement::saveElement(const std::string & fileName)
         newFile(fileName);
 
         if (!m_fio || !m_fio->isOpen())
-            return -1;
+            return ;
 
         m_fio->createElement();
     }
 
     if (!m_fio || !m_fio->isOpen() )
-        return 0;
+        return;
 
     int err = 0;
     if (m_fileAccess == VirtualIO::Read) {
         throw std::runtime_error(std::string("wrong access mode to save file")+fileName);
     }else if (m_fileAccess == VirtualIO::ReadWrite){
-        err = m_fio->saveElement();
+         m_fio->saveElement();
     }
 
-    return err;
+    return;
 }
 //_____________________________________________________________________________
 void IOElement::closeElement()

@@ -37,7 +37,7 @@ public:
 
    virtual  void         createElement() = 0;
    virtual  int          deleteElement() = 0;
-   virtual  int          saveElement()=0;
+   virtual  void         saveElement()=0;
 
    IOElement* element()const{return m_element;}
 
