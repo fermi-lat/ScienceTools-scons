@@ -14,6 +14,7 @@
 #include <cmath>
 #include <utility> // for pair
 #include <string>
+#include "astro/SkyProj.h"
 
 namespace astro {
 
@@ -47,6 +48,11 @@ namespace astro {
 
         //! initialize from a vector direction
         SkyDir(Hep3Vector, CoordSystem inputType = EQUATORIAL);
+
+        //! initialize using a projection and coordinates given in that projection
+        // x1, x2 = ra, dec equivalent coordinates
+        // projection = projection to use to obtain deprojected coordinates
+        SkyDir(double x1, double x2, SkyProj projection);
 
 
         //! function operator returns the direction
@@ -104,6 +110,10 @@ namespace astro {
             bool use_lb);
 
         std::pair<double,double> project() const;
+
+        /** @brief Routine that gives a projection of the current coordinates 
+            @param projection The projection transfomation to apply. */
+        std::pair<double,double> project(SkyProj projection) const;
 
         /** @brief inverse projection function for reference: units are degrees
 

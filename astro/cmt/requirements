@@ -10,5 +10,25 @@ use GlastPolicy  *
 use facilities   *
 use CLHEP * IExternal
 
-apply_pattern GLAST_static_library_package
+apply_pattern package_include
+apply_pattern package_linkopts
+
+private
+
+#the following prepend makes the includes and src folders available locally
+macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
+apply_pattern package_headers
+
+
+library astro -no_share  *.cxx  \
+ ${astro_headers} \
+ -s=wcslib  *.c *.h
+
+
+# this is the test program from G. Tosti
+# application orbit test/orbit/Orbit.cxx 
+
+# simple program to test basic functionality
+application test_astro test/test.cxx
+
 

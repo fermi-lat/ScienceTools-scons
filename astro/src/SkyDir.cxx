@@ -99,6 +99,30 @@ SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
     }
 }
 
+/** @brief initialize from projected coordinates
+@param param1 projected equivalent to ra or l, in degrees
+@param param2 projected equivalent dec or b, in degrees
+@param projection used to deproject these coordinates
+*/
+SkyDir::SkyDir(double param1, double param2, SkyProj projection)
+{
+   double ra_rad, dec_rad;
+   std::pair<double,double> s;
+   // Deproject the coordinates to find ra/dec (or l/b)
+   s = projection.Deproject(param1, param2);
+
+   ra_rad = s.first * M_PI/180.;
+   dec_rad = s.second * M_PI/180.;
+
+   Hep3Vector t = Hep3Vector( cos(ra_rad)*cos(dec_rad), sin(ra_rad)*cos(dec_rad) , sin(dec_rad) );        
+   if( !s_project_lb){
+      m_dir = t;
+   }else{
+      m_dir = s_equatorialToGalactic.inverse()* t;
+   }
+
+}
+
 HepRotation SkyDir::s_equatorialToGalactic = HepRotation().rotateZ(-282.8592*M_PI/180).rotateX(-62.8717*M_PI/180).rotateZ(32.93224*M_PI/180);
 
 void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
@@ -220,6 +244,13 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
     if( type==BAD) throw Exception(std::string("Unrecognized SkyDir projection type: ")+projName);
     setProjection(ref_ra, ref_dec, type, myRef_x, myRef_y, myScale_x, myScale_y, rot, use_lb);
 
+}
+
+
+// WCS based projection routine
+std::pair<double,double> SkyDir::project(SkyProj projection) const
+{
+   return projection.Project(this->ra(),this->dec());
 }
 
 
