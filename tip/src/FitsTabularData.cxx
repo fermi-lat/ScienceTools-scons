@@ -151,10 +151,6 @@ namespace table {
     getCellGeneric(field_index, record_index, value);
   }
 
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, std::vector<double> & value) const {
-    getVectorCellGeneric(field_index, record_index, value);
-  }
-
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
     bool * dest_begin) const {
     getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);

@@ -57,7 +57,6 @@ namespace table {
       class Vector : public VectorAdaptor<T, Cell> {
         public:
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
-          Vector & operator =(const std::vector<T> & data) { VectorAdaptor<T, Cell>::operator =(data); return *this; }
       };
 
       Table(ITabularData * tab_data): Extension(tab_data), m_tab_data(tab_data) {}

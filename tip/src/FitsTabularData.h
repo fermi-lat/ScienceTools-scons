@@ -69,8 +69,6 @@ namespace table {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const;
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const;
 
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, std::vector<double> & value) const;
-
       /** \brief Get one or more values from the current tabular data object.
           \param field_index The index of the field (column) to get.
           \param record_index The record index (row number) whose value to get.

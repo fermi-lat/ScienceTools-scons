@@ -8,7 +8,6 @@
 #define table_VectorAdaptor_h
 
 #include <cassert>
-#include <vector>
 
 #include "table/Ref.h"
 #include "table/table_types.h"
