@@ -1,5 +1,4 @@
 *.make
 setup*
 cleanup*
-Make*
 NMake
