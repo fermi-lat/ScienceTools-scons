@@ -106,7 +106,7 @@ void OptPP::find_min(int verbose, double tol, int) {
 // using the appropriate static functions and constraints
 
    NLF1 nlp(ndim, OptPP::statInterface, OptPP::statInit, myConstraints);
-   nlp.initFcn();
+//   nlp.initFcn();
 
 // Create an objective function for bound constrained quasi-Newton
 // optimization, using a LineSearch strategy
@@ -125,7 +125,7 @@ void OptPP::find_min(int verbose, double tol, int) {
 }
 #else
 
-void OptPP::find_min(int, double) {
+void OptPP::find_min(int, double, int) {
 // do nothing
 }
 
