@@ -110,7 +110,7 @@ namespace table {
   template <typename T>
   typename VectorAdaptorMM<T>::Entry & VectorAdaptorMM<T>::getEntry(Index_t entry_index) {
     if (!m_begin) allocate();
-    m_cell.get(0, m_begin, m_end);
+    m_cell.get(0, m_end - m_begin, m_begin);
     m_entry.setCurrent(m_begin + entry_index);
     return m_entry;
   }
