@@ -83,6 +83,7 @@ namespace tip {
       void setNumElements(Index_t num_elements);
 
     private:
+      FieldIndex_t getFieldIndex() const;
       static const FieldIndex_t s_field_unknown = -1;
       ConstTableRecord & m_record;
       std::string m_field;
@@ -119,7 +120,7 @@ namespace tip {
           but does not affect which fields were selected in this ConstTableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this ConstTableRecord.
       */
-protected:
+private:
       ConstTableRecord & operator =(const ConstTableRecord & rec);
 public:
 
@@ -145,6 +146,8 @@ public:
 
       // The following methods are needed to support access to this class by the
       // iterator class.
+      ConstTableRecord & itorAssign(const ConstTableRecord & record)
+        { m_tab_data = record.m_tab_data; m_index = record.m_index; return *this; }
       ConstTableRecord & itorNext() { ++m_index; return *this; }
       ConstTableRecord & itorPrev() { --m_index; return *this; }
       bool itorEquals(const ConstTableRecord & record) const
@@ -191,9 +194,17 @@ public:
           but does not affect which fields were selected in this TableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
-private:
       TableRecord & operator =(const TableRecord & rec);
-public:
+
+      /** \brief Assignment operator. Note that this behaves somewhat unusually!
+
+          This assignment does not change this TableRecord's container of TableCell objects.
+          This is necessary in order to preserve the selected content of this TableRecord. The
+          idea is that assignment changes which data object and record index this TableRecord points to
+          but does not affect which fields were selected in this TableRecord. This way client code
+          can be certain of the continued validity of references to TableCells contained in this TableRecord.
+      */
+      TableRecord & operator =(const ConstTableRecord & rec);
 
       /** \brief Return a TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
@@ -220,10 +231,7 @@ public:
     if (this != &cell) {
       const IExtensionData * src_ext = cell.m_record.getExtensionData();
       IExtensionData * dest_ext = m_record.getExtensionData();
-      if (m_field_index < 0) {
-        m_field_index = dest_ext->getFieldIndex(m_field);
-      }
-      dest_ext->copyCell(src_ext, src_ext->getFieldIndex(m_field), cell.m_record.getIndex(), m_field_index, m_record.getIndex());
+      dest_ext->copyCell(src_ext, cell.getFieldIndex(), cell.m_record.getIndex(), getFieldIndex(), m_record.getIndex());
     }
     return *this;
   }
@@ -231,19 +239,13 @@ public:
   // get method overloads:
   template <typename T>
   inline void TableCell::get(T & value) const {
-    if (m_field_index < 0) {
-      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    }
-    m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), value);
+    m_record.getExtensionData()->getColumn(getFieldIndex())->get(m_record.getIndex(), value);
   }
 
   template <typename T>
   inline void TableCell::get(Index_t src_begin, Index_t src_end, T * dest_begin) const {
-    if (m_field_index < 0) {
-      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    }
     std::vector<T> tmp_dest(src_end);
-    m_record.getExtensionData()->getColumn(m_field_index)->get(m_record.getIndex(), tmp_dest);
+    m_record.getExtensionData()->getColumn(getFieldIndex())->get(m_record.getIndex(), tmp_dest);
     for (long ii = 0; ii < src_end - src_begin; ++ii) dest_begin[ii] = tmp_dest[src_begin + ii];
   }
 
@@ -256,42 +258,31 @@ public:
   // set method overloads:
   template <typename T>
   inline void TableCell::set(const T & value) {
-    if (m_field_index < 0) {
-      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    }
-    m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), value);
+    m_record.getExtensionData()->getColumn(getFieldIndex())->set(m_record.getIndex(), value);
   }
 
   template <typename T>
   inline void TableCell::set(const T * src_begin, const T * src_end, Index_t dest_begin) {
     if (0 != dest_begin) throw TipException("BIIIIIIIIIIGGG PROBLEM");
-    if (m_field_index < 0) {
-      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    }
     std::vector<T> tmp_src(src_begin, src_end);
-    m_record.getExtensionData()->getColumn(m_field_index)->set(m_record.getIndex(), tmp_src);
+    m_record.getExtensionData()->getColumn(getFieldIndex())->set(m_record.getIndex(), tmp_src);
   }
 
   inline Index_t TableCell::getNumElements() const {
-    if (m_field_index < 0)
-      m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    return m_record.getExtensionData()->getColumn(m_field_index)->getNumElements(m_record.getIndex());
+    return m_record.getExtensionData()->getColumn(getFieldIndex())->getNumElements(m_record.getIndex());
   }
 
   inline void TableCell::setNumElements(Index_t num_elements) {
-    if (m_field_index < 0)
+    m_record.getExtensionData()->getColumn(getFieldIndex())->setNumElements(num_elements);
+  }
+
+  inline FieldIndex_t TableCell::getFieldIndex() const {
+    if (s_field_unknown == m_field_index)
       m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
-    m_record.getExtensionData()->getColumn(m_field_index)->setNumElements(num_elements);
+    return m_field_index;
   }
 
   // ConstTableRecord
-  inline ConstTableRecord & ConstTableRecord::operator =(const ConstTableRecord & rec) {
-    if (this != &rec) {
-    //  m_tab_data->copyRecord(rec.m_index, m_index);
-    }
-    return *this;
-  }
-
   inline TableCell & ConstTableRecord::find_or_make(const std::string & field) const {
     ConstTableRecord & rec = const_cast<ConstTableRecord &>(*this);
     CellCont_t::iterator itor = rec.m_cells.find(field);
@@ -301,7 +292,16 @@ public:
 
   // TableRecord
   inline TableRecord & TableRecord::operator =(const TableRecord & rec) {
-    ConstTableRecord::operator =(rec);
+    if (this != &rec) {
+      m_tab_data->copyRecord(rec.getExtensionData(), rec.m_index, m_index);
+    }
+    return *this;
+  }
+
+  inline TableRecord & TableRecord::operator =(const ConstTableRecord & rec) {
+    if (this != &rec) {
+      m_tab_data->copyRecord(rec.getExtensionData(), getIndex(), m_index);
+    }
     return *this;
   }
 
