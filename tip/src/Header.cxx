@@ -44,7 +44,7 @@ namespace tip {
     }
   }
 
-  std::string Header::formatTime(const time_t & time) {
+  std::string Header::formatTime(const time_t & time) const {
     // Standard date format defined by FITS standard.
     char string_time[] = "YYYY-MM-DDThh:mm:ss";
 

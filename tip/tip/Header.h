@@ -71,7 +71,7 @@ namespace tip {
       /** \brief Return a time in the standard format for use as a keyword.
           \param time The time to format.
       */
-      std::string formatTime(const time_t & time);
+      std::string formatTime(const time_t & time) const;
 
     protected:
       /** \brief Internal utility to add keywords when they are looked up.
