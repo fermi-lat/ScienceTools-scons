@@ -99,24 +99,28 @@ double GRBobsSpectrum::interval(double time)
 	}
 
 	else
-		return m_grbMaker->time().back() - time;
+		return nextTime() - time;
+		//return m_grbMaker->time().back() - time;
 }
 
 
     //JCT needs const to match pure virtual method
 float GRBobsSpectrum::operator () (float randomNumber) const
 {
-	HepRandomEngine *engine = HepRandom::getTheEngine();
-	HepRandom::setTheSeed(grbcst::seed);
+	//HepRandomEngine *engine = HepRandom::getTheEngine();
+	//HepRandom::setTheSeed(grbcst::seed);
 
-	return (float) nextEnergy(engine);
+	return (float) nextEnergy();
 }
 
 
 // returns next available energy
-double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const
+double GRBobsSpectrum::nextEnergy() const
 {
 	double energy = -1.0;
+	static DoubleIter it = m_grbMaker->energy().begin();
+
+
 
 	if (m_grbMaker->energy().empty())  // no more value left to return
 		std::cout << "No more energy values to return" << std::endl;
@@ -124,27 +128,29 @@ double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const
 	{
 		if (m_grbMaker->time().empty())  // last energy will correspond to the last returned time
 		{
-			energy = m_grbMaker->energy().front();
+			energy = m_grbMaker->energy().back();
 			m_grbMaker->energy().clear();
 		}
 
 		else  // pop energy corresponding to the last returned time
 		{
-			std::cout<< "PIPPO time: " << m_grbMaker->time().back() << std::endl;
+			//std::cout<< "PIPPO time: " << m_grbMaker->time().front() << std::endl;
 
 			DoubleSize sz = m_grbMaker->time().size();
 			if (m_grbMaker->energy().size() <= sz)  // more energies have been returned than time - return next energy
 			{
-				energy = m_grbMaker->energy().back();
-				m_grbMaker->energy().pop_back();
+				energy = *it++;
+				//energy = m_grbMaker->energy().back();
+				//m_grbMaker->energy().pop_back();
 			}
 
 			else  // more times have been returned than energies - find energy corresponding to last returned time
 			{
 				while (m_grbMaker->energy().size() > sz)
 				{
-					energy = m_grbMaker->energy().back();
-					m_grbMaker->energy().pop_back();
+					energy = *it++;
+					//energy = m_grbMaker->energy().back();
+					//m_grbMaker->energy().pop_back();
 				}
 			}
 		}
@@ -157,15 +163,18 @@ double GRBobsSpectrum::nextEnergy(HepRandomEngine *engine) const
 // returns next available energy to the simulation
 double GRBobsSpectrum::energySrc(HepRandomEngine *engine, double time)
 {
-	return nextEnergy(engine);
+	return nextEnergy();
 }
 
 
 // returns next available time
 // this method will be useful once time stamp is added to the Ispectrum interface
-double GRBobsSpectrum::nextTime(HepRandomEngine *engine) const
+double GRBobsSpectrum::nextTime() const
 {
 	double time = -1.0;
+	static DoubleIter it = m_grbMaker->time().begin();
+
+
 
 	if (m_grbMaker->time().empty())  // no more value left to return
 		std::cout << "No more time values to return" << std::endl;
@@ -173,27 +182,29 @@ double GRBobsSpectrum::nextTime(HepRandomEngine *engine) const
 	{
 		if (m_grbMaker->energy().empty())  // last time will correspond to the last returned energy
 		{
-			time = m_grbMaker->time().front();
+			time = m_grbMaker->time().back();
 			m_grbMaker->time().clear();
 		}
 
 		else  // pop time corresponding to the last returned energy
 		{
-			std::cout<< "PIPPO energy: " << m_grbMaker->energy().back() << std::endl;
+			//std::cout<< "PIPPO energy: " << m_grbMaker->energy().front() << std::endl;
 
 			DoubleSize sz = m_grbMaker->energy().size();
 			if (m_grbMaker->time().size() <= sz)  // more times have been returned than energy - return next time
 			{
-				time = m_grbMaker->time().back();
-				m_grbMaker->time().pop_back();
+				time = *it++;
+				//time = m_grbMaker->time().back();
+				//m_grbMaker->time().pop_back();
 			}
 
 			else  // more energies have been returned than times - find time corresponding to last returned energy
 			{
 				while (m_grbMaker->time().size() > sz)
 				{
-					time = m_grbMaker->time().back();
-					m_grbMaker->time().pop_back();
+					time = *it++;
+					//time = m_grbMaker->time().back();
+					//m_grbMaker->time().pop_back();
 				}
 			}
 		}
