@@ -17,13 +17,13 @@ apply_pattern package_linkopts
 
 private
 
-use RootPolicy v2*
-
 # Allow use of internal path.
 macro_append fitsGen_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
 
 # suppress warning messages (from Goodi package) on linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
+
+macro_append ROOT_linkopts "$(ROOT_GUI_libs)"
 
 macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreePlayer.lib libProof.lib "
 
