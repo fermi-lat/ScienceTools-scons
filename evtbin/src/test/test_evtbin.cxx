@@ -456,7 +456,7 @@ void EvtBinTest::testLightCurve() {
   using namespace evtbin;
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
 
   // Fill the light curve.
   lc.binInput();
@@ -469,7 +469,7 @@ void EvtBinTest::testSingleSpectrum() {
   using namespace evtbin;
 
   // Create spectrum object.
-  SingleSpec spectrum(m_ft1_file, m_ft2_file, LogBinner(m_e_min, m_e_max, 100, "ENERGY"));
+  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, LogBinner(m_e_min, m_e_max, 100, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -482,7 +482,7 @@ void EvtBinTest::testMultiSpectra() {
   using namespace evtbin;
 
   // Create spectrum object.
-  MultiSpec spectrum(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"),
+  MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"),
     LogBinner(m_e_min, m_e_max, 100, "ENERGY"));
 
   // Fill the spectrum.
@@ -506,7 +506,7 @@ void EvtBinTest::testCountMap() {
   }
 
   // Create count map object.
-  CountMap count_map(m_ft1_file, m_ft2_file, 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false, "RA", "DEC");
+  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false, "RA", "DEC");
 
   // Fill the count map.
   count_map.binInput();
@@ -791,7 +791,7 @@ void EvtBinTest::testGti() {
     std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"));
 
   const Gti & lc_gti = lc.getGti();
   if (1 != lc_gti.getNumIntervals())

@@ -106,8 +106,9 @@ class EvtBinAppBase : public st_app::StApp {
         \param pars The parameter prompting object.
     */
     virtual void parPrompt(st_app::AppParGroup & pars) {
-      // Prompt for input eventfile and output outfile. All binners need these.
-      pars.Prompt("eventfile");
+      // Prompt for input event file and output outfile. All binners need these.
+      pars.Prompt("evfile");
+      pars.Prompt("evtable");
       pars.Prompt("outfile");
       pars.Prompt("scfile");
     }
@@ -158,8 +159,8 @@ class CountMapApp : public EvtBinAppBase {
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
       }
 
-      return new evtbin::CountMap(pars["eventfile"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix,
-        pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
+      return new evtbin::CountMap(pars["evfile"], pars["evtable"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"],
+        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"]);
     }
 
   private:
@@ -188,7 +189,7 @@ class LightCurveApp : public EvtBinAppBase {
       std::auto_ptr<Binner> binner(m_bin_config.createTimeBinner(pars));
 
       // Create data object from Binner.
-      return new LightCurve(pars["eventfile"], pars["scfile"], *binner);
+      return new LightCurve(pars["evfile"], pars["evtable"], pars["scfile"], *binner);
     }
 
   private:
@@ -223,7 +224,7 @@ evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParG
   std::auto_ptr<Binner> binner(m_bin_config.createEnergyBinner(pars));
 
   // Create data product.
-  return new SingleSpec(pars["eventfile"], pars["scfile"], *binner);
+  return new SingleSpec(pars["evfile"], pars["evtable"], pars["scfile"], *binner);
 }
 
 /** \class MultiSpectraApp
@@ -254,7 +255,7 @@ class MultiSpectraApp : public EvtBinAppBase {
       std::auto_ptr<const Binner> energy_binner(m_bin_config.createEnergyBinner(pars));
 
       // Create data product.
-      return new MultiSpec(pars["eventfile"], pars["scfile"], *time_binner, *energy_binner);
+      return new MultiSpec(pars["evfile"], pars["evtable"], pars["scfile"], *time_binner, *energy_binner);
     }
 
   private:
