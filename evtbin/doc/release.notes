@@ -20,6 +20,7 @@
 13-oct-2004    v0r6p2 JP  Add documentation about application parameters.
 13-oct-2004    v0r6p3 JP  Use floating point values in templates where
                           appropriate to keep Xspec happy.
+16-dec-2004    v0r6p4 JP  Improve documentation.
 --------------------------------------------------------------------------------
 \endverbatim
 
