@@ -9,7 +9,6 @@
 
 #include <cmath>
 #include <cstdlib>
-#include <ctime>
 
 #include <algorithm>
 #include <numeric>
@@ -27,9 +26,7 @@
 #include "tip/Header.h"
 
 #include "astro/SkyDir.h"
-#include "astro/EarthCoordinate.h"
 #include "astro/GPS.h"
-#include "astro/JulianDate.h"
 
 #include "flux/EventSource.h"
 
@@ -102,9 +99,10 @@ void EventContainer::init() {
    
    char * root_path = std::getenv("OBSERVATIONSIMROOT");
    if (root_path != 0) {
-      m_ft1Template = std::string(root_path) + "/data/ft1.tpl";
+      m_ftTemplate = std::string(root_path) + "/data/ft1.tpl";
    } else {
-      throw std::runtime_error("Environment variable OBSERVATIONSIMROOT not set.");
+      throw std::runtime_error(std::string("Environment variable ")
+                               + "OBSERVATIONSIMROOT not set.");
    }
 }
 
@@ -131,7 +129,7 @@ int EventContainer::addEvent(EventSource *event,
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
                                 ScZenith(time), 0) );
-      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
+      if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
       return 1;
    }
 
@@ -155,7 +153,7 @@ int EventContainer::addEvent(EventSource *event,
                                 ScZenith(time), respPtr->irfID(), 
                                 energy, flux_theta, flux_phi) );
 //      std::cout << "adding an event: " << m_events.size() << std::endl;
-      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
+      if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
       return 1;
    }
    if (flush) writeEvents();
@@ -177,7 +175,7 @@ astro::SkyDir EventContainer::ScZenith(double time) {
 void EventContainer::writeEvents() {
 
    std::string ft1File = outputFileName();
-   tip::IFileSvc::instance().createFile(ft1File, m_ft1Template);
+   tip::IFileSvc::instance().createFile(ft1File, m_ftTemplate);
    tip::Table * my_table = 
       tip::IFileSvc::instance().editTable(ft1File, "EVENTS");
    my_table->setNumRecords(m_events.size());
@@ -229,67 +227,6 @@ void EventContainer::writeEvents() {
 
 // and update the m_fileNum index.
    m_fileNum++;
-}
-
-std::string EventContainer::outputFileName() const {
-   std::ostringstream outputfile;
-   outputfile << m_filename;
-   if (m_fileNum < 10) {
-      outputfile << "_000";
-   } else if (m_fileNum < 100) {
-      outputfile << "_00";
-   } else if (m_fileNum < 1000) {
-      outputfile << "_0";
-   } else {
-      outputfile << "_";
-   }
-   outputfile << m_fileNum << ".fits";
-   return outputfile.str();
-}
-
-void EventContainer::writeDateKeywords(tip::Table * table, double start_time, 
-                                       double stop_time) {
-   static double secsPerDay(8.64e4);
-   tip::Header & header = table->getHeader();
-   astro::JulianDate current_time = currentTime();
-   try {
-      header["DATE"].set(current_time.getGregorianDate());
-   } catch (...) {
-   }
-   astro::JulianDate mission_start(2005, 7, 18, 0);
-   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
-   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
-   try {
-      header["DATE-OBS"].set(date_start.getGregorianDate());
-      header["DATE-END"].set(date_stop.getGregorianDate());
-   } catch (...) {
-   }
-   double duration = stop_time - start_time;
-   try {
-      header["TSTART"].set(start_time);
-      header["TSTOP"].set(stop_time);
-   } catch (...) {
-   }
-   try {
-      header["ONTIME"].set(duration);
-      header["TELAPSE"].set(duration);
-   } catch (...) {
-   }
-}
-
-astro::JulianDate EventContainer::currentTime() {
-   std::time_t my_time = std::time(0);
-   std::tm * now = std::gmtime(&my_time);
-   if (now != 0) {
-      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
-      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
-                                     now->tm_mday, hours);
-      return current_time;
-   } else {
-      throw std::runtime_error("EventContainer::currentTime:\n"
-                               + std::string("cannot be ascertained, ")
-                               + "std::time returns a null value.");
-   }
 }
 
 } // namespace observationSim

@@ -32,9 +32,10 @@ void ScDataContainer::init() {
 
    char * root_path = std::getenv("OBSERVATIONSIMROOT");
    if (root_path != 0) {
-      m_ft2Template = std::string(root_path) + "/data/ft2.tpl";
+      m_ftTemplate = std::string(root_path) + "/data/ft2.tpl";
    } else {
-      throw std::runtime_error("Environment variable OBSERVATIONSIMROOT not set.");
+      throw std::runtime_error(std::string("Environment variable ") 
+                               + "OBSERVATIONSIMROOT not set.");
    }
 }
 
@@ -56,7 +57,7 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 void ScDataContainer::writeScData() {
 
    std::string ft2File = outputFileName();
-   tip::IFileSvc::instance().createFile(ft2File, m_ft2Template);
+   tip::IFileSvc::instance().createFile(ft2File, m_ftTemplate);
    tip::Table * my_table = 
       tip::IFileSvc::instance().editTable(ft2File, "Ext1");
    int npts = m_scData.size();
@@ -82,7 +83,7 @@ void ScDataContainer::writeScData() {
       row["ra_scx"].set(sc->xAxis().ra());
       row["dec_scx"].set(sc->xAxis().dec());
    }
-   EventContainer::writeDateKeywords(my_table, start_time, stop_time);
+   writeDateKeywords(my_table, start_time, stop_time);
    delete my_table;
 
 // Flush the buffer...
@@ -90,22 +91,6 @@ void ScDataContainer::writeScData() {
 
 // and update the m_fileNum index.
    m_fileNum++;
-}
-
-std::string ScDataContainer::outputFileName() const {
-   std::ostringstream outputfile;
-   outputfile << m_filename;
-   if (m_fileNum < 10) {
-      outputfile << "_000";
-   } else if (m_fileNum < 100) {
-      outputfile << "_00";
-   } else if (m_fileNum < 1000) {
-      outputfile << "_0";
-   } else {
-      outputfile << "_";
-   }
-   outputfile << m_fileNum << ".fits";
-   return outputfile.str();
 }
 
 } // namespace observationSim

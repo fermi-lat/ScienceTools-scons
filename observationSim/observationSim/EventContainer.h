@@ -13,8 +13,8 @@
 #include <vector>
 
 #include "astro/SkyDir.h"
-#include "astro/JulianDate.h"
 
+#include "observationSim/ContainerBase.h"
 #include "observationSim/Event.h"
 #include "observationSim/Spacecraft.h"
 
@@ -39,7 +39,7 @@ namespace observationSim {
  * $Header$
  */
 
-class EventContainer {
+class EventContainer : public ContainerBase {
 
 public:
 
@@ -48,8 +48,9 @@ public:
    ///        a FITS file is written.
    EventContainer(const std::string &filename, 
                   unsigned int maxNumEvents=20000) : 
-      m_filename(filename), m_fileNum(0), 
-      m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
+      ContainerBase(filename, maxNumEvents), m_prob(1) {
+      init();
+   }
 
    ~EventContainer();
 
@@ -81,30 +82,7 @@ public:
    /// of the data contained therein.
    const std::vector<Event> &getEvents() {return m_events;}  
 
-   /// Set the date keywords in a given header, accesses via the
-   /// tip::Table and tip::Header interface.
-   static void writeDateKeywords(tip::Table * table, double start_time,
-                                 double stop_time);
-
-   /// Return an astro::JulianDate object for the current time.
-   static astro::JulianDate currentTime();
-
 private:
-
-   /// Root name for the FITS binary table output files.
-   std::string m_filename;
-
-   /// Name of the FT1 template file.
-   std::string m_ft1Template;
-
-   /// The current index number of the FITS file to be written.  This
-   /// number is formatted appropriately and appended to the root
-   /// filename given in the constructor.
-   long m_fileNum;
-
-   /// The maximum number of Events to accumulate before the Events
-   /// are written to a FITS file and the Event buffer is flushed.
-   unsigned int m_maxNumEvents;
 
    /// The prior probability that an event will be accepted.
    /// Typically this is set to be the ratio of livetime to elapsed
@@ -114,8 +92,7 @@ private:
    /// The Event buffer.
    std::vector<Event> m_events;
 
-   /// This routine contains the constructor implementation (such as
-   /// it is).
+   /// This routine contains the constructor implementation.
    void init();
 
    /// Return the zenith for the current spacecraft location.
@@ -123,10 +100,6 @@ private:
 
    /// A routine to unpack and write the Event buffer to an FT1 file.
    void writeEvents();
-
-   /// Return an output filename, based on the root name, m_filename,
-   /// and the counter index, m_fileNum.
-   std::string outputFileName() const;
 
 };
 
