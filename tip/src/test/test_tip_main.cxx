@@ -54,7 +54,8 @@ int main() {
         r["counts"].get(counts_vec[ichan]);
 
         // Similarly, get the channel number. Just put this in a scalar however.
-        r["channel"].get(channel);
+        // Get this field using mixed case to verify case insensitivity.
+        r["CHANnel"].get(channel);
 
         // Confirm that the channel number obtained from the file matches what it should be.
         // Channels are numbered sequentially starting with 1.

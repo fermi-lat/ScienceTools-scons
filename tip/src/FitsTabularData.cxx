@@ -67,11 +67,18 @@ namespace table {
   Index_t FitsTabularData::getNumRecords() const { return m_num_records; }
 
   void FitsTabularData::getCell(const std::string & field, Index_t record_index, double & value) const {
-    std::map<std::string, int>::const_iterator itor = m_col_info.find(field);
+    // Copy field name and make it lowercase.
+    std::string tmp = field;
+    for (std::string::iterator itor = tmp.begin(); itor != tmp.end(); ++itor) *itor = tolower(*itor);
+
+    // Find (lowercased) field in container of columns. Complain if not found.
+    std::map<std::string, int>::const_iterator itor = m_col_info.find(tmp);
     if (itor == m_col_info.end()) throw TableException();
 
+    // Get the number of the column.
     int col_num = itor->second;
 
+    // Ask the helper extension class to get the value.
     m_extension.getCellGeneric(col_num, record_index, value);
   }
 
