@@ -189,9 +189,14 @@ void ObsSim::createSimulator() {
    double totalArea = m_pars["Maximum_effective_area"];
    double startTime = m_pars["Start_time"];
    std::string pointingHistory = m_pars["Pointing_history_file"];
+   double maxSimTime = 3.155e8;
+   try {
+      maxSimTime = m_pars["maximum_simulation_time"];
+   } catch (std::exception & eObj) {
+   }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
                                                totalArea, startTime, 
-                                               pointingHistory);
+                                               pointingHistory, maxSimTime);
 }
 
 void ObsSim::generateData() {

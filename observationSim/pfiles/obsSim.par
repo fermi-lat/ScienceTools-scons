@@ -8,4 +8,5 @@ Maximum_effective_area,r,hl,1.21,,,Maximum effective area value
 Start_time,r,hl,0,,,Simulation start time (seconds)
 Pointing_history_file,f,ql,"none",,,"Pointing history file"
 Maximum_number_of_rows,i,hl,200000,,,Maximum number of rows in FITS files
+maximum_simulation_time,r,hl,3.155e8,,,Maximum simulation time (seconds)
 Random_seed,i,ql,293049,,,Random number seed
