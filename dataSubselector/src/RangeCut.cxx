@@ -12,11 +12,21 @@
 
 namespace dataSubselector {
 
+Cuts::RangeCut::RangeCut(const std::string & colname, const std::string & unit,
+                         double minVal, double maxVal, RangeType type,
+                         unsigned int indx)
+   : CutBase("range"), m_colname(colname), m_unit(unit),
+     m_min(minVal), m_max(maxVal), m_type(type), m_index(indx),
+     m_fullName(colname) {
+   setFullName();
+}
+
 Cuts::RangeCut::RangeCut(const std::string & type,
                          const std::string & unit, 
                          const std::string & value,
                          unsigned int indx) 
-   : m_colname(type), m_unit(unit), m_index(indx) {
+   : CutBase("range"), m_colname(type), m_unit(unit), m_index(indx),
+     m_fullName(type) {
    std::vector<std::string> tokens;
    facilities::Util::stringTokenize(value, ":", tokens);
    if (tokens.size() == 2) {
@@ -29,7 +39,8 @@ Cuts::RangeCut::RangeCut(const std::string & type,
    } else {
       m_min = std::atof(tokens[0].c_str());
       m_type = MINONLY;
-   }      
+   }
+   setFullName();
 }
 
 bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
@@ -40,15 +51,7 @@ bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
 bool Cuts::
 RangeCut::accept(const std::map<std::string, double> & params) const {
    std::map<std::string, double>::const_iterator it;
-   std::string colname;
-   if (m_index) {
-      std::ostringstream col;
-      col << m_colname << "[" << m_index << "]";
-      colname = col.str();
-   } else {
-      colname = m_colname;
-   }
-   if ( (it = params.find(colname)) != params.end()) {
+   if ( (it = params.find(m_fullName)) != params.end()) {
       double value = it->second;
       return accept(value);
    }
@@ -60,10 +63,25 @@ bool Cuts::RangeCut::operator==(const CutBase & arg) const {
       RangeCut & rhs = dynamic_cast<RangeCut &>(const_cast<CutBase &>(arg));
       return (m_colname == rhs.m_colname && m_unit == rhs.m_unit &&
               m_min == rhs.m_min && m_max == rhs.m_max &&
-              m_type == rhs.m_type);
+              m_type == rhs.m_type && m_index == rhs.m_index);
    } catch (...) {
       return false;
    }
+}
+
+bool Cuts::RangeCut::supercedes(const CutBase & cut) const {
+   if (cut.type() != "range") {
+      return false;
+   }
+   RangeCut & rangeCut = dynamic_cast<RangeCut &>(const_cast<CutBase &>(cut));
+/// @todo Need to handle open ranges.
+   if (rangeCut.colname() != colname() || rangeCut.m_type != m_type) {
+      return false;
+   }
+   if (rangeCut.minVal() <= minVal() && maxVal() <= rangeCut.maxVal()) {
+      return true;
+   }
+   return false;
 }
 
 void Cuts::RangeCut::
@@ -78,13 +96,7 @@ getKeyValues(std::string & type, std::string & unit,
    } else {
       val << m_min << ":" << m_max;
    }
-   if (m_index) {
-      std::ostringstream typeval;
-      typeval << m_colname << "[" << m_index << "]";
-      type = typeval.str();
-   } else {
-      type = m_colname;
-   }
+   type = m_fullName;
    unit = m_unit;
    value = val.str();
 }
@@ -107,6 +119,16 @@ double Cuts::RangeCut::extractValue(tip::ConstTableRecord & row) const {
    double value;
    row[m_colname].get(value);
    return value;
+}
+
+void Cuts::RangeCut::setFullName() {
+   if (m_index) {
+      std::ostringstream name;
+      name << m_colname << "[" << m_index << "]";
+      m_fullName = name.str();
+   } else {
+      m_fullName = m_colname;
+   }
 }
 
 } // namespace dataSubselector

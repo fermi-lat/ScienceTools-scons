@@ -33,6 +33,8 @@ public:
    static CutController * instance(st_app::AppParGroup & pars,
                                    const std::string & eventFile);
 
+   static void delete_instance();
+
    bool accept(tip::ConstTableRecord & row) const;
 
    void writeDssKeywords(tip::Header & header) const {

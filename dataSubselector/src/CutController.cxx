@@ -23,6 +23,11 @@ CutController * CutController::instance(st_app::AppParGroup & pars,
    return s_instance;
 }
 
+void CutController::delete_instance() {
+   delete s_instance;
+   s_instance = 0;
+}
+
 CutController::CutController(st_app::AppParGroup & pars, 
                              const std::string & eventFile) 
    : m_pars(pars), m_cuts(eventFile) {

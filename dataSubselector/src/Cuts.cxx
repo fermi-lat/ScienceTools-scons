@@ -96,6 +96,24 @@ unsigned int Cuts::parseColname(const std::string & colname,
    return std::atoi(tokens.at(1).c_str());
 }
 
+unsigned int Cuts::find(CutBase * cut) const {
+   for (unsigned int i = 0; i < size(); i++) {
+      if (*cut == *m_cuts[i]) {
+         return i;
+      }
+   }
+   return size();
+}
+
+bool Cuts::hasCut(CutBase * newCut) const {
+   for (unsigned int i = 0; i < size(); i++) {
+      if (*newCut == *m_cuts[i]) {
+         return true;
+      }
+   }
+   return false;
+}
+
 Cuts::Cuts(const Cuts & rhs) {
    m_cuts.reserve(rhs.size());
    for (unsigned int i = 0; i < rhs.size(); i++) {
@@ -129,18 +147,41 @@ unsigned int Cuts::addRangeCut(const std::string & colname,
                                const std::string & unit,
                                double minVal, double maxVal, 
                                RangeType type, unsigned int indx) {
-   m_cuts.push_back(new Cuts::RangeCut(colname, unit, minVal, maxVal, 
-                                       type, indx));
-   return m_cuts.size();
+   Cuts::CutBase * newCut = new Cuts::RangeCut(colname, unit, minVal, maxVal, 
+                                               type, indx);
+
+   if (hasCut(newCut)) {
+      delete newCut;
+   } else {
+      for (unsigned int j = 0; j != size(); j++) {
+         if (newCut->supercedes(*(m_cuts[j]))) {
+            delete m_cuts[j];
+            m_cuts[j] = newCut;
+            return size();
+         }
+      }
+      m_cuts.push_back(newCut);
+   }
+   return size();
 }
 
 unsigned int Cuts::addGtiCut(const tip::Table & table) {
-   m_cuts.push_back(new Cuts::GtiCut(table));
+   Cuts::CutBase * newCut = new Cuts::GtiCut(table);
+   if (hasCut(newCut)) {
+      delete newCut;
+   } else {
+      m_cuts.push_back(newCut);
+   }
    return m_cuts.size();
 }
 
 unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
-   m_cuts.push_back(new Cuts::SkyConeCut(ra, dec, radius));
+   Cuts::CutBase * newCut = new Cuts::SkyConeCut(ra, dec, radius);
+   if (hasCut(newCut)) {
+      delete newCut;
+   } else {
+      m_cuts.push_back(newCut);
+   }
    return m_cuts.size();
 }
 

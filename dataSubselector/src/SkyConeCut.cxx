@@ -16,7 +16,8 @@ namespace dataSubselector {
 
 Cuts::SkyConeCut::SkyConeCut(const std::string & type,
                              const std::string & unit, 
-                             const std::string & value) {
+                             const std::string & value) 
+   : Cuts::CutBase("SkyCone") {
    if (unit.find("deg") != 0) {
       throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
                                std::string("Unsupported unit: ") + unit);
