@@ -41,7 +41,7 @@ public:
     const std::vector<long> & getAxisSize()const{return m_axisSize;}
     unsigned int   pixelCount()const;
 
-    operator  Image<float> * ();
+  // operator  Image<float> * ();
 
 protected:
     static BaseImage* readImage(const std::string & fileName, const std::string & name,  
@@ -83,6 +83,9 @@ public:
     //! const access to data array
     const std::vector<T> &    data() const   {return m_data;}
 
+    //! simple index
+    T  operator[](int k)const {return m_data[k];}
+
     //! writable access to data
     std::vector<T> &    data()   {return m_data;}
 
@@ -110,7 +113,7 @@ typedef    Image<int>      IntImg;
 //_____________________________________________________________________________
 //_____________________________________________________________________________
 
-inline BaseImage::operator Image<float> * () {return dynamic_cast <FloatImg *>(this);}
+//? inline BaseImage::operator Image<float> * () {return dynamic_cast <FloatImg *>(this);}
 
 
 
