@@ -273,6 +273,9 @@
        7. 4/2/2004: Table's iterator has problems with random access. See Table.h: TODO 7.
        8. 4/2/2004: Use of Record within a functor used with a for_each is problematic.
           See src/test/test_tip_main.cxx: TODO 8.
+      11. 5/17/2004:  Refactor IFileSvc and FitsFileManager/FitsExtensionManager to remove
+          reduncancy and improve error messages. See src/IFileSvc.cxx: TODO 11.
+          
 \endverbatim
 
     \section done Resolved Issues
