@@ -36,7 +36,7 @@
  @verbinclude obsSim.par
 
  The format of the entries in a .par file is given in the <a
- href="http://isdc.unige.ch/Soft/AstroRoot/pil.ps">PIL user
+ href="http://www-glast.slac.stanford.edu/sciencetools/userInterface/doc/pil.pdf">PIL user
  manual</a>.  A cursory description is also available at the
  Likelihood User's Guide page.  We describe each parameter entry in
  turn.
