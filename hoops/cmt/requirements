@@ -1,5 +1,5 @@
 package hoops
-version v0r1p1
+version v0r1p4
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
@@ -13,13 +13,14 @@ use pil * IExternal
 apply_pattern package_include
 apply_pattern package_linkopts
 
+# supress warnings from throw spec in windows
+macro_append cppflags "" WIN32 " /wd4290 "
+
 private
 
-# suppress warning messages on linux:
-#macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
 # allow use of internal path
-macro_append hoops_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
+macro_append hoops_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  "
 
 # make sure test applications gets built when library changes
 macro test_hoopsstamps "hoops.stamp"
