@@ -17,9 +17,9 @@ DATE    =                       / File creation date (YYYY-MM-DDThh:mm:ss UTC)
 DATE-OBS=                       / Start date and time of the observation (UTC)
 DATE-END=                       / End date and time of the observation (UTC)
 FILENAME=                       / Name of this file
-ORIGIN  =                       / Organization which created this file
+ORIGIN  =                   " " / Organization which created this file
 AUTHOR  =        NAME_OF_PERSON / person responsible for file generation
-CREATOR =                       / Software and version creating file
+CREATOR =                   " " / Software and version creating file
 VERSION =                       / release version of the file
 SOFTWARE=                       / version of the processing software
 END
@@ -34,7 +34,7 @@ GCOUNT  =                     1 / one data group (required keyword)
 CHECKSUM=                       / checksum for entire HDU
 DATASUM =                       / checksum for data table
 TFIELDS =                       / number of fields in each row
-TELESCOP=                       / Name of telescope generating data
+TELESCOP=                 GLAST / Name of telescope generating data
 INSTRUME=                   LAT / Name of instrument generating data
 EQUINOX =                 2000. / Equinox of celestial coord. system
 RADECSYS=                   FK5 / World coord. system for this file
@@ -113,8 +113,9 @@ TUNIT#  =           Earth_Radii / physical unit of field
 TLMIN#  =                   0.0 / Minimum value
 TLMAX#  =                 100.0 / Maximum value
 
-TTYPE#  =                IN_SAA / whether spacecraft was in SAA
-TFORM#  =                     L / data format of field: logical
+# comment out until astro/v1r1p2 gets a new tag
+#TTYPE#  =                IN_SAA / whether spacecraft was in SAA
+#TFORM#  =                     L / data format of field: logical
 
 #
 # Pointing direction and derived quantities
