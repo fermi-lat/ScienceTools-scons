@@ -55,6 +55,8 @@ public:
 
    virtual void run();
 
+   virtual void banner() const {}
+
 private:
 
    st_app::AppParGroup & m_pars;
@@ -67,7 +69,7 @@ private:
 
 };
 
-st_app::StAppFactory<DataFilter> myAppFactory;
+st_app::StAppFactory<DataFilter> myAppFactory("gtselect");
 
 void DataFilter::run() {
    std::string inputFile = m_pars["input_file"];

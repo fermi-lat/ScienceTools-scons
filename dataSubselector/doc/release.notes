@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r2p1  07-Mar-05   JC   disable annoying banner method
     v3r2    31-Jan-05   JC   rename apps with gt- prefix
     v3r1p1  18-Jan-05   JC   include <sstream> in RangeCut
     v3r1    14-Jan-05   JC   move CutController code to src/dataSubselector
