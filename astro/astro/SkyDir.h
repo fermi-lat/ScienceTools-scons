@@ -124,6 +124,8 @@ namespace astro {
         static float s_scaleY; // Projection Y Scaling 1/degrees
         static float s_rot;   // Projection Rotation Angle
 
+        class Exception; // forward declaration
+
     private:
         static HepRotation s_equatorialToGalactic;
 

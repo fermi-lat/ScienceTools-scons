@@ -26,6 +26,20 @@ namespace{
         static double DEGTORAD=M_PI/180.;
 }
 
+class SkyDir::Exception : public std::exception 
+    {
+    public:
+        Exception() {}
+        Exception(std::string errorString) 
+            : m_what(errorString)
+        {}
+
+        virtual ~Exception() throw() {}
+        virtual const char *what() const throw() {return m_what.c_str();}
+    protected:
+        std::string m_what;
+    };
+
 
 /** @brief initialize from (ra, dec), or (l,b)
 @param param1 either ra or l, in degrees
@@ -199,7 +213,7 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
         if( projName != std::string(names[i])) continue;
             type=static_cast<ProjType>(i); break;
     }
-    if( type==BAD) throw std::exception(("Unrecognized projection type: "+projName).c_str());
+    if( type==BAD) throw Exception(std::string("Unrecognized SkyDir projection type: ")+projName);
     setProjection(ref_ra, ref_dec, type, myRef_x, myRef_y, myScale_x, myScale_y, rot, use_lb);
 
 }
@@ -584,4 +598,5 @@ int SkyDir::inverseProjection(  double point_x,   double point_y,
 
     return(0);
 }  
+
 
