@@ -454,7 +454,6 @@ namespace hoops {
 #endif
 
 /******************************************************************************
- * $Log$
  * Revision 1.4  2003/12/02 14:39:43  peachey
  * To support compilers which do not have limits, such as g++ 2.95.x,
  * add round_error field to Lim class. This allows the test code to

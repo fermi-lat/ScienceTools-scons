@@ -124,7 +124,6 @@ namespace hoops {
 #endif
 
 /******************************************************************************
- * $Log$
  * Revision 1.7  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

@@ -587,7 +587,6 @@ namespace hoops {
 #endif
 
 /******************************************************************************
- * $Log$
  * Revision 1.1  2003/06/18 18:07:29  peachey
  * Replacements for numeric_limits class for compilers which don't
  * yet have it.

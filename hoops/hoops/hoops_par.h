@@ -191,15 +191,19 @@ namespace hoops {
         throw(std::bad_alloc, Hexception) {
         PrimFactory Factory;
         if (dest) dest->From(p);
+        // In general is find the best thing to be using here???
         else if (std::string::npos != type.find("b")) {
           dest = Factory.NewIPrim(bool()); dest->From(p);
         } else if (std::string::npos != type.find("i")) {
           dest = Factory.NewIPrim(long()); dest->From(p);
-        } else if (std::string::npos != type.find("r")) {
-          dest = Factory.NewIPrim(double()); dest->From(p);
+        // Important to check for type "f" before "r", because "fr" is
+        // file readable. If we check first for "r", such a parameter
+        // is misclassified as a float (double) value.
         } else if (std::string::npos != type.find("f") ||
           std::string::npos != type.find("s")) {
           dest = Factory.NewIPrim(std::string()); dest->From(p);
+        } else if (std::string::npos != type.find("r")) {
+          dest = Factory.NewIPrim(double()); dest->From(p);
         } else throw Hexception(PAR_INVALID_TYPE);
       }
 
@@ -253,7 +257,11 @@ namespace hoops {
 #endif
 
 /******************************************************************************
- * $Log$
+ * Revision 1.9  2004/01/15 15:21:30  peachey
+ * Bug fix: a parameter of type "fr" was being classified as a real
+ * (float/double) value. This led to unexpected exceptions eventually
+ * triggering abort in most programs.
+ *
  * Revision 1.8  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

@@ -514,7 +514,6 @@ namespace hoops {
 }
 
 /******************************************************************************
- * $Log$
  * Revision 1.9  2003/11/26 18:50:02  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *
