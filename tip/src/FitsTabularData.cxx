@@ -82,6 +82,22 @@ namespace table {
     m_extension.getCellGeneric(col_num, record_index, value);
   }
 
+  void FitsTabularData::getCell(const std::string & field, Index_t record_index, signed long & value) const {
+    // Copy field name and make it lowercase.
+    std::string tmp = field;
+    for (std::string::iterator itor = tmp.begin(); itor != tmp.end(); ++itor) *itor = tolower(*itor);
+
+    // Find (lowercased) field in container of columns. Complain if not found.
+    std::map<std::string, int>::const_iterator itor = m_col_info.find(tmp);
+    if (itor == m_col_info.end()) throw TableException();
+
+    // Get the number of the column.
+    int col_num = itor->second;
+
+    // Ask the helper extension class to get the value.
+    m_extension.getCellGeneric(col_num, record_index, value);
+  }
+
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {
     m_extension.getKeywordGeneric<double>(name, value);
   }

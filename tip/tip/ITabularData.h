@@ -32,6 +32,7 @@ namespace table {
           \param value The output value.
       */
       virtual void getCell(const std::string & field, Index_t record_index, double & value) const = 0;
+      virtual void getCell(const std::string & field, Index_t record_index, signed long & value) const = 0;
   };
 
 }
