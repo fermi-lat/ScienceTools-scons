@@ -60,6 +60,9 @@ namespace tip {
       /// \brief Test reading and writing vector-valued fields (just for FITS case for now).
       void readWriteVectorFieldTest();
 
+      /// \brief Test copying one table's columns to another.
+      void copyFieldTest();
+
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();
@@ -69,6 +72,9 @@ namespace tip {
       void appendFieldTest();
 
     private:
+      void setToZero(Table * table);
+      bool confirmEqual(const Table * table1, const Table * table2);
+
       Table * m_fits_table;
       Table * m_root_table;
   };

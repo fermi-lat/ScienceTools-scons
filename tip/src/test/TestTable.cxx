@@ -43,6 +43,9 @@ namespace tip {
     // Test appending a field to an existing table.
     appendFieldTest();
 
+    // Test copying records from one table to another.
+    copyFieldTest();
+
     // Clean up.
     delete m_root_table; m_root_table = 0;
     delete m_fits_table; m_fits_table = 0;
@@ -388,4 +391,139 @@ namespace tip {
     }
   }
 
+  void TestTable::copyFieldTest() {
+#if MAKE_COMPILATION_FAIL
+    throw TipException("SHOULD NOT HAVE COMPILED! Assigning to a ConstTableRecord object");
+    Table::ConstIterator itor1;
+    Table::ConstIterator itor2;
+    *itor1 = *itor2;
+#endif
+    if (0 != m_fits_table) {
+      const Table * in_table = m_fits_table;
+      Table * out_table = getTable();
+      try {
+        // Initialize output table to all zeros.
+        setToZero(out_table);
+
+        // Iterate over input and output, copying the input to the output using Cell::operator =.
+        Table::ConstIterator in_itor = in_table->begin();
+        Table::Iterator out_itor = out_table->begin();
+        for (; in_itor != in_table->end(); ++in_itor, ++out_itor) {
+          (*out_itor)["channel"] = (*in_itor)["channel"];
+          (*out_itor)["counts"] = (*in_itor)["counts"];
+        }
+
+        // Confirm the copy worked.
+        if (confirmEqual(in_table, out_table)) 
+          ReportExpected("copyFieldTest() succeeded copying one table's fields to another using Cell::operator =");
+        else
+          ReportUnexpected("copyFieldTest() failed to copy one table's fields to another using Cell::operator =");
+
+      } catch (const TipException & x) {
+        ReportUnexpected("copyFieldTest() failed", x);
+      }
+
+      try {
+        // Initialize output table to all zeros.
+        setToZero(out_table);
+
+        // Iterate over input and output, copying the input to the output using Record::operator =.
+        Table::ConstIterator in_itor = in_table->begin();
+        Table::Iterator out_itor = out_table->begin();
+        for (; in_itor != in_table->end(); ++in_itor, ++out_itor) {
+          (*out_itor) = (*in_itor);
+        }
+
+        // Confirm the copy worked.
+        if (confirmEqual(in_table, out_table)) 
+          ReportExpected("copyFieldTest() succeeded copying one table's fields to another using Record::operator =");
+        else
+          ReportUnexpected("copyFieldTest() failed to copy one table's fields to another using Record::operator =");
+
+      } catch (const TipException & x) {
+        ReportUnexpected("copyFieldTest() failed", x);
+      }
+      delete out_table;
+    }
+
+    // Try copying to a Root file; this should fail.
+    if (0 != m_fits_table && 0 != m_root_table) {
+      const Table * in_table = m_fits_table;
+      try {
+        Table::ConstIterator in_itor = in_table->begin();
+        Table::Iterator out_itor = m_root_table->begin();
+
+        (*out_itor)["McEnergy"] = (*in_itor)["channel"];
+
+        ReportUnexpected("copyFieldTest() did not fail when copying a cell to a Root file");
+      } catch (const TipException & x) {
+        ReportExpected("copyFieldTest() failed to copy a cell to a Root file", x);
+      }
+      try {
+        Table::ConstIterator in_itor = in_table->begin();
+        Table::Iterator out_itor = m_root_table->begin();
+
+        (*out_itor) = (*in_itor);
+
+        ReportUnexpected("copyFieldTest() did not fail when copying a record to a Root file");
+      } catch (const TipException & x) {
+        ReportExpected("copyFieldTest() failed to copy a record to a Root file", x);
+      }
+    }
+  }
+
+  void TestTable::setToZero(Table * table) {
+    short svalue = 0;
+    std::vector<long> vvalue(4096, 0);
+
+    // Zero out columns in output table:
+    for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor) {
+      (*itor)["Channel"].set(svalue);
+      (*itor)["Counts"].set(vvalue);
+    }
+
+    // Confirm columns in output table are all zeroes:
+    for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor) {
+      // Set dummy variable to a non-0 value.
+      short svalue = 1;
+
+      // Fetch value from the channel column.
+      (*itor)["Channel"].get(svalue);
+
+      // Check whether it's 0.
+      if (0 != svalue) throw TipException("setToZero() failed to set all scalar values in a table to 0");
+
+      // Set dummy vector field to non-0 values.
+      vvalue.assign(4096, 1);
+
+      // Fetch vector from counts column.
+      (*itor)["Counts"].get(vvalue);
+
+      // Check whether vector is now all zeroes.
+      for (std::vector<long>::iterator itor = vvalue.begin(); itor != vvalue.end(); ++itor) {
+        if (0 != *itor) throw TipException("setToZero() failed to set all vector values in a table to 0");
+      }
+    }
+  }
+
+  bool TestTable::confirmEqual(const Table * table1, const Table * table2) {
+    Table::ConstIterator itor1 = table1->begin();
+    Table::ConstIterator itor2 = table2->begin();
+    for (; itor1 != table1->end(); ++itor1, ++itor2) {
+      short chan1 = 0;
+      short chan2 = 0;
+      std::vector<long> counts1(4096, 0);
+      std::vector<long> counts2(4096, 0);
+
+      (*itor1)["channel"].get(chan1);
+      (*itor2)["channel"].get(chan2);
+
+      (*itor1)["counts"].get(counts1);
+      (*itor2)["counts"].get(counts2);
+
+      if (chan1 != chan2) return false;
+      if (counts1 != counts2) return false;
+    }
+    return true;
+  }
 }
