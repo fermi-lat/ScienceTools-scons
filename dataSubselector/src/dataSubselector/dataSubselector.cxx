@@ -37,7 +37,9 @@ public:
       try {
          m_pars.Prompt();
          m_pars.Save();
-      } catch (std::exception & eObj) {
+         setName("gtselect");
+         setVersion(s_cvs_id);
+  } catch (std::exception & eObj) {
          std::cerr << eObj.what() << std::endl;
          std::exit(1);
       } catch (...) {
@@ -57,7 +59,7 @@ public:
 
    virtual void run();
 
-   virtual void banner() const {}
+   virtual void banner() const;
 
 private:
 
@@ -69,9 +71,20 @@ private:
    void copyTable(const std::string & extension,
                   CutController * cutController=0) const;
 
+   static std::string s_cvs_id;
+
 };
 
+std::string DataFilter::s_cvs_id("$Name$");
+
 st_app::StAppFactory<DataFilter> myAppFactory("gtselect");
+
+void DataFilter::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
 
 void DataFilter::run() {
    std::string inputFile = m_pars["input_file"];

@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r3p2  06-Apr-05   JC   have ONTIME and TELAPSE keywords reflect
+                             GTI contents
     v3r3p1  04-Apr-05   JC   update checksum keywords
     v3r3    04-Apr-05   JC   update GTIs to incorporate time range cuts in
                              gtselect
