@@ -3,6 +3,7 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r3p1   15-Jan-04    JC    refactor and rename findSrcs
    v7r3     14-Jan-04    JC    reorganize, using sane rather than vice-versa
    v7r2     14-Dec-04    JC    add ObsSim.py GUI
    v7r1p1   27-Nov-04    JC    add -no_auto_imports to requirements
