@@ -18,25 +18,25 @@ using namespace map_tools;
 
 //! Constructor
 Parameters::Parameters( int argc, char *argv[]) 
-:  hoops::ParPromptGroup(argc, argv)
+:  m_par(*new hoops::ParPromptGroup(argc, argv))
 {   
 // Prompt for all parameters in the order in the par file:
-    Prompt();
-    m_chatter = (*this)["chatter"];
+    m_par.Prompt();
+    m_chatter = m_par["chatter"];
 
-    m_clobber = (*this)["clobber"];
+    m_clobber = m_par["clobber"];
 
     // Read name of the file containing events data and expand any
     // environment variables.
-    std::string infile = (*this)["infile"];
+    std::string infile = m_par["infile"];
     m_inFile = infile;
 
     facilities::Util::expandEnvVar(&m_inFile);
 
-    std::string filter = (*this)["filter"];
+    std::string filter = m_par["filter"];
     m_filter = filter;
 
-    std::string outfile = (*this)["outfile"];
+    std::string outfile = m_par["outfile"];
     m_outFile = outfile;
     facilities::Util::expandEnvVar(&m_outFile);
 

@@ -1,6 +1,6 @@
 package map_tools
 
-version v4r1
+version v4r2
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -10,6 +10,11 @@ use astro *
 use hoops * 
 use tuple *
 
+#set PFILES  ".;"\
+#    WIN32  '".|"'
+
+path_append PFILES "$(MAP_TOOLSROOT)/pfiles"
+
 #suppress annoying warnings from hoops: "illegal conversion" and "forcing value to bool" 
 macro_append cppflags "" WIN32 " /wd4800 /wd4927 /wd4251 "
 
@@ -17,7 +22,7 @@ macro_append cppflags "" WIN32 " /wd4800 /wd4927 /wd4251 "
 library image -no_share -s=image $(source)
 
 apply_pattern GLAST_static_library_package
-macro_append map_tools_linkopts " -l image " Win32 " $(map_toolsDir)/image.lib "
+macro_append map_tools_linkopts " -limage " Win32 " $(map_toolsDir)/image.lib "
 
 #convenient patern for building executables, with par file in project		
 pattern ST_app \
@@ -30,7 +35,6 @@ private
 
 use facilities *
 
-path_append PFILES "$(MAP_TOOLSROOT)/pfiles"
 set INFILES  "$(MAP_TOOLSROOT)/data"
 set OUTFILES "$(MAP_TOOLSROOT)/output"
 
