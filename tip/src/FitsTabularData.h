@@ -71,6 +71,7 @@ namespace table {
           \param value The output value.
       */
       virtual void getKeyword(const std::string & name, double & value) const;
+      virtual void getKeyword(const std::string & name, std::string & value) const;
 
     private:
       // The real FITS-specific stuff is hidden in the utility class FitsExtension, accessed

@@ -24,6 +24,7 @@ namespace table {
           \param value The output value of the keyword, converted to the given type.
       */
       virtual void getKeyword(const std::string & name, double & value) const = 0;
+      virtual void getKeyword(const std::string & name, std::string & value) const = 0;
   };
 
 }

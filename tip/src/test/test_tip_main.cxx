@@ -195,7 +195,14 @@ int main() {
       double exposure = 0.;
       header["exposure"].get(exposure);
       if (1.963e3 != exposure) {
-        std::cerr << "Problem reading exposure keyword." << std::endl;
+        std::cerr << "Keyword exposure was read to be " << exposure << " not " << 1.963e3 << std::endl;
+        status = 1;
+      }
+
+      std::string telescop;
+      header["telescop"].get(telescop);
+      if (telescop.compare("ROSAT")) {
+        std::cerr << "Keyword telescop was read to be " << telescop << " not " << "ROSAT" << std::endl;
         status = 1;
       }
     } catch(const TableException & x) {

@@ -79,6 +79,7 @@ namespace table {
     return itor->second;
   }
 
+  // getCell overloads.
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const {
     m_extension.getCellGeneric(field_index, record_index, value);
   }
@@ -129,6 +130,10 @@ namespace table {
 
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {
     m_extension.getKeywordGeneric<double>(name, value);
+  }
+
+  void FitsTabularData::getKeyword(const std::string & name, std::string & value) const {
+    m_extension.getKeywordGeneric<std::string>(name, value);
   }
 
 }
