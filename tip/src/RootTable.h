@@ -51,7 +51,7 @@ namespace tip {
       RootTable(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "", bool read_only = true);
 
-      /** \brief Destructor. Closes file if it is open.
+      /** \brief Destructor. Closes table if it is open.
       */
       virtual ~RootTable();
 

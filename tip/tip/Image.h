@@ -20,6 +20,8 @@ namespace tip {
   */
   class Image : public Extension {
     public:
+      /** \brief Destructor. Closes image if it is open.
+      */
       virtual ~Image() {}
 
       /** \brief Get the dimensionality of an image.

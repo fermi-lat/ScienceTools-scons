@@ -36,7 +36,7 @@ namespace tip {
       FitsImage(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "", bool read_only = true);
 
-      /** \brief Destructor. Closes file if it is open.
+      /** \brief Destructor. Closes image if it is open.
       */
       virtual ~FitsImage();
 

@@ -289,6 +289,8 @@ namespace tip {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
+      /** \brief Destructor. Closes table if it is open.
+      */
       virtual ~Table() {}
 
       /** \brief Return an iterator pointing to the first record in the table.
