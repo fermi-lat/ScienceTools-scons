@@ -2,6 +2,8 @@
  * Package facilities
  * Coordinator: Toby Burnett
  *
+ * v2r7p0 14-Feb-2003  hmk   Use static char* in Util::itoa
+ * v2r7   03-Jan-2003  jrb   Simplify Timestamp class
  * v2r6   19-sep-2002  thb   move cmt directory; minor gcc compilation fixes.
  * v2r5   29-aug-2002  thb   JRB Timestamp class
  * v2r4   15-Apr-2002  thb   hmk fixes
