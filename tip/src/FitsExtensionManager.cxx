@@ -109,62 +109,6 @@ namespace tip {
     m_fp = 0;
   }
 
-  void FitsExtensionManager::openTable() {
-    int status = 0;
-    int column_status = 0;
-    long nrows = 0;
-
-    // Read the number of rows present in the table.
-    fits_get_num_rows(m_fp, &nrows, &status);
-
-    // Check for success and if not, do not continue.
-    if (0 != status) {
-      close(status);
-      throw TipException(formatWhat("Cannot get number of rows"));
-    }
-
-    // Save the number of rows.
-    m_num_records = (Index_t) nrows;
-
-    char * match_all = "*";
-    char name[128]; // jp fix this: what is the maximum length of a FITS column name?
-    int col_num;
-    int type_code;
-    long repeat;
-
-    // Iterate over columns, putting the name of each in the column container.
-    while (COL_NOT_FOUND != column_status) {
-      *name = '\0';
-      col_num = 0;
-      type_code = 0;
-      repeat = 0;
-      // Get each column's name.
-      fits_get_colname(m_fp, CASEINSEN, match_all, name, &col_num, &column_status);
-      if (0 == column_status || COL_NOT_UNIQUE == column_status) {
-        // Also get its type and repeat count.
-        fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
-        if (0 != status) {
-          close(status);
-          std::ostringstream s;
-          s << "Could not get type information for column number " << col_num;
-          throw TipException(formatWhat(s.str()));
-        }
-
-        // Save values iff successful getting all the information.
-        // Convert name to lover case.
-        for (char * itor = name; *itor; ++itor) *itor = tolower(*itor);
-        m_col_name_lookup[name].m_name = name;
-        m_col_name_lookup[name].m_col_num = col_num;
-        m_col_name_lookup[name].m_repeat = repeat;
-        m_col_name_lookup[name].m_type_code = type_code;
-        m_col_num_lookup[col_num].m_name = name;
-        m_col_num_lookup[col_num].m_col_num = col_num;
-        m_col_num_lookup[col_num].m_repeat = repeat;
-        m_col_num_lookup[col_num].m_type_code = type_code;
-      }
-    }
-  }
-
   Index_t FitsExtensionManager::getNumRecords() const {
     if (!m_is_table) throw TipException(formatWhat("getNumRecords called, but object is not a table"));
     return m_num_records;
@@ -227,6 +171,62 @@ namespace tip {
       }
     }
     return repeat;
+  }
+
+  void FitsExtensionManager::openTable() {
+    int status = 0;
+    int column_status = 0;
+    long nrows = 0;
+
+    // Read the number of rows present in the table.
+    fits_get_num_rows(m_fp, &nrows, &status);
+
+    // Check for success and if not, do not continue.
+    if (0 != status) {
+      close(status);
+      throw TipException(formatWhat("Cannot get number of rows"));
+    }
+
+    // Save the number of rows.
+    m_num_records = (Index_t) nrows;
+
+    char * match_all = "*";
+    char name[128]; // jp fix this: what is the maximum length of a FITS column name?
+    int col_num;
+    int type_code;
+    long repeat;
+
+    // Iterate over columns, putting the name of each in the column container.
+    while (COL_NOT_FOUND != column_status) {
+      *name = '\0';
+      col_num = 0;
+      type_code = 0;
+      repeat = 0;
+      // Get each column's name.
+      fits_get_colname(m_fp, CASEINSEN, match_all, name, &col_num, &column_status);
+      if (0 == column_status || COL_NOT_UNIQUE == column_status) {
+        // Also get its type and repeat count.
+        fits_get_coltype(m_fp, col_num, &type_code, &repeat, 0, &status);
+        if (0 != status) {
+          close(status);
+          std::ostringstream s;
+          s << "Could not get type information for column number " << col_num;
+          throw TipException(formatWhat(s.str()));
+        }
+
+        // Save values iff successful getting all the information.
+        // Convert name to lover case.
+        for (char * itor = name; *itor; ++itor) *itor = tolower(*itor);
+        m_col_name_lookup[name].m_name = name;
+        m_col_name_lookup[name].m_col_num = col_num;
+        m_col_name_lookup[name].m_repeat = repeat;
+        m_col_name_lookup[name].m_type_code = type_code;
+        m_col_num_lookup[col_num].m_name = name;
+        m_col_num_lookup[col_num].m_col_num = col_num;
+        m_col_num_lookup[col_num].m_repeat = repeat;
+        m_col_num_lookup[col_num].m_type_code = type_code;
+      }
+    }
   }
 
   std::string FitsExtensionManager::formatWhat(const std::string & msg) const {
