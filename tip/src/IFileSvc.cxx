@@ -96,13 +96,19 @@ namespace tip {
   // Edit a image in a file, be it FITS or Root.
   Image * IFileSvc::editImage(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    return dynamic_cast<Image *>(editExtension(file_name, table_name, filter));
+    Extension * ext = editExtension(file_name, table_name, filter);
+    Image * image = dynamic_cast<Image *>(ext);
+    if (0 == image) delete ext;
+    return image;
   }
 
   // Edit a table in a file, be it FITS or Root.
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    return dynamic_cast<Table *>(editExtension(file_name, table_name, filter));
+    Extension * ext = editExtension(file_name, table_name, filter);
+    Table * table = dynamic_cast<Table *>(ext);
+    if (0 == table) delete ext;
+    return table;
   }
 
   // Read-only an extension in a file, be it FITS or Root, table or image.
@@ -112,7 +118,7 @@ namespace tip {
     IExtensionData * data = openExtension(file_name, ext_name, filter, true);
 
     // Determine whether this extension is a table or an image, and return the appropriate
-    // type of object..
+    // type of object.
     if (data->isTable())
       retval = new Table(data);
     else
@@ -124,13 +130,19 @@ namespace tip {
   // Read-only an image in a file, be it FITS or Root.
   const Image * IFileSvc::readImage(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    return dynamic_cast<const Image *>(readExtension(file_name, table_name, filter));
+    const Extension * ext = readExtension(file_name, table_name, filter);
+    const Image * image = dynamic_cast<const Image *>(ext);
+    if (0 == image) delete ext;
+    return image;
   }
 
   // Read-only a table in a file, be it FITS or Root.
   const Table * IFileSvc::readTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    return dynamic_cast<const Table *>(readExtension(file_name, table_name, filter));
+    const Extension * ext = readExtension(file_name, table_name, filter);
+    const Table * table = dynamic_cast<const Table *>(ext);
+    if (0 == table) delete ext;
+    return table;
   }
 
   void IFileSvc::getFileSummary(const std::string & file_name, FileSummary & summary) {
