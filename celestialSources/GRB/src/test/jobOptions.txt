@@ -3,11 +3,14 @@
 // Job options file for GRB test program
 //
 //==================================================
-// Thiswill call GRBtestAlg
-		
+// This will call GRBtestAlg		
 //#include "$GRBROOT/src/test/GRBtestAlgOptions.txt"
-// this will test the simulation program...
-#include "$GRBROOT/src/test/TDSreadFluxOptions.txt"
+
+// This will test the simulation program...
+//#include "$GRBROOT/src/test/TDSreadFluxOptions.txt"
+
+// This will test the LatTrigger algorithm
+#include "$GRBROOT/src/test/LatTriggerOptions.txt"
 
 //==============================================================
 //
