@@ -124,9 +124,9 @@ int main(int iargc, char * argv[]) {
 // Spacecraft position.
    std::vector< std::valarray<float> > scPosition(npts);
    std::vector< std::valarray<float> >::iterator scPosIt = scPosition.begin();
-   std::vector<double>::const_iterator posx = exposure("PtPosx").begin();
-   std::vector<double>::const_iterator posy = exposure("PtPosy").begin();
-   std::vector<double>::const_iterator posz = exposure("PtPosz").begin();
+   std::vector<double>::const_iterator posx = exposure("posx").begin();
+   std::vector<double>::const_iterator posy = exposure("posy").begin();
+   std::vector<double>::const_iterator posz = exposure("posz").begin();
    for ( ; scPosIt != scPosition.end(); scPosIt++) {
       (*scPosIt).resize(3);
       (*scPosIt)[0] = static_cast<float>(*posx++);
