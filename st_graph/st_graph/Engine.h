@@ -13,6 +13,8 @@
 namespace st_graph {
 
   class IEventReceiver;
+  class IFrame;
+  class IPlot;
 
   /** \class Engine
       \brief Interface which encapsulates a particular graphics implementation. This singleton has two purposes:
@@ -33,10 +35,11 @@ namespace st_graph {
       virtual void stop() = 0;
 
       /** \brief Create a top-level frame on the desktop. This is the first window which should be created.
+          \param receiver The receiver of GUI signals.
           \param width The width of the plot window.
           \param height The height of the plot window.
       */
-      virtual IFrame * createMainFrame(unsigned int width, unsigned int height) = 0;
+      virtual IFrame * createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height) = 0;
 
       /** \brief Create a plotter for a one dimensional histogram. This method will be removed soon in favor
                  of the more generic createPlot method.
@@ -69,7 +72,7 @@ namespace st_graph {
           \param y The second dimension being plotted.
           \param z The third dimension being plotted.
       */
-      virtual IFrame * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
         const ValueSet & y, const ValueSet & z = ValueSet()) = 0;
 
       /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
