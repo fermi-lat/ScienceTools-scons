@@ -84,51 +84,50 @@ void DataFilter::run() {
 
    const std::vector<std::string> & columnNames = inputTable->getValidFields();
 
-   for (; inputIt != inputTable->end(); ++inputIt, ++outputIt) {
-// Ideally, one would like to be able to use copy assignment here.
-//      output = input;
+   long npts(0);
 
-      for (std::vector<std::string>::const_iterator name = columnNames.begin();
-           name != columnNames.end(); ++name) {
-// Still would be nice if copy assignment worked between "Cells", but alas...
-//         output[*name] = input[*name];
-//
-// How about if one can use set methods directly?....nope.
-//         output[*name].set(input[*name]);
-
-// So we are forced to use an intermediate variable to store the data
-// and treat vectors as a special case.
-         try {
-            double value;
-            input[*name].get(value);
-            output[*name].set(value);
-         } catch (tip::TipException &) {
+   for (; inputIt != inputTable->end(); ++inputIt) {
+      double ra, dec;
+      input["RA"].get(ra);
+      input["DEC"].get(dec);
+      if (cuts.withinCoordLimits(ra, dec)) {
+         for (std::vector<std::string>::const_iterator name 
+                 = columnNames.begin(); name != columnNames.end(); ++name) {
+            try {
+               double value;
+               input[*name].get(value);
+               output[*name].set(value);
+            } catch (tip::TipException &) {
 // Here we must rely on our knowledge that the only vectors in FT1 are
 // calib_version and conversion_point (would be nice if one could type
 // check here rather than having to know calib_version comprises shorts
 // and conversion_point floats).
-            if (*name == "calib_version") {
-               tip::Table::Vector<short> calibVersion_in = input[*name];
-               tip::Table::Vector<short> calibVersion_out = output[*name];
-               int npts = calibVersion_in.getNumElements();
-               for (int i = 0; i < npts; i++) {
-                  short ivalue = calibVersion_in[i];
-                  calibVersion_out[i] = ivalue;
+               if (*name == "calib_version") {
+                  tip::Table::Vector<short> calibVersion_in = input[*name];
+                  tip::Table::Vector<short> calibVersion_out = output[*name];
+                  int npts = calibVersion_in.getNumElements();
+                  for (int i = 0; i < npts; i++) {
+                     short ivalue = calibVersion_in[i];
+                     calibVersion_out[i] = ivalue;
+                  }
+               } else if (*name == "conversion_point") {
+                  tip::Table::Vector<float> cp_in = input[*name];
+                  tip::Table::Vector<float> cp_out= output[*name];
+                  int npts = cp_in.getNumElements();
+                  for (int i = 0; i < npts; i++) {
+                     short ivalue = cp_in[i];
+                     cp_out[i] = ivalue;
+                  }
+               } else {
+                  throw;
                }
-            } else if (*name == "conversion_point") {
-               tip::Table::Vector<float> conversion_point_in = input[*name];
-               tip::Table::Vector<float> conversion_point_out = output[*name];
-               int npts = conversion_point_in.getNumElements();
-               for (int i = 0; i < npts; i++) {
-                  short ivalue = conversion_point_in[i];
-                  conversion_point_out[i] = ivalue;
-               }
-            } else {
-               throw;
             }
          }
+         ++outputIt;
+         npts++;
       }
    }
+   outputTable->setNumRecords(npts);
 
    cuts.addDataSubspaceKeywords(outputTable);
 

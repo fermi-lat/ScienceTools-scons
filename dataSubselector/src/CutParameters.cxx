@@ -44,6 +44,12 @@ CutParameters::CutParameters(st_app::AppParGroup & pars) :
       m_RA = -1;
       std::cout << "resetting default RA" << std::endl;
    }
+   m_lonMin = pars["lonMin"];
+   m_lonMax = pars["lonMax"];
+   m_latMin = pars["latMin"];
+   m_latMax = pars["latMax"];
+   std::string coordSys = pars["coordSys"];
+   m_coordSys = coordSys;
    m_tmin = pars["tmin"];
    m_tmax = pars["tmax"];
    m_emin = pars["emin"];

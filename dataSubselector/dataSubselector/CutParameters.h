@@ -12,6 +12,8 @@
 #include <string>
 #include <sstream>
 
+#include "astro/SkyDir.h"
+
 #include "tip/Table.h"
 #include "tip/Header.h"
 
@@ -49,12 +51,29 @@ public:
    const std::string & fitsQueryString() const {return m_query;}
 
    const std::string & headerString() const {return m_headerString;}
+
+   bool withinCoordLimits(double ra, double dec) {
+      if (m_coordSys == "GAL") {
+         astro::SkyDir dir(ra, dec);
+         return m_lonMin <= dir.l() && dir.l() <= m_lonMax && 
+            m_latMin <= dir.b() && dir.b() <= m_latMax;
+      } else {
+         return m_lonMin <= ra && ra <= m_lonMax && 
+            m_latMin <= dec && dec <= m_latMax;
+      }
+      return false;
+   }
   
 private:
    
    float m_RA;
    float m_Dec;
    float m_radius;
+   float m_lonMin;
+   float m_lonMax;
+   float m_latMin;
+   float m_latMax;
+   std::string m_coordSys;
    double m_tmin;
    double m_tmax;
    float m_emin;
