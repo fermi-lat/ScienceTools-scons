@@ -51,7 +51,7 @@ namespace hoops {
     public:
       PILParFile(const PILParFile & pf);
       PILParFile(const IParFile & pf);
-      PILParFile(const std::string & comp);
+      PILParFile(const std::string & comp, int argc = 0, char ** argv = 0);
 
       virtual ~PILParFile();
 
@@ -78,12 +78,17 @@ namespace hoops {
 
       virtual IParFile * Clone() const;
 
-      void OpenParFile(int argc = 0, char * argv[] = 0) const;
+      void OpenParFile() const;
       void CloseParFile(int status = 0) const;
+      void SetArgs(int argc, char ** argv);
+      int Argc() const { return mArgc; }
+      char ** const Argv() const { return mArgv; }
 
     protected:
       std::string mComponent;
       mutable IParGroup * mGroup;
+      int mArgc;
+      char ** mArgv;
       void CleanComponent(const std::string & comp, std::string & clean) const;
   };
 
@@ -102,23 +107,18 @@ namespace hoops {
       virtual PILParPrompt & Prompt(const std::string & pname);
       virtual PILParPrompt & Prompt(const std::vector<std::string> & pnames);
 
-      virtual int Argc() const { return mArgc; }
-      virtual char ** const Argv() const { return mArgv; }
+      virtual int Argc() const { return mFile->Argc(); }
+      virtual char ** const Argv() const { return mFile->Argv(); }
       virtual IParGroup & Group();
       virtual const IParGroup & Group() const;
 
-      virtual PILParPrompt & SetArgc(int argc) { mArgc = argc; return *this; }
-      virtual PILParPrompt & SetArgv(char ** argv);
       virtual IParGroup * SetGroup(IParGroup * group = 0);
 
       virtual IParPrompt * Clone() const;
 
     protected:
-      void Init(char ** argv, const std::string & comp_name = std::string());
+      void Init(int argc, char ** argv, const std::string & comp_name = std::string());
       mutable PILParFile * mFile;
-      int mArgc;
-      char ** mArgv;
-      void DeleteArgv();
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -136,6 +136,12 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.14  2004/11/09 18:55:45  peachey
+ * Refactor PILParFile to include a constructor which accepts command line
+ * arguments. Remove SetArgc, SetArgv from PILParPrompt. Refactor
+ * PILParPrompt so that it uses PILParFile to manage its command line
+ * arguments.
+ *
  * Revision 1.13  2004/03/30 21:14:46  peachey
  * Allow PILParPrompt and ParPromptGroup constructors to accept optional
  * component name which is then used in lieu of argv[0]

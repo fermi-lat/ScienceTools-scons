@@ -234,8 +234,6 @@ namespace hoops {
       virtual IParGroup & Group() = 0;
       virtual const IParGroup & Group() const = 0;
 
-      virtual IParPrompt & SetArgc(int argc) = 0;
-      virtual IParPrompt & SetArgv(char ** argv) = 0;
       virtual IParGroup * SetGroup(IParGroup * group) = 0;
 
       virtual IParPrompt * Clone() const = 0;
@@ -298,6 +296,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.15  2004/11/09 18:28:17  peachey
+ * Remove SetArgc/SetArgv from IParPrompt interface.
+ *
  * Revision 1.14  2004/03/26 22:32:15  peachey
  * Add new error code for unsupported features.
  *

@@ -23,6 +23,11 @@
 #include "hoops/hoops_pil_factory.h"
 #include "hoops/hoops_prim.h"
 #include "pil.h"
+
+// PIL uses a global for holding the prompt mode, but doesn't have a
+// read accessor method for it.
+extern int PILQueryMode;
+
 ////////////////////////////////////////////////////////////////////////////////
 namespace hoops {
 
@@ -62,20 +67,39 @@ namespace hoops {
   // Begin PILParFile implementation.
   //////////////////////////////////////////////////////////////////////////////
   PILParFile::PILParFile(const PILParFile & pf): IParFile(),
-    mComponent(pf.mComponent), mGroup(0)
-    { if (pf.mGroup) mGroup = pf.mGroup->Clone(); }
+    mComponent(pf.mComponent), mGroup(0), mArgc(0), mArgv(0) {
+    if (pf.mGroup) mGroup = pf.mGroup->Clone();
+    SetArgs(pf.mArgc, pf.mArgv);
+  }
 
   PILParFile::PILParFile(const IParFile & pf): IParFile(),
-    mComponent(pf.Component()), mGroup(0) {
+    mComponent(pf.Component()), mGroup(0), mArgc(0), mArgv(0) {
     mGroup = pf.Group().Clone();
+    SetArgs(0, 0);
+    Load();
   }
 
-  PILParFile::PILParFile(const std::string & comp): IParFile(), mComponent(),
-    mGroup(0) {
-    SetComponent(comp);
+  PILParFile::PILParFile(const std::string & comp, int argc, char ** argv):
+    IParFile(), mComponent(), mGroup(0), mArgc(0), mArgv(0) {
+    if (comp.empty()) {
+      SetComponent(argv[0]);
+      SetArgs(argc, argv);
+    } else {
+      SetComponent(comp);
+      ++argc;
+      char ** new_argv = new char *[argc];
+      new_argv[0] = CpyStr(comp.c_str());
+      for (int ii = 1; ii < argc; ++ii) {
+        new_argv[ii] = argv[ii - 1];
+      }
+      SetArgs(argc, new_argv);
+      delete [] new_argv[0];
+      delete [] new_argv;
+    }
+    Load();
   }
 
-  PILParFile::~PILParFile() { delete mGroup; }
+  PILParFile::~PILParFile() { SetArgs(0, 0); delete mGroup; }
 
   PILParFile & PILParFile::operator =(const PILParFile & pf) {
     mComponent = pf.mComponent;
@@ -85,6 +109,7 @@ namespace hoops {
     } else {
       if (pf.mGroup) mGroup = pf.mGroup->Clone();
     }
+    SetArgs(pf.mArgc, pf.mArgv);
     return *this;
   }
 
@@ -95,6 +120,7 @@ namespace hoops {
     } else {
       mGroup = pf.Group().Clone();
     }
+    SetArgs(0, 0);
     return *this;
   }
 
@@ -338,42 +364,57 @@ namespace hoops {
 
   // Note: in this method, argc and argv must *not* include
   // the name of the tool (traditionally argv[0])
-  void PILParFile::OpenParFile(int argc, char * argv[]) const {
+  void PILParFile::OpenParFile() const {
     int status = PIL_OK;
 
-    // If arguments were given, the component name will be
-    // prepended to the arguments and then the whole list will
-    // be passed to PIL, so increment argc. If no arguments,
-    // only the component name will be passed, so set argc = 1.
-    if (0 < argc && 0 != argv) ++argc;
-    else argc = 1;
-
-    // Create new arguments which are same as original arguments
-    // except for argv[0], which is taken from the component name.
-    char ** new_argv = new char *[argc];
-    new_argv[0] = CpyStr(mComponent.c_str());
-    for (int ii = 1; ii < argc; ++ii) new_argv[ii] = argv[ii - 1];
+    // Set the component/module name.
+    PILSetModuleName(mComponent.c_str());
 
     // Use PIL to open the par file with the new arguments.
     // Don't throw an exception (if necessary) until after the
     // clean up block.
-    status = PILInit(argc, new_argv);
-
-    if (PIL_OK == status) status = PILVerifyCmdLine();
-
-    // Clean up.
-    delete [] new_argv[0];
-    delete [] new_argv;
+    status = PILInit(mArgc, mArgv);
 
     if (PIL_OK != status) {
       std::ostringstream s;
       s << "Could not open parameter file for " << mComponent;
       throw PILException(status, s.str(), __FILE__, __LINE__);
     }
+
+    status = PILVerifyCmdLine();
+    if (PIL_OK != status) {
+      std::ostringstream s;
+      s << "Invalid command line for " << mComponent;
+      throw PILException(status, s.str(), __FILE__, __LINE__);
+    }
   }
 
   void PILParFile::CloseParFile(int status) const {
     PILClose(status);
+  }
+
+  void PILParFile::SetArgs(int argc, char ** argv) {
+    // Check new arguments.
+    if (0 > argc)
+      throw Hexception(PAR_NULL_PTR, "Number of arguments cannot be negative", __FILE__, __LINE__);
+
+    // Delete current set of arguments.
+    if (0 != mArgc) {
+      for (int ii = mArgc - 1; ii >= 0; --ii)
+        delete [] mArgv[ii];
+      delete [] mArgv;
+      mArgv = 0;
+    }
+
+    // Copy new arguments.
+    if (0 != argc) {
+      mArgc = argc;
+      if (0 != mArgc) {
+        mArgv = new char *[mArgc];
+        for (int ii = 0; ii < mArgc; ++ii)
+          mArgv[ii] = CpyStr(argv[ii]);
+      }
+    }
   }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParFile implementation.
@@ -383,27 +424,32 @@ namespace hoops {
   // Begin PILParPrompt implementation.
   //////////////////////////////////////////////////////////////////////////////
   PILParPrompt::PILParPrompt(const PILParPrompt & prompt):
-    IParPrompt(), mFile(0), mArgc(prompt.mArgc), mArgv(0) { Init(prompt.mArgv); }
+    IParPrompt(), mFile(0) {
+    mFile = new PILParFile(*prompt.mFile);
+  }
 
   PILParPrompt::PILParPrompt(const IParPrompt & prompt):
-    IParPrompt(), mFile(0), mArgc(prompt.Argc()), mArgv(0) { Init(prompt.Argv()); }
+    IParPrompt(), mFile(0) {
+    mFile = new PILParFile("", prompt.Argc(), prompt.Argv());
+    mFile->Group() = prompt.Group();
+  }
 
-  PILParPrompt::PILParPrompt(int argc, char ** argv, const std::string & comp_name):
-    IParPrompt(), mFile(0), mArgc(argc), mArgv(0) { Init(argv, comp_name); }
+  PILParPrompt::PILParPrompt(int argc, char ** argv,
+    const std::string & comp_name):
+    IParPrompt(), mFile(0) {
+    mFile = new PILParFile(comp_name, argc, argv);
+  }
 
-  PILParPrompt::~PILParPrompt() { delete mFile; DeleteArgv(); }
+  PILParPrompt::~PILParPrompt() { delete mFile; }
 
   PILParPrompt & PILParPrompt::operator =(const PILParPrompt & p) {
-    DeleteArgv();
-    mArgc = p.mArgc;
-    SetArgv(p.mArgv);
+    *mFile = *p.mFile;
     return *this;
   }
 
   PILParPrompt & PILParPrompt::operator =(const IParPrompt & p) {
-    DeleteArgv();
-    mArgc = p.Argc();
-    SetArgv(p.Argv());
+    delete mFile;
+    mFile = new PILParFile("", p.Argc(), p.Argv());
     return *this;
   }
 
@@ -432,15 +478,10 @@ namespace hoops {
   }
 
   PILParPrompt & PILParPrompt::Prompt(const std::vector<std::string> & pnames) {
-
     int status = PIL_OK;
 
-    // Must have defined at least one argument.
-    if (mArgc < 1 || !mArgv)
-      throw PILException(PAR_NULL_PTR, "Cannot prompt with NULL argument", __FILE__, __LINE__);
-
     try {
-      mFile->OpenParFile(mArgc - 1, mArgv + 1);
+      mFile->OpenParFile();
 
       std::string type;
       std::vector<std::string>::const_iterator it;
@@ -525,57 +566,17 @@ namespace hoops {
   }
 
   IParGroup & PILParPrompt::Group() {
-    if (!mFile) mFile = new PILParFile(mArgv[0]);
     return mFile->Group();
   }
 
   const IParGroup & PILParPrompt::Group() const {
-    if (!mFile) mFile = new PILParFile(mArgv[0]);
     return mFile->Group();
-  }
-
-  PILParPrompt & PILParPrompt::SetArgv(char ** argv) {
-    if (argv) {
-      mArgv = new char *[mArgc];
-      for (int ii = 0; ii < mArgc; ++ii) {
-        mArgv[ii] = CpyStr(argv[ii]);
-        if (!argv[ii]) {
-          mArgc = ii;
-          break;
-        }
-      }
-    } else {
-      mArgc = 0;
-      mArgv = 0;
-    }
-    return *this;
   }
 
   IParGroup * PILParPrompt::SetGroup(IParGroup * group)
     { IParGroup * retval = &mFile->Group(); mFile->SetGroup(group); return retval; }
 
   IParPrompt * PILParPrompt::Clone() const { return new PILParPrompt(*this); }
-
-  void PILParPrompt::DeleteArgv() {
-    for (int ii = 0; ii < mArgc; ++ii) delete [] mArgv[ii];
-    delete [] mArgv;
-  }
-
-  void PILParPrompt::Init(char ** argv, const std::string & comp_name) {
-    SetArgv(argv);
-
-    if (0 < mArgc) {
-      if (comp_name.empty()) mFile = new PILParFile(mArgv[0]);
-      else mFile = new PILParFile(comp_name);
-
-      std::string comp = mFile->Component();
-      if (comp.empty())
-        throw PILException(PAR_COMP_UNDEF, "Cannot initialize prompter for unspecified component", __FILE__, __LINE__);
-      PILSetModuleName(comp.c_str());
-
-      mFile->Load();
-    }
-  }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParPrompt implementation.
   //////////////////////////////////////////////////////////////////////////////
@@ -598,7 +599,7 @@ namespace hoops {
   IParPrompt * PILParPromptFactory::NewIParPrompt(const IParPrompt & p)
     { return new PILParPrompt(p); }
 
-  IParPrompt * PILParPromptFactory::NewIParPrompt(int argc, char * argv[], const std::string & comp_name)
+  IParPrompt * PILParPromptFactory::NewIParPrompt(int argc, char ** argv, const std::string & comp_name)
     { return new PILParPrompt(argc, argv, comp_name); }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParPromptFactory implementation.
@@ -641,6 +642,12 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.21  2004/11/09 18:55:45  peachey
+ * Refactor PILParFile to include a constructor which accepts command line
+ * arguments. Remove SetArgc, SetArgv from PILParPrompt. Refactor
+ * PILParPrompt so that it uses PILParFile to manage its command line
+ * arguments.
+ *
  * Revision 1.20  2004/09/21 16:48:46  peachey
  * Report name of group whenever errors are thrown.
  *

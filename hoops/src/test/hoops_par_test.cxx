@@ -5,6 +5,7 @@
 #include "hoops/hoops.h"
 #include "hoops/hoops_par.h"
 #include "hoops/hoops_pil_factory.h"
+#include "hoops/hoops_prompt_group.h"
 #include "pil.h"
 
 static int sLine;
@@ -354,7 +355,7 @@ int main(int argc, char * argv[]) {
       std::cout << ':' << *(*it) << ':' << std::endl;
     }
 
-    IParPrompt * prompt = PILParPromptFactory().NewIParPrompt(argc, argv, "hoops_par_test");
+    IParPrompt * prompt = PILParPromptFactory().NewIParPrompt(argc - 1, argv + 1, "hoops_par_test");
 
     prompt->Prompt("prompt");
     if (!(bool) prompt->Group()["prompt"]) PILOverrideQueryMode(PIL_QUERY_OVERRIDE);
@@ -380,6 +381,16 @@ int main(int argc, char * argv[]) {
 
     delete prompt;
     delete file;
+
+    char test_bool_arg[] = "test_bool=no";
+    char *new_argv[] = { argv[0], test_bool_arg, 0 };
+    ParPromptGroup par_prompt_group(2, new_argv, "hoops_par_test");
+    bool test_bool = par_prompt_group["test_bool"];
+    if (test_bool) {
+      std::cerr << "ERROR: ParPromptGroup did not accept the command line " <<
+        "value for parameter test_bool" << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
 
   } catch (const Hexception &x) {
     SetGlobalStatus(ERROR_UNDETECTED);
