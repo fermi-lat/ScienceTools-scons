@@ -134,6 +134,25 @@ int main(int, char**) {
               << std::endl;
   }
 
+  // Try out trimTrailing method
+  std::string string1("ends with 2 blanks  ");
+  std::string string2("ends with newline\n");
+  std::string string3("no trailing whitespace");
+
+  unsigned nTrimmed = facilities::Util::trimTrailing(&string1);
+  std::cout << "Trimmed " << nTrimmed << " from string1; has new value : "
+            << string1 << "*EOS*" << std::endl;
+
+  nTrimmed = facilities::Util::trimTrailing(&string2);
+  std::cout << "Trimmed " << nTrimmed << " from string2; has new value : "
+            << string2 << "*EOS" <<  std::endl;
+
+  nTrimmed = facilities::Util::trimTrailing(&string3);
+  std::cout << "Trimmed " << nTrimmed << " from string3; has new value : "
+            << string3 << "*EOS" << std::endl;
+
+
+
   return 0;
 }
 
