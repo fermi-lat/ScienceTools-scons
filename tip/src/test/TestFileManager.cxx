@@ -9,6 +9,7 @@
 #include "FitsFileManager.h"
 #include "RootExtensionData.h"
 #include "TestFileManager.h"
+#include "tip/Extension.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
@@ -22,6 +23,9 @@ namespace tip {
     // Test file creation.
     createFileTest();
 
+    // Test opening extensions generically read-only:
+    readExtensionTest();
+    
     // Test opening table read-only:
     readTableTest();
     
@@ -64,6 +68,28 @@ namespace tip {
 
   }
 
+  void TestFileManager::readExtensionTest() {
+    std::string msg;
+    const Extension * ext = 0;
+
+    // Find test data directory:
+    std::string data_dir = getDataDir();
+
+    // Test opening extension read-only:
+    msg = std::string("TestFileManager::readExtensionTest opening read-only extension SPECTRUM of file ") + data_dir + "a1.pha";
+    try {
+      ext = IFileSvc::instance().readExtension(data_dir + "a1.pha", "SPECTRUM", "#row > 50 && #row <= 100");
+      ReportExpected(msg + " succeeded");
+
+      const Table * table = dynamic_cast<const Table *>(ext);
+      if (0 == table) ReportUnexpected(msg + ": extension is not a table");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed");
+    }
+
+    delete ext;
+  }
+
   void TestFileManager::readTableTest() {
     std::string msg;
     const Table * table = 0;
@@ -71,7 +97,7 @@ namespace tip {
     // Find test data directory:
     std::string data_dir = getDataDir();
 
-    // Test opening file read-only:
+    // Test opening table read-only:
     msg = std::string("TestFileManager::readTableTest opening read-only extension SPECTRUM of file ") + data_dir + "a1.pha";
     try {
       table = IFileSvc::instance().readTable(data_dir + "a1.pha", "SPECTRUM", "#row > 50 && #row <= 100");

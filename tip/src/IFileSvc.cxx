@@ -9,8 +9,10 @@
 #include "FitsFileManager.h"
 #include "RootExtensionData.h"
 #include "RootExtensionManager.h"
+#include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 #include "tip/TipException.h"
 
@@ -81,6 +83,38 @@ namespace tip {
 
       /* DONE 1: 4/21/2004: This is not an issue at present, because Table::Table doesn't
       throw under any circumstance. */
+      throw;
+    }
+    return retval;
+  }
+
+  // Read-only an extension in a file, be it FITS or Root, table or image.
+  const Extension * IFileSvc::readExtension(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    Extension * retval = 0;
+    IExtensionData * data = 0;
+    TipException fits_exception;
+    try {
+      try {
+        // Open file with read-only mode enabled.
+        data = new FitsExtensionData(file_name, table_name, filter, true);
+      } catch(const TipException & x) {
+        fits_exception = x;
+        data = new RootExtensionData(file_name, table_name, filter);
+      }
+
+      // Determine whether this extension is a table or an image, and return the appropriate
+      // type of object..
+      if (data->isTable())
+        retval = new Table(data);
+      else
+        retval = new Image(data);
+
+    } catch(const TipException & x) {
+      delete retval; // If retval is non-0, Extension was created, so it will delete data.
+      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
+    } catch(...) {
+      delete retval; // If retval is non-0, Extension was created, so it will delete data.
       throw;
     }
     return retval;

@@ -13,6 +13,7 @@
 
 namespace tip {
 
+  class Extension;
   class Table;
 
   /** \class IFileSvc
@@ -50,6 +51,15 @@ namespace tip {
           \param filter Filtering string.
       */
       virtual Table * editTable(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing extension without modification access. The actual object returned
+          may be a subclass of Extension, depending on whether the object is a table or image extension.
+          \param file_name The name of the file (any supported format OK).
+          \param ext_name The name of the extension.
+          \param filter Filtering string.
+      */
+      virtual const Extension * readExtension(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "");
 
       /** \brief Open an existing table without modification access.
