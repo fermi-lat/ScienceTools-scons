@@ -7,7 +7,6 @@
 #ifndef table_FitsExtensionManager_h
 #define table_FitsExtensionManager_h
 
-#include <cassert>
 #include <map>
 #include <sstream>
 #include <string>
@@ -207,7 +206,7 @@ namespace table {
   template <>
   inline void FitsExtensionManager::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     Index_t src_end, std::string * dest) const {
-    assert(0);
+    throw TableException("String valued columns not yet implemented for FITS files.");
   }
 
   // Setting columns.
@@ -247,7 +246,7 @@ namespace table {
   template <>
   inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     std::string * dest_begin, std::string * dest_end) {
-    assert(0);
+    throw TableException("String valued columns not yet implemented for FITS files.");
   }
 
 }
