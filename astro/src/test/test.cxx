@@ -1,5 +1,6 @@
 // $Header$
 
+#include <cassert>
 #include "astro/SolarSystem.h"
 #include "astro/EarthCoordinate.h"
 #include "astro/EarthOrbit.h"
@@ -44,11 +45,65 @@ bool testSkyDir(){
 return ok;
 }
 
+void test_insideSAA() {
+
+   int npts_inSAA = 19;
+   double lon_inSAA[] = {-33.869, -54.191, -67.740, -81.288, -81.288, 
+                         -66.772, -49.353, -30.966, -10.643,   2.905,  
+                         26.131,  15.486,   0.970, -14.514, -25.159, 
+                         -20.320, -33.869, -51.288, -58.062};
+   double lat_inSAA[] = {-4.912,  -4.912, -11.457, -15.821, -23.457, 
+                         -25.639, -24.548, -25.639, -26.730, -26.730, 
+                         -25.639, -21.275, -16.912, -12.548,  -9.275, 
+                         -18.003, -16.912, -16.912, -15.821};
+
+   int npts_notInSAA = 49;
+   double lon_notInSAA[] = { 54.196,  47.422,  34.841,  21.293,  10.647, 
+                             -1.933, -15.482, -28.062, -39.675, -55.159,
+                             -70.643, -81.288, -93.869, -92.901, 163.551,
+                             136.454,  79.357, 160.647, 128.712, 105.486,
+                             73.551,  42.583,  10.647, -12.579, -45.482,
+                             -75.482, -94.837, -110.320, -134.514, -163.546,
+                             -168.385, -144.191, -121.933, -103.546, -56.127,
+                             -19.353,  16.454,  50.325,  76.454, 102.583,
+                             121.938, 151.938, 169.357, -172.256, -152.901,
+                             -142.256, -119.998, -156.772, -157.740};
+   double lat_notInSAA[] = { -25.639, -19.093, -15.821, -13.639, -10.366,
+                             -6.002,  -3.821,   2.725,   2.725,   3.816,
+                             -1.639,  -4.912, -13.639, -24.548, -20.184,
+                             -21.275, -23.457,  -2.730,  -2.730,  -3.821,
+                             -6.002,  -1.639,   8.179,   9.270,  10.361,
+                             9.270,   3.816, -15.821, -18.003, -18.003,
+                             -3.821,  -2.730,   2.725,  17.997,  23.452,
+                             23.452,  19.088,  14.725,  15.816,  13.634,
+                             13.634,  16.907,  21.270,  16.907,  23.452,
+                             13.634,  22.361,  11.452,   3.816};
+
+//   std::cout << "Testing EarthCoordinate::insideSAA" << std::endl;
+
+// Test for success
+   for (int i = 0; i < npts_inSAA; i++) {
+      astro::EarthCoordinate earthCoord(lat_inSAA[i], lon_inSAA[i]);
+      assert(earthCoord.insideSAA());
+   }
+
+// Test for failure
+   for (int i = 0; i < npts_notInSAA; i++) {
+      astro::EarthCoordinate earthCoord(lat_notInSAA[i], lon_notInSAA[i]);
+      assert(!earthCoord.insideSAA());
+   }
+   std::cout << "EarthCoordinate::insideSAA tests passed." << std::endl;
+}
+
 
 int main(){
 
 using namespace astro;
 using namespace std;
+
+// test EarthCoordinate::insideSAA
+
+    test_insideSAA();
 
     if( !testSkyDir() )return 1;
 
@@ -96,6 +151,7 @@ using namespace std;
     cout << "EarthCoordinate("<<lat<<","<<lon<<") " << ec.latitude() << ", " << ec.longitude() << endl;
 
     // run the sun and moon
+
     return 1; 
 }
 
