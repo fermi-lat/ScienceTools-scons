@@ -20,7 +20,7 @@ namespace {
     //! @brief add a string or double key or whatever to the image 
     tip::Header* header;
     template <typename T>
-    void setKey(std::string name, T value, std::string unit="", std::string comment=""){
+    void setKey(std::string name, T value, std::string /*unit*/="", std::string /*comment*/=""){
         (*header)[name].set( value); }
 }
 using namespace map_tools;
@@ -46,7 +46,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         std::string types[]={"" ,"CAR","AIT","ZEA"};
         int xsize[] =       {360, 360,  325,  230}; 
         int ysize[] =       {180, 180,  163,  230}; 
-        for( int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
+        for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
             if( ptype == types[i]) {
                 m_naxis1 = xsize[i]/pixelsize;
                 m_naxis2 = ysize[i]/pixelsize;

@@ -21,15 +21,19 @@ int     Exposure::Index::dec_factor=180;
 int     Exposure::Index::cosfactor=40;
 double  Exposure::Index::cosmin = 0;
 double  Exposure::Index::costhetabinsize;
+Exposure::Index::CosThetaBinning Exposure::Index::s_binning= WEIGHTED_WITH_SQRT; //(or UNIFORM)
 
 //------------------------------------------------------------------------------
-Exposure::Exposure(double skybin, double costhetabin) : m_total(0)
+Exposure::Exposure(double skybin, double costhetabin
+                   ,Exposure::Index::CosThetaBinning binfunction) 
+: m_total(0)
 {
     // set binsizes in the key
     Index::skybinsize = int(skybin);
     Index::ra_factor  = int(360./skybin);
     Index::dec_factor = int(180./skybin);
     Index::cosfactor  = int((1.-Index::cosmin)/costhetabin);
+    Index::s_binning = binfunction;
 
     //total size to reserve
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
@@ -77,6 +81,11 @@ Exposure::Exposure(const std::string& fits_file)
 // @todo Check for cos(theta) weighting.
     header["CDELT3"].get( Index::costhetabinsize);
     header["CRVAL3"].get( Index::cosmin);
+    std::string ctype3;
+    header["CTYPE3"].get( ctype3);
+    if( ctype3=="COSTHETA") Index::s_binning = Index::UNIFORM;
+    else if( ctype3=="SQRT(1-COSTHETA)" ) Index::s_binning = Index::WEIGHTED_WITH_SQRT;
+    else { throw std::range_error("Exposure::Exposure: unexpected CTYPE3 " + ctype3);}
     header["TOTAL"].get( m_total);
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
 

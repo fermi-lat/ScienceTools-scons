@@ -42,36 +42,49 @@ public:
             m_index = static_cast<int>( ra_bin + ra_factor*(dec_bin + dec_factor*theta_bin) );
         }
         Index(int i) : m_index(i){}
-#if 1 // version with weighted cos theta
-        static int costheta_bin(double costheta){ 
-            return static_cast<int>( sqrt((1.-costheta)/(1-cosmin))* cosfactor); 
-        }
-        static double costheta_value(int bin){ 
-            return 1. - sqr((bin+0.5)/cosfactor)*(1.-cosmin); 
-        }
-        static std::string thetaBinning(){ return "SQRT(1-COSTHETA)";}
-#else // uniform cos theta
-        static int costheta_bin(double costheta){ 
-            return static_cast<int>( (1.-costheta)/(1-cosmin)* cosfactor); 
-        }
-        static double costheta_value(int bin){ 
-            return 1. - (bin+0.5)/cosfactor*(1.-cosmin); 
-        }
-        static std::string thetaBinning(){ return "COSTHETA";}
-#endif
 
-        // statics, define binning
-        static double costhetabinsize;
-        static double skybinsize;
+
+        // statics which  define binning
+        typedef enum { UNIFORM, WEIGHTED_WITH_SQRT } CosThetaBinning; 
+        static CosThetaBinning s_binning; ///< binning scheme (maybe a fn?)
+        static double costhetabinsize;    ///< step in the cos theta binning function
+        static double skybinsize;         ///< pixel size in degrees 
         static int cosfactor, ra_factor, dec_factor;
         static double cosmin;
+
+        static int costheta_bin(double costheta){ 
+            if( s_binning ==WEIGHTED_WITH_SQRT ) {
+                return static_cast<int>( sqrt((1.-costheta)/(1-cosmin))* cosfactor); 
+            }else{
+                return static_cast<int>( (1.-costheta)/(1-cosmin)* cosfactor); 
+            }
+        }
+        static double costheta_value(int bin){ 
+            if( s_binning == WEIGHTED_WITH_SQRT ) {
+                return 1. - sqr((bin+0.5)/cosfactor)*(1.-cosmin); 
+            }else{
+                return 1. - (bin+0.5)/cosfactor*(1.-cosmin); 
+            }
+
+        }
+        static std::string thetaBinning(){ 
+            if( s_binning == WEIGHTED_WITH_SQRT ) {
+                return "SQRT(1-COSTHETA)";
+            }else{
+                return "COSTHETA";
+            }
+        }
     private:
         unsigned int m_index;
     };
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //! Constructor 
-    Exposure(double skybin=Index::skybinsize, double costhetabin=Index::costhetabinsize); 
+    //! @param skybinsize the pixel size in degrees
+    //! @param costhetabinsize size of bins in the costheta function
+    Exposure(double skybin=Index::skybinsize, 
+        double costhetabin=Index::costhetabinsize,
+        Exposure::Index::CosThetaBinning binfunction=Exposure::Index::WEIGHTED_WITH_SQRT); 
 
     typedef   std::vector<float> ExposureCube;
 

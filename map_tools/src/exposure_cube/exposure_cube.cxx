@@ -36,6 +36,7 @@ public:
         , m_f("ExposureCubeApp", "", 2)
 
     {}
+    ~ExposureCubeApp() throw() {} // required by StApp with gcc
 
     //--------------------------------------------------------------------------
     void LoadExposureFromGlast( const Parameters& pars,   Exposure& exp )

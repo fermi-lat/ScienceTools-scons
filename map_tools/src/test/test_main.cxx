@@ -45,6 +45,8 @@ int main(int argc, char** argv ){
             return 1;
         }
 
+        std::cout << "Testing exposure calculation with binning function "
+            << Exposure::Index::thetaBinning() << std::endl;
         Exposure e( 10,  0.1);
         double total=0;
 
@@ -80,7 +82,7 @@ int main(int argc, char** argv ){
         }
 
         // Write out the cube...delete any existing file first.
-        // this does not delete files: THBstd::remove(par.inputFile().c_str());
+        // THB: this does not delete files: std::remove(par.inputFile().c_str());
         ExposureHyperCube cube(e, par.inputFile());
         cube.save();
 

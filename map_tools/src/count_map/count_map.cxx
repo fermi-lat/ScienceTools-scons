@@ -40,6 +40,7 @@ public:
 //        gSystem->Load("libHist.dll");
 #endif
     }
+    ~CountMapApp() throw() {} // required by StApp with gcc
 
     void run(){
         using tip::Table;
@@ -71,8 +72,8 @@ public:
                 <<" at file\n\t" << m_pars.outputFile() << std::endl; 
     }
 private:
-    MapParameters m_pars;
     st_stream::StreamFormatter m_f;
+    MapParameters m_pars;
 
 };
 

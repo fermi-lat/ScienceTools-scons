@@ -14,7 +14,7 @@ namespace {
     //! @brief add a string or double key or whatever to the image 
     tip::Header* header;
     template <typename T>
-        void setKey(std::string name, T value, std::string unit="", std::string comment=""){
+        void setKey(std::string name, T value, std::string /*unit*/="", std::string /*comment*/=""){
             (*header)[name].set( value); }
 }
 ExposureHyperCube::ExposureHyperCube( const Exposure& exp, 

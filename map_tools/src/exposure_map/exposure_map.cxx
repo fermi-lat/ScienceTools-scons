@@ -94,6 +94,8 @@ public:
         , m_pars(st_app::StApp::getParGroup("exposure_map")) 
     {
     }
+        ~ExposureMapApp() throw() {} // required by StApp with gcc
+
     /**
     */
 
