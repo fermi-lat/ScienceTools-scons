@@ -292,6 +292,20 @@ void EvtBinTest::testOrderedBinner() {
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
     
+    // A value on the leading edge of the first bin.
+    value = 0.;
+    index = binner.computeIndex(value);
+    if (0 != index) {
+      std::cerr << msg << value << ") returned " << index << ", not 0" << std::endl;
+    }
+
+    // A value on the trailing edge of the last bin.
+    value = .72;
+    index = binner.computeIndex(value);
+    if (0 <= index) {
+      std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
+    }
+
     // A value in the 0th bin.
     value = .05;
     index = binner.computeIndex(value);
