@@ -9,5 +9,6 @@ use STpolicy *
 use ROOT * IExternal
 use cfitsio * IExternal
 
+macro_append tip_linkopts "" Linux "-lHist "
 apply_pattern ST_library option=-no_share
 application sample sample/sample.cxx
