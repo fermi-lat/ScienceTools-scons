@@ -5,6 +5,7 @@
     \author James Peachey, HEASARC
 */
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 
 #include "tip/Header.h"
@@ -19,6 +20,19 @@ int main() {
   Table * my_table = 0;
 
   try {
+    // Figure out runtime environment.
+    std::string tiproot;
+    std::string data_dir;
+
+    // Read TIPROOT environment variable.
+    const char * tiproot_cp = ::getenv("TIPROOT");
+
+    // Use it to set name of data directory:
+    if (0 != tiproot_cp) {
+      tiproot = tiproot_cp;
+      data_dir = tiproot + "/src/test/";
+    }
+
     try {
       // Opening a non-existent file should throw an exception.
       my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
@@ -34,7 +48,7 @@ int main() {
     delete my_table;
 
     // The following test file should be present.
-    my_table = IFileSvc::getSvc().editTable("a1.pha", "SPECTRUM");
+    my_table = IFileSvc::getSvc().editTable(data_dir + "a1.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
@@ -246,7 +260,7 @@ int main() {
     delete my_table; my_table = 0;
 
     // Now test Root file access.
-    my_table = IFileSvc::getSvc().editTable("merit.root", "1");
+    my_table = IFileSvc::getSvc().editTable(data_dir + "merit.root", "1");
 
     try {
       int recordNum = 0;
