@@ -1,11 +1,11 @@
-/** \file FitsTabularData.h
+/** \file FitsTable.h
 
     \brief Low level interface to Fits format tabular data.
 
     \author James Peachey, HEASARC
 */
-#ifndef FitsTabularData_h
-#define FitsTabularData_h
+#ifndef FitsTable_h
+#define FitsTable_h
 
 #include <exception>
 #include <map>
@@ -14,29 +14,29 @@
 #include "fitsio.h"
 
 #include "table/table_types.h"
-#include "table/ITabularData.h"
+#include "table/Table.h"
 
 namespace table {
 
   /** \class FitsException
 
-      \brief Exceptions thrown by FitsTabularData.
+      \brief Exceptions thrown by FitsTable.
   */
   class FitsException : public std::exception {
     public:
       virtual const char * what() const throw() { return "FitsError"; }
   };
 
-  /** \class FitsTabularData
+  /** \class FitsTable
       \brief Low level abstract interface to Fits format tabular data.
   */
-  class FitsTabularData : public ITabularData {
+  class FitsTable : public Table {
     public:
-      FitsTabularData(const std::string & file_name, const std::string & table_name);
+      FitsTable(const std::string & file_name, const std::string & table_name);
 
-      FitsTabularData(const FitsTabularData & fits_data);
+      FitsTable(const FitsTable & fits_data);
 
-      virtual ~FitsTabularData();
+      virtual ~FitsTable();
 
       /** \brief Return the number of records in the current tabular data object.
       */

@@ -99,11 +99,6 @@
     Client code can request from a Cell that it read data in any of these
     forms, and if possible, the request will be satisfied.
 
-    \subsection table ITabularData Class
-    ABC whose methods provide low-level access to the underlying
-    table. Client code will rarely, if ever, need to use this interface;
-    its use is mainly internal to the Table class.
-
     \subsection table Ref Class
     Templated class which serves as an adaptor for the Cell class. It may
     be templated on any primitive type or string type (currently only type

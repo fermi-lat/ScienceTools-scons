@@ -12,7 +12,6 @@
 #include <string>
 
 #include "table/table_types.h"
-#include "table/ITabularData.h"
 
 namespace table {
 
@@ -152,11 +151,6 @@ namespace table {
           Table * m_table;
       };
 
-      /** \brief Create a Table object from an ITabularData object.
-          \param tabular_data Pointer to the underlying ITabularData object.
-      */
-      Table(ITabularData * tabular_data): m_tabular_data(tabular_data) {}
-
       virtual ~Table() {}
 
       /** \brief Return an iterator pointing to the first record in the table.
@@ -165,18 +159,20 @@ namespace table {
 
       /** \brief Return an iterator pointing past the last record in the table.
       */
-      Iterator end() { return Iterator(this, m_tabular_data->getNumRecords()); }
+      Iterator end() { return Iterator(this, getNumRecords()); }
 
-      /** \brief Get a value from the Table.
+      /** \brief Return the number of records in the current tabular data object.
+      */
+      virtual Index_t getNumRecords() const = 0;
+
+      /** \brief Read a value from the current tabular data object.
           \param field The name of the field (column) to read.
           \param record_index The index whose value to read.
-          \pamar value The output value.
+          \param value The output value.
       */
-      void read(const std::string & field, Index_t record_index, double & value) const
-        { m_tabular_data->read(field, record_index, value); }
+      virtual void read(const std::string & field, Index_t record_index, double & value) const = 0;
 
     private:
-      ITabularData * m_tabular_data;
   };
 
   inline void Table::Cell::read(double & value) const

@@ -10,7 +10,7 @@
 #include "table/Ref.h"
 #include "table/Table.h"
 
-#include "src/FitsTabularData.h"
+#include "src/FitsTable.h"
 
 int main() {
   int status = 0;
@@ -20,7 +20,7 @@ int main() {
   try {
     try {
       // Opening a non-existent file should throw an exception.
-      FitsTabularData data("non-existent.pha", "SPECTRUM");
+      FitsTable table("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
       std::cerr << "Opening non-existent.pha didn't throw a FitsException." << std::endl;
@@ -30,13 +30,10 @@ int main() {
     }
 
     // The following test file should be present.
-    FitsTabularData data("arlac.pha", "SPECTRUM");
-
-    // Create a table access object.
-    Table table(&data);
+    FitsTable table("arlac.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
-    std::vector<double> counts_vec(data.getNumRecords());
+    std::vector<double> counts_vec(table.getNumRecords());
 
     // First, use standard C++-style access.
     try {
