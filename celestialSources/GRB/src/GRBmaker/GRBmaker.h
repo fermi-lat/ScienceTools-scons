@@ -20,7 +20,8 @@
 #include <vector>
 #include <string>
 #include <functional>  // for unary_function and plus
-
+//LIN
+#include <fstream>
 
 
 class HepRandomEngine;

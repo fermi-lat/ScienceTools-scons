@@ -23,7 +23,8 @@ class GRBobsUtilities
 //	 typedef std::vector<long>::const_iterator LongConstIter;
 //	 typedef std::vector<double>::const_iterator DoubleConstIter;
 //	 typedef std::vector<double>::size_type DoubleSize;
-//	 typedef std::vector<long>::size_type LongSize;
+  //LIN
+	 typedef std::vector<long>::size_type LongSize;
 
 	
 	 // utility functions
