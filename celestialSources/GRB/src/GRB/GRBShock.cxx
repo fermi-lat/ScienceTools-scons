@@ -129,8 +129,6 @@ double GRBShock::tsyn(double nrj, double B)
 double GRBShock::fred(double ee,double tt)
 {
   double decayt;
-  double Emax  = Esyn(m_gemax);
-  double Emin  = Esyn(m_gecoo);
   double riset = (m_riset*sqrt(1.0e+10/pow(ee,2.0)));
   double tp    = m_tobs+riset;
   

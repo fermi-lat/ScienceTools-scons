@@ -10,10 +10,8 @@
 
 using namespace std;
 
-GRBShell::GRBShell(double gamma, double mass,
-		   double thickness, double radius) 
-  : m_gamma(gamma), m_mass(mass),
-    m_thickness(thickness),m_radius(radius)
+GRBShell::GRBShell(double gamma, double mass,double thickness, double radius) 
+  : m_gamma(gamma), m_mass(mass),m_thickness(thickness),m_radius(radius)
 { 
 }
 
@@ -23,7 +21,7 @@ double GRBShell::beta(const double gamma)
 {
   if(gamma<1.0)
     {
-      cout << "warning: gamma undefined, returning beta=0" << endl;
+      //      cout << "warning: gamma undefined (= "<<gamma<<"), returning beta=0" << endl;
       return 0;
     } else 
       {

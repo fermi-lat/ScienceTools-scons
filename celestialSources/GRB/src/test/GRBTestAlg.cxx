@@ -1,4 +1,4 @@
-/*!\class GRBTestAlg.cxx
+/*!\class GRBTestAlg
  * \brief Test the GRB Gaudi algorithm.
  * 
  * It contains the structure of a general flux algorithm of Gaudi.
@@ -31,7 +31,7 @@
 
 
 // GRB includes
-#include "../GRB/GRBSpectrum.h"
+//#include "../GRB/GRBSpectrum.h"
 #include "other/GRBTest.cxx"
 //include files for ROOT...
 #include "TTree.h"
@@ -75,7 +75,7 @@ const IAlgFactory& GRBTestAlgFactory = Factory;
 //
 GRBTestAlg::GRBTestAlg(const std::string& name, ISvcLocator* pSvcLocator) :
   Algorithm(name, pSvcLocator),m_time(10.0),m_events(100000),
-  m_source_name("GRBSpectrumSpectrum"),m_background_name(" "),m_save_file("no"){
+  m_source_name("GRBSpectrum"),m_background_name(" "),m_save_file("no"){
   
   declareProperty("source_name", m_source_name);
   declareProperty("background_name",  m_background_name);

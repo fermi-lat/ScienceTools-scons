@@ -43,28 +43,28 @@ class GRBShock
   //! The time is evaluated in the Shell reference frame
   //  inline double time() {return m_time;}
   //! This is the time seen by GLAST
-  inline double tobs() {return m_tobs;}
+  inline double tobs() const {return m_tobs;}
   //! Radius of the resulting Shell 
-  inline double Radius() {return m_radius;}
+  inline double Radius() const {return m_radius;}
   /*! \brief Internal energy. 
    *
    * Is calculated as the difference of the 
    * kinatic energies before and after the collision:
    *\f$E_{int}=m_1c^{2}(\gamma_1-\Gamma_f)+m_2c^{2}(\Gamma_2-\Gamma_f)\f$
    */  
-  inline double Eint() {return m_Eint;}
+  inline double Eint() const {return m_Eint;}
   /*! \brief The Lorentz factor af the resulting Shell.
    *
    *It is:
    * \f$\Gamma_f\approx\sqrt{\frac{m_1\Gamma_1+m_2\Gamma_2}{m_1/\Gamma_1*m_2/\Gamma_2}}\f$
    */
-  inline double gf() {return m_gf;}
+  inline double gf() const {return m_gf;}
   
   /*! \brief Returns the comoving volume associated to the resulting Shell.
    *
    * This methods calls the VolCom() method of GRBShell
    */
-  inline double VolCom() {return m_VolCom;}
+  inline double VolCom() const {return m_VolCom;}
 
   /*!\brief Is the Total number of barions.
    * 
@@ -72,7 +72,7 @@ class GRBShock
    * The density of the particles \f$(n_p)\f$ is the ratio 
    * between the total number of and the comoving volume.
    */
-  inline double npart() {return m_npart;}
+  inline double npart() const {return m_npart;}
 
   /*!\brief The Magnetic Field (in Gauss).
    * 
@@ -82,21 +82,21 @@ class GRBShock
    * \f$B_{eq}\propto (\epsilon_B)^{1/2}(n_p)^{1/2}*\Gamma_f\f$
    *
    */
-  inline double Beq() {return m_Beq;}
+  inline double Beq() const {return m_Beq;}
   
   /*!\brief Normalization to the correct emitted flux
    *
    * This metod is used only for normalize the spectrum, and the value is 
    * set by GRBSim.
    */
-  inline double Sum() {return m_sum;}
+  //inline double Sum() {return m_sum;}
 
   //Set functions:
 
   /*! \brief Set the observer time (in the GLAST frame)
    */
   inline void setTobs(double value) {m_tobs = value;}
-  inline void setSum(double value)  {m_sum=value;}
+  //  inline void setSum(double value)  {m_sum=value;}
 
 
   //high level functions:
@@ -122,7 +122,7 @@ class GRBShock
   double Eic(double gamme,double nic=1.0/* order of IC*/);
 
   /*!
-   * Not yet implemented!
+   * Not yet documented!
    */
   double OpticalDepth(double energy);
   
@@ -151,9 +151,16 @@ class GRBShock
   //! Calculate the Inverse compton part of the spectrum.
   double Fic(double ee, double tt);
 
+  //! It computes the normalization constant for the Flux
+  //! \param energy_step the vector that contains the energy steps
+  //! \param energy the vector that contains the energy values
+  //! \param time_step is the time step
+  //! \param flagIC if =0 only the syncrothron component is taken into account for computing the normalization
+  
   void FluxSum(std::vector<double> energy_step,std::vector<double> energy,
 		 double time_step, bool flagIC);
   
+  //!Returns the flux at time \param time and at \param energy.If \param flagIC if =0 only the syncrothron component is taken into account
   double FluxAtT(double energy, double time, bool flagIC);
   
  private:

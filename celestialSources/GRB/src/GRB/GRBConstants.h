@@ -2,8 +2,9 @@
  * \class GRBConstants
  * \brief Class instantiated to access general parameters and constants.
  *  
- *  This should be a temporary solution: we need to find a better way to deal
- *  with it!
+ * The namespace cst contains all the constant needed to the simulation.
+ * All the constant relative to physical model are included in the GRBParam.txt
+ *
  * \author Nicola Omodei nicola.omodei@pi.infn.it
  * \author Johann Cohen-Tanugi johann.cohen@pi.infn.it
  */
@@ -48,7 +49,12 @@ namespace cst
   const int enstep       = 100;
   //! flag =[0,1], if ==0, No inverse compton;
   const float flagIC     = 1;
-  //RandomFlag==1 -> the parameters are choosing random 
+  //! If some of the constants in the GRBParam.txt file is ==0, it will be choosen randomly, accoding the to kind of burst selected.
+  //!  The possibilities are:
+  //! 'Short' or 'Long' to select the kind of burst will be generated.
+  //!  Everything else to select short or long burst whith different prop=bability.
+  const bool savef=false;
+  
 }
 
 class GRBConstants 
@@ -58,48 +64,71 @@ class GRBConstants
   //! Constructor calls method readParam wich gets an external file
   GRBConstants();
 
+  //! Destructor
   ~GRBConstants() { }
+
+  //! Initialize the Random Number Generator. Every run is differrent.
+  void InitializeRandom();
   
   //! Parameters are read from a file using facilities::Util::expandEnvVar ethod
   void ReadParam();
+  
+  //! Printout Utility
   void Print();
-  void Save();
-  double SelectRandom(double min=0.0, double max=1.0);
+  
+  //! Save the parameters in a file. It could be usefull to mantain trace of the models runned.
+  void Save(bool flag=false);
+
+  //! Returns a random number between \param min and \param max with a \em flat distributin 
+  double SelectFlatRandom(double min=0.0, double max=1.0);
+
+  //! Returns a random number between \param min and \param max with a \em gaussian distributin 
+  double SelectGaussRandom(double min=0.0, double max=2.0);
+
   //! Number of shells generated from the source
   inline int Nshell() {return nshell;}
-  //  inline void setNshell(int value=10){nshell=value;}
+  
+  // inline void SeveFile(bool value){savef=value;}
+  //! Set the number of shells. If the arguments is 0 it returns a random number.
   void setNshell(int value=10);
   
-  //! redshift of the source
+  //! Redshift of the source.
   inline double Redshift() {return redshift;}
-  //  inline void setRedshift(double value=1.0){redshift=value;}
+
+  //! Set the redshift of the source. If the arguments is 0 it returns a random number.
   void setRedshift(double value=1.0);
   
   //! Total Energy available (ergs)
   inline double Etot(){return etot;}
-  //  inline void setEtot(double value){etot=value;}
+
+  //! Set the total Energy available.
   void setEtot(double value);
   
   //! Initial separation between shells (cm)
   inline double R0(){return r0;}
-  //  inline void setR0(double value){r0=value;}
+
+  //! Set the initial separation between the shells.
   void setR0(double value);
   
   //! Initial thickness of the shells (cm)
   inline double T0(){return t0;}
+  //! Set the initial thickness
   inline void setT0(double value);
   
   //! Minimum Lorentz factor of the shells
   inline double Gamma0(){return g0;}
-  //inline void setGamma0(double value=100.0){g0=value;}
+
+  //! Set the minimum Lorentz factor of the shells
   void setGamma0(double value=100.0);
   
-  //! Maximum Lorentz factor of the shells
+  //! Delta Lorentz of the shells
   inline double DGamma(){return g1;}
-  //inline void setDGamma(double value=100.0){g1=value;}
+
+  //! Set the maximum delta Lorenz of the shells
   void setDGamma(double value=100.0);
- 
   
+ private:
+  char* burst_type;
   int nshell;
   double redshift;
   double etot;

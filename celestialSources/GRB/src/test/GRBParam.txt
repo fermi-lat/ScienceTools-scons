@@ -1,7 +1,7 @@
 10		// Nshell
 1.0		// Redshift
 1.0e+52         // Etot
-1.0e+7		// Radius of the shells [cm]
-1.0e+7		// Thickness of the shells[cm]
-100.0		// Minumum Lorenz Factor
-1000.0		// Maximum Lorenz Factor
+1.0e+9		// Radius of the shells [cm]
+1.0e+8		// Thickness of the shells[cm]
+100		// Minumum Lorenz Factor
+1000		// Maximum Lorenz Factor

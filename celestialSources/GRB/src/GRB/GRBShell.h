@@ -30,12 +30,17 @@ class GRBShell
   GRBShell(double gamma, double mass, 
 	   double thickness, double radius);
 
+  //! Destructor
   ~GRBShell() { }
   
   // Accessors to data member values:
+  //! Returns the Mass
   inline double getMass()      {return m_mass;}
+  //! Returns the Lorentz Factor
   inline double getGamma()     {return m_gamma;}
+  //! Returns the Thickness
   inline double getThickness() {return m_thickness;}
+  //! Returns the Radius of the shell
   inline double getRadius()    {return m_radius;}
 
   /*! \brief computes and returns the comoving volume (in \f$cm^3\f$).
@@ -46,9 +51,13 @@ class GRBShell
   inline double getVolCom()    {return 4.0*cst::pi*m_thickness*m_radius*m_radius*m_gamma;}
   
   //Set functions: Should be more protected!!
+  //! Set the mass
   inline void setMass(double value)      {m_mass = value;}
+  //! Set the Lorentz factor
   inline void setGamma(double value)     {m_gamma = value;}
+  //! Set the Thickness
   inline void setThickness(double value) {m_thickness = value;}
+  //! Set the Radius of the shell
   inline void setRadius(double value)    {m_radius = value;}
  
   //Higher  level functions:

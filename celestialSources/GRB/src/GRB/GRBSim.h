@@ -29,6 +29,7 @@ class GRBSim
   GRBConstants *myParam;
 
   GRBSim();
+  //! destructor
   ~GRBSim();
 
   /*!

@@ -26,8 +26,9 @@ using namespace std;
  */
 class ShockCmp{
 public:
-  bool operator()(const GRBShock& Sho1, const GRBShock& Sho2)
+  bool operator()(const GRBShock& Sho1,const GRBShock& Sho2)
   {
+    //    return const_cast<GRBShock&>(Sho1).tobs() < const_cast<GRBShock&>(Sho2).tobs();    
     return Sho1.tobs() < Sho2.tobs();    
   }
 };
@@ -36,50 +37,7 @@ public:
 
 GRBSim::GRBSim()
 {
-  //  time_t ctime;
-  // tm* gt=gmtime(&ctime);
   cout<<"******Staring The GRB Simulation******"<<endl;
-  try
-    {
-      myParam=new GRBConstants();
-    }
-  catch (char * s)
-    {
-      std::cout<< "Failure initializing the GRB constants \n";
-      //TODO LIST: still need to remove this, without getting a core dump!
-      exit(1);
-    }  
-  int i,imax;
-  myParam->Print();
-  //
-  imax=myParam->Nshell();
-  for (i=0;i<=imax;i++)
-    {
-      RandFlat::shoot(1.0);
-    }
-  m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)
-			  -0.4,(RandFlat::shoot(1.0))*2*M_PI);
-  
-  double qo=(1.0+3.0*cst::wzel)/2.0;
-  double Dist=(cst::c/(Hubble*1.0e+5)/pow(qo,2.0))*
-    (myParam->Redshift()*qo+(qo-1.0)*
-     (-1.0+sqrt(2.0*qo*myParam->Redshift()+1.0)))*cst::mpc2cm;
-  m_Area=(4.*cst::pi)*pow(Dist,2); // [cm^2]
-  
-  cout<<"Dist  of the source = "<<Dist<<endl;
-  double temp1=(enmax/enmin);
-  double temp2=(1.0/enstep);
-  double denergy = pow(temp1,temp2);
-
-  int en;
-  for(en=0;en<=enstep;en++)
-    {
-      m_energy.push_back(enmin*pow(denergy,en)); 
-    }
-  for(en=0;en<enstep;en++)
-    {
-      m_de.push_back(m_energy[en+1]-m_energy[en]);
-    }
 }
 
 /*------------------------------------------------------*/
@@ -101,52 +59,112 @@ double GRBSim::generateGamma(double gamma0,double dgamma)
 
 void GRBSim::Start() 
 {
-   //! Step 1: Creation of the shells
-  double ei = myParam->Etot()/myParam->Nshell(); //erg
-  int i;
-  for(i=myParam->Nshell();i>0;i--) {
-    
-    double gi = generateGamma(myParam->Gamma0(),myParam->DGamma()); 
-    double m = ei/(gi*cst::c2); // Shell mass
-    double r = i*(myParam->R0())+myParam->T0(); //radius
-    GRBShell iShell(gi,m,myParam->T0(),r);
-    theShells.push_back(iShell);
-
-    /*
-      cout <<" Shell n: "<<myParam->Nshell()-(i-1)
-      <<" Gamma= "<<iShell->Gamma()
-      <<" Initiaml Radius "<<iShell->Radius()
-      <<" Initial Thickness= " <<iShell->Thickness()<< endl;
-    */
-  }
-
-  double tmax = dt1*nstep; 
-  double time = 0.0;
   int nshock=0;
-  //! Step 2: Calculation of the evolution
-  while(time<tmax)
+  while (nshock==0)
     {
-      for(i=1;i<myParam->Nshell()-nshock;i++)
+      theShells.clear();
+      try
 	{
-	  theShells[i].evolve(dt1);      
+	  myParam=new GRBConstants();
 	}
-      for(i=2;i<myParam->Nshell()-nshock;i++) 
+      catch (char * s)
 	{
-	  GRBShell Sh1 = theShells[i-1];
-	  GRBShell Sh2 = theShells[i];
-	  if(Sh1.getRadius()
-	     <= (Sh2.getRadius()+Sh2.getThickness())) 
+	  std::cout<< "Failure initializing the GRB constants \n";
+	  //TODO LIST: still need to remove this, without getting a core dump!
+	  exit(1);
+	}  
+      
+      /*
+	imax=myParam->Nshell();
+	for (i=0;i<=imax;i++)
+	{
+	RandFlat::shoot(1.0);
+	}
+      */
+      //! Step 1: Creation of the shells
+      double ei = myParam->Etot()/myParam->Nshell(); //erg
+      int i;
+      for(i=myParam->Nshell();i>0;i--) {
+	
+	double gi = generateGamma(myParam->Gamma0(),myParam->DGamma()); 
+	double m = ei/(gi*cst::c2); // Shell mass
+	double r = i*(myParam->R0())+myParam->T0(); //radius
+	GRBShell iShell(gi,m,myParam->T0(),r);
+	theShells.push_back(iShell);
+	
+	/*
+	cout <<" Shell n: "<<myParam->Nshell()-(i-1)
+	     <<" Gamma= "<<iShell.Gamma()
+	     <<" Initiaml Radius "<<iShell.Radius()
+	     <<" Initial Thickness= " <<iShell.Thickness()<< endl;
+	*/
+      }
+      
+      double tmax = dt1*nstep;
+      /*
+	double g1=myParam->Gamma0()+myParam->DGamma();
+	double v1=c*sqrt(1. - 1./(g1*g1));
+	double v2=c*sqrt(1. - 1./((g1)*(g1+1.)));
+	double tmax=(myParam->Nshell()*(myParam->R0()+myParam->T0())/(v2-v1));
+	double dt1=tmax/nstep;
+      */
+      
+      double time = 0.0;
+      //! Step 2: Calculation of the evolution
+      while(time<tmax)
+	{
+	  for(i=1;i<=myParam->Nshell()-nshock;i++)
 	    {
-	      GRBShock iShock(Sh1, Sh2, time);
-	      theShocks.push_back(iShock);	
-	      theShells.erase(&theShells[i]);
-	      nshock++;
+	      theShells[i].evolve(dt1);      
 	    }
+	  for(i=2;i<=myParam->Nshell()-nshock;i++) 
+	    { 
+	      GRBShell Sh1 = theShells[i-1];
+	      GRBShell Sh2 = theShells[i];
+
+	      if(Sh1.getRadius()
+		 <= (Sh2.getRadius()+Sh2.getThickness())) 
+		{
+		  GRBShock iShock(Sh1, Sh2, time);
+		  theShocks.push_back(iShock);	
+		  theShells.erase(&theShells[i]);
+		  nshock++;
+		}
+	    }
+	  time+=dt1;
 	}
-      time+=dt1;
     }
+  // All is ok
+      double temp1=(enmax/enmin);
+      double temp2=(1.0/enstep);
+      double denergy = pow(temp1,temp2);
+      int en;
+      for(en=0;en<=enstep;en++)
+	{
+	  m_energy.push_back(enmin*pow(denergy,en)); 
+	}
+      for(en=0;en<enstep;en++)
+	{
+	  m_de.push_back(m_energy[en+1]-m_energy[en]);
+	}
+      
+      
+  myParam->Print();
+  myParam->Save(cst::savef);
+
+  m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)
+			  -0.4,(RandFlat::shoot(1.0))*2*M_PI);
+  
+  double qo=(1.0+3.0*cst::wzel)/2.0;
+  double Dist=(cst::c/(Hubble*1.0e+5)/pow(qo,2.0))*
+    (myParam->Redshift()*qo+(qo-1.0)*
+     (-1.0+sqrt(2.0*qo*myParam->Redshift()+1.0)))*cst::mpc2cm;
+  m_Area=(4.*cst::pi)*pow(Dist,2); // [cm^2]
+  
+  cout<<"Dist  of the source = "<<Dist<<endl;
   cout<< "Number of Shocks = " <<theShocks.size()<< endl;
-  if (nshock==0) throw "No shock event created!";
+  
+  
   /*------------------------------------------------------*/
   /// Step 3: Sorting the shocks and setting t min=0
   std::sort(theShocks.begin(), theShocks.end(), ShockCmp());
@@ -165,6 +183,10 @@ void GRBSim::Start()
 
   //Now compute the Flux sum produced in each Shock
   m_tmax=1.2*last.tobs()+0.1;
+  if (m_tmax<2.)
+    {cout<<"The burst is Short "<<endl;}
+  else
+    {cout<<"The burst is Long "<<endl;}
   double dt=m_tmax/nstep;
   for(itr=theShocks.begin();itr != theShocks.end();++itr)
     {
@@ -197,7 +219,7 @@ void GRBSim::ComputeFlux2(double time)
   double ti=0.0;
   int i=0;
   if (time<=0) time=m_DeadTime;
-  if (time>=m_tmax) time=m_tmax-m_DeadTime;
+  if (time>=m_tmax) exit(1);//time=m_tmax-m_DeadTime;
   while (ti<time) 
     {
       ti+=m_DeadTime;
@@ -209,9 +231,7 @@ void GRBSim::ComputeFlux2(double time)
 /*------------------------------------------------------*/
 void GRBSim::ComputeFlux(double time)
 {
-  int nshock=theShocks.size();
   double norma;
-  double sum;
   double temp;
   m_spectrum.clear();
   m_spectrum.resize(enstep,0.);
@@ -226,9 +246,8 @@ void GRBSim::ComputeFlux(double time)
       time=1.0e-6;
       //      cout<<" Time can not be 0.0 !! Set time = "<<time<<" s"<<endl;
     }
-  if (time>m_tmax) time=m_tmax;
   //
-  std::vector<GRBShock>::const_iterator itr;
+  std::vector<GRBShock>::iterator itr;
   for(itr=theShocks.begin();itr != theShocks.end();++itr)
     {
       norma = ((*itr).Eint())/(m_Area); //erg/cm^2

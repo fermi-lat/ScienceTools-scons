@@ -24,10 +24,14 @@ FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
 //------------------------------------------------------------
 // Primary source name (default GRBSpectrum)	
 GRBTestAlg.source_name="GRBSpectrum";
-//Maximum observation time (default 10 s)
-GRBTestAlg.observation_time=10;
-// OR Maximum number of photons generated (default 100000)
+
+// Set the maximum observation time (default 10 s)
+GRBTestAlg.observation_time=30;
+// Maximum number of photons generated (default 100000)
 GRBTestAlg.EvtMax=10000;
+// Is possible to save in root file
+GRBTestAlg.savefile="no";	
+
 // No idea...
 ApplicationMgr.EvtSel = "NONE";
 

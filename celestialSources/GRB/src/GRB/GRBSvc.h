@@ -26,7 +26,6 @@
 // GRB includes
 #include "GRBSpectrum.h"
 
-
 //forward declarations
 template <class TYPE> class SvcFactory;
 class IFluxSvc;
@@ -64,11 +63,10 @@ public:
         }
         
         log << MSG::INFO << "Adding GRB Spectra..." << endreq;
-        
         static RemoteSpectrumFactory<GRBSpectrum> factory(m_fsvc);
         const ISpectrumFactory& GRBSpectrumFactory = factory;
-        
-        return status;
+	
+	return status;
     }
     
     /// perform the finalization, as required for a service.

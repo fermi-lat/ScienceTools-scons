@@ -33,7 +33,7 @@ class GRBSpectrum : public ISpectrum
   GRBSpectrum(const std::string& params);
   /*! Destructor
    */
-  ~GRBSpectrum();  
+  virtual  ~GRBSpectrum();  
   /*! Computes the flux, in \b photons/m^2/s, for a given time
    */
   double flux(double time)const;
@@ -50,8 +50,14 @@ class GRBSpectrum : public ISpectrum
 
   //! returns the solid angle spanned by the source: set to 1.0 for GRBs.
   double solidAngle() const;
+  
   //! Galactic direction 
   std::pair<float,float> dir(float energy) const;
+  //! Galactic direction 
+  std::pair<double,double> dir(double energy, HepRandomEngine* engine){
+    return dir(energy);
+  } 
+
   /*! \brief Draws from the current spectrum the energy of a sampled photon. 
    *  \param u uniform random number drawn in the method \c energySrc .  
    */ 
@@ -71,10 +77,6 @@ class GRBSpectrum : public ISpectrum
   const char * particleName() const {return "gamma";}
   //! inherited from Spectrum
   const char * nameOf() const {return "GRBSpectrum";}
-  std::pair<double,double> dir(double energy, HepRandomEngine* engine){
-    // default that needs fixing!
-    return dir(energy);
-  } 
   
  private:
   
