@@ -17,9 +17,15 @@ namespace table {
 
   Table * FitsFileSvc::editTable(const std::string & file_name, const std::string & table_name) {
     Table * retval = 0;
-    FitsExtensionData * data = new FitsExtensionData(file_name, table_name);
-
-    if (data) retval = new Table(data);
+    FitsExtensionData * data = 0;
+    try {
+      data = new FitsExtensionData(file_name, table_name);
+      retval = new Table(data);
+    } catch(...) {
+      delete retval;
+      delete data;
+      throw;
+    }
     return retval;
   }
 

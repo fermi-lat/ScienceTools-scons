@@ -15,9 +15,16 @@ namespace table {
   // Construct without opening the file.
   FitsExtensionData::FitsExtensionData(const std::string & file_name, const std::string & ext_name):
     m_fits_utils(0), m_header(0), m_data(0) {
-    m_fits_utils = new FitsExtensionUtils(file_name, ext_name);
-    m_header = m_fits_utils->createHeader();
-    m_data = m_fits_utils->createData();
+    try {
+      m_fits_utils = new FitsExtensionUtils(file_name, ext_name);
+      m_header = m_fits_utils->createHeader();
+      m_data = m_fits_utils->createData();
+    } catch(...) {
+      delete m_data; m_data = 0;
+      delete m_header; m_header = 0;
+      delete m_fits_utils; m_fits_utils = 0;
+      throw;
+    }
   }
 
   // Close file automatically while destructing.
