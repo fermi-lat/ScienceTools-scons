@@ -25,6 +25,8 @@ namespace st_graph {
       */
       ISequence(size_type num_points): m_num_points(num_points) {}
 
+      virtual ~ISequence() {}
+
       /** \brief Fill the output container with the values of the sequence.
           \param val The output container.
       */
@@ -61,7 +63,6 @@ namespace st_graph {
           \param end Iterator pointing to one position past the last element in the sequence.
       */
       ScalarSequence(const Itor_t & begin, const Itor_t & end): ISequence(std::distance(begin, end)), m_begin(begin), m_end(end) {}
-      virtual ~ScalarSequence() {}
 
       /** \brief Compute the value at a given position in the input sequence.
           \param itor Position at which to compute the value.
