@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r2   14-Nov-03   JC   apply energy dispersion; update user guide
     v2r1   27-Oct-03   JC   comment out MapFlux dependencies; 
                             use latResponse v1*
     v2r0p1 18-Oct-03   JC   remove dependence on Likelihood package
