@@ -39,4 +39,4 @@ set INFILES "$(GOODIROOT)/Data"
 
 # The applications:
 application makeFT1 makeFT1.cxx
-#application makeFT2 makeFT2.cxx
+application makeFT2 makeFT2.cxx

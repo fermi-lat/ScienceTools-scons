@@ -28,8 +28,8 @@ int main(int iargc, char * argv[]) {
 
    std::string rootFile;
    if (iargc == 1) {
-      std::string rootTupleRoot = ::getenv("ROOTTUPLEROOT");
-      rootFile = rootTupleRoot + "/data/new_merit.root";
+      std::string fitsGenRoot = ::getenv("FITSGENROOT");
+      rootFile = fitsGenRoot + "/data/merit.root";
    } else if (iargc == 2) {
       if (argv[1] == "-h") {
          std::cout << "usage: " 
