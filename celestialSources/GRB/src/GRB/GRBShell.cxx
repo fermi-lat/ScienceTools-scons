@@ -15,12 +15,8 @@
 
 using namespace std;
 
-//GRBShell::GRBShell(double E) 
 GRBShell::GRBShell() 
 { 
-  //  cout<<cst::gamma0<<endl;
-  //m_gamma = generateGamma(cst::gamma0,cst::dgamma);
-  //m_mass = E/(m_gamma*cst::c2);
 }
 
 

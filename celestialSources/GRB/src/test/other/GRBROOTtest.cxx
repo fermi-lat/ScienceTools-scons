@@ -1,8 +1,8 @@
-/*!\file GRBTest.cxx
+/*!\file GRBROOTTest.cxx
  * \brief test program for GRB simulation studies.
  * 
  * This executable uses ROOT to display several histograms at run time.
- * To use it, type on the prompt ./GRBTest.exe
+ * To use it, type on the prompt ./test_GRBROOT.exe
  * After a period of initialization, a canvas pops up showing the 
  * complete evolution of the burst in function of the time. 
  * At the end, 4 new canvas pops up, showing several summary 
@@ -29,13 +29,13 @@
 #include "TBranch.h"
 #include "TObjArray.h"
 //#include "BranchObject.h"
-#include "TFile.h"
+#include "TFile.h" 
 
 //GRB include files...
-#include "../../src/GRB/GRBShell.h"
-#include "../../src/GRB/GRBShock.h"
-#include "../../src/GRB/GRBConstants.h"
-#include "../../src/GRB/GRBSim.h"
+#include "src/GRB/GRBShell.h"
+#include "src/GRB/GRBShock.h"
+#include "src/GRB/GRBConstants.h"
+#include "src/GRB/GRBSim.h"
 //#include "../../src/GRB/GRBSpectrum.h"
 #include "CLHEP/Random/RandFlat.h"
 using namespace std;
@@ -48,6 +48,22 @@ using namespace std;
  * Its Unities are 
  *
  */
+////////////////////////////////////////////////////////////
+// Channel for the output Light Curves
+// BATSE TRIGGER:
+const double ch1L      = 50.0e+3;
+const double ch1H      = 300.0e+3;
+// GLAST Energies ?
+//const double ch1L      = 0.001e+9;
+//const double ch1H      = 0.0025e+9;
+const double ch2L      = 0.0025e+9;
+const double ch2H      = 0.005e+9;
+const double ch3L      = 0.005e+9;
+const double ch3H      = 0.01e+9;
+const double ch4L      = 0.01e+9;
+const double ch4H      = 1.00e+9;
+////////////////////////////////////////////////////////////
+
 const double TIME=10.0;
 const double EVENTS=100000;
 double m_flux[ENERGYSIZE][TIMESIZE];
@@ -55,11 +71,11 @@ double timex[TIMESIZE];
 double energyx[ENERGYSIZE];
 
 static const char * default_arg="GRBSpectrum";
-void test();
+void Burst(int argc, char** argv);
 
-int main()
+int main(int argc, char** argv)
 {
-  test();
+  Burst(argc,argv);
   return 0;
 }
 
@@ -77,18 +93,30 @@ double CalculateFluence(double ee,double e1=cst::enmin*1e-9,double e2=cst::enmax
   return fluence;
 }
 
-void test()
+void Burst(int argc, char** argv)
 {
+  static const char * default_arg="GRBSpectrum";
+  int current_arg = 1;
   int flag=1;
   std::vector<double> spectrum,energy,deltae;
-  
+  std::string arg_name(default_arg);
+
   GRBSim* _myGRB = new GRBSim();
   /// This initializes the GRB simulation...
   cout<<"******     Initializing ROOT    ******"<<endl;
   static const   TROOT root("GRB", "GRB Simulator");
   _myGRB->Start();
-  
   double tmax=_myGRB->Tmax();
+  while(current_arg < argc)
+    {
+      arg_name = argv[current_arg]; 
+      if("-time"==arg_name)
+	{
+	  tmax = atof(argv[++current_arg]);
+	}
+      current_arg++;
+    }
+  cout<<" MAX TIME = "<<tmax<<endl;
   double m_dt=tmax/cst::nstep;
   
   energy=_myGRB->Energy();
@@ -176,10 +204,15 @@ void test()
   ////////////////  Compute the Total Flux /////////////////
   //------------------------------------------------------//
 
-  double ftottot=0.0;
-  double ftot1=0.0;
+  double fluence1=0.0;
+  double fluence2=0.0;
+  double fluence3=0.0;
+  double fluence4=0.0;
+  double fluence5=0.0;
   std::vector<double> m_time;
-  TH1D *h1 = new TH1D("h1","h1",cst::enstep,log10(cst::enmin),log10(cst::enmax));
+  //Baggio//
+  
+  TH1D *h1 = new TH1D("h1","h1",cst::enstep,log10(cst::enmin)-6,log10(cst::enmax)-6);
   
   TCanvas *cc2 = new TCanvas();
   h1->GetXaxis()->SetTitle("Log(Energy [eV])");
@@ -216,11 +249,13 @@ void test()
 	  for (int en=0;en<cst::enstep;en++)
 	    {
 	      h1->SetBinContent(en+1,m_flux[en][t]*1.0e-4); //erg/cm^2/s/MeV
+	      //h1->SetBinContent(energy[en],m_flux[en][t]*1.0e-4); //erg/cm^2/s/MeV
 	      //	h1->SetBinContent(en+1,Flux(en)); //ph/m^2/s/eV
 	    }
 	  cc2->cd();
+	  //cc2->SetLogx();
 	  h1->Draw("AL");
-	  h1->GetXaxis()->SetTitle("Log(Energy[eV])");
+	  h1->GetXaxis()->SetTitle("Log(Energy[MeV])");
 	  h1->GetXaxis()->SetTitleSize(0.035);
 	  h1->GetXaxis()->SetLabelSize(0.035);
 	  h1->GetXaxis()->SetTitleOffset(1.4);
@@ -228,18 +263,23 @@ void test()
 	  h1->GetYaxis()->SetTitleSize(0.035);
 	  h1->GetYaxis()->SetLabelSize(0.035);
 	  h1->GetYaxis()->SetTitleOffset(1.4);   
-	  
 	  h1->SetLineWidth(3);
 	  h1->SetLineColor(4);
 	  cc2->Update();   
 	}
-      ftottot+=_myGRB->IEnergy(cst::enmin)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
-      ftot1+=_myGRB->IEnergy(5.0e+4,3.0e+5)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      fluence1+=_myGRB->IEnergy(cst::enmin)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      fluence2+=_myGRB->IEnergy(ch1L,ch1H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      fluence3+=_myGRB->IEnergy(ch2L,ch2H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      fluence4+=_myGRB->IEnergy(ch3L,ch3H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
+      fluence5+=_myGRB->IEnergy(ch4L,ch4H)/(cst::erg2MeV*1.0e+10)*_myGRB->Area();
       //erg
-      cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<ftottot<<endl;
+      cout<<"Time / tmax = "<<m_time[t]<<"/" <<tmax<<" Ftot [erg]= "<<fluence1<<endl;
     }
-  cout<<"Fluence [erg/cm^2] = "<<ftottot/_myGRB->Area()<<endl;
-  cout<<"Fluence (50 KeV - 300 KeV) [erg/cm^2] = "<<ftot1/_myGRB->Area()<<endl;
+  cout<<"Fluence [erg/cm^2] = "<<fluence1/_myGRB->Area()<<endl;
+  cout<<"Fluence ("<<ch1L*1.0e-6<<" MeV - "<<ch1H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence2/_myGRB->Area()<<endl;
+  cout<<"Fluence ("<<ch2L*1.0e-6<<" MeV - "<<ch2H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence3/_myGRB->Area()<<endl;
+  cout<<"Fluence ("<<ch3L*1.0e-6<<" MeV - "<<ch3H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence4/_myGRB->Area()<<endl;
+  cout<<"Fluence ("<<ch4L*1.0e-6<<" MeV - "<<ch4H*1.0e-6<<" MeV) [erg/cm^2] = "<<fluence5/_myGRB->Area()<<endl;
   
   //////////////////////////////////////////////////////////
   for (int t=0;t<cst::nstep;t++)
@@ -278,7 +318,7 @@ void test()
   TGraph *gch3 = new TGraph(cst::nstep);
   TGraph *gch4 = new TGraph(cst::nstep);
   
-  TH2D *h2 = new TH2D("h2","H2",cst::enstep-2,log10(energyx[1]),log10(energyx[cst::enstep]),cst::nstep-1,timex[0],timex[cst::nstep-1]);
+  TH2D *h2 = new TH2D("h2","H2",cst::enstep-2,log10(energyx[1]),log10(energyx[cst::enstep]),cst::nstep,timex[0],timex[cst::nstep-1]);
   //TH2D *h2 = new TH2D("h2","H2",cst::enstep-1,2,20,cst::nstep-1,0,1);
   //h1->SetOption("B");
   
@@ -317,28 +357,28 @@ void test()
 	    /energyx[en]
 	    *m_dt; /// is in ph/m^2
       
-	  if (energyx[en]<cst::ch1H &&energyx[en]>=cst::ch1L)
+	  if (energyx[en]<ch1H &&energyx[en]>=ch1L)
 	    {
 	      ch1[t]+=(m_flux[en][t])*(cst::erg2MeV)
-		/energyx[en]
+		//		/energyx[en]
 		*m_dt; /// is in ph/m^2
 	    }
-	  if (energyx[en]<cst::ch2H &&energyx[en]>=cst::ch2L)
+	  if (energyx[en]<ch2H &&energyx[en]>=ch2L)
 	    {
 	      ch2[t]+=(m_flux[en][t])*(cst::erg2MeV)
-		/energyx[en]
+		//		/energyx[en]
 		*m_dt; /// is in ph/m^2
 	    }
-	  if (energyx[en]<cst::ch3H &&energyx[en]>=cst::ch3L)
+	  if (energyx[en]<ch3H &&energyx[en]>=ch3L)
 	    {
 	      ch3[t]+=(m_flux[en][t])*(cst::erg2MeV)
-		/energyx[en]
+		//		/energyx[en]
 		*m_dt; /// is in ph/m^2
 	    }
-	  if (energyx[en]<cst::ch4H &&energyx[en]>=cst::ch4L)
+	  if (energyx[en]<ch4H &&energyx[en]>=ch4L)
 	    {
 	      ch4[t]+=(m_flux[en][t])*(cst::erg2MeV)
-		/energyx[en]
+		//		/energyx[en]
 		*m_dt; /// is in ph/m^2
 	    }
 	  h2->Fill(loge[en],timex[t],m_flux[en][t]);
@@ -380,7 +420,7 @@ void test()
   
   c1b->cd();
   gph->Draw("ALP");
-  gph->GetXaxis()->SetTitle("Log(Energy [eV])");
+  gph->GetXaxis()->SetTitle("Energy [eV]");
   gph->GetXaxis()->SetTitleSize(0.035);
   gph->GetXaxis()->SetLabelSize(0.035);
   gph->GetXaxis()->SetTitleOffset(1.4);
@@ -419,11 +459,11 @@ void test()
   TLegend *leg = new TLegend(0.6,0.75,0.98,0.98);
   leg->SetTextFont(11);
   
-  sprintf(legendName1,"(%6g GeV - %6g GeV) ",cst::ch1L*1.0e-9,cst::ch1H*1.0e-9);
-  sprintf(legendName2,"(%6g GeV - %6g GeV) ",cst::ch2L*1.0e-9,cst::ch2H*1.0e-9);
-  sprintf(legendName3,"(%6g GeV - %6g GeV) ",cst::ch3L*1.0e-9,cst::ch3H*1.0e-9);
-  sprintf(legendName4,"(%6g GeV - %6g GeV) ",cst::ch4L*1.0e-9,cst::ch4H*1.0e-9);
-  //  sprintf(legendName5,"(%6g GeV - %6g GeV) ",cst::ch1L,cst::ch1H);
+  sprintf(legendName1,"(%6g GeV - %6g GeV) ",ch1L*1.0e-9,ch1H*1.0e-9);
+  sprintf(legendName2,"(%6g GeV - %6g GeV) ",ch2L*1.0e-9,ch2H*1.0e-9);
+  sprintf(legendName3,"(%6g GeV - %6g GeV) ",ch3L*1.0e-9,ch3H*1.0e-9);
+  sprintf(legendName4,"(%6g GeV - %6g GeV) ",ch4L*1.0e-9,ch4H*1.0e-9);
+  //  sprintf(legendName5,"(%6g GeV - %6g GeV) ",ch1L,ch1H);
 
   leg->AddEntry(gch1,legendName1,"l");
   leg->AddEntry(gch2,legendName2,"l");
@@ -445,11 +485,11 @@ void test()
   h2->GetXaxis()->SetTitle("Log(Energy [eV])");
   //  h2->GetYaxis()->SetTitleSize(0.05);
   //  h2->GetXaxis()->SetLabelSize(0.05);
-  h2->GetXaxis()->SetTitleOffset(2);
+  h2->GetXaxis()->SetTitleOffset(1.2);
   h2->GetYaxis()->SetTitle("Time[sec]");
   //h2->GetYaxis()->SetTitleSize(0.035);
   //  h2->GetYaxis()->SetLabelSize(0.05);
-  h2->GetYaxis()->SetTitleOffset(2);
+  h2->GetYaxis()->SetTitleOffset(1.2);
   h2->GetZaxis()->SetTitle("vFv[erg/s/m^2/MeV]");
 // h2->GetYaxis()->SetTitleSize(0.035);
 h2->GetZaxis()->SetLabelSize(0.05);

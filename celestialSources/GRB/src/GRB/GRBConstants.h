@@ -17,7 +17,7 @@ namespace cst
   const double mpc2      = 938.2;
   const double erg2MeV   = 624151.0;
   const double mpc2cm    = 3.0857e+24;
-  //1Gauss = G2Mev * sqrt(Mev)
+
   const double G2MeV     = 815.78;
   const double st        = 6.65225e-25;
   const double mec2      = 0.510999;
@@ -29,8 +29,7 @@ namespace cst
   const double pi        = 3.1415926535897932385;
   const double Hubble    = 6.5e+1; 
   const double wzel      = 0.0;
-  //  const double gamma0    = 100.;
-  //  const double dgamma    = 500.;
+
   const double csi       = 0.1;
   const double alphae    = .33;
   const double alphab    = .33;
@@ -40,20 +39,16 @@ namespace cst
   const double enmax     = 1.0e+20;
   //! Min. photon energy detectable by GLAST: set to 1 MeV
   const double enph      = 1.0e+6; 
+ //! Minimal Temporal separation between 2 photons
+  const double DeadTime  = 1.0e-5; //sec
   const double enmin     = 1.0e+3;
   const double dt1       = 10000.;
   const int nstep        = 200;
   const int enstep       = 100;
-  const double ch1L      = 0.001e+9;
-  const double ch1H      = 0.0025e+9;
-  const double ch2L      = 0.0025e+9;
-  const double ch2H      = 0.005e+9;
-  const double ch3L      = 0.005e+9;
-  const double ch3H      = 0.01e+9;
-  const double ch4L      = 0.01e+9;
-  const double ch4H      = 1.00e+9;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 0.0; 
+  const float flagIC     = 0.01;
+  //RandomFlag==1 -> the parameters are choosing random 
+  const int RandomFlag   =    0; 
 }
 
 class GRBConstants 
@@ -67,6 +62,9 @@ class GRBConstants
   
   //! Parameters are read from a file using facilities::Util::expandEnvVar ethod
   void ReadParam();
+  void Print();
+  void Save();
+  double SelectRandom(double min=0.0, double max=1.0);
   //! Number of shells generated from the source
   inline int Nshell() {return nshell;}
   inline void setNshell(int value=10){nshell=value;}
@@ -87,11 +85,11 @@ class GRBConstants
   inline double T0(){return t0;}
   inline void setT0(double value){t0=value;}
   
-  //! Minimum Lorentz factor of the shells (cm)
+  //! Minimum Lorentz factor of the shells
   inline double Gamma0(){return g0;}
   inline void setGamma0(double value=100.0){g0=value;}
   
-  //! Maximum Lorentz factor of the shells (cm)
+  //! Maximum Lorentz factor of the shells
   inline double DGamma(){return g1;}
   inline void setDGamma(double value=100.0){g1=value;}
   

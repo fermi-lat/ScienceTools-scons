@@ -16,6 +16,7 @@
 #include "GRBShell.h"
 #include "GRBShock.h"
 #include "GRBConstants.h"
+#include <vector>
 
 #ifndef GRBSIM_H
 #define GRBSIM_H 1
@@ -111,7 +112,7 @@ class GRBSim
   std::vector<double>    m_energy, m_de, m_spectrum;
   std::vector<double>    m_intervals;
   std::pair<float,float> m_grbdir;
-  std::vector<vector<double> > m_Fvt;
+  std::vector<std::vector<double> > m_Fvt;
   double m_tmax;
   double m_ftot;
   double m_phtot;

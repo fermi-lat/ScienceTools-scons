@@ -16,31 +16,27 @@
 #include <string>
 #include <map>
 #include <cmath>
-#include "src/Spectrum.h"
+#include "FluxSvc/ISpectrum.h"
 #include "facilities/Observer.h"
 #include "src/GPS.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "GRBSim.h"
 
 //! Class interfacing the framework with the GRB generation.
-class GRBSpectrum : public Spectrum
+class GRBSpectrum : public ISpectrum
 {
  public:
 
   //! Constructor: takes a file with some parameters as argument.
   /*! \param params file of parameters 
    */
-  GRBSpectrum(const std::string& /*params*/);
-
+  GRBSpectrum(const std::string& params);
   //! Destructor
-  ~GRBSpectrum();
-  
+  ~GRBSpectrum();  
   //! Computes the flux, in \b photons/m^2/s, for a given time
   double flux(double time)const;
-
   //! returns rate, for a given time;
   double rate(double time)const;
-
   /*! \brief Returns the time interval
    *
    * Given \f$t_0\f$, it computes \f$t_1\f$ for which \f$\int_{t_0}^{t_1}1/Rate(t)dt=1\f$
@@ -51,15 +47,12 @@ class GRBSpectrum : public Spectrum
 
   //! returns the solid angle spanned by the source: set to 1.0 for GRBs.
   double solidAngle() const;
-  
   //! Galactic direction 
   std::pair<float,float> dir(float energy) const;
-  
   /*! \brief Draws from the current spectrum the energy of a sampled photon. 
    *  \param u uniform random number drawn in the method \c energySrc .  
    */ 
-  float operator() (float /*u */ ) const ;
-  
+  float operator() (float /*u */ ) const ;  
   /*! \brief returns the energy of a sampled photon.
    *
    *  Method called by \c FluxSource::event(). 
@@ -69,16 +62,16 @@ class GRBSpectrum : public Spectrum
    *  \param time    current time. 
    */
   double energySrc(HepRandomEngine*, double /*time*/ );
-  
   //! inherited from Spectrum
-  inline std::string title() const {return "GRBSpectrum";}
-  
+  std::string title() const {return "GRBSpectrum";}
   //! inherited from Spectrum
-  inline const char * particleName() const {return "gamma";}
-  
+  const char * particleName() const {return "gamma";}
   //! inherited from Spectrum
-  inline  const char * nameOf() const {return "GRBSpectrum";}
-  
+  const char * nameOf() const {return "GRBSpectrum";}
+  std::pair<double,double> dir(double energy, HepRandomEngine* engine){
+    // default that needs fixing!
+    return dir(energy);
+  } 
   
  private:
   

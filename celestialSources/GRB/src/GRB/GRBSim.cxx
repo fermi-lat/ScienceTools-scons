@@ -45,13 +45,12 @@ GRBSim::GRBSim()
 	  //TODO LIST: still need to remove this, without getting a core dump!
 	  exit(1);
 	}  
-  //  cout<<"Current time = "<<gt->tm_hour-1<<":"<<gt->tm_min<<":"<<gt->tm_sec<<endl;
   int i,imax;
-  //  imax=(gt->tm_hour-1+gt->tm_min+gt->tm_sec);
+  myParam->Print();
+  //
   imax=myParam->Nshell();
   for (i=0;i<=imax;i++)
     {
-      //      cout<<imax<<endl;
       RandFlat::shoot(1.0);
     }
   m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)-0.4,(RandFlat::shoot(1.0))*2*M_PI);
@@ -61,7 +60,7 @@ GRBSim::GRBSim()
     (myParam->Redshift()*qo+(qo-1.0)*
      (-1.0+sqrt(2.0*qo*myParam->Redshift()+1.0)))*cst::mpc2cm;
   m_Area=(4.*cst::pi)*pow(Dist,2); // [cm^2]
-
+  
   cout<<"Dist  of the source = "<<Dist<<endl;
   double temp1=(enmax/enmin);
   double temp2=(1.0/enstep);
@@ -103,12 +102,12 @@ void GRBSim::Start()
     iShell->setMass(ei/(iShell->Gamma()*cst::c2));
     iShell->setThickness(myParam->T0());
     iShell->setRadius(i*(myParam->R0())+myParam->T0());
-   
-    cout <<" Shell n: "<<myParam->Nshell()-(i-1)
-    	 <<" Gamma= "<<iShell->Gamma()
-	 <<" Initiaml Radius "<<iShell->Radius()
-    	 <<" Initial Thickness= " <<iShell->Thickness()<< endl;
-    
+    /*
+      cout <<" Shell n: "<<myParam->Nshell()-(i-1)
+      <<" Gamma= "<<iShell->Gamma()
+      <<" Initiaml Radius "<<iShell->Radius()
+      <<" Initial Thickness= " <<iShell->Thickness()<< endl;
+    */
     theShells.push_back(iShell);
   }
   double ssum;
@@ -139,20 +138,18 @@ void GRBSim::Start()
     }
   cout<< "Number of Shocks = " <<nshock<< endl;
   if (nshock==0) throw "No shock event created!";
-  //    {
-  //      cout<< "Sorry no shocks events!! "<< endl;
-  //      exit(1);
-  //    }
-  
   /*------------------------------------------------------*/
   /// Step 3: Sorting the shocks and setting t min=0
   std::sort(theShocks.begin(), theShocks.end(), ShockCmp());
   double t0 = theShocks[0]->tobs();
+  
   for(i=0;i<nshock;i++)
     {
       double temp=theShocks[i]->tobs();
       theShocks[i]->setTobs(temp-t0);
-      cout<<"Shock num " << i << " @ time obs = " << theShocks[i]->tobs()<<endl;
+      /*
+	cout<<"Shock num " << i << " @ time obs = " << theShocks[i]->tobs()<<endl;
+      */
     }
 
   // Warning: tmax redeclared here!!
@@ -177,9 +174,6 @@ void GRBSim::Start()
       theShocks[i]->setSum(ssum);
       //   theShocks[i]->Write();
     }
-  //  cout<<"...Compute Intervals..."<<endl;
-  //ComputeIntervals();
-  //cout<<"...done..."<<endl;
   m_DeadTime=1e-4;
   //  TotalFlux();
 }
@@ -232,7 +226,7 @@ void GRBSim::ComputeFlux(double time)
   if (time<=0.0) 
     {
       time=1.0e-6;
-      cout<<" Time can not be 0.0 !! Set time = "<<time<<" s"<<endl;
+      //      cout<<" Time can not be 0.0 !! Set time = "<<time<<" s"<<endl;
     }
   if (time>m_tmax) time=m_tmax;
   //
@@ -255,7 +249,7 @@ void GRBSim::ComputeFlux(double time)
 	    }
 	}
     }
-  //  cout<<"Energy[0] = "<<m_energy[0]<<" Spectrum = "<<m_spectrum[0]<<endl;
+  //cout<<"Energy[0] = "<<m_energy[0]<<" Spectrum = "<<m_spectrum[0]<<endl;
   //cout<<"Energy[1] = "<<m_energy[1]<<" Spectrum = "<<m_spectrum[1]<<endl;
   //cout<<"Energy[2] = "<<m_energy[2]<<" Spectrum = "<<m_spectrum[2]<<endl;
   //cout<<"Energy[3] = "<<m_energy[3]<<" Spectrum = "<<m_spectrum[3]<<endl;

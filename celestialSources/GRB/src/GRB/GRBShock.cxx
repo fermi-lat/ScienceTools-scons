@@ -21,12 +21,6 @@ GRBShock::GRBShock(GRBShell* Sh1, GRBShell* Sh2)
   double dr1=Sh1->Thickness();
   double dr2=Sh2->Thickness();
   
-  //  double b1=sqrt(1.-1./pow(g1,2));
-  //  double b2=sqrt(1.-1./pow(g2,2));
-  //  double m11=pow(m1,2);
-  //  double m22=pow(m2,2);
-  //  double m12=m1*m2;
-
   double eb=cst::alphab/0.01;
   //Number and density of paerticles in the shocked material:
   m_npart =m1*cst::c2/(cst::mpc2);
@@ -129,7 +123,6 @@ double GRBShock::fred(double ee,double tt)
   } 
   double norma=(riset/2.0+decayt);
   //  double norma=decayt+riset-(riset*exp((m_tobs-tp)/riset));
-  
   //  cout<<" "<<decayt<<" "<<riset<<" "<<tp<<" "<<norma<<endl;
   if (norma <=0) 
     {
