@@ -34,6 +34,10 @@ namespace evtbin {
 
     // Make sure indices are valid:
     if (0 <= index1 && 0 <= index2) {
+      // Grow the container to accomodate this value, if necessary.
+      if (Cont_t::size_type(index1) >= m_data.size()) m_data.resize(index1 + 1);
+      if (Cont_t::size_type(index2) >= m_data[index1].size()) m_data[index1].resize(index2 + 1);
+
       // Increment the appropriate bin:
       m_data[index1][index2] += weight;
     }

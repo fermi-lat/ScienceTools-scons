@@ -8,10 +8,7 @@
 
 namespace evtbin {
 
-  Hist1D::Hist1D(const Binner & binner): m_data() {
-    // Set initial size of data array:
-    m_data.resize(binner.getNumBins(), 0);
-
+  Hist1D::Hist1D(const Binner & binner): m_data(binner.getNumBins(), 0.) {
     // Save binner:
     m_binners.resize(1, binner.clone());
   }
@@ -28,6 +25,9 @@ namespace evtbin {
 
     // Make sure index is valid:
     if (0 <= index) {
+      // Grow the container to accomodate this value, if necessary.
+      if (Cont_t::size_type(index) >= m_data.size()) m_data.resize(index + 1);
+
       // Increment the appropriate bin:
       m_data[index] += weight;
     }
