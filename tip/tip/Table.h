@@ -59,7 +59,7 @@ namespace table {
       */
       static Table * openReadWrite(const std::string & file_name, const std::string & table_name);
 
-      Table(ITabularData * tab_data): Extension(0), m_tab_data(tab_data) {}
+      Table(ITabularData * tab_data): Extension(tab_data), m_tab_data(tab_data) {}
 
       virtual ~Table() { delete m_tab_data; }
 
