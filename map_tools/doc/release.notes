@@ -5,6 +5,7 @@
 $Id$
 @verbatim
 
+ 03-mar-04 v3r0  THB refactoring to better enable external use; with Jim, better key implementation 
  01-mar-04 v2r2  THB properly hide image for external use; make requester call back const. 
  28-feb-04 v2r1  THB modifications for Linux, doxy stuff for FITS image code 
  28-feb-04 v2r0  THB implement with enfant astroroot 
