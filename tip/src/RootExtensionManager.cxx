@@ -14,6 +14,7 @@
 #include "TKey.h"
 #include "TLeaf.h"
 #include "TString.h"
+#include "TSystem.h"
 
 #include "RootExtensionManager.h"
 #include "tip/HeaderData.h"
@@ -38,6 +39,13 @@ namespace tip {
     if (branch) branch->ResetAddress();
     m_tree->SetBranchStatus(m_leaf_name.c_str(), 0);
     delete [] static_cast<double *>(m_buf);
+  }
+
+  void RootExtensionManager::resetSigHandlers() {
+    gSystem->ResetSignal(kSigBus);
+    gSystem->ResetSignal(kSigSegmentationViolation);
+    gSystem->ResetSignal(kSigIllegalInstruction);
+    gSystem->ResetSignal(kSigFloatingException);
   }
 
   // Construct without opening the file.

@@ -57,6 +57,10 @@ namespace tip {
   */
   class RootExtensionManager : public IExtensionManager {
     public:
+      /** \brief Reset Root's signale handlers so that Root wont interfere with debugging.
+      */
+      static void resetSigHandlers();
+
       /** \brief Create an object to provide low-level access to the given Root extension.
           \param file_name The name of the Root file.
           \param ext_name The name of the Root extension.
