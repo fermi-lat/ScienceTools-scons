@@ -31,7 +31,7 @@ namespace tip {
         if (3u != summary.size()) ReportUnexpected("test data file does not have expected number of extensions.");
         else {
           // Known contents of test file are:
-          const char * expected [] = { "1", "SPECTRUM", "GTI" };
+          const char * expected [] = { "0", "SPECTRUM", "GTI" };
 
           for (int index = 0; index < 3; ++index) {
             if (0 != summary[index].getExtId().compare(expected[index]))
