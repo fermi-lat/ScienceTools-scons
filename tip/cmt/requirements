@@ -5,8 +5,8 @@ version v0
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
 use GlastPolicy *
+use ROOT v2r30507p0 IExternal
 use cfitsio * IExternal
-use tug *
 
 apply_pattern package_include
 apply_pattern package_linkopts
@@ -15,7 +15,7 @@ apply_pattern package_linkopts
 private
 
 macro table_cppflags  ""\
-  Linux "-I ../src -g -pedantic"\
+  Linux "-I ../src -g "\
   WIN32 " /I ..\src /wd4305"
 
 macro source *.cxx WIN32 "*.h *.cxx ../table/*.h"
