@@ -15,7 +15,7 @@ int main(int, char**) {
 
   try {
     ntrans = facilities::Util::expandEnvVar(&name, oDelim, cDelim);
-    std::cout << "Translated name (right deliminters) is " 
+    std::cout << "Translated name (right delimiters) is " 
               << name << std::endl;  
     ntrans = facilities::Util::expandEnvVar(&nameAgain);
     std::cout << "Translated name (wrong delimiters) is " 
