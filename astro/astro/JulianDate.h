@@ -6,8 +6,8 @@ namespace astro {
 /**
 *  @class JulianDate
 *
-*
 *  @brief store a Julian Date
+*
 *  Julian dates (abbreviated JD) are a continuous 
 *   count of days and fractions since noon Universal Time on January 1, 4713 BCE 
 *    (on the Julian calendar).

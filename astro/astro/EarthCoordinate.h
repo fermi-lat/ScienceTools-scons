@@ -11,6 +11,15 @@ namespace astro {
   * \brief describe a point with respect to the surface of the Earth
   * \author T. Burnett and G. Tosti
   * <hr> $Id$
+  *
+  * Note that we calculate the geodetic coordinates: from http://ssd.jpl.nasa.gov/glossary.html#geodetic
+  *
+  *  Geodetic coordinates, latitude and longitude, specify a location on the Earth's oblate 
+     (non-spherical) surface. Latitude, unless otherwise specified, is generally the geodetic latitude. 
+      Geodetic latitude is defined as the angle between the equatorial plane 
+     and a line normal to the surface at that location. 
+     Geodetic longitude is the angular distance between the location's 
+     meridian and the Greenwich meridian. 
   */
 class EarthCoordinate   {
 public:
