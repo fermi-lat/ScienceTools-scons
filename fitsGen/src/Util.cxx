@@ -33,7 +33,7 @@ void Util::getFileNames(int iargc, char * argv[], std::string & rootFile,
          std::cout << "usage: " 
                    << facilities::Util::basename(argv[0]) << " "
                    << "<root input file> " 
-                   << "<fits input file> " << std::endl;
+                   << "<fits output file> " << std::endl;
          std::exit(0);
       } else {
          rootFile = std::string(argv[1]);

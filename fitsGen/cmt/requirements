@@ -14,3 +14,4 @@ apply_pattern ST_library option="-no_share "
 
 application makeFT1 makeFT1/makeFT1.cxx
 application makeFT2 makeFT2/makeFT2.cxx
+application makeFT2a makeFT2a/makeFT2a.cxx
