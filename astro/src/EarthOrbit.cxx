@@ -1,5 +1,8 @@
-// $Header$
+/** @file EarthOrbit.cxx
+    @brief implemention of EarthOrbit
 
+ $Header$
+*/
 #include "astro/EarthOrbit.h"
 #include "astro/EarthCoordinate.h"
 #include "astro/SolarSystem.h"

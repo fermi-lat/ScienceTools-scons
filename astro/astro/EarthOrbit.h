@@ -1,4 +1,7 @@
-//
+/** @file EarthOrbit.h
+    @brief definition of EarthOrbit class
+    $Header$
+*/
 #ifndef astro_EarthOrbit_H
 #define astro_EarthOrbit_H
 
@@ -13,7 +16,6 @@ namespace astro {
 * @brief Postition of Earth satellite
 * @author G. Tosti original code 
 * @author T. Burnett convert to class
-* $Id$
     */
     class EarthOrbit   {
     public:
