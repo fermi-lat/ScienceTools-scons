@@ -7,12 +7,20 @@
 
 #include "map_tools/MapParameters.h"
 #include <iostream>
+
 using namespace map_tools;
-
 //! Constructor
-
-MapParameters::MapParameters( int argc, char *argv[])
+MapParameters::MapParameters(int argc, char * argv[])
 : Parameters(argc, argv)
+{
+    setup();
+}
+MapParameters::MapParameters( hoops::IParGroup& hpar)
+: Parameters(hpar)
+{
+    setup();
+}
+void MapParameters::setup()
 {
 
     // Read number of pixels along x

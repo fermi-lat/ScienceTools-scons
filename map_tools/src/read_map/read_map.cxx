@@ -13,14 +13,7 @@
 #include <iostream>
 
 using namespace map_tools;
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class ReadPars : public MapParameters{
-public:
-    ReadPars(int argc, char * argv[]): MapParameters(argc,argv){
-        getValue<double>("ra", 0);
-        getValue<double>("dec", 0);
-    }
-};
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class Request 
     @brief function class requests a point from the image
@@ -46,7 +39,7 @@ int main(int argc, char * argv[]) {
         //! map are not the same!
 
         // read in, or prompt for, all necessary parameters
-        ReadPars pars(argc, argv);
+        MapParameters pars(argc, argv);
 
         std::cout << "Reading FITS input file " << pars.inputFile() << std::endl;
         SkyImage image(pars.inputFile(), "Primary"); 

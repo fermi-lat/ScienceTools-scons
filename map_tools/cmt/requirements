@@ -9,6 +9,7 @@ author T. Burnett <tburnett@u.washington.edu>
 use astro *
 use hoops * 
 use tuple *
+use st_app *
 
 
 path_append PFILES "$(MAP_TOOLSROOT)/pfiles"

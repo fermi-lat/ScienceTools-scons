@@ -9,8 +9,8 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile, s, a, "../../../data/D2_full_history.fits", , , "Name of the exposure file:" 
-outfile,   s, a, "$(OUTFILES)/expcube_1day.fits", , , "Name of the output file:"
+infile,   f, a, "/glast/DC1/data/D2_full_history.fits", , , "Name of the exposure file:" 
+outfile,  f, a, "$(OUTFILES)/expcube_1day.fits", , , "Name of the output file:"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #

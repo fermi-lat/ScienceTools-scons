@@ -11,41 +11,47 @@
 #include "astro/SkyDir.h"
 
 #include "image/Image.h" 
+#include "st_app/IApp.h"
 
 #include <algorithm>
 using namespace map_tools;
-namespace cmap { // for count_map helper classes
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/** @class AddCount
-@brief Function object to apply to a tuple. fill the image with counts of (ra, dec) pairs
+
+/** @class CountMap 
+    @brief The count_map application
+
 */
-class AddCount { 
+class CountMap : public st_app::IApp {
 public:
+    CountMap():st_app::IApp("count_map"){}
 
-    AddCount( const MapParameters& pars, tuple::ITable & t, SkyImage& image)
-        : m_image(image)
-    {
-      t.selectColumn(pars.raName());
-      t.selectColumn(pars.decName());
-    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /** @class AddCount
+    @brief Function object to apply to a tuple. fill the image with counts of (ra, dec) pairs
+    */
+    class AddCount { 
+    public:
 
-    void operator()(std::vector<double> tuple){
-        double ra = tuple[0], dec=tuple[1], intensity=1.0; 
-        m_image.addPoint(astro::SkyDir(ra, dec), intensity); 
-    }
+        AddCount( const MapParameters& pars, tuple::ITable & t, SkyImage& image)
+            : m_image(image)
+        {
+            t.selectColumn(pars.raName());
+            t.selectColumn(pars.decName());
+        }
 
-private:
-    SkyImage& m_image;
-};
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        void operator()(std::vector<double> tuple){
+            double ra = tuple[0], dec=tuple[1], intensity=1.0; 
+            m_image.addPoint(astro::SkyDir(ra, dec), intensity); 
+        }
 
-int main(int argc, char * argv[]) {
-    using namespace cmap;
-    try{
+    private:
+        SkyImage& m_image;
+    };
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    void run(){
         // read in, or prompt for, all necessary parameters
-        MapParameters pars(argc, argv);
+        MapParameters pars(hoopsGetParGroup());
 
         // connect to  input data, specifying filter
         tuple::ITable::Factory& tableFactory = * tuple::ITable::Factory::instance();
@@ -59,11 +65,6 @@ int main(int argc, char * argv[]) {
         std::for_each( table.begin(), table.end(), count);
 
         std::cout << "Total added to image: " << image.total() << std::endl;
- 
-    }catch( const std::exception& e){
-        std::cerr << "caught exception: " << e.what() << std::endl;
-        return 1;
     }
-    return 0;
-}
 
+} app;

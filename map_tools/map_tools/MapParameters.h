@@ -5,11 +5,13 @@
 * $Header$
 */
 
-#ifndef MAPPARAMETERS_H
-#define MAPPARAMETERS_H 
+#ifndef MAP_TOOLS_MAPPARAMETERS_H
+#define MAP_TOOLS_MAPPARAMETERS_H 
 
 #include "Parameters.h"
 #include <string>
+namespace hoops { class IParGroup; }
+
 namespace map_tools {
 
 /**
@@ -29,7 +31,8 @@ class MapParameters : public Parameters
 {
 public:
     // Constructors
-    MapParameters( int argc, char *argv[]);
+    MapParameters(hoops::IParGroup & pars);
+    MapParameters(int argc, char * argv[]);
 
     int npix() const                   { return m_npix; }
     int npixX() const                   { return m_npix; }
@@ -49,6 +52,8 @@ public:
 
 
 private:
+
+    void setup();
 
     int             m_npix, m_npix_y, m_npix_z;
     double         m_imgSizeX, m_imgSizeY;
