@@ -557,7 +557,7 @@
    <source name="transient_template">
       <spectrum escale="MeV">
          <SpectrumClass name="TransientTemplate"
-          params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+        params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
          <celestial_dir ra="80" dec="20"/>
       </spectrum>
    </source>
@@ -573,7 +573,7 @@
    <source name="Crab_Pulsar">
       <spectrum escale="MeV">
          <SpectrumClass name="Pulsar"
-         params="1e-3,2.,0.033,0,0,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+       params="1e-3,2.,0.033,0,0,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
          <celestial_dir ra="83.57" dec="22.01"/>
       </spectrum>
    </source>
@@ -589,7 +589,7 @@
    <source name="Extragalactic_diffuse">
       <spectrum escale="MeV">
          <SpectrumClass name="Isotropic"
-                        params="6.85, 2.1, 30, 2e5"/>
+                        params="10.7, 2.1, 20., 2e5"/>
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
