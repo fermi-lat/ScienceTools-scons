@@ -48,7 +48,7 @@ int main(int iargc, char * argv[]) {
    std::string d2File;
    if (iargc == 1) {
       std::string fitsGenRoot = ::getenv("FITSGENROOT");
-      d2File = fitsGenRoot + "/data/asciiD2.dat";
+      d2File = fitsGenRoot + "/data/pointing_history.txt";
    } else if (iargc == 2) {
       if (argv[1] == "-h") {
          std::cout << "usage: " 
