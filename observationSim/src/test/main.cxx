@@ -44,7 +44,7 @@ int main(int iargc, char * argv[]) {
    std::vector<std::string> fileList;
    std::string xml_list("$(OBSERVATIONSIMROOT)/xml/obsSim_source_library.xml");
    fileList.push_back(xml_list);
-   xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml";
+   xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_20-1e6MeV.xml";
    fileList.push_back(xml_list);
    xml_list = "$(GRBROOT)/xml/GRB_user_library.xml";
    fileList.push_back(xml_list);
