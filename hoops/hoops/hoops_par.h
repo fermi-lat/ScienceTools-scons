@@ -194,7 +194,8 @@ namespace hoops {
           dest = Factory.NewIPrim(std::string()); dest->From(p);
         } else if (std::string::npos != type.find("r")) {
           dest = Factory.NewIPrim(double()); dest->From(p);
-        } else throw Hexception(PAR_INVALID_TYPE, "", __FILE__, __LINE__);
+        } else throw Hexception(PAR_INVALID_TYPE,
+          std::string("Don't know how to handle parameters of type ") + type, __FILE__, __LINE__);
       }
 
       template <typename T>
@@ -243,6 +244,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.13  2004/03/24 16:58:56  peachey
+ * Improve messages in thrown exceptions.
+ *
  * Revision 1.12  2004/03/12 15:40:42  peachey
  * When throwing exceptions, include the file name and
  * line number where the exception was thrown.

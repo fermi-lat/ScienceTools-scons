@@ -58,7 +58,8 @@ namespace hoops {
       if (!pname.compare((*it)->Name())) break;
 
     // If not found, throw an exception to indicate this fact.
-    if (it == mPars.end()) throw Hexception(PAR_NOT_FOUND, "", __FILE__, __LINE__);
+    if (it == mPars.end()) throw Hexception(PAR_NOT_FOUND,
+      std::string("Parameter ") + pname + std::string(" not found in group"), __FILE__, __LINE__);
 
     // Otherwise, return the found parameter.
     return *(*it);
@@ -111,6 +112,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.9  2004/03/24 16:59:19  peachey
+ * Improve messages in thrown exceptions.
+ *
  * Revision 1.8  2004/03/16 20:50:57  peachey
  * Explicitly invoke constructors for base classes to shut up compiler
  * warnings in the SLAC build.
