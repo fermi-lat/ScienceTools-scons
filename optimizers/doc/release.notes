@@ -3,15 +3,17 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
-    v0r3   18-Oct-03   JC  Tag for m_genericName data member (used by 
-                           Likelihood)
-    v0r2p1 05-Sep-03   JC  Move DOM reader to Parameter class; clean up
-                           Python/SWIG interface file.
-    v0r2   25-Aug-03   JC  Enable python module build on linux.
-    v0r1p1 13-Aug-03   JC  Clean up FunctionFactory implementation;
-                           add Dom class.
-    v0r1   11-Aug-03   JC  Add FunctionFactory, model xml files, and python
-                           subdirectory
-    v0     02-Aug-03   JC  Initial import.
+    v0r4   09-Nov-03   PLN  Changes in covergence criteria; Drmngb bug-fix
+                       JC   Added RosenND class
+    v0r3   18-Oct-03   JC   Tag for m_genericName data member (used by 
+                            Likelihood)
+    v0r2p1 05-Sep-03   JC   Move DOM reader to Parameter class; clean up
+                            Python/SWIG interface file.
+    v0r2   25-Aug-03   JC   Enable python module build on linux.
+    v0r1p1 13-Aug-03   JC   Clean up FunctionFactory implementation;
+                            add Dom class.
+    v0r1   11-Aug-03   JC   Add FunctionFactory, model xml files, and python
+                            subdirectory
+    v0     02-Aug-03   JC   Initial import.
     @endverbatim
 */
