@@ -17,6 +17,7 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "st_graph/Axis.h"
 #include "st_graph/Engine.h"
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
@@ -50,7 +51,7 @@ class StGraphTestApp : public st_app::StApp {
     void reportUnexpected(const std::string & text) const;
 
   protected:
-    void StGraphTestApp::testSequence(const st_graph::ISequence & iseq, const std::string & test_name, const double * value,
+    void testSequence(const st_graph::ISequence & iseq, const std::string & test_name, const double * value,
       const double * low, const double * high);
 
   private:
@@ -95,12 +96,20 @@ void StGraphTestApp::run() {
   typedef PointSequence<std::vector<double>::iterator> PointSeq_t;
 
   // Create a histogram plot, size 900 x 600, with the given bin definitions.
-  IFrame * plot_hist_1 = engine->createPlot("Plot 1", 900, 600, "hist", LowerBoundSeq_t(intervals.begin(), intervals.end()),
+  IPlot * plot_hist_1 = engine->createPlot("Plot 1", 900, 600, "hist", LowerBoundSeq_t(intervals.begin(), intervals.end()),
     PointSeq_t(sine_wave.begin(), sine_wave.begin() + num_intervals));
 
+  std::vector<Axis> * axes(&plot_hist_1->getAxes());
+  (*axes)[0].setTitle("t");
+  (*axes)[1].setTitle("sin(t)");
+
   // Create a scatter plot, size 600 x 400, with the (same) given bin definitions, but displaying a cosine.
-  IFrame * plot_hist_2 = engine->createPlot("Plot 2", 600, 400, "scat", PointSeq_t(intervals.begin(), intervals.end()),
+  IPlot * plot_hist_2 = engine->createPlot("Plot 2", 600, 400, "scat", PointSeq_t(intervals.begin(), intervals.end()),
     PointSeq_t(sine_wave.end() - num_intervals, sine_wave.end()));
+
+  axes = &plot_hist_2->getAxes();
+  (*axes)[0].setTitle("t");
+  (*axes)[1].setTitle("cos(t)");
 
   // Reduce size of 2-d plot.
   num_intervals = 50;
@@ -118,22 +127,27 @@ void StGraphTestApp::run() {
   }
 
   // Create a 2-d histogram plot, populate it with a 2-d Gaussian.
-  IFrame * plot_hist_3 = engine->createPlot("Plot 3", 600, 400, "hist",
+  IPlot * plot_hist_3 = engine->createPlot("Plot 3", 600, 400, "hist",
     LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals),
     LowerBoundSeq_t(intervals.begin(), intervals.begin() + num_intervals), data2d);
+
+  axes = &plot_hist_3->getAxes();
+  (*axes)[0].setTitle("X");
+  (*axes)[1].setTitle("Y");
+  (*axes)[2].setTitle("Z");
 
   // Display all graphical objects.
   engine->run();
 
 #ifndef WIN32
-  sleep(1); // All windows should disappear briefly.
+//  sleep(1); // All windows should disappear briefly.
 #endif
 
   // Remove one plot.
   delete plot_hist_3;
 
 #ifndef WIN32
-  sleep(1); // All windows should disappear briefly.
+//  sleep(1); // All windows should disappear briefly.
 #endif
 
   // Display all graphical objects (again).
@@ -148,7 +162,7 @@ void StGraphTestApp::run() {
 #ifdef MAKE_TEST_HANG
 
 #ifndef WIN32
-  sleep(1); // All windows should disappear.
+//  sleep(1); // All windows should disappear.
 #endif
 
   // Display all graphical objects (in this case because all plots were deleted, this will just hang).
@@ -200,13 +214,23 @@ void StGraphTestApp::testPlots() {
   IPlot * plot1 = engine.createPlot(pf1, "Scatter", ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()),
     ValueSpreadSeq_t(y1.begin(), y1.end(), delta_y1.begin()));
 
-  // Modify the data set by shifting the plot down.
+  // Set axis title.
+  std::vector<Axis> * axes(&plot1->getAxes());
+  (*axes)[0].setTitle("Correct X axis label");
+
+  // Crate a different Y axis which is scaled down from the original Y axis.
+  Vec_t y1lower(y1);
   for (int ii = 0; ii < num_pts; ++ii) {
-    y1[ii] = .3 * (140. - (ii + .3) * (ii + .3));
+    y1lower[ii] = .3 * (140. - (ii + .3) * (ii + .3));
   }
 
   // Create a histogram plot of this data set, in the subframe, ignoring errors.
-  IPlot * plot2 = engine.createPlot(pf1, "hist", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1.begin(), y1.end()));
+  IPlot * plot2 = engine.createPlot(pf1, "hist", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1lower.begin(), y1lower.end()));
+
+  // Set axes titles.
+  axes = &plot2->getAxes();
+  (*axes)[0].setTitle("INCORRECT X axis label");
+  (*axes)[1].setTitle("Correct Y axis label");
 
   // Run the graphics engine to display everything.
   engine.run();
@@ -245,9 +269,11 @@ void StGraphTestApp::testPlots() {
   plot1 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
     ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
 
-  // Making a second identical plot with same title should not result in a warning about replacing existing histogram.
-  plot2 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
-    ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
+  // Set axes titles.
+  axes = &plot1->getAxes();
+  (*axes)[0].setTitle("Correct X axis");
+  (*axes)[1].setTitle("Correct Y axis");
+  (*axes)[2].setTitle("Correct Z axis");
 
   // Run the graphics engine to display everything.
   engine.run();

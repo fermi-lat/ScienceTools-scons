@@ -6,8 +6,9 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "st_graph/Axis.h"
 #include "st_graph/Engine.h"
-#include "st_graph/IFrame.h"
+#include "st_graph/IPlot.h"
 #include "st_graph/Sequence.h"
 
 #include "tip/IFileSvc.h"
@@ -27,7 +28,7 @@ class StGraphApp : public st_app::StApp {
       bool is_vector, std::vector<std::vector<double> > & data) const;
 
   private:
-    st_graph::IFrame * m_hist_plot;
+    st_graph::IPlot * m_hist_plot;
 };
 
 StGraphApp::StGraphApp(): m_hist_plot(0) {}
@@ -58,8 +59,14 @@ void StGraphApp::plot() {
   Vec_t low1;
   Vec_t high1;
 
+  // Extract some parameters which will be used several times.
+  std::string lowbin1 = pars["lowbin1"];
+  std::string highbin1 = pars["highbin1"];
+  std::string lowbin2 = pars["lowbin2"];
+  std::string highbin2 = pars["highbin2"];
+
   // Read intervals for first dimension from bin definition file.
-  readBins(pars["binfile1"], pars["bintable1"], pars["lowbin1"], pars["highbin1"], low1, high1);
+  readBins(pars["binfile1"], pars["bintable1"], lowbin1, highbin1, low1, high1);
 
   // Array to hold the data being plotted.
   std::vector<Vec_t> data;
@@ -67,21 +74,31 @@ void StGraphApp::plot() {
   // Read the data into the array.
   readData(pars["datafile1"], pars["datatable1"], pars["data1"], pars["vector1"], data);
 
-  IFrame * plot = 0;
+  Vec_t low2;
+  Vec_t high2;
   if (bool(pars["vector1"])) {
-    Vec_t low2;
-    Vec_t high2;
 
     // Read intervals for second dimension from bin definition file.
-    readBins(pars["binfile2"], pars["bintable2"], pars["lowbin2"], pars["highbin2"], low2, high2);
+    readBins(pars["binfile2"], pars["bintable2"], lowbin2, highbin2, low2, high2);
 
-    // Create 2D plot.
-    plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
+    // Create 3D plot.
+    m_hist_plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
       IntervalSeq_t(low1.begin(), low1.end(), high1.begin()), IntervalSeq_t(low2.begin(), low2.end(), high2.begin()), data);
+
+    // Set axes titles.
+    std::vector<Axis> & axes(m_hist_plot->getAxes());
+    axes[0].setTitle(lowbin1 + "/" + highbin1);
+    axes[1].setTitle(lowbin2 + "/" + highbin2);
+    axes[2].setTitle(pars["data1"]);
   } else {
-    // Create 1D plot.
-    plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
+    // Create 2D plot.
+    m_hist_plot = Engine::instance().createPlot(pars["data1"], 800, 600, "scat",
       IntervalSeq_t(low1.begin(), low1.end(), high1.begin()), PointSeq_t(data[0].begin(), data[0].end()));
+
+    // Set axes titles.
+    std::vector<Axis> & axes(m_hist_plot->getAxes());
+    axes[0].setTitle(lowbin1 + "/" + highbin1);
+    axes[1].setTitle(pars["data1"]);
   }
 
   // Display the plot.
