@@ -17,6 +17,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "astro/JulianDate.h"
+
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
 #include "Goodi/DataFactory.h"
@@ -78,13 +80,6 @@ int main(int iargc, char * argv[]) {
    Goodi::ISpacecraftData *scData = dynamic_cast<Goodi::ISpacecraftData *>
       (dataCreator.create(datatype, mission));
 
-   // Set some general header entries:
-   std::string date_start = "2005-07-18T00:00:00.0000";
-   std::string date_stop  = "2005-07-19T00:00:00.0000";
-   scData->setKey("DATE-OBS", date_start);
-   scData->setKey("DATE-END", date_stop);
-
-
 // Read the columns into Goodi.  Skip the first row so decrement by 1.
    unsigned int npts = exposure.nrows()-1;
 
@@ -108,6 +103,18 @@ int main(int iargc, char * argv[]) {
        gti.push_back(std::make_pair<double,double>(startTime[i],stopTime[i]));
      }
        scData->setGTI(gti);
+
+// Set some general header entries:
+//    std::string date_start = "2005-07-18T00:00:00.0000";
+//    std::string date_stop  = "2005-07-19T00:00:00.0000";
+//    scData->setKey("DATE-OBS", date_start);
+//    scData->setKey("DATE-END", date_stop);
+   astro::JulianDate mission_start(2005, 7, 18, 0.);
+   double secsPerDay = 8.64e4;
+   astro::JulianDate date_start(mission_start + startTime.front()/secsPerDay);
+   astro::JulianDate date_end(mission_start + stopTime.back()/secsPerDay);
+   scData->setKey("DATE-OBS", date_start.getGregorianDate());
+   scData->setKey("DATE-END", date_end.getGregorianDate());
 
 //        scData->setStartTime(startTime);
 //        scData->setStopTime(stopTime);
