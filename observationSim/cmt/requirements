@@ -1,5 +1,5 @@
 package observationSim
-version v2r5
+version v2r5p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -67,8 +67,9 @@ library observationSim -no_share $(my_headers) \
  Roi.cxx\
  $(pydir)/*.i
 
-# This needed for FITS templates.
+# These needed for FITS templates.
 set INFILES "$(GOODIROOT)/Data"
+set TPLDIR "$(GOODIROOT)/Templates"
 
 # test applications
 application test_observationSim test/main.cxx
@@ -79,4 +80,4 @@ application test_observationSim test/main.cxx
 application obsSim test/obsSim.cxx
 
 # exposure map calculator
-application exposureMap test/exposureMap.cxx
+#application exposureMap test/exposureMap.cxx
