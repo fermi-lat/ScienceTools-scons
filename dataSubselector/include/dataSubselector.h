@@ -1,5 +1,5 @@
 /**
- * @file U2.h
+ * @file dataSubselector.h
  * @brief  Header file for dataSubselection Tool main code
  * 
  * This file contains the includes, defines and global variables 

@@ -25,7 +25,7 @@
  * <hr>
  * @section jobOptions jobOptions
  * @subsection usage Usage
- * @verbinclude U2.usage
+ * @verbinclude dataSubselector.usage
  * <hr>
  * @section notes Release Notes
  * Prototypes:

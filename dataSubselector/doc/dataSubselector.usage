@@ -1,6 +1,6 @@
-U2 <input file> <output file> [options]  to process a file
+dataSubselector <input file> <output file> [options]  to process a file
      or
-U2 -h to print the help text
+dataSubselector -h to print the help text
 
 options:
 
