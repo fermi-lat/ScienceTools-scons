@@ -5,6 +5,12 @@
 $Id$
 
 \verbatim
+07-mar-2005    v0r1p0 JP  Add AbsoluteTime and subclasses for handling
+                          different time systems. Add TextPulsarDb class for
+                          handling ephemerides contained in text files.
+                          Changed application to handle any number of input
+                          files, in arbitrary mixtures of FITS/text formats.
+                          Major infrastructure refactoring.
 17-dec-2004    v0r0p1 JP  Added missing #include file.
 24-nov-2004        v0 JP  Initial import.
 \endverbatim
