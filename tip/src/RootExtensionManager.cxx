@@ -173,6 +173,11 @@ namespace tip {
 
   }
 
+  void RootExtensionManager::setNumRecords(Index_t num_records) {
+    // Not supported for now.
+    throw TipException("Changing the size of a Root table is not currently supported.");
+  }
+
   FieldIndex_t RootExtensionManager::getFieldIndex(const std::string & field_name) const {
     // Look up the given field (branch) name:
     std::map<std::string, FieldIndex_t>::iterator itor = m_branch_lookup.find(field_name);
