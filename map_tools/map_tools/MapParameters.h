@@ -47,6 +47,7 @@ public:
     std::string projType() const        { return m_projType; }
     std::string raName() const          { return m_raName; }
     std::string decName() const         { return m_decName; }
+   std::string tableName() const         { return m_tableName; }
 
     bool uselb()const           {return m_use_lb;}
 
@@ -62,6 +63,7 @@ private:
     std::string     m_projType;
     bool            m_use_lb;
     std::string     m_raName, m_decName;
+    std::string  m_tableName;
 
 };
 }//namespace map_tools

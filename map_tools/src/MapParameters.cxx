@@ -58,6 +58,9 @@ void MapParameters::setup()
     m_projType = getValue<std::string>("projtype");
     m_use_lb = getValue<bool>("uselb", false);
 
+    // name of FITS extension or ROOT TTree
+    m_tableName =getValue<std::string>("table_name");
+
     // names for ra and dec columns, with defaults
     m_raName= getValue<std::string>("ra_name", "ra");
     m_decName = getValue<std::string>("dec_name", "dec");
