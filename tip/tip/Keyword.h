@@ -37,6 +37,12 @@ namespace tip {
       template <typename T>
       void get(T & value) const;
 
+      /** \brief Set the value of this Keyword.
+          \param value The value to set.
+      */
+      template <typename T>
+      void set(const T & value);
+
     private:
       IHeaderData * m_header_data;
       std::string m_name;
@@ -44,6 +50,9 @@ namespace tip {
 
   template <typename T>
   inline void Keyword::get(T & value) const { m_header_data->getKeyword(m_name, value); }
+
+  template <typename T>
+  inline void Keyword::set(const T & value) { m_header_data->setKeyword(m_name, value); }
 
 }
 
