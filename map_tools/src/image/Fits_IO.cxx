@@ -1,4 +1,10 @@
 /**  @file  Fits_IO.cxx
+    @brief Implementaion of Fits_IO 
+
+    @author Toby Burnett
+    Code orginally written by Riener Rohlfs
+
+    $Header$
 */
 
 #include "Fits_IO.h"
@@ -89,15 +95,10 @@ Fits_IO::~Fits_IO()
 IOElement * Fits_IO::read(const std::string & fileName, const std::string & name,
                           int cycle, FMode mode)
 {
-    // tries to open an element in a FITS file and converts it into IOElement
-    // or one of its derived classes.
-    // In case there is a problem an Error is written to TFError and NULL is 
-    // returned.
-
     // open the fits file
     int status = 0;
     fitsfile * fptr;
-    fits_open_file(&fptr, fileName.c_str(), mode == kFRead ? READONLY : READWRITE, 
+    fits_open_file(&fptr, fileName.c_str(), mode == Read ? READONLY : READWRITE, 
         &status);
     if (status != 0)   
     {
@@ -183,15 +184,12 @@ IOElement * Fits_IO::read(const std::string & fileName, const std::string & name
 //_____________________________________________________________________________
 bool Fits_IO::isOpen()
 {
-    // return true if an element is successfull open
 
     return m_fptr != NULL;
 }
 //_____________________________________________________________________________
 const std::string  Fits_IO::getFileName()
 {
-    // returns the filename of an element. 
-    // returns NULL if the element is not open or in case of a cfitsio error
 
     static std::string null;
     if (m_fptr == 0)
@@ -205,9 +203,6 @@ const std::string  Fits_IO::getFileName()
 //_____________________________________________________________________________
 int Fits_IO::getCycle()
 {
-    // returns the cycle number == HDU number. 
-    // First element in FITS file (primary header) has cycle 1
-
     return m_cycle;
 }
 //_____________________________________________________________________________
@@ -243,9 +238,6 @@ void Fits_IO::createElement()
 //_____________________________________________________________________________
 int Fits_IO::deleteElement()
 {
-    // deletes this HDU and deletes the file if if is the last HDU
-    // Note: cfitsio will replace the first HDU == primary array by
-    // an empty one if this primary array should be deleted.
 
     if (m_fptr == NULL)
         return 0;

@@ -1,5 +1,11 @@
 /** @file FitsImgIO.cxx
+    @brief definition of static functions for reading/writing FITS images
 
+     @author Toby Burnett
+     Code orginally written by Riener Rohlfs
+
+     $Header$
+    (TODO: make them static in the Fits_IO class)
 */
 #include "Fits_IO.h"
 #include "IOElement.h"
@@ -302,9 +308,9 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
     int status = 0;
     unsigned int numPixel = image->pixelCount();
 #ifdef WIN32 // this does not work on Linux, assume only float for now
-    const type_info& t = typeid(*image);
+    const char* rawname = typeid(*image).raw_name();
 
-    if( strcmp(t.raw_name(), typeid(FloatImg).raw_name())==0 ) {
+    if( strcmp(rawname, typeid(FloatImg).raw_name())==0 ) {
 #endif
         FloatImg * fimg = dynamic_cast<FloatImg*>(image);
         float nullval = fimg->getNull();
@@ -314,7 +320,7 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
             fimg->nullDefined() ? &nullval : 0,
             &status);
 #ifdef WIN32
-    } else if( strcmp(t.raw_name(), typeid(DoubleImg).raw_name())==0 ) {
+    } else if( strcmp(rawname, typeid(DoubleImg).raw_name())==0 ) {
 
         DoubleImg * fimg = dynamic_cast<DoubleImg*>(image);
         double nullval = fimg->getNull();
@@ -324,7 +330,7 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
             fimg->nullDefined() ? &nullval : 0,
             &status);
 
-    } else if( strcmp(t.raw_name(), typeid(IntImg).raw_name())==0 ) {
+    } else if( strcmp(rawname, typeid(IntImg).raw_name())==0 ) {
 
         IntImg * fimg = dynamic_cast<IntImg*>(image);
         int nullval = fimg->getNull();
@@ -335,7 +341,8 @@ int SaveImage(fitsfile* fptr, BaseImage* image)
             &status);
 
     } else {
-        throw std::invalid_argument(std::string("Attempt to write unsupported image type")+t.name());
+        throw std::invalid_argument(std::string("Attempt to write unsupported image type")+
+            typeid(image).name());
     }
 #endif
     return status;

@@ -1,5 +1,10 @@
 /** @file VirtualIO.h
+    @brief definition of VirtualIO class
 
+     @author Toby Burnett
+     Code orginally written by Riener Rohlfs
+
+     $Header$
 
 */
 #ifndef VIRTUALIO_H
@@ -13,11 +18,14 @@ class BaseCol;
 class ColList;
 
 //_____________________________________________________________________________
+/** @class VirtualIO
+    @brief abstract base class for IO; contains an IOElement
 
+    */
 class VirtualIO
 {
 public:
-    typedef enum {kFUndefined = 0, kFRead = 1, kFReadWrite = 2} FMode;
+    typedef enum {Undefined = 0, Read = 1, ReadWrite = 2} FMode;
 
    VirtualIO( IOElement * element=0);
  

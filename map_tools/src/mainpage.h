@@ -21,11 +21,17 @@
 <br>
     Each application has an example  .par file in the pfiles folder.
     <hr>
- \section fitsstuff FITS Stuff
 
- A selection of classes for FITS I/O, copied from Goodi,  currently resides in the folder @table, in the namespace table.
- When adequtate replacement exists, these will be removed.
+    \section fits FITS Image interface
 
+    The package contains a folder src/image which has a subset of the 
+    <a href="http://isdc.unige.ch/Soft/AstroRoot/">astroroot</a> 
+    TFcontainer code, written by Reiner Rohlfs.
+    It has been stripped of ROOT dependence and simplified. 
+    It does not support tables, or any IO except for FITS. Base classes are BaseAttr, VirtualIO and Header.
+    
+    The interface is not made public, since it will be eventually replaced by James Peachy's table package.
+    
 
   \section notes release notes
   release.notes
@@ -57,8 +63,6 @@ environment variable
 - INFILES  input files
 - PFILES   parameter fiels
 - OUTFILES output files
-- TPLDIR   template fiels
-
 
  @section countmap count_map
 
@@ -87,6 +91,5 @@ This applicaton creates a FITS "hypercube" image file. Each layer is a bin in co
 */
 /** @page devguide Developer's Guide
 
-whatever
-
+[in preparation]
 */

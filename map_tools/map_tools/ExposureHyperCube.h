@@ -1,6 +1,7 @@
 /** @file ExposureHyperCube.h
     @brief declare class ExposureHyperCube 
 
+    @author Toby Burnett
     $Header$
 
 */

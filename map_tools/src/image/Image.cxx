@@ -1,5 +1,10 @@
 /** @file Image.cxx
+    @brief Implementation of BaseImage 
 
+     @author Toby Burnett
+     Code orginally written by Riener Rohlfs
+
+     $Header$
 */
 #include "Image.h"
 

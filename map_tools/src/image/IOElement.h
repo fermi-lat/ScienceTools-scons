@@ -1,4 +1,9 @@
 /** @file IOElement.h
+    @brief definition of abstract base class IOElement
+
+    @author Toby Burnett
+    Code orginally written by Riener Rohlfs
+    $Header$
 
 */
 #ifndef IOELEMENT_H
@@ -36,10 +41,11 @@ class IOElement:  public Header
 public:
     IOElement(){};
 
-    /**
-     A new element is created. It is associated with an element in a 
-     file. name is the id of the new element. 
-     fileName is the file name of the  file with this new 
+    /** @brief  A new element is created. It is associated with an element in a 
+     file. 
+
+     @param name is the id of the new element. 
+     @param fileName is the file name of the  file with this new 
      element. The file  may already exist or will be created. Other objects 
      with the same name can exist without problem in the same file. Each object 
      with the same name has a unique cycle number. Use getCycle() to ask for 
@@ -48,7 +54,12 @@ public:
     */
     IOElement(const std::string & name, const  std::string & fileName);
 
-    IOElement(const std::string & filename);
+    /**
+      Construct an element which is not associated with an element in a file.
+      It exist only in memory. 
+      @param name the id of the new element.
+    */
+    IOElement(const std::string & name);
 
 
     virtual ~IOElement();
@@ -60,7 +71,7 @@ public:
     virtual  bool         isFileConnected() const {return m_fio != NULL && m_fio->isOpen();}
     virtual  std::string  getFileName() const     {return m_fio ? m_fio->getFileName() : "";}
     virtual  int          getCycle() const        {return m_fio ? m_fio->getCycle() : 0;}
-    virtual std::string  getName()const { return m_name; }
+    virtual std::string   getName()const { return m_name; }
 
 
     virtual  void         closeElement();
@@ -76,6 +87,13 @@ public:
     */
     virtual  int          saveElement(const std::string & fileName = "");
 
+    /** @brief    Deletes the element in the file, but not in memory.
+
+    Closes the file and deletes the file if this element is the
+    last element in the file.
+    @param updateMemory Updated the element in memory before the file is deleted if
+    updateMemory is set to true. The default is false.
+    */
     virtual  int          deleteElement(bool updateMemory = false);
 
     /** @brief read an IOElement from a file
@@ -107,7 +125,7 @@ public:
     
     */
     static IOElement *  readIOElement(const std::string & fileName,const std::string & name,  
-        unsigned int cycle = 0, VirtualIO::FMode mode = VirtualIO::kFRead);
+        unsigned int cycle = 0, VirtualIO::FMode mode = VirtualIO::Read);
 
 protected:
     VirtualIO * fio(){ return m_fio;}

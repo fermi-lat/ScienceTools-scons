@@ -1,5 +1,10 @@
-/** file Attr.h
+/** @file Attr.h
+    @brief definiton of BaseAttr and Attr<class T> classes
 
+     @author Toby Burnett
+     Code orginally written by Riener Rohlfs
+
+    $Header$
 */
 #ifndef ATTR_H
 #define ATTR_H
@@ -7,7 +12,9 @@
 #include <string>
 #include <ostream>
 //_____________________________________________________________________________
-
+/** @class BaseAttr
+    @brief abstract base class for attributes
+    */
 class BaseAttr 
 {
 
@@ -36,6 +43,10 @@ private:
 };
 
 //_____________________________________________________________________________
+
+/** @class Attr
+    @brief templated attribute class
+*/
 
 template <typename T > 
 class Attr : public BaseAttr

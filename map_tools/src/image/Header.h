@@ -1,5 +1,10 @@
-/** file Header.h
+/** @file Header.h
+    @brief definition of class Header
 
+     @author Toby Burnett
+     Code orginally written by Riener Rohlfs
+
+     $Header$
 */
 #ifndef HEADER_H
 #define HEADER_H
@@ -9,7 +14,7 @@
 #include <string>
 
 /** @class Header
-    @breif Base class for all data objects, contains the header information
+    @brief Base class for all data objects, contains the header information
 */
 class Header : public std::vector< BaseAttr*>
 {

@@ -1,7 +1,8 @@
 /** @file exposure_cube.cxx
-@brief build the exposure_cube application
+    @brief build the exposure_cube application
 
-$Header$
+    @author Toby Burnett
+    $Header$
 */
 #include "tuple/ITable.h"
 
