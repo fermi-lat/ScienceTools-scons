@@ -131,6 +131,7 @@ namespace facilities {
       input = input.substr(j+1);
     }
     tokens.push_back(input);
+    if (tokens.back() == "") tokens.pop_back();
   }
 
   std::string Util::basename(const std::string& path) {
