@@ -21,10 +21,10 @@ namespace ecube{
         ExposureMapParameters(int argc, char* argv[])
             : MapParameters(argc, argv)
         {
-            getDouble("costhetabinsize", 0.025); // 40 bins in sqrt(1-cos(thetat))
-            getDouble("skybinsize", 1.0); // 1 degree bins in ra and dec
-            getDouble("tstart");
-            getDouble("tstop");
+            getValue<double>("costhetabinsize"); // 40 bins in sqrt(1-cos(thetat))
+            getValue<double>("skybinsize", 1.0); // 1 degree bins in ra and dec
+            getValue<double>("tstart");
+            getValue<double>("tstop");
         }
     };
 }

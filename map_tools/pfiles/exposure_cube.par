@@ -9,10 +9,8 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-#eventfile, s, a, "../../../data/egret/d2e.fits", , , "Name of the exposure file:" 
-#outfile,   s, a, "egret_exposure.fits", , , "Name of the output file:"
 infile, s, a, "../../../data/D2_full_history.fits", , , "Name of the exposure file:" 
-outfile,   s, a, "expcube_1day.fits", , , "Name of the output file:"
+outfile,   s, a, "$(OUTFILES)/expcube_1day.fits", , , "Name of the output file:"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #
@@ -27,7 +25,7 @@ projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, M
 uselb,    b, a, "NO",   , , "use l,b instead of ra,dec :"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
-costhetabinsize, b,a, 0.025, , , "binsize for the cos(theta) function 
+costhetabinsize, r,a, 0.025, , , "binsize for the cos(theta) function 
 # Exposure generation parameters
 tstart,  r, a,   0 ,   , , "start time"
 tstop,   r, a,  86400,  , , "end time"  

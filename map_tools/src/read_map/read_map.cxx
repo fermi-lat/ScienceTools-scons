@@ -41,7 +41,7 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
-    try{
+    try{ 
         //! a big @todo: this will fail if the WCS transformation parameters for the
         //! map are not the same!
 
