@@ -10,5 +10,7 @@
     v0r1p3  13-oct-04   JP    Add documentation about application parameters.
     v0r2p0  26-nov-04   JP    Add TimingModel::calcFreq to compute frequency at given time. Conform parameters
                               to standards.
+    v0r3p0  07-mar-05   JP    Use utility classes from pulsarDb for handling
+                              absolute times, and for database access.
     @endverbatim
 */
