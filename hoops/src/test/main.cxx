@@ -17,7 +17,7 @@ int main(int iargc, char* argv[]) {
    hoops::IParFile * pf 
       = hoops::PILParFileFactory().NewIParFile(argv[0]);
 
-   pf->Load();  // should be in constructor?
+   pf->Load();
 
    hoops::IParPrompt * prompter 
       = hoops::PILParPromptFactory().NewIParPrompt(iargc, argv);
@@ -33,7 +33,7 @@ int main(int iargc, char* argv[]) {
              << my_double << std::endl;
 
    pf->Group() = pg;
-   pf->Save();   // should be in destructor?
+   pf->Save();
 
    delete pf;
    delete prompter;
