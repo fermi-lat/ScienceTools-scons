@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "pulsePhase/TimingModel.h"
@@ -37,8 +38,7 @@ void PulsePhaseApp::run() {
     par_group.Prompt("p1");
     par_group.Prompt("p2");
   } else {
-    std::cerr << "Ephemeris style \"" << par_group["ephstyle"].Value() << "\" is not supported." << std::endl;
-    return;
+    throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
 
   par_group.Save(); // Save the values of the parameters.
@@ -49,38 +49,37 @@ void PulsePhaseApp::run() {
   // Get model parameters.
   double epoch = par_group["epoch"];
   double phi0 = par_group["phi0"];
-  double f0;
-  double f1;
-  double f2;
+  TimingModel * model = 0;
+
   if (eph_style == "FREQ") {
-    f0 = par_group["f0"];
-    f1 = par_group["f1"];
-    f2 = par_group["f2"];
+    double f0 = par_group["f0"];
+    double f1 = par_group["f1"];
+    double f2 = par_group["f2"];
+    TimingModel::FrequencyCoeff coeff(f0, f1, f2);
+    model = new TimingModel(epoch, phi0, coeff);
   } else if (eph_style == "PER") {
     double p0 = par_group["p0"];
     double p1 = par_group["p1"];
     double p2 = par_group["p2"];
-    double p0squared = p0 * p0;
-    f0 = 1.0 / p0;
-    f1 = - p1 / p0squared;
-    f2 = 2.0 * p1 * p1 / (p0 * p0squared) - p2 / p0squared;
+    TimingModel::PeriodCoeff coeff(p0, p1, p2);
+    model = new TimingModel(epoch, phi0, coeff);
+  } else {
+    throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
   std::string time_field = par_group["timefield"];
-
-  // Create the model.
-  TimingModel model(epoch, phi0, f0, f1, f2);
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
-    double phase = model.calcPhase(rec[time_field].get());
+    double phase = model->calcPhase(rec[time_field].get());
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
   }
 
   // Clean up.
+  delete model;
   delete events;
 }
 
