@@ -19,7 +19,7 @@ import readXml
 import FuncFactory as funcFactory
 
 class RootWindow(Tk.Tk):
-    def __init__(self, spectralFuncs, spatialFuncs):
+    def __init__(self, spectralFuncs, spatialFuncs, xmlFile=None):
         Tk.Tk.__init__(self)
         self.srcModel = readXml.SourceModel()
         self.title("Source Model Editor")
@@ -56,6 +56,8 @@ class RootWindow(Tk.Tk):
         spatialFrame.pack()
         self.spatialModel = ComponentEditor(spatialFrame, spatialFuncs,
                                             "Spatial Model")
+        if xmlFile:
+            self.open(xmlFile)
     def setSourceName(self, event):
         try:
             srcName = self.modelEditor.currentSrcName
@@ -106,8 +108,9 @@ class RootWindow(Tk.Tk):
         else:
             src.type = "DiffuseSource"
         src.setAttributes()
-    def open(self):
-        xmlFile = LoadFileDialog(self).go(pattern='*.xml')
+    def open(self, xmlFile=None):
+        if not xmlFile:
+            xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         self.srcModel = readXml.SourceModel(xmlFile)
         self.modelEditor.fill()
         self.title('Source Model Editor: ' + os.path.basename(xmlFile))
@@ -118,9 +121,10 @@ class RootWindow(Tk.Tk):
             self.saveAs()
     def saveAs(self):
         xmlFile = SaveFileDialog(self).go(pattern='*.xml')
-        self.srcModel.writeTo(xmlFile)
-        self.srcModel.filename = xmlFile
-        self.title('Source Model Editor: ' + os.path.basename(xmlFile))
+        if xmlFile:
+            self.srcModel.writeTo(xmlFile)
+            self.srcModel.filename = xmlFile
+            self.title('Source Model Editor: ' + os.path.basename(xmlFile))
     def addPointSource(self):
         src = funcFactory.PtSrc(self.ptsrcs)
         self.srcModel[src.name] = src
@@ -361,5 +365,8 @@ spectralFuncs = funcFactory.Spectra()
 spatialFuncs = funcFactory.SpatialModels()
 
 if __name__ == "__main__":
-    root = RootWindow(spectralFuncs, spatialFuncs)
+    if len(sys.argv) == 2:
+        root = RootWindow(spectralFuncs, spatialFuncs, sys.argv[1])
+    else:
+        root = RootWindow(spectralFuncs, spatialFuncs)
     root.mainloop()

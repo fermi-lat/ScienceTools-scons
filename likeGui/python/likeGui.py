@@ -22,19 +22,20 @@ import readXml
 #import findPaths
 import findSrcs
 
-likePath = '/'.join( (os.environ['LIKELIHOODROOT'],
-                      os.environ['BINDIR'], '') )
+likePath = os.path.join(os.environ['LIKELIHOODROOT'], os.environ['BINDIR'], '')
+                        
 likeProgram = likePath + "likelihood.exe"
 likeProgram = cleanPathName(likeProgram)
 TsMapProgram = likePath + "TsMap.exe"
 expMapProgram = likePath + "expMap.exe"
 expCubeProgram = likePath + "makeExposureCube.exe"
-obsSimProgram = '/'.join( (os.environ['OBSERVATIONSIMROOT'],
-                           os.environ['BINDIR'],
-                           'obsSim.exe') )
-#dataSubselectorProgram = '/'.join( (os.environ['DATASUBSELECTORROOT'],
-#                                    os.environ['BINDIR'],
-#                                    'dataSubselector.exe') )
+diffRespProgram = likePath + "diffuseResponses.exe"
+obsSimProgram = os.path.join(os.environ['OBSERVATIONSIMROOT'],
+                             os.environ['BINDIR'],
+                             'obsSim.exe')
+dataSubselectorProgram = os.path.join(os.environ['DATASUBSELECTORROOT'],
+                                      os.environ['BINDIR'],
+                                      'dataSubselector.exe')
 
 class RootWindow(Tkinter.Tk):
     def __init__(self, executable=likeProgram, debug=0):
@@ -224,11 +225,15 @@ class AppsMenu(Tkinter.Menu):
                          command=self.expCube, underline=0)
         self.add_command(label="expMap", command=self.expMap, underline=0)
         self.add_command(label="TsMap", command=self.TsMap, underline=0)
+        self.add_command(label="diffuseResponses",
+                         command=self.diffuseResponses,
+                         underline=0)
         self.add_separator()
         self.add_command(label="obsSim", command=self.obsSim, underline=3)
         self.add_separator()
-#        self.add_command(label="dataSubselector", command=self.dataSubselector,
-#                         underline=0)
+        self.add_command(label="dataSubselector",
+                         command=self.dataSubselector,
+                         underline=0)
         self.add_separator()
         self.add_command(label="ds9 (image)", command=self.ds9, underline=5)
         self.add_command(label="ds9 (events)", command=lambda:self.ds9(1),
@@ -260,6 +265,15 @@ class AppsMenu(Tkinter.Menu):
             self.grandparent.writeText('TsMap.par not found.\n')
             return
         self.grandparent.addThread(myThread)
+    def diffuseResponses(self):
+        try:
+            myThread = likelihoodClient(self.grandparent, diffRespProgram,
+                                        'diffuseResponses.par', useChars = 1,
+                                        debug=self.debug)
+        except IOError:
+            self.grandparent.writeText('diffuseResponses.par not found.\n')
+            return
+        self.grandparent.addThread(myThread)
     def obsSim(self):
         try:
             myThread = likelihoodClient(self.grandparent, obsSimProgram,
@@ -269,16 +283,16 @@ class AppsMenu(Tkinter.Menu):
             self.grandparent.writeText('obsSim.par not found.\n')
             return
         self.grandparent.addThread(myThread)
-#    def dataSubselector(self):
-#        try:
-#            myThread = likelihoodClient(self.grandparent,
-#                                        dataSubselectorProgram,
-#                                        'dataSubselector.par',
-#                                        debug=self.debug)
-#        except IOError:
-#            self.grandparent.writeText('dataSubselector.par not found.\n')
-#            return
-#        self.grandparent.addThread(myThread)
+    def dataSubselector(self):
+        try:
+            myThread = likelihoodClient(self.grandparent,
+                                        dataSubselectorProgram,
+                                        'dataSubselector.par',
+                                        debug=self.debug)
+        except IOError:
+            self.grandparent.writeText('dataSubselector.par not found.\n')
+            return
+        self.grandparent.addThread(myThread)
     def ds9(self, events=0):
         file = EditFileDialog(self.grandparent).go(pattern='*.fits')
         if file:

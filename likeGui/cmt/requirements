@@ -6,7 +6,7 @@ author J. Chiang <jchiang@slac.stanford.edu>
 use Likelihood v*
 use observationSim v*
 use map_tools v*
-#use dataSubselector v*
+use dataSubselector v*
 
 application run_likeGui run_likeGui.cxx
 

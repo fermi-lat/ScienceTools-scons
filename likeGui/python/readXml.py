@@ -5,7 +5,7 @@ A module to encapsulate a Likelihood source model xml file.
 
 $Header$
 """
-import sys, string
+import os, sys, string
 from xml.dom import minidom
 
 defaultModel = '\n'.join( ('<?xml version="1.0"?>',
@@ -14,11 +14,11 @@ defaultModel = '\n'.join( ('<?xml version="1.0"?>',
 
 class SourceModel:
     def __init__(self, xmlFile=None):
-        if xmlFile:
+        if xmlFile and os.path.isfile(xmlFile):
             self.filename = xmlFile.strip(" ")
             self.doc = minidom.parse(self.filename)
         else:
-            self.filename = None
+            self.filename = xmlFile
             self.doc = minidom.parseString(defaultModel)
         srcs = self.doc.getElementsByTagName("source")
         self.srcList = {}
