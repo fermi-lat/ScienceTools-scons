@@ -69,7 +69,7 @@ EventContainer::EventContainer(const std::string &filename, bool useA1fmt)
    m_events.clear();
 }
 
-int EventContainer::addEvent(EventSource *event, FluxMgr &fm, bool flush) {
+int EventContainer::addEvent(EventSource *event, bool flush) {
    
    std::string name = event->fullTitle();
    if (name.find("TimeTick") == std::string::npos) {
@@ -77,7 +77,9 @@ int EventContainer::addEvent(EventSource *event, FluxMgr &fm, bool flush) {
       double time = event->time();
       double energy = event->energy();
       Hep3Vector launchDir = event->launchDir();
-      HepRotation rotationMatrix = fm.transformGlastToGalactic(time);
+// Create the rotation matrix from instrument to "Celestial" (J2000?)
+// coordinates.
+      HepRotation rotationMatrix = glastToCelestial(time);
       Hep3Vector sourceDir = rotationMatrix(launchDir);
       Hep3Vector zAxis = rotationMatrix(Hep3Vector(0., 0., 1.));
       Hep3Vector xAxis = rotationMatrix(Hep3Vector(1., 0., 0.));
@@ -93,9 +95,14 @@ int EventContainer::addEvent(EventSource *event, FluxMgr &fm, bool flush) {
            && RandFlat::shoot() < ((*aeff)(energy, inclination)
                                    /event->totalArea()/1e4)
            && !earthCoord.insideSAA() ) {
-         Hep3Vector appDir = apparentDir(energy, sourceDir, zAxis);
-         m_events.push_back(Event(time, energy, appDir, sourceDir,
-                                  zAxis, xAxis, ScZenith(time)));
+         Hep3Vector appDir = apparentDir(energy, sourceDir, zAxis); 
+                                                        
+         m_events.push_back(Event(time, energy, 
+                                  astro::SkyDir(appDir), 
+                                  astro::SkyDir(sourceDir),
+                                  astro::SkyDir(zAxis), 
+                                  astro::SkyDir(xAxis),
+                                  astro::SkyDir(ScZenith(time))));
          if (flush) writeEvents();
          return 1;
       }
@@ -117,6 +124,9 @@ Hep3Vector EventContainer::ScZenith(double time) {
 Hep3Vector EventContainer::apparentDir(double energy, 
                                        const Hep3Vector &sourceDir, 
                                        const Hep3Vector &zAxis) {
+// This routine returns the apparent photon direction in the same
+// coordinate system used by sourceDir and zAxis.
+
 // Access the Psf data
    Likelihood::Psf *psf = Likelihood::Psf::instance();
 
@@ -168,34 +178,32 @@ void EventContainer::writeEvents() {
       std::vector<std::vector<double> > data(8);
       for (std::vector<Event>::const_iterator it = m_events.begin();
            it != m_events.end(); it++) {
-         data[0].push_back(it->m_time);
-         data[1].push_back(it->m_energy);
-         data[2].push_back(it->m_appDir.x());
-         data[3].push_back(it->m_appDir.y());
-         data[4].push_back(it->m_appDir.z());
-         data[5].push_back(it->m_srcDir.x());
-         data[6].push_back(it->m_srcDir.y());
-         data[7].push_back(it->m_srcDir.z());
+         data[0].push_back(it->time());
+         data[1].push_back(it->energy());
+         data[2].push_back(it->appDir().dir().x());
+         data[3].push_back(it->appDir().dir().y());
+         data[4].push_back(it->appDir().dir().z());
+         data[5].push_back(it->srcDir().dir().x());
+         data[6].push_back(it->srcDir().dir().y());
+         data[7].push_back(it->srcDir().dir().z());
       }
       m_eventTable->writeTableData(data);
    } else {
       std::vector<std::vector<double> > data(11);
       for (std::vector<Event>::const_iterator it = m_events.begin();
            it != m_events.end(); it++) {
-         double glon = atan2(it->m_appDir.y(), it->m_appDir.x())*180./M_PI;
-         double glat = asin(it->m_appDir.z())*180./M_PI;
-         astro::SkyDir appDir(glon, glat, astro::SkyDir::GALACTIC);
-         data[0].push_back(appDir.ra());
-         data[1].push_back(appDir.dec());
-         data[2].push_back(it->m_energy);
-         data[3].push_back(it->m_time);
-         data[4].push_back(it->m_xAxis.x());
-         data[5].push_back(it->m_xAxis.y());
-         data[6].push_back(it->m_xAxis.z());
-         data[7].push_back(it->m_zAxis.x());
-         data[8].push_back(it->m_zAxis.y());
-         data[9].push_back(it->m_zAxis.z());
-         data[10].push_back(it->m_zenith.angle(it->m_appDir)*180./M_PI);
+         data[0].push_back(it->appDir().ra());
+         data[1].push_back(it->appDir().dec());
+         data[2].push_back(it->energy());
+         data[3].push_back(it->time());
+         data[4].push_back(it->xAxis().dir().x());
+         data[5].push_back(it->xAxis().dir().y());
+         data[6].push_back(it->xAxis().dir().z());
+         data[7].push_back(it->zAxis().dir().x());
+         data[8].push_back(it->zAxis().dir().y());
+         data[9].push_back(it->zAxis().dir().z());
+         data[10].push_back(
+            it->zenith().dir().angle(it->appDir().dir())*180./M_PI);
       }
       m_eventTable->writeTableData(data);
    }

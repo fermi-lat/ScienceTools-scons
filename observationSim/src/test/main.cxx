@@ -56,8 +56,13 @@ int main(int argn, char * argc[]) {
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events.dat", true);
    observationSim::ScDataContainer scData("test_scData.dat", true);
-   my_simulator.generateEvents(count, events, scData);
 
+// Use simulation time rather than total counts if desired.
+   if (argn == 4 && std::string(argc[3]) == "-t") {
+      my_simulator.generateEvents(static_cast<double>(count), events, scData);
+   } else {
+      my_simulator.generateEvents(count, events, scData);
+   }
 }
 
 void help() {

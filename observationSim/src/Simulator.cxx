@@ -121,8 +121,8 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
       m_absTime += interval;
       m_elapsedTime += interval;
       m_fluxMgr->pass(interval);
-      scData.addScData(f, *m_fluxMgr);
-      if (events.addEvent(f, *m_fluxMgr)) {
+      scData.addScData(f);
+      if (events.addEvent(f)) {
          m_numEvents++;
          if (m_maxNumEvents/20 > 0 &&
              m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
