@@ -23,8 +23,11 @@ class SourceModel:
             self.doc = minidom.parseString(defaultModel)
         srcs = self.doc.getElementsByTagName("source")
         self.srcList = {}
-        for src in srcs:
-            self.srcList[src.getAttribute("name").encode()] = Source(src)
+        try:
+            for src in srcs:
+                self.srcList[src.getAttribute("name").encode()] = Source(src)
+        except ValueError:
+            pass
             
     def setAttributes(self):
         for src in self.srcList.values():

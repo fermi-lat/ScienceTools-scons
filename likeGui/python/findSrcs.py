@@ -129,7 +129,7 @@ def isPtSrc(src):
     return True
 
 def extractFrom3EG(ra0, dec0, radius, fluxLimit, filename, infile):
-    ds9File = ds9_region_file('ds9.reg')
+    ds9File = ds9_region_file('ds9.reg', fk5=1)
     ds9File.setSR(ra0, dec0, radius)
     file = open(filename, 'w')
     file.write('<?xml version="1.0" ?>\n')
@@ -159,9 +159,12 @@ class ds9_region_file:
         self.SR = None
         self.srcs = []
     def addSrc(self, src):
-        (dir, ) = src.getElementsByTagName('celestial_dir')
+        dir = src.getElementsByTagName('celestial_dir')[0]
         self.srcs.append( (dir.getAttribute('ra').encode('ascii'),
                            dir.getAttribute('dec').encode('ascii')) )
+    def addSource(self, src):
+        ra, dec = `src.spatialModel.RA.value`, `src.spatialModel.DEC.value`
+        self.srcs.append( (ra, dec) )
     def setSR(self, ra, dec, radius):
         self.SR = (ra, dec, radius)
     def write(self):

@@ -15,19 +15,28 @@ import string
 import Tkinter as Tk
 
 from FileDialog import Dialog, LoadFileDialog, SaveFileDialog
+from tkMessageBox import showwarning
 import mySimpleDialog
 
 import readXml
 import FuncFactory as funcFactory
 import findSrcs
+ds9 = None
 
 class RootWindow(Tk.Tk):
     def __init__(self, spectralFuncs, spatialFuncs, xmlFile=None):
         Tk.Tk.__init__(self)
-        self.srcModel = readXml.SourceModel()
+        self.srcModel = readXml.SourceModel(xmlFile)
         self.title("Source Model Editor")
         self.ptsrcs = 0
         self.difsrcs = 0
+
+        try:
+            global ds9
+            import ds9
+        except ImportError:
+            showwarning(title="ds9 Access Warning",
+                        message="Import error for ds9 package.")
 
         menuBar = MenuBar(self)
         
@@ -59,8 +68,6 @@ class RootWindow(Tk.Tk):
         spatialFrame.pack()
         self.spatialModel = ComponentEditor(spatialFrame, spatialFuncs,
                                             "Spatial Model")
-        if xmlFile:
-            self.open(xmlFile)
     def setSourceName(self, event):
         try:
             srcName = self.modelEditor.currentSrcName
@@ -115,12 +122,19 @@ class RootWindow(Tk.Tk):
         if not xmlFile:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         self.srcModel = readXml.SourceModel(xmlFile)
+        if not self.srcModel.names():
+            showwarning(title=os.path.basename(xmlFile),
+                        message="No valid sources loaded")
+            return
         self.modelEditor.fill()
         self.title('Source Model Editor: ' + os.path.basename(xmlFile))
     def importSrcs(self, xmlFile=None):
         if not xmlFile:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         new_srcModel = readXml.SourceModel(xmlFile)
+        if not new_srcModel.names():
+            showwarning(title=os.path.basename(xmlFile),
+                        message="No valid sources loaded")
         for src in new_srcModel.names():
             self.srcModel[src] = new_srcModel[src]
         self.modelEditor.fill()
@@ -140,13 +154,14 @@ class RootWindow(Tk.Tk):
             self.modelEditor.selectSource()
             self.srcModel.filename = xmlFile
             self.title('Source Model Editor: ' + os.path.basename(xmlFile))
-    def addPointSource(self):
-        src = funcFactory.PtSrc(self.ptsrcs)
+    def addPointSource(self, src=None):
+        if src is None:
+            src = funcFactory.PtSrc(self.ptsrcs)
+            self.ptsrcs += 1
         self.srcModel[src.name] = src
         self.modelEditor.fill()
         self.currentSource.set(src.name)
         self.modelEditor.selectSource()
-        self.ptsrcs += 1
     def addDiffuseSource(self):
         src = funcFactory.DiffuseSrc(self.difsrcs)
         self.srcModel[src.name] = src
@@ -182,6 +197,8 @@ class MenuBar(Tk.Menu):
         Tk.Menu.__init__(self)
         self.add_cascade(label="File", menu=FileMenu(parent), underline=0)
         self.add_cascade(label="Edit", menu=EditMenu(parent), underline=0)
+        if ds9 is not None:
+            self.add_cascade(label="ds9", menu=ds9Menu(parent), underline=0)
         parent.config(menu=self)
 
 class FileMenu(Tk.Menu):
@@ -213,6 +230,62 @@ class EditMenu(Tk.Menu):
         self.add_command(label="Delete selected", underline=0,
                          command=root.deleteSource)
         self.add_command(label="Delete all sources...", command=root.deleteAll)
+
+class ds9Menu(Tk.Menu):
+    def __init__(self, root):
+        Tk.Menu.__init__(self, tearoff=0)
+        self.add_command(label="Display point sources", underline="0",
+                         command=ds9Display(root))
+        self.add_command(label="Import region sources", underline="0",
+                         command=ds9Import(root))
+
+class ds9Display(object):
+    def __init__(self, root, file="ds9.reg"):
+        self.root = root
+        self.file = file
+    def __call__(self):
+        try:
+            ds9.clear_regions()
+            try:
+                os.remove(self.file)
+            except OSError:
+                pass
+            region_file = findSrcs.ds9_region_file(self.file, fk5=1)
+            for srcName in self.root.srcModel.names():
+                src = self.root.srcModel[srcName]
+                if src.type == "PointSource":
+                    region_file.addSource(src)
+                    region_file.write()
+            ds9.load_regions(self.file)
+        except RuntimeError:
+            pass
+
+class ds9Import(object):
+    def __init__(self, root, file="ds9.reg"):
+        self.root = root
+        self.file = file
+    def __call__(self):
+        try:
+            ds9.save_regions(self.file)
+            for coords in read_coords(self.file):
+                src = readXml.Source(copy.deepcopy(findSrcs.ptSrc()))
+                src.name = "point source %i" % self.root.ptsrcs
+                self.root.ptsrcs += 1
+                src.spatialModel.RA.value = coords[0]
+                src.spatialModel.DEC.value = coords[1]
+                src.setAttributes()
+                self.root.addPointSource(src)
+        except RuntimeError:
+            pass
+
+def read_coords(regfile="ds9.reg"):
+    coords = []
+    input = open(regfile, 'r')
+    for line in input:
+        if line.find('fk5') == 0:
+            x = eval('(' + line.split("fk5;point(")[1].split(")")[0] + ')')
+            coords.append(x)
+    return coords            
 
 class ModelEditor(Tk.Frame):
     def __init__(self, parent):
