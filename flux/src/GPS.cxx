@@ -463,11 +463,11 @@ void GPS::setInterpPoint(double time){
     std::map<double,POINTINFO>::const_iterator iter=m_pointingHistory.upper_bound(time);
     if((time< (*(m_pointingHistory.begin())).first )){
         timeTooEarly=true;
-        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - closest record being used." << std::endl;
+        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
         throw "Time out of Range!";
     }else if(iter==m_pointingHistory.end()){
         timeTooLate=true;
-        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - closest record being used." << std::endl;
+        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
         throw "Time out of Range!";
     }
     //get the point after "time"
