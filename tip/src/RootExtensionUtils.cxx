@@ -17,9 +17,9 @@
 
 #include "RootExtensionUtils.h"
 #include "RootHeaderData.h"
-#include "RootTabularData.h"
 #include "table/IData.h"
 #include "table/TableException.h"
+#include "table/TabularData.h"
 
 namespace table {
 
@@ -56,7 +56,7 @@ namespace table {
   ITabularData * RootExtensionUtils::getTabularData() {
     ITabularData * retval = 0;
     if (!m_data) {
-      retval =  new RootTabularData(this);
+      retval =  new TabularData<RootExtensionUtils>(*this);
       m_data = retval;
     }
     return retval;
