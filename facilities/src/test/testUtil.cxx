@@ -1,16 +1,20 @@
+/// @file testUtil.cxx
 #include <string>
 #include <iostream>
 #include "facilities/Util.h"
-// Miniscule test program for Util class
+/** Miniscule program to test a couple modes of Util::expandEnvVar
+ *  Caller should have an environment variable SRC with some
+ *  sensible definition.
+ */
 main() {
-  std::string name = std::string("{XMLUTILROOT}/src");
+  std::string name = std::string("{FACILITIESROOT}/src");
   std::string oDelim = std::string ("{");
   std::string cDelim = std::string ("}");
   int ntrans = facilities::Util::expandEnvVar(&name, &oDelim, &cDelim);
 
   cout << "Translated name is " << name << std::endl;
 
-  // Process running this must have environment variable SR
+  // Process running this must have environment variable SRC
   std::string multi = std::string("$(FACILITIESROOT)/$(SRC)");
 
   ntrans = facilities::Util::expandEnvVar(&multi);
