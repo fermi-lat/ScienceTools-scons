@@ -1,5 +1,5 @@
 /** \file test_main.cxx
-    \brief "Hello world" application showing how IApp can be used as a base class for the application object.
+    \brief "Hello world" application showing how StApp can be used as a base class for the application object.
 */
 
 #include <iostream>

@@ -22,62 +22,54 @@
     specific application object with the desired functionality. The
     st_app library
     also provides a standard int main(int argc, char **) (hereafter
-    called simply "main()") which calls the client's application object
-    to perform the real work of the application. Thus, client code need
-    only define an application subclass and link against the st_app
-    library.
+    called simply "main()") which instantiates an object of the client's
+    application class to perform the real work of the application. Lastly,
+    st_app provides a templated factory class which this standard main()
+    function uses to instantiate an object of the client's application
+    class.
 
     \subsection content Content of Client Code
     The test program test_main.cxx demonstrates the basic pattern
-    used to create an application with st_app. In this case, the
-    name of the application is "test_st_app". This application is
-    created by deriving an application class from st_app::IApp,
-    and instantiating a single instance of this application class:
+    used to create an application with st_app. An application class
+    named TestApp1 is derived from the st_app::StApp class. In addition
+    a singleton factory object is created using the st_app::StAppFactory template
+    class. This factory object
+    will be used by the standard main() function to create and then
+    run the application object at runtime.
 
 \verbatim
 /** \file test_main.cxx
-    \brief "Hello world" application showing how IApp can be used as a base class for the application object.
+    \brief "Hello world" application showing how StApp can be used as a base class for the application object.
 */
 
 #include <iostream>
 
-#include "st_app/IApp.h"
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
 
 /** \class TestApp1
     \brief Application singleton for test_st_app.
 */
-class TestApp1 : public st_app::IApp {
+class TestApp1 : public st_app::StApp {
   public:
-    /** \brief Create AppExample1 object, identifying it to the base class.
-    */
-    TestApp1(): st_app::IApp("test_st_app") {}
-
     /** \brief Perform the action needed by this application. This will be called by the standard main.
     */
     virtual void run() {
       std::cout << "Hello world" << std::endl;
     }
-} the_application; // Create the application object.
+};
 
+// Factory which can create an instance of the class above.
+st_app::StAppFactory<TestApp1> g_factory;
 \endverbatim
 
-    As the example shows, subclasses of st_app::IApp should include an explicit default
-    constructor which passes the name of the application to the constructor
-    for the base class st_app::IApp. The only other method which need be provided
-    by the application class is the run() method, which in this example contains
-    the ever popular "hello world" application behavior.
-
-    A note of caution: although developers are being asked to derive
-    application classes from st_app::IApp, it is recommended that they do not
-    add any member data. Instead, it is best if MyApp::run() is treated as if it
-    were the implementation main(), using only self-contained data and globally
-    accessible objects defined elsewhere.
-
-    Restated, MyApp should be viewed as a simple encapsulation of the concept
-    of the application qua application, and nothing more. The client should develop
-    separate classes to add required specific functionality, and MyApp::run()
-    can use these classes. The MyApp class should not itself be used as a
-    catch-all class in which all the application functionality is added.
+    As the example shows, the only requirement for subclasses of
+    st_app::StApp is that they provide
+    a concrete run() method (this is abstract in the base class).
+    After the standard main() uses the factory object to instantiate
+    the application object, it will call the application's run()
+    method to perform the work of the application, in this case,
+    the ever popular "Hello world" program.
 
     <hr>
     \section notes Release Notes

@@ -16,7 +16,7 @@ namespace st_app {
   */
   class AppParGroup : public hoops::ParPromptGroup {
     public:
-      /** \brief Create parameter group, using IApp to get the command line arguments.
+      /** \brief Create parameter group, using StApp to get the command line arguments.
           \param comp_name The required name of this application.
       */
       AppParGroup(const std::string & comp_name);

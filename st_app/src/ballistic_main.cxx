@@ -12,13 +12,11 @@
 #include <stdexcept>
 #include <typeinfo>
 
-#include "st_app/IApp.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
 int main(int argc, char ** argv) {
   int status = 0;
-  st_app::IApp * this_i_app = 0;
   st_app::StApp * this_st_app = 0;
 
   try {
@@ -29,28 +27,17 @@ int main(int argc, char ** argv) {
 
     // Process command line arguments. This will throw if the real application code
     // cannot/should not start.
-    st_app::IApp::processCommandLine(argc, argv);
-
-    // Process command line arguments. This will throw if the real application code
-    // cannot/should not start.
     st_app::StApp::processCommandLine(argc, argv);
 
     try {
-      // First, try getting the singleton IApp object:
-      this_i_app = st_app::IApp::getApp();
+      // Try using the singleton StAppFactory to create the application:
+      this_st_app = st_app::IStAppFactory::instance().createApp();
     } catch(const std::logic_error & x) {
-      // OK, maybe the client is using StApp, not IApp:
-      try {
-        // Try using the singleton StAppFactory to create the application:
-        this_st_app = st_app::IStAppFactory::instance().createApp();
-      } catch(const std::logic_error & x) {
-        throw std::logic_error("Failed to get an IApp or StAppFactory singleton: client must define one");
-      }
+      throw std::logic_error("Failed to get an StAppFactory singleton: client must define one");
     }
 
     // Run the application.
-    if (0 != this_i_app) this_i_app->run();
-    else if (0 != this_st_app) this_st_app->run();
+    if (0 != this_st_app) this_st_app->run();
 
   } catch (const std::exception & x) {
     // Return a non-zero exit code:
