@@ -6,39 +6,27 @@
  * $Header$
  */
 
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-
 #include <iostream>
 #include <stdexcept>
 #include <string>
-
-#include "astro/JulianDate.h"
-
-#include "facilities/Util.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/Header.h"
 
-void getFileNames(int iargc, char * argv[], std::string & rootFile, 
-                  std::string & fitsFile);
+#include "fitsGen/Util.h"
+
+using namespace fitsGen;
 
 void getEventFlags(tip::Table::Record & merit, short & isGamma, 
                    short & goodPsf, short & goodEnergy);
 
-void writeDateKeywords(tip::Table * table, double start_time, 
-                       double stop_time);
-
-astro::JulianDate currentTime();
-
 int main(int iargc, char * argv[]) {
    try {
-      std::string rootFile;
+      std::string rootFile("merit.root");
       std::string fitsFile("myLatData.fits");
-
-      getFileNames(iargc, argv, rootFile, fitsFile);
+      
+      Util::getFileNames(iargc, argv, rootFile, fitsFile);
 
       tip::Table * meritTable = 
          tip::IFileSvc::instance().editTable(rootFile, "MeritTuple");
@@ -47,7 +35,7 @@ int main(int iargc, char * argv[]) {
       tip::Table::Record & merit = *merit_iter;
 
 // Create the FT1 file.
-      std::string ft1Template = std::getenv("TIPROOT") 
+      std::string ft1Template = std::getenv("FITSGENROOT") 
          + std::string("/data/ft1.tpl");
       tip::IFileSvc::instance().createFile(fitsFile, ft1Template);
       tip::Table * eventTable =
@@ -101,36 +89,14 @@ int main(int iargc, char * argv[]) {
       (*it)["start"].set(start_time);
       (*it)["stop"].set(stop_time);
 
-      writeDateKeywords(eventTable, start_time, stop_time);
-      writeDateKeywords(gtiTable, start_time, stop_time);
+      Util::writeDateKeywords(eventTable, start_time, stop_time);
+      Util::writeDateKeywords(gtiTable, start_time, stop_time);
 
       delete meritTable;
       delete gtiTable;
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
       return 1;
-   }
-}
-
-void getFileNames(int iargc, char * argv[], std::string & rootFile, 
-                  std::string & fitsFile) {
-   if (iargc == 1) {
-      std::string fitsGenRoot = std::getenv("FITSGENROOT");
-      rootFile = fitsGenRoot + "/data/merit.root";
-   } else if (iargc == 2) {
-      std::string app_name = argv[0];
-      if (!std::strcmp(argv[1], "-h")) {
-         std::cout << "usage: " 
-                   << facilities::Util::basename(argv[0]) << " "
-                   << "<root input file> " 
-                   << "<fits input file> " << std::endl;
-         std::exit(0);
-      } else {
-         rootFile = std::string(argv[1]);
-      }
-   } else if (iargc == 3) {
-      rootFile = std::string(argv[1]);
-      fitsFile = std::string(argv[2]);     
    }
 }
 
@@ -157,7 +123,6 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
 //                           && merit["GltWord"].get() > 3
 //                           && merit["IMcoreProb"].get() > 0.2);
 //    bool veto(true);
-
 //    if (background_cut) {
 //       if (merit["VtxAngle"].get() > 0) {
 //          if (merit["EvtEnergySumOpt"].get() > 3500.) {
@@ -198,6 +163,7 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
 //          } // if EvtEnergySumOpt > 3500
 //       } // if VtxAngle > 0
 //    } // if background_cut
+//    if (!veto) isGamma = 1;
 
 // For DC1, IMgammaProb directly passes the background cut.
    if (merit["IMgammaProb"].get() > 0.5) isGamma = 1;
@@ -205,47 +171,3 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
    if (global_cut) goodEnergy = 1;
 }
 
-void writeDateKeywords(tip::Table * table, double start_time, 
-                       double stop_time) {
-   static double secsPerDay(8.64e4);
-   tip::Header & header = table->getHeader();
-   astro::JulianDate current_time = currentTime();
-   try {
-      header["DATE"].set(current_time.getGregorianDate());
-   } catch (...) {
-   }
-   astro::JulianDate mission_start(2005, 7, 18, 0);
-   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
-   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
-   try {
-      header["DATE-OBS"].set(date_start.getGregorianDate());
-      header["DATE-END"].set(date_stop.getGregorianDate());
-   } catch (...) {
-   }
-   double duration = stop_time - start_time;
-   try {
-      header["TSTART"].set(start_time);
-      header["TSTOP"].set(stop_time);
-   } catch (...) {
-   }
-   try {
-      header["ONTIME"].set(duration);
-      header["TELAPSE"].set(duration);
-   } catch (...) {
-   }
-}
-
-astro::JulianDate currentTime() {
-   std::time_t my_time = std::time(0);
-   std::tm * now = std::gmtime(&my_time);
-   if (now != 0) {
-      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
-      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
-                                     now->tm_mday, hours);
-      return current_time;
-   } else {
-      throw std::runtime_error("currentTime:\n"
-                               + std::string("cannot be ascertained, ")
-                               + "std::time returns a null value.");
-   }
-}

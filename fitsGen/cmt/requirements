@@ -8,8 +8,8 @@ author James Chiang <jchiang@slac.stanford.edu>
 branches cmt src doc
 
 use GlastPolicy v*
-use rootTuple v*
-use Goodi v*
+#use rootTuple v*
+#use Goodi v*
 use tip v*
 use astro v*
 use facilities v*
@@ -25,9 +25,9 @@ macro_append fitsGen_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src
 # suppress warning messages (from Goodi package) on linux:
 macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 
-macro_append ROOT_linkopts "$(ROOT_GUI_libs)"
-
-macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreePlayer.lib libProof.lib "
+#macro_append ROOT_linkopts "$(ROOT_GUI_libs)"
+#
+#macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreePlayer.lib libProof.lib "
 
 # Make sure test applications gets built when library changes.
 macro makeFT1stamps "makeFT1.stamp"
@@ -37,15 +37,15 @@ macro makeFT2astamps "makeFT2a.stamp"
 # Standard package library (It's empty so one should be able to 
 # get rid of this):
 macro my_headers "" WIN32 "../fitsGen/*.h *.h"
-library fitsGen -no_share $(my_headers) fitsGen.cxx
+library fitsGen -no_share $(my_headers) Util.cxx
 
-#
-# Need this environment variable for Goodi templates.
-#
-set TPLDIR "$(GOODIROOT)/Templates"
-set INFILES "$(GOODIROOT)/Data"
+##
+## Need this environment variable for Goodi templates.
+##
+#set TPLDIR "$(GOODIROOT)/Templates"
+#set INFILES "$(GOODIROOT)/Data"
 
 # The applications:
-application makeFT1 makeFT1.cxx
-application makeFT2 makeFT2.cxx
+application makeFT1 makeFT1/makeFT1.cxx
+application makeFT2 makeFT2/makeFT2.cxx
 #application makeFT2a makeFT2a.cxx
