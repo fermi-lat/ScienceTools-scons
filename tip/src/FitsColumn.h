@@ -120,7 +120,7 @@ namespace tip {
         char tmp_dest = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           0, &tmp_dest, 0, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::get(Index_t, bool &) failed to read scalar cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::get(Index_t, bool &) failed to read scalar cell value");
         dest = tmp_dest;
       }
 
@@ -133,7 +133,7 @@ namespace tip {
           0, tmp_dest, 0, &status);
         if (0 != status) {
           delete [] tmp_dest;
-          throw FitsTipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
+          throw TipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
         }
         dest.assign(tmp_dest, tmp_dest + num_els);
         delete [] tmp_dest;
@@ -145,7 +145,7 @@ namespace tip {
         char tmp_src = src;
         fits_write_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           const_cast<void *>(static_cast<const void *>(&tmp_src)), &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::set(Index_t, const bool &) failed to write scalar cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::set(Index_t, const bool &) failed to write scalar cell value");
       }
 
       virtual void set(Index_t record_index, const std::vector<bool> & src) {
@@ -167,7 +167,7 @@ namespace tip {
           tmp_src, &status);
         delete [] tmp_src;
         if (0 != status)
-          throw FitsTipException(status, "FitsColumn::set(Index_t, const std::vector<bool> &) failed to write vector cell value");
+          throw TipException(status, "FitsColumn::set(Index_t, const std::vector<bool> &) failed to write vector cell value");
       }
 
       /** \brief Copy a cell from another column to this column.
@@ -204,7 +204,7 @@ namespace tip {
         long num_els = 0;
         // Get number of elements in this particular field.
         fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::getNumElements failed to get size of variable length cell");
+        if (0 != status) throw TipException(status, "FitsColumn::getNumElements failed to get size of variable length cell");
 
         return num_els;
       }
@@ -215,7 +215,7 @@ namespace tip {
         if (m_var_length) throw TipException("FitsColumn::setNumElements cannot change the width of variable length column");
         int status = 0;
         fits_modify_vector_len(m_ext->getFp(), m_field_index, num_elements, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::setNumElements failed to modify field");
+        if (0 != status) throw TipException(status, "FitsColumn::setNumElements failed to modify field");
 
         // Update column information.
         m_repeat = num_elements;
@@ -231,7 +231,7 @@ namespace tip {
         int status = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           0, &dest, 0, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::getScalar failed to read scalar cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::getScalar failed to read scalar cell value");
       }
 
       template <typename U>
@@ -245,7 +245,7 @@ namespace tip {
         U * dest_begin = &dest.front();
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0,
           dest_begin, 0, &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::getVector failed to read vector cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
       }
 
       template <typename U>
@@ -257,7 +257,7 @@ namespace tip {
         if (m_ext->readOnly()) throw TipException("FitsColumn::setScalar called for a read-only file");
         fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           const_cast<void *>(static_cast<const void *>(&dest)), &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::setScalar failed to write scalar cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::setScalar failed to write scalar cell value");
       }
 
       template <typename U>
@@ -278,7 +278,7 @@ namespace tip {
         const U * src_begin = &src.front();
         fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           const_cast<void *>(static_cast<const void *>(src_begin)), &status);
-        if (0 != status) throw FitsTipException(status, "FitsColumn::setVector failed to write vector cell value");
+        if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
 
       FitsTable * m_ext;
@@ -296,7 +296,7 @@ namespace tip {
     // Determine characteristics of this column.
     int status = 0;
     fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
-    if (0 != status) throw FitsTipException(status, "FitsColumn::FitsColumn failed to get information about field");
+    if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get information about field");
 
     // Handle special case of strings, for which the info returned by fits_get_coltype means something different.
     if (TSTRING == m_type_code) {
@@ -319,7 +319,7 @@ namespace tip {
     char units[FLEN_CARD] = "";
     fits_read_key(m_ext->getFp(), TSTRING, const_cast<char *>(os.str().c_str()), units, 0, &status);
     if (0 == status) m_units = units;
-    else if (KEY_NO_EXIST != status) throw FitsTipException(status, "FitsColumn::FitsColumn failed to get units of field");
+    else if (KEY_NO_EXIST != status) throw TipException(status, "FitsColumn::FitsColumn failed to get units of field");
   }
 
 }
