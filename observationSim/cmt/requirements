@@ -11,6 +11,7 @@ use GlastPolicy v5r*
 use flux v*
 use latResponse v*
 use Goodi v*
+use tip v1r*
 use astro v0*
 use facilities v*
 use cfitsio v1* IExternal

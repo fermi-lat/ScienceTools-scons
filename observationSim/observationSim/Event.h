@@ -8,6 +8,7 @@
 #ifndef observationSim_Event_h
 #define observationSim_Event_h
 
+#include <cmath>
 #include "astro/SkyDir.h"
 
 namespace observationSim {
@@ -61,6 +62,35 @@ public:
 
    /// True photon energy in MeV.
    double trueEnergy() const {return m_trueEnergy;}
+
+   /// Apparent inclination wrt spacecraft z-axis (degrees)
+   double phi() const {
+      Hep3Vector yAxis = zAxis().dir().cross(xAxis().dir());
+      double my_phi = atan2(appDir().dir().dot(yAxis),
+                            appDir().dir().dot(xAxis().dir()));
+      return my_phi*180./M_PI;
+   }
+
+   /// Apparent azimuthal angle wrt spacecraft x-axis (degrees)
+   double theta() const {
+      return appDir().difference(zAxis())*180./M_PI;
+   }
+
+   /// Apparent angle wrt zenith (degrees)
+   double zenAngle() const {
+      return zenith().difference(appDir())*180./M_PI;
+   }                                 
+
+   /// Pick a conversion layer.
+   short convLayer() const {
+      if (eventType() == 0) { // Front
+         return 0;
+      } else if (eventType() == 1) { // Back
+         return 15;
+      } 
+   // Default: pick at random
+      return static_cast<int>(rand()*16);
+   }
 
    double fluxTheta() const {return m_flux_theta;}
    double fluxPhi() const {return m_flux_phi;}
