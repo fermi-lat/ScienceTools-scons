@@ -10,6 +10,8 @@
 #include <fenv.h>
 #endif
 
+#include <cmath>
+
 #include <iostream>
 #include <stdexcept>
 
@@ -63,7 +65,7 @@ private:
 
 };
 
-#define ASSERT_EQUALS(X, Y) CPPUNIT_ASSERT(fabs( (X - Y)/Y ) < 1e-4)
+#define ASSERT_EQUALS(X, Y) CPPUNIT_ASSERT(std::fabs( (X - Y)/Y ) < 1e-4)
 
 void DssTests::setUp() {
    char * root_path = ::getenv("DATASUBSELECTORROOT");
