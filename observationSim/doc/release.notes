@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r7p1 21-Jul-04   JC   fix test program
     v3r7   20-Jul-04   JC   use irfs/irfInterface
     v3r6   29-Jun-04   JC   use celestialSources/genericSources package,
                             which now contains sources added in v3r2

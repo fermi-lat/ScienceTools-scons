@@ -1,5 +1,5 @@
 package observationSim
-version v3r7
+version v3r7p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -15,8 +15,9 @@ use flux v8r*
 use Likelihood v4r*
 use GRB v4r* celestialSources
 use genericSources v0* celestialSources
-use dc1Response v0r* irfs
 use g25Response v0 irfs
+use dc1Response v0 irfs
+#use dc2Response v0 irfs
 
 apply_pattern ST_library option="-no_share "
 apply_pattern ST_pfiles
