@@ -30,7 +30,7 @@ void PowerLaw::init(double Prefactor, double Index, double Scale) {
    addParam(std::string("Index"), Index, true);
 // Scale should always be fixed.
    addParam(std::string("Scale"), Scale, false);
-   setParamAlwaysFixed("Scale");
+//   setParamAlwaysFixed("Scale");
 
 // Set FuncType and ArgType for use with CompositeFunction hierarchy.
    m_funcType = Addend;

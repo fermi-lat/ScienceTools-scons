@@ -56,7 +56,7 @@ public:
    }
 
    void generateSamples(std::vector< std::vector<double> > &samples,
-                        unsigned long nsamp=10000);
+                        unsigned long nsamp=10000, bool clear=false);
 
    /// Set the transition probablity widths by hand
    void setTransitionWidths(std::vector<double> &transitionWidths) {

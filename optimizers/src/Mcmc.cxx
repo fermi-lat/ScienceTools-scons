@@ -32,7 +32,7 @@ Mcmc::Mcmc(Function &stat, bool verbose) : m_stat(&stat), m_verbose(verbose) {
 }
 
 void Mcmc::generateSamples(std::vector< std::vector<double> > &samples, 
-                           unsigned long nsamp) {
+                           unsigned long nsamp, bool clear) {
 // Dummy Arg object required by Function methods:
    dArg dummy(1.);
 
@@ -44,7 +44,7 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
    std::vector<Parameter> params;
    m_stat->getFreeParams(params);
 
-   samples.clear();
+   if (clear) samples.clear();
 
    if (m_verbose) {
       std::cerr << "Mcmc generating samples";
