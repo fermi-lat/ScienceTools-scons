@@ -19,16 +19,6 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Geometry/Vector3D.h"
 
-#ifdef USE_GOODI
-#include "Goodi/GoodiConstants.h"
-#include "Goodi/DataIOServiceFactory.h"
-#include "Goodi/DataFactory.h"
-#include "Goodi/IDataIOService.h"
-#include "Goodi/IData.h"
-#include "Goodi/IEventData.h"
-#include "observationSim/useGoodiNames.h"
-#endif
-
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -106,31 +96,14 @@ namespace observationSim {
 
 EventContainer::~EventContainer() {
    if (m_events.size() > 0) writeEvents();
-#ifdef USE_GOODI
-   if (m_useGoodi) {
-      delete m_goodiEventData;
-   }
-#endif
 }
 
 void EventContainer::init() {
    m_events.clear();
    
-   if (m_useGoodi) {
-#ifdef USE_GOODI
+   if (m_useFT1) {
       std::string tipRoot(std::getenv("TIPROOT"));
       m_ft1Template = tipRoot + "/data/ft1.tpl";
-
-//       Goodi::DataFactory dataCreator;
-
-// // Set the type of data to be generated and the mission.
-//       Goodi::DataType datatype = Goodi::Evt;
-//       Goodi::Mission mission = Goodi::Lat;
-
-// // Create the EventData object.
-//       m_goodiEventData = dynamic_cast<Goodi::IEventData *>
-//          (dataCreator.create(datatype, mission));
-#endif
    }
 }
 
@@ -203,8 +176,7 @@ astro::SkyDir EventContainer::ScZenith(double time) {
 
 void EventContainer::writeEvents() {
 
-   if (m_useGoodi) {
-#ifdef USE_GOODI
+   if (m_useFT1) {
       std::string ft1File = outputFileName();
       tip::IFileSvc::instance().createFile(ft1File, m_ft1Template);
       tip::Table * my_table = 
@@ -233,49 +205,6 @@ void EventContainer::writeEvents() {
          }
       }
       delete my_table;
-//       unsigned int npts = m_events.size();
-//       std::vector<double> time(npts);
-//       std::vector<double> energy(npts);
-//       std::vector<double> ra(npts);
-//       std::vector<double> dec(npts);
-//       std::vector<double> theta(npts);
-//       std::vector<double> phi(npts);
-//       std::vector<double> zenithAngle(npts);
-//       std::vector<int> convLayer(npts);
-//       std::vector<std::pair<double, double> > gti;
-
-//       std::vector<Event>::iterator evtIt = m_events.begin();
-//       for (int i = 0; evtIt != m_events.end(); evtIt++, i++) {
-//          time[i] = evtIt->time();
-// // Goodi wants energies in ergs.
-//          energy[i] = evtIt->energy()*1e6;
-// // Goodi wants angles in radians.
-//          ra[i] = evtIt->appDir().ra()*M_PI/180.;
-//          dec[i] = evtIt->appDir().dec()*M_PI/180.;
-//          theta[i] = evtIt->appDir().difference(evtIt->zAxis());
-//          Hep3Vector yAxis = evtIt->zAxis().dir().cross(evtIt->xAxis().dir());
-//          phi[i] = atan2( evtIt->appDir().dir().dot(yAxis),
-//                          evtIt->appDir().dir().dot(evtIt->xAxis().dir()) );
-//          zenithAngle[i] = evtIt->zenith().difference(evtIt->appDir());
-//          if (evtIt->eventType() == 0) { // Front
-//             convLayer[i] = 0;
-//          } else if (evtIt->eventType() == 1) { // Back
-//             convLayer[i] = 15;
-//          } else { // pick at random
-//             convLayer[i] = static_cast<int>(RandFlat::shoot()*16);
-//          }
-//       }
-//       gti.push_back(std::make_pair(*time.begin(), *time.end()));
-
-//       m_goodiEventData->setTime(time);
-//       m_goodiEventData->setEnergy(energy);
-//       m_goodiEventData->setRA(ra);
-//       m_goodiEventData->setDec(dec);
-//       m_goodiEventData->setTheta(theta);
-//       m_goodiEventData->setPhi(phi);
-//       m_goodiEventData->setZenithAngle(zenithAngle);
-//       m_goodiEventData->setConvLayer(convLayer);
-//       m_goodiEventData->setGTI(gti);
 
 // // // Header keywords for the GTI extension.
 // //       std::string date_start = "2005-07-18T00:00:00.0000";
@@ -288,40 +217,6 @@ void EventContainer::writeEvents() {
 // //       m_goodiEventData->setKey("TSTOP", gti.front().second);
 // //       m_goodiEventData->setKey("ONTIME", duration);
 // //       m_goodiEventData->setKey("TELAPSE", duration);
-
-// // Set the sizes of the valarray data for the multiword columns,
-// // GEO_OFFSET, BARY_OFFSET, etc..
-//       std::vector< std::valarray<double> > geoOffset(npts);
-//       std::vector< std::valarray<double> > baryOffset(npts);
-//       std::vector< std::valarray<float> > convPoint(npts);
-//       std::vector< std::valarray<long> > acdTilesHit(npts);
-//       std::vector< std::valarray<int> > calibVersion(npts);
-//       for (unsigned int i = 0; i < npts; i++) {
-//          geoOffset[i].resize(3);
-//          baryOffset[i].resize(3);
-//          convPoint[i].resize(3);
-//          acdTilesHit[i].resize(3);
-//          calibVersion[i].resize(3);
-// // All events produced by observationSim satisfy all bg, goodPsf and
-// // goodEnergy cuts.
-//          calibVersion[i][0] = 1;
-//          calibVersion[i][1] = 1;
-//          calibVersion[i][2] = 1;
-//       }
-
-//       m_goodiEventData->setGeoOffset(geoOffset);
-//       m_goodiEventData->setBaryOffset(baryOffset);
-//       m_goodiEventData->setConvPoint(convPoint);
-//       m_goodiEventData->setAcdTilesHit(acdTilesHit);
-//       m_goodiEventData->setCalibVersion(calibVersion);
-
-//       Goodi::DataIOServiceFactory iosvcCreator;
-//       Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
-
-//       std::string outputFile = "!" + outputFileName();
-//       m_goodiEventData->write(goodiIoService, outputFile);
-//       delete goodiIoService;
-#endif
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(20);
@@ -363,7 +258,7 @@ void EventContainer::writeEvents() {
       m_eventTable->writeTableData(data);
 
 // Delete the old table.
-      delete m_eventTable;      
+      delete m_eventTable;
    }
 
 // Flush the Event buffer...

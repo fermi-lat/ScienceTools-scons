@@ -18,11 +18,6 @@
 #include "observationSim/FitsTable.h"
 #include "observationSim/Spacecraft.h"
 
-namespace Goodi {
-   class IEventData;
-   class IDataIOService;
-}
-
 class EventSource;
 
 namespace latResponse {
@@ -45,14 +40,14 @@ class EventContainer {
 public:
 
    /// @param filename The root name of the output FITS file.
-   /// @param useGoodi A flag to use the Goodi package to write the data in 
+   /// @param useFT1 A flag to write the data in 
    /// <a href="http://glast.gsfc.nasa.gov/ssc/dev/fits_def/definitionFT1.html">
    /// FT1</a> format. If set to false, the old A1 format is used.
    /// @param maxNumEvents The maximum size of the Event buffer before
    ///        a FITS file is written.
-   EventContainer(const std::string &filename, bool useGoodi=true, 
+   EventContainer(const std::string &filename, bool useFT1=true, 
                   unsigned int maxNumEvents=20000) : 
-      m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0), 
+      m_filename(filename), m_useFT1(useFT1), m_fileNum(0), 
       m_maxNumEvents(maxNumEvents), m_prob(1) {init();}
 
    ~EventContainer();
@@ -90,9 +85,8 @@ private:
    /// Root name for the FITS binary table output files.
    std::string m_filename;
 
-   /// Flag to indicate that Goodi shall be used to write the Event
-   /// data in FT1 format.
-   bool m_useGoodi;
+   /// Flag to indicate that the FT1 format will be used.
+   bool m_useFT1;
 
    /// Name of the FT1 template file.
    std::string m_ft1Template;
@@ -113,9 +107,6 @@ private:
 
    /// The FITS binary table object that steers the cfitsio routines.
    FitsTable *m_eventTable;
-
-   /// Goodi Event data object pointer.
-   Goodi::IEventData *m_goodiEventData;
 
    /// The Event buffer.
    std::vector<Event> m_events;

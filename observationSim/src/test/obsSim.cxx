@@ -151,17 +151,17 @@ int main(int iargc, char * argv[]) {
 //      my_simulator.setRocking(0);
       
 // Generate the events and spacecraft data.
-#ifdef USE_GOODI
-      bool useGoodi(true);
+#ifdef USE_FT1
+      bool useFT1(true);
 #else
-      bool useGoodi(false);
+      bool useFT1(false);
 #endif
       long nMaxRows = pars["Maximum_number_of_rows"];
       std::string prefix = pars["Output_file_prefix"];
       observationSim::EventContainer events(prefix + "_events", 
-                                            useGoodi, nMaxRows);
+                                            useFT1, nMaxRows);
       observationSim::ScDataContainer scData(prefix + "_scData", 
-                                             useGoodi, nMaxRows);
+                                             useFT1, nMaxRows);
 // The spacecraft object.
       observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
       

@@ -18,11 +18,6 @@
 #include "observationSim/FitsTable.h"
 #include "observationSim/Spacecraft.h"
 
-namespace Goodi {
-   class ISpacecraftData;
-   class IDataIOService;
-}
-
 class EventSource;
 
 namespace observationSim {
@@ -41,12 +36,12 @@ class ScDataContainer {
 public:
 
    /// @param filename The root name of the output FITS file.
-   /// @param useGoodi Set to true if Goodi is to be used.
+   /// @param useFT2 Set to true if FT2 format is to be used.
    /// @param maxNumEntries The maximum number of entries in the ScData
    ///        buffer before a FITS file is written.
-   ScDataContainer(const std::string &filename, bool useGoodi=true,
+   ScDataContainer(const std::string &filename, bool useFT2=true,
                    int maxNumEntries=20000) :
-      m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0),
+      m_filename(filename), m_useFT2(useFT2), m_fileNum(0),
       m_maxNumEntries(maxNumEntries) {init();}
 
    ~ScDataContainer();
@@ -68,9 +63,11 @@ private:
    /// Root name for the FITS binary table output files.
    std::string m_filename;
 
-   /// Flag to indicate that Goodi shall be used to write the Event
-   /// data in FT1 format.
-   bool m_useGoodi;
+   /// Template file for FT2 data.
+   std::string m_ft2Template;
+
+   /// Flag to indicate that FT2 format will be used.
+   bool m_useFT2;
 
    /// The current index number fo the FITS output files.
    long m_fileNum;
@@ -80,9 +77,6 @@ private:
 
    /// The FITS binary table object that steers the cfitsio routines.
    FitsTable *m_scDataTable;
-
-   /// Goodi Spacecraft data object pointer.
-   Goodi::ISpacecraftData *m_goodiScData;
 
    /// The ScData buffer.
    std::vector<ScData> m_scData;

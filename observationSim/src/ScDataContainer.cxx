@@ -10,17 +10,10 @@
 
 #include "CLHEP/Geometry/Vector3D.h"
 
-#ifdef USE_GOODI
-#include "Goodi/GoodiConstants.h"
-#include "Goodi/DataIOServiceFactory.h"
-#include "Goodi/DataFactory.h"
-#include "Goodi/IDataIOService.h"
-#include "Goodi/IData.h"
-#include "Goodi/ISpacecraftData.h"
-#endif
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 #include "astro/EarthCoordinate.h"
-//#include "astro/GPS.h"
 
 #include "flux/EventSource.h"
 
@@ -30,29 +23,13 @@ namespace observationSim {
 
 ScDataContainer::~ScDataContainer() {
    if (m_scData.size() > 0) writeScData();
-#ifdef USE_GOODI
-   if (m_useGoodi) {
-      delete m_goodiScData;
-   }
-#endif
 }
 
 void ScDataContainer::init() {
    m_scData.clear();
 
-   if (m_useGoodi) {
-#ifdef USE_GOODI
-      Goodi::DataFactory dataCreator;
-
-// Set the type of data to be generated and the mission.
-      Goodi::DataType datatype = Goodi::Spacecraft;
-      Goodi::Mission mission = Goodi::Lat;
-
-// Create the ScData object.
-      m_goodiScData = dynamic_cast<Goodi::ISpacecraftData *>
-         (dataCreator.create(datatype, mission));
-#endif
-   }
+   std::string rootPath(std::getenv("OBSERVATIONSIMROOT"));
+   m_ft2Template = rootPath + "/data/ft2.tpl";
 }
 
 void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
@@ -72,55 +49,32 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 
 void ScDataContainer::writeScData() {
 
-   if (m_useGoodi) {
-#ifdef USE_GOODI
-      unsigned int npts = m_scData.size();
-      std::vector<double> startTime(npts);
-      std::vector<double> stopTime(npts);
-      std::vector< std::pair<double, double> > gti(npts);
-      std::vector<float> latGeo(npts);
-      std::vector<float> lonGeo(npts);
-      std::vector<float> raSCZ(npts);
-      std::vector<float> decSCZ(npts);
-      std::vector<float> raSCX(npts);
-      std::vector<float> decSCX(npts);
-
-      std::vector<ScData>::const_iterator scIt = m_scData.begin();
-      for (unsigned int i = 0; scIt != m_scData.end(); scIt++, i++) {
-         stopTime[i] = scIt->time();
-         gti[i].second = stopTime[i];
-         if (i > 0) {
-            startTime[i] = stopTime[i-1];
-            gti[i].first = startTime[i];
+   if (m_useFT2) {
+      std::string ft2File = outputFileName();
+      tip::IFileSvc::instance().createFile(ft2File, m_ft2Template);
+      tip::Table * my_table = 
+         tip::IFileSvc::instance().editTable(ft2File, "Ext1");
+      int npts = m_scData.size();
+      my_table->setNumRecords(npts);
+      tip::Table::Iterator it = my_table->begin();
+      tip::Table::Record & row = *it;
+      std::vector<ScData>::const_iterator sc = m_scData.begin();
+      for ( ; it != my_table->end(), sc != m_scData.end(); ++it, ++sc) {
+         row["start"].set(sc->time());
+         if (sc+1 != m_scData.end()) {
+            row["stop"].set((sc+1)->time());
+         } else {
+            row["stop"].set(2.*m_scData[npts-1].time() 
+                            - m_scData[npts-2].time());
          }
-// Convert all angles to radians.
-         latGeo[i] = scIt->lat()*M_PI/180.;
-         lonGeo[i] = scIt->lon()*M_PI/180.;
-         raSCZ[i] = scIt->zAxis().ra()*M_PI/180.;
-         decSCZ[i] = scIt->zAxis().dec()*M_PI/180.;
-         raSCX[i] = scIt->xAxis().ra()*M_PI/180.;
-         decSCX[i] = scIt->xAxis().dec()*M_PI/180.;
+         row["lat_geo"].set(sc->lat());
+         row["lon_geo"].set(sc->lon());
+         row["ra_scz"].set(sc->zAxis().ra());
+         row["dec_scz"].set(sc->zAxis().dec());
+         row["ra_scx"].set(sc->xAxis().ra());
+         row["dec_scx"].set(sc->xAxis().dec());
       }
-      startTime[0] = 2.*stopTime[0] - stopTime[1];
-      gti[0].first = startTime[0];
-      m_goodiScData->setStartTime(startTime);
-      m_goodiScData->setStopTime(stopTime);
-      m_goodiScData->setGTI(gti);
-      m_goodiScData->setLatGeo(latGeo);
-      m_goodiScData->setLonGeo(lonGeo);
-      m_goodiScData->setRAscz(raSCZ);
-      m_goodiScData->setDECscz(decSCZ);
-      m_goodiScData->setRAscx(raSCX);
-      m_goodiScData->setDECscx(decSCX);
-
-// Goodi I/O service object.
-      Goodi::DataIOServiceFactory iosvcCreator;
-      Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
-
-      std::string outputFile = "!" + outputFileName();
-      m_goodiScData->write(goodiIoService, outputFile);
-      delete goodiIoService;
-#endif
+      delete my_table;
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(10);

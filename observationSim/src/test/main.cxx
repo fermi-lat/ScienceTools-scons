@@ -94,7 +94,6 @@ int main(int argn, char * argc[]) {
 
 // Allow for multiple IRFs.
    std::vector<latResponse::Irfs *> respPtrs;
-//   latResponse::IrfsFactory irfsFactory;
    if (useCombined) {
       respPtrs.push_back(irfsFactory().create("Glast25::Combined"));
    } else { // use Front & Back
@@ -103,13 +102,13 @@ int main(int argn, char * argc[]) {
    }
 
 // Generate the events and spacecraft data.
-#ifdef USE_GOODI
-   bool useGoodi(true);
+#ifdef USE_FT1
+   bool useFT1(true);
 #else
-   bool useGoodi(false);
+   bool useFT1(false);
 #endif
-   observationSim::EventContainer events("test_events", useGoodi);
-   observationSim::ScDataContainer scData("test_scData", useGoodi);
+   observationSim::EventContainer events("test_events", useFT1);
+   observationSim::ScDataContainer scData("test_scData", useFT1);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
