@@ -8,7 +8,10 @@
 #include "fitsio.h"
 
 #include "FitsColumn.h"
+#include "FitsExtensionManager.h"
 #include "TestColumn.h"
+
+#include "tip/IFileSvc.h"
 
 namespace tip {
 
@@ -27,133 +30,48 @@ namespace tip {
 
   void TestColumn::copyDataFile(const std::string & in_file, const std::string & out_file) {
     int status = 0;
-    std::string copy_file = std::string("!") + out_file + "(" + in_file + ")";
 
     // Create output file using input file as a template.
-    fitsfile * out_fp = 0;
-    fits_create_file(&out_fp, const_cast<char *>(copy_file.c_str()), &status);
-    if (0 != status) {
-      setStatus(status);
-      throw std::runtime_error(std::string("Unexpected: TestColumn::copyDataFile could not create file ") + copy_file);
-    }
+    IFileSvc::instance().createFile(out_file, in_file);
 
-    // Open the input file.
-    fitsfile * in_fp = 0;
-    fits_open_file(&in_fp, const_cast<char *>(in_file.c_str()), READONLY, &status);
-    if (0 != status) {
-      setStatus(status);
-      fits_close_file(out_fp, &status);
-      throw std::runtime_error(std::string("Unexpected: TestColumn::copyDataFile could not open file ") + copy_file);
-    }
+    // Get container of extensions in the file(s).
+    FileSummary summary;
+    IFileSvc::instance().getFileSummary(in_file, summary);
 
-    for(bool done = false; !done;) {
-      // Move to next extension in input file.
-      fits_movrel_hdu(in_fp, 1, 0, &status);
-      if (0 != status) {
-        if (END_OF_FILE == status) {
-          done = true;
-          continue;
-        }
-        setStatus(status);
-        fits_close_file(in_fp, &status);
-        fits_close_file(out_fp, &status);
-        throw std::runtime_error(std::string("Unexpected: TestColumn::copyDataFile could not move to next HDU of ") + in_file);
-      }
-  
-      // Move to next extension in output file.
-      fits_movrel_hdu(out_fp, 1, 0, &status);
-      if (0 != status) {
-        setStatus(status);
-        fits_close_file(in_fp, &status);
-        fits_close_file(out_fp, &status);
-        throw std::runtime_error(std::string("Unexpected: TestColumn::copyDataFile could not move to next HDU of ") + out_file);
-      }
-  
-      // Get number of columns to iterate over.
-      int num_cols = 0;
-      fits_get_num_cols(in_fp, &num_cols, &status);
-      if (0 != status) {
-        setStatus(status);
-        fits_close_file(in_fp, &status);
-        fits_close_file(out_fp, &status);
-        throw std::runtime_error("Unexpected: TestColumn::copyDataFile could not get number of columns in test file.");
-      }
-  
-      // Get number of rows to iterate over.
-      long num_rows = 0;
-      fits_get_num_rows(in_fp, &num_rows, &status);
-      if (0 != status) {
-        setStatus(status);
-        fits_close_file(in_fp, &status);
-        fits_close_file(out_fp, &status);
-        throw std::runtime_error("Unexpected: TestColumn::copyDataFile could not get number of rows in test file.");
-      }
-  
-      // Create column objects for each column in input and output files.
-      for (int ii = 0; ii < num_cols; ++ii) {
-        int type_code = 0;
-        long repeat = 0;
-        // Get info about the type. This will be used to create the column object.
-        fits_get_coltype(in_fp, ii + 1, &type_code, &repeat, 0, &status);
-        if (0 != status) {
-          setStatus(status);
-          fits_close_file(in_fp, &status);
-          fits_close_file(out_fp, &status);
-          std::ostringstream os;
-          os << "Unexpected: TestColumn::copyDataFile could not get type of column " << ii << " in test file.";
-          throw std::runtime_error(os.str());
-        }
-      
-        // Handle special case of variable length columns.
-        if (type_code < 0) {
-          type_code *= -1;
-          repeat = 0;
-        }
-  
-        const IColumn * in_col = 0;
-        IColumn * out_col = 0;
+    // Iterate over all extensions.
+    for (FileSummary::const_iterator ext_itor = summary.begin(); ext_itor != summary.end(); ++ext_itor) {
+      // Open input extension.
+      FitsExtensionManager in_manager(in_file, ext_itor->getExtId(), "", true);
 
-        switch (type_code) {
-          case TLOGICAL:
-            in_col = new FitsColumn<bool>(in_fp, ii + 1);
-            out_col = new FitsColumn<bool>(out_fp, ii + 1);
-            break;
-          case TDOUBLE:
-            in_col = new FitsColumn<double>(in_fp, ii + 1);
-            out_col = new FitsColumn<double>(out_fp, ii + 1);
-            break;
-          case TFLOAT:
-            in_col = new FitsColumn<float>(in_fp, ii + 1);
-            out_col = new FitsColumn<float>(out_fp, ii + 1);
-            break;
-          case TLONG:
-            in_col = new FitsColumn<long>(in_fp, ii + 1);
-            out_col = new FitsColumn<long>(out_fp, ii + 1);
-            break;
-          case TSHORT:
-            in_col = new FitsColumn<short>(in_fp, ii + 1);
-            out_col = new FitsColumn<short>(out_fp, ii + 1);
-            break;
-          default: {
-            delete in_col;
-            fits_close_file(in_fp, &status);
-            fits_close_file(out_fp, &status);
-            std::ostringstream os;
-            os << "Unexpected: TestColumn::copyDataFile encountered unknown type code " << type_code;
-            throw std::logic_error(os.str());
-            break;
-          }
-        }
+      // Skip images for now.
+      if (!in_manager.isTable()) continue;
 
-        // Copy column from in to out.
-        for (long jj = 0; jj < num_rows; ++jj) {
-          out_col->copy(in_col, jj, jj);
+      // Open output extension.
+      FitsExtensionManager out_manager(out_file, ext_itor->getExtId(), "", false);
+     
+      // Get number of fields in this extension.
+      long num_fields = in_manager.getValidFields().size();
+
+      // Get number of records in this extension.
+      Index_t num_records = in_manager.getNumRecords();
+
+      // Resize the output table.
+      out_manager.setNumRecords(num_records);
+
+      // Iterate over all records:
+      for (Index_t record_index = 0; record_index != num_records; ++record_index) {
+        // For each record, iterate over all fields.
+        for (long field_index = 1; field_index <= num_fields; ++field_index) {
+          const IColumn * in_col = in_manager.getColumn(field_index);
+          IColumn * out_col = out_manager.getColumn(field_index);
+
+          // Test copy column. This tests some of the overloaded get and set methods of FitsColumn as well.
+          out_col->copy(in_col, record_index, record_index);
         }
-    
-        // Clean up.
-        delete out_col;
-        delete in_col;
       }
+
+      // A little ugliness to handle variable length columns.
+      fitsfile * out_fp = out_manager.getFp();
 
       fits_compress_heap(out_fp, &status);
       if (0 != status) {
@@ -162,12 +80,5 @@ namespace tip {
       }
 
     }
-
-    fits_write_chksum(out_fp, &status);
-
-    // Final clean up.
-    fits_close_file(in_fp, &status);
-    fits_close_file(out_fp, &status);
-
   }
 }
