@@ -709,10 +709,9 @@ namespace hoops {
         } else { d = (unsigned long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, float & d) {
-        double s_abs = fabs(s);
-        if (s_abs < Lim<float>::min()) {
-          d = Lim<float>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s_abs > Lim<float>::max()) {
+        if (s < -Lim<float>::max()) {
+          d = -Lim<float>::max(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<float>::max()) {
           d = Lim<float>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = float(s); }
       }
@@ -792,18 +791,16 @@ namespace hoops {
         } else { d = (unsigned long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, float & d) {
-        long double s_abs = fabs(s);
-        if (s_abs < Lim<float>::min()) {
-          d = Lim<float>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s_abs > Lim<float>::max()) {
+        if (s < -Lim<float>::max()) {
+          d = -Lim<float>::max(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<float>::max()) {
           d = Lim<float>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = float(s); }
       }
       static void Convert(const long double & s, double & d) {
-        long double s_abs = fabs(s);
-        if (s_abs < Lim<double>::min()) {
-          d = Lim<double>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s_abs > Lim<double>::max()) {
+        if (s < -Lim<double>::max()) {
+          d = -Lim<double>::max(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<double>::max()) {
           d = Lim<double>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = double(s); }
       }
@@ -1009,10 +1006,10 @@ namespace hoops {
         } else if (!IPrim::IsBlank(r)) {
           d = float(val);
           throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
-        } else if (Lim<float>::min() > fabs(val)) {
-          d = Lim<float>::min();
+        } else if (-Lim<float>::max() > val) {
+          d = -Lim<float>::max();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<float>::max()) < fabs(val)) {
+        } else if ((tmpval = Lim<float>::max()) < val) {
           d = Lim<float>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
@@ -1201,6 +1198,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.15  2004/09/24 17:54:34  peachey
+ * Correct rules for determining underflows.
+ *
  * Revision 1.14  2004/06/24 20:35:57  peachey
  * The Lim class's min/max member variables have become min()/max() methods,
  * with the same meaning as in std::numeric_limits. This required 3 changes

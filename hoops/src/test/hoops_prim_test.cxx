@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include "hoops/hoops.h"
 #include "hoops/hoops_limits.h"
@@ -11597,7 +11598,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_bool) {
+          if ((bool) tmp_bool != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_bool;
@@ -11664,7 +11665,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_char) {
+          if ((char) tmp_bool != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_char;
@@ -11731,7 +11732,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_signed_char) {
+          if ((signed char) tmp_bool != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_signed_char;
@@ -11798,7 +11799,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_short) {
+          if ((short) tmp_bool != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_short;
@@ -11865,7 +11866,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_int) {
+          if ((int) tmp_bool != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_int;
@@ -11932,7 +11933,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_long) {
+          if ((long) tmp_bool != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long;
@@ -11999,7 +12000,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_unsigned_char) {
+          if ((unsigned char) tmp_bool != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_char;
@@ -12066,7 +12067,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_unsigned_short) {
+          if ((unsigned short) tmp_bool != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_short;
@@ -12133,7 +12134,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_unsigned_int) {
+          if ((unsigned int) tmp_bool != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_int;
@@ -12200,7 +12201,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_unsigned_long) {
+          if ((unsigned long) tmp_bool != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_unsigned_long;
@@ -12267,7 +12268,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_float) {
+          if ((float) tmp_bool != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_float;
@@ -12334,7 +12335,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_double) {
+          if ((double) tmp_bool != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_double;
@@ -12401,7 +12402,7 @@ int main() {
         {
           bool tmp_bool;
           hd_prim_bool->To(tmp_bool);
-          if (tmp_bool != (bool) tmp_long_double) {
+          if ((long double) tmp_bool != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_bool->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_bool << " to " << tmp_long_double;
@@ -12468,7 +12469,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_bool) {
+          if ((bool) tmp_char != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_bool;
@@ -12535,7 +12536,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_char) {
+          if ((char) tmp_char != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_char;
@@ -12602,7 +12603,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_signed_char) {
+          if ((signed char) tmp_char != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_signed_char;
@@ -12669,7 +12670,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_short) {
+          if ((short) tmp_char != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_short;
@@ -12736,7 +12737,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_int) {
+          if ((int) tmp_char != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_int;
@@ -12803,7 +12804,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_long) {
+          if ((long) tmp_char != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long;
@@ -12870,7 +12871,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_unsigned_char) {
+          if ((unsigned char) tmp_char != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_char;
@@ -12937,7 +12938,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_unsigned_short) {
+          if ((unsigned short) tmp_char != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_short;
@@ -13004,7 +13005,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_unsigned_int) {
+          if ((unsigned int) tmp_char != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_int;
@@ -13071,7 +13072,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_unsigned_long) {
+          if ((unsigned long) tmp_char != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_unsigned_long;
@@ -13138,7 +13139,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_float) {
+          if ((float) tmp_char != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_float;
@@ -13205,7 +13206,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_double) {
+          if ((double) tmp_char != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_double;
@@ -13272,7 +13273,7 @@ int main() {
         {
           char tmp_char;
           hd_prim_char->To(tmp_char);
-          if (tmp_char != (char) tmp_long_double) {
+          if ((long double) tmp_char != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_char->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_char << " to " << tmp_long_double;
@@ -13339,7 +13340,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_bool) {
+          if ((bool) tmp_signed_char != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_bool;
@@ -13406,7 +13407,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_char) {
+          if ((char) tmp_signed_char != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_char;
@@ -13473,7 +13474,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_signed_char) {
+          if ((signed char) tmp_signed_char != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_signed_char;
@@ -13540,7 +13541,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_short) {
+          if ((short) tmp_signed_char != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_short;
@@ -13607,7 +13608,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_int) {
+          if ((int) tmp_signed_char != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_int;
@@ -13674,7 +13675,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_long) {
+          if ((long) tmp_signed_char != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long;
@@ -13741,7 +13742,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_unsigned_char) {
+          if ((unsigned char) tmp_signed_char != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_char;
@@ -13808,7 +13809,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_unsigned_short) {
+          if ((unsigned short) tmp_signed_char != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_short;
@@ -13875,7 +13876,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_unsigned_int) {
+          if ((unsigned int) tmp_signed_char != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_int;
@@ -13942,7 +13943,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_unsigned_long) {
+          if ((unsigned long) tmp_signed_char != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_unsigned_long;
@@ -14009,7 +14010,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_float) {
+          if ((float) tmp_signed_char != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_float;
@@ -14076,7 +14077,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_double) {
+          if ((double) tmp_signed_char != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_double;
@@ -14143,7 +14144,7 @@ int main() {
         {
           signed char tmp_signed_char;
           hd_prim_signed_char->To(tmp_signed_char);
-          if (tmp_signed_char != (signed char) tmp_long_double) {
+          if ((long double) tmp_signed_char != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_signed_char->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_signed_char << " to " << tmp_long_double;
@@ -14210,7 +14211,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_bool) {
+          if ((bool) tmp_short != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_bool;
@@ -14277,7 +14278,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_char) {
+          if ((char) tmp_short != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_char;
@@ -14344,7 +14345,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_signed_char) {
+          if ((signed char) tmp_short != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_signed_char;
@@ -14411,7 +14412,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_short) {
+          if ((short) tmp_short != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_short;
@@ -14478,7 +14479,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_int) {
+          if ((int) tmp_short != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_int;
@@ -14545,7 +14546,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_long) {
+          if ((long) tmp_short != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long;
@@ -14612,7 +14613,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_unsigned_char) {
+          if ((unsigned char) tmp_short != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_char;
@@ -14679,7 +14680,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_unsigned_short) {
+          if ((unsigned short) tmp_short != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_short;
@@ -14746,7 +14747,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_unsigned_int) {
+          if ((unsigned int) tmp_short != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_int;
@@ -14813,7 +14814,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_unsigned_long) {
+          if ((unsigned long) tmp_short != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_unsigned_long;
@@ -14880,7 +14881,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_float) {
+          if ((float) tmp_short != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_float;
@@ -14947,7 +14948,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_double) {
+          if ((double) tmp_short != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_double;
@@ -15014,7 +15015,7 @@ int main() {
         {
           short tmp_short;
           hd_prim_short->To(tmp_short);
-          if (tmp_short != (short) tmp_long_double) {
+          if ((long double) tmp_short != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_short->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_short << " to " << tmp_long_double;
@@ -15081,7 +15082,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_bool) {
+          if ((bool) tmp_int != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_bool;
@@ -15148,7 +15149,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_char) {
+          if ((char) tmp_int != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_char;
@@ -15215,7 +15216,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_signed_char) {
+          if ((signed char) tmp_int != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_signed_char;
@@ -15282,7 +15283,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_short) {
+          if ((short) tmp_int != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_short;
@@ -15349,7 +15350,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_int) {
+          if ((int) tmp_int != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_int;
@@ -15416,7 +15417,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_long) {
+          if ((long) tmp_int != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long;
@@ -15483,7 +15484,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_unsigned_char) {
+          if ((unsigned char) tmp_int != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_char;
@@ -15550,7 +15551,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_unsigned_short) {
+          if ((unsigned short) tmp_int != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_short;
@@ -15617,7 +15618,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_unsigned_int) {
+          if ((unsigned int) tmp_int != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_int;
@@ -15684,7 +15685,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_unsigned_long) {
+          if ((unsigned long) tmp_int != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_unsigned_long;
@@ -15751,7 +15752,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_float) {
+          if ((float) tmp_int != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_float;
@@ -15818,7 +15819,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_double) {
+          if ((double) tmp_int != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_double;
@@ -15885,7 +15886,7 @@ int main() {
         {
           int tmp_int;
           hd_prim_int->To(tmp_int);
-          if (tmp_int != (int) tmp_long_double) {
+          if ((long double) tmp_int != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_int->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_int << " to " << tmp_long_double;
@@ -15952,7 +15953,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_bool) {
+          if ((bool) tmp_long != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_bool;
@@ -16019,7 +16020,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_char) {
+          if ((char) tmp_long != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_char;
@@ -16086,7 +16087,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_signed_char) {
+          if ((signed char) tmp_long != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_signed_char;
@@ -16153,7 +16154,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_short) {
+          if ((short) tmp_long != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_short;
@@ -16220,7 +16221,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_int) {
+          if ((int) tmp_long != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_int;
@@ -16287,7 +16288,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_long) {
+          if ((long) tmp_long != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long;
@@ -16354,7 +16355,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_unsigned_char) {
+          if ((unsigned char) tmp_long != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_char;
@@ -16421,7 +16422,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_unsigned_short) {
+          if ((unsigned short) tmp_long != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_short;
@@ -16488,7 +16489,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_unsigned_int) {
+          if ((unsigned int) tmp_long != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_int;
@@ -16555,7 +16556,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_unsigned_long) {
+          if ((unsigned long) tmp_long != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_unsigned_long;
@@ -16622,7 +16623,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_float) {
+          if ((float) tmp_long != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_float;
@@ -16689,7 +16690,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_double) {
+          if ((double) tmp_long != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_double;
@@ -16756,7 +16757,7 @@ int main() {
         {
           long tmp_long;
           hd_prim_long->To(tmp_long);
-          if (tmp_long != (long) tmp_long_double) {
+          if ((long double) tmp_long != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_long << " to " << tmp_long_double;
@@ -16823,7 +16824,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_bool) {
+          if ((bool) tmp_unsigned_char != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_bool;
@@ -16890,7 +16891,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_char) {
+          if ((char) tmp_unsigned_char != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_char;
@@ -16957,7 +16958,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_signed_char) {
+          if ((signed char) tmp_unsigned_char != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_signed_char;
@@ -17024,7 +17025,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_short) {
+          if ((short) tmp_unsigned_char != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_short;
@@ -17091,7 +17092,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_int) {
+          if ((int) tmp_unsigned_char != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_int;
@@ -17158,7 +17159,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_long) {
+          if ((long) tmp_unsigned_char != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long;
@@ -17225,7 +17226,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_unsigned_char) {
+          if ((unsigned char) tmp_unsigned_char != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_char;
@@ -17292,7 +17293,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_unsigned_short) {
+          if ((unsigned short) tmp_unsigned_char != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_short;
@@ -17359,7 +17360,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_unsigned_int) {
+          if ((unsigned int) tmp_unsigned_char != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_int;
@@ -17426,7 +17427,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_unsigned_long) {
+          if ((unsigned long) tmp_unsigned_char != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_unsigned_long;
@@ -17493,7 +17494,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_float) {
+          if ((float) tmp_unsigned_char != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_float;
@@ -17560,7 +17561,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_double) {
+          if ((double) tmp_unsigned_char != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_double;
@@ -17627,7 +17628,7 @@ int main() {
         {
           unsigned char tmp_unsigned_char;
           hd_prim_unsigned_char->To(tmp_unsigned_char);
-          if (tmp_unsigned_char != (unsigned char) tmp_long_double) {
+          if ((long double) tmp_unsigned_char != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_char->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_unsigned_char << " to " << tmp_long_double;
@@ -17694,7 +17695,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_bool) {
+          if ((bool) tmp_unsigned_short != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_bool;
@@ -17761,7 +17762,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_char) {
+          if ((char) tmp_unsigned_short != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_char;
@@ -17828,7 +17829,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_signed_char) {
+          if ((signed char) tmp_unsigned_short != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_signed_char;
@@ -17895,7 +17896,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_short) {
+          if ((short) tmp_unsigned_short != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_short;
@@ -17962,7 +17963,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_int) {
+          if ((int) tmp_unsigned_short != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_int;
@@ -18029,7 +18030,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_long) {
+          if ((long) tmp_unsigned_short != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long;
@@ -18096,7 +18097,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_unsigned_char) {
+          if ((unsigned char) tmp_unsigned_short != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_char;
@@ -18163,7 +18164,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_unsigned_short) {
+          if ((unsigned short) tmp_unsigned_short != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_short;
@@ -18230,7 +18231,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_unsigned_int) {
+          if ((unsigned int) tmp_unsigned_short != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_int;
@@ -18297,7 +18298,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_unsigned_long) {
+          if ((unsigned long) tmp_unsigned_short != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_unsigned_long;
@@ -18364,7 +18365,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_float) {
+          if ((float) tmp_unsigned_short != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_float;
@@ -18431,7 +18432,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_double) {
+          if ((double) tmp_unsigned_short != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_double;
@@ -18498,7 +18499,7 @@ int main() {
         {
           unsigned short tmp_unsigned_short;
           hd_prim_unsigned_short->To(tmp_unsigned_short);
-          if (tmp_unsigned_short != (unsigned short) tmp_long_double) {
+          if ((long double) tmp_unsigned_short != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_short->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_unsigned_short << " to " << tmp_long_double;
@@ -18565,7 +18566,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_bool) {
+          if ((bool) tmp_unsigned_int != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_bool;
@@ -18632,7 +18633,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_char) {
+          if ((char) tmp_unsigned_int != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_char;
@@ -18699,7 +18700,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_signed_char) {
+          if ((signed char) tmp_unsigned_int != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_signed_char;
@@ -18766,7 +18767,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_short) {
+          if ((short) tmp_unsigned_int != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_short;
@@ -18833,7 +18834,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_int) {
+          if ((int) tmp_unsigned_int != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_int;
@@ -18900,7 +18901,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_long) {
+          if ((long) tmp_unsigned_int != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long;
@@ -18967,7 +18968,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_unsigned_char) {
+          if ((unsigned char) tmp_unsigned_int != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_char;
@@ -19034,7 +19035,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_unsigned_short) {
+          if ((unsigned short) tmp_unsigned_int != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_short;
@@ -19101,7 +19102,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_unsigned_int) {
+          if ((unsigned int) tmp_unsigned_int != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_int;
@@ -19168,7 +19169,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_unsigned_long) {
+          if ((unsigned long) tmp_unsigned_int != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_unsigned_long;
@@ -19235,7 +19236,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_float) {
+          if ((float) tmp_unsigned_int != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_float;
@@ -19302,7 +19303,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_double) {
+          if ((double) tmp_unsigned_int != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_double;
@@ -19369,7 +19370,7 @@ int main() {
         {
           unsigned int tmp_unsigned_int;
           hd_prim_unsigned_int->To(tmp_unsigned_int);
-          if (tmp_unsigned_int != (unsigned int) tmp_long_double) {
+          if ((long double) tmp_unsigned_int != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_int->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_unsigned_int << " to " << tmp_long_double;
@@ -19436,7 +19437,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_bool) {
+          if ((bool) tmp_unsigned_long != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_bool;
@@ -19503,7 +19504,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_char) {
+          if ((char) tmp_unsigned_long != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_char;
@@ -19570,7 +19571,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_signed_char) {
+          if ((signed char) tmp_unsigned_long != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_signed_char;
@@ -19637,7 +19638,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_short) {
+          if ((short) tmp_unsigned_long != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_short;
@@ -19704,7 +19705,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_int) {
+          if ((int) tmp_unsigned_long != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_int;
@@ -19771,7 +19772,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_long) {
+          if ((long) tmp_unsigned_long != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long;
@@ -19838,7 +19839,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_unsigned_char) {
+          if ((unsigned char) tmp_unsigned_long != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_char;
@@ -19905,7 +19906,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_unsigned_short) {
+          if ((unsigned short) tmp_unsigned_long != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_short;
@@ -19972,7 +19973,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_unsigned_int) {
+          if ((unsigned int) tmp_unsigned_long != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_int;
@@ -20039,7 +20040,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_unsigned_long) {
+          if ((unsigned long) tmp_unsigned_long != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_unsigned_long;
@@ -20106,7 +20107,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_float) {
+          if ((float) tmp_unsigned_long != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_float;
@@ -20173,7 +20174,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_double) {
+          if ((double) tmp_unsigned_long != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_double;
@@ -20240,7 +20241,7 @@ int main() {
         {
           unsigned long tmp_unsigned_long;
           hd_prim_unsigned_long->To(tmp_unsigned_long);
-          if (tmp_unsigned_long != (unsigned long) tmp_long_double) {
+          if ((long double) tmp_unsigned_long != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_unsigned_long->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_unsigned_long << " to " << tmp_long_double;
@@ -20307,7 +20308,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_bool) {
+          if ((bool) tmp_float != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_bool;
@@ -20374,7 +20375,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_char) {
+          if ((char) tmp_float != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_char;
@@ -20441,7 +20442,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_signed_char) {
+          if ((signed char) tmp_float != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_signed_char;
@@ -20508,7 +20509,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_short) {
+          if ((short) tmp_float != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_short;
@@ -20575,7 +20576,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_int) {
+          if ((int) tmp_float != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_int;
@@ -20642,7 +20643,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_long) {
+          if ((long) tmp_float != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long;
@@ -20709,7 +20710,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_unsigned_char) {
+          if ((unsigned char) tmp_float != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_char;
@@ -20776,7 +20777,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_unsigned_short) {
+          if ((unsigned short) tmp_float != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_short;
@@ -20843,7 +20844,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_unsigned_int) {
+          if ((unsigned int) tmp_float != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_int;
@@ -20910,7 +20911,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_unsigned_long) {
+          if ((unsigned long) tmp_float != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_unsigned_long;
@@ -20977,7 +20978,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_float) {
+          if ((float) tmp_float != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_float;
@@ -21044,7 +21045,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_double) {
+          if ((double) tmp_float != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_double;
@@ -21111,7 +21112,7 @@ int main() {
         {
           float tmp_float;
           hd_prim_float->To(tmp_float);
-          if (tmp_float != (float) tmp_long_double) {
+          if ((long double) tmp_float != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_float->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_float << " to " << tmp_long_double;
@@ -21178,7 +21179,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_bool) {
+          if ((bool) tmp_double != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_bool;
@@ -21245,7 +21246,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_char) {
+          if ((char) tmp_double != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_char;
@@ -21312,7 +21313,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_signed_char) {
+          if ((signed char) tmp_double != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_signed_char;
@@ -21379,7 +21380,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_short) {
+          if ((short) tmp_double != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_short;
@@ -21446,7 +21447,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_int) {
+          if ((int) tmp_double != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_int;
@@ -21513,7 +21514,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_long) {
+          if ((long) tmp_double != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long;
@@ -21580,7 +21581,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_unsigned_char) {
+          if ((unsigned char) tmp_double != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_char;
@@ -21647,7 +21648,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_unsigned_short) {
+          if ((unsigned short) tmp_double != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_short;
@@ -21714,7 +21715,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_unsigned_int) {
+          if ((unsigned int) tmp_double != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_int;
@@ -21781,7 +21782,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_unsigned_long) {
+          if ((unsigned long) tmp_double != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_unsigned_long;
@@ -21848,7 +21849,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_float) {
+          if ((float) tmp_double != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_float;
@@ -21915,7 +21916,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_double) {
+          if ((double) tmp_double != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_double;
@@ -21982,7 +21983,7 @@ int main() {
         {
           double tmp_double;
           hd_prim_double->To(tmp_double);
-          if (tmp_double != (double) tmp_long_double) {
+          if ((long double) tmp_double != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_double->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_double << " to " << tmp_long_double;
@@ -22049,7 +22050,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_bool) {
+          if ((bool) tmp_long_double != tmp_bool) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_bool) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_bool;
@@ -22116,7 +22117,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_char) {
+          if ((char) tmp_long_double != tmp_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_char) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_char;
@@ -22183,7 +22184,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_signed_char) {
+          if ((signed char) tmp_long_double != tmp_signed_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_signed_char) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_signed_char;
@@ -22250,7 +22251,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_short) {
+          if ((short) tmp_long_double != tmp_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_short) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_short;
@@ -22317,7 +22318,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_int) {
+          if ((int) tmp_long_double != tmp_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_int) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_int;
@@ -22384,7 +22385,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_long) {
+          if ((long) tmp_long_double != tmp_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_long) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long;
@@ -22451,7 +22452,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_unsigned_char) {
+          if ((unsigned char) tmp_long_double != tmp_unsigned_char) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_char) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_char;
@@ -22518,7 +22519,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_unsigned_short) {
+          if ((unsigned short) tmp_long_double != tmp_unsigned_short) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_short) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_short;
@@ -22585,7 +22586,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_unsigned_int) {
+          if ((unsigned int) tmp_long_double != tmp_unsigned_int) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_int) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_int;
@@ -22652,7 +22653,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_unsigned_long) {
+          if ((unsigned long) tmp_long_double != tmp_unsigned_long) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_unsigned_long) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_unsigned_long;
@@ -22719,7 +22720,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_float) {
+          if ((float) tmp_long_double != tmp_float) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_float) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_float;
@@ -22786,7 +22787,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_double) {
+          if ((double) tmp_long_double != tmp_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_double) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_double;
@@ -22853,7 +22854,7 @@ int main() {
         {
           long double tmp_long_double;
           hd_prim_long_double->To(tmp_long_double);
-          if (tmp_long_double != (long double) tmp_long_double) {
+          if ((long double) tmp_long_double != tmp_long_double) {
             SetGlobalStatus(status);
             std::cerr << "ERROR: While converting from minimum, hd_prim_long_double->To(tmp_long_double) converted incorrectly from " <<
                 *hd_prim_long_double << " to " << tmp_long_double;
@@ -35658,6 +35659,36 @@ int main() {
     if (-1 != (signed char) tmp_char) {
       SetGlobalStatus(P_UNEXPECTED);
       std::cerr << "ERROR: While converting to char, hd_prim_std_string->To(tmp_char) converted incorrectly from " << *hd_prim_std_string << " to " << tmp_char << std::endl;
+    }
+    try {
+      tmp_double = 0.;
+      hd_prim_float->From(tmp_double);
+    } catch (const Hexception &x) {
+      SetGlobalStatus(P_UNEXPECTED);
+      std::cerr << "ERROR: While converting from 0., hd_prim_float->From(tmp_double) returned incorrect code " << code[x.Code()] << std::endl;
+    }
+    try {
+      tmp_long_double = 0.L;
+      hd_prim_float->From(tmp_long_double);
+    } catch (const Hexception &x) {
+      SetGlobalStatus(P_UNEXPECTED);
+      std::cerr << "ERROR: While converting from 0.L, hd_prim_float->From(tmp_long_double) returned incorrect code " << code[x.Code()] << std::endl;
+    }
+    try {
+      std::ostringstream os;
+      os << Lim<double>::min();
+      std::string tmp_string = os.str();
+      hd_prim_float->From(tmp_string);
+    } catch (const Hexception &x) {
+      SetGlobalStatus(P_UNEXPECTED);
+      std::cerr << "ERROR: While converting from string 0., hd_prim_float->From(tmp_string) returned incorrect code " << code[x.Code()] << std::endl;
+    }
+    try {
+      tmp_long_double = 0.L;
+      hd_prim_double->From(tmp_long_double);
+    } catch (const Hexception &x) {
+      SetGlobalStatus(P_UNEXPECTED);
+      std::cerr << "ERROR: While converting from 0.L, hd_prim_double->From(tmp_long_double) returned incorrect code " << code[x.Code()] << std::endl;
     }
 
   } catch (const Hexception &x) {
