@@ -54,7 +54,8 @@ Simulator::Simulator(const std::string &sourceName,
    }
 
 // Create a new pointer to the desired source from m_fluxMgr.
-   m_source = m_fluxMgr->source(sourceName);
+   m_source = new CompositeSource();
+   m_source->addSource(m_fluxMgr->source(sourceName));
 
 // Add a "timetick30s" source to the m_source object, assuming that
 // m_source is pointing to a CompositeSource....
@@ -69,7 +70,8 @@ Simulator::Simulator(const std::string &sourceName,
       exit(-1);
    }
    try {
-      dynamic_cast<CompositeSource *>(m_source)->addSource(clock);
+      m_source->addSource(clock);
+//      dynamic_cast<CompositeSource *>(m_source)->addSource(clock);
    } catch(...) {
       std::cerr << "Failed to add a timetick30s source to "
                 << sourceName << ".  Is it a CompositeSource?"
