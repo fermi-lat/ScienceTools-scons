@@ -58,8 +58,8 @@ def run_test(argv):
             else:
                 source_names.append(name)
     if len(source_names) == 0:
-#        source_names.append("all_3EG_sources")
-        source_names.append("anticenter")
+        source_names.append("all_3EG_sources")
+#        source_names.append("anticenter")
 
     my_simulator = observationSim.Simulator(source_names, xml_files)
 
@@ -68,6 +68,7 @@ def run_test(argv):
 #    respVector.append(irfsFactory.create("Glast25::Combined"))
     respVector.append(irfsFactory.create("Glast25::Front"))
     respVector.append(irfsFactory.create("Glast25::Back"))
+#    respVector.append(irfsFactory.create("Glast25::FlatAeff"))
 
     useGoodi = 0
     events = observationSim.EventContainer(root + "_events", useGoodi)

@@ -458,6 +458,30 @@
         <nestedSource sourceRef="PKS0528" />
     </source>
 
+    <!-- Low energy part of a broken power-law source -->
+    <source name="low_bpl" flux="0.0417">
+        <spectrum escale="MeV">
+            <particle name="gamma"> 
+                <power_law emin="30.0" emax="150." gamma="1.7"/>
+            </particle>
+            <celestial_dir ra="0." dec="0."/>
+        </spectrum>
+    </source>
+
+    <!-- High energy part of a broken power-law source -->
+    <source name="high_bpl" flux="0.01">
+        <spectrum escale="MeV">
+            <particle name="gamma"> 
+                <power_law emin="150.0" emax="100000." gamma="2.4"/>
+            </particle>
+            <celestial_dir ra="0." dec="0."/>
+        </spectrum>
+    </source>
+
+    <!-- A strong broken power-law point source. -->
+    <source name = "bpl_source">
+        <nestedSource sourceRef="low_bpl" />
+        <nestedSource sourceRef="high_bpl" />
+    </source>
+
 </source_library>
-
-
