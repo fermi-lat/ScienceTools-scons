@@ -7,7 +7,7 @@ $Header$
 
 #include "map_tools/Parameters.h"
 #include "map_tools/Exposure.h"
-#include "map_tools/ExposureHyperCube.h"
+#include "map_tools/HealpixArrayIO.h"
 
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
@@ -69,7 +69,7 @@ public:
             total++;
             if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
             added++;
-            exp.add( pt.dirZ, deltat);
+            exp.fill( pt.dirZ, deltat);
         }
 
         m_f.info() << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
@@ -80,15 +80,25 @@ public:
     void run()
     {
         m_f.setMethod("run()");
-        m_f.info() << "Creating an exposure object ...";
-        // create the exposure, and fill it from the history file
+
+        // create the differential exposure object
         Exposure ex( m_pars["pixelsize"], m_pars["binsize"]);
+#if 0
+        m_f.info() << "Creating an exposure object from a pointing history file ...";
 
         LoadExposureFromGlast(  m_pars, ex); 
-
+#else
+        m_f.info() << "Create exposure object from simple point" << std::endl;
+        ex.fill(astro::SkyDir(0,0), 1.0);
+        
+#endif
         // create the fits output file from the Exposure file
-        ExposureHyperCube cube(ex, m_pars.outputFile());
+        m_f.info() 
+            << "writing out the differential exposure file to "
+            << m_pars.outputFile() << std::endl;
+        map_tools::HealpixArrayIO::instance().write(ex.data(), m_pars.outputFile(), m_pars.table_name());
 
+ 
     }
 private:
     Parameters m_pars;

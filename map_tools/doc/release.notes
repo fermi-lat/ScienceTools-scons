@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 24-feb-05        THB  
  05-feb-05        THB add CosineBinner for exposure 
  20-jan-05 v5r9p3 THB gcc bug fix #2
  20-jan-05 v5r9p2 THB gcc bug fix

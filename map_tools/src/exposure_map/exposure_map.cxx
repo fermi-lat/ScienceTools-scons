@@ -34,7 +34,7 @@ using namespace map_tools;
 /** @class IrfAeff
 @brief function class implements effective area, as adapter to irfInterface::IAeff
 */
-class IrfAeff : public Exposure::Aeff{
+class IrfAeff { //: public Exposure::Aeff{
 public:
     /**
     @param aeff an object from the CALDB stuff. If zero, implement linear 
@@ -61,10 +61,11 @@ public:
 /** @class RequestExposure 
 @brief function class requests a point from the exposure
 */
+template< class F>
 class RequestExposure : public astro::SkyFunction
 {
 public:
-    RequestExposure(const Exposure& exp, const Exposure::Aeff& aeff, double norm=1.0)
+    RequestExposure(const Exposure& exp, const F& aeff, double norm=1.0)
         : m_exp(exp)
         , m_aeff(aeff)
         , m_norm(norm)
@@ -74,7 +75,7 @@ public:
     }
 private:
     const Exposure& m_exp;
-    const Exposure::Aeff& m_aeff;
+    const F& m_aeff;
     double m_norm;
 };
 
@@ -162,7 +163,9 @@ public:
         // create the exposure, read it in from the FITS input file
         m_f.info() << "Creating an Exposure object from file " << m_pars.inputFile() << std::endl;
 
-        Exposure ex(m_pars.inputFile() ); 
+        ///todo: create from file, usnig HealpixArrayIO.
+        Exposure ex(m_pars.inputFile(), m_pars.table_name() );
+
         double total_elaspsed = ex.total();
         m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
 
@@ -182,7 +185,7 @@ public:
                 << " at energy " << energy << " MeV " 
                 << " Aeff(0): " << norm << " cm^2"<< std::endl;
 
-            RequestExposure req(ex, IrfAeff(aeff, energy), 1.); 
+            RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy), 1.); 
             image.fill(req, layer);
         }
     }

@@ -92,8 +92,8 @@ public:
     void getNeighbors(const astro::SkyDir& pos, std::vector<double>& neighbors)const ;
     
     /// @brief implement SkyFunction interface by returning value at the selected pixel
-    /// @param dir the direction
-    /// note that if there are multiple layers, it will choose the selected layer, set setLayer.
+    /// @param s the direction
+    /// note that if there are multiple layers, it will choose the selected layer, see setLayer.
     double operator()(const astro::SkyDir& s)const;
 
 private:
