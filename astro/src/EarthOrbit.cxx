@@ -151,9 +151,33 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir &sourceDir) cons
 double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 {
    SolarSystem solsys;
-   Hep3Vector barycenter = solsys.getBarycenter(jd);
-   Hep3Vector rsrc = sourceDir.dir();
-   return -1. * barycenter.dot(rsrc) / (rsrc.mag() /** 299792458.*/);
+   Hep3Vector barycenter;
+   double correction = 0;
+   double last_correction = 1e20; // impossible value to force loop to iterate more than once
+   double eps = 0.000001;  // 1 nanosecond precision
+   bool precision_not_met = true;
+
+   for(int i = 0; precision_not_met && i < 10; i++)
+   {
+      barycenter = solsys.getBarycenter(jd+correction/86400.);
+
+      // Add location of satellite with respect to the earth to the barycenter vector;
+      barycenter -= (EarthOrbit::position(jd+correction/86400.)/299792.458);
+
+      Hep3Vector rsrc = sourceDir.dir();
+
+      correction = -1. * barycenter.dot(rsrc) / (rsrc.mag() /** 299792458.*/);
+
+      if(correction - last_correction < eps)
+         precision_not_met = false;
+      else
+         last_correction = correction;
+   }
+
+   if(precision_not_met)
+      std::cout << "Warning:  Desired precision not met in calculation of barycentric correction" << std::endl;
+
+   return correction;
 }
 
 
