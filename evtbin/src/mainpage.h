@@ -20,6 +20,168 @@
     data products, including light curves, spectra (PHA1 and PHA2)
     and count maps.
 
+    \section parameters Application Parameters
+
+    \subsection key Key To Parameter Descriptions
+\verbatim
+Automatic parameters:
+par_name [ = value ] type
+
+Hidden parameters:
+(par_name = value ) type
+
+Where "par_name" is the name of the parameter, "value" is the
+default value, and "type" is the type of the parameter. The
+type is enclosed in square brackets.
+
+Examples:
+infile [file]
+    Describes an automatic (queried) file-type parameter with
+    no default value.
+
+(plot = yes) [bool]
+    Describes a hidden bool-type parameter named plot, whose
+    default value is yes (true).
+\endverbatim
+
+    \subsection general General Parameters
+\verbatim
+algorithm [string]
+    Indicates which specific binning to perform by indicating the
+    type of output file produced. Legal values are CMAP (count map
+    binned in sky X-Y projected coordinates), LC (light curve binned
+    in time only), PHA1 (spectrum binned in energy), and PHA2
+    (spectra binned in energy for a series of time ranges/bins).
+
+eventfile [file]
+    Name of input event file, FT1 format or equivalent.
+
+outfile [file]
+    Name of output file, whose contents are determined by the
+    algorithm parameter.
+
+scfile [file]
+    Name of input spacecraft data file, FT2 format or equivalent.
+\endverbatim
+
+
+    \subsection timebins Time Binning Parameters
+\verbatim
+timebinalg = LIN [string]
+    Indicates how the time bins will be specified. Legal values
+    are FILE (bins will be read from a bin definition file), LIN
+    (linearly uniform bins), and LOG (logarithmically uniform bins).
+    This is only used if time binning is required by the output
+    type selected by the algorithm parameter.
+
+(timefield = TIME) [string]
+    This is the name of the field containing the time values for
+    time binning. The default value is consistent with the FT1
+    format.
+
+tstart [double]
+    The start time of the first interval for linearly or
+    logarithmically uniform bins. Only used if timebinalg
+    is LIN or LOG.
+
+tstop [double]
+    The stop time of the last interval for linearly or
+    logarithmically uniform bins. Only used if timebinalg
+    is LIN or LOG.
+
+tnumbins [integer]
+    The number of bins for logarithmically uniform bins. Only
+    used if timebinalg is LOG.
+
+deltatime [double]
+    The width of linearly uniform bins. Only used if timebinalg
+    is LIN.
+
+timebinfile [file]
+    The name of the time bin definition file. Only used if
+    timebinalg is FILE.
+\endverbatim
+
+    \subsection image Image Parameters
+\verbatim
+numxpix [integer]
+The number of pixels in the horizontal dimension in output
+image (maps only).
+
+numypix [integer]
+The number of pixels in the vertical dimension in output
+image (maps only).
+
+pixscale [double]
+The number of degrees per pixel at the center of the image
+(maps only).
+
+xref [double]
+The horizontal position of the center of the image, either RA
+in celestial coordinates or l in galactic coordinates (maps only).
+
+yref [double]
+The vertical position of the center of the image, either DEC
+in celestial coordinates or b in galactic coordinates (maps only).
+
+(rafield = RA) [string]
+The field in the input file which contains the RA (maps only).
+The default value is that used in FT1 files.
+
+(decfield = RA) [string]
+The field in the input file which contains the DEC (maps only).
+The default value is that used in FT1 files.
+
+axisrot = 0. [double]
+The rotation angle desired for the image (maps only).
+
+proj = AIT [string]
+The projection method. See the astro package for
+documentation of supported projections.
+
+uselb = yes [bool]
+Indicates whether the xref and yref fields specify (RA, DEC)
+or (l, b).
+
+\endverbatim
+
+    \subsection energybins Energy Binning Parameters
+\verbatim
+energybinalg = LOG [string]
+    Indicates how the energy bins will be specified. Legal values
+    are FILE (bins will be read from a bin definition file), LIN
+    (linearly uniform bins), and LOG (logarithmically uniform bins).
+    This is only used if energy binning is required by the output
+    type selected by the algorithm parameter.
+
+(energyfield = ENERGY) [string]
+    This is the name of the field containing the energy values for
+    energy binning. The default value is consistent with the FT1
+    format.
+
+emin [double]
+    The lowest energy of the first interval for linearly or
+    logarithmically uniform bins. Only used if energybinalg
+    is LIN or LOG.
+
+emax [double]
+    The highest energy of the last interval for linearly or
+    logarithmically uniform bins. Only used if energybinalg
+    is LIN or LOG.
+
+enumbins [integer]
+    The number of bins for logarithmically uniform bins. Only
+    used if energybinalg is LOG.
+
+deltaenergy [double]
+    The width of linearly uniform bins. Only used if energybinalg
+    is LIN.
+
+energybinfile [file]
+    The name of the energy bin definition file. Only used if
+    energybinalg is FILE.
+\endverbatim
+
     \section plan Development Plan
     The first stage of development, culminating in version v0r1p0,
     was focused on providing a working application which was capable
