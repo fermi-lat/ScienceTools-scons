@@ -51,9 +51,15 @@ class TestApp1 : public st_app::StApp {
       // For parameter file access, use the AppParGroup class, which is derived from a Hoops class.
       st_app::AppParGroup & pars(getParGroup());
 
-      // Prompt for all parameters in order.
-      pars.Prompt();
+      // File parameters must be set to a file which exists.
+      pars["infile"] = ".";
+      pars["outfile"] = ".";
 
+      // Do not commit version with prompting, as it will break automated tests.
+      // Prompt for all parameters in order.
+      // pars.Prompt();
+
+      // Do not commit version with prompting, as it will break automated tests.
       // To prompt for just the string parameter, comment out the line above and uncomment the following:
       // pars.Prompt("string");
 
