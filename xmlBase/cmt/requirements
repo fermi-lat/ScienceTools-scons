@@ -27,7 +27,7 @@ library xmlBase  \
 
 application entity_test test/entity_test.cxx
 
-application test_xml main.cxx  
+application test_xmlBase main.cxx  
 
 application test_mem test/test_mem.cxx 
 
