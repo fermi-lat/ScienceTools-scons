@@ -92,30 +92,36 @@ float GRBobsSpectrum::fraction(float energy)
 
 double GRBobsSpectrum::interval(double time)
 {
-	if (m_grbMaker->photonlist().empty())
-	{
-		std::cout << "No more time values available to return" << std::endl;
-		return -1.0;
-	}
+	static double currentPTime = 0.0;
+	double nextPTime = 0.0;
+	double intv = 0.0;
 
-	else
-		return nextTime() - time;
+
+	nextPTime = nextTime();
+	intv = nextPTime - currentPTime;
+	currentPTime = nextPTime;
+
+	return intv;
 }
 
 
     //JCT needs const to match pure virtual method
-float GRBobsSpectrum::operator () (float randomNumber) const
+float GRBobsSpectrum::operator () (float randomNumber) const  
 {
 	return (float) nextEnergy();
 }
 
 
 // returns next available energy
+// expects to be called once per time - so iterator should never become invalid before times run out
 double GRBobsSpectrum::nextEnergy() const
 {
 	static std::vector<TimeEnergy>::iterator it = m_grbMaker->photonlist().begin();
 
-	return (*it++).energy();
+	if (it != m_grbMaker->photonlist().end())
+		return (*it++).energy();
+	else
+		return -1;
 }
 
 
@@ -127,12 +133,14 @@ double GRBobsSpectrum::energySrc(HepRandomEngine *engine, double time)
 
 
 // returns next available time
-// this method will be useful once time stamp is added to the Ispectrum interface
 double GRBobsSpectrum::nextTime() const
 {
 	static std::vector<TimeEnergy>::iterator it = m_grbMaker->photonlist().begin();
 
-	return (*it++).time();
+	if (it != m_grbMaker->photonlist().end())
+		return (*it++).time();
+	else
+		return 1.0e+6;
 }
 
 
