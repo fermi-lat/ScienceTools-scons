@@ -105,43 +105,43 @@ timebinfile [file]
     \subsection image Image Parameters
 \verbatim
 numxpix [integer]
-The number of pixels in the horizontal dimension in output
-image (maps only).
+    The number of pixels in the horizontal dimension in output
+    image (maps only).
 
 numypix [integer]
-The number of pixels in the vertical dimension in output
-image (maps only).
+    The number of pixels in the vertical dimension in output
+    image (maps only).
 
 pixscale [double]
-The number of degrees per pixel at the center of the image
-(maps only).
+    The number of degrees per pixel at the center of the image
+    (maps only).
 
 xref [double]
-The horizontal position of the center of the image, either RA
-in celestial coordinates or l in galactic coordinates (maps only).
+    The horizontal position of the center of the image, either RA
+    in celestial coordinates or l in galactic coordinates (maps only).
 
 yref [double]
-The vertical position of the center of the image, either DEC
-in celestial coordinates or b in galactic coordinates (maps only).
+    The vertical position of the center of the image, either DEC
+    in celestial coordinates or b in galactic coordinates (maps only).
 
 (rafield = RA) [string]
-The field in the input file which contains the RA (maps only).
-The default value is that used in FT1 files.
+    The field in the input file which contains the RA (maps only).
+    The default value is that used in FT1 files.
 
 (decfield = RA) [string]
-The field in the input file which contains the DEC (maps only).
-The default value is that used in FT1 files.
+    The field in the input file which contains the DEC (maps only).
+    The default value is that used in FT1 files.
 
 axisrot = 0. [double]
-The rotation angle desired for the image (maps only).
+    The rotation angle desired for the image (maps only).
 
 proj = AIT [string]
-The projection method. See the astro package for
-documentation of supported projections.
+    The projection method. See the astro package for
+    documentation of supported projections.
 
 uselb = yes [bool]
-Indicates whether the xref and yref fields specify (RA, DEC)
-or (l, b).
+    Indicates whether the xref and yref fields specify (RA, DEC)
+    or (l, b).
 
 \endverbatim
 
