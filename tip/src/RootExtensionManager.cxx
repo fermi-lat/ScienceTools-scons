@@ -88,8 +88,9 @@ namespace tip {
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
     // cvs revision 1.8
     // Begin theft:
-// The following block are similar idiosyncrasies probably resulting from using incomplete Root link lines.
-// Really this should be resolved by correcting this behavior in the requirements file.
+// TODO 5: 4/2/2004: The following block are similar idiosyncrasies probably resulting from using
+// incomplete Root link lines. Really this should be resolved by correcting this behavior in the
+// requirements file.
     if (first_time) {
       first_time = false;
 #ifdef WIN32 // needed for windows.
