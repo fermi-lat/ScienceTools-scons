@@ -110,6 +110,10 @@ namespace st_graph {
 
       virtual IFrame * createGroupFrame(IFrame * parent, IEventReceiver * receiver, const std::string & label);
 
+      virtual ITabFolder * createTabFolder(IFrame * parent, IEventReceiver * receiver);
+
+      virtual std::string fileDialog(IFrame * parent, const std::string & initial_file_name, const std::string & style = "open");
+
       /// \brief Return whether graphics engine was successfully initialized.
       virtual bool initSucceeded() const { return m_init_succeeded; }
 

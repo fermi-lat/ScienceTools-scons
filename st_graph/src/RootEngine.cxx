@@ -5,6 +5,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <csignal>
+#include <cstring>
 #include <stdexcept>
 #include <vector>
 
@@ -15,6 +16,7 @@ typedef void (*sighandler_t) (int);
 #include "TApplication.h"
 #include "TGButton.h"
 #include "TGClient.h"
+#include "TGFileDialog.h"
 #include "TGLabel.h"
 #include "TGTextEntry.h"
 #include "TStyle.h"
@@ -27,6 +29,7 @@ typedef void (*sighandler_t) (int);
 #include "RootEngine.h"
 #include "RootPlot.h"
 #include "RootPlotFrame.h"
+#include "RootTabFolder.h"
 #include "STGLayoutManager.h"
 #include "STGMainFrame.h"
 
@@ -246,7 +249,6 @@ namespace st_graph {
     return frame;
   }
 
-
   IFrame * RootEngine::createComposite(IFrame * parent, IEventReceiver * receiver) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createComposite: graphical environment not initialized");
 
@@ -279,6 +281,66 @@ namespace st_graph {
     tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     return frame;
+  }
+
+  ITabFolder * RootEngine::createTabFolder(IFrame * parent, IEventReceiver * receiver) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createTabFolder: graphical environment not initialized");
+
+    // Need the Root frame of the parent object.
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createTabFolder was passed an invalid parent frame pointer");
+
+    RootTabFolder * folder = new RootTabFolder(rf, receiver);
+
+    return folder;
+  }
+
+  std::string RootEngine::fileDialog(IFrame *, const std::string & initial_file_name, const std::string & style) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::fileDialog: graphical environment not initialized");
+
+    std::string dir;
+    std::string file;
+
+    // Split input file name into directory and file.
+    std::string::size_type delim_pos = initial_file_name.find_last_of("/\\");
+    if (std::string::npos == delim_pos) {
+      // No delimiter: assume directory only was supplied.
+      dir = initial_file_name;
+    } else {
+      // Delimiter found: split into before/after delimiter.
+      // dir = initial_file_name.substr(0, delim_pos);
+      dir = initial_file_name;
+      file = initial_file_name.substr(delim_pos + 1, std::string::npos);
+    }
+
+    // Create structure to hold the details.
+    TGFileInfo * info = new TGFileInfo;
+
+    // Set the widget's initial directory.
+    info->fIniDir = new char[dir.size() + 1];
+    strcpy(info->fIniDir, dir.c_str());
+
+    // Set the widget's initial file name.
+    // This doesn't seem to work: Root ignores the file name part.
+    info->fFilename = new char[file.size() + 1];
+    strcpy(info->fFilename, file.c_str());
+
+    // Set up style.
+    EFileDialogMode mode = kFDOpen;
+    if (style != "open") mode = kFDSave;
+
+    // Create the dialog box. This will run the inner event loop until user closes the dialog box one way or another.
+    // At that point the dialog box will be automatically deleted.
+    new TGFileDialog(gClient->GetRoot(), gClient->GetRoot(), mode, info);
+
+    // Get the file name.
+    std::string file_name = initial_file_name;
+    if (0 != info->fFilename) file_name = info->fFilename;
+
+    // Clean up. TGFileInfo's destructor deletes the string(s) created above.
+    delete info;
+
+    return file_name;
   }
 
 }

@@ -14,6 +14,7 @@ namespace st_graph {
   class IFrame;
   class IPlot;
   class ISequence;
+  class ITabFolder;
 
   /** \class Engine
       \brief Interface which encapsulates a particular graphics implementation. This singleton has two purposes:
@@ -110,6 +111,11 @@ namespace st_graph {
       virtual IFrame * createComposite(IFrame * parent, IEventReceiver * receiver) = 0;
 
       virtual IFrame * createGroupFrame(IFrame * parent, IEventReceiver * receiver, const std::string & label) = 0;
+
+      virtual ITabFolder * createTabFolder(IFrame * parent, IEventReceiver * receiver) = 0;
+
+      virtual std::string fileDialog(IFrame * parent, const std::string & initial_file_name, const std::string & style = "open")
+        = 0;
 
     protected:
       /// \brief Create an engine.
