@@ -4,6 +4,7 @@
 */
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <string>
 
 #include "st_stream/Stream.h"
