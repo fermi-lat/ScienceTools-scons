@@ -65,9 +65,11 @@ namespace optimizers {
     const int kind = 2;
     divset_(&kind, &iv[0], &liv, &lv, &v[0]);
     if (verbose == 0) {iv[20] = 0;}
-    if (tolType == RELATIVE) v[32] = tol;
-    //    v[32] = 1.e-6;
-    //    v[31] = 1.e-6;
+    if (tolType == RELATIVE) {
+      v[31] = tol;
+    } else if (tolType == ABSOLUTE) {
+      v[31] = 3.e-16;
+    }
 
     /// Call the optimizing function in an infinite loop.
     double oldVal = 1.e+30;
@@ -87,14 +89,6 @@ namespace optimizers {
 	  std::cerr << e.what() << std::endl;
 	}
 	funcVal = -m_stat->value(dummy);
-	if (tolType == ABSOLUTE && abs(funcVal-oldVal) < tol) { 
-	  m_retCode = 6;  // Hijack this for our purposes
-	  oldVal = funcVal;
-	  if (verbose != 0)
-	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE *****" 
-		      << std::endl;
-	  break;
-	}
       }
       else if (rcode == 2) { /// request for the gradient
 	m_stat->setFreeParamValues(paramVals);
@@ -102,6 +96,15 @@ namespace optimizers {
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}
+	if (tolType == ABSOLUTE && iv[28] == 3 && abs(funcVal-oldVal) < tol) {
+	  // check after a successful line search
+	  m_retCode = 6;
+	  if (verbose != 0)
+	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE *****" 
+		      << std::endl;
+	  break;
+	}
+	oldVal = funcVal;
       }
       else {  /// Finished.  Exit loop.
 	m_retCode = rcode;

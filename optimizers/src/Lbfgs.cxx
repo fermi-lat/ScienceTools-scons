@@ -68,7 +68,7 @@ namespace optimizers {
     std::vector<double> dsave(29);
     std::vector<char> csave(60, ' ');  // Blank-filled
     std::vector<int> intWorkArray(3*nparams);
-    int workSize = (2*m_maxVarMetCorr + 4) * nparams
+    const int workSize = (2*m_maxVarMetCorr + 4) * nparams
       + 12 * m_maxVarMetCorr * (m_maxVarMetCorr + 12);
     std::vector<double> doubleWorkArray(workSize);
 
@@ -77,12 +77,14 @@ namespace optimizers {
     std::vector<char> task(60, ' '); // Blank-filled
     static const std::string strt("START");
     std::copy(strt.begin(), strt.end(), task.begin()); // Initialize
-    
-    // Call LBFGS in an infinite loop.  Break out when it's done.
 
+    double factr = 1./dpmeps_();
+    if (tolType == RELATIVE) factr *= tol;
+
+    // Call LBFGS in an infinite loop.  Break out when it's done.
+    double oldVal = 1.e+30;
     for (;;) {
       int iprint = verbose - 2;  
-      double factr = tol * 1.0e+16; // One of the stopping criteria
       const std::vector<int> nbd(nparams, 2); // All params bounded for now
       setulb_(&nparams, &m_maxVarMetCorr, &paramVals[0], &paramMins[0], 
 	      &paramMaxs[0], &nbd[0], &funcVal, &gradient[0], 
@@ -119,6 +121,12 @@ namespace optimizers {
 	  m_errorString = "Exceeded Specified Number of Iterations";
 	  break;
 	}
+	if (tolType == ABSOLUTE && abs(funcVal-oldVal) < tol) {
+	  m_retCode = LBFGS_NORMAL;
+	  m_errorString = "Absolute Convergence";
+	  break;
+	}
+	oldVal = funcVal;
       }  // Otherwise don't break.  Call setulb_ again.
       else if (taskString.substr(0, 4) == "CONV") {
 	// Normal convergence

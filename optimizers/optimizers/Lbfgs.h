@@ -58,7 +58,7 @@ namespace optimizers {
     
     Lbfgs(Function &stat) : m_maxVarMetCorr(5),
       m_maxIterations(100),
-      m_pgtol(.00001),
+      m_pgtol(1.e+20),
       m_retCode(0)
       {m_stat = &stat;}
     
@@ -102,8 +102,11 @@ namespace optimizers {
 		 int *iwa, char *task, const int *iprint, char *csave, 
 		 logical *lsave, int *isave, double *dsave, 
 		 ftnlen task_len, ftnlen csave_len);
-  }
-  
+
+    //! Machine epsilon
+    double dpmeps_(void);
+    
+  }  
 } // namespace optimizers
 
 #endif // optimizers_lbfgs_h

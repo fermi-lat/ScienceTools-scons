@@ -69,8 +69,16 @@ namespace optimizers {
 
     doCmd("SET ERR 0.5");  // Delta value = 1/2: correct for likelihood
     doCmd("SET GRAD 1");  // Use gradient calculated by fcn
+    
+    double tolerance = 0.;
+    if (tolType == ABSOLUTE) {
+      tolerance = 2000. * tol;
+    } else if (tolType == RELATIVE) {
+      dArg dummy(1.);
+      tolerance = 2000. * tol * abs(m_stat->value(dummy));
+    }
     std::ostringstream mline;
-    mline << "MIGRAD " << m_maxEval << " " << tol << std::endl;
+    mline << "MIGRAD " << m_maxEval << " " << tolerance << std::endl;
     int retCode = doCmd(mline.str());  // Minimize fcn
     if (retCode == 4) {
       // Abnormal termination
@@ -109,7 +117,6 @@ namespace optimizers {
     for (unsigned int i = 0; i < params.size(); i++) {
       paramValues.push_back(params[i].getValue());
     }
-//    (*m_stat)(paramValues);
     m_stat->setFreeParamValues(paramValues);
 
     // Get information about quality of minimization

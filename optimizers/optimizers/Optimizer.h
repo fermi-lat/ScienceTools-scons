@@ -16,7 +16,7 @@
 
 namespace optimizers {
 
- enum TOLTYPE {RELATIVE, ABSOLUTE, DISTANCE};
+ enum TOLTYPE {RELATIVE, ABSOLUTE};
 
 /** 
  * @class Optimizer
