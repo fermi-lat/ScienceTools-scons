@@ -30,7 +30,7 @@ library astro -no_share \
 pattern package_test \
  private ; \
  macro test_source "test/*.cxx " WIN32 "-s=../src/test *.h *.cxx " ; \
- application test_<package> -group=test $(test_source) <extra>; \
+ application test_<package> -group=test $(test_source) <extra> ; \
  public
 
 apply_pattern package_test
