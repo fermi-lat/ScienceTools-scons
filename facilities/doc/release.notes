@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r10   1-Nov-2004  jrb   Add utility Util::trimTrailing
   v2r9p3  21-Oct-2004 jrb   Bug fix for Util::expandEnvVar
   v2r9p2  11-Jun-2004 jrb   Move implementation of getJulian() to .cxx
   v2r9p1  11-Jun-2004 jrb   Fix to eliminate gcc compiler warning
