@@ -5,15 +5,14 @@
     \author James Peachey, HEASARC
 */
 
-#include <cctype>
-#include <iostream>
 #include <utility>
 
 #include "TBranch.h"
 #include "TFile.h"
 #include "TIterator.h"
-#include "TLeaf.h"
 #include "TKey.h"
+#include "TLeaf.h"
+#include "TString.h"
 
 #include "RootExtensionManager.h"
 #include "table/HeaderData.h"
@@ -83,7 +82,7 @@ namespace table {
         TIter nextTopLevelKey(m_fp->GetListOfKeys());
         TKey *key;
 
-        // loop on keys, get the first top-level TTree 
+        // loop on keys, get the first top-level TTree
         while  ( (key=(TKey*)nextTopLevelKey()) ) {
             TString className(key->GetClassName());
             if( className.CompareTo("TTree")==0 )  {
@@ -98,7 +97,7 @@ namespace table {
         throw TableException(std::string("Could not find tree ")+m_ext_name);
     }
     m_num_records = static_cast<Index_t>(m_tree->GetEntries());
-//    std::cout << "Opened ROOT file \"" << m_file_name 
+//    std::cout << "Opened ROOT file \"" << m_file_name
 //        << "\"\n\t    tree \"" << m_tree->GetName() << "\"" << std::endl;
 //    if( !filter.empty() ) {
 //        std::cout << "\t  filter \""<< filter << "\" ..." << std::endl;
@@ -150,7 +149,7 @@ namespace table {
           std::stringstream msg; msg << "branch \"" << field_name << "\" not found";
           throw TableException(formatWhat(msg.str()));
       }
-      int n = branch->GetNleaves(); 
+      int n = branch->GetNleaves();
       if( n!=1) throw TableException(formatWhat(std::string("branch ")+field_name+" has more than one leaf"));
       TObjArray * leaves = branch->GetListOfLeaves();
       TLeaf* leaf = (TLeaf*)leaves->At(0);

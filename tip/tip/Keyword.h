@@ -7,6 +7,8 @@
 #ifndef table_Keyword_h
 #define table_Keyword_h
 
+#include <string>
+
 #include "table/IHeaderData.h"
 #include "table/TableException.h"
 

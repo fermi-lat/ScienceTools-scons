@@ -9,7 +9,6 @@
 #include "table/IFileSvc.h"
 #include "table/TableException.h"
 
-
 namespace table {
 
   // Static initializations.

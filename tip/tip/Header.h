@@ -11,9 +11,7 @@
 #include <string>
 
 #include "table/Keyword.h"
-#include "table/Header.h"
 #include "table/TableException.h"
-#include "table/table_types.h"
 
 namespace table {
 

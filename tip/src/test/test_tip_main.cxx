@@ -7,9 +7,9 @@
 #include <iostream>
 #include <vector>
 
+#include "table/Header.h"
 #include "table/IFileSvc.h"
 #include "table/Table.h"
-#include "table/VectorAdaptor.h"
 
 int main() {
   int status = 0;

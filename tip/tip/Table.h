@@ -7,16 +7,14 @@
 #ifndef table_Table_h
 #define table_Table_h
 
-#include <string>
-
 #include "table/Extension.h"
 #include "table/IExtensionManager.h"
 #include "table/Iterator.h"
 #include "table/ScalarAdaptor.h"
 #include "table/TableException.h"
 #include "table/TableRecord.h"
-#include "table/table_types.h"
 #include "table/VectorAdaptor.h"
+#include "table/table_types.h"
 
 namespace table {
 

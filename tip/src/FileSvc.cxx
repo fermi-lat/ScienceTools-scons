@@ -13,9 +13,6 @@
 namespace table {
 
   // Create a new I/O class, setting the format_name to be "default".
-  // Note that despite the name, this will (for now at least) also
-  // try to open Root files! This class should thus be renamed eventually,
-  // or else a different division of labor adopted.
   FileSvc::FileSvc(): IFileSvc("default") {}
 
   Table * FileSvc::editTable(const std::string & file_name, const std::string & table_name) {

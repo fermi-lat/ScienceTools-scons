@@ -22,6 +22,7 @@ namespace table {
 
   class IData;
   class IHeaderData;
+  class ITabularData;
 
   /** \class FitsExtensionManager
 
@@ -85,7 +86,7 @@ namespace table {
       void openTable();
 
       // Non-virtual helper functions for ITabularData interface:
-      
+
       /** \brief Return the number of records in the current tabular data object (the number of rows
           in the FITS file).
       */

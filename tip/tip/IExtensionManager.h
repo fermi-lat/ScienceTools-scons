@@ -7,8 +7,6 @@
 #ifndef table_IExtensionManager_h
 #define table_IExtensionManager_h
 
-#include <string>
-
 namespace table {
 
   class IHeaderData;
