@@ -13,7 +13,7 @@
 
 namespace tip {
 
-  TestTable::TestTable(): m_data_dir(), m_fits_table(0), m_root_table(0) {}
+  TestTable::TestTable(): m_fits_table(0), m_root_table(0) {}
 
   TestTable::~TestTable() throw() { delete m_root_table; delete m_fits_table; }
 
@@ -41,14 +41,12 @@ namespace tip {
     }
 
     // Find test data directory:
-    const char * tiproot = getenv("TIPROOT");
-    if (0 != tiproot && 0 != *tiproot) m_data_dir = std::string(tiproot) + "/data/";
-    else ReportWarning("TIPROOT environment variable not set");
+    std::string data_dir = getDataDir();
 
     // Test constructing a FITS table:
-    msg = std::string("opening SPECTRUM extension of ") + m_data_dir + "a1.pha";
+    msg = std::string("opening SPECTRUM extension of ") + data_dir + "a1.pha";
     try {
-      IExtensionData * data = new FitsExtensionData(m_data_dir + "a1.pha", "SPECTRUM");
+      IExtensionData * data = new FitsExtensionData(data_dir + "a1.pha", "SPECTRUM");
       m_fits_table = new Table(data);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
@@ -57,9 +55,9 @@ namespace tip {
     }
 
     // Test constructing a Root table:
-    msg = std::string("opening TTree \"1\" extension of ") + m_data_dir + "merit.root";
+    msg = std::string("opening TTree \"1\" extension of ") + data_dir + "merit.root";
     try {
-      IExtensionData * data = new RootExtensionData(m_data_dir + "merit.root", "1");
+      IExtensionData * data = new RootExtensionData(data_dir + "merit.root", "1");
       m_root_table = new Table(data);
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {

@@ -38,7 +38,6 @@ namespace tip {
       void getValidFieldsTest();
 
     private:
-      std::string m_data_dir;
       Table * m_fits_table;
       Table * m_root_table;
   };
