@@ -7,6 +7,7 @@
 #define tip_KeyRecord_h
 
 #include <iosfwd>
+#include <sstream>
 #include <string>
 
 namespace tip {
@@ -43,6 +44,9 @@ namespace tip {
       /// \brief Retrieve the value field of the record as a string.
       std::string getValue() const;
 
+      template <typename T>
+      void getValue(T & value) const;
+
       /** \brief Assign the given value to the record's value field.
           \param value The new value.
       */
@@ -57,6 +61,22 @@ namespace tip {
     private:
       std::string m_record;
   };
+
+  template <typename T>
+  inline void KeyRecord::getValue(T & value) const {
+    std::string str_value = getValue();
+    std::stringstream ss;
+    ss.precision(24);
+    ss << str_value;
+    ss >> value;
+  }
+
+  template <>
+  inline void KeyRecord::getValue<bool>(bool & value) const {
+    std::string str_value = getValue();
+    if (str_value == "T") value = true;
+    else value = false;
+  }
 
   template <typename T>
   inline KeyRecord::KeyRecord(const std::string & name, const T & value, const std::string & comment): m_record() {
