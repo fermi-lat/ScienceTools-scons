@@ -415,7 +415,7 @@ namespace tip {
 
   TestExtensionData::TestExtensionData(): m_read_only_extension(0) {}
 
-  TestExtensionData::~TestExtensionData() throw() { delete m_read_only_extension; }
+  TestExtensionData::~TestExtensionData() throw() {}
 
   int TestExtensionData::test(int status) {
     setStatus(status);
@@ -467,6 +467,9 @@ namespace tip {
         ReportExpected(msg + " failed", x);
       }
     }
+
+    delete m_read_only_extension;
+    m_read_only_extension = 0;
   }
 
 }
