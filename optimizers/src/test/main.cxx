@@ -40,12 +40,12 @@ std::string test_path;
 
 int main() {
    test_FunctionFactory();
-//    test_Parameter_class();
-//    test_Function_class();
-//    test_PowerLaw_class();
-//    test_CompositeFunction();
-//    test_Optimizers();
-//    test_Mcmc();
+   test_Parameter_class();
+   test_Function_class();
+   test_PowerLaw_class();
+   test_CompositeFunction();
+   test_Optimizers();
+   test_Mcmc();
    return 0;
 }
 

@@ -115,7 +115,7 @@ void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {
 
 // Set the name of this function prototype.
       std::string name = xml::Dom::getAttribute(*funcIt, "name");
-      funcObj->setName("name");
+      funcObj->setName(name);
 
 // Fetch the parameter elements and set the Parameter data members.
       std::vector<DOM_Element> params;
