@@ -39,24 +39,26 @@ namespace table {
 
   // Subclasses call this to open the file and position it to the desired extension.
   void FitsExtensionUtils::open() {
-    fitsfile * fp = 0;
-    int status = 0;
+    if (!m_fp) {
+      fitsfile * fp = 0;
+      int status = 0;
 
-    // Open the fits file.
-    fits_open_file(&fp, const_cast<char *>(m_file_name.c_str()), READWRITE, &status);
+      // Open the fits file.
+      fits_open_file(&fp, const_cast<char *>(m_file_name.c_str()), READWRITE, &status);
 
-    if (status) throw TableException(std::string("Could not open FITS file ") + m_file_name);
+      if (status) throw TableException(std::string("Could not open FITS file ") + m_file_name);
 
-    // Move to the indicated extension.
-    fits_movnam_hdu(fp, ANY_HDU, const_cast<char *>(m_ext_name.c_str()), 0, &status);
+      // Move to the indicated extension.
+      fits_movnam_hdu(fp, ANY_HDU, const_cast<char *>(m_ext_name.c_str()), 0, &status);
 
-    if (status) {
-      fits_close_file(fp, &status);
-      throw TableException(std::string("Could not find extension ") + m_ext_name + " in file " + m_file_name);
+      if (status) {
+        fits_close_file(fp, &status);
+        throw TableException(std::string("Could not find extension ") + m_ext_name + " in file " + m_file_name);
+      }
+
+      // Success: save the pointer.
+      m_fp = fp;
     }
-
-    // Success: save the pointer.
-    m_fp = fp;
   }
 
   // Close file.
