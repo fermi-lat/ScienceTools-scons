@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "pulsePhase/TimingModel.h"
+#include "TimingModel.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"

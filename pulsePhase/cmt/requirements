@@ -9,6 +9,6 @@ use tip *
 
 private
 
-macro_append st_app_cppflags "" Linux "-I.."
+macro_append st_app_cppflags "" Linux "-I.. -I../src"
 application test_pulsePhase test/*.cxx
 application pulsePhase pulsePhase/*.cxx

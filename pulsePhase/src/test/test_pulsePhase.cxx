@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "pulsePhase/TimingModel.h"
+#include "TimingModel.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
