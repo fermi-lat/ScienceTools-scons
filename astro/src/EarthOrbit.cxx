@@ -168,7 +168,7 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 
       correction = -1. * barycenter.dot(rsrc) / (rsrc.mag() /** 299792458.*/);
 
-      if(correction - last_correction < eps)
+      if(fabs(correction - last_correction) < eps)
          precision_not_met = false;
       else
          last_correction = correction;
