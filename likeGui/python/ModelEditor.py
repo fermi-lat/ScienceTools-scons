@@ -128,6 +128,7 @@ class RootWindow(Tk.Tk):
         xmlFile = SaveFileDialog(self).go(pattern='*.xml')
         if xmlFile:
             self.srcModel.writeTo(xmlFile)
+            self.modelEditor.selectSource()
             self.srcModel.filename = xmlFile
             self.title('Source Model Editor: ' + os.path.basename(xmlFile))
     def addPointSource(self):
