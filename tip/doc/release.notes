@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+21-jan-2005 v2r1p1 JP Link against libHist to prevent problems loading libTreePlayer.so
+                      on Linux with Root 4.x.
 18-jan-2005 v2r1   JP Add support for history and comments in extensions,
                       for creation of files without templates, and
                       access to slices of images.
