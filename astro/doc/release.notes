@@ -4,6 +4,7 @@
   Package coordinators: T.Burnett
 
 @verbatim
+  v1r0p5  11-jun-04 THB provide dummy function for SolSystem::ephi_planet to satisfy external
 
   v1r0p2  11-jun-04 THB fix test program spec in req file
   v1r0p1  06-jun-04 THB SkyDir projection to pixel coords fixed to transform to galactic if appropriate

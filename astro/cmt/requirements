@@ -1,6 +1,6 @@
 package astro
 
-version v1r0p2	
+version v1r0p5	
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -18,6 +18,9 @@ private
 
 #the following prepend makes the includes and src folders available locally
 macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
+
+#kill "truncation from double to float"
+macro_append astro_cppflags "" WIN32 " /wd4305"
 
 macro source *.cxx WIN32 "*.h *.cxx"
 library astro -no_share \
