@@ -29,9 +29,13 @@ namespace tip {
       */
       virtual ~Extension();
 
-      /** \brief Retrieve Header object, which is a container of FITS-like keywords.
+      /** \brief Retrieve Header object, which is a container of FITS-like keywords, non-const version.
       */
       Header & getHeader();
+
+      /** \brief Retrieve Header object, which is a container of FITS-like keywords, const version.
+      */
+      const Header & getHeader() const;
 
     protected:
       Header m_header;

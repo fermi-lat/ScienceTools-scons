@@ -20,4 +20,6 @@ namespace tip {
 
   Header & Extension::getHeader() { return m_header; }
 
+  const Header & Extension::getHeader() const { return m_header; }
+
 }
