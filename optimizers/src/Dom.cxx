@@ -36,20 +36,26 @@ void Dom::checkTag(const DOM_Element &element,
    }
 }
 
+bool Dom::checkTagName(const DOM_Element &element, 
+                       const std::string &tagName, 
+                       const std::string &callingRoutine) {
+   if (element == DOM_Element()) {
+      throw Exception(
+         "optimizers::Dom::checkTag: Trying to read tag of DOM_Element().\n");
+   }
+   std::string myTagName( xml::Dom::transToChar(element.getTagName()) );
+   return myTagName == tagName;
+}
+
 // Retrieve all child elements by tag name.
 void Dom::getElements(const DOM_Element &parent, const std::string &tagName,
                       std::vector<DOM_Element> &children) {
    children.clear();
    DOM_Element child = xml::Dom::getFirstChildElement(parent);
    while (child != DOM_Element()) {
-      try {
-         Dom::checkTag(child, tagName, "optimizers::Dom::getElements");
+      if (Dom::checkTagName(child, tagName, 
+                            "optimizers::Dom::getElements")) {
          children.push_back(child);
-      } catch (Exception &) {
-// Tag doesn't match so do nothing.
-      } catch (...) {
-// Rethrow all other exceptions.
-         throw;
       }
       child = xml::Dom::getSiblingElement(child);
    }

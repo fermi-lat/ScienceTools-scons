@@ -37,6 +37,10 @@ public:
                         const std::string &tagName, 
                         const std::string &callingRoutine="") throw(Exception);
 
+   static bool checkTagName(const DOM_Element &element, 
+                            const std::string &tagName, 
+                            const std::string &callingRoutine="");
+   
    static void getElements(const DOM_Element &parent, 
                            const std::string &tagName,
                            std::vector<DOM_Element> &children);
