@@ -15,6 +15,8 @@ typedef void (*sighandler_t) (int);
 #include "TApplication.h"
 #include "TGButton.h"
 #include "TGClient.h"
+#include "TGLabel.h"
+#include "TGTextEntry.h"
 #include "TStyle.h"
 #include "TSystem.h"
 
@@ -93,7 +95,8 @@ namespace st_graph {
     gApplication->Terminate(0);
   }
 
-  IFrame * RootEngine::createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height) {
+  IFrame * RootEngine::createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height,
+    const std::string & title) {
     // Receiver which terminates the application -- sensible default behavior for a main frame.
     class DefaultReceiver : public IEventReceiver {
       public:
@@ -115,6 +118,8 @@ namespace st_graph {
 
     // Create the Root widget.
     STGMainFrame * tg_widget = new STGMainFrame(width, height);
+
+    tg_widget->SetWindowName(title.c_str());
 
     // Give window manager a hint about where to display it.
     tg_widget->SetWMPosition(100, 50);
@@ -203,6 +208,72 @@ namespace st_graph {
 
     // Connect appropriate Root Qt signals to this object's slot.
     tg_widget->Connect("Clicked()", "st_graph::RootFrame", frame, "clicked()");
+
+    return frame;
+  }
+
+  IFrame * RootEngine::createLabel(IFrame * parent, IEventReceiver * receiver, const std::string & text) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createLabel: graphical environment not initialized");
+
+    // Need the Root frame of the parent object.
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createLabel was passed an invalid parent frame pointer");
+
+    TGLabel * tg_widget  = new TGLabel(rf->getTGFrame(), text.c_str());
+
+    IFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    return frame;
+  }
+
+  IFrame * RootEngine::createTextEntry(IFrame * parent, IEventReceiver * receiver, const std::string & content) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createTextEntry: graphical environment not initialized");
+
+    // Need the Root frame of the parent object.
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createTextEntry was passed an invalid parent frame pointer");
+
+    TGTextEntry * tg_widget  = new TGTextEntry(rf->getTGFrame(), content.c_str());
+
+    IFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    // Whenever text is changed, send the changes back to root frame.
+    tg_widget->Connect("TextChanged(char *)", "st_graph::RootFrame", frame, "modified(const char *)");
+
+    return frame;
+  }
+
+
+  IFrame * RootEngine::createComposite(IFrame * parent, IEventReceiver * receiver) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createComposite: graphical environment not initialized");
+
+    // Need the Root frame of the parent object.
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createComposite was passed an invalid parent frame pointer");
+
+    TGCompositeFrame * tg_widget  = new TGCompositeFrame(rf->getTGFrame(), 20, 20);
+
+    RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
+
+    return frame;
+  }
+
+  IFrame * RootEngine::createGroupFrame(IFrame * parent, IEventReceiver * receiver, const std::string & label) {
+    if (!m_init_succeeded) throw std::runtime_error("RootEngine::createGroupFrame: graphical environment not initialized");
+
+    // Need the Root frame of the parent object.
+    RootFrame * rf = dynamic_cast<RootFrame *>(parent);
+    if (0 == rf) throw std::logic_error("RootEngine::createGroupFrame was passed an invalid parent frame pointer");
+
+    TGGroupFrame * tg_widget  = new TGGroupFrame(rf->getTGFrame(), label.c_str());
+
+    RootFrame * frame = new RootFrame(parent, receiver, tg_widget);
+
+    // Create a layout manager for the Root widget which uses the receiver to manager the layout.
+    tg_widget->SetLayoutManager(new STGLayoutManager(receiver, frame, tg_widget));
 
     return frame;
   }
