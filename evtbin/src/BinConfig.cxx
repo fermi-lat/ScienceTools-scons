@@ -44,12 +44,12 @@ namespace evtbin {
 
   Binner * BinConfig::createEnergyBinner(const st_app::AppParGroup & par_group) const {
     return createBinner(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile",
-      "ENERGYBINS", "START_BIN", "STOP_BIN");
+      "ENERGYBINS", "E_MIN", "E_MAX");
   }
 
   Binner * BinConfig::createTimeBinner(const st_app::AppParGroup & par_group) const {
     return createBinner(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile",
-      "TIMEBINS", "START_BIN", "STOP_BIN");
+      "TIMEBINS", "START", "STOP");
   }
 
   void BinConfig::parPrompt(st_app::AppParGroup & par_group, const std::string & alg, const std::string & in_field,
@@ -93,9 +93,16 @@ namespace evtbin {
       // Open the data file.
       std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(par_group[bin_file], bin_ext));
 
+// TODO Refactor this!
+      // Temporary hack pending a complete handling of units in tip.
+      double factor = 1.;
+
+      // For the moment, energy bins are in keV, period, so in the case of an energy binner, convert keV to MeV.
+      if (bin_ext == "ENERGYBINS") factor = 1.e-3;
+
       // Iterate over the file, saving the relevant values into the interval array.
       for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
-        intervals.push_back(Binner::Interval((*itor)[start_field].get(), (*itor)[stop_field].get()));
+        intervals.push_back(Binner::Interval(factor * (*itor)[start_field].get(), factor * (*itor)[stop_field].get()));
       }
 
       // Create binner from these intervals.
