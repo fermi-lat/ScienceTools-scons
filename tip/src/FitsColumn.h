@@ -150,7 +150,7 @@ namespace tip {
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           0, &tmp_dest, 0, &status);
         if (0 != status) throw TipException(status, "FitsColumn::get(Index_t, bool &) failed to read scalar cell value");
-        dest = tmp_dest;
+        dest = (0 != tmp_dest);
       }
 
       virtual void get(Index_t record_index, std::vector<bool> & dest) const {
@@ -164,7 +164,7 @@ namespace tip {
           delete [] tmp_dest;
           throw TipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
         }
-        dest.assign(tmp_dest, tmp_dest + num_els);
+        for (long ii = 0; ii != num_els; ++ii) dest[ii] = (0 != tmp_dest[ii]);
         delete [] tmp_dest;
       }
 

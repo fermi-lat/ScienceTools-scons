@@ -156,7 +156,7 @@ namespace tip {
     int tmp = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
     if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
-    value = tmp;
+    value = (0 != tmp);
   }
 
   // Getting keywords as strings is a special case because Cfitsio treats them as char *.
