@@ -662,7 +662,7 @@ int SolSystem::find_0alt (double mjd, double dt, double dis, double *az, double 
  *   converge return -1; if converges ok but not today return -2.
  * N.B. we assume np is passed set to local noon.
  */
-int SolSystem::find_transit (double mjd, double dt, double dis, double *alt, double *mjdt)
+int SolSystem::find_transit (double mjd, double dt, double /*dis*/, double *alt, double *mjdt)
 {
 #define	MAXLOOPS	10
 #define	MAXERR		(0.25/60.)		/* hours */
@@ -1613,7 +1613,7 @@ void obliquity (double mjd, double *eps)
 	}
 	*eps = lasteps;
 }
-
+#if 0 // disable planet stuff
 static void pluto_ell (double mjd, double *ret);
 static void chap_trans (double mjd, double *ret);
 static void planpos (double mjd, int obj, double prec, double *ret);
@@ -1698,7 +1698,6 @@ static void planpos (double mjd, int obj, double prec, double *ret)
 		vsop87(mjd, obj, prec, ret);
 #endif
 }
-
 /*************************************************************/
 
 /* visual elements of planets
@@ -1798,6 +1797,7 @@ void plans (double mjd, int p, double *lpd0, double *psi0, double *rp0, double *
 	*mag = vis_elements[p][1];
 }
 
+#endif // planets
 
 #define TWOPI   	(2*PI)
 #define	STOPERR		(1e-8)
