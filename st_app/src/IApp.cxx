@@ -57,7 +57,7 @@ namespace st_app {
   // Methods which use hoops:
   // Return the group, creating it first if necessary.
   hoops::IParGroup & IApp::hoopsGetParGroup() {
-    if (0 == m_hoops_par_group) m_hoops_par_group = new hoops::ParPromptGroup(s_argc, s_argv);
+    if (0 == m_hoops_par_group) m_hoops_par_group = new hoops::ParPromptGroup(s_argc, s_argv, m_app_name);
     return *m_hoops_par_group;
   }
 
