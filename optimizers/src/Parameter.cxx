@@ -61,7 +61,8 @@ void Parameter::extractDomData(const DOM_Element &elt) {
    m_value = ::atof( xml::Dom::getAttribute(elt, "value").c_str() );
    m_minValue = ::atof( xml::Dom::getAttribute(elt, "min").c_str() );
    m_maxValue = ::atof( xml::Dom::getAttribute(elt, "max").c_str() );
-   if (std::string(xml::Dom::getAttribute(elt, "free")) == "true") {
+   if (std::string(xml::Dom::getAttribute(elt, "free")) == "true" ||
+       std::string(xml::Dom::getAttribute(elt, "free")) == "1" ) {
       m_free = true;
    } else {
       m_free = false;
