@@ -5862,8 +5862,9 @@ void ta_par (double tha, double tdec, double phi, double ht, double *rho, double
 	*aha *= -1;
 	range (aha, 2*PI);
 }
-
+#if 0 // planets
 static void elongation (double lam, double bet, double lsn, double *el);
+#endif
 static void unrefractLT15 (double pr, double tr, double aa, double *ta);
 static void unrefractGE15 (double pr, double tr, double aa, double *ta);
 
