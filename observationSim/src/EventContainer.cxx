@@ -156,6 +156,7 @@ int EventContainer::addEvent(EventSource *event,
          = respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis);
 
       std::map<std::string, double> evtParams;
+      evtParams["ENERGY"] = appEnergy;
       evtParams["RA"] = appDir.ra();
       evtParams["DEC"] = appDir.dec();
       if (m_cuts == 0 || m_cuts->accept(evtParams)) {
@@ -163,7 +164,6 @@ int EventContainer::addEvent(EventSource *event,
                                    appDir, sourceDir, zAxis, xAxis,
                                    ScZenith(time), respPtr->irfID(), 
                                    energy, flux_theta, flux_phi) );
-//      std::cout << "adding an event: " << m_events.size() << std::endl;
       }
       if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
       return 1;
@@ -214,14 +214,15 @@ void EventContainer::writeEvents() {
          calibVersion[i] = 1;
       }
    }
-   it = my_table->begin();
-   double start_time;
-   row["time"].get(start_time);
-   it = my_table->end();
-   --it;
    double stop_time;
-   row["time"].get(stop_time);
-   writeDateKeywords(my_table, start_time, stop_time);
+   if (m_stopTime <= m_startTime) {
+      it = my_table->end();
+      --it;
+      row["time"].get(stop_time);
+   } else {
+      stop_time = m_stopTime;
+   }
+   writeDateKeywords(my_table, m_startTime, stop_time);
    if (m_cuts) {
       m_cuts->writeDssKeywords(my_table->getHeader());
    }
@@ -233,14 +234,14 @@ void EventContainer::writeEvents() {
       tip::IFileSvc::instance().editTable(ft1File, "GTI");
    gti_table->setNumRecords(1);
    it = gti_table->begin();
-   row["start"].set(m_events.begin()->time());
-   row["stop"].set((m_events.end()-1)->time());
-   writeDateKeywords(gti_table, start_time, stop_time);
+   row["start"].set(m_startTime);
+   row["stop"].set(stop_time);
+   writeDateKeywords(gti_table, m_startTime, stop_time);
    delete gti_table;
 
 // Take care of date keywords in primary header.
    tip::Image * phdu = tip::IFileSvc::instance().editImage(ft1File, "");
-   writeDateKeywords(phdu, start_time, stop_time);
+   writeDateKeywords(phdu, m_startTime, stop_time);
    delete phdu;
 
    st_facilities::FitsUtil::writeChecksums(ft1File);

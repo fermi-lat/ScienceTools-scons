@@ -243,7 +243,6 @@ void Simulator::makeEvents(EventContainer &events,
          throw;
       }
    }
-//    if (!m_useSimTime) std::cerr << "!" << std::endl;
 }
 
 bool Simulator::done() {

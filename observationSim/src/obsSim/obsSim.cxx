@@ -251,12 +251,21 @@ void ObsSim::createSimulator() {
 void ObsSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-   dataSubselector::Cuts * cuts(0);
+   dataSubselector::Cuts * cuts = new dataSubselector::Cuts;
+   cuts->addRangeCut("ENERGY", "MeV", m_pars["emin"], m_pars["emax"]);
    if (m_pars["use_acceptance_cone"]) {
-      cuts = new dataSubselector::Cuts;
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
    }
-   observationSim::EventContainer events(prefix + "_events", cuts, nMaxRows);
+   double start_time(m_pars["start_time"]);
+   double stop_time;
+   if (m_pars["use_as_numevents"]) {
+      stop_time = start_time;
+   } else {
+      double sim_time(m_pars["simulation_time"]);  // yes, this is BS.
+      stop_time = start_time + sim_time;
+   }
+   observationSim::EventContainer events(prefix + "_events", cuts, nMaxRows,
+                                         start_time, stop_time);
    std::string pointingHistory = m_pars["scfile"];
    bool writeScData = (pointingHistory == "" || pointingHistory == "none");
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows,

@@ -52,8 +52,10 @@ public:
    ///        a FITS file is written.
    EventContainer(const std::string &filename, 
                   dataSubselector::Cuts * cuts=0,
-                  unsigned int maxNumEvents=20000) : 
-      ContainerBase(filename, maxNumEvents), m_prob(1), m_cuts(cuts) {
+                  unsigned int maxNumEvents=20000,
+                  double startTime=0, double stopTime=0) : 
+      ContainerBase(filename, maxNumEvents), m_prob(1), m_cuts(cuts),
+      m_startTime(startTime), m_stopTime(stopTime) {
       init();
    }
 
@@ -95,6 +97,9 @@ private:
    double m_prob;
 
    dataSubselector::Cuts * m_cuts;
+
+   double m_startTime;
+   double m_stopTime;
 
    /// The Event buffer.
    std::vector<Event> m_events;
