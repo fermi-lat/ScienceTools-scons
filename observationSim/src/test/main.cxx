@@ -14,7 +14,7 @@
 #include "astro/SkyDir.h"
 
 #include "irfInterface/IrfsFactory.h"
-#include "g25Response/loadIrfs.h"
+#include "irfLoader/Loader.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -99,7 +99,7 @@ int main(int iargc, char * argv[]) {
    observationSim::Simulator my_simulator(sourceNames, fileList);
 
 // Allow for multiple IRFs.
-   g25Response::loadIrfs();
+   irfLoader::Loader::go();
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
    std::vector<irfInterface::Irfs *> respPtrs;

@@ -24,8 +24,7 @@
 #include "astro/SkyDir.h"
 
 #include "irfInterface/IrfsFactory.h"
-#include "g25Response/loadIrfs.h"
-#include "dc1Response/loadIrfs.h"
+#include "irfLoader/Loader.h"
 // #include "dc2Response/loadIrfs.h"
 
 #include "Likelihood/Util.h"
@@ -156,8 +155,7 @@ void ObsSim::readSrcNames() {
 }   
 
 void ObsSim::createResponseFuncs() {
-   g25Response::loadIrfs();
-   dc1Response::loadIrfs();
+   irfLoader::Loader::go();
 //    dc2Response::loadIrfs();
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
