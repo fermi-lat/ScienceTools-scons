@@ -46,8 +46,6 @@ namespace table {
 
     // Success: save the pointer.
     m_fp = fp;
-
-    return m_fp;
   }
 
   // Close file.
