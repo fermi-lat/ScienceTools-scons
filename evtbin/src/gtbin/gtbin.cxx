@@ -49,6 +49,9 @@
 // Table access from tip.
 #include "tip/Table.h"
 
+// Identify cvs version tag.
+const std::string s_cvs_id("$Name$");
+
 /** \class EvtBinAppBase
     \brief Base class for specific binning applications. This has a generic run() method which is valid for
     all binning applications. The logic of run() is a good place to start to understand how the pieces fit together.
@@ -265,6 +268,11 @@ class MultiSpectraApp : public EvtBinAppBase {
 */
 class GtBinApp : public st_app::StApp {
   public:
+    GtBinApp(): st_app::StApp() {
+      setName("gtbin");
+      setVersion(s_cvs_id);
+    }
+
     /** \brief Perform the action needed by this application. This will be called by the standard main.
     */
     virtual void run() {
@@ -310,4 +318,4 @@ class GtBinApp : public st_app::StApp {
 // 1. Energy units: Xspec needs keV, input is MeV but could be anything (read keyword)
 
 /// \brief Create factory object which can create the application:
-st_app::StAppFactory<GtBinApp> g_app_factory;
+st_app::StAppFactory<GtBinApp> g_app_factory("gtbin");
