@@ -5,7 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
- 02-apr-04 v5r0   THB convert to st_app and tip
+ 02-apr-04 v5r0p1 THB unix fixes
+ 02-apr-04 v5r0   THB convert to st_app and new STpolicy
  25-mar-04 v4r3   THB fix req file problem, change parameters interface to avoid inheritance
  04-mar-04 v4r1   THB switch from hoopsUtil to hoops for parameters
  04-mar-04 v4r0   THB switch from PIL to hoopsUtil for parameters. Additional SkyImage functionality,
