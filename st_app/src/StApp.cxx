@@ -37,7 +37,7 @@ namespace st_app {
   StApp::~StApp() throw() { delete m_par_group; }
 
   void StApp::runGui() {
-    StEventReceiver gui(this);
+    StEventReceiver gui(st_graph::Engine::instance(), getParGroup(), this);
     gui.run();
   }
 
