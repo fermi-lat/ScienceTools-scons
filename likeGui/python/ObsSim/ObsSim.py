@@ -65,74 +65,6 @@ class FileMenu(Tk.Menu):
         self.add_command(label="Save as...", command=root.saveAs)
         self.add_command(label="Quit", underline=0, command=root.quit)
 
-class SourceList(Tk.Frame):
-    def __init__(self, root, parentFrame):
-        Tk.Frame.__init__(self)
-        self.root = root
-        srcFrame = Tk.Frame(parentFrame)
-        srcFrame.pack(side=Tk.RIGHT, fill=Tk.BOTH)
-
-        self.menuButton = Tk.Menubutton(srcFrame, text='Model Sources',
-                                        relief=Tk.RAISED, bd=2, underline=0)
-        self.menuButton.pack(side=Tk.TOP, fill=Tk.X)
-        self.menuButton['menu'] = ModelMenu(self.menuButton)
-
-        self.xScroll = Tk.Scrollbar(srcFrame, orient=Tk.HORIZONTAL)
-        self.xScroll.pack(side=Tk.BOTTOM, fill=Tk.X)
-        self.yScroll = Tk.Scrollbar(srcFrame, orient=Tk.VERTICAL)
-        self.yScroll.pack(side=Tk.RIGHT, fill=Tk.Y)
-        self.listBox = Tk.Listbox(srcFrame, selectmode=Tk.BROWSE,
-                                  xscrollcommand=self.xScroll.set,
-                                  yscrollcommand=self.yScroll.set,
-                                  width=30)
-        self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
-        btags = self.listBox.bindtags()
-        self.listBox.bindtags(btags[1:] + btags[:1])
-#        self.listBox.bind('<ButtonRelease-1>', self.selectLibrary)
-        self.xScroll["command"] = self.listBox.xview
-        self.yScroll["command"] = self.listBox.yview
-        self.srcs = {}
-    def addSource(self, src):
-        if src not in self.srcs:
-            self.srcs[src] = src
-
-class Foo(object):
-    def __init__(self, name):
-        self.name = name
-    def __call__(self):
-        print self.name
-
-def pwd():
-    print ds9.cd()
-
-class ds9Menu(Tk.Menu):
-    def __init__(self, root):
-        Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="Display sources", underline=0,
-                         command=ds9Display(root))
-
-class ds9Display(object):
-    def __init__(self, root, file="ds9.reg"):
-        self.root = root
-        self.file = file
-    def __call__(self):
-        try:
-            ds9.cd(os.path.abspath(os.curdir))
-            ds9.clear_regions()
-            try:
-                os.remove(self.file)
-            except OSError:
-                pass
-            region_file = findSrcs.ds9_region_file(self.file, fk5=1)
-            for srcName in self.root.srcModel.names():
-                src = self.root.srcModel[srcName]
-                if src.type == "PointSource":
-                    region_file.addSource(src)
-                    region_file.write()
-            ds9.load_regions(self.file)
-        except RuntimeError:
-            pass
-
 class SourceLibraries(Tk.Frame):
     def __init__(self, root, parentFrame):
         self.root = root
@@ -140,8 +72,12 @@ class SourceLibraries(Tk.Frame):
         Tk.Frame.__init__(self)
         libFrame = Tk.Frame(self.parentFrame)
         libFrame.pack(side=Tk.TOP, fill=Tk.BOTH)
-        label = Tk.Label(libFrame, text='Source Libraries')
-        label.pack(side=Tk.TOP, fill=Tk.X)
+
+        self.menuButton = Tk.Menubutton(libFrame, text='Source Libraries',
+                                        relief=Tk.RAISED, bd=2, underline=0)
+        self.menuButton.pack(side=Tk.TOP, fill=Tk.X)
+        self.menuButton['menu'] = SourceLibMenu(self, self.menuButton)
+
         self.xScroll = Tk.Scrollbar(libFrame, orient=Tk.HORIZONTAL)
         self.xScroll.pack(side=Tk.BOTTOM, fill=Tk.X)
         self.yScroll = Tk.Scrollbar(libFrame, orient=Tk.VERTICAL)
@@ -170,6 +106,16 @@ class SourceLibraries(Tk.Frame):
     def selectLibrary(self, event=None):
         libname = self.listBox.get('active')
         self.root.candidates.setSrcLib(self.libs[libname])
+    def deleteSelected(self):
+        pass
+
+class SourceLibMenu(Tk.Menu):
+    def __init__(self, root, parentFrame):
+        Tk.Menu.__init__(self, parentFrame, tearoff=0)
+        self.add_command(label='Open...', underline=0,
+                         command=root.root.open)
+        self.add_command(label='Delete selected', underline=0,
+                         command=root.deleteSelected)
 
 class CandidateSources(Tk.Frame):
     def __init__(self, root, parentFrame):
@@ -182,20 +128,20 @@ class CandidateSources(Tk.Frame):
         self.menuButton = Tk.Menubutton(srcFrame, text='Candidate Sources',
                                         relief=Tk.RAISED, bd=2, underline=0)
         self.menuButton.pack(side=Tk.TOP, fill=Tk.X)
-        self.menuButton['menu'] = CandidateMenu(self.menuButton)
+        self.menuButton['menu'] = CandidateMenu(self, self.menuButton)
 
         self.xScroll = Tk.Scrollbar(srcFrame, orient=Tk.HORIZONTAL)
         self.xScroll.pack(side=Tk.BOTTOM, fill=Tk.X)
         self.yScroll = Tk.Scrollbar(srcFrame, orient=Tk.VERTICAL)
         self.yScroll.pack(side=Tk.RIGHT, fill=Tk.Y)
-        self.listBox = Tk.Listbox(srcFrame, selectmode=Tk.BROWSE,
+        self.listBox = Tk.Listbox(srcFrame, selectmode=Tk.MULTIPLE,
                                   xscrollcommand=self.xScroll.set,
                                   yscrollcommand=self.yScroll.set,
                                   width=30)
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
         self.listBox.bindtags(btags[1:] + btags[:1])
-        self.listBox.bind('<ButtonRelease-1>', self.selectSource)
+#        self.listBox.bind('<ButtonRelease-1>', self.selectSource)
         self.xScroll["command"] = self.listBox.xview
         self.yScroll["command"] = self.listBox.yview
     def setSrcLib(self, srcLib):
@@ -206,30 +152,89 @@ class CandidateSources(Tk.Frame):
         self.listBox.delete(0, Tk.END)
         for src in self.sources:
             self.listBox.insert(Tk.END, src)
-    def selectSource(self, event=None):
-        src = self.listBox.get('active')
-        print src
+    def addSelected(self):
+        indices = self.listBox.curselection()
+        for indx in indices:
+            self.root.sourceList.addSource(self.sources[int(indx)])
+    def selectAll(self):
+        self.listBox.selection_set(0, self.listBox.size())
+    def unSelectAll(self):
+        self.listBox.selection_clear(0, self.listBox.size())
 
 class CandidateMenu(Tk.Menu):
-    def __init__(self, root):
-        Tk.Menu.__init__(self, root, tearoff=0)
+    def __init__(self, root, parentFrame):
+        Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Add selected', underline=0,
-                         command=Foo('Add selected'))
+                         command=root.addSelected)
         self.add_command(label='Select all', underline=0,
-                         command=Foo('Select all'))
-        self.add_command(label='Clear all', underline=0,
-                         command=Foo('Clear all'))
+                         command=root.selectAll)
+        self.add_command(label='Un-select all', underline=0,
+                         command=root.unSelectAll)
+
+class SourceList(Tk.Frame):
+    def __init__(self, root, parentFrame):
+        Tk.Frame.__init__(self)
+        self.root = root
+        srcFrame = Tk.Frame(parentFrame)
+        srcFrame.pack(side=Tk.RIGHT, fill=Tk.BOTH)
+
+        self.menuButton = Tk.Menubutton(srcFrame, text='Model Sources',
+                                        relief=Tk.RAISED, bd=2, underline=0)
+        self.menuButton.pack(side=Tk.TOP, fill=Tk.X)
+        self.menuButton['menu'] = ModelMenu(self, self.menuButton)
+
+        self.xScroll = Tk.Scrollbar(srcFrame, orient=Tk.HORIZONTAL)
+        self.xScroll.pack(side=Tk.BOTTOM, fill=Tk.X)
+        self.yScroll = Tk.Scrollbar(srcFrame, orient=Tk.VERTICAL)
+        self.yScroll.pack(side=Tk.RIGHT, fill=Tk.Y)
+        self.listBox = Tk.Listbox(srcFrame, selectmode=Tk.MULTIPLE,
+                                  xscrollcommand=self.xScroll.set,
+                                  yscrollcommand=self.yScroll.set,
+                                  width=30)
+        self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
+        btags = self.listBox.bindtags()
+        self.listBox.bindtags(btags[1:] + btags[:1])
+        self.xScroll["command"] = self.listBox.xview
+        self.yScroll["command"] = self.listBox.yview
+        self.srcs = map()
+    def addSource(self, src):
+        if src not in self.srcs:
+            self.srcs[src] = src
+        self.fill()
+    def fill(self):
+        self.listBox.delete(0, Tk.END)
+        for src in self.srcs.ordered_keys:
+            self.listBox.insert(Tk.END, src)
+    def deleteSelected(self):
+        src = self.listBox.get('active')
+        self.srcs.delete(src)
+        self.fill()
+    def selectAll(self):
+        self.listBox.selection_set(0, self.listBox.size())
+    def unSelectAll(self):
+        self.listBox.selection_clear(0, self.listBox.size())
 
 class ModelMenu(Tk.Menu):
-    def __init__(self, root):
-        Tk.Menu.__init__(self, root, tearoff=0)
+    def __init__(self, root, parentFrame):
+        Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Delete selected', underline=0,
-                         command=Foo('Add selected'))
+                         command=root.deleteSelected)
         self.add_command(label='Select all', underline=0,
-                         command=Foo('Select all'))
-        self.add_command(label='Clear all', underline=0,
-                         command=Foo('Clear all'))
+                         command=root.selectAll)
+        self.add_command(label='Un-select all', underline=0,
+                         command=root.unSelectAll)
 
+class map(dict):
+    def __init__(self):
+        dict.__init__(self)
+        self.ordered_keys = []
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        if key not in self.ordered_keys:
+            self.ordered_keys.append(key)
+    def delete(self, key):
+        self.ordered_keys.remove(key)        
+        del self[key]
 
 if __name__ == "__main__":
     root = RootWindow()
