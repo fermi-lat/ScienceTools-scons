@@ -19,6 +19,6 @@ macro tip_cppflags  ""\
   WIN32 " /I ..\src /wd4305"
 
 macro source *.cxx WIN32 "*.h *.cxx ../tip/*.h"
-library tip $(source)
+library tip -no_share $(source)
 
 application test_tip test/*.cxx
