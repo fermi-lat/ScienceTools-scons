@@ -449,7 +449,7 @@ void EvtBinTest::testHist2D() {
   // Populate this histogram, starting from right of the right endpoint, going to left of left endpoint:
   for (int ii = 100; ii >= -1; --ii) {
     for (long jj = 0; jj < 10; ++jj) {
-      double value = .9999999 * exp(jj + 1);
+      double value = .9999999 * exp(double(jj + 1));
       hist.fillBin(ii, value);
     }
   }
