@@ -46,6 +46,8 @@ class Simulator {
 
 public:
 
+   Simulator() : m_fluxMgr(0), m_source(0), m_newEvent(0) {}
+
    /// @param sourceName The name of the source as it appears in the xml file.
    /// @param fileList A vector of xml file names using the source.dtd.
    /// @param totalArea The cross-sectional area of the sphere enclosing
@@ -56,8 +58,10 @@ public:
              const std::vector<std::string> &fileList,
              double totalArea = 1.21,
              double startTime = 0.,
-             const std::string &pointingHistory = "")
-      {init(sourceName, fileList, totalArea, startTime, pointingHistory);}
+             const std::string &pointingHistory = "") 
+      : m_fluxMgr(0), m_source(0), m_newEvent(0) {
+      init(sourceName, fileList, totalArea, startTime, pointingHistory);
+   }
 
    /// @param sourceNames A vector of source names as they appear in 
    ///        the xml file.
@@ -66,7 +70,9 @@ public:
              double totalArea = 1.21,
              double startTime = 0.,
              const std::string &pointingHistory = "")
-      {init(sourceNames, fileList, totalArea, startTime, pointingHistory);}
+      : m_fluxMgr(0), m_source(0), m_newEvent(0) {
+      init(sourceNames, fileList, totalArea, startTime, pointingHistory);
+   }
 
    ~Simulator();
 
@@ -140,6 +146,11 @@ public:
       makeEvents(events, scData, respPtrs, spacecraft, false, 
                  allEvents, roi);
    }
+
+protected:
+
+   Simulator(const Simulator &) {}
+   Simulator & operator=(const Simulator &) {return *this;}
 
 private:
 

@@ -1,60 +1,32 @@
 package observationSim
-version v2r11
+version v3r0
 
 author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
-branches observationSim cmt src doc
-
-use GlastPolicy v5r*
-use flux v*
-use latResponse v*
+use STpolicy v1r*
+use cfitsio v1r* IExternal
+use CLHEP v2r* IExternal
+use facilities v2r*
 use tip v1r*
-use astro v0*
-use facilities v*
-use cfitsio v1* IExternal
-use CLHEP v2* IExternal
+use astro v0r*
+use flux v8r*
+use latResponse v2r*
 
-apply_pattern package_include
+apply_pattern ST_library option="-no_share "
+apply_pattern ST_pfiles
+apply_pattern ST_app name=obsSim
 
 private
 
-use hoops v*
+use hoops v0r*
+use Likelihood v3r*
+use st_app v1r*
 
 #use python v2* IExternal
 #macro pydir ../python/
 
-# allow use of internal path
 macro observationSim_cppflags "" \
-Linux "-I ../src -D TRAP_FPE -D USE_FT1 " \
-#Linux "-I ../src -D TRAP_FPE " \
-WIN32 '/I..\src /D"USE_FT1" /wd4290'
-
-macro_prepend cflags "" Linux "-g -O"
-
-macro_append ROOT_linkopts " -lHist"  WIN32 " libHisT.lib "
-
-apply_pattern package_linkopts
-
-# make sure various applications get built when library changes
-macro test_observationSimstamps "observationSim.stamp"
-macro obsSimstamps "obsSim.stamp"
-
-# standard package library
-macro my_headers "" WIN32 "../observationSim/*.h *.h"
-library observationSim -no_share $(my_headers) \
- Simulator.cxx\
- EventContainer.cxx\
- ScDataContainer.cxx\
- FitsTable.cxx\
- LatSc.cxx\
- EgretSc.cxx\
- Roi.cxx\
- $(pydir)/*.i
-
-# test applications
-application test_observationSim test/main.cxx
-
-# O2 prototype
-application obsSim test/obsSim.cxx
+      Linux "-I ../src -D USE_FT1 " \
+      WIN32 '/I..\src /D"USE_FT1" /wd4290'
