@@ -1,5 +1,6 @@
 Linux-i686
 rh72_gcc2953
+rh9_gcc32
 sun4x_*
 i386_linux*
 Win32*
