@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 30-apr-04 v5r4p4 JC  fix buffer overrun on Windows when reading long FITS HISTORY cards
  27-apr-04 v5r432 THB add throw() to StApp subclass destructors, required by StApp.
  26-apr-04 v5r4p2 THB add throw() to Parameter destructor, required by StApp.
  26-apr-04 v5r4p1 THB use STapp instead of IApp; fix so parameters are saved; add table_name to pars
