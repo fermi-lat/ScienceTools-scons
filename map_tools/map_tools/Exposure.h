@@ -12,7 +12,6 @@
 #include <cmath>
 
 namespace astro { class SkyDir;}
-namespace tuple { class ITable;}
 namespace { 
     inline double sqr(double x){return x*x;}
 }

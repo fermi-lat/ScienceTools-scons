@@ -29,7 +29,7 @@ Exposure::Exposure(double skybin, double costhetabin
 : m_total(0)
 {
     // set binsizes in the key
-    Index::skybinsize = int(skybin);
+    Index::skybinsize = skybin;
     Index::ra_factor  = int(360./skybin);
     Index::dec_factor = int(180./skybin);
     Index::cosfactor  = int((1.-Index::cosmin)/costhetabin);
@@ -38,8 +38,10 @@ Exposure::Exposure(double skybin, double costhetabin
     //total size to reserve
     unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
     m_exposureMap.resize(size);
+#if 0 // this should be debug
     std::clog << "Creating a exposure hypercube, size " << size 
         << "="<< Index::ra_factor << " x "<< Index::dec_factor << " x "<< Index::cosfactor << std::endl;
+#endif
     std::fill(m_exposureMap.begin(), m_exposureMap.end(), 0);
 }
 //------------------------------------------------------------------------------
@@ -52,7 +54,7 @@ Exposure::Exposure(const ExposureCube& cube, double total)
     if( size != m_exposureMap.size() ) {
         throw std::invalid_argument("wrong size");
     }
-#if 0
+#if 0 
     double tot = std::accumulate(m_exposureMap.begin(), m_exposureMap.end(), 0.0);
     std::cout << ", average exposure: " << tot/m_exposureMap.size() << std::endl;
 #endif
