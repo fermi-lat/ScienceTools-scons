@@ -16,7 +16,7 @@
 #include "TKey.h"
 
 #include "RootExtensionUtils.h"
-#include "RootHeaderData.h"
+#include "table/HeaderData.h"
 #include "table/IData.h"
 #include "table/TableException.h"
 #include "table/TabularData.h"
@@ -49,7 +49,7 @@ namespace table {
   RootExtensionUtils::~RootExtensionUtils() { delete m_data; delete m_header; close(); }
 
   IHeaderData * RootExtensionUtils::getHeaderData() {
-    if (!m_header) m_header = new RootHeaderData(this);
+    if (!m_header) m_header = new HeaderData<RootExtensionUtils>(*this);
     return m_header;
   }
 
