@@ -14,7 +14,8 @@
     the library to be used in maximally different and disparate contexts.
 
     The evtbin application is considerably more specialized. It
-    operates on an input event file (and other optional input files
+    operates on an input file with time and/or energy information (and other
+    optional input files
     as needed) to bin the event data into one of a number of standard
     data products, including light curves, spectra (PHA1 and PHA2)
     and count maps.
@@ -53,14 +54,14 @@
                must pass fverify, and comply with the letter of
                OGIP standards for their respective file formats.
 
-    5/23/2004  Library: 6) Add support for writing histograms to
+    5/24/2004  Library: 6) Add support for writing histograms to
                output (FITS) images. 7) Add support for user-provided
                bin definitions.
                Application: 8) Add capability of producing count
                maps. 9) Add capability to utilize user-provided
                bin definitions.
 
-    5/30/2004  Library: 10) Add constant S/N and Bayesian block
+    5/31/2004  Library: 10) Add constant S/N and Bayesian block
                binners.
                Application: 11) Add capability of using these new
                binners.
@@ -90,7 +91,11 @@
     in one dimension. Subclasses correspond to particular types
     of binners, e.g. LinearBinner, LogBinner, etc. These classes
     store information pertaining to the bins, but they do not themselves
-    store any binned data.
+    store any binned data. Binner-derived classes have a virtual method
+    called computeIndex, which determines the index (bin number) for
+    a given value. In this way, the act of binning the data, which
+    varies from binner to binner, is decoupled from the act of storing
+    the data, which does not depend on the binning method.
 
     \subsection hist The Hist Hierarchy
     Hist and its subclasses encapsulate various dimensionalities of
@@ -116,6 +121,13 @@
 
     \section todo Open Issues
 \verbatim
+       4.  5/24/2004: Currently there are only two binning methods: LinearBinner and LogBinner. New
+           subclasses of Binner should be added to support User-defined binners, Constant Signal-to-Noise
+           binners and Bayesian Block binners.
+       5.  5/24/2004: The LightCurve class currently does not write GTIs.
+       6.  5/24/2004: TIMEDEL column is always written even for constant-size time bins.
+       7.  5/24/2004: SingleSpec and MultiSpec write only channel and counts. There are plenty of other
+           fields which need to be populated.
 \endverbatim
 
     \section done Resolved Issues
