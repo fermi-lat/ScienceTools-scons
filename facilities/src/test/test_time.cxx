@@ -55,6 +55,10 @@ int main(int argc, char* argv[]) {
     facilities::Timestamp future = cur + days10;
     std::cout << "10 days from now is " << future.getString() << std::endl;
     std::cout << "10 days from now julian is " << future.getJulian() << std::endl;
+
+    facilities::Timestamp delta = future - ago10;
+    std::cout << "result of subtracting absolute times (units = days) "
+              << delta.getJulian() << std::endl;
   }
 
   catch (const BadTimeInput f) {
