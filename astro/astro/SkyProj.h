@@ -21,7 +21,9 @@ namespace astro {
     * @brief Map Projection wrapper class for WCSLIB
     * @author T. Hierath
     *
-    This class acts as a wrapper for WCSLIB, a library written for handling transformations
+    This class acts as a wrapper for 
+    <a href=http://www.atnf.csiro.au/people/mcalabre/>WCSLIB</a>, 
+    a library written for handling transformations
     between celestial and projection coordinate systems. 
     See <a href="../skyproj.html"> this document</a> for example images.
 
