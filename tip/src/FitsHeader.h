@@ -77,6 +77,28 @@ namespace tip {
       */
       virtual const std::string implementation() const { return "FITS"; }
 
+      /** \brief Return the comment associated with the given keyword.
+          \param name The name of the keyword.
+      */
+      virtual std::string getKeyComment(const std::string & name) const;
+
+      /** \brief Set comment associated with the given keyword.
+          \param name The name of the keyword.
+          \param comment The new comment of the keyword.
+      */
+      virtual void setKeyComment(const std::string & name, const std::string & comment);
+
+      /** \brief Return the unit associated with the given keyword.
+          \param name The name of the keyword.
+      */
+      virtual std::string getKeyUnit(const std::string & name) const;
+
+      /** \brief Set unit associated with the given keyword.
+          \param name The name of the keyword.
+          \param unit The new unit of the keyword.
+      */
+      virtual void setKeyUnit(const std::string & name, const std::string & unit);
+
     private:
       /** \brief Templated function which can get keywords from a FITS table, converted to any data type.
           \param name The name of the keyword.

@@ -22,7 +22,11 @@ namespace tip {
 
   /** \class Keyword
 
-      \brief Encapsulation of a single keyword. The keyword may be get/set in any data type,
+      \brief Encapsulation of a single keyword. The keyword may be get/set in any data type.
+
+             See also the KeyRecord class. The difference between them is that Keyword obejcts
+             are bound to a specific data header, whereas KeyRecord objects simply contain a
+             copy of the entire keyword record stored as a single string.
   */
   class Keyword {
     public:
@@ -30,7 +34,7 @@ namespace tip {
           \param header_data Pointer to the referent IExtensionData object.
           \param name The name of this Keyword.
       */
-      Keyword(Header * header_data, const std::string & name): m_header_data(header_data),
+      Keyword(Header * header_data, const std::string & name): m_record(), m_header_data(header_data),
         m_name(name) {
         if (0 == m_header_data) throw TipException("Keyword::Keyword(Header *, const std::string &): "
           "Cannot create Keyword with a NULL IExtensionData pointer");
@@ -53,7 +57,22 @@ namespace tip {
 
       void setRecord(const KeyRecord & rec);
 
+      /// \brief Get comment associated with this keyword.
+      std::string getComment() const;
+
+      /// \brief Set comment associated with this keyword.
+      void setComment(const std::string & comment);
+
+      /// \brief Get unit associated with this keyword.
+      std::string getUnit() const;
+
+      /** \brief Set unit associated with this keyword.
+          \param unit The new unit of the keyword.
+      */
+      void setUnit(const std::string & unit);
+
     private:
+      KeyRecord m_record;
       Header * m_header_data;
       std::string m_name;
   };
@@ -179,6 +198,32 @@ namespace tip {
       */
       virtual const std::string implementation() const = 0;
 
+      /** \brief Get comment associated with the given keyword.
+          \param name The name of the keyword.
+      */
+      virtual std::string getKeyComment(const std::string &) const
+        { unsupported("getKeyComment(const std::string &)"); return ""; } 
+
+      /** \brief Set comment associated with the given keyword.
+          \param name The name of the keyword.
+          \param comment The new comment of the keyword.
+      */
+      virtual void setKeyComment(const std::string &, const std::string &)
+        { unsupported("setKeyComment(const std::string &, const std::string &)"); } 
+
+      /** \brief Get unit associated with the given keyword.
+          \param name The name of the keyword.
+      */
+      virtual std::string getKeyUnit(const std::string &) const
+        { unsupported("getKeyUnit(const std::string &)"); return ""; } 
+
+      /** \brief Set unit associated with the given keyword.
+          \param name The name of the keyword.
+          \param unit The new unit of the keyword.
+      */
+      virtual void setKeyUnit(const std::string &, const std::string &)
+        { unsupported("setKeyUnit(const std::string &, const std::string &)"); } 
+
     protected:
       /** \brief Internal utility to add keywords when they are looked up.
       */
@@ -227,6 +272,22 @@ namespace tip {
 
   inline void Keyword::setRecord(const KeyRecord & rec) {
     m_header_data->setKeyRecord(m_name, rec.get());
+  }
+
+  inline std::string Keyword::getComment() const {
+    return m_header_data->getKeyComment(m_name);
+  }
+
+  inline void Keyword::setComment(const std::string & comment) {
+    m_header_data->setKeyComment(m_name, comment);
+  }
+
+  inline std::string Keyword::getUnit() const {
+    return m_header_data->getKeyUnit(m_name);
+  }
+
+  inline void Keyword::setUnit(const std::string & unit) {
+    m_header_data->setKeyUnit(m_name, unit);
   }
 
 }

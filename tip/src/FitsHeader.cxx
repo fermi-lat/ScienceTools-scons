@@ -4,6 +4,7 @@
 
     \author James Peachey, HEASARC
 */
+#include <cctype>
 #include <sstream>
 
 #include "FitsHeader.h"
@@ -77,6 +78,35 @@ namespace tip {
   void FitsHeader::close(int status) {
     if (0 != m_fp) fits_close_file(m_fp, &status);
     m_fp = 0;
+  }
+
+  std::string FitsHeader::getKeyComment(const std::string & name) const {
+    int status = 0;
+    char value[FLEN_VALUE];
+    char comment[FLEN_COMMENT];
+    fits_read_keyword(m_fp, const_cast<char *>(name.c_str()), value, comment, &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot read comment for keyword \"") + name + '"'));
+    return comment;
+  }
+
+  void FitsHeader::setKeyComment(const std::string & name, const std::string & comment) {
+    int status = 0;
+    fits_modify_comment(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(comment.c_str()), &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write comment for keyword \"") + name + '"'));
+  }
+
+  std::string FitsHeader::getKeyUnit(const std::string & name) const {
+    int status = 0;
+    char unit[FLEN_CARD] = "";
+    fits_read_key_unit(m_fp, const_cast<char *>(name.c_str()), unit, &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot read unit for keyword \"") + name + '"'));
+    return unit;
+  }
+
+  void FitsHeader::setKeyUnit(const std::string & name, const std::string & unit) {
+    int status = 0;
+    fits_write_key_unit(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(unit.c_str()), &status);
+    if (0 != status) throw TipException(formatWhat(std::string("Cannot write unit for keyword \"") + name + '"'));
   }
 
   std::string FitsHeader::formatWhat(const std::string & msg) const {
