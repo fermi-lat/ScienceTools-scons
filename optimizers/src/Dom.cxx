@@ -37,8 +37,7 @@ void Dom::checkTag(const DOM_Element &element,
 }
 
 bool Dom::checkTagName(const DOM_Element &element, 
-                       const std::string &tagName, 
-                       const std::string &callingRoutine) {
+                       const std::string &tagName) {
    if (element == DOM_Element()) {
       throw Exception(
          "optimizers::Dom::checkTag: Trying to read tag of DOM_Element().\n");
@@ -53,8 +52,7 @@ void Dom::getElements(const DOM_Element &parent, const std::string &tagName,
    children.clear();
    DOM_Element child = xml::Dom::getFirstChildElement(parent);
    while (child != DOM_Element()) {
-      if (Dom::checkTagName(child, tagName, 
-                            "optimizers::Dom::getElements")) {
+      if (Dom::checkTagName(child, tagName)) {
          children.push_back(child);
       }
       child = xml::Dom::getSiblingElement(child);

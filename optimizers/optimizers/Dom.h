@@ -10,7 +10,6 @@
 #include <string>
 
 #include <xercesc/dom/DOM_Element.hpp>
-//#include <xercesc/dom/DOM_NodeList.hpp>
 
 #include "optimizers/Exception.h"
 
@@ -38,8 +37,7 @@ public:
                         const std::string &callingRoutine="") throw(Exception);
 
    static bool checkTagName(const DOM_Element &element, 
-                            const std::string &tagName, 
-                            const std::string &callingRoutine="");
+                            const std::string &tagName);
    
    static void getElements(const DOM_Element &parent, 
                            const std::string &tagName,

@@ -9,13 +9,16 @@
 #ifndef optimizers_Parameter_h
 #define optimizers_Parameter_h
 
+#include <cmath>
 #include <vector>
 #include <string>
-#include <cmath>
+#include <sstream>
 
 #include "optimizers/OutOfBounds.h"
 
-class DOM_Element;
+#include <xercesc/dom/DOM_Element.hpp>
+//class DOM_Element;
+class DOM_Document;
 
 namespace optimizers {
 
@@ -98,6 +101,10 @@ public:
    /// Extract data from an xml parameter element defined using the
    /// FunctionModels.dtd.
    void extractDomData(const DOM_Element &elt);
+
+   /// Add a parameter DOM_Element that contains the current data
+   /// member values.
+   DOM_Element createDomElement(DOM_Document &doc) const;
 
 private:
 

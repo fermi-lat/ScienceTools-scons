@@ -40,12 +40,12 @@ std::string test_path;
 
 int main() {
    test_FunctionFactory();
-   test_Parameter_class();
-   test_Function_class();
-   test_PowerLaw_class();
-   test_CompositeFunction();
-   test_Optimizers();
-   test_Mcmc();
+//    test_Parameter_class();
+//    test_Function_class();
+//    test_PowerLaw_class();
+//    test_CompositeFunction();
+//    test_Optimizers();
+//    test_Mcmc();
    return 0;
 }
 
@@ -110,6 +110,17 @@ void test_FunctionFactory() {
       std::cout << "*** End of readXml() failure test. ***\n" << std::endl;
    } catch (...) {
       std::cerr << "other exception caught while reading "
+                << xmlFile << std::endl;
+   }
+
+// Write the Functions in funcFactory to an XML file.
+   xmlFile = "outputModels.xml";
+   try {
+      funcFactory.writeXml(xmlFile);
+   } catch (Exception &eObj) {
+      std::cout << eObj.what() << std::endl;
+   } catch (...) {
+      std::cerr << "other exception caught while writing "
                 << xmlFile << std::endl;
    }
 

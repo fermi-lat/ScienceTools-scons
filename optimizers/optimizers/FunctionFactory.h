@@ -46,7 +46,7 @@ public:
 
    void readXml(const std::string &xmlFile) throw(Exception);
 
-//    void writeXml(const std::string &outputFile) const;
+   void writeXml(const std::string &outputFile);
 
 private:
 
