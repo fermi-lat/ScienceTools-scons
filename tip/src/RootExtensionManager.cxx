@@ -43,14 +43,24 @@ namespace table {
   // Construct without opening the file.
   RootExtensionUtils::RootExtensionUtils(const std::string & file_name, const std::string & ext_name):
     m_file_name(file_name), m_ext_name(ext_name), m_branch_lookup(), m_leaves(), m_num_records(0), m_fp(0),
-    m_tree(0) {}
+    m_tree(0), m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
-  RootExtensionUtils::~RootExtensionUtils() { close(); }
+  RootExtensionUtils::~RootExtensionUtils() { delete m_data; delete m_header; close(); }
 
-  IHeaderData * RootExtensionUtils::createHeader() { return new RootHeaderData(this); }
+  IHeaderData * RootExtensionUtils::getHeaderData() {
+    if (!m_header) m_header = new RootHeaderData(this);
+    return m_header;
+  }
 
-  IData * RootExtensionUtils::createData() { return new RootTabularData(this); }
+  ITabularData * RootExtensionUtils::getTabularData() {
+    ITabularData * retval = 0;
+    if (!m_data) {
+      retval =  new RootTabularData(this);
+      m_data = retval;
+    }
+    return retval;
+  }
 
   // Subclasses call this to open the file and position it to the desired extension.
   void RootExtensionUtils::open() {

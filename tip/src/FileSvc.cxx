@@ -7,7 +7,7 @@
 */
 #include "FitsExtensionManager.h"
 #include "FitsFileSvc.h"
-#include "RootExtensionData.h"
+#include "RootExtensionUtils.h"
 #include "table/Table.h"
 
 namespace table {
@@ -25,7 +25,7 @@ namespace table {
       try {
         data = new FitsExtensionManager(file_name, table_name);
       } catch(TableException & x) {
-        data = new RootExtensionData(file_name, table_name);
+        data = new RootExtensionUtils(file_name, table_name);
       }
       retval = new Table(data);
     } catch(...) {

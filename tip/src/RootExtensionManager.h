@@ -15,6 +15,7 @@
 
 #include "TTree.h"
 
+#include "table/IExtensionData.h"
 #include "table/TableException.h"
 #include "table/table_types.h"
 
@@ -54,7 +55,7 @@ namespace table {
       acts as a factory for creating Root-specific header and data objects, which refer back to the
       RootExtensionUtils object which created them.
   */
-  class RootExtensionUtils {
+  class RootExtensionUtils : public IExtensionData {
     public:
       /** \brief Create an object to provide low-level access to the given Root extension.
           \param file_name The name of the Root file.
@@ -64,17 +65,17 @@ namespace table {
 
       /** \brief Destructor. Closes file if it is open.
       */
-      ~RootExtensionUtils();
+      virtual ~RootExtensionUtils();
 
       /** \brief Create a header object which refers to this file. Caller is responsible for deleting
           the header object.
       */
-      IHeaderData * createHeader();
+      virtual IHeaderData * getHeaderData();
 
       /** \brief Create a data object (table or image) which refers to this file. Caller is responsible
           for deleting the header object.
       */
-      IData * createData();
+      virtual ITabularData * getTabularData();
 
       // General support for Root files:
       /** \brief Open the Root file.
@@ -138,6 +139,8 @@ namespace table {
       Index_t m_num_records;
       TFile * m_fp;
       mutable TTree * m_tree;
+      IHeaderData * m_header;
+      IData * m_data;
   };
 
   // Getting columns.
