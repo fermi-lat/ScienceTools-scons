@@ -10,6 +10,7 @@
 
 #include "FitsExtensionData.h"
 #include "RootExtensionData.h"
+#include "TestExtensionData.h"
 #include "tip/IExtensionData.h"
 #include "tip/TipException.h"
 
@@ -408,4 +409,35 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
   status = (0 == currentStatus) ? status : currentStatus;
 
   return status;
+}
+
+namespace tip {
+
+  TestExtensionData::TestExtensionData(): m_read_only_extension(0) {}
+
+  TestExtensionData::~TestExtensionData() throw() { delete m_read_only_extension; }
+
+  int TestExtensionData::test(int status) {
+    setStatus(status);
+
+    // Test read-only access:
+    testReadOnly();
+    return getStatus();
+  }
+
+  void TestExtensionData::testReadOnly() {
+    std::string msg;
+
+    const std::string & data_dir = getDataDir();
+
+    // Attempt to open a read-only file:
+    msg = std::string("attempt to open extension SPECTRUM in write-protected file ") + data_dir + "a1_read_only.pha";
+    try {
+      m_read_only_extension = new FitsExtensionData(data_dir + "a1_read_only.pha", "SPECTRUM");
+      ReportExpected(msg + " succeeded");
+    } catch(const TipException & x) {
+      ReportUnexpected(msg + " failed");
+    }
+  }
+
 }

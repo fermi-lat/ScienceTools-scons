@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <vector>
 
+#include "TestExtensionData.h"
 #include "TestFileManager.h"
 #include "TestTable.h"
 #include "tip/Header.h"
@@ -409,8 +410,14 @@ int main() {
       status = 1;
     }
     
-    // Test IExtensionData and its subclasses.
-    status = TestExtensionData(data_dir, status);
+    // Test IExtensionData and its subclasses. New tests should not be added here, but rather
+    // to the test object class below. The tests in the TestExtensionData function should be
+    // eventually superceded by the tests in tip::TestExtensionData class.
+    status = ::TestExtensionData(data_dir, status);
+
+    // Test IExtensionData and its subclasses. This uses the new style of tests. 
+    tip::TestExtensionData ext_data_test;
+    status = ext_data_test.test(status);
 
     // Test table interface-related classes.
     TestTable table_test;
