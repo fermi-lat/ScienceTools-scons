@@ -120,6 +120,11 @@ JulianDate EarthOrbit::dateFromSeconds(double seconds)const{
     return JDStart+(seconds/SecondsPerDay);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+JulianDate EarthOrbit::mjdFromSeconds(double seconds)const{
+   double MJDStart = JDStart - 2400000.5;
+   return MJDStart+(seconds/SecondsPerDay);
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double EarthOrbit::phase(JulianDate jd) const
 {
     double elapse = (jd - JDStart)*SecondsPerDay;
@@ -179,7 +184,6 @@ double EarthOrbit::calcTravelTime(JulianDate jd, const SkyDir &sourceDir) const
 
    return correction;
 }
-
 
 // Takes a Julian Date and returns the correction that is added to TT to get TDB.
 // Does a linear interpolation to avoid recomputing 100+ sin functions each time

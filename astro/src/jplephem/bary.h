@@ -6,7 +6,7 @@
 #include <stdlib.h>
 //#include <unistd.h>
 #include <string.h>
-//#include <time.h>
+#include <time.h>
 #include "fitsio.h"
 //#include "longnam.h"
 
