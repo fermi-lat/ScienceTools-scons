@@ -13,8 +13,10 @@ import sys
 import copy
 import string
 import Tkinter as Tk
+
+from FileDialog import Dialog, LoadFileDialog, SaveFileDialog
 import mySimpleDialog
-from FileDialog import LoadFileDialog, SaveFileDialog
+
 import readXml
 import FuncFactory as funcFactory
 import findSrcs
@@ -115,6 +117,13 @@ class RootWindow(Tk.Tk):
         self.srcModel = readXml.SourceModel(xmlFile)
         self.modelEditor.fill()
         self.title('Source Model Editor: ' + os.path.basename(xmlFile))
+    def importSrcs(self, xmlFile=None):
+        if not xmlFile:
+            xmlFile = LoadFileDialog(self).go(pattern='*.xml')
+        new_srcModel = readXml.SourceModel(xmlFile)
+        for src in new_srcModel.names():
+            self.srcModel[src] = new_srcModel[src]
+        self.modelEditor.fill()
     def extract(self):
         sources = findSrcs.SourceRegionDialog(self)
         if sources.haveSources:
@@ -157,14 +166,22 @@ class RootWindow(Tk.Tk):
             self.modelEditor.selectSource()
         except:
             pass
+    def deleteAll(self):
+        if self.srcModel.names():
+            d = Dialog(self, title="Delete all sources question",
+                       text="Delete all sources?",
+                       bitmap='questhead', default=1,
+                       strings=("Yes", "Cancel"))
+            if d.num == 0:
+                for src in self.srcModel.names():
+                    del self.srcModel[src]
+                self.modelEditor.fill()
 
 class MenuBar(Tk.Menu):
     def __init__(self, parent):
         Tk.Menu.__init__(self)
-        self.add_cascade(label="File", menu=FileMenu(parent),
-                         underline=0)
-        self.add_cascade(label="Edit", menu=EditMenu(parent),
-                         underline=0)
+        self.add_cascade(label="File", menu=FileMenu(parent), underline=0)
+        self.add_cascade(label="Edit", menu=EditMenu(parent), underline=0)
         parent.config(menu=self)
 
 class FileMenu(Tk.Menu):
@@ -173,9 +190,11 @@ class FileMenu(Tk.Menu):
         self.root = root
         self.add_command(label="Open...", underline=0, command=root.open)
         self.add_command(label="Extract...", underline=1, command=root.extract)
+        self.add_command(label="Import...", underline=0,
+                         command=root.importSrcs)
         self.add_command(label="Save", underline=0, command=root.save)
         self.add_command(label="Save as...", command=root.saveAs)
-        self.add_command(label="Quit", command=root.quit, underline=0)
+        self.add_command(label="Quit", underline=0, command=root.quit)
     def stat(self):
         if root.srcModel == None:
             self.entryconfigure(1, state=Tk.DISABLED)
@@ -187,12 +206,13 @@ class FileMenu(Tk.Menu):
 class EditMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="Add point source", underline=0,
+        self.add_command(label="Add point source", underline=4,
                          command=root.addPointSource)
-        self.add_command(label="Add diffuse source", underline=0,
+        self.add_command(label="Add diffuse source", underline=4,
                          command=root.addDiffuseSource)
         self.add_command(label="Delete selected", underline=0,
                          command=root.deleteSource)
+        self.add_command(label="Delete all sources...", command=root.deleteAll)
 
 class ModelEditor(Tk.Frame):
     def __init__(self, parent):
@@ -201,8 +221,7 @@ class ModelEditor(Tk.Frame):
         self.yScroll = Tk.Scrollbar(self, orient=Tk.VERTICAL)
         self.yScroll.pack(side=Tk.RIGHT, fill=Tk.Y)
         self.listBox = Tk.Listbox(self, selectmode=Tk.BROWSE,
-                                  yscrollcommand=self.yScroll.set,
-                                  height=16)
+                                  yscrollcommand=self.yScroll.set, height=16)
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
         self.listBox.bindtags(btags[1:] + btags[:1])
@@ -239,11 +258,9 @@ class ComponentEditor(Tk.Frame):
         self.functionDict = functionDict
         self.title = title
         Tk.Frame.__init__(self)
-        
         initialSrc = functionDict.keys()[0]
         self.currentFunc = Tk.StringVar()
         self.currentFunc.set(self.functionDict[initialSrc].type)
-        
         modelFrame = Tk.Frame(self.parent)
         modelFrame.pack(side=Tk.TOP, fill=Tk.X)
         label = Tk.Label(modelFrame, text=title + ": ")
@@ -254,7 +271,6 @@ class ComponentEditor(Tk.Frame):
         self.functionMenu.pack(side=Tk.LEFT, fill=Tk.X)
         self.functionMenu["menu"] = FunctionMenu(self.functionMenu, self,
                                                  functionDict)
-
         paramFrame = Tk.Frame(self.parent)
         paramFrame.pack(side=Tk.BOTTOM, fill=Tk.BOTH)
         self.yScroll = Tk.Scrollbar(paramFrame, orient=Tk.VERTICAL)
