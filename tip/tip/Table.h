@@ -76,6 +76,7 @@ namespace table {
 
               Record & operator = (const Record & rec) {
                 if (this != &rec) {
+                  // Note: do *not* assign m_cells! This is important to how Records work!
                   m_table = rec.m_table; // This should also confirm that the new table has the right fields.
                   m_index = rec.m_index;
                 }
@@ -99,7 +100,7 @@ namespace table {
 
               // Get the current row number and table. Client code should not normally need to call these.
               Index_t getRowNum() const { return m_index; }
-              void setRowNum(Index_t index) { m_index = index; }
+              void nextRecord() { ++m_index; }
               Table * getTable() { assert(m_table); return m_table; }
 
             private:
@@ -108,26 +109,16 @@ namespace table {
               Index_t m_index;
           };
 
-          /** \brief Create an Iterator object which is not associated directly to a table. Assignment
-              to this Iterator will form such an association.
+          /** \brief Create an Iterator object which is not immediately associated with a table. Assignment
+              to this Iterator can form such an association.
           */
-          Iterator(): m_record(), m_table(0), m_row_num(0) {}
-
-          /** \brief Standard copy constructor.
-
-              The argument is type const Iterator & to avoid temporary objects whenever possible, even
-              though it's not strictly true becase the Table * pointer is copied.
-              \param itor The source object.
-          */
-          Iterator(const Iterator & itor): m_record(), m_table(itor.m_table), m_row_num(itor.m_row_num)
-            { m_record = Record(*m_table, m_row_num); }
+          Iterator(): m_record(), m_table(0) {}
 
           /** \brief Create an Iterator which does refer to the given table and index.
               \param table Pointer to the referent Table object.
               \param row_num The index indicating the position of this iterator within the table.
           */
-          Iterator(Table * table, Index_t row_num): m_record(), m_table(table), m_row_num(row_num)
-            { m_record = Record(*m_table, m_row_num); }
+          Iterator(Table * table, Index_t row_num): m_record(*table, row_num), m_table(table) {}
 
           /** \brief Standard assignment, which makes this object refer to the same record in the same
               table as the source, but does not copy the source iterator's Record.
@@ -140,20 +131,19 @@ namespace table {
             if (this != &itor) {
               m_record = itor.m_record;
               m_table = itor.m_table;
-              m_row_num = itor.m_row_num;
             }
             return *this;
           }
 
           /** \brief Go on to the next table position.
           */
-          Iterator & operator ++() { m_record.setRowNum(++m_row_num); return *this; }
+          Iterator & operator ++() { m_record.nextRecord(); return *this; }
 
           /** \brief Compare iterator positions. They will agree iff they point to the same row of the same table.
               \param itor The iterator being compared.
           */
           bool operator !=(const Iterator & itor) const
-            { return (m_table != itor.m_table || m_row_num != itor.m_row_num); }
+            { return (m_table != itor.m_table || m_record.getRowNum() != itor.m_record.getRowNum()); }
 
           /** \brief Dereference to get the Record object this Iterator contains.
           */
@@ -166,7 +156,6 @@ namespace table {
         private:
           Record m_record;
           Table * m_table;
-          Index_t m_row_num;
       };
 
       /** \brief Create a Table object from an ITabularData object.
