@@ -6,12 +6,14 @@
 
 */
 
-#ifndef TOOL_SKYIMAGE_H
-#define TOOL_SKYIMAGE_H
+#ifndef MAP_TOOLS_SKYIMAGE_H
+#define MAP_TOOLS_SKYIMAGE_H
+
+#include "map_tools/SkyFunction.h"
 
 #include <string>
+#include <vector>
 class BaseImage;
-#include "map_tools/SkyFunction.h"
 
 namespace astro { class SkyDir; }
 
@@ -45,7 +47,7 @@ public:
         @param delta incremental value (default 1 if not present)
         @param layer for multi-layer app. 0 (default) means the first layer
     */
-    void addPoint(const astro::SkyDir& dir, double delta=1.0, int layer=0);
+    void addPoint(const astro::SkyDir& dir, double delta=1.0, unsigned int layer=0);
 
 
     ~SkyImage();
@@ -54,8 +56,10 @@ public:
     /**
     @brief loop over all internal bins, request the intensity from a functor derived
     from SkyFunction
+    @param req a functor that returns a double for a SkyDir
+    @param layer layer number to fill [default 0]
     */
-    void fill( const SkyFunction& req);
+    void fill( const SkyFunction& req, unsigned int layer=0);
 
     /** brief clear the image, putting nulls around a AIT map
     */
@@ -69,16 +73,24 @@ public:
         @param layer number
         @return value of the pixel corresponding to the given direction
     */
-    double pixelValue(const astro::SkyDir& pos, int layer=0)const;
+    double pixelValue(const astro::SkyDir& pos, unsigned int layer=0)const;
     
+    /** @brief  set a list of the neighbor values
+    @param pos position in the sky
+    @param nlist list of neighbor values to set
+    */
+    void getNeighbors(const astro::SkyDir& pos, std::vector<double>& neighbors)const ;
+
 private:
     //! sizes of the respective axes.
-    int m_naxis1, m_naxis2, m_naxis3;
+    int   m_naxis1, m_naxis2, m_naxis3;
     double m_total;
     //! pointer to the BaseImage abstract class, which is cast in the implementation.
     BaseImage* m_image;
     unsigned int m_pixelCount;
     bool m_save; 
+
+    
 };
 } //namesace map_tools
 

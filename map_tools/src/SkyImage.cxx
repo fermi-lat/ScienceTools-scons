@@ -74,7 +74,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     setKey("CTYPE1", std::string(galactic?"GLON--":"RA--")+ pars.projType()
         ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
     setKey("CRPIX1",  SkyDir::s_refX+0.5,"","Reference pixel"); // note that FITS pixel reference is off by 0.5
-    setKey("CRVAL1",  pars.xref(), "deg", "[RA|GLON] at the reference pixel");
+    setKey("CRVAL1",  pars.xref(), "deg", "RA or GLON at the reference pixel");
     setKey("CDELT1",  SkyDir::s_scaleX,"",
         "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT1",  "deg", "", "Physical unit of X-axis");
@@ -83,7 +83,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
 
     setKey("CRPIX2",  SkyDir::s_refY+0.5,"","Reference pixel");// note that FITS pixel reference is off by 0.5
-    setKey("CRVAL2",  pars.yref(), "deg", "[DEC|GLAT] at the reference pixel"); 
+    setKey("CRVAL2",  pars.yref(), "deg", "DEC or GLAT at the reference pixel"); 
     setKey("CDELT2",  SkyDir::s_scaleY,"",
         "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
     setKey("CUNIT2",  "deg", "", "Physical unit of Y-axis");
@@ -98,9 +98,9 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     m_image = &image;
 
     // standard ordering for ra, dec, cos(theta).
-    image.getValue("NAXIS1", m_naxis1);
-    image.getValue("NAXIS2", m_naxis2);
-    image.getValue("NAXIS3", m_naxis3);
+    image.getValue("NAXIS1", ( m_naxis1));
+    image.getValue("NAXIS2", (m_naxis2));
+    image.getValue("NAXIS3", (m_naxis3));
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     std::string ctype, trans;
@@ -144,7 +144,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer)
+void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
     std::pair<double,double> p= dir.project();
     unsigned int 
@@ -157,19 +157,20 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer)
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SkyImage::fill(const SkyFunction& req)
+void SkyImage::fill(const SkyFunction& req, unsigned int layer)
 {
+    if( layer >= (unsigned int)m_naxis3|| layer<0) throw std::out_of_range("SkyImage::fill, layer out of range");
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
-
-    for( size_t k = 0; k< m_pixelCount; ++k){
+    int offset = m_naxis1* m_naxis2 * layer;
+    for( size_t k = 0; k< (unsigned int)(m_naxis1* m_naxis2); ++k){
         // determine the bin center
-        float 
+        double 
             x = static_cast<int>(k%m_naxis1)+0.5, 
             y = static_cast<int>(k/m_naxis1)+0.5;
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
             double t= req(dir);
-            image->data()[k] = t; 
+            image->data()[k+offset] = t; 
             m_total += t;
         }catch(... ) { // any exception: just fill in a NaN
             image->data()[k]=dnan; 
@@ -183,7 +184,7 @@ void SkyImage::clear()
     size_t s = image->data().size();
     for( size_t k = 0; k< s; ++k){
         // determine the bin center
-        float 
+        double
             x = static_cast<int>(k%m_naxis1)+0.5, 
             y = static_cast<int>(k/m_naxis1)+0.5;
         try{
@@ -195,9 +196,9 @@ void SkyImage::clear()
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-double SkyImage::pixelValue(const astro::SkyDir& pos, int layer)const
+double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 {
-
+    if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
     std::pair<double,double> p= pos.project();
     unsigned int 
         i = static_cast<unsigned int>(p.first),
@@ -210,7 +211,6 @@ double SkyImage::pixelValue(const astro::SkyDir& pos, int layer)const
         throw std::range_error("SkyImage::pixelValue-- outside image hyper cube");
     }
 }
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::~SkyImage()
 {
@@ -220,4 +220,19 @@ SkyImage::~SkyImage()
         image->saveElement();
         delete image;
     }
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighbors)const
+{
+    int layer = 0; ///@todo: get neighbors on a different layer
+    FloatImg& image =  *dynamic_cast<FloatImg*>(m_image); 
+    std::pair<double,double> p= pos.project();
+    unsigned int 
+        i = static_cast<unsigned int>(p.first),
+        j = static_cast<unsigned int>(p.second),
+        k = i+m_naxis1*(j + layer*m_naxis2);
+    if(i<(unsigned int)m_naxis1)neighbors.push_back(image[k+1]); 
+    if(i>0) neighbors.push_back(image[k-1]);
+    if(j<(unsigned int)m_naxis2)neighbors.push_back(image[k+m_naxis1]);
+    if(j>0)neighbors.push_back(image[k-m_naxis1]);
 }
