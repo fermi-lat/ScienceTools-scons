@@ -3,16 +3,18 @@
 clobber,  b, h, "YES", , , "Overwrite existing output files with new output files"
 chatter,  i, h,   2,0,4 , , "Chattiness of output"
 debug,    b, h, "no", , , , "Debugging mode activated"
-mode,     s, h,  "h",   , ,""
+#mode,     s, h,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,     s, h,  "ql",   , ,""
+mode,     s, h,  "ql",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile,   f,a,"$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits",,,"Name of the exposure cube input file:"
+#infile,   f,a,"$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits",,,"Name of the exposure cube input file:"
+infile,   f,a,"",,,"Name of the exposure cube input file:"
 table,    s,a,"exposure",,,"name of the extension or ROOT tree"
 filter,   s,h,,,,"filter expression:"
-outfile,  f,a,"$(OUTFILES)/simple.fits",,,"output file name"
+#outfile,  f,a,"$(OUTFILES)/simple.fits",,,"output file name"
+outfile,  f,a,"",,,"output file name"
 #
 #------------ describe the effective area -------
 rspfunc,  s,a, "simple", "SIMPLE|DC1F|DC1B|DC1FB|DC2|G25","","response function type"
@@ -20,8 +22,8 @@ rspfunc,  s,a, "simple", "SIMPLE|DC1F|DC1B|DC1FB|DC2|G25","","response function 
 #Parameters for Spatial binning
 #
 pixelsize,r,a,1,,,Image size [degrees/pixel]
-projtype, s,a,"CAR","CAR|AIT",,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
-uselb,    b,a,no,,,use galactic coords:
+projtype, s,a,"AIT","CAR|AIT",,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
+uselb,    b,a,yes,,,use galactic coords:
 npix,     i,h,0,,,Total pixel size of the image in each axis: (0 for all sky auto)
 npixy,    i,h,0,,,Total pixel size of the image in y axis: (0 for automatic)
 xref,     r,h,0,,,RA/L at the image center:

@@ -4,13 +4,12 @@
 $Header$
 
 */
-#include "facilities/Util.h"
-#include "astro/SkyDir.h"
-
 #include "map_tools/Exposure.h"
-#include "map_tools/Parameters.h"
+#include "map_tools/MapParameters.h"
 #include "map_tools/ExposureHyperCube.h"
 #include "map_tools/SkyImage.h"
+
+
 
 #include <iostream>
 #include <algorithm>
@@ -29,16 +28,13 @@ public:
     double m_slope;
 };
 
-class TestPar : public Parameters {
-public:
-    TestPar(int argc, char** argv): Parameters(argc, argv){
-    }
-};
+
+
 
 int main(int argc, char** argv ){
     try{
         // read a pil file--and make sure that a few simple things work
-        TestPar par(argc, argv);
+        MapParameters par(argc, argv);
         double xref = par["xref"] ;
         if(  xref !=0 ) {
             std::cerr << "Read wrong value for parameter xref" << std::endl;
@@ -97,6 +93,8 @@ int main(int argc, char** argv ){
         SkyImage exp3(par.inputFile(),"");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
         assert(tt=36.0); 
+
+
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
             << e.what() << "\"" << std::endl;

@@ -3,17 +3,19 @@
 clobber,b,a,yes,,,Overwrite existing output file?:
 chatter,  i, h,   2,0,4 , , "Chattiness of output"
 debug, b, h, no,,,Debugging mode activated
-mode,     s, a,  "h",   , ,""
+#mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,s,a,"ql",,,
+mode,s,a,"ql",,,
 
 #
 #---------------------------------------------------------------------------------------
 #
-infile,f,a,"/common/DC1/root_files/DC1_goodGamma.root",,,"Name of the Event Data File:"
+#infile,f,a,"/common/DC1/root_files/DC1_goodGamma.root",,,"Name of the Event Data File:"
+infile,f,a,"",,,"Name of the Event Data File:"
 table,s,a,"MeritTuple",,,"name of the extension or ROOT tree"
 filter,s,a,,,,"filter expression:"
-outfile,f,a,"../output/DC1_goodGamma_AIT.fits",,,"Name of the output file:"
+#outfile,f,a,"../output/DC1_goodGamma_AIT.fits",,,"Name of the output file:"
+outfile,f,a,"",,,"Name of the output file:"
 #
 ra_name,s,a,"FT1Ra",,,"name of the RA field"
 dec_name,s,a,"FT1Dec",,,"name of the DEC field"

@@ -2,16 +2,17 @@
 #---------------------------------------------------------------------------------------
 clobber,b,a,no,,,Overwrite existing output file?:
 chatter,i,a,10,,,
-mode,     s, a,  "h",   , ,""
+#mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,s,a,"ql",,,
+mode,s,a,"ql",,,
 #
 #---------------------------------------------------------------------------------------
 #
-infile,f,a,"$(FLUXROOT)/sources/gas_gal.fits",,,"input file name:"
+#infile,f,a,"$(FLUXROOT)/sources/gas_gal.fits",,,"input file name:"
+infile,f,a,"",,,"input file name:"
 table,s,a,"",,,"Table name"
-#outfile,f,a,"$(TMP)/gas_gal_copy.fits",,,"Name of the  output file:"
-outfile,f,a,"gas_gal_copy.fits",,,"Name of the  output file:"
+#outfile,f,a,"gas_gal_copy.fits",,,"Name of the  output file:"
+outfile,f,a,"",,,"Name of the  output file:"
 filter,s,a,,,,"filter expression:"
 ra_name,s,a,"FT1Ra",,,"name of the RA field"
 dec_name,s,a,"FT1Dec",,,"name of the DEC field"
