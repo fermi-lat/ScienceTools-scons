@@ -406,6 +406,7 @@
 
     <!--average flux for pdr studies -->
     <source name="backgndavgpdr">
+        <nestedSource sourceRef="chimeavg"/>
 	<nestedSource sourceRef="albedo_proton_avg" /> 
 	<nestedSource sourceRef="albedo_gamma" /> 
 	<nestedSource sourceRef="electronavg" />  
