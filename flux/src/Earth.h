@@ -39,10 +39,7 @@ public:
 
    virtual ~Earth(){}
 
-   /// @return Particle energy in MeV.
-   /// @param xi Uniform random deviate on the unit interval.
-   //   virtual float operator() (float xi) const;
-
+ 
    /// @return Particle type, "gamma".
    virtual const char * particleName() const {return "gamma";}
 

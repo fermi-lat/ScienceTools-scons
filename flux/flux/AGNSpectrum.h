@@ -32,7 +32,7 @@ class AGNSpectrum : public Spectrum {
 public:
     
     /// Return energy
-    virtual float operator()(float r)const;
+    virtual float operator()(float r);
     
     /// Constructor with parameters
     AGNSpectrum (const std::string& params);
