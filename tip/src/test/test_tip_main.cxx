@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 
+#include "table/IFileSvc.h"
 #include "table/Table.h"
 
 int main() {
@@ -17,7 +18,7 @@ int main() {
   try {
     try {
       // Opening a non-existent file should throw an exception.
-      Table * my_table = Table::openReadWrite("non-existent.pha", "SPECTRUM");
+      Table * my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
       std::cerr << "Opening non-existent.pha didn't throw a TableException." << std::endl;
@@ -30,7 +31,7 @@ int main() {
     }
 
     // The following test file should be present.
-    Table * my_table = Table::openReadWrite("arlac.pha", "SPECTRUM");
+    Table * my_table = IFileSvc::getSvc().editTable("arlac.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());

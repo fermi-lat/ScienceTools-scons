@@ -49,16 +49,6 @@ namespace table {
           Ref & operator =(const T & data) { ReferenceAdaptor<T, Cell>::operator =(data); return *this; }
       };
 
-      /** \brief Open a file for reading and writing. An appropriate subobject of Table for supported
-          file formats will be returned.
-
-          If no file of any supported format can be opened, a TableException is thrown.
-
-          \param file_name Name of any supported file type.
-          \param table_name Name of desired table within the file.
-      */
-      static Table * openReadWrite(const std::string & file_name, const std::string & table_name);
-
       Table(ITabularData * tab_data): Extension(tab_data), m_tab_data(tab_data) {}
 
       virtual ~Table() { delete m_tab_data; }
