@@ -37,8 +37,7 @@ void CompositeSource::addSource (EventSource* aSource)
 EventSource* CompositeSource::event (double time)
 {
     int i=0; //for iterating through the m_unusedSource vector
-    int winningsourcenum; //the number of the "winning" source
-
+    int winningsourcenum=0; //the number of the "winning" source
     EventSource::setTime(time);
 
     m_numofiters=0;
