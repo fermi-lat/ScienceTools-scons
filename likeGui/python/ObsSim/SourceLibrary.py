@@ -15,7 +15,11 @@ class SourceLibrary(dict):
         doc = minidom.parseString(readXml(file))
         srcLibs = doc.getElementsByTagName('source_library')
         for lib in srcLibs:
-            name = ": ".join((basename, lib.getAttribute('title').encode()))
+            title = lib.getAttribute('title').encode()
+            if title:
+                name = ": ".join((basename, title))
+            else:
+                name = basename
             self[name] = lib
     def srcList(self, lib):
         names = []

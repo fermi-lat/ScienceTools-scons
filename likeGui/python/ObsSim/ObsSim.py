@@ -21,9 +21,9 @@ from tkMessageBox import showwarning
 
 from SourceLibrary import SourceLibrary
 from ParamDialog import ParamDialog
+from EditFileDialog import *
+from ThreadedClient import runInThread
 from pil import Pil
-
-ds9 = None
 
 # @todo replace this with a GtApp object
 obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
@@ -46,6 +46,13 @@ class RootWindow(Tk.Tk):
 
         if file is not None:
             self.srcLibs.addLibs(file)
+        else:
+            xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'], 'xml',
+                                    'xmlFiles.dat')
+            defaultFiles = open(xmlFiles, 'r')
+            for file in defaultFiles:
+                if file.strip() != '':
+                    self.srcLibs.addLibs(expandEnvVar(file).strip())
     def open(self, xmlFile=None):
         if xmlFile is None:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
@@ -61,14 +68,13 @@ class RootWindow(Tk.Tk):
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((obsSim, dialog.paramString))
-            os.system(command)
+            runInThread(commandApp(command))
         
 class MenuBar(Tk.Menu):
     def __init__(self, parent):
         Tk.Menu.__init__(self)
         self.add_cascade(label="File", menu=FileMenu(parent), underline=0)
-        if ds9 is not None:
-            self.add_cascade(label="ds9", menu=ds9Menu(parent), underline=0)
+        self.add_cascade(label="ds9", menu=Ds9Menu(parent), underline=0)
         parent.config(menu=self)
 
 class FileMenu(Tk.Menu):
@@ -76,8 +82,28 @@ class FileMenu(Tk.Menu):
         Tk.Menu.__init__(self, tearoff=0)
         self.root = root
         self.add_command(label="Open...", underline=0, command=root.open)
-        self.add_command(label="Run obsSim...", command=root.run)
+        self.add_command(label="Run obsSim...", command=root.run, underline=0)
         self.add_command(label="Quit", underline=0, command=root.quit)
+
+class Ds9Menu(Tk.Menu):
+    def __init__(self, root):
+        Tk.Menu.__init__(self, tearoff=0)
+        self.root = root
+        self.add_command(label="Events...", underline=0, command=Ds9(root, 1))
+        self.add_command(label="Image...", underline=0, command=Ds9(root))
+
+class Ds9(object):
+    def __init__(self, root, events=0):
+        self.root = root
+        self.events = events
+    def __call__(self):
+        file = EditFileDialog(self.root).go(pattern='*.fits')
+        if file:
+            if self.events:
+                command = 'ds9 "' + file + '[1][bin=ra,dec]"'
+            else:
+                command = 'ds9 ' + file
+            runInThread(commandApp(command))
 
 class SourceLibraries(Tk.Frame):
     def __init__(self, root, parentFrame):
@@ -190,18 +216,24 @@ class CandidateSources(Tk.Frame):
         indices = self.listBox.curselection()
         for indx in indices:
             self.root.sourceList.addSource(self.sources[int(indx)])
+    def addAll(self):
+        self.selectAll()
+        self.addSelected()
     def selectAll(self):
         self.listBox.selection_set(0, self.listBox.size())
     def unSelectAll(self):
         self.listBox.selection_clear(0, self.listBox.size())
     def clearAll(self):
         self.listBox.delete(0, Tk.END)
+        self.root.sourceList.deleteAll()
 
 class CandidateMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
         Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Add selected', underline=0,
                          command=root.addSelected)
+        self.add_command(label='Add all', underline=0,
+                         command=root.addAll)
         self.add_command(label='Select all', underline=0,
                          command=root.selectAll)
         self.add_command(label='Un-select all', underline=0,
@@ -249,6 +281,9 @@ class SourceList(Tk.Frame):
         for target in targets:
             self.srcs.delete(self.srcs[target])
         self.fill()
+    def deleteAll(self):
+        self.selectAll()
+        self.deleteSelected()
     def selectAll(self):
         self.listBox.selection_set(0, self.listBox.size())
     def unSelectAll(self):
@@ -264,10 +299,18 @@ class ModelMenu(Tk.Menu):
         Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Delete selected', underline=0,
                          command=root.deleteSelected)
+        self.add_command(label='Delete all', underline=0,
+                         command=root.deleteAll)
         self.add_command(label='Select all', underline=0,
                          command=root.selectAll)
         self.add_command(label='Un-select all', underline=0,
                          command=root.unSelectAll)
+        
+class commandApp:
+    def __init__(self, command):
+        self.command = command
+    def __call__(self):
+        output = os.system(self.command)
 
 class map(dict):
     def __init__(self):
@@ -280,6 +323,14 @@ class map(dict):
     def delete(self, key):
         self.ordered_keys.remove(key)        
         del self[key]
+
+def expandEnvVar(filename):
+    if filename.find('$(') != -1:
+        envVar = filename.split('$(')[1].split(')')[0]
+        remainder = filename.split('$(')[1].split(')')[1]
+        return os.environ[envVar] + remainder
+    else:
+        return filename
 
 if __name__ == "__main__":
     if sys.argv[1:]:

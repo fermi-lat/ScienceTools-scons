@@ -75,7 +75,10 @@ class Pil(object):
         for line in self.lines:
             item = name(line)
             if item in self.names:
-                file.write("%s,%s\n" % (item, ",".join(self.params[item])))
+                params = self.params[item]
+                for i in range(len(params)):
+                    params[i] = params[i].strip("'")
+                file.write("%s,%s\n" % (item, ",".join(params)))
             else:
                 file.write(line)
         file.close()
