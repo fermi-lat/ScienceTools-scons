@@ -12,8 +12,8 @@
 #include <string>
 #include <vector>
 
-#include "FluxSvc/../src/EventSource.h"
-#include "FluxSvc/../src/FluxMgr.h"
+#include "flux/EventSource.h"
+#include "flux/FluxMgr.h"
 
 #include "astro/SkyDir.h"
 

@@ -12,8 +12,8 @@
 #include <string>
 #include <iostream>
 #include "CLHEP/Geometry/Vector3D.h"
-#include "FluxSvc/../src/CompositeSource.h"
-#include "FluxSvc/../src/FluxMgr.h"
+#include "flux/../src/CompositeSource.h"
+#include "flux/FluxMgr.h"
 
 #include "latResponse/Irfs.h"
 
