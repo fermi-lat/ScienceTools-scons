@@ -24,6 +24,8 @@
 
 
 class HepRandomEngine;
+class TimeEnergy;
+
 
 class GRBmaker
 {
@@ -65,17 +67,15 @@ class GRBmaker
 
 	 int nphoton() const { return m_nphoton; } 
 
-	 const std::vector<double> &time() const  { return m_time; }
+	 const std::vector<TimeEnergy> &photonlist() const  { return m_photonlist; }
 
-	 const std::vector<double> &energy() const { return m_energy; }
-	
+
 
 
  
  private:
 	 // private accessor functions
-	 std::vector<double> &time()   { return m_time; };
-	 std::vector<double> &energy()  { return m_energy; };
+	 std::vector<TimeEnergy> &photonlist()  { return m_photonlist; }
 
 
 	 // class methods
@@ -174,19 +174,49 @@ class GRBmaker
 
 
 	 // data members
-	 double                  m_univFWHM;
-	 double                  m_duration;
-	 std::pair<float,float>  m_grbdir;
-	 double                  m_flux;
-	 double                  m_fraction;
- 	 double                  m_powerLawIndex;
-	 double                  m_specnorm;
-	 int                     m_npuls;
+	 double                   m_univFWHM;
+	 double                   m_duration;
+	 std::pair<float,float>   m_grbdir;
+	 double                   m_flux;
+	 double                   m_fraction;
+ 	 double                   m_powerLawIndex;
+	 double                   m_specnorm;
+	 int                      m_npuls;
 
-	 long                    m_nphoton;
-	 std::vector<double>     m_time;
-	 std::vector<double>     m_energy;
+	 long                     m_nphoton;
+	 std::vector<TimeEnergy>  m_photonlist;
 };
+	 
+
+
+class TimeEnergy
+{
+ public:
+	TimeEnergy() { };
+
+    inline void setTime(double time)   {m_time=time;}
+    inline void setEnergy(double energy) {m_energy=energy;}
+ 
+    inline double time()   {return m_time;}
+    inline double energy() {return m_energy;}
+
+ private:
+    double m_time;
+    double m_energy;
+};
+
+
+
+class timeCmp
+{
+ public:
+    //  bool operator()(const DataOut& data1,const DataOut& data2)
+    bool operator()(TimeEnergy &data1, TimeEnergy &data2)
+	{
+	   return data1.time() < data2.time();    
+	}
+};
+
 
 // Output operator
 std::ofstream &operator<<(std::ofstream &os, const GRBmaker &grbMaker);
