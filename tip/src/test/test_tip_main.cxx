@@ -48,10 +48,14 @@ int main() {
     delete my_table;
 
     // The following test file should be present.
-    my_table = IFileSvc::getSvc().editTable(data_dir + "a1.pha", "SPECTRUM");
+    my_table = IFileSvc::getSvc().editTable(data_dir + "a1.pha", "SPECTRUM", "#row < 100");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
+
+    // Confirm the size.
+    if (99 != counts_vec.size())
+      std::cerr << "Selecting #row < 100 resulted in " << counts_vec.size() << " rows, not 99" << std::endl;
 
     // First, use standard C++-style access.
     try {
@@ -104,6 +108,12 @@ int main() {
       // Integer channel number, which will be incremented and used to verify that
       // the Table reading methods are working.
       int ichan = 0;
+
+      // TODO 8: 4/2/2004: This pattern was originally to facilitate using a functor which
+      // has a Table::Record, and could thus have fields bound to member Table::Scalars or
+      // Table::Cell. This binding could be in Table::Record's constructor, thus making
+      // the functor's operator more efficient. But this doesn't work because for_each
+      // copy constructs the functor. Solution is not known at present.
 
       // Define a table record object.
       Table::Record r;
@@ -287,10 +297,10 @@ int main() {
 
 
   } catch(const TipException & x) {
-    std::cerr << "Unhandled TipException:" << x.what() << std::endl;
+    std::cerr << "Unhandled TipException: " << x.what() << std::endl;
     status = 1;
   } catch(const std::exception & x) {
-    std::cerr << "Unhandled std::exception." << x.what() << std::endl;
+    std::cerr << "Unhandled std::exception: " << x.what() << std::endl;
   } catch(...) {
     std::cerr << "Unhandled unknown thrown object." << std::endl;
   }
