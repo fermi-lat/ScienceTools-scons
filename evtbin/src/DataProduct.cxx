@@ -22,7 +22,7 @@
 namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file): m_key_value_pairs(), m_known_keys(), m_data_dir(),
-    m_event_file(event_file), m_gti(), m_hist_ptr(0) {
+    m_event_file(event_file), m_gti(event_file), m_hist_ptr(0) {
     // Find the directory containing templates.
     const char * top_dir = getenv("EVTBINROOT");
     if (0 != top_dir) m_data_dir = std::string(top_dir) + "/data/";
@@ -32,9 +32,6 @@ namespace evtbin {
     const char * keys[] = { "TELESCOP", "INSTRUME", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREF",
       "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
-
-    // Read GTI.
-    readGti(event_file);
   }
 
   DataProduct::~DataProduct() throw() {}
@@ -61,22 +58,6 @@ namespace evtbin {
 
     // Update newly created file with keywords which were harvested from input data.
     updateKeywords(out_file);
-  }
-
-  void DataProduct::readGti(const std::string & in_file) {
-    std::auto_ptr<const tip::Table> gti_table(tip::IFileSvc::instance().readTable(in_file, "GTI"));
-
-    // Clear the table.
-    m_gti.setNumIntervals(gti_table->getNumRecords());
-
-    // Start at beginning of the data.
-    Gti::Iterator itor = m_gti.begin();
-
-    // Start at beginning of the table.
-    for (tip::Table::ConstIterator table_itor = gti_table->begin(); table_itor != gti_table->end(); ++table_itor, ++itor) {
-      itor->first = (*table_itor)["START"].get();
-      itor->second = (*table_itor)["STOP"].get();
-    }
   }
 
   void DataProduct::writeGti(const std::string & out_file) const {

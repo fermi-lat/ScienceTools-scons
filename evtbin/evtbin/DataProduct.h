@@ -59,12 +59,6 @@ namespace evtbin {
       */
       virtual void writeOutput(const std::string & creator, const std::string & out_file) const = 0;
 
-      /** \brief Read the GTI extension from an input file. The resulting GTI information is stored
-          internally.
-          \param in_file The input file name.
-      */
-      virtual void readGti(const std::string & in_file);
-
       /** \brief Write the current GTI information to the given file's GTI extension. The extension must
           exist.
           \param out_file The output file name.
