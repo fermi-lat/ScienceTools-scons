@@ -439,11 +439,8 @@ void GPS::readFitsData() {
 
    long firstelem(1);
    int anynul(0);
-   double dnullval(0);
-   float fnullval(0);
-// column names in FT2 file:
-//    start, stop, sc_position, raz, decz, rax, decx, lat_geo, lon_geo
-// column numbers: 1, 2, 3, 11, 12, 13, 14, 4, 5
+   double nullval(0);
+
    long stride(1000);
    std::vector<double> start_time(stride);
    std::vector<double> stop_time(stride);
@@ -454,6 +451,21 @@ void GPS::readFitsData() {
    std::vector<float> decx(stride);
    std::vector<float> lat_geo(stride);
    std::vector<float> lon_geo(stride);
+
+// map of pointers to the data and type, keyed by column name.
+   std::map<std::string, std::pair<void *, int> > columns;
+   columns["START"] = std::make_pair(&start_time[0], TDOUBLE);
+   columns["STOP"] = std::make_pair(&stop_time[0], TDOUBLE);
+   columns["SC_POSITION"] = std::make_pair(&sc_pos[0], TFLOAT);
+   columns["RA_SCZ"]  = std::make_pair(&raz[0], TFLOAT);
+   columns["DEC_SCZ"] = std::make_pair(&decz[0], TFLOAT);
+   columns["RA_SCX"]  = std::make_pair(&rax[0], TFLOAT);
+   columns["DEC_SCX"] = std::make_pair(&decx[0], TFLOAT);
+   columns["LAT_GEO"] = std::make_pair(&lat_geo[0], TFLOAT);
+   columns["LON_GEO"] = std::make_pair(&lon_geo[0], TFLOAT);
+
+   std::map<std::string, std::pair<void *, int> >::iterator column;
+
    long nelements(stride);
    int nstrides = nrows/stride;
    if (nrows % stride != 0) nstrides++;
@@ -462,33 +474,18 @@ void GPS::readFitsData() {
       if (istride == nstrides-1 && nrows % stride != 0) {
          nelements = nrows % stride;
       }
-      fits_read_col(fptr, TDOUBLE, 1, firstrow, firstelem, nelements, 
-                    &dnullval, &start_time[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TDOUBLE, 2, firstrow, firstelem, nelements, 
-                    &dnullval, &stop_time[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 3, firstrow, firstelem, nelements, 
-                    &fnullval, &sc_pos[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 11, firstrow, firstelem, nelements, 
-                    &fnullval, &raz[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 12, firstrow, firstelem, nelements, 
-                    &fnullval, &decz[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 13, firstrow, firstelem, nelements, 
-                    &fnullval, &rax[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 14, firstrow, firstelem, nelements, 
-                    &fnullval, &decx[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 4, firstrow, firstelem, nelements, 
-                    &fnullval, &lat_geo[0], &anynul, &status);
-      fitsReportError(stderr, status);
-      fits_read_col(fptr, TFLOAT, 5, firstrow, firstelem, nelements, 
-                    &fnullval, &lon_geo[0], &anynul, &status);
-      fitsReportError(stderr, status);
+      for (column = columns.begin(); column != columns.end(); ++column) {
+         std::string colname = column->first;
+         void * array = column->second.first;
+         int datatype = column->second.second;
+         int colnum;
+         fits_get_colnum(fptr, CASEINSEN, const_cast<char *>(colname.c_str()), 
+                         &colnum, &status);
+         fitsReportError(stderr, status);
+         fits_read_col(fptr, datatype, colnum, firstrow, firstelem, nelements, 
+                       &nullval, array, &anynul, &status);
+         fitsReportError(stderr, status);
+      }
       
       for (int i = 0; i < nelements; i++) {
          POINTINFO row;

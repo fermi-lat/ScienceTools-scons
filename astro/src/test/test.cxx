@@ -1,6 +1,7 @@
 // $Header$
 
 #include <cassert>
+#include "astro/GPS.h"
 #include "astro/SolarSystem.h"
 #include "astro/EarthCoordinate.h"
 #include "astro/EarthOrbit.h"
@@ -211,6 +212,34 @@ bool testHTM()
     return true;
 }
 
+#define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
+
+void checkdir(double ra1, double dec1, double ra2, double dec2) {
+   astro::SkyDir dir1(ra1, dec1);
+   astro::SkyDir dir2(ra2, dec2);
+   assert(dir1.difference(dir2) < 1e-5);
+}
+
+bool test_GPS_readFitsData() {
+   GPS * gps = GPS::instance();
+
+   std::string filename("test_FT2.fits");
+   gps->setPointingHistoryFile(filename);
+
+   double time(30);
+   gps->getPointingCharacteristics(time);
+
+   ASSERT_EQUALS(gps->lat(), 28.675092697143555);
+   ASSERT_EQUALS(gps->lon(), -75.576118469238281);
+
+   checkdir(gps->RAX(), gps->DECX(), 281.15841674804688, 0.82335680723190308);
+   checkdir(gps->RAZ(), gps->DECZ(), 11.064399719238281, -6.5129880905151367);
+   checkdir(gps->RAZenith(), gps->DECZenith(), 
+            11.605173110961914, 28.483125686645508);
+   
+   return true;
+}
+
 int main(){
 
     using namespace astro;
@@ -227,6 +256,9 @@ int main(){
         if( !testHTM() ) return 1;
 
         if(! testSkyProj() ) return 1;
+
+// One needs the test data to run this.
+//        if (!test_GPS_readFitsData()) return 1;
 
         JulianDate start = JulianDate::missionStart(); 
 
