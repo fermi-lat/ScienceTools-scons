@@ -62,18 +62,6 @@ int main(int iargc, char * argv[]) {
    std::string query("");
    int nentries(0);
 
-// Read in the IM columns, CalEnergySum, CalTotRLn, GltLayer, FilterStatus_HI
-//   colNames.push_back("IMgoodCalProb");
-//   colNames.push_back("IMvertexProb");
-//   colNames.push_back("IMcoreProb");
-//   colNames.push_back("IMpsfErrPred");
-//   colNames.push_back("IMgammaProb");
-//   colNames.push_back("CalEnergySum");
-//   colNames.push_back("CalTotRLn");
-//   colNames.push_back("GltLayer");
-//   colNames.push_back("FilterStatus_HI");
-//   meritTuple.readTree(colNames, query, nentries);
-
 // Read in all of the columns for the FT1 and Exposure branches.
    colNames = meritTuple.branchNames();
    meritTuple.readTree(colNames, query, nentries);
@@ -87,13 +75,6 @@ int main(int iargc, char * argv[]) {
 // Set the type of data to be generated and the mission.
    Goodi::DataType datatype = Goodi::Evt;
    Goodi::Mission  mission  = Goodi::Lat;
-
-// Create the EventData object and explicitly down-cast to
-// LatEventsData since the IEventData interface does not have all of
-// the methods required to access LAT data.
-//    Goodi::LatEventsData *data =
-//       dynamic_cast<Goodi::LatEventsData *>
-//       (dataCreator.create(datatype, mission));
 
    Goodi::IEventData *data = 
      dynamic_cast<Goodi::IEventData *>(dataCreator.create(datatype, mission));
@@ -167,7 +148,7 @@ int main(int iargc, char * argv[]) {
 //   data->setAzimuth(meritTuple("earth_azimuth"));
 
 // TIME
-   data->setTime(meritTuple("EvtTime"));
+   data->setTime(meritTuple("elapsed_time"));
 
 // EVENT_ID
 // Using std::copy complains about type conversion; passing
@@ -303,9 +284,7 @@ int main(int iargc, char * argv[]) {
 // Write the data to a FITS file.
    Goodi::IDataIOService *ioService = iosvcCreator.create();
 
-// Need to "up"-cast to have access to the write(...) method we need.
-   Goodi::IEventData *idata = data;
-   idata->write(ioService, fitsFile);
+   data->write(ioService, fitsFile);
 
    delete ioService;
 }
