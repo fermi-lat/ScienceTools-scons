@@ -14,6 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
+#include <string>
 #include "hoops/hoops.h"
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +41,7 @@ namespace hoops {
       virtual ~PILParFileFactory() {}
 
       virtual IParFile * NewIParFile(const IParFile & p);
-      virtual IParFile * NewIParFile(const char * argv);
+      virtual IParFile * NewIParFile(const std::string & comp_name);
   };
 
   class EXPSYM PILParPromptFactory : public IParPromptFactory {
@@ -48,7 +49,7 @@ namespace hoops {
       virtual ~PILParPromptFactory() {}
 
       virtual IParPrompt * NewIParPrompt(const IParPrompt & p);
-      virtual IParPrompt * NewIParPrompt(int argc, char * argv[]);
+      virtual IParPrompt * NewIParPrompt(int argc, char * argv[], const std::string & comp_name = std::string());
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -66,6 +67,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.8  2004/03/30 21:14:46  peachey
+ * Allow PILParPrompt and ParPromptGroup constructors to accept optional
+ * component name which is then used in lieu of argv[0]
+ *
  * Revision 1.7  2004/03/16 14:36:58  peachey
  * Remove default construction option for ParFile and ParPrompt.
  *

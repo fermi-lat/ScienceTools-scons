@@ -39,10 +39,17 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  ParPromptGroup::ParPromptGroup(int argc, char * argv[]): IParGroup(), mFile(0),
+  ParPromptGroup::ParPromptGroup(int argc, char * argv[], const std::string & comp_name): IParGroup(), mFile(0),
     mPrompter(0) {
-    mFile = PILParFileFactory().NewIParFile(argv[0]);
-    mPrompter = PILParPromptFactory().NewIParPrompt(argc, argv);
+    // Use comp_name if one was supplied to find the parameter file, otherwise
+    // use argv[0].
+    if (comp_name.empty()) mFile = PILParFileFactory().NewIParFile(argv[0]);
+    else mFile = PILParFileFactory().NewIParFile(comp_name);
+
+    // Create a new prompter object:
+    mPrompter = PILParPromptFactory().NewIParPrompt(argc, argv, comp_name);
+
+    // Get a reference to the prompter's group:
     mGroup = &mPrompter->Group();
   }
 
@@ -153,6 +160,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.4  2004/03/30 21:14:46  peachey
+ * Allow PILParPrompt and ParPromptGroup constructors to accept optional
+ * component name which is then used in lieu of argv[0]
+ *
  * Revision 1.3  2004/03/26 22:31:54  peachey
  * Prevent client from shooting self in the foot: don't allow
  * them to add/remove parameters, because PIL can't handle that. What's more,

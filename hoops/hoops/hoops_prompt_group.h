@@ -1,7 +1,7 @@
 /******************************************************************************
  *   File name: hoops_prompt_group.h                                          *
  *                                                                            *
- * Description: Conveniece prompter for simple parameter file needs.          *
+ * Description: Convenience prompter for simple parameter file needs.         *
  *                                                                            *
  *    Language: C++                                                           *
  *                                                                            *
@@ -39,7 +39,8 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   class EXPSYM ParPromptGroup : public IParGroup {
     public:
-      ParPromptGroup(int argc, char * argv[]);
+      // If the comp_name argument is supplied, argv[0] is ignored.
+      ParPromptGroup(int argc, char * argv[], const std::string & comp_name = std::string());
       ParPromptGroup(const ParPromptGroup & group);
 
       virtual ~ParPromptGroup();
@@ -91,6 +92,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.2  2004/03/30 21:14:46  peachey
+ * Allow PILParPrompt and ParPromptGroup constructors to accept optional
+ * component name which is then used in lieu of argv[0]
+ *
  * Revision 1.1  2004/03/15 15:00:52  peachey
  * New wrapper class which handles simplest use case for getting parameters.
  *

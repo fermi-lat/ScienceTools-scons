@@ -344,7 +344,7 @@ int main(int argc, char * argv[]) {
       SetGlobalStatus(P_UNEXPECTED);
     }
 
-    IParFile * file = PILParFileFactory().NewIParFile(argv[0]);
+    IParFile * file = PILParFileFactory().NewIParFile("hoops_par_test");
 
     file->Load();
 
@@ -354,7 +354,7 @@ int main(int argc, char * argv[]) {
       std::cout << ':' << *(*it) << ':' << std::endl;
     }
 
-    IParPrompt * prompt = PILParPromptFactory().NewIParPrompt(argc, argv);
+    IParPrompt * prompt = PILParPromptFactory().NewIParPrompt(argc, argv, "hoops_par_test");
 
     prompt->Prompt("prompt");
     if (!(bool) prompt->Group()["prompt"]) PILOverrideQueryMode(PIL_QUERY_OVERRIDE);

@@ -91,7 +91,7 @@ namespace hoops {
     public:
       PILParPrompt(const PILParPrompt & prompt);
       PILParPrompt(const IParPrompt & prompt);
-      PILParPrompt(int argc, char ** argv);
+      PILParPrompt(int argc, char ** argv, const std::string & comp_name = std::string());
 
       virtual ~PILParPrompt();
 
@@ -114,7 +114,7 @@ namespace hoops {
       virtual IParPrompt * Clone() const;
 
     protected:
-      void Init(char ** argv);
+      void Init(char ** argv, const std::string & comp_name = std::string());
       mutable PILParFile * mFile;
       int mArgc;
       char ** mArgv;
@@ -136,6 +136,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.13  2004/03/30 21:14:46  peachey
+ * Allow PILParPrompt and ParPromptGroup constructors to accept optional
+ * component name which is then used in lieu of argv[0]
+ *
  * Revision 1.12  2004/03/16 20:11:20  peachey
  * Change PILParFile so that it can be used by PILParPrompt to open/
  * close the parameter file excplicitly. Change PILParPrompt so that it

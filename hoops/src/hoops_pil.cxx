@@ -374,8 +374,8 @@ namespace hoops {
   PILParPrompt::PILParPrompt(const IParPrompt & prompt):
     IParPrompt(), mFile(0), mArgc(prompt.Argc()), mArgv(0) { Init(prompt.Argv()); }
 
-  PILParPrompt::PILParPrompt(int argc, char ** argv):
-    IParPrompt(), mFile(0), mArgc(argc), mArgv(0) { Init(argv); }
+  PILParPrompt::PILParPrompt(int argc, char ** argv, const std::string & comp_name):
+    IParPrompt(), mFile(0), mArgc(argc), mArgv(0) { Init(argv, comp_name); }
 
   PILParPrompt::~PILParPrompt() { delete mFile; DeleteArgv(); }
 
@@ -541,11 +541,12 @@ namespace hoops {
     delete [] mArgv;
   }
 
-  void PILParPrompt::Init(char ** argv) {
+  void PILParPrompt::Init(char ** argv, const std::string & comp_name) {
     SetArgv(argv);
 
     if (0 < mArgc) {
-      mFile = new PILParFile(mArgv[0]);
+      if (comp_name.empty()) mFile = new PILParFile(mArgv[0]);
+      else mFile = new PILParFile(comp_name);
 
       std::string comp = mFile->Component();
       if (comp.empty())
@@ -565,8 +566,8 @@ namespace hoops {
   IParFile * PILParFileFactory::NewIParFile(const IParFile & p)
     { return new PILParFile(p); }
 
-  IParFile * PILParFileFactory::NewIParFile(const char * argv)
-    { return new PILParFile(argv); }
+  IParFile * PILParFileFactory::NewIParFile(const std::string & comp_name)
+    { return new PILParFile(comp_name); }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParFileFactory implementation.
   //////////////////////////////////////////////////////////////////////////////
@@ -577,8 +578,8 @@ namespace hoops {
   IParPrompt * PILParPromptFactory::NewIParPrompt(const IParPrompt & p)
     { return new PILParPrompt(p); }
 
-  IParPrompt * PILParPromptFactory::NewIParPrompt(int argc, char * argv[])
-    { return new PILParPrompt(argc, argv); }
+  IParPrompt * PILParPromptFactory::NewIParPrompt(int argc, char * argv[], const std::string & comp_name)
+    { return new PILParPrompt(argc, argv, comp_name); }
   //////////////////////////////////////////////////////////////////////////////
   // End PILParPromptFactory implementation.
   //////////////////////////////////////////////////////////////////////////////
@@ -620,6 +621,10 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.18  2004/03/30 21:14:46  peachey
+ * Allow PILParPrompt and ParPromptGroup constructors to accept optional
+ * component name which is then used in lieu of argv[0]
+ *
  * Revision 1.17  2004/03/26 22:30:37  peachey
  * Improve (make more specific) exception messages.
  *
