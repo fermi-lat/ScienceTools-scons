@@ -2,14 +2,13 @@
 #---------------------------------------------------------------------------------------
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
 chatter,  i, a,   10,  , , , "Chatter: "
-mode,     s, a,  "h",   , ,""
+#mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,     s, a,  "ql",   , ,""
-
+mode,     s, a,  "ql",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile,  s, a, "/glast/st_dev/flux/v8r7p1/sources/gas_gal.fits", , , "Name of the exposure cube input file:"
+infile,  s, a, "$(FLUXROOT)/sources/gas_gal.fits", , , "Name of the exposure cube input file:"
 outfile,  s, a, "$(TMP)/gas_gal_copy.fits", , , "Name of the  output file:"
 filter,   s, a, "", , , "filter expression:"
 #

@@ -2,9 +2,9 @@
 #---------------------------------------------------------------------------------------
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
 chatter,  i, a,   5,  , , , "Chatter: "
-mode,     s, a,  "h",   , ,""
+#mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,     s, a,  "ql",   , ,""
+mode,     s, a,  "ql",   , ,""
 
 #
 #---------------------------------------------------------------------------------------
