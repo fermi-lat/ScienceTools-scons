@@ -1,0 +1,11 @@
+<source_library>
+ <source name="GRB" >
+  <spectrum> <SpectrumClass name="GRBSpectrum"/> <use_spectrum/> 
+  </spectrum>
+ </source>
+ <source name="GRBobs" >
+  <spectrum> <SpectrumClass name="GRBobsSpectrum"/> <use_spectrum/> 
+  </spectrum>
+ </source>
+</source_library>
+	    
