@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r11  12-Apr-04   JC   convert to use tip
     v2r10  18-Mar-04   JC   use hoops directly instead of hoopsUtil
     v2r9   05-Feb-04   JC   adopt interface changes to astro package v0r10
     v2r8   02-Feb-04   JC   accommodate move of GPS class from flux to astro
