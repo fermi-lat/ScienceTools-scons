@@ -1,5 +1,5 @@
 package dataSubselector
-version v3r1p1
+version v3r2
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -14,7 +14,7 @@ use evtbin v0r*
 apply_pattern ST_library option="-no_share "
 apply_pattern ST_pfiles
 
-apply_pattern ST_app name=dataSubselector
+apply_pattern ST_app_withDir name=gtselect dir=dataSubselector
 
 application viewCuts viewCuts/*.cxx
 
@@ -28,5 +28,3 @@ use cppunit v1r* IExternal
 macro dataSubselector_cppflags "" \
       Linux "-I ../src " \
       WIN32 '/I..\src /wd4290'
-
-macro makeLinkMap ""

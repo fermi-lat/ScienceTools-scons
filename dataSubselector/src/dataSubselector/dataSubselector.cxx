@@ -31,7 +31,7 @@ using dataSubselector::CutController;
 class DataFilter : public st_app::StApp {
 public:
    DataFilter() : st_app::StApp(), 
-                  m_pars(st_app::StApp::getParGroup("dataSubselector")) {
+                  m_pars(st_app::StApp::getParGroup("gtselect")) {
       try {
          m_pars.Prompt();
          m_pars.Save();
