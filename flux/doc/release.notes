@@ -4,6 +4,7 @@
 
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
+ * 19-feb-04  v8r7p1 SMR Add MapSpectrum scaling index (used through xml).
  * 13-feb-04  v8r6   THB Add convenient access functions for truth study
  * 26-jan-04  v8r5p6 SMR equatorial coordinates possible for Spectrum objects like AGN.
  * 23-jan-04  v8r5p5 SMR AGNSpectrum added.
