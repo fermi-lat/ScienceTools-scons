@@ -220,6 +220,8 @@ int main(int iargc, char * argv[]) {
    data->setConvLayer( convLayer );
 
 // IM variables
+   assert(meritTuple("IMgoodCalProb").size() == nevts);
+
    std::vector<float> floatVector(nevts);
    std::copy( meritTuple("IMgoodCalProb").begin(),
               meritTuple("IMgoodCalProb").end(),
@@ -246,13 +248,13 @@ int main(int iargc, char * argv[]) {
               floatVector.begin() );
    data->setGammaProb( floatVector );
 
-// GltLayer (no doubt the same as ConvLayer)
-   std::vector<short> gltLayer(nevts);
-   std::transform( meritTuple("GltLayer").begin(), 
-                   meritTuple("GltLayer").end(),
-                   gltLayer.begin(), 
-                   std::bind2nd(std::multiplies<short>(), 1) );
-    data->setGltLayer( gltLayer );
+// // GltLayer (no doubt the same as ConvLayer)
+//    std::vector<short> gltLayer(nevts);
+//    std::transform( meritTuple("GltLayer").begin(), 
+//                    meritTuple("GltLayer").end(),
+//                    gltLayer.begin(), 
+//                    std::bind2nd(std::multiplies<short>(), 1) );
+//     data->setGltLayer( gltLayer );
 
 // CalEnergySum and CalTotRLn
    std::copy( meritTuple("CalEnergySum").begin(),
