@@ -55,8 +55,9 @@ tar_file:
 clean:
 	/bin/rm -f *~
 	/bin/rm -f *.o
+	/bin/rm -f _*.so
 	/bin/rm -f *.trace
-#	/bin/rm -f *wrap*
+	/bin/rm -f *wrap*
 
 very_clean:
 	make clean
