@@ -5,6 +5,7 @@
 #include "flux/EventSource.h"
 #include "flux/SpectrumFactoryTable.h"
 #include "flux/FluxMgr.h"
+#include "flux/GPS.h"
 
 #include <iostream>
 #include <fstream>
