@@ -21,7 +21,7 @@ const std::string s_cvs_tag("$Name$");
 */
 class TestApp1 : public st_app::StApp {
   public:
-    TestApp1(): m_f("TestApp1", "", 2) { setVersion(s_cvs_tag); }
+    TestApp1(): m_f("TestApp1", "", 2) { setName("test_st_app"); setVersion(s_cvs_tag); }
 
     /** \brief Perform the demo action needed by this application. This will be called by the standard main.
     */
@@ -30,7 +30,7 @@ class TestApp1 : public st_app::StApp {
       m_f.setMethod("run()");
 
       // For parameter file access, use the AppParGroup class, which is derived from a Hoops class.
-      st_app::AppParGroup & pars(getParGroup("test_st_app"));
+      st_app::AppParGroup & pars(getParGroup());
 
       // Prompt for all parameters in order.
       pars.Prompt();
