@@ -1,6 +1,10 @@
 #-------------------------------------------------------------------------------
 bintype,        s,a, E,,,"Type of bins, E -- energy or T -- time"
 binfile,        f,a,,,,"File containing the ascii bin definitions"
-outfile,        f,a,,,,"Output file containing FITS time or energy bins"
+outfile,        f,a,,,,"Output file name"
 energyunits,    s,a, "MeV",,,"Units of input energy bins: MeV, GeV, keV, or eV"
-mode,           s,h, "ql",,,"Mode"
+chatter,        i, h, 2, 0, 4, "Chattiness of output"
+clobber,        b, h, yes, , , "Overwrite existing output files with new output files"
+debug,          b, h, no, , , "Debugging mode activated"
+gui,            b, h, no, , , "GUI mode activated"
+mode,           s, h, "ql", , ,"Mode of automatic parameters"
