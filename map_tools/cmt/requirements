@@ -9,14 +9,14 @@ use GlastPolicy *
 use tuple *
 
 use astro *
-use pil   * IExternal
+use hoopsUtil * 
 use facilities *
 
 set INFILES  "$(MAP_TOOLSROOT)/data"
 set PFILES   "$(MAP_TOOLSROOT)/pfiles"
 set OUTFILES "$(MAP_TOOLSROOT)/output"
 
-#independent library for FITS image I/O and keyword handling (from astroroot)
+#internal library for FITS image I/O and keyword handling (from astroroot)
 library image -no_share -s=image $(source)
 
 apply_pattern GLAST_static_library_package

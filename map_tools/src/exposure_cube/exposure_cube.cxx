@@ -99,7 +99,7 @@ int main(int argc, char * argv[]) {
         ExposureHyperCube cube(ex, pars.outputFile());
 
     }catch( const std::exception& e){
-        std::cerr << "Error: ending with exception: " << e.what() << std::endl;
+        std::cerr << "Error: ending with exception: " << typeid(e).name()<< " \""<< e.what() << "\""<<std::endl;
         return 1;
     }
     return 0;

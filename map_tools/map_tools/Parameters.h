@@ -4,8 +4,10 @@
 *
 * $Header$
 */
-#ifndef PARAMETERS_H
-#define PARAMETERS_H 
+#ifndef MAP_TOOLS_PARAMETERS_H
+#define MAP_TOOLS_PARAMETERS_H 
+
+#include "hoopsUtil/ParametersBase.h"
 
 #include <string>
 #include <map>
@@ -23,51 +25,46 @@ namespace map_tools {
 *
 * $Header$
 */
-class Parameters
+
+class Parameters : public hoopsUtil::ParametersBase
 {
 public:
     // Constructors
     Parameters( int argc, char *argv[]);
-    ~Parameters();
+    ~Parameters(){};
 
 
     // Accessor Methods
-    const std::string &eventFile() const   { return m_eventFile; }
-    const std::string &inputFile() const   { return m_eventFile; }
+    const std::string &eventFile() const   { return m_inFile; }
+    const std::string &inputFile() const   { return m_inFile; }
     const std::string &filter() const      { return m_filter; }
-    const std::string &outputFile() const  { return m_oname; }
-    static bool verboseMode()              { return s_verboseMode; }
-    static bool clobber()                  { return s_clobber; }
-    static short chatter()                 { return s_chatter; }
+    const std::string &outputFile() const  { return m_outFile; }
+    bool verboseMode()  const            { return m_verboseMode; }
+    bool clobber()      const            { return m_clobber; }
+    short chatter()     const            { return m_chatter; }
+protected:
+//    std::string getString(const std::string& name){return getValue<std::string>(name);}
+//    std::string getString(const std::string& name, const std::string& deflt){return getValue<std::string>(name,deflt);};
+#if 1 
+    double      getDouble(const std::string& name){return getValue<double>(name);}
+    double      getDouble(const std::string& name,double deflt){return getValue<double>(name, deflt);}
+#endif
 
-    // special lookup by name
-    double operator[](const std::string& name)const;
-
-
-protected:  // make accessible to sub class
-    std::string getString(const std::string& name);
-    int         getInt(const std::string& name);
-    double      getDouble(const std::string& name);
-    bool        getBool(const std::string& name);
-
-    std::string getString(const std::string& name, const std::string& deflt);
-    int         getInt(const std::string& name,   int deflt);
-    double      getDouble(const std::string& name, double deflt);
-    bool        getBool(const std::string& name, bool deflt);
+    int         getInt(const std::string& name){return getValue<long>(name);}
+    bool        getBool(const std::string& name){return getValue<bool>(name);}
+    int         getInt(const std::string& name,   int deflt){return getValue<long>(name, deflt);}
+    bool        getBool(const std::string& name, bool deflt){return getValue<bool>(name, deflt);}
 
     // special
     typedef std::map<std::string,double> DoubleDict;
 private:
     // Data Members
-    std::string   m_eventFile;
-    std::string   m_oname;
+    std::string   m_inFile;
+    std::string   m_outFile;
     std::string   m_filter;
-    DoubleDict m_dictionary;
-
-    static std::string s_tool;
-    static bool        s_verboseMode;
-    static bool        s_clobber;
-    static int         s_chatter;
+    bool        m_verboseMode;
+    bool        m_clobber;
+    int         m_chatter;
 };
 } // namespace map_tools
 #endif

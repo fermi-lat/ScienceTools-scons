@@ -26,16 +26,16 @@ MapParameters::MapParameters( int argc, char *argv[])
 
 
     // Read xref
-    m_xref = getDouble("xref");
-    m_yref = getDouble("yref");
+    m_xref = getValue<double>("xref");
+    m_yref = getValue<double>("yref");
 
-    m_rot = getDouble("rot");
+    m_rot = getValue<double>("rot");
 
-    m_projType = getString("projtype");
-    m_use_lb = getBool("uselb", false);
+    m_projType = getValue<std::string>("projtype");
+    m_use_lb = getValue<bool>("uselb", false);
 
-    m_raName= getString("ra_name", "ra");
-    m_decName = getString("dec_name", "dec");
+    m_raName= getValue<std::string>("ra_name", "ra");
+    m_decName = getValue<std::string>("dec_name", "dec");
 
 }
 
