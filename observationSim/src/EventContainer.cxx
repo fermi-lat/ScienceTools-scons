@@ -232,6 +232,11 @@ void EventContainer::writeEvents() {
          convPoint[i].resize(3);
          acdTilesHit[i].resize(3);
          calibVersion[i].resize(3);
+// All events produced by observationSim satisfy all bg, goodPsf and
+// goodEnergy cuts.
+         calibVersion[i][0] = 1;
+         calibVersion[i][1] = 1;
+         calibVersion[i][2] = 1;
       }
 
       m_goodiEventData->setGeoOffset(geoOffset);

@@ -1,5 +1,5 @@
 package observationSim
-version v2r5p2
+version v2r5p3
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -78,6 +78,7 @@ set PFILES "$(OBSERVATIONSIMROOT)/data/"
 
 # test applications
 application test_observationSim test/main.cxx
+#application testGoodiWrite test/testGoodiWrite.cxx
 #application testGoodiRead test/testGoodiRead.cxx
 #application testScDataRead test/testScDataRead.cxx
 
