@@ -176,6 +176,19 @@ int main() {
       status = 1;
     }
 
+    try {
+      Header & header = my_table->getHeader();
+      double exposure = 0.;
+      header.read("exposure", exposure);
+      if (1.963e3 != exposure) {
+        std::cerr << "Problem reading exposure keyword." << std::endl;
+        status = 1;
+      }
+    } catch(const TableException & x) {
+      std::cerr << "Unexpected exception while testing direct keyword access." << std::endl;
+      status = 1;
+    }
+
   } catch(const TableException & x) {
     std::cerr << "Unhandled TableException." << std::endl;
     status = 1;
