@@ -61,9 +61,10 @@ SkyProj::SkyProj(const std::string &projName,
     }
 
     // specify position of pole
+#if 0 // not now
     m_wcs->lonpole = crval[0];
     m_wcs->latpole=crval[1];
-
+#endif
     // Set wcs to use CROTA rotations instead of PC or CD  transformations
     m_wcs->altlin |= 4;
     m_wcs->crota[1] = crota2;
@@ -128,13 +129,13 @@ std::pair<double,double> SkyProj::deproject(double x1, double x2) const
     int returncode = wcsp2s(m_wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
     if ( returncode != 0 ) throw SkyProj::Exception(returncode);
 
-    double s1 = worldcrd[m_wcs->lng];
+    double s1 = worldcrd[0];
 
     //fold RA into the range [0,360)
     while(s1 < 0) s1 +=360.;
     while(s1 >= 360) s1 -= 360.;
 
-    return std::make_pair<double,double>(s1,worldcrd[m_wcs->lat]);
+    return std::make_pair<double,double>(s1,worldcrd[1]);
 }
 
 
