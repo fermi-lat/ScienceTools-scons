@@ -52,12 +52,15 @@ namespace st_app {
   }
 
   // Get the name of this application.
-  const std::string & IApp::name() const { return m_app_name; }
+  const std::string & IApp::name() const {
+    if (m_app_name.empty() && 0 != s_argv) m_app_name = s_argv[0];
+    return m_app_name;
+  }
 
   // Methods which use hoops:
   // Return the group, creating it first if necessary.
   hoops::IParGroup & IApp::hoopsGetParGroup() {
-    if (0 == m_hoops_par_group) m_hoops_par_group = new hoops::ParPromptGroup(s_argc, s_argv, m_app_name);
+    if (0 == m_hoops_par_group) m_hoops_par_group = new hoops::ParPromptGroup(s_argc, s_argv, name());
     return *m_hoops_par_group;
   }
 

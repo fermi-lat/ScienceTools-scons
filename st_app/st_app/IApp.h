@@ -64,13 +64,13 @@ namespace st_app {
           as the top-level singleton application.
           \param app_name The name of this application.
       */
-      IApp(const std::string & app_name);
+      IApp(const std::string & app_name = "");
 
     private:
       static IApp * s_application;
       static int s_argc;
       static char ** s_argv;
-      std::string m_app_name;
+      mutable std::string m_app_name;
       hoops::ParPromptGroup * m_hoops_par_group;
   };
 
