@@ -10,7 +10,7 @@ mode,     s, h,  "h",   , ,""
 #---------------------------------------------------------------------------------------
 #
 infile,   f,a,"$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits",,,"Name of the exposure cube input file:"
-table,    s,a,,,,"name of the extension or ROOT tree"
+table,    s,a,"exposure",,,"name of the extension or ROOT tree"
 filter,   s,h,,,,"filter expression:"
 outfile,  f,a,"$(OUTFILES)/simple.fits",,,"output file name"
 #

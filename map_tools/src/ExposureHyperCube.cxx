@@ -18,13 +18,18 @@ namespace {
             (*header)[name].set( value); }
 }
 ExposureHyperCube::ExposureHyperCube( const Exposure& exp, 
-                                     std::string outfile) : m_image(0)
+                                     std::string outfile, bool clobber) : m_image(0)
 {
     std::vector<long> naxes(3);
     naxes[0]= Exposure::Index::ra_factor;
     naxes[1]= Exposure::Index::dec_factor;
     naxes[2] =Exposure::Index::cosfactor;
-
+ 
+    if(clobber ){
+        // the new way to rewrite a file
+        tip::IFileSvc::instance().createFile(outfile);
+    }
+ 
     tip::IFileSvc::instance().createImage(outfile, "exposure", naxes);
     m_image = tip::IFileSvc::instance().editImage(outfile, "exposure");
     header = &m_image->getHeader();// set up the anonymous convenience functions

@@ -74,12 +74,10 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     naxes[1]=m_naxis2;
     naxes[2]=m_naxis3;
 
-#if 0 // failed: needs a minimal template
     if( pars.clobber() ){
         // the new way to rewrite a file
         tip::IFileSvc::instance().createFile(pars.outputFile());
     }
-#endif
     // now add an image to the file
     tip::IFileSvc::instance().createImage(pars.outputFile(), extension, naxes);
     m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), extension);

@@ -25,7 +25,7 @@ namespace map_tools {
     class ExposureHyperCube  {
     public:
         //! ctor
-        ExposureHyperCube( const Exposure& exp, std::string outfile);
+        ExposureHyperCube( const Exposure& exp, std::string outfile, bool clobber=true);
 
         //! dtor updates the image file
         ~ExposureHyperCube();
