@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 26-apr-04 v5r4p2 THB add throw() to Parameter destructor, required by StApp.
  26-apr-04 v5r4p1 THB use STapp instead of IApp; fix so parameters are saved; add table_name to pars
  21-apr-04 v5r4   THB convert to use const Table access;
  04-apr-04 v5r3   THB use simpler tip access method for doubles
