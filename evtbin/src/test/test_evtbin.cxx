@@ -40,6 +40,8 @@
 #include "st_app/StApp.h"
 // Factory used by st_app's standard main to create application object.
 #include "st_app/StAppFactory.h"
+// Utility used to find test data for this application.
+#include "st_facilities/Env.h"
 // Tip File access.
 #include "tip/IFileSvc.h"
 // Tip Table access.
@@ -82,13 +84,19 @@ class EvtBinTest : public st_app::StApp {
 
   private:
     std::string m_data_dir;
+    std::string m_ft1_file;
+    std::string m_ft2_file;
+    double m_t_start;
+    double m_t_stop;
+    double m_e_min;
+    double m_e_max;
     bool m_failed;
 };
 
-EvtBinTest::EvtBinTest() {
-  const char * data_dir = getenv("EVTBINROOT");
-  if (0 != data_dir) m_data_dir = data_dir;
-  m_data_dir += "/data/";
+EvtBinTest::EvtBinTest(): m_t_start(0.), m_t_stop(900000.), m_e_min(1.), m_e_max(9.e4) {
+  m_data_dir = st_facilities::Env::getDataDir("evtbin");
+  m_ft1_file = st_facilities::Env::appendFileName(m_data_dir, "D1.fits");
+  m_ft2_file = st_facilities::Env::appendFileName(m_data_dir, "D2.fits");
 }
 
 void EvtBinTest::run() {
@@ -448,7 +456,7 @@ void EvtBinTest::testLightCurve() {
   using namespace evtbin;
 
   // Create light curve object.
-  LightCurve lc(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 900., "TIME"));
+  LightCurve lc(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, 900., "TIME"));
 
   // Fill the light curve.
   lc.binInput();
@@ -461,7 +469,7 @@ void EvtBinTest::testSingleSpectrum() {
   using namespace evtbin;
 
   // Create spectrum object.
-  SingleSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LogBinner(1., 90000., 1000, "ENERGY"));
+  SingleSpec spectrum(m_ft1_file, m_ft2_file, LogBinner(m_e_min, m_e_max, 1000, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -474,8 +482,8 @@ void EvtBinTest::testMultiSpectra() {
   using namespace evtbin;
 
   // Create spectrum object.
-  MultiSpec spectrum(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 300000., "TIME"),
-    LogBinner(1., 90000., 1000, "ENERGY"));
+  MultiSpec spectrum(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, 300000., "TIME"),
+    LogBinner(m_e_min, m_e_max, 1000, "ENERGY"));
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -498,7 +506,8 @@ void EvtBinTest::testCountMap() {
   }
 
   // Create count map object.
-  CountMap count_map(m_data_dir + "D1.fits", m_data_dir + "D2.fits", 60., 50., "AIT", 400, 400, .1, 0., true, "RA", "DEC");
+  CountMap count_map(st_facilities::Env::appendFileName(m_data_dir, "D1.fits"),
+    st_facilities::Env::appendFileName(m_data_dir, "D2.fits"), 60., 50., "AIT", 400, 400, .1, 0., true, "RA", "DEC");
 
   // Fill the count map.
   count_map.binInput();
@@ -639,7 +648,7 @@ void EvtBinTest::testBinConfig() {
 
     // Now test the bin file case with energy bins.
     par_group["energybinalg"] = "FILE";
-    par_group["energybinfile"] = m_data_dir + "ChanEnergyBin.fits";
+    par_group["energybinfile"] = st_facilities::Env::appendFileName(m_data_dir, "ChanEnergyBin.fits");
 
     // Save these parameters.
     par_group.Save();
@@ -773,22 +782,29 @@ void EvtBinTest::testGti() {
   result = gti6 & gti5;
   if (result != correct_result) std::cerr << "testGti found gti6 & gti5 did not return expected result" << std::endl;
 
-  // Create light curve object.
-  LightCurve lc(m_data_dir + "D1.fits", m_data_dir + "D2.fits", LinearBinner(0., 900000., 900., "TIME"));
-
-  const Gti & lc_gti = lc.getGti();
-  if (1 != lc_gti.getNumIntervals())
-    std::cerr << "testGti read GTI from D1.fits with " << lc_gti.getNumIntervals() << ", not 1" << std::endl;
-  else if (1.0744726657867401 != lc_gti.begin()->first || 886347.5625 != lc_gti.begin()->second)
-    std::cerr << "testGti read GTI from D1.fits with values [" << lc_gti.begin()->first << ", " << lc_gti.begin()->second <<
-      ", not [1.0744726657867401, 886347.5625]" << std::endl;
-
   // Check ONTIME computation.
   double on_time = correct_result.computeOntime();
-  const double expected_on_time = 1.55;
+  double expected_on_time = 1.55;
   const double tolerance = 1.e-12;
   if (tolerance < fabs(expected_on_time - on_time))
     std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
+
+  // Create light curve object.
+  LightCurve lc(m_ft1_file, m_ft2_file, LinearBinner(m_t_start, m_t_stop, 900., "TIME"));
+
+  const Gti & lc_gti = lc.getGti();
+  if (1 != lc_gti.getNumIntervals())
+    std::cerr << "testGti read GTI from test ft1 file with " << lc_gti.getNumIntervals() << " intervals, not 1" << std::endl;
+  else if (1.0744726657867401 != lc_gti.begin()->first || 886347.5625 != lc_gti.begin()->second)
+    std::cerr << "testGti read GTI from test ft1 file with values [" << lc_gti.begin()->first << ", " << lc_gti.begin()->second <<
+      ", not [" << 1.0744726657867401 << ", " << 886347.5625 << "]" << std::endl;
+
+  // Check ONTIME computation from light curve.
+  on_time = lc_gti.computeOntime();
+  expected_on_time = 886347.5625 - 1.0744726657867401;
+  if (tolerance < fabs(expected_on_time - on_time))
+    std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
+
 }
 
 /// \brief Create factory singleton object which will create the application:
