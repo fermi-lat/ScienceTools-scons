@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
     EOH
 
+   v8r14p3 03-mar-2005 thb remove Earth from source_library.xml 
    v8r14p2 27-feb-2005 thb and missed quite a few others :-( MAPspectrum, AlbedoPspectrum, GalElspectrum
    v8r14p1 26-feb-2005 thb missed that CHIMEspectrum had const operator(); fixed. removed \0 from titles.
    v8r14   3-Jan-2005  thb slight changes to interface to remove obsolete methods, make operator() not const
