@@ -109,6 +109,7 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     DLL_DECL_SPECTRUM( CHIMESpectrum );
     DLL_DECL_SPECTRUM( GalElSpectrum);
     DLL_DECL_SPECTRUM( MapSpectrum);
+    DLL_DECL_SPECTRUM( AGNSpectrum);
     
 }
 
