@@ -1,0 +1,49 @@
+/** \file IApp.h
+    \brief Base class for Science Tools applications.
+    \author James Peachey, HEASARC
+*/
+#ifndef st_app_IApp_h
+#define st_app_IApp_h
+
+#include <string>
+
+namespace st_app {
+
+  /** \class IApp
+      \brief Application of standard type.
+  */
+  class IApp {
+    public:
+      /** \brief Return the main singleton application.
+      */
+      static IApp * getApp();
+
+      /** \brief Handle command line arguments, storing the ones the application may need.
+          \param argc The number of arguments in the argument array.
+          \param argv The arguments array.
+      */
+      static void processCommandLine(int argc, char ** argv);
+
+      virtual ~IApp() throw();
+
+      /** \brief Perform the action needed by this application. This will be called by the standard main.
+      */
+      virtual void run() = 0;
+
+    protected:
+      /** \brief Create application object. The first application created has special significance
+          as the top-level singleton application.
+          \param app_name The name of this application.
+      */
+      IApp(const std::string & app_name);
+
+    private:
+      static IApp * s_application;
+      static int s_argc;
+      static char ** s_argv;
+      std::string m_app_name;
+  };
+
+}
+
+#endif
