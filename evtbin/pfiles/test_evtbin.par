@@ -27,13 +27,13 @@ energybinfile, f, a, "NONE", , , "Name of the file containing the energy bin def
 numxpix,       i, a, , , , "Size of the X axis in pixels"
 numypix,       i, a, , , , "Size of the Y axis in pixels"
 pixscale,      r, a, , , , "Image scale (in degrees/pixel)"
-xref,          r, a, 0., , , "RA at the image center in degrees"
-yref,          r, a, 0,, , , "DEC at the image center in degrees"
-rafield,       s, a, "RA", , ,"Name of RA field to bin"
-decfield,      s, a, "DEC", , ,"Name of DEC field to bin"
+coordsys,      s, a, CEL, CEL|GAL, ,"Coordinate system (CEL - celestial, GAL -galactic)"
+xref,          r, a, 0., , , "First coordinate of image center in degrees (RA or galactic l)"
+yref,          r, a, 0., , , "Second coordinate of image center in degrees (DEC or galactic b)"
+rafield,       s, h, "RA", , ,"First coordinate field to bin"
+decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
 axisrot,       r, a, 0,, , , "Rotation angle of image axis, in degrees"
 proj,          s, a, "AIT", , , "Projection method (AIT, ARC, CAR, GLS, MER, NCP, SIN, STG, TAN)"
-uselb,         b, a, yes, , ,"Use galactic coordinates"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------

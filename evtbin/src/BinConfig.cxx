@@ -94,13 +94,13 @@ namespace evtbin {
     par_group.Prompt("numxpix");
     par_group.Prompt("numypix");
     par_group.Prompt("pixscale");
+    par_group.Prompt("coordsys");
     par_group.Prompt("xref");
     par_group.Prompt("yref");
     par_group.Prompt("rafield");
     par_group.Prompt("decfield");
     par_group.Prompt("axisrot");
     par_group.Prompt("proj");
-    par_group.Prompt("uselb");
   }
 
   void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) const {

@@ -15,6 +15,7 @@
     \author Yasushi Ikebe, GSSC
             James Peachey, HEASARC
 */
+#include <cctype>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -161,8 +162,17 @@ class CountMapApp : public EvtBinAppBase {
       // Create configuration-specific GTI.
       std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
+      // Get the coordsys parameter and use it to determine what type coordinate system to use.
+      bool use_lb = false;
+      std::string coord_sys = pars["coordsys"];
+      for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = tolower(*itor);
+      if (coord_sys == "cel") use_lb = false;
+      else if (coord_sys == "gal") use_lb = true;
+      else throw std::logic_error(
+        "CountMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
+
       return new evtbin::CountMap(pars["evfile"], pars["evtable"], pars["scfile"], pars["xref"], pars["yref"], pars["proj"],
-        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], pars["uselb"], pars["rafield"], pars["decfield"], *gti);
+        num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"], use_lb, pars["rafield"], pars["decfield"], *gti);
     }
 };
 
