@@ -4,7 +4,7 @@
    $Header$
 */
 
-#include "CompositeSource.h"  
+#include "flux/CompositeSource.h"  
 
 
 #include <strstream>

@@ -9,7 +9,7 @@
 #include "flux/SpectrumFactoryTable.h"
 #include "flux/GPS.h"
 #include "flux/FluxException.h" // defines FATAL_MACRO
-#include "CompositeSource.h"
+#include "flux/CompositeSource.h"
 
 #include <xercesc/dom/DOM_Document.hpp>
 #include <xercesc/dom/DOM_Element.hpp>
