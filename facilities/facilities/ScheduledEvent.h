@@ -7,7 +7,7 @@
 
 class Scheduler;
 
-class ScheduledEvent 
+class facilities_APIDECL ScheduledEvent 
 {
     // abstract base class for an event that is scheduled by the ScheduledEvent class
 public:
@@ -24,8 +24,6 @@ protected:
 
     static void schedule(double t, ScheduledEvent* next);
     // subclass can easily schedule a new event
-
-
 
 private:
     friend class Scheduler;
