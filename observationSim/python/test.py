@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Basic script for steering the observationSim code.  No plotting.
+Basic script for steering the observationSim code.
 
 @author J. Chiang
 """
@@ -65,16 +65,22 @@ def run_test(argv):
     aeffFront = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 2)
     psfFront = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 2)
     edispFront = latResponse.EdispGlast25()
-
     respFront = latResponse.Irfs(aeffFront, psfFront, edispFront)
 
     aeffBack = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 3)
     psfBack = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 3)
     edispBack = latResponse.EdispGlast25()
-
     respBack = latResponse.Irfs(aeffBack, psfBack, edispBack)
 
-    respVector = latResponse.IrfVector((respFront, respBack))
+    aeffCombined = latResponse.AeffGlast25(caldbPath + "/aeff_lat.fits", 4)
+    psfCombined = latResponse.PsfGlast25(caldbPath + "/psf_lat.fits", 4)
+    edispCombined = latResponse.EdispGlast25()
+    respCombined = latResponse.Irfs(aeffCombined, psfCombined, edispCombined)
+
+    respVector = latResponse.IrfVector((respCombined, ))
+#    respVector = latResponse.IrfVector((respFront, ))
+#    respVector = latResponse.IrfVector((respBack, ))
+#    respVector = latResponse.IrfVector((respFront, respBack))
 
     useGoodi = 0
     events = observationSim.EventContainer(root + "_events", useGoodi)
@@ -92,6 +98,9 @@ def run_test(argv):
         while (elapsed_time < count - time_step):
             my_simulator.generate_events(time_step, events, scData, 
                                          respVector, spacecraft)
+            elapsed_time += time_step
+            print "elapsed time: ", elapsed_time
+            print "events so far: ", events.numEvents()
         my_simulator.generate_events(count-elapsed_time, events, scData, 
                                      respVector, spacecraft)
     else:

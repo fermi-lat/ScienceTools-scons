@@ -1,5 +1,5 @@
 package observationSim
-version v1r1
+version v2r0
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -65,7 +65,7 @@ library observationSim -no_share $(my_headers) \
 set INFILES "$(GOODIROOT)/Data"
 
 # test applications
-#application test_observationSim test/main.cxx
+application test_observationSim test/main.cxx
 #application testGoodiRead test/testGoodiRead.cxx
 
 # exposure map calculator

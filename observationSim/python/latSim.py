@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Basic script for steering the observationSim code.  No plotting.
+Basic script for steering the observationSim code. 
 
 @author J. Chiang
 """
@@ -84,6 +84,7 @@ def run_test(argv):
         while (elapsed_time < count - time_step):
             my_simulator.generate_events(time_step, events, scData, 
                                          response, spacecraft)
+            elapsed_time += time_step
         my_simulator.generate_events(count-elapsed_time, events, scData, 
                                      response, spacecraft)
     else:

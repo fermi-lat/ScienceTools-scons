@@ -48,12 +48,17 @@ int main(int argn, char * argc[]) {
 // sources.
 //
    bool useSimTime(false);
+   bool useCombined(true);
    std::vector<std::string> sourceNames;
    if (argn > 2) {
       for (int i = 2; i < argn; i++) {
          std::string argString = argc[i];
-         if (argString == "-t") {  // This is the only option, so far.
+         if (argString == "-t") {
+// Interpret arg[1] as elapsed time in seconds.
             useSimTime = true;
+         } else if (argString == "-fb") {
+// Use Front/Back responses instead of Combined.
+            useCombined = false;
          } else {
 // Assume the next argument is a source name or a request for help.
             if (argString == "help") {
@@ -85,29 +90,41 @@ int main(int argn, char * argc[]) {
 
 // Create pointers to the GLAST25 response function objects.  Note
 // that there is no GLAST25 energy dispersion file.
-   latResponse::IAeff *aeff 
-      = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                     latResponse::Glast25::Combined, 0.3);
-   latResponse::IPsf *psf 
-      = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
-                                    latResponse::Glast25::Combined);
-   latResponse::IEdisp *edisp = new latResponse::EdispGlast25();
+//
+   if (useCombined) {
 
-   latResponse::Irfs resp1(aeff, psf, edisp);
+      latResponse::IAeff *aeff_c
+         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
+                                        latResponse::Glast25::Combined);
+      latResponse::IPsf *psf_c
+         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
+                                       latResponse::Glast25::Combined);
+      latResponse::IEdisp *edisp_c = new latResponse::EdispGlast25();
+      latResponse::Irfs resp_c(aeff_c, psf_c, edisp_c);
+      respPtrs.push_back(&resp_c);
+   } else {
+// Front
+      latResponse::IAeff *aeff_f
+         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
+                                        latResponse::Glast25::Front);
+      latResponse::IPsf *psf_f
+         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
+                                       latResponse::Glast25::Front);
+      latResponse::IEdisp *edisp_f = new latResponse::EdispGlast25();
+      latResponse::Irfs resp_f(aeff_f, psf_f, edisp_f);
+      respPtrs.push_back(&resp_f);
 
-   respPtrs.push_back(&resp1);
-
-   latResponse::IAeff *aeff2
-      = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
-                                     latResponse::Glast25::Combined, 0.7);
-   latResponse::IPsf *psf2
-      = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
-                                    latResponse::Glast25::Combined);
-   latResponse::IEdisp *edisp2 = new latResponse::EdispGlast25();
-
-   latResponse::Irfs resp2(aeff2, psf2, edisp2);
-
-   respPtrs.push_back(&resp2);
+// Back
+      latResponse::IAeff *aeff_b
+         = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
+                                        latResponse::Glast25::Back);
+      latResponse::IPsf *psf_b
+         = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
+                                       latResponse::Glast25::Back);
+      latResponse::IEdisp *edisp_b = new latResponse::EdispGlast25();
+      latResponse::Irfs resp_b(aeff_b, psf_b, edisp_b);
+      respPtrs.push_back(&resp_b);
+   }
 
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events", true);
@@ -132,6 +149,9 @@ int main(int argn, char * argc[]) {
 }
 
 void help() {
-   std::cerr << "usage: <program name> <counts> [<options> <sourceNames>]"
+   std::cerr << "usage: <program name> <counts> [<options> <sourceNames>]\n"
+             << "options: \n"
+             << "  -t interpret counts as elapsed time in seconds\n" 
+             << "  -fb use Front/Back IRFs\n"
              << std::endl;
 }

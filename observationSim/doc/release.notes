@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r0   17-Oct-03   JC   allow multiple irfs to be handled at once
     v1r1   13-Oct-03   JC   applied photon direction fix for changes 
                             in flux v8*
     v1r0p1 13-Oct-03   JC   tagging for ScienceTools.

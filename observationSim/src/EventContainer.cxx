@@ -72,15 +72,16 @@ namespace {
 
 // The total effective area.
       double effAreaTot = *(effAreas.end() - 1);
-   
+
 // Generate a random deviate from the interval [0, area) to ascertain
 // which response object to use.
       double xi = RandFlat::shoot()*area;
 
       if (xi < effAreaTot) {
-// Success. Find the appropriate response function.
+// Success. Find the appropriate response functions.
          eaIt = std::lower_bound(effAreas.begin(), effAreas.end(), xi);
-         return *respPtrs.begin() + (eaIt - effAreas.begin());
+         int indx = eaIt - effAreas.begin();
+         return respPtrs[indx];
       } else {
 // Do not accept this event.
          return 0;
@@ -188,7 +189,7 @@ int EventContainer::addEvent(EventSource *event,
 // Apply the acceptance criteria.
    if ( energy > 31.623 
         && RandFlat::shoot() < m_prob
-        && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()/1e4, 
+        && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
                                     energy, sourceDir, zAxis, xAxis))
         && !spacecraft->inSaa(time) ) {
 
