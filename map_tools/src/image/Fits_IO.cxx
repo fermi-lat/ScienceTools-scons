@@ -37,10 +37,10 @@ static const char* errMsg[] = {
 
 static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status);
 static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status);
-static void writeBoolAttr(BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeDoubleAttr(BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeIntAttr(BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeStringAttr(BaseAttr & attr, fitsfile *fptr, int & status);
+static void writeBoolAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
+static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
+static void writeIntAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
+static void writeStringAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 
 IOElement * MakeImage(fitsfile * fptr, int * status);
 int           CreateFitsImage(fitsfile* fptr, IOElement* image);
@@ -375,50 +375,9 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 {
     if (*status != 0)
         return;
-    for( Header::iterator it = element->begin(); it != element->end(); ++it){
-//         BaseAttr& attr = *(it->second);
+    for( Header::const_iterator it = element->begin(); it != element->end(); ++it){
+        const BaseAttr& attr = *(*it);
 
-//            std::string tname(typeid(attr).name());
-//            int k = tname.find_first_of("<")+1;
-
-//            if (tname.substr(k,4)=="bool") {
-
-//                int val = (dynamic_cast< Attr<bool>& >(attr)).value();
-//                fits_update_key(fptr, TLOGICAL, (char*)attr.name().c_str(), 
-//                    &val, (char*)attr.comment().c_str(), status);
-
-//            }else if (tname.substr(k,6)=="double") {
-
-//                double val = (dynamic_cast< Attr<double>& >(attr)).value();
-//                fits_update_key(fptr, TDOUBLE, (char*)attr.name().c_str(), 
-//                    &val, (char*)attr.comment().c_str(), status);
-
-//            }else if (tname.substr(k,3)=="int") {
-
-//                int val = (int)(dynamic_cast< Attr<double>& >(attr)).value();
-//                fits_update_key(fptr, TINT, (char*)attr.name().c_str(), 
-//                    &val, (char*)attr.comment().c_str(), status);
-    
-//            }else if (tname.substr(k,23)=="class std::basic_string") {
-
-//                Attr<std::string>& tattr = (Attr<std::string>&)attr;
-//                   // dynamic_cast<class Attr<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > >(attr).value();
-                    
-//                const char * v = tattr.value().c_str();
-//                fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 
-//                    (char*)v, (char*)attr.comment().c_str(), status);
-//            }else if (tname.substr(k,4)=="char") {
-
-//                const char* val = (dynamic_cast< Attr<char *>& >(attr)).value();
-//                 fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 
-//                     (char*)val, (char*)attr.comment().c_str(), status);
-
-//            }else {
-//                throw std::runtime_error(std::string("Unexpected attribute type:")+tname);
-//            }
-
-
-       BaseAttr & attr = *(it->second);
        writeBoolAttr(attr, fptr, *status);
        writeDoubleAttr(attr, fptr, *status);
        writeIntAttr(attr, fptr, *status);
@@ -435,8 +394,8 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 
 }
 
-static void writeBoolAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
-   BoolAttr * my_attr = dynamic_cast<BoolAttr*>(&attr);
+static void writeBoolAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
+   const BoolAttr * my_attr = dynamic_cast<const BoolAttr*>(&attr);
    if (my_attr) {
       int val = my_attr->value();
       fits_update_key(fptr, TLOGICAL, (char*)attr.name().c_str(), 
@@ -444,8 +403,8 @@ static void writeBoolAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
    }
 }
 
-static void writeDoubleAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
-   DoubleAttr * my_attr = dynamic_cast<DoubleAttr*>(&attr);
+static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
+   const DoubleAttr * my_attr = dynamic_cast<const DoubleAttr*>(&attr);
    if (my_attr) {
       double val = my_attr->value();
       fits_update_key(fptr, TDOUBLE, (char*)attr.name().c_str(), 
@@ -453,8 +412,8 @@ static void writeDoubleAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
    }
 }
 
-static void writeIntAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
-   IntAttr * my_attr = dynamic_cast<IntAttr*>(&attr);
+static void writeIntAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
+   const IntAttr * my_attr = dynamic_cast<const IntAttr*>(&attr);
    if (my_attr) {
       int val = my_attr->value();
       fits_update_key(fptr, TINT, (char*)attr.name().c_str(), 
@@ -462,8 +421,8 @@ static void writeIntAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
    }
 }
 
-static void writeStringAttr(BaseAttr & attr, fitsfile *fptr, int & status) {
-   StringAttr * my_attr = dynamic_cast<StringAttr*>(&attr);
+static void writeStringAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
+   const StringAttr * my_attr = dynamic_cast<const StringAttr*>(&attr);
    if (my_attr) {
       const char * v = my_attr->value().c_str();
       fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 

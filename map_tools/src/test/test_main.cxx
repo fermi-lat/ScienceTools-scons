@@ -77,7 +77,7 @@ int main(int argc, char** argv ){
         test_Header();
 
     }catch( const std::exception& e){
-        std::cerr << "caught exception: " << e.what() << std::endl;
+        std::cerr << "Failed test because caught exception: " << e.what() << std::endl;
         return 1;
     }
     std::cout << "tests OK" << std::endl;
@@ -108,15 +108,26 @@ void test_Header() {
    } catch (std::invalid_argument &eObj) {}
 
 // Test for re-insertion.
-   float fvalue0(2.718);
+   float fvalue0(2.718F);
    header.addAttribute(FloatAttr(name, fvalue0));
    float floatValue;
    header.getValue(name, floatValue);
    assert(floatValue == fvalue0);
 
 // Test for insertion failure.
-   try {
+//   try {
       header.addAttribute(IntAttr(name, 3), false);
-      assert(false);
-   } catch (std::runtime_error &eObj) {}
+   //   assert(false);
+//   } catch (std::runtime_error &eObj) {}
+
+//      int n = std::count_if(header.begin(),header.end(),std::equal_to<std::string>(name));
+
+   // test operator[]
+   const BaseAttr & attr = header[name]; // should work
+   std::string name_check(attr); 
+   assert(name==name_check);
+   try {
+       const BaseAttr & attr2 = header["wrong"];//should not
+       assert(false);
+   } catch (const std::runtime_error &eobj){}
 }

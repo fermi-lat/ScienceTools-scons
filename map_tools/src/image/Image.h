@@ -13,6 +13,7 @@
 #include "IOElement.h"
 
 template <class T> class Image;
+#include <vector>
 
 //_____________________________________________________________________________
 /** @class BaseImage

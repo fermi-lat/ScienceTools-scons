@@ -10,29 +10,31 @@
 #define HEADER_H
 
 #include "Attr.h"
-#include <map>
 #include <typeinfo>
 #include <stdexcept>
-#include <vector>
 #include <string>
+#include <vector>
 
 /** @class Header
     @brief Base class for all data objects, contains the header information
 */
-class Header : public std::map<std::string, BaseAttr*>
+class Header : public  std::vector<BaseAttr*>
 {
 public:
+    typedef std::vector<BaseAttr*>::iterator iterator;
+    typedef std::vector<BaseAttr*>::const_iterator const_iterator;
+
    Header() {}
    virtual ~Header();
    void addAttribute(const BaseAttr& attribute, bool replace=true);
-   const BaseAttr* operator[](const std::string & name) const;
+   const BaseAttr& operator[](const std::string & name) const;
 
    template<typename T> void getValue(const std::string & name,
-                                      T &value) {
-      Header::iterator it = find(name);
+                                      T &value) const {
+      Header::const_iterator it = find(name);
       BaseAttr * my_attr = 0;
       if (it != end()) {
-         my_attr = it->second;
+         my_attr = *it;
       }
       if (my_attr) {
          if (dynamic_cast<Attr<T> *>(my_attr)) {
@@ -50,6 +52,8 @@ public:
    void setName(const std::string name){m_name=name;}
 
 private:
+    iterator find(const std::string& name);
+    const_iterator find(const std::string& name)const;
 
    std::string m_name;
 };

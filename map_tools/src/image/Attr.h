@@ -35,6 +35,7 @@ public:
     void setName(const std::string& name){m_name=name;}
     virtual void print(std::ostream&)const=0;
 
+    operator const std::string&()const{return m_name;}
     //virtual operator double()const = 0;
 
 private:
