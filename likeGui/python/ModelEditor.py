@@ -257,6 +257,7 @@ class ds9Display(object):
         self.file = file
     def __call__(self):
         try:
+            ds9.cd(os.path.abspath(os.curdir))
             ds9.clear_regions()
             try:
                 os.remove(self.file)
@@ -278,6 +279,7 @@ class ds9Import(object):
         self.file = file
     def __call__(self):
         try:
+            ds9.cd(os.path.abspath(os.curdir))
             ds9.save_regions(self.file)
             for coords in read_coords(self.file):
                 src = readXml.Source(copy.deepcopy(findSrcs.ptSrc()))

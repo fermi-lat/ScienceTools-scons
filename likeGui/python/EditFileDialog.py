@@ -54,7 +54,8 @@ def cleanPathName(file):
         file = prefix + os.sep + mat.group(2)
     if os.name == "nt":
         import win32api
-        try: shortpath = win32api.GetShortPathName(file)
+        try:
+            shortpath = win32api.GetShortPathName(file)
         except:
             shortpath = file
         return shortpath            
