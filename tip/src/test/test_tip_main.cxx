@@ -216,17 +216,15 @@ int main() {
             first_time = false;
           }
         }
-#ifdef foo
-        if (counts != *((const std::vector<double> &) vcounts).begin()) {
+        if (counts != vcounts_mm[0]) {
           static bool first_time = true;
           if (first_time) {
             std::cerr << "First Counts value when read into a vector is " <<
-              *((const std::vector<double> &) vcounts).begin() << " not " << counts << std::endl;
+              double(vcounts_mm[0]) << " not " << counts << std::endl;
             status = 1;
             first_time = false;
           }
         }
-#endif
       }
 
     } catch(const TableException & x) {
