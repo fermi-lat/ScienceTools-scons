@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  15-Feb-05 v0r4p1 JC    take abs. mag. of pixel solid angle expression
   14-Feb-05 v0r4   JC    make FitsImage member functions const
   29-Oct-04 v0r3p1 JC    use tip v2*
   04-Oct-04 v0r3   JC    add writeChecksum function
