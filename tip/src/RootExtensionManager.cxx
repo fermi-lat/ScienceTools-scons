@@ -17,10 +17,7 @@
 #include "TSystem.h"
 
 #include "RootExtensionManager.h"
-#include "tip/HeaderData.h"
-#include "tip/IData.h"
 #include "tip/TipException.h"
-#include "tip/TabularData.h"
 
 namespace tip {
 
@@ -62,24 +59,10 @@ namespace tip {
   // Construct without opening the file.
   RootExtensionManager::RootExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_branch_lookup(),
-    m_leaves(), m_num_records(0), m_fp(0), m_tree(0), m_header(0), m_data(0) { open(); }
+    m_leaves(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
 
   // Close file automatically while destructing.
-  RootExtensionManager::~RootExtensionManager() { delete m_data; delete m_header; close(); }
-
-  IHeaderData * RootExtensionManager::getHeaderData() {
-    if (!m_header) m_header = new HeaderData<RootExtensionManager>(*this);
-    return m_header;
-  }
-
-  ITabularData * RootExtensionManager::getTabularData() {
-    ITabularData * retval = 0;
-    if (!m_data) {
-      retval =  new TabularData<RootExtensionManager>(*this);
-      m_data = retval;
-    }
-    return retval;
-  }
+  RootExtensionManager::~RootExtensionManager() { close(); }
 
   // Subclasses call this to open the file and position it to the desired extension.
   void RootExtensionManager::open() {

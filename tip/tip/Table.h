@@ -8,7 +8,7 @@
 #define tip_Table_h
 
 #include "tip/Extension.h"
-#include "tip/IExtensionManager.h"
+#include "tip/IExtensionData.h"
 #include "tip/Iterator.h"
 #include "tip/ScalarAdaptor.h"
 #include "tip/TipException.h"
@@ -17,8 +17,6 @@
 #include "tip/tip_types.h"
 
 namespace tip {
-
-  class ITabularData;
 
   /** \class Table
 
@@ -61,10 +59,9 @@ namespace tip {
           Vector(Cell & cell): VectorAdaptor<T, Cell>(cell) {}
       };
 
-      Table(IExtensionManager * extension_data): Extension(extension_data), m_tab_data(0) {
-        if (extension_data) m_tab_data = extension_data->getTabularData();
-        else throw TipException("Table::Table(IExtensionManager *): "
-          "Cannot create Table with NULL IExtensionManager pointer.");
+      Table(IExtensionData * extension_data): Extension(extension_data), m_tab_data(extension_data) {
+        if (0 == m_tab_data) throw TipException("Table::Table(IExtensionData *): "
+          "Cannot create Table with NULL IExtensionData pointer.");
       }
 
       virtual ~Table() {}
@@ -88,7 +85,7 @@ namespace tip {
       void setNumRecords(Index_t num_records) { m_tab_data->setNumRecords(num_records); }
 
     private:
-      ITabularData * m_tab_data;
+      IExtensionData * m_tab_data;
   };
 
   /* TODO 7: 4/2/2004: 2 problems with random access: 1. operator * needs to return a

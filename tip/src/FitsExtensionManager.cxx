@@ -9,9 +9,6 @@
 #include <sstream>
 
 #include "FitsExtensionManager.h"
-#include "tip/HeaderData.h"
-#include "tip/IData.h"
-#include "tip/TabularData.h"
 #include "tip/TipException.h"
 
 namespace tip {
@@ -37,24 +34,10 @@ namespace tip {
   // Construct without opening the file.
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
-    m_col_num_lookup(), m_num_records(0), m_fp(0), m_header(0), m_data(0), m_is_table(false) { open(); }
+    m_col_num_lookup(), m_num_records(0), m_fp(0), m_is_table(false) { open(); }
 
   // Close file automatically while destructing.
-  FitsExtensionManager::~FitsExtensionManager() { delete m_data; delete m_header; close(); }
-
-  IHeaderData * FitsExtensionManager::getHeaderData() {
-    if (!m_header) m_header = new HeaderData<FitsExtensionManager>(*this);
-    return m_header;
-  }
-
-  ITabularData * FitsExtensionManager::getTabularData() {
-    ITabularData * retval = 0;
-    if (!m_data) {
-      retval = new TabularData<FitsExtensionManager>(*this);
-      m_data = retval;
-    }
-    return retval;
-  }
+  FitsExtensionManager::~FitsExtensionManager() { close(); }
 
   // Subclasses call this to open the file and position it to the desired extension.
   void FitsExtensionManager::open() {

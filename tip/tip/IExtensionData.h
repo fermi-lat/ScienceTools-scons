@@ -1,32 +1,67 @@
-/** \file ITabularData.h
+/** \file IExtensionData.h
 
-    \brief Low-level abstract interface to a FITS-like table, viewed as a collection of cells.
+    \brief
 
     \author James Peachey, HEASARC
 */
-#ifndef tip_ITabularData_h
-#define tip_ITabularData_h
+#ifndef tip_IExtensionData_h
+#define tip_IExtensionData_h
 
 #include <string>
 
-#include "tip/IData.h"
 #include "tip/tip_types.h"
 
 namespace tip {
 
-  /** \class ITabularData
+  /** \class IExtensionData
 
-      \brief Low-level abstract interface to a FITS-like table, viewed as a collection of cells. The cells are
-      located by a field index (column number in the FITS case) and a record index (row number). A facility
-      is provided for determining the field index from the name of the field (column). To support vector-valued
-      columns, each cell is seen as a container. Consequently the basic access methods use iterator-like
-      access.
   */
-  class ITabularData : public IData {
+  class IExtensionData {
     public:
-      virtual ~ITabularData() {}
+      virtual ~IExtensionData() {}
 
-      /** \brief Return the number of records in the current tabular data object.
+      /** \brief Get a keyword from this extension object.
+          \param name The name of the keyword to get from the extension object.
+          \param value The output value of the keyword, converted to the given type.
+      */
+      virtual void getKeyword(const std::string & name, bool & value) const = 0;
+      virtual void getKeyword(const std::string & name, double & value) const = 0;
+      virtual void getKeyword(const std::string & name, float & value) const = 0;
+      virtual void getKeyword(const std::string & name, char & value) const = 0;
+      virtual void getKeyword(const std::string & name, signed char & value) const = 0;
+      virtual void getKeyword(const std::string & name, signed short & value) const = 0;
+      virtual void getKeyword(const std::string & name, signed int & value) const = 0;
+      virtual void getKeyword(const std::string & name, signed long & value) const = 0;
+      virtual void getKeyword(const std::string & name, unsigned char & value) const = 0;
+      virtual void getKeyword(const std::string & name, unsigned short & value) const = 0;
+      virtual void getKeyword(const std::string & name, unsigned int & value) const = 0;
+      virtual void getKeyword(const std::string & name, unsigned long & value) const = 0;
+      virtual void getKeyword(const std::string & name, std::string & value) const = 0;
+
+      /** \brief Set a keyword in this extension object.
+          \param name The name of the keyword to get from the extension object.
+          \param value The output value of the keyword, converted to the given type.
+      */
+      virtual void setKeyword(const std::string & name, const bool & value) = 0;
+      virtual void setKeyword(const std::string & name, const double & value) = 0;
+      virtual void setKeyword(const std::string & name, const float & value) = 0;
+      virtual void setKeyword(const std::string & name, const char & value) = 0;
+      virtual void setKeyword(const std::string & name, const signed char & value) = 0;
+      virtual void setKeyword(const std::string & name, const signed short & value) = 0;
+      virtual void setKeyword(const std::string & name, const signed int & value) = 0;
+      virtual void setKeyword(const std::string & name, const signed long & value) = 0;
+      virtual void setKeyword(const std::string & name, const unsigned char & value) = 0;
+      virtual void setKeyword(const std::string & name, const unsigned short & value) = 0;
+      virtual void setKeyword(const std::string & name, const unsigned int & value) = 0;
+      virtual void setKeyword(const std::string & name, const unsigned long & value) = 0;
+      virtual void setKeyword(const std::string & name, const std::string & value) = 0;
+      virtual void setKeyword(const std::string & name, const char * const & value) = 0;
+
+      /** \brief Return a flag indicating whether the given data object is a table.
+      */
+      virtual bool isTable() const = 0;
+
+      /** \brief Return the number of records in the current (tabular) extension object.
       */
       virtual Index_t getNumRecords() const = 0;
 
@@ -43,7 +78,7 @@ namespace tip {
 
       virtual Index_t getFieldNumElements(FieldIndex_t field_index, Index_t record_index = 0) const = 0;
 
-      /** \brief Get one or more values from the current tabular data object.
+      /** \brief Get one or more values from the current (tabular) extension object.
           \param field_index The index of the field (column) to get.
           \param record_index The record index (row number) whose value to get.
           \param src_begin Index of the first element within the Cell.
@@ -75,7 +110,7 @@ namespace tip {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned long * dest_begin) const = 0;
 
-      /** \brief Set one or more values in the current tabular data object.
+      /** \brief Set one or more values in the current (tabular) extension object.
           \param field_index The index of the field (column) to set.
           \param record_index The record index (row number) whose value to set.
           \param src_begin Index of the first element within the Cell.
@@ -106,7 +141,6 @@ namespace tip {
         unsigned int * dest_begin, unsigned int * dest_end) = 0;
       virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
         unsigned long * dest_begin, unsigned long * dest_end) = 0;
-
   };
 
 }

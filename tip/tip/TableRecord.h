@@ -1,6 +1,6 @@
 /** \file TableRecord.h
 
-    \brief Helper classes to allow convenient and idiomatic access to ITabularData objects.
+    \brief Helper classes to allow convenient and idiomatic access to tabular data objects.
 
     \author James Peachey, HEASARC
 */
@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-#include "tip/ITabularData.h"
+#include "tip/IExtensionData.h"
 #include "tip/tip_types.h"
 
 namespace tip {
@@ -90,25 +90,25 @@ namespace tip {
     public:
       typedef std::map<std::string, TableCell> CellCont_t;
 
-      /** \brief Construct a ConstTableRecord object, without immediate association with any ITabularData.
+      /** \brief Construct a ConstTableRecord object, without immediate association with a tabular data object
           Such an association may be formed later by assignment.
       */
       ConstTableRecord(): m_cells(), m_tab_data(0), m_index(0) {}
 
-      /** \brief Construct a ConstTableRecord object, without immediate association with any ITabularData.
+      /** \brief Construct a ConstTableRecord object, without immediate association with a tabular data object
           Such an association may be formed later by assignment.
       */
       ConstTableRecord(const ConstTableRecord & rec): m_cells(), m_tab_data(rec.m_tab_data), m_index(rec.m_index) {}
 
-      /** \brief Construct a ConstTableRecord object, associated with the given ITabularData and record index.
+      /** \brief Construct a ConstTableRecord object, associated with the given data object and record index.
       */
-      ConstTableRecord(ITabularData * tab_data, Index_t index): m_cells(), m_tab_data(tab_data), m_index(index) {}
+      ConstTableRecord(IExtensionData * tab_data, Index_t index): m_cells(), m_tab_data(tab_data), m_index(index) {}
 
       /** \brief Assignment operator. Note that this behaves somewhat unusually!
 
           This assignment does not change this ConstTableRecord's container of TableCell objects.
           This is necessary in order to preserve the selected content of this ConstTableRecord. The
-          idea is that assignment changes which ITabularData and record index this ConstTableRecord points to
+          idea is that assignment changes which data object and record index this ConstTableRecord points to
           but does not affect which fields were selected in this ConstTableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this ConstTableRecord.
       */
@@ -117,7 +117,7 @@ namespace tip {
       /** \brief Return a const TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
 
-          Note that there is no check at this point whether the underlying ITabularData actually
+          Note that there is no check at this point whether the underlying data object actually
           has a field with this name.
           \param field The name of the TableCell object (the field in this ConstTableRecord).
       */
@@ -128,11 +128,11 @@ namespace tip {
       // Get the current record index and tab_data.
       Index_t getIndex() const { return m_index; }
 
-      // Get the current ITabularData pointer.
-      ITabularData * getTabularData() { assert(m_tab_data); return m_tab_data; }
+      // Get the current IExtensionData pointer.
+      IExtensionData * getExtensionData() { assert(m_tab_data); return m_tab_data; }
 
-      // Get the current ITabularData pointer.
-      const ITabularData * getTabularData() const { assert(m_tab_data); return m_tab_data; }
+      // Get the current IExtensionData pointer.
+      const IExtensionData * getExtensionData() const { assert(m_tab_data); return m_tab_data; }
 
       // The following methods are needed to support access to this class by the
       // iterator class.
@@ -149,7 +149,7 @@ namespace tip {
       TableCell & find_or_make(const std::string & field) const;
 
       CellCont_t m_cells;
-      ITabularData * m_tab_data;
+      IExtensionData * m_tab_data;
       Index_t m_index;
   };
 
@@ -161,14 +161,14 @@ namespace tip {
     public:
       typedef ConstTableRecord::CellCont_t CellCont_t;
 
-      /** \brief Construct a TableRecord object, without immediate association with any ITabularData.
+      /** \brief Construct a TableRecord object, without immediate association with a tabular data object
           Such an association may be formed later by assignment.
       */
       TableRecord(): ConstTableRecord() {}
 
-      /** \brief Construct a TableRecord object, associated with the given ITabularData and record index.
+      /** \brief Construct a TableRecord object, associated with the given tabular data object and record index.
       */
-      TableRecord(ITabularData * tab_data, Index_t index): ConstTableRecord(tab_data, index) {}
+      TableRecord(IExtensionData * tab_data, Index_t index): ConstTableRecord(tab_data, index) {}
 
       /** \brief Copy construct a TableRecord object.
       */
@@ -182,7 +182,7 @@ namespace tip {
 
           This assignment does not change this TableRecord's container of TableCell objects.
           This is necessary in order to preserve the selected content of this TableRecord. The
-          idea is that assignment changes which ITabularData and record index this TableRecord points to
+          idea is that assignment changes which data object and record index this TableRecord points to
           but does not affect which fields were selected in this TableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
@@ -192,7 +192,7 @@ namespace tip {
 
           This assignment does not change this TableRecord's container of TableCell objects.
           This is necessary in order to preserve the selected content of this TableRecord. The
-          idea is that assignment changes which ITabularData and record index this TableRecord points to
+          idea is that assignment changes which data object and record index this TableRecord points to
           but does not affect which fields were selected in this TableRecord. This way client code
           can be certain of the continued validity of references to TableCells contained in this TableRecord.
       */
@@ -201,7 +201,7 @@ namespace tip {
       /** \brief Return a TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
 
-          Note that there is no check at this point whether the underlying ITabularData actually
+          Note that there is no check at this point whether the underlying data object actually
           has a field with this name.
           \param field The name of the TableCell object (the field in this TableRecord).
       */
@@ -210,7 +210,7 @@ namespace tip {
       /** \brief Return a const TableCell object for the given field. The TableCell object will be created
           if it does not already exist.
 
-          Note that there is no check at this point whether the underlying ITabularData actually
+          Note that there is no check at this point whether the underlying data object actually
           has a field with this name. Note also that this duplicates the method in the base class
           but this is necessary because the above operator [] hides the base class method.
           \param field The name of the TableCell object (the field in this ConstTableRecord).
@@ -223,15 +223,15 @@ namespace tip {
   template <typename T>
   inline void TableCell::get(T & value) const {
     if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
-    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
   }
 
   template <typename T>
   inline void TableCell::get(Index_t src_begin, Index_t src_end, T * dest_begin) const {
     if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
-    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+    m_record.getExtensionData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
   }
 
   inline double TableCell::get() const {
@@ -245,20 +245,20 @@ namespace tip {
   inline void TableCell::set(const T & value) {
     T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
     tmp[0] = value;
-    if (m_field_index < 0) m_field_index = m_record.getTabularData()->getFieldIndex(m_field);
-    m_record.getTabularData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
+    if (m_field_index < 0) m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
   }
 
   template <typename T>
   inline void TableCell::set(T * src_begin, T * src_end, Index_t dest_begin) {
-    if (m_field_index < 0) m_field_index = m_record.getTabularData()->getFieldIndex(m_field);
-    m_record.getTabularData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
+    if (m_field_index < 0) m_field_index = m_record.getExtensionData()->getFieldIndex(m_field);
+    m_record.getExtensionData()->setCell(m_field_index, m_record.getIndex(), dest_begin, src_begin, src_end);
   }
 
   inline Index_t TableCell::getNumElements() const {
     if (m_field_index < 0)
-      const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
-    return m_record.getTabularData()->getFieldNumElements(m_field_index, m_record.getIndex());
+      const_cast<FieldIndex_t &>(m_field_index) = m_record.getExtensionData()->getFieldIndex(m_field);
+    return m_record.getExtensionData()->getFieldNumElements(m_field_index, m_record.getIndex());
   }
 
   // ConstTableRecord

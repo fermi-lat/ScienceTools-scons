@@ -15,15 +15,10 @@
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
-#include "tip/IExtensionManager.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
 
 namespace tip {
-
-  class IData;
-  class IHeaderData;
-  class ITabularData;
 
   /** \class FitsExtensionManager
 
@@ -33,7 +28,7 @@ namespace tip {
       acts as a factory for creating FITS-specific header and data objects, which refer back to the
       FitsExtensionManager object which created them.
   */
-  class FitsExtensionManager : public IExtensionManager {
+  class FitsExtensionManager {
     public:
       /** \brief Use a FITS template to create a new file. Clobber existing files.
           \param file_name The name of the new file.
@@ -51,16 +46,6 @@ namespace tip {
       /** \brief Destructor. Closes file if it is open.
       */
       virtual ~FitsExtensionManager();
-
-      /** \brief Create a header object which refers to this file. Caller is responsible for deleting
-          the header object.
-      */
-      virtual IHeaderData * getHeaderData();
-
-      /** \brief Create a data object (table or image) which refers to this file. Caller is responsible
-          for deleting the header object.
-      */
-      virtual ITabularData * getTabularData();
 
       // General support for FITS files:
       /** \brief Open the FITS file and return Cfitsio's fitsfile pointer.
@@ -97,7 +82,7 @@ namespace tip {
           int m_type_code;
       };
 
-      // Non-virtual helper functions for ITabularData interface:
+      // Non-virtual helper functions for data object interface:
 
       /** \brief Return a flag indicating whether the given data object is a table.
       */
@@ -161,8 +146,6 @@ namespace tip {
       std::map<int, ColumnInfo> m_col_num_lookup;
       Index_t m_num_records;
       fitsfile * m_fp;
-      IHeaderData * m_header;
-      IData * m_data;
       bool m_is_table;
   };
 

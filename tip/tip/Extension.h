@@ -7,10 +7,11 @@
 #ifndef tip_Extension_h
 #define tip_Extension_h
 
+#include "tip/Header.h"
+
 namespace tip {
 
-  class Header;
-  class IExtensionManager;
+  class IExtensionData;
 
   /** \class Extension
 
@@ -18,11 +19,11 @@ namespace tip {
   */
   class Extension {
     public:
-      /** \brief Create a new extension object from the given abstract extension manager encapsulation.
-          \param extension_manager The extension manager, which creates and manages the actual implementation,
+      /** \brief Create a new extension object from the given abstract extension data encapsulation.
+          \param extension_data The extension data, which creates and manages the actual implementation,
           including file format-specific details.
       */
-      Extension(IExtensionManager * extension_manager);
+      Extension(IExtensionData * extension_data);
 
       /** \brief Destruct an extension object.
       */
@@ -33,8 +34,8 @@ namespace tip {
       Header & getHeader();
 
     private:
-      Header * m_header;
-      IExtensionManager * m_extension_manager;
+      Header m_header;
+      IExtensionData * m_extension_data;
   };
 
 }

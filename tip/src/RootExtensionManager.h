@@ -14,7 +14,6 @@
 
 #include "TTree.h"
 
-#include "tip/IExtensionManager.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
 
@@ -23,10 +22,6 @@ class TFile;
 class TLeaf;
 
 namespace tip {
-
-  class IData;
-  class IHeaderData;
-  class ITabularData;
 
   class LeafBuffer {
     public:
@@ -55,7 +50,7 @@ namespace tip {
       acts as a factory for creating Root-specific header and data objects, which refer back to the
       RootExtensionManager object which created them.
   */
-  class RootExtensionManager : public IExtensionManager {
+  class RootExtensionManager {
     public:
       /** \brief Reset Root's signale handlers so that Root wont interfere with debugging.
       */
@@ -72,16 +67,6 @@ namespace tip {
       /** \brief Destructor. Closes file if it is open.
       */
       virtual ~RootExtensionManager();
-
-      /** \brief Create a header object which refers to this file. Caller is responsible for deleting
-          the header object.
-      */
-      virtual IHeaderData * getHeaderData();
-
-      /** \brief Create a data object (table or image) which refers to this file. Caller is responsible
-          for deleting the header object.
-      */
-      virtual ITabularData * getTabularData();
 
       // General support for Root files:
       /** \brief Open the Root file.
@@ -171,8 +156,6 @@ namespace tip {
       Index_t m_num_records;
       TFile * m_fp;
       mutable TTree * m_tree;
-      IHeaderData * m_header;
-      IData * m_data;
   };
 
   // Getting keywords.

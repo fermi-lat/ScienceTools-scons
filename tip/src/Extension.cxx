@@ -6,21 +6,18 @@
 */
 
 #include "tip/Extension.h"
-#include "tip/IExtensionManager.h"
 #include "tip/Header.h"
 #include "tip/TipException.h"
-#include "tip/tip_types.h"
 
 namespace tip {
 
-  Extension::Extension(IExtensionManager * extension_manager): m_header(0), m_extension_manager(extension_manager) {
-    if (m_extension_manager) m_header = new Header(m_extension_manager->getHeaderData());
-    else throw TipException("Extension::Extension(IExtensionManager *): Cannot create Extension object "
-      "with NULL IExtensionManager pointer.");
+  Extension::Extension(IExtensionData * extension_data): m_header(extension_data), m_extension_data(extension_data) {
+    if (0 == m_extension_data) throw TipException("Extension::Extension(IExtensionData *): Cannot create Extension object "
+        "with NULL IExtensionData pointer.");
   }
 
-  Extension::~Extension() { delete m_header; delete m_extension_manager; }
+  Extension::~Extension() { delete m_extension_data; }
 
-  Header & Extension::getHeader() { return *m_header; }
+  Header & Extension::getHeader() { return m_header; }
 
 }

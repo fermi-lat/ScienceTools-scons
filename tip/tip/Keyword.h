@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "tip/IHeaderData.h"
+#include "tip/IExtensionData.h"
 #include "tip/TipException.h"
 
 namespace tip {
@@ -21,13 +21,13 @@ namespace tip {
   class Keyword {
     public:
       /** \brief Construct a Keyword object associated with a particular Header.
-          \param header_data Pointer to the referent IHeaderData object.
+          \param header_data Pointer to the referent IExtensionData object.
           \param name The name of this Keyword.
       */
-      Keyword(IHeaderData * header_data, const std::string & name): m_header_data(header_data),
+      Keyword(IExtensionData * header_data, const std::string & name): m_header_data(header_data),
         m_name(name) {
-        if (!m_header_data) throw TipException("Keyword::Keyword(IHeaderData *, const std::string &): "
-          "Cannot create Keyword with a NULL IHeaderData pointer");
+        if (0 == m_header_data) throw TipException("Keyword::Keyword(IExtensionData *, const std::string &): "
+          "Cannot create Keyword with a NULL IExtensionData pointer");
       }
 
       /** \brief Get the current value of this Keyword.
@@ -44,7 +44,7 @@ namespace tip {
       void set(const T & value);
 
     private:
-      IHeaderData * m_header_data;
+      IExtensionData * m_header_data;
       std::string m_name;
   };
 

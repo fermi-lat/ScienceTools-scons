@@ -15,7 +15,7 @@
 
 namespace tip {
 
-  class IHeaderData;
+  class IExtensionData;
 
   /** \class Header
 
@@ -30,9 +30,9 @@ namespace tip {
       /** \brief Construct a new Header object from the given abstract header data.
           \param header_data The header data. Concrete objects will be FITS or Root-specific.
       */
-      Header(IHeaderData * header_data): m_keywords(), m_header_data(header_data) {
-        if (!m_header_data) throw TipException("Header::Header(IHeaderData *): Cannot create Header object "
-          "with NULL IHeaderData pointer");
+      Header(IExtensionData * header_data): m_keywords(), m_header_data(header_data) {
+        if (0 == m_header_data) throw TipException("Header::Header(IExtensionData *): Cannot create Header object "
+          "with NULL IExtensionData pointer");
       }
 
       /** \brief Random read/write keyword access.
@@ -52,7 +52,7 @@ namespace tip {
 
     private:
       KeywordCont_t m_keywords;
-      IHeaderData * m_header_data;
+      IExtensionData * m_header_data;
   };
 
   inline Keyword & Header::find_or_make(const std::string & name) const {

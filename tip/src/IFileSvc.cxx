@@ -5,6 +5,8 @@
     \author James Peachey, HEASARC
 */
 
+#include "FitsExtensionData.h"
+#include "RootExtensionData.h"
 #include "FitsExtensionManager.h"
 #include "RootExtensionManager.h"
 #include "tip/IFileSvc.h"
@@ -50,14 +52,14 @@ namespace tip {
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
     Table * retval = 0;
-    IExtensionManager * data = 0;
+    IExtensionData * data = 0;
     TipException fits_exception;
     try {
       try {
-        data = new FitsExtensionManager(file_name, table_name, filter);
+        data = new FitsExtensionData(file_name, table_name, filter);
       } catch(const TipException & x) {
         fits_exception = x;
-        data = new RootExtensionManager(file_name, table_name, filter);
+        data = new RootExtensionData(file_name, table_name, filter);
       }
       retval = new Table(data);
     } catch(const TipException & x) {
@@ -67,10 +69,10 @@ namespace tip {
       delete retval; // If retval is non-0, Table was created, so it will delete data.
 
       /* TODO 1: 4/2/2004: Memory management problem: Extension is base of Table. Extension
-      has a IExtensionManager and ~Extension deletes it. Currently editTable creates
-      the IExtensionManager and passes it to Table::Table(...) which passes it to
+      has a IExtensionData and ~Extension deletes it. Currently editTable creates
+      the IExtensionData and passes it to Table::Table(...) which passes it to
       Extension::Extension(...). If something throws along the way, catch 22: If
-      Extension throws, editTable should delete the IExtensionManager because
+      Extension throws, editTable should delete the IExtensionData because
       ~Extension wont be called. If Table throws, editTable shouldn't delete it
       because ~Extension *will* be called. FOR NOW: take out editTable's delete,
       which may cause a memory leak in case of error, but will at least not cause
