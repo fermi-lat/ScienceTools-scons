@@ -7,7 +7,7 @@
 
 #include <cctype>
 
-#include "FitsExtensionUtils.h"
+#include "FitsExtensionManager.h"
 #include "table/HeaderData.h"
 #include "table/IData.h"
 #include "table/TabularData.h"

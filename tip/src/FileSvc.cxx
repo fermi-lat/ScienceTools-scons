@@ -5,7 +5,7 @@
 
     \author James Peachey, HEASARC
 */
-#include "FitsExtensionUtils.h"
+#include "FitsExtensionManager.h"
 #include "FitsFileSvc.h"
 #include "RootExtensionData.h"
 #include "table/Table.h"

@@ -6,7 +6,7 @@
 */
 
 #include "table/TableException.h"
-#include "FitsExtensionUtils.h"
+#include "FitsExtensionManager.h"
 #include "FitsTabularData.h"
 
 namespace table {
