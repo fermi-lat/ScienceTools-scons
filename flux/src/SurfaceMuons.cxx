@@ -141,8 +141,9 @@ const char* SurfaceMuons::particleName()const
         plus_fraction=1/(1+charge_ratio);
     return RandFlat::shoot()>plus_fraction? pnames[0]:pnames[1];
 }
-
-static inline double cube(double x){return x*x*x;}
+namespace {
+    inline double cube(double x){return x*x*x;}
+}
 
 /// sample a single particle energy from the spectrum: assume called first
 double SurfaceMuons::energy( double time )
