@@ -39,7 +39,7 @@ void Exposure::fill(const astro::SkyDir& dirz, double deltat)
 }
 
 
-void Exposure::write(const std::string& outputfile, const std::string& tablename)
+void Exposure::write(const std::string& outputfile, const std::string& tablename)const
 {
     map_tools::HealpixArrayIO::instance().write(data(), outputfile, tablename);
 }
