@@ -261,4 +261,23 @@ The second method for reading above also supports writing:
     Scalar<T> object will read/write values from the table.
 
     \section jobOptions jobOptions
+
+    \section todo To do list:
+    1. 4/2/2004: Memory leak in IFileSvc::editTable. See IFileSvc.cxx: TODO 1.
+    2. 4/2/2004: Access should also be possible by extension number as well as name.
+    3. 4/2/2004: For read-only access, need const Table * IFileSvc::readTable() and
+       typedef Table::ConstIterator begin() const etc.
+    4. 4/2/2004: This document's examples include some mistakes! They should be redone
+       based on current live sample code.
+    5. 4/2/2004: In RootExtensionManager::open() there are calls to Root's
+       dynamic loader, which should be eliminated if possible by a requirements pattern.
+       See RootExtensionManager:cxx: TODO 5.
+    6. 4/2/2004: Add method to Table to facilitate "browsing", e.g. getting a list of
+       fields in the table (as distinct from whatever happens to be in a Record).
+    7. 4/2/2004: Table's iterator has problems with random access. See Table.h: TODO 7.
+    8. 4/2/2004: Use of Record within a functor used with a for_each is problematic.
+       See src/test/test_tip_main.cxx: TODO 8.
+    9. 4/2/2004: Bug in certain versions of cfitsio may prevent filtering syntax from
+       working. See FitsExtensionManager.cxx: TODO 9.
+
 */
