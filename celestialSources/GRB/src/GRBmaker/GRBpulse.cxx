@@ -46,8 +46,8 @@ GRBpulse::~GRBpulse()
 
 
 // getAmplitude(engine, npuls)
-// Generates amplitudes and sorts them in ascending order.
-// Scramples amplitudes of {1st,2nd} l halves of pulses, separately (leaves profile asymmetric)
+//		Generates pulse amplitudes and sorts them in ascending order.
+//		Scramples amplitudes of {1st,2nd} l halves of pulses, separately (leaves whole time profile asymmetric)
 //
 // Input:
 //		engine						:	pointer to a HepRandomEngine object
@@ -95,7 +95,7 @@ void GRBpulse::getAmplitude(HepRandomEngine *engine, const int npuls)
 
 
 // getAlpha(value)
-// Returns a number based on input value
+//		Gets a power-law index from one of the three portions of the pulse width distribution
 //
 // Input:
 //		value						:	input value
@@ -130,7 +130,7 @@ double GRBpulse::getAlpha(const double value) const
 
 
 // fillVector(ngtwid)
-// fills up a vector with some hard coded values
+//		Fills up a vector with the hard coded values for the integral pulse width distribution.
 //
 // Input:
 //		---
@@ -147,7 +147,7 @@ double GRBpulse::getAlpha(const double value) const
 void GRBpulse::fillVector(std::vector<long> &ngtwid) const
 {
 	// Keep it in sorted order for index method to work
-	// It can be sorted by the caller - however, it is just as easy to keep it is sorted
+	// It can be sorted by the caller - however, it is just as easy to keep it as sorted
 
 	long temp[] = {430,427,424,421,417,410,388,334,248,178,119,81,46,15,2};
 
@@ -202,12 +202,14 @@ long GRBpulse::index(HepRandomEngine *engine, const long diff, const long minval
 
 
 // universalWidth(engine, duration, diff, minval, in, v)
-// See Fig 3a of Norris et al. 1996 "attributes" paper.
-// A given GRB tends to have pulses of comparable widths.  
-// Picks one pulse width from the distribution of fitted widths of "All" pulses, 50-300 keV, in bright, long BATSE GRBs.
-// Since (a) ~1/4 of GRBs are short, and (b) short GRBs have pulse width ~1/10-1/20 that of long GRBs -- multiplies pulse
-//		widths for one quarter of the GRBs by compression factor of 1/10.  Then using width ~E^(-0.333) relationship, scales
-//		chosen width to Ethres, from 100 keV.
+//		Chooses a universal width for the pulses within a given burst.
+//		A given GRB tends to have pulses of comparable widths.  Therefore (see Fig 3a
+//		of Norris et al. 1996 "pulse attributes" paper), pick one pulse width from the
+//		distribution of fitted widths of "All" pulses, 50-300 keV, in bright, long
+//		BATSE GRBs.  Then, since (a) ~ 1/4 of GRBs are short, and (b) short GRBs have
+//		pulse widths ~ 1/10-1/20 that of long GRBs -- multiply pulse widths for one
+//		quarter of the GRBs by compression factor of 1/10.  Then using Width ~ E^(-0.333)
+//		relationship, scale chosen width (at 100 keV) to width at Ethres.
 //
 // Input:
 //		grbcst::ethres				:	double
@@ -303,6 +305,19 @@ void GRBpulse::pickWidth(HepRandomEngine *engine, const double duration)
 
 
 // createSigmaTdiff(engine)
+//		See the pulse attributes paper (Norris et al. 1996, ApJ, 459, 393) for
+//		description of the phenomenological "bisigma" pulse model employed here.
+//		pulse rise-to-decay ratios are ~= 0.4 +- 0.1
+//		generate time profile with 1 millisec precision.  for overall time profile,
+//		account for the T90 duration, the (~ max) rise of 1st pulse (~ 2 s), and
+//		the (~ max) decay of last pulse (~ 5 s).
+//		truncate each pulse array @ ~ 5% level, keeping registration with totpulse.
+//		pulses are self-similar:  therefore, number of photons per pulse is proportional to amplitude
+//		scale the pulse width for energy dependence, as E^-0.333.  make the peak shift
+//		1/2 as large as width adjustment, ~ as observed at BATSE energies.
+//		theses dependences are crude estimates of what we shall measure with GLAST.
+
+//
 // Creates the two vectors sigma and tdiff needed in the calculation of GRB times.
 //
 // Input:
@@ -410,8 +425,8 @@ void GRBpulse::getNphotpul(const long nphoton, const int npuls)
 
 
 // getTmax(engine, npuls, duration)
-// Returns a vector of random numbers multiplied by the duration sorted in ascending order.  Random numbers are in the range
-//		[0,1).  This vector is used in the calculations of GRB times.
+// Returns a vector of random numbers multiplied by the duration sorted in ascending order.  
+// Random numbers are in the range [0,1).  This vector is used in the calculations of GRB times.
 //
 // Input:
 //		engine						:	pointer to a HepRandomEngine object
