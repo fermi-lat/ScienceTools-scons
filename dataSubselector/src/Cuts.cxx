@@ -13,8 +13,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "facilities/Util.h"
-
 #include "tip/IFileSvc.h"
 
 #include "dataSubselector/Cuts.h"
@@ -136,7 +134,6 @@ bool Cuts::operator==(const Cuts & rhs) const {
    if (size() != rhs.size()) {
       return false;
    }
-
 // Note that the ordering of the cuts must be the same.
    for (unsigned int i = 0; i < size(); i++) {
       if (!(*m_cuts.at(i) == *rhs.m_cuts.at(i))) {
@@ -144,6 +141,32 @@ bool Cuts::operator==(const Cuts & rhs) const {
       }
    }
    return true;
+}
+
+void Cuts::writeCuts(std::ostream & stream) const {
+   for (unsigned int i = 0; i < m_cuts.size(); i++) {
+      m_cuts.at(i)->writeCut(stream, i + 1);
+   }
+}
+
+void Cuts::CutBase::
+writeCut(std::ostream & stream, unsigned int keynum) const {
+   std::string type, unit, value, ref("");
+   getKeyValues(type, unit, value, ref);
+   stream << "DSTYP" << keynum << ": " << type << "\n"
+          << "DSUNI" << keynum << ": " << unit << "\n"
+          << "DSVAL" << keynum << ": " << value << "\n";
+   if (ref != "") {
+      stream << "DSREF" << keynum << ": " << ref << "\n";
+   }
+   stream << std::endl;
+}
+
+void Cuts::CutBase::writeDssKeywords(tip::Header & header,
+                                     unsigned int keynum) const {
+   std::string type, unit, value, ref("");
+   getKeyValues(type, unit, value, ref);
+   writeDssKeywords(header, keynum, type, unit, value, ref);
 }
 
 void Cuts::CutBase::writeDssKeywords(tip::Header & header, 
@@ -163,187 +186,6 @@ void Cuts::CutBase::writeDssKeywords(tip::Header & header,
       std::ostringstream key4;
       key4 << "DSREF" << keynum;
       header[key4.str()].set(ref);
-   }
-}
-
-Cuts::RangeCut::RangeCut(const std::string & type,
-                         const std::string & unit, 
-                         const std::string & value) 
-   : m_keyword(type), m_unit(unit) {
-   std::vector<std::string> tokens;
-   facilities::Util::stringTokenize(value, ":", tokens);
-   if (tokens.size() == 2) {
-      m_min = std::atof(tokens[0].c_str());
-      m_max = std::atof(tokens[1].c_str());
-      m_type = CLOSED;
-   } else if (value.find(":") == 0) {
-      m_max = std::atof(tokens[0].c_str());
-      m_type = MAXONLY;
-   } else {
-      m_min = std::atof(tokens[0].c_str());
-      m_type = MINONLY;
-   }      
-}
-
-bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {
-   double value;
-   row[m_keyword].get(value);
-   return accept(value);
-}
-
-bool Cuts::
-RangeCut::accept(const std::map<std::string, double> & params) const {
-   std::map<std::string, double>::const_iterator it;
-   if ( (it = params.find(m_keyword)) != params.end()) {
-      return accept(it->second);
-   }
-   return true;
-}
-
-bool Cuts::RangeCut::accept(double value) const {
-   if (m_type == Cuts::MINONLY) {
-      return m_min <= value;
-   } else if (m_type == Cuts::MAXONLY) {
-      return value <= m_max;
-   }
-   return m_min <= value && value <= m_max;
-}
-
-void Cuts::RangeCut::writeDssKeywords(tip::Header & header, 
-                                      unsigned int keynum) const {
-   std::ostringstream value;
-   if (m_type == Cuts::MINONLY) {
-      value << m_min << ":";
-   } else if (m_type == Cuts::MAXONLY) {
-      value << ":" << m_max;
-   } else {
-      value << m_min << ":" << m_max;
-   }
-   CutBase::writeDssKeywords(header, keynum, m_keyword, m_unit, value.str());
-}
-
-bool Cuts::RangeCut::operator==(const CutBase & arg) const {
-   try {
-      CutBase & rhs = const_cast<CutBase &>(arg);
-      return (m_keyword == dynamic_cast<RangeCut &>(rhs).m_keyword &&
-              m_unit == dynamic_cast<RangeCut &>(rhs).m_unit &&
-              m_min == dynamic_cast<RangeCut &>(rhs).m_min &&
-              m_max == dynamic_cast<RangeCut &>(rhs).m_max &&
-              m_type == dynamic_cast<RangeCut &>(rhs).m_type);
-   } catch (...) {
-      return false;
-   }
-}
-
-bool Cuts::GtiCut::accept(tip::ConstTableRecord & row) const {
-   double time;
-   row["TIME"].get(time);
-   return accept(time);
-}
-
-bool Cuts::GtiCut::accept(const std::map<std::string, double> & params) const {
-   std::map<std::string, double>::const_iterator it;
-   if ( (it = params.find("TIME")) != params.end()) {
-      return accept(it->second);
-   }
-   return true;
-}
-
-bool Cuts::GtiCut::accept(double time) const {
-   return m_gti.accept(time);
-}
-
-void Cuts::GtiCut::writeDssKeywords(tip::Header & header,
-                                    unsigned int keynum) const {
-   CutBase::writeDssKeywords(header, keynum, "TIME", "s", "TABLE", ":GTI");
-}
-
-bool Cuts::GtiCut::operator==(const CutBase & arg) const {
-   try {
-      CutBase & rhs = const_cast<CutBase &>(arg);
-      return !(m_gti != dynamic_cast<GtiCut &>(rhs).m_gti);
-   } catch (...) {
-      return false;
-   }
-}
-
-Cuts::SkyConeCut::SkyConeCut(const std::string & type,
-                             const std::string & unit, 
-                             const std::string & value) {
-   if (unit.find("deg") != 0) {
-      throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
-                               std::string("Unsupported unit: ") + unit);
-   }
-   std::vector<std::string> coordSys;
-   getArgs(type, coordSys);
-   std::vector<std::string> coords;
-   getArgs(value, coords);
-   double lon = std::atof(coords.at(0).c_str());
-   double lat = std::atof(coords.at(1).c_str());
-   m_radius = std::atof(coords.at(2).c_str());
-   if (coordSys.at(0) == "RA") {
-      m_coneCenter = astro::SkyDir(lon, lat, astro::SkyDir::EQUATORIAL);
-      m_ra = lon;
-      m_dec = lat;
-   } else if (coordSys.at(0) == "GLON") {
-      m_coneCenter = astro::SkyDir(lon, lat, astro::SkyDir::GALACTIC);
-      m_ra = m_coneCenter.ra();
-      m_dec = m_coneCenter.dec();
-   } else {
-      throw std::runtime_error("dataSubselector::Cuts::SkyConeCut:\n" +
-                               std::string("Unsupported type: ") + type);
-   }
-}
-
-void Cuts::SkyConeCut::getArgs(const std::string & value, 
-                               std::vector<std::string> & args) const {
-   std::vector<std::string> tokens;
-   facilities::Util::stringTokenize(value, "()", tokens);
-   facilities::Util::stringTokenize(tokens.at(1), ",", args);
-}
-
-bool Cuts::SkyConeCut::accept(tip::ConstTableRecord & row) const {
-   double ra, dec;
-   row["RA"].get(ra);
-   row["DEC"].get(dec);
-   return accept(ra, dec);
-}
-
-bool Cuts::
-SkyConeCut::accept(const std::map<std::string, double> & params) const {
-   std::map<std::string, double>::const_iterator ra;
-   std::map<std::string, double>::const_iterator dec;
-   if ( (ra = params.find("RA")) != params.end() &&
-        (dec = params.find("DEC")) != params.end() ) {
-      return accept(ra->second, dec->second);
-   }
-   return true;
-}
-
-bool Cuts::SkyConeCut::accept(double ra, double dec) const {
-   double separation = m_coneCenter.difference(astro::SkyDir(ra, dec));
-   return separation*180./M_PI <= m_radius;
-}
-
-void Cuts::SkyConeCut::writeDssKeywords(tip::Header & header,
-                                        unsigned int keynum) const {
-   std::ostringstream value;
-   value << "CIRCLE(" 
-         << m_coneCenter.ra() << "," 
-         << m_coneCenter.dec() << ","
-         << m_radius << ")";
-   CutBase::writeDssKeywords(header, keynum, "POS(RA,DEC)", "deg", 
-                             value.str());
-}
-
-bool Cuts::SkyConeCut::operator==(const CutBase & arg) const {
-   try {
-      CutBase & rhs = const_cast<CutBase &>(arg);
-      return (m_ra == dynamic_cast<SkyConeCut &>(rhs).m_ra &&
-              m_dec == dynamic_cast<SkyConeCut &>(rhs).m_dec &&
-              m_radius == dynamic_cast<SkyConeCut &>(rhs).m_radius);
-   } catch (...) {
-      return false;
    }
 }
 
