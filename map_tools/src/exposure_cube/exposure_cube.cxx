@@ -8,16 +8,15 @@ $Header$
 #include "map_tools/Parameters.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/ExposureHyperCube.h"
-#include "astro/SkyDir.h"
+
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
 #include "astro/EarthCoordinate.h"
-#include "tip/Table.h"
-#include "tip/IFileSvc.h"
 
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 #include "st_app/AppParGroup.h"
+
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 
@@ -41,67 +40,41 @@ public:
     //--------------------------------------------------------------------------
     void LoadExposureFromGlast( const Parameters& pars,   Exposure& exp )
     {
-        using tip::Table;
 
         double 
             tstart = pars["tstart"], 
             tstop = pars["tstop"];
 
-        bool isText = pars.inputFile().find(".txt") >0;
-        bool avoid_saa = pars["avoid_saa"];
+        bool isText = pars.inputFile().find(".txt") != std::string::npos;
+        bool avoid_saa = pars["avoid_saa"]!=0;
 
-        if( isText) {
-            m_f.info() << "Opening text format pointing history file " 
+        m_f.info() << "Opening " << (isText? "text":"FITS") << " format pointing history file " 
                 << pars.inputFile() << std::endl;
-            // read from text file here
-            GPS& gps = *GPS::instance();
-            gps.setPointingHistoryFile(pars.inputFile());
-            const std::map<double,GPS::POINTINFO>& history = gps.getHistory();
-            GPS::history_iterator mit = history.begin(), next=mit;
-            double begintime=mit->first;
-            double endtime = (--(history.end()))->first;
-          
-            double deltat = (++next)->first-begintime; 
+        // read from text or FITS file here
+        GPS& gps = *GPS::instance();
+        gps.setPointingHistoryFile(pars.inputFile());
+        const std::map<double,GPS::POINTINFO>& history = gps.getHistory();
+        GPS::history_iterator mit = history.begin(), next=mit;
+        double begintime=mit->first;
+        double endtime = (--(history.end()))->first;
 
-            int added=0, total=0;
-            for( ; mit!=history.end(); ++mit) {
-                const GPS::POINTINFO& pt = mit->second;
-                double t = mit->first;
-                if( t < tstart) continue;
-                if( t > tstop) break;
-                total++;
-                if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
-                added++;
-                exp.add( pt.dirZ, deltat);
-            }
+        double deltat = (++next)->first-begintime; 
 
-            m_f.info() << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
-            m_f.info() << "Total elapsed time: " << deltat*(total-added) << " seconds." << std::endl;
-            return;
-
+        int added=0, total=0;
+        for( ; mit!=history.end(); ++mit) {
+            const GPS::POINTINFO& pt = mit->second;
+            double t = mit->first;
+            if( t < tstart) continue;
+            if( t > tstop) break;
+            total++;
+            if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
+            added++;
+            exp.add( pt.dirZ, deltat);
         }
-        // connect to  input data
-        const Table & table = *tip::IFileSvc::instance().readTable(pars.inputFile(), 
-            m_pars.getValue<std::string>("sctable"));
 
-        for (Table::ConstIterator it = table.begin(); it != table.end(); ++it) {
-
-            Table::ConstRecord & record = *it;
-
-            double start, stop;
-            record["start"].get(start);
-            record["stop"].get(stop);
-
-            if( start < tstart ) continue;
-            if( stop > tstop ) break;
-
-            double ra =record["ra_scz"].get(), 
-                dec=record["dec_scz"].get(),
-                livetime=  record["livetime"].get();
-
-            double deltat = livetime > 0 ? livetime : stop-start;
-            exp.add(astro::SkyDir(ra, dec), deltat); 
-        }
+        m_f.info() << "Number of steps added: " << added << ", rejected in SAA: "<< (total-added) << std::endl;
+        m_f.info() << "Total elapsed time: " << deltat*total << " seconds." << std::endl;
+        return;
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void run()

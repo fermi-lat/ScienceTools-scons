@@ -1,6 +1,6 @@
 package map_tools
 
-version v5r9	
+version v5r9p1	
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -10,6 +10,7 @@ use astro v1*
 use hoops * 
 use tip  *
 use st_app *
+use st_stream *
 use irfInterface * irfs
 use dc1Response * irfs 
 use cfitsio * IExternal 

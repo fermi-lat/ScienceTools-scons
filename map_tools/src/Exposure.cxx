@@ -62,7 +62,7 @@ Exposure::Exposure(const ExposureCube& cube, double total)
 //------------------------------------------------------------------------------
 Exposure::Exposure(const std::string& fits_file)
 {
-    const tip::Image& cube = *tip::IFileSvc::instance().readImage(fits_file, "exposure");
+    const tip::Image& cube = *tip::IFileSvc::instance().readImage(fits_file, "");
     cube.get(m_exposureMap);
 
 // Obtain Index static variables from FITS header keywords. Assume a

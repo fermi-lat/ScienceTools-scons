@@ -13,6 +13,7 @@ $Header$
 #include "tip/IFileSvc.h"
 #include <stdexcept>
 #include <sstream>
+#include <errno.h> // to test result of std::remove()
 
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
@@ -20,8 +21,11 @@ namespace {
     //! @brief add a string or double key or whatever to the image 
     tip::Header* header;
     template <typename T>
-    void setKey(std::string name, T value, std::string /*unit*/="", std::string /*comment*/=""){
-        (*header)[name].set( value); }
+        void setKey(std::string name, T value, std::string unit="", std::string comment=""){
+            (*header)[name].set( value); 
+            (*header)[name].setUnit(unit);
+            (*header)[name].setComment(comment);
+        }
 }
 using namespace map_tools;
 
@@ -75,11 +79,13 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     naxes[2]=m_naxis3;
 
     if( pars.clobber() ){
-        // the new way to rewrite a file
-        tip::IFileSvc::instance().createFile(pars.outputFile());
+        int rc = std::remove(pars.outputFile().c_str());
+        if( rc==-1 && errno ==EACCES ) throw std::runtime_error(
+            std::string("SkyImage: cannot remove file "+pars.outputFile())
+            );
     }
     // now add an image to the file
-    tip::IFileSvc::instance().createImage(pars.outputFile(), extension, naxes);
+    tip::IFileSvc::instance().appendImage(pars.outputFile(), extension, naxes);
     m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), extension);
 
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;

@@ -78,7 +78,6 @@ int main(int argc, char** argv ){
         }
 
         // Write out the cube...delete any existing file first.
-        // THB: this does not delete files: std::remove(par.inputFile().c_str());
         ExposureHyperCube cube(e, par.inputFile());
         cube.save();
 
@@ -92,7 +91,7 @@ int main(int argc, char** argv ){
         // create an image to access cells
         SkyImage exp3(par.inputFile(),"");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
-        assert(tt=36.0); 
+        if( tt!=36.0) throw std::runtime_error("Fail pixelvalue test!"); 
 
 
     }catch( const std::exception& e){

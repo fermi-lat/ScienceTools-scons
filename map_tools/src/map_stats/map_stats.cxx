@@ -48,7 +48,7 @@ public:
         // pass the image to the SkyStat guy
         astro::SkyStat ss(image, 8); 
         m_f.out() 
-#ifdef WIN32
+#if 0 //def WIN32
             << std::setw(12) << "average: " << ss.ave() << std::endl
             << std::setw(12) <<   "sigma: " << ss.sigma() << std::endl
             << std::setw(12) << "minimum: " << ss.min() << std::endl
