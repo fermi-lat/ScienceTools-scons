@@ -20,20 +20,20 @@ class DOM_Element;
 */
 class SimpleSpectrum : public Spectrum {
 public: 
-#if 0
-    SimpleSpectrum(const char* name,float E0, float index=0.0);
-    SimpleSpectrum(const char* name,float Emin, float Emax, float index);
-#endif
+
+    /// ctor for instantiation from XML element  "particle"
+    /// @param xelem nested element, expect either "power_law or "energy"
     SimpleSpectrum(const DOM_Element& xelem, bool useGeV=true);
+
+    /// ctor for instantiation from XML element "SpectrumClass"
+    /// @param parameter string 
+    /// This is required, but the implementation has never been used
     SimpleSpectrum(const std::string& params);
     
-#if 0
-    SimpleSpectrum();
-#endif
-    virtual double calculate_rate(double old_rate);
     virtual float  operator()(float f)const;
     virtual const char* particleName()const;
     virtual std::string title()const;
+
 private:
     float parseParamList(std::string input, int index);
     float m_E0;		// energy base

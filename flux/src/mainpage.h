@@ -9,7 +9,8 @@
   This package implements source definitions, and a procedure to extend them.
   <br>
 
-
+@section Basic_xml Basic XML specifications
+  Broken power law specification <a href="../multipower.htm">found here</a>
  <hr>
   @section Basic_XML_Sources Sources
   This is a limited selection of sources. See the contents of the source library file for a complete list.
