@@ -76,7 +76,8 @@ void OrbSim::run() {
 void OrbSim::promptForParameters() {
    m_pars.Prompt("outfile_prefix");
    m_pars.Prompt("pointing_strategy");
-   if (m_pars["pointing_strategy"] != "POINT") {
+   std::string pointing_strategy = m_pars["pointing_strategy"];
+   if (pointing_strategy != "POINT") {
       m_pars.Prompt("rocking_angle");
    } else {
       m_pars.Prompt("ra");
