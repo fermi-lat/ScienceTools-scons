@@ -11,11 +11,13 @@ use xml v4r*
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal
+#use OptPP v* IExternal
 
 apply_pattern ST_library option=" -no_share *.c "
+
 private
 
-macro optimizersLib_cppflags "" Linux " -D TRAP_FPE" 
-
+#macro_append cppflags "" Linux " -DTRAP_FPE -DHAVE_OPT_PP " 
+macro_append cppflags "" Linux " -DTRAP_FPE " 
 macro_prepend cflags "" Linux "-g -O "
 
