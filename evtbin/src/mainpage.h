@@ -5,7 +5,7 @@
              James Peachey peachey@lheamail.gsfc.nasa.gov
 
     \section intro Introduction
-    This package consists of a class library and an application. The
+    This package consists of a class library and two applications. The
     library contains abstractions which facilitate
     binning collections of data values into histograms. The abstractions
     in the library are organized in layers ranging from generic binners
@@ -13,12 +13,22 @@
     types such as light curves, with file access via Tip. This is to allow
     the library to be used in maximally different and disparate contexts.
 
-    The evtbin application is considerably more specialized. It
-    operates on an input file with time and/or energy information (and other
-    optional input files
+    The <a href=#evtbin_parameters> evtbin </a> application is considerably
+    more specialized. It operates on an input file with time and/or energy
+    information (and other optional input files
     as needed) to bin the event data into one of a number of standard
     data products, including light curves, spectra (PHA1 and PHA2)
     and count maps.
+
+    The <a href=#gtbindef_parameters> gtbindef </a> application is a utility
+    to assist in creating valid time and energy bin definition files. Energy bin
+    definitions are in a file format which is identical to EBOUNDS extensions,
+    except that the name of the extension is ENERGYBINS. Similarly, time bin
+    definition files are in a format which is identical to GTI extensions,
+    except that the name of the extension is TIMEBINS. The gtbindef application
+    allows a user to create a file containing either an ENERGYBINS or TIMEBINS
+    extension from a simple ASCII input file giving the start and stop value
+    of each bin.
 
     \section parameters Application Parameters
 
@@ -43,6 +53,11 @@ infile [file]
     Describes a hidden bool-type parameter named plot, whose
     default value is yes (true).
 \endverbatim
+
+    <a name="evtbin_parameters"></a>
+    \section evtbin_parameters Evtbin Application
+    The evtbin application is the main application used to perform various kinds
+    of binning.
 
     \subsection general General Parameters
 \verbatim
@@ -180,6 +195,28 @@ deltaenergy [double]
 energybinfile [file]
     The name of the energy bin definition file. Only used if
     energybinalg is FILE.
+\endverbatim
+
+    <a name="gtbindef_parameters"></a>
+    \section gtbindef_parameters Gtbindef Application
+    The gtbindef application is a utility to allow users to
+    create time and energy bin definition files.
+
+\verbatim
+bintype [string]
+    Specifies whether to generate time bins or energy bins
+
+binfile [file]
+    Input file containing flat ASCII definitions of the start and stop
+    of each bin.
+
+outfile [file]
+    Name of the output bin definition file.
+
+energyunits [string]
+    Energy units used in the input ASCII text file. The output table
+    is in the EBOUNDS format, and always has energy in keV. This
+    parameter is only used if energy bins are being constructed.
 \endverbatim
 
     \section plan Development Plan
