@@ -6,21 +6,79 @@
  * $Header$
  */
 
+#include <cstdlib>
+
+#include <algorithm>
+#include <iostream>
 #include <sstream>
+#include <stdexcept>
+
+#include "facilities/Util.h"
 
 #include "tip/IFileSvc.h"
 
 #include "dataSubselector/Cuts.h"
+
+namespace {
+void toLower(std::string & name) {
+   for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
+      *it = std::tolower(*it);
+   }
+}
+}
 
 namespace dataSubselector {
 
 Cuts::Cuts(const std::string & eventFile, const std::string & extension) {
    const tip::Table * table =
       tip::IFileSvc::instance().readTable(eventFile, extension);
+   const std::vector<std::string> & colnames = table->getValidFields();
+
+   const tip::Table * gtiTable = 
+      tip::IFileSvc::instance().readTable(eventFile, "GTI");
+
    const tip::Header & header = table->getHeader();
-   unsigned int nkeys;
-   header["NDSKEYS"].get(nkeys);
-// more to come...   
+   double nkeys_value;
+   header["NDSKEYS"].get(nkeys_value);
+// This is incredibly lame....might as well use CCFits.
+   unsigned int nkeys = static_cast<unsigned int>(nkeys_value);
+
+   std::string type, unit, value, ref("");
+
+   for (unsigned int keynum = 1; keynum <= nkeys; keynum++) {
+      std::ostringstream key1, key2, key3, key4;
+      key1 << "DSTYP" << keynum;
+      header[key1.str()].get(type);
+      key2 << "DSUNI" << keynum;
+      header[key2.str()].get(unit);
+      key3 << "DSVAL" << keynum;
+      header[key3.str()].get(value);
+      if (value == "TABLE") {
+         key4 << "DSREF" << keynum;
+         header[key4.str()].get(ref);
+      }
+      std::string mytype(type); // more tip-inspired foolishness
+      ::toLower(mytype);
+      if (std::find(colnames.begin(), colnames.end(), mytype)
+          != colnames.end() && value != "TABLE") {
+         m_cuts.push_back(new RangeCut(type, unit, value));
+      } else if (value.find("CIRCLE") == 0) {
+         m_cuts.push_back(new SkyConeCut(type, unit, value));
+      } else if (type == "TIME" && value == "TABLE") {
+         m_cuts.push_back(new GtiCut(*gtiTable));
+      } else {
+         std::ostringstream message;
+         message << "FITS extension contains an unrecognized DSS filtering "
+                 << "scheme.\n"
+                 << key1.str() << " = " << type << "\n"
+                 << key2.str() << " = " << unit << "\n"
+                 << key3.str() << " = " << value << "\n";
+         if (value == "TABLE") {
+            message << key4.str() << " = " << ref << "\n";
+         }
+         throw std::runtime_error(message.str());
+      }
+   }
 }
 
 Cuts::~Cuts() {
@@ -88,6 +146,25 @@ void Cuts::CutBase::writeDssKeywords(tip::Header & header,
       key4 << "DSREF" << keynum;
       header[key4.str()].set(ref);
    }
+}
+
+Cuts::RangeCut::RangeCut(const std::string & type,
+                         const std::string & unit, 
+                         const std::string & value) 
+   : m_keyword(type), m_unit(unit) {
+   std::vector<std::string> tokens;
+   facilities::Util::stringTokenize(value, ":", tokens);
+   if (tokens.size() == 2) {
+      m_min = std::atof(tokens[0].c_str());
+      m_max = std::atof(tokens[1].c_str());
+      m_type = CLOSED;
+   } else if (value.find(":") == 0) {
+      m_max = std::atof(tokens[0].c_str());
+      m_type = MAXONLY;
+   } else {
+      m_min = std::atof(tokens[0].c_str());
+      m_type = MINONLY;
+   }      
 }
 
 bool Cuts::RangeCut::accept(tip::ConstTableRecord & row) const {

@@ -1,0 +1,46 @@
+# -*- python -*-
+import os
+
+class map(dict):
+    def __init__(self):
+        dict.__init__(self)
+        self.ordered_keys = []
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, value)
+        self.ordered_keys.append(key)
+
+package = 'dataSubselector'
+home = os.environ[package.upper() + 'ROOT']
+apps = ['dataSubselector']
+
+libraries = map()
+
+default_libraries = ['astro', 
+                     'tipLib', 
+                     'st_appLib', 'st_streamLib', 'hoopsLib', 'f2c',
+                     'st_facilitiesLib', 'facilities']
+
+for lib in default_libraries:
+    libraries[lib] = None
+
+libraries['g2c'] = ('','')
+
+def externalLibrary(libname, version):
+    libdir = os.path.join(os.environ['GLAST_EXT'], libname, version)
+    return [os.path.join(libdir, 'include'), os.path.join(libdir, 'lib')]
+    
+libraries['cfitsio'] = externalLibrary('cfitsio', 'v2470')
+libraries['CLHEP'] = externalLibrary('CLHEP', '1.8.0.0')
+libraries['cppunit'] = externalLibrary('cppunit', '1.9.14')
+libraries['Core'] = externalLibrary('ROOT', os.path.join('v3.10.02', 'root'))
+libraries['pil'] = externalLibrary('pil', '1.9.2')
+libraries['pil'][1] += (os.path.sep + 'linux-3.2')
+
+#cflags = ' -rdynamic -O2 '
+cflags = ' -rdynamic '
+linkflags = ' '
+rootlibs = ['Cint', 'Tree', 'Matrix', 'Physics', 
+            'Hist', 'Graf', 'Graf3d', 'Gpad', 'Rint', 'Postscript', 'Gui']
+Export(['package', 'home', 'apps', 'libraries', 'cflags',
+        'linkflags', 'rootlibs'])
+SConscript('buildBase')

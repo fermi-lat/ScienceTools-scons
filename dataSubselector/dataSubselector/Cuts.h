@@ -59,6 +59,8 @@ public:
 
    void writeDssKeywords(tip::Header & header) const;
 
+   unsigned int size() const {return m_cuts.size();}
+
 private:
 
    std::vector<CutBase *> m_cuts;
@@ -86,6 +88,8 @@ private:
                double minVal, double maxVal, RangeType type=CLOSED) :
          m_keyword(keyword), m_unit(unit), m_min(minVal), m_max(maxVal),
          m_type(type) {}
+      RangeCut(const std::string & type, const std::string & unit, 
+               const std::string & value);
       virtual ~RangeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual bool accept(const std::map<std::string, double> & params) const;
@@ -119,6 +123,8 @@ private:
          m_coneCenter(astro::SkyDir(ra, dec)), m_radius(radius) {}
       SkyConeCut(const astro::SkyDir & dir, double radius) :
          m_coneCenter(dir), m_radius(radius) {}
+      SkyConeCut(const std::string & type, const std::string & unit, 
+                 const std::string & value) {}
       virtual ~SkyConeCut() {}
       virtual bool accept(tip::ConstTableRecord & row) const;
       virtual bool accept(const std::map<std::string, double> & params) const;
@@ -129,6 +135,7 @@ private:
       double m_radius;
       bool accept(double ra, double dec) const;
    };
+
 };
 } // namespace dataSubselector
 
