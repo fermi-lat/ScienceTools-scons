@@ -238,8 +238,13 @@ namespace hoops {
   void PILParFile::CleanComponent(const std::string & comp, std::string & clean)
     const {
     clean = comp;
+    // Trim path name.
     std::string::size_type pos = clean.rfind("/");
     if (std::string::npos != pos) clean.erase(0, pos + 1);
+
+    // Trim extension.
+    pos = clean.rfind(".");
+    if (std::string::npos != pos) clean.erase(pos);
   }
 
   void PILParFile::OpenParFile(int argc, char * argv[]) const {
@@ -337,6 +342,10 @@ namespace hoops {
     PILParFile f(mArgv[0]);
     try {
       f.Load();
+
+      std::string comp = f.Component();
+      if (comp.empty()) throw Hexception(PAR_COMP_UNDEF);
+      PILSetModuleName(comp.c_str());
 
       status = PILInit(mArgc, mArgv);
       if (PIL_OK != status) throw Hexception(status);
