@@ -32,7 +32,25 @@ namespace tip {
     int status = 0;
     fits_parse_value(const_cast<char *>(m_record.c_str()), value, 0, &status);
     if (0 != status) throw TipException("KeyRecord::getValue could not parse record");
-    return value;
+
+    // See if this is treated as a string, in which case it will have trailing blanks and a quote.
+    char * ptr = value + strlen(value) - 1;
+
+    // Skip trailing space outside quote.
+    while(isspace(*ptr)) --ptr;
+
+    // Skip the trailing quote.
+    if ('\'' == *ptr) {
+      // Skip trailing space inside quote.
+      while(isspace(*(ptr - 1))) --ptr;
+      *ptr = '\0';
+    }
+
+    // Handle leading quote, if any.
+    ptr = value;
+    if ('\'' == *ptr) ++ptr;
+
+    return ptr;
   }
 
   void KeyRecord::setValue(const std::string & value) {

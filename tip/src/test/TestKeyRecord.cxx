@@ -28,6 +28,7 @@ namespace tip {
     KeyRecord string_rec(formatStringRec("BOZO", "987.", "Bozo is a fine clown"));
     KeyRecord long_comment_string_rec(formatStringRec("BOZO", "987.",  "This comment is 50 characters long, very precisely"));
     KeyRecord num_rec(formatRec("BOZO", "987.", "Bozo is a fine clown"));
+    KeyRecord bool_rec(formatRec("BOZO", "T", "Bozo is a fine clown"));
     KeyRecord blank_rec("BOZO                           / Bozo is a fine clown");
 
     try {
@@ -294,6 +295,46 @@ namespace tip {
     } catch (const std::exception & x) {
       ReportUnexpected("creation of boolean key record from name, value, comment threw exception", x);
     }
+
+    // Test getValue.
+    try {
+      std::string rec = string_rec.getValue();
+      std::string correct_rec = "987.";
+
+      if (rec == correct_rec) ReportExpected("KeyRecordTest::test: getValue returned expected string");
+      else ReportUnexpected("KeyRecordTest::test: getValue returned \"" + rec + "\", not \"" + correct_rec + "\"");
+
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getValue threw exception", x);
+    }
+
+    // Test getValue templates.
+    try {
+      bool rec = false;
+      bool_rec.getValue(rec);
+      bool correct_rec = true;
+
+      if (rec == correct_rec) ReportExpected("KeyRecordTest::test: getValue(bool&) returned expected value");
+      else ReportUnexpected("KeyRecordTest::test: getValue(bool&) returned \"" + toString(rec) + "\", not \"" +
+        toString(correct_rec) + "\"");
+
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getValue(bool&) threw exception", x);
+    }
+
+    try {
+      double rec = 0.;
+      num_rec.getValue(rec);
+      double correct_rec = 987.;
+
+      if (rec == correct_rec) ReportExpected("KeyRecordTest::test: getValue(double&) returned expected value");
+      else ReportUnexpected("KeyRecordTest::test: getValue(double&) returned \"" + toString(rec) + "\", not \"" +
+        toString(correct_rec) + "\"");
+
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getValue(double&) threw exception", x);
+    }
+
     return getStatus();
   }
 
