@@ -43,7 +43,7 @@ void ContainerBase::writeDateKeywords(tip::Extension * table,
       header["DATE"].set(current_time.getGregorianDate());
    } catch (...) {
    }
-   astro::JulianDate mission_start(2005, 7, 18, 0);
+   astro::JulianDate mission_start(2006, 12, 31, 23.99888);
    astro::JulianDate date_start(mission_start + start_time/secsPerDay);
    astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
    try {

@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r6p3 07-Mar-05   JC   set mission start to MJDREF
     v5r6p2 21-Feb-05   JC   add SpectralTransient source
     v5r6p1 15-Feb-05   JC   add access to MapCube source; update template files
     v5r6   31-Jan-05   JC   rename apps using gt- convention
