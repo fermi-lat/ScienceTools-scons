@@ -7,8 +7,8 @@ rocking_angle,r,a,35,0,90,"Rocking angle (degrees)"
 #
 # pointing mode parameters
 #
-ra,r,a,0,0,360,Right ascension of z-axis direction for pointing (J2000 degrees)
-dec,r,a,0,0,360,Declination of z-axis direction for pointing (J2000 degrees)
+ra,r,a,0,0,360,RA of z-axis for pointing (J2000 degrees)
+dec,r,a,0,0,360,Dec of z-axis for pointing (J2000 degrees)
 
 simulation_time,r,a,86400,1,4e7,Simulation time (seconds)
 start_time,r,hl,0,,,Simulation start time (seconds)
