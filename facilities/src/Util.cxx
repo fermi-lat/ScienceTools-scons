@@ -36,11 +36,11 @@ namespace facilities {
                 std::string envVariable = 
                     toExpand->substr(afterBracket,(envEnd-afterBracket));
                 const char * path = ::getenv(envVariable.c_str());
-                if(path) {
+                if (path) {
                     toExpand->replace(envStart,(envEnd+clLen), path);
                     if (nSuccess > -1) nSuccess++;
                 }
-                else nSuccess = -1;
+                else throw Untranslatable(envVariable);
             }
             envStart = toExpand->find_first_of(openDel.c_str());
         }
