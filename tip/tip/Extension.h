@@ -7,14 +7,10 @@
 #ifndef table_Extension_h
 #define table_Extension_h
 
-#include <string>
-
-#include "table/IExtensionManager.h"
-#include "table/Header.h"
-#include "table/TableException.h"
-#include "table/table_types.h"
-
 namespace table {
+
+  class Header;
+  class IExtensionManager;
 
   /** \class Extension
 
@@ -22,28 +18,23 @@ namespace table {
   */
   class Extension {
     public:
-      /** \brief Create a new extension object from the given abstract extension data encapsulation.
-          \param extension_data The extension data (concrete instances are FITS or Root specific).
+      /** \brief Create a new extension object from the given abstract extension manager encapsulation.
+          \param extension_manager The extension manager, which creates and manages the actual implementation,
+          including file format-specific details.
       */
-      Extension(IExtensionManager * extension_data): m_header(0), m_extension_data(extension_data) {
-        if (m_extension_data) m_header = new Header(m_extension_data->getHeaderData());
-        else throw TableException("Extension::Extension(IExtensionManager *): Cannot create Extension object "
-          "with NULL IExtensionManager pointer.");
-      }
+      Extension(IExtensionManager * extension_manager);
 
       /** \brief Destruct an extension object.
       */
-      virtual ~Extension() { delete m_header; delete m_extension_data; }
+      virtual ~Extension();
 
       /** \brief Retrieve Header object, which is a container of FITS-like keywords.
       */
-      Header & getHeader() {
-        return *m_header;
-      }
+      Header & getHeader();
 
     private:
       Header * m_header;
-      IExtensionManager * m_extension_data;
+      IExtensionManager * m_extension_manager;
   };
 
 }
