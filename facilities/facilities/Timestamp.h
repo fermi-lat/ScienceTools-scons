@@ -23,7 +23,14 @@ namespace facilities {
   /** Timestamp class, valid for dates from 1970 through 2037 and for
       non-negative delta times of up to about 68 years 
 
-      Supports comparisons, addition and subtraction where sensible
+      Supports comparisons, addition and subtraction where sensible:
+          compare two delta times
+          compare two dates
+          date + delta ==> date
+          delta + delta ==> delta
+          date - delta ==> date
+          date - date ==> delta
+
 
       Input to constructors may be
               Julian date      

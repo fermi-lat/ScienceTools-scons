@@ -203,8 +203,8 @@ namespace facilities {
     strTime += bufPtr;
   }
 
-  // Arithmetic.  Can only add/subtract delta time
 
+  // Supported addition operands are (absolute + delta) or (delta + delta)
   Timestamp& Timestamp::operator+=(const Timestamp delta) {
     if (!delta.isDelta()) 
       throw BadTimeInput("facilities::Timestamp need delta time");
@@ -225,26 +225,30 @@ namespace facilities {
     return *this;
   }
 
-  Timestamp& Timestamp::operator-=(const Timestamp delta) {
-    if (!delta.isDelta()) 
-      throw BadTimeInput("facilities::Timestamp need delta time");
+  Timestamp& Timestamp::operator-=(const Timestamp toSubtract) {
 
     if (isDelta())  {
-      if (*this < delta) // result is delta. No negative deltas allowed
+      if (!toSubtract.isDelta())   // can't subtract absolute from delta
+        throw BadTimeInput("facilities::Timestamp need delta time");
+
+      if (*this < toSubtract) // result is delta. No negative deltas allowed
         throw BadTimeInput("facilities::Timestamp result out of range");
     }
-    else {         // absolute time minus a delta
-      double diff = m_time - delta.m_time;
-      //      if (-diff > maxInt) {
+    else {         // absolute time minus something
+      double diff = m_time - toSubtract.m_time;
       if (diff < 0) {
         throw BadTimeInput("facilities::Timestamp out of range");
       }
-      if ((diff == 0) && (m_nano < delta.m_nano)) {
+      if ((diff == 0) && (m_nano < toSubtract.m_nano)) {
         throw BadTimeInput("facilities::Timestamp out of range");
       }
+
+      // Result of subtracting absolute from absolute is delta
+      if (!toSubtract.isDelta()) m_isDelta = true;
+
     }
-    m_time -= delta.m_time;
-    m_nano -= delta.m_nano;
+    m_time -= toSubtract.m_time;
+    m_nano -= toSubtract.m_nano;
     if (m_nano < 0) {
       m_time--;
       m_nano += inverseNanoInt;
