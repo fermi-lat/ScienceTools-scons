@@ -36,9 +36,11 @@ namespace st_graph {
     if (0 == m_parent)
       throw std::logic_error("RootFrame constructor was passed a parent IFrame which is not a RootFrame");
 
-    // Connect Root Q signal to this object's slot.
-    frame->Connect("Clicked()", "st_graph::RootFrame", this, "clicked()");
+    m_parent->addFrame(this);
+  }
 
+  RootFrame::RootFrame(IEventReceiver * receiver, TGFrame * frame): m_subframes(), m_parent(RootFrame::ancestor()), m_frame(frame),
+    m_receiver(receiver) {
     m_parent->addFrame(this);
   }
 
@@ -48,7 +50,7 @@ namespace st_graph {
   }
 
   void RootFrame::display() {
-    for (std::list<IFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
+    for (std::set<IFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
       (*itor)->display();
     if (0 != m_frame) {
       m_frame->MapSubwindows();
@@ -60,20 +62,43 @@ namespace st_graph {
   void RootFrame::unDisplay() {
     if (0 != m_frame)
       m_frame->UnmapWindow();
-    for (std::list<IFrame *>::reverse_iterator itor = m_subframes.rbegin(); itor != m_subframes.rend(); ++itor)
+    for (std::set<IFrame *>::reverse_iterator itor = m_subframes.rbegin(); itor != m_subframes.rend(); ++itor)
       (*itor)->unDisplay();
   }
 
   void RootFrame::addFrame(IFrame * frame) {
-    m_subframes.push_back(frame);
+    // Make certain Root frame is not added more than once.
+    if (m_subframes.end() == m_subframes.find(frame)) {
+      RootFrame * rf = dynamic_cast<RootFrame *>(frame);
+      if (0 == rf) throw std::logic_error("RootFrame::addFrame was passed an invalid child frame");
+      TGFrame * child_tg_f = rf->getTGFrame();
+
+      TGCompositeFrame * parent_tg_f = dynamic_cast<TGCompositeFrame *>(m_frame);
+      if (0 != parent_tg_f && 0 != child_tg_f) parent_tg_f->AddFrame(child_tg_f);
+      m_subframes.insert(frame);
+    }
   }
 
   void RootFrame::removeFrame(IFrame * frame) {
-    m_subframes.remove(frame);
+    // Make certain Root frame is not removed more than once.
+    std::set<IFrame *>::iterator itor = m_subframes.find(frame);
+    if (m_subframes.end() != itor) {
+      m_subframes.erase(itor);
+      RootFrame * rf = dynamic_cast<RootFrame *>(frame);
+      if (0 == rf) throw std::logic_error("RootFrame::removeFrame was passed an invalid child frame");
+      TGFrame * child_tg_f = rf->getTGFrame();
+
+      TGCompositeFrame * parent_tg_f = dynamic_cast<TGCompositeFrame *>(m_frame);
+      if (0 != parent_tg_f && 0 != child_tg_f) parent_tg_f->RemoveFrame(child_tg_f);
+    }
   }
 
   void RootFrame::clicked() {
     m_receiver->clicked(this);
+  }
+
+  void RootFrame::closeWindow() {
+    m_receiver->closeWindow(this);
   }
 
   long RootFrame::getL() const {
@@ -99,6 +124,6 @@ namespace st_graph {
 
   TGFrame * RootFrame::getTGFrame() { return m_frame; }
 
-  RootFrame::RootFrame(): m_subframes(), m_parent(0), m_frame(0) {}
+  RootFrame::RootFrame(): m_subframes(), m_parent(0), m_frame(0), m_receiver(0) {}
 
 }
