@@ -40,12 +40,26 @@ namespace tip {
       */
       void getPixel(PixOrd_t x, PixOrd_t y, double & pixel) const { m_extension_data->getPixel(x, y, pixel); }
 
+      /** \brief Get a specific pixel from an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void getPixel(const std::vector<PixOrd_t> & x, double & pixel) const { m_extension_data->getPixel(x, pixel); }
+
       /** \brief Set a specific pixel in an image extension.
           \param x The x ordinate of the pixel.
           \param y The y ordinate of the pixel.
           \param pixel The pixel value.
       */
       void setPixel(PixOrd_t x, PixOrd_t y, const double & pixel) { m_extension_data->setPixel(x, y, pixel); }
+
+      /** \brief Set a specific pixel in an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void setPixel(const std::vector<PixOrd_t> & x, const double & pixel) { m_extension_data->setPixel(x, pixel); }
 
   };
 
