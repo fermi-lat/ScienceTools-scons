@@ -9,6 +9,7 @@
 #include <cctype>
 #include <sstream>
 
+#include "FitsColumn.h"
 #include "FitsExtensionManager.h"
 #include "tip/TipException.h"
 
@@ -16,7 +17,7 @@ namespace tip {
 
   FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
-    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_image_dimensions(),
+    m_filter(filter), m_col_name_lookup(), m_col_num_lookup(), m_fields(), m_image_dimensions(), m_columns(),
     m_num_records(0), m_fp(0), m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
@@ -87,6 +88,7 @@ namespace tip {
   // Close file.
   void FitsExtensionManager::close(int status) {
     if (0 != m_fp) fits_close_file(m_fp, &status);
+    for (std::vector<IColumn *>::reverse_iterator itor = m_columns.rbegin(); itor != m_columns.rend(); ++itor) delete *itor;
     m_image_dimensions.clear();
     m_fields.clear();
     m_col_num_lookup.clear();
@@ -116,6 +118,10 @@ namespace tip {
   }
 
   const IExtensionData::FieldCont & FitsExtensionManager::getValidFields() const { return m_fields; }
+
+  IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) { return m_columns.at(field_index - 1); }
+
+  const IColumn * FitsExtensionManager::getColumn(FieldIndex_t field_index) const { return m_columns.at(field_index - 1); }
 
   FieldIndex_t FitsExtensionManager::getFieldIndex(const std::string & field_name) const {
     if (!m_is_table) throw TipException(formatWhat("getFieldIndex called, but object is not a table"));
@@ -347,6 +353,49 @@ namespace tip {
 
     // Save lower cased name of field in sequential container of field names:
     m_fields.push_back(lc_name);
+
+    // Create column abstraction for this column.
+    switch (type_code) {
+      case TLOGICAL:
+        m_columns.push_back(new FitsColumn<bool>(m_fp, col_num));
+        break;
+      case TDOUBLE:
+        m_columns.push_back(new FitsColumn<double>(m_fp, col_num));
+        break;
+      case TFLOAT:
+        m_columns.push_back(new FitsColumn<float>(m_fp, col_num));
+        break;
+      case TBYTE:
+        m_columns.push_back(new FitsColumn<char>(m_fp, col_num));
+        break;
+      case TSHORT:
+        m_columns.push_back(new FitsColumn<signed short>(m_fp, col_num));
+        break;
+      case TINT:
+        m_columns.push_back(new FitsColumn<signed int>(m_fp, col_num));
+        break;
+      case TLONG:
+        m_columns.push_back(new FitsColumn<signed long>(m_fp, col_num));
+        break;
+      case TUSHORT:
+        m_columns.push_back(new FitsColumn<unsigned short>(m_fp, col_num));
+        break;
+      case TUINT:
+        m_columns.push_back(new FitsColumn<unsigned int>(m_fp, col_num));
+        break;
+      case TULONG:
+        m_columns.push_back(new FitsColumn<unsigned long>(m_fp, col_num));
+        break;
+      case TSTRING:
+        m_columns.push_back(new FitsColumn<std::string>(m_fp, col_num));
+        break;
+      default: {
+          std::ostringstream os;
+          os << "Unsupported column type " << type_code;
+          throw TipException(formatWhat(os.str()));
+          break;
+        }
+    }
   }
 
   void FitsExtensionManager::openImage() {
