@@ -285,11 +285,19 @@ int main(int iargc, char * argv[]) {
    std::vector<double> imgoodcalprob  = meritTuple("IMgoodCalProb");
    std::vector<double> reconzdir      = meritTuple("ReconZDir");
    std::vector<double> calenergysum   = meritTuple("CalEnergySum");
+   std::vector<double> calmipdiff     = meritTuple("CalMIPDiff");
    std::vector<double> calcsirln      = meritTuple("CalCsIRLn");
+   std::vector<double> callrmsratio   = meritTuple("CalLRmsRatio");
    std::vector<double> tkr1firstlayer = meritTuple("Tkr1FirstLayer");
    std::vector<double> tkrnumtracks   = meritTuple("TkrNumTracks");
    std::vector<double> imcoreprob     = meritTuple("IMcoreProb");
+   std::vector<double> imgammaprob     = meritTuple("IMgammaProb");
    std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
+
+   std::vector<double> evtenergysumopt = meritTuple("EvtEnergySumOpt");
+   std::vector<double> evttkrecomptonratio = meritTuple("EvtTkrEComptonRatio");
+   std::vector<double> vtxangle       = meritTuple("VtxAngle");
+   std::vector<double> acdtilecount    = meritTuple("AcdTileCount");
 
    for (unsigned int i = 0; i < nevts; i++) {
 
@@ -300,19 +308,45 @@ int main(int iargc, char * argv[]) {
      bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
      bool zdir_cut          = (reconzdir[i]<-0.2);      
      bool no_cal_cut        = (calenergysum[i]<5.0)||(calcsirln[i]<2.0);
-     bool thin_cut          = (tkr1firstlayer[i]<12.0);
+     bool thin_cut          = (tkr1firstlayer[i] != 0.0) && (tkr1firstlayer[i]<15.0);
 
      bool global_cut = good_energy_cut && zdir_cut && !(no_cal_cut);
      
      bool psf_filter =   (imcoreprob[i]>0.2) && (impsfprederr[i]<3.0);
 
-     bool background_cut = (tkrnumtracks[i]>0) && (gltword[i]>3);
-
-     if(background_cut)  (calibVersion[i])[0] = 1.;
+     bool background_cut = (tkrnumtracks[i]>0) && (gltword[i]>3) && (imcoreprob[i]>0.2);
+     bool veto = 1;
+     if(background_cut){
+       if(vtxangle[i]>0.0)
+	 {
+	   if( (evtenergysumopt[i]>350.0) && (evttkrecomptonratio[i]>0.6) && (calmipdiff[i]>60.0) && (imgammaprob[i]>0.5))
+	     {
+	       veto=0.0;
+	     }
+	   if((evtenergysumopt[i]<=350.0) && (acdtilecount[i]==0.0) && (calmipdiff[i]>-125.0) && (evttkrecomptonratio[i]>0.8) && (imgammaprob[i]>0.9) )
+	     {
+	       veto=0.0;
+	     }
+	 }
+       else
+	 {
+	   
+	   if( (evtenergysumopt[i]>450.0) && (evttkrecomptonratio[i]>0.7) && (calmipdiff[i]>80.0) && (callrmsratio[i]<20.0) && (imgammaprob[i]>0.5) )
+	     {
+	       veto=0.0;
+	     }
+	   if( (evtenergysumopt[i]<=450.0) && (acdtilecount[i]==0.0) && (evttkrecomptonratio[i]>1.0) && (callrmsratio[i]>5.0) && thin_cut && (imgammaprob[i]>0.9) )
+	     {
+	       veto=0.0;
+	     }
+	 }
+     }
+     if(!veto)           (calibVersion[i])[0] = 1.;
      if(psf_filter) 	 (calibVersion[i])[1] = 1.;
      if(global_cut) 	 (calibVersion[i])[2] = 1.;
-
+     
    }
+
    data->setCalibVersion(calibVersion);
 
 

@@ -34,7 +34,7 @@ int main(int iargc, char * argv[]) {
    if (iargc == 1) 
      {
        std::string fitsGenRoot = ::getenv("FITSGENROOT");
-       rootFile = fitsGenRoot + "/data/pointing_history.root";
+       rootFile = fitsGenRoot + "/data/merit.root";
      } 
    else if (iargc == 2) 
        {
@@ -77,6 +77,8 @@ int main(int iargc, char * argv[]) {
 
 // Read the columns into Goodi.
    unsigned int npts = exposure.nrows();
+
+   std::cout << "Number of events: " << npts << std::endl;
 
 // Start and stop times.
    std::vector<double> startTime(npts);
