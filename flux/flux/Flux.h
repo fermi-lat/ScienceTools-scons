@@ -103,7 +103,7 @@ public:
     virtual HepRotation transformToGlast(double seconds,GPS::CoordSystem index)const;
     
     ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-    HepRotation Flux::transformGlastToGalactic(double time)const;
+    HepRotation transformGlastToGalactic(double time)const;
     
     //    insert(std::make_pair<std::string, const ISpectrumFactory*>(name, factory));
     

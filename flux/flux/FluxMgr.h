@@ -98,7 +98,7 @@ public:
     HepRotation orientTransform(double time);
     
     ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-    HepRotation FluxMgr::transformGlastToGalactic(double time);
+    HepRotation transformGlastToGalactic(double time);
 
     ///this sets the rocking mode in GPS.
     std::vector<double> setRockType(GPS::RockType rockType, double rockAngle);
