@@ -13,6 +13,7 @@ import mySimpleDialog
 from FileDialog import LoadFileDialog, SaveFileDialog
 from EditFileDialog import EditFileDialog
 from pfilesPath import pfilesPath
+import random
 
 class ParamDialog(mySimpleDialog.Dialog):
     def __init__(self, parent, file):
@@ -61,6 +62,9 @@ class ParamEntry:
         elif self.fields[4].find("|") > 0:
             self.makeOptionsMenu(row)
             entryState = Tkinter.DISABLED
+        elif self.fields[0] == "Random_seed":
+            self.makeRandomSeed(row)
+            entryState = Tkinter.NORMAL
         else:
             self.makeLabel(row)
             entryState = Tkinter.NORMAL
@@ -90,6 +94,12 @@ class ParamEntry:
         for option in options:
             menu.add_command(label=option, command=SetVar(self, option))
         menuButton["menu"] = menu
+    def makeRandomSeed(self, row):
+        """Special button to create a random seed for the CLHEP generator
+           used by obsSim"""
+        w = Tkinter.Button(self.parent, text=self.fields[0],
+                           command=self.getRandomInt, bd=1)
+        w.grid(column=0, row=row, sticky=Tkinter.E)
     def makeLabel(self, row):
         name = Tkinter.Label(self.parent, text = self.fields[0])
         name.grid(column=0, row=row, sticky=Tkinter.E)
@@ -104,6 +114,9 @@ class ParamEntry:
         file = dialog.go(self.variable.get())
         if file:
             self.variable.set(file)
+    def getRandomInt(self):
+        my_int = int(random.random()*sys.maxint/1e3)
+        self.variable.set(`my_int`)
         
 class SetVar:
     def __init__(self, parent, value):
