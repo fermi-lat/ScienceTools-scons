@@ -1,0 +1,14 @@
+package pulsePhase
+version v0
+
+use STpolicy *
+use st_app *
+use tip *
+
+#apply_pattern ST_library option=-no_share
+
+private
+
+macro_append st_app_cppflags "" Linux "-I.."
+application test_pulsePhase test/*.cxx
+application pulsePhase pulsePhase/*.cxx
