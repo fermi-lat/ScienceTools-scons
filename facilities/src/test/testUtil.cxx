@@ -24,8 +24,9 @@ main() {
   std::cout << ntrans << " variables were translated." << std::endl;
 
   // Test the new itoa routine
-  const char *str = facilities::Util::itoa(12);
-  std::cout << "My String is " << str << std::endl;
+  std::string intStr;
+  facilities::Util::itoa(12, intStr);
+  std::cout << "My String is " << intStr << std::endl;
 }
 
   

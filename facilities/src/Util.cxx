@@ -45,7 +45,7 @@ namespace facilities {
     return nSuccess;
   }
 
-  std::string Util::itoa(int val, std::string &outStr) {
+  const char* Util::itoa(int val, std::string &outStr) {
       // Purpose and Method:  Provide a standard routine to convert integers
       //    into std::string.  The method used depends upon the availability of
       //    the stringstream classes.  The stringstream classes are the
@@ -65,7 +65,7 @@ namespace facilities {
       locStream << std::endl;
 #endif
       outStr = locStream.str();
-      return outStr;
+      return outStr.c_str();
   }
 
 }

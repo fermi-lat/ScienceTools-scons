@@ -35,11 +35,11 @@ namespace facilities {
       This method duplicates the stdlib.h method itoa, except that it returns
       std::string rather than char*.
       @param   val
-      @param   outStr
+      @param   outStr will be modified by this method
 
-      @return outStr
+      @return  const char* based on the contents of outStr.c_str()
     */
-    static std::string itoa(int val, std::string &outStr);
+    static const char* itoa(int val, std::string &outStr);
 
   };
 }
