@@ -22,7 +22,8 @@ namespace evtbin {
       /** \brief Create the spectrum object.
           \param binner The binner used to create the histogram.
       */
-      SingleSpec(const std::string & event_file, const std::string & sc_file, const Binner & binner);
+      SingleSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
+        const Binner & binner);
 
       virtual ~SingleSpec() throw();
 

@@ -23,8 +23,8 @@ namespace evtbin {
           \param time_binner The binner used to bin the time dimension.
           \param energy_binner The binner used to create the energy dimension.
       */
-      MultiSpec(const std::string & event_file, const std::string & sc_file, const Binner & time_binner,
-        const Binner & energy_binner);
+      MultiSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
+        const Binner & time_binner, const Binner & energy_binner);
 
       virtual ~MultiSpec() throw();
 

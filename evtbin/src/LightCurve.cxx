@@ -15,12 +15,12 @@
 
 namespace evtbin {
 
-  LightCurve::LightCurve(const std::string & event_file, const std::string & sc_file, const Binner & binner):
-    DataProduct(event_file), m_hist(binner) {
+  LightCurve::LightCurve(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
+    const Binner & binner): DataProduct(event_file, event_table), m_hist(binner) {
     m_hist_ptr = &m_hist;
 
     // Get all keywords.
-    harvestKeywords(event_file, "EVENTS");
+    harvestKeywords(m_event_file, m_event_table);
 
     // Adjust the GTI based on binning information.
     adjustGti(&binner);

@@ -33,7 +33,7 @@ namespace evtbin {
 
       /** \brief Construct data product object from the given event and spacecraft file.
       */
-      DataProduct(const std::string & event_file);
+      DataProduct(const std::string & event_file, const std::string & event_table);
 
       virtual ~DataProduct() throw();
 
@@ -136,6 +136,7 @@ namespace evtbin {
       KeyCont_t m_known_keys;
       std::string m_data_dir;
       std::string m_event_file;
+      std::string m_event_table;
       Gti m_gti;
       Hist * m_hist_ptr;
   };

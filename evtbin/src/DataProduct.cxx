@@ -24,8 +24,8 @@
 
 namespace evtbin {
 
-  DataProduct::DataProduct(const std::string & event_file): m_key_value_pairs(), m_known_keys(), m_data_dir(),
-    m_event_file(event_file), m_gti(event_file), m_hist_ptr(0) {
+  DataProduct::DataProduct(const std::string & event_file, const std::string & event_table): m_key_value_pairs(), m_known_keys(),
+    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_gti(event_file), m_hist_ptr(0) {
     // Find the directory containing templates.
     m_data_dir = st_facilities::Env::getDataDir("evtbin");
 
@@ -40,7 +40,7 @@ namespace evtbin {
 
   void DataProduct::binInput() {
     using namespace tip;
-    std::auto_ptr<const Table> events(IFileSvc::instance().readTable(m_event_file, "EVENTS"));
+    std::auto_ptr<const Table> events(IFileSvc::instance().readTable(m_event_file, m_event_table));
 
     binInput(events->begin(), events->end());
   }
