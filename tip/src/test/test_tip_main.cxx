@@ -1,4 +1,4 @@
-/** \file test_table_main.cxx
+/** \file test_tip_main.cxx
 
     \brief Test/sample program.
 
@@ -7,14 +7,14 @@
 #include <iostream>
 #include <vector>
 
-#include "table/Header.h"
-#include "table/IFileSvc.h"
-#include "table/Table.h"
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 int main() {
   int status = 0;
 
-  using namespace table;
+  using namespace tip;
 
   Table * my_table = 0;
 
@@ -24,10 +24,10 @@ int main() {
       my_table = IFileSvc::getSvc().editTable("non-existent.pha", "SPECTRUM");
 
       // If we got here, it didn't throw!
-      std::cerr << "Opening non-existent.pha didn't throw a TableException." << std::endl;
+      std::cerr << "Opening non-existent.pha didn't throw a TipException." << std::endl;
 
       status = 1;
-    } catch(const TableException & x) {
+    } catch(const TipException & x) {
       // This is as it should be
     }
 
@@ -76,12 +76,12 @@ int main() {
           r["energy"].get(energy);
           std::cerr << "Getting a non-existent column didn't throw." << std::endl;
           status = 1;
-        } catch(const TableException & x) {
+        } catch(const TipException & x) {
           // This should have thrown.
         }
 
       }
-    } catch(const TableException & x) {
+    } catch(const TipException & x) {
       std::cerr << "Unexpected exception while testing TableIterator: " << x.what() << std::endl;
       status = 1;
     }
@@ -208,7 +208,7 @@ int main() {
         }
       }
 
-    } catch(const TableException & x) {
+    } catch(const TipException & x) {
       std::cerr << "Unexpected exception while testing reading through the iterator into Scalar: " <<
         x.what() << std::endl;
       status = 1;
@@ -229,7 +229,7 @@ int main() {
         std::cerr << "Keyword telescop was read to be " << telescop << " not " << "SWIFT" << std::endl;
         status = 1;
       }
-    } catch(const TableException & x) {
+    } catch(const TipException & x) {
       std::cerr << "Unexpected exception while testing direct keyword access: " << x.what() << std::endl;
       status = 1;
     }
@@ -256,15 +256,15 @@ int main() {
         std::cout << "*     " << recordNum++ << " *      " << McEnergy << " *      " << McCharge << std::endl;
       }
 
-    } catch(const TableException & x) {
+    } catch(const TipException & x) {
       std::cerr << "Unexpected exception while reading through the iterator into Scalar for Root file: " <<
         x.what() << std::endl;
       status = 1;
     }
 
 
-  } catch(const TableException & x) {
-    std::cerr << "Unhandled TableException:" << x.what() << std::endl;
+  } catch(const TipException & x) {
+    std::cerr << "Unhandled TipException:" << x.what() << std::endl;
     status = 1;
   } catch(const std::exception & x) {
     std::cerr << "Unhandled std::exception." << x.what() << std::endl;

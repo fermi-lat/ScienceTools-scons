@@ -4,19 +4,19 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_Table_h
-#define table_Table_h
+#ifndef tip_Table_h
+#define tip_Table_h
 
-#include "table/Extension.h"
-#include "table/IExtensionManager.h"
-#include "table/Iterator.h"
-#include "table/ScalarAdaptor.h"
-#include "table/TableException.h"
-#include "table/TableRecord.h"
-#include "table/VectorAdaptor.h"
-#include "table/table_types.h"
+#include "tip/Extension.h"
+#include "tip/IExtensionManager.h"
+#include "tip/Iterator.h"
+#include "tip/ScalarAdaptor.h"
+#include "tip/TipException.h"
+#include "tip/TableRecord.h"
+#include "tip/VectorAdaptor.h"
+#include "tip/tip_types.h"
 
-namespace table {
+namespace tip {
 
   class ITabularData;
 
@@ -60,7 +60,7 @@ namespace table {
 
       Table(IExtensionManager * extension_data): Extension(extension_data), m_tab_data(0) {
         if (extension_data) m_tab_data = extension_data->getTabularData();
-        else throw TableException("Table::Table(IExtensionManager *): "
+        else throw TipException("Table::Table(IExtensionManager *): "
           "Cannot create Table with NULL IExtensionManager pointer.");
       }
 

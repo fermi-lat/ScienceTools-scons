@@ -5,12 +5,12 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_IHeaderData_h
-#define table_IHeaderData_h
+#ifndef tip_IHeaderData_h
+#define tip_IHeaderData_h
 
 #include <string>
 
-namespace table {
+namespace tip {
 
   /** \class IHeaderData
 

@@ -4,15 +4,15 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_Keyword_h
-#define table_Keyword_h
+#ifndef tip_Keyword_h
+#define tip_Keyword_h
 
 #include <string>
 
-#include "table/IHeaderData.h"
-#include "table/TableException.h"
+#include "tip/IHeaderData.h"
+#include "tip/TipException.h"
 
-namespace table {
+namespace tip {
 
   /** \class Keyword
 
@@ -26,7 +26,7 @@ namespace table {
       */
       Keyword(IHeaderData * header_data, const std::string & name): m_header_data(header_data),
         m_name(name) {
-        if (!m_header_data) throw TableException("Keyword::Keyword(IHeaderData *, const std::string &): "
+        if (!m_header_data) throw TipException("Keyword::Keyword(IHeaderData *, const std::string &): "
           "Cannot create Keyword with a NULL IHeaderData pointer");
       }
 

@@ -4,13 +4,13 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_IFileSvc_h
-#define table_IFileSvc_h
+#ifndef tip_IFileSvc_h
+#define tip_IFileSvc_h
 
 #include <map>
 #include <string>
 
-namespace table {
+namespace tip {
 
   class Table;
 

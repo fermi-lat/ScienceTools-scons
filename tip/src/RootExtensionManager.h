@@ -4,8 +4,8 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_RootExtensionManager_h
-#define table_RootExtensionManager_h
+#ifndef tip_RootExtensionManager_h
+#define tip_RootExtensionManager_h
 
 #include <map>
 #include <sstream>
@@ -14,15 +14,15 @@
 
 #include "TTree.h"
 
-#include "table/IExtensionManager.h"
-#include "table/TableException.h"
-#include "table/table_types.h"
+#include "tip/IExtensionManager.h"
+#include "tip/TipException.h"
+#include "tip/tip_types.h"
 
 class TBranch;
 class TFile;
 class TLeaf;
 
-namespace table {
+namespace tip {
 
   class IData;
   class IHeaderData;
@@ -155,7 +155,7 @@ namespace table {
   template <typename T>
 //  inline void RootExtensionManager::getKeywordGeneric(const std::string & name, T & value) const {
   inline void RootExtensionManager::getKeywordGeneric(const std::string &, T &) const {
-    throw TableException("Keyword access not yet implemented for Root files.");
+    throw TipException("Keyword access not yet implemented for Root files.");
   }
 
   // Getting columns.
@@ -163,7 +163,7 @@ namespace table {
   inline void RootExtensionManager::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
     T * dest_begin) const {
     m_tree->GetEntry(record_index);
-    if (src_begin + 1 != src_end) throw TableException("Getting vectors from Root files not working yet.");
+    if (src_begin + 1 != src_end) throw TipException("Getting vectors from Root files not working yet.");
     m_leaves[col_num]->get(*dest_begin);
   }
 
@@ -173,7 +173,7 @@ namespace table {
 //    T * dest_begin, T * dest_end) {
   inline void RootExtensionManager::setCellGeneric(int , Index_t , Index_t ,
     T *, T *) {
-    throw TableException("Write access not yet implemented for Root files.");
+    throw TipException("Write access not yet implemented for Root files.");
   }
 
 }

@@ -4,18 +4,17 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_TableRecord_h
-#define table_TableRecord_h
+#ifndef tip_TableRecord_h
+#define tip_TableRecord_h
 
 #include <cassert>
 #include <map>
 #include <string>
 
-#include "table/ITabularData.h"
-#include "table/TableException.h"
-#include "table/table_types.h"
+#include "tip/ITabularData.h"
+#include "tip/tip_types.h"
 
-namespace table {
+namespace tip {
 
   class ConstTableRecord;
 

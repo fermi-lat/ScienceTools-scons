@@ -5,12 +5,12 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_FileSvc_h
-#define table_FileSvc_h
+#ifndef tip_FileSvc_h
+#define tip_FileSvc_h
 
-#include "table/IFileSvc.h"
+#include "tip/IFileSvc.h"
 
-namespace table {
+namespace tip {
 
   /** \class FileSvc
 

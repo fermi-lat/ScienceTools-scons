@@ -1,5 +1,5 @@
 /**
-    \mainpage table package
+    \mainpage tip package
 
     \author  James Peachey peachey@lheamail.gsfc.nasa.gov
 
@@ -10,7 +10,7 @@
 
     <hr>
     \section info Information For Clients
-    This section describes how client code can and should use the table
+    This section describes how client code can and should use the tip
     classes to gain access to tabular data.
 
 \subsection read Reading Tabular Data (First Method)
@@ -18,7 +18,7 @@ The first step is for the client to create a data access object
 representing the table:
 
 \verbatim
-  using namespace table;
+  using namespace tip;
   Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
 \endverbatim
 
@@ -127,7 +127,7 @@ The Table class also supports write access to keywords
 using a "set" method:
 
 \verbatim
-  using namespace table;
+  using namespace tip;
   double offset = 100000.;
   Table * my_table = IFileSvc::get()::editTable("my_file.fits", "LAT_Event_Sum");
 

@@ -4,10 +4,10 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_IExtensionManager_h
-#define table_IExtensionManager_h
+#ifndef tip_IExtensionManager_h
+#define tip_IExtensionManager_h
 
-namespace table {
+namespace tip {
 
   class IHeaderData;
   class ITabularData;

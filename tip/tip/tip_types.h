@@ -1,13 +1,13 @@
-/** \file table_types.h
+/** \file tip_types.h
 
-    \brief Forward declarations and typedefs for all table classes.
+    \brief Forward declarations and typedefs for all tip classes.
 
     \author James Peachey, HEASARC
 */
-#ifndef table_table_types_h
-#define table_table_types_h
+#ifndef tip_tip_types_h
+#define tip_tip_types_h
 
-namespace table {
+namespace tip {
 
   /** \brief Type used to identify field index.
   */

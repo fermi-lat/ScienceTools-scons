@@ -4,10 +4,10 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_FitsPrimProps_h
-#define table_FitsPrimProps_h
+#ifndef tip_FitsPrimProps_h
+#define tip_FitsPrimProps_h
 
-namespace table {
+namespace tip {
 
   /** \struct FitsPrimProps
       \brief Templated utility class holding type-specific information to simplify calling cfitsio functions

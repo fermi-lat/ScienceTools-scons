@@ -4,14 +4,14 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_VectorAdaptor_h
-#define table_VectorAdaptor_h
+#ifndef tip_VectorAdaptor_h
+#define tip_VectorAdaptor_h
 
 #include <cassert>
 
-#include "table/table_types.h"
+#include "tip/tip_types.h"
 
-namespace table {
+namespace tip {
 
   /** \class VectorAdaptor
 

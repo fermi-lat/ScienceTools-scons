@@ -6,14 +6,14 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_HeaderData_h
-#define table_HeaderData_h
+#ifndef tip_HeaderData_h
+#define tip_HeaderData_h
 
 #include <string>
 
-#include "table/IHeaderData.h"
+#include "tip/IHeaderData.h"
 
-namespace table {
+namespace tip {
 
   /** \class HeaderData
 

@@ -8,9 +8,9 @@
 #include "FileSvc.h"
 #include "FitsExtensionManager.h"
 #include "RootExtensionManager.h"
-#include "table/Table.h"
+#include "tip/Table.h"
 
-namespace table {
+namespace tip {
 
   // Create a new I/O class, setting the format_name to be "default".
   FileSvc::FileSvc(): IFileSvc("default") {}
@@ -21,7 +21,7 @@ namespace table {
     try {
       try {
         data = new FitsExtensionManager(file_name, table_name);
-      } catch(TableException & x) {
+      } catch(TipException & x) {
         data = new RootExtensionManager(file_name, table_name);
       }
       retval = new Table(data);

@@ -4,10 +4,10 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_IData_h
-#define table_IData_h
+#ifndef tip_IData_h
+#define tip_IData_h
 
-namespace table {
+namespace tip {
 
   /** \class IData
 

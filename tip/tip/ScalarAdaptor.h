@@ -4,10 +4,10 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_ScalarAdaptor_h
-#define table_ScalarAdaptor_h
+#ifndef tip_ScalarAdaptor_h
+#define tip_ScalarAdaptor_h
 
-namespace table {
+namespace tip {
 
   /** \class ScalarAdaptor
 

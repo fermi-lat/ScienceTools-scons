@@ -4,10 +4,10 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_Extension_h
-#define table_Extension_h
+#ifndef tip_Extension_h
+#define tip_Extension_h
 
-namespace table {
+namespace tip {
 
   class Header;
   class IExtensionManager;

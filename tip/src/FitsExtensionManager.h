@@ -4,8 +4,8 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_FitsExtensionManager_h
-#define table_FitsExtensionManager_h
+#ifndef tip_FitsExtensionManager_h
+#define tip_FitsExtensionManager_h
 
 #include <map>
 #include <sstream>
@@ -14,11 +14,11 @@
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
-#include "table/IExtensionManager.h"
-#include "table/TableException.h"
-#include "table/table_types.h"
+#include "tip/IExtensionManager.h"
+#include "tip/TipException.h"
+#include "tip/tip_types.h"
 
-namespace table {
+namespace tip {
 
   class IData;
   class IHeaderData;
@@ -142,7 +142,7 @@ namespace table {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &value, 0, &status);
-    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
   }
 
   // Getting keywords as bool is a special case because Cfitsio gets them as ints.
@@ -152,7 +152,7 @@ namespace table {
     int status = 0;
     int tmp = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
     value = tmp;
   }
 
@@ -163,7 +163,7 @@ namespace table {
     int status = 0;
     char tmp[FLEN_KEYWORD];
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (status) throw TableException(formatWhat(std::string("Cannot read keyword ") + name));
+    if (status) throw TipException(formatWhat(std::string("Cannot read keyword ") + name));
     value = tmp;
   }
 
@@ -178,7 +178,7 @@ namespace table {
     if (status) {
       std::ostringstream s;
       s << "Cannot read record number " << record_index << " from column number " << col_num;
-      throw TableException(formatWhat(s.str()));
+      throw TipException(formatWhat(s.str()));
     }
   }
 
@@ -194,7 +194,7 @@ namespace table {
       if (status) {
         std::ostringstream s;
         s << "Cannot read record number " << record_index << " from column number " << col_num;
-        throw TableException(formatWhat(s.str()));
+        throw TipException(formatWhat(s.str()));
       }
       *dest++ = *tmp;
     }
@@ -207,7 +207,7 @@ namespace table {
   template <>
   inline void FitsExtensionManager::getCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     Index_t src_end, std::string * dest) const {
-    throw TableException("String valued columns not yet implemented for FITS files.");
+    throw TipException("String valued columns not yet implemented for FITS files.");
   }
 
   // Setting columns.
@@ -221,7 +221,7 @@ namespace table {
     if (status) {
       std::ostringstream s;
       s << "Cannot write record number " << record_index << " from column number " << col_num;
-      throw TableException(formatWhat(s.str()));
+      throw TipException(formatWhat(s.str()));
     }
   }
 
@@ -238,7 +238,7 @@ namespace table {
       if (status) {
         std::ostringstream s;
         s << "Cannot write record number " << record_index << " from column number " << col_num;
-        throw TableException(formatWhat(s.str()));
+        throw TipException(formatWhat(s.str()));
       }
     }
   }
@@ -247,7 +247,7 @@ namespace table {
   template <>
   inline void FitsExtensionManager::setCellGeneric<std::string>(int col_num, Index_t record_index, Index_t src_begin,
     std::string * dest_begin, std::string * dest_end) {
-    throw TableException("String valued columns not yet implemented for FITS files.");
+    throw TipException("String valued columns not yet implemented for FITS files.");
   }
 
 }

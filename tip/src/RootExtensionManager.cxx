@@ -15,16 +15,16 @@
 #include "TString.h"
 
 #include "RootExtensionManager.h"
-#include "table/HeaderData.h"
-#include "table/IData.h"
-#include "table/TableException.h"
-#include "table/TabularData.h"
+#include "tip/HeaderData.h"
+#include "tip/IData.h"
+#include "tip/TipException.h"
+#include "tip/TabularData.h"
 
-namespace table {
+namespace tip {
 
   LeafBuffer::LeafBuffer(TTree * tree, const std::string & leaf_name, const std::string &): m_leaf_name(leaf_name),
     m_tree(tree), m_buf(0) {
-    if (!m_tree) throw TableException("LeafBuffer::LeafBuffer(TTree *, string, string): "
+    if (!m_tree) throw TipException("LeafBuffer::LeafBuffer(TTree *, string, string): "
       "Cannot create LeafBuffer object with a NULL TTree pointer");
     m_buf = new double[1];
     *static_cast<double *>(m_buf) = 137.;
@@ -74,7 +74,7 @@ namespace table {
     m_fp = new TFile(m_file_name.c_str());
     if( !m_fp->IsOpen()){
         delete m_fp; m_fp = 0; // JP Added.
-        throw TableException(std::string("Could not open ROOT file ")+m_file_name);
+        throw TipException(std::string("Could not open ROOT file ")+m_file_name);
     }
     if( ! m_ext_name.empty() ){
         m_tree = (TTree*) m_fp->Get(m_ext_name.c_str());
@@ -94,7 +94,7 @@ namespace table {
     }
     if( m_tree==0) {
         delete m_fp; m_fp = 0; // JP Added.
-        throw TableException(std::string("Could not find tree ")+m_ext_name);
+        throw TipException(std::string("Could not find tree ")+m_ext_name);
     }
     m_num_records = static_cast<Index_t>(m_tree->GetEntries());
 //    std::cout << "Opened ROOT file \"" << m_file_name
@@ -147,14 +147,14 @@ namespace table {
       TBranch* branch = m_tree->GetBranch(cname);
       if( 0==branch ){
           std::stringstream msg; msg << "branch \"" << field_name << "\" not found";
-          throw TableException(formatWhat(msg.str()));
+          throw TipException(formatWhat(msg.str()));
       }
       int n = branch->GetNleaves();
-      if( n!=1) throw TableException(formatWhat(std::string("branch ")+field_name+" has more than one leaf"));
+      if( n!=1) throw TipException(formatWhat(std::string("branch ")+field_name+" has more than one leaf"));
       TObjArray * leaves = branch->GetListOfLeaves();
       TLeaf* leaf = (TLeaf*)leaves->At(0);
       std::string type(leaf->GetTypeName());
-      if( type != "Double_t") throw TableException(formatWhat(std::string("branch ")+field_name+" is "+type+" not double"));
+      if( type != "Double_t") throw TipException(formatWhat(std::string("branch ")+field_name+" is "+type+" not double"));
 
       // TODO: allow for Float_t, Int_t, and provide for conversion
       m_tree->SetBranchStatus(cname, 1);

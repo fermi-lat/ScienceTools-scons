@@ -1,4 +1,4 @@
-package table
+package tip
 
 version v0
 
@@ -14,11 +14,11 @@ apply_pattern package_linkopts
 #--------------------------------------------
 private
 
-macro table_cppflags  ""\
+macro tip_cppflags  ""\
   Linux "-I ../src -g "\
   WIN32 " /I ..\src /wd4305"
 
-macro source *.cxx WIN32 "*.h *.cxx ../table/*.h"
-library table $(source)
+macro source *.cxx WIN32 "*.h *.cxx ../tip/*.h"
+library tip $(source)
 
-application test_table test/*.cxx
+application test_tip test/*.cxx

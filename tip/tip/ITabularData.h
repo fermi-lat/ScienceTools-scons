@@ -4,15 +4,15 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_ITabularData_h
-#define table_ITabularData_h
+#ifndef tip_ITabularData_h
+#define tip_ITabularData_h
 
 #include <string>
 
-#include "table/IData.h"
-#include "table/table_types.h"
+#include "tip/IData.h"
+#include "tip/tip_types.h"
 
-namespace table {
+namespace tip {
 
   /** \class ITabularData
 

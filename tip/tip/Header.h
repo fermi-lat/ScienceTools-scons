@@ -4,16 +4,16 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_Header_h
-#define table_Header_h
+#ifndef tip_Header_h
+#define tip_Header_h
 
 #include <map>
 #include <string>
 
-#include "table/Keyword.h"
-#include "table/TableException.h"
+#include "tip/Keyword.h"
+#include "tip/TipException.h"
 
-namespace table {
+namespace tip {
 
   class IHeaderData;
 
@@ -31,7 +31,7 @@ namespace table {
           \param header_data The header data. Concrete objects will be FITS or Root-specific.
       */
       Header(IHeaderData * header_data): m_keywords(), m_header_data(header_data) {
-        if (!m_header_data) throw TableException("Header::Header(IHeaderData *): Cannot create Header object "
+        if (!m_header_data) throw TipException("Header::Header(IHeaderData *): Cannot create Header object "
           "with NULL IHeaderData pointer");
       }
 

@@ -7,12 +7,12 @@
 
     \author James Peachey, HEASARC
 */
-#ifndef table_Iterator_h
-#define table_Iterator_h
+#ifndef tip_Iterator_h
+#define tip_Iterator_h
 
 #include <iterator>
 
-namespace table {
+namespace tip {
 
   /** \class RandomAccessIterator
       \brief Standard implementation of an iterator for situations in which the underlying container
