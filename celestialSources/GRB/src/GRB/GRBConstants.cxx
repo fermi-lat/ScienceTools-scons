@@ -32,22 +32,8 @@ void GRBConstants::InitializeRandom()
   HepRandom::setTheSeed(ini);
 }
 
-void GRBConstants::ReadParam(){  // It determines if, in case of random selection of the parameters,
-  // the burst is long or short...
-  burst_type="Short";
-  // burst_type="Long";
-  //burst_type="both";
-  //    cst::kind_of_burst;
-  if (burst_type!="Short" && burst_type!="Long")
-    {
-      if (SelectFlatRandom(0.0,1.0)<=0.3)
-	{burst_type="Short";}
-      else
-	{burst_type="Long";}
-    }
-  
+void GRBConstants::ReadParam(){    
   char buf[100];
-  double g0,g1;
   std::string paramFile = "$(GRBROOT)/src/test/GRBParam.txt";
   facilities::Util::expandEnvVar(&paramFile);
   ifstream f1(paramFile.c_str());
@@ -57,36 +43,52 @@ void GRBConstants::ReadParam(){  // It determines if, in case of random selectio
       exit(1);
     }
   f1.getline(buf,100);
-  sscanf(buf,"%d",&nshell);
-  setNshell(nshell);
+  sscanf(buf,"%d",&m_nshell);
   
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&redshift);
-  setRedshift(redshift);
+  sscanf(buf,"%lf",&m_redshift);
   
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&etot);
-  setEtot(etot);
+  sscanf(buf,"%lf",&m_etot);
   
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&r0);
-  setR0(r0);
+  sscanf(buf,"%lf",&m_r0);
   
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&t0);
-  setT0(t0);
-  
+  sscanf(buf,"%lf",&m_t0);
+    
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&g0);
-  setGammaMin(g0);
-  
+  sscanf(buf,"%lf",&m_g0);
+   
   f1.getline(buf,100);
-  sscanf(buf,"%lf",&g1);
-  if(g1<=g0) g1=0;
-  setGammaMax(g1);
-  
+  sscanf(buf,"%lf",&m_g1);
+  if(m_g1<=m_g0) m_g1=0;
+  m_GenerateAgain=false;
+  m_duration=0;
+  if(m_nshell*m_redshift*m_etot*m_r0*m_t0*m_g0*m_g1==0)
+    {
+      m_GenerateAgain=true;
+      f1.getline(buf,100);
+      sscanf(buf,"%lf",&m_duration);
+    }
+  f1.getline(buf,100);
+  f1.getline(buf,100);
+  sscanf(buf,"%lf",&m_enph);
   f1.close();
-  //  if (cst::savef) Save();
+  
+}
+
+double GRBConstants::MakeGRB()
+{
+  setDuration(m_duration);
+  setNshell(m_nshell);
+  setRedshift(m_redshift);
+  setEtot(m_etot);
+  setR0(m_r0);
+  setT0(m_t0);
+  setGammaMin(m_g0);
+  setGammaMax(m_g1);
+  setEnergyPh(m_enph);
 }
 
 double GRBConstants::SelectFlatRandom(double min, double max)
@@ -147,23 +149,23 @@ void GRBConstants::Save(bool flag)
 void GRBConstants::setNshell(int value){
   if (value == 0)
     {
-      nshell=0;
-      while(nshell<2)
+      m_nshell=0;
+      while(m_nshell<2)
 	{
-	  if (burst_type=="Short"){nshell=int(SelectGaussRandom(4,10));}
-	  else {nshell=int(SelectGaussRandom(75,125));}
+	  if (m_burst_type=="Short"){m_nshell=int(SelectGaussRandom(4,10));}
+	  else {m_nshell=int(SelectGaussRandom(10,100));}
 	}
     }
   else
     {
-      nshell=value;
+      m_nshell=value;
     }
-  if(nshell<2) nshell=2;
+  if(m_nshell<2) m_nshell=2;
 }
 
 
 void GRBConstants::setRedshift(double value){
-  value==0 ? redshift=SelectFlatRandom(0.1,3):redshift=value;
+  value==0 ? m_redshift=SelectFlatRandom(0.1,3):m_redshift=value;
 }
 
 void GRBConstants::setEtot(double value){
@@ -171,75 +173,98 @@ void GRBConstants::setEtot(double value){
   if (value==0)
     {
       temp=SelectGaussRandom(51,55);
-      etot=pow(10,temp);
+      m_etot=pow(10,temp);
     }
   else
     {
-      etot=value;
+      m_etot=value;
     }
 }
 
 void GRBConstants::setR0(double value){
   if (value==0)
     {
-      if(burst_type=="Short")
+      if(m_burst_type=="Short")
 	{
-	  double temp=SelectGaussRandom(pow(10,8.5),pow(10,9.5));
-	  r0=temp;
-	  //	  r0=pow(10,temp);
+	  double temp=SelectGaussRandom(pow(10,6.),pow(10,10.));
+	  m_r0=temp;
 	}
       else
 	{
-	  double temp=SelectGaussRandom(9.6,10.);
-	  r0=pow(10,temp);
+	  double temp=SelectGaussRandom(pow(10,6.),pow(10,10.));
+	  m_r0=temp;
 	}
     }
   else
     {
-      r0=value;
+      m_r0=value;
     }  
 }
 
 void GRBConstants::setT0(double value){
   if (value==0)
     {
-      if(burst_type=="Short")
+      if(m_burst_type=="Short")
 	{
-	  double temp=SelectGaussRandom(8.0,9.0);
-	  t0=pow(10,temp);
+	  double temp=SelectGaussRandom(5.,10.);
+	  m_t0=pow(10,temp);
 	}
       else
 	{
-	  double temp=SelectGaussRandom(9.6,10);
-	  t0=pow(10,temp);
+	  double temp=SelectGaussRandom(5.,10.);
+	  m_t0=pow(10,temp);
 	}
     }
   else
     {
-      t0=value;
+      m_t0=value;
     }  
 }
 
 void GRBConstants::setGammaMin(double value){
   if (value==0)
     {
-      if(burst_type=="Short")
+      if(m_burst_type=="Short")
 	{
-	  g0=SelectGaussRandom(50,200);
+	  m_g0=SelectGaussRandom(50,200);
 	}
       else
 	{
-	  g0=SelectGaussRandom(90,110);
+	  m_g0=SelectGaussRandom(90,110);
 	}
     }
   else
     {
-      g0=value;
+      m_g0=value;
     }  
 }
 
 
 
 void GRBConstants::setGammaMax(double value){
-  value==0 ? g1=SelectGaussRandom(2*g0,100*g0):g1=value;
+  value==0 ? m_g1=SelectGaussRandom(2*m_g0,100*m_g0):m_g1=value;
 }
+
+void GRBConstants::setDuration(double value){
+  m_duration=value;
+  if (value<2.0)
+    {m_burst_type="Short";}
+  else
+    {m_burst_type="Long";}  
+}
+
+/*
+  bool GRBConstants::CompareResults(double duration, double ftot)
+  {
+  
+  if(!m_GenerateAgain) 
+  if (duration<=1000.0) return true;
+  
+  bool c1=false;
+  //  bool c2=false;
+  
+  if (m_duration <= duration+duration/10. && m_duration > duration-duration/10.) c1=true;
+  return c1;
+  //  if (m_duration <= duration+duration/10. && m_duration > duration-duration/10.)  
+  }
+*/

@@ -12,6 +12,8 @@
 #ifndef GRBCONSTANTS_HH
 #define GRBCONSTANTS_HH 1
 #include <string>
+#include <cmath>
+
 namespace cst
 {
   /// Universal constants :
@@ -22,6 +24,7 @@ namespace cst
   const double G2MeV     = 815.78;
   const double st        = 6.65225e-25;
   const double mec2      = 0.510999;
+  const double mu0       = 4.0*M_PI*1.0e-7; //N A^-2
   //! light speed in cm/sec.
   const double c         = 2.98e+10;
   const double c2        = c*c;
@@ -37,23 +40,24 @@ namespace cst
   const double p         = 2.5;
   const double viscosity = 0.0;
   /// Internal Parameters
-  const double enmax     = 1.0e+12;
+  const double enmax     = 3.0e+12;
   //! Min. photon energy detectable by GLAST: set to 1 MeV
-  //  const double enph      = 1.0e+6; 
-  const double enph      = 5.0e+4; // = 50 KeV BATSE band
+  //  double enph= 25.0e+3;
+//const double enph      = 1.0e+7; 
+//    const double enph      = 25.0e+3; // = 25 KeV BGO band
   //! Minimal Temporal separation between 2 photons
   const double DeadTime  = 1.0e-5; //sec
-  const double enmin     = 1.0e+3;
+  const double enmin     = 1.0e+1;
   const int nstep        = 200;
-  const int enstep       = 50;
+  const int enstep       = 100;
   //! flag =[0,1], if ==0, No inverse compton;
-  const float flagIC     = 1;
+  const float flagIC     = 1.;
   //! If some of the constants in the GRBParam.txt file is ==0, it will be choosen randomly, accoding the to kind of burst selected.
   //!  The possibilities are:
   //! 'Short' or 'Long' to select the kind of burst will be generated.
   //!  Everything else to select short or long burst whith different prop=bability.
-  const bool savef=true;
-  const std::string paramFile= "GRBdata.txt";
+  const bool savef=false;
+  const std::string paramFile= "GRBdata.txt";  
 }
 
 class GRBConstants 
@@ -79,65 +83,79 @@ class GRBConstants
   void Save(bool flag=false);
 
   //! Returns a random number between \param min and \param max with a \em flat distributin 
-  double SelectFlatRandom(double min=0.0, double max=1.0);
+  static double SelectFlatRandom(double min=0.0, double max=1.0);
 
   //! Returns a random number between \param min and \param max with a \em gaussian distributin 
-  double SelectGaussRandom(double min=0.0, double max=2.0);
+  static double SelectGaussRandom(double min=0.0, double max=2.0);
 
   //! Number of shells generated from the source
-  inline int Nshell() {return nshell;}
+  inline int Nshell() {return m_nshell;}
   
   // inline void SeveFile(bool value){savef=value;}
   //! Set the number of shells. If the arguments is 0 it returns a random number.
   void setNshell(int value=10);
   
   //! Redshift of the source.
-  inline double Redshift() {return redshift;}
+  inline double Redshift() {return m_redshift;}
 
   //! Set the redshift of the source. If the arguments is 0 it returns a random number.
   void setRedshift(double value=1.0);
   
   //! Total Energy available (ergs)
-  inline double Etot(){return etot;}
+  inline double Etot(){return m_etot;}
 
   //! Set the total Energy available.
   void setEtot(double value);
   
   //! Initial separation between shells (cm)
-  inline double R0(){return r0;}
+  inline double R0(){return m_r0;}
 
   //! Set the initial separation between the shells.
   void setR0(double value);
   
   //! Initial thickness of the shells (cm)
-  inline double T0(){return t0;}
+  inline double T0(){return m_t0;}
   //! Set the initial thickness
   inline void setT0(double value);
   
   //! Minimum Lorentz factor of the shells
   //  inline double Gamma0(){return g0;}
-  inline double GammaMin(){return g0;}
+  inline double GammaMin(){return m_g0;}
 
   //! Set the minimum Lorentz factor of the shells
   void setGammaMin(double value=100.0);
   
   //! Maximum Lorentz of the shells
-  inline double GammaMax(){return g1;}
+  inline double GammaMax(){return m_g1;}
 
   //! Set the maximum Lorenz of the shells
   void setGammaMax(double value=1000.0);
+  //////////////////////////////////////////////////
+  //! Duration of the burst
+  inline double Duration(){return m_duration;}
+
+  //! Set the maximum Lorenz of the shells
+  void setDuration(double value=0.4);
+  //! Set the maximum Lorenz of the shells
+  inline void setEnergyPh(double value=25.0e+3){m_enph = value;}
+  inline double EnergyPh(){return m_enph;}
+
   
   inline std::string GetParamFile() {return  m_paramFile;}
-  
+  double MakeGRB();
+  //  bool CompareResults(double duration, double ftot);
   
  private:
-  char* burst_type;
-  int nshell;
-  double redshift;
-  double etot;
-  double r0;
-  double t0;
-  double g0,g1;
+  char* m_burst_type;
+  int m_nshell;
+  double m_redshift;
+  double m_etot;
+  double m_r0;
+  double m_t0;
+  double m_g0,m_g1;
+  double m_duration;
+  double m_enph;
+  bool m_GenerateAgain;
   std::string m_paramFile;
  
 };

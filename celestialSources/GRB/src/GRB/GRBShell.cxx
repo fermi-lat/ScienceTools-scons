@@ -39,7 +39,7 @@ void GRBShell::evolve(double dt)
     }
   if(m_gamma<1.0) m_gamma=1.0;
   m_radius += beta(m_gamma)*cst::c*dt;
-  // Expanding sells...
+   // Expanding sells...
   //  m_thickness=m_radius/pow(m_gamma,2)>m_thickness?m_radius/pow(m_gamma,2):m_thickness;
   
 }

@@ -28,6 +28,7 @@ class GRBSim
   //! Gathers all relevant constants for the simulation 
   GRBConstants *myParam;
 
+
   GRBSim();
   //! destructor
   ~GRBSim();
@@ -40,15 +41,17 @@ class GRBSim
    *\param dgamma \f$d\Gamma\f$
    */
   double    generateGamma(double gamma0, double dgamma);
-
+  
+  bool CompareResults(double duration, double ftot);
+  double GRBSim::GRBDuration(char* burst_type="Both");
   /*!
   * \brief Starts the GRB simulation
   *
   * \arg Step 1: Creation of the shells
-  * \arg Step 2: Calculation of the evolution
+  * \arg Step 2: Calculation of the evolution of the shells
   * \arg Step 3: Sorting the Shocks with respect to \c tobs. 
   */
-  void Start();
+  void MakeGRB(double time_offset = 0.);
   /*! \arg Step 4:Compute the Flux, at given time.
    * \param time is the time in which the spectrum is calculated.
    */
@@ -86,7 +89,7 @@ class GRBSim
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
   double              IFlux( std::vector<double>,
-			     double enmin=cst::enph,
+			     double enmin=cst::enmin,
 			     double enmax=cst::enmax);
   
   /*! \brief Return the integrated photon rate (\f$ ph/(m^2 s)\f$) for energy greather than enmin.
@@ -97,8 +100,8 @@ class GRBSim
    * is to avoid generation of low energy photons without interest to GLAST. 
    */
   double              IRate(std::vector<double>,
-			    double enmin=cst::enph);
-
+			    double enmin=cst::enmin,
+			    double enmax=cst::enmax);
   /*!
    * \brief returns a photon energy sampled from the current spectrum vector.
    *
@@ -108,9 +111,11 @@ class GRBSim
    * \param emin minimal energy below which no photon energy is drawn. This 
    * is to avoid generation of low energy photons without interest to GLAST.
    */
-  float DrawPhotonFromSpectrum(std::vector<double>, float u=0.0, double emin=cst::enph);
+  double 		DrawPhotonFromSpectrum(std::vector<double>, 
+  			float u=0.0, 
+  			double enmin=cst::enmin);
 
-
+ inline double EnergyPh(){return m_enph;}
  private:
   //data member
   std::vector<GRBShell> theShells;
@@ -119,12 +124,14 @@ class GRBSim
   std::vector<double>    m_intervals;
   std::pair<float,float> m_grbdir;
   std::vector<std::vector<double> > m_Fvt;
+  
   double m_tmax;
   double m_ftot;
   double m_phtot;
   double m_Area;
   double m_DeadTime;
-};
+  double m_enph;
+  };
 
 #endif
 

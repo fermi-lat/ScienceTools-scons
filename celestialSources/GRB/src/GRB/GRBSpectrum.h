@@ -21,10 +21,12 @@
 #include "src/GPS.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "GRBSim.h"
+//#include "GRBmanager.h"
 
 //! Class interfacing the framework with the GRB generation.
 class GRBSpectrum : public ISpectrum
 {
+  friend class GRBmanager;  
  public:
 
   //! Constructor: takes a file with some parameters as argument.
@@ -61,7 +63,7 @@ class GRBSpectrum : public ISpectrum
   /*! \brief Draws from the current spectrum the energy of a sampled photon. 
    *  \param u uniform random number drawn in the method \c energySrc .  
    */ 
-  float operator() (float /*u */ ) const ;  
+  float operator() (float u ) const ;  
   /*! \brief returns the energy of a sampled photon.
    *
    *  Method called by \c FluxSource::event(). 

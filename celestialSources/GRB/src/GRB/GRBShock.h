@@ -37,15 +37,13 @@ class GRBShock
   GRBShock(GRBShell, GRBShell, double time);
 
   //! destructor
-  ~GRBShock() { }
+  ~GRBShock() { } 
   
   //Accessors:
   //! The time is evaluated in the Shell reference frame
   //  inline double time() {return m_time;}
   //! This is the time seen by GLAST
   inline double tobs() const {return m_tobs;}
-  //! Return the approximative duration of the shock
-  inline double duration() const {return m_riset;}
   //! Radius of the resulting Shell 
   inline double Radius() const {return m_radius;}
   /*! \brief Internal energy. 
@@ -91,7 +89,7 @@ class GRBShock
    * This metod is used only for normalize the spectrum, and the value is 
    * set by GRBSim.
    */
-  //inline double Sum() {return m_sum;}
+  //  inline double Sum() {return m_sum;}
 
   //Set functions:
 
@@ -105,6 +103,9 @@ class GRBShock
 
   //! A printout utility.
   void Write();
+  
+  double Umag(double B);
+  double Bfield(double Ub);
 
   /*!\brief Calculates the synchrotron critical energy (in eV)
    * for an electron.
@@ -113,7 +114,8 @@ class GRBShock
    * \param gammae is the Lorentz factor of the electron \f$\gamma_e\f$ 
     */
   double Esyn(double gammae);
-
+  double Gamma(double esyn);
+  double Psyn(double gammae);
   /*!\brief Calculates the Inverse Compton emission energy (in eV)
    *
    * If \f$h\nu_{in}\f$ is the energy of the incoming photon, and \f$\gamma_e\f$
@@ -135,8 +137,11 @@ class GRBShock
    * \param phenergy is the energy of the observed photon
    * \param B_field is the equipartition magnetic field
    */ 
-  double tsyn(double phenergy, double B_field);
+  double tsyn(double phenergy);
 
+  //! Return the approximative duration of the shock
+  double duration();
+  
   /*! \brief Fast Rise Exponential Decay.
    *
    * This method calculates the temporal behaviour of the spectrum.
@@ -146,7 +151,7 @@ class GRBShock
    * while the decay time depends on the cooling time of the 
    * processes (Syn, IC, ...).
    */
-  double fred(double ee, double tt);
+  double fred(double tt, double riset, double decayt);
   
   //! Calculates the Synchrotron component of the spectrum. 
   double Fsyn(double ee, double tt);
@@ -182,6 +187,7 @@ class GRBShock
   double m_npart;
   double m_n1;
   
+  double m_geabs;
   double m_gemin;
   double m_gemax;
   double m_gecoo;
