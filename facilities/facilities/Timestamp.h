@@ -170,7 +170,7 @@ namespace facilities {
   };
 
   /// Addition
-  static Timestamp operator+ (Timestamp a, 
+  inline Timestamp operator+ (Timestamp a, 
                               Timestamp b) {
     Timestamp t = a;
     return t += b;
@@ -178,7 +178,7 @@ namespace facilities {
 
 
   /// Subtraction
-  static Timestamp operator- (Timestamp a, 
+  inline Timestamp operator- (Timestamp a, 
                               Timestamp b) {
     Timestamp t = a;
     return t -= b;
