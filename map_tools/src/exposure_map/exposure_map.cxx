@@ -99,7 +99,8 @@ int main(int argc, char * argv[]) {
         // create the image object, fill it from the exposure, write out
         SkyImage image(pars); 
 
-        image.fill(RequestExposure(ex, Aeff(), 1.0));
+        RequestExposure req(ex, Aeff(), 1.0);
+        image.fill(req);
         image.write(&iosrv);
 
         iosrv.closeFile();
