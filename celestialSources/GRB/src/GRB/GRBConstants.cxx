@@ -25,16 +25,13 @@ void GRBConstants::InitializeRandom()
   time_t ctime;
   if (time(&ctime)==time_t(-1))
     {
-      cout<<" Time() not defined for this processor"<<endl;
+      cout<<" Time() not defined for this processor "<<endl;
       ini=1;
     }
-  //  tm* gt=gmtime(&ctime);
   ini=(ctime);
-  //  cout<<ini<<endl;
-  //ini=int(gt->tm_sec);
   HepRandom::setTheSeed(ini);
-  //  cout<<SelectFlatRandom(0.0,1.0)<<endl;
 }
+
 void GRBConstants::ReadParam(){  // It determines if, in case of random selection of the parameters,
   // the burst is long or short...
   //burst_type="Short";
@@ -125,35 +122,16 @@ void GRBConstants::Save(bool flag)
 {
   if(flag)
     {
-      /*
-	std::string paramFile = "$(GRBROOT)/src/test/GRBlog.txt";
-	facilities::Util::expandEnvVar(&paramFile);
-	ofstream f1(paramFile.c_str(),ios::app);
-	if (! f1.is_open()) 
-	{
-	cout<<"Error Opening $(GRBROOT)/src/test/GRBlog.txt\n";
-	//TODO LIST: still need to remove this exit, without gwtting a core dump!
-	exit(1);
-	}
-	cout<<"Save Parameters into the file: "<<paramFile.c_str()<<endl;
-	f1<<"********************"<<endl;
-	f1<<" Nshell   = "<<Nshell()<<endl;
-	f1<<" Redshift = "<<Redshift()<<endl;
-	f1<<" Etot     = "<<Etot()<<endl;
-	f1<<" R0      = "<<R0()<<endl;
-	f1<<" T0      = "<<T0()<<endl;
-	f1<<" Gamma0   = "<<Gamma0()<<endl;
-	f1<<" DGamma0  = "<<DGamma()<<endl;
-	f1.close();
-      */
-      std::string paramFile2 = "$(GRBROOT)/src/test/GRBdata.txt";
-      facilities::Util::expandEnvVar(&paramFile2);
-      ofstream f2(paramFile2.c_str(),ios::app);
+      m_paramFile=cst::paramFile;
+      facilities::Util::expandEnvVar(&m_paramFile);
+      cout<<"Save Parameters into the file: "<<m_paramFile.c_str()<<endl;
+      ofstream f2(m_paramFile.c_str(),ios::app);
       if (! f2.is_open()) 
 	{
-	  cout<<"Error Opening $(GRBROOT)/src/test/GRBdata.txt\n";
+	  cout<<"Error Opening "<<m_paramFile<<endl;
 	  exit(1);
 	}
+      
       f2<<Nshell()<<endl;
       f2<<Redshift()<<endl;
       f2<<Etot()<<endl;

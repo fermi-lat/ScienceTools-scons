@@ -11,7 +11,7 @@
 
 #ifndef GRBCONSTANTS_HH
 #define GRBCONSTANTS_HH 1
-
+#include <string>
 namespace cst
 {
   /// Universal constants :
@@ -54,7 +54,7 @@ namespace cst
   //! 'Short' or 'Long' to select the kind of burst will be generated.
   //!  Everything else to select short or long burst whith different prop=bability.
   const bool savef=false;
-  
+  const std::string paramFile="GRBdata.txt";
 }
 
 class GRBConstants 
@@ -135,7 +135,7 @@ class GRBConstants
   double r0;
   double t0;
   double g0,g1;
-
+  std::string m_paramFile;
 };
 
 #endif
