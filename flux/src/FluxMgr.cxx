@@ -381,7 +381,7 @@ HepRotation FluxMgr::CELTransform(double time){
 HepRotation FluxMgr::orientTransform(double time){
 	//make the transformtion that turns zenith coordinates into local coordinates.
     HepRotation ret;
-    ret = GPS::instance()->transformToGlast(time,GPS::CoordSystem::ZENITH);
+    ret = GPS::instance()->transformToGlast(time,GPS::ZENITH);
 	//note:  this transformation is only used by FluxDisplay to tell where the earth's horizon is.
 	//it will rotate zenith coordinates into a frame where the "upwards direction" becomes the direction of the
 	//zenith in spacecraft coordinates, but is not more specific than that.
