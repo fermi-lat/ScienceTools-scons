@@ -112,7 +112,8 @@ increments at the location of the reference point.<br>
  style="font-weight: bold;">
 <span style="font-weight: bold;">double latpole</span><br>
 <div style="text-align: left; margin-left: 40px;">These two parameters
-correspond the LONPOLE and LATPOLE.&nbsp; These are the coordinates of
+correspond to keywords LONPOLE and LATPOLE.&nbsp; These are the
+coordinates of
 the celestial pole given in native coordinates.&nbsp; If not specified,<br>
 WCSLIB sets these automatically.<br>
 </div>
@@ -137,25 +138,57 @@ just specify parameters that set up the projection.&nbsp; <br>
 <br>
 <span style="font-weight: bold;"><br>
 Doing a projection directly using SkyProj</span><br>
+<br style="font-style: italic;">
+<span style="font-style: italic; color: rgb(0, 0, 153);">std::string
+projType("AIT");</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">double crpix[]
+= {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">SkyProj
+projection(projType, crpix, crval, cdelt);</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">double lon =
+10, lat = 15;</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">std::pair&lt;double,double&gt;
+prjcoords1 = projection.sph2pix(lon,lat);</span><br>
 <br>
-std::string projType("AIT");<br>
-double crpix[] = {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};<br>
-SkyProj projection(projType, crpix, crval, cdelt);<br>
-double lon = 10, lat = 15;<br>
-std::pair&lt;double,double&gt; prjcoords1 = projection.sph2pix(lon,lat);<br>
 <br>
+<span style="font-weight: bold;">Doing a projection through SkyDir<br>
+<span style="font-weight: bold;"><span style="font-weight: bold;"></span></span><br>
+</span>Two member functions in SkyDir have SkyProj objects as
+parameters.&nbsp; A new SkyDir constructor takes a set of pixel
+coordinates and uses a SkyProj object to do the transformation.&nbsp;
+SkyDir's <span style="font-style: italic;">project</span> function
+takes a SkyProj object as a parameter and uses it to do the
+transformation.<br>
 <br>
-<span style="font-weight: bold;">Doing a projection through SkyDir</span><br>
-<br>
-std::string projType("AIT");<br>
-double crpix[] = {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};<br>
-SkyProj projection(projType, crpix, crval, cdelt);<br>
-double lon = 10, lat = 15;<br>
-SkyDir sd(lon,lat);<br>
-std::pair&lt;double,double&gt; prjcoords2 = sd.project(projection);<br>
+SkyDir(double pixelx, double pixely, const SkyProj&amp; projection);<br>
+std::pair&lt;double,double&gt; project(const SkyProj&amp; projection)
+const;<span style="font-weight: bold;"><br>
+</span><br style="font-style: italic;">
+<span style="font-style: italic; color: rgb(0, 0, 153);">std::string
+projType("AIT");</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">double crpix[]
+= {0,0}, crval[] = {0,0}, cdelt[] = {-1,1};</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">SkyProj
+projection(projType, crpix, crval, cdelt);</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">double lon =
+10, lat = 15;</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">SkyDir
+sd(lon,lat);</span><br
+ style="font-style: italic; color: rgb(0, 0, 153);">
+<span style="font-style: italic; color: rgb(0, 0, 153);">std::pair&lt;double,double&gt;
+prjcoords2 = sd.project(projection);</span><br>
 <br>
 The inverse projection can be obtained by calling the pix2sph member
 function of the SkyProj object.<br>
+<br>
 <br>
 <div style="text-align: center;">
 <h2>A Few Sample Projections</h2>
