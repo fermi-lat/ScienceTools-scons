@@ -36,7 +36,7 @@ public:
     HealpixArray():m_hp(1){resize(m_hp.size());}
 
     //! return the direction associated with an iterator
-    astro::SkyDir dir(const_iterator it){
+    astro::SkyDir dir(typename std::vector<C>::const_iterator it)const{
         astro::Healpix::Pixel px(it-begin(), m_hp);
         return px();
     }
