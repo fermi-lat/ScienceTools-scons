@@ -46,36 +46,70 @@
                Application: No activity
 
     5/17/2004  Library: No activity
-               Application: Refactor to use library to accomplish
+               Application: 5) Refactor to use library to accomplish
                the most critical analysis goals: light curve,
                time-unbinned spectra (PHA1), time-binned spectra
                (PHA1 and PHA2). Critical point: files produced
                must pass fverify, and comply with the letter of
                OGIP standards for their respective file formats.
 
-    5/23/2004  Library: 1) Add support for writing histograms to
-               output (FITS) images. 2) Add support for user-provided
+    5/23/2004  Library: 6) Add support for writing histograms to
+               output (FITS) images. 7) Add support for user-provided
                bin definitions.
-               Application: 1) Add capability of producing count
-               maps. 2) Add capability to utilize user-provided
+               Application: 8) Add capability of producing count
+               maps. 9) Add capability to utilize user-provided
                bin definitions.
 
-    5/30/2004  Library: 1) Add constant S/N and Bayesian block
+    5/30/2004  Library: 10) Add constant S/N and Bayesian block
                binners.
-               Application: 1) Add capability of using these new
+               Application: 11) Add capability of using these new
                binners.
 \endverbatim
 
-    \subsection details Library Design Details
-    Class families include Binner, HistN, TipHistIO.
-    The Binner hierarchy provides abstractions to manage
-    bin definitions, and to determine the bin index for
-    any given data value. However binners do not store any
-    data. That is the job of the HistN class. HistN objects
-    have one or more Binner objects, to manage binning in one
-    or more dimensions. In addition, HistN objects contain an
-    array to store the binned values. The TipHistIO class is
-    used to facilitate binning operations in which the input
-    data and/or the output binned data is stored in files
-    which are accessed using the tip package.
+    \subsection status Status of Development
+
+\verbatim
+    5/13/2004  Points 1, 2, 3, 4 were completed. Footnote to point
+               3: a generic N-dimensional histogram class was not
+               developed, but 1 and 2 D cases were, and extensions
+               to 3 or more dimensions are straightforward. Point
+               5 has been partly addressed. The PHA2 case does not
+               work correctly, mainly because there is not yet a
+               template for PHA2 files.
+\endverbatim
+
+    \section details Library Design Details
+    Base classes for families include Binner and Hist. The Binner
+    hierarchy provides abstractions to manage bin definitions, and
+    to determine the bin index for any given data value. However
+    binners do not store any data. That is the job of histograms
+    in the Hist hierarchy. Hist objects use Binner in a Strategy
+    pattern: a Hist object is configured with a supplied Binner
+    subobject, allowing arbitrary binning methods for each dimension
+    of a histogram.
+
+    In addition, a RecordBinFiller functor exists for the purpose of
+    filling a given Hist object from a table record from the tip
+    package. Beyond this, tip-specific writing classes have not
+    yet been added because writing output is pretty heterogeneous,
+    even in very similar situations. For example, when writing a light
+    curve, the interval information goes directly in the output table,
+    while for spectra the intervals are described in the EBOUNDS
+    extension. Similarly, the CHANNEL field is written for spectra,
+    but not for light curves. For the moment, application will simply
+    maintain different methods for each file output type. Such methods
+    may be moved to the library at some future point.
+
+    \section todo Open Issues
+\verbatim
+       1. 5/13/2004: PHA2 case doesn't work because template file is not available.
+       2. 5/13/2004: Keywords in output file are wrong in many cases (e.g. DATE-OBS)
+          because a means does not exist to update them from the input file.
+       3. 5/13/2004: The main application, evtbin, has some redundant (parallel) code
+          for different similar binning situations. This should naturally be consolidated.
+\endverbatim
+
+    \section done Resolved Issues
+\verbatim
+\endverbatim
 */
