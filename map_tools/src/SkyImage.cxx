@@ -33,6 +33,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_total(0)
 , m_image(0)
 , m_save(true)
+, m_layer(0)
 {
     using namespace astro;
 
@@ -142,7 +143,15 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
         cr1[2],          cr2[2], 
         crota2, uselb);
 }
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+unsigned int SkyImage::setLayer(unsigned int newlayer)
+{
+    if( newlayer>= m_naxis3)
+        throw std::invalid_argument("SkyImage::setLayer-- invalid layer number");
+    unsigned int t = m_layer;
+    m_layer = newlayer;
+    return t;
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
@@ -196,6 +205,16 @@ void SkyImage::clear()
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SkyImage::~SkyImage()
+{
+    if( !m_save) { delete m_image; return;}
+    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
+    if(image!=0){
+        image->saveElement();
+        delete image;
+    }
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 {
     if( layer >= (unsigned int)m_naxis3) throw std::out_of_range("SkyImage::fill, layer out of range");
@@ -212,13 +231,33 @@ double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SkyImage::~SkyImage()
+float &  SkyImage::operator[](const astro::SkyDir&  pixel)
+ {
+    std::pair<double,double> p= pixel.project();
+    unsigned int 
+        i = static_cast<unsigned int>(p.first),
+        j = static_cast<unsigned int>(p.second),
+        k = i+m_naxis1*(j + m_layer*m_naxis2);
+
+    if(  k< m_pixelCount){
+        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    }else{
+        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
+    }
+ }
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const float &  SkyImage::operator[](const astro::SkyDir&  pixel)const
 {
-    if( !m_save) { delete m_image; return;}
-    FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
-    if(image!=0){
-        image->saveElement();
-        delete image;
+    std::pair<double,double> p= pixel.project();
+    unsigned int 
+        i = static_cast<unsigned int>(p.first),
+        j = static_cast<unsigned int>(p.second),
+        k = i+m_naxis1*(j + m_layer*m_naxis2);
+
+    if(  k< m_pixelCount){
+        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    }else{
+        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

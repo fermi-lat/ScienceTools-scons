@@ -24,10 +24,20 @@ MapParameters::MapParameters( int argc, char *argv[])
     // z direction (layers) defaults to 1.
     m_npix_z= getValue<long>("layers", 1);
 
-    // Read image size (presumably degrees--don't know why it is integer)
-    m_imgSizeX= getValue<double>( "imgsize" );
+    // Read image size (presumably degreesr)
+    m_imgSizeX= getValue<double>( "imgsize" , 0);
     // if y not specified, assume square
     m_imgSizeY= getValue<double>( "imgsizey", m_imgSizeX);
+
+    if( m_imgSizeX==0 ) { // not specified: require a "pixelsize" card
+        double pixelsize=0;
+        try { pixelsize = getValue<double>("pixelsize"); } catch(...){
+            std::cerr << "MapParameters::MapParameters: neither imgsize or pixelsize specified" << std::endl;
+            throw;
+        }
+        m_imgSizeX = m_npix* pixelsize;
+        m_imgSizeY = m_npix_y*pixelsize;
+    }
 
     // Read xref, yref (standard is center)
     m_xref = getValue<double>("xref",0.);
