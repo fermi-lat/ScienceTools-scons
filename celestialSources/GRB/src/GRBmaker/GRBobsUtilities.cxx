@@ -3,7 +3,6 @@
 #include "GRBobsUtilities.h"
 #include <fstream>
 #include <iomanip>
-//#include "GRBobsConstants.h"
 #include "GRBsimvecCreator.h"
 #include <algorithm>  // for transform
 #include <numeric>  // for accumulate
@@ -90,7 +89,6 @@ double GRBobsUtilities::randGen::operator () (double x)
 
 
 
-
 // sortVector(index, in, sorted, out)
 // sorts "out" array in the order of "in"
 //
@@ -110,107 +108,21 @@ double GRBobsUtilities::randGen::operator () (double x)
 //		GRBmaker::makeTimes
 //		GRBpulse::getAmplitude
 
-// This version is lot slower than the following;  It takes ~8 minutes to run while the next version
-// takes ~1.30 minutes.
-//void GRBobsUtilities::sortVector(const long index, const std::vector<double> &in, const std::vector<double> &sorted, 
-//						  std::vector<double> &out) 
-//{
-//	doubleSize sz = in.size();
-
-//	std::vector<double> temp(out);
-
-//	for (long i=0; i<sz; ++i)
-//	{
-//		doubleConstIter it = std::find(sorted.begin(), sorted.end(), in[i]);
-
-//		doubleIter it_out = out.begin();
-//		std::advance(it_out, std::distance(sorted.begin(), it));
-
-//		*(it_out+index) = temp[i+index];
-//	}
-//}
-
-
+// This version is quite slow - but ok for small vectors like the one used by GRBmaker.
 void GRBobsUtilities::sortVector(const long index, const std::vector<double> &in, const std::vector<double> &sorted, 
-								 std::vector<double> &out) 
+						  std::vector<double> &out) 
 {
 	DoubleSize sz = in.size();
 
-	std::deque<bool> flag(sz,0);
 	std::vector<double> temp(out);
 
 	for (long i=0; i<sz; ++i)
 	{
-		long lowerBound=0, upperBound=sz-1; 
-		long mid=(lowerBound + upperBound) / 2;
-		long ich=-1;
+		DoubleConstIter it = std::find(sorted.begin(), sorted.end(), in[i]);
 
-		while (ich == -1)
-		{
-			bool next=0;
-	
-			if (in[i] <= sorted[mid])
-			{
-				if (in[i] == sorted[lowerBound])
-				{
-					while ((lowerBound <= mid) && (flag[lowerBound]))
-						++lowerBound;
+		DoubleIter it_out = out.begin();
+		std::advance(it_out, std::distance(sorted.begin(), it));
 
-					if (lowerBound <= mid)
-						ich = lowerBound;
-				}
-
-				else if (in[i] == sorted[mid])
-				{
-					if (!flag[mid])
-						--mid;
-
-					while ((mid > lowerBound) && (in[i] == sorted[mid]) && (!flag[mid]))
-						--mid;
-
-					ich = mid + 1;
-				}
-
-				else
-				{
-					upperBound = mid;
-					next = 1;
-				}
-			}
-
-			if ((!next) && (ich == -1))
-			{
-				++mid;
-
-				if (in[i] == sorted[mid])
-				{
-					while ((mid <= upperBound) && (flag[mid]))
-						++mid;
-
-					ich = mid;
-				}
-
-				else if (in[i] == sorted[upperBound])
-				{
-					--upperBound;
-
-					while ((upperBound > mid) && (in[i] == sorted[upperBound]) && (!flag[upperBound]))
-						--upperBound;
-
-					ich = upperBound + 1;
-				}
-
-				else
-					lowerBound = mid + 1;
-			}
-
-			mid=(lowerBound + upperBound) / 2;
-			if (ich != -1)
-				flag[ich] = 1;
-		}
-
-		out[ich+index] = temp[i+index];
+		*(it_out+index) = temp[i+index];
 	}
 }
-
-
