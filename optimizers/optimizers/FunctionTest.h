@@ -10,6 +10,8 @@
 #ifndef optimizers_FunctionTest_h
 #define optimizers_FunctionTest_h
 
+#include <cassert>
+
 #include "optimizers/Parameter.h"
 #include "optimizers/Arg.h"
 #include "optimizers/Function.h"
