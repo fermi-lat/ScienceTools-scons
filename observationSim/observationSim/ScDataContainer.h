@@ -12,10 +12,13 @@
 #include <string>
 #include <vector>
 
-#include "FluxSvc/../src/EventSource.h"
-#include "FluxSvc/../src/FluxMgr.h"
+#include "astro/SkyDir.h"
+
+#include "observationSim/Container.h"
 #include "observationSim/ScData.h"
 #include "observationSim/FitsTable.h"
+
+class EventSource;
 
 namespace observationSim {
 
@@ -28,21 +31,21 @@ namespace observationSim {
  * $Header$
  */
 
-class ScDataContainer {
+class ScDataContainer : public Container {
 
 public:
 
    /// @param filename The name of the output FITS file.
+   /// @param useA1fmt A flag to use the format that the A1 tool expects.
    ScDataContainer(const std::string &filename, bool useA1fmt=false);
 
    ~ScDataContainer() {writeScData(); delete m_scDataTable;}
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
-   /// @param fm The FluxMgr object.
    /// @param flush A flag to indicate whether to write the accumulated
    ///        ScData and then flush the buffers.
-   void addScData(EventSource *event, FluxMgr &fm, bool flush=false);
+   void addScData(EventSource *event, bool flush=false);
 
 private:
 

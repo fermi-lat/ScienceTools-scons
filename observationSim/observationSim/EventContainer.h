@@ -14,6 +14,7 @@
 
 #include "FluxSvc/../src/EventSource.h"
 #include "FluxSvc/../src/FluxMgr.h"
+#include "observationSim/Container.h"
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
 
@@ -28,7 +29,7 @@ namespace observationSim {
  * $Header$
  */
 
-class EventContainer {
+class EventContainer : public Container {
 
 public:
 
@@ -39,11 +40,10 @@ public:
    ~EventContainer() {writeEvents(); delete m_eventTable;}
 
    /// @param event A pointer to the current EventSource object
-   ///        that was provided by the FluxMgr object fm.
-   /// @param fm The FluxMgr object.
+   ///        that was provided by the FluxMgr object.
    /// @param flush A flag to indicate whether to write the accumulated
    ///        Event data and then flush the buffers.
-   int addEvent(EventSource *event, FluxMgr &fm, bool flush=false);
+   int addEvent(EventSource *event, bool flush=false);
 
 private:
 
