@@ -1,6 +1,6 @@
 package map_tools
 
-version v5r5p1
+version v5r6
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -13,6 +13,9 @@ use st_app *
 
 
 apply_pattern ST_library option=-no_share
+
+apply_pattern st_shared_library_package
+
 apply_pattern ST_pfiles
 #---------------------------------------------------------------
 private
@@ -20,10 +23,12 @@ macro_append test_source "" WIN32 " -s=..\pfiles test_map_tools.par"
 
 
 # add separate image code to the library
-apply_pattern ST_add_to_lib name=image
+#apply_pattern ST_add_to_lib name=image
 
 public
 # applications
+# for test program
+use flux * -no_auto_imports
 
 apply_pattern ST_app name=count_map
 apply_pattern ST_app name=exposure_cube
