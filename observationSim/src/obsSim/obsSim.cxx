@@ -53,14 +53,8 @@ public:
       m_pars.Prompt();
       m_pars.Save();
       m_count = m_pars["Number_of_events"];
-      GaussianSourceFactory();
-      GRBmanagerFactory();
-      IsotropicFactory();
-      MapSourceFactory();
-      PeriodicSourceFactory();
-      PulsarFactory();
-      SimpleTransientFactory();
-      TransientTemplateFactory();
+      setRandomSeed();
+      createFactories();
    }
    virtual ~ObsSim() throw() {
       try {
@@ -83,6 +77,7 @@ private:
    observationSim::Simulator * m_simulator;
 
    void setRandomSeed();
+   void createFactories();
    void setXmlFiles();
    void readSrcNames();
    void createResponseFuncs();
@@ -93,7 +88,8 @@ private:
 st_app::StAppFactory<ObsSim> myAppFactory;
 
 void ObsSim::run() {
-   setRandomSeed();
+//    setRandomSeed();
+//    createFactories();
    setXmlFiles();
    readSrcNames();
    createResponseFuncs();
@@ -107,6 +103,17 @@ void ObsSim::setRandomSeed() {
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
    HepRandom hepRandom(m_pars["Random_seed"]);
+}
+
+void ObsSim::createFactories() {
+   GaussianSourceFactory();
+   GRBmanagerFactory();
+   IsotropicFactory();
+   MapSourceFactory();
+   PeriodicSourceFactory();
+   PulsarFactory();
+   SimpleTransientFactory();
+   TransientTemplateFactory();
 }
 
 void ObsSim::setXmlFiles() {

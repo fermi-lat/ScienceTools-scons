@@ -65,6 +65,7 @@ void LatSc::getScPosition(double time, std::vector<double> & position) {
 }
 
 void LatSc::getZenith(double time, double & ra, double & dec) {
+   GPS::instance()->getPointingCharacteristics(time);
    ra = GPS::instance()->RAZenith();
    dec = GPS::instance()->DECZenith();
 }
