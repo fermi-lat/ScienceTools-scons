@@ -17,11 +17,11 @@ namespace table {
     m_fits_utils(0), m_header(0), m_data(0) {
     try {
       m_fits_utils = new FitsExtensionUtils(file_name, ext_name);
-      m_header = m_fits_utils->createHeader();
-      m_data = m_fits_utils->createData();
+      m_header = m_fits_utils->getHeaderData();
+      m_data = m_fits_utils->getTabularData();
     } catch(...) {
-      delete m_data; m_data = 0;
-      delete m_header; m_header = 0;
+//      delete m_data; m_data = 0;
+//      delete m_header; m_header = 0;
       delete m_fits_utils; m_fits_utils = 0;
       throw;
     }
