@@ -58,6 +58,7 @@ HepRotation LatSc::InstrumentToCelestial(double time) {
 // // Try to use astro::PointingTransform class.
 
 //    GPS *gps = GPS::instance();
+//    gps->getPointingCharacteristics(time);
 //    astro::SkyDir xAxis(gps->RAX(), gps->DECX());
 //    astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
 
