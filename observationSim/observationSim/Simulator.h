@@ -60,6 +60,14 @@ public:
              double startTime = 0.)
       {init(std::string(sourceName), fileList, totalArea, startTime);}
 
+   /// @param sourceNames A vector of source names as they appear in 
+   ///        the xml file.
+   Simulator(const std::vector<std::string> &sourceNames,
+             const std::vector<std::string> &fileList,
+             double totalArea = 1.21,
+             double startTime = 0.)
+      {init(sourceNames, fileList, totalArea, startTime);}
+
    ~Simulator() {delete m_fluxMgr; delete m_source;}
 
    /// Specify the rocking strategy from among those defined by
@@ -118,11 +126,15 @@ private:
              const std::vector<std::string> &fileList,
              double totalArea, double startTime);
 
+   void init(const std::vector<std::string> &sourceNames, 
+             const std::vector<std::string> &fileList,
+             double totalArea, double startTime);
+
    void makeEvents(EventContainer &, ScDataContainer &, 
                    latResponse::Irfs &, Spacecraft *spacecraft,
                    bool useSimTime=true);
 
-   void fluxLoad();
+//   void fluxLoad();
 
    bool done();
 
