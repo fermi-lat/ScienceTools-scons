@@ -6,11 +6,14 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
 #include <cmath>
+
 #include <iostream>
+#include <string>
+#include <vector>
+
 #include "optimizers/dArg.h"
+#include "optimizers/ParameterNotFound.h"
 #include "MyFun.h"
 
 namespace optimizers {
@@ -45,8 +48,7 @@ double MyFun::value(Arg &xarg) const {
    return my_val;
 }
 
-double MyFun::derivByParam(Arg &xarg, const std::string &paramName) const 
-   throw(ParameterNotFound) {
+double MyFun::derivByParam(Arg &xarg, const std::string &paramName) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
    std::vector<Parameter> params;

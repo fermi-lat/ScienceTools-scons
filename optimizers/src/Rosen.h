@@ -34,8 +34,7 @@ public:
       return value(dummy);
    }
 
-   virtual double derivByParam(Arg &, const std::string &paramName) const
-      throw(ParameterNotFound);
+   virtual double derivByParam(Arg &, const std::string &paramName) const;
 
    virtual void getFreeDerivs(std::vector<double> &derivs) const {
       Arg dummy;

@@ -9,6 +9,7 @@
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
 #include "optimizers/dArg.h"
+#include "optimizers/OutOfBounds.h"
 #include <vector>
 #include <algorithm>
 #include <iostream>

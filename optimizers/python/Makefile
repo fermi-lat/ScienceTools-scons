@@ -7,11 +7,10 @@
 # $Header$
 #
 
-#SWIG_DIR = /scratch/local
 #PYTHONDIR = $(GLAST_EXT)/python/2.3/Linux
 #PYINCLUDE = -I$(PYTHONDIR)/include
 #SWIG_DIR = /usr/local
-PYINCLUDE = -I/scratch/local/include/python2.3
+#PYINCLUDE = -I/scratch/local/include/python2.3
 SWIG = ${SWIG_DIR}/bin/swig -w401 -w402
 
 CFLAGS = -g -fPIC

@@ -6,11 +6,14 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
 #include <cmath>
+
 #include <sstream>
+#include <string>
+#include <vector>
+
 #include "optimizers/dArg.h"
+#include "optimizers/ParameterNotFound.h"
 #include "RosenND.h"
 
 namespace optimizers {
@@ -40,9 +43,7 @@ double RosenND::value(Arg &) const {
 }
 
 double RosenND::derivByParam(Arg &, 
-                             const std::string &paramName) const
-   throw(ParameterNotFound) {
-
+                             const std::string &paramName) const {
    std::vector<Parameter> params;
    getParams(params);
 

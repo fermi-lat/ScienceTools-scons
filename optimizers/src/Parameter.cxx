@@ -21,13 +21,14 @@
 #include "xml/XmlParser.h"
 
 #include "optimizers/Dom.h"
+#include "optimizers/OutOfBounds.h"
 #include "optimizers/Parameter.h"
 
 namespace optimizers {
 
 XERCES_CPP_NAMESPACE_USE
 
-void Parameter::setValue(double value) throw(OutOfBounds) {
+void Parameter::setValue(double value) {
    static double tol(1e-8);
    if (m_minValue != 0  && fabs((value - m_minValue)/m_minValue) < tol) {
       m_value = m_minValue;
@@ -43,13 +44,12 @@ void Parameter::setValue(double value) throw(OutOfBounds) {
    }
 }
 
-void Parameter::setTrueValue(double trueValue) throw(OutOfBounds) {
+void Parameter::setTrueValue(double trueValue) {
    double value = trueValue/m_scale;
    setValue(value);
 }
 
-void Parameter::setBounds(double minValue, double maxValue) 
-   throw(OutOfBounds) {
+void Parameter::setBounds(double minValue, double maxValue) {
    if (m_value >= minValue && m_value <= maxValue) {
       m_minValue = minValue;
       m_maxValue = maxValue;

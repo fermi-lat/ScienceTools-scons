@@ -35,8 +35,7 @@ public:
 
    double value(Arg&) const;
 
-   double derivByParam(Arg &x, const std::string &paramName) const
-      throw(ParameterNotFound);
+   double derivByParam(Arg &x, const std::string &paramName) const;
 
    virtual Function *clone() const {
       return new BrokenPowerLaw(*this);

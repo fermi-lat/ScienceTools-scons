@@ -6,12 +6,14 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
 #include <cmath>
+
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "optimizers/dArg.h"
+#include "optimizers/ParameterNotFound.h"
 #include "PowerLaw.h"
 
 namespace optimizers {
@@ -50,8 +52,7 @@ double PowerLaw::value(Arg &xarg) const {
            my_params[Index].getTrueValue());
 }
 
-double PowerLaw::derivByParam(Arg &xarg, const std::string &paramName) const 
-   throw(ParameterNotFound) {
+double PowerLaw::derivByParam(Arg &xarg, const std::string &paramName) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Index, Scale};

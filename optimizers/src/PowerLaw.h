@@ -32,8 +32,7 @@ public:
 
    double value(Arg&) const;
 
-   double derivByParam(Arg &x, const std::string &paramName) const
-      throw(ParameterNotFound);
+   double derivByParam(Arg &x, const std::string &paramName) const;
 
    double integral(Arg &xmin, Arg &xmax) const;
 

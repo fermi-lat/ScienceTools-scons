@@ -6,12 +6,15 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
 #include <cmath>
+
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "optimizers/dArg.h"
+#include "optimizers/ParameterNotFound.h"
+
 #include "BrokenPowerLaw.h"
 
 namespace optimizers {
@@ -59,8 +62,7 @@ double BrokenPowerLaw::value(Arg &xarg) const {
 }
 
 double BrokenPowerLaw::derivByParam(Arg &xarg, 
-                                    const std::string &paramName) const 
-   throw(ParameterNotFound) {
+                                    const std::string &paramName) const {
 
    double x = dynamic_cast<dArg &>(xarg).getValue();
 

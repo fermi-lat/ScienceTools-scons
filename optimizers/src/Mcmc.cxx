@@ -43,7 +43,11 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
 
    samples.clear();
 
+   std::cerr << "Mcmc generating samples";
    while (samples.size() < nsamp) {
+      if (samples.size() % nsamp/20 == 0) {
+         std::cerr << ".";
+      }
 // Loop over parameters, treating each update step as a trial
       for (unsigned int i = 0; i < paramValues.size(); i++) {
          std::vector<double> newParamValues = paramValues;
@@ -69,6 +73,7 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
          samples.push_back(paramValues);
       }
    }
+   std::cerr << "!" << std::endl;
 }
 
 void Mcmc::writeSamples(std::string filename, 

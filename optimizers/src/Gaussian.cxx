@@ -6,12 +6,14 @@
  * $Header$
  */
 
-#include <vector>
-#include <string>
 #include <cmath>
+
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "optimizers/dArg.h"
+#include "optimizers/ParameterNotFound.h"
 #include "Gaussian.h"
 
 namespace optimizers {
@@ -81,8 +83,7 @@ double Gaussian::value(Arg &xarg) const {
 }
 
 double Gaussian::derivByParam(Arg &xarg, 
-                              const std::string &paramName) const 
-   throw(ParameterNotFound) {
+                              const std::string &paramName) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Mean, Sigma};
