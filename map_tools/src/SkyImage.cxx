@@ -29,7 +29,7 @@ using namespace map_tools;
 SkyImage::SkyImage(const map_tools::MapParameters& pars)
 : m_naxis1(pars.npix())
 , m_naxis2(pars.npixY())
-, m_naxis3(1) // for future expansion
+, m_naxis3(pars.npixZ()) // for future expansion
 , m_total(0)
 , m_image(0)
 , m_save(true)
@@ -111,7 +111,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
         trans = ctype.substr(4,3);
     }else if( ctype.substr(0,4)=="GLON") {
         uselb=true;
-        trans = ctype.substr(6,3);
+        trans = ctype.size()==4? "CAR" : ctype.substr(6,3);
     }else {
         throw std::invalid_argument(
             std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
@@ -126,19 +126,20 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     image.getValue("CRPIX2", cr2[0]);
     image.getValue("CRVAL2", cr2[1]);
     image.getValue("CDELT2", cr2[2]);
-
+#if 0 /// @todo: interpret layer info if present
     double cr3[3];
     image.getValue("CRPIX3", cr3[0]);
     image.getValue("CRVAL3", cr3[1]);
     image.getValue("CDELT3", cr3[2]);
-
-    double crota2;
-    image.getValue("CROTA2", crota2);
+#endif
+    double crota2=0.;
+    try { image.getValue("CROTA2", crota2);}catch(const std::exception&){}
+    
     astro::SkyDir::setProjection(
-        cr1[1],    cr2[1], 
+        cr1[1]*M_PI/180, cr2[1]*M_PI/180, //! @todo verify units 
         trans, 
-        cr1[0]-0.5,cr2[0]-0.5, 
-        cr1[2],    cr2[2], 
+        cr1[0]-0.5,      cr2[0]-0.5, 
+        cr1[2],          cr2[2], 
         crota2, uselb);
 }
 

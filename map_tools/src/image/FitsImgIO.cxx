@@ -115,7 +115,8 @@ IOElement * MakeImage(fitsfile * fptr, int * status)
     {
 
    case LONG_IMG:
-       image = ReadIntImage(fptr,  axes, status);
+//       image = ReadIntImage(fptr,  axes, status);
+       image = ReadFloatImage(fptr,  axes, status);
        break;
    case FLOAT_IMG:
        image = ReadFloatImage(fptr,  axes, status);

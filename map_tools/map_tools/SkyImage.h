@@ -1,6 +1,8 @@
 /** @file SkyImage.h
 
     @brief declare  the class SkyImage
+    @author Toby Burnett <tburnett@u.washington.edu>
+    $Header$
 
 */
 
@@ -19,7 +21,6 @@ class MapParameters;
     @class SkyImage
     @brief define an image for export to a FITS image
 
-
 */
 class SkyImage 
 {
@@ -30,7 +31,9 @@ public:
     */
     SkyImage(const map_tools::MapParameters& pars);
 
-    /** @brief load an image from a file
+    /** @brief load an image from a file.
+        @param filename name of the file, only FITS for now
+        @param Name of an extension: if blank, assume primary
 
     */
     SkyImage(const std::string& filename, const std::string& extension="");
@@ -57,7 +60,8 @@ public:
     };
 
     /**
-    @brief loop over all internal bins, request the intensity from a functor
+    @brief loop over all internal bins, request the intensity from a functor derived
+    from SkyImage::Requester
     */
     void fill( const Requester& req);
 
@@ -76,6 +80,7 @@ public:
     double pixelValue(const astro::SkyDir& pos, int layer=0)const;
     
 private:
+    //! sizes of the respective axes.
     int m_naxis1, m_naxis2, m_naxis3;
     double m_total;
     //! pointer to the BaseImage abstract class, which is cast in the implementation.

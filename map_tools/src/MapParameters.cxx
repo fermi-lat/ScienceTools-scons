@@ -18,6 +18,7 @@ MapParameters::MapParameters( int argc, char *argv[])
     // Read number of pixels
     m_npix = getInt("npix");
     m_npix_y= getInt("npixy", m_npix);
+    m_npix_z= getInt("layers", 1);
 
     // Read Image size
     m_imgSizeX= getInt( "imgsize" );

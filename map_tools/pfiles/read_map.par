@@ -1,0 +1,24 @@
+# $Header$
+#---------------------------------------------------------------------------------------
+clobber,  b, a, "YES", , , "Overwrite existing output file?: "
+chatter,  i, a,   10,  , , , "Chatter: "
+mode,     s, a,  "h",   , ,""
+# uncomment the following for interactive/replacement mode
+#mode,     s, a,  "ql",   , ,""
+
+#
+#---------------------------------------------------------------------------------------
+#
+infile,  s, a, "/glast/DC1/flux/v8r7/sources/gas_gal.fits", , , "Name of the exposure cube input file:"
+outfile,  s, a, "$(OUTFILES)/dummy.fits", , , "Name of the  output file:"
+#
+#---------------------------------------------------------------------------------------
+#Parameters for Spatial binning
+#
+npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
+imgsize,  i, a,  360,   , , "Total physical size of the image(x): "
+xref,     r, a,    0,   , , "RA/L at the image center: "
+yref,     r, a,    0,   , , "DEC/B at the image center: "
+rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
+projtype, s, a, "CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
+#---------------------------------------------------------------------------------------

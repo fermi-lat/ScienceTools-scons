@@ -47,8 +47,8 @@ int main(int argc, char** argv ){
         double total=0;
 
         // make a quick uniform cube.
-        for( double ra=0.5; ra<360; ra+=1.0) {
-            for (double st = -0.95; st < 1.0; st += 0.1){
+        for( double ra=0.5; ra<360; ra+=2.0) {
+            for (double st = -0.95; st < 1.0; st += 0.05){
                 double dec = asin(st)*180/M_PI;
                 e.add( astro::SkyDir(ra, dec), 1.0);
                 total += 1.0;
@@ -89,7 +89,7 @@ int main(int argc, char** argv ){
         cube2.save();
 
         // create an image to access cells
-        SkyImage exp3(par.inputFile(), "hypercube");
+        SkyImage exp3(par.inputFile());
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
 
 

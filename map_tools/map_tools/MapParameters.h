@@ -34,6 +34,7 @@ public:
     int npix() const                   { return m_npix; }
     int npixX() const                   { return m_npix; }
     int npixY() const                   { return m_npix_y; }
+    int npixZ() const                   { return m_npix_z; }
     int imgSize() const                { return m_imgSizeX; }
     int imgSizeX() const                { return m_imgSizeX; }
     int imgSizeY() const                { return m_imgSizeY; }
@@ -49,7 +50,7 @@ public:
 
 private:
 
-    int             m_npix, m_npix_y;
+    int             m_npix, m_npix_y, m_npix_z;
     int             m_imgSizeX, m_imgSizeY;
     float           m_xref;
     float           m_yref;

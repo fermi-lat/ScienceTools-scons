@@ -15,8 +15,7 @@ infile,s, a, "/glast/DC1/root_files/DC1_goodGamma.root", , , "Name of the Event 
 #filter,   s, a, "FT1Energy>100", , , "filter expression:"
 
 
-outfile,  s, a, "DC1_image.fits", , , "Name of the output file:"
-templatefile, s, a, "$(TPLDIR)/CountMap", , , "name of the template file: "
+outfile,  s, a, "$(OUTFILES)/DC1_image_GAL_CAR.fits", , , "Name of the output file:"
 #
 ra_name,  s, a,  "FT1Ra", , , "name of the RA field" 
 dec_name, s, a,  "FT1Dec", , , "name of the DEC field"
@@ -30,5 +29,5 @@ imgsizey, i, a,  180,   , , "Total physical size of the image (y): "
 xref,     r, a,    0,   , , "RA at the image center: "
 yref,     r, a,    0,   , , "DEC at the image center: "
 rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
-projtype, s, a,"AIT",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
+projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
 uselb,    b, a,"YES",   , , "use l,b instead of ra,dec :"
