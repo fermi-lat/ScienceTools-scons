@@ -7,8 +7,9 @@
 #include "stdexcept"
 
 #include "st_app/AppParGroup.h"
+#include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
-#include "st_app/StAppGui.h"
+#include "st_app/StGui.h"
 
 #include "st_graph/Engine.h"
 #include "st_graph/IEventReceiver.h"
@@ -21,59 +22,60 @@ using namespace st_graph;
 
 namespace st_app {
 
-  class ParWidget : public IEventReceiver {
-    public:
-      ParWidget(Engine & engine, IFrame * parent, hoops::IPar * par);
-
-      ~ParWidget();
-
-      virtual void layout(IFrame *);
-
-      virtual void clicked(IFrame *);
-
-      virtual void modified(IFrame *, const std::string & text);
-
-      operator IFrame *();
-
-      IFrame * getFrame();
-
-      IFrame * getLabel();
-
-      void alignLabel(const HPlacer & h);
-
-      const std::string & getName() const;
-
-      const std::string & getValue() const;
-
-    private:
-      std::string m_value_string;
-      IFrame * m_frame;
-      IFrame * m_label;
-      IFrame * m_value;
-      hoops::IPar * m_par;
-  };
-
-  ParWidget::ParWidget(Engine & engine, IFrame * parent, hoops::IPar * par): m_value_string(),
-    m_frame(0), m_label(0), m_value(0), m_par(par) {
+  ParWidget::ParWidget(Engine & engine, IFrame * parent, hoops::IPar * par): m_engine(engine),
+    m_value_string(), m_frame(0), m_label(0), m_value(0), m_open(0), m_par(par) {
     if (0 == m_par) throw std::logic_error("ParWidget constructor was passed a null parameter pointer");
 
     m_value_string = m_par->Value();
 
     m_frame = engine.createComposite(parent, this);
-    m_label = engine.createLabel(m_frame, this, m_par->Name());
+
+    std::string label = m_par->Name();
+
+    // Get min/max values.
+    const std::string & min(m_par->Min());
+    const std::string & max(m_par->Max());
+
+    // Handle enumerated list of allowed values.
+    if (max.empty() && std::string::npos != min.find("|")) {
+      label += " [" + min + "]";
+    } else if (!min.empty()) {
+      label += " [" + min + ", " + max + "]";
+    }
+
+    m_label = engine.createLabel(m_frame, this, label);
+
+    // If prompt was supplied, use it to create tool tip.
+    const std::string & prompt(m_par->Prompt());
+    if (!prompt.empty()) m_label->setToolTipText(prompt);
+
+    // Build width of whole widget from constituent widths.
+    // Width = width of label + ...
+    long width = m_label->getWidth();
+
     if (std::string::npos != m_par->Type().find("b")) {
+      // If boolean parameter, use a checkbox.
       m_value = engine.createButton(m_frame, this, "check", "");
+
+      // Set button in state consistent with parameter value.
       bool state = *m_par;
       if (state) m_value->setState("down"); else m_value->setState("up");
     } else {
+      // For all other non-boolean parameters, use a text edit.
       m_value = engine.createTextEntry(m_frame, this, m_value_string);
+      if (std::string::npos != m_par->Type().find("f")) {
+        // File types have additional option of a file dialog box, activated by an "Open" button.
+        m_open = m_engine.createButton(m_frame, this, "text", "Open");
+        width += m_open->getWidth() + 3;
+      }
     }
+    width += m_value->getWidth() + 3;
 
     // Make certain widget will not shrink smaller than the label size.
     m_frame->setMinimumWidth(m_label->getWidth());
 
     m_value->setWidth(parent->getWidth() / 2);
-    m_frame->setWidth(m_label->getWidth() +  m_value->getWidth() + 3);
+    m_frame->setWidth(width);
     m_frame->setHeight(std::max(m_label->getHeight(), m_value->getHeight()));
   }
 
@@ -82,14 +84,26 @@ namespace st_app {
   void ParWidget::layout(IFrame *) {
     TopEdge(m_value).below(TopEdge(m_frame));
     Center(m_label).below(Center(m_frame));
+    if (0 != m_open) TopEdge(m_open).below(TopEdge(m_frame));
 
     LeftEdge(m_label).rightOf(LeftEdge(m_frame));
-    LeftEdge(m_value).rightOf(RightEdge(m_label), 3);
+    if (0 == m_open) {
+      LeftEdge(m_value).rightOf(RightEdge(m_label), 3);
+    } else {
+      LeftEdge(m_open).rightOf(RightEdge(m_label), 3);
+      LeftEdge(m_value).rightOf(RightEdge(m_open), 3);
+    }
     RightEdge(m_value).stretchTo(RightEdge(m_frame));
   }
 
-  void ParWidget::clicked(IFrame *) {
-    if (std::string::npos != m_par->Type().find("b")) {
+  void ParWidget::clicked(IFrame * f) {
+    if (m_open == f) {
+      if (std::string::npos == m_par->Type().find("w"))
+        m_value_string = m_engine.fileDialog(m_frame, ".", "open");
+      else
+        m_value_string = m_engine.fileDialog(m_frame, ".", "save");
+      m_value->setState(m_value_string);
+    } else if (m_value == f) {
       const std::string & state = m_value->getState();
       if (state == "down") m_value_string = "true";
       else if (state == "up") m_value_string = "false";
@@ -119,61 +133,17 @@ namespace st_app {
     RightEdge(m_frame).stretchTo(RightEdge(m_value));
   }
 
+  ParWidget::ParWidget(Engine & engine, hoops::IPar * par): m_engine(engine),
+    m_value_string(), m_frame(0), m_label(0), m_value(0), m_open(0), m_par(par) {}
+
   hoops::IParGroup & operator <<(hoops::IParGroup & group, const ParWidget & par) {
     group[par.getName()] = par.getValue();
     return group;
   }
 
-  class StEventReceiver : public IEventReceiver {
-    public:
-      StEventReceiver(StApp * m_app);
-
-      virtual ~StEventReceiver();
-
-      virtual void clicked(IFrame * f);
-
-      virtual void closeWindow(IFrame * f);
-
-      virtual void layout(IFrame *);
-
-    private:
-      st_stream::StreamFormatter m_os;
-      Engine & m_engine;
-      std::list<ParWidget *> m_par_widget;
-      IFrame * m_main;
-      IFrame * m_group_frame;
-      IFrame * m_run;
-      IFrame * m_cancel;
-      StApp * m_app;
-      ParWidget * m_widest;
-  };
-
   StEventReceiver::StEventReceiver(StApp * app): m_os(app->getName(), "StEventReceiver", 2),
     m_engine(Engine::instance()), m_par_widget(), m_main(0), m_group_frame(0), m_run(0), m_cancel(0),
-    m_app(app), m_widest(0) {
-    m_main = m_engine.createMainFrame(this, 600, 400, app->getName() + " Version " + app->getVersion());
-    m_group_frame = m_engine.createGroupFrame(m_main, this, "Parameters");
-    m_run = m_engine.createButton(m_main, this, "text", "Run");
-    m_cancel = m_engine.createButton(m_main, this, "text", "Cancel");
-
-    AppParGroup & pars(m_app->getParGroup(m_app->getName()));
-
-    pars.suppressPrompts();
-
-    for (hoops::GenParItor itor = pars.begin(); itor != pars.end(); ++itor) {
-      // Changing from GUI to command line mode is not permitted.
-      if ((*itor)->Name() == "gui") continue;
-      else if (0 == (*itor)->Name().size()) continue;
-
-      ParWidget * widget = new ParWidget(m_engine, m_group_frame, *itor);
-      m_par_widget.push_back(widget);
-      if (0 == m_widest || widget->getLabel()->getWidth() > m_widest->getLabel()->getWidth()) m_widest = widget;
-    }
-
-    m_group_frame->setMinimumWidth(m_widest->getFrame()->getWidth() + 12);
-
-    m_engine.run();
-  }
+    m_app(app), m_widest(0) {}
 
   StEventReceiver::~StEventReceiver() {
     for (std::list<ParWidget *>::reverse_iterator itor = m_par_widget.rbegin(); itor != m_par_widget.rend(); ++itor) delete (*itor);
@@ -209,7 +179,11 @@ namespace st_app {
         // Ignore
       }
 
-      m_app->run();
+      try {
+        m_app->run();
+      } catch (const std::exception & x) {
+        m_os.err() << "Running the application failed: " << std::endl << x.what() << std::endl;
+      }
     } else if (f == m_cancel) {
       m_engine.stop();
     }
@@ -260,16 +234,55 @@ namespace st_app {
     }
   }
 
-  StAppGui::StAppGui(const std::string & app_name, StApp * app): m_app(app) {
-    if (0 == m_app) throw std::logic_error("StAppGui constructor was passed a null application pointer");
-    setName(m_app->getName());
-    setVersion(m_app->getVersion());
+  void StEventReceiver::run() {
+    // Set up standard Gui main window.
+    createMainFrame();
+
+    AppParGroup & pars(m_app->getParGroup(m_app->getName()));
+    for (hoops::GenParItor itor = pars.begin(); itor != pars.end(); ++itor) {
+      // Changing from GUI to command line mode is not permitted. Also, mode is irrelevant.
+      // Skip blank lines as well.
+      if ((*itor)->Name() == "gui" || (*itor)->Name() == "mode") continue;
+      else if (0 == (*itor)->Name().size()) continue;
+
+      // Create widget representing each parameter.
+      ParWidget * widget = createParWidget(*itor);
+
+      // Store widget in container.
+      m_par_widget.push_back(widget);
+
+      // Keep track of the widest widget.
+      if (0 == m_widest || widget->getLabel()->getWidth() > m_widest->getLabel()->getWidth()) m_widest = widget;
+    }
+
+    m_group_frame->setMinimumWidth(m_widest->getFrame()->getWidth() + 12);
+
+    m_engine.run();
   }
 
-  StAppGui::~StAppGui() throw() { delete m_app; }
+  void StEventReceiver::createMainFrame() {
+    // Use the name and version of the tool as a label for the GUI window.
+    std::string label(m_app->getName());
+    if (!label.empty()) label += " ";
+    const std::string & version(m_app->getVersion());
+    if (!version.empty()) label += "version " + version;
 
-  void StAppGui::run() {
-    StEventReceiver event_receiver(m_app);
+    m_main = m_engine.createMainFrame(this, 600, 400, label);
+    m_group_frame = m_engine.createGroupFrame(m_main, this, "Parameters");
+    m_run = m_engine.createButton(m_main, this, "text", "Run");
+    m_cancel = m_engine.createButton(m_main, this, "text", "Cancel");
+
+    // Set up some tool tips.
+    m_run->setToolTipText("Run the application from inside the GUI");
+    m_cancel->setToolTipText("Exit the application and GUI");
+
+    // Disable prompting.
+    AppParGroup & pars(m_app->getParGroup(m_app->getName()));
+    pars.suppressPrompts();
+  }
+
+  ParWidget * StEventReceiver::createParWidget(hoops::IPar * par) {
+    return new ParWidget(m_engine, m_group_frame, par);
   }
 
 }
