@@ -1,8 +1,9 @@
 /** @file release.notes
-    @brief table definition
-    @author James Peachey
+    @brief tip package description
+    @author James Peachey, HEASARC/GSSC
 
 @verbatim
+29-oct-2004 v2     JP Major structural refactoring.
 29-sep-2004 v1r9p0 JP Add KeyRecord class for getting the whole keyword
                       record.
 27-sep-2004 v1r8p1 JP Bug fix: setImageDimensions now saves the new
