@@ -10,8 +10,6 @@
 #ifndef tip_Iterator_h
 #define tip_Iterator_h
 
-#include <iterator>
-
 namespace tip {
 
   /** \class RandomAccessIterator
@@ -24,11 +22,17 @@ namespace tip {
       \param pointer The pointer type returned by this iterator.
       \param reference The reference type returned by this iterator.
   */
-  template <typename T, typename difference_type, typename pointer = T *, typename reference = T &>
-  class RandomAccessIterator :
-    public std::iterator<std::random_access_iterator_tag, T, difference_type, pointer, reference> {
+  template <typename T, typename difference_t, typename pointer_t = T *, typename reference_t = T &>
+  class RandomAccessIterator {
     public:
       typedef RandomAccessIterator Itor;
+
+      // So iterator_traits will work:
+      typedef std::random_access_iterator_tag iterator_category;
+      typedef T value_type;
+      typedef difference_t difference_type;
+      typedef pointer_t pointer;
+      typedef reference_t reference;
 
       RandomAccessIterator(): m_data() {}
       RandomAccessIterator(const T & data): m_data(data) {}
