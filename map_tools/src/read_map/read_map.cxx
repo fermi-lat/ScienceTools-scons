@@ -34,18 +34,18 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
+    int rc = 0;
     try{ 
-        //! a big @todo: this will fail if the WCS transformation parameters for the
-        //! map are not the same!
-
+  
         // read in, or prompt for, all necessary parameters
         MapParameters pars(argc, argv);
 
         std::cout << "Reading FITS input file " << pars.inputFile() << std::endl;
-        SkyImage image(pars.inputFile(), "Primary"); 
+        SkyImage image(pars.inputFile(), pars.tableName()); 
 
-        std::cout << "Value of pixel at ra, dec: "<< pars["ra"]<< ", "<< pars["dec"] << ": "
-        <<image.pixelValue(astro::SkyDir(pars["ra"],pars["dec"],astro::SkyDir::GALACTIC)) << std::endl;
+        std::cout << "Value of pixel at l, b: "<< pars["ra"]<< ", "<< pars["dec"] << ": "
+        <<image.pixelValue(astro::SkyDir(pars["ra"],pars["dec"],astro::SkyDir::GALACTIC)) 
+        << std::endl;
 
         std::cout << "Creating copy at file " << pars.outputFile() << std::endl;
         SkyImage copy(pars);
@@ -53,9 +53,9 @@ int main(int argc, char * argv[]) {
 
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;
-        return 1;
+        rc=1;
     }
-    return 0;
+    return rc;
 }
 
 /** @page read_map_guide read_map users's Guide
