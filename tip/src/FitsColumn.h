@@ -12,17 +12,18 @@
 
 #include "fitsio.h"
 
+#include "FitsExtensionManager.h"
+#include "FitsPrimProps.h"
 #include "tip/IColumn.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
-#include "FitsPrimProps.h"
 
 namespace tip {
 
   template <typename T>
   class FitsColumn : public IColumn {
     public:
-      FitsColumn(fitsfile * fp, FieldIndex_t field_index);
+      FitsColumn(FitsExtensionManager * ext, FieldIndex_t field_index);
 
       virtual ~FitsColumn() throw() {}
 
@@ -94,8 +95,8 @@ namespace tip {
         if (!m_scalar) throw TipException("FitsColumn::get(Index_t, bool &) was called but field is not a scalar");
         int status = 0;
         char tmp_dest = 0;
-        fits_read_col(m_fp, FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat, 0, &tmp_dest, 0,
-          &status);
+        fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+          0, &tmp_dest, 0, &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::get(Index_t, bool &) failed to read scalar cell value");
         dest = tmp_dest;
       }
@@ -105,8 +106,8 @@ namespace tip {
         int status = 0;
         long num_els = getCellSize(record_index);
         char * tmp_dest = new char[num_els];
-        fits_read_col(m_fp, FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0, tmp_dest, 0,
-          &status);
+        fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          0, tmp_dest, 0, &status);
         if (0 != status) {
           delete [] tmp_dest;
           throw FitsTipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
@@ -119,7 +120,7 @@ namespace tip {
         if (!m_scalar) throw TipException("FitsColumn::set(Index_t, const bool &) called but field is not a scalar");
         int status = 0;
         char tmp_src = src;
-        fits_write_col(m_fp, FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+        fits_write_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           const_cast<void *>(static_cast<const void *>(&tmp_src)), &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::set(Index_t, const bool &) failed to write scalar cell value");
       }
@@ -139,7 +140,7 @@ namespace tip {
 
         char * tmp_src = new char[num_els];
         for (long ii = 0; ii < num_els; ++ii) tmp_src[ii] = src[ii];
-        fits_write_col(m_fp, FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+        fits_write_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           tmp_src, &status);
         delete [] tmp_src;
         if (0 != status)
@@ -178,7 +179,8 @@ namespace tip {
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (!m_scalar) throw TipException("FitsColumn::getScalar was called but field is not a scalar");
         int status = 0;
-        fits_read_col(m_fp, FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat, 0, &dest, 0, &status);
+        fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+          0, &dest, 0, &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::getScalar failed to read scalar cell value");
       }
 
@@ -191,8 +193,8 @@ namespace tip {
         long num_els = getCellSize(record_index);
         dest.resize(num_els);
         U * dest_begin = &dest.front();
-        fits_read_col(m_fp, FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0, dest_begin, 0,
-          &status);
+        fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0,
+          dest_begin, 0, &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::getVector failed to read vector cell value");
       }
 
@@ -202,7 +204,8 @@ namespace tip {
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (!m_scalar) throw TipException("FitsColumn::setScalar called but field is not a scalar");
         int status = 0;
-        fits_write_col(m_fp, FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+        if (m_ext->readOnly()) throw TipException("FitsColumn::setScalar called for a read-only file");
+        fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
           const_cast<void *>(static_cast<const void *>(&dest)), &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::setScalar failed to write scalar cell value");
       }
@@ -212,6 +215,7 @@ namespace tip {
         // Prevent accidental calling for bool or string. The optimizer will swallow this.
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (m_scalar) throw TipException("FitsColumn::setVector called but field is not a vector");
+        if (m_ext->readOnly()) throw TipException("FitsColumn::setVector called for a read-only file");
         int status = 0;
         long num_els = src.size();
 
@@ -222,7 +226,7 @@ namespace tip {
         }
 
         const U * src_begin = &src.front();
-        fits_write_col(m_fp, FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+        fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           const_cast<void *>(static_cast<const void *>(src_begin)), &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
@@ -232,13 +236,13 @@ namespace tip {
         int status = 0;
         long num_els = 0;
         // Get number of elements in this particular field.
-        fits_read_descript(m_fp, m_field_index, record_index + 1, &num_els, 0, &status);
+        fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
         if (0 != status) throw FitsTipException(status, "FitsColumn::getCellSize failed to get size of variable length cell");
 
         return num_els;
       }
 
-      fitsfile * m_fp;
+      FitsExtensionManager * m_ext;
       FieldIndex_t m_field_index;
       long m_repeat;
       int m_type_code;
@@ -247,11 +251,11 @@ namespace tip {
   };
 
   template <typename T>
-  inline FitsColumn<T>::FitsColumn(fitsfile * fp, FieldIndex_t field_index): m_fp(fp), m_field_index(field_index),
+  inline FitsColumn<T>::FitsColumn(FitsExtensionManager * ext, FieldIndex_t field_index): m_ext(ext), m_field_index(field_index),
     m_repeat(0), m_type_code(0), m_var_length(false), m_scalar(false) {
     // Determine characteristics of this column.
     int status = 0;
-    fits_get_coltype(m_fp, m_field_index, &m_type_code, &m_repeat, 0, &status);
+    fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, 0, &status);
     if (0 != status) throw FitsTipException(status, "FitsColumn::FitsColumn failed to get information about field");
 
     // Handle variable length columns.
