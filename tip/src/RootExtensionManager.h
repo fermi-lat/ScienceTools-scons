@@ -193,6 +193,12 @@ namespace tip {
   template <typename T>
   inline void RootExtensionManager::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
     T * dest_begin) const {
+    if (0 > col_num || m_leaves.size() <= (unsigned int)(col_num)) {
+      std::ostringstream os;
+      os << "Requested field index " << col_num << " not found in file.";
+      std::string msg = os.str();
+      throw TipException(formatWhat(msg));
+    }
     m_tree->GetEntry(record_index);
     if (src_begin + 1 != src_end) throw TipException("Getting vectors from Root files not working yet.");
     m_leaves[col_num]->get(*dest_begin);
