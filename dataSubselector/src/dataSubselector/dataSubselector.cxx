@@ -54,25 +54,44 @@ private:
 
    st_app::AppParGroup & m_pars;
 
+   std::string m_inputFile;
+   std::string m_outputFile;
+
+   void copyTable(const std::string & extension, CutParameters * cuts=0) const;
+
 };
 
 st_app::StAppFactory<DataFilter> myAppFactory;
 
 void DataFilter::run() {
+   std::string inputFile = m_pars["input_file"];
+   m_inputFile = inputFile;
+   facilities::Util::expandEnvVar(&m_inputFile);
+
+   std::string outputFile = m_pars["output_file"];
+   m_outputFile = outputFile;
+   facilities::Util::expandEnvVar(&m_outputFile);
+
+   tip::IFileSvc::instance().createFile(m_outputFile, m_inputFile);
 
    CutParameters cuts(m_pars);
+   copyTable("events", &cuts);
+   copyTable("gti");
+   std::cout << "Done." << std::endl;
+}
 
-   std::string inputFile = m_pars["input_file"];
-   facilities::Util::expandEnvVar(&inputFile);
+void DataFilter::copyTable(const std::string & extension,
+                           CutParameters * cuts) const {
+   std::string queryString("");
+   if (cuts) {
+      queryString = cuts->fitsQueryString();
+   }
    tip::Table * inputTable 
-      = tip::IFileSvc::instance().editTable(inputFile, "events",
-                                            cuts.fitsQueryString());
+      = tip::IFileSvc::instance().editTable(m_inputFile, extension, 
+                                            queryString);
    
-   std::string outputFile = m_pars["output_file"];
-   facilities::Util::expandEnvVar(&outputFile);
-   tip::IFileSvc::instance().createFile(outputFile, inputFile);
    tip::Table * outputTable 
-      = tip::IFileSvc::instance().editTable(outputFile, "events");
+      = tip::IFileSvc::instance().editTable(m_outputFile, extension);
 
    outputTable->setNumRecords(inputTable->getNumRecords());
 
@@ -82,28 +101,22 @@ void DataFilter::run() {
    tip::TableRecord & input = *inputIt;
    tip::Table::Record & output = *outputIt;
 
-   const std::vector<std::string> & columnNames = inputTable->getValidFields();
-
    long npts(0);
 
    for (; inputIt != inputTable->end(); ++inputIt) {
-      double ra, dec;
-      input["RA"].get(ra);
-      input["DEC"].get(dec);
-      if (cuts.withinCoordLimits(ra, dec)) {
-         for (std::vector<std::string>::const_iterator name 
-                 = columnNames.begin(); name != columnNames.end(); ++name) {
-            output = input;
-         }
+      if (!cuts || cuts->acceptRow(input)) {
+         output = input;
          ++outputIt;
          npts++;
       }
    }
+// Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);
 
-   cuts.addDataSubspaceKeywords(outputTable);
+   if (cuts) {
+      cuts->addDataSubspaceKeywords(outputTable);
+   }
 
    delete inputTable;
    delete outputTable;
-   std::cout << "Done." << std::endl;
 }

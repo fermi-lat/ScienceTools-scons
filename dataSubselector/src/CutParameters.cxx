@@ -62,11 +62,21 @@ CutParameters::CutParameters(st_app::AppParGroup & pars) :
    m_gammaProbMax = pars["gammaProbMax"];
    m_zmin = pars["zmin"];
    m_zmax = pars["zmax"];
+   m_convLayerMin = pars["convLayerMin"];
+   m_convLayerMax = pars["convLayerMax"];
    m_calibVersion[0] = pars["bgcut"];
    m_calibVersion[1] = pars["psfcut"];
    m_calibVersion[2] = pars["erescut"];
    setFilterExpression();
 }
+
+bool CutParameters::acceptRow(tip::ConstTableRecord & row) const {
+   double ra, dec;
+   row["RA"].get(ra);
+   row["DEC"].get(dec);
+   return withinCoordLimits(ra, dec);
+}
+
 
 /**
  * @brief Builds the FITS row filtering expression from the cut parameters
@@ -112,6 +122,10 @@ void CutParameters::setFilterExpression() {
    if (m_gammaProbMax) addParameterToQuery("IMGAMMAPROB>=", m_gammaProbMax);
    if (m_zmin) addParameterToQuery("ZENITH_ANGLE>=", m_zmin); 
    if (m_zmax) addParameterToQuery("ZENITH_ANGLE<=", m_zmax);
+   if (m_convLayerMin != 0) addParameterToQuery("CONVERSION_LAYER>=", 
+                                                m_convLayerMin);
+   if (m_convLayerMax != 15) addParameterToQuery("CONVERSION_LAYER<=", 
+                                                 m_convLayerMax);
 
 // These check the background cuts
    if (m_calibVersion[0]) addParameterToQuery("CALIB_VERSION[1]==", 

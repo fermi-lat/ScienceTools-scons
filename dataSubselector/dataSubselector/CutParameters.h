@@ -49,18 +49,8 @@ public:
 
    const std::string & headerString() const {return m_headerString;}
 
-   bool withinCoordLimits(double ra, double dec) {
-      if (m_coordSys == "GAL") {
-         astro::SkyDir dir(ra, dec);
-         return m_lonMin <= dir.l() && dir.l() <= m_lonMax && 
-            m_latMin <= dir.b() && dir.b() <= m_latMax;
-      } else {
-         return m_lonMin <= ra && ra <= m_lonMax && 
-            m_latMin <= dec && dec <= m_latMax;
-      }
-      return false;
-   }
-  
+   bool acceptRow(tip::ConstTableRecord & row) const;
+
 private:
    
    float m_RA;
@@ -83,11 +73,25 @@ private:
    float m_gammaProbMax;
    float m_zmin;
    float m_zmax;
+   short m_convLayerMin;
+   short m_convLayerMax;
 
    std::string m_query;
    std::string m_headerString;
    short m_calibVersion[3];
 
+   bool withinCoordLimits(double ra, double dec) const {
+      if (m_coordSys == "GAL") {
+         astro::SkyDir dir(ra, dec);
+         return m_lonMin <= dir.l() && dir.l() <= m_lonMax && 
+            m_latMin <= dir.b() && dir.b() <= m_latMax;
+      } else {
+         return m_lonMin <= ra && ra <= m_lonMax && 
+            m_latMin <= dec && dec <= m_latMax;
+      }
+      return false;
+   }
+  
    void setFilterExpression();
 
 /**
