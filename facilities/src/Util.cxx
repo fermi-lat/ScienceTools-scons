@@ -30,21 +30,24 @@ namespace facilities {
     }
 
     int envStart = toExpand->find_first_of(op);
-    int envEnd = toExpand->find_first_of(cl);
+    while (envStart != -1) {
+      int envEnd = toExpand->find_first_of(cl);
             
-    // add  characters to account for opening delimiter
-    int afterBracket = envStart + opLen;
+      // add  characters to account for opening delimiter
+      int afterBracket = envStart + opLen;
             
-    if(!((envStart==-1)||(envEnd==-1)))
-    {
-      std::string envVariable = 
-        toExpand->substr(afterBracket,(envEnd-afterBracket));
-      const char * path = ::getenv(envVariable.c_str());
-      if(path) {
-        toExpand->replace(envStart,(envEnd+clLen), path);
-        if (nSuccess > -1) nSuccess++;
+      if(!((envStart==-1)||(envEnd==-1)))
+      {
+        std::string envVariable = 
+          toExpand->substr(afterBracket,(envEnd-afterBracket));
+        const char * path = ::getenv(envVariable.c_str());
+        if(path) {
+          toExpand->replace(envStart,(envEnd+clLen), path);
+          if (nSuccess > -1) nSuccess++;
+        }
+        else nSuccess = -1;
       }
-      else nSuccess = -1;
+      envStart = toExpand->find_first_of(op);
     }
     return nSuccess;
   }
