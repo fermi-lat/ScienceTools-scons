@@ -42,12 +42,15 @@ int main(int argc, char ** argv) {
       try {
         // Try using the singleton StAppFactory to create the application:
         this_st_app = st_app::IStAppFactory::instance().createApp();
+
+        // Set application name.
+        this_st_app->setName(st_app::IStAppFactory::instance().getAppName());
       } catch(const std::logic_error & x) {
         throw std::logic_error("Failed to get an StAppFactory singleton: client must define one");
       }
 
-      // Run the application.
-      if (0 != this_st_app) this_st_app->run();
+      // Run the application. Check debug status again in case the application constructor changed it.
+      if (0 != this_st_app && !debug) this_st_app->run();
     }
 
   } catch (const std::exception & x) {
@@ -66,9 +69,15 @@ int main(int argc, char ** argv) {
 
   if (debug) {
     // In debug mode, so create and run the application here, outside of any try-catch,
+    // if it was not already created,
     // so that the debugger is more useful for finding exceptions at their source.
     // Use the singleton StAppFactory to create the application:
-    this_st_app = st_app::IStAppFactory::instance().createApp();
+    if (0 == this_st_app) {
+      this_st_app = st_app::IStAppFactory::instance().createApp();
+
+      // Set application name.
+      this_st_app->setName(st_app::IStAppFactory::instance().getAppName());
+    }
 
     // Run the application.
     if (0 != this_st_app) this_st_app->run();
