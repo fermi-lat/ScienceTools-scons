@@ -300,7 +300,7 @@ public:
 
   inline TableRecord & TableRecord::operator =(const ConstTableRecord & rec) {
     if (this != &rec) {
-      m_tab_data->copyRecord(rec.getExtensionData(), getIndex(), m_index);
+      m_tab_data->copyRecord(rec.getExtensionData(), rec.getIndex(), m_index);
     }
     return *this;
   }
