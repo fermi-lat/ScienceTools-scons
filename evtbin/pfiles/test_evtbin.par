@@ -1,8 +1,8 @@
 #-------------------------------------------------------------------------------
 # General parameters.
 algorithm,     s, a, "PHA2", , , "Type of output file (CMAP, LC, PHA1, PHA2)"
-eventfile,     s, a, , , , "Name of the input file"
-outfile,       s, a, , , , "Name of the output file"
+eventfile,     f, a, "NONE", , , "Name of the input file"
+outfile,       f, a, "NONE", , , "Name of the output file"
 mode,          s, h, "hl", , ,"Behavior for automatic parameters"
 #-------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ emin,          r, a, , , , "Start value for first energy bin"
 emax,          r, a, , , , "Stop value for last energy bin"
 enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
 deltaenergy,   r, a, , , , "Width of linearly uniform energy bins"
-energybinfile, s, a, , , , "Name of the file containing the energy bin definition"
+energybinfile, f, a, "NONE", , , "Name of the file containing the energy bin definition"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -39,4 +39,4 @@ tstart,        r, a, , , , "Start value for first time bin"
 tstop,         r, a, , , , "Stop value for last time bin"
 tnumbins,      i, a, , , , "Number of logarithmically uniform time bins"
 deltatime,     r, a, , , , "Width of linearly uniform time bins"
-timebinfile,   s, a, , , , "Name of the file containing the time bin definition"
+timebinfile,   f, a, "NONE", , , "Name of the file containing the time bin definition"
