@@ -22,32 +22,39 @@
 #include "Goodi/IData.h"
 #include "Goodi/IEventData.h"
 
-#include "Goodi/../src/LatEventsData.h"    // meh.
+//#include "Goodi/../src/LatEventsData.h"    // meh.
 
 #include "rootTuple/RootTuple.h"
 
 int main(int iargc, char * argv[]) {
 
+
    std::string rootFile;
-   if (iargc == 1) {
-      std::string fitsGenRoot = ::getenv("FITSGENROOT");
-      rootFile = fitsGenRoot + "/data/merit.root";
-   } else if (iargc == 2) {
-      if (argv[1] == "-h") {
-         std::cout << "usage: " 
-                   << argv[0] << ": "
-                   << "root_file" << std::endl;
-         return 0;
-      } else {
-         rootFile = std::string(argv[1]);
-      }
-   }
+   std::string fitsFile("!myLatData.fits");
 
-// Create the RootTuple object, for the Exposure
-// branches in the merit file.
-   RootTuple::RootTuple exposureTuple(rootFile, "Exposure");
+   if (iargc == 1) 
+     {
+       std::string fitsGenRoot = ::getenv("FITSGENROOT");
+       rootFile = fitsGenRoot + "/data/merit.root";
+     } 
+   else if (iargc == 2) 
+       {
+	 if (!strcmp(argv[1],"-h")) {
+	   std::cout << "usage: " << argv[0] << ": "
+		     << "<root input file>" 
+		     << "<fits input file>" << std::endl;
+	   return 0;
+	 } else {
+	     rootFile = std::string(argv[1]);
+	 }
+       } 
+   else if (iargc == 3) 
+	 {
+	   rootFile   = std::string(argv[1]);
+	   fitsFile   = std::string(argv[2]);     
+	 }
 
-// Need the MeritTuple tree for the IM variables
+// Merit tuple is read to retrieve general and FT1 info
    RootTuple::RootTuple meritTuple(rootFile, "MeritTuple");
 
    std::vector<std::string> colNames;
@@ -56,23 +63,20 @@ int main(int iargc, char * argv[]) {
    int nentries(0);
 
 // Read in the IM columns, CalEnergySum, CalTotRLn, GltLayer, FilterStatus_HI
-   colNames.push_back("IMgoodCalProb");
-   colNames.push_back("IMvertexProb");
-   colNames.push_back("IMcoreProb");
-   colNames.push_back("IMpsfErrPred");
-   colNames.push_back("IMgammaProb");
-   colNames.push_back("CalEnergySum");
-   colNames.push_back("CalTotRLn");
-   colNames.push_back("GltLayer");
-   colNames.push_back("GltFilterStatusHI");
-   meritTuple.readTree(colNames, query, nentries);
+//   colNames.push_back("IMgoodCalProb");
+//   colNames.push_back("IMvertexProb");
+//   colNames.push_back("IMcoreProb");
+//   colNames.push_back("IMpsfErrPred");
+//   colNames.push_back("IMgammaProb");
+//   colNames.push_back("CalEnergySum");
+//   colNames.push_back("CalTotRLn");
+//   colNames.push_back("GltLayer");
+//   colNames.push_back("FilterStatus_HI");
+//   meritTuple.readTree(colNames, query, nentries);
 
 // Read in all of the columns for the FT1 and Exposure branches.
    colNames = meritTuple.branchNames();
    meritTuple.readTree(colNames, query, nentries);
-
-   colNames = exposureTuple.branchNames();
-   exposureTuple.readTree(colNames, query, nentries);
 
 // Goodi setup.
 
@@ -87,11 +91,14 @@ int main(int iargc, char * argv[]) {
 // Create the EventData object and explicitly down-cast to
 // LatEventsData since the IEventData interface does not have all of
 // the methods required to access LAT data.
-   Goodi::LatEventsData *data =
-      dynamic_cast<Goodi::LatEventsData *>
-      (dataCreator.create(datatype, mission));
+//    Goodi::LatEventsData *data =
+//       dynamic_cast<Goodi::LatEventsData *>
+//       (dataCreator.create(datatype, mission));
 
-   std::vector<double> vect_times = meritTuple("EvtTime");
+   Goodi::IEventData *data = 
+     dynamic_cast<Goodi::IEventData *>(dataCreator.create(datatype, mission));
+
+   std::vector<double> vect_times = meritTuple("elapsed_time");
    std::stable_sort(vect_times.begin(),vect_times.end());
    std::vector<std::pair<double,double> > gti;
    gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
@@ -294,12 +301,11 @@ int main(int iargc, char * argv[]) {
 //   data->setCalibVersion(calibVersion);
 
 // Write the data to a FITS file.
-   std::string latFile("!myLatData.fits");
    Goodi::IDataIOService *ioService = iosvcCreator.create();
 
 // Need to "up"-cast to have access to the write(...) method we need.
    Goodi::IEventData *idata = data;
-   idata->write(ioService, latFile);
+   idata->write(ioService, fitsFile);
 
    delete ioService;
 }

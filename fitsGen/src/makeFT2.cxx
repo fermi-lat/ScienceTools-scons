@@ -29,14 +29,19 @@
 int main(int iargc, char * argv[]) {
 
    std::string d2File;
-   if (iargc == 1) {
-      std::string fitsGenRoot = ::getenv("FITSGENROOT");
-      d2File = fitsGenRoot + "/data/pointing_history.root";
-   } else if (iargc == 2) {
-      if (argv[1] == "-h") {
-         std::cout << "usage: " 
-                   << argv[0] 
-                   << " <D2 root file>" 
+   std::string outputFile("!myScData.fits");
+
+   if (iargc == 1) 
+     {
+       std::string fitsGenRoot = ::getenv("FITSGENROOT");
+       d2File = fitsGenRoot + "/data/pointing_history.root";
+     } 
+   else if (iargc == 2) 
+     {
+       if (!strcmp(argv[1],"-h")) {
+         std::cout << "usage: " << argv[0] 
+                   << " <D2 input root file>" 
+                   << " <D2 output fits file>" 
                    << std::endl;
          return 0;
       } else {
@@ -71,11 +76,11 @@ int main(int iargc, char * argv[]) {
 // Start and stop times.
    std::vector<double> startTime(npts);
    std::vector<double> stopTime(npts);
-   std::copy(exposure("PtTime").begin(), 
-             exposure("PtTime").end(), 
+   std::copy(exposure("elapsed_time").begin(), 
+             exposure("elapsed_time").end(), 
              startTime.begin());
-   std::copy(exposure("PtTime").begin()+1, 
-             exposure("PtTime").end(), 
+   std::copy(exposure("elapsed_time").begin()+1, 
+             exposure("elapsed_time").end(), 
              stopTime.begin());
    stopTime[npts-1] = startTime[npts-1] 
       + (startTime[npts-1] - startTime[npts-2]);
@@ -100,22 +105,22 @@ int main(int iargc, char * argv[]) {
 
 // Ground point longitude and latitude.  Convert to radians.
    std::vector<float> lonGeo(npts);
-   std::transform( exposure("PtLon").begin(), 
-                   exposure("PtLon").end(),
+   std::transform( exposure("lon").begin(), 
+                   exposure("lon").end(),
                    lonGeo.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setLonGeo(lonGeo);
    std::vector<float> latGeo(npts);
-   std::transform( exposure("PtLat").begin(), 
-                   exposure("PtLat").end(),
+   std::transform( exposure("lat").begin(), 
+                   exposure("lat").end(),
                    latGeo.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setLatGeo(latGeo);
 
 // Assume this is the same as altitude.  Convert from km to m.
    std::vector<double> radGeo(npts);
-   std::transform( exposure("PtAlt").begin(), 
-                   exposure("PtAlt").end(),
+   std::transform( exposure("alt").begin(), 
+                   exposure("alt").end(),
                    radGeo.begin(), 
                    std::bind2nd(std::multiplies<double>(), 1e3) );
    scData->setRadGeo(radGeo);
@@ -138,30 +143,30 @@ int main(int iargc, char * argv[]) {
 
 // Spacecraft z-axis in Celestial coordinates.
    std::vector<float> raSCZ(npts);
-   std::transform( exposure("PtRaz").begin(), 
-                   exposure("PtRaz").end(),
+   std::transform( exposure("raz").begin(), 
+                   exposure("raz").end(),
                    raSCZ.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setRAscz(raSCZ);
 
    std::vector<float> decSCZ(npts);
-   std::transform( exposure("PtDecz").begin(), 
-                   exposure("PtDecz").end(),
+   std::transform( exposure("decz").begin(), 
+                   exposure("decz").end(),
                    decSCZ.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setDECscz(decSCZ);
 
 // Spacecraft x-axis in Celestial coordinates.
    std::vector<float> raSCX(npts);
-   std::transform( exposure("PtRax").begin(), 
-                   exposure("PtRax").end(),
+   std::transform( exposure("rax").begin(), 
+                   exposure("rax").end(),
                    raSCX.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setRAscx(raSCX);
 
    std::vector<float> decSCX(npts);
-   std::transform( exposure("PtDecx").begin(), 
-                   exposure("PtDecx").end(),
+   std::transform( exposure("decx").begin(), 
+                   exposure("decx").end(),
                    decSCX.begin(), 
                    std::bind2nd(std::multiplies<float>(), M_PI/180.) );
    scData->setDECscx(decSCX);
@@ -177,7 +182,6 @@ int main(int iargc, char * argv[]) {
 // Goodi I/O service object.
    Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
 
-   std::string outputFile = "!myScData.fits";
    scData->write(goodiIoService, outputFile);
 
    delete goodiIoService;
