@@ -7,5 +7,6 @@ $Id$
 12-oct-2004    v0r1p2 JP  All calls to Engine class methods now throw
                           exceptions if Root initialization failed.
 12-oct-2004    v0r1p3 JP  Fix unit test to work in batch mode.
+13-oct-2004    v0r1p4 JP  Make some changes to support Windows.
 \endverbatim
 */
