@@ -8,6 +8,7 @@
 
 #include "astro/SkyDir.h"
 #include "astro/EarthOrbit.h"
+#include "astro/EarthCoordinate.h"
 #include "CLHEP/Vector/Rotation.h"
 
 #include <iostream>
@@ -103,6 +104,10 @@ public:
     /// access m_rotangles
     std::pair<double,double> rotateAngles(); 
 
+    /// position in Earth coordinates
+    astro::EarthCoordinate earthpos()const{
+        return astro::EarthCoordinate(lat(), lon(), altitude());
+    }
 
     // set data
 

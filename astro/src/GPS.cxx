@@ -28,7 +28,9 @@ m_sampleintvl(30.), // update position every 30 seconds
 m_rockDegrees(35.),
 m_rockType(NONE),
 m_rockNorth(0)
-{}
+{   // initialize the singleton
+    getPointingCharacteristics(0);
+}
 
 GPS::Coords::Coords( double alat, double alon, double apitch
                     , double ayaw, double aroll, GPStime atime, double aphase) 
