@@ -6,6 +6,7 @@ author Pat Nolan <pln@razzle.stanford.edu>
 
 # $Id$
 
+use xml
 use cfitsio v1* IExternal
 use f2c v*
 use CLHEP v2* IExternal

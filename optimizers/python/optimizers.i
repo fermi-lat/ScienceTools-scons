@@ -7,6 +7,7 @@
 #include "../optimizers/Exception.h"
 #include "../optimizers/Function.h"
 #include "../optimizers/FunctionTest.h"
+#include "../optimizers/FunctionFactory.h"
 #include "../optimizers/Lbfgs.h"
 #include "../optimizers/Mcmc.h"
 #include "../optimizers/Minuit.h"
@@ -46,6 +47,7 @@
 %include ../src/MyFun.h
 %include ../src/PowerLaw.h
 %include ../src/Rosen.h
+%include ../optimizers/FunctionFactory.h
 %include stl.i
 %template(DoubleVector) std::vector<double>;
 %template(DoubleVectorVector) std::vector< std::vector<double> >;
@@ -56,5 +58,16 @@
    }
    Parameter getParam(char *paramName) {
       return self->getParam(std::string(paramName));
+   }
+   static std::string string(const char *str) {
+      return std::string(str);
+   }
+}
+%extend optimizers::FunctionFactory {
+   Function *create(char *name) throw(Exception) {
+      return self->create(std::string(name));
+   }
+   void addFunc(char *name, Function *func, bool fromClone=true) {
+      self->addFunc(std::string(name), func, fromClone);
    }
 }

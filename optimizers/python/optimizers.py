@@ -228,6 +228,8 @@ class Function(_object):
     def argType(*args): return apply(_optimizers.Function_argType,args)
     def setParamBounds(*args): return apply(_optimizers.Function_setParamBounds,args)
     def getParam(*args): return apply(_optimizers.Function_getParam,args)
+    __swig_getmethods__["string"] = lambda x: _optimizers.Function_string
+    if _newclass:string = staticmethod(_optimizers.Function_string)
     def __init__(self): raise RuntimeError, "No constructor defined"
     def __repr__(self):
         return "<C Function instance at %s>" % (self.this,)
@@ -238,6 +240,8 @@ class FunctionPtr(Function):
         if not hasattr(self,"thisown"): _swig_setattr(self, Function, 'thisown', 0)
         _swig_setattr(self, Function,self.__class__,Function)
 _optimizers.Function_swigregister(FunctionPtr)
+Function_string = _optimizers.Function_string
+
 
 class CompositeFunction(Function):
     __swig_setmethods__ = {}
@@ -679,6 +683,32 @@ class RosenPtr(Rosen):
         if not hasattr(self,"thisown"): _swig_setattr(self, Rosen, 'thisown', 0)
         _swig_setattr(self, Rosen,self.__class__,Rosen)
 _optimizers.Rosen_swigregister(RosenPtr)
+
+class FunctionFactory(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, FunctionFactory, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, FunctionFactory, name)
+    def __init__(self,*args):
+        _swig_setattr(self, FunctionFactory, 'this', apply(_optimizers.new_FunctionFactory,args))
+        _swig_setattr(self, FunctionFactory, 'thisown', 1)
+    def __del__(self, destroy= _optimizers.delete_FunctionFactory):
+        try:
+            if self.thisown: destroy(self)
+        except: pass
+    def listFunctions(*args): return apply(_optimizers.FunctionFactory_listFunctions,args)
+    def readXml(*args): return apply(_optimizers.FunctionFactory_readXml,args)
+    def create(*args): return apply(_optimizers.FunctionFactory_create,args)
+    def addFunc(*args): return apply(_optimizers.FunctionFactory_addFunc,args)
+    def __repr__(self):
+        return "<C FunctionFactory instance at %s>" % (self.this,)
+
+class FunctionFactoryPtr(FunctionFactory):
+    def __init__(self,this):
+        _swig_setattr(self, FunctionFactory, 'this', this)
+        if not hasattr(self,"thisown"): _swig_setattr(self, FunctionFactory, 'thisown', 0)
+        _swig_setattr(self, FunctionFactory,self.__class__,FunctionFactory)
+_optimizers.FunctionFactory_swigregister(FunctionFactoryPtr)
 
 class DoubleVector(_object):
     __swig_setmethods__ = {}

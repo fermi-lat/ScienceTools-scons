@@ -19,6 +19,7 @@
 #include "optimizers/Drmngb.h"
 #include "optimizers/Mcmc.h"
 #include "optimizers/FunctionTest.h"
+#include "optimizers/FunctionFactory.h"
 #include "MyFun.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
@@ -27,6 +28,7 @@
 
 using namespace optimizers;   // for testing purposes only
 
+void test_FunctionFactory();
 void test_Parameter_class();
 void test_Function_class();
 void test_PowerLaw_class();
@@ -37,13 +39,58 @@ void test_Mcmc();
 std::string test_path;
 
 int main() {
-   test_Parameter_class();
-   test_Function_class();
-   test_PowerLaw_class();
-   test_CompositeFunction();
-   test_Optimizers();
-   test_Mcmc();
+   test_FunctionFactory();
+//    test_Parameter_class();
+//    test_Function_class();
+//    test_PowerLaw_class();
+//    test_CompositeFunction();
+//    test_Optimizers();
+//    test_Mcmc();
    return 0;
+}
+
+void test_FunctionFactory() {
+   std::cout << "*** testing FunctionFactory ***" << std::endl;
+
+   std::string xmlFile;
+   const char *root = ::getenv("OPTIMIZERSROOT");
+   if (!root) {
+      xmlFile = "../xml/FunctionModels.xml";
+   } else {
+      xmlFile = std::string(root) + "/xml/FunctionModels.xml";
+   }
+
+// Create the factory object and fill with standard prototypes.
+   FunctionFactory funcFactory;
+   bool fromClone = false;
+   funcFactory.addFunc("PowerLaw", new PowerLaw(), fromClone);
+   funcFactory.addFunc("Gaussian", new Gaussian(), fromClone);
+   funcFactory.addFunc("AbsEdge", new AbsEdge(), fromClone);
+
+   funcFactory.listFunctions();
+
+// Read in the customized prototypes.
+   funcFactory.readXml(xmlFile);
+
+   funcFactory.listFunctions();
+
+// Try out one of the new ones.
+   Function *gaussObj = funcFactory.create("Generic Gaussian");
+
+   int npts = 50;
+   double xmin = 6.;
+   double xmax = 7.;
+   double xstep = (xmax - xmin)/(npts-1);
+   for (int i = 0; i < npts; i++) {
+      double x = i*xstep + xmin;
+      dArg xarg(x);
+      std::cout << x << "  "
+                << (*gaussObj)(xarg) << std::endl;
+   }
+
+   std::cout << "*** test_FunctionFactory: all tests completed ***\n" 
+             << std::endl;
+
 }
 
 void test_Mcmc() {
@@ -52,75 +99,76 @@ void test_Mcmc() {
    Rosen my_rosen;
 
    try {
-   std::vector<Parameter> params;
-   my_rosen.getParams(params);
-   params[0].setValue(2.);
-   params[0].setBounds(-10., 10.);
-   params[1].setValue(2.);
-   params[1].setBounds(-10., 10.);
-   my_rosen.setParams(params);
+      std::vector<Parameter> params;
+      my_rosen.getParams(params);
+      params[0].setValue(2.);
+      params[0].setBounds(-10., 10.);
+      params[1].setValue(2.);
+      params[1].setBounds(-10., 10.);
+      my_rosen.setParams(params);
 
-   std::vector<double> my_sig(2);
-   double scale = 1.;
+      std::vector<double> my_sig(2);
+      double scale = 1.;
 
-   int verbose = 1;
-   Minuit myMinuitObj(my_rosen);
-   myMinuitObj.find_min(verbose, .0001);
-   std::vector<double> sig = myMinuitObj.getUncertainty();
-   for (unsigned int i=0; i < sig.size(); i++) {
-      std::cout << i << "  " << sig[i] << std::endl;
-      my_sig[i] = sig[i]*scale;
-   }
+      int verbose = 1;
+      Minuit myMinuitObj(my_rosen);
+      myMinuitObj.find_min(verbose, .0001);
+      std::vector<double> sig = myMinuitObj.getUncertainty();
+      for (unsigned int i=0; i < sig.size(); i++) {
+         std::cout << i << "  " << sig[i] << std::endl;
+         my_sig[i] = sig[i]*scale;
+      }
 
-   Mcmc myMcmcObj(my_rosen);
-   std::vector<double> widths;
-   myMcmcObj.getTransitionWidths(widths);
-   for (unsigned int i = 0; i < widths.size(); i++) {
-      std::cout << widths[i] << "  "
-                << my_sig[i] << std::endl;
-   }
-   myMcmcObj.setTransitionWidths(my_sig);
+      Mcmc myMcmcObj(my_rosen);
+      std::vector<double> widths;
+      myMcmcObj.getTransitionWidths(widths);
+      for (unsigned int i = 0; i < widths.size(); i++) {
+         std::cout << widths[i] << "  "
+                   << my_sig[i] << std::endl;
+      }
+      myMcmcObj.setTransitionWidths(my_sig);
 
-   std::vector< std::vector<double> > mcmc_samples;
-   long nsamp = 100000;
+      std::vector< std::vector<double> > mcmc_samples;
+      long nsamp = 100000;
 // Do a "burn in"...
-   myMcmcObj.generateSamples(mcmc_samples, nsamp);
+      myMcmcObj.generateSamples(mcmc_samples, nsamp);
 // then the real thing...
-   nsamp = 10000;
-   myMcmcObj.generateSamples(mcmc_samples, nsamp);
-
+      nsamp = 10000;
+      myMcmcObj.generateSamples(mcmc_samples, nsamp);
+      
 // generate "fake" samples to test cfitsio
 
-   myMcmcObj.writeSamples("Mc.fits", mcmc_samples);
+      myMcmcObj.writeSamples("Mc.fits", mcmc_samples);
 
-   std::cout << "MCMC results for " << nsamp << " trials:" << std::endl;
-   for (unsigned int j = 0; j < params.size(); j++) {
-      double mc_avg = 0;
-      double mc2_avg = 0;
-      for (unsigned int i = 0; i < mcmc_samples.size(); i++) {
-         mc_avg += mcmc_samples[i][j];
-         mc2_avg += pow(mcmc_samples[i][j], 2);
+      std::cout << "MCMC results for " << nsamp << " trials:" << std::endl;
+      for (unsigned int j = 0; j < params.size(); j++) {
+         double mc_avg = 0;
+         double mc2_avg = 0;
+         for (unsigned int i = 0; i < mcmc_samples.size(); i++) {
+            mc_avg += mcmc_samples[i][j];
+            mc2_avg += pow(mcmc_samples[i][j], 2);
+         }
+         mc_avg /= mcmc_samples.size();
+         mc2_avg /= mcmc_samples.size();
+         std::cout << "Parameter " << j << ": "
+                   << mc_avg << " +/- "
+                   << sqrt(mc2_avg - mc_avg*mc_avg) << std::endl;
       }
-      mc_avg /= mcmc_samples.size();
-      mc2_avg /= mcmc_samples.size();
-      std::cout << "Parameter " << j << ": "
-                << mc_avg << " +/- "
-                << sqrt(mc2_avg - mc_avg*mc_avg) << std::endl;
-   }
    
-//    std::string filename = test_path + "Data/Mcmc.dat"; 
-//    std::ofstream outfile(filename.c_str());
-//    if (!outfile) {
-//       std::cout << "opening Mcmc.dat failed." << std::endl;
-//       assert(false);
-//    }
-
-//    for (unsigned int i = 0; i < mcmc_samples.size(); i++) {
-//       for (unsigned int j = 0; j < params.size(); j++) {
-//          outfile << mcmc_samples[i][j] << "  ";
+// // Write data as an ascii file.
+//       std::string filename = test_path + "Data/Mcmc.dat"; 
+//       std::ofstream outfile(filename.c_str());
+//       if (!outfile) {
+//          std::cout << "opening Mcmc.dat failed." << std::endl;
+//          assert(false);
 //       }
-//       outfile << "\n";
-//    }
+      
+//       for (unsigned int i = 0; i < mcmc_samples.size(); i++) {
+//          for (unsigned int j = 0; j < params.size(); j++) {
+//             outfile << mcmc_samples[i][j] << "  ";
+//          }
+//          outfile << "\n";
+//       }
 
    } catch (OutOfBounds &eObj) {
       assert(eObj.code() == OutOfBounds::VALUE_ERROR);

@@ -654,41 +654,42 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define  SWIGTYPE_p_optimizers__ParameterNotFound swig_types[0] 
-#define  SWIGTYPE_p_optimizers__Gaussian swig_types[1] 
-#define  SWIGTYPE_p_std__vectorToptimizers__Function_p_t swig_types[2] 
-#define  SWIGTYPE_p_optimizers__logical swig_types[3] 
-#define  SWIGTYPE_p_double swig_types[4] 
-#define  SWIGTYPE_p_optimizers__Lbfgs swig_types[5] 
-#define  SWIGTYPE_p_optimizers__FunctionTest swig_types[6] 
-#define  SWIGTYPE_p_std__vectorToptimizers__Parameter_t swig_types[7] 
-#define  SWIGTYPE_p_optimizers__Minuit swig_types[8] 
-#define  SWIGTYPE_p_std__vectorTdouble_t__const_iterator swig_types[9] 
-#define  SWIGTYPE_p_std__pairTdouble_double_t swig_types[10] 
-#define  SWIGTYPE_p_std__vectorTdouble_t swig_types[11] 
-#define  SWIGTYPE_p_std__string swig_types[12] 
-#define  SWIGTYPE_p_optimizers__Optimizer swig_types[13] 
-#define  SWIGTYPE_p_std__vectorTstd__vectorTdouble_t_t swig_types[14] 
-#define  SWIGTYPE_p_optimizers__Exception swig_types[15] 
-#define  SWIGTYPE_p_optimizers__Rosen swig_types[16] 
-#define  SWIGTYPE_p_std__vectorToptimizers__Arg_p_t swig_types[17] 
-#define  SWIGTYPE_p_mfcn swig_types[18] 
-#define  SWIGTYPE_p_optimizers__Arg swig_types[19] 
-#define  SWIGTYPE_p_optimizers__dArg swig_types[20] 
-#define  SWIGTYPE_p_optimizers__Parameter swig_types[21] 
-#define  SWIGTYPE_p_optimizers__OutOfBounds swig_types[22] 
-#define  SWIGTYPE_p_optimizers__MyFun swig_types[23] 
-#define  SWIGTYPE_p_optimizers__PowerLaw swig_types[24] 
-#define  SWIGTYPE_p_optimizers__Mcmc swig_types[25] 
-#define  SWIGTYPE_p_optimizers__SumFunction swig_types[26] 
-#define  SWIGTYPE_p_optimizers__ProductFunction swig_types[27] 
-#define  SWIGTYPE_p_optimizers__Function swig_types[28] 
-#define  SWIGTYPE_p_optimizers__CompositeFunction swig_types[29] 
-#define  SWIGTYPE_p_int swig_types[30] 
-#define  SWIGTYPE_p_optimizers__AbsEdge swig_types[31] 
-#define  SWIGTYPE_p_std__vectorTstd__string_t swig_types[32] 
-#define  SWIGTYPE_p_optimizers__Drmngb swig_types[33] 
-static swig_type_info *swig_types[35];
+#define  SWIGTYPE_p_optimizers__FunctionFactory swig_types[0] 
+#define  SWIGTYPE_p_optimizers__ParameterNotFound swig_types[1] 
+#define  SWIGTYPE_p_optimizers__Gaussian swig_types[2] 
+#define  SWIGTYPE_p_std__vectorToptimizers__Function_p_t swig_types[3] 
+#define  SWIGTYPE_p_optimizers__logical swig_types[4] 
+#define  SWIGTYPE_p_double swig_types[5] 
+#define  SWIGTYPE_p_optimizers__Lbfgs swig_types[6] 
+#define  SWIGTYPE_p_optimizers__FunctionTest swig_types[7] 
+#define  SWIGTYPE_p_std__vectorToptimizers__Parameter_t swig_types[8] 
+#define  SWIGTYPE_p_optimizers__Minuit swig_types[9] 
+#define  SWIGTYPE_p_std__vectorTdouble_t__const_iterator swig_types[10] 
+#define  SWIGTYPE_p_std__pairTdouble_double_t swig_types[11] 
+#define  SWIGTYPE_p_std__vectorTdouble_t swig_types[12] 
+#define  SWIGTYPE_p_std__string swig_types[13] 
+#define  SWIGTYPE_p_optimizers__Optimizer swig_types[14] 
+#define  SWIGTYPE_p_std__vectorTstd__vectorTdouble_t_t swig_types[15] 
+#define  SWIGTYPE_p_optimizers__Exception swig_types[16] 
+#define  SWIGTYPE_p_optimizers__Rosen swig_types[17] 
+#define  SWIGTYPE_p_std__vectorToptimizers__Arg_p_t swig_types[18] 
+#define  SWIGTYPE_p_mfcn swig_types[19] 
+#define  SWIGTYPE_p_optimizers__Arg swig_types[20] 
+#define  SWIGTYPE_p_optimizers__dArg swig_types[21] 
+#define  SWIGTYPE_p_optimizers__Parameter swig_types[22] 
+#define  SWIGTYPE_p_optimizers__OutOfBounds swig_types[23] 
+#define  SWIGTYPE_p_optimizers__MyFun swig_types[24] 
+#define  SWIGTYPE_p_optimizers__PowerLaw swig_types[25] 
+#define  SWIGTYPE_p_optimizers__Mcmc swig_types[26] 
+#define  SWIGTYPE_p_optimizers__SumFunction swig_types[27] 
+#define  SWIGTYPE_p_optimizers__ProductFunction swig_types[28] 
+#define  SWIGTYPE_p_optimizers__Function swig_types[29] 
+#define  SWIGTYPE_p_optimizers__CompositeFunction swig_types[30] 
+#define  SWIGTYPE_p_int swig_types[31] 
+#define  SWIGTYPE_p_optimizers__AbsEdge swig_types[32] 
+#define  SWIGTYPE_p_std__vectorTstd__string_t swig_types[33] 
+#define  SWIGTYPE_p_optimizers__Drmngb swig_types[34] 
+static swig_type_info *swig_types[36];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -706,6 +707,7 @@ static swig_type_info *swig_types[35];
 #include "../optimizers/Exception.h"
 #include "../optimizers/Function.h"
 #include "../optimizers/FunctionTest.h"
+#include "../optimizers/FunctionFactory.h"
 #include "../optimizers/Lbfgs.h"
 #include "../optimizers/Mcmc.h"
 #include "../optimizers/Minuit.h"
@@ -729,6 +731,15 @@ void optimizers_Function_setParamBounds__SWIG_1(optimizers::Function *self,char 
    }
 optimizers::Parameter optimizers_Function_getParam__SWIG_1(optimizers::Function *self,char *paramName){
       return self->getParam(std::string(paramName));
+   }
+std::string Function_string(char const *str){
+      return std::string(str);
+   }
+optimizers::Function *optimizers_FunctionFactory_create__SWIG_1(optimizers::FunctionFactory *self,char *name){
+      return self->create(std::string(name));
+   }
+void optimizers_FunctionFactory_addFunc__SWIG_1(optimizers::FunctionFactory *self,char *name,optimizers::Function *func,bool fromClone){
+      self->addFunc(std::string(name), func, fromClone);
    }
 
 #define  SWIG_MemoryError    1
@@ -3116,6 +3127,25 @@ static PyObject *_wrap_Function_getParam(PyObject *self, PyObject *args) {
     }
     
     PyErr_SetString(PyExc_TypeError,"No matching function for overloaded 'Function_getParam'");
+    return NULL;
+}
+
+
+static PyObject *_wrap_Function_string(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    char *arg1 ;
+    std::string result;
+    
+    if(!PyArg_ParseTuple(args,(char *)"s:Function_string",&arg1)) goto fail;
+    result = Function_string((char const *)arg1);
+    
+    {
+        std::string * resultptr;
+        resultptr = new std::string((std::string &) result);
+        resultobj = SWIG_NewPointerObj((void *) resultptr, SWIGTYPE_p_std__string, 1);
+    }
+    return resultobj;
+    fail:
     return NULL;
 }
 
@@ -5565,6 +5595,383 @@ static PyObject * Rosen_swigregister(PyObject *self, PyObject *args) {
     Py_INCREF(obj);
     return Py_BuildValue((char *)"");
 }
+static PyObject *_wrap_new_FunctionFactory(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *result;
+    
+    if(!PyArg_ParseTuple(args,(char *)":new_FunctionFactory")) goto fail;
+    result = (optimizers::FunctionFactory *)new optimizers::FunctionFactory();
+    
+    resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_optimizers__FunctionFactory, 1);
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_delete_FunctionFactory(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    PyObject * obj0 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"O:delete_FunctionFactory",&obj0)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    delete arg1;
+    
+    Py_INCREF(Py_None); resultobj = Py_None;
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_create__SWIG_0(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    std::string *arg2 = 0 ;
+    optimizers::Function *result;
+    PyObject * obj0 = 0 ;
+    PyObject * obj1 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"OO:FunctionFactory_create",&obj0,&obj1)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_std__string,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (arg2 == NULL) {
+        PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+    }
+    try {
+        result = (optimizers::Function *)(arg1)->create((std::string const &)*arg2);
+        
+    }
+    catch(optimizers::Exception &_e) {
+        {
+            PyErr_SetString(PyExc_RuntimeError,"optimizers::Exception");
+            SWIG_fail;
+        }
+    }
+    catch(...) {
+        throw; 
+    }
+    resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_optimizers__Function, 0);
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_addFunc__SWIG_0(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    std::string *arg2 = 0 ;
+    optimizers::Function *arg3 = (optimizers::Function *) 0 ;
+    bool arg4 = (bool) true ;
+    PyObject * obj0 = 0 ;
+    PyObject * obj1 = 0 ;
+    PyObject * obj2 = 0 ;
+    PyObject * obj3 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"OOO|O:FunctionFactory_addFunc",&obj0,&obj1,&obj2,&obj3)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_std__string,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (arg2 == NULL) {
+        PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+    }
+    if ((SWIG_ConvertPtr(obj2,(void **) &arg3, SWIGTYPE_p_optimizers__Function,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (obj3) {
+        arg4 = PyInt_AsLong(obj3) ? true : false;
+        if (PyErr_Occurred()) SWIG_fail;
+    }
+    try {
+        (arg1)->addFunc((std::string const &)*arg2,arg3,arg4);
+        
+    }
+    catch(optimizers::Exception &_e) {
+        {
+            PyErr_SetString(PyExc_RuntimeError,"optimizers::Exception");
+            SWIG_fail;
+        }
+    }
+    catch(...) {
+        throw; 
+    }
+    Py_INCREF(Py_None); resultobj = Py_None;
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_listFunctions(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    PyObject * obj0 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"O:FunctionFactory_listFunctions",&obj0)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    (arg1)->listFunctions();
+    
+    Py_INCREF(Py_None); resultobj = Py_None;
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_readXml(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    std::string *arg2 = 0 ;
+    PyObject * obj0 = 0 ;
+    PyObject * obj1 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"OO:FunctionFactory_readXml",&obj0,&obj1)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr(obj1,(void **) &arg2, SWIGTYPE_p_std__string,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (arg2 == NULL) {
+        PyErr_SetString(PyExc_TypeError,"null reference"); SWIG_fail; 
+    }
+    try {
+        (arg1)->readXml((std::string const &)*arg2);
+        
+    }
+    catch(optimizers::Exception &_e) {
+        {
+            PyErr_SetString(PyExc_RuntimeError,"optimizers::Exception");
+            SWIG_fail;
+        }
+    }
+    catch(...) {
+        throw; 
+    }
+    Py_INCREF(Py_None); resultobj = Py_None;
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_create__SWIG_1(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    char *arg2 ;
+    optimizers::Function *result;
+    PyObject * obj0 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"Os:FunctionFactory_create",&obj0,&arg2)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    try {
+        result = (optimizers::Function *)optimizers_FunctionFactory_create__SWIG_1(arg1,arg2);
+        
+    }
+    catch(optimizers::Exception &_e) {
+        {
+            PyErr_SetString(PyExc_RuntimeError,"optimizers::Exception");
+            SWIG_fail;
+        }
+    }
+    catch(...) {
+        throw; 
+    }
+    resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_optimizers__Function, 0);
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_create(PyObject *self, PyObject *args) {
+    int argc;
+    PyObject *argv[3];
+    int ii;
+    
+    argc = PyObject_Length(args);
+    for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+        argv[ii] = PyTuple_GetItem(args,ii);
+    }
+    if (argc == 2) {
+        int _v;
+        {
+            void *ptr;
+            if (SWIG_ConvertPtr(argv[0], (void **) &ptr, SWIGTYPE_p_optimizers__FunctionFactory, 0) == -1) {
+                _v = 0;
+                PyErr_Clear();
+            }else {
+                _v = 1;
+            }
+        }
+        if (_v) {
+            {
+                void *ptr;
+                if (SWIG_ConvertPtr(argv[1], (void **) &ptr, SWIGTYPE_p_std__string, 0) == -1) {
+                    _v = 0;
+                    PyErr_Clear();
+                }else {
+                    _v = 1;
+                }
+            }
+            if (_v) {
+                return _wrap_FunctionFactory_create__SWIG_0(self,args);
+            }
+        }
+    }
+    if (argc == 2) {
+        int _v;
+        {
+            void *ptr;
+            if (SWIG_ConvertPtr(argv[0], (void **) &ptr, SWIGTYPE_p_optimizers__FunctionFactory, 0) == -1) {
+                _v = 0;
+                PyErr_Clear();
+            }else {
+                _v = 1;
+            }
+        }
+        if (_v) {
+            {
+                _v = PyString_Check(argv[1]) ? 1 : 0;
+            }
+            if (_v) {
+                return _wrap_FunctionFactory_create__SWIG_1(self,args);
+            }
+        }
+    }
+    
+    PyErr_SetString(PyExc_TypeError,"No matching function for overloaded 'FunctionFactory_create'");
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_addFunc__SWIG_1(PyObject *self, PyObject *args) {
+    PyObject *resultobj;
+    optimizers::FunctionFactory *arg1 = (optimizers::FunctionFactory *) 0 ;
+    char *arg2 ;
+    optimizers::Function *arg3 = (optimizers::Function *) 0 ;
+    bool arg4 = (bool) true ;
+    PyObject * obj0 = 0 ;
+    PyObject * obj2 = 0 ;
+    PyObject * obj3 = 0 ;
+    
+    if(!PyArg_ParseTuple(args,(char *)"OsO|O:FunctionFactory_addFunc",&obj0,&arg2,&obj2,&obj3)) goto fail;
+    if ((SWIG_ConvertPtr(obj0,(void **) &arg1, SWIGTYPE_p_optimizers__FunctionFactory,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if ((SWIG_ConvertPtr(obj2,(void **) &arg3, SWIGTYPE_p_optimizers__Function,SWIG_POINTER_EXCEPTION | 0 )) == -1) SWIG_fail;
+    if (obj3) {
+        arg4 = PyInt_AsLong(obj3) ? true : false;
+        if (PyErr_Occurred()) SWIG_fail;
+    }
+    optimizers_FunctionFactory_addFunc__SWIG_1(arg1,arg2,arg3,arg4);
+    
+    Py_INCREF(Py_None); resultobj = Py_None;
+    return resultobj;
+    fail:
+    return NULL;
+}
+
+
+static PyObject *_wrap_FunctionFactory_addFunc(PyObject *self, PyObject *args) {
+    int argc;
+    PyObject *argv[5];
+    int ii;
+    
+    argc = PyObject_Length(args);
+    for (ii = 0; (ii < argc) && (ii < 4); ii++) {
+        argv[ii] = PyTuple_GetItem(args,ii);
+    }
+    if ((argc >= 3) && (argc <= 4)) {
+        int _v;
+        {
+            void *ptr;
+            if (SWIG_ConvertPtr(argv[0], (void **) &ptr, SWIGTYPE_p_optimizers__FunctionFactory, 0) == -1) {
+                _v = 0;
+                PyErr_Clear();
+            }else {
+                _v = 1;
+            }
+        }
+        if (_v) {
+            {
+                void *ptr;
+                if (SWIG_ConvertPtr(argv[1], (void **) &ptr, SWIGTYPE_p_std__string, 0) == -1) {
+                    _v = 0;
+                    PyErr_Clear();
+                }else {
+                    _v = 1;
+                }
+            }
+            if (_v) {
+                {
+                    void *ptr;
+                    if (SWIG_ConvertPtr(argv[2], (void **) &ptr, SWIGTYPE_p_optimizers__Function, 0) == -1) {
+                        _v = 0;
+                        PyErr_Clear();
+                    }else {
+                        _v = 1;
+                    }
+                }
+                if (_v) {
+                    if (argc <= 3) {
+                        return _wrap_FunctionFactory_addFunc__SWIG_0(self,args);
+                    }
+                    {
+                        _v = (PyInt_Check(argv[3]) || PyLong_Check(argv[3])) ? 1 : 0;
+                    }
+                    if (_v) {
+                        return _wrap_FunctionFactory_addFunc__SWIG_0(self,args);
+                    }
+                }
+            }
+        }
+    }
+    if ((argc >= 3) && (argc <= 4)) {
+        int _v;
+        {
+            void *ptr;
+            if (SWIG_ConvertPtr(argv[0], (void **) &ptr, SWIGTYPE_p_optimizers__FunctionFactory, 0) == -1) {
+                _v = 0;
+                PyErr_Clear();
+            }else {
+                _v = 1;
+            }
+        }
+        if (_v) {
+            {
+                _v = PyString_Check(argv[1]) ? 1 : 0;
+            }
+            if (_v) {
+                {
+                    void *ptr;
+                    if (SWIG_ConvertPtr(argv[2], (void **) &ptr, SWIGTYPE_p_optimizers__Function, 0) == -1) {
+                        _v = 0;
+                        PyErr_Clear();
+                    }else {
+                        _v = 1;
+                    }
+                }
+                if (_v) {
+                    if (argc <= 3) {
+                        return _wrap_FunctionFactory_addFunc__SWIG_1(self,args);
+                    }
+                    {
+                        _v = (PyInt_Check(argv[3]) || PyLong_Check(argv[3])) ? 1 : 0;
+                    }
+                    if (_v) {
+                        return _wrap_FunctionFactory_addFunc__SWIG_1(self,args);
+                    }
+                }
+            }
+        }
+    }
+    
+    PyErr_SetString(PyExc_TypeError,"No matching function for overloaded 'FunctionFactory_addFunc'");
+    return NULL;
+}
+
+
+static PyObject * FunctionFactory_swigregister(PyObject *self, PyObject *args) {
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args,(char*)"O", &obj)) return NULL;
+    SWIG_TypeClientData(SWIGTYPE_p_optimizers__FunctionFactory, obj);
+    Py_INCREF(obj);
+    return Py_BuildValue((char *)"");
+}
 static PyObject *_wrap_new_DoubleVector__SWIG_0(PyObject *self, PyObject *args) {
     PyObject *resultobj;
     unsigned int arg1 = (unsigned int) 0 ;
@@ -7254,6 +7661,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Function_argType", _wrap_Function_argType, METH_VARARGS },
 	 { (char *)"Function_setParamBounds", _wrap_Function_setParamBounds, METH_VARARGS },
 	 { (char *)"Function_getParam", _wrap_Function_getParam, METH_VARARGS },
+	 { (char *)"Function_string", _wrap_Function_string, METH_VARARGS },
 	 { (char *)"Function_swigregister", Function_swigregister, METH_VARARGS },
 	 { (char *)"delete_CompositeFunction", _wrap_delete_CompositeFunction, METH_VARARGS },
 	 { (char *)"CompositeFunction_setParam", _wrap_CompositeFunction_setParam, METH_VARARGS },
@@ -7360,6 +7768,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Rosen_derivByParam", _wrap_Rosen_derivByParam, METH_VARARGS },
 	 { (char *)"delete_Rosen", _wrap_delete_Rosen, METH_VARARGS },
 	 { (char *)"Rosen_swigregister", Rosen_swigregister, METH_VARARGS },
+	 { (char *)"new_FunctionFactory", _wrap_new_FunctionFactory, METH_VARARGS },
+	 { (char *)"delete_FunctionFactory", _wrap_delete_FunctionFactory, METH_VARARGS },
+	 { (char *)"FunctionFactory_listFunctions", _wrap_FunctionFactory_listFunctions, METH_VARARGS },
+	 { (char *)"FunctionFactory_readXml", _wrap_FunctionFactory_readXml, METH_VARARGS },
+	 { (char *)"FunctionFactory_create", _wrap_FunctionFactory_create, METH_VARARGS },
+	 { (char *)"FunctionFactory_addFunc", _wrap_FunctionFactory_addFunc, METH_VARARGS },
+	 { (char *)"FunctionFactory_swigregister", FunctionFactory_swigregister, METH_VARARGS },
 	 { (char *)"new_DoubleVector", _wrap_new_DoubleVector, METH_VARARGS },
 	 { (char *)"DoubleVector___len__", _wrap_DoubleVector___len__, METH_VARARGS },
 	 { (char *)"DoubleVector___nonzero__", _wrap_DoubleVector___nonzero__, METH_VARARGS },
@@ -7456,6 +7871,7 @@ static void *_p_optimizers__ProductFunctionTo_p_optimizers__CompositeFunction(vo
 static void *_p_optimizers__SumFunctionTo_p_optimizers__CompositeFunction(void *x) {
     return (void *)((optimizers::CompositeFunction *)  ((optimizers::SumFunction *) x));
 }
+static swig_type_info _swigt__p_optimizers__FunctionFactory[] = {{"_p_optimizers__FunctionFactory", 0, "optimizers::FunctionFactory *", 0},{"_p_optimizers__FunctionFactory"},{0}};
 static swig_type_info _swigt__p_optimizers__ParameterNotFound[] = {{"_p_optimizers__ParameterNotFound", 0, "optimizers::ParameterNotFound *", 0},{"_p_optimizers__ParameterNotFound"},{0}};
 static swig_type_info _swigt__p_optimizers__Gaussian[] = {{"_p_optimizers__Gaussian", 0, "optimizers::Gaussian *", 0},{"_p_optimizers__Gaussian"},{0}};
 static swig_type_info _swigt__p_std__vectorToptimizers__Function_p_t[] = {{"_p_std__vectorToptimizers__Function_p_t", 0, "std::vector<optimizers::Function * > *", 0},{"_p_std__vectorToptimizers__Function_p_t"},{0}};
@@ -7492,6 +7908,7 @@ static swig_type_info _swigt__p_std__vectorTstd__string_t[] = {{"_p_std__vectorT
 static swig_type_info _swigt__p_optimizers__Drmngb[] = {{"_p_optimizers__Drmngb", 0, "optimizers::Drmngb *", 0},{"_p_optimizers__Drmngb"},{0}};
 
 static swig_type_info *swig_types_initial[] = {
+_swigt__p_optimizers__FunctionFactory, 
 _swigt__p_optimizers__ParameterNotFound, 
 _swigt__p_optimizers__Gaussian, 
 _swigt__p_std__vectorToptimizers__Function_p_t, 

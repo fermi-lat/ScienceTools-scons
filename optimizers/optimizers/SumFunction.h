@@ -40,6 +40,7 @@ public:
 
 protected:
 
+
    void fetchDerivs(Arg &x, std::vector<double> &derivs, bool getFree) const;
 
 };
