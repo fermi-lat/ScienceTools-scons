@@ -8,11 +8,14 @@
 #
 
 SWIG = swig
-SWIG_DIR = /scratch/local
-PYTHONDIR = $(GLAST_EXT)/python/2.3/Linux
-PYINCLUDE = -I$(PYTHONDIR)/include
+#SWIG_DIR = /scratch/local
+#PYTHONDIR = $(GLAST_EXT)/python/2.3/Linux
+#PYINCLUDE = -I$(PYTHONDIR)/include
+SWIG_DIR = /usr/local
+PYINCLUDE = -I/usr/local/include/python2.3
 
 #CFLAGS = -ansi -Wall -W -pedantic
+CFLAGS = -g -fPIC
 
 INCLUDE = -I$(OPTIMIZERSROOT)\
 	-I$(XMLROOT)\
@@ -29,7 +32,7 @@ LIBS = -L../$(BINDIR)/ -loptimizersLib\
 	-L$(CFITSIO_DIR)/lib -lcfitsio\
 	-L$(CLHEP_DIR)/1.8.0.0/lib -lCLHEP\
 	-L$(GLAST_EXT)/xerces/1.7.0/lib/ -lxerces-c1_7_0 -lpthread\
-	-lg2c -L$(SWIG_DIR)/lib -lswigpy
+	-lg2c -L$(SWIG_DIR)/lib -lswigpy -fPIC
 
 module_base = optimizers
 module_name = _${module_base}.so
@@ -41,7 +44,7 @@ ${module_base}.o: ${module_base}.cxx
 	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} -o $@ $<
 
 ${module_base}.cxx: ${module_base}.i
-	${SWIG} -c -python -c++ -o ${module_base}.cxx ${module_base}.i
+	${SWIG} -runtime -python -c++ -o ${module_base}.cxx ${module_base}.i
 
 anew:
 	make clean

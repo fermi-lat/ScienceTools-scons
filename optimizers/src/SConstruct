@@ -1,0 +1,25 @@
+# -*- python -*-
+import os
+package = 'optimizers'
+home = os.environ[package.upper() + 'ROOT']
+libraries = {'xml': None,
+             'cfitsio': (os.path.join(os.environ['CFITSIO_DIR'], 'include'),
+                         os.path.join(os.environ['CFITSIO_DIR'], 'lib')),
+             'CLHEP': (os.path.join(os.environ['CLHEP_DIR'], '1.8.0.0',
+                                    'include'),
+                       os.path.join(os.environ['CLHEP_DIR'], '1.8.0.0','lib')),
+             'f2c': None,
+             'facilities': None,
+             'xerces-c1_7_0': (os.path.join(os.environ['XMLEXT_DIR'],
+                                            'include'),
+                               os.path.join(os.environ['XMLEXT_DIR'], 'lib')),
+             'g2c': ('',''),
+             'opt-linux': ('/home/jchiang/data/OPT++2.1/include',
+                           '/home/jchiang/data/OPT++2.1/lib'),
+             'newmat-linux': ('/home/jchiang/data/OPT++2.1/newmat09',
+                              '/home/jchiang/data/OPT++2.1/lib')
+             }
+
+cflags = ' -DHAVE_OPT_PP'
+Export(['package', 'home', 'libraries', 'cflags'])
+SConscript('buildBase')

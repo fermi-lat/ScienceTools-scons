@@ -41,7 +41,7 @@ public:
    OptPP(Statistic &stat) : Optimizer(stat) {s_stat = &stat;}
    virtual ~OptPP() {}
 
-   void find_min(int verbose = 0, double tol = 1e-5);
+   void find_min(int verbose = 0, double tol = 1e-5, int tolType=0);
     
 protected:
 
@@ -59,7 +59,7 @@ protected:
    static void update_model(int, int, ColumnVector) {}
 #endif
 
-   static Function *s_stat;
+   static Statistic *s_stat;
 
 };
 

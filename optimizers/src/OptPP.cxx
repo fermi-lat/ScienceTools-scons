@@ -11,7 +11,7 @@
 #include <fstream>
 
 #include "optimizers/Parameter.h"
-#include "OptPP.h"
+#include "optimizers/OptPP.h"
 
 #ifdef HAVE_OPT_PP
 
@@ -26,7 +26,7 @@
 
 namespace optimizers {
 
-Function *OptPP::s_stat = 0;
+Statistic *OptPP::s_stat = 0;
 int OptPP::s_verbose = 0;
 
 #ifdef HAVE_OPT_PP
@@ -45,7 +45,8 @@ void OptPP::statInterface(int mode, int ndim, const ColumnVector &x,
          if (s_verbose) std::cout << param_val << "  ";
       }
 
-      fx = -s_stat->value(paramValues);
+      s_stat->setFreeParamValues(paramValues);
+      fx = -s_stat->value();
       result = NLPFunction;
 
       if (s_verbose) std::cout << "f(x) = " << fx << std::endl;
@@ -76,7 +77,7 @@ void OptPP::statInit(int ndim, ColumnVector &x) {
       x(i+1) = paramValues[i];
 }
 
-void OptPP::find_min(int verbose, double tol) {
+void OptPP::find_min(int verbose, double tol, int) {
 
    s_verbose = verbose;
 

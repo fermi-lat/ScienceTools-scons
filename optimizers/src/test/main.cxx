@@ -31,6 +31,10 @@
 #include "RosenND.h"
 #include "AbsEdge.h"
 
+#ifdef HAVE_OPT_PP
+#include "optimizers/OptPP.h"
+#endif
+
 using namespace optimizers;   // for testing purposes only
 
 void test_FunctionFactory();
@@ -81,7 +85,7 @@ void test_FunctionFactory() {
 // Read in the customized prototypes.
    try {
       funcFactory.readXml(xmlFile);
-   } catch (Exception &eObs) {
+   } catch (optimizers::Exception &eObs) {
       std::cerr << eObs.what() << std::endl;
    } catch (...) {
       std::cerr << "other exception caught while reading "
@@ -118,7 +122,7 @@ void test_FunctionFactory() {
 
    try {
       funcFactory.readXml(xmlFile);
-   } catch (Exception &eObj) {
+   } catch (optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
       std::cout << "*** End of readXml() failure test. ***\n" << std::endl;
    } catch (...) {
@@ -130,7 +134,7 @@ void test_FunctionFactory() {
    xmlFile = "outputModels.xml";
    try {
       funcFactory.writeXml(xmlFile);
-   } catch (Exception &eObj) {
+   } catch (optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    } catch (...) {
       std::cerr << "other exception caught while writing "
@@ -226,7 +230,7 @@ void test_Mcmc() {
                 << "minValue: " << eObj.minValue() << "\n"
                 << "maxValue: " << eObj.maxValue() << "\n" 
                 <<std::endl;
-   } catch(Exception &eObj) {
+   } catch(optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
 
@@ -261,8 +265,8 @@ void test_Optimizers() {
    try {
      my_lbfgsObj.find_min(verbose, .000001);
    }
-   catch(Exception& rrr) {
-     std::cout << "Exception: " << rrr.what() << std::endl;
+   catch(optimizers::Exception& rrr) {
+     std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
    }
    std::cout << "LBFGS exit code: " 
              << my_lbfgsObj.getRetCode() 
@@ -297,7 +301,7 @@ void test_Optimizers() {
    Drmngb my_Drmngb(rosenND);
    try {
       my_Drmngb.find_min(verbose, .0001);
-   } catch (Exception &eObj) {
+   } catch (optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
    std::cout << "Drmngb exit code: " << my_Drmngb.getRetCode() << std::endl;
@@ -319,7 +323,7 @@ void test_Optimizers() {
    Minuit my_Minuit(rosenND);
    try {
       my_Minuit.find_min(verbose, .0001);
-   } catch (Exception &eObj) {
+   } catch (optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
    sig = my_Minuit.getUncertainty();
@@ -330,8 +334,10 @@ void test_Optimizers() {
 
 #ifdef HAVE_OPT_PP
 // now restart and try OptPP
-   params[0].setValue(2.);
-   params[1].setValue(2.);
+   my_rosen.getParams(params);
+   for (unsigned int i = 0; i < params.size(); i++) {
+      params[i].setValue(2.);
+   }
    my_rosen.setParams(params);
    OptPP my_OptppObj(my_rosen);
    my_OptppObj.find_min(verbose);
@@ -563,7 +569,7 @@ void test_Function_class() {
    try {
       double value = f.getParamValue("foo");
       std::cout << value << std::endl;
-   } catch(Exception &eObj) {
+   } catch(optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
 
@@ -589,7 +595,7 @@ void test_Function_class() {
 // attempt to change the value of a non-existent parameter
    try {
       f.setParam(std::string("Oscar"), 5.);
-   } catch(Exception &eObj) {
+   } catch(optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
 
@@ -624,7 +630,7 @@ void test_Function_class() {
 
    try {
       Parameter my_param = f.getParam("Joan");
-   } catch(Exception &eObj) {
+   } catch(optimizers::Exception &eObj) {
       std::cout << eObj.what() << std::endl;
    }
 

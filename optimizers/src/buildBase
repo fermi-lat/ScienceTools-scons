@@ -1,0 +1,47 @@
+# -*- python -*-
+import os, glob
+
+Import('home', 'package', 'libraries', 'cflags')
+
+bindir = os.environ['BINDIR']
+install_dir = os.path.join(home, bindir)
+
+include_dirs = [home, os.path.join(home, 'src')]
+library_dirs = [os.path.join(home, bindir)]
+for lib in libraries.keys():
+    if libraries[lib] is None:
+        # remove ugly Lib kluge
+        lib = lib.split('Lib')[0]
+        print lib
+        include_dirs.append(os.environ[lib.upper() + 'ROOT'])
+        library_dirs.append(os.path.join(os.environ[lib.upper() + 'ROOT'],
+                                         os.environ['BINDIR']))
+    else:
+        include_dirs.append(libraries[lib][0])
+        library_dirs.append(libraries[lib][1])
+
+app = ''.join(('test_', package, '.exe'))
+
+SourceSignatures('timestamp')
+
+env = Environment(CCFLAGS='-g -pedantic' + cflags)
+
+src_files = glob.glob(os.path.join(home, 'src', '*.cxx'))
+src_files.extend(glob.glob(os.path.join(home, 'src', '*.c')))
+
+test_app_files = glob.glob(os.path.join(home, 'src', 'test/*.cxx'))
+
+libNames = libraries.keys()
+libNames.insert(0, package)
+libNames.remove('f2c')
+libNames.append('pthread')
+
+library = env.Library(package, src_files, CPPPATH=include_dirs)
+test_program = env.Program(app, test_app_files, CPPPATH=include_dirs,
+                           LIBS=libNames, LIBPATH=library_dirs)
+
+env.Install(install_dir, [library, test_program])
+
+env.Alias('install', install_dir)
+
+Default('install')
