@@ -16,27 +16,11 @@
 #include "TString.h"
 #include "TSystem.h"
 
+#include "RootColumn.h"
 #include "RootExtensionManager.h"
 #include "tip/TipException.h"
 
 namespace tip {
-
-  LeafBuffer::LeafBuffer(TTree * tree, const std::string & leaf_name, const std::string &): m_leaf_name(leaf_name),
-    m_tree(tree), m_buf(0) {
-    if (0 == m_tree) throw TipException("LeafBuffer::LeafBuffer(TTree *, string, string): "
-      "Cannot create LeafBuffer object with a NULL TTree pointer");
-    m_buf = new double[1];
-    *static_cast<double *>(m_buf) = 137.;
-    m_tree->SetBranchAddress(m_leaf_name.c_str(), m_buf);
-    m_tree->SetBranchStatus(m_leaf_name.c_str(), 1);
-  }
-
-  LeafBuffer::~LeafBuffer() {
-    TBranch * branch = m_tree->GetBranch(m_leaf_name.c_str());
-    if (0 != branch) branch->ResetAddress();
-    m_tree->SetBranchStatus(m_leaf_name.c_str(), 0);
-    delete [] static_cast<double *>(m_buf);
-  }
 
   void RootExtensionManager::resetSigHandlers() {
     gSystem->ResetSignal(kSigBus);
@@ -177,7 +161,7 @@ namespace tip {
   // Close file.
   void RootExtensionManager::close() {
     m_branch_lookup.clear();
-    for (std::vector<LeafBuffer *>::reverse_iterator it = m_leaves.rbegin(); it != m_leaves.rend(); ++it)
+    for (std::vector<IColumn *>::reverse_iterator it = m_leaves.rbegin(); it != m_leaves.rend(); ++it)
       delete *it;
     m_fields.clear();
     m_leaves.clear();
@@ -228,7 +212,7 @@ namespace tip {
 
       // Create buffer for leaf:
       // Use insert instead of push_back so that we can easily get the distance from the beginning of the array:
-      std::vector<LeafBuffer *>::iterator litor = m_leaves.insert(m_leaves.end(), new LeafBuffer(m_tree, field_name, type));
+      std::vector<IColumn *>::iterator litor = m_leaves.insert(m_leaves.end(), new RootColumn(m_tree, field_name, type));
       itor = m_branch_lookup.insert(itor, std::make_pair(field_name, litor - m_leaves.begin()));
 
     }
@@ -248,6 +232,10 @@ namespace tip {
 
   void RootExtensionManager::setFieldNumElements(FieldIndex_t, Index_t, Index_t) {
     throw TipException("Setting width of fields in a Root table is not supported");
+  }
+
+  void RootExtensionManager::copyCell(const IExtensionData *, FieldIndex_t, Index_t, FieldIndex_t, Index_t) {
+    throw TipException("Copying cells to a Root table is not supported");
   }
 
   // Append field to a table extension.

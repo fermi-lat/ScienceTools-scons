@@ -14,6 +14,7 @@
 
 #include "TTree.h"
 
+#include "tip/IColumn.h"
 #include "tip/IExtensionData.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
@@ -23,25 +24,6 @@ class TFile;
 class TLeaf;
 
 namespace tip {
-
-  class LeafBuffer {
-    public:
-      LeafBuffer(TTree * tree, const std::string & leaf_name, const std::string & leaf_type);
-
-      ~LeafBuffer();
-
-      template <typename T>
-      void get(T & val) const;
-
-    private:
-      LeafBuffer(const LeafBuffer &); // Make sure nobody copies one of these.
-      std::string m_leaf_name;
-      TTree * m_tree;
-      void * m_buf;
-  };
-
-  template <typename T>
-  inline void LeafBuffer::get(T & val) const { val = T(*static_cast<const double *>(m_buf)); };
 
   /** \class RootExtensionManager
 
@@ -125,6 +107,10 @@ namespace tip {
       */
       const IExtensionData::FieldCont & getValidFields() const;
 
+      virtual IColumn * getColumn(FieldIndex_t field_index) { return m_leaves[field_index]; }
+
+      virtual const IColumn * getColumn(FieldIndex_t field_index) const { return m_leaves[field_index]; }
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
@@ -145,6 +131,16 @@ namespace tip {
           \param record_index The record number of the cell.
       */
       void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0);
+
+      /** \brief Copy a cell from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_field The field identifier in the source data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_field The field identifier in this object (the destination data object).
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
+        Index_t dest_record);
 
       /** \brief Templated function which can get any kind of data from a Root table. This
           method throws an exception if the extension is not a table.
@@ -204,7 +200,7 @@ namespace tip {
       std::string m_ext_name;
       std::string m_filter;
       mutable std::map<std::string, FieldIndex_t> m_branch_lookup;
-      mutable std::vector<LeafBuffer *> m_leaves;
+      mutable std::vector<IColumn *> m_leaves;
       IExtensionData::FieldCont m_fields;
       Index_t m_num_records;
       TFile * m_fp;
@@ -235,9 +231,8 @@ namespace tip {
       std::string msg = os.str();
       throw TipException(formatWhat(msg));
     }
-    m_tree->GetEntry(record_index);
     if (src_begin + 1 != src_end) throw TipException("Getting vectors from Root extensions not working yet.");
-    m_leaves[col_num]->get(*dest_begin);
+    m_leaves[col_num]->get(record_index, *dest_begin);
   }
 
   // Setting columns.
