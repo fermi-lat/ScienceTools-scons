@@ -58,9 +58,9 @@ TFORM#  D                       / Data format of this field
 TTYPE#  TELAPSE                 / Label for this field
 TFORM#  D                       / Data format of this field
 
-TTYPE#  EXPOSURE                / Label for this field
-TFORM#  D                       / Data format of this field
-TUNIT#  s                       / Unit of this field
+#TTYPE#  EXPOSURE                / Label for this field
+#TFORM#  D                       / Data format of this field
+#TUNIT#  s                       / Unit of this field
 
 TTYPE#  SPEC_NUM                / Label for this field
 TFORM#  I                       / Data format of this field
@@ -72,35 +72,35 @@ TTYPE#  COUNTS                  / Counts in each bin
 TFORM#  J                       / Data format of this field
 TUNIT#  Counts                  / Unit of this field
 
-TTYPE#  SYS_ERR                 / Fractional systematic error
-TFORM#  E                       / Data format of this field
+#TTYPE#  SYS_ERR                 / Fractional systematic error
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  QUALITY                 / Data quality flag for each channel
-TFORM#  I                       / Data format of this field
+#TTYPE#  QUALITY                 / Data quality flag for each channel
+#TFORM#  I                       / Data format of this field
 
-TTYPE#  GROUPING                / Data grouping flag for each channel
-TFORM#  I                       / Data format of this field
+#TTYPE#  GROUPING                / Data grouping flag for each channel
+#TFORM#  I                       / Data format of this field
 
-TTYPE#  AREASCAL                / Area scaling factor
-TFORM#  E                       / Data format of this field
+#TTYPE#  AREASCAL                / Area scaling factor
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  BACKSCAL                / Scaling factor to be applied to Bkgdfile
-TFORM#  E                       / Data format of this field
+#TTYPE#  BACKSCAL                / Scaling factor to be applied to Bkgdfile
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  CORRSCAL                / Scaling factor to be applied to CORRFILE
-TFORM#  E                       / Data format of this field
+#TTYPE#  CORRSCAL                / Scaling factor to be applied to CORRFILE
+#TFORM#  E                       / Data format of this field
 
-TTYPE#  BACKFILE                / Name of the background file
-TFORM#  A                       / Data format of this field
+#TTYPE#  BACKFILE                / Name of the background file
+#TFORM#  A                       / Data format of this field
 
-TTYPE#  CORRFILE                / Name of the correction file
-TFORM#  A                       / Data format of this field
+#TTYPE#  CORRFILE                / Name of the correction file
+#TFORM#  A                       / Data format of this field
 
-TTYPE#  RESPFILE                / Name of the RMF/RSP file
-TFORM#  A                       / Data format of this field
+#TTYPE#  RESPFILE                / Name of the RMF/RSP file
+#TFORM#  A                       / Data format of this field
 
-TTYPE#  ANCRFILE                / Name of the ARF file
-TFORM#  A                       / Data format of this field
+#TTYPE#  ANCRFILE                / Name of the ARF file
+#TFORM#  A                       / Data format of this field
 
 TTYPE#  ROWID                   / Unique identifier for each spectrum
 TFORM#  A                       / Data format of this field
@@ -163,7 +163,6 @@ MJDREF   =                      / MJD for reference time
 TSTART   =                      / Lower bound of first GTI
 TSTOP    =                      / Upper bound of last GTI
 EXPOSURE =                      / Total Livetime in seconds
-TIMEZERO =                    0 / Clock correction (if not zero)
 TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / All times are in seconds unless specified otherwise
 DATE-OBS                        / Start Date and Time of the observation (UTC)
