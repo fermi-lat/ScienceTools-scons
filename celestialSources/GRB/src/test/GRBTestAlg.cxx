@@ -138,6 +138,7 @@ StatusCode GRBTestAlg::execute() {
   sprintf(arg1,"%f",m_time);
   sprintf(arg2,"%d",m_events);
   sprintf(arg3,"%s%d",m_source_name.c_str(),m_loop);
+  sprintf(arg3,"%d",m_loop);
   
   arguments.push_back("-time");
   arguments.push_back(arg1);
@@ -152,7 +153,7 @@ StatusCode GRBTestAlg::execute() {
 	{
 	  arguments.push_back("-root");
 	  arguments.push_back(arg3);
-	  cout<<" Saving the events in a root file..."<<endl;
+	  cout<<" Saving "<<(arg3)<<" in a root file..."<<endl;
 	}
       if((*itr)=="ascii") 
 	{

@@ -104,7 +104,7 @@ private:
   IFlux* m_flux;    // pointer the a flux object
   IFluxSvc* m_fsvc; // pointer to the flux Service 
  
-  char *m_source_name;
+  char *m_run_number;
   bool savef_root;
   bool savef_ascii;
   double TIME;
@@ -146,7 +146,7 @@ void GRBTest::help() {
     "      '-events <number of events to create>'\n"
     "      '-time <time in seconds>'    for the maximum time\n"
     "      '-list' lists the available spectra\n"
-    "      '-root' <name of the source> to save the events in a ROOT tree"
+    "      '-root' <number of the run> to save the events in a ROOT tree"
     "      '-ascii' to save the events in an asciifile"
     "      '-help' for this help"
 	    << std::endl;
@@ -228,7 +228,7 @@ int GRBTest::Start(std::vector<char*> argv)
       else if("-root" == arg_name) {
 	cout<<" SAVE ROOT" <<endl;
 	savef_root=true;
-	m_source_name = argv[++current_arg];
+	m_run_number = argv[++current_arg];
       }
       else if("-ascii" == arg_name) {
 	savef_ascii=true;
@@ -253,7 +253,8 @@ int GRBTest::Start(std::vector<char*> argv)
   TTree* events;        
   TObjArray Forest(0);
   
-  const char* name;
+  //const char* name;
+  char name[50];
   
   for(i = 0; i < num_sources; i++)
     {  
@@ -274,8 +275,10 @@ int GRBTest::Start(std::vector<char*> argv)
 	}
       cout<<" Source Name = "<<sources[i]<<endl;
       
-      name=const_cast<char *>(sources[i].c_str());
-      //name=m_source_name;
+      //name=const_cast<char *>(sources[i].c_str());
+      sprintf(name,"%s%s",sources[i].c_str(),m_run_number);
+      cout<<name<<endl;
+      //      name=m_source_name;
       if (savef_root==true){
 	events= new TTree(name,name);
 	events->Branch("energy",&energy,"energy/D");

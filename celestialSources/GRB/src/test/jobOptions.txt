@@ -37,7 +37,7 @@ GRBTestAlg.background_name+={"chimeavg"};
 //Maximum observation time (default 10 s)
 GRBTestAlg.observation_time=1;
 // Maximum number of photons generated (default 100000)
-GRBTestAlg.EvtMax=100000;
+//GRBTestAlg.EvtMax=1000;
 
 // Is possible to save in root file
 GRBTestAlg.savefile={"root"};
