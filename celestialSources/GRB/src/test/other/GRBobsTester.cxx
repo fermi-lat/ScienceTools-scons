@@ -1,7 +1,7 @@
 // $Header$
 
-#include "../../GRBmaker/GRBmaker.h"
-#include "../../../../../FluxSvc/v5r6/src/FluxMgr.h"
+#include "src/GRBmaker/GRBmaker.h"
+#include "src/FluxMgr.h"
 //#include "flux/EventSource.h"
 //#include "flux/ISpectrumFactory.h"
 //#include "../SpectrumFactoryTable.h"

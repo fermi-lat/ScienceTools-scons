@@ -133,10 +133,14 @@ StatusCode GRBTestAlg::execute() {
   arguments.push_back(arg1);
   arguments.push_back("-events");
   arguments.push_back(arg2);
-  if(m_save_file=="yes") 
+  if(m_save_file=="root") 
     {
-      arguments.push_back("-save");
+      arguments.push_back("-root");
       arguments.push_back(arg3);
+    }
+  else if(m_save_file=="ascii") 
+    {
+      arguments.push_back("-ascii");
     }
   
   arguments.push_back(m_source_name.c_str());

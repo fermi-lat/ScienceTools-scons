@@ -14,8 +14,7 @@
 
 
 	<!-- background mixture -->
-    <source name="grbbackgndmix">
-        <nestedSource sourceRef="grbobsspectrum"/>
+    <source name="backgndmix">
         <nestedSource sourceRef="chimeavg"/>
         <nestedSource sourceRef="albedo_proton_avg"/>
         <nestedSource sourceRef="albedo_gamma"/>
@@ -25,13 +24,13 @@
 	<!-- background mixture -->
     <source name="GRBbckmix">
         <nestedSource sourceRef="grbspectrum"/>
-        <nestedSource sourceRef="grbbackgndmix"/>
+        <nestedSource sourceRef="backgndmix"/>
     </source>
 
 	<!-- background mixture -->
     <source name="GRBobsbckmix">
         <nestedSource sourceRef="grbobsspectrum"/>
-        <nestedSource sourceRef="grbbackgndmix"/>
+        <nestedSource sourceRef="backgndmix"/>
     </source>
 
 
