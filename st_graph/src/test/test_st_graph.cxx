@@ -64,11 +64,10 @@ void StGraphTestApp::run() {
   for (int ii = 0; ii < num_intervals; ++ii) intervals[ii] = PlotHist::Interval_t(ii, ii + 1);
 
   // Create an array containing a sinusoid with 25 extra points at the end to allow it to look like a cosine too.
-  const double pi = asin(1) * 2.;
   std::vector<double> sine_wave(num_intervals + 25);
 
   // Two cycles of this sine will fit nicely in a plot with 200 points.
-  for (int ii = 0; ii < num_intervals + 25; ++ii) sine_wave[ii] = sin(ii * 2 * pi / 100.);
+  for (int ii = 0; ii < num_intervals + 25; ++ii) sine_wave[ii] = sin(ii * 2 * M_PI / 100.);
 
   // Create local reference to engine singleton. This engine is an abstract factory for graphical objects.
   Engine * engine = 0;
