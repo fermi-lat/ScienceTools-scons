@@ -61,14 +61,15 @@ void test_FunctionFactory() {
       xmlFile = std::string(root) + "/xml/FunctionModels.xml";
    }
 
-// Create the factory object and fill with standard prototypes.
+// Create the factory object and list the standard prototypes.
    FunctionFactory funcFactory;
-   bool fromClone = false;
-   funcFactory.addFunc("PowerLaw", new PowerLaw(), fromClone);
-   funcFactory.addFunc("Gaussian", new Gaussian(), fromClone);
-   funcFactory.addFunc("AbsEdge", new AbsEdge(), fromClone);
 
-   funcFactory.listFunctions();
+   std::vector<std::string> funcNames;
+   funcFactory.getFunctionNames(funcNames);
+   std::vector<std::string>::const_iterator nameIt = funcNames.begin();
+   for ( ; nameIt != funcNames.end(); nameIt++) {
+      std::cout << *nameIt << std::endl;
+   }
 
 // Read in the customized prototypes.
    try {
@@ -80,7 +81,11 @@ void test_FunctionFactory() {
                 << xmlFile << std::endl;
    }
 
-   funcFactory.listFunctions();
+   funcFactory.getFunctionNames(funcNames);
+   nameIt = funcNames.begin();
+   for ( ; nameIt != funcNames.end(); nameIt++) {
+      std::cout << *nameIt << std::endl;
+   }
 
 // Try out one of the new ones.
    Function *gaussObj = funcFactory.create("Generic Gaussian");

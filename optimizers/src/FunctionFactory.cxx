@@ -23,17 +23,21 @@
 #include "optimizers/Dom.h"
 #include "optimizers/FunctionFactory.h"
 
-// #include "PowerLaw.h"
-// #include "Gaussian.h"
-// #include "AbsEdge.h"
+#include "PowerLaw.h"
+#include "BrokenPowerLaw.h"
+#include "Gaussian.h"
+#include "AbsEdge.h"
+#include "ConstantValue.h"
 
 namespace optimizers {
 
 FunctionFactory::FunctionFactory() {
-// Clients should be responsible for adding these.
-//    addFunc("PowerLaw", new PowerLaw(), false);
-//    addFunc("Gaussian", new Gaussian(), false);
-//    addFunc("AbsEdge", new AbsEdge(), false);
+// Some standard functions.
+   addFunc("PowerLaw", new PowerLaw(), false);
+   addFunc("BrokenPowerLaw", new BrokenPowerLaw(), false);
+   addFunc("Gaussian", new Gaussian(), false);
+   addFunc("AbsEdge", new AbsEdge(), false);
+   addFunc("ConstantValue", new ConstantValue(), false);
 }
 
 FunctionFactory::~FunctionFactory() {
@@ -44,18 +48,16 @@ FunctionFactory::~FunctionFactory() {
 
 void FunctionFactory::addFunc(const std::string &name, 
                               optimizers::Function* func, 
-                              bool fromClone) throw(Exception) {
-   if (!m_prototypes.count(name)) {
-      if (fromClone) {
-         m_prototypes[name] = func->clone();
-      } else {
-         m_prototypes[name] = func;
-      }
+                              bool fromClone) {
+   if (m_prototypes.count(name)) {
+      std::cerr << "FunctionFactory::addFunc: A Function named "
+                << name << " already exists.  Replacing it." 
+                << std::endl;
+   }
+   if (fromClone) {
+      m_prototypes[name] = func->clone();
    } else {
-      std::ostringstream errorMessage;
-      errorMessage << "FunctionFactory::addFunc: A Function named "
-                   << name << " already exists!\n";
-      throw Exception(errorMessage.str());
+      m_prototypes[name] = func;
    }
 }
 
@@ -70,12 +72,12 @@ Function *FunctionFactory::create(const std::string &name) throw(Exception) {
    return m_prototypes[name]->clone();
 }
 
-void FunctionFactory::listFunctions() {
-   std::cout << "FunctionFactory Functions: " << std::endl;
-   std::map<std::string, Function *>::const_iterator 
-      it = m_prototypes.begin();
-   for (; it != m_prototypes.end(); it++)
-      std::cout << it->first << std::endl;
+void FunctionFactory::getFunctionNames(std::vector<std::string> &funcNames) {
+   funcNames.clear();
+   std::map<std::string, Function *>::const_iterator it = m_prototypes.begin();
+   for ( ; it != m_prototypes.end(); it++) {
+      funcNames.push_back(it->first);
+   }
 }
 
 void FunctionFactory::readXml(const std::string &xmlFile) throw(Exception) {

@@ -40,9 +40,9 @@ public:
    Function *create(const std::string &name) throw(Exception);
 
    void addFunc(const std::string &name, Function *func,
-                bool fromClone=true) throw(Exception);
+                bool fromClone=true);
 
-   void listFunctions();
+   void getFunctionNames(std::vector<std::string> &funcNames);
 
    void readXml(const std::string &xmlFile) throw(Exception);
 
