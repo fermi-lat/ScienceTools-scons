@@ -9,6 +9,7 @@
 
 #include <string>
 
+#include "table/Extension.h"
 #include "table/Ref.h"
 #include "table/TableException.h"
 #include "table/TableIterator.h"
@@ -24,7 +25,7 @@ namespace table {
       \brief High level encapsulation of tabular data, viewed as a container of Records. Access is mainly
       attained through STL-style iterators.
   */
-  class Table {
+  class Table : public Extension {
     public:
       /** \brief Helper type: encapsulation of a cell of data in this table.
       */
@@ -58,7 +59,7 @@ namespace table {
       */
       static Table * openReadWrite(const std::string & file_name, const std::string & table_name);
 
-      Table(ITabularData * tab_data): m_tab_data(tab_data) {}
+      Table(ITabularData * tab_data): Extension(0), m_tab_data(tab_data) {}
 
       virtual ~Table() { delete m_tab_data; }
 
