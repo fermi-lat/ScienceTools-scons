@@ -374,15 +374,15 @@ public:
                 b = direction.second;
             //then set up this direction:
             astro::SkyDir unrotated(l,b,astro::SkyDir::GALACTIC);
-			//get the zenith cosine:
-			astro::SkyDir zenDir(GPS::instance()->RAZenith(),GPS::instance()->DECZenith());
-		    m_zenithCos = -unrotated()*zenDir();
+            //get the zenith cosine:
+            astro::SkyDir zenDir(GPS::instance()->RAZenith(),GPS::instance()->DECZenith());
+            m_zenithCos = unrotated()*zenDir();
             //get the transformation matrix..
             //here, we have a SkyDir, so we need the transformation from a SkyDir to GLAST.
             HepRotation celtoglast = GPS::instance()->transformToGlast(time,GPS::CELESTIAL);
 
-            //and do the transform:
-            setDir(celtoglast*(-unrotated()));
+            //and do the transform, finally reversing the direction to correspond to the incoming particle
+            setDir( - (celtoglast * unrotated()) );
         }
     }
 
