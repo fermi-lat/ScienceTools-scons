@@ -5,7 +5,7 @@
 #ifndef st_graph_RootFrame_h
 #define st_graph_RootFrame_h
 
-#include <set>
+#include <list>
 
 #include "RQ_OBJECT.h"
 #include "Rtypes.h"
@@ -81,7 +81,7 @@ namespace st_graph {
       virtual TGFrame * getTGFrame();
 
     protected:
-      std::set<IFrame *> m_subframes;
+      std::list<IFrame *> m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;
       IEventReceiver * m_receiver;

@@ -2,7 +2,7 @@
     \brief Implementation of RootFrame class.
     \author James Peachey, HEASARC/GSSC
 */
-
+#include <algorithm>
 #include <stdexcept>
 
 #include "TGFrame.h"
@@ -46,11 +46,16 @@ namespace st_graph {
 
   RootFrame::~RootFrame() {
     if (0 != m_parent) m_parent->removeFrame(this);
+
+    // Delete children. When they are deleted, they will remove themselves from the container of subframes.
+    while (!m_subframes.empty()) delete *--m_subframes.end();
+
+    // Delete the root frame.
     delete m_frame;
   }
 
   void RootFrame::display() {
-    for (std::set<IFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
+    for (std::list<IFrame *>::iterator itor = m_subframes.begin(); itor != m_subframes.end(); ++itor)
       (*itor)->display();
     if (0 != m_frame) {
       m_frame->MapSubwindows();
@@ -62,26 +67,26 @@ namespace st_graph {
   void RootFrame::unDisplay() {
     if (0 != m_frame)
       m_frame->UnmapWindow();
-    for (std::set<IFrame *>::reverse_iterator itor = m_subframes.rbegin(); itor != m_subframes.rend(); ++itor)
+    for (std::list<IFrame *>::reverse_iterator itor = m_subframes.rbegin(); itor != m_subframes.rend(); ++itor)
       (*itor)->unDisplay();
   }
 
   void RootFrame::addFrame(IFrame * frame) {
     // Make certain Root frame is not added more than once.
-    if (m_subframes.end() == m_subframes.find(frame)) {
+    if (m_subframes.end() == std::find(m_subframes.begin(), m_subframes.end(), frame)) {
       RootFrame * rf = dynamic_cast<RootFrame *>(frame);
       if (0 == rf) throw std::logic_error("RootFrame::addFrame was passed an invalid child frame");
       TGFrame * child_tg_f = rf->getTGFrame();
 
       TGCompositeFrame * parent_tg_f = dynamic_cast<TGCompositeFrame *>(m_frame);
       if (0 != parent_tg_f && 0 != child_tg_f) parent_tg_f->AddFrame(child_tg_f);
-      m_subframes.insert(frame);
+      m_subframes.push_back(frame);
     }
   }
 
   void RootFrame::removeFrame(IFrame * frame) {
     // Make certain Root frame is not removed more than once.
-    std::set<IFrame *>::iterator itor = m_subframes.find(frame);
+    std::list<IFrame *>::iterator itor = std::find(m_subframes.begin(), m_subframes.end(), frame);
     if (m_subframes.end() != itor) {
       m_subframes.erase(itor);
       RootFrame * rf = dynamic_cast<RootFrame *>(frame);
