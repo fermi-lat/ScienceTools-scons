@@ -1,0 +1,13 @@
+SWIG = swig
+
+${CONSTITUENT} :: $(pydir)_${CONSTITUENT}.so
+
+$(pydir)$(package)_wrap.cxx: $(pydir)$(package).i
+	cd $(pydir); $(SWIG) -c -python -c++ $(package).i
+
+$(pydir)$(package)_wrap.o: $(pydir)$(package)_wrap.cxx
+	cd $(pydir); $(cppcomp) $(swig_nowarn) -fpic -o $(package)_wrap.o $(package)_wrap.cxx
+
+$(pydir)_$(package).so:: $(pydir)$(package)_wrap.o
+	cd $(pydir); $(cpplink) -shared $(package)_wrap.o $(use_linkopts) \
+	   -L$(PYLIB) -lswigpy -o _$(package).so
