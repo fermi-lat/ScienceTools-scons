@@ -24,3 +24,42 @@ EQUINOX  =               2000.0 / Equinox of RA & DEC specifications
 CREATOR  =                      / Software and version creating file
 HISTORY                   $Id$ 
 END
+
+################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =                  GTI / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+MJDREF   =                      / MJD for reference time
+TSTART   =                      / Lower bound of first GTI
+TSTOP    =                      / Upper bound of last GTI
+TIMEZERO =                    0 / Clock correction (if not zero)
+TIMESYS  =                  MJD / Time system used to define time
+TIMEUNIT =                    s / All times are in seconds unless specified otherwise
+EXPOSURE =                      / Total livetime in seconds
+HDUCLASS =                 OGIP / File format is OGIP standard
+HDUCLAS1 =                  GTI / Contains Good Time Intervals
+HDUVERS  =                1.2.0 / Version of file format
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+
+# Column description
+
+
+TTYPE#  START                   / Start time of an interval
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+TTYPE#  STOP                    / Stop time of an interval
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
