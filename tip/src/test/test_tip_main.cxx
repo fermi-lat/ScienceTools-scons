@@ -91,12 +91,10 @@ int main() {
       // the Table reading methods are working.
       int ichan = 0;
 
-      // Declare the iterator and dereference it outside the loop.
-      Table::Iterator itor;
-      Table::Record & r = *itor;
+      // Define a table record object.
+      Table::Record r;
 
-      // Make local aliases to hold the channel and counts. These variables are bound to the Iterator's
-      // referent Table::Record object.
+      // Make local aliases to hold the channel and counts. These variables are bound to the record object.
       Table::Scalar<double> channel = r["channel"];
       Table::Scalar<double> counts = r["counts"];
 
@@ -115,9 +113,11 @@ int main() {
       // Now try getting the same value as a long.
       Table::Scalar<long> lchannel = r["channel"];
 
-      for (itor = my_table->begin(); itor != my_table->end(); ++itor) {
+      for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
 
-        // Note that the iterator is never deferenenced; that was done once and for all above.
+        // Dereference the iterator. After this, channel and counts both refer to the current record.
+        r = *itor;
+
         if (counts != counts_vec[ichan]) {
           static bool first_time = true;
           if (first_time) {
@@ -206,6 +206,15 @@ int main() {
             first_time = false;
           }
         }
+
+#ifdef print_vector
+        if (itor == my_table->begin()) {
+          std::cout << "First counts vector is:" << std::endl;
+          for (int ii = 0; ii < 4096; ++ii) {
+            std::cout << "\t" << vcounts[ii] << std::endl;
+          }
+        }
+#endif
       }
 
     } catch(const TipException & x) {
