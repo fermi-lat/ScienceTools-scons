@@ -22,8 +22,11 @@ FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 FluxSvc.source_lib += {"$(FLUXSVCROOT)/xml/user_library.xml"};
 
 //------------------------------------------------------------
-// Primary source name (default GRBSpectrum)	
+// Primary source name (default is GRBSpectrum)	
+// To run the Physical Simulator (GRBSpectrum)
 GRBTestAlg.source_name="GRBSpectrum";
+// ... or the phenomenological one (GRBobsSpectrum)
+//GRBTestAlg.source_name="GRBobsSpectrum";
 
 // Set the maximum observation time (default 10 s)
 GRBTestAlg.observation_time=30;
