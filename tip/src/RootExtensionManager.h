@@ -7,7 +7,6 @@
 #ifndef table_RootExtensionUtils_h
 #define table_RootExtensionUtils_h
 
-#include <cassert>
 #include <map>
 #include <sstream>
 #include <string>
@@ -86,6 +85,14 @@ namespace table {
       */
       void close();
 
+      // Header/keyword-specific support:
+      /** \brief Templated function which can get keywords from a FITS table, converted to any data type.
+          \param name The name of the keyword.
+          \param value The variable in which the read value is placed.
+      */
+      template <typename T>
+      void getKeywordGeneric(const std::string & name, T & value) const;
+
       // Table-specific support:
       /** \brief Open the Root table. Exceptions will be thrown if the extension does not exist, or if
           the extension is not a table (TTree).
@@ -143,6 +150,13 @@ namespace table {
       IData * m_data;
   };
 
+  // Getting keywords.
+  template <typename T>
+//  inline void RootExtensionUtils::getKeywordGeneric(const std::string & name, T & value) const {
+  inline void RootExtensionUtils::getKeywordGeneric(const std::string &, T &) const {
+    throw TableException("Keyword access not yet implemented for Root files.");
+  }
+
   // Getting columns.
   template <typename T>
   inline void RootExtensionUtils::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
@@ -158,7 +172,7 @@ namespace table {
 //    T * dest_begin, T * dest_end) {
   inline void RootExtensionUtils::setCellGeneric(int , Index_t , Index_t ,
     T *, T *) {
-    assert(0);
+    throw TableException("Write access not yet implemented for Root files.");
   }
 
 }
