@@ -8,17 +8,18 @@
 #include "map_tools/MapParameters.h"
 
 #include "astro/SkyDir.h"
+
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const MapParameters& pars)
-: table::PrimaryHDU<float>() 
-, m_naxis1(pars.npix())
+: m_naxis1(pars.npix())
 , m_naxis2(pars.npixY())
 , m_naxis3(1) // for future expansion
 , m_total(0)
+, m_image(0)
 {
     using namespace astro;
 
@@ -35,43 +36,46 @@ SkyImage::SkyImage(const MapParameters& pars)
 
 
     bool galactic= pars.uselb();
+
+    // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
     naxes[0]=m_naxis1;
     naxes[1]=m_naxis2;
     naxes[2]=m_naxis3;
-    Primary::setNaxis(3);
-    Primary::setNaxes(naxes);
-    Primary::setBitpix( table::Ifloat);
-    Primary::setBufferSize(m_naxis1*m_naxis2*m_naxis3);
-    Primary::setScale(1.0);
-    m_data.resize(m_naxis1*m_naxis2*m_naxis3);
+    m_image = new FloatImg("skympap", pars.outputFile(), naxes);
+    m_pixelCount = m_image->pixelCount();
 
     // fill the boundaries with NaN
-#if 1// ?? takes too long, investigate
-     if( pars.projType()=="AIT") clear();
-#endif
+    if( pars.projType()=="AIT") clear();
 
     setKey("TELESCOP", "GLAST");
+
     setKey("INSTRUME", "SIMULATION");
 
     setKey("DATE-OBS", "");
     setKey("DATE-END", "");
-    setKey("EQUINOX", 2000.0);
+    setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
 
-    setKey("CTYPE1", std::string(galactic?"GLON--":"RA--")+ pars.projType());
-    setKey("CRPIX1",  SkyDir::s_refX+0.5); // note that FITS pixel reference is off by 0.5
-    setKey("CRVAL1",  SkyDir::s_refRA);
-    setKey("CDELT1",  SkyDir::s_scaleX);
-    setKey("CUNIT1",  "deg");
+    setKey("CTYPE1", std::string(galactic?"GLON--":"RA--")+ pars.projType()
+        ,"","RA---%%%, %%% represents the projection method such as AIT");
+    setKey("CRPIX1",  SkyDir::s_refX+0.5,"","Reference pixel"); // note that FITS pixel reference is off by 0.5
+    setKey("CRVAL1",  SkyDir::s_refRA, "", "RA at the reference pixel");
+    setKey("CDELT1",  SkyDir::s_scaleX,"",
+        "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
+    setKey("CUNIT1",  "deg", "", "Physical unit of X-axis");
 
-    setKey("CTYPE2",  std::string(galactic?"GLAT--":"DEC--")+ pars.projType());
-    setKey("CRPIX2",  SkyDir::s_refY+0.5);// note that FITS pixel reference is off by 0.5
-    setKey("CRVAL2",  SkyDir::s_refDEC); 
-    setKey("CDELT2",  SkyDir::s_scaleY);
-    setKey("CUNIT2",  "deg");
+    setKey("CTYPE2",  std::string(galactic?"GLAT--":"DEC--")+ pars.projType()
+        ,"","DEC---%%%, %%% represents the projection method such as AIT");
 
-    setKey("CROTA2",  0);
+    setKey("CRPIX2",  SkyDir::s_refY+0.5,"","Reference pixel");// note that FITS pixel reference is off by 0.5
+    setKey("CRVAL2",  SkyDir::s_refDEC, "", "DEC at the reference pixel"); 
+    setKey("CDELT2",  SkyDir::s_scaleY,"",
+        "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
+    setKey("CUNIT2",  "deg", "", "Physical unit of Y-axis");
+
+    setKey("CROTA2",  0, "", "Image rotation (deg)");
 }
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
 
@@ -80,8 +84,8 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
-    if(  k< m_data.size()){
-        m_data[k]+=delta;
+    if(  k< m_pixelCount){
+        m_image->data()[k]+=delta;
         m_total += delta;
     }
 }
@@ -89,7 +93,7 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
 void SkyImage::fill(Requester& req)
 {
 
-    for( size_t k = 0; k< m_data.size(); ++k){
+    for( size_t k = 0; k< m_pixelCount; ++k){
         // determine the bin center
         float 
             x = static_cast<int>(k%m_naxis1)+0.5, 
@@ -97,17 +101,17 @@ void SkyImage::fill(Requester& req)
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
             double t= req(dir);
-            m_data[k] = t; 
+            m_image->data()[k] = t; 
             m_total += t;
         }catch(... ) { // any exception: just fill in a NaN
-            m_data[k]=dnan; 
+            m_image->data()[k]=dnan; 
         }
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::clear()
 {
-    size_t s = m_data.size();
+    size_t s = m_image->data().size();
     for( size_t k = 0; k< s; ++k){
         // determine the bin center
         float 
@@ -115,9 +119,17 @@ void SkyImage::clear()
             y = static_cast<int>(k/m_naxis1)+0.5;
         try{
             astro::SkyDir dir(x,y,astro::SkyDir::PROJECTION);
-            m_data[k] = 0; 
+            m_image->data()[k] = 0; 
         }catch(... ) { // any exception: just fill in a NaN
-            m_data[k]=dnan; 
+            m_image->data()[k]=dnan; 
         }
+    }
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SkyImage::~SkyImage()
+{
+    if(m_image!=0){
+        m_image->saveElement();
+        delete m_image;
     }
 }

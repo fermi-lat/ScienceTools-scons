@@ -10,37 +10,10 @@ $Header$
 #include "map_tools/Exposure.h"
 #include "map_tools/ExposureHyperCube.h"
 
-#include "table/FitsService.h"
-#include "table/Constants.h"
+#include "image/Image.h"
 #include "astro/SkyDir.h"
-#include "table/PrimaryHDU.h"
-#include <algorithm>
-#include <fstream>
 
 namespace emap{ // for simple helper classes
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/** @class MyCube
-    @brief setup an exposure hypercube from a FITS file
-    */
-class MyCube : public table::PrimaryHDU<float>{
-public:
-    MyCube(const table::FitsService * iosrv): m_total(0){
-
-        readHeaderKeys(iosrv);
-        readAllKeys(iosrv);
-        int size = m_naxes[0]*m_naxes[1]*m_naxes[2];
-        Primary::setBufferSize(size);
-
-        m_data.resize(size);
-        this->read(iosrv, 1, size);
-        std::string comment;
-        iosrv->readKey("TOTAL", m_total,  comment);
-
-    }
-    float total()const{return m_total;};
-private:
-    float m_total;
-};
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class Aeff
     @brief function class implements effective area
@@ -79,31 +52,21 @@ private:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
-    using namespace table;
     using namespace emap;
     try{
 
         // read in, or prompt for, all necessary parameters
         MapParameters pars(argc, argv);
 
-        std::vector<std::string> files; files.push_back(pars.inputFile());
-        table::FitsService iosrv(files);
-
-        MyCube cube(& iosrv);
-
-        iosrv.createNewFile(pars.outputFile(), pars.templateFile());
-
         // create the exposure, read it in from the FITS input file
-        Exposure ex(cube.image(), cube.total()); 
+        Exposure ex(pars.inputFile() ); 
 
         // create the image object, fill it from the exposure, write out
         SkyImage image(pars); 
 
         RequestExposure req(ex, Aeff(), 1.0);
         image.fill(req);
-        image.write(&iosrv);
 
-        iosrv.closeFile();
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;
         return 1;

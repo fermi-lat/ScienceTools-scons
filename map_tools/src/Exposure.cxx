@@ -7,6 +7,8 @@
 #include "astro/SkyDir.h"
 #include "tuple/ITable.h"
 
+#include "image/Fits_IO.h"
+#include "image/Image.h"
 
 #include <iostream>
 #include <fstream>
@@ -51,7 +53,20 @@ Exposure::Exposure(const ExposureCube& cube, double total)
     std::cout << ", average exposure: " << tot/m_exposureMap.size() << std::endl;
 #endif
 }
+//------------------------------------------------------------------------------
+Exposure::Exposure(const std::string& fits_file)
+{
+    FloatImg & cube = *dynamic_cast<FloatImg *>(Fits_IO::read(fits_file, "hypercube"));
+    m_exposureMap = cube.data();
+    unsigned int size= Index::ra_factor * Index::dec_factor * Index::cosfactor;
 
+    std::cout << "Loaded exposure map from a FITS file " 
+        << fits_file << ", size is " << m_exposureMap.size() << std::endl;
+
+    if( size != m_exposureMap.size() ) {
+        throw std::invalid_argument("wrong size");
+    }
+}
 //------------------------------------------------------------------------------
 void Exposure::load(const std::string& textInputFilename, double tfirst, double tlast) {
     //find out if we're using an ASCII file for input here:

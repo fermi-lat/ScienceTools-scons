@@ -1,6 +1,6 @@
 package map_tools
 
-version v1r1p4
+version v2r0
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
@@ -14,15 +14,12 @@ use facilities *
 set INFILES  "$(MAP_TOOLSROOT)/data"
 set PFILES   "$(MAP_TOOLSROOT)/pfiles"
 set OUTFILES "$(MAP_TOOLSROOT)/output"
-set TPLDIR   "$(MAP_TOOLSROOT)/Templates"
-
 
 #temporary code for FITS table I/O and keyword handling
-library table -no_share -s=table $(source)
-
+library image -no_share -s=image $(source)
 
 apply_pattern GLAST_static_library_package
-macro_append map_tools_linkopts " -l table " Win32 " $(map_toolsDir)/table.lib "
+macro_append map_tools_linkopts " -l image " Win32 " $(map_toolsDir)/image.lib "
 		
 pattern ST_app \
   macro <name>_par "" WIN32 "<name>.par" ; \ 

@@ -10,7 +10,7 @@
 #include "tuple/ITable.h"
 #include "astro/SkyDir.h"
 
-#include "table/FitsService.h"
+#include "image/Image.h" 
 
 #include <algorithm>
 namespace cmap { // for count_map helper classes
@@ -50,21 +50,15 @@ int main(int argc, char * argv[]) {
         tuple::ITable::Factory& tableFactory = * tuple::ITable::Factory::instance();
         tuple::ITable& table = *tableFactory( pars.eventFile() , "", pars.filter());
 
-        // open output file
-        table::FitsService iosrv;
-        iosrv.createNewFile(pars.outputFile(), pars.templateFile());
-
         // create the image object
         SkyImage image(pars);
+
         // define a function opject to analyze each row, then apply it to all selected rows
         AddCount count(pars, table, image);
         std::for_each( table.begin(), table.end(), count);
 
         std::cout << "Total added to image: " << image.total() << std::endl;
-
-        image.write(&iosrv);
-        iosrv.closeFile();
-
+ 
     }catch( const std::exception& e){
         std::cerr << "caught exception: " << e.what() << std::endl;
         return 1;

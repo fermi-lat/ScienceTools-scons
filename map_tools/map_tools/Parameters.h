@@ -38,7 +38,6 @@ public:
     const std::string &inputFile() const   { return m_eventFile; }
     const std::string &filter() const      { return m_filter; }
     const std::string &outputFile() const  { return m_oname; }
-    const std::string &templateFile() const  { return m_templateFile; }
     static bool verboseMode()              { return s_verboseMode; }
     static bool clobber()                  { return s_clobber; }
     static short chatter()                 { return s_chatter; }
@@ -65,7 +64,6 @@ private:
     std::string   m_eventFile;
     std::string   m_oname;
     std::string   m_filter;
-    std::string   m_templateFile;
     DoubleDict m_dictionary;
 
     static std::string s_tool;

@@ -413,6 +413,14 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
                const char * v = tattr.value().c_str();
                fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 
                    (char*)v, (char*)attr.comment().c_str(), status);
+           }else if (tname.substr(k,4)=="char") {
+
+               const char* val = (dynamic_cast< Attr<char *>& >(attr)).value();
+                fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 
+                    (char*)val, (char*)attr.comment().c_str(), status);
+
+           }else {
+               throw std::runtime_error(std::string("Unexpected attribute type:")+tname);
            }
 
 
@@ -422,9 +430,6 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
         }
         if (*status != 0) {
             Fits_IO::report_error(*status);
-            //         TFError::SetError("HeaderRoot2Fits", errMsg[1], i_attr->GetName(),
-            //                          element->GetName(), fptr->Fptr->filename, *status); 
-            *status = 0;
         }
     }
 

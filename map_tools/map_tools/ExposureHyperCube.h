@@ -8,7 +8,7 @@
 #ifndef TOOLS_EXPOSUREHYPERCUBE_H
 #define TOOLS_EXPOSUREHYPERCUBE_H
 
-#include "table/PrimaryHDU.h"
+#include "image/Image.h"
 #include "Exposure.h"
 
 /** @class ExposureHyperCube 
@@ -17,21 +17,18 @@
     It is defined as a hypercube in ra, dec, sqrt(1-costheta) bins.
 
     */
-class ExposureHyperCube : public table::PrimaryHDU<float> {
+class ExposureHyperCube  {
 public:
-    ExposureHyperCube( const Exposure& exp)
+    ExposureHyperCube( const Exposure& exp, std::string outfile) : m_image(0)
     {
-        m_data = exp.data();
 
         std::vector<long> naxes(3);
         naxes[0]= Exposure::Index::ra_factor;
         naxes[1]= Exposure::Index::dec_factor;
         naxes[2] =Exposure::Index::cosfactor;
-        Primary::setNaxis(naxes.size());
-        Primary::setNaxes(naxes);
-        Primary::setBitpix( table::Ifloat);
-        Primary::setBufferSize(naxes[0]*naxes[1]*naxes[2]);
-        Primary::setScale(1.0);
+
+        m_image = new FloatImg("hypercube", outfile, naxes);
+        m_image->data() = exp.data(); 
 
         setKey("TELESCOP", "GLAST");
         setKey("INSTRUME", "SIMULATION");
@@ -65,8 +62,26 @@ public:
         setKey("TOTAL", exp.total());
 
     }
+    //! @brief add a string or douuble key to the image 
+    void setKey(std::string name, double value, std::string unit="", std::string comment="")
+    {
+        m_image->addAttribute(DoubleAttr(name, value, unit, comment)); 
+    }
+    void setKey(std::string name, std::string value,std::string unit="", std::string comment="")
+    {
+        m_image->addAttribute(StringAttr(name, value,unit,comment)); 
+    }
+    void save(std::string outfile=""){
+        m_image->saveElement(outfile);
+        delete m_image;
+        m_image=0;
+    }
+    ~ExposureHyperCube(){
+        if(m_image!=0) save();
+    }
 
 private:
+    FloatImg* m_image;
 
 };
 #endif //TOOLS_EXPOSUREHYPERCUBE_H

@@ -64,7 +64,6 @@ Parameters::Parameters( int argc, char *argv[])
         facilities::Util::expandEnvVar(&m_oname);
     }
 
-    m_templateFile = getString("templatefile");
 
     if( s_clobber ) m_oname= "!"+m_oname;  // FITS convention to rewrite file
 

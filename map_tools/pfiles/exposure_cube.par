@@ -12,7 +12,7 @@ mode,     s, a,  "h",   , ,""
 #eventfile,s, a, "../../../data/pointing_history.txt", , , "Name of the Exposure File:"
 eventfile, s, a, "../../../data/D2_full_history.fits", , , "Name of the exposure file:" 
 outfile,   s, a, "expcube_1_day.fits", , , "Name of the output file:"
-templatefile , s, a, "$(TPLDIR)/ExposureCube.txt", , , "Exposure cube template"
+#templatefile , s, a, "$(TPLDIR)/ExposureCube.txt", , , "Exposure cube template"
 #
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning

@@ -72,8 +72,10 @@ public:
     typedef   std::vector<float> ExposureCube;
 
     //! constructor from external source
-
     Exposure(const ExposureCube& cube, double total);
+
+    //! constructor from a file
+    Exposure(const std::string& filename);
 
     /** @class Exposure::Aeff
 
