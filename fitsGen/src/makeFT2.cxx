@@ -94,7 +94,11 @@ int main(int iargc, char * argv[]) {
    scData->setStartTime(startTime);
    scData->setStopTime(stopTime);
 
-//    scData->setGTI(gti);
+   std::vector<double> vect_times = exposure("elapsed_time");
+   std::stable_sort(vect_times.begin(),vect_times.end());
+   std::vector<std::pair<double,double> > gti;
+   gti.push_back(std::make_pair(vect_times.front(),vect_times.back()));
+   scData->setGTI(gti);
 
 // Spacecraft position.
    std::vector< std::valarray<float> > scPosition(npts);
