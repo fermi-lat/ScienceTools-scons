@@ -7,7 +7,7 @@ $Header$
 #include "flux/CompositeSource.h"  
 
 
-#include <strstream>
+#include <sstream>
 #include <cassert>
 #include <numeric> // for accumulate
 #include <functional>
@@ -82,7 +82,7 @@ EventSource* CompositeSource::event (double time)
 
 std::string CompositeSource::fullTitle () const
 {
-    std::strstream  s;
+    std::stringstream  s;
     std::vector<EventSource*>::const_iterator	it = m_sourceList.begin();
 
     while (it != m_sourceList.end()) {
@@ -93,7 +93,6 @@ std::string CompositeSource::fullTitle () const
     }
     s << '\0';
     std::string t(s.str());
-    s.freeze(false);
     return t;
 }
 
