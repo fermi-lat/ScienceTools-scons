@@ -29,7 +29,7 @@ fi
 AC_OUTPUT(Makefile facilities/Makefile src/Makefile)
 
 
-AC_MSG_RESULT([]
+AC_MSG_RESULT([
 	facilities package now configured.
 ])
 
