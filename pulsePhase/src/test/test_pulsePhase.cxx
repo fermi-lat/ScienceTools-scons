@@ -80,5 +80,25 @@ int main() {
     std::cerr << "ERROR: calcPdotCorr produced pdot-corrected time == " << pdot_t << " not " << correct_t << std::endl;
   }
   
+  // Test frequency computation.
+  TimingModel::FrequencyCoeff freq = model4.calcFreq(evt_time);
+  double correct_f0 = 5.625e-2;
+  if (fabs(freq.m_term[0] - correct_f0) > epsilon) {
+    status = 1;
+    std::cerr << "ERROR: calcFreq produced f0 == " << freq.m_term[0] << " not " << correct_f0 << std::endl;
+  }
+  
+  double correct_f1 = 11.25e-4;
+  if (fabs(freq.m_term[1] - correct_f1) > epsilon) {
+    status = 1;
+    std::cerr << "ERROR: calcFreq produced f1 == " << freq.m_term[1] << " not " << correct_f1 << std::endl;
+  }
+  
+  double correct_f2 = 13.5e-6;
+  if (fabs(freq.m_term[2] - correct_f2) > epsilon) {
+    status = 1;
+    std::cerr << "ERROR: calcFreq produced f2 == " << freq.m_term[2] << " not " << correct_f2 << std::endl;
+  }
+  
   return status;
 }

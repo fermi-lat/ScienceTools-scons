@@ -87,6 +87,16 @@ class TimingModel {
       return ev_time + m_f1/m_f0/2.0 * dt_squared + m_f2/m_f0/6.0 * dt * dt_squared;
     }
 
+    /** \brief Compute frequency and its derivatives at a given time.
+    */
+    FrequencyCoeff calcFreq(double ev_time) {
+      double dt = ev_time - m_epoch;
+      double f0 = m_f0 + m_f1 * dt + m_f2/2.0 * dt * dt;
+      double f1 = m_f1 + m_f2 * dt;
+      return FrequencyCoeff(f0, f1, m_f2);
+    }
+
+
     double getF0() const { return m_f0; }
     double getF1() const { return m_f1; }
     double getF2() const { return m_f2; }
