@@ -32,6 +32,61 @@ void ReportBehavior(const std::string & context, const int &, const tip::TipExce
 #endif
 }
 
+template <typename ExtData>
+void TestConstructorErrors(const std::string & class_name, const std::string & file_name, int & status) {
+  using namespace tip;
+  std::string msg;
+  try {
+    // Blank file name, blank extension name:
+    msg = "with blank file name and blank extension name";
+    ExtData tmp_data("", "");
+    ReportError(std::string("success creating ") + class_name + " " + msg, status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    ReportBehavior(std::string("failure creating ") + class_name + " " + msg, status, x);
+  }
+
+  try {
+    // Blank file name, non-blank extension name:
+    msg = "with blank file name and non-blank extension name";
+    ExtData tmp_data("", file_name);
+    ReportError(std::string("success creating ") + class_name + " " + msg, status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    ReportBehavior(std::string("failure creating ") + class_name + " " + msg, status, x);
+  }
+
+  try {
+    // Non-blank file name (doesn't exist), blank extension name:
+    msg = "with a non-existent file name and blank extension name";
+    ExtData tmp_data("non-existent-file.fits", "");
+    ReportError(std::string("success creating ") + class_name + " " + msg, status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    ReportBehavior(std::string("failure creating ") + class_name + " " + msg, status, x);
+  }
+
+  try {
+    // Non-blank file name (doesn't exist), non-blank extension name:
+    msg = "with a non-existent file name and valid extension name";
+    ExtData tmp_data("non-existent-file.fits", "SPECTRUM");
+    ReportError(std::string("success creating ") + class_name + " " + msg, status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    ReportBehavior(std::string("failure creating ") + class_name + " " + msg, status, x);
+  }
+
+  try {
+    // File exists, but extension doesn't:
+    msg = "with an existent file and non-existent extension name";
+    ExtData tmp_data(file_name, "NON_EXISTENT");
+    ReportError(std::string("success creating ") + class_name + " " + msg, status);
+  } catch(const TipException & x) {
+    // This exception should have been thrown.
+    ReportBehavior(std::string("failure creating ") + class_name + " " + msg, status, x);
+  }
+}
+
 // Perform operations on a valid const extension object which are expected to fail
 // regardless of the type (table or image).
 void TestCommonErrors(const tip::IExtensionData * const_ext, const std::string & ext_type, int & status) {
@@ -123,57 +178,8 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
   int status = 0;
 
 
-  // BEGIN Test error cases for FitsExtensionData constructors.
-  try {
-    // Blank file name, blank extension name:
-    FitsExtensionData tmp_data("", "");
-    ReportError("success creating FitsExtensionData with blank file name and extension name", status);
-  } catch(const TipException & x) {
-    // This exception should have been thrown.
-    ReportBehavior("failure creating FitsExtensionData with blank file name and extension name", status, x);
-  }
-
-  try {
-    // Blank file name, non-blank extension name:
-    FitsExtensionData tmp_data("", data_dir + "a1.fits");
-    ReportError("success creating FitsExtensionData with blank file name and non-blank extension name", status);
-  } catch(const TipException & x) {
-    // This exception should have been thrown.
-    ReportBehavior("failure creating FitsExtensionData with blank file name and non-blank extension name", status, x);
-  }
-
-  try {
-    // Non-blank file name (doesn't exist), blank extension name:
-    FitsExtensionData tmp_data("non-existent-file.fits", "");
-    ReportError("success creating FitsExtensionData object with a non-existent file name and blank extension name", status);
-  } catch(const TipException & x) {
-    // This exception should have been thrown.
-    ReportBehavior("failure creating FitsExtensionData object with a non-existent file name and blank extension name", status, x);
-  }
-
-  try {
-    // Non-blank file name (doesn't exist), non-blank extension name:
-    FitsExtensionData tmp_data("non-existent-file.fits", "SPECTRUM");
-    ReportError("success creating FitsExtensionData object with a non-existent file name and valid extension name", status);
-  } catch(const TipException & x) {
-    // This exception should have been thrown.
-    ReportBehavior("failure creating FitsExtensionData object with a non-existent file name and valid extension name", status, x);
-  }
-
-  try {
-    // File exists, but extension doesn't:
-    FitsExtensionData tmp_data(data_dir + "a1.pha", "NON_EXISTENT");
-    ReportError("success creating FitsExtensionData object with an existent file and non-existent extension name", status);
-  } catch(const TipException & x) {
-    // This exception should have been thrown.
-    ReportBehavior("failure creating FitsExtensionData object with an existent file and non-existent extension name", status, x);
-  }
-  // END Test error cases for FitsExtensionData constructors.
-
-
-
-
-
+  // Test error cases for FitsExtensionData constructors:
+  TestConstructorErrors<FitsExtensionData>("FitsExtensionData", data_dir + "a1.pha", status);
 
   // BEGIN Test success cases for FitsExtensionData constructors.
   // This test object will be used in further tests below so create it at this scope:
@@ -237,6 +243,9 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
 
+  // Clean up:
+  delete table; table = 0;
+  delete image; image = 0;
 
   // If currentStatus is non-0, keep it. Otherwise return the status from this test.
   status = (0 == currentStatus) ? status : currentStatus;
