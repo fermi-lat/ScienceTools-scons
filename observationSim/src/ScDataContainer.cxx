@@ -12,8 +12,12 @@
 
 #include "astro/EarthCoordinate.h"
 
-// #include "FluxSvc/../src/EventSource.h"
-// #include "FluxSvc/../src/GPS.h"
+#include "Goodi/GoodiConstants.h"
+#include "Goodi/DataIOServiceFactory.h"
+#include "Goodi/DataFactory.h"
+#include "Goodi/IDataIOService.h"
+#include "Goodi/IData.h"
+#include "Goodi/ISpacecraftData.h"
 
 #include "flux/EventSource.h"
 #include "flux/GPS.h"
@@ -24,6 +28,22 @@ namespace observationSim {
 
 void ScDataContainer::init() {
    m_scData.clear();
+
+   if (m_useGoodi) {
+      Goodi::DataIOServiceFactory iosvcCreator;
+      Goodi::DataFactory dataCreator;
+
+// Set the type of data to be generated and the mission.
+      Goodi::DataType datatype = Goodi::Spacecraft;
+      Goodi::Mission mission = Goodi::Lat;
+
+// Create the ScData object.
+      m_goodiScData = dynamic_cast<Goodi::ISpacecraftData *>
+         (dataCreator.create(datatype, mission));
+
+// Goodi I/O service object.
+      m_goodiIoService = iosvcCreator.create();
+   }
 }
 
 void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
@@ -43,20 +63,47 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 
 void ScDataContainer::writeScData() {
 
-   makeFitsTable();
-   if (!m_useA1fmt) {
-      std::vector<std::vector<double> > data(6);
-      for (std::vector<ScData>::const_iterator it = m_scData.begin();
-           it != m_scData.end(); it++) {
-         data[0].push_back(it->time());
-         data[1].push_back(it->raz());
-         data[2].push_back(it->decz());
-         data[3].push_back(it->lon());
-         data[4].push_back(it->lat());
-         data[5].push_back(static_cast<double>(it->inSaa()));
+   if (m_useGoodi) {
+      unsigned int npts = m_scData.size();
+      std::vector<double> startTime(npts);
+      std::vector<double> stopTime(npts);
+      std::vector< std::pair<double, double> > gti(npts);
+      std::vector<float> latGeo(npts);
+      std::vector<float> lonGeo(npts);
+      std::vector<float> raSCZ(npts);
+      std::vector<float> decSCZ(npts);
+      std::vector<float> raSCX(npts);
+      std::vector<float> decSCX(npts);
+
+      std::vector<ScData>::const_iterator scIt = m_scData.begin();
+      for (unsigned int i = 0; scIt != m_scData.end(); scIt++, i++) {
+         startTime[i] = scIt->time();
+         gti[i].first = startTime[i];
+         if (i > 0) {
+            stopTime[i] = startTime[i-1];
+            gti[i].second = stopTime[i];
+         }
+         latGeo[i] = scIt->lat();
+         lonGeo[i] = scIt->lon();
+         raSCZ[i] = scIt->zAxis().ra();
+         decSCZ[i] = scIt->zAxis().dec();
+         raSCX[i] = scIt->xAxis().ra();
+         decSCX[i] = scIt->xAxis().dec();
       }
-      m_scDataTable->writeTableData(data);
-   } else {
+      m_goodiScData->setStartTime(startTime);
+      m_goodiScData->setStopTime(stopTime);
+      m_goodiScData->setGTI(gti);
+      m_goodiScData->setLatGeo(latGeo);
+      m_goodiScData->setLonGeo(lonGeo);
+      m_goodiScData->setRAscz(raSCZ);
+      m_goodiScData->setDECscz(decSCZ);
+      m_goodiScData->setRAscx(raSCX);
+      m_goodiScData->setDECscx(decSCX);
+
+      std::string outputFile = "!" + outputFileName();
+      m_goodiScData->write(m_goodiIoService, outputFile);
+   } else { // Use the old A1 format.
+      makeFitsTable();
       std::vector<std::vector<double> > data(10);
 // pre-allocate the memory for each vector
       for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
@@ -76,11 +123,12 @@ void ScDataContainer::writeScData() {
          data[9].push_back(static_cast<double>(it->inSaa()));
       }
       m_scDataTable->writeTableData(data);
-   }
-// Delete the old table...
-   delete m_scDataTable;
 
-// flush the buffer...
+// Delete the old table.
+      delete m_scDataTable;
+   }
+
+// Flush the buffer...
    m_scData.clear();
 
 // and update the m_fileNum index.
@@ -93,28 +141,23 @@ void ScDataContainer::makeFitsTable() {
    std::vector<std::string> fmt;
    std::vector<std::string> unit;
 
-   if (!m_useA1fmt) { // the default
-      colName.push_back("time");fmt.push_back("1E");unit.push_back("seconds");
-      colName.push_back("RA_z");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("Dec_z");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("lon");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("lat");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("inSAA");fmt.push_back("1I");unit.push_back("integer");
-   } else {
-      colName.push_back("SC_x0");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("SC_x1");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("SC_x2");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("SC_x");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("SC_y");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("SC_z");fmt.push_back("1E");unit.push_back("dir cos");
-      colName.push_back("lon");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("lat");fmt.push_back("1E");unit.push_back("degrees");
-      colName.push_back("time");fmt.push_back("1D");unit.push_back("s");
-      colName.push_back("SAA_flag");fmt.push_back("1I");unit.push_back("int");
-   }
+   colName.push_back("SC_x0");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("SC_x1");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("SC_x2");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("SC_x");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("SC_y");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("SC_z");fmt.push_back("1E");unit.push_back("dir cos");
+   colName.push_back("lon");fmt.push_back("1E");unit.push_back("degrees");
+   colName.push_back("lat");fmt.push_back("1E");unit.push_back("degrees");
+   colName.push_back("time");fmt.push_back("1D");unit.push_back("s");
+   colName.push_back("SAA_flag");fmt.push_back("1I");unit.push_back("int");
 
-// Create the FITS filename using the root name, m_filename, and
-// m_fileNum.
+   std::string outputfile = outputFileName();
+   m_scDataTable = new FitsTable(outputfile, "LAT_PLM_summary",
+                                 colName, fmt, unit);
+}
+
+std::string ScDataContainer::outputFileName() const {
    std::ostringstream outputfile;
    outputfile << m_filename;
    if (m_fileNum < 10) {
@@ -128,9 +171,7 @@ void ScDataContainer::makeFitsTable() {
       exit(-1);
    }
    outputfile << m_fileNum << ".fits";
-
-   m_scDataTable = new FitsTable(outputfile.str(), "LAT_PLM_summary",
-                                 colName, fmt, unit);
+   return outputfile.str();
 }
 
 } // namespace observationSim

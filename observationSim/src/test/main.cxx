@@ -93,7 +93,8 @@ int main(int argn, char * argc[]) {
 
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events", true);
-   observationSim::ScDataContainer scData("test_scData", true);
+// For SC data, don't use Goodi until LatSCTemplate file appears.
+   observationSim::ScDataContainer scData("test_scData", false);
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();

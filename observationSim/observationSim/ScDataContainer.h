@@ -18,6 +18,11 @@
 #include "observationSim/FitsTable.h"
 #include "observationSim/Spacecraft.h"
 
+namespace Goodi {
+   class ISpacecraftData;
+   class IDataIOService;
+}
+
 class EventSource;
 
 namespace observationSim {
@@ -36,18 +41,12 @@ class ScDataContainer {
 public:
 
    /// @param filename The root name of the output FITS file.
-   /// @param useA1fmt A flag to use the format that the A1 tool expects.
+   /// @param useGoodi Set to true if Goodi is to be used.
    /// @param maxNumEntries The maximum number of entries in the ScData
    ///        buffer before a FITS file is written.
-   ScDataContainer(const std::string &filename, bool useA1fmt=false,
+   ScDataContainer(const std::string &filename, bool useGoodi=true,
                    int maxNumEntries=20000) :
-      m_filename(filename), m_useA1fmt(useA1fmt), m_fileNum(0),
-      m_maxNumEntries(maxNumEntries) {init();}
-
-   /// This version is provided for SWIG/Python.
-   ScDataContainer(char *filename, bool useA1fmt=false,
-                   int maxNumEntries=20000) :
-      m_filename(filename), m_useA1fmt(useA1fmt), m_fileNum(0),
+      m_filename(filename), m_useGoodi(useGoodi), m_fileNum(0),
       m_maxNumEntries(maxNumEntries) {init();}
 
    ~ScDataContainer() {if (m_scData.size() > 0) writeScData();}
@@ -69,19 +68,25 @@ private:
    /// Root name for the FITS binary table output files.
    std::string m_filename;
 
-   /// Flag to indicate that A1 (Likelihood prototype) formatting of
-   /// the FITS files will be used.
-   bool m_useA1fmt;
+   /// Flag to indicate that Goodi shall be used to write the Event
+   /// data in FT1 format.
+   bool m_useGoodi;
 
    /// The current index number fo the FITS output files.
    long m_fileNum;
 
    /// The maximum number of entries in the m_scData vector.
-   int m_maxNumEntries;
+   unsigned int m_maxNumEntries;
 
    /// The FITS binary table object that steers the cfitsio routines.
    FitsTable *m_scDataTable;
-   
+
+   /// Goodi Spacecraft data object pointer.
+   Goodi::ISpacecraftData *m_goodiScData;
+
+   /// Goodi I/O service object pointer.
+   Goodi::IDataIOService *m_goodiIoService;
+
    /// The ScData buffer.
    std::vector<ScData> m_scData;
 
@@ -94,6 +99,10 @@ private:
    /// This routine unpacks m_scData and calls the writeTableData(...)
    /// method of the m_scDataTable object.
    void writeScData();
+
+   /// Return an output filename, based on the root name, m_filename,
+   /// and the counter index, m_fileNum.
+   std::string outputFileName() const;
 
 };
 

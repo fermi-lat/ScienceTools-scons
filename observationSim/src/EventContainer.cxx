@@ -273,6 +273,4 @@ std::string EventContainer::outputFileName() const {
    return outputfile.str();
 }
 
-
-
 } // namespace observationSim
