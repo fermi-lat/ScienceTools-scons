@@ -394,11 +394,11 @@ void Fits_IO::readFitsCards(std::string keyname) {
    fits_read_record(fptr, keynum, card, &status);
    if (status != 0) report_error(status);
 
-   std::ostringstream my_history;
+   std::string my_history;
    while (status == 0) {
       fits_find_nextkey(fptr, include, ninc, exclude, nexc, card, &status);
       if (status == 0) {
-         my_history << &card[8] << std::endl;
+         my_history += &card[8];
       } else {
          break;
       }
@@ -408,19 +408,10 @@ void Fits_IO::readFitsCards(std::string keyname) {
       report_error(status);
    }
 
-
-   if (my_history.str() != "") {
-// Remove newlines.
-      std::vector<std::string> tokens;
-      facilities::Util::stringTokenize(my_history.str(), "\n", tokens);
-      std::ostringstream history;
-      for (std::vector<std::string>::iterator it = tokens.begin();
-           it != tokens.end(); it++) {
-         history << *it;
-      }
+   if (my_history != "") {
       char * unit = "";
       char * comment = "";
-      m_element->addAttribute(StringAttr(keyname, history.str(), unit,comment),
+      m_element->addAttribute(StringAttr(keyname, my_history, unit,comment),
                               false);
    }
 
