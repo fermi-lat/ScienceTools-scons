@@ -23,8 +23,14 @@ int main(int argc, char ** argv) {
       // instance of a subclass of IApp.
       st_app::IApp * app = st_app::IApp::getApp();
 
+      // Run application's setup code, if any.
+      app->setUp();
+
       // Run the application.
       app->run();
+
+      // Run application clean-up code, if any.
+      app->tearDown();
 
     } catch (const std::exception & x) {
       // Return a non-zero exit code:
