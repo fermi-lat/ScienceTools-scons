@@ -20,13 +20,16 @@ class DOM_Element;
 */
 class SimpleSpectrum : public Spectrum {
 public: 
+#if 0
     SimpleSpectrum(const char* name,float E0, float index=0.0);
     SimpleSpectrum(const char* name,float Emin, float Emax, float index);
+#endif
     SimpleSpectrum(const DOM_Element& xelem, bool useGeV=true);
     SimpleSpectrum(const std::string& params);
     
+#if 0
     SimpleSpectrum();
-    void setPosition ( float /*lat*/, float /*lon*/ ){}
+#endif
     virtual double calculate_rate(double old_rate);
     virtual float  operator()(float f)const;
     virtual const char* particleName()const;
@@ -37,7 +40,10 @@ private:
     std::string m_name;	// particle name to generate ("P", "gamma", ...)
     float m_index;	// spectral index: <=1 is delta function at E0
     float m_emax;
+    float m_ebreak;    // if not zero, put in a break
+    float m_index2;   // index for break
     bool m_useGeV;  // true if using GeV units, MeV otherwise
+    double m_a;  // relative area of lower part of broken spectrum
 };
 
 #endif

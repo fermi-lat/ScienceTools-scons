@@ -225,6 +225,16 @@
          <spectrum escale="GeV"> <SpectrumClass name="AlbedoPSpectrum" params="19.6,37.99"/>  <solid_angle mincos="-1.0" maxcos="1.0"/>
          </spectrum>
 	</source>
+	
+    <!-- testing new broken power law: this should be the same as albedo_electronpositron_total -->
+    <source name="aep" flux="146.">
+        <spectrum escale="GeV">
+            <particle name="e+" >
+                <power_law emin="0.010" ebreak="0.1" gamma="1.0"  emax="100"  gamma2="3.2" />
+            </particle>
+            <solid_angle mincos="-1.0" maxcos="1.0"/>
+        </spectrum>
+    </source>
 
     <source name="albedo_electronpositronlow" flux="146.">
         <spectrum escale="GeV">
