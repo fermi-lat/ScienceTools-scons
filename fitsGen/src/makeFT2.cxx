@@ -28,28 +28,33 @@
 
 int main(int iargc, char * argv[]) {
 
-   std::string d2File;
-   std::string outputFile("!myScData.fits");
+   std::string rootFile;
+   std::string fitsFile("!myScData.fits");
 
    if (iargc == 1) 
      {
        std::string fitsGenRoot = ::getenv("FITSGENROOT");
-       d2File = fitsGenRoot + "/data/pointing_history.root";
+       rootFile = fitsGenRoot + "/data/pointing_history.root";
      } 
    else if (iargc == 2) 
-     {
-       if (!strcmp(argv[1],"-h")) {
-         std::cout << "usage: " << argv[0] 
-                   << " <D2 input root file>" 
-                   << " <D2 output fits file>" 
-                   << std::endl;
-         return 0;
-      } else {
-         d2File = std::string(argv[1]);
-      }
-   }
+       {
+	 if (!strcmp(argv[1],"-h")) {
+	   std::cout << "usage: " << argv[0] << ": "
+		     << "<D2 input root file>" 
+		     << "<D2 output fits file>" << std::endl;
+	   return 0;
+	 } else {
+	     rootFile = std::string(argv[1]);
+	 }
+       } 
+   else if (iargc == 3) 
+	 {
+	   rootFile   = std::string(argv[1]);
+	   fitsFile   = std::string(argv[2]);     
+	 }
 
-   RootTuple::RootTuple exposure(d2File, "Exposure");
+   RootTuple::RootTuple exposure(rootFile, "Exposure");
+   
    std::vector<std::string> colNames;
    std::string query("");
    int nentries(0);
@@ -182,7 +187,7 @@ int main(int iargc, char * argv[]) {
 // Goodi I/O service object.
    Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
 
-   scData->write(goodiIoService, outputFile);
+   scData->write(goodiIoService, fitsFile);
 
    delete goodiIoService;
 
