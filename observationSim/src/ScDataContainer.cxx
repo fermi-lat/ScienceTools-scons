@@ -56,12 +56,13 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 
 // Get the rotation matrix from instrument to "Celestial" (J2000?)
 // coordinates.
-   astro::SkyDir zAxis = spacecraft->zAxis();
-   astro::SkyDir xAxis = spacecraft->xAxis();
+   astro::SkyDir zAxis = spacecraft->zAxis(time);
+   astro::SkyDir xAxis = spacecraft->xAxis(time);
 
    m_scData.push_back(ScData(time, zAxis.ra(), zAxis.dec(), 
-                             spacecraft->EarthLon(), spacecraft->EarthLat(),
-                             zAxis, xAxis, spacecraft->inSaa()));
+                             spacecraft->EarthLon(time), 
+                             spacecraft->EarthLat(time),
+                             zAxis, xAxis, spacecraft->inSaa(time)));
    if (flush) writeScData();
 }
 

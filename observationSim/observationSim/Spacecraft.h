@@ -32,24 +32,22 @@ public:
    virtual ~Spacecraft() {}
 
    /// Spacecraft z-axis in J2000 coordinates.
-   virtual astro::SkyDir zAxis() = 0;
+   virtual astro::SkyDir zAxis(double time) = 0;
 
    /// Spacecraft x-axis in J2000 coordinates.
-   virtual astro::SkyDir xAxis() = 0;
+   virtual astro::SkyDir xAxis(double time) = 0;
 
    /// Earth longitude in degrees.
-   virtual double EarthLon() = 0;
+   virtual double EarthLon(double time) = 0;
 
    /// Earth latitude in degrees.
-   virtual double EarthLat() = 0;
+   virtual double EarthLat(double time) = 0;
 
    /// Rotation matrix from instrument to J2000 coordinates
-   virtual HepRotation InstrumentToCelestial() = 0;
+   virtual HepRotation InstrumentToCelestial(double time) = 0;
 
    /// Unity if in SAA, zero otherwise.
-   virtual int inSaa() = 0;
-
-private:
+   virtual int inSaa(double time) = 0;
 
 };
 

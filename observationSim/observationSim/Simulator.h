@@ -16,6 +16,8 @@
 
 #include "latResponse/Irfs.h"
 
+#include "observationSim/Spacecraft.h"
+
 namespace observationSim {
 
 class EventContainer;
@@ -77,17 +79,19 @@ public:
    /// Generate photon events for a given elapsed simulation time.
    void generateEvents(double simulationTime, EventContainer &events,
                        ScDataContainer &scData, 
-                       latResponse::Irfs &response) {
+                       latResponse::Irfs &response,
+                       Spacecraft *spacecraft) {
       m_simTime = simulationTime;
-      makeEvents(events, scData, response);
+      makeEvents(events, scData, response, spacecraft);
    }
 
    /// Generate a specified number of events.
    void generateEvents(long numberOfEvents, EventContainer &events,
                        ScDataContainer &scData, 
-                       latResponse::Irfs &response) {
+                       latResponse::Irfs &response,
+                       Spacecraft *spacecraft) {
       m_maxNumEvents = numberOfEvents;
-      makeEvents(events, scData, response, false);
+      makeEvents(events, scData, response, spacecraft, false);
    }
 
 private:
@@ -109,7 +113,8 @@ private:
              double totalArea, double startTime);
 
    void makeEvents(EventContainer &, ScDataContainer &, 
-                   latResponse::Irfs &, bool useSimTime=true);
+                   latResponse::Irfs &, Spacecraft *spacecraft,
+                   bool useSimTime=true);
 
    void fluxLoad();
 

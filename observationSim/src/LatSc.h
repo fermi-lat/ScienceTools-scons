@@ -28,23 +28,19 @@ class LatSc : public Spacecraft {
 
 public:
 
-   LatSc(double time) : m_time(time) {}
+   LatSc() {}
 
    virtual ~LatSc() {}
 
-   virtual astro::SkyDir zAxis();
-   virtual astro::SkyDir xAxis();
+   virtual astro::SkyDir zAxis(double time);
+   virtual astro::SkyDir xAxis(double time);
 
-   virtual double EarthLon();
-   virtual double EarthLat();
+   virtual double EarthLon(double time);
+   virtual double EarthLat(double time);
 
-   virtual HepRotation InstrumentToCelestial();
+   virtual HepRotation InstrumentToCelestial(double time);
 
-   virtual int inSaa();
-
-private:
-
-   double m_time;
+   virtual int inSaa(double time);
 
 };
 

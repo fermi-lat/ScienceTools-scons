@@ -16,6 +16,7 @@
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
+#include "observationSim/../src/LatSc.h"
 
 void help();
 
@@ -73,12 +74,15 @@ int main(int argn, char * argc[]) {
    observationSim::EventContainer events("test_events.dat", true);
    observationSim::ScDataContainer scData("test_scData.dat", true);
 
+// The spacecraft object.
+   observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
+
 // Use simulation time rather than total counts if desired.
    if (argn == 4 && std::string(argc[3]) == "-t") {
       my_simulator.generateEvents(static_cast<double>(count), events, 
-                                  scData, response);
+                                  scData, response, spacecraft);
    } else {
-      my_simulator.generateEvents(count, events, scData, response);
+      my_simulator.generateEvents(count, events, scData, response, spacecraft);
    }
 }
 

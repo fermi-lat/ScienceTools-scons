@@ -12,36 +12,36 @@
 
 namespace observationSim {
 
-astro::SkyDir LatSc::zAxis() {
-   HepRotation rotationMatrix = InstrumentToCelestial();
+astro::SkyDir LatSc::zAxis(double time) {
+   HepRotation rotationMatrix = InstrumentToCelestial(time);
    return astro::SkyDir(rotationMatrix(Hep3Vector(0, 0, 1)),
                         astro::SkyDir::CELESTIAL);
 }
 
-astro::SkyDir LatSc::xAxis() {
-   HepRotation rotationMatrix = InstrumentToCelestial();
+astro::SkyDir LatSc::xAxis(double time) {
+   HepRotation rotationMatrix = InstrumentToCelestial(time);
    return astro::SkyDir(rotationMatrix(Hep3Vector(1, 0, 0)),
                         astro::SkyDir::CELESTIAL);
 }
 
-double LatSc::EarthLon() {
+double LatSc::EarthLon(double time) {
    GPS *gps = GPS::instance();
-   gps->getPointingCharacteristics(m_time);
+   gps->getPointingCharacteristics(time);
    return gps->lon();
 }
 
-double LatSc::EarthLat() {
+double LatSc::EarthLat(double time) {
    GPS *gps = GPS::instance();
-   gps->getPointingCharacteristics(m_time);
+   gps->getPointingCharacteristics(time);
    return gps->lat();
 }
 
-HepRotation LatSc::InstrumentToCelestial() {
+HepRotation LatSc::InstrumentToCelestial(double time) {
 // Get the rotation matrix from instrument to Galactic coordinates
 // from GPS.
    GPS *gps = GPS::instance();
-   gps->getPointingCharacteristics(m_time);
-   HepRotation glastToGalactic(gps->transformGlastToGalactic(m_time));
+   gps->getPointingCharacteristics(time);
+   HepRotation glastToGalactic(gps->transformGlastToGalactic(time));
 
 // Create astro::SkyDir objects for the instrument axes. 
    astro::SkyDir xAxisCel(glastToGalactic(Hep3Vector(1, 0, 0)),
@@ -55,8 +55,8 @@ HepRotation LatSc::InstrumentToCelestial() {
    return HepRotation(xAxisCel(), yAxisCel(), zAxisCel());
 }
 
-int LatSc::inSaa() {
-   astro::EarthCoordinate earthCoord(EarthLon(), EarthLat());
+int LatSc::inSaa(double time) {
+   astro::EarthCoordinate earthCoord(EarthLon(time), EarthLat(time));
    return earthCoord.insideSAA();
 }
 
