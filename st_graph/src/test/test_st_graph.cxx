@@ -22,6 +22,7 @@
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/IFrame.h"
 #include "st_graph/IPlot.h"
+#include "st_graph/Placer.h"
 #include "st_graph/Sequence.h"
 
 #include "st_stream/StreamFormatter.h"
@@ -64,9 +65,9 @@ bool StGraphTestApp::m_failed = false;
 void StGraphTestApp::run() {
   using namespace st_graph;
 
+  testGuis();
   testSequence();
   testPlots();
-  testGuis();
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -303,13 +304,14 @@ void StGraphTestApp::testGuis() {
 
   class MyGui : public IEventReceiver {
     public:
-      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0) {
+      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_ok_button(0), m_info_box(0) {
         // Create a top level main frame in which to place graphical objects.
         m_main_frame = m_engine.createMainFrame(this, 600, 400);
 
         // Create a couple test buttons.
         m_cancel_button = m_engine.createButton(m_main_frame, this, "text", "Cancel");
         m_ok_button = m_engine.createButton(m_main_frame, this, "text", "OK");
+//        m_info_box = m_engine.createInfoBox(m_main_frame, this, "text", "OK");
       }
 
       // Not necessary to delete children widgets, because they will be deleted by main frame's destructor.
@@ -332,11 +334,20 @@ void StGraphTestApp::testGuis() {
         }
       }
 
+      virtual void layout(IFrame *) {
+        // Position buttons.
+        LeftEdge le(m_main_frame);
+        RightEdge re(m_main_frame);
+        LeftEdge(m_ok_button).rightOf(le);
+        RightEdge(m_cancel_button).leftOf(re);
+      }
+
     private:
       Engine & m_engine;
       IFrame * m_main_frame;
       IFrame * m_cancel_button;
       IFrame * m_ok_button;
+      IFrame * m_info_box;
   };
 
   try {
