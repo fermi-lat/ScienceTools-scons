@@ -110,6 +110,10 @@ namespace tip {
       */
       virtual const IExtensionData::FieldCont & getValidFields() const { return m_extension_manager.getValidFields(); }
 
+      virtual IColumn * getColumn(FieldIndex_t field_index) { return m_extension_manager.getColumn(field_index); }
+
+      virtual const IColumn * getColumn(FieldIndex_t field_index) const { return m_extension_manager.getColumn(field_index); }
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
@@ -133,6 +137,16 @@ namespace tip {
       */
       virtual void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0)
         { m_extension_manager.setFieldNumElements(field_index, num_elements, record_index); }
+
+      /** \brief Copy a cell from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_field The field identifier in the source data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_field The field identifier in this object (the destination data object).
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
+        Index_t dest_record) { m_extension_manager.copyCell(src_ext, src_field, src_record, dest_field, dest_record); }
 
       /** \brief Get one or more values from the current extension object.
           \param field_index The index of the field (column) to get.

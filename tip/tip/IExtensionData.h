@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "tip/IColumn.h"
 #include "tip/tip_types.h"
 
 namespace tip {
@@ -80,6 +81,10 @@ namespace tip {
       */
       virtual const FieldCont & getValidFields() const = 0;
 
+      virtual IColumn * getColumn(FieldIndex_t field_index) = 0;
+
+      virtual const IColumn * getColumn(FieldIndex_t field_index) const = 0;
+
       /** \brief Get an index associated with the given field (column) name.
           \param field_name The name of the field.
       */
@@ -100,6 +105,16 @@ namespace tip {
           \param record_index The record number of the cell.
       */
       virtual void setFieldNumElements(FieldIndex_t field_index, Index_t num_elements, Index_t record_index = 0) = 0;
+
+      /** \brief Copy a cell from a source extension data object to a cell in this object.
+          \param src_ext The source extension data object.
+          \param src_field The field identifier in the source data object.
+          \param src_record The record identifier in the source data object.
+          \param dest_field The field identifier in this object (the destination data object).
+          \param dest_record The record identifier in this object (the destination data object).
+      */
+      virtual void copyCell(const IExtensionData * src_ext, FieldIndex_t src_field, Index_t src_record, FieldIndex_t dest_field,
+        Index_t dest_record) = 0;
 
       /** \brief Get one or more values from the current (tabular) extension object.
           \param field_index The index of the field (column) to get.
