@@ -43,8 +43,8 @@ namespace evtbin {
       */
       virtual Binner * clone() const;
 
-    private:
-      IntervalCont_t m_intervals;
+    protected:
+      mutable IntervalCont_t m_intervals;
   };
 
 }
