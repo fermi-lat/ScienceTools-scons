@@ -5,9 +5,7 @@
 #ifndef st_graph_Sequence_h
 #define st_graph_Sequence_h
 
-#include <cctype>
 #include <iterator>
-#include <string>
 #include <vector>
 
 namespace st_graph {
@@ -47,6 +45,10 @@ namespace st_graph {
       /** \brief Return the number of elements in the sequence.
       */
       size_type size() const { return m_num_points; }
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const = 0;
 
     private:
       size_type m_num_points;
@@ -207,6 +209,10 @@ namespace st_graph {
       virtual double upperSpread(const Itor_t &) const { return 0.; }
 
       virtual double width(const Itor_t &) const { return 0.; }
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const { return new PointSequence(*this); }
   };
 
   /** \class ValueSequence
@@ -236,6 +242,10 @@ namespace st_graph {
       virtual double upperSpread(const Itor_t & itor) const { return .5 * (nextElement(itor) - *itor); }
 
       virtual double width(const Itor_t & itor) const { return .5 * (nextElement(itor) - prevElement(itor)); }
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const { return new ValueSequence(*this); }
   };
 
   /** \class LowerBoundsSequence
@@ -265,6 +275,10 @@ namespace st_graph {
       virtual double upperSpread(const Itor_t & itor) const { return .5 * width(itor); }
 
       virtual double width(const Itor_t & itor) const { return nextElement(itor) - *itor; }
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const { return new LowerBoundSequence(*this); }
   };
 
   /** \class ValueSpreadSequence
@@ -312,6 +326,10 @@ namespace st_graph {
           \param upper The upper spreads of the sequence elements.
       */
       virtual void getSpreads(std::vector<double> & lower, std::vector<double> & upper) const;
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const { return new ValueSpreadSequence(*this); }
 
     private:
       Itor_t m_value_begin;
@@ -392,6 +410,10 @@ namespace st_graph {
           \param upper The upper spreads of the sequence elements.
       */
       virtual void getSpreads(std::vector<double> & lower, std::vector<double> & upper) const;
+
+      /** \brief Return a new copy of the current ISequence subclass.
+      */
+      virtual ISequence * clone() const { return new IntervalSequence(*this); }
 
     private:
       Itor_t m_low_begin;
