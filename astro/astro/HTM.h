@@ -9,11 +9,14 @@ $Header$
 #define astro_HTM_h
 
 #include "astro/SkyDir.h"
+#include "astro/SkyFunction.h"
 #include <vector>
 #include <iostream>
 
 
 namespace astro {
+
+
 /**
 @class HTM
 @brief Create a Hierarchical Triangle Mesh (HTM)
@@ -53,6 +56,9 @@ public:
         /** @brief the central direction */
         const astro::SkyDir & dir() const{return m_dir;}
         const double area()const {return m_area;}
+
+        /** @brief evaluate the diffential element of a function */
+        double fdA(const astro::SkyFunction& fun)const{return area()*fun(dir());}
     private:
         unsigned int m_id;
         astro::SkyDir m_dir;
