@@ -14,10 +14,18 @@
 
 using namespace pulsePhase;
 
+const std::string s_cvs_id("$Name$");
+
 class PulsePhaseApp : public st_app::StApp {
   public:
+    PulsePhaseApp();
     virtual void run();
 };
+
+PulsePhaseApp::PulsePhaseApp(): st_app::StApp() {
+  setName("pulsePhase");
+  setVersion(s_cvs_id);
+}
 
 void PulsePhaseApp::run() {
   st_app::AppParGroup & par_group = getParGroup("pulsePhase"); // getParGroup is in base class st_app::StApp
@@ -59,12 +67,18 @@ void PulsePhaseApp::run() {
     double f0 = par_group["f0"];
     double f1 = par_group["f1"];
     double f2 = par_group["f2"];
+
+    if (0. >= f0) throw std::runtime_error("Frequency must be positive.");
+
     TimingModel::FrequencyCoeff coeff(f0, f1, f2);
     model = new TimingModel(epoch, 0., coeff);
   } else if (eph_style == "PER") {
     double p0 = par_group["p0"];
     double p1 = par_group["p1"];
     double p2 = par_group["p2"];
+
+    if (0. >= p0) throw std::runtime_error("Period must be positive.");
+
     TimingModel::PeriodCoeff coeff(p0, p1, p2);
     model = new TimingModel(epoch, 0., coeff);
   } else {
