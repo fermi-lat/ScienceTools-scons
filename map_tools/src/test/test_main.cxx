@@ -10,12 +10,12 @@ $Header$
 #include "map_tools/Parameters.h"
 #include "map_tools/ExposureHyperCube.h"
 #include "map_tools/SkyImage.h"
+#include "map_tools/DataCube.h"
 #include "image/Header.h"
-#include "image/Fits_IO.h"
-#include "image/Image.h"
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <cassert>
 using namespace map_tools;
 class TestAeff : public Exposure::Aeff {
@@ -36,9 +36,10 @@ public:
 };
 
 void test_Header();
+void test_DataCube();
 
 int main(int argc, char** argv ){
-   try{
+    try{
         // read a pil file--and make sure that a few simple things work
         TestPar par(argc, argv);
         if( par["xref"] != 0) {
@@ -80,10 +81,9 @@ int main(int argc, char** argv ){
             return 1;
         }
 
-// Write out the cube...
+// Write out the cube...delete any existing file first.
+        std::remove(par.inputFile().c_str());
         ExposureHyperCube cube(e, par.inputFile());
-        cube.setKey("HISTORY", "This is a history header card.");
-        cube.setKey("COMMENT", "This is a comment header card.");
         cube.save();
 
 // Check the Exposure(fitsfile) constructor.
@@ -93,19 +93,12 @@ int main(int argc, char** argv ){
         ExposureHyperCube cube2(e2, par.outputFile());
         cube2.save();
 
-// Re-read as FloatImg and check HISTORY and COMMENT and header cards.
-        FloatImg * imageCube = dynamic_cast<FloatImg *>(Fits_IO::read(par.inputFile(), "hypercube"));
-        std::string history;
-        imageCube->getValue("HISTORY", history);
-        assert(history == "This is a history header card.");
-        imageCube->getValue("COMMENT", history);
-        assert(history == "This is a comment header card.");
-        delete imageCube;
-
         // create an image to access cells
         SkyImage exp3(par.inputFile(),"hypercube");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
         assert(tt=36.0); 
+
+        test_DataCube();
 
         test_Header();
 
@@ -163,4 +156,43 @@ void test_Header() {
    float * test = reinterpret_cast<float*>(attr.valuePtr()); // check alternate return
    assert (*test == fvalue0);
    std::cout << "header tests ok\n";
+}
+
+void test_DataCube() {
+   std::string filename("data_cube.fits");
+   std::string extName("an_image_extension");
+
+   std::remove(filename.c_str());
+   std::remove("data_cube2.fits");
+
+   std::vector<long> naxes(2);
+   naxes[0] = 10;
+   naxes[1] = 10;
+   std::vector<float> data;
+   for (int i = 0; i < naxes[0]*naxes[1]; i++) {
+      data.push_back(i);
+   }
+   
+   DataCube<float> cube1(naxes, extName, filename);
+   cube1.setKey("DVALUE", M_PI);
+   cube1.setKey("IVALUE", 42);
+   cube1.setKey<std::string>("HISTORY", "This is a history header card.");
+   cube1.setKey<std::string>("COMMENT", "This is a comment header card.");
+   cube1.data() = data;
+   cube1.save();
+
+   DataCube<float> cube2(filename, extName);
+   std::string history;
+   cube2.getKey("HISTORY", history);
+   assert(history == "This is a history header card.");
+   cube2.getKey("COMMENT", history);
+   assert(history == "This is a comment header card.");
+
+   for (unsigned int i = 0; i < data.size(); i++) {
+      assert(cube2.data()[i] == data[i]);
+   }
+
+   cube2.save("data_cube2.fits");
+
+   std::cout << "DataCube tests ok" << std::endl;
 }
