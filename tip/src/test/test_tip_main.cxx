@@ -31,7 +31,7 @@ int main() {
     }
 
     // The following test file should be present.
-    Table * my_table = IFileSvc::getSvc().editTable("arlac.pha", "SPECTRUM");
+    Table * my_table = IFileSvc::getSvc().editTable("a1.pha", "SPECTRUM");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
@@ -58,8 +58,8 @@ int main() {
         r["CHANnel"].get(channel);
 
         // Confirm that the channel number obtained from the file matches what it should be.
-        // Channels are numbered sequentially starting with 1.
-        if (channel != ++ichan) {
+        // Channels are numbered sequentially starting with 0.
+        if (channel != ichan++) {
           static bool first_time = true;
           if (first_time) {
             std::cerr << "One or more channel numbers mismatched following get." << std::endl;
@@ -125,8 +125,8 @@ int main() {
         }
 
         // Confirm that the channel number read from the file matches what it should be.
-        // Channels are numbered sequentially starting with 1.
-        if (channel != ++ichan) {
+        // Channels are numbered sequentially starting with 0.
+        if (channel != ichan++) {
           static bool first_time = true;
           if (first_time) {
             std::cerr << "One or more channel numbers mismatched following get using Ref." << std::endl;
@@ -183,6 +183,26 @@ int main() {
           }
         }
 
+        // Try getting counts as a vector-valued column.
+        Table::Vector<double> vcounts = r["Counts"];
+        if (4096 != ((const std::vector<double> &) vcounts).capacity()) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "Size of counts when read into a vector is " <<
+              ((const std::vector<double> &) vcounts).capacity() << " not " << 1 << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
+        if (counts != *((const std::vector<double> &) vcounts).begin()) {
+          static bool first_time = true;
+          if (first_time) {
+            std::cerr << "First Counts value when read into a vector is " <<
+              *((const std::vector<double> &) vcounts).begin() << " not " << counts << std::endl;
+            status = 1;
+            first_time = false;
+          }
+        }
       }
 
     } catch(const TableException & x) {
@@ -192,17 +212,17 @@ int main() {
 
     try {
       Header & header = my_table->getHeader();
-      double exposure = 0.;
-      header["exposure"].get(exposure);
-      if (1.963e3 != exposure) {
-        std::cerr << "Keyword exposure was read to be " << exposure << " not " << 1.963e3 << std::endl;
+      double src_thet = 0.;
+      header["src_thet"].get(src_thet);
+      if (-999. != src_thet) {
+        std::cerr << "Keyword src_thet was read to be " << src_thet << " not " << -999. << std::endl;
         status = 1;
       }
 
       std::string telescop;
       header["telescop"].get(telescop);
-      if (telescop.compare("ROSAT")) {
-        std::cerr << "Keyword telescop was read to be " << telescop << " not " << "ROSAT" << std::endl;
+      if (telescop.compare("SWIFT")) {
+        std::cerr << "Keyword telescop was read to be " << telescop << " not " << "SWIFT" << std::endl;
         status = 1;
       }
     } catch(const TableException & x) {
