@@ -143,7 +143,7 @@ double EarthOrbit::calcShapiroDelay(JulianDate jd, const SkyDir sourceDir) const
    double costheta = - rsun.dot(rsrc) / ( rsun.mag() * rsrc.mag() );
 
    // m = G * Msun / c^3
-   static double m = 4.9271e16;
+   static double m = 4.9271e-6;
    return 2 * m * log(1+costheta);
 }
 
