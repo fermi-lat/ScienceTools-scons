@@ -31,7 +31,7 @@ class TestApp1 : public st_app::StApp {
       st_app::AppParGroup & pars(getParGroup("test_st_app"));
 
       // Prompt for all parameters in order.
-      pars.Prompt();
+      // pars.Prompt();
 
       // To prompt for just the string parameter, comment out the line above and uncomment the following:.
       // pars.Prompt("string");
