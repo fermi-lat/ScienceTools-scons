@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 12-nov-04 v5r6p1 THB linux error; fix some warnings; change an annoying parameter name  
+ 10-nov-04 v5r6   THB implement use of Aeff from irf packages for calculating exposure map  
  05-jun-04 v5r5p1 THB compilation error fix in SkyImage, some rearrangement 
  05-jun-04 v5r5   THB convert to use new astro::SkyProj, requiring astro v1* 
  30-apr-04 v5r4p4 JC  fix buffer overrun on Windows when reading long FITS HISTORY cards
