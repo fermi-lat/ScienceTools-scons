@@ -45,9 +45,9 @@ namespace facilities {
     return nSuccess;
   }
 
-  const char* Util::itoa(int val) {
+  std::string Util::itoa(int val, std::string &outStr) {
       // Purpose and Method:  Provide a standard routine to convert integers
-      //    into char*.  The method used depends upon the availability of
+      //    into std::string.  The method used depends upon the availability of
       //    the stringstream classes.  The stringstream classes are the
       //    standard, but some compilers do yet support them.
       //    The method used is determined by the DEFECT_NO_STRINGSTREAM
@@ -64,8 +64,8 @@ namespace facilities {
 #ifdef DEFECT_NO_STRINGSTREAM
       locStream << std::endl;
 #endif
-      static std::string str = locStream.str();
-      return str.c_str();
+      outStr = locStream.str();
+      return outStr;
   }
 
 }
