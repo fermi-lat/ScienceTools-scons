@@ -23,6 +23,8 @@
 #include "IFlux.h"
 #include "CLHEP/Vector/Rotation.h"
 
+#include <vector>
+
 // forward declarations
 class FluxMgr;
 class EventSource;
@@ -31,6 +33,9 @@ class Flux : public IFlux {
 public:
     /// ctor, select the name
     Flux(std::string name);
+
+    Flux(std::vector<std::string> names);
+
     virtual ~Flux();
     
     /// name of the flux

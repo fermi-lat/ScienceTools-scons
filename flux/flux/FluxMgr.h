@@ -43,6 +43,10 @@ public:
     
     /// create and return a source by name.
     EventSource* source(std::string name);
+
+    /// create a composite source from the list of names
+    EventSource* compositeSource(std::vector<std::string> names);
+
     
     /// access to the source list
     std::list<std::string> sourceList() const;

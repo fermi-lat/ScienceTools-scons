@@ -15,6 +15,11 @@ Flux::Flux(std::string name)
 {
     m_event = s_mgr->source(name);
 }
+Flux::Flux(std::vector<std::string> names) 
+:  m_flux(0)
+{
+    m_event = s_mgr->compositeSource(names);
+}
 Flux::~Flux() 
 {
     delete m_flux;

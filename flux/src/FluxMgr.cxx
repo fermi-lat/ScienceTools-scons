@@ -124,6 +124,22 @@ EventSource* FluxMgr::source(std::string name)
     return getSourceFromXML(m_sources[name].first);
 }
 
+EventSource* FluxMgr::compositeSource(std::vector<std::string> names)
+{
+    //Purpose: to return a pointer to a source, referenced by a list of names.
+    //Input: the names of the desired sources.
+
+    CompositeSource* comp = new CompositeSource();
+    for( std::vector<std::string>::const_iterator it= names.begin(); it!=names.end(); ++it){
+        const std::string& name = *it;
+        if( m_sources.find(name)==m_sources.end() ) {
+            delete comp;
+            return 0;
+        }
+        comp->addSource(getSourceFromXML(m_sources[name].first));
+    }
+    return comp;
+}
 
 EventSource*  FluxMgr::getSourceFromXML(const DOM_Element& src)
 {
