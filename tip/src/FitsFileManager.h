@@ -8,9 +8,10 @@
 #define tip_FitsFileManager_h
 
 #include <string>
+#include "fitsio.h"
+#include "tip/FileSummary.h"
 
 namespace tip {
-
   /** \class FitsFileManager
       \brief Low level interface to FITS files. This is not part of the API. This class is concerned
       with whole files, as distinct from other classes which handle individual file extensions.
@@ -29,6 +30,16 @@ namespace tip {
           \param table_name The name of the new table.
       */
       static void appendTable(const std::string & file_name, const std::string & table_name);
+
+      /** \brief Obtain summary of contents of the given file.
+          \param file_name The name of the file.
+          \param summary The object holding the summary.
+      */
+      static void getFileSummary(const std::string & file_name, FileSummary & summary);
+
+    private:
+      // Get the extsnsion identifier (name or number).
+      static void getExtId(fitsfile * fp, std::string & ext_id);
   };
 
 }

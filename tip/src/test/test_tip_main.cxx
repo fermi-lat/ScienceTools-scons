@@ -10,6 +10,7 @@
 
 #include "TestExtensionData.h"
 #include "TestFileManager.h"
+#include "TestFileSummary.h"
 #include "TestImage.h"
 #include "TestTable.h"
 #include "tip/IFileSvc.h"
@@ -395,6 +396,10 @@ int main() {
     // Test image access.
     TestImage image_test;
     status = image_test.test(status);
+
+    // Test file access.
+    TestFileSummary file_summary_test;
+    status = file_summary_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;

@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include "tip/FileSummary.h"
+
 namespace tip {
 
   class Table;
@@ -57,6 +59,12 @@ namespace tip {
       */
       virtual const Table * readTable(const std::string & file_name, const std::string & table_name,
         const std::string & filter = "");
+
+      /** \brief Obtain summary of the file's contents.
+          \param file_name The name of the file.
+          \param summary The summary object to fill.
+      */
+      virtual void getFileSummary(const std::string & file_name, FileSummary & summary);
 
     protected:
       /** \brief For singleton pattern, limit creation of IFileSvc objects to derived classes.

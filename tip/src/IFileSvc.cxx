@@ -9,6 +9,7 @@
 #include "FitsFileManager.h"
 #include "RootExtensionData.h"
 #include "RootExtensionManager.h"
+#include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/TipException.h"
@@ -108,6 +109,10 @@ namespace tip {
       throw;
     }
     return retval;
+  }
+
+  void IFileSvc::getFileSummary(const std::string & file_name, FileSummary & summary) {
+    FitsFileManager::getFileSummary(file_name, summary);
   }
 
   // Protected constructor which adds the current object to the registry of IFileSvc objects.
