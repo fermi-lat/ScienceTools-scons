@@ -40,7 +40,11 @@ namespace facilities {
                     toExpand->replace(envStart,(envEnd+clLen), path);
                     if (nSuccess > -1) nSuccess++;
                 }
-                else throw Untranslatable(envVariable);
+                else {
+                  std::cerr << "Util::expandEnvVar unable to translate " 
+                            << envVariable << std::endl;
+                  throw Untranslatable(envVariable);
+                }
             }
             envStart = toExpand->find_first_of(openDel.c_str());
         }
