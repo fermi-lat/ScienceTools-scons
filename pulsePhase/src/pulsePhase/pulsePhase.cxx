@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -45,10 +46,10 @@ void PulsePhaseApp::run() {
 
   // Open the event file.
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["eventfile"], "EVENTS");
-  
+
   // Get model parameters.
   double epoch = par_group["epoch"];
-  double phi0 = par_group["phi0"];
+  double users_phi0 = par_group["phi0"];
   TimingModel * model = 0;
 
   if (eph_style == "FREQ") {
@@ -56,13 +57,13 @@ void PulsePhaseApp::run() {
     double f1 = par_group["f1"];
     double f2 = par_group["f2"];
     TimingModel::FrequencyCoeff coeff(f0, f1, f2);
-    model = new TimingModel(epoch, phi0, coeff);
+    model = new TimingModel(epoch, 0., coeff);
   } else if (eph_style == "PER") {
     double p0 = par_group["p0"];
     double p1 = par_group["p1"];
     double p2 = par_group["p2"];
     TimingModel::PeriodCoeff coeff(p0, p1, p2);
-    model = new TimingModel(epoch, phi0, coeff);
+    model = new TimingModel(epoch, 0., coeff);
   } else {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
@@ -72,7 +73,8 @@ void PulsePhaseApp::run() {
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
-    double phase = model->calcPhase(rec[time_field].get());
+    double int_part; // Ignored. Needed for modf.
+    double phase = modf(model->calcPhase(rec[time_field].get()) + users_phi0, &int_part);
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
