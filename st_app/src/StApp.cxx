@@ -8,6 +8,7 @@
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
+#include "st_app/StGui.h"
 
 #include "st_stream/StreamFormatter.h"
 
@@ -34,6 +35,11 @@ namespace st_app {
 
   // Destruct application object:
   StApp::~StApp() throw() { delete m_par_group; }
+
+  void StApp::runGui() {
+    StEventReceiver gui(this);
+    gui.run();
+  }
 
   // Return an object which provides the most typical kinds of parameter access.
   AppParGroup & StApp::getParGroup() {

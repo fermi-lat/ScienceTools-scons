@@ -20,6 +20,7 @@ int main(int argc, char ** argv) {
   st_app::StApp * this_st_app = 0;
 
   bool debug = false;
+  bool gui_mode = false;
 
   try {
 #ifdef TRAP_FPE
@@ -36,6 +37,9 @@ int main(int argc, char ** argv) {
 
     // Determine whether debugging was selected, either at runtime or compile time.
     debug = st_app::IStAppFactory::instance().getDebugMode();
+
+    // Determine whether to run the GUI.
+    gui_mode = st_app::IStAppFactory::instance().getGuiMode();
 
     if (!debug) {
       // Not in debug mode, so create and run the application here, inside the top-level try block.
@@ -55,8 +59,9 @@ int main(int argc, char ** argv) {
         // Display startup banner.
         this_st_app->banner();
 
-        // Run the application. Check debug status again in case the application constructor changed it.
-        this_st_app->run();
+        // Run the application, either in GUI mode or not.
+        if (gui_mode) this_st_app->runGui();
+        else this_st_app->run();
       }
     }
 
@@ -69,7 +74,7 @@ int main(int argc, char ** argv) {
     try {
       type_name = typeid(x).name();
     } catch (...) {
-      // Ignore problem with typeids.
+      // Ignore problems with typeid.
     }
     std::cerr << "Caught " << type_name << " at the top level: " << x.what() << std::endl;
   }
@@ -90,8 +95,9 @@ int main(int argc, char ** argv) {
       // Display startup banner.
       this_st_app->banner();
 
-      // Run the application.
-      this_st_app->run();
+      // Run the application, either in GUI mode or not.
+      if (gui_mode) this_st_app->runGui();
+      else this_st_app->run();
     }
   }
 

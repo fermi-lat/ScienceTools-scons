@@ -78,6 +78,10 @@ namespace st_app {
 
   void IStAppFactory::setDebugMode(bool debug_mode) { st_stream::SetDebugMode(debug_mode); }
 
+  bool IStAppFactory::getGuiMode() const { return m_gui_mode; }
+
+  void IStAppFactory::setGuiMode(bool gui_mode) { m_gui_mode = gui_mode; }
+
   const std::string & IStAppFactory::getAppName() const { return m_app_name; }
 
 }

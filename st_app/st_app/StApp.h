@@ -42,6 +42,10 @@ namespace st_app {
       */
       virtual void run() = 0;
 
+      /** \brief Launch this application's GUI. The GUI will call run.
+      */
+      virtual void runGui();
+
       /** \brief Return an object which provides the most typical kinds of parameter access.
                  The name used to find the parameter file is taken from the name member.
       */

@@ -7,8 +7,6 @@
 
 #include <string>
 
-#include "st_app/StAppGui.h"
-
 namespace st_app {
 
   class StApp;
@@ -44,6 +42,12 @@ namespace st_app {
 
       virtual void setDebugMode(bool debug_mode);
 
+      /** \brief Return true if GUI mode is enabled, false if not.
+      */
+      virtual bool getGuiMode() const;
+
+      virtual void setGuiMode(bool gui_mode);
+
       const std::string & getAppName() const;
 
     protected:
@@ -67,7 +71,7 @@ namespace st_app {
   /** \class StAppFactory
       \brief Factory which creates objects of a specific subclass of StApp.
   */
-  template <typename App, typename GuiApp = StAppGui>
+  template <typename App>
   class StAppFactory : public IStAppFactory {
     public:
       /** \brief Create factory for an unnamed application.
@@ -80,16 +84,7 @@ namespace st_app {
 
       /** \brief Create an application object.
       */
-      virtual StApp * createApp() const {
-        StApp * app = 0;
-        if (m_gui_mode) {
-          app = new GuiApp(getAppName(), new App);
-        } else {
-          app = new App;
-          if (0 != app) app->setName(getAppName());
-        }
-        return app;
-      }
+      virtual StApp * createApp() const { return new App; }
   };
 
 }
