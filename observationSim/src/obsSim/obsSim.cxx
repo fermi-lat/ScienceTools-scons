@@ -120,17 +120,21 @@ void ObsSim::setXmlFiles() {
    }
    facilities::Util::expandEnvVar(&xmlFiles);
    if (Util::fileExists(xmlFiles)) {
-      std::vector<std::string> files;
-      Util::readLines(xmlFiles, files);
-      for (unsigned int i=0; i < files.size(); i++) {
-         facilities::Util::expandEnvVar(&files[i]);
-         if (Util::fileExists(files[i])) {
-            m_xmlSourceFiles.push_back(files[i]);
-         } else {
-            std::cout << "File not found: " 
-                      << files[i] << std::endl;
+      if (Util::isXmlFile(xmlFiles)) {
+         m_xmlSourceFiles.push_back(xmlFiles);
+      } else {
+         std::vector<std::string> files;
+         Util::readLines(xmlFiles, files);
+         for (unsigned int i=0; i < files.size(); i++) {
+            facilities::Util::expandEnvVar(&files[i]);
+            if (Util::fileExists(files[i])) {
+               m_xmlSourceFiles.push_back(files[i]);
+            } else {
+               std::cout << "File not found: " 
+                         << files[i] << std::endl;
+            }
          }
-      }
+      } 
    } else {
       throw std::invalid_argument("List of XML files not found: " + xmlFiles);
    }

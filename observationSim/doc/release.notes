@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r5   30-Apr-04   JC   allow user to specify single xml file or a list
+    v3r4   28-Apr-04   JC   make GRB sources available
     v3r3   27-Apr-04   JC   using st_app::StApp
     v3r2   17-Apr-04   JC   add GaussianSource, PeriodicSource, Pulsar,
                             SimpleTransient, TransientTemplate sources
