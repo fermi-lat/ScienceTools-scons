@@ -14,9 +14,9 @@ DATE        =                             / file creation date (YYYY-MM-DDThh:mm
 DATE-OBS    =                             / start date and time of the observation (UTC)
 DATE-END    =                             / end date and time of the observation (UTC)
 FILENAME    =                             / name of this file
-ORIGIN      =                             / name of organization making file
-AUTHOR      =                             / name of person responsible for file generation
-CREATOR     =                             / software and version creating file
+ORIGIN      = ''                          / name of organization making file
+AUTHOR      = ''                          / name of person responsible for file generation
+CREATOR     = ''                          / software and version creating file
 VERSION     =                             / release version of the file
 SOFTWARE    =                             / version of the processing software
 END
