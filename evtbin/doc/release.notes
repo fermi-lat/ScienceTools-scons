@@ -17,6 +17,7 @@
                           finding data files.
 09-oct-2004    v0r6p1 JP  Convert from keV to MeV when creating a binner from
                           and EBOUNDS extension, just as for ENERGYBINS.
+13-oct-2004    v0r6p1 JP  Add documentation about application parameters.
 --------------------------------------------------------------------------------
 \endverbatim
 
