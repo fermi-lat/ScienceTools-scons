@@ -38,7 +38,8 @@ namespace tip {
           \param file_name The name of the FITS file.
           \param ext_name The name of the FITS extension.
       */
-      FitsExtensionManager(const std::string & file_name, const std::string & ext_name);
+      FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
+        const std::string & filter = "");
 
       /** \brief Destructor. Closes file if it is open.
       */
@@ -129,6 +130,7 @@ namespace tip {
 
       std::string m_file_name;
       std::string m_ext_name;
+      std::string m_filter;
       std::map<std::string, ColumnInfo> m_col_name_lookup;
       std::map<int, ColumnInfo> m_col_num_lookup;
       Index_t m_num_records;

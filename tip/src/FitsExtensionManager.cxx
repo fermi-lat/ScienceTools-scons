@@ -16,9 +16,9 @@
 namespace tip {
 
   // Construct without opening the file.
-  FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name):
-    m_file_name(file_name), m_ext_name(ext_name), m_col_name_lookup(), m_col_num_lookup(), m_num_records(0), m_fp(0),
-    m_header(0), m_data(0) { open(); }
+  FitsExtensionManager::FitsExtensionManager(const std::string & file_name, const std::string & ext_name,
+    const std::string & filter): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter), m_col_name_lookup(),
+    m_col_num_lookup(), m_num_records(0), m_fp(0), m_header(0), m_data(0) { open(); }
 
   // Close file automatically while destructing.
   FitsExtensionManager::~FitsExtensionManager() { delete m_data; delete m_header; close(); }
@@ -43,17 +43,26 @@ namespace tip {
       fitsfile * fp = 0;
       int status = 0;
 
+      // Construct the full name of the file from file name [extension] [filter] (if any):
+      std::ostringstream s;
+      s << m_file_name;
+      if (!m_ext_name.empty()) s << "[" << m_ext_name << "]";
+      if (!m_filter.empty()) s << "[" << m_filter << "]";
+      std::string file_name = s.str();
+
       // Open the fits file.
-      fits_open_file(&fp, const_cast<char *>(m_file_name.c_str()), READWRITE, &status);
-
-      if (status) throw TipException(std::string("Could not open FITS file ") + m_file_name);
-
-      // Move to the indicated extension.
-      fits_movnam_hdu(fp, ANY_HDU, const_cast<char *>(m_ext_name.c_str()), 0, &status);
+      fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
 
       if (status) {
-        fits_close_file(fp, &status);
-        throw TipException(std::string("Could not find extension ") + m_ext_name + " in file " + m_file_name);
+        // TODO 9. 4/2/2004: Bug in cfitsio 2.48: Check for it and warn about it. The bug causes
+        // the parser not to move to the correct extension.
+        float cfitsio_version = 0.;
+        fits_get_version(&cfitsio_version);
+        // This is surreal. A FLOATING POINT VERSION NUMBER! Checking for == doesn't work -- I tried it.
+        if (2.47 < cfitsio_version && 2.49 > cfitsio_version)
+          throw TipException(std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
+            "syntax parser!\nCould not open FITS file ") + file_name);
+        throw TipException(std::string("Could not open FITS file ") + file_name);
       }
 
       // Success: save the pointer.
@@ -72,8 +81,15 @@ namespace tip {
     // Open the actual file and move to the right extension.
     if (0 == m_fp) open();
 
-    int column_status = 0;
     int status = 0;
+
+    // Check whether the file pointer is pointing at a table:
+    int hdu_type = 0;
+    fits_get_hdu_type(m_fp, &hdu_type, &status);
+    if (0 != status) throw TipException(formatWhat("Could not determine the type of the HDU"));
+    if (ASCII_TBL != hdu_type && BINARY_TBL != hdu_type) throw TipException(formatWhat("Extension is not a table"));
+
+    int column_status = 0;
     long nrows = 0;
 
     // Read the number of rows present in the table.
