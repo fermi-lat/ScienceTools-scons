@@ -23,24 +23,38 @@
 
 using latResponse::irfsFactory;
 
+ISpectrumFactory & GaussianSourceFactory();
+ISpectrumFactory & GRBmanagerFactory();
+ISpectrumFactory & IsotropicFactory();
+ISpectrumFactory & MapSourceFactory();
+ISpectrumFactory & PeriodicSourceFactory();
+ISpectrumFactory & PulsarFactory();
+ISpectrumFactory & SimpleTransientFactory();
+ISpectrumFactory & TransientTemplateFactory();
+
 void help();
+
+void load_sources();
 
 int main(int iargc, char * argv[]) {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-   
+
+   try {
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
    std::string xml_list("$(OBSERVATIONSIMROOT)/xml/obsSim_source_library.xml");
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_32MeV.xml";
    fileList.push_back(xml_list);
-   xml_list = "$(OBSERVATIONSIMROOT)/xml/test_sources.xml";
+   xml_list = "$(GRBROOT)/xml/GRB_user_library.xml";
    fileList.push_back(xml_list);
    xml_list = "$(OBSERVATIONSIMROOT)/xml/time_source.xml";
    fileList.push_back(xml_list);
-   
+
+   load_sources();
+
 // Parse the command line arguments.
 //
 // The first argument will be the total number of photons or the total
@@ -79,6 +93,7 @@ int main(int iargc, char * argv[]) {
       }
    } else {
       sourceNames.push_back("all_3EG_sources");
+      sourceNames.push_back("One_GRB_each_10Minutes");
 //      sourceNames.push_back("galdiffusemap");
    }
 
@@ -126,6 +141,9 @@ int main(int iargc, char * argv[]) {
       my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
+   } catch (std::exception & eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
 }
 
 void help() {
@@ -134,4 +152,15 @@ void help() {
              << "  -t interpret counts as elapsed time in seconds\n" 
              << "  -fb use Front/Back IRFs\n"
              << std::endl;
+}
+
+void load_sources() {
+   GaussianSourceFactory();
+   GRBmanagerFactory();
+   IsotropicFactory();
+   MapSourceFactory();
+   PeriodicSourceFactory();
+   PulsarFactory();
+   SimpleTransientFactory();
+   TransientTemplateFactory();
 }

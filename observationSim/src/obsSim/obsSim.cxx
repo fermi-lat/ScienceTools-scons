@@ -33,11 +33,8 @@
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
 
-// #include "flux/SpectrumFactory.h"
-// #include "GRB/GRBmanager.h"
-// static SpectrumFactory<GRBmanager> my_factory;
-
 ISpectrumFactory & GaussianSourceFactory();
+ISpectrumFactory & GRBmanagerFactory();
 ISpectrumFactory & IsotropicFactory();
 ISpectrumFactory & MapSourceFactory();
 ISpectrumFactory & PeriodicSourceFactory();
@@ -55,6 +52,7 @@ public:
       m_pars.Save();
       m_count = m_pars["Number_of_events"];
       GaussianSourceFactory();
+      GRBmanagerFactory();
       IsotropicFactory();
       MapSourceFactory();
       PeriodicSourceFactory();
