@@ -11,19 +11,10 @@
 
 #include "optimizers/Optimizer.h"
 #include "optimizers/Function.h"
+#include "optimizers/f2c_types.h"
 #include <string>
 
 namespace optimizers {
-  
-  // These typedefs are copied from f2c.h.  It is problematic to 
-  //include f2c.h in C++ code.  It has some macros which can have
-  // strange effects.
-
-  //! f2c implementation of the fortran LOGICAL type
-  typedef long int logical; 
-
-  //! type used by f2c to pass length of fortran string
-  typedef long ftnlen;
   
   /** 
    * @class Lbfgs

@@ -10,16 +10,7 @@
 
 #include "optimizers/Optimizer.h"
 #include "optimizers/Function.h"
-
-// These typedefs are copied from f2c.h.  Including f2c.h in 
-// C++ code is problematic.  Some of its macros have weird
-// side effects.  
-
-//! f2c implementation of the Fortran LOGICAL type
-typedef long int logical; 
-//! The type used by f2c and g77 for passing the length 
-//! of Fortran CHARACTER variables as an extra parameter
-typedef long ftnlen;
+#include "optimizers/f2c_types.h"
 
 namespace optimizers {
 

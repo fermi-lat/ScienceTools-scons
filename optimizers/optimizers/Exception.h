@@ -8,7 +8,7 @@
 
 #ifndef optimizers_EXCEPTION_H
 #define optimizers_EXCEPTION_H
-#include <exception>
+//#include <exception>
 #include <string>
 
 namespace optimizers {
@@ -22,7 +22,8 @@ namespace optimizers {
  * $Header$
  */
 
-  class Exception: public std::exception {
+//  class Exception: public std::exception {
+  class Exception {
   public:
     Exception() {}
     Exception(std::string errorString, int code=0) : 
@@ -36,4 +37,4 @@ namespace optimizers {
     int m_code;
   };
 }
-#endif //LIKELIHOOD_EXCEPTION_H
+#endif //optimizers_EXCEPTION_H
