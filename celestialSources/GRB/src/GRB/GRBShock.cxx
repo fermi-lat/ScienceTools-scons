@@ -15,7 +15,7 @@ GRBShock::GRBShock(GRBShell Sh1, GRBShell Sh2, double time)
   Sh1.setRadius(Sh2.getRadius());
   m_radius    = Sh1.getRadius();
   m_tobs      = time - m_radius/cst::c;
-
+  cout<<"radius = "<<m_radius<<endl;
   //Kinematics:
   double m1 = Sh1.getMass();
   double m2 = Sh2.getMass();
@@ -299,6 +299,7 @@ void GRBShock::Write()
   cout<< "  Esyn. min " << Esyn(m_gemin) << " Esyn.max " << Esyn(m_gemax) << " Esyn. Cooling " << Esyn(m_gecoo) << endl;
   cout<< "  E IC min " << Eic(m_gemin) << " EIC max " << Eic(m_gemax) << " EIC Cooling " << Eic(m_gecoo) << endl;
   cout<< "  Vol Com = "<< m_VolCom <<" num ele "<<m_npart<< " n el = "<< m_npart/m_VolCom << endl;
+  cout<<" Gamma fin. "<<m_gf<<endl;
   cout<<" ******* " <<m_radius<< "** T obs = "<<m_tobs<<endl; 
   cout<<m_riset<<endl;
 }

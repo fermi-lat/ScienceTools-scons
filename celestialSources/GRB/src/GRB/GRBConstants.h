@@ -44,7 +44,6 @@ namespace cst
   //! Minimal Temporal separation between 2 photons
   const double DeadTime  = 1.0e-5; //sec
   const double enmin     = 1.0e+3;
-  const double dt1       = 10000.;
   const int nstep        = 200;
   const int enstep       = 100;
   //! flag =[0,1], if ==0, No inverse compton;
@@ -54,7 +53,7 @@ namespace cst
   //! 'Short' or 'Long' to select the kind of burst will be generated.
   //!  Everything else to select short or long burst whith different prop=bability.
   const bool savef=false;
-  const std::string paramFile="GRBdata.txt";
+  const std::string paramFile= "GRBdata.txt";
 }
 
 class GRBConstants 
@@ -116,16 +115,20 @@ class GRBConstants
   inline void setT0(double value);
   
   //! Minimum Lorentz factor of the shells
-  inline double Gamma0(){return g0;}
+  //  inline double Gamma0(){return g0;}
+  inline double GammaMin(){return g0;}
 
   //! Set the minimum Lorentz factor of the shells
-  void setGamma0(double value=100.0);
+  void setGammaMin(double value=100.0);
   
-  //! Delta Lorentz of the shells
-  inline double DGamma(){return g1;}
+  //! Maximum Lorentz of the shells
+  inline double GammaMax(){return g1;}
 
-  //! Set the maximum delta Lorenz of the shells
-  void setDGamma(double value=100.0);
+  //! Set the maximum Lorenz of the shells
+  void setGammaMax(double value=1000.0);
+  
+  inline std::string GetParamFile() {return  m_paramFile;}
+  
   
  private:
   char* burst_type;
@@ -136,6 +139,7 @@ class GRBConstants
   double t0;
   double g0,g1;
   std::string m_paramFile;
+ 
 };
 
 #endif

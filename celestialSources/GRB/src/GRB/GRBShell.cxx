@@ -33,4 +33,6 @@ double GRBShell::beta(const double gamma)
 void GRBShell::evolve(double time) 
 {
   m_radius += beta(m_gamma)*cst::c*time;
+  // Expanding sells...
+  //  m_thickness=m_radius/pow(m_gamma,2)>m_thickness?m_radius/pow(m_gamma,2):m_thickness;
 }

@@ -50,11 +50,11 @@ GRBSim::~GRBSim()
 /*------------------------------------------------------*/
 
 
-double GRBSim::generateGamma(double gamma0,double dgamma) 
+double GRBSim::generateGamma(double gammaMin,double gammaMax) 
 {
   HepRandom::setTheEngine(new RanluxEngine);
-  double gamma = gamma0 + (double (RandFlat::shoot(1.0)))*dgamma;
-  return gamma;
+  double dgamma = gammaMax - gammaMin;
+  return (gammaMin + (double (RandFlat::shoot(1.0)))*dgamma);
 }
 
 void GRBSim::Start() 
@@ -74,84 +74,99 @@ void GRBSim::Start()
 	  exit(1);
 	}  
       
-      /*
-	imax=myParam->Nshell();
-	for (i=0;i<=imax;i++)
-	{
-	RandFlat::shoot(1.0);
-	}
-      */
-      //! Step 1: Creation of the shells
+      // Step 1: Creation of the shells
       double ei = myParam->Etot()/myParam->Nshell(); //erg
+      
       int i;
-      for(i=myParam->Nshell();i>0;i--) {
-	
-	double gi = generateGamma(myParam->Gamma0(),myParam->DGamma()); 
-	double m = ei/(gi*cst::c2); // Shell mass
-	double r = i*(myParam->R0())+myParam->T0(); //radius
-	GRBShell iShell(gi,m,myParam->T0(),r);
-	theShells.push_back(iShell);
-	
-	/*
-	cout <<" Shell n: "<<myParam->Nshell()-(i-1)
-	     <<" Gamma= "<<iShell.Gamma()
-	     <<" Initiaml Radius "<<iShell.Radius()
-	     <<" Initial Thickness= " <<iShell.Thickness()<< endl;
-	*/
-      }
       
-      double tmax = dt1*nstep;
-      /*
-	double g1=myParam->Gamma0()+myParam->DGamma();
-	double v1=c*sqrt(1. - 1./(g1*g1));
-	double v2=c*sqrt(1. - 1./((g1)*(g1+1.)));
-	double tmax=(myParam->Nshell()*(myParam->R0()+myParam->T0())/(v2-v1));
-	double dt1=tmax/nstep;
-      */
+      double time=0.0;
+      // Gap of time between the emission of shells (at the engine)
+      double time_em=(myParam->R0()+myParam->T0())/cst::c;
       
-      double time = 0.0;
-      //! Step 2: Calculation of the evolution
-      while(time<tmax)
+      double ttee=0.0;
+      double gmax2= pow(myParam->GammaMax(),2);
+      double gmin2= pow(myParam->GammaMin(),2);
+      double tmax = myParam->Nshell()*2.0*time_em*(gmax2*gmax2/(gmax2-gmin2));
+      double ddt= time_em/10.0;
+      int shell_created=0;
+      while (time<tmax && nshock<myParam->Nshell()-1)
 	{
-	  for(i=1;i<=myParam->Nshell()-nshock;i++)
+	  if(shell_created<myParam->Nshell())
 	    {
-	      theShells[i].evolve(dt1);      
-	    }
-	  for(i=2;i<=myParam->Nshell()-nshock;i++) 
-	    { 
-	      GRBShell Sh1 = theShells[i-1];
-	      GRBShell Sh2 = theShells[i];
-
-	      if(Sh1.getRadius()
-		 <= (Sh2.getRadius()+Sh2.getThickness())) 
+	      if (ttee==0)
 		{
-		  GRBShock iShock(Sh1, Sh2, time);
-		  theShocks.push_back(iShock);	
-		  theShells.erase(&theShells[i]);
-		  nshock++;
+		  double gi = generateGamma(myParam->GammaMin(),myParam->GammaMax()); 
+		  
+		  if(myParam->Nshell()==2 && shell_created==1) 
+		    {
+		      while(gi<=theShells[0].getGamma()) 
+			{
+			  gi = generateGamma(myParam->GammaMin(),myParam->GammaMax()); 
+			}
+		    }
+		  
+		  double m = ei/(gi*cst::c2); // Shell mass
+		  
+		  GRBShell iShell(gi,m,myParam->T0(),0.0);
+		  theShells.push_back(iShell);
+		  shell_created++;
+		  
+		  cout<<"Shell created ="<<shell_created<<" Shell size ="<<theShells.size()<<endl;
 		}
 	    }
-	  time+=dt1;
+	  else
+	    {
+	      ddt=tmax/1000.0 ;
+	    }
+	  
+	  std::vector<GRBShell>::iterator itr;
+	  for(itr=theShells.begin();itr != theShells.end();++itr)
+	    {
+	      (*itr).evolve(ddt);
+	    }
+	  
+	  if(theShells.size()>1)
+	    {
+	      for(i=1;i<theShells.size();i++)
+		{ 
+		  GRBShell Sh1 = theShells[i-1];
+		  GRBShell Sh2 = theShells[i];
+		  
+		  if(Sh1.getRadius()
+		     <= (Sh2.getRadius()+Sh2.getThickness())) 
+		    {
+		      GRBShock iShock(Sh1, Sh2, time);
+		      theShocks.push_back(iShock);	
+		      theShells.erase(&theShells[i]);
+		      nshock++;
+		      //iShock.Write();
+		    }
+		}
+	    }
+	  time+=ddt;
+	  ttee+=ddt;
+	  if(ttee>=time_em) ttee=0.0;
 	}
     }
+  
   // All is ok
-      double temp1=(enmax/enmin);
-      double temp2=(1.0/enstep);
-      double denergy = pow(temp1,temp2);
-      int en;
-      for(en=0;en<=enstep;en++)
-	{
-	  m_energy.push_back(enmin*pow(denergy,en)); 
-	}
-      for(en=0;en<enstep;en++)
-	{
-	  m_de.push_back(m_energy[en+1]-m_energy[en]);
-	}
-      
-      
+  double temp1=(enmax/enmin);
+  double temp2=(1.0/enstep);
+  double denergy = pow(temp1,temp2);
+  int en;
+  for(en=0;en<=enstep;en++)
+    {
+      m_energy.push_back(enmin*pow(denergy,en)); 
+    }
+  for(en=0;en<enstep;en++)
+    {
+      m_de.push_back(m_energy[en+1]-m_energy[en]);
+    }
+  
+  
   myParam->Print();
   myParam->Save(cst::savef);
-
+  
   m_grbdir=std::make_pair(((RandFlat::shoot(1.0))*1.4)
 			  -0.4,(RandFlat::shoot(1.0))*2*M_PI);
   
@@ -163,12 +178,10 @@ void GRBSim::Start()
   
   cout<<"Dist  of the source = "<<Dist<<endl;
   cout<< "Number of Shocks = " <<theShocks.size()<< endl;
-  
-  
   /*------------------------------------------------------*/
   /// Step 3: Sorting the shocks and setting t min=0
   std::sort(theShocks.begin(), theShocks.end(), ShockCmp());
-
+  
   double t0 = (theShocks.front()).tobs();
   std::vector<GRBShock>::iterator itr;
   for(itr=theShocks.begin();itr != theShocks.end();++itr)
@@ -182,7 +195,8 @@ void GRBSim::Start()
   GRBShock last = theShocks.back();
 
   //Now compute the Flux sum produced in each Shock
-  m_tmax=1.2*last.tobs()+0.1;
+  m_tmax=1.2*(last.tobs()+last.duration());
+  //if (m_tmax>1000.0) m_tmax=1000.0;
   if (m_tmax<2.)
     {cout<<"The burst is Short "<<endl;}
   else
@@ -192,7 +206,6 @@ void GRBSim::Start()
     {
       (*itr).FluxSum(m_de,m_energy,dt,false);
     }
-
   m_DeadTime=1e-4;
 }
 
@@ -219,7 +232,6 @@ void GRBSim::ComputeFlux2(double time)
   double ti=0.0;
   int i=0;
   if (time<=0) time=m_DeadTime;
-  if (time>=m_tmax) exit(1);//time=m_tmax-m_DeadTime;
   while (ti<time) 
     {
       ti+=m_DeadTime;
@@ -235,11 +247,6 @@ void GRBSim::ComputeFlux(double time)
   double temp;
   m_spectrum.clear();
   m_spectrum.resize(enstep,0.);
-  //    for (int en=0;en<enstep;en++)
-  //{
-  // m_spectrum.push_back(0.0);
-  //}
-  
   // ATTENZIONE!!
   if (time<=0.0) 
     {

@@ -44,6 +44,8 @@ class GRBShock
   //  inline double time() {return m_time;}
   //! This is the time seen by GLAST
   inline double tobs() const {return m_tobs;}
+  //! Return the approximative duration of the shock
+  inline double duration() const {return m_riset;}
   //! Radius of the resulting Shell 
   inline double Radius() const {return m_radius;}
   /*! \brief Internal energy. 
@@ -184,7 +186,7 @@ class GRBShock
   double m_gemax;
   double m_gecoo;
   
-  double m_tsyn;
+  // double m_tsyn;
   double m_riset;
   double m_sum;
   

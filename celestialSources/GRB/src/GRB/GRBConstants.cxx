@@ -34,7 +34,7 @@ void GRBConstants::InitializeRandom()
 
 void GRBConstants::ReadParam(){  // It determines if, in case of random selection of the parameters,
   // the burst is long or short...
-  //burst_type="Short";
+  //  burst_type="Short";
   // burst_type="Long";
   burst_type="both";
   //    cst::kind_of_burst;
@@ -78,11 +78,12 @@ void GRBConstants::ReadParam(){  // It determines if, in case of random selectio
   
   f1.getline(buf,100);
   sscanf(buf,"%lf",&g0);
-  setGamma0(g0);
+  setGammaMin(g0);
   
   f1.getline(buf,100);
   sscanf(buf,"%lf",&g1);
-  setDGamma(g1);
+  if(g1<=g0) g1=0;
+  setGammaMax(g1);
   
   f1.close();
   //  if (cst::savef) Save();
@@ -113,8 +114,8 @@ void GRBConstants::Print()
   cout<<" Total Energy at the Source     = "<<Etot()<<endl;
   cout<<" Initial separation (cm)        = "<<R0()<<endl;
   cout<<" Initial thickness  (cm)        = "<<T0()<<endl;
-  cout<<" Minimum Lorentz factor         = "<<Gamma0()<<endl;
-  cout<<" Maximum Lorentz factor         = "<<DGamma()<<endl;
+  cout<<" Minimum Lorentz factor         = "<<GammaMin()<<endl;
+  cout<<" Maximum Lorentz factor         = "<<GammaMax()<<endl;
   cout<<"*******************************************"<<endl;
 }
 
@@ -137,8 +138,8 @@ void GRBConstants::Save(bool flag)
       f2<<Etot()<<endl;
       f2<<R0()<<endl;
       f2<<T0()<<endl;
-      f2<<Gamma0()<<endl;
-      f2<<DGamma()<<endl;
+      f2<<GammaMin()<<endl;
+      f2<<GammaMax()<<endl;
       f2.close();
     }
 }
@@ -147,10 +148,10 @@ void GRBConstants::setNshell(int value){
   if (value == 0)
     {
       nshell=0;
-      while(nshell<=6)
+      while(nshell<2)
 	{
-	  if (burst_type=="Short"){nshell=int(SelectGaussRandom(6,11));}
-	  else {nshell=int(SelectGaussRandom(30,80));}
+	  if (burst_type=="Short"){nshell=int(SelectGaussRandom(2,10));}
+	  else {nshell=int(SelectGaussRandom(75,125));}
 	}
     }
   else
@@ -183,13 +184,13 @@ void GRBConstants::setR0(double value){
     {
       if(burst_type=="Short")
 	{
-	  double temp=SelectGaussRandom(8,9);
-	  r0=pow(temp,10);
+	  double temp=SelectGaussRandom(9.,10.);
+	  r0=pow(10,temp);
 	}
       else
 	{
-	  double temp=SelectGaussRandom(10,10.5);
-	  r0=pow(temp,10);
+	  double temp=SelectGaussRandom(9.6,10.);
+	  r0=pow(10,temp);
 	}
     }
   else
@@ -204,12 +205,12 @@ void GRBConstants::setT0(double value){
       if(burst_type=="Short")
 	{
 	  double temp=SelectGaussRandom(8,9);
-	  t0=pow(temp,10);
+	  t0=pow(10,temp);
 	}
       else
 	{
-	  double temp=SelectGaussRandom(10,10.5);
-	  t0=pow(temp,10);
+	  double temp=SelectGaussRandom(9.6,10);
+	  t0=pow(10,temp);
 	}
     }
   else
@@ -218,7 +219,7 @@ void GRBConstants::setT0(double value){
     }  
 }
 
-void GRBConstants::setGamma0(double value){
+void GRBConstants::setGammaMin(double value){
   if (value==0)
     {
       if(burst_type=="Short")
@@ -238,6 +239,6 @@ void GRBConstants::setGamma0(double value){
 
 
 
-void GRBConstants::setDGamma(double value){
-  value==0 ? g1=SelectGaussRandom(g0,100*g0):g1=value;
+void GRBConstants::setGammaMax(double value){
+  value==0 ? g1=SelectGaussRandom(10*g0,100*g0):g1=value;
 }
