@@ -27,10 +27,7 @@ namespace table {
       /** \brief Create a HeaderData object which refers to the given utility object.
           \param implementor Pointer to the object which does the real work.
       */
-      HeaderData(Implementor & implementor): m_implementor(implementor) {
-//        if (!m_implementor) throw TableException("HeaderData::HeaderData(Implementor *): "
-//          "Cannot create HeaderData with NULL Implementor pointer");
-      }
+      HeaderData(Implementor & implementor): m_implementor(implementor) {}
 
       virtual ~HeaderData() {}
 
@@ -39,11 +36,9 @@ namespace table {
           \param value The output value of the keyword, converted to the given type.
       */
       virtual void getKeyword(const std::string & name, double & value) const
-//        { m_implementor->getKeywordGeneric(name, value); }
         { m_implementor.getKeywordGeneric(name, value); }
 
       virtual void getKeyword(const std::string & name, std::string & value) const
-//        { m_implementor->getKeywordGeneric(name, value); }
         { m_implementor.getKeywordGeneric(name, value); }
 
     private:
