@@ -12,9 +12,10 @@
 
 using namespace astro;
 
-SkyStat::SkyStat(const astro::SkyFunction & sf, const int level, const astro::HTM * h):
-                        m_sf(sf), m_level(level), m_h(h), 
-                        m_ave(0), m_rms(0), m_min(0), m_max(0), m_rejected(0)
+SkyStat::SkyStat(const astro::SkyFunction & sf, const int level, const astro::HTM * h)
+: m_h(h)
+, m_sf(sf), m_level(level)
+, m_ave(0), m_rms(0), m_min(0), m_max(0), m_rejected(0)
 {    
     if (h != 0)
         m_HTM_Created = false;
