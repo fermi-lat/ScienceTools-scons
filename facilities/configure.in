@@ -1,0 +1,33 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_REVISION($Revision$)
+
+AC_INIT(src/Clock.cxx)
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE(facilities, 1.0)
+
+dnl Checks for programs.
+AC_PROG_CXX
+
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+dnl Check for location of installed GLAST libraries
+AC_ARG_WITH(glast, --with-glast=DIR (path to GLAST libraries),
+	glast_prefix=$withval, glast_prefix="/usr/local/glast")
+AC_SUBST(glast_prefix)
+AC_MSG_RESULT( GLAST installation found at: $glast_prefix)
+
+dnl Check that it is really there
+AC_CHECK_PROG(MERIT, merit, merit, no, $glast_prefix/bin)
+if test "$MERIT" = no; then
+   AC_MSG_ERROR(GLAST installation not found in $glast_prefx)
+fi
+
+AC_OUTPUT(Makefile facilities/Makefile src/Makefile)
+
+
+AC_MSG_RESULT([]
+	facilities package now configured.
+])
+
