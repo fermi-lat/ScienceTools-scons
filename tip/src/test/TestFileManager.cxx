@@ -145,7 +145,7 @@ namespace tip {
       Table * table = dynamic_cast<Table *>(ext);
       if (0 == table) ReportUnexpected(msg + ": extension is not a table");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
     }
 
     delete ext;
@@ -167,7 +167,7 @@ namespace tip {
       const Table * table = dynamic_cast<const Table *>(ext);
       if (0 == table) ReportUnexpected(msg + ": extension is not a table");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
     }
 
     delete ext;
@@ -186,7 +186,7 @@ namespace tip {
       table = IFileSvc::instance().readTable(data_dir + "a1.pha", "SPECTRUM", "#row > 50 && #row <= 100");
       ReportExpected(msg + " succeeded");
     } catch(const TipException & x) {
-      ReportUnexpected(msg + " failed");
+      ReportUnexpected(msg + " failed", x);
     }
 
     // Basic sanity check only: is the number of records 50, as the filter should have selected?
@@ -199,7 +199,7 @@ namespace tip {
         if (50 == num_rec) ReportExpected(msg + ", as expected");
         else ReportUnexpected(msg + ", not 50, as expected");
       } catch(const TipException & x) {
-        ReportUnexpected("TestFileManager::readTableTest: getNumRecords failed");
+        ReportUnexpected("TestFileManager::readTableTest: getNumRecords failed", x);
       }
     }
 

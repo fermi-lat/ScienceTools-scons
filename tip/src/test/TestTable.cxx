@@ -247,7 +247,7 @@ namespace tip {
       Index_t num_records = -1;
       try {
         num_records = table->getNumRecords();
-      } catch (const TipException & x) {
+      } catch (const TipException &) {
         // Don't report this exception: not testing getNumRecords here.
       }
 
@@ -297,7 +297,7 @@ namespace tip {
         Index_t tmp_num = field_values.size();
         table->setNumRecords(tmp_num);
         num_records = tmp_num;
-      } catch (const TipException & x) {
+      } catch (const TipException &) {
         // Don't report this exception: not testing setNumRecords here.
       }
 

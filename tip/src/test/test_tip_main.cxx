@@ -170,7 +170,7 @@ int main() {
           r["energy"].get(energy);
           std::cerr << "Getting a non-existent column didn't throw." << std::endl;
           status = 1;
-        } catch(const TipException & x) {
+        } catch(const TipException &) {
           // This should have thrown.
         }
 
