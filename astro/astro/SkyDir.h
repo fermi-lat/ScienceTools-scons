@@ -39,7 +39,7 @@ namespace astro {
         const Hep3Vector& dir () const {return m_dir;}
         
         //!to return the opening angle (in radians) between two objects:
-        double SkyDir::difference(const SkyDir& other)const;
+        double difference(const SkyDir& other)const;
 
         //hammer-aitoff equal-area projection.
         std::pair<double,double> hammerAitoff()const;
