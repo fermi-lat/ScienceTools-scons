@@ -14,7 +14,7 @@
 
 namespace table {
 
-  class IHeaderData;
+  class IExtensionData;
 
   /** \class Extension
 
@@ -23,11 +23,11 @@ namespace table {
   class Extension {
     public:
 
-      Extension(IHeaderData * header_data): m_header(header_data) {}
+      Extension(IExtensionData * header_data): m_header(header_data) {}
 
       virtual ~Extension() {}
 
-      Header getHeader() { return m_header; }
+      Header & getHeader() { return m_header; }
 
     private:
       Header m_header;
