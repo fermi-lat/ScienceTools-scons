@@ -36,6 +36,10 @@ obsSimProgram = os.path.join(os.environ['OBSERVATIONSIMROOT'],
 dataSubselectorProgram = os.path.join(os.environ['DATASUBSELECTORROOT'],
                                       os.environ['BINDIR'],
                                       'dataSubselector.exe')
+evtbin = os.path.join(os.environ['EVTBINROOT'], os.environ['BINDIR'],
+                      'evtbin.exe')
+rspgen = os.path.join(os.environ['RSPGENROOT'], os.environ['BINDIR'],
+                      'rspgen.exe')
 
 class RootWindow(Tkinter.Tk):
     def __init__(self, executable=likeProgram, debug=0):
@@ -123,7 +127,7 @@ class FileMenu(Tkinter.Menu):
         self.grandparent = grandparent
         Tkinter.Menu.__init__(self, tearoff=0, postcommand=self.stat)
         self.add_command(label='Execute a Python command...',
-                         command=self.sendPythonCommand, underline=0) 
+                         command=self.sendPythonCommand, underline=10) 
         self.add_separator()
         self.add_command(label='cd...', command=self.cd, underline=0)
         self.add_command(label="Edit file...", command=self.editFile,
@@ -223,17 +227,20 @@ class AppsMenu(Tkinter.Menu):
         Tkinter.Menu.__init__(self, tearoff=0)
         self.add_command(label="makeExposureCube",
                          command=self.expCube, underline=0)
-        self.add_command(label="expMap", command=self.expMap, underline=0)
+        self.add_command(label="expMap", command=self.expMap, underline=1)
         self.add_command(label="TsMap", command=self.TsMap, underline=0)
         self.add_command(label="diffuseResponses",
                          command=self.diffuseResponses,
-                         underline=0)
+                         underline=7)
         self.add_separator()
         self.add_command(label="obsSim", command=self.obsSim, underline=3)
         self.add_separator()
         self.add_command(label="dataSubselector",
                          command=self.dataSubselector,
                          underline=0)
+        self.add_separator()
+        self.add_command(label="evtbin", command=self.evtbin, underline=3)
+        self.add_command(label="rspgen", command=self.rspgen, underline=0)
         self.add_separator()
         self.add_command(label="ds9 (image)", command=self.ds9, underline=5)
         self.add_command(label="ds9 (events)", command=lambda:self.ds9(1),
@@ -291,6 +298,22 @@ class AppsMenu(Tkinter.Menu):
                                         debug=self.debug)
         except IOError:
             self.grandparent.writeText('dataSubselector.par not found.\n')
+            return
+        self.grandparent.addThread(myThread)
+    def evtbin(self):
+        try:
+            myThread = likelihoodClient(self.grandparent, evtbin, 'evtbin.par',
+                                        debug=self.debug)
+        except IOError:
+            self.grandparent.writeText('evtbin.par not found.\n')
+            return
+        self.grandparent.addThread(myThread)
+    def rspgen(self):
+        try:
+            myThread = likelihoodClient(self.grandparent, rspgen, 'rspgen.par',
+                                        debug=self.debug)
+        except IOError:
+            self.grandparent.writeText('rspgen.par not found.\n')
             return
         self.grandparent.addThread(myThread)
     def ds9(self, events=0):
