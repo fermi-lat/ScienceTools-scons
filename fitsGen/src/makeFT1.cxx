@@ -235,6 +235,8 @@ int main(int iargc, char * argv[]) {
    std::copy( meritTuple("IMgammaProb").begin(),
               meritTuple("IMgammaProb").end(),
               floatVector.begin() );
+
+   // ignore IMgammaProb at this point  12/6/2003 RD.
    data->setGammaProb( floatVector );
 
 // // GltLayer (no doubt the same as ConvLayer)
@@ -307,6 +309,14 @@ int main(int iargc, char * argv[]) {
    std::vector<double> imgammaprob     = meritTuple("IMgammaProb");
    std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
 
+   std::vector<double> acdtotalenergy = meritTuple("AcdTotalEnergy");
+   std::vector<double> acdribbonactdist = meritTuple("AcdRibbonActDist");
+
+   std::vector<double> tkr1totfirst = meritTuple("Tkr1ToTFirst");
+   std::vector<double> tkr1totave = meritTuple("Tkr1ToTAve");
+
+   std::vector<double> filterstatus_hi = meritTuple("FilterStatus_HI");
+
    std::vector<double> evtenergysumopt = meritTuple("EvtEnergySumOpt");
    std::vector<double> evttkrecomptonratio = meritTuple("EvtTkrEComptonRatio");
    std::vector<double> vtxangle       = meritTuple("VtxAngle");
@@ -335,26 +345,47 @@ int main(int iargc, char * argv[]) {
      if(background_cut){
        if(vtxangle[i]>0.0)
 	 {
-	   if( (evtenergysumopt[i]>350.0) && (evttkrecomptonratio[i]>0.6) && (calmipdiff[i]>60.0) && (imgammaprob[i]>0.5))
+	   if( evtenergysumopt[i]>3500.0)
 	     {
 	       veto=0.0;
 	     }
-	   if((evtenergysumopt[i]<=350.0) && (acdtilecount[i]==0.0) && (calmipdiff[i]>-125.0) && (evttkrecomptonratio[i]>0.8) && (imgammaprob[i]>0.9) )
+	   if( evtenergysumopt[i]>350.0 && evtenergysumopt[i]<3500.0)
 	     {
 	       veto=0.0;
 	     }
+ 	   if(evtenergysumopt[i]<=350.0) 
+	      if(tkr1totfirst[i]>4.5||tkr1totave[i]>3.5||
+		 acdtotalenergy[i]>0.25||vtxangle[i]>0.4)
+		{
+		  veto=1.0;
+		}
+	      else {
+		veto = 0.0;
+	      }
 	 }
        else
 	 {
+	   if( evtenergysumopt[i]>3500.0)
+	     {
+	       veto=0.0;
+	     }
+
+ 	   if( evtenergysumopt[i]>350.0 && evtenergysumopt[i]<=3500.0)
+	       if (tkr1totave[i]>3.0||acdtotalenergy[i]>5.0||
+		   evttkrecomptonratio[i]<1.0) {
+		 veto = 1.0;
+	       }
+	       else veto=0.0;
+		
+	   if(evtenergysumopt[i]<=350.0) 
+	     if (tkr1totave[i]>3.0 || acdtilecount[i]>0.0 || 
+		 acdribbonactdist[i]>-300.0 ||
+		 evttkrecomptonratio[i]<1.05 || filterstatus_hi[i]>3.0) 
+	     {  
+	       veto=1.0;
+	     }
+	   else veto = 0.0; 
 	   
-	   if( (evtenergysumopt[i]>450.0) && (evttkrecomptonratio[i]>0.7) && (calmipdiff[i]>80.0) && (callrmsratio[i]<20.0) && (imgammaprob[i]>0.5) )
-	     {
-	       veto=0.0;
-	     }
-	   if( (evtenergysumopt[i]<=450.0) && (acdtilecount[i]==0.0) && (evttkrecomptonratio[i]>1.0) && (callrmsratio[i]>5.0) && thin_cut && (imgammaprob[i]>0.9) )
-	     {
-	       veto=0.0;
-	     }
 	 }
      }
      if(!veto)           (calibVersion[i])[0] = 1.;
