@@ -3,18 +3,9 @@
  * 
  * This executable uses ROOT to display several histograms at run time.
  * To use it, type on the prompt ./GRBTest.exe
- * After some output, an empty canvas named \b c1 will appear, 
- * and the program hangs at the line:
- * "Type a time (in sec) or 0 for the complete evolution"
- * \arg A time \c t entered will provoke the computation of the flux at \c t
- * seconds after initiation of the burst in the GLAST referential frame.
- * Then, the canvas \c1 will show on top the number of photons reaching the 
- * detector as a function of their energy (in log scale eV), and on bottom the
- * sampled photons from the preceding curve (note that the lowest energy for 
- * sampling is set to 10 Mev.)
- * \arg If 0 is typed, the complete simulation of GRB photon arrival to the 
- * detector is simulated. The canvas displays the continuous evolution of 
- * the spectrum. At the end, 4 new canvas pops up, showing several summary 
+ * After a period of initialization, a canvas pops up showing the 
+ * complete evolution of the burst in function of the time. 
+ * At the end, 4 new canvas pops up, showing several summary 
  * histograms.
  */
 #include <iterator>
@@ -64,25 +55,11 @@ double timex[TIMESIZE];
 double energyx[ENERGYSIZE];
 
 static const char * default_arg="GRBSpectrum";
-//int test1(int argc, char** argv);
-void test2();
-//void Generate();
-
-void help() {
-   std::cout << 
-      "   Simple test program for Transient Sources.\n"
-      "   Command line args are \n"
-      "      '-events <number of events to create>'\n"
-      "      '-time <time in seconds>'    for the maximum time\n"
-      "      '-list' lists the available spectra\n"
-      "      '-help' for this help"
-      << std::endl;
-}
+void test();
 
 int main()
 {
-  //  test1(argc,argv);
-  test2();
+  test();
   return 0;
 }
 
@@ -100,7 +77,7 @@ double CalculateFluence(double ee,double e1=cst::enmin*1e-9,double e2=cst::enmax
   return fluence;
 }
 
-void test2()
+void test()
 {
   int flag=1;
   std::vector<double> spectrum,energy,deltae;
@@ -118,86 +95,87 @@ void test2()
   deltae=_myGRB->DeltaE();
   
   TApplication theApp("App", 0, 0);
-  
-  float phenergy;
-  
-  TH1D *hh1 = new TH1D("hh1","hh1",cst::enstep,log10(cst::enmin),log10(cst::enmax));
-  TH1D *hh2 = new TH1D("hh2","hh2",cst::enstep,log10(cst::enmin),log10(cst::enmax));
-  
-  double ph;
-  double eextra;
-  double tim;
-  int temp;
-  double etot2;
-  temp=1;
-  
-  TCanvas *cc1 = new TCanvas();  
-  cc1->Divide(0,2);
-  cout<<"Type a time (in sec) or a 0 for the complete evolution:  "<<endl;
-  while(temp==1)
-    {
-      cin>>tim;
-      hh1->Reset();
-      hh2->Reset();
-      spectrum.clear();
-      
-      if (tim>0)
-	{
-	  etot2=0.0;
-	  _myGRB->ComputeFlux(tim);
-	  spectrum=_myGRB->Spectrum();
-	  
-	  for (int en=0;en<cst::enstep;en++)
-	    {
-	      if (energy[en]<cst::enph) 
-		{ 
-		  hh1->SetBinContent(en+1,1.0);
-		}
-	      else
-		{
-		  hh1->SetBinContent(en+1,spectrum[en]);
-		}
-	    }
-
-	  cout<<"Time  = "<< tim <<" Ftot  [eV/s/m^2]= "<<_myGRB->IFlux(cst::enph)<<endl;
-	  cout<<"                    Counts[ph/s/m^2]=" <<_myGRB->IRate(cst::enph)<<endl;
-	  cout<<"                    Energy[eV/m^2]=" <<_myGRB->IEnergy(cst::enph)<<endl;
-	  
-	  cc1->cd(1);
-	  hh1->Draw("AL");
-	  cc1->Update(); 
+  /* Test the Draw Photon From Spectrum... 
+     
+     float phenergy;
+     TH1D *hh1 = new TH1D("hh1","hh1",cst::enstep,log10(cst::enmin),log10(cst::enmax));
+     //TH1D *hh2 = new TH1D("hh2","hh2",cst::enstep,log10(cst::enmin),log10(cst::enmax));
+     
+     double ph;
+     double eextra;
+     double tim;
+     int temp;
+     temp=1;
+     
+     TCanvas *cc1 = new TCanvas();  
+     cc1->Divide(0,2);
+     cout<<"Type a time (in sec) or a 0 for the complete evolution:  "<<endl;
+     while(temp==1)
+     {
+     cin>>tim;
+     hh1->Reset();
+     hh2->Reset();
+     spectrum.clear();
+     
+     if (tim>0)
+     {
+     _myGRB->ComputeFlux(tim);
+     spectrum=_myGRB->Spectrum();
     
-	  cc1->cd(2);
-	  hh1->Draw("AL");
-	  cc1->Update();     
-	  //      hh1->Integral(e1);
-	  eextra=0.0;
-	  int j=0;
-	  while (eextra<_myGRB->IEnergy(cst::enph))
-	    {
-	      phenergy=_myGRB->DrawPhotonFromSpectrum(spectrum,RandFlat::shoot(1.0),cst::enph);
-	      ph=log10(phenergy*1e+9);
-	      hh2->Fill(ph);
-	      eextra+=phenergy*1.0e+9;
-	      j++;
-	    }
-	  
-	  cout<< "Number of photons extracted: "<<j<<" Energy extracted = "<<eextra<<endl<<endl;
-	  cc1->cd(2);
-	  hh2->Draw();
-	  cc1->Update();
-	} else 
-	  {
-	    tim=-1.0;
-	    temp=0;
-	  }
-    }
-  cc1->Clear();
-  cc1->Delete();
-  cout<<temp<<endl;
+     for (int en=0;en<cst::enstep;en++)
+     {
+     if (energy[en]<cst::enph) 
+     { 
+     hh1->SetBinContent(en+1,1.0);
+     }
+     else
+     {
+     hh1->SetBinContent(en+1,spectrum[en]);
+     }
+     }
+     
+     cout<<"Time  = "<< tim <<" Ftot  [eV/s/m^2]= "<<_myGRB->IFlux(cst::enph)<<endl;
+     cout<<"                    Counts[ph/s/m^2]=" <<_myGRB->IRate(cst::enph)<<endl;
+     cout<<"                    Energy[eV/m^2]=" <<_myGRB->IEnergy(cst::enph)<<endl;
+     
+     cc1->cd(1);
+     hh1->Draw("AL");
+     cc1->Update(); 
+     
+     cc1->cd(2);
+     hh1->Draw("AL");
+     cc1->Update();     
+     //      hh1->Integral(e1);
+     eextra=0.0;
+     int j=0;
+     while (eextra<_myGRB->IEnergy(cst::enph))
+     {
+     phenergy=_myGRB->DrawPhotonFromSpectrum(spectrum,RandFlat::shoot(1.0),cst::enph);
+     ph=log10(phenergy*1e+9);
+     hh2->Fill(ph);
+     eextra+=phenergy*1.0e+9;
+     j++;
+     }
+     
+     cout<< "Number of photons extracted: "<<j<<" Energy extracted = "<<eextra<<endl<<endl;
+     cc1->cd(2);
+     hh2->Draw();
+     cc1->Update();
+     } else 
+     {
+     tim=-1.0;
+     temp=0;
+     }
+     }
+     cc1->Clear();
+     cc1->Delete();
+     cout<<temp<<endl;
+  */
 
-  ////////////////  Compute the Total Flux ////////////////
-  //------------------------------------------------------//  
+  //------------------------------------------------------//
+  ////////////////  Compute the Total Flux /////////////////
+  //------------------------------------------------------//
+
   double ftottot=0.0;
   double ftot1=0.0;
   std::vector<double> m_time;
@@ -216,8 +194,8 @@ void test2()
       for (int en=0;en<cst::enstep;en++)
 	{
 	  m_flux[en][t]=0.0;
-	  cout<<energy[en]<<"  "<<deltae[en]
-	      <<"e/de"<<energy[en]/deltae[en]<<endl;
+	  //cout<<energy[en]<<"  "<<deltae[en]
+	  //    <<"e/de"<<energy[en]/deltae[en]<<endl;
 	}
     }
   for (int t=0;t<cst::nstep;t++)
@@ -478,9 +456,9 @@ h2->GetZaxis()->SetLabelSize(0.05);
   h2->GetZaxis()->SetTitleOffset(1.3);
   h2->Draw("surf");
   c5->Update();
-  ////////////////////////////////////////
+  ////////////////////////////////////////////
   delete _myGRB;
   theApp.Run();
-  cin>>tim;
+  //To kill the application press control C //
 }
 
