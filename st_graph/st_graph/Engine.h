@@ -58,10 +58,12 @@ namespace st_graph {
 
       /** \brief Create a top-level independent frame on the desktop. This frame's purpose is to hold other frames.
           \param receiver The receiver of GUI signals.
-          \param width The width of the plot window.
-          \param height The height of the plot window.
+          \param width The width of the window.
+          \param height The height of the window.
+          \param title The title to display on the window.
       */
-      virtual IFrame * createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height) = 0;
+      virtual IFrame * createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height,
+        const std::string & title = "") = 0;
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed. This must have been created by
@@ -100,6 +102,14 @@ namespace st_graph {
       */
       virtual IFrame * createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
         const std::string & text) = 0;
+
+      virtual IFrame * createLabel(IFrame * parent, IEventReceiver * receiver, const std::string & label) = 0;
+
+      virtual IFrame * createTextEntry(IFrame * parent, IEventReceiver * receiver, const std::string & content) = 0;
+
+      virtual IFrame * createComposite(IFrame * parent, IEventReceiver * receiver) = 0;
+
+      virtual IFrame * createGroupFrame(IFrame * parent, IEventReceiver * receiver, const std::string & label) = 0;
 
     protected:
       /// \brief Create an engine.
