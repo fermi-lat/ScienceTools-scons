@@ -50,6 +50,15 @@ namespace st_graph {
       */
       virtual void setState(const std::string & state) = 0;
 
+      /** \brief Set the tool tip text for the widget. Causes tool tips to appear/disappear automatically.
+                 Currently, this is only implemented for buttons!
+          \param text The text to display in the tool tip.
+      */
+      virtual void setToolTipText(const std::string & text) = 0;
+
+      /// \brief Resize the frame to its natural dimensions.
+      virtual void setNaturalSize() = 0;
+
       /// \brief Get the horizontal center of the frame.
       virtual long getHCenter() const = 0;
 

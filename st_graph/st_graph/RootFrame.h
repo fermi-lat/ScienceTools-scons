@@ -24,6 +24,8 @@ namespace st_graph {
       \brief Interface for base class frame for all graphical frames.
   */
   class RootFrame : public IFrame {
+      typedef std::list<RootFrame *> FrameCont;
+
       RQ_OBJECT("st_graph::RootFrame")
       ClassDef(RootFrame, 0)
 
@@ -81,6 +83,15 @@ namespace st_graph {
           \param state The new state of widget being set.
       */
       virtual void setState(const std::string & state);
+
+      /** \brief Set the tool tip text for the widget. Causes tool tips to appear/disappear automatically.
+                 Currently, this is only implemented for buttons!
+          \param text The text to display in the tool tip.
+      */
+      virtual void setToolTipText(const std::string & text);
+
+      /// \brief Resize the frame to its natural dimensions.
+      virtual void setNaturalSize();
 
       /// \brief Get the horizontal center of the frame.
       virtual long getHCenter() const;
@@ -157,9 +168,12 @@ namespace st_graph {
       /// \brief Get underlying Root frame. Not part of the API.
       virtual TGFrame * getTGFrame();
 
+      /// \brief Set underlying Root frame. Not part of the API.
+      virtual void setTGFrame(TGFrame * frame);
+
     protected:
       mutable std::string m_state;
-      std::list<RootFrame *> m_subframes;
+      FrameCont m_subframes;
       RootFrame * m_parent;
       TGFrame * m_frame;
       IEventReceiver * m_receiver;

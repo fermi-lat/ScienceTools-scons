@@ -8,6 +8,7 @@
 #include "TGButton.h"
 #include "TGFrame.h"
 #include "TGLayout.h"
+#include "TGTextEntry.h"
 
 #include "st_graph/IEventReceiver.h"
 #include "st_graph/RootFrame.h"
@@ -119,7 +120,7 @@ namespace st_graph {
   }
 
   const std::string & RootFrame::getState() const {
-    for(bool one_time_only = true; one_time_only ; one_time_only = false) {
+    for (bool one_time_only = true; one_time_only ; one_time_only = false) {
       m_state.clear();
       const TGButton * button = dynamic_cast<const TGButton *>(m_frame);
       if (0 != button) {
@@ -129,12 +130,17 @@ namespace st_graph {
         // else // TODO issue debug warning.
         continue;
       }
+      const TGTextEntry * text = dynamic_cast<const TGTextEntry *>(m_frame);
+      if (0 != text) {
+        m_state = text->GetText();
+        continue;
+      }
     }
     return m_state;
   }
 
   void RootFrame::setState(const std::string & state) {
-    for(bool one_time_only = true; one_time_only ; one_time_only = false) {
+    for (bool one_time_only = true; one_time_only ; one_time_only = false) {
       TGButton * button = dynamic_cast<TGButton *>(m_frame);
       if (0 != button) {
         if (state == "down") button->SetState(kButtonDown);
@@ -142,7 +148,22 @@ namespace st_graph {
         // else // TODO issue debug warning.
         continue;
       }
+      TGTextEntry * text = dynamic_cast<TGTextEntry *>(m_frame);
+      if (0 != text) {
+        text->SetText(state.c_str());
+        continue;
+      }
     }
+  }
+
+  void RootFrame::setToolTipText(const std::string & text) {
+    // TODO: generalize this to support tool tips for every type of widget.
+    TGButton * button = dynamic_cast<TGButton *>(m_frame);
+    if (0 != button) button->SetToolTipText(text.c_str());
+  }
+
+  void RootFrame::setNaturalSize() {
+    if (0 != m_frame) m_frame->SetSize(m_frame->GetDefaultSize());
   }
 
   /// \brief Get the horizontal center of the frame.
@@ -288,18 +309,20 @@ namespace st_graph {
   void RootFrame::setMinimumHeight(long height) { m_minimum_height = height > 0 ? height : 0; }
 
   void RootFrame::clicked() {
-    m_receiver->clicked(this);
+    if (0 != m_receiver) m_receiver->clicked(this);
   }
 
   void RootFrame::closeWindow() {
-    m_receiver->closeWindow(this);
+    if (0 != m_receiver) m_receiver->closeWindow(this);
   }
 
   void RootFrame::modified(const char * text) {
-    m_receiver->modified(this, text);
+    if (0 != m_receiver) m_receiver->modified(this, text);
   }
 
   TGFrame * RootFrame::getTGFrame() { return m_frame; }
+
+  void RootFrame::setTGFrame(TGFrame * frame) { m_frame = frame; }
 
   RootFrame::RootFrame(): m_subframes(), m_parent(0), m_frame(0), m_receiver(0) {}
 
