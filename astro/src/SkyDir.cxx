@@ -104,7 +104,7 @@ SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
 @param param2 projected equivalent dec or b, in degrees
 @param projection used to deproject these coordinates
 */
-SkyDir::SkyDir(double param1, double param2, SkyProj projection)
+SkyDir::SkyDir(double param1, double param2, const SkyProj& projection, bool galactic)
 {
    double ra_rad, dec_rad;
    std::pair<double,double> s;
@@ -115,7 +115,7 @@ SkyDir::SkyDir(double param1, double param2, SkyProj projection)
    dec_rad = s.second * M_PI/180.;
 
    Hep3Vector t = Hep3Vector( cos(ra_rad)*cos(dec_rad), sin(ra_rad)*cos(dec_rad) , sin(dec_rad) );        
-   if( !s_project_lb){
+   if( !galactic){
       m_dir = t;
    }else{
       m_dir = s_equatorialToGalactic.inverse()* t;
@@ -247,10 +247,10 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
 }
 
 
-// WCS based projection routine
-std::pair<double,double> SkyDir::project(SkyProj projection) const
+// wcslib based projection routine
+std::pair<double,double> SkyDir::project(const SkyProj& projection, bool galactic) const
 {
-   if(s_project_lb)
+   if(galactic)
       return projection.project(this->l(), this->b());
    else
       return projection.project(this->ra(),this->dec());

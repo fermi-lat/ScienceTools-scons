@@ -8,7 +8,10 @@
 #include "astro/SkyDir.h"
 #include "astro/PointingTransform.h"
 #include "astro/HTM.h"
+#include "astro/SkyProj.h"
 #include "CLHEP/Vector/ThreeVector.h"
+
+#include <stdexcept>
 
 bool testSkyDir(){
     using namespace astro;
@@ -45,9 +48,58 @@ bool testSkyDir(){
     //std::cout <<  "X =" << sd5.dir().x() << " , Y =" << sd5.dir().y() << " , Z =" << sd5.dir().z() << std::endl;
 
     std::cout << "galactic center corresponds to Ra = " << sd5.ra() << " , Dec = " << sd5.dec() << std::endl;
+
+
+
+
     return ok;
 }
+//------------------------------------------------------------
+//          test code for SkyProj
+//------------------------------------------------------------
+/** @brief test a single point, transforming from world to pixel and back
+*/
+double test_one(double lon, double lat, const astro::SkyProj& t){
+    using namespace astro;
+    SkyDir dir(lon, lat);
+    std::pair<double, double> pixel = dir.project(t );
+  //  std::cout <<  "(" << lon << ", " << lat << ") \t-> (" << pixel.first << ", " << pixel.second << ") \n";
+  std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
+    return SkyDir(pixel.first,pixel.second,t).difference(dir);
+}
 
+/** @brief test a single point, transforming from world to pixel and back
+*/
+bool testSkyProj(){
+    using namespace astro;
+
+    // simple test of SkyProj
+    //double crpix[]={180.5,90.5},  crval[]={0,0}, cdelt[]={-1,1}; // 1-degree CAR all sky
+    double crpix[]={1,1},  crval[]={-179.5,-89.5}, cdelt[]={1,1}; // 1-degree CAR all sky
+    std::string ctype("CAR");
+    SkyProj proj(ctype, crpix, crval, cdelt);
+    if( proj.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
+
+    // create another one to verify that it is possible to have more than one
+    /*
+    double zcrpix[]={180.5,90.5},  zcrval[]={0,0}, zcdelt[]={-1,1}; // 1-degree CAR all sky
+    SkyProj other("AIT", zcrpix, zcrval, zcdelt,0, true);
+    if( !other.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
+*/
+    double delta = 20;
+    for( double dec =-90+delta/2; dec<90 ; dec+= delta){
+        for( double ra = 0+delta/2; ra<360; ra+=delta){
+            double test = test_one(ra, dec, proj);
+            if( test > 1E-8){
+                std::cout << "error - SkyProj transformation failed to invert" << std::endl;
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+//---------------------------------------------------------------------
 void test_insideSAA() {
 
     int npts_inSAA = 19;
@@ -162,117 +214,126 @@ int main(){
 
     using namespace astro;
     using namespace std;
+    int rc = 0;
 
-    // test EarthCoordinate::insideSAA
+    try {
+        // test EarthCoordinate::insideSAA
 
-    test_insideSAA();
+        test_insideSAA();
 
-    if( !testSkyDir() )return 1;
+        if( !testSkyDir() )return 1;
 
-    if( !testHTM() ) return 1;
+        if( !testHTM() ) return 1;
 
-    JulianDate JD2000 = JulianDate(2000,1,1,12.); //2451545
+        if(! testSkyProj() ) return 1;
 
-    //   testJD();
+        JulianDate JD2000 = JulianDate(2000,1,1,12.); //2451545
 
-    double test=0;
+        //   testJD();
 
-    test += fabs(JD2000 -2451545);
+        double test=0;
 
-    double ra=30,dec=50;
-    SkyDir sd(ra, dec);
+        test += fabs(JD2000 -2451545);
 
-    double l=10.,b=-10.;
-    SkyDir sd3(l,b,SkyDir::GALACTIC);
+        double ra=30,dec=50;
+        SkyDir sd(ra, dec);
 
-    test += fabs(l-sd3.l()) + fabs(b - sd3.b());
-    test += fabs(ra-sd.ra()) +fabs(dec-sd.dec());
+        double l=10.,b=-10.;
+        SkyDir sd3(l,b,SkyDir::GALACTIC);
 
-    double lat=40, lon=45;
-    EarthOrbit abcd;
-    double juliandate = abcd.dateFromSeconds(0.0);
-    EarthCoordinate xyza(abcd.position(juliandate),juliandate);
-    std::cout << "latitude at t0 = " << xyza.latitude()
-        << " , longitude at t0 = " << xyza.longitude() << std::endl;
+        test += fabs(l-sd3.l()) + fabs(b - sd3.b());
+        test += fabs(ra-sd.ra()) +fabs(dec-sd.dec());
+
+        double lat=40, lon=45;
+        EarthOrbit abcd;
+        double juliandate = abcd.dateFromSeconds(0.0);
+        EarthCoordinate xyza(abcd.position(juliandate),juliandate);
+        std::cout << "latitude at t0 = " << xyza.latitude()
+            << " , longitude at t0 = " << xyza.longitude() << std::endl;
 
 
-    EarthCoordinate ec(lat, lon);
+        EarthCoordinate ec(lat, lon);
 
-    test += fabs(lat-ec.latitude()) + fabs(lon-ec.longitude());
+        test += fabs(lat-ec.latitude()) + fabs(lon-ec.longitude());
 
-    // test the SkyDir difference function
-    SkyDir sd2(ra+1,dec);
-    double 
-        diff = sd2.difference(sd);
-    test+= fabs( diff/cos(dec*M_PI/180) - M_PI/180. );
+        // test the SkyDir difference function
+        SkyDir sd2(ra+1,dec);
+        double 
+            diff = sd2.difference(sd);
+        test+= fabs( diff/cos(dec*M_PI/180) - M_PI/180. );
 
-    //now test the galactic transformation function:
-    SkyDir zenith(20,0,astro::SkyDir::GALACTIC);
-    SkyDir xdir(-70,0,astro::SkyDir::GALACTIC);
-    PointingTransform trans(zenith,xdir);
-    Hep3Vector vertical(0,0,1);
-    //double templ=trans.gDir(vertical).l();	
-    //double tempb=trans.gDir(vertical).b();
-    test += trans.gDir(vertical).l()-20.0;
-    test += trans.gDir(vertical).b();
+        //now test the galactic transformation function:
+        SkyDir zenith(20,0,astro::SkyDir::GALACTIC);
+        SkyDir xdir(-70,0,astro::SkyDir::GALACTIC);
+        PointingTransform trans(zenith,xdir);
+        Hep3Vector vertical(0,0,1);
+        //double templ=trans.gDir(vertical).l();	
+        //double tempb=trans.gDir(vertical).b();
+        test += trans.gDir(vertical).l()-20.0;
+        test += trans.gDir(vertical).b();
 
-    // test projection (use default)
+        // test projection (use default)
 
-    std::pair<double,double> proj= sd.project();
-    SkyDir sd4(proj.first, proj.second, astro::SkyDir::PROJECTION);
-    //THB double sd4_ra= sd4.ra(), sd4_dec=sd4.dec();
-    test += sd4.difference(sd);
+        std::pair<double,double> proj= sd.project();
+        SkyDir sd4(proj.first, proj.second, astro::SkyDir::PROJECTION);
+        //THB double sd4_ra= sd4.ra(), sd4_dec=sd4.dec();
+        test += sd4.difference(sd);
 
-    /*
-    const char prj_codes[26][4] =
-    {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
-    "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
-    "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
-    std::pair<double,double> newcoord;
-    double weps;
-    bool pass_low_lat, pass_mid_lat, pass_high_lat;
-    cout << "Projection/Deprojection Closure Test (0.5 degree or better = pass)" << endl;
-    cout << "Note: Some projections don't work at high latitudes and some projections" << endl;
-    cout << "      can only project one hemisphere."  << endl;
-    cout << "Projection   Pass High Lat    Pass Mid Lat    Pass Low Lat" << endl;
-    for(int currentcode = 0; currentcode < 26; currentcode++)
-    {
-       pass_low_lat = true;
-       pass_mid_lat = true;
-       pass_high_lat = true;
-       SkyProj Projection(prj_codes[currentcode]);
-       for(int lat = -90; lat <= 90; lat++) {
-          for(int lon = 0; lon <=360; lon++) {
-             newcoord = Projection.project(lon,lat);
-             newcoord = Projection.deproject(newcoord.first,newcoord.second);
-             weps = newcoord.first - lon + newcoord.second - lat;
-             if(weps > 0.5)
-             {
-                if(fabs((double) lat) > 60)
-                   pass_high_lat = false;
-                else if(fabs((double) lat) > 30)
-                   pass_mid_lat = false;
-                else
-                   pass_low_lat = false;
-             }
-          }
-       }
-       cout << prj_codes[currentcode] << "\t\t" << pass_high_lat << "\t\t" << pass_mid_lat << "\t\t" << pass_low_lat << endl;
+        /*
+        const char prj_codes[26][4] =
+        {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
+        "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
+        "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
+        std::pair<double,double> newcoord;
+        double weps;
+        bool pass_low_lat, pass_mid_lat, pass_high_lat;
+        cout << "Projection/Deprojection Closure Test (0.5 degree or better = pass)" << endl;
+        cout << "Note: Some projections don't work at high latitudes and some projections" << endl;
+        cout << "      can only project one hemisphere."  << endl;
+        cout << "Projection   Pass High Lat    Pass Mid Lat    Pass Low Lat" << endl;
+        for(int currentcode = 0; currentcode < 26; currentcode++)
+        {
+        pass_low_lat = true;
+        pass_mid_lat = true;
+        pass_high_lat = true;
+        SkyProj Projection(prj_codes[currentcode]);
+        for(int lat = -90; lat <= 90; lat++) {
+        for(int lon = 0; lon <=360; lon++) {
+        newcoord = Projection.project(lon,lat);
+        newcoord = Projection.deproject(newcoord.first,newcoord.second);
+        weps = newcoord.first - lon + newcoord.second - lat;
+        if(weps > 0.5)
+        {
+        if(fabs((double) lat) > 60)
+        pass_high_lat = false;
+        else if(fabs((double) lat) > 30)
+        pass_mid_lat = false;
+        else
+        pass_low_lat = false;
+        }
+        }
+        }
+        cout << prj_codes[currentcode] << "\t\t" << pass_high_lat << "\t\t" << pass_mid_lat << "\t\t" << pass_low_lat << endl;
+        }
+        */
+
+        if( fabs(test) < 1e-3 ) {
+            cout << "tests ok " << endl;
+            return 0;
+        } else {
+            cout << "failed a test" << endl;
+            cout << "JD2000" << JD2000 << endl;  
+            cout << "SkyDir("<<ra<<","<<dec<<") " << sd.ra() << ", " << sd.dec()   << endl;
+            cout << "SkyDir3("<<l<<","<<b<<") " << sd3.l() << ", " << sd3.b()   << endl;
+            cout << "EarthCoordinate("<<lat<<","<<lon<<") " << ec.latitude() << ", " << ec.longitude() << endl;
+
+            // run the sun and moon
+            return 1;
+        }
+    }catch( const std::exception& e){
+        std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
+            << e.what() << "\"" << std::endl;
+        return 1;
     }
-    */
-
-    if( fabs(test) < 1e-3 ) {
-        cout << "tests ok " << endl;
-        return 0;
-    }
-    cout << "failed a test" << endl;
-    cout << "JD2000" << JD2000 << endl;  
-    cout << "SkyDir("<<ra<<","<<dec<<") " << sd.ra() << ", " << sd.dec()   << endl;
-    cout << "SkyDir3("<<l<<","<<b<<") " << sd3.l() << ", " << sd3.b()   << endl;
-    cout << "EarthCoordinate("<<lat<<","<<lon<<") " << ec.latitude() << ", " << ec.longitude() << endl;
-
-    // run the sun and moon
-
-    return 1; 
 }
 

@@ -1,6 +1,6 @@
 /** @file SkyProj.cxx
 @brief implementation of the class SkyProj
-
+$Header$
 */
 
 // Include files
@@ -10,162 +10,131 @@
 
 using namespace astro;
 #include <string>
-#include <string.h>
+#include <sstream>
 #include <stdexcept>
-
-
+#include <cmath>
 
 class SkyProj::Exception : public std::exception 
 {
 public:
-   Exception() {}
-   Exception(std::string errorString) 
-      : m_what(errorString)
-   {}
+    Exception() {}
+    Exception(int status) 
+        : m_status(status)
+    {}
 
-   virtual ~Exception() throw() {}
-   virtual const char *what() const throw() {return m_what.c_str();}
-protected:
-   std::string m_what;
+    virtual ~Exception() throw() {}
+    virtual const char *what() const throw() {
+        std::stringstream msg; 
+        msg << "SkyProj wcslib error "<< m_status << " : ";
+        if(  m_status<1 || m_status>11 ) msg << " unknown error";
+        else msg << wcs_errmsg[m_status];
+        static char  buf[80];
+        ::strncpy(buf, msg.str().c_str(), sizeof(buf));
+        return buf;
+    }
+    int status()const throw(){return m_status;}
+private:
+    int m_status;
 };
 
-
-
-
-
 SkyProj::SkyProj(const std::string &projName, 
-                 double crpix1,
-                 double crpix2,
-                 double crval1,
-                 double crval2,
-                 double cdelt1,
-                 double cdelt2,
-                 double crota1,
-                 double crota2
-                 )
+                 double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic )
 {
-   int i, j, status;
-   double *pcij;
-   char CTYPE[2][9] = {"XLAT-xxx", "XLON-xxx"};
 
-   double pc[2][2] = {{1,0},
-                      {0,1}};
-   int naxis = 2;
+    m_wcs = reinterpret_cast<wcsprm*>(new char[sizeof(wcsprm)]);
+    m_wcs->flag = -1;
 
-   strncpy(&CTYPE[0][5], projName.c_str(), 3);
-   strncpy(&CTYPE[1][5], projName.c_str(), 3);
+    int naxis = 2;
+    wcsini(1, naxis, m_wcs);
 
-   wcs = new wcsprm;
-   wcs->flag = -1;
-   wcsini(1, naxis, wcs);
+    std::string 
+        lon_type = (galactic? "GLON-" : "RA---") + projName,
+        lat_type =  (galactic? "GLAT-" : "DEC--") + projName;
+    strcpy(m_wcs->ctype[0], lon_type.c_str() );
+    strcpy(m_wcs->ctype[1], lat_type.c_str() );
 
-   wcs->crpix[0] = crpix1;
-   wcs->crpix[1] = crpix2;
+    // copy  intput arrays
+    for( int i=0; i<naxis; ++i){
+        m_wcs->crval[i] = crval[i];  // reference value
+        m_wcs->crpix[i] = crpix[i]; // pixel coordinate
+        m_wcs->cdelt[i] = cdelt[i]; // scale factor
+    }
 
-   pcij = wcs->pc;
-   for (i = 0; i < naxis; i++) {
-      for (j = 0; j < naxis; j++) {
-         *(pcij++) = pc[i][j];
-      }
-   }
+    // specify position of pole
+    m_wcs->lonpole = crval[0];
+    m_wcs->latpole=crval[1];
 
-   wcs->cdelt[0] = cdelt1;
-   wcs->cdelt[1] = cdelt2;
+    // Set wcs to use CROTA rotations instead of PC or CD  transformations
+    m_wcs->altlin |= 4;
+    m_wcs->crota[1] = crota2;
 
+    int status = wcsset2(m_wcs);
+    if (status !=0) {
+        throw SkyProj::Exception(status );
+    }
+    // a simple test
+    double tlon = crval[0], tlat = crval[1];
+    std::pair<double, double> t = project(tlon, tlat);
+    double check = fabs(t.first-crpix[0])+fabs(t.second-crpix[1]);
+    std::pair<double, double> s = deproject(t.first, t.second);
+    check = fabs(s.first-crval[0]-s.second-crval[1]);
 
-   strcpy(wcs->ctype[0], CTYPE[0]);
-   strcpy(wcs->ctype[1], CTYPE[1]);
-
-
-   wcs->crval[0] = crval1;
-   wcs->crval[1] = crval2;
-
-   // Default's specified in twcs1.c test program
-   // May need to be changed.
-   wcs->lonpole = 150.0;
-   wcs->latpole = 999.0;
-
-   // Setting the following to a default value.
-   // Might be unneccessary
-   wcs->restfrq = 1.42040575e9f;
-   wcs->restwav = 0.0f;
-
-   // Set wcs to use CROTA rotations instead of PC or CD 
-   // transformations
-   wcs->altlin &= 4;
-
-   wcs->crota[0] = crota1;
-   wcs->crota[1] = crota2;
-
-   // No PV cards
-   wcs->npv = 0;
-
-   /* Extract information from the FITS header. */
-   if (status = wcsset2(wcs)) {
-      printf("wcsset error%3d\n", status);
-   }
-
+    wcsprt(m_wcs);// temp
 }
 
 SkyProj::~SkyProj()
 {
-   wcsfree(wcs);
-   delete wcs;
+    wcsfree(m_wcs);
+    delete m_wcs;
 }
 
 
-/** @brief Do the projection with the given coordinates
+/** @brief Do the projection to pixels with the given coordinates
 @param s1 ra or l, in degrees
 @param s2 dec or b, in degrees
+@return pair(x,y) in pixel coordinates
 */
-std::pair<double,double> SkyProj::project(double s1, double s2)
+std::pair<double,double> SkyProj::project(double s1, double s2) const
 {
-   int ncoords = 1;
-   int nelem = 9;
-   double worldcrd[9], imgcrd[9], pixcrd[9];
-   double phi[1], theta[1];
-   int stat[1];
-   int returncode;
+    int ncoords = 1;
+    int nelem = 2;
+    double  imgcrd[2], pixcrd[2];
+    double phi[1], theta[1];
+    int stat[1];
 
-   // WCS projection routines require the input coordinates are in degrees
-   // and in the range of [-90,90] for the lat and [-180,180] for the lon.
-   // So correct for this effect.
-   if(s1 > 180) s1 -= 360.;
+    // WCS projection routines require the input coordinates are in degrees
+    // and in the range of [-90,90] for the lat and [-180,180] for the lon.
+    // So correct for this effect.
+    if(s1 > 180) s1 -= 360.;
 
-   worldcrd[wcs->lng] = s1;
-   worldcrd[wcs->lat] = s2;
+    double worldcrd[] ={s1,s2};
 
-   returncode = wcss2p(wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
+    int returncode = wcss2p(m_wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
+    if ( returncode != 0 ) throw SkyProj::Exception(returncode);
 
-   checkForError(returncode, stat);
-
-   return std::make_pair<double,double>(pixcrd[wcs->lng],pixcrd[wcs->lat]);
+    return std::make_pair(pixcrd[0],pixcrd[1]);
 }
 
-std::pair<double,double> SkyProj::deproject(double x1, double x2)
+std::pair<double,double> SkyProj::deproject(double x1, double x2) const
 {
-   int ncoords = 1;
-   int nelem = 9;
-   double s1;
-   double worldcrd[9], imgcrd[9], pixcrd[9];
-   double phi[1], theta[1];
-   int stat[1];
-   int returncode;
+    int ncoords = 1;
+    int nelem = 2;
+    double worldcrd[2], imgcrd[2];
+    double phi[1], theta[1];
+    int stat[1];
 
-   pixcrd[wcs->lng] = x1;
-   pixcrd[wcs->lat] = x2;
+    double pixcrd[] = {x1,x2};;
 
-   returncode = wcsp2s(wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+    int returncode = wcsp2s(m_wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+    if ( returncode != 0 ) throw SkyProj::Exception(returncode);
 
-   checkForError(returncode, stat);
+    double s1 = worldcrd[m_wcs->lng];
 
-   s1 = worldcrd[wcs->lng];
+    //fold RA into the range [0,360)
+    while(s1 < 0) s1 +=360.;
+    while(s1 >= 360) s1 -= 360.;
 
-   //fold RA into the range (0,360)
-   while(s1 < 0) s1 +=360.;
-   while(s1 > 360) s1 -= 360.;
-
-   return std::make_pair<double,double>(s1,worldcrd[wcs->lat]);
+    return std::make_pair<double,double>(s1,worldcrd[m_wcs->lat]);
 }
 
 
@@ -176,43 +145,11 @@ std::pair<double,double> SkyProj::deproject(double x1, double x2)
 */
 std::pair<double,double> SkyProj::project(double x1, double x2, SkyProj otherProjection)
 {
-   double s1, s2; // Sky Coordinates
-   std::pair<double,double> s;
-   s = otherProjection.deproject(x1,x2);
-   s1 = s.first;
-   s2 = s.second;
-   return SkyProj::project(s1,s2);
+    std::pair<double,double> s = otherProjection.deproject(x1,x2);
+    return SkyProj::project(s.first,s.second);
 }
 
-int SkyProj::checkForError(int returncode, int stat[1])
+bool SkyProj::isGalactic()const
 {
-   int returnvalue = 0;
-
-   if(stat[0] != 0 || returncode != 0)
-   {
-      if(stat[0])
-         throw("SkyProj Error:  Invalid world coordinate");
-      else if(returncode == 1)
-         throw("SkyProj Error:  Null wcsprm pointer passed");
-      else if(returncode == 2)
-         throw("SkyProj Error:  Memory allocation error");
-      else if(returncode == 3)
-         throw("SkyProj Error:  Linear transformation matrix is singular");
-      else if(returncode == 4)
-         throw("SkyProj Error:  Inconsistent or unrecognized coordinate axis types");
-      else if(returncode == 5)
-         throw("SkyProj Error:  Invalid parameter value");
-      else if(returncode == 6)
-         throw("SkyProj Error:  Invalid coordinate transformation parameters");
-      else 
-         throw("SkyProj Error:  Ill-conditioned coordinate transformation parameters");
-
-      returnvalue = 1;
-   }
-
-   return returnvalue;
-
-
-
-}
-
+    return ( std::string( m_wcs->ctype[0] ).substr(0,4)=="GLON");
+};

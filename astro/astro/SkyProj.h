@@ -1,15 +1,18 @@
+/** @file SkyProj.cxx
+@brief declaration of the class SkyProj
+$Header$
+*/
+
 #ifndef OrbitModel_SkyProj_H
 #define OrbitModel_SkyProj_H
 
 
 // Include files
-#include <cmath>
 #include <utility> // for pair
 #include <string>
-#include <vector>
-#include "wcslib/wcs.h"
 
-
+// forward declaration
+struct wcsprm;
 
 namespace astro {
 
@@ -59,34 +62,24 @@ namespace astro {
             CSC: COBE quadrilateralized spherical cube
             QSC: quadrilateralized spherical cube
             @endverbatim
-            @param crpix1 corresponds to the FITS keyword CRPIX1 (coordinate reference point)
-            @param crpix2 corresponds to the FITS keyword CRPIX2 (coordinate reference point)
-            @param crval1 corresponds to the FITS keyword CRVAL1 (coordinate value at reference point)
-            @param crval2 corresponds to the FITS keyword CRVAL2 (coordinate value at reference point)
-            @param cdelt1 corresponds to the FITS keyword CDELT1
-            @param cdelt2 corresponds to the FITS keyword CDELT2
-            @param crota1 corresponds to the FITS keyword CROTA1
-            @param crota2 corresponds to the FITS keyword CROTA2
+            @param crpix corresponds to the FITS keyword CRPIXi (coordinate reference point)
+            @param crval corresponds to the FITS keyword CRVALi (coordinate value at reference point)
+            @param cdelt corresponds to the FITS keyword CDELTi
+            @param crota2 [default 0] corresponds to the FITS keyword CROTA2
+            @param galactic if coords are to be interpreted as galactic
             **/
         SkyProj(const std::string &projName, 
-                 double crpix1,
-                 double crpix2,
-                 double crval1,
-                 double crval2,
-                 double cdelt1,
-                 double cdelt2,
-                 double crota1,
-                 double crota2
-                 );
+                 double* crpix, double* crval, double* cdelt, double crota2=0, bool galactic=false  );
 
         // Destructor
        ~SkyProj();
 
-        /** @brief Do the projection with the given coordinates
-            @param s1 ra or l, in degrees
-            @param s2 dec or b, in degrees
-        */
-        std::pair<double,double> project(double s1, double s2);
+       /** @brief tranform form world  to pixels with the given coordinates
+       @param s1 ra or l, in degrees
+       @param s2 dec or b, in degrees
+       @return pair(x,y) in pixel coordinates
+       */
+        std::pair<double,double> project(double s1, double s2)const;
 
         /** @brief Convert from one projection to another
             @param x1 projected equivalent to ra or l, in degrees
@@ -99,21 +92,16 @@ namespace astro {
             @param x1 projected equivalent to ra or l, in degrees
             @param x2 projected equivalent dec or b, in degrees
         */
-        std::pair<double,double> deproject(double x1, double x2);
+        std::pair<double,double> deproject(double x1, double x2) const;
 
+        /** @brief is this galactic? */
+        bool isGalactic()const;
         class Exception; // forward declaration
     private:
 
-       /** @brief Checks the return codes for the wcs projection routines
-           @param returncode The return value for the wcs projection routines
-           @param stat The stat parameter returned by the wcs projection routines
-           @return 0 if ok, 1 if problem exists 
-       */
-       int checkForError(int returncode, int stat[1]);
-
-       /* Structure defined in WCSLIB wcs.h.  This contains all
+        /* Structure defined in WCSLIB wcs.h.  This contains all
           projection information. */
-        wcsprm *wcs;
+       wcsprm *m_wcs;
     
     };
 
