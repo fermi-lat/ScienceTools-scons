@@ -50,11 +50,11 @@ namespace tip {
 
     // Get current image type, which will not be changed by the resize operation.
     fits_get_img_type(m_header.getFp(), &bitpix, &status);
-    if (0 != status) throw TipException(formatWhat("setImageDimensions cannot determine image type"));
+    if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot determine image type"));
 
     // Resize the image.
     fits_resize_img(m_header.getFp(), bitpix, naxis, naxes, &status);
-    if (0 != status) throw TipException(formatWhat("setImageDimensions cannot change image dimensions"));
+    if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot change image dimensions"));
 
     // Save the dimensions in the dimension member.
     m_image_dimensions = dims;
@@ -70,7 +70,7 @@ namespace tip {
 
     // Read the given pixel:
     fits_read_pix(m_header.getFp(), TDOUBLE, &*coord.begin(), 1, 0, array, 0, &status);
-    if (0 != status) throw TipException(formatWhat("getPixel could not read pixel as a double"));
+    if (0 != status) throw TipException(status, formatWhat("getPixel could not read pixel as a double"));
 
     // Copy the value just read:
     pixel = *array;
@@ -86,7 +86,7 @@ namespace tip {
 
     // Write the copy to the output file:
     fits_write_pix(m_header.getFp(), TDOUBLE, &*coord.begin(), 1, array, &status);
-    if (0 != status) throw TipException(formatWhat("setPixel could not write a double to a pixel"));
+    if (0 != status) throw TipException(status, formatWhat("setPixel could not write a double to a pixel"));
   }
 
   void FitsImage::get(std::vector<float> & image) const {
@@ -137,14 +137,14 @@ namespace tip {
 
     // Get number of axes:
     fits_get_img_dim(m_header.getFp(), &naxis, &status);
-    if (0 != status) throw TipException(formatWhat("Cannot get number of dimensions of image"));
+    if (0 != status) throw TipException(status, formatWhat("Cannot get number of dimensions of image"));
 
     // Get naxes:
     long * naxes = new long[naxis];
     fits_get_img_size(m_header.getFp(), naxis, naxes, &status);
     if (0 != status) {
       delete [] naxes;
-      throw TipException(formatWhat("Cannot get dimensions of each degree of freedom of image"));
+      throw TipException(status, formatWhat("Cannot get dimensions of each degree of freedom of image"));
     }
 
     // If we got here, we obtained all information successfully, so store it in member:

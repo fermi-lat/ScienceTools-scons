@@ -47,11 +47,11 @@ namespace tip {
     int status = 0;
     if (m_num_records < num_records) {
       fits_insert_rows(m_header.getFp(), m_num_records, num_records - m_num_records, &status);
-      if (0 != status) throw TipException(formatWhat("setNumRecords could not insert rows in FITS table"));
+      if (0 != status) throw TipException(status, formatWhat("setNumRecords could not insert rows in FITS table"));
       m_num_records = num_records;
     } else if (m_num_records > num_records) {
       fits_delete_rows(m_header.getFp(), num_records + 1, m_num_records - num_records, &status);
-      if (0 != status) throw TipException(formatWhat("setNumRecords could not delete rows from FITS table"));
+      if (0 != status) throw TipException(status, formatWhat("setNumRecords could not delete rows from FITS table"));
       m_num_records = num_records;
     }
   }
@@ -103,7 +103,7 @@ namespace tip {
     if (0 != status) {
       std::ostringstream os;
       os << "Could not insert field " << field_name << " with form " << format;
-      throw TipException(formatWhat(os.str()));
+      throw TipException(status, formatWhat(os.str()));
     }
 
     // Get all pertinent info about the new column:
@@ -116,7 +116,7 @@ namespace tip {
 
     int status = 0;
     fits_select_rows(m_header.getFp(), m_header.getFp(), const_cast<char *>(filter.c_str()), &status);
-    if (0 != status) throw TipException(formatWhat("filterRows had an error applying the filtering expression " + filter));
+    if (0 != status) throw TipException(status, formatWhat("filterRows had an error applying the filtering expression " + filter));
 
     // Read the number of rows present in the table.
     long nrows = 0;
@@ -125,7 +125,7 @@ namespace tip {
     // Check for success and if not, do not continue.
     if (0 != status) {
       close(status);
-      throw TipException(formatWhat("Cannot get number of rows"));
+      throw TipException(status, formatWhat("Cannot get number of rows"));
     }
 
     // Save the number of rows.
@@ -150,7 +150,7 @@ namespace tip {
     // Check for success and if not, do not continue.
     if (0 != status) {
       close(status);
-      throw TipException(formatWhat("Cannot get number of rows"));
+      throw TipException(status, formatWhat("Cannot get number of rows"));
     }
 
     // Save the number of rows.
@@ -186,7 +186,7 @@ namespace tip {
     if (0 != status) {
       std::ostringstream s;
       s << "Could not get type information for column number " << col_num;
-      throw TipException(formatWhat(s.str()));
+      throw TipException(status, formatWhat(s.str()));
     }
 
     // Handle variable-length column specifiers.

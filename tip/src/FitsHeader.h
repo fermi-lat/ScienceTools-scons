@@ -145,7 +145,7 @@ namespace tip {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &value, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
   }
 
   // Getting keywords as bool is a special case because Cfitsio treats them as ints.
@@ -155,7 +155,7 @@ namespace tip {
     int status = 0;
     int tmp = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
     value = tmp;
   }
 
@@ -166,7 +166,7 @@ namespace tip {
     int status = 0;
     char tmp[FLEN_KEYWORD];
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
     value = tmp;
   }
 
@@ -179,7 +179,7 @@ namespace tip {
     int status = 0;
     T tmp = value;
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as bool is a special case because Cfitsio treats them as ints.
@@ -191,7 +191,7 @@ namespace tip {
     int status = 0;
     int tmp = value;
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as strings is a special case because Cfitsio treats them as char *.
@@ -204,7 +204,7 @@ namespace tip {
     char tmp[FLEN_KEYWORD];
     strncpy(tmp, value.c_str(), FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   // Setting keywords as strings is a special case because Cfitsio treats them as char *.
@@ -217,7 +217,7 @@ namespace tip {
     char tmp[FLEN_KEYWORD];
     strncpy(tmp, value, FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
 
   inline void FitsHeader::getKeyword(const std::string & name, bool & value) const { getKeywordGeneric(name, value); }
@@ -238,7 +238,7 @@ namespace tip {
     int status = 0;
     char tmp[FLEN_CARD];
     fits_read_card(m_fp, const_cast<char *>(name.c_str()), tmp, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read key record \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read key record \"") + name + '"'));
     record = tmp;
   }
 
@@ -264,7 +264,7 @@ namespace tip {
     char tmp[FLEN_CARD];
     strncpy(tmp, record.c_str(), FLEN_CARD - 1);
     fits_update_card(m_fp, const_cast<char *>(name.c_str()), tmp, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write key record\"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write key record\"") + name + '"'));
   }
 
 }

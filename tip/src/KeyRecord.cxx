@@ -30,7 +30,7 @@ namespace tip {
     char value[FLEN_VALUE];
     int status = 0;
     fits_parse_value(const_cast<char *>(m_record.c_str()), value, 0, &status);
-    if (0 != status) throw TipException("KeyRecord::getValue could not parse record");
+    if (0 != status) throw TipException(status, "KeyRecord::getValue could not parse record");
 
     // See if this is treated as a string, in which case it will have trailing blanks and a quote.
     char * ptr = value + strlen(value) - 1;
@@ -61,9 +61,10 @@ namespace tip {
 
     // Get name and comment.
     fits_get_keyname(const_cast<char *>(m_record.c_str()), name, &key_length, &status);
-    if (0 != status || !isalnum(*name)) throw TipException("KeyRecord::setValue could not get name of key record");
+    if (0 != status) throw TipException(status, "KeyRecord::setValue could not get name of key record");
+    else if (!isalnum(*name)) throw TipException("KeyRecord::setValue: name of key record starts with non-alpha-numeric character");
     fits_parse_value(const_cast<char *>(m_record.c_str()), orig_value, comment, &status);
-    if (0 != status) throw TipException("KeyRecord::setValue could not parse record");
+    if (0 != status) throw TipException(status, "KeyRecord::setValue could not parse record");
 
     // Classifying state of this record.
     // Fits standard states a ' must be in column 11 to indicate a string.

@@ -54,9 +54,9 @@ namespace tip {
         fits_get_version(&cfitsio_version);
         // This is surreal. A FLOATING POINT VERSION NUMBER! Checking for == doesn't work -- I tried it.
         if (2.4795 < cfitsio_version && 2.4805 > cfitsio_version)
-          throw TipException(std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
+          throw TipException(status, std::string("WARNING: there is a known bug in Cfitsio 2.48's extended "
             "syntax parser!\nCould not open FITS extension ") + file_name);
-        throw TipException(std::string("Could not open FITS extension \"") + file_name + '"');
+        throw TipException(status, std::string("Could not open FITS extension \"") + file_name + '"');
       }
 
       // Success: save the pointer.
@@ -87,7 +87,7 @@ namespace tip {
       fits_get_hdu_type(m_fp, &hdu_type, &status);
       if (0 != status) {
         close(status);
-        throw TipException(formatWhat("Could not determine the type of the HDU"));
+        throw TipException(status, formatWhat("Could not determine the type of the HDU"));
       }
       if (ASCII_TBL == hdu_type || BINARY_TBL == hdu_type)
         m_is_table = true;
@@ -105,7 +105,7 @@ namespace tip {
     char value[FLEN_VALUE];
     char comment[FLEN_COMMENT];
     fits_read_keyword(m_fp, const_cast<char *>(name.c_str()), value, comment, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read comment for keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read comment for keyword \"") + name + '"'));
     return comment;
   }
 
@@ -114,14 +114,14 @@ namespace tip {
       throw TipException(formatWhat(std::string("Cannot write comment for keyword \"") + name + "\"; object is not writable"));
     int status = 0;
     fits_modify_comment(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(comment.c_str()), &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write comment for keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write comment for keyword \"") + name + '"'));
   }
 
   std::string FitsHeader::getKeyUnit(const std::string & name) const {
     int status = 0;
     char unit[FLEN_CARD] = "";
     fits_read_key_unit(m_fp, const_cast<char *>(name.c_str()), unit, &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot read unit for keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read unit for keyword \"") + name + '"'));
     return unit;
   }
 
@@ -130,7 +130,7 @@ namespace tip {
       throw TipException(formatWhat(std::string("Cannot write unit for keyword \"") + name + "\"; object is not writable"));
     int status = 0;
     fits_write_key_unit(m_fp, const_cast<char *>(name.c_str()), const_cast<char *>(unit.c_str()), &status);
-    if (0 != status) throw TipException(formatWhat(std::string("Cannot write unit for keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write unit for keyword \"") + name + '"'));
   }
 
   void FitsHeader::addComment(const std::string & comment) {
@@ -138,7 +138,7 @@ namespace tip {
       throw TipException(formatWhat("Cannot add comment string; object is not writable"));
     int status = 0;
     fits_write_comment(m_fp, const_cast<char *>(comment.c_str()), &status);
-    if (0 != status) throw TipException(formatWhat("Cannot add comment string"));
+    if (0 != status) throw TipException(status, formatWhat("Cannot add comment string"));
   }
 
   void FitsHeader::addHistory(const std::string & history) {
@@ -146,7 +146,7 @@ namespace tip {
       throw TipException(formatWhat("Cannot add history string; object is not writable"));
     int status = 0;
     fits_write_history(m_fp, const_cast<char *>(history.c_str()), &status);
-    if (0 != status) throw TipException(formatWhat("Cannot add history string"));
+    if (0 != status) throw TipException(status, formatWhat("Cannot add history string"));
   }
 
   const std::string & FitsHeader::getName() const { return m_ext_name; }
