@@ -234,6 +234,10 @@ namespace tip {
     throw TipException("Adding fields to a Root table is not supported");
   }
 
+  void RootExtensionManager::filterRows(const std::string &) {
+    throw TipException("Row filtering a Root table is not supported");
+  }
+
   const std::vector<PixOrd_t> & RootExtensionManager::getImageDimensions() const {
     throw TipException("Images in Root files not supported");
   }
