@@ -9,6 +9,7 @@
 
 #include "astro/SkyDir.h"
 #include "image/Image.h"
+#include "image/IOElement.h"
 
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
@@ -31,6 +32,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_naxis3(1) // for future expansion
 , m_total(0)
 , m_image(0)
+, m_save(true)
 {
     using namespace astro;
 
@@ -88,10 +90,61 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 
     setKey("CROTA2",  0, "", "Image rotation (deg)");
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
+:  m_save(false)
+{
+    FloatImg& image = *dynamic_cast<FloatImg*>(IOElement::readIOElement(fits_file, extension));
+    m_image = &image;
+
+    // standard ordering for ra, dec, cos(theta).
+    image.getValue("NAXIS1", m_naxis1);
+    image.getValue("NAXIS2", m_naxis2);
+    image.getValue("NAXIS3", m_naxis3);
+    m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
+
+    std::string ctype, trans;
+    bool uselb;
+    image.getValue("CTYPE1", ctype);
+    if( ctype.substr(0,2)=="RA") {
+        uselb=false;
+        trans = ctype.substr(4,3);
+    }else if( ctype.substr(0,4)=="GLON") {
+        uselb=true;
+        trans = ctype.substr(6,3);
+    }else {
+        throw std::invalid_argument(
+            std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
+    }
+
+    double cr1[3];
+    image.getValue("CRPIX1", cr1[0]);
+    image.getValue("CRVAL1", cr1[1]);
+    image.getValue("CDELT1", cr1[2]);
+
+    double cr2[3];
+    image.getValue("CRPIX2", cr2[0]);
+    image.getValue("CRVAL2", cr2[1]);
+    image.getValue("CDELT2", cr2[2]);
+
+    double cr3[3];
+    image.getValue("CRPIX3", cr3[0]);
+    image.getValue("CRVAL3", cr3[1]);
+    image.getValue("CDELT3", cr3[2]);
+
+    double crota2;
+    image.getValue("CROTA2", crota2);
+    astro::SkyDir::setProjection(
+        cr1[1],    cr2[1], 
+        trans, 
+        cr1[0]-0.5,cr2[0]-0.5, 
+        cr1[2],    cr2[2], 
+        crota2, uselb);
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
-
+void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer)
+{
     std::pair<double,double> p= dir.project();
     unsigned int 
         i = static_cast<unsigned int>(p.first),
@@ -105,7 +158,6 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, int layer){
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::fill(const Requester& req)
 {
-
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
 
     for( size_t k = 0; k< m_pixelCount; ++k){
@@ -142,8 +194,26 @@ void SkyImage::clear()
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double SkyImage::pixelValue(const astro::SkyDir& pos, int layer)const
+{
+
+    std::pair<double,double> p= pos.project();
+    unsigned int 
+        i = static_cast<unsigned int>(p.first),
+        j = static_cast<unsigned int>(p.second),
+        k = i+m_naxis1*(j + layer*m_naxis2);
+
+    if(  k< m_pixelCount){
+        return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
+    }else{
+        throw std::range_error("SkyImage::pixelValue-- outside image hyper cube");
+    }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::~SkyImage()
 {
+    if( !m_save) { delete m_image; return;}
     FloatImg* image =  dynamic_cast<FloatImg*>(m_image); 
     if(image!=0){
         image->saveElement();

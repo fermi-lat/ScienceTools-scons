@@ -8,6 +8,7 @@
 #include "map_tools/Exposure.h"
 #include "map_tools/Parameters.h"
 #include "map_tools/ExposureHyperCube.h"
+#include "map_tools/SkyImage.h"
 #include "image/Header.h"
 #include <iostream>
 #include <algorithm>
@@ -87,6 +88,11 @@ int main(int argc, char** argv ){
         ExposureHyperCube cube2(e2, par.outputFile());
         cube2.save();
 
+        // create an image to access cells
+        SkyImage exp3(par.inputFile(), "hypercube");
+        double tt = exp3.pixelValue(astro::SkyDir(0,0));
+
+
         test_Header();
 
     }catch( const std::exception& e){
@@ -127,13 +133,7 @@ void test_Header() {
    header.getValue(name, floatValue);
    assert(floatValue == fvalue0);
 
-// Test for insertion failure.
-//   try {
-      header.addAttribute(IntAttr(name, 3), false);
-   //   assert(false);
-//   } catch (std::runtime_error &eObj) {}
-
-//      int n = std::count_if(header.begin(),header.end(),std::equal_to<std::string>(name));
+   header.addAttribute(IntAttr(name, 3), false);
 
    // test operator[]
    const BaseAttr & attr = header[name]; // should work

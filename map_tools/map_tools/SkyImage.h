@@ -7,6 +7,7 @@
 #ifndef TOOL_SKYIMAGE_H
 #define TOOL_SKYIMAGE_H
 
+#include <string>
 class BaseImage;
 
 namespace astro { class SkyDir; }
@@ -28,6 +29,12 @@ public:
     @param pars an object containing all the necessary parameters
     */
     SkyImage(const map_tools::MapParameters& pars);
+
+    /** @brief load an image from a file
+
+    */
+    SkyImage(const std::string& filename, const std::string& extension="");
+
     /**
         @brief add a count to the map, using current SkyDir projection
         @param dir A SkyDir object
@@ -61,6 +68,12 @@ public:
     //! @brief return the sum of all pixel values in the image
     double total()const{return m_total;}
 
+    /** @get value of the pixel at given skydir location
+        @param pos position in the sky
+        @param layer number
+        @return value of the pixel corresponding to the given direction
+    */
+    double pixelValue(const astro::SkyDir& pos, int layer=0)const;
     
 private:
     int m_naxis1, m_naxis2, m_naxis3;
@@ -68,6 +81,7 @@ private:
     //! pointer to the BaseImage abstract class, which is cast in the implementation.
     BaseImage* m_image;
     unsigned int m_pixelCount;
+    bool m_save; 
 };
 } //namesace map_tools
 
