@@ -9,6 +9,7 @@
 #include "astro/EarthCoordinate.h"
 
 #include <iomanip>
+#include <sstream>
 #include <stdexcept>
 
 #include "fitsio.h"
@@ -494,8 +495,11 @@ void GPS::readFitsData() {
          row.lat = lat_geo[i];
          row.lon = lon_geo[i];
          int indx = i*3;
-         row.position = Hep3Vector(sc_pos[indx], sc_pos[indx+1], 
-                                   sc_pos[indx+2]);
+// Divide by 10^3 since GPS expects the spacecraft position to be 
+// in units of km and the FT2 definition gives it in meters.
+         double mperkm(1e3);
+         row.position = Hep3Vector(sc_pos[indx]/mperkm, sc_pos[indx+1]/mperkm, 
+                                   sc_pos[indx+2]/mperkm);
          m_pointingHistory[start_time[i]] = row;
       }
    }
@@ -575,12 +579,17 @@ void GPS::setInterpPoint(double time){
     std::map<double,POINTINFO>::const_iterator iter=m_pointingHistory.upper_bound(time);
     if((time< (*(m_pointingHistory.begin())).first )){
         timeTooEarly=true;
-        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
-        throw std::runtime_error("Time out of Range!");
     }else if(iter==m_pointingHistory.end()){
         timeTooLate=true;
-        std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
-        throw std::runtime_error("Time out of Range!");
+    }
+    if (timeTooEarly || timeTooLate) {
+       std::ostringstream message;
+       message << "WARNING: Time out of Range!:\n"
+               << "Time (" << time 
+               << ") out of range of times in the pointing database "
+               << "- interpolation process excepted out." 
+               << std::endl;
+       throw std::runtime_error(message.str());
     }
 #if 0 //THB
     //get the point after "time"
