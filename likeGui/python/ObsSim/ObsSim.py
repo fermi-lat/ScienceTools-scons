@@ -21,9 +21,9 @@ from pil import Pil
 
 # @todo replace these with GtApp objects
 obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
-                      os.environ["BINDIR"], 'obsSim.exe')
+                      os.environ["BINDIR"], 'gtobssim.exe')
 orbSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
-                      os.environ["BINDIR"], 'orbSim.exe')
+                      os.environ["BINDIR"], 'gtorbsim.exe')
 
 class RootWindow(Tk.Tk):
     def __init__(self, file=None):
@@ -57,18 +57,18 @@ class RootWindow(Tk.Tk):
     def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)
-        pars = Pil('obsSim.par')
+        pars = Pil('gtobssim.par')
         pars['xml_source_file'] = xmlList
         pars['source_list'] = sourceNames
-        pfile = 'obsSim.par'
+        pfile = 'gtobssim.par'
         pars.write(pfile)   # create a local copy
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((obsSim, dialog.paramString))
             runInThread(commandApp(command))
     def orbSim(self):
-        pars = Pil('orbSim.par')
-        pfile = 'orbSim.par'
+        pars = Pil('gtorbsim.par')
+        pfile = 'gtorbsim.par'
         pars.write(pfile)   # create a local copy
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
@@ -92,8 +92,8 @@ class FileMenu(Tk.Menu):
 class SimMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="obsSim...", command=root.obsSim, underline=1)
-        self.add_command(label="orbSim...", command=root.orbSim, underline=1)
+        self.add_command(label="gtobssim...", command=root.obsSim, underline=1)
+        self.add_command(label="gtorbSim...", command=root.orbSim, underline=1)
 
 class Ds9Menu(Tk.Menu):
     def __init__(self, root):
