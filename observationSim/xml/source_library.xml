@@ -340,7 +340,8 @@
 
  <source_library title="galactic">
 
-    <!-- the Map of the modeled galactic diffuse gamma-ray emission -->
+    <!-- the Map of the galactic diffuse gamma-ray emission 
+         using the EGRET model for E > 100 MeV -->
     <source name="galdiffusemap">
         <spectrum escale="GeV"> 
             <SpectrumClass name="MapSpectrum" 
@@ -349,23 +350,34 @@
         </spectrum>
     </source>
 
+    <!-- the Map of the galactic diffuse gamma-ray emission that
+         extrapolates the EGRET > 100 MeV map down to 30 MeV -->
+    <source name="galdiffusemap30">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="MapSpectrum" 
+             params="0.03,2.1,/src/sources/gas_gal.fits,17.0"/> 
+            <use_spectrum frame="galaxy"/>
+        </spectrum>
+    </source>
+
+
     <!-- Extragalactic diffuse assuming isotropic extragalactic 
          sources with fluxes 1e-8 cm^-2 s^-1 (E > 100 MeV) comprise
          the balance of the extragalatic diffuse emission -->
-    <source name="extragalactic_test" flux="5.90">
+    <source name="extragalactic_test" flux="0.47">
        <spectrum escale="MeV">
           <particle name="gamma">
-             <power_law emin="30" gamma="2.1"/>
+             <power_law emin="30." emax="100000." gamma="2.1"/>
           </particle>
           <solid_angle mincos="-1." maxcos="1."/>
        </spectrum>
     </source>
 
     <!-- Extragalactic diffuse inferred by EGRET -->
-    <source name="extragalactic" flux="6.85">
+    <source name="extragalactic" flux="0.545">
        <spectrum escale="MeV">
           <particle name="gamma">
-             <power_law emin="30" gamma="2.1"/>
+             <power_law emin="30." emax="100000." gamma="2.1"/>
           </particle>
           <solid_angle mincos="-1." maxcos="1."/>
        </spectrum>
