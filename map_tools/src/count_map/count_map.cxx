@@ -1,6 +1,6 @@
 /** @file count_map.cxx
-
     @brief build the count_map application
+
     $Header$
 */
 
@@ -13,7 +13,7 @@
 #include "table/FitsService.h"
 
 #include <algorithm>
-
+namespace cmap { // for count_map helper classes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class AddCount
 @brief Function object to apply to a tuple. fill the image with counts of (ra, dec) pairs
@@ -36,10 +36,11 @@ public:
 private:
     SkyImage& m_image;
 };
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
-
+    using namespace cmap;
     try{
 
         // read in, or prompt for, all necessary parameters

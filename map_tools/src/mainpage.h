@@ -85,3 +85,8 @@ This applicaton creates a FITS "hypercube" image file. Each layer is a bin in co
 
 
 */
+/** @page devguide Developer's Guide
+
+whatever
+
+*/

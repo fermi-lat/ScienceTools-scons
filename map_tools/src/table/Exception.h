@@ -1,4 +1,7 @@
-// Authors: Jim Chiang, Pat Nolan, Sandhia Bansal
+/** @file Exception.h
+    @brief exception classes for Table
+
+*/
 
 #ifndef TABLE_EXCEPTION_H
 #define TABLE_EXCEPTION_H
@@ -64,15 +67,6 @@ namespace table
     };
 
 
-    class DisplayMessage 
-    {
-    public:
-        DisplayMessage()   {}
-        DisplayMessage(const std::string &msg)
-        {
-            std::cerr << msg;
-        }
-    };
 }   // namespace Goodi
 
 #endif

@@ -1,17 +1,13 @@
 /**
 * @file Parameters.h
 * @brief Tool Input Parameter Reader base class
-
-
 *
 * $Header$
 */
-
 #ifndef PARAMETERS_H
 #define PARAMETERS_H 
 
 #include <string>
-
 
 /**
 * @class Parameters

@@ -97,7 +97,7 @@ public:
     */
     void load(tuple::ITable& table, double tstart=0, double tend=0);
 
-    // return the exposure at the given ra, dec, and cos theta weighting
+    /// return the exposure at the given ra, dec, and cos theta weighting
     double operator()(double ra, double dec, const Aeff& fun)const;
     double operator()(const astro::SkyDir& dir, const Aeff& fun)const;
 

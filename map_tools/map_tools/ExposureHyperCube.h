@@ -1,4 +1,7 @@
 /** @file ExposureHyperCube.h
+    @brief declare class ExposureHyperCube 
+
+    $Header$
 
 */
 
@@ -8,7 +11,7 @@
 #include "table/PrimaryHDU.h"
 #include "Exposure.h"
 
-/** @classs ExposureHyperCube 
+/** @class ExposureHyperCube 
     @brief Set up an exposure map hypercube
 
     It is defined as a hypercube in ra, dec, sqrt(1-costheta) bins.
@@ -64,7 +67,6 @@ public:
     }
 
 private:
-
 
 };
 #endif //TOOLS_EXPOSUREHYPERCUBE_H

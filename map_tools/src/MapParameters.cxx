@@ -1,6 +1,5 @@
-/**
-* @file MapParameters.cxx
-* @brief Implementation for class that reads parameters needed for EventBinning.
+/** @file MapParameters.cxx
+*   @brief Implementation for class that reads parameters for image description
 * @author Toby Burnett 
 *
 * $Header$

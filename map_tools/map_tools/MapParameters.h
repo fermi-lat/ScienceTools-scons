@@ -6,7 +6,7 @@
 */
 
 #ifndef MAPPARAMETERS_H
-#define PAPARAMETERS_H 
+#define MAPPARAMETERS_H 
 
 #include "Parameters.h"
 #include <string>

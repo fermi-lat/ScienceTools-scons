@@ -29,8 +29,9 @@ public:
         @brief add a count to the map, using current SkyDir projection
         @param dir A SkyDir object
         @param delta incremental value (default 1 if not present)
+        @param layer for multi-layer app. 0 (default) means the first layer
     */
-    void addPoint(const astro::SkyDir& dir, double delta=1.0);
+    void addPoint(const astro::SkyDir& dir, double delta=1.0, int layer=0);
 
     /** @class SkyImage::Requester 
         @brief virtual base class for requesting data to fill a given pixel
@@ -55,7 +56,7 @@ public:
     double total()const{return m_total;}
     
 private:
-    int m_naxis1, m_naxis2;
+    int m_naxis1, m_naxis2, m_naxis3;
     double m_total;
 };
 

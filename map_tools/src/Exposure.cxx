@@ -1,4 +1,6 @@
 /** @file Exposure.cxx
+    @brief Implementation of class Exposure
+
    $Header$
 */
 #include "map_tools/Exposure.h"

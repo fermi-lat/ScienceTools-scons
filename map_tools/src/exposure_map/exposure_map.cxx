@@ -1,8 +1,7 @@
 /** @file exposure_map.cxx
+    @brief build the exposure_map application
 
-@brief build the exposure_map application
- $Header$
-
+$Header$
 */
 
 #include "map_tools/SkyImage.h"
@@ -18,10 +17,10 @@
 #include <algorithm>
 #include <fstream>
 
-namespace { // for simple helper classes
+namespace emap{ // for simple helper classes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class MyCube
-    @ brief setup an exposure hypercube from a FITS file
+    @brief setup an exposure hypercube from a FITS file
     */
 class MyCube : public table::PrimaryHDU<float>{
 public:
@@ -44,7 +43,7 @@ private:
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class Aeff
-    @ brief function class implements effective area
+    @brief function class implements effective area
     */
 class Aeff : public Exposure::Aeff{
 public:
@@ -76,11 +75,12 @@ private:
     const Aeff& m_aeff;
     double m_norm;
 };
-} // anonymous namespace
+} // emap namespace
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
-using namespace table;
+    using namespace table;
+    using namespace emap;
     try{
 
         // read in, or prompt for, all necessary parameters
@@ -90,7 +90,7 @@ using namespace table;
         table::FitsService iosrv(files);
 
         MyCube cube(& iosrv);
-        
+
         iosrv.createNewFile(pars.outputFile(), pars.templateFile());
 
         // create the exposure, read it in from the FITS input file

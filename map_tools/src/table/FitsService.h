@@ -139,7 +139,7 @@ public:
         std::vector<long> &naxes, int &extend, double &zero, double &scale) const;
     virtual void writeImageHeader( int &bitpix, int &naxis,
         const std::vector<long> &naxes, bool &extend, double &zero, double &scale) const;
-
+#if 0
 
     //  Write Data
     virtual void write(const std::string &key, const std::vector<std::string> &data, 
@@ -155,7 +155,7 @@ public:
     virtual void write(const std::string &key, const std::vector<short> &data, 
         long firsRow=1) const;
 
-
+#endif
 
 
     // Write Image

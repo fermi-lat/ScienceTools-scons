@@ -1,6 +1,6 @@
 /** @file exposure_cube.cxx
-
 @brief build the exposure_cube application
+
 $Header$
 */
 
@@ -9,8 +9,7 @@ $Header$
 #include "map_tools/ExposureHyperCube.h"
 
 #include "tuple/ITable.h"
-
-
+namespace ecube{
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class ExposureMapParameters : public MapParameters 
 {
@@ -24,10 +23,11 @@ public:
             getDouble("tstop");
         }
     };
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main(int argc, char * argv[]) {
-
+    using namespace ecube;
     try{
 
         // read in, or prompt for, all necessary parameters
