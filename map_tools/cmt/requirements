@@ -1,46 +1,28 @@
 package map_tools
 
-version v4r3
+version v5r0
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
-
+use STpolicy *
 use astro *
 use hoops * 
 use tuple *
 use st_app *
 
 
-path_append PFILES "$(MAP_TOOLSROOT)/pfiles"
-
-#suppress annoying warnings from hoops: "illegal conversion" and "forcing value to bool" 
-macro_append cppflags "" WIN32 " /wd4800 /wd4927 /wd4251 "
-
-#builds an internal library for FITS image I/O and keyword handling (from astroroot)
-library image -no_share -s=image $(source)
-
-apply_pattern GLAST_static_library_package
-public
-macro_append map_tools_linkopts " -limage " Win32 " $(map_toolsDir)/image.lib "
-
-#convenient patern for building executables, with par file in project		
-pattern ST_app \
-  macro <name>_par "" WIN32 "<name>.par" ; \ 
-  application <name> -s=<name> *.cxx  -s=../pfiles $(<name>_par)
-
-
+apply_pattern ST_library share=-no_share
+apply_pattern ST_pfiles
 #---------------------------------------------------------------
 private
 
-use facilities *
 
-set INFILES  "$(MAP_TOOLSROOT)/data"
-set OUTFILES "$(MAP_TOOLSROOT)/output"
+# add separate image code to the library
+apply_pattern ST_add_to_lib name=image
 
-#
 
-set TMP "/tmp" WIN32 "%TEMP%"
+# applications
 
 apply_pattern ST_app name=count_map
 apply_pattern ST_app name=exposure_cube
