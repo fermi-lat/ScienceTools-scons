@@ -102,9 +102,9 @@ SurfaceMuons::SurfaceMuons(const std::string& paramstring)
     m_cosmax = (params.size()>1)? params[1]: 1.0;
 
     m_option = (int) (params.size()>2 ? params[2]: 0.);
+    m_flux = 70. * 2*M_PI * fabs(pow(m_cosmax,3) - pow(m_cosmin,3))/3;
 
     if(m_option == 0) {
-      m_flux = 70. * 2*M_PI * fabs(pow(m_cosmax,3) - pow(m_cosmin,3))/3;
 
       // create integral table of the flux function, as a map of
       // energy and e*flux(e), with logarithmic energies

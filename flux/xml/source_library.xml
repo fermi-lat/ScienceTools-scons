@@ -147,6 +147,12 @@
         </spectrum>
     </source>
 
+    <source name="hiro_surface_muons">
+        <spectrum escale="GeV">
+            <SpectrumClass name="SurfaceMuons" params="0.0,1.0, 1.0"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
     <!--
         vertical muons only
     -->
