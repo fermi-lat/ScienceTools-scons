@@ -19,7 +19,6 @@ from EditFileDialog import *
 from ScrolledText import ScrolledText
 from ThreadedClient import *
 import readXml
-#import findPaths
 import findSrcs
 
 likePath = os.path.join(os.environ['LIKELIHOODROOT'], os.environ['BINDIR'], '')

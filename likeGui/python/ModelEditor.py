@@ -17,6 +17,7 @@ import mySimpleDialog
 from FileDialog import LoadFileDialog, SaveFileDialog
 import readXml
 import FuncFactory as funcFactory
+import findSrcs
 
 class RootWindow(Tk.Tk):
     def __init__(self, spectralFuncs, spatialFuncs, xmlFile=None):
@@ -114,6 +115,10 @@ class RootWindow(Tk.Tk):
         self.srcModel = readXml.SourceModel(xmlFile)
         self.modelEditor.fill()
         self.title('Source Model Editor: ' + os.path.basename(xmlFile))
+    def extract(self):
+        sources = findSrcs.SourceRegionDialog(self)
+        if sources.haveSources:
+            self.open(sources.filename.value())
     def save(self):
         if self.srcModel.filename:
             self.srcModel.writeTo()
@@ -166,6 +171,7 @@ class FileMenu(Tk.Menu):
         Tk.Menu.__init__(self, tearoff=0, postcommand=self.stat)
         self.root = root
         self.add_command(label="Open...", underline=0, command=root.open)
+        self.add_command(label="Extract...", underline=1, command=root.extract)
         self.add_command(label="Save", underline=0, command=root.save)
         self.add_command(label="Save as...", command=root.saveAs)
         self.add_command(label="Quit", command=root.quit, underline=0)
