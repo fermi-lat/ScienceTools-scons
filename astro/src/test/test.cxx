@@ -1,4 +1,4 @@
-// $Heading:$
+// $Header$
 
 #include "astro/SolarSystem.h"
 #include "astro/EarthCoordinate.h"
@@ -6,8 +6,9 @@
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 
-void testSkyDir(){
+bool testSkyDir(){
     using namespace astro;
+    bool ok = true;
     for(double l = -175 ; l < 175 ; l += 5.){
         for(double b = -85 ; b < 85 ; b +=5.){
             SkyDir sd4(l,b,SkyDir::GALACTIC);
@@ -16,7 +17,8 @@ void testSkyDir(){
             //std::cout << "l in = " << l << " ,b in = " << b << 
              //   " ,l out = " << sd4.l() << " ,b out = " << sd4.b() << 
             //" ,ra out = " << sd4.ra() << " ,dec out = " << sd4.dec() << std::endl;
-            if(test > 1E-3) std::cout << "error - l,b output does not match input" << std::endl; 
+            if(test > 1E-3){ std::cout << "error - l,b output does not match input" << std::endl; 
+            ok =false;}
         }
     }
     for(double ra = 5 ; l < 355 ; l += 5.){
@@ -27,7 +29,10 @@ void testSkyDir(){
             //std::cout << "ra in = " << ra << " ,dec in = " << dec << 
             //    " ,ra out = " << sd4.ra() << " ,dec out = " << sd4.dec() << 
             //   " ,l out = " << sd4.l() << " ,b out = " << sd4.b() << std::endl;
-            if(test > 1E-3) std::cout << "error - ra,dec output does not match input" << std::endl; 
+            if(test > 1E-3){
+                std::cout << "error - ra,dec output does not match input" << std::endl; 
+                ok=false;
+            }
         }
     }
     //test some known locations:
@@ -35,7 +40,7 @@ void testSkyDir(){
     //std::cout <<  "X =" << sd5.dir().x() << " , Y =" << sd5.dir().y() << " , Z =" << sd5.dir().z() << std::endl;
     
     std::cout << "galactic center corresponds to Ra = " << sd5.ra() << " , Dec = " << sd5.dec() << std::endl;
-return;
+return ok;
 }
 
 
@@ -44,7 +49,7 @@ int main(){
 using namespace astro;
 using namespace std;
 
-    testSkyDir();
+    if( !testSkyDir() )return 1;
 
     JulianDate JD2000 = JulianDate(2000,1,1,12.); //2451545
     
