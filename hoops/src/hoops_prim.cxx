@@ -14,6 +14,7 @@
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include <cerrno>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -44,14 +45,6 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
-  // Static variable definitions.
-  //////////////////////////////////////////////////////////////////////////////
-  static const char * const sFloatFormat = float_format();
-  static const char * const sDoubleFormat = double_format();
-  static const char * const sLongDoubleFormat = long_double_format();
-  //////////////////////////////////////////////////////////////////////////////
-
-  //////////////////////////////////////////////////////////////////////////////
   // Type definitions.
   //////////////////////////////////////////////////////////////////////////////
   class Conv {
@@ -73,57 +66,57 @@ namespace hoops {
         { if (s) d = "true"; else d = "false"; }
 
       static void Convert(const char & s, bool & d) {
-        if (Lim<char>::is_signed && s < char(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > char(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (Lim<char>::is_signed && s < char(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > char(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, char & d) { d = s; }
       static void Convert(const char & s, signed char & d) {
-        if (!Lim<char>::is_signed && s > (char) Lim<signed char>::max)
-          { d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (!Lim<char>::is_signed && s > (char) Lim<signed char>::max())
+          { d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed char)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, signed short & d) {
         if (!Lim<char>::is_signed &&
-          (unsigned short) s > (unsigned short) Lim<signed short>::max)
-          { d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+          (unsigned short) s > (unsigned short) Lim<signed short>::max())
+          { d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed short)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, signed int & d) {
         if (!Lim<char>::is_signed &&
-          (unsigned int) s > (unsigned int) Lim<signed int>::max)
-          { d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+          (unsigned int) s > (unsigned int) Lim<signed int>::max())
+          { d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed int)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, signed long & d) {
         if (!Lim<char>::is_signed &&
-          (unsigned long) s > (unsigned long) Lim<signed long>::max)
-          { d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+          (unsigned long) s > (unsigned long) Lim<signed long>::max())
+          { d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed long)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, unsigned char & d) {
-        if (Lim<char>::is_signed && s < (char) Lim<unsigned char>::min)
-          { d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+        if (Lim<char>::is_signed && s < (char) Lim<unsigned char>::min())
+          { d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned char)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, unsigned short & d) {
         if (Lim<char>::is_signed &&
-          (signed short) s < (signed short) Lim<unsigned short>::min)
-          { d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+          (signed short) s < (signed short) Lim<unsigned short>::min())
+          { d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned short)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, unsigned int & d) {
         if (Lim<char>::is_signed &&
-          (signed int) s < (signed int) Lim<unsigned int>::min)
-          { d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+          (signed int) s < (signed int) Lim<unsigned int>::min())
+          { d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned int)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, unsigned long & d) {
         if (Lim<char>::is_signed &&
-          (signed long) s < (signed long) Lim<unsigned long>::min)
-          { d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+          (signed long) s < (signed long) Lim<unsigned long>::min())
+          { d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned long)(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const char & s, float & d)
@@ -136,15 +129,15 @@ namespace hoops {
         { char buf[16]; sprintf(buf, "%d", s); d = buf; }
 
       static void Convert(const signed char & s, bool & d) {
-        if (s < char(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > char(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < char(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > char(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, char & d) {
-        if (!Lim<char>::is_signed && s < (signed char) Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (!Lim<char>::is_signed && s < (signed char) Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, signed char & d) { d = s; }
@@ -152,23 +145,23 @@ namespace hoops {
       static void Convert(const signed char & s, signed int & d) { d = s; }
       static void Convert(const signed char & s, signed long & d) { d = s; }
       static void Convert(const signed char & s, unsigned char & d) {
-        if (s < (signed char) Lim<unsigned char>::min)
-          { d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+        if (s < (signed char) Lim<unsigned char>::min())
+          { d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned char) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, unsigned short & d) {
-        if (s < (signed short) Lim<unsigned short>::min)
-          { d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+        if (s < (signed short) Lim<unsigned short>::min())
+          { d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, unsigned int & d) {
-        if (s < (signed int) Lim<unsigned int>::min)
-          { d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+        if (s < (signed int) Lim<unsigned int>::min())
+          { d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, unsigned long & d) {
-        if (s < (signed long) Lim<unsigned long>::min)
-          { d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
+        if (s < (signed long) Lim<unsigned long>::min())
+          { d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed char & s, float & d)
@@ -181,49 +174,49 @@ namespace hoops {
         { char buf[16]; sprintf(buf, "%d", s); d = buf; }
 
       static void Convert(const signed short & s, bool & d) {
-        if (s < (signed short)(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > (signed short)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed short)(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > (signed short)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, char & d) {
-        if (s < (signed short) Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned short) s > (unsigned short) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed short) Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned short) s > (unsigned short) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, signed short & d) { d = s; }
       static void Convert(const signed short & s, signed int & d) { d = s; }
       static void Convert(const signed short & s, signed long & d) { d = s; }
       static void Convert(const signed short & s, unsigned char & d) {
-        if (s < (signed short) Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned short) s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed short) Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned short) s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, unsigned short & d) {
-        if (s < (signed short) Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed short) Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, unsigned int & d) {
-        if (s < (signed int) Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int) Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, unsigned long & d) {
-        if (s < (signed long) Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed short & s, float & d)
@@ -236,57 +229,57 @@ namespace hoops {
         { char buf[16]; sprintf(buf, "%hd", s); d = buf; }
 
       static void Convert(const signed int & s, bool & d) {
-        if (s < (signed int)(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > (signed int)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int)(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > (signed int)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, char & d) {
-        if (s < (signed int) Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned int) s > (unsigned int) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int) Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned int) s > (unsigned int) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, signed short & d) {
-        if (s < Lim<signed short>::min) {
-          d = Lim<signed short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed short>::max) {
-          d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed short>::min()) {
+          d = Lim<signed short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed short>::max()) {
+          d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed short)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, signed int & d) { d = s; }
       static void Convert(const signed int & s, signed long & d) { d = s; }
       static void Convert(const signed int & s, unsigned char & d) {
-        if (s < (signed int) Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned int) s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int) Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned int) s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, unsigned short & d) {
-        if (s < (signed int) Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned int) s > Lim<unsigned short>::max) {
-          d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int) Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned int) s > Lim<unsigned short>::max()) {
+          d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, unsigned int & d) {
-        if (s < (signed int) Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed int) Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, unsigned long & d) {
-        if (s < (signed long) Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed int & s, float & d)
@@ -299,65 +292,65 @@ namespace hoops {
         { char buf[32]; sprintf(buf, "%d", s); d = buf; }
 
       static void Convert(const signed long & s, bool & d) {
-        if (s < (signed long)(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > (signed long)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long)(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > (signed long)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0 != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, char & d) {
-        if (s < (signed long) Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned long) s > (unsigned long) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned long) s > (unsigned long) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, signed short & d) {
-        if (s < Lim<signed short>::min) {
-          d = Lim<signed short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed short>::max) {
-          d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed short>::min()) {
+          d = Lim<signed short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed short>::max()) {
+          d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed short)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, signed int & d) {
-        if (s < Lim<signed int>::min) {
-          d = Lim<signed int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed int>::max) {
-          d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed int>::min()) {
+          d = Lim<signed int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed int>::max()) {
+          d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed int)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, signed long & d) { d = s; }
       static void Convert(const signed long & s, unsigned char & d) {
-        if (s < (signed long) Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned long) s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned long) s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, unsigned short & d) {
-        if (s < (signed long) Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned long) s > Lim<unsigned short>::max) {
-          d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned long) s > Lim<unsigned short>::max()) {
+          d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, unsigned int & d) {
-        if (s < (signed long) Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((unsigned long) s > Lim<unsigned int>::max) {
-          d = Lim<unsigned int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if ((unsigned long) s > Lim<unsigned int>::max()) {
+          d = Lim<unsigned int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, unsigned long & d) {
-        if (s < (signed long) Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        if (s < (signed long) Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const signed long & s, float & d)
@@ -370,33 +363,33 @@ namespace hoops {
         { char buf[64]; sprintf(buf, "%ld", s); d = buf; }
 
       static void Convert(const unsigned char & s, bool & d) {
-        if (s > (unsigned char)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s > (unsigned char)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, char & d) {
-        if (Lim<char>::is_signed && s > (unsigned char) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (Lim<char>::is_signed && s > (unsigned char) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, signed char & d) {
-        if (s > (unsigned char) Lim<signed char>::max)
-          { d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned char) Lim<signed char>::max())
+          { d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed char) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, signed short & d) {
-        if (s > (unsigned short) Lim<signed short>::max)
-          { d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned short) Lim<signed short>::max())
+          { d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, signed int & d) {
-        if (s > (unsigned int) Lim<signed int>::max)
-          { d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned int) Lim<signed int>::max())
+          { d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, signed long & d) {
-        if (s > (unsigned long) Lim<signed long>::max)
-          { d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed long>::max())
+          { d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned char & s, unsigned char & d) { d = s; }
@@ -414,38 +407,38 @@ namespace hoops {
         { char buf[16]; sprintf(buf, "%u", s); d = buf; }
 
       static void Convert(const unsigned short & s, bool & d) {
-        if (s > (unsigned short)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s > (unsigned short)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, char & d) {
-        if (Lim<char>::is_signed && s > (unsigned short) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (Lim<char>::is_signed && s > (unsigned short) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, signed char & d) {
-        if (s > (unsigned short) Lim<signed char>::max)
-          { d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned short) Lim<signed char>::max())
+          { d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed char) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, signed short & d) {
-        if (s > (unsigned short) Lim<signed short>::max)
-          { d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned short) Lim<signed short>::max())
+          { d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, signed int & d) {
-        if (s > (unsigned int) Lim<signed int>::max)
-          { d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned int) Lim<signed int>::max())
+          { d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, signed long & d) {
-        if (s > (unsigned long) Lim<signed long>::max)
-          { d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed long>::max())
+          { d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, unsigned char & d) {
-        if (s > Lim<unsigned char>::max)
-          { d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned char>::max())
+          { d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned short & s, unsigned short & d)
@@ -463,43 +456,43 @@ namespace hoops {
         { char buf[16]; sprintf(buf, "%hu", s); d = buf; }
 
       static void Convert(const unsigned int & s, bool & d) {
-        if (s > (unsigned int)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s > (unsigned int)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, char & d) {
-        if (Lim<char>::is_signed && s > (unsigned int) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (Lim<char>::is_signed && s > (unsigned int) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, signed char & d) {
-        if (s > (unsigned int) Lim<signed char>::max)
-          { d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned int) Lim<signed char>::max())
+          { d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed char) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, signed short & d) {
-        if (s > (unsigned int) Lim<signed short>::max)
-          { d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned int) Lim<signed short>::max())
+          { d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, signed int & d) {
-        if (s > (unsigned int) Lim<signed int>::max)
-          { d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned int) Lim<signed int>::max())
+          { d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, signed long & d) {
-        if (s > (unsigned long) Lim<signed long>::max)
-          { d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed long>::max())
+          { d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, unsigned char & d) {
-        if (s > Lim<unsigned char>::max)
-          { d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned char>::max())
+          { d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, unsigned short & d) {
-        if (s > Lim<unsigned short>::max)
-          { d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned short>::max())
+          { d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned short)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned int & s, unsigned int & d) { d = s; }
@@ -514,48 +507,48 @@ namespace hoops {
         { char buf[32]; sprintf(buf, "%u", s); d = buf; }
 
       static void Convert(const unsigned long & s, bool & d) {
-        if (s > (unsigned long)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s > (unsigned long)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0u != s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, char & d) {
-        if (Lim<char>::is_signed && s > (unsigned long) Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (Lim<char>::is_signed && s > (unsigned long) Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = char(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, signed char & d) {
-        if (s > (unsigned long) Lim<signed char>::max)
-          { d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed char>::max())
+          { d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed char) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, signed short & d) {
-        if (s > (unsigned long) Lim<signed short>::max)
-          { d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed short>::max())
+          { d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed short) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, signed int & d) {
-        if (s > (unsigned long) Lim<signed int>::max)
-          { d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed int>::max())
+          { d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed int) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, signed long & d) {
-        if (s > (unsigned long) Lim<signed long>::max)
-          { d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > (unsigned long) Lim<signed long>::max())
+          { d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (signed long) s; throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, unsigned char & d) {
-        if (s > Lim<unsigned char>::max)
-          { d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned char>::max())
+          { d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned char)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, unsigned short & d) {
-        if (s > Lim<unsigned short>::max)
-          { d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned short>::max())
+          { d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned short)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, unsigned int & d) {
-        if (s > Lim<unsigned int>::max)
-          { d = Lim<unsigned int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
+        if (s > Lim<unsigned int>::max())
+          { d = Lim<unsigned int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__); }
         else { d = (unsigned int)(s); if (sThrowBadSize) throw Hexception(P_BADSIZE, "", __FILE__, __LINE__); }
       }
       static void Convert(const unsigned long & s, unsigned long & d)
@@ -570,73 +563,73 @@ namespace hoops {
         { char buf[64]; sprintf(buf, "%lu", s); d = buf; }
 
       static void Convert(const float & s, bool & d) {
-        if (s < float(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > float(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < float(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > float(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0.f != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, char & d) {
-        if (s < Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, signed short & d) {
-        if (s < Lim<signed short>::min) {
-          d = Lim<signed short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed short>::max) {
-          d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed short>::min()) {
+          d = Lim<signed short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed short>::max()) {
+          d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, signed int & d) {
-        if (s < Lim<signed int>::min) {
-          d = Lim<signed int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed int>::max) {
-          d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed int>::min()) {
+          d = Lim<signed int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed int>::max()) {
+          d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, signed long & d) {
-        if (s < Lim<signed long>::min) {
-          d = Lim<signed long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed long>::max) {
-          d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed long>::min()) {
+          d = Lim<signed long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed long>::max()) {
+          d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, unsigned char & d) {
-        if (s < Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, unsigned short & d) {
-        if (s < Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned short>::max) {
-          d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned short>::max()) {
+          d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, unsigned int & d) {
-        if (s < Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned int>::max) {
-          d = Lim<unsigned int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned int>::max()) {
+          d = Lim<unsigned int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, unsigned long & d) {
-        if (s < Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned long>::max) {
-          d = Lim<unsigned long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned long>::max()) {
+          d = Lim<unsigned long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const float & s, float & d) { d = s; }
@@ -646,80 +639,81 @@ namespace hoops {
         { char buf[32]; sprintf(buf, sFloatFormat, s); d = buf; }
 
       static void Convert(const double & s, bool & d) {
-        if (s < double(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > double(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < double(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > double(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0. != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, char & d) {
-        if (s < Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, signed short & d) {
-        if (s < Lim<signed short>::min) {
-          d = Lim<signed short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed short>::max) {
-          d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed short>::min()) {
+          d = Lim<signed short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed short>::max()) {
+          d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, signed int & d) {
-        if (s < Lim<signed int>::min) {
-          d = Lim<signed int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed int>::max) {
-          d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed int>::min()) {
+          d = Lim<signed int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed int>::max()) {
+          d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, signed long & d) {
-        if (s < Lim<signed long>::min) {
-          d = Lim<signed long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed long>::max) {
-          d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed long>::min()) {
+          d = Lim<signed long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed long>::max()) {
+          d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, unsigned char & d) {
-        if (s < Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, unsigned short & d) {
-        if (s < Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned short>::max) {
-          d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned short>::max()) {
+          d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, unsigned int & d) {
-        if (s < Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned int>::max) {
-          d = Lim<unsigned int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned int>::max()) {
+          d = Lim<unsigned int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, unsigned long & d) {
-        if (s < Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned long>::max) {
-          d = Lim<unsigned long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned long>::max()) {
+          d = Lim<unsigned long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const double & s, float & d) {
-        if (s < Lim<float>::min) {
-          d = Lim<float>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<float>::max) {
-          d = Lim<float>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        double s_abs = fabs(s);
+        if (s_abs < Lim<float>::min()) {
+          d = Lim<float>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s_abs > Lim<float>::max()) {
+          d = Lim<float>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = float(s); }
       }
       static void Convert(const double & s, double & d) { d = s; }
@@ -728,87 +722,89 @@ namespace hoops {
         { char buf[64]; sprintf(buf, sDoubleFormat, s); d = buf; }
 
       static void Convert(const long double & s, bool & d) {
-        if (s < (long double)(Lim<bool>::min)) {
-          d = Lim<bool>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > (long double)(Lim<bool>::max)) {
-          d = Lim<bool>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < (long double)(Lim<bool>::min())) {
+          d = Lim<bool>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > (long double)(Lim<bool>::max())) {
+          d = Lim<bool>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (0.L != s); throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, char & d) {
-        if (s < Lim<char>::min) {
-          d = Lim<char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<char>::max) {
-          d = Lim<char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<char>::min()) {
+          d = Lim<char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<char>::max()) {
+          d = Lim<char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, signed char & d) {
-        if (s < Lim<signed char>::min) {
-          d = Lim<signed char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed char>::max) {
-          d = Lim<signed char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed char>::min()) {
+          d = Lim<signed char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed char>::max()) {
+          d = Lim<signed char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, signed short & d) {
-        if (s < Lim<signed short>::min) {
-          d = Lim<signed short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed short>::max) {
-          d = Lim<signed short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed short>::min()) {
+          d = Lim<signed short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed short>::max()) {
+          d = Lim<signed short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, signed int & d) {
-        if (s < Lim<signed int>::min) {
-          d = Lim<signed int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed int>::max) {
-          d = Lim<signed int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed int>::min()) {
+          d = Lim<signed int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed int>::max()) {
+          d = Lim<signed int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, signed long & d) {
-        if (s < Lim<signed long>::min) {
-          d = Lim<signed long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<signed long>::max) {
-          d = Lim<signed long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<signed long>::min()) {
+          d = Lim<signed long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<signed long>::max()) {
+          d = Lim<signed long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (signed long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, unsigned char & d) {
-        if (s < Lim<unsigned char>::min) {
-          d = Lim<unsigned char>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned char>::max) {
-          d = Lim<unsigned char>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned char>::min()) {
+          d = Lim<unsigned char>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned char>::max()) {
+          d = Lim<unsigned char>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned char) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, unsigned short & d) {
-        if (s < Lim<unsigned short>::min) {
-          d = Lim<unsigned short>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned short>::max) {
-          d = Lim<unsigned short>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned short>::min()) {
+          d = Lim<unsigned short>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned short>::max()) {
+          d = Lim<unsigned short>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned short) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, unsigned int & d) {
-        if (s < Lim<unsigned int>::min) {
-          d = Lim<unsigned int>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned int>::max) {
-          d = Lim<unsigned int>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned int>::min()) {
+          d = Lim<unsigned int>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned int>::max()) {
+          d = Lim<unsigned int>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned int) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, unsigned long & d) {
-        if (s < Lim<unsigned long>::min) {
-          d = Lim<unsigned long>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<unsigned long>::max) {
-          d = Lim<unsigned long>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        if (s < Lim<unsigned long>::min()) {
+          d = Lim<unsigned long>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s > Lim<unsigned long>::max()) {
+          d = Lim<unsigned long>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = (unsigned long) s; throw Hexception(P_PRECISION, "", __FILE__, __LINE__); }
       }
       static void Convert(const long double & s, float & d) {
-        if (s < Lim<float>::min) {
-          d = Lim<float>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<float>::max) {
-          d = Lim<float>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        long double s_abs = fabs(s);
+        if (s_abs < Lim<float>::min()) {
+          d = Lim<float>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s_abs > Lim<float>::max()) {
+          d = Lim<float>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = float(s); }
       }
       static void Convert(const long double & s, double & d) {
-        if (s < Lim<double>::min) {
-          d = Lim<double>::min; throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if (s > Lim<double>::max) {
-          d = Lim<double>::max; throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
+        long double s_abs = fabs(s);
+        if (s_abs < Lim<double>::min()) {
+          d = Lim<double>::min(); throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
+        } else if (s_abs > Lim<double>::max()) {
+          d = Lim<double>::max(); throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else { d = double(s); }
       }
       static void Convert(const long double & s, long double & d) { d = s; }
@@ -832,19 +828,21 @@ namespace hoops {
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         signed long val = strtol(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<char>::max;
+          d = Lim<char>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if ((signed long) Lim<char>::min > val) {
-          d = Lim<char>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (char) val;
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if ((signed long) Lim<char>::min() > val) {
+          d = Lim<char>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<char>::max) < val) {
-          d = Lim<char>::max;
+        } else if ((tmpval = Lim<char>::max()) < val) {
+          d = Lim<char>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (char) val;
-          if (val < Lim<unsigned char>::min) throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__);
+          if (val < Lim<unsigned char>::min()) throw Hexception(P_SIGNEDNESS, "", __FILE__, __LINE__);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, signed char & d) {
         char * r = 0;
@@ -852,18 +850,20 @@ namespace hoops {
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         signed long val = strtol(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<signed char>::max;
+          d = Lim<signed char>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<signed char>::min > val) {
-          d = Lim<signed char>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (signed char)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<signed char>::min() > val) {
+          d = Lim<signed char>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<signed char>::max) < val) {
-          d = Lim<signed char>::max;
+        } else if ((tmpval = Lim<signed char>::max()) < val) {
+          d = Lim<signed char>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (signed char)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, signed short & d) {
         char * r = 0;
@@ -871,18 +871,20 @@ namespace hoops {
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
                 signed long val = strtol(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<signed short>::max;
+          d = Lim<signed short>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<signed short>::min > val) {
-          d = Lim<signed short>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (signed short)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<signed short>::min() > val) {
+          d = Lim<signed short>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<signed short>::max) < val) {
-          d = Lim<signed short>::max;
+        } else if ((tmpval = Lim<signed short>::max()) < val) {
+          d = Lim<signed short>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (signed short)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, signed int & d) {
         char * r = 0;
@@ -890,30 +892,34 @@ namespace hoops {
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         signed long val = strtol(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<signed int>::max;
+          d = Lim<signed int>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<signed int>::min > val) {
-          d = Lim<signed int>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (signed int)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<signed int>::min() > val) {
+          d = Lim<signed int>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<signed int>::max) < val) {
-          d = Lim<signed int>::max;
+        } else if ((tmpval = Lim<signed int>::max()) < val) {
+          d = Lim<signed int>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (signed int)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, signed long & d) {
         char * r = 0;
         errno = 0;
         signed long val = strtol(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<signed short>::max;
+          d = Lim<signed short>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
+        } else if (!IPrim::IsBlank(r)) {
+          d = val;
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
         } else {
           d = val;
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, unsigned char & d) {
         char * r = 0;
@@ -921,18 +927,20 @@ namespace hoops {
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         unsigned long val = strtoul(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<unsigned char>::max;
+          d = Lim<unsigned char>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<unsigned char>::min > val) {
-          d = Lim<unsigned char>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (unsigned char)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<unsigned char>::min() > val) {
+          d = Lim<unsigned char>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<unsigned char>::max) < val) {
-          d = Lim<unsigned char>::max;
+        } else if ((tmpval = Lim<unsigned char>::max()) < val) {
+          d = Lim<unsigned char>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (unsigned char)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, unsigned short & d) {
         char * r = 0;
@@ -940,18 +948,20 @@ namespace hoops {
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         unsigned long val = strtoul(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<unsigned short>::max;
+          d = Lim<unsigned short>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<unsigned short>::min > val) {
-          d = Lim<unsigned short>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (unsigned short)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<unsigned short>::min() > val) {
+          d = Lim<unsigned short>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<unsigned short>::max) < val) {
-          d = Lim<unsigned short>::max;
+        } else if ((tmpval = Lim<unsigned short>::max()) < val) {
+          d = Lim<unsigned short>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (unsigned short)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, unsigned int & d) {
         char * r = 0;
@@ -959,30 +969,34 @@ namespace hoops {
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         unsigned long val = strtoul(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<unsigned int>::max;
+          d = Lim<unsigned int>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<unsigned int>::min > val) {
-          d = Lim<unsigned int>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = (unsigned int)(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<unsigned int>::min() > val) {
+          d = Lim<unsigned int>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<unsigned int>::max) < val) {
-          d = Lim<unsigned int>::max;
+        } else if ((tmpval = Lim<unsigned int>::max()) < val) {
+          d = Lim<unsigned int>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = (unsigned int)(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, unsigned long & d) {
         char * r = 0;
         errno = 0;
         unsigned long val = strtoul(s.c_str(), &r, 0);
         if (ERANGE == errno) {
-          d = Lim<unsigned long>::max;
+          d = Lim<unsigned long>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
+        } else if (!IPrim::IsBlank(r)) {
+          d = val;
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
         } else {
           d = val;
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, float & d) {
         char * r = 0;
@@ -990,48 +1004,67 @@ namespace hoops {
         double tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
         double val = strtod(s.c_str(), &r);
         if (ERANGE == errno) {
-          d = Lim<float>::max;
+          d = Lim<float>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
-        } else if (Lim<float>::min > val) {
-          d = Lim<float>::min;
+        } else if (!IPrim::IsBlank(r)) {
+          d = float(val);
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
+        } else if (Lim<float>::min() > fabs(val)) {
+          d = Lim<float>::min();
           throw Hexception(P_UNDERFLOW, "", __FILE__, __LINE__);
-        } else if ((tmpval = Lim<float>::max) < val) {
-          d = Lim<float>::max;
+        } else if ((tmpval = Lim<float>::max()) < fabs(val)) {
+          d = Lim<float>::max();
           throw Hexception(P_OVERFLOW, "", __FILE__, __LINE__);
         } else {
           d = float(val);
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, double & d) {
         char * r = 0;
         errno = 0;
         double val = strtod(s.c_str(), &r);
         if (ERANGE == errno) {
-          d = Lim<double>::max;
+          d = Lim<double>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
+        } else if (!IPrim::IsBlank(r)) {
+          d = val;
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
         } else {
           d = val;
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, long double & d) {
         char * r = 0;
         errno = 0;
         double val = strtod(s.c_str(), &r);
         if (ERANGE == errno) {
-          d = Lim<long double>::max;
+          d = Lim<long double>::max();
           throw Hexception(P_STR_OVERFLOW, "", __FILE__, __LINE__);
+        } else if (!IPrim::IsBlank(r)) {
+          d = val;
+          throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
         } else {
           d = val;
         }
-        if (!IPrim::IsBlank(r)) throw Hexception(P_STR_INVALID, "", __FILE__, __LINE__);
       }
       static void Convert(const std::string & s, std::string & d) { d = s; }
       static bool sThrowBadSize;
+
+      static const char * const sFloatFormat;
+      static const char * const sDoubleFormat;
+      static const char * const sLongDoubleFormat;
+
   };
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Static variable definitions.
+  //////////////////////////////////////////////////////////////////////////////
   bool Conv::sThrowBadSize = false;
+  const char * const Conv::sFloatFormat = float_format();
+  const char * const Conv::sDoubleFormat = double_format();
+  const char * const Conv::sLongDoubleFormat = long_double_format();
+  //////////////////////////////////////////////////////////////////////////////
+
 
   // Template class Prim. Any Prim class can be constructed from
   // any primitive type, though exceptions can be thrown if the
@@ -1168,6 +1201,21 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.14  2004/06/24 20:35:57  peachey
+ * The Lim class's min/max member variables have become min()/max() methods,
+ * with the same meaning as in std::numeric_limits. This required 3 changes
+ * to the Prim class:
+ * 1. Change min/max to min()/max() syntax.
+ * 2. When checking floating point values, use fabs when comparing to
+ *    min()/max().
+ * 3. When converting from strings, test for string overflows (non-blank
+ *    text following a numeric value) before testing value for numeric
+ *    overflows.
+ *
+ * Revision 1.13  2004/06/22 16:56:37  peachey
+ * Replace purely static string constants with static member constants
+ * in the (purely internal) Conv class.
+ *
  * Revision 1.12  2004/03/31 16:20:33  peachey
  * Make proper boolean expressions instead of using implicit conversion to
  * bool, to silence VC7 performance warnings on Windows.

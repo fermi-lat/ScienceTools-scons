@@ -113,7 +113,9 @@ namespace hoops {
       int nPar = 0;
       status = PILGetNumParameters(&nPar);
       if (PIL_OK != status)
-        throw PILException(status, "Could not get the number of parameters in the file", __FILE__, __LINE__);
+        throw PILException(status,
+        "Could not get the number of parameters for component " + mComponent,
+        __FILE__, __LINE__);
 
       // Make space to store parameter array.
       pp = new PIL_PARAM[nPar];
@@ -127,7 +129,8 @@ namespace hoops {
         status = PILGetParameter(ii, pp + ii, &minmaxok, &vmin, &vmax);
         if (PIL_OK != status) {
           std::ostringstream s;
-          s << "Problem reading the " << ii + 1 << "th line in the parameter file for " << mComponent;
+          s << "Problem reading the " << ii + 1 <<
+            "th line in the parameter file for component " << mComponent;
           throw PILException(status, s.str(), __FILE__, __LINE__);
         }
 
@@ -138,14 +141,15 @@ namespace hoops {
             PIL_FORMAT_OK != pp[ii].format) {
           status = PAR_FILE_CORRUPT;
           std::ostringstream s;
-          s << "The " << ii + 1 << "th line in the parameter file for " << mComponent << " is invalid";
+          s << "The " << ii + 1 << "th line in the parameter file for component "
+            << mComponent << " is invalid";
           throw PILException(status, s.str(), __FILE__, __LINE__);
         }
       }
 
       // At this point, no further problems _should_ happen, so go
       // ahead and clear the current parameter group.
-      if (mGroup) mGroup->Clear(); else mGroup = new ParGroup;
+      if (mGroup) mGroup->Clear(); else mGroup = new ParGroup(mComponent);
 
       // Loop over local copy of parameters, and use them to create
       // the parameter group.
@@ -210,37 +214,43 @@ namespace hoops {
             bool p = *par;
             status = PILPutBool(par->Name().c_str(), p);
             if (PIL_OK != status) {
-              err_stream << "Could not write boolean parameter " << par->Name() << " for " << mComponent;
+              err_stream << "Could not write boolean parameter " << par->Name() <<
+                " for component " << mComponent;
               throw PILException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("f")) {
             status = PILPutFname(par->Name().c_str(), *par);
             if (PIL_OK != status) {
-              err_stream << "Could not write file name parameter " << par->Name() << " for " << mComponent;
+              err_stream << "Could not write file name parameter " << par->Name() <<
+                " for component " << mComponent;
               throw PILException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("i")) {
             long p = *par;
             status = PILPutInt(par->Name().c_str(), p);
             if (PIL_OK != status) {
-              err_stream << "Could not write int parameter " << par->Name() << " for " << mComponent;
+              err_stream << "Could not write int parameter " << par->Name() <<
+                " for component " << mComponent;
               throw PILException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("r")) {
             status = PILPutReal(par->Name().c_str(), *par);
             if (PIL_OK != status) {
-              err_stream << "Could not write real parameter " << par->Name() << " for " << mComponent;
+              err_stream << "Could not write real parameter " << par->Name() <<
+                " for component " << mComponent;
               throw PILException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("s")) {
             status = PILPutString(par->Name().c_str(), *par);
             if (PIL_OK != status) {
-              err_stream << "Could not write string parameter " << par->Name() << " for " << mComponent;
+              err_stream << "Could not write string parameter " << par->Name() <<
+                " for component " << mComponent;
               throw PILException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else {
             status = PAR_INVALID_TYPE;
-            err_stream << "Parameter " << par->Name() << " has invalid type " << type;
+            err_stream << "Parameter " << par->Name() << " in component " << mComponent
+              << " has invalid type " << type;
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
         }
@@ -255,12 +265,12 @@ namespace hoops {
   }
 
   IParGroup & PILParFile::Group() {
-    if (!mGroup) mGroup = new ParGroup;
+    if (!mGroup) mGroup = new ParGroup(mComponent);
     return *mGroup;
   }
 
   const IParGroup & PILParFile::Group() const {
-    if (!mGroup) mGroup = new ParGroup;
+    if (!mGroup) mGroup = new ParGroup(mComponent);
     return *mGroup;
   }
 
@@ -275,7 +285,8 @@ namespace hoops {
   GenParItor PILParFile::begin() {
     if (!mGroup) {
       std::ostringstream s;
-      s << "Attempt to find the beginning of a NULL group of parameters for " << mComponent;
+      s << "Attempt to find the beginning of a NULL group of parameters for " <<
+        mComponent;
       throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return mGroup->begin();
@@ -284,7 +295,8 @@ namespace hoops {
   ConstGenParItor PILParFile::begin() const {
     if (!mGroup) {
       std::ostringstream s;
-      s << "Attempt to find the beginning of a NULL group of parameters for " << mComponent << " (const)";
+      s << "Attempt to find the beginning of a NULL group of parameters for " <<
+        mComponent << " (const)";
       throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return static_cast<const IParGroup *>(mGroup)->begin();
@@ -293,7 +305,8 @@ namespace hoops {
   GenParItor PILParFile::end() {
     if (!mGroup) {
       std::ostringstream s;
-      s << "Attempt to find the end of a NULL group of parameters for " << mComponent;
+      s << "Attempt to find the end of a NULL group of parameters for " <<
+        mComponent;
       throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return mGroup->end();
@@ -302,7 +315,8 @@ namespace hoops {
   ConstGenParItor PILParFile::end() const {
     if (!mGroup) {
       std::ostringstream s;
-      s << "Attempt to find the end of a NULL group of parameters for " << mComponent << " (const)";
+      s << "Attempt to find the end of a NULL group of parameters for " <<
+        mComponent << " (const)";
       throw PILException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return static_cast<const IParGroup *>(mGroup)->end();
@@ -446,7 +460,8 @@ namespace hoops {
           int r = 0;
           status = PILGetBool(it->c_str(), &r);
           if (PIL_OK != status) {
-            err_stream << "Cannot get boolean parameter " << *it;
+            err_stream << "Cannot get boolean parameter " << *it <<
+              " for component " << mFile->Component();
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
           par = 0 != r;
@@ -454,7 +469,8 @@ namespace hoops {
           char r[PIL_LINESIZE] = "";
           status = PILGetFname(it->c_str(), r);
           if (PIL_OK != status) {
-            err_stream << "Cannot get file name parameter " << *it;
+            err_stream << "Cannot get file name parameter " << *it <<
+              " for component " << mFile->Component();
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
           par = r;
@@ -462,7 +478,8 @@ namespace hoops {
           int r = 0;
           status = PILGetInt(it->c_str(), &r);
           if (PIL_OK != status) {
-            err_stream << "Cannot get int parameter " << *it;
+            err_stream << "Cannot get int parameter " << *it <<
+              " for component " << mFile->Component();
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
           par = r;
@@ -470,7 +487,8 @@ namespace hoops {
           double r = 0.;
           status = PILGetReal(it->c_str(), &r);
           if (PIL_OK != status) {
-            err_stream << "Cannot get real parameter " << *it;
+            err_stream << "Cannot get real parameter " << *it <<
+              " for component " << mFile->Component();
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
           par = r;
@@ -478,13 +496,15 @@ namespace hoops {
           char r[PIL_LINESIZE] = "";
           status = PILGetString(it->c_str(), r);
           if (PIL_OK != status) {
-            err_stream << "Cannot get string parameter " << *it;
+            err_stream << "Cannot get string parameter " << *it <<
+              " for component " << mFile->Component();
             throw PILException(status, err_stream.str(), __FILE__, __LINE__);
           }
           par = r;
         } else {
           status = PAR_INVALID_TYPE;
-          err_stream << "Cannot prompt for parameter of unknown type " << type;
+          err_stream << "Cannot prompt for parameter of unknown type " << type <<
+            " for component " << mFile->Component();
           throw PILException(status, err_stream.str(), __FILE__, __LINE__);
         }
 
@@ -621,6 +641,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.20  2004/09/21 16:48:46  peachey
+ * Report name of group whenever errors are thrown.
+ *
  * Revision 1.19  2004/03/31 16:20:33  peachey
  * Make proper boolean expressions instead of using implicit conversion to
  * bool, to silence VC7 performance warnings on Windows.

@@ -39,7 +39,8 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type declarations/definitions.
   //////////////////////////////////////////////////////////////////////////////
-  ParPromptGroup::ParPromptGroup(int argc, char * argv[], const std::string & comp_name): IParGroup(), mFile(0),
+  ParPromptGroup::ParPromptGroup(int argc, char * argv[],
+    const std::string & comp_name): IParGroup(), mFile(0),
     mPrompter(0) {
     // Use comp_name if one was supplied to find the parameter file, otherwise
     // use argv[0].
@@ -90,19 +91,22 @@ namespace hoops {
   }
 
   IParGroup & ParPromptGroup::Add(IPar * p) {
-    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+    throw Hexception(PAR_UNSUPPORTED,
+      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Add(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(IPar * p) {
-    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+    throw Hexception(PAR_UNSUPPORTED,
+      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(const std::string & pname) {
-    throw Hexception(PAR_UNSUPPORTED, "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+    throw Hexception(PAR_UNSUPPORTED,
+      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(pname);
     return *this;
   }
@@ -160,6 +164,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.5  2004/09/21 16:48:06  peachey
+ * Shorten line lengths to conform to package convention.
+ *
  * Revision 1.4  2004/03/30 21:14:46  peachey
  * Allow PILParPrompt and ParPromptGroup constructors to accept optional
  * component name which is then used in lieu of argv[0]

@@ -16,6 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
+#include "hoops/hoops_numeric_limits.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace hoops {
@@ -79,7 +80,11 @@ namespace hoops {
   // must be a fundamental primitive type: bool, char, etc.
   //////////////////////////////////////////////////////////////////////////////
   template <typename T>
-  class Lim {
+#ifdef HAVE_LIMITS
+  class Lim : public std::numeric_limits<T> {
+#else
+  class Lim : public hoops::numeric_limits<T> {
+#endif
     public:
       inline static bool is_smaller_than(PrimTypeCode_e typecode) throw () {
         switch (typecode) {
@@ -105,21 +110,11 @@ namespace hoops {
       // but it is only valid when applied to integral types.
       static bool maybe_smaller_than(PrimTypeCode_e typecode) throw ()
         { return false; }
-      static const PrimTypeCode_e code;
 
-      // Redefinitions based on the ISO standard numeric_limits class
-      // This wrapping is done because of variations in the implementations
-      // of numeric_limits, as well as differences in template handling
-      // on different systems. In addition, min for floating point types
-      // is -max, unlike the numeric_limits meaning of min which is the
-      // absolute value of the smallest possible floating value.
-      static const int digits10;
-      static T const epsilon;
-      static const bool is_integer;
-      static const bool is_signed;
-      static const T round_error;
-      static const T max;
-      static const T min;
+      static PrimTypeCode_e GetCode() { return code; }
+
+    private:
+      static PrimTypeCode_e code;
   };
 
   // Template class Lim specializations.
@@ -169,275 +164,6 @@ namespace hoops {
       throw ()
     { return 0 != (LONG_TYPE & typecode); }
 
-#ifdef FOO
-  // Lim<T>::code static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const PrimTypeCode_e Lim<bool>::code;
-  template <>
-  const PrimTypeCode_e Lim<char>::code;
-  template <>
-  const PrimTypeCode_e Lim<signed char>::code;
-  template <>
-  const PrimTypeCode_e Lim<short>::code;
-  template <>
-  const PrimTypeCode_e Lim<int>::code;
-  template <>
-  const PrimTypeCode_e Lim<long>::code;
-  template <>
-  const PrimTypeCode_e Lim<unsigned char>::code;
-  template <>
-  const PrimTypeCode_e Lim<unsigned short>::code;
-  template <>
-  const PrimTypeCode_e Lim<unsigned int>::code;
-  template <>
-  const PrimTypeCode_e Lim<unsigned long>::code;
-  template <>
-  const PrimTypeCode_e Lim<float>::code;
-  template <>
-  const PrimTypeCode_e Lim<double>::code;
-  template <>
-  const PrimTypeCode_e Lim<long double>::code;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::digits10 static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const int Lim<bool>::digits10;
-  template <>
-  const int Lim<char>::digits10;
-  template <>
-  const int Lim<signed char>::digits10;
-  template <>
-  const int Lim<short>::digits10;
-  template <>
-  const int Lim<int>::digits10;
-  template <>
-  const int Lim<long>::digits10;
-  template <>
-  const int Lim<unsigned char>::digits10;
-  template <>
-  const int Lim<unsigned short>::digits10;
-  template <>
-  const int Lim<unsigned int>::digits10;
-  template <>
-  const int Lim<unsigned long>::digits10;
-  template <>
-  const int Lim<float>::digits10;
-  template <>
-  const int Lim<double>::digits10;
-  template <>
-  const int Lim<long double>::digits10;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::epsilon static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::epsilon;
-  template <>
-  const char Lim<char>::epsilon;
-  template <>
-  const signed char Lim<signed char>::epsilon;
-  template <>
-  const short Lim<short>::epsilon;
-  template <>
-  const int Lim<int>::epsilon;
-  template <>
-  const long Lim<long>::epsilon;
-  template <>
-  const unsigned char Lim<unsigned char>::epsilon;
-  template <>
-  const unsigned short Lim<unsigned short>::epsilon;
-  template <>
-  const unsigned int Lim<unsigned int>::epsilon;
-  template <>
-  const unsigned long Lim<unsigned long>::epsilon;
-  template <>
-  const float Lim<float>::epsilon;
-  template <>
-  const double Lim<double>::epsilon;
-  template <>
-  const long double Lim<long double>::epsilon;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::is_integer static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::is_integer;
-  template <>
-  const bool Lim<char>::is_integer;
-  template <>
-  const bool Lim<signed char>::is_integer;
-  template <>
-  const bool Lim<short>::is_integer;
-  template <>
-  const bool Lim<int>::is_integer;
-  template <>
-  const bool Lim<long>::is_integer;
-  template <>
-  const bool Lim<unsigned char>::is_integer;
-  template <>
-  const bool Lim<unsigned short>::is_integer;
-  template <>
-  const bool Lim<unsigned int>::is_integer;
-  template <>
-  const bool Lim<unsigned long>::is_integer;
-  template <>
-  const bool Lim<float>::is_integer;
-  template <>
-  const bool Lim<double>::is_integer;
-  template <>
-  const bool Lim<long double>::is_integer;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::is_signed static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::is_signed;
-  template <>
-  const bool Lim<char>::is_signed;
-  template <>
-  const bool Lim<signed char>::is_signed;
-  template <>
-  const bool Lim<short>::is_signed;
-  template <>
-  const bool Lim<int>::is_signed;
-  template <>
-  const bool Lim<long>::is_signed;
-  template <>
-  const bool Lim<unsigned char>::is_signed;
-  template <>
-  const bool Lim<unsigned short>::is_signed;
-  template <>
-  const bool Lim<unsigned int>::is_signed;
-  template <>
-  const bool Lim<unsigned long>::is_signed;
-  template <>
-  const bool Lim<float>::is_signed;
-  template <>
-  const bool Lim<double>::is_signed;
-  template <>
-  const bool Lim<long double>::is_signed;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::round_error static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::round_error;
-  template <>
-  const char Lim<char>::round_error;
-  template <>
-  const signed char Lim<signed char>::round_error;
-  template <>
-  const short Lim<short>::round_error;
-  template <>
-  const int Lim<int>::round_error;
-  template <>
-  const long Lim<long>::round_error;
-  template <>
-  const unsigned char Lim<unsigned char>::round_error;
-  template <>
-  const unsigned short Lim<unsigned short>::round_error;
-  template <>
-  const unsigned int Lim<unsigned int>::round_error;
-  template <>
-  const unsigned long Lim<unsigned long>::round_error;
-  template <>
-  const float Lim<float>::round_error;
-  template <>
-  const double Lim<double>::round_error;
-  template <>
-  const long double Lim<long double>::round_error;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::max static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::max;
-  template <>
-  const char Lim<char>::max;
-  template <>
-  const signed char Lim<signed char>::max;
-  template <>
-  const short Lim<short>::max;
-  template <>
-  const int Lim<int>::max;
-  template <>
-  const long Lim<long>::max;
-  template <>
-  const unsigned char Lim<unsigned char>::max;
-  template <>
-  const unsigned short Lim<unsigned short>::max;
-  template <>
-  const unsigned int Lim<unsigned int>::max;
-  template <>
-  const unsigned long Lim<unsigned long>::max;
-  template <>
-  const float Lim<float>::max;
-  template <>
-  const double Lim<double>::max;
-  template <>
-  const long double Lim<long double>::max;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Lim<T>::min static declarations.
-  //////////////////////////////////////////////////////////////////////////////
-  template <>
-  const bool Lim<bool>::min;
-  template <>
-  const char Lim<char>::min;
-  template <>
-  const signed char Lim<signed char>::min;
-  template <>
-  const short Lim<short>::min;
-  template <>
-  const int Lim<int>::min;
-  template <>
-  const long Lim<long>::min;
-  template <>
-  const unsigned char Lim<unsigned char>::min;
-  template <>
-  const unsigned short Lim<unsigned short>::min;
-  template <>
-  const unsigned int Lim<unsigned int>::min;
-  template <>
-  const unsigned long Lim<unsigned long>::min;
-  // Note: for all floating points, min is -max, _not_ min in the
-  // sense of numeric_limits::min().
-  template <>
-  const float Lim<float>::min;
-  template <>
-  const double Lim<double>::min;
-  template <>
-  const long double Lim<long double>::min;
-  //////////////////////////////////////////////////////////////////////////////
-
-  // Support of all the above for long long.
-  //////////////////////////////////////////////////////////////////////////////
-#ifdef HAVE_LONGLONG
-  // Specializations of all static members of Lim for type long long.
-  template <>
-  const PrimTypeCode_e Lim<long long>::code;
-
-  template <>
-  const long long Lim<long long>::epsilon;
-
-  template <>
-  const bool Lim<long long>::is_signed;
-
-  template <>
-  const bool Lim<long long>::is_integer;
-
-  template <>
-  const long long Lim<long long>::round_error;
-
-  template <>
-  const long long Lim<long long>::max;
-
-  template <>
-  const long long Lim<long long>::min;
-#endif
-#endif
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
@@ -454,6 +180,22 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.7  2004/06/24 20:48:39  peachey
+ * Remove dead code which had been left in with an #ifdef until
+ * it was certain it was not needed.
+ *
+ * Revision 1.6  2004/06/24 20:26:38  peachey
+ * Correct a violation of ISO standard; static const int/enum types
+ * must be initialized where they are declared. The Lim class's "code"
+ * static member variable was therefore changed to be non-const. To
+ * protect its value, it was made private and an accessor, GetCode()
+ * was added.
+ *
+ * In addition, all Lim's other const static members which shadow
+ * numeric_limits members were removed, and instead Lim derives
+ * directly from std::numeric_limits (or hoops::numeric_limits if
+ * std::numeric_limits is not available.)
+ *
  * Revision 1.5  2004/03/31 16:20:52  peachey
  * Make proper boolean expressions instead of using implicit conversion to
  * bool, to silence VC7 performance warnings on Windows.

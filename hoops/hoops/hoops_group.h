@@ -43,7 +43,7 @@ namespace hoops {
       typedef BiDirItor<IPar *, Container_t::iterator> Itor_t;
       typedef ConstBiDirItor<IPar *, Container_t::const_iterator> ConstItor_t;
 
-      ParGroup();
+      ParGroup(const std::string & comp_name);
       ParGroup(const ParGroup & g);
 
       virtual ~ParGroup();
@@ -73,6 +73,7 @@ namespace hoops {
 
     private:
       Container_t mPars;
+      std::string mGroupName;
   };
 
   //////////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.7  2004/09/21 16:47:04  peachey
+ * Add name of group field to class, and use it in error messages.
+ *
  * Revision 1.6  2003/11/26 18:50:03  peachey
  * Merging changes made to SLAC repository into Goddard repository.
  *

@@ -29,33 +29,34 @@ namespace hoops {
   // Lim<T>::code static initializations.
   //////////////////////////////////////////////////////////////////////////////
   template <>
-  const PrimTypeCode_e Lim<bool>::code = P_BOOL;
+  PrimTypeCode_e Lim<bool>::code = P_BOOL;
   template <>
-  const PrimTypeCode_e Lim<char>::code = P_CHAR;
+  PrimTypeCode_e Lim<char>::code = P_CHAR;
   template <>
-  const PrimTypeCode_e Lim<signed char>::code = P_SCHAR;
+  PrimTypeCode_e Lim<signed char>::code = P_SCHAR;
   template <>
-  const PrimTypeCode_e Lim<short>::code = P_SHORT;
+  PrimTypeCode_e Lim<short>::code = P_SHORT;
   template <>
-  const PrimTypeCode_e Lim<int>::code = P_INT;
+  PrimTypeCode_e Lim<int>::code = P_INT;
   template <>
-  const PrimTypeCode_e Lim<long>::code = P_LONG;
+  PrimTypeCode_e Lim<long>::code = P_LONG;
   template <>
-  const PrimTypeCode_e Lim<unsigned char>::code = P_UCHAR;
+  PrimTypeCode_e Lim<unsigned char>::code = P_UCHAR;
   template <>
-  const PrimTypeCode_e Lim<unsigned short>::code = P_USHORT;
+  PrimTypeCode_e Lim<unsigned short>::code = P_USHORT;
   template <>
-  const PrimTypeCode_e Lim<unsigned int>::code = P_UINT;
+  PrimTypeCode_e Lim<unsigned int>::code = P_UINT;
   template <>
-  const PrimTypeCode_e Lim<unsigned long>::code = P_ULONG;
+  PrimTypeCode_e Lim<unsigned long>::code = P_ULONG;
   template <>
-  const PrimTypeCode_e Lim<float>::code = P_FLOAT;
+  PrimTypeCode_e Lim<float>::code = P_FLOAT;
   template <>
-  const PrimTypeCode_e Lim<double>::code = P_DOUBLE;
+  PrimTypeCode_e Lim<double>::code = P_DOUBLE;
   template <>
-  const PrimTypeCode_e Lim<long double>::code = P_LONGDOUBLE;
+  PrimTypeCode_e Lim<long double>::code = P_LONGDOUBLE;
   //////////////////////////////////////////////////////////////////////////////
 
+#ifdef OLD_LIMITS_IMPLEMENTATION
   // Lim<T>::digits10 static initializations.
   //////////////////////////////////////////////////////////////////////////////
   template <>
@@ -363,11 +364,17 @@ namespace hoops {
     }
     return min;
   }
+// the following #endif is for HAVE_LONGLONG
+#endif
+// the following #endif is for OLD_LIMITS_IMPLEMENTATION
+#endif
 
+#ifdef HAVE_LONGLONG
   // Specializations of all static members of Lim for type long long.
   template <>
-  const PrimTypeCode_e Lim<long long>::code = P_LONGLONG;
+  PrimTypeCode_e Lim<long long>::code = P_LONGLONG;
 
+#ifdef OLD_LIMITS_IMPLEMENTATION
   template <>
   const long long Lim<long long>::epsilon =
       numeric_limits<long long>::epsilon();
@@ -383,6 +390,7 @@ namespace hoops {
 
   template <>
   const long long Lim<long long>::min = LongLongMin();
+#endif
 #endif
   //////////////////////////////////////////////////////////////////////////////
 
@@ -418,6 +426,18 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.4  2004/06/24 20:26:39  peachey
+ * Correct a violation of ISO standard; static const int/enum types
+ * must be initialized where they are declared. The Lim class's "code"
+ * static member variable was therefore changed to be non-const. To
+ * protect its value, it was made private and an accessor, GetCode()
+ * was added.
+ *
+ * In addition, all Lim's other const static members which shadow
+ * numeric_limits members were removed, and instead Lim derives
+ * directly from std::numeric_limits (or hoops::numeric_limits if
+ * std::numeric_limits is not available.)
+ *
  * Revision 1.3  2003/12/02 14:39:44  peachey
  * To support compilers which do not have limits, such as g++ 2.95.x,
  * add round_error field to Lim class. This allows the test code to

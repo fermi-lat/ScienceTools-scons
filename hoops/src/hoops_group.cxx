@@ -25,8 +25,10 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   // Type definitions.
   //////////////////////////////////////////////////////////////////////////////
-  ParGroup::ParGroup(): IParGroup(), mPars() {}
-  ParGroup::ParGroup(const ParGroup & g): IParGroup(), mPars() {
+  ParGroup::ParGroup(const std::string & name): IParGroup(), mPars(),
+    mGroupName(name) {}
+  ParGroup::ParGroup(const ParGroup & g): IParGroup(), mPars(),
+    mGroupName(g.mGroupName) {
     std::vector<IPar *>::const_iterator it;
     for (it = g.mPars.begin(); it != g.mPars.end(); ++it) 
       mPars.push_back((*it)->Clone());
@@ -59,7 +61,8 @@ namespace hoops {
 
     // If not found, throw an exception to indicate this fact.
     if (it == mPars.end()) throw Hexception(PAR_NOT_FOUND,
-      std::string("Parameter ") + pname + std::string(" not found in group"), __FILE__, __LINE__);
+      "Parameter " + pname + " not found in parameter group " + mGroupName,
+      __FILE__, __LINE__);
 
     // Otherwise, return the found parameter.
     return *(*it);
@@ -112,6 +115,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.10  2004/09/21 16:47:03  peachey
+ * Add name of group field to class, and use it in error messages.
+ *
  * Revision 1.9  2004/03/24 16:59:19  peachey
  * Improve messages in thrown exceptions.
  *
