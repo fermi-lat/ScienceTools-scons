@@ -56,7 +56,7 @@ FitsTable::FitsTable(const std::string filename, const std::string extName,
 }
 
 FitsTable::~FitsTable() {
-   delete m_fptr;
+//   delete m_fptr;
    delete m_extName;
    for (int i = 0; i < m_tfields; i++) {
       delete m_ttype[i];
