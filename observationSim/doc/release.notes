@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r3p4 15-Dec-03   JC   add random seed access to obsSim
     v2r5p3 12-Dec-03   JC   update *Container destructors; 
                             use cfitsio v1r2470p0
     v2r5p2 06-Dec-03   JC   argv fixes
