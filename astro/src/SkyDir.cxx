@@ -41,7 +41,7 @@ namespace astro {
     /** @brief initialize from direction
     */
     SkyDir::SkyDir(Hep3Vector dir, CoordSystem inputType)
-        : m_dir(dir)
+        : m_dir(dir.unit())
     {
         if(inputType!=EQUATORIAL){
             m_dir = s_celestialToGalactic.inverse() * m_dir;

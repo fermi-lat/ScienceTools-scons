@@ -144,7 +144,7 @@ using namespace std;
 
 	//now test the galactic transformation function:
 	SkyDir zenith(20,0,astro::SkyDir::GALACTIC);
-	SkyDir xdir(110,0,astro::SkyDir::GALACTIC);
+	SkyDir xdir(-70,0,astro::SkyDir::GALACTIC);
 	PointingTransform trans(zenith,xdir);
 	Hep3Vector vertical(0,0,1);
 	double templ=trans.gDir(vertical).l();	
