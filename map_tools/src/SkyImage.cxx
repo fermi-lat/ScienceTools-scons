@@ -1,4 +1,4 @@
- /** @file SkyImage.cxx
+/** @file SkyImage.cxx
 
 @brief implement the class SkyImage
 $Header$
@@ -14,7 +14,7 @@ $Header$
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
-        //! @brief add a string or douuble key to the image 
+    //! @brief add a string or douuble key to the image 
 
     BaseImage* image;
     void setKey(std::string name, double value, std::string unit="", std::string comment=""){
@@ -37,15 +37,35 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_wcs(0)
 {
     using namespace astro;
+    std::string ptype(pars.projType());
+    double pixelsize = pars["pixelsize"];
+
+    if( m_naxis1==0){
+        // special code to determine all-sky limits based on scale factor and transformation
+        std::string types[]={"" ,"CAR","AIT","ZEA"};
+        int xsize[] =       {360, 360,  325,  230}; 
+        int ysize[] =       {180, 180,  163,  230}; 
+        for( int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
+            if( ptype == types[i]) {
+                m_naxis1 = xsize[i]/pixelsize;
+                m_naxis2 = ysize[i]/pixelsize;
+                break;
+            }
+        }
+        if( m_naxis1==0) {
+            throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
+                +ptype +" does not have default image size");
+        }
+    }
     bool galactic = pars.uselb();
 
-        /// arrays describing transformation; pointers passed to wcslib
-    double 
-        crval[2]={pars.xref(), pars.yref()},
-        crpix[2]={m_naxis1*0.5 +0.5, m_naxis2*0.5 +0.5},
-        cdelt[2]={-pars.imgSizeX()/double(m_naxis1), pars.imgSizeY()/double(m_naxis2)},
+    /// arrays describing transformation: assume reference in the center
+    double          //lon            lat
+        crval[2]={ pars.xref(),      pars.yref()},
+        crpix[2]={ (m_naxis1+1)/2.0, (m_naxis2+1)/2.0},
+        cdelt[2]={ -pixelsize,       pixelsize },
         crota2=pars.rot();
-    m_wcs = new astro::SkyProj(  pars.projType(),  crpix, crval, cdelt, crota2, galactic);
+    m_wcs = new astro::SkyProj( pars.projType(), crpix, crval, cdelt, crota2, galactic);
 
     // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
@@ -111,7 +131,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
             std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
     }
 
-     // note that the ctype may be blank: wcslib treats this like CAR
+    // note that the ctype may be blank: wcslib treats this like CAR
     std::string  trans = ctype.substr(ctype.size()-3,3);
 
     /// arrays describing transformation; pointers passed to wcslib
@@ -212,11 +232,11 @@ double SkyImage::pixelValue(const astro::SkyDir& pos,unsigned  int layer)const
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 float &  SkyImage::operator[](const astro::SkyDir&  pixel)
- {
+{
     unsigned int k = pixel_index(pixel);
     return  reinterpret_cast<FloatImg*>(m_image)->data()[k];        
- }
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const float &  SkyImage::operator[](const astro::SkyDir&  pixel)const
 {
     unsigned int k = pixel_index(pixel);
