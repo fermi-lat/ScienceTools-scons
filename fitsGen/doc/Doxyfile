@@ -1,5 +1,5 @@
 PROJECT_NAME           = "fitsGen"
-PROJECT_NUMBER         = "v0r1"
+PROJECT_NUMBER         = "v0r4"
 FILE_PATTERNS          = *.h *.cxx
 STRIP_CODE_COMMENTS    = NO
 #QUIET                  = YES
