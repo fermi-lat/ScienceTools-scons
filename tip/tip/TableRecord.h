@@ -34,16 +34,32 @@ namespace table {
 
       virtual ~TableCell() {}
 
-      /** \brief Get the current value of this TableCell from current iterator position.
+      /** \brief Get a single value from this TableCell at the current iterator position.
           The type of the converted value is given by the template parameter.
           \param value The current value.
       */
       template <typename T>
       void get(T & value) const;
 
+      /** \brief Get a sequence of values from this TableCell at the current iterator position.
+          The type of the converted sequence is given by the template parameter.
+          \param src_begin Index of the first input element.
+          \param src_end Index of the element after the last input element.
+          \param dest_begin Pointer to the first element in the destination sequence. The caller
+          is responsible for making sure adequate space is allocated.
+      */
       template <typename T>
       void get(Index_t src_begin, Index_t src_end, T * dest_begin) const;
 
+      /** \brief Set a single value in this TableCell at the current iterator position.
+          The type of the source value is given by the template parameter.
+          \param value The current value.
+      */
+      template <typename T>
+      void set(const T & value);
+
+      /** \brief Get the number of elements in the Cell.
+      */
       Index_t getNumElements() const;
 
     private:
@@ -190,6 +206,7 @@ namespace table {
   };
 
   // TableCell
+  // get method overloads:
   template <typename T>
   inline void TableCell::get(T & value) const {
     if (m_field_index < 0)
@@ -202,6 +219,15 @@ namespace table {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
     m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), src_begin, src_end, dest_begin);
+  }
+
+  // set method overloads:
+  template <typename T>
+  inline void TableCell::set(const T & value) {
+    T tmp[1]; // Need an array so that valid begin/end iterators may be passeed to the table.
+    tmp[0] = value;
+    if (m_field_index < 0) m_field_index = m_record.getTabularData()->getFieldIndex(m_field);
+    m_record.getTabularData()->setCell(m_field_index, m_record.getIndex(), 0, tmp, tmp + 1);
   }
 
   inline Index_t TableCell::getNumElements() const {

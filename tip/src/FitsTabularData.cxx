@@ -152,6 +152,56 @@ namespace table {
     getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
   }
 
+  // set methods
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    bool * dest_begin, bool * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    double * dest_begin, double * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    float * dest_begin, float * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    char * dest_begin, char * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    signed char * dest_begin, signed char * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    signed short * dest_begin, signed short * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    signed int * dest_begin, signed int * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    signed long * dest_begin, signed long * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    unsigned char * dest_begin, unsigned char * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    unsigned short * dest_begin, unsigned short * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    unsigned int * dest_begin, unsigned int * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+  void FitsTabularData::setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+    unsigned long * dest_begin, unsigned long * dest_end) {
+    setCellGeneric(field_index, record_index, src_begin, dest_begin, dest_end);
+  }
+
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {
     m_extension.getKeywordGeneric<double>(name, value);
   }

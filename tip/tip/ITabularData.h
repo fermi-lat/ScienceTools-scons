@@ -65,6 +65,38 @@ namespace table {
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
         unsigned long * dest_begin) const = 0;
 
+      /** \brief Set one or more values in the current tabular data object.
+          \param field_index The index of the field (column) to set.
+          \param record_index The record index (row number) whose value to set.
+          \param src_begin Index of the first element within the Cell.
+          \param dest_begin Pointer to the first element in the output sequence.
+          \param dest_end Pointer to the first element in the output sequence.
+      */
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        bool * dest_begin, bool * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        double * dest_begin, double * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        float * dest_begin, float * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        char * dest_begin, char * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed char * dest_begin, signed char * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed short * dest_begin, signed short * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed int * dest_begin, signed int * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        signed long * dest_begin, signed long * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned char * dest_begin, unsigned char * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned short * dest_begin, unsigned short * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned int * dest_begin, unsigned int * dest_end) = 0;
+      virtual void setCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin,
+        unsigned long * dest_begin, unsigned long * dest_end) = 0;
+
   };
 
 }

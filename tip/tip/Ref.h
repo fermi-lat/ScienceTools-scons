@@ -32,7 +32,7 @@ namespace table {
           refers to.
           \param data The source value for the assignment.
       */
-      ReferenceAdaptor & operator =(const T & data) { m_data = data; /* m_referent->write(data); */ return *this; }
+      ReferenceAdaptor & operator =(const T & data);
 
       /** \brief Retrieve the current templated parameter data value of this object.
       */
@@ -42,6 +42,15 @@ namespace table {
       T m_data;
       Referent * m_referent;
   };
+
+  template <typename T, typename Referent>
+  ReferenceAdaptor<T, Referent> & ReferenceAdaptor<T, Referent>::operator =(const T & data) {
+    if (m_data != data) {
+      m_data = data;
+      m_referent->set(m_data);
+    }
+    return *this;
+  }
 
 }
 
