@@ -292,6 +292,11 @@ int main(int iargc, char * argv[]) {
    std::vector<double> impsfprederr   = meritTuple("IMpsfPredErr");
 
    for (unsigned int i = 0; i < nevts; i++) {
+
+     (calibVersion[i])[0] = 0.;
+     (calibVersion[i])[1] = 0.;
+     (calibVersion[i])[2] = 0.;
+
      bool good_energy_cut   = (imgoodcalprob[i]>0.2); 
      bool zdir_cut          = (reconzdir[i]<-0.2);      
      bool no_cal_cut        = (calenergysum[i]<5.0)||(calcsirln[i]<2.0);
