@@ -176,7 +176,7 @@ namespace tip {
       /** \brief Get number of elements in the given cell.
           \param record_index The record number identifying the cell.
       */
-      virtual long getNumElements(Index_t record_index) const {
+      virtual long getNumElements(Index_t record_index = 0) const {
         if (!m_var_length) return m_repeat;
         int status = 0;
         long num_els = 0;
@@ -197,7 +197,7 @@ namespace tip {
 
         // Update column information.
         m_repeat = num_elements;
-        if (1 < m_repeat) m_scalar = true; else m_scalar = false;
+        if (1 == m_repeat && !m_var_length) m_scalar = true; else m_scalar = false;
       }
 
     private:
