@@ -155,6 +155,55 @@ namespace table {
     getVectorCellGeneric(field_index, record_index, value);
   }
 
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    bool * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    double * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    float * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    char * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    signed char * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    signed short * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    signed int * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    signed long * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    unsigned char * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    unsigned short * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    unsigned int * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+    unsigned long * dest_begin) const {
+    getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);
+  }
+
   void FitsTabularData::getKeyword(const std::string & name, double & value) const {
     m_extension.getKeywordGeneric<double>(name, value);
   }

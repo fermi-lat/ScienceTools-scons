@@ -71,6 +71,38 @@ namespace table {
 
       virtual void getCell(FieldIndex_t field_index, Index_t record_index, std::vector<double> & value) const;
 
+      /** \brief Get one or more values from the current tabular data object.
+          \param field_index The index of the field (column) to get.
+          \param record_index The record index (row number) whose value to get.
+          \param src_begin Index of the first element within the Cell.
+          \param src_end Index of one element past the last element within the Cell.
+          \param dest_begin Pointer to the first element in the output sequence.
+      */
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        bool * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        double * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        float * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        char * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        signed char * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        signed short * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        signed int * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        signed long * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        unsigned char * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        unsigned short * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        unsigned int * dest_begin) const;
+      virtual void getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
+        unsigned long * dest_begin) const;
+
       /** \brief Get a keyword from this extension object.
           \param name The name of the keyword to get from the extension object.
           \param value The output value.
@@ -95,6 +127,17 @@ namespace table {
       */
       template <typename T>
       void getCellGeneric(int col_num, Index_t record_index, T & value) const;
+
+      /** \brief Templated function which can get any kind of data from a FITS table. This
+          method throws an exception if the extension is not a table.
+          \param field_index The index of the field (column) to get.
+          \param record_index The record index (row number) whose value to get.
+          \param src_begin Index of the first element within the Cell.
+          \param src_end Index of one element past the last element within the Cell.
+          \param dest_begin Pointer to the first element in the output sequence.
+      */
+      template <typename T>
+      void getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end, T * value) const;
 
       /** \brief Templated function which can get any kind of vector data from a FITS table. This
           method throws an exception if the extension is not a table.
@@ -143,6 +186,18 @@ namespace table {
     fits_read_col(fp, data_type_code, col_num, record_index + 1, 1, 1, 0, tmp, 0, &status);
     if (status) throw TableException();
     value = tmp;
+  }
+
+  // Getting columns.
+  template <typename T>
+  inline void FitsTabularData::getCellGeneric(int col_num, Index_t record_index, Index_t src_begin, Index_t src_end,
+    T * dest_begin) const {
+    static int data_type_code = FitsPrimProps<T>::dataTypeCode();
+    int status = 0;
+    fitsfile * fp = m_extension.getFitsFp();
+    fits_read_col(fp, data_type_code, col_num, record_index + 1, src_begin + 1, src_end - src_begin, 0,
+      dest_begin, 0, &status);
+    if (status) throw TableException();
   }
 
   // Getting vector-valued columns.
