@@ -8,6 +8,7 @@ branches astro cmt src doc
 
 use GlastPolicy  *
 use facilities   *
+use cfitsio * IExternal
 use CLHEP * IExternal
 use cfitsio * IExternal
 

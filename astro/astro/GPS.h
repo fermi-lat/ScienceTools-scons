@@ -203,6 +203,10 @@ private:
     std::string m_pointingHistoryFile;//pointing/livetime database history file to use.
     std::map<double,POINTINFO> m_pointingHistory;//pointing/livetime database history
     POINTINFO m_currentInterpPoint; //holder object for currently interpotated pointing information
+
+   bool haveFitsFile() const;
+   void readFitsData();
+   void fitsReportError(FILE *, int) const;
 };
 
 inline std::istream&    operator>>(std::istream& i, GPS::Coords& c) {

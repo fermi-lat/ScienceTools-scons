@@ -9,7 +9,9 @@
 #include "astro/EarthCoordinate.h"
 
 #include <iomanip>
+#include <stdexcept>
 
+#include "fitsio.h"
 
 // static declaration
 
@@ -412,20 +414,136 @@ int GPS::setRockType(RockType rockType){
     return ret;
 }
 
-void GPS::setUpHistory(){
-    std::ifstream input_file;
-    input_file.open(m_pointingHistoryFile.c_str());
+bool GPS::haveFitsFile() const {
+   std::ifstream file(m_pointingHistoryFile.c_str());
+   std::string line;
+   std::getline(file, line, '\n');
+   file.close();
+   if (line.find("SIMPLE") == 0) {
+      return true;
+   }
+   return false;
+}
 
-    if(false == input_file.is_open())
-    {
-        std::cerr << "ERROR:  Unable to open:  " << m_pointingHistoryFile.c_str() << std::endl;
-        exit(0);
-    }
-    else
-    {
-        double intrvalstart,posx,posy,posz,raz,decz,rax,decx,razenith,deczenith,lon,lat,alt;
-        //initialize the key structure:
-        while (!input_file.eof()){
+void GPS::readFitsData() {
+   fitsfile * fptr;
+   int status(0);
+   
+   fits_open_table(&fptr, m_pointingHistoryFile.c_str(), READONLY, &status);
+   fitsReportError(stderr, status);
+
+   long nrows;
+   char comment[80];
+   fits_read_key(fptr, TLONG, "NAXIS2", &nrows, comment, &status);
+   fitsReportError(stderr, status);
+
+   long firstelem(1);
+   int anynul(0);
+   double dnullval(0);
+   float fnullval(0);
+// column names in FT2 file:
+//    start, stop, sc_position, raz, decz, rax, decx, lat_geo, lon_geo
+// column numbers: 1, 2, 3, 11, 12, 13, 14, 4, 5
+   long stride(1000);
+   std::vector<double> start_time(stride);
+   std::vector<double> stop_time(stride);
+   std::vector<float> sc_pos(3*stride);
+   std::vector<float> raz(stride);
+   std::vector<float> decz(stride);
+   std::vector<float> rax(stride);
+   std::vector<float> decx(stride);
+   std::vector<float> lat_geo(stride);
+   std::vector<float> lon_geo(stride);
+   long nelements(stride);
+   int nstrides = nrows/stride;
+   if (nrows % stride != 0) nstrides++;
+   for (int istride = 0; istride < nstrides; istride++) {
+      long firstrow = istride*stride + 1;
+      if (istride == nstrides-1 && nrows % stride != 0) {
+         nelements = nrows % stride;
+      }
+      fits_read_col(fptr, TDOUBLE, 1, firstrow, firstelem, nelements, 
+                    &dnullval, &start_time[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TDOUBLE, 2, firstrow, firstelem, nelements, 
+                    &dnullval, &stop_time[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 3, firstrow, firstelem, nelements, 
+                    &fnullval, &sc_pos[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 11, firstrow, firstelem, nelements, 
+                    &fnullval, &raz[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 12, firstrow, firstelem, nelements, 
+                    &fnullval, &decz[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 13, firstrow, firstelem, nelements, 
+                    &fnullval, &rax[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 14, firstrow, firstelem, nelements, 
+                    &fnullval, &decx[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 4, firstrow, firstelem, nelements, 
+                    &fnullval, &lat_geo[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      fits_read_col(fptr, TFLOAT, 5, firstrow, firstelem, nelements, 
+                    &fnullval, &lon_geo[0], &anynul, &status);
+      fitsReportError(stderr, status);
+      
+      for (int i = 0; i < nelements; i++) {
+         POINTINFO row;
+         row.dirZ = astro::SkyDir(raz[i], decz[i]);
+         row.dirX = astro::SkyDir(rax[i], decx[i]);
+         row.lat = lat_geo[i];
+         row.lon = lon_geo[i];
+         int indx = i*3;
+         row.position = Hep3Vector(sc_pos[indx], sc_pos[indx+1], 
+                                   sc_pos[indx+2]);
+         m_pointingHistory[start_time[i]] = row;
+      }
+   }
+// setInterpPoint does not deal with the final time entry correctly,
+// so we need to pad with one more row.
+   POINTINFO row;
+   int i = nelements-1;
+   row.dirZ = astro::SkyDir(raz[i], decz[i]);
+   row.dirX = astro::SkyDir(rax[i], decx[i]);
+   row.lat = lat_geo[i];
+   row.lon = lon_geo[i];
+   int indx = i*3;
+   row.position = Hep3Vector(sc_pos[indx], sc_pos[indx+1], 
+                             sc_pos[indx+2]);
+   m_pointingHistory[stop_time[i]] = row;
+
+   fits_close_file(fptr, &status);
+   fitsReportError(stderr, status);
+}   
+
+void GPS::fitsReportError(FILE *stream, int status) const {
+   if (status != 0) {
+      fits_report_error(stream, status);
+      throw std::runtime_error("GPS::readFitsData: "
+                               + std::string("cfitsio error."));
+   }
+}
+
+void GPS::setUpHistory(){
+   if (haveFitsFile()) {
+      readFitsData();
+   } else {
+      std::ifstream input_file;
+      input_file.open(m_pointingHistoryFile.c_str());
+
+      if(false == input_file.is_open())
+      {
+         std::cerr << "ERROR:  Unable to open:  " << m_pointingHistoryFile.c_str() << std::endl;
+         exit(0);
+      }
+      else
+      {
+         double intrvalstart,posx,posy,posz,raz,decz,rax,decx,razenith,deczenith,lon,lat,alt;
+         //initialize the key structure:
+         while (!input_file.eof()){
             input_file >> intrvalstart;
             input_file >> posx;
             input_file >> posy;
@@ -448,9 +566,9 @@ void GPS::setUpHistory(){
             temp.position=Hep3Vector(posx,posy,posz);
 
             m_pointingHistory[intrvalstart]=temp;
-
-        }
-    }
+         }
+      }
+   }
 }
 
 void GPS::setInterpPoint(double time){
@@ -461,11 +579,11 @@ void GPS::setInterpPoint(double time){
     if((time< (*(m_pointingHistory.begin())).first )){
         timeTooEarly=true;
         std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
-        throw "Time out of Range!";
+        throw std::runtime_error("Time out of Range!");
     }else if(iter==m_pointingHistory.end()){
         timeTooLate=true;
         std::cerr << "WARNING: Time (" << time << ") out of range of times in the pointing database - interpolation process excepted out." << std::endl;
-        throw "Time out of Range!";
+        throw std::runtime_error("Time out of Range!");
     }
 #if 0 //THB
     //get the point after "time"
