@@ -33,7 +33,7 @@
 
 class OrbSim : public st_app::StApp {
 public:
-   OrbSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("orbSim")),
+   OrbSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("gtorbsim")),
               m_simulator(0) {
    }
    virtual ~OrbSim() throw() {

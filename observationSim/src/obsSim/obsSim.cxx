@@ -53,7 +53,7 @@ using st_facilities::Util;
 
 class ObsSim : public st_app::StApp {
 public:
-   ObsSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("obsSim")),
+   ObsSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("gtobssim")),
               m_simulator(0) {
    }
    virtual ~ObsSim() throw() {

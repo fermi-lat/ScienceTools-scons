@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r6   31-Jan-05   JC   rename apps using gt- convention
     v5r5p1 27-Jan-05   JC   Convert S/C position from km to m for FT2 output
     v5r5   15-Jan-05   JC   Windows fixes; Earth azimuth angle computed
     v5r4p6 21-Dec-04   JC   Earth code has been *copied* (!) to flux
