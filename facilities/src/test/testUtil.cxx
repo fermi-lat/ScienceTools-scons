@@ -7,14 +7,20 @@
  *  sensible definition.
  */
 int main(int, char**) {
-  std::string name = std::string("{FACILITIESROOT}/src");
-  std::string oDelim = std::string ("{");
+  std::string name = std::string("${GLAST_EXT}/xerces");
+  std::string nameAgain = std::string("${GLAST_EXT}/xerces");
+  std::string oDelim = std::string ("${");
   std::string cDelim = std::string ("}");
   int ntrans;
 
   try {
     ntrans = facilities::Util::expandEnvVar(&name, oDelim, cDelim);
-    std::cout << "Translated name is " << name << std::endl;  }
+    std::cout << "Translated name (right deliminters) is " 
+              << name << std::endl;  
+    ntrans = facilities::Util::expandEnvVar(&nameAgain);
+    std::cout << "Translated name (wrong delimiters) is " 
+              << nameAgain << std::endl;  
+  }
   catch (facilities::Untranslatable err) {
     std::cout << "Failed to completely translate " << name << std::endl;
   }
