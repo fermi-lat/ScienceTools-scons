@@ -1,6 +1,6 @@
 /**
  * @file makeFT2.cxx
- * @brief Convert ascii D2 data from Gleam to FT2 format using Goodi.
+ * @brief Convert Root D2 data from Gleam to FT2 format using Goodi.
  * @author J. Chiang
  *
  * $Header$
@@ -24,36 +24,19 @@
 #include "Goodi/IData.h"
 #include "Goodi/ISpacecraftData.h"
 
-namespace {
-
-// This routine breaks down a string into its components based on the
-// characters appearing in the delimiters string.  A vector
-// of strings is returned.
-   std::vector<std::string> string_split(std::string input, 
-                                         const std::string &delimiters) {
-      std::vector<std::string> components;
-      
-      std::string::size_type j;
-      while ( (j = input.find_first_of(delimiters)) != std::string::npos ) { 
-         if (j != 0) components.push_back(input.substr(0, j));
-         input = input.substr(j+1);
-      }
-      components.push_back(input);
-      return components;
-   }
-} // unnamed namespace
+#include "rootTuple/RootTuple.h"
 
 int main(int iargc, char * argv[]) {
 
    std::string d2File;
    if (iargc == 1) {
       std::string fitsGenRoot = ::getenv("FITSGENROOT");
-      d2File = fitsGenRoot + "/data/pointing_history.txt";
+      d2File = fitsGenRoot + "/data/pointing_history.root";
    } else if (iargc == 2) {
       if (argv[1] == "-h") {
          std::cout << "usage: " 
                    << argv[0] 
-                   << " <D2 file>" 
+                   << " <D2 root file>" 
                    << std::endl;
          return 0;
       } else {
@@ -61,66 +44,12 @@ int main(int iargc, char * argv[]) {
       }
    }
 
-   std::vector<double> time;
-   std::vector< std::valarray<float> > scPosition;
-   std::vector<float> latGeo;
-   std::vector<float> lonGeo;
-   std::vector<double> radGeo;
-   std::vector<float> raZenith;
-   std::vector<float> decZenith;
-//    std::vector<float> bMcIlwain;
-//    std::vector<float> lMcIlwain;
-   std::vector<float> raSCZ;
-   std::vector<float> decSCZ;
-   std::vector<float> raSCX;
-   std::vector<float> decSCX;
-//    std::vector< std::pair<double, double> > gti;
-//    std::vector<int> latMode;
-//    std::vector<double> livetime;
-//    std::vector<double> deadtime;
-
-   std::ifstream d2(d2File.c_str());
-   std::string line;
-   std::vector<std::string> dataFields;
-   std::valarray<float> pos(3);
-   while (std::getline(d2, line, '\n')) {
-      dataFields = ::string_split(line, "\t");
-      time.push_back(atof(dataFields[0].c_str()));
-      pos[0] = atof(dataFields[1].c_str());
-      pos[1] = atof(dataFields[2].c_str());
-      pos[2] = atof(dataFields[3].c_str());
-      scPosition.push_back(pos);
-      raSCZ.push_back(atof(dataFields[4].c_str()));
-      decSCZ.push_back(atof(dataFields[5].c_str()));
-      raSCX.push_back(atof(dataFields[6].c_str()));
-      decSCX.push_back(atof(dataFields[7].c_str()));
-      raZenith.push_back(atof(dataFields[8].c_str()));
-      decZenith.push_back(atof(dataFields[9].c_str()));
-      lonGeo.push_back(atof(dataFields[10].c_str()));
-      latGeo.push_back(atof(dataFields[11].c_str()));
-      radGeo.push_back(atof(dataFields[12].c_str()));
-      if (time.size() == 1) {
-         for (unsigned int i = 0; i < dataFields.size(); i++) {
-            std::cout << dataFields[i] << std::endl;
-         }
-         std::cout << "raSCZ: "     << raSCZ[0] << "\n"
-                   << "decSCZ: "    << decSCZ[0] << "\n"
-                   << "raSCX: "     << raSCX[0] << "\n"
-                   << "decSCX: "    << decSCX[0] << "\n"
-                   << "raZenith: "  << raZenith[0] << "\n"
-                   << "decZenith: " << decZenith[0] << "\n"
-                   << "lonGeo: "    << lonGeo[0] << "\n"
-                   << "latGeo: "    << latGeo[0] << "\n"
-                   << "radGeo: "    << radGeo[0] << std::endl;
-      }
-   }
-   unsigned int npts = time.size();
-   std::vector<double> startTime(npts);
-   std::vector<double> stopTime(npts);
-   std::copy(time.begin(), time.end(), startTime.begin());
-   std::copy(time.begin()+1, time.end(), stopTime.begin());
-   stopTime[npts-1] = startTime[npts-1] 
-      + (startTime[npts-1] - startTime[npts-2]);
+   RootTuple::RootTuple exposure(d2File, "pointing");
+   std::vector<std::string> colNames;
+   std::string query("");
+   int nentries(0);
+   colNames = exposure.branchNames();
+   exposure.readTree(colNames, query, nentries);
 
 // Goodi setup.
 
@@ -137,37 +66,113 @@ int main(int iargc, char * argv[]) {
       (dataCreator.create(datatype, mission));
 
 // Read the columns into Goodi.
+   unsigned int npts = exposure.nrows();
+
+// Start and stop times.
+   std::vector<double> startTime(npts);
+   std::vector<double> stopTime(npts);
+   std::copy(exposure("time").begin(), 
+             exposure("time").end(), 
+             startTime.begin());
+   std::copy(exposure("time").begin()+1, 
+             exposure("time").end(), 
+             stopTime.begin());
+   stopTime[npts-1] = startTime[npts-1] 
+      + (startTime[npts-1] - startTime[npts-2]);
    scData->setStartTime(startTime);
    scData->setStopTime(stopTime);
-//    scData->setGTI(gti);
-   scData->setSCposition(scPosition);
-   scData->setLatGeo(latGeo);
-   scData->setLonGeo(lonGeo);
-   scData->setRadGeo(radGeo);
-   scData->setRAZenith(raZenith);
-   scData->setDECZenith(decZenith);
-//    scData->setBMcIlwain(bMcIlwain);
-//    scData->setLMcIlwain(lMcIlwain);
-   scData->setRAscz(raSCZ);
-   scData->setDECscz(decSCZ);
-   scData->setRAscx(raSCX);
-   scData->setDECscx(decSCX);
-//    scData->setLatMode(latMode);
-//    scData->setLivetime(livetime);
-//    scData->setDeadtime(deadtime);
 
-// Check that these set methods are implemented.
-   std::cout << scData->startTime()[0] << "\n"
-             << scData->stopTime()[0] << "\n"
-             << "raSCZ: "     << scData->raSCZ()[0] << "\n"
-             << "decSCZ: "    << scData->decSCZ()[0] << "\n"
-             << "raSCX: "     << scData->raSCX()[0] << "\n"
-             << "decSCX: "    << scData->decSCX()[0] << "\n"
-             << "raZenith: "  << scData->raZenith()[0] << "\n"
-             << "decZenith: " << scData->decZenith()[0] << "\n"
-             << "lonGeo: "    << scData->lonGeo()[0] << "\n"
-             << "latGeo: "    << scData->latGeo()[0] << "\n"
-             << "radGeo: "    << scData->radGeo()[0] << std::endl;
+//    scData->setGTI(gti);
+
+// Spacecraft position.
+   std::vector< std::valarray<float> > scPosition(npts);
+   std::vector< std::valarray<float> >::iterator scPosIt = scPosition.begin();
+   std::vector<double>::const_iterator posx = exposure("posx").begin();
+   std::vector<double>::const_iterator posy = exposure("posy").begin();
+   std::vector<double>::const_iterator posz = exposure("posz").begin();
+   for ( ; scPosIt != scPosition.end(); scPosIt++) {
+      (*scPosIt).resize(3);
+      (*scPosIt)[0] = static_cast<float>(*posx++);
+      (*scPosIt)[1] = static_cast<float>(*posy++);
+      (*scPosIt)[2] = static_cast<float>(*posz++);
+   }
+   scData->setSCposition(scPosition);
+
+// Ground point longitude and latitude.  Convert to radians.
+   std::vector<float> lonGeo(npts);
+   std::transform( exposure("lon").begin(), 
+                   exposure("lon").end(),
+                   lonGeo.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setLonGeo(lonGeo);
+   std::vector<float> latGeo(npts);
+   std::transform( exposure("lat").begin(), 
+                   exposure("lat").end(),
+                   latGeo.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setLatGeo(latGeo);
+
+// Assume this is the same as altitude.  Convert from km to m.
+   std::vector<double> radGeo(npts);
+   std::transform( exposure("alt").begin(), 
+                   exposure("alt").end(),
+                   radGeo.begin(), 
+                   std::bind2nd(std::multiplies<double>(), 1e3) );
+   scData->setRadGeo(radGeo);
+
+// // Zenith in Celestial coordinates.
+//    std::vector<float> raZenith(npts);
+//    std::copy(exposure("").begin(), exposure("").begin(), raZenith.begin());
+//    scData->setRAZenith(raZenith);
+//    std::vector<float> decZenith(npts);
+//    std::copy(exposure("").begin(), exposure("").begin(), decZenith.begin());
+//    scData->setDECZenith(decZenith);
+
+// // Geomagnetic quantities.
+//    std::vector<float> bMcIlwain(npts);
+//    std::copy(exposure("").begin(), exposure("").begin(), bMcIlwain.begin());
+//    scData->setBMcIlwain(bMcIlwain);
+//    std::vector<float> lMcIlwain(npts);
+//    std::copy(exposure("").begin(), exposure("").begin(), lMcIlwain.begin());
+//    scData->setLMcIlwain(lMcIlwain);
+
+// Spacecraft z-axis in Celestial coordinates.
+   std::vector<float> raSCZ(npts);
+   std::transform( exposure("raz").begin(), 
+                   exposure("raz").end(),
+                   raSCZ.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setRAscz(raSCZ);
+
+   std::vector<float> decSCZ(npts);
+   std::transform( exposure("decz").begin(), 
+                   exposure("decz").end(),
+                   decSCZ.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setDECscz(decSCZ);
+
+// Spacecraft x-axis in Celestial coordinates.
+   std::vector<float> raSCX(npts);
+   std::transform( exposure("rax").begin(), 
+                   exposure("rax").end(),
+                   raSCX.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setRAscx(raSCX);
+
+   std::vector<float> decSCX(npts);
+   std::transform( exposure("decx").begin(), 
+                   exposure("decx").end(),
+                   decSCX.begin(), 
+                   std::bind2nd(std::multiplies<float>(), M_PI/180.) );
+   scData->setDECscx(decSCX);
+
+//    std::vector< std::pair<double, double> > gti(npts);
+//    std::vector<int> latMode(npts);
+//    scData->setLatMode(latMode);
+//    std::vector<double> livetime(npts);
+//    scData->setLivetime(livetime);
+//    std::vector<double> deadtime(npts);
+//    scData->setDeadtime(deadtime);
 
 // Goodi I/O service object.
    Goodi::IDataIOService *goodiIoService = iosvcCreator.create();
@@ -176,9 +181,5 @@ int main(int iargc, char * argv[]) {
    scData->write(goodiIoService, outputFile);
 
    delete goodiIoService;
-
-// Test for consistency: read in the data just written out and ensure
-// that it is the same.
-
 
 }

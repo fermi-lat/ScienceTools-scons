@@ -1,5 +1,5 @@
 package fitsGen
-version v0
+version v0r1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -29,6 +29,7 @@ macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreeP
 # Make sure test applications gets built when library changes.
 macro makeFT1stamps "makeFT1.stamp"
 macro makeFT2stamps "makeFT2.stamp"
+macro makeFT2astamps "makeFT2a.stamp"
 
 # Standard package library (It's empty so one should be able to 
 # get rid of this):
@@ -42,4 +43,5 @@ set INFILES "$(GOODIROOT)/Data"
 
 # The applications:
 application makeFT1 makeFT1.cxx
-#application makeFT2 makeFT2.cxx
+application makeFT2 makeFT2.cxx
+application makeFT2a makeFT2a.cxx
