@@ -5,6 +5,7 @@
 $Id$
 @verbatim
 
+ 04-mar-04 v3r1p1 THB fix for test program
  04-mar-04 v3r1  THB allow constructing SkyImage from fits file, and access to pixel values
  03-mar-04 v3r0  THB refactoring to better enable external use; with Jim, better key implementation 
  01-mar-04 v2r2  THB properly hide image for external use; make requester call back const. 
