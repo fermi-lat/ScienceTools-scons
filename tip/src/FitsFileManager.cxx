@@ -30,6 +30,10 @@ namespace tip {
     // Create the file, and complain if it doesn't work:
     fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
 
+    // Create primary extension so that file is valid.
+    long naxes[1] = { 1 };
+    fits_create_img(fp, FLOAT_IMG, 1, naxes, &status);
+
     // Close the file; not interested in it anymore.
     int ignored_status = status;
     fits_close_file(fp, &ignored_status);
