@@ -39,6 +39,13 @@ namespace evtbin {
       */
       virtual void binInput(tip::Table::ConstIterator begin, tip::Table::ConstIterator end);
 
+      /** \brief Create a file, identifying the creator, and using the given template.
+          \param creator The creator identifier, used to set the "CREATOR" keyword.
+          \param out_file The output file name.
+          \param fits_template The name of the template file.
+      */
+      void createFile(const std::string & creator, const std::string & out_file, const std::string & fits_template) const;
+
       /** \brief Write the standard output file(s).
           \param creator The value to write for the "CREATOR" keyword.
           \param out_file The output file name.

@@ -25,7 +25,7 @@ namespace evtbin {
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).
-    const char * keys[] = { "TELESCOP", "DATE-OBS", "DATE-END", "OBJECT" };
+    const char * keys[] = { "TELESCOP", "INSTRUME", "DATE", "DATE-OBS", "DATE-END", "OBJECT" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
   }
 
@@ -37,6 +37,17 @@ namespace evtbin {
     std::for_each(begin, end, RecordBinFiller(*m_hist_ptr));
   }
 
+  void DataProduct::createFile(const std::string & creator, const std::string & out_file, const std::string & fits_template) const {
+    // Create light curve file using template from the data directory.
+    tip::IFileSvc::instance().createFile(out_file, fits_template);
+
+    // Add CREATOR keyword to the hash of keywords.
+    m_key_value_pairs["CREATOR"] = creator;
+
+    // Update newly created file with keywords which were harvested from input data.
+    updateKeywords(out_file);
+  }
+  
   void DataProduct::harvestKeywords(const tip::Header & header) {
     // Iterate over keywords which are known to be useful in this case.
     for (KeyCont_t::const_iterator itor = m_known_keys.begin(); itor != m_known_keys.end(); ++itor) {
@@ -63,6 +74,11 @@ namespace evtbin {
     tip::FileSummary summary;
 
     file_service.getFileSummary(file_name, summary);
+
+    // If DATE keyword is present, set it to the current date/time.
+    KeyValuePairCont_t::iterator date_itor = m_key_value_pairs.find("DATE");
+    if (m_key_value_pairs.end() != date_itor)
+     date_itor->second = formatDateKeyword(time(0));
 
     // Pointer to each extension in turn.
     tip::Extension * ext = 0;

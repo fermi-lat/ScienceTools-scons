@@ -17,17 +17,8 @@ namespace evtbin {
   LightCurve::~LightCurve() throw() {}
 
   void LightCurve::writeOutput(const std::string & creator, const std::string & out_file) const {
-    // Create light curve file using template from the data directory.
-    tip::IFileSvc::instance().createFile(out_file, m_data_dir + "LatLightCurveTemplate");
-
-    // Add CREATOR keyword to the hash of keywords.
-    m_key_value_pairs["CREATOR"] = creator;
-
-    // Set DATE keyword to the current time.
-    m_key_value_pairs["DATE"] = formatDateKeyword(time(0));
-
-    // Update newly created file with keywords which were harvested from input data.
-    updateKeywords(out_file);
+    // Standard file creation from base class.
+    createFile(creator, out_file, m_data_dir + "LatLightCurveTemplate");
 
     // Open RATE extension of output light curve file. Use an auto_ptr so that the table object
     // will for sure be deleted, even if an exception is thrown.
