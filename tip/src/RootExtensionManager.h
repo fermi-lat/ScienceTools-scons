@@ -113,6 +113,10 @@ namespace tip {
       */
       void openTable();
 
+      /** \brief Return a flag indicating whether the given data object is a table.
+      */
+      virtual bool isTable() const { return true; }
+
       // Non-virtual helper functions for ITabularData interface:
 
       /** \brief Return the number of records in the current tabular data object (the number of rows
