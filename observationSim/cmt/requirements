@@ -46,6 +46,8 @@ macro_prepend cppflags "-I ../src " Linux "-w " WIN32 "/I..\src "
 # this package uses obsolete C function names, beware	
 macro_append cpplinkflags "" WIN32 " oldnames.lib"
 
+macro_append ROOT_libs ""  WIN32 " libHisT.lib "
+
 apply_pattern package_linkopts
 
 # make sure various applications get built when library changes
