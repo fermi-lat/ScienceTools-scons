@@ -15,14 +15,15 @@
 #include <stdexcept>
 #include <vector>
 
-#include "fitsio.h"
-
+#include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
 #include "st_facilities/FitsUtil.h"
 
 namespace st_facilities {
+
+#include "fitsio.h"
 
 void FitsUtil::getTableVector(const std::string & filename,
                               const std::string & extName,
@@ -95,5 +96,44 @@ void FitsUtil::getFitsColNames(const std::string & filename, int hdu,
       tip::IFileSvc::instance().readTable(filename, extName);
    columnNames = my_table->getValidFields();
 }
+
+void FitsUtil::writeChecksums(const std::string & filename) {
+// Use tip to ascertain the number of HDUs
+   tip::FileSummary summary;
+   tip::IFileSvc::instance().getFileSummary(filename, summary);
+   unsigned int nhdus = summary.size();
+
+   int status(0);
+   fitsfile * fptr = 0;
+
+   fits_open_file(&fptr, filename.c_str(), READWRITE, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
+   }
+
+   int hdutype(0);
+   for (unsigned int hdu = 1; hdu < nhdus+1; hdu++) {
+      fits_movabs_hdu(fptr, hdu, &hdutype, &status);
+      if (status != 0) {
+         fits_report_error(stderr, status);
+         throw 
+            std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
+      }
+      
+      fits_write_chksum(fptr, &status);
+      if (status != 0) {
+         fits_report_error(stderr, status);
+         throw 
+            std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
+      }
+   }
+
+   fits_close_file(fptr, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
+   }
+}   
 
 } // namespace st_facilities

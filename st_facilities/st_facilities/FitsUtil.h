@@ -45,6 +45,9 @@ public:
    static void getFitsColNames(const std::string & filename, int hdu,
                                std::vector<std::string> & columnNames);
 
+   /// Write checksum and datasum information for all HDUs in a FITS file.
+   static void writeChecksums(const std::string & filename);
+
 protected:
 
    FitsUtil() {}
