@@ -2,5 +2,6 @@
  * Package facilities
  * Coordinator: Toby Burnett
  *
+ * v2r2p1 20-Mar-2002  jrb   Fix for Windows compile
  * v2r2   19-Mar-2002  jrb   Add Util class
  */
