@@ -11,7 +11,15 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Geometry/Vector3D.h"
 
+#include "astro/SkyDir.h"
 #include "astro/EarthCoordinate.h"
+
+#include "latResponse/IAeff.h"
+#include "latResponse/IPsf.h"
+#include "latResponse/IEdisp.h"
+#include "latResponse/Irfs.h"
+
+#include "latResponse/../src/Glast25.h"
 
 #include "observationSim/EventContainer.h"
 
@@ -29,8 +37,7 @@ namespace {
 
 namespace observationSim {
 
-void EventContainer::init(const std::string &filename,
-                          const latResponse::ResponseFiles &glast25Data) {
+void EventContainer::init(const std::string &filename) {
 
    std::vector<std::string> colName;
    std::vector<std::string> fmt;
@@ -64,13 +71,11 @@ void EventContainer::init(const std::string &filename,
                                 colName, fmt, unit);
    m_events.clear();
 
-   m_aeff = 
-      new latResponse::AeffGlast25(glast25Data.aeffFile(), glast25Data.hdu());
-   m_psf = 
-      new latResponse::PsfGlast25(glast25Data.psfFile(), glast25Data.hdu());
 }
 
-int EventContainer::addEvent(EventSource *event, bool flush) {
+int EventContainer::addEvent(EventSource *event, 
+                             latResponse::Irfs &response, 
+                             bool flush) {
    
    std::string name = event->fullTitle();
    if (name.find("TimeTick") == std::string::npos) {
@@ -93,12 +98,14 @@ int EventContainer::addEvent(EventSource *event, bool flush) {
       astro::EarthCoordinate earthCoord(gps->lon(), gps->lat());
 
       double inclination = sourceDir.difference(zAxis)*180./M_PI;
-      if ( inclination < m_aeff->incMax() 
+      if ( inclination < latResponse::Glast25::incMax()
            && energy > 31.623 
-           && RandFlat::shoot() < (*m_aeff)(energy, sourceDir, zAxis, xAxis)
+           && RandFlat::shoot() < (*response.aeff())(energy, sourceDir, 
+                                                     zAxis, xAxis)
                                    /event->totalArea()/1e4
            && !earthCoord.insideSAA() ) {
-         astro::SkyDir appDir = m_psf->appDir(energy, sourceDir, zAxis, xAxis);
+         astro::SkyDir appDir = response.psf()->appDir(energy, sourceDir, 
+                                                       zAxis, xAxis);
                                                         
          m_events.push_back( Event(time, energy, 
                                    appDir, sourceDir, zAxis, xAxis,

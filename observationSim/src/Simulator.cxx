@@ -10,14 +10,12 @@
 #include <iostream>
 #include <algorithm>
 
-// #include "Likelihood/Aeff.h"
-// #include "Likelihood/Psf.h"
-// #include "Likelihood/LikelihoodException.h"
-
 #include "FluxSvc/../src/EventSource.h"
 #include "FluxSvc/../src/CompositeSource.h"
 #include "FluxSvc/../src/SpectrumFactoryTable.h"
 #include "FluxSvc/../src/FluxMgr.h"
+
+#include "latResponse/Irfs.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
@@ -101,19 +99,8 @@ void Simulator::listSpectra() const {
    }
 }
 
-// void Simulator::readResponseData(const std::string &caldbPath, int hdu) {
-
-//    Likelihood::Psf *psf = Likelihood::Psf::instance();
-//    std::string psf_file = caldbPath + "/psf_lat.fits";
-//    psf->readPsfData(psf_file, hdu);
-
-//    Likelihood::Aeff *aeff = Likelihood::Aeff::instance();
-//    std::string aeff_file = caldbPath + "/aeff_lat.fits";
-//    aeff->readAeffData(aeff_file, hdu);
-// }
-
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
-                           bool useSimTime) {
+                           latResponse::Irfs &response, bool useSimTime) {
    m_useSimTime = useSimTime;
 
 // Loop over event generation steps until done.
@@ -124,7 +111,7 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
       m_elapsedTime += interval;
       m_fluxMgr->pass(interval);
       scData.addScData(f);
-      if (events.addEvent(f)) {
+      if (events.addEvent(f, response)) {
          m_numEvents++;
          if (m_maxNumEvents/20 > 0 &&
              m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
@@ -157,4 +144,4 @@ bool Simulator::done() {
    }
 }   
 
-} //observationSim
+} // namespace observationSim

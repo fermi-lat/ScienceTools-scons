@@ -14,6 +14,8 @@
 #include "FluxSvc/../src/CompositeSource.h"
 #include "FluxSvc/../src/FluxMgr.h"
 
+#include "latResponse/Irfs.h"
+
 namespace observationSim {
 
 class EventContainer;
@@ -74,23 +76,19 @@ public:
 
    /// Generate photon events for a given elapsed simulation time.
    void generateEvents(double simulationTime, EventContainer &events,
-                       ScDataContainer &scData) {
+                       ScDataContainer &scData, 
+                       latResponse::Irfs &response) {
       m_simTime = simulationTime;
-      makeEvents(events, scData);
+      makeEvents(events, scData, response);
    }
 
    /// Generate a specified number of events.
    void generateEvents(long numberOfEvents, EventContainer &events,
-                       ScDataContainer &scData) {
+                       ScDataContainer &scData, 
+                       latResponse::Irfs &response) {
       m_maxNumEvents = numberOfEvents;
-      makeEvents(events, scData, false);
+      makeEvents(events, scData, response, false);
    }
-
-//    /// @param caldbPath File path to the files psf_lat.fits and aeff_lat.fits.
-//    /// @param hdu FITS HDU for the desired response data.  Valid
-//    ///        values are 2 = Front, 3 = Back, 4 = Combined.  One can 
-//    ///        also enter the latResponse::Glast25::HDU enums.
-//    void readResponseData(const std::string &caldbPath, int hdu);
 
 private:
 
@@ -110,7 +108,8 @@ private:
              const std::vector<std::string> &fileList,
              double totalArea, double startTime);
 
-   void makeEvents(EventContainer &, ScDataContainer &, bool useSimTime=true);
+   void makeEvents(EventContainer &, ScDataContainer &, 
+                   latResponse::Irfs &, bool useSimTime=true);
 
    void fluxLoad();
 

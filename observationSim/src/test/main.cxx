@@ -6,7 +6,13 @@
  * $Header$
  */
 
+#include "astro/SkyDir.h"
+
 #include "latResponse/../src/Glast25.h"
+#include "latResponse/../src/AeffGlast25.h"
+#include "latResponse/../src/PsfGlast25.h"
+#include "latResponse/../src/EdispGlast25.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
@@ -51,21 +57,28 @@ int main(int argn, char * argc[]) {
       caldbPath = std::string(root) + "/data/CALDB";
    }
 
-// Note that there is no GLAST25 energy dispersion file.
-   latResponse::ResponseFiles glast25Data(caldbPath, 
-                                          "aeff_lat.fits",
-                                          "psf_lat.fits", " ",
-                                          latResponse::Glast25::Combined);
+// Create pointers to the GLAST25 response function objects.  Note
+// that there is no GLAST25 energy dispersion file.
+   latResponse::IAeff *aeff 
+      = new latResponse::AeffGlast25(caldbPath + "/aeff_lat.fits",
+                                     latResponse::Glast25::Combined);
+   latResponse::IPsf *psf 
+      = new latResponse::PsfGlast25(caldbPath + "/psf_lat.fits",
+                                    latResponse::Glast25::Combined);
+   latResponse::IEdisp *edisp = new latResponse::EdispGlast25();
+
+   latResponse::Irfs response(aeff, psf, edisp);
 
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events.dat", glast25Data, true);
+   observationSim::EventContainer events("test_events.dat", true);
    observationSim::ScDataContainer scData("test_scData.dat", true);
 
 // Use simulation time rather than total counts if desired.
    if (argn == 4 && std::string(argc[3]) == "-t") {
-      my_simulator.generateEvents(static_cast<double>(count), events, scData);
+      my_simulator.generateEvents(static_cast<double>(count), events, 
+                                  scData, response);
    } else {
-      my_simulator.generateEvents(count, events, scData);
+      my_simulator.generateEvents(count, events, scData, response);
    }
 }
 
