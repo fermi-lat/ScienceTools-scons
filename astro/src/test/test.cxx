@@ -6,6 +6,8 @@
 #include "astro/EarthOrbit.h"
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
+#include "astro/PointingTransform.h"
+#include "CLHEP/Vector/ThreeVector.h"
 
 bool testSkyDir(){
     using namespace astro;
@@ -140,7 +142,17 @@ using namespace std;
         diff = sd2.difference(sd);
     test+= fabs( diff/cos(dec*M_PI/180) - M_PI/180. );
 
-    if( test < 1e-3 ) {
+	//now test the galactic transformation function:
+	SkyDir zenith(0,20,astro::SkyDir::GALACTIC);
+	SkyDir xdir(90,0,astro::SkyDir::GALACTIC);
+	PointingTransform trans(zenith,xdir);
+	Hep3Vector vertical(0,0,1);
+	double templ=trans.gDir(vertical).l();	
+	double tempb=trans.gDir(vertical).b();
+	test += trans.gDir(vertical).l();
+	test += trans.gDir(vertical).b()-20.0;
+
+    if( fabs(test) < 1e-3 ) {
         cout << "tests ok " << endl;
         return 0;
     }
