@@ -22,7 +22,7 @@ namespace tip {
       TipException(int status, const std::string & msg = "Table component exception");
       virtual ~TipException() throw() {}
       virtual const char * what() const throw() { return m_msg.c_str(); }
-      virtual int code() const { return 1; }
+      virtual int code() const { return m_status; }
 
     protected:
       std::string m_msg;
