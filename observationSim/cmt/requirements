@@ -15,6 +15,7 @@ use flux v8r*
 use st_facilities v0r3*
 use GRB v4r* celestialSources
 use genericSources v0* celestialSources
+use Pulsar v0* celestialSources
 use irfLoader v0* irfs
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"

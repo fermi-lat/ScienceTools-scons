@@ -43,6 +43,7 @@ ISpectrumFactory & PeriodicSourceFactory();
 ISpectrumFactory & PulsarFactory();
 ISpectrumFactory & SimpleTransientFactory();
 ISpectrumFactory & TransientTemplateFactory();
+ISpectrumFactory & PulsarSpectrumFactory();
 
 using st_facilities::Util;
 
@@ -114,6 +115,7 @@ void ObsSim::createFactories() {
    PulsarFactory();
    SimpleTransientFactory();
    TransientTemplateFactory();
+   PulsarSpectrumFactory();
 }
 
 void ObsSim::setXmlFiles() {
