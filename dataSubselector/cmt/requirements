@@ -1,7 +1,8 @@
 package dataSubselector
-version v1r0p4
+version v1r1p0
 
 use Goodi v2*
+use hoops v0r1p1
 
 macro cpp g++
 macro app_dataSubselector_cppflags "-g -Wall"

@@ -22,6 +22,11 @@
 #include <string.h>
 #include <cmath>
 #include "Goodi/IDataIOService.h"
+#include "hoops/hoops.h"
+#include "hoops/hoops_limits.h"
+#include "hoops/hoops_pil_factory.h"
+#include "hoops/hoops_pil.h"
+#include "hoops/hoops_exception.h"
 
 /// conversion factor from degress to radians
 #define DEG_TO_RAD 0.0174532925199
@@ -29,6 +34,8 @@
 #define DEBUG 0
 
 class cutParameters {
+  
+private:
   /// File name of input FT1 file
   char m_inFile[FLEN_FILENAME];
   /// File name of output FT1 file
@@ -69,12 +76,13 @@ class cutParameters {
   char m_headerString[FLEN_FILENAME];
   /// calib version entries to check for cuts
   short m_calibVersion[3];
+  /// pointer to hoops IParPrompter object
+  hoops::IParPrompt * m_prompter;
   
 public:
   cutParameters();
   cutParameters(int argc, char **argv);
   ~cutParameters();
-  void parseCommandLine(int argc, char **argv);
   char *getFilterExpression();
   void addDataSubspaceKeywords(Goodi::IDataIOService *ios);
   // inline function go here
@@ -82,6 +90,36 @@ public:
   inline char *getOutputFilename();
   inline char *getFITSQueryString();
   inline char *getHeaderString();
+  
+/**
+ * @brief Returns the parameter values from parameter file
+ * 
+ * The getParam() function extracts the value for the parameter from
+ * the parameter file and returns it to the program.  This was copied from
+ * RunParams class that Jim wrote for Likelihood.  It is a templated function
+ * and can be used on any variable type.
+ * 
+ * @param name The name of the parameter as contained in the paramter file
+ * @param value a pointer to the variable to hold the returned data.
+ * 
+ * @author Jim Chang
+ * @date Last Modified 15 Dec 2003
+ */
+  template <typename T> 
+  void getParam(const std::string &name, T &value) const {
+    try {
+      T my_value = (m_prompter->Group())[name];
+      value = my_value;
+    } catch (hoops::Hexception &eObj) {
+      std::cout << "HOOPS exception: " << eObj.Msg() << "\n"
+                << "Code: " << eObj.Code() << std::endl;
+      assert(false);
+    } catch (...) {
+      std::cout << name << std::endl;
+      assert(false);
+    }
+  }
+  
 };
 
 // **********  INLINE FUNCTION DEFINITIONS  ********************

@@ -25,7 +25,7 @@
 int main(int argc, char **argv)
 {
   char *inFile,*outFile,*filter;
-  
+/*  
   // check to be sure that we have enough information to run the command or print
   // the help information if requested.
   if (argc>1&&strcmp(argv[1],"-h")==0) {
@@ -63,13 +63,13 @@ int main(int argc, char **argv)
     std::cout << "   dataSubselector <input file> <output file> [options]\n";
     std::cout << "For a complete list of options use 'dataSubselector -h'\n\n";
   } else {  // we have a valid command so let's get started
-    try {
+*/    try {
   
       // Here we create the Factories for IOService and Data for later use
       Goodi::DataIOServiceFactory iosvcCreator;
       Goodi::DataFactory dataCreator;
       
-      // parse the command line options
+      // read in the parameters using hoops
       cutParameters cuts = cutParameters(argc,argv);
       
       // verify existence of input file
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
       return Goodi::Failure;
     }
     
-  }  //end else of if (argc<3)
+//  }  //end else of if (argc<3)
 
   return Goodi::Success;
 }

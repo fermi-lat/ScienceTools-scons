@@ -53,14 +53,17 @@ cutParameters::cutParameters(){
  * 
  * This is main constructor function for the cutParameters class.  It
  * creates an empty structure with the values all set to zero and then
- * parses the command line arguments and fills in the data values.
+ * reads the parameter file using hoops and fills in the data values.
  * 
  * @param argc the number of command line arguments
  * @param argv array of pointers holding the individual arguments
  * 
  * @author Tom Stephens
  * @date Created:  17 Oct 2003
- * @date Last Modified:  3 Dec 2003
+ * @date Last Modified:  15 Dec 2003
+ * 
+ * Revisions:
+ *   - 15/12/03 - Added hoops functionality
  */
 cutParameters::cutParameters(int argc, char **argv){
 
@@ -85,7 +88,56 @@ cutParameters::cutParameters(int argc, char **argv){
   m_calibVersion[1]=0;
   m_calibVersion[2]=0;
   
-  parseCommandLine(argc,argv);
+  strcpy(argv[0],"dataSubselector");
+  // start using hoops here  - stole this straight from likelihood
+  hoops::IParFile *pf = hoops::PILParFileFactory().NewIParFile(argv[0]);
+  try {
+    pf->Load();
+    m_prompter = hoops::PILParPromptFactory().NewIParPrompt(argc, argv);
+    m_prompter->Prompt();
+    
+    pf->Group() = m_prompter->Group();
+    pf->Save();
+    delete pf;
+  } catch (hoops::Hexception &eObj) {
+    if (eObj.Code() == -3003) {
+      std::cout << "dataSubselector cutParamters .par file " << argv[0]
+                << " is not found.  Check your PFILES directory." 
+                << std::endl;
+    }
+    throw;
+  }
+  // Parameters are read in, not let's set the data values
+  std::string tstring;
+  getParam("input_file",tstring);
+  strcpy(m_inFile,tstring.c_str());
+  std::cout << m_inFile << " is the filename" << std::endl;
+  getParam("output_file",tstring);
+  strcpy(m_outFile,tstring.c_str());
+  std::cout << m_outFile << " is the filename" << std::endl;
+  getParam("ra",m_RA);
+  getParam("dec",m_Dec);
+  getParam("rad",m_radius);
+  if(m_RA==0&&m_Dec==0&&m_radius==0) {
+    m_RA=-1;
+    std::cout << "resetting default RA" << std::endl;
+  }
+  getParam("tmin",m_tmin);
+  getParam("tmax",m_tmax);
+  getParam("emin",m_emin);
+  getParam("emax",m_emax);
+  getParam("phimin",m_phimin);
+  getParam("phimax",m_phimax);
+  getParam("thetamin",m_thetamin);
+  getParam("thetamax",m_thetamax);
+  getParam("gammaProbMin",m_gammaProbMin);
+  getParam("gammaProbMax",m_gammaProbMax);
+  getParam("zmin",m_zmin);
+  getParam("zmax",m_zmax);
+  getParam("bgcut",m_calibVersion[0]);
+  getParam("psfcut",m_calibVersion[1]);
+  getParam("erescut",m_calibVersion[2]);
+  
   
   if(DEBUG){
     std::cout << "cutParameters initalized:\n";
@@ -121,94 +173,8 @@ cutParameters::cutParameters(int argc, char **argv){
  * @date Last Modified:  17 Oct 2003
  */
 cutParameters::~cutParameters() {
+  delete m_prompter;
   if(DEBUG) std::cout << "cutParameters destroyed\n";
-}
-
-/**
- * @brief method to parse the command line options
- * 
- * This method read through the command line options and fills in the appropriate
- * members for the cut parameters specified.
- * 
- * @param argc the number of command line arguments
- * @param argv array of pointers holding the individual arguments
- * 
- * @author Tom Stephens
- * @date Created:  17 Oct 2003
- * @date Last Modified:  3 Dec 2003
- * 
- * @todo verify that RA, Dec and radius are specified together
- */
-/* Revisions:
- *   25/11/03 - Changed qualmin/qualmax flags  to gammaProbMin/Max  -TS
- */
-
-void cutParameters::parseCommandLine(int argc, char **argv){
-  int i;
-  
-  strcpy(m_inFile,argv[1]);  // read in the input file
-  strcpy(m_outFile,argv[2]);  // read in the output file
-//  if (m_outFile[0]!='!') {  // add a ! to overwrite the file
-//    sprintf(m_outFile,"!%s",m_outFile);
-//  }
-  
-  for (i=3;i<argc;i++){  // start at first argument after output file
-    if (strcmp(argv[i] , "-ra")==0) {
-      m_RA = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-dec")==0){
-      m_Dec = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-rad")==0){
-      m_radius = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-tmin")==0){
-      m_tmin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-tmax")==0){
-      m_tmax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-emin")==0){
-      m_emin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-emax")==0){
-      m_emax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-thetamin")==0){
-      m_thetamin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-thetamax")==0){
-      m_thetamax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-phimin")==0){
-      m_phimin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-phimax")==0){
-      m_phimax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-gammaProbMin")==0){
-      m_gammaProbMin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-gammaProbMax")==0){
-      m_gammaProbMax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-zmin")==0){
-      m_zmin = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-zmax")==0){
-      m_zmax = (float)atof(argv[i+1]);
-      i++;
-    } else if(strcmp(argv[i] , "-bgcut")==0){
-      m_calibVersion[0] = 1;
-    } else if(strcmp(argv[i] , "-psfcut")==0){
-      m_calibVersion[1] = 1;
-    } else if(strcmp(argv[i] , "-erescut")==0){
-      m_calibVersion[2] = 1;
-    } else {
-      std::cout << "The parameter " << argv[i] << " is unknown\n";
-    }
-      
-  } // end loop over command line arguments
 }
 
 /**
