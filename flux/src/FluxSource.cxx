@@ -75,8 +75,9 @@ public:
     virtual void execute(const HepVector3D& dir){
         HepRotation r_pln;
 
+        //create rotation to take x-y plane to be perpendicular to incoming direction
         double ly = dir.y(), lx = dir.x();
-        if( lx !=0 || ly !=0 ) { 
+        if( fabs( lx) +fabs(ly) >1e-8) {  // leave as identity 
             r_pln.rotate(acos(dir.z()),  HepVector3D(-ly, lx, 0.));
         }
 
