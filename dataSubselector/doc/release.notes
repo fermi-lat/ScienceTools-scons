@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v2r1p2  29-Oct-04   JC   use tip v2*
     v2r1p1  23-Sep-04   JC   convert float data members to double
     v2r1    16-Aug-04   JC   write out GTI extension as well as events
     v2r0p2  14-Jun-04   JC   tag for ST release
