@@ -412,13 +412,26 @@ void Fits_IO::writeFitsHeader()
                 + typeid(attr).name());
         }
 
-        // now write out the key
-        fits_update_key(fptr, fitsType, (char*)attr.name().c_str(), 
-            pval, (char*)attr.comment().c_str(), &status);
-
-        if (! attr.unit().empty() ) {
-            fits_write_key_unit(fptr, (char*)attr.name().c_str(), 
-                (char*)attr.unit().c_str(), &status);
+        // Handle COMMENT and HISTORY cards separately.
+        if (attr.name() == "HISTORY") {
+           StringAttr & my_attr = dynamic_cast<StringAttr&>(attr);
+           fits_write_history(fptr, 
+                              const_cast<char *>(my_attr.value().c_str()),
+                              &status);
+        } else if (attr.name() == "COMMENT") {
+           StringAttr & my_attr = dynamic_cast<StringAttr&>(attr);
+           fits_write_comment(fptr, 
+                              const_cast<char *>(my_attr.value().c_str()),
+                              &status);
+        } else {
+           // now write out the key
+           fits_update_key(fptr, fitsType, (char*)attr.name().c_str(), 
+                           pval, (char*)attr.comment().c_str(), &status);
+           
+           if (! attr.unit().empty() ) {
+              fits_write_key_unit(fptr, (char*)attr.name().c_str(), 
+                                  (char*)attr.unit().c_str(), &status);
+           }
         }
         report_error(status);
     }

@@ -85,13 +85,14 @@ int main(int argc, char** argv ){
 
 // Write this out as a separate file for an external diff.
         ExposureHyperCube cube2(e2, par.outputFile());
+        cube2.setKey("HISTORY", "This is a history header card.");
+        cube2.setKey("COMMENT", "This is a comment header card.");
         cube2.save();
 
         // create an image to access cells
         SkyImage exp3(par.inputFile(),"hypercube");
         double tt = exp3.pixelValue(astro::SkyDir(0,0));
         assert(tt=36.0); 
-
 
         test_Header();
 
