@@ -103,10 +103,10 @@ namespace tip {
       // If that didn't work, try HDUNAME.
       fits_read_key(fp, TSTRING, "HDUNAME", tmp_id, 0, &status);
       if (0 != status) {
-        // Finally, if that didn't work, just use the number.
+        // Finally, if that didn't work, just use the number, offset by 1.
         int hdu_num = 0;
         fits_get_hdu_num(fp, &hdu_num);
-        sprintf(tmp_id, "%d", hdu_num);
+        sprintf(tmp_id, "%d", hdu_num - 1);
       }
     }
     ext_id = tmp_id;
