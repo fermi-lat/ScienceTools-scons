@@ -349,6 +349,18 @@
 
  <source_library title="galactic">
 
+    <!-- Extragalactic diffuse inferred by EGRET 
+	copied from observationSim. need to understand rate
+    -->
+    <source name="extragalactic" flux="0.545">
+       <spectrum escale="MeV">
+          <particle name="gamma">
+             <power_law emin="30." emax="100000." gamma="2.1"/>
+          </particle>
+          <solid_angle mincos="-1." maxcos="1."/>
+       </spectrum>
+    </source>
+
     <!-- diffuse extraglactic from 10 MeV: from APJ 494:523
             1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4 cm^2/m^2)*(100/10)^1.1 = 1.83
             -->
