@@ -13,6 +13,10 @@ namespace tip {
 
   /** \class KeyRecord
       \brief Encapsulation of a keyword, considered as a record with name, value and comment fields.
+
+             See also the Keyword class. The difference between them is that Keyword obejcts
+             are bound to a specific data header, whereas KeyRecord objects simply contain a
+             copy of the entire keyword record stored as a single string.
   */
   class KeyRecord {
     public:
