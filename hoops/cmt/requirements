@@ -1,5 +1,5 @@
 package hoops
-version v0r1p4
+version v0r4
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
@@ -7,37 +7,20 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
 branches hoops cmt src doc
 
-use GlastPolicy v*
+use STpolicy *
 use pil * IExternal
 
-apply_pattern package_include
-apply_pattern package_linkopts
-
-# supress warnings from throw spec in windows
-macro_append cppflags "" WIN32 " /wd4290 "
+apply_pattern ST_library share=-no_share
+ 
 
 private
-
-
-# allow use of internal path
-macro_append hoops_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  "
-
-# make sure test applications gets built when library changes
-macro test_hoopsstamps "hoops.stamp"
-macro test_hoops_simplestamps "hoops_simple.stamp"
-macro test_hoops_parstamps "hoops_par.stamp"
-macro test_hoops_limstamps "hoops_lim.stamp"
-
-# standard package library
-macro my_headers "" WIN32 "../hoops/*.h *.h"
-library hoops -no_share $(my_headers) \
- *.cxx
-
+#-------------------------------------
 set PFILES "$(HOOPSROOT)/data"
+macro test_source "test/hoops_lim_test.cxx" #override pattern
+macro hoops_cppflags "" WIN32 " /wd4251 " # suppress "needs to have dll-interface" 
 
-# test application
-#application test_hoops test/hoops_lim_test.cxx
+# supplemental test applications
 #application test_hoops_simple test/main.cxx
-application test_hoops_lim test/hoops_par_test.cxx
+#application test_hoops_lim test/hoops_par_test.cxx
 #application test_hoops_par test/hoops_prim_test.cxx
-application hoops_sample test/hoops_sample.cxx
+#application hoops_sample test/hoops_sample.cxx

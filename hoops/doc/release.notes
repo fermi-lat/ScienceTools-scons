@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r4     02-apr-04   THB  use new patterns in req file
     v0r1p4   08-Mar-04   THB  Suppress windows warning for clients
     v0r1p1   02-Dec-03   JP   Latest import, fixes build on Linux
     v0r1p0   27-Nov-03   JCT  Tagging James' new import, for definiteness
