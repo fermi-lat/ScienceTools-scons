@@ -1,6 +1,6 @@
 package map_tools
 
-version v2r0
+version v2r1
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
@@ -15,7 +15,7 @@ set INFILES  "$(MAP_TOOLSROOT)/data"
 set PFILES   "$(MAP_TOOLSROOT)/pfiles"
 set OUTFILES "$(MAP_TOOLSROOT)/output"
 
-#temporary code for FITS table I/O and keyword handling
+#independent library for FITS image I/O and keyword handling (from astroroot)
 library image -no_share -s=image $(source)
 
 apply_pattern GLAST_static_library_package

@@ -5,6 +5,7 @@
 $Id$
 @verbatim
 
+ 28-feb-04 v2r1  THB modifications for Linux, doxy stuff for FITS image code 
  28-feb-04 v2r0  THB implement with enfant astroroot 
  25-feb-04 v1r1p4 THB various patches to compile on gcc, read pil files on Linux, test same 
  21-feb-04 v1r1  THB ready for use with documentation 
