@@ -363,7 +363,7 @@ void EvtBinTest::testCountMap() {
   }
 
   // Create count map object.
-  CountMap count_map(240., 40., "AIT", 400, 300, .1, 0., true);
+  CountMap count_map(60., 40., "AIT", 400, 400, .2, 0., true);
 
   // Fill the count map.
   count_map.binInput(table->begin(), table->end());
