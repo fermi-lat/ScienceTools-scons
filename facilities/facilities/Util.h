@@ -30,6 +30,8 @@ namespace facilities {
                             const std::string& openDel = std::string("$("),
                             const std::string& closeDel = std::string(")"));
 
+    static const char* itoa(int val);
+
   };
 }
 

@@ -2,6 +2,13 @@
 
 #include "facilities/Util.h"
 
+#if DEFECT_NO_STRINGSTREAM
+#include <strstream>
+#else
+#include <sstream>
+#endif
+
+
 /** @file Util.cxx 
     @author J. Bogart
 */
@@ -36,6 +43,29 @@ namespace facilities {
       envStart = toExpand->find_first_of(openDel.c_str());
     }
     return nSuccess;
+  }
+
+  const char* Util::itoa(int val) {
+      // Purpose and Method:  Provide a standard routine to convert integers
+      //    into char*.  The method used depends upon the availability of
+      //    the stringstream classes.  The stringstream classes are the
+      //    standard, but some compilers do yet support them.
+      //    The method used is determined by the DEFECT_NO_STRINGSTREAM
+      //    macro, defined in the facilities requirements file.
+#ifdef DEFECT_NO_STRINGSTREAM
+      // Using static buffer to avoid problems with memory allocation
+      char a[100]=""; 
+      std::ostrstream locStream(a,100);
+#else
+      std::ostringstream locStream;
+      locStream.str("");
+#endif
+      locStream << val;
+#ifdef DEFECT_NO_STRINGSTREAM
+      locStream << std::endl;
+#endif
+      static std::string str = locStream.str();
+      return str.c_str();
   }
 
 }
