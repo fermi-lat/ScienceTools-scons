@@ -7,6 +7,7 @@
 #include "CLHEP/Vector/Rotation.h"
 #include "CLHEP/Vector/ThreeVector.h"
 #include <cmath>
+#include <utility> // for pair
 
 namespace astro {
     
@@ -41,7 +42,7 @@ namespace astro {
         double SkyDir::difference(const SkyDir& other)const;
 
         //hammer-aitoff equal-area projection.
-        std::pair<double,double> hammerAitoff();
+        std::pair<double,double> hammerAitoff()const;
         
     private:
         static HepRotation s_celestialToGalactic;

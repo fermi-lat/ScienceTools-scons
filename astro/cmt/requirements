@@ -1,6 +1,6 @@
 package astro
 
-version v0r1p2
+version v0r2
 
 branches astro cmt src doc
 
@@ -23,7 +23,7 @@ library astro -no_share  *.cxx  \
 
 
 # this is the test program from G. Tosti
-application orbit test/Orbit.cxx 
+#application orbit test/Orbit.cxx 
 
 # simple program to test basic functionality
 application test_astro test/test.cxx
