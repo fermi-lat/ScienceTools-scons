@@ -25,6 +25,10 @@ namespace st_graph {
       /** \brief Handle close window event. Parameter is the frame which was closed.
       */
       virtual void closeWindow(IFrame *) {}
+
+      /** \brief Layout subframes of the given frame.
+      */
+      virtual void layout(IFrame *) {}
   };
 
 }
