@@ -37,7 +37,9 @@ class RootWindow(Tk.Tk):
             try:
                 ds9.cd(os.path.abspath(os.curdir))
             except RuntimeError:
-                pass
+                version = ds9.xpaget("version")
+                if version.find("3.0.3") == -1:
+                    showwarning("ds9 version", "using " + version.strip())
         except ImportError:
             showwarning(title="ds9 Access Warning",
                         message="Import error for ds9 package.")
@@ -235,12 +237,15 @@ class EditMenu(Tk.Menu):
                          command=root.deleteSource)
         self.add_command(label="Delete all sources...", command=root.deleteAll)
 
+def pwd():
+    print ds9.cd()
+
 class ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="Display sources", underline="0",
+        self.add_command(label="Display sources", underline=0,
                          command=ds9Display(root))
-        self.add_command(label="Import sources", underline="0",
+        self.add_command(label="Import sources", underline=0,
                          command=ds9Import(root))
 
 class ds9Display(object):
