@@ -19,7 +19,21 @@ using namespace map_tools;
 //! Constructor
 Parameters::Parameters( int argc, char *argv[]) 
 :  m_par(*new hoops::ParPromptGroup(argc, argv))
-{   
+,  m_own_ppg(true)
+{  setup();
+}
+//! Constructor
+Parameters::Parameters( hoops::ParPromptGroup& par) 
+:  m_par(par), m_own_ppg(false)
+{  setup();
+}
+
+Parameters::~Parameters(){
+    if( m_own_ppg) delete &m_par;
+}
+
+void Parameters::setup()
+{
 // Prompt for all parameters in the order in the par file:
     m_par.Prompt();
     m_chatter = m_par["chatter"];
