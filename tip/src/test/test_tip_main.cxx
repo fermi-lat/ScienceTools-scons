@@ -13,6 +13,7 @@
 #include "TestFileManager.h"
 #include "TestFileSummary.h"
 #include "TestImage.h"
+#include "TestInterpolation.h"
 #include "TestTable.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
@@ -70,6 +71,21 @@ int main() {
     } catch(const TipException & x) {
       // This is as it should be
       std::cerr << "Expected: opening ft1.tpl threw exception: " << x.what() << std::endl;
+    }
+
+    delete my_table; my_table = 0;
+
+    try {
+      // Opening an existent file which is really a directory should throw an exception.
+      my_table = IFileSvc::instance().editTable(data_dir, "");
+
+      // If we got here, it didn't throw!
+      std::cerr << "Unexpected: opening directory didn't throw a TipException." << std::endl;
+
+      status = 1;
+    } catch(const TipException & x) {
+      // This is as it should be
+      std::cerr << "Expected: opening directory threw exception: " << x.what() << std::endl;
     }
 
     delete my_table; my_table = 0;
@@ -454,6 +470,10 @@ int main() {
     // Test column abstractions.
     TestColumn column_test;
     status = column_test.test(status);
+
+    // Test interpolation abstractions.
+    TestInterpolation interpolation_test;
+    status = interpolation_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
