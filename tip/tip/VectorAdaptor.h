@@ -7,9 +7,11 @@
 #ifndef table_VectorAdaptor_h
 #define table_VectorAdaptor_h
 
+#include <cassert>
 #include <vector>
 
 #include "table/Ref.h"
+#include "table/table_types.h"
 
 namespace table {
 
@@ -41,6 +43,77 @@ namespace table {
         { ScalarAdaptor::operator =(data); /* m_referent->write(data); */ return *this; }
 
   };
+
+  template <typename T>
+  class VectorAdaptorMM {
+    public:
+      class Entry {
+        public:
+          Entry(VectorAdaptorMM & adaptor, T * current): m_adaptor(adaptor), m_current(current) {}
+          Entry & operator =(const T & data) { *m_current = data; m_adaptor.setModified(); return *this; }
+          operator const T &() const { return *m_current; }
+          T * getCurrent() { return m_current; }
+          const T * getCurrent() const { return m_current; }
+          void setCurrent(T * current) { m_current = current; }
+          Entry & itorNext() { ++m_current; return *this; }
+          Entry & itorPrev() { --m_current; return *this; }
+          bool itorEquals(const Entry & entry) const { return m_current == entry; }
+          bool itorLessThan(const Entry & entry) const { return m_current < entry; }
+          bool itorGreaterThan(const Entry & entry) const { return m_current > entry; }
+
+        private:
+          VectorAdaptorMM & m_adaptor;
+          T * m_current;
+      };
+
+//      typedef RandomAccessIterator<Entry, IndexDiff_t> Iterator;
+
+      VectorAdaptorMM(TableCell & cell): m_cell(cell), m_entry(*this, 0), m_begin(0), m_end(0), m_modified(false) {}
+
+      // Need to fix this:
+      VectorAdaptorMM(const VectorAdaptorMM & adaptor): m_cell(adaptor.m_cell), m_entry(*this, 0), m_begin(0),
+        m_end(0), m_modified(false) { assert(0); }
+
+      ~VectorAdaptorMM() { delete [] m_begin; }
+
+      // Need to fix this:
+      VectorAdaptorMM & operator =(const VectorAdaptorMM & adaptor) { assert(0); return *this; }
+
+      Entry & operator [](Index_t entry_index) { return getEntry(entry_index); }
+
+      const Entry & operator [](Index_t entry_index) const
+        { VectorAdaptorMM & self = const_cast<VectorAdaptorMM &>(*this); return self.getEntry(entry_index); }
+
+      void setModified(bool modified = true) { m_modified = modified; }
+
+      void allocate();
+
+      Entry & getEntry(Index_t entry_index);
+
+      Index_t getNumElements() const { return m_cell.getNumElements(); }
+
+    private:
+      TableCell & m_cell;
+      Entry m_entry;
+      T * m_begin;
+      T * m_end;
+      bool m_modified;
+  };
+
+  template <typename T>
+  void VectorAdaptorMM<T>::allocate() {
+    Index_t vec_size = m_cell.getNumElements();
+    m_begin = new T[vec_size];
+    m_end = m_begin + vec_size;
+  }
+
+  template <typename T>
+  typename VectorAdaptorMM<T>::Entry & VectorAdaptorMM<T>::getEntry(Index_t entry_index) {
+    if (!m_begin) allocate();
+    m_cell.get(0, m_begin, m_end);
+    m_entry.setCurrent(m_begin + entry_index);
+    return m_entry;
+  }
 
 }
 
