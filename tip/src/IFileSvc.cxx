@@ -41,6 +41,11 @@ namespace tip {
   IFileSvc::~IFileSvc() {
   }
 
+  // Create a file, for now FITS only.
+  void IFileSvc::createFile(const std::string & file_name, const std::string & template_name) {
+    FitsExtensionManager::createFile(file_name, template_name);
+  }
+
   // Edit a table in a file, be it FITS or Root.
   Table * IFileSvc::editTable(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {

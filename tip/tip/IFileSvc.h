@@ -36,6 +36,12 @@ namespace tip {
       */
       virtual ~IFileSvc();
 
+      /** \brief Use a FITS template to create a new file. Clobber existing files.
+          \param file_name The name of the new file.
+          \param template_name The name of the template file.
+      */
+      virtual void createFile(const std::string & file_name, const std::string & template_name);
+
       /** \brief Open an existing table with modification access.
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
