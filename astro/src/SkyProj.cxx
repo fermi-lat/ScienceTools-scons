@@ -75,9 +75,9 @@ SkyProj::SkyProj(const std::string &projName,
     }
     // a simple test
     double tlon = crval[0], tlat = crval[1];
-    std::pair<double, double> t = project(tlon, tlat);
+    std::pair<double, double> t = sph2pix(tlon, tlat);
     double check = fabs(t.first-crpix[0])+fabs(t.second-crpix[1]);
-    std::pair<double, double> s = deproject(t.first, t.second);
+    std::pair<double, double> s = pix2sph(t.first, t.second);
     check = fabs(s.first-crval[0]-s.second-crval[1]);
 
     wcsprt(m_wcs);// temp
@@ -95,7 +95,7 @@ SkyProj::~SkyProj()
 @param s2 dec or b, in degrees
 @return pair(x,y) in pixel coordinates
 */
-std::pair<double,double> SkyProj::project(double s1, double s2) const
+std::pair<double,double> SkyProj::sph2pix(double s1, double s2) const
 {
     int ncoords = 1;
     int nelem = 2;
@@ -116,7 +116,7 @@ std::pair<double,double> SkyProj::project(double s1, double s2) const
     return std::make_pair(pixcrd[0],pixcrd[1]);
 }
 
-std::pair<double,double> SkyProj::deproject(double x1, double x2) const
+std::pair<double,double> SkyProj::pix2sph(double x1, double x2) const
 {
     int ncoords = 1;
     int nelem = 2;
@@ -144,10 +144,10 @@ std::pair<double,double> SkyProj::deproject(double x1, double x2) const
 @param x2 projected equivalent dec or b, in degrees
 @param projection used to deproject these coordinates
 */
-std::pair<double,double> SkyProj::project(double x1, double x2, SkyProj otherProjection)
+std::pair<double,double> SkyProj::pix2pix(double x1, double x2, SkyProj otherProjection)
 {
-    std::pair<double,double> s = otherProjection.deproject(x1,x2);
-    return SkyProj::project(s.first,s.second);
+    std::pair<double,double> s = otherProjection.pix2sph(x1,x2);
+    return SkyProj::sph2pix(s.first,s.second);
 }
 
 bool SkyProj::isGalactic()const

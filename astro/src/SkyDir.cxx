@@ -109,7 +109,7 @@ SkyDir::SkyDir(double param1, double param2, const SkyProj& projection, bool gal
    double ra_rad, dec_rad;
    std::pair<double,double> s;
    // Deproject the coordinates to find ra/dec (or l/b)
-   s = projection.deproject(param1, param2);
+   s = projection.pix2sph(param1, param2);
 
    ra_rad = s.first * M_PI/180.;
    dec_rad = s.second * M_PI/180.;
@@ -251,9 +251,9 @@ void SkyDir::setProjection( float ref_ra,  float ref_dec,
 std::pair<double,double> SkyDir::project(const SkyProj& projection, bool galactic) const
 {
    if(galactic)
-      return projection.project(this->l(), this->b());
+      return projection.sph2pix(this->l(), this->b());
    else
-      return projection.project(this->ra(),this->dec());
+      return projection.sph2pix(this->ra(),this->dec());
 }
 
 

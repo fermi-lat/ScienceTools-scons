@@ -793,6 +793,10 @@ struct wcsprm {
 
    int wcsprt(const struct wcsprm *);
 
+    /* All instances of wcsset were changed to wcsset2 to avoid a namespace 
+     * conflict that occurs with a Windows function of same name.  
+     * - Theodore Hierath
+    */
    int wcsset2(struct wcsprm *);
 
    int wcsp2s(struct wcsprm *, int, int, const double[],
@@ -808,7 +812,10 @@ struct wcsprm {
    void wcs_setAll(int, int, double *);
    void wcs_setAli(int, int, int *);
 #else
-   /// wcsset renamed to wcsset2 to avoid conflict with windows function of same name
+    /* All instances of wcsset were changed to wcsset2 to avoid a namespace 
+     * conflict that occurs with a Windows function of same name.  
+     * - T. Hierath
+    */
    int wcsini(), wcscopy(), wcsfree(), wcsprt(), wcsset2(), wcsp2s(), wcss2p(),
        wcsmix();
    int wcs_allEq();

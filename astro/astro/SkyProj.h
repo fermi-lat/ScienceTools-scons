@@ -79,20 +79,20 @@ namespace astro {
        @param s2 dec or b, in degrees
        @return pair(x,y) in pixel coordinates
        */
-        std::pair<double,double> project(double s1, double s2)const;
+        std::pair<double,double> sph2pix(double s1, double s2)const;
 
         /** @brief Convert from one projection to another
             @param x1 projected equivalent to ra or l, in degrees
             @param x2 projected equivalent dec or b, in degrees
             @param projection used to deproject these coordinates
         */
-        std::pair<double,double> project(double x1, double x2, SkyProj otherProjection);
+        std::pair<double,double> pix2pix(double x1, double x2, SkyProj otherProjection);
 
         /** @brief Does the inverse projection
             @param x1 projected equivalent to ra or l, in degrees
             @param x2 projected equivalent dec or b, in degrees
         */
-        std::pair<double,double> deproject(double x1, double x2) const;
+        std::pair<double,double> pix2sph(double x1, double x2) const;
 
         /** @brief is this galactic? */
         bool isGalactic()const;

@@ -66,6 +66,10 @@ struct wcsprm *wcs;
    /* Initialize if required. */
    if (wcs == 0) return 1;
    if (wcs->flag != WCSSET) {
+     /* All instances of wcsset were changed to wcsset2 to avoid a namespace 
+      * conflict that occurs with a Windows function of same name.  
+      * - T. Hierath
+      */
       if (status = wcsset2(wcs)) return status;
    }
 
@@ -150,5 +154,9 @@ struct wcsprm *wcs;
    wcs->crval[wcs->lat] = world[0][wcs->lat];
    wcs->lonpole = phi[0] - phi0;
 
+    /* All instances of wcsset were changed to wcsset2 to avoid a namespace 
+     * conflict that occurs with a Windows function of same name.  
+     * - T. Hierath
+     */
    return wcsset2(wcs);
 }
