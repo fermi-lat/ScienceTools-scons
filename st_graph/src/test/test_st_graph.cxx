@@ -18,8 +18,6 @@
 
 #include "st_graph/Engine.h"
 #include "st_graph/IFrame.h"
-#include "st_graph/IPlotFrame.h"
-#include "st_graph/IPlot.h"
 #include "st_graph/PlotHist.h"
 #include "st_graph/ValueSet.h"
 
@@ -37,6 +35,7 @@ class StGraphTestApp : public st_app::StApp {
     /// \brief Test scatter plots.
     virtual void testPlots();
 
+    /// \brief Report failed tests, and set a flag used to exit with non-0 status if an error occurs.
     void reportUnexpected(const std::string & text) const;
 
   private:
@@ -50,8 +49,6 @@ void StGraphTestApp::run() {
 
   testValueSet();
   testPlots();
-
-return;
 
   // Test will involve plotting histograms with 200 intervals.
   int num_intervals = 200;
@@ -190,8 +187,8 @@ void StGraphTestApp::testPlots() {
   std::vector<double> delta_y1(num_pts);
   for (int ii = 0; ii < num_pts; ++ii) {
     x1[ii] = ii;
-    delta_x1[ii] = .25;
-    y1[ii] = .3 * (25. - (ii - .3) * (ii - .3));
+    delta_x1[ii] = .2;
+    y1[ii] = .3 * (100. - (ii + .3) * (ii + .3));
     delta_y1[ii] = sqrt(fabs(y1[ii]));
   }
 
@@ -199,17 +196,25 @@ void StGraphTestApp::testPlots() {
   IFrame * mf = engine.createMainFrame(600, 400);
 
   // Create a new subframe in which to display the plots.
-  IPlotFrame * pf = engine.createPlotFrame(mf, 600, 400);
+  IFrame * pf1 = engine.createPlotFrame(mf, 600, 200);
   
-  // Create a plot of this data set, in the subframe.
-  IPlot * plot = engine.createPlot(pf, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+  // Create a scatter plot of this data set, in the subframe.
+  IFrame * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+
+  // Create a new subframe in which to display the plots.
+  IFrame * pf2 = engine.createPlotFrame(mf, 600, 200);
+  
+  // Create a histogram plot of this data set, in the subframe.
+  IFrame * plot2 = engine.createPlot(pf2, "Hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
   // Run the graphics engine to display everything.
   engine.run();
 
   // Clean up.
-  delete plot;
-  delete pf;
+  delete plot2;
+  delete pf2;
+  delete plot1;
+  delete pf1;
   delete mf;
 }
 
