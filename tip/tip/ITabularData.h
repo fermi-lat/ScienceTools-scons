@@ -21,16 +21,16 @@ namespace table {
     public:
       virtual ~ITabularData() {}
 
-      /** \brief Return the number of rows in the current tabular data object.
+      /** \brief Return the number of records in the current tabular data object.
       */
-      virtual Index_t getNumRows() const = 0;
+      virtual Index_t getNumRecords() const = 0;
 
       /** \brief Read a value from the current tabular data object.
           \param field The name of the field (column) to read.
-          \param row_num The index whose value to read.
+          \param record_index The index whose value to read.
           \param value The output value.
       */
-      virtual void read(const std::string & field, Index_t row_num, double & value) const = 0;
+      virtual void read(const std::string & field, Index_t record_index, double & value) const = 0;
   };
 
 }

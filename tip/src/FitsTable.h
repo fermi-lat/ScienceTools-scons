@@ -38,16 +38,16 @@ namespace table {
 
       virtual ~FitsTabularData();
 
-      /** \brief Return the number of rows in the current tabular data object.
+      /** \brief Return the number of records in the current tabular data object.
       */
-      virtual Index_t getNumRows() const;
+      virtual Index_t getNumRecords() const;
 
       /** \brief Read a value from the current tabular data object.
           \param field The name of the field (column) to read.
-          \param row_num The index whose value to read.
+          \param record_index The index whose value to read.
           \param value The output value.
       */
-      virtual void read(const std::string & field, Index_t row_num, double & value) const;
+      virtual void read(const std::string & field, Index_t record_index, double & value) const;
 
     protected:
       // Iternal method to open the FITS file.
@@ -61,7 +61,7 @@ namespace table {
       std::string m_file_name;
       std::string m_table_name;
       fitsfile * m_fp;
-      Index_t m_num_rows;
+      Index_t m_num_records;
   };
 
 }

@@ -91,10 +91,13 @@ namespace table {
             return itor->second;
           }
 
-          // Get the current row number and table. Client code should not normally need to call these.
-          Index_t getRowNum() const { return m_index; }
-          void nextRecord() { ++m_index; }
+          // Client code should not normally need to call methods below here.
+          // Get the current record index and table.
+          Index_t getIndex() const { return m_index; }
+
+          // Get the current Table pointer.
           Table * getTable() { assert(m_table); return m_table; }
+          void nextRecord() { ++m_index; }
 
         private:
           CellCont_t m_cells;
@@ -104,7 +107,7 @@ namespace table {
 
       /** \class Iterator
 
-          \brief STL-style iterator which points to positions (rows) within the Table.
+          \brief STL-style iterator which points to a position (record index) within the Table.
       */
       class Iterator {
         public:
@@ -115,9 +118,9 @@ namespace table {
 
           /** \brief Create an Iterator which does refer to the given table and index.
               \param table Pointer to the referent Table object.
-              \param row_num The index indicating the position of this iterator within the table.
+              \param record_index The index indicating the position of this iterator within the table.
           */
-          Iterator(Table * table, Index_t row_num): m_record(*table, row_num), m_table(table) {}
+          Iterator(Table * table, Index_t record_index): m_record(*table, record_index), m_table(table) {}
 
           /** \brief Standard assignment, which makes this object refer to the same record in the same
               table as the source, but does not copy the source iterator's Record.
@@ -138,11 +141,12 @@ namespace table {
           */
           Iterator & operator ++() { m_record.nextRecord(); return *this; }
 
-          /** \brief Compare iterator positions. They will agree iff they point to the same row of the same table.
+          /** \brief Compare iterator positions. They will agree iff they point to the same record index
+              of the same table.
               \param itor The iterator being compared.
           */
           bool operator !=(const Iterator & itor) const
-            { return (m_table != itor.m_table || m_record.getRowNum() != itor.m_record.getRowNum()); }
+            { return (m_table != itor.m_table || m_record.getIndex() != itor.m_record.getIndex()); }
 
           /** \brief Dereference to get the Record object this Iterator contains.
           */
@@ -170,22 +174,22 @@ namespace table {
 
       /** \brief Return an iterator pointing past the last record in the table.
       */
-      Iterator end() { return Iterator(this, m_tabular_data->getNumRows()); }
+      Iterator end() { return Iterator(this, m_tabular_data->getNumRecords()); }
 
       /** \brief Get a value from the Table.
           \param field The name of the field (column) to read.
-          \param row_num The index whose value to read.
+          \param record_index The index whose value to read.
           \pamar value The output value.
       */
-      void read(const std::string & field, Index_t row_num, double & value) const
-        { m_tabular_data->read(field, row_num, value); }
+      void read(const std::string & field, Index_t record_index, double & value) const
+        { m_tabular_data->read(field, record_index, value); }
 
     private:
       ITabularData * m_tabular_data;
   };
 
   inline void Table::Cell::read(double & value) const
-    { m_record.getTable()->read(m_field, m_record.getRowNum(), value); }
+    { m_record.getTable()->read(m_field, m_record.getIndex(), value); }
 
   typedef Table::Cell Cell;
   typedef Table::Record Record;

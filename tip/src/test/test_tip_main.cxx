@@ -36,7 +36,7 @@ int main() {
     Table table(&data);
 
     // Populate a test array with one of the fields from the table.
-    std::vector<double> counts_vec(data.getNumRows());
+    std::vector<double> counts_vec(data.getNumRecords());
 
     // First, use standard C++-style access.
     try {

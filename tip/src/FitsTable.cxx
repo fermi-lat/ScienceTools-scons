@@ -12,7 +12,7 @@
 namespace table {
 
   FitsTabularData::FitsTabularData(const std::string & file_name, const std::string & table_name): ITabularData(),
-    m_file_name(file_name), m_table_name(table_name), m_fp(0), m_num_rows(0) {
+    m_file_name(file_name), m_table_name(table_name), m_fp(0), m_num_records(0) {
     int status = 0;
     long nrows = 0;
 
@@ -29,7 +29,7 @@ namespace table {
     }
 
     // Save the number of rows.
-    m_num_rows = (Index_t) nrows;
+    m_num_records = (Index_t) nrows;
 
     // Iterate over columns, putting the name of each in the column container.
     while (COL_NOT_FOUND != status) {
@@ -47,13 +47,13 @@ namespace table {
   }
 
   FitsTabularData::FitsTabularData(const FitsTabularData & table): ITabularData(), m_col_info(table.m_col_info),
-    m_file_name(table.m_file_name), m_table_name(table.m_table_name), m_fp(0), m_num_rows(table.m_num_rows) {
+    m_file_name(table.m_file_name), m_table_name(table.m_table_name), m_fp(0), m_num_records(table.m_num_records) {
     // Copy construction requires that the new table opens the file itself separately.
     try {
       open();
     } catch(FitsException & x) {
       m_col_info.clear();
-      m_num_rows = 0;
+      m_num_records = 0;
       throw;
     }
   }
@@ -62,9 +62,9 @@ namespace table {
     close();
   }
 
-  Index_t FitsTabularData::getNumRows() const { return m_num_rows; }
+  Index_t FitsTabularData::getNumRecords() const { return m_num_records; }
 
-  void FitsTabularData::read(const std::string & field, Index_t row_num, double & value) const {
+  void FitsTabularData::read(const std::string & field, Index_t record_index, double & value) const {
     int status = 0;
     std::map<std::string, int>::const_iterator itor = m_col_info.find(field);
     if (itor == m_col_info.end()) throw FitsException();
@@ -72,7 +72,7 @@ namespace table {
     int col_num = itor->second;
 
     // Read one value at a time.
-    fits_read_col(m_fp, TDOUBLE, col_num, row_num + 1, 1, 1, 0, &value, 0, &status);
+    fits_read_col(m_fp, TDOUBLE, col_num, record_index + 1, 1, 1, 0, &value, 0, &status);
   }
 
   void FitsTabularData::open() {
