@@ -46,13 +46,18 @@ namespace tip {
     const std::string & filter) {
     Table * retval = 0;
     IExtensionManager * data = 0;
+    TipException fits_exception;
     try {
       try {
         data = new FitsExtensionManager(file_name, table_name, filter);
       } catch(const TipException & x) {
+        fits_exception = x;
         data = new RootExtensionManager(file_name, table_name, filter);
       }
       retval = new Table(data);
+    } catch(const TipException & x) {
+      delete retval; // If retval is non-0, Table was created, so it will delete data.
+      throw TipException(std::string(fits_exception.what()) + "\n" + x.what());
     } catch(...) {
       delete retval; // If retval is non-0, Table was created, so it will delete data.
 
