@@ -266,8 +266,6 @@ float CHIMESpectrum::cosomega(float E) const {
     // should be derived from the position by looking in tables.
     // Also, this is simple Størmer theory, ignoring  the penumbral
     // region and multipole effects.
-
-    E *= 0.001;  // Convert Mev->GeV
     
     const float Mp = 0.938f;  // mass of proton in GeV
     double/*float*/ pcut = sqrt(m_cutoff*m_cutoff + 2.*Mp*m_cutoff);  // cutoff momentum
@@ -303,7 +301,7 @@ std::pair<double,double> CHIMESpectrum::dir(double energy)
     int trial=0;
     do {
         // uniform distribution within Stormer cone
-        cospolar = -1. + HepRandom::getTheGenerator()->flat()*(cosomega(energy)+1.);
+        cospolar = -1. + HepRandom::getTheGenerator()->flat()*(cosomega(energy*0.001)+1.);
         sinpolar = sqrt(1.-cospolar*cospolar);
         azi = 2.*M_PI* HepRandom::getTheGenerator()->flat();
         coszenith = cos(azi)*sinpolar;
