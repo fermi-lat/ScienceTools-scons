@@ -54,7 +54,7 @@ columns (or leaves in Root parlance):
   double ph_time_dbl;
   for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
     // Read the current value.
-    itor->get("ph_time", ph_time_dbl);
+    (*itor)["ph_time"].get(ph_time_dbl);
     // Do something with the current value of ph_time_dbl here.
   }
 \endverbatim
@@ -68,7 +68,8 @@ causes the loop to terminate after processing the last row.
 The last clause ("++itor") causes the iterator (itor) to go on
 to the next value.
 
-Inside the loop, the get method is called to fill the current
+Inside the loop, the iterator is dereferenced "(*itor)" and
+the resulting object's get method is called to fill the current
 value of the ph_time column into the local ph_time_dbl variable.
 
 \subsection read2 Reading Tabular Data (Second Method)
@@ -148,14 +149,17 @@ and columns, also using "set":
 \verbatim
   double ph_time_dbl;
   for (Table::Iterator itor = my_table->begin(); itor != my_table->end(); ++itor) {
+    // Get the cell containing the ph_time field from the iterator:
+    Table::Cell & ph_time_cell = (*itor)["ph_time"];
+
     // Read the current value.
-    itor->get("ph_time", ph_time_dbl);
+    ph_time_cell.get(ph_time_dbl);
 
     // Subtract an offset.
     ph_time_dbl -= offset;
 
-    // Write the corrected value:
-    itor->set("ph_time", ph_time_dbl);
+    // Write the corrected value to the table:
+    ph_time_cell.set(ph_time_dbl);
   }
 \endverbatim
 
