@@ -32,9 +32,9 @@ namespace optimizers {
 
 void Parameter::setValue(double value) throw(OutOfBounds) {
    static double tol(1e-8);
-   if (fabs(value - m_minValue) < tol) {
+   if (m_minValue != 0  && fabs((value - m_minValue)/m_minValue) < tol) {
       m_value = m_minValue;
-   } else if (fabs(value - m_maxValue) < tol) {
+   } else if (m_maxValue != 0 && fabs((value - m_maxValue)/m_maxValue) < tol) {
       m_value = m_maxValue;
    } else if (value >= m_minValue && value <= m_maxValue) {
       m_value = value;
