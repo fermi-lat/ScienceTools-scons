@@ -25,7 +25,7 @@ void GRBConstants::ReadParam(){
   ifstream f1(paramFile.c_str());
   if (! f1.is_open()) 
     {
-      cout<<"Error Opening $(FLUXSVCROOT)/src/test/GRBParam.txt\n";
+      cout<<"Error Opening $(GRBROOT)/src/test/GRBParam.txt\n";
       //TODO LIST: still need to remove this exit, without gwtting a core dump!
       exit(1);
     }
