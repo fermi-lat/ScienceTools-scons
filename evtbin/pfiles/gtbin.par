@@ -1,10 +1,10 @@
 #-------------------------------------------------------------------------------
 # General parameters.
-algorithm,     s, a, "PHA2", , , "Type of output file (CMAP, LC, PHA1, PHA2)"
+algorithm,     s, a, "PHA2", CMAP|LC|PHA1|PHA2, , "Type of output file"
 evfile,        f, a, , , , "Event data file name"
 evtable,       s, h, "EVENTS", , , "Table containing event data"
 outfile,       f, a, , , , "Output file name"
-scfile,        f, a, , , , "Spacecraft data file name"
+scfile,        f, a, NONE, , , "Spacecraft data file name"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
 debug,         b, h, no, , , "Debugging mode activated"
@@ -14,7 +14,7 @@ mode,          s, h, "ql", , ,"Mode of automatic parameters"
 
 #-------------------------------------------------------------------------------
 # Time binning parameters.
-timebinalg,    s, a, "LIN", , , "Algorithm for defining time bins (FILE, LIN, LOG)"
+timebinalg,    s, a, "LIN", FILE|LIN|SNR, , "Algorithm for defining time bins"
 timefield,     s, h, "TIME", , , "Name of time field to bin"
 tstart,        r, a, , , , "Start value for first time bin"
 tstop,         r, a, , , , "Stop value for last time bin"
@@ -37,12 +37,12 @@ yref,          r, a, 0., , , "Second coordinate of image center in degrees (DEC 
 rafield,       s, h, "RA", , ,"First coordinate field to bin"
 decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
 axisrot,       r, a, 0., , , "Rotation angle of image axis, in degrees"
-proj,          s, h, "AIT", , , "Projection method (AIT, ARC, CAR, GLS, MER, NCP, SIN, STG, TAN)"
+proj,          s, h, "AIT", AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN, , "Projection method"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 # Energy binning parameters.
-energybinalg,  s, a, "LOG", , , "Algorithm for defining energy bins (FILE, LIN, LOG)"
+energybinalg,  s, a, "LOG", FILE|LIN|LOG, , "Algorithm for defining energy bins"
 energyfield,   s, h, "ENERGY", , ,"Name of energy field to bin"
 emin,          r, a, , , , "Start value for first energy bin"
 emax,          r, a, , , , "Stop value for last energy bin"
