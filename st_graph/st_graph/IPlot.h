@@ -14,7 +14,8 @@
 namespace st_graph {
 
   /** \class IPlot
-      \brief Base class for all plots which can be displayed in a plotting frame.
+      \brief Base class for all plots which can be displayed in a plotting frame. This is not used and currently
+             is deprecated.
   */
   class IPlot {
     public:

@@ -1,3 +1,7 @@
+/** \file ValueSet.cxx
+    \brief Implementation of ValueSet class.
+    \author James Peachey, HEASARC/GSSC
+*/
 #include <stdexcept>
 
 #include "st_graph/ValueSet.h"

@@ -17,6 +17,8 @@
     factory for the creation of plots.
 
     \subsection sample Sample Code
+    Note this example uses an older class (PlotHist) which is deprecated and
+    will soon be removed! A better example is coming.
 \verbatim
 
   // Create local reference to engine singleton. This engine is an abstract factory for graphical objects.
