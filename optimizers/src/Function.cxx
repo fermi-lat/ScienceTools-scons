@@ -9,10 +9,10 @@
 #include <iostream>
 #include <sstream>
 
-#include <xercesc/dom/DOM_Node.hpp>
+#include "xml/Dom.h"
 #include <xercesc/dom/DOM_Element.hpp>
-#include <xercesc/dom/DOM_Document.hpp>
 
+#include "optimizers/Dom.h"
 #include "optimizers/Function.h"
 
 namespace optimizers {
@@ -277,6 +277,20 @@ void Function::appendParamDomElements(DOM_Document &doc, DOM_Node &node) {
    for ( ; paramIt != m_parameter.end(); paramIt++) {
       DOM_Element paramElt = paramIt->createDomElement(doc);
       node.appendChild(paramElt);
+   }
+}
+
+void Function::setParams(const DOM_Element &elt) {
+   std::vector<DOM_Element> parElts;
+   Dom::getElements(elt, "parameter", parElts);
+   for (unsigned int i = 0; i < parElts.size(); i++) {
+      std::string name = xml::Dom::getAttribute(parElts[i], "name");
+      for (unsigned int j = 0; j < m_parameter.size(); j++) {
+         if (m_parameter[j].getName() == name) {
+            m_parameter[j].extractDomData(parElts[i]);
+            break;
+         }
+      }
    }
 }
 

@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v0r5   15-Nov-03   JC   add BrokenPowerLaw, ConstantValue classes; udpate
+                            FunctionFactory constructor
     v0r4   09-Nov-03   PLN  Changes in covergence criteria; Drmngb bug-fix
                        JC   Added RosenND class
     v0r3   18-Oct-03   JC   Tag for m_genericName data member (used by 

@@ -184,6 +184,9 @@ public:
    /// Append Parameter DOM_Elements to a DOM_Node.
    void appendParamDomElements(DOM_Document &doc, DOM_Node &node);
 
+   /// Set the Parameters from a Function DOM_Element.
+   void setParams(const DOM_Element &elt);
+
 protected:
 
    std::string m_genericName;

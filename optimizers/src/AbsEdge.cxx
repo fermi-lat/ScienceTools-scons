@@ -47,11 +47,10 @@ double AbsEdge::value(Arg &xarg) const {
 
    if (x < my_params[E0].getTrueValue()) {
       return 1;
-   } else {
-      double tau = my_params[Tau0].getTrueValue()
-         *pow(x/my_params[E0].getTrueValue(), my_params[Index].getTrueValue());
-      return exp(-tau);
    }
+   double tau = my_params[Tau0].getTrueValue()
+      *pow(x/my_params[E0].getTrueValue(), my_params[Index].getTrueValue());
+   return exp(-tau);
 }
 
 double AbsEdge::derivByParam(Arg &xarg, 
