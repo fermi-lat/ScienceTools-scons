@@ -12,12 +12,10 @@
 #include <string>
 #include <vector>
 
-#include "flux/EventSource.h"
-#include "flux/FluxMgr.h"
-
 #include "astro/SkyDir.h"
 
-//#include "latResponse/Irfs.h"
+//#include "flux/EventSource.h"
+//#include "flux/FluxMgr.h"
 
 #include "observationSim/Event.h"
 #include "observationSim/FitsTable.h"
@@ -27,6 +25,8 @@ namespace Goodi {
    class IEventData;
    class IDataIOService;
 }
+
+class EventSource;
 
 namespace latResponse {
    class Irfs;

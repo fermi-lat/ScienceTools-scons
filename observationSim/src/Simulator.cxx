@@ -101,7 +101,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    for (std::vector<std::string>::const_iterator name = sourceNames.begin();
         name != sourceNames.end(); name++) {
       EventSource * source;
-      if (source = m_fluxMgr->source(*name)) {
+      if ( (source = m_fluxMgr->source(*name)) ) {
          m_source->addSource(source);
          nsrcs++;
          std::cout << "added source \"" << *name << "\"" << std::endl;

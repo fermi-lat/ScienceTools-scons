@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r8   02-Feb-04   JC   accommodate move of GPS class from flux to astro
+    v2r7p3 ??-Jan-04   JC   fix for linking to ROOT
     v2r7p2 23-Jan-04   JC   add "NO_EDISP" option to IRF selection in obsSim
     v2r7p1 22-Jan-04   JC   fix test program
     v2r7   22-Jan-04   JC   make specification of flux-style xml files

@@ -10,8 +10,6 @@
 
 #include "CLHEP/Geometry/Vector3D.h"
 
-#include "astro/EarthCoordinate.h"
-
 #ifdef USE_GOODI
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
@@ -21,8 +19,10 @@
 #include "Goodi/ISpacecraftData.h"
 #endif
 
+#include "astro/EarthCoordinate.h"
+//#include "astro/GPS.h"
+
 #include "flux/EventSource.h"
-#include "flux/GPS.h"
 
 #include "observationSim/ScDataContainer.h"
 
