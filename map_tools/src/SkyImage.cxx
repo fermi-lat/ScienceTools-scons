@@ -73,13 +73,12 @@ SkyImage::SkyImage(const MapParameters& pars)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta){
 
-    double ra=dir.ra(), dec=dir.dec(); // for testing
     std::pair<double,double> p= dir.project();
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*j;
-    if( k>=0 && k< m_data.size()){
+    if(  k< m_data.size()){
         m_data[k]+=delta;
         m_total += delta;
     }
