@@ -9,16 +9,19 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile,  s, a, "$(TMP)/testCube.fits", , , "Name of the exposure cube input file:"
-outfile,  s, a, "$(OUTFILES)/testCube2.fits", , , "Name of the exposure output file:"
+infile,  f, a, "$(TMP)/testCube.fits", , , "Name of the exposure cube input file:"
+outfile, f, a, "$(OUTFILES)/testCube2.fits", , , "Name of the exposure output file:"
+filter,  s, a, "", , , "filter expression"
 #
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #
 npix,     i, a,  360,   , , "Total pixel size of the image in each axis: "
-imgsize,  i, a,  360,   , , "Total physical size of the image(x): "
-xref,     r, a,    0,   , , "RA/L at the image center: "
-yref,     r, a,    0,   , , "DEC/B at the image center: "
+npixy,    i, a,  180,   , , "Total pixel size of the image in y axis: "
+pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
+xref,     r, a,    0,   , , "RA at the image center: "
+yref,     r, a,    0,   , , "DEC at the image center: "
 rot,      r, a,    0,   , , "Rotation angle of Y-axis relative to the physical coordinate: "
-projtype, s, a, "CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
+projtype, s, a,"CAR",   , , "Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG): "
+uselb,    b, a,"YES",   , , "use l,b instead of ra,dec :"
 #---------------------------------------------------------------------------------------
