@@ -61,6 +61,10 @@ namespace tip {
       static bool isValid(const std::string & file_name);
 
     private:
+      static fitsfile * createFile(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+      static fitsfile * createImage(fitsfile * fp, const std::string & file_name, const std::string & image_name,
+        const std::vector<long> & dims);
+
       // Get the extsnsion identifier (name or number).
       static void getExtId(fitsfile * fp, std::string & ext_id);
 

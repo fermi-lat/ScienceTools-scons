@@ -24,35 +24,27 @@ namespace tip {
     if (clobber) full_name = "!" + file_name;
     else full_name = file_name;
 
-    // Concatenate the file name with the template name so that cfitsio can use it.
-    if (!template_name.empty()) full_name += "(" + template_name + ")";
-
     // Fitsio stuff.
     fitsfile * fp = 0;
     int status = 0;
 
-    // Create the file.
-    fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
-    if (0 != status) {
-      closeFile(fp, status);
-      throw TipException(status, "Unable to create file named \"" + full_name + '"');
-    }
+    // Concatenate the file name with the template name so that cfitsio can use it.
+    if (!template_name.empty()) {
+      full_name += "(" + template_name + ")";
 
-    if (template_name.empty()) {
-      long dims[1] = { 0 };
-
+      // Create the file.
+      fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
+    } else {
       // No template: need to create primary image explicitly.
-      fits_create_img(fp, FLOAT_IMG, 0, dims, &status);
-      if (0 != status) {
-        closeFile(fp, status);
-        throw TipException(status, "Unable to create primary image in file named \"" + full_name + '"');
-      }
+      std::vector<long> dims;
+
+      fp = createFile(full_name, "PRIMARY", dims);
     }
 
     // Close the file.
     closeFile(fp, status);
     if (0 != status)
-      throw TipException(status, "Unable to close newly created file named \"" + file_name + "\"");
+      throw TipException(status, "Unable to create file named \"" + full_name + "\"");
   }
 
   TipFile FitsFileManager::createMemFile(const std::string & file_name, const std::string & template_name, bool clobber) {
@@ -66,39 +58,10 @@ namespace tip {
     // Open or create the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
     if (0 != status) {
-      fp = 0;
       status = 0;
-      fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
-      if (0 != status) {
-        closeFile(fp, status);
-        throw TipException(status, "Unable to open or create file named \"" + file_name + "\"");
-      }
-    }
-
-    // Create new image extension at end of file.
-    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
-    if (0 != status) {
-      closeFile(fp, status);
-      throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
-    }
-
-    // Get the current extension number, because the primary extension is handled slightly differently.
-    int hdu_num = 0;
-    fits_get_hdu_num(fp, &hdu_num);
-    if (0 != status) {
-      closeFile(fp, status);
-      throw TipException(status, std::string("Unable to determine the extension number of image \"") + image_name + "\" in file \"" +
-        file_name + "\"");
-    }
-
-    // For primary array, write name in HDUNAME keyword, otherwise in the EXTNAME keyword.
-    char key_name[16];
-    if (1 == hdu_num) strcpy(key_name, "HDUNAME");
-    else strcpy(key_name, "EXTNAME");
-    fits_update_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
-    if (0 != status) {
-      closeFile(fp, status);
-      throw TipException(status, std::string("Unable to name image in file \"") + file_name + "\"");
+      fp = createFile(file_name, image_name, dims);
+    } else {
+      fp = createImage(fp, file_name, image_name, dims);
     }
 
     // Close the file; not interested in it anymore.
@@ -114,9 +77,9 @@ namespace tip {
     // Open or create the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
     if (0 != status) {
-      fp = 0;
+      std::vector<long> dims;
       status = 0;
-      fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
+      fp = createFile(file_name.c_str(), "PRIMARY", dims);
       if (0 != status) {
         closeFile(fp, status);
         throw TipException(status, "Unable to open or create file named \"" + file_name + "\"");
@@ -178,6 +141,54 @@ namespace tip {
     if (0 != status) return false;
     closeFile(fp, status);
     return true;
+  }
+
+  fitsfile * FitsFileManager::createFile(const std::string & file_name, const std::string & image_name,
+    const std::vector<long> & dims) {
+    fitsfile * fp = 0;
+    int status = 0;
+
+    // Create the file.
+    fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
+    if (0 != status) {
+      closeFile(fp, status);
+      throw TipException(status, "Unable to create file named \"" + file_name + "\"");
+    }
+
+    return createImage(fp, file_name, image_name, dims);
+  }
+
+  fitsfile * FitsFileManager::createImage(fitsfile * fp, const std::string & file_name, const std::string & image_name,
+    const std::vector<long> & dims) {
+    int status = 0;
+
+    // Create new image extension at end of file.
+    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
+    if (0 != status) {
+      closeFile(fp, status);
+      throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
+    }
+
+    // Get the current extension number, because the primary extension is handled slightly differently.
+    int hdu_num = 0;
+    fits_get_hdu_num(fp, &hdu_num);
+    if (0 != status) {
+      closeFile(fp, status);
+      throw TipException(status, std::string("Unable to determine the extension number of image \"") + image_name + "\" in file \"" +
+        file_name + "\"");
+    }
+
+    // For primary array, write name in HDUNAME keyword, otherwise in the EXTNAME keyword.
+    char key_name[16];
+    if (1 == hdu_num) strcpy(key_name, "HDUNAME");
+    else strcpy(key_name, "EXTNAME");
+    fits_update_key(fp, TSTRING, key_name, const_cast<char *>(image_name.c_str()), 0, &status);
+    if (0 != status) {
+      closeFile(fp, status);
+      throw TipException(status, std::string("Unable to name image in file \"") + file_name + "\"");
+    }
+
+    return fp;
   }
 
   void FitsFileManager::getExtId(fitsfile * fp, std::string & ext_id) {
