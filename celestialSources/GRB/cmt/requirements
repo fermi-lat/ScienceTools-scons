@@ -46,4 +46,7 @@ macro_append grbObsTesterlinkopts  "${GRB_lib} -L${FLUXSVCROOT}/${CMTCONFIG} -lF
 # test program, using local joboptions
 
 public set JOBOPTIONS ${GRBROOT}/src/test/jobOptions.txt
+
 apply_pattern package_test
+set TESTJOBOPTIONS ${GRBROOT}/src/test/test_jobOptions.txt
+
