@@ -515,7 +515,7 @@
     -->
     <source name="vela-galactic">
 		<spectrum escale="GeV">
-		   <SpectrumClass name="GalPulsars" params="../sources/vela.txt"/> <use_spectrum frame="galaxy"/>
+		   <SpectrumClass name="GalPulsars" params="vela.txt"/> <use_spectrum frame="galaxy"/>
 		</spectrum>
     </source>
     
@@ -523,14 +523,14 @@
     -->
     <source name="galactic-pulsars">
 	   <spectrum escale="GeV">
-	      <SpectrumClass name="GalPulsars" params="../sources/pulsars.txt"/> <use_spectrum frame="galaxy"/>
+	      <SpectrumClass name="GalPulsars" params="pulsars.txt"/> <use_spectrum frame="galaxy"/>
 	   </spectrum>
     </source>
     
     <!-- Single simulated pulsar source using GalPulsars. -->
     <source name="GRS01369">
        <spectrum escale="GeV">
-          <SpectrumClass name="GalPulsars" params="../sources/GRS01369.txt"/> <use_spectrum frame="galaxy"/>
+          <SpectrumClass name="GalPulsars" params="GRS01369.txt"/> <use_spectrum frame="galaxy"/>
        </spectrum>
     </source>
 
