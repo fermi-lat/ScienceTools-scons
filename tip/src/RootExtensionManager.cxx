@@ -5,6 +5,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <iostream>
 #include <utility>
 
 #include "TBranch.h"
@@ -44,11 +45,11 @@ namespace tip {
     // Save current error chattiness level:
     long root_err_level = gErrorIgnoreLevel;
 
-    // Tell root to ignore problems opening the file instead of issuing an annoying warning.
-    gErrorIgnoreLevel = 3000;
+    // Tell root to ignore problems opening files instead of issuing annoying warnings.
+    gErrorIgnoreLevel = 100000;
 
     // Try to open the file.
-    TFile file(file_name.c_str());
+    TFile file(file_name.c_str(), "READ");
 
     // Restore Root chattiness level.
     gErrorIgnoreLevel = root_err_level;
