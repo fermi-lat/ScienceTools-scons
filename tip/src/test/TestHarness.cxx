@@ -12,7 +12,7 @@
 
 namespace tip {
 
-  TestHarness::TestHarness(): m_status(0) {}
+  TestHarness::TestHarness(): m_data_dir(), m_status(0) {}
 
   TestHarness::~TestHarness() throw() {}
 
@@ -45,6 +45,15 @@ namespace tip {
 
   int TestHarness::getStatus() const { return m_status; }
 
-  void TestHarness::setStatus(int status) const { if (0 != m_status) m_status = status; }
+  void TestHarness::setStatus(int status) const { if (0 == m_status) m_status = status; }
+
+  const std::string & TestHarness::getDataDir() const {
+    if (m_data_dir.empty()) {
+      const char * tiproot = getenv("TIPROOT");
+      if (0 != tiproot && 0 != *tiproot) m_data_dir = std::string(tiproot) + "/data/";
+      else ReportWarning("TIPROOT environment variable not set");
+    }
+    return m_data_dir;
+  }
 
 }

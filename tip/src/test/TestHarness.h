@@ -69,7 +69,12 @@ namespace tip {
       */
       void setStatus(int status) const;
 
+      /** \brief Get name of directory containing test data.
+      */
+      const std::string & getDataDir() const;
+
     private:
+      mutable std::string m_data_dir;
       mutable int m_status;
   };
 
