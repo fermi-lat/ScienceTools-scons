@@ -12,6 +12,8 @@
 
 #include <cassert>
 
+#include "CLHEP/Random/Random.h"
+
 #include "hoops/hoops_exception.h"
 
 #include "astro/SkyDir.h"
@@ -36,6 +38,13 @@ int main(int iargc, char * argv[]) {
    strcpy(argv[0], "obsSim");
    try {
       Likelihood::RunParams params(iargc, argv);
+
+// Set the random number seed in the CLHEP random number engine.
+// We only do this once per run, so we set it using the constructor.
+// See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
+      long seed;
+      params.getParam("Random_seed", seed);
+      HepRandom hepRandom(seed);
          
 // Here are the default xml files for flux-style sources.
       std::vector<std::string> xmlSourceFiles;
