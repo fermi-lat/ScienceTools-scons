@@ -8,20 +8,25 @@
 # The following set,  else would follow GNU conventions
 AUTOMAKE_OPTIONS = foreign
 
-facilitiesincludedir = $(includedir)/facilities
+facilitiesdir = $(includedir)/facilities
 
-facilitiesinclude_HEADERS = \
+## headers required in shared file system installation
+facilities_HEADERS =     \
 	Adapter.h        \
 	Clock.h          \
-	Commissioner.h   \
-	Converter.h      \
 	FIFO.h           \
 	Observer.h       \
-	ScheduledEvent.h \
 	Scheduler.h      \
+	ScheduledEvent.h \
+	SimpleEvent.h    \
 	Utility.h        \
-	binarystream.h   \
 	bitmanip.h       \
 	bpkt_streams.h   \
-	error.h          \
+	error.h
+
+## headers not needed in shared file system installation
+noinst_HEADERS =         \
+	Commissioner.h   \
+	Converter.h      \
+	binarystream.h   \
 	filemap.h
