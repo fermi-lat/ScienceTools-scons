@@ -38,8 +38,6 @@ namespace {
 
 namespace dataSubselector {
 
-#include "fitsio.h"
-
 Cuts::Cuts(const std::string & eventFile, const std::string & extname,
            bool check_columns) {
    const tip::Extension * ext(0);
@@ -57,17 +55,17 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       const tip::Table * table 
          = dynamic_cast<tip::Table *>(const_cast<tip::Extension *>(ext));
       colnames = table->getValidFields();
-// FITS column names are in CAPS, not lowercase, so undo the damage
-// wrought by tip:
+// FITS column names are in CAPS, not lowercase, so undo what tip has wrought
       for (unsigned int i = 0; i < colnames.size(); i++) {
          ::toUpper(colnames[i]);
       }
    }
 
    const tip::Header & header = ext->getHeader();
+// The .get(...) method does not work for unsigned int arguments, so
+// we are force to use a double as a temporary variable:
    double nkeys_value;
    header["NDSKEYS"].get(nkeys_value);
-// This is incredibly lame....one might as well use CCFits.
    unsigned int nkeys = static_cast<unsigned int>(nkeys_value);
 
    std::string type, unit, value, ref("");
