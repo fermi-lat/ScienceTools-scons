@@ -430,10 +430,81 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
       // Dummy variable for holding double values obtained from the table.
       double tmp_d;
 
-      // Get a valid double keyword.
+      // Get a valid double keyword, and confirm its value.
       const_ext->getHeader().getKeyword("src_thet", tmp_d);
-      msg = "success calling getKeyword(\"src_thet\") from a const";
-      ReportBehavior(msg + " " + ext_type + " object", status);
+      if (-999. == tmp_d) {
+        msg = "success calling getKeyword(\"src_thet\") from a const";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        std::ostringstream os;
+        os << "getKeyword(\"src_thet\") returned " << tmp_d << " not 999. from a const";
+        ReportError(os.str() + " " + ext_type + " object", status);
+      }
+
+      // Get valid keyword comment, and confirm its value.
+      std::string expected_s = "Theta to rad src [deg]";
+      std::string tmp_s = const_ext->getHeader()["src_thet"].getComment();
+      if (tmp_s == expected_s) {
+        msg = "success calling Keyword::getComment from a const";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        msg = "Keyword::getComment returned \"" + tmp_s + "\" not \"" + expected_s + "\" when called for a const";
+        ReportError(msg + " " + ext_type + " object", status);
+      }
+
+      // Get valid keyword units. Despite the [deg] in the comment, reading unit will return a blank string,
+      // because units must be at the beginning of the comment.
+      expected_s = "";
+      tmp_s = const_ext->getHeader()["src_thet"].getUnit();
+      if (tmp_s == expected_s) {
+        msg = "success calling Keyword::getUnit from a const";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        msg = "Keyword::getUnit returned \"" + tmp_s + "\" not \"" + expected_s + "\" when called for a const";
+        ReportError(msg + " " + ext_type + " object", status);
+      }
+
+      // Set keyword unit, which should in effect prepend [deg] to the comment.
+      table->getHeader()["src_thet"].setUnit("deg");
+      
+      // Check that the keyword unit was modified, by reading the comment again and seeing if it changed.
+      expected_s = "[deg] Theta to rad src [deg]";
+      tmp_s = const_ext->getHeader()["src_thet"].getComment();
+      if (tmp_s == expected_s) {
+        msg = "success calling Keyword::setUnit for a";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        msg = "when verifying setUnit, Keyword::getComment returned \"" + tmp_s + "\" not \"" + expected_s +
+          "\" when called for a const";
+        ReportError(msg + " " + ext_type + " object", status);
+      }
+
+      // Also check whether getUnit works by getting the units again. Now they should be deg.
+      expected_s = "deg";
+      tmp_s = const_ext->getHeader()["src_thet"].getUnit();
+      if (tmp_s == expected_s) {
+        msg = "success calling Keyword::getUnit from a const";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        msg = "Keyword::getUnit returned \"" + tmp_s + "\" not \"" + expected_s + "\" when called for a const";
+        ReportError(msg + " " + ext_type + " object", status);
+      }
+
+      // Reset keyword comment in order to undo the change above.
+      expected_s = "Theta to rad src [deg]";
+      table->getHeader()["src_thet"].setComment(expected_s);
+      
+      // Check that the comment was modified, by reading the comment and seeing if it is different.
+      tmp_s = const_ext->getHeader()["src_thet"].getComment();
+      if (tmp_s == expected_s) {
+        msg = "success calling Keyword::setComment for a";
+        ReportBehavior(msg + " " + ext_type + " object", status);
+      } else {
+        msg = "when verifying setUnit, Keyword::getComment returned \"" + tmp_s + "\" not \"" + expected_s +
+          "\" when called for a const";
+        ReportError(msg + " " + ext_type + " object", status);
+      }
+
     } catch(const TipException & x) {
       msg = "failure calling getKeyword(\"src_thet\") from a const";
       ReportError(msg + " " + ext_type + " object", status, x);
