@@ -88,6 +88,12 @@ public:
     */
     virtual std::pair<double,double> dir(double energy)=0;
     
+    /** dummy set methods that are actually defaulted in Spectrum class.
+     * These are needed to parse info from the XML (see FluxSource class)
+     */
+    virtual void setParticleName(const std::string& value){;}
+    virtual void setInGeV(const bool value){;}
+    virtual void setFlux(double value){;}
 };
 
 

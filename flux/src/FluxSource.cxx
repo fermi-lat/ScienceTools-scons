@@ -456,7 +456,7 @@ FluxSource::FluxSource(const DOM_Element& xelem )
         DOM_Element specType = xml::Dom::getFirstChildElement(spec);
 
         std::string typeTagName = xml::Dom::getTagName(specType);
-        std::string spectrum_name = xml::Dom::getAttribute(spec, "name");
+        std::string spectrum_name = xml::Dom::getAttribute(spec, "particle_name");
         std::string spectrum_energyscale = xml::Dom::getAttribute(spec, "escale");
 
         if(spectrum_energyscale == "GeV"){ m_energyscale=GeV;
@@ -490,9 +490,15 @@ FluxSource::FluxSource(const DOM_Element& xelem )
                 FATAL_MACRO("Unknown Spectrum: "<< class_name);
                 return;
             }
+	    std:: string flux = xml::Dom::getAttribute(spec, "flux");
+	    if(flux!="")
+	      { s->setFlux(atof(flux.c_str())); }
+	    s->setInGeV(spectrum_energyscale == "GeV");
+
+	    s->setParticleName(spectrum_name);
         }
         m_spectrum =s;
-
+	
 
         // second child element is angle
         DOM_Element angles = xml::Dom::getSiblingElement(specType);
