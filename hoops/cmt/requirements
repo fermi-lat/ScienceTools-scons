@@ -12,13 +12,14 @@ use pil * IExternal
 
 apply_pattern ST_library option=-no_share
  
-
 private
 #-------------------------------------
 
 set PFILES "$(HOOPSROOT)/data" # for testing
 
 macro test_source "test/hoops_lim_test.cxx" #override pattern 
+
+macro_append hoops_cppflags "" Linux "-DHAVE_LIMITS "
 
 # supplemental test applications
 #application test_hoops_simple test/main.cxx
