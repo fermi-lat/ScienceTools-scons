@@ -13,6 +13,7 @@
   - astro::EarthCoordinate Point with respect to the surface of the Earth
   - astro::EarthOrbit Dynamics of an Earth orbit
   - astro::SolarSystem Sky positions of Moon and Sun
+  - astro::PointingTransform Transformation between GLAST and Celestial coordinate systems
 
 
     <hr>
