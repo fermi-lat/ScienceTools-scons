@@ -43,9 +43,17 @@ namespace st_app {
       */
       const std::string & name() const;
 
+      /** \brief Perform runtime initializations, if any.
+      */
+      virtual void setUp() {}
+
       /** \brief Perform the action needed by this application. This will be called by the standard main.
       */
       virtual void run() = 0;
+
+      /** \brief Perform runtime clean-up which follows the run, if any.
+      */
+      virtual void tearDown() {}
 
       /** \brief Get the group of parameters from hoops.
       */
