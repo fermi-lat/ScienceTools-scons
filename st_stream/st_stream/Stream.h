@@ -37,7 +37,7 @@ namespace st_stream {
           \param t The object to shift.
       */
       template <typename T>
-      OStream & operator <<(const T & t);
+      OStream & write(const T & t);
 
       /** \brief Pass the given stream modifier to the destination stream(s), but only if the current
                  message chatter level is less than or equal to the maximum chatter level.
@@ -87,7 +87,106 @@ namespace st_stream {
       */
       void disconnect(OStream & dest);
 
+      /** \brief Return current setting of stream format flags. See std::ios_base documentation for more details.
+      */
+      std::ios_base::fmtflags flags() const;
+
+      /** \brief Set stream format flags, and return flags' previous setting. See std::ios_base documentation for more details.
+          \param new_flags The new flags value.
+      */
+      std::ios_base::fmtflags flags(std::ios_base::fmtflags new_flags);
+
+      /** \brief Add stream format flag(s), and return flags' previous setting. See std::ios_base documentation for more details.
+          \param new_flags The new flag value.
+      */
+      std::ios_base::fmtflags setf(std::ios_base::fmtflags new_flags);
+
+      /** \brief Add stream format flag(s), and return flags' previous setting. See std::ios_base documentation for more details.
+          \param new_flags The new flag value.
+          \param mask Mask to apply prior to adding new flag(s).
+      */
+      std::ios_base::fmtflags setf(std::ios_base::fmtflags new_flags, std::ios_base::fmtflags mask);
+
+      /** \brief Unset stream format flags. See std::ios_base documentation for more details.
+          \param mask Mask to apply to flags.
+      */
+      void unsetf(std::ios_base::fmtflags mask);
+
+      /** \brief Return the current precision of this stream.
+      */
+      std::streamsize precision() const;
+
+      /** \brief Set the precision of all the streams to which this stream forwards its output.
+                 Return the original precision.
+          \param new_precision The new precision of the stream.
+      */
+      std::streamsize precision(std::streamsize new_precision);
+
+      /** \brief Return the current width of this stream.
+      */
+      std::streamsize width() const;
+
+      /** \brief Set the width of all the streams to which this stream forwards its output.
+                 Return the original width.
+          \param new_width The new width of the stream.
+      */
+      std::streamsize width(std::streamsize new_width);
+
+      /** \brief Return the current fill character of this stream.
+      */
+      char fill() const;
+
+      /** \brief Set the fill character of all the streams to which this stream forwards its output.
+                 Return the original fill character.
+          \param new_fill The new fill character of the stream.
+      */
+      char fill(char new_fill);
+
+      OStream & operator <<(const std::string & x) { return write(x); }
+      OStream & operator <<(const char * x) { return write(x); }
+      OStream & operator <<(bool x) { return write(x); }
+      OStream & operator <<(char x) { return write(x); }
+      OStream & operator <<(signed char x) { return write(x); }
+      OStream & operator <<(signed short x) { return write(x); }
+      OStream & operator <<(signed int x) { return write(x); }
+      OStream & operator <<(signed long x) { return write(x); }
+      OStream & operator <<(unsigned char x) { return write(x); }
+      OStream & operator <<(unsigned short x) { return write(x); }
+      OStream & operator <<(unsigned int x) { return write(x); }
+      OStream & operator <<(unsigned long x) { return write(x); }
+      OStream & operator <<(float x) { return write(x); }
+      OStream & operator <<(double x) { return write(x); }
+      OStream & operator <<(long double x) { return write(x); }
+
     private:
+      /** \brief Utility method to assist with the family of methods which get stream formatting information,
+                 e.g. precision() const, flags() const, etc.
+
+                 This uses pointers to methods in std::ios_base and its subclasses, and pointers to methods
+                 in OStream. First template argument is the return type of methods which will be called.
+                 Second template argument is the name of the subclass of std::ios_base in which the method
+                 is declared.
+          \param stdMethod Method to call to get format properties of std::ostream objects referred to by this stream.
+          \param method Method to call to get format properties of OStream objects referred to by this stream.
+      */
+      template <typename T, typename Stream_t>
+      T getStreamState(T (Stream_t::*stdMethod)() const, T (OStream::*method)() const) const;
+      
+      /** \brief Utility method to assist with the family of methods which set stream formatting information,
+                 e.g. precision(std::streamsize), flags(std::ios_base::fmtflags), etc.
+
+                 This uses pointers to methods in std::ios_base and its subclasses, and pointers to methods
+                 in OStream. First template argument is the return type of methods which will be called.
+                 Second template argument is the name of the subclass of std::ios_base in which the method
+                 is declared.
+          \param stdMethod Method to call to set format properties of std::ostream objects referred to by this stream.
+          \param method Method to call to set format properties of OStream objects referred to by this stream.
+          \param method Method to call to get format properties of OStream objects referred to by this stream.
+          \param arg Argument of set methods.
+      */
+      template <typename T, typename Stream_t>
+      T setStreamState(T (Stream_t::*stdMethod)(T), T (OStream::*method)(T), T (OStream::*getMethod)() const, T arg);
+      
       StdStreamCont_t m_std_stream_cont;
       OStreamCont_t m_stream_cont;
       std::string m_prefix;
@@ -123,8 +222,8 @@ namespace st_stream {
   inline OStream & operator <<(OStream & os, const Chat & chat) { return chat(os); }
 
   template <typename T>
-  inline OStream & OStream::operator <<(const T & t) {
-    // Only send object to destination(s) if message chatter is less than maximum user/client chatter.
+  inline OStream & OStream::write(const T & t) {
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
     if (m_chat_level <= m_max_chat) {
       // Iterate over std::ostreams, shifting object to each in turn.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
@@ -147,7 +246,7 @@ namespace st_stream {
   }
 
   inline OStream & OStream::operator <<(std::ostream & (*func)(std::ostream &)) {
-    // Only send modifier to destination(s) if message chatter is less than maximum user/client chatter.
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
     if (m_chat_level <= m_max_chat) {
       // Iterate over std::ostreams, shifting object to each in turn.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
@@ -167,6 +266,36 @@ namespace st_stream {
   inline OStream& OStream::setChatLevel(unsigned int chat_level) {
     m_chat_level = chat_level;
     return *this;
+  }
+
+  template <typename T, typename Stream_t>
+  inline T OStream::getStreamState(T (Stream_t::*stdMethod)() const, T (OStream::*method)() const) const {
+    T orig;
+    // First try getting the information from the first std::stream object which is referred to by this stream.
+    if (!m_std_stream_cont.empty()) orig = ((*m_std_stream_cont.begin())->*stdMethod)();
+    // First try getting the information from the first OStream object which is referred to by this stream.
+    else if (!m_stream_cont.empty()) orig = ((*m_stream_cont.begin())->*method)();
+    return orig;
+  }
+
+  template <typename T, typename Stream_t>
+  inline T OStream::setStreamState(T (Stream_t::*stdMethod)(T), T (OStream::*method)(T),
+    T (OStream::*getMethod)() const, T arg) {
+    // Return value is the current value of this particular stream property.
+    T orig = (this->*getMethod)();
+
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
+    if (m_chat_level <= m_max_chat) {
+      // Call stdMethod for each std::ostream object.
+      for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
+        ((*itor)->*stdMethod)(arg);
+
+      // Call method for each OStream object.
+      for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor)
+        ((*itor)->*method)(arg);
+    }
+
+    return orig;
   }
 
   /** \brief Error stream, parallel to std::cerr. This stream has the highest possible maximum chatter, so all

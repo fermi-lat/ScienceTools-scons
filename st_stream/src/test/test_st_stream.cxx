@@ -312,5 +312,29 @@ int main() {
   sf2.out() << Chat(std::numeric_limits<unsigned int>::max()) <<
     "This was written to sf2.out(), and should always appear despite its highest possible chatter level." << std::endl;
 
+  // Test setting stream precision.
+  double a_double = 1.23456789012;
+
+  stout << "With default precision, 1.23456789012 is displayed as " << a_double << std::endl;
+  stout.precision(12);
+  stout << "After precision was set to 12, 1.23456789012 is displayed as " << a_double << std::endl;
+
+  // Test setting format flags.
+  stout << "With default format flags, 16 is displayed as " << 16 << std::endl;
+  stout.flags(std::ios_base::hex);
+  stout << "With format flags hex, 16 is displayed as " << 16 << std::endl;
+
+  // Test field width and fill characters.
+  stout << "With default width and fill character, 1.234 shifted twice gives " << 1.234 << 1.234 << std::endl;
+  stout.setf(std::ios_base::left, std::ios_base::adjustfield);
+  stout.fill('#');
+  stout.width(16);
+  stout << "With width == 16 and fill character #, 1.234 shifted twice gives ";
+  stout.width(16);
+  stout << 1.234;
+  stout.width(16);
+  stout << 1.234;
+  stout << std::endl;
+
   return 0;
 }

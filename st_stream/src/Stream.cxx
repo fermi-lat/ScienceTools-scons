@@ -32,8 +32,77 @@ namespace st_stream {
 
   void OStream::disconnect(std::ostream & dest) { m_std_stream_cont.erase(&dest); }
 
-  void OStream::connect(OStream & dest) { m_stream_cont.insert(&dest); }
+  void OStream::connect(OStream & dest) { if (this != &dest) m_stream_cont.insert(&dest); }
 
   void OStream::disconnect(OStream & dest) { m_stream_cont.erase(&dest); }
+
+  std::ios_base::fmtflags OStream::flags() const {
+    return getStreamState<std::ios_base::fmtflags, std::ios_base>(&std::ostream::flags, &OStream::flags);
+  }
+
+  std::ios_base::fmtflags OStream::flags(std::ios_base::fmtflags fmtfl) {
+    return setStreamState<std::ios_base::fmtflags, std::ios_base>(&std::ostream::flags, &OStream::flags, &OStream::flags, fmtfl);
+  }
+
+  std::ios_base::fmtflags OStream::setf(std::ios_base::fmtflags fmtfl) {
+    return setStreamState<std::ios_base::fmtflags, std::ios_base>(&std::ostream::setf, &OStream::setf, &OStream::flags, fmtfl);
+  }
+
+  // Note that the following method has an unusal signature and thus can't use setStreamState.
+  std::ios_base::fmtflags OStream::setf(std::ios_base::fmtflags fmtfl, std::ios_base::fmtflags mask) {
+    std::ios_base::fmtflags orig_flags = flags();
+
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
+    if (m_chat_level <= m_max_chat) {
+      // Call setf for all std::ostream objects.
+      for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
+        (*itor)->setf(fmtfl, mask);
+
+      // Call setf for all OStream objects.
+      for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor)
+        (*itor)->setf(fmtfl, mask);
+    }
+
+    return orig_flags;
+  }
+
+  // Note that the following method has an unusal signature and thus can't use setStreamState.
+  void OStream::unsetf(std::ios_base::fmtflags mask) {
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
+    if (m_chat_level <= m_max_chat) {
+      // Call unsetf for all std::ostream objects.
+      for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor)
+        (*itor)->unsetf(mask);
+
+      // Call unsetf for all OStream objects.
+      for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor)
+        (*itor)->unsetf(mask);
+    }
+  }
+
+  std::streamsize OStream::precision() const {
+    return getStreamState<std::streamsize, std::ios_base>(&std::ostream::precision, &OStream::precision);
+  }
+
+  std::streamsize OStream::precision(std::streamsize new_precision) {
+    return setStreamState<std::streamsize, std::ios_base>(&std::ostream::precision, &OStream::precision,
+      &OStream::precision, new_precision);
+  }
+
+  std::streamsize OStream::width() const {
+    return getStreamState<std::streamsize, std::ios_base>(&std::ostream::width, &OStream::width);
+  }
+
+  std::streamsize OStream::width(std::streamsize new_width) {
+    return setStreamState<std::streamsize, std::ios_base>(&std::ostream::width, &OStream::width, &OStream::width, new_width);
+  }
+
+  char OStream::fill() const {
+    return getStreamState<char, std::basic_ios<char> >(&std::ostream::fill, &OStream::fill);
+  }
+
+  char OStream::fill(char new_fill) {
+    return setStreamState<char, std::basic_ios<char> >(&std::ostream::fill, &OStream::fill, &OStream::fill, new_fill);
+  }
 
 }
