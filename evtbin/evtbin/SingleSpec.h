@@ -5,6 +5,8 @@
 #ifndef evtbin_SingleSpec_h
 #define evtbin_SingleSpec_h
 
+#include <string>
+
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist1D.h"
 
@@ -20,7 +22,7 @@ namespace evtbin {
       /** \brief Create the spectrum object.
           \param binner The binner used to create the histogram.
       */
-      SingleSpec(const Binner & binner);
+      SingleSpec(const std::string & event_file, const std::string & sc_file, const Binner & binner);
 
       virtual ~SingleSpec() throw();
 
@@ -29,12 +31,6 @@ namespace evtbin {
           \param out_file The output file name.
       */
       virtual void writeOutput(const std::string & creator, const std::string & out_file) const;
-
-      /** \brief Write ebounds extension.
-          \param out_file The output file name.
-          \param binner The binner used to write the output.
-      */
-      virtual void writeEbounds(const std::string & out_file, const Binner * binner) const;
 
     private:
       Hist1D m_hist;
