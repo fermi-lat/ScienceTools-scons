@@ -1,8 +1,8 @@
 XML_source_file,f,ql,"none",,,"File of flux-style source definitions"
-Source_list,f,ql,"source_names.dat",,,"File containing source names"
+Source_list,f,ql,"/u1/jchiang/SciTools/dev/observationSim/v2r7p1/data/source_names.dat",,,"File containing source names"
 Number_of_events,r,ql,1000,1,4e7,Number of events (or simulation time in seconds)
 Use_as_sim_time,b,ql,no,,,Use number of events as simulation time?
-Response_functions,s,ql,"FRONT/BACK",FRONT/BACK|FRONT|BACK,,"Response functions to use"
+Response_functions,s,ql,"NO_EDISP",FRONT/BACK|FRONT|BACK|NO_EDISP,,"Response functions to use"
 Output_file_prefix,s,ql,"test",,,"Prefix for output files"
 Maximum_effective_area,r,hl,1.21,,,Maximum effective area value
 Start_time,r,hl,0,,,Simulation start time (seconds)

@@ -135,6 +135,8 @@ int main(int iargc, char * argv[]) {
       responseIds["BACK"].push_back("DC1::Back");
       responseIds["FRONT/BACK"].push_back("DC1::Front");
       responseIds["FRONT/BACK"].push_back("DC1::Back");
+      responseIds["NO_EDISP"].push_back("DC1::Front_noEdisp");
+      responseIds["NO_EDISP"].push_back("DC1::Back_noEdisp");
 
       if (responseIds.count(responseFuncs)) {
          std::vector<std::string> &resps = responseIds[responseFuncs];
