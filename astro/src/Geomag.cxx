@@ -31,7 +31,7 @@ namespace {
         a = fmod(lat+30., 5.)/5.;
         b = fmod(lon, 5.)/5.;
 
-        if(abs(lat) > 30)
+        if(fabs(lat) > 30)
         {
             std::cout << "Warning -- Geomag::geoInterp -- Latitude is out of range."  << std::endl;
             throw std::invalid_argument("astro::Geomag::geoInterp -- Latitude is out of range");

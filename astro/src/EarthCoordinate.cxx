@@ -123,11 +123,6 @@ bool EarthCoordinate::insideSAA()const
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool EarthCoordinate::insideSAA()const
 {
-
-    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
-                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
-
-    std::vector<double> dlat(latv,latv+sizeof(latv));
     typedef std::pair<float, float> coords;
     static std::vector<coords> corners;  // (latitude, longitude)
     static bool initialized = false;

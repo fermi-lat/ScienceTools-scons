@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cassert>
-
+#include <stdexcept>
 
 using namespace astro;
 
