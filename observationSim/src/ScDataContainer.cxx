@@ -12,12 +12,14 @@
 
 #include "astro/EarthCoordinate.h"
 
+#ifdef USE_GOODI
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
 #include "Goodi/DataFactory.h"
 #include "Goodi/IDataIOService.h"
 #include "Goodi/IData.h"
 #include "Goodi/ISpacecraftData.h"
+#endif
 
 #include "flux/EventSource.h"
 #include "flux/GPS.h"
@@ -28,15 +30,18 @@ namespace observationSim {
 
 ScDataContainer::~ScDataContainer() {
    if (m_scData.size() > 0) writeScData();
+#ifdef USE_GOODI
    if (m_useGoodi) {
       delete m_goodiScData;
    }
+#endif
 }
 
 void ScDataContainer::init() {
    m_scData.clear();
 
    if (m_useGoodi) {
+#ifdef USE_GOODI
       Goodi::DataFactory dataCreator;
 
 // Set the type of data to be generated and the mission.
@@ -46,7 +51,7 @@ void ScDataContainer::init() {
 // Create the ScData object.
       m_goodiScData = dynamic_cast<Goodi::ISpacecraftData *>
          (dataCreator.create(datatype, mission));
-
+#endif
    }
 }
 
@@ -68,6 +73,7 @@ void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
 void ScDataContainer::writeScData() {
 
    if (m_useGoodi) {
+#ifdef USE_GOODI
       unsigned int npts = m_scData.size();
       std::vector<double> startTime(npts);
       std::vector<double> stopTime(npts);
@@ -114,7 +120,7 @@ void ScDataContainer::writeScData() {
       std::string outputFile = "!" + outputFileName();
       m_goodiScData->write(goodiIoService, outputFile);
       delete goodiIoService;
-
+#endif
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(10);

@@ -65,6 +65,10 @@ int main(int iargc, char * argv[]) {
       params.getParam("Source_list", srcListFile);
       std::vector<std::string> srcNames;
       Likelihood::RunParams::readLines(srcListFile, srcNames);
+      if (srcNames.size() == 0) {
+         std::cout << "No sources given in " << srcListFile;
+         assert(srcNames.size() != 0);
+      }
    
 // Get the number of events.
       double count;
@@ -79,25 +83,18 @@ int main(int iargc, char * argv[]) {
       params.getParam("Response_functions", responseFuncs);
       std::vector<latResponse::Irfs *> respPtrs;
       latResponse::IrfsFactory irfsFactory;
-      if (responseFuncs == "COMBINED_G25") {
-         respPtrs.push_back(irfsFactory.create("Glast25::Combined"));
-      } else if (responseFuncs == "FRONT/BACK_G25") {
-         respPtrs.push_back(irfsFactory.create("Glast25::Front"));
-         respPtrs.push_back(irfsFactory.create("Glast25::Back"));
-      } else if (responseFuncs == "COMBINED_10") {
-         respPtrs.push_back(irfsFactory.create("Glast25::Combined_10"));
-      } else if (responseFuncs == "FRONT/BACK_10") {
-         respPtrs.push_back(irfsFactory.create("Glast25::Front_10"));
-         respPtrs.push_back(irfsFactory.create("Glast25::Back_10"));
-      } else if (responseFuncs == "TESTDC1") {
-         respPtrs.push_back(irfsFactory.create("DC1::test"));
-      } else if (responseFuncs == "FRONT") {
-         respPtrs.push_back(irfsFactory.create("DC1::Front"));
-      } else if (responseFuncs == "BACK") {
-         respPtrs.push_back(irfsFactory.create("DC1::Back"));
-      } else if (responseFuncs == "FRONT/BACK") {
-         respPtrs.push_back(irfsFactory.create("DC1::Front"));
-         respPtrs.push_back(irfsFactory.create("DC1::Back"));
+
+      std::map< std::string, std::vector<std::string> > responseIds;
+      responseIds["FRONT"].push_back("DC1::Front");
+      responseIds["BACK"].push_back("DC1::Back");
+      responseIds["FRONT/BACK"].push_back("DC1::Front");
+      responseIds["FRONT/BACK"].push_back("DC1::Back");
+
+      if (responseIds.count(responseFuncs)) {
+         std::vector<std::string> &resps = responseIds[responseFuncs];
+         for (unsigned int i = 0; i < resps.size(); i++) {
+            respPtrs.push_back(irfsFactory.create(resps[i]));
+         }
       } else {
          std::cerr << "Invalid response function choice: "
                    << responseFuncs << std::endl;

@@ -20,12 +20,14 @@
 #include "astro/SkyDir.h"
 #include "astro/EarthCoordinate.h"
 
+#ifdef USE_GOODI
 #include "Goodi/GoodiConstants.h"
 #include "Goodi/DataIOServiceFactory.h"
 #include "Goodi/DataFactory.h"
 #include "Goodi/IDataIOService.h"
 #include "Goodi/IData.h"
 #include "Goodi/IEventData.h"
+#endif
 
 #include "latResponse/IAeff.h"
 #include "latResponse/IPsf.h"
@@ -95,15 +97,18 @@ namespace observationSim {
 
 EventContainer::~EventContainer() {
    if (m_events.size() > 0) writeEvents();
+#ifdef USE_GOODI
    if (m_useGoodi) {
       delete m_goodiEventData;
    }
+#endif
 }
 
 void EventContainer::init() {
    m_events.clear();
 
    if (m_useGoodi) {
+#ifdef USE_GOODI
       Goodi::DataFactory dataCreator;
 
 // Set the type of data to be generated and the mission.
@@ -113,6 +118,7 @@ void EventContainer::init() {
 // Create the EventData object.
       m_goodiEventData = dynamic_cast<Goodi::IEventData *>
          (dataCreator.create(datatype, mission));
+#endif
    }
 }
 
@@ -179,6 +185,7 @@ astro::SkyDir EventContainer::ScZenith(double time) {
 void EventContainer::writeEvents() {
 
    if (m_useGoodi) {
+#ifdef USE_GOODI
       unsigned int npts = m_events.size();
       std::vector<double> time(npts);
       std::vector<double> energy(npts);
@@ -251,6 +258,7 @@ void EventContainer::writeEvents() {
       std::string outputFile = "!" + outputFileName();
       m_goodiEventData->write(goodiIoService, outputFile);
       delete goodiIoService;
+#endif
    } else { // Use the old A1 format.
       makeFitsTable();
       std::vector<std::vector<double> > data(14);
