@@ -5,12 +5,14 @@
 
 #include <cstdlib>
 #include <limits>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "FitsTable.h"
 #include "RootTable.h"
 #include "TestTable.h"
+#include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
 
@@ -43,6 +45,9 @@ namespace tip {
 
     // Test copying records from one table to another.
     copyFieldTest();
+
+    // Test that bug when only one column is present was corrected.
+    singleFieldBugTest();
 
     // Clean up.
     delete m_root_table; m_root_table = 0;
@@ -459,6 +464,25 @@ namespace tip {
         ReportExpected("copyFieldTest() failed to copy a record to a Root file", x);
       }
     }
+  }
+
+  void TestTable::singleFieldBugTest() {
+    try {
+      // Create an empty table.
+      IFileSvc::instance().appendTable("single_column.fits", "DUMMY");
+
+      // Open the table, and add a column.
+      std::auto_ptr<Table> table(IFileSvc::instance().editTable("single_column.fits", "DUMMY"));
+      table->appendField("COLUMN1", "1D");
+      delete table.release();
+      
+      // The following should just hang if the bug is present.
+      table.reset(IFileSvc::instance().editTable("single_column.fits", "DUMMY"));
+      ReportExpected("TestTable::singleFieldBugTest had no problem editing a table containing a single column");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestTable::singleFieldBugTest had a problem with a table containing a single column", x);
+    }
+    remove("single_column.fits");
   }
 
   void TestTable::setToZero(Table * table) {

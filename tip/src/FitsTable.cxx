@@ -160,7 +160,7 @@ namespace tip {
     char name[128]; // jp fix this: what is the maximum length of a FITS column name?
 
     // Iterate over columns, putting the name of each in the column container.
-    while (COL_NOT_FOUND != column_status) {
+    do {
       *name = '\0';
       int col_num = 0;
       // Get each column's name.
@@ -174,7 +174,7 @@ namespace tip {
           throw;
         }
       }
-    }
+    } while (COL_NOT_FOUND != column_status && 0 != column_status);
   }
 
   void FitsTable::getColumnInfo(const std::string & col_name, Index_t col_num) {

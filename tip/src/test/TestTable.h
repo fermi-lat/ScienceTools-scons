@@ -64,6 +64,9 @@ namespace tip {
       /// \brief Test copying one table's columns to another.
       void copyFieldTest();
 
+      /// \brief Test that bug when only one column is present was corrected.
+      void singleFieldBugTest();
+
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();
