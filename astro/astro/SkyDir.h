@@ -53,9 +53,6 @@ namespace astro {
         
     };
     
-    inline double SkyDir::difference(const SkyDir& other)const{
-        return 2.*asin(0.5*(m_dir-other.dir()).mag());
-    }
     
 } // namespace astro
 #endif    // LHCBEVENT_SKYDIR_H

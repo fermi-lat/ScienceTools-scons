@@ -117,6 +117,11 @@ namespace astro {
         return std::make_pair<double,double>(l,b);
     }
     
+    double SkyDir::difference(const SkyDir& other)const
+    {
+      // TODO: make this computationally efficient, avoid sqrt and asin at least for small angles
+        return 2.*asin(0.5*(m_dir-other.dir()).mag());
+    }
     
     
     
