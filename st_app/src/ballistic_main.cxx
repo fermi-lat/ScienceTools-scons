@@ -14,38 +14,34 @@ int main(int argc, char ** argv) {
   int status = 0;
 
   try {
+    // Process command line arguments. This will throw if the real application code
+    // cannot/should not start.
+    st_app::IApp::processCommandLine(argc, argv);
+
+    // Get a pointer to the singleton application. Client code must have instantiated a single
+    // instance of a subclass of IApp.
+    st_app::IApp * app = st_app::IApp::getApp();
+
+    // Run application's setup code, if any.
+    app->setUp();
+
+    // Run the application.
+    app->run();
+
+    // Run application clean-up code, if any.
+    app->tearDown();
+
+  } catch (const std::exception & x) {
+    // Return a non-zero exit code:
+    status = 1;
+
+    // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
     try {
-      // Process command line arguments. This will throw if the real application code
-      // cannot/should not start.
-      st_app::IApp::processCommandLine(argc, argv);
-
-      // Get a pointer to the singleton application. Client code must have instantiated a single
-      // instance of a subclass of IApp.
-      st_app::IApp * app = st_app::IApp::getApp();
-
-      // Run application's setup code, if any.
-      app->setUp();
-
-      // Run the application.
-      app->run();
-
-      // Run application clean-up code, if any.
-      app->tearDown();
-
-    } catch (const std::exception & x) {
-      // Return a non-zero exit code:
-      status = 1;
-
-      // Report the type of the exception if possible, using typeid; typeid can throw so be careful:
       const char * info = typeid(x).name();
       std::cerr << "Caught " << info << " at the top level: " << x.what() << std::endl;
+    } catch (...) {
+      std::cerr << "Caught std::exception at the top level: " << x.what() << std::endl;
     }
-  } catch (...) {
-    // Return a non-zero exit code:
-    status = 2;
-
-    // Report the error more generically:
-    std::cerr << "Caught unknown object at the top level." << std::endl;
   }
 
   return status;
