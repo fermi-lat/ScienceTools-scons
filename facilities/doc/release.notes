@@ -3,6 +3,7 @@
  
   @verbatim
   Coordinator: Toby Burnett
+            **EOH**
 
   v2r9p3  21-Oct-2004 jrb   Bug fix for Util::expandEnvVar
   v2r9p2  11-Jun-2004 jrb   Move implementation of getJulian() to .cxx
