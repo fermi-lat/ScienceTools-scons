@@ -26,7 +26,7 @@ using namespace st_graph;
 namespace st_app {
 
   ParWidget::ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par): m_engine(engine),
-    m_value_string(), m_frame(0), m_label(0), m_value(0), m_open(0), m_par(par), m_stretch(false) {
+    m_value_string(), m_frame(0), m_label(0), m_value(0), m_open(0), m_par(par), m_stretch(false), m_display(false) {
     if (0 == m_par) throw std::logic_error("ParWidget constructor was passed a null parameter pointer");
 
     // Get value from parameter.
@@ -90,6 +90,9 @@ namespace st_app {
 
     m_frame->setWidth(width);
     m_frame->setHeight(std::max(m_label->getHeight(), m_value->getHeight()));
+
+    // By default, "hidden" parameters are not displayed to start with.
+    m_display = (std::string::npos == m_par->Mode().find("h"));
   }
 
   ParWidget::~ParWidget() { delete m_frame; }
@@ -109,6 +112,13 @@ namespace st_app {
     } else {
       RightEdge(m_open).leftOf(RightEdge(m_frame));
       if (m_stretch) RightEdge(m_value).stretchTo(RightEdge(m_open), -3);
+    }
+
+    if (!m_display) {
+      m_frame->unDisplay();
+      m_label->unDisplay();
+      m_value->unDisplay();
+      if (0 != m_open) m_open->unDisplay();
     }
   }
 
@@ -141,6 +151,18 @@ namespace st_app {
   const std::string & ParWidget::getName() const { return m_par->Name(); }
 
   const std::string & ParWidget::getValue() const { return m_value_string; }
+
+  void ParWidget::display(bool disp_flag) {
+    m_display = disp_flag;
+    if (m_display) {
+      if (0 != m_open) m_open->display();
+      m_value->display();
+      m_label->display();
+      m_frame->display();
+    } else {
+      layout(m_frame);
+    }
+  }
 
   long ParWidget::entryWidth(hoops::IPar * par) const {
     // The first time this is called, create a temporary gui with text entries corresponding to the sizes of parameters.
@@ -176,7 +198,7 @@ namespace st_app {
 
   StEventReceiver::StEventReceiver(st_graph::Engine & engine, AppParGroup & par_group, StApp * app):
     m_os(app->getName(), "StEventReceiver", 2), m_engine(engine), m_par_group(par_group), m_par_widget(), m_tab_folder(),
-    m_parent(), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_app(app), m_widest(0), m_tab_height(0) {}
+    m_parent(), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0), m_app(app), m_widest(0), m_tab_height(0) {}
 
   StEventReceiver::~StEventReceiver() {
     for (ParWidgetCont::reverse_iterator itor = m_par_widget.rbegin(); itor != m_par_widget.rend(); ++itor)
@@ -220,6 +242,16 @@ namespace st_app {
       }
     } else if (f == m_cancel) {
       m_engine.stop();
+    } else if (f == m_show_advanced) {
+      // Show/hide advanced parameters.
+      for (ParWidgetCont::iterator itor = m_par_widget.begin(); itor != m_par_widget.end(); ++itor) {
+        // If parameter is not "hidden" do not tamper with its visibility.
+        if (std::string::npos == m_par_group[itor->first].Mode().find("h")) continue;
+        const std::string & state(m_show_advanced->getState());
+        if (state == "up") itor->second->display(false);
+        else if (state == "down") itor->second->display(true);
+      }
+      layout(m_group_frame);
     }
   }
 
@@ -232,16 +264,18 @@ namespace st_app {
       // Stack buttons horizontally at the top of the frame.
       LeftEdge(m_run).rightOf(LeftEdge(m_main), 6);
       LeftEdge(m_cancel).rightOf(RightEdge(m_run));
+      LeftEdge(m_show_advanced).rightOf(LeftEdge(m_run));
 
       TopEdge(m_run).below(TopEdge(m_main), 6);
       TopEdge(m_cancel).below(TopEdge(m_main), 6);
+      TopEdge(m_show_advanced).below(BottomEdge(m_cancel), 6);
 
       // Size the group frame so that it sits nicely below the buttons.
-      TopEdge(m_group_frame).below(BottomEdge(m_cancel), 6);
+      TopEdge(m_group_frame).below(BottomEdge(m_show_advanced), 6);
       BottomEdge(m_group_frame).stretchTo(BottomEdge(m_main), -6);
       LeftEdge(m_group_frame).rightOf(LeftEdge(m_main), 6);
       RightEdge(m_group_frame).stretchTo(RightEdge(m_main), -6);
-
+    
       // Layout tab folders.
       for (TabFolderCont::iterator tab_itor = m_tab_folder.begin(); tab_itor != m_tab_folder.end(); ++tab_itor) {
         // Starting height of tab folders is 0.
@@ -258,7 +292,6 @@ namespace st_app {
         // Set overall height of the folder to the computed height + the height of the tabs.
         tab_itor->second->getFrame()->setHeight(height + m_tab_height + 10);
       }
-    
     } else {
       std::list<IFrame *> subframes;
       f->getSubframes(subframes);
@@ -280,7 +313,6 @@ namespace st_app {
       }
     }
   }
-
 
   void StEventReceiver::run() {
     // Set up standard Gui main window.
@@ -354,10 +386,12 @@ namespace st_app {
     m_group_frame = m_engine.createGroupFrame(m_main, this, "Parameters");
     m_run = m_engine.createButton(m_main, this, "text", "Run");
     m_cancel = m_engine.createButton(m_main, this, "text", "Cancel");
+    m_show_advanced = m_engine.createButton(m_main, this, "check", "Show Advanced Parameters");
 
     // Set up some tool tips.
     m_run->setToolTipText("Run the application from inside the GUI");
     m_cancel->setToolTipText("Exit the application and GUI");
+    m_show_advanced->setToolTipText("Display advanced (\"hidden\") parameters");
 
     // Disable prompting.
     AppParGroup & pars(m_par_group);
