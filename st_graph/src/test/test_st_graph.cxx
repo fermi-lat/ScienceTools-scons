@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC/GSSC
 */
 #include <iostream>
+#include <list>
 #include <cmath>
 #include <stdexcept>
 #include <string>
@@ -21,18 +22,21 @@
 #include "st_graph/IFrame.h"
 #include "st_graph/IPlot.h"
 #include "st_graph/PlotHist.h"
-#include "st_graph/ValueSet.h"
+#include "st_graph/Sequence.h"
+
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/st_stream.h"
 
 /** \class StGraphTestApp
     \brief Test application class.
 */
 class StGraphTestApp : public st_app::StApp {
   public:
+    /// \brief Construct the test application.
+    StGraphTestApp(): m_out("test_st_graph", "", 2) {}
+
     /// \brief Perform all tests.
     virtual void run();
-
-    /// \brief Test the ValueSet class.
-    virtual void testValueSet();
 
     /// \brief Test scatter plots.
     virtual void testPlots();
@@ -40,11 +44,19 @@ class StGraphTestApp : public st_app::StApp {
     /// \brief Test GUI widgets.
     virtual void testGuis();
 
+    /// \brief Test the Sequence template class.
+    virtual void testSequence();
+
     /// \brief Report failed tests, and set a flag used to exit with non-0 status if an error occurs.
     void reportUnexpected(const std::string & text) const;
 
+  protected:
+    void StGraphTestApp::testSequence(const st_graph::ISequence & iseq, const std::string & test_name, const double * value,
+      const double * low, const double * high);
+
   private:
     static bool m_failed;
+    st_stream::StreamFormatter m_out;
 };
 
 bool StGraphTestApp::m_failed = false;
@@ -52,7 +64,7 @@ bool StGraphTestApp::m_failed = false;
 void StGraphTestApp::run() {
   using namespace st_graph;
 
-  testValueSet();
+  testSequence();
   testPlots();
   testGuis();
 
@@ -148,37 +160,6 @@ void StGraphTestApp::run() {
   if (m_failed) throw std::runtime_error("Unit test failed");
 }
 
-void StGraphTestApp::testValueSet() {
-  using namespace st_graph;
-
-  std::vector<double> values1(100, 10.);
-  std::vector<double> spreads1(100, 1.);
-  std::vector<double> values2(200, 20.);
-  std::vector<double> spreads2(200, 2.);
-
-  ValueSet v1(values1, spreads1);
-  if (values1 != v1.getValues()) reportUnexpected("testValueSet() found values were not the same after creating v1");
-  if (spreads1 != v1.getSpreads()) reportUnexpected("testValueSet() found spreads were not the same after creating v1");
-
-  ValueSet v2(values2, spreads1);
-  if (values2 != v2.getValues()) reportUnexpected("testValueSet() found values were not the same after creating v2");
-
-  const std::vector<double> & spreads(v2.getSpreads());
-  for (unsigned int ii = 0; ii < spreads1.size(); ++ii) {
-    if (spreads[ii] != spreads1[ii]) {
-      reportUnexpected("testValueSet() found value of spread which disagreed with original value");
-      break;
-    }
-  }
-
-  for (unsigned int ii = spreads1.size(); ii < spreads.size(); ++ii) {
-    if (0. != spreads[ii]) {
-      reportUnexpected("testValueSet() found padded spread value which was not 0.");
-      break;
-    }
-  }
-}
-
 void StGraphTestApp::testPlots() {
   using namespace st_graph;
 
@@ -194,17 +175,21 @@ void StGraphTestApp::testPlots() {
 
   Engine & engine(*engine_p);
 
+  typedef std::vector<double> Vec_t;
+  typedef ValueSequence<Vec_t::iterator> ValueSeq_t;
+  typedef ValueSpreadSequence<Vec_t::iterator> ValueSpreadSeq_t;
+
   // Set up some fake data.
   int num_pts = 10;
-  std::vector<double> x1(num_pts);
-  std::vector<double> delta_x1(num_pts);
-  std::vector<double> y1(num_pts);
-  std::vector<double> delta_y1(num_pts);
+  Vec_t x1(num_pts);
+  Vec_t delta_x1(num_pts);
+  Vec_t y1(num_pts);
+  Vec_t delta_y1(num_pts);
   for (int ii = 0; ii < num_pts; ++ii) {
     x1[ii] = ii;
-    delta_x1[ii] = .2;
+    delta_x1[ii] = .6;
     y1[ii] = .3 * (180. - (ii - .1) * (ii - .1));
-    delta_y1[ii] = sqrt(fabs(y1[ii]));
+    delta_y1[ii] = .2 * fabs(y1[ii]);
   }
 
   // Create a top level main frame in which to place graphical objects.
@@ -212,22 +197,18 @@ void StGraphTestApp::testPlots() {
 
   // Create a new subframe in which to display the plots.
   IFrame * pf1 = engine.createPlotFrame(mf, 600, 400);
-  
-  // Create a scatter plot of this data set, in the subframe.
-  IPlot * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
 
-  // Modify the data set; double the spreads and shift the plot down.
+  // Create a scatter plot of this data set, in the subframe.
+  IPlot * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()),
+    ValueSpreadSeq_t(y1.begin(), y1.end(), delta_y1.begin()));
+
+  // Modify the data set by shifting the plot down.
   for (int ii = 0; ii < num_pts; ++ii) {
-    delta_x1[ii] = .4;
     y1[ii] = .3 * (140. - (ii + .3) * (ii + .3));
-    delta_y1[ii] = sqrt(fabs(y1[ii]));
   }
 
-  delta_x1[num_pts / 2] = .6;
-  delta_x1[num_pts / 2 + 1] = 1.4;
-
-  // Create a histogram plot of this data set, in the subframe.
-  IPlot * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSet(x1, delta_x1), ValueSet(y1, delta_y1));
+  // Create a histogram plot of this data set, in the subframe, ignoring errors.
+  IPlot * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1.begin(), y1.end()));
 
   // Run the graphics engine to display everything.
   engine.run();
@@ -238,7 +219,7 @@ void StGraphTestApp::testPlots() {
   delete pf1; pf1 = 0;
 
   // Create rectangular 2d data.
-  std::vector<std::vector<double> > hist(2 * num_pts, std::vector<double>(num_pts));
+  std::vector<Vec_t> hist(2 * num_pts, Vec_t(num_pts));
   double x0 = -.5 * num_pts;
   double y0 = 9. - num_pts / 3.;
   for (int ii = 0; ii < num_pts * 2; ++ii) {
@@ -248,10 +229,10 @@ void StGraphTestApp::testPlots() {
       hist[ii][jj] = exp(-(x * x + y * y) / (2. * num_pts)) - exp(-(x0 * x0 + y0 * y0) / (2. * num_pts));
     }
   }
-  
+
   // Create bin definition for second dimension.
-  std::vector<double> x2(num_pts * 2);
-  std::vector<double> delta_x2(num_pts * 2);
+  Vec_t x2(num_pts * 2);
+  Vec_t delta_x2(num_pts * 2);
   for (int ii = 0; ii < num_pts * 2; ++ii) {
     x2[ii] = ii;
     delta_x2[ii] = .2;
@@ -259,9 +240,10 @@ void StGraphTestApp::testPlots() {
 
   // Create a new subframe in which to display new plots.
   pf1 = engine.createPlotFrame(mf, 600, 400);
-  
+
   // Plot the data as a histogram, using previous 1D bin defs for second dimension, new defs for first.
-  plot1 = engine.createPlot(pf1, "surf", "2D Gaussian", ValueSet(x2, delta_x2), ValueSet(x1, delta_x1), hist);
+  plot1 = engine.createPlot(pf1, "surf", "2D Gaussian", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
+    ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
 
   // Run the graphics engine to display everything.
   engine.run();
@@ -324,9 +306,154 @@ void StGraphTestApp::testGuis() {
   }
 }
 
+void StGraphTestApp::testSequence() {
+  using namespace st_graph;
+
+  // Typedef for brevity.
+  typedef std::vector<double> Vec_t;
+
+  // Test PointSequence.
+  {
+    // Create a sequence of values, and correct derived edges.
+    const double value[] = { 10., 12., 15., 17., 19., 20. };
+
+    // Create a sequence to represent the values, using a simple pointer as the iterator.
+    PointSequence<const double *> seq(value, value + sizeof(value) / sizeof(double));
+
+    // Perform detailed test of the sequence.
+    testSequence(seq, "PointSequence", value, value, value);
+
+  }
+
+  // Test ValueSequence.
+  {
+    // Create a sequence of values, and correct derived edges.
+    const double value[] = { 10., 12., 15., 17., 19., 20. };
+    const double low[] = { 9., 11., 13.5, 16., 18., 19.5 };
+    const double high[] = { 11., 13.5, 16., 18., 19.5, 20.5 };
+
+    // Create a sequence to represent the values, using a simple pointer as the iterator.
+    ValueSequence<const double *> seq(value, value + sizeof(value) / sizeof(double));
+
+    // Perform detailed test of the sequence.
+    testSequence(seq, "ValueSequence", value, low, high);
+
+  }
+
+  // Test LowerBoundSequence.
+  {
+    // Create a new sequence of left edges, and correct derived values.
+    const double left[] = { 10., 12., 15., 17., 19., 20. };
+    const double value[] = { 11., 13.5, 16., 18., 19.5, 20.5 };
+    const double right[] = { 12., 15., 17., 19., 20., 21. };
+
+    // Copy left edges to vector::iterator.
+    Vec_t vec(left, left + sizeof(left)/sizeof(double));
+
+    // Create a sequence to represent the values, using a vector::const_iterator.
+    LowerBoundSequence<Vec_t::iterator> seq(vec.begin(), vec.end());
+
+    // Perform detailed test of the sequence.
+    testSequence(seq, "LowerBoundSequence", value, left, right);
+  }
+
+  // Test ValueSpreadSequence.
+  {
+    // Create a new sequence of points with error bars.
+    const double value[] = { 10., 12., 15., 17., 19., 20. };
+    const double low_err[] = { .5, 2., 1., 1.5, .5, 1. };
+    const double low[] = { 9.5, 10., 14., 15.5, 18.5, 19. };
+    const double high_err[] = { 1.5, 1., 1.5, .5, 2., 1. };
+    const double high[] = { 11.5, 13., 16.5, 17.5, 21., 21. };
+
+    ISequence::size_type num_rec = sizeof(value) / sizeof(double);
+
+    // Create a sequence to represent the values, using a vector::const_iterator.
+    ValueSpreadSequence<const double *> seq(value, value + num_rec, low_err, high_err);
+
+    // Perform detailed test of the sequence.
+    testSequence(seq, "ValueSpreadSequence", value, low, high);
+  }
+
+  // Test IntervalSequence.
+  {
+    // Create a new sequence of left edges, and correct derived values.
+    const double left[] = { 10., 12., 15., 17., 19., 20. };
+    const double value[] = { 11., 13.5, 16., 18., 19.5, 20.5 };
+    const double right[] = { 12., 15., 17., 19., 20., 21. };
+
+    typedef std::list<double> List_t;
+
+    // Copy intervals to list, just to test list iteration.
+    List_t left_list(left, left + sizeof(left)/sizeof(double));
+    List_t right_list(right, right + sizeof(right)/sizeof(double));
+
+    // Create a sequence to represent the values, using a list::const_iterator.
+    IntervalSequence<List_t::iterator> seq(left_list.begin(), left_list.end(), right_list.begin());
+
+    // Perform detailed test of the sequence.
+    testSequence(seq, "IntervalSequence", value, left, right);
+  }
+
+}
+
+void StGraphTestApp::testSequence(const st_graph::ISequence & iseq, const std::string & test_name, const double * value,
+  const double * low, const double * high) {
+  // Customize stream message prefix.
+  m_out.setMethod("testSequence(const ISequence&, ...)");
+
+  // Typedef for brevity.
+  typedef std::vector<double> Vec_t;
+
+  // Create vectors to hold sequence's resultant values.
+  Vec_t low_vec;
+  Vec_t high_vec;
+  Vec_t value_vec;
+  Vec_t low_err;
+  Vec_t high_err;
+
+  // Get intervals defined by the sequence.
+  iseq.getIntervals(low_vec, high_vec);
+
+  // Get values defined by the sequence.
+  iseq.getValues(value_vec);
+
+  // Get spreads defined by the sequence.
+  iseq.getSpreads(low_err, high_err);
+
+  // Confirm that the intervals have the correct values.
+  for (Vec_t::size_type index = 0; index != low_vec.size(); ++index) {
+    if (value[index] != value_vec[index]) {
+      m_failed = true;
+      m_out.err() << test_name << ": getIntervals returned value_vec[" << index << "] == " << value_vec[index] <<
+        ", not " << value[index] << std::endl;
+    }
+    if (low[index] != low_vec[index]) {
+      m_failed = true;
+      m_out.err() << test_name << ": getIntervals returned low_vec[" << index << "] == " << low_vec[index] <<
+        ", not " << low[index] << std::endl;
+    }
+    if (high[index] != high_vec[index]) {
+      m_failed = true;
+      m_out.err() << test_name << ": getIntervals returned high_vec[" << index << "] == " << high_vec[index] <<
+        ", not " << high[index] << std::endl;
+    }
+    if (high_err[index] != high_vec[index] - value_vec[index]) {
+      m_failed = true;
+      m_out.err() << test_name << ": getIntervals returned high_err[" << index << "] == " << high_err[index] <<
+        ", not " << high_vec[index] - value_vec[index] << std::endl;
+    }
+    if (low_err[index] != value_vec[index] - low_vec[index]) {
+      m_failed = true;
+      m_out.err() << test_name << ": getIntervals returned low_err[" << index << "] == " << low_err[index] <<
+        ", not " << value_vec[index] - low_vec[index] << std::endl;
+    }
+  }
+}
+
 void StGraphTestApp::reportUnexpected(const std::string & text) const {
   m_failed = true;
   std::cerr << "Unexpected: " << text << std::endl;
 }
 
-st_app::StAppFactory<StGraphTestApp> g_factory;
+st_app::StAppFactory<StGraphTestApp> g_factory("test_st_graph");

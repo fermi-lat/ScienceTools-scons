@@ -7,6 +7,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
 use STpolicy *
 use st_app *
+use st_stream *
 use tip *
 use ROOT * IExternal
 

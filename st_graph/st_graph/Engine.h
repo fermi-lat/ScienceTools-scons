@@ -9,13 +9,14 @@
 #include <vector>
 
 #include "st_graph/PlotHist.h"
-#include "st_graph/ValueSet.h"
+#include "st_graph/Sequence.h"
 
 namespace st_graph {
 
   class IEventReceiver;
   class IFrame;
   class IPlot;
+  class ISequence;
 
   /** \class Engine
       \brief Interface which encapsulates a particular graphics implementation. This singleton has two purposes:
@@ -65,16 +66,12 @@ namespace st_graph {
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.
           \param style The plot style: currently hist* or scat* will be recognized, case insensitive, to mean
-                 histogram or scatter plot, respectively. Note that for histogram plots, the "spreads" vector
-                 from ValueSet is interpreted as the full bin widths. However, for scatter plots, the "spreads"
-                 vector represents the absolute size of the symmetric errror (+/-). Thus, for the same ValueSet,
-                 a scatter plot will have total spread (max - min) twice as large as for a histogram plot.
+                 histogram or scatter plot, respectively.
           \param x The first dimension being plotted.
-          \param y The second dimension being plotted.
-          \param z The third dimension being plotted.
+          \param x The second dimension being plotted.
       */
-      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-        const ValueSet & y, const ValueSet & z = ValueSet()) = 0;
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title,
+        const ISequence & x, const ISequence & y) = 0;
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.
@@ -83,8 +80,8 @@ namespace st_graph {
           \param y The second dimension being plotted.
           \param z The third dimension being plotted.
       */
-      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-        const ValueSet & y, const std::vector<std::vector<double> > & z) = 0;
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
+        const ISequence & y, const std::vector<std::vector<double> > & z) = 0;
 
       /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
                  because a new technique is planned to support plots within any frame.

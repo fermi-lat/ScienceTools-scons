@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "st_graph/IPlot.h"
-#include "st_graph/ValueSet.h"
+#include "st_graph/Sequence.h"
 
 class TGraph;
 class TH2D;
@@ -18,6 +18,7 @@ class TMultiGraph;
 namespace st_graph {
 
   class IFrame;
+  class ISequence;
   class RootPlotFrame;
 
   /** \class RootPlot
@@ -31,10 +32,8 @@ namespace st_graph {
                  a histogram or scatter plot, respectively.
           \param x The first dimension.
           \param y The second dimension.
-          \param z The third dimension.
       */
-      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x, const ValueSet & y,
-        const ValueSet & z = ValueSet());
+      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x, const ISequence & y);
 
       /** \brief Construct a RootPlot object.
           \param parent The parent frame.
@@ -43,7 +42,7 @@ namespace st_graph {
           \param y The second dimension.
           \param z The third dimension.
       */
-      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x, const ValueSet & y,
+      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x, const ISequence & y,
         const std::vector<std::vector<double> > & z);
 
       virtual ~RootPlot();
@@ -58,19 +57,17 @@ namespace st_graph {
           \param title The plot title.
           \param x The first dimension.
           \param y The second dimension.
-          \param z The third dimension.
       */
-      TGraph * createHistPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
+      TGraph * createHistPlot(const std::string & title, const ISequence & x, const ISequence & y);
 
       /** \brief Create scatter plot as a Root object. Not part of API.
           \param title The plot title.
           \param x The first dimension.
           \param y The second dimension.
-          \param z The third dimension.
       */
-      TGraph * createScatterPlot(const std::string & title, const ValueSet & x, const ValueSet & y, const ValueSet & z);
+      TGraph * createScatterPlot(const std::string & title, const ISequence & x, const ISequence & y);
 
-      TH2D * createHistPlot2D(const std::string & title, const ValueSet & x, const ValueSet & y,
+      TH2D * createHistPlot2D(const std::string & title, const ISequence & x, const ISequence & y,
         const std::vector<std::vector<double> > & z);
 
       /** \brief Return current Root graphical object. Not part of API.

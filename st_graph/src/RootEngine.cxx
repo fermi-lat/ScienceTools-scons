@@ -147,15 +147,15 @@ namespace st_graph {
     return hist;
   }
 
-  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-    const ValueSet & y, const ValueSet & z) {
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
+    const ISequence & y) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
-    return new RootPlot(parent, style, title, x, y, z);
+    return new RootPlot(parent, style, title, x, y);
   }
 
-  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ValueSet & x,
-    const ValueSet & y, const std::vector<std::vector<double> > & z) {
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
+    const ISequence & y, const std::vector<std::vector<double> > & z) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
     return new RootPlot(parent, style, title, x, y, z);
