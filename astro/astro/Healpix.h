@@ -62,6 +62,10 @@ public:
     long nside()const{return m_nside; }
     ///@brief the number of pixels
     long npix()const{return 12*m_nside*m_nside;}
+
+    ///@brief the number of pixels, as the size.
+    size_t size()const{return 12*m_nside*m_nside;}
+
     ///@brief the area per pixel
     double pixelArea()const{return 4*M_PI/npix();}
     ///@brief the value of the ordering parameter: either NESTED or RING

@@ -99,7 +99,7 @@ const double *dpleph (double *jd, int ntarg, int ncent)
   static double posn[12] ;
   long jdint ;
   double jdtmp ;
-  int i ;
+//  int i ;
 
 /*
  *     Make sure jd is in proper range
@@ -156,7 +156,7 @@ const double *dpleph (double *jd, int ntarg, int ncent)
 int state (double *jd, int ntarg, int ncent, double *posn)
 {
   double t, t1, t2 ;
-  int i ;
+//  int i ;
   long recnum ;
 
 /*
@@ -335,7 +335,7 @@ int interp (double *buf, double t1, int ncf, int na, double *pv)
 {
 
   static double pc[18], vc[18] ;
-  int i, j, k, l ;
+  int i, j, /*k,*/ l ;
   static int np = 2 ;
   static int nv = 3 ;
   static double twot = 0.0 ;

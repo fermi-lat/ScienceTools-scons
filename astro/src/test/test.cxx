@@ -14,6 +14,7 @@
 
 // local test classes
 #include "TestHealpix.h"
+#include "TestHealpixArray.h"
 
 #include <stdexcept>
 
@@ -261,6 +262,7 @@ int main(){
         if(! testSkyProj() ) rc= 1;
 
         TestHealpix();
+        TestHealpixArray();
 
 // One needs the test data to run this.
 //        if (!test_GPS_readFitsData()) return 1;
