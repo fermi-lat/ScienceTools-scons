@@ -6,8 +6,8 @@
 
 namespace st_graph {
 
-  PlotHist1D::PlotHist1D(const std::string & title, unsigned int width, unsigned int height, const IntervalCont_t & intervals):
-    m_intervals(intervals), m_title(title), m_width(width), m_height(height) {}
+  PlotHist1D::PlotHist1D(const std::string & title, unsigned int width, unsigned int height): m_title(title), m_width(width),
+    m_height(height) {}
 
   PlotHist1D::~PlotHist1D() {}
 

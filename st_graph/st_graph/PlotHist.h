@@ -26,9 +26,8 @@ namespace st_graph {
           \param title The title to display on the plot.
           \param width The width of the plot window.
           \param height The height of the plot window.
-          \param intervals Set of intervals (bin definitions) of the histogram, used to set the plot axes.
       */
-      PlotHist1D(const std::string & title, unsigned int width, unsigned int height, const IntervalCont_t & intervals);
+      PlotHist1D(const std::string & title, unsigned int width, unsigned int height);
 
       /// \brief Destruct the plotter.
       virtual ~PlotHist1D();
@@ -39,14 +38,22 @@ namespace st_graph {
       /// \brief Hide this plot.
       virtual void unDisplay() = 0;
 
-      /** \brief Set the given bin in the plot to have the given value.
+      /** \brief Set the given bin in the plot to have the given value. This throws an exception if
+          the plotter is not 1D.
           \param index The index of the plot bin.
           \param value The value to plot for that bin.
       */
       virtual void set(int index, double value) = 0;
 
+      /** \brief Set the given bin in the plot to have the given value. This throws an exception if
+          the plotter is not 2D.
+          \param x_index The index of the plot X bin.
+          \param y_index The index of the plot Y bin.
+          \param value The value to plot for that bin.
+      */
+      virtual void set(int x_index, int y_index, double value) = 0;
+
     protected:
-      IntervalCont_t m_intervals;
       std::string m_title;
       unsigned int m_width;
       unsigned int m_height;
