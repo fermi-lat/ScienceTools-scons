@@ -70,8 +70,7 @@ namespace st_graph {
           \param x The first dimension being plotted.
           \param x The second dimension being plotted.
       */
-      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title,
-        const ISequence & x, const ISequence & y) = 0;
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y) = 0;
 
       /** \brief Create a plot which may be displayed in a plot frame.
           \param parent The parent frame in which the plot will be displayed.
@@ -80,16 +79,17 @@ namespace st_graph {
           \param y The second dimension being plotted.
           \param z The third dimension being plotted.
       */
-      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
-        const ISequence & y, const std::vector<std::vector<double> > & z) = 0;
+      virtual IPlot * createPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
+        const std::vector<std::vector<double> > & z) = 0;
 
       /** \brief Create a frame specifically devoted to holding plots. This method will be removed shortly,
                  because a new technique is planned to support plots within any frame.
           \param parent The frame in which to embed the plot frame.
+          \param title The title of the plot.
           \param width The width of the frame in pixels.
           \param height The height of the frame in pixels.
       */
-      virtual IFrame * createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) = 0;
+      virtual IFrame * createPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height) = 0;
 
       virtual IFrame * createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
         const std::string & text) = 0;

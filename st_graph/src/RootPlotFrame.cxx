@@ -14,8 +14,8 @@
 
 namespace st_graph {
 
-  RootPlotFrame::RootPlotFrame(IFrame * parent, unsigned int width, unsigned int height):
-    RootFrame(parent, 0), m_canvas(0), m_multi_graph(0) {
+  RootPlotFrame::RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height):
+    RootFrame(parent, 0), m_title(title), m_canvas(0), m_multi_graph(0) {
     
     // Hook together Root primitives.
     TGCompositeFrame * root_frame = dynamic_cast<TGCompositeFrame *>(m_parent->getTGFrame());
@@ -52,8 +52,12 @@ namespace st_graph {
   }
 
   TMultiGraph * RootPlotFrame::getMultiGraph() {
-    if (0 == m_multi_graph) m_multi_graph = new TMultiGraph("tmultigraph", "TMultiGraph");
+    if (0 == m_multi_graph) m_multi_graph = new TMultiGraph("tmultigraph", m_title.c_str());
     return m_multi_graph;
+  }
+
+  const std::string & RootPlotFrame::getTitle() const {
+    return m_title;
   }
 
 }

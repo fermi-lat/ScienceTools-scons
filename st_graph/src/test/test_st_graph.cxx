@@ -196,10 +196,10 @@ void StGraphTestApp::testPlots() {
   IFrame * mf = engine.createMainFrame(0, 600, 400);
 
   // Create a new subframe in which to display the plots.
-  IFrame * pf1 = engine.createPlotFrame(mf, 600, 400);
+  IFrame * pf1 = engine.createPlotFrame(mf, "Quadratic", 600, 400);
 
   // Create a scatter plot of this data set, in the subframe.
-  IPlot * plot1 = engine.createPlot(pf1, "Scatter", "Quadratic", ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()),
+  IPlot * plot1 = engine.createPlot(pf1, "Scatter", ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()),
     ValueSpreadSeq_t(y1.begin(), y1.end(), delta_y1.begin()));
 
   // Modify the data set by shifting the plot down.
@@ -208,7 +208,7 @@ void StGraphTestApp::testPlots() {
   }
 
   // Create a histogram plot of this data set, in the subframe, ignoring errors.
-  IPlot * plot2 = engine.createPlot(pf1, "hist", "Quadratic", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1.begin(), y1.end()));
+  IPlot * plot2 = engine.createPlot(pf1, "hist", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1.begin(), y1.end()));
 
   // Run the graphics engine to display everything.
   engine.run();
@@ -239,10 +239,10 @@ void StGraphTestApp::testPlots() {
   }
 
   // Create a new subframe in which to display new plots.
-  pf1 = engine.createPlotFrame(mf, 600, 400);
+  pf1 = engine.createPlotFrame(mf, "2D Gaussian", 600, 400);
 
   // Plot the data as a histogram, using previous 1D bin defs for second dimension, new defs for first.
-  plot1 = engine.createPlot(pf1, "surf", "2D Gaussian", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
+  plot1 = engine.createPlot(pf1, "surf", ValueSpreadSeq_t(x2.begin(), x2.end(), delta_x2.begin()),
     ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()), hist);
 
   // Run the graphics engine to display everything.

@@ -33,7 +33,7 @@ namespace st_graph {
           \param x The first dimension.
           \param y The second dimension.
       */
-      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x, const ISequence & y);
+      RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y);
 
       /** \brief Construct a RootPlot object.
           \param parent The parent frame.
@@ -42,7 +42,7 @@ namespace st_graph {
           \param y The second dimension.
           \param z The third dimension.
       */
-      RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x, const ISequence & y,
+      RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
         const std::vector<std::vector<double> > & z);
 
       virtual ~RootPlot();
@@ -54,21 +54,18 @@ namespace st_graph {
       virtual void unDisplay();
 
       /** \brief Create histogram plot as a Root object. Not part of API.
-          \param title The plot title.
           \param x The first dimension.
           \param y The second dimension.
       */
-      TGraph * createHistPlot(const std::string & title, const ISequence & x, const ISequence & y);
+      TGraph * createHistPlot(const ISequence & x, const ISequence & y);
 
       /** \brief Create scatter plot as a Root object. Not part of API.
-          \param title The plot title.
           \param x The first dimension.
           \param y The second dimension.
       */
-      TGraph * createScatterPlot(const std::string & title, const ISequence & x, const ISequence & y);
+      TGraph * createScatterPlot(const ISequence & x, const ISequence & y);
 
-      TH2D * createHistPlot2D(const std::string & title, const ISequence & x, const ISequence & y,
-        const std::vector<std::vector<double> > & z);
+      TH2D * createHistPlot2D(const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z);
 
       /** \brief Return current Root graphical object. Not part of API.
       */

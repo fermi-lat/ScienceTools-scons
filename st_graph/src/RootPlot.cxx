@@ -21,14 +21,14 @@
 
 namespace st_graph {
 
-  RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
-   const ISequence & y): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
+  RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y): m_parent(0),
+    m_multi_graph(0), m_graph(0), m_th2d(0) {
 // TODO 2. Alter RootPlotFrame::addFrame so it calls back to this class. That allows this class to call
 //         TMultiGraph::Add(graph, opt) with display options when addFrame is called.
 // TODO 3. Remove call to addFrame in the constructor?
 // TODO 4. Change unDisplay to call TMultiGraph::RecursiveRemove or whatever.
     // Get the parent multi frame so that the plot can be added with desired style.
-    RootPlotFrame * m_parent = dynamic_cast<RootPlotFrame *>(parent);
+    m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
 
     // Sanity check.
@@ -43,20 +43,20 @@ namespace st_graph {
     if (0 == m_multi_graph) return;
 
     if (std::string::npos != lc_style.find("hist")) {
-      m_graph = createHistPlot(title, x, y);
+      m_graph = createHistPlot(x, y);
       m_multi_graph->Add(m_graph, "L");
     } else if (std::string::npos != lc_style.find("scat")) {
-      m_graph = createScatterPlot(title, x, y);
+      m_graph = createScatterPlot(x, y);
       m_multi_graph->Add(m_graph, "L");
     } else {
       throw std::logic_error("RootPlot constructor: unknown plot style \"" + style + "\"");
     }
   }
 
-  RootPlot::RootPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
-    const ISequence & y, const std::vector<std::vector<double> > & z): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
+  RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
+    const std::vector<std::vector<double> > & z): m_parent(0), m_multi_graph(0), m_graph(0), m_th2d(0) {
     // Get the parent multi frame so that the plot can be added with desired style.
-    RootPlotFrame * m_parent = dynamic_cast<RootPlotFrame *>(parent);
+    m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
 
     // Sanity check.
@@ -69,7 +69,7 @@ namespace st_graph {
     std::string lc_style = style;
     for (std::string::iterator itor = lc_style.begin(); itor != lc_style.end(); ++itor) *itor = tolower(*itor);
 
-    m_th2d = createHistPlot2D(title, x, y, z);
+    m_th2d = createHistPlot2D(x, y, z);
   }
 
   RootPlot::~RootPlot() {
@@ -82,7 +82,7 @@ namespace st_graph {
 
   void RootPlot::unDisplay() {}
 
-  TGraph * RootPlot::createHistPlot(const std::string & title, const ISequence & x, const ISequence & y) {
+  TGraph * RootPlot::createHistPlot(const ISequence & x, const ISequence & y) {
     TGraph * retval = 0;
 
     // Get arrays of values.
@@ -145,12 +145,10 @@ namespace st_graph {
 
     retval->SetEditable(kFALSE);
 
-    // Set title.
-    retval->SetTitle(title.c_str());
     return retval;
   }
 
-  TGraph * RootPlot::createScatterPlot(const std::string & title, const ISequence & x, const ISequence & y) {
+  TGraph * RootPlot::createScatterPlot(const ISequence & x, const ISequence & y) {
     TGraph * retval = 0;
     // Get arrays of values.
     std::vector<double> x_pts;
@@ -170,14 +168,10 @@ namespace st_graph {
     retval = new TGraphAsymmErrors(x.size(), &x_pts[0], &y_pts[0], &x_low_err[0], &x_high_err[0], &y_low_err[0], &y_high_err[0]);
     retval->SetEditable(kFALSE);
 
-    // Set title.
-    retval->SetTitle(title.c_str());
-    
     return retval;
   }
 
-  TH2D * RootPlot::createHistPlot2D(const std::string & title, const ISequence & x, const ISequence & y,
-    const std::vector<std::vector<double> > & z) {
+  TH2D * RootPlot::createHistPlot2D(const ISequence & x, const ISequence & y, const std::vector<std::vector<double> > & z) {
 
     TH2D * hist = 0;
 
@@ -212,7 +206,8 @@ namespace st_graph {
     y_bins[y.size()] = upper[y.size() - 1];
 
     // Create the histogram used to draw the plot.
-    hist = new TH2D(title.c_str(), title.c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1, &y_bins[0]);
+    hist = new TH2D(m_parent->getTitle().c_str(), m_parent->getTitle().c_str(), x_bins.size() - 1, &x_bins[0], y_bins.size() - 1,
+      &y_bins[0]);
 
     // Populate the histogram.
     for (unsigned int ii = 0; ii < x.size(); ++ii)

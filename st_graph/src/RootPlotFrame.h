@@ -5,7 +5,7 @@
 #ifndef st_graph_RootPlotFrame_h
 #define st_graph_RootPlotFrame_h
 
-#include <set>
+#include <string>
 
 #include "RootFrame.h"
 
@@ -25,7 +25,7 @@ namespace st_graph {
   */
   class RootPlotFrame : public RootFrame {
     public:
-      RootPlotFrame(IFrame * parent, unsigned int width, unsigned int height);
+      RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height);
 
       /// \brief Destruct the frame.
       virtual ~RootPlotFrame();
@@ -35,7 +35,10 @@ namespace st_graph {
       /// \brief Get the underlying Root graphical object. Not part of the API.
       virtual TMultiGraph * getMultiGraph();
 
+      const std::string & getTitle() const;
+
     private:
+      std::string m_title;
       TRootEmbeddedCanvas * m_canvas;
       TMultiGraph * m_multi_graph;
   };

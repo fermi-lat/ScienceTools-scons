@@ -147,24 +147,23 @@ namespace st_graph {
     return hist;
   }
 
-  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
-    const ISequence & y) {
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
-    return new RootPlot(parent, style, title, x, y);
+    return new RootPlot(parent, style, x, y);
   }
 
-  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const std::string & title, const ISequence & x,
-    const ISequence & y, const std::vector<std::vector<double> > & z) {
+  IPlot * RootEngine::createPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
+    const std::vector<std::vector<double> > & z) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlot: graphical environment not initialized");
 
-    return new RootPlot(parent, style, title, x, y, z);
+    return new RootPlot(parent, style, x, y, z);
   }
 
-  IFrame * RootEngine::createPlotFrame(IFrame * parent, unsigned int width, unsigned int height) {
+  IFrame * RootEngine::createPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height) {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createPlotFrame: graphical environment not initialized");
 
-    return new RootPlotFrame(parent, width, height);
+    return new RootPlotFrame(parent, title, width, height);
   }
 
   IFrame * RootEngine::createButton(IFrame * parent, IEventReceiver * receiver, const std::string & style,
