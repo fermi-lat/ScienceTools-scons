@@ -1,10 +1,9 @@
 /** \file EvtBin.cxx
-    \brief Event binner.
+    \brief Event bin test program.
     \author Yasushi Ikebe, GSSC
             James Peachey, HEASARC
 */
 
-#include <algorithm>
 #include <math.h>
 #include <iostream>
 #include <stdexcept>
@@ -27,7 +26,7 @@
 /** \class EvtBin
     \brief Application singleton for evtbin.
 */
-class EvtBin : public st_app::StApp {
+class EvtBinTest : public st_app::StApp {
   public:
     /** \brief Perform the action needed by this application. This will be called by the standard main.
     */
@@ -70,4 +69,4 @@ class EvtBin : public st_app::StApp {
 };
 
 /// \brief Create factory object which can create the application:
-st_app::StAppFactory<EvtBin> g_app_factory;
+st_app::StAppFactory<EvtBinTest> g_app_factory;
