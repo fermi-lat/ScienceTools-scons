@@ -34,4 +34,6 @@ namespace evtbin {
     );
   }
 
+  Binner * LinearBinner::clone() const { return new LinearBinner(*this); }
+
 }

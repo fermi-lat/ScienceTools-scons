@@ -36,6 +36,10 @@ namespace evtbin {
       */
       virtual Binner::Interval getInterval(long index) const;
 
+      /** \brief Create copy of this object.
+      */
+      virtual Binner * clone() const;
+
     private:
       double m_interval_begin;
       double m_interval_end;

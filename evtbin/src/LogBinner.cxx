@@ -38,4 +38,6 @@ namespace evtbin {
     );
   }
 
+  Binner * LogBinner::clone() const { return new LogBinner(*this); }
+
 }

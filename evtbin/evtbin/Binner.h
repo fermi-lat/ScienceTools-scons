@@ -50,6 +50,10 @@ namespace evtbin {
       */
       virtual Interval getInterval(long index) const = 0;
 
+      /** \brief Create copy of this object.
+      */
+      virtual Binner * clone() const = 0;
+
       /** \brief Compute and return the bin width of the given bin.
           \param index The index of the bin.
       */
