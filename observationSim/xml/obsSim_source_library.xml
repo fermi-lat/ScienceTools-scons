@@ -360,6 +360,16 @@
         </spectrum>
     </source>
 
+    <!-- the Map of the galactic diffuse gamma-ray emission that
+         extrapolates the EGRET > 100 MeV map down to 20 MeV -->
+    <source name="galdiffusemap20">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="MapSpectrum" 
+             params="0.1,0.02,1e3,2.1,/sources/gas_gal.fits"/> 
+            <use_spectrum frame="galaxy"/>
+        </spectrum>
+    </source>
+
     <!-- diffuse extraglactic from20 MeV to 1 TeV: from APJ 494:523
             1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4
             cm^2/m^2)*(100/20)^1.1 = 0.85 /s/sr/m^2 -->

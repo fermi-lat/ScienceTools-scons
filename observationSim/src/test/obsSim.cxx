@@ -17,8 +17,6 @@
 
 #include "facilities/Util.h"
 
-#include "hoops/hoops_exception.h"
-
 #include "hoopsUtil/RunParams.h"
 
 #include "astro/SkyDir.h"
@@ -59,16 +57,13 @@ int main(int iargc, char * argv[]) {
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
    
-// Read in the command-line parameters using HOOPS
-   strcpy(argv[0], "obsSim");
    try {
       hoopsUtil::RunParams params(iargc, argv);
 
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
-      long seed;
-      params.getParam("Random_seed", seed);
+      long seed = params.getParam<long>("Random_seed");
       HepRandom hepRandom(seed);
 
 // observationSim::Simulator requires a specific "TimeCandle" source,
@@ -78,8 +73,7 @@ int main(int iargc, char * argv[]) {
 
 // Fetch any user-specified xml file of flux-style source definitions,
 // replacing the default list.
-      std::string xmlFiles;
-      params.getParam("XML_source_file", xmlFiles);
+      std::string xmlFiles = params.getParam<std::string>("XML_source_file");
       if (xmlFiles == "none" || xmlFiles == "") { // use the default
          xmlFiles = "$(OBSERVATIONSIMROOT)/xml/xmlFiles.dat";
       }
@@ -102,8 +96,7 @@ int main(int iargc, char * argv[]) {
          exit(-1);
       }
 // Read the file containing the list of sources.
-      std::string srcListFile;
-      params.getParam("Source_list", srcListFile);
+      std::string srcListFile = params.getParam<std::string>("Source_list");
       std::vector<std::string> srcNames;
       if (::fileExists(srcListFile)) { 
          ::readLines(srcListFile, srcNames);
@@ -118,16 +111,15 @@ int main(int iargc, char * argv[]) {
       }
    
 // Get the number of events.
-      double count;
-      params.getParam("Number_of_events", count);
+      double count = params.getParam<double>("Number_of_events");
 
 // Get the flag to interpret nevents as simulation time in seconds.
-      bool useSimTime;
-      params.getParam("Use_as_sim_time", useSimTime);
+      bool useSimTime = params.getParam<bool>("Use_as_sim_time");
 
 // Ascertain which response functions to use.
-      std::string responseFuncs;
-      params.getParam("Response_functions", responseFuncs);
+      std::string responseFuncs 
+         = params.getParam<std::string>("Response_functions");
+      
       std::vector<latResponse::Irfs *> respPtrs;
 
       std::map< std::string, std::vector<std::string> > responseIds;
@@ -137,6 +129,8 @@ int main(int iargc, char * argv[]) {
       responseIds["FRONT/BACK"].push_back("DC1::Back");
       responseIds["NO_EDISP"].push_back("DC1::Front_noEdisp");
       responseIds["NO_EDISP"].push_back("DC1::Back_noEdisp");
+      responseIds["GLAST25"].push_back("Glast25::Front");
+      responseIds["GLAST25"].push_back("Glast25::Back");
 
       if (responseIds.count(responseFuncs)) {
          std::vector<std::string> &resps = responseIds[responseFuncs];
@@ -150,12 +144,10 @@ int main(int iargc, char * argv[]) {
       }
 
 // Create the Simulator object
-      double totalArea;
-      params.getParam("Maximum_effective_area", totalArea);
-      double startTime;
-      params.getParam("Start_time", startTime);
-      std::string pointingHistory;
-      params.getParam("Pointing_history_file", pointingHistory);
+      double totalArea = params.getParam<double>("Maximum_effective_area");
+      double startTime = params.getParam<double>("Start_time");
+      std::string pointingHistory
+         = params.getParam<std::string>("Pointing_history_file");
       observationSim::Simulator my_simulator(srcNames, xmlSourceFiles, 
                                              totalArea, startTime, 
                                              pointingHistory);
@@ -168,10 +160,8 @@ int main(int iargc, char * argv[]) {
 #else
       bool useGoodi(false);
 #endif
-      long nMaxRows;
-      params.getParam("Maximum_number_of_rows", nMaxRows);
-      std::string prefix;
-      params.getParam("Output_file_prefix", prefix);
+      long nMaxRows = params.getParam<long>("Maximum_number_of_rows");
+      std::string prefix = params.getParam<std::string>("Output_file_prefix");
       observationSim::EventContainer events(prefix + "_events", 
                                             useGoodi, nMaxRows);
       observationSim::ScDataContainer scData(prefix + "_scData", 
@@ -191,11 +181,7 @@ int main(int iargc, char * argv[]) {
                                      scData, respPtrs, spacecraft);
       }
       std::cout << "Done." << std::endl;
-   } catch (hoops::Hexception &eObj) {
-      std::cout << "hoops::Hexception: "
-                << eObj.Msg() << std::endl;
-      std::cout << "hoops::Hexception "
-                << "code: " << eObj.Code() << std::endl;
-      assert(eObj.Code() != 0);
+   } catch (std::exception &eObj) {
+      std::cerr << eObj.what() << std::endl;
    }
 }
