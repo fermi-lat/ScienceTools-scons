@@ -72,11 +72,14 @@ public:
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);
 
+    //! for backward compatibility: deprecated
+    void add(const astro::SkyDir& dirz, double deltat){fill(dirz,deltat);}
+
     //! create object from the data file (FITS for now)
     Exposure(const std::string& inputfile, const std::string& tablename="Exposure");
 
     //! write out to a file.
-    void write(const std::string& outputfile, const std::string& tablename="Exposure");
+    void write(const std::string& outputfile, const std::string& tablename="Exposure")const;
 
     /// this is deprecated, here only for Likelihood
     class Aeff {
