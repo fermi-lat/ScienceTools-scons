@@ -36,7 +36,8 @@ public:
     virtual void print(std::ostream&)const=0;
 
     operator const std::string&()const{return m_name;}
-    //virtual operator double()const = 0;
+    
+    virtual void* valuePtr()const=0;
 
 private:
     std::string m_name;
@@ -64,6 +65,7 @@ public:
     virtual BaseAttr * clone() const{ return new Attr<T>(*this);}
 
     const T& value()const{return m_value;}
+    virtual void* valuePtr()const{ return reinterpret_cast<void*>(const_cast<T*>((&m_value)));}
     virtual void print(std::ostream&out)const{ out << m_value;} 
 
 private:

@@ -37,11 +37,6 @@ static const char* errMsg[] = {
 
 static void HeaderFits2Root(fitsfile * fptr, IOElement * element, int * status);
 static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status);
-static void writeBoolAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeFloatAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeIntAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
-static void writeStringAttr(const BaseAttr & attr, fitsfile *fptr, int & status);
 
 IOElement * MakeImage(fitsfile * fptr, int * status);
 int           CreateFitsImage(fitsfile* fptr, IOElement* image);
@@ -378,26 +373,32 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
         return;
 
 // Create some Attr objects for typeid comparisons.
-    std::string boolAttr = typeid(BoolAttr("boolAttr", true)).name();
-    std::string stringAttr = typeid(StringAttr("stringAttr", "")).name();
-    std::string intAttr = typeid(IntAttr("intAttr", 1)).name();
-    std::string floatAttr = typeid(FloatAttr("floatAttr", 1.)).name();
-    std::string doubleAttr = typeid(DoubleAttr("doubleAttr", 1.)).name();
+    static std::string boolAttr = typeid(BoolAttr).name();
+    static std::string stringAttr = typeid(StringAttr).name();
+    static std::string intAttr = typeid(IntAttr).name();
+    static std::string floatAttr = typeid(FloatAttr).name();
+    static std::string doubleAttr = typeid(DoubleAttr).name();
 
-    for( Header::const_iterator it = element->begin(); it != element->end(); ++it){
-        const BaseAttr& attr = *(*it);
+    void* val = 0; // actual value cast to this pointer
+    char cbuf[120];
+    int fitsType=0;
+    for( Header::iterator it = element->begin(); it != element->end(); ++it){
+        BaseAttr& attr = *(*it);
 
-        if (typeid(attr).name() == doubleAttr) {
-           writeDoubleAttr(attr, fptr, *status);
-        } else if (typeid(attr).name() == stringAttr) {
-           writeStringAttr(attr, fptr, *status);
-        } else if (typeid(attr).name() == intAttr) {
-           writeIntAttr(attr, fptr, *status);
-        } else if (typeid(attr).name() == boolAttr) {
-           writeBoolAttr(attr, fptr, *status);
-        } else if (typeid(attr).name() == floatAttr) {
-           writeFloatAttr(attr, fptr, *status);
-        }           
+        if (typeid(attr).name() == doubleAttr) { fitsType = TDOUBLE; val = attr.valuePtr();
+        } else if (typeid(attr).name() == stringAttr) { fitsType = TSTRING; 
+           StringAttr & my_attr = dynamic_cast<StringAttr&>(attr); val = (void*)cbuf;
+           strncpy(cbuf, my_attr.value().c_str(), sizeof(cbuf));
+ 
+        } else if (typeid(attr).name() == intAttr) { fitsType = TINT; val = attr.valuePtr();
+        } else if (typeid(attr).name() == boolAttr) { fitsType = TLOGICAL;val = attr.valuePtr();
+        } else if (typeid(attr).name() == floatAttr) { fitsType = TFLOAT;val = attr.valuePtr();
+        } else {
+            throw std::runtime_error(std::string("HeaderRoot2Fits: unexpected attribute type ")+ typeid(attr).name());
+        }
+
+        fits_update_key(fptr, fitsType, (char*)attr.name().c_str(), 
+                      val, (char*)attr.comment().c_str(), status);
 
         if (! attr.unit().empty() ) {
             fits_write_key_unit(fptr, (char*)attr.name().c_str(), 
@@ -410,63 +411,3 @@ static void HeaderRoot2Fits(IOElement * element, fitsfile * fptr, int * status)
 
 }
 
-static void writeBoolAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
-   const BoolAttr * my_attr = dynamic_cast<const BoolAttr*>(&attr);
-   if (my_attr) {
-      int val = my_attr->value();
-      fits_update_key(fptr, TLOGICAL, (char*)attr.name().c_str(), 
-                      &val, (char*)attr.comment().c_str(), &status);
-   }
-}
-
-static void writeDoubleAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
-   const DoubleAttr * my_attr = dynamic_cast<const DoubleAttr*>(&attr);
-   if (my_attr) {
-      double val = my_attr->value();
-      fits_update_key(fptr, TDOUBLE, (char*)attr.name().c_str(), 
-                      &val, (char*)attr.comment().c_str(), &status);
-   }
-}
-
-static void writeFloatAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
-   const FloatAttr * my_attr = dynamic_cast<const FloatAttr*>(&attr);
-   if (my_attr) {
-      float val = my_attr->value();
-      fits_update_key(fptr, TFLOAT, (char*)attr.name().c_str(), 
-                      &val, (char*)attr.comment().c_str(), &status);
-   }
-}
-
-static void writeIntAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
-   const IntAttr * my_attr = dynamic_cast<const IntAttr*>(&attr);
-   if (my_attr) {
-      int val = my_attr->value();
-      fits_update_key(fptr, TINT, (char*)attr.name().c_str(), 
-                      &val, (char*)attr.comment().c_str(), &status);
-   }
-}
-
-static void writeStringAttr(const BaseAttr & attr, fitsfile *fptr, int & status) {
-   const StringAttr * my_attr = dynamic_cast<const StringAttr*>(&attr);
-   if (my_attr) {
-      const char * v = my_attr->value().c_str();
-      fits_update_key(fptr, TSTRING, (char*)attr.name().c_str(), 
-                      (char*)v, (char*)attr.comment().c_str(), &status);
-   }
-}
-
-#if 0 //do we really need this?
-namespace {
-// this unused function ensures that the cfitsio function ffgiwcs and ffgtwcs are linked
-// into the libtf.so library.
-static void never_used()
-{
-    int status;
-    fitsfile * fptr;
-    char * header;
-
-    ffgiwcs(fptr, &header, &status);
-    ffgtwcs(fptr, 1, 2, &header, &status);
-}
-}
-#endif

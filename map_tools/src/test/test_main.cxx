@@ -99,13 +99,13 @@ void test_Header() {
    try {
       header.getValue(name, ivalue);
       assert(false);
-   } catch (std::runtime_error &eObj) {}
+   } catch (std::runtime_error &) {}
 
 // Test for access failure.
    try {
       header.getValue("wrong name", value);
       assert(false);
-   } catch (std::invalid_argument &eObj) {}
+   } catch (std::invalid_argument &) {}
 
 // Test for re-insertion.
    float fvalue0(2.718F);
@@ -129,5 +129,9 @@ void test_Header() {
    try {
        const BaseAttr & attr2 = header["wrong"];//should not
        assert(false);
-   } catch (const std::runtime_error &eobj){}
+   } catch (const std::runtime_error &){}
+
+   double * test = reinterpret_cast<double*>(attr.valuePtr()); // check alternate return
+   assert (*test == dvalue0);
+   std::cout << "header tests ok\n";
 }
