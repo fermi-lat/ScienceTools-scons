@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <string>
 
+// Class encapsulating a count map.
+#include "evtbin/CountMap.h"
 // Class encapsulating a 1 dimensional histogram.
 #include "evtbin/Hist1D.h"
 // Class encapsulating a 2 dimensional histogram.
@@ -61,6 +63,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testMultiSpectra();
 
+    void testCountMap();
+
   private:
     std::string m_data_dir;
     bool m_failed;
@@ -89,6 +93,8 @@ void EvtBinTest::run() {
   testSingleSpectrum();
   // Test multiple spectra with no time binning (using Tip):
   testMultiSpectra();
+  // Test count map (using Tip):
+  testCountMap();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -103,7 +109,10 @@ void EvtBinTest::testLinearBinner() {
 
   // Make sure there are 7 bins:
   msg = "LinearBinner::getNumBins()";
-  if (7 != binner.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 7" << std::endl;
+  if (7 != binner.getNumBins()) {
+    std::cerr << msg << " returned " << binner.getNumBins() << ", not 7" << std::endl;
+    m_failed = true;
+  }
 
   // Make sure values are correctly classified:
   msg = "LinearBinner::computeIndex(";
@@ -149,7 +158,10 @@ void EvtBinTest::testLinearBinner() {
 
   // Make sure there are 10 bins:
   msg = "LinearBinner::getNumBins()";
-  if (10 != binner2.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+  if (10 != binner2.getNumBins()) {
+    std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+    m_failed = true;
+  }
 
 }
 
@@ -162,7 +174,10 @@ void EvtBinTest::testLogBinner() {
 
   // Make sure there are really 10 bins:
   msg = "LogBinner::getNumBins()";
-  if (10 != binner.getNumBins()) std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+  if (10 != binner.getNumBins()) {
+    std::cerr << msg << " returned " << binner.getNumBins() << ", not 10" << std::endl;
+    m_failed = true;
+  }
 
   // Make sure values are correctly classified:
   msg = "LogBinner::computeIndex(";
@@ -327,6 +342,37 @@ void EvtBinTest::testMultiSpectra() {
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA2.pha");
+
+  // Clean up input.
+  delete table;
+}
+
+void EvtBinTest::testCountMap() {
+  using namespace evtbin;
+
+  // Open input table:
+  const tip::Table * table = tip::IFileSvc::instance().readTable(m_data_dir + "D1.fits", "EVENTS");
+
+  // Create map object with invalid projection.
+  try {
+    CountMap count_map(240., 40., "GARBAGE", 400, 200, .1, 0., true);
+    std::cerr << "CountMap's constructor did not throw an exception when given an invalid projection type" << std::endl;
+    m_failed = true;
+  } catch (const std::exception & x) {
+    // OK, supposed to fail.
+  }
+
+  // Create count map object.
+  CountMap count_map(240., 40., "AIT", 400, 300, .1, 0., true);
+
+  // Fill the count map.
+  count_map.binInput(table->begin(), table->end());
+
+  // Cull keywords from input table.
+  count_map.harvestKeywords(table->getHeader());
+
+  // Write the count map to an output file.
+  count_map.writeOutput("test_evtbin", "CM2.fits");
 
   // Clean up input.
   delete table;

@@ -2,6 +2,7 @@ package evtbin
 version v0
 
 use STpolicy *
+use astro *
 use st_app *
 use tip *
 
