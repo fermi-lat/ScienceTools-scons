@@ -27,9 +27,11 @@ public:
 
    Event(double time, double energy, const astro::SkyDir &appDir, 
          const astro::SkyDir &srcDir, const astro::SkyDir &zAxis, 
-         const astro::SkyDir &xAxis, const astro::SkyDir &zenith) :
+         const astro::SkyDir &xAxis, const astro::SkyDir &zenith, 
+         int eventType=4) :
       m_time(time), m_energy(energy), m_appDir(appDir), m_srcDir(srcDir),
-      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith) {}
+      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), m_eventType(eventType) 
+      {}
 
    /// Time in seconds (referenced to the zero time of the orbit
    /// calculation in astro::EarthOrbit).
@@ -53,6 +55,9 @@ public:
    /// Zenith direction at spacecraft location in "Celestial" coordinates.
    astro::SkyDir zenith() const {return m_zenith;}
 
+   /// Event type (for ascertaining which set of IRFs to use).
+   int eventType() const {return m_eventType;}
+
 private:
 
    double m_time;
@@ -63,6 +68,8 @@ private:
    astro::SkyDir m_zAxis;
    astro::SkyDir m_xAxis;
    astro::SkyDir m_zenith;
+
+   int m_eventType;
 
 };
 

@@ -109,57 +109,6 @@ void EventContainer::init() {
 }
 
 int EventContainer::addEvent(EventSource *event, 
-                             latResponse::Irfs &response, 
-                             Spacecraft *spacecraft,
-                             bool flush, bool alwaysAccept) {
-   
-   std::string particleType = event->particleName();
-   double time = event->time();
-   double energy = event->energy();
-   Hep3Vector launchDir = event->launchDir();
-
-// We need the source direction in J2000 coordinates here.
-// Unfortunately, because EventSource objects are so closely tied to
-// the LAT geometry as embodied in the various FluxSvc and astro
-// classes (e.g., GPS, EarthOrbit, EarthCoordinate), launchDir is
-// accessible only as a Hep3Vector in LAT coordinates.  Therefore, we
-// are forced to cheat and use a LatSc object explicitly in order to
-// recover the source direction in J2000 coordinates.
-   LatSc latSpacecraft;
-   HepRotation rotMatrix = latSpacecraft.InstrumentToCelestial(time);
-   astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::CELESTIAL);
-
-   astro::SkyDir zAxis = spacecraft->zAxis(time);
-   astro::SkyDir xAxis = spacecraft->xAxis(time);
-
-   if (alwaysAccept) {
-      m_events.push_back( Event(time, energy, 
-                                sourceDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time)) );
-      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
-      return 1;
-   }
-      
-   double effArea = (*response.aeff())(energy, sourceDir, zAxis, xAxis);
-   if ( energy > 31.623 
-        && RandFlat::shoot() < m_prob
-        && RandFlat::shoot() < effArea/event->totalArea()/1e4
-        && !spacecraft->inSaa(time) ) {
-      astro::SkyDir appDir = response.psf()->appDir(energy, sourceDir, 
-                                                    zAxis, xAxis);
-                                                        
-      m_events.push_back( Event(time, energy, 
-                                appDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time)) );
-//      std::cout << "adding an event: " << m_events.size() << std::endl;
-      if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
-      return 1;
-   }
-   if (flush) writeEvents();
-   return 0;
-}
-
-int EventContainer::addEvent(EventSource *event, 
                              std::vector<latResponse::Irfs *> &respPtrs, 
                              Spacecraft *spacecraft,
                              bool flush, bool alwaysAccept) {
@@ -179,7 +128,7 @@ int EventContainer::addEvent(EventSource *event,
    if (alwaysAccept) {
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time)) );
+                                ScZenith(time), 0) );
       if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
       return 1;
    }
@@ -198,7 +147,7 @@ int EventContainer::addEvent(EventSource *event,
                                                         
       m_events.push_back( Event(time, energy, 
                                 appDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time)) );
+                                ScZenith(time), respPtr->irfID()) );
 //      std::cout << "adding an event: " << m_events.size() << std::endl;
       if (flush || m_events.size() >= m_maxNumEvents) writeEvents();
       return 1;
@@ -280,7 +229,7 @@ void EventContainer::writeEvents() {
       delete goodiIoService;
    } else { // Use the old A1 format.
       makeFitsTable();
-      std::vector<std::vector<double> > data(13);
+      std::vector<std::vector<double> > data(14);
 // pre-allocate the memory for each vector
       for (std::vector<std::vector<double> >::iterator vec_it = data.begin();
            vec_it != data.end(); vec_it++)
@@ -301,6 +250,7 @@ void EventContainer::writeEvents() {
          data[11].push_back(it->zAxis().dir().z());
          data[12].push_back(
             it->zenith().dir().angle(it->appDir().dir())*180./M_PI);
+         data[13].push_back(static_cast<double>(it->eventType()));
       }
       m_eventTable->writeTableData(data);
 
@@ -329,15 +279,17 @@ void EventContainer::makeFitsTable() {
    colName.push_back("GLON"); fmt.push_back("1E"); unit.push_back("deg");
    colName.push_back("GLAT"); fmt.push_back("1E"); unit.push_back("deg");
    colName.push_back("energy"); fmt.push_back("1E"); unit.push_back("MeV");
+
    colName.push_back("time"); fmt.push_back("1D"); unit.push_back("s");
    colName.push_back("SC_x0");fmt.push_back("1E");unit.push_back("dir cos");
    colName.push_back("SC_x1");fmt.push_back("1E");unit.push_back("dir cos");
    colName.push_back("SC_x2");fmt.push_back("1E");unit.push_back("dir cos");
    colName.push_back("SC_x");fmt.push_back("1E");unit.push_back("dir cos");
+
    colName.push_back("SC_y");fmt.push_back("1E");unit.push_back("dir cos");
    colName.push_back("SC_z");fmt.push_back("1E");unit.push_back("dir cos");
-   colName.push_back("zenith_angle"); fmt.push_back("1E");
-   unit.push_back("deg");
+   colName.push_back("zenith_angle");fmt.push_back("1E");unit.push_back("deg");
+   colName.push_back("event_type");fmt.push_back("1I");unit.push_back("int");
 
    std::string outputFile = outputFileName();
    m_eventTable = new FitsTable(outputFile, "LAT_event_summary", 

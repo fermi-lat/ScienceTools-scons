@@ -64,8 +64,8 @@ public:
 
    /// @param event A pointer to the current EventSource object
    ///        that was provided by the FluxMgr object.
-   /// @param respObj A container of pointers to the standard response 
-   ///        functions.
+   /// @param respPtrs A vector of pointers to response 
+   ///        function containters.
    /// @param spacecraft A pointer to an object that provides methods 
    ///        for accessing spacecraft orbit and attitude information.
    /// @param flush A flag to indicate whether to write the accumulated
@@ -73,10 +73,6 @@ public:
    /// @param alwaysAccept If true, the event is accepted without
    ///        regard to the response info, i.e., true energies and 
    ///        directions are saved.
-   int addEvent(EventSource *event, latResponse::Irfs &respObj, 
-                Spacecraft *spacecraft, bool flush=false, 
-                bool alwaysAccept=false);
-
    int addEvent(EventSource *event, 
                 std::vector<latResponse::Irfs *> &respPtrs, 
                 Spacecraft *spacecraft, bool flush=false, 
