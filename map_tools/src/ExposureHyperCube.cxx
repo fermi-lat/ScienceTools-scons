@@ -1,5 +1,6 @@
 /**
  * @file ExposureHyperCube.cxx
+   @brief Implement ExposureHyperCube methods
  *
  * $Header$
  */

@@ -57,12 +57,11 @@
  - prompt string
 
  @section env Environment variables
-If a file name does not start with a a "/" character, it is assumed to be in a folder given by the appropriate
-environment variable
 
-- INFILES  input files
-- PFILES   parameter fiels
-- OUTFILES output files
+ The package requirements file defines the following environment variables
+- INFILES  input files, subfolder "data"
+- PFILES   parameter files, subfolder "pfiles" - PIL will expect the parameter file to be here
+- OUTFILES output files, subfolder "output"
 
  @section countmap count_map
 
@@ -87,6 +86,10 @@ This applicaton creates a FITS "hypercube" image file. Each layer is a bin in co
 
  @verbinclude exposure_map.par
 
+ @section readmap read_map
+
+ A simple application that reads a value from a map.
+ @verbinclude read_map.par
 
 */
 /** @page devguide Developer's Guide
