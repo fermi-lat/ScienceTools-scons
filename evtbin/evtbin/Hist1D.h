@@ -6,10 +6,12 @@
 
 #include <vector>
 
-#include "evtbin/Binner.h"
 #include "evtbin/Hist.h"
 
 namespace evtbin {
+
+  class Binner;
+
   /** \class Hist1D
       \brief One dimensional histogram.
   */
@@ -21,7 +23,7 @@ namespace evtbin {
       /** \brief Create a one dimensional histogram which uses the given binner object:
           \param binner The binner object to use when filling bins.
       */
-      Hist1D(const Binner * binner);
+      Hist1D(const Binner & binner);
 
       virtual ~Hist1D() throw();
 

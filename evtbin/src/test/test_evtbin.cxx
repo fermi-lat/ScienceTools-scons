@@ -196,7 +196,7 @@ void EvtBinTest::testHist1D() {
   LinearBinner binner(0., 100., 10);
 
   // Create a histogram using this binner:
-  Hist1D lin_hist(&binner);
+  Hist1D lin_hist(binner);
 
   // Populate this histogram, starting from right of the right endpoint, going to left of left endpoint:
   for (int ii = 100; ii >= -1; --ii) lin_hist.fillBin(ii);
@@ -222,7 +222,7 @@ void EvtBinTest::testHist2D() {
   LogBinner binner2(1., exp(10.), 10);
 
   // Create a histogram using these binners:
-  Hist2D hist(&binner1, &binner2);
+  Hist2D hist(binner1, binner2);
 
   // Populate this histogram, starting from right of the right endpoint, going to left of left endpoint:
   for (int ii = 100; ii >= -1; --ii) {
@@ -256,7 +256,7 @@ void EvtBinTest::testLightCurve() {
   LinearBinner binner(0., 900000., 1000, "TIME");
 
   // Create the histogram:
-  Hist1D hist(&binner);
+  Hist1D hist(binner);
 
   // Fill the histogram, using helper class RecordBinFiller, which b
   std::for_each(table->begin(), table->end(), RecordBinFiller(hist));
@@ -297,7 +297,7 @@ void EvtBinTest::testSimpleSpectrum() {
   LogBinner binner(1., 90000., 1000, "ENERGY");
 
   // Create the histogram:
-  Hist1D hist(&binner);
+  Hist1D hist(binner);
 
   // Fill the histogram, using helper class RecordBinFiller, which b
   std::for_each(table->begin(), table->end(), RecordBinFiller(hist));

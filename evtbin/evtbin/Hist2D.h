@@ -6,10 +6,12 @@
 
 #include <vector>
 
-#include "evtbin/Binner.h"
 #include "evtbin/Hist.h"
 
 namespace evtbin {
+
+  class Binner;
+
   /** \class Hist2D
       \brief One dimensional histogram.
   */
@@ -24,7 +26,7 @@ namespace evtbin {
           \param binner1 The binner object for the first dimension.
           \param binner2 The binner object for the second dimension.
       */
-      Hist2D(const Binner * binner1, const Binner * binner2);
+      Hist2D(const Binner & binner1, const Binner & binner2);
 
       virtual ~Hist2D() throw();
 

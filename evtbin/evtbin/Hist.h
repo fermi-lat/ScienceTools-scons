@@ -6,9 +6,10 @@
 
 #include <vector>
 
-#include "evtbin/Binner.h"
-
 namespace evtbin {
+
+  class Binner;
+
   /** \class Hist
       \brief Base class for histogram abstractions.
   */
@@ -16,7 +17,7 @@ namespace evtbin {
     public:
       typedef std::vector<const Binner *> BinnerCont_t;
 
-      virtual ~Hist() throw() {}
+      virtual ~Hist() throw();
 
       /** \brief Increment the bin appropriate for the given value.
                  This is generic for N-dimensional histograms.
@@ -27,7 +28,7 @@ namespace evtbin {
 
       /** \brief Return the collection of binners being used by this histogram.
       */
-      const BinnerCont_t & getBinners() const { return m_binners; }
+      const BinnerCont_t & getBinners() const;
 
     protected:
       BinnerCont_t m_binners;

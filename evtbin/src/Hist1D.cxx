@@ -8,15 +8,12 @@
 
 namespace evtbin {
 
-  Hist1D::Hist1D(const Binner * binner): m_data() {
-    // Check for valid input:
-    if (0 == binner) throw std::logic_error("Hist1D cannot be constructed with a null binner pointer.");
-
+  Hist1D::Hist1D(const Binner & binner): m_data() {
     // Set initial size of data array:
-    m_data.resize(binner->getNumBins(), 0);
+    m_data.resize(binner.getNumBins(), 0);
 
     // Save binner:
-    m_binners.resize(1, binner);
+    m_binners.resize(1, binner.clone());
   }
 
   Hist1D::~Hist1D() throw() {}
