@@ -7,7 +7,9 @@
 #include <utility> // for pair
 #include <string>
 #include <vector>
-#include "wcslib/prj.h"
+#include "wcslib/wcs.h"
+
+
 
 namespace astro {
 
@@ -25,11 +27,8 @@ namespace astro {
     {
     public:
         ///Constructors
-        /** @brief Default projection is Hammer-Aitoff
-        */
-        SkyProj();
 
-        /** @brief Constructor specified by Projection Code
+        /** @brief Constructor specified by FITS parameters
             @param projName String containing three char code
             Valid codes are:
             @verbatim
@@ -60,20 +59,28 @@ namespace astro {
             CSC: COBE quadrilateralized spherical cube
             QSC: quadrilateralized spherical cube
             @endverbatim
+            @param crpix1 corresponds to the FITS keyword CRPIX1 (coordinate reference point)
+            @param crpix2 corresponds to the FITS keyword CRPIX2 (coordinate reference point)
+            @param crval1 corresponds to the FITS keyword CRVAL1 (coordinate value at reference point)
+            @param crval2 corresponds to the FITS keyword CRVAL2 (coordinate value at reference point)
+            @param cdelt1 corresponds to the FITS keyword CDELT1
+            @param cdelt2 corresponds to the FITS keyword CDELT2
+            @param crota1 corresponds to the FITS keyword CROTA1
+            @param crota2 corresponds to the FITS keyword CROTA2
             **/
-        SkyProj(const std::string &projName);
+        SkyProj(const std::string &projName, 
+                 double crpix1,
+                 double crpix2,
+                 double crval1,
+                 double crval2,
+                 double cdelt1,
+                 double cdelt2,
+                 double crota1,
+                 double crota2
+                 );
 
-        /** @brief Constructor specified by Projection Code
-            @param projName String containing three char code
-            @param x0 reference x coordinate
-            @param y0 reference y coordinate
-            @param phi0 fiducial native longitude coordinate
-            @param theta0 fiducial native latitude coordinate
-            @param sxy XY Scaling?
-            @param spt ?
-            @param params vector of doubles containing any projection specific parameters
-            **/
-        SkyProj(const std::string &projName, double phi0, double theta0, double sxy, double spt, std::vector<double> params);
+        // Destructor
+       ~SkyProj();
 
         /** @brief Do the projection with the given coordinates
             @param s1 ra or l, in degrees
@@ -96,20 +103,11 @@ namespace astro {
 
         class Exception; // forward declaration
     private:
-        /** @brief Change the projection type
-            @param projName String containing three char code
-        */
-        void setProjection(const std::string& projName);
 
-
-       /* Structure defined in WCSLIB prj.c.  This contains all
+       /* Structure defined in WCSLIB wcs.h.  This contains all
           projection information. */
-        prjprm prj;
-
-        /* Scaling parameters ? */
-        double m_spt;
-        double m_sxy;
-        
+        wcsprm *wcs;
+    
     };
 
 
