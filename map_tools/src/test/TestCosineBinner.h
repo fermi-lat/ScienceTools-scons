@@ -7,6 +7,7 @@ $Header$
 
 */
 #include "map_tools/CosineBinner.h"
+#include <stdexcept>
 
 
 class TestCosineBinner {
