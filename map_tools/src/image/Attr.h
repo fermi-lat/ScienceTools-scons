@@ -10,7 +10,7 @@
 #define ATTR_H
 
 #include <string>
-#include <ostream>
+#include <iostream>
 //_____________________________________________________________________________
 /** @class BaseAttr
     @brief abstract base class for attributes
