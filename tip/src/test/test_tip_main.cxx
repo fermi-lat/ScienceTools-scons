@@ -15,6 +15,7 @@
 #include "TestExtensionData.h"
 #include "TestFileManager.h"
 #include "TestFileSummary.h"
+#include "TestFilter.h"
 #include "TestImage.h"
 #include "TestInterpolation.h"
 #include "TestTable.h"
@@ -608,6 +609,10 @@ int main() {
     // Test interpolation abstractions.
     TestInterpolation interpolation_test;
     status = interpolation_test.test(status);
+
+    // Test filter capabilities.
+    TestFilter filter_test;
+    status = filter_test.test(status);
 
   } catch(const TipException & x) {
     std::cerr << "Unhandled TipException: " << x.what() << std::endl;
