@@ -81,13 +81,13 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       }
       std::string colname;
       unsigned int indx = parseColname(type, colname);
-      if ( (!check_columns || 
-            std::find(colnames.begin(), colnames.end(), colname) 
-            != colnames.end())
-           && value != "TABLE" ) {
-         m_cuts.push_back(new RangeCut(colname, unit, value, indx));
-      } else if (value.find("CIRCLE") == 0) {
+      if (value.find("CIRCLE") == 0) {
          m_cuts.push_back(new SkyConeCut(type, unit, value));
+      } else if ( (!check_columns || 
+                   std::find(colnames.begin(), colnames.end(), colname) 
+                   != colnames.end())
+                  && value != "TABLE" ) {
+         m_cuts.push_back(new RangeCut(colname, unit, value, indx));
       } else if (type == "TIME" && value == "TABLE") {
          m_cuts.push_back(new GtiCut(eventFile));
       } else {
@@ -118,7 +118,7 @@ unsigned int Cuts::parseColname(const std::string & colname,
    return std::atoi(tokens.at(1).c_str());
 }
 
-unsigned int Cuts::find(CutBase * cut) const {
+unsigned int Cuts::find(const CutBase * cut) const {
    for (unsigned int i = 0; i < size(); i++) {
       if (*cut == *m_cuts[i]) {
          return i;
@@ -127,7 +127,7 @@ unsigned int Cuts::find(CutBase * cut) const {
    return size();
 }
 
-bool Cuts::hasCut(CutBase * newCut) const {
+bool Cuts::hasCut(const CutBase * newCut) const {
    for (unsigned int i = 0; i < size(); i++) {
       if (*newCut == *m_cuts[i]) {
          return true;
@@ -169,9 +169,19 @@ unsigned int Cuts::addRangeCut(const std::string & colname,
                                const std::string & unit,
                                double minVal, double maxVal, 
                                RangeType type, unsigned int indx) {
-   Cuts::CutBase * newCut = new Cuts::RangeCut(colname, unit, minVal, maxVal, 
-                                               type, indx);
+   return addCut(new Cuts::RangeCut(colname, unit, minVal, maxVal, 
+                                    type, indx));
+}
 
+unsigned int Cuts::addGtiCut(const tip::Table & table) {
+   return addCut(new Cuts::GtiCut(table));
+}
+
+unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
+   return addCut(new Cuts::SkyConeCut(ra, dec, radius));
+}
+
+unsigned int Cuts::addCut(CutBase * newCut) {
    if (hasCut(newCut)) {
       delete newCut;
    } else {
@@ -181,30 +191,14 @@ unsigned int Cuts::addRangeCut(const std::string & colname,
             m_cuts[j] = newCut;
             return size();
          }
+         if (m_cuts[j]->supercedes(*newCut)) {
+            delete newCut;
+            return size();
+         }
       }
       m_cuts.push_back(newCut);
    }
    return size();
-}
-
-unsigned int Cuts::addGtiCut(const tip::Table & table) {
-   Cuts::CutBase * newCut = new Cuts::GtiCut(table);
-   if (hasCut(newCut)) {
-      delete newCut;
-   } else {
-      m_cuts.push_back(newCut);
-   }
-   return m_cuts.size();
-}
-
-unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
-   Cuts::CutBase * newCut = new Cuts::SkyConeCut(ra, dec, radius);
-   if (hasCut(newCut)) {
-      delete newCut;
-   } else {
-      m_cuts.push_back(newCut);
-   }
-   return m_cuts.size();
 }
 
 void Cuts::writeDssKeywords(tip::Header & header) const {

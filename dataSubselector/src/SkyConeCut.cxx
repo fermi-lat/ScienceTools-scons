@@ -79,6 +79,19 @@ bool Cuts::SkyConeCut::operator==(const CutBase & arg) const {
    }
 }
 
+bool Cuts::SkyConeCut::supercedes(const CutBase & cut) const {
+   if (cut.type() != "SkyCone") {
+      return false;
+   }
+   SkyConeCut & coneCut = 
+      dynamic_cast<SkyConeCut &>(const_cast<CutBase &>(cut));
+   double separation = m_coneCenter.difference(coneCut.m_coneCenter)*180./M_PI;
+   if (m_radius < coneCut.m_radius - separation) {
+      return true;
+   }
+   return false;
+}
+
 void Cuts::SkyConeCut::
 getKeyValues(std::string & type, std::string & unit,
              std::string & value, std::string & ref) const {

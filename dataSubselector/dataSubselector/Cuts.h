@@ -197,6 +197,7 @@ public:
       virtual bool accept(const std::map<std::string, double> & params) const;
       virtual bool operator==(const CutBase & rhs) const;
       virtual CutBase * clone() const {return new SkyConeCut(*this);}
+      virtual bool supercedes(const CutBase &) const;
 
       double ra() const {return m_ra;}
       double dec() const {return m_dec;}
@@ -221,9 +222,11 @@ private:
    unsigned int Cuts::parseColname(const std::string & colname,
                                    std::string & col) const;
 
-   bool hasCut(CutBase * newCut) const;
+   bool hasCut(const CutBase * newCut) const;
 
-   unsigned int find(CutBase * cut) const;
+   unsigned int find(const CutBase * cut) const;
+
+   unsigned int addCut(CutBase * newCut);
 
 };
 
