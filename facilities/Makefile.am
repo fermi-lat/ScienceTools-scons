@@ -9,3 +9,5 @@
 AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = facilities src
+
+EXTRA_DIST = config
