@@ -19,6 +19,8 @@
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/../src/LatSc.h"
 
+using latResponse::irfsFactory;
+
 void help();
 
 int main(int argn, char * argc[]) {
@@ -92,12 +94,12 @@ int main(int argn, char * argc[]) {
 
 // Allow for multiple IRFs.
    std::vector<latResponse::Irfs *> respPtrs;
-   latResponse::IrfsFactory irfsFactory;
+//   latResponse::IrfsFactory irfsFactory;
    if (useCombined) {
-      respPtrs.push_back(irfsFactory.create("Glast25::Combined"));
+      respPtrs.push_back(irfsFactory().create("Glast25::Combined"));
    } else { // use Front & Back
-      respPtrs.push_back(irfsFactory.create("Glast25::Front"));
-      respPtrs.push_back(irfsFactory.create("Glast25::Back"));
+      respPtrs.push_back(irfsFactory().create("Glast25::Front"));
+      respPtrs.push_back(irfsFactory().create("Glast25::Back"));
    }
 
 // Generate the events and spacecraft data.
