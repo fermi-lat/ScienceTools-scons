@@ -103,54 +103,6 @@ namespace table {
   }
 
   // getCell overloads.
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, double & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, float & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, char & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed char & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed short & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed int & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, signed long & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned char & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned short & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
-  void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const {
-    getCellGeneric(field_index, record_index, value);
-  }
-
   void FitsTabularData::getCell(FieldIndex_t field_index, Index_t record_index, Index_t src_begin, Index_t src_end,
     bool * dest_begin) const {
     getCellGeneric(field_index, record_index, src_begin, src_end, dest_begin);

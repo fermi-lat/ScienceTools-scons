@@ -33,24 +33,6 @@ namespace table {
 
       virtual Index_t getFieldNumElements(FieldIndex_t field_index) const = 0;
 
-      /** \brief Get a value from the current tabular data object.
-          \param field_index The index of the field (column) to get.
-          \param record_index The index whose value to get.
-          \param value The output value.
-      */
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, bool & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, double & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, float & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, char & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed char & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed short & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed int & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, signed long & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned char & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned short & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned int & value) const = 0;
-      virtual void getCell(FieldIndex_t field_index, Index_t record_index, unsigned long & value) const = 0;
-
       /** \brief Get one or more values from the current tabular data object.
           \param field_index The index of the field (column) to get.
           \param record_index The record index (row number) whose value to get.

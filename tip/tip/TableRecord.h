@@ -194,7 +194,7 @@ namespace table {
   inline void TableCell::get(T & value) const {
     if (m_field_index < 0)
       const_cast<FieldIndex_t &>(m_field_index) = m_record.getTabularData()->getFieldIndex(m_field);
-    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), value);
+    m_record.getTabularData()->getCell(m_field_index, m_record.getIndex(), 0, 1, &value);
   }
 
   template <typename T>
