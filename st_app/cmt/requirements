@@ -9,6 +9,6 @@ use STpolicy *
 use hoops *
 
 apply_pattern ST_library option=-no_share
+
 private
-
-
+application st_app_main st_app_main/*.cxx
