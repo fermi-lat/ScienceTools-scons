@@ -1,6 +1,6 @@
 /**
  * @file Simulator.cxx
- * @brief Implementation for the interface class to FluxSvc::FluxMgr for
+ * @brief Implementation for the interface class to flux::FluxMgr for
  * generating LAT photon events.
  * @author J. Chiang
  * $Header$
@@ -10,21 +10,30 @@
 #include <iostream>
 #include <algorithm>
 
-#include "FluxSvc/../src/EventSource.h"
-#include "FluxSvc/../src/CompositeSource.h"
-#include "FluxSvc/../src/SpectrumFactoryTable.h"
-#include "FluxSvc/../src/FluxMgr.h"
-#include "FluxSvc/ISpectrumFactory.h"
+// #include "FluxSvc/../src/EventSource.h"
+// #include "FluxSvc/../src/CompositeSource.h"
+// #include "FluxSvc/../src/SpectrumFactoryTable.h"
+// #include "FluxSvc/../src/FluxMgr.h"
+// #include "FluxSvc/ISpectrumFactory.h"
+
+#include "flux/EventSource.h"
+#include "flux/../src/CompositeSource.h"
+#include "flux/SpectrumFactoryTable.h"
+#include "flux/FluxMgr.h"
+#include "flux/ISpectrumFactory.h"
 
 #include "latResponse/Irfs.h"
 
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
+#include "observationSim/Roi.h"
 #include "LatSc.h"
 
 #include "src/MapSpectrum.h"
-#include "FluxSvc/../src/SpectrumFactory.h"
+//#include "FluxSvc/../src/SpectrumFactory.h"
+#include "flux/SpectrumFactory.h"
+
 static SpectrumFactory<MapSpectrum> factory;
 const ISpectrumFactory& MapSpectrumFactory = factory;
 
@@ -144,7 +153,8 @@ void Simulator::listSpectra() const {
 
 void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
                            latResponse::Irfs &response, Spacecraft *spacecraft,
-                           bool useSimTime, EventContainer *allEvents) {
+                           bool useSimTime, EventContainer *allEvents, 
+                           Roi *inAcceptanceCone) {
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
 
@@ -172,10 +182,12 @@ void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData,
             if (allEvents != 0) 
                allEvents->addEvent(m_newEvent, response, spacecraft, 
                                    false, true);
-            if (events.addEvent(m_newEvent, response, spacecraft)) {
-               m_numEvents++;
+            if (inAcceptanceCone == 0 || (*inAcceptanceCone)(m_newEvent)) {
+               if (events.addEvent(m_newEvent, response, spacecraft)) {
+                  m_numEvents++;
 //                if (!m_useSimTime && m_maxNumEvents/20 > 0 &&
 //                    m_numEvents % (m_maxNumEvents/20) == 0) std::cerr << ".";
+               }
             }
          }
 // EventSource::event(...) does not generate a pointer to a new object

@@ -7,7 +7,8 @@
  */
 
 #include "astro/EarthCoordinate.h"
-#include "FluxSvc/../src/GPS.h"
+//#include "FluxSvc/../src/GPS.h"
+#include "flux/GPS.h"
 #include "LatSc.h"
 
 namespace {

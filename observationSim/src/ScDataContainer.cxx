@@ -12,8 +12,11 @@
 
 #include "astro/EarthCoordinate.h"
 
-#include "FluxSvc/../src/EventSource.h"
-#include "FluxSvc/../src/GPS.h"
+// #include "FluxSvc/../src/EventSource.h"
+// #include "FluxSvc/../src/GPS.h"
+
+#include "flux/EventSource.h"
+#include "flux/GPS.h"
 
 #include "observationSim/ScDataContainer.h"
 

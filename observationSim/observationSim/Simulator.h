@@ -23,6 +23,7 @@ namespace observationSim {
 
 class EventContainer;
 class ScDataContainer;
+class Roi;
 
 /**
  * @class Simulator
@@ -91,9 +92,11 @@ public:
                        ScDataContainer &scData, 
                        latResponse::Irfs &response,
                        Spacecraft *spacecraft, 
-                       EventContainer *allEvents=0) {
+                       EventContainer *allEvents=0,
+                       Roi *roi=0) {
       m_simTime = simulationTime;
-      makeEvents(events, scData, response, spacecraft, true, allEvents);
+      makeEvents(events, scData, response, spacecraft, true, 
+                 allEvents, roi);
    }
 
    /// Generate a specified number of events.
@@ -102,11 +105,13 @@ public:
                        ScDataContainer &scData, 
                        latResponse::Irfs &response,
                        Spacecraft *spacecraft,
-                       EventContainer *allEvents=0) {
+                       EventContainer *allEvents=0,
+                       Roi *roi=0) {
       m_maxNumEvents = numberOfEvents;
 //       std::cout << "Number of events to generate: "
 //                 << m_maxNumEvents << std::endl;
-      makeEvents(events, scData, response, spacecraft, false, allEvents);
+      makeEvents(events, scData, response, spacecraft, false, 
+                 allEvents, roi);
    }
 
 private:
@@ -136,7 +141,7 @@ private:
 
    void makeEvents(EventContainer &, ScDataContainer &, 
                    latResponse::Irfs &, Spacecraft *spacecraft,
-                   bool useSimTime, EventContainer *allEvents);
+                   bool useSimTime, EventContainer *allEvents, Roi *roi);
 
 //   void fluxLoad();
 
