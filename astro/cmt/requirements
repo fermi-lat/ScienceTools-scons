@@ -1,6 +1,6 @@
 package astro
 
-version v1r2	
+version v1r3	
 #$Id$
 author  T. Burnett <tburnett@u.washington.edu>
 
@@ -43,5 +43,7 @@ apply_pattern astro_package_test
 
 # this is the test program from G. Tosti
 # application orbit test/orbit/Orbit.cxx 
+
+#application testHTM test/htm/*.cxx
 
 

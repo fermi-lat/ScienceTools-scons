@@ -4,6 +4,7 @@
   Package coordinators: T.Burnett
 
 @verbatim
+  v1r3    22-dec-04 THB New class SkyStat to do statistics over a SkyFunction. 
   v1r2    11-nov-04 THB added access to GPS history. Other changes. 
   v1r1    18-jul-04 THB add static JulianDate::missionStart() to return 01-jan-01 00:00. 
   v1r0p5  11-jun-04 THB provide dummy function for SolSystem::ephi_planet to satisfy external
