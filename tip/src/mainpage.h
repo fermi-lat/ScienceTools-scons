@@ -27,7 +27,7 @@
 
   // Example 1:
   using namespace tip;
-  Table * my_table = IFileSvc::instance().editTable("my_file.fits", "LAT_Event_Sum");
+  Table * my_table = IFileSvc::instance().editTable("my_file.fits", "LAT_Event_Summary");
 \endverbatim
 
     Table is the name of the main tip class clients need to worry about.
@@ -108,7 +108,7 @@
     // Get the current value:
     double ph_time_dbl = ph_time_cell.get();
 
-    // Do something useful with the value here ...
+    // Do something useful with ph_time_dbl's value here ...
   }
 \endverbatim
 
@@ -135,7 +135,7 @@
     ph_time_dbl -= offset;
 
     // Write it back to the table:
-    (*itor)["ph_time"].set(offset);
+    (*itor)["ph_time"].set(ph_time_dbl);
   }
 \endverbatim
 

@@ -14,7 +14,7 @@ int main() {
   try {
     // Example 1:
     using namespace tip;
-    Table * my_table = IFileSvc::instance().editTable("my_file.fits", "LAT_Event_Sum");
+    Table * my_table = IFileSvc::instance().editTable("day023.fits", "LAT_Event_Summary");
   
     // Example 2:
     Header & header = my_table->getHeader();
@@ -46,7 +46,7 @@ int main() {
       // Get the current value:
       double ph_time_dbl = ph_time_cell.get();
   
-      // Do something useful with the value here ...
+      // Do something useful with ph_time_dbl's value here ...
     }
   
     // Example 5:
@@ -66,7 +66,7 @@ int main() {
       ph_time_dbl -= offset;
   
       // Write it back to the table:
-      (*itor)["ph_time"].set(offset);
+      (*itor)["ph_time"].set(ph_time_dbl);
     }
 
   } catch (const std::exception & x) {
