@@ -4,6 +4,8 @@
 
 namespace st_graph {
 
+  ValueSet::ValueSet(): m_values(), m_spreads() {}
+
   ValueSet::ValueSet(const std::vector<double> & values, const std::vector<double> & spreads): m_values(values),
     m_spreads(spreads) {
     // Make sure by the end of the constructor, m_values and m_spreads have the same number of items.
@@ -21,4 +23,8 @@ namespace st_graph {
 
   const std::vector<double> & ValueSet::getSpreads() const { return m_spreads; }
   
+  std::vector<double>::size_type ValueSet::size() const { return m_values.size(); }
+
+  bool ValueSet::empty() const { return m_values.empty(); }
+
 }
