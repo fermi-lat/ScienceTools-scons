@@ -3,8 +3,11 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
-   v7r3p1   15-Jan-04    JC    refactor and rename findSrcs
-   v7r3     14-Jan-04    JC    reorganize, using sane rather than vice-versa
+   v7r3p2   17-Feb-05    JC    use gtobssim, gtorbsim in ObsSim gui;
+                               arccos reimplementation in celgal.Angdist by
+                               Jean Ballet
+   v7r3p1   15-Jan-05    JC    refactor and rename findSrcs
+   v7r3     14-Jan-05    JC    reorganize, using sane rather than vice-versa
    v7r2     14-Dec-04    JC    add ObsSim.py GUI
    v7r1p1   27-Nov-04    JC    add -no_auto_imports to requirements
    v7r1     16-Nov-04    JC    ModelEditor upgrades: 3EG extraction, 
