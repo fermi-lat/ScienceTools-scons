@@ -30,7 +30,7 @@ namespace st_stream {
     else setDebugMode(false);
   }
 
-  StreamFormatter::~StreamFormatter() {}
+  StreamFormatter::~StreamFormatter() throw() {}
 
   void StreamFormatter::setMethod(const std::string & method_name) {
     m_method_name = method_name;

@@ -31,7 +31,7 @@ namespace st_stream {
       */
       StreamFormatter(const std::string & class_name, const std::string & method_name, unsigned int default_chat_level);
 
-      virtual ~StreamFormatter();
+      virtual ~StreamFormatter() throw();
 
       /** \brief Return the name of the method.
       */
