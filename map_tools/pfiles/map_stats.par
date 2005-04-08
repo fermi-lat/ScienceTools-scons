@@ -1,0 +1,16 @@
+# $Header$
+#---------------------------------------------------------------------------------------
+clobber,b,a,no,,,Overwrite existing output file?:
+chatter,  i, h,   2,0,4 , , "Chattiness of output"
+debug, b, h, no,,,Debugging mode activated
+
+mode,     s, a,  "h",   , ,""
+# uncomment the following for interactive/replacement mode
+#mode,s,a,"ql",,,
+#
+#---------------------------------------------------------------------------------------
+#
+#infile,f,a,"../output/exposure_DC1.fits",,,"input file name:"
+infile,f,a,"",,,"input file name:"
+table,s,h,"",,,"Table name"
+filter,s,h,,,,"filter expression:"
