@@ -1,8 +1,10 @@
 # $Header$
 #---------------------------------------------------------------------------------------
-clobber,b,a,no,,,Overwrite existing output file?:
-chatter,i,a,10,,,
-#mode,     s, a,  "h",   , ,""
+clobber,b,a,yes,,,Overwrite existing output file?:
+chatter,  i, h,   2,0,4 , , "Chattiness of output"
+debug, b, h, no,,,Debugging mode activated
+
+mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
 mode,s,a,"ql",,,
 #
@@ -10,30 +12,18 @@ mode,s,a,"ql",,,
 #
 #infile,f,a,"$(FLUXROOT)/sources/gas_gal.fits",,,"input file name:"
 infile,f,a,"",,,"input file name:"
-table,s,a,"",,,"Table name"
+table,s,h,"",,,"Table name"
 #outfile,f,a,"gas_gal_copy.fits",,,"Name of the  output file:"
 outfile,f,a,"",,,"Name of the  output file:"
-filter,s,a,,,,"filter expression:"
-ra_name,s,a,"FT1Ra",,,"name of the RA field"
-dec_name,s,a,"FT1Dec",,,"name of the DEC field"
+filter,s,h,,,,"filter expression:"
 #---------------------------------------------------------------------------------------
 #Parameters for Spatial binning
 #
 npix,i,h,0,,,Total pixel size of the image in each axis: (0 for all sky auto)
 npixy,i,h,0,,,Total pixel size of the image in y axis: (0 for automatic)
 pixelsize,r,a,1,,,Image size [degrees/pixel]
-imgsize,r,a,1,,,Image size [degrees/pixel]
-imgsizey,r,a,1,,,Image size [degrees/pixel]
 xref,r,a,0,,,RA/L at the image center:
 yref,r,a,0,,,DEC/B at the image center:
 rot,r,a,0,,,Rotation angle of Y-axis relative to the physical coordinate:
-projtype,s,a,"CAR","CAR|AIT",,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
-uselb,b,a,no,,,use galactic coords:
-#---------------------------------------------------------------------------------------
-#Parameters for layers
-layers,i,a,1,,,layers
-emin,r,a,31.6227766, 30, 0, Minimium energy
-eratio,r,a,3.16227766, 2, 0, ratio betwee energies
-#---------------------------------------------------------------------------------------
-ra,r,a,0,,,
-dec,r,a,0,,,
+projtype,s,a,"AIT",CAR|AIT,,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
+uselb,b,a,yes,,,use galactic coords:
