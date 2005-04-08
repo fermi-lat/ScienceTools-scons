@@ -81,10 +81,12 @@ namespace optimizers {
       if (rcode == 1) { /// request for a function value
 	try {m_stat->setFreeParamValues(paramVals);}
 	catch (OutOfBounds e) {
+	  iv[1] = 1;  // Tell it to try a shorter step
 	  std::cerr << "Drmngb::find_min error" << std::endl;
 	  std::cerr << e.what() << std::endl;
 	  std::cerr << "Value " << e.value() << " is not between "
 		    << e.minValue() << " and " << e.maxValue() << std::endl;
+	  continue;  // Try again
 	}
 	catch (Exception e) {
 	  std::cerr << e.what() << std::endl;
