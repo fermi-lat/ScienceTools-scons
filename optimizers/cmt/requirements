@@ -16,9 +16,6 @@ apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern package_stamps
 
-use SwigPolicy v*
-apply_pattern swig_module name="pyOpt"
-
 path_remove PYTHONPATH optimizers
 path_append PYTHONPATH $(OPTIMIZERSROOT)/$(BINDIR)
 #path_append PYTHONPATH $(OPTIMIZERSROOT)/python
@@ -34,3 +31,7 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library optimizers -no_share $(source) *.c
 
 application test_optimizers test/main.cxx
+
+use SwigPolicy v*
+apply_pattern swig_module name="pyOpt"
+

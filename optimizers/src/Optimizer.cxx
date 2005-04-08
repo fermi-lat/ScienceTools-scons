@@ -17,7 +17,7 @@
 
 namespace optimizers {
 
-const std::vector<double> & Optimizer::getUncertainty(void) {
+const std::vector<double> & Optimizer::getUncertainty(bool) {
    double eps(1e-7);
    std::valarray<double> hess;
    computeHessian(hess, eps);
@@ -71,8 +71,12 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
    for (int irow = 0; irow < npars; irow++) {
       std::vector<double> new_params = params;
       double delta;
-      assert(params[irow] != 0);  // not sure what to do in this case
-      delta = params[irow]*eps;
+//      assert(params[irow] != 0);  // not sure what to do in this case
+      if (params[irow] == 0) {
+         delta = eps;
+      } else {
+         delta = params[irow]*eps;
+      }
       new_params[irow] = params[irow] + delta;
       m_stat->setFreeParamValues(new_params);
       std::vector<double> derivs;

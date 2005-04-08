@@ -33,8 +33,11 @@ namespace optimizers {
     return m_distance;
   }
 
-  const std::vector<double> & Minuit::getUncertainty(void) {
-    return m_uncertainty;
+  const std::vector<double> & Minuit::getUncertainty(bool useBase) {
+     if (useBase) {
+        Optimizer::getUncertainty(useBase);
+     }
+     return m_uncertainty;
   }
 
   void Minuit::find_min(int verbose, double tol, int tolType) {

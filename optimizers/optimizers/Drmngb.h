@@ -57,7 +57,7 @@ namespace optimizers {
 
     //! One-sigma confidence regions based on Hessian, assuming 
     // that this function is a likelihood
-    virtual std::vector<double> & getUncertainty(void);
+    virtual std::vector<double> & getUncertainty(bool useBase=false);
 
     //! Switch on the covariance matrix calculation. 
     // Save time by not doing this, if covariance is not needed.
