@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r2   08-Apr-05   JC   derivative fixes; add option to use 
+                            Optimizer::getUncertainty or subclass's
     v2r1   15-Feb-05   JC   make Function::clone pure virtual; check parameter
                             value to be within bounds for xml ingest
     v2r0p4 09-Feb-05   JC   allow some parameters to be always fixed
