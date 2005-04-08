@@ -34,7 +34,7 @@ public:
     
    virtual ~Statistic() {}
 
-   virtual double value() const  = 0;
+   virtual double value() const = 0;
 
    virtual void getFreeDerivs(std::vector<double> &derivs) const = 0;
 

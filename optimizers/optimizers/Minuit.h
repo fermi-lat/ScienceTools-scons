@@ -90,6 +90,7 @@ namespace optimizers {
 	   double* xval, int* iflag, void* futil);
 } // namespace optimizers
 
+#ifndef SWIG
 // The Fortran subroutines which make up the Minuit API
 extern "C" {
   //! Initialize Minuit with I/O unit numbers for in, out, save
@@ -130,6 +131,7 @@ extern "C" {
   //! Utility function used by Minuit: interactive or batch mode
   logical intrac_(double *);
 }
+#endif // SWIG
 
 #endif // optimizers_MINUIT_H
 

@@ -16,6 +16,13 @@ apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern package_stamps
 
+use SwigPolicy v*
+apply_pattern swig_module name="pyOpt"
+
+path_remove PYTHONPATH optimizers
+path_append PYTHONPATH $(OPTIMIZERSROOT)/$(BINDIR)
+#path_append PYTHONPATH $(OPTIMIZERSROOT)/python
+
 private
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "

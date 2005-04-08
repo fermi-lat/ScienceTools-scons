@@ -16,15 +16,15 @@ SWIG = ${SWIG_DIR}/bin/swig -w401 -w402
 CFLAGS = -g -fPIC
 
 INCLUDE = -I$(OPTIMIZERSROOT)\
-	-I$(XMLROOT)\
+	-I$(XMLBASEROOT)\
 	-I$(FACILITIESROOT)\
 	-I$(F2CROOT)\
 	-I$(GLAST_EXT)/cfitsio/v2470/include\
 	-I$(GLAST_EXT)/CLHEP/1.8.0.0/include\
 	-I$(GLAST_EXT)/xerces/2.6.0/include
 
-LIBS = -L../$(BINDIR)/ -loptimizersLib\
-	-L$(XMLROOT)/$(BINDIR) -lxml\
+LIBS = -L../$(BINDIR)/ -loptimizers\
+	-L$(XMLBASEROOT)/$(BINDIR) -lxmlBase\
 	-L$(FACILITIESROOT)/$(BINDIR) -lfacilities\
 	-L$(GLAST_EXT)/cfitsio/v2470/lib -lcfitsio\
 	-L$(GLAST_EXT)/CLHEP/1.8.0.0/lib -lCLHEP\
@@ -38,7 +38,7 @@ ${module_name}: ${module_base}.o
 	${CXX} -shared $< ${LIBS} -o ${module_name}
 
 ${module_base}.o: ${module_base}.cxx
-	${CXX} -c ${CFLAGS} ${INCLUDE} ${PYINCLUDE} $<
+	${CXX} -c ${CFLAGS} ${INCLUDE} -I${PYINCLUDE} $<
 
 ${module_base}.cxx: ${module_base}.i
 	${SWIG} -runtime -python -c++ -o ${module_base}.cxx ${module_base}.i

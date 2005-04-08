@@ -70,8 +70,14 @@ double PowerLaw::derivByParam(Arg &xarg, const std::string &paramName) const {
    
    switch (iparam) {
    case Prefactor:
-      return value(xarg)/my_params[Prefactor].getTrueValue()
-         *my_params[Prefactor].getScale();
+      if (my_params[Prefactor].getTrueValue() != 0) {
+         return value(xarg)/my_params[Prefactor].getTrueValue()
+            *my_params[Prefactor].getScale();
+      } else {
+         return pow((x/my_params[Scale].getTrueValue()), 
+                    my_params[Index].getTrueValue())
+            *my_params[Prefactor].getScale();
+      }
       break;
    case Index:
       return value(xarg)*log(x/my_params[Scale].getTrueValue())

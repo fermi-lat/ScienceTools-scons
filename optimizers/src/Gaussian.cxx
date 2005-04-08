@@ -102,8 +102,10 @@ double Gaussian::derivByParam(Arg &xarg,
    
    switch (iparam) {
    case Prefactor:
-      return value(xarg)/my_params[Prefactor].getTrueValue()
-         *my_params[Prefactor].getScale();
+      return my_params[Prefactor].getScale()/sqrt(2.*M_PI)
+         /my_params[Sigma].getTrueValue()
+         *exp(-pow( (x - my_params[Mean].getTrueValue())
+                    /my_params[Sigma].getTrueValue(), 2 )/2.);
       break;
    case Mean:
       return value(xarg)*(x - my_params[Mean].getTrueValue())

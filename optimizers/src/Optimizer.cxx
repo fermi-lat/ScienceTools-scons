@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <cmath>
 #include <cassert>
 #include <sstream>
 

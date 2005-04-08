@@ -84,7 +84,8 @@ double BrokenPowerLaw::derivByParam(Arg &xarg,
    
    switch (iparam) {
    case Prefactor:
-      return value(xarg)/my_params[Prefactor].getTrueValue()
+      return pow((x/my_params[BreakValue].getTrueValue()), 
+                 my_params[Index1].getTrueValue())
          *my_params[Prefactor].getScale();
       break;
    case Index1:

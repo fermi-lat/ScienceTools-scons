@@ -55,9 +55,9 @@ namespace optimizers {
     void find_min(int verbose = 0, double tol = 1e-8, 
 		  int tolType = RELATIVE);
 
-//     //! One-sigma confidence regions based on Hessian, assuming 
-//     // that this function is a likelihood
-//     virtual std::vector<double> & getUncertainty(void);
+    //! One-sigma confidence regions based on Hessian, assuming 
+    // that this function is a likelihood
+    virtual std::vector<double> & getUncertainty(void);
 
     //! Switch on the covariance matrix calculation. 
     // Save time by not doing this, if covariance is not needed.
