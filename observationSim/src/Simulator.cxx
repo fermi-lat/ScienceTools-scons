@@ -68,11 +68,13 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    m_fluxMgr = new FluxMgr(fileList);
    m_fluxMgr->setExpansion(1.);    // is this already the default?
 
+// Set the start of the simulation time in GPS:
+   GPS::instance()->time(m_absTime);
+
    if (pointingHistory != "none" && pointingHistory != "") {
 // Use pointing history file.
       facilities::Util::expandEnvVar(&pointingHistory);
       if (st_facilities::Util::fileExists(pointingHistory)) {
-         setRocking(5, 0);
          setPointingHistoryFile(pointingHistory);
       } else {
          if (print_output()) {
@@ -85,6 +87,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    } else {
 // Use the default rocking strategy.
       setRocking();
+
    }
 
 // Set the LAT sphere cross-sectional area.
@@ -190,8 +193,10 @@ void Simulator::makeEvents(EventContainer &events,
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
 
+   if (!m_usePointingHistory) {
 // Insert the very first entry in the scData file.
-   scData.addScData(m_absTime, spacecraft);
+      scData.addScData(m_absTime, spacecraft);
+   }
 
 // Enclose loop in outer try block, catching a GPS-thrown exception when
 // time exceeds pointing history database.
@@ -217,7 +222,9 @@ void Simulator::makeEvents(EventContainer &events,
 
             std::string name = m_newEvent->fullTitle();
             if (name.find("TimeTick") != std::string::npos) {
-               scData.addScData(m_newEvent, spacecraft);
+               if (!m_usePointingHistory) {
+                  scData.addScData(m_newEvent, spacecraft);
+               }
             } else {
                if (allEvents != 0) {
                   allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
@@ -233,14 +240,18 @@ void Simulator::makeEvents(EventContainer &events,
 
          } else if (m_useSimTime) {
 // No more events to process for this observation window, so advance
-// to the end of the window, updating all of the time accumlators.
+// to the end of the window, updating all of the time accumulators.
             m_absTime += (m_simTime - m_elapsedTime);
             m_fluxMgr->pass(m_simTime - m_elapsedTime);
             m_elapsedTime = m_simTime;
          }
       } // while (!done())
    } catch (std::exception & eObj) {
-      if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")) {
+      if (!st_facilities::Util::expectedException(eObj,"Time out of Range!")
+// This latter check is an ugly kluge necessary because one does not (yet)
+// have access to the start and stop times of the pointing history via
+// astro's GPS:
+          || (m_useSimTime && m_elapsedTime < 0.9*m_simTime)) {
          throw;
       }
    }

@@ -14,6 +14,7 @@
 
 #include "CLHEP/Geometry/Vector3D.h"
 
+#include "astro/GPS.h"
 #include "astro/SkyDir.h"
 
 #include "flux/FluxMgr.h"
@@ -84,8 +85,11 @@ public:
    ~Simulator();
 
    /// Set the pointing history file.
-   void setPointingHistoryFile(const std::string &filename)
-      {m_fluxMgr->setPointingHistoryFile(filename);}   
+   void setPointingHistoryFile(const std::string &filename) {
+      m_fluxMgr->setRockType(GPS::HISTORY, 0);
+      m_fluxMgr->setPointingHistoryFile(filename);
+      m_usePointingHistory = true;
+   }   
 
    /// Specify the rocking strategy from among those defined by
    /// flux::GPS::RockType.  
@@ -93,8 +97,10 @@ public:
    ///        The default value of 3 corresponds to step-rocking, once
    ///        per orbit.
    /// @param angle Rocking angle in degrees.
-   void setRocking(int rockType = 3, double angle = 35.)
-      {m_fluxMgr->setRockType(rockType, angle);}
+   void setRocking(int rockType = 3, double angle = 35.) {
+      m_fluxMgr->setRockType(rockType, angle);
+      m_usePointingHistory = false; 
+   }
 
    /// List the available sources by xml name for each file in the fileList.
    void listSources() const;
@@ -169,6 +175,8 @@ private:
    bool m_useSimTime;
 
    double m_maxSimTime;
+
+   bool m_usePointingHistory;
 
    void init(const std::string &sourceName, 
              const std::vector<std::string> &fileList,

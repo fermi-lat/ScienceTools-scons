@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r7   11-Apr-05   JC   Fixes for using a pointing history file if it
+                            does not start at time = 0.
     v5r6p7 06-Apr-05   JC   Set ONTIME and TELAPSE in GTI extension according
                             to FT1 definition.
     v5r6p6 04-Apr-05   JC   provide default strings for ft*.tpl keywords not

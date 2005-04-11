@@ -149,7 +149,6 @@ void ObsSim::checkOutputFiles() {
    }
 }
 
-
 void ObsSim::setRandomSeed() {
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
@@ -292,7 +291,9 @@ void ObsSim::generateData() {
                                   spacecraft);
    }
 
+   if (writeScData) {
 // Pad with one more row of ScData.
-   double time = scData.simTime() + 30.;
-   scData.addScData(time, spacecraft);
+      double time = scData.simTime() + 30.;
+      scData.addScData(time, spacecraft);
+   }
 }
