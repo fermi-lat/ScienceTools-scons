@@ -55,7 +55,7 @@ CutController::CutController(st_app::AppParGroup & pars,
    if (pars["erescut"]) {
       addRangeCut("CALIB_VERSION[3]", "dimensionless", 1, 1, 3);
    }
-   updateGti(eventFile);
+//   updateGti(eventFile);
 }
 
 bool CutController::accept(tip::ConstTableRecord & row) const {

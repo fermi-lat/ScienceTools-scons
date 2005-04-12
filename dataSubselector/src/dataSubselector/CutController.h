@@ -46,6 +46,8 @@ public:
       m_cuts.writeDssKeywords(header);
    }
 
+   void updateGti(const std::string & filename) const;
+
 protected:
 
    CutController::CutController(st_app::AppParGroup & pars,
@@ -62,8 +64,6 @@ private:
                     double minVal, double maxVal, unsigned int indx=0);
 
    bool CutController::withinCoordLimits(double ra, double dec) const;
-
-   void updateGti(const std::string & filename) const;
 
 };
 

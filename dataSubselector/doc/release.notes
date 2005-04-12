@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r4    12-Apr-05   JC   fix bug whereby the input file GTI was modified
     v3r3p2  06-Apr-05   JC   have ONTIME and TELAPSE keywords reflect
                              GTI contents
     v3r3p1  04-Apr-05   JC   update checksum keywords

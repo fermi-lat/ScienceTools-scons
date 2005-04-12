@@ -106,6 +106,7 @@ void DataFilter::run() {
    CutController * cuts = CutController::instance(m_pars, m_inputFile);
    copyTable("EVENTS", cuts);
    copyTable("gti");
+   cuts->updateGti(m_outputFile);
    unsigned int verbosity = m_pars["chatter"];
    if (verbosity > 1) {
       std::cout << "Done." << std::endl;
@@ -117,18 +118,18 @@ void DataFilter::run() {
 
 void DataFilter::copyTable(const std::string & extension,
                            CutController * cuts) const {
-   tip::Table * inputTable 
-      = tip::IFileSvc::instance().editTable(m_inputFile, extension);
+   const tip::Table * inputTable 
+      = tip::IFileSvc::instance().readTable(m_inputFile, extension);
    
    tip::Table * outputTable 
       = tip::IFileSvc::instance().editTable(m_outputFile, extension);
 
    outputTable->setNumRecords(inputTable->getNumRecords());
 
-   tip::Table::Iterator inputIt = inputTable->begin();
+   tip::Table::ConstIterator inputIt = inputTable->begin();
    tip::Table::Iterator outputIt = outputTable->begin();
 
-   tip::TableRecord & input = *inputIt;
+   tip::ConstTableRecord & input = *inputIt;
    tip::Table::Record & output = *outputIt;
 
    long npts(0);
