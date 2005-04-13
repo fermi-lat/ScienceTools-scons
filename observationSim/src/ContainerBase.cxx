@@ -51,7 +51,6 @@ void ContainerBase::writeDateKeywords(tip::Extension * table,
       header["DATE-END"].set(date_stop.getGregorianDate());
    } catch (...) {
    }
-   double duration = stop_time - start_time;
    try {
       header["TSTART"].set(start_time);
       header["TSTOP"].set(stop_time);
