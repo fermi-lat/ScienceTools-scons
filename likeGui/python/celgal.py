@@ -10,6 +10,7 @@ $Header$
 try:
     from numarray import *
 except ImportError:
+    import math
     from math import *
     arcsin = asin
     arccos = acos

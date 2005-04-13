@@ -34,7 +34,7 @@ class SourceList(object):
             or particles[0].getAttribute('name').encode('ascii') != 'gamma'):
             return False
         return True
-    def extract(self, outputFile, roiCone, fluxLimit=1e-2):
+    def extract(self, outputFile, roiCone, fluxLimit=1e-2, useDiffuse=True):
         ra0, dec0, radius = roiCone
         ds9File = ds9_region_file('ds9.reg', fk5=1)
         ds9File.setSR(ra0, dec0, radius)
@@ -43,8 +43,9 @@ class SourceList(object):
         outfile.write('<source_library title="source library">\n')
         doc = minidom.parse(self.inputFile)
         srcList = doc.getElementsByTagName('source')
-        outfile.write(EGDiffuse().toxml() + '\n')
-        outfile.write(GalDiffuse().toxml() + '\n')
+        if useDiffuse:
+            outfile.write(EGDiffuse().toxml() + '\n')
+            outfile.write(GalDiffuse().toxml() + '\n')
         for src in srcList[:-1]:
             if self._isPtSrc(src):
                 dir = src.getElementsByTagName('celestial_dir')[0]
