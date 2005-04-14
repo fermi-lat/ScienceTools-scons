@@ -132,6 +132,21 @@ class ds9_region_file:
                 file.write('physical;circle(%s, %s, %s) # color=red\n'
                            % self.SR)
 
+class DefaultValues(object):
+    def __init__(self, ra, dec, radius, flux, infile, outfile):
+        self.ra, self.dec, self.radius = ra, dec, radius
+        self.flux, self.infile, self.outfile = flux, infile, outfile
+    def set(self, dialogObject):
+        self.ra = dialogObject.ra.value()
+        self.dec = dialogObject.dec.value()
+        self.radius = dialogObject.radius.value()
+        self.flux = dialogObject.fluxLimit.value()
+        self.infile = dialogObject.infile.value()
+        self.outfile = dialogObject.filename.value()
+
+_defaults = DefaultValues(266.4, -28.9, 20, 0.01,
+                          _3EG_catalog, 'my_source_model')
+        
 class SourceRegionDialog(tkSimpleDialog.Dialog):
     def __init__(self, parent):
         self.parent = parent
@@ -140,21 +155,22 @@ class SourceRegionDialog(tkSimpleDialog.Dialog):
         dataFrame = Tkinter.Frame(self)
         dataFrame.pack(anchor=Tkinter.N, expand=Tkinter.YES, fill=Tkinter.X)
         self.title("Source Extraction Region")
-        self.ra = ParamDoubleEntry(parent, 'RA', 0, default=266.4)
-        self.dec = ParamDoubleEntry(parent, 'DEC', 1, default=-28.9)
-        self.radius = ParamDoubleEntry(parent, 'radius', 2, default=20)
+        self.ra = ParamDoubleEntry(parent, 'RA', 0, default=_defaults.ra)
+        self.dec = ParamDoubleEntry(parent, 'DEC', 1, default=_defaults.dec)
+        self.radius = ParamDoubleEntry(parent, 'radius', 2,
+                                       default=_defaults.radius)
         self.fluxLimit = ParamDoubleEntry(parent, 'flux limit', 3,
-                                          default=0.01)
-        flux_style_xmlFile = _3EG_catalog
+                                          default=_defaults.flux)
         self.infile = ParamFileEntry(parent, 'input file', 4,
-                                     default=flux_style_xmlFile)
+                                     default=_defaults.infile)
         self.filename = ParamFileEntry(parent, 'output file', 5,
-                                       default='my_source_model.xml')
+                                       default=_defaults.outfile)
     def apply(self):
         srcList = SourceList(self.infile.value())
         roiCone = (self.ra.value(), self.dec.value(), self.radius.value())
         srcList.extract(self.filename.value(), roiCone,
                         fluxLimit=self.fluxLimit.value())
+        _defaults.set(self)
     def ok(self, x=0):
         self.haveSources = 1
         self.withdraw()
