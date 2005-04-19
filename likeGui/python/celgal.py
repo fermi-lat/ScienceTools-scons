@@ -102,6 +102,7 @@ def dist(a, b):
     return Angdist(mu)*180./pi
 
 def SphCoords(u):
+    import math
     """Spherical coordinates in radians for a normalised 3Dvector u"""
     if abs(u[2]) < 1:
         theta_rad = math.asin(u[2])
