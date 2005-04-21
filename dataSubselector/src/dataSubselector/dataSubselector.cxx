@@ -39,7 +39,7 @@ public:
          m_pars.Save();
          setName("gtselect");
          setVersion(s_cvs_id);
-  } catch (std::exception & eObj) {
+      } catch (std::exception & eObj) {
          std::cerr << eObj.what() << std::endl;
          std::exit(1);
       } catch (...) {
