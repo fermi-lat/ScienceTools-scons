@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+25-apr-2005 v2r3p0 JP Add copyFile method to ITipFile and its subclasses, for
+                      copying whole files at a time.
 06-apr-2005 v2r2p2 JP Change code to eliminate compiler warnings on Windows.
 05-apr-2005 v2r2p1 JP Write floating-point keywords so they look like floating-point
                       values, even if they happen to convert to integer values. Some
