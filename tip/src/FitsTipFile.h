@@ -49,6 +49,12 @@ namespace tip {
       */
       virtual Table * editTable(const std::string & table_name);
 
+      /** \brief Copy the current file to a new file.
+          \param new_file_name The name of the new file to write.
+          \param clobber Flag determining whether to overwrite existing files.
+      */
+      void copyFile(const std::string & new_file_name, bool clobber = true) const;
+
       /** \brief Clone this object.
       */
       virtual ITipFile * clone() const;

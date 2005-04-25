@@ -387,7 +387,32 @@ namespace tip {
       // Clone the TipFile which points to another TipFile.
       std::auto_ptr<ITipFile> itip_file_p(tip_file_ptr_adopt.clone());
 
-      ReportExpected("TestFileManager::tipFileTest was able to construct and clone ITipFiles as expected");
+      ReportExpected("TestFileManager::tipFileTest was able to construct and clone ITipFiles");
+      
+      // Test copy-related methods.
+      remove("tipfile-copy.fits");
+
+      // Make a copy of the file, with no clobber. This should work since the file was removed above.
+      fits_file.copyFile("tipfile-copy.fits", false);
+
+      // Open the copy to make sure it can be opened. This will throw if it can't be done, and it will
+      // close the file when done.
+      FitsTipFile("tipfile-copy.fits");
+
+      try {
+        // Make a copy of the file, with no clobber. This should fail since the file exists.
+        fits_file.copyFile("tipfile-copy.fits", false);
+        ReportUnexpected("TestFileManager::tipFileTest copyFile did not throw exception when copying over an "
+          "existing file with clobber false.");
+      } catch (const TipException & x) {
+        ReportExpected("TestFileManager::tipFileTest copyFile threw exception when copying over an "
+          "existing file with clobber false.", x);
+      }
+
+      // Make a copy of the file, with default clobber (true). This should work.
+      fits_file.copyFile("tipfile-copy.fits");
+
+      ReportExpected("TestFileManager::tipFileTest was able to use an ITipFile to copy a file on disk as expected");
       
     } catch (const TipException & x) {
       ReportUnexpected("TestFileManager::tipFileTest caught unexpected exception", x);

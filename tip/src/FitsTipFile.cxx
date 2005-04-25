@@ -68,6 +68,22 @@ namespace tip {
     return IFileSvc::instance().editTable(getName(), table_name);
   }
 
+  void FitsTipFile::copyFile(const std::string & new_file_name, bool clobber) const {
+    std::string full_name;
+    if (clobber) full_name = "!";
+    full_name += new_file_name;
+    
+    fitsfile * new_fp = 0;
+    int status = 0;
+    fits_create_file(&new_fp, const_cast<char *>(full_name.c_str()), &status);
+    if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not create file " + new_file_name);
+
+    fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
+    int ignored_status = status;
+    fits_close_file(new_fp, &ignored_status);
+    if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
+  }
+
   ITipFile * FitsTipFile::clone() const { return new FitsTipFile(*this); }
 
   void FitsTipFile::openFile() {

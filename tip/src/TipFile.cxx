@@ -29,6 +29,8 @@ namespace tip {
 
   Table * TipFile::editTable(const std::string & table_name) { return m_itip_file->editTable(table_name); }
 
+  void TipFile::copyFile(const std::string & new_file_name, bool clobber) const { m_itip_file->copyFile(new_file_name, clobber); }
+
   ITipFile * TipFile::clone() const {
     // Pointer to be returned.
     ITipFile * itip_file = 0;

@@ -40,6 +40,12 @@ namespace tip {
       */
       virtual Table * editTable(const std::string & table_name) = 0;
 
+      /** \brief Copy the current file to a new file.
+          \param new_file_name The name of the new file to write.
+          \param clobber Flag determining whether to overwrite existing files.
+      */
+      virtual void copyFile(const std::string & new_file_name, bool clobber = true) const = 0;
+
       /** \brief Clone this object.
       */
       virtual ITipFile * clone() const = 0;
@@ -98,6 +104,12 @@ namespace tip {
           \param table_name The name of the table to open.
       */
       virtual Table * editTable(const std::string & table_name);
+
+      /** \brief Copy the current file to a new file.
+          \param new_file_name The name of the new file to write.
+          \param clobber Flag determining whether to overwrite existing files.
+      */
+      virtual void copyFile(const std::string & new_file_name, bool clobber = true) const;
 
       /** \brief Clone this object.
       */
