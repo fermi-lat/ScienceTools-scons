@@ -100,18 +100,20 @@ class PointSource:
         return self.ptsrc.toxml()
 
 class ds9_region_file:
-    def __init__(self, filename, fk5=0):
+    def __init__(self, filename, target=None, fk5=0):
         self.filename = filename
         self.fk5 = fk5
         self.SR = None
-        self.srcs = []
+        self.target = target
+        self.srcs = {}
     def addSrc(self, src):
+        name = src.getAttribute('name').encode()
         dir = src.getElementsByTagName('celestial_dir')[0]
-        self.srcs.append( (dir.getAttribute('ra').encode('ascii'),
-                           dir.getAttribute('dec').encode('ascii')) )
-    def addSource(self, src):
+        self.srcs[name] = ( dir.getAttribute('ra').encode('ascii'),
+                            dir.getAttribute('dec').encode('ascii') )
+    def addSource(self, srcName, src):
         ra, dec = `src.spatialModel.RA.value`, `src.spatialModel.DEC.value`
-        self.srcs.append( (ra, dec) )
+        self.srcs[srcName] = (ra, dec)
     def setSR(self, ra, dec, radius):
         self.SR = (ra, dec, radius)
     def write(self):
@@ -122,9 +124,13 @@ class ds9_region_file:
                    + 'fixed=0 source\n')
         for src in self.srcs:
             if self.fk5:
-                file.write('fk5;point(%s, %s) # point=circle\n' % src)
+                file.write('fk5;point(%s, %s) # point=circle' % self.srcs[src])
             else:
-                file.write('physical;point(%s, %s) # point=circle\n' % src)
+                file.write('physical;point(%s, %s) # point=circle' %
+                           self.srcs[src])
+            if src == self.target:
+                file.write(', color=red')
+            file.write('\n')
         if self.SR is not None:
             if self.fk5:
                 file.write('fk5;circle(%s, %s, %s) # color=red\n' % self.SR)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr//bin/env python
 """
 Prototype source model editor.
 
@@ -39,6 +39,7 @@ class RootWindow(Tk.Tk):
             import ds9
             try:
                 ds9.cd(os.path.abspath(os.curdir))
+                self.ds9Display = ds9Display(self)
             except RuntimeError:
                 try:
                     version = ds9.xpaget("version")
@@ -250,14 +251,16 @@ class ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
         self.add_command(label="Display sources", underline=0,
-                         command=ds9Display(root))
+                         command=root.ds9Display)
+#                         command=ds9Display(root))
         self.add_command(label="Import sources", underline=0,
                          command=ds9Import(root))
 
 class ds9Display(object):
-    def __init__(self, root, file="ds9.reg"):
+    def __init__(self, root, file="ds9.reg", target=None):
         self.root = root
         self.file = file
+        self.target = target
     def __call__(self):
         try:
             ds9.cd(os.path.abspath(os.curdir))
@@ -266,11 +269,12 @@ class ds9Display(object):
                 os.remove(self.file)
             except OSError:
                 pass
-            region_file = extractSources.ds9_region_file(self.file, fk5=1)
+            region_file = extractSources.ds9_region_file(self.file, fk5=1,
+                                                         target=self.target)
             for srcName in self.root.srcModel.names():
                 src = self.root.srcModel[srcName]
                 if src.type == "PointSource":
-                    region_file.addSource(src)
+                    region_file.addSource(srcName, src)
                     region_file.write()
             ds9.load_regions(self.file)
         except RuntimeError:
@@ -333,6 +337,14 @@ class _ModelEditor(Tk.Frame):
             self.parent.currentSource.set(srcName)
         else:
             srcName = self.parent.currentSource.get()
+            items = list(self.listBox.get(0, Tk.END))
+            try:
+                item = items.index(srcName)
+                self.listBox.select_set(item)
+            except ValueError, message:
+                pass
+        self.parent.ds9Display = ds9Display(self.parent, target=srcName)
+        self.parent.ds9Display()
         try:
             self.parent.importSrcComponents(srcName)
             src = self.parent.srcModel[srcName]
