@@ -151,7 +151,7 @@ class DefaultValues(object):
         self.outfile = dialogObject.filename.value()
 
 _defaults = DefaultValues(266.4, -28.9, 20, 0.01,
-                          _3EG_catalog, 'my_source_model')
+                          _3EG_catalog, 'my_source_model.xml')
         
 class SourceRegionDialog(tkSimpleDialog.Dialog):
     def __init__(self, parent):
@@ -217,8 +217,11 @@ class ParamStringEntry:
         return self.variable.get()
 
 class ParamFileEntry:
-    def __init__(self, parent, label, row, default=''):
+    def __init__(self, parent, label, row, default='', expand=True,
+                 pattern=None):
         self.parent = parent
+        self.pattern = pattern
+        self.expand = expand
         self.variable = Tkinter.StringVar()
         self.variable.set(default)
         file = Tkinter.Button(parent, text=label, command=self.getFile, bd=1)
@@ -229,8 +232,13 @@ class ParamFileEntry:
     def value(self):
         return self.variable.get()
     def getFile(self):
-        file = LoadFileDialog(self.parent).go()
+        if self.pattern is None:
+            file = LoadFileDialog(self.parent).go()
+        else:
+            file = LoadFileDialog(self.parent).go(self.pattern)
         if file:
+            if not self.expand:
+                file = os.path.basename(file)
             self.variable.set(file)
 
 if __name__ == '__main__':

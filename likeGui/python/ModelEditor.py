@@ -250,9 +250,12 @@ def pwd():
 class ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-        self.add_command(label="Display sources", underline=0,
-                         command=root.ds9Display)
-#                         command=ds9Display(root))
+#        try:
+#            root.ds9Display
+#        except AttributeError:
+#            root.ds9Display = ds9Display(root)
+#        self.add_command(label="Display sources", underline=0,
+#                         command=root.ds9Display)
         self.add_command(label="Import sources", underline=0,
                          command=ds9Import(root))
 
