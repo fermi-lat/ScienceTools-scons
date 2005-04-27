@@ -29,11 +29,11 @@ public:
          const astro::SkyDir &srcDir, const astro::SkyDir &zAxis, 
          const astro::SkyDir &xAxis, const astro::SkyDir &zenith, 
          int eventType=4, double trueEnergy = 0., double flux_theta=0.,
-         double flux_phi=0.) :
+         double flux_phi=0., int eventId=0) :
       m_time(time), m_energy(energy), m_appDir(appDir), m_srcDir(srcDir),
       m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), m_eventType(eventType),
       m_trueEnergy(trueEnergy), m_flux_theta(flux_theta), 
-      m_flux_phi(flux_phi) {}
+      m_flux_phi(flux_phi), m_eventId(eventId) {}
 
    /// Time in seconds (referenced to the zero time of the orbit
    /// calculation in astro::EarthOrbit).
@@ -95,6 +95,8 @@ public:
    double fluxTheta() const {return m_flux_theta;}
    double fluxPhi() const {return m_flux_phi;}
 
+   int eventId() const {return m_eventId;}
+
 private:
 
    double m_time;
@@ -111,6 +113,8 @@ private:
    double m_trueEnergy;
    double m_flux_theta;
    double m_flux_phi;
+   
+   int m_eventId;
 
 };
 

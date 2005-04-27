@@ -10,9 +10,6 @@
 #include <fenv.h>
 #endif
 
-#include <cassert>
-
-#include <fstream>
 #include <stdexcept>
 
 #include "CLHEP/Random/Random.h"
@@ -78,6 +75,7 @@ private:
    void createResponseFuncs();
    void createSimulator();
    void generateData();
+   void saveEventIds(const observationSim::EventContainer & events) const;
 };
 
 st_app::StAppFactory<ObsSim> myAppFactory;
@@ -276,4 +274,29 @@ void ObsSim::generateData() {
       double time = scData.simTime() + 30.;
       scData.addScData(time, spacecraft);
    }
+
+   saveEventIds(events);
+}
+
+void ObsSim::saveEventIds(const observationSim::EventContainer & events) const {
+   typedef std::map<std::string, int> id_map_t;
+
+   const id_map_t & eventIds = events.eventIds();
+
+// sort by ID number
+   unsigned int nsrcs = eventIds.size();
+   std::vector<std::string> ids(nsrcs);
+   id_map_t::const_iterator eventId = eventIds.begin();
+   for ( ; eventId != eventIds.end(); ++eventId) {
+      ids.at(eventId->second) = eventId->first;
+   }
+   
+   std::string event_id_file = m_pars["outfile_prefix"];
+   event_id_file += "_eventIds.dat";
+   std::ofstream outputFile(event_id_file.c_str());
+   for (unsigned int i = 0; i < nsrcs; i++) {
+      outputFile << i << "  "
+                 << ids.at(i) << "\n";
+   }
+   outputFile.close();
 }

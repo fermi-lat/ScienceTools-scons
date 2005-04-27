@@ -133,10 +133,14 @@ bool EventContainer::addEvent(EventSource *event,
    astro::SkyDir zAxis = spacecraft->zAxis(time);
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
+   std::string srcName(event->name());
+   setEventId(srcName);
+
    if (alwaysAccept) {
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time), 0) );
+                                ScZenith(time), 0, energy, flux_theta,
+                                flux_phi, m_eventIds[srcName]) );
       if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
       return true;
    }
@@ -165,13 +169,21 @@ bool EventContainer::addEvent(EventSource *event,
          m_events.push_back( Event(time, appEnergy, 
                                    appDir, sourceDir, zAxis, xAxis,
                                    ScZenith(time), respPtr->irfID(), 
-                                   energy, flux_theta, flux_phi) );
+                                   energy, flux_theta, flux_phi,
+                                   m_eventIds[srcName]) );
          accepted = true;
       }
       if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
    }
    if (flush) writeEvents();
    return accepted;
+}
+
+void EventContainer::setEventId(const std::string & name) {
+   typedef std::map<std::string, int> id_map_t;
+   if (m_eventIds.find(name) == m_eventIds.end()) {
+      m_eventIds.insert(id_map_t::value_type(name, m_eventIds.size()));
+   }
 }
 
 astro::SkyDir EventContainer::ScZenith(double time) const {
@@ -232,6 +244,7 @@ void EventContainer::writeEvents() {
       for (int i = 0; i < 3; i++) {
          calibVersion[i] = 1;
       }
+      row["event_id"].set(evt->eventId());
    }
    double stop_time;
    if (m_stopTime <= m_startTime) {
