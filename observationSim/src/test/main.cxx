@@ -16,19 +16,12 @@
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
 
+#include "celestialSources/SpectrumFactoryLoader.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
-
-ISpectrumFactory & GaussianSourceFactory();
-ISpectrumFactory & GRBmanagerFactory();
-ISpectrumFactory & IsotropicFactory();
-ISpectrumFactory & MapSourceFactory();
-ISpectrumFactory & PeriodicSourceFactory();
-ISpectrumFactory & PulsarFactory();
-ISpectrumFactory & SimpleTransientFactory();
-ISpectrumFactory & TransientTemplateFactory();
 
 void help();
 
@@ -142,12 +135,5 @@ void help() {
 }
 
 void load_sources() {
-   GaussianSourceFactory();
-   GRBmanagerFactory();
-   IsotropicFactory();
-   MapSourceFactory();
-   PeriodicSourceFactory();
-   PulsarFactory();
-   SimpleTransientFactory();
-   TransientTemplateFactory();
+   SpectrumFactoryLoader foo;
 }

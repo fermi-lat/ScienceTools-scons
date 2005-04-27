@@ -32,24 +32,14 @@
 
 #include "dataSubselector/Cuts.h"
 
+#include "celestialSources/SpectrumFactoryLoader.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 
 #include "LatSc.h"
 #include "Verbosity.h"
-
-ISpectrumFactory & GaussianSourceFactory();
-ISpectrumFactory & GRBmanagerFactory();
-ISpectrumFactory & IsotropicFactory();
-ISpectrumFactory & MapSourceFactory();
-ISpectrumFactory & MapCubeFactory();
-ISpectrumFactory & PeriodicSourceFactory();
-ISpectrumFactory & PulsarFactory();
-ISpectrumFactory & SimpleTransientFactory();
-ISpectrumFactory & SpectralTransientFactory();
-ISpectrumFactory & TransientTemplateFactory();
-ISpectrumFactory & PulsarSpectrumFactory();
 
 using st_facilities::Util;
 
@@ -157,17 +147,7 @@ void ObsSim::setRandomSeed() {
 }
 
 void ObsSim::createFactories() {
-   GaussianSourceFactory();
-   GRBmanagerFactory();
-   IsotropicFactory();
-   MapSourceFactory();
-   MapCubeFactory();
-   PeriodicSourceFactory();
-   PulsarFactory();
-   SimpleTransientFactory();
-   SpectralTransientFactory();
-   TransientTemplateFactory();
-   PulsarSpectrumFactory();
+   SpectrumFactoryLoader foo;
 }
 
 void ObsSim::setXmlFiles() {
