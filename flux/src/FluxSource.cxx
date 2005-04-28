@@ -438,9 +438,11 @@ FluxSource::FluxSource(const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem )
 , m_spectrum(0)
 , m_occultable(true)
 , m_zenithCosTheta(1.0) //won't be occulted by default
+
 {
     using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
     static double d2r = M_PI/180.;
+    setName(xmlBase::Dom::getAttribute(xelem, "name").c_str());
 
 
     ISpectrum*   s = 0;
@@ -745,3 +747,5 @@ const HepVector3D& FluxSource::skyDirection()const
 {
     return m_launch_dir->skyDirection();
 }
+
+

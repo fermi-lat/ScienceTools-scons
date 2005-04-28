@@ -56,8 +56,9 @@ std::string EventSource::displayTitle () const  {  return m_name; }
 // inline function declarations:
 
 
-const std::string& EventSource::name () const	{   return m_name;  }
-void EventSource::name (const std::string& value)    { m_name = value;   }
+std::string EventSource::name () const	{   return m_name;  }
+
+void EventSource::setName (const std::string& value)    { m_name = value;   }
 
 double    EventSource::totalArea () { return s_total_area; }
 void    EventSource::totalArea (double value) { s_total_area = value; }

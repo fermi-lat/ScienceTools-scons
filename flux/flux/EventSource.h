@@ -57,8 +57,9 @@ public:
     virtual double	solidAngle () const;
     
     ///	name of this flux source - for UI
-    const std::string& name () const;
-    void name (const std::string& value);
+    virtual std::string name () const;
+
+    void setName (const std::string& value);
     
     ///    code - for monte-carlo study
     unsigned  code () const;
