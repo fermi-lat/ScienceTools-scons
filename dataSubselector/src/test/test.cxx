@@ -36,6 +36,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(compareCuts);
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
+   CPPUNIT_TEST(test_DssFormatting);
 
    CPPUNIT_TEST_SUITE_END();
 
@@ -48,6 +49,7 @@ public:
    void compareCuts();
    void cutsConstructor();
    void test_SkyCone();
+   void test_DssFormatting();
 
 private:
 
@@ -233,6 +235,45 @@ void DssTests::compareCuts() {
 
    dataSubselector::Cuts cuts(m_infile);
    CPPUNIT_ASSERT(!(cuts == cuts1));
+}
+
+void DssTests::test_DssFormatting() {
+   std::string testfile1("dss_test1.fits");
+   std::string testfile2("dss_test2.fits");
+   if (st_facilities::Util::fileExists(testfile1)) {
+      std::remove(testfile1.c_str());
+   }
+   if (st_facilities::Util::fileExists(testfile2)) {
+      std::remove(testfile2.c_str());
+   }
+   tip::IFileSvc::instance().createFile(testfile1, m_infile);
+   tip::IFileSvc::instance().createFile(testfile2, m_infile);
+
+   dataSubselector::Cuts cuts1;
+   cuts1.addRangeCut("TIME", "s", -1.5046090110e7, 505910.);
+   tip::Table * table1 =
+      tip::IFileSvc::instance().editTable(testfile1, "EVENTS");
+   cuts1.writeDssKeywords(table1->getHeader());
+   delete table1;
+
+   tip::Table * table2 =
+      tip::IFileSvc::instance().editTable(testfile2, "EVENTS");
+   cuts1.writeDssKeywords(table2->getHeader());
+   delete table2;
+
+   table1 = tip::IFileSvc::instance().editTable(testfile1, "EVENTS");
+   table2 = tip::IFileSvc::instance().editTable(testfile2, "EVENTS");
+
+   const tip::Header & header1 = table1->getHeader();
+   const tip::Header & header2 = table2->getHeader();
+
+   std::string value1, value2;
+   header1["DSVAL1"].get(value1);
+   header2["DSVAL1"].get(value2);
+   CPPUNIT_ASSERT(value1 == value2);
+
+   delete table1;
+   delete table2;
 }
 
 int main() {
