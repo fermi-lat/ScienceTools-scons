@@ -1367,5 +1367,20 @@ double Healpix::integrate(const astro::SkyFunction& f)const
     return std::accumulate(begin(), end(), 0., Integrand(f));
 }
 
+void Healpix::findNeighbors(long index, std::vector<long> &p)
+{
+   
+    if (!(nested()))
+        throw std::invalid_argument("Healpix::findNeighbors -- Nested ordering required to determine neighbors.");
+
+    p.clear();
+
+    long n[8];// local copy of the list
+    int nbr_neighbors; // its length--either 7 or 8
+    neighbours_nest(m_nside, index, n, &nbr_neighbors);
+    // now insert this list into the output vector
+    std::copy( n, n+nbr_neighbors, std::back_insert_iterator<std::vector<long> >(p));
+}
+
 
 

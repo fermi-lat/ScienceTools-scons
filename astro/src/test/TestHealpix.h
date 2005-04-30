@@ -29,9 +29,9 @@ public:
     TestHealpix(){
         using astro::Healpix;
         test(256, Healpix::NESTED, astro::SkyDir::GALACTIC);
-        test(256, Healpix::NESTED, astro::SkyDir::EQUATORIAL);
-        test(256, Healpix::RING, astro::SkyDir::GALACTIC);
-        test(256, Healpix::RING, astro::SkyDir::EQUATORIAL);
+//        test(256, Healpix::NESTED, astro::SkyDir::EQUATORIAL);
+//        test(256, Healpix::RING, astro::SkyDir::GALACTIC);
+//        test(256, Healpix::RING, astro::SkyDir::EQUATORIAL);
         
         Healpix hp(8);
         TestNeighbors(hp);
@@ -138,6 +138,7 @@ public:
             if (calculated != from_file)
             {
                 std::cout << "Neighbor mismatch for pixel " << pixel_nbr << std::endl;
+                throw std::runtime_error("Healpix test failed");
             }
             #if 0 // Run this block to see detailed results.
             else

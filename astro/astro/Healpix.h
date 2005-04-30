@@ -75,6 +75,7 @@ public:
     astro::SkyDir::CoordSystem coordsys()const{return m_coordsys;}
     bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
+    void findNeighbors(long index, std::vector<long> &neighbors);
     /**@class Pixel
     @brief represent a Healpix pixel
 
