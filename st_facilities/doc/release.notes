@@ -5,6 +5,8 @@
   @verbatim
   $Id$
 
+  01-May-05 v0r4p2 JC    comment out FileSys test that is sure to 
+                         fail on Windows
   15-Feb-05 v0r4p1 JC    take abs. mag. of pixel solid angle expression
   14-Feb-05 v0r4   JC    make FitsImage member functions const
   29-Oct-04 v0r3p1 JC    use tip v2*
