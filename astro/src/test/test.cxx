@@ -11,6 +11,7 @@
 #include "astro/HTM.h"
 #include "astro/SkyProj.h"
 #include "CLHEP/Vector/ThreeVector.h"
+#include "astro/HealPixel.h"
 
 // local test classes
 #include "TestHealpix.h"
@@ -68,8 +69,8 @@ double test_one(double lon, double lat, const astro::SkyProj& t){
     using namespace astro;
     SkyDir dir(lon, lat);
     std::pair<double, double> pixel = dir.project(t );
-  //  std::cout <<  "(" << lon << ", " << lat << ") \t-> (" << pixel.first << ", " << pixel.second << ") \n";
-  //std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
+    //  std::cout <<  "(" << lon << ", " << lat << ") \t-> (" << pixel.first << ", " << pixel.second << ") \n";
+    //std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
     return SkyDir(pixel.first,pixel.second,t).difference(dir);
 }
 
@@ -86,7 +87,7 @@ bool testSkyProj(){
     if( proj.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
 
     // create another one to verify that it is possible to have more than one
-    
+
     double zcrpix[]={180.5,90.5},  zcrval[]={0,0}, zcdelt[]={-1,1}; // 1-degree CAR all sky
     SkyProj other("AIT", zcrpix, zcrval, zcdelt,0, true);
     if( !other.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
@@ -113,20 +114,34 @@ void test_insideSAA() {
     double lat_notInSAA[] = {-30, -31, -26, -25, -19, -20, -16, -17, -9, -10,   2,   1,   3,   2,  -2,  -3,  -7,  -8, -11, -12, -18, -19, -31, -30};
     double lon_notInSAA[] = { 46,  45,  42,  41,  31,  32,   9,  10,-11, -10, -34, -33, -46, -47, -62, -63, -79, -80, -85, -86, -89, -90, -87, -88};
 
+    bool error_found = false;
     std::cout << "\nTesting EarthCoordinate::insideSAA...";
 
     // Test for success
     for (int i = 0; i < sizeof(lat_inSAA)/sizeof(double); ++i) {
         astro::EarthCoordinate earthCoord(lat_inSAA[i], lon_inSAA[i]);
-        assert(earthCoord.insideSAA());
+        if (!earthCoord.insideSAA())
+        {
+            std::cout << std::endl << "Error: Lat/Lon " << lat_inSAA[i] << ", " << lon_inSAA[i];
+            std::cout << " should return true.  Returned false.";
+            error_found = true;
+        }
     }
 
     // Test for failure
     for (int i = 0; i < sizeof(lat_notInSAA)/sizeof(double); ++i) {
         astro::EarthCoordinate earthCoord(lat_notInSAA[i], lon_notInSAA[i]);
-        assert(!earthCoord.insideSAA());
+        if (earthCoord.insideSAA())
+        {
+            std::cout << std::endl << "Error: Lat/Lon " << lat_inSAA[i] << ", " << lon_inSAA[i];
+            std::cout << " should return false.  Returned true.";
+            error_found = true;
+        }
     }
-    std::cout << "Done.\n" << std::endl;
+    if (!error_found)
+        std::cout << "Done.\n" << std::endl;
+    else
+        throw std::runtime_error("InsideSAA test failed."); 
 }
 
 void testJD()
@@ -193,29 +208,29 @@ bool testHTM()
 #define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
 
 void checkdir(double ra1, double dec1, double ra2, double dec2) {
-   astro::SkyDir dir1(ra1, dec1);
-   astro::SkyDir dir2(ra2, dec2);
-   assert(dir1.difference(dir2) < 1e-5);
+    astro::SkyDir dir1(ra1, dec1);
+    astro::SkyDir dir2(ra2, dec2);
+    assert(dir1.difference(dir2) < 1e-5);
 }
 
 bool test_GPS_readFitsData() {
-   GPS * gps = GPS::instance();
+    GPS * gps = GPS::instance();
 
-   std::string filename("test_FT2.fits");
-   gps->setPointingHistoryFile(filename);
+    std::string filename("test_FT2.fits");
+    gps->setPointingHistoryFile(filename);
 
-   double time(30);
-   gps->getPointingCharacteristics(time);
+    double time(30);
+    gps->getPointingCharacteristics(time);
 
-   ASSERT_EQUALS(gps->lat(), 28.675092697143555);
-   ASSERT_EQUALS(gps->lon(), -75.576118469238281);
+    ASSERT_EQUALS(gps->lat(), 28.675092697143555);
+    ASSERT_EQUALS(gps->lon(), -75.576118469238281);
 
-   checkdir(gps->RAX(), gps->DECX(), 281.15841674804688, 0.82335680723190308);
-   checkdir(gps->RAZ(), gps->DECZ(), 11.064399719238281, -6.5129880905151367);
-   checkdir(gps->RAZenith(), gps->DECZenith(), 
-            11.605173110961914, 28.483125686645508);
-   
-   return true;
+    checkdir(gps->RAX(), gps->DECX(), 281.15841674804688, 0.82335680723190308);
+    checkdir(gps->RAZ(), gps->DECZ(), 11.064399719238281, -6.5129880905151367);
+    checkdir(gps->RAZenith(), gps->DECZenith(), 
+        11.605173110961914, 28.483125686645508);
+
+    return true;
 }
 
 int main(){
@@ -225,11 +240,21 @@ int main(){
     int rc = 0;
 
     try {
-        // test EarthCoordinate::insideSAA
+        // HealPixel test
+        {
 
- 
-// One needs the test data to run this.
-//        if (!test_GPS_readFitsData()) return 1;
+            if( ! HealPixel::test() ) { throw std::runtime_error("Fail HealPixel test");}
+            HealPixel h33=HealPixel(0,3);
+            std::vector<HealPixel> neighbors = h33.neighbors();
+            std::cout << "Neighbors of HealPixel(0,3): ";
+            for( std::vector<HealPixel>::const_iterator it = neighbors.begin(); it!=neighbors.end(); ++it){
+                std::cout << it->index() << ", ";
+            }
+            std::cout << endl;
+        }
+
+        // One needs the test data to run this.
+        //        if (!test_GPS_readFitsData()) return 1;
 
         JulianDate start = JulianDate::missionStart(); 
 
@@ -254,7 +279,7 @@ int main(){
 
         std::cout << "EarthCoordinate:\n";
         EarthCoordinate xyza(abcd.position(juliandate),juliandate);
-        
+
         std::cout << std::setprecision(6) << "\tlatitude at t0 = " << xyza.latitude()
             << " , longitude at t0 = " << xyza.longitude() << std::endl;
 
@@ -288,8 +313,25 @@ int main(){
 
         // make sure can set ephemeris
         JulianDate jdbary(2454101.5001062094);
-        SolarSystem ss(SolarSystem::Sun, juliandate);
+        JulianDate mission(2451910.5);
+        SolarSystem ss(SolarSystem::EARTH);
         Hep3Vector bary = ss.getBarycenter(jdbary);
+        Hep3Vector solar = ss.getSolarVector(mission);
+
+        //expected direction 1/1/2001 : 00:00:00
+        Hep3Vector svec = SkyDir(18.771666*15,-23.013055)();
+        test += (1-svec.dot(solar.unit()))*1e3;
+        solar = ss.getSolarVector(mission+1);
+
+        //expected direction 1/2/2001 : 00:00:00
+        svec = SkyDir(18.845277*15,-22.927777)();
+        test += (1-svec.dot(solar.unit()))*1e3;
+        solar = ss.getSolarVector(mission+365);
+
+        //expected direction 1/1/2002 : 00:00:00
+        svec = SkyDir(18.753888*15,-23.0325)();
+        test += (1-svec.dot(solar.unit()))*1e3;
+
         std::cout << "Barycenter coords for JD: "
             << std::setprecision(8)<< jdbary << ": "  << bary << std::endl;
         // expected, from comparison with glbary.
@@ -310,7 +352,7 @@ int main(){
 
         if( fabs(test) < 1e-3 ) {
             cout << "tests ok " << endl;
-            
+
         } else {
             cout << "failed a test" << endl;
             cout << "Mission start" << start << endl;  

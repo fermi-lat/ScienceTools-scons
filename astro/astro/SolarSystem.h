@@ -2,12 +2,8 @@
 #ifndef astro_SolarSystem_H
 #define astro_SolarSystem_H
 
-
 #include "astro/JulianDate.h"
-#include "astro/SkyDir.h"
-
-// forward declaration
-class SolSystem;
+#include "astro/Skydir.h"
 
 namespace astro {
 
@@ -24,49 +20,50 @@ class SolarSystem  {
 
 public:
     /**
-     * index of body that corresponds to the #define's in SolSystem  
+     * index of body that corresponds to the elements in dpleph class
      */
-    enum Body{ MERCURY=0,
-        VENUS=1, MARS=2, JUPITER=3,SATURN=4, 
-        URANUS=5,NEPTUNE=6, PLUTO=7, 
-            Sun=8, Moon=9 };
-    SolarSystem();
+	typedef enum Body { MERCURY=1,
+		VENUS=2, EARTH=3, MARS=4,
+		JUPITER=5, SATURN=6, URANUS=7,
+		NEPTUNE=8, PLUTO=9, MOON=10, SUN=11};
 
     /** @brief simple constructor that initializes
-     * @param body Body index
-     * @param date Julian date for given position 
+     * @param body Body targ
      */
-    SolarSystem(  Body body, JulianDate date );
+    SolarSystem(Body body=SUN);
     ~SolarSystem();
 
     /**
-    * @brief set the body and date; retun the SkyDir 
+    * @brief return the SkyDir at date 
     */
-    SkyDir direction(Body body, JulianDate date) ;
+    SkyDir direction(JulianDate jd) ;
 
     /**
-     * @brief set the body and date; return the distance of the body from Earth
+     * @brief return the distance of the body from Earth at date in lightseconds
      */
-    double distance(Body body, JulianDate date);
+    double distance(JulianDate jd);
 
-
-    /**
-     * @brief set the date and return the distance vector to solar system barycenter.
+	/**
+     * @brief return the distance vector to solar system barycenter at date in lightseconds
      */
     Hep3Vector getBarycenter(JulianDate jd);
 
+	/**
+	 * @brief return a distance vector to the sun at date in lightseconds
+	 */
     Hep3Vector getSolarVector(JulianDate jd);
+	
+	/*
+	 * @brief returns the distance vector between two bodies: target and center at date in lightseconds
+	 */
+	static Hep3Vector vector(Body targ, Body cent, JulianDate jd);
+	
 
-    /**
-    * @brief conversion operator that returns the SkyDir 
-    */
-    operator SkyDir()const { return m_dir; }
 private:
     //! setup the jpl ephemeris database if needed, return jd in correct form
-    double * jplSetup(JulianDate jd);
-
-    SkyDir m_dir;
-    SolSystem* m_ss;
+    static double * jplSetup(JulianDate jd);
+	SkyDir m_dir;      //current SkyDir
+	Body m_body;       //target solar body
 };
 
 } // namespace astro

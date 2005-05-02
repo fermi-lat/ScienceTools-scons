@@ -5,38 +5,25 @@
  $Header$
 */
 #include "astro/SolarSystem.h"
-
-#include "SolSystem.h"
 #include "jplephem/bary.h" //local interface to the JPL ephemeris
 #include <stdexcept>
 
 namespace astro {
 
-SolarSystem::SolarSystem()
-: m_ss(new SolSystem)
+SolarSystem::SolarSystem(Body body)
 {
+	m_body = body;
 }
 
-SolarSystem::SolarSystem( SolarSystem::Body body, JulianDate jd )
-: m_ss(new SolSystem)
+SkyDir SolarSystem::direction(JulianDate jd)
 {
-    direction(body, jd);
-}
-
-SkyDir SolarSystem::direction(Body body, JulianDate jd)
-{
-    m_ss->SetObj(body);
-    m_ss->CalculatePos(jd);
-    m_dir = SkyDir(m_ss->Ra*180/M_PI, m_ss->Dec*180/M_PI);
-
-    return m_dir;
+    m_dir = SkyDir(vector(m_body,EARTH,jd));
+	return m_dir;
 }
  
-double SolarSystem::distance(Body body, JulianDate jd)
+double SolarSystem::distance(JulianDate jd)
 {
-   m_ss->SetObj(body);
-   m_ss->CalculatePos(jd);
-   return m_ss->Edist;
+   return vector(m_body,EARTH,jd).mag();
 }
 
 double * SolarSystem::jplSetup(JulianDate jd)
@@ -73,8 +60,7 @@ double * SolarSystem::jplSetup(JulianDate jd)
 // Returns an Hep3Vector with light seconds as distance units
 Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
 {
-    enum {EARTHx=3, SUNx=11};
-    const double *eposn =  dpleph(jplSetup(jd), EARTHx, SUNx);
+    const double *eposn =  dpleph(jplSetup(jd), m_body, SUN);
 
    // Position of barycenter
    double x = -eposn[0];
@@ -86,18 +72,21 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)
 
 Hep3Vector SolarSystem::getSolarVector(JulianDate jd)
 {
-   enum {EARTHx=3, SUNx=11};
+	return vector(EARTH,SUN,jd);
+}
 
-   const double *eposn =  dpleph(jplSetup(jd), EARTHx, SUNx);
-
-   // Position of sun with respect to the geocenter
-   double x = -eposn[0] + eposn[3];
-   double y = -eposn[1] + eposn[4];
-   double z = -eposn[2] + eposn[5];
+Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) {
+   const double *eposn = dpleph(jplSetup(jd), targ, cent);
+   
+   // Position of targ with respect to the cent
+   double x = -eposn[0] + eposn[6];
+   double y = -eposn[1] + eposn[7];
+   double z = -eposn[2] + eposn[8];
 
    return Hep3Vector(x,y,z);
 }
 
-SolarSystem::~SolarSystem(){ delete m_ss;}
+SolarSystem::~SolarSystem(){
+}
  
 } // namespace astro
