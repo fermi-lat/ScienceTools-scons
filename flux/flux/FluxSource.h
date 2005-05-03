@@ -13,6 +13,8 @@ class  DOMElement;
 XERCES_CPP_NAMESPACE_END
 
 class ISpectrum;
+class LaunchDirection;
+class LaunchPoint;
 
 // 
 /** @class FluxSource
@@ -78,17 +80,14 @@ public:
 
 private:
 
-    // forward declaration of classes that handle the lauch direction
-    class LaunchDirection;  // base class
-    class RandomDirection;  // choose randomly from range 
-    class SourceDirection;  // choose from an external source class
+// forward declaration of classes that handle the lauch direction
+   class RandomDirection;  // choose randomly from range 
+   class SourceDirection;  // choose from an external source class
 
-    // forward declaration of classes that handle launch point
-    class LaunchPoint;  // base class
-    class RandomPoint; // random strategy
-    class FixedPoint;  // fixed, or pencil
-    class Patch;  // a box
-
+// forward declaration of classes that handle launch point
+   class RandomPoint; // random strategy
+   class FixedPoint;  // fixed, or pencil
+   class Patch;  // a box
 
     LaunchPoint* m_launch_pt; // pointer to actual point stategy: must be set
     LaunchDirection* m_launch_dir;
@@ -118,6 +117,9 @@ private:
 
     ///cosine of angle between zenith direction and incoming particle direction.
     double m_zenithCosTheta;
+
+   bool m_launch_dir_owner;
+   bool m_launch_pt_owner;
 
 };
 #endif
