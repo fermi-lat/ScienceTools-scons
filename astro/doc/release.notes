@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r9p1   02-may-05 THB fixes
   v1r9     02-may-05 THB Healpix neighbors; new SAA.
   v1r8     04-apr-05 THB Healpix neighbors; new SAA.
   v1r7p3   02-apr-05 THB gcc fixes
