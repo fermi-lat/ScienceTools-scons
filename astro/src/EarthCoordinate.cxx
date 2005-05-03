@@ -94,7 +94,7 @@ bool EarthCoordinate::insideSAA() const
     
     if (!initialized)
     {
-        for (int i = 0; i < sizeof(latv)/sizeof(double); ++i)
+        for (size_t i = 0; i < sizeof(latv)/sizeof(double); ++i)
         {
             corners.push_back(coords(latv[i], lonv[i]));
             if (latv[i] < lat_min) lat_min = latv[i];
