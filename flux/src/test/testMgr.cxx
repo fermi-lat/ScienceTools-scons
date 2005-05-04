@@ -57,6 +57,7 @@ void flux_load() {
     DECLARE_SPECTRUM( GalElSpectrum);
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( MapSpectrum);
+    DECLARE_SPECTRUM( FileSource);
  }
 
 void galacticTest(FluxMgr* fm, std::string sourceName,double count){

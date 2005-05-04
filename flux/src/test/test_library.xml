@@ -306,5 +306,15 @@
 
     </source>
 
+<!-- FileSource reads in the incident particles from a text file
+-->
+    <source name="file_source">
+       <spectrum escale="MeV">
+          <SpectrumClass name="FileSource" 
+           params="input_file=$(FLUXROOT)/sources/test_FileSource.dat,rate=1">
+          <custom/>
+       </spectrum>
+    </source>
+
 </source_library>
 

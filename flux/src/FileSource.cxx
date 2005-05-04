@@ -12,7 +12,12 @@
 
 #include "facilities/Util.h"
 
+#include "flux/SpectrumFactory.h"
+
 #include "FileSource.h"
+
+static SpectrumFactory<FileSource> factory;
+const ISpectrumFactory& FileSourceFactory = factory;
 
 namespace {
    void readLines(std::string inputFile, 
