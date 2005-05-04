@@ -75,6 +75,7 @@ protected:
 
 private:
    
+#ifndef SWIG
    class FileLaunchDir : public LaunchDirection {
    public:
       FileLaunchDir() {}
@@ -90,9 +91,7 @@ private:
          return 1.;
       }
 
-      void setDir(const HepVector3D & dir) {
-         m_dir = dir;
-      }
+      void setDir(const HepVector3D & dir);
    private:
       HepVector3D m_dir;
       HepRotation m_glastToGalactic;
@@ -105,12 +104,11 @@ private:
       virtual const HepPoint3D & point() const;
       virtual std::string title() const;
 
-      void setPoint(const HepPoint3D & pt) {
-         m_pt = pt;
-      }
+      void setPoint(const HepPoint3D & pt);
    private:
       HepPoint3D m_pt;
    } * m_launchPoint;
+#endif // SWIG
 
    std::vector<std::string> m_inputLines;
    unsigned int m_currentLine;
