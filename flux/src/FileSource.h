@@ -89,6 +89,10 @@ private:
       virtual double zenithCosine() const {
          return 1.;
       }
+
+      void setDir(const HepVector3D & dir) {
+         m_dir = dir;
+      }
    private:
       HepVector3D m_dir;
       HepRotation m_glastToGalactic;
@@ -111,10 +115,13 @@ private:
    std::vector<std::string> m_inputLines;
    unsigned int m_currentLine;
    double m_interval;
+
+   double m_backOffDistance;
+
    double m_energy;
-   Hep3Vector m_dir;
-   Hep3Vector m_pt;
    std::string m_particleName;
+
+   void parseCurrentLine();
 
 };
 
