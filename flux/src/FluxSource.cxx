@@ -22,6 +22,7 @@ $Header$
 
 #include <algorithm>
 #include <sstream>
+#include <stdexcept>
 namespace {
     // this is the (wired-in) distance to back off from the target sphere.
     const double backoff_distance=2000.;
@@ -189,7 +190,7 @@ public:
 
     }
 
-    virtual void execute(double ke, double time){
+   virtual void execute(double /*ke*/, double time){
         double  costh = -RandFlat::shoot(m_minCos, m_maxCos),
             sinth = sqrt(1.-costh*costh),
             phi = RandFlat::shoot(m_minPhi, m_maxPhi);

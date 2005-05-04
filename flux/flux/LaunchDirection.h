@@ -7,6 +7,11 @@
 #ifndef _FluxSource_LaunchDirection_h
 #define _FluxSource_LaunchDirection_h
 
+#include "CLHEP/Geometry/Point3D.h"
+#include "CLHEP/Geometry/Vector3D.h"
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Vector/Rotation.h"
+
 #include "astro/SkyDir.h"
 
 #include "astro/GPS.h"
@@ -41,7 +46,7 @@ public:
     @param KE kinetic energy
     @param time mission time
     */
-    virtual void execute(double KE, double time){
+   virtual void execute(double /*KE*/, double time){
         if(m_skydir){
             //here, we have a SkyDir, so we need the transformation from a SkyDir to GLAST.
             m_rottoglast = GPS::instance()->transformToGlast(time,GPS::CELESTIAL);//->transformCelToGlast(time);
