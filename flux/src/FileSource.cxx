@@ -49,7 +49,6 @@ FileSource::FileSource(const std::string & params)
 // NB: Instrument units are in millimeters.
       m_backOffDistance = std::atof(pars["backoff_distance"].c_str());
    }
-
    m_launchDirection = new FileLaunchDir();
    m_launchPoint = new FileLaunchPoint();
 }
@@ -65,7 +64,7 @@ double FileSource::energy(double time) {
       parseCurrentLine();
       m_currentLine++;
    } else {
-      m_interval = 3e8; /// @todo Find a better way to handle the EOF.
+      // If EOF, use particle properties given in last line of input file.
    }
    return m_energy;
 }
