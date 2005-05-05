@@ -572,9 +572,9 @@ Map File to Use" -->
 <!-- FileSource reads in the incident particles from a text file
 -->
     <source name="file_source">
-       <spectrum escale="MeV">
+       <spectrum escale="GeV">
           <SpectrumClass name="FileSource" 
-           params="input_file=$(FLUXROOT)/sources/test_FileSource.dat,rate=1,backoff_distance=1000"/>
+           params="input_file=$(FLUXROOT)/sources/test_FileSource.dat,rate=1,backoff_distance=0"/>
           <custom_dir/>
           <custom_pt/>
        </spectrum>
