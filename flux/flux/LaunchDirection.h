@@ -1,5 +1,6 @@
 /** 
  * @file LaunchDirection.h
+ * @brief Declare LaunchDirection class
  *
  * $Header$
  */
@@ -20,8 +21,8 @@
 #include <sstream>
 
 /** @class LaunchDirection
-@brief nested launch strategy base class
-$Header$
+@brief launch strategy base class
+
 */
 class LaunchDirection  {
 public:
