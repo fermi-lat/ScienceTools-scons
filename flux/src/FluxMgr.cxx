@@ -11,8 +11,6 @@ $Header$
 #include "flux/FluxException.h" // defines FATAL_MACRO
 #include "flux/CompositeSource.h"
 
-// #include <xercesc/dom/DOMDocument.hpp>   already included by .h file
-// #include <xercesc/dom/DOMElement.hpp>
 #include "xmlBase/Dom.h"
 #include "facilities/Util.h"     // for expandEnvVar
 
@@ -101,6 +99,7 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     // these are the locally defined spectra that we want to make available
     DECLARE_SPECTRUM( FILESpectrum);
     DECLARE_SPECTRUM( TimeCandle);
+    DECLARE_SPECTRUM( FileSource);
 
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( GalPulsars);
