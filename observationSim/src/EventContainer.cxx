@@ -152,9 +152,7 @@ bool EventContainer::addEvent(EventSource *event,
    if ( RandFlat::shoot() < m_prob
         && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
                                     energy, sourceDir, zAxis, xAxis))
-      ) {
-// Turn off SAA for DC1.
-//         && !spacecraft->inSaa(time) ) {
+        && !spacecraft->inSaa(time) ) {
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);

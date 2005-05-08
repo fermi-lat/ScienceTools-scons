@@ -103,6 +103,7 @@ void ScDataContainer::writeScData() {
          row["sc_position"].set(sc->position());
          row["ra_zenith"].set(sc->raZenith());
          row["dec_zenith"].set(sc->decZenith());
+         row["in_saa"].set(sc->inSaa());
       }
       writeDateKeywords(my_table, start_time, stop_time);
       delete my_table;

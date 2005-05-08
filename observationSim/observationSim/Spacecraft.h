@@ -47,8 +47,8 @@ public:
    /// Rotation matrix from instrument to J2000 coordinates
    virtual HepRotation InstrumentToCelestial(double time) = 0;
 
-   /// Unity if in SAA, zero otherwise.
-   virtual int inSaa(double time) = 0;
+   /// true if in SAA
+   virtual bool inSaa(double time) = 0;
 
    /// Spacecraft position in geocentric coordinates (km)
    virtual void getScPosition(double time,

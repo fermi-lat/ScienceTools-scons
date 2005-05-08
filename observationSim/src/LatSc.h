@@ -40,7 +40,7 @@ public:
 
    virtual HepRotation InstrumentToCelestial(double time);
 
-   virtual int inSaa(double time);
+   virtual bool inSaa(double time);
 
    virtual void getScPosition(double time, std::vector<double> & scPosition);
 

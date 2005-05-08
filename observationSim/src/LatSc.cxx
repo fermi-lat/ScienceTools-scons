@@ -51,7 +51,7 @@ HepRotation LatSc::InstrumentToCelestial(double time) {
    return transform.localToCelestial();
 }
 
-int LatSc::inSaa(double time) {
+bool LatSc::inSaa(double time) {
    astro::EarthCoordinate earthCoord( EarthLat(time), EarthLon(time) );
    return earthCoord.insideSAA();
 }

@@ -32,12 +32,12 @@ class EgretSc : public Spacecraft {
 public:
 
    EgretSc(astro::SkyDir &zAxis, astro::SkyDir &xAxis, 
-           double earthLon, double earthLat, int inSaa) :
+           double earthLon, double earthLat, bool inSaa) :
       m_zAxis(zAxis), m_xAxis(xAxis), m_earthLon(earthLon),
       m_earthLat(earthLat), m_inSaa(inSaa) {}
 
    EgretSc(double raz, double decz, double rax, double decx,
-           double earthLon, double earthLat, int inSaa) :
+           double earthLon, double earthLat, bool inSaa) :
       m_zAxis(astro::SkyDir(raz, decz, astro::SkyDir::EQUATORIAL)), 
       m_xAxis(astro::SkyDir(rax, decx, astro::SkyDir::EQUATORIAL)), 
       m_earthLon(earthLon), m_earthLat(earthLat), m_inSaa(inSaa) {}
@@ -52,7 +52,7 @@ public:
 
    virtual HepRotation InstrumentToCelestial(double);
 
-   virtual int inSaa(double) {return m_inSaa;}
+   virtual bool inSaa(double) {return m_inSaa;}
 
    virtual void getScPosition(double time, std::vector<double> & scPosition);
 
@@ -64,7 +64,7 @@ private:
    astro::SkyDir m_xAxis;
    double m_earthLon;
    double m_earthLat;
-   int m_inSaa;
+   bool m_inSaa;
 
 };
 
