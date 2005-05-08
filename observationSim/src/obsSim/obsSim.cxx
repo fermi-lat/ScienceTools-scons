@@ -292,7 +292,7 @@ void ObsSim::saveEventIds(const observationSim::EventContainer & events) const {
    }
    
    std::string event_id_file = m_pars["outfile_prefix"];
-   event_id_file += "_eventIds.dat";
+   event_id_file += "_srcIds.dat";
    std::ofstream outputFile(event_id_file.c_str());
    for (unsigned int i = 0; i < nsrcs; i++) {
       outputFile << i << "  "
