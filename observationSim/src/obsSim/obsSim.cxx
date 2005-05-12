@@ -278,7 +278,8 @@ void ObsSim::generateData() {
    saveEventIds(events);
 }
 
-void ObsSim::saveEventIds(const observationSim::EventContainer & events) const {
+void ObsSim::
+saveEventIds(const observationSim::EventContainer & events) const {
    typedef std::map<std::string, int> id_map_t;
 
    const id_map_t & eventIds = events.eventIds();

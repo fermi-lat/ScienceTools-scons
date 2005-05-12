@@ -104,6 +104,9 @@ void ScDataContainer::writeScData() {
          row["ra_zenith"].set(sc->raZenith());
          row["dec_zenith"].set(sc->decZenith());
          row["in_saa"].set(sc->inSaa());
+         if (sc->inSaa()) {
+            row["livetime"].set(0);
+         }
       }
       writeDateKeywords(my_table, start_time, stop_time);
       delete my_table;

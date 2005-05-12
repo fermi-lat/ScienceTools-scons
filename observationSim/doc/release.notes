@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r8p2 11-May-05   JC   write in_SAA flag to FT2; omit events during 
+                            these intervals
     v5r8p1 08-May-05   JC   use MC_SRC_ID instead of EVENT_ID
     v5r8   27-Apr-05   JC   Use celestialSources/SpectrumFactoryLoader; set
                             EVENT_ID column with source id; write event ID map 
