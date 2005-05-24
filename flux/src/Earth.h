@@ -78,17 +78,16 @@ public:
 
 private:
 
-   double m_alt, m_emin, m_emax, m_a[28], m_ftot; // model parameters, set in init()
+   double m_alt, m_emin, m_emax, m_a[23], m_ftot; // model parameters, set in init()
    int m_version; // the version of the model parameters 
                   //  (used to check if the total flux can be taken from a precomputed value) 
    bool m_eCalled;
    double m_e, m_t, m_p;
 
-   double tp(double ee) const; // Peak position (degrees)
-   double sigma(double ee) const; // Peak Width (degrees)
-                            //corrected for EGRET PSF, orbital decay, orbital interpolation
-   double sigmaUncorrected(double ee) const; // Peak Width as measured by EGRET
-   double t0(double ee) const; // Transition point from Gaussian to Exponential 
+   double tp() const; // Peak position (degrees)
+   double sigma() const; // Peak Width (degrees)
+                         //corrected for EGRET PSF, orbital decay, orbital interpolation
+   double t0() const; // Transition point from Gaussian to Exponential 
    double g0(double e) const; // Spectrum of the constant component independent of AZ
    double g1(double e) const; // Spectrum of the component dependent on AZ
    double sigmaz(double t) const; // Std Dev of the AZ dependent component

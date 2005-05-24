@@ -234,10 +234,12 @@
 <!-- ************************************************************************** -->
 <source_library title="background">
 
-    <!-- The Earth -->
+    <!-- The Earth, an analytical model of the gamma emission of the Earth 
+    based on  measurements made by EGRET between 35 MeV and 350 GeV
+    (see http://xxx.lanl.gov/abs/astro-ph/0410487 ) -->
     <source name="Earth">
       <spectrum escale="MeV">
-         <SpectrumClass name="Earth" params="565.,10.,10000."/>
+         <SpectrumClass name="Earth" params="565.,20.,350000."/>
          <use_spectrum frame="zenith"/>
       </spectrum>
     </source>
