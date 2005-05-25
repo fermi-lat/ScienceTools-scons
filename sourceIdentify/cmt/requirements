@@ -1,0 +1,15 @@
+package sourceIdentify
+version v0
+
+author Jurgen Knodlseder <knodlseder@cesr.fr>
+
+use STpolicy *
+use hoops *
+use st_facilities *
+use st_app *
+use catalogAccess *
+
+apply_pattern ST_pfiles
+apply_pattern ST_app name=gtsrcid
+
+application gtsrcid gtsrcid/*.cxx
