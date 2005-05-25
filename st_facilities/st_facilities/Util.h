@@ -69,10 +69,15 @@ public:
                              const std::vector<double> &y,
                              double xx);
 
-   /// A zeroth order bilinear interpolater.
+   /// A bilinear interpolater.
    static double bilinear(const std::vector<double> &xx, double x,
                           const std::vector<double> &yy, double y, 
                           const std::vector<double> &z);
+
+   /// A bilinear interpolater operating on a vector of vectors
+   static double bilinear(const std::vector<double> &xx, double x,
+                          const std::vector<double> &yy, double y, 
+                          const std::vector< std::vector<double> > &z);
 
    /// @return true if eObj.what() contains the targetMessage
    ///         as a substring.

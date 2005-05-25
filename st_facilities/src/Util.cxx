@@ -137,7 +137,57 @@ namespace st_facilities {
          + tt*uu*y3 + (1. - tt)*uu*y4; 
       if (value < 0.) {
          std::ostringstream message;
-         message << "irfUtil::Util::bilinear:\n"
+         message << "st_facilities::Util::bilinear:\n"
+                 << "value = " << value << " < 0\n";
+         message << xx[i-1] << "  " << *(ix-1) << "  " 
+                 << x << "  " << *ix << "\n";
+         message << yy[j-1] << "  " << *(iy-1) << "  " 
+                 << y << "  " << *iy << "\n";
+         message << tt << "  " << uu << "  " 
+                 << y1 << "  " << y2 << "  "
+                 << y3 << "  " << y4;
+         throw std::runtime_error(message.str());
+      }
+      return value;
+   }
+
+   double Util::bilinear(const std::vector<double> &xx, double x, 
+                         const std::vector<double> &yy, double y, 
+                         const std::vector< std::vector<double> > &z) {
+
+      std::vector<double>::const_iterator ix;
+      if (x < *(xx.begin())) {
+         ix = xx.begin() + 1;
+      } else if (x >= *(xx.end()-1)) {
+         ix = xx.end() - 1;
+      } else {
+         ix = std::upper_bound(xx.begin(), xx.end(), x);
+      }
+      int i = ix - xx.begin();
+      
+      std::vector<double>::const_iterator iy;
+      if (y < *(yy.begin())) {
+         iy = yy.begin() + 1;
+      } else if (y >= *(yy.end()-1)) {
+         iy = yy.end() - 1;
+      } else {
+         iy = std::upper_bound(yy.begin(), yy.end(), y);
+      }
+      int j = iy - yy.begin();
+      
+      double tt = (x - *(ix-1))/(*(ix) - *(ix-1));
+      double uu = (y - *(iy-1))/(*(iy) - *(iy-1));
+      
+      double y1 = z.at(i-1).at(j-1);
+      double y2 = z.at(i).at(j-1);
+      double y3 = z.at(i).at(j);
+      double y4 = z.at(i-1).at(j);
+
+      double value = (1. - tt)*(1. - uu)*y1 + tt*(1. - uu)*y2 
+         + tt*uu*y3 + (1. - tt)*uu*y4; 
+      if (value < 0.) {
+         std::ostringstream message;
+         message << "st_facilities::Util::bilinear:\n"
                  << "value = " << value << " < 0\n";
          message << xx[i-1] << "  " << *(ix-1) << "  " 
                  << x << "  " << *ix << "\n";
