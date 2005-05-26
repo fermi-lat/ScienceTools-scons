@@ -43,7 +43,7 @@ public:
    /// @return Particle type, "gamma".
    virtual const char * particleName() const {return "gamma";}
 
-   /// @return Total flux (photons/m^2).
+   /// @return average differential flux integrated over energy (photons/m^2/sr).
    /// @param time Simulation time in seconds.
    virtual double flux(double time) const;
 
@@ -54,7 +54,7 @@ public:
    virtual std::string title() const {return "Earth";}
 
    /// @return Interval to the next event (seconds)
-   virtual double interval(double time);
+   virtual double interval(double time){return -1;}; // flag for Poisson 
 
    /// @return Photon energy (MeV).
    virtual double energy(double time);
