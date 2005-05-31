@@ -22,6 +22,9 @@ namespace xmlBase {
   class XmlParser {
   public:
     XmlParser(bool throwErrors = false);
+
+    /// Call this method to turn on schema processing (else it's off)
+    void doSchema(bool doit);
     ~XmlParser();
 
     /// Parse an xml file, returning document node if successful
@@ -44,7 +47,7 @@ namespace xmlBase {
     EResolver*       m_resolver;    
     bool             m_throwErrors;
     bool             m_errorsOccurred;
-
+    bool             m_doSchema;
     static int didInit;
   };
 }
