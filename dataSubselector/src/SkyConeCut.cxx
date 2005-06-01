@@ -70,7 +70,7 @@ bool SkyConeCut::accept(const std::map<std::string, double> & params) const {
    return true;
 }
 
-bool SkyConeCut::operator==(const CutBase & arg) const {
+bool SkyConeCut::equals(const CutBase & arg) const {
    try {
       SkyConeCut & rhs = 
          dynamic_cast<SkyConeCut &>(const_cast<CutBase &>(arg));

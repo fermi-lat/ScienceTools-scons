@@ -21,7 +21,7 @@ RangeCut::RangeCut(const std::string & colname, const std::string & unit,
                          double minVal, double maxVal, IntervalType type,
                          unsigned int indx)
    : CutBase("range"), m_colname(colname), m_unit(unit),
-     m_min(minVal), m_max(maxVal), m_type(type), m_index(indx),
+     m_min(minVal), m_max(maxVal), m_intervalType(type), m_index(indx),
      m_fullName(colname) {
    setFullName();
 }
@@ -37,13 +37,13 @@ RangeCut::RangeCut(const std::string & type,
    if (tokens.size() == 2) {
       m_min = std::atof(tokens[0].c_str());
       m_max = std::atof(tokens[1].c_str());
-      m_type = CLOSED;
+      m_intervalType = CLOSED;
    } else if (value.find(":") == 0) {
       m_max = std::atof(tokens[0].c_str());
-      m_type = MAXONLY;
+      m_intervalType = MAXONLY;
    } else {
       m_min = std::atof(tokens[0].c_str());
-      m_type = MINONLY;
+      m_intervalType = MINONLY;
    }
    setFullName();
 }
@@ -62,12 +62,22 @@ bool RangeCut::accept(const std::map<std::string, double> & params) const {
    return true;
 }
 
-bool RangeCut::operator==(const CutBase & arg) const {
+bool RangeCut::equals(const CutBase & arg) const {
    try {
       RangeCut & rhs = dynamic_cast<RangeCut &>(const_cast<CutBase &>(arg));
-      return (m_colname == rhs.m_colname && m_unit == rhs.m_unit &&
-              m_min == rhs.m_min && m_max == rhs.m_max &&
-              m_type == rhs.m_type && m_index == rhs.m_index);
+      bool result = (m_colname == rhs.m_colname &&
+                     m_unit == rhs.m_unit &&
+                     m_intervalType == rhs.m_intervalType && 
+                     m_index == rhs.m_index);
+      if (m_intervalType == CLOSED) {
+         result = result && (m_min == rhs.m_min && 
+                             m_max == rhs.m_max);
+      } else if (m_intervalType == MINONLY) {
+         result = result && m_min == rhs.m_min;
+      } else if (m_intervalType == MAXONLY) {
+         result = result && m_max == rhs.m_max;
+      }
+      return result;
    } catch (...) {
       return false;
    }
@@ -79,7 +89,8 @@ bool RangeCut::supercedes(const CutBase & cut) const {
    }
    RangeCut & rangeCut = dynamic_cast<RangeCut &>(const_cast<CutBase &>(cut));
 /// @todo Need to handle open ranges.
-   if (rangeCut.colname() != colname() || rangeCut.m_type != m_type) {
+   if (rangeCut.colname() != colname() || 
+       rangeCut.m_intervalType != m_intervalType) {
       return false;
    }
    if (rangeCut.minVal() <= minVal() && maxVal() <= rangeCut.maxVal()) {
@@ -93,9 +104,9 @@ void RangeCut::getKeyValues(std::string & type, std::string & unit,
    (void)(ref);
    std::ostringstream val;
    val.precision(20);
-   if (m_type == MINONLY) {
+   if (m_intervalType == MINONLY) {
       val << m_min << ":";
-   } else if (m_type == MAXONLY) {
+   } else if (m_intervalType == MAXONLY) {
       val << ":" << m_max;
    } else {
       val << m_min << ":" << m_max;
@@ -106,9 +117,9 @@ void RangeCut::getKeyValues(std::string & type, std::string & unit,
 }
 
 bool RangeCut::accept(double value) const {
-   if (m_type == MINONLY) {
+   if (m_intervalType == MINONLY) {
       return m_min <= value;
-   } else if (m_type == MAXONLY) {
+   } else if (m_intervalType == MAXONLY) {
       return value <= m_max;
    }
    return m_min <= value && value <= m_max;

@@ -34,6 +34,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(compareGtis);
    CPPUNIT_TEST(updateGti);
    CPPUNIT_TEST(compareCuts);
+   CPPUNIT_TEST(compareUnorderedCuts);
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
    CPPUNIT_TEST(test_DssFormatting);
@@ -47,6 +48,7 @@ public:
    void compareGtis();
    void updateGti();
    void compareCuts();
+   void compareUnorderedCuts();
    void cutsConstructor();
    void test_SkyCone();
    void test_DssFormatting();
@@ -235,6 +237,23 @@ void DssTests::compareCuts() {
 
    dataSubselector::Cuts cuts(m_infile);
    CPPUNIT_ASSERT(!(cuts == cuts1));
+}
+
+void DssTests::compareUnorderedCuts() {
+   dataSubselector::Cuts cuts0;
+   dataSubselector::Cuts cuts1;
+
+   cuts0.addRangeCut("RA", "deg", 83, 93);
+   cuts0.addSkyConeCut(83., 22., 20);
+   cuts0.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                     dataSubselector::RangeCut::CLOSED, 1);
+      
+   cuts1.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                     dataSubselector::RangeCut::CLOSED, 1);
+   cuts1.addSkyConeCut(83., 22., 20);
+   cuts1.addRangeCut("RA", "deg", 83, 93);
+
+   CPPUNIT_ASSERT(cuts0 == cuts1);
 }
 
 void DssTests::test_DssFormatting() {

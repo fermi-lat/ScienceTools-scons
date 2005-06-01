@@ -41,14 +41,14 @@ public:
 
    virtual bool accept(const std::map<std::string, double> & params) const;
 
-   virtual bool operator==(const CutBase & rhs) const;
-
    virtual CutBase * clone() const {return new GtiCut(*this);}
 
    /// @brief A reference to the Gti object.
    const Gti & gti() const {return m_gti;}
 
 protected:
+
+   virtual bool equals(const CutBase & rhs) const;
 
    virtual void getKeyValues(std::string & type, std::string & unit,
                              std::string & value, std::string & ref) const;

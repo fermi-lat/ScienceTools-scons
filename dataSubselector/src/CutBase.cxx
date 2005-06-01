@@ -14,6 +14,10 @@
 
 namespace dataSubselector {
 
+bool CutBase::operator==(const CutBase & rhs) const {
+   return m_type == rhs.m_type && this->equals(rhs);
+}
+
 void CutBase::writeCut(std::ostream & stream, unsigned int keynum) const {
    std::string type, unit, value, ref("");
    getKeyValues(type, unit, value, ref);

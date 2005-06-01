@@ -125,10 +125,6 @@ unsigned int Cuts::parseColname(const std::string & colname,
 
 unsigned int Cuts::find(const CutBase * cut) const {
    for (unsigned int i = 0; i < size(); i++) {
-     if(cut->type() != m_cuts[i]->type())
-       {
-	 continue;
-       }
       if (*cut == *m_cuts[i]) {
          return i;
       }
@@ -239,10 +235,10 @@ bool Cuts::operator==(const Cuts & rhs) const {
       return false;
    }
    for (unsigned int i = 0; i < size(); i++) {
-     int place = find(rhs.m_cuts.at(i));
-     if(place==size()){
-       return false;
-     }
+      unsigned int place = find(rhs.m_cuts.at(i));
+      if (place == size()){
+         return false;
+      }
    }
    return true;
 }

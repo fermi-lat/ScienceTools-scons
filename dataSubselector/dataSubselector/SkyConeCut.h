@@ -48,8 +48,6 @@ public:
 
    virtual bool accept(const std::map<std::string, double> & params) const;
 
-   virtual bool operator==(const CutBase & rhs) const;
-
    virtual CutBase * clone() const {return new SkyConeCut(*this);}
 
    virtual bool supercedes(const CutBase &) const;
@@ -64,6 +62,8 @@ public:
    double radius() const {return m_radius;}
 
 protected:
+
+   virtual bool equals(const CutBase & rhs) const;
 
    virtual void getKeyValues(std::string & type, std::string & unit,
                              std::string & value, std::string & ref) const;

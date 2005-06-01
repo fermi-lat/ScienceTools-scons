@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r5    01-Jun-05   JC   incorporate Johann's use of find in
+                             Cuts::operator==; use Template Method pattern
+                             for CutBase::operator==
     v3r4    12-Apr-05   JC   fix bug whereby the input file GTI was modified
     v3r3p2  06-Apr-05   JC   have ONTIME and TELAPSE keywords reflect
                              GTI contents
