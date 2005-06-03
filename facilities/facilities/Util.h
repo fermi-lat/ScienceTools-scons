@@ -61,6 +61,14 @@ namespace facilities {
                             const std::string& openDel = std::string("$("),
                             const std::string& closeDel = std::string(")"));
 
+    /**  
+        Expand environment variables in the string, using standard conventions
+        of current OS.
+           For Windows, use delimiters %    %
+           For Linux or other unix, use ${    }
+     */
+    static int expandEnvVarOS(std::string* toExpand);
+
     /** Given an input integer @a val to convert and an output string @a outStr
       converts val into a std::string.
       This method duplicates the stdlib.h method itoa, except that it returns

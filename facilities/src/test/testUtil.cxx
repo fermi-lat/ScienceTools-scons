@@ -21,6 +21,11 @@ int main(int, char**) {
     ntrans = facilities::Util::expandEnvVar(&nameAgain);
     std::cout << "Translated name (wrong delimiters) is " 
               << nameAgain << std::endl;  
+    if (!ntrans) {
+      ntrans = facilities::Util::expandEnvVarOS(&nameAgain);
+      std::cout << "Translated name using default delimiters for OS, got "
+                << nameAgain << std::endl;
+    }
   }
   catch (facilities::Untranslatable err) {
     std::cout << "Failed to completely translate " << name << std::endl;
