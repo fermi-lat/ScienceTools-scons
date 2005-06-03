@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r12   3-Jun-2005  jrb   Add utility Util::expandEnvVarOS
   v2r11   8-Apr-2005  jrb   Add utility Util::keyValueTokenize; add optional
                             timezone arguments to some constructors of Timestamp
   v2r10   1-Nov-2004  jrb   Add utility Util::trimTrailing
