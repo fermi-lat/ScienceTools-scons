@@ -99,6 +99,10 @@ namespace astro {
 
         // Destructor
         ~SkyProj();
+        /// copy constructor
+        SkyProj(const SkyProj& proj);
+        /// assignment
+        const SkyProj& operator=(const SkyProj& rhs);
 
         /** @brief tranform form world  to pixels with the given coordinates
         @param s1 ra or l, in degrees
@@ -113,7 +117,7 @@ namespace astro {
         @param projection used to deproject these coordinates
         @return pair(x,y) in new pixel coordinates
         */
-        std::pair<double,double> pix2pix(double x1, double x2, SkyProj otherProjection)const;
+        std::pair<double,double> pix2pix(double x1, double x2, const SkyProj& otherProjection)const;
 
         /** @brief Does the inverse projection
         @param x1 projected equivalent to ra or l, in degrees
@@ -135,8 +139,11 @@ namespace astro {
 
         /* Structure defined in WCSLIB wcs.h.  This contains all
         projection information. */
-        wcsprm *m_wcs;
+        wcsprm* m_wcs;
 
+        // allocate a local array to hold the wcslib.
+        static const size_t sizeof_wcslib = 1240;
+        char  m_wcs_struct[sizeof_wcslib];
     };
 
 
