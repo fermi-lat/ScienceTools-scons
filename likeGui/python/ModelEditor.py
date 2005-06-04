@@ -185,9 +185,9 @@ class RootWindow(Tk.Tk):
     def deleteSource(self):
         try:
             indx = self.modelEditor.listBox.curselection()
-            self.modelEditor.listBox.selection_set(indx)
-            srcName = self.modelEditor.listBox.get('active')
-            del self.srcModel[srcName]
+            srcNames = self.modelEditor.highlightedSources()
+            for srcName in srcNames:
+                del self.srcModel[srcName]
             self.modelEditor.fill()
             srcName = self.modelEditor.listBox.get('active')
             self.currentSource.set(srcName)
@@ -250,20 +250,14 @@ def pwd():
 class ds9Menu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
-#        try:
-#            root.ds9Display
-#        except AttributeError:
-#            root.ds9Display = ds9Display(root)
-#        self.add_command(label="Display sources", underline=0,
-#                         command=root.ds9Display)
         self.add_command(label="Import sources", underline=0,
                          command=ds9Import(root))
 
 class ds9Display(object):
-    def __init__(self, root, file="ds9.reg", target=None):
+    def __init__(self, root, file="ds9.reg", targets=None):
         self.root = root
         self.file = file
-        self.target = target
+        self.targets = targets
     def __call__(self):
         try:
             ds9.cd(os.path.abspath(os.curdir))
@@ -273,7 +267,7 @@ class ds9Display(object):
             except OSError:
                 pass
             region_file = extractSources.ds9_region_file(self.file, fk5=1,
-                                                         target=self.target)
+                                                         targets=self.targets)
             for srcName in self.root.srcModel.names():
                 src = self.root.srcModel[srcName]
                 if src.type == "PointSource":
@@ -317,7 +311,7 @@ class _ModelEditor(Tk.Frame):
         self.parent = parent
         self.yScroll = Tk.Scrollbar(self, orient=Tk.VERTICAL)
         self.yScroll.pack(side=Tk.RIGHT, fill=Tk.Y)
-        self.listBox = Tk.Listbox(self, selectmode=Tk.BROWSE,
+        self.listBox = Tk.Listbox(self, selectmode=Tk.EXTENDED,
                                   yscrollcommand=self.yScroll.set, height=16)
         self.listBox.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         btags = self.listBox.bindtags()
@@ -346,7 +340,8 @@ class _ModelEditor(Tk.Frame):
                 self.listBox.select_set(item)
             except ValueError, message:
                 pass
-        self.parent.ds9Display = ds9Display(self.parent, target=srcName)
+        targets = self.highlightedSources()
+        self.parent.ds9Display = ds9Display(self.parent, targets=targets)
         self.parent.ds9Display()
         try:
             self.parent.importSrcComponents(srcName)
@@ -356,6 +351,12 @@ class _ModelEditor(Tk.Frame):
             self.currentSrcName = srcName
         except (KeyError, TypeError):
             pass
+    def highlightedSources(self):
+        indices = self.listBox.curselection()
+        srcNames = []
+        for indx in indices:
+            srcNames.append(self.listBox.get(indx))
+        return srcNames
 
 class ComponentEditor(Tk.Frame):
     def __init__(self, parent, functionDict, title):

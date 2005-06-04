@@ -84,12 +84,14 @@ class PointSource:
         self.emin = string.atof(powerlaw.getAttribute('emin'))/100.
         self.emax = string.atof(powerlaw.getAttribute('emax'))/100.
     def _setIndex(self):
-        self._setSpecParam('Index', -self.gamma)
+        self._setSpecParam('Index', -2)
+#        self._setSpecParam('Index', -self.gamma)
     def _setPrefactor(self):
-        flux = string.atof(self.fluxSrc.getAttribute('flux').encode('ascii'))
-        prefactor = flux*1e5*(self.gamma-1)/100./(self.emin**(1-self.gamma)
-                                                  - self.emax**(1-self.gamma))
-        self._setSpecParam('Prefactor', prefactor)
+        self._setSpecParam('Prefactor', 1)
+#        flux = string.atof(self.fluxSrc.getAttribute('flux').encode('ascii'))
+#        prefactor = flux*1e5*(self.gamma-1)/100./(self.emin**(1-self.gamma)
+#                                                  - self.emax**(1-self.gamma))
+#        self._setSpecParam('Prefactor', prefactor)
     def _setSpecParam(self, paramName, value):
         spectrum = self.ptsrc.getElementsByTagName('spectrum')[0]
         params = spectrum.getElementsByTagName('parameter')
@@ -100,11 +102,11 @@ class PointSource:
         return self.ptsrc.toxml()
 
 class ds9_region_file:
-    def __init__(self, filename, target=None, fk5=0):
+    def __init__(self, filename, targets=(), fk5=0):
         self.filename = filename
         self.fk5 = fk5
         self.SR = None
-        self.target = target
+        self.targets = targets
         self.srcs = {}
     def addSrc(self, src):
         name = src.getAttribute('name').encode()
@@ -128,7 +130,7 @@ class ds9_region_file:
             else:
                 file.write('physical;point(%s, %s) # point=circle' %
                            self.srcs[src])
-            if src == self.target:
+            if src in self.targets:
                 file.write(', color=red')
             file.write('\n')
         if self.SR is not None:
