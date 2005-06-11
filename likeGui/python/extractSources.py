@@ -34,7 +34,8 @@ class SourceList(object):
             or particles[0].getAttribute('name').encode('ascii') != 'gamma'):
             return False
         return True
-    def extract(self, outputFile, roiCone, fluxLimit=1e-2, useDiffuse=True):
+    def extract(self, outputFile, roiCone, fluxLimit=1e-2, useDiffuse=True,
+                useCatVal=True):
         ra0, dec0, radius = roiCone
         ds9File = ds9_region_file('ds9.reg', fk5=1)
         ds9File.setSR(ra0, dec0, radius)
@@ -54,14 +55,16 @@ class SourceList(object):
                 flux = string.atof(src.getAttribute('flux').encode('ascii'))
                 if (celgal.dist((ra0, dec0), (ra, dec)) < radius
                     and flux > fluxLimit):
-                    outfile.write(PointSource(src).write() + '\n')
+                    outfile.write(PointSource(src, useCatVal=useCatVal)
+                                  .write() + '\n')
                     ds9File.addSrc(src)
         outfile.write('</source_library>\n')
         outfile.close()
         ds9File.write()
 
 class PointSource:
-    def __init__(self, fluxSrc, prefix='my'):
+    def __init__(self, fluxSrc, prefix='my', useCatVal=False):
+        self.use_cat_val = useCatVal
         self.ptsrc = copy.deepcopy(ptSrc())
         self.ptsrc.setAttribute('name', prefix + fluxSrc.getAttribute('name'))
         self.fluxSrc = fluxSrc
@@ -84,14 +87,20 @@ class PointSource:
         self.emin = string.atof(powerlaw.getAttribute('emin'))/100.
         self.emax = string.atof(powerlaw.getAttribute('emax'))/100.
     def _setIndex(self):
-        self._setSpecParam('Index', -2)
-#        self._setSpecParam('Index', -self.gamma)
+        if self.use_cat_val:
+            self._setSpecParam('Index', -self.gamma)
+        else:
+            self._setSpecParam('Index', -2)
     def _setPrefactor(self):
-        self._setSpecParam('Prefactor', 1)
-#        flux = string.atof(self.fluxSrc.getAttribute('flux').encode('ascii'))
-#        prefactor = flux*1e5*(self.gamma-1)/100./(self.emin**(1-self.gamma)
-#                                                  - self.emax**(1-self.gamma))
-#        self._setSpecParam('Prefactor', prefactor)
+        if self.use_cat_val:
+            flux = string.atof(self.fluxSrc.getAttribute('flux').
+                               encode('ascii'))
+            prefactor = (flux*1e5*(self.gamma-1)/100.
+                         /(self.emin**(1-self.gamma)
+                           - self.emax**(1-self.gamma)))
+            self._setSpecParam('Prefactor', prefactor)
+        else:
+            self._setSpecParam('Prefactor', 1)
     def _setSpecParam(self, paramName, value):
         spectrum = self.ptsrc.getElementsByTagName('spectrum')[0]
         params = spectrum.getElementsByTagName('parameter')

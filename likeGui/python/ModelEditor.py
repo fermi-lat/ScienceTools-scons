@@ -136,7 +136,7 @@ class RootWindow(Tk.Tk):
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         self.srcModel = readXml.SourceModel(xmlFile)
         if not self.srcModel.names():
-            showwarning(title=os.path.basename(xmlFile),
+            showwarning(title=xmlFile,
                         message="No valid sources loaded")
             return
         self.modelEditor.fill()
@@ -146,8 +146,11 @@ class RootWindow(Tk.Tk):
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         new_srcModel = readXml.SourceModel(xmlFile)
         if not new_srcModel.names():
-            showwarning(title=os.path.basename(xmlFile),
-                        message="No valid sources loaded")
+            try:
+                filename = os.path.basename(xmlFile)
+            except:
+                filename = xmlFile
+            showwarning(title=filename, message="No valid sources loaded")
         for src in new_srcModel.names():
             self.srcModel[src] = new_srcModel[src]
         self.modelEditor.fill()
