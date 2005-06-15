@@ -1,6 +1,7 @@
 package evtbin
 version v0
 
+use CLHEP * IExternal
 use STpolicy *
 use astro *
 use st_app *
@@ -12,6 +13,6 @@ apply_pattern ST_pfiles
 
 private
 
-macro_append st_app_cppflags "" Linux "-I.."
+macro_append st_app_cppflags "" Linux "-I.. "
 application gtbin gtbin/*.cxx
 application gtbindef gtbindef/*.cxx
