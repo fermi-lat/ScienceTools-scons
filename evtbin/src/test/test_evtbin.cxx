@@ -6,11 +6,14 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
+// Class encapsulating a Bayesian block binner.
+#include "evtbin/BayesianBinner.h"
 // Class encapsulating a binner configuration helper object.
 #include "evtbin/BinConfig.h"
 // Class encapsulating a count map.
@@ -94,6 +97,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testConstSnBinner();
 
+    void testBayesianBinner();
+
   private:
     st_stream::StreamFormatter m_os;
     std::string m_data_dir;
@@ -149,6 +154,8 @@ void EvtBinTest::run() {
   testGti();
   // Test const s/n binner:
   testConstSnBinner();
+  // Test Bayesian block binner:
+  testBayesianBinner();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -1023,6 +1030,40 @@ void EvtBinTest::testConstSnBinner() {
     m_os.err() << "In fourth binner test, index of 102. was " << index << ", not -1" << std::endl;
   }
 
+}
+
+void EvtBinTest::testBayesianBinner() {
+  m_os.setMethod("testBayesianBinner()");
+
+  // Create uniform bins, and highly artificial data which obviously hovers around constant values.
+  OrderedBinner::IntervalCont_t intervals;
+  std::vector<double> cell_pop(100);
+  double change_points[] = { 0, 20, 21, 22, 27, 40, 60, 100 };
+  double plateau[] = { 5, 25, 100, 160, 120, 58, 12 };
+  int cp = 1;
+  for (int ii = 0; ii < 100; ++ii) {
+    intervals.push_back(Binner::Interval(ii, ii + 1));
+    if (ii >= change_points[cp]) ++cp;
+    cell_pop[ii] = plateau[cp] + 3. * rand() / RAND_MAX;
+  }
+
+  // Use BayesianBinner to determine blocks, and compare with the correct answer.
+  BayesianBinner binner(intervals, cell_pop.begin());
+  int num_bins = (sizeof(change_points) / sizeof(double)) - 1;
+  if (binner.getNumBins() != num_bins) {
+    m_failed = true;
+    m_os.err() << "Number of Bayesian blocks found was " << binner.getNumBins() << ", not " << num_bins <<
+      ", as expected." << std::endl;
+  } else {
+    for (int ii = 0; ii != num_bins; ++ii) {
+      Binner::Interval interval(binner.getInterval(ii));
+      if (interval.begin() != change_points[ii] || interval.end() != change_points[ii + 1]) {
+        m_failed = true;
+        m_os.err() << "Interval[" << ii << "] is [" << interval.begin() << ", " << interval.end() << "], not [" <<
+          change_points[ii] << ", " << change_points[ii + 1] << "], as expected." << std::endl;
+      }
+    }
+  }
 }
 
 /// \brief Create factory singleton object which will create the application:
