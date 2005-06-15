@@ -48,6 +48,7 @@ public:
     @param time mission time
     */
    virtual void execute(double /*KE*/, double time){
+       using astro::GPS;
         if(m_skydir){
             //here, we have a SkyDir, so we need the transformation from a SkyDir to GLAST.
             m_rottoglast = GPS::instance()->transformToGlast(time,GPS::CELESTIAL);//->transformCelToGlast(time);
@@ -97,7 +98,7 @@ public:
     /// return the cosine of the angle between the incoming direction and the earth's zenith
     virtual double zenithCosine()const{
         if(m_skydir){
-            astro::SkyDir zenDir(GPS::instance()->RAZenith(),GPS::instance()->DECZenith());
+            astro::SkyDir zenDir(astro::GPS::instance()->RAZenith(),astro::GPS::instance()->DECZenith());
             return -m_dir*zenDir();
         }
         //if the direction is local

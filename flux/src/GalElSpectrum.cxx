@@ -7,7 +7,7 @@
 
 #include "GalElSpectrum.h"
 #include "astro/GPS.h"
-
+using astro::GPS;
 #include <cmath>
 #include "CLHEP/Random/Random.h"
 

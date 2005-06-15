@@ -8,6 +8,7 @@ $Header$
 #include "rootAngleHist.h"
 
 #include "CLHEP/Geometry/Vector3D.h"
+using astro::GPS;
 
 rootplot::rootplot(int argc, char* argv[])
 : NUM_BINS(30),LOOP(30000),

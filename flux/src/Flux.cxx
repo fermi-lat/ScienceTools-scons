@@ -144,7 +144,7 @@ HepRotation Flux::transformGlastToGalactic(double time)const{
 }
 
 //get the transformtation matrix - the rest of these functions are now deprecated
-HepRotation Flux::transformToGlast(double seconds,GPS::CoordSystem index)const{
+HepRotation Flux::transformToGlast(double seconds,astro::GPS::CoordSystem index)const{
     return s_mgr->transformToGlast(seconds, index);
 }
 

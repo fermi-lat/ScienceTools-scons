@@ -1,7 +1,8 @@
 package flux
 
-version v8r20
-author Sean Robinson <srobinsn@u.washington.edu>
+version v8r20p1
+author Toby Burnett <tburnett@u.washington.edu>
+
 # $Id$
 
 use xmlBase  v5r*
