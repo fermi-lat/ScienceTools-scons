@@ -78,7 +78,7 @@ private:
    void saveEventIds(const observationSim::EventContainer & events) const;
 };
 
-st_app::StAppFactory<ObsSim> myAppFactory;
+st_app::StAppFactory<ObsSim> myAppFactory("gtobssim");
 
 void ObsSim::run() {
    promptForParameters();

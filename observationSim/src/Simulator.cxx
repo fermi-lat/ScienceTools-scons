@@ -69,7 +69,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    m_fluxMgr->setExpansion(1.);    // is this already the default?
 
 // Set the start of the simulation time in GPS:
-   GPS::instance()->time(m_absTime);
+   astro::GPS::instance()->time(m_absTime);
 
    if (pointingHistory != "none" && pointingHistory != "") {
 // Use pointing history file.

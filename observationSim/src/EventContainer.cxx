@@ -185,7 +185,7 @@ void EventContainer::setEventId(const std::string & name) {
 }
 
 astro::SkyDir EventContainer::ScZenith(double time) const {
-   GPS *gps = GPS::instance();
+   astro::GPS * gps = astro::GPS::instance();
    gps->getPointingCharacteristics(time);
    double lon_zenith = gps->RAZenith()*M_PI/180.;
    double lat_zenith = gps->DECZenith()*M_PI/180.;

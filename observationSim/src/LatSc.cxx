@@ -27,22 +27,19 @@ astro::SkyDir LatSc::xAxis(double time) {
 }
 
 double LatSc::EarthLon(double time) {
-//   astro::GPS *gps = astro::GPS::instance();
-   GPS *gps = GPS::instance();
+   astro::GPS * gps = astro::GPS::instance();
    gps->getPointingCharacteristics(time);
    return gps->lon();
 }
 
 double LatSc::EarthLat(double time) {
-//   astro::GPS *gps = astro::GPS::instance();
-   GPS *gps = GPS::instance();
+   astro::GPS * gps = astro::GPS::instance();
    gps->getPointingCharacteristics(time);
    return gps->lat();
 }
 
 HepRotation LatSc::InstrumentToCelestial(double time) {
-//   astro::GPS *gps = astro::GPS::instance();
-   GPS *gps = GPS::instance();
+   astro::GPS *gps = astro::GPS::instance();
    gps->getPointingCharacteristics(time);
    astro::SkyDir xAxis(gps->RAX(), gps->DECX());
    astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
@@ -57,7 +54,7 @@ bool LatSc::inSaa(double time) {
 }
 
 void LatSc::getScPosition(double time, std::vector<double> & position) {
-   Hep3Vector pos = GPS::instance()->position(time);
+   Hep3Vector pos = astro::GPS::instance()->position(time);
    position.clear();
 // GPS returns the position in units of km, but FT2 wants meters so
 // we multiply by 10^3.
@@ -68,9 +65,9 @@ void LatSc::getScPosition(double time, std::vector<double> & position) {
 }
 
 void LatSc::getZenith(double time, double & ra, double & dec) {
-   GPS::instance()->getPointingCharacteristics(time);
-   ra = GPS::instance()->RAZenith();
-   dec = GPS::instance()->DECZenith();
+   astro::GPS::instance()->getPointingCharacteristics(time);
+   ra = astro::GPS::instance()->RAZenith();
+   dec = astro::GPS::instance()->DECZenith();
 }
 
 } // namespace observationSim

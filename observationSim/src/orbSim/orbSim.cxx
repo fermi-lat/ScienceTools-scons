@@ -60,7 +60,7 @@ private:
    void generateData();
 };
 
-st_app::StAppFactory<OrbSim> myAppFactory;
+st_app::StAppFactory<OrbSim> myAppFactory("gtorbsim");
 
 void OrbSim::run() {
    defineRockTypes();
@@ -135,8 +135,8 @@ void OrbSim::createSimulator() {
       astro::SkyDir dir(ra, dec);
 // GPS wants (l, b) for the rotation angles in pointing mode, but
 // they must be in radians!
-      GPS::instance()->rotateAngles(std::make_pair(dir.l()*M_PI/180., 
-                                                   dir.b()*M_PI/180.));
+      astro::GPS::instance()->rotateAngles(std::make_pair(dir.l()*M_PI/180., 
+                                                          dir.b()*M_PI/180.));
    }
 }
 

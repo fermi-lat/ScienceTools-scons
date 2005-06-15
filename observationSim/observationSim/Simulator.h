@@ -86,7 +86,7 @@ public:
 
    /// Set the pointing history file.
    void setPointingHistoryFile(const std::string &filename) {
-      m_fluxMgr->setRockType(GPS::HISTORY, 0);
+      m_fluxMgr->setRockType(astro::GPS::HISTORY, 0);
       m_fluxMgr->setPointingHistoryFile(filename);
       m_usePointingHistory = true;
    }   
