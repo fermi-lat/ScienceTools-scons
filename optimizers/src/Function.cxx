@@ -56,7 +56,7 @@ std::vector<double>::const_iterator Function::setParamValues_(
    return it;
 }
 
-void Function::setParams(std::vector<Parameter> &params) {
+void Function::setParams(const std::vector<Parameter> & params) {
    if (params.size() == m_parameter.size()) {
       m_parameter = params;
    } else {

@@ -88,7 +88,7 @@ public:
       std::vector<double>::const_iterator);
 
    /// Set all the Parameters using a vector of Parameter objects.
-   virtual void setParams(std::vector<Parameter> &params);
+   virtual void setParams(const std::vector<Parameter> &params);
 
    /// Get a vector of the Parameter names.
    void getParamNames(std::vector<std::string> &names) const {
