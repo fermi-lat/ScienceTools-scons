@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cstring>
 #include <cmath>
+#include <vector>
 
 //  include everything for the compiler to test
 
@@ -25,6 +26,7 @@
 #include "optimizers/Mcmc.h"
 #include "optimizers/FunctionTest.h"
 #include "optimizers/FunctionFactory.h"
+#include "optimizers/ChiSq.h"
 #include "MyFun.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
@@ -45,6 +47,7 @@ void test_PowerLaw_class();
 void test_CompositeFunction();
 void test_Optimizers();
 void test_Mcmc();
+void test_ChiSq();
 
 std::string test_path;
 
@@ -59,6 +62,7 @@ int main() {
    test_CompositeFunction();
    test_Optimizers();
    test_Mcmc();
+   test_ChiSq();
    return 0;
 }
 
@@ -760,3 +764,101 @@ void test_Parameter_class() {
              << std::endl;
 
 } // Parameter class tests
+
+void test_ChiSq() {
+   std::cout << "*** test_ChiSq ***" << std::endl;
+
+   bool passed = true;
+   std::vector<double> domain(2);
+   std::vector<double> range(2);
+
+// test for failure
+   Gaussian gauss(10., 1., 0.1);
+   try {
+      ChiSq chi_sq(domain, range, &gauss);
+      std::cerr << "creating ChiSq object from too small a data set "
+                << "did not throw an exception"
+                << std::endl;
+      assert(0);
+   } catch (const std::exception &) {
+      // Expected.
+   }
+
+   domain.resize(10);
+   range.resize(9);
+   try {
+      ChiSq chi_sq(domain, range, &gauss);
+      std::cerr << "creating ChiSq object from domain/range with "
+                << "mismatched sizes did not throw an exception"
+                << std::endl;
+      assert(0);
+   } catch (const std::exception &) {
+      // Expected.
+   }
+
+   range.resize(10);
+   try {
+      ChiSq chi_sq(domain, range, 0);
+      std::cerr << "creating ChiSq object with a NULL function pointer "
+                << "did not throw an exception"
+                << std::endl;
+      assert(0);
+   } catch (const std::exception &) {
+      // Expected.
+   }
+
+// test for success
+   // Correct value of chi_sq.
+   double correct_value = 0.;
+
+   // Vector to hold correct deriv wrt Prefactor, deriv wrt Mean, deriv wrt Sigma
+   ChiSq::DataCont_t correct_deriv(3, 0.);
+
+   for (int ii = 0; ii < 10; ++ii) {
+      domain[ii] = .2 * ii;
+      dArg arg(domain[ii]);
+      // Set range so that each term in chisq sum contributes .25 * model value
+      // and each deriv contributes .75 * function deriv.
+      range[ii] = .5 * gauss.value(arg);
+      correct_value += .25 * gauss.value(arg);
+      correct_deriv[0] += .75 * gauss.derivByParam(arg, "Prefactor");
+      correct_deriv[1] += .75 * gauss.derivByParam(arg, "Mean");
+      correct_deriv[2] += .75 * gauss.derivByParam(arg, "Sigma");
+   }
+
+   // Create ChiSq object from valid inputs.
+   ChiSq chi_sq(domain, range, &gauss);
+
+   // Compare ChiSq's computation of value with the known correct result.
+   if (fabs((correct_value - chi_sq.value()) / correct_value) > 1.e-8) {
+      passed = false;
+      std::cerr << "ChiSq::value returned " << chi_sq.value() << ", not " << correct_value
+                << ", as expected."
+                << std::endl;
+   }
+
+   // Compare ChiSq's computation of derivatives with the known correct result.
+   ChiSq::DataCont_t deriv;
+   chi_sq.getFreeDerivs(deriv);
+   std::cerr.precision(10);
+   if (correct_deriv.size() != deriv.size()) {
+      passed = false;
+      std::cerr << "output vector from ChiSq::getFreeDerivs(vector &) has size "
+                << deriv.size() << ", not " << correct_deriv.size() << ", as expected."
+                << std::endl;
+   } else {
+      for (int ii = 0; ii < 3; ++ii) {
+         if (fabs((correct_deriv[ii] - deriv[ii]) / correct_deriv[ii]) > 1.e-8) {
+            passed = false;
+            std::cerr << "output from ChiSq::getFreeDerivs(vector &) deriv[" << ii
+                      << "] has value " << deriv[ii] << ", not " << correct_deriv[ii]
+                      << ", as expected."
+                      << std::endl;
+         }
+      }
+   }
+
+   if (passed)
+      std::cout << "*** test_ChiSq: all tests passed ***\n" 
+                << std::endl;
+} // ChiSq class tests
