@@ -14,6 +14,7 @@
 
 #include "fitsio.h"
 
+using namespace astro;
 // static declaration
 
 GPS*	GPS::s_instance = 0;
@@ -151,10 +152,10 @@ void GPS::rotateAngles(std::pair<double,double> coords){
 }
 
 /// set the desired pointing history file to use:
-void GPS::setPointingHistoryFile(std::string fileName){
+void GPS::setPointingHistoryFile(std::string fileName, double  offset){
     m_pointingHistoryFile = fileName;
     m_rockType = HISTORY;
-    setUpHistory();
+    setUpHistory(offset);
 }
 
 HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
@@ -536,7 +537,7 @@ void GPS::fitsReportError(FILE *stream, int status) const {
    }
 }
 
-void GPS::setUpHistory(){
+void GPS::setUpHistory(double offset){
    if (haveFitsFile()) {
       readFitsData();
    } else {
@@ -553,18 +554,12 @@ void GPS::setUpHistory(){
          double intrvalstart,posx,posy,posz,raz,decz,rax,decx,razenith,deczenith,lon,lat,alt;
          //initialize the key structure:
          while (!input_file.eof()){
-            input_file >> intrvalstart;
-            input_file >> posx;
-            input_file >> posy;
-            input_file >> posz;
-            input_file >> raz;
-            input_file >> decz;
-            input_file >> rax;
-            input_file >> decx;
-            input_file >> razenith;
-            input_file >> deczenith;
-            input_file >> lon;
-            input_file >> lat;
+            input_file >> intrvalstart; 
+            input_file >> posx >> posy >> posz;
+            input_file >> raz >> decz;
+            input_file >> rax >> decx;
+            input_file >> razenith >> deczenith;
+            input_file >> lon >> lat;
             input_file >> alt;
 
             POINTINFO temp;
@@ -575,7 +570,7 @@ void GPS::setUpHistory(){
             temp.position=Hep3Vector(posx,posy,posz);
             temp.altitude = alt;
 
-            m_pointingHistory[intrvalstart]=temp;
+            m_pointingHistory[intrvalstart+offset]=temp;
          }
       }
    }

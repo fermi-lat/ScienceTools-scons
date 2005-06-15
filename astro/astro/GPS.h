@@ -9,11 +9,13 @@
 #include "astro/SkyDir.h"
 #include "astro/EarthOrbit.h"
 #include "astro/EarthCoordinate.h"
+#include "astro/GPS.h"
+
 #include "CLHEP/Vector/Rotation.h"
 
 #include <iostream>
 #include <string>
-
+namespace astro {
 
 /** 
 * \class GPS
@@ -127,11 +129,14 @@ public:
     /// set m_rotangles
     void    rotateAngles(std::pair<double,double> coords); 
 
-    /// set the desired pointing history file to use:
-    void setPointingHistoryFile(std::string fileName);
+    /** @brief set the desired pointing history file to use. 
+     *  @param fileName 
+     *  @param offset mission elapsed time for "launch", number to be added to time increments
+     */
+    void setPointingHistoryFile(std::string fileName, double offset=0);
 
     /// write the explicit history data for re-creation of orbit.
-    void setUpHistory();
+    void setUpHistory(double offset);
 
     /// print time & position
     void    printOn(std::ostream& out) const; 
@@ -228,4 +233,6 @@ inline std::ostream&    operator<<(std::ostream& o, const GPS::Coords& c) {
         << c.time() <<' ' << c.phase();
     return o;
 }
+
+} // namespace
 #endif // !defined(AFX_GPS_H__F9844433_4E64_11D2_B4DD_00A0C9960210__INCLUDED_)
