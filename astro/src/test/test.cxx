@@ -214,7 +214,7 @@ void checkdir(double ra1, double dec1, double ra2, double dec2) {
 }
 
 bool test_GPS_readFitsData() {
-    GPS * gps = GPS::instance();
+    astro::GPS * gps = astro::GPS::instance();
 
     std::string filename("test_FT2.fits");
     gps->setPointingHistoryFile(filename);

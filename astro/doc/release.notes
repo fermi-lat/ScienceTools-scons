@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r10p1  16-jun-05 THB fix test program
   v1r10    15-jun-05 THB put GPS in the namespace
   v1r9p2   03-jun-05 THB fix SkyProj::pix2pix and SkyProj copy constructor.
   v1r9p1   02-may-05 THB fixes
