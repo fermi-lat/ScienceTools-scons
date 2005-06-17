@@ -57,6 +57,20 @@ namespace tip {
       ReportExpected("TestColumn::test() was not able to write a non-numeric string to a double column", x);
     }
 
+    // Test getColumnKeyword facility.
+    try {
+      FitsTable manager(getDataDir() + "aeff_DC1.fits", "EA_ALL");
+
+      std::string units;
+      manager.getColumn(0)->getColumnKeyword("TUNIT").get(units);
+      if ("MeV" == units)
+        ReportExpected("TestColumn::test(): getColumnKeyword(\"TUNIT\") returned MeV");
+      else
+        ReportUnexpected("TestColumn::test(): getColumnKeyword(\"TUNIT\") returned \"" + units + "\", not MeV");
+    } catch (const TipException & x) {
+      ReportUnexpected("TestColumn::test() caught unexpected exception while testing FitsColumn::getColumnKeyword", x);
+    }
+
     return getStatus();
   }
 

@@ -251,6 +251,17 @@ namespace tip {
         if (1 == m_repeat && !m_var_length) m_scalar = true; else m_scalar = false;
       }
 
+      /** \brief Get a modifiable keyword associated with this column.
+          \param base_name The base name of the keyword, which will be specialized for this column.
+      */
+      virtual Keyword & getColumnKeyword(const std::string & base_name);
+
+      /** \brief Get a constant keyword associated with this column.
+          \param base_name The base name of the keyword, which will be specialized for this column.
+      */
+      virtual const Keyword & getColumnKeyword(const std::string & base_name) const;
+
+
     private:
       template <typename U>
       void getScalar(Index_t record_index, U & dest) const {
@@ -349,6 +360,20 @@ namespace tip {
     fits_read_key(m_ext->getFp(), TSTRING, const_cast<char *>(os.str().c_str()), units, 0, &status);
     if (0 == status) m_units = units;
     else if (KEY_NO_EXIST != status) throw TipException(status, "FitsColumn::FitsColumn failed to get units of field");
+  }
+
+  template <typename T>
+  inline Keyword & FitsColumn<T>::getColumnKeyword(const std::string & base_name) {
+    std::ostringstream os;
+    os << base_name << m_field_index;
+    return m_ext->getHeader()[os.str()];
+  }
+
+  template <typename T>
+  inline const Keyword & FitsColumn<T>::getColumnKeyword(const std::string & base_name) const {
+    std::ostringstream os;
+    os << base_name << m_field_index;
+    return m_ext->getHeader()[os.str()];
   }
 
 }

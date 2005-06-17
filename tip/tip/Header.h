@@ -30,6 +30,8 @@ namespace tip {
   */
   class Keyword {
     public:
+      static Keyword & emptyKeyword();
+
       /** \brief Construct a Keyword object associated with a particular Header.
           \param header_data Pointer to the referent IExtensionData object.
           \param name The name of this Keyword.
@@ -72,6 +74,8 @@ namespace tip {
       void setUnit(const std::string & unit);
 
     private:
+      Keyword(): m_record(), m_header_data(0), m_name() {}
+
       KeyRecord m_record;
       Header * m_header_data;
       std::string m_name;

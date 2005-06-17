@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "tip/Header.h"
 #include "tip/TipException.h"
 #include "tip/tip_types.h"
 
@@ -123,6 +124,18 @@ namespace tip {
       /** \brief Get the units of this column, as a string.
       */
       virtual const std::string & getUnits() const { return m_units; }
+
+      /** \brief Get a modifiable keyword associated with this column.
+          \param base_name The base name of the keyword, which will be specialized for this column.
+      */
+      virtual Keyword & getColumnKeyword(const std::string &)
+        { unsupported("getColumnKeyword"); return Keyword::emptyKeyword(); }
+
+      /** \brief Get a constant keyword associated with this column.
+          \param base_name The base name of the keyword, which will be specialized for this column.
+      */
+      virtual const Keyword & getColumnKeyword(const std::string &) const
+        { unsupported("getColumnKeyword"); return Keyword::emptyKeyword(); }
 
     protected:
       std::string m_units;

@@ -9,6 +9,11 @@
 
 namespace tip {
 
+  Keyword & Keyword::emptyKeyword() {
+    static Keyword s_empty_keyword;
+    return s_empty_keyword;
+  }
+
   void Header::get(const char ** keys, KeyValCont_t & key_vals) const {
     std::string value;
     // Iterate over the given set of keys.
