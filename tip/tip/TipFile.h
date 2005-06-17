@@ -7,10 +7,11 @@
 
 #include <string>
 
+#include "tip/Image.h"
+
 namespace tip {
 
   class Extension;
-  class Image;
   class Table;
 
   /** \class ITipFile

@@ -6,10 +6,9 @@
 #define tip_TestImage_h
 
 #include "TestHarness.h"
+#include "tip/Image.h"
 
 namespace tip {
-
-  class Image;
 
   /** \class TestImage
       \brief Declaration for class to perform detailed testing of Image class.

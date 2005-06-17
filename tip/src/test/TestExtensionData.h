@@ -6,10 +6,10 @@
 #define tip_TestExtensionData_h
 
 #include "TestHarness.h"
+#include "tip/Image.h"
 
 namespace tip {
 
-  class Image;
   class Table;
 
   /** \class TestExtensionData
