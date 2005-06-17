@@ -19,14 +19,14 @@ namespace tip {
 
       \brief High level encapsulation of image data.
   */
-  class Image : public Extension {
+  class ImageBase : public Extension {
     public:
       typedef std::vector<PixOrd_t> PixelCoordinate;
       typedef std::vector<std::pair<PixOrd_t, PixOrd_t> > PixelCoordRange;
 
       /** \brief Destructor. Closes image if it is open.
       */
-      virtual ~Image() {}
+      virtual ~ImageBase() {}
 
       /** \brief Get the dimensionality of an image.
       */
@@ -72,16 +72,55 @@ namespace tip {
       */
       virtual void setPixel(const PixelCoordinate & coord, const double & pixel) = 0;
 
+  };
+
+  template <typename T>
+  class TypedImage : public ImageBase {
+    public:
+      /** \brief Return a specific pixel from an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+      */
+      T get(PixOrd_t x, PixOrd_t y) const {
+        PixelCoordinate coord(2);
+        coord[0] = x;
+        coord[1] = y;
+        return get(coord);
+      }
+
+      /** \brief Return a specific pixel from an image extension.
+          \param coord The coordinates of the pixel.
+      */
+      virtual T get(const PixelCoordinate & coord) const = 0;
+
+      /** \brief Set a specific pixel in an image extension.
+          \param x The x ordinate of the pixel.
+          \param y The y ordinate of the pixel.
+          \param pixel The pixel value.
+      */
+      void set(PixOrd_t x, PixOrd_t y, T pixel) {
+        PixelCoordinate coord(2);
+        coord[0] = x;
+        coord[1] = y;
+        set(coord, pixel);
+      }
+
+      /** \brief Set a specific pixel in an image extension.
+          \param coord The coordinates of the pixel.
+          \param pixel The pixel value.
+      */
+      virtual void set(const PixelCoordinate & coord, T pixel) = 0;
+
       /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
           \param image The array in which to store the image.
       */
-      virtual void get(std::vector<float> & image) const = 0;
+      virtual void get(std::vector<T> & image) const = 0;
 
       /** \brief Get a slice of an image as a one-dimensional array.
           \param index The index of the first dimension of the array being read.
           \param image The array in which to store the image slice.
       */
-      void get(const PixOrd_t & index, std::vector<float> & image) const {
+      void get(const PixOrd_t & index, std::vector<T> & image) const {
         const std::vector<PixOrd_t> & dims(getImageDimensions());
         PixelCoordRange range(dims.size());
         range[0].first = index;
@@ -97,18 +136,18 @@ namespace tip {
           \param range A container of intervals which give the range of pixels in each image dimension.
           \param image The array in which to store the image.
       */
-      virtual void get(const PixelCoordRange & range, std::vector<float> & image) const = 0;
+      virtual void get(const PixelCoordRange & range, std::vector<T> & image) const = 0;
 
       /** \brief Get an entire image, regardless of its dimensionality, as a one-dimensional array.
           \param image The array which stores the image to be written.
       */
-      virtual void set(const std::vector<float> & image) = 0;
+      virtual void set(const std::vector<T> & image) = 0;
 
       /** \brief Set a slice of an image as a one-dimensional array.
           \param index The index of the first dimension of the array being written.
           \param image The array in which the image slice is stored.
       */
-      void set(const PixOrd_t & index, const std::vector<float> & image) {
+      void set(const PixOrd_t & index, const std::vector<T> & image) {
         const std::vector<PixOrd_t> & dims(getImageDimensions());
         PixelCoordRange range(dims.size());
         range[0].first = index;
@@ -124,8 +163,10 @@ namespace tip {
           \param range A container of intervals which give the range of pixels in each image dimension.
           \param image The array which stores the slice of the image to be written.
       */
-      virtual void set(const PixelCoordRange & range, const std::vector<float> & image) = 0;
+      virtual void set(const PixelCoordRange & range, const std::vector<T> & image) = 0;
   };
+
+  typedef TypedImage<float> Image;
 
 }
 

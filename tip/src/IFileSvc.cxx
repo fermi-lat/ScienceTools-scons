@@ -108,12 +108,36 @@ namespace tip {
   }
 
   // Edit a image in a file, be it FITS or Root.
-  Image * IFileSvc::editImage(const std::string & file_name, const std::string & table_name,
+  TypedImage<double> * IFileSvc::editImageDbl(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Image * image = 0;
+    TypedImage<double> * image = 0;
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
-      image = new FitsImage(file_name, table_name, filter, false);
+      image = new FitsTypedImage<double>(file_name, table_name, filter, false);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
+    return image;
+  }
+
+  // Edit a image in a file, be it FITS or Root.
+  TypedImage<float> * IFileSvc::editImageFlt(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    TypedImage<float> * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsTypedImage<float>(file_name, table_name, filter, false);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
+    return image;
+  }
+
+  // Edit a image in a file, be it FITS or Root.
+  TypedImage<int> * IFileSvc::editImageInt(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    TypedImage<int> * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsTypedImage<int>(file_name, table_name, filter, false);
     else if (file_type == "root")
       throw TipException("Root images are not supported.");
     return image;
@@ -149,12 +173,36 @@ namespace tip {
   }
 
   // Read-only an image in a file, be it FITS or Root.
-  const Image * IFileSvc::readImage(const std::string & file_name, const std::string & table_name,
+  const TypedImage<double> * IFileSvc::readImageDbl(const std::string & file_name, const std::string & table_name,
     const std::string & filter) {
-    Image * image = 0;
+    TypedImage<double> * image = 0;
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
-      image = new FitsImage(file_name, table_name, filter, true);
+      image = new FitsTypedImage<double>(file_name, table_name, filter, true);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
+    return image;
+  }
+
+  // Read-only an image in a file, be it FITS or Root.
+  const TypedImage<float> * IFileSvc::readImageFlt(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    TypedImage<float> * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsTypedImage<float>(file_name, table_name, filter, true);
+    else if (file_type == "root")
+      throw TipException("Root images are not supported.");
+    return image;
+  }
+
+  // Read-only an image in a file, be it FITS or Root.
+  const TypedImage<int> * IFileSvc::readImageInt(const std::string & file_name, const std::string & table_name,
+    const std::string & filter) {
+    TypedImage<int> * image = 0;
+    std::string file_type = classifyFile(file_name);
+    if (file_type == "fits")
+      image = new FitsTypedImage<int>(file_name, table_name, filter, true);
     else if (file_type == "root")
       throw TipException("Root images are not supported.");
     return image;

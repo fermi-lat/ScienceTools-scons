@@ -12,11 +12,11 @@
 
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
+#include "tip/Image.h"
 
 namespace tip {
 
   class Extension;
-  class Image;
   class Table;
   class TipFile;
 
@@ -81,12 +81,36 @@ namespace tip {
       virtual Extension * editExtension(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "");
 
-      /** \brief Open an existing image with modification access.
+      /** \brief Open an existing image with modification access. Each pixel is treated as a float.
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
           \param filter Filtering string.
       */
       virtual Image * editImage(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "") { return editImageFlt(file_name, table_name, filter); }
+
+      /** \brief Open an existing image with modification access. Each pixel is treated as a double.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual TypedImage<double> * editImageDbl(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing image with modification access. Each pixel is treated as a float.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual TypedImage<float> * editImageFlt(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing image with modification access. Each pixel is treated as an int.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual TypedImage<int> * editImageInt(const std::string & file_name, const std::string & table_name,
         const std::string & filter = "");
 
       /** \brief Open an existing table with modification access.
@@ -106,12 +130,36 @@ namespace tip {
       virtual const Extension * readExtension(const std::string & file_name, const std::string & ext_name,
         const std::string & filter = "");
 
-      /** \brief Open an existing image without modification access.
+      /** \brief Open an existing image without modification access. Each pixel is treated as a float.
           \param file_name The name of the file (any supported format OK).
           \param table_name The name of the table.
           \param filter Filtering string.
       */
       virtual const Image * readImage(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "") { return readImageFlt(file_name, table_name, filter); }
+
+      /** \brief Open an existing image without modification access. Each pixel is treated as a double.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual const TypedImage<double> * readImageDbl(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing image without modification access. Each pixel is treated as a float.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual const TypedImage<float> * readImageFlt(const std::string & file_name, const std::string & table_name,
+        const std::string & filter = "");
+
+      /** \brief Open an existing image without modification access. Each pixel is treated as a double.
+          \param file_name The name of the file (any supported format OK).
+          \param table_name The name of the table.
+          \param filter Filtering string.
+      */
+      virtual const TypedImage<int> * readImageInt(const std::string & file_name, const std::string & table_name,
         const std::string & filter = "");
 
       /** \brief Open an existing table without modification access.

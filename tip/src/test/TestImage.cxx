@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -59,9 +60,8 @@ namespace tip {
       // Copy pixel by pixel from input. Output image will be rotated about the upper-left - lower-right diagonal
       for (int ii = 0; ii < dims[0]; ++ii) {
         for (int jj = 0; jj < dims[1]; ++jj) {
-          double pixel = 0;
-          m_const_image->getPixel(jj, ii, pixel);
-          image->setPixel(dims[0] - 1 - ii, dims[1] - 1 - jj, pixel);
+          float pixel = m_const_image->get(jj, ii);
+          image->set(dims[0] - 1 - ii, dims[1] - 1 - jj, pixel);
         }
       }
 
@@ -87,17 +87,19 @@ namespace tip {
       // Create new image.
       IFileSvc::instance().createFile("new_image2.fits",  getDataDir() + "arlac.pha");
 
-      // Open new image for writing.
-      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image2.fits", ""));
+      // Open new image for writing. Treat pixels as doubles.
+      std::auto_ptr<TypedImage<double> > image(IFileSvc::instance().editImageDbl("new_image2.fits", ""));
 
-      // Create array for read image.
+      // Create array for reading image.
       std::vector<float> image_vec;
 
       // Read entire image from input.
       m_const_image->get(image_vec);
 
       // Copy it to the output.
-      image->set(image_vec);
+      std::vector<double> dbl_image_vec(image_vec.begin(), image_vec.end());
+
+      image->set(dbl_image_vec);
 
       // Re-read the image dimensions.
       dims = m_const_image->getImageDimensions();
@@ -125,8 +127,8 @@ namespace tip {
       // Create new image.
       IFileSvc::instance().createFile("new_image3.fits",  getDataDir() + "arlac.pha");
 
-      // Open new image for writing.
-      std::auto_ptr<Image> image(IFileSvc::instance().editImage("new_image3.fits", ""));
+      // Open new image for writing. Treat pixels as ints.
+      std::auto_ptr<TypedImage<int> > image(IFileSvc::instance().editImageInt("new_image3.fits", ""));
 
       // Create array to read image slice.
       std::vector<float> image_vec;
@@ -152,7 +154,10 @@ namespace tip {
       image->setImageDimensions(dims);
 
       // Write slice to output image.
-      image->set(image_vec);
+      std::vector<int> int_image_vec(image_vec.size());
+      for (size_t ii = 0; ii != image_vec.size(); ++ii) int_image_vec[ii] = int(image_vec[ii]);
+
+      image->set(int_image_vec);
 
       // Confirm that they match up as expected with original image.
       for (int ii = range[0].first; ii < range[0].second; ++ii) {
