@@ -13,7 +13,7 @@
 namespace tip {
 
   FitsHeader::FitsHeader(const std::string & file_name, const std::string & ext_name,
-    const std::string & filter, bool read_only): m_file_name(file_name), m_ext_name(ext_name),
+    const std::string & filter, bool read_only): m_keyword_seq(), m_file_name(file_name), m_ext_name(ext_name),
     m_filter(filter), m_fp(0), m_is_primary(false), m_is_table(false), m_read_only(read_only) { open(); }
 
   // Close file automatically while destructing.
@@ -61,6 +61,9 @@ namespace tip {
 
       // Success: save the pointer.
       m_fp = fp;
+
+      // Read all keywords.
+      loadAllKeywords();
 
       // See whether this is the primary extension.
       int hdu_num = 0;
@@ -164,6 +167,32 @@ namespace tip {
     if (!m_ext_name.empty()) msg_str << " in extension \"" << m_ext_name << '"';
     msg_str << " in file \"" << m_file_name << '"';
     return msg_str.str();
+  }
+
+  void FitsHeader::loadAllKeywords() {
+    // Get number of keywords in header.
+    int status = 0;
+    int num_keywords = 0;
+    fits_get_hdrspace(m_fp, &num_keywords, 0, &status);
+    if (0 != status) throw TipException(status, formatWhat("Cannot get number of keywords in header"));
+
+    // See if any of these keywords were not already loaded.
+    if (num_keywords > 0 && (unsigned int)(num_keywords) > m_keyword_seq.size()) {
+      int begin = m_keyword_seq.size();
+      m_keyword_seq.resize(num_keywords);
+      for (int ii = begin; ii < num_keywords; ++ii) {
+        char card[FLEN_CARD] = "";
+        // Read each keyword.
+        fits_read_record(m_fp, ii + 1, card, &status);
+        if (0 != status) {
+          std::ostringstream os;
+          os << "Cannot get keyword number " << ii;
+          throw TipException(status, formatWhat(os.str()));
+        }
+        // Add key record to sequence.
+        m_keyword_seq[ii] = KeyRecord(card);
+      }
+    }
   }
 
 }

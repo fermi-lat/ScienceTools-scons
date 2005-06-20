@@ -13,6 +13,7 @@
 #include <vector>
 #include <utility>
 
+#include "tip/Iterator.h"
 #include "tip/KeyRecord.h"
 #include "tip/TipException.h"
 
@@ -91,6 +92,12 @@ namespace tip {
       */
       typedef std::map<std::string, Keyword> KeywordCont_t;
 
+      /** \brief Container of keywords in order.
+      */
+      typedef std::vector<KeyRecord> KeySeq_t;
+      typedef KeySeq_t::iterator Iterator;
+      typedef KeySeq_t::const_iterator ConstIterator;
+
       /** \brief Adaptor for keywords in a form separate from the Header structure.
       */
       typedef std::pair<std::string, std::string> KeyValPair_t;
@@ -127,6 +134,14 @@ namespace tip {
           \param time The time to format.
       */
       std::string formatTime(const time_t & time) const;
+
+      virtual Iterator begin() { unsupported("begin()"); return KeySeq_t().begin(); }
+
+      virtual Iterator end() { unsupported("end()"); return KeySeq_t().end(); }
+
+      virtual ConstIterator begin() const { unsupported("begin() const"); return KeySeq_t().begin(); }
+
+      virtual ConstIterator end() const { unsupported("end() const"); return KeySeq_t().end(); }
 
       /** \brief Get a keyword from this header data object.
           \param name The name of the keyword to get from the header data object.

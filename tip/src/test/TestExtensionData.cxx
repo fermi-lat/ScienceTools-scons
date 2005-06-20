@@ -18,6 +18,7 @@
 #include "RootTable.h"
 #include "TestExtensionData.h"
 #include "tip/Image.h"
+#include "tip/KeyRecord.h"
 #include "tip/Table.h"
 #include "tip/TipException.h"
 
@@ -597,6 +598,9 @@ namespace tip {
     // Test copying:
     testCopy();
 
+    // Test keyword iterator:
+    testKeywordItor();
+
     return getStatus();
   }
 
@@ -799,6 +803,37 @@ namespace tip {
     }
     delete output;
     delete input;
+  }
+
+  void TestExtensionData::testKeywordItor() {
+    const Header & header(m_read_only_extension->getHeader());
+
+    bool discrepancy = false;
+
+    // See if the header contains the expected number of keywords.
+    Header::KeySeq_t::size_type num_keys = header.end() - header.begin();
+    if (142 != num_keys) {
+      discrepancy = true;
+      std::ostringstream os;
+      os << "TestExtensionData::testKeywordItor found " << num_keys << " keywords, not 142 as expected.";
+      ReportUnexpected(os.str());
+    }
+   
+    // Make sure getting keywords using the associative container interface yields the same results as
+    // the sequential iterator.
+    for (Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
+      std::string key_name = itor->getName();
+      if (!key_name.empty()) {
+        std::string assoc_value;
+        header[key_name].get(assoc_value);
+        if (assoc_value != itor->getValue()) {
+          discrepancy = true;
+          ReportUnexpected("TestExtensionData::testKeywordItor obtained keyword \"" + key_name + "\" = \"" + assoc_value +
+            "\" from associative array, but value was \"" + itor->getValue() + "\" from sequential iterator.");
+        }
+      }
+    }
+    if (!discrepancy) ReportExpected("TestExtensionData::testKeywordItor successfully tested keyword sequence iterator.");
   }
 
 }

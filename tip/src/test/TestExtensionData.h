@@ -45,6 +45,10 @@ namespace tip {
       */
       void testCopy();
 
+      /** \brief Test keyword access via iterators.
+      */
+      void testKeywordItor();
+
     private:
     Table * m_read_only_extension;
     Table * m_writable_extension;
