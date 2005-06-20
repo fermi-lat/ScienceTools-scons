@@ -3,6 +3,9 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+20-jun-2005 v2r4p0 JP Add iterator type and begin/end to Header to allow interating
+                      through all keywords in sequence. Also add KeyRecord::getName
+                      and getComment methods.
 25-apr-2005 v2r3p0 JP Add copyFile method to ITipFile and its subclasses, for
                       copying whole files at a time.
 06-apr-2005 v2r2p2 JP Change code to eliminate compiler warnings on Windows.
