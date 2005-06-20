@@ -44,6 +44,9 @@ namespace tip {
       */
       void set(const std::string & record);
 
+      /// \brief Retrieve the name of the keyword record.
+      std::string getName() const;
+
       /// \brief Retrieve the value field of the record as a string.
       std::string getValue() const;
 
@@ -60,6 +63,9 @@ namespace tip {
       */
       template <typename T>
       void setValue(const T & value);
+
+      /// \brief Retrieve the comment of the keyword record.
+      std::string getComment() const;
 
     private:
       std::string m_record;

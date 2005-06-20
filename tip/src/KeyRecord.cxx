@@ -26,6 +26,15 @@ namespace tip {
 
   void KeyRecord::set(const std::string & record) { m_record = record; }
 
+  std::string KeyRecord::getName() const {
+    char key_name[FLEN_CARD];
+    int status = 0;
+    int len = 0;
+    fits_get_keyname(const_cast<char *>(m_record.c_str()), key_name, &len, &status);
+    if (0 != status) throw TipException(status, "KeyRecord::getName could not parse record");
+    return std::string(key_name, key_name + len);
+  }
+
   std::string KeyRecord::getValue() const {
     char value[FLEN_VALUE];
     int status = 0;
@@ -149,6 +158,21 @@ namespace tip {
 
     // Finally replace the record.
     m_record = new_rec;
+  }
+
+  std::string KeyRecord::getComment() const {
+    char value[FLEN_VALUE];
+    char comment[FLEN_COMMENT];
+    int status = 0;
+    fits_parse_value(const_cast<char *>(m_record.c_str()), value, comment, &status);
+    if (0 != status) throw TipException(status, "KeyRecord::getComment could not parse record");
+
+    // In some circumstances Cfitsio returns leading spaces and/or leading / in the comment. Go figure.
+    char * cp = comment;
+    while(0 != isspace(*cp)) ++cp;
+    if ('/' == *cp) ++cp;
+    while(0 != isspace(*cp)) ++cp;
+    return cp;
   }
 
 }

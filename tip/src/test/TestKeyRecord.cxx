@@ -30,6 +30,10 @@ namespace tip {
     KeyRecord num_rec(formatRec("BOZO", "987.", "Bozo is a fine clown"));
     KeyRecord bool_rec(formatRec("BOZO", "T", "Bozo is a fine clown"));
     KeyRecord blank_rec("BOZO                           / Bozo is a fine clown");
+    KeyRecord history("HISTORY Bozo is a fine clown");
+    KeyRecord comment("COMMENT Bozo is a fine clown");
+    KeyRecord blank_comment("        Bozo is a fine clown");
+    KeyRecord completely_blank;
 
     try {
       hh["BOZO"].setRecord(string_rec);
@@ -41,6 +45,8 @@ namespace tip {
     try {
       KeyRecord read_rec;
       hh["BOZO"].getRecord(read_rec);
+      if ("BOZO" == read_rec.getName()) ReportExpected("key record read had name BOZO.");
+      else ReportUnexpected("key record name was \"" + read_rec.getName() + "\", not BOZO, as expected.");
 
       if (read_rec.get() == string_rec.get()) ReportExpected("key record read matched key record written");
       else ReportUnexpected("key record read was\n" + read_rec.get() + ",\nnot\n" + string_rec.get() + ".");
@@ -335,6 +341,122 @@ namespace tip {
       ReportUnexpected("KeyRecordTest::test: getValue(double&) threw exception", x);
     }
 
+    // Test getName.
+    try {
+      bool discrepancy = false;
+      if ("BOZO" != string_rec.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: string_rec.getName() returned \"" +
+          string_rec.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("BOZO" != long_comment_string_rec.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: long_comment_string_rec.getName() returned \"" +
+          long_comment_string_rec.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("BOZO" != num_rec.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: num_rec.getName() returned \"" +
+          num_rec.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("BOZO" != bool_rec.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: bool_rec.getName() returned \"" +
+          bool_rec.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("BOZO" != blank_rec.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: blank_rec.getName() returned \"" +
+          blank_rec.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("HISTORY" != history.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: history.getName() returned \"" +
+          history.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("COMMENT" != comment.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: comment.getName() returned \"" +
+          comment.getName() +  "\", not BOZO, as expected.");
+      }
+      if ("" != blank_comment.getName()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: blank_comment.getName() returned \"" +
+          blank_comment.getName() +  "\", not BOZO, as expected.");
+      }
+      if (!completely_blank.getName().empty()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: completely_blank.getName() returned \"" +
+          completely_blank.getName() +  "\", not \"\", as expected.");
+      }
+      if (!discrepancy) ReportExpected("KeyRecord::getName behaved as expected.");
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getName() threw exception", x);
+    }
+
+    // Test getValue.
+    try {
+      bool discrepancy = false;
+      if (!completely_blank.getValue().empty()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: completely_blank.getValue() returned \"" +
+          completely_blank.getValue() +  "\", not \"\", as expected.");
+      }
+      if (!discrepancy) ReportExpected("KeyRecord::getValue behaved as expected.");
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getValue() threw exception", x);
+    }
+
+    // Test getComment.
+    try {
+      bool discrepancy = false;
+      std::string expected = "Bozo is a fine clown";
+      if (expected != string_rec.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: string_rec.getComment() returned \"" +
+          string_rec.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      expected = "This comment is 50 characters long, very precisely";
+      if (expected != long_comment_string_rec.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: long_comment_string_rec.getComment() returned \"" +
+          long_comment_string_rec.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      expected = "Bozo is a fine clown";
+      if (expected != num_rec.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: num_rec.getComment() returned \"" +
+          num_rec.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      if (expected != bool_rec.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: bool_rec.getComment() returned \"" +
+          bool_rec.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      if (expected != blank_rec.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: blank_rec.getComment() returned \"" +
+          blank_rec.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      if (expected != history.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: history.getComment() returned \"" +
+          history.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      if (expected != comment.getComment()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: comment.getComment() returned \"" +
+          comment.getComment() +  "\", not \"" + expected + "\", as expected.");
+      }
+      if (!completely_blank.getComment().empty()) {
+        discrepancy = true;
+        ReportUnexpected("KeyRecordTest::test: completely_blank.getComment() returned \"" +
+          completely_blank.getComment() +  "\", not \"\", as expected.");
+      }
+      if (!discrepancy) ReportExpected("KeyRecord::getComment behaved as expected.");
+    } catch (const std::exception & x) {
+      ReportUnexpected("KeyRecordTest::test: getComment() threw exception", x);
+    }
     return getStatus();
   }
 
