@@ -33,6 +33,10 @@
                           the primary extension as well as events extension.
 05-apr-2005    v0r9p1 JP  Fix bug which was converting the name of the
                           spacecraft file to lowercase.
+21-jun-2005   v0r10p0 JP  JIRA issue STGEN-15: Set CTYPE1/CTYPE2 to GLON-XXX/
+                          GLAT-XXX or RA---XXX/DEC--XXX depending on whether
+                          coordinates are galactic or celestial. (where XXX is
+                          the abbreviated name of the projection.)
 --------------------------------------------------------------------------------
 \endverbatim
 
