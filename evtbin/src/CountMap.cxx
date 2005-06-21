@@ -2,8 +2,9 @@
     \brief Encapsulation of a count map, with methods to read/write using tip.
     \author James Peachey, HEASARC
 */
-#include <iostream>
+#include <iomanip>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -35,7 +36,7 @@ namespace evtbin {
       //LinearBinner(- (long)(num_y_pix) / 2., num_y_pix / 2., 1., dec_field)
       LinearBinner(0.5, num_x_pix + 0.5, 1., ra_field),
       LinearBinner(0.5, num_y_pix + 0.5, 1., dec_field)
-    ), m_proj_name(proj), m_crpix(), m_crval(), m_cdelt(), m_axis_rot(axis_rot), m_proj(0) {
+    ), m_proj_name(proj), m_crpix(), m_crval(), m_cdelt(), m_axis_rot(axis_rot), m_proj(0), m_use_lb(use_lb) {
     m_hist_ptr = &m_hist;
 
     m_crpix[0] = (num_x_pix + 1.) / 2.;
@@ -47,10 +48,10 @@ namespace evtbin {
     m_cdelt[0] = -pix_scale;
     m_cdelt[1] = pix_scale;
 
-    m_proj = new astro::SkyProj(proj, m_crpix, m_crval, m_cdelt, m_axis_rot, use_lb);
+    m_proj = new astro::SkyProj(proj, m_crpix, m_crval, m_cdelt, m_axis_rot, m_use_lb);
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
     //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
-    //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., use_lb);
+    //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., m_use_lb);
 
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file);
@@ -109,6 +110,27 @@ namespace evtbin {
     // Get the binners.
     const Hist::BinnerCont_t & binners = m_hist.getBinners();
 
+    // Compute settings for CTYPE keywords.
+    std::string ctype1;
+    std::string ctype2;
+
+    // First 4 characters of CTYPEn describe coordinates, with trailing dashes.
+    if (m_use_lb) {
+      ctype1 = "GLON";
+      ctype2 = "GLAT";
+    } else {
+      ctype1 = "RA--";
+      ctype2 = "DEC-";
+    }
+
+    // Last 4 characters of CTYPEn describe projection, with leading dashes.
+    std::ostringstream os;
+    os.fill('-');
+    os.width(4);
+    os << std::right << m_proj_name;
+    ctype1 += os.str();
+    ctype2 += os.str();
+
     // Write c* keywords
     tip::Header & header = output_image->getHeader();
     header["CRPIX1"].set(m_crpix[0]);
@@ -118,8 +140,8 @@ namespace evtbin {
     header["CDELT1"].set(m_cdelt[0]);
     header["CDELT2"].set(m_cdelt[1]);
     header["CROTA2"].set(m_axis_rot);
-    header["CTYPE1"].set(binners[0]->getName() + "---" + m_proj_name);
-    header["CTYPE2"].set(binners[1]->getName() + "---" + m_proj_name);
+    header["CTYPE1"].set(ctype1);
+    header["CTYPE2"].set(ctype2);
 
     // Resize image dimensions to conform to the binner dimensions.
     for (DimCont_t::size_type index = 0; index != num_dims; ++index) {

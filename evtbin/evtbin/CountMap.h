@@ -54,6 +54,7 @@ namespace evtbin {
       double m_cdelt[2];
       double m_axis_rot;
       astro::SkyProj * m_proj;
+      bool m_use_lb;
   };
 
 }
