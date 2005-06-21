@@ -4,6 +4,7 @@
 */
 #include <algorithm>
 #include <cctype>
+#include <map>
 #include <sstream>
 #include <stdexcept>
 
@@ -168,7 +169,8 @@ namespace st_graph {
     // Create or get parent multi-graph.
     getMultiGraph();
 
-    for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor) {
+    int color = 1;
+    for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor, ++color) {
       // Get numeric sequences from data.
       const std::vector<const ISequence *> sequences((*itor)->getSequences());
 
@@ -185,6 +187,10 @@ namespace st_graph {
         tgraph = createHistPlot(*x, *y);
       else
         tgraph = createScatterPlot(*x, *y);
+
+      // TODO: Warning: after 7 colors, the colors start being things like "white" so some hacking needed for
+      // 8 or more layered plots.
+      tgraph->SetLineColor(color);
 
       // Keep track of Root object, so it can be deleted later.
       m_tgraphs.push_back(tgraph);
