@@ -8,6 +8,8 @@
 #include "tip/Table.h"
 #include "astro/EarthCoordinate.h"
 
+#include <memory>
+
 using namespace map_tools;
 
 
@@ -107,7 +109,7 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
 
             if( start < first ) {
                 if( stop < first) continue; // history interval before gti
-                if( stop < second){
+                if( stop <= second){
                     fraction = (stop-first)/(stop-start); // overlap start of gti
                     break;
                 }
@@ -115,7 +117,7 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
                 break;
             }else {
                 if( start > second) continue; // interval after gti 
-                if( stop < second ) {
+                if( stop <= second ) {
                     fraction = 1.0; break;  // fully contained
                 }
                 fraction = (second-start)/(stop-start);  // overlap end of gti
