@@ -9,7 +9,6 @@ $Header$
 #include "map_tools/HealpixArrayIO.h"
 
 #include "tip/IFileSvc.h"
-#include "tip/Table.h"
 //#define TIP_ONECOLUMNBUG // remove this when tip is fixed to allow a single column
 
 #include <cmath>
@@ -37,7 +36,7 @@ HealpixArrayIO & HealpixArrayIO::instance()
     return s_HealpixArrayIO;
 }
 
-void HealpixArrayIO::write(const astro::HealpixArray<CosineBinner> & ha,
+std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<CosineBinner> & ha,
                              const std::string & outputFile,
                              const std::string & tablename, bool clobber)
 {
@@ -92,11 +91,11 @@ void HealpixArrayIO::write(const astro::HealpixArray<CosineBinner> & ha,
     hdr["NBRBINS"].set(CosineBinner::s_nbins);
     hdr["COSMIN"].set(CosineBinner::s_cosmin);
 
-    // need to do this to close the file
-    delete &table; 
+    // need to do this to ensure file is closed when pointer goes out of scope
+    return std::auto_ptr<tip::Table>(&table); 
 }
 
-void HealpixArrayIO::write(const astro::HealpixArray<float> & ha,
+std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<float> & ha,
                              const std::string & outputFile,
                              const std::string & tablename,
                              const std::string & fieldname,
@@ -148,11 +147,11 @@ void HealpixArrayIO::write(const astro::HealpixArray<float> & ha,
     hdr["FIRSTPIX"].set(0); 
     hdr["LASTPIX"].set(ha.size()-1); 
 
-    // need to do this to close the file
-    delete &table; 
+    // need to do this to ensure file is closed when pointer goes out of scope
+    return std::auto_ptr<tip::Table>(&table); 
 }
 
-void HealpixArrayIO::write(const astro::HealpixArray<std::vector<float> > & ha,
+std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::vector<float> > & ha,
                              const std::string & outputFile,
                              const std::string & tablename,
                              const std::vector<std::string> & fieldname,
@@ -222,8 +221,8 @@ void HealpixArrayIO::write(const astro::HealpixArray<std::vector<float> > & ha,
     hdr["FIRSTPIX"].set(0); 
     hdr["LASTPIX"].set(ha.size()-1); 
 
-    // need to do this to close the file
-    delete &table; 
+    // need to do this to ensure file is closed when pointer goes out of scope
+    return std::auto_ptr<tip::Table>(&table); 
 }
 
 

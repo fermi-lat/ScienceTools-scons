@@ -12,9 +12,12 @@ $Header$
 #include "astro/Healpix.h"
 #include "astro/HealpixArray.h"
 
+#include "tip/Table.h"
+
 #include "map_tools/CosineBinner.h"
 
 #include <vector>
+#include <memory>
 
 
 namespace map_tools
@@ -39,11 +42,11 @@ namespace map_tools
             @parm outputFile Fully qualified fits output file name
             @parm tablename Fits secondary extension name
             @parm clobber Whether to delete an existing file first */
-            void write(const astro::HealpixArray<CosineBinner> & ha,
+            std::auto_ptr<tip::Table> write(const astro::HealpixArray<CosineBinner> & ha,
                         const std::string & outputFile,
                         const std::string & tablename, bool clobber=true);
             ///@brief Write a HealpixArray<float> object to a fits file
-            void write(const astro::HealpixArray<float> & ha,
+            std::auto_ptr<tip::Table> write(const astro::HealpixArray<float> & ha,
                         const std::string & outputFile,
                         const std::string & tablename,
                         const std::string & fieldname, bool clobber=true);
@@ -59,7 +62,7 @@ namespace map_tools
             @parm tablename Fits secondary extension name
             @parm fieldname Vector of field names to be written to table.  
             @parm clobber Whether to delete an existing file first */
-            void write(const astro::HealpixArray<std::vector<float> > & ha,
+            std::auto_ptr<tip::Table> write(const astro::HealpixArray<std::vector<float> > & ha,
                         const std::string & outputFile,
                         const std::string & tablename,
                         const std::vector<std::string> & fieldname,
