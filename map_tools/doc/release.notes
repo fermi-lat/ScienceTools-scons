@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 22-jun-05 v5r13  THB various fixes, including adjust to new tip/Image
  05-mar-05 v5r12p1THB enable selection of number of cosine bins in Exposure constructor
  05-mar-05 v5r12  THB remove deprectated interfaces; add Exposure::load
  04-mar-05 v5r11p1THB little fix to obsolete class for Likelihood
