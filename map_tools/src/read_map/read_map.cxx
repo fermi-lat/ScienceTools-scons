@@ -26,10 +26,6 @@ int main(int argc, char * argv[]) {
         std::cout << "Reading FITS input file " << pars.inputFile() << std::endl;
         SkyImage image(pars.inputFile(), pars.tableName()); 
 
-        std::cout << "Value of pixel at l, b: "<< pars["ra"]<< ", "<< pars["dec"] << ": "
-        <<image(astro::SkyDir(pars["ra"],pars["dec"],astro::SkyDir::GALACTIC)) 
-        << std::endl;
-
         std::cout << "Creating copy at file " << pars.outputFile() << std::endl;
         SkyImage copy(pars);
         copy.fill(image);
