@@ -15,7 +15,7 @@
 
 #include <string>
 #include <vector>
-namespace tip { class Image; }
+#include "tip/Image.h"
 
 namespace astro { class SkyDir; }
 

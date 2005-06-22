@@ -9,7 +9,6 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
-#include "tip/Image.h"
 #include "tip/IFileSvc.h"
 #include <stdexcept>
 #include <sstream>
