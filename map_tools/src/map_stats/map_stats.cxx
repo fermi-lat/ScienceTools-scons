@@ -46,7 +46,7 @@ public:
         SkyImage image(m_pars.inputFile(), m_pars.table_name() );
 
         // pass the image to the SkyStat guy
-        astro::SkyStat ss(image, 8); 
+        astro::SkyStat ss(image, 128); 
         m_f.out() 
 #if 0 //def WIN32
             << std::setw(12) << "average: " << ss.ave() << std::endl
