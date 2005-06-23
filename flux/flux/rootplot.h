@@ -15,12 +15,13 @@ package.
 #include "flux/SpectrumFactoryTable.h"
 
 #include <fstream>
+#include <string>
 
 class rootplot
 {
 public:
     /// ctor
-    rootplot(std::vector<const char*> argv, FluxMgr*);
+    rootplot(std::vector<std::string> argv, FluxMgr*);
 
     rootplot(int argc, char* argv[]);
 
@@ -76,7 +77,7 @@ public:
     
       
 private:
-    void init(std::vector<const char*> argv);
+    void init(std::vector<std::string> argv);
 
     FluxMgr* m_fm;
 
