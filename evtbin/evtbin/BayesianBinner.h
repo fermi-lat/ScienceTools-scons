@@ -31,7 +31,7 @@ namespace evtbin {
       virtual Binner * clone() const;
 
     private:
-      static const int s_ncp_prior = 6;
+      static const int s_ncp_prior;
       /** \brief Perform the Bayesian Block procedure to determine the block definitions.
       */
       void computeBlocks(const IntervalCont_t & intervals);

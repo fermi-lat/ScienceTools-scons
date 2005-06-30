@@ -20,7 +20,7 @@ namespace {
 
 namespace evtbin {
 
-  const int BayesianBinner::s_ncp_prior;
+  const int BayesianBinner::s_ncp_prior = 6;
 
   BayesianBinner::~BayesianBinner() throw() {}
 
