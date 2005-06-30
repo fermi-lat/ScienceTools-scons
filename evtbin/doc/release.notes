@@ -37,6 +37,7 @@
                           GLAT-XXX or RA---XXX/DEC--XXX depending on whether
                           coordinates are galactic or celestial. (where XXX is
                           the abbreviated name of the projection.)
+30-jun-2005   v0r10p1 JP  Correct multiple symbol problem on Windows.
 --------------------------------------------------------------------------------
 \endverbatim
 
