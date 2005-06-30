@@ -19,5 +19,6 @@ $Id$
                           layout options.
 30-jun-2005    v1r3p1 JP  Switch order of patterns in requirements to correct RM
                           problem on Windows.
+30-jun-2005    v1r3p2 JP  Further fiddling with public/private tags
 \endverbatim
 */
