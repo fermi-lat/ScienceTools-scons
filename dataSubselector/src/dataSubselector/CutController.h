@@ -48,6 +48,8 @@ public:
 
    void updateGti(const std::string & filename) const;
 
+   std::string filterString() const;
+
 protected:
 
    CutController::CutController(st_app::AppParGroup & pars,

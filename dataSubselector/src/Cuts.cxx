@@ -249,4 +249,18 @@ void Cuts::writeCuts(std::ostream & stream) const {
    }
 }
 
+std::string Cuts::filterString() const {
+   std::string filter("");
+   for (unsigned int i = 0; i < m_cuts.size(); i++) {
+      std::string my_filter = m_cuts.at(i)->filterString();
+      if (my_filter != "") {
+         if (filter != "") {
+            filter += " && ";
+         }
+         filter += my_filter;
+      }
+   }
+   return filter;
+}
+
 } // namespace dataSubselector

@@ -44,6 +44,8 @@ public:
 
    virtual bool supercedes(const CutBase & cut) const;
 
+   virtual std::string filterString() const;
+
    /// @brief The column name identifier for a range cut as it
    ///        appears in the DSTYPn keyword, e.g., "ENERGY" or
    ///        "CALIB_VERSION[1]".

@@ -146,6 +146,8 @@ public:
    /// @return A reference to the i-th cut.
    const CutBase & operator[](unsigned int i) const {return *(m_cuts.at(i));}
 
+   std::string filterString() const;
+
 private:
 
    std::vector<CutBase *> m_cuts;

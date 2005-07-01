@@ -118,8 +118,13 @@ void DataFilter::run() {
 
 void DataFilter::copyTable(const std::string & extension,
                            CutController * cuts) const {
+   std::string filterString("");
+   if (cuts) {
+      filterString = cuts->filterString();
+   }
    const tip::Table * inputTable 
-      = tip::IFileSvc::instance().readTable(m_inputFile, extension);
+      = tip::IFileSvc::instance().readTable(m_inputFile, extension,
+                                            filterString);
    
    tip::Table * outputTable 
       = tip::IFileSvc::instance().editTable(m_outputFile, extension);
@@ -134,12 +139,17 @@ void DataFilter::copyTable(const std::string & extension,
 
    long npts(0);
 
+//    for (; inputIt != inputTable->end(); ++inputIt) {
+//       if (!cuts || cuts->accept(input)) {
+//          output = input;
+//          ++outputIt;
+//          npts++;
+//       }
+//    }
    for (; inputIt != inputTable->end(); ++inputIt) {
-      if (!cuts || cuts->accept(input)) {
-         output = input;
-         ++outputIt;
-         npts++;
-      }
+      output = input;
+      ++outputIt;
+      npts++;
    }
 // Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);

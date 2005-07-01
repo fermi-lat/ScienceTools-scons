@@ -112,4 +112,19 @@ bool SkyConeCut::accept(double ra, double dec) const {
    return separation*180./M_PI <= m_radius;
 }
 
+std::string SkyConeCut::filterString() const {
+   static double DEG_TO_RAD(M_PI/180.);
+   double ra(m_coneCenter.ra());
+   double dec(m_coneCenter.dec());
+   std::ostringstream q;
+   q << "((2*asin(min(1,sqrt(max(0,(sin((DEC-" << dec << ")*" 
+     << DEG_TO_RAD/2 << ")*sin((DEC-" << dec << ")*" 
+     << DEG_TO_RAD/2 << "))+(cos(DEC*" << DEG_TO_RAD
+     << ")*" << std::cos(dec*DEG_TO_RAD) << "*sin((RA-" 
+     << ra << ")*" << DEG_TO_RAD/2 << ")*sin((RA-" 
+     << ra << ")*" << DEG_TO_RAD/2 << ")))))))<" 
+     << m_radius*DEG_TO_RAD << ")";
+   return q.str();
+}
+
 } // namespace dataSubselector

@@ -67,6 +67,10 @@ public:
    ///        subclasses that do not re-implement.
    virtual bool supercedes(const CutBase &) const {return false;}
 
+   virtual std::string filterString() const {
+      return "";
+   }
+
 protected:
 
    /// @brief Hook method for use by operator==(...)

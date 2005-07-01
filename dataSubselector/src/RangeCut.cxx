@@ -99,6 +99,19 @@ bool RangeCut::supercedes(const CutBase & cut) const {
    return false;
 }
 
+std::string RangeCut::filterString() const {
+   std::ostringstream filter;
+   if (m_intervalType == MINONLY) {
+      filter << m_min << " <= " << m_fullName;
+   } else if (m_intervalType == MAXONLY) {
+      filter << m_fullName << " <= " << m_max;
+   } else {
+      filter << m_min << " <= " << m_fullName << " && "
+             << m_fullName << " <= " << m_max;
+   }
+   return filter.str();
+}
+
 void RangeCut::getKeyValues(std::string & type, std::string & unit,
                             std::string & value, std::string & ref) const {
    (void)(ref);

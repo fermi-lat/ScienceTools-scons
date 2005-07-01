@@ -118,5 +118,14 @@ void CutController::updateGti(const std::string & eventFile) const {
    }
    gti.writeExtension(eventFile);
 }
-      
+
+std::string CutController::filterString() const {
+   std::string filter(m_cuts.filterString());
+   if (filter != "") {
+      filter += " && ";
+   }
+   filter += "gtifilter()";
+   return filter;
+}
+
 } // namespace dataSubselector

@@ -52,6 +52,12 @@ public:
 
    virtual bool supercedes(const CutBase &) const;
       
+   /// @return The corresponding filter string, using the haversine
+   /// formula, that can be passed to tip, following the cfitsio
+   /// extended filename syntax.  The implementation is from Tom
+   /// Stephens' original cutParameters.cxx code.
+   virtual std::string filterString() const;
+
    /// @brief The RA of the cone center (J2000 degrees)
    double ra() const {return m_ra;}
 
