@@ -23,7 +23,13 @@ int main() {
   std::cout.precision(20);
 
   // Set the data directory.
-  std::string data_dir = st_facilities::Env::getDataDir("pulsePhase");
+  std::string data_dir;
+  try {
+    data_dir = st_facilities::Env::getDataDir("pulsePhase");
+  } catch (const std::exception & x) {
+    std::cerr << x.what() << std::endl;
+    return 1;
+  }
 
   // Simple test of timing model computation.
   TimingModel model;
