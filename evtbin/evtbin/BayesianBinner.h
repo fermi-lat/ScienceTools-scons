@@ -19,8 +19,9 @@ namespace evtbin {
       /** \brief Construct a Bayesian block binner object, using any kind of iterator to provide the cell population.
       */
       template <typename Itor>
-      BayesianBinner(const IntervalCont_t & intervals, Itor cell_begin, const std::string & name = std::string()):
-        OrderedBinner(IntervalCont_t(), name), m_cell_pop(cell_begin, cell_begin + intervals.size()) {
+      BayesianBinner(const IntervalCont_t & intervals, Itor cell_begin, const std::string & name = std::string(),
+        double ncp_prior = 9.): OrderedBinner(IntervalCont_t(), name), m_cell_pop(cell_begin, cell_begin + intervals.size()),
+        m_ncp_prior(ncp_prior) {
         computeBlocks(intervals);
       }
 
@@ -31,7 +32,6 @@ namespace evtbin {
       virtual Binner * clone() const;
 
     private:
-      static const int s_ncp_prior;
       /** \brief Perform the Bayesian Block procedure to determine the block definitions.
       */
       void computeBlocks(const IntervalCont_t & intervals);
@@ -42,6 +42,7 @@ namespace evtbin {
         std::vector<double> & result) const;
 
       std::vector<double> m_cell_pop;
+      const double m_ncp_prior;
   };
 
 }

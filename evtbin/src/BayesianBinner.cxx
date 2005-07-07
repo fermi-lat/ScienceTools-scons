@@ -20,8 +20,6 @@ namespace {
 
 namespace evtbin {
 
-  const int BayesianBinner::s_ncp_prior = 6;
-
   BayesianBinner::~BayesianBinner() throw() {}
 
   Binner * BayesianBinner::clone() const { return new BayesianBinner(*this); }
@@ -142,7 +140,7 @@ namespace evtbin {
     //
     //    logprob = logprob - ncp_prior
     for (deque_t::size_type index = 0; index != num_cells; ++index)
-      log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * log(rev_csize[index]) - s_ncp_prior;
+      log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * log(rev_csize[index]) - m_ncp_prior;
   }
 
 }

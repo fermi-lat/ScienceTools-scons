@@ -1039,7 +1039,7 @@ void EvtBinTest::testBayesianBinner() {
   OrderedBinner::IntervalCont_t intervals;
   std::vector<double> cell_pop(100);
   double change_points[] = { 0, 20, 21, 22, 27, 40, 60, 100 };
-  double plateau[] = { 5, 25, 100, 160, 120, 58, 12 };
+  double plateau[] = { 5, 25, 150, 260, 120, 58, 12 };
   int cp = 1;
   for (int ii = 0; ii < 100; ++ii) {
     intervals.push_back(Binner::Interval(ii, ii + 1));
@@ -1054,6 +1054,10 @@ void EvtBinTest::testBayesianBinner() {
     m_failed = true;
     m_os.err() << "Number of Bayesian blocks found was " << binner.getNumBins() << ", not " << num_bins <<
       ", as expected." << std::endl;
+    for (int ii = 0; ii != binner.getNumBins(); ++ii) {
+      Binner::Interval interval(binner.getInterval(ii));
+      m_os.err() << "Interval[" << ii << "] is [" << interval.begin() << ", " << interval.end() << "]" << std::endl;
+    }
   } else {
     for (int ii = 0; ii != num_bins; ++ii) {
       Binner::Interval interval(binner.getInterval(ii));
