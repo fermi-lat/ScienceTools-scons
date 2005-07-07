@@ -38,6 +38,8 @@
                           coordinates are galactic or celestial. (where XXX is
                           the abbreviated name of the projection.)
 30-jun-2005   v0r10p1 JP  Correct multiple symbol problem on Windows.
+07-jul-2005   v0r11p0 JP  Allow clients to vary ncp_prior parameter in
+                          individual BayesianBinner objects.
 --------------------------------------------------------------------------------
 \endverbatim
 
