@@ -121,6 +121,26 @@ std::pair<double,double> SkyProj::pix2pix(double x1, double x2, const SkyProj& o
     return SkyProj::sph2pix(s.first,s.second);
 }
 
+void SkyProj::setLonpole(double lonpole)
+{
+   m_wcs->lonpole = lonpole;
+
+   int status = wcsset2(m_wcs);
+   if (status !=0) {
+      throw SkyProj::Exception(status);
+   }
+}
+
+void SkyProj::setLatpole(double latpole)
+{
+   m_wcs->latpole = latpole;
+
+   int status = wcsset2(m_wcs);
+   if (status !=0) {
+      throw SkyProj::Exception(status);
+   }
+}
+
 bool SkyProj::isGalactic()const
 {
     return ( std::string( m_wcs->ctype[0] ).substr(0,4)=="GLON");

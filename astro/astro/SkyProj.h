@@ -126,6 +126,16 @@ namespace astro {
        */
         std::pair<double,double> pix2sph(double x1, double x2) const;
 
+        /** @brief Sets lonpole parameter
+        @param lonpole corresponds to the FITS keyword LONPOLE (native coordinates of celestial pole)
+        */
+        void setLonpole(double lonpole);
+
+        /** @brief Sets latpole parameter
+        @param latpole corresponds to the FITS keyword LATPOLE
+        */
+        void setLatpole(double latpole);
+
         /** @brief is this galactic? */
         bool isGalactic()const;
 
