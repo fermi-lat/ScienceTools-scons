@@ -31,7 +31,9 @@ namespace st_app {
   char ** StApp::getArgv() { return s_argv; }
 
   // Construct application object:
-  StApp::StApp(): m_name("Unknown application"), m_version("unknown"), m_par_group(0) {}
+  StApp::StApp(): m_name("Unknown application"), m_version(), m_par_group(0) {
+    setVersion("");
+  }
 
   // Destruct application object:
   StApp::~StApp() throw() { delete m_par_group; }
@@ -69,8 +71,13 @@ namespace st_app {
 
     std::string::size_type start = version.find(cvs_prefix);
 
+    std::string default_version = "N/A";
+
     // If cvs was used to assign the version automatically, chop out the prefix and suffix ($) it uses.
     if (std::string::npos != start) {
+      // Change default version to reflect the fact that a CVS prefix was found.
+      default_version = "HEAD";
+
       start += cvs_prefix.size();
 
       // Skip whitespace after prefix.
@@ -90,6 +97,13 @@ namespace st_app {
     } else {
       m_version = version;
     }
+
+    // See if version contains any non-whitespace.
+    std::string::const_iterator vers_itor;
+    for (vers_itor = m_version.begin(); vers_itor != m_version.end() && (0 != isspace(*vers_itor)); ++vers_itor) {}
+
+    // If no non-whitespace was found, call this version HEAD.
+    if (vers_itor == m_version.end()) m_version = default_version;
   }
 
 }

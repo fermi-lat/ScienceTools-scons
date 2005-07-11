@@ -5,6 +5,7 @@
     format output.
     \author James Peachey, HEASARC/GSSC
 */
+#include <stdexcept>
 #include <string>
 
 #include "st_app/AppParGroup.h"
@@ -23,6 +24,13 @@ const std::string s_cvs_tag("$Name$");
 class TestApp1 : public st_app::StApp {
   public:
     TestApp1(): m_f("TestApp1", "", 2) {
+      m_f.setMethod("TestApp1");
+
+      // Confirm that initial version reporting is working correctly.
+      if (getVersion() != "N/A")
+        m_f.err() << "Before version id was set, getVersion returned \"" << getVersion() << "\" not \"N/A\"." << std::endl;
+
+      // Set name and version of executable.
       setName("test_st_app");
       setVersion(s_cvs_tag);
 
@@ -45,8 +53,55 @@ class TestApp1 : public st_app::StApp {
     /** \brief Perform the demo action needed by this application. This will be called by the standard main.
     */
     virtual void run() {
+      bool failed = false;
+
       // For output streams, set name of method, which will be used in messages when tool is run in debug mode.
       m_f.setMethod("run()");
+
+      // Test resetting version to a blank.
+      std::string correct_version = "N/A";
+      setVersion(" \t");
+      if (correct_version != getVersion()) {
+        m_f.err() << "After setVersion(\" \\t\"), version is \"" << getVersion() << "\", not \"" <<
+          correct_version << "\", as expected." << std::endl;
+        failed = true;
+      }
+
+      // Test resetting version to a blank cvs tagged version number (HEAD).
+      correct_version = "HEAD";
+      setVersion("$Name$");
+      if (correct_version != getVersion()) {
+        m_f.err() << "After setVersion(\"$Name$\"), version is \"" << getVersion() << "\", not \"" <<
+          correct_version << "\", as expected." << std::endl;
+        failed = true;
+      }
+
+      // Test resetting version to a real cvs tagged version number.
+      correct_version = "v0";
+      setVersion("$Name$");
+      if (correct_version != getVersion()) {
+        m_f.err() << "After setVersion(\"$Name$\"), version is \"" << getVersion() << "\", not \"" <<
+          correct_version << "\", as expected." << std::endl;
+        failed = true;
+      }
+
+      // Test resetting version to something custom.
+      correct_version = "custom";
+      setVersion("custom");
+      if (correct_version != getVersion()) {
+        m_f.err() << "After setVersion(\"custom\"), version is \"" << getVersion() << "\", not \"" <<
+          correct_version << "\", as expected." << std::endl;
+        failed = true;
+      }
+
+      // Finally, reset version to what it should normally be.
+      std::string correct_tag = (s_cvs_tag == "$Name$") ? "$Name$" : s_cvs_tag;
+      setVersion(s_cvs_tag);
+      std::string tag = "$Name$";
+      if (correct_tag != tag) {
+        m_f.err() << "Version tag \"" << tag << "\" is not \"" << correct_tag << "\", as expected." << std::endl;
+        failed = true;
+      }
 
       // For parameter file access, use the AppParGroup class, which is derived from a Hoops class.
       st_app::AppParGroup & pars(getParGroup());
@@ -94,6 +149,8 @@ class TestApp1 : public st_app::StApp {
       m_f.out() << user_string << std::endl;
       m_f.out() << "The infile the user entered was:" << std::endl;
       m_f.out() << in_file << std::endl;
+
+      if (failed) throw std::runtime_error("Test failed");
     }
 
     virtual void runGui() {
