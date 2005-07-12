@@ -4,6 +4,7 @@
 $Id$
 
 \verbatim
+12-jul-2005    v1r6p4 JP  Tweak unit test again to make it work with/without tag.
 11-jul-2005    v1r6p3 JP  Tweak unit test, which was not working correctly when tag found.
 11-jul-2005    v1r6p2 JP  When setting version, make cvs versions HEAD if no tag found.
                           Make totally blank versions display N/A.
