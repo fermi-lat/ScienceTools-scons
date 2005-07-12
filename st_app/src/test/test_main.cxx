@@ -69,18 +69,23 @@ class TestApp1 : public st_app::StApp {
 
       // Test resetting version to a blank cvs tagged version number (HEAD).
       correct_version = "HEAD";
-      setVersion("$Name$");
+      // Construct version string in stages to prevent cvs expanding this string literal as well.
+      std::string version = "$Name: ";
+      version += " $";
+      setVersion(version);
       if (correct_version != getVersion()) {
-        m_f.err() << "After setVersion(\"$Name$\"), version is \"" << getVersion() << "\", not \"" <<
+        m_f.err() << "After setVersion(\"" << version << "\"), version is \"" << getVersion() << "\", not \"" <<
           correct_version << "\", as expected." << std::endl;
         failed = true;
       }
 
       // Test resetting version to a real cvs tagged version number.
       correct_version = "v0";
-      setVersion("$Name$");
+      version = "$Name: ";
+      version += "v0 $";
+      setVersion(version);
       if (correct_version != getVersion()) {
-        m_f.err() << "After setVersion(\"$Name$\"), version is \"" << getVersion() << "\", not \"" <<
+        m_f.err() << "After setVersion(\"" << version << "\"), version is \"" << getVersion() << "\", not \"" <<
           correct_version << "\", as expected." << std::endl;
         failed = true;
       }
@@ -95,7 +100,13 @@ class TestApp1 : public st_app::StApp {
       }
 
       // Finally, reset version to what it should normally be.
-      std::string correct_tag = (s_cvs_tag == "$Name$") ? "$Name$" : s_cvs_tag;
+      std::string correct_tag = s_cvs_tag;
+      if (9 == s_cvs_tag.size()) {
+        // Version part of tag in $Name expansion is blank -> this is the head version.
+        correct_tag = "$Name: ";
+        correct_tag += "HEAD $" ;
+      }
+
       setVersion(s_cvs_tag);
       std::string tag = "$Name$";
       if (correct_tag != tag) {
