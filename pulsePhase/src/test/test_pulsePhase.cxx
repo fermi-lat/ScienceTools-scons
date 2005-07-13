@@ -51,7 +51,7 @@ int main() {
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
-    double phase = model.calcPhase(eph, GlastTdbTime(rec["TIME"].get()));
+    double phase = model.calcPulsePhase(eph, GlastTdbTime(rec["TIME"].get()));
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
