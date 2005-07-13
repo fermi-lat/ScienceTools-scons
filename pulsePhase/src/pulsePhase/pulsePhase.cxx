@@ -22,6 +22,8 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "st_facilities/Env.h"
+
 using namespace pulsarDb;
 
 const std::string s_cvs_id("$Name$");
@@ -40,13 +42,32 @@ PulsePhaseApp::PulsePhaseApp(): st_app::StApp() {
 void PulsePhaseApp::run() {
   st_app::AppParGroup & par_group = getParGroup("pulsePhase"); // getParGroup is in base class st_app::StApp
 
-  // par_group.Prompt(); // Prompts for all parameters.
+#if 0
+  par_group.setSwitch("ephstyle");
+
+  par_group.setCase("ephstyle", "DB", "epoch");
+  par_group.setCase("ephstyle", "DB", "phi0");
+
+  par_group.setCase("ephstyle", "FREQ", "f0");
+  par_group.setCase("ephstyle", "FREQ", "f1");
+  par_group.setCase("ephstyle", "FREQ", "f2");
+
+  par_group.setCase("ephstyle", "PER", "p0");
+  par_group.setCase("ephstyle", "PER", "p1");
+  par_group.setCase("ephstyle", "PER", "p2");
+
+  par_group.Prompt();
+#endif
+
+  // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
-  par_group.Save();
-
+  par_group.Prompt("psrdbfile");
+  par_group.Prompt("psrname");
   par_group.Prompt("ephstyle");
+  par_group.Prompt("demodbin");
   std::string eph_style = par_group["ephstyle"];
+  par_group.Save();
 
   for (std::string::iterator itor = eph_style.begin(); itor != eph_style.end(); ++itor) *itor = toupper(*itor);
 
@@ -62,10 +83,8 @@ void PulsePhaseApp::run() {
     par_group.Prompt("p0");
     par_group.Prompt("p1");
     par_group.Prompt("p2");
-  } else if (eph_style == "FILE") {
-    par_group.Prompt("psrdbfile");
-    par_group.Prompt("psrname");
-    par_group.Prompt("binarycorr");
+  } else if (eph_style == "DB") {
+    // No action needed.
   } else {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
@@ -108,14 +127,42 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Only TDB or TT time systems are supported for now");
   }
 
-  EphComputer computer;
-
-  PulsarEphCont & ephemerides(computer.getPulsarEphCont());
-
   // This phi0 is the phase of the ephemeris itself. The user supplied user_phi0 is a phase offset applied to the whole event file.
   double phi0 = 0.;
 
-  bool binary_corr = false;
+  // Find the pulsar database.
+  std::string psrdb_file = par_group["psrdbfile"];
+  std::string psrdb_file_uc = psrdb_file;
+  for (std::string::iterator itor = psrdb_file_uc.begin(); itor != psrdb_file_uc.end(); ++itor) *itor = toupper(*itor);
+  if ("DEFAULT" == psrdb_file_uc) {
+    using namespace st_facilities;
+    psrdb_file = Env::appendFileName(Env::getDataDir("pulsePhase"), "master_pulsardb.fits");
+  }
+  std::string psr_name = par_group["psrname"];
+  std::string demod_bin_string = par_group["demodbin"];
+  for (std::string::iterator itor = demod_bin_string.begin(); itor != demod_bin_string.end(); ++itor) *itor = toupper(*itor);
+  
+  EphComputer computer;
+
+  // Open the database.
+  PulsarDb database(psrdb_file);
+
+  // Select only ephemerides for this pulsar.
+  database.filterName(psr_name);
+
+  // Load the selected ephemerides.
+  computer.load(database);
+
+  // Determine whether to perform binary demodulation.
+  bool demod_bin = false;
+  if (demod_bin_string != "NO") {
+    // User selected not "no", so attempt to perform demodulation
+    if (!computer.getOrbitalEphCont().empty()) {
+      demod_bin = true;
+    } else if (demod_bin_string == "YES") {
+      throw std::runtime_error("Binary demodulation was required by user, but no orbital ephemeris was found");
+    }
+  }
 
   if (eph_style == "FREQ") {
     double f0 = par_group["f0"];
@@ -124,6 +171,9 @@ void PulsePhaseApp::run() {
 
     if (0. >= f0) throw std::runtime_error("Frequency must be positive.");
 
+    // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
+    PulsarEphCont & ephemerides(computer.getPulsarEphCont());
+    ephemerides.clear();
     ephemerides.push_back(FrequencyEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, f0, f1, f2).clone());
   } else if (eph_style == "PER") {
     double p0 = par_group["p0"];
@@ -132,20 +182,12 @@ void PulsePhaseApp::run() {
 
     if (0. >= p0) throw std::runtime_error("Period must be positive.");
 
+    // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
+    PulsarEphCont & ephemerides(computer.getPulsarEphCont());
+    ephemerides.clear();
     ephemerides.push_back(PeriodEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, p0, p1, p2).clone());
-  } else if (eph_style == "FILE") {
-    std::string psrdb_file = par_group["psrdbfile"];
-    std::string psr_name = par_group["psrname"];
-    binary_corr = par_group["binarycorr"];
-
-    // Open the database.
-    PulsarDb database(psrdb_file);
-
-    // Select only ephemerides for this pulsar.
-    database.filterName(psr_name);
-
-    // Load the selected ephemerides.
-    computer.load(database);
+  } else if (eph_style == "DB") {
+    // No action needed.
   } else {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
@@ -165,7 +207,7 @@ void PulsePhaseApp::run() {
       abs_evt_time.reset(new GlastTtTime(evt_time));
     }
 
-    if (binary_corr) {
+    if (demod_bin) {
       computer.demodulateBinary(*abs_evt_time);
     }
 
