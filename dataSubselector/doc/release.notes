@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r6p1  13-Jul-05   JC   use standard names for I/O files
     v3r6    01-Jul-05   JC   use filter expressions to read in FITS file
     v3r5    01-Jun-05   JC   incorporate Johann's use of find in
                              Cuts::operator==; use Template Method pattern

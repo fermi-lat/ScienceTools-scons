@@ -12,8 +12,8 @@ tmin,r,h,0,0,,start time (MET in s)
 tmax,r,h,0,0,,end time (MET in s)
 emin,r,a,30,0,,lower energy limit (MeV)
 emax,r,a,200000,0,,upper energy limit (MeV)
-convLayerMin,i,h,0,0,15,first conversion layer
-convLayerMax,i,h,15,0,15,last conversion layer
+convLayerMin,i,a,0,0,15,first conversion layer
+convLayerMax,i,a,15,0,15,last conversion layer
 thetamin,r,h,0,0,180,minimum theta value (degrees)
 thetamax,r,h,0,0,180,maximum theta value (degrees)
 phimin,r,h,0,0,360,minimum phi value (degrees)
