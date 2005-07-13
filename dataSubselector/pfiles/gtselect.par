@@ -1,5 +1,5 @@
-input_file,f,a,"test_events_0000.fits",,,"Input FT1 file"
-output_file,f,a,"filtered_events_0000.fits",,,"Output FT1 file"
+infile,f,a,"test_events_0000.fits",,,"Input FT1 file"
+outfile,f,a,"filtered_events_0000.fits",,,"Output FT1 file"
 ra,r,a,86.4,0,360,RA for new search center (degrees)
 dec,r,a,28.9,-90,90,Dec for new search center (degrees)
 rad,r,a,20,0,180,radius of new search region (degrees)
@@ -8,12 +8,12 @@ lonMax,r,h,360,0,360,Longitude coordinate upper limit (degrees)
 latMin,r,h,-90,-90,90,Latitude coordinate lower limit (degrees)
 latMax,r,h,90,-90,90,Latitude coordinate upper limit (degrees)
 coordSys,s,h,"CEL",CEL|GAL,,"Coordinate system"
-tmin,r,a,0,0,,start time (MET in s)
-tmax,r,a,0,0,,end time (MET in s)
+tmin,r,h,0,0,,start time (MET in s)
+tmax,r,h,0,0,,end time (MET in s)
 emin,r,a,30,0,,lower energy limit (MeV)
 emax,r,a,200000,0,,upper energy limit (MeV)
-convLayerMin,i,a,0,0,15,first conversion layer
-convLayerMax,i,a,15,0,15,last conversion layer
+convLayerMin,i,h,0,0,15,first conversion layer
+convLayerMax,i,h,15,0,15,last conversion layer
 thetamin,r,h,0,0,180,minimum theta value (degrees)
 thetamax,r,h,0,0,180,maximum theta value (degrees)
 phimin,r,h,0,0,360,minimum phi value (degrees)

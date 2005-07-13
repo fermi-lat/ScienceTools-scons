@@ -87,11 +87,11 @@ void DataFilter::banner() const {
 }
 
 void DataFilter::run() {
-   std::string inputFile = m_pars["input_file"];
+   std::string inputFile = m_pars["infile"];
    m_inputFile = inputFile;
    facilities::Util::expandEnvVar(&m_inputFile);
 
-   std::string outputFile = m_pars["output_file"];
+   std::string outputFile = m_pars["outfile"];
    m_outputFile = outputFile;
    facilities::Util::expandEnvVar(&m_outputFile);
    bool clobber = m_pars["clobber"];
