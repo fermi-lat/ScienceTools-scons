@@ -53,6 +53,20 @@ def BrokenPowerLaw():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def LogParabola():
+    func = '\n'.join( ('<spectrum type="LogParabola">',
+                       '   <parameter free="1" max="1000.0" min="0.001" '
+                       + 'name="norm" scale="1e-9" value="1"/>',
+                       '   <parameter free="1" max="10" min="0" '
+                       + 'name="alpha" scale="1.0" value="1"/>',
+                       '   <parameter free="1" max="1e4" min="20" '
+                       + 'name="Eb" scale="1" value="300."/>',
+                       '   <parameter free="1" max="10" min="0" '
+                       + 'name="beta" scale="1.0" value="2"/>',
+                       '</spectrum>\n') )
+    (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
+    return Function(func)
+
 def Gaussian():
     func = '\n'.join( ('<spectrum type="Gaussian">',
                        '   <parameter free="1" max="1000.0" min="0.001" '
@@ -116,6 +130,7 @@ class Spectra(FuncContainer):
         self.funcs['PowerLaw'] = PowerLaw()
         self.funcs['PowerLaw2'] = PowerLaw2()
         self.funcs['BrokenPowerLaw'] = BrokenPowerLaw()
+        self.funcs['LogParabola'] = LogParabola()
         self.funcs['Gaussian'] = Gaussian()
 
 class SpatialModels(FuncContainer):
