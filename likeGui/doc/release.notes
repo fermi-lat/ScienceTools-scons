@@ -3,6 +3,7 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r4p1   18-Jul-05    JC    add LogParabola to FunctionFactory
    v7r4     04-Jun-05    JC    ModelEditor callable from python cl, 
                                allow for multiple source selections
    v7r3p2   17-Feb-05    JC    use gtobssim, gtorbsim in ObsSim gui;
