@@ -65,6 +65,7 @@ public:
     //--------------------------------------------------------------------------
     void loadExposureWithGPS(Exposure& exp, const std::string& inputFile, const Exposure::GTIvector& gti )
     {
+        using astro::GPS;
 
         double 
             tstart = gti.front().first,
