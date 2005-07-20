@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <limits>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -48,6 +49,9 @@ namespace tip {
 
     // Test that bug when only one column is present was corrected.
     singleFieldBugTest();
+
+    // Test that unsigned integers are handled correctly.
+    unsignedIntTest();
 
     // Clean up.
     delete m_root_table; m_root_table = 0;
@@ -348,10 +352,6 @@ namespace tip {
     }
   }
 
-  Table * TestTable::getTable() {
-    return new FitsTable(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
-  }
-
   // Test appending a field to an existing table.
   void TestTable::appendFieldTest() {
     std::string msg;
@@ -483,6 +483,101 @@ namespace tip {
       ReportUnexpected("TestTable::singleFieldBugTest had a problem with a table containing a single column", x);
     }
     remove("single_column.fits");
+  }
+
+  void TestTable::unsignedIntTest() {
+    try {
+      remove("unsigned_int.fits");
+
+      // Create an empty table.
+      IFileSvc::instance().appendTable("unsigned_int.fits", "DUMMY");
+
+      // Open the table.
+      std::auto_ptr<Table> table(IFileSvc::instance().editTable("unsigned_int.fits", "DUMMY"));
+
+      // Add 16 bit unsigned int column.
+      table->appendField("USHORT", "1U");
+
+      // Add 16 bit signed int column.
+      table->appendField("SHORT", "1I");
+
+      // Add 32 bit unsigned int column.
+      table->appendField("UINT", "1V");
+
+      // Add 32 bit signed int column.
+      table->appendField("INT", "1J");
+
+      // Add float column.
+      table->appendField("FLOAT", "1E");
+
+      // Add scaled int column.
+      table->appendField("SCALED", "1I");
+      table->getHeader()["TSCAL6"].set(1.01);
+      table->getHeader()["TZERO6"].set(1<<16);
+
+      // Make room for a record.
+      table->setNumRecords(1);
+
+      // Write a value to the new column.
+      unsigned int expected = std::numeric_limits<unsigned int>::max();
+      Table::Iterator itor = table->begin();
+      (*itor)["UINT"].set(expected);
+
+      // Close and re-open the table.
+      delete table.release();
+      
+      table.reset(IFileSvc::instance().editTable("unsigned_int.fits", "DUMMY"));
+      itor = table->begin();
+      unsigned int actual;
+      (*itor)["UINT"].get(actual);
+      if (expected == actual) {
+        ReportExpected("TestTable::unsignedIntTest reading and writing unsigned int is consistent.");
+      } else {
+        std::ostringstream os;
+        os << "TestTable::unsignedIntTest wrote value " << expected << " to \"unsigned_int.fits[DUMMY]\", but read it back as " <<
+          actual;
+        ReportUnexpected(os.str());
+      }
+
+      // Confirm format of the columns.
+      if ("1I" == table->getColumn(table->getFieldIndex("SHORT"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: SHORT column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: SHORT column format read disagrees with the format used to create column");
+      }
+      if ("1U" == table->getColumn(table->getFieldIndex("USHORT"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: USHORT column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: USHORT column format read disagrees with the format used to create column");
+      }
+      if ("1V" == table->getColumn(table->getFieldIndex("UINT"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: UINT column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: UINT column format read disagrees with the format used to create column");
+      }
+      if ("1J" == table->getColumn(table->getFieldIndex("INT"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: INT column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: INT column format read disagrees with the format used to create column");
+      }
+      if ("1E" == table->getColumn(table->getFieldIndex("FLOAT"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: FLOAT column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: FLOAT column format read disagrees with the format used to create column");
+      }
+      if ("1I" == table->getColumn(table->getFieldIndex("SCALED"))->getFormat()) {
+        ReportExpected("TestTable::unsignedIntTest: SCALED column format read agrees with the format used to create column");
+      } else {
+        ReportUnexpected("TestTable::unsignedIntTest: SCALED column format read disagrees with the format used to create column");
+      }
+
+    } catch (const TipException & x) {
+      ReportUnexpected("TestTable::unsignedIntTest had a problem", x);
+    }
+  }
+
+  Table * TestTable::getTable() {
+    return new FitsTable(getDataDir() + "a1.pha", "SPECTRUM", "#row > 0", false);
   }
 
   void TestTable::setToZero(Table * table) {

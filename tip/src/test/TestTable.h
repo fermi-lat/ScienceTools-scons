@@ -67,13 +67,16 @@ namespace tip {
       /// \brief Test that bug when only one column is present was corrected.
       void singleFieldBugTest();
 
-      /** \brief Get a writable table pointer, for the benefit of other tests.
-      */
-      Table * getTable();
-
       /** \brief Test appending a field to an existing table.
       */
       void appendFieldTest();
+
+      /// \brief Test that unsigned integers are handled correctly.
+      void unsignedIntTest();
+
+      /** \brief Get a writable table pointer, for the benefit of other tests.
+      */
+      Table * getTable();
 
     private:
       void setToZero(Table * table);
