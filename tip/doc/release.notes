@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+19-jul-2005 v2r5p0 JP Add IColumn::getFormat() which returns the full format
+                      descriptor of any column.
 20-jun-2005 v2r4p0 JP Add iterator type and begin/end to Header to allow interating
                       through all keywords in sequence. Also add KeyRecord::getName
                       and getComment methods.
