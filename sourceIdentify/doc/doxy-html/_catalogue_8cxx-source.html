@@ -11,22 +11,22 @@
 00003 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00004 <span class="comment">/* Task            : Catalogue interface file.                                */</span>
 00005 <span class="comment">/* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */</span>
-00006 <span class="comment">/* Revision        : 1.0.0                                                    */</span>
-00007 <span class="comment">/* Date of version : 20-May-2005                                              */</span>
+00006 <span class="comment">/* Revision        : 1.0                                                      */</span>
+00007 <span class="comment">/* Date of version : 24-Feb-2005                                              */</span>
 00008 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00009 <span class="comment">/* History :                                                                  */</span>
-00010 <span class="comment">/* 1.0.0  20-May-2005  first version                                          */</span>
+00010 <span class="comment">/* 1.0   24-Feb-2005  first version                                           */</span>
 00011 <span class="comment">/*----------------------------------------------------------------------------*/</span>
 00012 
 00013 <span class="comment">/* Includes _________________________________________________________________ */</span>
-00014 <span class="preprocessor">#include "<a class="code" href="source_identify_8h.html">sourceIdentify.h</a>"</span>
-00015 <span class="preprocessor">#include "<a class="code" href="_catalogue_8h.html">Catalogue.h</a>"</span>
-00016 <span class="preprocessor">#include "<a class="code" href="_log_8h.html">Log.h</a>"</span>
+00014 <span class="preprocessor">#include "<a class="code" href="source_identify_8h.html">sourceIdentify/sourceIdentify.h</a>"</span>
+00015 <span class="preprocessor">#include "<a class="code" href="_catalogue_8h.html">sourceIdentify/Catalogue.h</a>"</span>
+00016 <span class="preprocessor">#include "<a class="code" href="_log_8h.html">sourceIdentify/Log.h</a>"</span>
 00017 <span class="preprocessor">#include "src/quantity.h"</span>
 00018 
 00019 
 00020 <span class="comment">/* Namespace definition _____________________________________________________ */</span>
-<a name="l00021"></a><a class="code" href="namespacesource_identify.html">00021</a> <span class="keyword">namespace </span>sourceIdentify {
+00021 <span class="keyword">namespace </span>sourceIdentify {
 00022 <span class="keyword">using</span> <span class="keyword">namespace </span>catalogAccess;
 00023 
 00024 
@@ -34,8 +34,8 @@
 00026 
 00027 
 00028 <span class="comment">/* Prototypes _______________________________________________________________ */</span>
-00029 <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a32">set_fits_col_format</a>(catalogAccess::Quantity *desc, std::string *format);
-00030 <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a33">fits_tform_binary</a>(<span class="keywordtype">int</span> typecode, <span class="keywordtype">long</span> repeat, <span class="keywordtype">long</span> width, 
+00029 <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a35">set_fits_col_format</a>(catalogAccess::Quantity *desc, std::string *format);
+00030 <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a36">fits_tform_binary</a>(<span class="keywordtype">int</span> typecode, <span class="keywordtype">long</span> repeat, <span class="keywordtype">long</span> width, 
 00031                       std::string *format);
 00032 
 00033 
@@ -44,7 +44,7 @@
 00036 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00037 <span class="comment">/* Private function: set FITS column format from catalogue description        */</span>
 00038 <span class="comment">/*----------------------------------------------------------------------------*/</span>
-<a name="l00039"></a><a class="code" href="namespacesource_identify.html#a32">00039</a> <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a32">set_fits_col_format</a>(catalogAccess::Quantity *desc, std::string *format) {
+<a name="l00039"></a><a class="code" href="namespacesource_identify.html#a35">00039</a> <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a35">set_fits_col_format</a>(catalogAccess::Quantity *desc, std::string *format) {
 00040 
 00041     <span class="comment">// Declare local variables</span>
 00042     std::string            col_format;
@@ -86,7 +86,7 @@
 00078     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
 00079     
 00080     <span class="comment">// Return</span>
-00081     <span class="keywordflow">return</span> <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>;
+00081     <span class="keywordflow">return</span> <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>;
 00082 
 00083 }
 00084 
@@ -96,7 +96,7 @@
 00088 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00089 <span class="comment">/* Private function: set FITS column format from catalogue description        */</span>
 00090 <span class="comment">/*----------------------------------------------------------------------------*/</span>
-<a name="l00091"></a><a class="code" href="namespacesource_identify.html#a33">00091</a> <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a33">fits_tform_binary</a>(<span class="keywordtype">int</span> typecode, <span class="keywordtype">long</span> repeat, <span class="keywordtype">long</span> width, 
+<a name="l00091"></a><a class="code" href="namespacesource_identify.html#a36">00091</a> <span class="keywordtype">int</span> <a class="code" href="namespacesource_identify.html#a36">fits_tform_binary</a>(<span class="keywordtype">int</span> typecode, <span class="keywordtype">long</span> repeat, <span class="keywordtype">long</span> width, 
 00092                       std::string *format) {
 00093 
 00094     <span class="comment">// Declare local variables</span>
@@ -160,7 +160,7 @@
 00152     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
 00153     
 00154     <span class="comment">// Return</span>
-00155     <span class="keywordflow">return</span> <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>;
+00155     <span class="keywordflow">return</span> <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>;
 00156 
 00157 }
 00158 
@@ -240,32 +240,32 @@
 00232       caterr = cat-&gt;importDescription(catName);
 00233       <span class="keywordflow">if</span> (caterr &lt; 0) {
 00234         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00235           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' descriptor from"</span>
+00235           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' descriptor from"</span>
 00236               <span class="stringliteral">" file."</span>, caterr, catName.c_str());
 00237         caterr = <a class="code" href="classsource_identify_1_1_catalogue.html#o4">src</a>.importDescriptionWeb(catName);
 00238         <span class="keywordflow">if</span> (caterr &lt; 0) {
 00239           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00240             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' descriptor from"</span>
+00240             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' descriptor from"</span>
 00241                 <span class="stringliteral">" file or web."</span>, caterr, catName.c_str());
-00242           status = <a class="code" href="namespacesource_identify.html#a38a30">STATUS_CAT_NOT_FOUND</a>;
+00242           status = <a class="code" href="namespacesource_identify.html#a38a28">STATUS_CAT_NOT_FOUND</a>;
 00243           <span class="keywordflow">continue</span>;
 00244         }
 00245         <span class="keywordflow">else</span> {
 00246           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00247             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' descriptor from web."</span>, 
+00247             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' descriptor from web."</span>, 
 00248                 catName.c_str());
 00249         }
 00250       }
 00251       <span class="keywordflow">else</span> {
 00252         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00253           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' descriptor from file."</span>, 
+00253           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' descriptor from file."</span>, 
 00254               catName.c_str());
 00255       }
 00256       
 00257       <span class="comment">// Debug mode: dump catalogue descriptor</span>
 00258       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>()) {
 00259         status = <a class="code" href="classsource_identify_1_1_catalogue.html#c13">dump_descriptor</a>(cat, status);
-00260         <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00260         <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00261           <span class="keywordflow">continue</span>;
 00262       }
 00263     
@@ -298,24 +298,24 @@
 00290       caterr = cat-&gt;import(catName);
 00291       <span class="keywordflow">if</span> (caterr &lt; 0) {
 00292         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00293           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' from file."</span>,
+00293           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' from file."</span>,
 00294               caterr, catName.c_str());
 00295         caterr = <a class="code" href="classsource_identify_1_1_catalogue.html#o4">src</a>.importWeb(catName);
 00296         <span class="keywordflow">if</span> (caterr &lt; 0) {
 00297           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00298             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' from file or web."</span>,
+00298             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load catalogue '%s' from file or web."</span>,
 00299                 caterr, catName.c_str());
-00300           status = <a class="code" href="namespacesource_identify.html#a38a30">STATUS_CAT_NOT_FOUND</a>;
+00300           status = <a class="code" href="namespacesource_identify.html#a38a28">STATUS_CAT_NOT_FOUND</a>;
 00301           <span class="keywordflow">continue</span>;
 00302         }
 00303         <span class="keywordflow">else</span> {
 00304           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00305             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' from web."</span>, catName.c_str());
+00305             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' from web."</span>, catName.c_str());
 00306         }
 00307       }
 00308       <span class="keywordflow">else</span> {
 00309         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00310           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' from file."</span>, catName.c_str());
+00310           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Loaded catalogue '%s' from file."</span>, catName.c_str());
 00311       }
 00312       
 00313     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
@@ -355,25 +355,25 @@
 00347 
 00348       <span class="comment">// Optionally dump source information</span>
 00349       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a6">logDetail</a>()) {
-00350         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">""</span>);
-00351         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Source %5d .....................: %s"</span>
+00350         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">""</span>);
+00351         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Source %5d .....................: %s"</span>
 00352             <span class="stringliteral">" (%8.3f,%8.3f) +/- %8.3f"</span>,
 00353             iSrc, src_name.c_str(), ra, dec, pos_err);
 00354       }
 00355         
 00356       <span class="comment">// Get counterparts near the source position</span>
 00357       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c5">get_counterparts</a>(par, &amp;ra, &amp;dec, &amp;pos_err, status);
-00358       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00358       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00359         <span class="keywordflow">continue</span>;
 00360 
 00361       <span class="comment">// Assign probability for each counterpart</span>
 00362       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c6">get_probability</a>(par, iSrc, status);
-00363       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00363       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00364         <span class="keywordflow">continue</span>;
 00365 
 00366       <span class="comment">// Add all counterpart candidates to output catalogue</span>
 00367       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c9">add_counterpart_candidates</a>(par, iSrc, status);
-00368       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00368       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00369         <span class="keywordflow">continue</span>;
 00370 
 00371       <span class="comment">// Optionally dump counterpart candidats</span>
@@ -443,38 +443,38 @@
 00435 
 00436           <span class="comment">// Load counterpart catalogue</span>
 00437           status = <a class="code" href="classsource_identify_1_1_catalogue.html#c3">get_input_catalogue</a>(par, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>, &amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o5">cpt</a>, status);
-00438           <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+00438           <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 00439             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00440               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load counterpart catalogue '%s'"</span>
+00440               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load counterpart catalogue '%s'"</span>
 00441                   <span class="stringliteral">" data."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>.c_str());
 00442             <span class="keywordflow">continue</span>;
 00443           }
 00444           <span class="keywordflow">else</span> {
 00445             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00446               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Counterpart catalogue loaded."</span>);
+00446               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Counterpart catalogue loaded."</span>);
 00447           }
 00448 
 00449           <span class="comment">// Determine the number of sources in counterpart catalogue. Stop if</span>
 00450           <span class="comment">// the catalogue is empty</span>
 00451           <a class="code" href="classsource_identify_1_1_catalogue.html#o5">cpt</a>.getNumRows(&amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o1">numCpt</a>);
 00452           <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o1">numCpt</a> &lt; 1) {
-00453             status = <a class="code" href="namespacesource_identify.html#a38a31">STATUS_CAT_EMPTY</a>;
+00453             status = <a class="code" href="namespacesource_identify.html#a38a29">STATUS_CAT_EMPTY</a>;
 00454             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00455               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Counterpart catalogue is empty. Stop."</span>, 
+00455               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Counterpart catalogue is empty. Stop."</span>, 
 00456                   (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00457             <span class="keywordflow">continue</span>;
 00458           }
 00459           <span class="keywordflow">else</span> {
 00460             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-00461               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Counterpart catalogue contains %d sources."</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o1">numCpt</a>);
+00461               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Counterpart catalogue contains %d sources."</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o1">numCpt</a>);
 00462           }
 00463           
 00464           <span class="comment">// Allocate memory for counterpart candidate search</span>
 00465           <a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a> = <span class="keyword">new</span> <a class="code" href="structsource_identify_1_1_c_c_element.html">CCElement</a>[<a class="code" href="classsource_identify_1_1_catalogue.html#o1">numCpt</a>];
 00466           <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a> == NULL) {
-00467             status = <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>;
+00467             status = <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>;
 00468             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00469               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+00469               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00470             <span class="keywordflow">continue</span>;
 00471           }
 00472  
@@ -527,11 +527,11 @@
 00519 
 00520       <span class="comment">// Optionally dump counterpart filter statistics</span>
 00521       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a6">logDetail</a>()) {
-00522         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Filter step candidates ..........: %d"</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a>);
+00522         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Filter step candidates ..........: %d"</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a>);
 00523         <span class="keywordflow">if</span> (numNoPos &gt; 0)
-00524           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">"              no positions ........: %d"</span>, numNoPos);
+00524           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">"              no positions ........: %d"</span>, numNoPos);
 00525         <span class="keywordflow">if</span> (numNoError &gt; 0)
-00526           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">"              no errors ...........: %d"</span>, numNoError);
+00526           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">"              no errors ...........: %d"</span>, numNoError);
 00527       }
 00528 
 00529     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
@@ -564,7 +564,7 @@
 00556     <span class="keywordflow">do</span> {
 00557     
 00558       <span class="comment">// Fall through in case of an error</span>
-00559       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00559       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00560         <span class="keywordflow">continue</span>;
 00561         
 00562       <span class="comment">// Fall through if there are no counterpart candidates</span>
@@ -573,9 +573,9 @@
 00565 
 00566       <span class="comment">// Determine counterpart probabilities based on angular separation</span>
 00567       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c7">get_probability_angsep</a>(par, iSrc, status);
-00568       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+00568       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 00569         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00570           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to determine counterpart probabilities"</span>
+00570           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to determine counterpart probabilities"</span>
 00571               <span class="stringliteral">" based on angular separation."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00572         <span class="keywordflow">continue</span>;
 00573       }
@@ -587,9 +587,9 @@
 00579 
 00580       <span class="comment">// Sort counterpart candidates by decreasing probability</span>
 00581       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c12">cc_sort</a>(par, status);
-00582       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+00582       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 00583         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00584           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to sort counterpart candidates."</span>, 
+00584           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to sort counterpart candidates."</span>, 
 00585               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00586         <span class="keywordflow">continue</span>;
 00587       }
@@ -598,22 +598,22 @@
 00590       <span class="comment">// threshold</span>
 00591       numUseCC = 0;
 00592       <span class="keywordflow">for</span> (iCC = 0; iCC &lt; <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a>; iCC++) {
-00593         <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a>[iCC].<a class="code" href="structsource_identify_1_1_c_c_element.html#m6">prob</a> &gt;= par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o9">m_probThres</a>)
+00593         <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a>[iCC].<a class="code" href="structsource_identify_1_1_c_c_element.html#m6">prob</a> &gt;= par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o9">probThres</a>)
 00594           numUseCC++;
 00595         <span class="keywordflow">else</span>
 00596           <span class="keywordflow">break</span>;
 00597       }
 00598 
 00599       <span class="comment">// Apply the maximum number of counterpart threshold</span>
-00600       <span class="keywordflow">if</span> (numUseCC &gt; par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a>)
-00601         numUseCC = par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a>;
+00600       <span class="keywordflow">if</span> (numUseCC &gt; par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a>)
+00601         numUseCC = par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a>;
 00602 
 00603       <span class="comment">// Eliminate counterpart candidates below threshold. Fall through if no </span>
 00604       <span class="comment">// counterparts are left</span>
 00605       <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a> = numUseCC;
 00606       <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a> &lt; 1) {
 00607         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a6">logDetail</a>())
-00608           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Refine step candidates ..........: no"</span>);
+00608           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Refine step candidates ..........: no"</span>);
 00609         <span class="keywordflow">continue</span>;
 00610       }
 00611 
@@ -626,7 +626,7 @@
 00618 
 00619       <span class="comment">// Optionally dump counterpart refine statistics</span>
 00620       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a6">logDetail</a>()) {
-00621         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Refine step candidates ..........: %d"</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a>);
+00621         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Refine step candidates ..........: %d"</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o7">numCC</a>);
 00622       }
 00623     
 00624     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
@@ -679,7 +679,7 @@
 00671     <span class="keywordflow">do</span> {
 00672     
 00673       <span class="comment">// Fall through in case of an error</span>
-00674       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00674       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00675         <span class="keywordflow">continue</span>;
 00676         
 00677       <span class="comment">// Fall through if there are no counterpart candidates</span>
@@ -801,18 +801,18 @@
 00793     <span class="keywordflow">do</span> {
 00794     
 00795       <span class="comment">// Fall through in case of an error</span>
-00796       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00796       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00797         <span class="keywordflow">continue</span>;
 00798 
 00799       <span class="comment">// If clobber=1 we make sure that the output catalogue does not yet exist</span>
-00800       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o12">m_clobber</a>)
+00800       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o11">clobber</a>)
 00801         remove(par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>.c_str());
 00802         
 00803       <span class="comment">// Create empty FITS file.</span>
 00804       fstatus = fits_create_file(&amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>.c_str(), &amp;fstatus);
 00805       <span class="keywordflow">if</span> (fstatus != 0) {
 00806         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00807           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to create output catalogue '%s'."</span>, 
+00807           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to create output catalogue '%s'."</span>, 
 00808               fstatus, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>.c_str());
 00809         <span class="keywordflow">continue</span>;
 00810       }
@@ -835,7 +835,7 @@
 00827           num_col++;
 00828 
 00829           <span class="comment">// Set quantity FITS column format</span>
-00830           <a class="code" href="namespacesource_identify.html#a32">set_fits_col_format</a>(&amp;qtyDesc[iQty], &amp;form);
+00830           <a class="code" href="namespacesource_identify.html#a35">set_fits_col_format</a>(&amp;qtyDesc[iQty], &amp;form);
 00831         
 00832           <span class="comment">// Add quantity information to source quantity string</span>
 00833           <a class="code" href="classsource_identify_1_1_catalogue.html#o11">src_Qty_ttype</a>.push_back(qtyNames[iQty]);
@@ -857,7 +857,7 @@
 00849           num_col++;
 00850 
 00851           <span class="comment">// Set quantity FITS column format</span>
-00852           <a class="code" href="namespacesource_identify.html#a32">set_fits_col_format</a>(&amp;qtyDesc[iQty], &amp;form);
+00852           <a class="code" href="namespacesource_identify.html#a35">set_fits_col_format</a>(&amp;qtyDesc[iQty], &amp;form);
 00853         
 00854           <span class="comment">// Add quantity information to source quantity string</span>
 00855           <a class="code" href="classsource_identify_1_1_catalogue.html#o16">cpt_Qty_ttype</a>.push_back(qtyNames[iQty]);
@@ -873,9 +873,9 @@
 00865       <span class="keywordflow">if</span> (ttype == NULL ||
 00866           tform == NULL ||
 00867           tunit == NULL) {
-00868         status = <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>;
+00868         status = <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>;
 00869         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00870           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+00870           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00871         <span class="keywordflow">continue</span>;
 00872       }
 00873       <span class="keywordflow">for</span> (col = 0; col &lt; num_col; col++) {
@@ -885,16 +885,16 @@
 00877         <span class="keywordflow">if</span> (ttype[col] == NULL ||
 00878             tform[col] == NULL ||
 00879             tunit[col] == NULL) {
-00880           status = <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>;
+00880           status = <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>;
 00881           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00882             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+00882             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 00883           <span class="keywordflow">break</span>;
 00884         }
 00885         sprintf(ttype[col], <span class="stringliteral">""</span>);
 00886         sprintf(tform[col], <span class="stringliteral">""</span>);
 00887         sprintf(tunit[col], <span class="stringliteral">""</span>);
 00888       }
-00889       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00889       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00890         <span class="keywordflow">continue</span>;
 00891 
 00892       <span class="comment">// Add generic columns</span>
@@ -953,7 +953,7 @@
 00945                                 <a class="code" href="_catalogue_8h.html#a2">OUTCAT_EXT_NAME</a>, &amp;fstatus);
 00946       <span class="keywordflow">if</span> (fstatus != 0) {
 00947         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-00948           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to create empty catalogue '%s'."</span>, 
+00948           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to create empty catalogue '%s'."</span>, 
 00949               fstatus, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>);
 00950         <span class="keywordflow">continue</span>;
 00951       }
@@ -981,7 +981,7 @@
 00973     }
 00974 
 00975     <span class="comment">// Set FITSIO status</span>
-00976     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00976     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 00977       status = (Status)fstatus;
 00978     
 00979     <span class="comment">// Return status</span>
@@ -1026,7 +1026,7 @@
 01018     <span class="keywordflow">do</span> {
 01019     
 01020       <span class="comment">// Fall through in case of an error</span>
-01021       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01021       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01022         <span class="keywordflow">continue</span>;
 01023         
 01024       <span class="comment">// Fall through if there are no counterpart candidates</span>
@@ -1037,7 +1037,7 @@
 01029       fstatus = fits_get_num_rows(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, &amp;nactrows, &amp;fstatus);
 01030       <span class="keywordflow">if</span> (fstatus != 0) {
 01031         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01032           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
+01032           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
 01033               <span class="stringliteral">" catalogue."</span>, fstatus);
 01034         <span class="keywordflow">continue</span>;
 01035       }
@@ -1051,7 +1051,7 @@
 01043       fstatus = fits_insert_rows(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, firstrow, nrows, &amp;fstatus);
 01044       <span class="keywordflow">if</span> (fstatus != 0) {
 01045         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01046           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to add %d rows to output catalogue."</span>, 
+01046           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to add %d rows to output catalogue."</span>, 
 01047               fstatus, nrows);
 01048         <span class="keywordflow">continue</span>;
 01049       }
@@ -1061,21 +1061,21 @@
 01053       cptr = <span class="keyword">new</span> (<span class="keywordtype">char</span>*)[nrows];
 01054       <span class="keywordflow">if</span> (dptr == NULL ||
 01055           cptr == NULL) {
-01056         status = <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>;
+01056         status = <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>;
 01057         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01058           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+01058           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01059         <span class="keywordflow">continue</span>;
 01060       }
 01061       <span class="keywordflow">for</span> (row = 0; row &lt; nrows; row++) {
 01062         cptr[row] = <span class="keyword">new</span> <span class="keywordtype">char</span>[<a class="code" href="_catalogue_8h.html#a0">OUTCAT_MAX_STRING_LEN</a>];
 01063         <span class="keywordflow">if</span> (cptr[row] == NULL) {
-01064           status = <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>;
+01064           status = <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>;
 01065           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01066             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+01066             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Memory allocation failure."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01067           <span class="keywordflow">break</span>;
 01068         }
 01069       }
-01070       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01070       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01071         <span class="keywordflow">continue</span>;
 01072 
 01073 
@@ -1086,7 +1086,7 @@
 01078                                    frow, 1, nrows, cptr, &amp;fstatus);
 01079       <span class="keywordflow">if</span> (fstatus != 0) {
 01080         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01081           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart identifier to output"</span>
+01081           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart identifier to output"</span>
 01082               <span class="stringliteral">" catalogue."</span>, fstatus);
 01083         <span class="keywordflow">continue</span>;
 01084       }
@@ -1098,7 +1098,7 @@
 01090                                frow, 1, nrows, dptr, &amp;fstatus);
 01091       <span class="keywordflow">if</span> (fstatus != 0) {
 01092         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01093           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart Right Ascension to"</span>
+01093           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart Right Ascension to"</span>
 01094               <span class="stringliteral">" output catalogue."</span>, fstatus);
 01095         <span class="keywordflow">continue</span>;
 01096       }
@@ -1110,7 +1110,7 @@
 01102                                frow, 1, nrows, dptr, &amp;fstatus);
 01103       <span class="keywordflow">if</span> (fstatus != 0) {
 01104         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01105           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart Declination to"</span>
+01105           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart Declination to"</span>
 01106               <span class="stringliteral">" output catalogue."</span>, fstatus);
 01107         <span class="keywordflow">continue</span>;
 01108       }
@@ -1122,7 +1122,7 @@
 01114                                frow, 1, nrows, dptr, &amp;fstatus);
 01115       <span class="keywordflow">if</span> (fstatus != 0) {
 01116         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01117           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse major"</span>
+01117           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse major"</span>
 01118               <span class="stringliteral">" axis to output catalogue."</span>, fstatus);
 01119         <span class="keywordflow">continue</span>;
 01120       }
@@ -1134,7 +1134,7 @@
 01126                                frow, 1, nrows, dptr, &amp;fstatus);
 01127       <span class="keywordflow">if</span> (fstatus != 0) {
 01128         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01129           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse minor"</span>
+01129           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse minor"</span>
 01130               <span class="stringliteral">" axis to output catalogue."</span>, fstatus);
 01131         <span class="keywordflow">continue</span>;
 01132       }
@@ -1146,7 +1146,7 @@
 01138                                frow, 1, nrows, dptr, &amp;fstatus);
 01139       <span class="keywordflow">if</span> (fstatus != 0) {
 01140         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01141           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse position"</span>
+01141           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart error ellipse position"</span>
 01142               <span class="stringliteral">" angle to output catalogue."</span>, fstatus);
 01143         <span class="keywordflow">continue</span>;
 01144       }
@@ -1158,7 +1158,7 @@
 01150                                frow, 1, nrows, dptr, &amp;fstatus);
 01151       <span class="keywordflow">if</span> (fstatus != 0) {
 01152         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01153           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart probability to output"</span>
+01153           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart probability to output"</span>
 01154               <span class="stringliteral">" catalogue."</span>, fstatus);
 01155         <span class="keywordflow">continue</span>;
 01156       }
@@ -1180,7 +1180,7 @@
 01172                                    dptr, &amp;fstatus);
 01173           <span class="keywordflow">if</span> (fstatus != 0) {
 01174             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01175               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write source catalogue data &lt;%s&gt;"</span>
+01175               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write source catalogue data &lt;%s&gt;"</span>
 01176                   <span class="stringliteral">" (column %d) to output catalogue."</span>, 
 01177                   fstatus, name.c_str(), colnum);
 01178             <span class="keywordflow">break</span>;
@@ -1196,7 +1196,7 @@
 01188                                        &amp;fstatus);
 01189           <span class="keywordflow">if</span> (fstatus != 0) {
 01190             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01191               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write source catalogue data &lt;%s&gt;"</span>
+01191               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write source catalogue data &lt;%s&gt;"</span>
 01192                   <span class="stringliteral">" (column %d) to output catalogue."</span>, 
 01193                   fstatus, name.c_str(), colnum);
 01194             <span class="keywordflow">break</span>;
@@ -1226,7 +1226,7 @@
 01218                                    dptr, &amp;fstatus);
 01219           <span class="keywordflow">if</span> (fstatus != 0) {
 01220             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01221               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart catalogue data &lt;%s&gt;"</span>
+01221               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart catalogue data &lt;%s&gt;"</span>
 01222                   <span class="stringliteral">" (column %d) to output catalogue."</span>, 
 01223                   fstatus, name.c_str(), colnum);
 01224             <span class="keywordflow">break</span>;
@@ -1244,7 +1244,7 @@
 01236                                        &amp;fstatus);
 01237           <span class="keywordflow">if</span> (fstatus != 0) {
 01238             <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01239               <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart catalogue data"</span>
+01239               <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to write counterpart catalogue data"</span>
 01240                   <span class="stringliteral">" &lt;%s&gt; (column %d) to output catalogue."</span>, 
 01241                   fstatus, name.c_str(), colnum);
 01242             <span class="keywordflow">break</span>;
@@ -1267,7 +1267,7 @@
 01259     }
 01260 
 01261     <span class="comment">// Set FITSIO status</span>
-01262     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01262     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01263       status = (Status)fstatus;
 01264     
 01265     <span class="comment">// Return status</span>
@@ -1289,7 +1289,7 @@
 01281     <span class="keywordtype">int</span>                    datatype;
 01282     <span class="keywordtype">int</span>                    naxis;
 01283     <span class="keywordtype">long</span>                   nelements;
-01284     <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>          iQty;
+01284     <span class="keywordtype">long</span>                   iQty;
 01285     std::string::size_type numQty;
 01286     std::string            tform;
 01287 
@@ -1300,7 +1300,7 @@
 01292     <span class="keywordflow">do</span> {
 01293     
 01294       <span class="comment">// Fall through in case of an error</span>
-01295       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01295       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01296         <span class="keywordflow">continue</span>;
 01297 
 01298       <span class="comment">// Determine number of new output catalogue quantities. Fall through if</span>
@@ -1311,9 +1311,9 @@
 01303 
 01304       <span class="comment">// Dump header</span>
 01305       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01306         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">""</span>);
-01307         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"Add new output catalogue quantities:"</span>);
-01308         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"===================================="</span>);
+01306         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">""</span>);
+01307         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"Add new output catalogue quantities:"</span>);
+01308         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"===================================="</span>);
 01309       }
 01310 
 01311       <span class="comment">// Add all new output catalogue quantities</span>
@@ -1326,7 +1326,7 @@
 01318                                  &amp;fstatus);
 01319         <span class="keywordflow">if</span> (fstatus != 0) {
 01320           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01321             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">" Unable to evaluate expression &lt;%s='%s'&gt; for"</span>
+01321             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">" Unable to evaluate expression &lt;%s='%s'&gt; for"</span>
 01322                 <span class="stringliteral">" creating new output catalogue quantity (status=%d)."</span>,
 01323                 par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>[iQty].c_str(), 
 01324                 par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>[iQty].c_str(),
@@ -1338,7 +1338,7 @@
 01330         <span class="comment">// Set column format</span>
 01331         <span class="keywordflow">if</span> (nelements &lt; 1) 
 01332           nelements = 1;
-01333         <a class="code" href="namespacesource_identify.html#a33">fits_tform_binary</a>(datatype, nelements, 0, &amp;tform);
+01333         <a class="code" href="namespacesource_identify.html#a36">fits_tform_binary</a>(datatype, nelements, 0, &amp;tform);
 01334 
 01335         <span class="comment">// Create new FITS column</span>
 01336         fstatus = fits_calculator(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, 
@@ -1349,7 +1349,7 @@
 01341                                   &amp;fstatus);
 01342         <span class="keywordflow">if</span> (fstatus != 0) {
 01343           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01344             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to evaluate quantity &lt;%s='%s'&gt; in output"</span>
+01344             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to evaluate quantity &lt;%s='%s'&gt; in output"</span>
 01345                 <span class="stringliteral">" catalogue."</span>, 
 01346                 fstatus, 
 01347                 par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>[iQty].c_str(), 
@@ -1359,7 +1359,7 @@
 01351 
 01352         <span class="comment">// Dump new output catalogue quantities information</span>
 01353         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01354           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" New quantity .....................: %s = %s"</span>
+01354           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" New quantity .....................: %s = %s"</span>
 01355               <span class="stringliteral">" (format='%s')"</span>,
 01356               par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>[iQty].c_str(),
 01357               par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>[iQty].c_str(),
@@ -1373,7 +1373,7 @@
 01365     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
 01366 
 01367     <span class="comment">// Set FITSIO status</span>
-01368     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01368     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01369       status = (Status)fstatus;
 01370     
 01371     <span class="comment">// Return status</span>
@@ -1391,9 +1391,9 @@
 01383 
 01384     <span class="comment">// Declare local variables</span>
 01385     <span class="keywordtype">int</span>                    fstatus;
-01386     <span class="keywordtype">long</span>                   numBefore;
-01387     <span class="keywordtype">long</span>                   numAfter;
-01388     std::string::size_type iSel;
+01386     <span class="keywordtype">long</span>                   iSel;
+01387     <span class="keywordtype">long</span>                   numBefore;
+01388     <span class="keywordtype">long</span>                   numAfter;
 01389     std::string::size_type numSel;
 01390 
 01391     <span class="comment">// Initialise FITSIO status</span>
@@ -1403,7 +1403,7 @@
 01395     <span class="keywordflow">do</span> {
 01396     
 01397       <span class="comment">// Fall through in case of an error</span>
-01398       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01398       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01399         <span class="keywordflow">continue</span>;
 01400 
 01401       <span class="comment">// Determine number of output catalogue selection strings. Fall through</span>
@@ -1414,9 +1414,9 @@
 01406 
 01407       <span class="comment">// Dump header</span>
 01408       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01409         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">""</span>);
-01410         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"Select output catalogue counterparts:"</span>);
-01411         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"====================================="</span>);
+01409         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">""</span>);
+01410         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"Select output catalogue counterparts:"</span>);
+01411         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"====================================="</span>);
 01412       }
 01413 
 01414       <span class="comment">// Select output catalogue entries</span>
@@ -1426,7 +1426,7 @@
 01418         fstatus = fits_get_num_rows(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, &amp;numBefore, &amp;fstatus);
 01419         <span class="keywordflow">if</span> (fstatus != 0) {
 01420           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01421             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
+01421             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
 01422                 <span class="stringliteral">" catalogue."</span>, fstatus);
 01423           <span class="keywordflow">break</span>;
 01424         }
@@ -1437,7 +1437,7 @@
 01429                                    &amp;fstatus);
 01430         <span class="keywordflow">if</span> (fstatus != 0) {
 01431           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01432             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a14">Warning_2</a>, <span class="stringliteral">" Unable to perform selection &lt;%s&gt; on the output"</span>
+01432             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a12">Warning_2</a>, <span class="stringliteral">" Unable to perform selection &lt;%s&gt; on the output"</span>
 01433                 <span class="stringliteral">" catalogue (status=%d)."</span>,
 01434                 par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>[iSel].c_str(), 
 01435                 fstatus);
@@ -1449,16 +1449,16 @@
 01441         fstatus = fits_get_num_rows(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, &amp;numAfter, &amp;fstatus);
 01442         <span class="keywordflow">if</span> (fstatus != 0) {
 01443           <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01444             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
+01444             <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to determine number of rows in output"</span>
 01445                 <span class="stringliteral">" catalogue."</span>, fstatus);
 01446           <span class="keywordflow">break</span>;
 01447         }
 01448 
 01449         <span class="comment">// Dump selection information</span>
 01450         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01451           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Selection ........................: %s"</span>, 
+01451           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Selection ........................: %s"</span>, 
 01452               par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>[iSel].c_str());
-01453           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"   Number of deleted counterparts .: %d (%d =&gt; %d)"</span>, 
+01453           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"   Number of deleted counterparts .: %d (%d =&gt; %d)"</span>, 
 01454               numBefore-numAfter, numBefore, numAfter);
 01455         }
 01456 
@@ -1469,7 +1469,7 @@
 01461     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
 01462 
 01463     <span class="comment">// Set FITSIO status</span>
-01464     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01464     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01465       status = (Status)fstatus;
 01466     
 01467     <span class="comment">// Return status</span>
@@ -1496,7 +1496,7 @@
 01488     <span class="keywordflow">do</span> {
 01489     
 01490       <span class="comment">// Fall through in case of an error</span>
-01491       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01491       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01492         <span class="keywordflow">continue</span>;
 01493         
 01494       <span class="comment">// Fall through if there are no counterpart candidates</span>
@@ -1578,9 +1578,9 @@
 01570       }
 01571 
 01572       <span class="comment">// Dump catalogue information</span>
-01573       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Catalogue ........................: %s"</span>, titles[0].c_str());
-01574       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Number of entries (rows) .........: %d"</span>, numRows);
-01575       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Number of quantities (columns) ...: %d"</span>, numQty);
+01573       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Catalogue ........................: %s"</span>, titles[0].c_str());
+01574       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Number of entries (rows) .........: %d"</span>, numRows);
+01575       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Number of quantities (columns) ...: %d"</span>, numQty);
 01576 
 01577       <span class="comment">// Dump information about catalogue quantitites</span>
 01578       <span class="keywordflow">for</span> (iQty = 0; iQty &lt; numQty; iQty++) {
@@ -1602,7 +1602,7 @@
 01594         }
 01595         
 01596         <span class="comment">// Dump quantity</span>
-01597         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Quantity %3d ....................: %*s %*s %*s (%s)"</span>, 
+01597         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Quantity %3d ....................: %*s %*s %*s (%s)"</span>, 
 01598                  iQty+1, 
 01599                  maxLenNames, qtyNames[iQty].c_str(),
 01600                  maxLenUnits, qtyUnits[iQty].c_str(),
@@ -1639,7 +1639,7 @@
 01631     <span class="keywordflow">do</span> {
 01632     
 01633       <span class="comment">// Fall through in case of an error</span>
-01634       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01634       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01635         <span class="keywordflow">continue</span>;
 01636         
 01637       <span class="comment">// Fall through if there are no counterpart candidates</span>
@@ -1663,11 +1663,11 @@
 01655 
 01656         <span class="comment">// Dump counterpart candidate information</span>
 01657         <span class="keywordflow">if</span> (!par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>()) {
-01658           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Counterpart candidate %5d .....: %s Prob=%7.3f %%"</span>,
+01658           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Counterpart candidate %5d .....: %s Prob=%7.3f %%"</span>,
 01659               iCC+1, cpt_name.c_str(), <a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a>[iCC].<a class="code" href="structsource_identify_1_1_c_c_element.html#m6">prob</a>*100.0);
 01660         }
 01661         <span class="keywordflow">else</span> {
-01662           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"  Counterpart candidate %5d .....: %s Prob=%7.3f %%"</span>
+01662           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"  Counterpart candidate %5d .....: %s Prob=%7.3f %%"</span>
 01663               <span class="stringliteral">" (RA,DEC)=(%8.3f,%8.3f) +/- %8.3f  Sep=%8.3f deg"</span>,
 01664               iCC+1, cpt_name.c_str(), <a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a>[iCC].<a class="code" href="structsource_identify_1_1_c_c_element.html#m6">prob</a>*100.0,
 01665               cpt_ra, cpt_dec, cpt_error, <a class="code" href="classsource_identify_1_1_catalogue.html#o8">cc</a>[iCC].<a class="code" href="structsource_identify_1_1_c_c_element.html#m8">angsep</a>);
@@ -1727,66 +1727,66 @@
 01719     <span class="keywordflow">do</span> {
 01720 
 01721       <span class="comment">// Fall through in case of an error</span>
-01722       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01722       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01723         <span class="keywordflow">continue</span>;
 01724 
 01725       <span class="comment">// Dump header</span>
 01726       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01727         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">""</span>);
-01728         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"Build counterpart candidate catalogue:"</span>);
-01729         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"======================================"</span>);
+01727         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">""</span>);
+01728         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"Build counterpart candidate catalogue:"</span>);
+01729         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"======================================"</span>);
 01730       }
 01731       
 01732       <span class="comment">// Get input catalogue descriptors</span>
 01733       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c2">get_input_descriptor</a>(par, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>, &amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o4">src</a>, status);
-01734       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01734       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01735         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01736           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load source catalogue '%s' descriptor."</span>,
+01736           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load source catalogue '%s' descriptor."</span>,
 01737               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>.c_str());
 01738         <span class="keywordflow">continue</span>;
 01739       }
 01740       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c2">get_input_descriptor</a>(par, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>, &amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o5">cpt</a>, status);
-01741       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01741       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01742         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01743           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load counterpart catalogue '%s'"</span>
+01743           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load counterpart catalogue '%s'"</span>
 01744               <span class="stringliteral">" descriptor."</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>.c_str());
 01745         <span class="keywordflow">continue</span>;
 01746       }
 01747 
 01748       <span class="comment">// Create output catalogue</span>
 01749       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c8">create_output_catalogue</a>(par, status);
-01750       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01750       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01751         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01752           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to create output catalogue."</span>,
+01752           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to create output catalogue."</span>,
 01753               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01754         <span class="keywordflow">continue</span>;
 01755       }
 01756       
 01757       <span class="comment">// Load source catalogue</span>
 01758       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c3">get_input_catalogue</a>(par, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>, &amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o4">src</a>, status);
-01759       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01759       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01760         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01761           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to load source catalogue '%s' data."</span>,
+01761           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to load source catalogue '%s' data."</span>,
 01762               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>.c_str());
 01763         <span class="keywordflow">continue</span>;
 01764       }
 01765       <span class="keywordflow">else</span> {
 01766         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-01767           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Source catalogue loaded."</span>);
+01767           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Source catalogue loaded."</span>);
 01768       }
 01769       
 01770       <span class="comment">// Determine the number of sources in source catalogue. Stop of the</span>
 01771       <span class="comment">// catalogue is empty</span>
 01772       <a class="code" href="classsource_identify_1_1_catalogue.html#o4">src</a>.getNumRows(&amp;<a class="code" href="classsource_identify_1_1_catalogue.html#o0">numSrc</a>);
 01773       <span class="keywordflow">if</span> (<a class="code" href="classsource_identify_1_1_catalogue.html#o0">numSrc</a> &lt; 1) {
-01774         status = <a class="code" href="namespacesource_identify.html#a38a31">STATUS_CAT_EMPTY</a>;
+01774         status = <a class="code" href="namespacesource_identify.html#a38a29">STATUS_CAT_EMPTY</a>;
 01775         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01776           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Source catalogue is empty. Stop"</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
+01776           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Source catalogue is empty. Stop"</span>, (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01777         <span class="keywordflow">continue</span>;
 01778       }
 01779       <span class="keywordflow">else</span> {
 01780         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a7">logDebug</a>())
-01781           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">" Source catalogue contains %d sources."</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o0">numSrc</a>);
+01781           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">" Source catalogue contains %d sources."</span>, <a class="code" href="classsource_identify_1_1_catalogue.html#o0">numSrc</a>);
 01782       }
 01783       
 01784       <span class="comment">// Loop over all sources</span>
@@ -1794,27 +1794,27 @@
 01786       
 01787         <span class="comment">// Get counterpart candidates for the source</span>
 01788         status = <a class="code" href="classsource_identify_1_1_catalogue.html#c4">get_counterpart_candidates</a>(par, iSrc, status);
-01789         <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01789         <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01790           <span class="keywordflow">break</span>;
 01791       
 01792       } <span class="comment">// endfor: looped over all sources</span>
-01793       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01793       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01794         <span class="keywordflow">continue</span>;
 01795 
 01796       <span class="comment">// Evaluate output catalogue quantities</span>
 01797       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c10">eval_output_catalogue_quantities</a>(par, status);
-01798       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01798       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01799         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01800           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to evaluate output catalogue quantities."</span>,
+01800           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to evaluate output catalogue quantities."</span>,
 01801               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01802         <span class="keywordflow">continue</span>;
 01803       }
 01804 
 01805       <span class="comment">// Select output catalogue counterparts</span>
 01806       status = <a class="code" href="classsource_identify_1_1_catalogue.html#c11">select_output_catalogue</a>(par, status);
-01807       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>) {
+01807       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>) {
 01808         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01809           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to select output catalogue counterparts."</span>,
+01809           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to select output catalogue counterparts."</span>,
 01810               (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status);
 01811         <span class="keywordflow">continue</span>;
 01812       }
@@ -1844,28 +1844,28 @@
 01836     <span class="keywordflow">do</span> {
 01837 
 01838       <span class="comment">// Fall through in case of an error</span>
-01839       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01839       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01840         <span class="keywordflow">continue</span>;
 01841 
 01842       <span class="comment">// Dump header</span>
 01843       <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a5">logAction</a>()) {
-01844         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">""</span>);
-01845         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"Save counterpart candidate catalogue:"</span>);
-01846         <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a22">Log_2</a>, <span class="stringliteral">"====================================="</span>);
+01844         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">""</span>);
+01845         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"Save counterpart candidate catalogue:"</span>);
+01846         <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a20">Log_2</a>, <span class="stringliteral">"====================================="</span>);
 01847       }
 01848 
 01849       <span class="comment">// Close FITS file</span>
 01850       fstatus = fits_close_file(<a class="code" href="classsource_identify_1_1_catalogue.html#o6">outFile</a>, &amp;fstatus);
 01851       <span class="keywordflow">if</span> (fstatus != 0) {
 01852         <span class="keywordflow">if</span> (par-&gt;<a class="code" href="classsource_identify_1_1_parameters.html#a4">logError</a>())
-01853           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : Unable to close output catalogue."</span>, fstatus);
+01853           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a8">Error_2</a>, <span class="stringliteral">"%d : Unable to close output catalogue."</span>, fstatus);
 01854         <span class="keywordflow">continue</span>;
 01855       }
 01856     
 01857     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
 01858     
 01859     <span class="comment">// Set FITSIO status</span>
-01860     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+01860     <span class="keywordflow">if</span> (status == <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
 01861       status = (Status)fstatus;
 01862     
 01863     <span class="comment">// Return status</span>
@@ -1875,7 +1875,7 @@
 01867 
 01868 <span class="comment">/* Namespace ends ___________________________________________________________ */</span>
 01869 }
-</pre></div><hr><address style="align: right;"><small>Generated on Wed May 25 18:45:42 2005 for sourceIdentify by
+</pre></div><hr><address style="align: right;"><small>Generated on Mon Feb 28 18:34:26 2005 for sourceIdentify by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.18 </small></address>
