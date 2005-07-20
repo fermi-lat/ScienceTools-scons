@@ -137,6 +137,9 @@ namespace tip {
       virtual const Keyword & getColumnKeyword(const std::string &) const
         { unsupported("getColumnKeyword"); return Keyword::emptyKeyword(); }
 
+      /// \brief Return a string identifying the full data type of the column.
+      virtual std::string getFormat() const { unsupported("getFormat"); return ""; }
+
     protected:
       std::string m_units;
 

@@ -261,6 +261,8 @@ namespace tip {
       */
       virtual const Keyword & getColumnKeyword(const std::string & base_name) const;
 
+      /// \brief Return a string identifying the full data type of the column.
+      virtual std::string getFormat() const { return m_type_string; }
 
     private:
       template <typename U>
@@ -321,6 +323,7 @@ namespace tip {
         if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
 
+      std::string m_type_string;
       FitsTable * m_ext;
       FieldIndex_t m_field_index;
       long m_repeat;
@@ -332,11 +335,56 @@ namespace tip {
 
   template <typename T>
   inline FitsColumn<T>::FitsColumn(FitsTable * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
-    m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0), m_var_length(false), m_scalar(false) {
+    m_type_string(), m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0),
+    m_var_length(false), m_scalar(false) {
+
     // Determine characteristics of this column.
     int status = 0;
     fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
-    if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get information about field");
+    if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get format of field " + id);
+
+    // Read the TFORM keyword, which gives the full layout of the column.
+    getColumnKeyword("TFORM").get(m_type_string);
+
+    // Detect unsigned integral types, and modify m_type_string as needed to reflect this.
+    if (TINT == m_type_code || TLONG == m_type_code || TSHORT == m_type_code) {
+      // Check the tscal.
+      double tscal = 0.;
+      try {
+        getColumnKeyword("TSCAL").get(tscal);
+      } catch (const TipException &) {
+        tscal = 1.;
+      }
+
+      // If tscal is 1., need to check TZERO to see if it indicates the correct offset for unsigned integers.
+      if (1. == tscal) {
+        unsigned long tzero = 0;
+        try {
+          getColumnKeyword("TZERO").get(tzero);
+          // Check whether TZERO is the correct offset for representing unsigned integers.
+          switch (m_type_code) {
+            case TINT:
+            case TLONG:
+              if ((unsigned long)(1<<31) == tzero) {
+                std::string::size_type index = m_type_string.find("J");
+                if (std::string::npos != index) m_type_string[index] = 'V';
+              }
+              break;
+            case TSHORT:
+              if ((unsigned long)(1<<15) == tzero) {
+                std::string::size_type index = m_type_string.find("I");
+                if (std::string::npos != index) m_type_string[index] = 'U';
+              }
+              break;
+            default:
+              break;
+          }
+        } catch (const TipException &) {
+          // Failure to read TZERO as an unsigned long implies only that this column/field does not contain
+          // an unsigned integer, so just continue.
+        }
+      }
+    }
 
     // Handle special case of strings, for which the info returned by fits_get_coltype means something different.
     if (TSTRING == m_type_code) {
