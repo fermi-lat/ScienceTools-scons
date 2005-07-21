@@ -3,11 +3,12 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Catalogue interface file.                                */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.1.0                                                    */
+/* Date of version : 21-Jul-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.1.0  21-Jul-2005  add debug information                                  */
 /*----------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -223,45 +224,54 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
     // Declare local variables
     int caterr;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_input_descriptor");
+
     // Single loop for common exit point
     do {
-
+    
       // First interpret the input string as filename and load the catalogue
       // from the file. If this fails then interpret input string as
       // catalogue name and load from WEB.
       caterr = cat->importDescription(catName);
       if (caterr < 0) {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Warning_2, "%d : Unable to load catalogue '%s' descriptor from"
               " file.", caterr, catName.c_str());
         caterr = src.importDescriptionWeb(catName);
         if (caterr < 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Unable to load catalogue '%s' descriptor from"
                 " file or web.", caterr, catName.c_str());
           status = STATUS_CAT_NOT_FOUND;
           continue;
         }
         else {
-          if (par->logDebug())
+          if (par->logVerbose())
             Log(Log_2, " Loaded catalogue '%s' descriptor from web.", 
                 catName.c_str());
         }
       }
       else {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Log_2, " Loaded catalogue '%s' descriptor from file.", 
               catName.c_str());
       }
       
       // Debug mode: dump catalogue descriptor
-      if (par->logDebug()) {
+      if (par->logVerbose()) {
         status = dump_descriptor(cat, status);
         if (status != STATUS_OK)
           continue;
       }
     
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_input_descriptor (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -281,6 +291,10 @@ Status Catalogue::get_input_catalogue(Parameters *par, std::string catName,
     // Declare local variables
     int caterr;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_input_catalogue");
+
     // Single loop for common exit point
     do {
 
@@ -289,28 +303,33 @@ Status Catalogue::get_input_catalogue(Parameters *par, std::string catName,
       // catalogue name and load from WEB.
       caterr = cat->import(catName);
       if (caterr < 0) {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Warning_2, "%d : Unable to load catalogue '%s' from file.",
               caterr, catName.c_str());
         caterr = src.importWeb(catName);
         if (caterr < 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Unable to load catalogue '%s' from file or web.",
                 caterr, catName.c_str());
           status = STATUS_CAT_NOT_FOUND;
           continue;
         }
         else {
-          if (par->logDebug())
+          if (par->logVerbose())
             Log(Log_2, " Loaded catalogue '%s' from web.", catName.c_str());
         }
       }
       else {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Log_2, " Loaded catalogue '%s' from file.", catName.c_str());
       }
       
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_input_catalogue (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -333,6 +352,10 @@ Status Catalogue::get_counterpart_candidates(Parameters *par, long iSrc,
     std::string src_name;
     std::string obj_name;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_counterpart_candidates");
+
     // Single loop for common exit point
     do {
 
@@ -346,7 +369,7 @@ Status Catalogue::get_counterpart_candidates(Parameters *par, long iSrc,
       src.getSValue(obj_name, iSrc, &src_name);
 
       // Optionally dump source information
-      if (par->logDetail()) {
+      if (par->logExplicit()) {
         Log(Log_2, "");
         Log(Log_2, " Source %5d .....................: %s"
             " (%8.3f,%8.3f) +/- %8.3f",
@@ -369,10 +392,15 @@ Status Catalogue::get_counterpart_candidates(Parameters *par, long iSrc,
         continue;
 
       // Optionally dump counterpart candidats
-      if (par->logDetail())
+      if (par->logExplicit())
         dump_counterpart_candidates(par, status);
 
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_counterpart_candidates (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -410,6 +438,10 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
     double cpt_dec_cos;
     double angsep;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_counterparts");
+
     // Single loop for common exit point
     do {
 
@@ -436,13 +468,13 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
           // Load counterpart catalogue
           status = get_input_catalogue(par, par->m_cptCatName, &cpt, status);
           if (status != STATUS_OK) {
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
                   " data.", (Status)status, par->m_cptCatName.c_str());
             continue;
           }
           else {
-            if (par->logDebug())
+            if (par->logVerbose())
               Log(Log_2, " Counterpart catalogue loaded.");
           }
 
@@ -451,13 +483,13 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
           cpt.getNumRows(&numCpt);
           if (numCpt < 1) {
             status = STATUS_CAT_EMPTY;
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Counterpart catalogue is empty. Stop.", 
                   (Status)status);
             continue;
           }
           else {
-            if (par->logDebug())
+            if (par->logVerbose())
               Log(Log_2, " Counterpart catalogue contains %d sources.", numCpt);
           }
           
@@ -465,7 +497,7 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
           cc = new CCElement[numCpt];
           if (cc == NULL) {
             status = STATUS_MEM_ALLOC;
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Memory allocation failure.", (Status)status);
             continue;
           }
@@ -518,7 +550,7 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
       } // endfor: looped over counterparts
 
       // Optionally dump counterpart filter statistics
-      if (par->logDetail()) {
+      if (par->logExplicit()) {
         Log(Log_2, "  Filter step candidates ..........: %d", numCC);
         if (numNoPos > 0)
           Log(Warning_2, "              no positions ........: %d", numNoPos);
@@ -527,6 +559,11 @@ Status Catalogue::get_counterparts(Parameters *par, double *ra, double *dec,
       }
 
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_counterparts (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -552,6 +589,10 @@ Status Catalogue::get_probability(Parameters *par, long iSrc, Status status) {
     long numUseCC;
     char cid[OUTCAT_MAX_STRING_LEN];
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_probability");
+
     // Single loop for common exit point
     do {
     
@@ -566,7 +607,7 @@ Status Catalogue::get_probability(Parameters *par, long iSrc, Status status) {
       // Determine counterpart probabilities based on angular separation
       status = get_probability_angsep(par, iSrc, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to determine counterpart probabilities"
               " based on angular separation.", (Status)status);
         continue;
@@ -580,7 +621,7 @@ Status Catalogue::get_probability(Parameters *par, long iSrc, Status status) {
       // Sort counterpart candidates by decreasing probability
       status = cc_sort(par, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to sort counterpart candidates.", 
               (Status)status);
         continue;
@@ -604,7 +645,7 @@ Status Catalogue::get_probability(Parameters *par, long iSrc, Status status) {
       // counterparts are left
       numCC = numUseCC;
       if (numCC < 1) {
-        if (par->logDetail())
+        if (par->logExplicit())
           Log(Log_2, "  Refine step candidates ..........: no");
         continue;
       }
@@ -617,11 +658,16 @@ Status Catalogue::get_probability(Parameters *par, long iSrc, Status status) {
       }
 
       // Optionally dump counterpart refine statistics
-      if (par->logDetail()) {
+      if (par->logExplicit()) {
         Log(Log_2, "  Refine step candidates ..........: %d", numCC);
       }
     
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_probability (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -666,6 +712,10 @@ Status Catalogue::get_probability_angsep(Parameters *par, long iSrc,
     double cpt_err_ang;
     double cpt_dec_sin;
     double cpt_dec_cos;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::get_probability_angsep");
 
     // Single loop for common exit point
     do {
@@ -753,6 +803,11 @@ Status Catalogue::get_probability_angsep(Parameters *par, long iSrc,
       } // endfor: looped over counterpart candidates
 
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::get_probability_angsep (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -781,6 +836,10 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
     char                                 **tform;
     char                                 **tunit;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::create_output_catalogue");
+
     // Initialise temporary memory pointers
     ttype = NULL;
     tform = NULL;
@@ -803,7 +862,7 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
       // Create empty FITS file.
       fstatus = fits_create_file(&outFile, par->m_outCatName.c_str(), &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to create output catalogue '%s'.", 
               fstatus, par->m_outCatName.c_str());
         continue;
@@ -866,7 +925,7 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
           tform == NULL ||
           tunit == NULL) {
         status = STATUS_MEM_ALLOC;
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
@@ -878,7 +937,7 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
             tform[col] == NULL ||
             tunit[col] == NULL) {
           status = STATUS_MEM_ALLOC;
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Memory allocation failure.", (Status)status);
           break;
         }
@@ -944,7 +1003,7 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
                                 ttype, tform, tunit,
                                 OUTCAT_EXT_NAME, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to create empty catalogue '%s'.", 
               fstatus, par->m_outCatName);
         continue;
@@ -975,6 +1034,11 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::create_output_catalogue (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -1007,6 +1071,10 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
     double       *dptr;
     char        **cptr;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::add_counterpart_candidates");
+
     // Initialise temporary memory pointers
     dptr = NULL;
     cptr = NULL;    
@@ -1028,7 +1096,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       // Determine number of rows in actual table
       fstatus = fits_get_num_rows(outFile, &nactrows, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to determine number of rows in output"
               " catalogue.", fstatus);
         continue;
@@ -1042,7 +1110,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       // Insert rows for the new counterpart candidates
       fstatus = fits_insert_rows(outFile, firstrow, nrows, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to add %d rows to output catalogue.", 
               fstatus, nrows);
         continue;
@@ -1054,7 +1122,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       if (dptr == NULL ||
           cptr == NULL) {
         status = STATUS_MEM_ALLOC;
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
@@ -1062,7 +1130,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
         cptr[row] = new char[OUTCAT_MAX_STRING_LEN];
         if (cptr[row] == NULL) {
           status = STATUS_MEM_ALLOC;
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Memory allocation failure.", (Status)status);
           break;
         }
@@ -1077,7 +1145,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col_str(outFile, OUTCAT_COL_ID_COLNUM, 
                                    frow, 1, nrows, cptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart identifier to output"
               " catalogue.", fstatus);
         continue;
@@ -1089,7 +1157,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_RA_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart Right Ascension to"
               " output catalogue.", fstatus);
         continue;
@@ -1101,7 +1169,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_DEC_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart Declination to"
               " output catalogue.", fstatus);
         continue;
@@ -1113,7 +1181,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_MAJERR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart error ellipse major"
               " axis to output catalogue.", fstatus);
         continue;
@@ -1125,7 +1193,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_MINERR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart error ellipse minor"
               " axis to output catalogue.", fstatus);
         continue;
@@ -1137,7 +1205,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_POSANGLE_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart error ellipse position"
               " angle to output catalogue.", fstatus);
         continue;
@@ -1149,7 +1217,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       fstatus = fits_write_col(outFile, TDOUBLE, OUTCAT_COL_PROB_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to write counterpart probability to output"
               " catalogue.", fstatus);
         continue;
@@ -1171,7 +1239,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
           fstatus = fits_write_col(outFile, TDOUBLE, colnum, frow, 1, nrows, 
                                    dptr, &fstatus);
           if (fstatus != 0) {
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Unable to write source catalogue data <%s>"
                   " (column %d) to output catalogue.", 
                   fstatus, name.c_str(), colnum);
@@ -1187,7 +1255,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
           fstatus = fits_write_col_str(outFile, colnum, frow, 1, nrows, cptr, 
                                        &fstatus);
           if (fstatus != 0) {
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Unable to write source catalogue data <%s>"
                   " (column %d) to output catalogue.", 
                   fstatus, name.c_str(), colnum);
@@ -1217,7 +1285,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
           fstatus = fits_write_col(outFile, TDOUBLE, colnum, frow, 1, nrows, 
                                    dptr, &fstatus);
           if (fstatus != 0) {
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Unable to write counterpart catalogue data <%s>"
                   " (column %d) to output catalogue.", 
                   fstatus, name.c_str(), colnum);
@@ -1235,7 +1303,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
           fstatus = fits_write_col_str(outFile, colnum, frow, 1, nrows, cptr, 
                                        &fstatus);
           if (fstatus != 0) {
-            if (par->logError())
+            if (par->logTerse())
               Log(Error_2, "%d : Unable to write counterpart catalogue data"
                   " <%s> (column %d) to output catalogue.", 
                   fstatus, name.c_str(), colnum);
@@ -1261,6 +1329,11 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::add_counterpart_candidates (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -1285,6 +1358,10 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
     std::string::size_type numQty;
     std::string            tform;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::eval_output_catalogue_quantities");
+
     // Initialise FITSIO status
     fstatus = (int)status;
 
@@ -1302,7 +1379,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
         continue;
 
       // Dump header
-      if (par->logAction()) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Add new output catalogue quantities:");
         Log(Log_2, "====================================");
@@ -1317,7 +1394,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
                                  0, &datatype, &nelements, &naxis, NULL,
                                  &fstatus);
         if (fstatus != 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Warning_2, " Unable to evaluate expression <%s='%s'> for"
                 " creating new output catalogue quantity (status=%d).",
                 par->m_outCatQtyName[iQty].c_str(), 
@@ -1340,7 +1417,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
                                   tform.c_str(), 
                                   &fstatus);
         if (fstatus != 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Unable to evaluate quantity <%s='%s'> in output"
                 " catalogue.", 
                 fstatus, 
@@ -1350,7 +1427,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
         }
 
         // Dump new output catalogue quantities information
-        if (par->logAction()) {
+        if (par->logNormal()) {
           Log(Log_2, " New quantity .....................: %s = %s"
               " (format='%s')",
               par->m_outCatQtyName[iQty].c_str(),
@@ -1367,6 +1444,11 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::eval_output_catalogue_quantities"
+          " (status=%d)", status);
     
     // Return status
     return status;
@@ -1388,6 +1470,10 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
     std::string::size_type iSel;
     std::string::size_type numSel;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::select_output_catalogue");
+
     // Initialise FITSIO status
     fstatus = (int)status;
 
@@ -1405,7 +1491,7 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
         continue;
 
       // Dump header
-      if (par->logAction()) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Select output catalogue counterparts:");
         Log(Log_2, "=====================================");
@@ -1417,7 +1503,7 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
         // Determine number of rows in table before selection
         fstatus = fits_get_num_rows(outFile, &numBefore, &fstatus);
         if (fstatus != 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Unable to determine number of rows in output"
                 " catalogue.", fstatus);
           break;
@@ -1428,7 +1514,7 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
                                    par->m_select[iSel].c_str(),
                                    &fstatus);
         if (fstatus != 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Warning_2, " Unable to perform selection <%s> on the output"
                 " catalogue (status=%d).",
                 par->m_select[iSel].c_str(), 
@@ -1440,14 +1526,14 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
         // Determine number of rows in table after selection
         fstatus = fits_get_num_rows(outFile, &numAfter, &fstatus);
         if (fstatus != 0) {
-          if (par->logError())
+          if (par->logTerse())
             Log(Error_2, "%d : Unable to determine number of rows in output"
                 " catalogue.", fstatus);
           break;
         }
 
         // Dump selection information
-        if (par->logAction()) {
+        if (par->logNormal()) {
           Log(Log_2, " Selection ........................: %s", 
               par->m_select[iSel].c_str());
           Log(Log_2, "   Number of deleted counterparts .: %d (%d => %d)", 
@@ -1463,6 +1549,11 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::select_output_catalogue (status=%d)", 
+          status);
     
     // Return status
     return status;
@@ -1483,6 +1574,10 @@ Status Catalogue::cc_sort(Parameters *par, Status status) {
     long      imax;
     double    max;
     CCElement swap;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cc_sort");
 
     // Single loop for common exit point
     do {
@@ -1514,6 +1609,10 @@ Status Catalogue::cc_sort(Parameters *par, Status status) {
       }
     
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cc_sort (status=%d)", status);
     
     // Return status
     return status;
@@ -1627,6 +1726,10 @@ Status Catalogue::dump_counterpart_candidates(Parameters *par, Status status) {
     std::string cpt_name;
     std::string obj_name;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::dump_counterpart_candidates");
+
     // Single loop for common exit point
     do {
     
@@ -1654,7 +1757,7 @@ Status Catalogue::dump_counterpart_candidates(Parameters *par, Status status) {
         cpt.getSValue(obj_name, iCpt, &cpt_name);
 
         // Dump counterpart candidate information
-        if (!par->logDebug()) {
+        if (!par->logVerbose()) {
           Log(Log_2, "  Counterpart candidate %5d .....: %s Prob=%7.3f %%",
               iCC+1, cpt_name.c_str(), cc[iCC].prob*100.0);
         }
@@ -1668,6 +1771,11 @@ Status Catalogue::dump_counterpart_candidates(Parameters *par, Status status) {
       } // endfor: looped over counterpart candidats
     
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::dump_counterpart_candidates"
+          " (status=%d)", status);
     
     // Return status
     return status;
@@ -1714,6 +1822,10 @@ Status Catalogue::build(Parameters *par, Status status) {
 
     // Declare local variables
     long iSrc;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::build");
         
     // Single loop for common exit point
     do {
@@ -1723,7 +1835,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
 
       // Dump header
-      if (par->logAction()) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Build counterpart candidate catalogue:");
         Log(Log_2, "======================================");
@@ -1732,14 +1844,14 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Get input catalogue descriptors
       status = get_input_descriptor(par, par->m_srcCatName, &src, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to load source catalogue '%s' descriptor.",
               (Status)status, par->m_srcCatName.c_str());
         continue;
       }
       status = get_input_descriptor(par, par->m_cptCatName, &cpt, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
               " descriptor.", (Status)status, par->m_cptCatName.c_str());
         continue;
@@ -1748,7 +1860,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Create output catalogue
       status = create_output_catalogue(par, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to create output catalogue.",
               (Status)status);
         continue;
@@ -1757,13 +1869,13 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Load source catalogue
       status = get_input_catalogue(par, par->m_srcCatName, &src, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to load source catalogue '%s' data.",
               (Status)status, par->m_srcCatName.c_str());
         continue;
       }
       else {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Log_2, " Source catalogue loaded.");
       }
       
@@ -1772,12 +1884,12 @@ Status Catalogue::build(Parameters *par, Status status) {
       src.getNumRows(&numSrc);
       if (numSrc < 1) {
         status = STATUS_CAT_EMPTY;
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Source catalogue is empty. Stop", (Status)status);
         continue;
       }
       else {
-        if (par->logDebug())
+        if (par->logVerbose())
           Log(Log_2, " Source catalogue contains %d sources.", numSrc);
       }
       
@@ -1796,7 +1908,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Evaluate output catalogue quantities
       status = eval_output_catalogue_quantities(par, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to evaluate output catalogue quantities.",
               (Status)status);
         continue;
@@ -1805,13 +1917,17 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Select output catalogue counterparts
       status = select_output_catalogue(par, status);
       if (status != STATUS_OK) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to select output catalogue counterparts.",
               (Status)status);
         continue;
       }
       
     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::build (status=%d)", status);
     
     // Return status
     return status;
@@ -1829,6 +1945,10 @@ Status Catalogue::save(Parameters *par, Status status) {
     // Declare local variables
     int fstatus;
 
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::save");
+        
     // Initialise FITSIO status
     fstatus = (int)status;
         
@@ -1840,7 +1960,7 @@ Status Catalogue::save(Parameters *par, Status status) {
         continue;
 
       // Dump header
-      if (par->logAction()) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Save counterpart candidate catalogue:");
         Log(Log_2, "=====================================");
@@ -1849,7 +1969,7 @@ Status Catalogue::save(Parameters *par, Status status) {
       // Close FITS file
       fstatus = fits_close_file(outFile, &fstatus);
       if (fstatus != 0) {
-        if (par->logError())
+        if (par->logTerse())
           Log(Error_2, "%d : Unable to close output catalogue.", fstatus);
         continue;
       }
@@ -1859,6 +1979,10 @@ Status Catalogue::save(Parameters *par, Status status) {
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::save (status=%d)", status);
     
     // Return status
     return status;

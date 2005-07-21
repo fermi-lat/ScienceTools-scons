@@ -1,0 +1,45 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T17:34:19
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml19092
+#INFO	CatalogsExamined=2
+#  2 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=7235
+#Name: VII/235
+#Title:	Quasars and Active Galactic Nuclei (11th Ed.) (Veron+, 2003)
+#Table	VII_235_table1:
+#Name: VII/235/table1
+#Title:	Quasars (brighter than absolute magnitude -23)
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F8.5)	Distance from center (RAJ2000=20 32 48.0, DEJ2000=+41 00 00)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F8.4)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F8.4)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	notRadio	(A1)	[*] '*' if not detected in radio (1)	[ucd=CODE_MISC]
+#Column	Name	(A17)	Most common name of the object        (link)	[ucd=ID_IDENTIFIER]
+#Column	RAJ2000	(A10)	Right Ascension J2000 (hours) (see also n_RAh)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(A9)	Declination J2000 (degrees)	[ucd=POS_EQ_DEC_MAIN]
+#Column	n_RAh	(A1)	[AOR] Approximative/Optical/Radio position (2)	[ucd=NOTE]
+#Column	l_z	(A1)	[>*] limit or method flag on z (4)	[ucd=CODE_LIMIT]
+#Column	z	(F6.3)	? redshift	[ucd=REDSHIFT_HC]
+#Column	Sp	(A4)	[S0-9?HPBLbhin. ] Spectrum classification (3)	[ucd=SPECT_TYPE_GENERAL]
+#Column	n_Vmag	(A1)	[*RIO] Photographic(*), red(R), infra-red (I) or photographic O- or J- plates(O)	[ucd=NOTE]
+#Column	Vmag	(F5.2)	? magnitude, V or other (see n_Vmag)	[ucd=PHOT_JHN_V]
+#Column	r_z	(I4)	[1,2377]? Reference of the redshift        (link)	[ucd=REFER_CODE]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	notRadio	Name	RAJ2000	DEJ2000	n_RAh	l_z	z	Sp	n_Vmag	Vmag	r_z
+	deg	deg	deg	deg	deg			"h:m:s"	"d:m:s"						mag	
+--------	--------	------	------	--------	--------	-	-----------------	----------	---------	-	-	------	----	-	-----	----
+   40853	 4.76994	076.82	+04.30	301.9375	+40.4967	 	TEX 2005+403     	20 07 45.0	+40 29 48	O	 	 1.736	    	 	19.00	 211
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#

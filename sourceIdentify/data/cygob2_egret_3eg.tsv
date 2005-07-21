@@ -1,0 +1,86 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T17:41:38
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml20959
+#INFO	CatalogsExamined=2
+#  2 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=21230079
+#Name: J/ApJS/123/79
+#Title:	Third EGRET catalog (3EG) (Hartman+, 1999)
+#Table	J_ApJS_123_79_3eg:
+#Name: J/ApJS/123/79/3eg
+#Title:	Third EGRET Source Catalog (table 4)
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F6.3)	Distance from center (RAJ2000=308.20, DEJ2000=+41.00)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F6.2)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F6.2)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	3EG	(A10)	3EG name (Jhhmm+ddmm)        (link)	[ucd=ID_MAIN]
+#Column	RAJ2000	(F6.2)	Right ascension (J2000)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(F6.2)	Declination (J2000)	[ucd=POS_EQ_DEC_MAIN]
+#Column	theta95	(F6.3)	Radius of the circle containing the same solid angle as the 95% confidence contour	[ucd=ERROR]
+#Column	F	(F5.1)	Flux (E>100MeV) (4)	[ucd=PHOT_FLUX_GAMMA]
+#Column	e_F	(F4.1)	? rms uncertainty on F ({DELTA}F) (4)	[ucd=ERROR]
+#Column	Sp-Index	(F5.2)	? Photon spectral index in F(E)~E-^Sp-Index^	[ucd=SPECT_SP-INDEX]
+#Column	ID	(A1)	[PGSAa] Identification code (1)	[ucd=CLASS_OBJECT]
+#Column	Note	(A6)	[@EemC, ] Notes (2)	[ucd=NOTE]
+#Column	r_ID	(A10)	References detailed in file "\begin{tex}\vFile{J/ApJS/123/79/./refs.dat}{refs.dat}\end{tex}"        (link)	[ucd=REFER_CODE]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	3EG	RAJ2000	DEJ2000	theta95	F	e_F	Sp-Index	ID	Note	r_ID
+	deg	deg	deg	deg	deg		deg	deg	deg	10-8ph/cm2/s	10-8ph/cm2/s				
+--------	------	------	------	------	------	----------	------	------	------	-----	----	-----	-	------	----------
+     245	 6.574	074.08	-02.36	306.95	+34.50	J2027+3429	306.95	+34.50	 0.770	 25.9	 4.7	 2.28	 	em,C  	1
+     239	 5.185	074.74	+00.97	304.05	+36.94	J2016+3657	304.05	+36.94	 0.550	 34.7	 5.7	 2.09	 	C     	1
+     242	 4.355	075.58	+00.33	305.30	+37.27	J2021+3716	305.30	+37.27	 0.300	 59.1	 6.2	 1.86	 	C     	1
+     240	 2.345	078.05	+02.08	305.25	+40.30	J2020+4017	305.25	+40.30	 0.160	123.7	 6.7	 2.08	 	@,C   	1,15,17,24
+     246	 0.357	080.27	+00.73	308.41	+41.32	J2033+4118	308.41	+41.32	 0.280	 73.0	 6.7	 1.96	 	C     	1
+     243	 3.032	080.63	+03.62	305.52	+43.29	J2022+4317	305.52	+43.29	 0.720	 24.7	 5.2	 2.31	 	em,C  	
+     248	 3.721	083.17	+02.49	308.85	+44.69	J2035+4441	308.85	+44.69	 0.540	 29.2	 5.5	 2.08	 	@,em,C	
+
+
+#RESOURCE=21350155
+#Name: J/ApJS/135/155
+#Title:	Radio identification of 3EG EGRET sources (Mattox+, 2001)
+#Table	J_ApJS_135_155_table4:
+#Name: J/ApJS/135/155/table4
+#Title:	Elliptical fits to the 95% confidence position contours of all 3EG EGRET sources
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F6.3)	Distance from center (RAJ2000=308.20, DEJ2000=+41.00)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F6.2)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F6.2)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	3EG	(A10)	The 3EG EGRET {gamma}-ray position name        (link)	[ucd=ID_MAIN]
+#Column	3EG_data	(A8)	Link to all parameters of <%E J/ApJS/123/79|3rd EGRET Gamma-ray catalog (3EG)> (1999ApJS..123...79H)	[ucd=DATA_LINK]
+#Column	RAJ2000	(F6.2)	Right Ascension expressed in degrees (J2000)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(F6.2)	Declination expressed in degrees (J2000)	[ucd=POS_EQ_DEC_MAIN]
+#Column	GLON	(F6.2)	Galactic longitude	[ucd=POS_GAL_LON]
+#Column	GLAT	(F6.2)	Galactic latitude	[ucd=POS_GAL_LAT]
+#Column	MajAxis	(F5.1)	Semi-major axis length	[ucd=EXTENSION_DIAM]
+#Column	MinAxis	(F5.1)	Semi-minor axis length	[ucd=EXTENSION_DIAM]
+#Column	PA	(I3)	Position angle of MajAxis	[ucd=POS_POS-ANG]
+#Column	f_PA	(A2)	Flag on PA (1)        (link)	[ucd=CODE_MISC]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	3EG	3EG_data	RAJ2000	DEJ2000	GLON	GLAT	MajAxis	MinAxis	PA	f_PA
+	deg	deg	deg	deg	deg			deg	deg	deg	deg	arcmin	arcmin	deg	
+--------	------	------	------	------	------	----------	--------	------	------	------	------	-----	-----	---	--
+     245	 6.552	074.02	-02.19	306.74	+34.55	J2027+3429	3EG_data	306.74	+34.55	 74.02	 -2.19	 61.3	 34.3	159	b
+     239	 5.198	074.73	+00.87	304.14	+36.87	J2016+3657	3EG_data	304.14	+36.87	 74.73	  0.87	 40.8	 26.3	151	
+     242	 4.360	075.58	+00.30	305.33	+37.25	J2021+3716	3EG_data	305.33	+37.25	 75.58	  0.30	 21.1	 15.4	125	
+     240	 2.342	078.06	+02.09	305.25	+40.31	J2020+4017	3EG_data	305.25	+40.31	 78.05	  2.09	 10.5	  9.0	 99	
+     246	 0.357	080.27	+00.73	308.41	+41.32	J2033+4118	3EG_data	308.41	+41.32	 80.27	  0.73	 18.7	 15.0	 67	
+     243	 2.817	080.35	+03.45	305.49	+42.97	J2022+4317	3EG_data	305.49	+42.97	 80.35	  3.45	 50.0	 40.0	  0	b
+     248	 3.658	083.11	+02.47	308.82	+44.63	J2035+4441	3EG_data	308.82	+44.63	 83.11	  2.47	 35.6	 28.4	 21	
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#++++METAdic name="3EG", type=14 chosen for width=10
+#

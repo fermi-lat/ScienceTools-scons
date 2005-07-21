@@ -1,0 +1,47 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T16:46:22
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml6273
+#INFO	CatalogsExamined=2
+#  2 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=16079033
+#Name: J/ApJ/607/L33
+#Title:	First IBIS Catalog: 20-100keV (Bird+, 2004)
+#Table	J_ApJ_607_L33_table1:
+#Name: J/ApJ/607/L33/table1
+#Title:	The First IBIS Catalog: 20-100keV
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F7.4)	Distance from center (RAJ2000=308.200, DEJ2000=+41.000)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F7.3)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F7.3)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	[BBB2004b]	(I3)	Sequential number	[ucd=ID_MAIN]
+#Column	Name	(A16)	Source name        (link)	[ucd=ID_ALTERNATIVE]
+#Column	RAJ2000	(F7.3)	Right ascension (J2000)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(F7.3)	Declination (J2000)	[ucd=POS_EQ_DEC_MAIN]
+#Column	l_F20-40	(A1)	Limit flag on F20-40	[ucd=CODE_LIMIT]
+#Column	F20-40	(F5.2)	Count-rate in 20-40keV band	[ucd=PHOT_COUNT-RATE_GAMMA]
+#Column	l_F40-100	(A1)	Limit flag on F40-100	[ucd=CODE_LIMIT]
+#Column	F40-100	(F5.2)	? Count-rate in 40-100keV band	[ucd=PHOT_COUNT-RATE_GAMMA]
+#Column	Sign	(F6.1)	Significance in primary detection band (30-50keV) (1)	[ucd=STAT_SIGNIFICANCE]
+#Column	Type	(A20)	Type of source (2)	[ucd=CLASS_OBJECT]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	[BBB2004b]	Name	RAJ2000	DEJ2000	l_F20-40	F20-40	l_F40-100	F40-100	Sign	Type
+	deg	deg	deg	deg	deg			deg	deg		ct/s		ct/s		
+--------	-------	------	------	-------	-------	---	----------------	-------	-------	-	-----	-	-----	------	--------------------
+     116	 8.9036	071.34	+03.07	299.593	+35.208	116	Cyg X-1         	299.593	+35.208	 	75.51	 	66.37	 676.6	HMXB, BHC, U
+     117	 3.3569	077.15	-01.23	308.054	+37.645	117	EXO 2030+375    	308.054	+37.645	 	 1.51	 	 0.74	  11.8	HMXB, XP, T
+     118	 0.0806	079.85	+00.71	308.102	+40.968	118	Cyg X-3         	308.102	+40.968	 	18.07	 	 5.68	 122.7	HMXB
+     119	 7.3386	087.13	-00.68	315.899	+45.757	119	SAX J2103.5+4545	315.899	+45.757	 	 4.65	 	 2.04	  41.6	HMXB, XP
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#

@@ -3,18 +3,19 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Source identification header file.                       */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.1.0                                                    */
+/* Date of version : 21-Jul-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.1.0  21-Jul-2005  version 1, revision 1                                  */
 /*----------------------------------------------------------------------------*/
 #ifndef SOURCEIDENTIFY_H
 #define SOURCEIDENTIFY_H
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "gtsrcid-1.0.0"
+#define TOOL_VERSION  "gtsrcid-1.1.0"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define USE_ST_APP 1
 
