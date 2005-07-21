@@ -1,0 +1,50 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T16:50:48
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml7638
+#INFO	CatalogsExamined=14
+#  14 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=33230739
+#Name: J/A+A/323/739
+#Title:	ROSAT detected quasars. II. (Brinkmann+ 1997)
+#Table	J_A_A_323_739_table1:
+#Name: J/A+A/323/739/table1
+#Title:	DELTA(VLA-RASS)<40" unidentified RGB sources
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=]
+#Column	_r	(F9.6)	Distance from center (RAJ2000=20 32 48.00, DEJ2000=041 00 00.0)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F9.5)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F9.5)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	ROSAT	(A14)	ROSAT name        (link)	[ucd=]
+#Column	RAJ2000	(A11)	VLA right ascension (J2000.0)	[ucd=]
+#Column	DEJ2000	(A11)	VLA declination(J2000.0)	[ucd=]
+#Column	DXrad	(I2)	Angular separation of the VLA radio source and the X-ray source	[ucd=]
+#Column	fr	(F6.3)	5GHz VLA flux density from L97 (1)	[ucd=]
+#Column	FX	(F6.2)	0.1 - 2.4 keV X-ray flux	[ucd=]
+#Column	e_FX	(F5.2)	rms uncertainty on FX	[ucd=]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	ROSAT	RAJ2000	DEJ2000	DXrad	fr	FX	e_FX
+	deg	deg	deg	deg	deg		"h:m:s"	"d:m:s"	arcsec	Jy	10-15W/m2	10-15W/m2
+--------	---------	------	------	---------	---------	--------------	-----------	-----------	--	------	------	-----
+     694	 5.788329	077.15	+05.75	300.53012	+41.54561	RXJ2002.0+4132	20 02 07.23	041 32 44.2	13	 0.014	  2.83	 0.72
+     717	 4.489356	078.53	-03.60	311.47700	+37.29819	RXJ2045.8+3717	20 45 54.48	037 17 53.5	33	 0.009	  2.50	 0.81
+     711	 0.081686	079.85	+00.70	308.10737	+40.95778	RXJ2032.3+4057	20 32 25.77	040 57 28.0	24	 0.028	216.70	 9.85
+     730	 9.029049	080.28	-08.35	317.38283	+35.54936	RXJ2109.4+3532	21 09 31.88	035 32 57.7	 4	 1.363	 16.02	 1.09
+     696	 6.738568	080.91	+07.33	301.37796	+45.56111	RXJ2005.4+4533	20 05 30.71	045 33 40.0	 6	 0.548	  3.03	 0.96
+     706	 3.759092	080.97	+04.28	305.03333	+43.94619	RXJ2020.0+4357	20 20 08.00	043 56 46.3	16	 0.064	  0.40	 0.14
+     733	 9.347985	082.03	-08.44	318.91833	+36.76406	RXJ2115.6+3646	21 15 40.40	036 45 50.6	34	 0.013	  1.75	 0.70
+     700	 6.632950	082.31	+06.86	303.02354	+46.48217	RXJ2012.0+4628	20 12 05.65	046 28 55.8	 6	 0.450	 17.85	 1.51
+     725	 9.625875	089.32	+02.76	314.17804	+49.66850	RXJ2056.6+4940	20 56 42.73	049 40 06.6	24	 0.097	  2.97	 0.48
+
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#

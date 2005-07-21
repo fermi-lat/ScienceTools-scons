@@ -3,11 +3,12 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Source identification.                                   */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.1.0                                                    */
+/* Date of version : 21-Jul-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.1.0  21-Jul-2005  version 1, revision 1                                  */
 /* -------------------------------------------------------------------------- */
 
 /* Includes _________________________________________________________________ */
@@ -75,9 +76,9 @@ public:
       Log(Log_1, 
          "* -------------------------------------------------------- *");
       Log(Log_1, 
-         "* Revision : 1.0.0                                         *");
+         "* Revision : 1.1.0                                         *");
       Log(Log_1, 
-         "* Date     : 20 May 2005                                   *");
+         "* Date     : 21 July 2005                                  *");
       Log(Log_1, 
          "* Author   : Jurgen Knodlseder (CESR)                      *");
       Log(Log_1, 
@@ -89,7 +90,7 @@ public:
       // Load task parameters
       status = par.load(pars, status);
       if (status != STATUS_OK) {
-        if (par.logError())
+        if (par.logTerse())
           Log(Error_3, "%d : Error while loading task parameters.", status);      
         continue;
       }
@@ -97,7 +98,7 @@ public:
       // Dump task parameters
       status = par.dump(status);
       if (status != STATUS_OK) {
-        if (par.logError())
+        if (par.logTerse())
           Log(Error_3, "%d : Error while dumping task parameters.", status);      
         continue;
       }
@@ -105,7 +106,7 @@ public:
       // Build counterpart catalogue
       status = cat.build(&par, status);
       if (status != STATUS_OK) {
-        if (par.logError())
+        if (par.logTerse())
           Log(Error_3, "%d : Error while building counterpart candidate"
                        " catalogue.", status);      
         continue;
@@ -114,7 +115,7 @@ public:
       // Save counterpart candidate catalogue
       status = cat.save(&par, status);
       if (status != STATUS_OK) {
-        if (par.logError())
+        if (par.logTerse())
           Log(Error_3, "%d : Error while saving counterpart candidate"
                        " catalogue.", status);      
         continue;

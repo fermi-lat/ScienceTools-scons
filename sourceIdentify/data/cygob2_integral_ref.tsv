@@ -1,0 +1,64 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T16:46:22
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml6273
+#INFO	CatalogsExamined=2
+#  2 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=34119059
+#Name: J/A+A/411/L59
+#Title:	INTEGRAL reference catalog (Ebisawa+, 2003)
+#Table	J_A_A_411_L59_catalog:
+#Name: J/A+A/411/L59/catalog
+#Title:	INTEGRAL reference catalog
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F9.6)	Distance from center (RAJ2000=20 32 48.00, DEJ2000=+41 00 00.0)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F9.5)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F9.5)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	Seq	(I4)	[1/1122] Source number	[ucd=ID_MAIN]
+#Column	Name	(A21)	Source name        (link)	[ucd=ID_ALTERNATIVE]
+#Column	RAJ2000	(A11)	Right ascension (J2000)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(A11)	Declination (J2000)	[ucd=POS_EQ_DEC_MAIN]
+#Column	F3-10keV	(E8.2)	3-10 keV energy flux (JEMX) (2)	[ucd=PHOT_FLUX_X]
+#Column	F10-30keV	(E8.2)	10-30 keV energy flux (JEMX) (2)	[ucd=PHOT_FLUX_X]
+#Column	F20-60keV	(E8.2)	20-60 keV energy flux (ISGRI) (2)	[ucd=PHOT_FLUX_X]
+#Column	F60-200keV	(E8.2)	60-200 keV energy flux (ISGRI) (2)	[ucd=PHOT_FLUX_X]
+#Column	Type	(A29)	Source type	[ucd=CLASS_OBJECT]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	Seq	Name	RAJ2000	DEJ2000	F3-10keV	F10-30keV	F20-60keV	F60-200keV	Type
+	deg	deg	deg	deg	deg			"h:m:s"	"d:m:s"	mW/m2	mW/m2	mW/m2	mW/m2	
+--------	---------	------	------	---------	---------	----	---------------------	-----------	-----------	--------	--------	--------	--------	-----------------------------
+    1001	 8.909537	071.34	+03.07	299.59033	+35.20161	1001	Cyg X-1              	19 58 21.68	+35 12 05.8	1.67e-08	2.15e-08	2.52e-08	2.89e-08	HMXB
+    1013	 7.929605	072.02	-00.04	303.22500	+34.11667	1013	GRO J1948+32         	20 12 54.00	+34 07 00.0	3.18e-09	5.18e-09	3.38e-09	2.53e-10	Gamma-ray source
+    1021	 7.339558	073.12	-02.09	306.01575	+33.86756	1021	Ginga 2023+338       	20 24 03.78	+33 52 03.2	1.38e-12	2.85e-13	3.05e-14	6.23e-18	LMXB
+    1025	 6.568680	074.11	-02.39	307.00000	+34.50000	1025	2EG J2026+3610       	20 28 00.00	+34 30 00.0	1.71e-22	3.30e-20	4.08e-19	2.81e-17	Gamma-ray source
+    1012	 4.797695	075.39	+02.25	303.15750	+38.18364	1012	XTE J2012+381        	20 12 37.80	+38 11 01.1	2.30e-09	4.76e-10	5.09e-11	1.04e-14	LMXB
+    1015	 4.462112	075.46	+00.59	304.95000	+37.31667	1015	2CG 075+00           	20 19 48.00	+37 19 00.0	1.37e-16	2.64e-14	3.26e-13	2.25e-11	Gamma-ray source
+    1004	 6.304015	076.19	+05.76	299.86817	+40.73386	1004	QSO B1957+405        	19 59 28.36	+40 44 01.9	7.64e-11	3.29e-11	9.34e-12	9.14e-14	Sey-1
+    1047	 9.577305	077.11	-08.49	315.00000	+33.10000	1047	4U 2058+32           	21 00 00.00	+33 06 00.0	5.46e-11	2.35e-11	6.67e-12	6.53e-14	X-ray source
+    1028	 3.364160	077.15	-01.24	308.06333	+37.63750	1028	EXO 2030+375         	20 32 15.20	+37 38 15.0	8.70e-12	1.42e-11	9.25e-12	6.92e-13	HMXB
+    1029	 3.364160	077.15	-01.24	308.06333	+37.63750	1029	EXO 2030+375         	20 32 15.20	+37 38 15.0	8.70e-12	1.42e-11	9.25e-12	6.92e-13	HMXB
+    1017	 2.494717	078.04	+02.31	305.00000	+40.41667	1017	2CG 078+01           	20 20 00.00	+40 25 00.0	2.13e-18	4.11e-16	5.08e-15	3.50e-13	Gamma-ray source
+    1023	 1.256004	079.56	+01.87	306.62500	+41.41667	1023	GeV J2026+4124       	20 26 30.00	+41 25 00.0	3.75e-22	7.23e-20	8.93e-19	6.16e-17	Gamma-ray source
+    1030	 0.082390	079.84	+00.69	308.11083	+40.95250	1030	Cyg X-3              	20 32 26.60	+40 57 09.0	6.83e-10	9.14e-10	1.13e-09	1.75e-09	Wolf-Rayet Star
+    1031	 0.350644	080.27	+00.74	308.40000	+41.31667	1031	2EG J2033+4112       	20 33 36.00	+41 19 00.0	5.13e-22	9.91e-20	1.22e-18	8.43e-17	Gamma-ray source
+    1019	 3.048742	080.63	+03.63	305.50000	+43.30000	1019	3EG J2022+4317       	20 22 00.00	+43 18 00.0	1.24e-23	2.40e-21	2.96e-20	2.04e-18	Gamma-ray source
+    1035	 1.341099	081.21	+01.03	308.85000	+42.25000	1035	GeV J2035+4214       	20 35 24.00	+42 15 00.0	4.46e-22	8.61e-20	1.06e-18	7.33e-17	Gamma-ray source
+    1027	 2.027756	081.34	+02.12	307.75000	+43.00000	1027	4U 2028+42           	20 31 00.00	+43 00 00.0	7.28e-11	3.14e-11	8.90e-12	8.71e-14	X-ray source
+    1033	 3.721880	083.13	+02.55	308.75000	+44.70000	1033	3EG J2035+4441       	20 35 00.00	+44 42 00.0	1.24e-23	2.40e-21	2.96e-20	2.04e-18	Gamma-ray source
+    1046	 4.967073	083.55	-02.72	314.75000	+41.71667	1046	GRO J2058+42         	20 59 00.00	+41 43 00.0	2.19e-09	1.24e-09	6.42e-10	4.25e-10	HMXB
+    1040	 4.908114	084.81	+00.25	312.75000	+44.60000	1040	4U 2048+44           	20 51 00.00	+44 36 00.0	6.76e-11	2.92e-11	8.27e-12	8.10e-14	X-ray source
+    1026	 6.876146	085.23	+05.05	307.62854	+47.86408	1026	RX J2030.5+4751      	20 30 30.85	+47 51 50.7	6.96e-13	1.14e-12	7.40e-13	5.54e-14	Emission-line Star
+    1049	 7.327935	087.12	-00.68	315.88750	+45.75000	1049	SAX J2103.5+4545     	21 03 33.00	+45 45 00.0	3.48e-10	5.68e-10	3.70e-10	2.77e-11	HMXB
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#

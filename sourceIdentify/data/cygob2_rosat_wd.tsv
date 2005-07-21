@@ -1,0 +1,44 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T16:50:48
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml7638
+#INFO	CatalogsExamined=14
+#  14 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=33160147
+#Name: J/A+A/316/147
+#Title:	Catalogue of ROSAT White Dwarfs (Fleming+ 1996)
+#Table	J_A_A_316_147_table1:
+#Name: J/A+A/316/147/table1
+#Title:	All white dwarfs detected in the ROSAT PSPC Survey
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F8.5)	Distance from center (RAJ2000=20 32 48.0, DEJ2000=+41 00 00)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F8.4)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F8.4)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	RAJ2000	(A10)	Right ascension (J2000)	[ucd=POS_EQ_RA_MAIN]
+#Column	DEJ2000	(A9)	Declination sign	[ucd=POS_EQ_DEC_MAIN]
+#Column	n_Rate	(A1)	[+] Note on count rate (1)	[ucd=NOTE]
+#Column	Rate	(F6.3)	PSPC count rate in the 0.1-0.28 keV band	[ucd=PHOT_COUNT-RATE_X]
+#Column	e_Rate	(F6.3)	1-sigma error in count rate	[ucd=ERROR]
+#Column	WFCflag	(A1)	[YN] Was source detected in EUV by ROSAT WFC?	[ucd=REMARKS]
+#Column	Name	(A14)	Star name        (link)	[ucd=ID_MAIN]
+#Column	WD	(A11)	Villanova catalogue designation <III/129>	[ucd=ID_ALTERNATIVE]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	RAJ2000	DEJ2000	n_Rate	Rate	e_Rate	WFCflag	Name	WD
+	deg	deg	deg	deg	deg	"h:m:s"	"d:m:s"		ct/s	ct/s			
+--------	--------	------	------	--------	--------	----------	---------	-	------	------	-	--------------	-----------
+     148	 3.85389	077.00	+03.18	303.2900	+40.0381	20 13 09.6	+40 02 17	+	 0.935	 0.034	Y	new ID        	
+     152	 1.85980	078.16	+00.06	307.4833	+39.2228	20 29 56.0	+39 13 22	 	 0.071	 0.009	Y	GD 391        	WD 2028+390
+     155	 6.70191	086.59	+01.34	313.1779	+46.6625	20 52 42.7	+46 39 45	 	 0.570	 0.057	N	new ID        	
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#

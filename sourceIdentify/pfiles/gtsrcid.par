@@ -1,0 +1,68 @@
+#######################################################################
+#                                                                     #
+#               Centre d'Etude Spatiale des Rayonnements              #
+#                                                                     #
+#                 GLAST Source Identification Software                #
+#                                                                     #
+# ------------------------------------------------------------------- #
+#                                                                     #
+#  File:      gtsrcid.par                                             #
+#  Version:   1.1.0                                                   #
+#  Component: A2                                                      #
+#                                                                     #
+#  Author:    Jurgen Knodlseder                                       #
+#             knodlseder@cesr.fr                                      #
+#             CESR                                                    #
+#                                                                     #
+#  Purpose:   Parameter file for the gtsrcid executable               #
+#                                                                     #
+#  History:   1.0.0  20-May-2005  First release                       #
+#             1.1.0  21-Jul-2005  Deleted blanks from file            #
+#                                                                     #
+#######################################################################
+#
+# Source Catalogue information
+#=============================
+srcCatName,s,a,"../../data/cygob2_egret_3eg.tsv",,,"Source catalogue name"
+srcCatQty,s,a,"3EG,RAJ2000,DEJ2000,theta95",,,"Source catalogue quantities to be written"
+#
+# Counterpart Catalogue information
+#==================================
+cptCatName,s,a,"../../data/cygob2_iras_ipac_pt.tsv",,,"Counterpart catalogue name"
+cptCatQty,s,a,,,,"Counterpart catalogue quantities to be written"
+#
+# Output Catalogue information
+#=============================
+outCatName,s,a,"../../data/outref/test2.fits",,,"Output catalogue name"
+outCatQty01,s,h,"",,,"New output catalogue quantity 1"
+outCatQty02,s,h,"",,,"New output catalogue quantity 2"
+outCatQty03,s,h,"",,,"New output catalogue quantity 3"
+outCatQty04,s,h,"",,,"New output catalogue quantity 4"
+outCatQty05,s,h,"",,,"New output catalogue quantity 5"
+outCatQty06,s,h,"",,,"New output catalogue quantity 6"
+outCatQty07,s,h,"",,,"New output catalogue quantity 7"
+outCatQty08,s,h,"",,,"New output catalogue quantity 8"
+outCatQty09,s,h,"",,,"New output catalogue quantity 9"
+#
+# Task parameters
+#================
+probMethod,s,a,"POSITION",,,"Probability method"
+probThres,r,a,0.60,,,"Probability threshold"
+maxNumCtp,i,a,100,,,"Maximum number of counterpart candidates"
+select01,s,h,"",,,"Selection cirterium 1"
+select02,s,h,"",,,"Selection cirterium 2"
+select03,s,h,"",,,"Selection cirterium 2"
+select04,s,h,"",,,"Selection cirterium 2"
+select05,s,h,"",,,"Selection cirterium 2"
+select06,s,h,"",,,"Selection cirterium 2"
+select07,s,h,"",,,"Selection cirterium 2"
+select08,s,h,"",,,"Selection cirterium 2"
+select09,s,h,"",,,"Selection cirterium 2"
+#
+# Standard parameters
+#====================
+chatter,i,h,4,0,4,"Chattiness of output"
+clobber,b,h,no,,,"Overwrite existing output catalogue ?"
+debug,b,h,no,,,"Debugging mode activated"
+mode,s,h,"ql",,,"Mode of automatic parameters"
+

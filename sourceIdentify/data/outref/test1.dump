@@ -1,0 +1,21 @@
+gtsrcid: INFO: This is gtsrcid version N/A
+LOG_1 (catalogAccess): input text file is TSV type (Tab=0x09 separator)
+LOG_1 (catalogAccess): input text file is TSV type (Tab=0x09 separator)
+LOG_2 (catalogAccess): deleting previous Catalog description
+WARNING catalogAccess (IN import): trying to get whole catalog file
+WARNING catalogAccess (IN import): line #49 without separator, line skipped
+WARNING catalogAccess (IN import): line #50 without separator, line skipped
+LOG_1 (catalogAccess): input text file is TSV type (Tab=0x09 separator)
+LOG_1 (catalogAccess): Original whole catalog number of rows =      7
+LOG_1 (catalogAccess): Needed RAM space (MB) for      7 data rows =   0.0
+    1 kB for numericals ( 12 double per row)
+    0 kB for  4 strings ( 27 char per row)
+    0 kB for select bits ( 1 long per row)
+LOG_2 (catalogAccess): deleting previous Catalog description
+WARNING catalogAccess (IN import): trying to get whole catalog file
+LOG_1 (catalogAccess): input text file is TSV type (Tab=0x09 separator)
+LOG_1 (catalogAccess): Original whole catalog number of rows =    115
+LOG_1 (catalogAccess): Needed RAM space (MB) for    115 data rows =   0.0
+   15 kB for numericals ( 17 double per row)
+    3 kB for  2 strings ( 25 char per row)
+    0 kB for select bits ( 1 long per row)

@@ -41,9 +41,10 @@ public:
   // Public methods
   Status load(st_app::AppParGroup &pars, Status status);
   Status dump(Status status);
-  int    logError(void);                    // Inline
-  int    logAction(void);                   // Inline
-  int    logDetail(void);                   // Inline
+  int    logTerse(void);                    // Inline
+  int    logNormal(void);                   // Inline
+  int    logExplicit(void);                 // Inline
+  int    logVerbose(void);                  // Inline
   int    logDebug(void);                    // Inline
               
   // Private methods
@@ -70,10 +71,11 @@ private:
 };
 inline Parameters::Parameters(void) { init_memory(); }
 inline Parameters::~Parameters(void) { free_memory(); }
-inline int Parameters::logError(void) { return (m_chatter > 0); }
-inline int Parameters::logAction(void) { return (m_chatter > 1); }
-inline int Parameters::logDetail(void) { return (m_chatter > 2); }
-inline int Parameters::logDebug(void) { return (m_chatter > 3); }
+inline int Parameters::logTerse(void) { return (m_chatter > 0); }
+inline int Parameters::logNormal(void) { return (m_chatter > 1); }
+inline int Parameters::logExplicit(void) { return (m_chatter > 2); }
+inline int Parameters::logVerbose(void) { return (m_chatter > 3); }
+inline int Parameters::logDebug(void) { return (m_debug); }
 
 /* Prototypes _______________________________________________________________ */
 

@@ -1,0 +1,53 @@
+#
+#   VizieR Astronomical Server: http://vizier.u-strasbg.fr	2005-05-20T17:31:41
+#   Explanations and Statistics of UCDs:			See LINK below
+#   In case of problem, please report to:	question@simbad.u-strasbg.fr
+#    (link)
+#
+#Coosys	J2000:	eq_FK5 2000
+#INFO	Ref=Vxml18492
+#INFO	CatalogsExamined=1
+#  1 catalogues with potential matches were examined
+#
+#INFO	Target=308.200000+41.000000,rm=600.
+
+#RESOURCE=7080
+#Name: VII/80
+#Title:	The HEAO A-1 X-Ray Source Catalog (Wood+, 1984)
+#Table	VII_80_sources:
+#Name: VII/80/sources
+#Title:	The data
+#Coosys	B1950:	eq_FK4 1950
+#Column	recno	(I8)	Record number within the original table (starting from 1)        (link)	[ucd=RECORD]
+#Column	_r	(F6.3)	Distance from center (RA1950=307.75, DE1950= 40.83)	[ucd=POS_ANG_DIST_GENERAL]
+#Column	_Glon	(F6.2)	Galactic longitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LON]
+#Column	_Glat	(F6.2)	Galactic latitude (computed by VizieR, not part of the original data)	[ucd=POS_GAL_LAT]
+#Column	_RAJ2000	(F6.2)	Right ascension (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_RA_MAIN]
+#Column	_DEJ2000	(F6.2)	Declination (FK5) Equinox=J2000. (computed by VizieR, not part of the original data)	[ucd=POS_EQ_DEC_MAIN]
+#Column	name	(A10)	Source designation (1H)        (link)	[ucd=ID_MAIN]
+#Column	RA1950	(F6.2)	Right ascension 1950 in degrees	[ucd=POS_EQ_RA_MAIN]
+#Column	DE1950	(F6.2)	Declination 1950 in degrees	[ucd=POS_EQ_DEC_MAIN]
+#Column	GLON	(F6.2)	Galactic longitude	[ucd=POS_GAL_LON]
+#Column	GLAT	(F6.2)	Galactic latitude	[ucd=POS_GAL_LAT]
+#Column	flux	(F7.4)	Flux (2)	[ucd=PHOT_FLUX_X]
+#Column	e_flux	(F7.4)	Flux error (2)	[ucd=ERROR]
+#Column	name2	(A12)	Alternate designation (X-ray) (3)	[ucd=ID_ALTERNATIVE]
+#Column	name9	(A15)	Alternate desig. (non-X-ray) (3)	[ucd=ID_ALTERNATIVE]
+
+recno	_r	_Glon	_Glat	_RAJ2000	_DEJ2000	name	RA1950	DE1950	GLON	GLAT	flux	e_flux	name2	name9
+	deg	deg	deg	deg	deg		deg	deg	deg	deg	ct/cm2/s	ct/cm2/s		
+--------	------	------	------	------	------	----------	------	------	------	------	-------	-------	------------	---------------
+     714	 8.968	071.29	+03.11	299.51	 35.19	1H1956+350	299.04	 35.05	 71.29	  3.12	 1.1710	 0.0112	4U 1956+35  	HDE226868
+     710	 8.853	072.10	+04.84	298.20	 36.77	1H1950+366	297.74	 36.64	 72.10	  4.84	 0.0080	 0.0013	4U 1943+36  	
+     727	 4.840	075.10	+00.29	305.00	 36.85	1H2018+366	304.53	 36.69	 75.09	  0.29	 0.0080	 0.0007	4U 2019+39? 	SNR 2015+36
+     716	 6.181	076.31	+05.69	300.02	 40.81	1H1958+406	299.59	 40.67	 76.32	  5.69	 0.0173	 0.0010	4U 1957+40  	Cyg A Cluster
+     737	 5.974	076.75	-04.40	310.89	 35.41	1H2041+352	310.40	 35.23	 76.75	 -4.40	 0.0011	 0.0005	            	
+     730	 0.187	079.76	+00.77	307.97	 40.93	1H2030+407	307.52	 40.76	 79.76	  0.77	 0.5927	 0.0046	4U 2030+40  	V1521 Cyg
+     728	 3.795	081.11	+04.27	305.15	 44.06	1H2018+439	304.73	 43.90	 81.12	  4.27	 0.0114	 0.0006	4U 2028+42  	
+     747	 6.243	082.50	-05.02	316.11	 39.42	1H2102+392	315.63	 39.22	 82.50	 -5.01	 0.0041	 0.0006	            	
+     733	 8.503	087.08	+05.28	309.00	 49.48	1H2034+493	308.61	 49.31	 87.08	  5.28	 0.0037	 0.0006	4U 2056+49  	
+     748	 8.210	087.98	-00.88	316.93	 46.25	1H2105+460	316.49	 46.05	 87.98	 -0.88	 0.0105	 0.0007	4U 2048+44  	
+
+#INFO	Errors=(**** indicates an Error,++++ indicates a Warning)
+#++++meta_init: connection to ReferenceDirectory already done
+#
