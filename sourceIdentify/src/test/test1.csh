@@ -19,5 +19,5 @@ gtsrcid.exe \
   chatter="4" \
   clobber="yes" \
   debug="no" \
-  mode="q" >& "../../data/outref/$RUN_ID.dump"
+  mode="q" >& /dev/null
 mv gtsrcid.log "../../data/outref/$RUN_ID.log"

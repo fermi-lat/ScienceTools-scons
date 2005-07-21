@@ -1,122 +1,122 @@
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: ************************************************************
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: *                sourceIdentify (gtsrcid)                  *
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: * -------------------------------------------------------- *
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: * Revision : 1.1.0                                         *
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: * Date     : 21 July 2005                                  *
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: * Author   : Jurgen Knodlseder (CESR)                      *
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: ************************************************************
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: Task Parameters:
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0: ================
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Source catalogue filename ........: ../../data/cygob2_egret_3eg.tsv
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Counterpart catalogue name .......: ../../data/cygob2_rosat_1rxs.tsv
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Output catalogue name ............: ../../data/outref/test1.fits
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Source catalogue quantities ......: 3EG,RAJ2000,DEJ2000,theta95
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Counterpart catalogue quantities .: 1RXS,RAJ2000,DEJ2000,PosErr
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Probability method ...............: POSITION
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Probability threshold ............: 5.000000e-02
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Maximum number of counterparts  ..: 100
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Chatter level of output ..........: 4
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Clobber ..........................: 1
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Debugging mode activated .........: 0
-Log_1   2005-07-21T18:27:39 gtsrcid-1.1.0:  Mode of automatic parameters .....: q
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0: Build counterpart candidate catalogue:
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0: ======================================
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' descriptor from file.
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Catalogue ........................: EGRET3 sources
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Number of quantities (columns) ...: 16
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                            RECORD (numerical (I8))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   2 ....................:       _r          deg POS_ANG_DIST_GENERAL (numerical (F6.3))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon          deg          POS_GAL_LON (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat          deg          POS_GAL_LAT (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   7 ....................:      3EG                           ID_MAIN (string (A10))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  10 ....................:  theta95          deg                ERROR (numerical (F6.3))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  11 ....................:        F 10-8ph/cm2/s      PHOT_FLUX_GAMMA (numerical (F5.1))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  12 ....................:      e_F 10-8ph/cm2/s                ERROR (numerical (F4.1))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  13 ....................: Sp-Index                    SPECT_SP-INDEX (numerical (F5.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  14 ....................:       ID                      CLASS_OBJECT (string (A1))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  15 ....................:     Note                              NOTE (string (A6))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  16 ....................:     r_ID                        REFER_CODE (string (A10))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_rosat_1rxs.tsv' descriptor from file.
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Catalogue ........................: ROSAT 1RXS
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:  Number of quantities (columns) ...: 19
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                      RECORD (numerical (I8))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   2 ....................:       _r    deg POS_ANG_DIST_GENERAL (numerical (F9.6))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon    deg          POS_GAL_LON (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat    deg          POS_GAL_LAT (numerical (F6.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000    deg       POS_EQ_RA_MAIN (numerical (F9.5))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000    deg      POS_EQ_DEC_MAIN (numerical (F9.5))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   7 ....................:     1RXS                     ID_MAIN (string (A21))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000    deg       POS_EQ_RA_MAIN (numerical (F9.5))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000    deg      POS_EQ_DEC_MAIN (numerical (F9.5))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  10 ....................:   PosErr arcsec                ERROR (numerical (I2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  11 ....................:  NewFlag                   CODE_MISC (string (A4))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  12 ....................:    Count   ct/s    PHOT_COUNT-RATE_X (numerical (E9.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  13 ....................:  e_Count   ct/s                ERROR (numerical (E9.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  14 ....................:      HR1        SPECT_HARDNESS-RATIO (numerical (F5.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  15 ....................:    e_HR1                       ERROR (numerical (F5.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  16 ....................:      HR2        SPECT_HARDNESS-RATIO (numerical (F5.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  17 ....................:    e_HR2                       ERROR (numerical (F5.2))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  18 ....................:     SASS                    ID_FIELD (numerical (I8))
-Log_2   2005-07-21T18:27:39 gtsrcid-1.1.0:   Quantity  19 ....................:    MASOL                   ID_NUMBER (numerical (I4))
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' from file.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source catalogue loaded.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source catalogue contains 7 sources.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     0 .....................: J2027+3429 ( 306.950,  34.500) +/-    0.770
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_rosat_1rxs.tsv' from file.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Counterpart catalogue loaded.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Counterpart catalogue contains 115 sources.
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 5
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J202422.2+344631 Prob= 37.397 % (RA,DEC)=( 306.092,  34.775) +/-    0.004  Sep=   0.757 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J202658.5+334253 Prob= 35.216 % (RA,DEC)=( 306.744,  33.715) +/-    0.003  Sep=   0.804 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J203107.6+333229 Prob= 21.581 % (RA,DEC)=( 307.782,  33.541) +/-    0.003  Sep=   1.181 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 1RXS J202402.8+330824 Prob= 13.060 % (RA,DEC)=( 306.012,  33.140) +/-    0.003  Sep=   1.567 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 1RXS J202509.2+363121 Prob=  6.599 % (RA,DEC)=( 306.288,  36.523) +/-    0.003  Sep=   2.093 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     1 .....................: J2016+3657 ( 304.050,  36.940) +/-    0.550
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 3
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J201700.4+372524 Prob= 39.612 % (RA,DEC)=( 304.252,  37.423) +/-    0.005  Sep=   0.509 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J201605.5+380944 Prob= 10.831 % (RA,DEC)=( 304.023,  38.162) +/-    0.003  Sep=   1.223 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J201154.9+381557 Prob=  5.718 % (RA,DEC)=( 302.979,  38.266) +/-    0.010  Sep=   1.574 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     2 .....................: J2021+3716 ( 305.300,  37.270) +/-    0.300
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 1
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J201700.4+372524 Prob=  5.936 % (RA,DEC)=( 304.252,  37.423) +/-    0.005  Sep=   0.847 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     3 .....................: J2020+4017 ( 305.250,  40.300) +/-    0.160
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: no
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     4 .....................: J2033+4118 ( 308.410,  41.320) +/-    0.280
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 5
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J203315.8+411848 Prob= 77.595 % (RA,DEC)=( 308.316,  41.313) +/-    0.002  Sep=   0.071 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J203309.4+411353 Prob= 63.588 % (RA,DEC)=( 308.289,  41.232) +/-    0.005  Sep=   0.127 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J203241.2+411408 Prob= 49.320 % (RA,DEC)=( 308.172,  41.236) +/-    0.006  Sep=   0.198 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 1RXS J203224.0+411759 Prob= 43.403 % (RA,DEC)=( 308.100,  41.300) +/-    0.004  Sep=   0.234 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 1RXS J203226.2+405725 Prob= 21.689 % (RA,DEC)=( 308.109,  40.957) +/-    0.002  Sep=   0.428 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     5 .....................: J2022+4317 ( 305.520,  43.290) +/-    0.720
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 2
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J202028.5+435111 Prob= 41.474 % (RA,DEC)=( 305.119,  43.853) +/-    0.002  Sep=   0.634 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J202538.9+415345 Prob= 11.763 % (RA,DEC)=( 306.412,  41.896) +/-    0.003  Sep=   1.541 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:  Source     6 .....................: J2035+4441 ( 308.850,  44.690) +/-    0.540
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Filter step candidates ..........: 115
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Refine step candidates ..........: 1
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J203902.9+451222 Prob= 21.640 % (RA,DEC)=( 309.762,  45.206) +/-    0.004  Sep=   0.827 deg
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: Save counterpart candidate catalogue:
-Log_2   2005-07-21T18:27:40 gtsrcid-1.1.0: =====================================
-Log_1   2005-07-21T18:27:40 gtsrcid-1.1.0: Task terminated using 0.060 sec CPU time.
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: ************************************************************
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: *                sourceIdentify (gtsrcid)                  *
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: * -------------------------------------------------------- *
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: * Revision : 1.1.0                                         *
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: * Date     : 21 July 2005                                  *
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: * Author   : Jurgen Knodlseder (CESR)                      *
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: ************************************************************
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: Task Parameters:
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: ================
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source catalogue filename ........: ../../data/cygob2_egret_3eg.tsv
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Counterpart catalogue name .......: ../../data/cygob2_rosat_1rxs.tsv
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Output catalogue name ............: ../../data/outref/test1.fits
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source catalogue quantities ......: 3EG,RAJ2000,DEJ2000,theta95
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Counterpart catalogue quantities .: 1RXS,RAJ2000,DEJ2000,PosErr
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Probability method ...............: POSITION
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Probability threshold ............: 5.000000e-02
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Maximum number of counterparts  ..: 100
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Chatter level of output ..........: 4
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Clobber ..........................: 1
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Debugging mode activated .........: 0
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0:  Mode of automatic parameters .....: q
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: Build counterpart candidate catalogue:
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: ======================================
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' descriptor from file.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Catalogue ........................: EGRET3 sources
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Number of quantities (columns) ...: 16
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                            RECORD (numerical (I8))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   2 ....................:       _r          deg POS_ANG_DIST_GENERAL (numerical (F6.3))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon          deg          POS_GAL_LON (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat          deg          POS_GAL_LAT (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   7 ....................:      3EG                           ID_MAIN (string (A10))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  10 ....................:  theta95          deg                ERROR (numerical (F6.3))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  11 ....................:        F 10-8ph/cm2/s      PHOT_FLUX_GAMMA (numerical (F5.1))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  12 ....................:      e_F 10-8ph/cm2/s                ERROR (numerical (F4.1))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  13 ....................: Sp-Index                    SPECT_SP-INDEX (numerical (F5.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  14 ....................:       ID                      CLASS_OBJECT (string (A1))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  15 ....................:     Note                              NOTE (string (A6))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  16 ....................:     r_ID                        REFER_CODE (string (A10))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_rosat_1rxs.tsv' descriptor from file.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Catalogue ........................: ROSAT 1RXS
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Number of quantities (columns) ...: 19
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                      RECORD (numerical (I8))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   2 ....................:       _r    deg POS_ANG_DIST_GENERAL (numerical (F9.6))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon    deg          POS_GAL_LON (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat    deg          POS_GAL_LAT (numerical (F6.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000    deg       POS_EQ_RA_MAIN (numerical (F9.5))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000    deg      POS_EQ_DEC_MAIN (numerical (F9.5))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   7 ....................:     1RXS                     ID_MAIN (string (A21))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000    deg       POS_EQ_RA_MAIN (numerical (F9.5))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000    deg      POS_EQ_DEC_MAIN (numerical (F9.5))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  10 ....................:   PosErr arcsec                ERROR (numerical (I2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  11 ....................:  NewFlag                   CODE_MISC (string (A4))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  12 ....................:    Count   ct/s    PHOT_COUNT-RATE_X (numerical (E9.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  13 ....................:  e_Count   ct/s                ERROR (numerical (E9.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  14 ....................:      HR1        SPECT_HARDNESS-RATIO (numerical (F5.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  15 ....................:    e_HR1                       ERROR (numerical (F5.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  16 ....................:      HR2        SPECT_HARDNESS-RATIO (numerical (F5.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  17 ....................:    e_HR2                       ERROR (numerical (F5.2))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  18 ....................:     SASS                    ID_FIELD (numerical (I8))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Quantity  19 ....................:    MASOL                   ID_NUMBER (numerical (I4))
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' from file.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source catalogue loaded.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source catalogue contains 7 sources.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     0 .....................: J2027+3429 ( 306.950,  34.500) +/-    0.770
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_rosat_1rxs.tsv' from file.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Counterpart catalogue loaded.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Counterpart catalogue contains 115 sources.
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 5
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J202422.2+344631 Prob= 37.397 % (RA,DEC)=( 306.092,  34.775) +/-    0.004  Sep=   0.757 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J202658.5+334253 Prob= 35.216 % (RA,DEC)=( 306.744,  33.715) +/-    0.003  Sep=   0.804 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J203107.6+333229 Prob= 21.581 % (RA,DEC)=( 307.782,  33.541) +/-    0.003  Sep=   1.181 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 1RXS J202402.8+330824 Prob= 13.060 % (RA,DEC)=( 306.012,  33.140) +/-    0.003  Sep=   1.567 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 1RXS J202509.2+363121 Prob=  6.599 % (RA,DEC)=( 306.288,  36.523) +/-    0.003  Sep=   2.093 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     1 .....................: J2016+3657 ( 304.050,  36.940) +/-    0.550
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 3
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J201700.4+372524 Prob= 39.612 % (RA,DEC)=( 304.252,  37.423) +/-    0.005  Sep=   0.509 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J201605.5+380944 Prob= 10.831 % (RA,DEC)=( 304.023,  38.162) +/-    0.003  Sep=   1.223 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J201154.9+381557 Prob=  5.718 % (RA,DEC)=( 302.979,  38.266) +/-    0.010  Sep=   1.574 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     2 .....................: J2021+3716 ( 305.300,  37.270) +/-    0.300
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 1
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J201700.4+372524 Prob=  5.936 % (RA,DEC)=( 304.252,  37.423) +/-    0.005  Sep=   0.847 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     3 .....................: J2020+4017 ( 305.250,  40.300) +/-    0.160
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: no
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     4 .....................: J2033+4118 ( 308.410,  41.320) +/-    0.280
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 5
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J203315.8+411848 Prob= 77.595 % (RA,DEC)=( 308.316,  41.313) +/-    0.002  Sep=   0.071 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J203309.4+411353 Prob= 63.588 % (RA,DEC)=( 308.289,  41.232) +/-    0.005  Sep=   0.127 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 1RXS J203241.2+411408 Prob= 49.320 % (RA,DEC)=( 308.172,  41.236) +/-    0.006  Sep=   0.198 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 1RXS J203224.0+411759 Prob= 43.403 % (RA,DEC)=( 308.100,  41.300) +/-    0.004  Sep=   0.234 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 1RXS J203226.2+405725 Prob= 21.689 % (RA,DEC)=( 308.109,  40.957) +/-    0.002  Sep=   0.428 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     5 .....................: J2022+4317 ( 305.520,  43.290) +/-    0.720
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 2
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J202028.5+435111 Prob= 41.474 % (RA,DEC)=( 305.119,  43.853) +/-    0.002  Sep=   0.634 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 1RXS J202538.9+415345 Prob= 11.763 % (RA,DEC)=( 306.412,  41.896) +/-    0.003  Sep=   1.541 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:  Source     6 .....................: J2035+4441 ( 308.850,  44.690) +/-    0.540
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Filter step candidates ..........: 115
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Refine step candidates ..........: 1
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 1RXS J203902.9+451222 Prob= 21.640 % (RA,DEC)=( 309.762,  45.206) +/-    0.004  Sep=   0.827 deg
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: Save counterpart candidate catalogue:
+Log_2   2005-07-21T19:01:19 gtsrcid-1.1.0: =====================================
+Log_1   2005-07-21T19:01:19 gtsrcid-1.1.0: Task terminated using 0.050 sec CPU time.

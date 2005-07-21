@@ -1,178 +1,178 @@
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: ************************************************************
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: *                sourceIdentify (gtsrcid)                  *
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: * -------------------------------------------------------- *
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: * Revision : 1.1.0                                         *
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: * Date     : 21 July 2005                                  *
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: * Author   : Jurgen Knodlseder (CESR)                      *
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: ************************************************************
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: Task Parameters:
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0: ================
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Source catalogue filename ........: ../../data/cygob2_egret_3eg.tsv
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Counterpart catalogue name .......: ../../data/cygob2_iras_ipac_pt.tsv
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Output catalogue name ............: ../../data/outref/test2.fits
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Source catalogue quantities ......: 3EG,RAJ2000,DEJ2000,theta95
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Counterpart catalogue quantities .: 
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Probability method ...............: POSITION
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Probability threshold ............: 6.000000e-01
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Maximum number of counterparts  ..: 100
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Chatter level of output ..........: 4
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Clobber ..........................: 1
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Debugging mode activated .........: 0
-Log_1   2005-07-21T18:27:43 gtsrcid-1.1.0:  Mode of automatic parameters .....: q
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0: Build counterpart candidate catalogue:
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0: ======================================
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' descriptor from file.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Catalogue ........................: EGRET3 sources
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Number of quantities (columns) ...: 16
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                            RECORD (numerical (I8))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   2 ....................:       _r          deg POS_ANG_DIST_GENERAL (numerical (F6.3))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon          deg          POS_GAL_LON (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat          deg          POS_GAL_LAT (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   7 ....................:      3EG                           ID_MAIN (string (A10))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  10 ....................:  theta95          deg                ERROR (numerical (F6.3))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  11 ....................:        F 10-8ph/cm2/s      PHOT_FLUX_GAMMA (numerical (F5.1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  12 ....................:      e_F 10-8ph/cm2/s                ERROR (numerical (F4.1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  13 ....................: Sp-Index                    SPECT_SP-INDEX (numerical (F5.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  14 ....................:       ID                      CLASS_OBJECT (string (A1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  15 ....................:     Note                              NOTE (string (A6))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  16 ....................:     r_ID                        REFER_CODE (string (A10))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_iras_ipac_pt.tsv' descriptor from file.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Catalogue ........................: 
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Number of quantities (columns) ...: 19
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   1 ....................:     recno                       RECORD (numerical (I8))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   2 ....................:        _r     deg POS_ANG_DIST_GENERAL (numerical (F8.5))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   3 ....................:     _Glon     deg          POS_GAL_LON (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   4 ....................:     _Glat     deg          POS_GAL_LAT (numerical (F6.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   5 ....................:  _RAJ2000     deg       POS_EQ_RA_MAIN (numerical (F8.4))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   6 ....................:  _DEJ2000     deg      POS_EQ_DEC_MAIN (numerical (F8.4))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   7 ....................:      IRAS                      ID_MAIN (string (A11))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   8 ....................:    RA1950 "h:m:s"       POS_EQ_RA_MAIN (string (A10))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity   9 ....................:    DE1950 "d:m:s"      POS_EQ_DEC_MAIN (string (A9))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  10 ....................:    Fnu_12      Jy      PHOT_FLUX_IR_12 (numerical (E9.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  11 ....................:    Fnu_25      Jy      PHOT_FLUX_IR_25 (numerical (E9.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  12 ....................:    Fnu_60      Jy      PHOT_FLUX_IR_60 (numerical (E9.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  13 ....................:   Fnu_100      Jy     PHOT_FLUX_IR_100 (numerical (E9.2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  14 ....................:  FQual_12                 CODE_QUALITY (numerical (I1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  15 ....................:  FQual_25                 CODE_QUALITY (numerical (I1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  16 ....................:  FQual_60                 CODE_QUALITY (numerical (I1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  17 ....................: FQual_100                 CODE_QUALITY (numerical (I1))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  18 ....................:      NLRS                       NUMBER (numerical (I2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:   Quantity  19 ....................:       NID                       NUMBER (numerical (I2))
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' from file.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Source catalogue loaded.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Source catalogue contains 7 sources.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Source     0 .....................: J2027+3429 ( 306.950,  34.500) +/-    0.770
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_iras_ipac_pt.tsv' from file.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Counterpart catalogue loaded.
-Log_2   2005-07-21T18:27:43 gtsrcid-1.1.0:  Counterpart catalogue contains 6475 sources.
-Log_2   2005-07-21T18:27:48 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:27:48 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Refine step candidates ..........: 21
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20258+3419 Prob= 98.825 % (RA,DEC)=( 306.959,  34.495) +/-    0.000  Sep=   0.009 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20254+3412 Prob= 81.997 % (RA,DEC)=( 306.858,  34.367) +/-    0.000  Sep=   0.153 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20250+3421 Prob= 80.305 % (RA,DEC)=( 306.749,  34.531) +/-    0.000  Sep=   0.169 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20263+3429 Prob= 78.349 % (RA,DEC)=( 307.086,  34.651) +/-    0.000  Sep=   0.188 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20252+3410 Prob= 76.091 % (RA,DEC)=( 306.794,  34.333) +/-    0.000  Sep=   0.210 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20262+3432 Prob= 75.051 % (RA,DEC)=( 307.044,  34.707) +/-    0.000  Sep=   0.221 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20264+3408 Prob= 74.297 % (RA,DEC)=( 307.106,  34.311) +/-    0.000  Sep=   0.229 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20250+3408 Prob= 71.777 % (RA,DEC)=( 306.748,  34.307) +/-    0.000  Sep=   0.255 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20267+3409 Prob= 71.235 % (RA,DEC)=( 307.189,  34.329) +/-    0.000  Sep=   0.261 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20246+3423 Prob= 70.956 % (RA,DEC)=( 306.638,  34.560) +/-    0.000  Sep=   0.264 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20266+3432 Prob= 70.240 % (RA,DEC)=( 307.155,  34.714) +/-    0.000  Sep=   0.272 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20245+3416 Prob= 70.006 % (RA,DEC)=( 306.625,  34.438) +/-    0.000  Sep=   0.275 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20244+3425 Prob= 67.653 % (RA,DEC)=( 306.601,  34.590) +/-    0.000  Sep=   0.301 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20244+3431 Prob= 63.792 % (RA,DEC)=( 306.604,  34.697) +/-    0.000  Sep=   0.346 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    15 .....: 20241+3424 Prob= 63.074 % (RA,DEC)=( 306.530,  34.579) +/-    0.000  Sep=   0.355 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    16 .....: 20274+3429 Prob= 62.785 % (RA,DEC)=( 307.340,  34.659) +/-    0.000  Sep=   0.358 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    17 .....: 20275+3412 Prob= 61.456 % (RA,DEC)=( 307.379,  34.376) +/-    0.000  Sep=   0.375 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    18 .....: 20276+3419 Prob= 60.924 % (RA,DEC)=( 307.413,  34.500) +/-    0.000  Sep=   0.382 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    19 .....: 20260+3442 Prob= 60.921 % (RA,DEC)=( 306.998,  34.880) +/-    0.000  Sep=   0.382 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    20 .....: 20254+3357 Prob= 60.626 % (RA,DEC)=( 306.852,  34.123) +/-    0.000  Sep=   0.385 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:   Counterpart candidate    21 .....: 20276+3427 Prob= 60.178 % (RA,DEC)=( 307.401,  34.623) +/-    0.000  Sep=   0.391 deg
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:27:54 gtsrcid-1.1.0:  Source     1 .....................: J2016+3657 ( 304.050,  36.940) +/-    0.550
-Log_2   2005-07-21T18:27:59 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:27:59 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Refine step candidates ..........: 18
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20145+3645 Prob= 90.141 % (RA,DEC)=( 304.115,  36.916) +/-    0.000  Sep=   0.057 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20142+3651 Prob= 86.126 % (RA,DEC)=( 304.023,  37.019) +/-    0.000  Sep=   0.082 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20138+3647 Prob= 85.029 % (RA,DEC)=( 303.938,  36.940) +/-    0.000  Sep=   0.089 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20141+3639 Prob= 79.574 % (RA,DEC)=( 304.001,  36.821) +/-    0.000  Sep=   0.126 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20136+3645 Prob= 78.770 % (RA,DEC)=( 303.889,  36.913) +/-    0.000  Sep=   0.131 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20135+3644 Prob= 75.275 % (RA,DEC)=( 303.861,  36.902) +/-    0.000  Sep=   0.156 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20136+3651 Prob= 74.519 % (RA,DEC)=( 303.874,  37.020) +/-    0.000  Sep=   0.162 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20135+3643 Prob= 73.985 % (RA,DEC)=( 303.858,  36.877) +/-    0.000  Sep=   0.166 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20145+3656 Prob= 73.597 % (RA,DEC)=( 304.111,  37.102) +/-    0.000  Sep=   0.169 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20134+3646 Prob= 73.050 % (RA,DEC)=( 303.834,  36.927) +/-    0.000  Sep=   0.173 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20151+3651 Prob= 71.305 % (RA,DEC)=( 304.262,  37.017) +/-    0.000  Sep=   0.186 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20135+3640 Prob= 70.543 % (RA,DEC)=( 303.854,  36.829) +/-    0.000  Sep=   0.192 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20152+3643 Prob= 70.060 % (RA,DEC)=( 304.285,  36.886) +/-    0.000  Sep=   0.196 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20143+3634 Prob= 67.421 % (RA,DEC)=( 304.047,  36.723) +/-    0.000  Sep=   0.217 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    15 .....: 20148+3658 Prob= 67.033 % (RA,DEC)=( 304.190,  37.129) +/-    0.000  Sep=   0.220 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    16 .....: 20155+3651 Prob= 62.887 % (RA,DEC)=( 304.353,  37.021) +/-    0.000  Sep=   0.255 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    17 .....: 20146+3632 Prob= 62.279 % (RA,DEC)=( 304.135,  36.689) +/-    0.000  Sep=   0.260 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:   Counterpart candidate    18 .....: 20138+3632 Prob= 61.049 % (RA,DEC)=( 303.925,  36.688) +/-    0.000  Sep=   0.271 deg
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:28:04 gtsrcid-1.1.0:  Source     2 .....................: J2021+3716 ( 305.300,  37.270) +/-    0.300
-Log_2   2005-07-21T18:28:09 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:28:09 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:   Refine step candidates ..........: 4
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20196+3702 Prob= 72.606 % (RA,DEC)=( 305.388,  37.204) +/-    0.000  Sep=   0.096 deg
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20195+3658 Prob= 63.129 % (RA,DEC)=( 305.350,  37.138) +/-    0.000  Sep=   0.138 deg
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20200+3707 Prob= 62.828 % (RA,DEC)=( 305.473,  37.291) +/-    0.000  Sep=   0.139 deg
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20191+3658 Prob= 61.459 % (RA,DEC)=( 305.249,  37.130) +/-    0.000  Sep=   0.146 deg
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:28:15 gtsrcid-1.1.0:  Source     3 .....................: J2020+4017 ( 305.250,  40.300) +/-    0.160
-Log_2   2005-07-21T18:28:20 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:28:20 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:28:26 gtsrcid-1.1.0:   Refine step candidates ..........: 2
-Log_2   2005-07-21T18:28:26 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20190+4005 Prob= 71.740 % (RA,DEC)=( 305.215,  40.254) +/-    0.000  Sep=   0.053 deg
-Log_2   2005-07-21T18:28:26 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20190+4011 Prob= 69.785 % (RA,DEC)=( 305.205,  40.346) +/-    0.000  Sep=   0.058 deg
-Log_2   2005-07-21T18:28:26 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:28:26 gtsrcid-1.1.0:  Source     4 .....................: J2033+4118 ( 308.410,  41.320) +/-    0.280
-Log_2   2005-07-21T18:28:31 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:28:31 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Refine step candidates ..........: 7
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20317+4106 Prob= 83.559 % (RA,DEC)=( 308.388,  41.273) +/-    0.000  Sep=   0.050 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20314+4106 Prob= 75.592 % (RA,DEC)=( 308.316,  41.286) +/-    0.000  Sep=   0.078 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20321+4112 Prob= 75.215 % (RA,DEC)=( 308.482,  41.379) +/-    0.000  Sep=   0.080 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20319+4103 Prob= 73.868 % (RA,DEC)=( 308.439,  41.238) +/-    0.000  Sep=   0.085 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20317+4115 Prob= 68.391 % (RA,DEC)=( 308.378,  41.424) +/-    0.000  Sep=   0.106 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20320+4115 Prob= 67.010 % (RA,DEC)=( 308.463,  41.425) +/-    0.000  Sep=   0.112 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20311+4110 Prob= 61.218 % (RA,DEC)=( 308.232,  41.352) +/-    0.000  Sep=   0.137 deg
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:28:37 gtsrcid-1.1.0:  Source     5 .....................: J2022+4317 ( 305.520,  43.290) +/-    0.720
-Log_2   2005-07-21T18:28:42 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:28:42 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Refine step candidates ..........: 14
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20201+4311 Prob= 90.302 % (RA,DEC)=( 305.467,  43.353) +/-    0.000  Sep=   0.073 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20212+4301 Prob= 75.870 % (RA,DEC)=( 305.752,  43.185) +/-    0.000  Sep=   0.199 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20212+4259 Prob= 74.092 % (RA,DEC)=( 305.748,  43.152) +/-    0.000  Sep=   0.216 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20216+4303 Prob= 71.589 % (RA,DEC)=( 305.833,  43.212) +/-    0.000  Sep=   0.241 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20217+4304 Prob= 70.419 % (RA,DEC)=( 305.860,  43.240) +/-    0.000  Sep=   0.253 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20199+4250 Prob= 66.668 % (RA,DEC)=( 305.421,  43.007) +/-    0.000  Sep=   0.292 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20219+4310 Prob= 66.260 % (RA,DEC)=( 305.921,  43.340) +/-    0.000  Sep=   0.296 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20218+4300 Prob= 65.594 % (RA,DEC)=( 305.900,  43.165) +/-    0.000  Sep=   0.304 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20216+4319 Prob= 64.929 % (RA,DEC)=( 305.848,  43.490) +/-    0.000  Sep=   0.311 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20202+4249 Prob= 64.778 % (RA,DEC)=( 305.493,  42.978) +/-    0.000  Sep=   0.313 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20186+4310 Prob= 64.310 % (RA,DEC)=( 305.088,  43.339) +/-    0.000  Sep=   0.318 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20211+4249 Prob= 62.003 % (RA,DEC)=( 305.726,  42.981) +/-    0.000  Sep=   0.344 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20219+4256 Prob= 61.561 % (RA,DEC)=( 305.919,  43.096) +/-    0.000  Sep=   0.349 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20210+4327 Prob= 61.465 % (RA,DEC)=( 305.689,  43.618) +/-    0.000  Sep=   0.350 deg
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:28:48 gtsrcid-1.1.0:  Source     6 .....................: J2035+4441 ( 308.850,  44.690) +/-    0.540
-Log_2   2005-07-21T18:28:54 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
-Warn_2  2005-07-21T18:28:54 gtsrcid-1.1.0:               no errors ...........: 6475
-Log_2   2005-07-21T18:29:00 gtsrcid-1.1.0:   Refine step candidates ..........: no
-Log_2   2005-07-21T18:29:00 gtsrcid-1.1.0: 
-Log_2   2005-07-21T18:29:00 gtsrcid-1.1.0: Save counterpart candidate catalogue:
-Log_2   2005-07-21T18:29:00 gtsrcid-1.1.0: =====================================
-Log_1   2005-07-21T18:29:00 gtsrcid-1.1.0: Task terminated using 76.680 sec CPU time.
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: ************************************************************
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: *                sourceIdentify (gtsrcid)                  *
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: * -------------------------------------------------------- *
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: * Revision : 1.1.0                                         *
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: * Date     : 21 July 2005                                  *
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: * Author   : Jurgen Knodlseder (CESR)                      *
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: ************************************************************
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: Task Parameters:
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0: ================
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Source catalogue filename ........: ../../data/cygob2_egret_3eg.tsv
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Counterpart catalogue name .......: ../../data/cygob2_iras_ipac_pt.tsv
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Output catalogue name ............: ../../data/outref/test2.fits
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Source catalogue quantities ......: 3EG,RAJ2000,DEJ2000,theta95
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Counterpart catalogue quantities .: 
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Probability method ...............: POSITION
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Probability threshold ............: 6.000000e-01
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Maximum number of counterparts  ..: 100
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Chatter level of output ..........: 4
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Clobber ..........................: 1
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Debugging mode activated .........: 0
+Log_1   2005-07-21T19:01:51 gtsrcid-1.1.0:  Mode of automatic parameters .....: q
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0: Build counterpart candidate catalogue:
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0: ======================================
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' descriptor from file.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Catalogue ........................: EGRET3 sources
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Number of quantities (columns) ...: 16
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   1 ....................:    recno                            RECORD (numerical (I8))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   2 ....................:       _r          deg POS_ANG_DIST_GENERAL (numerical (F6.3))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   3 ....................:    _Glon          deg          POS_GAL_LON (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   4 ....................:    _Glat          deg          POS_GAL_LAT (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   5 ....................: _RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   6 ....................: _DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   7 ....................:      3EG                           ID_MAIN (string (A10))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   8 ....................:  RAJ2000          deg       POS_EQ_RA_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   9 ....................:  DEJ2000          deg      POS_EQ_DEC_MAIN (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  10 ....................:  theta95          deg                ERROR (numerical (F6.3))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  11 ....................:        F 10-8ph/cm2/s      PHOT_FLUX_GAMMA (numerical (F5.1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  12 ....................:      e_F 10-8ph/cm2/s                ERROR (numerical (F4.1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  13 ....................: Sp-Index                    SPECT_SP-INDEX (numerical (F5.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  14 ....................:       ID                      CLASS_OBJECT (string (A1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  15 ....................:     Note                              NOTE (string (A6))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  16 ....................:     r_ID                        REFER_CODE (string (A10))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_iras_ipac_pt.tsv' descriptor from file.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Catalogue ........................: 
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Number of entries (rows) .........: 0
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Number of quantities (columns) ...: 19
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   1 ....................:     recno                       RECORD (numerical (I8))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   2 ....................:        _r     deg POS_ANG_DIST_GENERAL (numerical (F8.5))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   3 ....................:     _Glon     deg          POS_GAL_LON (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   4 ....................:     _Glat     deg          POS_GAL_LAT (numerical (F6.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   5 ....................:  _RAJ2000     deg       POS_EQ_RA_MAIN (numerical (F8.4))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   6 ....................:  _DEJ2000     deg      POS_EQ_DEC_MAIN (numerical (F8.4))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   7 ....................:      IRAS                      ID_MAIN (string (A11))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   8 ....................:    RA1950 "h:m:s"       POS_EQ_RA_MAIN (string (A10))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity   9 ....................:    DE1950 "d:m:s"      POS_EQ_DEC_MAIN (string (A9))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  10 ....................:    Fnu_12      Jy      PHOT_FLUX_IR_12 (numerical (E9.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  11 ....................:    Fnu_25      Jy      PHOT_FLUX_IR_25 (numerical (E9.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  12 ....................:    Fnu_60      Jy      PHOT_FLUX_IR_60 (numerical (E9.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  13 ....................:   Fnu_100      Jy     PHOT_FLUX_IR_100 (numerical (E9.2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  14 ....................:  FQual_12                 CODE_QUALITY (numerical (I1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  15 ....................:  FQual_25                 CODE_QUALITY (numerical (I1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  16 ....................:  FQual_60                 CODE_QUALITY (numerical (I1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  17 ....................: FQual_100                 CODE_QUALITY (numerical (I1))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  18 ....................:      NLRS                       NUMBER (numerical (I2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:   Quantity  19 ....................:       NID                       NUMBER (numerical (I2))
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_egret_3eg.tsv' from file.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Source catalogue loaded.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Source catalogue contains 7 sources.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Source     0 .....................: J2027+3429 ( 306.950,  34.500) +/-    0.770
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Loaded catalogue '../../data/cygob2_iras_ipac_pt.tsv' from file.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Counterpart catalogue loaded.
+Log_2   2005-07-21T19:01:51 gtsrcid-1.1.0:  Counterpart catalogue contains 6475 sources.
+Log_2   2005-07-21T19:01:52 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:01:52 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Refine step candidates ..........: 21
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20258+3419 Prob= 98.825 % (RA,DEC)=( 306.959,  34.495) +/-    0.000  Sep=   0.009 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20254+3412 Prob= 81.997 % (RA,DEC)=( 306.858,  34.367) +/-    0.000  Sep=   0.153 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20250+3421 Prob= 80.305 % (RA,DEC)=( 306.749,  34.531) +/-    0.000  Sep=   0.169 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20263+3429 Prob= 78.349 % (RA,DEC)=( 307.086,  34.651) +/-    0.000  Sep=   0.188 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20252+3410 Prob= 76.091 % (RA,DEC)=( 306.794,  34.333) +/-    0.000  Sep=   0.210 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20262+3432 Prob= 75.051 % (RA,DEC)=( 307.044,  34.707) +/-    0.000  Sep=   0.221 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20264+3408 Prob= 74.297 % (RA,DEC)=( 307.106,  34.311) +/-    0.000  Sep=   0.229 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20250+3408 Prob= 71.777 % (RA,DEC)=( 306.748,  34.307) +/-    0.000  Sep=   0.255 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20267+3409 Prob= 71.235 % (RA,DEC)=( 307.189,  34.329) +/-    0.000  Sep=   0.261 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20246+3423 Prob= 70.956 % (RA,DEC)=( 306.638,  34.560) +/-    0.000  Sep=   0.264 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20266+3432 Prob= 70.240 % (RA,DEC)=( 307.155,  34.714) +/-    0.000  Sep=   0.272 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20245+3416 Prob= 70.006 % (RA,DEC)=( 306.625,  34.438) +/-    0.000  Sep=   0.275 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20244+3425 Prob= 67.653 % (RA,DEC)=( 306.601,  34.590) +/-    0.000  Sep=   0.301 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20244+3431 Prob= 63.792 % (RA,DEC)=( 306.604,  34.697) +/-    0.000  Sep=   0.346 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    15 .....: 20241+3424 Prob= 63.074 % (RA,DEC)=( 306.530,  34.579) +/-    0.000  Sep=   0.355 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    16 .....: 20274+3429 Prob= 62.785 % (RA,DEC)=( 307.340,  34.659) +/-    0.000  Sep=   0.358 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    17 .....: 20275+3412 Prob= 61.456 % (RA,DEC)=( 307.379,  34.376) +/-    0.000  Sep=   0.375 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    18 .....: 20276+3419 Prob= 60.924 % (RA,DEC)=( 307.413,  34.500) +/-    0.000  Sep=   0.382 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    19 .....: 20260+3442 Prob= 60.921 % (RA,DEC)=( 306.998,  34.880) +/-    0.000  Sep=   0.382 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    20 .....: 20254+3357 Prob= 60.626 % (RA,DEC)=( 306.852,  34.123) +/-    0.000  Sep=   0.385 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:   Counterpart candidate    21 .....: 20276+3427 Prob= 60.178 % (RA,DEC)=( 307.401,  34.623) +/-    0.000  Sep=   0.391 deg
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:53 gtsrcid-1.1.0:  Source     1 .....................: J2016+3657 ( 304.050,  36.940) +/-    0.550
+Log_2   2005-07-21T19:01:54 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:01:54 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Refine step candidates ..........: 18
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20145+3645 Prob= 90.141 % (RA,DEC)=( 304.115,  36.916) +/-    0.000  Sep=   0.057 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20142+3651 Prob= 86.126 % (RA,DEC)=( 304.023,  37.019) +/-    0.000  Sep=   0.082 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20138+3647 Prob= 85.029 % (RA,DEC)=( 303.938,  36.940) +/-    0.000  Sep=   0.089 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20141+3639 Prob= 79.574 % (RA,DEC)=( 304.001,  36.821) +/-    0.000  Sep=   0.126 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20136+3645 Prob= 78.770 % (RA,DEC)=( 303.889,  36.913) +/-    0.000  Sep=   0.131 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20135+3644 Prob= 75.275 % (RA,DEC)=( 303.861,  36.902) +/-    0.000  Sep=   0.156 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20136+3651 Prob= 74.519 % (RA,DEC)=( 303.874,  37.020) +/-    0.000  Sep=   0.162 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20135+3643 Prob= 73.985 % (RA,DEC)=( 303.858,  36.877) +/-    0.000  Sep=   0.166 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20145+3656 Prob= 73.597 % (RA,DEC)=( 304.111,  37.102) +/-    0.000  Sep=   0.169 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20134+3646 Prob= 73.050 % (RA,DEC)=( 303.834,  36.927) +/-    0.000  Sep=   0.173 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20151+3651 Prob= 71.305 % (RA,DEC)=( 304.262,  37.017) +/-    0.000  Sep=   0.186 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20135+3640 Prob= 70.543 % (RA,DEC)=( 303.854,  36.829) +/-    0.000  Sep=   0.192 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20152+3643 Prob= 70.060 % (RA,DEC)=( 304.285,  36.886) +/-    0.000  Sep=   0.196 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20143+3634 Prob= 67.421 % (RA,DEC)=( 304.047,  36.723) +/-    0.000  Sep=   0.217 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    15 .....: 20148+3658 Prob= 67.033 % (RA,DEC)=( 304.190,  37.129) +/-    0.000  Sep=   0.220 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    16 .....: 20155+3651 Prob= 62.887 % (RA,DEC)=( 304.353,  37.021) +/-    0.000  Sep=   0.255 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    17 .....: 20146+3632 Prob= 62.279 % (RA,DEC)=( 304.135,  36.689) +/-    0.000  Sep=   0.260 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:   Counterpart candidate    18 .....: 20138+3632 Prob= 61.049 % (RA,DEC)=( 303.925,  36.688) +/-    0.000  Sep=   0.271 deg
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:55 gtsrcid-1.1.0:  Source     2 .....................: J2021+3716 ( 305.300,  37.270) +/-    0.300
+Log_2   2005-07-21T19:01:56 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:01:56 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:   Refine step candidates ..........: 4
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20196+3702 Prob= 72.606 % (RA,DEC)=( 305.388,  37.204) +/-    0.000  Sep=   0.096 deg
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20195+3658 Prob= 63.129 % (RA,DEC)=( 305.350,  37.138) +/-    0.000  Sep=   0.138 deg
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20200+3707 Prob= 62.828 % (RA,DEC)=( 305.473,  37.291) +/-    0.000  Sep=   0.139 deg
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20191+3658 Prob= 61.459 % (RA,DEC)=( 305.249,  37.130) +/-    0.000  Sep=   0.146 deg
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:57 gtsrcid-1.1.0:  Source     3 .....................: J2020+4017 ( 305.250,  40.300) +/-    0.160
+Log_2   2005-07-21T19:01:58 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:01:58 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:01:59 gtsrcid-1.1.0:   Refine step candidates ..........: 2
+Log_2   2005-07-21T19:01:59 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20190+4005 Prob= 71.740 % (RA,DEC)=( 305.215,  40.254) +/-    0.000  Sep=   0.053 deg
+Log_2   2005-07-21T19:01:59 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20190+4011 Prob= 69.785 % (RA,DEC)=( 305.205,  40.346) +/-    0.000  Sep=   0.058 deg
+Log_2   2005-07-21T19:01:59 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:01:59 gtsrcid-1.1.0:  Source     4 .....................: J2033+4118 ( 308.410,  41.320) +/-    0.280
+Log_2   2005-07-21T19:02:00 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:02:00 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Refine step candidates ..........: 7
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20317+4106 Prob= 83.559 % (RA,DEC)=( 308.388,  41.273) +/-    0.000  Sep=   0.050 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20314+4106 Prob= 75.592 % (RA,DEC)=( 308.316,  41.286) +/-    0.000  Sep=   0.078 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20321+4112 Prob= 75.215 % (RA,DEC)=( 308.482,  41.379) +/-    0.000  Sep=   0.080 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20319+4103 Prob= 73.868 % (RA,DEC)=( 308.439,  41.238) +/-    0.000  Sep=   0.085 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20317+4115 Prob= 68.391 % (RA,DEC)=( 308.378,  41.424) +/-    0.000  Sep=   0.106 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20320+4115 Prob= 67.010 % (RA,DEC)=( 308.463,  41.425) +/-    0.000  Sep=   0.112 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20311+4110 Prob= 61.218 % (RA,DEC)=( 308.232,  41.352) +/-    0.000  Sep=   0.137 deg
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:02:01 gtsrcid-1.1.0:  Source     5 .....................: J2022+4317 ( 305.520,  43.290) +/-    0.720
+Log_2   2005-07-21T19:02:02 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:02:02 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Refine step candidates ..........: 14
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     1 .....: 20201+4311 Prob= 90.302 % (RA,DEC)=( 305.467,  43.353) +/-    0.000  Sep=   0.073 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     2 .....: 20212+4301 Prob= 75.870 % (RA,DEC)=( 305.752,  43.185) +/-    0.000  Sep=   0.199 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     3 .....: 20212+4259 Prob= 74.092 % (RA,DEC)=( 305.748,  43.152) +/-    0.000  Sep=   0.216 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     4 .....: 20216+4303 Prob= 71.589 % (RA,DEC)=( 305.833,  43.212) +/-    0.000  Sep=   0.241 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     5 .....: 20217+4304 Prob= 70.419 % (RA,DEC)=( 305.860,  43.240) +/-    0.000  Sep=   0.253 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     6 .....: 20199+4250 Prob= 66.668 % (RA,DEC)=( 305.421,  43.007) +/-    0.000  Sep=   0.292 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     7 .....: 20219+4310 Prob= 66.260 % (RA,DEC)=( 305.921,  43.340) +/-    0.000  Sep=   0.296 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     8 .....: 20218+4300 Prob= 65.594 % (RA,DEC)=( 305.900,  43.165) +/-    0.000  Sep=   0.304 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate     9 .....: 20216+4319 Prob= 64.929 % (RA,DEC)=( 305.848,  43.490) +/-    0.000  Sep=   0.311 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate    10 .....: 20202+4249 Prob= 64.778 % (RA,DEC)=( 305.493,  42.978) +/-    0.000  Sep=   0.313 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate    11 .....: 20186+4310 Prob= 64.310 % (RA,DEC)=( 305.088,  43.339) +/-    0.000  Sep=   0.318 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate    12 .....: 20211+4249 Prob= 62.003 % (RA,DEC)=( 305.726,  42.981) +/-    0.000  Sep=   0.344 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate    13 .....: 20219+4256 Prob= 61.561 % (RA,DEC)=( 305.919,  43.096) +/-    0.000  Sep=   0.349 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:   Counterpart candidate    14 .....: 20210+4327 Prob= 61.465 % (RA,DEC)=( 305.689,  43.618) +/-    0.000  Sep=   0.350 deg
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:02:03 gtsrcid-1.1.0:  Source     6 .....................: J2035+4441 ( 308.850,  44.690) +/-    0.540
+Log_2   2005-07-21T19:02:04 gtsrcid-1.1.0:   Filter step candidates ..........: 6475
+Warn_2  2005-07-21T19:02:04 gtsrcid-1.1.0:               no errors ...........: 6475
+Log_2   2005-07-21T19:02:05 gtsrcid-1.1.0:   Refine step candidates ..........: no
+Log_2   2005-07-21T19:02:05 gtsrcid-1.1.0: 
+Log_2   2005-07-21T19:02:05 gtsrcid-1.1.0: Save counterpart candidate catalogue:
+Log_2   2005-07-21T19:02:05 gtsrcid-1.1.0: =====================================
+Log_1   2005-07-21T19:02:05 gtsrcid-1.1.0: Task terminated using 13.680 sec CPU time.

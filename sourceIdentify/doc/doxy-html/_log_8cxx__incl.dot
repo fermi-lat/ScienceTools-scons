@@ -10,7 +10,7 @@ digraph inheritance
   Node34 -> Node30 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
   Node34 [shape="box",label="time.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
   Node35 -> Node30 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
-  Node35 [shape="box",label="sourceIdentify/sourceIdentify.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",URL="$source_identify_8h.html"];
+  Node35 [shape="box",label="sourceIdentify.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",URL="$source_identify_8h.html"];
   Node36 -> Node35 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
   Node36 [shape="box",label="string",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
   Node37 -> Node35 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
@@ -24,6 +24,6 @@ digraph inheritance
   Node41 -> Node35 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
   Node41 [shape="box",label="st_stream/st_stream.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
   Node42 -> Node30 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
-  Node42 [shape="box",label="sourceIdentify/Log.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",URL="$_log_8h.html"];
+  Node42 [shape="box",label="Log.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",URL="$_log_8h.html"];
   Node35 -> Node42 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
 }

@@ -13,12 +13,13 @@
 <tr><td colspan=2><br><h2>Public Methods</h2></td></tr>
 <tr><td nowrap align=right valign=top>&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a0">Parameters</a> (void)</td></tr>
 <tr><td nowrap align=right valign=top>&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a1">~Parameters</a> (void)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="namespacesource_identify.html#a38">Status</a>&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a2">load</a> (<a class="el" href="namespacesource_identify.html#a38">Status</a> status)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="namespacesource_identify.html#a38">Status</a>&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a2">load</a> (st_app::AppParGroup &amp;pars, <a class="el" href="namespacesource_identify.html#a38">Status</a> status)</td></tr>
 <tr><td nowrap align=right valign=top><a class="el" href="namespacesource_identify.html#a38">Status</a>&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a3">dump</a> (<a class="el" href="namespacesource_identify.html#a38">Status</a> status)</td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a4">logError</a> (void)</td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a5">logAction</a> (void)</td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a6">logDetail</a> (void)</td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a7">logDebug</a> (void)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a4">logTerse</a> (void)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a5">logNormal</a> (void)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a6">logExplicit</a> (void)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a7">logVerbose</a> (void)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#a8">logDebug</a> (void)</td></tr>
 <tr><td colspan=2><br><h2>Private Methods</h2></td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#c0">init_memory</a> (void)</td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#c1">free_memory</a> (void)</td></tr>
@@ -32,10 +33,12 @@
 <tr><td nowrap align=right valign=top>std::vector&lt; std::string &gt;&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a></td></tr>
 <tr><td nowrap align=right valign=top>std::vector&lt; std::string &gt;&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o7">m_select</a></td></tr>
 <tr><td nowrap align=right valign=top>std::string&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o8">m_probMethod</a></td></tr>
-<tr><td nowrap align=right valign=top>double&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o9">probThres</a></td></tr>
-<tr><td nowrap align=right valign=top>long&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a></td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o11">clobber</a></td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o12">verbose</a></td></tr>
+<tr><td nowrap align=right valign=top>double&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o9">m_probThres</a></td></tr>
+<tr><td nowrap align=right valign=top>long&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a></td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a></td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o12">m_clobber</a></td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o13">m_debug</a></td></tr>
+<tr><td nowrap align=right valign=top>std::string&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#o14">m_mode</a></td></tr>
 <tr><td colspan=2><br><h2>Friends</h2></td></tr>
 <tr><td nowrap align=right valign=top>class&nbsp;</td><td valign=bottom><a class="el" href="classsource_identify_1_1_parameters.html#l0">Catalogue</a></td></tr>
 </table>
@@ -68,11 +71,11 @@
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00073">73</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00072">72</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
 References <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.
 <p>
-<div class="fragment"><pre>00073 { <a class="code" href="classsource_identify_1_1_parameters.html#c0">init_memory</a>(); }
+<div class="fragment"><pre>00072 { <a class="code" href="classsource_identify_1_1_parameters.html#c0">init_memory</a>(); }
 </pre></div>    </td>
   </tr>
 </table>
@@ -104,11 +107,11 @@ References <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory(
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00074">74</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00073">73</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-References <a class="el" href="_parameters_8cxx-source.html#l00068">free_memory()</a>.
+References <a class="el" href="_parameters_8cxx-source.html#l00070">free_memory()</a>.
 <p>
-<div class="fragment"><pre>00074 { <a class="code" href="classsource_identify_1_1_parameters.html#c1">free_memory</a>(); }
+<div class="fragment"><pre>00073 { <a class="code" href="classsource_identify_1_1_parameters.html#c1">free_memory</a>(); }
 </pre></div>    </td>
   </tr>
 </table>
@@ -141,57 +144,59 @@ References <a class="el" href="_parameters_8cxx-source.html#l00068">free_memory(
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8cxx-source.html#l00232">232</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
+Definition at line <a class="el" href="_parameters_8cxx-source.html#l00200">200</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00070">clobber</a>, <a class="el" href="_log_8cxx-source.html#l00119">sourceIdentify::Log()</a>, <a class="el" href="namespacesource_identify.html#a37a19">sourceIdentify::Log_1</a>, <a class="el" href="_parameters_8h-source.html#l00060">m_cptCatName</a>, <a class="el" href="_parameters_8h-source.html#l00063">m_cptCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00061">m_outCatName</a>, <a class="el" href="_parameters_8h-source.html#l00065">m_outCatQtyFormula</a>, <a class="el" href="_parameters_8h-source.html#l00064">m_outCatQtyName</a>, <a class="el" href="_parameters_8h-source.html#l00067">m_probMethod</a>, <a class="el" href="_parameters_8h-source.html#l00066">m_select</a>, <a class="el" href="_parameters_8h-source.html#l00059">m_srcCatName</a>, <a class="el" href="_parameters_8h-source.html#l00062">m_srcCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00069">maxNumCtp</a>, <a class="el" href="_parameters_8h-source.html#l00068">probThres</a>, <a class="el" href="source_identify_8h-source.html#l00043">sourceIdentify::Status</a>, and <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+References <a class="el" href="_log_8cxx-source.html#l00119">sourceIdentify::Log()</a>, <a class="el" href="namespacesource_identify.html#a37a21">sourceIdentify::Log_1</a>, <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>, <a class="el" href="_parameters_8h-source.html#l00068">m_clobber</a>, <a class="el" href="_parameters_8h-source.html#l00057">m_cptCatName</a>, <a class="el" href="_parameters_8h-source.html#l00060">m_cptCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00069">m_debug</a>, <a class="el" href="_parameters_8h-source.html#l00066">m_maxNumCtp</a>, <a class="el" href="_parameters_8h-source.html#l00070">m_mode</a>, <a class="el" href="_parameters_8h-source.html#l00058">m_outCatName</a>, <a class="el" href="_parameters_8h-source.html#l00062">m_outCatQtyFormula</a>, <a class="el" href="_parameters_8h-source.html#l00061">m_outCatQtyName</a>, <a class="el" href="_parameters_8h-source.html#l00064">m_probMethod</a>, <a class="el" href="_parameters_8h-source.html#l00065">m_probThres</a>, <a class="el" href="_parameters_8h-source.html#l00063">m_select</a>, <a class="el" href="_parameters_8h-source.html#l00056">m_srcCatName</a>, <a class="el" href="_parameters_8h-source.html#l00059">m_srcCatQty</a>, and <a class="el" href="source_identify_8h-source.html#l00045">sourceIdentify::Status</a>.
 <p>
-<div class="fragment"><pre>00232                                      {
-00233 
-00234     <span class="comment">// Declare local variables</span>
-00235     <span class="keywordtype">long</span>                   i;
-00236     std::string::size_type n;
-00237         
-00238     <span class="comment">// Single loop for common exit point</span>
-00239     <span class="keywordflow">do</span> {
-00240 
-00241       <span class="comment">// Dump task parameters</span>
-00242       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">"Task Parameters:"</span>);
-00243       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">"================"</span>);
-00244       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Source catalogue filename ........: %s"</span>, 
-00245           <a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>.c_str());
-00246       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Counterpart catalogue name .......: %s"</span>, 
-00247           <a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>.c_str());
-00248       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Output catalogue name ............: %s"</span>, 
-00249           <a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>.c_str());
-00250       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Source catalogue quantities ......: %s"</span>, 
-00251           <a class="code" href="classsource_identify_1_1_parameters.html#o3">m_srcCatQty</a>.c_str());
-00252       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Counterpart catalogue quantities .: %s"</span>, 
-00253           <a class="code" href="classsource_identify_1_1_parameters.html#o4">m_cptCatQty</a>.c_str());
-00254       <span class="keywordflow">if</span> ((n = <a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>.size()) &gt; 0) {
-00255         <span class="keywordflow">for</span> (i = 0; i &lt; n; i++) {
-00256           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" New output catalogue quantity %2d .: %s = %s"</span>, 
-00257               i+1, <a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>[i].c_str(), <a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>[i].c_str());
-00258         }
-00259       }
-00260       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Probability method ...............: %s"</span>, 
-00261           <a class="code" href="classsource_identify_1_1_parameters.html#o8">m_probMethod</a>.c_str());
-00262       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Probability threshold ............: %e"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o9">probThres</a>);
-00263       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Maximum number of counterparts  ..: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a>);
-00264       <span class="keywordflow">if</span> ((n = <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>.size()) &gt; 0) {
-00265         <span class="keywordflow">for</span> (i = 0; i &lt; n; i++) {
-00266           <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Output catalogue selection %2d ....: %s"</span>, 
-00267               i+1, <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>[i].c_str());
-00268         }
-00269       }
-00270       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Clobber ..........................: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o11">clobber</a>);
-00271       <a class="code" href="namespacesource_identify.html#a34">Log</a>(<a class="code" href="namespacesource_identify.html#a37a19">Log_1</a>, <span class="stringliteral">" Verbose level ....................: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a>);
-00272     
-00273     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
-00274     
-00275     <span class="comment">// Return status</span>
-00276     <span class="keywordflow">return</span> status;
-00277 
-00278 }
+<div class="fragment"><pre>00200                                      {
+00201 
+00202     <span class="comment">// Declare local variables</span>
+00203     <span class="keywordtype">long</span>                   i;
+00204     std::string::size_type n;
+00205         
+00206     <span class="comment">// Single loop for common exit point</span>
+00207     <span class="keywordflow">do</span> {
+00208 
+00209       <span class="comment">// Dump task parameters</span>
+00210       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">"Task Parameters:"</span>);
+00211       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">"================"</span>);
+00212       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Source catalogue filename ........: %s"</span>, 
+00213           <a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>.c_str());
+00214       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Counterpart catalogue name .......: %s"</span>, 
+00215           <a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>.c_str());
+00216       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Output catalogue name ............: %s"</span>, 
+00217           <a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>.c_str());
+00218       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Source catalogue quantities ......: %s"</span>, 
+00219           <a class="code" href="classsource_identify_1_1_parameters.html#o3">m_srcCatQty</a>.c_str());
+00220       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Counterpart catalogue quantities .: %s"</span>, 
+00221           <a class="code" href="classsource_identify_1_1_parameters.html#o4">m_cptCatQty</a>.c_str());
+00222       <span class="keywordflow">if</span> ((n = <a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>.size()) &gt; 0) {
+00223         <span class="keywordflow">for</span> (i = 0; i &lt; n; i++) {
+00224           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" New output catalogue quantity %2d .: %s = %s"</span>, 
+00225               i+1, <a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>[i].c_str(), <a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>[i].c_str());
+00226         }
+00227       }
+00228       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Probability method ...............: %s"</span>, 
+00229           <a class="code" href="classsource_identify_1_1_parameters.html#o8">m_probMethod</a>.c_str());
+00230       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Probability threshold ............: %e"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o9">m_probThres</a>);
+00231       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Maximum number of counterparts  ..: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a>);
+00232       <span class="keywordflow">if</span> ((n = <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>.size()) &gt; 0) {
+00233         <span class="keywordflow">for</span> (i = 0; i &lt; n; i++) {
+00234           <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Output catalogue selection %2d ....: %s"</span>, 
+00235               i+1, <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>[i].c_str());
+00236         }
+00237       }
+00238       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Chatter level of output ..........: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a>);
+00239       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Clobber ..........................: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o12">m_clobber</a>);
+00240       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Debugging mode activated .........: %d"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o13">m_debug</a>);
+00241       <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a21">Log_1</a>, <span class="stringliteral">" Mode of automatic parameters .....: %s"</span>, <a class="code" href="classsource_identify_1_1_parameters.html#o14">m_mode</a>.c_str());
+00242     
+00243     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
+00244     
+00245     <span class="comment">// Return status</span>
+00246     <span class="keywordflow">return</span> status;
+00247 
+00248 }
 </pre></div>    </td>
   </tr>
 </table>
@@ -223,28 +228,28 @@ References <a class="el" href="_parameters_8h-source.html#l00070">clobber</a>, <
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8cxx-source.html#l00068">68</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
+Definition at line <a class="el" href="_parameters_8cxx-source.html#l00070">70</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
 <p>
 References <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8h-source.html#l00074">~Parameters()</a>.
+Referenced by <a class="el" href="_parameters_8h-source.html#l00073">~Parameters()</a>.
 <p>
-<div class="fragment"><pre>00068                                  {
-00069 
-00070     <span class="comment">// Declare local variables</span>
+<div class="fragment"><pre>00070                                  {
 00071 
-00072     <span class="comment">// Single loop for common exit point</span>
-00073     <span class="keywordflow">do</span> {
-00074       
-00075       <span class="comment">// Initialise memory</span>
-00076       <a class="code" href="classsource_identify_1_1_parameters.html#c0">init_memory</a>();
-00077 
-00078     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
-00079     
-00080     <span class="comment">// Return</span>
-00081     <span class="keywordflow">return</span>;
-00082 
-00083 }
+00072     <span class="comment">// Declare local variables</span>
+00073 
+00074     <span class="comment">// Single loop for common exit point</span>
+00075     <span class="keywordflow">do</span> {
+00076       
+00077       <span class="comment">// Initialise memory</span>
+00078       <a class="code" href="classsource_identify_1_1_parameters.html#c0">init_memory</a>();
+00079 
+00080     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
+00081     
+00082     <span class="comment">// Return</span>
+00083     <span class="keywordflow">return</span>;
+00084 
+00085 }
 </pre></div>    </td>
   </tr>
 </table>
@@ -278,9 +283,9 @@ Referenced by <a class="el" href="_parameters_8h-source.html#l00074">~Parameters
 <p>
 Definition at line <a class="el" href="_parameters_8cxx-source.html#l00034">34</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00070">clobber</a>, <a class="el" href="_parameters_8h-source.html#l00060">m_cptCatName</a>, <a class="el" href="_parameters_8h-source.html#l00063">m_cptCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00061">m_outCatName</a>, <a class="el" href="_parameters_8h-source.html#l00065">m_outCatQtyFormula</a>, <a class="el" href="_parameters_8h-source.html#l00064">m_outCatQtyName</a>, <a class="el" href="_parameters_8h-source.html#l00067">m_probMethod</a>, <a class="el" href="_parameters_8h-source.html#l00066">m_select</a>, <a class="el" href="_parameters_8h-source.html#l00059">m_srcCatName</a>, <a class="el" href="_parameters_8h-source.html#l00062">m_srcCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00069">maxNumCtp</a>, and <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+References <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>, <a class="el" href="_parameters_8h-source.html#l00068">m_clobber</a>, <a class="el" href="_parameters_8h-source.html#l00057">m_cptCatName</a>, <a class="el" href="_parameters_8h-source.html#l00060">m_cptCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00069">m_debug</a>, <a class="el" href="_parameters_8h-source.html#l00066">m_maxNumCtp</a>, <a class="el" href="_parameters_8h-source.html#l00070">m_mode</a>, <a class="el" href="_parameters_8h-source.html#l00058">m_outCatName</a>, <a class="el" href="_parameters_8h-source.html#l00062">m_outCatQtyFormula</a>, <a class="el" href="_parameters_8h-source.html#l00061">m_outCatQtyName</a>, <a class="el" href="_parameters_8h-source.html#l00064">m_probMethod</a>, <a class="el" href="_parameters_8h-source.html#l00063">m_select</a>, <a class="el" href="_parameters_8h-source.html#l00056">m_srcCatName</a>, and <a class="el" href="_parameters_8h-source.html#l00059">m_srcCatQty</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00068">free_memory()</a>, and <a class="el" href="_parameters_8h-source.html#l00073">Parameters()</a>.
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00070">free_memory()</a>, and <a class="el" href="_parameters_8h-source.html#l00072">Parameters()</a>.
 <p>
 <div class="fragment"><pre>00034                                  {
 00035 
@@ -299,16 +304,18 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00068">free_memo
 00048       <a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>.clear();
 00049       <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>.clear();
 00050       <a class="code" href="classsource_identify_1_1_parameters.html#o8">m_probMethod</a>.clear();
-00051       <a class="code" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a>    = 0;
-00052       <a class="code" href="classsource_identify_1_1_parameters.html#o11">clobber</a>      = 0;
-00053       <a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a>      = 0;
-00054 
-00055     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
-00056     
-00057     <span class="comment">// Return</span>
-00058     <span class="keywordflow">return</span>;
-00059 
-00060 }
+00051       <a class="code" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a> = 0;
+00052       <a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a>   = 0;
+00053       <a class="code" href="classsource_identify_1_1_parameters.html#o12">m_clobber</a>   = 0;
+00054       <a class="code" href="classsource_identify_1_1_parameters.html#o13">m_debug</a>     = 0;
+00055       <a class="code" href="classsource_identify_1_1_parameters.html#o14">m_mode</a>.clear();
+00056 
+00057     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
+00058     
+00059     <span class="comment">// Return</span>
+00060     <span class="keywordflow">return</span>;
+00061 
+00062 }
 </pre></div>    </td>
   </tr>
 </table>
@@ -320,76 +327,19 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00068">free_memo
         <tr>
           <td class="md" nowrap valign="top"> <a class="el" href="namespacesource_identify.html#a38">Status</a> sourceIdentify::Parameters::load </td>
           <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top"><a class="el" href="namespacesource_identify.html#a38">Status</a>&nbsp;</td>
-          <td class="mdname1" valign="top" nowrap>&nbsp; <em>status</em>          </td>
-          <td class="md" valign="top">)&nbsp;</td>
-          <td class="md" nowrap></td>
+          <td class="md" nowrap valign="top">st_app::AppParGroup &amp;&nbsp;</td>
+          <td class="mdname" nowrap>&nbsp; <em>pars</em>, </td>
         </tr>
-
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-
-<p>
-Definition at line <a class="el" href="_parameters_8cxx-source.html#l00190">190</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
-<p>
-References <a class="el" href="_parameters_8h-source.html#l00070">clobber</a>, <a class="el" href="_parameters_8h-source.html#l00069">maxNumCtp</a>, <a class="el" href="_parameters_8h-source.html#l00068">probThres</a>, <a class="el" href="source_identify_8h-source.html#l00043">sourceIdentify::Status</a>, <a class="el" href="namespacesource_identify.html#a38a22">sourceIdentify::STATUS_OK</a>, and <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
-<p>
-<div class="fragment"><pre>00190                                      {
-00191 
-00192     <span class="comment">// Single loop for common exit point</span>
-00193     <span class="keywordflow">do</span> {
-00194 
-00195       <span class="comment">// Fall through in case of an error</span>
-00196       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>)
-00197         <span class="keywordflow">continue</span>;
-00198 
-00199       <span class="comment">// Initialise task parameters</span>
-00200       sprintf(srcCatName, <span class="stringliteral">"../data/3EG_all.tsv"</span>);
-00201       sprintf(cptCatName, <span class="stringliteral">"../data/1rxs_50.tsv"</span>);
-00202       sprintf(outCatName, <span class="stringliteral">"output.fits"</span>);
-00203       sprintf(srcCatQty,  <span class="stringliteral">"3EG,RAJ2000,DEJ2000,theta95"</span>);
-00204       sprintf(cptCatQty,  <span class="stringliteral">"*"</span>);
-00205       sprintf(probMethod,  <span class="stringliteral">"POSITION"</span>);
-00206       numOutCatQty = 0;
-00207       outCatQty    = NULL;
-00208       <a class="code" href="classsource_identify_1_1_parameters.html#o9">probThres</a>    = 0.05;
-00209       <a class="code" href="classsource_identify_1_1_parameters.html#o10">maxNumCtp</a>    = 100;
-00210       numSelect    = 0;
-00211       select       = NULL;
-00212       <a class="code" href="classsource_identify_1_1_parameters.html#o11">clobber</a>      = 1;
-00213       <a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a>      = 4;
-00214     
-00215     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
-00216     
-00217     <span class="comment">// Return status</span>
-00218     <span class="keywordflow">return</span> status;
-00219 
-00220 }
-</pre></div>    </td>
-  </tr>
-</table>
-<a name="a5" doxytag="sourceIdentify::Parameters::logAction"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logAction </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">void&nbsp;</td>
-          <td class="mdname1" valign="top" nowrap>&nbsp;          </td>
-          <td class="md" valign="top">)&nbsp;</td>
-          <td class="md" nowrap><code> [inline]</code></td>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap><a class="el" href="namespacesource_identify.html#a38">Status</a>&nbsp;</td>
+          <td class="mdname" nowrap>&nbsp; <em>status</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
         </tr>
 
       </table>
@@ -406,17 +356,114 @@ References <a class="el" href="_parameters_8h-source.html#l00070">clobber</a>, <
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00076">76</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8cxx-source.html#l00093">93</a> of file <a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+References <a class="el" href="namespacesource_identify.html#a37a10">sourceIdentify::Error_2</a>, <a class="el" href="_log_8cxx-source.html#l00119">sourceIdentify::Log()</a>, <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>, <a class="el" href="_parameters_8h-source.html#l00068">m_clobber</a>, <a class="el" href="_parameters_8h-source.html#l00057">m_cptCatName</a>, <a class="el" href="_parameters_8h-source.html#l00060">m_cptCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00069">m_debug</a>, <a class="el" href="_parameters_8h-source.html#l00066">m_maxNumCtp</a>, <a class="el" href="_parameters_8h-source.html#l00070">m_mode</a>, <a class="el" href="_parameters_8h-source.html#l00058">m_outCatName</a>, <a class="el" href="_parameters_8h-source.html#l00062">m_outCatQtyFormula</a>, <a class="el" href="_parameters_8h-source.html#l00061">m_outCatQtyName</a>, <a class="el" href="_parameters_8h-source.html#l00064">m_probMethod</a>, <a class="el" href="_parameters_8h-source.html#l00065">m_probThres</a>, <a class="el" href="_parameters_8h-source.html#l00063">m_select</a>, <a class="el" href="_parameters_8h-source.html#l00056">m_srcCatName</a>, <a class="el" href="_parameters_8h-source.html#l00059">m_srcCatQty</a>, <a class="el" href="_parameters_8h-source.html#l00024">MAX_CHAR</a>, <a class="el" href="_parameters_8h-source.html#l00026">MAX_OUTCAT_QTY</a>, <a class="el" href="_parameters_8h-source.html#l00028">MAX_OUTCAT_SEL</a>, <a class="el" href="_parameters_8h-source.html#l00025">MIN_OUTCAT_QTY</a>, <a class="el" href="_parameters_8h-source.html#l00027">MIN_OUTCAT_SEL</a>, <a class="el" href="source_identify_8h-source.html#l00045">sourceIdentify::Status</a>, <a class="el" href="namespacesource_identify.html#a38a24">sourceIdentify::STATUS_OK</a>, and <a class="el" href="namespacesource_identify.html#a38a29">sourceIdentify::STATUS_PAR_BAD_PARAMETER</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01276">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01827">sourceIdentify::Catalogue::save()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01382">sourceIdentify::Catalogue::select_output_catalogue()</a>.
-<p>
-<div class="fragment"><pre>00076 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a> &gt; 1); }
+<div class="fragment"><pre>00093                                                               {
+00094 
+00095     <span class="comment">// Declare local variables</span>
+00096     <span class="keywordtype">long</span>                   i;
+00097     <span class="keywordtype">char</span>                   parname[<a class="code" href="_parameters_8h.html#a0">MAX_CHAR</a>];
+00098     std::string::size_type len;
+00099     std::string::size_type pos;
+00100     std::string::size_type len_name;
+00101     std::string::size_type start_formula;
+00102     std::string::size_type len_formula;
+00103         
+00104     <span class="comment">// Single loop for common exit point</span>
+00105     <span class="keywordflow">do</span> {
+00106 
+00107       <span class="comment">// Fall through in case of an error</span>
+00108       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00109         <span class="keywordflow">continue</span>;
+00110 
+00111       <span class="comment">// Prompt for parameters</span>
+00112       pars.Prompt();
+00113 
+00114       <span class="comment">// Recover task parameters</span>
+00115       std::string s_srcCatName = pars[<span class="stringliteral">"srcCatName"</span>];
+00116       std::string s_cptCatName = pars[<span class="stringliteral">"cptCatName"</span>];
+00117       std::string s_outCatName = pars[<span class="stringliteral">"outCatName"</span>];
+00118       std::string s_srcCatQty  = pars[<span class="stringliteral">"srcCatQty"</span>];
+00119       std::string s_cptCatQty  = pars[<span class="stringliteral">"cptCatQty"</span>];
+00120       std::string s_probMethod = pars[<span class="stringliteral">"probMethod"</span>];
+00121       std::string s_mode       = pars[<span class="stringliteral">"mode"</span>];
+00122       <a class="code" href="classsource_identify_1_1_parameters.html#o0">m_srcCatName</a>             = s_srcCatName;
+00123       <a class="code" href="classsource_identify_1_1_parameters.html#o1">m_cptCatName</a>             = s_cptCatName;
+00124       <a class="code" href="classsource_identify_1_1_parameters.html#o2">m_outCatName</a>             = s_outCatName;
+00125       <a class="code" href="classsource_identify_1_1_parameters.html#o3">m_srcCatQty</a>              = s_srcCatQty;
+00126       <a class="code" href="classsource_identify_1_1_parameters.html#o4">m_cptCatQty</a>              = s_cptCatQty;
+00127       <a class="code" href="classsource_identify_1_1_parameters.html#o8">m_probMethod</a>             = s_probMethod;
+00128       <a class="code" href="classsource_identify_1_1_parameters.html#o9">m_probThres</a>              = pars[<span class="stringliteral">"probThres"</span>];
+00129       <a class="code" href="classsource_identify_1_1_parameters.html#o10">m_maxNumCtp</a>              = pars[<span class="stringliteral">"maxNumCtp"</span>];
+00130       <a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a>                = pars[<span class="stringliteral">"chatter"</span>];
+00131       <a class="code" href="classsource_identify_1_1_parameters.html#o12">m_clobber</a>                = pars[<span class="stringliteral">"clobber"</span>];
+00132       <a class="code" href="classsource_identify_1_1_parameters.html#o13">m_debug</a>                  = pars[<span class="stringliteral">"debug"</span>];
+00133       <a class="code" href="classsource_identify_1_1_parameters.html#o14">m_mode</a>                   = s_mode;
+00134 
+00135       <span class="comment">// Retrieve new output quantities and decompose into quantity name and</span>
+00136       <span class="comment">// evaluation string</span>
+00137       <span class="keywordflow">for</span> (i = <a class="code" href="_parameters_8h.html#a1">MIN_OUTCAT_QTY</a>; i &lt;= <a class="code" href="_parameters_8h.html#a2">MAX_OUTCAT_QTY</a>; i++) {
+00138         sprintf(parname, <span class="stringliteral">"outCatQty%2.2ld"</span>, i);
+00139         std::string outCatQty = pars[parname];
+00140         len = outCatQty.length();
+00141         <span class="keywordflow">if</span> (len &gt; 0) {
+00142           pos           = outCatQty.find(<span class="stringliteral">"="</span>,0);
+00143           len_name      = pos;
+00144           start_formula = pos + 1;
+00145           len_formula   = len - start_formula;
+00146           <span class="keywordflow">if</span> (pos == std::string::npos) {
+00147             status = <a class="code" href="namespacesource_identify.html#a38a29">STATUS_PAR_BAD_PARAMETER</a>;
+00148             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : No equality symbol found in new output catalogue"</span>
+00149                 <span class="stringliteral">" quantity string &lt;%s='%s'&gt;."</span>, 
+00150                 (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, parname, outCatQty.c_str());
+00151             <span class="keywordflow">break</span>;
+00152           }
+00153           <span class="keywordflow">if</span> (len_name &lt; 1) {
+00154             status = <a class="code" href="namespacesource_identify.html#a38a29">STATUS_PAR_BAD_PARAMETER</a>;
+00155             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : No quantity name found for new output catalogue"</span>
+00156                 <span class="stringliteral">" quantity &lt;%s='%s'&gt;."</span>, 
+00157                 (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, parname, outCatQty.c_str());
+00158             <span class="keywordflow">break</span>;
+00159           }
+00160           <span class="keywordflow">if</span> (len_formula &lt; 1) {
+00161             status = <a class="code" href="namespacesource_identify.html#a38a29">STATUS_PAR_BAD_PARAMETER</a>;
+00162             <a class="code" href="namespacesource_identify.html#a36">Log</a>(<a class="code" href="namespacesource_identify.html#a37a10">Error_2</a>, <span class="stringliteral">"%d : No quantity evaluation string found for new"</span>
+00163                 <span class="stringliteral">" output catalogue quantity &lt;%s='%s'&gt;."</span>, 
+00164                 (<a class="code" href="namespacesource_identify.html#a38">Status</a>)status, parname, outCatQty.c_str());
+00165             <span class="keywordflow">break</span>;
+00166           }
+00167           <a class="code" href="classsource_identify_1_1_parameters.html#o5">m_outCatQtyName</a>.push_back(outCatQty.substr(0, len_name));
+00168           <a class="code" href="classsource_identify_1_1_parameters.html#o6">m_outCatQtyFormula</a>.push_back(outCatQty.substr(start_formula,
+00169                                        len_formula));
+00170         }
+00171       }
+00172       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00173         <span class="keywordflow">continue</span>;
+00174 
+00175       <span class="comment">// Retrieve selection strings</span>
+00176       <span class="keywordflow">for</span> (i = <a class="code" href="_parameters_8h.html#a3">MIN_OUTCAT_SEL</a>; i &lt;= <a class="code" href="_parameters_8h.html#a4">MAX_OUTCAT_SEL</a>; i++) {
+00177         sprintf(parname, <span class="stringliteral">"select%2.2ld"</span>, i);
+00178         std::string select = pars[parname];
+00179         len = select.length();
+00180         <span class="keywordflow">if</span> (len &gt; 0) {
+00181           <a class="code" href="classsource_identify_1_1_parameters.html#o7">m_select</a>.push_back(select);
+00182         }
+00183       }
+00184       <span class="keywordflow">if</span> (status != <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>)
+00185         <span class="keywordflow">continue</span>;
+00186 
+00187     } <span class="keywordflow">while</span> (0); <span class="comment">// End of main do-loop</span>
+00188     
+00189     <span class="comment">// Return status</span>
+00190     <span class="keywordflow">return</span> status;
+00191 
+00192 }
 </pre></div>    </td>
   </tr>
 </table>
-<a name="a7" doxytag="sourceIdentify::Parameters::logDebug"></a><p>
+<a name="a8" doxytag="sourceIdentify::Parameters::logDebug"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
@@ -446,21 +493,19 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIden
 <p>
 Definition at line <a class="el" href="_parameters_8h-source.html#l00078">78</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01054">sourceIdentify::Catalogue::add_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01569">sourceIdentify::Catalogue::cc_sort()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01718">sourceIdentify::Catalogue::dump_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01349">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00345">sourceIdentify::Catalogue::get_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00425">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00287">sourceIdentify::Catalogue::get_input_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00220">sourceIdentify::Catalogue::get_input_descriptor()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00585">sourceIdentify::Catalogue::get_probability()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00695">sourceIdentify::Catalogue::get_probability_angsep()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01943">sourceIdentify::Catalogue::save()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01464">sourceIdentify::Catalogue::select_output_catalogue()</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01619">sourceIdentify::Catalogue::dump_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00397">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00277">sourceIdentify::Catalogue::get_input_catalogue()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l00219">sourceIdentify::Catalogue::get_input_descriptor()</a>.
-<p>
-<div class="fragment"><pre>00078 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a> &gt; 3); }
+<div class="fragment"><pre>00078 { <span class="keywordflow">return</span> (m_debug); }
 </pre></div>    </td>
   </tr>
 </table>
-<a name="a6" doxytag="sourceIdentify::Parameters::logDetail"></a><p>
+<a name="a6" doxytag="sourceIdentify::Parameters::logExplicit"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logDetail </td>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logExplicit </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">void&nbsp;</td>
           <td class="mdname1" valign="top" nowrap>&nbsp;          </td>
@@ -482,23 +527,23 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00077">77</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00076">76</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+References <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00326">sourceIdentify::Catalogue::get_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00397">sourceIdentify::Catalogue::get_counterparts()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l00548">sourceIdentify::Catalogue::get_probability()</a>.
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00345">sourceIdentify::Catalogue::get_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00425">sourceIdentify::Catalogue::get_counterparts()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l00585">sourceIdentify::Catalogue::get_probability()</a>.
 <p>
-<div class="fragment"><pre>00077 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a> &gt; 2); }
+<div class="fragment"><pre>00076 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a> &gt; 2); }
 </pre></div>    </td>
   </tr>
 </table>
-<a name="a4" doxytag="sourceIdentify::Parameters::logError"></a><p>
+<a name="a5" doxytag="sourceIdentify::Parameters::logNormal"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logError </td>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logNormal </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">void&nbsp;</td>
           <td class="mdname1" valign="top" nowrap>&nbsp;          </td>
@@ -522,11 +567,87 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00326">sourceIden
 <p>
 Definition at line <a class="el" href="_parameters_8h-source.html#l00075">75</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-References <a class="el" href="_parameters_8h-source.html#l00071">verbose</a>.
+References <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00990">sourceIdentify::Catalogue::add_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01276">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00397">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00277">sourceIdentify::Catalogue::get_input_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00219">sourceIdentify::Catalogue::get_input_descriptor()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00548">sourceIdentify::Catalogue::get_probability()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01827">sourceIdentify::Catalogue::save()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01382">sourceIdentify::Catalogue::select_output_catalogue()</a>.
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01349">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01943">sourceIdentify::Catalogue::save()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01464">sourceIdentify::Catalogue::select_output_catalogue()</a>.
 <p>
-<div class="fragment"><pre>00075 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o12">verbose</a> &gt; 0); }
+<div class="fragment"><pre>00075 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a> &gt; 1); }
+</pre></div>    </td>
+  </tr>
+</table>
+<a name="a4" doxytag="sourceIdentify::Parameters::logTerse"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logTerse </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">void&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>&nbsp;          </td>
+          <td class="md" valign="top">)&nbsp;</td>
+          <td class="md" nowrap><code> [inline]</code></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00074">74</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+References <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>.
+<p>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01054">sourceIdentify::Catalogue::add_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01349">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00425">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00287">sourceIdentify::Catalogue::get_input_catalogue()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00220">sourceIdentify::Catalogue::get_input_descriptor()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00585">sourceIdentify::Catalogue::get_probability()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01943">sourceIdentify::Catalogue::save()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01464">sourceIdentify::Catalogue::select_output_catalogue()</a>.
+<p>
+<div class="fragment"><pre>00074 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a> &gt; 0); }
+</pre></div>    </td>
+  </tr>
+</table>
+<a name="a7" doxytag="sourceIdentify::Parameters::logVerbose"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::logVerbose </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">void&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>&nbsp;          </td>
+          <td class="md" valign="top">)&nbsp;</td>
+          <td class="md" nowrap><code> [inline]</code></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00077">77</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+References <a class="el" href="_parameters_8h-source.html#l00067">m_chatter</a>.
+<p>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01718">sourceIdentify::Catalogue::dump_counterpart_candidates()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00425">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00287">sourceIdentify::Catalogue::get_input_catalogue()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l00220">sourceIdentify::Catalogue::get_input_descriptor()</a>.
+<p>
+<div class="fragment"><pre>00077 { <span class="keywordflow">return</span> (<a class="code" href="classsource_identify_1_1_parameters.html#o11">m_chatter</a> &gt; 3); }
 </pre></div>    </td>
   </tr>
 </table>
@@ -556,13 +677,13 @@ Definition at line <a class="el" href="_parameters_8h-source.html#l00035">35</a>
   </tr>
 </table>
 <hr><h2>Member Data Documentation</h2>
-<a name="o11" doxytag="sourceIdentify::Parameters::clobber"></a><p>
+<a name="o11" doxytag="sourceIdentify::Parameters::m_chatter"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::clobber<code> [private]</code>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::m_chatter<code> [private]</code>
       </table>
     </td>
   </tr>
@@ -577,9 +698,35 @@ Definition at line <a class="el" href="_parameters_8h-source.html#l00035">35</a>
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00070">70</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00067">67</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00190">load()</a>.    </td>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>, <a class="el" href="_parameters_8h-source.html#l00076">logExplicit()</a>, <a class="el" href="_parameters_8h-source.html#l00075">logNormal()</a>, <a class="el" href="_parameters_8h-source.html#l00074">logTerse()</a>, and <a class="el" href="_parameters_8h-source.html#l00077">logVerbose()</a>.    </td>
+  </tr>
+</table>
+<a name="o12" doxytag="sourceIdentify::Parameters::m_clobber"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::m_clobber<code> [private]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00068">68</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o1" doxytag="sourceIdentify::Parameters::m_cptCatName"></a><p>
@@ -603,9 +750,9 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00060">60</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00057">57</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00397">sourceIdentify::Catalogue::get_counterparts()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00425">sourceIdentify::Catalogue::get_counterparts()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o4" doxytag="sourceIdentify::Parameters::m_cptCatQty"></a><p>
@@ -629,9 +776,87 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00063">63</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00060">60</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
+  </tr>
+</table>
+<a name="o13" doxytag="sourceIdentify::Parameters::m_debug"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::m_debug<code> [private]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00069">69</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
+  </tr>
+</table>
+<a name="o10" doxytag="sourceIdentify::Parameters::m_maxNumCtp"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> long sourceIdentify::Parameters::m_maxNumCtp<code> [private]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00066">66</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00585">sourceIdentify::Catalogue::get_probability()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
+  </tr>
+</table>
+<a name="o14" doxytag="sourceIdentify::Parameters::m_mode"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> std::string sourceIdentify::Parameters::m_mode<code> [private]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00070">70</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o2" doxytag="sourceIdentify::Parameters::m_outCatName"></a><p>
@@ -655,9 +880,9 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00061">61</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00058">58</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o6" doxytag="sourceIdentify::Parameters::m_outCatQtyFormula"></a><p>
@@ -681,9 +906,9 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00065">65</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00062">62</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01276">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01349">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o5" doxytag="sourceIdentify::Parameters::m_outCatQtyName"></a><p>
@@ -707,9 +932,9 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00064">64</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00061">61</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01276">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l01349">sourceIdentify::Catalogue::eval_output_catalogue_quantities()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o8" doxytag="sourceIdentify::Parameters::m_probMethod"></a><p>
@@ -733,9 +958,35 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00067">67</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00064">64</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
+  </tr>
+</table>
+<a name="o9" doxytag="sourceIdentify::Parameters::m_probThres"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> double sourceIdentify::Parameters::m_probThres<code> [private]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+
+<p>
+Definition at line <a class="el" href="_parameters_8h-source.html#l00065">65</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+<p>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00585">sourceIdentify::Catalogue::get_probability()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o7" doxytag="sourceIdentify::Parameters::m_select"></a><p>
@@ -759,9 +1010,9 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00066">66</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00063">63</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01382">sourceIdentify::Catalogue::select_output_catalogue()</a>.    </td>
+Referenced by <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>, and <a class="el" href="_catalogue_8cxx-source.html#l01464">sourceIdentify::Catalogue::select_output_catalogue()</a>.    </td>
   </tr>
 </table>
 <a name="o0" doxytag="sourceIdentify::Parameters::m_srcCatName"></a><p>
@@ -785,9 +1036,9 @@ Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00059">59</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00056">56</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01821">sourceIdentify::Catalogue::build()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <a name="o3" doxytag="sourceIdentify::Parameters::m_srcCatQty"></a><p>
@@ -811,92 +1062,14 @@ Referenced by <a class="el" href="_catalogue_8cxx-source.html#l01713">sourceIden
 <p>
 
 <p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00062">62</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
+Definition at line <a class="el" href="_parameters_8h-source.html#l00059">59</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
 <p>
-Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00768">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>.    </td>
-  </tr>
-</table>
-<a name="o10" doxytag="sourceIdentify::Parameters::maxNumCtp"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> long sourceIdentify::Parameters::maxNumCtp<code> [private]</code>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-
-<p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00069">69</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
-<p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00548">sourceIdentify::Catalogue::get_probability()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00190">load()</a>.    </td>
-  </tr>
-</table>
-<a name="o9" doxytag="sourceIdentify::Parameters::probThres"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> double sourceIdentify::Parameters::probThres<code> [private]</code>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-
-<p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00068">68</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
-<p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_catalogue_8cxx-source.html#l00548">sourceIdentify::Catalogue::get_probability()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00190">load()</a>.    </td>
-  </tr>
-</table>
-<a name="o12" doxytag="sourceIdentify::Parameters::verbose"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> int sourceIdentify::Parameters::verbose<code> [private]</code>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-
-<p>
-Definition at line <a class="el" href="_parameters_8h-source.html#l00071">71</a> of file <a class="el" href="_parameters_8h-source.html">Parameters.h</a>.
-<p>
-Referenced by <a class="el" href="_parameters_8cxx-source.html#l00232">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, <a class="el" href="_parameters_8cxx-source.html#l00190">load()</a>, <a class="el" href="_parameters_8h-source.html#l00076">logAction()</a>, <a class="el" href="_parameters_8h-source.html#l00078">logDebug()</a>, <a class="el" href="_parameters_8h-source.html#l00077">logDetail()</a>, and <a class="el" href="_parameters_8h-source.html#l00075">logError()</a>.    </td>
+Referenced by <a class="el" href="_catalogue_8cxx-source.html#l00823">sourceIdentify::Catalogue::create_output_catalogue()</a>, <a class="el" href="_parameters_8cxx-source.html#l00200">dump()</a>, <a class="el" href="_parameters_8cxx-source.html#l00034">init_memory()</a>, and <a class="el" href="_parameters_8cxx-source.html#l00093">load()</a>.    </td>
   </tr>
 </table>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_parameters_8h-source.html">Parameters.h</a><li><a class="el" href="_parameters_8cxx-source.html">Parameters.cxx</a></ul>
-<hr><address style="align: right;"><small>Generated on Mon Feb 28 18:34:26 2005 for sourceIdentify by
+<hr><address style="align: right;"><small>Generated on Thu Jul 21 21:03:37 2005 for sourceIdentify by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.18 </small></address>

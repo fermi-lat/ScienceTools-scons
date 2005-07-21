@@ -11,65 +11,64 @@
 00003 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00004 <span class="comment">/* Task            : Source identification header file.                       */</span>
 00005 <span class="comment">/* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */</span>
-00006 <span class="comment">/* Revision        : 1.0                                                      */</span>
-00007 <span class="comment">/* Date of version : 25-Feb-2005                                              */</span>
+00006 <span class="comment">/* Revision        : 1.1.0                                                    */</span>
+00007 <span class="comment">/* Date of version : 21-Jul-2005                                              */</span>
 00008 <span class="comment">/* -------------------------------------------------------------------------- */</span>
 00009 <span class="comment">/* History :                                                                  */</span>
-00010 <span class="comment">/* 1.0   25-Feb-2005  first version                                           */</span>
-00011 <span class="comment">/*----------------------------------------------------------------------------*/</span>
-00012 <span class="preprocessor">#ifndef SOURCEIDENTIFY_H</span>
-00013 <span class="preprocessor"></span><span class="preprocessor">#define SOURCEIDENTIFY_H</span>
-00014 <span class="preprocessor"></span>
-00015 <span class="comment">/* Definitions ______________________________________________________________ */</span>
-<a name="l00016"></a><a class="code" href="source_identify_8h.html#a0">00016</a> <span class="preprocessor">#define USE_ST_APP 1</span>
-00017 <span class="preprocessor"></span>
-00018 <span class="comment">/* Includes _________________________________________________________________ */</span>
-00019 <span class="preprocessor">#if USE_ST_APP</span>
-00020 <span class="preprocessor"></span><span class="preprocessor">#include &lt;string&gt;</span>
-00021 <span class="preprocessor">#include "st_app/AppParGroup.h"</span>
-00022 <span class="preprocessor">#include "st_app/StApp.h"</span>
-00023 <span class="preprocessor">#include "st_app/StAppFactory.h"</span>
-00024 <span class="preprocessor">#include "st_stream/StreamFormatter.h"</span>
-00025 <span class="preprocessor">#include "st_stream/st_stream.h"</span>
-00026 <span class="preprocessor">#endif</span>
-00027 <span class="preprocessor"></span>
-00028 <span class="comment">/* Architecture specific definitions ________________________________________ */</span>
-00029 <span class="preprocessor">#ifndef EXPSYM</span>
-00030 <span class="preprocessor"></span><span class="preprocessor">#ifdef WIN32</span>
-00031 <span class="preprocessor"></span><span class="preprocessor">#define EXPSYM __declspec(dllexport)</span>
-00032 <span class="preprocessor"></span><span class="preprocessor">#else</span>
-<a name="l00033"></a><a class="code" href="source_identify_8h.html#a1">00033</a> <span class="preprocessor"></span><span class="preprocessor">#define EXPSYM</span>
-00034 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-00035 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-00036 <span class="preprocessor"></span>
-00037 
-00038 <span class="comment">/* Namespace definition _____________________________________________________ */</span>
-00039 <span class="keyword">namespace </span>sourceIdentify {
-00040 
-00041 
-00042 <span class="comment">/* Type defintions __________________________________________________________ */</span>
-<a name="l00043"></a><a class="code" href="namespacesource_identify.html#a38">00043</a> <span class="keyword">typedef</span> <span class="keyword">enum</span>  {                                  <span class="comment">// Function status code</span>
-00044   <a class="code" href="namespacesource_identify.html#a38a22">STATUS_OK</a>                =       0,             <span class="comment">// Function status ok</span>
-00045   <a class="code" href="namespacesource_identify.html#a38a23">STATUS_MEM_ALLOC</a>         = -100000,             <span class="comment">// Memory allocation failure</span>
-00046   <a class="code" href="namespacesource_identify.html#a38a24">STATUS_LOG_OPEN_FAILED</a>   = -100100,             <span class="comment">// Log file open error</span>
-00047   <a class="code" href="namespacesource_identify.html#a38a25">STATUS_LOG_CLOSE_FAILED</a>  = -100101,             <span class="comment">// Log file close error</span>
-00048   <a class="code" href="namespacesource_identify.html#a38a26">STATUS_LOG_WRITE_FAILED</a>  = -100102,             <span class="comment">// Log file write error</span>
-00049   <a class="code" href="namespacesource_identify.html#a38a27">STATUS_PAR_BAD_PARAMETER</a> = -100200,             <span class="comment">// Bad task parameter</span>
-00050   <a class="code" href="namespacesource_identify.html#a38a28">STATUS_CAT_NOT_FOUND</a>     = -100300,             <span class="comment">// Catalogue not found</span>
-00051   <a class="code" href="namespacesource_identify.html#a38a29">STATUS_CAT_EMPTY</a>         = -100301              <span class="comment">// Catalogue empty</span>
-00052 } <a class="code" href="namespacesource_identify.html#a38">Status</a>;
-00053 
-00054 <span class="comment">/* Prototypes _______________________________________________________________ */</span>
+00010 <span class="comment">/* 1.0.0  20-May-2005  first version                                          */</span>
+00011 <span class="comment">/* 1.1.0  21-Jul-2005  version 1, revision 1                                  */</span>
+00012 <span class="comment">/*----------------------------------------------------------------------------*/</span>
+00013 <span class="preprocessor">#ifndef SOURCEIDENTIFY_H</span>
+00014 <span class="preprocessor"></span><span class="preprocessor">#define SOURCEIDENTIFY_H</span>
+00015 <span class="preprocessor"></span>
+00016 <span class="comment">/* Definitions ______________________________________________________________ */</span>
+<a name="l00017"></a><a class="code" href="source_identify_8h.html#a0">00017</a> <span class="preprocessor">#define TOOL_NAME     "gtsrcid"</span>
+<a name="l00018"></a><a class="code" href="source_identify_8h.html#a1">00018</a> <span class="preprocessor"></span><span class="preprocessor">#define TOOL_VERSION  "gtsrcid-1.1.0"</span>
+<a name="l00019"></a><a class="code" href="source_identify_8h.html#a2">00019</a> <span class="preprocessor"></span><span class="preprocessor">#define TOOL_LOGFILE  "gtsrcid.log"</span>
+<a name="l00020"></a><a class="code" href="source_identify_8h.html#a3">00020</a> <span class="preprocessor"></span><span class="preprocessor">#define USE_ST_APP 1</span>
+00021 <span class="preprocessor"></span>
+00022 <span class="comment">/* Includes _________________________________________________________________ */</span>
+00023 <span class="preprocessor">#include &lt;string&gt;</span>
+00024 <span class="preprocessor">#include "st_app/AppParGroup.h"</span>
+00025 <span class="preprocessor">#include "st_app/StApp.h"</span>
+00026 <span class="preprocessor">#include "st_app/StAppFactory.h"</span>
+00027 <span class="preprocessor">#include "st_stream/StreamFormatter.h"</span>
+00028 <span class="preprocessor">#include "st_stream/st_stream.h"</span>
+00029 
+00030 <span class="comment">/* Architecture specific definitions ________________________________________ */</span>
+00031 <span class="preprocessor">#ifndef EXPSYM</span>
+00032 <span class="preprocessor"></span><span class="preprocessor">#ifdef WIN32</span>
+00033 <span class="preprocessor"></span><span class="preprocessor">#define EXPSYM __declspec(dllexport)</span>
+00034 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00035"></a><a class="code" href="source_identify_8h.html#a4">00035</a> <span class="preprocessor"></span><span class="preprocessor">#define EXPSYM</span>
+00036 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+00037 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+00038 <span class="preprocessor"></span>
+00039 
+00040 <span class="comment">/* Namespace definition _____________________________________________________ */</span>
+00041 <span class="keyword">namespace </span>sourceIdentify {
+00042 
+00043 
+00044 <span class="comment">/* Type defintions __________________________________________________________ */</span>
+<a name="l00045"></a><a class="code" href="namespacesource_identify.html#a38">00045</a> <span class="keyword">typedef</span> <span class="keyword">enum</span>  {                                  <span class="comment">// Function status code</span>
+00046   <a class="code" href="namespacesource_identify.html#a38a24">STATUS_OK</a>                =       0,             <span class="comment">// Function status ok</span>
+00047   <a class="code" href="namespacesource_identify.html#a38a25">STATUS_MEM_ALLOC</a>         = -100000,             <span class="comment">// Memory allocation failure</span>
+00048   <a class="code" href="namespacesource_identify.html#a38a26">STATUS_LOG_OPEN_FAILED</a>   = -100100,             <span class="comment">// Log file open error</span>
+00049   <a class="code" href="namespacesource_identify.html#a38a27">STATUS_LOG_CLOSE_FAILED</a>  = -100101,             <span class="comment">// Log file close error</span>
+00050   <a class="code" href="namespacesource_identify.html#a38a28">STATUS_LOG_WRITE_FAILED</a>  = -100102,             <span class="comment">// Log file write error</span>
+00051   <a class="code" href="namespacesource_identify.html#a38a29">STATUS_PAR_BAD_PARAMETER</a> = -100200,             <span class="comment">// Bad task parameter</span>
+00052   <a class="code" href="namespacesource_identify.html#a38a30">STATUS_CAT_NOT_FOUND</a>     = -100300,             <span class="comment">// Catalogue not found</span>
+00053   <a class="code" href="namespacesource_identify.html#a38a31">STATUS_CAT_EMPTY</a>         = -100301              <span class="comment">// Catalogue empty</span>
+00054 } <a class="code" href="namespacesource_identify.html#a38">Status</a>;
 00055 
-00056 <span class="comment">/* Globals __________________________________________________________________ */</span>
-00057 <span class="preprocessor">#if USE_ST_APP</span>
-00058 <span class="preprocessor"></span><span class="comment">//extern st_app::StAppFactory g_factory;</span>
-00059 <span class="preprocessor">#endif</span>
-00060 <span class="preprocessor"></span>
-00061 <span class="comment">/* Namespace ends ___________________________________________________________ */</span>
-00062 }
-00063 <span class="preprocessor">#endif // SOURCEIDENTIFY_H</span>
-</pre></div><hr><address style="align: right;"><small>Generated on Mon Feb 28 18:34:26 2005 for sourceIdentify by
+00056 <span class="comment">/* Prototypes _______________________________________________________________ */</span>
+00057 
+00058 <span class="comment">/* Globals __________________________________________________________________ */</span>
+00059 
+00060 <span class="comment">/* Namespace ends ___________________________________________________________ */</span>
+00061 }
+00062 <span class="preprocessor">#endif // SOURCEIDENTIFY_H</span>
+</pre></div><hr><address style="align: right;"><small>Generated on Thu Jul 21 21:03:37 2005 for sourceIdentify by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.18 </small></address>
