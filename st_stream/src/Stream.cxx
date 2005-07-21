@@ -21,9 +21,11 @@ namespace st_stream {
   }
 
   OStream::OStream(bool use_chatter): m_std_stream_cont(), m_stream_cont(), m_prefix(), m_chat_level(0),
-    m_begin_new_line(true), m_enabled(true), m_use_chatter(use_chatter) { setChatLevel(m_chat_level); }
+    m_enabled(true), m_use_chatter(use_chatter) { setChatLevel(m_chat_level); }
 
-  OStream& OStream::setChatLevel(unsigned int chat_level) {
+  OStream & OStream::prefix() { return *this << m_prefix; }
+
+  OStream & OStream::setChatLevel(unsigned int chat_level) {
     m_chat_level = chat_level;
     if (m_use_chatter) enable(m_chat_level <= GetMaximumChatter());
     return *this;
@@ -110,4 +112,5 @@ namespace st_stream {
     return setStreamState<char, std::basic_ios<char> >(&std::ostream::fill, &OStream::fill, &OStream::fill, new_fill);
   }
 
+  OStream & prefix(OStream & os) { return os.prefix(); }
 }

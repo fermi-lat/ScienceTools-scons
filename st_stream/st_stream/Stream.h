@@ -32,6 +32,10 @@ namespace st_stream {
       */
       OStream(bool use_chatter);
 
+      /** \brief Write this stream's prefix, (respecting chatter, if enabled) and return the stream.
+      */
+      OStream & prefix();
+
       /** \brief Shift the given object to the destination stream(s), but only if the current
                  message chatter level is less than or equal to the maximum chatter level.
           \param t The object to shift.
@@ -44,6 +48,24 @@ namespace st_stream {
           \param func The stream modifier.
       */
       OStream & operator <<(std::ostream & (*func)(std::ostream &));
+
+      /** \brief Pass the given stream modifier to the destination stream(s), but only if the current
+                 message chatter level is less than or equal to the maximum chatter level.
+          \param func The stream modifier.
+      */
+      OStream & operator <<(std::ios & (*func)(std::ios &));
+
+      /** \brief Pass the given stream modifier to the destination stream(s), but only if the current
+                 message chatter level is less than or equal to the maximum chatter level.
+          \param func The stream modifier.
+      */
+      OStream & operator <<(std::ios_base & (*func)(std::ios_base &));
+
+      /** \brief Pass the given stream modifier to the destination stream(s), but only if the current
+                 message chatter level is less than or equal to the maximum chatter level.
+          \param func The stream modifier.
+      */
+      OStream & operator <<(OStream & (*func)(OStream &));
 
       /** \brief Change the current chatter level for messages written to the stream. This has no
                  effect on the maximum chatter level currently selected by the user/client.
@@ -194,7 +216,6 @@ namespace st_stream {
       OStreamCont_t m_stream_cont;
       std::string m_prefix;
       unsigned int m_chat_level;
-      bool m_begin_new_line;
       bool m_enabled;
       bool m_use_chatter;
   };
@@ -219,6 +240,11 @@ namespace st_stream {
       unsigned int m_chat_level;
   };
 
+  /** \brief Manipulator which calls the prefix() method of the given stream.
+      \param os The stream whose prefix() method to call.
+  */
+  OStream & prefix(OStream & os);
+
   /** \brief Shift operator used to shift a Chat object to an OStream object.
       \param os The OStream object acted upon by the Chat object.
       \param chat The Chat object which modifies the OStream object.
@@ -231,20 +257,12 @@ namespace st_stream {
     if (m_enabled) {
       // Iterate over std::ostreams, shifting object to each in turn.
       for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
-        // Prepend prefix if this is the first object being shifted at the beginning of a new line.
-        if (m_begin_new_line && !m_prefix.empty()) *(*itor) << m_prefix;
-        // Shift the object itself.
         *(*itor) << t;
       }
       // Iterate over OStreams, shifting object to each in turn.
       for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor) {
-        // Prepend prefix if this is the first object being shifted at the beginning of a new line.
-        if (m_begin_new_line && !m_prefix.empty()) *(*itor) << m_prefix;
-        // Shift the object itself.
         *(*itor) << t;
       }
-      // Something was shifted, so no longer the beginning of a new line.
-      m_begin_new_line = false;
     }
     return *this;
   }
@@ -260,12 +278,41 @@ namespace st_stream {
       for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor) {
         *(*itor) << func;
       }
-      // If this modifier is endl, set flag indicating position at the beginning of a new line.
-      if (static_cast<std::ostream &(*)(std::ostream&)>(std::endl<std::ostream::char_type, std::ostream::traits_type>) == func)
-        m_begin_new_line = true;
     }
     return *this;
   }
+
+  inline OStream & OStream::operator <<(std::ios & (*func)(std::ios &)) {
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
+    if (m_enabled) {
+      // Iterate over std::ostreams, shifting object to each in turn.
+      for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
+        *(*itor) << func;
+      }
+      // Iterate over OStreams, shifting object to each in turn.
+      for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor) {
+        *(*itor) << func;
+      }
+    }
+    return *this;
+  }
+
+  inline OStream & OStream::operator <<(std::ios_base & (*func)(std::ios_base &)) {
+    // Only modify destination streams if message chatter is less than or equal to maximum user/client chatter.
+    if (m_enabled) {
+      // Iterate over std::ostreams, shifting object to each in turn.
+      for (StdStreamCont_t::iterator itor = m_std_stream_cont.begin(); itor != m_std_stream_cont.end(); ++itor) {
+        *(*itor) << func;
+      }
+      // Iterate over OStreams, shifting object to each in turn.
+      for (OStreamCont_t::iterator itor = m_stream_cont.begin(); itor != m_stream_cont.end(); ++itor) {
+        *(*itor) << func;
+      }
+    }
+    return *this;
+  }
+
+  inline OStream & OStream::operator <<(OStream & (*func)(OStream &)) { return func(*this); }
 
   template <typename T, typename Stream_t>
   inline T OStream::getStreamState(T (Stream_t::*stdMethod)() const, T (OStream::*method)() const) const {
