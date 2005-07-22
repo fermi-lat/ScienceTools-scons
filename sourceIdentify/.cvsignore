@@ -1,6 +1,7 @@
-sun4x_*
+Linux-i686
 i386_linux*
+rh*
+msdev*
 Win32*
 Visual
-setup.*
-*.mak*
+VC*
