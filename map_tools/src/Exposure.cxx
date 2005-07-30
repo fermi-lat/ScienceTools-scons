@@ -8,8 +8,6 @@
 #include "tip/Table.h"
 #include "astro/EarthCoordinate.h"
 
-#include <memory>
-
 using namespace map_tools;
 
 
@@ -45,14 +43,17 @@ Exposure::Exposure(double pixelsize, double cosbinsize)
 }
 
 
-void Exposure::fill(const astro::SkyDir& dirz, double deltat)
+void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)
 {
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
         CosineBinner & pixeldata= *is; // get the contents of this pixel
         astro::SkyDir pdir = data().dir(is); // dir() is defined in HealpixArray.h
         double costh = pdir().dot(dirz());
-        pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
+        double costhzen = pdir().dot(dirzenith());
+	if(costhzen>-0.4){
+	  pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
+	}
     }
     addtotal(deltat);
 }
@@ -109,7 +110,7 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
 
             if( start < first ) {
                 if( stop < first) continue; // history interval before gti
-                if( stop <= second){
+                if( stop < second){
                     fraction = (stop-first)/(stop-start); // overlap start of gti
                     break;
                 }
@@ -117,7 +118,7 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
                 break;
             }else {
                 if( start > second) continue; // interval after gti 
-                if( stop <= second ) {
+                if( stop < second ) {
                     fraction = 1.0; break;  // fully contained
                 }
                 fraction = (second-start)/(stop-start);  // overlap end of gti
@@ -128,10 +129,12 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
         done = fraction==0 && start > gti.back().second; 
     }
     if( fraction>0. ) {
-        double ra, dec;
+        double ra, dec,razenith,deczenith;
         row["ra_scz"].get(ra);
         row["dec_scz"].get(dec);
-        fill(astro::SkyDir(ra, dec), deltat* fraction);
+        row["ra_zenith"].get(razenith);
+        row["dec_zenith"].get(deczenith);
+        fill(astro::SkyDir(ra, dec), astro::SkyDir(razenith,deczenith), deltat* fraction);
     }
     return done; 
 

@@ -32,7 +32,7 @@ public:
 
     virtual ~BasicExposure(){}
 
-    virtual void fill(const astro::SkyDir& dirz, double deltat)=0;
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)=0;
 
     template<class F>
         double operator()(const astro::SkyDir& dir, const F& fun)const
@@ -73,7 +73,7 @@ public:
     Exposure(double pixelsize=1., double cosbinsize=1./CosineBinner::s_nbins);
 
     //! add a time interval at the given position
-    virtual void fill(const astro::SkyDir& dirz, double deltat);
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat);
 
     //! create object from the data file (FITS for now)
     Exposure(const std::string& inputfile, const std::string& tablename="Exposure");
