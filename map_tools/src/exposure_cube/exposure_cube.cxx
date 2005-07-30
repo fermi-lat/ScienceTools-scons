@@ -65,6 +65,7 @@ public:
     //--------------------------------------------------------------------------
     void loadExposureWithGPS(Exposure& exp, const std::string& inputFile, const Exposure::GTIvector& gti )
     {
+        using astro::GPS;
 
         double 
             tstart = gti.front().first,
@@ -90,9 +91,9 @@ public:
 //            if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
             added++;
 	    astro::SkyDir dirZenith(pt.position.unit());
-            exp.fill( pt.dirZ, dirZenith , deltat);
+            exp.fill( pt.dirZ, dirZenith, deltat);
         }
-	
+
         m_f.info() << "Number of steps added: " << added << ", rejected: "<< (total-added) << std::endl;
         m_f.info() << "Total elapsed time: " << deltat*total << " seconds." << std::endl;
         return;
