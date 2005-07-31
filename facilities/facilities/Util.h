@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <exception>
 
 /** @file Util.h
     @author J. Bogart
@@ -18,23 +19,33 @@ namespace facilities {
   /// any context (hence static)
 
   /// Exception class used by expandEnvVar
-  class Untranslatable {
+  class Untranslatable : public std::exception {
   public:
-    Untranslatable(const std::string& toTrans) : m_badVar(toTrans) {}
+    Untranslatable(const std::string& toTrans = "") : std::exception(),
+                                                 m_badVar(toTrans) {}
+    virtual ~Untranslatable() throw() {}
     std::string m_badVar;
+    virtual const char* what() const throw() {
+      return m_badVar.c_str();
+    }
   };
 
   /// Exception class used when converting from string to numeric type
 
-  class WrongType {
+  class WrongType : public std::exception {
   public:
-    WrongType(const std::string& toConvert, const std::string& typeName) : 
-      m_toConvert(toConvert), m_typeName(typeName) {}
-    std::string getMsg() {
+    WrongType(const std::string& toConvert="", 
+              const std::string& typeName="") : 
+      std::exception(), m_toConvert(toConvert), m_typeName(typeName) {}
+    virtual ~WrongType() throw() {}
+    std::string getMsg() const {
       std::string msg =
         "facilities::WrongType.  Cannot convert '" + m_toConvert + "' to type "
         + m_typeName;
       return msg;
+    }
+    virtual const char* what() const throw() { 
+      return (getMsg()).c_str();
     }
   private:
     std::string m_toConvert;

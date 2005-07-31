@@ -27,8 +27,9 @@ int main(int, char**) {
                 << nameAgain << std::endl;
     }
   }
-  catch (facilities::Untranslatable err) {
-    std::cout << "Failed to completely translate " << name << std::endl;
+  catch (std::exception& err) {
+    std::cout << "Caught standard exception; what() returns " 
+              << err.what() << std::endl;
   }
 
 
@@ -42,8 +43,9 @@ int main(int, char**) {
     std::cout << "Translated name is " << multi << std::endl;
     std::cout << ntrans << " variables were translated." << std::endl;
   }
-  catch (facilities::Untranslatable err) {
-    std::cout << "Failed to completely translate " << multi << std::endl;
+  catch (std::exception& err) {
+    std::cout << "Caught standard exception; what() returns " 
+              << err.what() << std::endl;
   }
 
   std::cout << std::endl << "Test itoa " << std::endl;
@@ -135,9 +137,9 @@ int main(int, char**) {
     std::cout << "Converted (string) " << okDouble << " to (double) " 
               << result << std::endl;
   }
-  catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception   " << ex.getMsg() 
-              << std::endl;
+  catch (std::exception& err) {
+    std::cout << "Caught standard exception; what() returns " 
+              << err.what() << std::endl;
   }
 
   try {
@@ -145,9 +147,9 @@ int main(int, char**) {
     std::cout << "Converted (string) " << badDouble << " to (double) " 
               << result << std::endl;
   }
-  catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception   " << ex.getMsg() 
-              << std::endl;
+  catch (std::exception& err) {
+    std::cout << "Caught standard exception; what() returns " 
+              << err.what() << std::endl;
   }
 
   // Test stringToInt routine
@@ -164,9 +166,9 @@ int main(int, char**) {
     std::cout << "Converted (string) " << okInt << " to (int) " 
               << intResult << std::endl;
   }
-  catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception   " << ex.getMsg() 
-              << std::endl;
+  catch (std::exception& err) {
+    std::cout << "Caught standard exception; what() returns " 
+              << err.what() << std::endl;
   }
 
   try {
@@ -174,9 +176,9 @@ int main(int, char**) {
     std::cout << "Converted (string) " << badInt1 << " to (int) " 
               << intResult << std::endl;
   }
-  catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception  " << ex.getMsg() 
-              << std::endl;
+  catch (std::exception& ex) {
+    std::cout << "Caught std::exception, what() returns " 
+              << ex.what() << std::endl;
   }
 
   try {
@@ -184,9 +186,9 @@ int main(int, char**) {
     std::cout << "Converted (string) " << badInt2 << " to (int) " 
               << intResult << std::endl;
   }
-  catch (facilities::WrongType ex) {
-    std::cout << "Failed with exception  " << ex.getMsg() 
-              << std::endl;
+  catch (std::exception& ex) {
+    std::cout << "Caught std::exception, what() returns " 
+              << ex.what() << std::endl;
   }
 
   // Try out trimTrailing method
