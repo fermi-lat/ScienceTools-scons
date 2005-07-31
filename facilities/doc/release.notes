@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r12p1 31-Jul-2005 jrb   Base exception classes on std::exception
   v2r12   3-Jun-2005  jrb   Add utility Util::expandEnvVarOS
   v2r11   8-Apr-2005  jrb   Add utility Util::keyValueTokenize; add optional
                             timezone arguments to some constructors of Timestamp
