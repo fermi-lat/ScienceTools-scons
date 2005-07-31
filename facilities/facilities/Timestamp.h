@@ -3,6 +3,7 @@
 #define FACILITIES_TIMESTAMP_H
 
 #include <string>
+#include <exception>
 
 namespace facilities {
 
@@ -10,13 +11,17 @@ namespace facilities {
       constructors, incompatible arguments for comparisons or
       arithmetic, or out of range results.
   */
-  class BadTimeInput {
+  class BadTimeInput : public std::exception {
   public:
-    BadTimeInput(std::string msg) : complaint(msg) {};
-    ~BadTimeInput() {};
+    BadTimeInput(std::string msg) : std::exception(), complaint(msg) {};
+    virtual ~BadTimeInput() throw() {};
     std::string complaint; 
+    virtual const char* what() const throw() {
+      return complaint.c_str();
+    }
 
-    BadTimeInput(const BadTimeInput &other) {complaint = other.complaint; };
+    BadTimeInput(const BadTimeInput &other) : std::exception() {
+      complaint = other.complaint; };
   }; 
 
 
