@@ -59,7 +59,7 @@ namespace evtbin {
       double e_min = (*itor)["E_MIN"].get();
       double e_max = (*itor)["E_MAX"].get();
 
-      *interval_itor = Binner::Interval(e_min, e_max);
+      *interval_itor = Binner::Interval(1.e-3 * e_min, 1.e-3 * e_max);
     }
 
     return new OrderedBinner(intervals);
