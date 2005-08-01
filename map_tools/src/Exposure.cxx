@@ -44,6 +44,17 @@ Exposure::Exposure(double pixelsize, double cosbinsize)
     }
 }
 
+void Exposure::fill(const astro::SkyDir& dirz, double deltat)
+{
+    SkyBinner::iterator is = data().begin();
+    for( ; is != data().end(); ++is){ // loop over all pixels
+        CosineBinner & pixeldata= *is; // get the contents of this pixel
+        astro::SkyDir pdir = data().dir(is); // dir() is defined in HealpixArray.h
+        double costh = pdir().dot(dirz());
+	pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
+    }
+    addtotal(deltat);
+}
 
 void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)
 {
