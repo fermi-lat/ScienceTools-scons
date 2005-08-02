@@ -7,6 +7,7 @@
 
 #include "evtbin/Binner.h"
 #include "evtbin/MultiSpec.h"
+#include "evtbin/SingleSpec.h"
 
 #include "st_facilities/Env.h"
 
@@ -17,7 +18,7 @@ namespace evtbin {
 
   MultiSpec::MultiSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
     const Binner & time_binner, const Binner & energy_binner, const Binner & ebounds, const Gti & gti):
-    DataProduct(event_file, event_table, gti), m_hist(time_binner, energy_binner), m_ebounds(ebounds.clone()) {
+    DataProduct(event_file, event_table, gti), m_sc_file(sc_file), m_hist(time_binner, energy_binner), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
     // Collect any/all needed keywords from the primary extension.
@@ -81,6 +82,20 @@ namespace evtbin {
 
       // Number of counts in each bin, from the histogram.
       (*table_itor)["COUNTS"].set(&(m_hist[index][0]), &(m_hist[index][num_energy_bins]), 0);
+
+      // Create a Gti object which contains just the current time interval.
+      Gti gti;
+      gti.insertInterval(time_int.begin(), time_int.end());
+
+      // Merge this with the overall input Gti.
+      gti = gti & m_gti;
+
+      // Create an object which represents just this single spectrum, but with the reduced Gti.
+      SingleSpec spec(m_event_file, m_event_table, m_sc_file, *energy_binner, *m_ebounds, gti);
+
+      // Use the single spectrum to compute exposure for the current spectrum, in a manner similar
+      // to keywords for a single spectrum.
+      (*table_itor)["EXPOSURE"].set(spec.computeExposure(m_sc_file));
     }
 
     delete [] channel;
