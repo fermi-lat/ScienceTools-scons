@@ -260,6 +260,9 @@ namespace evtbin {
   }
 
   double DataProduct::computeExposure(const std::string & sc_file) const {
+    // If Gti is empty, return 0. exposure.
+    if (0 == m_gti.getNumIntervals()) return 0.;
+
     // If no spacecraft file is available, return the total ontime.
     if (sc_file.empty()) return m_gti.computeOntime();
 
