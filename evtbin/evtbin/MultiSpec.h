@@ -36,6 +36,7 @@ namespace evtbin {
       virtual void writeOutput(const std::string & creator, const std::string & out_file) const;
 
     private:
+      std::string m_sc_file;
       Hist2D m_hist;
       Binner * m_ebounds;
   };
