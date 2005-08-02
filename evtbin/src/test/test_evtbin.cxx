@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstddef>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -127,8 +128,8 @@ EvtBinTest::EvtBinTest(): m_os("EvtBinTest", "EvtBinTest", 2), m_t_start(2.16744
 void EvtBinTest::run() {
   m_failed = false;
 
-  std::cerr.precision(24);
-  std::cout.precision(24);
+  std::cerr.precision(std::numeric_limits<double>::digits10);
+  std::cout.precision(std::numeric_limits<double>::digits10);
 
   // Test high level bin configuration object first, as it tests some things which need to be done first.
   testBinConfig();
@@ -492,7 +493,7 @@ void EvtBinTest::testLightCurve() {
   Gti gbm_gti;
   gbm_gti.insertInterval(m_gbm_t_start, m_gbm_t_stop);
 
-  // Create light curve object for GBD data.
+  // Create light curve object for GBM data.
   LightCurve gbm_lc(m_gbm_file, "EVENTS", "",
     LinearBinner(m_gbm_t_start, m_gbm_t_stop, (m_gbm_t_stop - m_gbm_t_start) * .01, "TIME"), gbm_gti);
 
@@ -908,20 +909,36 @@ void EvtBinTest::testGti() {
   // Create light curve object.
   LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
+  // Get absolute O/S dependent limit on precision.
+  const double epsilon = std::numeric_limits<double>::epsilon();
+
   const Gti & lc_gti = lc.getGti();
-  if (1 != lc_gti.getNumIntervals()) {
-    std::cerr << "testGti read GTI from test ft1 file with " << lc_gti.getNumIntervals() << ", not 1" << std::endl;
+  if (2 != lc_gti.getNumIntervals()) {
+    std::cerr << "testGti: ERROR: read GTI from test ft1 file with " << lc_gti.getNumIntervals() << ", not 2 GTI" << std::endl;
     m_failed = true;
-  } else if (m_t_start != lc_gti.begin()->first || m_t_stop != lc_gti.begin()->second) {
-    std::cerr << "testGti read GTI from test ft1 file with values [" << lc_gti.begin()->first << ", " << lc_gti.begin()->second <<
-      ", not [" << m_t_start << ", " << m_t_stop << "]" << std::endl;
-    m_failed = true;
+  } else {
+    // The first interval should agree exactly with the start interval read from the file.
+    if (m_t_start != lc_gti.begin()->first || epsilon < fabs((m_t_start + 5.e3 - lc_gti.begin()->second) / (m_t_start + 5.e3))) {
+      std::cerr << "testGti: ERROR: read GTI from test ft1 file with values [" << lc_gti.begin()->first << ", " <<
+        lc_gti.begin()->second << ", not [" << m_t_start << ", " << m_t_start + 5.e3 << "], as expected." << std::endl;
+      m_failed = true;
+    }
+
+    Gti::ConstIterator last = lc_gti.end();
+    --last;
+    // The last interval should agree less exactly with the stop interval read from the file, because the gti was recut.
+    if (m_t_stop != last->second || 10. * epsilon < fabs((m_t_stop - 1.e4 - last->first) / (m_t_stop - 1.e4))) {
+      std::cerr << "testGti: ERROR: read GTI from test ft1 file with values [" << last->first << ", " << last->second <<
+        ", not [" << m_t_stop - 1.e4 << ", " << m_t_stop << "], as expected." << std::endl;
+      m_failed = true;
+    }
   }
 
   // Check ONTIME computation from light curve.
+  expected_on_time = 1.5e4;
   on_time = lc_gti.computeOntime();
-  expected_on_time = m_t_stop - m_t_start;
-  if (tolerance < fabs(expected_on_time - on_time)) {
+  // Error in ontime is compounded by the large number of bins used in the light curve.
+  if (1000. * epsilon < fabs((expected_on_time - on_time) / expected_on_time)) {
     std::cerr << "testGti: computeOntime returned " << on_time << ", not " << expected_on_time << " as expected" << std::endl;
     m_failed = true;
   }
