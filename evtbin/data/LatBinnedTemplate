@@ -33,7 +33,7 @@ HDUCLAS4 =               PHA:II / Single PHA dataset
 HDUVERS  =                1.2.0 / Version number of the format
 DETCHANS =                    0 / Total number of detector channels available
 POISSERR =                    T / Whether Poissonian errors are appropriate to the data
-EXPOSURE =                      / Total livetime in seconds
+#EXPOSURE =                      / Total livetime in seconds
 BACKFILE =                 NONE / Name of background file (if any)
 CORRFILE =                 NONE / Name of correction file (if any)
 CORRSCAL =                   1. / Correction scaling factor.
@@ -62,10 +62,6 @@ TFORM#  D                       / Data format of this field
 
 TTYPE#  TELAPSE                 / Label for this field
 TFORM#  D                       / Data format of this field
-
-#TTYPE#  EXPOSURE                / Label for this field
-#TFORM#  D                       / Data format of this field
-#TUNIT#  s                       / Unit of this field
 
 TTYPE#  SPEC_NUM                / Label for this field
 TFORM#  I                       / Data format of this field
@@ -109,6 +105,10 @@ TUNIT#  Counts                  / Unit of this field
 
 TTYPE#  ROWID                   / Unique identifier for each spectrum
 TFORM#  A                       / Data format of this field
+
+TTYPE#  EXPOSURE                / Label for this field
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
 
 
 ##################################################################################
