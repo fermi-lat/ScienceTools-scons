@@ -35,12 +35,12 @@ class PulsePhaseApp : public st_app::StApp {
 };
 
 PulsePhaseApp::PulsePhaseApp(): st_app::StApp() {
-  setName("pulsePhase");
+  setName("gtpphase");
   setVersion(s_cvs_id);
 }
 
 void PulsePhaseApp::run() {
-  st_app::AppParGroup & par_group = getParGroup("pulsePhase"); // getParGroup is in base class st_app::StApp
+  st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
 
 #if 0
   par_group.setSwitch("ephstyle");
@@ -222,4 +222,4 @@ void PulsePhaseApp::run() {
   delete events;
 }
 
-st_app::StAppFactory<PulsePhaseApp> g_factory("pulsePhase");
+st_app::StAppFactory<PulsePhaseApp> g_factory("gtpphase");
