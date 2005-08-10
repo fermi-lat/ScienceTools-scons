@@ -1,6 +1,6 @@
 package map_tools
 
-version v5r13	
+version v5r14	
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -32,8 +32,12 @@ public
 # for test program
 use flux * -no_auto_imports
 
-apply_pattern ST_app name=count_map
+#these are useful exposure tools, but not part of standard set
 apply_pattern ST_app name=exposure_cube
 apply_pattern ST_app name=exposure_map
-apply_pattern ST_app name=read_map
-apply_pattern ST_app name=map_stats
+
+# these are not standard science tools applications: 
+# uncomment them to build for development, testing
+#apply_pattern ST_app name=count_map
+#apply_pattern ST_app name=read_map
+#apply_pattern ST_app name=map_stats
