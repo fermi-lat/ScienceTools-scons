@@ -27,10 +27,15 @@ int main(int iargc, char * argv[]) {
       std::string fitsFile("myLatData.fits");
       
       Util::getFileNames(iargc, argv, rootFile, fitsFile);
+      if (iargc == 1) {
+         std::cout << "input merit file: " << rootFile << std::endl;
+         std::cout << "output FT1 file: " << fitsFile << std::endl;
+      }
 
       tip::Table * meritTable = 
          tip::IFileSvc::instance().editTable(rootFile, "MeritTuple");
       long nrows = meritTable->getNumRecords();
+      std::cout << "number of rows in MeritTuple: " << nrows << std::endl;
       tip::Table::Iterator merit_iter = meritTable->begin();
       tip::Table::Record & merit = *merit_iter;
 
@@ -44,6 +49,7 @@ int main(int iargc, char * argv[]) {
       tip::Table::Iterator ft1_iter = eventTable->begin();
       tip::Table::Record & ft1 = *ft1_iter;
    
+      int ncount(0);
       for ( ; merit_iter != meritTable->end(); ++merit_iter, ++ft1_iter) {
          ft1["energy"].set(merit["FT1Energy"].get());
          ft1["ra"].set(merit["FT1Ra"].get());
@@ -75,7 +81,9 @@ int main(int iargc, char * argv[]) {
          convPoint[0] = merit["FT1ConvPointX"].get();
          convPoint[1] = merit["FT1ConvPointY"].get();
          convPoint[2] = merit["FT1ConvPointZ"].get();
+         ncount++;
       }
+      std::cout << "number of rows processed: " << ncount << std::endl;
 
       merit_iter = meritTable->begin();
       double start_time = merit["elapsed_time"].get();
