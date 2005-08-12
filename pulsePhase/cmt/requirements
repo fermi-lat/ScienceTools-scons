@@ -8,6 +8,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 use STpolicy *
 
 apply_pattern ST_pfiles
+apply_pattern ST_app name=gtophase
 apply_pattern ST_app name=gtpphase
 
 private
