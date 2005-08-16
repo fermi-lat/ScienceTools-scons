@@ -56,7 +56,7 @@ protected:
    /// Set the date keywords in a given header, accesses via the
    /// tip::Extension and tip::Header interface.
    static void writeDateKeywords(tip::Extension * table, double start_time,
-                                 double stop_time);
+                                 double stop_time, bool extension=true);
 
    /// Return an astro::JulianDate object for the current time.
    static astro::JulianDate currentTime();

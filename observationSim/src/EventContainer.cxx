@@ -279,7 +279,7 @@ void EventContainer::writeEvents() {
 
 // Take care of date keywords in primary header.
    tip::Image * phdu = tip::IFileSvc::instance().editImage(ft1File, "");
-   writeDateKeywords(phdu, m_startTime, stop_time);
+   writeDateKeywords(phdu, m_startTime, stop_time, false);
    delete phdu;
 
    st_facilities::FitsUtil::writeChecksums(ft1File);
