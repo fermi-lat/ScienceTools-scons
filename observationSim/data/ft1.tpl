@@ -1,5 +1,5 @@
 # Definition of LAT Event Summary File (FT1)
-# Definition as of August 2nd, 2004
+# Definition as of July 12th, 2005
 SIMPLE      = T                              / file does conform to FITS standard
 BITPIX      = 8                              / number of bits per data pixel
 NAXIS       = 0                              / number of data axes
@@ -14,9 +14,9 @@ DATE        =                                / file creation date (YYYY-MM-DDThh
 DATE-OBS    =                                / start date and time of the observation (UTC)
 DATE-END    =                                / end date and time of the observation (UTC)
 FILENAME    =                                / name of this file
-ORIGIN      = ''                             / name of organization making file
-AUTHOR      = ''                             / name of person responsible for file generation
-CREATOR     = ''                             / software and version creating file
+ORIGIN      =                                / name of organization making file
+AUTHOR      =                                / name of person responsible for file generation
+CREATOR     =                                / software and version creating file
 VERSION     =                                / release version of the file
 SOFTWARE    =                                / version of the processing software
 END
@@ -42,16 +42,29 @@ EXTNAME     = 'EVENTS'                                  / name of this binary ta
 HDUCLASS    = 'OGIP'                                    / format conforms to OGIP standard
 HDUCLAS1    = 'EVENTS'                                  / extension contains events
 HDUCLAS2    = 'ALL'                                     / extension contains all events detected
-MJDREF      = 54101.0                                   / MJD corresponding to SC clock start
+TSTART      =                                           / mission time of the start of the observation
+TSTOP       =                                           / mission time of the end of the observation
+MJDREF      = 51910.0                                   / MJD corresponding to SC clock start
 TIMEUNIT    = 's'                                       / units for the time related keywords
+TIMEZERO    = 0.0                                       / clock correction
 TIMESYS     = 'TT'                                      / type of time system that is used
 TIMEREF     = 'LOCAL'                                   / reference frame used for times
 TASSIGN     = 'SATELLITE'                               / location where time assignment performed
 CLOCKAPP    =                                           / whether a clock drift correction has been applied
 GPS_OUT     =                                           / whether GPS time was unavailable at any time during this interval
 OBS_ID      =                                           / observation ID number
-OBJECT      = ''                                        / observed object
+OBJECT      =                                           / observed object
 MC_TRUTH    =                                           / whether the Monte Carlo truth columns are included in this file
+NDSKEYS     = 3                                         / number of data subspace keywords in header
+DSTYP1      = 'POS(RA,DEC)'                             / type of data filtering
+DSUNI1      = 'deg'                                     / physical unit of filtering parameters
+DSVAL1      =                                           / value range of filtering parameters
+DSTYP2      = 'TIME'                                    / type of data filtering
+DSUNI2      = 's'                                       / physical unit of filtering parameters
+DSVAL2      =                                           / value range of filtering parameters
+DSTYP3      = 'ENERGY'                                  / type of data filtering
+DSUNI3      = 'GeV'                                     / physical unit of filtering parameters
+DSVAL3      =                                           / value range of filtering parameters
 TTYPE1      = 'ENERGY'                                  / energy of event
 TFORM1      = 'E'                                       / data format of field: 4-byte REAL
 TUNIT1      = 'MeV'                                     / physical unit of field
@@ -149,6 +162,11 @@ TFORM21     = 'D'                                       / data format of field: 
 TUNIT21     = ''                                        / physical unit of field
 TLMIN21     = 0.0                                       / minimum value
 TLMAX21     = 1.0                                       / maximum value
+TTYPE22     = 'ORBITAL_PHASE'                           / orbital phase of binary system at event arrival time
+TFORM22     = 'D'                                       / data format of field: 8-byte DOUBLE
+TUNIT22     = ''                                        / physical unit of field
+TLMIN22     = 0.0                                       / minimum value
+TLMAX22     = 1.0                                       / maximum value
 END
 
 XTENSION     = 'BINTABLE'                  / binary table extension
@@ -174,8 +192,9 @@ HDUCLAS1     = 'GTI'                       / extension contains good time interv
 HDUCLAS2     = 'ALL'                       / extension contains all science time
 TSTART       =                             / mission time of the start of the observation
 TSTOP        =                             / mission time of the end of the observation
-MJDREF       = 54101.0                     / MJD corresponding to SC clock start
+MJDREF       = 51910.0                     / MJD corresponding to SC clock start
 TIMEUNIT     = 's'                         / units for the time related keywords
+TIMEZERO     = 0.0                         / clock correction
 TIMESYS      = 'TT'                        / type of time system that is used
 TIMEREF      = 'LOCAL'                     / reference frame used for times
 TASSIGN      = 'SATELLITE'                 / location where time assignment performed
