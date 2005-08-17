@@ -34,6 +34,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(compareGtis);
    CPPUNIT_TEST(updateGti);
    CPPUNIT_TEST(compareCuts);
+   CPPUNIT_TEST(compareCutsWithoutGtis);
    CPPUNIT_TEST(compareUnorderedCuts);
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
@@ -48,6 +49,7 @@ public:
    void compareGtis();
    void updateGti();
    void compareCuts();
+   void compareCutsWithoutGtis();
    void compareUnorderedCuts();
    void cutsConstructor();
    void test_SkyCone();
@@ -237,6 +239,24 @@ void DssTests::compareCuts() {
 
    dataSubselector::Cuts cuts(m_infile);
    CPPUNIT_ASSERT(!(cuts == cuts1));
+}
+
+void DssTests::compareCutsWithoutGtis() {
+   dataSubselector::Cuts cuts1;
+   cuts1.addRangeCut("Energy", "MeV", 30., 2e5);
+   cuts1.addSkyConeCut(83.57, 22.01, 20);
+
+   dataSubselector::Cuts cuts2(cuts1);
+
+   dataSubselector::Gti gti1, gti2;
+   gti1.insertInterval(100., 500.);
+   gti2.insertInterval(300., 700.);
+
+   cuts1.addGtiCut(gti1);
+   cuts2.addGtiCut(gti2);
+
+   CPPUNIT_ASSERT(!(cuts1 == cuts2));
+   CPPUNIT_ASSERT(cuts1.compareWithoutGtis(cuts2));
 }
 
 void DssTests::compareUnorderedCuts() {

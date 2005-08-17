@@ -243,6 +243,21 @@ bool Cuts::operator==(const Cuts & rhs) const {
    return true;
 }
 
+bool Cuts::compareWithoutGtis(const Cuts & rhs) const {
+   if (size() != rhs.size()) {
+      return false;
+   }
+   for (unsigned int i = 0; i < size(); i++) {
+      if (rhs.m_cuts.at(i)->type() != "GTI") {
+         unsigned int place = find(rhs.m_cuts.at(i));
+         if (place == size()){
+            return false;
+         }
+      }
+   }
+   return true;
+}
+
 void Cuts::writeCuts(std::ostream & stream) const {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       m_cuts.at(i)->writeCut(stream, i + 1);

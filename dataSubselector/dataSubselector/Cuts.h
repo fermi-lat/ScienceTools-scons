@@ -139,6 +139,9 @@ public:
    /// The ordering of cuts must be the same.
    bool operator==(const Cuts & rhs) const;
 
+   /// @brief Do a member-wise comparison of each cut, but skip GTIs
+   bool compareWithoutGtis(const Cuts & rhs) const;
+
    /// @brief Write a summary of the cuts to the output stream.  This
    /// summary contains the same information as the DSS keywords.
    void writeCuts(std::ostream & stream) const;
