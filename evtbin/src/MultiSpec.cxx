@@ -46,6 +46,9 @@ namespace evtbin {
     // will for sure be deleted, even if an exception is thrown.
     std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SPECTRUM"));
 
+    // Write DSS keywords to preserve cut information.
+    writeDssKeywords(output_table->getHeader());
+
     // Get number of bins in each dimension.
     const Binner * time_binner = m_hist.getBinners().at(0);
     long num_time_bins = time_binner->getNumBins();

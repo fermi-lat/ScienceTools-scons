@@ -6,6 +6,7 @@
 #define evtbin_DataProduct_h
 
 #include <ctime>
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
@@ -113,6 +114,8 @@ namespace evtbin {
       */
       void updateKeywords(const std::string & file_name) const;
 
+      void writeDssKeywords(tip::Header & header) const;
+
       /** \brief Compute the total exposure.
           \param sc_file The name of the spacecraft data file to be used as input.
       */
@@ -134,6 +137,7 @@ namespace evtbin {
 
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
+      std::list<std::string> m_dss_keys;
       std::string m_data_dir;
       std::string m_event_file;
       std::string m_event_table;

@@ -42,6 +42,9 @@ namespace evtbin {
     // will for sure be deleted, even if an exception is thrown.
     std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "RATE"));
 
+    // Write DSS keywords to preserve cut information.
+    writeDssKeywords(output_table->getHeader());
+
     // The binner from the histogram will be used below.
     const Binner * binner = m_hist.getBinners().at(0);
 

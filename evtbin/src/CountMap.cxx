@@ -143,6 +143,9 @@ namespace evtbin {
     header["CTYPE1"].set(ctype1);
     header["CTYPE2"].set(ctype2);
 
+    // Write DSS keywords to preserve cut information.
+    writeDssKeywords(header);
+
     // Resize image dimensions to conform to the binner dimensions.
     for (DimCont_t::size_type index = 0; index != num_dims; ++index) {
       dims[index] = binners.at(index)->getNumBins();

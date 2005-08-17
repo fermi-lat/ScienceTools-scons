@@ -46,6 +46,9 @@ namespace evtbin {
     // will for sure be deleted, even if an exception is thrown.
     std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SPECTRUM"));
 
+    // Write DSS keywords to preserve cut information.
+    writeDssKeywords(output_table->getHeader());
+
     // Resize table: number of records in output file must == the number of bins in the binner.
     output_table->setNumRecords(binner->getNumBins());
 

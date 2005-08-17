@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
+#include <list>
 #include <memory>
 #include <stdexcept>
 #include <sstream>
@@ -25,7 +26,7 @@
 namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
-    m_key_value_pairs(), m_known_keys(), m_data_dir(), m_event_file(event_file), m_event_table(event_table),
+    m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_data_dir(), m_event_file(event_file), m_event_table(event_table),
     m_gti(gti), m_hist_ptr(0) {
     // Find the directory containing templates.
     m_data_dir = st_facilities::Env::getDataDir("evtbin");
@@ -139,6 +140,35 @@ namespace evtbin {
   }
 
   void DataProduct::harvestKeywords(const tip::Header & header) {
+    // See if any DSS keywords are present.
+    int num_dss_keys = 0;
+    try {
+      header["NDSKEYS"].get(num_dss_keys);
+    } catch (...) {
+    }
+
+    // Add all DSS keywords to container of known keys.
+    for (int idx = 0; idx < num_dss_keys; ++idx) {
+      // Get the number of this sub-sequence of DSS keywords.
+      std::ostringstream os;
+
+      // DSS keywords are numbered starting with 1.
+      os << idx + 1;
+
+      // Harvest this sub-sequence of DSS keywords.
+      std::list<std::string> key_name;
+      key_name.push_back("DSTYP" + os.str());
+      key_name.push_back("DSUNI" + os.str());
+      key_name.push_back("DSVAL" + os.str());
+      key_name.push_back("DSREF" + os.str());
+      for (std::list<std::string>::iterator itor = key_name.begin(); itor != key_name.end(); ++itor) {
+        if (m_known_keys.end() == std::find(m_known_keys.begin(), m_known_keys.end(), *itor)) {
+          m_dss_keys.push_back(*itor);
+          m_known_keys.push_back(*itor);
+        }
+      }
+    }
+
     // Iterate over keywords which are known to be useful in this case.
     for (KeyCont_t::const_iterator itor = m_known_keys.begin(); itor != m_known_keys.end(); ++itor) {
       try {
@@ -257,6 +287,18 @@ namespace evtbin {
       throw;
     }
 
+  }
+
+  void DataProduct::writeDssKeywords(tip::Header & header) const {
+    // Iterate over all DSS keywords.
+    for (std::list<std::string>::const_iterator dss_itor = m_dss_keys.begin(); dss_itor != m_dss_keys.end(); ++dss_itor) {
+
+      // Look up keywords in dictionary.
+      KeyValuePairCont_t::const_iterator itor = m_key_value_pairs.find(*dss_itor);
+
+      // If keyword was found, write it.
+      if (m_key_value_pairs.end() != itor) header[*dss_itor].setRecord(itor->second);
+    }
   }
 
   double DataProduct::computeExposure(const std::string & sc_file) const {
