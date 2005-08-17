@@ -35,6 +35,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(updateGti);
    CPPUNIT_TEST(compareCuts);
    CPPUNIT_TEST(compareCutsWithoutGtis);
+   CPPUNIT_TEST(mergeGtis);
    CPPUNIT_TEST(compareUnorderedCuts);
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
@@ -50,6 +51,7 @@ public:
    void updateGti();
    void compareCuts();
    void compareCutsWithoutGtis();
+   void mergeGtis();
    void compareUnorderedCuts();
    void cutsConstructor();
    void test_SkyCone();
@@ -257,6 +259,46 @@ void DssTests::compareCutsWithoutGtis() {
 
    CPPUNIT_ASSERT(!(cuts1 == cuts2));
    CPPUNIT_ASSERT(cuts1.compareWithoutGtis(cuts2));
+}
+
+void DssTests::mergeGtis() {
+   dataSubselector::Cuts cuts1;
+   cuts1.addRangeCut("Energy", "MeV", 30., 2e5);
+   cuts1.addSkyConeCut(83.57, 22.01, 20);
+
+   dataSubselector::Cuts cuts2;
+   
+   cuts2 = cuts1;
+
+   CPPUNIT_ASSERT(cuts2 == cuts1);
+
+   dataSubselector::Gti gti1, gti2;
+   gti1.insertInterval(100., 500.);
+   gti2.insertInterval(300., 700.);
+
+   cuts1.addGtiCut(gti1);
+   cuts2.addGtiCut(gti2);
+
+   std::vector<dataSubselector::Cuts> my_cuts;
+   my_cuts.push_back(cuts1);
+   my_cuts.push_back(cuts2);
+
+   dataSubselector::Cuts newCuts = dataSubselector::Cuts::mergeGtis(my_cuts);
+
+   CPPUNIT_ASSERT(newCuts != cuts1);
+   CPPUNIT_ASSERT(newCuts != cuts2);
+   CPPUNIT_ASSERT(newCuts.compareWithoutGtis(cuts1));
+   CPPUNIT_ASSERT(newCuts.compareWithoutGtis(cuts2));
+
+   std::vector<const dataSubselector::GtiCut *> gtiCuts;
+   newCuts.getGtiCuts(gtiCuts);
+
+   CPPUNIT_ASSERT(gtiCuts.size() == 1);
+
+   dataSubselector::Gti mergedGti;
+   mergedGti = gti1 & gti2;
+
+   CPPUNIT_ASSERT(!(gtiCuts.at(0)->gti() != mergedGti));
 }
 
 void DssTests::compareUnorderedCuts() {

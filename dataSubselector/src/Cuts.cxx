@@ -38,6 +38,60 @@ namespace {
 
 namespace dataSubselector {
 
+Cuts::Cuts(const std::vector<std::string> & eventFiles,
+           const std::string & extname, bool check_columns) {
+   std::vector<Cuts> my_cuts;
+   for (unsigned int i = 0; i < eventFiles.size(); i++) {
+      my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns));
+      if (i > 0) {
+         if (!my_cuts.front().compareWithoutGtis(my_cuts.back())) {
+            std::ostringstream message;
+            message << "DSS keywords in " << eventFiles.at(i)
+                    << " do not match those in " << eventFiles.front();
+            throw std::runtime_error(message.str());
+         }
+      }
+   }
+   *this = mergeGtis(my_cuts);
+}
+
+Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
+// Gather non-Gti cuts.
+   dataSubselector::Cuts my_cuts;
+   const dataSubselector::Cuts & firstCuts(cuts_vector.front());
+   for (unsigned int i = 0; i < firstCuts.size(); i++) {
+      if (firstCuts[i].type() != "GTI") {
+         my_cuts.addCut(firstCuts[i]);
+      }
+   }
+   
+// Merge all of the GTIs into one.
+   dataSubselector::Gti merged_gti;
+   std::vector<const dataSubselector::GtiCut *> gtiCuts;
+   for (unsigned int i = 0; i < cuts_vector.size(); i++) {
+      cuts_vector.at(i).getGtiCuts(gtiCuts);
+      for (unsigned int j = 0; j < gtiCuts.size(); j++) {
+         if (i == 0 && j == 0) {
+            merged_gti = gtiCuts.at(j)->gti();
+         } else {
+            merged_gti = merged_gti & gtiCuts.at(j)->gti();
+         }
+      }
+   }
+
+   my_cuts.addGtiCut(merged_gti);
+   return my_cuts;
+}
+
+void Cuts::getGtiCuts(std::vector<const GtiCut *> & gtiCuts) {
+   gtiCuts.clear();
+   for (unsigned int i = 0; i < m_cuts.size(); i++) {
+      if (m_cuts.at(i)->type() == "GTI") {
+         gtiCuts.push_back(dynamic_cast<GtiCut *>(m_cuts.at(i)));
+      }
+   }
+}
+
 Cuts::Cuts(const std::string & eventFile, const std::string & extname,
            bool check_columns) {
    const tip::Extension * ext(0);
@@ -152,6 +206,20 @@ Cuts::~Cuts() {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       delete m_cuts[i];
    }
+}
+
+Cuts & Cuts::operator=(const Cuts & rhs) {
+   if (*this != rhs) {
+      std::vector<CutBase *>::reverse_iterator cut = m_cuts.rbegin();
+      for ( ; cut != m_cuts.rend(); cut++) {
+         delete *cut;
+      }
+      m_cuts.clear();
+      for (unsigned int i = 0; i < rhs.size(); i++) {
+         m_cuts.push_back(rhs.m_cuts.at(i)->clone());
+      }
+   }
+   return *this;
 }
 
 bool Cuts::accept(tip::ConstTableRecord & row) const {

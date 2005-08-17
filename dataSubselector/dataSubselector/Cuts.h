@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "dataSubselector/GtiCut.h"
 #include "dataSubselector/RangeCut.h"
 
 namespace tip {
@@ -26,6 +27,7 @@ namespace tip {
 namespace dataSubselector {
 
 class Gti;
+class GtiCuts;
 
 /**
  * @class Cuts
@@ -60,11 +62,21 @@ public:
    Cuts(const std::string & eventFile, const std::string & extension="EVENTS",
         bool check_columns=true);
 
+   /// @brief This constructor reads in a vector of eventFiles, verifying
+   ///        that the non-GTI cuts are the same in all files, and merging
+   ///        the GTIs from the various files into a single Gti object.
+   Cuts(const std::vector<std::string> & eventFiles,
+        const std::string & extension="Events",
+        bool check_columns=true);
+
    /// A copy constructor is needed since there are pointer data members.
    Cuts(const Cuts & rhs);
 
    /// Deletes the CutBase pointers.
    ~Cuts();
+
+   /// Copy assignment operator
+   Cuts & operator=(const Cuts & rhs);
 
    /// @brief True if the data in the row passes all of the cuts.
    /// @param row A row of FITS binary table.
@@ -115,6 +127,11 @@ public:
    /// @param radius Cone half-opening angle (degrees)
    unsigned int addSkyConeCut(double ra, double dec, double radius);
 
+   unsigned int addCut(const CutBase & newCut) {
+      m_cuts.push_back(newCut.clone());
+      return m_cuts.size();
+   }
+
    /// @brief Add the DSS keywords to a write-enabled tip::Header.
    /// @param header The reference returned from the tip::Table::getHeader
    ///        method where the table has been opened using the
@@ -139,6 +156,10 @@ public:
    /// The ordering of cuts must be the same.
    bool operator==(const Cuts & rhs) const;
 
+   bool operator!=(const Cuts & rhs) const {
+      return !operator==(rhs);
+   }
+
    /// @brief Do a member-wise comparison of each cut, but skip GTIs
    bool compareWithoutGtis(const Cuts & rhs) const;
 
@@ -150,6 +171,16 @@ public:
    const CutBase & operator[](unsigned int i) const {return *(m_cuts.at(i));}
 
    std::string filterString() const;
+
+   /// @return A vector of pointers to the GtiCuts that are present.
+   void getGtiCuts(std::vector<const GtiCut *> & gtiCuts);
+
+   /// @return A new Cuts object. This static function checks that all
+   /// of the non-GtiCuts are the same in each element of the input
+   /// vector, copies those, then merges the GtiCuts.  The returned
+   /// object is then equivalent to the composition of all of the Cuts
+   /// in the vector.
+   static Cuts mergeGtis(std::vector<Cuts> & cuts_vector);
 
 private:
 

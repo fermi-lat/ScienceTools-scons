@@ -2,6 +2,10 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r8    17-Aug-05   JC   add Cuts constructor that accepts multiple
+                             input FITS files and merges the GTIs. The
+                             new static function Cuts::mergeGtis does the
+                             work.
     v3r7    16-Aug-05   JC   add Cuts::compareWithoutGtis
     v3r6p1  13-Jul-05   JC   use standard names for I/O files
     v3r6    01-Jul-05   JC   use filter expressions to read in FITS file
