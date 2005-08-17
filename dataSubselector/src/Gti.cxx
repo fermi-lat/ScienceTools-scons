@@ -7,6 +7,8 @@
  * $Header$
  */
 
+#include "fitsio.h"
+
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
@@ -15,7 +17,6 @@
 #include "dataSubselector/Gti.h"
 
 namespace {
-#include "fitsio.h"
    void fitsReportError(int status) {
       fits_report_error(stderr, status);
       if (status != 0) {
@@ -26,7 +27,6 @@ namespace {
 }
 
 namespace dataSubselector {
-#include "fitsio.h"
 
 Gti::Gti(const tip::Table & gtiTable) : evtbin::Gti() {
    tip::Table::ConstIterator it = gtiTable.begin();
@@ -129,6 +129,36 @@ double Gti::maxValue() const {
       }
    }
    return max_val;
+}
+
+Gti Gti::operator|(const evtbin::Gti & rhs) const {
+   Gti new_gti;
+   std::vector< std::pair<double, double> >::const_iterator mine;
+   std::vector< std::pair<double, double> >::const_iterator other;
+   for (other = rhs.begin(); other != rhs.end(); ++other) {
+      for (mine = begin(); mine != end(); ++mine) {
+         if (mine->first >= other->second) {
+            new_gti.insertInterval(other->first, other->second);
+            new_gti.insertInterval(mine->first, mine->second);
+         } else if (mine->second <= other->first) {
+            new_gti.insertInterval(mine->first, mine->second);
+            new_gti.insertInterval(other->first, other->second);
+         } else if (mine->first <= other->first && 
+                    mine->second <= other->second) {
+            new_gti.insertInterval(mine->first, other->second);
+         } else if (mine->first >= other->first && 
+                    mine->second >= other->second) {
+            new_gti.insertInterval(other->first, mine->second);
+         } else if (mine->first <= other->first &&
+                    mine->second >= other->second) {
+            new_gti.insertInterval(mine->first, mine->second);
+         } else if (mine->first >= other->first &&
+                    mine->second <= other->second) {
+            new_gti.insertInterval(other->first, other->second);
+         }
+      }
+   }
+   return new_gti;
 }
 
 } // namespace dataSubselector

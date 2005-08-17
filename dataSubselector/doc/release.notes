@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r8p1  17-Aug-05   JC   take the union of merged GTIs not the 
+                             intersection.
     v3r8    17-Aug-05   JC   add Cuts constructor that accepts multiple
                              input FITS files and merges the GTIs. The
                              new static function Cuts::mergeGtis does the

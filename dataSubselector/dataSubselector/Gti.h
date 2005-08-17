@@ -56,6 +56,10 @@ public:
    /// @return The maximum upper bound of the GTIs (MET seconds)
    double maxValue() const;
 
+   /// @return A Gti that is the union of intervals between this and
+   /// the other Gti.  The resulting set of GTIs are disjoint.
+   Gti operator|(const evtbin::Gti & rhs) const;
+
 };
 
 } // namespace dataSubselector

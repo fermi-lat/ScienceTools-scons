@@ -33,6 +33,7 @@ class DssTests : public CppUnit::TestFixture {
 
    CPPUNIT_TEST(compareGtis);
    CPPUNIT_TEST(updateGti);
+   CPPUNIT_TEST(combineGtis);
    CPPUNIT_TEST(compareCuts);
    CPPUNIT_TEST(compareCutsWithoutGtis);
    CPPUNIT_TEST(mergeGtis);
@@ -49,6 +50,7 @@ public:
    void tearDown();
    void compareGtis();
    void updateGti();
+   void combineGtis();
    void compareCuts();
    void compareCutsWithoutGtis();
    void mergeGtis();
@@ -155,6 +157,50 @@ void DssTests::test_SkyCone() {
 
    params["DEC"] = -40;
    CPPUNIT_ASSERT(!my_cuts.accept(params));
+}
+
+void DssTests::combineGtis() {
+   dataSubselector::Gti gti1, gti2;
+
+   gti1.insertInterval(200., 300.);
+   gti2.insertInterval(500., 700.);
+
+   dataSubselector::Gti new_gti, test_gti;
+   test_gti.insertInterval(200., 300.);
+   test_gti.insertInterval(500., 700.);
+
+   new_gti = gti1 | gti2;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 2);
+   CPPUNIT_ASSERT(!(new_gti != test_gti));
+
+   new_gti = gti2 | gti1;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 2);
+   CPPUNIT_ASSERT(!(new_gti != test_gti));
+
+   dataSubselector::Gti gti3, gti4, test_gti34;
+   gti3.insertInterval(200., 500.);
+   gti4.insertInterval(300., 700.);
+   test_gti34.insertInterval(200., 700.);
+
+   new_gti = gti3 | gti4;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 1);
+   CPPUNIT_ASSERT(!(new_gti != test_gti34));
+   
+   new_gti = gti4 | gti3;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 1);
+   CPPUNIT_ASSERT(!(new_gti != test_gti34));
+
+   dataSubselector::Gti gti5, gti6;
+   gti5.insertInterval(200., 700.);
+   gti6.insertInterval(300., 500.);
+   
+   new_gti = gti5 | gti6;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 1);
+   CPPUNIT_ASSERT(!(new_gti != test_gti34));
+   
+   new_gti = gti6 | gti5;
+   CPPUNIT_ASSERT(new_gti.getNumIntervals() == 1);
+   CPPUNIT_ASSERT(!(new_gti != test_gti34));
 }
 
 void DssTests::compareCuts() {
@@ -296,7 +342,7 @@ void DssTests::mergeGtis() {
    CPPUNIT_ASSERT(gtiCuts.size() == 1);
 
    dataSubselector::Gti mergedGti;
-   mergedGti = gti1 & gti2;
+   mergedGti.insertInterval(100., 700.);
 
    CPPUNIT_ASSERT(!(gtiCuts.at(0)->gti() != mergedGti));
 }
