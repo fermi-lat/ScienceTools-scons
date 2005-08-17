@@ -98,7 +98,9 @@ namespace {
 namespace observationSim {
 
 EventContainer::~EventContainer() {
-   if (m_events.size() > 0) writeEvents();
+   if (m_events.size() > 0) {
+      writeEvents(m_stopTime);
+   }
 }
 
 void EventContainer::init() {
@@ -141,7 +143,9 @@ bool EventContainer::addEvent(EventSource *event,
                                 sourceDir, sourceDir, zAxis, xAxis,
                                 ScZenith(time), 0, energy, flux_theta,
                                 flux_phi, m_eventIds[srcName]) );
-      if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
+      if (flush || m_events.size() >= m_maxNumEntries) {
+         writeEvents();
+      }
       return true;
    }
 
@@ -171,9 +175,13 @@ bool EventContainer::addEvent(EventSource *event,
                                    m_eventIds[srcName]) );
          accepted = true;
       }
-      if (flush || m_events.size() >= m_maxNumEntries) writeEvents();
+      if (flush || m_events.size() >= m_maxNumEntries) {
+         writeEvents();
+      }
    }
-   if (flush) writeEvents();
+   if (flush) {
+      writeEvents();
+   }
    return accepted;
 }
 
@@ -207,7 +215,7 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
    return azimuth*180./M_PI;
 }
 
-void EventContainer::writeEvents() {
+void EventContainer::writeEvents(double obsStopTime) {
 
    std::string ft1File = outputFileName();
    tip::IFileSvc::instance().createFile(ft1File, m_ftTemplate);
@@ -245,14 +253,22 @@ void EventContainer::writeEvents() {
       }
       row["mc_src_id"].set(evt->eventId());
    }
-   double stop_time;
-   if (m_stopTime <= m_startTime) {
-      it = my_table->end();
-      --it;
-      row["time"].get(stop_time);
-   } else {
-      stop_time = m_stopTime;
+//    double stop_time;
+//    if (m_stopTime <= m_startTime) {
+//       it = my_table->end();
+//       --it;
+//       row["time"].get(stop_time);
+//    } else {
+//       stop_time = m_stopTime;
+//    }
+
+// Set stop time to be arrival time of last event if obsStopTime is
+// negative (i.e., not set);
+   double stop_time(m_events.back().time());
+   if (obsStopTime > 0) {
+      stop_time = obsStopTime;
    }
+
    writeDateKeywords(my_table, m_startTime, stop_time);
 
 // Fill the GTI extension, with the entire observation in a single GTI.
@@ -289,6 +305,9 @@ void EventContainer::writeEvents() {
 
 // and update the m_fileNum index.
    m_fileNum++;
+
+// Set the start time for next output file to be current stop time.
+   m_startTime = stop_time;
 }
 
 } // namespace observationSim

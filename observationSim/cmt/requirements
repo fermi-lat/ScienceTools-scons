@@ -1,5 +1,5 @@
 package observationSim
-version v5r8p3
+version v5r9
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -19,7 +19,7 @@ use dataSubselector v3*
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"
 
-apply_pattern ST_library option="-no_share "
+apply_pattern ST_library option=" -no_share "
 apply_pattern ST_pfiles
 apply_pattern ST_app_withDir name=gtobssim dir=obsSim
 apply_pattern ST_app_withDir name=gtorbsim dir=orbSim

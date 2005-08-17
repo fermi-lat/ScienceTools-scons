@@ -126,7 +126,7 @@ private:
    double earthAzimuthAngle(double ra, double dec, double time) const;
 
    /// A routine to unpack and write the Event buffer to an FT1 file.
-   void writeEvents();
+   void writeEvents(double obsStopTime=-1.);
 
 };
 

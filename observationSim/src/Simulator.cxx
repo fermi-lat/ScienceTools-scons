@@ -87,12 +87,11 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
    } else {
 // Use the default rocking strategy.
       setRocking();
-
    }
 
 // Set the LAT sphere cross-sectional area.
    try {
-      EventSource *defaultSource = m_fluxMgr->source("default");
+      EventSource * defaultSource = m_fluxMgr->source("default");
       defaultSource->totalArea(totalArea);
       delete defaultSource;
    } catch(...) {
