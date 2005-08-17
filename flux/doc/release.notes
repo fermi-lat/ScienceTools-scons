@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
     EOH
 
+   v8r21p1 17-aug-2005 thb Limit maximum energy from CHIME to 1 TeV ( problem in G4)
    v8r21   22-jun-2005 thb change rootplots to accept vector of strings parameters
    v8r20p2 16-jun-2005 thb test program fix
    v8r20p1 15-jun-2005 thb adjust for GPS move to astro

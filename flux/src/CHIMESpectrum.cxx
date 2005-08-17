@@ -186,7 +186,13 @@ float CHIMESpectrum::operator() (float x) {
     
     float join = (m_tot-m_upper)/m_tot;
     if (x < join) return m_en.interpolate(m_fl.search((1.-x)*m_tot-m_upper));
-    else          return m_etop*pow((1.-x)/(1.-join), 1./m_expo);
+    
+    // note kluged-in maximum of 1 TeV
+    static float emax = 1e3f; 
+    float energy = m_etop*pow((1.-x)/(1.-join), 1./m_expo);
+    if (energy> emax) return emax;
+    return energy;
+    
 }
 
 //-------------------------- setPosition (separate coordinates)
