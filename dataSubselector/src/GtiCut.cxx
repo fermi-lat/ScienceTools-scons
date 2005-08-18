@@ -45,4 +45,14 @@ bool GtiCut::accept(double time) const {
    return m_gti.accept(time);
 }
 
+void GtiCut::writeCut(std::ostream & stream, unsigned int keynum) const {
+   CutBase::writeCut(stream, keynum);
+   std::vector< std::pair<double, double> >::const_iterator dt;
+   stream << "GTIs:\n";
+   for (dt = m_gti.begin(); dt != m_gti.end(); ++dt) {
+      stream << dt->first << "  " << dt->second << "\n";
+   }
+   stream << std::endl;
+}
+
 } // namespace dataSubselector

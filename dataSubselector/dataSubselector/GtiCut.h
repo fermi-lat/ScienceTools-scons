@@ -41,6 +41,8 @@ public:
 
    virtual bool accept(const std::map<std::string, double> & params) const;
 
+   virtual void writeCut(std::ostream & stream, unsigned int keynum) const;
+
    virtual CutBase * clone() const {return new GtiCut(*this);}
 
    /// @brief A reference to the Gti object.
