@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r9p1 18-Aug-05   JC   remove extraneous and incorrect DSS keywords
+                            from template file
     v5r9   16-Aug-05   JC   set GTI and date keywords to start and end 
                             times to reflect artificial partitioning of 
                             event files.
