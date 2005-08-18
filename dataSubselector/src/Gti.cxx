@@ -7,6 +7,8 @@
  * $Header$
  */
 
+#include <algorithm>
+
 #include "fitsio.h"
 
 #include "st_facilities/Util.h"
@@ -23,6 +25,10 @@ namespace {
          throw std::string("dataSubselector::Gti::writeExtension: " +
                            std::string("cfitsio error."));
       }
+   }
+   bool gti_comp(const std::pair<double, double> & a, 
+                 const std::pair<double, double> & b) {
+      return a.first < b.first;
    }
 }
 
@@ -132,31 +138,31 @@ double Gti::maxValue() const {
 }
 
 Gti Gti::operator|(const evtbin::Gti & rhs) const {
-   Gti new_gti;
-   std::vector< std::pair<double, double> >::const_iterator mine;
-   std::vector< std::pair<double, double> >::const_iterator other;
-   for (other = rhs.begin(); other != rhs.end(); ++other) {
-      for (mine = begin(); mine != end(); ++mine) {
-         if (mine->first >= other->second) {
-            new_gti.insertInterval(other->first, other->second);
-            new_gti.insertInterval(mine->first, mine->second);
-         } else if (mine->second <= other->first) {
-            new_gti.insertInterval(mine->first, mine->second);
-            new_gti.insertInterval(other->first, other->second);
-         } else if (mine->first <= other->first && 
-                    mine->second <= other->second) {
-            new_gti.insertInterval(mine->first, other->second);
-         } else if (mine->first >= other->first && 
-                    mine->second >= other->second) {
-            new_gti.insertInterval(other->first, mine->second);
-         } else if (mine->first <= other->first &&
-                    mine->second >= other->second) {
-            new_gti.insertInterval(mine->first, mine->second);
-         } else if (mine->first >= other->first &&
-                    mine->second <= other->second) {
-            new_gti.insertInterval(other->first, other->second);
+   std::vector< std::pair<double, double> > my_intervals;
+   std::vector< std::pair<double, double> >::const_iterator intvl;
+   for (intvl = begin(); intvl != end(); ++intvl) {
+      my_intervals.push_back(*intvl);
+   }
+   for (intvl = rhs.begin(); intvl != rhs.end(); ++intvl) {
+      my_intervals.push_back(*intvl);
+   }
+   std::stable_sort(my_intervals.begin(), my_intervals.end(), ::gti_comp);
+   std::vector<double> x1, x2;
+   x1.push_back(my_intervals.front().first);
+   x2.push_back(my_intervals.front().second);
+   for (unsigned int i = 1; i < my_intervals.size(); i++) {
+      if (x2.back() < my_intervals.at(i).first) {
+         x1.push_back(my_intervals.at(i).first);
+         x2.push_back(my_intervals.at(i).second);
+      } else {
+         if (my_intervals.at(i).second > x2.back()) {
+            x2.back() = my_intervals.at(i).second;
          }
       }
+   }
+   Gti new_gti;
+   for (unsigned int i = 0; i < x1.size(); i++) {
+      new_gti.insertInterval(x1.at(i), x2.at(i));
    }
    return new_gti;
 }

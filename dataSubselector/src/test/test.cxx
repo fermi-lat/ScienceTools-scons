@@ -201,6 +201,27 @@ void DssTests::combineGtis() {
    new_gti = gti6 | gti5;
    CPPUNIT_ASSERT(new_gti.getNumIntervals() == 1);
    CPPUNIT_ASSERT(!(new_gti != test_gti34));
+
+   gti1.insertInterval(500, 600);
+   gti1.insertInterval(900, 1000);
+
+   gti2.insertInterval(800, 850);
+
+   new_gti = gti1 | gti2;
+
+   dataSubselector::Gti test_gti7;
+   test_gti7.insertInterval(200, 300);
+   test_gti7.insertInterval(500, 700);
+   test_gti7.insertInterval(800, 850);
+   test_gti7.insertInterval(900, 1000);
+
+   CPPUNIT_ASSERT(!(new_gti != test_gti7));
+
+   new_gti = gti2 | gti1;
+   CPPUNIT_ASSERT(!(new_gti != test_gti7));
+
+   test_gti7.insertInterval(1100, 1111);
+   CPPUNIT_ASSERT(new_gti != test_gti7);
 }
 
 void DssTests::compareCuts() {
