@@ -943,6 +943,97 @@ void EvtBinTest::testGti() {
     m_failed = true;
   }
 
+  Gti spec_gti("PHA1.pha", "GTI");
+
+  Gti::ConstIterator gti_pos = spec_gti.begin();
+
+  double gti_start = 2.167442034386540E+06;
+  double gti_stop = 2.172442034386540E+06;
+
+  std::cerr.precision(24);
+
+  // Interval == GTI.
+  double fract = spec_gti.getFraction(gti_start, gti_stop, gti_pos);
+  if (fract != 1.) {
+    std::cerr << "Unexpected: testGti: Interval == GTI, getFraction returned " << fract << ", not 1" << std::endl;
+    m_failed = true;
+//  if (gti_pos !=spec_gti.end())
+//    std::cerr << "Unexpected: testGti: Interval == GTI, iterator was not incremented" << std::endl;
+  }
+
+  // Interval < GTI.
+  gti_pos = spec_gti.begin();
+  fract = spec_gti.getFraction(gti_start - 1.e3, gti_start, gti_pos);
+  if (fract != 0.) {
+    std::cerr << "Unexpected: testGti: Interval < GTI, getFraction returned " << fract << ", not 0" << std::endl;
+    m_failed = true;
+  }
+  if (gti_pos != spec_gti.begin()) {
+    std::cerr << "Unexpected: testGti: Interval < GTI, iterator was incremented" << std::endl;
+    m_failed = true;
+  }
+
+  // Interval > GTI.
+  gti_pos = spec_gti.begin();
+  fract = spec_gti.getFraction(gti_stop + .0001, gti_stop + 1.e3, gti_pos);
+  if (fract != 0.) {
+    std::cerr << "Unexpected: testGti: Interval > GTI, getFraction returned " << fract << ", not 0" << std::endl;
+    m_failed = true;
+  }
+  if (++gti_pos != spec_gti.end()) {
+    std::cerr << "Unexpected: testGti: Interval > GTI, iterator was not incremented" << std::endl;
+    m_failed = true;
+  }
+
+  // Interval starts before GTI, goes halfway through.
+  gti_pos = spec_gti.begin();
+  double gti_width = gti_stop - gti_start;
+  fract = spec_gti.getFraction(gti_start - gti_width * .5, gti_stop - gti_width * .5, gti_pos);
+  if (epsilon < fabs((fract - .5) / .5)) {
+    std::cerr << "Unexpected: testGti: Interval starts before GTI, getFraction returned " << fract << ", not .5" << std::endl;
+    m_failed = true;
+  }
+  if (gti_pos != spec_gti.begin()) {
+    std::cerr << "Unexpected: testGti: Interval starts before GTI, iterator was incremented" << std::endl;
+    m_failed = true;
+  }
+
+  // Interval starts halfway through GTI, goes past end.
+  gti_pos = spec_gti.begin();
+  fract = spec_gti.getFraction(gti_start + gti_width * .1, gti_stop + gti_width * .1, gti_pos);
+  if (epsilon < fabs((fract - .9) / .9)) {
+    std::cerr << "Unexpected: testGti: GTI starts before interval, getFraction returned " << fract << ", not .9" << std::endl;
+    m_failed = true;
+  }
+  if (++gti_pos != spec_gti.end()) {
+    std::cerr << "Unexpected: testGti: GTI starts before interval, iterator was not incremented" << std::endl;
+    m_failed = true;
+  }
+
+  // Interval contained within GTI.
+  gti_pos = spec_gti.begin();
+  fract = spec_gti.getFraction(gti_start + 100., gti_stop - 100., gti_pos);
+  if (fract != 1.) {
+    std::cerr << "Unexpected: testGti: Interval contained within GTI, getFraction returned " << fract << ", not 1." << std::endl;
+    m_failed = true;
+  }
+  if (gti_pos != spec_gti.begin()) {
+    std::cerr << "Unexpected: testGti: Interval contained within GTI, iterator was incremented" << std::endl;
+    m_failed = true;
+  }
+
+  // GTI contained within interval.
+  gti_pos = spec_gti.begin();
+  fract = spec_gti.getFraction(gti_start - gti_width * .5, gti_stop + gti_width * .1, gti_pos);
+  if (epsilon < fabs((fract -.625) / .625)) {
+    std::cerr << "Unexpected: testGti: GTI contained within interval, getFraction returned " << fract << ", not .625" << std::endl;
+    m_failed = true;
+  }
+  if (++gti_pos != spec_gti.end()) {
+    std::cerr << "Unexpected: testGti: GTI contained within interval, iterator was not incremented" << std::endl;
+    m_failed = true;
+  }
+
 }
 
 void EvtBinTest::testConstSnBinner() {
