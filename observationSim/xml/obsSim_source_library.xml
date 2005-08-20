@@ -1,10 +1,4 @@
 <!-- $Header$
-   This is a library of sources that can be included by a source with
-   an empty element: that is, <source name="chime"/> picks up the
-   entry named "chime".  Also, if the second command line option
-   matches one of these names, it will be used as a source (overriding
-   any specified in the xml).  Finally, it is used to generate a
-   drop-down menu of sources to add.
 -->
 <!-- *********************************************************************** -->
 <source_library title="photons">
@@ -35,7 +29,6 @@
             <solid_angle mincos="0.99" maxcos="1.0"/>
         </spectrum>
     </source>
-
 
         <!--1 gev -->
     <source name="gamma_1_gev_normal" flux="1.0">
@@ -94,174 +87,7 @@
 </source_library>
 
 <!-- ************************************************************************** -->
-<source_library title="test muons" >
-
-    <!-- special source that mimics non-interacting cosmics -->
-    <source name="cosmic_muons" flux="100">
-        <spectrum escale="GeV">
-            <particle name="mu+"> <energy e="10"/> </particle>
-            <solid_angle mincos="-0.4" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-
-    <source name="vertical_muons" flux="1.0">
-        <spectrum escale="GeV">
-            <particle name="mu+"> <energy e="10."/> </particle>
-            <direction theta="0" phi="0"/>
-        </spectrum>
-    </source>
-
-</source_library>
-
-<!-- ************************************************************************** -->
-<source_library title="cosmic ray surface muons" >
-
-    <!-- 
-        special representation of surface muons for test
-        params is the angle in degree to rotate the resulting flux
-        all angles
-    -->
-    <source name="surface_muons">
-        <spectrum escale="GeV">
-            <SpectrumClass name="SurfaceMuons" params="0.0,1.0, 0.0"/> 
-            <use_spectrum/>
-        </spectrum>
-    </source>
-
-    <!--
-        vertical muons only
-    -->
-    <source name="vertical_surface_muons">
-        <spectrum escale="GeV">
-            <SpectrumClass name="SurfaceMuons" params="0.99,1.0, 0.0"/> 
-            <use_spectrum/>
-        </spectrum>
-    </source>
-
-</source_library>
-
-
-<!-- ************************************************************************** -->
-
-<source_library title="clocks" >
-
-    <!-- the TimeCandle spectrum  -->
-    <source name="timetick">
-         <spectrum escale="GeV"> <SpectrumClass name="TimeCandle" params="57.338"/>  
-                 <use_spectrum/>
-                 <launch_point />
-         </spectrum>
-    </source>
-
-    <!-- the TimeCandle spectrum  -->
-    <source name="timetick30s">
-         <spectrum escale="GeV"> <SpectrumClass name="TimeCandle" params="30.0"/>  
-                 <use_spectrum/>
-                 <launch_point />
-         </spectrum>
-    </source>
-
-</source_library>
-
-<!-- ************************************************************************** -->
 <source_library title="background">
-
-  
-    <!-- the CHIME spectrum. angular dependence and rate are from the CHIME spectrum object 
-         This is deprecated, since it is not supported, and gives wrong angular distributions.
-      -->
-    <source name="chime" >
-        <spectrum escale="GeV"> <SpectrumClass name="CHIMESpectrum"/> <use_spectrum/> </spectrum>
-    </source>
-
-    <!-- the CHIME spectrum at Maximum flux. angular dependence and rate are from the CHIME spectrum object -->
-    <source name="chimemax" >
-        <spectrum escale="GeV"> <SpectrumClass name="CHIMESpectrum" params="-28.5,110"/> <use_spectrum/> </spectrum>
-    </source>
-
-    <!-- the CHIME spectrum at average flux. angular dependence and rate are from the CHIME spectrum object -->
-    <source name="chimeavg" >
-        <spectrum escale="GeV"> <SpectrumClass name="CHIMESpectrum" params="13.8, 24.9"/> <use_spectrum/> </spectrum>
-    </source>
-
-        <!-- the CHIME spectrum at minimum flux. angular dependence and rate are from the CHIME spectrum object -->
-    <source name="chimemin" >
-        <spectrum escale="GeV"> <SpectrumClass name="CHIMESpectrum" params="10.0, 144.37"/> <use_spectrum/> </spectrum>
-    </source>
-
-    <!-- default creme is the orbit average -->   
-    <source name="cremeavg" >
-        <spectrum escale="GeV"> <SpectrumClass name="FILESpectrum" params="sources/glast_smin_flx.txt"/> 
-            <solid_angle mincos="-0.4" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-    <!-- galactic electron spectrum -->
-    <source name="electron">
-        <spectrum escale="GeV"> <SpectrumClass name="GalElSpectrum"/> <use_spectrum/> </spectrum>
-    </source>
-
-
-        <!-- galactic electron spectrum evaluated at the CHIME  average . angular dependence and rate are from the CHIME spectrum object -->
-    <source name="electronavg" >
-        <spectrum escale="GeV"> <SpectrumClass name="GalElSpectrum" params="13.8, 24.9"/> <use_spectrum/> </spectrum>
-    </source>
-
- 
-    <!-- galactic electron spectrum orbit max-->
-    <source name="electronmax">
-        <spectrum escale="GeV"> <SpectrumClass name="GalElSpectrum" params="-28.5,110"/> <use_spectrum/> </spectrum>
-    </source>
-
-
-    <!-- the albedo proton spectrum, measured by AMS, implemented by AlbedoPSpectrum. isotropic for now  -->
-    <source name="albedo_proton_max">
-         <spectrum escale="GeV"> <SpectrumClass name="AlbedoPSpectrum" params="4.78,8.18"/>  <solid_angle mincos="-1.0" maxcos="1.0"/>
-         </spectrum>
-    </source>
-
-        <!-- the albedo proton spectrum, measured by AMS, implemented by AlbedoPSpectrum. isotropic for now  -->
-    <source name="albedo_proton_avg">
-         <spectrum escale="GeV"> <SpectrumClass name="AlbedoPSpectrum" params="19.6,37.99"/>  <solid_angle mincos="-1.0" maxcos="1.0"/>
-         </spectrum>
-        </source>
-
-    <source name="albedo_electronpositronlow" flux="146.">
-        <spectrum escale="GeV">
-            <particle name="e+" >
-                <power_law emin="0.010" emax="0.1" gamma="1.0"/>
-            </particle>
-            <solid_angle mincos="-1.0" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-    <source name="albedo_electronpositronhi" flux="28.8">
-        <spectrum escale="GeV">
-            <particle name="e+" >
-                <power_law emin="0.10" gamma="3.2"/>
-            </particle>
-            <solid_angle mincos="-1.0" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-    <source name="albedo_electronpositronavglow" flux="73.">
-        <spectrum escale="GeV">
-            <particle name="e+" >
-                <power_law emin="0.010" emax="0.1" gamma="1.0"/>
-            </particle>
-            <solid_angle mincos="-1.0" maxcos="1.0"/>
-        </spectrum>
-    </source>
-    <source name="albedo_electronpositronavghi" flux="14.4">
-        <spectrum escale="GeV">
-            <particle name="e+" >
-                <power_law emin="0.10" gamma="3.2"/>
-            </particle>
-            <solid_angle mincos="-1.0" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
 
     <!-- source that represents the Earth horizon albedo with Glast zenith pointing
      Numbers are based on Thompson et al., JGR 86, 1265
@@ -279,273 +105,14 @@
         </spectrum>
     </source>
 
-    <!-- source that represents the spalsh and re-entrant albedo electrons and positrons 
-     Numbers are based on LAT-TD-00250-01 figure 10, multiplied by 2 for positrons and is
-         isotropic to include splash and re-entrant pieces and is blindly extrapolated down
-         to 10 MeV (worst case).
-     -3.2 index spectrum (best fit by eye) and assuming isotropic in phi:
-     = 994 particles/m^2/s/sr integrated above 20 MeV.  Make them all positrons for worst case and simplicity.
-     -->
-    <source name="albedo_electronpositron" flux="994.">
-        <spectrum escale="GeV">
-            <particle name="e+" >
-                <power_law emin="0.020" gamma="3.2"/>
-            </particle>
-            <solid_angle mincos="-1.0" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-
-
-    <!--average flux for pdr studies -->
-    <source name="backgndavgpdr">
-        <nestedSource sourceRef="cremeavg" /> 
-        <nestedSource sourceRef="albedo_proton_avg" /> 
-        <nestedSource sourceRef="albedo_gamma" /> 
-        <nestedSource sourceRef="electronavg" />  
-        <nestedSource sourceRef="albedo_electronpositronavg_total"/> 
-    </source>
-
-    <!-- background mixture - maximum for PDR studies-->
-    <source name="backgndmaxpdr">
-        <nestedSource sourceRef="chimemax"/>
-        <nestedSource sourceRef="albedo_proton_max"/>
-        <nestedSource sourceRef="albedo_gamma"/>
-        <nestedSource sourceRef="electronmax"/> 
-        <nestedSource sourceRef="albedo_electronpositron_total"/>
-    </source>
-
-    <!-- 'standard' background mixture -->
-    <source name="backgndmix">
-        <nestedSource sourceRef="albedo_proton_avg"/>
-        <nestedSource sourceRef="albedo_gamma"/>
-    </source>
-
-    <source name="albedo_electronpositronavg_total">
-        <nestedSource sourceRef="albedo_electronpositronavglow"/>
-        <nestedSource sourceRef="albedo_electronpositronavghi"/>
-    </source>
-
-        
-    <source name="albedo_electronpositron_total">
-        <nestedSource sourceRef="albedo_electronpositronlow"/>
-        <nestedSource sourceRef="albedo_electronpositronhi"/>
-    </source>
-
-
-
-
 </source_library>
+
 <!-- ************************************************************************** -->
 
  <source_library title="galactic">
 
-    <!-- the Map of the galactic diffuse gamma-ray emission 
-         using the EGRET model for E > 100 MeV -->
-    <source name="galdiffusemap">
-        <spectrum escale="GeV"> 
-            <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.1,2e5,2.1,1.,/sources/gas_gal.fits"/> 
-            <use_spectrum frame="galaxy"/>
-        </spectrum>
-    </source>
-
-    <!-- the Map of the galactic diffuse gamma-ray emission that
-         extrapolates the EGRET > 100 MeV map down to 30 MeV -->
-    <source name="galdiffusemap30">
-        <spectrum escale="GeV"> 
-            <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.03,2e5,2.1,1.,/sources/gas_gal.fits"/> 
-            <use_spectrum frame="galaxy"/>
-        </spectrum>
-    </source>
-
-    <!-- the Map of the galactic diffuse gamma-ray emission that
-         extrapolates the EGRET > 100 MeV map down to 20 MeV -->
-    <source name="galdiffusemap20">
-        <spectrum escale="GeV"> 
-            <SpectrumClass name="MapSpectrum" 
-             params="0.1,0.02,2e3,2.1,1.,/sources/gas_gal.fits"/> 
-            <use_spectrum frame="galaxy"/>
-        </spectrum>
-    </source>
-
-    <!-- diffuse extraglactic from 20 MeV to 1 TeV: from APJ 494:523
-            1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4
-            cm^2/m^2)*(100/20)^1.1 = 0.85 /s/sr/m^2 -->
- 
-    <source name="diffuse-20mev" flux="0.85">
-        <spectrum escale="GeV">
-            <particle name="gamma">  
-            <power_law emin="0.02" emax="1e3" gamma="2.1"/></particle>
-            <solid_angle mincos="-0.4" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-
-    <!-- Extragalactic diffuse assuming isotropic extragalactic 
-         sources with fluxes 1e-8 cm^-2 s^-1 (E > 100 MeV) comprise
-         the balance of the extragalatic diffuse emission -->
-    <source name="extragalactic_test" flux="0.47">
-       <spectrum escale="MeV">
-          <particle name="gamma">
-             <power_law emin="30." emax="100000." gamma="2.1"/>
-          </particle>
-          <solid_angle mincos="-0.4" maxcos="1."/>
-       </spectrum>
-    </source>
-
-    <!-- Extragalactic diffuse inferred by EGRET -->
-    <source name="extragalactic" flux="0.545">
-       <spectrum escale="MeV">
-          <particle name="gamma">
-             <power_law emin="30." emax="100000." gamma="2.1"/>
-          </particle>
-          <solid_angle mincos="-0.4" maxcos="1."/>
-       </spectrum>
-    </source>
-
-    <!-- diffuse extraglactic from 10 MeV: from APJ 494:523
-            1.45E-5 /cm^2/s E> 100 MeV, so (1.45E-5)*(1e4 cm^2/m^2)*(100/10)^1.1 = 1.83
-            -->
-    <source name="diffuse" flux="1.83">
-        <spectrum escale="GeV">
-            <particle name="gamma">  <power_law emin="0.01" gamma="2.1"/></particle>
-            <solid_angle mincos="-0.4" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-         <!-- Test source at the galactic origin -->
-     <source name="galcenter" flux="0.05">
-          <spectrum escale="GeV">
-              <particle name="gamma"> <energy e="0.1"/> </particle>
-               <galactic_dir l="0" b="0"/>
-          </spectrum>
-     </source>
-
-    <!-- diffuse extraglactic from 100 MeV: see above for numbers-->
-    <source name="diffuse-100mev" flux="0.145">
-        <spectrum escale="GeV">
-            <particle name="gamma">  
-                <power_law emin="0.1" gamma="2.1"/>
-            </particle>
-            <solid_angle mincos="-0.4" maxcos="1.0"/>
-        </spectrum>
-    </source>
-
-    <!-- Crab Pulsar, from the 3EG catalog -->
-    <source name="Crab" flux="0.02262">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="100." emax="100000." gamma="2.19"/>
-            </particle>
-            <celestial_dir ra="83.57" dec="22.01"/>
-        </spectrum>
-    </source>
-
-    <!-- Geminga, from the 3EG catalog -->
-    <source name="Geminga" flux="0.03529">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="100." emax="100000." gamma="1.66"/>
-            </particle>
-            <celestial_dir ra="98.49" dec="17.86"/>
-        </spectrum>
-    </source>
-
-    <!-- PKS 0528+134, from the 3EG catalog -->
-    <source name="PKS0528" flux="0.00935">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="100." emax="100000." gamma="2.46"/>
-            </particle>
-            <celestial_dir ra="82.74" dec="13.38"/>
-        </spectrum>
-    </source>
-
-    <!-- Vela pulsar, from the 3EG catalog -->
-    <source name="Vela" flux="0.08343">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="100.0" emax="100000." gamma="1.69"/>
-            </particle>
-            <celestial_dir ra="128.73" dec="-45.20"/>
-        </spectrum>
-    </source>
-
-    <!--Vela, off-pulse portion, with pointed observation, for photons
-        above 30 MeV, based on astro-ph/9709123 from arXiv.org. The
-        flux above 100 MeV was 4.4*10^-7 (cm^-2*s^-1), and the flux
-        was extrapolated down to 30 MeV with the same index.  -->
-    <source name="vela" flux="0.00928">
-        <spectrum escale="MeV">
-            <particle name="gamma">
-                 <power_law emin="30.0" emax="100000." gamma="1.62"/>
-            </particle>
-            <celestial_dir ra="128.73" dec="-45.2"/>
-        </spectrum>
-    </source>
-
-    <!-- Strong point sources in the Galactic anticenter region -->
-    <source name = "anticenter">
-        <nestedSource sourceRef="Crab" />
-        <nestedSource sourceRef="Geminga" />
-        <nestedSource sourceRef="PKS0528" />
-    </source>
-
-<source name="multipower" flux="0.1">
-    <spectrum escale="GeV">
-        <particle name="gamma"> 
-        <power_law emin="0.03" emax="100.0" ebreak="0.3" 
-                   gamma="1.6" gamma2="2.5"/>
-        </particle>
-        <celestial_dir ra="0." dec="0."/>
-    </spectrum>
-</source>
-
-
-    <!-- Low energy part of a broken power-law source -->
-    <source name="low_bpl" flux="0.0417">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="30.0" emax="150." gamma="1.7"/>
-            </particle>
-            <celestial_dir ra="0." dec="0."/>
-        </spectrum>
-    </source>
-
-    <!-- High energy part of a broken power-law source -->
-    <source name="high_bpl" flux="0.01">
-        <spectrum escale="MeV">
-            <particle name="gamma"> 
-                <power_law emin="150.0" emax="100000." gamma="2.4"/>
-            </particle>
-            <celestial_dir ra="0." dec="0."/>
-        </spectrum>
-    </source>
-
-    <!-- A strong broken power-law point source. -->
-    <source name = "bpl_source">
-        <nestedSource sourceRef="low_bpl" />
-        <nestedSource sourceRef="high_bpl" />
-    </source>
-
 <!-- MapSource version of the Galactic Diffuse model -->
    <source name="Galactic_diffuse">
-      <spectrum escale="MeV">
-<!-- Total photon flux from the map (#/m^2/s) = 17.
-     Photon spectral index = 2.1
-     Fits file (plate-carree only) = $(FLUXROOT)/sources/gas_gal.fits
-     Minimum photon energy (MeV) = 30.
-     Maximum photon energy (MeV) = 2e5
--->
-         <SpectrumClass name="MapSource"
-          params="17.,2.1,$(FLUXROOT)/sources/gas_gal.fits,30.,2e5"/>
-         <use_spectrum frame="galaxy"/>
-      </spectrum>
-   </source>
-
-   <source name="Galactic_diffuse_20">
       <spectrum escale="MeV">
 <!-- Total photon flux from the map (#/m^2/s) = 26.56.
      Photon spectral index = 2.1
@@ -559,44 +126,11 @@
       </spectrum>
    </source>
 
-<!-- A short transient source, similar to a simple GRB -->
-   <source name="simple_transient">
+   <source name="Extragalactic_diffuse">
       <spectrum escale="MeV">
-         <SpectrumClass name="SimpleTransient"
-          params="10., 2., 1e3, 1.1e3, 30., 2e5"/>
-         <celestial_dir ra="83." dec="22."/>
-      </spectrum>
-   </source>
-
-   <source name="transient_template">
-      <spectrum escale="MeV">
-         <SpectrumClass name="TransientTemplate"
-        params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
-         <celestial_dir ra="80" dec="20"/>
-      </spectrum>
-   </source>
-
-   <source name="_3C279_June1991_flare">
-      <spectrum escale="MeV">
-         <SpectrumClass name="TransientTemplate"
-        params="0.425,1.89,0.,1.07e6,$(OBSERVATIONSIMROOT)/data/3c279Template.dat"/>
-         <celestial_dir ra="193.98" dec="-5.82"/>
-      </spectrum>
-   </source>
-
-   <source name="PKS1622m297_flare">
-      <spectrum escale="MeV">
-         <SpectrumClass name="TransientTemplate"
-        params="0.118,1.9,0.,3.95e6,$(OBSERVATIONSIMROOT)/data/pks1622-297_Template.dat"/>
-         <celestial_dir ra="246.36" dec="-29.92"/>
-      </spectrum>
-   </source>
-
-   <source name="periodic_source">
-      <spectrum escale="MeV">
-         <SpectrumClass name="PeriodicSource"
-                        params="0.1, 2.1, 1e3, 1, 0.75, 30., 2e5"/>
-         <galactic_dir l="0" b="0"/>
+         <SpectrumClass name="Isotropic"
+                        params="10.7, 2.1, 20., 2e5"/>
+         <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
 
@@ -616,6 +150,81 @@
       </spectrum>
    </source>
 
+   <source name="PKS0528p134">
+      <spectrum escale="MeV">
+         <particle name="gamma">
+            <power_law emin="20.0" emax="1000000.0" gamma="2.46"/>
+         </particle>
+         <celestial_dir ra="82.74" dec="13.38"/>
+      </spectrum>
+   </source>
+
+   <!-- Strong point sources in the Galactic anticenter region -->
+   <source name = "Strong_anticenter_sources">
+       <nestedSource sourceRef="Crab_Pulsar" />
+       <nestedSource sourceRef="Geminga_Pulsar" />
+       <nestedSource sourceRef="PKS0528p134" />
+   </source>
+
+   <source name="_3C279_June1991_flare">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+        params="0.425,1.89,0.,1.07e6,$(OBSERVATIONSIMROOT)/data/3c279Template.dat"/>
+         <celestial_dir ra="193.98" dec="-5.82"/>
+      </spectrum>
+   </source>
+
+   <source name="PKS1622m297_flare">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+        params="0.118,1.9,0.,3.95e6,$(OBSERVATIONSIMROOT)/data/pks1622-297_Template.dat"/>
+         <celestial_dir ra="246.36" dec="-29.92"/>
+      </spectrum>
+   </source>
+
+   <!-- Test source at the galactic origin -->
+   <source name="galcenter" flux="0.05">
+        <spectrum escale="GeV">
+            <particle name="gamma"> <energy e="0.1"/> </particle>
+             <galactic_dir l="0" b="0"/>
+        </spectrum>
+   </source>
+
+   <source name="multipower" flux="0.1">
+      <spectrum escale="GeV">
+         <particle name="gamma"> 
+            <power_law emin="0.03" emax="100.0" ebreak="0.3" 
+                       gamma="1.6" gamma2="2.5"/>
+         </particle>
+         <celestial_dir ra="0." dec="0."/>
+      </spectrum>
+   </source>
+
+   <!-- A short transient source, similar to a simple GRB -->
+   <source name="simple_transient">
+      <spectrum escale="MeV">
+         <SpectrumClass name="SimpleTransient"
+          params="10., 2., 1e3, 1.1e3, 30., 2e5"/>
+         <celestial_dir ra="83." dec="22."/>
+      </spectrum>
+   </source>
+
+   <source name="transient_template">
+      <spectrum escale="MeV">
+         <SpectrumClass name="TransientTemplate"
+        params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+         <celestial_dir ra="80" dec="20"/>
+      </spectrum>
+   </source>
+
+   <source name="periodic_source">
+      <spectrum escale="MeV">
+         <SpectrumClass name="PeriodicSource"
+                        params="0.1, 2.1, 1e3, 1, 0.75, 30., 2e5"/>
+         <galactic_dir l="0" b="0"/>
+      </spectrum>
+   </source>
+
    <source name="gaussian_source">
       <spectrum escale="MeV">
          <SpectrumClass name="GaussianSource"
@@ -623,13 +232,4 @@
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
-
-   <source name="Extragalactic_diffuse">
-      <spectrum escale="MeV">
-         <SpectrumClass name="Isotropic"
-                        params="10.7, 2.1, 20., 2e5"/>
-         <use_spectrum frame="galaxy"/>
-      </spectrum>
-   </source>
-
 </source_library>
