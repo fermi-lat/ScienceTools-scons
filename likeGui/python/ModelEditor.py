@@ -277,7 +277,7 @@ class ds9Display(object):
                     region_file.addSource(srcName, src)
                     region_file.write()
             ds9.load_regions(self.file)
-        except RuntimeError:
+        except:
             pass
 
 class ds9Import(object):
@@ -296,7 +296,7 @@ class ds9Import(object):
                 src.spatialModel.DEC.value = coords[1]
                 src.setAttributes()
                 self.root.addPointSource(src)
-        except RuntimeError:
+        except:
             pass
 
 def read_coords(regfile="ds9.reg"):

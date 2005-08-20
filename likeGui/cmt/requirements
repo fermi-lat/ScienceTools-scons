@@ -7,6 +7,6 @@ author J. Chiang <jchiang@slac.stanford.edu>
 
 use sane v*
 
-application run_likeGui run_likeGui.cxx
+application gui_launcher run_likeGui.cxx
 
 path_append PYTHONPATH "$(LIKEGUIROOT)/python"

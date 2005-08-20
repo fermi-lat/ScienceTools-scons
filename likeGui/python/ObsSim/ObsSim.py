@@ -61,7 +61,6 @@ class RootWindow(Tk.Tk):
         pars['xml_source_file'] = xmlList
         pars['source_list'] = sourceNames
         pfile = 'gtobssim.par'
-        pars.write(pfile)   # create a local copy
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((obsSim, dialog.paramString))
@@ -69,7 +68,6 @@ class RootWindow(Tk.Tk):
     def orbSim(self):
         pars = Pil('gtorbsim.par')
         pfile = 'gtorbsim.par'
-        pars.write(pfile)   # create a local copy
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((orbSim, dialog.paramString))
