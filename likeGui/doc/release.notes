@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r4p2   21-Aug-05    JC    stop writing par file; rename gui launcher;
+                               allow user to cd
    v7r4p1   18-Jul-05    JC    add LogParabola to FunctionFactory
    v7r4     04-Jun-05    JC    ModelEditor callable from python cl, 
                                allow for multiple source selections
