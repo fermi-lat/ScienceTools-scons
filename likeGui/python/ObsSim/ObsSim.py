@@ -9,6 +9,7 @@ Prototype GUI for obsSim
 #
 import os, sys
 import Tkinter as Tk
+import tkFileDialog
 from FileDialog import LoadFileDialog
 
 sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
@@ -54,6 +55,13 @@ class RootWindow(Tk.Tk):
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         if xmlFile is not None:
             self.srcLibs.addLibs(xmlFile)
+    def cd(self):
+        file = tkFileDialog.askdirectory(title="Where to?", mustexist=1)
+        #file = FileDialog(self.parent).go()
+        try:
+            os.chdir(file)
+        except:
+            pass
     def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)
@@ -84,6 +92,7 @@ class MenuBar(Tk.Menu):
 class FileMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
+        self.add_command(label="cd...", underline=0, command=root.cd)
         self.add_command(label="Open...", underline=0, command=root.open)
         self.add_command(label="Quit", underline=0, command=root.quit)
         
@@ -359,9 +368,15 @@ def expandEnvVar(filename):
     else:
         return filename
 
-if __name__ == "__main__":
-    if sys.argv[1:]:
-        root = RootWindow(sys.argv[1])
+def ObsSim(filename=None):
+    if filename is not None:
+        root = RootWindow(filename)
     else:
         root = RootWindow()
     root.mainloop()
+
+if __name__ == "__main__":
+    if sys.argv[1:]:
+        ObsSim(sys.argv[1])
+    else:
+        ObsSim()
