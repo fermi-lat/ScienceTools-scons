@@ -1,0 +1,13 @@
+#-------------------------------------------------------------------------------
+evfile,        f, a, , , , "Event data file name"
+evtable,       s, h, "EVENTS", , , "Table containing event data"
+psrname,       s, a, "ANY", , ,"Pulsar name"
+phi0,          r, h, 0., , , "Enter phase offset (user supplied phase origin)"
+psrdbfile,     f, h, DEFAULT, , , "Name of input pulsar ephemerides database file (DEFAULT - use standard eph db)"
+timefield,     s, h, "TIME", , , "Name of time field in event data file"
+chatter,       i, h, 2, 0, 4, "Chattiness of output"
+clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
+debug,         b, h, no, , , "Debugging mode activated"
+gui,           b, h, no, , , "GUI mode activated"
+mode,          s, h, "ql", , ,"Mode of automatic parameters"
+#-------------------------------------------------------------------------------
