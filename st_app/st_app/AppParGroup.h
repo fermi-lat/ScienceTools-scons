@@ -49,7 +49,9 @@ namespace st_app {
 
       virtual void Prompt(const std::string & par_name);
 
-      void suppressPrompts(bool suppress = true);
+      bool getPromptMode() const;
+
+      void setPromptMode(bool prompt_mode = true);
 
       /** \brief Returns whether or not the named parameter is being used as a switch.
           \param par_name The parameter in question.

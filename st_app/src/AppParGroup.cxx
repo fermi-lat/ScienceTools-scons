@@ -70,7 +70,9 @@ namespace st_app {
     if (m_prompt_mode) hoops::ParPromptGroup::Prompt(par_name);
   }
 
-  void AppParGroup::suppressPrompts(bool suppress) { m_prompt_mode = !suppress; }
+  bool AppParGroup::getPromptMode() const { return m_prompt_mode; }
+
+  void AppParGroup::setPromptMode(bool prompt_mode) { m_prompt_mode = prompt_mode; }
 
   bool AppParGroup::isSwitch(const std::string & par_name) const {
     return (m_switch.end() != m_switch.find(par_name));
@@ -113,4 +115,5 @@ namespace st_app {
 
     m_case.insert(std::make_pair(par_name, std::make_pair(switch_name, uc_case_name)));
   }
+
 }
