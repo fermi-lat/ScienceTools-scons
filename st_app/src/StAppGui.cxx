@@ -403,7 +403,7 @@ namespace st_app {
 
     // Disable prompting.
     AppParGroup & pars(m_par_group);
-    pars.suppressPrompts();
+    pars.setPromptMode(false);
   }
 
   ParWidget * StEventReceiver::createParWidget(hoops::IPar * par, st_graph::IFrame * parent) {
@@ -464,9 +464,9 @@ namespace st_app {
     for (AppParGroup::CaseList::iterator itor = case_cont.begin(); itor != case_cont.end(); ++itor) {
       // itor->first == name of switch.
       // itor->second == value of switch.
-      // See if switch is displayed as a tab folder.
-      TabFolderCont::iterator tab_itor = m_tab_folder.find(itor->first);
-      if (m_tab_folder.end() != tab_itor) {
+      // See if switch is displayed in one or more tab folders.
+      std::pair<TabFolderCont::iterator, TabFolderCont::iterator> range = m_tab_folder.equal_range(itor->first);
+      for (TabFolderCont::iterator tab_itor = range.first; tab_itor != range.second; ++tab_itor) {
         // Find the tab corresponding to the parameter value given by the second part of the case.
         IFrame * frame = tab_itor->second->getTab(itor->second);
         if (0 != frame) parent.push_back(frame);

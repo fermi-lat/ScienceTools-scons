@@ -58,7 +58,7 @@ namespace st_app {
   class StEventReceiver : public st_graph::IEventReceiver {
     public:
       typedef std::multimap<std::string, ParWidget *> ParWidgetCont;
-      typedef std::map<std::string, st_graph::ITabFolder *> TabFolderCont;
+      typedef std::multimap<std::string, st_graph::ITabFolder *> TabFolderCont;
 
       StEventReceiver(st_graph::Engine & engine, AppParGroup & par_group, StApp * m_app);
 
