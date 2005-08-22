@@ -211,6 +211,12 @@ namespace st_app {
       AppParGroup & pars(m_par_group);
 
       try {
+        // Get parameter values which are associated with the state of a tab folder.
+        for (TabFolderCont::iterator itor = m_tab_folder.begin(); itor != m_tab_folder.end(); ++itor) {
+          pars[itor->first] = itor->second->getSelected();
+        }
+
+        // Get parameter values which are associated with parameter widgets.
         for (ParWidgetCont::iterator itor = m_par_widget.begin(); itor != m_par_widget.end(); ++itor) {
           pars << *itor->second;
         }
@@ -341,7 +347,9 @@ namespace st_app {
         if (m_par_group.isSwitch(par_name) && enumerated_range) {
           ITabFolder * tf = m_engine.createTabFolder(*parent_itor, this);
           for (std::list<std::string>::iterator enum_itor = par_range.begin(); enum_itor != par_range.end(); ++enum_itor) {
-            tf->addTab(*enum_itor);
+            IFrame * frame = tf->addTab(*enum_itor);
+            // Use the current parameter value to select the correct tab.
+            if ((*itor)->Value() == *enum_itor) tf->select(frame);
           }
           tf->getFrame()->setNaturalSize();
           m_tab_height = tf->getFrame()->getHeight();
