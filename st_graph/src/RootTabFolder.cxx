@@ -63,7 +63,23 @@ namespace st_graph {
 
   IFrame * RootTabFolder::getFrame() { return m_frame; }
 
-  void RootTabFolder::select(IFrame *) {
+  std::string RootTabFolder::getSelected() const { return m_tg_tab->GetCurrentTab()->GetString(); }
+
+  void RootTabFolder::select(IFrame * tab) {
+    int num_tabs = m_tg_tab->GetNumberOfTabs();
+    // Look through container for string associated with this tab.
+    for (std::map<std::string, IFrame *>::iterator itor = m_tab.begin(); itor != m_tab.end(); ++itor) {
+      if (itor->second == tab) {
+        // Look through Root's set of tabs to find the number of the tab with this string.
+        for (int idx = 0; idx != num_tabs; ++idx) {
+          if (m_tg_tab->GetTabTab(idx)->GetString() == itor->first) {
+            m_tg_tab->SetTab(idx);
+            break;
+          }
+        }
+        break;
+      }
+    }
   }
 
   void RootTabFolder::getTabCont(std::map<std::string, IFrame *> & tab_cont) {

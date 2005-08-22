@@ -33,6 +33,10 @@ namespace st_graph {
       */
       virtual IFrame * getFrame() = 0;
 
+      /** \brief Get the name of the currently selected tabbed folder.
+      */
+      virtual std::string getSelected() const = 0;
+
       /** \brief Cause selected tabbed folder to be on top.
           \param tab The tab folder sheet to select.
       */

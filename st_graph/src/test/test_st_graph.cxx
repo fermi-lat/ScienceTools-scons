@@ -307,8 +307,8 @@ void StGraphTestApp::testGuis() {
 
   class MyGui : public IEventReceiver {
     public:
-      MyGui(Engine & engine): m_engine(engine), m_main_frame(0), m_cancel_button(0), m_open_button(0), m_enable_button(0),
-        m_click_me(0), m_plot_frame(0), m_data(100), m_file_name("./requirements") {
+      MyGui(Engine & engine, StGraphTestApp * app): m_app(app), m_engine(engine), m_main_frame(0), m_cancel_button(0),
+        m_open_button(0), m_enable_button(0), m_click_me(0), m_plot_frame(0), m_data(100), m_file_name("./requirements") {
         // Create a top level main frame in which to place graphical objects.
         m_main_frame = m_engine.createMainFrame(this, 600, 400);
 
@@ -327,6 +327,9 @@ void StGraphTestApp::testGuis() {
         m_engine.createButton(f, this, "text", "And me");
 
         m_tab_folder->select(m_tab_folder->addTab("Folder 3"));
+        if ("Folder 3" != m_tab_folder->getSelected())
+          m_app->reportUnexpected("After creating tab folder and selecting third tab, getSelected() returned \"" +
+            m_tab_folder->getSelected() + "\", not \"Folder 3\" as expected.");
 
         // Put in some tool tips.
         m_cancel_button->setToolTipText("Cancel this part of the test and go on to the rest");
@@ -357,6 +360,8 @@ void StGraphTestApp::testGuis() {
       virtual void clicked(IFrame * f) {
         if (f == m_cancel_button) {
           m_engine.stop();
+        } else if (f == m_click_me) {
+          std::cout << "Click me button is " << m_enable_button->getState() << std::endl;
         } else if (f == m_enable_button) {
           std::cout << "Enable button is " << m_enable_button->getState() << std::endl;
         } else if (f == m_open_button) {
@@ -364,7 +369,7 @@ void StGraphTestApp::testGuis() {
           m_file_name = m_engine.fileDialog(m_main_frame, m_file_name);
           std::cout << "Chosen file was " << m_file_name << std::endl;
         } else {
-          std::cout << "Something unforeseen clicked" << std::endl;
+          std::cout << "One of the buttons was clicked" << std::endl;
         }
       }
 
@@ -404,6 +409,7 @@ void StGraphTestApp::testGuis() {
       }
 
     private:
+      StGraphTestApp * m_app;
       Engine & m_engine;
       IFrame * m_main_frame;
       IFrame * m_cancel_button;
@@ -417,7 +423,7 @@ void StGraphTestApp::testGuis() {
   };
 
   try {
-    MyGui gui(Engine::instance());
+    MyGui gui(Engine::instance(), this);
 
     gui.run();
   } catch (const std::exception & x) {
