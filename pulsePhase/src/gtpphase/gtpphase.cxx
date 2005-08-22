@@ -66,6 +66,7 @@ void PulsePhaseApp::run() {
   par_group.Prompt("psrname");
   par_group.Prompt("ephstyle");
   par_group.Prompt("demodbin");
+  par_group.Prompt("timefield");
   std::string eph_style = par_group["ephstyle"];
   par_group.Save();
 
