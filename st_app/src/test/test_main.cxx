@@ -108,9 +108,10 @@ class TestApp1 : public st_app::StApp {
       }
 
       setVersion(s_cvs_tag);
-      std::string tag = "$Name$";
+      std::string tag = "$Name: ";
+      tag += getVersion() + " $";
       if (correct_tag != tag) {
-        m_f.err() << "Version tag \"" << tag << "\" is not \"" << correct_tag << "\", as expected." << std::endl;
+        m_f.err() << "After restoring version, tag \"" << tag << "\" is not \"" << correct_tag << "\", as expected." << std::endl;
         failed = true;
       }
 
