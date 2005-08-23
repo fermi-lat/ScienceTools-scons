@@ -15,10 +15,11 @@ namespace st_app {
 
   class AppParGroup;
   class StApp;
+  class StEventReceiver;
 
   class ParWidget : public st_graph::IEventReceiver {
     public:
-      ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par);
+      ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StEventReceiver * receiver);
 
       ~ParWidget();
 
@@ -36,7 +37,9 @@ namespace st_app {
 
       const std::string & getName() const;
 
-      const std::string & getValue() const;
+      std::string getValue() const;
+
+      void setValue(const std::string & string_value);
 
       void display(bool disp_flag = true);
 
@@ -46,11 +49,13 @@ namespace st_app {
     private:
       st_graph::Engine & m_engine;
       std::string m_value_string;
+      StEventReceiver * m_receiver;
       st_graph::IFrame * m_frame;
       st_graph::IFrame * m_label;
       st_graph::IFrame * m_value;
       st_graph::IFrame * m_open;
       hoops::IPar * m_par;
+      bool m_bool;
       bool m_stretch;
       bool m_display;
   };
@@ -75,6 +80,8 @@ namespace st_app {
       virtual void createMainFrame();
 
       virtual ParWidget * createParWidget(hoops::IPar * par, st_graph::IFrame * parent);
+
+      virtual void synchronizeWidgets(const std::string & par_name, const std::string & value);
 
     private:
       bool parseRange(const hoops::IPar * par, std::list<std::string> & range);

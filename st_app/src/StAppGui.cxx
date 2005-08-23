@@ -25,12 +25,10 @@ using namespace st_graph;
 
 namespace st_app {
 
-  ParWidget::ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par): m_engine(engine),
-    m_value_string(), m_frame(0), m_label(0), m_value(0), m_open(0), m_par(par), m_stretch(false), m_display(false) {
+  ParWidget::ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StEventReceiver * receiver):
+    m_engine(engine), m_value_string(), m_receiver(receiver), m_frame(0), m_label(0), m_value(0), m_open(0),
+    m_par(par), m_bool(false), m_stretch(false), m_display(false) {
     if (0 == m_par) throw std::logic_error("ParWidget constructor was passed a null parameter pointer");
-
-    // Get value from parameter.
-    m_value_string = m_par->Value();
 
     m_frame = m_engine.createComposite(parent, this);
 
@@ -58,13 +56,22 @@ namespace st_app {
     long width = m_label->getWidth();
 
     if (std::string::npos != m_par->Type().find("b")) {
+      m_bool = true;
       // If boolean parameter, use a checkbox.
       m_value = m_engine.createButton(m_frame, this, "check", "");
 
       // Set button in state consistent with parameter value.
       bool state = *m_par;
-      if (state) m_value->setState("down"); else m_value->setState("up");
+      if (state) {
+        m_value_string = "down";
+      } else {
+        m_value_string = "up";
+      }
+      m_value->setState(m_value_string);
     } else {
+      // Get value from parameter.
+      m_value_string = m_par->Value();
+
       // For all other non-boolean parameters, use a text edit.
       m_value = m_engine.createTextEntry(m_frame, this, m_value_string);
 
@@ -123,23 +130,20 @@ namespace st_app {
   }
 
   void ParWidget::clicked(st_graph::IFrame * f) {
-    if (m_open == f) {
-      if (std::string::npos == m_par->Type().find("w"))
-        m_value_string = m_engine.fileDialog(m_frame, ".", "open");
+    std::string state;
+    if (m_open == f && m_open != 0) {
+      if (std::string::npos != m_par->Type().find("r"))
+        state = m_engine.fileDialog(m_frame, m_value_string, "open");
       else
-        m_value_string = m_engine.fileDialog(m_frame, ".", "save");
-      m_value->setState(m_value_string);
-    } else if (m_value == f) {
-      const std::string & state = m_value->getState();
-      if (state == "down") m_value_string = "true";
-      else if (state == "up") m_value_string = "false";
+        state = m_engine.fileDialog(m_frame, m_value_string, "save");
     } else {
-      m_value_string = m_value->getState();
+      state = m_value->getState();
     }
+    m_receiver->synchronizeWidgets(getName(), state);
   }
 
   void ParWidget::modified(st_graph::IFrame *, const std::string & text) {
-    m_value_string = text;
+    m_receiver->synchronizeWidgets(getName(), text);
   }
 
   ParWidget::operator st_graph::IFrame * () { return getFrame(); }
@@ -150,7 +154,18 @@ namespace st_app {
 
   const std::string & ParWidget::getName() const { return m_par->Name(); }
 
-  const std::string & ParWidget::getValue() const { return m_value_string; }
+  std::string ParWidget::getValue() const {
+    if (m_bool) {
+      if (m_value_string == "down") return "true";
+      return "false";
+    }
+    return m_value_string;
+  }
+
+  void ParWidget::setValue(const std::string & value_string) {
+    m_value_string = value_string;
+    m_value->setState(value_string);
+  }
 
   void ParWidget::display(bool disp_flag) {
     m_display = disp_flag;
@@ -407,7 +422,14 @@ namespace st_app {
   }
 
   ParWidget * StEventReceiver::createParWidget(hoops::IPar * par, st_graph::IFrame * parent) {
-    return new ParWidget(m_engine, parent, par);
+    return new ParWidget(m_engine, parent, par, this);
+  }
+
+  void StEventReceiver::synchronizeWidgets(const std::string & par_name, const std::string & value) {
+    std::pair<ParWidgetCont::iterator, ParWidgetCont::iterator> range = m_par_widget.equal_range(par_name);
+    for (ParWidgetCont::iterator itor = range.first; itor != range.second; ++itor) {
+      itor->second->setValue(value);
+    }
   }
 
   bool StEventReceiver::parseRange(const hoops::IPar * par, std::list<std::string> & range) {
