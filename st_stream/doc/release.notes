@@ -4,6 +4,9 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+23-aug-2005   v0r4    JP  Do not automatically write prefix after endls.
+                          Add prefix() method to OStream and prefix manipulator
+                          to achieve this.
 07-mar-2005 v0r3p0    JP  Add methods to enable/disable streams at will.
                           Change chattiness to use this facility. Add globally
                           accessible debug mode, which affects debug stream in
