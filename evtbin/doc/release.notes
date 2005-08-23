@@ -43,6 +43,7 @@
 23-jul-2005     v0r12 JP  Write exposure column (not keyword) in PHA2 files.
                           Include DSS keywords in all output files. Change
                           order of parameters to improve GUI.
+23-aug-2005   v0r12p1 JP  Improve logic/order of parameters to improve the GUI.
 --------------------------------------------------------------------------------
 \endverbatim
 
