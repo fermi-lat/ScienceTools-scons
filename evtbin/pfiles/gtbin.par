@@ -4,12 +4,16 @@ evfile,        f, a, , , , "Event data file name"
 scfile,        f, a, NONE, , , "Spacecraft data file name"
 outfile,       f, a, , , , "Output file name"
 algorithm,     s, a, "PHA2", CMAP|LC|PHA1|PHA2, , "Type of output file"
-evtable,       s, h, "EVENTS", , , "Table containing event data"
-chatter,       i, h, 2, 0, 4, "Chattiness of output"
-clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
-debug,         b, h, no, , , "Debugging mode activated"
-gui,           b, h, no, , , "GUI mode activated"
-mode,          s, h, "ql", , ,"Mode of automatic parameters"
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Energy binning parameters.
+energybinalg,  s, a, "LOG", FILE|LIN|LOG, , "Algorithm for defining energy bins"
+emin,          r, a, , , , "Start value for first energy bin"
+emax,          r, a, , , , "Stop value for last energy bin"
+enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
+deltaenergy,   r, a, , , , "Width of linearly uniform energy bins"
+energybinfile, f, a, "NONE", , , "Name of the file containing the energy bin definition"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -22,7 +26,6 @@ timebinfile,   f, a, "NONE", , , "Name of the file containing the time bin defin
 snratio,       r, a, , 1.e-8, , "Signal-to-noise ratio per time bin"
 lcemin,        r, a, , 0., , "Lower bound of energy range"
 lcemax,        r, a, , 0., , "Upper bound of energy range"
-timefield,     s, h, "TIME", , , "Name of time field to bin"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -40,12 +43,13 @@ proj,          s, h, "AIT", AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN, , "Projection m
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-# Energy binning parameters.
-energybinalg,  s, a, "LOG", FILE|LIN|LOG, , "Algorithm for defining energy bins"
-emin,          r, a, , , , "Start value for first energy bin"
-emax,          r, a, , , , "Stop value for last energy bin"
-enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
-deltaenergy,   r, a, , , , "Width of linearly uniform energy bins"
-energybinfile, f, a, "NONE", , , "Name of the file containing the energy bin definition"
+# Hidden parameters.
+evtable,       s, h, "EVENTS", , , "Table containing event data"
 energyfield,   s, h, "ENERGY", , ,"Name of energy field to bin"
+timefield,     s, h, "TIME", , , "Name of time field to bin"
+chatter,       i, h, 2, 0, 4, "Chattiness of output"
+clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
+debug,         b, h, no, , , "Debugging mode activated"
+gui,           b, h, no, , , "GUI mode activated"
+mode,          s, h, "ql", , ,"Mode of automatic parameters"
 #-------------------------------------------------------------------------------

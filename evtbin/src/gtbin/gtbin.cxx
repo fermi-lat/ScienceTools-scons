@@ -300,6 +300,57 @@ class GtBinApp : public st_app::StApp {
     GtBinApp(): st_app::StApp() {
       setName("gtbin");
       setVersion(s_cvs_id);
+
+      // Get parameter file object.
+      st_app::AppParGroup & pars = getParGroup("gtbin");
+
+      // Set up logic for prompts/GUI layout.
+#if 0
+      pars.setSwitch("algorithm");
+      pars.setCase("algorithm", "CMAP", "numxpix");
+      pars.setCase("algorithm", "CMAP", "numypix");
+      pars.setCase("algorithm", "CMAP", "pixscale");
+      pars.setCase("algorithm", "CMAP", "coordsys");
+      pars.setCase("algorithm", "CMAP", "xref");
+      pars.setCase("algorithm", "CMAP", "yref");
+      pars.setCase("algorithm", "CMAP", "axisrot");
+      pars.setCase("algorithm", "CMAP", "rafield");
+      pars.setCase("algorithm", "CMAP", "decfield");
+      pars.setCase("algorithm", "CMAP", "proj");
+
+      pars.setCase("algorithm", "LC", "timebinalg");
+      pars.setCase("algorithm", "PHA2", "timebinalg");
+#endif
+
+      pars.setSwitch("timebinalg");
+      pars.setCase("timebinalg", "FILE", "timebinfile");
+      pars.setCase("timebinalg", "LIN", "tstart");
+      pars.setCase("timebinalg", "LIN", "tstop");
+      pars.setCase("timebinalg", "LIN", "deltatime");
+      pars.setCase("timebinalg", "SNR", "snratio");
+      pars.setCase("timebinalg", "SNR", "lcemin");
+      pars.setCase("timebinalg", "SNR", "lcemax");
+#if 0
+      pars.setCase("algorithm", "LC", "timefield");
+
+      pars.setCase("algorithm", "PHA1", "energybinalg");
+      pars.setCase("algorithm", "PHA2", "energybinalg");
+#endif
+
+      pars.setSwitch("energybinalg");
+      pars.setCase("energybinalg", "FILE", "energybinfile");
+      pars.setCase("energybinalg", "LIN", "emin");
+      pars.setCase("energybinalg", "LIN", "emax");
+      pars.setCase("energybinalg", "LIN", "deltaenergy");
+      pars.setCase("energybinalg", "LOG", "emin");
+      pars.setCase("energybinalg", "LOG", "emax");
+      pars.setCase("energybinalg", "LOG", "enumbins");
+
+#if 0
+      pars.setCase("algorithm", "PHA1", "energyfield");
+      pars.setCase("algorithm", "PHA2", "energyfield");
+#endif
+
     }
 
     /** \brief Perform the action needed by this application. This will be called by the standard main.
@@ -315,6 +366,7 @@ class GtBinApp : public st_app::StApp {
 
       // Prompt for algorithm parameter, which determines which application is really used.
       pars.Prompt("algorithm");
+      pars.Save();
 
       std::string algorithm = pars["algorithm"];
 
@@ -330,9 +382,12 @@ class GtBinApp : public st_app::StApp {
       else if (0 == algorithm.compare("PHA2")) app.reset(new MultiSpectraApp("gtbin"));
       else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
 
-      // Pass on the algorithm parameter value to the application. This is so that that algorithm
-      // parameter will be learned.
-      app->getParGroup("gtbin")["algorithm"] = algorithm;
+      // Pass on all parameter settings to the real app. (Needed for unlearned parameters.)
+      st_app::AppParGroup & app_pars(app->getParGroup("gtbin"));
+      app_pars = pars;
+
+      // Prompt mode is set during construction, so set it explicitly.
+      app_pars.setPromptMode(pars.getPromptMode());
 
       // Run the real application.
       app->run();
