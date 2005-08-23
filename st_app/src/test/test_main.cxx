@@ -40,14 +40,21 @@ class TestApp1 : public st_app::StApp {
       pars.setSwitch("switch");
       pars.setSwitch("usedeltae");
 
+      pars.setCase("switch", "EnERGY", "binfile");
       pars.setCase("switch", "EnERGY", "emin");
       pars.setCase("switch", "energy", "emax");
       pars.setCase("switch", "ENergy", "usedeltae");
+      pars.setCase("switch", "ENergy", "offset");
+      pars.setCase("switch", "ENergy", "checkunits");
       pars.setCase("usedeltae", "true", "deltae");
       pars.setCase("switch", "ENergy", "deltae");
+
+      pars.setCase("switch", "time", "binfile");
       pars.setCase("switch", "Time", "tstart");
       pars.setCase("switch", "TIME", "tstop");
       pars.setCase("switch", "timE", "deltat");
+      pars.setCase("switch", "time", "offset");
+      pars.setCase("switch", "time", "checkunits");
     }
 
     /** \brief Perform the demo action needed by this application. This will be called by the standard main.
