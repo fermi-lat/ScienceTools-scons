@@ -40,6 +40,9 @@
 30-jun-2005   v0r10p1 JP  Correct multiple symbol problem on Windows.
 07-jul-2005   v0r11p0 JP  Allow clients to vary ncp_prior parameter in
                           individual BayesianBinner objects.
+23-jul-2005     v0r12 JP  Write exposure column (not keyword) in PHA2 files.
+                          Include DSS keywords in all output files. Change
+                          order of parameters to improve GUI.
 --------------------------------------------------------------------------------
 \endverbatim
 
