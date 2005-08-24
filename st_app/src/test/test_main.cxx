@@ -128,6 +128,7 @@ class TestApp1 : public st_app::StApp {
       // File parameters must be set to a file which exists.
       pars["infile"] = ".";
       pars["outfile"] = ".";
+      pars["binfile"] = ".";
 
       // Do not commit version with prompting, as it will break automated tests.
       // Prompt for all parameters in order.
