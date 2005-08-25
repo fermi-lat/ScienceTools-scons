@@ -22,6 +22,8 @@
 #include "tip/Table.h"
 #include "tip/Header.h"
 
+#include "astro/EarthCoordinate.h"
+
 #include "fitsGen/Util.h"
 
 using namespace fitsGen;
@@ -90,9 +92,18 @@ int main(int iargc, char * argv[]) {
          ft2["dec_scx"].set(std::atof(dataFields[7].c_str()));
          ft2["ra_zenith"].set(std::atof(dataFields[8].c_str()));
          ft2["dec_zenith"].set(std::atof(dataFields[9].c_str()));
-         ft2["lon_geo"].set(std::atof(dataFields[10].c_str()));
-         ft2["lat_geo"].set(std::atof(dataFields[11].c_str()));
-         ft2["rad_geo"].set(std::atof(dataFields[12].c_str()));
+         double lonGeo = std::atof(dataFields[10].c_str());
+         double latGeo = std::atof(dataFields[11].c_str());
+         double radGeo = std::atof(dataFields[12].c_str());
+         ft2["lon_geo"].set(lonGeo);
+         ft2["lat_geo"].set(latGeo);
+         ft2["rad_geo"].set(radGeo);
+         astro::EarthCoordinate earthCoord(latGeo, lonGeo, radGeo);
+         if (earthCoord.insideSAA()) {
+            ft2["in_saa"].set(true);
+         } else {
+            ft2["in_saa"].set(false);
+         }
          ++ft2_iter;
       }
 // Get stop times. This is painful and ugly since Table::Iterator is
@@ -118,7 +129,9 @@ int main(int iargc, char * argv[]) {
 // sigh, *now* we can fill in the livetime
       ft2_iter = scDataTable->begin();
       for ( ; ft2_iter != scDataTable->end(); ++ft2_iter) {
-         ft2["livetime"].set(ft2["stop"].get() - ft2["start"].get());
+         double full_interval(ft2["stop"].get() - ft2["start"].get());
+         double fraction(0.90);
+         ft2["livetime"].set(fraction*full_interval);
       }
 
       Util::writeDateKeywords(scDataTable, start_time, stop_time);
