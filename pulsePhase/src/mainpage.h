@@ -4,18 +4,17 @@
     \author  Masaharu Hirayama hirayama@jca.umbc.edu
              James Peachey peachey@milkyway.gsfc.nasa.gov
 
-    \section intro Introduction
-This package contains a library and an application.
-The library's main public class is the TimingModel class,
-which computes the phase of any photon arrival time,
-given a particular set of ephemeral data (frequency or
-period derivatives).
-
-The application operates on an event file to compute
-the phase for the time of each event, and write this
+    \section synopsis Synopsis
+This package contains a library and two applications,
+gtpphase and gtophase.
+The application gtpphase operates on an event file to compute
+the spin (pulse) phase for the time of each event, and writes this
 phase to the PULSE_PHASE column of the event file.
+The application gtophase operates on an event file to compute
+the orbital phase for the time of each event, and writes this
+phase to the ORBITAL_PHASE column of the event file.
 
-    \section parameters Application Parameters
+    \section gtpphase_parameters gtpphase Parameters
 
     \subsection key Key To Parameter Descriptions
 \verbatim
@@ -41,29 +40,52 @@ infile [file]
 
     \subsection general General Parameters
 \verbatim
-eventfile [string]
+evfile [string]
     Name of input event file, FT1 format or equivalent.
 
-ephstyle [string]
-    Specifies whether the user will supply values for the central
-    frequency and its derivatives (FREQ) or the central period and
-    its derivatives (PER).
+psrname [string]
+    The name of the pulsar, used to select only ephemerides
+    valid for a particular pulsar.
+
+ephstyle = DB [string]
+    Specifies how the ephemerides will be supplied. If ephstyle
+    is DB, a pulsar database file (GLAST D4 FITS format) will
+    be used. If ephstyle is FREQ (PER), the user will supply values
+    for the frequency (period) and its derivatives at the time
+    given by the epoch parameter.
 
 epoch [double]
-    The epoch, or time origin, for the ephemeris.
+    The epoch, or time origin, for the ephemeris. This parameter
+    only has effect if ephstyle is FREQ or PER.
 
 phi0 [double]
     The phase offset at this epoch.
 
+(psrdbfile = DEFAULT) [file name]
+    Name of pulsar ephemerides database file, in GLAST D4
+    FITS format. If psrdbfile is DEFAULT, the canonical pulsar
+    database file (master_pulsardb.fits), which is distributed
+    with the pulsar tools, will be used.
+
+(demodbin = AUTO) [string]
+    A three-way switch. If demodbin is AUTO, binary demodulation
+    will be applied only to pulsars for which orbital parameters
+    exist in the pulsar database. If demodbin is YES, the computation
+    is the same as for AUTO, but orbital parameters are required
+    to be present and an error will be thrown if none are found.
+    If demodbin is NO, binary demodulation will not be performed
+    regardless of whether orbital ephemerides exist in the database.
+
+(evtable = EVENTS) [STRING]
+
 (timefield = TIME) [string]
-    This is the name of the field containing the time values for
-    time binning. The default value is consistent with the FT1
-    format.
+    This is the name of the field containing the time values
+    for time binning. The default value is consistent with
+    the GLAST FT1 event file format.
 \endverbatim
 
-
     \subsection frequency_para Frequency Ephemeris Parameters
-\verbatim
+
 f0 [double]
     The value of the frequency at the epoch. Only used if
     ephstyle is FREQ.
