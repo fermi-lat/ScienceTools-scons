@@ -16,5 +16,6 @@
         v1  23-aug-05   JP    Add binary correction, and gtophase tool. Rename
                               pulsePhase tool gtpphase.
     v1r0p1  25-aug-05   JP    Re-order parameters to improve look of GUI. Improve docs.
+    v1r0p2  25-aug-05   JP    Add documentation for gtophase.
     @endverbatim
 */
