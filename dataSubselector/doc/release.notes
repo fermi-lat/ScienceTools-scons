@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r8p2  25-Aug-05   JC   use evtbin v* etc.
     v3r8p1  17-Aug-05   JC   take the union of merged GTIs not the 
                              intersection.
     v3r8    17-Aug-05   JC   add Cuts constructor that accepts multiple

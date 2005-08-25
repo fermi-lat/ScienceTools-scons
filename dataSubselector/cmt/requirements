@@ -1,16 +1,16 @@
 package dataSubselector
-version v3r8p1
+version v3r8p2
 
 author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
-use STpolicy v1r*
+use STpolicy v*
 use tip v*
 use astro v*
 use st_facilities v*
 use facilities v*
-use evtbin v0r*
+use evtbin v*
 
 apply_pattern ST_library option=" -no_share "
 apply_pattern ST_pfiles
@@ -21,10 +21,10 @@ application viewCuts viewCuts/*.cxx
 
 private
 
-use hoops v0r*
-use st_app v1r*
+use hoops v*
+use st_app v*
 use st_facilities v*
-use cppunit v1r* IExternal
+use cppunit v* IExternal
 
 macro dataSubselector_cppflags "" \
       Linux "-I ../src " \
