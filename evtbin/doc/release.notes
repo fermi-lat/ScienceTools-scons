@@ -44,6 +44,7 @@
                           Include DSS keywords in all output files. Change
                           order of parameters to improve GUI.
 23-aug-2005   v0r12p1 JP  Improve logic/order of parameters to improve the GUI.
+25-aug-2005   v0r12p2 JP  Compare floating numbers more carefully in unit test.
 --------------------------------------------------------------------------------
 \endverbatim
 
