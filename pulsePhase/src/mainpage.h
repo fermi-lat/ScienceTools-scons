@@ -14,7 +14,7 @@ The application gtophase operates on an event file to compute
 the orbital phase for the time of each event, and writes this
 phase to the ORBITAL_PHASE column of the event file.
 
-    \section gtpphase_parameters gtpphase Parameters
+    \section parameters Parameters
 
     \subsection key Key To Parameter Descriptions
 \verbatim
@@ -38,12 +38,13 @@ infile [file]
     default value is yes (true).
 \endverbatim
 
-    \subsection general General Parameters
+    \subsection gtpphase_general gtpphase General Parameters
+
 \verbatim
 evfile [string]
     Name of input event file, FT1 format or equivalent.
 
-psrname [string]
+psrname = ANY [string]
     The name of the pulsar, used to select only ephemerides
     valid for a particular pulsar.
 
@@ -77,6 +78,7 @@ phi0 [double]
     regardless of whether orbital ephemerides exist in the database.
 
 (evtable = EVENTS) [STRING]
+    The name of the file containing the event data.
 
 (timefield = TIME) [string]
     This is the name of the field containing the time values
@@ -86,6 +88,7 @@ phi0 [double]
 
     \subsection frequency_para Frequency Ephemeris Parameters
 
+\verbatim
 f0 [double]
     The value of the frequency at the epoch. Only used if
     ephstyle is FREQ.
@@ -112,6 +115,34 @@ p1 [double]
 p2 [double]
     The value of the second time derivative of the period at the
     epoch. Only used if ephstyle is PER.
+\endverbatim
+
+    \subsection gtophase_parameters gtophase Parameters
+
+\verbatim
+evfile [string]
+    Name of input event file, FT1 format or equivalent.
+
+psrname = ANY [string]
+    The name of the pulsar, used to select only ephemerides
+    valid for a particular pulsar.
+
+(phi0 = 0.) [double]
+    The phase offset at this epoch.
+
+(psrdbfile = DEFAULT) [file name]
+    Name of pulsar ephemerides database file, in GLAST D4
+    FITS format. If psrdbfile is DEFAULT, the canonical pulsar
+    database file (master_pulsardb.fits), which is distributed
+    with the pulsar tools, will be used.
+
+(evtable = EVENTS) [STRING]
+    The name of the file containing the event data.
+
+(timefield = TIME) [string]
+    This is the name of the field containing the time values
+    for time binning. The default value is consistent with
+    the GLAST FT1 event file format.
 \endverbatim
 
     \section todo Open Issues
