@@ -3,6 +3,9 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+25-aug-2005 v2r5p1 JP Make a path in test code more Windows-like (on Windows)
+                      in the hopes that this overcomes a problem when tests
+                      are run by the release manager.
 19-jul-2005 v2r5p0 JP Add IColumn::getFormat() which returns the full format
                       descriptor of any column.
 20-jun-2005 v2r4p0 JP Add iterator type and begin/end to Header to allow interating
