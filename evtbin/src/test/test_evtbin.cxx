@@ -652,15 +652,18 @@ void EvtBinTest::testBinConfig() {
       std::cerr << "BinConfig::createTimeBinner created a binner with " << binner->getNumBins() << " bins, not 11" << std::endl;
     }
 
+    // Get absolute O/S dependent limit on precision.
+    const double epsilon = std::numeric_limits<double>::epsilon();
+
     // The first bin should begin with tstart.
-    if (-177. != binner->getInterval(0).begin()) {
+    if (epsilon < fabs((binner->getInterval(0).begin() + 177.) / 177.)) {
       m_failed = true;
       std::cerr << "BinConfig::createTimeBinner created a binner whose first bin begins with " <<
         binner->getInterval(0).begin() << " not -177." << std::endl;
     }
 
     // The last bin should end with tstop.
-    if (-100. != binner->getInterval(binner->getNumBins() - 1).end()) {
+    if (epsilon < fabs((binner->getInterval(binner->getNumBins() - 1).end() + 100.) / 100.)) {
       m_failed = true;
       std::cerr << "BinConfig::createTimeBinner created a binner whose last bin ends with " <<
         binner->getInterval(binner->getNumBins() - 1).end() << " not -100." << std::endl;
@@ -702,28 +705,28 @@ void EvtBinTest::testBinConfig() {
     }
 
     // The first bin should begin with emin.
-    if (-7 != int(floor(log10(binner->getInterval(0).begin())))) {
+    if (epsilon < fabs((binner->getInterval(0).begin() - 1.e-7) / 1.e-7)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner created a binner whose first bin begins with " <<
         binner->getInterval(0).begin() << " not 1.e-7" << std::endl;
     }
 
     // The first bin should end with one order of magnitude more than emin.
-    if (-6 != int(floor(log10(binner->getInterval(0).end())))) {
+    if (epsilon * 100 < fabs((binner->getInterval(0).end() - 1.e-6) / 1.e-6)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner created a binner whose first bin ends with " <<
         binner->getInterval(0).end() << " not 1.e-6" << std::endl;
     }
 
     // The last bin should begin with one order of magnitude less than emax.
-    if (-1 != int(floor(log10(binner->getInterval(binner->getNumBins() - 1).begin())))) {
+    if (epsilon * 100 < fabs((binner->getInterval(binner->getNumBins() - 1).begin() - .1) / .1)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner created a binner whose last bin begins with " <<
         binner->getInterval(binner->getNumBins() - 1).begin() << " not .1" << std::endl;
     }
 
     // The last bin should end with emax.
-    if (0 != int(floor(log10(binner->getInterval(binner->getNumBins() - 1).end())))) {
+    if (epsilon < fabs((binner->getInterval(binner->getNumBins() - 1).end() - 1.) / 1.)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner created a binner whose last bin ends with " <<
         binner->getInterval(binner->getNumBins() - 1).end() << " not 1." << std::endl;
@@ -751,33 +754,32 @@ void EvtBinTest::testBinConfig() {
     }
 
     // The beginning of the first bin should match the file contents.
-    if (30. != binner->getInterval(0).begin()) {
+    if (epsilon < fabs((binner->getInterval(0).begin() - 30.) / 30.)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose first bin begins with " <<
         binner->getInterval(0).begin() << " not 30." << std::endl;
     }
 
+    float float_epsilon = std::numeric_limits<float>::epsilon();
     // The end value of the first bin should match the file contents.
-    if (float(30.2030597787817) != float(binner->getInterval(0).end())) {
+    if (float_epsilon < fabs((binner->getInterval(0).end() - 30.20306) / 30.20306)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose first bin ends with " <<
-        binner->getInterval(0).end() << " not 30.2030597787817" << std::endl;
+        binner->getInterval(0).end() << " not 30.20306" << std::endl;
     }
 
     // The beginning value of the last bin should match the file contents.
-    // ? This should work but there seems to be some spurious rounding error in cfitsio.
-    // if (float(29798.3054230906) != float(binner->getInterval(binner->getNumBins() - 1).begin())) {
-    if (float(29798.306) != float(binner->getInterval(binner->getNumBins() - 1).begin())) {
+    if (float_epsilon < fabs((binner->getInterval(binner->getNumBins() - 1).begin() - 29798.306) / 29798.306)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose last bin begins with " <<
         binner->getInterval(binner->getNumBins() - 1).begin() << " not 29798.306" << std::endl;
     }
 
     // The end value of the last bin should match the file contents.
-    if (float(29999.9999999999) != float(binner->getInterval(binner->getNumBins() - 1).end())) {
+    if (float_epsilon < fabs((binner->getInterval(binner->getNumBins() - 1).end() - 30000.) / 30000.)) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner with bin def file created a binner whose last bin ends with " <<
-        binner->getInterval(binner->getNumBins() - 1).end() << " not 29999.9999999999" << std::endl;
+        binner->getInterval(binner->getNumBins() - 1).end() << " not 30000." << std::endl;
     }
 
   } catch (const std::exception & x) {
