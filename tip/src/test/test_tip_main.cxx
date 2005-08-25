@@ -46,7 +46,11 @@ int main() {
     // Use it to set name of data directory:
     if (0 != tiproot_cp) {
       tiproot = tiproot_cp;
+#ifdef WIN32
+      data_dir = tiproot + "\\data\\";
+#else
       data_dir = tiproot + "/data/";
+#endif
     }
 
     // Perform startup initialization.
@@ -128,7 +132,7 @@ int main() {
     delete my_table; my_table = 0;
 
     // The following test file should be present.
-    my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM", "#row < 100");
+    my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM", "#row<100");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
