@@ -11,7 +11,13 @@ use STpolicy *
 use st_stream *
 
 private
-apply_pattern ST_library option=-no_share
+#apply_pattern ST_library option=-no_share
+
+apply_pattern package_include
+apply_pattern package_linkopts
+macro source *.cxx WIN32 "*.h *.cxx"
+library st_graph -no_share $(source)
+
 public
 apply_pattern root_package headers="../st_graph/RootFrame.h" includes="-I. -I.."
 public
