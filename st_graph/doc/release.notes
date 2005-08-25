@@ -22,5 +22,7 @@ $Id$
 30-jun-2005    v1r3p2 JP  Further fiddling with public/private tags
 23-aug-2005      v1r4 JP  Add capability to select tabs and find out selected tabs
                           from tab folders
+24-aug-2005    v1r4p1 JP  Change patterns to avoid conflict between
+                          GlastRootPolicy and ST_policy.
 \endverbatim
 */
