@@ -13,11 +13,6 @@ use st_stream *
 private
 #apply_pattern ST_library option=-no_share
 
-apply_pattern package_include
-apply_pattern package_linkopts
-macro source *.cxx WIN32 "*.h *.cxx"
-library st_graph -no_share $(source)
-
 public
 apply_pattern root_package headers="../st_graph/RootFrame.h" includes="-I. -I.."
 public
@@ -30,3 +25,9 @@ macro_append st_graph_linkopts ${st_graph_libs}
 
 private
 macro_append st_graph_cppflags "" Linux "-DTRAP_FPE "
+apply_pattern package_include
+apply_pattern package_linkopts
+macro source *.cxx WIN32 "*.h *.cxx"
+library st_graph -no_share $(source)
+application test_st_graph test/*.cxx
+
