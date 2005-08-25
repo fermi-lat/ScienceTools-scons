@@ -15,5 +15,6 @@
     v0r3p1  07-mar-05   JP    Requirements file was out-of-sync.
         v1  23-aug-05   JP    Add binary correction, and gtophase tool. Rename
                               pulsePhase tool gtpphase.
+    v1r0p1  25-aug-05   JP    Re-order parameters to improve look of GUI. Improve docs.
     @endverbatim
 */
