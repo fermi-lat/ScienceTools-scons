@@ -32,12 +32,16 @@
 class StGraphTestApp {
   public:
     /// \brief Construct the test application.
-    StGraphTestApp(int argc, char ** argv): m_out("test_st_graph", "", 2) {}
+    StGraphTestApp(int argc, char ** argv): m_out("test_st_graph", "", 2), m_do_test(false) {
+      processCommandLine(argc, argv);
+    }
 
     virtual ~StGraphTestApp() throw() {}
 
     /// \brief Perform all tests.
     virtual void run();
+
+    virtual void processCommandLine(int argc, char ** argv);
 
     /// \brief Test scatter plots.
     virtual void testPlots();
@@ -61,12 +65,19 @@ class StGraphTestApp {
   private:
     static bool m_failed;
     st_stream::StreamFormatter m_out;
+    bool m_do_test;
 };
 
 bool StGraphTestApp::m_failed = false;
 
 void StGraphTestApp::run() {
   using namespace st_graph;
+  m_out.setMethod("run()");
+
+  if (!m_do_test) {
+    m_out.info() << "Graphical test not actually being run; to run it invoke this program with\n an argument." << std::endl;
+    return;
+  }
 
   testGuis();
   testSequence();
@@ -174,6 +185,10 @@ void StGraphTestApp::run() {
 #endif
 
   if (m_failed) throw std::runtime_error("Unit test failed");
+}
+
+void StGraphTestApp::processCommandLine(int argc, char **) {
+  if (argc > 1) m_do_test = true;
 }
 
 void StGraphTestApp::testPlots() {
