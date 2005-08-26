@@ -45,6 +45,9 @@ public:
    virtual void getScPosition(double time, std::vector<double> & scPosition);
 
    virtual void getZenith(double time, double & ra, double & dec);
+
+   virtual double livetimeFrac(double time) const;
+
 };
 
 } // namespace observationSim

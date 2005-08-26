@@ -253,6 +253,8 @@ void ObsSim::generateData() {
    bool writeScData = (pointingHistory == "" || pointingHistory == "none");
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows,
                                           writeScData);
+   double frac = m_pars["livetime_frac"];
+   scData.setLivetimeFrac(frac);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    if (m_pars["use_as_numevents"]) {
       if (observationSim::print_output()) {

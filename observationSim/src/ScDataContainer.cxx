@@ -87,13 +87,16 @@ void ScDataContainer::writeScData() {
       double stop_time = 2.*m_scData[npts-1].time() - m_scData[npts-2].time();
       for ( ; it != my_table->end(), sc != m_scData.end(); ++it, ++sc) {
          row["start"].set(sc->time());
+         double interval;
          if (sc+1 != m_scData.end()) {
             row["stop"].set((sc+1)->time());
-            row["livetime"].set((sc+1)->time() - sc->time());
+            interval = (sc+1)->time() - sc->time();
          } else {
             row["stop"].set(stop_time);
-            row["livetime"].set(stop_time - sc->time());
+            interval = stop_time - sc->time();
          }
+         row["livetime"].set(m_livetime_frac*interval);
+         row["deadtime"].set(interval*(1. - m_livetime_frac));
          row["lat_geo"].set(sc->lat());
          row["lon_geo"].set(sc->lon());
          row["ra_scz"].set(sc->zAxis().ra());
@@ -106,6 +109,7 @@ void ScDataContainer::writeScData() {
          row["in_saa"].set(sc->inSaa());
          if (sc->inSaa()) {
             row["livetime"].set(0);
+            row["deadtime"].set(interval);
          }
       }
       writeDateKeywords(my_table, start_time, stop_time);

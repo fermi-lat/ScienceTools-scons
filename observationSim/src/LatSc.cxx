@@ -70,4 +70,9 @@ void LatSc::getZenith(double time, double & ra, double & dec) {
    dec = astro::GPS::instance()->DECZenith();
 }
 
+double LatSc::livetimeFrac(double time) const {
+   astro::GPS::instance()->getPointingCharacteristics(time);
+   return astro::GPS::instance()->livetime_frac();
+}
+
 } // namespace observationSim

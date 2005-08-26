@@ -4,6 +4,7 @@ scfile,f,a,"none",,,"Pointing history file"
 outfile_prefix,s,a,"test",,,"Prefix for output files"
 
 simulation_time,r,a,86400,1,4e7, Simulation time (seconds)
+livetime_frac,r,hl,0.9,,,Livetime fraction
 start_time,r,h,0,,,Simulation start time (seconds)
 use_as_numevents,b,h,no,,,Use simulation time as number of events
 max_simulation_time,r,h,3.155e8,,,Maximum simulation time (seconds)

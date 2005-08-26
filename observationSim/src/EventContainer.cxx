@@ -156,7 +156,8 @@ bool EventContainer::addEvent(EventSource *event,
    if ( RandFlat::shoot() < m_prob
         && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
                                     energy, sourceDir, zAxis, xAxis))
-        && !spacecraft->inSaa(time) ) {
+        && !spacecraft->inSaa(time) 
+        && RandFlat::shoot() < spacecraft->livetimeFrac(time) ) {
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);
