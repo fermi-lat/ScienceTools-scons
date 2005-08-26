@@ -60,6 +60,8 @@ public:
       return 1;
    }
 
+   virtual void setLivetimeFrac(double) {};
+
 };
 
 } // namespace observationSim

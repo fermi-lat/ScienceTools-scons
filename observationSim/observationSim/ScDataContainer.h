@@ -40,8 +40,7 @@ public:
    ///        buffer before a FITS file is written.
    ScDataContainer(const std::string &filename, 
                    int maxNumEntries=20000, bool writeData=true) : 
-      ContainerBase(filename, maxNumEntries), m_writeData(writeData),
-      m_livetime_frac(1.) {
+      ContainerBase(filename, maxNumEntries), m_writeData(writeData) {
       init();
    }
 
@@ -63,16 +62,6 @@ public:
       return m_scData[m_scData.size()-1].time();
    }
 
-   void setLivetimeFrac(double frac) {
-      if (frac < 0) {
-         m_livetime_frac = 0;
-      } else if (frac > 1) {
-         m_livetime_frac = 1.;
-      } else {
-         m_livetime_frac = frac;
-      }
-   }
-
 private:
 
    /// The ScData buffer.
@@ -80,9 +69,6 @@ private:
 
    /// Flag if ScData is to be written out to FT2 files.
    bool m_writeData;
-
-   /// Livetime fraction
-   double m_livetime_frac;
 
    /// This routine contains the constructor implementation.
    void init();

@@ -27,10 +27,11 @@ public:
    ScData(double time, double RAz, double Decz, double lon, 
           double lat, const astro::SkyDir &zAxis, const astro::SkyDir &xAxis,
           bool inSAA, const std::vector<double> & position,
-          double raZenith, double decZenith) :
+          double raZenith, double decZenith, double livetimeFrac) :
       m_time(time), m_RAz(RAz), m_Decz(Decz), m_lon(lon), 
       m_lat(lat), m_zAxis(zAxis), m_xAxis(xAxis), m_inSaa(inSAA),
-      m_position(position), m_raZenith(raZenith), m_decZenith(decZenith) {}
+      m_position(position), m_raZenith(raZenith), m_decZenith(decZenith),
+      m_livetimeFrac(livetimeFrac) {}
 
    /// Time in seconds (referenced to the zero time of the orbit
    /// calculation in astro::EarthOrbit).
@@ -63,6 +64,9 @@ public:
    double raZenith() const {return m_raZenith;}
    double decZenith() const {return m_decZenith;}
 
+   // Live-time fraction for the current interval
+   double livetimeFrac() const {return m_livetimeFrac;}
+
 private:
 
    double m_time;
@@ -76,6 +80,8 @@ private:
    std::vector<double> m_position;
    double m_raZenith;
    double m_decZenith;
+
+   double m_livetimeFrac;
 };
 
 } // namespace observationSim

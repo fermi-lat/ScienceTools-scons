@@ -75,4 +75,8 @@ double LatSc::livetimeFrac(double time) const {
    return astro::GPS::instance()->livetime_frac();
 }
 
+void LatSc::setLivetimeFrac(double frac) {
+   astro::GPS::instance()->setLivetime_frac(frac);
+}
+
 } // namespace observationSim

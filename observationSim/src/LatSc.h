@@ -48,6 +48,8 @@ public:
 
    virtual double livetimeFrac(double time) const;
 
+   virtual void setLivetimeFrac(double frac);
+
 };
 
 } // namespace observationSim

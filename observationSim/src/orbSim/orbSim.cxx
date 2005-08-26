@@ -145,9 +145,9 @@ void OrbSim::generateData() {
    std::string prefix = m_pars["outfile_prefix"];
    observationSim::EventContainer events(prefix + "_events", 0, nMaxRows);
    observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows);
-   double frac = m_pars["livetime_frac"];
-   scData.setLivetimeFrac(frac);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
+   double frac = m_pars["livetime_frac"];
+   spacecraft->setLivetimeFrac(frac);
    if (observationSim::print_output()) {
       std::cout << "Generating pointing history for a simulation time of "
                 << m_count << " seconds...." << std::endl;
