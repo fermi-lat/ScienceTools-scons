@@ -1,12 +1,15 @@
 package likeGui
-version v7r4p2
+version v7r5
 
 #$Id$
 
 author J. Chiang <jchiang@slac.stanford.edu>
 
-use sane v*
+use sane v* 
 
-application gui_launcher run_likeGui.cxx
+application like_gui likeGui.cxx
+application ObsSim ObsSim.cxx
+application ModelEditor ModelEditor.cxx
 
-path_append PYTHONPATH "$(LIKEGUIROOT)/python"
+path_remove PYTHONPATH "$(LIKEGUIROOT)/python"
+path_prepend PYTHONPATH "$(LIKEGUIROOT)/python"

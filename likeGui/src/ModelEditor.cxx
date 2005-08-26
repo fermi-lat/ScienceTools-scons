@@ -1,6 +1,6 @@
 /**
- * @file main.cxx
- * @brief Driver for running likeGui
+ * @file ModelEditor.cxx
+ * @brief Driver for running ModelEditor
  *
  * @author J. Chiang <jchiang@slac.stanford.edu>
  *
@@ -16,7 +16,7 @@ int main(int iargc, char *argv[]) {
    std::string pythonDir = rootPath + "/python";
    if (iargc == 1) {
       command = std::string("python ") + pythonDir 
-         + std::string("/likeGui.py");
+         + std::string("/ModelEditor.py");
    } else if (iargc == 2) {
       command = std::string("python ") + argv[1];
    }

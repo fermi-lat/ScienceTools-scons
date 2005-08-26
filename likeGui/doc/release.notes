@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r5     26-Aug-05    JC    build separate applications for ModelEditor,
+                               ObsSim so they are wrapped by Navid's scripts
    v7r4p2   21-Aug-05    JC    stop writing par file; rename gui launcher;
                                allow user to cd
    v7r4p1   18-Jul-05    JC    add LogParabola to FunctionFactory
