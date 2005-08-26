@@ -58,6 +58,7 @@ public:
         double lat,lon;
         Hep3Vector position;
         double altitude;
+        double livetime_frac;
     }POINTINFO;
 
     typedef std::map<double,GPS::POINTINFO> HistoryMap;
@@ -182,6 +183,9 @@ public:
         return m_earthOrbit->position(time);
         /*return m_position;*/} //interface to EarthOrbit::position()
 
+   double livetime_frac() const;
+   void setLivetime_frac(double time);
+
 protected:
     // singleton - protect ctor/dtor
     GPS();
@@ -216,6 +220,7 @@ private:
     HistoryMap m_pointingHistory;//pointing/livetime database history
     POINTINFO m_currentInterpPoint; //holder object for currently interpotated pointing information
 
+   double m_livetime_frac;
    bool haveFitsFile() const;
    void readFitsData();
    void fitsReportError(FILE *, int) const;

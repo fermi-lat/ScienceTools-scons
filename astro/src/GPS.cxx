@@ -28,7 +28,7 @@ m_lastQueriedTime(-1.),
 m_sampleintvl(30.), // update position every 30 seconds
 m_rockDegrees(35.),
 m_rockType(NONE),
-m_rockNorth(0)
+m_rockNorth(0), m_livetime_frac(1)
 {   // initialize the singleton
     getPointingCharacteristics(0);
 }
@@ -80,6 +80,13 @@ double GPS::DECX()const{return m_DECX;}
 double GPS::DECZ()const{return m_DECZ;}    
 double GPS::RAZenith()const{return m_RAZenith;}    
 double GPS::DECZenith()const{return m_DECZenith;}
+double GPS::livetime_frac() const {
+   return m_livetime_frac;
+}
+
+void GPS::setLivetime_frac(double frac) {
+   m_livetime_frac = frac;
+}
 
 GPStime	GPS::time ()  const
 { 
@@ -285,7 +292,7 @@ void GPS::getPointingCharacteristics(double inputTime){
     double inclination = m_earthOrbit->inclination();
     double orbitPhase = m_earthOrbit->phase(time);
     m_position = m_earthOrbit->position(time);
-
+    
     //first make the directions for the x and Z axes, as well as the zenith direction, and latitude/longitude
     double lZ,bZ,raX,decX;
     //before rotation, the z axis points along the zenith:
@@ -314,6 +321,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         m_lat = m_currentInterpPoint.lat;
         m_lon = m_currentInterpPoint.lon;
         m_altitude = m_currentInterpPoint.altitude;
+        m_livetime_frac = m_currentInterpPoint.livetime_frac;
         //now set the zenith direction before the rocking.
         m_RAZenith = dirZenith.ra();
         m_DECZenith = dirZenith.dec();
@@ -460,6 +468,7 @@ void GPS::readFitsData() {
    std::vector<float> lat_geo(stride);
    std::vector<float> lon_geo(stride);
    std::vector<float> rad_geo(stride);
+   std::vector<float> livetime(stride);
 
 // map of pointers to the data and type, keyed by column name.
    std::map<std::string, std::pair<void *, int> > columns;
@@ -473,6 +482,7 @@ void GPS::readFitsData() {
    columns["LAT_GEO"] = std::make_pair(&lat_geo[0], TFLOAT);
    columns["LON_GEO"] = std::make_pair(&lon_geo[0], TFLOAT);
    columns["RAD_GEO"] = std::make_pair(&rad_geo[0], TFLOAT);
+   columns["LIVETIME"] = std::make_pair(&livetime[0], TFLOAT);
 
    std::map<std::string, std::pair<void *, int> >::iterator column;
 
@@ -509,6 +519,7 @@ void GPS::readFitsData() {
          double mperkm(1e3);
          row.position = Hep3Vector(sc_pos[indx]/mperkm, sc_pos[indx+1]/mperkm, 
                                    sc_pos[indx+2]/mperkm);
+         row.livetime_frac = livetime[i]/(stop_time[i] - start_time[i]);
          m_pointingHistory[start_time[i]] = row;
       }
    }
@@ -523,6 +534,7 @@ void GPS::readFitsData() {
    int indx = i*3;
    row.position = Hep3Vector(sc_pos[indx], sc_pos[indx+1], 
                              sc_pos[indx+2]);
+   row.livetime_frac = livetime[i]/(stop_time[i] - start_time[i]);
    m_pointingHistory[stop_time[i]] = row;
 
    fits_close_file(fptr, &status);
@@ -569,6 +581,7 @@ void GPS::setUpHistory(double offset){
             temp.lon=lon;
             temp.position=Hep3Vector(posx,posy,posz);
             temp.altitude = alt;
+            temp.livetime_frac = 1.;
 
             m_pointingHistory[intrvalstart+offset]=temp;
          }
@@ -602,6 +615,8 @@ void GPS::setInterpPoint(double time){
     astro::SkyDir dirZ2=(*iter).second.dirZ;
     astro::SkyDir dirX2=(*iter).second.dirX;
     double alt2 =(*iter).second.altitude;
+
+    m_currentInterpPoint.livetime_frac = iter->second.livetime_frac;
 
     //then get the details from the previous point:
     iter--;
