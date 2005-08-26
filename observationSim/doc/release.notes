@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r9p2 26-Aug-05   JC   handle livetime fractions via new imp in 
+                            astro v1r10p3
     v5r9p1 18-Aug-05   JC   remove extraneous and incorrect DSS keywords
                             from template file
     v5r9   16-Aug-05   JC   set GTI and date keywords to start and end 
