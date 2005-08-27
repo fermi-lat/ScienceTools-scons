@@ -7,10 +7,10 @@ Prototype GUI for obsSim
 #
 # $Header$
 #
-import os, sys
+import os, sys, time
 import Tkinter as Tk
 import tkFileDialog
-from FileDialog import LoadFileDialog
+from FileDialog import LoadFileDialog, SaveFileDialog
 
 sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
 
@@ -19,6 +19,8 @@ from ParamDialog import ParamDialog
 from EditFileDialog import *
 from ThreadedClient import runInThread
 from pil import Pil
+from pfilesPath import pfilesPath
+from create_library import makeSrcLib
 
 # @todo replace these with GtApp objects
 obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
@@ -55,6 +57,17 @@ class RootWindow(Tk.Tk):
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         if xmlFile is not None:
             self.srcLibs.addLibs(xmlFile)
+    def importSrcList(self):
+        inputFile = LoadFileDialog(self, title='Input ascii file:').go()
+        time.sleep(0.5)
+        saveDialog =SaveFileDialog(self, title='Output xml file:')
+        outputFile = saveDialog.go(pattern='*.xml')
+        src_lib = makeSrcLib(inputFile)
+        outfile = open(outputFile, 'w')
+        for line in src_lib:
+            outfile.write(line + "\n")
+        outfile.close()
+        self.open(outputFile)
     def cd(self):
         file = tkFileDialog.askdirectory(title="Where to?", mustexist=1)
         #file = FileDialog(self.parent).go()
@@ -65,17 +78,18 @@ class RootWindow(Tk.Tk):
     def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)
-        pars = Pil('gtobssim.par')
+        pfile = 'gtobssim.par'
+        pars = Pil(pfile)
         pars['xml_source_file'] = xmlList
         pars['source_list'] = sourceNames
-        pfile = 'gtobssim.par'
+        pars.write(os.path.join(pfilesPath(), pfile))
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((obsSim, dialog.paramString))
             runInThread(commandApp(command))
     def orbSim(self):
-        pars = Pil('gtorbsim.par')
         pfile = 'gtorbsim.par'
+        pars = Pil(pfile)
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
             command = " ".join((orbSim, dialog.paramString))
@@ -93,7 +107,6 @@ class FileMenu(Tk.Menu):
     def __init__(self, root):
         Tk.Menu.__init__(self, tearoff=0)
         self.add_command(label="cd...", underline=0, command=root.cd)
-        self.add_command(label="Open...", underline=0, command=root.open)
         self.add_command(label="Quit", underline=0, command=root.quit)
         
 class SimMenu(Tk.Menu):
@@ -188,6 +201,8 @@ class SourceLibMenu(Tk.Menu):
         Tk.Menu.__init__(self, parentFrame, tearoff=0)
         self.add_command(label='Open...', underline=0,
                          command=root.root.open)
+        self.add_command(label='Import source list...', underline=0,
+                         command=root.root.importSrcList)
         self.add_command(label='Delete selected', underline=0,
                          command=root.deleteSelected)
 
