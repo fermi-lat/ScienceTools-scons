@@ -6,6 +6,8 @@
 $Id$
 
 @verbatim
+  v1r10p4  28-aug-05 JC  patch to handle events arriving after end time of 
+                         pointing history file
   v1r10p3  26-aug-05 JC  add access to livetime info in GPS
   v1r10p2  09-aug-05 THB special patch for CINT to manage SkyDir
   v1r10p1  16-jun-05 THB fix test program
