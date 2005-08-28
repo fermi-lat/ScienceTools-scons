@@ -28,7 +28,7 @@ m_lastQueriedTime(-1.),
 m_sampleintvl(30.), // update position every 30 seconds
 m_rockDegrees(35.),
 m_rockType(NONE),
-m_rockNorth(0), m_livetime_frac(1)
+m_rockNorth(0), m_livetime_frac(1), m_endTime(0)
 {   // initialize the singleton
     getPointingCharacteristics(0);
 }
@@ -292,7 +292,7 @@ void GPS::getPointingCharacteristics(double inputTime){
     double inclination = m_earthOrbit->inclination();
     double orbitPhase = m_earthOrbit->phase(time);
     m_position = m_earthOrbit->position(time);
-    
+
     //first make the directions for the x and Z axes, as well as the zenith direction, and latitude/longitude
     double lZ,bZ,raX,decX;
     //before rotation, the z axis points along the zenith:
@@ -309,7 +309,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         //now set the zenith direction before the rocking.
         m_RAZenith = tempDirZ.ra();
         m_DECZenith = tempDirZ.dec();
-    }else if(m_rockType == HISTORY){
+    }else if(m_rockType == HISTORY && inputTime < m_endTime){
         setInterpPoint(inputTime);
         SkyDir dirZenith(m_currentInterpPoint.position.unit());
         SkyDir dirZ(m_currentInterpPoint.dirZ);
@@ -539,6 +539,7 @@ void GPS::readFitsData() {
 
    fits_close_file(fptr, &status);
    fitsReportError(stderr, status);
+   m_endTime = stop_time[i];
 }   
 
 void GPS::fitsReportError(FILE *stream, int status) const {
@@ -582,7 +583,7 @@ void GPS::setUpHistory(double offset){
             temp.position=Hep3Vector(posx,posy,posz);
             temp.altitude = alt;
             temp.livetime_frac = 1.;
-
+            m_endTime = intrvalstart + offset;
             m_pointingHistory[intrvalstart+offset]=temp;
          }
       }

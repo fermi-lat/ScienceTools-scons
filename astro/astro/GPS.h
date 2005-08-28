@@ -221,6 +221,7 @@ private:
     POINTINFO m_currentInterpPoint; //holder object for currently interpotated pointing information
 
    double m_livetime_frac;
+   double m_endTime;
    bool haveFitsFile() const;
    void readFitsData();
    void fitsReportError(FILE *, int) const;
