@@ -240,7 +240,7 @@ class CandidateSources(Tk.Frame):
         srcElts = srcLib.getElementsByTagName('source')
         self.sources = map()
         for src in srcElts:
-            name = src.getAttribute('name').encode()
+            name = src.getAttribute('name').encode().strip()
             self.sources[name] = src
         self.listBox.delete(0, Tk.END)
         for src in self.sources.ordered_keys:
