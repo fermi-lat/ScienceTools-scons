@@ -10,6 +10,7 @@ Prototype GUI for obsSim
 import os, sys, time
 import Tkinter as Tk
 import tkFileDialog
+from tkMessageBox import showwarning
 from FileDialog import LoadFileDialog, SaveFileDialog
 
 sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
@@ -46,31 +47,50 @@ class RootWindow(Tk.Tk):
         if file is not None:
             self.srcLibs.addLibs(file)
         else:
-            xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'], 'xml',
-                                    'xmlFiles.dat')
-            defaultFiles = open(xmlFiles, 'r')
+            try:
+                defaultFiles = open('xmlFiles.dat')
+            except:
+                xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
+                                        'xml', 'xmlFiles.dat')
+                defaultFiles = open(xmlFiles, 'r')
             for file in defaultFiles:
                 if file.strip() != '':
                     self.srcLibs.addLibs(expandEnvVar(file).strip())
+    def loadDefaultXmlFiles(self):
+        xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
+                                'xml', 'xmlFiles.dat')
+        defaultFiles = open(xmlFiles, 'r')
+        for file in defaultFiles:
+            if file.strip() != '' and file.find('#') != 0:
+                self.srcLibs.addLibs(expandEnvVar(file).strip())
     def open(self, xmlFile=None):
         if xmlFile is None:
             xmlFile = LoadFileDialog(self).go(pattern='*.xml')
         if xmlFile is not None:
-            self.srcLibs.addLibs(xmlFile)
+            try:
+                self.srcLibs.addLibs(xmlFile)
+            except:
+                showwarning("XML Parsing Error: ", "Cannot read " + xmlFile)
+        self.save()
+    def save(self):
+        self.srcLibs.writeXmlFileList()
     def importSrcList(self):
-        inputFile = LoadFileDialog(self, title='Input ascii file:').go()
-        time.sleep(0.5)
-        saveDialog =SaveFileDialog(self, title='Output xml file:')
-        outputFile = saveDialog.go(pattern='*.xml')
-        src_lib = makeSrcLib(inputFile)
-        outfile = open(outputFile, 'w')
-        for line in src_lib:
-            outfile.write(line + "\n")
-        outfile.close()
-        self.open(outputFile)
+        try:
+            inputFile = LoadFileDialog(self, title='Input ascii file:').go()
+            time.sleep(0.5)
+            saveDialog = SaveFileDialog(self, title='Output xml file:')
+            outputFile = saveDialog.go(pattern='*.xml')
+            src_lib = makeSrcLib(inputFile)
+            outfile = open(outputFile, 'w')
+            for line in src_lib:
+                outfile.write(line + "\n")
+            outfile.close()
+            self.open(outputFile)
+        except:
+            showwarning("Import Error: ", "Cannot parse " + inputFile)
     def cd(self):
-        file = tkFileDialog.askdirectory(title="Where to?", mustexist=1)
-        #file = FileDialog(self.parent).go()
+        file = tkFileDialog.askdirectory(title="Change working directory:",
+                                         mustexist=1)
         try:
             os.chdir(file)
         except:
@@ -167,14 +187,17 @@ class SourceLibraries(Tk.Frame):
         for lib in self.libs.ordered_keys:
             self.listBox.insert(Tk.END, lib)
     def addLibs(self, file):
-        srcLibs = SourceLibrary(file)
-        file = os.path.abspath(file)
-        for lib in srcLibs:
-            if lib not in self.libs:
-                self.libs[lib] = (srcLibs[lib], file)
-        self.fill()
-        if file not in self.files:
-            self.files.append(file)
+        try:
+            srcLibs = SourceLibrary(file)
+            file = os.path.abspath(file)
+            for lib in srcLibs:
+                if lib not in self.libs:
+                    self.libs[lib] = (srcLibs[lib], file)
+            self.fill()
+            if file not in self.files:
+                self.files.append(file)
+        except:
+            showwarning("XML Parsing Error: ", "Cannot read " + file)
     def selectLibrary(self, event=None):
         libname = self.listBox.get('active')
         self.root.candidates.setSrcLib(self.libs[libname][0], libname)
@@ -190,6 +213,7 @@ class SourceLibraries(Tk.Frame):
         self.fill()
         self.root.candidates.clearAll()
         self.root.candidates.menuButton.config(text='Candidate Sources')
+        self.writeXmlFileList()
     def writeXmlFileList(self, file='xmlFiles.dat'):
         outfile = open(file, 'w')
         for item in self.files:
@@ -199,12 +223,15 @@ class SourceLibraries(Tk.Frame):
 class SourceLibMenu(Tk.Menu):
     def __init__(self, root, parentFrame):
         Tk.Menu.__init__(self, parentFrame, tearoff=0)
-        self.add_command(label='Open...', underline=0,
+        self.add_command(label='Add source library file...', underline=0,
                          command=root.root.open)
-        self.add_command(label='Import source list...', underline=0,
-                         command=root.root.importSrcList)
+        self.add_command(label='Load default files', underline=0,
+                         command=root.root.loadDefaultXmlFiles)
         self.add_command(label='Delete selected', underline=0,
                          command=root.deleteSelected)
+        self.add_separator()
+        self.add_command(label='Import source list...', underline=0,
+                         command=root.root.importSrcList)
 
 class CandidateSources(Tk.Frame):
     def __init__(self, root, parentFrame):
