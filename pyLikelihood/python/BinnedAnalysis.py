@@ -27,7 +27,7 @@ class BinnedObs(object):
                                   'IRFs: ' + str(irfs)))
         self.srcMaps = srcMaps
         self._createObservation(srcMaps, expCube, irfs)
-        if binnedExpMap is not None and binnedExpMap is not "":
+        if binnedExpMap is not None and binnedExpMap != "":
             pyLike.SourceMap_setBinnedExposure(binnedExpMap)
         self.countsMap = pyLike.CountsMap(srcMaps)
     def _createObservation(self, srcMaps, expCube, irfs):
