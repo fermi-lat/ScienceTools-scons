@@ -150,7 +150,7 @@
       </spectrum>
    </source>
 
-   <source name="PKS0528p134">
+   <source name="PKS0528p134" flux="0.0980184334659">
       <spectrum escale="MeV">
          <particle name="gamma">
             <power_law emin="20.0" emax="1000000.0" gamma="2.46"/>
