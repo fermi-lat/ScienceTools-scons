@@ -5,6 +5,7 @@
 $Id$
 
 \verbatim
+29-aug-2005    v1r0p2 JP  Do not perform test of binary demodulation on Windows for now.
 25-aug-2005    v1r0p1 JP  Use _isnan on Windows.
 23-aug-2005        v1 JP  Add orbital phase calculation and binary correction.
                           Add gtephcomp, an ephemeris extractor/calculator.
