@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+30-aug-2005 v2r5p2 JP Add more tests to try to diagnose problem with unit
+                      test on Windows when run by release manager.
 25-aug-2005 v2r5p1 JP Make a path in test code more Windows-like (on Windows)
                       in the hopes that this overcomes a problem when tests
                       are run by the release manager.
