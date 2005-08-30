@@ -131,6 +131,43 @@ int main() {
 
     delete my_table; my_table = 0;
 
+    // Test opening some extensions in a1.pha, both with and without write access.
+    try {
+      const Extension * ext = IFileSvc::instance().readExtension(data_dir + "a1.pha", "");
+      delete ext;
+      std::cerr << "Expected: reading primary extension in a1.pha did not throw an exception." << std::endl;
+    } catch (const TipException & x) {
+      std::cerr << "Unexpected: reading primary extension in a1.pha threw exception: " << x.what() << std::endl;
+      status = 1;
+    }
+
+    try {
+      const Extension * ext = IFileSvc::instance().readTable(data_dir + "a1.pha", "SPECTRUM");
+      delete ext;
+      std::cerr << "Expected: reading SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
+    } catch (const TipException & x) {
+      std::cerr << "Unexpected: reading SPECTRUM extension in a1.pha threw exception: " << x.what() << std::endl;
+      status = 1;
+    }
+
+    try {
+      Extension * ext = IFileSvc::instance().editExtension(data_dir + "a1.pha", "");
+      delete ext;
+      std::cerr << "Expected: editing SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
+    } catch (const TipException & x) {
+      std::cerr << "Unexpected: editing SPECTRUM extension in a1.pha threw exception: " << x.what() << std::endl;
+      status = 1;
+    }
+
+    try {
+      Extension * ext = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM");
+      delete ext;
+      std::cerr << "Expected: editing SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
+    } catch (const TipException & x) {
+      std::cerr << "Unexpected: editing SPECTRUM extension in a1.pha threw exception: " << x.what() << std::endl;
+      status = 1;
+    }
+
     // The following test file should be present.
     my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM", "#row<100");
 
