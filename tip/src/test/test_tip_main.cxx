@@ -153,9 +153,9 @@ int main() {
     try {
       Extension * ext = IFileSvc::instance().editExtension(data_dir + "a1.pha", "");
       delete ext;
-      std::cerr << "Expected: editing SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
+      std::cerr << "Expected: editing primary extension in a1.pha did not throw an exception." << std::endl;
     } catch (const TipException & x) {
-      std::cerr << "Unexpected: editing SPECTRUM extension in a1.pha threw exception: " << x.what() << std::endl;
+      std::cerr << "Unexpected: editing primary extension in a1.pha threw exception: " << x.what() << std::endl;
       status = 1;
     }
 
