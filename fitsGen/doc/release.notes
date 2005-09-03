@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r2   03-Sep-05   JC   update to "current" FT1/2 template files
+                            which have MJDREF = 51910
     v1r1p3 07-Mar-05   JC   set mission start = MJDREF = 54101.0
     v1r1p2 27-Jan-05   JC   convert from km to meters in makeFT2a for 
                             spacecraft position vector
