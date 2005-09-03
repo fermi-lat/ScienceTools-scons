@@ -1,5 +1,5 @@
 # Definition of LAT Event Summary File (FT1)
-# Definition as of August 2nd, 2004
+# Definition as of July 12th, 2005
 SIMPLE      = T                              / file does conform to FITS standard
 BITPIX      = 8                              / number of bits per data pixel
 NAXIS       = 0                              / number of data axes
@@ -44,8 +44,9 @@ HDUCLAS1    = 'EVENTS'                                  / extension contains eve
 HDUCLAS2    = 'ALL'                                     / extension contains all events detected
 TSTART      =                                           / mission time of the start of the observation
 TSTOP       =                                           / mission time of the end of the observation
-MJDREF      = 54101.0                                   / MJD corresponding to SC clock start
+MJDREF      = 51910.0                                   / MJD corresponding to SC clock start
 TIMEUNIT    = 's'                                       / units for the time related keywords
+TIMEZERO    = 0.0                                       / clock correction
 TIMESYS     = 'TT'                                      / type of time system that is used
 TIMEREF     = 'LOCAL'                                   / reference frame used for times
 TASSIGN     = 'SATELLITE'                               / location where time assignment performed
@@ -152,6 +153,11 @@ TFORM21     = 'D'                                       / data format of field: 
 TUNIT21     = ''                                        / physical unit of field
 TLMIN21     = 0.0                                       / minimum value
 TLMAX21     = 1.0                                       / maximum value
+TTYPE22     = 'ORBITAL_PHASE'                           / orbital phase of binary system at event arrival time
+TFORM22     = 'D'                                       / data format of field: 8-byte DOUBLE
+TUNIT22     = ''                                        / physical unit of field
+TLMIN22     = 0.0                                       / minimum value
+TLMAX22     = 1.0                                       / maximum value
 END
 
 XTENSION     = 'BINTABLE'                  / binary table extension
@@ -177,8 +183,9 @@ HDUCLAS1     = 'GTI'                       / extension contains good time interv
 HDUCLAS2     = 'ALL'                       / extension contains all science time
 TSTART       =                             / mission time of the start of the observation
 TSTOP        =                             / mission time of the end of the observation
-MJDREF       = 54101.0                     / MJD corresponding to SC clock start
+MJDREF       = 51910.0                     / MJD corresponding to SC clock start
 TIMEUNIT     = 's'                         / units for the time related keywords
+TIMEZERO     = 0.0                         / clock correction
 TIMESYS      = 'TT'                        / type of time system that is used
 TIMEREF      = 'LOCAL'                     / reference frame used for times
 TASSIGN      = 'SATELLITE'                 / location where time assignment performed

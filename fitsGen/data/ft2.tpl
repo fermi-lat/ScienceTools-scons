@@ -1,5 +1,5 @@
 # Definition of LAT Pointing & Livetime History File (FT2)
-# Definition as of August 2nd, 2004
+# Definition as of July 12th, 2005
 SIMPLE      = T                           / file does conform to FITS standard
 BITPIX      = 8                           / number of bits per data pixel
 NAXIS       = 0                           / number of data axes
@@ -38,11 +38,12 @@ RADECSYS     = 'FK5'                       / world coord. system for this file (
 DATE         =                             / file creation date (YYYY-MM-DDThh:mm:ss UT)
 DATE-OBS     =                             / start date and time of the observation (UTC)
 DATE-END     =                             / end date and time of the observation (UTC)
-EXTNAME      = Ext1                        / name of this binary table extension
+EXTNAME      = 'Ext1'                      / name of this binary table extension
 TSTART       =                             / mission time of the start of the observation
 TSTOP        =                             / mission time of the end of the observation
-MJDREF       = 54101.0                     / MJD corresponding to SC clock start
+MJDREF       = 51910.0                     / MJD corresponding to SC clock start
 TIMEUNIT     = 's'                         / units for the time related keywords
+TIMEZERO     = 0.0                         / clock correction
 TIMESYS      = 'TT'                        / type of time system that is used
 TIMEREF      = 'LOCAL'                     / reference frame used for times
 TASSIGN      = 'SATELLITE'                 / location where time assignment performed
@@ -73,7 +74,7 @@ TLMIN5       = 0.0                         / minimum value
 TLMAX5       = 360.0                       / maximum value
 TTYPE6       = 'RAD_GEO'                   / S/C altitude
 TFORM6       = 'D'                         / data format of field: 8-byte DOUBLE
-TUNIT6       = 'km'                        / physical unit of field
+TUNIT6       = 'm'                         / physical unit of field
 TLMIN6       = 0.0                         / minimum value
 TLMAX6       = 10000.0                     / maximum value
 TTYPE7       = 'RA_ZENITH'                 / RA of zenith direction at start
