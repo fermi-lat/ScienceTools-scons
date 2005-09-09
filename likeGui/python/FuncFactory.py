@@ -12,6 +12,9 @@ model Functions.
 import copy
 from xml.dom import minidom
 from readXml import Source, Function, Parameter
+from tkMessageBox import showwarning
+
+_map_cube_warning_issued = False
 
 #
 # Spectra
@@ -79,6 +82,14 @@ def Gaussian():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def ConstantValueSpectrum():
+    func = '\n'.join( ('<spectrum type="ConstantValue">',
+                       '   <parameter max="10" min="0" free="0" '
+                       + 'name="Value" scale="1" value="1" />',
+                       '</spectrum>\n') )
+    (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
+    return Function(func)
+
 #
 # Spatial Models
 #
@@ -110,6 +121,19 @@ def SpatialMap():
     (func, ) = minidom.parseString(func).getElementsByTagName('spatialModel')
     return Function(func)
 
+def MapCubeFunction():
+    func  = """<spatialModel file="test_image.fits" type="MapCubeFunction">
+   <parameter free="0" max="1000" min="0.001" name="Normalization" scale="1" value="1" />
+</spatialModel>
+"""
+    func = minidom.parseString(func).getElementsByTagName('spatialModel')[0]
+#    global _map_cube_warning_issued
+#    if not _map_cube_warning_issued:
+#        showwarning('', 'Be sure to use "ConstantValue" as your ' +
+#                    'spectrum when using MapCubeFunction')
+#        _map_cube_warning_issued = True
+    return Function(func)
+
 #
 # Containers
 #                                   
@@ -132,6 +156,7 @@ class Spectra(FuncContainer):
         self.funcs['BrokenPowerLaw'] = BrokenPowerLaw()
         self.funcs['LogParabola'] = LogParabola()
         self.funcs['Gaussian'] = Gaussian()
+        self.funcs['ConstantValue'] = ConstantValueSpectrum()
 
 class SpatialModels(FuncContainer):
     def __init__(self):
@@ -139,6 +164,7 @@ class SpatialModels(FuncContainer):
         self.funcs['SkyDirFunction'] = SkyDirFunction()
         self.funcs['ConstantValue'] = ConstantValue()
         self.funcs['SpatialMap'] = SpatialMap()
+        self.funcs['MapCubeFunction'] = MapCubeFunction()
 
 #
 # Source factories
