@@ -12,9 +12,6 @@ model Functions.
 import copy
 from xml.dom import minidom
 from readXml import Source, Function, Parameter
-from tkMessageBox import showwarning
-
-_map_cube_warning_issued = False
 
 #
 # Spectra
@@ -127,11 +124,6 @@ def MapCubeFunction():
 </spatialModel>
 """
     func = minidom.parseString(func).getElementsByTagName('spatialModel')[0]
-#    global _map_cube_warning_issued
-#    if not _map_cube_warning_issued:
-#        showwarning('', 'Be sure to use "ConstantValue" as your ' +
-#                    'spectrum when using MapCubeFunction')
-#        _map_cube_warning_issued = True
     return Function(func)
 
 #
