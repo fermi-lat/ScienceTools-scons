@@ -185,7 +185,7 @@ namespace evtbin {
     }
   }
 
-  void DataProduct::adjustTimeKeywords(const std::string & sc_file, const Binner * binner) {
+  void DataProduct::adjustTimeKeywords(const std::string & sc_file, const std::string & sc_table, const Binner * binner) {
     std::stringstream ss;
     ss.precision(24);
     if (0 != binner) {
@@ -218,7 +218,7 @@ namespace evtbin {
     }
 
     // Compute the EXPOSURE keyword.
-    updateKeyValue("EXPOSURE", computeExposure(sc_file), "Integration time (in seconds) for the PHA data");
+    updateKeyValue("EXPOSURE", computeExposure(sc_file, sc_table), "Integration time (in seconds) for the PHA data");
 
     // Compute the ONTIME keyword.
     updateKeyValue("ONTIME", m_gti.computeOntime(), "Sum of all Good Time Intervals");
@@ -301,7 +301,7 @@ namespace evtbin {
     }
   }
 
-  double DataProduct::computeExposure(const std::string & sc_file) const {
+  double DataProduct::computeExposure(const std::string & sc_file, const std::string & sc_table) const {
     // If Gti is empty, return 0. exposure.
     if (0 == m_gti.getNumIntervals()) return 0.;
 
@@ -309,10 +309,10 @@ namespace evtbin {
     if (sc_file.empty()) return m_gti.computeOntime();
 
     // Open the spacecraft data table.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(sc_file, "Ext1"));
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // If no rows in the table, issue a warning and then return 0.
-    if (0 == sc_table->getNumRecords()) {
+    if (0 == table->getNumRecords()) {
       std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data file is empty!" << std::endl;
       return 0.;
     }
@@ -324,14 +324,14 @@ namespace evtbin {
     Gti::ConstIterator gti_pos = m_gti.begin();
 
     // In the spacecraft data table, start from the first entry.
-    tip::Table::ConstIterator itor = sc_table->begin();
+    tip::Table::ConstIterator itor = table->begin();
 
     // Check first entry in the table for validity.
     if ((*itor)["START"].get() > m_gti.begin()->first) 
       std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data commences after start of first GTI" << std::endl;
 
     // Iterate through the spacecraft data.
-    for (; itor != sc_table->end(); ++itor) {
+    for (; itor != table->end(); ++itor) {
       double start = (*itor)["START"].get();
       double stop = (*itor)["STOP"].get();
 

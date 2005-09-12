@@ -481,7 +481,8 @@ void EvtBinTest::testLightCurve() {
   Gti gti(m_ft1_file);
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+    LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   // Fill the light curve.
   lc.binInput();
@@ -494,7 +495,7 @@ void EvtBinTest::testLightCurve() {
   gbm_gti.insertInterval(m_gbm_t_start, m_gbm_t_stop);
 
   // Create light curve object for GBM data.
-  LightCurve gbm_lc(m_gbm_file, "EVENTS", "",
+  LightCurve gbm_lc(m_gbm_file, "EVENTS", "", "Ext1",
     LinearBinner(m_gbm_t_start, m_gbm_t_stop, (m_gbm_t_stop - m_gbm_t_start) * .01, "TIME"), gbm_gti);
 
   // Fill the light curve.
@@ -514,7 +515,7 @@ void EvtBinTest::testSingleSpectrum() {
   Gti gti(m_ft1_file);
 
   // Create spectrum object.
-  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, energy_binner, energy_binner, gti);
+  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "Ext1", energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -533,7 +534,7 @@ void EvtBinTest::testSingleSpectrum() {
   std::auto_ptr<Binner> gbm_ebounds(config->createEbounds(pars));
   std::auto_ptr<Gti> gbm_gti(config->createGti(pars));
 
-  SingleSpec gbm_spectrum(m_gbm_file, "EVENTS", "", *gbm_energy_binner, *gbm_ebounds, *gbm_gti);
+  SingleSpec gbm_spectrum(m_gbm_file, "EVENTS", "", "Ext1", *gbm_energy_binner, *gbm_ebounds, *gbm_gti);
 
   // Fill the spectrum.
   gbm_spectrum.binInput();
@@ -550,8 +551,8 @@ void EvtBinTest::testMultiSpectra() {
   Gti gti(m_ft1_file);
 
   // Create spectrum object.
-  MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"),
-    energy_binner, energy_binner, gti);
+  MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+    LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"), energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -575,7 +576,7 @@ void EvtBinTest::testCountMap() {
   Gti gti(m_ft1_file);
 
   // Create count map object.
-  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false,
+  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, "Ext1", 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false,
     "RA", "DEC", gti);
 
   // Fill the count map.
@@ -909,7 +910,8 @@ void EvtBinTest::testGti() {
   Gti gti(m_ft1_file);
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+    LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   // Get absolute O/S dependent limit on precision.
   const double epsilon = std::numeric_limits<double>::epsilon();

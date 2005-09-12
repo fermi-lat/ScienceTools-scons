@@ -16,8 +16,8 @@
 namespace evtbin {
 
   SingleSpec::SingleSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-    const Binner & binner, const Binner & ebounds, const Gti & gti): DataProduct(event_file, event_table, gti),
-    m_hist(binner), m_ebounds(ebounds.clone()) {
+    const std::string & sc_table, const Binner & binner, const Binner & ebounds, const Gti & gti):
+    DataProduct(event_file, event_table, gti), m_hist(binner), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
     // Collect any/all needed keywords from the primary extension.
@@ -27,7 +27,7 @@ namespace evtbin {
     harvestKeywords(m_event_file, m_event_table);
 
     // Update tstart/tstop etc.
-    adjustTimeKeywords(sc_file);
+    adjustTimeKeywords(sc_file, sc_table);
   }
 
   SingleSpec::~SingleSpec() throw() { delete m_ebounds; }

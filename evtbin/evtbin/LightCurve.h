@@ -23,7 +23,7 @@ namespace evtbin {
           \param binner The binner used to create the histogram.
       */
       LightCurve(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        const Binner & binner, const Gti & gti);
+        const std::string & sc_table, const Binner & binner, const Gti & gti);
 
       virtual ~LightCurve() throw();
 

@@ -106,6 +106,7 @@ class EvtBinAppBase : public st_app::StApp {
       // Prompt for input event file and output outfile. All binners need these.
       pars.Prompt("outfile");
       pars.Prompt("scfile");
+      pars.Prompt("sctable");
     }
 
     /** \brief Create a specific data product object using the given parameters.
@@ -182,7 +183,7 @@ class CountMapApp : public EvtBinAppBase {
       else throw std::logic_error(
         "CountMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
 
-      return new evtbin::CountMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]),
+      return new evtbin::CountMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],
         pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
         use_lb, pars["rafield"], pars["decfield"], *gti);
     }
@@ -213,7 +214,7 @@ class LightCurveApp : public EvtBinAppBase {
       std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data object from Binner.
-      return new LightCurve(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *binner, *gti);
+      return new LightCurve(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"], *binner, *gti);
     }
 };
 
@@ -248,7 +249,7 @@ evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParG
   std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
   // Create data product.
-  return new SingleSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *binner, *ebounds, *gti);
+  return new SingleSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"], *binner, *ebounds, *gti);
 }
 
 /** \class MultiSpectraApp
@@ -285,7 +286,7 @@ class MultiSpectraApp : public EvtBinAppBase {
       std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
 
       // Create data product.
-      return new MultiSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), *time_binner,
+      return new MultiSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"], *time_binner,
         *energy_binner, *ebounds, *gti);
     }
 };
@@ -366,7 +367,6 @@ class GtBinApp : public st_app::StApp {
 
       // Prompt for algorithm parameter, which determines which application is really used.
       pars.Prompt("algorithm");
-      pars.Save();
 
       std::string algorithm = pars["algorithm"];
 

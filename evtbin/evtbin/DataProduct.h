@@ -104,9 +104,10 @@ namespace evtbin {
                  Keywords TSTART, TSTOP are modified only if the binner has a tighter range than the values in the original file.
                  Keywords EXPOSURE, ONTIME are computed from the spacecraft file.
           \param sc_file The spacecraft data file used to compute time keywords.
+          \param sc_table The name of the data table in the spacecraft data file.
           \param binner Optional binner used to adjust TSTART and TSTOP if necessary. 
       */
-      void adjustTimeKeywords(const std::string & sc_file, const Binner * binner = 0);
+      void adjustTimeKeywords(const std::string & sc_file, const std::string & sc_table, const Binner * binner = 0);
 
       /** \brief Update keywords in the given file, using this object's current set of key-value pairs. Every extension
                  of the file will be updated.
@@ -118,8 +119,9 @@ namespace evtbin {
 
       /** \brief Compute the total exposure.
           \param sc_file The name of the spacecraft data file to be used as input.
+          \param sc_table The name of the data table in the spacecraft data file.
       */
-      virtual double computeExposure(const std::string & sc_file) const;
+      virtual double computeExposure(const std::string & sc_file, const std::string & sc_table) const;
 
       /** \brief Convert time object into a string representation suitable for storage in a date-like keyword.
           \param time The time to convert.

@@ -24,9 +24,9 @@ namespace evtbin {
       /** \brief Create the count map object.
       */
       CountMap(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        double ref_ra, double ref_dec, const std::string & proj, unsigned long num_x_pix, unsigned long num_y_pix,
-        double pix_scale, double axis_rot, bool use_lb, const std::string & ra_field, const std::string & dec_field,
-        const Gti & gti);
+        const std::string & sc_table, double ref_ra, double ref_dec, const std::string & proj,
+        unsigned long num_x_pix, unsigned long num_y_pix, double pix_scale, double axis_rot, bool use_lb,
+        const std::string & ra_field, const std::string & dec_field, const Gti & gti);
 
       virtual ~CountMap() throw();
 

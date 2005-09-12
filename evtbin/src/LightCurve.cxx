@@ -16,7 +16,8 @@
 namespace evtbin {
 
   LightCurve::LightCurve(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-    const Binner & binner, const Gti & gti): DataProduct(event_file, event_table, gti), m_hist(binner) {
+    const std::string & sc_table, const Binner & binner, const Gti & gti): DataProduct(event_file, event_table, gti),
+    m_hist(binner) {
     m_hist_ptr = &m_hist;
 
     // Collect any/all needed keywords from the primary extension.
@@ -29,7 +30,7 @@ namespace evtbin {
     adjustGti(&binner);
 
     // Update tstart/tstop etc.
-    adjustTimeKeywords(sc_file, &binner);
+    adjustTimeKeywords(sc_file, sc_table, &binner);
   }
 
   LightCurve::~LightCurve() throw() {}

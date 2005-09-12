@@ -24,7 +24,7 @@ namespace evtbin {
           \param ebounds The binner which describes the energy intervals associated with the defined bins.
       */
       SingleSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        const Binner & binner, const Binner & ebounds, const Gti & gti);
+        const std::string & sc_table, const Binner & binner, const Binner & ebounds, const Gti & gti);
 
       virtual ~SingleSpec() throw();
 

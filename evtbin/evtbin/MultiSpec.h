@@ -25,7 +25,8 @@ namespace evtbin {
           \param ebounds The binner which describes the energy intervals associated with the defined bins.
       */
       MultiSpec(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
-        const Binner & time_binner, const Binner & energy_binner, const Binner & ebounds, const Gti & gti);
+        const std::string & sc_table, const Binner & time_binner, const Binner & energy_binner,
+        const Binner & ebounds, const Gti & gti);
 
       virtual ~MultiSpec() throw();
 
@@ -37,6 +38,7 @@ namespace evtbin {
 
     private:
       std::string m_sc_file;
+      std::string m_sc_table;
       Hist2D m_hist;
       Binner * m_ebounds;
   };
