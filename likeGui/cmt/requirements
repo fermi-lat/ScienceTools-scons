@@ -7,9 +7,11 @@ author J. Chiang <jchiang@slac.stanford.edu>
 
 use sane v* 
 
-application like_gui likeGui.cxx
+application likeGui likeGui.cxx
 application ObsSim ObsSim.cxx
 application ModelEditor ModelEditor.cxx
 
 path_remove PYTHONPATH "$(LIKEGUIROOT)/python"
 path_prepend PYTHONPATH "$(LIKEGUIROOT)/python"
+
+ignore_pattern user_package
