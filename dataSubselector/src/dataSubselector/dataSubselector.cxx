@@ -90,6 +90,7 @@ void DataFilter::run() {
    std::string inputFile = m_pars["infile"];
    m_inputFile = inputFile;
    facilities::Util::expandEnvVar(&m_inputFile);
+   st_facilities::Util::file_ok(m_inputFile);
 
    std::string outputFile = m_pars["outfile"];
    m_outputFile = outputFile;
