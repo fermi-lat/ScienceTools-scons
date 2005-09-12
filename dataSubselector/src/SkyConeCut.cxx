@@ -88,7 +88,7 @@ bool SkyConeCut::supercedes(const CutBase & cut) const {
    SkyConeCut & coneCut = 
       dynamic_cast<SkyConeCut &>(const_cast<CutBase &>(cut));
    double separation = m_coneCenter.difference(coneCut.m_coneCenter)*180./M_PI;
-   if (m_radius < coneCut.m_radius - separation) {
+   if (m_radius <= coneCut.m_radius - separation) {
       return true;
    }
    return false;

@@ -26,6 +26,8 @@ bgcut,b,h,yes,,,select only events that passed background cut?
 psfcut,b,h,yes,,,select only events that passed PSF cut?
 erescut,b,h,yes,,,select only events that passed energy resolution cut?
 
+evtable,s,h,"EVENTS",,,"Event data extension"
+
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"
 debug,          b, h, no, , , "Activate debugging mode"

@@ -64,6 +64,7 @@ private:
    std::string m_infile;
    std::string m_outfile;
    std::string m_outfile2;
+   std::string m_evtable;
 
    const tip::Table * m_inputTable;
    tip::Table * m_outputTable;
@@ -80,6 +81,7 @@ private:
 void DssTests::setUp() {
    char * root_path = ::getenv("DATASUBSELECTORROOT");
    m_infile = "input_events.fits";
+   m_evtable = "EVENTS";
    if (root_path) {
       m_infile = std::string(root_path) + "/Data/" + m_infile;
    } else {
@@ -123,7 +125,7 @@ void DssTests::updateGti() {
 }
 
 void DssTests::cutsConstructor() {
-   dataSubselector::Cuts my_cuts(m_infile);
+   dataSubselector::Cuts my_cuts(m_infile, m_evtable);
 
    CPPUNIT_ASSERT(my_cuts.size() == 2);
 
@@ -147,7 +149,7 @@ void DssTests::cutsConstructor() {
 }
 
 void DssTests::test_SkyCone() {
-   dataSubselector::Cuts my_cuts(m_outfile);
+   dataSubselector::Cuts my_cuts(m_outfile, m_evtable);
    
    std::map<std::string, double> params;
 
@@ -253,7 +255,7 @@ void DssTests::compareCuts() {
    tip::TableRecord & output = *m_outputIt;
    tip::TableRecord & output2 = *m_output2It;
 
-   dataSubselector::Cuts my_cuts(m_infile);
+   dataSubselector::Cuts my_cuts(m_infile, m_evtable);
       
    my_cuts.addRangeCut("RA", "deg", 83, 93);
    my_cuts.addSkyConeCut(83., 22., 20);
@@ -302,11 +304,11 @@ void DssTests::compareCuts() {
    st_facilities::FitsUtil::writeChecksums(m_outfile);
    st_facilities::FitsUtil::writeChecksums(m_outfile2);
 
-   dataSubselector::Cuts cuts1(m_outfile);
-   dataSubselector::Cuts cuts2(m_outfile2);
+   dataSubselector::Cuts cuts1(m_outfile, m_evtable);
+   dataSubselector::Cuts cuts2(m_outfile2, m_evtable);
    CPPUNIT_ASSERT(cuts1 == cuts2);
 
-   dataSubselector::Cuts cuts(m_infile);
+   dataSubselector::Cuts cuts(m_infile, m_evtable);
    CPPUNIT_ASSERT(!(cuts == cuts1));
 }
 

@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r8p4  12-Sep-05   JC   merge identical SkyConCuts; use sctable, evtable
+                             instead of hard-wired extension names
     v3r8p3  12-Sep-05   JC   add check for existence of input FT1 file
     v3r8p2  25-Aug-05   JC   use evtbin v* etc.
     v3r8p1  17-Aug-05   JC   take the union of merged GTIs not the 

@@ -87,6 +87,7 @@ void DataFilter::banner() const {
 }
 
 void DataFilter::run() {
+   std::string evtable = m_pars["evtable"];
    std::string inputFile = m_pars["infile"];
    m_inputFile = inputFile;
    facilities::Util::expandEnvVar(&m_inputFile);
@@ -105,7 +106,7 @@ void DataFilter::run() {
    tip::IFileSvc::instance().createFile(m_outputFile, m_inputFile);
 
    CutController * cuts = CutController::instance(m_pars, m_inputFile);
-   copyTable("EVENTS", cuts);
+   copyTable(evtable, cuts);
    copyTable("gti");
    cuts->updateGti(m_outputFile);
    unsigned int verbosity = m_pars["chatter"];
