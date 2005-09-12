@@ -38,9 +38,11 @@ public:
    /// @param filename The root name of the output FITS file.
    /// @param maxNumEntries The maximum number of entries in the ScData
    ///        buffer before a FITS file is written.
-   ScDataContainer(const std::string &filename, 
+   ScDataContainer(const std::string & filename, 
+                   const std::string & tablename,
                    int maxNumEntries=20000, bool writeData=true) : 
-      ContainerBase(filename, maxNumEntries), m_writeData(writeData) {
+      ContainerBase(filename, tablename, maxNumEntries),
+      m_writeData(writeData) {
       init();
    }
 

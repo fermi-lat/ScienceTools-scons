@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r9p3 12-Sep-05   JC   use sctable, evtable as ext names instead of                                    hard-wired values
     v5r9p2 26-Aug-05   JC   handle livetime fractions via new imp in 
                             astro v1r10p3
     v5r9p1 18-Aug-05   JC   remove extraneous and incorrect DSS keywords

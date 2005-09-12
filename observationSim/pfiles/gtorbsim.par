@@ -1,4 +1,6 @@
 outfile_prefix,s,a,"test",,,"Prefix for output files"
+evtable,s,h,"EVENTS",,,"Spacecraft data extension"
+sctable,s,h,"Ext1",,,"Spacecraft data extension"
 pointing_strategy,s,a,"ONEPERORBIT",NONE|UPDOWN|SLEWING|ONEPERORBIT|EXPLICIT|POINT,,"Pointing strategy"
 #
 # non-pointing parameter

@@ -221,7 +221,7 @@ void EventContainer::writeEvents(double obsStopTime) {
    std::string ft1File = outputFileName();
    tip::IFileSvc::instance().createFile(ft1File, m_ftTemplate);
    tip::Table * my_table = 
-      tip::IFileSvc::instance().editTable(ft1File, "EVENTS");
+      tip::IFileSvc::instance().editTable(ft1File, m_tablename);
    my_table->appendField("MC_SRC_ID", "1I");
    my_table->setNumRecords(m_events.size());
    tip::Table::Iterator it = my_table->begin();

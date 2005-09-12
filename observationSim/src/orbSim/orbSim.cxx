@@ -143,8 +143,12 @@ void OrbSim::createSimulator() {
 void OrbSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-   observationSim::EventContainer events(prefix + "_events", 0, nMaxRows);
-   observationSim::ScDataContainer scData(prefix + "_scData", nMaxRows);
+   std::string ev_table = m_pars["evtable"];
+   std::string sc_table = m_pars["sctable"];
+   observationSim::EventContainer events(prefix + "_events", ev_table,
+                                         0, nMaxRows);
+   observationSim::ScDataContainer scData(prefix + "_scData", sc_table, 
+                                          nMaxRows);
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    double frac = m_pars["livetime_frac"];
    spacecraft->setLivetimeFrac(frac);

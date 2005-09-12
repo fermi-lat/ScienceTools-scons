@@ -1,7 +1,9 @@
 xml_source_file,f,a,"none",,,"File of flux-style source definitions"
 source_list,fr,a,"source_names.dat",,,"File containing list of source names"
 scfile,f,a,"none",,,"Pointing history file"
+sctable,s,h,"Ext1",,,"Spacecraft data extension"
 outfile_prefix,s,a,"test",,,"Prefix for output files"
+evtable,s,h,"EVENTS",,,"Event data extension"
 
 simulation_time,r,a,86400,1,4e7, Simulation time (seconds)
 livetime_frac,r,hl,0.9,,,Livetime fraction

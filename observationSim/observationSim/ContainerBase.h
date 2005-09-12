@@ -29,13 +29,18 @@ class ContainerBase {
 
 public:
    
-   ContainerBase(const std::string & filename, unsigned int maxNumEntries) 
-      : m_filename(filename), m_maxNumEntries(maxNumEntries), m_fileNum(0) {} 
+   ContainerBase(const std::string & filename, const std::string & tablename,
+                 unsigned int maxNumEntries) 
+      : m_filename(filename), m_tablename(tablename),
+        m_maxNumEntries(maxNumEntries), m_fileNum(0) {} 
 
 protected:
 
    /// Root name for the FITS binary table output files.
    std::string m_filename;
+
+   /// Extension name of FITS binary table
+   std::string m_tablename;
 
    /// The maximum number of rows to accumulate before the data are
    /// written to a FITS file and the data buffer is flushed.

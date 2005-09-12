@@ -104,8 +104,8 @@ int main(int iargc, char * argv[]) {
    }
 
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events");
-   observationSim::ScDataContainer scData("test_scData");
+   observationSim::EventContainer events("test_events", "EVENTS");
+   observationSim::ScDataContainer scData("test_scData", "Ext1");
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();

@@ -79,7 +79,7 @@ void ScDataContainer::writeScData() {
       std::string ft2File = outputFileName();
       tip::IFileSvc::instance().createFile(ft2File, m_ftTemplate);
       tip::Table * my_table = 
-         tip::IFileSvc::instance().editTable(ft2File, "Ext1");
+         tip::IFileSvc::instance().editTable(ft2File, m_tablename);
       int npts = m_scData.size();
       my_table->setNumRecords(npts);
       tip::Table::Iterator it = my_table->begin();
