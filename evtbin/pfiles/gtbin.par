@@ -45,7 +45,7 @@ proj,          s, h, "AIT", AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN, , "Projection m
 #-------------------------------------------------------------------------------
 # Hidden parameters.
 evtable,       s, h, "EVENTS", , , "Table containing event data"
-sctable,       s, h, "SC_DATA", , , "Table containing spacecraft data"
+sctable,       s, h, "Ext1", , , "Table containing spacecraft data"
 energyfield,   s, h, "ENERGY", , ,"Name of energy field to bin"
 timefield,     s, h, "TIME", , , "Name of time field to bin"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
