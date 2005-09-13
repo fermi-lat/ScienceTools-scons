@@ -17,9 +17,10 @@ namespace dataSubselector {
 CutController * CutController::s_instance(0);
 
 CutController * CutController::instance(st_app::AppParGroup & pars, 
-                                        const std::string & eventFile) {
+                                        const std::string & eventFile,
+                                        const std::string & evtable) {
    if (!s_instance) {
-      s_instance = new CutController(pars, eventFile);
+      s_instance = new CutController(pars, eventFile, evtable);
    }
    return s_instance;
 }
@@ -30,8 +31,9 @@ void CutController::delete_instance() {
 }
 
 CutController::CutController(st_app::AppParGroup & pars, 
-                             const std::string & eventFile) 
-   : m_pars(pars), m_cuts(eventFile) {
+                             const std::string & eventFile,
+                             const std::string & evtable) 
+   : m_pars(pars), m_cuts(eventFile, evtable) {
    double ra = pars["ra"], dec = pars["dec"], radius = pars["rad"];
    if (ra != 0 && dec != 0 && radius !=0) {
       m_cuts.addSkyConeCut(ra, dec, radius);

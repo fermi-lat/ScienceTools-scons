@@ -105,7 +105,8 @@ void DataFilter::run() {
 
    tip::IFileSvc::instance().createFile(m_outputFile, m_inputFile);
 
-   CutController * cuts = CutController::instance(m_pars, m_inputFile);
+   CutController * cuts = 
+      CutController::instance(m_pars, m_inputFile, evtable);
    copyTable(evtable, cuts);
    copyTable("gti");
    cuts->updateGti(m_outputFile);

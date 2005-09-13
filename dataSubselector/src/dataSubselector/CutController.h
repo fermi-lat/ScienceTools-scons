@@ -36,7 +36,8 @@ class CutController {
 public:
 
    static CutController * instance(st_app::AppParGroup & pars,
-                                   const std::string & eventFile);
+                                   const std::string & eventFile,
+                                   const std::string & evtable);
 
    static void delete_instance();
 
@@ -53,7 +54,8 @@ public:
 protected:
 
    CutController::CutController(st_app::AppParGroup & pars,
-                                const std::string & eventFile);
+                                const std::string & eventFile,
+                                const std::string & evtable);
 
 private:
 
