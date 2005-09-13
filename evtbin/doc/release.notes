@@ -47,6 +47,8 @@
 25-aug-2005   v0r12p2 JP  Compare floating numbers more carefully in unit test.
 12-sep-2005     v0r13 JP  Add hidden parameter sctable which controls the name
                           of the spacecraft history data table.
+13-sep-2005   v0r13p1 JP  Change default extension for spacecraft data back to Ext1
+                          for now.
 --------------------------------------------------------------------------------
 \endverbatim
 
