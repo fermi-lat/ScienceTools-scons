@@ -462,12 +462,7 @@ namespace hoops {
 //      static const bool is_exact = false;
 //      static const int radix = 0;
       static T epsilon() throw() { return FLT_EPSILON; }
-      static T round_error() throw()
-#ifdef sun
-        { return .5; }
-#else
-        { return 1; }
-#endif
+      static T round_error() throw() { return .5; }
 //      static const int min_exponent = 0;
 //      static const int min_exponent10 = 0;
 //      static const int max_exponent = 0;
@@ -503,12 +498,7 @@ namespace hoops {
 //      static const bool is_exact = false;
 //      static const int radix = 0;
       static T epsilon() throw() { return DBL_EPSILON; }
-      static T round_error() throw()
-#ifdef sun
-        { return .5; }
-#else
-        { return 1; }
-#endif
+      static T round_error() throw() { return .5; }
 //      static const int min_exponent = 0;
 //      static const int min_exponent10 = 0;
 //      static const int max_exponent = 0;
@@ -544,12 +534,7 @@ namespace hoops {
 //      static const bool is_exact = false;
 //      static const int radix = 0;
       static T epsilon() throw() { return LDBL_EPSILON; }
-      static T round_error() throw()
-#ifdef sun
-        { return .5; }
-#else
-        { return 1; }
-#endif
+      static T round_error() throw() { return .5; }
 //      static const int min_exponent = 0;
 //      static const int min_exponent10 = 0;
 //      static const int max_exponent = 0;
@@ -587,6 +572,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.2  2005/09/13 20:51:36  peachey
+ * Use .5 for all rounding errors.
+ *
  * Revision 1.1  2003/06/18 18:07:29  peachey
  * Replacements for numeric_limits class for compilers which don't
  * yet have it.
