@@ -79,7 +79,9 @@ Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
       }
    }
 
-   my_cuts.addGtiCut(merged_gti);
+   if (merged_gti.getNumIntervals() > 0) {
+      my_cuts.addGtiCut(merged_gti);
+   }
    return my_cuts;
 }
 
