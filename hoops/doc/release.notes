@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v0r4p5   13-sep-05   JP   Use .5 for round_error for all floating types.
     v0r4p4   09-nov-04   JP   Latest import from HEASARC, fix bug which caused
                               command line to be ignored if parameters were not
                               prompted for.
