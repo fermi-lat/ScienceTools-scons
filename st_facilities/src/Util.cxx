@@ -33,8 +33,9 @@ namespace st_facilities {
    }
 
    void Util::readLines(std::string inputFile, 
-                        std::vector<std::string> &lines,
-                        const std::string &skip) {
+                        std::vector<std::string> & lines,
+                        const std::string & skip,
+                        bool cleanLines) {
       facilities::Util::expandEnvVar(&inputFile);
       std::ifstream file(inputFile.c_str());
       lines.clear();
@@ -42,8 +43,21 @@ namespace st_facilities {
       while (std::getline(file, line, '\n')) {
          if (line != "" && line != " "             //skip (most) blank lines 
              && line.find_first_of(skip) != 0) {   //and commented lines
+            if (cleanLines) {
+               cleanLine(line);
+            }
             lines.push_back(line);
          }
+      }
+   }
+
+   void Util::cleanLine(std::string & line) {
+      char CR[1];
+      CR[0] = 0x0d;
+      if (line.find(CR) != std::string::npos) {
+         std::vector<std::string> tokens;
+         facilities::Util::stringTokenize(line, CR, tokens);
+         line = tokens.front();
       }
    }
 
