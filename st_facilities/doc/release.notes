@@ -5,6 +5,8 @@
   @verbatim
   $Id$
 
+  14-Sep-05 v0r5   JC    add cleanLines routine to strip CRs from input lines
+                         from Windows formatted text files
   26-May-05 v0r4p3 JC    add version of bilinear to handle vector of vectors
   01-May-05 v0r4p2 JC    comment out FileSys test that is sure to 
                          fail on Windows
