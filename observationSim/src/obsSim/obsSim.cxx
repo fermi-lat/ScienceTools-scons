@@ -165,7 +165,7 @@ void ObsSim::setXmlFiles() {
          m_xmlSourceFiles.push_back(xmlFiles);
       } else {
          std::vector<std::string> files;
-         Util::readLines(xmlFiles, files);
+         Util::readLines(xmlFiles, files, "#", true);
          for (unsigned int i=0; i < files.size(); i++) {
             facilities::Util::expandEnvVar(&files[i]);
             if (Util::fileExists(files[i])) {
@@ -186,7 +186,7 @@ void ObsSim::setXmlFiles() {
 void ObsSim::readSrcNames() {
    std::string srcListFile = m_pars["source_list"];
    if (Util::fileExists(srcListFile)) { 
-      Util::readLines(srcListFile, m_srcNames);
+      Util::readLines(srcListFile, m_srcNames, "#", true);
       if (m_srcNames.size() == 0) {
          throw std::invalid_argument("No sources given in " + srcListFile);
       }
@@ -224,7 +224,7 @@ void ObsSim::createSimulator() {
    double maxSimTime = 3.155e8;
    try {
       maxSimTime = m_pars["max_simulation_time"];
-   } catch (std::exception & eObj) {
+   } catch (std::exception &) {
    }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
                                                totalArea, startTime, 
