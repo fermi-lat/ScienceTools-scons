@@ -12,7 +12,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "fitsio.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 using namespace astro;
 // static declaration
@@ -28,7 +29,9 @@ m_lastQueriedTime(-1.),
 m_sampleintvl(30.), // update position every 30 seconds
 m_rockDegrees(35.),
 m_rockType(NONE),
-m_rockNorth(0), m_livetime_frac(1), m_endTime(0)
+m_rockNorth(0), 
+m_sctable("Ext1"), // default FITS extension name for pointing history file
+m_livetime_frac(1), m_endTime(0)
 {   // initialize the singleton
     getPointingCharacteristics(0);
 }
@@ -349,7 +352,7 @@ void GPS::getPointingCharacteristics(double inputTime){
     m_RAXZenith = raX;
     m_DECXZenith = decX;
 
-    if(m_rockType != HISTORY){
+    if(m_rockType != HISTORY || inputTime >= m_endTime){
         //rotate the x direction so that the x direction points along the orbital direction.
         dirX().rotate(dirZ.dir() , inclination*cos(orbitPhase));
     }
@@ -442,112 +445,38 @@ bool GPS::haveFitsFile() const {
 }
 
 void GPS::readFitsData() {
-   fitsfile * fptr;
-   int status(0);
-   
-   fits_open_table(&fptr, m_pointingHistoryFile.c_str(), READONLY, &status);
-   fitsReportError(stderr, status);
+   const tip::Table * scData = 
+      tip::IFileSvc::instance().readTable(m_pointingHistoryFile, m_sctable);
+   double start_time, stop_time, raz, decz, rax, decx, livetime;
+   std::vector<double> sc_pos(3);
+   tip::Table::ConstIterator it = scData->begin();
+   tip::ConstTableRecord & interval = *it;
+   for ( ; it != scData->end(); ++it) {
+      POINTINFO row;
 
-   long nrows;
-   char comment[80];
-   fits_read_key(fptr, TLONG, "NAXIS2", &nrows, comment, &status);
-   fitsReportError(stderr, status);
+      interval["ra_scz"].get(raz);
+      interval["dec_scz"].get(decz);
+      row.dirZ = astro::SkyDir(raz, decz);
 
-   long firstelem(1);
-   int anynul(0);
-   double nullval(0);
+      interval["ra_scx"].get(rax);
+      interval["dec_scx"].get(decx);
+      row.dirX = astro::SkyDir(rax, decx);
 
-   long stride(1000);
-   std::vector<double> start_time(stride);
-   std::vector<double> stop_time(stride);
-   std::vector<float> sc_pos(3*stride);
-   std::vector<float> raz(stride);
-   std::vector<float> decz(stride);
-   std::vector<float> rax(stride);
-   std::vector<float> decx(stride);
-   std::vector<float> lat_geo(stride);
-   std::vector<float> lon_geo(stride);
-   std::vector<float> rad_geo(stride);
-   std::vector<float> livetime(stride);
+      interval["lat_geo"].get(row.lat);
+      interval["lon_geo"].get(row.lon);
 
-// map of pointers to the data and type, keyed by column name.
-   std::map<std::string, std::pair<void *, int> > columns;
-   columns["START"] = std::make_pair(&start_time[0], TDOUBLE);
-   columns["STOP"] = std::make_pair(&stop_time[0], TDOUBLE);
-   columns["SC_POSITION"] = std::make_pair(&sc_pos[0], TFLOAT);
-   columns["RA_SCZ"]  = std::make_pair(&raz[0], TFLOAT);
-   columns["DEC_SCZ"] = std::make_pair(&decz[0], TFLOAT);
-   columns["RA_SCX"]  = std::make_pair(&rax[0], TFLOAT);
-   columns["DEC_SCX"] = std::make_pair(&decx[0], TFLOAT);
-   columns["LAT_GEO"] = std::make_pair(&lat_geo[0], TFLOAT);
-   columns["LON_GEO"] = std::make_pair(&lon_geo[0], TFLOAT);
-   columns["RAD_GEO"] = std::make_pair(&rad_geo[0], TFLOAT);
-   columns["LIVETIME"] = std::make_pair(&livetime[0], TFLOAT);
+      interval["start"].get(start_time);
+      interval["stop"].get(stop_time);
+      interval["livetime"].get(livetime);
+      row.livetime_frac = livetime/(stop_time - start_time);
+         
+      interval["sc_position"].get(sc_pos);
+      row.position = Hep3Vector(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
 
-   std::map<std::string, std::pair<void *, int> >::iterator column;
+      m_pointingHistory[start_time] = row;
 
-   long nelements(stride);
-   int nstrides = nrows/stride;
-   if (nrows % stride != 0) nstrides++;
-   for (int istride = 0; istride < nstrides; istride++) {
-      long firstrow = istride*stride + 1;
-      if (istride == nstrides-1 && nrows % stride != 0) {
-         nelements = nrows % stride;
-      }
-      for (column = columns.begin(); column != columns.end(); ++column) {
-         std::string colname = column->first;
-         void * array = column->second.first;
-         int datatype = column->second.second;
-         int colnum;
-         fits_get_colnum(fptr, CASEINSEN, const_cast<char *>(colname.c_str()), 
-                         &colnum, &status);
-         fitsReportError(stderr, status);
-         fits_read_col(fptr, datatype, colnum, firstrow, firstelem, nelements, 
-                       &nullval, array, &anynul, &status);
-         fitsReportError(stderr, status);
-      }
-      
-      for (int i = 0; i < nelements; i++) {
-         POINTINFO row;
-         row.dirZ = astro::SkyDir(raz[i], decz[i]);
-         row.dirX = astro::SkyDir(rax[i], decx[i]);
-         row.lat = lat_geo[i];
-         row.lon = lon_geo[i];
-         int indx = i*3;
-// Divide by 10^3 since GPS expects the spacecraft position to be 
-// in units of km and the FT2 definition gives it in meters.
-         double mperkm(1e3);
-         row.position = Hep3Vector(sc_pos[indx]/mperkm, sc_pos[indx+1]/mperkm, 
-                                   sc_pos[indx+2]/mperkm);
-         row.livetime_frac = livetime[i]/(stop_time[i] - start_time[i]);
-         m_pointingHistory[start_time[i]] = row;
-      }
    }
-// setInterpPoint does not deal with the final time entry correctly,
-// so we need to pad with one more row.
-   POINTINFO row;
-   int i = nelements-1;
-   row.dirZ = astro::SkyDir(raz[i], decz[i]);
-   row.dirX = astro::SkyDir(rax[i], decx[i]);
-   row.lat = lat_geo[i];
-   row.lon = lon_geo[i];
-   int indx = i*3;
-   row.position = Hep3Vector(sc_pos[indx], sc_pos[indx+1], 
-                             sc_pos[indx+2]);
-   row.livetime_frac = livetime[i]/(stop_time[i] - start_time[i]);
-   m_pointingHistory[stop_time[i]] = row;
-
-   fits_close_file(fptr, &status);
-   fitsReportError(stderr, status);
-   m_endTime = stop_time[i];
-}   
-
-void GPS::fitsReportError(FILE *stream, int status) const {
-   if (status != 0) {
-      fits_report_error(stream, status);
-      throw std::runtime_error("GPS::readFitsData: "
-                               + std::string("cfitsio error."));
-   }
+   m_endTime = stop_time;
 }
 
 void GPS::setUpHistory(double offset){

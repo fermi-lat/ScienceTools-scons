@@ -186,6 +186,10 @@ public:
    double livetime_frac() const;
    void setLivetime_frac(double time);
 
+   void setScTableName(const std::string & sctable) {
+      m_sctable = sctable;
+   }
+
 protected:
     // singleton - protect ctor/dtor
     GPS();
@@ -217,6 +221,7 @@ private:
     RockType m_rockType;//current rocking scheme
     double m_rockNorth; //internal value for the current number of degrees the craft is rotated at the time.
     std::string m_pointingHistoryFile;//pointing/livetime database history file to use.
+   std::string m_sctable;  // FITS extension name for spacecraft data
     HistoryMap m_pointingHistory;//pointing/livetime database history
     POINTINFO m_currentInterpPoint; //holder object for currently interpotated pointing information
 
