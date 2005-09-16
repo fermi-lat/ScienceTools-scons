@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r10p5  15-Sep-05 JC  use tip to read in FT2 data in GPS
   v1r10p4  28-aug-05 JC  patch to handle events arriving after end time of 
                          pointing history file
   v1r10p3  26-aug-05 JC  add access to livetime info in GPS
