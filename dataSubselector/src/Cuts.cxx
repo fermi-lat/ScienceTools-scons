@@ -15,6 +15,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "fitsio.h"
+
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"
@@ -34,15 +36,24 @@ namespace {
          *it = std::toupper(*it);
       }
    }
+
+   void fitsReportError(int status) {
+      fits_report_error(stderr, status);
+      if (status != 0) {
+         throw std::runtime_error("Cuts::removeDssKeywords: cfitsio error.");
+      }
+   }
 }
 
 namespace dataSubselector {
 
 Cuts::Cuts(const std::vector<std::string> & eventFiles,
-           const std::string & extname, bool check_columns) {
+           const std::string & extname, bool check_columns,
+           bool skipTimeRangeCuts) {
    std::vector<Cuts> my_cuts;
    for (unsigned int i = 0; i < eventFiles.size(); i++) {
-      my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns));
+      my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns,
+                             skipTimeRangeCuts));
       if (i > 0) {
          if (!my_cuts.front().compareWithoutGtis(my_cuts.back())) {
             std::ostringstream message;
@@ -95,7 +106,7 @@ void Cuts::getGtiCuts(std::vector<const GtiCut *> & gtiCuts) {
 }
 
 Cuts::Cuts(const std::string & eventFile, const std::string & extname,
-           bool check_columns) {
+           bool check_columns, bool skipTimeRangeCuts) {
    const tip::Extension * ext(0);
    try {
       ext = tip::IFileSvc::instance().readTable(eventFile, extname);
@@ -148,7 +159,9 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
                    std::find(colnames.begin(), colnames.end(), colname) 
                    != colnames.end())
                   && value != "TABLE" ) {
-         m_cuts.push_back(new RangeCut(colname, unit, value, indx));
+         if (type != "TIME" || !skipTimeRangeCuts) {
+            m_cuts.push_back(new RangeCut(colname, unit, value, indx));
+         }
       } else if (type == "TIME" && value == "TABLE") {
          m_cuts.push_back(new GtiCut(eventFile));
       } else {
@@ -285,7 +298,37 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       m_cuts[i]->writeDssKeywords(header, i + 1);
    }
-}      
+}
+
+void Cuts::removeDssKeywords(std::string filename,
+                             std::string extname,
+                             int ndskeys) {
+   fitsfile * fptr;
+   int status(0);
+      
+   fits_open_file(&fptr, const_cast<char *>(filename.c_str()), 
+                  READWRITE, &status);
+   ::fitsReportError(status);
+      
+   fits_movnam_hdu(fptr, ANY_HDU, const_cast<char *>(extname.c_str()),
+                   0, &status);
+   ::fitsReportError(status);
+      
+   for (int i = 0; i < ndskeys; i++) {
+      for (int j = 0; j < 4; j++) {
+         std::ostringstream keyname;
+         keyname << "DS*" << j+1;
+         fits_delete_key(fptr, const_cast<char *>(keyname.str().c_str()),
+                         &status);
+         if (status != 202) {
+            ::fitsReportError(status);
+         }
+         status = 0;
+      }
+   }
+   fits_close_file(fptr, &status);
+   ::fitsReportError(status);   
+}
 
 void Cuts::writeGtiExtension(const std::string & filename) const {
    const dataSubselector::Gti * gti(0);

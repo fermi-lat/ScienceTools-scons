@@ -59,15 +59,20 @@ public:
    ///        encountered as the DSS type.  If false, the range cut
    ///        will be stored, but if applied to a tip::TableRecord,
    ///        tip will throw an exception.
+   /// @param skipTimeRangeCuts If true, time range cuts in the DSS
+   ///        keywords will not be read in.  Since the GTI extension
+   ///        should already include any time range cuts, explicit
+   ///        time range cuts are not needed.
    Cuts(const std::string & eventFile, const std::string & extension,
-        bool check_columns=true);
+        bool check_columns=true, bool skipTimeRangeCuts=false);
 
    /// @brief This constructor reads in a vector of eventFiles, verifying
    ///        that the non-GTI cuts are the same in all files, and merging
    ///        the GTIs from the various files into a single Gti object.
    Cuts(const std::vector<std::string> & eventFiles,
         const std::string & extension,
-        bool check_columns=true);
+        bool check_columns=true,
+        bool skipTimeRangeCuts=false);
 
    /// A copy constructor is needed since there are pointer data members.
    Cuts(const Cuts & rhs);
@@ -137,6 +142,10 @@ public:
    ///        method where the table has been opened using the
    ///        tip::IFileSvc::editTable method.
    void writeDssKeywords(tip::Header & header) const;
+
+   static void removeDssKeywords(std::string filename,
+                                 std::string extname,
+                                 int ndskeys);
 
    /// @brief Add the first GTI extension in the m_cuts vector to
    ///        the specified FITS file.  It is tacitly assumed that
