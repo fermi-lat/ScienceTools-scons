@@ -294,7 +294,8 @@ unsigned int Cuts::addCut(CutBase * newCut) {
 }
 
 void Cuts::writeDssKeywords(tip::Header & header) const {
-   header["NDSKEYS"].set(m_cuts.size());
+   int ndskeys = m_cuts.size();
+   header["NDSKEYS"].set(ndskeys);
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
       m_cuts[i]->writeDssKeywords(header, i + 1);
    }
