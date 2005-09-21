@@ -378,7 +378,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    table = new FitsTable(data_dir + "a1.pha", "SPECTRUM", "", false);
+    table = new FitsTable(data_dir + "a1.pha", "SPECTRUM", "#row>0", false);
     ReportBehavior("success creating FitsTable with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating FitsTable with valid file name and valid extension name", status, x);
@@ -505,9 +505,50 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
           "\" when called for a const";
         ReportError(msg + " " + ext_type + " object", status);
       }
-
     } catch(const TipException & x) {
       msg = "failure calling getKeyword(\"src_thet\") from a const";
+      ReportError(msg + " " + ext_type + " object", status, x);
+    }
+
+    try {
+      // Test adding a keyword before the 46th keyword.
+      Header::Iterator itor = table->getHeader().begin();
+      KeyRecord prev = itor[44];
+      KeyRecord next = itor[45];
+      std::string test_key = "TESTKEY = 'Test keyword value'";
+      table->getHeader().insert(itor + 45, test_key);
+
+      itor = table->getHeader().begin();
+      if (prev.get() == itor[44].get()) {
+        ReportBehavior("after inserting TESTKEY, keyword 44 had expected value \"" + itor[44].get() + "\"", status);
+      } else {
+        ReportError("after inserting TESTKEY, keyword 44 was \"" + itor[44].get() + "\", not \"" + prev.get() + "\", as expected",             status);
+      }
+
+      if (test_key == itor[45].get()) {
+        ReportBehavior("after inserting TESTKEY, keyword 45 had expected value \"" + itor[45].get() + "\"", status);
+      } else {
+        ReportError("after inserting TESTKEY, keyword 45 was \"" + itor[45].get() + "\", not \"" + test_key + "\", as expected",
+          status);
+      }
+
+      if (next.get() == itor[46].get()) {
+        ReportBehavior("after inserting TESTKEY, keyword 46 had expected value \"" + itor[46].get() + "\"", status);
+      } else {
+        ReportError("after inserting TESTKEY, keyword 46 was \"" + itor[46].get() + "\", not \"" + next.get() + "\", as expected",
+          status);
+      }
+
+      test_key = "ENDKEY  = 'Test end keyword value'";
+      itor = table->getHeader().append(test_key);
+      if (itor->get() == test_key) {
+        ReportBehavior("after appending ENDKEY, last keyword in header had expected value \"" + test_key + "\"", status);
+      } else {
+        ReportError("after appending ENDKEY, last keyword was \"" + itor->get() + "\", not \"" + test_key + "\", as expected",
+          status);
+      }
+    } catch(const TipException & x) {
+      msg = "failure testing Header::insert/append for a non-const";
       ReportError(msg + " " + ext_type + " object", status, x);
     }
 
