@@ -135,6 +135,8 @@ namespace tip {
       */
       std::string formatTime(const time_t & time) const;
 
+      virtual KeySeq_t::size_type getNumKeywords() const { unsupported("getNumKeywords()"); return 0; }
+
       virtual Iterator begin() { unsupported("begin()"); return KeySeq_t().begin(); }
 
       virtual Iterator end() { unsupported("end()"); return KeySeq_t().end(); }
@@ -142,6 +144,10 @@ namespace tip {
       virtual ConstIterator begin() const { unsupported("begin() const"); return KeySeq_t().begin(); }
 
       virtual ConstIterator end() const { unsupported("end() const"); return KeySeq_t().end(); }
+
+      virtual Iterator insert(Iterator itor, const KeyRecord &) { unsupported("insert(Iterator, const KeyRecord &)"); return itor; }
+
+      virtual Iterator append(const KeyRecord &) { unsupported("append(const KeyRecord &)"); return KeySeq_t().end(); }
 
       /** \brief Get a keyword from this header data object.
           \param name The name of the keyword to get from the header data object.

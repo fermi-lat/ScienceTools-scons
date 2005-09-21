@@ -32,6 +32,8 @@ namespace tip {
 
       bool readOnly() const { return m_read_only; }
 
+      virtual KeySeq_t::size_type getNumKeywords() const { return m_keyword_seq.size(); }
+
       virtual Iterator begin() { return m_keyword_seq.begin(); }
 
       virtual Iterator end() { return m_keyword_seq.end(); }
@@ -39,6 +41,10 @@ namespace tip {
       virtual ConstIterator begin() const { return m_keyword_seq.begin(); }
 
       virtual ConstIterator end() const { return m_keyword_seq.end(); }
+
+      virtual Iterator insert(Iterator itor, const KeyRecord & record);
+
+      virtual Iterator append(const KeyRecord & record);
 
       /** \brief Get a keyword from this header data object.
           \param name The name of the keyword to get from the header data object.
