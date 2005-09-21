@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r9    21-Sep-05   JC   enable DSS keyword deletion; start moving
+                             towards incorporating RangeCuts on TIME to
+                             be included in GTIs only.
     v3r8p5  12-Sep-05   JC   patch for CutController constructor
     v3r8p4  12-Sep-05   JC   merge identical SkyConCuts; use sctable, evtable
                              instead of hard-wired extension names
