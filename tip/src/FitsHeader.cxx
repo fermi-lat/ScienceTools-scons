@@ -103,6 +103,21 @@ namespace tip {
     m_fp = 0;
   }
 
+  Header::Iterator FitsHeader::insert(Iterator itor, const KeyRecord & record) {
+    int status = 0;
+    fits_insert_record(m_fp, itor - m_keyword_seq.begin() + 1, const_cast<char *>(record.get().c_str()), &status);
+    if (0 != status) {
+      std::string msg = "Cannot insert record " + record.get();
+      if (!itor->getName().empty()) msg += " before keyword " + itor->getName();
+      throw TipException(status, formatWhat(msg));
+    }
+    return m_keyword_seq.insert(itor, record);
+  }
+
+  Header::Iterator FitsHeader::append(const KeyRecord & record) {
+    return insert(m_keyword_seq.end(), record);
+  }
+
   std::string FitsHeader::getKeyComment(const std::string & name) const {
     int status = 0;
     char value[FLEN_VALUE];
