@@ -12,7 +12,7 @@ use facilities v2r*
 use tip v2*
 use astro v1r*
 use flux v8r*
-use st_facilities v0r4*
+use st_facilities v0r*
 use celestialSources v*
 use irfLoader v0* irfs
 use dataSubselector v3*
