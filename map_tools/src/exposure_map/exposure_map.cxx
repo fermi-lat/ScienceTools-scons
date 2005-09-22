@@ -15,7 +15,7 @@ $Header$
 #include "irfInterface/IAeff.h"
 #include "irfInterface/Irfs.h"
 #include "irfInterface/IrfsFactory.h"
-#include "dc1Response/loadIrfs.h"
+#include "irfLoader/Loader.h"
 
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
@@ -100,6 +100,7 @@ public:
     /**
     */
 
+
     irfInterface::IAeff* findAeff(std::string rspfunc)
     {
         using namespace irfInterface;
@@ -107,11 +108,11 @@ public:
 
         class AeffSum : public irfInterface::IAeff {
         public:  
-            AeffSum(){
-                irfInterface::Irfs* dc1 = IrfsFactory::instance()->create("DC1::Front");
-                m_front = dc1->aeff();
-                dc1 = IrfsFactory::instance()->create("DC1::Back");
-                m_back = dc1->aeff();
+            AeffSum(const std::vector<std::string>& irflist){
+                for(std::vector<std::string>::const_iterator sit= irflist.begin(); sit!=irflist.end(); ++sit){
+                    irfInterface::Irfs* irf=IrfsFactory::instance()->create(*sit);
+                    m_aeff.push_back(irf->aeff());
+                }
             }
 
             virtual double value(double /*energy*/, 
@@ -122,37 +123,44 @@ public:
 
             virtual double value(double energy, double theta, double phi) const 
             {
-                return m_front->value(energy, theta, phi) + m_back->value(energy, theta, phi);
+                // should use accumulate here
+                double value = m_aeff[0]->value(energy, theta, phi);
+                for( int i = 1; i < m_aeff.size(); ++i){
+                    value+=m_aeff[i]->value(energy, theta, phi);
+                }
+                return value;
             }
             virtual IAeff * clone(){throw std::runtime_error("clone?"); return 0;};
 
         private:
-            const irfInterface::IAeff* m_front;
-            const irfInterface::IAeff* m_back;
+            std::vector<const irfInterface::IAeff*> m_aeff;
         };
 
 
         // set up irf stuff, and translate the IRF name        
-        dc1Response::loadIrfs();
 
-        m_f.info() << "Using Aeff " ;
-        std::string irfname;
-        if(      rspfunc=="DC1F") irfname="DC1::Front";
-        else if( rspfunc=="DC1B") irfname="DC1::Back";
-        else if( rspfunc=="DC1FB") {
-            // special case handled by custom class above.
-            m_f.info() << "DC1::Front + DC1::Back" << std::endl;
-            return new AeffSum();
-        }else if( rspfunc=="SIMPLE" ){
+        irfLoader::Loader::go();
+
+        m_f.info() << "Using Aeff(s) " ;
+
+        if( rspfunc=="SIMPLE") {
             m_f.info() << "Simple linear form " << std::endl;
             return 0;
-        }else { 
-            throw std::invalid_argument(
-                std::string("Response function not implemented here: "+rspfunc));
         }
-        m_f.info() << irfname << std::endl;
-        Irfs* dc1 = IrfsFactory::instance()->create(irfname);
-        return dc1->aeff();
+        std::map<std::string, std::vector<std::string> > idMap = irfLoader::Loader::respIds();
+        std::vector<std::string> irf_list = idMap[rspfunc];
+        if( irf_list.empty()) {
+            throw std::invalid_argument(
+                std::string("Response function not recognized: "+rspfunc));
+        }
+
+        // this could be a simple copy with an ostream_iterator, but the ST interface does not allow it :-(
+        for(std::vector<std::string>::const_iterator sit= irf_list.begin(); sit!=irf_list.end(); ++sit){
+            m_f.info() << *sit<< ", ";
+        }
+        m_f.info() << std::endl;
+    
+        return new AeffSum(irf_list );
 
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

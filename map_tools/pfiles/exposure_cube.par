@@ -3,21 +3,23 @@
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
 chatter,  i, h,   2,0,4 , , "Chattiness of output"
 debug,    b, h, no,,,Debugging mode activated
-mode,     s, a,  "h",   , ,""
+#mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-#mode,     s, a,  "ql",   , ,""
+mode,     s, a,  "ql",   , ,""
 
 #---------------------------------------------------------------------------------------
 #
-#infile,  f, a, "/common/DC1/history/D2_full_history.fits", , , "Name of the exposure file:" 
-infile,   f, a, "/common/DC2/history/Gleam42.txt", , , "Name of the exposure file:" 
+#infile,   f, a, "/common/DC2/history/Gleam42.txt", , , "Name of the exposure file:" 
+#outfile,  f, a, "expcube_Gleam42_1day_withSAA.fits", , , "Name of the output file:"
+#
+infile,   f, a, "", , , "Name of the exposure file:" 
 table,    s, h, "Ext1",,,"name of the extension or ROOT tree"
-outfile,  f, a, "$(OUTFILES)/expcube_Gleam42_1day_withSAA.fits", , , "Name of the output file:"
+outfile,  f, a, "exposure_cube.fits", , , "Name of the output file:"
 filter,   s, h, "", , , "filter expression:"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
-binsize,  r,a, 0.025, , , binsize for the function of theta
-pixelsize, r, a, 1.0, , , "Image size [degrees/pixel]"
+binsize,  r, h, 0.025, , , binsize for the function of theta
+pixelsize, r, h, 1.0, , , "Image size [degrees/pixel]"
  
 tstart,   r, a,   0 ,   , , "start time"
 tstop,    r, a,  86400,  , , "end time"  
