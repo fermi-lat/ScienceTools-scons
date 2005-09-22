@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r9p5 22-Sep-05   JC   use st_facilities v0r*
     v5r9p4 14-Sep-05   JC   have st_facilities::Util::readLines strip
                             trailing carriage returns from Windows
                             formatted text files
