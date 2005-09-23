@@ -15,8 +15,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "fitsio.h"
-
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"
@@ -34,13 +32,6 @@ namespace {
    void toUpper(std::string & name) {
       for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
          *it = std::toupper(*it);
-      }
-   }
-
-   void fitsReportError(int status) {
-      fits_report_error(stderr, status);
-      if (status != 0) {
-         throw std::runtime_error("Cuts::removeDssKeywords: cfitsio error.");
       }
    }
 }
@@ -129,15 +120,14 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
    }
 
    const tip::Header & header = ext->getHeader();
-// The .get(...) method does not work for unsigned int arguments, so
-// we are force to use a double as a temporary variable:
-   double nkeys_value;
-   header["NDSKEYS"].get(nkeys_value);
-   unsigned int nkeys = static_cast<unsigned int>(nkeys_value);
+
+// NB: The .get(...) method does not work for unsigned int arguments.
+   int nkeys;
+   header["NDSKEYS"].get(nkeys);
 
    std::string type, unit, value, ref("");
 
-   for (unsigned int keynum = 1; keynum <= nkeys; keynum++) {
+   for (int keynum = 1; keynum <= nkeys; keynum++) {
       std::ostringstream key1, key2, key3, key4;
       key1 << "DSTYP" << keynum;
       header[key1.str()].get(type);
@@ -294,6 +284,7 @@ unsigned int Cuts::addCut(CutBase * newCut) {
 }
 
 void Cuts::writeDssKeywords(tip::Header & header) const {
+   removeDssKeywords(header);
    int ndskeys = m_cuts.size();
    header["NDSKEYS"].set(ndskeys);
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
@@ -301,34 +292,21 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
    }
 }
 
-void Cuts::removeDssKeywords(std::string filename,
-                             std::string extname,
-                             int ndskeys) {
-   fitsfile * fptr;
-   int status(0);
-      
-   fits_open_file(&fptr, const_cast<char *>(filename.c_str()), 
-                  READWRITE, &status);
-   ::fitsReportError(status);
-      
-   fits_movnam_hdu(fptr, ANY_HDU, const_cast<char *>(extname.c_str()),
-                   0, &status);
-   ::fitsReportError(status);
-      
+void Cuts::removeDssKeywords(tip::Header & header) const {
+   int ndskeys;
+   header["NDSKEYS"].get(ndskeys);
+   char * dskeys[] = {"DSTYP", "DSUNI", "DSVAL", "DSREF"};
    for (int i = 0; i < ndskeys; i++) {
       for (int j = 0; j < 4; j++) {
          std::ostringstream keyname;
-         keyname << "DS*" << j+1;
-         fits_delete_key(fptr, const_cast<char *>(keyname.str().c_str()),
-                         &status);
-         if (status != 202) {
-            ::fitsReportError(status);
+         keyname << dskeys[j] << i;
+         tip::Header::Iterator keyword = header.find(keyname.str());
+         if (keyword != header.end()) {
+            header.erase(keyword);
          }
-         status = 0;
       }
    }
-   fits_close_file(fptr, &status);
-   ::fitsReportError(status);   
+   header.erase("NDSKEYS");
 }
 
 void Cuts::writeGtiExtension(const std::string & filename) const {

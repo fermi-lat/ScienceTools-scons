@@ -143,10 +143,6 @@ public:
    ///        tip::IFileSvc::editTable method.
    void writeDssKeywords(tip::Header & header) const;
 
-   static void removeDssKeywords(std::string filename,
-                                 std::string extname,
-                                 int ndskeys);
-
    /// @brief Add the first GTI extension in the m_cuts vector to
    ///        the specified FITS file.  It is tacitly assumed that
    ///        there is only one GTI extension.  If a GTI extension
@@ -206,6 +202,10 @@ private:
    ///        existing cut supercedes it, but it will be deleted.  If
    ///        added, this cut will be deleted by the destructor ~Cut().
    unsigned int addCut(CutBase * newCut);
+
+   /// @brief Remove all DSS keywords (and NDSKEYS) from
+   ///        the header.
+   void removeDssKeywords(tip::Header & header) const;
 
 };
 

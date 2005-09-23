@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r9p1  23-Sep-05   JC   use new tip::Header::find, erase methods for
+                             DSS keyword deletion.
     v3r9    21-Sep-05   JC   enable DSS keyword deletion; start moving
                              towards incorporating RangeCuts on TIME to
                              be included in GTIs only.
