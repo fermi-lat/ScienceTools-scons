@@ -103,6 +103,18 @@ namespace tip {
     m_fp = 0;
   }
 
+  Header::Iterator FitsHeader::find(const std::string & key_name) {
+    Header::Iterator found_key = m_keyword_seq.begin();
+    for (; found_key != m_keyword_seq.end() && key_name != found_key->getName(); ++found_key);
+    return found_key;
+  }
+
+  Header::ConstIterator FitsHeader::find(const std::string & key_name) const {
+    Header::ConstIterator found_key = m_keyword_seq.begin();
+    for (; found_key != m_keyword_seq.end() && key_name != found_key->getName(); ++found_key);
+    return found_key;
+  }
+
   Header::Iterator FitsHeader::insert(Iterator itor, const KeyRecord & record) {
     int status = 0;
     fits_insert_record(m_fp, itor - m_keyword_seq.begin() + 1, const_cast<char *>(record.get().c_str()), &status);

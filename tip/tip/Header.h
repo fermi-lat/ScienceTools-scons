@@ -145,12 +145,41 @@ namespace tip {
 
       virtual ConstIterator end() const { unsupported("end() const"); return KeySeq_t().end(); }
 
+      /** \brief Return an iterator pointing to the first keyword with the given name. If no keyword
+          with this name was found, returns end().
+          \param key_name The name of the keyword being sought.
+      */
+      virtual Iterator find(const std::string &) { unsupported("find(const std::string &)"); return KeySeq_t().end(); }
+
+      /** \brief Return a const iterator pointing to the first keyword with the given name. If no keyword
+          with this name was found, returns end().
+          \param key_name The name of the keyword being sought.
+      */
+      virtual ConstIterator find(const std::string &) const
+        { unsupported("find(const std::string &) const"); return KeySeq_t().end(); }
+
+      /** \brief Insert a keyword record before the given iterator position.
+          with this name was found, returns end().
+          \param itor The position before which the new record will be placed.
+          \param record The record being inserted.
+      */
       virtual Iterator insert(Iterator itor, const KeyRecord &) { unsupported("insert(Iterator, const KeyRecord &)"); return itor; }
 
+      /** \brief Append a keyword record to the container of keywords in this header.
+          This has the same effect as calling insert(end(), record).
+          \param record The record being appeneded.
+      */
       virtual Iterator append(const KeyRecord &) { unsupported("append(const KeyRecord &)"); return KeySeq_t().end(); }
 
+      /** \brief Erase the keyword pointed to by the iterator. Other keywords with the same name will
+          not be erased.
+          \param itor Iterator pointing to the keyword being erased.
+      */
       virtual Iterator erase(Iterator) { unsupported("erase(Iterator)"); return KeySeq_t().end(); }
 
+      /** \brief Erase all keywords whose name is the same as the given name.
+          \param key_name The name of the keyword(s) being erased.
+      */
       virtual void erase(const std::string &) { unsupported("erase(const std::string &)"); }
 
       /** \brief Get a keyword from this header data object.

@@ -939,6 +939,38 @@ namespace tip {
 
     // Add the last keyword back again.
     write_header.append(record);
+
+    // Look for a keyword which is in the table.
+    key_itor = write_header.find("HV_BIAS");
+    if (key_itor != write_header.end()) {
+      ReportExpected("TestExtensionData::testKeywordItor: non-const find found keyword HV_BIAS");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor: non-const find did not find keyword HV_BIAS");
+    }
+
+    // Look for a keyword which is not in the table.
+    key_itor = write_header.find("NON_EXIS");
+    if (key_itor == write_header.end()) {
+      ReportExpected("TestExtensionData::testKeywordItor: non-const find did not find non-existent keyword NON_EXIS");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor: non-const find found non-existent keyword NON_EXIS");
+    }
+
+    // Look for a keyword which is in the table.
+    Header::ConstIterator const_key_itor = header.find("HV_BIAS");
+    if (const_key_itor != header.end()) {
+      ReportExpected("TestExtensionData::testKeywordItor: const find found keyword HV_BIAS");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor: const find did not find keyword HV_BIAS");
+    }
+
+    // Look for a keyword which is not in the table.
+    const_key_itor = header.find("NON_EXIS");
+    if (const_key_itor == header.end()) {
+      ReportExpected("TestExtensionData::testKeywordItor: const find did not find non-existent keyword NON_EXIS");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor: const find found non-existent keyword NON_EXIS");
+    }
   }
 
 }
