@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r4p1 23-Sep-05   JC   Fix derivative evaluations for BrokenPowerLaw
     v2r4   12-Jul-05   JC   Create shared instead of static library.
     v2r3   15-Jun-05   JC   Tag for James Peachey's ChiSq class.
     v2r2   08-Apr-05   JC   derivative fixes; add option to use 
