@@ -106,7 +106,7 @@ double PowerLaw::integral(Arg &xargmin, Arg &xargmax) const {
    double Gamma = my_params[Index].getTrueValue();
    double x0 = my_params[Scale].getTrueValue();
 
-   return f0/(Gamma+1.)*(pow((xmax/x0), Gamma+1.) - pow((xmin/x0), Gamma+1.));
+   return f0*x0/(Gamma+1.)*(pow((xmax/x0),Gamma+1.) - pow((xmin/x0),Gamma+1.));
 }
 
 } // namespace optimizers
