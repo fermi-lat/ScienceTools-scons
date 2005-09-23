@@ -28,16 +28,20 @@ class BrokenPowerLaw : public Function {
 
 public:
 
-   BrokenPowerLaw(){init(0., -2., -2., 1.);}
+   BrokenPowerLaw() {
+      init(1, -1.5, -2.5, 1000.);
+   }
+
    BrokenPowerLaw(double Prefactor, double Index1, double Index2, 
-                  double BreakValue)
-      {init(Prefactor, Index1, Index2, BreakValue);}
+                  double BreakValue) {
+      init(Prefactor, Index1, Index2, BreakValue);
+   }
 
-   double value(Arg&) const;
+   double value(Arg &) const;
 
-   double derivByParam(Arg &x, const std::string &paramName) const;
+   double derivByParam(Arg & x, const std::string & paramName) const;
 
-   virtual Function *clone() const {
+   virtual Function * clone() const {
       return new BrokenPowerLaw(*this);
    }
 

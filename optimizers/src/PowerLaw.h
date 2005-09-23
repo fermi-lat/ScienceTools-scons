@@ -26,15 +26,19 @@ namespace optimizers {
 class PowerLaw : public Function {
 public:
 
-   PowerLaw(){init(0, -2, 1);}
-   PowerLaw(double Prefactor, double Index, double Scale)
-      {init(Prefactor, Index, Scale);}
+   PowerLaw() {
+      init(1, -2, 1);
+   }
 
-   double value(Arg&) const;
+   PowerLaw(double Prefactor, double Index, double Scale) {
+      init(Prefactor, Index, Scale);
+   }
 
-   double derivByParam(Arg &x, const std::string &paramName) const;
+   double value(Arg &) const;
 
-   double integral(Arg &xmin, Arg &xmax) const;
+   double derivByParam(Arg & x, const std::string & paramName) const;
+
+   double integral(Arg & xmin, Arg & xmax) const;
 
    virtual Function *clone() const {
       return new PowerLaw(*this);

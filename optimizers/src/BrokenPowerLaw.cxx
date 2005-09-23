@@ -71,6 +71,10 @@ double BrokenPowerLaw::derivByParam(Arg &xarg,
    std::vector<Parameter> my_params;
    getParams(my_params);
 
+   double gam1 = -my_params[Index1].getTrueValue();
+   double gam2 = -my_params[Index2].getTrueValue();
+   double Eb = my_params[BreakValue].getTrueValue();
+
    int iparam = -1;
    for (unsigned int i = 0; i < my_params.size(); i++) {
       if (paramName == my_params[i].getName()) iparam = i;
@@ -84,13 +88,17 @@ double BrokenPowerLaw::derivByParam(Arg &xarg,
    
    switch (iparam) {
    case Prefactor:
-      return pow((x/my_params[BreakValue].getTrueValue()), 
-                 my_params[Index1].getTrueValue())
-         *my_params[Prefactor].getScale();
+      if (x < Eb) {
+         return std::pow(x/Eb, -gam1)
+            *my_params[Prefactor].getScale();
+      } else {
+         return std::pow(x/Eb, -gam2)
+            *my_params[Prefactor].getScale();
+      }
       break;
    case Index1:
-      if (x < my_params[BreakValue].getTrueValue()) {
-         return value(xarg)*log(x/my_params[BreakValue].getTrueValue())
+      if (x < Eb) {
+         return value(xarg)*std::log(x/Eb)
             *my_params[Index1].getScale();
       } else {
          return 0;
@@ -100,18 +108,16 @@ double BrokenPowerLaw::derivByParam(Arg &xarg,
       if (x < my_params[BreakValue].getTrueValue()) {
          return 0;
       } else {
-         return value(xarg)*log(x/my_params[BreakValue].getTrueValue())
+         return value(xarg)*std::log(x/Eb)
             *my_params[Index2].getScale();
       }
       break;
    case BreakValue:
-      if (x < my_params[BreakValue].getTrueValue()) {
-         return -value(xarg)*(my_params[Index1].getTrueValue())
-            /(my_params[BreakValue].getTrueValue())
+      if (x < Eb) {
+         return value(xarg)*gam1/Eb
             *my_params[BreakValue].getScale();
       } else {
-         return -value(xarg)*(my_params[Index2].getTrueValue())
-            /(my_params[BreakValue].getTrueValue())
+         return value(xarg)*gam2/Eb
             *my_params[BreakValue].getScale();
       }
       break;

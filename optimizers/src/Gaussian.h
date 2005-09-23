@@ -26,9 +26,13 @@ namespace optimizers {
 class Gaussian : public Function {
 public:
 
-   Gaussian(){init(0, 0, 1);}
-   Gaussian(double Prefactor, double Mean, double Sigma)
-      {init(Prefactor, Mean, Sigma);}
+   Gaussian() {
+      init(1, 150, 15);
+   }
+
+   Gaussian(double Prefactor, double Mean, double Sigma) {
+      init(Prefactor, Mean, Sigma);
+   }
 
    double value(Arg &) const;
 
