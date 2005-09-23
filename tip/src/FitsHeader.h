@@ -46,6 +46,10 @@ namespace tip {
 
       virtual Iterator append(const KeyRecord & record);
 
+      virtual Iterator erase(Iterator itor);
+
+      virtual void erase(const std::string & key_name);
+
       /** \brief Get a keyword from this header data object.
           \param name The name of the keyword to get from the header data object.
           \param value The output value of the keyword, converted to the given type.

@@ -874,7 +874,71 @@ namespace tip {
         }
       }
     }
+
     if (!discrepancy) ReportExpected("TestExtensionData::testKeywordItor successfully tested keyword sequence iterator.");
+
+    Header & write_header(m_writable_extension->getHeader());
+
+    Header::KeySeq_t::size_type num_keywords = write_header.getNumKeywords();
+
+    // Go to the last keyword in the header.
+    Header::Iterator key_itor = write_header.end();
+    --key_itor;
+
+    // Get value of this keyword.
+    std::string record = key_itor->get();
+    std::string key_name = key_itor->getName();
+
+    // Erase this keyword.
+    write_header.erase(key_itor);
+
+    // Confirm one fewer keyword in header now.
+    if (num_keywords == 1 + write_header.getNumKeywords()) {
+      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using iterator there is one fewer keyword");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor after erasing keyword using iterator there is not one fewer keyword");
+    }
+
+    // Make sure the last keyword is not the same.
+    key_itor = write_header.end();
+    --key_itor;
+    if (key_itor->get() == record) {
+      ReportUnexpected("TestExtensionData::testKeywordItor after erasing keyword using iterator final keyword is *not* different");
+    } else {
+      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using iterator final keyword is different");
+    }
+
+    // Add the keyword back.
+    write_header.append(record);
+
+    // Confirm one more keyword in header now.
+    if (num_keywords == write_header.getNumKeywords()) {
+      ReportExpected("TestExtensionData::testKeywordItor after appending keyword using iterator there is one more keyword");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor after appending keyword using iterator there is not one more keyword");
+    }
+
+    // Erase the keyword again, this time using name of the keyword. There are five history keywords, and all should be erased.
+    write_header.erase(key_name);
+
+    // Confirm fewer keywords in header now.
+    if (num_keywords == 5 + write_header.getNumKeywords()) {
+      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using key name there are five fewer keywords");
+    } else {
+      ReportUnexpected("TestExtensionData::testKeywordItor after erasing keyword using key name there are not five fewer keywords");
+    }
+
+    // Make sure the last keyword is not the same.
+    key_itor = write_header.end();
+    --key_itor;
+    if (key_itor->get() == record) {
+      ReportUnexpected("TestExtensionData::testKeywordItor after erasing keyword using key name final keyword is *not* different");
+    } else {
+      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using key name final keyword is different");
+    }
+
+    // Add the last keyword back again.
+    write_header.append(record);
   }
 
 }

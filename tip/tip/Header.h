@@ -149,6 +149,10 @@ namespace tip {
 
       virtual Iterator append(const KeyRecord &) { unsupported("append(const KeyRecord &)"); return KeySeq_t().end(); }
 
+      virtual Iterator erase(Iterator) { unsupported("erase(Iterator)"); return KeySeq_t().end(); }
+
+      virtual void erase(const std::string &) { unsupported("erase(const std::string &)"); }
+
       /** \brief Get a keyword from this header data object.
           \param name The name of the keyword to get from the header data object.
           \param value The output value of the keyword, converted to the given type.

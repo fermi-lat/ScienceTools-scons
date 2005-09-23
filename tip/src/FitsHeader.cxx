@@ -118,6 +118,30 @@ namespace tip {
     return insert(m_keyword_seq.end(), record);
   }
 
+  Header::Iterator FitsHeader::erase(Iterator itor) {
+    int status = 0;
+    fits_delete_record(m_fp, itor - begin() + 1, &status);
+    return m_keyword_seq.erase(itor);
+  }
+
+  void FitsHeader::erase(const std::string & key_name) {
+    int status = 0;
+    // First, erase all matching keywords as far as cfitsio is concerned.
+    do {
+      fits_delete_key(m_fp, const_cast<char *>(key_name.c_str()), &status);
+    } while (0 == status);
+    if (KEY_NO_EXIST != status) throw TipException(status, formatWhat("Error deleting keyword \"" + key_name + "\""));
+
+    // Next, erase all matching keywords in the container of keywords.
+    for (KeySeq_t::size_type index = m_keyword_seq.size(); index != 0; --index) {
+      KeySeq_t::iterator itor = m_keyword_seq.begin() + index - 1;
+      std::string rec = itor->get();
+      if (key_name == itor->getName()) {
+        m_keyword_seq.erase(itor);
+      }
+    }
+  }
+
   std::string FitsHeader::getKeyComment(const std::string & name) const {
     int status = 0;
     char value[FLEN_VALUE];
