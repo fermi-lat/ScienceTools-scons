@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r2p1 25-Sep-05   JC   set livetime to zero during SAA passages;
+                            set mission start time to Jan 1 2001 in
+                            Util::writeDateKeywords
     v1r2   03-Sep-05   JC   update to "current" FT1/2 template files
                             which have MJDREF = 51910
     v1r1p3 07-Mar-05   JC   set mission start = MJDREF = 54101.0
