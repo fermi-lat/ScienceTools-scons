@@ -132,6 +132,13 @@ int main(int iargc, char * argv[]) {
          double full_interval(ft2["stop"].get() - ft2["start"].get());
          double fraction(0.90);
          ft2["livetime"].set(fraction*full_interval);
+         ft2["deadtime"].set(full_interval*(1. - fraction));
+         bool in_saa;
+         ft2["in_saa"].get(in_saa);
+         if (true == in_saa) {
+            ft2["livetime"].set(0);
+            ft2["deadtime"].set(full_interval);
+         }
       }
 
       Util::writeDateKeywords(scDataTable, start_time, stop_time);
