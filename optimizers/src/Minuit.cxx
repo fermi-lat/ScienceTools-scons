@@ -166,17 +166,7 @@ namespace optimizers {
     // m_stat, so this non-member function can use it.
 
     Statistic * statp = static_cast<Statistic *>(futil);
-    try {statp->setFreeParamValues(parameters);}
-    catch (OutOfBounds& e) {
-//       std::cerr << e.what() << std::endl;
-//       std::cerr << "Value " << e.value() << " is not between " 
-// 		<< e.minValue() << " and " << e.maxValue() << std::endl;
-//       exit(e.code());
-    }
-    catch (Exception& e) {
-//       std::cerr << e.what() << std::endl;
-//       exit(e.code());
-    }
+    statp->setFreeParamValues(parameters);
 
     *fcnval = -statp->value();
     if (*iflag == 2) { // Return gradient values
