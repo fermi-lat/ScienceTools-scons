@@ -168,14 +168,14 @@ namespace optimizers {
     Statistic * statp = static_cast<Statistic *>(futil);
     try {statp->setFreeParamValues(parameters);}
     catch (OutOfBounds& e) {
-      std::cerr << e.what() << std::endl;
-      std::cerr << "Value " << e.value() << " is not between " 
-		<< e.minValue() << " and " << e.maxValue() << std::endl;
-      exit(e.code());
+//       std::cerr << e.what() << std::endl;
+//       std::cerr << "Value " << e.value() << " is not between " 
+// 		<< e.minValue() << " and " << e.maxValue() << std::endl;
+//       exit(e.code());
     }
     catch (Exception& e) {
-      std::cerr << e.what() << std::endl;
-      exit(e.code());
+//       std::cerr << e.what() << std::endl;
+//       exit(e.code());
     }
 
     *fcnval = -statp->value();
