@@ -81,8 +81,10 @@ float FILESpectrum::operator() (float r)
     
     for(i = integ_flux.begin(); i != integ_flux.end(); i++)
     {
-        if((*i).second >= target_flux)
-            break;
+      if((*i).second >= target_flux){
+	if(i==integ_flux.begin()) i++;
+	break;
+      }
         previous = (*i);
     }
     
