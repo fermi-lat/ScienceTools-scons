@@ -118,6 +118,14 @@ class AnalysisBase(object):
     def __repr__(self):
         return self._inputs
     def thaw(self, i):
-        self.model[i].setFree(1)
+        try:
+            for ii in i:
+                self.model[ii].setFree(1)
+        except TypeError:
+            self.model[i].setFree(1)
     def freeze(self, i):
-        self.model[i].setFree(0)
+        try:
+            for ii in i:
+                self.model[ii].setFree(1)
+        except TypeError:
+            self.model[i].setFree(0)
