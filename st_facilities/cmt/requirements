@@ -5,10 +5,11 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
-use f2c v2r*
-use tip v2*
-use facilities v2r*
-use cfitsio v1r* IExternal
+use astro v*
+use f2c v*
+use tip v*
+use facilities v*
+use cfitsio v* IExternal
 
 apply_pattern ST_library option="-no_share *.c "
 
