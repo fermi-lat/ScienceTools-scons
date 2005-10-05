@@ -129,6 +129,7 @@ void st_facilitiesTests::test_Util_expectedException() {
       test_Util_file_ok();
    } catch (std::exception & eObj) {
       CPPUNIT_ASSERT(Util::expectedException(eObj, "File not found"));
+      CPPUNIT_ASSERT(!Util::expectedException(eObj, "File not fund"));
    }
 }
 

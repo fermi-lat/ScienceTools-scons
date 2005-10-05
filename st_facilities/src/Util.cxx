@@ -265,7 +265,7 @@ namespace st_facilities {
    bool Util::expectedException(const std::exception & eObj, 
                                 const std::string & targetMessage) {
       std::string message(eObj.what());
-      return message.find_first_of(targetMessage.c_str()) 
+      return message.find(targetMessage.c_str()) 
          != std::string::npos;
    }
 

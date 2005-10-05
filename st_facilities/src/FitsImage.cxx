@@ -238,7 +238,10 @@ astro::SkyProj * FitsImage::skyProjCreate(const std::string & fitsFile,
 
    delete image;
 
-   return new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
+   astro::SkyProj * proj = 
+      new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
+
+   return proj;
 }
 
 } // namespace st_facilities
