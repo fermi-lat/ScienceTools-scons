@@ -16,6 +16,37 @@
 
 #include "st_facilities/Util.h"
 
+namespace {
+   bool reverse_cmp(double x, double y) {
+      return x > y;
+   }
+   int findIndex(const std::vector<double> & xx, double x) {
+      std::vector<double>::const_iterator ix;
+      if (xx.front() < xx.back()) {
+         ix = std::upper_bound(xx.begin(), xx.end(), x);
+      } else {
+         ix = std::upper_bound(xx.begin(), xx.end(), x, reverse_cmp);
+      }
+      if (ix != xx.end()) {
+         return ix - xx.begin();
+      } else {
+         if (xx.front() < xx.back()) {
+            if (x < xx.front()) {
+               return 1;
+            } else {
+               return xx.size() - 1;
+            }
+         } else {
+            if (x < xx.back()) {
+               return 1;
+            } else {
+               return xx.size() - 1;
+            }
+         }
+      }
+   }
+}
+
 namespace st_facilities {
 
    bool Util::fileExists(const std::string & filename) {
@@ -119,28 +150,44 @@ namespace st_facilities {
                          const std::vector<double> &yy, double y, 
                          const std::vector<double> &z) {
 
-      std::vector<double>::const_iterator ix;
-      if (x < *(xx.begin())) {
-         ix = xx.begin() + 1;
-      } else if (x >= *(xx.end()-1)) {
-         ix = xx.end() - 1;
-      } else {
-         ix = std::upper_bound(xx.begin(), xx.end(), x);
+//       std::vector<double>::const_iterator ix;
+//       if (x < *(xx.begin())) {
+//          ix = xx.begin() + 1;
+//       } else if (x >= *(xx.end()-1)) {
+//          ix = xx.end() - 1;
+//       } else {
+//          ix = std::upper_bound(xx.begin(), xx.end(), x);
+//       }
+//       int i = ix - xx.begin();
+      int i = ::findIndex(xx, x);
+      if (i < 1) {
+         i = 1;
+      } else if (i > static_cast<int>(xx.size())) {
+         i = xx.size() - 1;
       }
-      int i = ix - xx.begin();
+
       
-      std::vector<double>::const_iterator iy;
-      if (y < *(yy.begin())) {
-         iy = yy.begin() + 1;
-      } else if (y >= *(yy.end()-1)) {
-         iy = yy.end() - 1;
-      } else {
-         iy = std::upper_bound(yy.begin(), yy.end(), y);
+//       std::vector<double>::const_iterator iy;
+//       if (y < *(yy.begin())) {
+//          iy = yy.begin() + 1;
+//       } else if (y >= *(yy.end()-1)) {
+//          iy = yy.end() - 1;
+//       } else {
+//          iy = std::upper_bound(yy.begin(), yy.end(), y);
+//       }
+//       int j = iy - yy.begin();
+      int j = ::findIndex(yy, y);
+      if (j < 1) {
+         j = 1;
+      } else if (j > static_cast<int>(yy.size())) {
+         j = yy.size() - 1;
       }
-      int j = iy - yy.begin();
       
-      double tt = (x - *(ix-1))/(*(ix) - *(ix-1));
-      double uu = (y - *(iy-1))/(*(iy) - *(iy-1));
+//       double tt = (x - *(ix-1))/(*(ix) - *(ix-1));
+//       double uu = (y - *(iy-1))/(*(iy) - *(iy-1));
+
+      double tt = (x - xx.at(i-1))/(xx.at(i) - xx.at(i-1));
+      double uu = (y - yy.at(j-1))/(yy.at(j) - yy.at(j-1));
       
       double y1 = z[yy.size()*(i-1) + (j-1)];
       double y2 = z[yy.size()*(i) + (j-1)];
@@ -153,10 +200,10 @@ namespace st_facilities {
          std::ostringstream message;
          message << "st_facilities::Util::bilinear:\n"
                  << "value = " << value << " < 0\n";
-         message << xx[i-1] << "  " << *(ix-1) << "  " 
-                 << x << "  " << *ix << "\n";
-         message << yy[j-1] << "  " << *(iy-1) << "  " 
-                 << y << "  " << *iy << "\n";
+         message << xx[i-1] << "  " << xx.at(i-1) << "  " 
+                 << x << "  " << xx.at(i) << "\n";
+         message << yy[j-1] << "  " << yy.at(j-1) << "  " 
+                 << y << "  " << yy.at(j) << "\n";
          message << tt << "  " << uu << "  " 
                  << y1 << "  " << y2 << "  "
                  << y3 << "  " << y4;
