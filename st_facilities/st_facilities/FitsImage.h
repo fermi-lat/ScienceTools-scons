@@ -39,7 +39,7 @@ class FitsImage {
     
 public:
 
-   FitsImage() : m_proj(0) {}
+   FitsImage() {}
 
    FitsImage(const std::string & fitsfile, 
              const std::string & extension="");
@@ -118,9 +118,6 @@ protected:
 
    /// The FITS image data
    std::vector<float> m_image;
-
-   /// The file-specific projection information.
-   astro::SkyProj * m_proj;
 
    void setProjection(const tip::Header & header);
 

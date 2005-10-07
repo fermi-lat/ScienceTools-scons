@@ -27,19 +27,14 @@ namespace st_facilities {
 
 FitsImage::FitsImage(const std::string & fitsfile,
                      const std::string & extension) 
-   : m_filename(fitsfile), m_extension(extension), m_proj(0) {
+   : m_filename(fitsfile), m_extension(extension) {
    read_fits_image();
-   m_proj = skyProjCreate(fitsfile, extension);
 }
 
 FitsImage::FitsImage(const FitsImage & rhs) 
    : m_filename(rhs.m_filename), m_extension(rhs.m_extension) {
    m_axes = rhs.m_axes;
    m_image = rhs.m_image;
-// NB: The astro::SkyProj copy constructor is not implemented
-// properly, so this pointer must be shared, and so we cannot delete
-// it in the destructor.
-   m_proj = rhs.m_proj;
 }
 
 FitsImage & FitsImage::operator=(const FitsImage & rhs) {
@@ -48,18 +43,11 @@ FitsImage & FitsImage::operator=(const FitsImage & rhs) {
       m_extension = rhs.m_extension;
       m_axes = rhs.m_axes;
       m_image = rhs.m_image;
-      delete m_proj;
-      m_proj = new astro::SkyProj(*(rhs.m_proj));
    }
    return *this;
 }
 
-FitsImage::~FitsImage() {
-// Because of the faulty astro::SkyProj copy constructor, this pointer
-// is shared and cannot be deleted and is therefore a resource leak
-// here.
-//  delete m_proj;
-}
+FitsImage::~FitsImage() {}
 
 void FitsImage::getAxisDims(std::vector<int> &axisDims) const {
    axisDims.clear();
@@ -77,6 +65,8 @@ void FitsImage::getAxisNames(std::vector<std::string> &axisNames) const {
 
 void FitsImage::getCelestialArrays(std::vector<double> & lonArray,
                                    std::vector<double> & latArray) const {
+   astro::SkyProj * proj = skyProjCreate(m_filename, m_extension);
+
    int npix = m_axes[0].size*m_axes[1].size;
    lonArray.clear();
    lonArray.reserve(npix);
@@ -86,14 +76,17 @@ void FitsImage::getCelestialArrays(std::vector<double> & lonArray,
 // NB: wcslib starts indexing pixel arrays with 1, not 0.
    for (int j = 1; j < m_axes[1].size + 1; j++) {
       for (int i = 1; i < m_axes[0].size + 1; i++) {
-         std::pair<double, double> dir = m_proj->pix2sph(i, j);
+         std::pair<double, double> dir = proj->pix2sph(i, j);
          lonArray.push_back(dir.first);
          latArray.push_back(dir.second);
       }
    }
+   delete proj;
 }
          
 void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
+   astro::SkyProj * proj = skyProjCreate(m_filename, m_extension);
+
    int npix = m_axes[0].size*m_axes[1].size;
    solidAngles.clear();
    solidAngles.reserve(npix);
@@ -101,14 +94,15 @@ void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
 // NB: wcslib starts indexing pixel arrays with 1, not 0.
    for (int j = 1; j < m_axes[1].size + 1; j++) {
       for (int i = 1; i < m_axes[0].size + 1; i++) {
-         astro::SkyDir A(i - 0.5, j - 0.5, *m_proj);
-         astro::SkyDir B(i + 0.5, j - 0.5, *m_proj);
-         astro::SkyDir C(i + 0.5, j + 0.5, *m_proj);
-         astro::SkyDir D(i - 0.5, j + 0.5, *m_proj);
+         astro::SkyDir A(i - 0.5, j - 0.5, *proj);
+         astro::SkyDir B(i + 0.5, j - 0.5, *proj);
+         astro::SkyDir C(i + 0.5, j + 0.5, *proj);
+         astro::SkyDir D(i - 0.5, j + 0.5, *proj);
 
          solidAngles.push_back(solidAngle(A, B, C, D));
       }
    }
+   delete proj;
 }
 
 double FitsImage::solidAngle(const astro::SkyDir & A,
