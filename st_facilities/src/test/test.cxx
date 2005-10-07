@@ -42,8 +42,6 @@ class st_facilitiesTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_Env_getDataDir);
    CPPUNIT_TEST(test_FileSys_expandFileList);
 
-   CPPUNIT_TEST(test_FitsImage);
-
    CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,8 +58,6 @@ public:
    void test_Env_expandEnvVar();
    void test_Env_getDataDir();
    void test_FileSys_expandFileList();
-
-   void test_FitsImage();
 
 private:
 
@@ -316,58 +312,6 @@ void st_facilitiesTests::test_FileSys_expandFileList() {
 // the following assert will fail on Windows.
 //  CPPUNIT_ASSERT(*cont.begin() == expanded_list);
   CPPUNIT_ASSERT(cont.back() == "fits_file1.fits");
-}
-
-void st_facilitiesTests::test_FitsImage() {
-
-   std::string infile;
-   infile = Env::appendFileName(Env::appendFileName("$(ST_FACILITIESROOT)",
-                                                    "data"),"test_image.fits");
-
-   std::string fitsFile;
-
-   Env::expandEnvVar(infile, fitsFile);
-
-   st_facilities::FitsImage fitsImage(fitsFile);
-
-   std::ofstream outfile("FitsImage_output.dat");
-
-   std::vector<int> axisDims;
-   fitsImage.getAxisDims(axisDims);
-
-   std::vector<std::string> axisNames;
-   fitsImage.getAxisNames(axisNames);
-   for (unsigned int i = 0; i < axisNames.size(); i++) {
-      outfile << axisNames.at(i) << "  "
-              << axisDims.at(i) << "\n";
-   }
-   outfile << std::endl;
-
-//    std::vector<double> xaxis, yaxis;
-
-//    fitsImage.getAxisVector(0, xaxis);
-//    for (unsigned int i = 0; i < xaxis.size(); i++) {
-//       outfile << xaxis.at(i) << std::endl;
-//    }
-   
-//    fitsImage.getAxisVector(1, yaxis);
-//    for (unsigned int i = 0; i < yaxis.size(); i++) {
-//       outfile << yaxis.at(i) << std::endl;
-//    }
-
-   std::vector<double> lonArray, latArray;
-   fitsImage.getCelestialArrays(lonArray, latArray);
-
-   std::vector<double> imageData;
-   fitsImage.getImageData(imageData);
-
-   for (unsigned int i = 0; i < imageData.size(); i++) {
-      outfile << lonArray.at(i) << "  " 
-              << latArray.at(i) << "  "
-              << imageData.at(i) << "\n";
-   }
-
-   outfile.close();
 }
 
 int main() {

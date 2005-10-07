@@ -18,6 +18,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 
+#include "astro/SkyDir.h"
 #include "astro/SkyProj.h"
 
 #include "st_facilities/FitsImage.h"
@@ -116,19 +117,27 @@ void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
 // NB: wcslib starts indexing pixel arrays with 1, not 0.
    for (int j = 1; j < m_axes[1].size + 1; j++) {
       for (int i = 1; i < m_axes[0].size + 1; i++) {
-         std::pair<double, double> center = m_proj->pix2sph(i, j);
-         std::pair<double, double> lower = m_proj->pix2sph(i, j-1);
-         std::pair<double, double> upper = m_proj->pix2sph(i, j+1);
-         double thetamin = (lower.second + center.second)/2.*M_PI/180.;
-         double thetamax = (upper.second + center.second)/2.*M_PI/180.;
+         astro::SkyDir A(i - 0.5, j - 0.5, *m_proj);
+         astro::SkyDir B(i + 0.5, j - 0.5, *m_proj);
+         astro::SkyDir C(i + 0.5, j + 0.5, *m_proj);
+         astro::SkyDir D(i - 0.5, j + 0.5, *m_proj);
 
-         lower = m_proj->pix2sph(i-1, j);
-         upper = m_proj->pix2sph(i+1, j);
-         double dphi = (upper.first - lower.first)/2.;
-         solidAngles.push_back(std::fabs(dphi*M_PI/180.*(sin(thetamax) - 
-                                                         sin(thetamin))));
+         solidAngles.push_back(solidAngle(A, B, C, D));
       }
    }
+}
+
+double FitsImage::solidAngle(const astro::SkyDir & A,
+                             const astro::SkyDir & B, 
+                             const astro::SkyDir & C,
+                             const astro::SkyDir & D) {
+   double dOmega1 = A.difference(B)*A.difference(D)
+      *((A()-B()).unit().cross((A() - D()).unit())).mag();
+
+   double dOmega2 = C.difference(B)*C.difference(D)
+      *((C()-B()).unit().cross((C() - D()).unit())).mag();
+
+   return (dOmega1 + dOmega2)/2.;
 }
 
 void FitsImage::getImageData(std::vector<double> &imageData) const {

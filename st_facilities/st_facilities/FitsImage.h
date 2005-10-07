@@ -14,6 +14,7 @@
 #include <vector>
 
 namespace astro {
+   class SkyDir;
    class SkyProj;
 }
 
@@ -77,6 +78,13 @@ public:
    /// @param extension The name of the relevent FITS image extension.
    static astro::SkyProj * skyProjCreate(const std::string & fitsFile,
                                          const std::string & extension="");
+
+   /// @brief Compute the solid angle of a region defined by four
+   /// ordered directions on the sky, joined by great circles.
+   static double solidAngle(const astro::SkyDir & A,
+                            const astro::SkyDir & B, 
+                            const astro::SkyDir & C,
+                            const astro::SkyDir & D);
 
 protected:
 
