@@ -30,19 +30,16 @@ FitsImage::FitsImage(const std::string & fitsfile,
    : m_filename(fitsfile), m_extension(extension), m_proj(0) {
    read_fits_image();
    m_proj = skyProjCreate(fitsfile, extension);
-   for (unsigned int i = 0; i < m_axes.size(); i++) {
-      std::vector<double> axisVector;
-      m_axes[i].computeAxisVector(axisVector);
-      m_axisVectors.push_back(axisVector);
-   }
 }
 
 FitsImage::FitsImage(const FitsImage & rhs) 
    : m_filename(rhs.m_filename), m_extension(rhs.m_extension) {
    m_axes = rhs.m_axes;
-   m_axisVectors = rhs.m_axisVectors;
    m_image = rhs.m_image;
-   m_proj = new astro::SkyProj(*(rhs.m_proj));
+// NB: The astro::SkyProj copy constructor is not implemented
+// properly, so this pointer must be shared, and so we cannot delete
+// it in the destructor.
+   m_proj = rhs.m_proj;
 }
 
 FitsImage & FitsImage::operator=(const FitsImage & rhs) {
@@ -50,7 +47,6 @@ FitsImage & FitsImage::operator=(const FitsImage & rhs) {
       m_filename = rhs.m_filename;
       m_extension = rhs.m_extension;
       m_axes = rhs.m_axes;
-      m_axisVectors = rhs.m_axisVectors;
       m_image = rhs.m_image;
       delete m_proj;
       m_proj = new astro::SkyProj(*(rhs.m_proj));
@@ -59,7 +55,10 @@ FitsImage & FitsImage::operator=(const FitsImage & rhs) {
 }
 
 FitsImage::~FitsImage() {
-   delete m_proj;
+// Because of the faulty astro::SkyProj copy constructor, this pointer
+// is shared and cannot be deleted and is therefore a resource leak
+// here.
+//  delete m_proj;
 }
 
 void FitsImage::getAxisDims(std::vector<int> &axisDims) const {
@@ -74,16 +73,6 @@ void FitsImage::getAxisNames(std::vector<std::string> &axisNames) const {
    for (unsigned int i = 0; i < m_axes.size(); i++) {
       axisNames.push_back(m_axes[i].axisType);
    }
-}
-
-void FitsImage::getAxisVector(unsigned int naxis,
-                              std::vector<double> &axisVector) const {
-   if (naxis >= m_axes.size()) {
-      std::ostringstream message;
-      message << "FitsImage::getAxisVector: Invalid axis number " << naxis;
-      throw std::invalid_argument(message.str());
-   }
-   axisVector = m_axisVectors[naxis];
 }
 
 void FitsImage::getCelestialArrays(std::vector<double> & lonArray,
@@ -105,11 +94,6 @@ void FitsImage::getCelestialArrays(std::vector<double> & lonArray,
 }
          
 void FitsImage::getSolidAngles(std::vector<double> &solidAngles) const {
-// This solid angle calculation *assumes* that m_axes[0] is a
-// longitudinal coordinate and that m_axes[1] is a latitudinal one.
-// The axis units are assumed to be degrees, while the solid angles
-// are returned as steradians.
-
    int npix = m_axes[0].size*m_axes[1].size;
    solidAngles.clear();
    solidAngles.reserve(npix);
@@ -131,6 +115,8 @@ double FitsImage::solidAngle(const astro::SkyDir & A,
                              const astro::SkyDir & B, 
                              const astro::SkyDir & C,
                              const astro::SkyDir & D) {
+// Approximation to the pixel solid angle:  Divide into two
+// triangles and compute the area as if the space were flat.
    double dOmega1 = A.difference(B)*A.difference(D)
       *((A()-B()).unit().cross((A() - D()).unit())).mag();
 
@@ -140,23 +126,10 @@ double FitsImage::solidAngle(const astro::SkyDir & A,
    return (dOmega1 + dOmega2)/2.;
 }
 
-void FitsImage::getImageData(std::vector<double> &imageData) const {
+void FitsImage::getImageData(std::vector<double> & imageData) const {
    imageData.resize(m_image.size());
    for (unsigned int i = 0; i < m_image.size(); i++) {
       imageData.at(i) = m_image.at(i);
-   }
-}
-
-void FitsImage::
-AxisParams::computeAxisVector(std::vector<double> &axisVector) {
-   axisVector.clear();
-   axisVector.reserve(size);
-   for (int i = 0; i < size; i++) {
-      double value = step*(i - refPixel + 1) + refVal;
-      if (logScale) {
-         value = exp(value);
-      }
-      axisVector.push_back(value);
    }
 }
 
