@@ -5,6 +5,7 @@
 $Id$
 
 \verbatim
+07-oct-2005      v1r1 JP  Update hardcoded MJDREF to current mission definition.
 07-sep-2005    v1r0p4 JP  Use ST_pfiles pattern to install parameter files.
 30-aug-2005    v1r0p3 JP  No, really, do not perform test of binary demodulation on Windows for now.
 29-aug-2005    v1r0p2 JP  Do not perform test of binary demodulation on Windows for now.
