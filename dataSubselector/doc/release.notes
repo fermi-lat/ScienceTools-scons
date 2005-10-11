@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v3r10   11-Oct-05   JC   add gtmaketime application
     v3r9p2  23-Sep-05   JC   patch for Cuts::writeDssKeywords for headers
                              that do not have NDSKEYS set.
     v3r9p1  23-Sep-05   JC   use new tip::Header::find, erase methods for
