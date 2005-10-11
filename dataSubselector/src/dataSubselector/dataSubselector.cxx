@@ -142,13 +142,6 @@ void DataFilter::copyTable(const std::string & extension,
 
    long npts(0);
 
-//    for (; inputIt != inputTable->end(); ++inputIt) {
-//       if (!cuts || cuts->accept(input)) {
-//          output = input;
-//          ++outputIt;
-//          npts++;
-//       }
-//    }
    for (; inputIt != inputTable->end(); ++inputIt) {
       output = input;
       ++outputIt;
