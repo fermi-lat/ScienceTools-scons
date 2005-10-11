@@ -17,6 +17,8 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include "st_facilities/Util.h"
+
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
 #include "dataSubselector/GtiCut.h"
@@ -87,37 +89,48 @@ void MakeTime::run() {
 
 void MakeTime::createGti() {
    std::string scfile = m_pars["scfile"];
+   std::vector<std::string> scfiles;
+   st_facilities::Util::resolve_fits_files(scfile, scfiles);
    std::string sctable = m_pars["sctable"];
    std::string filter = m_pars["filter"];
-   std::auto_ptr<const tip::Table> 
-      in_table(tip::IFileSvc::instance().readTable(scfile, sctable, filter));
-   
-   tip::Table::ConstIterator input = in_table->begin();
-   tip::ConstTableRecord & in = *input;
 
-   double start_time;
-   double stop_time;
-   for (; input != in_table->end(); ++input) {
-      in["START"].get(start_time);
-      in["STOP"].get(stop_time);
-      dataSubselector::Gti gti;
-      gti.insertInterval(start_time, stop_time);
-      m_gti = m_gti | gti;
+   for (unsigned int i = 0; i < scfiles.size(); i++) {
+      std::auto_ptr<const tip::Table> 
+         in_table(tip::IFileSvc::instance().readTable(scfiles.at(i), 
+                                                      sctable, filter));
+   
+      tip::Table::ConstIterator input = in_table->begin();
+      tip::ConstTableRecord & in = *input;
+
+      double start_time;
+      double stop_time;
+      for (; input != in_table->end(); ++input) {
+         in["START"].get(start_time);
+         in["STOP"].get(stop_time);
+         dataSubselector::Gti gti;
+         gti.insertInterval(start_time, stop_time);
+         m_gti = m_gti | gti;
+      }
    }
 }
 
 void MakeTime::mergeGtis() {
    std::string evfile = m_pars["evfile"];
+   std::vector<std::string> evfiles;
+   st_facilities::Util::resolve_fits_files(evfile, evfiles);
    std::string evtable = m_pars["evtable"];
 
-   dataSubselector::Cuts cuts(evfile, evtable);
+   for (unsigned int j = 0; j < evfiles.size(); j++) {
+      dataSubselector::Cuts cuts(evfiles.at(j), evtable);
 
-   std::vector<const dataSubselector::GtiCut *> gtiCuts;
-   cuts.getGtiCuts(gtiCuts);
-
-   for (size_t i = 0; i < gtiCuts.size(); i++) {
-      m_gti = m_gti & gtiCuts.at(i)->gti();
+      std::vector<const dataSubselector::GtiCut *> gtiCuts;
+      cuts.getGtiCuts(gtiCuts);
+      
+      dataSubselector::Gti my_gti(m_gti);
+      for (size_t i = 0; i < gtiCuts.size(); i++) {
+         my_gti = my_gti & gtiCuts.at(i)->gti();
+      }
+      
+      my_gti.writeExtension(evfiles.at(j));
    }
-
-   m_gti.writeExtension(evfile);
 }
