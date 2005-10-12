@@ -18,11 +18,11 @@ namespace hoops {
 namespace st_graph {
 
 //  class StApp;
-  class StEventReceiver;
+  class StGui;
 
   class ParWidget : public st_graph::IEventReceiver {
     public:
-      ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StEventReceiver * receiver);
+      ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StGui * gui);
 
       ~ParWidget();
 
@@ -52,7 +52,7 @@ namespace st_graph {
     private:
       st_graph::Engine & m_engine;
       std::string m_value_string;
-      StEventReceiver * m_receiver;
+      StGui * m_gui;
       st_graph::IFrame * m_frame;
       st_graph::IFrame * m_label;
       st_graph::IFrame * m_value;
@@ -63,15 +63,15 @@ namespace st_graph {
       bool m_display;
   };
 
-  class StEventReceiver : public st_graph::IEventReceiver {
+  class StGui : public st_graph::IEventReceiver {
     public:
       typedef std::multimap<std::string, ParWidget *> ParWidgetCont;
       typedef std::multimap<std::string, st_graph::ITabFolder *> TabFolderCont;
 
       //StEventReceiver(st_graph::Engine & engine, hoops::IParGroup & par_group, StApp * m_app);
-      StEventReceiver(st_graph::Engine & engine, const hoops::IParGroup & par_group);
+      StGui(st_graph::Engine & engine, const hoops::IParGroup & par_group);
 
-      virtual ~StEventReceiver();
+      virtual ~StGui();
 
       virtual void clicked(st_graph::IFrame * f);
 
@@ -106,7 +106,7 @@ namespace st_graph {
       long m_tab_height;
   };
 
-  typedef StEventReceiver StGui;
+//  typedef StEventReceiver StGui;
 }
 
 #endif
