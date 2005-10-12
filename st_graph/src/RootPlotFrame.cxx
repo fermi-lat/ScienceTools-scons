@@ -258,11 +258,13 @@ namespace st_graph {
     unsigned long idx = 0;
     unsigned long ii = 0;
 
+#if 0
     // First point plotted is at the base of the first bin.
     x_vals[idx] = x_low[ii];
     y_vals[idx] = 0.;
 
     ++idx;
+#endif
     for (ii = 0; ii < x_low.size(); ++ii, ++idx) {
       // Plot the y value at the left edge.
       x_vals[idx] = x_low[ii];
@@ -286,11 +288,13 @@ namespace st_graph {
           x_vals[idx] = next;
           y_vals[idx] = 0.;
         }
+#if 0
       } else {
         // Last input point is the last right edge, which should drop to 0.
         ++idx;
         x_vals[idx] = x_vals[idx - 1];
         y_vals[idx] = 0.;
+#endif
       }
     }
 
