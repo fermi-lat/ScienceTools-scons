@@ -9,6 +9,7 @@ use ROOT * IExternal
 use RootcintPolicy * GlastPolicy
 use STpolicy *
 use st_stream *
+use hoops *
 
 private
 #apply_pattern ST_library option=-no_share
