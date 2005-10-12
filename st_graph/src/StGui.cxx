@@ -26,7 +26,7 @@ using namespace st_graph;
 
 namespace st_graph {
 
-  ParWidget::ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StGui * gui):
+  ParWidget::ParWidget(Engine & engine, IFrame * parent, hoops::IPar * par, StGui * gui):
     m_engine(engine), m_value_string(), m_gui(gui), m_frame(0), m_label(0), m_value(0), m_open(0),
     m_par(par), m_bool(false), m_stretch(false), m_display(false) {
     if (0 == m_par) throw std::logic_error("ParWidget constructor was passed a null parameter pointer");
@@ -105,7 +105,7 @@ namespace st_graph {
 
   ParWidget::~ParWidget() { delete m_frame; }
 
-  void ParWidget::layout(st_graph::IFrame * f) {
+  void ParWidget::layout(IFrame * f) {
     if (f != m_frame) return;
 
     Center(m_value).below(Center(m_frame));
@@ -130,7 +130,7 @@ namespace st_graph {
     }
   }
 
-  void ParWidget::clicked(st_graph::IFrame * f) {
+  void ParWidget::clicked(IFrame * f) {
     std::string state;
     if (m_open == f && m_open != 0) {
       if (std::string::npos != m_par->Type().find("r"))
@@ -143,15 +143,15 @@ namespace st_graph {
     m_gui->synchronizeWidgets(getName(), state);
   }
 
-  void ParWidget::modified(st_graph::IFrame *, const std::string & text) {
+  void ParWidget::modified(IFrame *, const std::string & text) {
     m_gui->synchronizeWidgets(getName(), text);
   }
 
-  ParWidget::operator st_graph::IFrame * () { return getFrame(); }
+  ParWidget::operator IFrame * () { return getFrame(); }
 
-  st_graph::IFrame * ParWidget::getFrame () { return m_frame; }
+  IFrame * ParWidget::getFrame () { return m_frame; }
 
-  st_graph::IFrame * ParWidget::getLabel() { return m_label; }
+  IFrame * ParWidget::getLabel() { return m_label; }
 
   const std::string & ParWidget::getName() const { return m_par->Name(); }
 
@@ -213,7 +213,7 @@ namespace st_graph {
   }
 
   //StEventReceiver::StEventReceiver(st_graph::Engine & engine, hoops::IParGroup & par_group, StEventReceiver * app):
-  StGui::StGui(st_graph::Engine & engine, const hoops::IParGroup & par_group):
+  StGui::StGui(Engine & engine, const hoops::IParGroup & par_group):
     m_os("StGui", "StGui", 2), m_engine(engine), m_par_widget(), m_tab_folder(), m_parent(),
     m_par_group(par_group.Clone()), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0),
     m_widest(0), m_tab_height(0) {}
@@ -225,7 +225,7 @@ namespace st_graph {
     delete m_par_group;
   }
 
-  void StGui::clicked(st_graph::IFrame * f) {
+  void StGui::clicked(IFrame * f) {
     hoops::IParGroup & pars(*m_par_group);
     if (f == m_run) {
 
@@ -282,11 +282,11 @@ namespace st_graph {
     }
   }
 
-  void StGui::closeWindow(st_graph::IFrame * f) {
+  void StGui::closeWindow(IFrame * f) {
     if (f == m_main) m_engine.stop();
   }
 
-  void StGui::layout(st_graph::IFrame * f) {
+  void StGui::layout(IFrame * f) {
     if (f == m_main) {
       // Stack buttons horizontally at the top of the frame.
       LeftEdge(m_run).rightOf(LeftEdge(m_main), 6);
@@ -431,7 +431,7 @@ namespace st_graph {
     //pars.setPromptMode(false);
   }
 
-  ParWidget * StGui::createParWidget(hoops::IPar * par, st_graph::IFrame * parent) {
+  ParWidget * StGui::createParWidget(hoops::IPar * par, IFrame * parent) {
     return new ParWidget(m_engine, parent, par, this);
   }
 
@@ -484,7 +484,7 @@ namespace st_graph {
   }
 
   //void StEventReceiver::getParent(const hoops::IPar * par, std::list<st_graph::IFrame *> & parent) {
-  void StGui::getParent(const hoops::IPar *, std::list<st_graph::IFrame *> & parent) {
+  void StGui::getParent(const hoops::IPar *, std::list<IFrame *> & parent) {
 //    const std::string & name(par->Name());
     // Clear out previous container of frames.
     parent.clear();

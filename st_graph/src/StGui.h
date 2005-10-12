@@ -20,23 +20,23 @@ namespace st_graph {
 //  class StApp;
   class StGui;
 
-  class ParWidget : public st_graph::IEventReceiver {
+  class ParWidget : public IEventReceiver {
     public:
-      ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StGui * gui);
+      ParWidget(Engine & engine, IFrame * parent, hoops::IPar * par, StGui * gui);
 
       ~ParWidget();
 
-      virtual void layout(st_graph::IFrame *);
+      virtual void layout(IFrame *);
 
-      virtual void clicked(st_graph::IFrame *);
+      virtual void clicked(IFrame *);
 
-      virtual void modified(st_graph::IFrame *, const std::string & text);
+      virtual void modified(IFrame *, const std::string & text);
 
-      operator st_graph::IFrame *();
+      operator IFrame *();
 
-      st_graph::IFrame * getFrame();
+      IFrame * getFrame();
 
-      st_graph::IFrame * getLabel();
+      IFrame * getLabel();
 
       const std::string & getName() const;
 
@@ -50,58 +50,58 @@ namespace st_graph {
       long entryWidth(hoops::IPar * par) const;
 
     private:
-      st_graph::Engine & m_engine;
+      Engine & m_engine;
       std::string m_value_string;
       StGui * m_gui;
-      st_graph::IFrame * m_frame;
-      st_graph::IFrame * m_label;
-      st_graph::IFrame * m_value;
-      st_graph::IFrame * m_open;
+      IFrame * m_frame;
+      IFrame * m_label;
+      IFrame * m_value;
+      IFrame * m_open;
       hoops::IPar * m_par;
       bool m_bool;
       bool m_stretch;
       bool m_display;
   };
 
-  class StGui : public st_graph::IEventReceiver {
+  class StGui : public IEventReceiver {
     public:
       typedef std::multimap<std::string, ParWidget *> ParWidgetCont;
-      typedef std::multimap<std::string, st_graph::ITabFolder *> TabFolderCont;
+      typedef std::multimap<std::string, ITabFolder *> TabFolderCont;
 
-      //StEventReceiver(st_graph::Engine & engine, hoops::IParGroup & par_group, StApp * m_app);
-      StGui(st_graph::Engine & engine, const hoops::IParGroup & par_group);
+      //StEventReceiver(Engine & engine, hoops::IParGroup & par_group, StApp * m_app);
+      StGui(Engine & engine, const hoops::IParGroup & par_group);
 
       virtual ~StGui();
 
-      virtual void clicked(st_graph::IFrame * f);
+      virtual void clicked(IFrame * f);
 
-      virtual void closeWindow(st_graph::IFrame * f);
+      virtual void closeWindow(IFrame * f);
 
-      virtual void layout(st_graph::IFrame *);
+      virtual void layout(IFrame *);
 
       virtual void run();
 
       virtual void createMainFrame();
 
-      virtual ParWidget * createParWidget(hoops::IPar * par, st_graph::IFrame * parent);
+      virtual ParWidget * createParWidget(hoops::IPar * par, IFrame * parent);
 
       virtual void synchronizeWidgets(const std::string & par_name, const std::string & value);
 
     private:
       bool parseRange(const hoops::IPar * par, std::list<std::string> & range);
-      void getParent(const hoops::IPar * par, std::list<st_graph::IFrame *> & parent);
+      void getParent(const hoops::IPar * par, std::list<IFrame *> & parent);
 
       st_stream::StreamFormatter m_os;
-      st_graph::Engine & m_engine;
+      Engine & m_engine;
       ParWidgetCont m_par_widget;
       TabFolderCont m_tab_folder;
-      std::map<st_graph::IFrame *, st_graph::IFrame *> m_parent;
+      std::map<IFrame *, IFrame *> m_parent;
       hoops::IParGroup * m_par_group;
-      st_graph::IFrame * m_main;
-      st_graph::IFrame * m_group_frame;
-      st_graph::IFrame * m_run;
-      st_graph::IFrame * m_cancel;
-      st_graph::IFrame * m_show_advanced;
+      IFrame * m_main;
+      IFrame * m_group_frame;
+      IFrame * m_run;
+      IFrame * m_cancel;
+      IFrame * m_show_advanced;
       ParWidget * m_widest;
       long m_tab_height;
   };
