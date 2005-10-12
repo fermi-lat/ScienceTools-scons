@@ -13,6 +13,10 @@
 #include "CLHEP/Vector/ThreeVector.h"
 #include "astro/HealPixel.h"
 
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
+#include "tip/Image.h"
+
 // local test classes
 #include "TestHealpix.h"
 #include "TestHealpixArray.h"
@@ -74,6 +78,34 @@ double test_one(double lon, double lat, const astro::SkyProj& t){
     return SkyDir(pixel.first,pixel.second,t).difference(dir);
 }
 
+/**
+ * @brief Write out a test FITS file for SkyProj
+ */
+std::string writeTestFile(const std::string & ctype, double * crpix, 
+                          double * crval, double * cdelt) {
+   std::string filename("SkyProj_test_file.fits");
+   tip::IFileSvc::instance().createFile(filename);
+   std::vector<long> naxes;
+   naxes.push_back(1);
+   naxes.push_back(1);
+//   tip::IFileSvc::instance().appendImage(filename, "", naxes);
+   tip::Image * image = tip::IFileSvc::instance().editImage(filename, 
+                                                            "PRIMARY");
+   tip::Header & header = image->getHeader();
+   header["CTYPE1"].set("RA---" + ctype);
+   header["CTYPE2"].set("DEC--" + ctype);
+   header["CRPIX1"].set(crpix[0]);
+   header["CRPIX2"].set(crpix[1]);
+   header["CRVAL1"].set(crval[0]);
+   header["CRVAL2"].set(crval[1]);
+   header["CDELT1"].set(cdelt[0]);
+   header["CDELT2"].set(cdelt[1]);
+   delete image;
+   return filename;
+}
+
+#define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
+
 /** @brief test a group of directions
 */
 bool testSkyProj(){
@@ -86,11 +118,26 @@ bool testSkyProj(){
     SkyProj proj(ctype, crpix, crval, cdelt);
     if( proj.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
 
+    // write out a FITS image file using these params and create a new
+    // SkyProj from the FITS header
+
+    std::string filename(writeTestFile(ctype, crpix, crval, cdelt));
+    SkyProj fileproj(filename);
+    
     // create another one to verify that it is possible to have more than one
 
     double zcrpix[]={180.5,90.5},  zcrval[]={0,0}, zcdelt[]={-1,1}; // 1-degree CAR all sky
     SkyProj other("AIT", zcrpix, zcrval, zcdelt,0, true);
     if( !other.isGalactic() ) throw std::runtime_error(" wrong return from SkyProj::isGalactic");
+
+    // test SkyProj::Exception
+    try{
+       other.pix2sph(-1000, -1000);
+       // This should have thrown; if not, indicate failure.
+       throw std::runtime_error("SkyProj::Exception failed");
+    } catch (SkyProj::Exception &) {
+       // Caught as expected, so do nothing.
+    }
 
     double delta = 20;
     for( double dec =-90+delta/2; dec<90 ; dec+= delta){
@@ -100,8 +147,18 @@ bool testSkyProj(){
                 std::cout << "error - SkyProj transformation failed to invert" << std::endl;
                 return false;
             }
+
+            // proj and fileproj should operate consistently
+            std::pair<double, double> coord0(proj.sph2pix(ra, dec));
+            std::pair<double, double> coord1(fileproj.sph2pix(ra, dec));
+            
+            ASSERT_EQUALS(coord0.first, coord1.first);
+            ASSERT_EQUALS(coord0.second, coord1.second);
         }
     }
+
+    // clean up
+    std::remove(filename.c_str());
 
     return true;
 }
@@ -118,7 +175,7 @@ void test_insideSAA() {
     std::cout << "\nTesting EarthCoordinate::insideSAA...";
 
     // Test for success
-    for (int i = 0; i < sizeof(lat_inSAA)/sizeof(double); ++i) {
+    for (unsigned int i = 0; i < sizeof(lat_inSAA)/sizeof(double); ++i) {
         astro::EarthCoordinate earthCoord(lat_inSAA[i], lon_inSAA[i]);
         if (!earthCoord.insideSAA())
         {
@@ -129,7 +186,7 @@ void test_insideSAA() {
     }
 
     // Test for failure
-    for (int i = 0; i < sizeof(lat_notInSAA)/sizeof(double); ++i) {
+    for (unsigned int i = 0; i < sizeof(lat_notInSAA)/sizeof(double); ++i) {
         astro::EarthCoordinate earthCoord(lat_notInSAA[i], lon_notInSAA[i]);
         if (earthCoord.insideSAA())
         {
@@ -204,8 +261,6 @@ bool testHTM()
     std::cout << "HTM check OK" << std::endl; 
     return true;
 }
-
-#define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
 
 void checkdir(double ra1, double dec1, double ra2, double dec2) {
     astro::SkyDir dir1(ra1, dec1);
@@ -288,7 +343,7 @@ int main(){
         EarthCoordinate ec(lat, lon);
 
         test += fabs(lat-ec.latitude()) + fabs(lon-ec.longitude());
-        double L = ec.L(), B=ec.B();
+//        double L = ec.L(), B=ec.B();
         std::cout << "\tL=\t"<< ec.L() 
             << "\n\tB=\t"<< ec.B() 
             << "\n\tgeolat=\t"<< ec.geolat() 
@@ -375,7 +430,6 @@ int main(){
 
         TestHealpix();
         TestHealpixArray();
-
 
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  

@@ -97,6 +97,14 @@ namespace astro {
             double* crpix, double* crval, double* cdelt, double lonpole, double latpole,
             double crota2=0, bool galactic=false);
 
+        /** @brief Constructor that reads wcs information from
+            a FITS image extension
+            @param fitsFile The FITS filename.
+            @param extension The HDU extension name. If a null string,
+            then the primary HDU is used.
+        */
+       SkyProj(const std::string & fitsFile, const std::string & extension="");
+
         // Destructor
         ~SkyProj();
         /// copy constructor
@@ -155,6 +163,21 @@ namespace astro {
         static const size_t sizeof_wcslib = 1240;
         char  m_wcs_struct[sizeof_wcslib];
     };
+
+class SkyProj::Exception : public std::exception 
+{
+public:
+    Exception() {}
+    Exception(int status) 
+        : m_status(status)
+    {}
+
+    virtual ~Exception() throw() {}
+    virtual const char *what() const throw();
+    int status()const throw(){return m_status;}
+private:
+    int m_status;
+};
 
 
 } // namespace astro

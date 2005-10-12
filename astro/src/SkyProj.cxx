@@ -6,6 +6,9 @@ $Header$
 
 // Include files
 
+#include "tip/IFileSvc.h"
+#include "tip/Image.h"
+#include "tip/Header.h"
 #include "astro/SkyProj.h"
 #include "wcslib/wcs.h"
 
@@ -15,29 +18,6 @@ using namespace astro;
 #include <stdexcept>
 #include <cmath>
 #include <cassert>
-
-class SkyProj::Exception : public std::exception 
-{
-public:
-    Exception() {}
-    Exception(int status) 
-        : m_status(status)
-    {}
-
-    virtual ~Exception() throw() {}
-    virtual const char *what() const throw() {
-        std::stringstream msg; 
-        msg << "SkyProj wcslib error "<< m_status << " : ";
-        if(  m_status<1 || m_status>11 ) msg << " unknown error";
-        else msg << wcs_errmsg[m_status];
-        static char  buf[80];
-        ::strncpy(buf, msg.str().c_str(), sizeof(buf));
-        return buf;
-    }
-    int status()const throw(){return m_status;}
-private:
-    int m_status;
-};
 
 SkyProj::SkyProj(const std::string &projName, 
                  double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)
@@ -54,6 +34,60 @@ SkyProj::SkyProj(const std::string &projName,
 {
 	SkyProj::init(projName,crpix,crval,cdelt,lonpole,latpole,crota2,galactic);
 }
+
+SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
+   const tip::Image * image = 
+      tip::IFileSvc::instance().readImage(fitsFile, extension);
+
+   const tip::Header & header = image->getHeader();
+
+   bool galactic;
+   std::string ctype;
+   header["CTYPE1"].get(ctype);
+   if (ctype.substr(0, 2) == "RA") {
+      galactic = false;
+   } else if (ctype.substr(0, 4) == "GLON") {
+      galactic = true;
+   } else {
+      throw std::runtime_error("Unrecognized coordinate system in " 
+                               + fitsFile + "[" + extension + "]");
+   }
+   
+   std::string projName("");
+   if (ctype.size() > 7) {
+      projName = ctype.substr(ctype.size() - 3, 3);
+   }
+   
+   double crpix[2], crval[2], cdelt[2];
+   header["CRPIX1"].get(crpix[0]);
+   header["CRVAL1"].get(crval[0]);
+   header["CDELT1"].get(cdelt[0]);
+
+   header["CRPIX2"].get(crpix[1]);
+   header["CRVAL2"].get(crval[1]);
+   header["CDELT2"].get(cdelt[1]);
+
+   double lonpole;
+   double latpole;
+   try {
+      header["LONPOLE"].get(lonpole);
+      header["LATPOLE"].get(latpole);
+   } catch (tip::TipException &) {
+      lonpole = 999;
+      latpole = 999;
+   }
+
+   double crota2(0);
+   try {
+      header["CROTA2"].get(crota2);
+   } catch (tip::TipException &) {
+   }
+
+   delete image;
+
+   init(projName, crpix, crval, cdelt, lonpole, latpole, crota2, galactic);
+}
+
 
 SkyProj::~SkyProj()
 {
@@ -202,4 +236,12 @@ SkyProj::SkyProj(const SkyProj & other)
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);    
 }
 
-
+const char * SkyProj::Exception::what() const throw() {
+   std::stringstream msg; 
+   msg << "SkyProj wcslib error "<< m_status << " : ";
+   if(  m_status<1 || m_status>11 ) msg << " unknown error";
+   else msg << wcs_errmsg[m_status];
+   static char  buf[80];
+   ::strncpy(buf, msg.str().c_str(), sizeof(buf));
+   return buf;
+}
