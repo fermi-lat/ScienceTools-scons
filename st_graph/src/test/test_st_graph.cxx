@@ -14,6 +14,8 @@
 #include <unistd.h>
 #endif
 
+#include "StGui.h"
+#include "hoops/hoops_prompt_group.h"
 #include "st_graph/Axis.h"
 #include "st_graph/Engine.h"
 #include "st_graph/IEventReceiver.h"
@@ -33,6 +35,7 @@ class StGraphTestApp {
   public:
     /// \brief Construct the test application.
     StGraphTestApp(int argc, char ** argv): m_out("test_st_graph", "", 2), m_do_test(false) {
+      st_stream::InitStdStreams("test_st_graph", 2, true);
       processCommandLine(argc, argv);
     }
 
@@ -319,6 +322,16 @@ void StGraphTestApp::testPlots() {
 
 void StGraphTestApp::testGuis() {
   using namespace st_graph;
+
+  try {
+    char * argv[] = { "test_st_graph", 0 };
+    StGui gui(Engine::instance(), hoops::ParPromptGroup(1, argv));
+    gui.run();
+  } catch (const std::exception & x) {
+    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    return;
+  }
 
   class MyGui : public IEventReceiver {
     public:
