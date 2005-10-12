@@ -64,9 +64,13 @@ private:
    
    st_app::AppParGroup & m_pars;
    dataSubselector::Gti m_gti;
+   std::string m_evfile;
+   std::string m_outfile;
 
+   void check_outfile();
    void createGti();
    void mergeGtis();
+   void copyTable() const;
 
    static std::string s_cvs_id;
 };
@@ -83,8 +87,26 @@ void MakeTime::banner() const {
 }
 
 void MakeTime::run() {
+   check_outfile();
    createGti();
    mergeGtis();
+   copyTable();
+}
+
+void MakeTime::check_outfile() {
+   bool clobber = m_pars["clobber"];
+   std::string outfile = m_pars["outfile"];
+   m_outfile = outfile;
+   if (outfile == "") {
+      std::cout << "Please specify an output file name." << std::endl;
+      std::exit(1);
+   }
+   if (!clobber && st_facilities::Util::fileExists(outfile)) {
+      std::cout << "Output file " << outfile 
+                << " exists and clobber is set to 'no'.  Exiting."
+                << std::endl;
+      std::exit(1);
+   }
 }
 
 void MakeTime::createGti() {
@@ -116,21 +138,54 @@ void MakeTime::createGti() {
 
 void MakeTime::mergeGtis() {
    std::string evfile = m_pars["evfile"];
-   std::vector<std::string> evfiles;
-   st_facilities::Util::resolve_fits_files(evfile, evfiles);
+   m_evfile = evfile;
    std::string evtable = m_pars["evtable"];
 
-   for (unsigned int j = 0; j < evfiles.size(); j++) {
-      dataSubselector::Cuts cuts(evfiles.at(j), evtable);
-
-      std::vector<const dataSubselector::GtiCut *> gtiCuts;
-      cuts.getGtiCuts(gtiCuts);
-      
-      dataSubselector::Gti my_gti(m_gti);
-      for (size_t i = 0; i < gtiCuts.size(); i++) {
-         my_gti = my_gti & gtiCuts.at(i)->gti();
-      }
-      
-      my_gti.writeExtension(evfiles.at(j));
+   dataSubselector::Cuts cuts(evfile, evtable);
+   
+   std::vector<const dataSubselector::GtiCut *> gtiCuts;
+   cuts.getGtiCuts(gtiCuts);
+   
+   for (size_t i = 0; i < gtiCuts.size(); i++) {
+      m_gti = m_gti & gtiCuts.at(i)->gti();
    }
+}
+
+void MakeTime::copyTable() const {
+   tip::IFileSvc::instance().createFile(m_outfile, m_evfile);
+
+   std::string extension("EVENTS");
+   const tip::Table * inputTable 
+      = tip::IFileSvc::instance().readTable(m_evfile, extension);
+   
+   tip::Table * outputTable 
+      = tip::IFileSvc::instance().editTable(m_outfile, extension);
+
+   outputTable->setNumRecords(inputTable->getNumRecords());
+
+   tip::Table::ConstIterator inputIt = inputTable->begin();
+   tip::Table::Iterator outputIt = outputTable->begin();
+
+   tip::ConstTableRecord & input = *inputIt;
+   tip::Table::Record & output = *outputIt;
+
+   long npts(0);
+
+   dataSubselector::Cuts my_cuts;
+   my_cuts.addGtiCut(m_gti);
+
+   for (; inputIt != inputTable->end(); ++inputIt) {
+      if (my_cuts.accept(input)) {
+         output = input;
+         ++outputIt;
+         npts++;
+      }
+   }
+// Resize output table to account for filtered rows.
+   outputTable->setNumRecords(npts);
+
+   delete inputTable;
+   delete outputTable;
+
+   m_gti.writeExtension(m_outfile);
 }
