@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,33 +25,32 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spectral coordinate systems
-*   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
+*   WCSLIB 4.2 - C routines that implement the spectral coordinate systems
+*   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
 *      (paper III, in preparation)
 *
 *
 *   Summary of routines
 *   -------------------
 *      specx() is a scalar routine that, given one spectral variable (e.g.
-*      frequency, computes all the others (e.g. wavelength, velocity, etc.)
-*      plus the required derivatives of each with respect to the others.
+*      frequency), computes all the others (e.g. wavelength, velocity, etc.)
+*      plus the required derivatives of each with respect to the others.  The
+*      results are returned in the spxprm struct, described in detail below.
 *
 *      The remaining routines are all vector conversions from one spectral
 *      variable to another.  Conversion may be done "in place" by calling
 *      the routine with the output vector set to the input.
-*
-*      Logarithmic conversions
-*      ------------------------
-*      speclog()    Converts spectral values to their natural logarithm
-*      logspec()    Restores spectral values from their natural logarithm
 *
 *      Non-linear   From                    To
 *      ----------   ---------------------   ---------------------
@@ -123,37 +122,11 @@
 *                        variables and their derivatives, in SI units.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null spxprm pointer passed.
 *                           2: Invalid spectral parameters.
 *                           3: Invalid spectral variable.
-*
-*
-*   Logarithmic conversions (vector); speclog(), logspec()
-*   ---------------------------------------------------------------
-*   Vector logarithmic conversions.
-*
-*   Given:
-*      param    double   Ignored.
-*      nspec    int      Vector length, see below.
-*      instep   int
-*      outstep  int      Vector strides, see below.
-*      inspec   const double[]
-*                        Input spectral variables, in SI units.
-*
-*   Returned:
-*      outspec  double[] Output spectral variables, in SI units.
-*      stat     int[]    Error status for each vector element:
-*                           0: Success.
-*                           1: Invalid value of inspec.
-*
-*   Function return value:
-*               int      Error status
-*                           0: Success.
-*                           2: Invalid spectral parameters.
-*                           4: One or more of the inspec coordinates were
-*                              invalid, as indicated by the stat vector.
 *
 *
 *   Spectral conversions (vector); freqwave(), wavefreq(), etc.
@@ -192,20 +165,20 @@
 *
 *   Returned:
 *      outspec  double[] Output spectral variables, in SI units.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of inspec.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           2: Invalid spectral parameters.
 *                           4: One or more of the inspec coordinates were
 *                              invalid, as indicated by the stat vector.
 *
 *
-*   Vector length and strides
-*   -------------------------
+*   Vector lengths and strides
+*   --------------------------
 *   Vector computation in the spectral code mainly speeds it by amortising the
 *   function call overhead.  The vector length function argument refers to the
 *   number of spectral variables in both the input and output spectral
@@ -228,9 +201,9 @@
 *   If the vector length is 1 then the stride is ignored and may be set to 0.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the function return error code for all routines
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   are encoded in the spx_errmsg character array.
 *
 *
@@ -251,9 +224,6 @@
 *   double precision rounding error was demonstrated by test routine tspec.c
 *   which accompanies this software.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_SPEC
@@ -263,20 +233,13 @@
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
-
 
 extern const char *spx_errmsg[];
+
 
 struct spxprm {
    /* The spxprm data structure is used solely by specx().                  */
 
-   /* Parameters to be provided (see specx() description above).            */
-   /*-----------------------------------------------------------------------*/
    double restfrq, restwav;	/* Rest frequency (Hz) and wavelength (m).  */
 
    /* If one or other of restfrq and restwav is given (non-zero) then all   */
@@ -288,7 +251,7 @@ struct spxprm {
    int wavetype, velotype;	/* True if wave/velocity types have been    */
 				/* computed; types are defined below.       */
 
-   /* Spectral variables; set one, the others will be computed by specx().  */
+   /* Spectral variables computed by specx().                               */
    /*-----------------------------------------------------------------------*/
    double freq,			/* wavetype: Frequency (Hz).                */
           afrq,			/* wavetype: Angular frequency (rad/s).     */
@@ -302,7 +265,7 @@ struct spxprm {
           velo,			/* velotype: Relativistic velocity (m/s).   */
           beta;			/* velotype: Relativistic beta.             */
 
-   /* Derivatives of spectral variables; computed by specx().               */
+   /* Derivatives of spectral variables computed by specx().                */
    /*-----------------------------------------------------------------------*/
    double dfreqafrq, dafrqfreq, /* Constant, always available.              */
           dfreqener, denerfreq, /* Constant, always available.              */
@@ -321,21 +284,13 @@ struct spxprm {
 
 #define SPXLEN (sizeof(struct spxprm)/sizeof(int))
 
-int specx(const char *, const double, const double, const double,
-          struct spxprm *);
 
+int specx(const char *, double, double, double, struct spxprm *);
 
 /* Use the preprocessor to declare the remaining function prototypes. */
-#if __STDC__ || defined(__cplusplus)
 #define SPX_ARGS double, int, int, int, const double[], double[], int[]
-#else
-#define SPX_ARGS
-#endif
 
 #define SPX_PROTO(CODE) int CODE(SPX_ARGS);
-
-SPX_PROTO(speclog)
-SPX_PROTO(logspec)
 
 SPX_PROTO(freqafrq)
 SPX_PROTO(afrqfreq)
@@ -375,6 +330,7 @@ SPX_PROTO(veloawav)
 
 SPX_PROTO(velobeta)
 SPX_PROTO(betavelo)
+
 
 #ifdef __cplusplus
 };

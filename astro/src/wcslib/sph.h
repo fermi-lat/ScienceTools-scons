@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,10 +25,13 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spherical coordinate
-*   transformations used by the FITS World Coordinate System (WCS) convention.
+*   WCSLIB 4.2 - C routines that implement the spherical coordinate
+*   transformations used by the FITS World Coordinate System (WCS) standard.
 *   Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -40,13 +43,14 @@
 *
 *   Summary of routines
 *   -------------------
-*   The spherical coordinate transformations are implemented via separate
+*   The WCS spherical coordinate transformations are implemented via separate
 *   functions for the transformation in each direction.
 *
 *
-*   Pixel-to-world transformation; sphx2s()
-*   ---------------------------------------
-*   Transform native coordinates of a projection to celestial coordinates.
+*   Rotation in the pixel-to-world direction; sphx2s()
+*   --------------------------------------------------
+*   sphx2s() transforms native coordinates of a projection to celestial
+*   coordinates.
 *
 *   Given:
 *      eul      const double[5]
@@ -71,13 +75,14 @@
 *      lng,lat  double[] Celestial longitude and latitude, in degrees.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *
 *
-*   World-to-pixel transformation; sphs2x()
-*   ---------------------------------------
-*   Transform celestial coordinates to the native coordinates of a projection.
+*   Rotation in the world-to-pixel direction; sphs2x()
+*   --------------------------------------------------
+*   sphs2x() transforms celestial coordinates to the native coordinates of a
+*   projection.
 *
 *   Given:
 *      eul      const double[5]
@@ -102,7 +107,7 @@
 *      theta             system of the projection, in degrees.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *
 *
@@ -173,9 +178,6 @@
 *
 *   If the vector length is 1 then the stride is ignored and may be set to 0.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_SPH
@@ -185,28 +187,14 @@
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
+int sphx2s(const double[], int, int, int, int,
+           const double[], const double [],
+           double[], double[]);
 
-#if __STDC__  || defined(__cplusplus)
-   int sphx2s(const double[], int, int, int, int,
-              const double[], const double [],
-              double[], double[]);
-
-   int sphs2x(const double[], int, int, int, int,
-              const double[], const double [],
-              double[], double[]);
-#else
-   int sphx2s(), sphs2x();
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+int sphs2x(const double[], int, int, int, int,
+           const double[], const double [],
+           double[], double[]);
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -214,5 +202,10 @@ extern "C" {
         sphx2s(eul, 1, 1, 1, 1, &(phi), &(theta), lng, lat)
 #define sphfwd(lng, lat, eul, phi, theta) \
         sphs2x(eul, 1, 1, 1, 1, &(lng), &(lat), phi, theta)
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* WCSLIB_SPH */

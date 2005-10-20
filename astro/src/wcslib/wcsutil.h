@@ -28,49 +28,21 @@
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
+*=============================================================================
+*
+*   Simple utility functions used by WCSLIB.
+*
 *===========================================================================*/
 
-#ifndef WCSLIB_WCSTRIG
-#define WCSLIB_WCSTRIG
+#ifndef WCSLIB_WCSUTIL
+#define WCSLIB_WCSUTIL
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void wcsutil_blank_fill(int, char []);
+void wcsutil_null_fill(int, char []);
 
+int  wcsutil_allEq(int, int, const double *);
+void wcsutil_setAll(int, int, double *);
+void wcsutil_setAli(int, int, int *);
+void wcsutil_setBit(int, int*, int, int *);
 
-#ifdef WCSTRIG_MACRO
-
-/* Macro implementation of the trigd functions. */
-#include "wcsmath.h"
-
-#define cosd(X) cos((X)*D2R)
-#define sind(X) sin((X)*D2R)
-#define tand(X) tan((X)*D2R)
-#define acosd(X) acos(X)*R2D
-#define asind(X) asin(X)*R2D
-#define atand(X) atan(X)*R2D
-#define atan2d(Y,X) atan2(Y,X)*R2D
-
-#else
-
-/* Use WCSLIB wrappers or native trigd functions. */
-
-double cosd(double);
-double sind(double);
-double tand(double);
-double acosd(double);
-double asind(double);
-double atand(double);
-double atan2d(double, double);
-
-/* Domain tolerance for asin and acos functions. */
-#define WCSTRIG_TOL 1e-10
-
-#endif /* WCSTRIG_MACRO */
-
-
-#ifdef __cplusplus
-};
-#endif
-
-#endif /* WCSLIB_WCSTRIG */
+#endif /* WCSLIB_WCSUTIL */

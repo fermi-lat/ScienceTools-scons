@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,10 +25,13 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 4.2 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -39,63 +42,74 @@
 *
 *   Summary of routines
 *   -------------------
-*   These routines are provided as drivers for the lower level spherical
-*   coordinate transformation and projection routines.  There are separate
-*   driver routines for the pixel-to-world, celx2s(), and world-to-pixel,
-*   cels2x(), transformations.
+*   These routines implement the part of the FITS World Coordinate System
+*   (WCS) standard that deals with celestial coordinates.  They define
+*   methods to be used for computing celestial world coordinates from
+*   intermediate world coordinates (a linear transformation of image pixel
+*   coordinates), and vice versa.  They are based on the celprm struct,
+*   described in detail below, which contains all information needed for the
+*   computations.  It contains some elements that must be set by the caller,
+*   and others that are maintained by these routines, somewhat like a C++
+*   class but with no encapsulation.
 *
-*   An initialization routine, celset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of cel.flag below.
+*   Routine celini() is provided to initialize the celprm struct with default
+*   values, and another, celprt(), to print its contents.
 *
-*   A service routine, celini(), is provided to initialize the celprm struct,
-*   and another, celprt(), to print its contents.
+*   A setup routine, celset(), computes intermediate values in the celprm
+*   struct from parameters in it that were supplied by the caller.  The
+*   struct always needs to be set up by celset() but it need not be called
+*   explicitly - see the explanation of cel.flag below.
+*
+*   celx2s() and cels2x() implement the WCS celestial coordinate
+*   transformations.  In fact, they are high level driver routines for the
+*   lower level spherical coordinate rotation and projection routines
+*   described in sph.h and prj.h.
 *
 *
-*   Initialization routine for the celprm struct; celini()
-*   ------------------------------------------------------
-*   This service routine may be used to set the members of a celprm struct to
-*   default values.
+*   Default constructor for the celprm struct; celini()
+*   ---------------------------------------------------
+*   celini() sets all members of a celprm struct to default values.  It should
+*   be used to initialize every celprm struct.
 *
 *   Returned:
 *      cel      struct celprm*
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *
 *
 *   Print routine for the celprm struct; celprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a celprm struct.
+*   celprt() prints the contents of a celprm struct.
 *
 *   Given:
 *      cel      const struct celprm*
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *
 *
-*   Initialization routine; celset()
-*   --------------------------------
-*   Initializes a celprm data structure according to information supplied
-*   within it (see "Celestial transformation parameters" below).
+*   Setup routine; celset()
+*   -----------------------
+*   celset() sets up a celprm struct according to information supplied within
+*   it (see "Celestial transformation parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   celx2s() and cels2x() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   celx2s() and cels2x() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and returned:
 *      cel      struct celprm*
 *                        Celestial transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -106,8 +120,8 @@
 *
 *   Pixel-to-world transformation; celx2s()
 *   ---------------------------------------
-*   Compute the celestial coordinates (lng,lat) of the point with projected
-*   coordinates (x,y).
+*   celx2s() transforms (x,y) coordinates in the plane of projection to
+*   celestial coordinates (lng,lat).
 *
 *   Given and returned:
 *      cel      struct celprm*
@@ -124,12 +138,12 @@
 *      theta             system of the projection, in degrees.
 *      lng,lat  double[] Celestial longitude and latitude of the projected
 *                        point, in degrees.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (x,y).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -142,8 +156,8 @@
 *
 *   World-to-pixel transformation; cels2x()
 *   ---------------------------------------
-*   Compute (x,y) coordinates in the plane of projection from celestial
-*   coordinates (lng,lat).
+*   celx2s() transforms celestial coordinates (lng,lat) to (x,y) coordinates
+*   in the plane of projection.
 *
 *   Given and returned:
 *      cel      struct celprm*
@@ -161,12 +175,12 @@
 *      phi,     double[] Longitude and latitude in the native coordinate
 *      theta             system of the projection, in degrees.
 *      x,y      double[] Projected coordinates, "degrees".
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (lng,lat).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null celprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -200,33 +214,37 @@
 *
 *      double ref[4]
 *         The first pair of values should be set to the celestial longitude
-*         and latitude (usually right ascension and declination) of the
-*         fiducial point.  These are given by the CRVALi keywords in FITS.
+*         and latitude (typically right ascension and declination) of the
+*         fiducial point.  These are given by the CRVALia keywords in FITS.
 *
-*         The second pair of values are the native longitude and latitude of
-*         the celestial pole (the latter is the same as the celestial latitude
-*         of the native pole) and correspond to the FITS keywords LONPOLE and
-*         LATPOLE.
+*         The second pair of values are the native longitude (phi_p) and
+*         latitude (theta_p) of the celestial pole (the latter is the same as
+*         the celestial latitude of the native pole, delta_p) and these are
+*         given by the FITS keywords LONPOLEa and LATPOLEa.
 *
-*         LONPOLE defaults to 0 degrees if the celestial latitude of the
+*         LONPOLEa defaults to 0 degrees if the celestial latitude of the
 *         fiducial point of the projection is greater than the native
 *         latitude, otherwise 180 degrees.  (This is the condition for the
 *         celestial latitude to increase in the same direction as the native
-*         latitude at the fiducial point.)  ref[2] may be set to 999.0 to
-*         indicate that the correct default should be substituted.
+*         latitude at the fiducial point.)  ref[2] may be set to UNDEFINED
+*         (from wcsmath.h) or 999.0 to indicate that the correct default
+*         should be substituted.
 *
-*         In some circumstances the celestial latitude of the native pole may
-*         be determined by the first three values only to within a sign and
-*         LATPOLE is used to choose between the two solutions.  LATPOLE is
+*         theta_p, the native and latitude of the celestial pole (or equally
+*         the celestial latitude of the native pole) is often determined
+*         uniquely by CRVALia and LONPOLEa in which case LATPOLEa is ignored.
+*         However, in some circumstances there are two valid solutions for
+*         theta_p and LATPOLEa is used to choose between them.  LATPOLEa is
 *         set in ref[3] and the solution closest to this value is used to
 *         reset ref[3].  It is therefore legitimate, for example, to set
-*         ref[3] to 999.0 to choose the more northerly solution - the default
-*         if the LATPOLE card is omitted from the FITS header.  For the
+*         ref[3] to +90.0 to choose the more northerly solution - the default
+*         if the LATPOLEa card is omitted from the FITS header.  For the
 *         special case where the fiducial point of the projection is at native
-*         latitude zero, its celestial latitude is zero, and LONPOLE = +/- 90
+*         latitude zero, its celestial latitude is zero, and LONPOLEa = +/- 90
 *         then the celestial latitude of the native pole is not determined by
-*         the first three reference values and LATPOLE specifies it
-*         completely.
+*         the first three reference values and LATPOLEa specifies it
+*         completely.  The latpreq member of the celprm struct (see below)
+*         specifies how LATPOLEa was actually used.
 *
 *      struct prjprm prj
 *         Projection parameters described in the prologue to prj.h.
@@ -239,6 +257,14 @@
 *         coordinate reference values.  The first three values are the Z-, X-,
 *         and Z'-Euler angles, and the remaining two are the cosine and sine
 *         of the X-Euler angle.
+*
+*      int latpreq
+*         For informational purposes, this indicates how the LATPOLEa card was
+*         used
+*            0: Not required, theta_p (== delta_p) was determined uniquely by
+*               the CRVALia and LONPOLEa keywords.
+*            1: Required to select between two valid solutions of theta_p.
+*            2: theta_p was specified solely by LATPOLEa.
 *
 *      int isolat
 *         True if the spherical rotation preserves the magnitude of the
@@ -316,14 +342,11 @@
 *   If the vector length is 1 then the stride is ignored and may be set to 0.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the cel_errmsg character array.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_CEL
@@ -333,12 +356,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
 #endif
 
 
@@ -368,29 +385,27 @@ struct celprm {
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
    double euler[5];		/* Euler angles and functions thereof.      */
+   int    latpreq;		/* LATPOLEa requirement.                    */
    int    isolat;		/* True if |latitude| is preserved.         */
-   int    padding;		/* (Dummy inserted for alignment purposes.) */
 };
 
-#if __STDC__  || defined(__cplusplus)
-   int celini(struct celprm *);
-
-   int celprt(const struct celprm *);
-
-   int celset(struct celprm *);
-
-   int celx2s(struct celprm *, int, int, int, int,
-              const double[], const double[],
-              double[], double[], double[], double[], int[]);
-
-   int cels2x(struct celprm *, int, int, int, int,
-              const double[], const double[],
-              double[], double[], double[], double[], int[]);
-#else
-   int celini(), celprt(), celset(), celx2s(), cels2x();
-#endif
-
 #define CELLEN (sizeof(struct celprm)/sizeof(int))
+
+
+int celini(struct celprm *);
+
+int celprt(const struct celprm *);
+
+int celset(struct celprm *);
+
+int celx2s(struct celprm *, int, int, int, int,
+           const double[], const double[],
+           double[], double[], double[], double[], int[]);
+
+int cels2x(struct celprm *, int, int, int, int,
+           const double[], const double[],
+           double[], double[], double[], double[], int[]);
+
 
 #ifdef __cplusplus
 }

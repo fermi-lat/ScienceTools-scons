@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -26,30 +26,29 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
 #include <math.h>
 #include <stdio.h>
 
+#include "wcsmath.h"
 #include "wcstrig.h"
 #include "sph.h"
 #include "cel.h"
 
 const int CELSET = 137;
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *cel_errmsg[] = {
-   0,
+   "Success",
    "Null celprm pointer passed",
    "Invalid projection parameters",
    "Invalid coordinate transformation parameters",
    "Ill-conditioned coordinate transformation parameters",
    "One or more of the (x,y) coordinates were invalid",
    "One or more of the (lng,lat) coordinates were invalid"};
-
-#define UNDEFINED 987654321.0e99
-#define undefined(value) (value == UNDEFINED)
 
 /*--------------------------------------------------------------------------*/
 
@@ -60,7 +59,7 @@ struct celprm *cel;
 {
    register int k;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    cel->flag = 0;
 
@@ -69,10 +68,11 @@ struct celprm *cel;
    cel->theta0 = UNDEFINED;
    cel->ref[0] =   0.0;
    cel->ref[1] =   0.0;
-   cel->ref[2] = 999.0;
-   cel->ref[3] = 999.0;
+   cel->ref[2] = UNDEFINED;
+   cel->ref[3] = +90.0;
 
    for (k = 0; k < 5; cel->euler[k++] = 0.0);
+   cel->latpreq = -1;
 
    return prjini(&(cel->prj));
 }
@@ -86,7 +86,7 @@ const struct celprm *cel;
 {
    int i;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    printf("       flag: %d\n",  cel->flag);
    printf("     offset: %d\n",  cel->offset);
@@ -102,15 +102,26 @@ const struct celprm *cel;
    }
    printf("        ref:");
    for (i = 0; i < 4; i++) {
-      printf("  %- 11.4g", cel->ref[i]);
+      printf("  %- 11.5g", cel->ref[i]);
    }
    printf("\n");
    printf("        prj: (see below)\n");
+
    printf("      euler:");
    for (i = 0; i < 5; i++) {
-      printf("  %- 11.4g", cel->euler[i]);
+      printf("  %- 11.5g", cel->euler[i]);
    }
    printf("\n");
+   printf("    latpreq: %d", cel->latpreq);
+   if (cel->latpreq == 0) {
+      printf(" (not required)\n");
+   } else if (cel->latpreq == 1) {
+      printf(" (disambiguation)\n");
+   } else if (cel->latpreq == 2) {
+      printf(" (specification)\n");
+   } else {
+      printf(" (UNDEFINED)\n");
+   }
    printf("     isolat: %d\n", cel->isolat);
 
    printf("\n");
@@ -134,7 +145,7 @@ struct celprm *cel;
    double u, v, x, y, z;
    struct prjprm *celprj;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    /* Initialize the projection driver routines. */
    celprj = &(cel->prj);
@@ -178,7 +189,7 @@ struct celprm *cel;
    latp = cel->ref[3];
 
    /* Set default for native longitude of the celestial pole? */
-   if (phip == 999.0) {
+   if (undefined(phip) || phip == 999.0) {
       phip = (lat0 < cel->theta0) ? 180.0 : 0.0;
       phip += cel->phi0;
 
@@ -193,6 +204,7 @@ struct celprm *cel;
 
 
    /* Compute celestial coordinates of the native pole. */
+   cel->latpreq = 0;
    if (cel->theta0 == 90.0) {
       /* Fiducial point at the native pole. */
       lngp = lng0;
@@ -215,7 +227,8 @@ struct celprm *cel;
             return 3;
          }
 
-         /* latp determined by LATPOLE in this case. */
+         /* latp determined solely by LATPOLEa in this case. */
+         cel->latpreq = 2;
          if (latp > 90.0) {
             latp = 90.0;
          } else if (latp < -90.0) {
@@ -242,6 +255,12 @@ struct celprm *cel;
             latp2 -= 360.0;
          } else if (latp2 < -180.0) {
             latp2 += 360.0;
+         }
+
+         if (fabs(latp1) < 90.0+tol &&
+             fabs(latp2) < 90.0+tol) {
+            /* There are two valid solutions for latp. */
+            cel->latpreq = 1;
          }
 
          if (fabs(latp-latp1) < fabs(latp-latp2)) {
@@ -309,7 +328,7 @@ struct celprm *cel;
       }
    }
 
-   /* Reset LATPOLE. */
+   /* Reset LATPOLEa. */
    cel->ref[3] = latp;
 
    /* Set the Euler angles. */
@@ -346,7 +365,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
    if (cel->flag != CELSET) {
       if (status = celset(cel)) return status;
    }
@@ -387,7 +406,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
    if (cel->flag != CELSET) {
       if (status = celset(cel)) return status;
    }

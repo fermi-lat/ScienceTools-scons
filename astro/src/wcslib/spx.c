@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -26,6 +26,7 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
@@ -36,9 +37,9 @@
 #include "spx.h"
 
 
-/* Map error number to error message for each function. */
+/* Map status return value to message. */
 const char *spx_errmsg[] = {
-   0,
+   "Success",
    "Null spxprm pointer passed",
    "Invalid spectral parameters",
    "Invalid spectral variable",
@@ -65,16 +66,21 @@ struct spxprm *spx;
    int haverest;
    double beta, dwaveawav, gamma, n, s, t, u;
 
-   if (spx == 0) return 1;
+   if (spx == 0x0) return 1;
 
    haverest = 1;
    if (restfrq == 0.0) {
       if (restwav == 0.0) {
          /* No line rest frequency supplied. */
          haverest = 0;
+
+         /* Temporarily set a dummy value for conversions. */
          spx->restwav = 1.0;
+      } else {
+        spx->restwav = restwav;
       }
       spx->restfrq = C/spx->restwav;
+
    } else {
       spx->restfrq = restfrq;
       spx->restwav = C/restfrq;
@@ -230,8 +236,9 @@ struct spxprm *spx;
 
       if (!spx->wavetype) {
          /* Don't have wave characteristic types. */
-         spx->ener = 0.0;
+         spx->freq = 0.0;
          spx->afrq = 0.0;
+         spx->ener = 0.0;
          spx->wavn = 0.0;
          spx->wave = 0.0;
          spx->awav = 0.0;
@@ -271,73 +278,6 @@ struct spxprm *spx;
 
       spx->dawavvelo = 0.0;
       spx->dveloawav = 0.0;
-   }
-
-   return 0;
-}
-
-
-/*============================================================================
-*   Logarithmic conversions.
-*===========================================================================*/
-
-int speclog(dummy, nspec, sspec, sloge, spec, loge, stat)
-
-double dummy;
-int nspec, sspec, sloge;
-const double spec[];
-double loge[];
-int stat[];
-
-{
-   int status = 0;
-   register int ispec, *statp;
-   register const double *specp;
-   register double *logep;
-
-   specp = spec;
-   logep = loge;
-   statp = stat;
-   for (ispec = 0; ispec < nspec; ispec++) {
-      if (*specp > 0.0) {
-         *logep = log(*specp);
-         *(statp++) = 0;
-      } else {
-         *(statp++) = 1;
-         status = 4;
-      }
-
-      specp += sspec;
-      logep += sloge;
-   }
-
-   return status;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int logspec(dummy, nloge, sloge, sspec, loge, spec, stat)
-
-double dummy;
-int nloge, sloge, sspec;
-const double loge[];
-double spec[];
-int stat[];
-
-{
-   register int iloge, *statp;
-   register const double *logep;
-   register double *specp;
-
-   logep = loge;
-   specp = spec;
-   statp = stat;
-   for (iloge = 0; iloge < nloge; iloge++) {
-      *specp = exp(*logep);
-      *(statp++) = 0;
-
-      logep += sloge;
-      specp += sspec;
    }
 
    return 0;

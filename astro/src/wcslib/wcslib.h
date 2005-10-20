@@ -28,49 +28,38 @@
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
+*=============================================================================
+*
+*   WCSLIB 4.2 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
+*
+*   This header file includes all WCSLIB headers.
+*
 *===========================================================================*/
 
-#ifndef WCSLIB_WCSTRIG
-#define WCSLIB_WCSTRIG
+#ifndef WCSLIB_WCSLIB
+#define WCSLIB_WCSLIB
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-#ifdef WCSTRIG_MACRO
-
-/* Macro implementation of the trigd functions. */
+#include "cel.h"
+#include "fitshdr.h"
+#include "lin.h"
+#include "log.h"
+#include "prj.h"
+#include "spc.h"
+#include "sph.h"
+#include "spx.h"
+#include "tab.h"
+#include "wcs.h"
+#include "wcsfix.h"
+#include "wcshdr.h"
+#include "wcslib.h"
 #include "wcsmath.h"
-
-#define cosd(X) cos((X)*D2R)
-#define sind(X) sin((X)*D2R)
-#define tand(X) tan((X)*D2R)
-#define acosd(X) acos(X)*R2D
-#define asind(X) asin(X)*R2D
-#define atand(X) atan(X)*R2D
-#define atan2d(Y,X) atan2(Y,X)*R2D
-
-#else
-
-/* Use WCSLIB wrappers or native trigd functions. */
-
-double cosd(double);
-double sind(double);
-double tand(double);
-double acosd(double);
-double asind(double);
-double atand(double);
-double atan2d(double, double);
-
-/* Domain tolerance for asin and acos functions. */
-#define WCSTRIG_TOL 1e-10
-
-#endif /* WCSTRIG_MACRO */
-
+#include "wcstrig.h"
+#include "wcsunits.h"
+#include "wcsutil.h"
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif /* WCSLIB_WCSTRIG */
+#endif /* WCSLIB_WCSLIB */

@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,10 +25,13 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spherical map projections
-*   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
+*   WCSLIB 4.2 - C routines that implement the spherical map projections
+*   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -39,15 +42,34 @@
 *
 *   Summary of routines
 *   -------------------
-*   Each map projection is implemented via separate functions for the
-*   spherical projection, *s2x(), and deprojection, *x2s().
+*   These routines implement the spherical map projections defined by the FITS
+*   WCS standard.  They are based on the prjprm struct, described in detail
+*   below, which contains all information needed for the computations.  The
+*   struct contains some members that must be set by the caller, and others
+*   that are maintained by these routines, somewhat like a C++ class but with
+*   no encapsulation.
 *
-*   Initialization routines, *set(), compute intermediate values from the
-*   projection parameters but need not be called explicitly - see the
-*   explanation of the flag member of the prjprm struct below.
+*   Routine prjini() is provided to initialize the prjprm struct with default
+*   values, and another, prjprt(), to print its contents.
+*
+*   Setup routines for each projection with names of the form ???set(), where
+*   "???" is the three-letter projection code, compute intermediate values in
+*   the prjprm struct from parameters in it that were supplied by the caller.
+*   The struct always needs to be set by the projection's setup routine but it
+*   need not be called explicitly - see the explanation of prj.flag below.
+*
+*   Each map projection is implemented via separate functions for the
+*   spherical projection, ???s2x(), and deprojection, ???x2s().
+*
+*   A set of generic driver routines, prjset(), prjx2s(), and prjs2x(),
+*   provide a generic interface to the projection routines.  These these
+*   invoke the specific projection routines via a pointer-to-funcation they
+*   are slightly less efficient than calling the specific routines directly.
+*
+*   In summary, the routines are:
 *
 *      prjini                 Initialization routine for the prjprm struct.
-*      prjprt                 Service routine to print the prjprm struct.
+*      prjprt                 Routine to print the prjprm struct.
 *
 *      prjset prjx2s prjs2x   Generic driver routines (see below).
 *
@@ -77,33 +99,34 @@
 *      tscset tscx2s tscs2x   TSC: tangential spherical cube
 *      cscset cscx2s cscs2x   CSC: COBE quadrilateralized spherical cube
 *      qscset qscx2s qscs2x   QSC: quadrilateralized spherical cube
+*      hpxset hpxx2s hpxs2x   HPX: HEALPix
 *
 *
-*   Initialization routine for the prjprm struct; prjini()
-*   ------------------------------------------------------
-*   This service routine may be used to set the members of a prjprm struct to
-*   default values.
+*   Default constructor for the prjprm struct; prjini()
+*   ---------------------------------------------------
+*   prjini() sets all members of a prjprm struct to default values.  It should
+*   be used to initialize every prjprm struct.
 *
 *   Returned:
 *      prj      struct prjprm*
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *
 *
 *   Print routine for the prjprm struct; prjprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a prjprm struct.
+*   prjprt() prints the contents of a prjprm struct.
 *
 *   Given:
 *      prj      const struct prjprm*
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *
@@ -122,21 +145,21 @@
 *   pointers to the specific projection and deprojection contained therein.
 *
 *
-*   Initialization routine; *set()
-*   ------------------------------
-*   Initializes a prjprm data structure according to information supplied
-*   within it (see "Projection parameters" below).
+*   Setup routines; *set()
+*   ----------------------
+*   Set up a prjprm struct according to information supplied within it (see
+*   "Projection parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   prjx2s() and prjs2x() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   prjx2s() and prjs2x() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and/or returned:
 *      prj      struct prjprm*
 *                        Projection parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -144,8 +167,8 @@
 *
 *   Cartesian-to-spherical deprojection; *x2s()
 *   -------------------------------------------
-*   Compute native spherical coordinates (phi,theta) from (x,y) coordinates in
-*   the plane of projection.
+*   Transform (x,y) coordinates in the plane of projection to native spherical
+*   coordinates (phi,theta).
 *
 *   Given and returned:
 *      prj      struct prjprm*
@@ -160,12 +183,12 @@
 *   Returned:
 *      phi,     double[] Longitude and latitude of the projected point in
 *      theta             native spherical coordinates, in degrees.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (x,y).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -175,8 +198,8 @@
 *
 *   Spherical-to-Cartesian projection; *s2x()
 *   -----------------------------------------
-*   Compute (x,y) coordinates in the plane of projection from native spherical
-*   coordinates (phi,theta).
+*   Transform native spherical coordinates (phi,theta) to (x,y) coordinates in
+*   the plane of projection.
 *
 *   Given and returned:
 *      prj      struct prjprm*
@@ -192,12 +215,12 @@
 *
 *   Returned:
 *      x,y      double[] Projected coordinates.
-*      stat     int[]    Error status for each vector element:
+*      stat     int[]    Status return value for each vector element:
 *                           0: Success.
 *                           1: Invalid value of (phi,theta).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null prjprm pointer passed.
 *                           2: Invalid projection parameters.
@@ -224,10 +247,10 @@
 *         value of 180/pi (the value for FITS WCS).
 *
 *      double pv[30]
-*         Projection parameters.  These correspond to the PVi_m keywords in
-*         FITS, so pv[0] is PVi_0, pv[1] is PVi_1, etc., where i denotes the
-*         latitude-like axis.  Many projections use pv[1] (PVi_1), some also
-*         use pv[2] (PVi_2) and SZP uses pv[3] (PVi_3).  ZPN is the only
+*         Projection parameters.  These correspond to the PVi_ma keywords in
+*         FITS, so pv[0] is PVi_0a, pv[1] is PVi_1a, etc., where i denotes the
+*         latitude-like axis.  Many projections use pv[1] (PVi_1a), some also
+*         use pv[2] (PVi_2a) and SZP uses pv[3] (PVi_3a).  ZPN is the only
 *         projection that uses any of the others.
 *
 *      double phi0, theta0
@@ -251,8 +274,8 @@
 *            - Long name of the projection.
 *            - category matches the value of the relevant global variable:
 *              ZENITHAL, CYLINDRICAL, PSEUDOCYLINDRICAL, CONVENTIONAL, CONIC,
-*              POLYCONIC, and QUADCUBE.  The category name may also be
-*              identified via the prj_categories character array.
+*              POLYCONIC, QUADCUBE, and HEALPIX.  The category name may also
+*              be identified via the prj_categories character array.
 *            - Range of projection parameter indices: 100 times the first
 *              allowed index plus the number of parameters, e.g. TAN is 0
 *              (no parameters), SZP is 103 (1 to 3), and ZPN is 30 (0 to 29).
@@ -376,9 +399,9 @@
 *      within the ranges [-180,180] for phi, and [-90,90] for theta.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the prj_errmsg character array.
 *
 *
@@ -390,12 +413,9 @@
 *   least 1E-10 degree of longitude and latitude has been verified for typical
 *   projection parameters on the 1 degree graticule of native longitude and
 *   latitude (to within 5 degrees of any latitude where the projection may
-*   diverge).  Refer to the tproj1.c and tproj2.c test routines which
-*   accompany this software.
+*   diverge).  Refer to the tprj1.c and tprj2.c test routines that accompany
+*   this software.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_PROJ
@@ -405,15 +425,9 @@
 extern "C" {
 #endif
 
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
-#endif
 
 /* Total number of projection parameters; 0 to PVN-1. */
 #define PVN 30
-
 
 extern const char *prj_errmsg[];
 #define prjini_errmsg prj_errmsg
@@ -423,51 +437,43 @@ extern const char *prj_errmsg[];
 #define prjs2x_errmsg prj_errmsg
 
 extern const int CONIC, CONVENTIONAL, CYLINDRICAL, POLYCONIC,
-                 PSEUDOCYLINDRICAL, QUADCUBE, ZENITHAL;
-extern const char prj_categories[8][32];
+                 PSEUDOCYLINDRICAL, QUADCUBE, ZENITHAL, HEALPIX;
+extern const char prj_categories[9][32];
 
 extern const int  prj_ncode;
-extern const char prj_codes[26][4];
+extern const char prj_codes[27][4];
 
 
 /* Use the preprocessor to define function interfaces. */
-#ifdef INI
-#undef INI
+#ifdef PRJINI
+#undef PRJINI
 #endif
 
-#ifdef PRT
-#undef PRT
+#ifdef PRJPRT
+#undef PRJPRT
 #endif
 
-#ifdef SET
-#undef SET
+#ifdef PRJSET
+#undef PRJSET
 #endif
 
-#ifdef X2S
-#undef X2S
+#ifdef PRJX2S
+#undef PRJX2S
 #endif
 
-#ifdef S2X
-#undef S2X
+#ifdef PRJS2X
+#undef PRJS2X
 #endif
 
-#if __STDC__ || defined(__cplusplus)
-#define INI struct prjprm *
-#define PRT const struct prjprm *
-#define SET struct prjprm *
-#define X2S struct prjprm *, int, int, int, int, \
-            const double[], const double[],      \
-            double[], double[], int[]
-#define S2X struct prjprm *, int, int, int, int, \
-            const double[], const double[],      \
-            double[], double[], int[]
-#else
-#define INI
-#define PRT
-#define SET
-#define X2S
-#define S2X
-#endif
+#define PRJINI struct prjprm *
+#define PRJPRT const struct prjprm *
+#define PRJSET struct prjprm *
+#define PRJX2S struct prjprm *, int, int, int, int, \
+               const double[], const double[],      \
+               double[], double[], int[]
+#define PRJS2X struct prjprm *, int, int, int, int, \
+               const double[], const double[],      \
+               double[], double[], int[]
 
 
 struct prjprm {
@@ -498,8 +504,8 @@ struct prjprm {
    double w[10];		/* Intermediate values.                     */
    int    n;			/* Intermediate value.                      */
 
-   int (*prjx2s)(X2S);		/* Pointers to the spherical projection and */
-   int (*prjs2x)(S2X);		/* deprojection functions.                  */
+   int (*prjx2s)(PRJX2S);	/* Pointers to the spherical projection and */
+   int (*prjs2x)(PRJS2X);	/* deprojection functions.                  */
 
    double *p;			/* Aliased to pv[] by prjini() for backward */
                                 /* compatibility with WCSLIB 2.x.           */
@@ -509,13 +515,13 @@ struct prjprm {
 
 
 /* Use the preprocessor to declare function prototypes. */
-int prjini(INI);
-int prjprt(PRT);
+int prjini(PRJINI);
+int prjprt(PRJPRT);
 
 #define PROTO(CODE)    \
-   int CODE##set(SET); \
-   int CODE##x2s(X2S); \
-   int CODE##s2x(S2X);
+   int CODE##set(PRJSET); \
+   int CODE##x2s(PRJX2S); \
+   int CODE##s2x(PRJS2X);
 
 PROTO(prj)
 PROTO(azp)
@@ -544,6 +550,7 @@ PROTO(pco)
 PROTO(tsc)
 PROTO(csc)
 PROTO(qsc)
+PROTO(hpx)
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -685,6 +692,12 @@ extern int prj_stat;
         qscx2s(prj, 1, 1, 1, 1, &(x), &(y), phi, theta, &prj_stat)
 #define qscfwd(phi, theta, prj, x, y) \
         qscs2x(prj, 1, 1, 1, 1, &(phi), &(theta), x, y, &prj_stat)
+
+#define hpxrev(x, y, prj, phi, theta) \
+        hpxx2s(prj, 1, 1, 1, 1, &(x), &(y), phi, theta, &prj_stat)
+#define hpxfwd(phi, theta, prj, x, y) \
+        hpxs2x(prj, 1, 1, 1, 1, &(phi), &(theta), x, y, &prj_stat)
+
 
 #ifdef __cplusplus
 };

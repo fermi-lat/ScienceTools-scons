@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.2 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -25,10 +25,13 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the FITS World Coordinate System
-*   (WCS) convention.  Refer to
+*   WCSLIB 4.2 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
@@ -36,37 +39,49 @@
 *
 *   Summary of routines
 *   -------------------
-*   These routines apply the linear transformation defined by the WCS FITS
-*   header cards.  There are separate routines for the pixel-to-image,
-*   linp2x(), and image-to-pixel, linx2p(), transformations.
+*   These routines apply the linear transformation defined by the FITS WCS
+*   standard.  They are based on the linprm struct, described in detail
+*   below, which contains all information needed for the computations.  The
+*   struct contains some members that must be set by the caller, and others
+*   that are maintained by these routines, somewhat like a C++ class but with
+*   no encapsulation.
 *
-*   An initialization routine, linset(), computes intermediate values from
-*   the transformation parameters but need not be called explicitly - see the
-*   explanation of lin.flag below.
+*   Three routines, linini(), lincpy(), and linfree() are provided to manage
+*   the linprm struct, and another, linprt(), prints its contents.
 *
-*   Three service routines, linini(), lincpy(), and linfree() are provided to
-*   manage the linprm struct.  A third, linprt(), prints its contents.
+*   A setup routine, linset(), computes intermediate values in the linprm
+*   struct from parameters in it that were supplied by the caller.  The struct
+*   always needs to be set up by linset() but need not be called explicitly -
+*   see the explanation of lin.flag below.
+*
+*   linp2s() and lins2p() implement the WCS linear transformations.
 *
 *   An auxiliary matrix inversion routine, matinv(), is included.  It uses
 *   LU-triangular factorization with scaled partial pivoting.
 *
 *
-*   Service routines for the linprm struct; linini(), lincpy(), & linfree()
-*   -----------------------------------------------------------------------
-*   These service routines are provided to manage the linprm struct (see also
-*   "Memory allocation and deallocation" below).
+*   Default constructor for the linprm struct; linini()
+*   ---------------------------------------------------
+*   linini() allocates memory for arrays in a linprm struct and sets all
+*   members of the struct to default values.
 *
-*   linini() allocates memory for the crpix, pc, and cdelt arrays and sets the
-*   members of the linprm struct to default values.
+*   N.B. every linprm struct should be initialized by linini(), possibly
+*   repeatedly.  On the first invokation, and only the first invokation, the
+*   flag member of the linprm struct must be set to -1 to initialize memory
+*   management, regardless of whether linini() will actually be used to
+*   allocate memory.
 *
 *   Given:
-*      alloc    int      If true, allocate memory for the crpix, pc, and cdelt
-*                        arrays.  Otherwise, it is assumed that pointers to
-*                        these arrays have been set by the caller except if
-*                        they are null pointers in which case memory will be
-*                        allocated for them regardless.  (In other words,
-*                        setting alloc true saves having to initalize these
-*                        pointers to zero.)
+*      alloc    int      If true, allocate memory unconditionally for arrays
+*                        in the linprm struct (see "Memory allocation and
+*                        deallocation below").
+*
+*                        If false, it is assumed that pointers to these arrays
+*                        have been set by the caller except if they are null
+*                        pointers in which case memory will be allocated for
+*                        them regardless.  (In other words, setting alloc true
+*                        saves having to initalize these pointers to zero.)
+*
 *      naxis    int      The number of world coordinate axes, used to
 *                        determine array sizes.
 *
@@ -79,12 +94,14 @@
 *                        already been initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
+*   Copy routine for the linprm struct; lincpy()
+*   --------------------------------------------
 *   lincpy() does a deep copy of one linprm struct to another, using linini()
 *   to allocate memory for its arrays if required.  Only the "information to
 *   be provided" part of the struct is copied; a call to linset() is required
@@ -106,67 +123,70 @@
 *                        leaks may result if it was previously initialized).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
+*   Destructor for the linprm struct; linfree()
+*   -------------------------------------------
 *   linfree() frees memory allocated for the linprm arrays by linini() and/or
 *   linset().  linini() keeps a record of the memory it allocates and
 *   linfree() will only attempt to free this.
+*
+*   N.B. linfree() must not be invoked on a linprm struct that was not
+*   initialized by linini().
 *
 *   Given:
 *      lin      struct linprm*
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *
 *
 *   Print routine for the linprm struct; linprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a linprm struct.
+*   linprt() prints the contents of a linprm struct.
 *
 *   Given:
 *      lin      const struct linprm*
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *
 *
-*   Initialization routine; linset()
-*   --------------------------------
-*   If necessary, allocates memory for the piximg and imgpix arrays in the
-*   linprm struct and initializes the structure according to information
+*   Setup routine; linset()
+*   -----------------------
+*   linset(), if necessary, allocates memory for the piximg and imgpix arrays
+*   in the linprm struct and sets up the struct according to information
 *   supplied within it (see "Linear transformation parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   linp2x() and linx2p() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   linp2x() and linx2p() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and/or returned:
 *      lin      struct linprm*
 *                        Linear transformation parameters (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           2: Memory allocation failed.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   Pixel-to-world transformation; linp2x()
 *   ---------------------------------------
-*   Compute image coordinates from pixel coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
+*   linp2x() transforms pixel coordinates to intermediate world coordinates.
 *
 *   Given and/or returned:
 *      lin      struct linprm*
@@ -180,21 +200,19 @@
 *
 *   Returned:
 *      imgcrd   double[ncoord][nelem]
-*                        Array of image (world) coordinates.
+*                        Array of intermediate world coordinates.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           2: Memory allocation failed.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   World-to-pixel transformation; linx2p()
 *   ---------------------------------------
-*   Compute pixel coordinates from image coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
+*   linx2p() transforms intermediate world coordinates to pixel coordinates.
 *
 *   Given and returned:
 *      lin      struct linprm*
@@ -204,23 +222,24 @@
 *      ncoord   int      The number of coordinates, each of vector length
 *      nelem    int      nelem but containing lin.naxis coordinate elements.
 *      imgcrd   const double[ncoord][nelem]
-*                        Array of image (world) coordinates.
+*                        Array of intermediate world coordinates.
 *
 *   Returned:
 *      pixcrd   double[ncoord][nelem]
 *                        Array of pixel coordinates.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null linprm pointer passed.
-*                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           2: Memory allocation failed.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   Linear transformation parameters
 *   --------------------------------
-*   The linprm struct consists of the following:
+*   The linprm struct consists of the following elements that must be
+*   supplied:
 *
 *      int flag
 *         This flag must be set to zero whenever any of the following members
@@ -237,10 +256,10 @@
 *
 *      double *crpix
 *         Pointer to the first element of an array of double containing the
-*         coordinate reference pixel, CRPIXj.
+*         coordinate reference pixel, CRPIXja.
 *
 *      double *pc
-*         Pointer to the first element of the PC (pixel coordinate)
+*         Pointer to the first element of the PCi_ja (pixel coordinate)
 *         transformation matrix.  The expected order is
 *
 *            lin.pc = {PC1_1, PC1_2, PC2_1, PC2_2};
@@ -267,7 +286,7 @@
 *
 *      double *cdelt
 *         Pointer to the first element of an array of double containing the
-*         coordinate increments, CDELTi.
+*         coordinate increments, CDELTia.
 *
 *   The remaining members of the linprm struct are maintained by linset() and
 *   must not be modified elsewhere:
@@ -277,14 +296,13 @@
 *
 *      double *piximg
 *         Pointer to the first element of the matrix containing the product
-*         of the CDELTi diagonal matrix and the PC matrix.
+*         of the CDELTia diagonal matrix and the PCi_ja matrix.
 *
 *      double *imgpix
 *         Pointer to the first element of the inverse of the piximg matrix.
 *
-*      int m_flag, m_naxis
-*      double *m_crpix, *m_pc, *m_cdelt
-*         These are used for memory management by linini() and linfree().
+*      The remaining members of the linprm struct are used for memory
+*      management by linini() and linfree().
 *
 *
 *   Vector arguments
@@ -303,9 +321,8 @@
 *
 *   Memory allocation and deallocation
 *   ----------------------------------
-*   linini() allocates memory for the crpix, pc, and cdelt arrays in the
-*   linprm struct.  It is provided as a service routine; usage is optional,
-*   and the caller is at liberty to set these pointers independently.
+*   linini() optionally allocates memory for the crpix, pc, and cdelt arrays
+*   in the linprm struct as described in the usage notes above.
 *
 *   If the pc matrix is not unity, linset() also allocates memory for the
 *   piximg and imgpix arrays.  The caller must not modify these.
@@ -316,12 +333,12 @@
 *   caller to invoke linfree() separately.  Likewise, linset() deallocates
 *   memory that it may have allocated on a previous invokation.
 *
-*   However, a memory leak will result if a linprm struct goes out of scope
-*   before the memory has been free'd, either by linfree() or otherwise.
-*   Likewise, if the linprm struct itself has been malloc'd and the allocated
-*   memory is not free'd when the memory for the struct is free'd.  A leak may
-*   also arise if the caller interferes with the array pointers in the
-*   "private" part of the linprm struct.
+*   A memory leak will result if a linprm struct goes out of scope before the
+*   memory has been free'd, either by linfree() or otherwise.  Likewise, if
+*   the linprm struct itself has been malloc'd and the allocated memory is not
+*   free'd when the memory for the struct is free'd.  A leak may also arise if
+*   the caller interferes with the array pointers in the "private" part of the
+*   linprm struct.
 *
 *   Beware of making a shallow copy of a linprm struct by assignment; any
 *   changes made to allocated memory in one would be reflected in the other,
@@ -329,14 +346,11 @@
 *   unallocated memory.  Use lincpy() instead to make a deep copy.
 *
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the lin_errmsg character array.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_LIN
@@ -344,12 +358,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if !defined(__STDC__) && !defined(__cplusplus)
-#ifndef const
-#define const
-#endif
 #endif
 
 
@@ -371,14 +379,14 @@ struct linprm {
    /* Parameters to be provided (see the prologue above).                   */
    /*-----------------------------------------------------------------------*/
    int naxis;			/* The number of axes, given by NAXIS.      */
-   double *crpix;		/* CRPIXj cards for each pixel axis.        */
-   double *pc;			/* PCi_j  linear transformation matrix.     */
-   double *cdelt;		/* CDELTi cards for each coordinate axis.   */
+   double *crpix;		/* CRPIXja cards for each pixel axis.       */
+   double *pc;			/* PCi_ja  linear transformation matrix.    */
+   double *cdelt;		/* CDELTia cards for each coordinate axis.  */
 
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
-   int unity;			/* True if the PCi_j matrix is unity.       */
-   double *piximg;		/* Product of the CDELTi and PCij matrices. */
+   int unity;			/* True if the PCi_ja matrix is unity.      */
+   double *piximg;		/* Product of CDELTia and PCi_ja matrices.  */
    double *imgpix;		/* Inverse of the piximg matrix.            */
 
    int m_flag, m_naxis;		/* The remainder are for memory management. */
@@ -386,26 +394,23 @@ struct linprm {
    int i_naxis;
 };
 
-#if __STDC__  || defined(__cplusplus)
-   int linini(int, int, struct linprm *);
+#define LINLEN (sizeof(struct linprm)/sizeof(int))
 
-   int lincpy(int, const struct linprm *, struct linprm *);
+int linini(int, int, struct linprm *);
 
-   int linfree(struct linprm *);
+int lincpy(int, const struct linprm *, struct linprm *);
 
-   int linprt(const struct linprm *);
+int linfree(struct linprm *);
 
-   int linset(struct linprm *);
+int linprt(const struct linprm *);
 
-   int linp2x(struct linprm *, int, int, const double[], double[]);
+int linset(struct linprm *);
 
-   int linx2p(struct linprm *, int, int, const double[], double[]);
+int linp2x(struct linprm *, int, int, const double[], double[]);
 
-   int matinv(int, const double [], double []);
-#else
-   int linini(), lincpy(), linfree(), linprt(), linset(), linp2x(), linx2p(),
-       matinv();
-#endif
+int linx2p(struct linprm *, int, int, const double[], double[]);
+
+int matinv(int, const double [], double []);
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -414,7 +419,6 @@ struct linprm {
 #define linrev(pixcrd, lin, imgcrd) linp2x(lin, 1, 1, pixcrd, imgcrd)
 #define linfwd(imgcrd, lin, pixcrd) linx2p(lin, 1, 1, imgcrd, pixcrd)
 
-#define LINLEN (sizeof(struct linprm)/sizeof(int))
 
 #ifdef __cplusplus
 };
