@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v1r11    21-0ct-05 THB Get latest C++ version of healpix code
+  v1r11p1  21-0ct-05 THB Get latest C++ version of healpix code
   v1r10p7  12-0ct-05 JC  move Exception class to inside of SkyProj class 
                          declaration
   v1r10p6  12-Oct-05 JC  add SkyProj constructor from FITS file; small
