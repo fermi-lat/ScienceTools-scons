@@ -103,6 +103,9 @@ namespace facilities {
     /// of proper form, throws facilities::WrongType
     static int stringToInt(const std::string& InStr);
 
+    /// converts a std::string to an unsigned int.  If string contents are not
+    /// of proper form, throws facilities::WrongType
+    static unsigned int stringToUnsigned(const std::string& InStr);
 
 
     /** This routine breaks down a string into tokens, based on the

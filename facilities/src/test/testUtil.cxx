@@ -152,14 +152,16 @@ int main(int, char**) {
               << err.what() << std::endl;
   }
 
-  // Test stringToInt routine
+  // Test stringToInt and stringToUnsigned routines
   std::cout << std::endl << "Test stringToInt " << std::endl;
 
   std::string okInt("33550");
   std::string badInt1("3garbage56");
   std::string badInt2("garbage356");
+  std::string negInt("-23");
 
   int intResult = -1;
+  unsigned unResult = 0;
 
   try {
     intResult = facilities::Util::stringToInt(okInt);
@@ -185,6 +187,28 @@ int main(int, char**) {
     intResult = facilities::Util::stringToInt(badInt2);
     std::cout << "Converted (string) " << badInt2 << " to (int) " 
               << intResult << std::endl;
+  }
+  catch (std::exception& ex) {
+    std::cout << "Caught std::exception, what() returns " 
+              << ex.what() << std::endl;
+  }
+
+  std::cout << "Attempt to convert " << okInt << " to unsigned " << std::endl;
+  try {
+    unResult = facilities::Util::stringToUnsigned(okInt);
+    std::cout << "Converted (string) " << okInt << " to (unsigned) " 
+              << unResult << std::endl;
+  }
+  catch (std::exception& ex) {
+    std::cout << "Caught std::exception, what() returns " 
+              << ex.what() << std::endl;
+  }
+
+  std::cout << "Attempt to convert " << negInt << " to unsigned " << std::endl;
+  try {
+    unResult = facilities::Util::stringToUnsigned(negInt);
+    std::cout << "Converted (string) " << negInt << " to (unsigned) " 
+              << unResult << std::endl;
   }
   catch (std::exception& ex) {
     std::cout << "Caught std::exception, what() returns " 
