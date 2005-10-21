@@ -2,6 +2,7 @@
 @brief declaration of the class SkyProj
 
 $Header$
+=======
 */
 
 #ifndef astro_SkyProj_H
@@ -134,18 +135,15 @@ namespace astro {
        */
         std::pair<double,double> pix2sph(double x1, double x2) const;
 
-        /** @brief Sets lonpole parameter
-        @param lonpole corresponds to the FITS keyword LONPOLE (native coordinates of celestial pole)
-        */
-        void setLonpole(double lonpole);
-
-        /** @brief Sets latpole parameter
-        @param latpole corresponds to the FITS keyword LATPOLE
-        */
-        void setLatpole(double latpole);
-
         /** @brief is this galactic? */
         bool isGalactic()const;
+        
+        /** @brief returns the range 
+        @param xvar varies x if true, varies y if false
+        @param x1 x or y coordinate to find y or x range respectively
+        */
+        std::pair<double,double> range(double x1, bool xvar);
+        
 
        class Exception : public std::exception 
        {
@@ -167,10 +165,28 @@ namespace astro {
         void init(const std::string &projName, 
             double* crpix, double* crval, double* cdelt, 
             double lonpole, double latpole, double crota2, bool galactic);
-
+        
+        /** @brief returns 0 if point (x1,x2) is in range */
+        int SkyProj::testpix2sph(double x1, double x2);
+        
         /* Structure defined in WCSLIB wcs.h.  This contains all
         projection information. */
         wcsprm* m_wcs;
+        
+        /*@brief determines if bounding rectangle exists
+           @param xvar varies x if true, varies y if false
+           @param x1 x or y coordinate to find y or x range respectively */
+        bool hasRange(double x1, bool xvar);
+        
+        /*@brief finds bounding rectangle if it exists
+        * @param crpix wcs pixel definition*/
+        void findBound(double* crpix);
+
+        /*used to determine bounding rectangle if it exists
+         0-xmax, 1-xmin, 2-ymax, 3-ymin, 4-x finite, 5-y finite */
+        double limit[6];
+        static const int max=1600;
+        double tol;
 
         // allocate a local array to hold the wcslib.
         static const size_t sizeof_wcslib = 1240;

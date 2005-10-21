@@ -20,11 +20,11 @@ using namespace astro;
 #include <cassert>
 
 SkyProj::SkyProj(const std::string &projName, 
-                 double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)
+                 double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)                
 {
+        tol=0.00000001;
 	double lonpole = 999;
 	double latpole = 999;
-
 	SkyProj::init(projName,crpix,crval,cdelt,lonpole,latpole,crota2,galactic);
 }
 
@@ -32,7 +32,8 @@ SkyProj::SkyProj(const std::string &projName,
         double* crpix, double* crval, double* cdelt, double lonpole, double latpole,
 		double crota2, bool galactic)
 {
-	SkyProj::init(projName,crpix,crval,cdelt,lonpole,latpole,crota2,galactic);
+        tol=0.00000001;
+        SkyProj::init(projName,crpix,crval,cdelt,lonpole,latpole,crota2,galactic);
 }
 
 SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
@@ -155,30 +156,93 @@ std::pair<double,double> SkyProj::pix2pix(double x1, double x2, const SkyProj& o
     return SkyProj::sph2pix(s.first,s.second);
 }
 
-void SkyProj::setLonpole(double lonpole)
-{
-   m_wcs->lonpole = lonpole;
-
-   int status = wcsset2(m_wcs);
-   if (status !=0) {
-      throw SkyProj::Exception(status);
-   }
-}
-
-void SkyProj::setLatpole(double latpole)
-{
-   m_wcs->latpole = latpole;
-
-   int status = wcsset2(m_wcs);
-   if (status !=0) {
-      throw SkyProj::Exception(status);
-   }
-}
-
 bool SkyProj::isGalactic()const
 {
     return ( std::string( m_wcs->ctype[0] ).substr(0,4)=="GLON");
 };
+
+/*@brief determine the x or y range for a given x or y coordinate
+   @param xvar varies x if true, varies y if false
+   @param x1 x or y coordinate to find y or x range respectively */
+std::pair<double,double> SkyProj::range(double x1,bool xvar) {
+    if(hasRange(x1,xvar))
+        return std::make_pair<double,double>(0,0);
+    double xval,yval,delt;
+    double max,min;
+    int offset;
+    if(xvar) {
+        //y is constant
+        xval=limit[0];
+        yval=x1;
+        delt=(xval-limit[1])/4;
+        offset=0;
+    }
+    else {
+        //x is contant
+        xval=x1;
+        yval=limit[2];
+        delt=(yval-limit[3])/2;
+        offset=2;
+    }
+    int returncode = -1;
+    //find max by a binary search
+    while(delt/limit[offset] > tol || returncode!=0) {
+        returncode = testpix2sph(xval,yval);
+        if(returncode==0&&xvar) 
+            xval=xval+delt;
+        else if(returncode==0&&!xvar) 
+            yval=yval+delt;
+        else if(returncode!=0&&xvar)
+            xval=xval-delt;
+        else
+            yval=yval-delt;
+        delt=delt/2;
+    }
+    if(xvar) {
+        max=xval;
+        xval=limit[1];
+        yval=x1;
+        delt=(limit[0]-xval)/4;
+        offset=0;
+    }
+    else {
+        max=yval;
+        xval=x1;
+        yval=limit[3];
+        delt=(limit[2]-yval)/4;
+        offset=2;
+    }
+    returncode=-1;
+    //find min with a binary search
+    while(delt/limit[offset+1] > tol || returncode!=0) {
+        returncode = testpix2sph(xval,yval);
+        if(returncode==0&&xvar) 
+            xval=xval-delt;
+        else if(returncode==0&&!xvar) 
+            yval=yval-delt;
+        else if(returncode!=0&&xvar)
+            xval=xval+delt;
+        else
+            yval=yval+delt;
+        delt=delt/2;
+    }
+    xvar?min=xval:min=yval;
+    return std::make_pair<double,double>(max,min);
+}
+
+/*@brief determines if a pixel coordinate is in 
+    the scope of the projection*/
+int SkyProj::testpix2sph(double x1, double x2) {
+    int ncoords = 1;
+    int nelem = 2;
+    double worldcrd[2], imgcrd[2];
+    double phi[1], theta[1];
+    int stat[1];
+
+    double pixcrd[] = {x1,x2};;
+
+    return wcsp2s(m_wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+}
 
 void SkyProj::init(const std::string &projName, 
                  double* crpix, double* crval, double* cdelt, 
@@ -213,11 +277,15 @@ void SkyProj::init(const std::string &projName,
     // Set wcs to use CROTA rotations instead of PC or CD  transformations
     m_wcs->altlin |= 4;
     m_wcs->crota[1] = crota2;
-
+    
     int status = wcsset2(m_wcs);
     if (status !=0) {
         throw SkyProj::Exception(status );
     }
+    
+    //determine bounding box
+    findBound(crpix);
+
     // a simple test
     double tlon = crval[0], tlat = crval[1];
     std::pair<double, double> t = sph2pix(tlon, tlat);
@@ -236,6 +304,78 @@ SkyProj::SkyProj(const SkyProj & other)
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);    
 }
 
+/** @brief determines if current point and variable are in range */
+bool SkyProj::hasRange(double x1, bool xvar) {
+    return (xvar&&limit[4]==1)||(!xvar&&limit[5]==1)||((x1>limit[2]||x1<limit[3])&&xvar)||((x1>limit[0]||x1<limit[1])&&!xvar);
+}
+
+/** @brief initializes the bounding rectangle
+        breaks if rectangle has no width or height */
+void SkyProj::findBound(double* crpix) {
+    int returncode = 0;
+    double j=crpix[0];
+    returncode = testpix2sph(0,max+crpix[1]); //tests max x finite
+    returncode==0?limit[4]=1:limit[4]=0;
+    returncode = testpix2sph(max+crpix[0],0); //tests max y finite
+    returncode==0?limit[5]=1:limit[5]=0;
+    double delt = max/4;
+    double x1 = max/2+crpix[0];
+    int k=0;
+    //try a binary search in all directions for limits
+    //test xmax
+    while((delt>tol || returncode!=0) && limit[4]==0) {
+        returncode = testpix2sph(x1,crpix[1]);
+        if(returncode!=0)
+            x1=x1-delt;
+        else
+            x1=x1+delt;
+        delt=delt/2;
+        if(k>600)
+            throw std::runtime_error("This transformation has no valid x range.");
+        k++;
+    }
+    limit[0]=x1;
+    delt = -max/4;
+    //test xmin
+    x1 = -max/2+crpix[0];
+    while((-delt>tol || returncode!=0) && limit[4]==0) {
+        returncode = testpix2sph(x1,crpix[1]);
+        if(returncode!=0)
+            x1=x1-delt;
+        else
+            x1=x1+delt;
+        delt=delt/2;
+    }
+    limit[1]=x1;
+    delt = max/4;
+    //test ymax
+    x1 = max/2+crpix[1];
+    k=0;
+    while((delt>tol || returncode!=0) && limit[4]==0) {
+        returncode = testpix2sph(crpix[0],x1);
+        if(returncode!=0)
+            x1=x1-delt;
+        else
+            x1=x1+delt;
+        delt=delt/2;
+        if(k>600)
+            throw std::runtime_error("This transformation has no valid y range.");
+        k++;
+    }
+    limit[2]=x1;
+    delt = -max/4;
+    //test ymin
+    x1 = -max/2+crpix[1];
+    while((-delt>tol || returncode!=0) && limit[4]==0 && k<600) {
+        returncode = testpix2sph(crpix[0],x1);
+        if(returncode!=0)
+            x1=x1-delt;
+        else
+            x1=x1+delt;
+        delt=delt/2;
+    }
+    limit[3]=x1;
+}
 const char * SkyProj::Exception::what() const throw() {
    std::stringstream msg; 
    msg << "SkyProj wcslib error "<< m_status << " : ";
