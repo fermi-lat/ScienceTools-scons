@@ -48,7 +48,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         // special code to determine all-sky limits based on scale factor and transformation
         std::string types[]={"" ,"CAR","AIT","ZEA"};
         int xsize[] =       {360, 360,  325,  230}; 
-        int ysize[] =       {180, 180,  163,  230}; 
+        int ysize[] =       {180, 180,  162,  230}; 
         for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
             if( ptype == types[i]) {
                 m_naxis1 = static_cast<int>(xsize[i]/pixelsize);
@@ -156,13 +156,31 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     /// arrays describing transformation; pointers passed to wcslib
     double crpix[2], crval[2], cdelt[2];
 
-    header["CRPIX1"].get( crpix[0]);
-    header["CRVAL1"].get( crval[0]);
-    header["CDELT1"].get( cdelt[0]);
+    try {
+        header["CRPIX1"].get( crpix[0]);
+        header["CRPIX2"].get( crpix[1]);
+    }catch(const tip::TipException&) {
+        throw std::runtime_error("CRPIX keyword not found");
+    }
+    try{
+        header["CRVAL1"].get( crval[0]);
+        header["CRVAL2"].get( crval[1]);
+    } catch(const tip::TipException&) {
+        throw std::runtime_error("CRVAL keyword not found");
+    }
+    try {
+        header["CDELT1"].get( cdelt[0]);
+        header["CDELT2"].get( cdelt[1]);
+    }
+    catch(const tip::TipException&) {
+        try {
+            header["CD1_1"].get( cdelt[0]);
+            header["CD2_2"].get( cdelt[1]);
+        } catch(const tip::TipException&) {
+            throw std::runtime_error("Neither CDELT nor CD keywords found");
+        }
+    }
 
-    header["CRPIX2"].get( crpix[1]);
-    header["CRVAL2"].get( crval[1]);
-    header["CDELT2"].get( cdelt[1]);
     double crota2=0;
     try { header["CROTA2"].get(crota2);}catch(const std::exception&){}
     m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
@@ -208,45 +226,34 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
 {
     checkLayer(layer);
     int offset = m_naxis1* m_naxis2 * layer;
-
-    for( size_t k = 0; k< (unsigned int)(m_naxis1* m_naxis2); ++k){
+    std::pair<double,double> yrange = m_wcs->range((m_naxis1)/2.0,false); //determine the y range in the middle of the transform
+    for( size_t k = 0; k< (unsigned int)(m_naxis1)*(m_naxis2); ++k){
+        size_t kk = k%(unsigned int)(m_naxis1* m_naxis2);
         // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
             x = static_cast<int>(k%m_naxis1)+1.0, 
             y = static_cast<int>(k/m_naxis1)+1.0;
-        try{
-
+        std::pair<double,double> xrange = m_wcs->range(y,true);  //determine x range for current y
+        if(x<xrange.first && x>xrange.second && y<yrange.first && y>yrange.second) {  //if bin center is in transformation, add it
             astro::SkyDir dir(x,y, *m_wcs);
             double t= req(dir);
             m_imageData[k+offset] = t;
             m_total += t;
-        }catch(const std::exception& ){ 
+        }
+        else{ 
             // any exception: just fill in a NaN
             m_imageData[k+offset]=dnan; 
         }
     }
-
+    return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::clear()
 {
     size_t s = m_imageData.size();
-    size_t pixels = size_t(m_naxis1*m_naxis2);
     for( size_t k = 0; k< s; ++k){
-        // determine the bin center
-        size_t kk = k%pixels;
-
-        double
-            x = static_cast<int>(kk%m_naxis1)+1, 
-            y = static_cast<int>(kk/m_naxis1)+1;
-        try{
-            astro::SkyDir dir(x,y, *m_wcs);
-            m_imageData[k] = 0; 
-        }catch(... ) { // any exception: just fill in a NaN
-            m_imageData[k]=dnan; 
-        }
+        m_imageData[k]=NULL; 
     }
-
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::~SkyImage()

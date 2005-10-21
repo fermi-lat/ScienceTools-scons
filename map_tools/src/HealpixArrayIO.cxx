@@ -7,7 +7,7 @@ $Header$
 */
 
 #include "map_tools/HealpixArrayIO.h"
-
+#include "astro/Healpix.h"
 #include "tip/IFileSvc.h"
 //#define TIP_ONECOLUMNBUG // remove this when tip is fixed to allow a single column
 
@@ -141,7 +141,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<float>
         hdr["NAXIS1"].set(sizeof(float));
     #endif
     hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == astro::Healpix::NESTED)? "NESTED": "RING";
+    std::string ordering = (ha.healpix().ord() == NEST)? "NESTED": "RING";
     hdr["ORDERING"].set(ordering); 
     hdr["NSIDE"].set(ha.healpix().nside()); 
     hdr["FIRSTPIX"].set(0); 
@@ -215,7 +215,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
         hdr["NAXIS1"].set(fieldname.size() * sizeof(float));
     #endif
     hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == astro::Healpix::NESTED)? "NESTED": "RING";
+    std::string ordering = (ha.healpix().ord() == NEST)? "NESTED": "RING";
     hdr["ORDERING"].set(ordering); 
     hdr["NSIDE"].set(ha.healpix().nside()); 
     hdr["FIRSTPIX"].set(0); 
@@ -242,8 +242,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    astro::Healpix::Ordering ord = (ordering == "NESTED")?
-        astro::Healpix::NESTED: astro::Healpix::RING;
+    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
+        NEST: RING;
     std::string thetabinstring;
     hdr["THETABIN"].get(thetabinstring);
     bool thetabin = (thetabinstring == "COSTHETA")? false: true;
@@ -282,8 +282,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    astro::Healpix::Ordering ord = (ordering == "NESTED")?
-        astro::Healpix::NESTED: astro::Healpix::RING;
+    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
+        NEST: RING;
    
     astro::HealpixArray<float> ha(astro::Healpix(nside, ord));
     
@@ -308,8 +308,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    astro::Healpix::Ordering ord = (ordering == "NESTED")?
-        astro::Healpix::NESTED: astro::Healpix::RING;
+    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
+        NEST: RING;
    
     astro::HealpixArray<std::vector<float> > ha(astro::Healpix(nside, ord));
     
