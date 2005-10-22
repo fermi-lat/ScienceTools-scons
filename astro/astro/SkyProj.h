@@ -188,8 +188,8 @@ namespace astro {
         static const int max=1600;
         double tol;
 
-        // allocate a local array to hold the wcslib.
-        static const size_t sizeof_wcslib = 1240;
+        // allocate a local array to hold the wcslib: must be at least as large
+        static const size_t sizeof_wcslib = 2000;
         char  m_wcs_struct[sizeof_wcslib];
     };
 
