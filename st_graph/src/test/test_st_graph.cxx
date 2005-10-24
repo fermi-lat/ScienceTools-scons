@@ -238,6 +238,9 @@ void StGraphTestApp::testPlots() {
   IPlot * plot1 = engine.createPlot(pf1, "Scatter", ValueSpreadSeq_t(x1.begin(), x1.end(), delta_x1.begin()),
     ValueSpreadSeq_t(y1.begin(), y1.end(), delta_y1.begin()));
 
+  // Add a marker to the plot.
+  plot1->addMarker(x1[num_pts / 2], y1[num_pts / 2], "data center");
+
   // Set axis title.
   std::vector<Axis> * axes(&plot1->getAxes());
   (*axes)[0].setTitle("Correct X axis label");
@@ -312,6 +315,7 @@ void StGraphTestApp::testPlots() {
   // Run the graphics engine to display everything.
   engine.run();
 
+  
   // Clean up. It would not hurt to delete objects owned by mf, but mf's destructor will delete pf1 automatically,
   // which in turn will delete the plots if they were not already deleted.
   // delete plot2;

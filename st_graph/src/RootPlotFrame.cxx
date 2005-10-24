@@ -4,12 +4,16 @@
 */
 #include <algorithm>
 #include <cctype>
+#include <list>
 #include <map>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 #include "TAxis.h"
 #include "TCanvas.h"
+#include "TLatex.h"
+#include "TMarker.h"
 #include "TGFrame.h"
 #include "TGraph.h"
 #include "TGraphAsymmErrors.h"
@@ -21,6 +25,159 @@
 #include "RootPlotFrame.h"
 
 namespace st_graph {
+
+  class StMarker : public TMarker {
+    public:
+      StMarker(Marker & marker);
+
+      virtual ~StMarker();
+
+      virtual void ExecuteEvent(Int_t event, Int_t px, Int_t py);
+
+      virtual void Draw(Option_t * option = "");
+
+      virtual void SetColor(Color_t tcolor = 1);
+
+      virtual void SetTextAngle(float_t angle);
+
+    private:
+      Marker * m_marker;
+      TLatex * m_label;
+  };
+
+  class StLatex : public TLatex {
+    public:
+      StLatex(Marker & marker, StMarker & st_marker);
+
+      virtual void ExecuteEvent(Int_t event, Int_t px, Int_t py);
+
+    private:
+      Marker * m_marker;
+      StMarker * m_st_marker;
+  };
+
+  class StEmbeddedCanvas : public TRootEmbeddedCanvas {
+    public:
+      typedef std::list<StMarker *> MarkerCont_t;
+
+      StEmbeddedCanvas(const char * name = "0", const TGWindow * p = 0, UInt_t w = 10, UInt_t h = 10);
+
+      virtual ~StEmbeddedCanvas();
+
+      virtual Bool_t HandleContainerButton(Event_t * event);
+
+      void addMarker(Marker & marker);
+
+    private:
+      MarkerCont_t m_marker_cont;
+      double m_press_x;
+      double m_press_y;
+  };
+
+  StMarker::StMarker(Marker & marker): TMarker(marker.m_x, marker.m_y, 23), m_marker(&marker), m_label(0) {
+    if (!marker.m_text.empty()) m_label = new StLatex(marker, *this);
+  }
+
+  StMarker::~StMarker() { delete m_label; }
+
+  void StMarker::ExecuteEvent(Int_t event, Int_t px, Int_t py) {
+    double current_x = fX;
+    double current_y = fY;
+    TMarker::ExecuteEvent(event, px, py);
+    if (fX != current_x) {
+      if (0 != m_label) m_label->SetX(fX);
+    }
+    if (fY != current_y) {
+      if (0 != m_label) m_label->SetY(fY);
+    }
+  }
+
+  void StMarker::Draw(Option_t * option) {
+    if (0 != m_label) m_label->Draw(option);
+    TMarker::Draw(option);
+  }
+
+  void StMarker::SetColor(Color_t tcolor) {
+    if (0 != m_label) m_label->SetTextColor(tcolor);
+    TMarker::SetMarkerColor(tcolor);
+  }
+
+  void StMarker::SetTextAngle(float_t angle) {
+    if (0 != m_label) m_label->SetTextAngle(angle);
+  }
+
+  StLatex::StLatex(Marker & marker, StMarker & st_marker): TLatex(marker.m_x, marker.m_y, (" " + marker.m_text).c_str()),
+    m_marker(&marker), m_st_marker(&st_marker) {}
+
+  void StLatex::ExecuteEvent(Int_t event, Int_t px, Int_t py) {
+    double current_x = fX;
+    double current_y = fY;
+    TLatex::ExecuteEvent(event, px, py);
+    if (fX != current_x) {
+      m_st_marker->SetX(fX);
+      m_marker->m_x = fX;
+    }
+    if (fY != current_y) {
+      m_st_marker->SetY(fY);
+      m_marker->m_y = fY;
+    }
+  }
+
+  StEmbeddedCanvas::StEmbeddedCanvas(const char * name, const TGWindow * p, UInt_t w, UInt_t h):
+    TRootEmbeddedCanvas(name, p, w, h), m_marker_cont(), m_press_x(0.), m_press_y(0.) {}
+
+  StEmbeddedCanvas::~StEmbeddedCanvas() {
+    for (MarkerCont_t::reverse_iterator itor = m_marker_cont.rbegin(); itor != m_marker_cont.rend(); ++itor) {
+      delete *itor;
+    }
+  }
+
+  Bool_t StEmbeddedCanvas::HandleContainerButton(Event_t * event) {
+    Bool_t status = kTRUE;
+    bool root_handles_event = true;
+    if (0 != event) {
+      Int_t button = event->fCode;
+      if (kButton3 == button) {
+        // Button 3 events inside the plot window are handled by the event handler.
+        if (event->fX > Int_t(.1 * GetWidth()) && event->fX < Int_t(.9 * GetWidth()) &&
+          event->fY > Int_t(.1 * GetHeight()) && event->fY < Int_t(.9 * GetHeight())) {
+          root_handles_event = false;
+          if (kButtonRelease == event->fType) {
+            // TODO: Handle "clicked" event.
+          }
+        }
+      } else {
+        // Find the object with which this event is associated.
+        TObjLink * obj_link = 0;
+        fCanvas->Pick(event->fX, event->fY, obj_link);
+
+        // See if the associated object is a marker or label.
+        TObject * obj = 0;
+        if (0 != obj_link && 0 != (obj = obj_link->GetObject())) {
+          std::string class_name = obj->ClassName();
+          if (class_name != "TLatex" && class_name != "TMarker" && kButtonRelease != event->fType) {
+            if (event->fX > Int_t(.1 * GetWidth())) {
+              // These events are used to zoom: remap them to look like they come from the X axis.
+              event->fY = Int_t(.9 * GetHeight());
+            }
+          }
+        }
+      }
+    }
+    if (root_handles_event) {
+      status = TRootEmbeddedCanvas::HandleContainerButton(event);
+    }
+    return status;
+  }
+
+  void StEmbeddedCanvas::addMarker(Marker & marker) {
+    StMarker * st_marker = new StMarker(marker);
+    st_marker->SetTextAngle(45);
+    st_marker->SetColor(kBlue);
+    st_marker->Draw();
+
+    m_marker_cont.push_back(st_marker);
+  }
 
   RootPlotFrame::RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height,
     bool delete_parent): RootFrame(parent, 0, 0, delete_parent), m_plots(), m_tgraphs(), m_title(title), m_canvas(0),
@@ -38,7 +195,8 @@ namespace st_graph {
     root_frame->AddFrame(top_canvas);
 
     // Create a special Root TGCanvas which is suitable for embedding plots.
-    TRootEmbeddedCanvas * plot_canvas = new TRootEmbeddedCanvas(createRootName("TRootEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight(), kFixedSize);
+    //TRootEmbeddedCanvas * plot_canvas = new TRootEmbeddedCanvas(createRootName("TRootEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight(), kFixedSize);
+    StEmbeddedCanvas * plot_canvas = new StEmbeddedCanvas(createRootName("StEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight());
 
     top_canvas->SetContainer(plot_canvas);
 
@@ -106,6 +264,15 @@ namespace st_graph {
             root_axes[index]->CenterTitle(kTRUE);
             title_set[index] = true;
           }
+        }
+
+        // Loop over plots, displaying each one's labels.
+        std::vector<Marker> labels;
+        (*itor)->getMarkers(labels);
+        double x1, x2, y1, y2;
+        gPad->GetRange(x1, y1, x2, y2);
+        for (std::vector<Marker>::iterator itor = labels.begin(); itor != labels.end(); ++itor) {
+          m_canvas->addMarker(*itor);
         }
       }
 

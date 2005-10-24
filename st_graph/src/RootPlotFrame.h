@@ -15,7 +15,6 @@ class TAxis;
 class TGraph;
 class TH2D;
 class TMultiGraph;
-class TRootEmbeddedCanvas;
 
 namespace st_graph {
 
@@ -23,6 +22,7 @@ namespace st_graph {
   class IPlot;
   class ISequence;
   class RootPlot;
+  class StEmbeddedCanvas;
 
   /** \class RootPlotFrame
       \brief A Root frame which is suitable for displaying plots.
@@ -107,7 +107,7 @@ namespace st_graph {
       std::list<RootPlot *> m_plots;
       std::list<TGraph *> m_tgraphs;
       std::string m_title;
-      TRootEmbeddedCanvas * m_canvas;
+      StEmbeddedCanvas * m_canvas;
       TMultiGraph * m_multi_graph;
       TH2D * m_th2d;
       unsigned int m_dimensionality;
