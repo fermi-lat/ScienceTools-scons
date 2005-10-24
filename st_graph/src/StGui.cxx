@@ -19,6 +19,7 @@
 #include "st_graph/IFrame.h"
 #include "st_graph/ITabFolder.h"
 #include "st_graph/Placer.h"
+#include "st_graph/RootFrame.h"
 
 #include "st_stream/StreamFormatter.h"
 
@@ -189,6 +190,7 @@ namespace st_graph {
       std::auto_ptr<IFrame> int_pw(m_engine.createTextEntry(mf.get(), 0, "+1234567890"));
       std::auto_ptr<IFrame> float_pw(m_engine.createTextEntry(mf.get(), 0, "1.2345678901234E+123"));
       std::auto_ptr<IFrame> string_pw(m_engine.createTextEntry(mf.get(), 0, "1234567890123456789012345678901234567890"));
+      //std::auto_ptr<IFrame> string_pw(m_engine.createTextEntry(mf.get(), 0, "123456789012345678901234"));
       // Store sizes of text entry boxes for each parameter type.
       s_width.insert(std::make_pair(std::string("b"), bool_pw->getWidth()));
       s_width.insert(std::make_pair(std::string("i"), int_pw->getWidth()));
@@ -216,7 +218,7 @@ namespace st_graph {
   StGui::StGui(Engine & engine, const hoops::IParGroup & par_group):
     m_os("StGui", "StGui", 2), m_engine(engine), m_par_widget(), m_tab_folder(), m_parent(),
     m_par_group(par_group.Clone()), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0),
-    m_widest(0), m_tab_height(0) {}
+    m_plot_frame(0), m_widest(0), m_tab_height(0) {}
 
   StGui::~StGui() {
     for (ParWidgetCont::reverse_iterator itor = m_par_widget.rbegin(); itor != m_par_widget.rend(); ++itor)
@@ -299,9 +301,19 @@ namespace st_graph {
 
       // Size the group frame so that it sits nicely below the buttons.
       TopEdge(m_group_frame).below(BottomEdge(m_show_advanced), 6);
-      BottomEdge(m_group_frame).stretchTo(BottomEdge(m_main), -6);
+//      BottomEdge(m_group_frame).stretchTo(BottomEdge(m_main), -6);
       LeftEdge(m_group_frame).rightOf(LeftEdge(m_main), 6);
       RightEdge(m_group_frame).stretchTo(RightEdge(m_main), -6);
+//      RightEdge(m_group_frame).stretchTo(RightEdge(m_widest->getFrame()));
+
+      // Size the plot so it sits nicely to the right of the group frame, and maintains constant aspect ratio.
+      TopEdge(m_plot_frame).below(BottomEdge(m_group_frame), 6);
+//      TopEdge(m_plot_frame).below(BottomEdge(m_show_advanced), 6);
+      LeftEdge(m_plot_frame).rightOf(LeftEdge(m_main), 6);
+//      LeftEdge(m_plot_frame).rightOf(RightEdge(m_group_frame), 6);
+      RightEdge(m_plot_frame).stretchTo(RightEdge(m_main), -6);
+      BottomEdge(m_plot_frame).stretchTo(BottomEdge(m_main), -6);
+//      m_plot_frame->setHeight(m_plot_frame->getWidth() / 2);
     
       // Layout tab folders.
       for (TabFolderCont::iterator tab_itor = m_tab_folder.begin(); tab_itor != m_tab_folder.end(); ++tab_itor) {
@@ -337,6 +349,7 @@ namespace st_graph {
           previous = *itor;
         }
         BottomEdge(f).stretchTo(BottomEdge(previous), 10);
+        BottomEdge(m_group_frame).stretchTo(BottomEdge(f));
       }
     }
   }
@@ -401,6 +414,7 @@ namespace st_graph {
         itor->second->getLabel()->setWidth(m_widest->getLabel()->getWidth());
       }
     }
+    m_plot_frame->setMinimumWidth(100);
 
     m_engine.run();
   }
@@ -417,6 +431,7 @@ namespace st_graph {
 
     m_main = m_engine.createMainFrame(this, 650, 600, label);
     m_group_frame = m_engine.createGroupFrame(m_main, this, "Parameters");
+    m_plot_frame = m_engine.createPlotFrame(m_main, "Plot", 638, 319);
     m_run = m_engine.createButton(m_main, this, "text", "Run");
     m_cancel = m_engine.createButton(m_main, this, "text", "Cancel");
     m_show_advanced = m_engine.createButton(m_main, this, "check", "Show Advanced Parameters");

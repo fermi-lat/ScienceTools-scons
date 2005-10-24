@@ -28,7 +28,7 @@ namespace st_graph {
 
       virtual void layout(IFrame *);
 
-      virtual void clicked(IFrame *);
+      virtual void clicked(IFrame * f);
 
       virtual void modified(IFrame *, const std::string & text);
 
@@ -102,6 +102,7 @@ namespace st_graph {
       IFrame * m_run;
       IFrame * m_cancel;
       IFrame * m_show_advanced;
+      IFrame * m_plot_frame;
       ParWidget * m_widest;
       long m_tab_height;
   };
