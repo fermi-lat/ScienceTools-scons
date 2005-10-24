@@ -54,6 +54,13 @@ int main(int, char**) {
   facilities::Util::itoa(12, intStr);
   std::cout << "My String is " << intStr << std::endl;
 
+  // ..and the even newer utoa routine
+  std::string unsignedStr;
+  unsigned int u=0xffffffff;
+  facilities::Util::utoa(u, unsignedStr);
+  std::cout << "Result from utoa for 0xffffffff is: " 
+            << unsignedStr << std::endl;
+
   // basename & stringTokenize
   std::string unixname("/a/path/myUnixFile.txt");
   std::string wname("C:\\a\\longer\\path\\myWindowsFile.txt");

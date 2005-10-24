@@ -90,6 +90,10 @@ namespace facilities {
       @return  const char* based on the contents of outStr.c_str()
     */
     static const char* itoa(int val, std::string &outStr);
+    /**
+      Given unsigned, convert to output string
+    */
+    static const char* utoa(unsigned int val, std::string &outStr);
 
     /// converts an std::string to an integer
     static int atoi(const std::string& InStr);
