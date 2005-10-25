@@ -11,9 +11,9 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
-#include "healpix/healpix_base.h" ///< NASA healpix class
+#include "src/healpix/healpix_base.h" ///< NASA healpix class
 #include <vector>
-#include "healpix/arr.h" ///< needed fixed size array class
+#include "src/healpix/arr.h" ///< needed fixed size array class
 
 namespace astro{
 /**
