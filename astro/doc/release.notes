@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r11p4  25-Oct-05 JC  Temporary fix to give access to healpix_base.h
   v1r11p2  22-0ct-05 THB Fix build:  TH has added latest wcslib
   v1r11p1  21-0ct-05 THB Get latest C++ version of healpix code
   v1r10p7  12-0ct-05 JC  move Exception class to inside of SkyProj class 
