@@ -192,10 +192,10 @@ void Simulator::makeEvents(EventContainer &events,
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
 
-   if (!m_usePointingHistory) {
-// Insert the very first entry in the scData file.
-      scData.addScData(m_absTime, spacecraft);
-   }
+//    if (!m_usePointingHistory) {
+// // Insert the very first entry in the scData file.
+//       scData.addScData(m_absTime, spacecraft);
+//    }
 
 // Enclose loop in outer try block, catching a GPS-thrown exception when
 // time exceeds pointing history database.
