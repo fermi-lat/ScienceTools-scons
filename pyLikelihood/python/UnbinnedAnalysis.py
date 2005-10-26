@@ -69,7 +69,7 @@ class UnbinnedObs(object):
         paramDict['scFile'] = Param('file', '*.fits')
         paramDict['expMap'] = Param('file', '')
         paramDict['expCube'] = Param('file', '')
-        paramDict['irfs'] = Param('string', 'TEST')
+        paramDict['irfs'] = Param('string', 'DC1A')
         root = SimpleDialog(paramDict, title="Unbinned Analysis Elements:")
         root.mainloop()
         eventFiles = _resolveFileList(paramDict['eventFile'].value())
@@ -104,7 +104,7 @@ class UnbinnedObs(object):
         return self._inputs
 
 class UnbinnedAnalysis(AnalysisBase):
-    def __init__(self, observation, srcModel=None,  optimizer='Minuit'):
+    def __init__(self, observation, srcModel=None,  optimizer='Drmngb'):
         AnalysisBase.__init__(self)
         if srcModel is None:
             srcModel, optimizer = self._srcDialog()

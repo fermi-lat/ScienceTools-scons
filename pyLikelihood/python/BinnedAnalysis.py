@@ -60,7 +60,7 @@ class BinnedObs(object):
         else:
             paramDict['expCube'] = Param('file', expCube)
         paramDict['binnedExpMap'] = Param('file', '')
-        paramDict['irfs'] = Param('string', 'TEST')
+        paramDict['irfs'] = Param('string', 'DC1A')
         root = SimpleDialog(paramDict, title="Binned Analysis Elements:")
         root.mainloop()
         output = (paramDict['srcMaps'].value(),
@@ -70,7 +70,7 @@ class BinnedObs(object):
         return output
         
 class BinnedAnalysis(AnalysisBase):
-    def __init__(self, binnedData, srcModel=None, optimizer='Minuit'):
+    def __init__(self, binnedData, srcModel=None, optimizer='Drmngb'):
         AnalysisBase.__init__(self)
         if srcModel is None:
             srcModel, optimizer = self._srcDialog()

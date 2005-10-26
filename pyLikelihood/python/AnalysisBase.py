@@ -19,7 +19,7 @@ class AnalysisBase(object):
     def _srcDialog(self):
         paramDict = map()
         paramDict['Source Model File'] = Param('file', '*.xml')
-        paramDict['optimizer'] = Param('string', 'Minuit')
+        paramDict['optimizer'] = Param('string', 'Drmngb')
         root = SimpleDialog(paramDict, title="Define Analysis Object:")
         root.mainloop()
         xmlFile = paramDict['Source Model File'].value()
@@ -126,6 +126,6 @@ class AnalysisBase(object):
     def freeze(self, i):
         try:
             for ii in i:
-                self.model[ii].setFree(1)
+                self.model[ii].setFree(0)
         except TypeError:
             self.model[i].setFree(0)
