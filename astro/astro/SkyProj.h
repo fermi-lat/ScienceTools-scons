@@ -74,6 +74,7 @@ namespace astro {
         TSC: tangential spherical cube
         CSC: COBE quadrilateralized spherical cube
         QSC: quadrilateralized spherical cube
+        HPX: HEALPix
         @endverbatim
         @param crpix corresponds to the FITS keyword CRPIXi (coordinate reference point)
         @param crval corresponds to the FITS keyword CRVALi (coordinate value at reference point)
@@ -109,13 +110,13 @@ namespace astro {
         /** @brief Constructor that uses wcslib's function wcspih to extract the required 
                    information from the fits header.  Also, this constructor does not call
                    the init member function of SkyProj.
-        @param fitsFile string containing the name of the fits file to obtain header info from
-        @param relax integer which determines what keywords are accepted
+            @param fitsFile string containing the name of the fits file to obtain header info from
+            @param relax integer which determines what keywords are accepted
                     0: Recognize only FITS keywords defined by the
                        published WCS standard.
                     1: Admit all recognized informal extensions of the
                        WCS standard.
-        @param ctrl integer used by wcspih for error reporting
+            @param ctrl integer used by wcspih for error reporting
                     0: Do not report any rejected header cards.
                     1: Produce a one-line message stating the number
                        of WCS cards rejected (nreject).

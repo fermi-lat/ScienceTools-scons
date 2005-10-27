@@ -5,7 +5,7 @@
 <body>
 <h1 style="text-align: center;">Class SkyProj</h1>
 <div style="text-align: center;">Author:&nbsp; Theodore Hierath<br>
-Last updated:&nbsp; 28 June 2004<br>
+Last updated:&nbsp; 27 October 2005<br>
 <br>
 </div>
 <br>
@@ -90,6 +90,8 @@ tangential spherical cube<br>
 COBE quadrilateralized spherical cube<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QSC:
 quadrilateralized spherical cube<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HPX:
+HEALPix<br>
 Note:&nbsp; CAR is not the same as cartesian.&nbsp; An empty string for
 this parameter corresponds to a simple cartesian transformation.&nbsp; <br>
 </div>
@@ -124,9 +126,24 @@ this parameter is not specified this is set to zero.<br>
 </div>
 <span style="font-weight: bold;">bool galactic</span><br>
 <div style="margin-left: 40px;">If true use galactic coordinates.&nbsp;
-If this parameter is not specified this is set to false.<br>
-<br>
-</div>
+If this parameter is not specified this is set to false.</div>
+<p>Two additional constructors can initialize using a string containing the path 
+to a FITS file.</p>
+<p>&nbsp;&nbsp;&nbsp; SkyProj(const std::string &amp; fitsFile, const std::string &amp; 
+extension=&quot;&quot;);<br>&nbsp;&nbsp;&nbsp; SkyProj(const std::string &amp;fitsFile, int 
+relax, int ctrl=0);</p>
+<p><b>const std::string &amp; fitsFile</b> - String containing the path and name of 
+the FITS file to read the header from.</p>
+<p><b>const std::string &amp; extension</b> - String added to the above before an 
+attempt is made to open the file.</p>
+<p><b>int relax</b> - Integer that determines how strict wcslib should be when 
+accepting keywords from the FITS header.&nbsp; Use 0 to accept only values that 
+meet the official standard, or 1 to allow informal extensions.</p>
+<p><b>int ctrl=0</b> - Integer that controls how verbose wcslib is when it 
+accepts or rejects keywords.&nbsp; Allowed values are 0, 1, 2, and 3.&nbsp; 
+Default is 0 for no messages.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <div style="text-align: center;">
 <h2>How to do a projection</h2>
 </div>
@@ -196,7 +213,10 @@ function of the SkyProj object.<br>
 running map_tools on the file gas_gal.fits that comes in the flux
 package.&nbsp; The read_map program in map_tools was used to create a
 fits file using a transformation and fv was used to display the
-file.&nbsp; <br>
+file.&nbsp;</div>
+<div style="text-align: left;">&nbsp;</div>
+<div style="text-align: left;">Note:&nbsp; This section somewhat outdated now.&nbsp; 
+	Original plots were made on June 2004.<br>
 <br>
 <span style="font-weight: bold;">Original FITS image for reference</span><br>
 <img style="width: 563px; height: 376px;" alt="gas_gal.fits"
@@ -223,19 +243,21 @@ file.&nbsp; <br>
 <br>
 <div style="text-align: center;">
 <h2>Notes</h2>
-<div style="text-align: left;">This implementation uses WCSLIB 3.4, but
-it differs in one respect
+<div style="text-align: left;">This implementation uses WCSLIB 4.2, but
+it differs in three ways
 from the version available from Mark Calabretta, the function wcsset
-and all references to it were changed to wcsset2.&nbsp; This was the
+and all references to it were changed to wcsset2.&nbsp;  This was the
 least intrusive way to resolve a naming conflict with a Windows
-function of the same name.&nbsp; So any future upgrades to new versions
-of WCSLIB should incorporate this change.&nbsp; WCSLIB is currently
+function of the same name.&nbsp; Also in fitshdr.c, 
+wcspih.c, wcsulex.c, and wcsutrn.c the functions read() and fileno() were changed to _read() and _fileno()&nbsp; 
+	and used in conjunction with a #ifdef _WIN32 statement to 
+allow compilation in Visual Studio. The file config.h.in was renamed to config.h to resolve
+a problem locating that header file.  So any future upgrades to new versions
+of WCSLIB should incorporate these changes.&nbsp; WCSLIB is currently
 included with the astro package.<br>
 <br>
-<br>
 </div>
-<br>
-</div>
+<p>&nbsp;</div>
 <br>
 &nbsp;The WCSLIB website is:&nbsp;<a
  href="http://www.atnf.csiro.au/people/mcalabre/WCS/index.html">
