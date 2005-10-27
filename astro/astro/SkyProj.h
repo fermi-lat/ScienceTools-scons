@@ -106,6 +106,27 @@ namespace astro {
         */
        SkyProj(const std::string & fitsFile, const std::string & extension="");
 
+        /** @brief Constructor that uses wcslib's function wcspih to extract the required 
+                   information from the fits header.  Also, this constructor does not call
+                   the init member function of SkyProj.
+        @param fitsFile string containing the name of the fits file to obtain header info from
+        @param relax integer which determines what keywords are accepted
+                    0: Recognize only FITS keywords defined by the
+                       published WCS standard.
+                    1: Admit all recognized informal extensions of the
+                       WCS standard.
+        @param ctrl integer used by wcspih for error reporting
+                    0: Do not report any rejected header cards.
+                    1: Produce a one-line message stating the number
+                       of WCS cards rejected (nreject).
+                    2: Report each rejected card and the reason why it
+                       was rejected.
+                    3: As above, but also report all non-WCS cards
+                       that were discarded, and the number of
+                       coordinate representations (nwcs) found.
+        */
+        SkyProj(const std::string &fitsFile, int relax, int ctrl=0);
+
         // Destructor
         ~SkyProj();
         /// copy constructor
@@ -191,6 +212,13 @@ namespace astro {
         // allocate a local array to hold the wcslib: must be at least as large
         static const size_t sizeof_wcslib = 2000;
         char  m_wcs_struct[sizeof_wcslib];
+
+        // Number of coordinate representations found by wcspih
+        int m_nwcs; 
+
+        /* Boolean used by destructor so that it can call the appropriate function to
+           deallocate memory. */
+        bool m_wcspih_used;
     };
 
 } // namespace astro

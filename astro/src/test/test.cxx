@@ -123,6 +123,7 @@ bool testSkyProj(){
 
     std::string filename(writeTestFile(ctype, crpix, crval, cdelt));
     SkyProj fileproj(filename);
+    SkyProj fproj(filename,1);
     
     // create another one to verify that it is possible to have more than one
 
@@ -148,12 +149,16 @@ bool testSkyProj(){
                 return false;
             }
 
-            // proj and fileproj should operate consistently
+            // proj, fileproj, and fproj should operate consistently
             std::pair<double, double> coord0(proj.sph2pix(ra, dec));
             std::pair<double, double> coord1(fileproj.sph2pix(ra, dec));
+            std::pair<double, double> coord2(fproj.sph2pix(ra, dec));
             
             ASSERT_EQUALS(coord0.first, coord1.first);
             ASSERT_EQUALS(coord0.second, coord1.second);
+
+            ASSERT_EQUALS(coord0.first, coord2.first);
+            ASSERT_EQUALS(coord0.second, coord2.second);
         }
     }
 

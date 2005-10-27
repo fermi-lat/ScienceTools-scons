@@ -11,6 +11,10 @@ $Header$
 #include "tip/Header.h"
 #include "astro/SkyProj.h"
 #include "wcslib/wcs.h"
+#include "wcslib/wcshdr.h"
+
+#include "longnam.h"
+#include "fitsio.h"
 
 using namespace astro;
 #include <string>
@@ -18,6 +22,7 @@ using namespace astro;
 #include <stdexcept>
 #include <cmath>
 #include <cassert>
+
 
 SkyProj::SkyProj(const std::string &projName, 
                  double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)                
@@ -89,10 +94,52 @@ SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
    init(projName, crpix, crval, cdelt, lonpole, latpole, crota2, galactic);
 }
 
+SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
+{
+   int nreject;
+
+   fitsfile *fptr; // cfitsio fits file pointer
+   int mode = 0; // file read mode
+   int fstatus = 0, // cfitsio error status 
+       numkeys, // number of keys (cards) in header
+       nummore; // number of keys that can be added to header
+   char *header; // string containing header
+
+   fits_open_file(&fptr,fitsFile.c_str(),mode,&fstatus);
+   fits_report_error(stderr, fstatus);
+
+   // Todo:  When the external library cfitsio is updated to 2.510 or later
+   // replace ffghsp and fits_header2str with fits_hdr2str.
+
+   // Get number of keywords in header
+   ffghsp(fptr, &numkeys, &nummore, &fstatus);
+   fits_report_error(stderr, fstatus);
+
+   // Read header to string
+   fits_header2str(fptr, &header, &fstatus);
+   fits_report_error(stderr, fstatus);
+
+   fits_close_file(fptr,&fstatus);
+
+   // wcspih reads the header string from the fits file and allocates 
+   // memory for a wcsprm struct.
+   wcspih(header,numkeys,relax,ctrl,&nreject,&m_nwcs,&m_wcs);
+   m_wcspih_used = true;
+
+    int status = wcsset2(m_wcs);
+    if (status !=0) {
+        throw SkyProj::Exception(status );
+    }
+
+//      wcsprt(&m_wcs[0]); 
+}
 
 SkyProj::~SkyProj()
 {
-    wcsfree(m_wcs);
+   if(m_wcspih_used)
+      wcsvfree(&m_nwcs,&m_wcs);
+   else
+      wcsfree(m_wcs);
 }
 
 
@@ -251,6 +298,8 @@ void SkyProj::init(const std::string &projName,
     assert( sizeof_wcslib>=sizeof(wcsprm));
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);
     m_wcs->flag = -1;
+
+    m_wcspih_used = false;
 
     int naxis = 2;
     wcsini(1, naxis, m_wcs);
