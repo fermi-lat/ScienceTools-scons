@@ -305,8 +305,14 @@ void SkyProj::init(const std::string &projName,
     wcsini(1, naxis, m_wcs);
 
     std::string 
-        lon_type = (galactic? "GLON-" : "RA---") + projName,
-        lat_type =  (galactic? "GLAT-" : "DEC--") + projName;
+        lon_type = (galactic? "GLON" : "RA"),
+        lat_type =  (galactic? "GLAT" : "DEC");
+
+    if(projName.compare("") != 0) {
+       lon_type += (galactic? "-" : "---") + projName;
+       lat_type += (galactic? "-" : "--") + projName;
+    }
+
     strcpy(m_wcs->ctype[0], lon_type.c_str() );
     strcpy(m_wcs->ctype[1], lat_type.c_str() );
 
