@@ -48,6 +48,8 @@ namespace st_graph {
       /// \brief Hide this frame and all it contains.
       virtual void unDisplay();
 
+      virtual void reset();
+
       /** \brief Add the given plot to the frame.
           \param plot The plot to add.
       */
