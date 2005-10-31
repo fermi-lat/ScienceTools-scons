@@ -77,18 +77,27 @@ namespace st_graph {
 
       virtual void closeWindow(IFrame * f);
 
-      virtual void layout(IFrame *);
+      virtual void layout(IFrame * f);
 
       virtual void run();
+
+      virtual void runApp() = 0;
 
       virtual void createMainFrame();
 
       virtual ParWidget * createParWidget(hoops::IPar * par, IFrame * parent);
 
       virtual void synchronizeWidgets(const std::string & par_name, const std::string & value);
+      
+      virtual void enablePlotFrame(const std::string & title);
 
-    private:
+      virtual IFrame * getPlotFrame();
+
+      virtual const IFrame * getPlotFrame() const;
+
+    protected:
       bool parseRange(const hoops::IPar * par, std::list<std::string> & range);
+
       void getParent(const hoops::IPar * par, std::list<IFrame *> & parent);
 
       st_stream::StreamFormatter m_os;
@@ -96,6 +105,7 @@ namespace st_graph {
       ParWidgetCont m_par_widget;
       TabFolderCont m_tab_folder;
       std::map<IFrame *, IFrame *> m_parent;
+      std::string m_plot_title;
       hoops::IParGroup * m_par_group;
       IFrame * m_main;
       IFrame * m_group_frame;
@@ -105,7 +115,9 @@ namespace st_graph {
       IFrame * m_plot_frame;
       ParWidget * m_widest;
       long m_tab_height;
+      bool m_plot_enabled;
   };
+
 
 //  typedef StEventReceiver StGui;
 }
