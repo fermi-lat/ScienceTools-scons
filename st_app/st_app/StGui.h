@@ -103,7 +103,7 @@ namespace st_app {
       long m_tab_height;
   };
 
-  typedef StEventReceiver StAppGui;
+//  typedef StEventReceiver StAppGui;
 }
 
 #endif
