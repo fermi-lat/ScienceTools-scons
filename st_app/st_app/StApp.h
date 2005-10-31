@@ -7,6 +7,11 @@
 
 #include <string>
 
+namespace st_graph {
+  class IFrame;
+  class StGui;
+}
+
 namespace st_app {
 
   class AppParGroup;
@@ -68,12 +73,17 @@ namespace st_app {
 
       void setVersion(const std::string & version);
 
+      st_graph::IFrame * getPlotFrame(const std::string & title);
+
     private:
       static int s_argc;
       static char ** s_argv;
       std::string m_name;
       std::string m_version;
       AppParGroup * m_par_group;
+      st_graph::StGui * m_gui;
+      st_graph::IFrame * m_main_frame;
+      st_graph::IFrame * m_plot_frame;
   };
 
 }
