@@ -9,7 +9,6 @@
 #include <utility>
 
 #include "hoops/hoops.h"
-#include "StGui.h"
 //#include "st_app/StApp.h"
 //#include "st_app/StAppFactory.h"
 //#include "st_app/StEventReceiver.h"
@@ -20,6 +19,7 @@
 #include "st_graph/ITabFolder.h"
 #include "st_graph/Placer.h"
 #include "st_graph/RootFrame.h"
+#include "st_graph/StGui.h"
 
 #include "st_stream/StreamFormatter.h"
 
@@ -216,9 +216,20 @@ namespace st_graph {
 
   //StEventReceiver::StEventReceiver(st_graph::Engine & engine, hoops::IParGroup & par_group, StEventReceiver * app):
   StGui::StGui(Engine & engine, const hoops::IParGroup & par_group):
-    m_os("StGui", "StGui", 2), m_engine(engine), m_par_widget(), m_tab_folder(), m_parent(),
+    m_os("StGui", "StGui", 2), m_engine(engine), m_par_widget(), m_tab_folder(), m_parent(), m_plot_title(),
     m_par_group(par_group.Clone()), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0),
-    m_plot_frame(0), m_widest(0), m_tab_height(0) {}
+    m_plot_frame(0), m_widest(0), m_tab_height(0), m_plot_enabled(false) {
+    try {
+      m_plot_enabled = (*m_par_group)["plot"];
+    } catch (const std::exception &) {
+      // Ignore this exception.
+    }
+    try {
+      m_plot_title = (*m_par_group)["title"].Value();
+    } catch (const std::exception &) {
+      // Ignore this exception.
+    }
+  }
 
   StGui::~StGui() {
     for (ParWidgetCont::reverse_iterator itor = m_par_widget.rbegin(); itor != m_par_widget.rend(); ++itor)
@@ -248,6 +259,10 @@ namespace st_graph {
         return;
       }
 
+      if (0 != m_plot_frame) {
+        m_plot_frame->reset();
+      }
+      runApp();
 #if 0
       try {
         int chatter = pars["chatter"];
@@ -307,13 +322,15 @@ namespace st_graph {
 //      RightEdge(m_group_frame).stretchTo(RightEdge(m_widest->getFrame()));
 
       // Size the plot so it sits nicely to the right of the group frame, and maintains constant aspect ratio.
-      TopEdge(m_plot_frame).below(BottomEdge(m_group_frame), 6);
-//      TopEdge(m_plot_frame).below(BottomEdge(m_show_advanced), 6);
-      LeftEdge(m_plot_frame).rightOf(LeftEdge(m_main), 6);
-//      LeftEdge(m_plot_frame).rightOf(RightEdge(m_group_frame), 6);
-      RightEdge(m_plot_frame).stretchTo(RightEdge(m_main), -6);
-      BottomEdge(m_plot_frame).stretchTo(BottomEdge(m_main), -6);
-//      m_plot_frame->setHeight(m_plot_frame->getWidth() / 2);
+      if (0 != m_plot_frame) {
+        TopEdge(m_plot_frame).below(BottomEdge(m_group_frame), 6);
+//        TopEdge(m_plot_frame).below(BottomEdge(m_show_advanced), 6);
+        LeftEdge(m_plot_frame).rightOf(LeftEdge(m_main), 6);
+//        LeftEdge(m_plot_frame).rightOf(RightEdge(m_group_frame), 6);
+        RightEdge(m_plot_frame).stretchTo(RightEdge(m_main), -6);
+        BottomEdge(m_plot_frame).stretchTo(BottomEdge(m_main), -6);
+//        m_plot_frame->setHeight(m_plot_frame->getWidth() / 2);
+      }
     
       // Layout tab folders.
       for (TabFolderCont::iterator tab_itor = m_tab_folder.begin(); tab_itor != m_tab_folder.end(); ++tab_itor) {
@@ -414,7 +431,7 @@ namespace st_graph {
         itor->second->getLabel()->setWidth(m_widest->getLabel()->getWidth());
       }
     }
-    m_plot_frame->setMinimumWidth(100);
+    if (0 != m_plot_frame) m_plot_frame->setMinimumWidth(100);
 
     m_engine.run();
   }
@@ -431,10 +448,10 @@ namespace st_graph {
 
     m_main = m_engine.createMainFrame(this, 650, 600, label);
     m_group_frame = m_engine.createGroupFrame(m_main, this, "Parameters");
-    m_plot_frame = m_engine.createPlotFrame(m_main, "Plot", 638, 319);
     m_run = m_engine.createButton(m_main, this, "text", "Run");
     m_cancel = m_engine.createButton(m_main, this, "text", "Cancel");
     m_show_advanced = m_engine.createButton(m_main, this, "check", "Show Advanced Parameters");
+    if (m_plot_enabled) m_plot_frame = m_engine.createPlotFrame(m_main, m_plot_title, 638, 319);
 
     // Set up some tool tips.
     m_run->setToolTipText("Run the application from inside the GUI");
@@ -456,6 +473,15 @@ namespace st_graph {
       itor->second->setValue(value);
     }
   }
+
+  void StGui::enablePlotFrame(const std::string & title) {
+    m_plot_enabled = true;
+    m_plot_title = title;
+  }
+
+  IFrame * StGui::getPlotFrame() { return m_plot_frame; }
+
+  const IFrame * StGui::getPlotFrame() const { return m_plot_frame; }
 
   bool StGui::parseRange(const hoops::IPar * par, std::list<std::string> & range) {
     range.clear();
