@@ -8,7 +8,10 @@
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
+#include "st_app/StAppGui.h"
 #include "st_app/StGui.h"
+
+#include "st_graph/Engine.h"
 
 #include "st_stream/StreamFormatter.h"
 
@@ -31,16 +34,16 @@ namespace st_app {
   char ** StApp::getArgv() { return s_argv; }
 
   // Construct application object:
-  StApp::StApp(): m_name("Unknown application"), m_version(), m_par_group(0) {
+  StApp::StApp(): m_name("Unknown application"), m_version(), m_par_group(0), m_gui(0), m_main_frame(0), m_plot_frame(0) {
     setVersion("");
   }
 
   // Destruct application object:
-  StApp::~StApp() throw() { delete m_par_group; }
+  StApp::~StApp() throw() { delete m_main_frame; delete m_gui; delete m_par_group; }
 
   void StApp::runGui() {
-    StEventReceiver gui(st_graph::Engine::instance(), getParGroup(), this);
-    gui.run();
+    if (0 == m_gui) m_gui = new StAppGui(st_graph::Engine::instance(), *this);
+    m_gui->run();
   }
 
   // Return an object which provides the most typical kinds of parameter access.
@@ -104,6 +107,22 @@ namespace st_app {
 
     // If no non-whitespace was found, call this version HEAD.
     if (vers_itor == m_version.end()) m_version = default_version;
+  }
+
+  st_graph::IFrame * StApp::getPlotFrame(const std::string & title) {
+    st_graph::IFrame * plot_frame(0);
+
+    if (0 == m_gui) {
+      st_graph::Engine & engine(st_graph::Engine::instance());
+      if (0 == m_main_frame) m_main_frame = engine.createMainFrame(0, 638, 319, "StApp plot window");
+      if (0 == m_plot_frame) m_plot_frame = engine.createPlotFrame(m_main_frame, title, 638, 319);
+      plot_frame = m_plot_frame;
+    } else {
+      // In a GUI context use the Gui's plot window, creating it as needed.
+      plot_frame = m_gui->getPlotFrame();
+    }
+
+    return plot_frame;
   }
 
 }
