@@ -11,6 +11,7 @@
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
+#include "st_app/StAppGui.h"
 #include "st_app/StGui.h"
 
 #include "st_graph/Engine.h"
@@ -24,6 +25,53 @@
 using namespace st_graph;
 
 namespace st_app {
+
+  StAppGui::StAppGui(st_graph::Engine & engine, StApp & app): StGui(engine, app.getParGroup()), m_app(&app) {}
+
+  void StAppGui::runApp() {
+    AppParGroup & pars(m_app->getParGroup());
+
+    // Disable the application's prompts.
+    pars.setPromptMode(false);
+
+    try {
+      // Get parameter values which are associated with the state of a tab folder.
+      for (TabFolderCont::iterator itor = m_tab_folder.begin(); itor != m_tab_folder.end(); ++itor) {
+        pars[itor->first] = itor->second->getSelected();
+      }
+
+      // Get parameter values which are associated with parameter widgets.
+      for (ParWidgetCont::iterator itor = m_par_widget.begin(); itor != m_par_widget.end(); ++itor) {
+        st_graph::ParWidget * par_p = itor->second;
+        pars[par_p->getName()] = par_p->getValue();
+      }
+
+      pars.Save();
+    } catch (const std::exception & x) {
+      m_os.err() << "Problem with parameter: " << x.what() << std::endl;
+      return;
+    }
+
+    try {
+      int chatter = pars["chatter"];
+      IStAppFactory::instance().setMaximumChatter(chatter);
+    } catch (const std::exception &) {
+      // Ignore
+    }
+
+    try {
+      bool debug = pars["debug"];
+      IStAppFactory::instance().setDebugMode(debug);
+    } catch (const std::exception &) {
+      // Ignore
+    }
+
+    try {
+      m_app->run();
+    } catch (const std::exception & x) {
+      m_os.err() << "Running the application failed: " << std::endl << x.what() << std::endl;
+    }
+  }
 
   ParWidget::ParWidget(st_graph::Engine & engine, st_graph::IFrame * parent, hoops::IPar * par, StEventReceiver * receiver):
     m_engine(engine), m_value_string(), m_receiver(receiver), m_frame(0), m_label(0), m_value(0), m_open(0),
