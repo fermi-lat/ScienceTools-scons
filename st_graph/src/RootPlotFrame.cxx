@@ -24,6 +24,8 @@
 #include "RootPlot.h"
 #include "RootPlotFrame.h"
 
+#include "st_graph/IEventReceiver.h"
+
 namespace st_graph {
 
   class StMarker : public TMarker {
@@ -60,7 +62,8 @@ namespace st_graph {
     public:
       typedef std::list<StMarker *> MarkerCont_t;
 
-      StEmbeddedCanvas(const char * name = "0", const TGWindow * p = 0, UInt_t w = 10, UInt_t h = 10);
+      StEmbeddedCanvas(RootPlotFrame * parent, const char * name = "0", const TGWindow * p = 0, UInt_t w = 10,
+        UInt_t h = 10);
 
       virtual ~StEmbeddedCanvas();
 
@@ -70,8 +73,11 @@ namespace st_graph {
 
     private:
       MarkerCont_t m_marker_cont;
+      RootPlotFrame * m_parent;
       double m_press_x;
       double m_press_y;
+      UInt_t m_width;
+      UInt_t m_height;
   };
 
   StMarker::StMarker(Marker & marker): TMarker(marker.m_x, marker.m_y, 23), m_marker(&marker), m_label(0) {
@@ -123,8 +129,8 @@ namespace st_graph {
     }
   }
 
-  StEmbeddedCanvas::StEmbeddedCanvas(const char * name, const TGWindow * p, UInt_t w, UInt_t h):
-    TRootEmbeddedCanvas(name, p, w, h), m_marker_cont(), m_press_x(0.), m_press_y(0.) {}
+  StEmbeddedCanvas::StEmbeddedCanvas(RootPlotFrame * parent, const char * name, const TGWindow * p, UInt_t w, UInt_t h):
+    TRootEmbeddedCanvas(name, p, w, h), m_marker_cont(), m_parent(parent), m_press_x(0.), m_press_y(0.), m_width(w), m_height(h) {}
 
   StEmbeddedCanvas::~StEmbeddedCanvas() {
     for (MarkerCont_t::reverse_iterator itor = m_marker_cont.rbegin(); itor != m_marker_cont.rend(); ++itor) {
@@ -139,11 +145,12 @@ namespace st_graph {
       Int_t button = event->fCode;
       if (kButton3 == button) {
         // Button 3 events inside the plot window are handled by the event handler.
-        if (event->fX > Int_t(.1 * GetWidth()) && event->fX < Int_t(.9 * GetWidth()) &&
-          event->fY > Int_t(.1 * GetHeight()) && event->fY < Int_t(.9 * GetHeight())) {
+        if (event->fX > Int_t(.1 * m_width) && event->fX < Int_t(.9 * m_width) &&
+          event->fY > Int_t(.1 * m_height) && event->fY < Int_t(.9 * m_height)) {
           root_handles_event = false;
           if (kButtonRelease == event->fType) {
-            // TODO: Handle "clicked" event.
+            IEventReceiver * receiver = m_parent->getReceiver();
+            if (0 != receiver) receiver->rightClicked(m_parent, event->fX, event->fY);
           }
         }
       } else {
@@ -156,9 +163,9 @@ namespace st_graph {
         if (0 != obj_link && 0 != (obj = obj_link->GetObject())) {
           std::string class_name = obj->ClassName();
           if (class_name != "TLatex" && class_name != "TMarker" && kButtonRelease != event->fType) {
-            if (event->fX > Int_t(.1 * GetWidth())) {
+            if (event->fX > Int_t(.1 * m_width)) {
               // These events are used to zoom: remap them to look like they come from the X axis.
-              event->fY = Int_t(.9 * GetHeight());
+              event->fY = Int_t(.9 * m_height);
             }
           }
         }
@@ -183,6 +190,9 @@ namespace st_graph {
     bool delete_parent): RootFrame(parent, 0, 0, delete_parent), m_plots(), m_tgraphs(), m_title(title), m_canvas(0),
     m_multi_graph(0), m_th2d(0), m_dimensionality(0) {
     
+    // Send event messages back to parent.
+    m_receiver = m_parent->getReceiver();
+
     // Hook together Root primitives.
     TGCompositeFrame * root_frame = dynamic_cast<TGCompositeFrame *>(m_parent->getTGFrame());
     if (0 == root_frame)
@@ -196,7 +206,8 @@ namespace st_graph {
 
     // Create a special Root TGCanvas which is suitable for embedding plots.
     //TRootEmbeddedCanvas * plot_canvas = new TRootEmbeddedCanvas(createRootName("TRootEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight(), kFixedSize);
-    StEmbeddedCanvas * plot_canvas = new StEmbeddedCanvas(createRootName("StEmbeddedCanvas", this).c_str(), vp, vp->GetWidth(), vp->GetHeight());
+    StEmbeddedCanvas * plot_canvas = new StEmbeddedCanvas(this, createRootName("StEmbeddedCanvas", this).c_str(), vp,
+      vp->GetWidth(), vp->GetHeight());
 
     top_canvas->SetContainer(plot_canvas);
 
@@ -214,16 +225,7 @@ namespace st_graph {
     // process. Thus it is important to ensure the child is detached at the right times to prevent deleting
     // the parent and/or the child twice.
 
-    unDisplay();
-    // Delete children.
-    while (!m_plots.empty()) {
-      // Find last child.
-      std::list<RootPlot *>::iterator itor = --m_plots.end();
-      // Break links between this and the child.
-      removePlot(*itor);
-      // Delete the child.
-      delete *itor;
-    }
+    reset();
 
     // Delete Root widgets.
     delete m_multi_graph;
@@ -296,8 +298,26 @@ namespace st_graph {
       delete *itor;
     }
     m_tgraphs.clear();
-  
     RootFrame::unDisplay();
+  }
+
+  void RootPlotFrame::reset() {
+    unDisplay();
+
+    // Delete children.
+    while (!m_plots.empty()) {
+      // Find last child.
+      std::list<RootPlot *>::iterator itor = --m_plots.end();
+
+      // Get pointer to the plot.
+      RootPlot * plot = *itor;
+
+      // Break links between this and the child plot.
+      removePlot(*itor);
+
+      // Delete the child plot.
+      delete plot;
+    }
   }
 
   void RootPlotFrame::addPlot(IPlot * plot) {
