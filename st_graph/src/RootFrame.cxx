@@ -345,6 +345,8 @@ namespace st_graph {
 
   void RootFrame::setTGFrame(TGFrame * frame) { m_frame = frame; }
 
+  IEventReceiver * RootFrame::getReceiver() { return m_receiver; }
+
   void RootFrame::setLayoutBroken(TGFrame * frame) {
     frame->SetLayoutBroken(kFALSE);
     TGCompositeFrame * cf = dynamic_cast<TGCompositeFrame *>(frame);

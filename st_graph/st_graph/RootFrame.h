@@ -59,6 +59,8 @@ namespace st_graph {
       /// \brief Hide this frame and all it contains.
       virtual void unDisplay();
 
+      virtual void reset() {}
+
       /** \brief Get flag indicating whether frame is hidden.
       */
       virtual bool isHidden() const;
@@ -188,6 +190,9 @@ namespace st_graph {
 
       /// \brief Set underlying Root frame. Not part of the API.
       virtual void setTGFrame(TGFrame * frame);
+
+      /// \brief Return the event receiver associated with this frame.
+      virtual IEventReceiver * getReceiver();
 
     protected:
       void setLayoutBroken(TGFrame * frame);
