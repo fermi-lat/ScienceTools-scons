@@ -138,53 +138,7 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     header["NAXIS3"].get(m_naxis3);
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
-    std::string ctype;
-    header["CTYPE1"].get(ctype);
-    bool galactic;
-    if( ctype.substr(0,2)=="RA") {
-        galactic=false;
-    }else if( ctype.substr(0,4)=="GLON") {
-        galactic=true;
-    }else {
-        throw std::invalid_argument(
-            std::string("SkyImage::SkyImage -- unexpected CYTPE1 value: ")+ctype);
-    }
-
-    // note that the ctype may be blank: wcslib treats this like CAR
-    std::string  trans(ctype.size()==8?ctype.substr(5,3): "");
-
-    /// arrays describing transformation; pointers passed to wcslib
-    double crpix[2], crval[2], cdelt[2];
-
-    try {
-        header["CRPIX1"].get( crpix[0]);
-        header["CRPIX2"].get( crpix[1]);
-    }catch(const tip::TipException&) {
-        throw std::runtime_error("CRPIX keyword not found");
-    }
-    try{
-        header["CRVAL1"].get( crval[0]);
-        header["CRVAL2"].get( crval[1]);
-    } catch(const tip::TipException&) {
-        throw std::runtime_error("CRVAL keyword not found");
-    }
-    try {
-        header["CDELT1"].get( cdelt[0]);
-        header["CDELT2"].get( cdelt[1]);
-    }
-    catch(const tip::TipException&) {
-        try {
-            header["CD1_1"].get( cdelt[0]);
-            header["CD2_2"].get( cdelt[1]);
-        } catch(const tip::TipException&) {
-            throw std::runtime_error("Neither CDELT nor CD keywords found");
-        }
-    }
-
-    double crota2=0;
-    try { header["CROTA2"].get(crota2);}catch(const std::exception&){}
-    m_wcs = new astro::SkyProj(trans, crpix, crval, cdelt, crota2, galactic);
-
+    m_wcs = new astro::SkyProj(fits_file,1);
     // finally, read in the image
     m_image->get(m_imageData);
 
