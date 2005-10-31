@@ -10,8 +10,11 @@
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
+#include "st_app/StAppGui.h"
 #include "st_app/StAppFactory.h"
 #include "st_app/StGui.h"
+
+#include "st_graph/Engine.h"
 
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
@@ -170,12 +173,33 @@ class TestApp1 : public st_app::StApp {
       m_f.out() << "The infile the user entered was:" << std::endl;
       m_f.out() << in_file << std::endl;
 
+      bool plot = pars["plot"];
+      if (plot) {
+        try {
+          getPlotFrame("test plot");
+          st_graph::Engine::instance().run();
+        } catch (const std::exception &) {
+          m_f.err() << "A plot should have been displayed." << std::endl;
+          failed = true;
+        }
+      } 
       if (failed) throw std::runtime_error("Test failed");
     }
 
     virtual void runGui() {
-      st_app::StAppGui gui(st_graph::Engine::instance(), getParGroup(), this);
-      gui.run();
+      {
+        st_app::StAppGui gui(st_graph::Engine::instance(), *this);
+        gui.run();
+      }
+      {
+        st_app::StAppGui gui(st_graph::Engine::instance(), *this);
+        gui.enablePlotFrame("test plot");
+        gui.run();
+      }
+      {
+        st_app::StEventReceiver gui(st_graph::Engine::instance(), getParGroup(), this);
+        gui.run();
+      }
     }
 
   private:
