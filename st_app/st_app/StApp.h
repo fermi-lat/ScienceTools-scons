@@ -75,7 +75,7 @@ namespace st_app {
 
       st_graph::IFrame * getPlotFrame(const std::string & title);
 
-    private:
+    protected:
       static int s_argc;
       static char ** s_argv;
       std::string m_name;
