@@ -14,7 +14,6 @@
 #include <unistd.h>
 #endif
 
-#include "StGui.h"
 #include "hoops/hoops_prompt_group.h"
 #include "st_graph/Axis.h"
 #include "st_graph/Engine.h"
@@ -25,6 +24,7 @@
 #include "st_graph/Placer.h"
 #include "st_graph/Sequence.h"
 
+#include "st_graph/StGui.h"
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 
@@ -327,9 +327,20 @@ void StGraphTestApp::testPlots() {
 void StGraphTestApp::testGuis() {
   using namespace st_graph;
 
+  class MyStGui : public StGui {
+    public:
+      MyStGui(char ** argv): StGui(Engine::instance(), hoops::ParPromptGroup(1, argv)) {}
+
+      virtual void runApp() { std::cerr << "Run button was clicked." << std::endl; }
+
+      virtual void rightClicked(IFrame * frame, double x, double y) {
+        if (frame == m_plot_frame) std::cerr << "Plot frame was clicked at coordinates (" << x << ", " << y << ")" << std::endl;
+      }
+  };
+
   try {
     char * argv[] = { "test_st_graph", 0 };
-    StGui gui(Engine::instance(), hoops::ParPromptGroup(1, argv));
+    MyStGui gui(argv);
     gui.run();
   } catch (const std::exception & x) {
     std::cerr << "Exception while creating engine: " << x.what() << std::endl;
