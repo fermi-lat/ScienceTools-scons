@@ -26,6 +26,8 @@ namespace st_graph {
       /// \brief Remove this frame and all it contains from the display.
       virtual void unDisplay() = 0;
 
+      virtual void reset() = 0;
+
       /** \brief Get flag indicating whether frame is hidden.
       */
       virtual bool isHidden() const = 0;
