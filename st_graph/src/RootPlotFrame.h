@@ -21,6 +21,7 @@ namespace st_graph {
   class IFrame;
   class IPlot;
   class ISequence;
+  class Marker;
   class RootPlot;
   class StEmbeddedCanvas;
 
@@ -59,6 +60,8 @@ namespace st_graph {
           \param plot The plot to remove. If not already in the frame, no harm done.
       */
       virtual void removePlot(IPlot * plot);
+
+      virtual void addMarker(Marker & marker);
 
       /** \brief Get the title of the frame.
       */

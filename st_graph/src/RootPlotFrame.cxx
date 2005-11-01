@@ -150,7 +150,10 @@ namespace st_graph {
           root_handles_event = false;
           if (kButtonRelease == event->fType) {
             IEventReceiver * receiver = m_parent->getReceiver();
-            if (0 != receiver) receiver->rightClicked(m_parent, event->fX, event->fY);
+            double x;
+            double y;
+            fCanvas->AbsPixeltoXY(event->fX, event->fY, x, y);
+            if (0 != receiver) receiver->rightClicked(m_parent, x, y);
           }
         }
       } else {
@@ -271,8 +274,6 @@ namespace st_graph {
         // Loop over plots, displaying each one's labels.
         std::vector<Marker> labels;
         (*itor)->getMarkers(labels);
-        double x1, x2, y1, y2;
-        gPad->GetRange(x1, y1, x2, y2);
         for (std::vector<Marker>::iterator itor = labels.begin(); itor != labels.end(); ++itor) {
           m_canvas->addMarker(*itor);
         }
@@ -344,6 +345,23 @@ namespace st_graph {
       if (0 != root_plot) root_plot->setParent(0);
       m_plots.erase(itor);
     }
+  }
+
+  void RootPlotFrame::addMarker(Marker & marker) {
+    // Save current pad.
+    TVirtualPad * save_pad = gPad;
+
+    // Select embedded canvas for drawing.
+    gPad = m_canvas->GetCanvas();
+
+    m_canvas->addMarker(marker);
+
+    // Force complete update of the display.
+    gPad->Modified();
+    gPad->Update();
+
+    // Restore current pad.
+    gPad = save_pad;
   }
 
   const std::string & RootPlotFrame::getTitle() const {
