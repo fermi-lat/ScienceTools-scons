@@ -91,6 +91,7 @@ namespace st_graph {
 
   void RootPlot::addMarker(double x, double y, const std::string & text) {
     m_label.push_back(Marker(x, y, text));
+    m_parent->addMarker(m_label.back());
   }
 
   void RootPlot::getMarkers(std::vector<Marker> & labels) const {
