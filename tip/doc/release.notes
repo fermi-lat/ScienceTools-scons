@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+03-nov-2005   v2r7 JP Generalize Root-specific table implementation to handle floats
+                      as well as doubles.
 23-sep-2005   v2r6 JP Add insert(), erase() and find() methods to manipulate keywords in
                       Header class.
 30-aug-2005 v2r5p2 JP Add more tests to try to diagnose problem with unit
