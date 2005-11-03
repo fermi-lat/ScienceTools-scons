@@ -226,7 +226,8 @@ namespace tip {
       TObjArray * leaves = branch->GetListOfLeaves();
       TLeaf* leaf = (TLeaf*)leaves->At(0);
       std::string type(leaf->GetTypeName());
-      if( type != "Double_t") throw TipException(formatWhat(std::string("branch ")+field_name+" is "+type+" not double"));
+      if( type != "Double_t" && type != "Float_t" )
+        throw TipException(formatWhat(std::string("branch ")+field_name+" is "+type+" not Double_t or Float_t"));
 
       // TODO: allow for Float_t, Int_t, and provide for conversion
       m_tree->SetBranchStatus(cname, 1);
@@ -237,9 +238,15 @@ namespace tip {
 
       // Create buffer for leaf:
       // Use insert instead of push_back so that we can easily get the distance from the beginning of the array:
-      std::vector<IColumn *>::iterator litor = m_leaves.insert(m_leaves.end(), new RootColumn(m_tree, field_name, type));
-      itor = m_branch_lookup.insert(itor, std::make_pair(field_name, litor - m_leaves.begin()));
+      std::vector<IColumn *>::iterator litor = m_leaves.end();
 
+      if( type == "Double_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Double_t>(m_tree, field_name, type));
+      else if( type == "Float_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Float_t>(m_tree, field_name, type));
+
+      // Add an associative lookup for this new branch.
+      itor = m_branch_lookup.insert(itor, std::make_pair(field_name, litor - m_leaves.begin()));
     }
 
     return itor->second;
