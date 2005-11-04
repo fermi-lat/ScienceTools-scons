@@ -4,6 +4,7 @@
 */
 #include <algorithm>
 #include <cctype>
+#include <limits>
 #include <list>
 #include <map>
 #include <sstream>
@@ -70,6 +71,8 @@ namespace st_graph {
       virtual Bool_t HandleContainerButton(Event_t * event);
 
       void addMarker(Marker & marker);
+
+      void reset();
 
     private:
       MarkerCont_t m_marker_cont;
@@ -142,11 +145,17 @@ namespace st_graph {
     Bool_t status = kTRUE;
     bool root_handles_event = true;
     if (0 != event) {
+      // Determine if this event is inside the frame.
+      double x_min, x_max, y_min, y_max;
+      fCanvas->GetRangeAxis(x_min, y_min, x_max, y_max);
+      double event_x, event_y;
+      fCanvas->AbsPixeltoXY(event->fX, event->fY, event_x, event_y);
+      bool in_frame = x_min <= event_x && event_x <= x_max && y_min <= event_y && event_y <= y_max;
+
       Int_t button = event->fCode;
       if (kButton3 == button) {
         // Button 3 events inside the plot window are handled by the event handler.
-        if (event->fX > Int_t(.1 * m_width) && event->fX < Int_t(.9 * m_width) &&
-          event->fY > Int_t(.1 * m_height) && event->fY < Int_t(.9 * m_height)) {
+        if (in_frame) {
           root_handles_event = false;
           if (kButtonRelease == event->fType) {
             IEventReceiver * receiver = m_parent->getReceiver();
@@ -166,9 +175,9 @@ namespace st_graph {
         if (0 != obj_link && 0 != (obj = obj_link->GetObject())) {
           std::string class_name = obj->ClassName();
           if (class_name != "TLatex" && class_name != "TMarker" && kButtonRelease != event->fType) {
-            if (event->fX > Int_t(.1 * m_width)) {
+            if (in_frame) {
               // These events are used to zoom: remap them to look like they come from the X axis.
-              event->fY = Int_t(.9 * m_height);
+              event->fY = fCanvas->YtoAbsPixel(y_min) + 1;
             }
           }
         }
@@ -187,6 +196,13 @@ namespace st_graph {
     st_marker->Draw();
 
     m_marker_cont.push_back(st_marker);
+  }
+
+  void StEmbeddedCanvas::reset() {
+    for (MarkerCont_t::reverse_iterator itor = m_marker_cont.rbegin(); itor != m_marker_cont.rend(); ++itor) {
+      delete *itor;
+    }
+    m_marker_cont.clear();
   }
 
   RootPlotFrame::RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height,
@@ -293,7 +309,8 @@ namespace st_graph {
   }
 
   void RootPlotFrame::unDisplay() {
-    // Undisplay all Root children.
+    // Delete all Root children. This must be done; otherwise there is some kind of seg fault because Root
+    // still tries to redraw TGraphs which are associated with no display.
     for (std::list<TGraph *>::reverse_iterator itor = m_tgraphs.rbegin(); itor != m_tgraphs.rend(); ++itor) {
       if (0 != m_multi_graph) m_multi_graph->RecursiveRemove(*itor);
       delete *itor;
@@ -303,7 +320,8 @@ namespace st_graph {
   }
 
   void RootPlotFrame::reset() {
-    unDisplay();
+    // Reset canvas.
+    if (0 != m_canvas) m_canvas->reset();
 
     // Delete children.
     while (!m_plots.empty()) {
@@ -319,6 +337,8 @@ namespace st_graph {
       // Delete the child plot.
       delete plot;
     }
+
+    unDisplay();
   }
 
   void RootPlotFrame::addPlot(IPlot * plot) {
@@ -353,7 +373,6 @@ namespace st_graph {
 
     // Select embedded canvas for drawing.
     gPad = m_canvas->GetCanvas();
-
     m_canvas->addMarker(marker);
 
     // Force complete update of the display.
@@ -590,7 +609,13 @@ namespace st_graph {
 
   TMultiGraph * RootPlotFrame::getMultiGraph() {
     if (0 == m_multi_graph) {
-      m_multi_graph = new TMultiGraph(createRootName("TMultiGraph", this).c_str(), m_title.c_str());
+      class StMultiGraph : public TMultiGraph {
+        public:
+          StMultiGraph(const char * name, const char * title): TMultiGraph(name, title) {}
+          virtual Int_t DistancetoPrimitive(Int_t, Int_t) { return std::numeric_limits<Int_t>::max(); }
+      };
+
+      m_multi_graph = new StMultiGraph(createRootName("TMultiGraph", this).c_str(), m_title.c_str());
     }
     return m_multi_graph;
   }
