@@ -259,9 +259,6 @@ namespace st_graph {
         return;
       }
 
-      if (0 != m_plot_frame) {
-        m_plot_frame->reset();
-      }
       runApp();
 #if 0
       try {
