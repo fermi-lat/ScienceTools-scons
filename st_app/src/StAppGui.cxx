@@ -67,6 +67,9 @@ namespace st_app {
     }
 
     try {
+      if (0 != m_plot_frame) {
+        m_plot_frame->reset();
+      }
       m_app->run();
     } catch (const std::exception & x) {
       m_os.err() << "Running the application failed: " << std::endl << x.what() << std::endl;
