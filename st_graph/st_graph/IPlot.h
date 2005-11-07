@@ -16,11 +16,14 @@ namespace st_graph {
 
   class Marker {
     public:
-      Marker(double x, double y, const std::string & text);
+      enum Color_e { WHITE, BLACK, RED, GREEN, BLUE, YELLOW, MAGENTA, CYAN, NUMBER_OF_COLORS };
 
+      Marker(double x, double y, const std::string & text, int color = BLUE);
+
+      std::string m_text;
       double m_x;
       double m_y;
-      std::string m_text;
+      int m_color;
   };
 
   /** \class IPlot
@@ -45,7 +48,7 @@ namespace st_graph {
           \param y Y coordinate of label.
           \param text Text to display in the label.
       */
-      virtual void addMarker(double x, double y, const std::string & text) = 0;
+      virtual void addMarker(double x, double y, const std::string & text, int color = Marker::BLUE) = 0;
 
       /** \brief Get container of labels.
           \param labels The output container of labels.

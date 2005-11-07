@@ -16,7 +16,7 @@
 
 namespace st_graph {
 
-  Marker::Marker(double x, double y, const std::string & text): m_x(x), m_y(y), m_text(text) {}
+  Marker::Marker(double x, double y, const std::string & text, int color): m_text(text), m_x(x), m_y(y), m_color(color) {}
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent):
     m_axes(3), m_seq_cont(0), m_label(), m_style(), m_dimensionality(2), m_parent(0), m_z_data(0), m_delete_parent(delete_parent) {
@@ -89,8 +89,8 @@ namespace st_graph {
 
   const std::vector<Axis> & RootPlot::getAxes() const { return m_axes; }
 
-  void RootPlot::addMarker(double x, double y, const std::string & text) {
-    m_label.push_back(Marker(x, y, text));
+  void RootPlot::addMarker(double x, double y, const std::string & text, int color) {
+    m_label.push_back(Marker(x, y, text, color));
     m_parent->addMarker(m_label.back());
   }
 

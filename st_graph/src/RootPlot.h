@@ -67,7 +67,7 @@ namespace st_graph {
           \param y Y coordinate of label.
           \param text Text to display in the label.
       */
-      virtual void addMarker(double x, double y, const std::string & text);
+      virtual void addMarker(double x, double y, const std::string & text, int color = Marker::BLUE);
 
       /** \brief Get container of labels.
           \param labels The output container of labels.

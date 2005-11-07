@@ -192,7 +192,7 @@ namespace st_graph {
   void StEmbeddedCanvas::addMarker(Marker & marker) {
     StMarker * st_marker = new StMarker(marker);
     st_marker->SetTextAngle(45);
-    st_marker->SetColor(kBlue);
+    st_marker->SetColor(int(marker.m_color));
     st_marker->Draw();
 
     m_marker_cont.push_back(st_marker);
