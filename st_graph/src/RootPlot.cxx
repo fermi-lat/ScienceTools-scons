@@ -16,8 +16,6 @@
 
 namespace st_graph {
 
-  Marker::Marker(double x, double y, const std::string & text, int color): m_text(text), m_x(x), m_y(y), m_color(color) {}
-
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent):
     m_axes(3), m_seq_cont(0), m_label(), m_style(), m_dimensionality(2), m_parent(0), m_z_data(0), m_delete_parent(delete_parent) {
     // Get the parent multi frame so that the plot can be added with desired style.

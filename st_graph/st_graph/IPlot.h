@@ -18,6 +18,8 @@ namespace st_graph {
     public:
       enum Color_e { WHITE, BLACK, RED, GREEN, BLUE, YELLOW, MAGENTA, CYAN, NUMBER_OF_COLORS };
 
+      Marker();
+
       Marker(double x, double y, const std::string & text, int color = BLUE);
 
       std::string m_text;
