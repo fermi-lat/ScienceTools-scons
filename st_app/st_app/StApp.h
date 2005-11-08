@@ -8,8 +8,8 @@
 #include <string>
 
 namespace st_graph {
+  class IEventReceiver;
   class IFrame;
-  class StGui;
 }
 
 namespace st_app {
@@ -81,7 +81,7 @@ namespace st_app {
       std::string m_name;
       std::string m_version;
       AppParGroup * m_par_group;
-      st_graph::StGui * m_gui;
+      st_graph::IEventReceiver * m_gui;
       st_graph::IFrame * m_main_frame;
       st_graph::IFrame * m_plot_frame;
   };

@@ -42,8 +42,28 @@ namespace st_app {
   StApp::~StApp() throw() { delete m_main_frame; delete m_gui; delete m_par_group; }
 
   void StApp::runGui() {
-    if (0 == m_gui) m_gui = new StAppGui(st_graph::Engine::instance(), *this);
-    m_gui->run();
+    // TODO Clean this up when old GUI removed. For now it's a rats' nest.
+    // If no GUI already instantiated, create the old GUI.
+    if (0 == m_gui) {
+      StEventReceiver * gui = new StEventReceiver(st_graph::Engine::instance(), getParGroup(), this);
+      m_gui = gui;
+      gui->run();
+    } else {
+      // See if this is the new GUI (set by client) and run that if it is.
+      st_graph::StGui * gui = dynamic_cast<st_graph::StGui *>(m_gui);
+      if (0 != gui) {
+        gui->run();
+      } else {
+        // See if this is the old GUI (set by client) and run that if it is.
+        StEventReceiver * gui = dynamic_cast<StEventReceiver *>(m_gui);
+        if (0 != gui) {
+          gui->run();
+        } else {
+          // Unknown type of GUI (set by client) so just run the event loop.
+          st_graph::Engine::instance().run();
+        }
+      }
+    }
   }
 
   // Return an object which provides the most typical kinds of parameter access.
@@ -111,18 +131,18 @@ namespace st_app {
 
   st_graph::IFrame * StApp::getPlotFrame(const std::string & title) {
     st_graph::IFrame * plot_frame(0);
+    st_graph::StGui * st_gui = dynamic_cast<st_graph::StGui *>(m_gui);
 
-    if (0 == m_gui) {
+    if (0 == st_gui) {
       st_graph::Engine & engine(st_graph::Engine::instance());
       if (0 == m_main_frame) m_main_frame = engine.createMainFrame(0, 638, 319, "StApp plot window");
       if (0 == m_plot_frame) m_plot_frame = engine.createPlotFrame(m_main_frame, title, 638, 319);
       plot_frame = m_plot_frame;
     } else {
       // In a GUI context use the Gui's plot window, creating it as needed.
-      plot_frame = m_gui->getPlotFrame();
+      plot_frame = st_gui->getPlotFrame();
     }
 
     return plot_frame;
   }
-
 }
