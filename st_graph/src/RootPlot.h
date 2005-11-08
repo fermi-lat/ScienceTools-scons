@@ -5,7 +5,6 @@
 #ifndef st_graph_RootPlot_h
 #define st_graph_RootPlot_h
 
-#include <list>
 #include <string>
 #include <vector>
 
@@ -74,6 +73,8 @@ namespace st_graph {
       */
       virtual void getMarkers(std::vector<Marker> & labels) const;
 
+      virtual std::vector<Marker> & getMarkers();
+
       /// \brief Return a string describing the plot style, e.g. hist, scat, lego, surf, etc.
       const std::string & getStyle() const;
 
@@ -90,7 +91,7 @@ namespace st_graph {
     private:
       std::vector<Axis> m_axes;
       std::vector<const ISequence *> m_seq_cont;
-      std::list<Marker> m_label;
+      std::vector<Marker> m_label;
       std::string m_style;
       unsigned int m_dimensionality;
       RootPlotFrame * m_parent;

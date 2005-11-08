@@ -96,6 +96,8 @@ namespace st_graph {
     labels.assign(m_label.begin(), m_label.end());
   }
 
+  std::vector<Marker> & RootPlot::getMarkers() { return m_label; }
+
   const std::string & RootPlot::getStyle() const { return m_style; }
 
   void RootPlot::setStyle(const std::string & style) {

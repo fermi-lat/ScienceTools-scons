@@ -288,9 +288,8 @@ namespace st_graph {
         }
 
         // Loop over plots, displaying each one's labels.
-        std::vector<Marker> labels;
-        (*itor)->getMarkers(labels);
-        for (std::vector<Marker>::iterator itor = labels.begin(); itor != labels.end(); ++itor) {
+        std::vector<Marker> & marker((*itor)->getMarkers());
+        for (std::vector<Marker>::iterator itor = marker.begin(); itor != marker.end(); ++itor) {
           m_canvas->addMarker(*itor);
         }
       }
