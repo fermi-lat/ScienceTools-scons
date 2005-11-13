@@ -22,7 +22,7 @@ double EarthCoordinate::s_EarthRadius = 6378145.; //m
 EarthCoordinate::EarthCoordinate(Hep3Vector pos, JulianDate jd)
 {
     m_lat = M_PI/2- pos.theta();
-    m_lon = GetGMST(jd)*M_PI/180 - pos.phi();
+    m_lon = pos.phi() - GetGMST(jd)*M_PI/180;
     m_lon = fmod(m_lon, 2*M_PI); if(m_lon>M_PI) m_lon -= 2*M_PI;
 
     // oblateness correction to obtain geodedic latitude 
