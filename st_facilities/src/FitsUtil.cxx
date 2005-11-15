@@ -95,6 +95,7 @@ void FitsUtil::getFitsColNames(const std::string & filename, int hdu,
    const tip::Table * my_table =
       tip::IFileSvc::instance().readTable(filename, extName);
    columnNames = my_table->getValidFields();
+   delete my_table;
 }
 
 void FitsUtil::writeChecksums(const std::string & filename) {
