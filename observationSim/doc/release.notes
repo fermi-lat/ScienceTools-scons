@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v5r9p6 17-Nov-05   JC   added galprop to standard set of sources; other
+                            small fixes
     v5r9p5 22-Sep-05   JC   use st_facilities v0r*
     v5r9p4 14-Sep-05   JC   have st_facilities::Util::readLines strip
                             trailing carriage returns from Windows
