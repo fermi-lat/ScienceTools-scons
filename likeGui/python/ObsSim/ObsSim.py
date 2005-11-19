@@ -44,6 +44,8 @@ class RootWindow(Tk.Tk):
         outputFrame.pack(side=Tk.RIGHT, fill=Tk.BOTH)
         self.sourceList = SourceList(self, outputFrame)
 
+        self.cwd = os.path.abspath('.')
+
         if file is not None:
             self.srcLibs.addLibs(file)
         else:
@@ -65,7 +67,12 @@ class RootWindow(Tk.Tk):
                 self.srcLibs.addLibs(expandEnvVar(file).strip())
     def open(self, xmlFile=None):
         if xmlFile is None:
-            xmlFile = LoadFileDialog(self).go(pattern='*.xml')
+            pattern = os.path.join(self.cwd, '*.xml')
+            xmlFile = LoadFileDialog(self).go(pattern=pattern)
+            try:
+                self.cwd = os.path.abspath(os.path.dirname(xmlFile))
+            except:
+                pass
         if xmlFile is not None:
             try:
                 self.srcLibs.addLibs(xmlFile)
@@ -95,6 +102,7 @@ class RootWindow(Tk.Tk):
             os.chdir(file)
         except:
             pass
+        self.cwd = os.path.abspath('.')
     def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)

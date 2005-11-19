@@ -34,7 +34,7 @@ class SourceList(object):
             or particles[0].getAttribute('name').encode('ascii') != 'gamma'):
             return False
         return True
-    def extract(self, outputFile, roiCone, fluxLimit=1e-2, useDiffuse=True,
+    def extract(self, outputFile, roiCone, fluxLimit=1e-2, useDiffuse=False,
                 useCatVal=True):
         ra0, dec0, radius = roiCone
         ds9File = ds9_region_file('ds9.reg', fk5=1)

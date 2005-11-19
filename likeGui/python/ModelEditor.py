@@ -22,6 +22,8 @@ import mySimpleDialog
 import readXml
 import FuncFactory as funcFactory
 import extractSources
+import xmlSrcLib
+
 ds9 = None
 
 class RootWindow(Tk.Tk):
@@ -204,6 +206,17 @@ class RootWindow(Tk.Tk):
             self.modelEditor.selectSource()
         except:
             pass
+    def addEGRET(self):
+        self._addToSrcModel(readXml.Source(xmlSrcLib.EgretDiffuse()))
+    def addGALPROP(self):
+        self._addToSrcModel(readXml.Source(xmlSrcLib.GalProp()))
+    def addExtragalactic(self):
+        self._addToSrcModel(readXml.Source(xmlSrcLib.EGDiffuse()))
+    def _addToSrcModel(self, src):
+        self.srcModel[src.name] = src
+        self.modelEditor.fill()
+        self.currentSource.set(src.name)
+        self.modelEditor.selectSource()
     def deleteAll(self):
         if self.srcModel.names():
             d = Dialog(self, title="Delete all sources question",
@@ -254,6 +267,13 @@ class EditMenu(Tk.Menu):
         self.add_command(label="Delete selected", underline=0,
                          command=root.deleteSource)
         self.add_command(label="Delete all sources...", command=root.deleteAll)
+        self.add_separator()
+        self.add_command(label="Add EGRET diffuse", underline=4,
+                         command=root.addEGRET)
+        self.add_command(label="Add GALPROP diffuse", underline=4,
+                         command=root.addGALPROP)
+        self.add_command(label="Add extragalactic diffuse", underline=5,
+                         command=root.addExtragalactic)
 
 def pwd():
     print ds9.cd()
