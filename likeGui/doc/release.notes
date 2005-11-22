@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r5p2   21-Nov-05    JC    refactor menus in ModelEditor; minor changes
+                               to ObsSim
    v7r5p1   12-Sep-05    JC    ignore user_package pattern from sane;
                                add MapCubeFunction to ModelEditor
    v7r5     26-Aug-05    JC    build separate applications for ModelEditor,
