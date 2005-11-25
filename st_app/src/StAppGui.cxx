@@ -264,7 +264,9 @@ namespace st_app {
 
   StEventReceiver::StEventReceiver(st_graph::Engine & engine, AppParGroup & par_group, StApp * app):
     m_os(app->getName(), "StEventReceiver", 2), m_engine(engine), m_par_group(par_group), m_par_widget(), m_tab_folder(),
-    m_parent(), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0), m_app(app), m_widest(0), m_tab_height(0) {}
+    m_parent(), m_main(0), m_group_frame(0), m_run(0), m_cancel(0), m_show_advanced(0), m_app(app), m_widest(0), m_tab_height(0) {
+    m_engine.setDefaultExitOnClose(false);
+  }
 
   StEventReceiver::~StEventReceiver() {
     for (ParWidgetCont::reverse_iterator itor = m_par_widget.rbegin(); itor != m_par_widget.rend(); ++itor)
