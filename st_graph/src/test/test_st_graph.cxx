@@ -211,6 +211,8 @@ void StGraphTestApp::testPlots() {
 
   Engine & engine(*engine_p);
 
+  engine.setDefaultExitOnClose(true);
+
   typedef std::vector<double> Vec_t;
   typedef ValueSequence<Vec_t::iterator> ValueSeq_t;
   typedef ValueSpreadSequence<Vec_t::iterator> ValueSpreadSeq_t;
