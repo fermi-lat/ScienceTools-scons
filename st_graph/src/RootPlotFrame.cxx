@@ -181,7 +181,9 @@ namespace st_graph {
           if (class_name != "TLatex" && class_name != "TMarker" && kButtonRelease != event->fType) {
             if (in_frame) {
               // These events are used to zoom: remap them to look like they come from the X axis.
-              event->fY = fCanvas->YtoAbsPixel(y_min) + 1;
+              // Add 1 pixel to make the event be slightly below the axis, and 1 more to prevent
+              // round-off errors resulting from the conversion from graph coordinate to pixels.
+              event->fY = fCanvas->YtoAbsPixel(y_min) + 2;
             }
           }
         }
