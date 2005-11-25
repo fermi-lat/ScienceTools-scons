@@ -134,5 +134,7 @@ class Parameter(object):
         self.parameter.setFree(value)
         if not value:
             self.parameter.setError(0)
+    def value(self):
+        return self.parameter.getValue()
     def __getattr__(self, attrname):
         return getattr(self.parameter, attrname)
