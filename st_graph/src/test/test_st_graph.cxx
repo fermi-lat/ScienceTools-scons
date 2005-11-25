@@ -422,6 +422,10 @@ void StGraphTestApp::testGuis() {
         }
       }
 
+      virtual void rightClicked(IFrame * frame, double x, double y) {
+        if (frame == m_plot_frame) std::cerr << "Plot frame was clicked at coordinates (" << x << ", " << y << ")" << std::endl;
+      }
+
       virtual void layout(IFrame *) {
         // Button justifiers.
         LeftEdge le_main(m_main_frame);
