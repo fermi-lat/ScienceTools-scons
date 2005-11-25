@@ -4,7 +4,6 @@
 */
 #include <algorithm>
 #include <cctype>
-#include <limits>
 #include <list>
 #include <map>
 #include <sstream>
@@ -611,7 +610,54 @@ namespace st_graph {
       class StMultiGraph : public TMultiGraph {
         public:
           StMultiGraph(const char * name, const char * title): TMultiGraph(name, title) {}
-          virtual Int_t DistancetoPrimitive(Int_t, Int_t) { return std::numeric_limits<Int_t>::max(); }
+          virtual Int_t DistancetoPrimitive(Int_t px, Int_t py) {
+            // The following code was copied from TMultiGraph in Root 4.02.00 and modified.
+            // This is undesirable, but currently the only solution which works. Without this
+            // override, the line:
+            //      if (dist < kMaxDiff) {gPad->SetSelected(g); return dist;}
+            // causes the click event to be associated with one of the TGraphs. This is a
+            // problem if this event is a "button release" when dragging and dropping another
+            // object. Because the event gets tied to the TGraph, the button release is not
+            // handled as a "drop", so the object being dragged springs back to its original
+            // position.
+            //
+            // At first a simpler solution was tried in the overridden method, in which the maximum
+            // distance was always returned. However, this broke mouse clicks which were not
+            // associated with the TMultiGraph, because the line:
+            // distance = fHistogram->DistancetoPrimitive(px,py);
+            // was not getting executed. When this method is called, the correct histogram
+            // axis gets selected and that axis can then respond to events, otherwise
+            // no object responds to it. In other words, Root depends on the correct
+            // object being selected as a side-effect of computing the distance to the
+            // object!
+            
+            //*-*- Are we on the axis?
+               const Int_t kMaxDiff = 10;
+               Int_t distance = 9999;
+               // Changed following line, using 0 != to silence warning on Windows.
+               // if (fHistogram) {
+               if (0 != fHistogram) {
+                  distance = fHistogram->DistancetoPrimitive(px,py);
+                  if (distance <= 0) return distance;
+               }
+            
+            //*-*- Loop on the list of graphs
+               // Changed following line, using 0 == to silence warning on Windows.
+               // if (!fGraphs) return distance;
+               if (0 == fGraphs) return distance;
+               TGraph *g;
+               TIter   next(fGraphs);
+               // Added 0 != to silence warning on Windows.
+               // Changed following line, using 0 != to silence warning on Windows.
+               // while ((g = (TGraph*) next())) {
+               while (0 != (g = (TGraph*) next())) {
+                  Int_t dist = g->DistancetoPrimitive(px,py);
+                  if (dist <= 0) return 0;
+                  // Commenting out gPad->SetSelected(g) is the only modification to base class method.
+                  if (dist < kMaxDiff) {/* gPad->SetSelected(g); */ return dist;}
+               }
+               return distance;
+            }
       };
 
       m_multi_graph = new StMultiGraph(createRootName("TMultiGraph", this).c_str(), m_title.c_str());
