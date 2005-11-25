@@ -114,6 +114,12 @@ namespace st_graph {
 
       virtual std::string fileDialog(IFrame * parent, const std::string & initial_file_name, const std::string & style = "open");
 
+      /** \brief Determine whether windows cause the application to terminate by default when they are closed.
+                 Windows with an explicit event receiver object are not affected by this.
+          \param exit_on_close Flag indicating whether to exit or not.
+      */
+      virtual void setDefaultExitOnClose(bool exit_on_close = true);
+
       /// \brief Return whether graphics engine was successfully initialized.
       virtual bool initSucceeded() const { return m_init_succeeded; }
 

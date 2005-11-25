@@ -33,6 +33,34 @@ typedef void (*sighandler_t) (int);
 #include "STGLayoutManager.h"
 #include "STGMainFrame.h"
 
+namespace {
+
+  // Receiver which terminates the application -- sensible default behavior for a main frame.
+  class DefaultReceiver : public st_graph::IEventReceiver {
+    public:
+      DefaultReceiver(): m_engine(st_graph::Engine::instance()), m_exit_on_close(true) {}
+
+      // General behavior when closing window is to close the Root window.
+      virtual void closeWindow(st_graph::IFrame * f) {
+        st_graph::RootFrame * rf = dynamic_cast<st_graph::RootFrame *>(f);
+        if (0 != rf) {
+          TGFrame * tgf = rf->getTGFrame();
+          if (0 != tgf) tgf->UnmapWindow();
+        }
+        if (m_exit_on_close) m_engine.stop();
+      }
+
+      void setExitOnClose(bool exit_on_close) { m_exit_on_close = exit_on_close; }
+
+    private:
+      st_graph::Engine & m_engine;
+      bool m_exit_on_close;
+  };
+
+  DefaultReceiver s_default_receiver;
+
+}
+
 namespace st_graph {
 
   RootEngine::RootEngine(): m_init_succeeded(false) {
@@ -105,20 +133,6 @@ namespace st_graph {
 
   IFrame * RootEngine::createMainFrame(IEventReceiver * receiver, unsigned int width, unsigned int height,
     const std::string & title) {
-    // Receiver which terminates the application -- sensible default behavior for a main frame.
-    class DefaultReceiver : public IEventReceiver {
-      public:
-        DefaultReceiver(Engine & engine): m_engine(engine) {}
-        virtual void closeWindow(IFrame *) {
-          m_engine.stop();
-        }
-
-      private:
-        Engine & m_engine;
-    };
-
-    static DefaultReceiver s_default_receiver(*this);
-
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createMainFrame: graphical environment not initialized");
 
     // If client did not supply a receiver, use the default one.
@@ -361,6 +375,10 @@ namespace st_graph {
     delete [] buf;
 
     return file_name;
+  }
+
+  void RootEngine::setDefaultExitOnClose(bool exit_on_close) {
+    s_default_receiver.setExitOnClose(exit_on_close);
   }
 
   void RootEngine::hideHidden(IFrame * frame) {

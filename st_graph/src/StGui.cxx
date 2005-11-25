@@ -229,6 +229,9 @@ namespace st_graph {
     } catch (const std::exception &) {
       // Ignore this exception.
     }
+
+    // Prevent most windows from exiting this application.
+    engine.setDefaultExitOnClose(false);
   }
 
   StGui::~StGui() {
