@@ -73,6 +73,8 @@ namespace st_graph {
 
       void reset();
 
+      void setHandleEvents(bool handle_events);
+
     private:
       MarkerCont_t m_marker_cont;
       RootPlotFrame * m_parent;
@@ -80,6 +82,7 @@ namespace st_graph {
       double m_press_y;
       UInt_t m_width;
       UInt_t m_height;
+      bool m_handle_events;
   };
 
   StMarker::StMarker(Marker & marker): TMarker(marker.m_x, marker.m_y, 23), m_marker(&marker), m_label(0) {
@@ -132,7 +135,8 @@ namespace st_graph {
   }
 
   StEmbeddedCanvas::StEmbeddedCanvas(RootPlotFrame * parent, const char * name, const TGWindow * p, UInt_t w, UInt_t h):
-    TRootEmbeddedCanvas(name, p, w, h), m_marker_cont(), m_parent(parent), m_press_x(0.), m_press_y(0.), m_width(w), m_height(h) {}
+    TRootEmbeddedCanvas(name, p, w, h), m_marker_cont(), m_parent(parent), m_press_x(0.), m_press_y(0.), m_width(w), m_height(h),
+    m_handle_events(false) {}
 
   StEmbeddedCanvas::~StEmbeddedCanvas() {
     for (MarkerCont_t::reverse_iterator itor = m_marker_cont.rbegin(); itor != m_marker_cont.rend(); ++itor) {
@@ -141,6 +145,7 @@ namespace st_graph {
   }
 
   Bool_t StEmbeddedCanvas::HandleContainerButton(Event_t * event) {
+    if (!m_handle_events) return TRootEmbeddedCanvas::HandleContainerButton(event);
     Bool_t status = kTRUE;
     bool root_handles_event = true;
     if (0 != event) {
@@ -203,6 +208,8 @@ namespace st_graph {
     }
     m_marker_cont.clear();
   }
+
+  void StEmbeddedCanvas::setHandleEvents(bool handle_events) { m_handle_events = handle_events; }
 
   RootPlotFrame::RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height,
     bool delete_parent): RootFrame(parent, 0, 0, delete_parent), m_plots(), m_tgraphs(), m_title(title), m_canvas(0),
@@ -390,6 +397,9 @@ namespace st_graph {
 
     // Create or get parent multi-graph.
     getMultiGraph();
+
+    // Enable custom event handling for 2d graphs.
+    m_canvas->setHandleEvents(true);
 
     int color = 1;
     for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor, ++color) {
