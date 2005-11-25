@@ -78,6 +78,12 @@ public:
     void setFlux(double value){m_flux=value;}
     
     
+    /// set a reference time that clients may use
+    static void setStartTime(double t){ s_startTime=t;}
+    static double startTime(){ return s_startTime;}
+
+
+
 protected:
     Spectrum(const std::vector<float>& /*params*/){};
     Spectrum(){}
@@ -90,6 +96,8 @@ protected:
     double m_flux;
     std::string m_particle_name;
     bool m_inGeV;
+private:
+    static double s_startTime;
 };
 
 #endif    
