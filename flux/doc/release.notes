@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
     EOH
 
+   v8r22p1 27-nov-2005 thb fix warnings due to no virtual destructor
    v8r22   24-nov-2005 thb Include static start time for sources
    v8r21p2 29-oct-2005 thb fix bug in rootplots output; make legends nicer
    v8r21p1 17-aug-2005 thb Limit maximum energy from CHIME to 1 TeV ( problem in G4)
