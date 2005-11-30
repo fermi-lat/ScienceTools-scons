@@ -21,7 +21,7 @@ HealPixel::HealPixel(long index, int level)
 HealPixel::HealPixel(const astro::SkyDir& dir, int level)
 :m_level(level)
 {
-    Healpix hp( nside(), NEST, s_coordsys);
+    Healpix hp( nside(), astro::Healpix::NESTED, s_coordsys);
 
     // get theta, phi (radians) in appropriate coordinate system
     double theta, phi;
@@ -40,7 +40,7 @@ HealPixel::HealPixel(const astro::SkyDir& dir, int level)
 HealPixel::operator astro::SkyDir()const
 {
     double theta, phi; 
-    Healpix hp(nside(), NEST, s_coordsys);
+    Healpix hp(nside(), astro::Healpix::NESTED, s_coordsys);
     hp.pix2ang( index(), theta, phi);
     // convert to ra, dec (or l,b)
     return astro::SkyDir( phi*180/M_PI, (M_PI/2-theta)*180/M_PI, s_coordsys );
@@ -63,7 +63,7 @@ bool HealPixel::operator<(const HealPixel& other)const
 std::vector<HealPixel> HealPixel::neighbors() const
 {
     std::vector<HealPixel> p;
-    Healpix hp( nside(), NEST, s_coordsys);
+    Healpix hp( nside(), astro::Healpix::NESTED, s_coordsys);
     std::vector<long> neighbors;
     hp.findNeighbors(index(), neighbors);
     for (std::vector<long>::const_iterator i = neighbors.begin();

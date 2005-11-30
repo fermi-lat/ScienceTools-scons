@@ -11,9 +11,11 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
-#include "src/healpix/healpix_base.h" ///< NASA healpix class
+
 #include <vector>
-#include "src/healpix/arr.h" ///< needed fixed size array class
+///< needed fixed size array class
+
+class Healpix_Base;
 
 namespace astro{
 /**
@@ -42,8 +44,12 @@ Reference: http://www.eso.org/science/healpix/
 Note: Healpix stands for "Hierarchical, Equal Area, and iso-Latitude Pixelisation of the sphere".
 */
 
+
 class Healpix {
 public: 
+
+    typedef enum { RING,
+        NESTED} Ordering;
 
     /**@brief specify configuration
     @param nside Number of divisions of the side of 
@@ -52,22 +58,22 @@ public:
     @param coordsys equatorial (ra,dec) or galactic (l,b)
 
     */
-    Healpix(long nside=2, Healpix_Ordering_Scheme ord = NEST, 
+    Healpix(long nside=2, Ordering ord = NESTED, 
         astro::SkyDir::CoordSystem coordsys = astro::SkyDir::EQUATORIAL);
-
+    
     ///@brief the number of sides per dodecahedron
-    long nside()const{return m_nside; }
+    long nside()const;
     ///@brief the number of pixels
-    long npix()const{return 12*m_nside*m_nside;}
+    long npix()const;
 
     ///@brief the number of pixels, as the size.
-    size_t size()const{return 12*m_nside*m_nside;}
+    size_t size()const;
 
     ///@brief the area per pixel
     double pixelArea()const{return 4*M_PI/npix();}
     ///@brief the value of the ordering parameter: either NESTED or RING
-    Healpix_Ordering_Scheme ord()const{return m_ord;}
-    bool nested()const{return m_ord==NEST;}
+    Ordering ord()const;
+    bool nested()const;
     astro::SkyDir::CoordSystem coordsys()const{return m_coordsys;}
     bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
@@ -148,13 +154,11 @@ public:
     // direct access to NASA healpix routines
     void pix2ang(long index, double &theta, double &phi)const;
     void ang2pix(double theta, double phi, long &index)const;
+    
 
 private:
-    Healpix_Base m_heal; ///< reference to the NASA library
-    long m_nside; ///< number of sides per dodecahedron
-    Healpix_Ordering_Scheme m_ord; ///< ordering
+    Healpix_Base& m_heal;///< reference to the NASA library
     astro::SkyDir::CoordSystem m_coordsys;///< how to define SkyDir
-
 };
 
 } // namespace astro
