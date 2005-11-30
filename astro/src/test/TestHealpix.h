@@ -124,8 +124,12 @@ public:
             }
             
             // Get entry from file 
-            int pixel_nbr;
+            long pixel_nbr;
             f >> pixel_nbr;  
+            if( pixel_nbr > hp.npix() ) { 
+                std::cout << "warning, quit since pixel number read from file is >" << hp.npix() << std::endl;
+                break;
+            }
             std::vector<int> from_file;
             for (int i = 0; i < 8; i++)
             {
@@ -136,7 +140,6 @@ public:
             }
             
             #if 0 // Run this block to see detailed results.
-            #else
             {
                 std::cout << calculated << from_file << std::endl ;
             }
@@ -145,10 +148,10 @@ public:
             if (calculated != from_file)
             {
                 std::cout << "Neighbor mismatch for pixel " << pixel_nbr << std::endl;
+                std::cout << "expected: " << from_file << "\n  found:" << calculated << std::endl;
                 throw std::runtime_error("Healpix test failed");
             }
             #if 0 // Run this block to see detailed results.
-            else
             {
                 std::cout << calculated << from_file << std::endl ;
             }
