@@ -16,6 +16,7 @@ use st_facilities v0r*
 use celestialSources v*
 use irfLoader v0* irfs
 use dataSubselector v3*
+use fitsGen v*
 
 macro_append ROOT_linkopts " $(ROOT_GUI_libs)"
 

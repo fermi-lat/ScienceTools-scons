@@ -106,12 +106,12 @@ EventContainer::~EventContainer() {
 void EventContainer::init() {
    m_events.clear();
    
-   char * root_path = std::getenv("OBSERVATIONSIMROOT");
+   char * root_path = std::getenv("FITSGENROOT");
    if (root_path != 0) {
       m_ftTemplate = std::string(root_path) + "/data/ft1.tpl";
    } else {
-      throw std::runtime_error(std::string("Environment variable ")
-                               + "OBSERVATIONSIMROOT not set.");
+      throw std::runtime_error("Environment variable "
+                               "FITSGENROOT not set.");
    }
 }
 
