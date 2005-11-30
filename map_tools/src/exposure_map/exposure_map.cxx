@@ -125,7 +125,7 @@ public:
             {
                 // should use accumulate here
                 double value = m_aeff[0]->value(energy, theta, phi);
-                for( int i = 1; i < m_aeff.size(); ++i){
+                for( unsigned int i = 1; i < m_aeff.size(); ++i){
                     value+=m_aeff[i]->value(energy, theta, phi);
                 }
                 return value;

@@ -141,7 +141,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<float>
         hdr["NAXIS1"].set(sizeof(float));
     #endif
     hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == NEST)? "NESTED": "RING";
+    std::string ordering = (ha.healpix().ord() == astro::Healpix::NEST)? "NESTED": "RING";
     hdr["ORDERING"].set(ordering); 
     hdr["NSIDE"].set(ha.healpix().nside()); 
     hdr["FIRSTPIX"].set(0); 
@@ -215,7 +215,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
         hdr["NAXIS1"].set(fieldname.size() * sizeof(float));
     #endif
     hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == NEST)? "NESTED": "RING";
+    std::string ordering = (ha.healpix().ord() == astro::Healpix::NEST)? "NESTED": "RING";
     hdr["ORDERING"].set(ordering); 
     hdr["NSIDE"].set(ha.healpix().nside()); 
     hdr["FIRSTPIX"].set(0); 
@@ -235,6 +235,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
        Could provide a GetAddtibutes function for this purpose.  If a reference is
        passed, this routine should throw an exception if the attributes of the
        HealpixArray passed don't match those of the file being read.  */
+    using astro::Healpix;
        
     const tip::Table & table=*tip::IFileSvc::instance().readTable(inputFile, tablename);
     const tip::Header& hdr = table.getHeader();
@@ -242,8 +243,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
-        NEST: RING;
+    astro::Healpix::Ordering ord = (ordering == "NESTED")?
+        astro::Healpix::NEST: astro::Healpix::RING;
     std::string thetabinstring;
     hdr["THETABIN"].get(thetabinstring);
     bool thetabin = (thetabinstring == "COSTHETA")? false: true;
@@ -282,8 +283,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
-        NEST: RING;
+    astro::Healpix::Ordering ord = (ordering == "NESTED")?
+        astro::Healpix::NEST: astro::Healpix::RING;
    
     astro::HealpixArray<float> ha(astro::Healpix(nside, ord));
     
@@ -308,8 +309,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<std::v
     hdr["NSIDE"].get(nside);
     std::string ordering;
     hdr["ORDERING"].get(ordering);
-    Healpix_Ordering_Scheme ord = (ordering == "NESTED")?
-        NEST: RING;
+    astro::Healpix::Ordering ord = (ordering == "NESTED")?
+        astro::Healpix::NEST: astro::Healpix::RING;
    
     astro::HealpixArray<std::vector<float> > ha(astro::Healpix(nside, ord));
     

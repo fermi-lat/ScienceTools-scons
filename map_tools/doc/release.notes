@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 29-nov-05 v5r15p2 THB healpix ordering change
  21-oct-05 v5r15p1 THB use new astro range, changed names for healpix ordering 
  21-sep-05 v5r15  THB fix exposure_map to allow any standard effective area function, like DC 21-sep-05 v5r15  THB fix exposure_map to allow any standard effective area function, like DC1A
  10-aug-05 v5r14  THB remove all executables but exposure_map and exposure_cube from being built
