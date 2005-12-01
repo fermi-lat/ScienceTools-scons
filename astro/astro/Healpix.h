@@ -159,8 +159,8 @@ public:
     Healpix& operator=(const Healpix& other);
 
 private:
-    Healpix_Base& m_heal;///< reference to the NASA library
     astro::SkyDir::CoordSystem m_coordsys;///< how to define SkyDir
+    Healpix_Base& m_heal;///< reference to the NASA library
 };
 
 } // namespace astro

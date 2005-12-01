@@ -14,6 +14,7 @@
 ///< NASA healpix class
 /* Standard Includes */
 #include <numeric> // for accumulate
+#include <stdexcept>
 
 using namespace astro;
 
