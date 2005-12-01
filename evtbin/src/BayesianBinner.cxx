@@ -139,8 +139,11 @@ namespace evtbin {
     //    logprob = lngamma(cell_pops + 1.) - (cell_pops + 1.) * alog(cell_sizes)
     //
     //    logprob = logprob - ncp_prior
-    for (deque_t::size_type index = 0; index != num_cells; ++index)
-      log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * log(rev_csize[index]) - m_ncp_prior;
+    for (deque_t::size_type index = 0; index != num_cells; ++index) {
+      //log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * log(rev_csize[index]) - m_ncp_prior;
+      log_prob[index] = rev_cpop[index] * (log(rev_cpop[index]) - log(rev_csize[index]) - 1.);
+      log_prob[index] -= m_ncp_prior + 6.7;
+    }
   }
 
 }
