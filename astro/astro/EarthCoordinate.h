@@ -29,8 +29,8 @@ public:
     //! initialize with latitude and longitude, in deg, optional altitude 
     EarthCoordinate( double latDeg=0, double lonDeg=0 , double altitude=0);
 
-    //! initialize with orbit position (in km), current date
-    EarthCoordinate( Hep3Vector position, JulianDate jd);
+    //! initialize with orbit position (in km), current MET in sec (was JD)
+    EarthCoordinate( Hep3Vector position, double met); //JulianDate jd);
 
     /** @brief true if inside the SAA
 
