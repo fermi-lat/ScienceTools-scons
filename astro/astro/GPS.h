@@ -1,5 +1,8 @@
-// $Header$
+/** @file GPS.h
+    @brief declare class GPS
 
+  $Header$
+*/
 #if !defined(_H_GPS_CLASS)
 #define _H_GPS_CLASS
 
@@ -21,7 +24,6 @@ namespace astro {
 * \class GPS
 * \brief Models the Global Positoning System for a spacecraft. Handles time, position, and orientation for the instrument as a whole.
 * 
-* $Header$
 Represents the Global Positioning System on-board the spacecraft. An Orbit
 object is used to compute the spacecraft's position and pointing characteristics.
 Time is tracked through this object, and synchronized with the Scheduler for 
@@ -189,6 +191,7 @@ public:
    void setScTableName(const std::string & sctable) {
       m_sctable = sctable;
    }
+   double endTime()const{return m_endTime==0? 1e30: m_endTime;}
 
 protected:
     // singleton - protect ctor/dtor

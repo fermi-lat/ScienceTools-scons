@@ -1,7 +1,8 @@
-// GPS.cxx: implementation of the GPS class.
-// $Id$
-//////////////////////////////////////////////////////////////////////
+/** @file GPS.cxx
+ @brief  implementation of the GPS class.
 
+ $Id$
+*/
 #include "astro/GPS.h"
 
 //#include "Orbit.h"
@@ -312,7 +313,10 @@ void GPS::getPointingCharacteristics(double inputTime){
         //now set the zenith direction before the rocking.
         m_RAZenith = tempDirZ.ra();
         m_DECZenith = tempDirZ.dec();
-    }else if(m_rockType == HISTORY && inputTime < m_endTime){
+    }else if(m_rockType == HISTORY ){
+        if( inputTime > m_endTime){
+            throw std::runtime_error("GPS: time is beyond end of history file");
+        }
         setInterpPoint(inputTime);
         SkyDir dirZenith(m_currentInterpPoint.position.unit());
         SkyDir dirZ(m_currentInterpPoint.dirZ);
@@ -321,13 +325,27 @@ void GPS::getPointingCharacteristics(double inputTime){
         bZ=dirZ.b();
         raX=dirX.ra();
         decX=dirX.dec();
+
+        // earth coordinates form interpolating the table -- depracated
         m_lat = m_currentInterpPoint.lat;
         m_lon = m_currentInterpPoint.lon;
         m_altitude = m_currentInterpPoint.altitude;
-        m_livetime_frac = m_currentInterpPoint.livetime_frac;
+        
+        // use the inertial earth coordinate instead
+        astro::EarthCoordinate earthpos(m_currentInterpPoint.position, inputTime);
+        double lat(earthpos.latitude()), 
+            lon(earthpos.longitude()), 
+            altitude(earthpos.altitude());
+
+        m_lat = lat;
+        m_lon = lon;
+        m_altitude = altitude;
+
         //now set the zenith direction before the rocking.
         m_RAZenith = dirZenith.ra();
         m_DECZenith = dirZenith.dec();
+        m_livetime_frac = m_currentInterpPoint.livetime_frac;
+
     }else{
         //ok, get the pointing from earthOrbit.
         SkyDir tempDirZ(m_position.unit());
@@ -490,7 +508,7 @@ void GPS::setUpHistory(double offset){
       if(false == input_file.is_open())
       {
          std::cerr << "ERROR:  Unable to open:  " << m_pointingHistoryFile.c_str() << std::endl;
-         exit(0);
+         throw std::invalid_argument("GPS: could not open pointing history file");
       }
       else
       {
