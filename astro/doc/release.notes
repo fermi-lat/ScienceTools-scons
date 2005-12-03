@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r12p2  03-dec-05 THB GPS mods to treat history file consistently
   v1r12p1  01-dec-05 THB unix fixes
   v1r12    29-nov-05 THB mods to Healpix to hide healix_base; slight change to interface
   v1r11p5  13-oct-05 THB Fix sign of longitude
