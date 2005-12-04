@@ -58,17 +58,17 @@ int main(int iargc, char * argv[]) {
          ft1["phi"].set(merit["FT1Phi"].get());
          ft1["zenith_angle"].set(merit["FT1ZenithTheta"].get());
          ft1["earth_azimuth_angle"].set(merit["FT1EarthAzimuth"].get());
-         ft1["time"].set(merit["elapsed_time"].get());
+         ft1["time"].set(merit["EvtElapsedTime"].get());
          ft1["event_id"].set(static_cast<int>(merit["FT1EventId"].get()));
          ft1["conversion_layer"].
-            set(static_cast<short>(merit["FT1ConvLayer"].get()));
-         ft1["imgoodcalprob"].set(merit["IMgoodCalProb"].get());
-         ft1["imvertexprob"].set(merit["IMvertexProb"].get());
-         ft1["imcoreprob"].set(merit["IMcoreProb"].get());
-         ft1["impsferrpred"].set(merit["IMpsfErrPred"].get());
-         ft1["calenergysum"].set(merit["CalEnergySum"].get());
+	   set(static_cast<short>(15-(merit["Tkr1FirstLayer"].get())));
+         ft1["imgoodcalprob"].set(merit["CTgoodCal"].get());
+         ft1["imvertexprob"].set(merit["CTvertex"].get());
+         ft1["imcoreprob"].set(merit["CTgoodPsf"].get());
+         ft1["impsferrpred"].set(merit["CTgoodPsf"].get());
+         ft1["calenergysum"].set(merit["CalEnergyRaw"].get());
          ft1["caltotrln"].set(merit["CalTotRLn"].get());
-         ft1["imgammaprob"].set(merit["IMgammaProb"].get());
+         ft1["imgammaprob"].set(merit["CTgamma"].get());
 
          short isGamma, goodPsf, goodEnergy;
          getEventFlags(merit, isGamma, goodPsf, goodEnergy);
@@ -86,10 +86,10 @@ int main(int iargc, char * argv[]) {
       std::cout << "number of rows processed: " << ncount << std::endl;
 
       merit_iter = meritTable->begin();
-      double start_time = merit["elapsed_time"].get();
+      double start_time = merit["EvtElapsedTime"].get();
       merit_iter = meritTable->end();
       --merit_iter;
-      double stop_time = merit["elapsed_time"].get();
+      double stop_time = merit["EvtElapsedTime"].get();
       tip::Table * gtiTable = 
          tip::IFileSvc::instance().editTable(fitsFile, "GTI");
       gtiTable->setNumRecords(1);
@@ -115,18 +115,18 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
    goodPsf = 0;
    goodEnergy = 0;
 
-   bool good_energy_cut = merit["IMgoodCalProb"].get() > 0.2;
-   bool zdir_cut = merit["Tkr1ZDir"].get() < -0.2;
-   bool no_cal_cut = (merit["CalEnergySum"].get() < 5. 
-                      || merit["CalTotRLn"].get() < 2.);
-   bool thin_cut = (merit["Tkr1FirstLayer"].get() != 0 
-                    && merit["Tkr1FirstLayer"].get() < 15);
-   (void)(thin_cut);
+   //   bool good_energy_cut = merit["IMgoodCalProb"].get() > 0.2;
+   // bool zdir_cut = merit["Tkr1ZDir"].get() < -0.2;
+   // bool no_cal_cut = (merit["CalEnergySum"].get() < 5. 
+   //                    || merit["CalTotRLn"].get() < 2.);
+   //bool thin_cut = (merit["Tkr1FirstLayer"].get() != 0 
+   //                  && merit["Tkr1FirstLayer"].get() < 15);
+   //(void)(thin_cut);
 
-   bool global_cut = good_energy_cut && zdir_cut && !no_cal_cut;
+   //   bool global_cut = good_energy_cut && zdir_cut && !no_cal_cut;
 
-   bool psf_filter = (merit["IMcoreProb"].get() > 0.2 
-                      && merit["IMpsfErrPred"].get() < 3.);
+   //   bool psf_filter = (merit["IMcoreProb"].get() > 0.2 
+   //                  && merit["IMpsfErrPred"].get() < 3.);
 
 //    bool background_cut = (merit["TkrNumTracks"].get() > 0 
 //                           && merit["GltWord"].get() > 3
@@ -175,8 +175,8 @@ void getEventFlags(tip::Table::Record & merit, short & isGamma,
 //    if (!veto) isGamma = 1;
 
 // For DC1, IMgammaProb directly passes the background cut.
-   if (merit["IMgammaProb"].get() > 0.5) isGamma = 1;
-   if (psf_filter) goodPsf = 1;
-   if (global_cut) goodEnergy = 1;
+//   if (merit["IMgammaProb"].get() > 0.5) isGamma = 1;
+//   if (psf_filter) goodPsf = 1;
+//   if (global_cut) goodEnergy = 1;
 }
 
