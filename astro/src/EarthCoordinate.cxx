@@ -1,4 +1,9 @@
-// $Header$
+/** @file EarthCoordinate.cxx
+    @brief implement class EarthCoordinate
+
+ $Header$
+
+*/
 #include <cmath>
 #include <vector>
 
@@ -27,8 +32,8 @@ EarthCoordinate::EarthCoordinate(Hep3Vector pos, double met) //JulianDate jd)
     JulianDate jd(JulianDate::missionStart() + met/JulianDate::secondsPerDay);
     m_lon = pos.phi() - GetGMST(jd)*M_PI/180;
     m_lon = fmod(m_lon, 2*M_PI); 
-    if(m_lon>M_PI) m_lon -= 2*M_PI;
-    if(m_lon<M_PI) m_lon += 2*M_PI;
+    if( m_lon<M_PI) m_lon+=2*M_PI; // for -180 to 180?
+    if( m_lon>M_PI) m_lon-=2*M_PI;
 
     // oblateness correction to obtain geodedic latitude 
     m_lat=(atan(tan(m_lat))/(sqr(1.-EarthFlat)) );

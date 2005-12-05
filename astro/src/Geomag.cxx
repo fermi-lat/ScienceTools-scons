@@ -25,6 +25,7 @@ namespace {
 
         if(lon < 0)
             lon += 360;
+        if(lon>360) lon -= 360;
 
         ilat = static_cast<int>(lat/5.+6);
         ilon = static_cast<int>(lon/5.);
