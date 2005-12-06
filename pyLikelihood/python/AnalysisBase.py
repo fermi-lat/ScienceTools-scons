@@ -26,7 +26,7 @@ class AnalysisBase(object):
         xmlFile = paramDict['Source Model File'].value()
         output = (xmlFile, paramDict['optimizer'].value())
         return output
-    def setPlotter(self, plotter='root'):
+    def setPlotter(self, plotter='hippo'):
         global _plotter_package
         _plotter_package = plotter
     def __call__(self):
