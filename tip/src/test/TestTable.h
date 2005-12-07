@@ -74,6 +74,9 @@ namespace tip {
       /// \brief Test that unsigned integers are handled correctly.
       void unsignedIntTest();
 
+      /// \brief Test that Root version of FT2 files are readable.
+      void rootFt2Test();
+
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();
@@ -84,6 +87,7 @@ namespace tip {
 
       Table * m_fits_table;
       Table * m_root_table;
+      Table * m_root_ft2;
   };
 
 }

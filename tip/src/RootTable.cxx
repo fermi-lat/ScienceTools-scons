@@ -215,35 +215,35 @@ namespace tip {
       // tuple/src/RootTable.cxx: RootTable::select(const std::string &);
       // cvs revision 1.8
       // Begin theft:
-      const char * cname = field_name.c_str();
-      TBranch* branch = m_tree->GetBranch(cname);
-      if( 0==branch ){
-          std::stringstream msg; msg << "branch \"" << field_name << "\" not found";
-          throw TipException(formatWhat(msg.str()));
-      }
-      int n = branch->GetNleaves();
-      if( n!=1) throw TipException(formatWhat(std::string("branch ")+field_name+" has more than one leaf"));
-      TObjArray * leaves = branch->GetListOfLeaves();
-      TLeaf* leaf = (TLeaf*)leaves->At(0);
+      TLeaf * leaf = m_tree->GetLeaf(field_name.c_str());
+      if (0 == leaf) throw TipException(formatWhat(std::string("leaf ")+field_name+" was not found"));
       std::string type(leaf->GetTypeName());
-      if( type != "Double_t" && type != "Float_t" )
-        throw TipException(formatWhat(std::string("branch ")+field_name+" is "+type+" not Double_t or Float_t"));
+      Int_t num_data = leaf->GetNdata();
+      if( type != "Double_t" && type != "Float_t"  && type != "Int_t" && type != "UInt_t" && type != "Long_t" && type != "ULong_t")
+        throw TipException(formatWhat(std::string("leaf ")+field_name+" is "+type+" not supported"));
 
       // TODO: allow for Float_t, Int_t, and provide for conversion
-      m_tree->SetBranchStatus(cname, 1);
+      m_tree->SetBranchStatus(leaf->GetBranch()->GetName(), 1);
 //      m_leafList.push_back(leaf);
 //      m_tuple.push_back(0);
       // End theft.
-      branch->SetAutoDelete(kFALSE);
 
       // Create buffer for leaf:
       // Use insert instead of push_back so that we can easily get the distance from the beginning of the array:
       std::vector<IColumn *>::iterator litor = m_leaves.end();
 
       if( type == "Double_t" )
-        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Double_t>(m_tree, field_name, type));
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Double_t>(m_tree, field_name, type, num_data));
       else if( type == "Float_t" )
-        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Float_t>(m_tree, field_name, type));
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Float_t>(m_tree, field_name, type, num_data));
+      else if( type == "Int_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Int_t>(m_tree, field_name, type, num_data));
+      else if( type == "UInt_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<UInt_t>(m_tree, field_name, type, num_data));
+      else if( type == "Long_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<Long_t>(m_tree, field_name, type, num_data));
+      else if( type == "ULong_t" )
+        litor = m_leaves.insert(m_leaves.end(), new RootColumn<ULong_t>(m_tree, field_name, type, num_data));
 
       // Add an associative lookup for this new branch.
       itor = m_branch_lookup.insert(itor, std::make_pair(field_name, litor - m_leaves.begin()));
