@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+06-dec-2005   v2r8 JP Add support for vectors and for integer types in Root files.
 03-nov-2005   v2r7 JP Generalize Root-specific table implementation to handle floats
                       as well as doubles.
 23-sep-2005   v2r6 JP Add insert(), erase() and find() methods to manipulate keywords in
