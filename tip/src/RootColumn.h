@@ -27,7 +27,27 @@ namespace tip {
 
       virtual void get(Index_t record_index, double & dest) const;
 
+      virtual void get(Index_t record_index, float & dest) const;
+
+      virtual void get(Index_t record_index, int & dest) const;
+
+      virtual void get(Index_t record_index, unsigned int & dest) const;
+
+      virtual void get(Index_t record_index, long & dest) const;
+
+      virtual void get(Index_t record_index, unsigned long & dest) const;
+
       virtual void get(Index_t record_index, std::vector<double> & dest) const;
+
+      virtual void get(Index_t record_index, std::vector<float> & dest) const;
+
+      virtual void get(Index_t record_index, std::vector<int> & dest) const;
+
+      virtual void get(Index_t record_index, std::vector<unsigned int> & dest) const;
+
+      virtual void get(Index_t record_index, std::vector<long> & dest) const;
+
+      virtual void get(Index_t record_index, std::vector<unsigned long> & dest) const;
 
       /** \brief Returns the name of the particular column implementation (subclass identifier).
       */
@@ -69,7 +89,42 @@ namespace tip {
   inline void RootColumn<T>::get(Index_t record_index, double & dest) const {
     if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, double &): Cannot convert vector to scalar");
     m_tree->GetEntry(record_index);
-    dest = *m_buf;
+    dest = double(*m_buf);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, float & dest) const {
+    if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, float &): Cannot convert vector to scalar");
+    m_tree->GetEntry(record_index);
+    dest = float(*m_buf);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, int & dest) const {
+    if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, int &): Cannot convert vector to scalar");
+    m_tree->GetEntry(record_index);
+    dest = int(*m_buf);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, unsigned int & dest) const {
+    if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, unsigned int &): Cannot convert vector to scalar");
+    m_tree->GetEntry(record_index);
+    dest = (unsigned int)(*m_buf);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, long & dest) const {
+    if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, long &): Cannot convert vector to scalar");
+    m_tree->GetEntry(record_index);
+    dest = long(*m_buf);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, unsigned long & dest) const {
+    if (1u != m_num_elements) throw TipException("RootColumn::get(Index_t, unsigned long &): Cannot convert vector to scalar");
+    m_tree->GetEntry(record_index);
+    dest = (unsigned long)(*m_buf);
   }
 
   template <typename T>
@@ -77,7 +132,47 @@ namespace tip {
     if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, double &): Cannot convert scalar to vector");
     m_tree->GetEntry(record_index);
     dest.resize(m_num_elements);
-    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = m_buf[ii];
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = double(m_buf[ii]);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, std::vector<float> & dest) const {
+    if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, float &): Cannot convert scalar to vector");
+    m_tree->GetEntry(record_index);
+    dest.resize(m_num_elements);
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = float(m_buf[ii]);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, std::vector<int> & dest) const {
+    if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, int &): Cannot convert scalar to vector");
+    m_tree->GetEntry(record_index);
+    dest.resize(m_num_elements);
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = int(m_buf[ii]);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, std::vector<unsigned int> & dest) const {
+    if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, unsigned int &): Cannot convert scalar to vector");
+    m_tree->GetEntry(record_index);
+    dest.resize(m_num_elements);
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = (unsigned int)(m_buf[ii]);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, std::vector<long> & dest) const {
+    if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, long &): Cannot convert scalar to vector");
+    m_tree->GetEntry(record_index);
+    dest.resize(m_num_elements);
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = long(m_buf[ii]);
+  }
+
+  template <typename T>
+  inline void RootColumn<T>::get(Index_t record_index, std::vector<unsigned long> & dest) const {
+    if (1u >= m_num_elements) throw TipException("RootColumn::get(Index_t, unsigned long &): Cannot convert scalar to vector");
+    m_tree->GetEntry(record_index);
+    dest.resize(m_num_elements);
+    for (size_type ii = 0; ii != m_num_elements; ++ii) dest[ii] = (unsigned long)(m_buf[ii]);
   }
 
 }

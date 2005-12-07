@@ -154,34 +154,34 @@ namespace tip {
 
     // Test Root field read only for McEnergy field; note that this doesn't test whether the
     // values were read correctly.
-    std::vector<double> mc_energy;
     double expected_prim[] = {
-9881.1264038085956,
-374.32735403145591, 1152.7569293975816, 225.12541611949609, 18.767785214795236, 339.41182494163502, 10.787301655186937,
-797.71661758422795, 14.06410336494446, 36.623448133468628, 217.75630116462719, 23.318689316511175, 460.38362383842457,
-132.9941302537917, 33.655513077974319, 909.00588035583507, 54.750926792621613, 36540.122985839967, 22.067859768867493,
-377.05758213996899, 327.8842270374297, 10.945985093712842, 5289.381504058837, 22.08190038800231, 8162.9266738891656,
-855.15505075454632, 68.108297884463497, 128.2227784395219, 18.153037875890789, 175.14409124851559, 14083.505630493151,
-378.89450788494082, 66.376052796840654, 14.711145311594038, 497.05943465232849, 25.426756590604821, 28.807224705815244,
-372.79221415519714, 45.064602047204126, 9686.2659454345721, 13036.463737487768, 3482.7575683593755, 138.82616162300511,
-34.407161176204681, 979.49832677841164, 33.445887267588958, 13607.332229614267, 1098.5789299011228, 10577.536582946796,
-39.210032671689987, 122.55537509918202, 78.723251819610596, 55.001884698867798, 484.89898443222, 7445.1961517334166,
-60.068890452384949, 10977.50663757324, 14.0966046601534, 48.188492655754089, 212.06137537956226, 1121.369361877441,
-67.464247345924647, 45.730490237474271, 1120.1473474502566, 25014.816284179677, 864.57240581512406, 34759.517669677713,
-4227.282047271734, 19845.930099487312, 39.487283782755362, 20481.880187988296, 725.81541538238537, 48.921696841716198,
-8337.3651504516802, 10748.487472534172, 12337.617874145524, 57.304948568344116, 58.529380708931932, 105.42155802249897,
-21.78704924881459, 18.594179302453984, 131.47398829460133, 441.02409482002258, 744.8423504829409, 424.8797297477721,
-439.89828228950512, 257.54529237747192, 631.42776489257801, 307.97910690307629, 916.03666543960583, 39685.558319092001,
-445.65033912658703, 105.19703477621152, 18603.65104675293, 860.60708761215233, 636.98887825012196, 23.482421413064074,
-14332.509040832481, 58.536481112240828, 272.88678288459755, 19.715877249836996, 148.36083352565799, 62.212664633988936,
-28734.207153320436, 59.966348111628768, 28381.13403320306, 19393.611907959028, 45.317552983760535, 17956.829071044936,
-10.328903855784141, 25.998368859291141, 19211.191177368193, 51.203172653913498, 13509.49573516849, 76.188392937183679,
-10.321938432753091, 459.03411507602431, 12.923626229166985, 67.820891737937927, 50.406116992234182, 26.325548067688942,
-12195.323944091791, 502.07096338272095, 45.203171670436859, 28.993524610996246, 717.13972091674816, 1923.8300323486335,
-957.36962556839001
+      9881.1264038085956,
+      374.32735403145591, 1152.7569293975816, 225.12541611949609, 18.767785214795236, 339.41182494163502, 10.787301655186937,
+      797.71661758422795, 14.06410336494446, 36.623448133468628, 217.75630116462719, 23.318689316511175, 460.38362383842457,
+      132.9941302537917, 33.655513077974319, 909.00588035583507, 54.750926792621613, 36540.122985839967, 22.067859768867493,
+      377.05758213996899, 327.8842270374297, 10.945985093712842, 5289.381504058837, 22.08190038800231, 8162.9266738891656,
+      855.15505075454632, 68.108297884463497, 128.2227784395219, 18.153037875890789, 175.14409124851559, 14083.505630493151,
+      378.89450788494082, 66.376052796840654, 14.711145311594038, 497.05943465232849, 25.426756590604821, 28.807224705815244,
+      372.79221415519714, 45.064602047204126, 9686.2659454345721, 13036.463737487768, 3482.7575683593755, 138.82616162300511,
+      34.407161176204681, 979.49832677841164, 33.445887267588958, 13607.332229614267, 1098.5789299011228, 10577.536582946796,
+      39.210032671689987, 122.55537509918202, 78.723251819610596, 55.001884698867798, 484.89898443222, 7445.1961517334166,
+      60.068890452384949, 10977.50663757324, 14.0966046601534, 48.188492655754089, 212.06137537956226, 1121.369361877441,
+      67.464247345924647, 45.730490237474271, 1120.1473474502566, 25014.816284179677, 864.57240581512406, 34759.517669677713,
+      4227.282047271734, 19845.930099487312, 39.487283782755362, 20481.880187988296, 725.81541538238537, 48.921696841716198,
+      8337.3651504516802, 10748.487472534172, 12337.617874145524, 57.304948568344116, 58.529380708931932, 105.42155802249897,
+      21.78704924881459, 18.594179302453984, 131.47398829460133, 441.02409482002258, 744.8423504829409, 424.8797297477721,
+      439.89828228950512, 257.54529237747192, 631.42776489257801, 307.97910690307629, 916.03666543960583, 39685.558319092001,
+      445.65033912658703, 105.19703477621152, 18603.65104675293, 860.60708761215233, 636.98887825012196, 23.482421413064074,
+      14332.509040832481, 58.536481112240828, 272.88678288459755, 19.715877249836996, 148.36083352565799, 62.212664633988936,
+      28734.207153320436, 59.966348111628768, 28381.13403320306, 19393.611907959028, 45.317552983760535, 17956.829071044936,
+      10.328903855784141, 25.998368859291141, 19211.191177368193, 51.203172653913498, 13509.49573516849, 76.188392937183679,
+      10.321938432753091, 459.03411507602431, 12.923626229166985, 67.820891737937927, 50.406116992234182, 26.325548067688942,
+      12195.323944091791, 502.07096338272095, 45.203171670436859, 28.993524610996246, 717.13972091674816, 1923.8300323486335,
+      957.36962556839001
     };
     std::vector<double> expected_mc_energy(expected_prim, expected_prim + sizeof(expected_prim) / sizeof(double));
     try {
+      std::vector<double> mc_energy;
       readFieldTest(m_root_table, "McEnergy", mc_energy);
       if (mc_energy != expected_mc_energy) {
         ReportUnexpected("reading McEnergy field from Root table did not return expected result:");
@@ -205,6 +205,99 @@ namespace tip {
     } catch (const TipException & x) {
       ReportUnexpected("reading McEnergy field from Root table failed", x);
     }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
+        float mc_energy;
+        (*itor)["McEnergy"].get(mc_energy);
+        if (mc_energy != float(expected_mc_energy[0])) {
+          std::ostringstream os;
+          os << "float(mc_energy) was " << mc_energy << ", not " << float(expected_mc_energy[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        } else {
+          ReportExpected("Reading McEnergy field in FT2.root as a float succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading McEnergy field in FT2.root as a float failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
+        int mc_energy;
+        (*itor)["McEnergy"].get(mc_energy);
+        if (mc_energy != int(expected_mc_energy[0])) {
+          std::ostringstream os;
+          os << "int(mc_energy) was " << mc_energy << ", not " << int(expected_mc_energy[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        } else {
+          ReportExpected("Reading McEnergy field in FT2.root as a int succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading McEnergy field in FT2.root as a int failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      typedef unsigned int uint;
+      for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
+        uint mc_energy;
+        (*itor)["McEnergy"].get(mc_energy);
+        if (mc_energy != uint(expected_mc_energy[0])) {
+          std::ostringstream os;
+          os << "uint(mc_energy) was " << mc_energy << ", not " << uint(expected_mc_energy[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        } else {
+          ReportExpected("Reading McEnergy field in FT2.root as a uint succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading McEnergy field in FT2.root as a uint failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
+        long mc_energy;
+        (*itor)["McEnergy"].get(mc_energy);
+        if (mc_energy != long(expected_mc_energy[0])) {
+          std::ostringstream os;
+          os << "long(mc_energy) was " << mc_energy << ", not " << long(expected_mc_energy[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        } else {
+          ReportExpected("Reading McEnergy field in FT2.root as a long succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading McEnergy field in FT2.root as a long failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      typedef unsigned long ulong;
+      for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
+        ulong mc_energy;
+        (*itor)["McEnergy"].get(mc_energy);
+        if (mc_energy != ulong(expected_mc_energy[0])) {
+          std::ostringstream os;
+          os << "ulong(mc_energy) was " << mc_energy << ", not " << ulong(expected_mc_energy[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        } else {
+          ReportExpected("Reading McEnergy field in FT2.root as a ulong succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading McEnergy field in FT2.root as a ulong failed", x);
+    }
+
   }
 
   void TestTable::readWriteFieldTest(Table * table, const std::string & format, const std::string & field_name) {
@@ -640,15 +733,6 @@ namespace tip {
   void TestTable::rootFt2Test() {
     if (0 == m_root_ft2) return;
 
-    try {
-      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
-        (*itor)["sc_position"].get();
-      }
-      ReportUnexpected("Attempting to read sc_position field in FT2.root as a scalar failed");
-    } catch (const TipException & x) {
-      ReportExpected("Attempting to read sc_position field in FT2.root as a scalar failed", x);
-    }
-
     double expected_prim[] = {
       -5181385, 3659535.75, 2811837, -5283849, 3464278.25, 2867339, -5380638.5, 3265300.25, 2919752.5,
       -5471648.5, 3062814.25, 2969022, -5556780.5, 2857038.25, 3015093.5, -5635943.5, 2648194, 3057916.25,
@@ -691,6 +775,18 @@ namespace tip {
     };
 
     std::vector<double> expected_sc_pos(expected_prim, expected_prim + sizeof(expected_prim) / sizeof(double));
+
+    // Failure case: reading vetor as a scalar.
+    try {
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        (*itor)["sc_position"].get();
+      }
+      ReportUnexpected("Reading sc_position field in FT2.root as a scalar succeeded");
+    } catch (const TipException & x) {
+      ReportExpected("Reading sc_position field in FT2.root as a scalar failed", x);
+    }
+
+    // Test correctness of native read.
     try {
       std::vector<double>::size_type index = 0;
       bool mismatch = false;
@@ -723,6 +819,174 @@ namespace tip {
     } catch (const TipException & x) {
       ReportUnexpected("TestTable::rootFt2Test had unexpected problem", x);
     }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        std::vector<float> sc_position;
+        (*itor)["sc_position"].get(sc_position);
+        bool mismatch = false;
+        if (sc_position[0] != float(expected_sc_pos[0])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "float(sc_position[0]) was " << sc_position[0] << ", not " << float(expected_sc_pos[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[1] != float(expected_sc_pos[1])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "float(sc_position[1]) was " << sc_position[1] << ", not " << float(expected_sc_pos[1]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[2] != float(expected_sc_pos[2])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "float(sc_position[2]) was " << sc_position[2] << ", not " << float(expected_sc_pos[2]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (!mismatch) {
+          ReportExpected("Reading sc_position field in FT2.root as a vector<float> succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading sc_position field in FT2.root as a vector<float> failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        std::vector<int> sc_position;
+        (*itor)["sc_position"].get(sc_position);
+        bool mismatch = false;
+        if (sc_position[0] != int(expected_sc_pos[0])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "int(sc_position[0]) was " << sc_position[0] << ", not " << int(expected_sc_pos[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[1] != int(expected_sc_pos[1])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "int(sc_position[1]) was " << sc_position[1] << ", not " << int(expected_sc_pos[1]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[2] != int(expected_sc_pos[2])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "int(sc_position[2]) was " << sc_position[2] << ", not " << int(expected_sc_pos[2]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (!mismatch) {
+          ReportExpected("Reading sc_position field in FT2.root as a vector<int> succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading sc_position field in FT2.root as a vector<int> failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      typedef unsigned int uint;
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        std::vector<uint> sc_position;
+        (*itor)["sc_position"].get(sc_position);
+        bool mismatch = false;
+        if (sc_position[0] != uint(expected_sc_pos[0])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "uint(sc_position[0]) was " << sc_position[0] << ", not " << uint(expected_sc_pos[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[1] != uint(expected_sc_pos[1])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "uint(sc_position[1]) was " << sc_position[1] << ", not " << uint(expected_sc_pos[1]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[2] != uint(expected_sc_pos[2])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "uint(sc_position[2]) was " << sc_position[2] << ", not " << uint(expected_sc_pos[2]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (!mismatch) {
+          ReportExpected("Reading sc_position field in FT2.root as a vector<uint> succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading sc_position field in FT2.root as a vector<uint> failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        std::vector<long> sc_position;
+        (*itor)["sc_position"].get(sc_position);
+        bool mismatch = false;
+        if (sc_position[0] != long(expected_sc_pos[0])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "long(sc_position[0]) was " << sc_position[0] << ", not " << long(expected_sc_pos[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[1] != long(expected_sc_pos[1])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "long(sc_position[1]) was " << sc_position[1] << ", not " << long(expected_sc_pos[1]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[2] != long(expected_sc_pos[2])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "long(sc_position[2]) was " << sc_position[2] << ", not " << long(expected_sc_pos[2]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (!mismatch) {
+          ReportExpected("Reading sc_position field in FT2.root as a vector<long> succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading sc_position field in FT2.root as a vector<long> failed", x);
+    }
+
+    // Test type conversions, just the first value of each loop.
+    try {
+      typedef unsigned long ulong;
+      for (Table::Iterator itor = m_root_ft2->begin(); itor != m_root_ft2->end(); ++itor) {
+        std::vector<ulong> sc_position;
+        (*itor)["sc_position"].get(sc_position);
+        bool mismatch = false;
+        if (sc_position[0] != ulong(expected_sc_pos[0])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "ulong(sc_position[0]) was " << sc_position[0] << ", not " << ulong(expected_sc_pos[0]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[1] != ulong(expected_sc_pos[1])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "ulong(sc_position[1]) was " << sc_position[1] << ", not " << ulong(expected_sc_pos[1]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (sc_position[2] != ulong(expected_sc_pos[2])) {
+          mismatch = true;
+          std::ostringstream os;
+          os << "ulong(sc_position[2]) was " << sc_position[2] << ", not " << ulong(expected_sc_pos[2]) << ", as expected";
+          ReportUnexpected(os.str());
+        }
+        if (!mismatch) {
+          ReportExpected("Reading sc_position field in FT2.root as a vector<ulong> succeeded");
+        }
+        break;
+      }
+    } catch (const TipException & x) {
+      ReportUnexpected("Reading sc_position field in FT2.root as a vector<ulong> failed", x);
+    }
+
   }
 
   Table * TestTable::getTable() {
