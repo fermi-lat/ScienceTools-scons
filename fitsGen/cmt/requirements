@@ -6,9 +6,11 @@ author James Chiang <jchiang@slac.stanford.edu>
 # $Id$
 
 use GlastPolicy v*
-use facilities v2r*
-use tip v2*
-use astro v1r*
+use facilities v*
+use tip v*
+use astro v*
+use st_facilities v*
+use dataSubselector v*
 
 apply_pattern package_include
 apply_pattern package_linkopts
