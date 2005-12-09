@@ -59,6 +59,7 @@ public:
 private:
 
    tip::Table * m_table;
+   tip::Table * m_gtiTable;
    tip::Table::Iterator m_it;
    long m_nrows;
 

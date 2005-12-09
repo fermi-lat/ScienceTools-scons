@@ -15,7 +15,8 @@
 
 namespace fitsGen {
 
-Ft1File::Ft1File(const std::string & outfile, long nrows) : m_table(0) {
+Ft1File::Ft1File(const std::string & outfile, long nrows) : 
+   m_table(0), m_gtiTable(0) {
    std::string ft1_template(std::getenv("FITSGENROOT") 
                             + std::string("/data/ft1.tpl"));
 
@@ -24,6 +25,8 @@ Ft1File::Ft1File(const std::string & outfile, long nrows) : m_table(0) {
    m_table = fileSvc.editTable(outfile, "EVENTS");
    m_table->setNumRecords(nrows);
    m_it = m_table->begin();
+
+   m_gtiTable = fileSvc.editTable(outfile, "GTI");
 }
 
 Ft1File::~Ft1File() {
@@ -41,7 +44,9 @@ Ft1File::~Ft1File() {
       }
    }
    Util::writeDateKeywords(m_table, start, stop);
+   Util::writeDateKeywords(m_gtiTable, start, stop);
    delete m_table;
+   delete m_gtiTable;
 }
 
 void Ft1File::next() {
