@@ -117,16 +117,25 @@ TTYPE14     = 'EVENT_CLASS'                             / event class: 0=Front c
 TFORM14     = 'I'                                       / data format of field: 2-byte signed INTEGER
 TLMIN14     =  0                                        / minimum value
 TLMAX14     =  32767                                    / maximum value
-TTYPE15     = 'PULSE_PHASE'                             / pulse phase of event arrival time
-TFORM15     = 'D'                                       / data format of field: 8-byte DOUBLE
-TUNIT15     = ''                                        / physical unit of field
-TLMIN15     = 0.0                                       / minimum value
-TLMAX15     = 1.0                                       / maximum value
-TTYPE16     = 'ORBITAL_PHASE'                           / orbital phase of binary system at event arrival time
+TTYPE15     = 'CONVERSION_TYPE'                         / type of conversion: 0=Front converting, 1=Back, 2=CAL only
+TFORM15     = 'I'                                       / data format of field: 2-byte signed INTEGER
+TLMIN15     =  0                                        / minimum value
+TLMAX15     =  32767                                    / maximum value
+TTYPE16     = 'LIVETIME'                                / Accumulated livetime since mission start
 TFORM16     = 'D'                                       / data format of field: 8-byte DOUBLE
-TUNIT16     = ''                                        / physical unit of field
+TUNIT16     = 's'                                       / physical unit of field
 TLMIN16     = 0.0                                       / minimum value
-TLMAX16     = 1.0                                       / maximum value
+TLMAX16     = 1.0D+10                                   / maximum value
+TTYPE17     = 'PULSE_PHASE'                             / pulse phase of event arrival time
+TFORM17     = 'D'                                       / data format of field: 8-byte DOUBLE
+TUNIT17     = ''                                        / physical unit of field
+TLMIN17     = 0.0                                       / minimum value
+TLMAX17     = 1.0                                       / maximum value
+TTYPE18     = 'ORBITAL_PHASE'                           / orbital phase of binary system at event arrival time
+TFORM18     = 'D'                                       / data format of field: 8-byte DOUBLE
+TUNIT18     = ''                                        / physical unit of field
+TLMIN18     = 0.0                                       / minimum value
+TLMAX18     = 1.0                                       / maximum value
 END
 
 XTENSION     = 'BINTABLE'                  / binary table extension

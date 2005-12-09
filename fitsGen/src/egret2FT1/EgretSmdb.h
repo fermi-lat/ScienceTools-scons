@@ -51,6 +51,8 @@ public:
 
    bool tascIn() const;
 
+   bool zenAngleCut(double nsigma=2.5) const;
+
    int eventClass() const;
    
    static void setMdjRef(double mjdref);

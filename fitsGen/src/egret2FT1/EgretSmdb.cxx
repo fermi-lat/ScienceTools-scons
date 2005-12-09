@@ -6,6 +6,10 @@
  * $Header$
  */
 
+#include <cmath>
+
+#include <algorithm>
+
 #include "tip/IFileSvc.h"
 
 #include "EgretSmdb.h"
@@ -66,6 +70,15 @@ bool EgretSmdb::tascIn() const {
       return true;
    }
    return false;
+}
+
+bool EgretSmdb::zenAngleCut(double nsigma) const {
+   static const double sig0(5.85);
+   static const double indx(-0.534);
+   double energy(m_row["gamma_ray_energy"].get());
+   double maxZenAngle(110. - nsigma*sig0*std::pow(energy/100., indx));
+   maxZenAngle = std::min(maxZenAngle, 105.);
+   return m_row["zenith_direction"].get()*180./M_PI <= maxZenAngle;
 }
 
 int EgretSmdb::eventClass() const {
