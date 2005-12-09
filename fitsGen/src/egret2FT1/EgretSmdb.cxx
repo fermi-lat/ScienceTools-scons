@@ -9,21 +9,41 @@
 #include <cmath>
 
 #include <algorithm>
+#include <iostream>
+#include <stdexcept>
+
+#include "facilities/Util.h"
 
 #include "tip/IFileSvc.h"
 
+#include "st_facilities/Util.h"
+
+#include "dataSubselector/Gti.h"
+
 #include "EgretSmdb.h"
 
-double EgretSmdb::s_mjdref(48368.);
+double EgretSmdb::s_mjdref(48361.);
 
 EgretSmdb::EgretSmdb(const std::string & smdbfile) :
    m_table(tip::IFileSvc::instance().readTable(smdbfile, "EGRET_SMDB")),
    m_it(m_table->begin()),
    m_row(*m_it),
-   m_nrows(m_table->getNumRecords()) {
+   m_nrows(m_table->getNumRecords()),
+   m_gti(0) {
+   
+   dataSubselector::Gti my_gti;
+   readEgretGtis(my_gti);
+
+   double start(arrivalTime());
+   m_it = end();
+   --m_it;
+   double stop(arrivalTime());
+   m_it = begin();
+   m_gti = new dataSubselector::Gti(my_gti.applyTimeRangeCut(start, stop));
 }
 
 EgretSmdb::~EgretSmdb() {
+   delete m_gti;
    delete m_table;
 }
 
@@ -85,4 +105,31 @@ int EgretSmdb::eventClass() const {
    char evt_class;
    m_row["ENERGY"].get(evt_class);
    return static_cast<int>(evt_class & 3);
+}
+
+void EgretSmdb::setMjdRef(double mjdref) {
+   s_mjdref = mjdref;
+}
+
+const dataSubselector::Gti & EgretSmdb::gti() const {
+   return *m_gti;
+}
+
+void EgretSmdb::readEgretGtis(dataSubselector::Gti & gti) {
+   char * fitsGenroot = ::getenv("FITSGENROOT");
+   if (!fitsGenroot) {
+      throw std::runtime_error("FITSGENROOT not set");
+   }
+   std::string infile(fitsGenroot);
+   infile += "/data/egret_gtis_tjd.dat";
+   std::vector<std::string> lines;
+   st_facilities::Util::file_ok(infile);
+   st_facilities::Util::readLines(infile, lines);
+   std::vector<std::string> tokens;
+   for (size_t i = 0; i < lines.size(); i++) {
+      facilities::Util::stringTokenize(lines.at(i), " ", tokens);
+      double t0((std::atof(tokens.at(0).c_str()) + 4e4 - s_mjdref)*8.64e4);
+      double t1((std::atof(tokens.at(1).c_str()) + 4e4 - s_mjdref)*8.64e4);
+      gti.insertInterval(t0, t1);
+   }
 }

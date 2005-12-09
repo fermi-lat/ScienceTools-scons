@@ -11,6 +11,9 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "dataSubselector/Gti.h"
+#include "dataSubselector/Cuts.h"
+
 #include "fitsGen/Ft1File.h"
 
 #include "EgretSmdb.h"
@@ -21,16 +24,19 @@ int main(int iargc, char * argv[]) {
       std::exit(1);
    }
 
+   dataSubselector::Cuts my_cuts;
    try {
       EgretSmdb egret(argv[1]);
       fitsGen::Ft1File ft1(argv[2], egret.nrows());
-   
+      
       ft1.header()["MJDREF"].set(EgretSmdb::mjdref());
       ft1.appendField("ARRIVAL_TJD", "D");
-
+      
       long nrows(0);
       for ( ; egret.itor() != egret.end(); egret.next()) {
-         if (egret.tascIn() && egret.zenAngleCut()) {
+         double arrivalTime(egret.arrivalTime());
+         if (egret.tascIn() && egret.zenAngleCut() &&
+             egret.gti().accept(arrivalTime)) {
             ft1["energy"].set(egret["gamma_ray_energy"]);
             ft1["ra"].set(egret["right_ascension"]*180./M_PI);
             ft1["dec"].set(egret["declination"]*180./M_PI);
@@ -39,7 +45,7 @@ int main(int iargc, char * argv[]) {
             ft1["zenith_angle"].set(egret["zenith_direction"]*180./M_PI);
             ft1["earth_azimuth_angle"].
                set(egret["azimuth_direction"]*180./M_PI);
-            ft1["time"].set(egret.arrivalTime());
+            ft1["time"].set(arrivalTime);
             ft1["arrival_tjd"].set(egret.arrivalTjd());
             ft1["event_class"].set(egret.eventClass());
             ft1.next();
@@ -47,7 +53,10 @@ int main(int iargc, char * argv[]) {
          }
       }
       ft1.setNumRows(nrows);
+      my_cuts.addGtiCut(egret.gti());
+      my_cuts.writeDssKeywords(ft1.header());
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
    }
+   my_cuts.writeGtiExtension(argv[2]);
 }

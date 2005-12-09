@@ -11,6 +11,10 @@
 
 #include "tip/Table.h"
 
+namespace dataSubselector {
+   class Gti;
+}
+
 /**
  * @class EgretSmdb
  * @brief Provide a convenient interface to tip access of EGRET
@@ -55,11 +59,15 @@ public:
 
    int eventClass() const;
    
-   static void setMdjRef(double mjdref);
+   static void setMjdRef(double mjdref);
    
    static double mjdref() {
       return s_mjdref;
    }
+
+   /// @return A Gti object containing the GTIs for this EgretSmdb
+   /// object based on the excluded times in the EGRET timeline file.
+   const dataSubselector::Gti & gti() const; 
 
 private:
 
@@ -68,7 +76,11 @@ private:
    tip::ConstTableRecord & m_row;
    long m_nrows;
 
+   dataSubselector::Gti * m_gti;
+
    static double s_mjdref;
+
+   void readEgretGtis(dataSubselector::Gti & gti);
 
 };
 
