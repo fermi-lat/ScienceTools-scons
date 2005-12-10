@@ -66,8 +66,9 @@ namespace astro {
         @param pixelx value of x pixel
         @param pixely value of y pixel
         @param projection  projection to use to obtain world coordinates
+        @param check  if false and the pixels are invalid, throw an exception. if true, make the direction invalid
         */
-        SkyDir(double pixelx, double pixely, const SkyProj& projection);
+        SkyDir(double pixelx, double pixely, const SkyProj& projection, bool check=false);
 
 
         //! function operator returns the direction
@@ -97,6 +98,9 @@ namespace astro {
         projection will be applied to (l,b) rather than (ra,dec)
         */
         std::pair<double,double> project(const SkyProj& projection) const;
+
+        //! check for validity: m_dir.z is made gt 1 if invalid
+        bool isValid()const{ return m_dir.z()<1.0; }
 
     private:
         static HepRotation s_equatorialToGalactic;

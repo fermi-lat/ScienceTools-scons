@@ -6,6 +6,8 @@
 $Id$
 
 @verbatim
+  v1r13    10-dec-05 THB SkyDir and SkyProj: allow check for invalid projected coords;
+                         SkyProj: add function to set a FITS image header
   v1r12p3  03-dec-05 THB Fix computation of longitude from position
   v1r12p2  03-dec-05 THB GPS mods to treat history file consistently
   v1r12p1  01-dec-05 THB unix fixes

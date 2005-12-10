@@ -302,6 +302,8 @@ void SkyProj::init(const std::string &projName,
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);
     m_wcs->flag = -1;
 
+    m_projName = projName; // save for user access
+
     m_wcspih_used = false;
 
     int naxis = 2;
