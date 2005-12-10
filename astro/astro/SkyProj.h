@@ -15,6 +15,7 @@ $Header$
 
 // forward declaration
 struct wcsprm;
+namespace tip { class Header;}
 
 namespace astro {
 
@@ -166,6 +167,13 @@ namespace astro {
         */
         std::pair<double,double> range(double x1, bool xvar);
         
+        /** @brief returns 0 if point (x1,x2) is in range */
+        int SkyProj::testpix2sph(double x1, double x2)const;
+
+        /** @brief set appropriate keywords in the FITS header
+
+        */
+        void setKeywords(tip::Header& header);
 
        class Exception : public std::exception 
        {
@@ -188,8 +196,6 @@ namespace astro {
             double* crpix, double* crval, double* cdelt, 
             double lonpole, double latpole, double crota2, bool galactic);
         
-        /** @brief returns 0 if point (x1,x2) is in range */
-        int SkyProj::testpix2sph(double x1, double x2);
         
         /* Structure defined in WCSLIB wcs.h.  This contains all
         projection information. */

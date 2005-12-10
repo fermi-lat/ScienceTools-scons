@@ -282,7 +282,7 @@ std::pair<double,double> SkyProj::range(double x1,bool xvar) {
 
 /*@brief determines if a pixel coordinate is in 
     the scope of the projection*/
-int SkyProj::testpix2sph(double x1, double x2) {
+int SkyProj::testpix2sph(double x1, double x2) const{
     int ncoords = 1;
     int nelem = 2;
     double worldcrd[2], imgcrd[2];
@@ -443,3 +443,46 @@ const char * SkyProj::Exception::what() const throw() {
    ::strncpy(buf, msg.str().c_str(), sizeof(buf));
    return buf;
 }
+
+namespace {
+        tip::Header* header;
+
+template <typename T>
+        void setKey(std::string name, T value, std::string unit="", std::string comment=""){
+            (*header)[name].set( value); 
+            (*header)[name].setUnit(unit);
+            (*header)[name].setComment(comment);
+        }
+}
+void SkyProj::setKeywords(tip::Header& hdr)
+{
+    header = &hdr;
+    setKey("TELESCOP", "GLAST");
+
+    setKey("INSTRUME", "LAT SIMULATION");
+
+    setKey("DATE-OBS", "");
+    setKey("DATE-END", "");
+    setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
+
+    setKey("CTYPE1", m_wcs->ctype[0]
+        ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
+    setKey("CRPIX1",  m_wcs->crpix[0],"","Reference pixel"); 
+    setKey("CRVAL1",  m_wcs->crval[0], "deg", "RA or GLON at the reference pixel");
+    setKey("CDELT1",  m_wcs->cdelt[0],"",
+        "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
+
+    setKey("CTYPE2",  m_wcs->ctype[1]
+        ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
+
+    setKey("CRPIX2",  m_wcs->crpix[1],"","Reference pixel");
+    setKey("CRVAL2",  m_wcs->crval[1], "deg", "DEC or GLAT at the reference pixel"); 
+    setKey("CDELT2",  m_wcs->cdelt[1],"",
+        "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
+
+    // todo: fix these
+    setKey("CROTA2",  0, "", "Image rotation (deg)");
+    setKey("LONPOLE", 180.0, "deg", "longitude of celestial pole");
+    setKey("LATPOLE", 0,     "deg", "latitude of celestial pole");
+}
+
