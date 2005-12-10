@@ -15,6 +15,8 @@
 
 #include <string>
 #include <vector>
+
+//does not work? namespace tip { class Image; }
 #include "tip/Image.h"
 
 namespace astro { class SkyDir; }
@@ -41,8 +43,20 @@ public:
         @param extension Name of an extension: if blank, assume primary
 
     */
-    SkyImage(const std::string& filename, const std::string& extension="");
 
+    
+    SkyImage(const std::string& filename, const std::string& extension="");
+    /** @brief create an image, using the projection
+    @param center coords of image center
+    @param outputFile FITS file to write the image to
+    @param pixel_size [0.5] degree size of indivitual pixel
+    @param fov [20] (degrees0 size of field of view, square. must be less than 90
+    
+    */
+
+    SkyImage(const astro::SkyDir& center,  
+                   const std::string& outputFile, 
+                   double pixel_size=0.5, double fov=20, int layers=1);
     /**
         @brief add a count to the map, using current SkyDir projection
         @param dir A SkyDir object
@@ -77,6 +91,9 @@ public:
 
     //! @brief return the sum of all pixel values in the image
     double total()const{return m_total;}
+    double minimum()const{return m_min;}
+    double maximum()const{return m_max;}
+    double count()const{return m_count;}
 
     /** @brief get value of the pixel at given skydir location
         @param pos position in the sky
@@ -97,6 +114,7 @@ public:
     double operator()(const astro::SkyDir& s)const;
 
 private:
+    void setupImage(const std::string& outputFile,  bool clobber=true);
     //! @brief internal routine to convert SkyDir to pixel index
     unsigned int pixel_index(const astro::SkyDir& pos, int layer=-1) const;
 
@@ -105,7 +123,9 @@ private:
 
     //! sizes of the respective axes.
     int   m_naxis1, m_naxis2, m_naxis3;
-    double m_total;
+
+    //! for statistics of a fill
+    double m_total, m_sumsq, m_count, m_min, m_max;
     //! pointer to the associated tip Image class
     tip::Image* m_image;
 

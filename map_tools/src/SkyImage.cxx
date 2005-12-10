@@ -9,7 +9,10 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
+
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
+
 #include <stdexcept>
 #include <sstream>
 #include <errno.h> // to test result of std::remove()
@@ -17,6 +20,7 @@ $Header$
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
+#if 0
     //! @brief add a string or double key or whatever to the image 
     tip::Header* header;
     template <typename T>
@@ -25,8 +29,30 @@ namespace {
             (*header)[name].setUnit(unit);
             (*header)[name].setComment(comment);
         }
+#endif
 }
 using namespace map_tools;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SkyImage::SkyImage(const astro::SkyDir& center,  
+                   const std::string& outputFile, 
+                   double pixel_size, double fov, int layers)
+: m_naxis3(layers)  
+, m_image(0)
+, m_save(true)
+, m_layer(0)
+{
+    // 
+    int npixel = static_cast<int>(fov/pixel_size + 0.5);
+    m_naxis1 = m_naxis2 = npixel;
+
+    double crpix[2] = { npixel/2+0.5, npixel/2+0.5};
+    double crval[2] = { center.ra(), center.dec()};
+    double cdelt[2] = { -pixel_size, pixel_size };
+    // note that ZEA is wired in here. Could be made an arg
+    m_wcs = new astro::SkyProj("ZEA", crpix, crval, cdelt);
+    this->setupImage(outputFile);
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const map_tools::MapParameters& pars)
@@ -41,7 +67,6 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 {
     using namespace astro;
     std::string ptype(pars.projType());
-    std::string extension("skyimage"); // maybe a parameter?
     double pixelsize = pars["pixelsize"];
 
     if( m_naxis1==0){
@@ -72,56 +97,36 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
         crota2=pars.rot();
     m_wcs = new astro::SkyProj( pars.projType(), crpix, crval, cdelt, crota2, galactic);
 
+    setupImage(pars.outputFile(),  pars.clobber());
+}
+void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
+{
+    std::string extension("skyimage"); // maybe a parameter?
+
+    if( clobber ){
+        int rc = std::remove(outputFile.c_str());
+        if( rc==-1 && errno ==EACCES ) throw std::runtime_error(
+            std::string("SkyImage: cannot remove file "+outputFile)
+            );
+    }
+
     // setup the image: it needs an axis dimension array and the file name to write to
     std::vector<long> naxes(3);
     naxes[0]=m_naxis1;
     naxes[1]=m_naxis2;
     naxes[2]=m_naxis3;
 
-    if( pars.clobber() ){
-        int rc = std::remove(pars.outputFile().c_str());
-        if( rc==-1 && errno ==EACCES ) throw std::runtime_error(
-            std::string("SkyImage: cannot remove file "+pars.outputFile())
-            );
-    }
     // now add an image to the file
-    tip::IFileSvc::instance().appendImage(pars.outputFile(), extension, naxes);
-    m_image = tip::IFileSvc::instance().editImage(pars.outputFile(), extension);
+    tip::IFileSvc::instance().appendImage(outputFile, extension, naxes);
+    m_image = tip::IFileSvc::instance().editImage(outputFile, extension);
 
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
     m_imageData.resize(m_pixelCount);
 
     // fill the boundaries with NaN
-    if( pars.projType()!="CAR") clear();
+    //if( pars.projType()!="CAR") clear();
 
-    header = &m_image->getHeader();// set up the anonymous convenience functions
-
-    setKey("TELESCOP", "GLAST");
-
-    setKey("INSTRUME", "LAT SIMULATION");
-
-    setKey("DATE-OBS", "");
-    setKey("DATE-END", "");
-    setKey("EQUINOX", 2000.0,"","Equinox of RA & DEC specifications");
-
-    setKey("CTYPE1", std::string(galactic?"GLON-":"RA---")+ pars.projType()
-        ,"","[RA|GLON]---%%%, %%% represents the projection method such as AIT");
-    setKey("CRPIX1",  crpix[0],"","Reference pixel"); 
-    setKey("CRVAL1",  crval[0], "deg", "RA or GLON at the reference pixel");
-    setKey("CDELT1",  cdelt[0],"",
-        "X-axis incr per pixel of physical coord at position of ref pixel(deg)");
-
-    setKey("CTYPE2",  std::string(galactic?"GLAT-":"DEC--")+ pars.projType()
-        ,"","[DEC|GLAT]---%%%, %%% represents the projection method such as AIT");
-
-    setKey("CRPIX2",  crpix[1],"","Reference pixel");
-    setKey("CRVAL2",  crval[1], "deg", "DEC or GLAT at the reference pixel"); 
-    setKey("CDELT2",  cdelt[1],"",
-        "Y-axis incr per pixel of physical coord at position of ref pixel(deg)");
-
-    setKey("CROTA2",  crota2, "", "Image rotation (deg)");
-    setKey("LONPOLE", 180.0, "deg", "longitude of celestial pole");
-    setKey("LATPOLE", 0,     "deg", "latitude of celestial pole");
+    m_wcs->setKeywords(m_image->getHeader());
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
@@ -173,29 +178,31 @@ void SkyImage::checkLayer(unsigned int layer)const
             << " not compatible with axis3: " << m_naxis3 << std::endl;
         throw std::out_of_range(errmsg.str());
     }
-
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
 {
     checkLayer(layer);
+    m_total=m_count=m_sumsq=0;
+    m_min=1e10;m_max=-1e10;
     int offset = m_naxis1* m_naxis2 * layer;
-    std::pair<double,double> yrange = m_wcs->range((m_naxis1)/2.0,false); //determine the y range in the middle of the transform
     for( size_t k = 0; k< (unsigned int)(m_naxis1)*(m_naxis2); ++k){
         size_t kk = k%(unsigned int)(m_naxis1* m_naxis2);
         // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
             x = static_cast<int>(k%m_naxis1)+1.0, 
             y = static_cast<int>(k/m_naxis1)+1.0;
-        std::pair<double,double> xrange = m_wcs->range(y,true);  //determine x range for current y
-        if(x<xrange.first && x>xrange.second && y<yrange.first && y>yrange.second) {  //if bin center is in transformation, add it
+        if( m_wcs->testpix2sph(x,y)==0) {
             astro::SkyDir dir(x,y, *m_wcs);
             double t= req(dir);
             m_imageData[k+offset] = t;
             m_total += t;
-        }
-        else{ 
-            // any exception: just fill in a NaN
+            ++m_count;
+            m_sumsq += t*t;
+            m_min = t<m_min? t:m_min;
+            m_max = t>m_max? t:m_max;
+        }else{
+            // not valid (off the edge, perhaps)
             m_imageData[k+offset]=dnan; 
         }
     }
