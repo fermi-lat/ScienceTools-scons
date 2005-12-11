@@ -23,7 +23,32 @@ using namespace astro;
 #include <cmath>
 #include <cassert>
 
+namespace{
+/** @class SkyProjException
+    @brief local std::exception to implement a what method with the status code
+*/
+class SkyProjException : public std::exception 
+{
+public:
+    SkyProjException(int status=0) 
+        : m_status(status)
+    {}
 
+    virtual ~SkyProjException() throw() {}
+    virtual const char *what() const throw(){
+        std::stringstream msg; 
+        msg << "SkyProj wcslib error "<< m_status << " : ";
+        if(  m_status<1 || m_status>11 ) msg << " unknown error";
+        else msg << wcs_errmsg[m_status];
+        static char  buf[80];
+        ::strncpy(buf, msg.str().c_str(), sizeof(buf));
+        return buf;
+    }
+    int status()const throw(){return m_status;}
+private:
+    int m_status;
+};
+}
 SkyProj::SkyProj(const std::string &projName, 
                  double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)                
 {
@@ -131,7 +156,7 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
 
     int status = wcsset2(m_wcs);
     if (status !=0) {
-        throw SkyProj::Exception(status );
+        throw SkyProjException(status );
     }
 
     //  wcsprt(&m_wcs[0]); 
@@ -167,7 +192,7 @@ std::pair<double,double> SkyProj::sph2pix(double s1, double s2) const
     double worldcrd[] ={s1,s2};
 
     int returncode = wcss2p(m_wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
-    if ( returncode != 0 ) throw SkyProj::Exception(returncode);
+    if ( returncode != 0 ) throw SkyProjException(returncode);
 
     return std::make_pair(pixcrd[0],pixcrd[1]);
 }
@@ -183,7 +208,7 @@ std::pair<double,double> SkyProj::pix2sph(double x1, double x2) const
     double pixcrd[] = {x1,x2};;
 
     int returncode = wcsp2s(m_wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
-    if ( returncode != 0 ) throw SkyProj::Exception(returncode);
+    if ( returncode != 0 ) throw SkyProjException(returncode);
 
     double s1 = worldcrd[0];
 
@@ -340,7 +365,7 @@ void SkyProj::init(const std::string &projName,
     
     int status = wcsset2(m_wcs);
     if (status !=0) {
-        throw SkyProj::Exception(status );
+        throw SkyProjException(status );
     }
     
     //determine bounding box
@@ -435,15 +460,6 @@ void SkyProj::findBound(double* crpix) {
         delt=delt/2;
     }
     limit[3]=x1;
-}
-const char * SkyProj::Exception::what() const throw() {
-   std::stringstream msg; 
-   msg << "SkyProj wcslib error "<< m_status << " : ";
-   if(  m_status<1 || m_status>11 ) msg << " unknown error";
-   else msg << wcs_errmsg[m_status];
-   static char  buf[80];
-   ::strncpy(buf, msg.str().c_str(), sizeof(buf));
-   return buf;
 }
 
 namespace {

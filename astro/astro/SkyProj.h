@@ -175,20 +175,6 @@ namespace astro {
         */
         void setKeywords(tip::Header& header);
 
-       class Exception : public std::exception 
-       {
-       public:
-          Exception() {}
-          Exception(int status) 
-             : m_status(status)
-             {}
-          
-          virtual ~Exception() throw() {}
-          virtual const char *what() const throw();
-          int status()const throw(){return m_status;}
-       private:
-          int m_status;
-       };
        std::string projType()const{return m_projName;}///< access to the projection
     private:
 
