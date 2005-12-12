@@ -395,7 +395,7 @@ namespace st_graph {
   }
 
   void RootPlotFrame::display2d(std::vector<TAxis *> & axes) {
-    axes.assign(3, 0);
+    axes.assign(3, (TAxis *)(0));
 
     // Create or get parent multi-graph.
     getMultiGraph();
@@ -444,7 +444,7 @@ namespace st_graph {
   }
 
   void RootPlotFrame::display3d(std::vector<TAxis *> & axes) {
-    axes.assign(3, 0);
+    axes.assign(3, (TAxis *)(0));
 
     if (m_plots.empty()) return;
     std::list<RootPlot *>::iterator itor = m_plots.begin();
