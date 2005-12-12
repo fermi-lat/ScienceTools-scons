@@ -157,7 +157,7 @@
    <source name="Geminga_Pulsar">
       <spectrum escale="MeV">
          <SpectrumClass name="Pulsar"
-          params="0.133,1.66,0.2371,1.098e-14,0,$(OBSERVATIONSIMROOT)/data/GemingaTemplate.dat,0,20,2e5"/>
+          params="0.102,1.66,0.2371,1.098e-14,0,$(OBSERVATIONSIMROOT)/data/GemingaTemplate.dat,0,20,2e5"/>
          <celestial_dir ra="98.49" dec="17.86"/>
       </spectrum>
    </source>
