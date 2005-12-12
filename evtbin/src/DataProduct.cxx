@@ -144,6 +144,7 @@ namespace evtbin {
     int num_dss_keys = 0;
     try {
       header["NDSKEYS"].get(num_dss_keys);
+      m_known_keys.push_back("NDSKEYS");
     } catch (...) {
     }
 
