@@ -11,6 +11,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "st_facilities/FitsUtil.h"
+
 #include "dataSubselector/Gti.h"
 #include "dataSubselector/Cuts.h"
 
@@ -59,4 +61,5 @@ int main(int iargc, char * argv[]) {
       std::cout << eObj.what() << std::endl;
    }
    my_cuts.writeGtiExtension(argv[2]);
+   st_facilities::FitsUtil::writeChecksums(argv[2]);
 }

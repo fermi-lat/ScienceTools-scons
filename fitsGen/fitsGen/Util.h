@@ -34,8 +34,8 @@ public:
    static void getFileNames(int iargc, char * argv[], std::string & rootFile,
                             std::string & fitsFile);
 
-   static void writeDateKeywords(tip::Table * table, double start_time,
-                                 double stop_time);
+   static void writeDateKeywords(tip::Extension * table, double start_time,
+                                 double stop_time, bool extension=true);
 
    static astro::JulianDate currentTime();
 

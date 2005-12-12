@@ -44,8 +44,8 @@ void Util::getFileNames(int iargc, char * argv[], std::string & rootFile,
    }
 }
 
-void Util::writeDateKeywords(tip::Table * table, double start_time, 
-                             double stop_time) {
+void Util::writeDateKeywords(tip::Extension * table, double start_time, 
+                             double stop_time, bool extension) {
    static double secsPerDay(8.64e4);
    tip::Header & header = table->getHeader();
    astro::JulianDate current_time = currentTime();
@@ -62,16 +62,19 @@ void Util::writeDateKeywords(tip::Table * table, double start_time,
       header["DATE-END"].set(date_stop.getGregorianDate());
    } catch (...) {
    }
-   double duration = stop_time - start_time;
-   try {
-      header["TSTART"].set(start_time);
-      header["TSTOP"].set(stop_time);
-   } catch (...) {
-   }
-   try {
-      header["ONTIME"].set(duration);
-      header["TELAPSE"].set(duration);
-   } catch (...) {
+   if (extension) {
+// Do not write these keywords if this is the primary HDU.
+      double duration = stop_time - start_time;
+      try {
+         header["TSTART"].set(start_time);
+         header["TSTOP"].set(stop_time);
+      } catch (...) {
+      }
+      try {
+         header["ONTIME"].set(duration);
+         header["TELAPSE"].set(duration);
+      } catch (...) {
+      }
    }
 }
 

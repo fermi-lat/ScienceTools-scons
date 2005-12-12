@@ -33,6 +33,8 @@ public:
 
    ~Ft1File();
 
+   void close();
+
    void next();
 
    tip::TableCell & operator[](const std::string & fieldname) {
@@ -56,12 +58,19 @@ public:
    /// @return The EVENTS extension FITS header.
    tip::Header & header();
 
+   void setObsTimes(double start, double stop);
+
 private:
 
+   std::string m_outfile;
    tip::Table * m_table;
-   tip::Table * m_gtiTable;
    tip::Table::Iterator m_it;
    long m_nrows;
+
+   double m_startTime;
+   double m_stopTime;
+
+   void verifyObsTimes();
 
 };
 

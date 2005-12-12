@@ -1,6 +1,6 @@
 /**
  * @file makeFT2.cxx
- * @brief Convert Root D2 data from Gleam to FT2 format using Goodi.
+ * @brief Convert Root D2 data from Gleam to FT2 format.
  * @author J. Chiang
  *
  * $Header$

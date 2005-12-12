@@ -6,9 +6,12 @@
  * $Header$
  */
 
+#include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/Util.h"
@@ -16,7 +19,7 @@
 namespace fitsGen {
 
 Ft1File::Ft1File(const std::string & outfile, long nrows) : 
-   m_table(0), m_gtiTable(0) {
+   m_outfile(outfile), m_table(0), m_startTime(-1), m_stopTime(-1) {
    std::string ft1_template(std::getenv("FITSGENROOT") 
                             + std::string("/data/ft1.tpl"));
 
@@ -25,28 +28,30 @@ Ft1File::Ft1File(const std::string & outfile, long nrows) :
    m_table = fileSvc.editTable(outfile, "EVENTS");
    m_table->setNumRecords(nrows);
    m_it = m_table->begin();
-
-   m_gtiTable = fileSvc.editTable(outfile, "GTI");
 }
 
 Ft1File::~Ft1File() {
-// Infer start and stop times from events.  The entries may not be
-// ordered, so we need to loop over the entire dataset.
-   m_it = begin();
-   double start((*m_it)["TIME"].get());
-   double stop(start);
-   for ( ; m_it != end(); ++m_it) {
-      double time((*m_it)["TIME"].get());
-      if (time < start) {
-         start = time;
-      } else if (time > stop) {
-         stop = time;
-      }
+   close();
+}
+
+void Ft1File::close() {
+   verifyObsTimes();
+
+   if (m_table) {
+      Util::writeDateKeywords(m_table, m_startTime, m_stopTime);
+      delete m_table;
+      m_table = 0;
+
+      tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
+
+      tip::Table * gtiTable(fileSvc.editTable(m_outfile, "GTI"));
+      Util::writeDateKeywords(gtiTable, m_startTime, m_stopTime);
+      delete gtiTable;
+
+      tip::Image * phdu(fileSvc.editImage(m_outfile, ""));
+      Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false);
+      delete phdu;
    }
-   Util::writeDateKeywords(m_table, start, stop);
-   Util::writeDateKeywords(m_gtiTable, start, stop);
-   delete m_table;
-   delete m_gtiTable;
 }
 
 void Ft1File::next() {
@@ -77,5 +82,36 @@ tip::Table::Iterator Ft1File::itor() {
 tip::Header & Ft1File::header() {
    return m_table->getHeader();
 }
+
+void Ft1File::setObsTimes(double start, double stop) {
+   m_startTime = start;
+   m_stopTime = stop;
+}
+
+void Ft1File::verifyObsTimes() {
+// Infer start and stop times from events if necessary.  The entries
+// may not be ordered, so we need to loop over the entire dataset.
+   double start, stop;
+   if (m_startTime < 0 || m_stopTime < 0) {
+      m_it = begin();
+      start = (*m_it)["TIME"].get();
+      stop = start;
+      for ( ; m_it != end(); ++m_it) {
+         double time((*m_it)["TIME"].get());
+         if (time < start) {
+            start = time;
+         } else if (time > stop) {
+            stop = time;
+         }
+      }
+   }
+   if (m_startTime < 0) {
+      m_startTime = start;
+   }
+   if (m_stopTime < 0) {
+      m_stopTime = stop;
+   }
+}
+
 
 } // namespace fitsGen

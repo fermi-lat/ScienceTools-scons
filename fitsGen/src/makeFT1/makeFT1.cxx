@@ -15,6 +15,8 @@
 
 #include "astro/SkyDir.h"
 
+#include "st_facilities/FitsUtil.h"
+
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
 #include "fitsGen/Util.h"
@@ -71,5 +73,6 @@ int main(int iargc, char * argv[]) {
       return 1;
    }
    my_cuts.writeGtiExtension(fitsFile);
+   st_facilities::FitsUtil::writeChecksums(fitsFile);
 }
 
