@@ -1,6 +1,6 @@
 /**
  * @file makeFT2.cxx
- * @brief Convert ascii D2 data from Gleam to FT2 format using Goodi.
+ * @brief Convert ascii D2 data from Gleam to FT2.
  * @author J. Chiang
  *
  * $Header$
@@ -18,12 +18,9 @@
 
 #include "facilities/Util.h"
 
-#include "tip/IFileSvc.h"
-#include "tip/Table.h"
-#include "tip/Header.h"
-
 #include "astro/EarthCoordinate.h"
 
+#include "fitsGen/Ft2File.h"
 #include "fitsGen/Util.h"
 
 using namespace fitsGen;
@@ -65,16 +62,8 @@ int main(int iargc, char * argv[]) {
       ::getFileNames(iargc, argv, pointingFile, fitsFile);
       unsigned long nrows = ::count_lines(pointingFile);
 
-// Create the FT2 file.
-      std::string ft2Template = std::getenv("FITSGENROOT")
-         + std::string("/data/ft2.tpl");
-      tip::IFileSvc::instance().createFile(fitsFile, ft2Template);
-      tip::Table * scDataTable =
-         tip::IFileSvc::instance().editTable(fitsFile, "Ext1");
-      scDataTable->setNumRecords(nrows);
-      tip::Table::Iterator ft2_iter = scDataTable->begin();
-      tip::Table::Record & ft2 = *ft2_iter;
-
+      fitsGen::Ft2File ft2(fitsFile, nrows);
+      
       std::ifstream d2(pointingFile.c_str());
       std::string line;
       std::vector<std::string> dataFields;
@@ -104,31 +93,31 @@ int main(int iargc, char * argv[]) {
          } else {
             ft2["in_saa"].set(false);
          }
-         ++ft2_iter;
+         ft2.next();
       }
-// Get stop times. This is painful and ugly since Table::Iterator is
-// not random access.
-      ft2_iter = scDataTable->begin();
-      ++ft2_iter;
+
+// Get stop times. This is painful since Table::Iterator is not random
+// access.
+      ft2.itor() = ft2.begin();
+      ft2.next();
       double start_time;
-      for ( ; ft2_iter != scDataTable->end(); ++ft2_iter) {
+      for ( ; ft2.itor() != ft2.end(); ft2.next()) {
          start_time = ft2["start"].get();
-         --ft2_iter;
+         ft2.prev();
          ft2["stop"].set(start_time);
-         ++ft2_iter;
+         ft2.next();
       }
-      ft2_iter = scDataTable->end();
-      --ft2_iter;
-      --ft2_iter;
+      ft2.itor() = ft2.end();
+      ft2.prev();
+      ft2.prev();
       double time_step = start_time - ft2["start"].get();
-      ft2_iter = scDataTable->end();
-      --ft2_iter;
+      ft2.next();
       double stop_time = start_time + time_step;
       ft2["stop"].set(stop_time);
 
 // sigh, *now* we can fill in the livetime
-      ft2_iter = scDataTable->begin();
-      for ( ; ft2_iter != scDataTable->end(); ++ft2_iter) {
+      ft2.itor() = ft2.begin();
+      for ( ; ft2.itor() != ft2.end(); ft2.next()) {
          double full_interval(ft2["stop"].get() - ft2["start"].get());
          double fraction(0.90);
          ft2["livetime"].set(fraction*full_interval);
@@ -141,8 +130,12 @@ int main(int iargc, char * argv[]) {
          }
       }
 
-      Util::writeDateKeywords(scDataTable, start_time, stop_time);
-      delete scDataTable;
+      ft2.itor() = ft2.begin();
+      double start(ft2["start"].get());
+      ft2.itor() = ft2.end();
+      ft2.prev();
+      double stop(ft2["stop"].get());
+      ft2.setObsTimes(start, stop);
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
       std::exit(1);

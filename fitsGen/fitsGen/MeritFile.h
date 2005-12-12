@@ -36,6 +36,8 @@ public:
 
    void next();
 
+   void prev();
+
    double operator[](const std::string & fieldname) const;
 
    tip::ConstTableRecord & row() const {
@@ -50,7 +52,7 @@ public:
 
    tip::Table::ConstIterator end() const;
 
-   tip::Table::ConstIterator itor() const;
+   tip::Table::ConstIterator & itor();
 
    /// @return A Gti object containing the GTIs for this merit file.
    /// This comprises just the beginning and end times for the data.

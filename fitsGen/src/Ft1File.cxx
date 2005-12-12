@@ -26,7 +26,7 @@ Ft1File::Ft1File(const std::string & outfile, long nrows) :
    tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
    fileSvc.createFile(outfile, ft1_template);
    m_table = fileSvc.editTable(outfile, "EVENTS");
-   m_table->setNumRecords(nrows);
+   setNumRows(nrows);
    m_it = m_table->begin();
 }
 
@@ -60,6 +60,7 @@ void Ft1File::next() {
 
 void Ft1File::setNumRows(long nrows) {
    m_table->setNumRecords(nrows);
+   m_nrows = nrows;
 }
 
 void Ft1File::appendField(const std::string & colname,
@@ -75,7 +76,7 @@ tip::Table::Iterator Ft1File::end() {
    return m_table->end();
 }
 
-tip::Table::Iterator Ft1File::itor() {
+tip::Table::Iterator & Ft1File::itor() {
    return m_it;
 }
 

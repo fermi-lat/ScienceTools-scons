@@ -13,6 +13,8 @@
 #include "tip/Table.h"
 #include "tip/Header.h"
 
+#include "fitsGen/Ft2File.h"
+#include "fitsGen/MeritFile.h"
 #include "fitsGen/Util.h"
 
 using namespace fitsGen;
@@ -24,64 +26,48 @@ int main(int iargc, char * argv[]) {
 
       Util::getFileNames(iargc, argv, rootFile, fitsFile);
 
-      tip::Table * pointingTable = 
-         tip::IFileSvc::instance().editTable(rootFile, "Exposure");
-      long nrows = pointingTable->getNumRecords();
-      tip::Table::Iterator pointing_iter = pointingTable->begin();
-      tip::Table::Record & pointing = *pointing_iter;
+      fitsGen::MeritFile pointing(rootFile, "Exposure");
+      fitsGen::Ft2File ft2(fitsFile, pointing.nrows());
 
-// Create the FT2 file.
-      std::string ft2Template = std::getenv("FITSGENROOT")
-         + std::string("/data/ft2.tpl");
-      tip::IFileSvc::instance().createFile(fitsFile, ft2Template);
-      tip::Table * scDataTable =
-         tip::IFileSvc::instance().editTable(fitsFile, "Ext1");
-      scDataTable->setNumRecords(nrows);
-      tip::Table::Iterator ft2_iter = scDataTable->begin();
-      tip::Table::Record & ft2 = *ft2_iter;
-
-      for (; pointing_iter != pointingTable->end(); 
-           ++pointing_iter, ++ft2_iter) {
-         ft2["start"].set(pointing["elapsed_time"].get());
+      for ( ; pointing.itor() != pointing.end(); pointing.next(), ft2.next()) {
+         ft2["start"].set(pointing["elapsed_time"]);
          tip::Table::Vector<float> scPosition = ft2["sc_position"];
 // @todo check units (FT2 specifies sc_position in m)
-         scPosition[0] = pointing["posx"].get();
-         scPosition[1] = pointing["posy"].get();
-         scPosition[2] = pointing["posz"].get();
-         ft2["lat_geo"].set(pointing["lat"].get());
-         ft2["lon_geo"].set(pointing["lon"].get());
+         scPosition[0] = pointing["posx"];
+         scPosition[1] = pointing["posy"];
+         scPosition[2] = pointing["posz"];
+         ft2["lat_geo"].set(pointing["lat"]);
+         ft2["lon_geo"].set(pointing["lon"]);
 // @todo check units (FT2 specifies rad_geo in km)
-         ft2["rad_geo"].set(pointing["alt"].get());
-         ft2["ra_scz"].set(pointing["raz"].get());
-         ft2["dec_scz"].set(pointing["decz"].get());
-         ft2["ra_scx"].set(pointing["rax"].get());
-         ft2["dec_scx"].set(pointing["decx"].get());
+         ft2["rad_geo"].set(pointing["alt"]);
+         ft2["ra_scz"].set(pointing["raz"]);
+         ft2["dec_scz"].set(pointing["decz"]);
+         ft2["ra_scx"].set(pointing["rax"]);
+         ft2["dec_scx"].set(pointing["decx"]);
       }
 
 // Get stop times. This is complicated since Table::Iterator is not
 // random access.
-      pointing_iter = pointingTable->begin();
-      ++pointing_iter;
-      ft2_iter = scDataTable->begin();
+      pointing.itor() = pointing.begin();
+      pointing.next();
+      ft2.itor() = ft2.begin();
       double start_time = ft2["start"].get();
-      for (; pointing_iter != pointingTable->end(); 
-           ++pointing_iter, ++ft2_iter) {
-         ft2["stop"].set(pointing["elapsed_time"].get());
+      for (; pointing.itor() != pointing.end();  pointing.next(), ft2.next()) {
+         ft2["stop"].set(pointing["elapsed_time"]);
       }
 // Compute the last stop time based on the last interval of start times.
-      pointing_iter = pointingTable->end();
-      --pointing_iter;
-      --pointing_iter;
-      double t1 = pointing["elapsed_time"].get();
-      ++pointing_iter;
-      double t2 = pointing["elapsed_time"].get();
+      pointing.itor() = pointing.end();
+      pointing.prev();
+      pointing.prev();
+      double t1 = pointing["elapsed_time"];
+      pointing.next();
+      double t2 = pointing["elapsed_time"];
       double stop_time = 2.*t2 - t1;
-      ft2_iter = scDataTable->end();
-      --ft2_iter;
+      ft2.itor() = ft2.end();
+      ft2.prev();
       ft2["stop"].set(stop_time);
 
-      Util::writeDateKeywords(scDataTable, start_time, stop_time);
-      delete scDataTable;
+      ft2.setObsTimes(start_time, stop_time);
    } catch (std::exception &eObj) {
       std::cout << eObj.what() << std::endl;
       std::exit(1);

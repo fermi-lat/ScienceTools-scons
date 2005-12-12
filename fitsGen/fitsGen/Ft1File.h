@@ -53,7 +53,7 @@ public:
 
    tip::Table::Iterator end();
 
-   tip::Table::Iterator itor();
+   tip::Table::Iterator & itor();
 
    /// @return The EVENTS extension FITS header.
    tip::Header & header();
