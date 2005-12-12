@@ -29,6 +29,8 @@
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
 
+#include "fitsGen/Ft1File.h"
+
 #include "flux/EventSource.h"
 
 #include "st_facilities/FitsUtil.h"
@@ -218,50 +220,31 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
 
 void EventContainer::writeEvents(double obsStopTime) {
 
-   std::string ft1File = outputFileName();
-   tip::IFileSvc::instance().createFile(ft1File, m_ftTemplate);
-   tip::Table * my_table = 
-      tip::IFileSvc::instance().editTable(ft1File, m_tablename);
-   my_table->appendField("MC_SRC_ID", "1I");
-   my_table->setNumRecords(m_events.size());
-   tip::Table::Iterator it = my_table->begin();
-   tip::Table::Record & row = *it;
+   std::string ft1File(outputFileName());
+   fitsGen::Ft1File ft1(ft1File, m_events.size());
+   ft1.appendField("MC_SRC_ID", "1I");
+
    std::vector<Event>::iterator evt = m_events.begin();
-   for ( ; it != my_table->end(), evt != m_events.end(); ++it, ++evt) {
+   for ( ; ft1.itor() != ft1.end() && evt != m_events.end(); 
+         ft1.next(), ++evt) {
       double time = evt->time();
       double ra = evt->appDir().ra();
       double dec = evt->appDir().dec();
 
-      row["time"].set(time);
-      row["energy"].set(evt->energy());
-      row["ra"].set(ra);
-      row["dec"].set(dec);
-      row["theta"].set(evt->theta());
-      row["phi"].set(evt->phi());
-      row["zenith_angle"].set(evt->zenAngle());
-      row["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
-      try {
-         row["conversion_layer"].set(evt->convLayer());
-      } catch (std::exception &eObj) {
-         if (print_output()) {
-            std::cout << eObj.what() << std::endl;
-         }
-         std::exit(-1);
-      }
-      tip::Table::Vector<short> calibVersion = row["calib_version"];
-      for (int i = 0; i < 3; i++) {
-         calibVersion[i] = 1;
-      }
-      row["mc_src_id"].set(evt->eventId());
+      ft1["time"].set(time);
+      ft1["energy"].set(evt->energy());
+      ft1["ra"].set(ra);
+      ft1["dec"].set(dec);
+      ft1["l"].set(evt->appDir().l());
+      ft1["b"].set(evt->appDir().b());
+      ft1["theta"].set(evt->theta());
+      ft1["phi"].set(evt->phi());
+      ft1["zenith_angle"].set(evt->zenAngle());
+      ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
+      ft1["event_class"].set(evt->convLayer());
+      ft1["conversion_type"].set(evt->convLayer());      
+      ft1["mc_src_id"].set(evt->eventId());
    }
-//    double stop_time;
-//    if (m_stopTime <= m_startTime) {
-//       it = my_table->end();
-//       --it;
-//       row["time"].get(stop_time);
-//    } else {
-//       stop_time = m_stopTime;
-//    }
 
 // Set stop time to be arrival time of last event if obsStopTime is
 // negative (i.e., not set);
@@ -269,17 +252,7 @@ void EventContainer::writeEvents(double obsStopTime) {
    if (obsStopTime > 0) {
       stop_time = obsStopTime;
    }
-
-   writeDateKeywords(my_table, m_startTime, stop_time);
-
-// Fill the GTI extension, with the entire observation in a single GTI.
-   dataSubselector::Gti gti;
-   gti.insertInterval(m_startTime, stop_time);
-   gti.writeExtension(ft1File);
-
-   tip::Table * gti_table = 
-      tip::IFileSvc::instance().editTable(ft1File, "GTI");
-   writeDateKeywords(gti_table, m_startTime, stop_time);
+   ft1.setObsTimes(m_startTime, stop_time);
 
    dataSubselector::Cuts * cuts;
    if (m_cuts) {
@@ -287,18 +260,17 @@ void EventContainer::writeEvents(double obsStopTime) {
    } else {
       cuts = new dataSubselector::Cuts();
    }
-   cuts->addGtiCut(*gti_table);
-   cuts->writeDssKeywords(my_table->getHeader());
 
-   delete cuts;
-   delete my_table;
-   delete gti_table;
+// Fill the GTI extension with the entire observation in a single GTI.
+   dataSubselector::Gti gti;
+   gti.insertInterval(m_startTime, stop_time);
+   gti.writeExtension(ft1File);
 
-// Take care of date keywords in primary header.
-   tip::Image * phdu = tip::IFileSvc::instance().editImage(ft1File, "");
-   writeDateKeywords(phdu, m_startTime, stop_time, false);
-   delete phdu;
+   cuts->addGtiCut(gti);
+   cuts->writeDssKeywords(ft1.header());
+   ft1.close();
 
+   cuts->writeGtiExtension(ft1File);
    st_facilities::FitsUtil::writeChecksums(ft1File);
    
 // Flush the Event buffer...
