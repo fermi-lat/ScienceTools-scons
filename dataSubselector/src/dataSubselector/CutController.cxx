@@ -44,20 +44,11 @@ CutController::CutController(st_app::AppParGroup & pars,
    addRangeCut("ENERGY", "MeV", pars["emin"], pars["emax"]);
    addRangeCut("PHI", "deg", pars["phimin"], pars["phimax"]);
    addRangeCut("THETA", "deg", pars["thetamin"], pars["thetamax"]);
-   addRangeCut("IMGAMMAPROB", "dimensionless",
-               pars["gammaProbMin"], pars["gammaProbMax"]);
    addRangeCut("ZENITH_ANGLE", "deg", pars["zmin"], pars["zmax"]);
-   unsigned int layerMin = pars["convLayerMin"];
-   unsigned int layerMax = pars["convLayerMax"];
-   addRangeCut("CONVERSION_LAYER", "dimensionless", layerMin, layerMax);
-   if (pars["bgcut"]) {
-      addRangeCut("CALIB_VERSION[1]", "dimensionless", 1, 1, 1);
-   }                  
-   if (pars["psfcut"]) {
-      addRangeCut("CALIB_VERSION[2]", "dimensionless", 1, 1, 2);
-   }
-   if (pars["erescut"]) {
-      addRangeCut("CALIB_VERSION[3]", "dimensionless", 1, 1, 3);
+   int eventClass = pars["eventClass"];
+   if (eventClass >= 0) {
+      addRangeCut("EVENT_CLASS", "dimensionless", eventClass, eventClass,
+                  0, true);
    }
 }
 
@@ -71,9 +62,9 @@ bool CutController::accept(tip::ConstTableRecord & row) const {
 void CutController::addRangeCut(const std::string & colname,
                                 const std::string & unit,
                                 double minVal, double maxVal, 
-                                unsigned int indx) {
+                                unsigned int indx, bool force) {
    RangeCut::IntervalType type;
-   if (minVal == 0 && maxVal == 0) {
+   if (!force && minVal == 0 && maxVal == 0) {
       return;
    }
    if (minVal != 0 && maxVal != 0) {

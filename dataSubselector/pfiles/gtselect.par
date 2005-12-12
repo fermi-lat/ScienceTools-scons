@@ -12,19 +12,20 @@ tmin,r,a,0,0,,start time (MET in s)
 tmax,r,a,0,0,,end time (MET in s)
 emin,r,a,30,0,,lower energy limit (MeV)
 emax,r,a,200000,0,,upper energy limit (MeV)
-convLayerMin,i,h,0,0,15,first conversion layer
-convLayerMax,i,h,15,0,15,last conversion layer
+#convLayerMin,i,h,0,0,15,first conversion layer
+#convLayerMax,i,h,15,0,15,last conversion layer
+eventClass,i,h,-1,<-1|0|1>,,Event classes (-1=all, 0=front, 1=back)
 thetamin,r,h,0,0,180,minimum theta value (degrees)
 thetamax,r,h,0,0,180,maximum theta value (degrees)
 phimin,r,h,0,0,360,minimum phi value (degrees)
 phimax,r,h,0,0,360,maximum phi value (degrees)
-gammaProbMin,r,h,0,0,1,minimum probablilty that event is a gamma ray
-gammaProbMax,r,h,0,0,1,maximum probablilty that event is a gamma ray
+#gammaProbMin,r,h,0,0,1,minimum probablilty that event is a gamma ray
+#gammaProbMax,r,h,0,0,1,maximum probablilty that event is a gamma ray
 zmin,r,h,0,0,180,minimum zenith angle value (degrees)
 zmax,r,h,0,0,180,maximum zenith angle value (degrees)
-bgcut,b,h,yes,,,select only events that passed background cut?
-psfcut,b,h,yes,,,select only events that passed PSF cut?
-erescut,b,h,yes,,,select only events that passed energy resolution cut?
+#bgcut,b,h,yes,,,select only events that passed background cut?
+#psfcut,b,h,yes,,,select only events that passed PSF cut?
+#erescut,b,h,yes,,,select only events that passed energy resolution cut?
 
 evtable,s,h,"EVENTS",,,"Event data extension"
 

@@ -65,7 +65,8 @@ private:
    static CutController * s_instance;
 
    void addRangeCut(const std::string & colname, const std::string & unit,
-                    double minVal, double maxVal, unsigned int indx=0);
+                    double minVal, double maxVal, unsigned int indx=0,
+                    bool force=false);
 
    bool CutController::withinCoordLimits(double ra, double dec) const;
 
