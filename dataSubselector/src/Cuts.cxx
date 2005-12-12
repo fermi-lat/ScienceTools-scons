@@ -54,7 +54,9 @@ Cuts::Cuts(const std::vector<std::string> & eventFiles,
          }
       }
    }
-   *this = mergeGtis(my_cuts);
+   if (!my_cuts.empty()) {
+      *this = mergeGtis(my_cuts);
+   }
 }
 
 Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
