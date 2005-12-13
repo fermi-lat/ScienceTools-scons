@@ -9,11 +9,7 @@
 #ifndef fitsGen_Ft1File_h
 #define fitsGen_Ft1File_h
 
-#include "tip/Table.h"
-
-namespace tip {
-   class Header;
-}
+#include "fitsGen/FtFileBase.h"
 
 namespace fitsGen {
 
@@ -25,50 +21,15 @@ namespace fitsGen {
  * @author J. Chiang
  */
 
-class Ft1File {
+class Ft1File : public FtFileBase {
 
 public:
 
    Ft1File(const std::string & outfile, long nrows=0);
 
-   ~Ft1File();
-
-   void close();
-
-   void next();
-
-   tip::TableCell & operator[](const std::string & fieldname) {
-      return (*m_it)[fieldname];
-   }
-
-   long nrows() const {
-      return m_nrows;
-   }
-
-   void setNumRows(long nrows);
-
-   void appendField(const std::string & colname, const std::string & format);
-
-   tip::Table::Iterator begin();
-
-   tip::Table::Iterator end();
-
-   tip::Table::Iterator & itor();
-
-   /// @return The EVENTS extension FITS header.
-   tip::Header & header();
-
-   void setObsTimes(double start, double stop);
+   virtual void close();
 
 private:
-
-   std::string m_outfile;
-   tip::Table * m_table;
-   tip::Table::Iterator m_it;
-   long m_nrows;
-
-   double m_startTime;
-   double m_stopTime;
 
    void verifyObsTimes();
 

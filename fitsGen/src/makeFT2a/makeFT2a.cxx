@@ -70,11 +70,12 @@ int main(int iargc, char * argv[]) {
       while (std::getline(d2, line, '\n')) {
          facilities::Util::stringTokenize(line, "\t ", dataFields);
          ft2["start"].set(std::atof(dataFields[0].c_str()));
-         tip::Table::Vector<float> scPosition = ft2["sc_position"];
+         std::vector<float> scPosition(3);
 // convert the spacecraft position from km to meters.
          scPosition[0] = std::atof(dataFields[1].c_str())*1e3;
          scPosition[1] = std::atof(dataFields[2].c_str())*1e3;
          scPosition[2] = std::atof(dataFields[3].c_str())*1e3;
+         ft2["sc_position"].set(scPosition);
          ft2["ra_scz"].set(std::atof(dataFields[4].c_str()));
          ft2["dec_scz"].set(std::atof(dataFields[5].c_str()));
          ft2["ra_scx"].set(std::atof(dataFields[6].c_str()));

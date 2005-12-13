@@ -47,7 +47,7 @@ public:
 
    tip::Table::ConstIterator end() const;
 
-   tip::Table::ConstIterator itor() const;
+   tip::Table::ConstIterator & itor();
 
    double arrivalTime() const;
 

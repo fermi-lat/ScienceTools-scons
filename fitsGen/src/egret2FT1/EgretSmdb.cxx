@@ -63,7 +63,7 @@ tip::Table::ConstIterator EgretSmdb::end() const {
    return m_table->end();
 }
 
-tip::Table::ConstIterator EgretSmdb::itor() const {
+tip::Table::ConstIterator & EgretSmdb::itor() {
    return m_it;
 }
 
