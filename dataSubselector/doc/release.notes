@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v4      12-Dec-05   JC   use new FT1 definition
     v3r10p1 12-Oct-05   JC   have gtmaketime write a GTI-filtered output file
     v3r10   11-Oct-05   JC   add gtmaketime application
     v3r9p2  23-Sep-05   JC   patch for Cuts::writeDssKeywords for headers
