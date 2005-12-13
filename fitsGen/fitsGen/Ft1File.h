@@ -25,7 +25,8 @@ class Ft1File : public FtFileBase {
 
 public:
 
-   Ft1File(const std::string & outfile, long nrows=0);
+   Ft1File(const std::string & outfile, long nrows=0,
+           const std::string & templateFile="ft1.tpl");
 
    virtual void close();
 

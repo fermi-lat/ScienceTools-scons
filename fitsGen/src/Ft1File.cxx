@@ -18,9 +18,10 @@
 
 namespace fitsGen {
 
-Ft1File::Ft1File(const std::string & outfile, long nrows) 
+Ft1File::Ft1File(const std::string & outfile, long nrows, 
+                 const std::string & templateFile) 
    : FtFileBase(outfile, nrows) {
-   init("ft1.tpl", "EVENTS");
+   init(templateFile, "EVENTS");
 }
 
 void Ft1File::close() {

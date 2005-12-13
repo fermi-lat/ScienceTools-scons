@@ -26,3 +26,5 @@ application makeFT2 makeFT2/makeFT2.cxx
 application makeFT2a makeFT2a/makeFT2a.cxx
 
 application egret2FT1 egret2FT1/*.cxx
+
+application convertFT1 convertFT1/convertFT1.cxx
