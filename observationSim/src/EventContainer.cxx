@@ -21,11 +21,6 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Geometry/Vector3D.h"
 
-#include "tip/IFileSvc.h"
-#include "tip/Image.h"
-#include "tip/Table.h"
-#include "tip/Header.h"
-
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
 
@@ -241,8 +236,8 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["phi"].set(evt->phi());
       ft1["zenith_angle"].set(evt->zenAngle());
       ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
-      ft1["event_class"].set(evt->convLayer());
-      ft1["conversion_type"].set(evt->convLayer());      
+      ft1["event_class"].set(evt->eventType());
+      ft1["conversion_type"].set(evt->eventType());
       ft1["mc_src_id"].set(evt->eventId());
    }
 

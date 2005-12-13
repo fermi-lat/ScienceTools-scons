@@ -11,14 +11,12 @@
 
 #include "CLHEP/Geometry/Vector3D.h"
 
-#include "tip/IFileSvc.h"
-#include "tip/Image.h"
-#include "tip/Table.h"
-
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
 #include "astro/EarthCoordinate.h"
+
+#include "fitsGen/Ft2File.h"
 
 #include "flux/EventSource.h"
 
@@ -43,7 +41,7 @@ void ScDataContainer::init() {
    }
 }
 
-void ScDataContainer::addScData(EventSource *event, Spacecraft *spacecraft,
+void ScDataContainer::addScData(EventSource * event, Spacecraft * spacecraft,
                                 bool flush) {
    double time = event->time();
    addScData(time, spacecraft, flush);
@@ -77,57 +75,50 @@ void ScDataContainer::addScData(double time, Spacecraft * spacecraft,
 void ScDataContainer::writeScData() {
    if (m_writeData) {
       std::string ft2File = outputFileName();
-      tip::IFileSvc::instance().createFile(ft2File, m_ftTemplate);
-      tip::Table * my_table = 
-         tip::IFileSvc::instance().editTable(ft2File, m_tablename);
-      int npts = m_scData.size();
-      my_table->setNumRecords(npts);
-      tip::Table::Iterator it = my_table->begin();
-      tip::Table::Record & row = *it;
-      std::vector<ScData>::const_iterator sc = m_scData.begin();
+      long npts(m_scData.size());
+
+      fitsGen::Ft2File ft2(ft2File, npts);
+
       double start_time = m_scData.begin()->time();
       double stop_time = 2.*m_scData[npts-1].time() - m_scData[npts-2].time();
-      for ( ; it != my_table->end(), sc != m_scData.end(); ++it, ++sc) {
-         row["start"].set(sc->time());
+      ft2.setObsTimes(start_time, stop_time);
+
+      std::vector<ScData>::const_iterator sc = m_scData.begin();
+      for ( ; ft2.itor() != ft2.end() && sc != m_scData.end();
+            ft2.next(), ++sc) {
+         ft2["start"].set(sc->time());
          double interval;
          if (sc+1 != m_scData.end()) {
-            row["stop"].set((sc+1)->time());
+            ft2["stop"].set((sc+1)->time());
             interval = (sc+1)->time() - sc->time();
          } else {
-            row["stop"].set(stop_time);
+            ft2["stop"].set(stop_time);
             interval = stop_time - sc->time();
          }
-         row["livetime"].set(sc->livetimeFrac()*interval);
-         row["deadtime"].set(interval*(1. - sc->livetimeFrac()));
-         row["lat_geo"].set(sc->lat());
-         row["lon_geo"].set(sc->lon());
-         row["ra_scz"].set(sc->zAxis().ra());
-         row["dec_scz"].set(sc->zAxis().dec());
-         row["ra_scx"].set(sc->xAxis().ra());
-         row["dec_scx"].set(sc->xAxis().dec());
-         row["sc_position"].set(sc->position());
-         row["ra_zenith"].set(sc->raZenith());
-         row["dec_zenith"].set(sc->decZenith());
-         row["in_saa"].set(sc->inSaa());
+         ft2["livetime"].set(sc->livetimeFrac()*interval);
+         ft2["deadtime"].set(interval*(1. - sc->livetimeFrac()));
+         ft2["lat_geo"].set(sc->lat());
+         ft2["lon_geo"].set(sc->lon());
+         ft2["ra_scz"].set(sc->zAxis().ra());
+         ft2["dec_scz"].set(sc->zAxis().dec());
+         ft2["ra_scx"].set(sc->xAxis().ra());
+         ft2["dec_scx"].set(sc->xAxis().dec());
+         ft2["sc_position"].set(sc->position());
+         ft2["ra_zenith"].set(sc->raZenith());
+         ft2["dec_zenith"].set(sc->decZenith());
+         ft2["in_saa"].set(sc->inSaa());
          if (sc->inSaa()) {
-            row["livetime"].set(0);
-            row["deadtime"].set(interval);
+            ft2["livetime"].set(0);
+            ft2["deadtime"].set(interval);
          }
       }
-      writeDateKeywords(my_table, start_time, stop_time);
-      delete my_table;
-
-// Take care of date keywords in primary header.
-      tip::Image * phdu = tip::IFileSvc::instance().editImage(ft2File, "");
-      writeDateKeywords(phdu, start_time, stop_time);
-      delete phdu;
+      ft2.close();
 
       st_facilities::FitsUtil::writeChecksums(ft2File);
-// Update the m_fileNum index.
+
       m_fileNum++;
    }
 
-// Flush the buffer...
    m_scData.clear();
 }
 
