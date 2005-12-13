@@ -136,7 +136,7 @@ bool testSkyProj(){
        other.pix2sph(-1000, -1000);
        // This should have thrown; if not, indicate failure.
        throw std::runtime_error("SkyProj::Exception failed");
-    } catch (SkyProj::Exception &) {
+    } catch (std::exception &) {
        // Caught as expected, so do nothing.
     }
 
