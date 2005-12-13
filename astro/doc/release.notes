@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v1r13p1  12-dec-05 THB Improve SWIG access by taking out, or hiding nested classes
+  v1r13p1,2  12-dec-05 THB Improve SWIG access by taking out, or hiding nested classes
   v1r13    10-dec-05 THB SkyDir and SkyProj: allow check for invalid projected coords;
                          SkyProj: add function to set a FITS image header
   v1r12p3  03-dec-05 THB Fix computation of longitude from position
