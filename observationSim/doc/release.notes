@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r0p1 12-Dec-05   JC   use v* in req file
     v6     12-Dec-05   JC   use new ft1 def
     v5r9p6 17-Nov-05   JC   added galprop to standard set of sources; other
                             small fixes
