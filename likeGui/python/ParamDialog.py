@@ -107,7 +107,7 @@ class ParamEntry:
         try:
             my_value = "%s" % eval(self.variable.get())
         except:
-            my_value = self.variable.get()
+            my_value = '"%s"' % self.variable.get()
         return my_value
     def getFile(self, label='Edit File Dialog'):
         dialog = EditFileDialog(self.parent, label)

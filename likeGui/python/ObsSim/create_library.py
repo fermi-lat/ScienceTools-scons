@@ -45,7 +45,7 @@ def makeSrcLib(inputfile):
     for line in lines:
         data = line.split()
         if len(data) > 4:
-            outlines.append(ptsrc(*data))
+            outlines.append(ptsrc(*data[:9]))
             names.append(data[0])
     outlines.extend(nested_sources(names, os.path.basename(inputfile)))
     outlines.append('</source_library>')

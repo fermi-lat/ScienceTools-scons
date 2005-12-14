@@ -50,17 +50,17 @@ class RootWindow(Tk.Tk):
             self.srcLibs.addLibs(file)
         else:
             try:
-                defaultFiles = open('xmlFiles.dat')
+                defaultFiles = open('xmlFiles.txt')
             except:
                 xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
-                                        'xml', 'xmlFiles.dat')
+                                        'xml', 'xmlFiles.txt')
                 defaultFiles = open(xmlFiles, 'r')
             for file in defaultFiles:
                 if file.strip() != '':
                     self.srcLibs.addLibs(expandEnvVar(file).strip())
     def loadDefaultXmlFiles(self):
         xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
-                                'xml', 'xmlFiles.dat')
+                                'xml', 'xmlFiles.txt')
         defaultFiles = open(xmlFiles, 'r')
         for file in defaultFiles:
             if file.strip() != '' and file.find('#') != 0:
@@ -103,7 +103,7 @@ class RootWindow(Tk.Tk):
         except:
             pass
         self.cwd = os.path.abspath('.')
-    def obsSim(self, xmlList='xmlFiles.dat', sourceNames='source_names.dat'):
+    def obsSim(self, xmlList='xmlFiles.txt', sourceNames='source_names.txt'):
         self.srcLibs.writeXmlFileList(xmlList)
         self.sourceList.writeSourceNames(sourceNames)
         pfile = 'gtobssim.par'
@@ -222,7 +222,7 @@ class SourceLibraries(Tk.Frame):
         self.root.candidates.clearAll()
         self.root.candidates.menuButton.config(text='Candidate Sources')
         self.writeXmlFileList()
-    def writeXmlFileList(self, file='xmlFiles.dat'):
+    def writeXmlFileList(self, file='xmlFiles.txt'):
         outfile = open(file, 'w')
         for item in self.files:
             outfile.write(item + "\n")
@@ -371,7 +371,7 @@ class SourceList(Tk.Frame):
         self.listBox.selection_set(0, self.listBox.size())
     def unSelectAll(self):
         self.listBox.selection_clear(0, self.listBox.size())
-    def writeSourceNames(self, file='source_names.dat'):
+    def writeSourceNames(self, file='source_names.txt'):
         outfile = open(file, 'w')
         for src in self.srcs.ordered_keys:
             outfile.write(src + "\n")

@@ -39,6 +39,14 @@ def PowerLaw2():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def FileFunction():
+    func = """<spectrum type="FileFunction" file="foo.dat">
+ <parameter free="1" max="1e5" min="1e-5" name="Normalization" scale="1" value="1.0"/>
+</spectrum>
+"""
+    func = minidom.parseString(func).getElementsByTagName('spectrum')[0]
+    return Function(func)
+
 def BrokenPowerLaw():
     func = '\n'.join( ('<spectrum type="BrokenPowerLaw">',
                        '   <parameter free="1" max="1000.0" min="0.001" '
@@ -163,6 +171,7 @@ class Spectra(FuncContainer):
         self.funcs['LogParabola'] = LogParabola()
         self.funcs['Gaussian'] = Gaussian()
         self.funcs['ConstantValue'] = ConstantValueSpectrum()
+        self.funcs['FileFunction'] = FileFunction()
 
 class SpatialModels(FuncContainer):
     def __init__(self):
