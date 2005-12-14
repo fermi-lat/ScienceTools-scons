@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r1   12-Dec-05   JC   allow TCut to be specified for makeFT1
     v2     12-Dec-05   JC   use new FT1 def; refactor to use FtFileBase
                             hierarchy, etc.; add egret2FT1 app
     v1r2p1 25-Sep-05   JC   set livetime to zero during SAA passages;
