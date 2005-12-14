@@ -15,8 +15,9 @@
 namespace fitsGen {
 
 MeritFile::MeritFile(const std::string & meritfile,
-                     const std::string & tree) :
-   m_table(tip::IFileSvc::instance().editTable(meritfile, tree)),
+                     const std::string & tree,
+                     const std::string & filter) :
+   m_table(tip::IFileSvc::instance().readTable(meritfile, tree, filter)),
    m_it(m_table->begin()),
    m_row(*m_it),
    m_nrows(m_table->getNumRecords()),

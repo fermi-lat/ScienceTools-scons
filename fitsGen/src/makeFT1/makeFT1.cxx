@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -16,6 +17,7 @@
 #include "astro/SkyDir.h"
 
 #include "st_facilities/FitsUtil.h"
+#include "st_facilities/Util.h"
 
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
@@ -33,9 +35,23 @@ int main(int iargc, char * argv[]) {
                 << "output FT1 file: " << fitsFile << std::endl;
    }
 
+   std::ostringstream filter;
+   if (iargc == 4) {
+      if (st_facilities::Util::fileExists(argv[3])) {
+         std::vector<std::string> lines;
+         st_facilities::Util::readLines(argv[3], lines, "#", true);
+         for (size_t i = 0; i < lines.size(); i++) {
+            filter << lines.at(i);
+         }
+      } else {
+         filter << argv[3];
+      }
+      std::cout << "applying TCut: " << filter.str() << std::endl;
+   }
+
    dataSubselector::Cuts my_cuts;
    try {
-      fitsGen::MeritFile merit(rootFile, "MeritTuple");
+      fitsGen::MeritFile merit(rootFile, "MeritTuple", filter.str());
       fitsGen::Ft1File ft1(fitsFile, merit.nrows());
    
       int ncount(0);

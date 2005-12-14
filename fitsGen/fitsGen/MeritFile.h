@@ -30,7 +30,8 @@ class MeritFile {
 public:
 
    MeritFile(const std::string & meritfile,
-             const std::string & tree="MeritTuple");
+             const std::string & tree="MeritTuple",
+             const std::string & filter="");
 
    ~MeritFile();
 
