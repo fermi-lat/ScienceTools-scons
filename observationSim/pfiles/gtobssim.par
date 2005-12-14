@@ -7,9 +7,10 @@ evtable,s,h,"EVENTS",,,"Event data extension"
 
 simulation_time,r,a,86400,1,4e7,"Simulation time (seconds)"
 livetime_frac,r,h,0.9,,,"Livetime fraction"
-start_time,r,h,0,,,Simulation start time (seconds)
+start_time,r,h,0,,,Simulation start time (seconds wrt start_date)
 use_as_numevents,b,h,no,,,Use simulation time as number of events
 max_simulation_time,r,h,3.155e8,,,Maximum simulation time (seconds)
+start_date,s,h,"2001-01-01 00:00:00",,,"Simulation start date"
 
 use_acceptance_cone,b,a,no,,,"Apply acceptance cone?"
 ra,r,a,0,-360,360,"RA of cone center (degrees)"

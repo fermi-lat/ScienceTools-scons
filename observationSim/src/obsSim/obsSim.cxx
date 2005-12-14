@@ -18,15 +18,19 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "facilities/Timestamp.h"
 #include "facilities/Util.h"
 
 #include "astro/GPS.h"
+#include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
 
 #include "st_facilities/Util.h"
+
+#include "flux/Spectrum.h"
 
 #include "dataSubselector/Cuts.h"
 
@@ -222,6 +226,13 @@ void ObsSim::createSimulator() {
    double totalArea = m_pars["max_effarea"];
    double startTime = m_pars["start_time"];
    std::string pointingHistory = m_pars["scfile"];
+   std::string startDate = m_pars["start_date"];
+   facilities::Timestamp start(startDate);
+   double offset((astro::JulianDate(start.getJulian()) 
+                  - astro::JulianDate::missionStart())
+                 *astro::JulianDate::secondsPerDay);
+   startTime += offset;
+   Spectrum::setStartTime(offset);
    double maxSimTime = 3.155e8;
    try {
       maxSimTime = m_pars["max_simulation_time"];
@@ -229,7 +240,8 @@ void ObsSim::createSimulator() {
    }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
                                                totalArea, startTime, 
-                                               pointingHistory, maxSimTime);
+                                               pointingHistory, maxSimTime,
+                                               offset);
 }
 
 void ObsSim::generateData() {

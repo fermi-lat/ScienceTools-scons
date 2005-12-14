@@ -63,10 +63,11 @@ public:
              double totalArea = 1.21,
              double startTime = 0.,
              const std::string &pointingHistory = "",
-             double maxSimTime = 3.155e8)
+             double maxSimTime = 3.155e8,
+             double pointingHistoryOffset = 0)
       : m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceName, fileList, totalArea, startTime, pointingHistory,
-           maxSimTime);
+           maxSimTime, pointingHistoryOffset);
    }
 
    /// @param sourceNames A vector of source names as they appear in 
@@ -76,18 +77,20 @@ public:
              double totalArea = 1.21,
              double startTime = 0.,
              const std::string &pointingHistory = "",
-             double maxSimTime = 3.155e8)
+             double maxSimTime = 3.155e8,
+             double pointingHistoryOffset=0)
       : m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceNames, fileList, totalArea, startTime, pointingHistory,
-           maxSimTime);
+           maxSimTime, pointingHistoryOffset);
    }
 
    ~Simulator();
 
    /// Set the pointing history file.
-   void setPointingHistoryFile(const std::string &filename) {
+   void setPointingHistoryFile(const std::string &filename, double offset) {
       m_fluxMgr->setRockType(astro::GPS::HISTORY, 0);
-      m_fluxMgr->setPointingHistoryFile(filename);
+//      m_fluxMgr->setPointingHistoryFile(filename);
+      astro::GPS::instance()->setPointingHistoryFile(filename, offset);
       m_usePointingHistory = true;
    }   
 
@@ -181,12 +184,12 @@ private:
    void init(const std::string &sourceName, 
              const std::vector<std::string> &fileList,
              double totalArea, double startTime, 
-             const std::string &, double);
+             const std::string &, double, double);
 
    void init(const std::vector<std::string> &sourceNames, 
              const std::vector<std::string> &fileList,
              double totalArea, double startTime,
-             std::string, double);
+             std::string, double, double);
 
    void makeEvents(EventContainer &, ScDataContainer &, 
                    irfInterface::Irfs &, Spacecraft *spacecraft,

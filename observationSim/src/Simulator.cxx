@@ -45,17 +45,18 @@ void Simulator::init(const std::string &sourceName,
                      const std::vector<std::string> &fileList,
                      double totalArea, double startTime,
                      const std::string &pointingHistory,
-                     double maxSimTime) {
+                     double maxSimTime, double pointingHistoryOffset) {
    std::vector<std::string> sourceNames;
    sourceNames.push_back(sourceName);
    init(sourceNames, fileList, totalArea, startTime, pointingHistory,
-        maxSimTime);
+        maxSimTime, pointingHistoryOffset);
 }
 
 void Simulator::init(const std::vector<std::string> &sourceNames,
                      const std::vector<std::string> &fileList,
                      double totalArea, double startTime, 
-                     std::string pointingHistory, double maxSimTime) {
+                     std::string pointingHistory, double maxSimTime,
+                     double pointingHistoryOffset) {
    m_absTime = startTime;
    m_numEvents = 0;
    m_newEvent = 0;
@@ -75,7 +76,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
 // Use pointing history file.
       facilities::Util::expandEnvVar(&pointingHistory);
       if (st_facilities::Util::fileExists(pointingHistory)) {
-         setPointingHistoryFile(pointingHistory);
+         setPointingHistoryFile(pointingHistory, pointingHistoryOffset);
       } else {
          if (print_output()) {
             std::cout << "Pointing history file not found: \n"
