@@ -11,6 +11,8 @@
 
 #include "tip/Table.h"
 
+#include "astro/JulianDate.h"
+
 namespace tip {
    class Header;
 }
@@ -62,6 +64,8 @@ public:
 
    void setObsTimes(double start, double stop);
 
+   static void setMissionStart(int year, int month, int day, int sec);
+
 protected:
 
    std::string m_outfile;
@@ -71,6 +75,8 @@ protected:
 
    double m_startTime;
    double m_stopTime;
+
+   static astro::JulianDate s_missionStart;
 
    void init(const std::string & templateFile,
              const std::string & extname);

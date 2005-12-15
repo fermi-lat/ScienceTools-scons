@@ -13,10 +13,18 @@
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 
+#include "astro/JulianDate.h"
+
 #include "fitsGen/FtFileBase.h"
 #include "fitsGen/Util.h"
 
 namespace fitsGen {
+
+astro::JulianDate FtFileBase::s_missionStart(2001, 1, 1, 0);
+
+void FtFileBase::setMissionStart(int year, int month, int day, int sec) {
+   s_missionStart = astro::JulianDate(year, month, day, sec);
+}
 
 FtFileBase::FtFileBase(const std::string & outfile, long nrows) : 
    m_outfile(outfile), m_table(0), m_nrows(nrows),
@@ -43,12 +51,14 @@ FtFileBase::~FtFileBase() {
 
 void FtFileBase::close() {
    if (m_table) {
-      Util::writeDateKeywords(m_table, m_startTime, m_stopTime);
+      Util::writeDateKeywords(m_table, m_startTime, m_stopTime, true,
+                              s_missionStart);
       delete m_table;
       m_table = 0;
 
       tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
-      Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false);
+      Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false,
+                              s_missionStart);
       delete phdu;
    }
 }

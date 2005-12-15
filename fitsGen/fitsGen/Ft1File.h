@@ -9,6 +9,8 @@
 #ifndef fitsGen_Ft1File_h
 #define fitsGen_Ft1File_h
 
+#include "astro/JulianDate.h"
+
 #include "fitsGen/FtFileBase.h"
 
 namespace fitsGen {

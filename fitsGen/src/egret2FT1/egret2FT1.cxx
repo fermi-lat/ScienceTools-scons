@@ -26,6 +26,8 @@ int main(int iargc, char * argv[]) {
       std::exit(1);
    }
 
+   fitsGen::FtFileBase::setMissionStart(1991, 4, 15, 0);
+
    dataSubselector::Cuts my_cuts;
    try {
       EgretSmdb egret(argv[1]);
@@ -57,6 +59,7 @@ int main(int iargc, char * argv[]) {
       ft1.setNumRows(nrows);
       my_cuts.addGtiCut(egret.gti());
       my_cuts.writeDssKeywords(ft1.header());
+      ft1.close();
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
    }

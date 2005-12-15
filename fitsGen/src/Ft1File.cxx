@@ -28,18 +28,21 @@ void Ft1File::close() {
    verifyObsTimes();
 
    if (m_table) {
-      Util::writeDateKeywords(m_table, m_startTime, m_stopTime);
+      Util::writeDateKeywords(m_table, m_startTime, m_stopTime, true,
+                              s_missionStart);
       delete m_table;
       m_table = 0;
 
       tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
 
       tip::Table * gtiTable(fileSvc.editTable(m_outfile, "GTI"));
-      Util::writeDateKeywords(gtiTable, m_startTime, m_stopTime);
+      Util::writeDateKeywords(gtiTable, m_startTime, m_stopTime, true,
+                              s_missionStart);
       delete gtiTable;
 
       tip::Image * phdu(fileSvc.editImage(m_outfile, ""));
-      Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false);
+      Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false,
+                              s_missionStart);
       delete phdu;
    }
 }
@@ -62,10 +65,10 @@ void Ft1File::verifyObsTimes() {
       }
    }
    if (m_startTime < 0) {
-      m_startTime = start;
+      m_startTime = start - 1;
    }
    if (m_stopTime < 0) {
-      m_stopTime = stop;
+      m_stopTime = stop + 1;
    }
 }
 

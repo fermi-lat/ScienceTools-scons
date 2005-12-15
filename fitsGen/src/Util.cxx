@@ -45,7 +45,8 @@ void Util::getFileNames(int iargc, char * argv[], std::string & rootFile,
 }
 
 void Util::writeDateKeywords(tip::Extension * table, double start_time, 
-                             double stop_time, bool extension) {
+                             double stop_time, bool extension,
+                             const astro::JulianDate & mission_start) {
    static double secsPerDay(8.64e4);
    tip::Header & header = table->getHeader();
    astro::JulianDate current_time = currentTime();
@@ -54,7 +55,7 @@ void Util::writeDateKeywords(tip::Extension * table, double start_time,
    } catch (...) {
    }
 // The official mission start time is Jan 1 2001:
-   astro::JulianDate mission_start(2001, 1, 1, 0);
+//   astro::JulianDate mission_start(2001, 1, 1, 0);
    astro::JulianDate date_start(mission_start + start_time/secsPerDay);
    astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
    try {
