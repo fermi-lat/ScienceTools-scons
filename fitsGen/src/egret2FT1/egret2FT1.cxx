@@ -59,7 +59,6 @@ int main(int iargc, char * argv[]) {
       ft1.setNumRows(nrows);
       my_cuts.addGtiCut(egret.gti());
       my_cuts.writeDssKeywords(ft1.header());
-      ft1.close();
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
    }

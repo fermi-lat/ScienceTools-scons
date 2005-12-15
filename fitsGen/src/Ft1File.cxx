@@ -24,6 +24,10 @@ Ft1File::Ft1File(const std::string & outfile, long nrows,
    init(templateFile, "EVENTS");
 }
 
+Ft1File::~Ft1File() {
+   close();
+}
+
 void Ft1File::close() {
    verifyObsTimes();
 

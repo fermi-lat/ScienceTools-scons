@@ -30,6 +30,8 @@ public:
    Ft1File(const std::string & outfile, long nrows=0,
            const std::string & templateFile="ft1.tpl");
 
+   virtual ~Ft1File();
+
    virtual void close();
 
 private:
