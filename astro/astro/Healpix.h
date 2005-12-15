@@ -61,6 +61,8 @@ public:
     Healpix(long nside=2, Ordering ord = NESTED, 
         astro::SkyDir::CoordSystem coordsys = astro::SkyDir::EQUATORIAL);
     
+    ~Healpix();
+
     ///@brief the number of sides per dodecahedron
     long nside()const;
     ///@brief the number of pixels
@@ -152,7 +154,7 @@ public:
 
     ///@brief do the integral
     double integrate(const astro::SkyFunction& f)const;
-#endif
+#endif //SWIG
 
     // direct access to NASA healpix routines
     void pix2ang(long index, double &theta, double &phi)const;

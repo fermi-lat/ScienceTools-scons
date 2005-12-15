@@ -24,10 +24,14 @@ using namespace astro;
 //=========================================================================================
 
 Healpix::Healpix(long nside, astro::Healpix::Ordering ord, SkyDir::CoordSystem coordsys)
-    : m_coordsys(coordsys),
-    m_heal( * new Healpix_Base(nside,static_cast<Healpix_Ordering_Scheme>(ord),SET_NSIDE))
+    : m_coordsys(coordsys)
+    , m_heal( * new Healpix_Base(nside,static_cast<Healpix_Ordering_Scheme>(ord),SET_NSIDE))
 {
 
+}
+Healpix::~Healpix()
+{
+    delete &m_heal;
 }
 
 void Healpix::pix2ang(long index, double &theta, double &phi)const
@@ -41,7 +45,6 @@ void Healpix::ang2pix(double theta, double phi, long &index)const
 {
      index = m_heal.ang2pix(pointing(theta,phi));
 }        
-
 
 Healpix::Pixel::Pixel(const astro::SkyDir &dir, const Healpix& hp)
 : m_healpix(&hp)
