@@ -6,6 +6,8 @@
  * $Header$
  */
 
+#include <cstdlib>
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -54,6 +56,9 @@ int main(int iargc, char * argv[]) {
       fitsGen::MeritFile merit(rootFile, "MeritTuple", filter.str());
       fitsGen::Ft1File ft1(fitsFile, merit.nrows());
    
+      ft1.header().addHistory("Input merit file: " + rootFile);
+      ft1.header().addHistory("Filter string: " + filter.str());
+
       int ncount(0);
       for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
          ft1["energy"].set(merit["FT1Energy"]);
@@ -93,5 +98,8 @@ int main(int iargc, char * argv[]) {
    }
    my_cuts.writeGtiExtension(fitsFile);
    st_facilities::FitsUtil::writeChecksums(fitsFile);
+   if (st_facilities::Util::fileExists("dummy.root")) {
+      std::remove("dummy.root");
+   }
 }
 

@@ -63,7 +63,9 @@ int main(int iargc, char * argv[]) {
       unsigned long nrows = ::count_lines(pointingFile);
 
       fitsGen::Ft2File ft2(fitsFile, nrows);
-      
+
+      ft2.header().addHistory("Input pointing history file: " + pointingFile);
+
       std::ifstream d2(pointingFile.c_str());
       std::string line;
       std::vector<std::string> dataFields;
@@ -71,7 +73,7 @@ int main(int iargc, char * argv[]) {
          facilities::Util::stringTokenize(line, "\t ", dataFields);
          ft2["start"].set(std::atof(dataFields[0].c_str()));
          std::vector<float> scPosition(3);
-// convert the spacecraft position from km to meters.
+// Convert the spacecraft position from km to meters.
          scPosition[0] = std::atof(dataFields[1].c_str())*1e3;
          scPosition[1] = std::atof(dataFields[2].c_str())*1e3;
          scPosition[2] = std::atof(dataFields[3].c_str())*1e3;
@@ -97,8 +99,7 @@ int main(int iargc, char * argv[]) {
          ft2.next();
       }
 
-// Get stop times. This is painful since Table::Iterator is not random
-// access.
+// Get stop times. Table::Iterator does not have random access.
       ft2.itor() = ft2.begin();
       ft2.next();
       double start_time;
@@ -116,7 +117,7 @@ int main(int iargc, char * argv[]) {
       double stop_time = start_time + time_step;
       ft2["stop"].set(stop_time);
 
-// sigh, *now* we can fill in the livetime
+// Fill livetime and deadtimes.
       ft2.itor() = ft2.begin();
       for ( ; ft2.itor() != ft2.end(); ft2.next()) {
          double full_interval(ft2["stop"].get() - ft2["start"].get());

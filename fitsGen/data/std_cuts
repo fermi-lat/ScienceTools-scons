@@ -1,0 +1,13 @@
+#
+# Standard DC2 era cuts
+#
+# $Header$
+#
+FilterStatus_HI == 0 && 
+CalEnergyRaw > 5 && 
+CalCsIRLn > 4 && 
+CTBBestEnergyProb > 0.1 && 
+CTBGAM > 0.1 && 
+CTBCORE > 0.1 && 
+(AcdCornerDoca < -5 || AcdCornerDoca > 50) && 
+CTBTkrLATEdge > 100

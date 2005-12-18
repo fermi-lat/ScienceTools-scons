@@ -32,7 +32,8 @@ int main(int iargc, char * argv[]) {
    try {
       EgretSmdb egret(argv[1]);
       fitsGen::Ft1File ft1(argv[2], egret.nrows());
-      
+
+      ft1.header().addHistory("Input smdb file: " + std::string(argv[1]));
       ft1.header()["MJDREF"].set(EgretSmdb::mjdref());
       ft1.appendField("ARRIVAL_TJD", "D");
       

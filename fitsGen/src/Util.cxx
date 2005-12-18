@@ -38,7 +38,7 @@ void Util::getFileNames(int iargc, char * argv[], std::string & rootFile,
       } else {
          rootFile = std::string(argv[1]);
       }
-   } else if (iargc == 3) {
+   } else if (iargc >= 3) {
       rootFile = std::string(argv[1]);
       fitsFile = std::string(argv[2]);     
    }
