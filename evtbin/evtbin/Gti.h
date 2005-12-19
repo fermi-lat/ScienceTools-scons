@@ -5,6 +5,7 @@
 #ifndef evtbin_Gti_h
 #define evtbin_Gti_h
 
+#include <iosfwd>
 #include <string>
 #include <utility>
 #include <vector>
@@ -44,6 +45,11 @@ namespace evtbin {
       */
       Gti operator &(const Gti & gti) const;
 
+      /** \brief From this Gti and a second, produce a third Gti which is the union of
+          the two inputs.
+      */
+      Gti operator |(const Gti & gti) const;
+
       /** \brief Compare two sets of time intervals. If they differ in any way, this returns true.
           \param gti The Gti object with which this one will be compared.
       */
@@ -78,10 +84,14 @@ namespace evtbin {
       /// \brief Compute and return the ontime (total of all intervals).
       double computeOntime() const;
 
+      /// \brief Write itervals to a stream.
+      void write(std::ostream & os) const;
+
     private:
       IntervalCont_t m_intervals;
   };
 
+  std::ostream & operator <<(std::ostream & os, const Gti & gti);
 }
 
 #endif

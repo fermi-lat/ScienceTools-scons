@@ -96,6 +96,54 @@ namespace evtbin {
     return new_gti;
   }
 
+  Gti Gti::operator |(const Gti & gti) const {
+    Gti new_gti;
+
+    ConstIterator it1 = m_intervals.begin();
+    ConstIterator it2 = gti.m_intervals.begin();
+
+    // Iterate until both sets of intervals are finished.
+    while(it1 != m_intervals.end() || it2 != gti.m_intervals.end()) {
+      if (m_intervals.end() == it1) {
+        // This gti has been used up; add interval from other gti.
+        new_gti.insertInterval(it2->first, it2->second);
+        ++it2;
+      } else if (gti.m_intervals.end() == it2) {
+        // Other gti has been used up; add interval from this gti.
+        new_gti.insertInterval(it1->first, it1->second);
+        ++it1;
+      } else if (it1->second < it2->first) {
+        // Interval 1 comes before interval 2, just add interval 1.
+        new_gti.insertInterval(it1->first, it1->second);
+        ++it1;
+      } else if (it2->second < it1->first) {
+        // Interval 2 comes before interval 1, just add interval 2.
+        new_gti.insertInterval(it2->first, it2->second);
+        ++it2;
+      } else {
+        // They overlap, so find earliest start time.
+        double start = it1->first < it2->first ? it1->first : it2->first;
+
+        // And latest stop time.
+        double stop = it1->second > it2->second ? it1->second: it2->second;
+
+        // Check whether this interval can simply augment the last new interval.
+        if (!new_gti.m_intervals.empty() && new_gti.m_intervals.back().second >= start) {
+          // Modify last new interval to include the current stop time.
+          new_gti.m_intervals.back().second = stop;
+        } else {
+          // Add a new interval from the current start & stop.
+          new_gti.insertInterval(start, stop);
+        }
+
+        // Both intervals were consumed by this process; skip to the next interval in both series.
+        ++it1; ++it2;
+      }
+    }
+
+    return new_gti;
+  }
+
   bool Gti::operator !=(const Gti & gti) const { return m_intervals != gti.m_intervals; }
 
   Gti::Iterator Gti::begin() { return m_intervals.begin(); }
@@ -119,6 +167,23 @@ namespace evtbin {
     for (IntervalCont_t::const_iterator itor = m_intervals.begin(); itor != m_intervals.end(); ++itor)
       on_time += itor->second - itor->first;
     return on_time;
+  }
+
+  void Gti::write(std::ostream & os) const {
+    IntervalCont_t::const_iterator itor = m_intervals.begin();
+    if (m_intervals.end() != itor) {
+      os << "[" << itor->first << ", " << itor->second << "]";
+      ++itor;
+    }
+    for (; itor != m_intervals.end(); ++itor) {
+      os << std::endl;
+      os << "[" << itor->first << ", " << itor->second << "]";
+    }
+  }
+
+  std::ostream & operator <<(std::ostream & os, const Gti & gti) {
+    gti.write(os);
+    return os;
   }
 
 }
