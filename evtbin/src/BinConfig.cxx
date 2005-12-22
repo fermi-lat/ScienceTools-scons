@@ -19,6 +19,8 @@
 // Interactive parameter file access from st_app.
 #include "st_app/AppParGroup.h"
 
+#include "st_facilities/FileSys.h"
+
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
@@ -35,25 +37,29 @@ namespace evtbin {
   }
 
   BinConfig * BinConfig::create(const std::string & ev_file_name) {
+    using namespace st_facilities;
+    FileSys::FileNameCont file_name_cont = FileSys::expandFileList(ev_file_name);
     BinConfig * config = 0;
-    // Get container of all extensions in file.
-    tip::FileSummary summary;
-    tip::IFileSvc::instance().getFileSummary(ev_file_name, summary);
-
     std::string mission;
     std::string instrument;
-    // Read all extensions in input file, looking for mission and instrument names.
-    for (tip::FileSummary::const_iterator itor = summary.begin(); itor != summary.end(); ++itor) {
-      // Open extension.
-      std::auto_ptr<const tip::Extension> table(tip::IFileSvc::instance().readExtension(ev_file_name, itor->getExtId()));
-
-      try {
-        if (mission.empty()) table->getHeader()["TELESCOP"].get(mission);
-        if (instrument.empty()) table->getHeader()["INSTRUME"].get(instrument);
-        break;
-      } catch (const tip::TipException &) {
-        // Read each extension until these keywords are found.
-        continue;
+    for (FileSys::FileNameCont::iterator file_itor = file_name_cont.begin(); file_itor != file_name_cont.end(); ++file_itor) {
+      // Get container of all extensions in file.
+      tip::FileSummary summary;
+      tip::IFileSvc::instance().getFileSummary(*file_itor, summary);
+  
+      // Read all extensions in input file, looking for mission and instrument names.
+      for (tip::FileSummary::const_iterator itor = summary.begin(); itor != summary.end(); ++itor) {
+        // Open extension.
+        std::auto_ptr<const tip::Extension> table(tip::IFileSvc::instance().readExtension(*file_itor, itor->getExtId()));
+  
+        try {
+          if (mission.empty()) table->getHeader()["TELESCOP"].get(mission);
+          if (instrument.empty()) table->getHeader()["INSTRUME"].get(instrument);
+          break;
+        } catch (const tip::TipException &) {
+          // Read each extension until these keywords are found.
+          continue;
+        }
       }
     }
 
