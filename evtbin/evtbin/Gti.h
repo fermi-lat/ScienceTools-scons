@@ -6,6 +6,7 @@
 #define evtbin_Gti_h
 
 #include <iosfwd>
+#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -18,7 +19,7 @@ namespace evtbin {
   class Gti {
     public:
       typedef std::pair<double, double> Interval_t;
-      typedef std::vector<Interval_t> IntervalCont_t;
+      typedef std::map<double, double> IntervalCont_t;
       typedef IntervalCont_t::iterator Iterator;
       typedef IntervalCont_t::const_iterator ConstIterator;
 
@@ -42,13 +43,25 @@ namespace evtbin {
 
       /** \brief From this Gti and a second, produce a third Gti which is the intersection of
           the two inputs.
+          \param gti The other gti.
       */
       Gti operator &(const Gti & gti) const;
 
       /** \brief From this Gti and a second, produce a third Gti which is the union of
           the two inputs.
+          \param gti The other gti.
       */
       Gti operator |(const Gti & gti) const;
+
+      /** \brief Replace this Gti with the intersection of this Gti and the one supplied as an argument.
+          \param gti The other gti.
+      */
+      Gti & operator &=(const Gti & gti);
+
+      /** \brief Replace this Gti with the union of this Gti and the one supplied as an argument.
+          \param gti The other gti.
+      */
+      Gti & operator |=(const Gti & gti);
 
       /** \brief Compare two sets of time intervals. If they differ in any way, this returns true.
           \param gti The Gti object with which this one will be compared.
@@ -86,6 +99,10 @@ namespace evtbin {
 
       /// \brief Write itervals to a stream.
       void write(std::ostream & os) const;
+
+    protected:
+      /// \brief Merge overlapping intervals.
+      void consolidate();
 
     private:
       IntervalCont_t m_intervals;
