@@ -55,10 +55,10 @@ namespace evtbin {
     //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., m_use_lb);
 
     // Collect any/all needed keywords from the primary extension.
-    harvestKeywords(m_event_file);
+    harvestKeywords(m_event_file_cont);
 
     // Collect any/all needed keywords from the events extension.
-    harvestKeywords(m_event_file, m_event_table);
+    harvestKeywords(m_event_file_cont, m_event_table);
 
     // Correct time keywords.
     adjustTimeKeywords(sc_file, sc_table);
