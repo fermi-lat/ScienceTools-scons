@@ -1112,6 +1112,88 @@ void EvtBinTest::testGti() {
     m_failed = true;
   }
 
+  gti3 = Gti();
+  gti3.insertInterval(10., 15.);
+  gti4 = Gti();
+  gti4.insertInterval(10., 20.);
+  correct_result = gti4;
+  result = Gti();
+  result = gti3 | gti4;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting both gti to start at the same time, result of gti3 | gti4 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  result = Gti();
+  result = gti4 | gti3;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting both gti to start at the same time, result of gti4 | gti3 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  gti3 = Gti();
+  gti3.insertInterval(15., 20.);
+  gti4 = Gti();
+  gti4.insertInterval(10., 20.);
+
+  correct_result = gti4;
+  result = Gti();
+  result = gti3 | gti4;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting both gti to stop at the same time, result of gti3 | gti4 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  result = Gti();
+  result = gti4 | gti3;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting both gti to stop at the same time, result of gti4 | gti3 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  gti3 = Gti();
+  gti3.insertInterval(15., 18.);
+  gti4 = Gti();
+  gti4.insertInterval(10., 20.);
+
+  correct_result = gti4;
+  result = Gti();
+  result = gti3 | gti4;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting gti3 to be contained completely inside gti4, result of gti3 | gti4 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  result = Gti();
+  result = gti4 | gti3;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting gti3 to be contained completely inside gti4, result of gti4 | gti3 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  correct_result = gti3;
+  result = Gti();
+  result = gti3 & gti4;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting gti3 to be contained completely inside gti4, result of gti3 & gti4 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
+  result = Gti();
+  result = gti4 & gti3;
+  if (result != correct_result) {
+    std::cerr << "Unexpected: testGti: after setting gti3 to be contained completely inside gti4, result of gti4 & gti3 was:\n" <<
+      result << "\n, not\n" << correct_result << "\nas expected." << std::endl;
+    m_failed = true;
+  }
+
 }
 
 void EvtBinTest::testConstSnBinner() {

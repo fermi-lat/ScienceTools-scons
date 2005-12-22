@@ -63,6 +63,11 @@ namespace evtbin {
       */
       Gti & operator |=(const Gti & gti);
 
+      /** \brief Compare two sets of time intervals. If they are identical, this returns true.
+          \param gti The Gti object with which this one will be compared.
+      */
+      bool operator ==(const Gti & gti) const;
+
       /** \brief Compare two sets of time intervals. If they differ in any way, this returns true.
           \param gti The Gti object with which this one will be compared.
       */
@@ -103,6 +108,13 @@ namespace evtbin {
     protected:
       /// \brief Merge overlapping intervals.
       void consolidate();
+
+      /** \brief For internal use only. Add an interval to this GTI object. Does not call consolidate to ensure 
+            intervals are merged to form minimal set.
+          \param tstart The start time of the interval.
+          \param tstop The start time of the interval.
+      */
+      void insertInterval(Interval_t interval);
 
     private:
       IntervalCont_t m_intervals;

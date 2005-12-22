@@ -38,7 +38,7 @@ namespace evtbin {
             "start time " << start << " > stop time " << stop;
           throw std::runtime_error(os.str());
         }
-        m_intervals.insert(Interval_t(start, stop));
+        insertInterval(Interval_t(start, stop));
       }
     }
     consolidate();
@@ -92,13 +92,7 @@ namespace evtbin {
         // And earliest stop time.
         double stop = it1->second < it2->second ? it1->second: it2->second;
 
-        // See if an interval already exists which has this start time.
-        Iterator found = new_gti.m_intervals.find(start);
-        if (new_gti.m_intervals.end() != found) {
-          if (stop > found->second) found->second = stop;
-        } else {
-          new_gti.m_intervals.insert(Interval_t(start, stop));
-        }
+        new_gti.insertInterval(Interval_t(start, stop));
 
         // Skip to the next interval in the series for whichever interval ends earliest.
         if (it1->second < it2->second) ++it1; else ++it2;
@@ -121,10 +115,14 @@ namespace evtbin {
   }
 
   Gti & Gti::operator |=(const Gti & gti) {
-    m_intervals.insert(gti.begin(), gti.end());
+    for (ConstIterator itor = gti.begin(); itor != gti.end(); ++itor) {
+      insertInterval(*itor);
+    }
     consolidate();
     return *this;
   }
+
+  bool Gti::operator ==(const Gti & gti) const { return m_intervals == gti.m_intervals; }
 
   bool Gti::operator !=(const Gti & gti) const { return m_intervals != gti.m_intervals; }
 
@@ -181,9 +179,26 @@ namespace evtbin {
           // Next interval is no longer needed in any case.
           m_intervals.erase(next);
           next = current;
+        } else if (next->first < current->first && current->first <= next->first) {
+          // Current interval begins in the middle of the next interval.
+          // If current interval continues past end of next interval, stretch
+          // the next interval to cover the combined range.
+          if (next->second < current->second) next->second = current->second;
+          // Current interval is no longer needed in any case.
+          m_intervals.erase(current);
         }
         current = next;
       }
+    }
+  }
+
+  void Gti::insertInterval(Interval_t interval) {
+    // See if an interval already exists which has this start time.
+    Iterator found = m_intervals.find(interval.first);
+    if (m_intervals.end() == found) {
+      m_intervals.insert(interval);
+    } else {
+      if (interval.second > found->second) found->second = interval.second;
     }
   }
 
