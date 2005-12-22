@@ -32,10 +32,10 @@ namespace evtbin {
       for (tip::Table::ConstIterator itor = gti_table->begin(); itor != gti_table->end(); ++itor) {
         double start = (*itor)["START"].get();
         double stop = (*itor)["STOP"].get();
-        if (start >= stop) {
+        if (start > stop) {
           std::ostringstream os;
           os << "Gti: In file " << file_name << ", record " << itor->getIndex() << " is invalid: " <<
-            "start time " << start << " >= stop time " << stop;
+            "start time " << start << " > stop time " << stop;
           throw std::runtime_error(os.str());
         }
         m_intervals.insert(Interval_t(start, stop));
