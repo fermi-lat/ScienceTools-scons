@@ -49,6 +49,8 @@
 #include "st_app/StAppFactory.h"
 // Utility used to find test data for this application.
 #include "st_facilities/Env.h"
+// Utility used to find files for this application.
+#include "st_facilities/FileSys.h"
 // Message utilities.
 #include "st_stream/st_stream.h"
 #include "st_stream/StreamFormatter.h"
@@ -56,6 +58,8 @@
 #include "tip/IFileSvc.h"
 // Tip Table access.
 #include "tip/Table.h"
+// Tip type definitions
+#include "tip/tip_types.h"
 
 using namespace evtbin;
 
@@ -99,6 +103,8 @@ class EvtBinTest : public st_app::StApp {
     void testConstSnBinner();
 
     void testBayesianBinner();
+
+    void testMultipleFiles();
 
   private:
     st_stream::StreamFormatter m_os;
@@ -157,6 +163,8 @@ void EvtBinTest::run() {
   testConstSnBinner();
   // Test Bayesian block binner:
   testBayesianBinner();
+  // Test getting input from multiple files:
+  testMultipleFiles();
 
   // Report problems, if any.
   if (m_failed) throw std::runtime_error("Unit test failed");
@@ -1245,6 +1253,72 @@ void EvtBinTest::testBayesianBinner() {
           change_points[ii] << ", " << change_points[ii + 1] << "], as expected." << std::endl;
       }
     }
+  }
+}
+
+void EvtBinTest::testMultipleFiles() {
+  using namespace st_facilities;
+  m_os.setMethod("testMultipleFiles()");
+
+  // Create name of list file from the data directory.
+  std::string list_file = "@" + Env::appendFileName(m_data_dir, "ft1filelist");
+
+  // Expand the contents of the list file.
+  FileSys::FileNameCont tmp_input_file = FileSys::expandFileList(list_file);
+
+  // Make a vector of test files (just in case FileNameCont ever changes type.
+  std::vector<std::string> input_file(tmp_input_file.begin(), tmp_input_file.end());
+
+  // Number of events in each file.
+  tip::Index_t expected_num_events = 0;
+  std::vector<tip::Index_t> num_rec(input_file.size());
+
+  // Get information about input files for verification purposes.
+  std::vector<std::string>::size_type index = 0;
+  for (FileSys::FileNameCont::iterator itor = input_file.begin(); itor != input_file.end(); ++itor, ++index) {
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(*itor, "EVENTS"));
+    num_rec[index] = table->getNumRecords();
+    expected_num_events += num_rec[index];
+  }
+
+  // Create binner used both for energy bins and for ebounds definition.
+  LogBinner energy_binner(30., 200000., 100, "ENERGY");
+
+  // Get the good time intervals from event file list.
+  Gti gti(list_file);
+
+  // Confirm the gtis were merged correctly.
+  Gti expected_gti;
+  expected_gti.insertInterval(1000., 5000.);
+  expected_gti.insertInterval(10000., 20000.);
+
+  if (gti != expected_gti) {
+    m_failed = true;
+    std::cerr << "Unexpected: testMultipleFiles: Gti computed from merged list of event files was:\n" << gti << "\nnot:\n" <<
+      expected_gti << "\n, as expected." << std::endl;
+  }
+
+  // Bin up the input to make a spectrum, and require the total number of binned counts to agree with the inputs.
+  SingleSpec spectrum(list_file, "EVENTS", "", "", energy_binner, energy_binner, gti);
+
+  // Fill the spectrum.
+  spectrum.binInput();
+
+  // Write the spectrum to an output file.
+  spectrum.writeOutput("test_evtbin", "merged_spectrum.pha");
+
+  // Read the output and confirm it has the requisite properties.
+  std::auto_ptr<const tip::Table> spec_table(tip::IFileSvc::instance().readTable("merged_spectrum.pha", "SPECTRUM"));
+  
+  double num_events = 0.;
+  for (tip::Table::ConstIterator itor = spec_table->begin(); itor != spec_table->end(); ++itor) {
+    num_events += (*itor)["COUNTS"].get();
+  }
+
+  if (num_events != double(expected_num_events)) {
+    m_failed = true;
+    m_os.err() << "Created spectrum merged_spectrum.pha has " << num_events << " events, not " << expected_num_events <<
+      ", as expected." << std::endl;
   }
 }
 
