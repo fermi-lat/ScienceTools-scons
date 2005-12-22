@@ -16,6 +16,7 @@
 #include "evtbin/Hist.h"
 #include "evtbin/RecordBinFiller.h"
 #include "st_facilities/Env.h"
+#include "st_facilities/FileSys.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
@@ -26,8 +27,10 @@
 namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
-    m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_data_dir(), m_event_file(event_file), m_event_table(event_table),
-    m_gti(gti), m_hist_ptr(0) {
+    m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_event_file_cont(), m_data_dir(), m_event_file(event_file),
+    m_event_table(event_table), m_gti(gti), m_hist_ptr(0) {
+    using namespace st_facilities;
+
     // Find the directory containing templates.
     m_data_dir = st_facilities::Env::getDataDir("evtbin");
 
@@ -36,15 +39,28 @@ namespace evtbin {
     const char * keys[] = { "TELESCOP", "INSTRUME", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREF",
       "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
+
+    // Get container of file names from the supplied input file.
+    FileSys::FileNameCont file_cont = FileSys::expandFileList(event_file);
+
+    // Make space for the input file names.
+    m_event_file_cont.resize(file_cont.size());
+
+    // Copy input to output.
+    FileNameCont_t::size_type index = 0;
+    for (FileSys::FileNameCont::iterator itor = file_cont.begin(); itor != file_cont.end(); ++itor, ++index) {
+      m_event_file_cont[index] = *itor;
+    }
   }
 
   DataProduct::~DataProduct() throw() {}
 
   void DataProduct::binInput() {
     using namespace tip;
-    std::auto_ptr<const Table> events(IFileSvc::instance().readTable(m_event_file, m_event_table));
-
-    binInput(events->begin(), events->end());
+    for (FileNameCont_t::iterator itor = m_event_file_cont.begin(); itor != m_event_file_cont.end(); ++itor) {
+      std::auto_ptr<const Table> events(IFileSvc::instance().readTable(*itor, m_event_table));
+      binInput(events->begin(), events->end());
+    }
   }
 
   void DataProduct::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIterator end) {
@@ -134,6 +150,12 @@ namespace evtbin {
     }
   }
 
+  void DataProduct::harvestKeywords(const FileNameCont_t & file_name_cont, const std::string & ext_name) {
+    for (FileNameCont_t::const_iterator itor = file_name_cont.begin(); itor != file_name_cont.end(); ++itor) {
+      harvestKeywords(*itor, ext_name);
+    }
+  }
+
   void DataProduct::harvestKeywords(const std::string & file_name, const std::string & ext_name) {
     std::auto_ptr<const tip::Extension> ext(tip::IFileSvc::instance().readExtension(file_name, ext_name));
     harvestKeywords(ext->getHeader());
@@ -163,6 +185,7 @@ namespace evtbin {
       key_name.push_back("DSVAL" + os.str());
       key_name.push_back("DSREF" + os.str());
       for (std::list<std::string>::iterator itor = key_name.begin(); itor != key_name.end(); ++itor) {
+        // Do not add keywords more than once.
         if (m_known_keys.end() == std::find(m_known_keys.begin(), m_known_keys.end(), *itor)) {
           m_dss_keys.push_back(*itor);
           m_known_keys.push_back(*itor);
@@ -345,7 +368,9 @@ namespace evtbin {
 
     // Go back to last position in the table, and check it for validity.
     --itor;
-    if ((*itor)["STOP"].get() < (m_gti.end() - 1)->second)
+    Gti::ConstIterator last = m_gti.end();
+    --last;
+    if ((*itor)["STOP"].get() < last->second)
       std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data ceases before end of last GTI" << std::endl;
     
     return exposure;

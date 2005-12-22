@@ -29,6 +29,7 @@ namespace evtbin {
   */
   class DataProduct {
     public:
+      typedef std::vector<std::string> FileNameCont_t;
       typedef std::vector<std::string> KeyCont_t;
       typedef std::map<std::string, tip::KeyRecord> KeyValuePairCont_t;
 
@@ -87,6 +88,13 @@ namespace evtbin {
       /** \brief Read values for all known keywords from the given file and extension.
            Any keywords missing from the header will simply be omitted in this object's
            container of key-value pairs.
+           \param file_name_cont A container holding the file names to be harvested.
+      */
+      void harvestKeywords(const FileNameCont_t & file_name_cont, const std::string & ext_name = "");
+
+      /** \brief Read values for all known keywords from the given file and extension.
+           Any keywords missing from the header will simply be omitted in this object's
+           container of key-value pairs.
       */
       void harvestKeywords(const std::string & file_name, const std::string & ext_name = "");
 
@@ -140,6 +148,7 @@ namespace evtbin {
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::list<std::string> m_dss_keys;
+      FileNameCont_t m_event_file_cont;
       std::string m_data_dir;
       std::string m_event_file;
       std::string m_event_table;
