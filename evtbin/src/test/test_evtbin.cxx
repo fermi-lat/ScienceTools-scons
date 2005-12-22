@@ -1234,7 +1234,7 @@ void EvtBinTest::testBayesianBinner() {
   }
 
   // Use BayesianBinner to determine blocks, and compare with the correct answer.
-  BayesianBinner binner(intervals, cell_pop.begin());
+  BayesianBinner binner(intervals, cell_pop.begin(), "", 6.);
   int num_bins = (sizeof(change_points) / sizeof(double)) - 1;
   if (binner.getNumBins() != num_bins) {
     m_failed = true;
