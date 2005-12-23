@@ -27,6 +27,7 @@
 #include "fitsGen/Ft1File.h"
 
 #include "flux/EventSource.h"
+#include "flux/Spectrum.h"
 
 #include "st_facilities/FitsUtil.h"
 
@@ -102,14 +103,6 @@ EventContainer::~EventContainer() {
 
 void EventContainer::init() {
    m_events.clear();
-   
-   char * root_path = std::getenv("FITSGENROOT");
-   if (root_path != 0) {
-      m_ftTemplate = std::string(root_path) + "/data/ft1.tpl";
-   } else {
-      throw std::runtime_error("Environment variable "
-                               "FITSGENROOT not set.");
-   }
 }
 
 bool EventContainer::addEvent(EventSource *event, 
@@ -216,7 +209,7 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
 void EventContainer::writeEvents(double obsStopTime) {
 
    std::string ft1File(outputFileName());
-   fitsGen::Ft1File ft1(ft1File, m_events.size());
+   fitsGen::Ft1File ft1(ft1File, m_events.size(), m_tablename);
    ft1.appendField("MC_SRC_ID", "1I");
 
    std::vector<Event>::iterator evt = m_events.begin();
@@ -258,7 +251,8 @@ void EventContainer::writeEvents(double obsStopTime) {
 
 // Fill the GTI extension with the entire observation in a single GTI.
    dataSubselector::Gti gti;
-   gti.insertInterval(m_startTime, stop_time);
+   gti.insertInterval(m_startTime + Spectrum::startTime(),
+                      stop_time + Spectrum::startTime());
    gti.writeExtension(ft1File);
 
    cuts->addGtiCut(gti);
@@ -275,7 +269,7 @@ void EventContainer::writeEvents(double obsStopTime) {
    m_fileNum++;
 
 // Set the start time for next output file to be current stop time.
-   m_startTime = stop_time;
+   m_startTime = stop_time + Spectrum::startTime();
 }
 
 } // namespace observationSim

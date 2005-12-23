@@ -51,9 +51,6 @@ protected:
    /// filename given in the constructor.
    long m_fileNum;
 
-   /// Name of the FT1/2 template file.
-   std::string m_ftTemplate;
-
    /// Return an output filename, based on the root name, m_filename,
    /// and the counter index, m_fileNum.
    std::string outputFileName() const;

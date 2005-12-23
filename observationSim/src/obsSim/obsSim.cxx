@@ -226,6 +226,8 @@ void ObsSim::createSimulator() {
    double totalArea = m_pars["max_effarea"];
    double startTime = m_pars["start_time"];
    std::string pointingHistory = m_pars["scfile"];
+   std::string sc_table = m_pars["sctable"];
+   astro::GPS::instance()->setScTableName(sc_table);
    std::string startDate = m_pars["start_date"];
    facilities::Timestamp start(startDate);
    double offset((astro::JulianDate(start.getJulian()) 
@@ -265,9 +267,8 @@ void ObsSim::generateData() {
                                          cuts, nMaxRows,
                                          start_time, stop_time);
    std::string pointingHistory = m_pars["scfile"];
-   std::string sc_table = m_pars["sctable"];
-   astro::GPS::instance()->setScTableName(sc_table);
    bool writeScData = (pointingHistory == "" || pointingHistory == "none");
+   std::string sc_table = m_pars["sctable"];
    observationSim::ScDataContainer scData(prefix + "_scData", sc_table,
                                           nMaxRows, writeScData);
                                           
