@@ -103,7 +103,7 @@ void DssTests::compareGtis() {
 
    CPPUNIT_ASSERT(!(gti1 != gti2));
 
-   gti1.insertInterval(0, 10.);
+   gti1.insertInterval(100000., 100010.);
 
    CPPUNIT_ASSERT(gti1 != gti2);
 }
@@ -115,7 +115,7 @@ void DssTests::updateGti() {
    dataSubselector::Gti new_gti = gti.applyTimeRangeCut(500., 1750.);
 
    double expected_values[2][2] = {{500, 1000}, {1500, 1750}};
-   std::vector< std::pair<double, double> >::const_iterator interval;
+   evtbin::Gti::ConstIterator interval;
    int i(0);
    for (interval = new_gti.begin();
         interval != new_gti.end(); ++interval, i++) {

@@ -137,34 +137,4 @@ double Gti::maxValue() const {
    return max_val;
 }
 
-Gti Gti::operator|(const evtbin::Gti & rhs) const {
-   std::vector< std::pair<double, double> > my_intervals;
-   std::vector< std::pair<double, double> >::const_iterator intvl;
-   for (intvl = begin(); intvl != end(); ++intvl) {
-      my_intervals.push_back(*intvl);
-   }
-   for (intvl = rhs.begin(); intvl != rhs.end(); ++intvl) {
-      my_intervals.push_back(*intvl);
-   }
-   std::stable_sort(my_intervals.begin(), my_intervals.end(), ::gti_comp);
-   std::vector<double> x1, x2;
-   x1.push_back(my_intervals.front().first);
-   x2.push_back(my_intervals.front().second);
-   for (unsigned int i = 1; i < my_intervals.size(); i++) {
-      if (x2.back() < my_intervals.at(i).first) {
-         x1.push_back(my_intervals.at(i).first);
-         x2.push_back(my_intervals.at(i).second);
-      } else {
-         if (my_intervals.at(i).second > x2.back()) {
-            x2.back() = my_intervals.at(i).second;
-         }
-      }
-   }
-   Gti new_gti;
-   for (unsigned int i = 0; i < x1.size(); i++) {
-      new_gti.insertInterval(x1.at(i), x2.at(i));
-   }
-   return new_gti;
-}
-
 } // namespace dataSubselector
