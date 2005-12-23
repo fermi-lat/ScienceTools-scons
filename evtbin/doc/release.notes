@@ -49,6 +49,9 @@
                           of the spacecraft history data table.
 13-sep-2005   v0r13p1 JP  Change default extension for spacecraft data back to Ext1
                           for now.
+23-dec-2005     v0r14 JP  Add support for multiple event files specified using
+                          Ftools-style @file-name convention. Change default
+                          ft2 extension to SC_DATA.
 --------------------------------------------------------------------------------
 \endverbatim
 
