@@ -25,9 +25,12 @@ class Ft2File : public FtFileBase {
 
 public:
 
-   Ft2File(const std::string & outfile, long nrows=0) 
+   Ft2File(const std::string & outfile,
+           long nrows=0, 
+           const std::string & extname="SC_DATA",
+           const std::string & templateFile="ft2.tpl")
       : FtFileBase(outfile, nrows) {
-      init("ft2.tpl", "Ext1");
+      init(templateFile, extname);
    }
 
 };
