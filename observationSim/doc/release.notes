@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r1p1 23-Dec-05   JC   use new fitsGen interfaces
     v6r1   13-Dec-05   JC   allow startDate offset to be set via par file
     v6r0p1 12-Dec-05   JC   use v* in req file
     v6     12-Dec-05   JC   use new ft1 def
