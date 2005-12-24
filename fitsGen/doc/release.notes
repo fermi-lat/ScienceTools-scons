@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v2r2   23-Dec-05   JC   change FT2 extension name; allow cuts on merit
+                            file to be specified; more ft1.tpl updates
     v2r1   12-Dec-05   JC   allow TCut to be specified for makeFT1
     v2     12-Dec-05   JC   use new FT1 def; refactor to use FtFileBase
                             hierarchy, etc.; add egret2FT1 app
