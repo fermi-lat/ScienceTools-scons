@@ -195,6 +195,16 @@ void PulsePhaseApp::run() {
 
   std::string time_field = par_group["timefield"];
 
+  // Add PULSE_PHASE field if missing.
+  bool add_col = true;
+  try {
+    events->getFieldIndex("PULSE_PHASE");
+    add_col = false;
+  } catch (const tip::TipException &) {
+  }
+  if (add_col)
+    events->appendField("PULSE_PHASE", "1D");
+
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     // Get value from the table.

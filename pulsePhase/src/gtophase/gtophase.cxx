@@ -107,11 +107,14 @@ void PulsePhaseApp::run() {
   std::string time_field = par_group["timefield"];
 
   // Add ORBITAL_PHASE field if missing.
+  bool add_col = true;
   try {
     events->getFieldIndex("ORBITAL_PHASE");
+    add_col = false;
   } catch (const tip::TipException &) {
-    events->appendField("ORBITAL_PHASE", "1D");
   }
+  if (add_col)
+    events->appendField("ORBITAL_PHASE", "1D");
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {

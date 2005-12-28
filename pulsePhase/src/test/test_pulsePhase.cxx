@@ -47,6 +47,16 @@ int main() {
   GlastTdbTime abs_valid_since(valid_since);
   FrequencyEph eph(abs_valid_since, GlastTdbTime(valid_until), GlastTdbTime(123.456789), .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
+  // Add PULSE_PHASE field if missing.
+  bool add_col = true;
+  try {
+    events->getFieldIndex("PULSE_PHASE");
+    add_col = false;
+  } catch (const tip::TipException &) {
+  }
+  if (add_col)
+    events->appendField("PULSE_PHASE", "1D");
+
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
