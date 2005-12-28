@@ -17,5 +17,6 @@
                               pulsePhase tool gtpphase.
     v1r0p1  25-aug-05   JP    Re-order parameters to improve look of GUI. Improve docs.
     v1r0p2  25-aug-05   JP    Add documentation for gtophase.
+      v1r1  27-dec-05   JP    Create phase columns if they do not exist.
     @endverbatim
 */
