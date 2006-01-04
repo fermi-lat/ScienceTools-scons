@@ -302,7 +302,7 @@ void EvtBinTest::testOrderedBinner() {
     OrderedBinner binner(intervals);
     std::cerr << msg << " did not throw when given an interval whose beginning value is > ending value" << std::endl;
     m_failed = true;
-  } catch (const std::exception & x) {
+  } catch (const std::exception &) {
   }
 
   intervals.clear();
@@ -317,7 +317,7 @@ void EvtBinTest::testOrderedBinner() {
     OrderedBinner binner(intervals);
     std::cerr << msg << " did not throw when given two sequential intervals which are not in order" << std::endl;
     m_failed = true;
-  } catch (const std::exception & x) {
+  } catch (const std::exception &) {
   }
 
   // Finally, create a legitimate set of intervals.
@@ -418,7 +418,7 @@ void EvtBinTest::testOrderedBinner() {
       std::cerr << msg << value << ") returned " << index << ", not a negative index" << std::endl;
     }
   
-  } catch (const std::exception & x) {
+  } catch (const std::exception &) {
     std::cerr << msg << " threw when given a set of intervals which are legal (i.e. in order)" << std::endl;
     m_failed = true;
   }
@@ -576,7 +576,7 @@ void EvtBinTest::testCountMap() {
 //    CountMap count_map(240., 40., "GARBAGE", 400, 200, .1, 0., true, "RA", "DEC");
 //    std::cerr << "CountMap's constructor did not throw an exception when given an invalid projection type" << std::endl;
 //    m_failed = true;
-  } catch (const std::exception & x) {
+  } catch (const std::exception &) {
     // OK, supposed to fail.
   }
 
