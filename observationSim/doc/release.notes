@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r1p2 05-Jan-05   JC   do not use timetick30s source if pointing history
+                            file is used
     v6r1p1 23-Dec-05   JC   use new fitsGen interfaces
     v6r1   13-Dec-05   JC   allow startDate offset to be set via par file
     v6r0p1 12-Dec-05   JC   use v* in req file
