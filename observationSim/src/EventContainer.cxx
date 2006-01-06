@@ -236,12 +236,13 @@ void EventContainer::writeEvents(double obsStopTime) {
 
 // Set stop time to be arrival time of last event if obsStopTime is
 // negative (i.e., not set);
-   double stop_time(m_events.back().time());
+   double stop_time(m_events.back().time() - Spectrum::startTime());
    if (obsStopTime > 0) {
       stop_time = obsStopTime;
    }
-   ft1.setObsTimes(m_startTime, stop_time);
-
+   ft1.setObsTimes(m_startTime + Spectrum::startTime(),
+                   stop_time + Spectrum::startTime());
+   
    dataSubselector::Cuts * cuts;
    if (m_cuts) {
       cuts = new dataSubselector::Cuts(*m_cuts);
@@ -269,7 +270,7 @@ void EventContainer::writeEvents(double obsStopTime) {
    m_fileNum++;
 
 // Set the start time for next output file to be current stop time.
-   m_startTime = stop_time + Spectrum::startTime();
+   m_startTime = stop_time;
 }
 
 } // namespace observationSim
