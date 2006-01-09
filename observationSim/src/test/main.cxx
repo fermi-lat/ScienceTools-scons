@@ -105,7 +105,7 @@ int main(int iargc, char * argv[]) {
 
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events", "EVENTS");
-   observationSim::ScDataContainer scData("test_scData", "Ext1");
+   observationSim::ScDataContainer scData("test_scData", "SC_DATA");
 
 // The spacecraft object.
    observationSim::Spacecraft *spacecraft = new observationSim::LatSc();
@@ -123,6 +123,7 @@ int main(int iargc, char * argv[]) {
    std::cout << "Done." << std::endl;
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
+      return 1;
    }
 }
 
