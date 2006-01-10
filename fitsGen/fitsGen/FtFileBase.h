@@ -66,6 +66,10 @@ public:
 
    static void setMissionStart(int year, int month, int day, int sec);
 
+   static const astro::JulianDate & missionStart() {
+      return s_missionStart;
+   }
+
 protected:
 
    std::string m_outfile;
