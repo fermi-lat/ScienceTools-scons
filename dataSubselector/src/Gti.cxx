@@ -130,8 +130,8 @@ double Gti::minValue() const {
 double Gti::maxValue() const {
    double max_val = begin()->first;
    for (ConstIterator interval = begin(); interval != end(); ++interval) {
-      if (interval->first > max_val) {
-         max_val = interval->first;
+      if (interval->second > max_val) {
+         max_val = interval->second;
       }
    }
    return max_val;
