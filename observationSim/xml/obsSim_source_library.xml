@@ -116,9 +116,9 @@
       <spectrum escale="MeV">
          <!--
               Total photon flux from the map (#/m^2/s) = 12.59
-              Fits file (plate-carree only) = GP_gamma_v0.fits
+              Fits file (plate-carree only) = GP_gamma_v0r0p1.fits
           -->
-         <SpectrumClass name="MapCube" params="12.59, $(EXTFILESSYS)/galdiffuse/GP_gamma_v0.fits"/>
+         <SpectrumClass name="MapCube" params="12.59, $(EXTFILESSYS)/galdiffuse/GP_gamma_v0r0p1.fits"/>
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
@@ -133,7 +133,7 @@
      Maximum photon energy (MeV) = 2e5
 -->
          <SpectrumClass name="MapSource"
-          params="26.56,2.1,$(FLUXROOT)/sources/gas_gal.fits,20.,2e5"/>
+          params="26.56,2.1,$(EXTFILESSYS)/galdiffuse/EGRET_diffuse_gal.fits,20.,2e5"/>
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
