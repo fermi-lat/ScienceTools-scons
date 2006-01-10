@@ -77,7 +77,7 @@ void FtFileBase::setNumRows(long nrows) {
 }
 
 void FtFileBase::appendField(const std::string & colname,
-                          const std::string & format) {
+                             const std::string & format) {
    m_table->appendField(colname, format);
 }
 
