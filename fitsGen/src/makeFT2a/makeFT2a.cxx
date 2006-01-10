@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "facilities/Timestamp.h"
 #include "facilities/Util.h"
 
 #include "astro/EarthCoordinate.h"
@@ -29,11 +30,11 @@ namespace {
 
 void getFileNames(int iargc, char * argv[], std::string & rootFile,
                   std::string & fitsFile) {
-   if (iargc != 3) {
+   if (iargc != 3 && iargc != 4) {
       std::cout << "usage: " 
                 << facilities::Util::basename(argv[0]) << " "
                 << "<pointing history file> " 
-                << "<FITS output file> " << std::endl;
+                << "<FITS output file> [<start_date>]" << std::endl;
       std::exit(0);
    } else {
       rootFile = std::string(argv[1]);
@@ -52,6 +53,14 @@ unsigned long count_lines(const std::string & infile) {
    return nlines;
 }
 
+double startDate(const std::string & start_date) {
+   facilities::Timestamp start(start_date);
+   double offset((astro::JulianDate(start.getJulian()) 
+                  - fitsGen::FtFileBase::missionStart())
+                 *astro::JulianDate::secondsPerDay);
+   return offset;
+}
+
 } // unnamed namespace
 
 int main(int iargc, char * argv[]) {
@@ -62,6 +71,13 @@ int main(int iargc, char * argv[]) {
       ::getFileNames(iargc, argv, pointingFile, fitsFile);
       unsigned long nrows = ::count_lines(pointingFile);
 
+      double time_offset(0);
+      if (iargc == 4) {
+         std::cout << "Using launch date: " 
+                   << argv[3] << std::endl;
+         time_offset = ::startDate(argv[3]);
+      }
+
       fitsGen::Ft2File ft2(fitsFile, nrows);
 
       ft2.header().addHistory("Input pointing history file: " + pointingFile);
@@ -71,7 +87,7 @@ int main(int iargc, char * argv[]) {
       std::vector<std::string> dataFields;
       while (std::getline(d2, line, '\n')) {
          facilities::Util::stringTokenize(line, "\t ", dataFields);
-         ft2["start"].set(std::atof(dataFields[0].c_str()));
+         ft2["start"].set(std::atof(dataFields[0].c_str()) + time_offset);
          std::vector<float> scPosition(3);
 // Convert the spacecraft position from km to meters.
          scPosition[0] = std::atof(dataFields[1].c_str())*1e3;
