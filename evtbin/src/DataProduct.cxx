@@ -14,6 +14,8 @@
 #include "evtbin/Binner.h"
 #include "evtbin/DataProduct.h"
 #include "evtbin/Hist.h"
+#include "evtbin/Hist1D.h"
+#include "evtbin/Hist2D.h"
 #include "evtbin/RecordBinFiller.h"
 #include "st_facilities/Env.h"
 #include "st_facilities/FileSys.h"
@@ -97,6 +99,18 @@ namespace evtbin {
   }
 
   const Gti & DataProduct::getGti() const { return m_gti; }
+
+  const Hist1D & DataProduct::getHist1D() const {
+    const Hist1D * hist = dynamic_cast<const Hist1D *>(m_hist_ptr);
+    if (0 == hist) throw std::logic_error("DataProduct::getHist1D: not a 1 dimensional histogram");
+    return *hist;
+  }
+
+  const Hist2D & DataProduct::getHist2D() const {
+    const Hist2D * hist = dynamic_cast<const Hist2D *>(m_hist_ptr);
+    if (0 == hist) throw std::logic_error("DataProduct::getHist2D: not a 2 dimensional histogram");
+    return *hist;
+  }
 
   bool DataProduct::adjustGti(const Binner * binner) {
     // Get number of bins.

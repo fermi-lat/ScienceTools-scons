@@ -23,6 +23,8 @@ namespace tip {
 namespace evtbin {
   class Binner;
   class Hist;
+  class Hist1D;
+  class Hist2D;
 
   /** \class DataProduct
       \brief Base class for encapsulations of specific data products, with methods to read/write them using tip.
@@ -71,6 +73,16 @@ namespace evtbin {
       /** \brief Returns this object's current set of GTIs (read-only).
       */
       virtual const Gti & getGti() const;
+
+      /** \brief Return the histogram which was used to bin this data product. Throws exception if
+          underlying histogram is not 1 dimensional.
+      */
+      virtual const Hist1D & getHist1D() const;
+
+      /** \brief Return the histogram which was used to bin this data product. Throws exception if
+          underlying histogram is not 2 dimensional.
+      */
+      virtual const Hist2D & getHist2D() const;
 
       /** \brief Use the given (time) binner to modify the Gti by finding the overlap.
           Returns true if the Gti was actually changed by this operation, false if the

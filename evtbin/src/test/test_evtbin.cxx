@@ -548,7 +548,42 @@ void EvtBinTest::testSingleSpectrum() {
   gbm_spectrum.binInput();
 
   // Write the spectrum to an output file.
-  gbm_spectrum.writeOutput("test_evtbin", "GBMPHA1.pha");
+  std::string output_file = "GBMPHA1.pha";
+  gbm_spectrum.writeOutput("test_evtbin", output_file);
+
+  // Make sure this spectrum does not contain a 2D histogram.
+  try {
+    gbm_spectrum.getHist2D();
+    m_failed = true;
+    std::cerr <<
+      "Unexpected: in testSingleSpectrum, getHist2D did not throw exception when called for what should be a 1D histogram." <<
+      std::endl;
+  } catch (const std::exception &) {
+    // OK, this is supposed to throw.
+  }
+
+  // Get the output data from the spectrum and compare it to the output file to make sure it's valid.
+  const Hist1D & hist(gbm_spectrum.getHist1D());
+
+  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(output_file, "SPECTRUM"));
+  if (0 == table->getNumRecords()) {
+    m_failed = true;
+    std::cerr << "Unexpected: in testSingleSpectrum, output file " << output_file << " has 0 records." << std::endl;
+  } else if (hist.end() - hist.begin() != table->getNumRecords()) {
+    m_failed = true;
+    std::cerr << "Unexpected: in testSingleSpectrum, output file " << output_file << " has " << table->getNumRecords() <<
+      " records, not " << int(hist.end() - hist.begin()) << ", as expected." << std::endl;
+  } else {
+    tip::Table::ConstIterator table_itor = table->begin();
+    bool discrepancy = false;
+    for (Hist1D::ConstIterator itor = hist.begin(); !discrepancy && itor != hist.end(); ++itor, ++table_itor) {
+      if (*itor != (*table_itor)["COUNTS"].get()) discrepancy = true;
+    }
+    if (discrepancy) {
+      m_failed = true;
+      std::cerr << "Unexpected: in testSingleSpectrum, output file " << output_file << " disagrees with histogram." << std::endl;
+    }
+  }
 }
 
 void EvtBinTest::testMultiSpectra() {
@@ -567,6 +602,20 @@ void EvtBinTest::testMultiSpectra() {
 
   // Write the spectrum to an output file.
   spectrum.writeOutput("test_evtbin", "PHA2.pha");
+
+  // Make sure this spectrum does not contain a 1D histogram.
+  try {
+    spectrum.getHist1D();
+    m_failed = true;
+    std::cerr <<
+      "Unexpected: in testMultiSpectra, getHist1D did not throw exception when called for what should be a 1D histogram." <<
+      std::endl;
+  } catch (const std::exception &) {
+    // OK, this is supposed to throw.
+  }
+
+  // Make sure we can extract a 2D histogram from spectrum.
+  spectrum.getHist2D();
 }
 
 void EvtBinTest::testCountMap() {
