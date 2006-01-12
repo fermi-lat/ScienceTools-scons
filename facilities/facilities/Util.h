@@ -36,20 +36,23 @@ namespace facilities {
   public:
     WrongType(const std::string& toConvert="", 
               const std::string& typeName="") : 
-      std::exception(), m_toConvert(toConvert), m_typeName(typeName) {}
+      std::exception(), m_toConvert(toConvert), m_typeName(typeName) {
+      m_msg = std::string("facilities::WrongType. Cannot convert '") +  
+        m_toConvert;
+      m_msg += std::string("'to type ");
+      m_msg += m_typeName;
+    }
     virtual ~WrongType() throw() {}
     std::string getMsg() const {
-      std::string msg =
-        "facilities::WrongType.  Cannot convert '" + m_toConvert + "' to type "
-        + m_typeName;
-      return msg;
+      return m_msg;
     }
     virtual const char* what() const throw() { 
-      return (getMsg()).c_str();
+      return (m_msg.c_str());
     }
   private:
     std::string m_toConvert;
     std::string m_typeName;
+    std::string m_msg;
   };
 
   class Util {
