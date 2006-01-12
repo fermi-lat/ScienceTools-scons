@@ -27,6 +27,7 @@
 #include "optimizers/FunctionTest.h"
 #include "optimizers/FunctionFactory.h"
 #include "optimizers/ChiSq.h"
+#include "optimizers/newMinuit.h"
 #include "MyFun.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
@@ -265,7 +266,19 @@ void test_Optimizers() {
 
    int verbose = 1;
 
-// try lbfgs_bcm method first   
+// try the C++ version of Minuit
+
+   newMinuit myNewMin(my_rosen);
+   try {
+     myNewMin.find_min(verbose, .00001);
+   }
+   catch (optimizers::Exception& rrr) {
+     std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
+   }
+// use Minuit's HESSE to get the covariance matrix by finite differences
+   myNewMin.hesse(verbose);
+   
+// try lbfgs_bcm method 
    Lbfgs my_lbfgsObj(my_rosen);
    my_lbfgsObj.setMaxVarMetCorr(12);
    my_lbfgsObj.setPgtol(.0000001);
