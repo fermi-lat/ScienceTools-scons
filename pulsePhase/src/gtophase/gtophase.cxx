@@ -66,6 +66,7 @@ void PulsePhaseApp::run() {
   par_group.Prompt("psrname");
   par_group.Prompt("phi0");
   par_group.Prompt("timefield");
+  par_group.Prompt("ophasefield");
 
   par_group.Save();
 
@@ -106,15 +107,16 @@ void PulsePhaseApp::run() {
 
   std::string time_field = par_group["timefield"];
 
-  // Add ORBITAL_PHASE field if missing.
+  // Add orbital phase field if missing.
   bool add_col = true;
+  std::string phase_field = par_group["ophasefield"];
   try {
-    events->getFieldIndex("ORBITAL_PHASE");
+    events->getFieldIndex(phase_field);
     add_col = false;
   } catch (const tip::TipException &) {
   }
   if (add_col)
-    events->appendField("ORBITAL_PHASE", "1D");
+    events->appendField(phase_field, "1D");
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
@@ -133,7 +135,7 @@ void PulsePhaseApp::run() {
     double phase = modf(computer.calcOrbitalPhase(*abs_evt_time) + user_phi0, &int_part);
 
     // Write phase into output column.
-    (*itor)["ORBITAL_PHASE"].set(phase);
+    (*itor)[phase_field].set(phase);
   }
 
   // Clean up.
