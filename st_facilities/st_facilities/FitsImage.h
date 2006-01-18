@@ -73,6 +73,10 @@ public:
    /// will be indexed by column then row, indx = i + j*NAXIS1.
    virtual void getSolidAngles(std::vector<double> & solidAngles) const;
 
+   const std::vector<float> & imageData() const {
+      return m_image;
+   }
+
    /// @brief Factory method to create an astro::SkyProj object.
    /// @param fitsFile FITS file containing the WCS projection information.
    /// @param extension The name of the relevent FITS image extension.
