@@ -14,6 +14,9 @@ $Header$
 #include "wcslib/wcshdr.h"
 
 #include "longnam.h"
+#ifndef WCSLIB_GETWCSTAB
+#define WCSLIB_GETWCSTAB
+#endif
 #include "fitsio.h"
 
 using namespace astro;
@@ -141,7 +144,7 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
    fits_report_error(stderr, fstatus);
 
    // Read header to string
-   fits_header2str(fptr, &header, &fstatus);
+   ffh2st(fptr, &header, &fstatus);
    fits_report_error(stderr, fstatus);
 
    fits_close_file(fptr,&fstatus);
