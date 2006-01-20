@@ -98,7 +98,7 @@ const char *prj_errmsg[] = {
    "One or more of the (x,y) coordinates were invalid",
    "One or more of the (phi,theta) coordinates were invalid"};
 
-int prj_stat;
+int prj_stat = 0;
 
 
 #define copysign(X, Y) ((Y) < 0.0 ? -fabs(X) : fabs(X))

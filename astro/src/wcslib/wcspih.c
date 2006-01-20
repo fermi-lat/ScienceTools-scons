@@ -238,7 +238,7 @@ static char yy_hold_char;
 static int yy_n_chars;		/* number of characters read into yy_ch_buf */
 
 
-int yyleng;
+int yyleng = 0;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -7955,7 +7955,7 @@ static yyconst yy_state_type yy_NUL_trans[435] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-char *yytext;
+char *yytext = 0;
 #line 1 "wcspih.l"
 #define INITIAL 0
 /*============================================================================
@@ -8072,8 +8072,8 @@ char *yytext;
 #endif
 
 /* These global variables are required by YY_INPUT. */
-char *wcspih_hdr;
-int  wcspih_ncards;
+char *wcspih_hdr = 0;
+int  wcspih_ncards = 0;
 
 void wcspih_naxes(int naxis, int i, int j, char alt, int alts[], int *npptr);
 int  wcspih_inits(int alts[], int npv[], int nps[], int *nwcs,
