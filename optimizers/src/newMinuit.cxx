@@ -23,7 +23,7 @@ namespace optimizers {
 
   // Constructor
   newMinuit::newMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(200), 
-	       m_FCN(stat), m_fitDone(false) { };
+                                           m_fitDone(false), m_FCN(stat) { }
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void newMinuit::find_min(int verbose, double tol, int TolType) {
