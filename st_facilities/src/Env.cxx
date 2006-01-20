@@ -139,7 +139,7 @@ namespace st_facilities {
 
     // First attempt to expand the pattern $<pkg>ROOT/data.
     try {
-      expandEnvVar(appendFileName(getPkgRoot(pkg_id), "xmlData"), dir);
+      expandEnvVar(appendFileName(getPkgRoot(pkg_id), "xml"), dir);
     } catch (const std::exception &) {
       // Expansion failed, so try the install area.
       dir = getEnv("XMLPATH");
