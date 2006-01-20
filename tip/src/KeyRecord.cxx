@@ -4,7 +4,7 @@
              James Peachey, HEASARC/GSSC
 */
 #include <cctype>
-#include <error.h>
+#include <errno.h>
 #include <cstdlib>
 #include <sstream>
 
