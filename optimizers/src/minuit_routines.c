@@ -12,166 +12,166 @@ extern "C" {
 
 struct {
     char cpnam[1000];
-} mn7nam_;
+} mn7nam_ = { {0} };
 
 #define mn7nam_1 mn7nam_
 
 struct {
     doublereal u[100], alim[100], blim[100];
-} mn7ext_;
+} mn7ext_ = { {0}, {0}, {0} };
 
 #define mn7ext_1 mn7ext_
 
 struct {
     doublereal erp[100], ern[100], werr[100], globcc[100];
-} mn7err_;
+} mn7err_ = { {0}, {0}, {0}, {0} };
 
 #define mn7err_1 mn7err_
 
 struct {
     integer nvarl[100], niofex[100], nexofi[100];
-} mn7inx_;
+} mn7inx_ = { {0}, {0}, {0} };
 
 #define mn7inx_1 mn7inx_
 
 struct {
     doublereal x[100], xt[100], dirin[100];
-} mn7int_;
+} mn7int_ = { {0}, {0}, {0} };
 
 #define mn7int_1 mn7int_
 
 struct {
     doublereal xs[100], xts[100], dirins[100];
-} mn7fx2_;
+} mn7fx2_ = { {0}, {0}, {0} };
 
 #define mn7fx2_1 mn7fx2_
 
 struct {
     doublereal grd[100], g2[100], gstep[100], gin[100], dgrd[100];
-} mn7der_;
+} mn7der_ = { {0}, {0}, {0}, {0}, {0} };
 
 #define mn7der_1 mn7der_
 
 struct {
     doublereal grds[100], g2s[100], gsteps[100];
-} mn7fx3_;
+} mn7fx3_ = { {0}, {0}, {0} };
 
 #define mn7fx3_1 mn7fx3_
 
 struct {
     integer ipfix[100], npfix;
-} mn7fx1_;
+} mn7fx1_ = { {0}, 0 };
 
 #define mn7fx1_1 mn7fx1_
 
 struct {
     doublereal vhmat[5050];
-} mn7var_;
+} mn7var_ = { {0} };
 
 #define mn7var_1 mn7var_
 
 struct {
     doublereal vthmat[5050];
-} mn7vat_;
+} mn7vat_ = { {0} };
 
 #define mn7vat_1 mn7vat_
 
 struct {
     doublereal p[10100]	/* was [100][101] */, pstar[100], pstst[100], pbar[
 	    100], prho[100];
-} mn7sim_;
+} mn7sim_ = { {0}, {0}, {0}, {0}, {0} };
 
 #define mn7sim_1 mn7sim_
 
 struct {
     integer maxint, npar, maxext, nu;
-} mn7npr_;
+} mn7npr_ = { 0, 0, 0, 0 };
 
 #define mn7npr_1 mn7npr_
 
 struct {
     integer isysrd, isyswr, isyssa, npagwd, npagln, newpag;
-} mn7iou_;
+} mn7iou_ = { 0, 0, 0, 0, 0, 0 };
 
 #define mn7iou_1 mn7iou_
 
 struct {
     integer istkrd[10], nstkrd, istkwr[10], nstkwr;
-} mn7io2_;
+} mn7io2_ = { {0}, 0, {0}, 0 };
 
 #define mn7io2_1 mn7io2_
 
 struct {
     char cfrom[8], cstatu[10], ctitl[50], cword[20], cundef[10], cvrsn[6], 
 	    covmes[88];
-} mn7tit_;
+} mn7tit_ = { {0}, {0}, {0}, {0}, {0}, {0}, {0} };
 
 #define mn7tit_1 mn7tit_
 
 struct {
     integer isw[7], idbg[11], nblock, icomnd;
-} mn7flg_;
+} mn7flg_ = { {0}, {0}, 0, 0 };
 
 #define mn7flg_1 mn7flg_
 
 struct {
     doublereal amin, up, edm, fval3, epsi, apsi, dcovar;
-} mn7min_;
+} mn7min_ = { 0, 0, 0, 0, 0, 0, 0 };
 
 #define mn7min_1 mn7min_
 
 struct {
     integer nfcn, nfcnmx, nfcnlc, nfcnfr, itaur, istrat, nwrmes[2];
-} mn7cnv_;
+} mn7cnv_ = { 0, 0, 0, 0, 0, 0, {0} };
 
 #define mn7cnv_1 mn7cnv_
 
 struct {
     doublereal word7[30];
-} mn7arg_;
+} mn7arg_ = { {0} };
 
 #define mn7arg_1 mn7arg_
 
 struct {
     logical lwarn, lrepor, limset, lnolim, lnewmn, lphead;
-} mn7log_;
+} mn7log_ = { 0, 0, 0, 0, 0, 0 };
 
 #define mn7log_1 mn7log_
 
 struct {
     doublereal epsmac, epsma2, vlimlo, vlimhi, undefi, bigedm, updflt;
-} mn7cns_;
+} mn7cns_ = { 0, 0, 0, 0, 0, 0, 0 };
 
 #define mn7cns_1 mn7cns_
 
 struct {
     doublereal xpt[101], ypt[101];
-} mn7rpt_;
+} mn7rpt_ = { {0}, {0} };
 
 #define mn7rpt_1 mn7rpt_
 
 struct {
     char chpt[101];
-} mn7cpt_;
+} mn7cpt_ = { {0} };
 
 #define mn7cpt_1 mn7cpt_
 
 struct {
     doublereal xmidcr, ymidcr, xdircr, ydircr;
     integer ke1cr, ke2cr;
-} mn7xcr_;
+} mn7xcr_ = { 0, 0, 0, 0, 0, 0 };
 
 #define mn7xcr_1 mn7xcr_
 
 struct {
     char origin[200]	/* was [10][2] */, warmes[1200]	/* was [10][2] */;
-} mn7wrc_;
+} mn7wrc_ = { {0}, {0} };
 
 #define mn7wrc_1 mn7wrc_
 
 struct {
     integer nfcwar[20]	/* was [10][2] */, icirc[2];
-} mn7wri_;
+} mn7wri_ = { {0}, {0} };
 
 #define mn7wri_1 mn7wri_
 
@@ -194,6 +194,9 @@ static integer c__10 = 10;
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -263,6 +266,9 @@ COND CALL.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -288,6 +294,9 @@ COND CALL.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -519,6 +528,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -553,6 +565,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -582,6 +597,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -627,6 +645,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -666,6 +687,9 @@ L_mintio:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -784,6 +808,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -817,6 +844,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -846,6 +876,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -910,6 +943,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -942,6 +978,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -969,6 +1008,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1021,6 +1063,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1094,6 +1139,9 @@ IGNORED.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1121,6 +1169,9 @@ IGNORED.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1400,6 +1451,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1453,6 +1507,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1496,6 +1553,9 @@ L1350:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1608,6 +1668,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1684,6 +1747,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -1719,6 +1785,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -2140,6 +2209,9 @@ L2000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -2198,6 +2270,9 @@ AND HAS INPUT\002,i5,\002 NUMERIC FIELDS, BUT MINUIT CAN ACCEPT ONLY\002,i3)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -2417,6 +2492,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -2499,6 +2577,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -2531,6 +2612,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3055,6 +3139,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3097,6 +3184,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3126,6 +3216,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3206,6 +3299,9 @@ L1000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3283,6 +3379,9 @@ T.  MNDERI'/        ' PAR    DERIV     STEP      MINSTEP   OPTSTEP ',       \
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3313,6 +3412,9 @@ T.  MNDERI'/        ' PAR    DERIV     STEP      MINSTEP   OPTSTEP ',       \
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3515,6 +3617,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3547,6 +3652,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3575,6 +3683,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3612,6 +3723,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3649,6 +3763,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -3960,6 +4077,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4003,6 +4123,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4030,6 +4153,9 @@ L240:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4148,6 +4274,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4184,6 +4313,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4217,6 +4349,9 @@ ATED.", (ftnlen)54);
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4291,6 +4426,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4317,6 +4455,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4348,6 +4489,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4405,6 +4549,9 @@ L990:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4532,6 +4679,9 @@ GIVES UP'/)", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -4561,6 +4711,9 @@ GIVES UP'/)", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5220,6 +5373,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5251,6 +5407,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5279,6 +5438,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5322,6 +5484,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5361,6 +5526,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5389,6 +5557,9 @@ L5000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5509,6 +5680,9 @@ L300:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5564,6 +5738,9 @@ ESTORED TO VARIABLE.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5593,6 +5770,9 @@ ESTORED TO VARIABLE.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5754,6 +5934,9 @@ L300:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5814,6 +5997,9 @@ LATIONS BY FCN\002/\002 TO FORCE ACCEPTANCE, ENTER \"SET GRAD    1\"\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5845,6 +6031,9 @@ LATIONS BY FCN\002/\002 TO FORCE ACCEPTANCE, ENTER \"SET GRAD    1\"\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -5951,6 +6140,9 @@ L2000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -6698,6 +6890,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -6759,6 +6954,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -6787,6 +6985,9 @@ L99:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -6924,6 +7125,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7003,6 +7207,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7035,6 +7242,9 @@ L60:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7396,6 +7606,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7472,6 +7685,9 @@ AL MINIMUM\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7503,6 +7719,9 @@ AL MINIMUM\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7817,6 +8036,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7848,6 +8070,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7876,6 +8101,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7923,6 +8151,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -7987,6 +8218,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8016,6 +8250,9 @@ L380:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8148,6 +8385,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8179,6 +8419,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8209,6 +8452,9 @@ L35:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8275,6 +8521,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8308,6 +8557,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8336,6 +8588,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8374,6 +8629,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8446,6 +8704,9 @@ g15.5)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8474,6 +8735,9 @@ g15.5)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8672,6 +8936,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8737,6 +9004,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -8768,6 +9038,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9096,6 +9369,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9150,6 +9426,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9179,6 +9458,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9312,6 +9594,9 @@ L500:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9404,6 +9689,9 @@ i2,\002.  CONVERGENCE WHEN EDM .LT.\002,e9.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9433,6 +9721,9 @@ i2,\002.  CONVERGENCE WHEN EDM .LT.\002,e9.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9943,6 +10234,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -9993,6 +10287,9 @@ V\002/57x,\002VVVVVVV\002/58x,\002VVVVV\002/59x,\002VVV\002/60x,\002V\002//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10021,6 +10318,9 @@ V\002/57x,\002VVVVVVV\002/58x,\002VVVVV\002/59x,\002VVV\002/60x,\002V\002//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10147,6 +10447,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10229,6 +10532,9 @@ PARAMETER\002,i4/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10259,6 +10565,9 @@ PARAMETER\002,i4/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10536,6 +10845,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10635,6 +10947,9 @@ ARAMETERS.\002/\002 THIS VERSION OF MINUIT DIMENSIONED FOR\002,i4//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10671,6 +10986,9 @@ ARAMETERS.\002/\002 THIS VERSION OF MINUIT DIMENSIONED FOR\002,i4//)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -10966,6 +11284,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11024,6 +11345,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11058,6 +11382,9 @@ L800:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11237,6 +11564,9 @@ L210:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11269,6 +11599,9 @@ L210:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11380,6 +11713,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11428,6 +11764,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11456,6 +11795,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11529,6 +11871,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11593,6 +11938,9 @@ L10:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11849,6 +12197,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11879,6 +12230,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11918,6 +12272,9 @@ L400:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -11995,6 +12352,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12080,6 +12440,9 @@ ER IS AT LIMIT.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12117,6 +12480,9 @@ ER IS AT LIMIT.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12442,6 +12808,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12522,6 +12891,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12549,6 +12921,9 @@ L700:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12691,6 +13066,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12737,6 +13115,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12766,6 +13147,9 @@ L217:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12857,6 +13241,9 @@ L45:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12936,6 +13323,9 @@ a/\002 **********\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -12983,6 +13373,9 @@ a/\002 **********\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13277,6 +13670,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13305,6 +13701,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13353,6 +13752,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13384,6 +13786,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13414,6 +13819,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13471,6 +13879,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13548,6 +13959,9 @@ ARIANCE MATRIX.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13577,6 +13991,9 @@ ARIANCE MATRIX.\002/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13824,6 +14241,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13901,6 +14321,9 @@ ETER \002,i3/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -13930,6 +14353,9 @@ ETER \002,i3/)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14089,6 +14515,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14152,6 +14581,9 @@ UL TRIALS.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14186,6 +14618,9 @@ UL TRIALS.\002)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14343,6 +14778,9 @@ L600:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14497,6 +14935,9 @@ ORED')", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -14525,6 +14966,9 @@ ORED')", 0 };
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15159,6 +15603,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15184,6 +15631,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15211,6 +15661,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15243,6 +15696,9 @@ L4000:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15329,6 +15785,9 @@ E WHEN EDM .LT.\002,e10.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15357,6 +15816,9 @@ E WHEN EDM .LT.\002,e10.2)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15679,6 +16141,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15702,6 +16167,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15741,6 +16209,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15786,6 +16257,9 @@ L90:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15863,6 +16337,9 @@ M UNIT NO.\002,i3/\002 FILENAME: \002,a)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -15902,6 +16379,9 @@ M UNIT NO.\002,i3/\002 FILENAME: \002,a)";
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16256,6 +16736,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16278,6 +16761,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16311,6 +16797,9 @@ L900:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16368,6 +16857,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16393,6 +16885,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16420,6 +16915,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16452,6 +16950,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16501,6 +17002,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16530,6 +17034,9 @@ L150:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16663,6 +17170,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16718,6 +17228,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16743,6 +17256,9 @@ L100:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16883,6 +17399,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16920,6 +17439,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -16949,6 +17471,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -17037,6 +17562,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
@@ -17059,6 +17587,9 @@ L200:
 /* $Id$ */
 
 /* $Log$
+/* Revision 1.2  2004/06/10 17:27:19  jchiang
+/* comment out MINUIT startup message; allow for teensy slop in setting parameter values within bounds
+/*
 /* Revision 1.1.1.1  2003/08/02 22:14:21  jchiang
 /* First import
 /*
