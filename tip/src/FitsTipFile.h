@@ -62,10 +62,11 @@ namespace tip {
     protected:
       virtual void openFile();
 
-      virtual void closeFile(int status);
+      virtual void closeFile(bool update_checksum, int status);
 
     private:
       fitsfile * m_fp;
+      bool m_read_only;
   };
 }
 

@@ -68,7 +68,7 @@ namespace tip {
       // Get the extsnsion identifier (name or number).
       static void getExtId(fitsfile * fp, std::string & ext_id);
 
-      static void closeFile(fitsfile *fp, int status);
+      static void closeFile(fitsfile *fp, bool update_checksum, int status);
   };
 
 }

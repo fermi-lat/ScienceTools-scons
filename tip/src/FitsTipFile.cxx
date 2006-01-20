@@ -10,12 +10,12 @@
 
 namespace tip {
 
-  FitsTipFile::FitsTipFile(const std::string & file_name): ITipFile(file_name), m_fp(0) {
+  FitsTipFile::FitsTipFile(const std::string & file_name): ITipFile(file_name), m_fp(0), m_read_only(true) {
     openFile();
   }
 
   FitsTipFile::FitsTipFile(const std::string & file_name, const std::string & template_name, bool clobber): ITipFile(file_name),
-    m_fp(0) {
+    m_fp(0), m_read_only(true) {
     std::string full_name;
 
     // Handle clobber by prepending a bang or not.
@@ -31,7 +31,7 @@ namespace tip {
     // Create the file.
     fits_create_file(&m_fp, const_cast<char *>(full_name.c_str()), &status);
     if (0 != status) {
-      closeFile(status);
+      closeFile(true, status);
       throw TipException(status, "Unable to create file named \"" + full_name + '"');
     }
 
@@ -41,18 +41,19 @@ namespace tip {
       // No template: need to create primary image explicitly.
       fits_create_img(m_fp, FLOAT_IMG, 0, dims, &status);
       if (0 != status) {
-        closeFile(status);
+        closeFile(true, status);
         throw TipException(status, "Unable to create primary image in file named \"" + full_name + '"');
       }
     }
+    m_read_only = false;
   }
 
-  FitsTipFile::FitsTipFile(const FitsTipFile & file): ITipFile(file.getName()), m_fp(0) {
+  FitsTipFile::FitsTipFile(const FitsTipFile & file): ITipFile(file.getName()), m_fp(0), m_read_only(true) {
     openFile();
   }
 
   FitsTipFile::~FitsTipFile() {
-    closeFile(0);
+    closeFile(!m_read_only, 0);
   }
 
   // TODO: Turn this around: IFileSvc should call FitsTipFile not vice versa.
@@ -80,6 +81,8 @@ namespace tip {
 
     fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
     int ignored_status = status;
+    fits_write_chksum(new_fp, &ignored_status);
+    ignored_status = status;
     fits_close_file(new_fp, &ignored_status);
     if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
   }
@@ -88,9 +91,11 @@ namespace tip {
 
   void FitsTipFile::openFile() {
     int status = 0;
+    m_read_only = false;
     fits_open_file(&m_fp, const_cast<char *>(getName().c_str()), READWRITE, &status);
     if (0 != status) {
       status = 0;
+      m_read_only = true;
       fits_open_file(&m_fp, const_cast<char *>(getName().c_str()), READONLY, &status);
 
       if (0 != status)
@@ -98,7 +103,8 @@ namespace tip {
     }
   }
 
-  void FitsTipFile::closeFile(int status) {
+  void FitsTipFile::closeFile(bool update_checksum, int status) {
+    if (update_checksum && 0 == status) fits_write_chksum(m_fp, &status);
     fits_close_file(m_fp, &status);
     m_fp = 0;
   }
