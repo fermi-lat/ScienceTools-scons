@@ -15,6 +15,8 @@
 
 #include "astro/JulianDate.h"
 
+#include "st_facilities/Util.h"
+
 #include "fitsGen/FtFileBase.h"
 #include "fitsGen/Util.h"
 
@@ -39,7 +41,11 @@ void FtFileBase::init(const std::string & templateFile,
          + std::string("/data/") + templateFile;
    } 
    tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
-   fileSvc.createFile(m_outfile, ft_template);
+   if (ft_template != "") {
+      fileSvc.createFile(m_outfile, ft_template);
+   } else {
+      fileSvc.appendTable(m_outfile, extname);
+   }
    m_table = fileSvc.editTable(m_outfile, extname);
    setNumRows(m_nrows);
    m_it = m_table->begin();

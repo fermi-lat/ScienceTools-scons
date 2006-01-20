@@ -40,10 +40,13 @@ void Ft1File::close() {
 
       tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
 
-      tip::Table * gtiTable(fileSvc.editTable(m_outfile, "GTI"));
-      Util::writeDateKeywords(gtiTable, m_startTime, m_stopTime, true,
-                              s_missionStart);
-      delete gtiTable;
+      try {
+         tip::Table * gtiTable(fileSvc.editTable(m_outfile, "GTI"));
+         Util::writeDateKeywords(gtiTable, m_startTime, m_stopTime, true,
+                                 s_missionStart);
+         delete gtiTable;
+      } catch (...) {
+      }
 
       tip::Image * phdu(fileSvc.editImage(m_outfile, ""));
       Util::writeDateKeywords(phdu, m_startTime, m_stopTime, false,
