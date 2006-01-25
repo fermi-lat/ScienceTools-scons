@@ -45,7 +45,7 @@ void PulsePhaseApp::run() {
 #if 0
   par_group.setSwitch("ephstyle");
 
-  par_group.setCase("ephstyle", "DB", "epoch");
+  par_group.setCase("ephstyle", "DB", "ephepoch");
   par_group.setCase("ephstyle", "DB", "phi0");
 
   par_group.setCase("ephstyle", "FREQ", "f0");
@@ -74,13 +74,17 @@ void PulsePhaseApp::run() {
   for (std::string::iterator itor = eph_style.begin(); itor != eph_style.end(); ++itor) *itor = toupper(*itor);
 
   if (eph_style == "FREQ") {
-    par_group.Prompt("epoch");
+    par_group.Prompt("ephepoch");
+    par_group.Prompt("timeformat");
+    par_group.Prompt("timesys");
     par_group.Prompt("phi0");
     par_group.Prompt("f0");
     par_group.Prompt("f1");
     par_group.Prompt("f2");
   } else if (eph_style == "PER") {
-    par_group.Prompt("epoch");
+    par_group.Prompt("ephepoch");
+    par_group.Prompt("timeformat");
+    par_group.Prompt("timesys");
     par_group.Prompt("phi0");
     par_group.Prompt("p0");
     par_group.Prompt("p1");
@@ -97,7 +101,7 @@ void PulsePhaseApp::run() {
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
   // Get model parameters.
-  double epoch = par_group["epoch"];
+  double epoch = par_group["ephepoch"];
   double user_phi0 = par_group["phi0"];
 
   // Get keywords.
