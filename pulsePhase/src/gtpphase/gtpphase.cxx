@@ -97,40 +97,54 @@ void PulsePhaseApp::run() {
 
   par_group.Save(); // Save the values of the parameters.
 
-  // Open the event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
-
   // Get model parameters.
   double epoch = par_group["ephepoch"];
+  std::string time_format = par_group["timeformat"];
+  std::string epoch_time_sys = par_group["timesys"];
   double user_phi0 = par_group["phi0"];
+
+  if (time_format != "GLAST") throw std::runtime_error("Only GLAST time format is supported for ephemeris epoch");
+
+  // Handle ephemeris epoch time.
+  std::auto_ptr<AbsoluteTime> abs_epoch(0);
+
+  if (epoch_time_sys == "TDB") {
+    abs_epoch.reset(new GlastTdbTime(epoch));
+  } else if (epoch_time_sys == "TT") {
+    abs_epoch.reset(new GlastTtTime(epoch));
+  } else {
+    throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
+  }
+
+  // Open the event file.
+  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
   // Get keywords.
   double valid_since = 0.;
   double valid_until = 0.;
   std::string telescope;
-  std::string time_sys;
+  std::string event_time_sys;
 
   const tip::Header & header(events->getHeader());
   header["TSTART"].get(valid_since);
   header["TSTOP"].get(valid_until);
   header["TELESCOP"].get(telescope);
-  header["TIMESYS"].get(time_sys);
+  header["TIMESYS"].get(event_time_sys);
 
-  if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
+  if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
 
-  std::auto_ptr<AbsoluteTime> abs_epoch(0);
+  // Handle event time.
   std::auto_ptr<AbsoluteTime> abs_valid_since(0);
   std::auto_ptr<AbsoluteTime> abs_valid_until(0);
-  if (time_sys == "TDB") {
-    abs_epoch.reset(new GlastTdbTime(epoch));
+
+  if (event_time_sys == "TDB") {
     abs_valid_since.reset(new GlastTdbTime(valid_since));
     abs_valid_until.reset(new GlastTdbTime(valid_until));
-  } else if (time_sys == "TT") {
-    abs_epoch.reset(new GlastTtTime(epoch));
+  } else if (event_time_sys == "TT") {
     abs_valid_since.reset(new GlastTtTime(valid_since));
     abs_valid_until.reset(new GlastTtTime(valid_until));
   } else {
-    throw std::runtime_error("Only TDB or TT time systems are supported for now");
+    throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
   }
 
   // This phi0 is the phase of the ephemeris itself. The user supplied user_phi0 is a phase offset applied to the whole event file.
@@ -218,7 +232,7 @@ void PulsePhaseApp::run() {
 
     std::auto_ptr<AbsoluteTime> abs_evt_time(0);
 
-    if (time_sys == "TDB") {
+    if (event_time_sys == "TDB") {
       abs_evt_time.reset(new GlastTdbTime(evt_time));
     } else {
       abs_evt_time.reset(new GlastTtTime(evt_time));
