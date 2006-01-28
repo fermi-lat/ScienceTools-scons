@@ -36,21 +36,41 @@ using namespace map_tools;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const astro::SkyDir& center,  
                    const std::string& outputFile, 
-                   double pixel_size, double fov, int layers)
+                   double pixel_size, double fov, int layers, 
+                   const std::string& ptype,
+                   bool galactic)
 : m_naxis3(layers)  
 , m_image(0)
 , m_save(true)
 , m_layer(0)
 {
-    // 
-    int npixel = static_cast<int>(fov/pixel_size + 0.5);
-    m_naxis1 = m_naxis2 = npixel;
 
-    double crpix[2] = { npixel/2+0.5, npixel/2+0.5};
-    double crval[2] = { center.ra(), center.dec()};
+    if( fov>90) {
+        std::string types[]={"" ,"CAR","AIT","ZEA"};
+        int xsize[] =       {360, 360,  325,  230}; 
+        int ysize[] =       {180, 180,  162,  230}; 
+        for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
+            if( ptype == types[i]) {
+                m_naxis1 = static_cast<int>(xsize[i]/pixel_size);
+                m_naxis2 = static_cast<int>(ysize[i]/pixel_size);
+                break;
+            }
+        }
+
+        if( m_naxis1==0) {
+            throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
+                +ptype +" does not have default image size");
+        }
+    }else{
+
+        m_naxis1=m_naxis2 = static_cast<int>(fov/pixel_size + 0.5);
+    }
+
+    double crval[2] = { galactic?center.l():center.ra(),galactic? center.b(): center.dec()};
     double cdelt[2] = { -pixel_size, pixel_size };
-    // note that ZEA is wired in here. Could be made an arg
-    m_wcs = new astro::SkyProj("ZEA", crpix, crval, cdelt);
+    double crpix[2] = { (m_naxis1+1)/2.0, (m_naxis2+1)/2.0};
+
+    m_wcs = new astro::SkyProj(ptype, crpix, crval, cdelt, 0., galactic);
     this->setupImage(outputFile);
 }
 
