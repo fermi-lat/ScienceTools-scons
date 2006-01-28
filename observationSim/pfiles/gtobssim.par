@@ -1,5 +1,5 @@
 xml_source_file,f,a,"none",,,"File of flux-style source definitions"
-source_list,fr,a,"source_names.dat",,,"File containing list of source names"
+source_list,fr,a,"source_names.txt",,,"File containing list of source names"
 scfile,f,a,"none",,,"Pointing history file"
 sctable,s,h,"SC_DATA",,,"Spacecraft data extension"
 outfile_prefix,s,a,"test",,,"Prefix for output files"
