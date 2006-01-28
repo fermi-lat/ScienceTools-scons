@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 28-jan-05 v5r16p1THB Extend new SkyImage constructor to allow full sky images
  10-dec-05 v5r16  THB Add new constructor to SkyImage for creating limited images;
                        fix SkyImage bug; use new astro::SkyProj facility for setting FITS header
  29-nov-05 v5r15p2 THB healpix ordering change
