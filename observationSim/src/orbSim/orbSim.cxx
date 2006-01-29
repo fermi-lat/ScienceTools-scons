@@ -46,7 +46,7 @@ public:
       }
    }
    virtual void run();
-   virtual void banner() const {}
+   virtual void banner() const;
 private:
    st_app::AppParGroup & m_pars;
    double m_count;
@@ -64,6 +64,15 @@ private:
 };
 
 st_app::StAppFactory<OrbSim> myAppFactory("gtorbsim");
+
+std::string OrbSim::s_cvs_id("$Name$");
+
+void OrbSim::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
 
 void OrbSim::run() {
    defineRockTypes();

@@ -63,7 +63,7 @@ public:
       }
    }
    virtual void run();
-   virtual void banner() const {}
+   virtual void banner() const;
 private:
    st_app::AppParGroup & m_pars;
    double m_count;
@@ -87,6 +87,15 @@ private:
 };
 
 st_app::StAppFactory<ObsSim> myAppFactory("gtobssim");
+
+std::string ObsSim::s_cvs_id("$Name$");
+
+void ObsSim::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
 
 void ObsSim::run() {
    promptForParameters();
