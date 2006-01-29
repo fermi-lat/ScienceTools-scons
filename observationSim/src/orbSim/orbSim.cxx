@@ -59,6 +59,8 @@ private:
    void checkOutputFiles();
    void createSimulator();
    void generateData();
+
+   static std::string s_cvs_id;
 };
 
 st_app::StAppFactory<OrbSim> myAppFactory("gtorbsim");

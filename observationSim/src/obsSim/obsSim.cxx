@@ -82,6 +82,8 @@ private:
    void createSimulator();
    void generateData();
    void saveEventIds(const observationSim::EventContainer & events) const;
+
+   static std::string s_cvs_id;
 };
 
 st_app::StAppFactory<ObsSim> myAppFactory("gtobssim");
