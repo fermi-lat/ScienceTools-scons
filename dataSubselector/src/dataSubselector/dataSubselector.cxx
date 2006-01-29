@@ -35,9 +35,6 @@ public:
    DataFilter() : st_app::StApp(), 
                   m_pars(st_app::StApp::getParGroup("gtselect")) {
       try {
-         m_pars.Prompt();
-         m_pars.Save();
-         setName("gtselect");
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
          std::cerr << eObj.what() << std::endl;
@@ -87,6 +84,8 @@ void DataFilter::banner() const {
 }
 
 void DataFilter::run() {
+   m_pars.Prompt();
+   m_pars.Save();
    std::string evtable = m_pars["evtable"];
    std::string inputFile = m_pars["infile"];
    m_inputFile = inputFile;

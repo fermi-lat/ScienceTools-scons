@@ -34,9 +34,6 @@ public:
    MakeTime() : st_app::StApp(),
                 m_pars(st_app::StApp::getParGroup("gtmaketime")) {
       try {
-         m_pars.Prompt();
-         m_pars.Save();
-         setName("gtmaketime");
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
          std::cerr << eObj.what() << std::endl;
@@ -87,6 +84,8 @@ void MakeTime::banner() const {
 }
 
 void MakeTime::run() {
+   m_pars.Prompt();
+   m_pars.Save();
    check_outfile();
    createGti();
    mergeGtis();
