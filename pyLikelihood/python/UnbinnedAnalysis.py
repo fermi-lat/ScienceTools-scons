@@ -25,7 +25,8 @@ def _resolveFileList(files):
 
 class UnbinnedObs(object):
     def __init__(self, eventFile=None, scFile=None, expMap=None,
-                 expCube=None, irfs='DC1A', checkCuts=True):
+                 expCube=None, irfs='DC1A', checkCuts=True, sctable='SC_DATA'):
+        self.sctable = sctable
         self.checkCuts = checkCuts
         if eventFile is None and scFile is None:
             eventFile, scFile, expMap, expCube, irfs = self._obsDialog()
@@ -89,7 +90,7 @@ class UnbinnedObs(object):
         self._readEvents(eventFile)
     def _readScData(self, scFile):
         scFiles = self._fileList(scFile)
-        self._scData.readData(scFiles[0], True)
+        self._scData.readData(scFiles[0], True, self.sctable)
         for file in scFiles[1:]:
             self._scData.readData(file)
     def _readEvents(self, eventFile):
