@@ -3,9 +3,10 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
-    v6r1p3 09-Jan-05   JC   include start_date offset in start and stop
+    v6r1p4 29-Jan-06   JC   enable gui, set versions
+    v6r1p3 09-Jan-06   JC   include start_date offset in start and stop
                             times so that DATE keywords are set properly
-    v6r1p2 05-Jan-05   JC   do not use timetick30s source if pointing history
+    v6r1p2 05-Jan-06   JC   do not use timetick30s source if pointing history
                             file is used
     v6r1p1 23-Dec-05   JC   use new fitsGen interfaces
     v6r1   13-Dec-05   JC   allow startDate offset to be set via par file
