@@ -2,7 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
-    v4r1p1  10-Jan-05   JC   fix Gti::maxValue bug
+    v4r1p2  29-Jan-06   JC   enable gui
+    v4r1p1  10-Jan-06   JC   fix Gti::maxValue bug
     v4r1    23-Dec-05   JC   use new FT2 name, new evtbin::Gti interface
     v4      12-Dec-05   JC   use new FT1 definition
     v3r10p1 12-Oct-05   JC   have gtmaketime write a GTI-filtered output file
