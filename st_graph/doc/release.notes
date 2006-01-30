@@ -30,5 +30,6 @@ $Id$
                           failing (in batch mode).
 30-jan-2006      v1r5 JP  Assorted changes to support burstFit: add markers to
                           graphs, handle mouse click events etc.
+30-jan-2006    v1r5p1 JP  Changes to compile under gcc 3.4.x.
 \endverbatim
 */
