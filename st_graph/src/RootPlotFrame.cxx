@@ -40,7 +40,7 @@ namespace st_graph {
 
       virtual void SetColor(Color_t tcolor = 1);
 
-      virtual void SetTextAngle(float_t angle);
+      virtual void SetTextAngle(Float_t angle);
 
     private:
       Marker * m_marker;
@@ -113,7 +113,7 @@ namespace st_graph {
     TMarker::SetMarkerColor(tcolor);
   }
 
-  void StMarker::SetTextAngle(float_t angle) {
+  void StMarker::SetTextAngle(Float_t angle) {
     if (0 != m_label) m_label->SetTextAngle(angle);
   }
 
