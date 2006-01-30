@@ -28,5 +28,7 @@ $Id$
 26-aug-2005    v1r4p3 JP  Make test be a no-op unless arguments are supplied
                           to it, in order to prevent release manager from
                           failing (in batch mode).
+30-jan-2006      v1r5 JP  Assorted changes to support burstFit: add markers to
+                          graphs, handle mouse click events etc.
 \endverbatim
 */
