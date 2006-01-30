@@ -57,6 +57,7 @@
                           a relative path.
 30-jan-2006     v0r15 JP  Add accessors for getting histograms from DataProduct
                           class.
+30-jan-2006   v0r15p1 JP  Add author line to requirements.
 --------------------------------------------------------------------------------
 \endverbatim
 
