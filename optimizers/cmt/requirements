@@ -18,7 +18,7 @@ apply_pattern shared_library
 private
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
-macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE " Darwin " -I../src "
 macro_prepend cflags "" Linux " -g -O "
 
 macro source *.cxx WIN32 "*.h *.cxx"
