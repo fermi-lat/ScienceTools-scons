@@ -55,6 +55,8 @@
 03-jan-2006   v0r14p1 JP  Change unit test input for multiple files to use
                           EVTBINROOT environment variable rather than relying on
                           a relative path.
+30-jan-2006     v0r15 JP  Add accessors for getting histograms from DataProduct
+                          class.
 --------------------------------------------------------------------------------
 \endverbatim
 
