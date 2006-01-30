@@ -9,9 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
-#ifdef WIN32
-typedef void (*sighandler_t) (int);
-#endif
+typedef void (*root_signal_handler_t) (int);
 
 #include "TApplication.h"
 #include "TGButton.h"
@@ -83,7 +81,7 @@ namespace st_graph {
     // If no TApplication already exists, create one.
     if (0 == gApplication) {
       // Ignore signals when creating the application.
-      std::vector<sighandler_t> handlers(16);
+      std::vector<root_signal_handler_t> handlers(16);
       for (int ii = 0; ii < 16; ++ii) {
         handlers[ii] = signal(ii, SIG_IGN);
       }
