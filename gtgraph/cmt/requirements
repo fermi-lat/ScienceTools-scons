@@ -1,5 +1,8 @@
 package gtgraph
 
+author James Peachey <peachey@milkyway.gsfc.nasa.gov>
+# $Id$
+
 use STpolicy *
 use st_app *
 use st_graph *

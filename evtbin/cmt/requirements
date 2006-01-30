@@ -1,5 +1,9 @@
 package evtbin
+
 version v0
+
+author James Peachey <peachey@milkyway.gsfc.nasa.gov>
+# $Id$
 
 use CLHEP * IExternal
 use STpolicy *
@@ -13,6 +17,6 @@ apply_pattern ST_pfiles
 
 private
 
-macro_append st_app_cppflags "" Linux "-I.. "
+macro_append st_app_cppflags "" Linux "-I.. -O0 -g "
 application gtbin gtbin/*.cxx
 application gtbindef gtbindef/*.cxx
