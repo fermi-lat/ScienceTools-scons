@@ -4,6 +4,8 @@
 $Id$
 
 \verbatim
+30-jan-2006        v2 JP  Add possibility to switch between two GUIs, both of which
+                          live in st_graph, and remove the gui which was here.
 23-aug-2005    v1r7p1 JP  Fix bug which caused unit test to fail with pristine par file only.
 23-aug-2005      v1r7 JP  Allow multiple GUI widgets to affect same parameter.
 12-jul-2005    v1r6p4 JP  Tweak unit test again to make it work with/without tag.
