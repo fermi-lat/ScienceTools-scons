@@ -3,19 +3,25 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Source identification header file.                       */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.1.0                                                    */
-/* Date of version : 21-Jul-2005                                              */
+/* Revision        : 1.3.1                                                    */
+/* Date of version : 20-Dec-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
-/* 1.1.0  21-Jul-2005  version 1, revision 1                                  */
+/* 1.1.0  21-Jul-2005  add debug information                                  */
+/* 1.2.0  26-Sep-2005  - adapted generic quantity names to U9 (v0r2p3)        */
+/*                     - add UCD keywords to output FITS file                 */
+/* 1.3.0  19-Dec-2005  - prefix class members by "m_"                         */
+/*                     - introduce maximum acceptance angle for filter step   */
+/*                     - extract counterpart locations only once              */
+/* 1.3.1  20-Dec-2005  - treat R.A. wrap around correctly                     */
 /*----------------------------------------------------------------------------*/
 #ifndef SOURCEIDENTIFY_H
 #define SOURCEIDENTIFY_H
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "gtsrcid-1.1.0"
+#define TOOL_VERSION  "gtsrcid-1.3.1"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define USE_ST_APP 1
 

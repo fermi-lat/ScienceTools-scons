@@ -47,7 +47,7 @@ Status LogInit(const char *logName, const char *taskName, Status status) {
     do {
     
       // Clean log task name
-      sprintf(gLogTaskName, "");
+      sprintf(gLogTaskName, "%s", "");
     
       // If there is already a log file opened then close it first
       if (gLogFilePtr != NULL) {

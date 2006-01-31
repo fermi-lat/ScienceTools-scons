@@ -3,11 +3,12 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Task parameter interface header file.                    */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.1.0                                                    */
+/* Date of version : 27-Sep-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.1.0  27-Sep-2005  add default position errors for src and cpt            */
 /*----------------------------------------------------------------------------*/
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
@@ -63,6 +64,8 @@ private:
   std::vector<std::string> m_select;              // Selections
   std::string              m_probMethod;          // Probability method
   double                   m_probThres;           // Probability threshold
+  double                   m_srcPosError;         // Default source pos. error
+  double                   m_cptPosError;         // Default counterpart pos. error
   long                     m_maxNumCtp;           // Maximum # of counterparts
   int                      m_chatter;             // Chatter level
   int                      m_clobber;             // Clobber flag

@@ -3,11 +3,16 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Catalogue interface header file.                         */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.3.0                                                    */
+/* Date of version : 19-Dec-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.2.0  26-Sep-2005  - adapted generic quantity names to U9 (v0r2p3)        */
+/*                     - add UCD keywords to output FITS file                 */
+/* 1.3.0  19-Dec-2005  - prefix class members by "m_"                         */
+/*                     - introduce maximum acceptance angle for filter step   */
+/*                     - extract counterpart locations only once              */
 /*----------------------------------------------------------------------------*/
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
@@ -32,36 +37,44 @@ namespace sourceIdentify {
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
 #define OUTCAT_COL_ID_FORM         "20A"
+#define OUTCAT_COL_ID_UCD          "ID_MAIN"
 //
 #define OUTCAT_COL_RA_COLNUM       2
-#define OUTCAT_COL_RA_NAME         "POS_EQ_RA"
+#define OUTCAT_COL_RA_NAME         "RA_J2000"
 #define OUTCAT_COL_RA_FORM         "1E"
 #define OUTCAT_COL_RA_UNIT         "deg"
+#define OUTCAT_COL_RA_UCD          "POS_EQ_RA_MAIN"
 //
 #define OUTCAT_COL_DEC_COLNUM      3
-#define OUTCAT_COL_DEC_NAME        "POS_EQ_DEC"
+#define OUTCAT_COL_DEC_NAME        "DEC_J2000"
 #define OUTCAT_COL_DEC_FORM        "1E"
 #define OUTCAT_COL_DEC_UNIT        "deg"
+#define OUTCAT_COL_DEC_UCD         "POS_EQ_DEC_MAIN"
 //
 #define OUTCAT_COL_MAJERR_COLNUM   4
-#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAJ"
+//#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAX"
+#define OUTCAT_COL_MAJERR_NAME     "PosErr"
 #define OUTCAT_COL_MAJERR_FORM     "1E"
 #define OUTCAT_COL_MAJERR_UNIT     "deg"
+#define OUTCAT_COL_MAJERR_UCD      "ERROR"
 //
 #define OUTCAT_COL_MINERR_COLNUM   5
 #define OUTCAT_COL_MINERR_NAME     "POS_ERR_MIN"
 #define OUTCAT_COL_MINERR_FORM     "1E"
 #define OUTCAT_COL_MINERR_UNIT     "deg"
+#define OUTCAT_COL_MINERR_UCD      "ERROR"
 //
 #define OUTCAT_COL_POSANGLE_COLNUM 6
 #define OUTCAT_COL_POSANGLE_NAME   "POS_ERR_ANG"
 #define OUTCAT_COL_POSANGLE_FORM   "1E"
 #define OUTCAT_COL_POSANGLE_UNIT   "deg"
+#define OUTCAT_COL_POSANGLE_UCD    "ERROR"
 //
 #define OUTCAT_COL_PROB_COLNUM     7
 #define OUTCAT_COL_PROB_NAME       "PROB"
 #define OUTCAT_COL_PROB_FORM       "1E"
 #define OUTCAT_COL_PROB_UNIT       "probability"
+#define OUTCAT_COL_PROB_UCD        ""
 
 /* Constants ________________________________________________________________ */
 const double pi          = 3.1415926535897931159979635;
@@ -86,6 +99,11 @@ typedef struct {                  // Counterpart candidate
   double      prob_angsep;          // Probability from angular separation
 } CCElement;
 
+typedef struct {                  // Catalogue location information
+  double      ra;                   // Right Ascension (deg)
+  double      dec;                  // Declination (deg)
+} ObjectInfo;
+
 class Catalogue {
 public:
 
@@ -107,7 +125,7 @@ private:
                              catalogAccess::Catalog *cat, Status status);
   Status get_counterpart_candidates(Parameters *par, long iSrc, Status status);
   Status get_counterparts(Parameters *par, double *ra, double *dec,
-                          double *pos_err, Status status);
+                          Status status);
   Status get_probability(Parameters *par, long iSrc, Status status);
   Status get_probability_angsep(Parameters *par, long iSrc, Status status);
   Status create_output_catalogue(Parameters *par, Status status);
@@ -119,31 +137,35 @@ private:
   Status dump_counterpart_candidates(Parameters *par, Status status);
 
 private:
-  long                    numSrc;     // Number of sources in source catalogue
-  long                    numCpt;     // Number of sources in counterpart cat.
-  long                    maxCptLoad; // Maximum number of counterparts to be loaded
-  long                    fCptLoaded; // Loaded counterparts fully
-  catalogAccess::Catalog  src;        // Source catalogue
-  catalogAccess::Catalog  cpt;        // Counterpart catalogue
-  fitsfile               *outFile;    // Output catalogue FITS file pointer
+  long                     m_numSrc;        // Number of sources in source catalogue
+  long                     m_numCpt;        // Number of sources in counterpart cat.
+  long                     m_maxCptLoad;    // Maximum number of counterparts to be loaded
+  long                     m_fCptLoaded;    // Loaded counterparts fully
+  double                   m_filter_maxsep; // Maximum counterpart separation (in deg)
+  catalogAccess::Catalog   m_src;           // Source catalogue
+  catalogAccess::Catalog   m_cpt;           // Counterpart catalogue
+  ObjectInfo              *m_cpt_loc;       // Counterpart catalogue information
+  fitsfile                *m_outFile;       // Output catalogue FITS file pointer
   //
   // Counterpart candidate (CC) working arrays
-  long                    numCC;      // Number of CCs
-  CCElement              *cc;         // CCs
+  long                     m_numCC;         // Number of CCs
+  CCElement               *m_cc;            // CCs
   //
   // Output cataloge: source catalogue quantities
-  long                     num_src_Qty;
-  std::vector<int>         src_Qty_colnum;
-  std::vector<std::string> src_Qty_ttype;
-  std::vector<std::string> src_Qty_tform;
-  std::vector<std::string> src_Qty_tunit;
+  long                     m_num_src_Qty;
+  std::vector<int>         m_src_Qty_colnum;
+  std::vector<std::string> m_src_Qty_ttype;
+  std::vector<std::string> m_src_Qty_tform;
+  std::vector<std::string> m_src_Qty_tunit;
+  std::vector<std::string> m_src_Qty_tbucd;
   //
   // Output cataloge: counterpart catalogue quantities
-  long                     num_cpt_Qty;
-  std::vector<int>         cpt_Qty_colnum;
-  std::vector<std::string> cpt_Qty_ttype;
-  std::vector<std::string> cpt_Qty_tform;
-  std::vector<std::string> cpt_Qty_tunit;
+  long                     m_num_cpt_Qty;
+  std::vector<int>         m_cpt_Qty_colnum;
+  std::vector<std::string> m_cpt_Qty_ttype;
+  std::vector<std::string> m_cpt_Qty_tform;
+  std::vector<std::string> m_cpt_Qty_tunit;
+  std::vector<std::string> m_cpt_Qty_tbucd;
 };
 inline Catalogue::Catalogue(void) { init_memory(); }
 inline Catalogue::~Catalogue(void) { free_memory(); }

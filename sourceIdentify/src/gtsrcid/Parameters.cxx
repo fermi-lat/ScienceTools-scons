@@ -3,11 +3,12 @@
 /* -------------------------------------------------------------------------- */
 /* Task            : Parameter interface file.                                */
 /* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.0.0                                                    */
-/* Date of version : 20-May-2005                                              */
+/* Revision        : 1.1.0                                                    */
+/* Date of version : 27-Sep-2005                                              */
 /* -------------------------------------------------------------------------- */
 /* History :                                                                  */
 /* 1.0.0  20-May-2005  first version                                          */
+/* 1.1.0  27-Sep-2005  add default position errors for src and cpt            */
 /*----------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -48,10 +49,13 @@ void Parameters::init_memory(void) {
       m_outCatQtyFormula.clear();
       m_select.clear();
       m_probMethod.clear();
-      m_maxNumCtp = 0;
-      m_chatter   = 0;
-      m_clobber   = 0;
-      m_debug     = 0;
+      m_probThres   = 0.0;
+      m_srcPosError = 0.0;
+      m_cptPosError = 0.0;
+      m_maxNumCtp   = 0;
+      m_chatter     = 0;
+      m_clobber     = 0;
+      m_debug       = 0;
       m_mode.clear();
 
     } while (0); // End of main do-loop
@@ -126,6 +130,8 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       m_cptCatQty              = s_cptCatQty;
       m_probMethod             = s_probMethod;
       m_probThres              = pars["probThres"];
+      m_srcPosError            = pars["srcPosError"];
+      m_cptPosError            = pars["cptPosError"];
       m_maxNumCtp              = pars["maxNumCtp"];
       m_chatter                = pars["chatter"];
       m_clobber                = pars["clobber"];
@@ -200,7 +206,7 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 Status Parameters::dump(Status status) {
 
     // Declare local variables
-    long                   i;
+    std::string::size_type i;
     std::string::size_type n;
         
     // Single loop for common exit point
@@ -219,6 +225,10 @@ Status Parameters::dump(Status status) {
           m_srcCatQty.c_str());
       Log(Log_1, " Counterpart catalogue quantities .: %s", 
           m_cptCatQty.c_str());
+      Log(Log_1, " Source catalogue uncertainty .....: %f arcmin",
+          m_srcPosError*60.0);
+      Log(Log_1, " Counterpart catalogue uncertainty : %f arcmin",
+          m_cptPosError*60.0);
       if ((n = m_outCatQtyName.size()) > 0) {
         for (i = 0; i < n; i++) {
           Log(Log_1, " New output catalogue quantity %2d .: %s = %s", 
