@@ -37,13 +37,13 @@ public:
 
     //! return the direction associated with an iterator
     astro::SkyDir dir(typename std::vector<C>::const_iterator it)const{
-        astro::Healpix::Pixel px(it-begin(), m_hp);
+        astro::Healpix::Pixel px(it-this->begin(), m_hp);
         return px();
     }
 
     //! return the pixel associated with an iterator
     astro::Healpix::Pixel pixel(typename std::vector<C>::const_iterator it)const{
-        astro::Healpix::Pixel px(it-begin(), m_hp);
+        astro::Healpix::Pixel px(it-this->begin(), m_hp);
         return px;
     }
 
