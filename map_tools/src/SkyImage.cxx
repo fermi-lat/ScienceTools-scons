@@ -20,16 +20,6 @@ $Header$
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
-#if 0
-    //! @brief add a string or double key or whatever to the image 
-    tip::Header* header;
-    template <typename T>
-        void setKey(std::string name, T value, std::string unit="", std::string comment=""){
-            (*header)[name].set( value); 
-            (*header)[name].setUnit(unit);
-            (*header)[name].setComment(comment);
-        }
-#endif
 }
 using namespace map_tools;
 
@@ -119,6 +109,7 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 
     setupImage(pars.outputFile(),  pars.clobber());
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 {
     std::string extension("skyimage"); // maybe a parameter?
@@ -142,9 +133,6 @@ void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
     m_imageData.resize(m_pixelCount);
-
-    // fill the boundaries with NaN
-    //if( pars.projType()!="CAR") clear();
 
     m_wcs->setKeywords(m_image->getHeader());
 }
@@ -304,7 +292,7 @@ unsigned int SkyImage::pixel_index(const astro::SkyDir& pos, int layer) const
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
     if( k >= m_pixelCount ) {
-        throw std::range_error("SkyImage::operator[]-- outside image hyper cube");
+        throw std::range_error("SkyImage::pixel_index -- outside image hyper cube");
     }
     return k;
 }
