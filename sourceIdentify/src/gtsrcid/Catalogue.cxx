@@ -1,21 +1,11 @@
-/*----------------------------------------------------------------------------*/
-/*                               Catalogue.cxx                                */
-/* -------------------------------------------------------------------------- */
-/* Task            : Catalogue interface file.                                */
-/* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.3.1                                                    */
-/* Date of version : 20-Dec-2005                                              */
-/* -------------------------------------------------------------------------- */
-/* History :                                                                  */
-/* 1.0.0  20-May-2005  first version                                          */
-/* 1.1.0  21-Jul-2005  add debug information                                  */
-/* 1.2.0  26-Sep-2005  - adapted generic quantity names to U9 (v0r2p3)        */
-/*                     - add UCD keywords to output FITS file                 */
-/* 1.3.0  19-Dec-2005  - prefix class members by "m_"                         */
-/*                     - introduce maximum acceptance angle for filter step   */
-/*                     - extract counterpart locations only once              */
-/* 1.3.1  20-Dec-2005  - treat R.A. wrap around correctly                     */
-/*----------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Id ........: $Id$
+Author ....: $Author$
+Revision ..: $Revision$
+Date ......: $Date$
+--------------------------------------------------------------------------------
+$Log$
+------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
 #include "sourceIdentify.h"
@@ -958,10 +948,11 @@ Status Catalogue::create_output_catalogue(Parameters *par, Status status) {
       Log(Log_0, " ==> ENTRY: Catalogue::create_output_catalogue");
 
     // Initialise temporary memory pointers
-    ttype = NULL;
-    tform = NULL;
-    tunit = NULL;
-    tbucd = NULL;
+    ttype   = NULL;
+    tform   = NULL;
+    tunit   = NULL;
+    tbucd   = NULL;
+    num_col = 0;
 
     // Initialise FITSIO status
     fstatus = (int)status;
@@ -1235,12 +1226,13 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
       Log(Log_0, " ==> ENTRY: Catalogue::add_counterpart_candidates");
 
     // Initialise temporary memory pointers
-    dptr = NULL;
-    cptr = NULL;    
+    dptr  = NULL;
+    cptr  = NULL;   
+    nrows = 0; 
 
     // Initialise FITSIO status
     fstatus = (int)status;
-
+    
     // Single loop for common exit point
     do {
     
@@ -1549,7 +1541,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
 
         // Test expression to determine the format of the new column
         fstatus = fits_test_expr(m_outFile,
-                                 (char*)par->m_outCatQtyFormula[iQty].c_str(),
+                                 par->m_outCatQtyFormula[iQty].c_str(),
                                  0, &datatype, &nelements, &naxis, NULL,
                                  &fstatus);
         if (fstatus != 0) {
@@ -1570,10 +1562,10 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
 
         // Create new FITS column
         fstatus = fits_calculator(m_outFile, 
-                                  (char*)par->m_outCatQtyFormula[iQty].c_str(),
+                                  par->m_outCatQtyFormula[iQty].c_str(),
                                   m_outFile,
-                                  (char*)par->m_outCatQtyName[iQty].c_str(),
-                                  (char*)tform.c_str(), 
+                                  par->m_outCatQtyName[iQty].c_str(),
+                                  tform.c_str(), 
                                   &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())
@@ -1670,7 +1662,7 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
 
         // Perform selection
         fstatus = fits_select_rows(m_outFile, m_outFile,
-                                   (char*)par->m_select[iSel].c_str(),
+                                   par->m_select[iSel].c_str(),
                                    &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())

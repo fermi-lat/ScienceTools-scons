@@ -1,19 +1,11 @@
-/*----------------------------------------------------------------------------*/
-/*                                Catalogue.h                                 */
-/* -------------------------------------------------------------------------- */
-/* Task            : Catalogue interface header file.                         */
-/* Author          : Jurgen Knodlseder CESR (C) (all rights reserved)         */
-/* Revision        : 1.3.0                                                    */
-/* Date of version : 19-Dec-2005                                              */
-/* -------------------------------------------------------------------------- */
-/* History :                                                                  */
-/* 1.0.0  20-May-2005  first version                                          */
-/* 1.2.0  26-Sep-2005  - adapted generic quantity names to U9 (v0r2p3)        */
-/*                     - add UCD keywords to output FITS file                 */
-/* 1.3.0  19-Dec-2005  - prefix class members by "m_"                         */
-/*                     - introduce maximum acceptance angle for filter step   */
-/*                     - extract counterpart locations only once              */
-/*----------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Id ........: $Id$
+Author ....: $Author$
+Revision ..: $Revision$
+Date ......: $Date$
+--------------------------------------------------------------------------------
+$Log$
+------------------------------------------------------------------------------*/
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
 
