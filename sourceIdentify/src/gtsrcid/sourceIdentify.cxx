@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2006/02/01 13:33:37  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -121,7 +126,8 @@ public:
  
     // Save the execution stop time and calculate elapsed time
     t_stop = clock();
-    t_elapse = (float)(t_stop - t_start) / (float)CLOCKS_PER_SEC;
+//    t_elapse = (float)(t_stop - t_start) / (float)CLOCKS_PER_SEC;
+    t_elapse = (float)(t_stop - t_start);
 
     // Dump termination message
     Log(Log_1, "Task terminated using %.3f sec CPU time.", t_elapse);
