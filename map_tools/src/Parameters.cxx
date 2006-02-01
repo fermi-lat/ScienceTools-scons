@@ -6,6 +6,7 @@
 * $Header$
 */
 
+#include <cctype>
 #include <sstream>
 
 #include "facilities/Util.h"
@@ -24,7 +25,7 @@ Parameters::Parameters( int argc, char *argv[])
     setup();
 }
 //! Constructor
-Parameters::Parameters( hoops::IParGroup & par) 
+Parameters::Parameters( hoops::ParPromptGroup & par) 
 :  m_par(par), m_own_ppg(false)
 {  
     setup();
@@ -38,8 +39,35 @@ void Parameters::setup()
 {
     // Prompt for all parameters in the order in the par file:
 
-    dynamic_cast<hoops::ParPromptGroup&>(m_par).Prompt();
-    dynamic_cast<hoops::ParPromptGroup&>(m_par).Save();
+    m_par.Prompt("infile");
+    m_par.Prompt("table");
+    m_par.Prompt("filter");
+    m_par.Prompt("cmfile");
+    m_par.Prompt("outfile");
+    m_par.Prompt("rspfunc");
+
+    std::string uc_cm_file = m_par["cmfile"];
+    for (std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
+    if ("NONE" == uc_cm_file) {
+      m_par.Prompt("pixelsize");
+      m_par.Prompt("projtype");
+      m_par.Prompt("uselb");
+      m_par.Prompt("npix");
+      m_par.Prompt("npixy");
+      m_par.Prompt("xref");
+      m_par.Prompt("yref");
+      m_par.Prompt("rot");
+      m_par.Prompt("layers");
+      m_par.Prompt("emin");
+      m_par.Prompt("eratio");
+    }
+
+    m_par.Prompt("clobber");
+    m_par.Prompt("chatter");
+    m_par.Prompt("debug");
+//    m_par.Prompt("gui");
+    m_par.Save();
+
     m_chatter = m_par["chatter"];
 
     m_clobber = m_par["clobber"];

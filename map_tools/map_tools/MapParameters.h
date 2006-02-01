@@ -31,7 +31,7 @@ class MapParameters : public Parameters
 {
 public:
     // Constructors
-    MapParameters(hoops::IParGroup & pars);
+    MapParameters(hoops::ParPromptGroup & pars);
     MapParameters(int argc, char * argv[]);
 
     int npix() const                   { return m_npix; }

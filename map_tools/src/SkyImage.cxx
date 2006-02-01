@@ -12,7 +12,9 @@ $Header$
 
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
+#include "tip/Table.h"
 
+#include <cctype>
 #include <stdexcept>
 #include <sstream>
 #include <errno.h> // to test result of std::remove()
@@ -71,42 +73,67 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 , m_naxis3(pars.npixZ()) // for future expansion
 , m_total(0)
 , m_image(0)
+, m_imageData()
 , m_save(true)
 , m_layer(0)
 , m_wcs(0)
 {
     using namespace astro;
-    std::string ptype(pars.projType());
-    double pixelsize = pars["pixelsize"];
 
-    if( m_naxis1==0){
-        // special code to determine all-sky limits based on scale factor and transformation
-        std::string types[]={"" ,"CAR","AIT","ZEA"};
-        int xsize[] =       {360, 360,  325,  230}; 
-        int ysize[] =       {180, 180,  162,  230}; 
-        for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
-            if( ptype == types[i]) {
-                m_naxis1 = static_cast<int>(xsize[i]/pixelsize);
-                m_naxis2 = static_cast<int>(ysize[i]/pixelsize);
-                break;
+    // see if there is an input count map
+    std::string cm_file = pars.getValue<std::string>("cmfile");
+    std::string uc_cm_file = cm_file;
+    for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
+        
+    if ( "NONE" != uc_cm_file){
+        static double s_Mev_per_keV = .001;
+        // read the count map to get the image dimensions from it
+        loadImage(cm_file, "", true);
+        // read energies associated with layers from ebounds extension.
+        std::auto_ptr<const tip::Table> ebounds(tip::IFileSvc::instance().readTable(cm_file, "EBOUNDS"));
+        m_energy.resize(ebounds->getNumRecords());
+        std::vector<double>::iterator out_itor = m_energy.begin();
+        for (tip::Table::ConstIterator in_itor = ebounds->begin(); in_itor != ebounds->end(); ++in_itor, ++out_itor) {
+          *out_itor = (*in_itor)["E_MIN"].get() * s_Mev_per_keV;
+        }
+    }else{
+        std::string ptype(pars.projType());
+        double pixelsize = pars["pixelsize"];
+
+        if( m_naxis1==0){
+            // special code to determine all-sky limits based on scale factor and transformation
+            std::string types[]={"" ,"CAR","AIT","ZEA"};
+            int xsize[] =       {360, 360,  325,  230}; 
+            int ysize[] =       {180, 180,  162,  230}; 
+            for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
+                if( ptype == types[i]) {
+                    m_naxis1 = static_cast<int>(xsize[i]/pixelsize);
+                    m_naxis2 = static_cast<int>(ysize[i]/pixelsize);
+                    break;
+                }
+            }
+            if( m_naxis1==0) {
+                throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
+                    +ptype +" does not have default image size");
             }
         }
-        if( m_naxis1==0) {
-            throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
-                +ptype +" does not have default image size");
+        if( m_naxis2==0) m_naxis2=m_naxis1; // default square image
+        bool galactic = pars.uselb();
+
+        /// arrays describing transformation: assume reference in the center
+        double          //lon            lat
+            crval[2]={ pars.xref(),      pars.yref()},
+            crpix[2]={ (m_naxis1+1)/2.0, (m_naxis2+1)/2.0},
+            cdelt[2]={ -pixelsize,       pixelsize },
+            crota2=pars.rot();
+        m_wcs = new astro::SkyProj( pars.projType(), crpix, crval, cdelt, crota2, galactic);
+  
+        double energy = pars["emin"], eratio = pars["eratio"];
+        m_energy.resize(m_naxis3);
+        for ( int ii = 0; ii != m_naxis3; ++ii, energy *= eratio){
+            m_energy[ii] = energy;
         }
     }
-    if( m_naxis2==0) m_naxis2=m_naxis1; // default square image
-    bool galactic = pars.uselb();
-
-    /// arrays describing transformation: assume reference in the center
-    double          //lon            lat
-        crval[2]={ pars.xref(),      pars.yref()},
-        crpix[2]={ (m_naxis1+1)/2.0, (m_naxis2+1)/2.0},
-        cdelt[2]={ -pixelsize,       pixelsize },
-        crota2=pars.rot();
-    m_wcs = new astro::SkyProj( pars.projType(), crpix, crval, cdelt, crota2, galactic);
-
     setupImage(pars.outputFile(),  pars.clobber());
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,13 +163,9 @@ void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 
     m_wcs->setKeywords(m_image->getHeader());
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
-:  m_save(false)
-, m_layer(0)
-, m_wcs(0)
+void SkyImage::loadImage(const std::string& fits_file, const std::string& extension, bool dim_only)
 {
-    m_image = const_cast<tip::Image*>(tip::IFileSvc::instance().readImage(fits_file, extension));
+    tip::Image* m_image = const_cast<tip::Image*>(tip::IFileSvc::instance().readImage(fits_file, extension));
     tip::Header& header = m_image->getHeader();
 
     // standard ordering for ra, dec, cos(theta).
@@ -152,9 +175,18 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     m_wcs = new astro::SkyProj(fits_file,1);
-    // finally, read in the image
-    m_image->get(m_imageData);
 
+    // finally, read in the image if client desires
+    if (dim_only) m_imageData.resize(m_pixelCount, 0.);
+    else m_image->get(m_imageData);
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
+:  m_save(false)
+, m_layer(0)
+, m_wcs(0)
+{
+    loadImage(fits_file, extension);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)

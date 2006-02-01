@@ -15,7 +15,7 @@ MapParameters::MapParameters(int argc, char * argv[])
 {
     setup();
 }
-MapParameters::MapParameters( hoops::IParGroup& hpar)
+MapParameters::MapParameters( hoops::ParPromptGroup& hpar)
 : Parameters(hpar)
 {
     setup();

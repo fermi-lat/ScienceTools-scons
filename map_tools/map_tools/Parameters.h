@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "hoops/hoops_group.h"
+#include "hoops/hoops_prompt_group.h"
 
 namespace map_tools {
 /**
@@ -31,7 +31,7 @@ public:
     Parameters( int argc, char *argv[]);
 
     //! @brief ctor with hoops already set up
-    Parameters( hoops::IParGroup& par);
+    Parameters( hoops::ParPromptGroup& par);
 
     ~Parameters() throw() ;
 
@@ -59,7 +59,7 @@ public:
     short chatter()     const            { return m_chatter; }
 private:
     void setup();
-     hoops::IParGroup & m_par;
+     hoops::ParPromptGroup & m_par;
     // Data Members
     std::string   m_inFile;
     std::string   m_outFile;

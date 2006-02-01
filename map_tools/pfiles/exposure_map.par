@@ -14,6 +14,7 @@ infile,   f,a,"",,,"Name of the exposure cube input file:"
 table,s,a,"Ext1",,,"name of the extension or ROOT tree"
 filter,   s,h,,,,"filter expression:"
 #outfile,f,a,"simple.fits",,,"output file name"
+cmfile,   f,a,"",,,"Name of input count map file whose geometry to match (NONE for no count map)"
 outfile,  f,a,"",,,"output file name"
 #
 #------------ describe the effective area -------
