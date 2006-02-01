@@ -11,6 +11,7 @@
                          - introduce maximum acceptance angle for filter step
                          - extract counterpart locations only once
                          - treat R.A. wrap around correctly
-1-Feb-2006   v0r4    JK  Allow for additional PDF
+1-Feb-2006   v0r4    JK  New clean tag.
+1-Feb-2006   v0r5    JK  - allow for additional PDF.
 @endverbatim
 */
