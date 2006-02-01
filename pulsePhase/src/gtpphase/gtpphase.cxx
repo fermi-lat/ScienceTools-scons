@@ -100,10 +100,20 @@ void PulsePhaseApp::run() {
   // Get model parameters.
   double epoch = par_group["ephepoch"];
   std::string time_format = par_group["timeformat"];
-  std::string epoch_time_sys = par_group["timesys"];
+
+  // Determine the time system used for the ephemeris epoch.
+  std::string epoch_time_sys;
+  if (eph_style == "DB") epoch_time_sys = "TDB";
+  else epoch_time_sys = par_group["timesys"].Value();
+
+  // Make names of time formats and time systems case insensitive.
+  for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
+  for (std::string::iterator itor = epoch_time_sys.begin(); itor != epoch_time_sys.end(); ++itor) *itor = toupper(*itor);
+
   double user_phi0 = par_group["phi0"];
 
-  if (time_format != "GLAST") throw std::runtime_error("Only GLAST time format is supported for ephemeris epoch");
+  if (eph_style != "DB" && time_format != "GLAST")
+    throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
 
   // Handle ephemeris epoch time.
   std::auto_ptr<AbsoluteTime> abs_epoch(0);
@@ -131,7 +141,14 @@ void PulsePhaseApp::run() {
   header["TELESCOP"].get(telescope);
   header["TIMESYS"].get(event_time_sys);
 
+  // Make names of time system and mission are case insensitive)
+  for (std::string::iterator itor = telescope.begin(); itor != telescope.end(); ++itor) *itor = toupper(*itor);
+  for (std::string::iterator itor = event_time_sys.begin(); itor != event_time_sys.end(); ++itor) *itor = toupper(*itor);
+
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
+
+  if (epoch_time_sys != event_time_sys)
+    throw std::runtime_error("Event time system must match pulsar ephemeris time system for now");
 
   // Handle event time.
   std::auto_ptr<AbsoluteTime> abs_valid_since(0);
