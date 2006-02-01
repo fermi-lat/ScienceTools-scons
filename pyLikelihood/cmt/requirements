@@ -8,6 +8,8 @@ author James Chiang <jchiang@slac.stanford.edu>
 use Likelihood v*
 use SwigPolicy v*
 
+macro_append st_graph_libs " -lGX11 -lGX11TTF " WIN32 ""
+
 path_remove PYTHONPATH pyLikelihood
 path_append PYTHONPATH $(PYLIKELIHOODROOT)/$(BINDIR)
 path_append PYTHONPATH $(PYLIKELIHOODROOT)/python
