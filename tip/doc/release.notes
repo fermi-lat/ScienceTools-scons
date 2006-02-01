@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+01-feb-2006 v2r8p3 JP Remove optimization/debugging flags from requirements.
 19-jan-2006 v2r8p2 JP Add support for OSX, and for gcc 3.3 and later.
 07-dec-2005 v2r8p1 JP Add support for getting vectors and scalars of all common
                       floating point and integer types, converting them as needed to
