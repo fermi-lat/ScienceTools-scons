@@ -12,6 +12,7 @@ $Header$
 //#define TIP_ONECOLUMNBUG // remove this when tip is fixed to allow a single column
 
 #include <cmath>
+#include <errno.h>
 #include <sstream>
 #include <string>
 #include <typeinfo>
