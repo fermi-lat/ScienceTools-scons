@@ -12,6 +12,6 @@
                          - extract counterpart locations only once
                          - treat R.A. wrap around correctly
 1-Feb-2006   v0r4    JK  New clean tag.
-1-Feb-2006   v0r5    JK  - allow for additional PDF.
+2-Feb-2006   v0r5    JK  Fixed Win32 compile bugs.
 @endverbatim
 */
