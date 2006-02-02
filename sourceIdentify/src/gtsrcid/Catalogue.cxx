@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2006/02/02 09:26:14  jurgen
+correct Win32 compile bugs
+
 Revision 1.4  2006/02/01 15:17:10  jurgen
 correct g++-3.4.3 compile error related to parentheses around (char*)
 
@@ -1572,7 +1575,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
         fstatus = fits_calculator(m_outFile, 
                                   (char*)par->m_outCatQtyFormula[iQty].c_str(),
                                   m_outFile,
-                                  par->m_outCatQtyName[iQty].c_str(),
+                                  (char*)par->m_outCatQtyName[iQty].c_str(),
                                   tform.c_str(), 
                                   &fstatus);
         if (fstatus != 0) {
