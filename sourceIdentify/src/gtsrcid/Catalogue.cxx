@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2006/02/01 15:17:10  jurgen
+correct g++-3.4.3 compile error related to parentheses around (char*)
+
 Revision 1.3  2006/02/01 13:33:36  jurgen
 Tried to fix Win32 compilation bugs.
 Change revision number to 1.3.2.
@@ -350,7 +353,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, std::string catName,
 /*----------------------------------------------------------------------------*/
 /*                    Catalogue::get_counterpart_candidates                   */
 /* -------------------------------------------------------------------------- */
-/* Private method: get  counterpart candidates for source 'iSrc'              */
+/* Private method: get counterpart candidates for source 'iSrc'               */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::get_counterpart_candidates(Parameters *par, long iSrc, 
                                              Status status) {
@@ -1274,7 +1277,7 @@ Status Catalogue::add_counterpart_candidates(Parameters *par, long iSrc,
 
       // Allocate memory to hold quantities
       dptr = new double[nrows];
-      cptr = new (char*)[nrows];
+      cptr = new char*[nrows];
       if (dptr == NULL ||
           cptr == NULL) {
         status = STATUS_MEM_ALLOC;
@@ -1546,7 +1549,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
 
         // Test expression to determine the format of the new column
         fstatus = fits_test_expr(m_outFile,
-                                 par->m_outCatQtyFormula[iQty].c_str(),
+                                 (char*)par->m_outCatQtyFormula[iQty].c_str(),
                                  0, &datatype, &nelements, &naxis, NULL,
                                  &fstatus);
         if (fstatus != 0) {
@@ -1567,7 +1570,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
 
         // Create new FITS column
         fstatus = fits_calculator(m_outFile, 
-                                  par->m_outCatQtyFormula[iQty].c_str(),
+                                  (char*)par->m_outCatQtyFormula[iQty].c_str(),
                                   m_outFile,
                                   par->m_outCatQtyName[iQty].c_str(),
                                   tform.c_str(), 
@@ -1667,7 +1670,7 @@ Status Catalogue::select_output_catalogue(Parameters *par, Status status) {
 
         // Perform selection
         fstatus = fits_select_rows(m_outFile, m_outFile,
-                                   par->m_select[iSel].c_str(),
+                                   (char*)par->m_select[iSel].c_str(),
                                    &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())
