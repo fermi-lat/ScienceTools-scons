@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.6  2006/02/02 09:29:29  jurgen
+correct Win32 bug
+
 Revision 1.5  2006/02/02 09:26:14  jurgen
 correct Win32 compile bugs
 
@@ -1576,7 +1579,7 @@ Status Catalogue::eval_output_catalogue_quantities(Parameters *par,
                                   (char*)par->m_outCatQtyFormula[iQty].c_str(),
                                   m_outFile,
                                   (char*)par->m_outCatQtyName[iQty].c_str(),
-                                  tform.c_str(), 
+                                  (char*)tform.c_str(), 
                                   &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())
