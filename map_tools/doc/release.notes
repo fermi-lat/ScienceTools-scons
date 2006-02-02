@@ -5,6 +5,9 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 02-feb-06 v5r17   JP Add parameter cmfile, which allows a count map file to be used as
+                      input. In this case most of the other parameters are not used, because
+                      the geometry comes from the count map file.
  28-jan-05 v5r16p1THB Extend new SkyImage constructor to allow full sky images
  10-dec-05 v5r16  THB Add new constructor to SkyImage for creating limited images;
                        fix SkyImage bug; use new astro::SkyProj facility for setting FITS header
