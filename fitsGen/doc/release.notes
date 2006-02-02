@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+
+    v2r2p2 02-Feb-06   JC   added irfTuple and intermediate changes for makeFT1
+    v2r2p1 10-Jan-06   JC   added partition app; exposed missionStart access
     v2r2   23-Dec-05   JC   change FT2 extension name; allow cuts on merit
                             file to be specified; more ft1.tpl updates
     v2r1   12-Dec-05   JC   allow TCut to be specified for makeFT1
