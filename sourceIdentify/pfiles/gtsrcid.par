@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   1.2.0                                                   #
+#  Version:   v1r0                                                    #
 #  Component: A2                                                      #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
@@ -16,21 +16,19 @@
 #                                                                     #
 #  Purpose:   Parameter file for the gtsrcid executable               #
 #                                                                     #
-#  History:   1.0.0  20-May-2005  First release                       #
-#             1.1.0  21-Jul-2005  Deleted blanks from file            #
-#             1.2.0  26-Sep-2005  Added srcPosError and cptPosError   #
-#                                                                     #
 #######################################################################
 #
 # Source Catalogue information
 #=============================
 srcCatName,s,a,"../../data/cygob2_egret_3eg.tsv",,,"Source catalogue name"
+srcCatPrefix,s,a,"3EG",,,"Source catalogue column prefix"
 srcCatQty,s,a,"3EG,RAJ2000,DEJ2000,theta95",,,"Source catalogue quantities to be written"
 srcPosError,r,h,0.0,,,"Source position uncertainty (deg)"
 #
 # Counterpart Catalogue information
 #==================================
 cptCatName,s,a,"../../data/cygob2_iras_ipac_pt.tsv",,,"Counterpart catalogue name"
+cptCatPrefix,s,a,"IRAS",,,"Counterpart catalogue column prefix"
 cptCatQty,s,a,,,,"Counterpart catalogue quantities to be written"
 cptPosError,r,h,0.0,,,"Counterpart position uncertainty (deg)"
 #
