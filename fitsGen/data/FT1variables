@@ -1,0 +1,23 @@
+# @brief This is a translation table for the merit to FT1 conversion
+# @author J. Chiang
+#
+# $Header$
+#
+# FT1 name              MeritTuple name
+#
+ENERGY                  FT1Energy
+RA                      FT1Ra
+DEC                     FT1Dec
+#L                       FT1L
+#B                       FT1B
+THETA                   FT1Theta
+PHI                     FT1Phi
+ZENITH_ANGLE            FT1ZenithTheta
+EARTH_AZIMUTH_ANGLE     FT1EarthAzimuth
+TIME                    EvtElapsedTime
+EVENT_ID                FT1EventId
+#RECON_VERSION
+#CALIB_VERSION
+#EVENT_CLASS
+#CONVERSION_TYPE
+LIVETIME                FT1Livetime

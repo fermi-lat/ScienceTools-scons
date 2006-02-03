@@ -57,7 +57,13 @@ public:
 
    /// @return A Gti object containing the GTIs for this merit file.
    /// This comprises just the beginning and end times for the data.
-   const dataSubselector::Gti & gti() const; 
+   const dataSubselector::Gti & gti() const;
+
+   /// @return Event type of current row.
+   short int eventType() const;
+
+   /// @return Conversion type (e.g., front=0, back=1) of current row.
+   short int conversionType() const;
 
 private:
 

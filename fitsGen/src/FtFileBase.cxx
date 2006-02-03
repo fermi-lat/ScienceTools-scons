@@ -15,6 +15,7 @@
 
 #include "astro/JulianDate.h"
 
+#include "st_facilities/Env.h"
 #include "st_facilities/Util.h"
 
 #include "fitsGen/FtFileBase.h"
@@ -37,8 +38,8 @@ void FtFileBase::init(const std::string & templateFile,
                       const std::string & extname) {
    std::string ft_template(templateFile);
    if (templateFile == "ft1.tpl" || templateFile == "ft2.tpl") {
-      ft_template = std::getenv("FITSGENROOT") 
-         + std::string("/data/") + templateFile;
+      ft_template = st_facilities::Env::appendFileName(
+         st_facilities::Env::getDataDir("fitsGen"), templateFile);
    } 
    tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
    if (ft_template != "") {

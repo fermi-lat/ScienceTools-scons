@@ -18,6 +18,8 @@
 #include "tip/Table.h"
 #include "tip/Header.h"
 
+#include "st_facilities/Env.h"
+
 #include "fitsGen/Util.h"
 
 namespace fitsGen {
@@ -25,8 +27,9 @@ namespace fitsGen {
 void Util::getFileNames(int iargc, char * argv[], std::string & rootFile, 
                         std::string & fitsFile) {
    if (iargc == 1) {
-      std::string fitsGenRoot = std::getenv("FITSGENROOT");
-      rootFile = fitsGenRoot + "/data/" + rootFile;
+//       std::string fitsGenRoot = std::getenv("FITSGENROOT");
+//       rootFile = fitsGenRoot + "/data/" + rootFile;
+      rootFile = st_facilities::Env::getDataDir("fitsGen") + "/" + rootFile;
    } else if (iargc == 2) {
       std::string app_name = argv[0];
       if (!std::strcmp(argv[1], "-h")) {

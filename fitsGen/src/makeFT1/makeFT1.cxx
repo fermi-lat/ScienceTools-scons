@@ -13,11 +13,14 @@
 #include <stdexcept>
 #include <string>
 
+#include "facilities/Util.h"
+
 #include "dataSubselector/Gti.h"
 #include "dataSubselector/Cuts.h"
 
 #include "astro/SkyDir.h"
 
+#include "st_facilities/Env.h"
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
@@ -27,18 +30,32 @@
 
 using namespace fitsGen;
 
+namespace {
+   void getFT1Dict(const std::string & inputFile,
+                   std::map<std::string, std::string> & ft1Dict) {
+      ft1Dict.clear();
+      std::vector<std::string> lines;
+      st_facilities::Util::readLines(inputFile, lines, "#", true);
+      for (size_t i = 0; i < lines.size(); i++) {
+         std::vector<std::string> tokens;
+         facilities::Util::stringTokenize(lines.at(i), " ", tokens);
+         ft1Dict[tokens.at(0)] = tokens.at(1);
+      }
+   }
+}
+
 int main(int iargc, char * argv[]) {
    if (iargc < 3) {
-      std::cout << "usage: <merit file> <FT1 file> [<TCut>]"
-                << std::endl;
+      std::cout << "usage: <merit file> <FT1 file> "
+                << "[<TCut> [<Merit-to-FT1 dictionary file>]]\n";
       std::exit(1);
    }
-
+   
    std::string rootFile(argv[1]);
    std::string fitsFile(argv[2]);
 
    std::ostringstream filter;
-   if (iargc == 4) {
+   if (iargc >= 4) {
       if (st_facilities::Util::fileExists(argv[3])) {
          std::vector<std::string> lines;
          st_facilities::Util::readLines(argv[3], lines, "#", true);
@@ -51,6 +68,16 @@ int main(int iargc, char * argv[]) {
       std::cout << "applying TCut: " << filter.str() << std::endl;
    }
 
+   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
+   std::string dictFile = 
+      st_facilities::Env::appendFileName(dataDir,"FT1variables");
+   if (iargc == 5) {
+      dictFile = argv[4];
+   }
+   typedef std::map<std::string, std::string> Ft1Map_t;
+   Ft1Map_t ft1Dict;
+   ::getFT1Dict(dictFile, ft1Dict);
+
    dataSubselector::Cuts my_cuts;
    try {
       fitsGen::MeritFile merit(rootFile, "MeritTuple", filter.str());
@@ -61,28 +88,10 @@ int main(int iargc, char * argv[]) {
 
       int ncount(0);
       for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
-         ft1["energy"].set(merit["FT1Energy"]);
-         double ra = merit["FT1Ra"];
-         double dec = merit["FT1Dec"];
-         ft1["ra"].set(ra);
-         ft1["dec"].set(dec);
-         astro::SkyDir dir(ra, dec);
-         ft1["l"].set(dir.l());
-         ft1["b"].set(dir.b());
-         ft1["theta"].set(merit["FT1Theta"]);
-         ft1["phi"].set(merit["FT1Phi"]);
-         ft1["zenith_angle"].set(merit["FT1ZenithTheta"]);
-         ft1["earth_azimuth_angle"].set(merit["FT1EarthAzimuth"]);
-         ft1["time"].set(merit["EvtElapsedTime"]);
-         ft1["event_id"].set(static_cast<int>(merit["FT1EventId"]));
-         if (17 - merit["Tkr1FirstLayer"] < 11.5) { // Front converting
-            ft1["event_class"].set(0);
-            ft1["conversion_type"].set(0);
-         } else { // Back converting
-            ft1["event_class"].set(1);
-            ft1["conversion_type"].set(1);
+         for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
+              variable != ft1Dict.end(); ++variable) {
+            ft1[variable->first].set(merit[variable->second]);
          }
-         ft1["livetime"].set(merit["FT1Livetime"]);
          ncount++;
       }
       std::cout << "number of rows processed: " << ncount << std::endl;

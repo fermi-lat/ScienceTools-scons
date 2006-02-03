@@ -68,4 +68,16 @@ const dataSubselector::Gti & MeritFile::gti() const {
    return *m_gti;
 }
 
+short int MeritFile::eventType() const {
+   return conversionType();
+}
+
+short int MeritFile::conversionType() const {
+   if (17 - m_row["Tkr1FirstLayer"].get() < 11.5) { // Front converting
+      return 0;
+   } else { // Back converting
+      return 1;
+   }
+}
+
 } // namespace fitsGen

@@ -16,6 +16,7 @@
 
 #include "tip/IFileSvc.h"
 
+#include "st_facilities/Env.h"
 #include "st_facilities/Util.h"
 
 #include "dataSubselector/Gti.h"
@@ -116,12 +117,14 @@ const dataSubselector::Gti & EgretSmdb::gti() const {
 }
 
 void EgretSmdb::readEgretGtis(dataSubselector::Gti & gti) {
-   char * fitsGenroot = ::getenv("FITSGENROOT");
-   if (!fitsGenroot) {
-      throw std::runtime_error("FITSGENROOT not set");
-   }
-   std::string infile(fitsGenroot);
-   infile += "/data/egret_gtis_tjd.dat";
+//    char * fitsGenroot = ::getenv("FITSGENROOT");
+//    if (!fitsGenroot) {
+//       throw std::runtime_error("FITSGENROOT not set");
+//    }
+//    std::string infile(fitsGenroot);
+//    infile += "/data/egret_gtis_tjd.dat";
+   std::string infile(st_facilities::Env::getDataDir("fitsGen") 
+                      + "egret_gtis_tjd.dat");
    std::vector<std::string> lines;
    st_facilities::Util::file_ok(infile);
    st_facilities::Util::readLines(infile, lines);
