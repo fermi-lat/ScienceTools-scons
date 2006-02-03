@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2006/02/02 09:44:43  jurgen
+Remove doxygen documentation and set revision number to v0r5
+
 Revision 1.4  2006/02/01 15:59:35  jurgen
 Don't devide by CLOCKS_PER_SEC
 
@@ -80,7 +83,7 @@ public:
       Log(Log_1, 
          "* -------------------------------------------------------- *");
       Log(Log_1, 
-         "* Revision : v0r5                                          *");
+         "* Revision : v1r0                                          *");
       Log(Log_1, 
          "* Date     : 2 February 2006                               *");
       Log(Log_1, 
@@ -112,15 +115,6 @@ public:
       if (status != STATUS_OK) {
         if (par.logTerse())
           Log(Error_3, "%d : Error while building counterpart candidate"
-                       " catalogue.", status);      
-        continue;
-      }
-
-      // Save counterpart candidate catalogue
-      status = cat.save(&par, status);
-      if (status != STATUS_OK) {
-        if (par.logTerse())
-          Log(Error_3, "%d : Error while saving counterpart candidate"
                        " catalogue.", status);      
         continue;
       }

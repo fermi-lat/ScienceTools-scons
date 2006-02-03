@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2006/02/01 13:33:36  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
@@ -24,7 +29,16 @@ namespace sourceIdentify {
 #define MIN_OUTCAT_SEL  1
 #define MAX_OUTCAT_SEL  9
 
+
 /* Type defintions __________________________________________________________ */
+typedef enum {
+  NotUsed = 1,
+  Exponential,
+  Gaussian
+} PosProbType;
+
+
+/* Classes __________________________________________________________________ */
 class Parameters {
 public:
 
@@ -53,12 +67,15 @@ private:
   std::string              m_srcCatName;          // Source catalogue name
   std::string              m_cptCatName;          // Counterpart catalogue name
   std::string              m_outCatName;          // Output catalogue name
+  std::string              m_srcCatPrefix;        // Source catalogue prefix
+  std::string              m_cptCatPrefix;        // Counterpart catalogue prefix
   std::string              m_srcCatQty;           // Source catalogue quantities
   std::string              m_cptCatQty;           // Counterpart catalogue quantities
   std::vector<std::string> m_outCatQtyName;       // New output catalogue quantities
   std::vector<std::string> m_outCatQtyFormula;    // New output catalogue quantities
   std::vector<std::string> m_select;              // Selections
-  std::string              m_probMethod;          // Probability method
+  PosProbType              m_posProbType;         // Position probability type
+  std::vector<std::string> m_probColNames;        // Probability column names
   double                   m_probThres;           // Probability threshold
   double                   m_srcPosError;         // Default source pos. error
   double                   m_cptPosError;         // Default counterpart pos. error

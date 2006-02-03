@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2006/02/01 13:33:36  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
@@ -77,24 +82,39 @@ const double deg2rad     = 0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 
 /* Type defintions __________________________________________________________ */
-typedef struct {                  // Counterpart candidate
-  std::string id;                   // Unique identifier
-  double      pos_eq_ra;            // Right Ascension (deg)
-  double      pos_eq_dec;           // Declination (deg)
-  double      pos_err_maj;          // Uncertainty ellipse major axis (deg)
-  double      pos_err_min;          // Uncertainty ellipse minor axis (deg)
-  double      pos_err_ang;          // Uncertainty ellipse positron angle (deg)
-  double      prob;                 // Counterpart probability
+typedef struct {                      // Counterpart candidate
+  std::string             id;           // Unique identifier
+  double                  pos_eq_ra;    // Right Ascension (deg)
+  double                  pos_eq_dec;   // Declination (deg)
+  double                  pos_err_maj;  // Uncertainty ellipse major axis (deg)
+  double                  pos_err_min;  // Uncertainty ellipse minor axis (deg)
+  double                  pos_err_ang;  // Uncertainty ellipse positron angle (deg)
+  double                  prob;         // Counterpart probability
   //
-  long        index;                // Index of CCs in CPT catalogue
-  double      angsep;               // Angular separation of CCs from source
-  double      prob_angsep;          // Probability from angular separation
+  long                    index;        // Index of CCs in CPT catalogue
+  double                  angsep;       // Angular separation of CCs from source
+  double                  prob_angsep;  // Probability from angular separation
+  std::vector<double>     prob_add;     // Additional probabilities
 } CCElement;
 
-typedef struct {                  // Catalogue location information
-  double      ra;                   // Right Ascension (deg)
-  double      dec;                  // Declination (deg)
+typedef struct {                      // Catalogue object information
+  double                  ra;           // Right Ascension (deg)
+  double                  dec;          // Declination (deg)
 } ObjectInfo;
+
+typedef struct {                      // Input catalogue
+  std::string             inName;       // Input name
+  std::string             catCode;      // Catalogue code
+  std::string             catURL;       // Catalogue URL
+  std::string             catName;      // Catalogue name
+  std::string             catRef;       // Catalogue Reference
+  std::string             tableName;    // Table name
+  std::string             tableRef;     // Table reference
+  catalogAccess::Catalog  cat;          // Catalogue
+  long                    numLoad;      // Number of loaded objects in catalogue
+  long                    numTotal;     // Total number of objects in catalogue
+  ObjectInfo             *object;       // Object information
+} InCatalogue;
 
 class Catalogue {
 public:
@@ -105,38 +125,50 @@ public:
 
   // Public methods
   Status build(Parameters *par, Status status);
-  Status save(Parameters *par, Status status);
               
   // Private methods
 private:
   void   init_memory(void);
   void   free_memory(void);
   Status get_input_descriptor(Parameters *par, std::string catName, 
-                              catalogAccess::Catalog *cat, Status status);
-  Status get_input_catalogue(Parameters *par, std::string catName, 
-                             catalogAccess::Catalog *cat, Status status);
-  Status get_counterpart_candidates(Parameters *par, long iSrc, Status status);
-  Status get_counterparts(Parameters *par, double *ra, double *dec,
-                          Status status);
-  Status get_probability(Parameters *par, long iSrc, Status status);
-  Status get_probability_angsep(Parameters *par, long iSrc, Status status);
-  Status create_output_catalogue(Parameters *par, Status status);
-  Status add_counterpart_candidates(Parameters *par, long iSrc, Status status);
-  Status eval_output_catalogue_quantities(Parameters *par, Status status);
-  Status select_output_catalogue(Parameters *par, Status status);
-  Status cc_sort(Parameters *par, Status status);
-  Status dump_descriptor(catalogAccess::Catalog *cat, Status status);
-  Status dump_counterpart_candidates(Parameters *par, Status status);
-
+                              InCatalogue *in,  Status status);
+  Status get_input_catalogue(Parameters *par, InCatalogue *in, Status status);
+  Status dump_descriptor(InCatalogue *in, Status status);
+  //
+  // Low-level source identification methods
+  // ---------------------------------------
+  Status cid_get(Parameters *par, long iSrc, Status status);
+  Status cid_filter(Parameters *par, double *ra, double *dec, Status status);
+  Status cid_refine(Parameters *par, long iSrc, Status status);
+  Status cid_prob_angsep(Parameters *par, long iSrc, Status status);
+  Status cid_sort(Parameters *par, Status status);
+  Status cid_dump(Parameters *par, Status status);
+  //
+  // Low-level FITS catalogue handling methods
+  // -----------------------------------------
+  Status cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
+                      int verbose, Status status);
+  Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_add(fitsfile *fptr, long iSrc, Parameters *par, Status status);
+  Status cfits_eval(fitsfile *fptr, Parameters *par, int verbose, 
+                    Status status);
+  Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
+                      std::vector<double> *val, Status status);
+  Status cfits_select(fitsfile *fptr, Parameters *par, int verbose, 
+                      Status status);
+  Status cfits_save(fitsfile *fptr, Parameters *par, int verbose, 
+                    Status status);
 private:
-  long                     m_numSrc;        // Number of sources in source catalogue
-  long                     m_numCpt;        // Number of sources in counterpart cat.
+  //
+  // Input catalogues
+  InCatalogue              m_src;           // Source catalogue
+  InCatalogue              m_cpt;           // Counterpart catalogue
+  //
+  // Catalogue building parameters
   long                     m_maxCptLoad;    // Maximum number of counterparts to be loaded
   long                     m_fCptLoaded;    // Loaded counterparts fully
   double                   m_filter_maxsep; // Maximum counterpart separation (in deg)
-  catalogAccess::Catalog   m_src;           // Source catalogue
-  catalogAccess::Catalog   m_cpt;           // Counterpart catalogue
-  ObjectInfo              *m_cpt_loc;       // Counterpart catalogue information
+  fitsfile                *m_memFile;       // Memory catalogue FITS file pointer
   fitsfile                *m_outFile;       // Output catalogue FITS file pointer
   //
   // Counterpart candidate (CC) working arrays

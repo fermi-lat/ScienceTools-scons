@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2006/02/01 13:33:36  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -41,10 +46,13 @@ void Parameters::init_memory(void) {
       m_outCatName.clear();
       m_srcCatQty.clear();
       m_cptCatQty.clear();
+      m_srcCatPrefix.clear();
+      m_cptCatPrefix.clear();
       m_outCatQtyName.clear();
       m_outCatQtyFormula.clear();
       m_select.clear();
-      m_probMethod.clear();
+      m_probColNames.clear();
+      m_posProbType = NotUsed;
       m_probThres   = 0.0;
       m_srcPosError = 0.0;
       m_cptPosError = 0.0;
@@ -93,13 +101,17 @@ void Parameters::free_memory(void) {
 Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 
     // Declare local variables
+    int                    blank;
+    int                    found;
     long                   i;
     char                   parname[MAX_CHAR];
+    std::string            prob_name;
     std::string::size_type len;
     std::string::size_type pos;
     std::string::size_type len_name;
     std::string::size_type start_formula;
     std::string::size_type len_formula;
+    std::string::size_type start_name;
         
     // Single loop for common exit point
     do {
@@ -112,27 +124,30 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       pars.Prompt();
 
       // Recover task parameters
-      std::string s_srcCatName = pars["srcCatName"];
-      std::string s_cptCatName = pars["cptCatName"];
-      std::string s_outCatName = pars["outCatName"];
-      std::string s_srcCatQty  = pars["srcCatQty"];
-      std::string s_cptCatQty  = pars["cptCatQty"];
-      std::string s_probMethod = pars["probMethod"];
-      std::string s_mode       = pars["mode"];
-      m_srcCatName             = s_srcCatName;
-      m_cptCatName             = s_cptCatName;
-      m_outCatName             = s_outCatName;
-      m_srcCatQty              = s_srcCatQty;
-      m_cptCatQty              = s_cptCatQty;
-      m_probMethod             = s_probMethod;
-      m_probThres              = pars["probThres"];
-      m_srcPosError            = pars["srcPosError"];
-      m_cptPosError            = pars["cptPosError"];
-      m_maxNumCtp              = pars["maxNumCtp"];
-      m_chatter                = pars["chatter"];
-      m_clobber                = pars["clobber"];
-      m_debug                  = pars["debug"];
-      m_mode                   = s_mode;
+      std::string s_srcCatName   = pars["srcCatName"];
+      std::string s_cptCatName   = pars["cptCatName"];
+      std::string s_outCatName   = pars["outCatName"];
+      std::string s_srcCatPrefix = pars["srcCatPrefix"];
+      std::string s_cptCatPrefix = pars["cptCatPrefix"];
+      std::string s_srcCatQty    = pars["srcCatQty"];
+      std::string s_cptCatQty    = pars["cptCatQty"];
+      std::string probMethod     = pars["probMethod"];
+      std::string s_mode         = pars["mode"];
+      m_srcCatName               = s_srcCatName;
+      m_cptCatName               = s_cptCatName;
+      m_outCatName               = s_outCatName;
+      m_srcCatPrefix             = "@" + s_srcCatPrefix + "_";
+      m_cptCatPrefix             = "@" + s_cptCatPrefix + "_";
+      m_srcCatQty                = s_srcCatQty;
+      m_cptCatQty                = s_cptCatQty;
+      m_probThres                = pars["probThres"];
+      m_srcPosError              = pars["srcPosError"];
+      m_cptPosError              = pars["cptPosError"];
+      m_maxNumCtp                = pars["maxNumCtp"];
+      m_chatter                  = pars["chatter"];
+      m_clobber                  = pars["clobber"];
+      m_debug                    = pars["debug"];
+      m_mode                     = s_mode;
 
       // Retrieve new output quantities and decompose into quantity name and
       // evaluation string
@@ -185,6 +200,51 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       }
       if (status != STATUS_OK)
         continue;
+        
+      // Retrieve additional probability column names from probability method
+      len   = probMethod.length();
+      blank = 0;
+      found = 0;
+      for (pos = 0; pos < len; pos++) {
+      
+        // Reset found flag
+        found = 0;
+      
+        // Search first non blank and non '*'
+        if (!blank && probMethod[pos] != ' ' && probMethod[pos] != '*') {
+          start_name = pos;
+          blank      = 1;
+        }
+          
+        // Search first blank or "*"
+        else if (blank && (probMethod[pos] == ' ' || 
+                           probMethod[pos] == '*')) {
+          len_name = pos - start_name;
+          blank    = 0;
+          found    = 1;
+        }
+        
+        // Signal if the end of the string is reached
+        if (pos == len-1) {
+          len_name = pos - start_name + 1;
+          blank    = 0;
+          found    = 1;
+        }
+        
+        // Extract name if found
+        if (found) {
+          prob_name = probMethod.substr(start_name, len_name);
+          if (prob_name == "POSITION")
+            m_posProbType = Exponential;
+          else if (prob_name == "POS-EXP")
+            m_posProbType = Exponential;
+          else if (prob_name == "POS-GAUSS")
+            m_posProbType = Gaussian;
+          else
+            m_probColNames.push_back(prob_name);
+        }
+      
+      } // endfor: looped over method string     
 
     } while (0); // End of main do-loop
     
@@ -202,11 +262,16 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 Status Parameters::dump(Status status) {
 
     // Declare local variables
-    std::string::size_type i;
-    std::string::size_type n;
+    std::string::size_type         i;
+    std::string::size_type         n;
+    std::vector<double>::size_type i_add;
+    std::vector<double>::size_type num_add;
         
     // Single loop for common exit point
     do {
+
+      // Determine number of additional probabilites
+      num_add = m_probColNames.size();      
 
       // Dump task parameters
       Log(Log_1, "Task Parameters:");
@@ -217,6 +282,10 @@ Status Parameters::dump(Status status) {
           m_cptCatName.c_str());
       Log(Log_1, " Output catalogue name ............: %s", 
           m_outCatName.c_str());
+      Log(Log_1, " Source catalogue prefix ..........: %s", 
+          m_srcCatPrefix.c_str());
+      Log(Log_1, " Counterpart catalogue prefix .....: %s", 
+          m_cptCatPrefix.c_str());
       Log(Log_1, " Source catalogue quantities ......: %s", 
           m_srcCatQty.c_str());
       Log(Log_1, " Counterpart catalogue quantities .: %s", 
@@ -231,8 +300,24 @@ Status Parameters::dump(Status status) {
               i+1, m_outCatQtyName[i].c_str(), m_outCatQtyFormula[i].c_str());
         }
       }
-      Log(Log_1, " Probability method ...............: %s", 
-          m_probMethod.c_str());
+      switch (m_posProbType) {
+      case NotUsed:
+        Log(Log_1, " Position probability method ......: not used");
+        break;
+      case Exponential:
+        Log(Log_1, " Position probability method ......: Exponential");
+        break;
+      case Gaussian:
+        Log(Log_1, " Position probability method ......: Gaussian");
+        break;
+      default:
+        Log(Log_1, " Position probability method ......: undefined");
+        break;
+      }
+      for (i_add = 0; i_add < num_add; i_add++) {
+        Log(Log_1, " Additional probability column ....: %s", 
+            m_probColNames[i_add].c_str());
+      }
       Log(Log_1, " Probability threshold ............: %e", m_probThres);
       Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCtp);
       if ((n = m_select.size()) > 0) {

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2006/02/02 09:44:43  jurgen
+Remove doxygen documentation and set revision number to v0r5
+
 Revision 1.3  2006/02/01 13:33:37  jurgen
 Tried to fix Win32 compilation bugs.
 Change revision number to 1.3.2.
@@ -16,7 +19,7 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "gtsrcid-v0r5"
+#define TOOL_VERSION  "gtsrcid-v1r0"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define USE_ST_APP 1
 
@@ -51,7 +54,8 @@ typedef enum  {                                  // Function status code
   STATUS_LOG_WRITE_FAILED  = -100102,             // Log file write error
   STATUS_PAR_BAD_PARAMETER = -100200,             // Bad task parameter
   STATUS_CAT_NOT_FOUND     = -100300,             // Catalogue not found
-  STATUS_CAT_EMPTY         = -100301              // Catalogue empty
+  STATUS_CAT_EMPTY         = -100301,             // Catalogue empty
+  STATUS_CAT_BAD_PROB_COL  = -100302              // Bad probability coltype
 } Status;
 
 /* Prototypes _______________________________________________________________ */
