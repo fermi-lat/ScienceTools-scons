@@ -13,5 +13,7 @@
                          - treat R.A. wrap around correctly
 1-Feb-2006   v0r4    JK  New clean tag.
 2-Feb-2006   v0r5    JK  Fixed Win32 compile bugs.
+3-Feb-2006   v1r0    JK  - allow for additional probabilities
+                         - modify input catalogue quantity prefixing
 @endverbatim
 */
