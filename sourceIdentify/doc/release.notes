@@ -3,17 +3,17 @@
     @author J. Knodlseder
 
 @verbatim
-25-Feb-2005  v0      JK  First version.
-21-Jul-2005  v0r1p1  JK  Complete version.
-22-Jul-2005  v0r1p3  JK  Clean CVS tree from old stuff.
-22-Jul-2005  v0r2    JK  New clean tag.
+3-Feb-2006   v1r0    JK  - allow for additional probabilities
+                         - modify input catalogue quantity prefixing
+2-Feb-2006   v0r5    JK  Fixed Win32 compile bugs.
+1-Feb-2006   v0r4    JK  New clean tag.
 19-Dec-2005  v0r3    JK  - prefix catalogue class members by "m_"
                          - introduce maximum acceptance angle for filter step
                          - extract counterpart locations only once
                          - treat R.A. wrap around correctly
-1-Feb-2006   v0r4    JK  New clean tag.
-2-Feb-2006   v0r5    JK  Fixed Win32 compile bugs.
-3-Feb-2006   v1r0    JK  - allow for additional probabilities
-                         - modify input catalogue quantity prefixing
+22-Jul-2005  v0r2    JK  New clean tag.
+22-Jul-2005  v0r1p3  JK  Clean CVS tree from old stuff.
+21-Jul-2005  v0r1p1  JK  Complete version.
+25-Feb-2005  v0      JK  First version.
 @endverbatim
 */
