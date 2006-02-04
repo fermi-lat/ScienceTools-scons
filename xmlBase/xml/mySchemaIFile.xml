@@ -13,10 +13,14 @@ cvs_Header="$Header$"
                 string-valued item within a subsection
           </item>
     </section>
+<!--  stick an XML comment in here -->
   </section>
   <section name="section2"> Comment for section2
     <item name="bad-int" value="1a4">Call this an int, but it isn't</item>
     <item name="okItem"  value="4.5"> A well-formed float</item>
+  <!-- comment with what looks like xml inside: 
+         <item name="commented out" value="0.0">stuff</item>
+  -->
   </section>
 </ifile>
 
