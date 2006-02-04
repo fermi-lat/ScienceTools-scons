@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 04-feb-06 v5r17p1 JC Make MapParameters::getValue const; update par file for 
+                      test program
  02-feb-06 v5r17   JP Add parameter cmfile, which allows a count map file to be used as
                       input. In this case most of the other parameters are not used, because
                       the geometry comes from the count map file.
