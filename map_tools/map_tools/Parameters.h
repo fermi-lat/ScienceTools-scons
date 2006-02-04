@@ -36,10 +36,10 @@ public:
     ~Parameters() throw() ;
 
     template< typename T>
-        T getValue(const std::string & name){ return m_par[name];}
+        T getValue(const std::string & name) const { return m_par[name];}
 
      template <typename T>
-   T getValue(const std::string & name, const T & default_value) {
+   T getValue(const std::string & name, const T & default_value) const {
       try {
          return getValue<T>(name);
       } catch ( ...) {
