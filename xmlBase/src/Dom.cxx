@@ -860,7 +860,7 @@ namespace xmlBase {
     return;
   }
 
-  bool Dom::writeIt(DOMNode* doc, const char* fname) {
+  bool Dom::writeIt(DOMNode* doc, const char* fname, bool standalone) {
     XMLCh tempStr[100];
     XMLString::transcode("LS", tempStr, 99);
     DOMImplementation *impl = 
@@ -877,6 +877,11 @@ namespace xmlBase {
     
     facilities::Util::expandEnvVar(&f);
     myFormTarget = new LocalFileFormatTarget(f.c_str());
+
+    if (doc->getNodeType() == DOMNode::DOCUMENT_NODE) {
+      DOMDocument* d = static_cast<DOMDocument *>(doc);
+      d->setStandalone(standalone);
+    }
 
     bool status = theSerializer->writeNode(myFormTarget, *doc);
     delete theSerializer;

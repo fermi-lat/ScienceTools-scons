@@ -211,7 +211,8 @@ namespace xmlBase {
     static void stripComments(DOMNode* elt);
 
     //! Write document to specified file
-    static bool writeIt(DOMNode* doc, const char* fname);
+    static bool writeIt(DOMNode* doc, const char* fname, 
+                        bool standalone=false);
 
     //! Add attribute of type double to a DOM element, DOMString att name 
     //    static void         addAttribute(DOMElement* elt, const DomString& name, 
