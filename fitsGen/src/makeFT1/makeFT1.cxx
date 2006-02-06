@@ -92,6 +92,8 @@ int main(int iargc, char * argv[]) {
               variable != ft1Dict.end(); ++variable) {
             ft1[variable->first].set(merit[variable->second]);
          }
+         ft1["event_class"].set(merit.eventType());
+         ft1["conversion_type"].set(merit.conversionType());
          ncount++;
       }
       std::cout << "number of rows processed: " << ncount << std::endl;
