@@ -10,6 +10,7 @@
 #define fitsGen_MeritFile_h
 
 namespace dataSubselector {
+   class Cuts;
    class Gti;
 }
 
@@ -73,6 +74,9 @@ private:
    long m_nrows;
 
    dataSubselector::Gti * m_gti;
+
+   dataSubselector::Cuts * m_goodEvent1;
+   dataSubselector::Cuts * m_goodEvent3;
 };
 
 } // namespace fitsGen

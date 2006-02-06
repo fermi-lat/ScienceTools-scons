@@ -8,6 +8,7 @@
 
 #include "tip/IFileSvc.h"
 
+#include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
 
 #include "fitsGen/MeritFile.h"
@@ -21,7 +22,9 @@ MeritFile::MeritFile(const std::string & meritfile,
    m_it(m_table->begin()),
    m_row(*m_it),
    m_nrows(m_table->getNumRecords()),
-   m_gti(new dataSubselector::Gti()) 
+   m_gti(new dataSubselector::Gti()),
+   m_goodEvent1(new dataSubselector::Cuts()),
+   m_goodEvent3(new dataSubselector::Cuts())
 {
    try {
       double start(m_row["EvtElapsedTime"].get());
@@ -30,12 +33,28 @@ MeritFile::MeritFile(const std::string & meritfile,
       double stop(m_row["EvtElapsedTime"].get());
       m_gti->insertInterval(start, stop);
       m_it = begin();
+      
+      // CTBCORE > 0.1
+      m_goodEvent1->addRangeCut("CTBCORE", "N/A", 0.1, 1.1);
+      // CTBBestEnergyProb > 0.1
+      m_goodEvent1->addRangeCut("CTBBestEnergyProb", "N/A", 0.1, 1.1);
+      // CTBGAM > 0.35
+      m_goodEvent1->addRangeCut("CTBGAM", "N/A", 0.35, 1.1);
+
+      // CTBCORE > 0.35
+      m_goodEvent3->addRangeCut("CTBCORE", "N/A", 0.35, 1.1);
+      // CTBBestEnergyProb > 0.35
+      m_goodEvent3->addRangeCut("CTBBestEnergyProb", "N/A", 0.35, 1.1);
+      // CTBGAM > 0.50
+      m_goodEvent3->addRangeCut("CTBGAM", "N/A", 0.50, 1.1);
    } catch (...) { 
 // assume there is no EvtElapsedTime, so do not insert any intervals
    }
 }
 
 MeritFile::~MeritFile() {
+   delete m_goodEvent1;
+   delete m_goodEvent3;
    delete m_gti;
    delete m_table;
 }
@@ -69,7 +88,14 @@ const dataSubselector::Gti & MeritFile::gti() const {
 }
 
 short int MeritFile::eventType() const {
-   return conversionType();
+   if (m_goodEvent1->accept(m_row)) {
+      if (m_goodEvent3->accept(m_row)) { // Class A event
+         return conversionType();
+      } else {                           // Class B
+         return conversionType() + 2;
+      }
+   }
+   return -1;
 }
 
 short int MeritFile::conversionType() const {
