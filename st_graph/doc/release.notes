@@ -34,5 +34,6 @@ $Id$
 30-jan-2006    v1r5p2 JP  Fix typo.
 06-feb-2006    v1r5p3 JP  If graphical environment does not initialize successfully,
                           track the failure, but do not throw exception.
+06-feb-2006    v1r5p4 JP  Fix another instance of previous problem.
 \endverbatim
 */
