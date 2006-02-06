@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2006/02/03 12:14:52  jurgen
+New version that allows additional probabilities to be taken
+into account. The code has been considerably reorganised. Also
+catalogue column prefixes are now handled differently.
+
 Revision 1.3  2006/02/01 13:33:36  jurgen
 Tried to fix Win32 compilation bugs.
 Change revision number to 1.3.2.
@@ -26,7 +31,44 @@ namespace sourceIdentify {
 
 
 /* Prototypes _______________________________________________________________ */
+std::string trim(std::string str);
 
+
+/*============================================================================*/
+/*                              Private functions                             */
+/*============================================================================*/
+
+/*----------------------------------------------------------------------------*/
+/*                                     trim                                   */
+/* -------------------------------------------------------------------------- */
+/* Private function: remove leading and trailing whitespace from string       */
+/*----------------------------------------------------------------------------*/
+std::string trim(std::string str) {
+
+    // Declare variables
+    char const* delims = " \t\r\n";
+
+    // Declare variables
+    int                    pos;
+    std::string::size_type notwhite;
+    
+    // Trim leading whitespace
+    notwhite = str.find_first_not_of(delims);
+    str.erase(0,notwhite);
+    
+    // Trim trailing whitespace
+    notwhite = str.find_last_not_of(delims);
+    str.erase(notwhite+1);
+
+    // Return string
+    return str;
+    
+}
+    
+
+/*============================================================================*/
+/*                   Low-level FITS catalogue handling methods                */
+/*============================================================================*/
 
 /*----------------------------------------------------------------------------*/
 /*                           Parameters::init_memory                          */
@@ -149,43 +191,55 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       m_debug                    = pars["debug"];
       m_mode                     = s_mode;
 
-      // Retrieve new output quantities and decompose into quantity name and
-      // evaluation string
+      // Retrieve new output quantities and decompose them into quantity name 
+      // and evaluation string
       for (i = MIN_OUTCAT_QTY; i <= MAX_OUTCAT_QTY; i++) {
+
+        // Extract parameter name
         sprintf(parname, "outCatQty%2.2ld", i);
         std::string outCatQty = pars[parname];
-        len = outCatQty.length();
-        if (len > 0) {
-          pos           = outCatQty.find("=",0);
-          len_name      = pos;
-          start_formula = pos + 1;
-          len_formula   = len - start_formula;
-          if (pos == std::string::npos) {
-            status = STATUS_PAR_BAD_PARAMETER;
-            Log(Error_2, "%d : No equality symbol found in new output catalogue"
-                " quantity string <%s='%s'>.", 
-                (Status)status, parname, outCatQty.c_str());
-            break;
-          }
-          if (len_name < 1) {
-            status = STATUS_PAR_BAD_PARAMETER;
-            Log(Error_2, "%d : No quantity name found for new output catalogue"
-                " quantity <%s='%s'>.", 
-                (Status)status, parname, outCatQty.c_str());
-            break;
-          }
-          if (len_formula < 1) {
-            status = STATUS_PAR_BAD_PARAMETER;
-            Log(Error_2, "%d : No quantity evaluation string found for new"
-                " output catalogue quantity <%s='%s'>.", 
-                (Status)status, parname, outCatQty.c_str());
-            break;
-          }
-          m_outCatQtyName.push_back(outCatQty.substr(0, len_name));
-          m_outCatQtyFormula.push_back(outCatQty.substr(start_formula,
-                                       len_formula));
+        
+        // Fall through if parameter is empty
+        outCatQty = trim(outCatQty);
+        len       = outCatQty.length();
+        if (len < 1)
+          continue;
+        
+        // Decompose string in part before and after "=" symbol
+        pos           = outCatQty.find("=",0);
+        len_name      = pos;
+        start_formula = pos + 1;
+        len_formula   = len - start_formula;
+        
+        // Catch invalid parameters
+        if (pos == std::string::npos) {
+          status = STATUS_PAR_BAD_PARAMETER;
+          Log(Error_2, "%d : No equality symbol found in new output catalogue"
+              " quantity string <%s='%s'>.", 
+              (Status)status, parname, outCatQty.c_str());
+          break;
         }
-      }
+        if (len_name < 1) {
+          status = STATUS_PAR_BAD_PARAMETER;
+          Log(Error_2, "%d : No quantity name found for new output catalogue"
+              " quantity <%s='%s'>.", 
+              (Status)status, parname, outCatQty.c_str());
+          break;
+        }
+        if (len_formula < 1) {
+          status = STATUS_PAR_BAD_PARAMETER;
+          Log(Error_2, "%d : No quantity evaluation string found for new"
+              " output catalogue quantity <%s='%s'>.", 
+              (Status)status, parname, outCatQty.c_str());
+          break;
+        }
+          
+        // Set name and formula (remove whitespace)
+        m_outCatQtyName.push_back(trim(outCatQty.substr(0, len_name)));
+        m_outCatQtyFormula.push_back(trim((outCatQty.substr(start_formula,
+                                                            len_formula))));
+          
+      } // endfor: looped over quantities
       if (status != STATUS_OK)
         continue;
 
@@ -193,7 +247,8 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       for (i = MIN_OUTCAT_SEL; i <= MAX_OUTCAT_SEL; i++) {
         sprintf(parname, "select%2.2ld", i);
         std::string select = pars[parname];
-        len = select.length();
+        select             = trim(select);
+        len                = select.length();
         if (len > 0) {
           m_select.push_back(select);
         }
