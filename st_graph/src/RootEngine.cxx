@@ -96,15 +96,11 @@ namespace st_graph {
       }
     }
 
-    // Now test for success: if virtual X was set up
-    // correctly, gClient will be non-0.
-    if (0 == gClient)
-      throw std::runtime_error("RootEngine::RootEngine could not initialize graphical environment");
-
     // Turn off "stats box".
     if (0 != gStyle) gStyle->SetOptStat("");
 
-    m_init_succeeded = true;
+    // Now test for success: if virtual X was set up correctly, gClient will be non-0.
+    if (0 != gClient) m_init_succeeded = true;
   }
 
   void RootEngine::run() {
