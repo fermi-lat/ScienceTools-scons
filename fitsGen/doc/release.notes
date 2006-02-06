@@ -4,6 +4,10 @@
 
     @verbatim
 
+    v2r3   05-Feb-06   JC   Implement MeritFile::eventType, conversionType
+                            for DC2; use ascii dictionary for Merit to FT1
+                            assignments; update std_cuts and use these
+                            by default for makeFT1
     v2r2p2 02-Feb-06   JC   added irfTuple and intermediate changes for makeFT1
     v2r2p1 10-Jan-06   JC   added partition app; exposed missionStart access
     v2r2   23-Dec-05   JC   change FT2 extension name; allow cuts on merit
