@@ -112,7 +112,7 @@ TLMIN12     = 0                                         / minimum value
 TLMAX12     = 32767                                     / maximum value
 TTYPE13     = 'CALIB_VERSION'                           / versions of calibration tables for the ACD, CAL, TKR
 TFORM13     = '3I'                                      / data format of field: 2-byte signed INTEGER
-TTYPE14     = 'EVENT_CLASS'                             / event class: 0=Front converting, 1=Back, 2=CAL only
+TTYPE14     = 'EVENT_CLASS'                             / event class: 0=Front converting class A, 1=Back A, 2=Front B, 3=Back B
 TFORM14     = 'I'                                       / data format of field: 2-byte signed INTEGER
 TLMIN14     =  0                                        / minimum value
 TLMAX14     =  32767                                    / maximum value

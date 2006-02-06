@@ -8,8 +8,8 @@
 ENERGY                  FT1Energy
 RA                      FT1Ra
 DEC                     FT1Dec
-#L                       FT1L
-#B                       FT1B
+L                       FT1L
+B                       FT1B
 THETA                   FT1Theta
 PHI                     FT1Phi
 ZENITH_ANGLE            FT1ZenithTheta
@@ -18,6 +18,6 @@ TIME                    EvtElapsedTime
 EVENT_ID                FT1EventId
 #RECON_VERSION
 #CALIB_VERSION
-#EVENT_CLASS
-#CONVERSION_TYPE
+#EVENT_CLASS            set using MeritFile::eventType()
+#CONVERSION_TYPE        set using MeritFile::conversionType()
 LIVETIME                FT1Livetime

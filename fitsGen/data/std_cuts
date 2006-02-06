@@ -1,13 +1,29 @@
 #
-# Standard DC2 era cuts
+# Standard cuts for DC2.  After applying this cut, only Class A and B
+# events should be remain.
+#
+# See http://confluence.slac.stanford.edu/display/DC2/Trigger+and+Filter+settings+and+Event+classes
 #
 # $Header$
 #
-FilterStatus_HI == 0 && 
-CalEnergyRaw > 5 && 
-CalCsIRLn > 4 && 
-CTBBestEnergyProb > 0.1 && 
-CTBGAM > 0.1 && 
-CTBCORE > 0.1 && 
-(AcdCornerDoca < -5 || AcdCornerDoca > 50) && 
-CTBTkrLATEdge > 100
+(GltWord&10) > 0 && GltWord != 35 
+&&
+FilterStatus_HI == 0 
+&& 
+CalEnergyRaw > 5 && CalCsIRLn > 4 
+&& 
+!( (AcdCornerDoca > -5 && AcdCornerDoca < 50 && CTBTkrLATEdge < 100) ||
+   ((AcdActiveDist3D > 0 || AcdRibbonActDist > 0) && Tkr1SSDVeto < 2) )
+&&
+!( ((min(abs(Tkr1XDir),abs(Tkr1YDir)) < .01 &&
+    Tkr1DieEdge < 10 && AcdActiveDist3D > 0 && AcdActDistTileEnergy > .2) ||
+(Tkr1SSDVeto < 7 && AcdActiveDist3D > -3 && AcdActDistTileEnergy > .15)    ||
+( AcdActiveDist3D >(-30 + 30*(Tkr1FirstLayer-2)))) && CTBBestEnergy > 5000) 
+&&
+!( (Tkr1FirstLayer - Tkr2FirstLayer) < 0 && Tkr2FirstLayer > 4 && Tkr2TkrHDoca > 100 )
+&&
+!( CTBBestEnergy>5000&& (((CalTransRms-1.5)*Tkr1ToTTrAve)<5) )
+&&
+CTBCORE>0.1&&CTBBestEnergyProb>0.1&&CTBGAM>0.35
+&&
+CTBBestZDir < -0.4 && FT1ZenithTheta < 100
