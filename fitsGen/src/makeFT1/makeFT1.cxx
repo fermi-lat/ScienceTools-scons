@@ -42,6 +42,15 @@ namespace {
          ft1Dict[tokens.at(0)] = tokens.at(1);
       }
    }
+   std::string filterString(const std::string & filterFile) {
+      std::ostringstream filter;
+      std::vector<std::string> lines;
+      st_facilities::Util::readLines(filterFile, lines, "#", true);
+      for (size_t i = 0; i < lines.size(); i++) {
+         filter << lines.at(i);
+      }
+      return filter.str();
+   }
 }
 
 int main(int iargc, char * argv[]) {
@@ -54,21 +63,21 @@ int main(int iargc, char * argv[]) {
    std::string rootFile(argv[1]);
    std::string fitsFile(argv[2]);
 
-   std::ostringstream filter;
+   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
+   std::string defaultFilter =
+      st_facilities::Env::appendFileName(dataDir, "std_cuts");
+
+   std::string filter(filterString(defaultFilter));
+
    if (iargc >= 4) {
       if (st_facilities::Util::fileExists(argv[3])) {
-         std::vector<std::string> lines;
-         st_facilities::Util::readLines(argv[3], lines, "#", true);
-         for (size_t i = 0; i < lines.size(); i++) {
-            filter << lines.at(i);
-         }
+         filter = filterString(argv[3]);
       } else {
-         filter << argv[3];
+         filter = argv[3];
       }
-      std::cout << "applying TCut: " << filter.str() << std::endl;
    }
+   std::cout << "applying TCut: " << filter << std::endl;
 
-   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
    std::string dictFile = 
       st_facilities::Env::appendFileName(dataDir,"FT1variables");
    if (iargc == 5) {
@@ -80,11 +89,11 @@ int main(int iargc, char * argv[]) {
 
    dataSubselector::Cuts my_cuts;
    try {
-      fitsGen::MeritFile merit(rootFile, "MeritTuple", filter.str());
+      fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
       fitsGen::Ft1File ft1(fitsFile, merit.nrows());
    
       ft1.header().addHistory("Input merit file: " + rootFile);
-      ft1.header().addHistory("Filter string: " + filter.str());
+      ft1.header().addHistory("Filter string: " + filter);
 
       int ncount(0);
       for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
