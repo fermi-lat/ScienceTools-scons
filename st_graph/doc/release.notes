@@ -32,5 +32,7 @@ $Id$
                           graphs, handle mouse click events etc.
 30-jan-2006    v1r5p1 JP  Changes to compile under gcc 3.4.x.
 30-jan-2006    v1r5p2 JP  Fix typo.
+06-feb-2006    v1r5p3 JP  If graphical environment does not initialize successfully,
+                          track the failure, but do not throw exception.
 \endverbatim
 */
