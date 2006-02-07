@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.6  2006/02/07 11:10:51  jurgen
+Suppress catalogAccess verbosity
+
 Revision 1.5  2006/02/03 12:14:52  jurgen
 New version that allows additional probabilities to be taken
 into account. The code has been considerably reorganised. Also
@@ -24,7 +27,7 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "gtsrcid-v1r0"
+#define TOOL_VERSION  "gtsrcid-v1r0p2"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define USE_ST_APP 1
 

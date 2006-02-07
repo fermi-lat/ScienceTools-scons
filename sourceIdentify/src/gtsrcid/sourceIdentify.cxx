@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.7  2006/02/07 11:10:51  jurgen
+Suppress catalogAccess verbosity
+
 Revision 1.6  2006/02/03 12:14:52  jurgen
 New version that allows additional probabilities to be taken
 into account. The code has been considerably reorganised. Also
@@ -89,9 +92,9 @@ public:
       Log(Log_1, 
          "* -------------------------------------------------------- *");
       Log(Log_1, 
-         "* Revision : v1r0                                          *");
+         "* Revision : v1r0p2                                        *");
       Log(Log_1, 
-         "* Date     : 2 February 2006                               *");
+         "* Date     : 7 February 2006                               *");
       Log(Log_1, 
          "* Author   : Jurgen Knodlseder (CESR)                      *");
       Log(Log_1, 

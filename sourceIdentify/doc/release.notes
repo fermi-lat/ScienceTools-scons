@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+7-Feb-2006   v1r0p2  JK  Use ObjectInfo structure to hold catalogue object information
 7-Feb-2006   v1r0p1  JK  Suppress catalogAccess verbosity
                          Remove leading and trailing whitespace in derived quantity
                            formulae

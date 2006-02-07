@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2006/02/07 11:10:50  jurgen
+Suppress catalogAccess verbosity
+
 Revision 1.4  2006/02/03 12:14:52  jurgen
 New version that allows additional probabilities to be taken
 into account. The code has been considerably reorganised. Also
@@ -103,8 +106,13 @@ typedef struct {                      // Counterpart candidate
 } CCElement;
 
 typedef struct {                      // Catalogue object information
-  double                  ra;           // Right Ascension (deg)
-  double                  dec;          // Declination (deg)
+  std::string             name;         // Object name
+  int                     pos_valid;    // Position validity (1=valid)
+  double                  pos_eq_ra;    // Right Ascension (deg)
+  double                  pos_eq_dec;   // Declination (deg)
+  double                  pos_err_maj;  // Position error major axis
+  double                  pos_err_min;  // Position error minor axis
+  double                  pos_err_ang;  // Position error angle
 } ObjectInfo;
 
 typedef struct {                      // Input catalogue
@@ -137,13 +145,14 @@ private:
   void   free_memory(void);
   Status get_input_descriptor(Parameters *par, std::string catName, 
                               InCatalogue *in,  Status status);
-  Status get_input_catalogue(Parameters *par, InCatalogue *in, Status status);
+  Status get_input_catalogue(Parameters *par, InCatalogue *in, double posErr,
+                             Status status);
   Status dump_descriptor(InCatalogue *in, Status status);
   //
   // Low-level source identification methods
   // ---------------------------------------
   Status cid_get(Parameters *par, long iSrc, Status status);
-  Status cid_filter(Parameters *par, double *ra, double *dec, Status status);
+  Status cid_filter(Parameters *par, long iSrc, Status status);
   Status cid_refine(Parameters *par, long iSrc, Status status);
   Status cid_prob_angsep(Parameters *par, long iSrc, Status status);
   Status cid_sort(Parameters *par, Status status);

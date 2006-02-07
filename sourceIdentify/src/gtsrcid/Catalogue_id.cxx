@@ -5,6 +5,12 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.1  2006/02/03 12:11:37  jurgen
+New file that contains routines that have formerly been found in
+Catalogue.cxx. The routines have also been renamed and preceeded
+by "cid_". The routines handle source identification at the low
+level.
+
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -37,11 +43,7 @@ using namespace catalogAccess;
 Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
 
     // Declare local variables
-    double      ra;
-    double      dec;
-    double      pos_err;
-    std::string src_name;
-    std::string obj_name;
+    ObjectInfo *src;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -49,26 +51,34 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
 
     // Single loop for common exit point
     do {
+    
+      // Get pointer to source object
+      src = &(m_src.object[iSrc]);
 
-      // Determine the name of the generic quantity "object name"
-      obj_name = m_src.cat.getNameObjName();
-
-      // Get source coordinates
-      m_src.cat.ra_deg(iSrc,  &ra);
-      m_src.cat.dec_deg(iSrc, &dec);
-      m_src.cat.posError_deg(iSrc, &pos_err);
-      m_src.cat.getSValue(obj_name, iSrc, &src_name);
-
-      // Optionally dump source information
+      // Dump source information (optionally)
       if (par->logExplicit()) {
         Log(Log_2, "");
-        Log(Log_2, " Source %5d .....................: %s"
-            " (%8.3f,%8.3f) +/- %8.3f",
-            iSrc+1, src_name.c_str(), ra, dec, pos_err);
+        if (src->pos_valid) {
+          Log(Log_2, " Source %5d .....................: %12s"
+              "  R.A.=%.3f  Dec.=%.3f"
+              "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+              iSrc+1, src->name.c_str(), 
+              src->pos_eq_ra, src->pos_eq_dec, 
+              src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
+        }
+        else {
+          Log(Log_2, " Source %5d .....................: %12s"
+              " No position information found.",
+              iSrc+1, src->name.c_str());
+        }
       }
+      
+      // Fall through if no position information has been found
+      if (!src->pos_valid)
+        continue;
         
       // Filter step: Get counterparts near the source position
-      status = cid_filter(par, &ra, &dec, status);
+      status = cid_filter(par, iSrc, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to perform filter step for source %d.", 
@@ -124,8 +134,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
 /* separation to the source of interest and keep only those candidates that   */
 /* are spatially sufficient close to the source.                              */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec, 
-                             Status status) {
+Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
 
     // Declare local variables
     long        iCpt;
@@ -139,7 +148,8 @@ Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec,
     double      cpt_ra_min;
     double      cpt_ra_max;
     double      filter_maxsep;
-    ObjectInfo *cpt_info;
+    ObjectInfo *src;
+    ObjectInfo *cpt;
     CCElement  *cpt_ptr;
 
     // Timing measurements
@@ -163,15 +173,18 @@ Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec,
       numRA    = 0;
       numDec   = 0;
 
+      // Get pointer to source object
+      src = &(m_src.object[iSrc]);
+
       // Calculate sin and cos of source latitude
-      src_dec_sin = sin(*dec * deg2rad);
-      src_dec_cos = cos(*dec * deg2rad);
+      src_dec_sin = sin(src->pos_eq_dec * deg2rad);
+      src_dec_cos = cos(src->pos_eq_dec * deg2rad);
       
       // Define bounding box around source position. The declination
       // range of the bounding box is constrained to [-90,90] deg, the
       // Right Ascension boundaries are put into the interval [0,360[ deg.
-      cpt_dec_min = *dec - m_filter_maxsep;
-      cpt_dec_max = *dec + m_filter_maxsep;
+      cpt_dec_min = src->pos_eq_dec - m_filter_maxsep;
+      cpt_dec_max = src->pos_eq_dec + m_filter_maxsep;
       if (cpt_dec_min < -90.0) cpt_dec_min = -90.0;
       if (cpt_dec_max >  90.0) cpt_dec_max =  90.0;
       if (src_dec_cos > 0.0) {
@@ -181,8 +194,8 @@ Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec,
       }
       else
         filter_maxsep = 180.0;
-      cpt_ra_min  = *ra - filter_maxsep;
-      cpt_ra_max  = *ra + filter_maxsep;
+      cpt_ra_min  = src->pos_eq_ra - filter_maxsep;
+      cpt_ra_max  = src->pos_eq_ra + filter_maxsep;
       cpt_ra_min = cpt_ra_min - double(long(cpt_ra_min / 360.0) * 360.0);
       if (cpt_ra_min < 0.0) cpt_ra_min += 360.0;
       cpt_ra_max = cpt_ra_max - double(long(cpt_ra_max / 360.0) * 360.0);
@@ -200,7 +213,7 @@ Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec,
         if (!m_fCptLoaded) {
 
           // Load counterpart catalogue
-          status = get_input_catalogue(par, &m_cpt, status);
+          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, status);
           if (status != STATUS_OK) {
             if (par->logTerse())
               Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
@@ -242,40 +255,39 @@ Status Catalogue::cid_filter(Parameters *par, double *ra, double *dec,
       } // endelse: entire catalogue requested
 
       // Initialise counterpart pointers
-      cpt_info = m_cpt.object;
-      cpt_ptr  = m_cc;
+      cpt     = m_cpt.object;
+      cpt_ptr = m_cc;
 
       // Loop over counterparts
       #if CATALOGUE_TIMING
       t_start_loop = clock();
       #endif
-      for (iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt_info++) {
+      for (iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
+      
+        // Filter counterparts that have no positional information
+        if (!cpt->pos_valid) {
+          numNoPos++;
+          continue;
+        }
 
-        // Filter counterpart if it falls outside the declination range. If
-        // the declination is larger than 9000 than the counterpart has no
-        // location information and should be skipped ...
-        if (cpt_info->dec < cpt_dec_min || cpt_info->dec > cpt_dec_max) {
-          if (cpt_info->dec > 9000.0) {
-            numNoPos++;
-            continue;
-          }
-          else {
-            numDec++;
-            continue;
-          }
+        // Filter counterpart if it falls outside the declination range.
+        if (cpt->pos_eq_dec < cpt_dec_min || 
+            cpt->pos_eq_dec > cpt_dec_max) {
+          numDec++;
+          continue;
         }
 
         // Filter source if it falls outside the Right Ascension range. The
         // first case handles no R.A. wrap around ...
         if (cpt_ra_min < cpt_ra_max) {
-          if (cpt_info->ra < cpt_ra_min || cpt_info->ra > cpt_ra_max) {
+          if (cpt->pos_eq_ra < cpt_ra_min || cpt->pos_eq_ra > cpt_ra_max) {
             numRA++;
             continue;
           }
         }
         // ... and this one R.A wrap around
         else {
-          if (cpt_info->ra < cpt_ra_min && cpt_info->ra > cpt_ra_max) {
+          if (cpt->pos_eq_ra < cpt_ra_min && cpt->pos_eq_ra > cpt_ra_max) {
             numRA++;
             continue;
           }
@@ -582,23 +594,15 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
 
     // Declare local variables
-    long   iCC;
-    long   iCpt;
-    double src_ra;
-    double src_dec;
-    double src_err_maj;
-    double src_err_min;
-    double src_err_ang;
-    double src_dec_sin;
-    double src_dec_cos;
-    double cpt_ra;
-    double cpt_dec;
-    double cpt_err_maj;
-    double cpt_err_min;
-    double cpt_err_ang;
-    double cpt_dec_sin;
-    double cpt_dec_cos;
-    double arg;
+    long        iCC;
+    long        iCpt;
+    double      src_dec_sin;
+    double      src_dec_cos;
+    double      cpt_dec_sin;
+    double      cpt_dec_cos;
+    double      arg;
+    ObjectInfo *src;
+    ObjectInfo *cpt;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -615,30 +619,17 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
-        
-      // Get position for source. Fall through if information is not available
-      if ((m_src.cat.ra_deg(iSrc,  &src_ra)  != IS_OK) ||
-          (m_src.cat.dec_deg(iSrc, &src_dec) != IS_OK))
+
+      // Get pointer to source object
+      src = &(m_src.object[iSrc]);
+      
+      // Fall through if no source position is available
+      if (!src->pos_valid)
         continue;
-
-      // Get error ellipse for source. Fall through if information is not 
-      // available
-      src_err_maj = 0.0;
-      src_err_min = 0.0;
-      src_err_ang = 0.0;
-      if ((m_src.cat.posError_deg(iSrc, &src_err_maj) != IS_OK) ||
-          (m_src.cat.posError_deg(iSrc, &src_err_min) != IS_OK)) {
-        if (par->m_srcPosError > 0.0) {
-          src_err_maj = par->m_srcPosError;
-          src_err_min = par->m_srcPosError;
-        }
-        else
-          continue;
-      }
-
+        
       // Calculate sin and cos of source declination
-      src_dec_sin = sin(src_dec * deg2rad);
-      src_dec_cos = cos(src_dec * deg2rad);
+      src_dec_sin = sin(src->pos_eq_dec * deg2rad);
+      src_dec_cos = cos(src->pos_eq_dec * deg2rad);
     
       // Loop over counterpart candidates
       for (iCC = 0; iCC < m_numCC; iCC++) {
@@ -646,29 +637,21 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         // Get index of candidate in counterpart catalogue
         iCpt = m_cc[iCC].index;
 
-        // Get position for counterpart candidate. Fall through if position is 
-        // not available
-        if ((m_cpt.cat.ra_deg(iCpt, &cpt_ra)   != IS_OK) ||
-            (m_cpt.cat.dec_deg(iCpt, &cpt_dec) != IS_OK))
+        // Get pointer to counterpart object
+        cpt = &(m_cpt.object[iCpt]);
+        
+        // Fall through if no counterpart position is available
+        if (!cpt->pos_valid)
           continue;
-
-        // Get error ellipse for counterpart candidate. Assume no error if error
-        // ellipse is not available
-        cpt_err_ang = 0.0;
-        if ((m_cpt.cat.posError_deg(iCpt, &cpt_err_maj) != IS_OK) ||
-            (m_cpt.cat.posError_deg(iCpt, &cpt_err_min) != IS_OK)) {
-          cpt_err_maj = par->m_cptPosError;
-          cpt_err_min = par->m_cptPosError;	  
-          cpt_err_ang = 0.0;
-        }
-
+        
         // Calculate angular separation between source and counterpart in
         // degrees. Make sure that the separation is always comprised between 
         // [0,180] (out of range arguments lead to a floating exception)
-        cpt_dec_sin = sin(cpt_dec * deg2rad);
-        cpt_dec_cos = cos(cpt_dec * deg2rad);
+        cpt_dec_sin = sin(cpt->pos_eq_dec * deg2rad);
+        cpt_dec_cos = cos(cpt->pos_eq_dec * deg2rad);
         arg         = src_dec_sin * cpt_dec_sin +
-                      src_dec_cos * cpt_dec_cos * cos((src_ra - cpt_ra)*deg2rad);
+                      src_dec_cos * cpt_dec_cos * 
+                      cos((src->pos_eq_ra - cpt->pos_eq_ra)*deg2rad);
         if (arg <= -1.0)
           m_cc[iCC].angsep = 180.0;
         else if (arg >= 1.0)
@@ -680,8 +663,8 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         switch (par->m_posProbType) {
         case Exponential:
           m_cc[iCC].prob_angsep = 
-            exp(-m_cc[iCC].angsep / sqrt(cpt_err_maj*cpt_err_maj + 
-                                         src_err_maj*src_err_maj));
+            exp(-m_cc[iCC].angsep / sqrt(cpt->pos_err_maj * cpt->pos_err_maj + 
+                                         src->pos_err_maj * src->pos_err_maj));
           break;
         case Gaussian:
           m_cc[iCC].prob_angsep = 1.0;
@@ -694,19 +677,19 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         // Assign position and error ellipse
         // DUMMY: we assign the position and error ellipse of the partner
         //        that has the smaller positional uncertainty
-        if (cpt_err_maj < src_err_maj) {
-          m_cc[iCC].pos_eq_ra   = cpt_ra;
-          m_cc[iCC].pos_eq_dec  = cpt_dec;
-          m_cc[iCC].pos_err_maj = cpt_err_maj;
-          m_cc[iCC].pos_err_min = cpt_err_min;
-          m_cc[iCC].pos_err_ang = cpt_err_ang;
+        if (cpt->pos_err_maj < src->pos_err_maj) {
+          m_cc[iCC].pos_eq_ra   = cpt->pos_eq_ra;
+          m_cc[iCC].pos_eq_dec  = cpt->pos_eq_dec;
+          m_cc[iCC].pos_err_maj = cpt->pos_err_maj;
+          m_cc[iCC].pos_err_min = cpt->pos_err_min;
+          m_cc[iCC].pos_err_ang = cpt->pos_err_ang;
         }
         else {
-          m_cc[iCC].pos_eq_ra   = src_ra;
-          m_cc[iCC].pos_eq_dec  = src_dec;
-          m_cc[iCC].pos_err_maj = src_err_maj;
-          m_cc[iCC].pos_err_min = src_err_min;
-          m_cc[iCC].pos_err_ang = src_err_ang;
+          m_cc[iCC].pos_eq_ra   = src->pos_eq_ra;
+          m_cc[iCC].pos_eq_dec  = src->pos_eq_dec;
+          m_cc[iCC].pos_err_maj = src->pos_err_maj;
+          m_cc[iCC].pos_err_min = src->pos_err_min;
+          m_cc[iCC].pos_err_ang = src->pos_err_ang;
         }
               
       } // endfor: looped over counterpart candidates
@@ -791,15 +774,11 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
 Status Catalogue::cid_dump(Parameters *par, Status status) {
 
     // Declare local variables
-    long                           iCC;
-    long                           iCpt;
-    double                         cpt_ra;
-    double                         cpt_dec;
-    double                         cpt_error;
-    std::string                    cpt_name;
-    std::string                    obj_name;
-    std::vector<double>::size_type i_add;
-    std::vector<double>::size_type num_add;
+    long                            iCC;
+    long                            iCpt;
+    std::vector<double>::size_type  i_add;
+    std::vector<double>::size_type  num_add;
+    ObjectInfo                     *cpt;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -816,53 +795,70 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
       if (m_numCC < 1)
         continue;
 
-      // Determine the name of the generic quantity "object name"
-      obj_name = m_cpt.cat.getNameObjName();
-    
       // Loop over counterpart candidates
       for (iCC = 0; iCC < m_numCC; iCC++) {
       
         // Get index of candidate in counterpart catalogue
         iCpt = m_cc[iCC].index;
 
-        // Extract information for counterpart candidate
-        m_cpt.cat.ra_deg(iCpt,  &cpt_ra);
-        m_cpt.cat.dec_deg(iCpt, &cpt_dec);
-        m_cpt.cat.posError_deg(iCpt, &cpt_error);
-        m_cpt.cat.getSValue(obj_name, iCpt, &cpt_name);
-
+        // Get pointer to counterpart object
+        cpt = &(m_cpt.object[iCpt]);
+        
         // Determine number of additional probabilites
         num_add = m_cc[iCC].prob_add.size();      
 
         // Dump counterpart candidate information
         if (!par->logVerbose()) {
-          Log(Log_2, "  Counterpart candidate %5d .....: %s Prob=%7.3f %%",
-              iCC+1, cpt_name.c_str(), m_cc[iCC].prob*100.0);
+          Log(Log_2, "  Counterpart candidate %5d .....: %12s"
+              "  Prob=%7.3f %%",
+              iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
         }
         else {
           if (num_add < 1) {
-            Log(Log_2, "  Counterpart candidate %5d .....: %s Prob=%7.3f %%"
-                " (RA,DEC)=(%8.3f,%8.3f) +/- %8.3f  Sep=%8.3f deg",
-                iCC+1, cpt_name.c_str(), m_cc[iCC].prob*100.0,
-                cpt_ra, cpt_dec, cpt_error, m_cc[iCC].angsep);
+            if (cpt->pos_valid) {
+              Log(Log_2, "  Counterpart candidate %5d .....: %12s"
+                  "  Prob=%7.3f %%  Sep=%.4f deg"
+                  "  R.A.=%.3f  Dec.=%.3f"
+                  "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+                  iCC+1, cpt->name.c_str(), 
+                  m_cc[iCC].prob*100.0, m_cc[iCC].angsep,
+                  cpt->pos_eq_ra, cpt->pos_eq_dec, 
+                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            }
+            else {
+              Log(Log_2, "  Counterpart candidate %5d .....: %12s"
+                  "  Prob=%7.3f %%"
+                  " No position information found",
+                  iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
+            }
           }
           else {
-            Log(Log_2, "  Counterpart candidate %5d .....: %s Prob=%7.3f %%",
-                iCC+1, cpt_name.c_str(), m_cc[iCC].prob*100.0);
-            Log(Log_2, 
-                "   Angular separation probability .: %7.3f %%"
-                " (RA,DEC)=(%8.3f,%8.3f) +/- %8.3f  Sep=%8.3f deg",
-                m_cc[iCC].prob_angsep*100.0, 
-                cpt_ra, cpt_dec, cpt_error, m_cc[iCC].angsep);
+            Log(Log_2, "  Counterpart candidate %5d .....: %12s"
+                "  Prob=%7.3f %%",
+                iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
+            if (cpt->pos_valid) {            
+              Log(Log_2, 
+                  "   Angular separation probability .: %7.3f %%"
+                  "  Sep=%.4f deg"
+                  "  R.A.=%.3f  Dec.=%.3f"
+                  "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+                  m_cc[iCC].prob_angsep*100.0,
+                  m_cc[iCC].angsep,
+                  cpt->pos_eq_ra, cpt->pos_eq_dec, 
+                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            }
+            else {
+              Log(Log_2, "  No position information found");
+            }
             for (i_add = 0; i_add < num_add; i_add++) {
               Log(Log_2, 
                   "   Additional probability .........: %7.3f %%"
-                  " (Quantity='%s')",
+                  "  (Quantity='%s')",
                   m_cc[iCC].prob_add[i_add]*100.0,
                   par->m_probColNames[i_add].c_str());
             }
-          }        
-        }
+          } // endelse: there were additional quantities
+        } // endelse: high verbosity requested
 
       } // endfor: looped over counterpart candidats
     

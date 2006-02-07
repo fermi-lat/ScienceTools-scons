@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2006/02/07 11:10:50  jurgen
+Suppress catalogAccess verbosity
+
 Revision 1.9  2006/02/03 22:10:30  jurgen
 Remove comments to correctly catch an error in the determination
 of the number of catalogue entries (these comments have been
@@ -255,12 +258,14 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 /* Private method: get data for input catalogue                               */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
-                                      Status status) {
+                                      double posErr, Status status) {
 
     // Declare local variables
-    int         caterr;
-    long        i;
-    ObjectInfo *ptr;
+    int          caterr;
+    long         i;
+    double       err;
+    std::string  obj_name;
+    ObjectInfo  *ptr;
     
     // Debug mode: Entry
     if (par->logDebug())
@@ -315,20 +320,41 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       }
           
       // Extract object information
-      ptr = in->object;
+      ptr      = in->object;
+      obj_name = in->cat.getNameObjName();
       for (i = 0; i < in->numLoad; i++, ptr++) {
+      
+        // Get object name
+        in->cat.getSValue(obj_name, i, &(ptr->name));
 
-        // Get location. If no location is available then set it to 9999.
-        // Put counterpart Right Ascension in interval [0,2pi[
-        if ((in->cat.ra_deg(i,  &(ptr->ra))  != IS_OK) ||
-            (in->cat.dec_deg(i, &(ptr->dec)) != IS_OK)) {
-          ptr->ra  = 9999;
-          ptr->dec = 9999;
+        // Get location. If no location is available then set validity flag
+        // to 0. Put Right Ascension in interval [0,2pi[
+        if ((in->cat.ra_deg(i,  &(ptr->pos_eq_ra))  != IS_OK) ||
+            (in->cat.dec_deg(i, &(ptr->pos_eq_dec)) != IS_OK)) {
+          ptr->pos_valid  = 0;
+          ptr->pos_eq_ra  = 0.0;
+          ptr->pos_eq_dec = 0.0;
         }
         else {
-          ptr->ra = ptr->ra - double(long(ptr->ra / 360.0) * 360.0);
-          if (ptr->ra < 0.0) ptr->ra += 360.0;
+          ptr->pos_valid  = 1;
+          ptr->pos_eq_ra  = ptr->pos_eq_ra - 
+                            double(long(ptr->pos_eq_ra / 360.0) * 360.0);
+          if (ptr->pos_eq_ra < 0.0) 
+            ptr->pos_eq_ra += 360.0;
         }
+        
+        // Get position error. If no position error is specified then use
+        // the task parameter ...
+        if (in->cat.posError_deg(i, &err)  != IS_OK) {
+          ptr->pos_err_maj = posErr;
+          ptr->pos_err_min = posErr;
+          ptr->pos_err_ang = 0.0;
+        }
+        else {
+          ptr->pos_err_maj = err;
+          ptr->pos_err_min = err;
+          ptr->pos_err_ang = 0.0;
+        }       
         
       } // endfor: looped over all objects
 
@@ -556,7 +582,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
       
       // Load source catalogue
-      status = get_input_catalogue(par, &m_src, status);
+      status = get_input_catalogue(par, &m_src, par->m_srcPosError, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to load source catalogue '%s' data.",

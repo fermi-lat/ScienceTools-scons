@@ -1,7 +1,7 @@
 # echo "Setting sourceIdentify v1r0p1 in /home/knodlseder/dev/glast"
 
 if ( $?CMTROOT == 0 ) then
-  setenv CMTROOT /opt/projects/glast/applications/CMT/v1r16p20040701
+  setenv CMTROOT /opt/projects/glast/tools/CMT/v1r16p20040701
 endif
 source ${CMTROOT}/mgr/setup.csh
 
