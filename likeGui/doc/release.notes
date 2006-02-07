@@ -3,6 +3,9 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r6     07-Feb-06    JC    added FileFunction, ExpCutoff; refactor
+                               ObsSim.cxx, ModelEditor.cxx; 
+                               add ObsSim/__init__.py; disable likeGui
    v7r5p2   21-Nov-05    JC    refactor menus in ModelEditor; minor changes
                                to ObsSim
    v7r5p1   12-Sep-05    JC    ignore user_package pattern from sane;
