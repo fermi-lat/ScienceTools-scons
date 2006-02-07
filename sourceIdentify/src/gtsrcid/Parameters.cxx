@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2006/02/06 13:26:14  jurgen
+Remove whitespace in input parameter strings
+
 Revision 1.4  2006/02/03 12:14:52  jurgen
 New version that allows additional probabilities to be taken
 into account. The code has been considerably reorganised. Also
@@ -18,13 +21,17 @@ Replace header information with CVS typeset information.
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
-#include <stdio.h>                           // for "sprintf" function
+#include <stdio.h>                       // for "sprintf" function
 #include "sourceIdentify.h"
 #include "Parameters.h"
 #include "Log.h"	                     // for parameter dumping/errors
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
+
+
+/* Globals __________________________________________________________________ */
+int g_u9_verbosity;
 
 
 /* Type defintions __________________________________________________________ */
@@ -190,7 +197,13 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       m_clobber                  = pars["clobber"];
       m_debug                    = pars["debug"];
       m_mode                     = s_mode;
-
+      
+      // Set U9 verbosity
+      if (m_debug)
+        g_u9_verbosity = 3;
+      else
+        g_u9_verbosity = 0;
+      
       // Retrieve new output quantities and decompose them into quantity name 
       // and evaluation string
       for (i = MIN_OUTCAT_QTY; i <= MAX_OUTCAT_QTY; i++) {
@@ -382,6 +395,7 @@ Status Parameters::dump(Status status) {
         }
       }
       Log(Log_1, " Chatter level of output ..........: %d", m_chatter);
+      Log(Log_1, " U9 verbosity .....................: %d", g_u9_verbosity);
       Log(Log_1, " Clobber ..........................: %d", m_clobber);
       Log(Log_1, " Debugging mode activated .........: %d", m_debug);
       Log(Log_1, " Mode of automatic parameters .....: %s", m_mode.c_str());

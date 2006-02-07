@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.6  2006/02/03 12:14:52  jurgen
+New version that allows additional probabilities to be taken
+into account. The code has been considerably reorganised. Also
+catalogue column prefixes are now handled differently.
+
 Revision 1.5  2006/02/02 09:44:43  jurgen
 Remove doxygen documentation and set revision number to v0r5
 
@@ -31,6 +36,7 @@ using namespace sourceIdentify;
 
 
 /* Globals __________________________________________________________________ */
+
 
 
 /* Constants ________________________________________________________________ */

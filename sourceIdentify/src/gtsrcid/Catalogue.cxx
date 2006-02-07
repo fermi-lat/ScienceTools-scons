@@ -5,6 +5,12 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2006/02/03 22:10:30  jurgen
+Remove comments to correctly catch an error in the determination
+of the number of catalogue entries (these comments have been
+introduced due to a bug in catalogAccess - which has been fixed in
+version v0r2p6).
+
 Revision 1.8  2006/02/03 12:14:51  jurgen
 New version that allows additional probabilities to be taken
 into account. The code has been considerably reorganised. Also
@@ -43,6 +49,12 @@ Replace header information with CVS typeset information.
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
 using namespace catalogAccess;
+
+
+/* Globals __________________________________________________________________ */
+
+
+/* Constants ________________________________________________________________ */
 
 
 /* Type defintions __________________________________________________________ */
@@ -87,7 +99,7 @@ void Catalogue::init_memory(void) {
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
       m_num_cpt_Qty   = 0;
-
+      
     } while (0); // End of main do-loop
     
     // Return
@@ -142,6 +154,9 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 
     // Single loop for common exit point
     do {
+
+      // Set catalogAccess verbosity
+      catalogAccess::verbosity = g_u9_verbosity;
     
       // Determine the number of objects in the catalogue. First we try to
       // access the catalogue on disk, then on the Web ...
@@ -253,6 +268,9 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
 
     // Single loop for common exit point
     do {
+
+      // Set catalogAccess verbosity
+      catalogAccess::verbosity = g_u9_verbosity;
 
       // First interpret the input string as filename and load the catalogue
       // from the file. If this fails then interpret input string as

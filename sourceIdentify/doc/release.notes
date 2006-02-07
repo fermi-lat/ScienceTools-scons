@@ -3,14 +3,18 @@
     @author J. Knodlseder
 
 @verbatim
-3-Feb-2006   v1r0    JK  - allow for additional probabilities
-                         - modify input catalogue quantity prefixing
+7-Feb-2006   v1r0p1  JK  Suppress catalogAccess verbosity
+                         Remove leading and trailing whitespace in derived quantity
+                           formulae
+                         Update default parameter file
+3-Feb-2006   v1r0    JK  Allow for additional probabilities
+                         Modify input catalogue quantity prefixing (using @..._)
 2-Feb-2006   v0r5    JK  Fixed Win32 compile bugs.
 1-Feb-2006   v0r4    JK  New clean tag.
-19-Dec-2005  v0r3    JK  - prefix catalogue class members by "m_"
-                         - introduce maximum acceptance angle for filter step
-                         - extract counterpart locations only once
-                         - treat R.A. wrap around correctly
+19-Dec-2005  v0r3    JK  Prefix catalogue class members by "m_"
+                         Introduce maximum acceptance angle for filter step
+                         Extract counterpart locations only once
+                         Treat R.A. wrap around correctly
 22-Jul-2005  v0r2    JK  New clean tag.
 22-Jul-2005  v0r1p3  JK  Clean CVS tree from old stuff.
 21-Jul-2005  v0r1p1  JK  Complete version.
