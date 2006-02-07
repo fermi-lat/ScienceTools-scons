@@ -600,10 +600,13 @@ class SourceEntry:
             free = int(self.spectrum[paramName][1].get())
             self.srcElement.spectrum.parameters[paramName].free = free
 
-if __name__ == "__main__":
+def likeGui():
     debug = 0
     for name in sys.argv:
         if name == "-debug":
             debug = 1
     root = RootWindow(debug=debug)
     root.mainloop()
+
+if __name__ == "__main__":
+    likeGui()

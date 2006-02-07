@@ -28,6 +28,10 @@ obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
                       os.environ["BINDIR"], 'gtobssim.exe')
 orbSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
                       os.environ["BINDIR"], 'gtorbsim.exe')
+if not os.path.exists("obsSim"):  # assume it is in the user's PATH
+    obsSim = "gtobssim"
+if not os.path.exists("orbSim"):  # assume it is in the user's PATH
+    obsSim = "gtorbsim"
 
 class RootWindow(Tk.Tk):
     def __init__(self, file=None):
