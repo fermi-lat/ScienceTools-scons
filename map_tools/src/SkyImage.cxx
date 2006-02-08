@@ -4,6 +4,8 @@
 $Header$
 */
 
+#include "hoops/hoops_group.h"
+
 #include "map_tools/SkyImage.h"
 #include "map_tools/MapParameters.h"
 
@@ -136,6 +138,86 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
     }
     setupImage(pars.outputFile(),  pars.clobber());
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Note: this constructor was stolen on 2/7/2006 by James Peachey from
+// SkyImage::SkyImage(const map_tools::MapParameters&) and modified to use
+// ScienceTools-compliant parameters for the map geometry. This constructor
+// is thus redundant to the one above, but represents a migration path toward
+// making map_tools more like the other ScienceTools.
+// TODO: migrate all tools in map_tools to use this constructor, then
+// remove Parameters and MapParameters classes and the constructor above.
+SkyImage::SkyImage(const hoops::IParGroup& pars)
+: m_naxis1(pars["numxpix"])
+, m_naxis2(pars["numypix"])
+, m_naxis3(pars["layers"])
+, m_total(0)
+, m_image(0)
+, m_imageData()
+, m_save(true)
+, m_layer(0)
+, m_wcs(0)
+{
+    using namespace astro;
+
+    // see if there is an input count map
+    std::string cm_file = pars["cmfile"];
+    std::string uc_cm_file = cm_file;
+    for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
+        
+    if ( "NONE" != uc_cm_file){
+        static double s_Mev_per_keV = .001;
+        // read the count map to get the image dimensions from it
+        loadImage(cm_file, "", true);
+        // read energies associated with layers from ebounds extension.
+        std::auto_ptr<const tip::Table> ebounds(tip::IFileSvc::instance().readTable(cm_file, "EBOUNDS"));
+        m_energy.resize(ebounds->getNumRecords());
+        std::vector<double>::iterator out_itor = m_energy.begin();
+        for (tip::Table::ConstIterator in_itor = ebounds->begin(); in_itor != ebounds->end(); ++in_itor, ++out_itor) {
+          *out_itor = (*in_itor)["E_MIN"].get() * s_Mev_per_keV;
+        }
+    }else{
+        std::string ptype = pars["proj"];
+        double pixelsize = pars["pixscale"];
+
+        if( m_naxis1==0){
+            // special code to determine all-sky limits based on scale factor and transformation
+            std::string types[]={"" ,"CAR","AIT","ZEA"};
+            int xsize[] =       {360, 360,  325,  230}; 
+            int ysize[] =       {180, 180,  162,  230}; 
+            for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
+                if( ptype == types[i]) {
+                    m_naxis1 = static_cast<int>(xsize[i]/pixelsize);
+                    m_naxis2 = static_cast<int>(ysize[i]/pixelsize);
+                    break;
+                }
+            }
+            if( m_naxis1==0) {
+                throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
+                    +ptype +" does not have default image size");
+            }
+        }
+        if( m_naxis2==0) m_naxis2=m_naxis1; // default square image
+        std::string coord_sys = pars["coordsys"];
+        for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = toupper(*itor);
+        bool galactic = (coord_sys == "GAL");
+
+        /// arrays describing transformation: assume reference in the center
+        double          //lon            lat
+            crval[2]={ pars["xref"],      pars["yref"]},
+            crpix[2]={ (m_naxis1+1)/2.0, (m_naxis2+1)/2.0},
+            cdelt[2]={ -pixelsize,       pixelsize },
+            crota2=pars["axisrot"];
+        m_wcs = new astro::SkyProj( pars["proj"], crpix, crval, cdelt, crota2, galactic);
+  
+        double energy = pars["emin"], eratio = pars["eratio"];
+        m_energy.resize(m_naxis3);
+        for ( int ii = 0; ii != m_naxis3; ++ii, energy *= eratio){
+            m_energy[ii] = energy;
+        }
+    }
+    setupImage(pars["outfile"],  pars["clobber"]);
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 {
@@ -227,7 +309,8 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
     m_min=1e10;m_max=-1e10;
     int offset = m_naxis1* m_naxis2 * layer;
     for( size_t k = 0; k< (unsigned int)(m_naxis1)*(m_naxis2); ++k){
-        size_t kk = k%(unsigned int)(m_naxis1* m_naxis2);
+        // 2/7/2006 JP commented out the following line to silence compiler warning.
+        // size_t kk = k%(unsigned int)(m_naxis1* m_naxis2);
         // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
             x = static_cast<int>(k%m_naxis1)+1.0, 
@@ -253,7 +336,9 @@ void SkyImage::clear()
 {
     size_t s = m_imageData.size();
     for( size_t k = 0; k< s; ++k){
-        m_imageData[k]=NULL; 
+        // 2/7/2006 JP changed the following line to silence compiler warning.
+        // m_imageData[k]=NULL; 
+        m_imageData[k]=0; 
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

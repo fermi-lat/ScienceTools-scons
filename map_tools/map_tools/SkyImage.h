@@ -21,6 +21,8 @@
 
 namespace astro { class SkyDir; }
 
+namespace hoops { class IParGroup; }
+
 namespace map_tools {
 class MapParameters;
 
@@ -37,6 +39,12 @@ public:
     @param pars an object containing all the necessary parameters
     */
     SkyImage(const map_tools::MapParameters& pars);
+
+    /** @brief constructor set up the map using standard ScienceTools map configuration
+
+    @param pars an object containing all the necessary parameters
+    */
+    SkyImage(const hoops::IParGroup& pars);
 
     /** @brief load an image from a file.
         @param filename name of the file, only FITS for now
