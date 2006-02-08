@@ -133,9 +133,9 @@ SkyImage::SkyImage(const map_tools::MapParameters& pars)
 // TODO: migrate all tools in map_tools to use this constructor, then
 // remove Parameters and MapParameters classes and the constructor above.
 SkyImage::SkyImage(const hoops::IParGroup& pars)
-: m_naxis1(pars["numxpix"])
-, m_naxis2(pars["numypix"])
-, m_naxis3(pars["layers"])
+: m_naxis1(1)
+, m_naxis2(1)
+, m_naxis3(1)
 , m_total(0)
 , m_image(0)
 , m_imageData()
@@ -151,17 +151,58 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
     for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
         
     if ( "NONE" != uc_cm_file){
-        static double s_Mev_per_keV = .001;
-        // read the count map to get the image dimensions from it
-        loadImage(cm_file, "", true);
-        // read energies associated with layers from ebounds extension.
+        // get as much info as possible from the count map
+        // determine the projection
+        m_wcs = new astro::SkyProj(cm_file,1);
+
+        // read the count map
+        std::auto_ptr<const tip::Image> count_map(tip::IFileSvc::instance().readImage(cm_file, ""));
+        const tip::Header& header = count_map->getHeader();
+
+        // first two dimensions come from count map image
+        header["NAXIS1"].get(m_naxis1);
+        header["NAXIS2"].get(m_naxis2);
+
+        // read energies associated with layers from ebounds extension of count map.
         std::auto_ptr<const tip::Table> ebounds(tip::IFileSvc::instance().readTable(cm_file, "EBOUNDS"));
-        m_energy.resize(ebounds->getNumRecords());
-        std::vector<double>::iterator out_itor = m_energy.begin();
-        for (tip::Table::ConstIterator in_itor = ebounds->begin(); in_itor != ebounds->end(); ++in_itor, ++out_itor) {
-          *out_itor = (*in_itor)["E_MIN"].get() * s_Mev_per_keV;
+
+        // determine how energy values are computed from bins using layercalc parameter.
+        std::string layer_calc = pars["layercalc"];
+        for ( std::string::iterator itor = layer_calc.begin(); itor != layer_calc.end(); ++itor) *itor = toupper(*itor);
+
+        static double s_MeV_per_keV = .001;
+
+        if ( layer_calc == "CENTER"){
+            // compute energies using N central bin values from ebounds
+            m_naxis3 = ebounds->getNumRecords();
+            m_energy.resize(m_naxis3);
+            std::vector<double>::iterator out_itor = m_energy.begin();
+            for ( tip::Table::ConstIterator in_itor = ebounds->begin(); in_itor != ebounds->end(); ++in_itor, ++out_itor){
+                double e_min = (*in_itor)["E_MIN"].get();
+                double e_max = (*in_itor)["E_MAX"].get();
+                *out_itor = .5 * (e_max + e_min) * s_MeV_per_keV;
+            }
+        } else {
+            // compute energies using N + 1 edge bin values from ebounds
+            m_naxis3 = ebounds->getNumRecords() + 1;
+            m_energy.resize(m_naxis3);
+            tip::Table::ConstIterator last_in = ebounds->begin();
+            std::vector<double>::iterator out_itor = m_energy.begin();
+            for ( tip::Table::ConstIterator in_itor = ebounds->begin(); in_itor != ebounds->end(); ++in_itor, ++out_itor){
+                *out_itor = (*in_itor)["E_MIN"].get() * s_MeV_per_keV;
+                last_in = in_itor;
+            }
+            // get last bin edge from e_max column.
+            *out_itor = (*last_in)["E_MAX"].get() * s_MeV_per_keV;
         }
+
+        // size of image is now known, so initialize it.
+        m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
+        m_imageData.resize(m_pixelCount, 0.);
     }else{
+        m_naxis1 = pars["numxpix"];
+        m_naxis2 = pars["numypix"];
+        m_naxis3 = pars["layers"];
         std::string ptype = pars["proj"];
         double pixelsize = pars["pixscale"];
 
@@ -239,10 +280,6 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
 , m_layer(0)
 , m_wcs(0)
 {
-    loadImage(fits_file, extension);
-}
-void SkyImage::loadImage(const std::string& fits_file, const std::string& extension, bool dim_only)
-{
     m_image = tip::IFileSvc::instance().editImage(fits_file, extension);
     tip::Header& header = m_image->getHeader();
 
@@ -253,10 +290,9 @@ void SkyImage::loadImage(const std::string& fits_file, const std::string& extens
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     m_wcs = new astro::SkyProj(fits_file,1);
+    // finally, read in the image
+    m_image->get(m_imageData);
 
-    // finally, read in the image if client desires
-    if (dim_only) m_imageData.resize(m_pixelCount, 0.);
-    else m_image->get(m_imageData);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 unsigned int SkyImage::setLayer(unsigned int newlayer)

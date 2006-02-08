@@ -28,6 +28,7 @@ eratio,        r, a, 3., 1., , "Ratio between energies for subsequent layers"
 #---------------------------------------------------------------------------------------
 # Hidden parameters.
 filter,        s, h, , , ,"Filter expression"
+layercalc,     s, h, CENTER, CENTER|EDGE, , "How are energy layers computed from count map ebounds?"
 table,         s, h, "Ext1",,,"Exposure cube extension"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, "yes", , , "Overwrite existing output files with new output files"

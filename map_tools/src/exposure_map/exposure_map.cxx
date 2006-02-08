@@ -221,6 +221,7 @@ public:
         }
     
         m_pars.Prompt("filter");
+        m_pars.Prompt("layercalc");
         m_pars.Prompt("table");
         m_pars.Prompt("chatter");
         m_pars.Prompt("clobber");
