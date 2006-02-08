@@ -55,7 +55,7 @@ namespace {
       bool m_exit_on_close;
   };
 
-  DefaultReceiver s_default_receiver;
+  DefaultReceiver * s_default_receiver = 0;
 
 }
 
@@ -130,7 +130,10 @@ namespace st_graph {
     if (!m_init_succeeded) throw std::runtime_error("RootEngine::createMainFrame: graphical environment not initialized");
 
     // If client did not supply a receiver, use the default one.
-    if (0 == receiver) receiver = &s_default_receiver;
+    if (0 == receiver) {
+      if (0 == s_default_receiver) s_default_receiver = new DefaultReceiver;
+      receiver = s_default_receiver;
+    }
 
     // Create the Root widget.
     STGMainFrame * tg_widget = new STGMainFrame(width, height);
@@ -372,7 +375,8 @@ namespace st_graph {
   }
 
   void RootEngine::setDefaultExitOnClose(bool exit_on_close) {
-    s_default_receiver.setExitOnClose(exit_on_close);
+    if (0 == s_default_receiver) s_default_receiver = new DefaultReceiver;
+    s_default_receiver->setExitOnClose(exit_on_close);
   }
 
   void RootEngine::hideHidden(IFrame * frame) {
