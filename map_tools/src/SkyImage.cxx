@@ -17,6 +17,7 @@ $Header$
 #include "tip/Table.h"
 
 #include <cctype>
+#include <cmath>
 #include <stdexcept>
 #include <sstream>
 #include <errno.h> // to test result of std::remove()
@@ -148,7 +149,7 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
     // see if there is an input count map
     std::string cm_file = pars["cmfile"];
     std::string uc_cm_file = cm_file;
-    for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
+    for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = std::toupper(*itor);
         
     if ( "NONE" != uc_cm_file){
         // get as much info as possible from the count map
@@ -166,9 +167,9 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         // read energies associated with layers from ebounds extension of count map.
         std::auto_ptr<const tip::Table> ebounds(tip::IFileSvc::instance().readTable(cm_file, "EBOUNDS"));
 
-        // determine how energy values are computed from bins using layercalc parameter.
-        std::string layer_calc = pars["layercalc"];
-        for ( std::string::iterator itor = layer_calc.begin(); itor != layer_calc.end(); ++itor) *itor = toupper(*itor);
+        // determine how energy values are computed from bins using bincalc parameter.
+        std::string layer_calc = pars["bincalc"];
+        for ( std::string::iterator itor = layer_calc.begin(); itor != layer_calc.end(); ++itor) *itor = std::toupper(*itor);
 
         static double s_MeV_per_keV = .001;
 
@@ -202,7 +203,7 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
     }else{
         m_naxis1 = pars["numxpix"];
         m_naxis2 = pars["numypix"];
-        m_naxis3 = pars["layers"];
+        m_naxis3 = pars["enumbins"];
         std::string ptype = pars["proj"];
         double pixelsize = pars["pixscale"];
 
@@ -225,7 +226,7 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         }
         if( m_naxis2==0) m_naxis2=m_naxis1; // default square image
         std::string coord_sys = pars["coordsys"];
-        for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = toupper(*itor);
+        for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = std::toupper(*itor);
         bool galactic = (coord_sys == "GAL");
 
         /// arrays describing transformation: assume reference in the center
@@ -236,11 +237,17 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
             crota2=pars["axisrot"];
         m_wcs = new astro::SkyProj( pars["proj"], crpix, crval, cdelt, crota2, galactic);
   
-        double energy = pars["emin"], eratio = pars["eratio"];
+        double emin = pars["emin"], emax = pars["emax"];
         m_energy.resize(m_naxis3);
-        for ( int ii = 0; ii != m_naxis3; ++ii, energy *= eratio){
+        
+        // compute logarithmic bin ratio
+        const double eratio = std::exp(std::log(emax / emin) / m_naxis3);
+        double energy = emin;
+        for ( int ii = 0; ii != m_naxis3 - 1; ++ii, energy *= eratio){
             m_energy[ii] = energy;
         }
+        // prevent annoying round-off in the last bin
+        m_energy[m_naxis3 - 1] = emax;
     }
     setupImage(pars["outfile"],  pars["clobber"]);
 }
