@@ -9,7 +9,6 @@ $Header$
 */
 
 #include "map_tools/SkyImage.h"
-#include "map_tools/MapParameters.h"
 #include "map_tools/Exposure.h"
 
 #include "irfInterface/IAeff.h"
@@ -168,19 +167,23 @@ public:
 
         m_f.setMethod("run()");
 
+        prompt();
+
         // create the exposure, read it in from the FITS input file
-        m_f.info() << "Creating an Exposure object from file " << m_pars.inputFile() << std::endl;
+        m_f.info() << "Creating an Exposure object from file " << m_pars["infile"].Value() << std::endl;
 
         ///todo: create from file, usnig HealpixArrayIO.
-        Exposure ex(m_pars.inputFile(), m_pars.table_name() );
+        std::string in_file = m_pars["infile"];
+        std::string table = m_pars["table"];
+        Exposure ex(in_file, table);
 
         double total_elaspsed = ex.total();
         m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
 
-        irfInterface::IAeff* aeff = findAeff(m_pars.getValue<std::string>("rspfunc"));
+        irfInterface::IAeff* aeff = findAeff(m_pars["resptype"]);
 
         // create the image object, fill it from the exposure, write out
-        std::clog << "Creating an Image, will write to file " << m_pars.outputFile() << std::endl;
+        std::clog << "Creating an Image, will write to file " << m_pars["outfile"].Value() << std::endl;
         SkyImage image(m_pars); 
         std::vector<double> energy;
         image.getEnergies(energy);
@@ -195,9 +198,40 @@ public:
         }
     }
 
+    void prompt() {
+        m_pars.Prompt("infile");
+        m_pars.Prompt("cmfile");
+        m_pars.Prompt("outfile");
+        m_pars.Prompt("resptype");
+    
+        std::string uc_cm_file = m_pars["cmfile"];
+        for (std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = toupper(*itor);
+        if ("NONE" == uc_cm_file) {
+            m_pars.Prompt("numxpix");
+            m_pars.Prompt("numypix");
+            m_pars.Prompt("pixscale");
+            m_pars.Prompt("coordsys");
+            m_pars.Prompt("xref");
+            m_pars.Prompt("yref");
+            m_pars.Prompt("axisrot");
+            m_pars.Prompt("proj");
+            m_pars.Prompt("layers");
+            m_pars.Prompt("emin");
+            m_pars.Prompt("eratio");
+        }
+    
+        m_pars.Prompt("filter");
+        m_pars.Prompt("table");
+        m_pars.Prompt("chatter");
+        m_pars.Prompt("clobber");
+        m_pars.Prompt("debug");
+        m_pars.Prompt("gui");
+        m_pars.Save();
+    }
+
 private:
     st_stream::StreamFormatter m_f;
-    MapParameters m_pars;
+    st_app::AppParGroup& m_pars;
 
 };
 // Factory which can create an instance of the class above.
