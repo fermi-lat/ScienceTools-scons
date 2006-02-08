@@ -7,13 +7,14 @@
  * $Header$
  */
 
-#include <cstdlib>
+#include <sstream>
 
-#include <iostream>
-#include <string>
-
-int main(int iargc, char *argv[]) {
-   std::string command 
-      = "python -c \"import ModelEditor; ModelEditor.ModelEditor()\"";
-   std::system(command.c_str());
+int main(int iargc, char * argv[]) {
+   std::ostringstream command;
+   command << "python -c \"import ModelEditor; ModelEditor.ModelEditor(";
+   if (iargc == 2) {
+      command << "\'" << argv[1] << "\'";
+   }
+   command << ")\"";
+   std::system(command.str().c_str());
 }
