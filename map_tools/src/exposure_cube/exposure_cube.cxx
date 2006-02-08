@@ -77,7 +77,8 @@ public:
         const std::map<double,GPS::POINTINFO>& history = gps.getHistory();
         GPS::history_iterator mit = history.begin(), next=mit;
         double begintime=mit->first;
-        double endtime = (--(history.end()))->first;
+        // 2/8/2006 JP commented out the following line to silence compiler warning.
+        //double endtime = (--(history.end()))->first;
 
         double deltat = (++next)->first-begintime; 
 
