@@ -37,5 +37,6 @@ $Id$
 06-feb-2006    v1r5p4 JP  Fix another instance of previous problem.
 08-feb-2006    v1r5p5 JP  Related issue: avoid static creation of objects which cause
                           Root initialization, to prevent spurious errors in non-GUI mode.
+09-feb-2006    v1r5p6 JP  Fix bug which prevented dialog boxes from starting in the correct directory.
 \endverbatim
 */
