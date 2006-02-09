@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2006/02/07 16:05:04  jurgen
+Use ObjectInfo structure to hold catalogue object information
+
 Revision 1.10  2006/02/07 11:10:50  jurgen
 Suppress catalogAccess verbosity
 
@@ -89,9 +92,9 @@ void Catalogue::init_memory(void) {
       m_cpt.object   = NULL;
 
       // Intialise catalogue building parameters
-      m_maxCptLoad    = 100000; // load maximum of 100000 sources
+      m_maxCptLoad    = c_maxCptLoad;
       m_fCptLoaded    = 0;
-      m_filter_maxsep = 4.0; // filter all sources more distant than 2 deg
+      m_filter_maxsep = c_filter_maxsep; 
       m_memFile       = NULL;
       m_outFile       = NULL;
 
