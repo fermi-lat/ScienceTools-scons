@@ -338,8 +338,7 @@ namespace st_graph {
       dir = initial_file_name;
     } else {
       // Delimiter found: split into before/after delimiter.
-      // dir = initial_file_name.substr(0, delim_pos);
-      dir = initial_file_name;
+      dir = initial_file_name.substr(0, delim_pos);
       file = initial_file_name.substr(delim_pos + 1, std::string::npos);
     }
 
