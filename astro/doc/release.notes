@@ -6,6 +6,8 @@
 $Id$
 
 @verbatim
+  v1r13p7  10-Feb-06 JC  this-> qualifier needed in templated methods 
+                         for gcc3.4.3 (without -fpermissive flag)
   v1r13p6  19-jan-06 JP  fix to allow compiling with gcc 3.3 and later, initialize uninitialized vars
   v1r13p5  19-jan-06 JP  fix to allow compiling with cfitsio 3.005, change name of FT2 table to SC_DATA
   v1r13p3,4  14-dec-05 THB change at v1r12 generated Healpix memory leak, fixed
