@@ -36,8 +36,8 @@ MeritFile::MeritFile(const std::string & meritfile,
       
       // CTBCORE > 0.1
       m_goodEvent1->addRangeCut("CTBCORE", "N/A", 0.1, 1.1);
-      // CTBBestEnergyProb > 0.1
-      m_goodEvent1->addRangeCut("CTBBestEnergyProb", "N/A", 0.1, 1.1);
+      // CTBBestEnergyProb > 0.3
+      m_goodEvent1->addRangeCut("CTBBestEnergyProb", "N/A", 0.3, 1.1);
       // CTBGAM > 0.35
       m_goodEvent1->addRangeCut("CTBGAM", "N/A", 0.35, 1.1);
 

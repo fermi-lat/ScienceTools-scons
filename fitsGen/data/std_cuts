@@ -24,6 +24,6 @@ CalEnergyRaw > 5 && CalCsIRLn > 4
 &&
 !( CTBBestEnergy>5000&& (((CalTransRms-1.5)*Tkr1ToTTrAve)<5) )
 &&
-CTBCORE>0.1&&CTBBestEnergyProb>0.1&&CTBGAM>0.35
+CTBCORE>0.1&&CTBBestEnergyProb>0.3&&CTBGAM>0.35
 &&
 CTBBestZDir < -0.4 && FT1ZenithTheta < 100

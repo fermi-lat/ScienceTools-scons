@@ -106,25 +106,29 @@ TTYPE11     = 'EVENT_ID'                                / ID number of original 
 TFORM11     = 'J'                                       / data format of field: 4-byte signed INTEGER
 TLMIN11     = 0                                         / minimum value
 TLMAX11     = 2147483647                                / maximum value
-TTYPE12     = 'RECON_VERSION'                           / version of event reconstruction software
-TFORM12     = 'I'                                       / data format of field: 2-byte signed INTEGER
+TTYPE12     = 'RUN_ID'                                  / Run number of original event
+TFORM12     = 'J'                                       / data format of field: 4-byte signed INTEGER
 TLMIN12     = 0                                         / minimum value
-TLMAX12     = 32767                                     / maximum value
-TTYPE13     = 'CALIB_VERSION'                           / versions of calibration tables for the ACD, CAL, TKR
-TFORM13     = '3I'                                      / data format of field: 2-byte signed INTEGER
-TTYPE14     = 'EVENT_CLASS'                             / event class: 0=Front converting class A, 1=Back A, 2=Front B, 3=Back B
-TFORM14     = 'I'                                       / data format of field: 2-byte signed INTEGER
-TLMIN14     =  0                                        / minimum value
-TLMAX14     =  32767                                    / maximum value
-TTYPE15     = 'CONVERSION_TYPE'                         / type of conversion: 0=Front converting, 1=Back, 2=CAL only
+TLMAX12     = 2147483647                                / maximum value
+TTYPE13     = 'RECON_VERSION'                           / version of event reconstruction software
+TFORM13     = 'I'                                       / data format of field: 2-byte signed INTEGER
+TLMIN13     = 0                                         / minimum value
+TLMAX13     = 32767                                     / maximum value
+TTYPE14     = 'CALIB_VERSION'                           / versions of calibration tables for the ACD, CAL, TKR
+TFORM14     = '3I'                                      / data format of field: 2-byte signed INTEGER
+TTYPE15     = 'EVENT_CLASS'                             / event class: 0=Front converting class A, 1=Back A, 2=Front B, 3=Back B
 TFORM15     = 'I'                                       / data format of field: 2-byte signed INTEGER
 TLMIN15     =  0                                        / minimum value
 TLMAX15     =  32767                                    / maximum value
-TTYPE16     = 'LIVETIME'                                / Accumulated livetime since mission start
-TFORM16     = 'D'                                       / data format of field: 8-byte DOUBLE
-TUNIT16     = 's'                                       / physical unit of field
-TLMIN16     = 0.0                                       / minimum value
-TLMAX16     = 1.0D+10                                   / maximum value
+TTYPE16     = 'CONVERSION_TYPE'                         / type of conversion: 0=Front converting, 1=Back
+TFORM16     = 'I'                                       / data format of field: 2-byte signed INTEGER
+TLMIN16     =  0                                        / minimum value
+TLMAX16     =  32767                                    / maximum value
+TTYPE17     = 'LIVETIME'                                / Accumulated livetime since mission start
+TFORM17     = 'D'                                       / data format of field: 8-byte DOUBLE
+TUNIT17     = 's'                                       / physical unit of field
+TLMIN17     = 0.0                                       / minimum value
+TLMAX17     = 1.0D+10                                   / maximum value
 END
 
 XTENSION     = 'BINTABLE'                  / binary table extension
