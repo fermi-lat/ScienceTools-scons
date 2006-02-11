@@ -4,6 +4,7 @@
 
     @verbatim
 
+    v2r3p1 10-Feb-06   JC   add RUN_ID to FT1; update class B def in MeritFile
     v2r3   05-Feb-06   JC   Implement MeritFile::eventType, conversionType
                             for DC2; use ascii dictionary for Merit to FT1
                             assignments; update std_cuts and use these
