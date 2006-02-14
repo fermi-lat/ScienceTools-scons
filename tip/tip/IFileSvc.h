@@ -192,7 +192,7 @@ namespace tip {
 
     private:
       // Copying file service objects is not supported.
-      IFileSvc(const IFileSvc & service) {}
+      IFileSvc(const IFileSvc &) {}
   };
 
 }
