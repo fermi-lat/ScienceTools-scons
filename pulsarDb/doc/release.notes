@@ -5,6 +5,7 @@
 $Id$
 
 \verbatim
+14-feb-2006    v2r0p2 JP  Issue a warning if no ephemerides are in the written database.
 01-feb-2006    v2r0p1 JP  Throw exception if user tries to use TT time system (temporarily.)
 27-jan-2006        v2 JP  Use timesystem, timeformat parameters to generalize interpretation of epoch.
 19-jan-2006    v1r2p1 JP  Changes to support gcc 3.3 and later.
