@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+14-Feb-2006  v1r0p3  JK  Remove unused variables 'pos' and attach 'L' to long integer
 9-Feb-2006   v1r0p2  JK  Use ObjectInfo structure to hold catalogue object information
                          Increase maximum number of objects loaded at once to 
                            10,000,000,000 (since ROI dependent loading has not yet
