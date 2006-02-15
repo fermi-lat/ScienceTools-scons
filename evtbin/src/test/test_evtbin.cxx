@@ -1355,8 +1355,8 @@ void EvtBinTest::testBayesianBinner() {
   // Create uniform bins, and highly artificial data which obviously hovers around constant values.
   OrderedBinner::IntervalCont_t intervals;
   std::vector<double> cell_pop(100);
-  double change_points[] = { 0, 20, 21, 22, 27, 40, 60, 100 };
-  double plateau[] = { 5, 25, 150, 260, 120, 58, 12 };
+  double change_points[] = { 0., 20., 21., 22., 27., 40., 60., 100. };
+  double plateau[] = { 5., 25., 150., 260., 120., 58., 12., 0. };
   int cp = 1;
   for (int ii = 0; ii < 100; ++ii) {
     intervals.push_back(Binner::Interval(ii, ii + 1));
@@ -1391,11 +1391,31 @@ void EvtBinTest::testMultipleFiles() {
   using namespace st_facilities;
   m_os.setMethod("testMultipleFiles()");
 
-  // Create name of list file from the data directory.
-  std::string list_file = "@" + Env::appendFileName(m_data_dir, "ft1filelist");
+  // Names of unsplit files containing events and sc data.
+  std::string ev_file = Env::appendFileName(m_data_dir, "ft1small.fits");
+  std::string sc_file = Env::appendFileName(m_data_dir, "ft2small.fits");
+
+  // Get Gti from unsplit file.
+  Gti separate_gti(ev_file);
+
+  // Create binner used both for energy bins and for ebounds definition.
+  LogBinner energy_binner(30., 200000., 100, "ENERGY");
+
+  // Create spectrum from unsplit files.
+  SingleSpec separate(ev_file, "EVENTS", sc_file, "Ext1", energy_binner, energy_binner, separate_gti);
+
+  // Fill the spectrum.
+  separate.binInput();
+
+  // Write the spectrum to an output file.
+  separate.writeOutput("test_evtbin", "separate_spectrum.pha");
+
+  // Names of files containing lists of equivalent split files containing events and sc data.
+  std::string ev_list_file = "@" + Env::appendFileName(m_data_dir, "ft1filelist");
+  std::string sc_list_file = "@" + Env::appendFileName(m_data_dir, "ft2filelist");
 
   // Expand the contents of the list file.
-  FileSys::FileNameCont tmp_input_file = FileSys::expandFileList(list_file);
+  FileSys::FileNameCont tmp_input_file = FileSys::expandFileList(ev_list_file);
 
   // Make a vector of test files (just in case FileNameCont ever changes type.
   std::vector<std::string> input_file(tmp_input_file.begin(), tmp_input_file.end());
@@ -1412,31 +1432,28 @@ void EvtBinTest::testMultipleFiles() {
     expected_num_events += num_rec[index];
   }
 
-  // Create binner used both for energy bins and for ebounds definition.
-  LogBinner energy_binner(30., 200000., 100, "ENERGY");
-
   // Get the good time intervals from event file list.
-  Gti gti(list_file);
+  Gti merged_gti(ev_list_file);
 
   // Confirm the gtis were merged correctly.
   Gti expected_gti;
   expected_gti.insertInterval(1000., 5000.);
   expected_gti.insertInterval(10000., 20000.);
 
-  if (gti != expected_gti) {
+  if (merged_gti != expected_gti) {
     m_failed = true;
-    std::cerr << "Unexpected: testMultipleFiles: Gti computed from merged list of event files was:\n" << gti << "\nnot:\n" <<
-      expected_gti << "\n, as expected." << std::endl;
+    std::cerr << "Unexpected: testMultipleFiles: Gti computed from merged list of event files was:\n" << merged_gti <<
+      "\nnot:\n" << expected_gti << "\n, as expected." << std::endl;
   }
 
   // Bin up the input to make a spectrum, and require the total number of binned counts to agree with the inputs.
-  SingleSpec spectrum(list_file, "EVENTS", "", "", energy_binner, energy_binner, gti);
+  SingleSpec merged(ev_list_file, "EVENTS", sc_list_file, "Ext1", energy_binner, energy_binner, merged_gti);
 
   // Fill the spectrum.
-  spectrum.binInput();
+  merged.binInput();
 
   // Write the spectrum to an output file.
-  spectrum.writeOutput("test_evtbin", "merged_spectrum.pha");
+  merged.writeOutput("test_evtbin", "merged_spectrum.pha");
 
   // Read the output and confirm it has the requisite properties.
   std::auto_ptr<const tip::Table> spec_table(tip::IFileSvc::instance().readTable("merged_spectrum.pha", "SPECTRUM"));

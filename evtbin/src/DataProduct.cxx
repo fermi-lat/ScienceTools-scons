@@ -7,6 +7,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <numeric>
 #include <stdexcept>
 #include <sstream>
 #include <string>
@@ -25,6 +26,52 @@
 #include "tip/IFileSvc.h"
 #include "tip/KeyRecord.h"
 #include "tip/Table.h"
+
+namespace {
+
+  // Internal utility class to make it easy to sort/track spacecraft files.
+  class SpacecraftTable {
+    public:
+      SpacecraftTable(const std::string & sc_file, const std::string & sc_table): m_sc_file(sc_file), m_sc_table(sc_table),
+        m_first_start(0.), m_last_stop(0.), m_num_rec(0) {
+        std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
+
+        m_num_rec = table->getNumRecords();
+
+        if (0 != m_num_rec) {
+          // Track the time range spanned by this file, from first start time...
+          tip::Table::ConstIterator itor = table->begin();
+          m_first_start = (*itor)["START"].get();
+
+          // ... to last stop time.
+          itor = table->end();
+          --itor;
+          m_last_stop = (*itor)["STOP"].get();
+        }
+
+      }
+
+      operator tip::Index_t() const { return getNumRecords(); }
+
+      tip::Index_t getNumRecords() const { return m_num_rec; }
+
+      bool operator <(const SpacecraftTable & table) const {
+        return m_first_start != table.m_first_start ? (m_first_start < table.m_first_start) : (m_last_stop < table.m_last_stop);
+      }
+
+      bool connects(const SpacecraftTable & table) const { return m_last_stop == table.m_first_start; }
+
+      const tip::Table * openTable() const { return tip::IFileSvc::instance().readTable(m_sc_file, m_sc_table); }
+
+    private:
+      std::string m_sc_file;
+      std::string m_sc_table;
+      double m_first_start;
+      double m_last_stop;
+      tip::Index_t m_num_rec;
+  };
+
+}
 
 namespace evtbin {
 
@@ -340,52 +387,74 @@ namespace evtbin {
   }
 
   double DataProduct::computeExposure(const std::string & sc_file, const std::string & sc_table) const {
+    using namespace st_facilities;
+
     // If Gti is empty, return 0. exposure.
     if (0 == m_gti.getNumIntervals()) return 0.;
 
     // If no spacecraft file is available, return the total ontime.
     if (sc_file.empty()) return m_gti.computeOntime();
 
-    // Open the spacecraft data table.
-    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
+    // Get container of file names from the supplied input file.
+    FileSys::FileNameCont file_name_cont = FileSys::expandFileList(sc_file);
 
-    // If no rows in the table, issue a warning and then return 0.
-    if (0 == table->getNumRecords()) {
-      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data file is empty!" << std::endl;
-      return 0.;
+    // Get container of spacecraft files.
+    std::vector<SpacecraftTable> table_cont;
+
+    // Fill container of spacecraft files, summing the total number of records at the same time.
+    tip::Index_t total_num_rec = 0;
+    for (FileSys::FileNameCont::iterator itor = file_name_cont.begin(); itor != file_name_cont.end(); ++itor) {
+      table_cont.push_back(SpacecraftTable(*itor, sc_table));
+      total_num_rec += table_cont.back().getNumRecords();
     }
+
+    // Sort them into ascending order.
+    std::sort(table_cont.begin(), table_cont.end());
 
     // Start with no exposure.
     double exposure = 0.0;
 
+    // If no rows in the table(s), issue a warning and then return 0.
+    if (0 == total_num_rec) {
+      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data file(s) contain no pointings!" << std::endl;
+      return exposure;
+    }
+
     // Start from beginning of first interval in the GTI.
     Gti::ConstIterator gti_pos = m_gti.begin();
 
-    // In the spacecraft data table, start from the first entry.
-    tip::Table::ConstIterator itor = table->begin();
+    // Iterate over spacecraft files.
+    for (std::vector<SpacecraftTable>::iterator table_itor = table_cont.begin(); table_itor != table_cont.end(); ++table_itor) {
+      std::auto_ptr<const tip::Table> table(table_itor->openTable());
 
-    // Check first entry in the table for validity.
-    if ((*itor)["START"].get() > m_gti.begin()->first) 
-      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data commences after start of first GTI" << std::endl;
+      // In each spacecraft data table, start from the first entry.
+      tip::Table::ConstIterator itor = table->begin();
 
-    // Iterate through the spacecraft data.
-    for (; itor != table->end(); ++itor) {
-      double start = (*itor)["START"].get();
-      double stop = (*itor)["STOP"].get();
+      // Check first entry in the table for validity.
+// TODO: move this test outside the loop.
+//      if ((*itor)["START"].get() > m_gti.begin()->first) 
+//        std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data commences after start of first GTI" << std::endl;
 
-      // Compute the total fraction of this time which overlaps one or more intervals in the GTI extension.
-      double fract = m_gti.getFraction(start, stop, gti_pos);
+      // Iterate through the spacecraft data.
+      for (; itor != table->end(); ++itor) {
+        double start = (*itor)["START"].get();
+        double stop = (*itor)["STOP"].get();
 
-      // Use this fraction to prorate the livetime before adding it to the total exposure time.
-      exposure += fract * (*itor)["LIVETIME"].get();
+        // Compute the total fraction of this time which overlaps one or more intervals in the GTI extension.
+        double fract = m_gti.getFraction(start, stop, gti_pos);
+
+        // Use this fraction to prorate the livetime before adding it to the total exposure time.
+        exposure += fract * (*itor)["LIVETIME"].get();
+      }
     }
 
     // Go back to last position in the table, and check it for validity.
-    --itor;
-    Gti::ConstIterator last = m_gti.end();
-    --last;
-    if ((*itor)["STOP"].get() < last->second)
-      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data ceases before end of last GTI" << std::endl;
+// TODO: make this test work again:
+//    --itor;
+//    Gti::ConstIterator last = m_gti.end();
+//    --last;
+//    if ((*itor)["STOP"].get() < last->second)
+//      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data ceases before end of last GTI" << std::endl;
     
     return exposure;
   }
