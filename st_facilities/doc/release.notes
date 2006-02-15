@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  14-Feb-06 v0r6p4 JC    allow negative values in Util::bilinear
   19-Jan-06 v0r6p3 JP    use PKGROOT/xml for xml files
   17-Jan-05 v0r6p2 JC    add direct access to image data in FitsImage
   17-Nov-05 v0r6p1 JC    patch tag for missing delete in FitsUtil
