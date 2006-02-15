@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r5p2 15-Feb-06   JC   disable newMinuit until it is supported 
+                            for Windows in extlibs 
     v2r5p1 29-Jan-06   JC   add compile flags for Darwin
     v2r5   20-Jan-06   JC   tag for Pat's newMinuit class implementation
                             and Mac/gcc3.3 patch for old minuit_routines.c

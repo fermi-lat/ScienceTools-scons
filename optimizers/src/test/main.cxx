@@ -27,7 +27,9 @@
 #include "optimizers/FunctionTest.h"
 #include "optimizers/FunctionFactory.h"
 #include "optimizers/ChiSq.h"
+#ifdef HAVE_NEW_MINUIT
 #include "optimizers/newMinuit.h"
+#endif
 #include "MyFun.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
@@ -266,6 +268,7 @@ void test_Optimizers() {
 
    int verbose = 1;
 
+#ifdef HAVE_NEW_MINUIT
 // try the C++ version of Minuit
 
    newMinuit myNewMin(my_rosen);
@@ -277,6 +280,7 @@ void test_Optimizers() {
    }
 // use Minuit's HESSE to get the covariance matrix by finite differences
    myNewMin.hesse(verbose);
+#endif
    
 // try lbfgs_bcm method 
    Lbfgs my_lbfgsObj(my_rosen);

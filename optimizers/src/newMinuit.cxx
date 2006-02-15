@@ -5,6 +5,8 @@
  * $Header:
  */
 
+#ifdef HAVE_NEWMINUIT
+
 #include "optimizers/newMinuit.h"
 #include "optimizers/Parameter.h"
 #include "Minuit/MnUserParameters.h"
@@ -124,3 +126,4 @@ namespace optimizers {
   }
 
 }
+#endif
