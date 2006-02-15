@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r6p1   14-Feb-06    JC    extend lower lim on PowerLaw2; correct test
+                               for obsSim, orbSim paths in ObsSim.py
    v7r6     07-Feb-06    JC    added FileFunction, ExpCutoff; refactor
                                ObsSim.cxx, ModelEditor.cxx; 
                                add ObsSim/__init__.py; disable likeGui
