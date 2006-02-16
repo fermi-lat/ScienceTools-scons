@@ -13,6 +13,8 @@
 
 #include "evtbin/Gti.h"
 
+#include "st_stream/StreamFormatter.h"
+
 #include "tip/KeyRecord.h"
 #include "tip/Table.h"
 
@@ -157,6 +159,7 @@ namespace evtbin {
       template <typename T>
       void updateKeyValue(const std::string & name, const T & value, const std::string & comment = "") const;
 
+      mutable st_stream::StreamFormatter m_os;
       mutable KeyValuePairCont_t m_key_value_pairs;
       KeyCont_t m_known_keys;
       std::list<std::string> m_dss_keys;

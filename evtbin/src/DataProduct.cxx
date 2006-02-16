@@ -4,7 +4,6 @@
 */
 #include <algorithm>
 #include <cstdlib>
-#include <iostream>
 #include <list>
 #include <memory>
 #include <numeric>
@@ -76,8 +75,8 @@ namespace {
 namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
-    m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_event_file_cont(), m_data_dir(), m_event_file(event_file),
-    m_event_table(event_table), m_gti(gti), m_hist_ptr(0) {
+    m_os("DataProduct", "DataProduct", 2), m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_event_file_cont(),
+    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_gti(gti), m_hist_ptr(0) {
     using namespace st_facilities;
 
     // Find the directory containing templates.
@@ -387,10 +386,17 @@ namespace evtbin {
   }
 
   double DataProduct::computeExposure(const std::string & sc_file, const std::string & sc_table) const {
+    m_os.setMethod("computeExposure(const std::string &...)");
     using namespace st_facilities;
 
+    // Start with no exposure.
+    double exposure = 0.0;
+
     // If Gti is empty, return 0. exposure.
-    if (0 == m_gti.getNumIntervals()) return 0.;
+    if (0 == m_gti.getNumIntervals()) {
+      m_os.warn().prefix() << "GTI contains no intervals! EXPOSURE keyword will be set to 0." << std::endl;
+      return exposure;
+    }
 
     // If no spacecraft file is available, return the total ontime.
     if (sc_file.empty()) return m_gti.computeOntime();
@@ -408,37 +414,43 @@ namespace evtbin {
       total_num_rec += table_cont.back().getNumRecords();
     }
 
-    // Sort them into ascending order.
-    std::sort(table_cont.begin(), table_cont.end());
-
-    // Start with no exposure.
-    double exposure = 0.0;
-
     // If no rows in the table(s), issue a warning and then return 0.
     if (0 == total_num_rec) {
-      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data file(s) contain no pointings!" << std::endl;
+      m_os.warn().prefix() << "Spacecraft data file(s) contain no pointings! EXPOSURE keyword will be set to 0." << std::endl;
       return exposure;
     }
 
-    // Start from beginning of first interval in the GTI.
+    // Sort them into ascending order.
+    std::sort(table_cont.begin(), table_cont.end());
+
+    // Start from beginning of first interval in the GTI and first spacecraft file.
     Gti::ConstIterator gti_pos = m_gti.begin();
+
+    bool first_time = true;
+    double start = 0.;
+    double stop = 0.;
 
     // Iterate over spacecraft files.
     for (std::vector<SpacecraftTable>::iterator table_itor = table_cont.begin(); table_itor != table_cont.end(); ++table_itor) {
+
       std::auto_ptr<const tip::Table> table(table_itor->openTable());
 
       // In each spacecraft data table, start from the first entry.
       tip::Table::ConstIterator itor = table->begin();
 
       // Check first entry in the table for validity.
-// TODO: move this test outside the loop.
-//      if ((*itor)["START"].get() > m_gti.begin()->first) 
-//        std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data commences after start of first GTI" << std::endl;
+      if (first_time) {
+        first_time = false;
+        if ((*itor)["START"].get() > gti_pos->first) {
+          m_os.warn().prefix() << "Spacecraft data commences after start of first GTI." << std::endl;
+          m_os.warn().prefix() << "EXPOSURE keyword may not be accurate." << std::endl;
+        }
+      }
 
       // Iterate through the spacecraft data.
       for (; itor != table->end(); ++itor) {
-        double start = (*itor)["START"].get();
-        double stop = (*itor)["STOP"].get();
+        start = (*itor)["START"].get();
+        stop = (*itor)["STOP"].get();
 
         // Compute the total fraction of this time which overlaps one or more intervals in the GTI extension.
         double fract = m_gti.getFraction(start, stop, gti_pos);
@@ -448,13 +460,13 @@ namespace evtbin {
       }
     }
 
-    // Go back to last position in the table, and check it for validity.
-// TODO: make this test work again:
-//    --itor;
-//    Gti::ConstIterator last = m_gti.end();
-//    --last;
-//    if ((*itor)["STOP"].get() < last->second)
-//      std::clog << "WARNING: DataProduct::computeExposure: Spacecraft data ceases before end of last GTI" << std::endl;
+    // Go to last interval in Gti and check its end time.
+    gti_pos = m_gti.end();
+    --gti_pos;
+    if (stop < gti_pos->second) {
+      m_os.warn().prefix() << "Spacecraft data ceases before end of last GTI" << std::endl;
+      m_os.warn().prefix() << "EXPOSURE keyword may not be accurate." << std::endl;
+    }
     
     return exposure;
   }
