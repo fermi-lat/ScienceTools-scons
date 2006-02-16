@@ -10,6 +10,7 @@ use STpolicy *
 use astro *
 use st_app *
 use st_facilities *
+use st_stream *
 use tip *
 
 apply_pattern ST_library option=-no_share
