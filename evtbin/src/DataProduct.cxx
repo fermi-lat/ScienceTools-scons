@@ -58,7 +58,19 @@ namespace {
         return m_first_start != table.m_first_start ? (m_first_start < table.m_first_start) : (m_last_stop < table.m_last_stop);
       }
 
-      bool connects(const SpacecraftTable & table) const { return m_last_stop == table.m_first_start; }
+      bool connectsTo(const SpacecraftTable & table) const {
+        bool is_equal = m_last_stop == table.m_first_start;
+        if (!is_equal) {
+          double ratio = 1.;
+          if (0. == m_last_stop) ratio = table.m_first_start;
+          else if (0. == table.m_first_start) ratio = m_last_stop;
+          else ratio = (table.m_first_start - m_last_stop) / m_last_stop;
+          is_equal = std::fabs(ratio) < std::numeric_limits<double>::epsilon();
+        }
+        return is_equal;
+      }
+
+      const std::string & getFileName() const { return m_sc_file; }
 
       const tip::Table * openTable() const { return tip::IFileSvc::instance().readTable(m_sc_file, m_sc_table); }
 
@@ -423,6 +435,18 @@ namespace evtbin {
     // Sort them into ascending order.
     std::sort(table_cont.begin(), table_cont.end());
 
+    // Track whether calculation is believed to be accurate.
+    bool accurate = true;
+
+    // Check for gaps in files.
+    for (std::vector<SpacecraftTable>::size_type index = 0; index != table_cont.size() - 1; ++index) {
+      if (!table_cont[index].connectsTo(table_cont[index + 1])) {
+        m_os.warn().prefix() << "There is a gap in time coverage between " << table_cont[index].getFileName() << " and " <<
+          table_cont[index + 1].getFileName() << std::endl;
+        accurate = false;
+      }
+    }
+
     // Start from beginning of first interval in the GTI and first spacecraft file.
     Gti::ConstIterator gti_pos = m_gti.begin();
 
@@ -443,7 +467,7 @@ namespace evtbin {
         first_time = false;
         if ((*itor)["START"].get() > gti_pos->first) {
           m_os.warn().prefix() << "Spacecraft data commences after start of first GTI." << std::endl;
-          m_os.warn().prefix() << "EXPOSURE keyword may not be accurate." << std::endl;
+          accurate = false;
         }
       }
 
@@ -464,10 +488,12 @@ namespace evtbin {
     gti_pos = m_gti.end();
     --gti_pos;
     if (stop < gti_pos->second) {
-      m_os.warn().prefix() << "Spacecraft data ceases before end of last GTI" << std::endl;
-      m_os.warn().prefix() << "EXPOSURE keyword may not be accurate." << std::endl;
+      m_os.warn().prefix() << "Spacecraft data ceases before end of last GTI." << std::endl;
+      accurate = false;
     }
     
+    if (!accurate) m_os.warn().prefix() << "EXPOSURE keyword calculation may not be accurate." << std::endl;
+
     return exposure;
   }
 
