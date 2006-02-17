@@ -3,7 +3,9 @@
     \author James Peachey, HEASARC
 */
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
+#include <limits>
 #include <list>
 #include <memory>
 #include <numeric>
