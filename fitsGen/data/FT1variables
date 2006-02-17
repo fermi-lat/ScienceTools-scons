@@ -5,6 +5,7 @@
 #
 # FT1 name              MeritTuple name
 #
+#ENERGY                  CTBBestEnergy
 ENERGY                  FT1Energy
 RA                      FT1Ra
 DEC                     FT1Dec
@@ -21,4 +22,4 @@ RUN_ID                  EvtRun
 #CALIB_VERSION
 #EVENT_CLASS            set using MeritFile::eventType()
 #CONVERSION_TYPE        set using MeritFile::conversionType()
-LIVETIME                FT1Livetime
+LIVETIME                EvtLivetime
