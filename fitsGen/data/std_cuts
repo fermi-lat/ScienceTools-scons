@@ -18,7 +18,7 @@ CalEnergyRaw > 5 && CalCsIRLn > 4
 !( ((min(abs(Tkr1XDir),abs(Tkr1YDir)) < .01 &&
     Tkr1DieEdge < 10 && AcdActiveDist3D > 0 && AcdActDistTileEnergy > .2) ||
 (Tkr1SSDVeto < 7 && AcdActiveDist3D > -3 && AcdActDistTileEnergy > .15)    ||
-( AcdActiveDist3D >(-30 + 30*(Tkr1FirstLayer-2)))) && (CTBGAM+0.17*CTBBestEnergy) > 1.75 )
+( AcdActiveDist3D >(-30 + 30*(Tkr1FirstLayer-2)))) && (CTBGAM+0.17*CTBBestLogEnergy) < 1.75 )
 &&
 !( (Tkr1FirstLayer - Tkr2FirstLayer) <= 0 && Tkr2FirstLayer > 2 && Tkr2TkrHDoca > 10 && (CTBGAM+0.16*CTBBestLogEnergy)<1.32 )
 &&
