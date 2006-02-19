@@ -7,8 +7,9 @@ $Header$
 #include "hoops/hoops_group.h"
 
 #include "map_tools/SkyImage.h"
+#if 0
 #include "map_tools/MapParameters.h"
-
+#endif
 #include "astro/SkyDir.h"
 #include "astro/SkyFunction.h"
 
@@ -25,16 +26,6 @@ $Header$
 namespace {
     static unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     static double& dnan = *( double* )lnan;
-#if 0
-    //! @brief add a string or double key or whatever to the image 
-    tip::Header* header;
-    template <typename T>
-        void setKey(std::string name, T value, std::string unit="", std::string comment=""){
-            (*header)[name].set( value); 
-            (*header)[name].setUnit(unit);
-            (*header)[name].setComment(comment);
-        }
-#endif
 }
 using namespace map_tools;
 
@@ -78,53 +69,6 @@ SkyImage::SkyImage(const astro::SkyDir& center,
     m_wcs = new astro::SkyProj(ptype, crpix, crval, cdelt, 0., galactic);
     this->setupImage(outputFile);
 }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SkyImage::SkyImage(const map_tools::MapParameters& pars)
-: m_naxis1(pars.npix())
-, m_naxis2(pars.npixY())
-, m_naxis3(pars.npixZ()) // for future expansion
-, m_total(0)
-, m_image(0)
-, m_save(true)
-, m_layer(0)
-, m_wcs(0)
-{
-    using namespace astro;
-    std::string ptype(pars.projType());
-    double pixelsize = pars["pixelsize"];
-
-    if( m_naxis1==0){
-        // special code to determine all-sky limits based on scale factor and transformation
-        std::string types[]={"" ,"CAR","AIT","ZEA"};
-        int xsize[] =       {360, 360,  325,  230}; 
-        int ysize[] =       {180, 180,  162,  230}; 
-        for( unsigned int i = 0; i< sizeof(types)/sizeof(std::string); ++i){
-            if( ptype == types[i]) {
-                m_naxis1 = static_cast<int>(xsize[i]/pixelsize);
-                m_naxis2 = static_cast<int>(ysize[i]/pixelsize);
-                break;
-            }
-        }
-        if( m_naxis1==0) {
-            throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
-                +ptype +" does not have default image size");
-        }
-    }
-    if( m_naxis2==0) m_naxis2=m_naxis1; // default square image
-    bool galactic = pars.uselb();
-
-    /// arrays describing transformation: assume reference in the center
-    double          //lon            lat
-        crval[2]={ pars.xref(),      pars.yref()},
-        crpix[2]={ (m_naxis1+1)/2.0, (m_naxis2+1)/2.0},
-        cdelt[2]={ -pixelsize,       pixelsize },
-        crota2=pars.rot();
-    m_wcs = new astro::SkyProj( pars.projType(), crpix, crval, cdelt, crota2, galactic);
-
-    setupImage(pars.outputFile(),  pars.clobber());
-}
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Note: this constructor was stolen on 2/7/2006 by James Peachey from
 // SkyImage::SkyImage(const map_tools::MapParameters&) and modified to use
