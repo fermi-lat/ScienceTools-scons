@@ -27,8 +27,8 @@ apply_pattern ST_app_withDir name=gtorbsim dir=orbSim
 
 private
 
-use hoops v0r*
-use st_app v1r*
+use hoops v*
+use st_app v*
 
 macro observationSim_cppflags "" \
       Linux "-I ../src " \
