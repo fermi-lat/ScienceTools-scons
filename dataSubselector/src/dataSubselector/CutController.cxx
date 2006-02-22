@@ -46,9 +46,12 @@ CutController::CutController(st_app::AppParGroup & pars,
    addRangeCut("THETA", "deg", pars["thetamin"], pars["thetamax"]);
    addRangeCut("ZENITH_ANGLE", "deg", pars["zmin"], pars["zmax"]);
    int eventClass = pars["eventClass"];
-   if (eventClass >= 0) {
+   if (eventClass >= 0 && eventClass < 4) {
       addRangeCut("EVENT_CLASS", "dimensionless", eventClass, eventClass,
                   0, true);
+   }
+   if (eventClass == 4) { // Class A events only
+      addRangeCut("EVENT_CLASS", "dimensionless", 0, 1, 0, true);
    }
 }
 

@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include "st_stream/StreamFormatter.h"
+
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
@@ -93,17 +95,19 @@ void MakeTime::run() {
 }
 
 void MakeTime::check_outfile() {
+   st_stream::StreamFormatter formatter("MakeTime", "run", 2);
    bool clobber = m_pars["clobber"];
    std::string outfile = m_pars["outfile"];
    m_outfile = outfile;
    if (outfile == "") {
-      std::cout << "Please specify an output file name." << std::endl;
+      formatter.err() << "Please specify an output file name." 
+                      << std::endl;
       std::exit(1);
    }
    if (!clobber && st_facilities::Util::fileExists(outfile)) {
-      std::cout << "Output file " << outfile 
-                << " exists and clobber is set to 'no'.  Exiting."
-                << std::endl;
+      formatter.err() << "Output file " << outfile 
+                      << " exists and clobber is set to 'no'.  Exiting."
+                      << std::endl;
       std::exit(1);
    }
 }
