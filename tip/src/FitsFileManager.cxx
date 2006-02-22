@@ -214,7 +214,13 @@ namespace tip {
   }
 
   void FitsFileManager::closeFile(fitsfile *fp, bool update_checksum, int status) {
-    if (update_checksum && 0 == status) fits_write_chksum(fp, &status);
+    if (update_checksum && 0 == status) {
+      int local_status = 0;
+      for (int extension = 1; 0 == local_status; ++extension) {
+        fits_movabs_hdu(fp, extension, 0, &local_status);
+        fits_write_chksum(fp, &local_status);
+      }
+    }
     fits_close_file(fp, &status);
   }
 }
