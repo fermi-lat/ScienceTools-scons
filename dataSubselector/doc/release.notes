@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r1p4  22-Feb-06   JC   additions to allow for automatic irf selection
+                             override in likelihood.
     v4r1p3  21-Feb-06   JC   allow for a DC2 class A event selection
     v4r1p2  29-Jan-06   JC   enable gui
     v4r1p1  10-Jan-06   JC   fix Gti::maxValue bug

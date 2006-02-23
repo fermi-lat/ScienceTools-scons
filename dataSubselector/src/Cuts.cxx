@@ -40,11 +40,11 @@ namespace dataSubselector {
 
 Cuts::Cuts(const std::vector<std::string> & eventFiles,
            const std::string & extname, bool check_columns,
-           bool skipTimeRangeCuts) {
+           bool skipTimeRangeCuts, bool skipEventClassCuts) {
    std::vector<Cuts> my_cuts;
    for (unsigned int i = 0; i < eventFiles.size(); i++) {
       my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns,
-                             skipTimeRangeCuts));
+                             skipTimeRangeCuts, skipEventClassCuts));
       if (i > 0) {
          if (!my_cuts.front().compareWithoutGtis(my_cuts.back())) {
             std::ostringstream message;
@@ -99,7 +99,8 @@ void Cuts::getGtiCuts(std::vector<const GtiCut *> & gtiCuts) {
 }
 
 Cuts::Cuts(const std::string & eventFile, const std::string & extname,
-           bool check_columns, bool skipTimeRangeCuts) {
+           bool check_columns, bool skipTimeRangeCuts,
+           bool skipEventClassCuts) {
    const tip::Extension * ext(0);
    try {
       ext = tip::IFileSvc::instance().readTable(eventFile, extname);
@@ -151,7 +152,8 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
                    std::find(colnames.begin(), colnames.end(), colname) 
                    != colnames.end())
                   && value != "TABLE" ) {
-         if (type != "TIME" || !skipTimeRangeCuts) {
+         if ((type != "TIME" || !skipTimeRangeCuts) &&
+             (type != "EVENT_CLASS" || !skipEventClassCuts)) {
             m_cuts.push_back(new RangeCut(colname, unit, value, indx));
          }
       } else if (type == "TIME" && value == "TABLE") {

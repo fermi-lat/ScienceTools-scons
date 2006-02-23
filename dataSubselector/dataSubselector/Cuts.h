@@ -64,7 +64,8 @@ public:
    ///        should already include any time range cuts, explicit
    ///        time range cuts are not needed.
    Cuts(const std::string & eventFile, const std::string & extension,
-        bool check_columns=true, bool skipTimeRangeCuts=false);
+        bool check_columns=true, bool skipTimeRangeCuts=false,
+        bool skipEventClassCuts=false);
 
    /// @brief This constructor reads in a vector of eventFiles, verifying
    ///        that the non-GTI cuts are the same in all files, and merging
@@ -72,7 +73,8 @@ public:
    Cuts(const std::vector<std::string> & eventFiles,
         const std::string & extension,
         bool check_columns=true,
-        bool skipTimeRangeCuts=false);
+        bool skipTimeRangeCuts=false,
+        bool skipEventClassCuts=false);
 
    /// A copy constructor is needed since there are pointer data members.
    Cuts(const Cuts & rhs);

@@ -27,9 +27,9 @@ RangeCut::RangeCut(const std::string & colname, const std::string & unit,
 }
 
 RangeCut::RangeCut(const std::string & type,
-                         const std::string & unit, 
-                         const std::string & value,
-                         unsigned int indx) 
+                   const std::string & unit, 
+                   const std::string & value,
+                   unsigned int indx) 
    : CutBase("range"), m_colname(type), m_unit(unit), m_index(indx),
      m_fullName(type) {
    std::vector<std::string> tokens;
