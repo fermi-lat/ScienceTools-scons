@@ -21,6 +21,18 @@
 
 #define MAKE_COMPILATION_FAIL (0)
 
+namespace {
+  template <typename T>
+  bool is_equal(const T & t1, const T & t2) {
+    bool equal = t1 == t2;
+    if (!equal) {
+      if (0 != t1) equal = std::fabs(double(t2 - t1) / t1) < std::numeric_limits<T>::epsilon();
+      else if (0 != t2) equal = std::fabs(double(t1 - t2) / t2) < std::numeric_limits<T>::epsilon();
+    }
+    return equal;
+  }
+}
+
 namespace tip {
 
   TestTable::TestTable(): m_fits_table(0), m_root_table(0), m_root_ft2(0) {}
@@ -211,7 +223,7 @@ namespace tip {
       for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
         float mc_energy;
         (*itor)["McEnergy"].get(mc_energy);
-        if (mc_energy != float(expected_mc_energy[0])) {
+        if (!is_equal<float>(mc_energy, expected_mc_energy[0])) {
           std::ostringstream os;
           os << "float(mc_energy) was " << mc_energy << ", not " << float(expected_mc_energy[0]) << ", as expected";
           ReportUnexpected(os.str());
