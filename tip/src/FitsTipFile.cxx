@@ -31,7 +31,7 @@ namespace tip {
     // Create the file.
     fits_create_file(&m_fp, const_cast<char *>(full_name.c_str()), &status);
     if (0 != status) {
-      closeFile(true, status);
+      closeFile(false, status);
       throw TipException(status, "Unable to create file named \"" + full_name + '"');
     }
 
@@ -41,7 +41,7 @@ namespace tip {
       // No template: need to create primary image explicitly.
       fits_create_img(m_fp, FLOAT_IMG, 0, dims, &status);
       if (0 != status) {
-        closeFile(true, status);
+        closeFile(false, status);
         throw TipException(status, "Unable to create primary image in file named \"" + full_name + '"');
       }
     }
@@ -81,7 +81,9 @@ namespace tip {
 
     fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
     int ignored_status = status;
-    fits_write_chksum(new_fp, &ignored_status);
+    for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &ignored_status); ++ii) {
+      fits_write_chksum(new_fp, &ignored_status);
+    }
     ignored_status = status;
     fits_close_file(new_fp, &ignored_status);
     if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
@@ -104,7 +106,12 @@ namespace tip {
   }
 
   void FitsTipFile::closeFile(bool update_checksum, int status) {
-    if (update_checksum && 0 == status) fits_write_chksum(m_fp, &status);
+    if (update_checksum && 0 == status) {
+      int ignored_status = 0;
+      for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &ignored_status); ++ii) {
+        fits_write_chksum(m_fp, &ignored_status);
+      }
+    }
     fits_close_file(m_fp, &status);
     m_fp = 0;
   }

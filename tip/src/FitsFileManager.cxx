@@ -81,7 +81,7 @@ namespace tip {
       status = 0;
       fp = createFile(file_name.c_str(), "PRIMARY", dims);
       if (0 != status) {
-        closeFile(fp, true, status);
+        closeFile(fp, false, status);
         throw TipException(status, "Unable to open or create file named \"" + file_name + "\"");
       }
     }
@@ -151,7 +151,7 @@ namespace tip {
     // Create the file.
     fits_create_file(&fp, const_cast<char *>(file_name.c_str()), &status);
     if (0 != status) {
-      closeFile(fp, true, status);
+      closeFile(fp, false, status);
       throw TipException(status, "Unable to create file named \"" + file_name + "\"");
     }
 
@@ -165,7 +165,7 @@ namespace tip {
     // Create new image extension at end of file.
     fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
     if (0 != status) {
-      closeFile(fp, true, status);
+      closeFile(fp, false, status);
       throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
     }
 
@@ -173,7 +173,7 @@ namespace tip {
     int hdu_num = 0;
     fits_get_hdu_num(fp, &hdu_num);
     if (0 != status) {
-      closeFile(fp, true, status);
+      closeFile(fp, false, status);
       throw TipException(status, std::string("Unable to determine the extension number of image \"") + image_name + "\" in file \"" +
         file_name + "\"");
     }
@@ -215,10 +215,9 @@ namespace tip {
 
   void FitsFileManager::closeFile(fitsfile *fp, bool update_checksum, int status) {
     if (update_checksum && 0 == status) {
-      int local_status = 0;
-      for (int extension = 1; 0 == local_status; ++extension) {
-        fits_movabs_hdu(fp, extension, 0, &local_status);
-        fits_write_chksum(fp, &local_status);
+      int ignored_status = 0;
+      for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &ignored_status); ++ii) {
+        fits_write_chksum(fp, &ignored_status);
       }
     }
     fits_close_file(fp, &status);
