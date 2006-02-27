@@ -119,6 +119,7 @@ void ObsSim::promptForParameters() {
    m_pars.Prompt("scfile");
    m_pars.Prompt("outfile_prefix");
    m_pars.Prompt("simulation_time");
+   m_pars.Prompt("start_date");
    m_pars.Prompt("use_acceptance_cone");
    if (m_pars["use_acceptance_cone"]) {
       m_pars.Prompt("ra");

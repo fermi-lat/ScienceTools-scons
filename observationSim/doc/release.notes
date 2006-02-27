@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r1p8 27-Feb-06   JC   prompt explicitly for start_date
     v6r1p7 21-Feb-06   JC   update req file using v*; make start_date 
                             prompted in gtobssim.par
     v6r1p6 20-Feb-06   JC   update galprop def in xml file; update
