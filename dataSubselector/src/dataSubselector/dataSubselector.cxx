@@ -153,6 +153,8 @@ void DataFilter::copyTable(const std::string & extension,
       cuts->writeDssKeywords(outputTable->getHeader());
    }
 
+   outputTable->getHeader().addHistory("Filter string: " + filterString);
+
    delete inputTable;
    delete outputTable;
 }

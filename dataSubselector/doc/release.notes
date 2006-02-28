@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r1p5  27-Feb-06   JC   setprecision to 20 for RangeCut filter string
+                             and to 10 for SkyConeCut
     v4r1p4  22-Feb-06   JC   additions to allow for automatic irf selection
                              override in likelihood.
     v4r1p3  21-Feb-06   JC   allow for a DC2 class A event selection

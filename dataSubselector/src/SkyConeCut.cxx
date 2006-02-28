@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -98,6 +99,7 @@ void SkyConeCut::getKeyValues(std::string & type, std::string & unit,
                               std::string & value, std::string & ref) const {
    (void)(ref);
    std::ostringstream val;
+   val << std::setprecision(10);
    val << "CIRCLE(" 
        << m_coneCenter.ra() << "," 
        << m_coneCenter.dec() << ","
@@ -117,6 +119,7 @@ std::string SkyConeCut::filterString() const {
    double ra(m_coneCenter.ra());
    double dec(m_coneCenter.dec());
    std::ostringstream q;
+   q << std::setprecision(10);
    q << "((2*asin(min(1,sqrt(max(0,(sin((DEC-" << dec << ")*" 
      << DEG_TO_RAD/2 << ")*sin((DEC-" << dec << ")*" 
      << DEG_TO_RAD/2 << "))+(cos(DEC*" << DEG_TO_RAD

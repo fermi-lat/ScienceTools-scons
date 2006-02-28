@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 
@@ -101,6 +102,7 @@ bool RangeCut::supercedes(const CutBase & cut) const {
 
 std::string RangeCut::filterString() const {
    std::ostringstream filter;
+   filter << std::setprecision(20);
    if (m_intervalType == MINONLY) {
       filter << m_min << " <= " << m_fullName;
    } else if (m_intervalType == MAXONLY) {
