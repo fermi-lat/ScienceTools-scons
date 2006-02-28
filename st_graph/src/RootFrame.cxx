@@ -166,7 +166,11 @@ namespace st_graph {
       }
       TGTextEntry * text = dynamic_cast<TGTextEntry *>(m_frame);
       if (0 != text) {
-        text->SetText(state.c_str());
+        // Only set the text in the entry widget if it has changed. This prevents flicker and moving
+        // the cursor to the end of the line each time a character is typed.
+        std::string current_text = text->GetText();
+        if (current_text != state)
+          text->SetText(state.c_str());
         continue;
       }
     }
