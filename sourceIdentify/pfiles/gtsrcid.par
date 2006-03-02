@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   v1r0                                                    #
+#  Version:   v1r0p4                                                  #
 #  Component: A2                                                      #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
@@ -30,13 +30,13 @@ srcPosError,r,h,0.0,,,"Source position uncertainty (deg)"
 cptCatName,s,a,"radio_white1.4GHz.tsv",,,"Counterpart catalogue name"
 cptCatPrefix,s,a,"WB14",,,"Counterpart catalogue column prefix"
 cptCatQty,s,a,"WB,_RAJ2000,_DEJ2000,S1.4,S4.85,S.365,Sp+Index,Sp+Index2",,,"Counterpart catalogue quantities to be written"
-cptPosError,r,h,0.0138888,,,"Counterpart position uncertainty (deg)"
+cptPosError,r,h,0.0,,,"Counterpart position uncertainty (deg)"
 #
 # Output Catalogue information
 #=============================
 outCatName,s,a,"result.fits",,,"Output catalogue name"
-outCatQty01,s,h,"RATIO = $@3EG_F$ / $@WB14_S1.4$",,,"New output catalogue quantity 1"
-outCatQty02,s,h,"PROB_RATIO = exp(-0.5*((RATIO-0.11)/0.11)^2)",,,"New output catalogue quantity 2"
+outCatQty01,s,h,"",,,"New output catalogue quantity 1"
+outCatQty02,s,h,"",,,"New output catalogue quantity 2"
 outCatQty03,s,h,"",,,"New output catalogue quantity 3"
 outCatQty04,s,h,"",,,"New output catalogue quantity 4"
 outCatQty05,s,h,"",,,"New output catalogue quantity 5"
@@ -50,7 +50,7 @@ outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 probMethod,s,a,"POSITION * PROB_RATIO",,,"Probability method"
 probThres,r,a,0.01,,,"Probability threshold"
 maxNumCtp,i,a,100,,,"Maximum number of counterpart candidates"
-select01,s,h,"$@WB14_Sp+index$ > -0.5",,,"Selection cirterium 1"
+select01,s,h,"",,,"Selection cirterium 1"
 select02,s,h,"",,,"Selection cirterium 2"
 select03,s,h,"",,,"Selection cirterium 2"
 select04,s,h,"",,,"Selection cirterium 2"

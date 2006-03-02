@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.8  2006/02/14 15:38:54  jurgen
+Set the version string to "v1r0p3"
+
 Revision 1.7  2006/02/07 16:05:05  jurgen
 Use ObjectInfo structure to hold catalogue object information
 
@@ -30,7 +33,7 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "gtsrcid-v1r0p3"
+#define TOOL_VERSION  "gtsrcid-v1r0p4"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define USE_ST_APP 1
 
