@@ -14,6 +14,8 @@ $Header$
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
+#include "st_app/AppParGroup.h"
+
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 #include "TSystem.h" // ROOT, for gSystem

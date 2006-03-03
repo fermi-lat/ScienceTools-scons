@@ -11,22 +11,23 @@
 #define MAP_TOOLS_SKYIMAGE_H
 
 #include "astro/SkyFunction.h"
-#include "astro/SkyProj.h"
+#include "astro/SkyDir.h"
 
 #include <string>
 #include <vector>
 
-//does not work? namespace tip { class Image; }
-#include "tip/Image.h"
-
-namespace astro { class SkyDir; }
-
+// forward declarations of classes involved in implementaion
+namespace tip   { class ImageBase; }
+namespace astro { class SkyProj; }
 namespace hoops { class IParGroup; }
 
 namespace map_tools {
 /**
     @class SkyImage
-    @brief define an image for export to a FITS image
+    @brief manage a FITS image containing float values
+
+    Implements the class SkyFunction, to define a function over the sky derived
+    from the image.
 
 */
 class SkyImage : public astro::SkyFunction
@@ -146,9 +147,10 @@ private:
 
     //! for statistics of a fill
     double m_total, m_sumsq, m_count, m_min, m_max;
-    //! pointer to the associated tip Image class
-    tip::Image* m_image;
 
+    //! pointer to the associated tip Image class. The type is the base class, with 
+    //! dynamic cast when necessary.
+    tip::ImageBase* m_image;
     //! the actual image data
     std::vector<float>m_imageData;
     //! energy bounds for layers
@@ -158,9 +160,8 @@ private:
     bool m_save; 
     unsigned int m_layer;
 
-    /// associated projection object, initialized from a par file, or a FITS file
+    /// associated projection object, initialized from a par file, or a FITS header
     astro::SkyProj* m_wcs; 
- //   bool m_galactic;  /// flag to interpret the image in galactic coords
 };
 } //namesace map_tools
 

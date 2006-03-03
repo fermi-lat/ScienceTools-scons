@@ -10,8 +10,10 @@
 
 #include "Parameters.h"
 #include <string>
+#include "hoops/hoops_prompt_group.h"
+#if 0
 namespace hoops { class IParGroup; }
-
+#endif
 namespace map_tools {
 
 /**
@@ -27,12 +29,21 @@ namespace map_tools {
 * $Header$
 */
 
-class MapParameters : public Parameters
+    class MapParameters : public hoops::ParPromptGroup //Parameters
 {
 public:
     // Constructors
     MapParameters(hoops::ParPromptGroup & pars);
     MapParameters(int argc, char * argv[]);
+
+    // Accessor Methods
+    const std::string &inputFile() const   { return m_inFile; }
+  //  const std::string &table_name() const   { return m_table_name; }
+    const std::string &filter() const      { return m_filter; }
+    const std::string &outputFile() const  { return m_outFile; }
+    bool verboseMode()  const            { return m_verboseMode; }
+    bool clobber()      const            { return m_clobber; }
+    short chatter()     const            { return m_chatter; }
 
     int npix() const                   { return m_npix; }
     int npixX() const                   { return m_npix; }
@@ -52,6 +63,7 @@ public:
     bool uselb()const           {return m_use_lb;}
 
 
+
 private:
 
     void setup();
@@ -63,7 +75,14 @@ private:
     std::string     m_projType;
     bool            m_use_lb;
     std::string     m_raName, m_decName;
+// temporary kluge
     std::string  m_tableName;
+    std::string m_inFile;
+    std::string m_filter;
+    std::string m_outFile;
+    bool m_verboseMode;
+    bool m_clobber;
+    short m_chatter; 
 
 };
 }//namespace map_tools

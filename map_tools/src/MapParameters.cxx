@@ -10,19 +10,21 @@
 
 using namespace map_tools;
 //! Constructor
+#if 1
 MapParameters::MapParameters(int argc, char * argv[])
-: Parameters(argc, argv)
+: hoops::ParPromptGroup(argc, argv)
 {
     setup();
 }
+#endif
 MapParameters::MapParameters( hoops::ParPromptGroup& hpar)
-: Parameters(hpar)
+: hoops::ParPromptGroup(hpar)
 {
     setup();
 }
 void MapParameters::setup()
 {
-
+#if 0
     // Read number of pixels along x
     m_npix = getValue<long>("npix");
 
@@ -64,6 +66,7 @@ void MapParameters::setup()
     // names for ra and dec columns, with defaults
     m_raName= getValue<std::string>("ra_name", "ra");
     m_decName = getValue<std::string>("dec_name", "dec");
+#endif
 
 }
 

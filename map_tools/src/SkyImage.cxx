@@ -4,14 +4,9 @@
 $Header$
 */
 
-#include "hoops/hoops_group.h"
-
 #include "map_tools/SkyImage.h"
-#if 0
-#include "map_tools/MapParameters.h"
-#endif
-#include "astro/SkyDir.h"
-#include "astro/SkyFunction.h"
+#include "astro/SkyProj.h"
+#include "hoops/hoops_group.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
@@ -215,7 +210,8 @@ void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 
     // now add an image to the file
     tip::IFileSvc::instance().appendImage(outputFile, extension, naxes);
-    m_image = tip::IFileSvc::instance().editImage(outputFile, extension);
+    // create a float image
+    m_image = tip::IFileSvc::instance().editImageFlt(outputFile, extension);
 
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
     m_imageData.resize(m_pixelCount);
@@ -227,11 +223,12 @@ void SkyImage::setupImage(const std::string& outputFile,  bool clobber)
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
-:  m_save(false)
+: m_save(false)
 , m_layer(0)
 , m_wcs(0)
 {
-    m_image = tip::IFileSvc::instance().editImage(fits_file, extension);
+    // note expect the image to be float
+    m_image = tip::IFileSvc::instance().editImageFlt(fits_file, extension);
     tip::Header& header = m_image->getHeader();
 
     // standard ordering for ra, dec, cos(theta).
@@ -241,8 +238,8 @@ SkyImage::SkyImage(const std::string& fits_file, const std::string& extension)
     m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
 
     m_wcs = new astro::SkyProj(fits_file,1);
-    // finally, read in the image
-    m_image->get(m_imageData);
+    // finally, read in the image: assume it is float
+    dynamic_cast<tip::TypedImage<float>*>(m_image)->get(m_imageData);
 
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -320,7 +317,7 @@ void SkyImage::clear()
 SkyImage::~SkyImage()
 {
     if( m_save) {
-        m_image->set(m_imageData);
+        dynamic_cast<tip::TypedImage<float>*>(m_image)->set(m_imageData);
     }
     delete m_image; 
     delete m_wcs;
