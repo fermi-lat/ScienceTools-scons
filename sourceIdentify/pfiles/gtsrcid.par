@@ -22,14 +22,14 @@
 #=============================
 srcCatName,s,a,"3EG.fits",,,"Source catalogue name"
 srcCatPrefix,s,a,"3EG",,,"Source catalogue column prefix"
-srcCatQty,s,a,"3EG,RAJ2000,DEJ2000,theta95,F",,,"Source catalogue quantities to be written"
+srcCatQty,s,h,"*",,,"Source catalogue quantities to be written"
 srcPosError,r,h,0.0,,,"Source position uncertainty (deg)"
 #
 # Counterpart Catalogue information
 #==================================
 cptCatName,s,a,"radio_white1.4GHz.tsv",,,"Counterpart catalogue name"
 cptCatPrefix,s,a,"WB14",,,"Counterpart catalogue column prefix"
-cptCatQty,s,a,"WB,_RAJ2000,_DEJ2000,S1.4,S4.85,S.365,Sp+Index,Sp+Index2",,,"Counterpart catalogue quantities to be written"
+cptCatQty,s,h,"*",,,"Counterpart catalogue quantities to be written"
 cptPosError,r,h,0.0,,,"Counterpart position uncertainty (deg)"
 #
 # Output Catalogue information
@@ -47,18 +47,18 @@ outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 #
 # Task parameters
 #================
-probMethod,s,a,"POSITION * PROB_RATIO",,,"Probability method"
-probThres,r,a,0.01,,,"Probability threshold"
+probMethod,s,a,"POSITION",,,"Probability method"
+probThres,r,a,0.10,,,"Probability threshold"
 maxNumCtp,i,a,100,,,"Maximum number of counterpart candidates"
-select01,s,h,"",,,"Selection cirterium 1"
-select02,s,h,"",,,"Selection cirterium 2"
-select03,s,h,"",,,"Selection cirterium 2"
-select04,s,h,"",,,"Selection cirterium 2"
-select05,s,h,"",,,"Selection cirterium 2"
-select06,s,h,"",,,"Selection cirterium 2"
-select07,s,h,"",,,"Selection cirterium 2"
-select08,s,h,"",,,"Selection cirterium 2"
-select09,s,h,"",,,"Selection cirterium 2"
+select01,s,h,"",,,"Selection criterium 1"
+select02,s,h,"",,,"Selection criterium 2"
+select03,s,h,"",,,"Selection criterium 3"
+select04,s,h,"",,,"Selection criterium 4"
+select05,s,h,"",,,"Selection criterium 5"
+select06,s,h,"",,,"Selection criterium 6"
+select07,s,h,"",,,"Selection criterium 7"
+select08,s,h,"",,,"Selection criterium 8"
+select09,s,h,"",,,"Selection criterium 9"
 #
 # Standard parameters
 #====================

@@ -1,4 +1,4 @@
-# echo "Setting sourceIdentify v1r0p3 in /home/knodlseder/dev/glast"
+# echo "Setting sourceIdentify v1r0p4 in /home/knodlseder/dev/glast"
 
 if ( $?CMTROOT == 0 ) then
   setenv CMTROOT /opt/projects/glast/tools/CMT/v1r16p20040701
@@ -9,6 +9,6 @@ set tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
 if $status != 0 then
   set tempfile=/tmp/cmt.$$
 endif
-${CMTROOT}/mgr/cmt -quiet setup -csh -pack=sourceIdentify -version=v1r0p3 -path=/home/knodlseder/dev/glast  $* >${tempfile}; source ${tempfile}
+${CMTROOT}/mgr/cmt -quiet setup -csh -pack=sourceIdentify -version=v1r0p4 -path=/home/knodlseder/dev/glast  $* >${tempfile}; source ${tempfile}
 /bin/rm -f ${tempfile}
 
