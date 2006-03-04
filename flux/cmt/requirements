@@ -1,6 +1,6 @@
 package flux
 
-version v8r22p2
+version v8r23
 author Toby Burnett <tburnett@u.washington.edu>
 
 # $Id$
@@ -14,6 +14,8 @@ apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern package_stamps
 
+# default path to xml files
+set FLUX_XML "$(flux_root)/xml"
 
 #=============================================================
 private

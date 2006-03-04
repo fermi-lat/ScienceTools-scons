@@ -24,7 +24,7 @@ $Header$
 using astro::GPS;
 
 FluxMgr::FluxMgr(const std::vector<std::string>& fileList, std::string dtdname)
-: m_dtd(dtdname.empty()? "$(FLUXROOT)/xml/source.dtd" : dtdname )
+: m_dtd(dtdname.empty()? "$(FLUX_XML)/source.dtd" : dtdname )
 {
     if( fileList.empty() ){
         defaultFile();
@@ -39,9 +39,7 @@ void FluxMgr::defaultFile(){
 
     // must find the source_library.xml file.
     // set up the xml document to use for initialization parameters
-    const char* flux_root = ::getenv("FLUXROOT");
-    std::string doc_path= (flux_root? std::string(flux_root)+"/xml/" : "");
-    input.push_back(/*doc_path+initialization_document*/"$(FLUXROOT)/xml/source_library.xml");	
+    input.push_back("$(FLUX_XML)/source_library.xml");	
     init(input);
 }
 
@@ -102,17 +100,19 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     DECLARE_SPECTRUM( FileSource);
 
     DECLARE_SPECTRUM( SurfaceMuons);
+#if 0 // on the way out
     DECLARE_SPECTRUM( GalPulsars);
+#endif
     DECLARE_SPECTRUM( VdgGamma);
     DECLARE_SPECTRUM( Earth);
-
+#if 0 // on the way out 
     // these are deprecated, will be replaced by Hiroshima group
     DECLARE_SPECTRUM( AlbedoPSpectrum);
     DECLARE_SPECTRUM( CHIMESpectrum );
     DECLARE_SPECTRUM( GalElSpectrum);
     DECLARE_SPECTRUM( MapSpectrum);
     DECLARE_SPECTRUM( AGNSpectrum);
-
+#endif
 }
 
 
