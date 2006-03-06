@@ -80,14 +80,14 @@ int main(int argc, char** argv ){
             return 1;
         }
 
-        // Write out the cube...delete any existing file first.
-        e.write( par.inputFile());
+//         // Write out the cube...delete any existing file first.
+//         e.write( par.inputFile());
  
-        // Check the Exposure(fitsfile) constructor.
-        Exposure e2(par.inputFile());
+//         // Check the Exposure(fitsfile) constructor.
+//         Exposure e2(par.inputFile());
 
-        // Write this out as a separate file for an external diff.
-        e2.write( par.outputFile());
+//         // Write this out as a separate file for an external diff.
+//         e2.write( par.outputFile());
 
         // now test cos
         TestCosineBinner();

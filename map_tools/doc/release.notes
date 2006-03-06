@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 06-mar-06 v6r1p1  JC Comment out parts of test program that are no longer
+                      supported by MapParameters
  04-mar-06 v6r1   THB Refactor a bit, cleaning up interfaces
  08-feb-06 v6      JP Allow computation of maps using N bin centers or N+1 bin edges, to
                       support both general use and binned likelihood. Rationalize parameters for
