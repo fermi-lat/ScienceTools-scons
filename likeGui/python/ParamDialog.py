@@ -43,7 +43,7 @@ class ParamDialog(mySimpleDialog.Dialog):
     def apply(self):
         self.paramString = ""
         for param in self.parameters:
-            self.paramString += (" " + param.value())
+            self.paramString += param.fields[0] + "=" + param.value() + " "
 
 class ParamEntry:
     def __init__(self, parent, fields, row):
