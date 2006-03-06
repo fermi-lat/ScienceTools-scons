@@ -3,6 +3,9 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r6p2   06-Mar-06    JC    overcome apparent bug in Pil 2.0.1 regarding
+                               passing of unqualified parameter list to
+                               gtobssim
    v7r6p1   14-Feb-06    JC    extend lower lim on PowerLaw2; correct test
                                for obsSim, orbSim paths in ObsSim.py
    v7r6     07-Feb-06    JC    added FileFunction, ExpCutoff; refactor
