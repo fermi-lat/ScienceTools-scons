@@ -21,6 +21,60 @@ from xmlSrcLib import *
 _3EG_catalog = os.path.join(os.environ['OBSERVATIONSIMROOT'],
                             'xml', '3EG_catalog_20-1e6MeV.xml')
 
+class LikeSource(object):
+    def __init__(self, src):
+        self.src = src
+        self.dir = self._getDir(src)
+        self.flux = self._getFlux(src)
+    def _getFlux(self, src):
+        spectrum = src.getElementsByTagName('spectrum')[0]
+        pars = spectrum.getElementsByTagName('parameter')
+        for par in pars:
+            if par.getAttribute('name').encode() == "Integral":
+                flux = (float(par.getAttribute('value'))
+                        *float(par.getAttribute('scale'))*1e4)
+                return flux
+        return None
+    def _getDir(self, src):
+        dir_info = src.getElementsByTagName('spatialModel')[0]
+        pars = dir_info.getElementsByTagName('parameter')
+        try:
+            pars[0].getAttribute('RA')
+            ra = float(pars[0].getAttribute('value'))
+            dec = float(pars[1].getAttribute('value'))
+        except:
+            ra = float(pars[1].getAttribute('value'))
+            dec = float(pars[0].getAttribute('value'))
+        return ra, dec
+    def dist(self, ra, dec):
+        return celgal.dist(self.dir, (ra, dec))
+    def __getattr__(self, attrname):
+        return getattr(self.src, attrname)
+
+class LikeSourceList(object):
+    def __init__(self, xmlFile):
+        self.doc = minidom.parse(xmlFile)
+        self.srcs = []
+        for src in self.doc.getElementsByTagName('source'):
+            try:
+                self.srcs.append(LikeSource(src))
+            except:
+                pass
+        if len(self.srcs) == 0:
+            raise RuntimeError, "No sources loaded from %s" % xmlFile
+    def extract(self, outfile, cone, fluxLimit=1e-2, useDiffuse=False,
+                useCatVal=None):
+        ra, dec, radius = cone
+        output = open(outfile, 'w')
+        output.write('<?xml version="1.0" ?>\n')
+        output.write('<source_library title="%s">\n' % outfile)
+        for src in self.srcs:
+            if (src.dist(ra, dec) < radius and
+                (src.flux is None or src.flux >= fluxLimit)):
+                src.writexml(output)
+        output.write('</source_library>\n')
+        output.close()
+
 class SourceList(object):
     def __init__(self, inputFile=_3EG_catalog):
         self.inputFile = inputFile
@@ -54,7 +108,7 @@ class SourceList(object):
                 dec = string.atof(dir.getAttribute('dec').encode('ascii'))
                 flux = string.atof(src.getAttribute('flux').encode('ascii'))
                 if (celgal.dist((ra0, dec0), (ra, dec)) < radius
-                    and flux > fluxLimit):
+                    and flux >= fluxLimit):
                     outfile.write(PointSource(src, useCatVal=useCatVal)
                                   .write() + '\n')
                     ds9File.addSrc(src)
@@ -62,7 +116,7 @@ class SourceList(object):
         outfile.close()
         ds9File.write()
 
-class PointSource:
+class PointSource(object):
     def __init__(self, fluxSrc, prefix='my', useCatVal=False):
         self.use_cat_val = useCatVal
         self.ptsrc = copy.deepcopy(ptSrc())
@@ -183,7 +237,10 @@ class SourceRegionDialog(tkSimpleDialog.Dialog):
         self.filename = ParamFileEntry(parent, 'output file', 5,
                                        default=_defaults.outfile)
     def apply(self):
-        srcList = SourceList(self.infile.value())
+        try:
+            srcList = LikeSourceList(self.infile.value())
+        except RuntimeError:
+            srcList = SourceList(self.infile.value())
         roiCone = (self.ra.value(), self.dec.value(), self.radius.value())
         srcList.extract(self.filename.value(), roiCone,
                         fluxLimit=self.fluxLimit.value())
