@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r6p3   08-Mar-06    JC    allow Likelihood-style xml files to be read
+                               in for ModelEditor extraction region dialog
    v7r6p2   06-Mar-06    JC    overcome apparent bug in Pil 2.0.1 regarding
                                passing of unqualified parameter list to
                                gtobssim
