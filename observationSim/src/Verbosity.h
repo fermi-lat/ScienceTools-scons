@@ -9,9 +9,11 @@
 #ifndef observationSim_Verbosity_h
 #define observationSim_Verbosity_h
 
+#include "st_facilities/libStApiExports.h"
+
 namespace observationSim {
 
-class Verbosity {
+class SCIENCETOOLS_API Verbosity {
 
 public:
    static Verbosity * instance(unsigned int verbosity=2, bool clobber=true) {

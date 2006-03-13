@@ -1,4 +1,15 @@
+/**
+ * @file Verbosity.cxx
+ * @brief Implementation for Singleton class to control screen output
+ * for applications
+ * @author J. Chiang
+ *
+ * $Header$
+ */
+
+#define ST_DLL_EXPORTS
 #include "Verbosity.h"
+#undef ST_DLL_EXPORTS
 
 namespace observationSim {
 
