@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <cmath>
 #include <cstdlib>
 #include <limits>
 #include <memory>
