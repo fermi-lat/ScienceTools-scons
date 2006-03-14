@@ -88,6 +88,10 @@ void FtFileBase::appendField(const std::string & colname,
    m_table->appendField(colname, format);
 }
 
+const std::vector<std::string> & FtFileBase::getFieldNames() const {
+   return m_table->getValidFields();
+}
+
 tip::Table::Iterator FtFileBase::begin() {
    return m_table->begin();
 }

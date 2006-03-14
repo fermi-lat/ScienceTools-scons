@@ -51,6 +51,8 @@ public:
 
    void setNumRows(long nrows);
 
+   const std::vector<std::string> & getFieldNames() const;
+
    void appendField(const std::string & colname, const std::string & format);
 
    tip::Table::Iterator begin();
