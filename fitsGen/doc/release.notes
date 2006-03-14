@@ -4,6 +4,8 @@
 
     @verbatim
 
+    v2r3p4 14-Mar-06   JC   allow fields to be added to FT1 via the 
+                            dictionary file
     v2r3p3 18-Feb-06   JC   correct std_cuts; use EvtLiveTime for LIVETIME
     v2r3p1 10-Feb-06   JC   add RUN_ID to FT1; update class B def in MeritFile
     v2r3   05-Feb-06   JC   Implement MeritFile::eventType, conversionType
