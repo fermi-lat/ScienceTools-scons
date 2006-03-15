@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+15-mar-2006   v2r3 JP Add implementation for vectors of strings.
 27-feb-2006 v2r8p5 JP Make checksum code more careful when errors occur, and fix some
                       file issues which were making the unit test fail on Windows.
 22-feb-2006 v2r8p4 JP Update checksums in every file extension while closing files.
