@@ -9,6 +9,8 @@
 #ifndef observationSim_EgretSc_h
 #define observationSim_EgretSc_h
 
+#include <stdexcept>
+
 #include "observationSim/Spacecraft.h"
 
 namespace observationSim {
@@ -54,9 +56,18 @@ public:
 
    virtual bool inSaa(double) {return m_inSaa;}
 
-   virtual void getScPosition(double time, std::vector<double> & scPosition);
+   virtual void getScPosition(double time, std::vector<double> & scPosition) {
+      (void)(time);
+      (void)(scPosition);
+      throw std::runtime_error("EgretSc::getScPosition: not implemented");
+   }
 
-   virtual void getZenith(double time, double & ra, double & dec);
+   virtual void getZenith(double time, double & ra, double & dec) {
+      (void)(time);
+      (void)(ra);
+      (void)(dec);
+      throw std::runtime_error("EgretSc::getZenith: not implemented");
+   }
 
 private:
 
