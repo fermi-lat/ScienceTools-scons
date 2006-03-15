@@ -49,7 +49,7 @@ extern const nside_dummy SET_NSIDE;
 class Healpix_Base
   {
   protected:
-    enum { order_max=13 };
+    enum { order_max=15 }; //<<< changed from 13 for GLAST
 
     class Tablefiller
       {
