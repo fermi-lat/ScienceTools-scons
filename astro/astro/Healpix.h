@@ -60,14 +60,8 @@ public:
     */
     Healpix(long nside=2, Ordering ord = NESTED, 
         astro::SkyDir::CoordSystem coordsys = astro::SkyDir::EQUATORIAL);
-    /// copy constructor
-    Healpix(const Healpix& other);
 
-    /// need explicit equality operator
-    Healpix& operator=(const Healpix& other); 
-    ~Healpix();
-
-    ///@brief the number of sides per dodecahedron
+    ///@brief the number of sides 
     long nside()const;
     ///@brief the number of pixels
     long npix()const;
@@ -167,7 +161,8 @@ public:
 
 private:
     astro::SkyDir::CoordSystem m_coordsys;///< how to define SkyDir
-    Healpix_Base& m_heal;///< reference to the NASA library
+    int m_nside;
+    astro::Healpix::Ordering m_ord;
 };
 
 } // namespace astro

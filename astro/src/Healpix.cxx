@@ -25,39 +25,22 @@ using namespace astro;
 
 Healpix::Healpix(long nside, astro::Healpix::Ordering ord, SkyDir::CoordSystem coordsys)
     : m_coordsys(coordsys)
-    , m_heal( * new Healpix_Base(nside,static_cast<Healpix_Ordering_Scheme>(ord),SET_NSIDE))
+    , m_nside(nside)
+    , m_ord(ord)
 {
-
 }
-
-// copy constructur
-Healpix::Healpix(const astro::Healpix& other)
-: m_coordsys (other.m_coordsys)
-, m_heal( * new Healpix_Base(other.m_heal))
-{}
-
-Healpix& Healpix::operator=(const Healpix& other)
-{
-    m_coordsys = other.m_coordsys;
-    m_heal = other.m_heal;
-    return *this;
-}
-
-Healpix::~Healpix()
-{
-    delete &m_heal;
-}
-
 void Healpix::pix2ang(long index, double &theta, double &phi)const
 {
-    pointing point = m_heal.pix2ang(index);
+    Healpix_Base hp(m_nside,static_cast<Healpix_Ordering_Scheme>(m_ord),SET_NSIDE); 
+    pointing point = hp.pix2ang(index);
     theta = point.theta;
     phi = point.phi;
 }
 
 void Healpix::ang2pix(double theta, double phi, long &index)const
 {
-     index = m_heal.ang2pix(pointing(theta,phi));
+    Healpix_Base hp(m_nside,static_cast<Healpix_Ordering_Scheme>(m_ord),SET_NSIDE); 
+    index = hp.ang2pix(pointing(theta,phi));
 }        
 
 Healpix::Pixel::Pixel(const astro::SkyDir &dir, const Healpix& hp)
@@ -92,7 +75,9 @@ void Healpix::Pixel::neighbors(std::vector<Healpix::Pixel> & p) const
     if (!(this->m_healpix->nested()))
         throw std::runtime_error("Nested ordering required to determine neighbors.");
     
-    this->m_healpix->m_heal.neighbors(m_index,result);
+    const Healpix &hpx = *this->m_healpix;
+    Healpix_Base hpb(hpx.nside(),static_cast<Healpix_Ordering_Scheme>(hpx.ord()),SET_NSIDE); 
+    hpb.neighbors(m_index, result);
     if(result[result.size()-1]  != -1) {
             p.push_back(Healpix::Pixel(result[result.size()-1], *(this->m_healpix)));
     }
@@ -118,7 +103,9 @@ void Healpix::findNeighbors(long index, std::vector<long> &p)
     p.clear();
 
     fix_arr<int,8> result;// local copy of the list
-    m_heal.neighbors(index,result);
+    Healpix_Base hpb(nside(),static_cast<Healpix_Ordering_Scheme>(ord()),SET_NSIDE); 
+    hpb.neighbors(index, result);
+
     long n[8];
     int nit=0;
     if(result[result.size()-1]!=-1) {
@@ -135,16 +122,14 @@ void Healpix::findNeighbors(long index, std::vector<long> &p)
     std::copy(n,n+nit, std::back_insert_iterator<std::vector<long> >(p));
 }
 
- ///@brief the number of sides per dodecahedron
-long Healpix::nside()const{return m_heal.Nside(); }
+ ///@brief the number of sides 
+long Healpix::nside()const{return m_nside; }
     ///@brief the number of pixels
-long Healpix::npix()const{return 12*m_heal.Nside()*m_heal.Nside();}
+long Healpix::npix()const{return 12*nside()*nside();}
 
     ///@brief the number of pixels, as the size.
-size_t Healpix::size()const{return 12*m_heal.Nside()*m_heal.Nside();}
+size_t Healpix::size()const{return npix();}
 
-Healpix::Ordering Healpix::ord()const{return static_cast<Healpix::Ordering>(m_heal.Scheme());}
+Healpix::Ordering Healpix::ord()const{return m_ord;}
 
-bool Healpix::nested()const{return static_cast<Healpix::Ordering>(m_heal.Scheme())==NESTED;}
-
-
+bool Healpix::nested()const{return ord()==NESTED;}
