@@ -20,6 +20,7 @@
       v1r1  27-dec-05   JP    Create phase columns if they do not exist.
         v2  27-jan-06   JP    Use timesystem, timeformat parameters to generalize interpretation of epoch.
       v2r1  01-feb-06   JP    Improve checks for consistency between time systems.
+    v2r1p1  15-mar-06   JP    Add default value of 0. to phi0 parameter.
 
     @endverbatim
 */
