@@ -98,10 +98,36 @@ namespace tip {
         delete [] buf;
       }
 
-      // TODO: Specialize this so that vectors of strings can be supported.
       // virtual void get(Index_t record_index, std::vector<std::string> & dest) const
-      virtual void get(Index_t , std::vector<std::string> &) const
-        { throw TipException("FitsColumn::get(Index_t, std::vector<std::string> &) not yet supported"); }
+      virtual void get(Index_t record_index, std::vector<std::string> & dest) const {
+        // Clear content of destination in case there is a problem.
+        dest.clear();
+        std::auto_ptr<char> buf(new char[m_display_width + 1]);
+        char * tmp_dest[] = { buf.get(), 0 };
+
+        // Redimension the destination so that it will hold the contents of this vector.
+        dest.resize(m_repeat);
+        
+        for (std::vector<std::string>::size_type index = 0; index != dest.size(); ++index) {
+          // Read each element in the column, letting cfitsio do the conversions to strings.
+          int status = 0;
+          fits_read_col(m_ext->getFp(), FitsPrimProps<std::string>::dataTypeCode(), m_field_index, record_index + 1,
+            index + 1, 1, 0, tmp_dest, 0, &status);
+          if (0 != status) {
+            std::ostringstream os;
+            os << "FitsColumn::get(Index_t, std::vector<std::string> &) could not read record " << record_index;
+            throw TipException(status, os.str());
+          }
+          // Skip leading and trailing spaces.
+          char * begin = *tmp_dest;
+          while ('\0' != *begin && 0 != isspace(*begin)) ++begin;
+          char * end = begin;
+          while ('\0' != *end && 0 == isspace(*end)) ++end;
+
+          // Copy cfitsio's string to the output string.
+          dest[index].assign(begin, end);
+        }
+      }
 
       virtual void set(Index_t record_index, const char * src) { set(record_index, std::string(src)); }
 
@@ -329,13 +355,14 @@ namespace tip {
       long m_repeat;
       long m_width;
       int m_type_code;
+      int m_display_width;
       bool m_var_length;
       bool m_scalar;
   };
 
   template <typename T>
   inline FitsColumn<T>::FitsColumn(FitsTable * ext, const std::string & id, FieldIndex_t field_index): IColumn(id),
-    m_type_string(), m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0),
+    m_type_string(), m_ext(ext), m_field_index(field_index), m_repeat(0), m_width(0), m_type_code(0), m_display_width(0),
     m_var_length(false), m_scalar(false) {
 
     // Determine characteristics of this column.
@@ -408,6 +435,11 @@ namespace tip {
     fits_read_key(m_ext->getFp(), TSTRING, const_cast<char *>(os.str().c_str()), units, 0, &status);
     if (0 == status) m_units = units;
     else if (KEY_NO_EXIST != status) throw TipException(status, "FitsColumn::FitsColumn failed to get units of field");
+
+    // Find out how big strings need to be to accomodate this data field.
+    status = 0;
+    fits_get_col_display_width(m_ext->getFp(), m_field_index, &m_display_width, &status);
+    if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get string width of field " + id);
   }
 
   template <typename T>

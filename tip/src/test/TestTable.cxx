@@ -515,7 +515,38 @@ namespace tip {
         ReportExpected(msg + " failed", x);
       }
 
-      // Todo: Test success and remove old-style tests.
+      msg = std::string("getting vector-valued \"") + vector_field + "\" cell as a vector<string> variable";
+      try {
+        std::vector<std::string> result;
+        (*const_table->begin())[vector_field].get(result);
+        bool error = false;
+        if (4096 != result.size()) {
+          std::ostringstream os;
+          os << msg << " returned vector of size " << result.size() << ", not 4096 as expected";
+          error = true;
+          ReportUnexpected(os.str());
+        } else {
+          // Check some values.
+          for (std::vector<std::string>::size_type index = 0; index != 1989; ++index) {
+            if ("0" != result[index]) {
+              error = true;
+              break;
+            }
+          }
+          if ("1" != result[1989] || "1" != result[2021] || "1" != result[2063] || "53" != result[2050] || "70" != result[2043])
+            error = true;
+          for (std::vector<std::string>::size_type index = 2069; index != result.size(); ++index) {
+            if ("0" != result[index]) {
+              error = true;
+              break;
+            }
+          }
+        }
+        if (error) ReportUnexpected(msg + ", some values were not as expected");
+        else ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
     }
   }
 
