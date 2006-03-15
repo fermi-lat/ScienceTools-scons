@@ -5,7 +5,7 @@ ephstyle,      s, a, "DB", "DB|FREQ|PER", , "How will spin ephemeris be specifie
 ephepoch,      r, a, , , , "Enter value of epoch for spin ephemeris"
 timeformat,    s, h, GLAST, "MJD|GLAST", , "Time format for spin ephemeris epoch"
 timesys,       s, h, TDB, "TDB|TT", , "Time system for spin ephemeris epoch"
-phi0,          r, a, , , , "Enter base value of phase at this epoch"
+phi0,          r, a, 0., , , "Enter base value of phase at this epoch"
 f0,            r, a, , , , "Enter pulse frequency at this epoch"
 f1,            r, a, , , , "Enter first time derivative of pulse frequency (fdot) at this epoch"
 f2,            r, a, , , , "Enter second time derivative of pulse frequency (f2dot) at this epoch"
