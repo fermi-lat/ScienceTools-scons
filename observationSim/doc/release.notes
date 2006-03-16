@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2   15-Mar-06   JC   convert to shared library using 
+                            st_facilities::libStApiExports.h
     v6r1p8 27-Feb-06   JC   prompt explicitly for start_date
     v6r1p7 21-Feb-06   JC   update req file using v*; make start_date 
                             prompted in gtobssim.par
