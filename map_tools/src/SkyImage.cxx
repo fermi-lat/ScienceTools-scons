@@ -254,10 +254,13 @@ unsigned int SkyImage::setLayer(unsigned int newlayer)
 void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
     std::pair<double,double> p= dir.project(*m_wcs);
+    // ignore if not in the image.
+    if( p.first<0 || p.first >= m_naxis1 || p.second<0 || p.second>=m_naxis2) return;
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
         k = i+m_naxis1*(j + layer*m_naxis2);
+    
     if(  k< m_pixelCount){
         m_imageData[k] += delta;
         m_total += delta;
