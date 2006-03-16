@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r15    15-Mar-06 THB Add simple photon data class
   v1r14    15-Mar-06 THB Simplify wrapper of healpix_base to create only when needed.
   v1r13p7  10-Feb-06 JC  this-> qualifier needed in templated methods 
                          for gcc3.4.3 (without -fpermissive flag)
