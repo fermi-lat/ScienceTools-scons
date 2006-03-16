@@ -4,8 +4,8 @@
 $Header$
 
 */
-#ifndef OrbitModel_SkyDir_H
-#define OrbitModel_SkyDir_H
+#ifndef astro_SkyDir_H
+#define astro_SkyDir_H
 
 
 // Include files
