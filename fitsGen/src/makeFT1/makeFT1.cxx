@@ -6,8 +6,10 @@
  * $Header$
  */
 
+#include <cctype>
 #include <cstdlib>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
