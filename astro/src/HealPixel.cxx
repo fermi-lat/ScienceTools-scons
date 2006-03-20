@@ -34,6 +34,9 @@ HealPixel::HealPixel(const astro::SkyDir& dir, int level)
     }
     // and set the pixel number
     hp.ang2pix( theta, phi, m_index);
+    if( m_index<0 ){
+        throw std::out_of_range("HealPixel::HealPixel: bad index");
+    }
 }
 
 
