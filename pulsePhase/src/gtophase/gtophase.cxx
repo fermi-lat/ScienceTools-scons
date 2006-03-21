@@ -42,38 +42,21 @@ PulsePhaseApp::PulsePhaseApp(): st_app::StApp() {
 void PulsePhaseApp::run() {
   st_app::AppParGroup & par_group = getParGroup("gtophase"); // getParGroup is in base class st_app::StApp
 
-#if 0
-  par_group.setSwitch("ephstyle");
-
-  par_group.setCase("ephstyle", "DB", "epoch");
-  par_group.setCase("ephstyle", "DB", "phi0");
-
-  par_group.setCase("ephstyle", "FREQ", "f0");
-  par_group.setCase("ephstyle", "FREQ", "f1");
-  par_group.setCase("ephstyle", "FREQ", "f2");
-
-  par_group.setCase("ephstyle", "PER", "p0");
-  par_group.setCase("ephstyle", "PER", "p1");
-  par_group.setCase("ephstyle", "PER", "p2");
-
-  par_group.Prompt();
-#endif
-
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
-  par_group.Prompt("phi0");
   par_group.Prompt("timefield");
   par_group.Prompt("ophasefield");
+  par_group.Prompt("ophaseoffset");
 
   par_group.Save();
 
   // Open the event file.
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
-  double user_phi0 = par_group["phi0"];
+  double phase_offset = par_group["ophaseoffset"];
 
   std::string telescope;
   std::string time_sys;
@@ -132,7 +115,7 @@ void PulsePhaseApp::run() {
     }
 
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcOrbitalPhase(*abs_evt_time) + user_phi0, &int_part);
+    double phase = modf(computer.calcOrbitalPhase(*abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
     (*itor)[phase_field].set(phase);
