@@ -68,6 +68,7 @@ void PulsePhaseApp::run() {
   par_group.Prompt("demodbin");
   par_group.Prompt("timefield");
   par_group.Prompt("pphasefield");
+  par_group.Prompt("pphaseoffset");
   std::string eph_style = par_group["ephstyle"];
   par_group.Save();
 
@@ -110,7 +111,7 @@ void PulsePhaseApp::run() {
   for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
   for (std::string::iterator itor = epoch_time_sys.begin(); itor != epoch_time_sys.end(); ++itor) *itor = toupper(*itor);
 
-  double user_phi0 = par_group["phi0"];
+  double phase_offset = par_group["pphaseoffset"];
 
   if (eph_style != "DB" && time_format != "GLAST")
     throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
@@ -164,9 +165,6 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
   }
 
-  // This phi0 is the phase of the ephemeris itself. The user supplied user_phi0 is a phase offset applied to the whole event file.
-  double phi0 = 0.;
-
   // Find the pulsar database.
   std::string psrdb_file = par_group["psrdbfile"];
   std::string psrdb_file_uc = psrdb_file;
@@ -204,6 +202,7 @@ void PulsePhaseApp::run() {
   }
 
   if (eph_style == "FREQ") {
+    double phi0 = par_group["phi0"];
     double f0 = par_group["f0"];
     double f1 = par_group["f1"];
     double f2 = par_group["f2"];
@@ -215,6 +214,7 @@ void PulsePhaseApp::run() {
     ephemerides.clear();
     ephemerides.push_back(FrequencyEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, f0, f1, f2).clone());
   } else if (eph_style == "PER") {
+    double phi0 = par_group["phi0"];
     double p0 = par_group["p0"];
     double p1 = par_group["p1"];
     double p2 = par_group["p2"];
@@ -262,7 +262,7 @@ void PulsePhaseApp::run() {
     }
 
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcPulsePhase(*abs_evt_time) + user_phi0, &int_part);
+    double phase = modf(computer.calcPulsePhase(*abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
     (*itor)[phase_field].set(phase);
