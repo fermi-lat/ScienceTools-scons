@@ -16,10 +16,12 @@
 #include <stdexcept>
 #include <utility>
 
-#include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Geometry/Vector3D.h"
+
+using CLHEP::RandFlat;
+using CLHEP::Hep3Vector;
+using CLHEP::HepRotation;
 
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"

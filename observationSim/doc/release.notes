@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2p1 21-Mar-06   JC   add using CLHEP:: where needed
     v6r2   15-Mar-06   JC   convert to shared library using 
                             st_facilities::libStApiExports.h
     v6r1p8 27-Feb-06   JC   prompt explicitly for start_date

@@ -12,8 +12,6 @@
 #include <iostream>
 #include <string>
 
-#include "CLHEP/Geometry/Vector3D.h"
-
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"

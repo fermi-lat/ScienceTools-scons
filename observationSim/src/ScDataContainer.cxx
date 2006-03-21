@@ -9,8 +9,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "CLHEP/Geometry/Vector3D.h"
-
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
