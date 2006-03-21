@@ -62,6 +62,7 @@
 15-feb-2006   v0r16p1 JP  Improve warnings about 0. exposure.
 16-feb-2006   v0r16p2 JP  Improve warnings about gaps between multiple spacecraft files.
 17-feb-2006   v0r16p3 JP  Add some needed header files.
+21-mar-2006   v0r16p4 JP  Remove unneccessary dependence on CLHEP.
 --------------------------------------------------------------------------------
 \endverbatim
 
