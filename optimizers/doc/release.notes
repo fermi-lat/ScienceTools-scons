@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r5p3 21-Mar-06   JC   add using CLHEP::RandFlat to Mcmc.cxx
     v2r5p2 15-Feb-06   JC   disable newMinuit until it is supported 
                             for Windows in extlibs 
     v2r5p1 29-Jan-06   JC   add compile flags for Darwin
