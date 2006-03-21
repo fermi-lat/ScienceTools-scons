@@ -401,10 +401,10 @@ void Earth::earth(double &t, double &p, double &e) const {
     dummy = 0.;
     while(count < n){
         dummy = dummy + 1.;
-        double r1=RandFlat::shoot(),
-            r2=RandFlat::shoot(),
-            r3=RandFlat::shoot(),
-            r4=RandFlat::shoot();
+        double r1=CLHEP::RandFlat::shoot(),
+               r2=CLHEP::RandFlat::shoot(),
+               r3=CLHEP::RandFlat::shoot(),
+               r4=CLHEP::RandFlat::shoot();
         
         e0 = qqinv(r1*aqq);
 // uniform 2D coordinates in one hemisphere,

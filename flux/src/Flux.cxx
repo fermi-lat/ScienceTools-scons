@@ -131,20 +131,20 @@ void Flux::addFactory(std::string name, const ISpectrumFactory* factory ) {
     SpectrumFactoryTable::instance()->addFactory(name,factory);
 }
 
-HepRotation Flux::CELTransform(double time)const{
+CLHEP::HepRotation Flux::CELTransform(double time)const{
     return s_mgr->CELTransform(time);
 }
-HepRotation Flux::orientTransform(double time)const{
+CLHEP::HepRotation Flux::orientTransform(double time)const{
     return s_mgr->orientTransform(time);
 }
 
-HepRotation Flux::transformGlastToGalactic(double time)const{
+CLHEP::HepRotation Flux::transformGlastToGalactic(double time)const{
 
     return s_mgr->transformGlastToGalactic(time);
 }
 
 //get the transformtation matrix - the rest of these functions are now deprecated
-HepRotation Flux::transformToGlast(double seconds,astro::GPS::CoordSystem index)const{
+CLHEP::HepRotation Flux::transformToGlast(double seconds,astro::GPS::CoordSystem index)const{
     return s_mgr->transformToGlast(seconds, index);
 }
 

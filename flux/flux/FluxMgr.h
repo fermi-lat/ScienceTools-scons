@@ -92,16 +92,16 @@ public:
     /// get the current satellite location
     std::pair<double,double> location();
     
-    HepRotation transformToGlast(double seconds, astro::GPS::CoordSystem index);
+    CLHEP::HepRotation transformToGlast(double seconds, astro::GPS::CoordSystem index);
     
     ///get the transformation matrix due to orientation of the Galaxy
-    HepRotation CELTransform(double time);
+    CLHEP::HepRotation CELTransform(double time);
     
     ///get the transformation matrix due to orientation of the spacecraft.
-    HepRotation orientTransform(double time);
+    CLHEP::HepRotation orientTransform(double time);
     
     ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-    HepRotation transformGlastToGalactic(double time);
+    CLHEP::HepRotation transformGlastToGalactic(double time);
 
     ///this sets the rocking mode in GPS.
     std::vector<double> setRockType(astro::GPS::RockType rockType, double rockAngle);

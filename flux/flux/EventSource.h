@@ -8,8 +8,13 @@
 #define EventSource_h 1
 #include "CLHEP/Geometry/Point3D.h"
 #include "CLHEP/Geometry/Vector3D.h"
-
-
+// Hack for CLHEP 1.9.2.2
+#ifndef HepVector3D
+typedef HepGeom::Vector3D<double> HepVector3D;
+#endif
+#ifndef HepPoint3D
+typedef HepGeom::Point3D<double>  HepPoint3D;
+#endif
 /** 
 * \class EventSource
 *
