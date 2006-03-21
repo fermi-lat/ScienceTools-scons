@@ -18,12 +18,12 @@ HTM::HTM(int maxlevel)
     using astro::SkyDir;
     // create vertices of the octahedron: order is the same as for htm
     SkyDir v[]= {        
-        SkyDir(Hep3Vector( 0, 0, 1)), // 0
-            SkyDir(Hep3Vector( 1, 0, 0)), // 1
-            SkyDir(Hep3Vector( 0, 1, 0)), // 2
-            SkyDir(Hep3Vector(-1, 0, 0)), // 3
-            SkyDir(Hep3Vector( 0,-1, 0)), // 4
-            SkyDir(Hep3Vector( 0, 0,-1))  // 5
+        SkyDir(CLHEP::Hep3Vector( 0, 0, 1)), // 0
+            SkyDir(CLHEP::Hep3Vector( 1, 0, 0)), // 1
+            SkyDir(CLHEP::Hep3Vector( 0, 1, 0)), // 2
+            SkyDir(CLHEP::Hep3Vector(-1, 0, 0)), // 3
+            SkyDir(CLHEP::Hep3Vector( 0,-1, 0)), // 4
+            SkyDir(CLHEP::Hep3Vector( 0, 0,-1))  // 5
     };
 
     // then make a quad tree of nodes for each one, again same order

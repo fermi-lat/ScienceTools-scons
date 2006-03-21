@@ -49,17 +49,17 @@ namespace astro {
         /**
         * @brief return the distance vector to solar system barycenter at date in lightseconds
         */
-        Hep3Vector getBarycenter(JulianDate jd)const;
+        CLHEP::Hep3Vector getBarycenter(JulianDate jd)const;
 
         /**
         * @brief return a distance vector to the sun at date in lightseconds
         */
-        Hep3Vector getSolarVector(JulianDate jd)const;
+        CLHEP::Hep3Vector getSolarVector(JulianDate jd)const;
 
         /*
         * @brief returns the distance vector between two bodies: target and center at date in lightseconds
         */
-        static Hep3Vector vector(Body targ, Body cent, JulianDate jd);
+        static CLHEP::Hep3Vector vector(Body targ, Body cent, JulianDate jd);
 
 
     private:

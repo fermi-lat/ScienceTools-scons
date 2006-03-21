@@ -31,10 +31,10 @@ namespace astro {
         PointingTransform(SkyDir zdir, SkyDir xdir);
 
         /// The rotation that turns glast-local to SkyDir cartesian celestial vector
-        HepRotation localToCelestial () const;
+        CLHEP::HepRotation localToCelestial () const;
 
         /// The absolute direction corresponding to some GLAST direction
-        SkyDir gDir(Hep3Vector localDir) const;
+        SkyDir gDir(CLHEP::Hep3Vector localDir) const;
 
     private:
         SkyDir m_xDir,m_zDir;

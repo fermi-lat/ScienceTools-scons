@@ -24,7 +24,7 @@ double EarthCoordinate::s_EarthRadius = 6378145.; //m
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-EarthCoordinate::EarthCoordinate(Hep3Vector pos, double met) //JulianDate jd)
+EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate jd)
 {
 
     m_lat = M_PI/2- pos.theta();

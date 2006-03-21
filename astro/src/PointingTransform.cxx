@@ -14,18 +14,18 @@ namespace astro {
 
     /** @brief transform a local to a celestial direction
     */
-    HepRotation PointingTransform::localToCelestial () const{
-        const Hep3Vector& xd(m_xDir.dir());
-        const Hep3Vector& zd(m_zDir.dir());
-        const Hep3Vector& yd( (m_zDir.dir()).cross( m_xDir.dir() ) );
-        HepRotation ret(xd,yd,zd);
+    CLHEP::HepRotation PointingTransform::localToCelestial () const{
+        const CLHEP::Hep3Vector& xd(m_xDir.dir());
+        const CLHEP::Hep3Vector& zd(m_zDir.dir());
+        const CLHEP::Hep3Vector& yd( (m_zDir.dir()).cross( m_xDir.dir() ) );
+        CLHEP::HepRotation ret(xd,yd,zd);
         return ret;
     }
 
     /** @brief get the celestial direction from the local one
     */
-    SkyDir PointingTransform::gDir(Hep3Vector localDir) const{
-        Hep3Vector dir(localDir);
+    SkyDir PointingTransform::gDir(CLHEP::Hep3Vector localDir) const{
+        CLHEP::Hep3Vector dir(localDir);
         SkyDir ret(localToCelestial()*dir,SkyDir::EQUATORIAL);
         return ret;
     }

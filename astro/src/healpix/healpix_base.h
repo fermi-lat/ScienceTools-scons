@@ -182,7 +182,7 @@ class Healpix_Base
     void query_disc_inclusive (const pointing &dir, double radius,
       std::vector<int> &listpix) const
 // FIXME: verify the factor 1.35
-        { query_disc (dir,radius+1.35*pi/(4*nside_),listpix); }
+        { query_disc (dir,radius+1.35*astro::pi/(4*nside_),listpix); }
     void query_strip (const pointing &dir, double theta1, double theta2,
       std::vector<int> &listpix) const;
 

@@ -58,7 +58,7 @@ public:
         astro::SkyDir dirZ;
         astro::SkyDir dirX;
         double lat,lon;
-        Hep3Vector position;
+        CLHEP::Hep3Vector position;
         double altitude;
         double livetime_frac;
     }POINTINFO;
@@ -155,17 +155,17 @@ public:
     //this is the only external rotation function that should survive.
     //all the others are being phased out outside of GPS, whiule this one should
     //take care of the various necessary rotations.
-    HepRotation transformToGlast(double seconds,CoordSystem index);
+    CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
 
     /// return the rotation for compensation for the rocking angles.
-    HepRotation rockingAngleTransform(double seconds);
+    CLHEP::HepRotation rockingAngleTransform(double seconds);
 
     ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-    HepRotation transformGlastToGalactic(double seconds);
+    CLHEP::HepRotation transformGlastToGalactic(double seconds);
 
-    HepRotation CELTransform(double seconds);
+    CLHEP::HepRotation CELTransform(double seconds);
 
-    HepRotation transformCelToGlast(double seconds);
+    CLHEP::HepRotation transformCelToGlast(double seconds);
 
     double rockingDegrees(double rockDegrees){double ret=m_rockDegrees;
     m_rockDegrees = rockDegrees;
@@ -176,7 +176,7 @@ public:
 
     void    time ( GPStime );// set time
 
-    Hep3Vector position(double seconds)const{
+    CLHEP::Hep3Vector position(double seconds)const{
         if(m_rockType == HISTORY){
             instance()->setInterpPoint(seconds);
             return m_currentInterpPoint.position;
@@ -217,7 +217,7 @@ private:
     double m_altitude; 
     double m_RAX,m_RAZ,m_DECX,m_DECZ; //pointing characteristics.
     double m_RAZenith,m_DECZenith,m_RAXZenith,m_DECXZenith; //pointing characteristic of the zenith direction.
-    Hep3Vector m_position; //current vector position of the LAT.
+    CLHEP::Hep3Vector m_position; //current vector position of the LAT.
     // notification
     Subject    m_notification; 
     double m_rockDegrees; //number of degrees to "rock" the spacecraft, along the local x axis. 

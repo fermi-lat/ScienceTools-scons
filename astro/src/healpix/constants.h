@@ -35,7 +35,7 @@
 
 /*! \defgroup mathconstgroup Mathematical constants */
 /*! \{ */
-
+namespace astro {
 const double pi=3.141592653589793238462643383279502884197;
 const double twopi=6.283185307179586476925286766559005768394;
 const double inv_twopi=1.0/twopi;
@@ -108,5 +108,5 @@ const double solsysspeed = 371000.0;
 
 //! Healpix value representing "undefined"
 const double Healpix_undef=-1.6375e30;
-
+}
 #endif

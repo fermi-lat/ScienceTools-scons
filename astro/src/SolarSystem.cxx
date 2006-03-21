@@ -57,7 +57,7 @@ double * SolarSystem::jplSetup(JulianDate jd)
 }
 
 // Returns an Hep3Vector with light seconds as distance units
-Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const
+CLHEP::Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const
 {
     const double *eposn =  dpleph(jplSetup(jd), m_body, SUN);
 
@@ -65,16 +65,16 @@ Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const
    double x = -eposn[0];
    double y = -eposn[1];
    double z = -eposn[2];
-   return Hep3Vector(x,y,z);
+   return CLHEP::Hep3Vector(x,y,z);
 
 }
 
-Hep3Vector SolarSystem::getSolarVector(JulianDate jd)const
+CLHEP::Hep3Vector SolarSystem::getSolarVector(JulianDate jd)const
 {
 	return vector(EARTH,SUN,jd);
 }
 
-Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) {
+CLHEP::Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) {
    const double *eposn = dpleph(jplSetup(jd), targ, cent);
    
    // Position of targ with respect to the cent
@@ -82,7 +82,7 @@ Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) {
    double y = -eposn[1] + eposn[7];
    double z = -eposn[2] + eposn[8];
 
-   return Hep3Vector(x,y,z);
+   return CLHEP::Hep3Vector(x,y,z);
 }
 
 SolarSystem::~SolarSystem(){

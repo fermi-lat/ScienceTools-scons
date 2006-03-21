@@ -7,6 +7,7 @@
 #include "astro/JulianDate.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
+
 namespace astro {
 /** \class EarthCoordinate
 
@@ -30,7 +31,7 @@ public:
     EarthCoordinate( double latDeg=0, double lonDeg=0 , double altitude=0);
 
     //! initialize with orbit position (in km), current MET in sec (was JD)
-    EarthCoordinate( Hep3Vector position, double met); //JulianDate jd);
+    EarthCoordinate( CLHEP::Hep3Vector position, double met); //JulianDate jd);
 
     /** @brief true if inside the SAA
 

@@ -12,6 +12,8 @@ using namespace astro;
 #include <string>
 #include <stdexcept>
 
+using namespace CLHEP;
+
 
 /** @brief initialize from (ra, dec), or (l,b)
 @param param1 either ra or l, in degrees

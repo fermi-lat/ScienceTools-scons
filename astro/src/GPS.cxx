@@ -169,7 +169,7 @@ void GPS::setPointingHistoryFile(std::string fileName, double  offset){
     setUpHistory(offset);
 }
 
-HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
+CLHEP::HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
     ///Purpose:  return the rotation from a given system to
     ///the satellite system.  this should eventually be the
     ///only function used external to GPS!
@@ -180,7 +180,7 @@ HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
     ///2: rotate from the cartesian celestial coordinate system (like a SkyDir)
 
     ///Output:  3x3 rocking-angle transformation matrix.
-    HepRotation trans;
+    CLHEP::HepRotation trans;
 
     if(index==0){
         //do nothing - we are already in the GLAST frame.
@@ -197,7 +197,7 @@ HepRotation GPS::transformToGlast(double seconds,CoordSystem index){
     return trans;
 }
 
-HepRotation GPS::rockingAngleTransform(double seconds){
+CLHEP::HepRotation GPS::rockingAngleTransform(double seconds){
     ///Purpose:  return the rotation to correct for satellite rocking.
     ///Input:  Current time
     ///Output:  3x3 rocking-angle transformation matrix.
@@ -207,7 +207,7 @@ HepRotation GPS::rockingAngleTransform(double seconds){
     getPointingCharacteristics(seconds);
 
     // now, we want to find the proper transformation for the rocking angles:
-    HepRotation rockRot;
+    CLHEP::HepRotation rockRot;
     if(m_rockType == EXPLICIT){
         rockRot.rotateX(m_rotangles.first).rotateZ(m_rotangles.second);
     }else{
@@ -218,19 +218,19 @@ HepRotation GPS::rockingAngleTransform(double seconds){
         SkyDir dirXZenith(m_RAXZenith,m_DECXZenith);
 
         // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
-        Hep3Vector xhat = dirXZenith() -  (dirXZenith().dot(dirZenith())) * dirZenith() ;
+        CLHEP::Hep3Vector xhat = dirXZenith() -  (dirXZenith().dot(dirZenith())) * dirZenith() ;
         //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
         //what we want now is to make cel, where
         //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
-        HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
-        HepRotation temp = transformCelToGlast(seconds) * cel;
+        CLHEP::HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
+        CLHEP::HepRotation temp = transformCelToGlast(seconds) * cel;
         rockRot=temp;
     }
 
     return rockRot;
 }
 
-HepRotation GPS::CELTransform(double seconds){
+CLHEP::HepRotation GPS::CELTransform(double seconds){
     /// Purpose:  Return the 3x3 matrix which transforms a vector from a galactic 
     /// coordinate system to a local coordinate system.
     //THIS FUNCTION SHOULD BE REMOVED!  IT IS ONLY USED IN A FEW PLACES!!
@@ -240,20 +240,20 @@ HepRotation GPS::CELTransform(double seconds){
     getPointingCharacteristics(seconds);
 
     //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
-    HepRotation cel(transformCelToGlast(seconds).inverse());
+    CLHEP::HepRotation cel(transformCelToGlast(seconds).inverse());
 
     //std::cout << "time is " << seconds << std::endl;
     //m_orbit->displayRotation(cel);
 
     //gal is the matrix which rotates (cartesian)celestial coordiantes into (cartesian)galactic ones
-    HepRotation gal;
+    CLHEP::HepRotation gal;
     gal.rotateZ(-282.8592/degsPerRad).rotateX(-62.8717/degsPerRad).rotateZ(32.93224/degsPerRad);
     //so gal*cel should be the matrix that makes local coordiates into galactic ones.
-    HepRotation glstToGal=gal*cel;
+    CLHEP::HepRotation glstToGal=gal*cel;
     return glstToGal.inverse();
 }
 
-HepRotation GPS::transformCelToGlast(double seconds){
+CLHEP::HepRotation GPS::transformCelToGlast(double seconds){
     /// Purpose:  Return the 3x3 matrix which transforms a vector from a celestial 
     /// coordinate system (like a SkyDir vector) to a local coordinate system (like the FluxSvc output).
     using namespace astro;
@@ -267,15 +267,15 @@ HepRotation GPS::transformCelToGlast(double seconds){
     SkyDir dirX(m_RAX,m_DECX);
 
     // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
-    Hep3Vector xhat = dirX() -  (dirX().dot(dirZ())) * dirZ() ;
+    CLHEP::Hep3Vector xhat = dirX() -  (dirX().dot(dirZ())) * dirZ() ;
     //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
     //what we want now is to make cel, where
     //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
-    HepRotation cel(xhat , dirZ().cross(xhat) , dirZ());
+    CLHEP::HepRotation cel(xhat , dirZ().cross(xhat) , dirZ());
     return cel.inverse();
 }
 
-HepRotation GPS::transformGlastToGalactic(double seconds){
+CLHEP::HepRotation GPS::transformGlastToGalactic(double seconds){
     return (CELTransform(seconds).inverse())*(rockingAngleTransform(seconds).inverse());
 }
 
@@ -393,8 +393,10 @@ void GPS::getPointingCharacteristics(double inputTime){
         }
     }else if(m_rockType == ONEPERORBIT){
 //       while(orbitPhase >2.*M_2PI) {orbitPhase -= 2.*M_2PI;}
-       orbitPhase = fmod(orbitPhase, 2.*M_2PI);
-        if(orbitPhase <= M_2PI) m_rockNorth *= -1.;
+        //orbitPhase = fmod(orbitPhase, 2.*CLHEP::M_2PI);
+        orbitPhase = fmod(orbitPhase, 2.*CLHEP::twopi);  // TU The above says M_2PI so I assume this is valid
+        //if(orbitPhase <= M_2PI) m_rockNorth *= -1.;
+        if(orbitPhase <= CLHEP::twopi) m_rockNorth *= -1.;  // TU convert to local constants
     }else{
         //important - this includes EXPLICIT rocking angles - they
         //are currently still handled by rockingTransform().
@@ -490,7 +492,7 @@ void GPS::readFitsData() {
       row.livetime_frac = livetime/(stop_time - start_time);
          
       interval["sc_position"].get(sc_pos);
-      row.position = Hep3Vector(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
+      row.position = CLHEP::Hep3Vector(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
 
       m_pointingHistory[start_time] = row;
 
@@ -528,7 +530,7 @@ void GPS::setUpHistory(double offset){
             temp.dirX=astro::SkyDir(rax,decx);
             temp.lat=lat;
             temp.lon=lon;
-            temp.position=Hep3Vector(posx,posy,posz);
+            temp.position=CLHEP::Hep3Vector(posx,posy,posz);
             temp.altitude = alt;
             temp.livetime_frac = 1.;
             m_endTime = intrvalstart + offset;
@@ -559,7 +561,7 @@ void GPS::setInterpPoint(double time){
     }
     double lat2=(*iter).second.lat;
     double lon2=(*iter).second.lon;
-    Hep3Vector pos2=(*iter).second.position;
+    CLHEP::Hep3Vector pos2=(*iter).second.position;
     double time2=(*iter).first;
     astro::SkyDir dirZ2=(*iter).second.dirZ;
     astro::SkyDir dirX2=(*iter).second.dirX;
@@ -572,7 +574,7 @@ void GPS::setInterpPoint(double time){
     double lat1=(*iter).second.lat;
     double lon1=(*iter).second.lon;
     double alt1=(*iter).second.altitude;
-    Hep3Vector pos1=(*iter).second.position;
+    CLHEP::Hep3Vector pos1=(*iter).second.position;
     double time1=(*iter).first;
     astro::SkyDir dirZ1=(*iter).second.dirZ;
     astro::SkyDir dirX1=(*iter).second.dirX;
@@ -612,7 +614,7 @@ void GPS::setInterpPoint(double time){
     m_currentInterpPoint.dirX=astro::SkyDir(dirX1()+((dirX2()-dirX1())*prop));
 
     //now regenerate X to be perpindicular to Z (ir should be almost there anyway).
-    Hep3Vector dirY( m_currentInterpPoint.dirZ().cross(m_currentInterpPoint.dirX()) );
+    CLHEP::Hep3Vector dirY( m_currentInterpPoint.dirZ().cross(m_currentInterpPoint.dirX()) );
     m_currentInterpPoint.dirX=astro::SkyDir( dirY.cross(m_currentInterpPoint.dirZ()) );
 
 }

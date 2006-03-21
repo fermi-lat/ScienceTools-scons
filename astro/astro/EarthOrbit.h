@@ -33,7 +33,7 @@ namespace astro {
         * @param jd the Julian Date for the orbit calculation
         *  @return  The orbit position (in inertial coordinates) in km
         */
-        Hep3Vector position(JulianDate jd)const;
+        CLHEP::Hep3Vector position(JulianDate jd)const;
         
         /**
         * return the inclination of orbit
