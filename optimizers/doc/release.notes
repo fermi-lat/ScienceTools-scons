@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r5p4 21-Mar-06   JC   use v* in req file for all packages
     v2r5p3 21-Mar-06   JC   add using CLHEP::RandFlat to Mcmc.cxx
     v2r5p2 15-Feb-06   JC   disable newMinuit until it is supported 
                             for Windows in extlibs 
