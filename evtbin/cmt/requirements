@@ -5,7 +5,6 @@ version v0
 author James Peachey <peachey@milkyway.gsfc.nasa.gov>
 # $Id$
 
-use CLHEP * IExternal
 use STpolicy *
 use astro *
 use st_app *
