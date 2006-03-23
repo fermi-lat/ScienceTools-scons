@@ -6,7 +6,7 @@ author Toby Burnett <tburnett@u.washington.edu>
 # $Id$
 
 use xmlBase  v5r*
-use CLHEP v2* IExternal
+use CLHEP v3* IExternal
 use astro v*
 use cfitsio * IExternal
 
