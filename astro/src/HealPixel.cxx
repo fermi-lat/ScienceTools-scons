@@ -6,6 +6,7 @@ $Header$
 
 #include "astro/HealPixel.h" 
 #include "astro/Healpix.h"
+#include <stdexcept>
 
 using namespace astro;
 
