@@ -100,7 +100,7 @@ void Healpix_Base::pix2xy (int pix, int &x, int &y)
 int Healpix_Base::ring_above (double z) const
   {
   double az=abs(z);
-  if (az>astro::twothird) // polar caps
+  if (az>twothird) // polar caps
     {
     int iring = int(nside_*sqrt(3*(1-az)));
     return (z>0) ? iring : 4*nside_-iring-1;
@@ -138,12 +138,12 @@ void Healpix_Base::in_ring(int iz, double phi0, double dphi,
   int ipix2 = ipix1 + nr - 1;       //    highest pixel number in the ring
 
    // ----------- constructs the pixel list --------------
-  if (dphi > (astro::pi-1e-7))
+  if (dphi > (pi-1e-7))
     for (int i=ipix1; i<=ipix2; ++i) listir.push_back(i);
   else
     {
-    int ip_lo = intfloor(nr*astro::inv_twopi*(phi0-dphi) - shift)+1;
-    int ip_hi = intfloor(nr*astro::inv_twopi*(phi0+dphi) - shift);
+    int ip_lo = intfloor(nr*inv_twopi*(phi0-dphi) - shift)+1;
+    int ip_hi = intfloor(nr*inv_twopi*(phi0+dphi) - shift);
     int pixnum = ip_lo+ipix1;
     if (pixnum<ipix1) pixnum += nr;
     for (int i=ip_lo; i<=ip_hi; ++i, ++pixnum)
@@ -300,11 +300,11 @@ int Healpix_Base::ring2nest (int pix) const
 int Healpix_Base::ang2pix_z_phi (double z, double phi) const
   {
   double za = abs(z);
-  double tt = modulo(phi,astro::twopi) * astro::inv_halfpi; // in [0,4)
+  double tt = modulo(phi,twopi) * inv_halfpi; // in [0,4)
 
   if (scheme_==RING)
     {
-    if (za<=astro::twothird) // Equatorial region
+    if (za<=twothird) // Equatorial region
       {
       double temp1 = nside_*(0.5+tt);
       double temp2 = nside_*z*0.75;
@@ -343,7 +343,7 @@ int Healpix_Base::ang2pix_z_phi (double z, double phi) const
     const int ns_max = 1<<order_max;
     int face_num, ix, iy;
 
-    if (za<=astro::twothird) // Equatorial region
+    if (za<=twothird) // Equatorial region
       {
       double temp1 = ns_max*(0.5+tt);
       double temp2 = ns_max*z*0.75;
@@ -403,7 +403,7 @@ pointing Healpix_Base::pix2ang (int pix) const
       int iphi  = (pix+1) - 2*iring*(iring-1);
 
       return pointing (acos(1.0 - (iring*iring)*fact2_),
-                       (iphi-0.5) * astro::pi/(2.0*iring));
+                       (iphi-0.5) * pi/(2.0*iring));
       }
     else if (pix<(npix_-ncap_)) // Equatorial region
       {
@@ -415,7 +415,7 @@ pointing Healpix_Base::pix2ang (int pix) const
 
       int nl2 = 2*nside_;
       return pointing (acos((nl2-iring)*fact1_),
-                       (iphi-fodd) * astro::pi/nl2);
+                       (iphi-fodd) * pi/nl2);
       }
     else // South Polar cap
       {
@@ -424,7 +424,7 @@ pointing Healpix_Base::pix2ang (int pix) const
       int iphi  = 4*iring + 1 - (ip - 2*iring*(iring-1));
 
       return pointing (acos(-1.0 + (iring*iring)*fact2_),
-                       (iphi-0.5) * astro::pi/(2*iring));
+                       (iphi-0.5) * pi/(2*iring));
       }
     }
   else
@@ -464,7 +464,7 @@ pointing Healpix_Base::pix2ang (int pix) const
     if (jp>nl4) jp-=nl4;
     if (jp<1) jp+=nl4;
 
-    return pointing (acos(z), (jp-(kshift+1)*0.5)*(astro::halfpi/nr));
+    return pointing (acos(z), (jp-(kshift+1)*0.5)*(halfpi/nr));
     }
   }
 
@@ -486,7 +486,7 @@ void Healpix_Base::query_disc (const pointing &ptg, double radius,
 
   if (rlat1<=0) // north pole in the disc
     for (int m=1; m<irmin; ++m) // rings completely in the disc
-      in_ring (m, 0, astro::pi, listpix);
+      in_ring (m, 0, pi, listpix);
 
   double rlat2  = ptg.theta + radius;
   double zmin = cos(rlat2);
@@ -511,9 +511,9 @@ void Healpix_Base::query_disc (const pointing &ptg, double radius,
     in_ring (iz, ptg.phi, dphi, listpix);
     }
 
-  if (rlat2>=astro::pi) // south pole in the disc
+  if (rlat2>=pi) // south pole in the disc
     for (int m=irmax+1; m<(4*nside_); ++m)  // rings completely in the disc
-      in_ring (m, 0, astro::pi, listpix);
+      in_ring (m, 0, pi, listpix);
 
   if (scheme_==NEST)
     for (unsigned int m=0; m<listpix.size(); ++m)
@@ -636,9 +636,9 @@ void add_weights (int p1, int p2, int p3, int p4, double xdiff, double ydiff,
     }
   else
     {
-    wgt[0] = 1-xdiff-ydiff+astro::fourthird*xdiff*ydiff;
-    wgt[1] = xdiff-astro::twothird*xdiff*ydiff;
-    wgt[2] = ydiff-astro::twothird*xdiff*ydiff;
+    wgt[0] = 1-xdiff-ydiff+fourthird*xdiff*ydiff;
+    wgt[1] = xdiff-twothird*xdiff*ydiff;
+    wgt[2] = ydiff-twothird*xdiff*ydiff;
     pix[3] = 0;
     wgt[3] = 0;
     }
@@ -651,11 +651,11 @@ void Healpix_Base::get_interpol (const pointing &ptg, fix_arr<int,4> &pix,
   {
   double z = cos(ptg.theta);
   double za = abs(z);
-  double tt = modulo(ptg.phi,astro::twopi) / astro::halfpi; // in [0,4)
+  double tt = modulo(ptg.phi,twopi) / halfpi; // in [0,4)
 
   int face_num;
   double ix, iy;
-  if (za<=astro::twothird) // Equatorial region
+  if (za<=twothird) // Equatorial region
     {
     double temp1 = nside_*(0.5+tt);
     double temp2 = nside_*z*0.75;
@@ -768,7 +768,7 @@ void Healpix_Base::get_ring_info2 (int ring, int &startpix, int &ringpix,
     }
   if (northring != ring) // southern hemisphere
     {
-    theta = astro::pi-theta;
+    theta = pi-theta;
     startpix = npix_ - startpix - ringpix;
     }
   }
@@ -786,7 +786,7 @@ void Healpix_Base::get_interpol2 (const pointing &ptg, fix_arr<int,4> &pix,
   if (ir1>0)
     {
     get_ring_info2 (ir1, sp, nr, theta1, shift);
-    dphi = astro::twopi/nr;
+    dphi = twopi/nr;
     tmp = (ptg.phi/dphi - .5*shift);
     i1 = (tmp<0) ? int(tmp)-1 : int(tmp);
     w1 = (ptg.phi-(i1+.5*shift)*dphi)/dphi;
@@ -799,7 +799,7 @@ void Healpix_Base::get_interpol2 (const pointing &ptg, fix_arr<int,4> &pix,
   if (ir2<(4*nside_))
     {
     get_ring_info2 (ir2, sp, nr, theta2, shift);
-    dphi = astro::twopi/nr;
+    dphi = twopi/nr;
     tmp = (ptg.phi/dphi - .5*shift);
     i1 = (tmp<0) ? int(tmp)-1 : int(tmp);
     w1 = (ptg.phi-(i1+.5*shift)*dphi)/dphi;
@@ -821,7 +821,7 @@ void Healpix_Base::get_interpol2 (const pointing &ptg, fix_arr<int,4> &pix,
     }
   else if (ir2==4*nside_)
     {
-    double wtheta = (ptg.theta-theta1)/(astro::pi-theta1);
+    double wtheta = (ptg.theta-theta1)/(pi-theta1);
     wgt[0] *= (1-wtheta); wgt[1] *= (1-wtheta);
     double fac = wtheta*0.25;
     wgt[0] += fac; wgt[1] += fac; wgt[2] = fac; wgt[3] =fac;

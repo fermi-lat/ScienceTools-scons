@@ -64,7 +64,7 @@ class pointing
       using namespace std;
       theta = atan2(sqrt(inp.x*inp.x+inp.y*inp.y),inp.z);
       phi = safe_atan2 (inp.y,inp.x);
-      if (phi<0) phi += astro::twopi;
+      if (phi<0) phi += twopi;
       }
 // FIXME: should be removed some time
     /*! Returns a normalized vector pointing in the same direction. */
@@ -82,13 +82,13 @@ class pointing
     /*! Changes the angles so that \a 0<=theta<=pi and \a 0<=phi<2*pi. */
     void normalize()
       {
-      theta=modulo(theta,astro::twopi);
-      if (theta>astro::pi)
+      theta=modulo(theta,twopi);
+      if (theta>pi)
         {
-        phi+=astro::pi;
-        theta=astro::twopi-theta;
+        phi+=pi;
+        theta=twopi-theta;
         }
-      phi=modulo(phi,astro::twopi);
+      phi=modulo(phi,twopi);
       }
   };
 
@@ -99,7 +99,7 @@ inline void vec2pnt(const vec3 &vec, pointing &ptg)
   using namespace std;
   ptg.theta = atan2(sqrt(vec.x*vec.x+vec.y*vec.y),vec.z);
   ptg.phi = safe_atan2 (vec.y,vec.x);
-  if (ptg.phi<0) ptg.phi += astro::twopi;
+  if (ptg.phi<0) ptg.phi += twopi;
   }
 
 /*! Writes \a p to \a os.

@@ -10,7 +10,7 @@ branches astro cmt src doc
 use GlastPolicy  *
 use facilities   *
 use cfitsio * IExternal 
-use CLHEP * IExternal
+use CLHEP v3* IExternal
 use extFiles * IExternal # for jphephem data
 use tip *
 

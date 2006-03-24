@@ -35,12 +35,21 @@
 
 /*! \defgroup mathconstgroup Mathematical constants */
 /*! \{ */
-namespace astro {
+#if 0
+// GLAST modification: these are defined in CLHEP/Units/PhysicalConstants.h,
+// which is also included by code including this header
+
 const double pi=3.141592653589793238462643383279502884197;
 const double twopi=6.283185307179586476925286766559005768394;
+const double halfpi=1.570796326794896619231321691639751442099;
+#else
+#include "CLHEP/Units/PhysicalConstants.h"
+using CLHEP::pi;
+using CLHEP::twopi;
+using CLHEP::halfpi;
+#endif
 const double inv_twopi=1.0/twopi;
 const double fourpi=12.56637061435917295385057353311801153679;
-const double halfpi=1.570796326794896619231321691639751442099;
 const double inv_halfpi=0.6366197723675813430755350534900574;
 const double inv_sqrt4pi = 0.2820947917738781434740397257803862929220;
 
@@ -108,5 +117,4 @@ const double solsysspeed = 371000.0;
 
 //! Healpix value representing "undefined"
 const double Healpix_undef=-1.6375e30;
-}
 #endif
