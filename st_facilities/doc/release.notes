@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  24-Mar-06 v0r6p6 JC    use cppunit v* IExternal, not v1*
   15-Mar-06 v0r6p5 JC    add libStApiExports.h
   14-Feb-06 v0r6p4 JC    allow negative values in Util::bilinear
   19-Jan-06 v0r6p3 JP    use PKGROOT/xml for xml files

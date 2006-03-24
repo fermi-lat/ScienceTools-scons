@@ -1,5 +1,5 @@
 package st_facilities
-version v0r6p5
+version v0r6p6
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -10,7 +10,7 @@ use f2c v*
 use tip v*
 use facilities v*
 use cfitsio v* IExternal
-use cppunit v1* IExternal
+use cppunit v* IExternal
 
 apply_pattern package_include
 apply_pattern package_linkopts
