@@ -48,7 +48,7 @@ void PhotonMap::addPhoton(const astro::Photon& gamma)
 HealPixel PhotonMap::pixel(const astro::Photon& gamma)
 {
     int i( static_cast<int>(log(gamma.energy()/m_emin)/m_logeratio) );
-    i= i>m_levels? m_levels : i;
+    if( i>m_levels-1) i= m_levels-1;
     return HealPixel(gamma.dir(), i+m_minlevel);
 }
 
@@ -95,5 +95,35 @@ int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::
         }
     }
     return total;
+}
+
+//! Count the photons within a given pixel.
+int PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
+                              bool weighted) const
+{
+    static bool first = true;
+        
+    if (!includeChildren) // No children
+    {
+        const_iterator it = find(px);
+        if (it != end()) {
+            double weight = 1 << 2*(it->first.level() - m_minlevel);
+
+            return weighted? it->second * weight  : it->second; 
+        }else  return 0;
+    }else{ // Include children
+    
+        int count = 0;
+        astro::HealPixel boundary(px.index() + 1, px.level());
+        for (PhotonMap::const_iterator it =lower_bound(px);
+            it != end() && it->first < boundary; ++it)
+        {
+           double weight = 1 << 2*(it->first.level() - m_minlevel);
+
+            count += weighted? it->second * weight
+                             : it->second; 
+        }
+        return count;
+    }
 }
 
