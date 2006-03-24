@@ -140,13 +140,16 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         m_pixelCount = m_naxis1*m_naxis2*m_naxis3;
         m_imageData.resize(m_pixelCount, 0.);
     }else{
+        //
+        // the input is a livetime cube: get display from par file parameters
+        //
         m_naxis1 = pars["numxpix"];
         m_naxis2 = pars["numypix"];
         m_naxis3 = pars["enumbins"];
         std::string ptype = pars["proj"];
         double pixelsize = pars["pixscale"];
 
-        if( m_naxis1==0){
+        if( m_naxis1<=1){
             // special code to determine all-sky limits based on scale factor and transformation
             std::string types[]={"" ,"CAR","AIT","ZEA"};
             int xsize[] =       {360, 360,  325,  230}; 
@@ -158,7 +161,7 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
                     break;
                 }
             }
-            if( m_naxis1==0) {
+            if( m_naxis1<=1) {
                 throw std::invalid_argument("SkyImage::SkyImage -- projection type " 
                     +ptype +" does not have default image size");
             }
@@ -251,11 +254,11 @@ unsigned int SkyImage::setLayer(unsigned int newlayer)
     return t;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
+bool SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int layer)
 {
     std::pair<double,double> p= dir.project(*m_wcs);
     // ignore if not in the image.
-    if( p.first<0 || p.first >= m_naxis1 || p.second<0 || p.second>=m_naxis2) return;
+    if( p.first<0 || p.first >= m_naxis1 || p.second<0 || p.second>=m_naxis2) return false;
     unsigned int 
         i = static_cast<unsigned int>(p.first),
         j = static_cast<unsigned int>(p.second),
@@ -265,6 +268,7 @@ void SkyImage::addPoint(const astro::SkyDir& dir, double delta, unsigned int lay
         m_imageData[k] += delta;
         m_total += delta;
     }
+    return true;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SkyImage::checkLayer(unsigned int layer)const

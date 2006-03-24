@@ -262,5 +262,112 @@ st_app::StAppFactory<ExposureMapApp> g_factory("exposure_map");
 
 - The parameter file
  @verbinclude exposure_map.par
+  Print Version 
+exposure_map
+Generates an exposure map, or a set of exposure maps for different energies, from a livetime cube written by gtlivetimecube. 
+@verbatim
+Prerequisites
+Input Files: 
+Livetime or Exposure cube FITS file from gtlivetimecube 
+Optionally, a counts map FITS file from gtbin, for which exposure_map should match the coordinate projection and gridding.  The counts map also specifies the effective area response functions for exposure_map to use. 
+Links: 
+
+Basic FTOOL Parameter Usage 
+General Parameters
+  infile [file]  
+    Exposure or Livetime cube input file.  
+      
+  cmfile [file] 
+    Count map input file (NONE to determine map geometry from parameters). 
+      
+  outfile [file] 
+    Exposure map output file name (FITS format  image). 
+      
+  resptype = "DC2" [string]
+     Response function.  
+    
+  numxpix =1 [int] 
+    Size of the X axis in pixels. Default (1) for full sky
+    
+  numypix =1 [int] 
+    Size of the Y axis in pixels. Default (1) to copy numxpix, or full sky
+    
+  pixscale =1.0 [float]  
+    Image scale (in degrees/pixel).  
+    
+  coordsys ="CEL" [string] 
+    Coordinate system, CEL or GAL. 
+    
+  xref =0. [float] 
+    First coordinate of image center in degrees (RA or Galactic l). (default 0) 
+    
+  yref =0. [float]  
+    Second coordinate of image center in degrees (DEC or Galactic b). (default 0)
+    
+  axisrot=0. [float] 
+    Rotation angle of image axis, in degrees. (default 0)
+    
+  (proj = "AIT") [string] 
+    Coordinate projection (AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN); see Calabretta & Greisen 2002, A&A, 395, 1077 for definitions of the projections.  
+    Must be AIT, ZEA or CAR for auto full sky. 
+    
+  emin =20[float]
+     Start value for first energy bin (MeV); must be >=30 MeV. 
+    
+  emax =200000[float] 
+    Stop value for last energy bin; must be <=200 GeV. Will use this if enumbins is 1
+    
+  enumbins [int] 
+    Number of logarithmically uniform energy bins, defaults to 8. 
+    
+  (bincalc = "CENTER") [string] 
+    How are energy layers computed from count map ebounds? (CENTER|EDGE) 
+    
+  (filter  = no default) [string] 
+    Filter expression (FTOOLS style).  
+    
+  (table = "Exposure")  
+    Exposure cube extension. 
+    
+  (chatter = 2) [int] 
+    Chattiness of output. 
+    
+  (clobber = "yes") [boolean]  
+    Overwrite existing output files with new output files. 
+    
+  (debug = "no") [boolean] 
+    Debugging mode activated. 
+    
+  (gui = "no") [boolean]  
+    Gui mode activated. 
+    
+  (mode = "ql") [string] 
+    Mode of automatic parameters. 
+
+Also See
+gtlivetimecube 
+Basic FTOOL Parameter Usage 
+
+--------------------------------------------------------------------------------
+
+ 
+
+Owned by: Toby Burnett  
+
+Generated on: Mar 16 21:53:43 2006 
+
+Last updated by: Chuck Patterson 03/20/2006 Back to Top  
+
+ @endverbatim
+ 
+
+ 
+
+ 
+
+ 
+ 
+
+ 
 
 */

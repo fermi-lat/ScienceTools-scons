@@ -35,19 +35,23 @@ class SkyImage : public astro::SkyFunction
 public:
     /** @brief constructor set up the map using standard ScienceTools map configuration
 
-    @param pars an object containing all the necessary parameters
+    @param pars an object containing all the necessary parameters: \{
+
+    @param cmfile   Count map input file (NONE for manual input of map geometry).
+    @param bincalc  determine how energy values are computed from bins using bincalc parameter.
+    @param numxpix  Size of the X axis in pixels. 
+    @param numypix  Size of the Y axis in pixels
+    @param enumbins  Number of logarithmically uniform energy bins
+    @param proj      Coordinate projection (AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN); see Calabretta & Greisen 2002, A&A, 395, 1077 for definitions of the projections.  
+    @param pixscale  Image scale (in degrees/pixel)
+    @param coordsys  Coordinate system, "CEL" or GAL.
+    @param xref,yref  coordinates of image center in degrees (RA,DEC or Galactic l,b).
+    @param axisrot  Rotation angle of image axis, in degrees.
+    @param emin,emax Range of energies
+    \}
     @verbatim
-    cmfile
-    bincalc  determine how energy values are computed from bins using bincalc parameter.
-    numxpix,  numypix
-    enumbins
-    proj
-    pixscale
-    coordsys
-    xref, yref
-    axisrot
-    emin, emax
-    outfile, clobber
+    outfile       Exposure map output file name. 
+    clobber       Overwrite existing output files with new output files
 @endverbatim
     */
     SkyImage(const hoops::IParGroup& pars);
@@ -81,8 +85,9 @@ public:
         @param dir A SkyDir object
         @param delta incremental value (default 1 if not present)
         @param layer for multi-layer app. 0 (default) means the first layer 
+        @return true if in the image, and added to it; false otherwise (not added)
     */
-    void addPoint(const astro::SkyDir& dir, double delta=1.0, unsigned int layer=0);
+    bool addPoint(const astro::SkyDir& dir, double delta=1.0, unsigned int layer=0);
 
  
      /** @brief direct access to the pixel at the given direction and current layer
