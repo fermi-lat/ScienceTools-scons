@@ -21,6 +21,11 @@
     - read_map, example executable showing how to copy an image from one file to another, redefining the 
     image parameters
     - map_stats Prints out statistics for a map.
+    <br>
+    Each application has an example  .par file in the pfiles folder.
+
+    \section classes Primary Classes
+
     - HealpixArray, defined in HealpixArray.h  Template used to associate an object with
       each healpix pixel.
     - CosineBinner, defined in CosineBinner.h.  Bins for storing values corresponding
@@ -34,8 +39,6 @@
     - HealpixArrayIO, Defined in HealpixArrayIO.cxx. A singleton used to manage I/O of
       a HealpixArray object to/from a FITS file.
       
-    <br>
-    Each application has an example  .par file in the pfiles folder.
     <hr>
 
   
