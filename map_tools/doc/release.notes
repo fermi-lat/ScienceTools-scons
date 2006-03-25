@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 25-mar-06 v6r3p1 THB Really fix defaults
  24-mar-06 v6r3   THB Change some defaults for exposure_map application; fix PhotonMap a little
  15-mar-06 v6r2   THB Add new class to manage photon data 
  06-mar-06 v6r1p1  JC Comment out parts of test program that are no longer
