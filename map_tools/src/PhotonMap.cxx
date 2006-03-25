@@ -101,7 +101,6 @@ int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::
 double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
                               bool weighted) const
 {
-    static bool first = true;
         
     if (!includeChildren) // No children
     {
@@ -113,7 +112,7 @@ double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
         }else  return 0;
     }else{ // Include children
     
-        int count = 0;
+        double count = 0;
         astro::HealPixel boundary(px.index() + 1, px.level());
         for (PhotonMap::const_iterator it =lower_bound(px);
             it != end() && it->first < boundary; ++it)

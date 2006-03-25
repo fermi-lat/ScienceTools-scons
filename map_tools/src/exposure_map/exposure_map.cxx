@@ -11,6 +11,8 @@ $Header$
 #include "map_tools/SkyImage.h"
 #include "map_tools/Exposure.h"
 
+#include "astro/SkyDir.h"
+
 #include "irfInterface/IAeff.h"
 #include "irfInterface/Irfs.h"
 #include "irfInterface/IrfsFactory.h"
@@ -22,9 +24,10 @@ $Header$
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 
-#include <sstream>
 
-#include "astro/SkyDir.h"
+#include <sstream>
+#include <iterator> // for ostream_iterator
+
 
 #include <stdexcept>
 using namespace map_tools;
@@ -328,7 +331,8 @@ General Parameters
     Number of logarithmically uniform energy bins, defaults to 8. 
     
   (bincalc = "CENTER") [string] 
-    How are energy layers computed from count map ebounds? (CENTER|EDGE) 
+     How are energy layers computed from count map ebounds?  Options are CENTER and EDGE
+
     
   (filter  = no default) [string] 
     Filter expression (FTOOLS style).  
