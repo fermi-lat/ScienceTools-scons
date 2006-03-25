@@ -50,7 +50,7 @@ public:
     double density (const astro::SkyDir & sd) const;
 
     //! Count the photons within a given pixel.
-    int photonCount(const astro::HealPixel & px, bool includeChildren=false,
+    double photonCount(const astro::HealPixel & px, bool includeChildren=false,
                               bool weighted=false) const;
 
     ///  implement the SkyFunction class by returning density

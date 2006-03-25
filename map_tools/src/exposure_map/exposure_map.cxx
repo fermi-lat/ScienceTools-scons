@@ -22,7 +22,7 @@ $Header$
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 
-
+#include <sstream>
 
 #include "astro/SkyDir.h"
 
@@ -139,7 +139,7 @@ public:
         // set up irf stuff, and translate the IRF name        
 
         irfLoader::Loader::go();
-
+ 
         m_f.info() << "Using Aeff(s) " ;
 
         if( rspfunc=="SIMPLE") {
@@ -149,15 +149,22 @@ public:
         std::map<std::string, std::vector<std::string> > idMap = irfLoader::Loader::respIds();
         std::vector<std::string> irf_list = idMap[rspfunc];
         if( irf_list.empty()) {
+
+            std::vector<std::string> irfnames;
+            IrfsFactory::instance()->getIrfsNames(irfnames);
+            std::cerr << "\nResponse function \""<< rspfunc<< "\" Not recognized: Valid list is: ";
+            std::copy(irfnames.begin(), irfnames.end(), 
+                std::ostream_iterator<std::string>(std::cerr, ", "));
+            std::cerr <<std::endl;
+
             throw std::invalid_argument(
                 std::string("Response function not recognized: "+rspfunc));
         }
 
-        // this could be a simple copy with an ostream_iterator, but the ST interface does not allow it :-(
-        for(std::vector<std::string>::const_iterator sit= irf_list.begin(); sit!=irf_list.end(); ++sit){
-            m_f.info() << *sit<< ", ";
-        }
-        m_f.info() << std::endl;
+        std::stringstream buf;
+        m_f.info() << "\nResponse function(s) used: ";
+        std::copy(irf_list.begin(), irf_list.end(), std::ostream_iterator<std::string>(buf, ", "));
+        m_f.info() << buf.str()<< std::endl;
     
         return new AeffSum(irf_list );
 
@@ -284,37 +291,37 @@ General Parameters
     Exposure map output file name (FITS format  image). 
       
   resptype = "DC2" [string]
-     Response function.  
+     Response function. Default DC2 means the sum of classA and class B   
     
-  numxpix =1 [int] 
+  numxpix = 1 [int] 
     Size of the X axis in pixels. Default (1) for full sky
     
-  numypix =1 [int] 
+  numypix = 1 [int] 
     Size of the Y axis in pixels. Default (1) to copy numxpix, or full sky
     
-  pixscale =1.0 [float]  
+  pixscale = 1.0 [float]  
     Image scale (in degrees/pixel).  
     
-  coordsys ="CEL" [string] 
+  coordsys = "CEL" [string] 
     Coordinate system, CEL or GAL. 
     
-  xref =0. [float] 
+  xref = 0. [float] 
     First coordinate of image center in degrees (RA or Galactic l). (default 0) 
     
-  yref =0. [float]  
+  yref = 0. [float]  
     Second coordinate of image center in degrees (DEC or Galactic b). (default 0)
     
   axisrot=0. [float] 
     Rotation angle of image axis, in degrees. (default 0)
     
   (proj = "AIT") [string] 
-    Coordinate projection (AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN); see Calabretta & Greisen 2002, A&A, 395, 1077 for definitions of the projections.  
+    Coordinate projection (AIT|ZEA|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN); see Calabretta & Greisen 2002, A&A, 395, 1077 for definitions of the projections.  
     Must be AIT, ZEA or CAR for auto full sky. 
     
-  emin =20[float]
+  emin = 30 [float]
      Start value for first energy bin (MeV); must be >=30 MeV. 
     
-  emax =200000[float] 
+  emax = 200000 [float] 
     Stop value for last energy bin; must be <=200 GeV. Will use this if enumbins is 1
     
   enumbins [int] 

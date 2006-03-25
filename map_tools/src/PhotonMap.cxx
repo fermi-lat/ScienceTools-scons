@@ -97,8 +97,8 @@ int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::
     return total;
 }
 
-//! Count the photons within a given pixel.
-int PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
+//! Count the photons, perhaps weighted, within a given pixel.
+double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
                               bool weighted) const
 {
     static bool first = true;
