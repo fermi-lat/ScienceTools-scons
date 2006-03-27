@@ -53,6 +53,19 @@ def ExpCutoff():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def BPLExpCutoff():
+    func = """<spectrum type="BPLExpCutoff">
+      <parameter free="1" max="100000.0" min="0.01" name="Prefactor" scale="1e-09" value="1"/>
+      <parameter free="1" max="-1.001" min="-5." name="Index1" scale="1.0" value="-2.1"/>
+      <parameter free="1" max="-1.001" min="-5." name="Index2" scale="1.0" value="-2.1"/>
+      <parameter free="1" max="10000.0" min="1.0" name="BreakValue" scale="1.0" value="1000.0"/>
+      <parameter free="1" max="300.0" min="1.0" name="Eabs" scale="1.0" value="10.0"/>
+      <parameter free="1" max="300.0" min="0.1" name="P1" scale="1000.0" value="100."/>
+    </spectrum>
+"""
+    (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
+    return Function(func)
+
 def FileFunction():
     func = """<spectrum type="FileFunction" file="foo.dat">
  <parameter free="1" max="1e5" min="1e-5" name="Normalization" scale="1" value="1.0"/>
@@ -187,6 +200,7 @@ class Spectra(FuncContainer):
         self.funcs['ConstantValue'] = ConstantValueSpectrum()
         self.funcs['FileFunction'] = FileFunction()
         self.funcs['ExpCutoff'] = ExpCutoff()
+        self.funcs['BPLExpCutoff'] = BPLExpCutoff()
 
 class SpatialModels(FuncContainer):
     def __init__(self):

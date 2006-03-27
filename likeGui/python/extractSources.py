@@ -126,6 +126,7 @@ class PointSource(object):
         self._getSpecParams()
         self._setIndex()
         self._setPrefactor()
+        self._setFlux()
     def _setDir(self):
         dir = self.fluxSrc.getElementsByTagName('celestial_dir')[0]
         spatialModel = self.ptsrc.getElementsByTagName('spatialModel')[0]
@@ -155,6 +156,13 @@ class PointSource(object):
             self._setSpecParam('Prefactor', prefactor)
         else:
             self._setSpecParam('Prefactor', 1)
+    def _setFlux(self):
+        if self.use_cat_val:
+            flux = string.atof(self.fluxSrc.getAttribute('flux').
+                               encode('ascii'))*1e-04/1e-6
+            self._setSpecParam('Integral', flux)
+        else:
+            self._setSpecParam('Integral', 1)
     def _setSpecParam(self, paramName, value):
         spectrum = self.ptsrc.getElementsByTagName('spectrum')[0]
         params = spectrum.getElementsByTagName('parameter')
