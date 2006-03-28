@@ -4,6 +4,7 @@
 
     @verbatim
 
+    v2r3p6 28-Mar-06   JC   remove DATASUM keyword from PRIMARY header
     v2r3p5 15-Mar-06   JC   include <cctype> and <algorithm> in makeFT1.cxx
     v2r3p4 14-Mar-06   JC   allow fields to be added to FT1 via the 
                             dictionary file
