@@ -5,7 +5,6 @@ BITPIX      = 8                           / number of bits per data pixel
 NAXIS       = 0                           / number of data axes
 EXTEND      = T                           / FITS dataset may contain extensions
 CHECKSUM    =                             / checksum for entire HDU
-DATASUM     =                             / checksum for data table
 TELESCOP    = 'GLAST'                     / name of telescope generating data
 INSTRUME    = 'LAT'                       / name of instrument generating data
 EQUINOX     = 2000.0                      / equinox for ra and dec
