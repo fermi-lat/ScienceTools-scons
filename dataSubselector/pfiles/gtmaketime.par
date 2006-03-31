@@ -4,6 +4,7 @@ filter,s,a,"IN_SAA!=T",,,"Filter expression"
 evfile,f,a,"test_events_0000.fits",,,"Event data file"
 evtable,s,h,"EVENTS",,,"Event data extension"
 outfile,s,a,"filtered.fits",,,"Output event file name"
+apply_filter,b,h,yes,,,"apply GTI filter"
 
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"

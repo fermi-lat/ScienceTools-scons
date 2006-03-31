@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r1p6  31-Mar-06   JC   enable gtmaketime to append GTIs to non-FT1
+                             files
     v4r1p5  27-Feb-06   JC   setprecision to 20 for RangeCut filter string
                              and to 10 for SkyConeCut
     v4r1p4  22-Feb-06   JC   additions to allow for automatic irf selection

@@ -144,7 +144,8 @@ void MakeTime::mergeGtis() {
    m_evfile = evfile;
    std::string evtable = m_pars["evtable"];
 
-   dataSubselector::Cuts cuts(evfile, evtable);
+   bool checkColumns = m_pars["apply_filter"];
+   dataSubselector::Cuts cuts(evfile, evtable, checkColumns);
    
    std::vector<const dataSubselector::GtiCut *> gtiCuts;
    cuts.getGtiCuts(gtiCuts);
@@ -157,7 +158,7 @@ void MakeTime::mergeGtis() {
 void MakeTime::copyTable() const {
    tip::IFileSvc::instance().createFile(m_outfile, m_evfile);
 
-   std::string extension("EVENTS");
+   std::string extension = m_pars["evtable"];
    const tip::Table * inputTable 
       = tip::IFileSvc::instance().readTable(m_evfile, extension);
    
@@ -177,8 +178,9 @@ void MakeTime::copyTable() const {
    dataSubselector::Cuts my_cuts;
    my_cuts.addGtiCut(m_gti);
 
+   bool applyFilter = m_pars["apply_filter"];
    for (; inputIt != inputTable->end(); ++inputIt) {
-      if (my_cuts.accept(input)) {
+      if (!applyFilter || my_cuts.accept(input)) {
          output = input;
          ++outputIt;
          npts++;
