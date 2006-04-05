@@ -7,6 +7,9 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <typeinfo>
@@ -81,10 +84,10 @@ namespace tip {
         char * buf = 0;
         try {
           // For strings, make a buffer to hold the value.
-          buf = new char[m_width + 1];
+          buf = new char[m_display_width + 1];
 
           // Set the buffer contents to 0.
-          memset(buf, '\0', m_width + 1);
+          std::memset(buf, '\0', m_display_width + 1);
 
           // Now call fitsio to fill the buffer with the string.
           getScalar(record_index, buf);
@@ -98,12 +101,11 @@ namespace tip {
         delete [] buf;
       }
 
-      // virtual void get(Index_t record_index, std::vector<std::string> & dest) const
       virtual void get(Index_t record_index, std::vector<std::string> & dest) const {
         // Clear content of destination in case there is a problem.
         dest.clear();
-        std::auto_ptr<char> buf(new char[m_display_width + 1]);
-        char * tmp_dest[] = { buf.get(), 0 };
+        char * buf(new char[m_display_width + 1]);
+        char * tmp_dest[] = { buf };
 
         // Redimension the destination so that it will hold the contents of this vector.
         dest.resize(m_repeat);
@@ -111,22 +113,29 @@ namespace tip {
         for (std::vector<std::string>::size_type index = 0; index != dest.size(); ++index) {
           // Read each element in the column, letting cfitsio do the conversions to strings.
           int status = 0;
-          fits_read_col(m_ext->getFp(), FitsPrimProps<std::string>::dataTypeCode(), m_field_index, record_index + 1,
-            index + 1, 1, 0, tmp_dest, 0, &status);
+          int any_null = 0;
+          fits_read_col(m_ext->getFp(), FitsPrimProps<char *>::dataTypeCode(), m_field_index, record_index + 1,
+            index + 1, 1, 0, tmp_dest, &any_null, &status);
           if (0 != status) {
             std::ostringstream os;
             os << "FitsColumn::get(Index_t, std::vector<std::string> &) could not read record " << record_index;
+            delete [] buf;
             throw TipException(status, os.str());
           }
-          // Skip leading and trailing spaces.
-          char * begin = *tmp_dest;
-          while ('\0' != *begin && 0 != isspace(*begin)) ++begin;
-          char * end = begin;
-          while ('\0' != *end && 0 == isspace(*end)) ++end;
+          if (0 != any_null) {
+            dest[index] = FitsPrimProps<char *>::undefined();
+          } else {
+            // Skip leading and trailing spaces.
+            char * begin = *tmp_dest;
+            while ('\0' != *begin && 0 != std::isspace(*begin)) ++begin;
+            char * end = begin;
+            while ('\0' != *end && 0 == std::isspace(*end)) ++end;
 
-          // Copy cfitsio's string to the output string.
-          dest[index].assign(begin, end);
+            // Copy cfitsio's string to the output string.
+            dest[index].assign(begin, end);
+          }
         }
+        delete [] buf;
       }
 
       virtual void set(Index_t record_index, const char * src) { set(record_index, std::string(src)); }
@@ -162,10 +171,54 @@ namespace tip {
         }
       }
 
-      // TODO: Specialize this so that vectors of strings can be supported.
-      // virtual void set(Index_t record_index, const std::vector<std::string> & src)
-      virtual void set(Index_t , const std::vector<std::string> &)
-        { throw TipException("FitsColumn::set(Index_t, const std::vector<std::string> &) not yet supported"); }
+      virtual void set(Index_t record_index, const std::vector<std::string> & src) {
+        if (m_scalar) throw TipException("FitsColumn::set(Index_t, const vector<string> &) was called but field is not a vector");
+        // Writing strings must be handled carefully, because cfitsio only converts strings to numbers when reading.
+        switch (m_type_code) {
+          case TSTRING: {
+              // String data -> string column. Copy pointers to individual strings in src vector into an array of C primitives
+              // to pass to cfitsio.
+              std::vector<const char *> buf(src.size());
+              for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
+                buf[idx] = &src[idx][0];
+              }
+              setVector(record_index, buf);
+              break;
+            }
+          case TLOGICAL: {
+              // String data -> boolean column.
+              std::vector<char> buf(src.size());
+              for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
+                // Strip leading/trailing blanks.
+                std::string::size_type begin = src[idx].find_first_not_of(" \n\t\v");
+                std::string::size_type end = src[idx].find_last_of(" \n\t\v");
+                if (begin == std::string::npos) begin = 0;
+                if (end == std::string::npos) end = src[idx].size();
+                std::string src_copy(src[idx].begin() + begin, src[idx].begin() + end);
+                for (std::string::iterator itor = src_copy.begin(); itor != src_copy.end(); ++itor) *itor = tolower(*itor);
+                if (src_copy == "t" || src_copy == "true") buf[idx] = true;
+                else if (src_copy == "f" || src_copy == "false") buf[idx] = false;
+                else if (src_copy.empty()) buf[idx] = FitsPrimProps<char>::undefined();
+                else throw TipException(
+                  "FitsColumn::set(Index_t, const vector<string> &) could not convert string \"" + src[idx] + "\" to bool");
+              }
+              setVector(record_index, buf);
+              break;
+            }
+          default: {
+              // String data -> numeric column. Use double for everything.
+              std::vector<double> buf(src.size());
+              char * remainder = 0;
+              for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
+                buf[idx] = strtod(src[idx].c_str(), &remainder);
+                if (0 != remainder && '\0' != *remainder) throw TipException(
+                  "FitsColumn::set(Index_t, const vector<string> &) could not convert string \"" + src[idx] + "\" to double");
+              }
+              setVector(record_index, buf);
+              break;
+            }
+        }
+      }
 
       // Specializations for bool. This is done instead of specializing the templates to avoid complexity and
       // platform-specific code.
@@ -173,9 +226,11 @@ namespace tip {
         if (!m_scalar) throw TipException("FitsColumn::get(Index_t, bool &) was called but field is not a scalar");
         int status = 0;
         char tmp_dest = 0;
+        int any_nul = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
-          0, &tmp_dest, 0, &status);
+          0, &tmp_dest, &any_nul, &status);
         if (0 != status) throw TipException(status, "FitsColumn::get(Index_t, bool &) failed to read scalar cell value");
+        if (0 != any_nul) dest = FitsPrimProps<bool>::undefined();
         dest = (0 != tmp_dest);
       }
 
@@ -184,13 +239,17 @@ namespace tip {
         int status = 0;
         long num_els = getNumElements(record_index);
         char * tmp_dest = new char[num_els];
+        int * any_nul = new int[num_els];
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          0, tmp_dest, 0, &status);
+          0, tmp_dest, any_nul, &status);
         if (0 != status) {
+          delete [] any_nul;
           delete [] tmp_dest;
           throw TipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
         }
-        for (long ii = 0; ii != num_els; ++ii) dest[ii] = (0 != tmp_dest[ii]);
+        for (long ii = 0; ii != num_els; ++ii)
+          if (0 == any_nul[ii]) dest[ii] = (0 != tmp_dest[ii]); else dest[ii] = FitsPrimProps<bool>::undefined();
+        delete [] any_nul;
         delete [] tmp_dest;
       }
 
@@ -298,7 +357,7 @@ namespace tip {
         if (!m_scalar) throw TipException("FitsColumn::getScalar was called but field is not a scalar");
         int status = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
-          0, &dest, 0, &status);
+          &FitsPrimProps<U>::undefined(), &dest, 0, &status);
         if (0 != status) throw TipException(status, "FitsColumn::getScalar failed to read scalar cell value");
       }
 
@@ -311,8 +370,8 @@ namespace tip {
         long num_els = getNumElements(record_index);
         dest.resize(num_els);
         U * dest_begin = &dest.front();
-        fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els, 0,
-          dest_begin, 0, &status);
+        fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          &FitsPrimProps<U>::undefined(), dest_begin, 0, &status);
         if (0 != status) throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
       }
 
@@ -323,8 +382,8 @@ namespace tip {
         if (!m_scalar) throw TipException("FitsColumn::setScalar called but field is not a scalar");
         int status = 0;
         if (m_ext->readOnly()) throw TipException("FitsColumn::setScalar called for a read-only file");
-        fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
-          const_cast<void *>(static_cast<const void *>(&dest)), &status);
+        fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+          const_cast<void *>(static_cast<const void *>(&dest)), &FitsPrimProps<U>::undefined(), &status);
         if (0 != status) throw TipException(status, "FitsColumn::setScalar failed to write scalar cell value");
       }
 
@@ -344,8 +403,8 @@ namespace tip {
         }
 
         const U * src_begin = &src.front();
-        fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          const_cast<void *>(static_cast<const void *>(src_begin)), &status);
+        fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          const_cast<void *>(static_cast<const void *>(src_begin)), &FitsPrimProps<U>::undefined(), &status);
         if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
 
