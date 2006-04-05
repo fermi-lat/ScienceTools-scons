@@ -168,13 +168,19 @@ makeUserGti(std::vector<const dataSubselector::GtiCut *> & gtiCuts) const {
    double tstart = m_pars["tstart"];
    double tstop = m_pars["tstop"];
    bool useHeader = m_pars["header_obstimes"];
+   std::string extension = m_pars["evtable"];
    if (useHeader) {
-      std::string extension = m_pars["evtable"];
       const tip::Table * evTable 
          = tip::IFileSvc::instance().readTable(m_evfile, extension);
       const tip::Header & header(evTable->getHeader());
       header["TSTART"].get(tstart);
       header["TSTOP"].get(tstop);
+   } else {
+      tip::Table * evTable 
+         = tip::IFileSvc::instance().editTable(m_evfile, extension);
+      tip::Header & header(evTable->getHeader());
+      header["TSTART"].set(tstart);
+      header["TSTOP"].set(tstop);
    }
    dataSubselector::Gti myGti;
    myGti.insertInterval(tstart, tstop);
@@ -213,11 +219,22 @@ void MakeTime::copyTable() const {
          npts++;
       }
    }
+   delete inputTable;
+
 // Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);
 
-   delete inputTable;
+   bool overwrite = m_pars["overwrite"];
+   if (overwrite) {
+      st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
+                                             m_gti.maxValue(), true);
+      tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
+      st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
+                                             m_gti.maxValue(), false);
+      delete phdu;
+   }
    delete outputTable;
 
    m_gti.writeExtension(m_outfile);
+
 }

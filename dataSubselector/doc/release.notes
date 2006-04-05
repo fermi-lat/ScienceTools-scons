@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r2p1  05-Apr-06   JC   update DATE-OBS, DATE-END, TSTART, TSTOP, et al.
+                             keywords for user-specified start and stop times
     v4r2    05-Apr-06   JC   allow GTI to be recomputed from scratch in 
                              gtmaketime, with user-specifiable start and
                              stop observation times
