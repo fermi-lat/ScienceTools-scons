@@ -8,6 +8,7 @@
  * $Header$
  */
 
+#include <iostream>
 #include <memory>
 
 #include "st_stream/StreamFormatter.h"
@@ -69,6 +70,7 @@ private:
    void check_outfile();
    void createGti();
    void mergeGtis();
+   void makeUserGti(std::vector<const dataSubselector::GtiCut*>&gtiCuts) const;
    void copyTable() const;
 
    static std::string s_cvs_id;
@@ -143,16 +145,41 @@ void MakeTime::mergeGtis() {
    std::string evfile = m_pars["evfile"];
    m_evfile = evfile;
    std::string evtable = m_pars["evtable"];
-
+   
    bool checkColumns = m_pars["apply_filter"];
    dataSubselector::Cuts cuts(evfile, evtable, checkColumns);
-   
+
    std::vector<const dataSubselector::GtiCut *> gtiCuts;
-   cuts.getGtiCuts(gtiCuts);
-   
+
+   bool overwrite = m_pars["overwrite"];
+   if (overwrite) {
+      makeUserGti(gtiCuts);
+   } else {
+      cuts.getGtiCuts(gtiCuts);
+   }
+
    for (size_t i = 0; i < gtiCuts.size(); i++) {
       m_gti = m_gti & gtiCuts.at(i)->gti();
    }
+}
+
+void MakeTime::
+makeUserGti(std::vector<const dataSubselector::GtiCut *> & gtiCuts) const {
+   double tstart = m_pars["tstart"];
+   double tstop = m_pars["tstop"];
+   bool useHeader = m_pars["header_obstimes"];
+   if (useHeader) {
+      std::string extension = m_pars["evtable"];
+      const tip::Table * evTable 
+         = tip::IFileSvc::instance().readTable(m_evfile, extension);
+      const tip::Header & header(evTable->getHeader());
+      header["TSTART"].get(tstart);
+      header["TSTOP"].get(tstop);
+   }
+   dataSubselector::Gti myGti;
+   myGti.insertInterval(tstart, tstop);
+   gtiCuts.clear();
+   gtiCuts.push_back(new dataSubselector::GtiCut(myGti));
 }
 
 void MakeTime::copyTable() const {

@@ -6,6 +6,11 @@ evtable,s,h,"EVENTS",,,"Event data extension"
 outfile,s,a,"filtered.fits",,,"Output event file name"
 apply_filter,b,h,yes,,,"apply GTI filter"
 
+overwrite,b,h,no,,,"Build GTI from scratch (overwrite existing GTI)"
+header_obstimes,b,h,yes,,,"Use FITS header values for TSTART and TSTOP"
+tstart,r,h,0,,,"Observation start time (MET)"
+tstop,r,h,0,,,"Observation stop time (MET)"
+
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"
 debug,          b, h, no, , , "Activate debugging mode"
