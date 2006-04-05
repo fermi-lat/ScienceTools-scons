@@ -15,9 +15,6 @@
 
 #include "facilities/Util.h"
 
-#include "tip/Table.h"
-#include "tip/Header.h"
-
 #include "st_facilities/Env.h"
 
 #include "fitsGen/Util.h"
@@ -44,56 +41,6 @@ void Util::getFileNames(int iargc, char * argv[], std::string & rootFile,
    } else if (iargc >= 3) {
       rootFile = std::string(argv[1]);
       fitsFile = std::string(argv[2]);     
-   }
-}
-
-void Util::writeDateKeywords(tip::Extension * table, double start_time, 
-                             double stop_time, bool extension,
-                             const astro::JulianDate & mission_start) {
-   static double secsPerDay(8.64e4);
-   tip::Header & header = table->getHeader();
-   astro::JulianDate current_time = currentTime();
-   try {
-      header["DATE"].set(current_time.getGregorianDate());
-   } catch (...) {
-   }
-// The official mission start time is Jan 1 2001:
-//   astro::JulianDate mission_start(2001, 1, 1, 0);
-   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
-   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
-   try {
-      header["DATE-OBS"].set(date_start.getGregorianDate());
-      header["DATE-END"].set(date_stop.getGregorianDate());
-   } catch (...) {
-   }
-   if (extension) {
-// Do not write these keywords if this is the primary HDU.
-      double duration = stop_time - start_time;
-      try {
-         header["TSTART"].set(start_time);
-         header["TSTOP"].set(stop_time);
-      } catch (...) {
-      }
-      try {
-         header["ONTIME"].set(duration);
-         header["TELAPSE"].set(duration);
-      } catch (...) {
-      }
-   }
-}
-
-astro::JulianDate Util::currentTime() {
-   std::time_t my_time = std::time(0);
-   std::tm * now = std::gmtime(&my_time);
-   if (now != 0) {
-      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
-      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
-                                     now->tm_mday, hours);
-      return current_time;
-   } else {
-      throw std::runtime_error("currentTime:\n"
-                               + std::string("cannot be ascertained, ")
-                               + "std::time returns a null value.");
    }
 }
 

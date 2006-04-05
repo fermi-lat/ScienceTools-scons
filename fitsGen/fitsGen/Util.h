@@ -11,12 +11,6 @@
 
 #include <string>
 
-#include "astro/JulianDate.h"
-
-namespace tip {
-   class Table;
-}
-
 namespace fitsGen {
 
 /**
@@ -33,13 +27,6 @@ public:
 
    static void getFileNames(int iargc, char * argv[], std::string & rootFile,
                             std::string & fitsFile);
-
-   static void writeDateKeywords(tip::Extension * table, double start_time,
-                                 double stop_time, bool extension=true,
-                                 const astro::JulianDate & mission_start
-                                 =astro::JulianDate(2001, 1, 1, 0));
-
-   static astro::JulianDate currentTime();
 
 };
 
