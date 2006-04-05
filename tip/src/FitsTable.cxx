@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "FitsColumn.h"
+#include "FitsPrimProps.h"
 #include "FitsTable.h"
 #include "tip/TipException.h"
 
@@ -104,6 +105,50 @@ namespace tip {
       std::ostringstream os;
       os << "Could not insert field " << field_name << " with form " << format;
       throw TipException(status, formatWhat(os.str()));
+    }
+
+    // Find out type code for this column, needed for TNULL keyword.
+    int type_code = 0;
+    fits_get_coltype(m_header.getFp(), col_num, &type_code, 0, 0, &status);
+    if (0 != status) {
+      std::ostringstream os;
+      os << "Could not get type of newly inserted field \"" << field_name << "\"";
+      throw TipException(status, formatWhat(os.str()));
+    }
+
+    // Get the address of the TNULL value for the correct primitive type.
+    void * value = 0;
+    int bool_value = FitsPrimProps<char>::undefined();
+    switch (type_code) {
+      case TSTRING: value = &FitsPrimProps<char *>::undefined(); break;
+      case TLOGICAL: type_code = TBYTE; value = &bool_value; break; // Fitsio expects a 4 byte int, but value needs to be correct for bool undef.
+      case TBYTE: value = &FitsPrimProps<char>::undefined(); break;
+      case TSHORT: value = &FitsPrimProps<short>::undefined(); break;
+      case TINT: value = &FitsPrimProps<int>::undefined(); break;
+      case TLONG: value = &FitsPrimProps<long>::undefined(); break;
+      case TUSHORT: value = &FitsPrimProps<unsigned short>::undefined(); break;
+      case TUINT: value = &FitsPrimProps<unsigned int>::undefined(); break;
+      case TULONG: value = &FitsPrimProps<unsigned long>::undefined(); break;
+      case TFLOAT: value = &FitsPrimProps<float>::undefined(); break;
+      case TDOUBLE: value = &FitsPrimProps<double>::undefined(); break;
+      case TLONGLONG: value = &FitsPrimProps<long long>::undefined(); break;
+      default: break;
+    }
+
+    if (0 != value) {
+      // Construct and set the TNULL keyword name for this column.
+      std::ostringstream tnullN;
+      tnullN << "TNULL" << col_num;
+      fits_update_key(m_header.getFp(), type_code, const_cast<char *>(tnullN.str().c_str()), value, 0, &status);
+      if (0 != status) {
+        throw TipException(status, formatWhat("Could not update keyword " + tnullN.str()));
+      }
+    }
+
+    // Update structural keywords to reflect this change.
+    fits_set_hdustruc(m_header.getFp(), &status);
+    if (0 != status) {
+      throw TipException(status, formatWhat("Could not update structural keywords for new field \"" + field_name + "\""));
     }
 
     // Get all pertinent info about the new column:
