@@ -21,6 +21,12 @@ namespace tip {
           for types not already supported.
       */
       static int dataTypeCode();
+
+      /** \brief Return the value used for undefined values in FITS files for the given primitive type.
+
+          Note that this is tied to the primitive type being written, not to the type in the FITS file.
+      */
+      static T & undefined();
   };
 
 }
