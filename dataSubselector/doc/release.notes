@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r2    05-Apr-06   JC   allow GTI to be recomputed from scratch in 
+                             gtmaketime, with user-specifiable start and
+                             stop observation times
     v4r1p6  31-Mar-06   JC   enable gtmaketime to append GTIs to non-FT1
                              files
     v4r1p5  27-Feb-06   JC   setprecision to 20 for RangeCut filter string
