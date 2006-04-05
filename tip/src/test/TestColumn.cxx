@@ -7,6 +7,7 @@
 #include "fitsio.h"
 
 #include "FitsColumn.h"
+#include "FitsPrimProps.h"
 #include "FitsTable.h"
 #include "TestColumn.h"
 
@@ -69,6 +70,28 @@ namespace tip {
         ReportUnexpected("TestColumn::test(): getColumnKeyword(\"TUNIT\") returned \"" + units + "\", not MeV");
     } catch (const TipException & x) {
       ReportUnexpected("TestColumn::test() caught unexpected exception while testing FitsColumn::getColumnKeyword", x);
+    }
+
+    // Write and read back an empty string, which should be interpreted as a null value.
+    try {
+      FitsTable manager("a1-copy.pha", "SPECTRUM", "#row>0", false);
+
+      // First read value as a string to make sure it's not null.
+      std::string value;
+      manager.getColumn(0)->get(1, value);
+      if (value.empty()) ReportUnexpected("TestColumn::test() read a non-null value as a blank string");
+      else {
+        // Set the first element in the column to be a null value using blank string.
+        std::string null_string = FitsPrimProps<char *>::undefined();
+        manager.getColumn(0)->set(1, null_string);
+
+        // Read back the value to make sure it is null.
+        manager.getColumn(0)->get(1, value);
+        if (value != null_string)
+          ReportUnexpected("TestColumn::test() read what should be a null value as the non-blank string \"" + value + "\"");
+      }
+    } catch (const TipException & x) {
+      ReportExpected("TestColumn::test() was not able to read/write null value in a double column", x);
     }
 
     return getStatus();

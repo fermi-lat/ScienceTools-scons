@@ -11,14 +11,13 @@
 #include <string>
 #include <vector>
 
+#include "FitsPrimProps.h"
 #include "FitsTable.h"
 #include "RootTable.h"
 #include "TestTable.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
-
-#include <iostream>
 
 #define MAKE_COMPILATION_FAIL (0)
 
@@ -568,6 +567,123 @@ namespace tip {
       try {
         m_fits_table->appendField("NEW_chan", "1I");
         ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
+
+      msg = "appending vector bool field to FITS table";
+      try {
+        // Add a vector bool field.
+        m_fits_table->appendField("NEW_bool", "8L");
+        
+        // Create a state with alternating T/F.
+        bool ramp = false;
+        std::vector<bool> bool_state(8, false);
+        for (std::vector<bool>::iterator itor = bool_state.begin(); itor != bool_state.end(); ++itor, ramp = !ramp)
+          (*itor) = ramp;
+    
+        // Assign the state to each row in the new field.
+        for (Table::Iterator itor = m_fits_table->begin(); itor != m_fits_table->end(); ++itor) {
+          (*itor)["NEW_bool"].set(bool_state);
+        }
+
+        // Overwrite the first entry, setting it to all empty strings (interpreted as undefined).
+        // Start off with 8 blanks.
+        std::vector<std::string> state(8);
+        (*m_fits_table->begin())["New_bool"].set(state);
+
+        char * prim_correct[] = { "F", "T", "F", "T", "F", "T", "F", "T" };
+        // Read back in the new column to make sure it's correct.
+        bool error = false;
+        std::vector<std::string> correct_state(8, FitsPrimProps<char *>::undefined());
+        for (Table::Iterator itor = m_fits_table->begin(); itor != m_fits_table->end(); ++itor) {
+          state.clear();
+          (*itor)["NEW_bool"].get(state);
+          if (state != correct_state) {
+            ReportUnexpected("after " + msg + " state read was:");
+            std::ostringstream os;
+            const char * delim = "\t(";
+            for (std::vector<std::string>::iterator s_itor = state.begin(); s_itor != state.end(); ++s_itor) {
+              os << delim << *s_itor;
+              delim = ", ";
+            }
+            os << ")";
+            ReportUnexpected(os.str());
+            ReportUnexpected("but the state read should have been:");
+            os.str("");
+            delim = "\t(";
+            for (std::vector<std::string>::iterator s_itor = correct_state.begin(); s_itor != correct_state.end(); ++s_itor) {
+              os << delim << *s_itor;
+              delim = ", ";
+            }
+            os << ")";
+            ReportUnexpected(os.str());
+            error = true;
+          }
+          correct_state.assign(prim_correct, prim_correct+ sizeof(prim_correct) / sizeof(char *));
+        }
+        if (!error) ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
+
+      msg = "appending vector short field to FITS table";
+      try {
+        // Add a vector short field.
+        m_fits_table->appendField("NEW_short", "8I");
+        
+        // Create a vector which should evaluate to all INDEF.
+        std::vector<short> short_state(8, std::numeric_limits<short>::min());
+
+        // Start with the first row of the new field, and set it as undefined.
+        Table::Iterator table_itor = m_fits_table->begin();
+        (*table_itor)["New_short"].set(short_state);
+
+        // Recreate the state with ramp.
+        short ramp = 0;
+        for (std::vector<short>::iterator itor = short_state.begin(); itor != short_state.end(); ++itor, ++ramp)
+          (*itor) = ramp;
+    
+        // Assign the state to each remaining row in the new field.
+        for (++table_itor; table_itor != m_fits_table->end(); ++table_itor) {
+          (*table_itor)["NEW_short"].set(short_state);
+        }
+
+        // Overwrite the first entry, setting it to all empty strings (interpreted as undefined).
+        // Start off with 8 blanks.
+        std::vector<std::string> state(8);
+
+        char * prim_correct[] = { "0", "1", "2", "3", "4", "5", "6", "7" };
+        // Read back in the new column to make sure it's correct.
+        bool error = false;
+        std::vector<std::string> correct_state(8, FitsPrimProps<char *>::undefined());
+        for (Table::Iterator itor = m_fits_table->begin(); itor != m_fits_table->end(); ++itor) {
+          state.clear();
+          (*itor)["NEW_short"].get(state);
+          if (state != correct_state) {
+            ReportUnexpected("after " + msg + " state read was:");
+            std::ostringstream os;
+            const char * delim = "\t(";
+            for (std::vector<std::string>::iterator s_itor = state.begin(); s_itor != state.end(); ++s_itor) {
+              os << delim << *s_itor;
+              delim = ", ";
+            }
+            os << ")";
+            ReportUnexpected(os.str());
+            ReportUnexpected("but the state read should have been:");
+            os.str("");
+            delim = "\t(";
+            for (std::vector<std::string>::iterator s_itor = correct_state.begin(); s_itor != correct_state.end(); ++s_itor) {
+              os << delim << *s_itor;
+              delim = ", ";
+            }
+            os << ")";
+            ReportUnexpected(os.str());
+            error = true;
+          }
+          correct_state.assign(prim_correct, prim_correct+ sizeof(prim_correct) / sizeof(char *));
+        }
+        if (!error) ReportExpected(msg + " succeeded");
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);
       }
