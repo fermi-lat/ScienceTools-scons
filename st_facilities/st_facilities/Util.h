@@ -113,9 +113,11 @@ public:
                                  const astro::JulianDate & mission_start
                                  =astro::JulianDate(2001, 1, 1, 0));
    
+#ifndef SWIG   
    /// @return The current time ascertained using the <ctime> standard
    /// library.
    static astro::JulianDate currentTime();
+#endif
 
 };
 

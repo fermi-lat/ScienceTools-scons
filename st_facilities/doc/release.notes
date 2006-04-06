@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  05-Apr-06 v0r7p1 JC    protect against SWIG build of Util::currentTime()
   05-Apr-06 v0r7   JC    move Util::writeDateKeywords from fitsGen
   24-Mar-06 v0r6p6 JC    use cppunit v* IExternal, not v1*
   15-Mar-06 v0r6p5 JC    add libStApiExports.h
