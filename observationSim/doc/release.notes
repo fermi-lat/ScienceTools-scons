@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2p2 06-Apr-06   JC   back off on shared lib build since static symbols
+                            from celestialSources, i.e., the factory objects,
+                            are not being exported on Windows.
     v6r2p1 21-Mar-06   JC   add using CLHEP:: where needed
     v6r2   15-Mar-06   JC   convert to shared library using 
                             st_facilities::libStApiExports.h
