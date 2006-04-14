@@ -94,9 +94,11 @@ namespace facilities {
     */
     static const char* itoa(int val, std::string &outStr);
     /**
-      Given unsigned, convert to output string
+      Given unsigned, convert to output string. If optional  @arg base
+      is 16, format as 8 hex digits.
     */
-    static const char* utoa(unsigned int val, std::string &outStr);
+    static const char* utoa(unsigned int val, std::string &outStr,
+                            int base=10);
 
     /// converts an std::string to an integer
     static int atoi(const std::string& InStr);

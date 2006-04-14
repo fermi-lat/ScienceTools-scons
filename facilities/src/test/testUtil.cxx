@@ -61,6 +61,13 @@ int main(int, char**) {
   std::cout << "Result from utoa for 0xffffffff is: " 
             << unsignedStr << std::endl;
 
+  u = 64;
+  unsignedStr.clear();
+  facilities::Util::utoa(u, unsignedStr, 16);
+  std::cout << "Result from utoa (base 16 output) for (base 10) " << u
+            << " is: " << unsignedStr << std::endl;
+  std::cout.flush();
+
   // basename & stringTokenize
   std::string unixname("/a/path/myUnixFile.txt");
   std::string wname("C:\\a\\longer\\path\\myWindowsFile.txt");
