@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r17    14-Apr-06 THB Add function to HealpixArray, to take dot product for efficiency
   v1r16    23-Mar-06 THB Changes for new CLHEP namespace
   v1r15    15-Mar-06 THB Add simple photon data class
   v1r14    15-Mar-06 THB Simplify wrapper of healpix_base to create only when needed.
