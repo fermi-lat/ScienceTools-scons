@@ -50,21 +50,21 @@ void Exposure::fill(const astro::SkyDir& dirz, double deltat)
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
         CosineBinner & pixeldata= *is; // get the contents of this pixel
-        astro::SkyDir pdir = data().dir(is); // dir() is defined in HealpixArray.h
-        double costh = pdir().dot(dirz());
+        double costh = data().dot(is, dirz); 
 	pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
     }
     addtotal(deltat);
 }
 
+
+//! Todo: this is duplicated code! ugh!
 void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)
 {
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
         CosineBinner & pixeldata= *is; // get the contents of this pixel
-        astro::SkyDir pdir = data().dir(is); // dir() is defined in HealpixArray.h
-        double costh = pdir().dot(dirz());
-	double costhzen = pdir().dot(dirzenith());
+        double costh = data().dot(is, dirz);
+	double costhzen = data().dot(is, dirzenith);
 	if(costhzen>-0.4){
 	  pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
 	}
