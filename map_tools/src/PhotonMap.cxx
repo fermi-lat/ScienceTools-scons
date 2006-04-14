@@ -97,6 +97,34 @@ int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::
     return total;
 }
 
+int PhotonMap::extract(int level,const astro::SkyDir& dir, double radius, std::vector<std::pair<astro::HealPixel, int> >& vec)const
+{
+    radius *= (M_PI / 180); // convert to radians
+    int summary_level( m_minlevel - 1); // default level to test
+    int nside( 1<< summary_level);
+    int npix( 12 * nside * nside);
+    int total(0);
+
+    // Look at each summary pixel and decide whether to go deeper.
+    for (int i = 0; i < npix; ++ i)  {
+        astro::HealPixel hp(i, summary_level);
+        double distance = hp().difference(dir);
+
+        if (distance <= radius) {
+            astro::HealPixel boundary(i + 1, summary_level);
+            for( const_iterator it = lower_bound(hp);
+                it != end() && it->first < boundary; ++it)
+            {
+                if( it->first.level() != level ) continue;
+                int count = it->second;
+                vec.push_back(std::make_pair( it->first, count));
+                total+=count;
+            }
+        }
+    }
+    return total;
+}
+
 //! Count the photons, perhaps weighted, within a given pixel.
 double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
                               bool weighted) const
