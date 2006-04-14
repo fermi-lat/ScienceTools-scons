@@ -186,10 +186,10 @@ public:
         std::string in_file = m_pars["infile"];
         std::string table = m_pars["table"];
         Exposure ex(in_file, table);
-
+#if 0 //! todo: find out how this was broken
         double total_elaspsed = ex.total();
         m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
-
+#endif
         irfInterface::IAeff* aeff = findAeff(m_pars["resptype"]);
 
         // create the image object, fill it from the exposure, write out
