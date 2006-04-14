@@ -155,7 +155,8 @@ void OrbSim::createSimulator() {
 void OrbSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-   std::string ev_table = m_pars["evtable"];
+//   std::string ev_table = m_pars["evtable"];
+   std::string ev_table("EVENTS");
    std::string sc_table = m_pars["sctable"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          0, nMaxRows);
