@@ -104,7 +104,19 @@ private:
 
     */
     void create_cache();
-    std::vector< std::pair<CosineBinner* ,  CLHEP::Hep3Vector> > m_dir_cache;
+
+    /** @class Simple3Vector 
+    @brief replacement for Hep3Vector for speed of dot product
+
+    */
+    class Simple3Vector {
+    public: 
+        Simple3Vector(const CLHEP::Hep3Vector& v=CLHEP::Hep3Vector())
+            : x(v.x()),y(v.y()),z(v.z()){};
+        double dot(const Simple3Vector& u)const{return x*u.x+y*u.y+z*u.z;}
+        double x,y,z;
+    };
+    std::vector< std::pair<CosineBinner* ,  Simple3Vector> > m_dir_cache;
     class Filler ; ///< class used to fill a CosineBinner object with a value
 };
 

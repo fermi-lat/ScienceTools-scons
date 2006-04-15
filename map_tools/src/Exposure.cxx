@@ -53,7 +53,7 @@ void Exposure::create_cache()
 
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
-        CLHEP::Hep3Vector pixdir = data().dir(is)();
+        Simple3Vector pixdir(data().dir(is)());
         m_dir_cache.push_back(std::make_pair(&*is, pixdir));
     }
 }
@@ -74,7 +74,7 @@ public:
         , m_deltat(deltat)
         , m_zcut(zcut)
     {}
-    void operator()( std::pair<CosineBinner*, CLHEP::Hep3Vector> &x)
+    void operator()( std::pair<CosineBinner*, Simple3Vector> &x)
     {
         // check if we are making a horizon cut:
         if( m_zcut==-1 || x.second.dot(m_zenith)< m_zcut)
@@ -83,41 +83,20 @@ public:
             x.first->fill(x.second.dot(m_dir), m_deltat);
     }
 private:
-    CLHEP::Hep3Vector m_dir, m_zenith;
+    Simple3Vector m_dir, m_zenith;
     double m_deltat, m_zcut;
 };
 
 void Exposure::fill(const astro::SkyDir& dirz, double deltat)
 {
-#if 0
-    SkyBinner::iterator is = data().begin();
-    for( ; is != data().end(); ++is){ // loop over all pixels
-        CosineBinner & pixeldata= *is; // get the contents of this pixel
-        double costh = data().dot(is, dirz); 
-	pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
-    }
-#else //use cache
     for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz));
-#endif
     addtotal(deltat);
 }
 
 
 void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, double deltat, double zcut)
 {
-#if 0 // old non-cache version: leave so that James and Julie can compare
-    SkyBinner::iterator is = data().begin();
-    for( ; is != data().end(); ++is){ // loop over all pixels
-        CosineBinner & pixeldata= *is; // get the contents of this pixel
-        double costh = data().dot(is, dirz);
-	double costhzen = data().dot(is, dirzenith);
-	if(costhzen>-0.4){
-	  pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
-	}
-    }
-#else // use cache
     for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, zenith, zcut));
-#endif
     addtotal(deltat);
 }
 
