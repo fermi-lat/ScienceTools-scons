@@ -9,6 +9,7 @@
 #include "astro/EarthCoordinate.h"
 
 #include <memory>
+#include <algorithm>
 
 using namespace map_tools;
 
@@ -33,33 +34,78 @@ inline int side_from_degrees(double pixelsize){
 Exposure::Exposure(double pixelsize, double cosbinsize)
 : SkyExposure(SkyBinner(side_from_degrees(pixelsize)))
 {
-    // 2/8/2006 JP changed this to unsigned int to silence compiler warning.
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
     if( cosbins != CosineBinner::s_nbins ) {
         SkyBinner::iterator is = data().begin();
-       for( ; is != data().end(); ++is){ // loop over all pixels
-        CosineBinner & pixeldata= *is; // get the contents of this pixel
-        pixeldata.resize(cosbins);
-       }
-       CosineBinner::setBinning(0, cosbins);
+        for( ; is != data().end(); ++is){ // loop over all pixels
+            CosineBinner & pixeldata= *is; // get the contents of this pixel
+            pixeldata.resize(cosbins);
+            CLHEP::Hep3Vector pixdir = data().dir(is)();
+        }
+        CosineBinner::setBinning(0, cosbins);
+    }
+    create_cache();
+}
+
+void Exposure::create_cache()
+{
+    m_dir_cache.resize(data().size());
+
+    SkyBinner::iterator is = data().begin();
+    for( ; is != data().end(); ++is){ // loop over all pixels
+        CLHEP::Hep3Vector pixdir = data().dir(is)();
+        m_dir_cache.push_back(std::make_pair(&*is, pixdir));
     }
 }
+/** @class Filler
+    @brief private helper class used in for_each to fill a CosineBinner object
+*/
+class Exposure::Filler {
+public:
+    /** @brief ctor
+        @param deltat time to add
+        @param dir direction to use to determine angle (presumably the spacecraft z-axis)
+        @param zenith optional zenith direction for potential cut
+        @param zcut optional cut: if -1, ignore
+    */
+    Filler( double deltat, const astro::SkyDir& dir, astro::SkyDir zenith=astro::SkyDir(), double zcut=-1)
+        : m_dir(dir())
+        , m_zenith(zenith())
+        , m_deltat(deltat)
+        , m_zcut(zcut)
+    {}
+    void operator()( std::pair<CosineBinner*, CLHEP::Hep3Vector> &x)
+    {
+        // check if we are making a horizon cut:
+        if( m_zcut==-1 || x.second.dot(m_zenith)< m_zcut)
+
+            // if ok, add to the angle histogram
+            x.first->fill(x.second.dot(m_dir), m_deltat);
+    }
+private:
+    CLHEP::Hep3Vector m_dir, m_zenith;
+    double m_deltat, m_zcut;
+};
 
 void Exposure::fill(const astro::SkyDir& dirz, double deltat)
 {
+#if 0
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
         CosineBinner & pixeldata= *is; // get the contents of this pixel
         double costh = data().dot(is, dirz); 
 	pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
     }
+#else //use cache
+    for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz));
+#endif
     addtotal(deltat);
 }
 
 
-//! Todo: this is duplicated code! ugh!
-void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)
+void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, double deltat, double zcut)
 {
+#if 0 // old non-cache version: leave so that James and Julie can compare
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
         CosineBinner & pixeldata= *is; // get the contents of this pixel
@@ -69,6 +115,9 @@ void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, d
 	  pixeldata.fill(costh, deltat); // fill() is defined in CosineBinner.h
 	}
     }
+#else // use cache
+    for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, zenith, zcut));
+#endif
     addtotal(deltat);
 }
 

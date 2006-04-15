@@ -23,7 +23,7 @@ CosineBinner::CosineBinner()
 /// the binning function: add value to the selected bin
 void CosineBinner::fill(double costheta, double value)
 {
-    if( costheta<s_cosmin ) return;
+    if( costheta<=s_cosmin ) return;
     (*this)[costheta] += value;
 }
 
