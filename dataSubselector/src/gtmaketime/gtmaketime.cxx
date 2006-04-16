@@ -175,12 +175,6 @@ makeUserGti(std::vector<const dataSubselector::GtiCut *> & gtiCuts) const {
       const tip::Header & header(evTable->getHeader());
       header["TSTART"].get(tstart);
       header["TSTOP"].get(tstop);
-   } else {
-      tip::Table * evTable 
-         = tip::IFileSvc::instance().editTable(m_evfile, extension);
-      tip::Header & header(evTable->getHeader());
-      header["TSTART"].set(tstart);
-      header["TSTOP"].set(tstop);
    }
    dataSubselector::Gti myGti;
    myGti.insertInterval(tstart, tstop);
