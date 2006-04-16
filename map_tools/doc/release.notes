@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 15-apr-06 v6r4p1 THB  much faster implementation of exposure_map
  14-apr-06 v6r4   THB  added method to PhotonMap; made exposure_map more efficient
  25-mar-06 v6r3p1,2 THB Really fix defaults
  24-mar-06 v6r3   THB Change some defaults for exposure_map application; fix PhotonMap a little
