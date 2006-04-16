@@ -40,7 +40,7 @@ using CLHEP::HepRotation;
 
 #include "observationSim/EventContainer.h"
 #include "observationSim/Spacecraft.h"
-#include "Verbosity.h"
+//#include "Verbosity.h"
 
 namespace {
    double my_acos(double mu) {

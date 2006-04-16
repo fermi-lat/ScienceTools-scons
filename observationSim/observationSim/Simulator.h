@@ -14,6 +14,8 @@
 
 #include "CLHEP/Geometry/Vector3D.h"
 
+#include "st_stream/StreamFormatter.h"
+
 #include "astro/GPS.h"
 #include "astro/SkyDir.h"
 
@@ -58,14 +60,15 @@ public:
    ///        the instrument in square meters.  The default value is
    ///        maximum effective area appearing in the GLAST25 tables.
    /// @param startTime Absolute starting time of the simulation in seconds.
-   Simulator(const std::string &sourceName, 
-             const std::vector<std::string> &fileList,
+   Simulator(const std::string & sourceName, 
+             const std::vector<std::string> & fileList,
              double totalArea = 1.21,
              double startTime = 0.,
-             const std::string &pointingHistory = "",
+             const std::string & pointingHistory = "",
              double maxSimTime = 3.155e8,
              double pointingHistoryOffset = 0)
-      : m_fluxMgr(0), m_source(0), m_newEvent(0) {
+      : m_formatter(new st_stream::StreamFormatter("Simulator", "", 2)),
+        m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceName, fileList, totalArea, startTime, pointingHistory,
            maxSimTime, pointingHistoryOffset);
    }
@@ -79,7 +82,8 @@ public:
              const std::string &pointingHistory = "",
              double maxSimTime = 3.155e8,
              double pointingHistoryOffset=0)
-      : m_fluxMgr(0), m_source(0), m_newEvent(0) {
+      : m_formatter(new st_stream::StreamFormatter("Simulator", "", 2)),
+        m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceNames, fileList, totalArea, startTime, pointingHistory,
            maxSimTime, pointingHistoryOffset);
    }
@@ -89,7 +93,6 @@ public:
    /// Set the pointing history file.
    void setPointingHistoryFile(const std::string &filename, double offset) {
       m_fluxMgr->setRockType(astro::GPS::HISTORY, 0);
-//      m_fluxMgr->setPointingHistoryFile(filename);
       astro::GPS::instance()->setPointingHistoryFile(filename, offset);
       m_usePointingHistory = true;
    }   
@@ -162,11 +165,12 @@ protected:
 
 private:
 
-   FluxMgr *m_fluxMgr;
+   st_stream::StreamFormatter * m_formatter;
 
-   CompositeSource *m_source;
+   FluxMgr * m_fluxMgr;
+   CompositeSource * m_source;
+   EventSource * m_newEvent;
 
-   EventSource *m_newEvent;
    double m_interval;
    
    long m_numEvents;

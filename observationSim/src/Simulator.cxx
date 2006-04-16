@@ -30,7 +30,7 @@
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/Simulator.h"
 #include "LatSc.h"
-#include "Verbosity.h"
+//#include "Verbosity.h"
 
 namespace observationSim {
 
@@ -76,11 +76,10 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       if (st_facilities::Util::fileExists(pointingHistory)) {
          setPointingHistoryFile(pointingHistory, pointingHistoryOffset);
       } else {
-         if (print_output()) {
-            std::cout << "Pointing history file not found: \n"
-                      << pointingHistory << "\n"
-                      << "Using default rocking strategy." << std::endl;
-         }
+         m_formatter->info() << "Pointing history file not found: \n"
+                             << pointingHistory << "\n"
+                             << "Using default rocking strategy." 
+                             << std::endl;
          setRocking();
       }
    } else {
@@ -94,10 +93,10 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       defaultSource->totalArea(totalArea);
       delete defaultSource;
    } catch(...) {
-      std::cerr << "Simulator::Simulator: \n"
-                << "Cannot use default source to set the LAT sphere "
-                << "cross-section.  Leaving it at 6 m^2."
-                << std::endl;
+      m_formatter->info() << "Simulator::Simulator: \n"
+                          << "Cannot use default source to set the LAT sphere "
+                          << "cross-section.  Leaving it at 6 m^2."
+                          << std::endl;
    }
 
 // Create a new pointer to the desired source from m_fluxMgr.
@@ -109,25 +108,20 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       if ( (source = m_fluxMgr->source(*name)) ) {
          m_source->addSource(source);
          nsrcs++;
-         if (print_output()) {
-            std::cout << "added source \"" << *name << "\"" << std::endl;
-         }
+         m_formatter->info() << "added source \"" << *name 
+                             << "\"" << std::endl;
       } else {
-         if (print_output()) {
-            std::cout << "Simulator::init: \n"
-                      << "FluxMgr failed to find a source named \""
-                      << *name << "\"" << std::endl;
-         }
+         m_formatter->info() << "Simulator::init: \n"
+                             << "FluxMgr failed to find a source named \""
+                             << *name << "\"" << std::endl;
       }
    }
    if (nsrcs == 0) {
-      if (print_output()) {
-         std::cout << "Simulator::init: \n"
-                   << "FluxMgr has failed to add any valid "
-                   << "photon sources to the model."
-                   << std::endl;
-      }
-      exit(-1);
+      m_formatter->err() << "Simulator::init: \n"
+                         << "FluxMgr has failed to add any valid "
+                         << "photon sources to the model."
+                         << std::endl;
+      std::exit(1);
    }
 
    if (pointingHistory == "none" || pointingHistory == "") {
@@ -136,41 +130,41 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
       try {
          clock = m_fluxMgr->source("obsSim_timetick30s");
       } catch(...) {
-         std::cerr << "Simulator::Simulator: \n"
-                   << "Failed to create a obsSim_timetick30s source." 
-                   << std::endl;
+         m_formatter->err() << "Simulator::Simulator: \n"
+                            << "Failed to create a obsSim_timetick30s source." 
+                            << std::endl;
          listSources();
-         exit(-1);
+         std::exit(1);
       }
       try {
          m_source->addSource(clock);
       } catch(...) {
-         std::cerr << "Failed to add a timetick30s source to the "
-                   << "CompositeSource object."
-                   << std::endl;
+         m_formatter->err() << "Failed to add a timetick30s source to the "
+                            << "CompositeSource object."
+                            << std::endl;
          listSources();
-         exit(-1);
+         std::exit(1);
       }
    }
 }
 
 void Simulator::listSources() const {
-   std::cerr << "List of available sources:" << std::endl;
+   m_formatter->info() << "List of available sources:" << std::endl;
    std::list<std::string> source_list = m_fluxMgr->sourceList();
-
+   
    for (std::list<std::string>::const_iterator it = source_list.begin()
            ; it != source_list.end(); it++) {
-      std::cerr << '\t' << *it << std::endl;
+      m_formatter->info() << '\t' << *it << std::endl;
    }
 }
 
 void Simulator::listSpectra() const {
-   std::cerr << "List of loaded Spectrum objects: " << std::endl;
+   m_formatter->info() << "List of loaded Spectrum objects: " << std::endl;
    std::list<std::string> 
       spectra(SpectrumFactoryTable::instance()->spectrumList());
    for( std::list<std::string>::const_iterator it = spectra.begin(); 
         it != spectra.end(); ++it) { 
-      std::cerr << '\t'<< *it << std::endl;
+      m_formatter->info() << '\t'<< *it << std::endl;
    }
 }
 

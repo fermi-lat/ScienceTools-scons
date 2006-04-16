@@ -14,6 +14,8 @@
 
 #include "CLHEP/Random/Random.h"
 
+#include "st_stream/StreamFormatter.h"
+
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
@@ -41,19 +43,21 @@
 #include "observationSim/ScDataContainer.h"
 
 #include "LatSc.h"
-#include "Verbosity.h"
+//#include "Verbosity.h"
 
 using st_facilities::Util;
 
 class ObsSim : public st_app::StApp {
 public:
    ObsSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("gtobssim")),
-              m_simulator(0) {
+              m_simulator(0), 
+              m_formatter(new st_stream::StreamFormatter("gtobssim", "", 2)) {
       setVersion(s_cvs_id);
    }
    virtual ~ObsSim() throw() {
       try {
          delete m_simulator;
+         delete m_formatter;
          for (unsigned int i = 0; i < m_respPtrs.size(); i++) {
             delete m_respPtrs[i];
          }
@@ -71,6 +75,7 @@ private:
    std::vector<std::string> m_srcNames;
    std::vector<irfInterface::Irfs *> m_respPtrs;
    observationSim::Simulator * m_simulator;
+   st_stream::StreamFormatter * m_formatter;
 
    void promptForParameters();
    void checkOutputFiles();
@@ -100,7 +105,7 @@ void ObsSim::banner() const {
 void ObsSim::run() {
    promptForParameters();
    checkOutputFiles();
-   observationSim::Verbosity::instance(m_pars["chatter"]);
+//   observationSim::Verbosity::instance(m_pars["chatter"]);
    setRandomSeed();
    createFactories();
    setXmlFiles();
@@ -108,9 +113,7 @@ void ObsSim::run() {
    createResponseFuncs();
    createSimulator();
    generateData();
-   if (observationSim::print_output()) {
-      std::cout << "Done." << std::endl;
-   }
+   m_formatter->info() << "Done." << std::endl;
 }
 
 void ObsSim::promptForParameters() {
@@ -138,18 +141,18 @@ void ObsSim::checkOutputFiles() {
       std::string prefix = m_pars["outfile_prefix"];
       std::string file = prefix + "_events_0000.fits";
       if (st_facilities::Util::fileExists(file)) {
-         std::cout << "Output file " << file 
-                   << " already exists and you have set 'clobber' to 'no'.\n"
-                   << "Please provide a different output file prefix." 
-                   << std::endl;
+         m_formatter->err() << "Output file " << file  << " already exists,\n"
+                            << "and you have set 'clobber' to 'no'.\n"
+                            << "Please provide a different output file prefix."
+                            << std::endl;
          std::exit(1);
       }
       file = prefix + "_scData_0000.fits";
       if (st_facilities::Util::fileExists(file)) {
-         std::cout << "Output file " << file 
-                   << " already exists and you have set 'clobber' to 'no'.\n"
-                   << "Please provide a different output file prefix." 
-                   << std::endl;
+         m_formatter->err() << "Output file " << file << " already exists,\n"
+                            << "and you have set 'clobber' to 'no'.\n"
+                            << "Please provide a different output file prefix."
+                            << std::endl;
          std::exit(1);
       }
    }
@@ -189,10 +192,8 @@ void ObsSim::setXmlFiles() {
             if (Util::fileExists(files[i])) {
                m_xmlSourceFiles.push_back(files[i]);
             } else {
-               if (observationSim::print_output()) {
-                  std::cout << "File not found: " 
-                            << files[i] << std::endl;
-               }
+               m_formatter->info() << "File not found: " 
+                                   << files[i] << std::endl;
             }
          }
       } 
@@ -289,16 +290,13 @@ void ObsSim::generateData() {
    double frac = m_pars["livetime_frac"];
    spacecraft->setLivetimeFrac(frac);
    if (m_pars["use_as_numevents"]) {
-      if (observationSim::print_output()) {
-         std::cout << "Generating " << m_count << " events...." << std::endl;
-      }
+      m_formatter->info() << "Generating " << m_count 
+                          << " events...." << std::endl;
       m_simulator->generateEvents(static_cast<long>(m_count), events, 
                                   scData, m_respPtrs, spacecraft);
    } else {
-      if (observationSim::print_output()) {
-         std::cout << "Generating events for a simulation time of "
-                   << m_count << " seconds...." << std::endl;
-      }
+      m_formatter->info() << "Generating events for a simulation time of "
+                          << m_count << " seconds...." << std::endl;
       m_simulator->generateEvents(m_count, events, scData, m_respPtrs, 
                                   spacecraft);
    }

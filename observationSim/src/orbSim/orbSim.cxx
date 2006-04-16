@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "st_stream/StreamFormatter.h"
+
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
@@ -29,12 +31,13 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
-#include "Verbosity.h"
+//#include "Verbosity.h"
 
 class OrbSim : public st_app::StApp {
 public:
    OrbSim() : st_app::StApp(), m_pars(st_app::StApp::getParGroup("gtorbsim")),
-              m_simulator(0) {
+              m_simulator(0),
+              m_formatter(new st_stream::StreamFormatter("gtorbsim", "", 2)) {
       setVersion(s_cvs_id);
    }
    virtual ~OrbSim() throw() {
@@ -51,6 +54,8 @@ private:
    st_app::AppParGroup & m_pars;
    double m_count;
    observationSim::Simulator * m_simulator;
+   st_stream::StreamFormatter * m_formatter;
+
    std::map<std::string, int> m_rockTypes;
    std::vector<irfInterface::Irfs *> m_respPtrs;
 
@@ -78,12 +83,10 @@ void OrbSim::run() {
    defineRockTypes();
    promptForParameters();
    checkOutputFiles();
-   observationSim::Verbosity::instance(m_pars["chatter"]);
+//   observationSim::Verbosity::instance(m_pars["chatter"]);
    createSimulator();
    generateData();
-   if (observationSim::print_output()) {
-      std::cout << "Done." << std::endl;
-   }
+   m_formatter->info() << "Done." << std::endl;
 }
 
 void OrbSim::promptForParameters() {
@@ -107,10 +110,10 @@ void OrbSim::checkOutputFiles() {
       std::string prefix = m_pars["outfile_prefix"];
       std::string file = prefix + "_scData_0000.fits";
       if (st_facilities::Util::fileExists(file)) {
-         std::cout << "Output file " << file 
-                   << " already exists and you have set 'clobber' to 'no'.\n"
-                   << "Please provide a different output file prefix." 
-                   << std::endl;
+         m_formatter->err() << "Output file " << file << " already exists,\n"
+                            << "and you have set 'clobber' to 'no'.\n"
+                            << "Please provide a different output file prefix."
+                            << std::endl;
          std::exit(1);
       }
    }
@@ -155,7 +158,6 @@ void OrbSim::createSimulator() {
 void OrbSim::generateData() {
    long nMaxRows = m_pars["max_numrows"];
    std::string prefix = m_pars["outfile_prefix"];
-//   std::string ev_table = m_pars["evtable"];
    std::string ev_table("EVENTS");
    std::string sc_table = m_pars["sctable"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
@@ -165,10 +167,10 @@ void OrbSim::generateData() {
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    double frac = m_pars["livetime_frac"];
    spacecraft->setLivetimeFrac(frac);
-   if (observationSim::print_output()) {
-      std::cout << "Generating pointing history for a simulation time of "
-                << m_count << " seconds...." << std::endl;
-   }
+   m_formatter->info() << "Generating pointing history for a "
+                       << "simulation time of "
+                       << m_count << " seconds...." 
+                       << std::endl;
    m_simulator->generateEvents(m_count, events, scData, m_respPtrs, 
                                spacecraft);
 
