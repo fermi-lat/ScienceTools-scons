@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2p3 16-Apr-06   JC   use st_stream
     v6r2p2 06-Apr-06   JC   back off on shared lib build since static symbols
                             from celestialSources, i.e., the factory objects,
                             are not being exported on Windows.
