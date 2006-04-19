@@ -50,6 +50,16 @@ namespace {
          }
       }
    }
+   void strip_at_sign(std::string & input) {
+      if (input.find_first_of("@") == 0) {
+         std::string output = "";
+         std::string::iterator it = input.begin() + 1;
+         for ( ; it != input.end(); ++it) {
+            output += *it;
+         }
+         input = output;
+      }
+   }
 }
 
 namespace st_facilities {
@@ -100,6 +110,7 @@ namespace st_facilities {
 
    void Util::resolve_fits_files(std::string filename, 
                                  std::vector<std::string> &files) {
+      ::strip_at_sign(filename);
       facilities::Util::expandEnvVar(&filename);
       files.clear();
 // Read the first line of the file and see if the first 6 characters

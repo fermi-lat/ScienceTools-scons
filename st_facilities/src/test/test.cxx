@@ -133,6 +133,9 @@ void st_facilitiesTests::test_Util_resolve_fits_files() {
    std::vector<std::string> lines;
    Util::resolve_fits_files(m_filename, lines);
    CPPUNIT_ASSERT(lines.size() == 3);
+
+   Util::resolve_fits_files("@" + m_filename, lines);
+   CPPUNIT_ASSERT(lines.size() == 3);
 }
 
 void st_facilitiesTests::test_Env_appendNames() {
