@@ -1,41 +1,76 @@
 /**
  * @file viewCuts.cxx
- * @brief Simple app to print the DSS keywords in an event extension.
+ * @brief Simple app to print the DSS keywords in an event extension or
+ * other extension.
  * @author J. Chiang
  *
  * $Header$
  */
 
 #include <iostream>
+
+#include "st_stream/StreamFormatter.h"
+
+#include "st_app/AppParGroup.h"
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+
 #include "st_facilities/Util.h"
 #include "dataSubselector/Cuts.h"
 
-int main(int iargc, char * argv[]) {
-   std::string file;
-   std::string extname;
-   try {
-      if (iargc == 2 || iargc == 3) {
-         file = argv[1];
-         if (iargc == 3) {
-            extname = argv[2];
-         } else {
-            extname = "EVENTS";
-         }
-         dataSubselector::Cuts cuts(file, extname, false);
-         cuts.writeCuts(std::cout);
-      } else {
-         std::cout << "usage: viewCuts <filename> [<extname>]" << std::endl;
-      }
-   } catch (std::exception & eObj) {
-      if (st_facilities::Util::expectedException(eObj, "EVENTS")) {
-         try {
-            dataSubselector::Cuts cuts(file, "", false);
-            cuts.writeCuts(std::cout);
-         } catch (std::exception & eObj) {
-            std::cout << eObj.what() << std::endl;
-         }
-      } else {
-         std::cout << eObj.what() << std::endl;
+class ViewCuts : public st_app::StApp {
+
+public:
+
+   ViewCuts() : st_app::StApp(),
+                m_pars(st_app::StApp::getParGroup("gtviewcuts")) {
+      try {
+         setVersion(s_cvs_id);
+      } catch (std::exception & eObj) {
+         std::cerr << eObj.what() << std::endl;
+         std::exit(1);
+      } catch (...) {
+         std::cerr << "Caught unknown exception in ViewCuts constructor." 
+                   << std::endl;
+         std::exit(1);
       }
    }
+
+   virtual ~ViewCuts() throw() {
+      try {
+      } catch (std::exception &eObj) {
+         std::cerr << eObj.what() << std::endl;
+      } catch (...) {
+      }
+   }
+
+   virtual void run();
+
+   virtual void banner() const;
+
+private:
+   
+   st_app::AppParGroup & m_pars;
+
+   static std::string s_cvs_id;
+};
+
+std::string ViewCuts::s_cvs_id("$Name$");
+
+st_app::StAppFactory<ViewCuts> myAppFactory("gtviewcuts");
+
+void ViewCuts::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
+
+void ViewCuts::run() {
+   m_pars.Prompt();
+   m_pars.Save();
+   std::string infile = m_pars["infile"];
+   std::string extname = m_pars["table"];
+   dataSubselector::Cuts cuts(infile, extname, false);
+   cuts.writeCuts(std::cout);
 }
