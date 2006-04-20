@@ -328,6 +328,7 @@ void DssTests::compareCutsWithoutGtis() {
 
    CPPUNIT_ASSERT(!(cuts1 == cuts2));
    CPPUNIT_ASSERT(cuts1.compareWithoutGtis(cuts2));
+   CPPUNIT_ASSERT(dataSubselector::Cuts::isTimeCut(cuts2[2]));
 }
 
 void DssTests::mergeGtis() {
@@ -424,6 +425,8 @@ void DssTests::test_DssFormatting() {
 
    delete table1;
    delete table2;
+
+   CPPUNIT_ASSERT(dataSubselector::Cuts::isTimeCut(cuts1[0]));
 }
 
 int main() {

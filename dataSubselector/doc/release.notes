@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r3p1  20-Apr-06   JC   add Cuts::writeDssTimeKeywords method
     v4r3    20-Apr-06   JC   convert viewCuts to gtviewcuts
     v4r2p2  16-Apr-06   JC   do not modify input file header
     v4r2p1  05-Apr-06   JC   update DATE-OBS, DATE-END, TSTART, TSTOP, et al.

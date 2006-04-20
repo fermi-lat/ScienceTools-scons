@@ -296,6 +296,33 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
    }
 }
 
+void Cuts::writeDssTimeKeywords(tip::Header & header) const {
+   removeDssKeywords(header);
+
+   std::vector<CutBase *> my_time_cuts;
+   for (size_t i = 0; i < m_cuts.size(); i++) {
+      if (isTimeCut(*m_cuts.at(i))) {
+         my_time_cuts.push_back(m_cuts.at(i));
+      }
+   }
+
+   int ndskeys = my_time_cuts.size();
+   header["NDSKEYS"].set(ndskeys);
+   for (unsigned int i = 0; i < my_time_cuts.size(); i++) {
+      my_time_cuts.at(i)->writeDssKeywords(header, i + 1);
+   }
+}
+
+bool Cuts::isTimeCut(const CutBase & cut) {
+   if (cut.type() == "GTI" || 
+       (cut.type() == "range" && 
+        dynamic_cast<RangeCut &>(const_cast<CutBase &>(cut)).colname() 
+        == "TIME")) {
+      return true;
+   }
+   return false;
+}
+
 void Cuts::removeDssKeywords(tip::Header & header) const {
    int ndskeys(0);
    try {
