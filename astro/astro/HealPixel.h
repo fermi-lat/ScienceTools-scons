@@ -39,9 +39,16 @@ namespace astro {
         int level()const{return m_level;} ///< the level, where nside=2**level
         
         double area()const{return (4 * M_PI)/(12 * nside() * nside());}///< solid angle
+        
+        long lastChildIndex(int childLevel)const; // largest index for my child at given level.
 
         /// sort operator
         bool operator<(const HealPixel& other)const;
+        
+        /// other comparison operators
+        bool operator==(const HealPixel& other)const;
+        bool operator!=(const HealPixel& other)const;
+        bool operator<=(const HealPixel& other)const;
 
         static bool test(); // should be true
 
