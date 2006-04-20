@@ -34,6 +34,12 @@ void ScDataContainer::init() {
 void ScDataContainer::addScData(EventSource * event, Spacecraft * spacecraft,
                                 bool flush) {
    double time = event->time();
+// Kluge required because the flux package is utterly incapable of
+// providing an event time of zero, passing instead 1e-30 (for some
+// unknown reason):
+   if (time < 1.1e-30 && time > 0) {
+      time = 0;
+   }
    addScData(time, spacecraft, flush);
 }
 
