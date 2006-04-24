@@ -84,6 +84,7 @@ class BinnedAnalysis(AnalysisBase):
                                                binnedData.observation,
                                                binnedData.srcMaps,
                                                True)
+        self.logLike.initOutputStreams()
         self.logLike.readXml(srcModel, _funcFactory, False)
         self.model = SourceModel(self.logLike)
         self.energies = num.array(self.logLike.energies())

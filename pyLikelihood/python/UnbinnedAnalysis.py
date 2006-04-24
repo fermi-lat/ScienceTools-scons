@@ -115,6 +115,7 @@ class UnbinnedAnalysis(AnalysisBase):
         self.observation = observation
         self.optimizer = optimizer
         self.logLike = pyLike.LogLike(self.observation.observation)
+        self.logLike.initOutputStreams()
         self.logLike.readXml(srcModel, _funcFactory)
         self.logLike.computeEventResponses()
         self.model = SourceModel(self.logLike)
