@@ -203,3 +203,9 @@ class AnalysisBase(object):
                 self.model[ii].setFree(0)
         except TypeError:
             self.model[i].setFree(0)
+
+def _quotefn(filename):
+    if filename is None:
+        return None
+    else:
+        return "'" + filename + "'"

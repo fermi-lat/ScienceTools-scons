@@ -12,7 +12,7 @@ import glob
 import numarray as num
 import pyLikelihood as pyLike
 from SrcModel import SourceModel
-from AnalysisBase import AnalysisBase
+from AnalysisBase import AnalysisBase, _quotefn
 from SimpleDialog import SimpleDialog, map, Param
 
 _funcFactory = pyLike.SourceFactory_funcFactory()
@@ -117,9 +117,10 @@ class UnbinnedObs(object):
         except:
             pass
         output.write("from UnbinnedAnalysis import *\n")
-        output.write(("obs = UnbinnedObs(%s, %s, expMap='%s', expCube='%s', " +
+        output.write(("obs = UnbinnedObs(%s, %s, expMap=%s, expCube=%s, " +
                       "irfs='%s')\n") % (`self.eventFiles`, `self.scFiles`,
-                                         self.expMap, self.expCube, self.irfs))
+                                         _quotefn(self.expMap),
+                                         _quotefn(self.expCube), self.irfs))
         if close:
             output.close()
 
@@ -163,8 +164,9 @@ class UnbinnedAnalysis(AnalysisBase):
         except:
             pass
         self.observation.state(output)
-        output.write(("foo = UnbinnedAnalysis(obs, srcModel='%s', " +
-                      "optimizer='%s')\n") % (self.srcModel, self.optimizer))
+        output.write(("foo = UnbinnedAnalysis(obs, srcModel=%s, " +
+                      "optimizer='%s')\n")
+                     % (_quotefn(self.srcModel), self.optimizer))
         if close:
             output.close()
 
