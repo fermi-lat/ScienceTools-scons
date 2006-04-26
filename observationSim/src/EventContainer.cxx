@@ -40,7 +40,6 @@ using CLHEP::HepRotation;
 
 #include "observationSim/EventContainer.h"
 #include "observationSim/Spacecraft.h"
-//#include "Verbosity.h"
 
 namespace {
    double my_acos(double mu) {
@@ -54,10 +53,10 @@ namespace {
    }
 
    irfInterface::Irfs* drawRespPtr(std::vector<irfInterface::Irfs*> &respPtrs,
-                                  double area, double energy, 
-                                  astro::SkyDir &sourceDir,
-                                  astro::SkyDir &zAxis,
-                                  astro::SkyDir &xAxis) {
+                                   double area, double energy, 
+                                   astro::SkyDir &sourceDir,
+                                   astro::SkyDir &zAxis,
+                                   astro::SkyDir &xAxis) {
    
 // Build a vector of effective area accumulated over the vector
 // of response object pointers.

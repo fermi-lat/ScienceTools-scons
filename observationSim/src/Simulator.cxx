@@ -30,7 +30,6 @@
 #include "observationSim/ScDataContainer.h"
 #include "observationSim/Simulator.h"
 #include "LatSc.h"
-//#include "Verbosity.h"
 
 namespace observationSim {
 

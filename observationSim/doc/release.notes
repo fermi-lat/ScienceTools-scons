@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2p6 25-Apr-06   JC   clear ObsSim::m_xmlSourceFiles before loading
+                            new set of files for gui operation.
     v6r2p5 25-Apr-06   JC   use Aeff::upperLimit for max. eff. area
     v6r2p4 20-Apr-06   JC   overcome flux package's inability to return
                             an event time of zero

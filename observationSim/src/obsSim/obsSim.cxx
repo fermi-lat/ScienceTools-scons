@@ -178,6 +178,7 @@ void ObsSim::createFactories() {
 }
 
 void ObsSim::setXmlFiles() {
+   m_xmlSourceFiles.clear();
 // observationSim::Simulator requires a specific "TimeCandle" source,
 // so time_source.xml must always be loaded.
    m_xmlSourceFiles.push_back("$(OBSERVATIONSIMROOT)/xml/time_source.xml");
