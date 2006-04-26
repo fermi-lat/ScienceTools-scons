@@ -134,6 +134,14 @@ public:
             }
             virtual IAeff * clone(){throw std::runtime_error("clone?"); return 0;};
 
+            virtual double upperLimit() const {
+               double total(0);
+               for( unsigned int i = 1; i < m_aeff.size(); ++i){
+                  total+=m_aeff[i]->upperLimit();
+               }
+               return total;
+            }
+
         private:
             std::vector<const irfInterface::IAeff*> m_aeff;
         };
