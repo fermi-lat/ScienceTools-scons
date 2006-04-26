@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r2p5 25-Apr-06   JC   use Aeff::upperLimit for max. eff. area
     v6r2p4 20-Apr-06   JC   overcome flux package's inability to return
                             an event time of zero
     v6r2p3 16-Apr-06   JC   use st_stream
