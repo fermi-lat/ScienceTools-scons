@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Prototype GUI for obsSim
+Prototype GUI for driving gtobssim and gtorbsim
 
 @author J. Chiang <jchiang@slac.stanford.edu>
 """
@@ -36,7 +36,7 @@ if not os.path.exists(orbSim):
 class RootWindow(Tk.Tk):
     def __init__(self, file=None):
         Tk.Tk.__init__(self)
-        self.title("obsSim GUI")
+        self.title("ObsSim GUI")
         menuBar = MenuBar(self)
 
         inputFrames = Tk.Frame(self)

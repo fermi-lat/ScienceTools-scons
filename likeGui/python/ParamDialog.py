@@ -120,7 +120,7 @@ class ParamEntry:
                 pass
             self.variable.set(file)
     def getRandomInt(self):
-        my_int = int(random.random()*sys.maxint/1e3)
+        my_int = 4*int(random.random()*sys.maxint/1e4) + 1
         self.variable.set(`my_int`)
         
 class SetVar:
