@@ -80,6 +80,7 @@ void Simulator::init(const std::vector<std::string> &sourceNames,
                              << "Using default rocking strategy." 
                              << std::endl;
          setRocking();
+         pointingHistory = "none";
       }
    } else {
 // Use the default rocking strategy.

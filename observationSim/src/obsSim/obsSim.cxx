@@ -290,7 +290,9 @@ void ObsSim::generateData() {
                                          cuts, nMaxRows,
                                          start_time, stop_time);
    std::string pointingHistory = m_pars["scfile"];
-   bool writeScData = (pointingHistory == "" || pointingHistory == "none");
+   facilities::Util::expandEnvVar(&pointingHistory);
+   bool writeScData = (pointingHistory == "" || pointingHistory == "none"
+                       || !st_facilities::Util::fileExists(pointingHistory));
    std::string sc_table = m_pars["sctable"];
    observationSim::ScDataContainer scData(prefix + "_scData", sc_table,
                                           nMaxRows, writeScData);
