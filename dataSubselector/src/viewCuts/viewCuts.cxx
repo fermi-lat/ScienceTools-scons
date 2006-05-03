@@ -71,6 +71,7 @@ void ViewCuts::run() {
    m_pars.Save();
    std::string infile = m_pars["infile"];
    std::string extname = m_pars["table"];
+   bool suppressGtis = m_pars["suppress_gtis"];
    dataSubselector::Cuts cuts(infile, extname, false);
-   cuts.writeCuts(std::cout);
+   cuts.writeCuts(std::cout, suppressGtis);
 }

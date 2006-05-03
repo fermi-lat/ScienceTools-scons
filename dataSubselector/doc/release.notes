@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4v3p2  02-May-06   JC   allow GTI intervals to be suppressed on output
+                             from gtviewcuts
     v4r3p1  20-Apr-06   JC   add Cuts::writeDssTimeKeywords method
     v4r3    20-Apr-06   JC   convert viewCuts to gtviewcuts
     v4r2p2  16-Apr-06   JC   do not modify input file header

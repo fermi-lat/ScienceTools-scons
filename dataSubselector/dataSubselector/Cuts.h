@@ -179,7 +179,9 @@ public:
 
    /// @brief Write a summary of the cuts to the output stream.  This
    /// summary contains the same information as the DSS keywords.
-   void writeCuts(std::ostream & stream) const;
+   /// @param stream Where the output should be directed.
+   /// @param suppressGtis Suppress printing of the GTI data if it exists.
+   void writeCuts(std::ostream & stream, bool suppressGtis=false) const;
 
    /// @return A reference to the i-th cut.
    const CutBase & operator[](unsigned int i) const {return *(m_cuts.at(i));}

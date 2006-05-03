@@ -387,9 +387,17 @@ bool Cuts::compareWithoutGtis(const Cuts & rhs) const {
    return true;
 }
 
-void Cuts::writeCuts(std::ostream & stream) const {
+void Cuts::writeCuts(std::ostream & stream, bool suppressGtis) const {
    for (unsigned int i = 0; i < m_cuts.size(); i++) {
-      m_cuts.at(i)->writeCut(stream, i + 1);
+      if (!suppressGtis || m_cuts.at(i)->type() != "GTI") {
+         m_cuts.at(i)->writeCut(stream, i + 1);
+      } else {
+         stream << "DSTYP" << i+1 << ": TIME\n"
+                << "DSUNI" << i+1 << ": s\n"
+                << "DSVAL" << i+1 << ": TABLE\n"
+                << "DSREF" << i+1 << ": :GTI\n\n"
+                << "GTIs: (suppressed)\n\n";
+      }
    }
 }
 
