@@ -155,12 +155,13 @@ namespace evtbin {
     // Set size of image.
     output_image->setImageDimensions(dims);
 
-    // Copy bins into image.
-    for (tip::PixOrd_t x_index = 0; x_index != dims[0]; ++x_index) {
-      for (tip::PixOrd_t y_index = 0; y_index != dims[1]; ++y_index) {
-        output_image->setPixel(x_index, y_index, m_hist[x_index][y_index]);
-      }
-    }
+    std::vector<float> vec;
+
+    // Get bins from histogram in a 1-d vector.
+    m_hist.getImage(vec);
+
+    // Write the output image in one fell swoop instead of iterating over each dimension separately.
+    output_image->set(vec);
 
     // Write the GTI extension.
     writeGti(out_file);

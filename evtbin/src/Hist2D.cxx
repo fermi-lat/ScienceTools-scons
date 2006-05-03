@@ -43,4 +43,22 @@ namespace evtbin {
     }
   }
 
+  void Hist2D::getImage(std::vector<float> & image) const {
+    if (!m_data.empty()) {
+      // Get the sizes of the 2 dimensions from the binners.
+      Cont_t::size_type size0 = m_binners[0]->getNumBins();
+      Cont_t::size_type size1 = m_binners[1]->getNumBins();
+
+      // Resize the output image accordingly.
+      image.resize(size0 * size1, 0.);
+      for (Cont_t::size_type index0 = 0; index0 != size0; ++index0) {
+        for (Cont_t::size_type index1 = 0; index1 != size1; ++index1) {
+          image[index0 + index1 * size0] = m_data[index0][index1];
+        }
+      }
+
+    } else {
+      image.clear();
+    }
+  }
 }

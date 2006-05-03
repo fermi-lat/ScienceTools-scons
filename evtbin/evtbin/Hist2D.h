@@ -37,6 +37,11 @@ namespace evtbin {
       */
       virtual void fillBin(const std::vector<double> & value, double weight = 1.);
 
+      /** \brief Fill output vector with a 1-d representation of the histogram, suitable for storing as an image.
+          \param image The output vector.
+      */
+      virtual void getImage(std::vector<float> & image) const;
+
       /** \brief Increment the bin appropriate for the given value.
           \param value1 The value being binned by the first binner.
           \param value2 The value being binned by the second binner.
