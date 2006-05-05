@@ -16,8 +16,8 @@ namespace {
   char * s_cp_undef = "INDEF";
   const char * s_ccp_undef = "INDEF";
   bool s_bool_undef = std::numeric_limits<bool>::min();
-  double s_double_undef = -std::numeric_limits<double>::max();
-  float s_float_undef = -std::numeric_limits<float>::max();
+  double s_double_undef = std::numeric_limits<double>::min();
+  float s_float_undef = std::numeric_limits<float>::min();
   char s_char_undef = std::numeric_limits<char>::min();
   signed char s_signed_char_undef = std::numeric_limits<signed char>::min();
   signed short s_signed_short_undef = std::numeric_limits<signed short>::min();
