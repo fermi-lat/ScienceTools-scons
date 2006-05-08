@@ -133,3 +133,15 @@ size_t Healpix::size()const{return npix();}
 Healpix::Ordering Healpix::ord()const{return m_ord;}
 
 bool Healpix::nested()const{return ord()==NESTED;}
+
+void Healpix::query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const
+{
+    v.clear();
+	double theta, phi;
+	Healpix::Pixel px(dir, *this);
+	pix2ang(px.index(), theta, phi);
+
+    Healpix_Base hpb(this->nside(),static_cast<Healpix_Ordering_Scheme>(this->ord()),SET_NSIDE); 
+	hpb.query_disc(pointing(theta, phi), radius, v);
+}
+

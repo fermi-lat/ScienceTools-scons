@@ -78,6 +78,7 @@ public:
     bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
     void findNeighbors(long index, std::vector<long> &neighbors);
+	void query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const;
 
 #ifndef SWIG // can't export these nested classes, and therefore the integration, to python
     /**@class Pixel
