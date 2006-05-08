@@ -7,12 +7,12 @@ $Header$
 #ifndef map_tools_PhotonMap_h
 #define map_tools_PhotonMap_h
 
+#include "astro/Healpix.h"
 #include "astro/HealPixel.h"
 #include "astro/SkyFunction.h"
 #include <map>
 
 
-#include "astro/HealPixel.h"
 #include "astro/Photon.h"
 
 
@@ -74,8 +74,10 @@ public:
         @param vec the vector to fill with (healpixel, count ) pairs
         @return the total number of photons (sum of count)
     */
-    int extract(int level,const astro::SkyDir& dir, double radius, std::vector<std::pair<astro::HealPixel, int> >& vec)const;
-   
+	int extract(const astro::SkyDir& dir, double radius,
+					std::vector<std::pair<astro::HealPixel, int> >& vec,
+					int summary_level = -1, int select_level = -1) const;
+
     int photonCount()const { return m_photons;} ///< current number of photons
     int pixelCount()const { return m_pixels; } ///< current nubmer of pixesl
 

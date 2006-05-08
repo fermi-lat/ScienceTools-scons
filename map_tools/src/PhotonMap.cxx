@@ -70,7 +70,7 @@ double PhotonMap::density (const astro::SkyDir & sd) const
 }
 int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::vector<std::pair<int, float> >& vec)const
 {
-    radius *= (M_PI / 180); // convert to radians
+	radius *= (M_PI / 180); // convert to radians
     int summary_level( m_minlevel - 1); // default level to test
     int nside( 1<< summary_level);
     int npix( 12 * nside * nside);
@@ -97,31 +97,42 @@ int PhotonMap::extract(int level, const astro::SkyDir& dir, double radius, std::
     return total;
 }
 
-int PhotonMap::extract(int level,const astro::SkyDir& dir, double radius, std::vector<std::pair<astro::HealPixel, int> >& vec)const
+int PhotonMap::extract(const astro::SkyDir& dir, double radius,
+					     std::vector<std::pair<astro::HealPixel, int> >& vec,
+						 int summary_level, int select_level) const
 {
     radius *= (M_PI / 180); // convert to radians
-    int summary_level( m_minlevel - 1); // default level to test
+	if (summary_level == -1)
+		summary_level = m_minlevel; // default level to test
     int nside( 1<< summary_level);
     int npix( 12 * nside * nside);
     int total(0);
+	vec.clear();
+	
+	// Get pixels in summary level that are within radius
+	std::vector<int> v;
+	astro::Healpix hpx(nside, astro::Healpix::NESTED, HealPixel::s_coordsys);
+	hpx.query_disc(dir, radius, v);  
+	int vsize = v.size(); //debug
+	int max_level = m_minlevel + m_levels - 1;
 
-    // Look at each summary pixel and decide whether to go deeper.
-    for (int i = 0; i < npix; ++ i)  {
-        astro::HealPixel hp(i, summary_level);
-        double distance = hp().difference(dir);
-
-        if (distance <= radius) {
-            astro::HealPixel boundary(i + 1, summary_level);
-            for( const_iterator it = lower_bound(hp);
-                it != end() && it->first < boundary; ++it)
-            {
-                if( it->first.level() != level ) continue;
-                int count = it->second;
-                vec.push_back(std::make_pair( it->first, count));
-                total+=count;
-            }
+	// Add summary level pixels and all their children to return vector
+	for (std::vector<int>::const_iterator it = v.begin(); it != v.end(); ++it)
+	{
+		
+		astro::HealPixel hp(*it, summary_level);
+		astro::HealPixel boundary(hp.lastChildIndex(max_level), max_level);
+        for(const_iterator it2 = lower_bound(hp);
+            it2 != end() && it2->first <= boundary; ++it2)
+        {
+            if(select_level != -1 && it2->first.level() != select_level) continue;
+            int count = it2->second;
+            vec.push_back(std::make_pair(it2->first, count));
+            total+=count;
         }
-    }
+		int vecsize = vec.size(); //debug
+	}
+
     return total;
 }
 
