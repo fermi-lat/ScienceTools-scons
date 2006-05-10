@@ -27,3 +27,4 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library optimizers $(source) *.c
 
 application test_optimizers test/main.cxx
+

@@ -1,35 +1,43 @@
-// test program for optimizers
+/**
+ * @file main.cxx
+ * @brief test program for optimizers
+ * @author J. Chiang
+ * 
+ * $Header$
+ */
 
 #ifdef TRAP_FPE
 #include <fenv.h>
 #endif // TRAP_FPE
 
-#include <iostream>
-#include <fstream>
-#include <cstring>
 #include <cmath>
+#include <cstring>
+
+#include <fstream>
+#include <iostream>
 #include <vector>
 
-//  include everything for the compiler to test
-
-#include "optimizers/Exception.h"
-#include "optimizers/Parameter.h"
-#include "optimizers/Function.h"
+#include "optimizers/ChiSq.h"
 #include "optimizers/dArg.h"
-#include "optimizers/SumFunction.h"
-#include "optimizers/ProductFunction.h"
-#include "optimizers/OutOfBounds.h"
-#include "optimizers/Optimizer.h"
+#include "optimizers/Drmngb.h"
+#include "optimizers/Exception.h"
+#include "optimizers/Function.h"
+#include "optimizers/FunctionFactory.h"
+#include "optimizers/FunctionTest.h"
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Minuit.h"
-#include "optimizers/Drmngb.h"
 #include "optimizers/Mcmc.h"
-#include "optimizers/FunctionTest.h"
-#include "optimizers/FunctionFactory.h"
-#include "optimizers/ChiSq.h"
+#include "optimizers/Optimizer.h"
+#include "optimizers/OptimizerFactory.h"
+#include "optimizers/OutOfBounds.h"
+#include "optimizers/Parameter.h"
+#include "optimizers/ProductFunction.h"
+#include "optimizers/SumFunction.h"
+
 #ifdef HAVE_NEW_MINUIT
-#include "optimizers/newMinuit.h"
+#include "optimizers/NewMinuit.h"
 #endif
+
 #include "MyFun.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
@@ -43,7 +51,7 @@
 
 #include "TestOptimizer.h"
 
-using namespace optimizers;   // for testing purposes only
+using namespace optimizers;
 
 void test_FunctionFactory();
 void test_Parameter_class();
@@ -60,14 +68,14 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-//    test_FunctionFactory();
-//    test_Parameter_class();
-//    test_Function_class();
-//    test_PowerLaw_class();
-//    test_CompositeFunction();
+   test_FunctionFactory();
+   test_Parameter_class();
+   test_Function_class();
+   test_PowerLaw_class();
+   test_CompositeFunction();
    test_Optimizers();
-//    test_Mcmc();
-//    test_ChiSq();
+   test_Mcmc();
+   test_ChiSq();
    return 0;
 }
 
@@ -254,7 +262,7 @@ void test_Mcmc() {
 /* Test Optimizers */
 /*******************/
 void test_Optimizers() {
-   std::cout << "*** test_Optimizers ***" << std::endl;
+   std::cout << "*** test_Optimizers ***\n" << std::endl;
 
 // Use the standard 2D Rosenbrock test with bounds constraints
    Rosen my_rosen;
@@ -267,30 +275,22 @@ void test_Optimizers() {
    params[1].setBounds(-4, 10);
    my_rosen.setParams(params);
 
-   TestOptimizer * tester(0);
+   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb"};
+
+   OptimizerFactory & optFactory(OptimizerFactory::instance());
 
 #ifdef HAVE_NEW_MINUIT
-   std::cout << "Testing newMinuit...\n";
-   newMinuit myNewMin(my_rosen);
-   tester = new TestOptimizer(myNewMin);
-   tester->fit();
-   tester->printResults();
-   delete tester;
+   for (size_t i = 0; i < 4; i++) {
+#else
+   for (size_t i = 1; i < 4; i++) {
 #endif
-
-   std::cout << "Testing Lbfgs...\n";
-   Lbfgs lbfgs(my_rosen);
-   tester = new TestOptimizer(lbfgs);
-   tester->fit();
-   tester->printResults();
-   delete tester;
-   
-   std::cout << "Testing Minuit...\n";
-   Minuit minuit(my_rosen);
-   tester = new TestOptimizer(minuit);
-   tester->fit();
-   tester->printResults();
-   delete tester;
+      std::cout << "Testing " << optimizers[i] 
+                << " using 2-D Rosenbrock function...\n";
+      Optimizer * my_opt(optFactory.create(optimizers[i], my_rosen));
+      TestOptimizer tester(*my_opt);
+      tester.run();
+      delete my_opt;
+   }
 
    RosenND rosenND(5);
    rosenND.getParams(params);
@@ -300,29 +300,19 @@ void test_Optimizers() {
    }
    rosenND.setParams(params);
 
-   std::cout << "Test Minuit method using 5 dimensional "
-             << "Rosenbrock function..." << std::endl;
-   Minuit my_Minuit(rosenND);
-   tester = new TestOptimizer(my_Minuit);
-   tester->fit();
-   tester->printResults();
-   delete tester;
-
-   std::cout << "Test DRMNGB method using 5 dimensional "
-             << "Rosenbrock function..." << std::endl;
-   Drmngb drmngb(rosenND);
-   tester = new TestOptimizer(drmngb);
-   tester->fit();
-   tester->printResults();
-   delete tester;
-
-   std::cout << "Test LBFGS method using 5 dimensional "
-             << "Rosenbrock function..." << std::endl;
-   Lbfgs my_lbfgs(rosenND);
-   tester = new TestOptimizer(my_lbfgs);
-   tester->fit();
-   tester->printResults();
-   delete tester;
+#ifdef HAVE_NEW_MINUIT
+   for (size_t i = 0; i < 4; i++) {
+#else
+   for (size_t i = 1; i < 4; i++) {
+#endif
+      std::cout << "Testing " << optimizers[i] 
+                << " using 5-D Rosenbrock function..." 
+                << std::endl;
+      Optimizer * my_opt(optFactory.create(optimizers[i], rosenND));
+      TestOptimizer tester(*my_opt);
+      tester.run();
+      delete my_opt;
+   }
 
 #ifdef HAVE_OPT_PP
 // now restart and try OptPP

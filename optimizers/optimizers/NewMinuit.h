@@ -1,5 +1,5 @@
 /**
- * @file newMinuit.h
+ * @file NewMinuit.h
  * @brief Interface to the new C++ version of Minuit
  * @author P. Nolan
  * $Header: 
@@ -24,7 +24,7 @@ namespace optimizers {
    Minuit provides a base class for the function to be minimized.
    This is the implementation using the Optimizer infrastructure.
 
-   Q:  Would it be better to do this as a hidden class within newMinuit?
+   Q:  Would it be better to do this as a hidden class within NewMinuit?
   */
 
   class myFCN : public FCNGradientBase {
@@ -39,7 +39,7 @@ namespace optimizers {
   };
 
   /**
-   * @class newMinuit
+   * @class NewMinuit
    * @brief Wrapper class for the Minuit optimizer from CERN
    * @author P. Nolan
    This class implements an Optimizer by using Minuit, a well-known
@@ -52,10 +52,10 @@ namespace optimizers {
    span of about 30 years.
   */
 
-  class newMinuit : public Optimizer {
+  class NewMinuit : public Optimizer {
   public:
-    newMinuit(Statistic &);
-    virtual ~newMinuit() {};
+    NewMinuit(Statistic &);
+    virtual ~NewMinuit() {};
     void find_min(int verbose=0, double tole = 1e-3, int tolType = ABSOLUTE);
     void setMaxEval(int);
     void setStrategy(unsigned int strat = 2) {m_strategy=MnStrategy(strat);}

@@ -1,3 +1,12 @@
+/**
+ * @file TestOptimizer.h
+ * @brief Runs the optimizer for a specified Statistic object and 
+ * prints the results.
+ * @author J. Chiang
+ *
+ * $Header$
+ */
+
 #ifndef optimizers_TestOptimizer_h
 #define optimizers_TestOptimizer_h
 
@@ -23,12 +32,16 @@ public:
       } catch (...) {
       }
    }
-   void fit(int verbose=0, double tol=1e-5) {
+   void run(int verbose=0, double tol=1e-5) {
       try {
-         m_opt.find_min(verbose, tol);
+         fit(verbose, tol);
+         printResults();
       } catch (std::exception & eObj) {
-         std::cout << eObj.what() << std::endl;
+         std::cout << "\n" << eObj.what() << "\n" << std::endl;
       }
+   }
+   void fit(int verbose=0, double tol=1e-5) {
+      m_opt.find_min(verbose, tol);
    }
    void printResults() {
       std::vector<Parameter> params;

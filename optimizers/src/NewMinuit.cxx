@@ -1,13 +1,13 @@
 /**
- * @file newMinuit.cxx
- * @brief Implementation of the newMinuit class
+ * @file NewMinuit.cxx
+ * @brief Implementation of the NewMinuit class
  * @author P. Nolan
  * $Header$
  */
 
 #ifdef HAVE_NEW_MINUIT
 
-#include "optimizers/newMinuit.h"
+#include "optimizers/NewMinuit.h"
 #include "optimizers/Parameter.h"
 #include "Minuit/MnUserParameters.h"
 #include "Minuit/MnMigrad.h"
@@ -24,11 +24,11 @@ namespace optimizers {
   typedef std::vector<Parameter>::iterator pptr;
 
   // Constructor
-  newMinuit::newMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(200), 
+  NewMinuit::NewMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(200), 
                                            m_fitDone(false), m_FCN(stat) { }
 
   // Call Minuit's MIGRAD to find the minimum of the function
-  void newMinuit::find_min(int verbose, double tol, int TolType) {
+  void NewMinuit::find_min(int verbose, double tol, int TolType) {
     double tolerance = 2000. * tol;
     if (TolType == RELATIVE) tolerance *= fabs(m_stat->value());
     std::vector<Parameter> params;
@@ -59,7 +59,7 @@ namespace optimizers {
   }
 
   // Call Minuit's HESSE to get a robust estimate of the covariance matrix
-  void newMinuit::hesse(int verbose) {
+  void NewMinuit::hesse(int verbose) {
     if (!m_fitDone) 
       throw Exception("Minuit: find_min must be executed before hesse");
     MnHesse hesse(m_strategy);
@@ -113,7 +113,7 @@ namespace optimizers {
   }
 
   // Get the uncertainty values from covariance matrix
-   const std::vector<double> & newMinuit::getUncertainty(bool useBase) {
+   const std::vector<double> & NewMinuit::getUncertainty(bool useBase) {
       if (useBase) {
          Optimizer::getUncertainty(useBase);
       } else {

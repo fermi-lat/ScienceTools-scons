@@ -14,6 +14,30 @@
 #include "optimizers/Exception.h"
 #include "optimizers/Optimizer.h"
 #include "optimizers/Statistic.h"
+#include "optimizers/Util.h"
+
+namespace {
+   class StatDerivFunc {
+   public:
+      StatDerivFunc(optimizers::Statistic & stat, size_t ipar, size_t jpar) 
+         : m_stat(stat), m_ipar(ipar), m_jpar(jpar) {
+         m_stat.getFreeParamValues(m_parVals);
+      }
+      double operator()(double parVal) const {
+         std::vector<double> parVals(m_parVals);
+         parVals.at(m_jpar) = parVal;
+         m_stat.setFreeParamValues(parVals);
+         std::vector<double> derivs;
+         m_stat.getFreeDerivs(derivs);
+         return derivs.at(m_ipar);
+      }
+   private:
+      optimizers::Statistic & m_stat;
+      size_t m_ipar;
+      size_t m_jpar;
+      std::vector<double> m_parVals;
+   };
+}
 
 namespace optimizers {
 
@@ -55,6 +79,7 @@ const std::vector<double> & Optimizer::getUncertainty(bool) {
    return m_uncertainty;
 }
 
+#if 1
 void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
 // Compute the Hessian matrix for the free parameters using simple
 // finite differences.
@@ -88,6 +113,28 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
 // Restore Parameter values.
    m_stat->setFreeParamValues(params);
 }
+#else
+void Optimizer::computeHessian(std::valarray<double> & hess, double eps) {
+   std::vector<double> params;
+   m_stat->getFreeParamValues(params);
+   size_t npars(params.size());
+   hess.resize(npars*npars);
+   size_t indx(0);
+   for (size_t i=0; i < npars; i++) {
+      for (size_t j=0; j < npars; j++, indx++) {
+         ::StatDerivFunc statFunc(*m_stat, i, j);
+         Functor< ::StatDerivFunc > my_func(statFunc);
+         double err;
+         double h(std::fabs(params.at(j)*eps));
+         if (h == 0) {
+            h = eps;
+         }
+         hess[indx] = -Util::numDeriv(my_func, params.at(j), h, err);
+      }
+   }
+   m_stat->setFreeParamValues(params);
+}
+#endif
 
 void Optimizer::choleskyDecompose(std::valarray<double> &array) {
 // This implementation is based on NR's choldc().
