@@ -41,6 +41,8 @@
 #include "optimizers/OptPP.h"
 #endif
 
+#include "TestOptimizer.h"
+
 using namespace optimizers;   // for testing purposes only
 
 void test_FunctionFactory();
@@ -58,14 +60,14 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-   test_FunctionFactory();
-   test_Parameter_class();
-   test_Function_class();
-   test_PowerLaw_class();
-   test_CompositeFunction();
+//    test_FunctionFactory();
+//    test_Parameter_class();
+//    test_Function_class();
+//    test_PowerLaw_class();
+//    test_CompositeFunction();
    test_Optimizers();
-   test_Mcmc();
-   test_ChiSq();
+//    test_Mcmc();
+//    test_ChiSq();
    return 0;
 }
 
@@ -254,8 +256,7 @@ void test_Mcmc() {
 void test_Optimizers() {
    std::cout << "*** test_Optimizers ***" << std::endl;
 
-// Test the OptPP code using my standard 2D Rosenbrock test with
-// bounds constraints
+// Use the standard 2D Rosenbrock test with bounds constraints
    Rosen my_rosen;
 
    std::vector<Parameter> params;
@@ -266,51 +267,71 @@ void test_Optimizers() {
    params[1].setBounds(-4, 10);
    my_rosen.setParams(params);
 
-   int verbose = 1;
+   TestOptimizer * tester(0);
 
 #ifdef HAVE_NEW_MINUIT
-// try the C++ version of Minuit
-
+   std::cout << "\nTesting newMinuit:\n\n";
    newMinuit myNewMin(my_rosen);
-   try {
-     myNewMin.find_min(verbose, .00001);
-   }
-   catch (optimizers::Exception& rrr) {
-     std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
-   }
-// use Minuit's HESSE to get the covariance matrix by finite differences
-   myNewMin.hesse(verbose);
-#endif
-   
-// try lbfgs_bcm method 
-   Lbfgs my_lbfgsObj(my_rosen);
-   my_lbfgsObj.setMaxVarMetCorr(12);
-   my_lbfgsObj.setPgtol(.0000001);
-   try {
-     my_lbfgsObj.find_min(verbose, .000001);
-   }
-   catch(optimizers::Exception& rrr) {
-     std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
-   }
-   std::cout << "LBFGS exit code: " 
-             << my_lbfgsObj.getRetCode() 
-             << std::endl;
-   std::cout << "LBFGS end message: " 
-             << my_lbfgsObj.getErrorString() 
-             << std::endl;
 
-   verbose = 3;
-   params[0].setValue(2.);
-   params[0].setBounds(-10., 10.);
-   params[1].setValue(2.);
-   params[1].setBounds(-4, 10.);
-   my_rosen.setParams(params);
-   Minuit myMinuitObj(my_rosen);
-   myMinuitObj.find_min(verbose, .0001);
-   std::vector<double> sig = myMinuitObj.getUncertainty();
-   for (unsigned int i=0; i < sig.size(); i++) {
-     std::cout << i << "  " << sig[i] << std::endl;
-   }
+   tester = new TestOptimizer(my_rosen, myNewMin);
+   tester->fit();
+   tester->printResults();
+   delete tester;
+   tester = 0;
+#endif
+
+   std::cout << "\nTesting Lbfgs:\n\n";
+   Lbfgs lbfgs(my_rosen);
+   lbfgs.setMaxVarMetCorr(12);
+   lbfgs.setPgtol(1e-7);
+
+   tester = new TestOptimizer(my_rosen, lbfgs);
+   tester->fit();
+   tester->printResults();
+   delete tester;
+   tester = 0;
+   
+   std::cout << "\nTesting Minuit:\n\n";
+   Minuit minuit(my_rosen);
+
+   tester = new TestOptimizer(my_rosen, minuit);
+   tester->fit();
+   tester->printResults();
+   delete tester;
+   tester = 0;
+
+   int verbose = 1;
+   std::vector<double> sig;
+
+// // try lbfgs_bcm method 
+//    Lbfgs my_lbfgsObj(my_rosen);
+//    my_lbfgsObj.setMaxVarMetCorr(12);
+//    my_lbfgsObj.setPgtol(.0000001);
+//    try {
+//      my_lbfgsObj.find_min(verbose, .000001);
+//    }
+//    catch(optimizers::Exception& rrr) {
+//      std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
+//    }
+//    std::cout << "LBFGS exit code: " 
+//              << my_lbfgsObj.getRetCode() 
+//              << std::endl;
+//    std::cout << "LBFGS end message: " 
+//              << my_lbfgsObj.getErrorString() 
+//              << std::endl;
+
+//    verbose = 3;
+//    params[0].setValue(2.);
+//    params[0].setBounds(-10., 10.);
+//    params[1].setValue(2.);
+//    params[1].setBounds(-4, 10.);
+//    my_rosen.setParams(params);
+//    Minuit myMinuitObj(my_rosen);
+//    myMinuitObj.find_min(verbose, .0001);
+//    sig = myMinuitObj.getUncertainty();
+//    for (unsigned int i=0; i < sig.size(); i++) {
+//       std::cout << i << "  " << sig[i] << std::endl;
+//    }
 
    std::cout 
       << "\nTest DRMNGB method using 5 dimensional Rosenbrock function\n" 
@@ -329,7 +350,7 @@ void test_Optimizers() {
       std::cout << eObj.what() << std::endl;
    }
    std::cout << "Drmngb exit code: " << my_Drmngb.getRetCode() << std::endl;
-   sig = my_Drmngb.getUncertainty();
+   sig = my_Drmngb.getUncertainty(true);
    std::cout << "Uncertainties:" << std::endl;
    for (unsigned int i=0; i < sig.size(); i++) {
       std::cout << i << "  " << sig[i] << std::endl;
@@ -879,3 +900,4 @@ void test_ChiSq() {
       std::cout << "*** test_ChiSq: all tests passed ***\n" 
                 << std::endl;
 } // ChiSq class tests
+
