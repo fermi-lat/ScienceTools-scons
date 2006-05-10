@@ -5,7 +5,7 @@
  * $Header:
  */
 
-#ifdef HAVE_NEWMINUIT
+#ifdef HAVE_NEW_MINUIT
 
 #include "optimizers/newMinuit.h"
 #include "optimizers/Parameter.h"
@@ -113,17 +113,20 @@ namespace optimizers {
   }
 
   // Get the uncertainty values from covariance matrix
-  const std::vector<double> & newMinuit::getUncertainty(bool useBase) {
-    if (useBase) {
-      Optimizer::getUncertainty(useBase);
-    } else {
-      m_uncertainty.clear();
-      for (unsigned int i = 0; i < m_userState.params().size(); i++) {
-	m_uncertainty.push_back(sqrt(m_userState.covariance()(i,i)));
+   const std::vector<double> & newMinuit::getUncertainty(bool useBase) {
+      if (useBase) {
+         Optimizer::getUncertainty(useBase);
+      } else {
+         if (!m_userState.hasCovariance()) {
+            hesse(0);
+         }
+         m_uncertainty.clear();
+         for (size_t i = 0; i < m_userState.params().size(); i++) {
+            m_uncertainty.push_back(sqrt(m_userState.covariance()(i, i)));
+         }
       }
-    }
-    return m_uncertainty;
-  }
+      return m_uncertainty;
+   }
 
 }
 #endif
