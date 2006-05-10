@@ -20,9 +20,10 @@ namespace optimizers {
   typedef std::vector<Parameter>::iterator pptr;
 
   std::vector<double> & Drmngb::getUncertainty(bool useBase) {
-     if (useBase) {
-        Optimizer::getUncertainty(useBase);
-     }
+//      if (useBase) {
+//         Optimizer::getUncertainty(useBase);
+//      }
+     Optimizer::getUncertainty(useBase);
      return m_uncertainty;
   }
 

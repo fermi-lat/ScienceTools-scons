@@ -2,7 +2,7 @@
  * @file newMinuit.cxx
  * @brief Implementation of the newMinuit class
  * @author P. Nolan
- * $Header:
+ * $Header$
  */
 
 #ifdef HAVE_NEW_MINUIT

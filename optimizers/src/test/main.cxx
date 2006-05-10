@@ -270,112 +270,59 @@ void test_Optimizers() {
    TestOptimizer * tester(0);
 
 #ifdef HAVE_NEW_MINUIT
-   std::cout << "\nTesting newMinuit:\n\n";
+   std::cout << "Testing newMinuit...\n";
    newMinuit myNewMin(my_rosen);
-
-   tester = new TestOptimizer(my_rosen, myNewMin);
+   tester = new TestOptimizer(myNewMin);
    tester->fit();
    tester->printResults();
    delete tester;
-   tester = 0;
 #endif
 
-   std::cout << "\nTesting Lbfgs:\n\n";
+   std::cout << "Testing Lbfgs...\n";
    Lbfgs lbfgs(my_rosen);
-   lbfgs.setMaxVarMetCorr(12);
-   lbfgs.setPgtol(1e-7);
-
-   tester = new TestOptimizer(my_rosen, lbfgs);
+   tester = new TestOptimizer(lbfgs);
    tester->fit();
    tester->printResults();
    delete tester;
-   tester = 0;
    
-   std::cout << "\nTesting Minuit:\n\n";
+   std::cout << "Testing Minuit...\n";
    Minuit minuit(my_rosen);
-
-   tester = new TestOptimizer(my_rosen, minuit);
+   tester = new TestOptimizer(minuit);
    tester->fit();
    tester->printResults();
    delete tester;
-   tester = 0;
 
-   int verbose = 1;
-   std::vector<double> sig;
-
-// // try lbfgs_bcm method 
-//    Lbfgs my_lbfgsObj(my_rosen);
-//    my_lbfgsObj.setMaxVarMetCorr(12);
-//    my_lbfgsObj.setPgtol(.0000001);
-//    try {
-//      my_lbfgsObj.find_min(verbose, .000001);
-//    }
-//    catch(optimizers::Exception& rrr) {
-//      std::cout << "optimizers::Exception: " << rrr.what() << std::endl;
-//    }
-//    std::cout << "LBFGS exit code: " 
-//              << my_lbfgsObj.getRetCode() 
-//              << std::endl;
-//    std::cout << "LBFGS end message: " 
-//              << my_lbfgsObj.getErrorString() 
-//              << std::endl;
-
-//    verbose = 3;
-//    params[0].setValue(2.);
-//    params[0].setBounds(-10., 10.);
-//    params[1].setValue(2.);
-//    params[1].setBounds(-4, 10.);
-//    my_rosen.setParams(params);
-//    Minuit myMinuitObj(my_rosen);
-//    myMinuitObj.find_min(verbose, .0001);
-//    sig = myMinuitObj.getUncertainty();
-//    for (unsigned int i=0; i < sig.size(); i++) {
-//       std::cout << i << "  " << sig[i] << std::endl;
-//    }
-
-   std::cout 
-      << "\nTest DRMNGB method using 5 dimensional Rosenbrock function\n" 
-      << std::endl;
    RosenND rosenND(5);
    rosenND.getParams(params);
    for (unsigned int i = 0; i < params.size(); i++) {
-      params[i].setValue(2.);
+      params[i].setValue(1.9);
       params[i].setBounds(-10., 10.);
    }
    rosenND.setParams(params);
-   Drmngb my_Drmngb(rosenND);
-   try {
-      my_Drmngb.find_min(verbose, .0001);
-   } catch (optimizers::Exception &eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
-   std::cout << "Drmngb exit code: " << my_Drmngb.getRetCode() << std::endl;
-   sig = my_Drmngb.getUncertainty(true);
-   std::cout << "Uncertainties:" << std::endl;
-   for (unsigned int i=0; i < sig.size(); i++) {
-      std::cout << i << "  " << sig[i] << std::endl;
-   }
 
-   std::cout 
-      << "\nTest Minuit method using 5 dimensional Rosenbrock function\n" 
-      << std::endl;
-//    rosenND.getParams(params);
-//    for (unsigned int i = 0; i < params.size(); i++) {
-//       params[i].setValue(2.);
-//       params[i].setBounds(-10., 10.);
-//    }
-//    rosenND.setParams(params);
+   std::cout << "Test Minuit method using 5 dimensional "
+             << "Rosenbrock function..." << std::endl;
    Minuit my_Minuit(rosenND);
-   try {
-      my_Minuit.find_min(verbose, .0001);
-   } catch (optimizers::Exception &eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
-   sig = my_Minuit.getUncertainty();
-   std::cout << "Uncertainties:" << std::endl;
-   for (unsigned int i=0; i < sig.size(); i++) {
-      std::cout << i << "  " << sig[i] << std::endl;
-   }
+   tester = new TestOptimizer(my_Minuit);
+   tester->fit();
+   tester->printResults();
+   delete tester;
+
+   std::cout << "Test DRMNGB method using 5 dimensional "
+             << "Rosenbrock function..." << std::endl;
+   Drmngb drmngb(rosenND);
+   tester = new TestOptimizer(drmngb);
+   tester->fit();
+   tester->printResults();
+   delete tester;
+
+   std::cout << "Test LBFGS method using 5 dimensional "
+             << "Rosenbrock function..." << std::endl;
+   Lbfgs my_lbfgs(rosenND);
+   tester = new TestOptimizer(my_lbfgs);
+   tester->fit();
+   tester->printResults();
+   delete tester;
 
 #ifdef HAVE_OPT_PP
 // now restart and try OptPP
@@ -392,11 +339,6 @@ void test_Optimizers() {
       std::cout << eObj.what() << std::endl;
    }
 #endif  //HAVE_OPT_PP
-   
-   rosenND.getParams(params);
-   for (unsigned int i = 0; i < params.size(); i++) 
-      std::cout << params[i].getName() << ": "
-                << params[i].getValue() << std::endl;
 
    std::cout << "*** test_Optimizers: all tests completed ***\n" << std::endl;
 }

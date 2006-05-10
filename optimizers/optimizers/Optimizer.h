@@ -34,7 +34,7 @@ class Optimizer {
     
 public:
     
-   Optimizer(Statistic &stat) {m_stat = &stat;}
+   Optimizer(Statistic & stat) : m_stat(&stat) {}
 
    virtual ~Optimizer() {}
 
@@ -44,9 +44,17 @@ public:
    /// assuming that the statistic is a log-likelihood.
    virtual const std::vector<double> & getUncertainty(bool useBase=false);
 
+   Statistic & stat() {
+      return *m_stat;
+   }
+
+   const Statistic & stat() const {
+      return *m_stat;
+   }
+
 protected:
 
-   Statistic *m_stat;
+   Statistic * m_stat;
 
    /// A vector to contain the estimated uncertainties of the free 
    /// parameters.

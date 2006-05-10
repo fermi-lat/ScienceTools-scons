@@ -13,8 +13,8 @@ namespace optimizers {
 
 class TestOptimizer {
 public:
-   TestOptimizer(Statistic & stat, Optimizer & optimizer) 
-      : m_stat(stat), m_opt(optimizer) {
+   TestOptimizer(Optimizer & optimizer) 
+      : m_opt(optimizer), m_stat(m_opt.stat()) {
       m_stat.getParams(m_params);
    }
    ~TestOptimizer() throw() {
@@ -44,8 +44,8 @@ public:
       std::cout << std::endl;
    }
 private:
-   Statistic & m_stat;
    Optimizer & m_opt;
+   Statistic & m_stat;
    std::vector<Parameter> m_params;
 };
 

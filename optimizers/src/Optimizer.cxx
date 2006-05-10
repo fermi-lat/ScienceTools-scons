@@ -7,13 +7,13 @@
  */
 
 #include <cmath>
-#include <cassert>
+
 #include <sstream>
 
-#include "optimizers/Statistic.h"
 #include "optimizers/dArg.h"
 #include "optimizers/Exception.h"
 #include "optimizers/Optimizer.h"
+#include "optimizers/Statistic.h"
 
 namespace optimizers {
 
@@ -71,7 +71,6 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
    for (int irow = 0; irow < npars; irow++) {
       std::vector<double> new_params = params;
       double delta;
-//      assert(params[irow] != 0);  // not sure what to do in this case
       if (params[irow] == 0) {
          delta = eps;
       } else {

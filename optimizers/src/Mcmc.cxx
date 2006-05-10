@@ -44,18 +44,20 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
    std::vector<Parameter> params;
    m_stat->getFreeParams(params);
 
-   if (clear) samples.clear();
+   if (clear) {
+      samples.clear();
+   }
 
    if (m_verbose) {
       std::cerr << "Mcmc generating samples";
    }
    unsigned long sample_size(0);
    while (sample_size < nsamp) {
-      if (m_verbose && samples.size() % nsamp/20 == 0) {
-         std::cerr << ".";
-      }
 // Loop over parameters, treating each update step as a trial
       for (unsigned int i = 0; i < paramValues.size(); i++) {
+         if (m_verbose && (sample_size % int(nsamp/20.) == 0)) {
+            std::cerr << ".";
+         }
          std::vector<double> newParamValues = paramValues;
          double transProbRatio;
          newParamValues[i] = drawValue(params[i], m_transitionWidths[i],
@@ -72,9 +74,14 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
 // Accept the new point in Parameter space
             paramValues[i] = newParamValues[i];
             params[i].setValue(paramValues[i]);
+         } else {
+// Retain the old one
+            newParamValues[i] = paramValues[i];
          }
+// Append the objective function value
+         newParamValues.push_back(-m_stat->value(dummy));
 // We always append the current point after the update step
-         samples.push_back(paramValues);
+         samples.push_back(newParamValues);
          sample_size++;
       }
    }

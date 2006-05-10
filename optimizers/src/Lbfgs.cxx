@@ -6,13 +6,14 @@
  * $Header$
  */
 
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
 #include "optimizers/dArg.h"
-#include <vector>
-#include <algorithm>
-#include <iostream>
 
 namespace optimizers {
   
@@ -104,11 +105,14 @@ namespace optimizers {
 	m_numEvals++;
 	
 	if (verbose != 0) {
-	  std::cout << "LBFGS " << funcVal << "  ";
-	  for (int i = 0; i < nparams; i++) {
-	    std::cout << paramVals[i] << "  " << gradient[i] << " : ";
-	  }
-	  std::cout << std::endl;
+           std::cout << m_numEvals << "  "
+                     << funcVal << std::endl;
+//            std::cout << "LBFGS " << funcVal << "\n";
+//            for (int i = 0; i < nparams; i++) {
+//               std::cout << i << ": "
+//                         << paramVals[i] << "  " 
+//                         << gradient[i] << "\n";
+//            }
 	}
       }  // Don't break.  Call setulb_ again
       else if (taskString.substr(0, 5) == "NEW_X") {
@@ -161,5 +165,3 @@ namespace optimizers {
     m_stat->setFreeParamValues(paramVals);
   } // End of find_min
 }
-
-
