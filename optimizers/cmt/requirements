@@ -11,7 +11,7 @@ use xmlBase v*
 use cfitsio v* IExternal
 use f2c v*
 use CLHEP v* IExternal
-use Minuit v* IExternal
+#use Minuit v* IExternal
 
 apply_pattern shared_library
 

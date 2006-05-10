@@ -8,6 +8,7 @@
 #ifndef optimizers_NEWMINUIT_H
 #define optimizers_NEWMINUIT_H
 
+#ifdef HAVE_NEW_MINUIT
 #include <vector>
 #include "optimizers/Optimizer.h"
 #include "optimizers/Statistic.h"
@@ -73,4 +74,5 @@ namespace optimizers {
   };
 
 }
+#endif // HAVE_NEW_MINUIT
 #endif

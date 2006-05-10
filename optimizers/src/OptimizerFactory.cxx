@@ -16,7 +16,7 @@
 #include "optimizers/Optimizer.h"
 #include "optimizers/Statistic.h"
 
-#include "OptimizerFactory.h"
+#include "optimizers/OptimizerFactory.h"
 
 namespace optimizers {
 
@@ -37,8 +37,10 @@ Optimizer * OptimizerFactory::create(const std::string & optimizerName,
       return new Lbfgs(stat);
    } else if (optimizerName == "Drmngb") {
       return new Drmngb(stat);
+#ifdef HAVE_NEW_MINUIT
    } else if (optimizerName == "NewMinuit") {
       return new NewMinuit(stat);
+#endif // HAVE_NEW_MINUIT
    } else {
       throw std::runtime_error("Invalid optimizer choice: " + optimizerName);
    }
