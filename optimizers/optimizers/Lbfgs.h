@@ -59,7 +59,7 @@ namespace optimizers {
     
       Lbfgs(Statistic &stat) 
          : Optimizer(stat), m_maxVarMetCorr(5),
-           m_maxIterations(100), m_pgtol(1e-7), m_retCode(0) {}
+           m_maxIterations(100), m_pgtol(0), m_retCode(0) {}
     
     virtual ~Lbfgs() {}
     
