@@ -291,11 +291,11 @@ void GPS::getPointingCharacteristics(double inputTime){
     m_lastQueriedTime=inputTime;
 
     //and then get the appropriate julian date:
-    double time = m_earthOrbit->dateFromSeconds(inputTime);
+    astro::JulianDate jDate = m_earthOrbit->dateFromSeconds(inputTime);
 
     double inclination = m_earthOrbit->inclination();
-    double orbitPhase = m_earthOrbit->phase(time);
-    m_position = m_earthOrbit->position(time);
+    double orbitPhase = m_earthOrbit->phase(jDate);
+    m_position = m_earthOrbit->position(jDate);
 
     //first make the directions for the x and Z axes, as well as the zenith direction, and latitude/longitude
     double lZ,bZ,raX,decX;
@@ -306,7 +306,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         SkyDir tempDirZ(lZ,bZ,astro::SkyDir::GALACTIC);
         raX = tempDirZ.ra()-90.0;
         decX = 0.;
-        astro::EarthCoordinate earthpos(m_position,time);
+        astro::EarthCoordinate earthpos(m_position,inputTime);
         m_lat = earthpos.latitude();
         m_lon = earthpos.longitude();
         m_altitude = earthpos.altitude();
@@ -353,7 +353,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         bZ=tempDirZ.b();
         raX = tempDirZ.ra()-90.0;
         decX = 0.;
-        astro::EarthCoordinate earthpos(m_position,time);
+        astro::EarthCoordinate earthpos(m_position,inputTime);
         m_lat = earthpos.latitude();
         m_lon = earthpos.longitude();
         m_altitude = earthpos.altitude();
