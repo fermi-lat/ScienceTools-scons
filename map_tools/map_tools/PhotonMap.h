@@ -37,7 +37,7 @@ public:
         @param emin [100] Minimum energy
         @param eratio [2.35] ratio between bins
         @param nlevels [8] number of levels
-        @param minlevel [5] HealPixel level of first bin
+        @param minlevel [6] HealPixel level of first bin
 
     */
     PhotonMap(double emin=100, double eratio=2.35, int nlevels=8, int minlevel=6);
@@ -60,23 +60,16 @@ public:
     /// direction and energy
     astro::HealPixel pixel(const astro::Photon& gamma);
 
-
     /** @brief extract a subset around a given direction
-        @param radius The maximum radius (deg)
-        @param vec the vector to fill with (count, distance(rad) ) pairs
-        @return the total number of photons (sum of count)
+    @param radius The maximum radius (deg). Set to >=180 for all
+    @param vec the vector to fill with (healpixel, count ) pairs
+    @param summary_level [-1] selection level: default is the minimum level 
+    @param select_level [-1] set to return only pixels at this level
+    @return the total number of photons (sum of count)
     */
-
-    int extract(int level,const astro::SkyDir& dir, double radius, std::vector<std::pair<int, float> >& vec)const;
-    
-    /** @brief extract a subset around a given direction
-        @param radius The maximum radius (deg)
-        @param vec the vector to fill with (healpixel, count ) pairs
-        @return the total number of photons (sum of count)
-    */
-	int extract(const astro::SkyDir& dir, double radius,
-					std::vector<std::pair<astro::HealPixel, int> >& vec,
-					int summary_level = -1, int select_level = -1) const;
+    int extract(const astro::SkyDir& dir, double radius,
+        std::vector<std::pair<astro::HealPixel, int> >& vec,
+        int summary_level = -1, int select_level = -1) const;
 
     int photonCount()const { return m_photons;} ///< current number of photons
     int pixelCount()const { return m_pixels; } ///< current nubmer of pixesl
