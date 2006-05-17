@@ -57,8 +57,7 @@ namespace optimizers {
   public:
     NewMinuit(Statistic &);
     virtual ~NewMinuit() {};
-    void find_min(int verbose=0, double tole = 1e-3, int tolType = ABSOLUTE);
-    void setMaxEval(int);
+    void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 2) {m_strategy=MnStrategy(strat);}
     void setMaxEval(unsigned int n) {m_maxEval=n;}
     double getDistance(void) const {return m_distance;};

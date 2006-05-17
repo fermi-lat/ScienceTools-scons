@@ -24,12 +24,12 @@ namespace optimizers {
   typedef std::vector<Parameter>::iterator pptr;
 
   // Constructor
-  NewMinuit::NewMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(200), 
+  NewMinuit::NewMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(0), 
                                            m_fitDone(false), m_FCN(stat) { }
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {
-    double tolerance = 2000. * tol;
+    double tolerance = 1000. * tol;
     if (TolType == RELATIVE) tolerance *= fabs(m_stat->value());
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
