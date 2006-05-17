@@ -245,7 +245,9 @@ void StGraphTestApp::testPlots() {
 
   // Set axis title.
   std::vector<Axis> * axes(&plot1->getAxes());
+  (*axes)[0].setTitle("INCORRECT X axis label");
   (*axes)[0].setTitle("Correct X axis label");
+  (*axes)[0].setScaleMode(Axis::eLog);
 
   // Crate a different Y axis which is scaled down from the original Y axis.
   Vec_t y1lower(y1);
@@ -258,7 +260,7 @@ void StGraphTestApp::testPlots() {
 
   // Set axes titles.
   axes = &plot2->getAxes();
-  (*axes)[0].setTitle("INCORRECT X axis label");
+  (*axes)[0].setTitle("Correct X axis label");
   (*axes)[1].setTitle("Correct Y axis label");
 
   // Run the graphics engine to display everything.
