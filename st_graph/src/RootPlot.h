@@ -89,7 +89,6 @@ namespace st_graph {
       void setParent(RootPlotFrame * parent);
 
     private:
-      std::vector<Axis> m_axes;
       std::vector<const ISequence *> m_seq_cont;
       std::vector<Marker> m_label;
       std::string m_style;

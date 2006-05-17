@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include "st_graph/Axis.h"
 #include "st_graph/RootFrame.h"
 
 class TAxis;
@@ -67,6 +68,10 @@ namespace st_graph {
       */
       const std::string & getTitle() const;
 
+      std::vector<Axis> & getAxes();
+
+      const std::vector<Axis> & getAxes() const;
+
     protected:
       /** \brief Internal helper method which correctly displays 2d plots.
           \param axes (Output) set of Root axis objects. Note that axes contains 3 such TAxis objects.
@@ -109,6 +114,7 @@ namespace st_graph {
       virtual TMultiGraph * getMultiGraph();
 
     private:
+      std::vector<Axis> m_axes;
       std::list<RootPlot *> m_plots;
       std::list<TGraph *> m_tgraphs;
       std::string m_title;

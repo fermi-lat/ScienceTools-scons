@@ -214,7 +214,7 @@ namespace st_graph {
   void StEmbeddedCanvas::setHandleEvents(bool handle_events) { m_handle_events = handle_events; }
 
   RootPlotFrame::RootPlotFrame(IFrame * parent, const std::string & title, unsigned int width, unsigned int height,
-    bool delete_parent): RootFrame(parent, 0, 0, delete_parent), m_plots(), m_tgraphs(), m_title(title), m_canvas(0),
+    bool delete_parent): RootFrame(parent, 0, 0, delete_parent), m_axes(3), m_plots(), m_tgraphs(), m_title(title), m_canvas(0),
     m_multi_graph(0), m_th2d(0), m_dimensionality(0) {
     
     // Send event messages back to parent.
@@ -279,22 +279,24 @@ namespace st_graph {
       // Flags indicating whether titles have been set.
       std::vector<bool> title_set(3, false);
 
+      // Loop over all dimensions, setting axis titles as needed.
+      for (unsigned int index = 0; index != m_dimensionality; ++index) {
+        // If title was not already set, set it.
+        const std::string & title(m_axes[index].getTitle());
+        if (!title_set[index] && !title.empty()) {
+          root_axes[index]->SetTitle(title.c_str());
+          root_axes[index]->CenterTitle(kTRUE);
+          title_set[index] = true;
+        }
+      }
+
+      // Handle log/linear scaling.
+      if (0 < m_dimensionality) gPad->SetLogx(Axis::eLog == m_axes[0].getScaleMode() ? 1 : 0);
+      if (1 < m_dimensionality) gPad->SetLogy(Axis::eLog == m_axes[1].getScaleMode() ? 1 : 0);
+      if (2 < m_dimensionality) gPad->SetLogz(Axis::eLog == m_axes[2].getScaleMode() ? 1 : 0);
+
       // Get titles from IPlots.
       for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor) {
-        // Extract IPlot-style axes.
-        const std::vector<Axis> & axes = (*itor)->getAxes();
-
-        // Loop over all dimensions, setting titles as needed.
-        for (unsigned int index = 0; index != m_dimensionality; ++index) {
-          // If title was not already set, set it.
-          const std::string & title(axes[index].getTitle());
-          if (!title_set[index] && !title.empty()) {
-            root_axes[index]->SetTitle(title.c_str());
-            root_axes[index]->CenterTitle(kTRUE);
-            title_set[index] = true;
-          }
-        }
-
         // Loop over plots, displaying each one's labels.
         std::vector<Marker> & marker((*itor)->getMarkers());
         for (std::vector<Marker>::iterator itor = marker.begin(); itor != marker.end(); ++itor) {
@@ -393,6 +395,10 @@ namespace st_graph {
   const std::string & RootPlotFrame::getTitle() const {
     return m_title;
   }
+
+  std::vector<Axis> & RootPlotFrame::getAxes() { return m_axes; }
+
+  const std::vector<Axis> & RootPlotFrame::getAxes() const { return m_axes; }
 
   void RootPlotFrame::display2d(std::vector<TAxis *> & axes) {
     axes.assign(3, (TAxis *)(0));
