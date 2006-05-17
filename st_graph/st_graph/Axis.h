@@ -14,6 +14,10 @@ namespace st_graph {
   */
   class Axis {
     public:
+      enum { eLinear, eLog };
+
+      Axis();
+
       /** \brief Get the current title of the axis.
       */
       const std::string & getTitle() const;
@@ -23,8 +27,13 @@ namespace st_graph {
       */
       void setTitle(const std::string & title);
 
+      int getScaleMode() const;
+
+      void setScaleMode(int scale_mode);
+
     private:
       std::string m_title;
+      bool m_log_scale;
   };
 }
 
