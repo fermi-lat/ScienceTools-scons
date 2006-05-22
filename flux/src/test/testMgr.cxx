@@ -52,7 +52,7 @@ void flux_load() {
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( Earth);
  }
-
+#if 0
 void galacticTest(FluxMgr* fm, std::string sourceName,double count){
     EventSource* e = fm->source(sourceName);
     double time=fm->time();
@@ -78,6 +78,7 @@ void galacticTest(FluxMgr* fm, std::string sourceName,double count){
     bavg /= i;
     std::cout << "  the average photon location was (l,b) = " << lavg << "," << bavg << std::endl;
 }
+#endif
 
 int main(int argn, char * argc[]) {
     using std::cout;
@@ -129,6 +130,7 @@ int main(int argn, char * argc[]) {
     }
     std::list<std::string> allTheSources = fm.sourceList();
     std::list<std::string>::iterator abc;
+#if 0
     if(argn != 1){
         fm.test(std::cout, source_name, count);
         std::cout << std::endl << "testing the galactic spread function: these photons should be centeres on l=b=10" << std::endl;
@@ -139,6 +141,7 @@ int main(int argn, char * argc[]) {
         galacticTest(&fm,"AGN",count);
         return 0;
     }
+#endif
     std::string testfilename("testMgrOutput.out");
     std::ostream* m_out = new std::ofstream(testfilename.c_str());
     std::ostream& out = *m_out;
