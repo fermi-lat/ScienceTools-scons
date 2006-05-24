@@ -1,5 +1,5 @@
 package pyLikelihood
-version v0r2
+version v0r2p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -16,10 +16,5 @@ path_append PYTHONPATH $(PYLIKELIHOODROOT)/python
 
 path_remove PYTHONPATH ROOT
 path_prepend PYTHONPATH $(ROOTSYS)/lib
-
-path_remove PYTHONPATH "" Linux "${pyLikelihood_cmtpath}/lib" \
-                          WIN32 "${pyLikelihood_cmtpath}\lib"
-path_append PYTHONPATH "" Linux "${pyLikelihood_cmtpath}/lib" \
-                          WIN32 "${pyLikelihood_cmtpath}\lib"
 
 apply_pattern swig_module name="pyLikelihood"
