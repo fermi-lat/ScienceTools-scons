@@ -17,7 +17,8 @@ SolarSystem::SolarSystem(Body body)
 
 SkyDir SolarSystem::direction(JulianDate jd)const
 {
-    return SkyDir(vector(m_body,EARTH,jd));
+//    return SkyDir(vector(m_body,EARTH,jd));
+    return SkyDir(vector(EARTH, m_body,jd));
 }
  
 double SolarSystem::distance(JulianDate jd)const
