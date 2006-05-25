@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r18p1  25-May-06 JC  fix sign error in SolarSystem::direction method
   v1r18    15-May-06 THB Add time to Photon data class
   v1r17p1  13-May-06 THB Fix bug introduced at v1r11p2 that broke default history generation of lat/lon
   v1r17    14-Apr-06 THB Add function to HealpixArray, to take dot product for efficiency
