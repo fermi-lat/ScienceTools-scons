@@ -53,6 +53,9 @@ public:
     double photonCount(const astro::HealPixel & px, bool includeChildren=false,
                               bool weighted=false) const;
 
+    //! Count the photons within a given pixel, weighted with children.  Also return weighted direction.
+	double photonCount(const astro::HealPixel & px, astro::SkyDir & NewDir) const;
+
     ///  implement the SkyFunction class by returning density
     double operator()(const astro::SkyDir & sd) const{ return density(sd);}
 
@@ -60,7 +63,7 @@ public:
     /// direction and energy
     astro::HealPixel pixel(const astro::Photon& gamma);
 
-    /** @brief extract a subset around a given direction
+    /** @brief extract a subset around a given direction. include selected pixels and all children.
     @param radius The maximum radius (deg). Set to >=180 for all
     @param vec the vector to fill with (healpixel, count ) pairs
     @param summary_level [-1] selection level: default is the minimum level 
@@ -70,6 +73,17 @@ public:
     int extract(const astro::SkyDir& dir, double radius,
         std::vector<std::pair<astro::HealPixel, int> >& vec,
         int summary_level = -1, int select_level = -1) const;
+
+    /** @brief extract a subset around a given direction.  single level only.
+    @param radius The maximum radius (deg). Set to >=180 for all
+    @param vec the vector to fill with (healpixel, count ) pairs
+    @param select_level [-1] return only pixels at this level. default is the minimum level
+	@param include_all [false] True: return all possible select_level pixels within radius.  False: return only pixels found in current PhotonMap.
+    @return the total number of photons (sum of count)
+    */
+    int extract(const astro::SkyDir& dir, double radius,
+        std::vector<std::pair<astro::HealPixel, int> >& vec,
+        int select_level = -1, bool include_all = false) const;
 
     int photonCount()const { return m_photons;} ///< current number of photons
     int pixelCount()const { return m_pixels; } ///< current nubmer of pixesl
