@@ -203,6 +203,12 @@ class AnalysisBase(object):
                 self.model[ii].setFree(0)
         except TypeError:
             self.model[i].setFree(0)
+    def writeXml(self, xmlFile=None):
+        if xmlFile is None:
+            xmlFile = self.srcModel
+        self.logLike.writeXml(xmlFile)
+#    def __getattr__(self, attrname):
+#        return getattr(self.logLike, attrname)
 
 def _quotefn(filename):
     if filename is None:
