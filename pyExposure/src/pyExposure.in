@@ -7,10 +7,15 @@
  */
 %module pyExposure
 %{
-#include "pyExposure/Exposure.h"
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "evtbin/Gti.h"
+#include "dataSubselector/Cuts.h"
+#include "dataSubselector/GtiCut.h"
+#include "dataSubselector/RangeCut.h"
+#include "pyExposure/Exposure.h"
 %}
 %include stl.i
 %exception {
@@ -22,4 +27,28 @@
    }
 }
 %template(DoubleVector) std::vector<double>;
+%template(StringVector) std::vector<std::string>;
+%include $(EVTBINROOT)/evtbin/Gti.h
+%rename (evtbin_Gti) Gti;
+%include $(DATASUBSELECTORROOT)/dataSubselector/CutBase.h
+%include $(DATASUBSELECTORROOT)/dataSubselector/Gti.h
+%include $(DATASUBSELECTORROOT)/dataSubselector/GtiCut.h
+%include $(DATASUBSELECTORROOT)/dataSubselector/RangeCut.h
+%include $(DATASUBSELECTORROOT)/dataSubselector/Cuts.h
+%template(GtiCutVector) std::vector<dataSubselector::GtiCut *>;
 %include $(PYEXPOSUREROOT)/pyExposure/Exposure.h
+%extend dataSubselector::Cuts {
+   void writeCuts() const {
+      self->writeCuts(std::cout);
+   }
+   std::vector<dataSubselector::GtiCut *> gtiCuts() {
+      std::vector<const dataSubselector::GtiCut *> my_gtiCuts;
+      self->getGtiCuts(my_gtiCuts);
+      std::vector<dataSubselector::GtiCut *> output;
+      for (size_t i = 0; i < my_gtiCuts.size(); i++) {
+         output.push_back(my_gtiCuts.at(i)->clone());
+      }
+      return output;
+   }
+}
+
