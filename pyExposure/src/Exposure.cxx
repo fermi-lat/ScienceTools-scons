@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <algorithm>
 #include <stdexcept>
 #include <utility>
 
@@ -23,9 +24,9 @@ namespace pyExposure {
 
 Exposure::Exposure(const std::string & scDataFile,
                    const std::vector<double> & timeBoundaries,
-                   double energy, double ra, double dec,
-                   const std::string & irfs) 
-   : m_timeBoundaries(timeBoundaries), m_energy(energy),
+                   const std::vector<double> & energies, 
+                   double ra, double dec, const std::string & irfs) 
+   : m_timeBoundaries(timeBoundaries), m_energies(energies),
      m_srcDir(astro::SkyDir(ra, dec)), m_scData(0) {
    irfLoader::Loader::go();
    const std::vector<std::string> & 
@@ -46,11 +47,26 @@ Exposure::~Exposure() throw() {
    }
 }
    
-double Exposure::value(double time) const {
+double Exposure::value(double time, double energy) const {
    int indx = std::upper_bound(m_timeBoundaries.begin(), 
                                m_timeBoundaries.end(), time) 
       - m_timeBoundaries.begin() - 1;
-   return m_exposureValues[indx];
+   int k = std::upper_bound(m_energies.begin(), m_energies.end(), energy)
+      - m_energies.begin() - 1;
+   double expVal1 = m_exposureValues.at(indx).at(k);
+   double expVal2 = m_exposureValues.at(indx).at(k+1);
+   double expVal(0);
+   if (expVal1 > 0 && expVal2 > 0) {
+      expVal = expVal1*std::exp(std::log(energy/m_energies.at(k))
+                                /std::log(m_energies.at(k+1)
+                                          /m_energies.at(k))
+                                *std::log(expVal2/expVal1));
+   } else {
+      expVal = (std::log(energy/m_energies.at(k))
+                /std::log(m_energies.at(k+1)/m_energies.at(k))
+                *(expVal2 - expVal1) + expVal1);
+   }
+   return std::max(0., expVal);
 }
 
 void Exposure::readScData(const std::string & scDataFile) {
@@ -69,7 +85,7 @@ void Exposure::integrateExposure() {
    unsigned int numIntervals = m_timeBoundaries.size() - 1;
    m_exposureValues.resize(numIntervals);
    for (unsigned int i = 0; i < numIntervals; i++) {
-      m_exposureValues[i] = 0;
+      m_exposureValues.at(i).resize(m_energies.size(), 0);
       std::pair<double, double> wholeInterval;
       wholeInterval.first = m_timeBoundaries[i];
       wholeInterval.second = m_timeBoundaries[i+1];
@@ -94,23 +110,25 @@ void Exposure::integrateExposure() {
          thisInterval.first = it->time;
          thisInterval.second = (it+1)->time;
          if (Likelihood::LikeExposure::overlap(wholeInterval, thisInterval)) {
-            m_exposureValues[i] += (effArea(thisInterval.first) 
-                                    + effArea(thisInterval.second))/2.
-               *it->livetime;
-//               *(thisInterval.second - thisInterval.first);
+            for (size_t k = 0; k < m_energies.size(); k++) {
+               m_exposureValues.at(i).at(k) += 
+                  (effArea(thisInterval.first, m_energies.at(k)) 
+                   + effArea(thisInterval.second, m_energies.at(k)))/2.
+                  *it->livetime;
+            }
          }
       }
    }
 }
 
-double Exposure::effArea(double time) const {
+double Exposure::effArea(double time, double energy) const {
    astro::SkyDir zAxis = m_scData->zAxis(time);
    astro::SkyDir xAxis = m_scData->xAxis(time);
    
    double my_effArea(0);
    for (size_t i = 0; i < m_irfs.size(); i++) {
       irfInterface::IAeff * aeff = m_irfs.at(i)->aeff();
-      my_effArea += aeff->value(m_energy, m_srcDir, zAxis, xAxis);
+      my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis);
    }
    return my_effArea;
 }
