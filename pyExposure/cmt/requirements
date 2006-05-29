@@ -11,6 +11,8 @@ use irfLoader v* irfs
 use Likelihood v*
 use st_facilities v*
 use SwigPolicy v*
+use pyLikelihood v* -no_auto_imports
+use sane v* -no_auto_imports
 
 apply_pattern package_include
 apply_pattern package_linkopts
