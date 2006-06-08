@@ -1,6 +1,6 @@
 package flux
 
-version v8r24
+version v8r25
 author Toby Burnett <tburnett@u.washington.edu>
 
 # $Id$

@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
     EOH
 
+   v8r25   08-jun=2006 thb Spectrum implementation fixes for particle type and direction
    v8r24   23-mar-2006 thb CLHEP update, tagging Heather and Tracy mods
    v8r23   04-mar-2006 thb protect against times beyond pointing history
    v8r22p2 03-dec-2005 thb protect against times beyond pointing history
