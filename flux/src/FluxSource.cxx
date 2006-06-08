@@ -341,7 +341,7 @@ FluxSource::FluxSource(const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem )
         DOMElement* specType = xmlBase::Dom::getFirstChildElement(spec);
 
         std::string typeTagName = xmlBase::Dom::getTagName(specType);
-        std::string spectrum_name = xmlBase::Dom::getAttribute(spec, "particle_name");
+        std::string particle_name = xmlBase::Dom::getAttribute(spec, "particle_name");
         std::string spectrum_energyscale = xmlBase::Dom::getAttribute(spec, "escale");
 
         if(spectrum_energyscale == "GeV"){ m_energyscale=GeV;
@@ -380,7 +380,7 @@ FluxSource::FluxSource(const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem )
 	      { s->setFlux(atof(flux.c_str())); }
 	    s->setInGeV(spectrum_energyscale == "GeV");
 
-	    s->setParticleName(spectrum_name);
+	    if( !particle_name.empty() ) s->setParticleName(particle_name);
         }
         m_spectrum =s;
 	
