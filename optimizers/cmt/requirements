@@ -1,5 +1,5 @@
 package optimizers
-version v2r5p4
+version v2r6
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
@@ -18,8 +18,9 @@ apply_pattern shared_library
 private
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
-macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
-             Darwin " -I../src "
+#macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE " \
+                         Darwin " -I../src "
 macro_prepend cflags "" Linux " -g -O "
 
 macro source *.cxx WIN32 "*.h *.cxx"
