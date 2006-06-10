@@ -31,14 +31,14 @@ OptimizerFactory & OptimizerFactory::instance() {
 
 Optimizer * OptimizerFactory::create(const std::string & optimizerName,
                                      Statistic & stat) {
-   if (optimizerName == "Minuit") {
+   if (optimizerName == "Minuit" || optimizerName == "MINUIT") {
       return new Minuit(stat);
-   } else if (optimizerName == "Lbfgs") {
+   } else if (optimizerName == "Lbfgs" || optimizerName == "LBFGS") {
       return new Lbfgs(stat);
-   } else if (optimizerName == "Drmngb") {
+   } else if (optimizerName == "Drmngb" || optimizerName == "DRMNGB") {
       return new Drmngb(stat);
 #ifdef HAVE_NEW_MINUIT
-   } else if (optimizerName == "NewMinuit") {
+   } else if (optimizerName == "NewMinuit" || optimizerName == "NEWMINUIT") {
       return new NewMinuit(stat);
 #endif // HAVE_NEW_MINUIT
    } else {
