@@ -13,7 +13,9 @@ use f2c v*
 use CLHEP v* IExternal
 use ROOT v* IExternal
 
-macro_append ROOT_libs " -lMinuit2 -lHist -lGraf "
+macro_append ROOT_libs "" Linux " -lMinuit2 -lHist -lGraf " \
+                          WIN32 " libMinuit2.lib libHist.lib libGraf.lib " \
+                          Darwin " -lMinuit2 -lHist -lGraf "
 
 apply_pattern shared_library
 
@@ -21,8 +23,8 @@ private
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
 macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
-#macro_append cppflags "" Linux " -I../src -DTRAP_FPE " \
-                         Darwin " -I../src "
+                         WIN32 " /DHAVE_NEW_MINUIT " \
+                         Darwin " -I../src -DHAVE_NEW_MINUIT "
 macro_prepend cflags "" Linux " -g -O "
 
 macro source *.cxx WIN32 "*.h *.cxx"
