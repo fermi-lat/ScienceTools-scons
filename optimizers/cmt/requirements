@@ -11,15 +11,17 @@ use xmlBase v*
 use cfitsio v* IExternal
 use f2c v*
 use CLHEP v* IExternal
-#use Minuit v* IExternal
+use ROOT v* IExternal
+
+macro_append ROOT_libs " -lMinuit2 -lHist -lGraf "
 
 apply_pattern shared_library
 
 private
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
-#macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
-macro_append cppflags "" Linux " -I../src -DTRAP_FPE " \
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
+#macro_append cppflags "" Linux " -I../src -DTRAP_FPE " \
                          Darwin " -I../src "
 macro_prepend cflags "" Linux " -g -O "
 

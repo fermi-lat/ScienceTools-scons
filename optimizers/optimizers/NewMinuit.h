@@ -12,9 +12,9 @@
 #include <vector>
 #include "optimizers/Optimizer.h"
 #include "optimizers/Statistic.h"
-#include "Minuit/FCNGradientBase.h"
-#include "Minuit/MnStrategy.h"
-#include "Minuit/MnUserParameterState.h"
+#include "Minuit2/FCNGradientBase.h"
+#include "Minuit2/MnStrategy.h"
+#include "Minuit2/MnUserParameterState.h"
 
 namespace optimizers {
 
@@ -28,13 +28,13 @@ namespace optimizers {
    Q:  Would it be better to do this as a hidden class within NewMinuit?
   */
 
-  class myFCN : public FCNGradientBase {
+  class myFCN : public ROOT::Minuit2::FCNGradientBase {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
-    virtual double up() const {return 0.5;}
+    virtual double Up() const {return 0.5;}
     virtual double operator() (const std::vector<double> &) const;
-    virtual std::vector<double> gradient(const std::vector<double> &) const;
+    virtual std::vector<double> Gradient(const std::vector<double> &) const;
   private:
     Statistic * m_stat;
   };
@@ -58,7 +58,9 @@ namespace optimizers {
     NewMinuit(Statistic &);
     virtual ~NewMinuit() {};
     void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
-    void setStrategy(unsigned int strat = 2) {m_strategy=MnStrategy(strat);}
+    void setStrategy(unsigned int strat = 2) {
+       m_strategy=ROOT::Minuit2::MnStrategy(strat);
+    }
     void setMaxEval(unsigned int n) {m_maxEval=n;}
     double getDistance(void) const {return m_distance;};
     void hesse(int verbose = 0);
@@ -68,8 +70,8 @@ namespace optimizers {
     bool m_fitDone;
     myFCN m_FCN;
     double m_distance;
-    MnStrategy m_strategy;
-    MnUserParameterState m_userState;
+    ROOT::Minuit2::MnStrategy m_strategy;
+    ROOT::Minuit2::MnUserParameterState m_userState;
   };
 
 }
