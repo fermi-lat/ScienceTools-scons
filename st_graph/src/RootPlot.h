@@ -75,6 +75,15 @@ namespace st_graph {
 
       virtual std::vector<Marker> & getMarkers();
 
+      /** \brief Get the current style of line used to connect points in plot.
+      */
+      virtual std::string getLineStyle() const;
+
+      /** \brief Set the style of line used to connect points in plot.
+          \param style String indicating type of line; may be none, solid, dotted, dashed.
+      */
+      virtual void setLineStyle(const std::string & style);
+
       /// \brief Return a string describing the plot style, e.g. hist, scat, lego, surf, etc.
       const std::string & getStyle() const;
 
@@ -92,6 +101,7 @@ namespace st_graph {
       std::vector<const ISequence *> m_seq_cont;
       std::vector<Marker> m_label;
       std::string m_style;
+      std::string m_line_style;
       unsigned int m_dimensionality;
       RootPlotFrame * m_parent;
       const std::vector<std::vector<double> > * m_z_data;

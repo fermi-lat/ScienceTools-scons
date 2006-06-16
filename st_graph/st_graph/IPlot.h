@@ -56,6 +56,11 @@ namespace st_graph {
           \param labels The output container of labels.
       */
       virtual void getMarkers(std::vector<Marker> & labels) const = 0;
+
+      /** \brief Set the style of line used to connect points in plot.
+          \param style String indicating type of line; may be none, solid, dotted, dashed.
+      */
+      virtual void setLineStyle(const std::string & style) = 0;
   };
 
 }

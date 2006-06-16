@@ -432,11 +432,22 @@ namespace st_graph {
       // 8 or more layered plots.
       tgraph->SetLineColor(color);
 
+      // Handle line style: none, solid, dashed, dotted.
+      std::string line_style = (*itor)->getLineStyle();
+      int root_line_style = kSolid;
+      if ("dashed" == line_style) {
+        root_line_style = kDashed;
+      } else if ("dotted" == line_style) {
+        root_line_style = kDotted;
+      }
+      if ("none" == line_style) line_style = ""; else line_style = "L";
+      tgraph->SetLineStyle(root_line_style);
+
       // Keep track of Root object, so it can be deleted later.
       m_tgraphs.push_back(tgraph);
 
       // Connect Root objects.
-      m_multi_graph->Add(tgraph, "L");
+      m_multi_graph->Add(tgraph, line_style.c_str());
     }
 
     // Draw parent TMultiGraph object.

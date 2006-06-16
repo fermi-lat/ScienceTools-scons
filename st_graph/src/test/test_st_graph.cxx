@@ -258,6 +258,9 @@ void StGraphTestApp::testPlots() {
   // Create a histogram plot of this data set, in the subframe, ignoring errors.
   IPlot * plot2 = engine.createPlot(pf1, "hist", ValueSeq_t(x1.begin(), x1.end()), ValueSeq_t(y1lower.begin(), y1lower.end()));
 
+  // Set different line style for this plot.
+  plot2->setLineStyle("dashed");
+
   // Set axes titles.
   axes = &plot2->getAxes();
   (*axes)[0].setTitle("Correct X axis label");
