@@ -16,6 +16,7 @@ private
 use pulsarDb *
 use st_app *
 use st_facilities *
+use timeSystem *
 use tip *
 
 application test_pulsePhase test/*.cxx

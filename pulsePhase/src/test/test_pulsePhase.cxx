@@ -4,17 +4,20 @@
 #include <limits>
 #include <memory>
 
-#include "pulsarDb/GlastTime.h"
 #include "pulsarDb/PulsarEph.h"
 #include "pulsarDb/TimingModel.h"
 
 #include "st_facilities/Env.h"
+
+#include "timeSystem/AbsoluteTime.h"
+#include "timeSystem/TimeRep.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
 using namespace pulsarDb;
+using namespace timeSystem;
 
 int main() {
   int status = 0;
@@ -44,8 +47,16 @@ int main() {
   header["TSTART"].get(valid_since);
   header["TSTOP"].get(valid_until);
 
-  GlastTdbTime abs_valid_since(valid_since);
-  FrequencyEph eph(abs_valid_since, GlastTdbTime(valid_until), GlastTdbTime(123.456789), .11, 1.125e-2, -2.25e-4, 6.75e-6);
+  MetRep glast_tdb("TDB", 51910, 0., 0.);
+  glast_tdb.setValue(valid_since);
+  AbsoluteTime abs_valid_since = glast_tdb.getTime();
+  glast_tdb.setValue(valid_until);
+  AbsoluteTime abs_valid_until = glast_tdb.getTime();
+  glast_tdb.setValue(123.456789);
+  AbsoluteTime abs_epoch = glast_tdb.getTime();
+//  GlastTdbTime abs_valid_since(valid_since);
+//  FrequencyEph eph(abs_valid_since, GlastTdbTime(valid_until), GlastTdbTime(123.456789), .11, 1.125e-2, -2.25e-4, 6.75e-6);
+  FrequencyEph eph(abs_valid_since, abs_valid_until, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
   bool add_col = true;
@@ -61,7 +72,9 @@ int main() {
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
-    double phase = model.calcPulsePhase(eph, GlastTdbTime(rec["TIME"].get()));
+    glast_tdb.setValue(rec["TIME"].get());
+    double phase = model.calcPulsePhase(eph, glast_tdb.getTime());
+//    double phase = model.calcPulsePhase(eph, GlastTdbTime(rec["TIME"].get()));
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);

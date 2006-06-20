@@ -5,14 +5,15 @@
 #include <stdexcept>
 #include <string>
 
-#include "pulsarDb/AbsoluteTime.h"
 #include "pulsarDb/EphChooser.h"
 #include "pulsarDb/EphComputer.h"
-#include "pulsarDb/GlastTime.h"
 #include "pulsarDb/OrbitalEph.h"
 #include "pulsarDb/PulsarDb.h"
 #include "pulsarDb/PulsarEph.h"
 #include "pulsarDb/TimingModel.h"
+
+#include "timeSystem/AbsoluteTime.h"
+#include "timeSystem/TimeRep.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -25,6 +26,7 @@
 #include "st_facilities/Env.h"
 
 using namespace pulsarDb;
+using namespace timeSystem;
 
 const std::string s_cvs_id("$Name$");
 
@@ -117,15 +119,11 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
 
   // Handle ephemeris epoch time.
-  std::auto_ptr<AbsoluteTime> abs_epoch(0);
-
-  if (epoch_time_sys == "TDB") {
-    abs_epoch.reset(new GlastTdbTime(epoch));
-  } else if (epoch_time_sys == "TT") {
-    abs_epoch.reset(new GlastTtTime(epoch));
-  } else {
+  if (epoch_time_sys != "TDB" && epoch_time_sys != "TT") {
     throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
   }
+  MetRep epoch_rep(epoch_time_sys, 51910, 0., epoch);
+  AbsoluteTime abs_epoch = epoch_rep.getTime();
 
   // Open the event file.
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
@@ -152,18 +150,14 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Event time system must match pulsar ephemeris time system for now");
 
   // Handle event time.
-  std::auto_ptr<AbsoluteTime> abs_valid_since(0);
-  std::auto_ptr<AbsoluteTime> abs_valid_until(0);
-
-  if (event_time_sys == "TDB") {
-    abs_valid_since.reset(new GlastTdbTime(valid_since));
-    abs_valid_until.reset(new GlastTdbTime(valid_until));
-  } else if (event_time_sys == "TT") {
-    abs_valid_since.reset(new GlastTtTime(valid_since));
-    abs_valid_until.reset(new GlastTtTime(valid_until));
-  } else {
+  if (event_time_sys != "TDB" && event_time_sys != "TT") {
     throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
   }
+  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
+  evt_time_rep.setValue(valid_since);
+  AbsoluteTime abs_valid_since = evt_time_rep.getTime();
+  evt_time_rep.setValue(valid_until);
+  AbsoluteTime abs_valid_until = evt_time_rep.getTime();
 
   // Find the pulsar database.
   std::string psrdb_file = par_group["psrdbfile"];
@@ -212,7 +206,7 @@ void PulsePhaseApp::run() {
     // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
     PulsarEphCont & ephemerides(computer.getPulsarEphCont());
     ephemerides.clear();
-    ephemerides.push_back(FrequencyEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, f0, f1, f2).clone());
+    ephemerides.push_back(FrequencyEph(abs_valid_since, abs_valid_until, abs_epoch, phi0, f0, f1, f2).clone());
   } else if (eph_style == "PER") {
     double phi0 = par_group["phi0"];
     double p0 = par_group["p0"];
@@ -224,7 +218,7 @@ void PulsePhaseApp::run() {
     // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
     PulsarEphCont & ephemerides(computer.getPulsarEphCont());
     ephemerides.clear();
-    ephemerides.push_back(PeriodEph(*abs_valid_since, *abs_valid_until, *abs_epoch, phi0, p0, p1, p2).clone());
+    ephemerides.push_back(PeriodEph(abs_valid_since, abs_valid_until, abs_epoch, phi0, p0, p1, p2).clone());
   } else if (eph_style == "DB") {
     // No action needed.
   } else {
@@ -249,20 +243,15 @@ void PulsePhaseApp::run() {
     // Get value from the table.
     double evt_time = (*itor)[time_field].get();
 
-    std::auto_ptr<AbsoluteTime> abs_evt_time(0);
-
-    if (event_time_sys == "TDB") {
-      abs_evt_time.reset(new GlastTdbTime(evt_time));
-    } else {
-      abs_evt_time.reset(new GlastTtTime(evt_time));
-    }
+    evt_time_rep.setValue(evt_time);
+    AbsoluteTime abs_evt_time = evt_time_rep.getTime();
 
     if (demod_bin) {
-      computer.demodulateBinary(*abs_evt_time);
+      computer.demodulateBinary(abs_evt_time);
     }
 
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcPulsePhase(*abs_evt_time) + phase_offset, &int_part);
+    double phase = modf(computer.calcPulsePhase(abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
     (*itor)[phase_field].set(phase);

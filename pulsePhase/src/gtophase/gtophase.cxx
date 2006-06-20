@@ -5,14 +5,15 @@
 #include <stdexcept>
 #include <string>
 
-#include "pulsarDb/AbsoluteTime.h"
 #include "pulsarDb/EphChooser.h"
 #include "pulsarDb/EphComputer.h"
-#include "pulsarDb/GlastTime.h"
 #include "pulsarDb/OrbitalEph.h"
 #include "pulsarDb/PulsarDb.h"
 #include "pulsarDb/PulsarEph.h"
 #include "pulsarDb/TimingModel.h"
+
+#include "timeSystem/AbsoluteTime.h"
+#include "timeSystem/TimeRep.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -25,6 +26,7 @@
 #include "st_facilities/Env.h"
 
 using namespace pulsarDb;
+using namespace timeSystem;
 
 const std::string s_cvs_id("$Name$");
 
@@ -67,6 +69,8 @@ void PulsePhaseApp::run() {
 
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
 
+  MetRep time_rep(time_sys, 51910, 0., 0.);
+
   // Find the pulsar database.
   std::string psrdb_file = par_group["psrdbfile"];
   std::string psrdb_file_uc = psrdb_file;
@@ -106,16 +110,11 @@ void PulsePhaseApp::run() {
     // Get value from the table.
     double evt_time = (*itor)[time_field].get();
 
-    std::auto_ptr<AbsoluteTime> abs_evt_time(0);
-
-    if (time_sys == "TDB") {
-      abs_evt_time.reset(new GlastTdbTime(evt_time));
-    } else {
-      abs_evt_time.reset(new GlastTtTime(evt_time));
-    }
+    time_rep.setValue(evt_time);
+    AbsoluteTime abs_evt_time = time_rep.getTime();
 
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcOrbitalPhase(*abs_evt_time) + phase_offset, &int_part);
+    double phase = modf(computer.calcOrbitalPhase(abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
     (*itor)[phase_field].set(phase);
