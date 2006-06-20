@@ -269,6 +269,11 @@ namespace st_graph {
     gPad = m_canvas->GetCanvas();
 
     try {
+      // Handle log/linear scaling.
+      if (0 < m_dimensionality) gPad->SetLogx(Axis::eLog == m_axes[0].getScaleMode() ? 1 : 0);
+      if (1 < m_dimensionality) gPad->SetLogy(Axis::eLog == m_axes[1].getScaleMode() ? 1 : 0);
+      if (2 < m_dimensionality) gPad->SetLogz(Axis::eLog == m_axes[2].getScaleMode() ? 1 : 0);
+
       // Modifying axes must be done through Root TAxis objects.
       std::vector<TAxis *> root_axes(3);
 
@@ -289,11 +294,6 @@ namespace st_graph {
           title_set[index] = true;
         }
       }
-
-      // Handle log/linear scaling.
-      if (0 < m_dimensionality) gPad->SetLogx(Axis::eLog == m_axes[0].getScaleMode() ? 1 : 0);
-      if (1 < m_dimensionality) gPad->SetLogy(Axis::eLog == m_axes[1].getScaleMode() ? 1 : 0);
-      if (2 < m_dimensionality) gPad->SetLogz(Axis::eLog == m_axes[2].getScaleMode() ? 1 : 0);
 
       // Get titles from IPlots.
       for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor) {
