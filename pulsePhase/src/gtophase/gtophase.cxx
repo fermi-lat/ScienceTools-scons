@@ -69,6 +69,7 @@ void PulsePhaseApp::run() {
 
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
 
+  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
   MetRep time_rep(time_sys, 51910, 0., 0.);
 
   // Find the pulsar database.

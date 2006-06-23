@@ -56,7 +56,7 @@ int main() {
   AbsoluteTime abs_epoch = glast_tdb.getTime();
 //  GlastTdbTime abs_valid_since(valid_since);
 //  FrequencyEph eph(abs_valid_since, GlastTdbTime(valid_until), GlastTdbTime(123.456789), .11, 1.125e-2, -2.25e-4, 6.75e-6);
-  FrequencyEph eph(abs_valid_since, abs_valid_until, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
+  FrequencyEph eph("TDB", abs_valid_since, abs_valid_until, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
   bool add_col = true;
