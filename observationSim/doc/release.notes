@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r3   24-Jun-06   JC   output number of incident and accepted events
+                            for each source
     v6r2p7 05-May-06   JC   small bug fix: write out scfile if input is not
                             found and default pointing strategy is used
     v6r2p6 25-Apr-06   JC   clear ObsSim::m_xmlSourceFiles before loading

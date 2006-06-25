@@ -323,16 +323,21 @@ void ObsSim::generateData() {
 
 void ObsSim::
 saveEventIds(const observationSim::EventContainer & events) const {
-   typedef std::map<std::string, int> id_map_t;
+   typedef observationSim::EventContainer::SourceSummary srcSummary_t;
+   typedef std::map<std::string, srcSummary_t> id_map_t;
 
    const id_map_t & eventIds = events.eventIds();
 
 // sort by ID number
    unsigned int nsrcs = eventIds.size();
    std::vector<std::string> ids(nsrcs);
+   std::vector<unsigned long> incidents(nsrcs);
+   std::vector<unsigned long> accepteds(nsrcs);
    id_map_t::const_iterator eventId = eventIds.begin();
    for ( ; eventId != eventIds.end(); ++eventId) {
-      ids.at(eventId->second) = eventId->first;
+      ids.at(eventId->second.id) = eventId->first;
+      incidents.at(eventId->second.id) = eventId->second.incidentNum;
+      accepteds.at(eventId->second.id) = eventId->second.acceptedNum;
    }
    
    std::string event_id_file = m_pars["outfile_prefix"];
@@ -340,7 +345,9 @@ saveEventIds(const observationSim::EventContainer & events) const {
    std::ofstream outputFile(event_id_file.c_str());
    for (unsigned int i = 0; i < nsrcs; i++) {
       outputFile << i << "  "
-                 << ids.at(i) << "\n";
+                 << ids.at(i) << "  "
+                 << incidents.at(i) << "  "
+                 << accepteds.at(i) << "\n";
    }
    outputFile.close();
 }

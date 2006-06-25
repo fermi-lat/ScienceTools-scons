@@ -129,11 +129,12 @@ bool EventContainer::addEvent(EventSource *event,
    std::string srcName(event->name());
    setEventId(srcName);
 
+   m_srcSummaries[srcName].incidentNum += 1;
    if (alwaysAccept) {
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
                                 ScZenith(time), 0, energy, flux_theta,
-                                flux_phi, m_eventIds[srcName]) );
+                                flux_phi, m_srcSummaries[srcName].id) );
       if (flush || m_events.size() >= m_maxNumEntries) {
          writeEvents();
       }
@@ -160,11 +161,12 @@ bool EventContainer::addEvent(EventSource *event,
       evtParams["RA"] = appDir.ra();
       evtParams["DEC"] = appDir.dec();
       if (m_cuts == 0 || m_cuts->accept(evtParams)) {
+         m_srcSummaries[srcName].acceptedNum += 1;
          m_events.push_back( Event(time, appEnergy, 
                                    appDir, sourceDir, zAxis, xAxis,
                                    ScZenith(time), respPtr->irfID(), 
                                    energy, flux_theta, flux_phi,
-                                   m_eventIds[srcName]) );
+                                   m_srcSummaries[srcName].id) );
          accepted = true;
       }
       if (flush || m_events.size() >= m_maxNumEntries) {
@@ -178,9 +180,11 @@ bool EventContainer::addEvent(EventSource *event,
 }
 
 void EventContainer::setEventId(const std::string & name) {
-   typedef std::map<std::string, int> id_map_t;
-   if (m_eventIds.find(name) == m_eventIds.end()) {
-      m_eventIds.insert(id_map_t::value_type(name, m_eventIds.size()));
+   typedef std::map<std::string, SourceSummary> id_map_t;
+   if (m_srcSummaries.find(name) == m_srcSummaries.end()) {
+      m_srcSummaries.insert(
+         id_map_t::value_type(name, 
+                              SourceSummary(m_srcSummaries.size())));
    }
 }
 
