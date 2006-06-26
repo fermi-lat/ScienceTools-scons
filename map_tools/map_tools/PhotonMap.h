@@ -91,6 +91,10 @@ public:
     int minLevel()const { return m_minlevel;} ///< minimum Healpixel level
     int levels()const {return m_levels;};  ///< number of energy bins
 
+    /// @return a vector if the left edges of the energy bins
+    std::vector<double> energyBins()const;
+
+
 private:
     double m_emin;     ///< minimum energy for first bin
     double m_logeratio;   ///< log10(ratio between energy bins)

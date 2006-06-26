@@ -198,3 +198,11 @@ double PhotonMap::photonCount(const astro::HealPixel & px, astro::SkyDir & NewDi
 	return count;
 }
 
+std::vector<double> PhotonMap::energyBins()const
+{
+    std::vector<double> result; result.push_back(m_emin);
+    double eratio(exp(m_logeratio));
+    for(int i = 1; i< m_levels; ++i) result.push_back(result.back()*eratio);
+    return result;
+}
+
