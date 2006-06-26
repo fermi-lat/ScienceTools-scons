@@ -81,6 +81,7 @@ public:
         //double endtime = (--(history.end()))->first;
 
         double deltat = (++next)->first-begintime; 
+        double zmin = m_pars["zmin"];
 
         int added=0, total=0;
         for( ; mit!=history.end(); ++mit) {
@@ -92,7 +93,7 @@ public:
 //            if( avoid_saa && astro::EarthCoordinate(pt.lat, pt.lon).insideSAA()) continue;
             added++;
 	    astro::SkyDir dirZenith(pt.position.unit());
-            exp.fill( pt.dirZ, dirZenith, deltat);
+            exp.fill( pt.dirZ, dirZenith, deltat, zmin); // zcut of -1: no cut.
         }
 
         m_f.info() << "Number of steps added: " << added << ", rejected: "<< (total-added) << std::endl;

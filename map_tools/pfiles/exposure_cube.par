@@ -9,17 +9,15 @@ mode,     s, a,  "ql",   , ,""
 
 #---------------------------------------------------------------------------------------
 #
-#infile,   f, a, "/common/DC2/history/Gleam42.txt", , , "Name of the exposure file:" 
-#outfile,  f, a, "expcube_Gleam42_1day_withSAA.fits", , , "Name of the output file:"
-#
 infile,   f, a, "", , , "Name of the exposure file:" 
-table,    s, h, "Ext1",,,"name of the extension or ROOT tree"
+table,    s, h, "Exposure",,,"name of the extension or ROOT tree"
 outfile,  f, a, "exposure_cube.fits", , , "Name of the output file:"
 filter,   s, h, "", , , "filter expression:"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
 binsize,  r, h, 0.025, , , binsize for the function of theta
 pixelsize, r, h, 1.0, , , "Image size [degrees/pixel]"
+zmin,     r, h, -1, -1.0, 1.0, "cos(thetazenith) minimum allowed"
  
 tstart,   r, a,   0 ,   , , "start time"
 tstop,    r, a,  86400,  , , "end time"  
