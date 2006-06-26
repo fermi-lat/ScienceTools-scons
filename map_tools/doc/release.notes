@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 26-jun-06 v6r6   THB  expose zmin in exposure calculation; return energies used by PhotonMap
  15-may-06 v6r5   THB  change to PhotonMap::extract interface
  25-apr-06 v6r4p2  JC  accomodate irfInterface::IAeff interface change
  15-apr-06 v6r4p1 THB  much faster implementation of exposure_map
