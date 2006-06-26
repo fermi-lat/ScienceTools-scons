@@ -440,7 +440,14 @@ namespace st_graph {
       } else if ("dotted" == line_style) {
         root_line_style = kDotted;
       }
-      if ("none" == line_style) line_style = ""; else line_style = "L";
+      if ("none" == line_style) {
+        line_style = "";
+      } else {
+        std::string type = (*itor)->getCurveType();
+        if ("curve" == type) line_style = "C";
+        else line_style = "L";
+      }
+
       tgraph->SetLineStyle(root_line_style);
 
       // Keep track of Root object, so it can be deleted later.

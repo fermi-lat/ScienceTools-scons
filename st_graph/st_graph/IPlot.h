@@ -57,10 +57,23 @@ namespace st_graph {
       */
       virtual void getMarkers(std::vector<Marker> & labels) const = 0;
 
+      /** \brief Get the current style of line used to connect points in plot.
+      */
+      virtual std::string getLineStyle() const = 0;
+
       /** \brief Set the style of line used to connect points in plot.
           \param style String indicating type of line; may be none, solid, dotted, dashed.
       */
       virtual void setLineStyle(const std::string & style) = 0;
+
+      /** \brief Get the current type of curve used to connect points in plot.
+      */
+      virtual std::string getCurveType() const = 0;
+
+      /** \brief Set the type of curve used to connect data points.
+          \param type String indicating type of connection: curve or line.
+      */
+      virtual void setCurveType(const std::string & type) = 0;
   };
 
 }

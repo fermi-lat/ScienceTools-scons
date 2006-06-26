@@ -84,6 +84,15 @@ namespace st_graph {
       */
       virtual void setLineStyle(const std::string & style);
 
+      /** \brief Get the current type of curve used to connect points in plot.
+      */
+      virtual std::string getCurveType() const;
+
+      /** \brief Set the type of curve used to connect data points.
+          \param type String indicating type of connection: curve or line.
+      */
+      virtual void setCurveType(const std::string & type);
+
       /// \brief Return a string describing the plot style, e.g. hist, scat, lego, surf, etc.
       const std::string & getStyle() const;
 
@@ -102,6 +111,7 @@ namespace st_graph {
       std::vector<Marker> m_label;
       std::string m_style;
       std::string m_line_style;
+      std::string m_curve_type;
       unsigned int m_dimensionality;
       RootPlotFrame * m_parent;
       const std::vector<std::vector<double> > * m_z_data;
