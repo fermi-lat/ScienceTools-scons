@@ -128,6 +128,7 @@ void StGraphTestApp::run() {
   axes = &plot_hist_2->getAxes();
   (*axes)[0].setTitle("t");
   (*axes)[1].setTitle("cos(t)");
+  plot_hist_2->setCurveType("curve");
 
   // Reduce size of 2-d plot.
   num_intervals = 50;
