@@ -39,5 +39,7 @@ $Id$
                           Root initialization, to prevent spurious errors in non-GUI mode.
 09-feb-2006    v1r5p6 JP  Fix bug which prevented dialog boxes from starting in the correct directory.
 28-feb-2006    v1r5p7 JP  Only update contents of text entry widgets when the contents change.
+26-jun-2006      v1r6 JP  Add logarithmic scaling, line styles (solid, dashed, dotted, none) and
+                          curve type (curve = smooth curve, line = lines connecting points.)
 \endverbatim
 */
