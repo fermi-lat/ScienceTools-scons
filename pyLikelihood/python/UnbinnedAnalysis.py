@@ -12,7 +12,7 @@ import glob
 import numarray as num
 import pyLikelihood as pyLike
 from SrcModel import SourceModel
-from AnalysisBase import AnalysisBase, _quotefn
+from AnalysisBase import AnalysisBase, _quotefn, _null_file
 from SimpleDialog import SimpleDialog, map, Param
 from Pil import Pil
 
@@ -171,16 +171,18 @@ class UnbinnedAnalysis(AnalysisBase):
         if close:
             output.close()
 
-def unbinnedAnalysis(parfile):
+def unbinnedAnalysis(parfile='gtlikelihood.par', irfs='DC1A'):
     """Return an UnbinnedAnalysis object using the data in a gtlikelihood.par
 file."""
     pars = Pil(parfile)
-    irfs = pars['rspfunc']
-    if irfs == 'DSS':
-        irfs = 'DC2'   # need to fix this for event class subselections
     evfiles = pyLike.Util_resolveFitsFiles(pars['evfile'])
     scfiles = pyLike.Util_resolveFitsFiles(pars['scfile'])
-    obs = UnbinnedObs(evfiles, scfiles, expMap=pars[
+    obs = UnbinnedObs(evfiles, scfiles,
+                      expMap=_null_file(pars['exposure_map_file']),
+                      expCube=_null_file(pars['exposure_cube_file']),
+                      irfs=irfs)
+    like = UnbinnedAnalysis(obs, pars['source_model_file'], pars['optimizer'])
+    return like
 
 if __name__ == '__main__':
     obs = UnbinnedObs('galdiffuse_events_0000.fits',

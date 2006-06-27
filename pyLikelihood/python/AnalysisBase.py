@@ -217,3 +217,10 @@ def _quotefn(filename):
         return None
     else:
         return "'" + filename + "'"
+
+def _null_file(filename):
+    if filename == 'none' or filename == '':
+        return None
+    else:
+        return filename
+
