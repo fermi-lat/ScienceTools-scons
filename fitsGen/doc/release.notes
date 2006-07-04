@@ -4,6 +4,7 @@
 
     @verbatim
 
+    v2r4p1 03-Jul-06   JC   allow tabs in FT1variables
     v2r4   05-Apr-06   JC   move Util::writeDateKeywords to st_facilities::Util
     v2r3p6 28-Mar-06   JC   remove DATASUM keyword from PRIMARY header
     v2r3p5 15-Mar-06   JC   include <cctype> and <algorithm> in makeFT1.cxx
