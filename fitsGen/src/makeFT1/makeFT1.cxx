@@ -45,7 +45,7 @@ namespace {
       st_facilities::Util::readLines(inputFile, lines, "#", true);
       for (size_t i = 0; i < lines.size(); i++) {
          std::vector<std::string> tokens;
-         facilities::Util::stringTokenize(lines.at(i), " ", tokens);
+         facilities::Util::stringTokenize(lines.at(i), " \t", tokens);
          ft1Dict[tokens.at(0)] = tokens.at(1);
       }
    }

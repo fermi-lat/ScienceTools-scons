@@ -6,7 +6,7 @@
 # FT1 name              MeritTuple name
 #
 #ENERGY                  CTBBestEnergy
-ENERGY                  FT1Energy
+ENERGY			FT1Energy
 RA                      FT1Ra
 DEC                     FT1Dec
 L                       FT1L
