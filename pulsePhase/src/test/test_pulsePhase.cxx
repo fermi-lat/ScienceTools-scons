@@ -54,8 +54,6 @@ int main() {
   AbsoluteTime abs_valid_until(glast_tdb);
   glast_tdb.setValue(123.456789);
   AbsoluteTime abs_epoch(glast_tdb);
-//  GlastTdbTime abs_valid_since(valid_since);
-//  FrequencyEph eph(abs_valid_since, GlastTdbTime(valid_until), GlastTdbTime(123.456789), .11, 1.125e-2, -2.25e-4, 6.75e-6);
   FrequencyEph eph("TDB", abs_valid_since, abs_valid_until, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
@@ -74,7 +72,6 @@ int main() {
     // Calculate phase.
     glast_tdb.setValue(rec["TIME"].get());
     double phase = model.calcPulsePhase(eph, AbsoluteTime(glast_tdb));
-//    double phase = model.calcPulsePhase(eph, GlastTdbTime(rec["TIME"].get()));
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
