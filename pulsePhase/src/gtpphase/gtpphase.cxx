@@ -124,7 +124,7 @@ void PulsePhaseApp::run() {
   }
   // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
   MetRep epoch_rep(epoch_time_sys, 51910, 0., epoch);
-  AbsoluteTime abs_epoch = epoch_rep.getTime();
+  AbsoluteTime abs_epoch(epoch_rep);
 
   // Open the event file.
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
@@ -157,9 +157,9 @@ void PulsePhaseApp::run() {
   // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
   MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
   evt_time_rep.setValue(valid_since);
-  AbsoluteTime abs_valid_since = evt_time_rep.getTime();
+  AbsoluteTime abs_valid_since(evt_time_rep);
   evt_time_rep.setValue(valid_until);
-  AbsoluteTime abs_valid_until = evt_time_rep.getTime();
+  AbsoluteTime abs_valid_until(evt_time_rep);
 
   // Find the pulsar database.
   std::string psrdb_file = par_group["psrdbfile"];
@@ -250,7 +250,7 @@ void PulsePhaseApp::run() {
     double evt_time = (*itor)[time_field].get();
 
     evt_time_rep.setValue(evt_time);
-    AbsoluteTime abs_evt_time = evt_time_rep.getTime();
+    AbsoluteTime abs_evt_time(evt_time_rep);
 
     if (demod_bin) {
       computer.demodulateBinary(abs_evt_time);

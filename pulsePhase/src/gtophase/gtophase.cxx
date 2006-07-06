@@ -112,7 +112,7 @@ void PulsePhaseApp::run() {
     double evt_time = (*itor)[time_field].get();
 
     time_rep.setValue(evt_time);
-    AbsoluteTime abs_evt_time = time_rep.getTime();
+    AbsoluteTime abs_evt_time(time_rep);
 
     double int_part; // Ignored. Needed for modf.
     double phase = modf(computer.calcOrbitalPhase(abs_evt_time) + phase_offset, &int_part);
