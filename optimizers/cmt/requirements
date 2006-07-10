@@ -17,10 +17,6 @@ macro_append ROOT_libs "" Linux " -lMinuit2 -lHist -lGraf " \
                           WIN32 " libMinuit2.lib libHist.lib libGraf.lib " \
                           Darwin " -lMinuit2 -lHist -lGraf "
 
-apply_pattern shared_library
-
-private
-
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
 macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
                          WIN32 " /DHAVE_NEW_MINUIT " \
@@ -29,6 +25,7 @@ macro_prepend cflags "" Linux " -g -O "
 
 macro source *.cxx WIN32 "*.h *.cxx"
 
+apply_pattern shared_library
 library optimizers $(source) *.c
 
 application test_optimizers test/main.cxx
