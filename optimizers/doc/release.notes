@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r7p1 10-Jul-06   JC   workaround because of broken linking on Windows
     v2r7   07-Jul-06   JC   add Amoeba, Functor classes
     v2r6p1 12-Jun-06   JC   enable use of ROOT::Minuit2
     v2r6   09-Jun-06   JC   add TestOptimizer, OptimizerFactory classes;
