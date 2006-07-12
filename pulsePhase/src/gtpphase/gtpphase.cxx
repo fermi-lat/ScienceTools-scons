@@ -100,16 +100,70 @@ void PulsePhaseApp::run() {
 
   par_group.Save(); // Save the values of the parameters.
 
-  // Get model parameters.
-  double epoch = par_group["ephepoch"];
+  // Determine the time system used for the ephemeris epoch.
+  std::string epoch_time_sys;
+
+  // Create placeholder for the computer object, which will be used for all computations.
+  std::auto_ptr<EphComputer> computer(0);
+
+  if (eph_style == "DB") {
+    epoch_time_sys = "TDB";
+    // Create the computer object, which will be used for all computations.
+    computer.reset(new EphComputer);
+  } else {
+    TimingModel model;
+    SloppyEphChooser chooser;
+    computer.reset(new EphComputer(model, chooser));
+
+    // Read epoch time system parameter and make it case insensitive.
+    epoch_time_sys = par_group["timesys"].Value();
+    for (std::string::iterator itor = epoch_time_sys.begin(); itor != epoch_time_sys.end(); ++itor) *itor = toupper(*itor);
+
+    // Read time format parameter and make it case insensitive.
+    std::string time_format = par_group["timeformat"];
+    for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
+
+    double epoch = par_group["ephepoch"];
+    std::auto_ptr<TimeRep> epoch_rep(0);
+    if (time_format == "GLAST") {
+      // TODO Change origin to use new definition:
+      // epoch_rep.reset(new MetRep("TDB", 51910, 64.184 / 86400., epoch));
+      epoch_rep.reset(new MetRep(epoch_time_sys, 51910, 0., epoch));
+    } else {
+      throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
+    }
+    AbsoluteTime abs_epoch(*epoch_rep);
+    if (eph_style == "FREQ") {
+      double phi0 = par_group["phi0"];
+      double f0 = par_group["f0"];
+      double f1 = par_group["f1"];
+      double f2 = par_group["f2"];
+  
+      if (0. >= f0) throw std::runtime_error("Frequency must be positive.");
+  
+      // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
+      PulsarEphCont & ephemerides(computer->getPulsarEphCont());
+      ephemerides.push_back(FrequencyEph(epoch_time_sys, abs_epoch, abs_epoch, abs_epoch, phi0, f0, f1, f2).clone());
+    } else if (eph_style == "PER") {
+      double phi0 = par_group["phi0"];
+      double p0 = par_group["p0"];
+      double p1 = par_group["p1"];
+      double p2 = par_group["p2"];
+  
+      if (0. >= p0) throw std::runtime_error("Period must be positive.");
+  
+      // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
+      PulsarEphCont & ephemerides(computer->getPulsarEphCont());
+      ephemerides.push_back(PeriodEph(epoch_time_sys, abs_epoch, abs_epoch, abs_epoch, phi0, p0, p1, p2).clone());
+    } else {
+      throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
+    }
+  }
 
   // Read demodulate binary parameter and make it case insensitive.
   std::string demod_bin_string = par_group["demodbin"];
   for (std::string::iterator itor = demod_bin_string.begin(); itor != demod_bin_string.end(); ++itor) *itor = toupper(*itor);
   
-  // Create the computer object, which will be used for all computations.
-  EphComputer computer;
-
   if (eph_style == "DB" || demod_bin_string != "NO") {
     // Find the pulsar database.
     std::string psrdb_file = par_group["psrdbfile"];
@@ -127,8 +181,8 @@ void PulsePhaseApp::run() {
     database.filterName(psr_name);
 
     // Load the selected ephemerides.
-    if (eph_style == "DB") computer.loadPulsarEph(database);
-    computer.loadOrbitalEph(database);
+    if (eph_style == "DB") computer->loadPulsarEph(database);
+    computer->loadOrbitalEph(database);
   }
 
   // Open the event file.
@@ -156,62 +210,7 @@ void PulsePhaseApp::run() {
   if (event_time_sys != "TDB" && event_time_sys != "TT") {
     throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
   }
-  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
-  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
-  evt_time_rep.setValue(valid_since);
-  AbsoluteTime abs_valid_since(evt_time_rep);
-  evt_time_rep.setValue(valid_until);
-  AbsoluteTime abs_valid_until(evt_time_rep);
-
-  // Determine the time system used for the ephemeris epoch.
-  std::string epoch_time_sys;
-  if (eph_style == "DB") {
-    epoch_time_sys = "TDB";
-  } else {
-    // Read epoch time system parameter and make it case insensitive.
-    epoch_time_sys = par_group["timesys"].Value();
-    for (std::string::iterator itor = epoch_time_sys.begin(); itor != epoch_time_sys.end(); ++itor) *itor = toupper(*itor);
-
-    // Read time format parameter and make it case insensitive.
-    std::string time_format = par_group["timeformat"];
-    for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
-
-    std::auto_ptr<TimeRep> epoch_rep(0);
-    if (time_format == "GLAST") {
-      // TODO Change origin to use new definition:
-      // epoch_rep.reset(new MetRep("TDB", 51910, 64.184 / 86400., epoch));
-      epoch_rep.reset(new MetRep(epoch_time_sys, 51910, 0., epoch));
-    } else {
-      throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
-    }
-    AbsoluteTime abs_epoch(*epoch_rep);
-    if (eph_style == "FREQ") {
-      double phi0 = par_group["phi0"];
-      double f0 = par_group["f0"];
-      double f1 = par_group["f1"];
-      double f2 = par_group["f2"];
-  
-      if (0. >= f0) throw std::runtime_error("Frequency must be positive.");
-  
-      // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
-      PulsarEphCont & ephemerides(computer.getPulsarEphCont());
-      ephemerides.push_back(FrequencyEph(epoch_time_sys, abs_valid_since, abs_valid_until, abs_epoch, phi0, f0, f1, f2).clone());
-    } else if (eph_style == "PER") {
-      double phi0 = par_group["phi0"];
-      double p0 = par_group["p0"];
-      double p1 = par_group["p1"];
-      double p2 = par_group["p2"];
-  
-      if (0. >= p0) throw std::runtime_error("Period must be positive.");
-  
-      // Override any ephemerides which may have been found in the database with the ephemeris the user provided.
-      PulsarEphCont & ephemerides(computer.getPulsarEphCont());
-      ephemerides.push_back(PeriodEph(epoch_time_sys, abs_valid_since, abs_valid_until, abs_epoch, phi0, p0, p1, p2).clone());
-    } else {
-      throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
-    }
-  }
-
+  // Check for matchin time systems.
   if (epoch_time_sys != event_time_sys)
     throw std::runtime_error("Event time system must match pulsar ephemeris time system for now");
 
@@ -220,13 +219,20 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
   }
 
+  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
+  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
+  evt_time_rep.setValue(valid_since);
+  AbsoluteTime abs_valid_since(evt_time_rep);
+  evt_time_rep.setValue(valid_until);
+  AbsoluteTime abs_valid_until(evt_time_rep);
+
   double phase_offset = par_group["pphaseoffset"];
 
   // Determine whether to perform binary demodulation.
   bool demod_bin = false;
   if (demod_bin_string != "NO") {
     // User selected not "no", so attempt to perform demodulation
-    if (!computer.getOrbitalEphCont().empty()) {
+    if (!computer->getOrbitalEphCont().empty()) {
       demod_bin = true;
     } else if (demod_bin_string == "YES") {
       throw std::runtime_error("Binary demodulation was required by user, but no orbital ephemeris was found");
@@ -255,11 +261,11 @@ void PulsePhaseApp::run() {
     AbsoluteTime abs_evt_time(evt_time_rep);
 
     if (demod_bin) {
-      computer.demodulateBinary(abs_evt_time);
+      computer->demodulateBinary(abs_evt_time);
     }
 
     double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcPulsePhase(abs_evt_time) + phase_offset, &int_part);
+    double phase = modf(computer->calcPulsePhase(abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
     (*itor)[phase_field].set(phase);
