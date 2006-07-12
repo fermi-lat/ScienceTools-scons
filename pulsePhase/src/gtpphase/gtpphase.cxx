@@ -185,6 +185,17 @@ void PulsePhaseApp::run() {
     computer->loadOrbitalEph(database);
   }
 
+  // Determine whether to perform binary demodulation.
+  bool demod_bin = false;
+  if (demod_bin_string != "NO") {
+    // User selected not "no", so attempt to perform demodulation
+    if (!computer->getOrbitalEphCont().empty()) {
+      demod_bin = true;
+    } else if (demod_bin_string == "YES") {
+      throw std::runtime_error("Binary demodulation was required by user, but no orbital ephemeris was found");
+    }
+  }
+
   // Open the event file.
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
@@ -219,19 +230,8 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
   }
 
+  // Read global phase offset and name of "TIME column"
   double phase_offset = par_group["pphaseoffset"];
-
-  // Determine whether to perform binary demodulation.
-  bool demod_bin = false;
-  if (demod_bin_string != "NO") {
-    // User selected not "no", so attempt to perform demodulation
-    if (!computer->getOrbitalEphCont().empty()) {
-      demod_bin = true;
-    } else if (demod_bin_string == "YES") {
-      throw std::runtime_error("Binary demodulation was required by user, but no orbital ephemeris was found");
-    }
-  }
-
   std::string time_field = par_group["timefield"];
 
   // Add pulse phase field if missing.
