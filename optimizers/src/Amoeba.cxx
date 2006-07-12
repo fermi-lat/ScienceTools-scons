@@ -131,7 +131,7 @@ double Amoeba::findMin(std::vector<double> & params, double tol) {
    int imin(0);
    double ymin(yvalues.at(imin));
    for (size_t i = 1; i < m_npars + 1; i++) {
-      if (yvalues.at(imin) < ymin) {
+      if (yvalues.at(i) < ymin) {
          imin = i;
          ymin = yvalues.at(imin);
       }
