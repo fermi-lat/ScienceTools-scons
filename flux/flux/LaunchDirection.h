@@ -87,7 +87,9 @@ public:
         return rdir;
     }
 
-    void setDir(const HepGeom::HepVector3D& dir){m_dir=dir;}
+    void setDir(const HepGeom::HepVector3D& dir){
+        m_dir=dir;
+    }
 
 
     //! solid angle: default of 1. for a point source

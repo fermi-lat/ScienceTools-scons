@@ -86,9 +86,6 @@ public:
     ///get the transformation matrix due to orientation of the Galaxy 
     virtual CLHEP::HepRotation CELTransform(double time)const=0;
     
-    ///get the transformation matrix due to orientation of the spacecraft.
-    virtual CLHEP::HepRotation orientTransform(double time)const=0;
-    
     virtual void addFactory(std::string name, const ISpectrumFactory* factory )=0;
     
     virtual /*int*/double gpsTime()const=0;

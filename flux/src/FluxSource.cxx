@@ -588,8 +588,8 @@ void FluxSource::computeLaunch (double time)
     m_zenithCosTheta = m_launch_dir->zenithCosine();
 
     //  rotate by Glast orientation transformation
-    //HepRotation correctForTilt =GPS::instance()->rockingAngleTransform(time);
-    m_correctedDir = /*correctForTilt*/m_launchDir;
+    if( s_applyAlign) m_correctedDir = s_alignMatrix * m_launchDir;
+    else     m_correctedDir = m_launchDir;
 
     // now set the launch point, which may depend on the direction
 

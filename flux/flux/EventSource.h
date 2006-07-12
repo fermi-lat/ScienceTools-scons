@@ -105,6 +105,7 @@ public:
     virtual const HepPoint3D&  launchPoint()const { static HepPoint3D dummy; return dummy;}
     virtual const HepVector3D& skyDirection()const{ static HepVector3D dummy; return dummy;}
     
+    static void setAlignmentRotation(const CLHEP::HepRotation& align);
 private:
     double m_time;    // elapsed time, really only needed for EventSource
     
@@ -116,6 +117,11 @@ private:
     static unsigned int  s_id;    // id for new EventSources...
     static double s_total_area;   // total area for flux generation (in square meters)
     double m_solid_angle;
+
+protected:
+    // to implement (mis) alignment of particle trajectories in instrument coordinates
+    static bool s_applyAlign;
+    static CLHEP::HepRotation s_alignMatrix;
 };
 
 

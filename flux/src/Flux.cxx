@@ -134,9 +134,6 @@ void Flux::addFactory(std::string name, const ISpectrumFactory* factory ) {
 CLHEP::HepRotation Flux::CELTransform(double time)const{
     return s_mgr->CELTransform(time);
 }
-CLHEP::HepRotation Flux::orientTransform(double time)const{
-    return s_mgr->orientTransform(time);
-}
 
 CLHEP::HepRotation Flux::transformGlastToGalactic(double time)const{
 
