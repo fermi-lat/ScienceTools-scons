@@ -17,6 +17,7 @@
 #include <iostream>
 #include <vector>
 
+#include "optimizers/Amoeba.h"
 #include "optimizers/ChiSq.h"
 #include "optimizers/dArg.h"
 #include "optimizers/Drmngb.h"
@@ -61,6 +62,7 @@ void test_CompositeFunction();
 void test_Optimizers();
 void test_Mcmc();
 void test_ChiSq();
+void test_Amoeba();
 
 std::string test_path;
 
@@ -76,6 +78,7 @@ int main() {
    test_Optimizers();
    test_Mcmc();
    test_ChiSq();
+   test_Amoeba();
    return 0;
 }
 
@@ -833,3 +836,29 @@ void test_ChiSq() {
                 << std::endl;
 } // ChiSq class tests
 
+class Paraboloid : public optimizers::Functor {
+public:
+   Paraboloid(double x0, double y0) : m_x0(x0), m_y0(y0) {}
+   virtual double operator()(std::vector<double> & pars) {
+      double x(pars.at(0));
+      double y(pars.at(1));
+      double value((x - m_x0)*(x - m_x0) + (y - m_y0)*(y - m_y0) + 1);
+      std::cout << x << "  " 
+                << y << "  "
+                << value << std::endl;
+      return value;
+   }
+private:
+   double m_x0;
+   double m_y0;
+};
+
+void test_Amoeba() {
+   Paraboloid func(1, 2);
+   std::vector<double> pars(2);
+   pars.at(0) = 3.;
+   pars.at(1) = 1.;
+
+   Amoeba my_amoeba(func, pars);
+   my_amoeba.findMin(pars);
+}

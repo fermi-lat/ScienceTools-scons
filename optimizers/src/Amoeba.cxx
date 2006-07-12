@@ -84,7 +84,7 @@ void amoeba(std::vector< std::vector<double> > & p,
          throw std::runtime_error("amoeba: nmax exceeded");
       }
       nfunc += 2;
-      double ytry(amotry(p, y, psum, ndim, func, ihi, 0.5));
+      double ytry(amotry(p, y, psum, ndim, func, ihi, -1.0));
       if (ytry <= y.at(ilo)) {
          ytry = amotry(p, y, psum, ndim, func, ihi, 2.0);
       } else if (ytry >= y.at(inhi)) {
