@@ -219,13 +219,6 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
   }
 
-  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
-  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
-  evt_time_rep.setValue(valid_since);
-  AbsoluteTime abs_valid_since(evt_time_rep);
-  evt_time_rep.setValue(valid_until);
-  AbsoluteTime abs_valid_until(evt_time_rep);
-
   double phase_offset = par_group["pphaseoffset"];
 
   // Determine whether to perform binary demodulation.
@@ -251,6 +244,9 @@ void PulsePhaseApp::run() {
   }
   if (add_col)
     events->appendField(phase_field, "1D");
+
+  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
+  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
