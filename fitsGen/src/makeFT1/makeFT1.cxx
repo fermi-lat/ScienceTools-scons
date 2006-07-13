@@ -26,6 +26,12 @@
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
+#include "st_stream/StreamFormatter.h"
+
+#include "st_app/AppParGroup.h"
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
 #include "fitsGen/Util.h"
@@ -74,69 +80,107 @@ namespace {
    }
 }
 
-int main(int iargc, char * argv[]) {
-   if (iargc < 3) {
-      std::cout << "usage: <merit file> <FT1 file> "
-                << "[<TCut> [<Merit-to-FT1 dictionary file>]]\n";
-      std::exit(1);
-   }
-   
-   std::string rootFile(argv[1]);
-   std::string fitsFile(argv[2]);
-
-   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
-   std::string defaultFilter =
-      st_facilities::Env::appendFileName(dataDir, "std_cuts");
-
-   std::string filter(filterString(defaultFilter));
-
-   if (iargc >= 4) {
-      if (st_facilities::Util::fileExists(argv[3])) {
-         filter = filterString(argv[3]);
-      } else {
-         filter = argv[3];
+class MakeFt1 : public st_app::StApp {
+public:
+   MakeFt1() : st_app::StApp(),
+               m_pars(st_app::StApp::getParGroup("makeFT1")) {
+      try {
+         setVersion(s_cvs_id);
+      } catch (std::exception & eObj) {
+         std::cerr << eObj.what() << std::endl;
+         std::exit(1);
+      } catch (...) {
+         std::cerr << "Caught unknown exception in DataFilter constructor." 
+                   << std::endl;
+         std::exit(1);
       }
    }
-   std::cout << "applying TCut: " << filter << std::endl;
-
-   std::string dictFile = 
-      st_facilities::Env::appendFileName(dataDir,"FT1variables");
-   if (iargc == 5) {
-      dictFile = argv[4];
+   virtual ~MakeFt1() throw() {
+      try {
+      } catch (std::exception &eObj) {
+         std::cerr << eObj.what() << std::endl;
+      } catch (...) {
+      }
    }
+   virtual void run();
+   virtual void banner() const;
+private:
+   st_app::AppParGroup & m_pars;
+   static std::string s_cvs_id;
+};
+
+std::string MakeFt1::s_cvs_id("$Name$");
+
+st_app::StAppFactory<MakeFt1> myAppFactory("makeFT1");
+
+void MakeFt1::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
+
+void MakeFt1::run() {
+   m_pars.Prompt();
+   m_pars.Save();
+   std::string rootFile = m_pars["rootFile"];
+   std::string fitsFile = m_pars["fitsFile"];
+   std::string defaultFilter = m_pars["TCuts"];
+
+   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
+   if (defaultFilter == "DEFAULT") {
+      defaultFilter = st_facilities::Env::appendFileName(dataDir, "std_cuts");
+   }
+   std::string filter;
+   if (!st_facilities::Util::fileExists(defaultFilter)) {
+      filter = defaultFilter;
+   } else {
+      filter = filterString(defaultFilter);
+   }
+
+   st_stream::StreamFormatter formatter("MakeFt1", "run", 2);
+   formatter.info() << "applying TCut: " << filter << std::endl;
+
+   std::string dictFile = m_pars["dict_file"];
+   if (dictFile == "DEFAULT") {
+      dictFile = st_facilities::Env::appendFileName(dataDir,"FT1variables");
+   }
+
    typedef std::map<std::string, std::string> Ft1Map_t;
    Ft1Map_t ft1Dict;
    ::getFT1Dict(dictFile, ft1Dict);
 
    dataSubselector::Cuts my_cuts;
-   try {
-      fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
-      fitsGen::Ft1File ft1(fitsFile, merit.nrows());
-
-      ::addNeededFields(ft1, ft1Dict);
+   fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
+   fitsGen::Ft1File ft1(fitsFile, merit.nrows());
    
-      ft1.header().addHistory("Input merit file: " + rootFile);
-      ft1.header().addHistory("Filter string: " + filter);
-
-      int ncount(0);
-      for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
-         for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
-              variable != ft1Dict.end(); ++variable) {
-            ft1[variable->first].set(merit[variable->second]);
-         }
-         ft1["event_class"].set(merit.eventType());
-         ft1["conversion_type"].set(merit.conversionType());
-         ncount++;
+   ::addNeededFields(ft1, ft1Dict);
+   
+   ft1.header().addHistory("Input merit file: " + rootFile);
+   ft1.header().addHistory("Filter string: " + filter);
+   
+   int ncount(0);
+   for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
+      for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
+           variable != ft1Dict.end(); ++variable) {
+         ft1[variable->first].set(merit[variable->second]);
       }
-      std::cout << "number of rows processed: " << ncount << std::endl;
-
-      ft1.setNumRows(ncount);
-      my_cuts.addGtiCut(merit.gti());
-      my_cuts.writeDssKeywords(ft1.header());
-   } catch (std::exception & eObj) {
-      std::cout << eObj.what() << std::endl;
-      return 1;
+      ft1["event_class"].set(merit.eventType());
+      ft1["conversion_type"].set(merit.conversionType());
+      ncount++;
    }
+   formatter.info() << "number of rows processed: " << ncount << std::endl;
+   
+   ft1.setNumRows(ncount);
+   my_cuts.addGtiCut(merit.gti());
+   my_cuts.writeDssKeywords(ft1.header());
+   ft1.setPhduKeyword("SOFTWARE", getVersion());
+   std::ostringstream creator;
+   creator << "makeFT1 " << getVersion();
+   ft1.setPhduKeyword("CREATOR", creator.str());
+   std::string version = m_pars["file_version"];
+   ft1.setPhduKeyword("VERSION", version);
+
    my_cuts.writeGtiExtension(fitsFile);
    st_facilities::FitsUtil::writeChecksums(fitsFile);
    if (st_facilities::Util::fileExists("dummy.root")) {

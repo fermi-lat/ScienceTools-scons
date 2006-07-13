@@ -9,6 +9,8 @@
 #ifndef fitsGen_FtFileBase_h
 #define fitsGen_FtFileBase_h
 
+#include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 
 #include "astro/JulianDate.h"
@@ -63,6 +65,15 @@ public:
 
    /// @return The EVENTS or SC_DATA extension FITS header.
    tip::Header & header();
+
+   template<class Type>
+   void setPhduKeyword(const std::string & keyword,
+                       const Type & value) const {
+      tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
+      tip::Header & header = phdu->getHeader();
+      header[keyword].set(value);
+      delete phdu;
+   }
 
    void setObsTimes(double start, double stop);
 

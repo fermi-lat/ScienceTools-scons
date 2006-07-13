@@ -13,10 +13,9 @@ DATE        =                                / file creation date (YYYY-MM-DDThh
 DATE-OBS    =                                / start date and time of the observation (UTC)
 DATE-END    =                                / end date and time of the observation (UTC)
 FILENAME    =                                / name of this file
-ORIGIN      =                                / name of organization making file
-AUTHOR      =                                / name of person responsible for file generation
+ORIGIN      = 'LISOC'                        / name of organization making file
 CREATOR     =                                / software and version creating file
-VERSION     =                                / release version of the file
+VERSION     = 1                               / release version of the file
 SOFTWARE    =                                / version of the processing software
 END
 

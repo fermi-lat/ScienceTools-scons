@@ -10,9 +10,6 @@
 #include <stdexcept>
 #include <string>
 
-#include "tip/IFileSvc.h"
-#include "tip/Image.h"
-
 #include "astro/JulianDate.h"
 
 #include "st_facilities/Env.h"
