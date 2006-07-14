@@ -263,6 +263,13 @@ void EventContainer::writeEvents(double obsStopTime) {
 
    cuts->addGtiCut(gti);
    cuts->writeDssKeywords(ft1.header());
+   
+   std::ostringstream creator;
+   creator << "gtobssim " << m_softwareVersion;
+   ft1.setPhduKeyword("CREATOR", creator.str());
+   ft1.setPhduKeyword("SOFTWARE", m_softwareVersion);
+   ft1.setPhduKeyword("FILENAME", ft1File);
+
    ft1.close();
 
    cuts->writeGtiExtension(ft1File);

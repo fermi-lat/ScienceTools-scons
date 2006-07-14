@@ -289,6 +289,7 @@ void ObsSim::generateData() {
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          cuts, nMaxRows,
                                          start_time, stop_time);
+   events.setVersion(getVersion());
    std::string pointingHistory = m_pars["scfile"];
    facilities::Util::expandEnvVar(&pointingHistory);
    bool writeScData = (pointingHistory == "" || pointingHistory == "none"
