@@ -1,6 +1,6 @@
 /**
  * @file orbSim.cxx
- * @brief A prototype O1 application.
+ * @brief A prototype O2 application.
  * @author J. Chiang
  *
  * $Header$
@@ -31,7 +31,6 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
-//#include "Verbosity.h"
 
 class OrbSim : public st_app::StApp {
 public:
@@ -83,7 +82,6 @@ void OrbSim::run() {
    defineRockTypes();
    promptForParameters();
    checkOutputFiles();
-//   observationSim::Verbosity::instance(m_pars["chatter"]);
    createSimulator();
    generateData();
    m_formatter->info() << "Done." << std::endl;
@@ -162,8 +160,12 @@ void OrbSim::generateData() {
    std::string sc_table = m_pars["sctable"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          0, nMaxRows);
+   events.setAppName("gtorbsim");
+   events.setVersion(getVersion());
    observationSim::ScDataContainer scData(prefix + "_scData", sc_table, 
                                           nMaxRows);
+   scData.setAppName("gtorbsim");
+   scData.setVersion(getVersion());
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    double frac = m_pars["livetime_frac"];
    spacecraft->setLivetimeFrac(frac);

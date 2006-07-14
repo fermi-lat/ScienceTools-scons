@@ -289,6 +289,7 @@ void ObsSim::generateData() {
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          cuts, nMaxRows,
                                          start_time, stop_time);
+   events.setAppName("gtobssim");
    events.setVersion(getVersion());
    std::string pointingHistory = m_pars["scfile"];
    facilities::Util::expandEnvVar(&pointingHistory);
@@ -297,7 +298,8 @@ void ObsSim::generateData() {
    std::string sc_table = m_pars["sctable"];
    observationSim::ScDataContainer scData(prefix + "_scData", sc_table,
                                           nMaxRows, writeScData);
-                                          
+   scData.setAppName("gtobssim");
+   scData.setVersion(getVersion());
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
    double frac = m_pars["livetime_frac"];
    spacecraft->setLivetimeFrac(frac);

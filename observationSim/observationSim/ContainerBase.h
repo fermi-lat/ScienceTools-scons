@@ -32,7 +32,22 @@ public:
    ContainerBase(const std::string & filename, const std::string & tablename,
                  unsigned int maxNumEntries) 
       : m_filename(filename), m_tablename(tablename),
-        m_maxNumEntries(maxNumEntries), m_fileNum(0) {} 
+        m_maxNumEntries(maxNumEntries), m_fileNum(0),
+        m_appName(""), m_softwareVersion("") {}
+
+   virtual ~ContainerBase() {}
+
+   virtual void setVersion(const std::string & version) {
+      m_softwareVersion = version;
+   }
+
+   virtual void setAppName(const std::string & appName) {
+      m_appName = appName;
+   }
+
+   virtual std::string creator() {
+      return m_appName + " " + m_softwareVersion;
+   }
 
 protected:
 
@@ -50,6 +65,12 @@ protected:
    /// number is formatted appropriately and appended to the root
    /// filename given in the constructor.
    long m_fileNum;
+
+   /// The name of the application using this class.
+   std::string m_appName;
+
+   /// The version of the application.
+   std::string m_softwareVersion;
 
    /// Return an output filename, based on the root name, m_filename,
    /// and the counter index, m_fileNum.
