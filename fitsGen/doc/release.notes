@@ -3,7 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
-
+    v3r0p1 13-Jul-06   JC   add par file
     v3     13-Jul-06   JC   convert makeFT1 to an FTOOL
     v2r4p1 03-Jul-06   JC   allow tabs in FT1variables
     v2r4   05-Apr-06   JC   move Util::writeDateKeywords to st_facilities::Util

@@ -180,6 +180,7 @@ void MakeFt1::run() {
    ft1.setPhduKeyword("CREATOR", creator.str());
    std::string version = m_pars["file_version"];
    ft1.setPhduKeyword("VERSION", version);
+   ft1.setPhduKeyword("FILENAME", fitsFile);
 
    my_cuts.writeGtiExtension(fitsFile);
    st_facilities::FitsUtil::writeChecksums(fitsFile);
