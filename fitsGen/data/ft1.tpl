@@ -15,7 +15,7 @@ DATE-END    =                                / end date and time of the observat
 FILENAME    =                                / name of this file
 ORIGIN      = 'LISOC'                        / name of organization making file
 CREATOR     =                                / software and version creating file
-VERSION     = 1                               / release version of the file
+VERSION     = 1                              / release version of the file
 SOFTWARE    =                                / version of the processing software
 END
 
