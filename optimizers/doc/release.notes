@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r7p3 15-Jul-06   JC   add default step param to Amoeba constructor
     v2r7p2 11-Jul-06   JC   refactor Amoeba to no longer be Singleton, thereby
                             eliminating static variables that cause linkage
                             problems on Windows
