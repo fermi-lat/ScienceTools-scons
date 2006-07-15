@@ -125,7 +125,7 @@ class BinnedAnalysis(AnalysisBase):
         except:
             pass
         self.binnedData.state(output)
-        output.write(("foo = BinnedAnalysis(obs, srcModel=%s, " +
+        output.write(("like = BinnedAnalysis(obs, srcModel=%s, " +
                       "optimizer='%s')\n")
                      % (_quotefn(self.srcModel), self.optimizer))
         if close:

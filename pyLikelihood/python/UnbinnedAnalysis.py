@@ -164,7 +164,7 @@ class UnbinnedAnalysis(AnalysisBase):
         except:
             pass
         self.observation.state(output)
-        output.write(("foo = UnbinnedAnalysis(obs, srcModel=%s, " +
+        output.write(("like = UnbinnedAnalysis(obs, srcModel=%s, " +
                       "optimizer='%s')\n")
                      % (_quotefn(self.srcModel), self.optimizer))
         if close:
