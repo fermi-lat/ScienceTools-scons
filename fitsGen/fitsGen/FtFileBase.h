@@ -83,6 +83,10 @@ public:
       return s_missionStart;
    }
 
+   const std::string & filename() const {
+      return m_outfile;
+   }
+
 protected:
 
    std::string m_outfile;

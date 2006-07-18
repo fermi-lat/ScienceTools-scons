@@ -174,7 +174,6 @@ void MakeFt1::run() {
    ft1.setNumRows(ncount);
    my_cuts.addGtiCut(merit.gti());
    my_cuts.writeDssKeywords(ft1.header());
-   ft1.setPhduKeyword("SOFTWARE", getVersion());
    std::ostringstream creator;
    creator << "makeFT1 " << getVersion();
    ft1.setPhduKeyword("CREATOR", creator.str());
