@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r3p3 18-Jul-06   JC   remove SOFTWARE keyword from FT1/2 headers
     v6r3p2 14-Jul-06   JC   move PHDU keyword setting to ContainerBase
     v6r3p1 13-Jul-06   JC   set PHDU keywords
     v6r3   24-Jun-06   JC   output number of incident and accepted events
