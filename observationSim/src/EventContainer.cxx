@@ -267,7 +267,6 @@ void EventContainer::writeEvents(double obsStopTime) {
    ft1.setPhduKeyword("FILENAME", ft1File);
    ft1.setPhduKeyword("VERSION", 1);
    ft1.setPhduKeyword("CREATOR", creator());
-   ft1.setPhduKeyword("SOFTWARE", m_softwareVersion);
 
    ft1.close();
 

@@ -111,7 +111,6 @@ void ScDataContainer::writeScData() {
       ft2.setPhduKeyword("FILENAME", ft2File);
       ft2.setPhduKeyword("VERSION", 1);
       ft2.setPhduKeyword("CREATOR", creator());
-      ft2.setPhduKeyword("SOFTWARE", m_softwareVersion);
 
       ft2.close();
 
