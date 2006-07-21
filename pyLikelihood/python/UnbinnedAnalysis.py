@@ -13,7 +13,10 @@ import numarray as num
 import pyLikelihood as pyLike
 from SrcModel import SourceModel
 from AnalysisBase import AnalysisBase, _quotefn, _null_file
-from SimpleDialog import SimpleDialog, map, Param
+try:
+    from SimpleDialog import SimpleDialog, map, Param
+except ImportError:
+    pass
 
 _funcFactory = pyLike.SourceFactory_funcFactory()
 
