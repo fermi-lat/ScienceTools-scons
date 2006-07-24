@@ -125,6 +125,9 @@ void DataFilter::copyTable(const std::string & extension,
    std::string filterString("");
    if (cuts) {
       filterString = cuts->filterString();
+      st_stream::StreamFormatter formatter("DataFilter", "copyTable", 3);
+      formatter.info() << "Applying filter string: " 
+                       << filterString << std::endl;
    }
    const tip::Table * inputTable 
       = tip::IFileSvc::instance().readTable(m_inputFile, extension,

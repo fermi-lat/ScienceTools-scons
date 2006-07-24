@@ -90,14 +90,12 @@ void Gti::writeExtension(const std::string & filename) const {
    tip::Table::Iterator it = gtiTable->begin();
    tip::Table::Record & row = *it;
    Gti::ConstIterator interval = begin();
-   double ontime(0);
    double tstart, tstop;
    tstart = interval->first;
    tstop = interval->second;
    for ( ; it != gtiTable->end(); ++it, ++interval) {
       row["START"].set(interval->first);
       row["STOP"].set(interval->second);
-      ontime += interval->second - interval->first;
       if (interval->first < tstart) {
          tstart = interval->first;
       }
@@ -107,7 +105,7 @@ void Gti::writeExtension(const std::string & filename) const {
    }
    double telapse(tstop - tstart);
    tip::Header & header = gtiTable->getHeader();
-   header["ONTIME"].set(ontime);
+   header["ONTIME"].set(computeOntime());
    header["TELAPSE"].set(telapse);
 }
 
