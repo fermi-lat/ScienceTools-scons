@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r0p4 24-Jul-06   JC   set CLOCKAPP and GPS_OUT keywords in template 
+                            files; strip path info before writing FILENAME
+                            keyword
     v3r0p3 18-Jul-06   JC   omit SOFTWARE keyword
     v3r0p2 14-Jul-06   JC   update ft2.tpl
     v3r0p1 13-Jul-06   JC   add par file
