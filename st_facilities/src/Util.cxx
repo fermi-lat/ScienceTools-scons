@@ -283,20 +283,14 @@ namespace st_facilities {
          header["DATE-END"].set(date_stop.getGregorianDate());
       } catch (...) {
       }
-      if (extension) {
-// Do not write these keywords if this is the primary HDU.
-         double duration = stop_time - start_time;
+//       if (extension) {
+// // Do not write these keywords if this is the primary HDU.
          try {
             header["TSTART"].set(start_time);
             header["TSTOP"].set(stop_time);
          } catch (...) {
          }
-         try {
-            header["ONTIME"].set(duration);
-            header["TELAPSE"].set(duration);
-         } catch (...) {
-         }
-      }
+//       }
    }
 
    astro::JulianDate Util::currentTime() {
