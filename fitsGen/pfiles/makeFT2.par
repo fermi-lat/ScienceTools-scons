@@ -1,11 +1,9 @@
-# @file makeFT1.par
+# @file makeFT2.par
 # $Header$
 #
-rootFile,fr,a,"",,,merit filename
-fitsFile,f,a,"",,,FT1 filename
-TCuts,s,h,DEFAULT,,,TCut to apply
-dict_file,s,h,DEFAULT,,,merit-to-FT1 dictionary file
-file_version,s,h,1,,,Version of FT1 file
+rootFile,fr,a,"",,,pointing history filename
+fitsFile,f,a,"",,,FT2 filename
+file_version,s,h,1,,,Version of FT2 file
 
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"
