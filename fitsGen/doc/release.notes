@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r1   25-Jul-06   JC   convert makeFT2 to FTOOL; change MJDREF to
+                            MDJREFI and MDJREFF; more updates to ft[12].tpl
     v3r0p4 24-Jul-06   JC   set CLOCKAPP and GPS_OUT keywords in template 
                             files; strip path info before writing FILENAME
                             keyword
