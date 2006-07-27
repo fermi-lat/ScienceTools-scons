@@ -216,13 +216,13 @@ class SpatialModels(FuncContainer):
 def PtSrc(indx=0):
     name = "point source %i" % indx
     src = '\n'.join( (('<source name= "%s" ' % name) + 'type="PointSource">',
-                      '   <spectrum type="PowerLaw"/>',
+                      '   <spectrum type="PowerLaw2"/>',
                       '   <!-- point source units are cm^-2 s^-1 MeV^-1 -->',
                       '   <spatialModel type="SkyDirFunction"/>',
                       '</source>\n') )
-    (src, ) = minidom.parseString(src).getElementsByTagName('source')
+    src = minidom.parseString(src).getElementsByTagName('source')[0]
     src = Source(src)
-    src.spectrum = PowerLaw()
+    src.spectrum = PowerLaw2()
     src.deleteChildElements('spectrum')
     src.node.appendChild(src.spectrum.node)
     

@@ -3,6 +3,9 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r6p5   27-Jul-06    JC    set default spectral model to PowerLaw2 in 
+                               FuncFactory.PtSrc; save filename in 
+                               readXml.SourceModel
    v7r6p4   27-Mar-06    JC    add BPLExpCutoff; set flux for PowerLaw2 and
                                BPL2 models in ModelEditor->File->Extract...
    v7r6p3   08-Mar-06    JC    allow Likelihood-style xml files to be read

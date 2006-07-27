@@ -52,6 +52,7 @@ class SourceModel:
         file = open(filename, 'w')
         file.write(doc.toxml() + '\n')
         file.close()
+        self.filename = filename
 
 class DomElement:
     def __init__(self, node, converter=None):
