@@ -356,8 +356,9 @@ namespace tip {
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (!m_scalar) throw TipException("FitsColumn::getScalar was called but field is not a scalar");
         int status = 0;
+        int any_null = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
-          &FitsPrimProps<U>::undefined(), &dest, 0, &status);
+          &FitsPrimProps<U>::undefined(), &dest, &any_null, &status);
         if (0 != status) throw TipException(status, "FitsColumn::getScalar failed to read scalar cell value");
       }
 
@@ -370,8 +371,9 @@ namespace tip {
         long num_els = getNumElements(record_index);
         dest.resize(num_els);
         U * dest_begin = &dest.front();
+        int any_null = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          &FitsPrimProps<U>::undefined(), dest_begin, 0, &status);
+          &FitsPrimProps<U>::undefined(), dest_begin, &any_null, &status);
         if (0 != status) throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
       }
 
