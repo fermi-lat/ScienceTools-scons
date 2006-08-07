@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+07-aug-2006 v2r10p1   JP Fix bug in null value code which caused seg faults if a null
+                         value was actually encountered.
 04-apr-2006  v2r10 JP Add support for vectors of bools and strings, and some support for
                       null values.
 15-mar-2006   v2r9 JP Add implementation for vectors of strings.
