@@ -13,6 +13,7 @@
 #include "pulsarDb/TimingModel.h"
 
 #include "timeSystem/AbsoluteTime.h"
+#include "timeSystem/GlastMetRep.h"
 #include "timeSystem/TimeRep.h"
 
 #include "tip/Header.h"
@@ -126,9 +127,7 @@ void PulsePhaseApp::run() {
     double epoch = par_group["ephepoch"];
     std::auto_ptr<TimeRep> epoch_rep(0);
     if (time_format == "GLAST") {
-      // TODO Change origin to use new definition:
-      // epoch_rep.reset(new MetRep("TDB", 51910, 64.184 / 86400., epoch));
-      epoch_rep.reset(new MetRep(epoch_time_sys, 51910, 0., epoch));
+      epoch_rep.reset(new GlastMetRep(epoch_time_sys, epoch));
     } else {
       throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
     }
