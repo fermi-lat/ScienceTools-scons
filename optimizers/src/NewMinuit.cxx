@@ -13,6 +13,7 @@
 #include "Minuit2/MnMigrad.h"
 #include "Minuit2/FunctionMinimum.h"
 #include "Minuit2/MnHesse.h"
+#include "Minuit2/MnPrint.h"
 #include "optimizers/Exception.h"
 #include "optimizers/OutOfBounds.h"
 
@@ -26,7 +27,6 @@ namespace optimizers {
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {
-     (void)(verbose);
     double tolerance = 1000. * tol;
     if (TolType == RELATIVE) tolerance *= fabs(m_stat->value());
     std::vector<Parameter> params;
@@ -41,7 +41,7 @@ namespace optimizers {
     m_userState = ROOT::Minuit2::MnUserParameterState(upar);
     ROOT::Minuit2::MnMigrad migrad(m_FCN, m_userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, tolerance);
-//     if (verbose > 0) std::cout << min;
+    if (verbose > 0) std::cout << min;
     if (!min.IsValid()) {
       throw Exception("Minuit abnormal termination.  No convergence?");
     }
@@ -58,12 +58,11 @@ namespace optimizers {
 
   // Call Minuit's HESSE to get a robust estimate of the covariance matrix
   void NewMinuit::hesse(int verbose) {
-     (void)(verbose);
     if (!m_fitDone) 
       throw Exception("Minuit: find_min must be executed before hesse");
     ROOT::Minuit2::MnHesse hesse(m_strategy);
     m_userState = hesse(m_FCN, m_userState.Parameters(), m_maxEval);
-//     if (verbose > 0) std::cout << m_userState;
+    if (verbose > 0) std::cout << m_userState;
     if (!m_userState.HasCovariance())
       throw Exception("Minuit HESSE results invalid");
   }
