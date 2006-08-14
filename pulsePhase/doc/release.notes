@@ -25,5 +25,6 @@
                               parameter, to make user interface more clear. Do not open pulsar database in
                               cases where it is not needed.
         v4  26-jul-06   JP    Changed to work with timeSystem v1.
+      v4r1  14-aug-06   JP    Major but internal refactoring to use latest timeSystem.
     @endverbatim
 */
