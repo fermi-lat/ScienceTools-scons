@@ -66,7 +66,7 @@ namespace st_graph {
           \param y Y coordinate of label.
           \param text Text to display in the label.
       */
-      virtual void addMarker(double x, double y, const std::string & text, int color = Marker::BLUE);
+      virtual void addMarker(double x, double y, const std::string & text, int color = Color::eBlack);
 
       /** \brief Get container of labels.
           \param labels The output container of labels.
@@ -74,6 +74,15 @@ namespace st_graph {
       virtual void getMarkers(std::vector<Marker> & labels) const;
 
       virtual std::vector<Marker> & getMarkers();
+
+      /** \brief Get the current color of line used to connect points in plot.
+      */
+      virtual int getLineColor() const;
+
+      /** \brief Set the color of line used to connect points in plot.
+          \param color Integer code indicating desired color of line.
+      */
+      virtual void setLineColor(int color);
 
       /** \brief Get the current style of line used to connect points in plot.
       */
@@ -112,6 +121,7 @@ namespace st_graph {
       std::string m_style;
       std::string m_line_style;
       std::string m_curve_type;
+      int m_line_color;
       unsigned int m_dimensionality;
       RootPlotFrame * m_parent;
       const std::vector<std::vector<double> > * m_z_data;

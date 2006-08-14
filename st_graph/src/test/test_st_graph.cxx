@@ -242,7 +242,10 @@ void StGraphTestApp::testPlots() {
     ValueSpreadSeq_t(y1.begin(), y1.end(), delta_y1.begin()));
 
   // Add a marker to the plot.
-  plot1->addMarker(x1[num_pts / 2], y1[num_pts / 2], "data center");
+  plot1->addMarker(x1[num_pts / 2], y1[num_pts / 2], "data center", Color::eBlue);
+
+  // Set the plot color.
+  plot1->setLineColor(Color::eBlue);
 
   // Set axis title.
   std::vector<Axis> * axes(&plot1->getAxes());

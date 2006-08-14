@@ -17,8 +17,8 @@
 namespace st_graph {
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent):
-    m_seq_cont(0), m_label(), m_style(), m_line_style("solid"), m_curve_type("line"), m_dimensionality(2), m_parent(0),
-    m_z_data(0), m_delete_parent(delete_parent) {
+    m_seq_cont(0), m_label(), m_style(), m_line_style("solid"), m_curve_type("line"), m_line_color(Color::eBlack), m_dimensionality(2),
+    m_parent(0), m_z_data(0), m_delete_parent(delete_parent) {
     // Get the parent multi frame so that the plot can be added with desired style.
     m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
@@ -37,7 +37,8 @@ namespace st_graph {
 
   RootPlot::RootPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
     const std::vector<std::vector<double> > & z, bool delete_parent): m_seq_cont(0), m_label(), m_style(),
-    m_line_style("solid"), m_curve_type("line"), m_dimensionality(3), m_parent(0), m_z_data(&z), m_delete_parent(delete_parent) {
+    m_line_style("solid"), m_curve_type("line"), m_line_color(Color::eBlack), m_dimensionality(3), m_parent(0),
+    m_z_data(&z), m_delete_parent(delete_parent) {
     // Get the parent multi frame so that the plot can be added with desired style.
     m_parent = dynamic_cast<RootPlotFrame *>(parent);
     if (0 == m_parent) throw std::logic_error("RootPlot constructor: parent must be a valid RootPlotFrame");
@@ -98,6 +99,10 @@ namespace st_graph {
   }
 
   std::vector<Marker> & RootPlot::getMarkers() { return m_label; }
+
+  int RootPlot::getLineColor() const { return m_line_color; }
+
+  void RootPlot::setLineColor(int color) { m_line_color = color; }
 
   std::string RootPlot::getLineStyle() const { return m_line_style; }
 

@@ -14,13 +14,19 @@ namespace st_graph {
 
   class ISequence;
 
+  class Color {
+    public:
+      enum Color_e { eWhite, eBlack, eRed, eGreen, eBlue, eYellow, eMagenta, eCyan, eNumberOfColors };
+
+      static int nextColor(int current_color);
+  };
+
   class Marker {
     public:
-      enum Color_e { WHITE, BLACK, RED, GREEN, BLUE, YELLOW, MAGENTA, CYAN, NUMBER_OF_COLORS };
 
       Marker();
 
-      Marker(double x, double y, const std::string & text, int color = BLUE);
+      Marker(double x, double y, const std::string & text, int color = Color::eBlack);
 
       std::string m_text;
       double m_x;
@@ -50,14 +56,23 @@ namespace st_graph {
           \param y Y coordinate of label.
           \param text Text to display in the label.
       */
-      virtual void addMarker(double x, double y, const std::string & text, int color = Marker::BLUE) = 0;
+      virtual void addMarker(double x, double y, const std::string & text, int color = Color::eBlack) = 0;
 
       /** \brief Get container of labels.
           \param labels The output container of labels.
       */
       virtual void getMarkers(std::vector<Marker> & labels) const = 0;
 
-      /** \brief Get the current style of line used to connect points in plot.
+      /** \brief Get the current color of line used to connect points in plot.
+      */
+      virtual int getLineColor() const = 0;
+
+      /** \brief Set the color of line used to connect points in plot.
+          \param color Integer code indicating desired color of line.
+      */
+      virtual void setLineColor(int color) = 0;
+
+      /** \brief Get integer expressing the current style of line used to connect points in plot.
       */
       virtual std::string getLineStyle() const = 0;
 

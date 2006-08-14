@@ -409,8 +409,8 @@ namespace st_graph {
     // Enable custom event handling for 2d graphs.
     m_canvas->setHandleEvents(true);
 
-    int color = 1;
-    for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor, ++color) {
+    for (std::list<RootPlot *>::iterator itor = m_plots.begin(); itor != m_plots.end(); ++itor) {
+
       // Get numeric sequences from data.
       const std::vector<const ISequence *> sequences((*itor)->getSequences());
 
@@ -428,9 +428,7 @@ namespace st_graph {
       else
         tgraph = createScatterPlot(*x, *y);
 
-      // TODO: Warning: after 7 colors, the colors start being things like "white" so some hacking needed for
-      // 8 or more layered plots.
-      tgraph->SetLineColor(color);
+      tgraph->SetLineColor((*itor)->getLineColor());
 
       // Handle line style: none, solid, dashed, dotted.
       std::string line_style = (*itor)->getLineStyle();
