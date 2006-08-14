@@ -244,8 +244,7 @@ void PulsePhaseApp::run() {
   if (add_col)
     events->appendField(phase_field, "1D");
 
-  // TODO: Read MJDREF keyword value. Try MJDREFI and MJDREFF first.
-  MetRep evt_time_rep(event_time_sys, 51910, 0., 0.);
+  MetRep evt_time_rep(header, 0.);
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
