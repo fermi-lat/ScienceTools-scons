@@ -120,10 +120,12 @@ public:
             virtual double value(double /*energy*/, 
                 const astro::SkyDir & /*srcDir*/, 
                 const astro::SkyDir &/*scZAxis*/,
-                const astro::SkyDir &/*scXAxis*/) const 
-            {return 0;}
+                const astro::SkyDir &/*scXAxis*/,
+                                 double /*time=0*/) const 
+              {return 0;}
 
-            virtual double value(double energy, double theta, double phi) const 
+            virtual double value(double energy, double theta, double phi,
+                                 double /*time=0*/) const 
             {
                 // should use accumulate here
                 double value = m_aeff[0]->value(energy, theta, phi);
