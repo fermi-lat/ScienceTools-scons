@@ -40,7 +40,8 @@ public:
    virtual ~OptPP() {}
 
    void find_min(int verbose = 0, double tol = 1e-5, int tolType=0);
-    
+   virtual std::ostream& put (std::ostream& s) const;
+
 protected:
 
    static int s_verbose;

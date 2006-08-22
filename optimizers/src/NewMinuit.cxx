@@ -126,5 +126,10 @@ namespace optimizers {
       return m_uncertainty;
    }
 
+  std::ostream& NewMinuit::put (std::ostream& s) const {
+    s << m_userState;
+    return s;
+  }
+
 }
 #endif

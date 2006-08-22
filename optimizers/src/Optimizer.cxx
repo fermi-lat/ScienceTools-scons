@@ -176,4 +176,8 @@ void Optimizer::choleskyDecompose(std::valarray<double> &array) {
    }
 }
 
+  std::ostream& operator<<(std::ostream& s, const Optimizer& t) {
+    return t.put(s);
+  }
+
 } // namespace optimizers

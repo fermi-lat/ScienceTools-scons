@@ -75,6 +75,8 @@ namespace optimizers {
 
     /// Call the optimizing function in an infinite loop.
     double oldVal = 1.e+30;
+    m_evals = 0;
+    m_grads = 0;
     for (;;) {
       drmngb_(&paramBounds[0], &scale[0], &funcVal, &gradient[0], &iv[0], 
 	      &liv,&lv, &nparams, &v[0], &paramVals[0]);
@@ -93,6 +95,8 @@ namespace optimizers {
 	  std::cerr << e.what() << std::endl;
 	}
 	funcVal = -m_stat->value();
+	m_evals++;
+	m_val = funcVal;
       }
       else if (rcode == 2) { /// request for the gradient
 	m_stat->setFreeParamValues(paramVals);
@@ -100,6 +104,7 @@ namespace optimizers {
 	for (dptr p = gradient.begin(); p != gradient.end(); p++) {
 	  *p = -*p;
 	}
+	m_grads++;
 	if (tolType == ABSOLUTE && iv[28] == 3 && fabs(funcVal-oldVal) < tol) {
 	  // check after a successful line search
 	  m_retCode = 6;
@@ -150,4 +155,12 @@ namespace optimizers {
     }
 
   } // End of find_min
+
+  std::ostream& Drmngb::put (std::ostream& s) const {
+    s << "DRMNGB performed " << m_evals << " function evaluations" << std::endl;
+    s << "and " << m_grads << " gradient evaluations, ending with" << std::endl;
+    s << "a function value of " << m_val << std::endl;
+    return s;
+  }
+
 } // namespace optimizers

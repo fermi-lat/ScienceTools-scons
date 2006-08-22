@@ -65,6 +65,8 @@ namespace optimizers {
 
     int getRetCode(void) const;
 
+    virtual std::ostream& put (std::ostream& s) const;
+
     enum DrmngbReturnCodes {
       XCONV = 3, RELCONV, BOTHCONV, ABSCONV, SINGCONV, FALSECONV,
       EVALLIM, ITLIM, STOPX, ALLOCATED = 14, LIVSMALL, LVSMALL,
@@ -76,6 +78,8 @@ namespace optimizers {
     
     int m_retCode;
     bool m_NeedCovariance;
+    int m_evals, m_grads;
+    double m_val;
 
   };
 

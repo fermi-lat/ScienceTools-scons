@@ -72,6 +72,8 @@ namespace optimizers {
     // that this function is a likelihood
     virtual const std::vector<double> & getUncertainty(bool useBase=false);
 
+    virtual std::ostream& put (std::ostream& s) const;
+
     //! Symbolic form of the return codes for readability 
     enum MinuitQuality {MINUIT_NOTCALC, MINUIT_DIAG, MINUIT_FORCEDPOS, 
 			MINUIT_NORMAL};
@@ -83,6 +85,7 @@ namespace optimizers {
     int m_maxEval;
     int m_quality;
     double m_distance;
+    double m_val;
   };
   
   //! The function which Minuit will minimize

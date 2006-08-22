@@ -124,6 +124,7 @@ namespace optimizers {
     int nVariable, nparx, minStat;
     double fmin, vertDist, errDef;
     mnstat_(&fmin, &vertDist, &errDef, &nVariable, &nparx, &minStat);
+    m_val = fmin;
     m_quality = minStat;
     m_distance = vertDist;
     if (verbose != 0) {
@@ -177,6 +178,13 @@ namespace optimizers {
       }
     }
   }    
+
+  std::ostream& Minuit::put (std::ostream& s) const {
+    s << "MINUIT returned a value of " << m_val << std::endl;
+    s << "and an estimated distance of " << m_distance << std::endl;
+    return s;
+  }
+
 } // namespace optimizers
 
 

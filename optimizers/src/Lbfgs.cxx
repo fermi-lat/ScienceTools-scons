@@ -103,6 +103,7 @@ namespace optimizers {
 	  gradient[i] = -gradient[i];
 	}
 	m_numEvals++;
+	m_val = funcVal;
 	
 	if (verbose != 0) {
            std::cout << m_numEvals << "  "
@@ -164,4 +165,11 @@ namespace optimizers {
     // Put parameter values back into the objective Function
     m_stat->setFreeParamValues(paramVals);
   } // End of find_min
+
+  std::ostream& Lbfgs::put (std::ostream& s) const {
+    s << "LBFGS returned a function value of " << m_val << std::endl;
+    s << "after " << m_numEvals << " evaluations." << std::endl;
+    return s;
+  }
+
 }

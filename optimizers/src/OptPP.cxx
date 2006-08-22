@@ -125,11 +125,15 @@ void OptPP::find_min(int verbose, double tol, int) {
 }
 #else
 
-void OptPP::find_min(int, double, int) {
-// do nothing
-}
-
+  void OptPP::find_min(int, double, int) {
+    // do nothing
+  }
+    
+  std::ostream& OptPP::put (std::ostream& s) const {
+    s << "This is the output of OptPP." << std::endl;
+    return s;
+  }
+  
 #endif // HAVE_OPT_PP
-
-
+  
 } // namespace optimizers

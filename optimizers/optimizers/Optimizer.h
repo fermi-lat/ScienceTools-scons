@@ -52,6 +52,8 @@ public:
       return *m_stat;
    }
 
+   virtual std::ostream& put (std::ostream& s) const = 0;
+
 protected:
 
    Statistic * m_stat;
@@ -70,8 +72,9 @@ protected:
    ///        On return, this matrix is replaced by the Cholesky 
    ///        decomposition and made fully symmetric.
    void choleskyDecompose(std::valarray<double> &hess);
-   
 };
+
+ std::ostream& operator<<(std::ostream& s, const Optimizer& t);
 
 /// Fortran routines
 extern "C" {

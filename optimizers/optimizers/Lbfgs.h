@@ -71,6 +71,8 @@ namespace optimizers {
     std::string getErrorString(void) const;
     
     void find_min(int verbose = 0, double tol = 1.e-5, int tolType = RELATIVE);
+
+    virtual std::ostream& put (std::ostream& s) const;
     
     enum LbfgsReturnCodes {LBFGS_NORMAL, LBFGS_ABNO, LBFGS_ERROR,
 			   LBFGS_TOOMANY, LBFGS_UNKNOWN};
@@ -88,6 +90,7 @@ namespace optimizers {
     int m_retCode;
 
     int m_numEvals;
+    double m_val;
     std::string m_errorString;
   };
   

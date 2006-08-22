@@ -282,6 +282,7 @@ void test_Optimizers() {
 
    OptimizerFactory & optFactory(OptimizerFactory::instance());
 
+   int verbose = 0;
 #ifdef HAVE_NEW_MINUIT
    for (size_t i = 0; i < 4; i++) {
 #else
@@ -291,7 +292,8 @@ void test_Optimizers() {
                 << " using 2-D Rosenbrock function...\n";
       Optimizer * my_opt(optFactory.create(optimizers[i], my_rosen));
       TestOptimizer tester(*my_opt);
-      tester.run();
+      tester.run(verbose);
+      std::cout << *my_opt << std::endl;
       delete my_opt;
    }
 
@@ -313,7 +315,7 @@ void test_Optimizers() {
                 << std::endl;
       Optimizer * my_opt(optFactory.create(optimizers[i], rosenND));
       TestOptimizer tester(*my_opt);
-      tester.run();
+      tester.run(verbose);
       delete my_opt;
    }
 
