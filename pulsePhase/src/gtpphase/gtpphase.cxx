@@ -124,13 +124,21 @@ void PulsePhaseApp::run() {
     std::string time_format = par_group["timeformat"];
     for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
 
-    double epoch = par_group["ephepoch"];
+    std::string epoch = par_group["ephepoch"];
     std::auto_ptr<TimeRep> epoch_rep(0);
+
+    // Set up proper time representation for this time format and time system.
     if (time_format == "GLAST") {
-      epoch_rep.reset(new GlastMetRep(epoch_time_sys, epoch));
+      epoch_rep.reset(new GlastMetRep(epoch_time_sys, 0.));
+    } else if (time_format == "MJD") {
+      epoch_rep.reset(new MjdRep(epoch_time_sys, 0, 0.));
     } else {
-      throw std::runtime_error("Only GLAST time format is supported for manual ephemeris epoch");
+      throw std::runtime_error("Time format \"" + time_format + "\" is not supported");
     }
+
+    // Assign to the representation the string value given by the user.
+    epoch_rep->assign(epoch);
+
     AbsoluteTime abs_epoch(*epoch_rep);
     if (eph_style == "FREQ") {
       double phi0 = par_group["phi0"];
