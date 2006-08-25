@@ -70,15 +70,15 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-   test_FunctionFactory();
-   test_Parameter_class();
-   test_Function_class();
-   test_PowerLaw_class();
-   test_CompositeFunction();
+   //   test_FunctionFactory();
+   //   test_Parameter_class();
+   //   test_Function_class();
+   //   test_PowerLaw_class();
+   //   test_CompositeFunction();
    test_Optimizers();
-   test_Mcmc();
-   test_ChiSq();
-   test_Amoeba();
+   //   test_Mcmc();
+   //   test_ChiSq();
+   //   test_Amoeba();
    return 0;
 }
 
@@ -278,15 +278,15 @@ void test_Optimizers() {
    params[1].setBounds(-4, 10);
    my_rosen.setParams(params);
 
-   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb"};
+   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb", "Powell"};
 
    OptimizerFactory & optFactory(OptimizerFactory::instance());
 
    int verbose = 0;
 #ifdef HAVE_NEW_MINUIT
-   for (size_t i = 0; i < 4; i++) {
+   for (size_t i = 0; i < 5; i++) {
 #else
-   for (size_t i = 1; i < 4; i++) {
+   for (size_t i = 1; i < 5; i++) {
 #endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 2-D Rosenbrock function...\n";
@@ -306,9 +306,9 @@ void test_Optimizers() {
    rosenND.setParams(params);
 
 #ifdef HAVE_NEW_MINUIT
-   for (size_t i = 0; i < 4; i++) {
+   for (size_t i = 0; i < 5; i++) {
 #else
-   for (size_t i = 1; i < 4; i++) {
+   for (size_t i = 1; i < 5; i++) {
 #endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 5-D Rosenbrock function..." 

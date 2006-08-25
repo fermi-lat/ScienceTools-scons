@@ -15,6 +15,7 @@
 #include "optimizers/NewMinuit.h"
 #include "optimizers/Optimizer.h"
 #include "optimizers/Statistic.h"
+#include "optimizers/Powell.h"
 
 #include "optimizers/OptimizerFactory.h"
 
@@ -37,6 +38,8 @@ Optimizer * OptimizerFactory::create(const std::string & optimizerName,
       return new Lbfgs(stat);
    } else if (optimizerName == "Drmngb" || optimizerName == "DRMNGB") {
       return new Drmngb(stat);
+   } else if (optimizerName == "Powell" || optimizerName == "POWELL") {
+     return new Powell(stat);
 #ifdef HAVE_NEW_MINUIT
    } else if (optimizerName == "NewMinuit" || optimizerName == "NEWMINUIT") {
       return new NewMinuit(stat);
