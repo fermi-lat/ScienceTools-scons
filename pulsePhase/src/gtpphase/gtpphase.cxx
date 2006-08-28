@@ -81,6 +81,7 @@ void PulsePhaseApp::run() {
     par_group.Prompt("ephepoch");
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
+    par_group.Prompt("leapsecfile");
     par_group.Prompt("phi0");
     par_group.Prompt("f0");
     par_group.Prompt("f1");
@@ -89,6 +90,7 @@ void PulsePhaseApp::run() {
     par_group.Prompt("ephepoch");
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
+    par_group.Prompt("leapsecfile");
     par_group.Prompt("phi0");
     par_group.Prompt("p0");
     par_group.Prompt("p1");
@@ -124,10 +126,16 @@ void PulsePhaseApp::run() {
     std::string time_format = par_group["timeformat"];
     for (std::string::iterator itor = time_format.begin(); itor != time_format.end(); ++itor) *itor = toupper(*itor);
 
-    std::string epoch = par_group["ephepoch"];
-    std::auto_ptr<TimeRep> epoch_rep(0);
+    // Handle leap seconds.
+    std::string leap_sec_file = par_group["leapsecfile"];
+    std::string uc_leap_sec_file = leap_sec_file;
+    for (std::string::iterator itor = uc_leap_sec_file.begin(); itor != uc_leap_sec_file.end(); ++itor) *itor = std::toupper(*itor);
+    if (uc_leap_sec_file == "DEFAULT") leap_sec_file = "";
+    if (epoch_time_sys == "UTC") timeSystem::TimeSystem::loadLeapSeconds(leap_sec_file, true);
 
     // Set up proper time representation for this time format and time system.
+    std::string epoch = par_group["ephepoch"];
+    std::auto_ptr<TimeRep> epoch_rep(0);
     if (time_format == "GLAST") {
       epoch_rep.reset(new GlastMetRep(epoch_time_sys, 0.));
     } else if (time_format == "MJD") {
@@ -222,19 +230,13 @@ void PulsePhaseApp::run() {
   for (std::string::iterator itor = telescope.begin(); itor != telescope.end(); ++itor) *itor = toupper(*itor);
   for (std::string::iterator itor = event_time_sys.begin(); itor != event_time_sys.end(); ++itor) *itor = toupper(*itor);
 
+  // TODO Relax this restriction?
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
 
   // Handle event time.
+  // TODO Relax this restriction?
   if (event_time_sys != "TDB" && event_time_sys != "TT") {
     throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
-  }
-  // Check for matchin time systems.
-  if (epoch_time_sys != event_time_sys)
-    throw std::runtime_error("Event time system must match pulsar ephemeris time system for now");
-
-  // Check for valid epoch time system.
-  if (epoch_time_sys != "TDB" && epoch_time_sys != "TT") {
-    throw std::runtime_error("Ephemeris epoch can only be in TDB or TT time systems for now");
   }
 
   // Read global phase offset and name of "TIME column"
