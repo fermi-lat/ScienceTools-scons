@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r4    31-Aug-06   JC   only apply acceptance cone cut if cone
+                             radius < 180 deg
     v4r3p3  24-Jul-06   JC   use evtbin::Gti::computeOntime() in 
                              Gti::writeExtension
     v4r3p2  02-May-06   JC   allow GTI intervals to be suppressed on output

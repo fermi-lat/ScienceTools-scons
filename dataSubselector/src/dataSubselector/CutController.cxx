@@ -37,7 +37,8 @@ CutController::CutController(st_app::AppParGroup & pars,
    double ra = pars["ra"];
    double dec = pars["dec"];
    double radius = pars["rad"];
-   if (radius !=0) {
+   double max_rad = 180.;
+   if (radius < max_rad) {
       m_cuts.addSkyConeCut(ra, dec, radius);
    }
    addRangeCut("TIME", "s", pars["tmin"], pars["tmax"]);
