@@ -103,6 +103,28 @@ void PulsePhaseApp::run() {
 
   par_group.Save(); // Save the values of the parameters.
 
+  // Open the event file.
+  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
+
+  // Get keywords.
+  double valid_since = 0.;
+  double valid_until = 0.;
+  std::string telescope;
+  std::string event_time_sys;
+
+  const tip::Header & header(events->getHeader());
+  header["TSTART"].get(valid_since);
+  header["TSTOP"].get(valid_until);
+  header["TELESCOP"].get(telescope);
+  header["TIMESYS"].get(event_time_sys);
+
+  // Make names of time system and mission are case insensitive)
+  for (std::string::iterator itor = telescope.begin(); itor != telescope.end(); ++itor) *itor = toupper(*itor);
+  for (std::string::iterator itor = event_time_sys.begin(); itor != event_time_sys.end(); ++itor) *itor = toupper(*itor);
+
+  // TODO Relax this restriction?
+  if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
+
   // Determine the time system used for the ephemeris epoch.
   std::string epoch_time_sys;
 
@@ -121,6 +143,7 @@ void PulsePhaseApp::run() {
     // Read epoch time system parameter and make it case insensitive.
     epoch_time_sys = par_group["timesys"].Value();
     for (std::string::iterator itor = epoch_time_sys.begin(); itor != epoch_time_sys.end(); ++itor) *itor = toupper(*itor);
+    if ("FILE" == epoch_time_sys) epoch_time_sys = event_time_sys;
 
     // Read time format parameter and make it case insensitive.
     std::string time_format = par_group["timeformat"];
@@ -133,7 +156,9 @@ void PulsePhaseApp::run() {
     // Set up proper time representation for this time format and time system.
     std::string epoch = par_group["ephepoch"];
     std::auto_ptr<TimeRep> epoch_rep(0);
-    if (time_format == "GLAST") {
+    if (time_format == "FILE") {
+      epoch_rep.reset(new MetRep(header, 0.));
+    } else if (time_format == "GLAST") {
       epoch_rep.reset(new GlastMetRep(epoch_time_sys, 0.));
     } else if (time_format == "MJD") {
       epoch_rep.reset(new MjdRep(epoch_time_sys, 0, 0.));
@@ -207,28 +232,6 @@ void PulsePhaseApp::run() {
       throw std::runtime_error("Binary demodulation was required by user, but no orbital ephemeris was found");
     }
   }
-
-  // Open the event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
-
-  // Get keywords.
-  double valid_since = 0.;
-  double valid_until = 0.;
-  std::string telescope;
-  std::string event_time_sys;
-
-  const tip::Header & header(events->getHeader());
-  header["TSTART"].get(valid_since);
-  header["TSTOP"].get(valid_until);
-  header["TELESCOP"].get(telescope);
-  header["TIMESYS"].get(event_time_sys);
-
-  // Make names of time system and mission are case insensitive)
-  for (std::string::iterator itor = telescope.begin(); itor != telescope.end(); ++itor) *itor = toupper(*itor);
-  for (std::string::iterator itor = event_time_sys.begin(); itor != event_time_sys.end(); ++itor) *itor = toupper(*itor);
-
-  // TODO Relax this restriction?
-  if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
 
   // Read global phase offset and name of "TIME column"
   double phase_offset = par_group["pphaseoffset"];
