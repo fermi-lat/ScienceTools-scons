@@ -128,10 +128,7 @@ void PulsePhaseApp::run() {
 
     // Handle leap seconds.
     std::string leap_sec_file = par_group["leapsecfile"];
-    std::string uc_leap_sec_file = leap_sec_file;
-    for (std::string::iterator itor = uc_leap_sec_file.begin(); itor != uc_leap_sec_file.end(); ++itor) *itor = std::toupper(*itor);
-    if (uc_leap_sec_file == "DEFAULT") leap_sec_file = "";
-    if (epoch_time_sys == "UTC") timeSystem::TimeSystem::loadLeapSeconds(leap_sec_file, true);
+    timeSystem::TimeSystem::setDefaultLeapSecFileName(leap_sec_file);
 
     // Set up proper time representation for this time format and time system.
     std::string epoch = par_group["ephepoch"];
@@ -232,12 +229,6 @@ void PulsePhaseApp::run() {
 
   // TODO Relax this restriction?
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST event files supported for now");
-
-  // Handle event time.
-  // TODO Relax this restriction?
-  if (event_time_sys != "TDB" && event_time_sys != "TT") {
-    throw std::runtime_error("Event time can only be in TDB or TT time systems for now");
-  }
 
   // Read global phase offset and name of "TIME column"
   double phase_offset = par_group["pphaseoffset"];
