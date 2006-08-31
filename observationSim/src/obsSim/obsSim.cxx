@@ -333,21 +333,23 @@ saveEventIds(const observationSim::EventContainer & events) const {
 
 // sort by ID number
    unsigned int nsrcs = eventIds.size();
+   std::vector<int> idnums(nsrcs);
    std::vector<std::string> ids(nsrcs);
    std::vector<unsigned long> incidents(nsrcs);
    std::vector<unsigned long> accepteds(nsrcs);
    id_map_t::const_iterator eventId = eventIds.begin();
-   for ( ; eventId != eventIds.end(); ++eventId) {
-      ids.at(eventId->second.id) = eventId->first;
-      incidents.at(eventId->second.id) = eventId->second.incidentNum;
-      accepteds.at(eventId->second.id) = eventId->second.acceptedNum;
+   for (size_t idnum=0 ; eventId != eventIds.end(); ++eventId, idnum++) {
+      ids.at(idnum) = eventId->first;
+      idnums.at(idnum) = eventId->second.id;
+      incidents.at(idnum) = eventId->second.incidentNum;
+      accepteds.at(idnum) = eventId->second.acceptedNum;
    }
    
    std::string event_id_file = m_pars["outfile_prefix"];
    event_id_file += "_srcIds.txt";
    std::ofstream outputFile(event_id_file.c_str());
    for (unsigned int i = 0; i < nsrcs; i++) {
-      outputFile << i << "  "
+      outputFile << idnums.at(i) << "  "
                  << ids.at(i) << "  "
                  << incidents.at(i) << "  "
                  << accepteds.at(i) << "\n";

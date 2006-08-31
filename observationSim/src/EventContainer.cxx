@@ -127,7 +127,7 @@ bool EventContainer::addEvent(EventSource *event,
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
    std::string srcName(event->name());
-   setEventId(srcName);
+   setEventId(srcName, event->numSource());
 
    m_srcSummaries[srcName].incidentNum += 1;
    if (alwaysAccept) {
@@ -179,12 +179,13 @@ bool EventContainer::addEvent(EventSource *event,
    return accepted;
 }
 
-void EventContainer::setEventId(const std::string & name) {
+void EventContainer::setEventId(const std::string & name, int eventId) {
    typedef std::map<std::string, SourceSummary> id_map_t;
    if (m_srcSummaries.find(name) == m_srcSummaries.end()) {
       m_srcSummaries.insert(
-         id_map_t::value_type(name, 
-                              SourceSummary(m_srcSummaries.size())));
+//          id_map_t::value_type(name, 
+//                               SourceSummary(m_srcSummaries.size())));
+         id_map_t::value_type(name, SourceSummary(eventId)));
    }
 }
 

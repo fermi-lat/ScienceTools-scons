@@ -127,7 +127,7 @@ private:
    void init();
 
    /// Set the event ID for the named source, if it does not already exist.
-   void setEventId(const std::string & name);
+   void setEventId(const std::string & name, int eventId);
 
    /// Return the zenith for the current spacecraft location.
    astro::SkyDir ScZenith(double time) const;
