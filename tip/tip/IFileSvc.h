@@ -13,12 +13,12 @@
 #include "tip/FileSummary.h"
 #include "tip/Header.h"
 #include "tip/Image.h"
+#include "tip/TipFile.h" 
 
 namespace tip {
 
   class Extension;
   class Table;
-  class TipFile;
 
   /** \class IFileSvc
 
@@ -56,6 +56,11 @@ namespace tip {
           \param clobber Should existing files be overwritten?
       */
       virtual TipFile createMemFile(const std::string & file_name, const std::string & template_name = "", bool clobber = true);
+
+      /** \brief Open a TipFile object for access to the file as a whole.
+          \param file_name The name of the file to open.
+      */
+      virtual TipFile openFile(const std::string & file_name);
 
       /** \brief Append a new image extension in a file. If the file does not exist, it will be created with
                  its primary image extension named with the image name.

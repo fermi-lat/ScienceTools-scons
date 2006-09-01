@@ -11,6 +11,7 @@
 #include "FitsFileManager.h"
 #include "FitsImage.h"
 #include "FitsTable.h"
+#include "FitsTipFile.h"
 #include "RootTable.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
@@ -32,6 +33,7 @@ namespace tip {
     if (first_time) {
       // Make sure global initialization has been performed:
       globalInit();
+      first_time = false;
     }
 
     // Create the singleton factory.
@@ -56,6 +58,10 @@ namespace tip {
 
   TipFile IFileSvc::createMemFile(const std::string & file_name, const std::string & template_name, bool clobber) {
     return FitsFileManager::createMemFile(file_name, template_name, clobber);
+  }
+
+  TipFile IFileSvc::openFile(const std::string & file_name) {
+    return new FitsTipFile(file_name);
   }
 
   void IFileSvc::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
