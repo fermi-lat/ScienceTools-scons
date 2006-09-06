@@ -26,5 +26,8 @@
                               cases where it is not needed.
         v4  26-jul-06   JP    Changed to work with timeSystem v1.
       v4r1  14-aug-06   JP    Major but internal refactoring to use latest timeSystem.
+      v4r2  06-sep-06   JP    Add support for common time systems. Supported systems now
+                              include TAI, TDB, TT, and UTC.
+
     @endverbatim
 */
