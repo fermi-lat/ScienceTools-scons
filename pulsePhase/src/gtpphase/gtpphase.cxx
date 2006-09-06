@@ -118,6 +118,10 @@ void PulsePhaseApp::run() {
   header["TELESCOP"].get(telescope);
   header["TIMESYS"].get(event_time_sys);
 
+  // Get the mjdref from the header, which is not as simple as just reading a single keyword.
+  MjdRefDatabase mjd_ref_db;
+  IntFracPair mjd_ref(mjd_ref_db(header));
+
   // Make names of time system and mission are case insensitive)
   for (std::string::iterator itor = telescope.begin(); itor != telescope.end(); ++itor) *itor = toupper(*itor);
   for (std::string::iterator itor = event_time_sys.begin(); itor != event_time_sys.end(); ++itor) *itor = toupper(*itor);
@@ -157,7 +161,7 @@ void PulsePhaseApp::run() {
     std::string epoch = par_group["ephepoch"];
     std::auto_ptr<TimeRep> epoch_rep(0);
     if (time_format == "FILE") {
-      epoch_rep.reset(new MetRep(header, 0.));
+      epoch_rep.reset(new MetRep(epoch_time_sys, mjd_ref, 0.));
     } else if (time_format == "GLAST") {
       epoch_rep.reset(new GlastMetRep(epoch_time_sys, 0.));
     } else if (time_format == "MJD") {
@@ -248,7 +252,7 @@ void PulsePhaseApp::run() {
   if (add_col)
     events->appendField(phase_field, "1D");
 
-  MetRep evt_time_rep(header, 0.);
+  MetRep evt_time_rep(event_time_sys, mjd_ref, 0.);
 
   // Iterate over events.
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {

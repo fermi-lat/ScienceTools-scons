@@ -61,16 +61,17 @@ void PulsePhaseApp::run() {
   double phase_offset = par_group["ophaseoffset"];
 
   std::string telescope;
-//  std::string time_sys;
+  std::string time_sys;
 
   const tip::Header & header(events->getHeader());
 
   header["TELESCOP"].get(telescope);
-//  header["TIMESYS"].get(time_sys);
+  header["TIMESYS"].get(time_sys);
 
   if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
 
-  MetRep time_rep(header, 0.);
+  MjdRefDatabase db;
+  MetRep time_rep(time_sys, db(header), 0.);
 
   // Find the pulsar database.
   std::string psrdb_file = par_group["psrdbfile"];
