@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+06-sep-2006   v2r11   JP Add IFileSvc::openFile method, for opening a file as a
+                         TipFile object.
 07-aug-2006 v2r10p1   JP Fix bug in null value code which caused seg faults if a null
                          value was actually encountered.
 04-apr-2006  v2r10 JP Add support for vectors of bools and strings, and some support for
