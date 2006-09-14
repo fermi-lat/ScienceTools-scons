@@ -278,15 +278,16 @@ void test_Optimizers() {
    params[1].setBounds(-4, 10);
    my_rosen.setParams(params);
 
-   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb", "Powell"};
+   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb", "Drmnfb",
+			  "Powell"};
 
    OptimizerFactory & optFactory(OptimizerFactory::instance());
 
-   int verbose = 0;
+   int verbose = 1;
 #ifdef HAVE_NEW_MINUIT
-   for (size_t i = 0; i < 5; i++) {
+   for (size_t i = 0; i < 6; i++) {
 #else
-   for (size_t i = 1; i < 5; i++) {
+   for (size_t i = 1; i < 6; i++) {
 #endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 2-D Rosenbrock function...\n";
@@ -306,9 +307,9 @@ void test_Optimizers() {
    rosenND.setParams(params);
 
 #ifdef HAVE_NEW_MINUIT
-   for (size_t i = 0; i < 5; i++) {
+   for (size_t i = 0; i < 6; i++) {
 #else
-   for (size_t i = 1; i < 5; i++) {
+   for (size_t i = 1; i < 6; i++) {
 #endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 5-D Rosenbrock function..." 

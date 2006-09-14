@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "optimizers/Drmngb.h"
+#include "optimizers/Drmnfb.h"
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Minuit.h"
 #include "optimizers/NewMinuit.h"
@@ -37,7 +38,9 @@ Optimizer * OptimizerFactory::create(const std::string & optimizerName,
    } else if (optimizerName == "Lbfgs" || optimizerName == "LBFGS") {
       return new Lbfgs(stat);
    } else if (optimizerName == "Drmngb" || optimizerName == "DRMNGB") {
-      return new Drmngb(stat);
+     return new Drmngb(stat);
+   } else if (optimizerName == "Drmnfb" || optimizerName == "DRMNFB") {
+     return new Drmnfb(stat);
    } else if (optimizerName == "Powell" || optimizerName == "POWELL") {
      return new Powell(stat);
 #ifdef HAVE_NEW_MINUIT

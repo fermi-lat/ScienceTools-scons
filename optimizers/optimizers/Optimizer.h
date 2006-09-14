@@ -81,6 +81,9 @@ extern "C" {
   void drmngb_(const double * bounds, double * scale, double * funcval,
       	 double * grad, int * iv, const int * liv, const int *lv, 
       	 const int * n, double * v, double *x);
+  void drmnfb_(const double * bounds, double * scale, double * funcval,
+      	 int * iv, const int * liv, const int *lv, 
+      	 const int * n, double * v, double *x);
   void divset_(const int * kind, int * iv, const int * liv, const int * lv, 
       	double * v);
   int dpptri_(const char * uplo, const int * n, double * array,
