@@ -127,7 +127,7 @@ bool EventContainer::addEvent(EventSource *event,
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
    std::string srcName(event->name());
-   setEventId(srcName, event->numSource());
+   setEventId(srcName, event->code());
 
    m_srcSummaries[srcName].incidentNum += 1;
    if (alwaysAccept) {

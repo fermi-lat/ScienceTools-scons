@@ -203,6 +203,7 @@ void Simulator::makeEvents(EventContainer &events,
 // The following line is where the "Time out of Range!" exception is 
 // thrown by astro's GPS class:
             m_newEvent = m_source->event(m_absTime);
+            m_newEvent->code(m_source->numSource()); // THB minimal kluge: save the code using 
             m_interval = m_source->interval(m_absTime);
          }
 
