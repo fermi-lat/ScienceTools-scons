@@ -53,14 +53,15 @@ ephstyle = DB [string]
     is DB, a pulsar database file (GLAST D4 FITS format) will
     be used. If ephstyle is FREQ (PER), the user will supply values
     for the frequency (period) and its derivatives at the time
-    given by the epoch parameter.
+    given by the ephepoch parameter.
 
-epoch [double]
-    The epoch, or time origin, for the ephemeris. This parameter
-    only has effect if ephstyle is FREQ or PER.
+ephepoch [double]
+    The epoch, or time origin, for a user-supplied ephemeris. This
+    parameter only has effect if ephstyle is FREQ or PER.
 
 phi0 [double]
-    The phase offset at this epoch.
+    The phase offset at this ephepoch for a user-supplied ephemeris.
+    This parameter only has effect if ephstyle is FREQ or PER.
 
 (psrdbfile = DEFAULT) [file name]
     Name of pulsar ephemerides database file, in GLAST D4
@@ -84,37 +85,53 @@ phi0 [double]
     This is the name of the field containing the time values
     for time binning. The default value is consistent with
     the GLAST FT1 event file format.
+
+(pphasefield = PULSE_PHASE) [string]
+    The name of the output column to contain the assigned pulse phase.
+
+(pphaseoffset = 0.) [double]
+    Global offset applied to all assigned pulse phases. This may be
+    used to shift the entire pulse profile. Note that this offset will
+    be applied regardless of the source of the ephemeris used, whereas
+    phi0 is used only when ephstyle is FREQ or PER.
+
+(leapsecfile = DEFAULT) [file name]
+    The file containing the name of the leap second table, in
+    OGIP-compliant leap second table format. If leapsecfile is
+    the string DEFAULT, the default leapsec file (leapsec.fits),
+    which is distributed with the extFiles package, will be used.
+
 \endverbatim
 
-    \subsection frequency_para Frequency Ephemeris Parameters
+    \subsection frequency_pars Frequency Ephemeris Parameters
 
 \verbatim
 f0 [double]
-    The value of the frequency at the epoch. Only used if
+    The value of the frequency at the ephepoch. Only used if
     ephstyle is FREQ.
 
 f1 [double]
     The value of the first time derivative of the frequency at the
-    epoch. Only used if ephstyle is FREQ.
+    ephepoch. Only used if ephstyle is FREQ.
 
 f2 [double]
     The value of the second time derivative of the frequency at the
-    epoch. Only used if ephstyle is FREQ.
+    ephepoch. Only used if ephstyle is FREQ.
 \endverbatim
 
     \subsection period_pars Period Ephemeris Parameters
 \verbatim
 p0 [double]
-    The value of the period at the epoch. Only used if
+    The value of the period at the ephepoch. Only used if
     ephstyle is PER.
 
 p1 [double]
     The value of the first time derivative of the period at the
-    epoch. Only used if ephstyle is PER.
+    ephepoch. Only used if ephstyle is PER.
 
 p2 [double]
     The value of the second time derivative of the period at the
-    epoch. Only used if ephstyle is PER.
+    ephepoch. Only used if ephstyle is PER.
 \endverbatim
 
     \subsection gtophase_parameters gtophase Parameters
@@ -126,9 +143,6 @@ evfile [string]
 psrname = ANY [string]
     The name of the pulsar, used to select only ephemerides
     valid for a particular pulsar.
-
-(phi0 = 0.) [double]
-    The phase offset at this epoch.
 
 (psrdbfile = DEFAULT) [file name]
     Name of pulsar ephemerides database file, in GLAST D4
@@ -143,13 +157,22 @@ psrname = ANY [string]
     This is the name of the field containing the time values
     for time binning. The default value is consistent with
     the GLAST FT1 event file format.
+
+(ophasefield = ORBITAL_PHASE) [string]
+    The name of the output column to contain the assigned orbital phase.
+
+(ophaseoffset = 0.) [double]
+    Global offset applied to all assigned orbital phases.
+
 \endverbatim
 
     \section todo Open Issues
 \verbatim
+None.
 \endverbatim
 
     \section done Resolved Issues
 \verbatim
+None.
 \endverbatim
 */
