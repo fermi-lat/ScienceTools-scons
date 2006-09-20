@@ -41,7 +41,7 @@ infile [file]
     \subsection gtpphase_general gtpphase General Parameters
 
 \verbatim
-evfile [string]
+evfile [file name]
     Name of input event file, FT1 format or equivalent.
 
 psrname = ANY [string]
@@ -55,11 +55,23 @@ ephstyle = DB [string]
     for the frequency (period) and its derivatives at the time
     given by the ephepoch parameter.
 
-ephepoch [double]
+ephepoch = 0. [string]
     The epoch, or time origin, for a user-supplied ephemeris. This
     parameter only has effect if ephstyle is FREQ or PER.
 
-phi0 [double]
+timeformat = FILE [string]
+    String describing the representation used for the ephepoch.
+    Valid choices are FILE, MJD and GLAST (MET). If FILE is chosen,
+    the time format specified in the input event file header will be
+    used.
+
+timesys = FILE [string]
+    String describing the time system used for the ephepoch.
+    Valid choices are FILE, TAI, TDB, TT and UTC. If FILE is chosen,
+    the time system specified in the input event file header (TIMESYS
+    keyword) will be used.
+
+phi0 = 0. [double]
     The phase offset at this ephepoch for a user-supplied ephemeris.
     This parameter only has effect if ephstyle is FREQ or PER.
 
@@ -78,7 +90,7 @@ phi0 [double]
     If demodbin is NO, binary demodulation will not be performed
     regardless of whether orbital ephemerides exist in the database.
 
-(evtable = EVENTS) [STRING]
+(evtable = EVENTS) [string]
     The name of the file containing the event data.
 
 (timefield = TIME) [string]
@@ -106,30 +118,30 @@ phi0 [double]
     \subsection frequency_pars Frequency Ephemeris Parameters
 
 \verbatim
-f0 [double]
+f0 = 1. [double]
     The value of the frequency at the ephepoch. Only used if
     ephstyle is FREQ.
 
-f1 [double]
+f1 = 0. [double]
     The value of the first time derivative of the frequency at the
     ephepoch. Only used if ephstyle is FREQ.
 
-f2 [double]
+f2 = 0. [double]
     The value of the second time derivative of the frequency at the
     ephepoch. Only used if ephstyle is FREQ.
 \endverbatim
 
     \subsection period_pars Period Ephemeris Parameters
 \verbatim
-p0 [double]
+p0 = 1. [double]
     The value of the period at the ephepoch. Only used if
     ephstyle is PER.
 
-p1 [double]
+p1 = 0. [double]
     The value of the first time derivative of the period at the
     ephepoch. Only used if ephstyle is PER.
 
-p2 [double]
+p2 = 0. [double]
     The value of the second time derivative of the period at the
     ephepoch. Only used if ephstyle is PER.
 \endverbatim
@@ -137,7 +149,7 @@ p2 [double]
     \subsection gtophase_parameters gtophase Parameters
 
 \verbatim
-evfile [string]
+evfile [file name]
     Name of input event file, FT1 format or equivalent.
 
 psrname = ANY [string]
@@ -150,7 +162,7 @@ psrname = ANY [string]
     database file (master_pulsardb.fits), which is distributed
     with the pulsar tools, will be used.
 
-(evtable = EVENTS) [STRING]
+(evtable = EVENTS) [string]
     The name of the file containing the event data.
 
 (timefield = TIME) [string]
