@@ -30,5 +30,6 @@
                               include TAI, TDB, TT, and UTC.
         v5  13-sep-06   JP    Use latest version of timeSystem; read time system from event file, and
                               completely decouple time format from time system.
+    v5r0p1  20-sep-06   JP    Update mainpage.h.
     @endverbatim
 */
