@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+25-sep-2006   v2r12   JP Add isNull method, for determining if a cell contains an
+                         INDEF (null) value.
 06-sep-2006   v2r11   JP Add IFileSvc::openFile method, for opening a file as a
                          TipFile object.
 07-aug-2006 v2r10p1   JP Fix bug in null value code which caused seg faults if a null
