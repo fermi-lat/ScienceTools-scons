@@ -16,6 +16,7 @@ TSTART      =                                / mission time of the start of the 
 TSTOP       =                                / mission time of the end of the observation
 TIMEUNIT    = 's'                            / units for the time related keywords
 TIMESYS     = 'TT'                           / type of time system that is used
+GPS_OUT     = F                                         / whether GPS time was unavailable at any time during this interval
 MJDREFI     = 51910.                         / Integer part of MJD corresponding to SC clock start
 MJDREFF     = 7.428703703703703D-4           / Fractional part of MJD corresponding to SC clock start
 OBSERVER    = 'Peter Michelson'              / GLAST/LAT PI
