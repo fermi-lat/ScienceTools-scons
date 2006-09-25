@@ -284,6 +284,19 @@ namespace tip {
           throw TipException(status, "FitsColumn::set(Index_t, const std::vector<bool> &) failed to write vector cell value");
       }
 
+      virtual bool isNull(Index_t record_index) const {
+        if (!m_scalar) throw TipException("FitsColumn::isNull(Index_t) called but field is not a scalar");
+        int status = 0;
+        int any_null = 0;
+        // For strings, make a buffer to hold the value.
+        char * dest = new char[m_display_width + 1];
+        fits_read_col(m_ext->getFp(), FitsPrimProps<char *>::dataTypeCode(), m_field_index, record_index + 1, 1, m_repeat,
+          &FitsPrimProps<char *>::undefined(), &dest, &any_null, &status);
+        delete [] dest; dest = 0;
+        if (0 != status) throw TipException(status, "FitsColumn::isNull failed to read scalar cell value");
+        return any_null;
+      }
+
       /** \brief Copy a cell from another column to this column.
           \param src Pointer to the source column.
           \param src_index Index of the cell in the source column.

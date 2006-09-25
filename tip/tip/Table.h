@@ -88,6 +88,10 @@ namespace tip {
       */
       void setNumElements(Index_t num_elements);
 
+      /** \brief Return true if the cell contains a null (indef) value, false otherwise.
+      */
+      bool isNull() const;
+
     private:
       FieldIndex_t getFieldIndex() const;
       static const FieldIndex_t s_field_unknown = -1;
@@ -426,6 +430,10 @@ namespace tip {
 
   inline void TableCell::setNumElements(Index_t num_elements) {
     m_record.getExtensionData()->getColumn(getFieldIndex())->setNumElements(num_elements);
+  }
+
+  inline bool TableCell::isNull() const {
+    return m_record.getExtensionData()->getColumn(getFieldIndex())->isNull(m_record.getIndex());
   }
 
   inline FieldIndex_t TableCell::getFieldIndex() const {
