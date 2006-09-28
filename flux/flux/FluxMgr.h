@@ -59,15 +59,9 @@ public:
     
     /// generate some test output
     void test(std::ostream& out, std::string source_name, int count);
-    
-    /// set the angular (off-zenith) values of the GLAST satellite
-    void setExplicitRockingAngles(std::pair<double,double> ang);
 
-	/// set the desired pointing history file to use:
-	void setPointingHistoryFile(std::string fileName);
-
-    /// get the angular values of the satellite
-    std::pair<double,double> getExplicitRockingAngles();
+    /// set the desired pointing history file to use:
+    void setPointingHistoryFile(std::string fileName);
 
     ///this should return the source file names, along with the contained sources.
     std::vector<std::pair< std::string ,std::list<std::string> > > sourceOriginList() const;

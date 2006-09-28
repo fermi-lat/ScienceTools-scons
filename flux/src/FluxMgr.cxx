@@ -317,14 +317,6 @@ void FluxMgr::addFactory(std::string name, const ISpectrumFactory* factory ) {
     SpectrumFactoryTable::instance()->addFactory(name,factory);
 }
 
-void FluxMgr::setExplicitRockingAngles(std::pair<double,double> ang){
-   GPS::instance()->rotateAngles(ang);
-}
-
-std::pair<double,double> FluxMgr::getExplicitRockingAngles(){
-    return GPS::instance()->rotateAngles();
-}
-
 /// set the desired pointing history file to use:
 void FluxMgr::setPointingHistoryFile(std::string fileName){
     GPS::instance()->setPointingHistoryFile(fileName);
