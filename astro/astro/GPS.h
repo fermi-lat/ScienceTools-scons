@@ -100,6 +100,12 @@ public:
     double DECZ()const;//{getPointingCharacteristics(time);return m_DECZ;}
     double RAZenith()const;//{getPointingCharacteristics(time);return m_RAZenith;}
     double DECZenith()const;//{getPointingCharacteristics(time);return m_DECZenith;}
+
+    // New versions of the above, which are deprecated
+    const astro::SkyDir& zAxisDir()const{return m_zaxis;} ///< spacecraft z-axis direction
+    const astro::SkyDir& xAxisDir()const{return m_xaxis;} ///< spacecraft x-axis direction
+    const astro::SkyDir& zenithDir()const{return m_zenith;}///< local zenith
+
     /// expansion of the current orbit
     double      expansion () const; 
     /// sample interval for random orbit distribution
@@ -131,6 +137,9 @@ public:
     void    ascendingLon(double);   
     /// set m_rotangles
     void    rotateAngles(std::pair<double,double> coords); 
+
+    /// set the direction to point
+    void setPointingDirection(const astro::SkyDir& dir);
 
     /** @brief set the desired pointing history file to use. 
      *  @param fileName 
@@ -230,6 +239,10 @@ private:
 
    double m_livetime_frac;
    double m_endTime;
+
+   astro::SkyDir m_zaxis, m_xaxis, m_zenith;
+
+
    bool haveFitsFile() const;
    void readFitsData();
    void fitsReportError(FILE *, int) const;

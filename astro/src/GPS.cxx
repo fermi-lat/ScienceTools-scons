@@ -78,12 +78,13 @@ double GPS::lat()const{return m_lat;}
 double GPS::lon()const{return m_lon;}  	
 double GPS::altitude()const {return m_altitude;}
 /// pointing characteristics	
-double GPS::RAX()const{return m_RAX;}    
-double GPS::RAZ()const{return m_RAZ;}    
-double GPS::DECX()const{return m_DECX;}    
-double GPS::DECZ()const{return m_DECZ;}    
-double GPS::RAZenith()const{return m_RAZenith;}    
-double GPS::DECZenith()const{return m_DECZenith;}
+double GPS::RAX()const{return m_xaxis.ra();}    
+double GPS::RAZ()const{return m_zaxis.ra();}    
+double GPS::DECX()const{return m_xaxis.dec();}    
+double GPS::DECZ()const{return m_zaxis.dec();}    
+double GPS::RAZenith()const{return m_zenith.ra();}    
+double GPS::DECZenith()const{return m_zenith.dec();}
+
 double GPS::livetime_frac() const {
    return m_livetime_frac;
 }
@@ -161,6 +162,13 @@ void GPS::rotateAngles(std::pair<double,double> coords){
     m_rotangles=coords;
     //m_rockType = EXPLICIT;
 }
+void GPS::setPointingDirection( const astro::SkyDir& dir){
+    m_zaxis = dir;
+    // make an arbitray perpendicular direction for the x-axis
+    CLHEP::Hep3Vector xhat = CLHEP::Hep3Vector(0,0,1).cross(m_zaxis()).unit();
+    m_xaxis = astro::SkyDir(xhat);
+    m_rockType = POINT;
+}
 
 /// set the desired pointing history file to use:
 void GPS::setPointingHistoryFile(std::string fileName, double  offset){
@@ -214,11 +222,11 @@ CLHEP::HepRotation GPS::rockingAngleTransform(double seconds){
         //don't do anything - the new pointing characteristics have already been taken account of
         //in getPointingCharacteristics().
         //rockRot.rotateX(m_rockNorth);
-        SkyDir dirZenith(m_RAZenith,m_DECZenith,SkyDir::EQUATORIAL);
-        SkyDir dirXZenith(m_RAXZenith,m_DECXZenith);
+        SkyDir dirZenith(m_zenith);
 
         // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
-        CLHEP::Hep3Vector xhat = dirXZenith() -  (dirXZenith().dot(dirZenith())) * dirZenith() ;
+        // z-axis (North) cross(zenith) is East
+        CLHEP::Hep3Vector xhat = CLHEP::Hep3Vector(0,0,1).cross(m_zenith()).unit();
         //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
         //what we want now is to make cel, where
         //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
@@ -262,10 +270,12 @@ CLHEP::HepRotation GPS::transformCelToGlast(double seconds){
     // set the needed pointing/location variables:
     getPointingCharacteristics(seconds);
 
-
+#if 0
     SkyDir dirZ(m_RAZ,m_DECZ,SkyDir::EQUATORIAL);
     SkyDir dirX(m_RAX,m_DECX);
-
+#else 
+    SkyDir dirZ(m_zaxis), dirX(m_xaxis);
+#endif
     // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
     CLHEP::Hep3Vector xhat = dirX() -  (dirX().dot(dirZ())) * dirZ() ;
     //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
@@ -300,20 +310,17 @@ void GPS::getPointingCharacteristics(double inputTime){
     //first make the directions for the x and Z axes, as well as the zenith direction, and latitude/longitude
     double lZ,bZ,raX,decX;
     //before rotation, the z axis points along the zenith:
+
     if(m_rockType == POINT){
-        lZ=m_rotangles.first*(180./M_PI);
-        bZ=m_rotangles.second*(180./M_PI);
-        SkyDir tempDirZ(lZ,bZ,astro::SkyDir::GALACTIC);
-        raX = tempDirZ.ra()-90.0;
-        decX = 0.;
+        // pointing mode
         astro::EarthCoordinate earthpos(m_position,inputTime);
         m_lat = earthpos.latitude();
         m_lon = earthpos.longitude();
         m_altitude = earthpos.altitude();
-        //now set the zenith direction before the rocking.
-        m_RAZenith = tempDirZ.ra();
-        m_DECZenith = tempDirZ.dec();
-    }else if(m_rockType == HISTORY ){
+        m_zenith = SkyDir(m_position);
+        return; // all now is set.
+    }
+    if(m_rockType == HISTORY ){
         if( inputTime > m_endTime){
             throw std::runtime_error("GPS: time is beyond end of history file");
         }
@@ -342,8 +349,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         m_altitude = altitude;
 
         //now set the zenith direction before the rocking.
-        m_RAZenith = dirZenith.ra();
-        m_DECZenith = dirZenith.dec();
+        m_zenith = dirZenith;
         m_livetime_frac = m_currentInterpPoint.livetime_frac;
 
     }else{
@@ -358,8 +364,7 @@ void GPS::getPointingCharacteristics(double inputTime){
         m_lon = earthpos.longitude();
         m_altitude = earthpos.altitude();
         //now set the zenith direction before the rocking.
-        m_RAZenith = tempDirZ.ra();
-        m_DECZenith = tempDirZ.dec();
+        m_zenith = tempDirZ;
     }
 
     SkyDir dirZ(lZ,bZ,SkyDir::GALACTIC);
@@ -367,8 +372,6 @@ void GPS::getPointingCharacteristics(double inputTime){
     //before rotation, the z axis points along the zenith:
     SkyDir dirZenith(dirZ.dir());
     //also, before Rotation, set the characteristics of the zenith x-direction:
-    m_RAXZenith = raX;
-    m_DECXZenith = decX;
 
     if(m_rockType != HISTORY || inputTime >= m_endTime){
         //rotate the x direction so that the x direction points along the orbital direction.
@@ -404,11 +407,8 @@ void GPS::getPointingCharacteristics(double inputTime){
     }
 
     dirZ().rotate(dirX.dir() , m_rockNorth);
-
-    m_RAX = dirX.ra();
-    m_RAZ = dirZ.ra();
-    m_DECX = dirX.dec();
-    m_DECZ = dirZ.dec();
+    m_xaxis = dirX;
+    m_zaxis = dirZ;
 
     //a test - to ensure the rotation went properly
     //std::cout << " degrees between xhat and zhat directions: " <<
