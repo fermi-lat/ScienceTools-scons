@@ -34,7 +34,6 @@
 
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
-#include "fitsGen/Util.h"
 
 using namespace fitsGen;
 
@@ -90,7 +89,7 @@ public:
          std::cerr << eObj.what() << std::endl;
          std::exit(1);
       } catch (...) {
-         std::cerr << "Caught unknown exception in DataFilter constructor." 
+         std::cerr << "Caught unknown exception in MakeFT1 constructor." 
                    << std::endl;
          std::exit(1);
       }

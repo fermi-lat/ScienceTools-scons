@@ -25,7 +25,6 @@
 
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
-#include "fitsGen/Util.h"
 
 using namespace fitsGen;
 

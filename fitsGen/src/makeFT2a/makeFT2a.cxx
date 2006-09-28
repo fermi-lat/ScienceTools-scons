@@ -22,7 +22,6 @@
 #include "astro/EarthCoordinate.h"
 
 #include "fitsGen/Ft2File.h"
-#include "fitsGen/Util.h"
 
 using namespace fitsGen;
 

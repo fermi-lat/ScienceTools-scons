@@ -32,7 +32,7 @@ public:
          std::cerr << eObj.what() << std::endl;
          std::exit(1);
       } catch (...) {
-         std::cerr << "Caught unknown exception in DataFilter constructor." 
+         std::cerr << "Caught unknown exception in MakeFt2 constructor." 
                    << std::endl;
          std::exit(1);
       }
