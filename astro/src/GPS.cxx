@@ -403,7 +403,7 @@ void GPS::getPointingCharacteristics(double inputTime){
     }else{
         //important - this includes EXPLICIT rocking angles - they
         //are currently still handled by rockingTransform().
-        m_rockNorth = 0.;
+        // why? m_rockNorth = 0.;
     }
 
     dirZ().rotate(dirX.dir() , m_rockNorth);
