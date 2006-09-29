@@ -94,9 +94,7 @@ public:
     CLHEP::HepRotation transformGlastToGalactic(double time);
 
     ///this sets the rocking mode in GPS.
-    std::vector<double> setRockType(astro::GPS::RockType rockType, double rockAngle);
     std::vector<double> setRockType(int rockType, double rockAngle);
-
     /// Set an alignment rotation to be applied to the instrument coordinates of any incoming particle
     void setAlignmentRotation(const CLHEP::HepRotation& align);
 

@@ -359,41 +359,20 @@ CLHEP::HepRotation FluxMgr::transformToGlast(double seconds,GPS::CoordSystem ind
 CLHEP::HepRotation FluxMgr::CELTransform(double time){
     return GPS::instance()->CELTransform(time);
 }
-#if 0 // not used? 
-
-//get the transformation matrix.
-CLHEP::HepRotation FluxMgr::orientTransform(double time){
-    //make the transformtion that turns zenith coordinates into local coordinates.
-    CLHEP::HepRotation ret;
-    ret = GPS::instance()->transformToGlast(time,GPS::ZENITH);
-    return ret;
-}
-#endif
 ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
 CLHEP::HepRotation FluxMgr::transformGlastToGalactic(double time){
     return GPS::instance()->transformGlastToGalactic(time);
 }
-
-///this sets the rocking mode in GPS.
-std::vector<double> FluxMgr::setRockType(GPS::RockType rockType, double rockAngle){
-    int type=GPS::instance()->setRockType(rockType);
-    double degrees = GPS::instance()->rockingDegrees(rockAngle);
-    std::vector<double> ret;
-    ret.push_back(type);
-    ret.push_back(degrees);
-    return ret;
-}
-
 ///this sets the rocking mode in GPS.
 std::vector<double> FluxMgr::setRockType(int rockType, double rockAngle){
     int type=GPS::instance()->setRockType(rockType);
     double degrees = GPS::instance()->rockingDegrees(rockAngle);
+    GPS::instance()->rotateAngles(std::make_pair(rockAngle*M_PI/180,0)); //also set "explicit"
     std::vector<double> ret;
     ret.push_back(type);
     ret.push_back(degrees);
     return ret;
 }
-
 std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
     /** purpose: creates a document of the form
 
