@@ -106,6 +106,8 @@ public:
     virtual const HepVector3D& skyDirection()const{ static HepVector3D dummy; return dummy;}
     
     static void setAlignmentRotation(const CLHEP::HepRotation& align);
+
+    static double s_backoff; // expose backoff distance, in mm
 private:
     double m_time;    // elapsed time, really only needed for EventSource
     

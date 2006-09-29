@@ -12,6 +12,8 @@
 
 unsigned int  EventSource::s_id = 0;
 double  EventSource::s_total_area = 6.; // area in m^2
+double  EventSource::s_backoff = 2000.; // in mm
+
 
 bool EventSource::s_applyAlign(false);
 CLHEP::HepRotation EventSource::s_alignMatrix;
