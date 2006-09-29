@@ -78,6 +78,7 @@ public:
     /// by the earth
     bool occulted();
 
+
 private:
 
 // forward declaration of classes that handle the lauch direction
