@@ -28,6 +28,7 @@
 #include "evtbin/LogBinner.h"
 
 // Data product support classes.
+#include "evtbin/CountCube.h"
 #include "evtbin/CountMap.h"
 #include "evtbin/DataProduct.h"
 #include "evtbin/LightCurve.h"
@@ -130,6 +131,69 @@ class EvtBinAppBase : public st_app::StApp {
 
   private:
     std::string m_app_name;
+};
+
+/** \class CountCubeApp
+    \brief Light curve specific binning application.
+*/
+class CountCubeApp : public EvtBinAppBase {
+  public:
+    CountCubeApp(const std::string & app_name): EvtBinAppBase(app_name) {}
+
+    virtual void parPrompt(st_app::AppParGroup & pars) {
+      // Call base class prompter for standard universal parameters.
+      EvtBinAppBase::parPrompt(pars);
+
+      // Call configuration object to prompt for spatial binning related parameters.
+      m_bin_config->spatialParPrompt(pars);
+
+      // Call configuration object to prompt for spatial binning related parameters.
+      m_bin_config->energyParPrompt(pars);
+    }
+
+    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
+      using namespace evtbin;
+
+      unsigned long num_x_pix = 0;
+      unsigned long num_y_pix = 0;
+
+      // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
+      try {
+        // The conversion will work even if the exception is thrown.
+        pars["numxpix"].To(num_x_pix);
+      } catch (const hoops::Hexception & x) {
+        // Ignore just the "signedness" error.
+        if (hoops::P_SIGNEDNESS != x.Code()) throw;
+      }
+
+      // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
+      try {
+        // The conversion will work even if the exception is thrown.
+        pars["numypix"].To(num_y_pix);
+      } catch (const hoops::Hexception & x) {
+        // Ignore just the "signedness" error.
+        if (hoops::P_SIGNEDNESS != x.Code()) throw;
+      }
+
+      // Create configuration-specific GTI.
+      std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
+
+      // Get the coordsys parameter and use it to determine what type coordinate system to use.
+      bool use_lb = false;
+      std::string coord_sys = pars["coordsys"];
+      for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = tolower(*itor);
+      if (coord_sys == "cel") use_lb = false;
+      else if (coord_sys == "gal") use_lb = true;
+      else throw std::logic_error(
+        "CountCubeApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
+
+      // Get binner for energy from energy application object.
+      std::auto_ptr<Binner> energy_binner(m_bin_config->createEnergyBinner(pars));
+
+      return new evtbin::CountCube(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],
+        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
+        use_lb, pars["rafield"], pars["decfield"], *energy_binner, *gti);
+    }
 };
 
 /** \class CountMapApp
@@ -376,7 +440,8 @@ class GtBinApp : public st_app::StApp {
       // Based on this parameter, create the real application.
       std::auto_ptr<st_app::StApp> app(0);
 
-      if (0 == algorithm.compare("CMAP")) app.reset(new CountMapApp("gtbin"));
+      if (0 == algorithm.compare("CCUBE")) app.reset(new CountCubeApp("gtbin"));
+      else if (0 == algorithm.compare("CMAP")) app.reset(new CountMapApp("gtbin"));
       else if (0 == algorithm.compare("LC")) app.reset(new LightCurveApp("gtbin"));
       else if (0 == algorithm.compare("PHA1")) app.reset(new SimpleSpectrumApp("gtbin"));
       else if (0 == algorithm.compare("PHA2")) app.reset(new MultiSpectraApp("gtbin"));
