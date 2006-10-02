@@ -3,7 +3,7 @@
 evfile,        f, a, , , , "Event data file name"
 scfile,        f, a, NONE, , , "Spacecraft data file name"
 outfile,       f, a, , , , "Output file name"
-algorithm,     s, a, "PHA2", CMAP|LC|PHA1|PHA2, , "Type of output file"
+algorithm,     s, a, "PHA2", CCUBE|CMAP|LC|PHA1|PHA2, , "Type of output file"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -34,8 +34,8 @@ numxpix,       i, a, , , , "Size of the X axis in pixels"
 numypix,       i, a, , , , "Size of the Y axis in pixels"
 pixscale,      r, a, , , , "Image scale (in degrees/pixel)"
 coordsys,      s, a, CEL, CEL|GAL, ,"Coordinate system (CEL - celestial, GAL -galactic)"
-xref,          r, a, 0., , , "First coordinate of image center in degrees (RA or galactic l)"
-yref,          r, a, 0., , , "Second coordinate of image center in degrees (DEC or galactic b)"
+xref,          r, a, , , , "First coordinate of image center in degrees (RA or galactic l)"
+yref,          r, a, , , , "Second coordinate of image center in degrees (DEC or galactic b)"
 axisrot,       r, a, 0., , , "Rotation angle of image axis, in degrees"
 rafield,       s, h, "RA", , ,"First coordinate field to bin"
 decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
