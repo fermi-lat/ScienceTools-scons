@@ -64,6 +64,8 @@
 17-feb-2006   v0r16p3 JP  Add some needed header files.
 21-mar-2006   v0r16p4 JP  Remove unneccessary dependence on CLHEP.
 03-may-2006     v0r17 JP  Speed up writing of count maps.
+02-oct-2006        v1 JP  Add support for count cubes, binned in 2 spatial +
+                          energy dimensions.
 --------------------------------------------------------------------------------
 \endverbatim
 
