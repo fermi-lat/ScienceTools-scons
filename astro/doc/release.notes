@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r19p1  05-oct-06 THB Bug fix for explicit point
   v1r19    28-sep-06 THB Implement pointed mode in GPS.
   v1r18p1  25-May-06 JC  fix sign error in SolarSystem::direction method
   v1r18    15-May-06 THB Add time to Photon data class
