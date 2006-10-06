@@ -207,11 +207,6 @@ protected:
     GPS();
     virtual ~GPS();
 
-    std::pair<double,double> m_rotangles;  //angles for coordinate rotation (rocking angle)
-
-    // friends
-    friend class FluxGenerator;
-
 private:
     static GPS* s_instance;
     astro::EarthOrbit* m_earthOrbit; //orbital position object, from the astro package.

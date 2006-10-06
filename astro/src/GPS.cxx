@@ -5,7 +5,6 @@
 */
 #include "astro/GPS.h"
 
-//#include "Orbit.h"
 #include "CLHEP/Random/RandFlat.h"
 #include "astro/EarthCoordinate.h"
 
@@ -22,8 +21,7 @@ using namespace astro;
 GPS*	GPS::s_instance = 0;
 
 GPS::GPS() 
-:m_rotangles(std::make_pair<double,double>(0.,0.)),
-m_earthOrbit(new astro::EarthOrbit),
+:m_earthOrbit(new astro::EarthOrbit),
 m_expansion(1.),    // default expansion:regular orbit for now
 m_time(0.), 
 m_lastQueriedTime(-1.),
@@ -150,11 +148,10 @@ void    GPS::printOn(std::ostream& out) const
         << std::endl;
 }
 
-
+#if 0
 //access m_rotangles
 std::pair<double,double> GPS::rotateAngles(){
     return m_rotangles;
-
 }
 
 //set m_rotangles
@@ -162,6 +159,7 @@ void GPS::rotateAngles(std::pair<double,double> coords){
     m_rotangles=coords;
     //m_rockType = EXPLICIT;
 }
+#endif
 void GPS::setPointingDirection( const astro::SkyDir& dir){
     m_zaxis = dir;
     // make an arbitray perpendicular direction for the x-axis
@@ -216,24 +214,17 @@ CLHEP::HepRotation GPS::rockingAngleTransform(double seconds){
 
     // now, we want to find the proper transformation for the rocking angles:
     CLHEP::HepRotation rockRot;
-    if(m_rockType == EXPLICIT){
-        rockRot.rotateX(m_rotangles.first).rotateZ(m_rotangles.second);
-    }else{
-        //don't do anything - the new pointing characteristics have already been taken account of
-        //in getPointingCharacteristics().
-        //rockRot.rotateX(m_rockNorth);
-        SkyDir dirZenith(m_zenith);
+    SkyDir dirZenith(m_zenith);
 
-        // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
-        // z-axis (North) cross(zenith) is East
-        CLHEP::Hep3Vector xhat = CLHEP::Hep3Vector(0,0,1).cross(m_zenith()).unit();
-        //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
-        //what we want now is to make cel, where
-        //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
-        CLHEP::HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
-        CLHEP::HepRotation temp = transformCelToGlast(seconds) * cel;
-        rockRot=temp;
-    }
+    // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
+    // z-axis (North) cross(zenith) is East
+    CLHEP::Hep3Vector xhat = CLHEP::Hep3Vector(0,0,1).cross(m_zenith()).unit();
+    //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
+    //what we want now is to make cel, where
+    //cel is the matrix which rotates (cartesian)local coordinates into (cartesian)celestial ones
+    CLHEP::HepRotation cel(xhat , dirZenith().cross(xhat) , dirZenith());
+    CLHEP::HepRotation temp = transformCelToGlast(seconds) * cel;
+    rockRot=temp;
 
     return rockRot;
 }
@@ -270,12 +261,7 @@ CLHEP::HepRotation GPS::transformCelToGlast(double seconds){
     // set the needed pointing/location variables:
     getPointingCharacteristics(seconds);
 
-#if 0
-    SkyDir dirZ(m_RAZ,m_DECZ,SkyDir::EQUATORIAL);
-    SkyDir dirX(m_RAX,m_DECX);
-#else 
     SkyDir dirZ(m_zaxis), dirX(m_xaxis);
-#endif
     // orthogonalize, since interpolation and transformations destory orthogonality (limit is 10E-8)
     CLHEP::Hep3Vector xhat = dirX() -  (dirX().dot(dirZ())) * dirZ() ;
     //so now we know where the x and z axes of the zenith-pointing frame point in the celestial frame.
