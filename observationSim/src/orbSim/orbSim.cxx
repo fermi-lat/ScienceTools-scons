@@ -146,10 +146,18 @@ void OrbSim::createSimulator() {
       double ra = m_pars["ra"];
       double dec = m_pars["dec"];
       astro::SkyDir dir(ra, dec);
-// GPS wants (l, b) for the rotation angles in pointing mode, but
-// they must be in radians!
-      astro::GPS::instance()->rotateAngles(std::make_pair(dir.l()*M_PI/180., 
-                                                          dir.b()*M_PI/180.));
+// // GPS wants (l, b) for the rotation angles in pointing mode, but
+// // they must be in radians!
+//       astro::GPS::instance()->rotateAngles(std::make_pair(dir.l()*M_PI/180., 
+//                                                           dir.b()*M_PI/180.));
+
+      throw std::runtime_error("If you are trying to use the 'POINT' pointing"
+                               "strategy (so-called),\n it is no longer "
+                               "available. If you are curious why, then "
+                               "ask Toby Burnett, "
+                               "tburnett@u.washington.edu, why he has diabled\n"
+                               "the GPS::rotateAngles member function "
+                               "as of Oct 5, 2006");
    }
 }
 
