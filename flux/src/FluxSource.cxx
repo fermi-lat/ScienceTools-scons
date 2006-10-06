@@ -290,7 +290,7 @@ public:
             //and do the transform, finally reversing the direction to correspond to the incoming particle
             setDir( - (celtoglast * unrotated()) );
         }else {
-            // Glast freame
+            // Glast frame
             double  costh = direction.first,
                 sinth = sqrt(1.-costh*costh),
                 phi = direction.second;
