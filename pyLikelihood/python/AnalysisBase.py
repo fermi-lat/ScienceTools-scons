@@ -202,6 +202,7 @@ class AnalysisBase(object):
         return self.model[name]
     def __setitem__(self, name, value):
         self.model[name] = value
+        self.logLike.syncParams()
     def thaw(self, i):
         try:
             for ii in i:
