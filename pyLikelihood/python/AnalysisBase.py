@@ -97,6 +97,8 @@ class AnalysisBase(object):
             self.renormFactor = 1. + deficit/freeNpred
         else:
             self.renormFactor = factor
+        if self.renormFactor < 1:
+            self.renormFactor = 1
         srcNames = self.sourceNames()
         for src in srcNames:
             parameter = self._normPar(src)
