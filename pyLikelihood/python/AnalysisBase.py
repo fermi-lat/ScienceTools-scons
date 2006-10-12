@@ -84,6 +84,7 @@ class AnalysisBase(object):
                         self._renorm()
                     except ZeroDivisionError:
                         pass
+            self.logLike.syncParams()
             logLike0 = max(self.logLike.value(), logLike0)
             Ts_value = 2*(logLike1 - logLike0)
             self.logLike.addSource(self._ts_src)
