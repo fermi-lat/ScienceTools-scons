@@ -148,11 +148,15 @@ namespace tip {
     if (KEY_NO_EXIST != status) throw TipException(status, formatWhat("Error deleting keyword \"" + key_name + "\""));
 
     // Next, erase all matching keywords in the container of keywords.
-    for (KeySeq_t::size_type index = m_keyword_seq.size(); index != 0; --index) {
-      KeySeq_t::iterator itor = m_keyword_seq.begin() + index - 1;
-      std::string rec = itor->get();
-      if (key_name == itor->getName()) {
-        m_keyword_seq.erase(itor);
+    // Iterate through container in reverse order, but using forward iterator.
+    for (KeySeq_t::iterator itor = m_keyword_seq.end(); itor != m_keyword_seq.begin();) {
+      // See if the previous item matches.
+      if (key_name == (itor - 1)->getName()) {
+        // Remove the matching item, and reset iterator to point to the element after the one
+        // that was removed (end is OK because the iterator will be decremented above).
+        itor = m_keyword_seq.erase(itor - 1);
+      } else {
+        --itor;
       }
     }
   }
