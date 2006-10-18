@@ -75,7 +75,7 @@ namespace {
       std::partial_sum(effAreas.begin(), effAreas.end(), effAreas.begin());
 
 // The total effective area.
-      double effAreaTot = *(effAreas.end() - 1);
+      double effAreaTot(effAreas.back());
 
 // Generate a random deviate from the interval [0, area) to ascertain
 // which response object to use.

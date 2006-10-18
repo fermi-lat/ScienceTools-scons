@@ -236,8 +236,9 @@ void ObsSim::createResponseFuncs() {
    respMap::const_iterator it;
    if ( (it = responseIds.find(responseFuncs)) != responseIds.end() ) {
       const std::vector<std::string> & resps = it->second;
-      for (unsigned int i = 0; i < resps.size(); i++) {
-         m_respPtrs.push_back(myFactory->create(resps[i]));
+      for (size_t i = 0; i < resps.size(); i++) {
+         irfInterface::Irfs * irf(myFactory->create(resps[i]));
+         m_respPtrs.push_back(irf);
       }
    } else {
       throw std::invalid_argument("Invalid response function choice: "

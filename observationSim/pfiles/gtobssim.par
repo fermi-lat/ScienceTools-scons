@@ -20,7 +20,7 @@ radius,r,a,20,0,180,"Acceptance cone radius (degrees)"
 emin,r,h,30,20,2e5,"Minimum event energy (MeV)"
 emax,r,h,200000,20,2e5,"Maximum event energy (MeV)"
 
-rspfunc,s,a,"DC2",DC2|DC1A|G25,,"Response functions"
+rspfunc,s,a,"DC2",DC2|DC1A|G25|HANDOFF,,"Response functions"
 
 max_numrows,i,h,200000,,,"Maximum number of rows in FITS files"
 random_seed,i,a,293049,,,"Random number seed"
