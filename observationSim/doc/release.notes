@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r3p6 19-Oct-06   JC   add HANDOFF to list of irfs in gtobssim.par
     v6r3p5 05-Oct-06   JC   accomodate astro v1r19p2 interface change
     v6r3p4 18-Sep-06   JC   Use Gleam mechanism for assigning source ids
     v6r3p3 18-Jul-06   JC   remove SOFTWARE keyword from FT1/2 headers
