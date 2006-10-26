@@ -216,7 +216,7 @@ void EventContainer::writeEvents(double obsStopTime) {
 
    std::string ft1File(outputFileName());
    fitsGen::Ft1File ft1(ft1File, m_events.size(), m_tablename);
-   ft1.appendField("MC_SRC_ID", "1I");
+   ft1.appendField("MC_SRC_ID", "1J");
 
    std::vector<Event>::iterator evt = m_events.begin();
    for ( ; ft1.itor() != ft1.end() && evt != m_events.end(); 
