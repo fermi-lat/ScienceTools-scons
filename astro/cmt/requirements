@@ -1,6 +1,6 @@
 package astro
 
-version v1r19p2
+version v1r20
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
