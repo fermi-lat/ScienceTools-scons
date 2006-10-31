@@ -305,6 +305,8 @@ int main(){
         if( Quaternion::test()!=0) {
             std::cerr << "Failed quaternion test" << std::endl;
             rc=1;
+        }else{
+            std::cerr << "Quaternion tests ok" << std::endl;
         }
 
         // HealPixel test

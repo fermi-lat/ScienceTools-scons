@@ -14,7 +14,7 @@ Quaternion::Quaternion(const CLHEP::HepRotation& R)
 : m_v(Hep3Vector(0,0,0))
 , m_s(1)
 {
-    // code mostly from ROOT's TRotation::AngleAxis. rversed sign of rot axis
+    // code mostly from ROOT's TRotation::AngleAxis. 
     double cosa  = 0.5*(R.xx()+R.yy()+R.zz()-1);
     double cosa1 = 1-cosa;
     if (cosa1 >0 ){
@@ -22,9 +22,9 @@ Quaternion::Quaternion(const CLHEP::HepRotation& R)
         if (R.xx() > cosa) x = sqrt((R.xx()-cosa)/cosa1);
         if (R.yy() > cosa) y = sqrt((R.yy()-cosa)/cosa1);
         if (R.zz() > cosa) z = sqrt((R.zz()-cosa)/cosa1);
-        if (R.zy() > R.yz())  x = -x;
-        if (R.xz() > R.zx())  y = -y;
-        if (R.yx() > R.xy())  z = -z;
+        if (R.zy() < R.yz())  x = -x;
+        if (R.xz() < R.zx())  y = -y;
+        if (R.yx() < R.xy())  z = -z;
         m_s = sqrt(0.5*(1+cosa));
         m_v = Hep3Vector(x,y,z)*sqrt(0.5*cosa1);;
     }
@@ -34,7 +34,7 @@ Quaternion::Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& z
 {
     // note no check that they are unit vectors and orthogonal, beware
     Hep3Vector yhat(zhat.cross(xhat));
-    // code mostly from ROOT's TRotation::AngleAxis. rversed sign of rot axis
+    // code mostly from ROOT's TRotation::AngleAxis. 
     double cosa  = 0.5*(xhat.x()+yhat.y()+zhat.z()-1);
     double cosa1 = 1-cosa;
     if (cosa1 >0 ){
@@ -42,9 +42,9 @@ Quaternion::Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& z
         if (xhat.x() > cosa) x = sqrt((xhat.x()-cosa)/cosa1);
         if (yhat.y() > cosa) y = sqrt((yhat.y()-cosa)/cosa1);
         if (zhat.z() > cosa) z = sqrt((zhat.z()-cosa)/cosa1);
-        if (zhat.y() > yhat.z())  x = -x;
-        if (xhat.z() > zhat.x())  y = -y;
-        if (yhat.x() > xhat.y())  z = -z;
+        if (zhat.y() < yhat.z())  x = -x;
+        if (xhat.z() < zhat.x())  y = -y;
+        if (yhat.x() < xhat.y())  z = -z;
         m_s = sqrt(0.5*(1+cosa));
         m_v = Hep3Vector(x,y,z)*sqrt(0.5*cosa1);;
     }
@@ -81,9 +81,9 @@ HepRotation Quaternion::rotation()const
     /// create rotation matrix
     double s(m_s), x(m_v.x()), y(m_v.y()), z(m_v.z());
     Hep3Vector 
-        xcol(s*s+x*x-y*y-z*z, 2*(x*y-s*z),     2*(x*z+s*y) ),
-        ycol(2*(x*y+s*z),     s*s+y*y-x*x-z*z, 2*(y*z-s*x) ) ,
-        zcol(2*(x*z-s*y),     2*(z*y+s*x),     s*s+z*z-x*x-y*y);
+        xcol(s*s+x*x-y*y-z*z, 2*(x*y+s*z),     2*(x*z-s*y) ),
+        ycol(2*(x*y-s*z),     s*s+y*y-x*x-z*z, 2*(y*z+s*x) ) ,
+        zcol(2*(x*z+s*y),     2*(z*y-s*x),     s*s+z*z-x*x-y*y);
 
     return HepRotation(xcol, ycol, zcol);
 }
@@ -97,20 +97,40 @@ CLHEP::Hep3Vector Quaternion::rotate(const CLHEP::Hep3Vector& t) const
 {
 
 #if 0 // inefficient code using formal definition: enable to verify
-    Quaternion qv(v), qc(-m_v, m_s), q1 = t*(*this);
-    Quaternion out = qc * q1;
+    Quaternion  qc(-m_v, m_s), q1 = t*qc;
+    Quaternion out = (*this) * q1;
     return out.vector();
 #else   // derived from above
-    return (2*m_s*m_s-1)*t + 2.*m_v*m_v.dot(t) -2.*m_s*m_v.cross(t); 
+    return (2*m_s*m_s-1)*t + 2.*m_v*m_v.dot(t) +2.*m_s*m_v.cross(t); 
 
 #endif
 }
+
+astro::Quaternion Quaternion::power(double t)const{
+    if( t==0) return Quaternion();
+    double a( acos(m_s) );
+    return Quaternion( m_v.unit()*sin(a*t), cos(a*t) );
+}
+
+bool Quaternion::isNear(const Quaternion& other)const
+{
+    return m_v.isNear(other.vector()) && fabs(m_s-other.scalar())<1e-10;
+}
+
+Quaternion Quaternion::interpolate(const Quaternion& q1, double t)const
+{
+    if( t==0) return *this;
+
+    return (q1*(this->conjugate())).power(t) * (*this);
+
+}
+
 
 int Quaternion::test()
 {
     int ret( 0 );
 
-    double angle(0.1);
+    double angle(-0.3);
 
     HepRotation R= HepRotationY(angle);
 
@@ -118,6 +138,7 @@ int Quaternion::test()
 
     Hep3Vector dir = q.vector().unit();
     double ameas = 2.*asin(q.vector().mag()); // should be absolute of angle
+    if( fabs(ameas-fabs(angle))>1e-10 ) ret+=1;
 
     double norm = q.norm(); 
 
@@ -127,9 +148,9 @@ int Quaternion::test()
 
     dir = qq.vector().unit();
     double angle2 = 2.*asin(qq.vector().mag());
-    if( fabs(angle2-2*angle)>1e-10) ret=1; // fail angle test
+    if( fabs(angle2-2*fabs(angle))>1e-10) ret+=1; // fail double angle test
     norm = qq.norm();
-    if( fabs(norm-1.0)>1e-10) ret=1; // fail normalization
+    if( fabs(norm-1.0)>1e-10) ret+=1; // fail normalization
 
     // test rotation of a simple vector
     Hep3Vector test(1,1,0);
@@ -139,10 +160,19 @@ int Quaternion::test()
     // the same length, and that the rotation is the same
     double check = fabs(xrot.mag2()-test.mag2());
     check += (xrot-xrot2).mag2();
-    if( check>1e-10 ) ret=1; // failed simple test
+    if( check>1e-10 ) ret+=1; // failed simple test
 
     HepRotation Rcheck= q.rotation();
-    bool nearcheck( R.isNear(R));
+    if( ! R.isNear(R) ) ret+=1;
+   
+    // check power
+    Quaternion pcheck = (q.power(0.5)).power(2.0);
+    if( ! pcheck.isNear(q)) ret +=1;
+
+    // check interpolation
+    Quaternion other(Hep3Vector(0,1,0), Hep3Vector(1,0,0) )
+        , interp(q.interpolate(other, 1.0));
+    if( ! interp.isNear(other) ) ret+=1;
 
     return ret;
 

@@ -1,6 +1,7 @@
 /** @file Quaternion.h
 @brief declare class Quaternion
 
+@author T. Burnett <tburnett@u.washington.edu>
 $Header$
 
 */
@@ -19,6 +20,10 @@ namespace astro {
     class Quaternion {
     public:
 
+        /** default ctor: identity transformation 
+        */
+        Quaternion():m_v(0,0,0),m_s(1){}
+
         /** ctor from vector and scalar
 
         */
@@ -31,14 +36,16 @@ namespace astro {
         */
         Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& zhat);
 
-      //  Quaternion(const Quaternion& other);
 
         /** ctor from a rotation matrix
-
         */
         explicit Quaternion(const CLHEP::HepRotation& R);
 
         ~Quaternion(){};
+
+        /// is it approximately identical?
+        bool isNear(const Quaternion& other)const;
+
     
  /**
 Quaternion multiplication is performed thusly:
@@ -80,6 +87,17 @@ Multiplication is associative but not commutative.
         /** return equivalent rotation matrix
         */
         CLHEP::HepRotation rotation()const;
+
+        /** return to the given power
+        */
+        Quaternion power(double t)const;
+
+        /** SLERP interpolation
+        @param q1 the guy to interpolate to
+        @param t  when t==1, should evaluate to q1; when  0, returns this,
+        and smoothly inbetween.
+        */
+        Quaternion interpolate(const Quaternion& q1, double t)const;
 
         static int test();
 
