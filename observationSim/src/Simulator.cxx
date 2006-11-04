@@ -252,7 +252,8 @@ void Simulator::makeEvents(EventContainer &events,
 //          throw;
 //       }
       if (!st_facilities::Util::
-          expectedException(eObj, "time is beyond end of history file")) {
+          expectedException(eObj, "time is beyond end of history file")
+          && !(m_useSimTime && m_elapsedTime > 0.9*m_simTime)) {
          throw;
       }
    }
