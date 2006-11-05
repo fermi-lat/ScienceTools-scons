@@ -269,28 +269,29 @@ bool testHTM()
     return true;
 }
 
+void checkdir(const astro::SkyDir& dir1, const astro::SkyDir& dir2) {
+        assert(dir1.difference(dir2) < 1e-5);
+}
 void checkdir(double ra1, double dec1, double ra2, double dec2) {
-    astro::SkyDir dir1(ra1, dec1);
-    astro::SkyDir dir2(ra2, dec2);
-    assert(dir1.difference(dir2) < 1e-5);
+    checkdir( astro::SkyDir(ra1, dec1), astro::SkyDir(ra2, dec2) );
 }
 
 bool test_GPS_readFitsData() {
+    using astro::SkyDir;
     astro::GPS * gps = astro::GPS::instance();
 
     std::string filename("test_FT2.fits");
     gps->setPointingHistoryFile(filename);
 
     double time(30);
-    gps->getPointingCharacteristics(time);
+    gps->time(time);
 
     ASSERT_EQUALS(gps->lat(), 28.675092697143555);
     ASSERT_EQUALS(gps->lon(), -75.576118469238281);
 
-    checkdir(gps->RAX(), gps->DECX(), 281.15841674804688, 0.82335680723190308);
-    checkdir(gps->RAZ(), gps->DECZ(), 11.064399719238281, -6.5129880905151367);
-    checkdir(gps->RAZenith(), gps->DECZenith(), 
-        11.605173110961914, 28.483125686645508);
+    checkdir(gps->xAxisDir(), SkyDir( 281.15841674804688, 0.82335680723190308));
+    checkdir(gps->zAxisDir(), SkyDir(11.064399719238281, -6.5129880905151367));
+    checkdir(gps->zenithDir(), SkyDir(11.605173110961914, 28.483125686645508));
 
     return true;
 }
@@ -305,14 +306,18 @@ int main(){
         if( Quaternion::test()!=0) {
             std::cerr << "Failed quaternion test" << std::endl;
             rc=1;
-        }else{
-            std::cerr << "Quaternion tests ok" << std::endl;
-        }
+        }else{        std::cerr << "Quaternion tests ok" << std::endl;  }
+
+        if( GPS::test()!=0 ) {
+            std::cerr << "Failed GPS test" << std::endl;
+            rc=1;
+        }else{         std::cerr << "GPS tests OK" << std::endl; }
 
         // HealPixel test
         {
-
-            if( ! HealPixel::test() ) { throw std::runtime_error("Fail HealPixel test");}
+            if( ! HealPixel::test() ) {
+                ++rc; std::cerr << "Fail HealPixel test";
+            }
             HealPixel h33=HealPixel(0,3);
             std::vector<HealPixel> neighbors = h33.neighbors();
             std::cout << "Neighbors of HealPixel(0,3): ";

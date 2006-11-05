@@ -11,12 +11,13 @@ $Header$
 
 #include "CLHEP/Vector/ThreeVector.h"
 #include "CLHEP/Vector/Rotation.h"
-
+#include <iostream>
 
 namespace astro {
-/** @class Quaternion
+    /** @class Quaternion
 
-*/
+    Manage quaternion objects, implementing multiplication and rotation of vectors.
+    */
     class Quaternion {
     public:
 
@@ -34,28 +35,29 @@ namespace astro {
         /** ctor from x and z directions of rotated object
 
         */
-        Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& zhat);
+        Quaternion(const CLHEP::Hep3Vector& zhat, const CLHEP::Hep3Vector& xhat);
 
 
         /** ctor from a rotation matrix
         */
         explicit Quaternion(const CLHEP::HepRotation& R);
 
+        /** ctor from an open stream, presume a single line
+        */
+        Quaternion(std::istream& in); 
         ~Quaternion(){};
 
         /// is it approximately identical?
         bool isNear(const Quaternion& other)const;
 
-    
- /**
-Quaternion multiplication is performed thusly:
 
-(v,s)(v’,s’) = (vÄv’ + sv’ + vs’, ss’ – v·v’) where Ä is the vector cross-product and · is the vector dot-product. 
+        /** 
+        Quaternion multiplication is performed thusly:
 
-Multiplication is associative but not commutative.
-
-
- */
+        (v,s)(v’,s’) = (vÄv’ + sv’ + vs’, ss’ – v·v’) where Ä 
+        is the vector cross-product and · is the vector dot-product. 
+        Multiplication is associative but not commutative.
+        */
         Quaternion operator* (const Quaternion & r) const;
 
         /** multiply a vector, Q*v -> Q' */
@@ -63,7 +65,7 @@ Multiplication is associative but not commutative.
 
         /** multiply by a vector v*Q -> Q/ */
         friend Quaternion operator* (const CLHEP::Hep3Vector & rx, const Quaternion & r);
- 
+
         /** access to vector part
         */
         const CLHEP::Hep3Vector& vector()const{return m_v;}

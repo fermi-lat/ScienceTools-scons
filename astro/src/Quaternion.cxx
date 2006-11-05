@@ -29,7 +29,7 @@ Quaternion::Quaternion(const CLHEP::HepRotation& R)
         m_v = Hep3Vector(x,y,z)*sqrt(0.5*cosa1);;
     }
 }
-Quaternion::Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& zhat)
+Quaternion::Quaternion(const CLHEP::Hep3Vector& zhat, const CLHEP::Hep3Vector& xhat)
 : m_v(Hep3Vector(0,0,0)), m_s(1)
 {
     // note no check that they are unit vectors and orthogonal, beware
@@ -42,20 +42,20 @@ Quaternion::Quaternion(const CLHEP::Hep3Vector& xhat, const CLHEP::Hep3Vector& z
         if (xhat.x() > cosa) x = sqrt((xhat.x()-cosa)/cosa1);
         if (yhat.y() > cosa) y = sqrt((yhat.y()-cosa)/cosa1);
         if (zhat.z() > cosa) z = sqrt((zhat.z()-cosa)/cosa1);
-        if (zhat.y() < yhat.z())  x = -x;
-        if (xhat.z() < zhat.x())  y = -y;
-        if (yhat.x() < xhat.y())  z = -z;
+        if (zhat.y() > yhat.z())  x = -x;
+        if (xhat.z() > zhat.x())  y = -y;
+        if (yhat.x() > xhat.y())  z = -z;
         m_s = sqrt(0.5*(1+cosa));
         m_v = Hep3Vector(x,y,z)*sqrt(0.5*cosa1);;
     }
 }
+
 Quaternion Quaternion::operator* (const Quaternion & r) const
 {
     Hep3Vector pv= m_v.cross(r.m_v) + m_s*r.m_v + m_v*r.m_s;
     double ps = m_s*r.m_s - m_v*r.m_v;
 
     return Quaternion(pv,ps);
-
 }
 
 Quaternion Quaternion::operator* (const CLHEP::Hep3Vector & vp) const
@@ -66,7 +66,6 @@ Quaternion Quaternion::operator* (const CLHEP::Hep3Vector & vp) const
     return Quaternion(pv,ps);
 }
 
-
 Quaternion astro::operator* (const CLHEP::Hep3Vector & v, const Quaternion & q)
 {
     Hep3Vector pv= v.cross(q.vector())  + v*q.scalar();
@@ -74,7 +73,6 @@ Quaternion astro::operator* (const CLHEP::Hep3Vector & v, const Quaternion & q)
 
     return Quaternion(pv,ps);
 }
-
 
 HepRotation Quaternion::rotation()const
 {
@@ -97,8 +95,7 @@ CLHEP::Hep3Vector Quaternion::rotate(const CLHEP::Hep3Vector& t) const
 {
 
 #if 0 // inefficient code using formal definition: enable to verify
-    Quaternion  qc(-m_v, m_s), q1 = t*qc;
-    Quaternion out = (*this) * q1;
+    Quaternion out = (*this) * t * conjugate();
     return out.vector();
 #else   // derived from above
     return (2*m_s*m_s-1)*t + 2.*m_v*m_v.dot(t) +2.*m_s*m_v.cross(t); 
@@ -120,9 +117,7 @@ bool Quaternion::isNear(const Quaternion& other)const
 Quaternion Quaternion::interpolate(const Quaternion& q1, double t)const
 {
     if( t==0) return *this;
-
     return (q1*(this->conjugate())).power(t) * (*this);
-
 }
 
 
@@ -152,6 +147,10 @@ int Quaternion::test()
     norm = qq.norm();
     if( fabs(norm-1.0)>1e-10) ret+=1; // fail normalization
 
+    // multiply by vector on either side.
+    Hep3Vector w(0,1,1); Quaternion q3(w*q), q4((q.conjugate()*w).conjugate());
+    if( fabs(q3.norm()-q4.norm())>1e-10) ret+=1;
+
     // test rotation of a simple vector
     Hep3Vector test(1,1,0);
     Hep3Vector xrot = q.rotate(test), xrot2(R*test);
@@ -174,6 +173,15 @@ int Quaternion::test()
         , interp(q.interpolate(other, 1.0));
     if( ! interp.isNear(other) ) ret+=1;
 
+
+    // check construction
+    Hep3Vector zin(Hep3Vector(0,1,0)), xin(Hep3Vector(1,0,0) );
+    Quaternion q9(zin, xin );
+    Hep3Vector 
+        xout( q9.rotate(Hep3Vector(1,0,0)) ), 
+        zout( q9.rotate(Hep3Vector(0,0,1))  );
+    if ( !xin.isNear(xout) ) ret+=1;
+    if ( !zin.isNear(zout) ) ret+=1;
     return ret;
 
 }
