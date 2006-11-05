@@ -13,6 +13,7 @@ using namespace astro;
 
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 PointingHistory::PointingHistory(const std::string& filename, double offset)
 : m_selected(-1)
