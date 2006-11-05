@@ -6,7 +6,7 @@ author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
 use STpolicy *
-use astro v1*
+use astro v*
 use hoops * 
 use tip  *
 use st_app *
