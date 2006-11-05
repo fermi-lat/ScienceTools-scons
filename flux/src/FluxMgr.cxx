@@ -331,7 +331,7 @@ void FluxMgr::pass(double t){
     synch();
 }
 
-GPStime FluxMgr::time () const{
+double FluxMgr::time () const{
     return GPS::instance()->time();
 }
 
@@ -353,17 +353,8 @@ CLHEP::HepRotation FluxMgr::transformToGlast(double seconds,GPS::CoordSystem ind
     return GPS::instance()->transformToGlast(seconds, index);
 }
 
-//get the transformation matrix.
-CLHEP::HepRotation FluxMgr::CELTransform(double time){
-    return GPS::instance()->CELTransform(time);
-}
-///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-CLHEP::HepRotation FluxMgr::transformGlastToGalactic(double time){
-    return GPS::instance()->transformGlastToGalactic(time);
-}
-
 ///this sets the rocking mode in GPS.
-std::vector<double> FluxMgr::setRockType(int rockType, double rockAngle){
+std::vector<double> FluxMgr::setRockType(GPS::RockType rockType, double rockAngle){
     int type=GPS::instance()->setRockType(rockType);
     double degrees = GPS::instance()->rockingDegrees(rockAngle);
     std::vector<double> ret;

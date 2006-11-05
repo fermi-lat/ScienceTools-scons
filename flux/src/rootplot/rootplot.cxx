@@ -243,7 +243,7 @@ void rootplot::init(std::vector<std::string> argv)
 
         std::cout << sources[i] << std::endl;
 
-        GPS::instance()->getPointingCharacteristics(time);
+        GPS::instance()->time(time);
         std::pair<double,double> loc=fm.location();
         std::cout << "Lat/Lon:  " << loc.first << "   " << loc.second << std::endl;
 

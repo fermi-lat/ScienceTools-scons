@@ -114,7 +114,11 @@ LaunchPoint * FileSource::launchPoint() {
 
 void FileSource::FileLaunchDir::execute(double KE, double time) {
    (void)(KE);
+#if 0
    m_glastToGalactic = astro::GPS::instance()->transformGlastToGalactic(time);
+#else
+   m_glastToGalactic = astro::GPS::instance()->transformToGlast(time, astro::GPS::CELESTIAL).inverse();
+#endif
 }
 
 const HepGeom::HepVector3D & FileSource::FileLaunchDir::dir() const {
