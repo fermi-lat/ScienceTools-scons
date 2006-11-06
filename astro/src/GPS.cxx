@@ -86,6 +86,11 @@ void GPS::expansion ( double e ){    m_expansion = e; }
 
 void GPS::time ( double t )
 {
+    // ignore a large request, meant to be invalid, and not expecting anything
+    if( t>3e8 ){
+        return;
+    }
+
     m_time = t;
     update(t);
 }
