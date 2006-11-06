@@ -27,7 +27,6 @@ $Header$
 using namespace map_tools;
 
 
-#endif
 
 class ExposureCubeApp : public st_app::StApp {
 public:
