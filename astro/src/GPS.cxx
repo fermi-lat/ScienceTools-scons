@@ -197,86 +197,66 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 
 
 void GPS::update(double inputTime){
-    //this function calculates all the relevant satellite data. Note that the rocking is done here as well, 
-    //so that pointing characteristics come out right.
-    using namespace astro;
+    //this function calculates all the relevant position and orientation info
 
     //decide if the time has changed;  if it has not, we have already calculated all of the following information:
     if(m_lastQueriedTime==inputTime || inputTime<0 )return;
-
-    //if not, set the last time to this one:
     m_lastQueriedTime=inputTime;
 
-    //and then get the appropriate julian date:
+
+    // if history, just ask the history to interpolate the table, or whatever
+    if(m_rockType == HISTORY ){
+        m_currentPoint = (*m_history)(inputTime);
+        return;
+    }
+
+    //Not history: use the default orbit and define useful directions
     astro::JulianDate jDate = m_earthOrbit->dateFromSeconds(inputTime);
+
+    Hep3Vector position( m_earthOrbit->position(jDate) ),
+        npole(0,0,1), 
+        zenith( position.unit() ),
+        east( npole.cross(zenith).unit() );
+
+    astro::EarthCoordinate earthpos(position,inputTime);
 
     if(m_rockType == POINT){
         // pointing mode
-        Hep3Vector position( m_earthOrbit->position(jDate) );
         astro::EarthCoordinate earthpos(position,inputTime);
-        Hep3Vector npole(0,0,1);
         Hep3Vector xaxis( npole.cross(m_point()).unit() ); // 
-        m_currentPoint = PointingInfo( position, Quaternion(m_point(), xaxis), earthpos );
-
-        return; // all now is set.
-    }
-    if(m_rockType == HISTORY ){
-        m_currentPoint = (*m_history)(inputTime);
-
-    }else{
-
-        if( m_rockType != NONE && m_rockType!=EXPLICIT ) throw(std::invalid_argument("Rocking not yet re-implemented"));
-        // NONE - use built-in earth orbit, zenith pointing
-
-        Hep3Vector 
-            position( m_earthOrbit->position(jDate) ),
-            npole(0,0,1), 
-            zenith( position.unit() ),
-            east( npole.cross(zenith).unit() );
-
-        double rockangle( m_rockDegrees*M_PI/180);
-
-        m_currentPoint = 
-            PointingInfo( position, 
-            Quaternion(zenith.rotate(east,rockangle), east), 
-            EarthCoordinate(position,inputTime) );
-        
-    }
-#if 0  ///@todo still lots of stuff to try to clean up, convert 
-    SkyDir dirZ(lZ,bZ,SkyDir::GALACTIC);
-    SkyDir dirX(raX,decX);
-    //before rotation, the z axis points along the zenith:
-    SkyDir dirZenith(dirZ.dir());
-    //also, before Rotation, set the characteristics of the zenith x-direction:
-
-    if(m_rockType != HISTORY || inputTime >= m_endTime){
-        //rotate the x direction so that the x direction points along the orbital direction.
-        dirX().rotate(dirZ.dir() , inclination*cos(orbitPhase));
+        m_currentPoint = PointingInfo( position, 
+            Quaternion(m_point(), xaxis), earthpos );
+        return; 
     }
 
-    // now, we want to find the proper transformation for the rocking angles:
-    //HepRotation rockRot(Hep3Vector(0,0,1).cross(dirZ.dir()) , m_rockNorth);    
-    //and apply the transformation to dirZ and dirX:
-    m_rockNorth = m_rockDegrees*M_PI/180;
-    //here's where we decide how much to rock about the x axis.  this depends on the 
-    //rocking mode.
-    if(m_rockType == NONE){
-        m_rockNorth = 0.;
+    // Rocking if get here: decide on strategy 
+    double rockangle ( m_rockDegrees*M_PI/180 )  // default up
+        ,  zenithDec( SkyDir(zenith).dec() );
+
+    if (m_rockType == NONE) {
+        rockangle = 0; // zenith pointing
     }else if(m_rockType == UPDOWN){
-        if(m_DECZenith <= 0) m_rockNorth *= -1.;
+        if( zenithDec <= 0) rockangle *= -1.;
     }else if(m_rockType == SLEWING){
-        //slewing is experimental
-        if(m_DECZenith <= 0) m_rockNorth *= -1.;
-        if(m_DECZenith >= -5.5 && m_DECZenith <= 5.5){
-            m_rockNorth -= m_rockNorth*((5.5-fabs(m_DECZenith))/5.5);
+        //slewing is experimental (not checked by THB)
+        if(zenithDec <= 0) rockangle *= -1.;
+        if(zenithDec >= -5.5 && zenithDec <= 5.5){
+            rockangle -= rockangle*((5.5-fabs(zenithDec))/5.5);
         }
     }else if(m_rockType == ONEPERORBIT){
-        orbitPhase = fmod(orbitPhase, 2.*CLHEP::twopi);  // TU The above says M_2PI so I assume this is valid
-        if(orbitPhase <= CLHEP::twopi) m_rockNorth *= -1.;  // TU convert to local constants
+        double orbitPhase = fmod(m_earthOrbit->phase(jDate), 4*M_PI);
+        if(orbitPhase <= 2*M_PI) rockangle *= -1.; 
     }else{
+        // EXPLICT is here: don't change angle. axis is E-W.
     }
 
-#endif
+    // note that final rocking is rotation about E-W, should be orbital plane
+    ///@todo define orbital direction for rocking
+    m_currentPoint = 
+        PointingInfo( position, 
+            Quaternion(zenith.rotate(east,rockangle), east), 
+            earthpos);
+    return;
 }
 
 
@@ -320,12 +300,28 @@ int GPS::test()
     if ( !in().isNear(out())) ++rc;
 
 
+    // test rocking
+    {
+    gps.setRockType(GPS::ONEPERORBIT);
+    gps.rockingDegrees(35.);
+    double start(0), stop(start+90*60*3), step(60*10);  // will interpolate two intervals
+    cout << "\nRocking test:\ntime\tlat\tlon\traz\tdecz" << endl;
+    for( double time=start; time<stop; time+=step){
+        gps.time(time);  // set the time
+        cout << time << "\t"
+            << gps.lat() << "\t" 
+            << gps.lon() << "\t" 
+            << gps.zAxisDir().ra()  << "\t"
+            << gps.zAxisDir().dec() << "\t"
+            << endl;
+    }    
+    }
     // test reading and interpolating an ascii file
     const char * package_root(::getenv("ASTROROOT") );
     gps.setPointingHistoryFile(std::string(package_root)+"/src/test/history_test.txt");
 
     double start(900), stop(start+61), step(5);  // will interpolate two intervals
-    cout << "time\tlat\tlon\traz\tdecz\trax\tdecz\trazen\tdeczen" << endl;
+    cout << "\nRead history file test\ntime\tlat\tlon\traz\tdecz\trax\tdecz\trazen\tdeczen" << endl;
     for( double time=start; time<stop; time+=step){
         gps.time(time);  // set the time
         cout << time << "\t"
