@@ -23,30 +23,10 @@ $Header$
 #include "tip/Table.h"
 
 #include <iostream>
+#include <stdexcept>
 using namespace map_tools;
 
-#if 0
-class SimpleHistory : public std::vector< std::vector<double> >{
-public:
-    SimpleHistory() {}
 
-    void load(Exposure& exp){
-        exp.fill(begin(), end());
-    }
-    typedef td::vector< std::vector<double> >::const_iterator const_iterator;
-
-    class Iter  {
-    public:
-
- 
-    };
-
-    Iter begin(){ return Iter( );}
-    Iter end() {  return Iter( );}
-
-private:
-    typedef 
-};
 #endif
 
 class ExposureCubeApp : public st_app::StApp {
@@ -66,11 +46,14 @@ public:
     void loadExposureWithGPS(Exposure& exp, const std::string& inputFile, const Exposure::GTIvector& gti )
     {
         using astro::GPS;
-
         double 
-            tstart = gti.front().first,
-            tstop = gti.front().second;
+            tstart ( gti.front().first ),
+            tstop  ( gti.front().second),
+            zmin ( m_pars["zmin"] );
 
+#if 1
+        throw std::invalid_argument("exposure_cube: text file not currently implemented");
+#else // fix this if we still need to extract exposure cubes from text files
         // read from text or FITS file here
         GPS& gps = *GPS::instance();
         gps.setPointingHistoryFile(inputFile);
@@ -81,7 +64,6 @@ public:
         //double endtime = (--(history.end()))->first;
 
         double deltat = (++next)->first-begintime; 
-        double zmin = m_pars["zmin"];
 
         int added=0, total=0;
         for( ; mit!=history.end(); ++mit) {
@@ -98,6 +80,7 @@ public:
 
         m_f.info() << "Number of steps added: " << added << ", rejected: "<< (total-added) << std::endl;
         m_f.info() << "Total elapsed time: " << deltat*total << " seconds." << std::endl;
+#endif
         return;
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
