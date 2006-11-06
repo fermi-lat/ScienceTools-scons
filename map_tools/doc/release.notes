@@ -5,7 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
- 14-aug-06 v6r6p2 THB  remove explicit astro v1*.   
+ 14-aug-06 v6r6p3 THB  remove explicit astro v1*.   
  14-aug-06 v6r6p1  JC  yet another irfInterface::IAeff interface change
  26-jun-06 v6r6   THB  expose zmin in exposure calculation; return energies used by PhotonMap
  15-may-06 v6r5   THB  change to PhotonMap::extract interface
