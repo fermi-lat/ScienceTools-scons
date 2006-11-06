@@ -64,6 +64,20 @@ public:
     astro::SkyDir xAxisDir()const; ///< spacecraft x-axis direction
     astro::SkyDir zenithDir()const;///< local zenith direction
     CLHEP::Hep3Vector position()const;///< return current position;
+    astro::EarthCoordinate earthpos()const;    ///< position in Earth coordinates
+
+
+    // non-const versions that allow setting the time before retrieving info.
+    double lat(double t);  /// < latitude (degrees)
+    double lon(double t); ///  < longitude (degrees)
+    double altitude(double t); ///< altitude (km)
+
+    astro::SkyDir zAxisDir(double t); ///< spacecraft z-axis direction
+    astro::SkyDir xAxisDir(double t); ///< spacecraft x-axis direction
+    astro::SkyDir zenithDir(double t);///< local zenith direction
+    CLHEP::Hep3Vector position(double t);///< return current position;
+    astro::EarthCoordinate earthpos(double t);    ///< position in Earth coordinates
+
 
     /// return a rotation matrix for the requested transformation
     CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
@@ -73,8 +87,6 @@ public:
     /// sample interval for random orbit distribution
     double     sampleintvl () const; 
 
-    /// position in Earth coordinates
-    astro::EarthCoordinate earthpos()const;
 
     /// pass a specific amount of time
     void    pass ( double );

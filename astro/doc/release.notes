@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r1     06-Nov-06 THB  add access functions that set the time before retrieving info.
   v2r0p3   06-Nov-06 THB  Fix to accept, and ignore large times
   v2r0p1   05-Nov-06 THB  Refactor GPS class, remove features from interface
   v1r20p1  31-oct-06 THB  Add initial Quaternion support, fixes

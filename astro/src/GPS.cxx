@@ -62,18 +62,31 @@ void GPS::synch ()
 
 }
 
-double        GPS::lat()const{   return m_currentPoint.earthCoord().latitude();}     
-double        GPS::lon()const{   return m_currentPoint.earthCoord().longitude();}  	
-double        GPS::altitude()const {    return m_currentPoint.earthCoord().altitude();}   
-astro::SkyDir GPS::zAxisDir()const{    return m_currentPoint.zAxis();}    
-astro::SkyDir GPS::xAxisDir()const{    return m_currentPoint.xAxis();}     
-astro::SkyDir GPS::zenithDir()const{    return m_currentPoint.zenith();}
-CLHEP::Hep3Vector GPS::position()const{    return m_currentPoint.position();} 
-astro::EarthCoordinate GPS::earthpos()const{    return m_currentPoint.earthCoord();}
+// access functions that retrive parameters from current state
+double        GPS::lat()const{               return m_currentPoint.earthCoord().latitude();}     
+double        GPS::lon()const{               return m_currentPoint.earthCoord().longitude();}  	
+double        GPS::altitude()const {         return m_currentPoint.earthCoord().altitude();}   
+astro::SkyDir GPS::zAxisDir()const{          return m_currentPoint.zAxis();}    
+astro::SkyDir GPS::xAxisDir()const{          return m_currentPoint.xAxis();}     
+astro::SkyDir GPS::zenithDir()const{         return m_currentPoint.zenith();}
+CLHEP::Hep3Vector GPS::position()const{      return m_currentPoint.position();} 
+astro::EarthCoordinate GPS::earthpos()const{ return m_currentPoint.earthCoord();}
 
 double	GPS::time ()  const{     return m_time;}
 
 double   GPS::expansion () const{    return m_expansion;}
+
+// functions that set the state, then retrieve the given value
+
+double                    GPS::lat(double t){       time(t); return m_currentPoint.earthCoord().latitude();}  
+double                    GPS::lon(double t){       time(t); return m_currentPoint.earthCoord().longitude();} 
+double                    GPS::altitude(double t){  time(t); return m_currentPoint.earthCoord().altitude();}  
+astro::SkyDir             GPS::zAxisDir(double t){  time(t); return m_currentPoint.zAxis();}    
+astro::SkyDir             GPS::xAxisDir(double t){  time(t); return m_currentPoint.xAxis();}     
+astro::SkyDir             GPS::zenithDir(double t){ time(t); return m_currentPoint.zenith();}
+CLHEP::Hep3Vector         GPS::position(double t){  time(t); return m_currentPoint.position();} 
+astro::EarthCoordinate    GPS::earthpos(double t){  time(t); return m_currentPoint.earthCoord();}
+
 
 void GPS::pass ( double t )
 { 
@@ -212,7 +225,7 @@ void GPS::update(double inputTime){
 
     }else{
 
-        if( m_rockType != NONE && m_rockType!=EXPLICIT ) throw(std::invalid_argument("Rocking not implemented"));
+        if( m_rockType != NONE && m_rockType!=EXPLICIT ) throw(std::invalid_argument("Rocking not yet re-implemented"));
         // NONE - use built-in earth orbit, zenith pointing
 
         Hep3Vector 
@@ -221,12 +234,12 @@ void GPS::update(double inputTime){
             zenith( position.unit() ),
             east( npole.cross(zenith).unit() );
 
-         double rockangle( m_rockDegrees*M_PI/180);
+        double rockangle( m_rockDegrees*M_PI/180);
 
         m_currentPoint = 
             PointingInfo( position, 
-                Quaternion(zenith.rotate(east,rockangle), east), 
-                EarthCoordinate(position,inputTime) );
+            Quaternion(zenith.rotate(east,rockangle), east), 
+            EarthCoordinate(position,inputTime) );
         
     }
 #if 0  ///@todo still lots of stuff to try to clean up, convert 
