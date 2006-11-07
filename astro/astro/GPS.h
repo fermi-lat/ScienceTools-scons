@@ -125,7 +125,7 @@ public:
 
     void    time ( double );// set time
 
-    double endTime()const{return m_endTime==0? 1e30: m_endTime;}
+    double endTime()const;
 
     static int test();
 
@@ -140,9 +140,8 @@ private:
     astro::PointingHistory* m_history;
 
     double m_time;	    // global time
-    double m_endTime;
     double m_lastQueriedTime; //the last time that was asked for
-    double  m_expansion;    // orbit expansion factor
+    double m_expansion;    // orbit expansion factor
 
     // notification
     double  m_sampleintvl;  // interval to sample for each pt. in the orbit - to normalize spectra
