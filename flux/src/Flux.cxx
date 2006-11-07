@@ -130,16 +130,6 @@ int Flux::numSource()const
 void Flux::addFactory(std::string name, const ISpectrumFactory* factory ) {
     SpectrumFactoryTable::instance()->addFactory(name,factory);
 }
-#if 0
-CLHEP::HepRotation Flux::CELTransform(double time)const{
-    return s_mgr->CELTransform(time);
-}
-
-CLHEP::HepRotation Flux::transformGlastToGalactic(double time)const{
-
-    return s_mgr->transformGlastToGalactic(time);
-}
-#endif
 //get the transformtation matrix - the rest of these functions are now deprecated
 CLHEP::HepRotation Flux::transformToGlast(double seconds,astro::GPS::CoordSystem index)const{
     return s_mgr->transformToGlast(seconds, index);

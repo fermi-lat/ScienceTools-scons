@@ -82,16 +82,10 @@ public:
     
     /// pass a specific amount of time
     virtual void pass ( double t)=0;
-    
-    ///get the transformation matrix due to orientation of the Galaxy 
-    virtual CLHEP::HepRotation CELTransform(double time)const=0;
-    
+        
     virtual void addFactory(std::string name, const ISpectrumFactory* factory )=0;
     
     virtual /*int*/double gpsTime()const=0;
-    
-    ///this transforms glast-local (cartesian) vectors into galactic (cartesian) vectors
-    virtual CLHEP::HepRotation transformGlastToGalactic(double time)const=0;
     
     virtual EventSource* currentEvent()=0;
     virtual EventSource* currentFlux()=0;
