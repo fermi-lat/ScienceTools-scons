@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r3p9 07-Nov-06   JC   changes for astro v2r*
     v6r3p8 04-Nov-06   JC   more workarounds for poorly written CompositeSource
                             code in flux package
     v6r3p7 03-Nov-06   JC   workaround for "time is beyond end of history file"
