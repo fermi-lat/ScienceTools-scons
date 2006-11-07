@@ -6,6 +6,7 @@ $Header$
 */
 
 #include "astro/Quaternion.h"
+#include "astro/SkyDir.h" // only for test
 
 using namespace astro;
 using namespace CLHEP;
@@ -33,9 +34,12 @@ Quaternion::Quaternion(const CLHEP::Hep3Vector& zhat, const CLHEP::Hep3Vector& x
 : m_v(Hep3Vector(0,0,0)), m_s(1)
 {
     // note no check that they are unit vectors and orthogonal, beware
+    double check( zhat.dot(xhat) ); // should be very small
+    if( fabs(check) >1e-6) throw std::runtime_error("Quaternion ctor: fail orthogonality");
     Hep3Vector yhat(zhat.cross(xhat));
     // code mostly from ROOT's TRotation::AngleAxis. 
     double cosa  = 0.5*(xhat.x()+yhat.y()+zhat.z()-1);
+    if( cosa < -1.) cosa=-1; if(cosa>1.) cosa=1.; // prevent sqrt errors
     double cosa1 = 1-cosa;
     if (cosa1 >0 ){
         double x=0, y=0, z=0;
@@ -123,6 +127,7 @@ Quaternion Quaternion::interpolate(const Quaternion& q1, double t)const
 
 int Quaternion::test()
 {
+    using astro::SkyDir;
     int ret( 0 );
 
     double angle(-0.3);
@@ -182,6 +187,18 @@ int Quaternion::test()
         zout( q9.rotate(Hep3Vector(0,0,1))  );
     if ( !xin.isNear(xout) ) ret+=1;
     if ( !zin.isNear(zout) ) ret+=1;
+
+
+    // check apparent failure
+    /*
+root [10] t.Scan("start:ra_scz:dec_scz:ra_scx:dec_scx", "start==221622510")
+************************************************************************
+*    Row   *     start *    ra_scz *   dec_scz *    ra_scx *   dec_scx *
+************************************************************************
+*    26308 * 221622510 * 320.13729 * -62.60844 * 276.88589 * 20.676851 *
+*************************************************************************/
+    Quaternion q10(SkyDir( 320.13729, -62.60844 )(),SkyDir(276.88589, 20.676851)());
+    if ( q10.scalar() > 1e-5 ) ++ret;
     return ret;
 
 }
