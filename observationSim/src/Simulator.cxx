@@ -33,6 +33,16 @@
 
 namespace observationSim {
 
+astro::GPS::RockType rockTypes[] = {astro::GPS::NONE, 
+                                    astro::GPS::UPDOWN,
+                                    astro::GPS::SLEWING,
+                                    astro::GPS::ONEPERORBIT,
+                                    astro::GPS::EXPLICIT,
+                                    astro::GPS::POINT,
+                                    astro::GPS::HISTORY};
+std::vector<astro::GPS::RockType> Simulator::s_rockTypes(rockTypes, 
+                                                         rockTypes + 7);
+
 Simulator::~Simulator() {
    delete m_fluxMgr;
    delete m_source;

@@ -27,24 +27,21 @@ astro::SkyDir LatSc::xAxis(double time) {
 }
 
 double LatSc::EarthLon(double time) {
-   astro::GPS * gps = astro::GPS::instance();
-   gps->getPointingCharacteristics(time);
+   astro::GPS * gps(astro::GPS::instance());
+   gps->time(time);
    return gps->lon();
 }
 
 double LatSc::EarthLat(double time) {
-   astro::GPS * gps = astro::GPS::instance();
-   gps->getPointingCharacteristics(time);
+   astro::GPS * gps(astro::GPS::instance());
+   gps->time(time);
    return gps->lat();
 }
 
 HepRotation LatSc::InstrumentToCelestial(double time) {
-   astro::GPS *gps = astro::GPS::instance();
-   gps->getPointingCharacteristics(time);
-   astro::SkyDir xAxis(gps->RAX(), gps->DECX());
-   astro::SkyDir zAxis(gps->RAZ(), gps->DECZ());
-
-   astro::PointingTransform transform(zAxis, xAxis);
+   astro::GPS * gps(astro::GPS::instance());
+   gps->time(time);
+   astro::PointingTransform transform(gps->zAxisDir(), gps->xAxisDir());
    return transform.localToCelestial();
 }
 
@@ -65,18 +62,11 @@ void LatSc::getScPosition(double time, std::vector<double> & position) {
 }
 
 void LatSc::getZenith(double time, double & ra, double & dec) {
-   astro::GPS::instance()->getPointingCharacteristics(time);
-   ra = astro::GPS::instance()->RAZenith();
-   dec = astro::GPS::instance()->DECZenith();
-}
-
-double LatSc::livetimeFrac(double time) const {
-   astro::GPS::instance()->getPointingCharacteristics(time);
-   return astro::GPS::instance()->livetime_frac();
-}
-
-void LatSc::setLivetimeFrac(double frac) {
-   astro::GPS::instance()->setLivetime_frac(frac);
+   astro::GPS * gps(astro::GPS::instance());
+   gps->time(time);
+   astro::SkyDir zenithDir(gps->zenithDir());
+   ra = zenithDir.ra();
+   dec = zenithDir.dec();
 }
 
 } // namespace observationSim

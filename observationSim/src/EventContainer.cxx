@@ -183,21 +183,14 @@ void EventContainer::setEventId(const std::string & name, int eventId) {
    typedef std::map<std::string, SourceSummary> id_map_t;
    if (m_srcSummaries.find(name) == m_srcSummaries.end()) {
       m_srcSummaries.insert(
-//          id_map_t::value_type(name, 
-//                               SourceSummary(m_srcSummaries.size())));
          id_map_t::value_type(name, SourceSummary(eventId)));
    }
 }
 
 astro::SkyDir EventContainer::ScZenith(double time) const {
-   astro::GPS * gps = astro::GPS::instance();
-   gps->getPointingCharacteristics(time);
-   double lon_zenith = gps->RAZenith()*M_PI/180.;
-   double lat_zenith = gps->DECZenith()*M_PI/180.;
-   return astro::SkyDir(Hep3Vector(cos(lat_zenith)*cos(lon_zenith),
-                                   cos(lat_zenith)*sin(lon_zenith),
-                                   sin(lat_zenith)),
-                        astro::SkyDir::EQUATORIAL);
+   astro::GPS * gps(astro::GPS::instance());
+   gps->time(time);
+   return gps->zenithDir();
 }
 
 double EventContainer::earthAzimuthAngle(double ra, double dec, 
@@ -217,6 +210,7 @@ void EventContainer::writeEvents(double obsStopTime) {
    std::string ft1File(outputFileName());
    fitsGen::Ft1File ft1(ft1File, m_events.size(), m_tablename);
    ft1.appendField("MC_SRC_ID", "1J");
+   ft1.appendField("MCENERGY", "1E");
 
    std::vector<Event>::iterator evt = m_events.begin();
    for ( ; ft1.itor() != ft1.end() && evt != m_events.end(); 
@@ -238,6 +232,7 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["event_class"].set(evt->eventType());
       ft1["conversion_type"].set(evt->eventType());
       ft1["mc_src_id"].set(evt->eventId());
+      ft1["mcenergy"].set(evt->trueEnergy());
    }
 
 // Set stop time to be arrival time of last event if obsStopTime is

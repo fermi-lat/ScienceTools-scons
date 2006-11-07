@@ -46,10 +46,6 @@ public:
 
    virtual void getZenith(double time, double & ra, double & dec);
 
-   virtual double livetimeFrac(double time) const;
-
-   virtual void setLivetimeFrac(double frac);
-
 };
 
 } // namespace observationSim

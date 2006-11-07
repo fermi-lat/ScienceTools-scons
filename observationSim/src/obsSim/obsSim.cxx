@@ -251,7 +251,7 @@ void ObsSim::createSimulator() {
    double startTime = m_pars["start_time"];
    std::string pointingHistory = m_pars["scfile"];
    std::string sc_table = m_pars["sctable"];
-   astro::GPS::instance()->setScTableName(sc_table);
+//   astro::GPS::instance()->setScTableName(sc_table);
    std::string startDate = m_pars["start_date"];
    facilities::Timestamp start(startDate);
    double offset((astro::JulianDate(start.getJulian()) 

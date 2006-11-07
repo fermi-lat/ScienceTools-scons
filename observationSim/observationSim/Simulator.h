@@ -104,7 +104,7 @@ public:
    ///        per orbit.
    /// @param angle Rocking angle in degrees.
    void setRocking(int rockType = 3, double angle = 35.) {
-      m_fluxMgr->setRockType(rockType, angle);
+      m_fluxMgr->setRockType(s_rockTypes.at(rockType), angle);
       m_usePointingHistory = false; 
    }
 
@@ -170,6 +170,8 @@ private:
    FluxMgr * m_fluxMgr;
    CompositeSource * m_source;
    EventSource * m_newEvent;
+
+   static std::vector<astro::GPS::RockType> s_rockTypes;
 
    double m_interval;
    

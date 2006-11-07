@@ -30,6 +30,8 @@ class Spacecraft {
 
 public:
 
+   Spacecraft() : m_livetimeFrac(1) {}
+
    virtual ~Spacecraft() {}
 
    /// Spacecraft z-axis in J2000 coordinates.
@@ -56,11 +58,18 @@ public:
 
    virtual void getZenith(double time, double & ra, double & dec) = 0;
 
-   virtual double livetimeFrac(double) const {
-      return 1;
+   virtual double livetimeFrac(double time) const {
+      (void)(time);
+      return m_livetimeFrac;
    }
 
-   virtual void setLivetimeFrac(double) {};
+   virtual void setLivetimeFrac(double livetimeFrac) {
+      m_livetimeFrac = livetimeFrac;
+   }
+
+private:
+
+   double m_livetimeFrac;
 
 };
 
