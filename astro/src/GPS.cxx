@@ -319,12 +319,7 @@ int GPS::test()
     }
     // test reading and interpolating an ascii file
     const char * package_root(::getenv("ASTROROOT") );
-#if 0
     std::string history(std::string(package_root)+"/src/test/history_test.txt");
-#else
-    std::string history("Y:/common/DC2/history/pointing_history.txt");
-
-#endif
     std::cout << "Reading history file " << history << std::endl;
     gps.setPointingHistoryFile(history);
 
