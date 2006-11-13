@@ -77,7 +77,7 @@ class Source(object):
         funcs = src.getSrcFuncs()
         self.funcs = {}
         for item in funcs.keys():
-            self.funcs[item] = Function(funcs[item])
+            self.funcs[item] = Function(funcs[item], src.getName())
     def __getitem__(self, name):
         return self.funcs[name]
     def __repr__(self, prefix='   ', free_only=False):
@@ -91,14 +91,15 @@ class Source(object):
         return getattr(self.src, attrname)
 
 class Function(object):
-    def __init__(self, func):
+    def __init__(self, func, srcName=None):
         self.func = func
+        self.srcName = srcName
         names = pyLike.StringVector()
         func.getParamNames(names)
         self.paramNames = list(names)
         self.params = {}
         for name in self.paramNames:
-            self.params[name] = Parameter(self.func.getParam(name))
+            self.params[name] = Parameter(self.func.getParam(name), srcName)
         self._parIds = []
     def __getitem__(self, name):
         return self.func.getParamValue(name)
@@ -119,8 +120,9 @@ class Function(object):
         return getattr(self.func, attrname)
 
 class Parameter(object):
-    def __init__(self, parameter):
+    def __init__(self, parameter, srcName=None):
         self.parameter = parameter
+        self.srcName = srcName
     def __repr__(self):
         par = self.parameter
         desc = ("%10s: %10.3e " % (par.getName(), par.getValue()) +
