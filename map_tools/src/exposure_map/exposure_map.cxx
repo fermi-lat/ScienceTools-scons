@@ -24,12 +24,39 @@ $Header$
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
 
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 #include <sstream>
 #include <iterator> // for ostream_iterator
 
 
 #include <stdexcept>
+
+namespace {
+   void writeEnergies(const std::string & filename,
+                      const std::vector<double> & energies) {
+      std::string ext("ENERGIES");
+
+      tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
+      fileSvc.appendTable(filename, ext);
+      tip::Table * table = fileSvc.editTable(filename, ext);
+
+      table->appendField("Energy", "1D");
+      table->setNumRecords(energies.size());
+
+      tip::Table::Iterator row = table->begin();
+      tip::Table::Record & record = *row;
+      
+      std::vector<double>::const_iterator energy = energies.begin();
+      for ( ; energy != energies.end(); ++energy, ++row) {
+         record["Energy"].set(*energy);
+      }
+
+      delete table;
+   }
+}
+
 using namespace map_tools;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -216,6 +243,7 @@ public:
             RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy[layer]), 1.); 
             image.fill(req, layer);
         }
+        ::writeEnergies(m_pars["outfile"], energy);
     }
 
     void prompt() {
@@ -253,7 +281,6 @@ public:
 private:
     st_stream::StreamFormatter m_f;
     st_app::AppParGroup& m_pars;
-
 };
 // Factory which can create an instance of the class above.
 st_app::StAppFactory<ExposureMapApp> g_factory("exposure_map");
