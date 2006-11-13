@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 13-nov-06 v6r6p5  JC  write ENERGIES extension for exposure_map output (needed by
+                       binned likelihood calculations)
  06-nov-06 v6r6p4 THB  remove explicit astro v1*, other small fixes
  14-aug-06 v6r6p1  JC  yet another irfInterface::IAeff interface change
  26-jun-06 v6r6   THB  expose zmin in exposure calculation; return energies used by PhotonMap
