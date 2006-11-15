@@ -236,6 +236,21 @@
          </spectrum>
     </source>
 
+    <!-- a 5 Hz rate, with offset for the ATT magic-7 messages -->
+    <source name="ATT">
+         <spectrum escale="GeV"> <SpectrumClass name="TimeCandle" params="0.2,0.16"/>  
+		 <use_spectrum/>
+                 <launch_point />
+         </spectrum>
+    </source>
+
+    <!-- a 5 Hz rate, with offset for the ORB magic-7 messages -->
+    <source name="ORB">
+         <spectrum escale="GeV"> <SpectrumClass name="TimeCandle" params="1.0,0.8"/>  
+		 <use_spectrum/>
+                 <launch_point />
+         </spectrum>
+    </source>
 </source_library>
 
 <!-- ************************************************************************** -->

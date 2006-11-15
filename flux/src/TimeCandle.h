@@ -40,7 +40,7 @@ public:
     
     double interval (double time);
 private:
-    float parseParamList(std::string input, int index, float default);
+    float parseParamList(std::string input, int index, float default_value);
     double m_period; ///< period 
     double m_offset; ///< offset in seconds after second boundary to start (-1: ignore)
     std::string m_name;	// particle name to generate ("P", "gamma", ...)
