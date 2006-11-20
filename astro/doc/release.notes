@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r2p4   20-Nov-06 THB  Fix lat/lon swap in reading history file
   v2r2p3   07-Nov-06 THB  Protection for Quaternion constructor
   v2r2     06-Nov-06 THB  add access functions that set the time before retrieving info; restore rocking
   v2r0p3   06-Nov-06 THB  Fix to accept, and ignore large times

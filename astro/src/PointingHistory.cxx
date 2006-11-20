@@ -50,7 +50,7 @@ void PointingHistory::readTextData(std::string filename, double offset)
             buf >> razenith >> deczenith; // ignore since redundant with position
 
             double lat, lon, alt;
-            buf >> lat >> lon >> alt;
+            buf >> lon >> lat >> alt;
             EarthCoordinate earth(lat, lon, alt);
 
             m_endTime = start + offset;
