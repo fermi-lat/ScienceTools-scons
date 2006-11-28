@@ -131,5 +131,24 @@ namespace optimizers {
     return s;
   }
 
-}
+   std::vector<std::vector<double> > NewMinuit::covarianceMatrix() const {
+      if (!m_userState.HasCovariance()) {
+         const_cast<NewMinuit *>(this)->hesse(0);
+      }
+      std::vector<std::vector<double> > covariancematrix;
+      
+      ROOT::Minuit2::MnUserCovariance cov = m_userState.Covariance();
+      
+      for (unsigned int x = 0; x < cov.Nrow(); ++x) {
+         std::vector<double> vec;
+         for (unsigned int y = 0; y < cov.Nrow(); ++y) {
+            vec.push_back(cov(x,y));
+         }
+         covariancematrix.push_back(vec);
+      }
+      
+      return covariancematrix;
+   }
+      
+} // namespace optimizers
 #endif

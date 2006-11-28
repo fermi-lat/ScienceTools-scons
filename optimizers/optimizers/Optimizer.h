@@ -44,6 +44,9 @@ public:
    /// assuming that the statistic is a log-likelihood.
    virtual const std::vector<double> & getUncertainty(bool useBase=false);
 
+   /// Returns the covariance matrix
+   virtual std::vector<std::vector<double> > covarianceMatrix() const;
+
    Statistic & stat() {
       return *m_stat;
    }
@@ -62,6 +65,9 @@ protected:
    /// parameters.
    std::vector<double> m_uncertainty;
 
+//    /// A matrix to contain the covariance matrix of the free parameters
+//    std::vector<std::vector<double> > m_covariancematrix;
+
    /// @param hess The Hessian matrix for the free parameters.
    /// @param eps The fractional step size used for computing the
    ///        finite difference approximations to the partial second 
@@ -72,9 +78,10 @@ protected:
    ///        On return, this matrix is replaced by the Cholesky 
    ///        decomposition and made fully symmetric.
    void choleskyDecompose(std::valarray<double> &hess);
+   
 };
 
- std::ostream& operator<<(std::ostream& s, const Optimizer& t);
+std::ostream& operator<<(std::ostream& s, const Optimizer& t);
 
 /// Fortran routines
 extern "C" {

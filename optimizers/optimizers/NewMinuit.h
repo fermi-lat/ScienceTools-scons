@@ -65,6 +65,7 @@ namespace optimizers {
     double getDistance(void) const {return m_distance;};
     void hesse(int verbose = 0);
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
+    virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
   private:
     unsigned int m_maxEval;

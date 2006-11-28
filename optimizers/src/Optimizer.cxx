@@ -9,6 +9,7 @@
 #include <cmath>
 
 #include <sstream>
+#include <stdexcept>
 
 #include "optimizers/dArg.h"
 #include "optimizers/Exception.h"
@@ -176,8 +177,15 @@ void Optimizer::choleskyDecompose(std::valarray<double> &array) {
    }
 }
 
-  std::ostream& operator<<(std::ostream& s, const Optimizer& t) {
-    return t.put(s);
-  }
+std::ostream& operator<<(std::ostream& s, const Optimizer& t) {
+   return t.put(s);
+}
+
+std::vector<std::vector<double> > Optimizer::covarianceMatrix() const {
+   throw std::runtime_error("Optimizer::covarianceMatrix member function "
+                            "not implemented yet.");
+   std::vector<std::vector<double> > ret;
+   return ret;
+}
 
 } // namespace optimizers
