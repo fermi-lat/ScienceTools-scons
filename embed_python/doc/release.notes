@@ -1,5 +1,11 @@
 /** @file release.notes
+@brief embed_python package relase notes
 
+  package embed_python
+  Package coordinators: T.Burnett
+$Id$
 
+@verbatim
+  v0r0   28-nov-06  Initial test
 
 */
