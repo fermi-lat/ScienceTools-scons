@@ -20,18 +20,18 @@ The virtual base class manages the point itself
 class LaunchPoint  { 
 public:
     LaunchPoint(){}
-    LaunchPoint(const HepGeom::HepPoint3D& pt):m_pt(pt){}
+    LaunchPoint(const CLHEP::Hep3Vector& pt):m_pt(pt){}
     virtual ~LaunchPoint(){}
 
     /// access to direction, perhaps set by the execute()
-    virtual const HepGeom::HepPoint3D& point()const {return m_pt;}
-    const HepGeom::HepPoint3D& operator()()const{return point();}
+    virtual const CLHEP::Hep3Vector& point()const {return m_pt;}
+    const CLHEP::Hep3Vector& operator()()const{return point();}
 
     /// execute the strategy, perhaps depending on direction
-    virtual void execute(const HepGeom::HepVector3D& ){};
+    virtual void execute(const CLHEP::Hep3Vector& ){};
 
     /// set the point
-    void setPoint(const HepGeom::HepPoint3D& pt){ m_pt = pt;}
+    void setPoint(const CLHEP::Hep3Vector& pt){ m_pt = pt;}
 
     /// return info, default if not overriden
     virtual std::string title()const{
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    HepGeom::HepPoint3D m_pt; ///< the point we manage
+    CLHEP::Hep3Vector m_pt; ///< the point we manage
 };
 
 #endif // _FluxSource_LaunchPoint_h

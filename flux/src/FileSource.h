@@ -83,17 +83,17 @@ private:
       virtual void execute(double KE, double time);
 
       /// @return The particle direction in instrument coordinates.
-      virtual const HepGeom::HepVector3D & dir() const;
+      virtual const CLHEP::Hep3Vector & dir() const;
 
       virtual std::string title() const;
-      virtual const HepGeom::HepVector3D & skyDirection() const;
+      virtual astro::SkyDir  skyDirection() const;
       virtual double zenithCosine() const {
          return 1.;
       }
 
-      void setDir(const HepGeom::HepVector3D & dir);
+      void setDir(const CLHEP::Hep3Vector & dir);
    private:
-      HepGeom::HepVector3D m_dir;
+      CLHEP::Hep3Vector m_dir;
       CLHEP::HepRotation m_glastToGalactic;
    } * m_launchDirection;
 
@@ -101,12 +101,12 @@ private:
    public:
       FileLaunchPoint() {}
       virtual ~FileLaunchPoint() {}
-      virtual const HepGeom::HepPoint3D & point() const;
+      virtual const CLHEP::Hep3Vector & point() const;
       virtual std::string title() const;
 
-      void setPoint(const HepGeom::HepPoint3D & pt);
+      void setPoint(const CLHEP::Hep3Vector & pt);
    private:
-      HepGeom::HepPoint3D m_pt;
+      CLHEP::Hep3Vector m_pt;
    } * m_launchPoint;
 #endif // SWIG
 
