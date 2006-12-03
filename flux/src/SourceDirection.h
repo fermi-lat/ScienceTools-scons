@@ -45,7 +45,7 @@ private:
     double m_zenithCos;
     std::string m_frameName;
 
-    CLHEP::Hep3Vector solarSystemDir(Frame f, double time);
+    void solarSystemDir(double costh, double phi, double time);
 
 };
 
