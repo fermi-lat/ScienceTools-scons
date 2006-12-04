@@ -42,6 +42,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_SkyCone);
    CPPUNIT_TEST(test_DssFormatting);
    CPPUNIT_TEST(test_removeRangeCuts);
+   CPPUNIT_TEST(test_mergeRangeCuts);
 
    CPPUNIT_TEST_SUITE_END();
 
@@ -60,6 +61,7 @@ public:
    void test_SkyCone();
    void test_DssFormatting();
    void test_removeRangeCuts();
+   void test_mergeRangeCuts();
 
 private:
 
@@ -461,6 +463,34 @@ void DssTests::test_removeRangeCuts() {
    cuts3.addRangeCut("RA", "deg", 83, 93);
 
    CPPUNIT_ASSERT(cuts2 == cuts3);
+}
+
+void DssTests::test_mergeRangeCuts() {
+   dataSubselector::Cuts cuts0;
+
+   cuts0.addRangeCut("ENERGY", "MeV", 100, 2e5);
+   cuts0.addRangeCut("ENERGY", "MeV", 150, 2e5, 
+                     dataSubselector::RangeCut::MINONLY);
+   cuts0.addRangeCut("ENERGY", "MeV", 200, 1e5,
+                     dataSubselector::RangeCut::MAXONLY);
+   cuts0.addRangeCut("RA", "deg", 100, 200,
+                     dataSubselector::RangeCut::MAXONLY, 1);
+   cuts0.addRangeCut("RA", "deg", 0, 133,
+                     dataSubselector::RangeCut::MAXONLY, 1);
+   cuts0.addSkyConeCut(83., 22., 20);
+   cuts0.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                      dataSubselector::RangeCut::CLOSED, 1);
+   cuts0.mergeRangeCuts();
+
+   dataSubselector::Cuts cuts1;
+   cuts1.addRangeCut("ENERGY", "MeV", 150, 1e5);
+   cuts1.addRangeCut("RA", "deg", 0, 133, 
+                     dataSubselector::RangeCut::MAXONLY, 1);
+   cuts1.addSkyConeCut(83., 22., 20);
+   cuts1.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                      dataSubselector::RangeCut::CLOSED, 1);
+
+   CPPUNIT_ASSERT(cuts0 == cuts1);
 }
 
 int main() {

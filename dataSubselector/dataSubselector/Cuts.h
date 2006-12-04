@@ -139,6 +139,10 @@ public:
       return m_cuts.size();
    }
 
+   /// @brief Merge RangeCuts, taking care of intersecting intervals, 
+   /// open-ended ranges, etc.
+   unsigned int mergeRangeCuts();
+
    /// @brief Remove all RangeCuts with a given column name.
    /// @param colname The name of the column corresponding to the
    ///        RangeCuts to be removed.

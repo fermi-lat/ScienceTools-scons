@@ -29,12 +29,54 @@
 #include "dataSubselector/SkyConeCut.h"
 
 namespace {
-   void toUpper(std::string & name) {
-      for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
-         *it = std::toupper(*it);
-      }
+void toUpper(std::string & name) {
+   for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
+      *it = std::toupper(*it);
    }
 }
+
+dataSubselector::RangeCut * 
+mergeRangeCuts(const std::vector<dataSubselector::RangeCut *> & cuts) {
+   double minValue;
+   double maxValue;
+   bool haveMin(false);
+   bool haveMax(false);
+   for (size_t i = 0; i < cuts.size(); i++) {
+      if (cuts.at(i)->intervalType() == dataSubselector::RangeCut::CLOSED ||
+          cuts.at(i)->intervalType() == dataSubselector::RangeCut::MINONLY) {
+         if (!haveMin) {
+            minValue = cuts.at(i)->minVal();
+            haveMin = true;
+         } else if (cuts.at(i)->minVal() > minValue) {
+            minValue = cuts.at(i)->minVal();
+         }
+      }
+      if (cuts.at(i)->intervalType() == dataSubselector::RangeCut::CLOSED ||
+          cuts.at(i)->intervalType() == dataSubselector::RangeCut::MAXONLY) {
+         if (!haveMax) {
+            maxValue = cuts.at(i)->maxVal();
+            haveMax = true;
+         } else if (cuts.at(i)->maxVal() < maxValue) {
+            maxValue = cuts.at(i)->maxVal();
+         }
+      }
+   }
+   dataSubselector::RangeCut::IntervalType 
+      type(dataSubselector::RangeCut::CLOSED);
+   if (!haveMin) {
+      type = dataSubselector::RangeCut::MAXONLY;
+   } else if (!haveMax) {
+      type = dataSubselector::RangeCut::MINONLY;
+   }
+   std::vector<std::string> tokens;
+   facilities::Util::stringTokenize(cuts.at(0)->colname(), "[]", tokens);
+   return new dataSubselector::RangeCut(tokens.at(0),
+                                        cuts.at(0)->unit(),
+                                        minValue, maxValue, type,
+                                        cuts.at(0)->index());
+}
+
+} // anonymous namespace
 
 namespace dataSubselector {
 
@@ -285,6 +327,32 @@ unsigned int Cuts::addCut(CutBase * newCut) {
       m_cuts.push_back(newCut);
    }
    return size();
+}
+
+unsigned int Cuts::mergeRangeCuts() {
+   std::vector<RangeCut *> rangeCuts;
+   for (size_t j = 0; j < m_cuts.size(); j++) {
+      if (m_cuts.at(j)->type() == "range") {
+         RangeCut * rangeCut(dynamic_cast<RangeCut *>(m_cuts.at(j)));
+         rangeCuts.push_back(rangeCut);
+      }
+   }
+
+   std::map<std::string, int> colnames;
+   for (size_t j = 0; j < rangeCuts.size(); j++) {
+      colnames[rangeCuts.at(j)->colname()] = 1;
+   }
+
+   for (std::map<std::string, int>::const_iterator colname(colnames.begin());
+        colname != colnames.end(); ++colname) {
+      removeRangeCuts(colname->first, rangeCuts);
+      m_cuts.push_back(::mergeRangeCuts(rangeCuts));
+      for (size_t i = 0; i < rangeCuts.size(); i++) {
+         delete rangeCuts.at(i);
+      }
+   }
+
+   return m_cuts.size();
 }
 
 unsigned int Cuts::removeRangeCuts(const std::string & colname,

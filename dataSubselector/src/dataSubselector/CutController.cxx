@@ -54,6 +54,7 @@ CutController::CutController(st_app::AppParGroup & pars,
    if (eventClass == 4) { // Class A events only
       addRangeCut("EVENT_CLASS", "dimensionless", 0, 1, 0, true);
    }
+   m_cuts.mergeRangeCuts();
 }
 
 bool CutController::accept(tip::ConstTableRecord & row) const {

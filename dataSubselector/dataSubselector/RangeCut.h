@@ -64,6 +64,18 @@ public:
       return m_intervalType;
    }
 
+   /// @brief The units of the column.
+   const std::string & unit() const {
+      return m_unit;
+   }
+
+   /// @brief The index of the column vector that is operated on.
+   /// Since FITS column vectors are indexed from 1, 0 indicates that
+   /// this is not a column vector.
+   const unsigned int index() const {
+      return m_index;
+   }
+
 protected:
 
    virtual bool equals(const CutBase & rhs) const;
