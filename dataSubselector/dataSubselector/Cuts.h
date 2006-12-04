@@ -139,6 +139,14 @@ public:
       return m_cuts.size();
    }
 
+   /// @brief Remove all RangeCuts with a given column name.
+   /// @param colname The name of the column corresponding to the
+   ///        RangeCuts to be removed.
+   /// @param removedCuts Vector of removed cuts.  The calling routine
+   ///        is responsible for deleting these cuts.
+   unsigned int Cuts::removeRangeCuts(const std::string & colname,
+                                      std::vector<CutBase *> & removedCuts);
+
    /// @brief Add the DSS keywords to a write-enabled tip::Header.
    /// @param header The reference returned from the tip::Table::getHeader
    ///        method where the table has been opened using the

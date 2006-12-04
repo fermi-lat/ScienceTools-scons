@@ -41,6 +41,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(cutsConstructor);
    CPPUNIT_TEST(test_SkyCone);
    CPPUNIT_TEST(test_DssFormatting);
+   CPPUNIT_TEST(test_removeRangeCuts);
 
    CPPUNIT_TEST_SUITE_END();
 
@@ -58,6 +59,7 @@ public:
    void cutsConstructor();
    void test_SkyCone();
    void test_DssFormatting();
+   void test_removeRangeCuts();
 
 private:
 
@@ -427,6 +429,38 @@ void DssTests::test_DssFormatting() {
    delete table2;
 
    CPPUNIT_ASSERT(dataSubselector::Cuts::isTimeCut(cuts1[0]));
+}
+
+void DssTests::test_removeRangeCuts() {
+   dataSubselector::Cuts cuts0;
+   dataSubselector::Cuts cuts1;
+
+   cuts0.addRangeCut("RA", "deg", 83, 93);
+   cuts0.addSkyConeCut(83., 22., 20);
+   cuts0.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                     dataSubselector::RangeCut::CLOSED, 1);
+      
+   cuts1.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
+                     dataSubselector::RangeCut::CLOSED, 1);
+   cuts1.addSkyConeCut(83., 22., 20);
+
+
+   CPPUNIT_ASSERT(cuts0 != cuts1);
+
+   std::vector<dataSubselector::CutBase *> removedCuts;
+   cuts0.removeRangeCuts("RA", removedCuts);
+   
+   CPPUNIT_ASSERT(cuts0 == cuts1);
+
+   dataSubselector::Cuts cuts2;
+   for (size_t j = 0; j < removedCuts.size(); j++) {
+      cuts2.addCut(*removedCuts.at(j));
+   }
+   
+   dataSubselector::Cuts cuts3;
+   cuts3.addRangeCut("RA", "deg", 83, 93);
+
+   CPPUNIT_ASSERT(cuts2 == cuts3);
 }
 
 int main() {

@@ -287,6 +287,28 @@ unsigned int Cuts::addCut(CutBase * newCut) {
    return size();
 }
 
+unsigned int Cuts::removeRangeCuts(const std::string & colname,
+                                   std::vector<CutBase *> & removedCuts) {
+   removedCuts.clear();
+   for (size_t j = 0; j < m_cuts.size(); j++) {
+      if (m_cuts.at(j)->type() == "range") {
+         RangeCut * rangeCut(dynamic_cast<RangeCut *>(m_cuts.at(j)));
+         if (rangeCut->colname() == colname) {
+            removedCuts.push_back(m_cuts.at(j));
+            m_cuts.at(j) = 0;
+         }
+      }
+   }
+   std::vector<CutBase *> held_cuts;
+   for (size_t j = 0; j < m_cuts.size(); j++) {
+      if (m_cuts.at(j)) {
+         held_cuts.push_back(m_cuts.at(j));
+      }
+   }
+   m_cuts = held_cuts;
+   return m_cuts.size();
+}
+
 void Cuts::writeDssKeywords(tip::Header & header) const {
    removeDssKeywords(header);
    int ndskeys = m_cuts.size();
