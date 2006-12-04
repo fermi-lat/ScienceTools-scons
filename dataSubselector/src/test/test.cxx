@@ -447,7 +447,7 @@ void DssTests::test_removeRangeCuts() {
 
    CPPUNIT_ASSERT(cuts0 != cuts1);
 
-   std::vector<dataSubselector::CutBase *> removedCuts;
+   std::vector<dataSubselector::RangeCut *> removedCuts;
    cuts0.removeRangeCuts("RA", removedCuts);
    
    CPPUNIT_ASSERT(cuts0 == cuts1);

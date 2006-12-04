@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r5    03-Dec-06   JC   add Cuts::removeRangeCuts to support independent
+                             checking of energy ranges in Likelihood
     v4r4    31-Aug-06   JC   only apply acceptance cone cut if cone
                              radius < 180 deg
     v4r3p3  24-Jul-06   JC   use evtbin::Gti::computeOntime() in 

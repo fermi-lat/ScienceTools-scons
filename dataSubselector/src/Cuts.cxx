@@ -288,13 +288,13 @@ unsigned int Cuts::addCut(CutBase * newCut) {
 }
 
 unsigned int Cuts::removeRangeCuts(const std::string & colname,
-                                   std::vector<CutBase *> & removedCuts) {
+                                   std::vector<RangeCut *> & removedCuts) {
    removedCuts.clear();
    for (size_t j = 0; j < m_cuts.size(); j++) {
       if (m_cuts.at(j)->type() == "range") {
          RangeCut * rangeCut(dynamic_cast<RangeCut *>(m_cuts.at(j)));
          if (rangeCut->colname() == colname) {
-            removedCuts.push_back(m_cuts.at(j));
+            removedCuts.push_back(rangeCut);
             m_cuts.at(j) = 0;
          }
       }
