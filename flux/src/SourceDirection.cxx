@@ -23,9 +23,10 @@ SourceDirection::SourceDirection(ISpectrum* spectrum, std::string frame )
 {
     m_frame = INVALID; int n(0);
     static const char* frame_names[]=
-     {"zenith",  "equatorial","galactic", "Sun", "Moon"};
+     {"zenith",  "equatorial","galactic", "galaxy", "Sun", "Moon"};
     if( frame == frame_names[n++] ) m_frame=ZENITH;
     if( frame == frame_names[n++] ) m_frame=EQUATORIAL;
+    if( frame == frame_names[n++] ) m_frame=GALACTIC;
     if( frame == frame_names[n++] ) m_frame=GALACTIC;
     if( frame == frame_names[n++] ) m_frame=SUN;
     if( frame == frame_names[n++] ) m_frame=MOON;
