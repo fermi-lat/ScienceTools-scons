@@ -1,6 +1,6 @@
 package embed_python
 
-version v0r0p3
+version v0r0p4
 author t. burnett <tburnett@u.washington.edu>
 
 #$Id$
@@ -14,9 +14,9 @@ apply_pattern package_linkopts
 path_append PYTHONPATH $(embed_python_root)/python
 
 
-# have to add this since python does not.
+# have to add this since python does not. (think those Linux guys are needed?)
 macro python_linkopts "" \
-   Linux "-lpython2.4  -L$(python_DIR)/lib/python2.4/config"\
+   Linux " -lpthread -lm -ldl -rdynamic -L$(python_DIR)/lib/python2.4/config -lpython2.4  "\
    WIN32 "$(python_DIR)\libs\$(python_LIB) "
 
 private
