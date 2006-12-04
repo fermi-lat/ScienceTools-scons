@@ -65,10 +65,11 @@ class UnbinnedObs(object):
             eventFiles = self._fileList(eventFile)
             checkCuts = pyLike.AppHelpers_checkCuts
             checkTimeCuts = pyLike.AppHelpers_checkTimeCuts
+            checkExpMapCuts = pyLike.AppHelpers_checkExpMapCuts
             for file in eventFiles[1:]:
                 checkCuts(eventFiles[0], 'EVENTS', file, 'EVENTS', False)
             if expMap is not None and expMap != '':
-                checkCuts(eventFiles, 'EVENTS', expMap, '')
+                checkExpMapCuts(eventFiles, expMap)
             if expCube is not None and expCube != '':
                 checkTimeCuts(eventFiles, 'EVENTS', expCube, 'Exposure')
     def _obsDialog(self):
