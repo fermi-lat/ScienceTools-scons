@@ -91,6 +91,14 @@ class AnalysisBase(object):
             self.logLike.setFreeParamValues(freeParams)
             self.model = SourceModel(self.logLike)
             return Ts_value
+    def writeCountsSpectra(self, outfile='counts_spectra.fits'):
+        counts = pyLike.CountsSpectra(self.logLike)
+        try:
+            emin, emax = self.observation.observation.roiCuts().getEnergyCuts()
+            counts.setEbounds(emin, emax, 21)
+        except:
+            pass
+        counts.writeTable(outfile)
     def _renorm(self, factor=None):
         if factor is None:
             freeNpred, totalNpred = self._npredValues()
