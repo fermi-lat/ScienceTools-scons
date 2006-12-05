@@ -6,6 +6,7 @@
 
    @verbatim
 
+   v0r3p8 05-Dec-06   JC    add AnalysisBase.writeCountsSpectra method
    v0r3p7 04-Dec-06   JC    check that expMap energy bounds enclose
                             evfiles energy range
    v0r3p6 12-Nov-06   JC    use LogLike::syncSrcParams in 
