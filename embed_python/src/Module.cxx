@@ -24,11 +24,17 @@ namespace {
     char * _getcwd(  char * buffer,   size_t maxlen ){return ::getcwd(buffer, maxlen);}
 }
 #endif
+
+namespace {
+    bool initialized(false);
+}
+
 using namespace embed_python;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Module::Module(std::string path, std::string module, bool verbosity)
-: m_verbose(verbosity)
+: m_moduleName(module)
+, m_verbose(verbosity)
 , m_root("")
 {
     char oldcwd[128], newcwd[128];
@@ -43,7 +49,10 @@ Module::Module(std::string path, std::string module, bool verbosity)
         if( verbose()) std::cout << "switched to folder" << newcwd << std::endl;
         m_root=newcwd;
     }
-    Py_Initialize();
+    if( ! initialized ){
+        initialized = true;
+        Py_Initialize();
+    }
 
     m_module = PyImport_ImportModule(const_cast<char*>(module.c_str()));
     check_error("Module: error parsing module "+module);
@@ -79,7 +88,13 @@ Module::~Module()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PyObject* Module::attribute(std::string name)
 {
-    ///@todo. If compound name, "module.attribute", parse it and check for module
+    unsigned int c (name.find_first_of("."));
+    if( c != std::string::npos) {
+        PyObject * t = attribute(name.substr(0,c));
+        PyObject * ret = PyObject_GetAttrString(t, const_cast<char*>(name.substr(c+1).c_str()));
+        check_error("Module: did not find attribute "+name);
+        return ret;
+    }
     PyObject* ret = PyObject_GetAttrString(m_module,const_cast<char*>(name.c_str()));
     check_error("Module: did not find attribute "+name);
     return ret;
@@ -89,7 +104,7 @@ PyObject* Module::attribute(std::string name)
 double Module::operator[](std::string key)
 { 
     PyObject* obj = attribute(key);
-    double dval (PyFloat_AsDouble(attribute(key)));
+    double dval (PyFloat_AsDouble(obj));
     check_error("Module::operator[] -- "+key+" not a numeric type");
     return dval;
 }
@@ -97,14 +112,14 @@ double Module::operator[](std::string key)
 void Module::getValue(std::string key, double& value)
 { 
     value = PyFloat_AsDouble(attribute(key));
-    check_error("Module::getAttribute -- "+key+" not a numeric type");
+    check_error("Module::getValue -- "+key+" not a numeric type");
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::getValue(std::string key, std::string& value)
 { 
     char * str = PyString_AsString(attribute(key));
-    check_error("Module::getAttribute-- "+key+" not a str type");
+    check_error("Module::getValue-- "+key+" not a str type");
     value = std::string(str);
     return;
 }
@@ -132,7 +147,29 @@ void Module::getList(std::string listname, std::vector<std::string>& names)
     check_error("Module: failure parsing"+ listname);
     
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getList(std::string listname, std::vector<double>& values)
+{
+    PyObject* plist( attribute(listname) )
+        , *iterator( PyObject_GetIter(plist) )
+        , *item(0);
+    if( iterator==NULL) {
+        throw std::invalid_argument("Module: "+ listname +" is not a list");
+    }
+    if( verbose() ) std::cout << "Parsing list " << listname << std::endl;
+    while (item = PyIter_Next(iterator)) {
+        double value( PyFloat_AsDouble(item) );
+        check_error("Module::parse_list: "+listname + " contains non-numeric item");
+        if( verbose()) std::cout << "\t" << value << std::endl;
+        values.push_back(value);
+        Py_DECREF(item);
+    }
 
+    Py_DECREF(iterator);
+
+    check_error("Module: failure parsing"+ listname);
+    
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::check_error(const std::string& text)const
 {    if (PyErr_Occurred()) {
@@ -161,13 +198,27 @@ int Module::test(int argc, char* argv[], std::string modulename)
         setup.getValue("z", z);  std::cout << "z=" << z << std::endl;
 
         // assume the module imports math, defines pi
-        std::cout << "pi=" << setup["pi"]<< std::endl;
+        try{
+            setup["pi"];  // should fail
+        }catch(const std::exception& e){
+            std::cout << "caught exception "<< e.what() << " as expected" << std::endl;
+        }
+
+        // now check compound 
+        std::cout << "math.pi=" << setup["math.pi"] << std::endl;
 
         std::vector<std::string> names;
         setup.getList("names", names);
 
         std::copy(names.begin(), names.end(), std::ostream_iterator<std::string>(std::cout, ", "));
         std::cout << std::endl;
+
+        // check list of numbers
+        std::vector<double> numbers;
+        setup.getList("values", numbers);
+        std::copy(numbers.begin(), numbers.end(), std::ostream_iterator<double>(std::cout, ", "));
+        std::cout << std::endl;
+
 
     }catch( const std::exception & e){
         std::cerr<< "Module::test -- caught exception " << e.what() << std::endl;

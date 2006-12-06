@@ -43,6 +43,9 @@ public:
     /// set a list of strings
     void getList(std::string listname, std::vector<std::string>& names);
 
+    /// set a list of values
+    void getList(std::string listname, std::vector<double>& values);
+
     /// examine type of a PyObject
     std::string type(const PyObject* obj)const;
 
@@ -61,6 +64,7 @@ public:
 private:
 
     PyObject * m_module; ///< the module we manage
+    std::string m_moduleName; 
 
     bool m_verbose;
     bool verbose()const{return m_verbose;}

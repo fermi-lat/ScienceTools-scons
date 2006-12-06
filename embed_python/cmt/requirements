@@ -1,6 +1,6 @@
 package embed_python
 
-version v0r0p6
+version v0r1
 author t. burnett <tburnett@u.washington.edu>
 
 #$Id$
