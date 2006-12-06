@@ -9,6 +9,8 @@ $Header$
 #include <cmath>
 #include <utility>
 #include "CLHEP/Vector/ThreeVector.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
 
 using namespace map_tools;
 using astro::HealPixel;
@@ -23,6 +25,43 @@ PhotonMap::PhotonMap(double emin, double eratio, int nlevels, int minlevel)
 , m_photons(0)
 , m_pixels(0)
 {}
+
+PhotonMap::PhotonMap(const std::string & inputFile, const std::string & tablename)
+: m_photons(0)
+, m_pixels(0)
+{
+    const tip::Table & table=*tip::IFileSvc::instance().readTable(inputFile, tablename);
+    const tip::Header& hdr = table.getHeader();
+    double eratio;
+    int stored_photons(0), stored_pixels(0);
+    hdr["EMIN"].get(m_emin);
+    hdr["ERATIO"].get(eratio);
+    m_logeratio = log(eratio);
+    hdr["LEVELS"].get(m_levels);
+    hdr["MINLEVEL"].get(m_minlevel);
+    hdr["PHOTONS"].get(stored_photons);
+    hdr["PIXELS"].get(stored_pixels);
+
+    tip::Table::ConstIterator itor = table.begin();
+    std::cout << "Creating PhotonMap from file " << inputFile << ", tabel " << tablename << std::endl;
+
+    for(tip::Table::ConstIterator itor = table.begin(); itor != table.end(); ++itor)
+    {
+        long level, index, count;
+        (*itor)["LEVEL"].get(level);
+        (*itor)["INDEX"].get(index);
+        (*itor)["COUNT"].get(count);
+        HealPixel p(index, level);
+        this->insert( value_type(p, count) );
+        m_pixels ++;
+        m_photons += count;
+    }
+    delete &table; 
+    std::cout << "Photons available: " << stored_photons 
+        << "  Pixels available: " << stored_pixels <<std::endl;
+    std::cout << "Photons loaded: " << m_photons 
+        << "  Pixels created: " << m_pixels <<std::endl;
+}
 
 
 PhotonMap::~PhotonMap()
@@ -130,12 +169,12 @@ int PhotonMap::extract(const astro::SkyDir& dir, double radius,
 
         astro::HealPixel hp(*it, select_level);
         const_iterator it2 = find(hp);
-		if (it2 == end()) // Not in PhotonMap
-		{
-			if (include_all) // Add anyway
-				vec.push_back(std::make_pair(hp, 0));
-		}
-		else // In PhotonMap
+        if (it2 == end()) // Not in PhotonMap
+        {
+            if (include_all) // Add anyway
+                vec.push_back(std::make_pair(hp, 0));
+        }
+        else // In PhotonMap
         {
             int count = it2->second;
             vec.push_back(std::make_pair(it2->first, count));
@@ -149,7 +188,7 @@ int PhotonMap::extract(const astro::SkyDir& dir, double radius,
 double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
                               bool weighted) const
 {
-        
+
     if (!includeChildren) // No children
     {
         const_iterator it = find(px);
@@ -159,17 +198,17 @@ double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
             return weighted? it->second * weight  : it->second; 
         }else  return 0;
     }else{ // Include children
-    
+
         double count = 0;
         int maxLevel = m_minlevel + m_levels - 1;
         astro::HealPixel boundary(px.lastChildIndex(maxLevel), maxLevel);
         for (PhotonMap::const_iterator it =lower_bound(px);
             it != end() && it->first <= boundary; ++it)
         {
-           double weight = 1 << 2*(it->first.level() - m_minlevel);
+            double weight = 1 << 2*(it->first.level() - m_minlevel);
 
             count += weighted? it->second * weight
-                             : it->second; 
+                : it->second; 
         }
         return count;
     }
@@ -178,12 +217,12 @@ double PhotonMap::photonCount(const astro::HealPixel & px, bool includeChildren,
 //! Count the photons within a given pixel, weighted with children.  Also return weighted direction.
 double PhotonMap::photonCount(const astro::HealPixel & px, astro::SkyDir & NewDir) const
 {
-        
-    
+
+
     double count = 0;
     int maxLevel = m_minlevel + m_levels - 1;
     astro::HealPixel boundary(px.lastChildIndex(maxLevel), maxLevel);
-	CLHEP::Hep3Vector v(0,0,0);
+    CLHEP::Hep3Vector v(0,0,0);
 
     for (PhotonMap::const_iterator it = lower_bound(px);
         it != end() && it->first <= boundary; ++it)
@@ -191,11 +230,11 @@ double PhotonMap::photonCount(const astro::HealPixel & px, astro::SkyDir & NewDi
         double weight = 1 << 2*(it->first.level() - m_minlevel);
 
         count += it->second * weight; 
-		v +=  weight * it->second * (it->first)().dir();
+        v +=  weight * it->second * (it->first)().dir();
     }
 
-	NewDir = astro::SkyDir(v);
-	return count;
+    NewDir = astro::SkyDir(v);
+    return count;
 }
 
 std::vector<double> PhotonMap::energyBins()const
@@ -204,5 +243,51 @@ std::vector<double> PhotonMap::energyBins()const
     double eratio(exp(m_logeratio));
     for(int i = 1; i< m_levels; ++i) result.push_back(result.back()*eratio);
     return result;
+}
+
+std::auto_ptr<tip::Table> PhotonMap::write(const std::string & outputFile,
+                                           const std::string & tablename,
+                                           bool clobber) const
+{
+    if (clobber)
+    {
+        int rc = std::remove(outputFile.c_str());
+        if( rc == -1 && errno == EACCES ) 
+            throw std::runtime_error(std::string(" Cannot remove file " + outputFile));
+    }
+
+    // now add a table to the file
+    tip::IFileSvc::instance().appendTable(outputFile, tablename);
+    tip::Table & table = *tip::IFileSvc::instance().editTable( outputFile, tablename);
+
+    table.appendField("LEVEL", "1J");
+    table.appendField("INDEX", "1J");
+    table.appendField("COUNT", "1J");
+    table.setNumRecords(m_pixels);
+
+    // get iterators for the Table and the Map
+    tip::Table::Iterator itor = table.begin();
+    const_iterator pmitor = begin();
+
+    // now just copy
+    for( ; pmitor != end(); ++pmitor, ++itor)
+    {
+        (*itor)["LEVEL"].set(pmitor->first.level());
+        (*itor)["INDEX"].set(pmitor->first.index());
+        (*itor)["COUNT"].set(pmitor->second);
+    }
+
+    // set the headers (TODO: do the comments, too)
+    tip::Header& hdr = table.getHeader();
+    hdr["NAXIS1"].set(3 * sizeof(long));
+    hdr["EMIN"].set(m_emin); 
+    hdr["ERATIO"].set(exp(m_logeratio)); 
+    hdr["LEVELS"].set(m_levels); 
+    hdr["MINLEVEL"].set(m_minlevel); 
+    hdr["PHOTONS"].set(m_photons); 
+    hdr["PIXELS"].set(m_pixels);
+
+    // need to do this to ensure file is closed when pointer goes out of scope
+    return std::auto_ptr<tip::Table>(&table); 
 }
 
