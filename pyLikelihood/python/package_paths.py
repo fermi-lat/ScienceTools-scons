@@ -20,13 +20,9 @@ else:
 
 from swig_setup import packageroot
 
-stlibs = ['st_graph', 'optimizers', 'xmlBase', 'Likelihood', 'evtbin',
-          'dc1Response', 'g25Response', 'testResponse', 'tip']
-
-extra_paths = [('LIKELIHOODROOT',
-                os.path.join(inst_dir, '%s' % packageroot('Likelihood'))),
-               ('EVTBINROOT',
-                os.path.join(inst_dir, '%s' % packageroot('evtbin'))),
+extra_paths = [('HANDOFF_RESPONSEROOT',
+                os.path.join(inst_dir, 'irfs',
+                             '%s' %packageroot('handoff_response'))),
                ('CALDB',
                 os.path.join(inst_dir, 'irfs',
                              '%s' % packageroot('caldb'), 'CALDB')), 

@@ -6,6 +6,8 @@
 
    @verbatim
 
+   v0r3p9 06-Dec-06   JC    update package_paths.py; start using SwigPolicy's
+                            startup_scripts.py
    v0r3p8 05-Dec-06   JC    add AnalysisBase.writeCountsSpectra method
    v0r3p7 04-Dec-06   JC    check that expMap energy bounds enclose
                             evfiles energy range
