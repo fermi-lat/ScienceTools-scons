@@ -6,11 +6,13 @@ $Header$
 
 #include "map_tools/PhotonMap.h"
 
-#include <cmath>
-#include <utility>
 #include "CLHEP/Vector/ThreeVector.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
+#include <cmath>
+#include <utility>
+#include <stdexcept>
 
 using namespace map_tools;
 using astro::HealPixel;
