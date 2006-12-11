@@ -16,8 +16,8 @@ Tkr1FirstLayer  CTBCORE  CTBGAM  CTBBestEnergyProb
 
 #
 # DC2 Event class cuts.  Note that the ordering ensures that class A
-# events are assigned first, so that class B event need only be
-# defined by lower their looser limits.  Defining the cuts using an
+# events are assigned first, so that class B events need only be
+# defined by their looser lower limits.  Defining the cuts using an
 # order from more to less restrictive also helps ensure that the
 # events are properly partitioned.
 #

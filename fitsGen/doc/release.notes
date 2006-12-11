@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r2   11-Dec-06   JC   use embed_python and the EventClassifier class
+                            to assign event classes by simple ROOT TCuts
     v3r1p3 28-Sep-06   JC   remove Util (unneeded with conversion to st_app)
     v3r1p2 25-Sep-06   JC   add TIMESYS, TIMEUNIT and GPS_OUT to ft[12].tpl
     v3r1p1 08-Aug-06   JC   add OBSERVER and ORIGIN keywords to SC_DATA 
