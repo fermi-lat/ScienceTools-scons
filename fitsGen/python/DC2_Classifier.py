@@ -14,7 +14,11 @@ Tkr1FirstLayer  CTBCORE  CTBGAM  CTBBestEnergyProb
 """.split()
 
 #
-# Example event class cuts.
+# DC2 Event class cuts.  Note that the ordering ensures that class A
+# events are assigned first, so that class B event need only be
+# defined by lower their looser limits.  Defining the cuts using an
+# order from more to less restrictive also helps ensure that the
+# events are properly partitioned.
 #
 eventClassCuts = ["CTBCORE > 0.35 && CTBBestEnergyProb > 0.35 && "
                   + " CTBGAM > 0.50 && Tkr1FirstLayer > 5.5",

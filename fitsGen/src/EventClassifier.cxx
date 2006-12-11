@@ -20,11 +20,11 @@
 namespace fitsGen {
 
 EventClassifier::EventClassifier(const std::string & classifierScript) 
-   : m_module(0), m_meritDict(0) {
+   : m_module(0), m_classifier(0), m_meritDict(0) {
    m_module = new embed_python::Module("", classifierScript, false,
                                        pythonPath());
-   m_meritDict = new MeritDict(m_module);
    m_classifier = m_module->attribute("eventClassifier");
+   m_meritDict = new MeritDict(m_module);
 }
 
 EventClassifier::~EventClassifier() throw() {
@@ -42,7 +42,8 @@ long EventClassifier::operator()(tip::ConstTableRecord & row) {
    PyObject * args(PyTuple_New(1));
    PyTuple_SetItem(args, 0, m_meritDict->pyDict());
    PyObject * result = m_module->call(m_classifier, args);
-   return PyInt_AsLong(result);
+   long ret(PyInt_AsLong(result));
+   return ret;
 }
 
 long EventClassifier::
@@ -54,7 +55,8 @@ operator()(const std::map<std::string, double> & row) {
    PyObject * args(PyTuple_New(1));
    PyTuple_SetItem(args, 0, m_meritDict->pyDict());
    PyObject * result = m_module->call(m_classifier, args);
-   return PyInt_AsLong(result);
+   long ret(PyInt_AsLong(result));
+   return ret;
 }
 
 std::string EventClassifier::pythonPath() const {
@@ -77,7 +79,6 @@ EventClassifier::MeritDict::MeritDict(embed_python::Module * module)
 EventClassifier::MeritDict::~MeritDict() throw() {
    if (m_dict) {
       Py_DECREF(m_dict);
-      delete m_dict;
    }
 }
 

@@ -51,7 +51,7 @@ private:
 
    /**
     * @class Nested class to encapsulate relevant merit variables for
-    * access to from event classifier script.
+    * access from event classifier script.
     */
 
    class MeritDict {
