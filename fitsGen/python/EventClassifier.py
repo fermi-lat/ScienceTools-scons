@@ -1,43 +1,35 @@
 """
 @brief Python code for parsing ROOT TCuts and partitioning Gleam
-events into event classes.  The function eventClassifier should be
-called via embed_python and the EventClassifier class from makeFT1.
-
+events into event classes.  A function object eventClassifier should
+be created as an instance of EventClassifier with the desired TCuts
+defining the various classes. The function eventClassifier will be
+called from makeFT1 via embed_python and the fitsGen::EventClassifier
+class.
 @author J. Chiang <jchiang@slac.stanford.edu>
 """
 #
 # $Header$
 #
-meritVariables = """
-EvtRun    EvtEnergyCorr 
-McEnergy  McXDir  McYDir  McZDir   
-McXDirErr   McYDirErr  McZDirErr   
-McTkr1DirErr  McDirErr  
-GltWord   FilterStatus_HI 
-Tkr1FirstLayer  
-CTBCORE  CTBSummedCTBGAM  CTBBestEnergyProb
-""".split()
 
-#
-# Example event class cuts.
-#
-eventClassCuts = ['CTBSummedCTBGAM>=0.5 && CTBCORE>=0.8',
-                  'CTBSummedCTBGAM>=0.5 && CTBCORE>=0.5 && CTBCORE<0.8',
-                  'CTBSummedCTBGAM>=0.5 && CTBCORE<0.5',
-                  'CTBSummedCTBGAM>=0.1 && CTBSummedCTBGAM<0.5',
-                  'CTBSummedCTBGAM<0.1']
-
-event_classes = [cut.replace('&&', 'and') for cut in eventClassCuts]
-
-def eventClassifier(row):
-    for key in row:
-        exec("%s = row['%s']" % (key, key))
-    for i, cut in enumerate(event_classes):
-        if eval(cut):
-            return i
-    return -1
+class EventClassifier(object):
+    def __init__(self, eventClassCuts):
+        self.event_classes = [cut.replace('&&', 'and') for cut
+                              in eventClassCuts]
+    def __call__(self, row):
+        for key in row:
+            exec("%s = row['%s']" % (key, key))
+        for i, cut in enumerate(self.event_classes):
+            if eval(cut):
+                return i
+        return -1
 
 if __name__ == '__main__':
+    cuts = ['CTBSummedCTBGAM>=0.5 && CTBCORE>=0.8',
+            'CTBSummedCTBGAM>=0.5 && CTBCORE>=0.5 && CTBCORE<0.8',
+            'CTBSummedCTBGAM>=0.5 && CTBCORE<0.5',
+            'CTBSummedCTBGAM>=0.1 && CTBSummedCTBGAM<0.5',
+            'CTBSummedCTBGAM<0.1']
+    eventClassifier = EventClassifier(cuts)
     rows = [{'CTBSummedCTBGAM' : 0.5,
              'CTBCORE' : 0.8},
             {'CTBSummedCTBGAM' : 0.5,

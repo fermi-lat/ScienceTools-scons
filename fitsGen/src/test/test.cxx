@@ -23,7 +23,7 @@ void run(fitsGen::EventClassifier & eventClass,
 
 int main() {
    try {
-      fitsGen::EventClassifier foo("EventClassifier");
+      fitsGen::EventClassifier foo("Pass4_Classifier");
       run(foo, 0.5, 0.8);
       run(foo, 0.5, 0.7);
       run(foo, 0.5, 0.3);

@@ -21,8 +21,8 @@ namespace fitsGen {
 
 EventClassifier::EventClassifier(const std::string & classifierScript) 
    : m_module(0), m_classifier(0), m_meritDict(0) {
-   m_module = new embed_python::Module("", classifierScript, false,
-                                       pythonPath());
+   m_module = new embed_python::Module("", classifierScript, 
+                                       pythonPath(), false);
    m_classifier = m_module->attribute("eventClassifier");
    m_meritDict = new MeritDict(m_module);
 }
@@ -30,6 +30,7 @@ EventClassifier::EventClassifier(const std::string & classifierScript)
 EventClassifier::~EventClassifier() throw() {
    try {
       delete m_meritDict;
+      Py_DECREF(m_classifier);
       delete m_module;
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
@@ -39,10 +40,11 @@ EventClassifier::~EventClassifier() throw() {
 
 long EventClassifier::operator()(tip::ConstTableRecord & row) {
    m_meritDict->setItems(row);
-   PyObject * args(PyTuple_New(1));
-   PyTuple_SetItem(args, 0, m_meritDict->pyDict());
+   PyObject * args(Py_BuildValue("(O)", m_meritDict->pyDict()));
    PyObject * result = m_module->call(m_classifier, args);
    long ret(PyInt_AsLong(result));
+   Py_DECREF(result);
+   Py_DECREF(args);
    return ret;
 }
 
@@ -52,10 +54,11 @@ operator()(const std::map<std::string, double> & row) {
    for ( ; variable != row.end(); ++variable) {
       m_meritDict->setItem(variable->first, variable->second);
    }
-   PyObject * args(PyTuple_New(1));
-   PyTuple_SetItem(args, 0, m_meritDict->pyDict());
+   PyObject * args(Py_BuildValue("(O)", m_meritDict->pyDict()));
    PyObject * result = m_module->call(m_classifier, args);
    long ret(PyInt_AsLong(result));
+   Py_DECREF(result);
+   Py_DECREF(args);
    return ret;
 }
 
@@ -87,6 +90,8 @@ MeritDict::setItem(const std::string & key, double value) {
    PyObject * py_key(PyString_FromString(const_cast<char *>(key.c_str())));
    PyObject * py_value(PyFloat_FromDouble(value));
    PyDict_SetItem(m_dict, py_key, py_value);
+   Py_DECREF(py_key);
+   Py_DECREF(py_value);
 }
 
 void EventClassifier::
