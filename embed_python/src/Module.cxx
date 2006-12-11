@@ -32,8 +32,42 @@ namespace {
 using namespace embed_python;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Module::Module(std::string path, std::string module, bool verbosity,
-               const std::string & python_dir)
+Module::Module(std::string path, std::string module, bool verbosity)
+: m_moduleName(module)
+, m_verbose(verbosity)
+, m_root("")
+{
+    char oldcwd[128], newcwd[128];
+    _getcwd(oldcwd, sizeof(oldcwd));
+
+    if( !path.empty() ) {
+        if( _chdir(path.c_str()) !=0 ){
+            throw std::runtime_error("Setup: could not find folder " +path);
+        }
+        // save current working directory.
+        _getcwd(newcwd, sizeof(newcwd));
+        if( verbose()) std::cout << "switched to folder" << newcwd << std::endl;
+        m_root=newcwd;
+    }
+    if( ! initialized ){
+        initialized = true;
+        Py_Initialize();
+    }
+
+    m_module = PyImport_ImportModule(const_cast<char*>(module.c_str()));
+    check_error("Module: error parsing module "+module);
+   
+    if( verbose() ) std::cout << "Read python module "
+        << PyString_AsString(attribute("__file__"))<<std::endl;
+#if 0
+    if( !path.empty() ){
+        _chdir(oldcwd);
+    }
+#endif
+}
+
+Module::Module(std::string path, std::string module,
+               const std::string & python_dir, bool verbosity)
 : m_moduleName(module)
 , m_verbose(verbosity)
 , m_root("")
@@ -58,13 +92,11 @@ Module::Module(std::string path, std::string module, bool verbosity,
     if (!python_dir.empty()) {
        m_module = PyImport_ImportModule("sys");
        check_error("Module: error parsing module sys");
-       PyObject * py_dir = 
-          PyString_FromString(const_cast<char *>(python_dir.c_str()));
        PyObject * sys_path_insert(attribute("path.insert"));
-       PyObject * args(PyTuple_New(2));
-       PyTuple_SetItem(args, 0, PyInt_FromLong(0));
-       PyTuple_SetItem(args, 1, py_dir);
+       PyObject * args(Py_BuildValue("(is)", 0, python_dir.c_str()));
        call(sys_path_insert, args);
+       Py_DECREF(sys_path_insert);
+       Py_DECREF(args);
        Py_DECREF(m_module);
     }
 

@@ -28,9 +28,17 @@ public:
     /// @param path path to module. If empty, assume cwd
     /// @param module name of module to load, without ".py".  Must be on pythonpath
     /// @param verbose [false] useful output if debugging?
+    Module(std::string path, std::string module, bool verbose=false);
+
+
+    /// @param path path to module. If empty, assume cwd
+    /// @param module name of module to load, without ".py". 
     /// @param python_dir Directory to be prepended to PYTHONPATH
-    Module(std::string path, std::string module, bool verbose=false,
-           const std::string & python_dir="");
+    /// @param verbose [false] useful output if debugging?
+    Module(std::string path, std::string module, 
+           const std::string & python_dir="",
+           bool verbose=false);
+           
     ~Module();
 
     /// return a numeric type
