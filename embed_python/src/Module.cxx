@@ -32,7 +32,8 @@ namespace {
 using namespace embed_python;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Module::Module(std::string path, std::string module, bool verbosity)
+Module::Module(std::string path, std::string module, bool verbosity,
+               const std::string & python_dir)
 : m_moduleName(module)
 , m_verbose(verbosity)
 , m_root("")
@@ -52,6 +53,19 @@ Module::Module(std::string path, std::string module, bool verbosity)
     if( ! initialized ){
         initialized = true;
         Py_Initialize();
+    }
+
+    if (!python_dir.empty()) {
+       m_module = PyImport_ImportModule("sys");
+       check_error("Module: error parsing module sys");
+       PyObject * py_dir = 
+          PyString_FromString(const_cast<char *>(python_dir.c_str()));
+       PyObject * sys_path_insert(attribute("path.insert"));
+       PyObject * args(PyTuple_New(2));
+       PyTuple_SetItem(args, 0, PyInt_FromLong(0));
+       PyTuple_SetItem(args, 1, py_dir);
+       call(sys_path_insert, args);
+       Py_DECREF(m_module);
     }
 
     m_module = PyImport_ImportModule(const_cast<char*>(module.c_str()));
