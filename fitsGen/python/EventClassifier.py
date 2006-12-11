@@ -8,7 +8,6 @@ called via embed_python and the EventClassifier class from makeFT1.
 #
 # $Header$
 #
-
 meritVariables = """
 EvtRun    EvtEnergyCorr 
 McEnergy  McXDir  McYDir  McZDir   

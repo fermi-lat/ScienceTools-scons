@@ -21,7 +21,8 @@ namespace fitsGen {
 
 EventClassifier::EventClassifier(const std::string & classifierScript) 
    : m_module(0), m_meritDict(0) {
-   m_module = new embed_python::Module(pythonPath(), classifierScript);
+   m_module = new embed_python::Module("", classifierScript, false,
+                                       pythonPath());
    m_meritDict = new MeritDict(m_module);
    m_classifier = m_module->attribute("eventClassifier");
 }
