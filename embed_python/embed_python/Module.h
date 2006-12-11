@@ -24,12 +24,6 @@ namespace embed_python {
 */
 class Module {
 public:
-    /// ctor 
-    /// @param path path to module. If empty, assume cwd
-    /// @param module name of module to load, without ".py".  Must be on pythonpath
-    /// @param verbose [false] useful output if debugging?
-    Module(std::string path, std::string module, bool verbose=false);
-
 
     /// @param path path to module. If empty, assume cwd
     /// @param module name of module to load, without ".py". 
