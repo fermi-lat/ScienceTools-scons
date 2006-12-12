@@ -35,12 +35,21 @@ class EventClassifier {
 
 public:
 
+   /// @param classifierScript Module name of a Python script that 
+   /// takes TCuts for defining event classes.
    EventClassifier(const std::string & classifierScript);
 
    ~EventClassifier() throw();
 
+   /// @return The event class id number.  This is -1 if the
+   /// event does not fit into any class.
+   /// @param row A row from a merit file, typically
    long operator()(tip::ConstTableRecord & row);
 
+   /// @return The event class id number.  This is -1 if the
+   /// event does not fit into any class.
+   /// @param row A map containing the same relevant information as a
+   /// merit file row.
    long operator()(const std::map<std::string, double> & row);
 
 private:
@@ -69,6 +78,8 @@ private:
 
       void setItems(tip::ConstTableRecord & row);
 
+      void setItems(const std::map<std::string, double> & row);
+
       double getItem(const std::string & key) const;
 
       std::vector<std::string> keys() const {
@@ -86,6 +97,8 @@ private:
       PyObject * m_dict;
 
    } * m_meritDict;
+
+   long value() const;
 
    std::string pythonPath() const;
 

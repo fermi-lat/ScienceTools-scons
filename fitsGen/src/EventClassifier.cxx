@@ -40,20 +40,16 @@ EventClassifier::~EventClassifier() throw() {
 
 long EventClassifier::operator()(tip::ConstTableRecord & row) {
    m_meritDict->setItems(row);
-   PyObject * args(Py_BuildValue("(O)", m_meritDict->pyDict()));
-   PyObject * result = m_module->call(m_classifier, args);
-   long ret(PyInt_AsLong(result));
-   Py_DECREF(result);
-   Py_DECREF(args);
-   return ret;
+   return value();
 }
 
 long EventClassifier::
 operator()(const std::map<std::string, double> & row) {
-   std::map<std::string, double>::const_iterator variable(row.begin());
-   for ( ; variable != row.end(); ++variable) {
-      m_meritDict->setItem(variable->first, variable->second);
-   }
+   m_meritDict->setItems(row);
+   return value();
+}
+
+long EventClassifier::value() const {
    PyObject * args(Py_BuildValue("(O)", m_meritDict->pyDict()));
    PyObject * result = m_module->call(m_classifier, args);
    long ret(PyInt_AsLong(result));
@@ -98,6 +94,14 @@ void EventClassifier::
 MeritDict::setItems(tip::ConstTableRecord & row) {
    for (size_t i = 0; i < m_keys.size(); i++) {
       setItem(m_keys.at(i), row[m_keys.at(i)].get());
+   }
+}
+
+void EventClassifier::
+MeritDict::setItems(const std::map<std::string, double> & row) {
+   std::map<std::string, double>::const_iterator variable(row.begin());
+   for ( ; variable != row.end(); ++variable) {
+      setItem(variable->first, variable->second);
    }
 }
 
