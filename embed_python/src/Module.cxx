@@ -57,19 +57,26 @@ Module::Module(std::string path, std::string module,
         Py_Initialize();
     }
 
+    // Set a default sys.argv[0] for naive modules (e.g., numarray)
+    // that expect this.
+    m_module = PyImport_ImportModule("sys");
+    check_error("Module: error parsing module sys");
+    PyObject * sys_dict_setitem(attribute("__dict__.__setitem__"));
+    PyObject * args(Py_BuildValue("(ss)", "argv", "embed_python"));
+    call(sys_dict_setitem, args);
+    Py_DECREF(sys_dict_setitem);
+    Py_DECREF(args);
     if (!python_dir.empty()) {
-        // this is equivalent to: 
-        //  import sys 
-        //  sys.path.insert(python_dir)
-       m_module = PyImport_ImportModule("sys");
-       check_error("Module: error parsing module sys");
+       // this is equivalent to: 
+       // import sys 
+       // sys.path.insert(0, python_dir)
        PyObject * sys_path_insert(attribute("path.insert"));
-       PyObject * args(Py_BuildValue("(is)", 0, python_dir.c_str()));
+       args = Py_BuildValue("(is)", 0, python_dir.c_str());
        call(sys_path_insert, args);
        Py_DECREF(sys_path_insert);
        Py_DECREF(args);
-       Py_DECREF(m_module);
     }
+    Py_DECREF(m_module);
 
     m_module = PyImport_ImportModule(const_cast<char*>(module.c_str()));
     check_error("Module: error parsing module "+module);
