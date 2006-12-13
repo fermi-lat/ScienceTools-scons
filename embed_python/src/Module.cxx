@@ -62,10 +62,12 @@ Module::Module(std::string path, std::string module,
     m_module = PyImport_ImportModule("sys");
     check_error("Module: error parsing module sys");
     PyObject * sys_dict_setitem(attribute("__dict__.__setitem__"));
-    PyObject * args(Py_BuildValue("(ss)", "argv", "embed_python"));
+    PyObject * mylist(Py_BuildValue("[s]", "embed_python"));
+    PyObject * args(Py_BuildValue("(sO)", "argv", mylist));
     call(sys_dict_setitem, args);
     Py_DECREF(sys_dict_setitem);
     Py_DECREF(args);
+    Py_DECREF(mylist); 
     if (!python_dir.empty()) {
        // this is equivalent to: 
        // import sys 
