@@ -136,6 +136,26 @@ double Module::operator[](const std::string& key)
     return dval;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getValue(const std::string& key, int& value)
+{ 
+    value = PyFloat_AsDouble(attribute(key));
+    check_error("Module::getValue -- "+key+" not an integer type");
+    return;
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getValue(const std::string& key, int& value, int default_value)
+{ 
+    PyObject* o = attribute(key, false); 
+    if( o==0){ 
+        value = default_value;
+
+    }else{
+        value =PyInt_AsLong(o);
+        check_error("Module::getValue -- "+key+" not an integer type"); 
+    }
+    return;
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::getValue(const std::string& key, double& value)
 { 
     value = PyFloat_AsDouble(attribute(key));
@@ -159,8 +179,23 @@ void Module::getValue(const std::string& key, double& value, double default_valu
 void Module::getValue(const std::string& key, std::string& value)
 { 
     char * str = PyString_AsString(attribute(key));
-    check_error("Module::getValue-- "+key+" not a str type");
+    check_error("Module::getValue-- "+key+" not a string type");
     value = std::string(str);
+    return;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getValue(const std::string& key, std::string& value, std::string default_value)
+{ 
+    PyObject* o = attribute(key, false); 
+    if( o==0){ 
+        value = default_value;
+
+    }else{
+        char* str =PyString_AsString(o);
+        check_error("Module::getValue -- "+key+" not a string type");
+        value = std::string(str);
+    }
     return;
 }
 

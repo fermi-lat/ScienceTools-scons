@@ -38,14 +38,21 @@ public:
     /// return a numeric type
     double operator[](const std::string& key);
 
-    /// set a numeric value
-    void getValue(const std::string& attribute, double & value);
 
-    /// set a numeric value
+    /// set an int value
+    void getValue(const std::string& attribute, int & value);
+    /// set an int value with default
+    void getValue(const std::string& attribute, int & value, int default_value);
+
+    /// set a double value
+    void getValue(const std::string& attribute, double & value);
+    /// set a double value with default
     void getValue(const std::string& attribute, double & value, double default_value);
 
     /// set a string value
     void getValue(const std::string& attribute, std::string& value);
+    /// set a string value with default
+    void getValue(const std::string& attribute, std::string& value, std::string default_value);
 
     /// set a list of strings
     void getList(const std::string& listname, std::vector<std::string>& names);
