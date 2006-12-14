@@ -34,7 +34,7 @@ using namespace embed_python;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Module::Module(std::string path, std::string module,
+Module::Module(const std::string& path, const std::string& module,
                const std::string & python_dir, bool verbosity)
 : m_moduleName(module)
 , m_verbose(verbosity)
@@ -68,6 +68,7 @@ Module::Module(std::string path, std::string module,
     Py_DECREF(sys_dict_setitem);
     Py_DECREF(args);
     Py_DECREF(mylist); 
+
     if (!python_dir.empty()) {
        // this is equivalent to: 
        // import sys 
@@ -112,22 +113,22 @@ Module::~Module()
     Py_Finalize();
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-PyObject* Module::attribute(std::string name)
+PyObject* Module::attribute(const std::string& name, bool check)
 {
     unsigned int c (name.find_first_of("."));
     if( c != std::string::npos) {
         PyObject * t = attribute(name.substr(0,c));
         PyObject * ret = PyObject_GetAttrString(t, const_cast<char*>(name.substr(c+1).c_str()));
-        check_error("Module: did not find attribute "+name);
+        if ( check)  check_error("Module: did not find attribute "+name);
         return ret;
     }
     PyObject* ret = PyObject_GetAttrString(m_module,const_cast<char*>(name.c_str()));
-    check_error("Module: did not find attribute "+name);
+    if ( check ) check_error("Module: did not find attribute "+name);
     return ret;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-double Module::operator[](std::string key)
+double Module::operator[](const std::string& key)
 { 
     PyObject* obj = attribute(key);
     double dval (PyFloat_AsDouble(obj));
@@ -135,14 +136,21 @@ double Module::operator[](std::string key)
     return dval;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(std::string key, double& value)
+void Module::getValue(const std::string& key, double& value)
 { 
     value = PyFloat_AsDouble(attribute(key));
     check_error("Module::getValue -- "+key+" not a numeric type");
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(std::string key, std::string& value)
+void Module::getValue(const std::string& key, double& value, double default_value)
+{ 
+    PyObject* o = attribute(key, false); 
+    value = o!=0? PyFloat_AsDouble(o) : default_value;
+    return;
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getValue(const std::string& key, std::string& value)
 { 
     char * str = PyString_AsString(attribute(key));
     check_error("Module::getValue-- "+key+" not a str type");
@@ -151,7 +159,7 @@ void Module::getValue(std::string key, std::string& value)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getList(std::string listname, std::vector<std::string>& names)
+void Module::getList(const std::string& listname, std::vector<std::string>& names)
 {
     PyObject* plist( attribute(listname) )
         , *iterator( PyObject_GetIter(plist) )
@@ -174,7 +182,7 @@ void Module::getList(std::string listname, std::vector<std::string>& names)
     
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getList(std::string listname, std::vector<double>& values)
+void Module::getList(const std::string& listname, std::vector<double>& values)
 {
     PyObject* plist( attribute(listname) )
         , *iterator( PyObject_GetIter(plist) )
@@ -204,7 +212,7 @@ void Module::check_error(const std::string& text)const
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int Module::test(int argc, char* argv[], std::string modulename)
+int Module::test(int argc, char* argv[], const std::string& modulename)
 {
     int ret(0);
     try{
@@ -226,10 +234,16 @@ int Module::test(int argc, char* argv[], std::string modulename)
         // assume the module imports math, defines pi
         try{
             setup["pi"];  // should fail
+            std::cout << "This should have failed!" << std::endl; 
+            ret = 1;
         }catch(const std::exception& e){
-            std::cout << "caught exception "<< e.what() << " as expected" << std::endl;
+            std::cout << "caught exception \""<< e.what() << "\" as expected" << std::endl;
         }
 
+        setup.getValue("junk", x, 99);
+            if( x!=99) {std::cerr << "failed to set default" << std::endl;
+            ret=1;\
+        }
         // now check compound 
         std::cout << "math.pi=" << setup["math.pi"] << std::endl;
 
@@ -245,6 +259,11 @@ int Module::test(int argc, char* argv[], std::string modulename)
         std::copy(numbers.begin(), numbers.end(), std::ostream_iterator<double>(std::cout, ", "));
         std::cout << std::endl;
 
+        // Try a call--get the PyObject that is a function
+        setup.call(setup.attribute("callable"));
+
+        // finally, a local class definition with a few attributes (class variables)
+        std::cout << "Local class: A.a= " << setup["A.a"] << std::endl;
 
     }catch( const std::exception & e){
         std::cerr<< "Module::test -- caught exception " << e.what() << std::endl;
