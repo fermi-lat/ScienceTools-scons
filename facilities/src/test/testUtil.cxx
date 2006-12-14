@@ -229,24 +229,56 @@ int main(int, char**) {
               << ex.what() << std::endl;
   }
 
+  // Try out trimLeading method
+  {
+    std::cout << std::endl << "Test trimLeading " << std::endl;
+    std::string string0;
+    std::string string1("  starts with 2 blanks");
+    std::string string2("\nstarts with newline");
+    std::string string3("no leading whitespace");
+    
+    unsigned nTrimmed = facilities::Util::trimLeading(&string0);
+    std::cout << "Trimmed " << nTrimmed << " from string0; has new value : "
+	      << "*BOS*" << string0 << "*EOS*" << std::endl;
+
+    nTrimmed = facilities::Util::trimLeading(&string1);
+    std::cout << "Trimmed " << nTrimmed << " from string1; has new value : "
+	      << "*BOS*" << string1 << "*EOS*" << std::endl;
+    
+    nTrimmed = facilities::Util::trimLeading(&string2);
+    std::cout << "Trimmed " << nTrimmed << " from string2; has new value : "
+	      << "*BOS*" << string2 << "*EOS*" <<  std::endl;
+    
+    nTrimmed = facilities::Util::trimLeading(&string3);
+    std::cout << "Trimmed " << nTrimmed << " from string3; has new value : "
+	      << "*BOS*" << string3 << "*EOS*" << std::endl;
+  }
+
+
   // Try out trimTrailing method
-  std::cout << std::endl << "Test trimTrailing " << std::endl;
-  std::string string1("ends with 2 blanks  ");
-  std::string string2("ends with newline\n");
-  std::string string3("no trailing whitespace");
+  {
+    std::cout << std::endl << "Test trimTrailing " << std::endl;
+    std::string string0;
+    std::string string1("ends with 2 blanks  ");
+    std::string string2("ends with newline\n");
+    std::string string3("no trailing whitespace");
+    
+    unsigned nTrimmed = facilities::Util::trimLeading(&string0);
+    std::cout << "Trimmed " << nTrimmed << " from string0; has new value : "
+	      << string0 << "*EOS*" << std::endl;
 
-  unsigned nTrimmed = facilities::Util::trimTrailing(&string1);
-  std::cout << "Trimmed " << nTrimmed << " from string1; has new value : "
-            << string1 << "*EOS*" << std::endl;
-
-  nTrimmed = facilities::Util::trimTrailing(&string2);
-  std::cout << "Trimmed " << nTrimmed << " from string2; has new value : "
-            << string2 << "*EOS" <<  std::endl;
-
-  nTrimmed = facilities::Util::trimTrailing(&string3);
-  std::cout << "Trimmed " << nTrimmed << " from string3; has new value : "
-            << string3 << "*EOS" << std::endl;
-
+    nTrimmed = facilities::Util::trimTrailing(&string1);
+    std::cout << "Trimmed " << nTrimmed << " from string1; has new value : "
+	      << string1 << "*EOS*" << std::endl;
+    
+    nTrimmed = facilities::Util::trimTrailing(&string2);
+    std::cout << "Trimmed " << nTrimmed << " from string2; has new value : "
+	      << string2 << "*EOS" <<  std::endl;
+    
+    nTrimmed = facilities::Util::trimTrailing(&string3);
+    std::cout << "Trimmed " << nTrimmed << " from string3; has new value : "
+	      << string3 << "*EOS" << std::endl;
+  }
 
 
   return 0;
