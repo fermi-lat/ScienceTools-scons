@@ -119,11 +119,11 @@ PyObject* Module::attribute(const std::string& name, bool check)
     if( c != std::string::npos) {
         PyObject * t = attribute(name.substr(0,c));
         PyObject * ret = PyObject_GetAttrString(t, const_cast<char*>(name.substr(c+1).c_str()));
-        if ( check)  check_error("Module: did not find attribute "+name);
+        if ( check)  check_error("Module: did not find attribute "+name); else PyErr_Clear();
         return ret;
     }
     PyObject* ret = PyObject_GetAttrString(m_module,const_cast<char*>(name.c_str()));
-    if ( check ) check_error("Module: did not find attribute "+name);
+    if ( check ) check_error("Module: did not find attribute "+name); else PyErr_Clear();
     return ret;
 }
 
@@ -146,7 +146,13 @@ void Module::getValue(const std::string& key, double& value)
 void Module::getValue(const std::string& key, double& value, double default_value)
 { 
     PyObject* o = attribute(key, false); 
-    value = o!=0? PyFloat_AsDouble(o) : default_value;
+    if( o==0){ 
+        value = default_value;
+
+    }else{
+        value =PyFloat_AsDouble(o);
+        check_error("Module::getValue -- "+key+" not a numeric type"); 
+    }
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
