@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r6p1  17-Dec-06   JC   skip unneeded scData entries in gtmaketime
     v4r6    04-Dec-06   JC   add Cuts::mergeRangeCuts; now all RangeCuts are 
                              merged and the DSS keywords updated accordingly
     v4r5    03-Dec-06   JC   add Cuts::removeRangeCuts to support independent
