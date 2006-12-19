@@ -94,7 +94,7 @@ void MakeTime::run() {
    m_pars.Prompt();
    m_pars.Save();
    check_outfile();
-//   findTimeLims();
+   findTimeLims();
    createGti();
    mergeGtis();
    copyTable();
