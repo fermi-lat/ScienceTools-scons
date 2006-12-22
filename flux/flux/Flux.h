@@ -45,7 +45,7 @@ public:
     virtual std::string title()const;
     
     /// generate a new entry trajectory
-    virtual void generate();
+    virtual bool generate();
     
     /// the particle generated 
     virtual std::string particleName()const;
@@ -57,10 +57,10 @@ public:
     virtual double energy()const;
     
     /// starting point 
-    virtual HepPoint3D launchPoint()const;
+    virtual Hep3Vector launchPoint()const;
     
     /// direction
-    virtual HepVector3D launchDir()const;
+    virtual Hep3Vector launchDir()const;
     
     /// return the time
     virtual double time()const;
@@ -103,6 +103,7 @@ public:
     /// write the characteristics of the current source distribution to a stream
     void writeSourceCharacteristic(std::ostream& out);
     
+    bool invalid()const;
 private:
     
     EventSource* m_event;  

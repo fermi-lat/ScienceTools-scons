@@ -5,17 +5,10 @@
 
 // includes
 #include <string>
-#include "CLHEP/Geometry/Point3D.h"
-#include "CLHEP/Geometry/Vector3D.h"
 #include "CLHEP/Vector/Rotation.h"
+#include "CLHEP/Vector/ThreeVector.h"
 #include "astro/GPS.h"
-// Hack for CLHEP 1.9.2.2
-#ifndef HepVector3D
-typedef HepGeom::Vector3D<double> HepVector3D;
-#endif
-#ifndef HepPoint3D 
-typedef Point3D<double>  HepPoint3D;
-#endif
+
 
 class ParticleProperty;
 class EventSource;
@@ -44,9 +37,11 @@ public:
     /// full title of the flux
     virtual std::string title()const = 0;
     
-    /// generate a new entry trajectory
-    virtual void generate()=0;
-    
+    /// generate a new entry trajectory. Must be valid, that is, there are available sources. 
+    /// May become invalid as a result of this call, return is validity
+    /// if invalid, std::runtime exception will be thrown
+    virtual bool generate()=0;
+
     /// the particle name of the last particle generated 
     virtual std::string particleName()const=0;
     
@@ -57,10 +52,10 @@ public:
     virtual double energy()const=0;
     
     /// starting point 
-    virtual HepPoint3D launchPoint()const=0;
+    virtual Hep3Vector launchPoint()const=0;
     
     /// direction
-    virtual HepVector3D launchDir()const=0;
+    virtual Hep3Vector launchDir()const=0;
     
     /// time (s) (absolute or elapsed??)
     virtual double time()const=0;
@@ -96,6 +91,9 @@ public:
     /// get the transformtation matrix - the rest of these functions are now deprecated
     virtual CLHEP::HepRotation transformToGlast(double seconds,astro::GPS::CoordSystem index)const=0;
     
+    /// may become invalid if no sources are enabled
+    virtual bool invalid()const=0; 
+
 };
 
 

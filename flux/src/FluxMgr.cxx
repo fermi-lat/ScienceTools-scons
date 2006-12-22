@@ -275,6 +275,10 @@ void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
         //double curTime=GPS::instance()->time();
         //cout << std::endl << "testlat=" << GPS::instance()->orbit()->testLatitude(curTime) << ' ' << "testlon=" << GPS::instance()->orbit()->testLongitude(curTime) << std::endl;
 
+        if( !f->enabled()) {
+            std::cout << "Source turned off at time " << time << std::endl;
+            break;
+        }
         double interval=e->interval(time);
 
         //here we increment the "elapsed" time and the "orbital" time,
