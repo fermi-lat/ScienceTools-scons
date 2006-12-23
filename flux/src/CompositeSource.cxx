@@ -13,6 +13,7 @@ $Header$
 #include <functional>
 #include <iomanip>
 #include <cmath>
+#include <stdexcept>
 
 CompositeSource::CompositeSource (double aRate)
 : EventSource(aRate),m_numofiters(0), m_recent(0),m_occulted(false)

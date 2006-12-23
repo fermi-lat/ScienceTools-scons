@@ -5,7 +5,7 @@
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
     
-   v8r31   22-dec-2006 thb Attempt to fix "out of sources" problem
+   v8r31p1 22-dec-2006 thb Attempt to fix "out of sources" problem
    v8r30p1 02-dec-2006 thb initial support for Sun and Moon; some refactoring
    v8r29   11-nov-2006 thb new timer sources
    v8r28p1 06-nov-2006 thb more Mods due to GPS refactoring 
