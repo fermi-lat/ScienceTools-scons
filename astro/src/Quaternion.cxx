@@ -35,9 +35,10 @@ Quaternion::Quaternion(const CLHEP::HepRotation& R)
 Quaternion::Quaternion(const CLHEP::Hep3Vector& zhat, const CLHEP::Hep3Vector& xhat)
 : m_v(Hep3Vector(0,0,0)), m_s(1)
 {
-    // note no check that they are unit vectors and orthogonal, beware
+    // note no check that they are unit vectors 
     double check( zhat.dot(xhat) ); // should be very small
-    if( fabs(check) >2e-6){
+    if( fabs(check) >5e-6){ // corresponds to 1 arc-sec
+        std::cerr << "Quaternion ctor: fail 1 arc-sec orthogonality requirement, dot product = " << check << std::endl;
         throw std::invalid_argument("Quaternion ctor: fail orthogonality");
     }
     Hep3Vector yhat(zhat.cross(xhat));
