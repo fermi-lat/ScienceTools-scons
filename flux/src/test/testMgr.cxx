@@ -51,8 +51,7 @@ void flux_load() {
     // these are the spectra that we want to make available
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( Earth);
-    DECLARE_SPECTRUM( microQuasar);
- }
+}
 
 
 int main(int argn, char * argc[]) {
