@@ -5,6 +5,7 @@
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
     
+   v8r31p3 03-jan-2007 thb add Earth10 source, same as Earth, but from 10 MeV
    v8r31p2 23-dec-2006 thb Attempt to fix "out of sources" problem
    v8r30p1 02-dec-2006 thb initial support for Sun and Moon; some refactoring
    v8r29   11-nov-2006 thb new timer sources
