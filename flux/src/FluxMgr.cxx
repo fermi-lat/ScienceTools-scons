@@ -382,7 +382,7 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
     */
     std::stringstream fileString;
     // Unique tag to add to ENTITY elements in the DTD.
-    char libchar = 'a';
+    int libid(1);
     std::string inFileName;
 
     std::vector<std::string>::const_iterator iter = fileList.begin();
@@ -397,27 +397,25 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
         << " SYSTEM " << '"' << inFileName << '"' << " [" << std::endl;
 
     //as long as there are files in the file list...
-    for (;iter != fileList.end(); iter++) {
+    for (;iter != fileList.end(); iter++, libid++) {
 
         // get the file name, and evaluate any system variables in it
         inFileName=(*iter).c_str();
         facilities::Util::expandEnvVar(&inFileName);
 
         //then make an ENTITY entry specifying where the file is
-        fileString << "<!ENTITY " << "library" << libchar << " SYSTEM " << '"' 
+        fileString << "<!ENTITY " << "library_" << libid << " SYSTEM " << '"' 
             << inFileName << "\" >" << std::endl;      
-        libchar++;
     }
 
     fileString << "]>" << std::endl << "<source_library>" << std::endl;
     iter = fileList.begin();
-    libchar = 'a';
+    libid = 1;
 
     //as long as there are files in the file list...
-    for (;iter != fileList.end(); iter++) {
+    for (;iter != fileList.end(); iter++, libid++) {
         // add a reference to the file name
-        fileString << "&library" << libchar << ";" << std::endl;       
-        libchar++;
+        fileString << "&library_" << libid << ";" << std::endl;       
     }
 
     fileString << "</source_library>" << '\0';
