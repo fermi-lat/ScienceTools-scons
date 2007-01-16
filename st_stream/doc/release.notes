@@ -4,6 +4,8 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+16-jan-2007   v0r5    JP  Direct StreamFormatter::info() stream to stout (cout)
+                          instead of stlog (clog).
 23-aug-2005   v0r4    JP  Do not automatically write prefix after endls.
                           Add prefix() method to OStream and prefix manipulator
                           to achieve this.
