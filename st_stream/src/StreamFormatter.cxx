@@ -16,7 +16,7 @@ namespace st_stream {
     // Make any mandatory connections for all streams.
     m_debug_stream.connect(sterr);
     m_err_stream.connect(sterr);
-    m_info_stream.connect(stlog);
+    m_info_stream.connect(stout);
     m_out_stream.connect(stout);
     m_warn_stream.connect(stlog);
 
