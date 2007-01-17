@@ -5,11 +5,17 @@ author James Chiang <jchiang@slac.stanford.edu>
 
 # $Id$
 
-use GlastPolicy v*
+use STpolicy v*
 use astro v*
 use irfLoader v* irfs
 use Likelihood v*
 use st_facilities v*
+use xmlBase v*
+use dataSubselector v*
+use st_stream v*
+use st_app v*
+use tip v*
+use optimizers v*
 use SwigPolicy v*
 use pyLikelihood v* -no_auto_imports
 use sane v* -no_auto_imports
@@ -17,10 +23,13 @@ use sane v* -no_auto_imports
 apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern shared_library
+apply_pattern ST_pfiles
 
 path_remove PYTHONPATH pyExposure
 path_append PYTHONPATH $(PYEXPOSUREROOT)/$(BINDIR)
 path_append PYTHONPATH $(PYEXPOSUREROOT)/python
+
+apply_pattern ST_app name=gtexposure
 
 private
 

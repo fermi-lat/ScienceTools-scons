@@ -82,9 +82,9 @@ void Exposure::readScData(const std::string & scDataFile) {
 }
 
 void Exposure::integrateExposure() {
-   unsigned int numIntervals = m_timeBoundaries.size() - 1;
+   size_t numIntervals = m_timeBoundaries.size() - 1;
    m_exposureValues.resize(numIntervals);
-   for (unsigned int i = 0; i < numIntervals; i++) {
+   for (size_t i = 0; i < numIntervals; i++) {
       m_exposureValues.at(i).resize(m_energies.size(), 0);
       std::pair<double, double> wholeInterval;
       wholeInterval.first = m_timeBoundaries[i];

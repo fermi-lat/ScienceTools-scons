@@ -9,11 +9,45 @@
  * $Header$
  */
 
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#include <xercesc/util/XercesDefs.hpp>
+
+#include "xmlBase/Dom.h"
+#include "xmlBase/XmlParser.h"
+
 #include "st_stream/StreamFormatter.h"
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
+
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
+
+#include "st_facilities/Util.h"
+
+#include "optimizers/dArg.h"
+#include "optimizers/Function.h"
+#include "optimizers/FunctionFactory.h"
+
+#include "dataSubselector/Cuts.h"
+#include "dataSubselector/RangeCut.h"
+#include "dataSubselector/SkyConeCut.h"
+
+#include "Likelihood/BrokenPowerLawExpCutoff.h"
+#include "Likelihood/BrokenPowerLaw2.h"
+#include "Likelihood/ExpCutoff.h"
+#include "Likelihood/FileFunction.h"
+#include "Likelihood/LogParabola.h"
+#include "Likelihood/MapCubeFunction.h"
+#include "Likelihood/PowerLaw2.h"
+
+#include "pyExposure/Exposure.h"
+
+XERCES_CPP_NAMESPACE_USE
 
 class GtExposure : public st_app::StApp {
 
@@ -38,33 +72,32 @@ private:
 
    st_app::AppParGroup & m_pars;
    st_stream::StreamFormatter * m_formatter;
-   static std::string s_cvs_id;
+   optimizers::FunctionFactory * m_funcFactory;
+   pyExposure::Exposure * m_exposure;
+   optimizers::Function * m_function;
 
    double m_emin;
    double m_emax;
    double m_ra;
    double m_dec;
 
-   optimizers::FunctionFactory * m_funcFactory;
-   pyExposure::Exposure * m_exposure;
-   optimizers::Function * m_function;
+   std::vector<double> m_weightedExps;
 
+   static std::string s_cvs_id;
+
+   void prepareFunctionFactory();
+   void promptForParameters();
    void parseDssKeywords();
    void setExposure();
    void getLcTimes(std::vector<double> & tlims) const;
-   void prepareFunctionFactory();
+   void prepareModel();
+   void performSpectralWeighting();
+   void writeExposure();
 };
 
 st_app::StAppFactory<GtExposure> myAppFactory("gtexposure");
 
 std::string GtExposure::s_cvs_id("$Name$");
-
-void GtExposure::banner() const {
-   int verbosity = m_pars["chatter"];
-   if (verbosity > 2) {
-      st_app::StApp::banner();
-   }
-}
 
 GtExposure::GtExposure() 
    : st_app::StApp(), 
@@ -77,12 +110,34 @@ GtExposure::GtExposure()
    prepareFunctionFactory();
 }
 
+void GtExposure::banner() const {
+   int verbosity = m_pars["chatter"];
+   if (verbosity > 2) {
+      st_app::StApp::banner();
+   }
+}
+
 void GtExposure::run() {
-   m_pars.Prompt();
-   m_pars.Save();
+   promptForParameters();
    parseDssKeywords();
    setExposure();
    prepareModel();
+   performSpectralWeighting();
+   writeExposure();
+}
+
+void GtExposure::promptForParameters() {
+   m_pars.Prompt("lcfile");
+   m_pars.Prompt("scfile");
+   m_pars.Prompt("rspfunc");
+   m_pars.Prompt("source_model_file");
+   std::string xmlFile = m_pars["source_model_file"];
+   if (xmlFile == "none") {
+      m_pars.Prompt("spectral_index");
+   } else {
+      m_pars.Prompt("target_source");
+   }
+   m_pars.Save();
 }
 
 void GtExposure::parseDssKeywords() {
@@ -95,13 +150,15 @@ void GtExposure::parseDssKeywords() {
    for (size_t i(0); i < cuts.size(); i++) {
       if (cuts[i].type() == "SkyCone") {
          const dataSubselector::SkyConeCut & my_cut =
-            dynamic_cast<dataSubselector::SkyConeCut &>(cuts[i]);
-         ra = my_cut.ra();
-         dec = my_cut.dec();
+            dynamic_cast<dataSubselector::SkyConeCut &>(
+               const_cast<dataSubselector::CutBase &>(cuts[i]));
+         m_ra = my_cut.ra();
+         m_dec = my_cut.dec();
       }
-      if (cuts[i].type == "range") {
+      if (cuts[i].type() == "range") {
          const dataSubselector::RangeCut & my_cut =
-            dynamic_cast<dataSubselector::RangeCut &>(cuts[i]);
+            dynamic_cast<dataSubselector::RangeCut &>(
+               const_cast<dataSubselector::CutBase &>(cuts[i]));
          if (my_cut.colname() == "ENERGY") {
             m_emin = my_cut.minVal();
             m_emax = my_cut.maxVal();
@@ -112,9 +169,9 @@ void GtExposure::parseDssKeywords() {
 
 void GtExposure::setExposure() {
    std::vector<double> energies;
-   size_t nee(21);
+   int nee = m_pars["number_of_energies"];
    double estep(std::log(m_emax/m_emin)/(nee-1));
-   for (size_t k(0); k < nee; k++) {
+   for (int k(0); k < nee; k++) {
       energies.push_back(m_emin*std::exp(estep*k));
    }
    std::vector<double> tlims;
@@ -124,7 +181,8 @@ void GtExposure::setExposure() {
    if (irfs == "DSS") {
       irfs = "DC2";
    }
-   m_exposure = pyExposure::Exposure(ft2file, tlims, energies, ra, dec, irfs);
+   m_exposure = new pyExposure::Exposure(ft2file, tlims, energies, 
+                                         m_ra, m_dec, irfs);
 }
 
 void GtExposure::getLcTimes(std::vector<double> & tlims) const {
@@ -133,7 +191,7 @@ void GtExposure::getLcTimes(std::vector<double> & tlims) const {
       tip::IFileSvc::instance().readTable(lc_file, "RATE");
 
    tip::Table::ConstIterator it(table->begin());
-   tip::ConstTableRecord row(*it);
+   tip::ConstTableRecord & row(*it);
 
    double time;
    double dt;
@@ -151,8 +209,15 @@ void GtExposure::getLcTimes(std::vector<double> & tlims) const {
 void GtExposure::prepareModel() {
    std::string xmlFile = m_pars["source_model_file"];
    std::string srcName = m_pars["target_source"];
+   double gamma = m_pars["spectral_index"];
    
-   xmlBase::XmlParser * parser(Likelihood::XmlParser_instance());
+   if (xmlFile == "none") {
+      m_function = m_funcFactory->create("PowerLaw2");
+      m_function->setParam("Index", gamma);
+      return;
+   }
+
+   xmlBase::XmlParser * parser(new xmlBase::XmlParser());
    
    DOMDocument * doc(parser->parse(xmlFile.c_str()));
    DOMElement * source_library(doc->getDocumentElement());
@@ -170,7 +235,7 @@ void GtExposure::prepareModel() {
          xmlBase::Dom::getChildrenByTagName(*it, "spectrum", children);
          DOMElement * spectrum(children.front());
          std::string type(xmlBase::Dom::getAttribute(spectrum, "type"));
-         m_function = m_functionFactory->create(type);
+         m_function = m_funcFactory->create(type);
          m_function->setParams(spectrum);
          return;
       }
@@ -179,20 +244,70 @@ void GtExposure::prepareModel() {
                             + xmlFile);
 }
 
-void prepareFunctionFactory() {
-   m_funcFactory->addFunc("SkyDirFunction", new Likelihood::SkyDirFunction(),
-                          false);
-   m_funcFactory->addFunc("SpatialMap", new Likelihood::SpatialMap(), false);
-   m_funcFactory->addFunc("MapCubeFunction", new Likelihood::MapCubeFunction(),
-                          false);
-   m_funcFactory->addFunc("PowerLaw2", new Likelihood::PowerLaw2(), false);
-   m_funcFactory->addFunc("BrokenPowerLaw2", new Likelihood::BrokenPowerLaw2(),
-                          false);
-   m_funcFactory->addFunc("LogParabola", new Likelihood::LogParabola(), false);
-   m_funcFactory->addFunc("FileFunction", new Likelihood::FileFunction(), 
-                          false);
-   m_funcFactory->addFunc("ExpCutoff", new Likelihood::ExpCutoff(), false);
+void GtExposure::performSpectralWeighting() {
+   const std::vector<double> & energies(m_exposure->energies());
+   std::vector<double> dndes;
+   for (size_t k(0); k < energies.size(); k++) {
+      optimizers::dArg arg(energies.at(k));
+      dndes.push_back(m_function->value(arg));
+   }
+   double dnde_int(0);
+   for (size_t k(0); k < energies.size()-1; k++) {
+      dnde_int += ((dndes.at(k+1) + dndes.at(k))/2.
+                   *(energies.at(k+1) - energies.at(k)));
+   }
+   const std::vector< std::vector<double> > & exposures(m_exposure->values());
+   std::vector< std::vector<double> >::const_iterator row(exposures.begin());
+   m_weightedExps.clear();
+   for ( ; row != exposures.end(); ++row) {
+      double my_exposure(0);
+      for (size_t k(0); k < energies.size()-1; k++) {
+         my_exposure += ((row->at(k+1)*dndes.at(k+1) 
+                           + row->at(k)*dndes.at(k))/2.
+                          *(energies.at(k+1) - energies.at(k)))/dnde_int;
+      }
+      m_weightedExps.push_back(my_exposure);
+   }
+}
+
+void GtExposure::writeExposure() {
+   std::string lc_file = m_pars["lcfile"];
+   tip::Table * table =
+      tip::IFileSvc::instance().editTable(lc_file, "RATE");
+
+   try {
+      table->appendField("EXPOSURE", "E");
+   } catch (tip::TipException & eObj) {
+      if (!st_facilities::Util::expectedException(eObj, "already exists")) {
+         throw;
+      }
+   }
+   
+   tip::Table::Iterator it(table->begin());
+   tip::TableRecord & row(*it);
+
+   if (m_weightedExps.size() != static_cast<size_t>(table->getNumRecords())) {
+      throw std::runtime_error("Size of exposures does not equal size of "
+                               "lc file RATE table");
+   }
+
+   for (size_t i(0); it != table->end(); ++it, i++) {
+      row["exposure"].set(m_weightedExps.at(i));
+   }
+   delete table;
+}
+
+void GtExposure::prepareFunctionFactory() {
    m_funcFactory->addFunc("BPLExpCutoff",
                           new Likelihood::BrokenPowerLawExpCutoff(), 
                           false);
+   m_funcFactory->addFunc("BrokenPowerLaw2", new Likelihood::BrokenPowerLaw2(),
+                          false);
+   m_funcFactory->addFunc("ExpCutoff", new Likelihood::ExpCutoff(), false);
+   m_funcFactory->addFunc("LogParabola", new Likelihood::LogParabola(), false);
+   m_funcFactory->addFunc("FileFunction", new Likelihood::FileFunction(), 
+                          false);
+   m_funcFactory->addFunc("MapCubeFunction", new Likelihood::MapCubeFunction(),
+                          false);
+   m_funcFactory->addFunc("PowerLaw2", new Likelihood::PowerLaw2(), false);
 }
