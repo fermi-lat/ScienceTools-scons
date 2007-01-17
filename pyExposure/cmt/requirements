@@ -1,5 +1,5 @@
 package pyExposure
-version v0
+version v1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -29,12 +29,11 @@ path_remove PYTHONPATH pyExposure
 path_append PYTHONPATH $(PYEXPOSUREROOT)/$(BINDIR)
 path_append PYTHONPATH $(PYEXPOSUREROOT)/python
 
-apply_pattern ST_app name=gtexposure
-
-private
-
 macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
 macro source *.cxx WIN32 "*.h *.cxx"
 
 library pyExposure $(source)
+
 apply_pattern swig_module name="pyExposure"
+
+apply_pattern ST_app name=gtexposure
