@@ -14,7 +14,7 @@ use astro v*
 use flux v*
 use st_facilities v*
 use celestialSources v*
-use irfLoader v* irfs
+use irfs v*
 use dataSubselector v*
 use fitsGen v*
 
