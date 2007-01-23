@@ -44,6 +44,7 @@ public:
 
 private:
     float parseParamList(std::string input, int index);
+    void setup_power_law();
     float m_E0;		// energy base
     std::string m_name;	// particle name to generate ("P", "gamma", ...)
     float m_index;	// spectral index: <=1 is delta function at E0
