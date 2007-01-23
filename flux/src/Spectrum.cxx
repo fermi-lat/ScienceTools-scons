@@ -30,7 +30,9 @@ std::pair<double,double> Spectrum::dir(double energy)
     // Purpose: return solid angle pair (costh, phi) for the given energy
     // Input:: the given energy.
 
+#if 0 // disable this to allow Sun, Moon sources
     throw std::runtime_error("Spectrum::dir called: sub class must implement if use_sprectrum invoked");
+#endif
     return std::make_pair(0,0);
 }
 

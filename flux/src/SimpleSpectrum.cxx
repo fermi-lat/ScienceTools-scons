@@ -42,6 +42,8 @@ SimpleSpectrum::SimpleSpectrum(const std::string& params)
 :m_name("gamma")
 ,m_E0(parseParamList(params,0))
 ,m_index(parseParamList(params,1))
+,m_index2(parseParamList(params,2))
+,m_ebreak(parseParamList(params,3))
 {}
 
 
@@ -137,5 +139,6 @@ float SimpleSpectrum::parseParamList(std::string input, int index)
         i=input.find_first_of(",");
         input= input.substr(i+1);
     } 
-    return output[index];
+    // @todo: throw explicit exception
+    return output.at(index);
 }
