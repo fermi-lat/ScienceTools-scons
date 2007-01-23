@@ -27,8 +27,6 @@
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 
-#include "irfs/Loader.h"
-
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
 
@@ -177,7 +175,6 @@ void ObsSim::setRandomSeed() {
 
 void ObsSim::createFactories() {
    SpectrumFactoryLoader foo;
-   irfs::Loader();
 }
 
 void ObsSim::setXmlFiles() {

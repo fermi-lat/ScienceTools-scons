@@ -5,7 +5,7 @@ sctable,s,h,"SC_DATA",,,"Spacecraft data extension"
 outfile_prefix,s,a,"test",,,"Prefix for output files"
 evtable,s,h,"EVENTS",,,"Event data extension"
 
-simulation_time,r,a,86400,1,4e7,"Simulation time (seconds)"
+simulation_time,r,a,86400,,,"Simulation time (seconds)"
 livetime_frac,r,h,0.9,,,"Livetime fraction"
 start_time,r,h,0,,,Simulation start time (seconds wrt start_date)
 use_as_numevents,b,h,no,,,Use simulation time as number of events
@@ -17,8 +17,8 @@ ra,r,a,0,-360,360,"RA of cone center (degrees)"
 dec,r,a,0,-90,90,"Dec of cone center (degrees)"
 radius,r,a,20,0,180,"Acceptance cone radius (degrees)"
 
-emin,r,h,30,20,2e5,"Minimum event energy (MeV)"
-emax,r,h,200000,20,2e5,"Maximum event energy (MeV)"
+emin,r,h,30,,,"Minimum event energy (MeV)"
+emax,r,h,200000,,,"Maximum event energy (MeV)"
 
 rspfunc,s,a,"DC2",DC2|DC1A|G25|HANDOFF,,"Response functions"
 
