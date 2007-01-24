@@ -103,6 +103,8 @@ public:
     static void setAlignmentRotation(const CLHEP::HepRotation& align);
 
     static double s_backoff; // expose backoff distance, in mm
+
+    static int s_id_offset;  // allow to set an offset for the automatically-generated source id
 private:
     double m_time;    // elapsed time, really only needed for EventSource
     

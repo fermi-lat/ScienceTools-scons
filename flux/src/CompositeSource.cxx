@@ -151,6 +151,6 @@ int  CompositeSource::numSource()const
     ///Purpose: Return a unique number correcponding to the current spectrum.
     // if selected source is composite itself, (id=-1)  add its id as an integer
     int t=m_recent->numSource();
-    return 1000*m_numofiters + (t==-1? 0:  t/1000);
+    return EventSource::s_id_offset + 1000*m_numofiters + (t==-1? 0:  t/1000);
 }
 

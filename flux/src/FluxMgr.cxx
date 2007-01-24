@@ -430,3 +430,9 @@ void FluxMgr::setAlignmentRotation(const CLHEP::HepRotation& align)
 
 }
 
+int FluxMgr::setIdOffset(int id)
+{
+    int last ( EventSource::s_id_offset );
+    EventSource::s_id_offset = id;
+    return last;
+}

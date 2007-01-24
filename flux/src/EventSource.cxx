@@ -13,6 +13,7 @@
 unsigned int  EventSource::s_id = 0;
 double  EventSource::s_total_area = 6.; // area in m^2
 double  EventSource::s_backoff = 2000.; // in mm
+int EventSource::s_id_offset=0;     // offset for assigning ids in CompositeSource
 
 
 bool EventSource::s_applyAlign(false);

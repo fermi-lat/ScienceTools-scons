@@ -94,6 +94,9 @@ public:
     /// Set an alignment rotation to be applied to the instrument coordinates of any incoming particle
     void setAlignmentRotation(const CLHEP::HepRotation& align);
 
+    /// set an offset for generating source id numbers, return previous value
+    int setIdOffset(int id);
+
 private:
     
     /// source library lookup.  Each source is uniquely identified
