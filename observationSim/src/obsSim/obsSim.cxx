@@ -268,6 +268,9 @@ void ObsSim::createSimulator() {
                                                totalArea, startTime, 
                                                pointingHistory, maxSimTime,
                                                offset);
+
+   int id_offset = m_pars["srcid_offset"];
+   m_simulator->setIdOffset(id_offset);
 }
 
 void ObsSim::generateData() {

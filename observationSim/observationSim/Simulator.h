@@ -158,6 +158,10 @@ public:
       makeEvents(events, scData, respPtrs, spacecraft, false, allEvents);
    }
 
+   void setIdOffset(int id) {
+      m_fluxMgr->setIdOffset(id);
+   }
+
 protected:
 
    Simulator(const Simulator &) {}
