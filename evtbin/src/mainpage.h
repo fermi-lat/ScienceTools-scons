@@ -68,7 +68,7 @@ algorithm [string]
     in time only), PHA1 (spectrum binned in energy), and PHA2
     (spectra binned in energy for a series of time ranges/bins).
 
-eventfile [file]
+evfile [file]
     Name of input event file, FT1 format or equivalent.
 
 outfile [file]
