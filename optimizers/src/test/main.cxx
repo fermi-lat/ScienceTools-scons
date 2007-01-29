@@ -10,6 +10,7 @@
 #include <fenv.h>
 #endif // TRAP_FPE
 
+#include <cassert>
 #include <cmath>
 #include <cstring>
 
@@ -70,15 +71,15 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-   //   test_FunctionFactory();
-   //   test_Parameter_class();
-   //   test_Function_class();
-   //   test_PowerLaw_class();
-   //   test_CompositeFunction();
+   test_FunctionFactory();
+   test_Parameter_class();
+   test_Function_class();
+   test_PowerLaw_class();
+   test_CompositeFunction();
    test_Optimizers();
-   //   test_Mcmc();
-   //   test_ChiSq();
-   //   test_Amoeba();
+   test_Mcmc();
+   test_ChiSq();
+   test_Amoeba();
    return 0;
 }
 
@@ -846,9 +847,9 @@ public:
       double x(pars.at(0));
       double y(pars.at(1));
       double value((x - m_x0)*(x - m_x0) + (y - m_y0)*(y - m_y0) + 1);
-      std::cout << x << "  " 
-                << y << "  "
-                << value << std::endl;
+//       std::cout << x << "  " 
+//                 << y << "  "
+//                 << value << std::endl;
       return value;
    }
 private:
@@ -864,4 +865,6 @@ void test_Amoeba() {
 
    Amoeba my_amoeba(func, pars);
    my_amoeba.findMin(pars);
+   assert(std::fabs(pars.at(0) - 1.) < 1e-7);
+   assert(std::fabs(pars.at(1) - 2.) < 1e-7);
 }
