@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r7p8 29-Jan-07   JC   fix floating point error bug and erroneous 
+                            minimum reporting in amoeba; reactivate unit tests
     v2r7p4 10-Aug-06   JC   add back in #include "Minuit2/MnPrint.h" to 
                             NewMinuit.cxx
     v2r7p3 15-Jul-06   JC   add default step param to Amoeba constructor
