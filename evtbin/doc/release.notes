@@ -66,6 +66,7 @@
 03-may-2006     v0r17 JP  Speed up writing of count maps.
 02-oct-2006        v1 JP  Add support for count cubes, binned in 2 spatial +
                           energy dimensions.
+29-jan-2007    v1r0p1 JP  Correct documentation.
 --------------------------------------------------------------------------------
 \endverbatim
 
