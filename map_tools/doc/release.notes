@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 30-jan-07 v6r7p2 THB  needed an include for rhel4_gcc34
  08-dec-06 v6r7p1 THB  update PhotonMap to support FITS file I/O
  13-nov-06 v6r6p5  JC  write ENERGIES extension for exposure_map output (needed by
                        binned likelihood calculations)
