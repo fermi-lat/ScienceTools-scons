@@ -13,6 +13,7 @@ $Header$
 #include <cmath>
 #include <utility>
 #include <stdexcept>
+#include <errno.h>
 
 using namespace map_tools;
 using astro::HealPixel;
