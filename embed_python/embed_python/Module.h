@@ -87,6 +87,8 @@ private:
     bool verbose()const{return m_verbose;}
     void check_error(const std::string& text)const;
     std::string m_root; ///< python path
+
+   void insert_path(const std::string & dir);
 };
 
 }// namespace

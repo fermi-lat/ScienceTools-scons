@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r1p1   03-Feb-07  JC  insert "." into sys.path so that cwd is used on linux
   v1r1     23-dec-06  THB new getValue overrides for ints, via Leon 
   v1r0     06-dec-06  THB add J.Chiang constructor change
   v0r1     06-dec-06  add compound and number list
