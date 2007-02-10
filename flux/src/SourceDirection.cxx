@@ -94,9 +94,9 @@ void SourceDirection::execute(double ke, double time){
 
 }
 
-void SourceDirection::solarSystemDir( double thetax, double thetay, double time)
+void SourceDirection::solarSystemDir( double ra, double dec, double time)
 {
-    // expect displacement from celestial direction
+    // expect displacement with respect to the object's direction
 
     using astro::GPS;    
     using astro::SolarSystem;
@@ -105,7 +105,7 @@ void SourceDirection::solarSystemDir( double thetax, double thetay, double time)
     using CLHEP::Hep3Vector;
 
     GPS* gps = GPS::instance();
-    static Hep3Vector xhat(1,0,0), yhat(0,1,0);
+    static Hep3Vector xhat(1,0,0);
 
     // get celestical direction of the object
     JulianDate jd(JulianDate::missionStart()+time/JulianDate::secondsPerDay);
@@ -119,9 +119,11 @@ void SourceDirection::solarSystemDir( double thetax, double thetay, double time)
         SolarSystem luna(astro::SolarSystem::MOON);
         cdir = Hep3Vector(luna.direction(jd)());
     }
-    // rotate it according to the (presumably small) input angles
-    HepRotation Rx(xhat, thetax*M_PI/180), Ry(yhat, thetay*M_PI/180);
-    Hep3Vector rdir(Rx*Ry*cdir); 
+    Hep3Vector r(SkyDir(ra,dec)()), axis(xhat.cross(r));
+    double angle( asin(axis.mag()) ); // the rotation angle
+    HepRotation xhat_to_r(axis, angle);
+    Hep3Vector rdir(  xhat_to_r * cdir); 
+    //Hep3Vector check( xhat_to_r * xhat); // should be the incoming direction
 
     CLHEP::HepRotation celtoglast( gps->transformToGlast(time, GPS::CELESTIAL) );
     //and do the transform, finally reversing the direction to correspond to the incoming particle
