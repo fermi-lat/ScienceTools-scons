@@ -19,6 +19,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "st_facilities/dgaus8.h"
+#include "st_facilities/Dgaus8.h"
 #include "PowerLaw.h"
 
 #include "st_facilities/Env.h"
@@ -33,6 +34,7 @@ class st_facilitiesTests : public CppUnit::TestFixture {
    CPPUNIT_TEST_SUITE(st_facilitiesTests);
 
    CPPUNIT_TEST(test_dgaus8);
+   CPPUNIT_TEST(test_Dgaus8);
    CPPUNIT_TEST_EXCEPTION(test_Util_file_ok, std::runtime_error);
    CPPUNIT_TEST(test_Util_readLines);
    CPPUNIT_TEST(test_Util_expectedException);
@@ -50,6 +52,7 @@ public:
    void tearDown();
 
    void test_dgaus8();
+   void test_Dgaus8();
    void test_Util_file_ok();
    void test_Util_readLines();
    void test_Util_expectedException();
@@ -103,6 +106,27 @@ void st_facilitiesTests::test_dgaus8() {
       true_value = powerLaw.prefactor()*log(xmax/xmin);
    }
    double tol(1e-4);
+   CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
+}
+
+void st_facilitiesTests::test_Dgaus8() {
+   double xmin(0);
+   double xmax(4.);
+   double err(1e-5);
+   long ier;
+
+   double true_value;
+   if (powerLaw.index() != 1.) {
+      true_value = powerLaw.prefactor()*(pow(xmax, powerLaw.index() + 1.)
+                                         - pow(xmin, powerLaw.index() + 1.))
+                                         /(powerLaw.index() + 1.);
+   } else {
+      true_value = powerLaw.prefactor()*log(xmax/xmin);
+   }
+   double tol(1e-4);
+
+   double result(Dgaus8::integrate(&power_law, xmin, xmax, err, ier));
+
    CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
 }
 

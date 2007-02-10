@@ -325,14 +325,14 @@ L120:
 	goto L140;
     }
     *ierr = 2;
-    xermsg_("SLATEC", "DGAUS8", "ANS is probably insufficiently accurate.", &
-	    c__3, &c__1, (ftnlen)6, (ftnlen)6, (ftnlen)40);
+/*     xermsg_("SLATEC", "DGAUS8", "ANS is probably insufficiently accurate.", & */
+/* 	    c__3, &c__1, (ftnlen)6, (ftnlen)6, (ftnlen)40); */
     goto L140;
 L130:
     *ierr = -1;
-    xermsg_("SLATEC", "DGAUS8", "A and B are too nearly equal to allow norma\
-l integration. $$ANS is set to zero and IERR to -1.", &c__1, &c_n1, (ftnlen)6,
-	     (ftnlen)6, (ftnlen)94);
+/*     xermsg_("SLATEC", "DGAUS8", "A and B are too nearly equal to allow norma\ */
+/* l integration. $$ANS is set to zero and IERR to -1.", &c__1, &c_n1, (ftnlen)6, */
+/* 	     (ftnlen)6, (ftnlen)94); */
 L140:
     if (*err < 0.) {
 	*err = ce;
