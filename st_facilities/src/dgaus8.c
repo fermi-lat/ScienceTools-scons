@@ -1256,7 +1256,7 @@ L10:
 
 /*     CALL FDUMP */
 
-    s_stop("", (ftnlen)0);
+/*     s_stop("", (ftnlen)0); */
     return ret_val;
 } /* i1mach_ */
 
@@ -3001,7 +3001,7 @@ integer j4save_(integer *iwhich, integer *ivalue, logical *iset)
 /*   920501  Reformatted the REFERENCES section.  (WRB) */
 /* ***END PROLOGUE  XERHLT */
 /* ***FIRST EXECUTABLE STATEMENT  XERHLT */
-    s_stop("", (ftnlen)0);
+/*     s_stop("", (ftnlen)0); */
     return 0;
 } /* xerhlt_ */
 

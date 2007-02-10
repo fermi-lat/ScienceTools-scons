@@ -267,6 +267,7 @@ namespace st_facilities {
    void Util::writeDateKeywords(tip::Extension * table, double start_time, 
                                 double stop_time, bool extension,
                                 const astro::JulianDate & mission_start) {
+      (void)(extension);
       static double secsPerDay(8.64e4);
       tip::Header & header = table->getHeader();
       astro::JulianDate current_time = currentTime();
