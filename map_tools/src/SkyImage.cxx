@@ -90,6 +90,10 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
     std::string uc_cm_file = cm_file;
     for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = std::toupper(*itor);
         
+    // determine how energy values are computed from bins using bincalc parameter.
+    std::string layer_calc = pars["bincalc"];
+    for ( std::string::iterator itor = layer_calc.begin(); itor != layer_calc.end(); ++itor) *itor = std::toupper(*itor);
+
     if ( "NONE" != uc_cm_file){
         // get as much info as possible from the count map
         // determine the projection
@@ -105,10 +109,6 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
 
         // read energies associated with layers from ebounds extension of count map.
         std::auto_ptr<const tip::Table> ebounds(tip::IFileSvc::instance().readTable(cm_file, "EBOUNDS"));
-
-        // determine how energy values are computed from bins using bincalc parameter.
-        std::string layer_calc = pars["bincalc"];
-        for ( std::string::iterator itor = layer_calc.begin(); itor != layer_calc.end(); ++itor) *itor = std::toupper(*itor);
 
         static double s_MeV_per_keV = .001;
 
@@ -145,7 +145,7 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         //
         m_naxis1 = pars["numxpix"];
         m_naxis2 = pars["numypix"];
-        m_naxis3 = pars["enumbins"];
+        int enumbins = pars["enumbins"];
         std::string ptype = pars["proj"];
         double pixelsize = pars["pixscale"];
 
@@ -180,16 +180,30 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         m_wcs = new astro::SkyProj( pars["proj"], crpix, crval, cdelt, crota2, galactic);
   
         double emin = pars["emin"], emax = pars["emax"];
-        m_energy.resize(m_naxis3);
-        
-        // compute logarithmic bin ratio
-        const double eratio = std::exp(std::log(emax / emin) / m_naxis3);
+
+        // compute logarithmic bin ratio for edges
+        std::vector<double> edge(enumbins+1);
+        const double eratio = std::exp(std::log(emax / emin) / enumbins);
         double energy = emin;
-        for ( int ii = 0; ii != m_naxis3 - 1; ++ii, energy *= eratio){
-            m_energy[ii] = energy;
+        for ( int ii = 0; ii != enumbins; ++ii, energy *= eratio){
+            edge[ii] = energy;
         }
         // prevent annoying round-off in the last bin
-        m_energy[m_naxis3 - 1] = emax;
+        edge[enumbins] = emax;
+
+        // handle different styles of energy output
+        if ( layer_calc == "CENTER"){
+          // energies are taken at centers of bins
+          m_naxis3=enumbins;
+          m_energy.resize(m_naxis3);
+          for( int ii = 0; ii != enumbins; ++ii){
+            m_energy[ii] = .5 * (edge[ii] + edge[ii+1]);
+          }
+        }else{
+          // energies are taken at edges of bins
+          m_naxis3=enumbins+1;
+          m_energy=edge;
+        }
     }
     setupImage(pars["outfile"],  pars["clobber"]);
 }
