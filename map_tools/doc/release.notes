@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 12-feb-07 v6r8    JP  Use bincalc parameter to determine how to compute the energy bins when
+                       generating an exposure map without a referent count map.
  30-jan-07 v6r7p2 THB  needed an include for rhel4_gcc34
  08-dec-06 v6r7p1 THB  update PhotonMap to support FITS file I/O
  13-nov-06 v6r6p5  JC  write ENERGIES extension for exposure_map output (needed by
