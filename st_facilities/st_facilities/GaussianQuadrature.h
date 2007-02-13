@@ -1,17 +1,17 @@
 /**
- * @file Dgaus8.h
+ * @file GaussianQuadrature.h
  * @brief Wrapper for dgaus8.
  * @author J. Chiang
  *
  * $Header$
  */
 
-#ifndef st_facilities_Dgaus8_h
-#define st_facilities_Dgaus8_h
+#ifndef st_facilities_GaussianQuadrature_h
+#define st_facilities_GaussianQuadrature_h
 
 namespace st_facilities {
 
-class Dgaus8 {
+class GaussianQuadrature {
 
 public:
 
@@ -24,4 +24,4 @@ public:
 
 } // namespace st_facilities
 
-#endif // st_facilities_Dgaus8_h
+#endif // st_facilities_GaussianQuadrature_h

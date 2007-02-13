@@ -1,5 +1,5 @@
 /**
- * @file Dgaus8.cxx
+ * @file GaussianQuadrature.cxx
  * @brief Class wrapper for dgaus8
  * @author J. Chiang
  *
@@ -9,12 +9,12 @@
 #include <vector>
 
 #include "st_facilities/dgaus8.h"
-#include "st_facilities/Dgaus8.h"
+#include "st_facilities/GaussianQuadrature.h"
 
 namespace st_facilities {
 
-double Dgaus8::integrate(D_fp func, double xmin, double xmax,
-                         double error, long & ier) {
+double GaussianQuadrature::integrate(D_fp func, double xmin, double xmax,
+                                     double error, long & ier) {
    double integral(0);
    dgaus8_(func, &xmin, &xmax, &error, &integral, &ier);
    if (ier == 1) {
