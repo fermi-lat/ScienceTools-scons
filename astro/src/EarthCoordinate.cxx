@@ -70,7 +70,11 @@ double EarthCoordinate::geolon()const
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EarthCoordinate::EarthCoordinate(double latDeg, double lonDeg, double alt)
 : m_lat(latDeg*M_PI/180), m_lon(lonDeg*M_PI/180), m_altitude(alt)
-{}
+{
+    // the altitude might be radius (in km) 
+    static double radius(s_EarthRadius/1000.);
+    if( alt>radius ) m_altitude -= radius;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double  EarthCoordinate::GetGMST(JulianDate jd)
