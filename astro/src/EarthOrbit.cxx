@@ -29,7 +29,7 @@ namespace {
 // static constants reflecting orbit parameters
 
 namespace astro {
-double EarthOrbit::s_altitude = 550.e3  ; //m
+double EarthOrbit::s_altitude = 565.e3  ; //m
 double EarthOrbit::s_incl = 28.5*M_PI/180; //radian 
 double EarthOrbit::s_e = 0.; //eccentricity
 
@@ -42,6 +42,7 @@ EarthOrbit::EarthOrbit(JulianDate launch) : m_launch(launch)
 {
     initialize();
 }
+
 
 void EarthOrbit::initialize()
 {
