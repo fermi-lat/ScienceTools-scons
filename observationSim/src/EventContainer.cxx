@@ -153,8 +153,11 @@ bool EventContainer::addEvent(EventSource *event,
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis);
-      double appEnergy 
-         = respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis);
+      double appEnergy(energy);
+      if (m_applyEdisp) {
+         appEnergy =
+            respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis);
+      }
 
       std::map<std::string, double> evtParams;
       evtParams["ENERGY"] = appEnergy;

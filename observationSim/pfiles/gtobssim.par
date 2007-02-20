@@ -20,6 +20,7 @@ radius,r,a,20,0,180,"Acceptance cone radius (degrees)"
 
 emin,r,h,30,,,"Minimum event energy (MeV)"
 emax,r,h,200000,,,"Maximum event energy (MeV)"
+apply_edisp,b,h,yes,,,"Apply energy dispersion?"
 
 rspfunc,s,a,"DC2",DC2|DC1A|G25|HANDOFF,,"Response functions"
 

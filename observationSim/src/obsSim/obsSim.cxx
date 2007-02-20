@@ -290,9 +290,10 @@ void ObsSim::generateData() {
       double sim_time(m_pars["simulation_time"]);  // yes, this is BS.
       stop_time = start_time + sim_time;
    }
+   bool applyEdisp = m_pars["apply_edisp"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          cuts, nMaxRows,
-                                         start_time, stop_time);
+                                         start_time, stop_time, applyEdisp);
    events.setAppName("gtobssim");
    events.setVersion(getVersion());
    std::string pointingHistory = m_pars["scfile"];

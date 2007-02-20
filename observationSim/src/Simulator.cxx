@@ -202,9 +202,9 @@ void Simulator::makeEvents(EventContainer &events,
 //       scData.addScData(m_absTime, spacecraft);
 //    }
 
-// Enclose loop in outer try block, catching a GPS-thrown exception when
-// time exceeds pointing history database.
-  try {
+// // Enclose loop in outer try block, catching a GPS-thrown exception when
+// // time exceeds pointing history database.
+//   try {
 // Loop over event generation steps until done.
       while (!done()) {
 
@@ -213,7 +213,7 @@ void Simulator::makeEvents(EventContainer &events,
 // The following line is where the "Time out of Range!" exception is 
 // thrown by astro's GPS class:
             m_newEvent = m_source->event(m_absTime);
-            m_newEvent->code(m_source->numSource()); // THB minimal kluge: save the code using 
+            m_newEvent->code(m_source->numSource());
             m_interval = m_source->interval(m_absTime);
          }
 
@@ -251,22 +251,13 @@ void Simulator::makeEvents(EventContainer &events,
             m_elapsedTime = m_simTime;
          }
       } // while (!done())
-   } catch (std::exception & eObj) {
-//       if ( (!st_facilities::Util::expectedException(eObj,"Time out of Range!")
-//             && !st_facilities::Util::expectedException(eObj,
-//                "time is beyond end of history file"))
-// // This latter check is an ugly kluge necessary because one does not (yet)
-// // have access to the start and stop times of the pointing history via
-// // astro's GPS:
-//           || (m_useSimTime && m_elapsedTime < 0.9*m_simTime)) {
+//    } catch (std::exception & eObj) {
+//       if (!st_facilities::Util::
+//           expectedException(eObj, "time is beyond end of history file")
+//           && !(m_useSimTime && m_elapsedTime > 0.9*m_simTime)) {
 //          throw;
 //       }
-      if (!st_facilities::Util::
-          expectedException(eObj, "time is beyond end of history file")
-          && !(m_useSimTime && m_elapsedTime > 0.9*m_simTime)) {
-         throw;
-      }
-   }
+//    }
 }
 
 bool Simulator::done() {
