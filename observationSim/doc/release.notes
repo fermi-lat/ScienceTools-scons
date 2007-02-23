@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r4p1 22-Feb-07   JC   apply a more graceful workaround for the 
+                            astro::GPS class' lack of introspection regarding 
+                            the pointing history start and stop times
     v6r4   19-Feb-07   JC   add apply_edisp
     v6r3p10 24-Jan-07  JC   add srcid_offset
     v6r3p9 07-Nov-06   JC   changes for astro v2r*
