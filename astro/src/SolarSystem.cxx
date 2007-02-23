@@ -17,10 +17,19 @@ SolarSystem::SolarSystem(Body body)
 
 SkyDir SolarSystem::direction(JulianDate jd)const
 {
-//    return SkyDir(vector(m_body,EARTH,jd));
     return SkyDir(vector(EARTH, m_body,jd));
 }
- 
+
+SkyDir SolarSystem::direction(JulianDate jd, const CLHEP::Hep3Vector& position)const
+{
+    static double c(299792.458); // velocity of light in km/s
+
+    CLHEP::Hep3Vector r(vector(EARTH, m_body,jd));
+
+    return SkyDir(r-position/c);
+}
+
+
 double SolarSystem::distance(JulianDate jd)const
 {
    return vector(m_body,EARTH,jd).mag();

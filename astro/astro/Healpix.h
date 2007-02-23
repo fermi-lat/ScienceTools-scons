@@ -13,6 +13,7 @@ $Header$
 #include "astro/SkyFunction.h"
 
 #include <vector>
+#include <cmath>
 ///< needed fixed size array class
 
 class Healpix_Base;

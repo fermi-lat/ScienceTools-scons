@@ -37,11 +37,16 @@ namespace astro {
         ~SolarSystem();
 
         /**
-        * @brief return the SkyDir at date 
+        * @brief return the SkyDir at date, with respect to position (in km) from center of Earth 
+        */
+        SkyDir direction(JulianDate jd, const CLHEP::Hep3Vector& position)const ;
+
+        /**
+        * @brief return the SkyDir at date
         */
         SkyDir direction(JulianDate jd)const ;
 
-        /**
+		/**
         * @brief return the distance of the body from Earth at date in lightseconds
         */
         double distance(JulianDate jd)const;

@@ -5,11 +5,11 @@ version v2r3
 
 author  T. Burnett <tburnett@u.washington.edu>
 
-use GlastPolicy  *
+use GlastPolicy  * -no_auto_imports
 use facilities   *
 use cfitsio * IExternal 
 use CLHEP v3* IExternal
-use extFiles * IExternal # for jphephem data
+use extFiles * IExternal -no_auto_imports # for jphephem data
 use tip *
 
 apply_pattern package_include
