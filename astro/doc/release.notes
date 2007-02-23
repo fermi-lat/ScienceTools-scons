@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r4     22-Feb-07 THB  Change to allow for parallax of Moon position
   v2r3     19-Feb-07 THB  Set default altitude to 565 km; new static to change inclination
   v2r2p6   15-Feb-07 THB  Fix bug in interpolating altitude from history file, introduced v2r0
   v2r2p5   20-Nov-06 THB  Relax quaternion orthogonality requirement to admit SC1 FT2 file
