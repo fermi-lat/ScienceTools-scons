@@ -30,9 +30,9 @@ class Amoeba {
 public:
 
    Amoeba(Functor & functor, const std::vector<double> & params,
-          double step=0.1) 
+          double step=0.1, bool addstep=false) 
       : m_functor(functor), m_npars(params.size()) {
-      buildSimplex(params, step);
+      buildSimplex(params, step, addstep);
    }
 
    ~Amoeba() {}

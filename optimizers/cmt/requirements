@@ -1,5 +1,5 @@
 package optimizers
-version v2r7p8
+version v2r8
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
