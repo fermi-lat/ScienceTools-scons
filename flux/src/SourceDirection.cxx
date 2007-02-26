@@ -107,7 +107,6 @@ void SourceDirection::solarSystemDir( double ra, double dec, double time)
     GPS* gps = GPS::instance();
     static Hep3Vector xhat(1,0,0);
 
-    // get celestical direction of the object
     JulianDate jd(JulianDate::missionStart()+time/JulianDate::secondsPerDay);
 
     Hep3Vector cdir;
@@ -117,7 +116,7 @@ void SourceDirection::solarSystemDir( double ra, double dec, double time)
     }
     if (m_frame==MOON) {
         SolarSystem luna(astro::SolarSystem::MOON);
-        cdir = Hep3Vector(luna.direction(jd)());
+        cdir = Hep3Vector(luna.direction(jd, gps->position())());
     }
     Hep3Vector r(SkyDir(ra,dec)()), axis(xhat.cross(r));
     double angle( asin(axis.mag()) ); // the rotation angle
