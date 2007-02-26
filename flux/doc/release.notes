@@ -5,6 +5,7 @@
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
     
+   v8r33p2 25-feb-2007 thb fix rotation matrix for Sun translation
    v8r33p1 09-feb-2007 thb fix rotation matrix for Sun translation
    v8r33   24-jan-2007 thb provide offset for generating source identifiers
    v8r32p1 23-jan-2007 thb Changes to allow Sun, Moon to use SimpleSpectrum
