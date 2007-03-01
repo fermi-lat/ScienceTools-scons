@@ -469,7 +469,6 @@ EventSource* FluxSource::event(double time)
     }
     //now set the actual interval to be what FluxMgr will get, unless beyond the endtime
     EventSource::setTime(time + m_interval);
-    
     return this;
 }
 
@@ -579,5 +578,10 @@ astro::SkyDir FluxSource::skyDirection()const
     return astro::SkyDir(m_launch_dir->dir());
 }
 
-
+void FluxSource::disable()
+{
+    m_enabled=false;
+    delete m_spectrum;
+    m_spectrum=0;
+}
 

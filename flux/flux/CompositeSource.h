@@ -76,6 +76,9 @@ public:
 
     /// is the most recent photon occulted?
     bool occulted(){return m_occulted;}
+
+    /// just set the flag in base class
+    void disable(){m_enabled=false;}
     
 protected:
     

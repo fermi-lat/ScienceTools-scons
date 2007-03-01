@@ -49,6 +49,7 @@ bool Flux::generate()
     do{
         double current_time=time();
         // get the next event and its time interval?
+        if( ! m_event->enabled()) return false; // there is no source
         m_flux = m_event->event(current_time);
         double timepass = m_event->interval(current_time);
         pass(timepass);

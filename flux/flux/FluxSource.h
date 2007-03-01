@@ -80,6 +80,7 @@ public:
     /// by the earth
     bool occulted();
 
+    virtual void disable();
 
 private:
 
