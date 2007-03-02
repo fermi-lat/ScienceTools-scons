@@ -68,7 +68,7 @@ void CutController::addRangeCut(const std::string & colname,
                                 const std::string & unit,
                                 double minVal, double maxVal, 
                                 unsigned int indx, bool force) {
-   RangeCut::IntervalType type;
+   RangeCut::IntervalType type(RangeCut::CLOSED);
    if (!force && minVal == 0 && maxVal == 0) {
       return;
    }
