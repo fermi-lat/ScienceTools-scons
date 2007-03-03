@@ -94,14 +94,8 @@ class UnbinnedObs(object):
         else:
             return files
     def _readData(self, scFile, eventFile):
-        self._readScData(scFile)
+        self._readScData(scFile, eventFile)
         self._readEvents(eventFile)
-    def _readScData(self, scFile):
-        scFiles = self._fileList(scFile)
-        self._scData.readData(scFiles[0], True, self.sctable)
-        for file in scFiles[1:]:
-            self._scData.readData(file)
-        self.scFiles = scFiles
     def _readEvents(self, eventFile):
         if eventFile is not None:
             eventFiles = self._fileList(eventFile)
@@ -109,6 +103,17 @@ class UnbinnedObs(object):
             for file in eventFiles:
                 self._eventCont.getEvents(file)
             self.eventFiles = eventFiles
+    def _readScData(self, scFile, eventFile):
+        if eventFile is not None:
+            eventFiles = self._fileList(eventFile)
+            self._roiCuts.readCuts(eventFiles, 'EVENTS', False)
+        tmin = self._roiCuts.minTime()
+        tmax = self._roiCuts.maxTime()
+        scFiles = self._fileList(scFile)
+        self._scData.readData(scFiles[0], tmin, tmax, True, self.sctable)
+        for file in scFiles[1:]:
+            self._scData.readData(file, tmin, tmax)
+        self.scFiles = scFiles
     def __getattr__(self, attrname):
         return getattr(self.observation, attrname)
     def __repr__(self):

@@ -65,7 +65,7 @@ class AnalysisBase(object):
                 self.model[i].setError(errors[j])
                 j += 1
         return errors
-    def Ts(self, srcName, reoptimize=False, approx=True):
+    def Ts(self, srcName, reoptimize=False, approx=True, tol=1e-5):
         self.logLike.syncParams()
         src = self.logLike.getSource(srcName)
         if src.getType() == "Point":
@@ -77,7 +77,7 @@ class AnalysisBase(object):
             if reoptimize:
                 optFactory = pyLike.OptimizerFactory_instance()
                 myOpt = optFactory.create(self.optimizer, self.logLike)
-                myOpt.find_min(0, 1e-5)
+                myOpt.find_min(0, tol)
             else:
                 if approx:
                     try:
