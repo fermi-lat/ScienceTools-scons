@@ -15,11 +15,11 @@ $Header$
 #include <stdexcept>
 
 
-
 SourceDirection::SourceDirection(ISpectrum* spectrum, std::string frame )
 : m_spectrum(spectrum)
 , m_frameName(frame)
 , m_zenithCos(1.0)
+
 {
     m_frame = INVALID; int n(0);
     static const char* frame_names[]=
@@ -33,6 +33,7 @@ SourceDirection::SourceDirection(ISpectrum* spectrum, std::string frame )
     if( m_frame==INVALID ){ 
         throw std::invalid_argument("flux/SourceDirection: frame name"+frame+" not recognized");
     }
+    
 
 }
 
@@ -118,13 +119,13 @@ void SourceDirection::solarSystemDir( double ra, double dec, double time)
         SolarSystem luna(astro::SolarSystem::MOON);
         cdir = Hep3Vector(luna.direction(jd, gps->position())());
     }
-    Hep3Vector r(SkyDir(ra,dec)()), axis(xhat.cross(r));
-    double angle( asin(axis.mag()) ); // the rotation angle
-    HepRotation xhat_to_r(axis, angle);
-    Hep3Vector rdir(  xhat_to_r * cdir); 
-    //Hep3Vector check( xhat_to_r * xhat); // should be the incoming direction
+    // create rotation that takes (0,0) to (ra,dec)
+
+    HepRotation R (  HepRotationZ(ra*M_PI/180) *HepRotationY(-dec*M_PI/180) );
+    Hep3Vector rdir( R * cdir );
 
     CLHEP::HepRotation celtoglast( gps->transformToGlast(time, GPS::CELESTIAL) );
+
     //and do the transform, finally reversing the direction to correspond to the incoming particle
     setDir( - (celtoglast * rdir) );
 }
