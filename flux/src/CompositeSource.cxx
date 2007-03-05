@@ -52,7 +52,7 @@ EventSource* CompositeSource::event (double time)
     std::vector<EventSource*>::iterator  now = m_sourceList.begin();
     std::vector<EventSource*>::iterator  it = now;
 
-    double intrval=0.,intrmin=100000.;
+    double intrval=0.,intrmin=1e10; //100000.;
     int q;
     for (q=0 ; now != m_sourceList.end(); ++now, ++i, ++q) {
         if( ! (*now)->enabled() ) continue; // ignore if turned off
