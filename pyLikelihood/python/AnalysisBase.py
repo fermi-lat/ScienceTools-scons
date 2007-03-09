@@ -91,6 +91,10 @@ class AnalysisBase(object):
             self.logLike.setFreeParamValues(freeParams)
             self.model = SourceModel(self.logLike)
             return Ts_value
+    def deleteSource(self, srcName):
+        src = self.logLike.deleteSource(srcName)
+        self.model = SourceModel(self.logLike)
+        return src
     def writeCountsSpectra(self, outfile='counts_spectra.fits'):
         counts = pyLike.CountsSpectra(self.logLike)
         try:

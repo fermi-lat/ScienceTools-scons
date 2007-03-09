@@ -6,6 +6,8 @@
 
    @verbatim
 
+   v0r5   09-Mar-07   JC    provide AnalysisBase.deleteSource method
+                            so that the model attribute is updated.
    v0r4   03-Mar-07   JC    overload Ts for BinnedAnalysis since 
                             AnalysisBase._renorm cannot be used;
                             refactor reading of ScData in UnbinnedAnalysis
