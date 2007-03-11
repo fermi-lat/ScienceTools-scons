@@ -5,7 +5,7 @@ version v6r7p2
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
-use STpolicy *
+use STpolicy * -no_auto_imports
 use astro v*
 use hoops * 
 use tip  *

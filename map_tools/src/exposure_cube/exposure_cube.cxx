@@ -5,7 +5,7 @@
 $Header$
 */
 
-#include "map_tools/Parameters.h"
+#include "hoops/hoops_prompt_group.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/HealpixArrayIO.h"
 
@@ -88,33 +88,36 @@ public:
         m_f.setMethod("run()");
 
         // create the differential exposure object
-        Exposure ex( m_pars["pixelsize"], m_pars["binsize"]);
+		int pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
+        Exposure ex( pixelsize, binsize );
         Exposure::GTIvector gti; 
-        gti.push_back(std::make_pair(m_pars["tstart"],m_pars["tstop"]));
-        m_f.info() << "Creating an exposure object from a pointing history file ..." << m_pars.inputFile() << std::endl;
+		double tstart(m_pars["tstart"]), tstop(m_pars["tstop"]);
+        gti.push_back(std::make_pair(tstart,tstop));
+		std::string infile(m_pars["infile"]), outfile(m_pars["outfile"]), table(m_pars["table"]);
+        m_f.info() << "Creating an exposure object from a pointing history file ..." << infile << std::endl;
 
-        bool isText = m_pars.inputFile().find(".txt") != std::string::npos;
+        bool isText = infile.find(".txt") != std::string::npos;
 
         m_f.info() << "Opening " << (isText? "text":"FITS") << " format pointing history file " 
-                << m_pars.inputFile() << std::endl;
+                << infile << std::endl;
 
         if( isText ) {
-            loadExposureWithGPS(ex, m_pars.inputFile(), gti);
+            loadExposureWithGPS(ex, infile, gti);
         }else{
-            tip::Table * scData = tip::IFileSvc::instance().editTable(m_pars.inputFile(), m_pars.table_name());
+            tip::Table * scData = tip::IFileSvc::instance().editTable(infile, table);
             ex.load(scData, gti);
         }
 
         // create the fits output file from the Exposure file
         m_f.info() 
             << "writing out the differential exposure file to "
-            << m_pars.outputFile() << std::endl;
-        map_tools::HealpixArrayIO::instance().write(ex.data(), m_pars.outputFile(), m_pars.table_name());
+            << outfile << std::endl;
+        map_tools::HealpixArrayIO::instance().write(ex.data(), outfile, table);
 
  
     }
 private:
-    Parameters m_pars;
+	hoops::ParPromptGroup m_pars;
     st_stream::StreamFormatter m_f;
 
 };
