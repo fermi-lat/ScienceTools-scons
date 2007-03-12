@@ -1,29 +1,33 @@
 # $Header$
-#---------------------------------------------------------------------------------------
-clobber,b,a,yes,,,Overwrite existing output file?:
-chatter,  i, h,   2,0,4 , , "Chattiness of output"
-debug, b, h, no,,,Debugging mode activated
-
 mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-mode,s,a,"ql",,,
+#mode,s,a,"ql",,,
 #
 #---------------------------------------------------------------------------------------
 #
-#infile,f,a,"$(FLUXROOT)/sources/gas_gal.fits",,,"input file name:"
-infile,f,a,"",,,"input file name:"
-table,s,h,"",,,"Table name"
-#outfile,f,a,"gas_gal_copy.fits",,,"Name of the  output file:"
-outfile,f,a,"",,,"Name of the  output file:"
-filter,s,h,,,,"filter expression:"
+infile,		f, a, "F:/glast/data/SC1/skymodel/diffuse/GP_gamma.fits",,,"input file name:"
+#infile,	f, a, "",,,"input file name:"
+table,		s, h, "",,,"Table name"
+outfile,	f, a, "GP_copy05b.fits",,,"Name of the  output file:"
+#outfile,	f, a, "",,,"Name of the  output file:"
+filter,		s, h, ,,,"filter expression:"
+cmfile,     f, h, "NONE", , ,"Count map input file name (NONE for manual input of map geometry)"
+
 #---------------------------------------------------------------------------------------
-#Parameters for Spatial binning
-#
-npix,i,h,0,,,Total pixel size of the image in each axis: (0 for all sky auto)
-npixy,i,h,0,,,Total pixel size of the image in y axis: (0 for automatic)
-pixelsize,r,a,1,,,Image size [degrees/pixel]
-xref,r,a,0,,,RA/L at the image center:
-yref,r,a,0,,,DEC/B at the image center:
-rot,r,a,0,,,Rotation angle of Y-axis relative to the physical coordinate:
-projtype,s,a,"AIT",CAR|AIT,,"Projection Method  (CAR, SIN, TAN, ARC, NCP, GLS, MER, AIT, STG):"
-uselb,b,a,yes,,,use galactic coords:
+#---------------------------------------------------------------------------------------
+# Spatial binning parameters.
+numxpix,	i, a, 1, 1, , "Size of the X axis in pixels (leave at 1 for auto full sky"
+numypix,    i, a, 1, 1, , "Size of the Y axis in pixels (leave at 1 to copy numxpix or auto full sky)"
+pixscale,   r, a, 0.5, 1., , "Image scale (in degrees/pixel)"
+coordsys,   s, a, GAL, CEL|GAL, ,"Coordinate system (CEL - celestial, GAL -galactic)"
+xref,       r, a, 0., , , "First coordinate of image center in degrees (RA or galactic l)"
+yref,       r, a, 0., , , "Second coordinate of image center in degrees (DEC or galactic b)"
+axisrot,    r, a, 0., , , "Rotation angle of image axis, in degrees"
+proj,       s, h, "AIT", AIT|ARC|CAR|ZEA|GLS|MER|NCP|SIN|STG|TAN, , "Projection method"
+
+
+#---------------------------------------------------------------------------------------
+clobber,	b, a,yes,,,Overwrite existing output file?:
+chatter,	i, h,   2,0,4 , , "Chattiness of output"
+debug,		b, h, no,,,Debugging mode activated
+
