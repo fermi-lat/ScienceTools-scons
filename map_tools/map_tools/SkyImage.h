@@ -139,6 +139,9 @@ public:
     /// note that if there are multiple layers, it will choose the selected layer, see setLayer.
     double operator()(const astro::SkyDir& s)const;
 
+    /// @brief access to number of layers
+    int layers()const{return m_naxis3;}
+
 private:
     void setupImage(const std::string& outputFile,  bool clobber=true);
     //! @brief internal routine to convert SkyDir to pixel index
