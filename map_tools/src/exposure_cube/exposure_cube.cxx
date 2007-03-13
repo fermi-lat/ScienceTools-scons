@@ -91,9 +91,12 @@ public:
 		int pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
         Exposure ex( pixelsize, binsize );
         Exposure::GTIvector gti; 
-		double tstart(m_pars["tstart"]), tstop(m_pars["tstop"]);
+		
+        double tstart(m_pars["tstart"]), tstop(m_pars["tstop"]);
         gti.push_back(std::make_pair(tstart,tstop));
-		std::string infile(m_pars["infile"]), outfile(m_pars["outfile"]), table(m_pars["table"]);
+        std::string infile(m_pars["infile"].Value()),
+            outfile(m_pars["outfile"].Value()),
+            table(m_pars["table"].Value());
         m_f.info() << "Creating an exposure object from a pointing history file ..." << infile << std::endl;
 
         bool isText = infile.find(".txt") != std::string::npos;

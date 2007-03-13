@@ -35,9 +35,9 @@ public:
 int main(int argc, char** argv ){
     int rc=0;
     try{
-    
+
         // read a pil file--and make sure that a few simple things work
-		hoops::ParPromptGroup par(argc, argv);
+        hoops::ParPromptGroup par(argc, argv);
         double xref = par["xref"] ;
         if(  xref !=0 ) {
             std::cerr << "Read wrong value for parameter xref" << std::endl;
@@ -45,11 +45,11 @@ int main(int argc, char** argv ){
         }
 
         std::cout << "Testing exposure calculation with binning function "
-          //  << Exposure::Index::thetaBinning() 
-          << std::endl;
+            //  << Exposure::Index::thetaBinning() 
+            << std::endl;
         Exposure e( 10,  0.1);
         double total=0;
-
+#if 1
         // make a quick uniform cube.
         for( double ra=0.5; ra<360; ra+=2.0) {
             for (double st = -0.95; st < 1.0; st += 0.05){
@@ -58,7 +58,12 @@ int main(int argc, char** argv ){
                 total += 1.0;
             }
         }
-
+#else
+        // this is a delta function at (0,0)
+        e.fill(astro::SkyDir(0,0), 1.0); 
+        total = 1.0;
+#endif
+#if 0
         double test = e(astro::SkyDir(0,0), TestAeff()) / total;
         if ( fabs(test-0.5)> 0.01 ){
             std::cerr << "bad cosine integral: " << test << std::endl;
@@ -80,13 +85,12 @@ int main(int argc, char** argv ){
             std::cerr << "bad cosine integral: " << test << std::endl;
             return 1;
         }
-
+#endif
         // Write out the cube...delete any existing file first.
-		std::string infile(par["infile"]), outfile(par["outfile"]);
-		facilities::Util::expandEnvVar(&infile);
-		facilities::Util::expandEnvVar(&outfile);
+        std::string infile(par["infile"].Value()), outfile(par["outfile"].Value());
+        facilities::Util::expandEnvVar(&infile);
+        facilities::Util::expandEnvVar(&outfile);
         e.write( infile);
-
         // Check the Exposure(fitsfile) constructor.
         Exposure e2(infile);
 
