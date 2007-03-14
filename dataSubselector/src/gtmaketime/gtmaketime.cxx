@@ -135,7 +135,12 @@ void MakeTime::createGti() {
    std::string sctable = m_pars["sctable"];
    std::string filter = m_pars["filter"];
 
-   for (unsigned int i = 0; i < scfiles.size(); i++) {
+   std::ostringstream event_time_range;
+   event_time_range << " && (START >= " << m_tmin
+                    << ") && (STOP <= " << m_tmax << ")";
+   filter += event_time_range.str();
+
+   for (size_t i = 0; i < scfiles.size(); i++) {
       std::auto_ptr<const tip::Table> 
          in_table(tip::IFileSvc::instance().readTable(scfiles.at(i), 
                                                       sctable, filter));

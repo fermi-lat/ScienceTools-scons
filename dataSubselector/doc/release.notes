@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r6p4  14-Mar-07   JC   speed up gtmaketime by using filter string
+                             to read in just the relevant parts of the
+                             FT2 files
     v4r6p3  02-Mar-07   JC   fix range cut bug if range is (0, 0) (for 
                              EVENT_CLASS selection)
     v4r6p2  18-Dec-06   JC   uncomment call to findTimeLims in gtmaketime
