@@ -9,6 +9,7 @@
 #ifndef st_facilities_GaussianQuadrature_h
 #define st_facilities_GaussianQuadrature_h
 
+#include <cmath>
 #include <stdexcept>
 
 namespace {
@@ -39,7 +40,7 @@ public:
  */
    template<typename Functor>
    static double dgaus8(Functor & fun, double a, double b,
-                        double & err=1e-5, int & ierr=1) {
+                        double & err, int & ierr) {
       const double x1 = 1.83434642495649805E-01;     
       const double x2 = 5.25532409916328986E-01;
       const double x3 = 7.96666477413626740E-01;     
