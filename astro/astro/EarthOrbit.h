@@ -79,7 +79,7 @@ namespace astro {
         double tdb_minus_tt(JulianDate jd) const;
 
         /// set the inclination (degrees)
-        static double set_inclination(double inclination){s_incl=inclination*M_PI/180;}
+        static double set_inclination(double inclination);
         
     private:
         

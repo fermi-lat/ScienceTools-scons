@@ -422,6 +422,13 @@ double EarthOrbit::ctatv(int long jdno, double fjdno) const
 
       return (t1+t2+t3+t4+t5+t24+t25+t29+t30) * 1.0e-6 ;
 }
+double EarthOrbit::set_inclination(double inclination)
+{
+    double old = s_incl;
+    s_incl=inclination*M_PI/180;
+    return old*180/M_PI;
+
+}
 
 
 }
