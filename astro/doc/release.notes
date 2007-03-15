@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r4p2   15-Mar-07 THB  compiler error fix (subtle)
   v2r4p1   25-Feb-07 THB  fix test program
   v2r4     22-Feb-07 THB  Change to allow for parallax of Moon position
   v2r3     19-Feb-07 THB  Set default altitude to 565 km; new static to change inclination
