@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  15-Mar-07 v0r10  JC    add C++ version of dgaus8 to GaussianQuadrature class
   13-Feb-07 v0r9   JC    change names of Dgaus8 files since Windoze filenames
                          are not case-sensitive
   10-Feb-07 v0r8   JC    add Dgaus8 wrapper; comment out s_stop and 
