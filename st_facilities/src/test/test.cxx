@@ -84,29 +84,93 @@ void st_facilitiesTests::tearDown() {
    std::remove(m_filename.c_str());
 }
 
+class Linear {
+public:
+   double operator()(double x) const {
+      return x;
+   }
+};
+
+class Foo {
+public:
+   Foo(const Linear & bar) : m_bar(bar) {}
+   double operator()(double x) const {
+      double err;
+      int ier;
+      return x*GaussianQuadrature::dgaus8(m_bar, 0, 1, err, ier);
+   }
+private:
+   const Linear & m_bar;
+};
+
+class Edisp {
+public:
+   Edisp(double ltail, double rwidth) : m_ltail(ltail), m_rwidth(rwidth) {}
+   double operator()(double x) const {
+      double arg(x/m_rwidth);
+      if (arg > 40) {
+         return std::pow(x + 1, m_ltail)*std::exp(-arg);
+      }
+      return std::pow(x + 1, m_ltail)/(1 + std::exp(arg));
+   }
+private:
+   double m_ltail;
+   double m_rwidth;
+};
+
+void st_facilitiesTests::test_dgaus8() {
+   double err(1e-5);
+   double result(0);
+   int ier;
+   double tol(1e-4);
+
+   PowerLaw pl(1, -2);
+   result = GaussianQuadrature::dgaus8(pl, 1, 5, err, ier);
+   double trueValue(0.8);
+   CPPUNIT_ASSERT(std::fabs((result - trueValue)/trueValue) < tol);
+
+   Linear fx;
+   result = GaussianQuadrature::dgaus8(fx, 0, 1, err, ier);
+   trueValue = 0.5;
+   CPPUNIT_ASSERT(std::fabs((result - trueValue)/trueValue) < tol);
+
+   Foo fxy(fx);
+   result = GaussianQuadrature::dgaus8(fxy, 0, 1, err, ier);
+   trueValue = 0.25;
+   CPPUNIT_ASSERT(std::fabs((result - trueValue)/trueValue) < tol);
+
+   double ltail(20);
+   double rwidth(0.1);
+
+   double xmin(-1);
+   double xmax(2);
+
+   Edisp edisp(ltail, rwidth);
+
+   result = GaussianQuadrature::dgaus8(edisp, xmin, xmax, err, ier);
+
+   size_t npts(500);
+   std::vector<double> xx;
+   std::vector<double> yy;
+
+   double dx((xmax - xmin)/(npts-1));
+   for (size_t i(0); i < npts; i++) {
+      xx.push_back(i*dx + xmin);
+      yy.push_back(edisp(xx.back()));
+   }
+   
+   double integral(0);
+   for (size_t i(1); i < npts; i++) {
+      integral += (yy.at(i) + yy.at(i-1))/2.*(xx.at(i) - xx.at(i-1));
+   }
+
+   CPPUNIT_ASSERT(std::fabs((result - integral)/integral) < tol);
+}
+
 PowerLaw powerLaw(1., 2.);
 
 double power_law(double * x) {
    return powerLaw(*x);
-}
-
-void st_facilitiesTests::test_dgaus8() {
-   double xmin(0);
-   double xmax(4.);
-   double err(1e-5);
-   double result(0);
-   long ierr;
-   dgaus8_(&power_law, &xmin, &xmax, &err, &result, &ierr);
-   double true_value;
-   if (powerLaw.index() != 1.) {
-      true_value = powerLaw.prefactor()*(pow(xmax, powerLaw.index() + 1.)
-                                         - pow(xmin, powerLaw.index() + 1.))
-                                         /(powerLaw.index() + 1.);
-   } else {
-      true_value = powerLaw.prefactor()*log(xmax/xmin);
-   }
-   double tol(1e-4);
-   CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
 }
 
 void st_facilitiesTests::test_GaussianQuadrature() {

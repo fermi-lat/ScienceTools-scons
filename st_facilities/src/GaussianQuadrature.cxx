@@ -6,6 +6,9 @@
  * $Header$
  */
 
+#include <cmath>
+
+#include <algorithm>
 #include <vector>
 
 #include "st_facilities/dgaus8.h"
@@ -88,4 +91,3 @@ double GaussianQuadrature::integrate(D_fp func, double xmin, double xmax,
 }
 
 } // namespace st_facilities
-
