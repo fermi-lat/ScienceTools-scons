@@ -1,7 +1,7 @@
 /** @file GPS.cxx
- @brief  implementation of the GPS class.
+@brief  implementation of the GPS class.
 
- $Id$
+$Id$
 */
 #include "astro/GPS.h"
 
@@ -129,15 +129,15 @@ void GPS::setPointingDirection( const astro::SkyDir& dir){
 }
 
 /// set the desired pointing history file to use:
-void GPS::setPointingHistoryFile(std::string fileName, double  offset){
-    m_rockType = HISTORY;
+void GPS::setPointingHistoryFile(std::string fileName, double  offset, bool x_east){
+    m_rockType = x_east? HISTORY_X_EAST : HISTORY;
     m_history = new PointingHistory(fileName, offset);
 }
 
 double GPS::rockingDegrees(double rockDegrees){
-        double ret=m_rockDegrees;
-        m_rockDegrees = rockDegrees;
-        return ret;}
+    double ret=m_rockDegrees;
+    m_rockDegrees = rockDegrees;
+    return ret;}
 
 GPS::RockType GPS::setRockType(RockType rockType){
     RockType ret (m_rockType);
@@ -180,8 +180,8 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 
             // return the product, zenith->celestial->GLAST
             trans = trans* zenith_to_cel;
-            }
-            break;
+                     }
+                     break;
 
         case CELESTIAL:
 
@@ -206,8 +206,20 @@ void GPS::update(double inputTime){
 
 
     // if history, just ask the history to interpolate the table, or whatever
-    if(m_rockType == HISTORY ){
+    if(m_rockType == HISTORY ||  m_rockType == HISTORY_X_EAST ){
         m_currentPoint = (*m_history)(inputTime);
+        if( m_rockType == HISTORY_X_EAST) {
+            
+            // recreate the pointing guy but with same orientation of x axis as
+            // is done for the explicit pointing, in East direction
+            astro::EarthCoordinate earth (m_currentPoint.earthCoord());
+            CLHEP::Hep3Vector pos (m_currentPoint.position() )
+                ,north(0,0,1)
+                ,zAxis(m_currentPoint.zAxis()())
+                ,east(north.cross(zAxis).unit());
+             m_currentPoint =  PointingInfo(pos, Quaternion(zAxis, east), earth);
+
+        }
         return;
     }
 
@@ -255,8 +267,8 @@ void GPS::update(double inputTime){
     ///@todo define orbital direction for rocking
     m_currentPoint = 
         PointingInfo( position, 
-            Quaternion(zenith.rotate(east,rockangle), east), 
-            earthpos);
+        Quaternion(zenith.rotate(east,rockangle), east), 
+        earthpos);
     return;
 }
 
@@ -270,26 +282,26 @@ int GPS::test()
     int rc(0);
     GPS& gps = *GPS::instance();
     {
-    // default: zenith pointing
-    gps.time(1000);
-    if( ! gps.zAxisDir()().isNear(gps.zenithDir()())) ++rc;
-    HepRotation Rzen = gps.transformToGlast(1000,GPS::ZENITH);
-    Hep3Vector localZenith(0,0,1),
-     testz ( Rzen* localZenith );
-    if( !testz.isNear(localZenith) ) ++rc;
+        // default: zenith pointing
+        gps.time(1000);
+        if( ! gps.zAxisDir()().isNear(gps.zenithDir()())) ++rc;
+        HepRotation Rzen = gps.transformToGlast(1000,GPS::ZENITH);
+        Hep3Vector localZenith(0,0,1),
+            testz ( Rzen* localZenith );
+        if( !testz.isNear(localZenith) ) ++rc;
     }
     // test setting zenith angle
     {
-    gps.setRockType(GPS::EXPLICIT);
-    double rock(20.);
-    gps.rockingDegrees(rock);
-    gps.time(2000);
-    if(  gps.zAxisDir()().isNear(gps.zenithDir()())) ++rc; // should not be near
-    HepRotation Rzen = gps.transformToGlast(2000,GPS::ZENITH);
-    Hep3Vector localZenith(0,0,1),
-     testz ( Rzen* localZenith );
-    double dot(testz.dot(localZenith) ), cs(cos(rock*M_PI/180));
-    if( fabs(dot-cs) >1e-10  ) ++rc;
+        gps.setRockType(GPS::EXPLICIT);
+        double rock(20.);
+        gps.rockingDegrees(rock);
+        gps.time(2000);
+        if(  gps.zAxisDir()().isNear(gps.zenithDir()())) ++rc; // should not be near
+        HepRotation Rzen = gps.transformToGlast(2000,GPS::ZENITH);
+        Hep3Vector localZenith(0,0,1),
+            testz ( Rzen* localZenith );
+        double dot(testz.dot(localZenith) ), cs(cos(rock*M_PI/180));
+        if( fabs(dot-cs) >1e-10  ) ++rc;
     }
 
     // test pointing
@@ -303,19 +315,19 @@ int GPS::test()
 
     // test rocking
     {
-    gps.setRockType(GPS::ONEPERORBIT);
-    gps.rockingDegrees(35.);
-    double start(0), stop(start+90*60*3), step(60*10);  // will interpolate two intervals
-    cout << "\nRocking test:\ntime\tlat\tlon\traz\tdecz" << endl;
-    for( double time=start; time<stop; time+=step){
-        gps.time(time);  // set the time
-        cout << time << "\t"
-            << gps.lat() << "\t" 
-            << gps.lon() << "\t" 
-            << gps.zAxisDir().ra()  << "\t"
-            << gps.zAxisDir().dec() << "\t"
-            << endl;
-    }    
+        gps.setRockType(GPS::ONEPERORBIT);
+        gps.rockingDegrees(35.);
+        double start(0), stop(start+90*60*3), step(60*10);  // will interpolate two intervals
+        cout << "\nRocking test:\ntime\tlat\tlon\traz\tdecz" << endl;
+        for( double time=start; time<stop; time+=step){
+            gps.time(time);  // set the time
+            cout << time << "\t"
+                << gps.lat() << "\t" 
+                << gps.lon() << "\t" 
+                << gps.zAxisDir().ra()  << "\t"
+                << gps.zAxisDir().dec() << "\t"
+                << endl;
+        }    
     }
     // test reading and interpolating an ascii file
     const char * package_root(::getenv("ASTROROOT") );
