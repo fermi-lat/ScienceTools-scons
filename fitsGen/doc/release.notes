@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r2p1 18-Mar-07   JC   set Pass4_Classifier.py to use single standard
+                            Pass4 class (for front and back)
     v3r2   11-Dec-06   JC   use embed_python and the EventClassifier class
                             to assign event classes by simple ROOT TCuts
     v3r1p3 28-Sep-06   JC   remove Util (unneeded with conversion to st_app)
