@@ -19,12 +19,14 @@ CTBCORE  CTBSummedCTBGAM  CTBBestEnergyProb
 """.split()
 
 #
-# Example event class cuts.
+# Event class cuts for standard/front, standard/back
 #
-eventClassCuts = ['CTBSummedCTBGAM>=0.5 && CTBCORE>=0.8',
-                  'CTBSummedCTBGAM>=0.5 && CTBCORE>=0.5 && CTBCORE<0.8',
-                  'CTBSummedCTBGAM>=0.5 && CTBCORE<0.5',
-                  'CTBSummedCTBGAM>=0.1 && CTBSummedCTBGAM<0.5',
-                  'CTBSummedCTBGAM<0.1']
+
+eventClassCuts = ['(GltWord&&10)>0 && (GltWord!=35) && (FilterStatus_HI==0) &&'
+                  +'CTBBestEnergyProb>0.1 && CTBCORE>0.1 && CTBSummedCTBGAM>0.5'
+                  + 'Tkr1FirstLayer>5.5',
+                  '(GltWord&&10)>0 && (GltWord!=35) && (FilterStatus_HI==0) &&'
+                  +'CTBBestEnergyProb>0.1 && CTBCORE>0.1 && CTBSummedCTBGAM>0.5'
+                  + 'Tkr1FirstLayer<5.5']
 
 eventClassifier = EventClassifier(eventClassCuts)
