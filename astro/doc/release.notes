@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r5     18-Mar-07 THB  GPS capability to rotate xaxis to East, overriding history
   v2r4p2   15-Mar-07 THB  compiler error fix (subtle)
   v2r4p1   25-Feb-07 THB  fix test program
   v2r4     22-Feb-07 THB  Change to allow for parallax of Moon position
