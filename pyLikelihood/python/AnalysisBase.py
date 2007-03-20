@@ -25,7 +25,8 @@ class AnalysisBase(object):
                  "PowerLaw2": "Integral",
                  "Gaussian": "Prefactor",
                  "FileFunction": "Normalization",
-                 "LogParabola": "norm"}
+                 "LogParabola": "norm",
+                 "PLSuperExpCutoff" : "Prefactor" }
     def __init__(self):
         self.maxdist = 20
         self.tol = 1e-5
