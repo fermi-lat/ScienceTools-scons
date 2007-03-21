@@ -40,21 +40,12 @@ int main() {
   // Next test: read event file.
   std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(st_facilities::Env::appendFileName(data_dir, "D1.fits"), "EVENTS"));
  
-  double valid_since = 0.;
-  double valid_until = 0.;
-
   const tip::Header & header(events->getHeader());
-  header["TSTART"].get(valid_since);
-  header["TSTOP"].get(valid_until);
 
   MetRep glast_tdb("TDB", 51910, 0., 0.);
-  glast_tdb.setValue(valid_since);
-  AbsoluteTime abs_valid_since(glast_tdb);
-  glast_tdb.setValue(valid_until);
-  AbsoluteTime abs_valid_until(glast_tdb);
   glast_tdb.setValue(123.456789);
   AbsoluteTime abs_epoch(glast_tdb);
-  FrequencyEph eph("TDB", abs_valid_since, abs_valid_until, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
+  FrequencyEph eph("TDB", abs_epoch, abs_epoch, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
   bool add_col = true;

@@ -107,14 +107,10 @@ void PulsePhaseApp::run() {
   tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
 
   // Get keywords.
-  double valid_since = 0.;
-  double valid_until = 0.;
   std::string telescope;
   std::string event_time_sys;
 
   const tip::Header & header(events->getHeader());
-  header["TSTART"].get(valid_since);
-  header["TSTOP"].get(valid_until);
   header["TELESCOP"].get(telescope);
   header["TIMESYS"].get(event_time_sys);
 
