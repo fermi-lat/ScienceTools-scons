@@ -74,13 +74,14 @@ public:
     
     /// return a unique number correcponding to that spectrum
     virtual int numSource()const=0;
+#if 0 // removing
     
     /// pass a specific amount of time
     virtual void pass ( double t)=0;
-        
+    virtual /*int*/double gpsTime()const=0;
+#endif   
     virtual void addFactory(std::string name, const ISpectrumFactory* factory )=0;
     
-    virtual /*int*/double gpsTime()const=0;
     
     virtual EventSource* currentEvent()=0;
     virtual EventSource* currentFlux()=0;

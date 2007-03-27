@@ -329,6 +329,7 @@ void FluxMgr::setExpansion (double p){
     GPS::instance()->expansion(p);
 }
 
+
 // pass a specific amount of time
 void FluxMgr::pass(double t){
     GPS::instance()->pass(t);
@@ -337,6 +338,10 @@ void FluxMgr::pass(double t){
 
 double FluxMgr::time () const{
     return GPS::instance()->time();
+}
+void FluxMgr::setTime(double newtime)
+{
+    GPS::instance()->time(newtime);
 }
 
 void FluxMgr::synch(){

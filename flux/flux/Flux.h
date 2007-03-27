@@ -64,13 +64,18 @@ public:
     
     /// return the time
     virtual double time()const;
-    
+
+#if 0
     /// pass a specific amount of time
     virtual void pass ( double t);
-    
+#endif
+    /// set the new time
+    void setTime(double newtime); 
+ 
+#if 0
     /// Get the time as held by GPS (same: here for backward compatibility
     double gpsTime () const;
-    
+#endif
     /// rate ( /mm**2 /s)
     virtual double rate()const;
     
