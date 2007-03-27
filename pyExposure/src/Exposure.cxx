@@ -70,13 +70,21 @@ double Exposure::value(double time, double energy) const {
 }
 
 void Exposure::readScData(const std::string & scDataFile) {
+   double tmin(*std::min_element(m_timeBoundaries.begin(), 
+                                 m_timeBoundaries.end()));
+   double tmax(*std::max_element(m_timeBoundaries.begin(), 
+                                 m_timeBoundaries.end()));
+// Add some padding to ensure the interval covering the end time
+// boundary is included.
+   size_t npts(m_timeBoundaries.size());
+   tmax += (m_timeBoundaries.back() - m_timeBoundaries.at(npts-2));
    std::vector<std::string> scFiles;
    st_facilities::Util::resolve_fits_files(scDataFile, scFiles);
    std::vector<std::string>::const_iterator scIt = scFiles.begin();
    bool clear(true);
    for ( ; scIt != scFiles.end(); scIt++) {
       st_facilities::Util::file_ok(*scIt);
-      m_scData->readData(*scIt, clear);
+      m_scData->readData(*scIt, tmin, tmax, clear);
       clear = false;
    }
 }
