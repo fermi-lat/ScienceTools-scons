@@ -7,7 +7,9 @@
  */
 %module pyExposure
 %{
+#ifdef TRAP_FPE
 #include <fenv.h>
+#endif
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -41,11 +43,13 @@
 %include $(DATASUBSELECTORROOT)/dataSubselector/Cuts.h
 %template(GtiCutVector) std::vector<dataSubselector::GtiCut *>;
 %include $(PYEXPOSUREROOT)/pyExposure/Exposure.h
+#ifdef TRAP_FPE
 %extend pyExposure::Exposure {
    static void enableFPE() {
       feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
    }
 }
+#endif
 %extend dataSubselector::Cuts {
    void writeCuts() const {
       self->writeCuts(std::cout);
