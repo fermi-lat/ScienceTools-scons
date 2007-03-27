@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  27-Mar-07 v1r0p1  JC    read in FT2 data for time interval of interest only
   17-Jan-07 v1      JC    added gtexposure application
   09-Mar-06 v0      JC    initial import
  
