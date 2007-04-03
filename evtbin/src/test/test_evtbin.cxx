@@ -1075,7 +1075,7 @@ void EvtBinTest::testGti() {
   const double fw = 0.1;
   const double omfw = 1.0 - fw;
   fract = spec_gti.getFraction(gti_start + gti_width * fw,
-			       gti_stop + gti_width * fw, gti_pos);
+                               gti_stop + gti_width * fw, gti_pos);
   if (epsilon < fabs((fract - omfw) / omfw)) {
     std::cerr << "Unexpected: testGti: GTI starts before interval, "
       "getFraction returned " << fract << ", not " << omfw << std::endl;
@@ -1459,18 +1459,18 @@ void EvtBinTest::testMultipleFiles() {
   Gti expected_gti;
   const int n_gti = 13;
   const double gti_start[n_gti] = {223850000.0, 223856049.158012, 223862084.197088,
-			      223868030.092777, 223873894.124928,
-			      223879825.027392, 223885778.155413,
-			      223891726.103164, 223897231.049686,
-			      223930038.17317, 223936206.009276,
-			      223942287.099427, 223948307.123155};
+                                   223868030.092777, 223873894.124928,
+                                   223879825.027392, 223885778.155413,
+                                   223891726.103164, 223897231.049686,
+                                   223930038.17317, 223936206.009276,
+                                   223942287.099427, 223948307.123155};
   const double gti_stop[n_gti] = {223854399.129535, 223860305.006878,
-			     223866272.158332, 223872392.133007,
-			     223878540.140182, 223884651.061104,
-			     223890762.015572, 223896970.086514,
-			     223929670.094502, 223934706.009866,
-			     223940596.057341,223946500.116608,
-			     223950000.0};
+                                  223866272.158332, 223872392.133007,
+                                  223878540.140182, 223884651.061104,
+                                  223890762.015572, 223896970.086514,
+                                  223929670.094502, 223934706.009866,
+                                  223940596.057341,223946500.116608,
+                                  223950000.0};
   for (int i = 0; i < n_gti; i++) {
     expected_gti.insertInterval(gti_start[i], gti_stop[i]);
   }
@@ -1481,13 +1481,13 @@ void EvtBinTest::testMultipleFiles() {
   for (; merged_pos != merged_gti.end(); ++merged_pos, ++expected_pos) {
     if (fabs((merged_pos->first - expected_pos->first) / expected_pos->first) > epsilon) {
       m_failed = true;
-      std::cerr << "Unexpected: testMultipleFiles: Gti first computed from merged list of event files was:\n" << merged_pos->first <<
-	"\nnot:\n" << expected_pos->first << "\n, as expected." << std::endl;
+      std::cerr << "Unexpected: testMultipleFiles: Gti first computed from merged list of event files was:\n" <<
+        merged_pos->first << "\nnot:\n" << expected_pos->first << "\n, as expected." << std::endl;
     }
     if (fabs((merged_pos->second - expected_pos->second) / expected_pos->second) > epsilon) {
       m_failed = true;
-      std::cerr << "Unexpected: testMultipleFiles: Gti second computed from merged list of event files was:\n" << merged_pos->second <<
-	"\nnot:\n" << expected_pos->second << "\n, as expected." << std::endl;
+      std::cerr << "Unexpected: testMultipleFiles: Gti second computed from merged list of event files was:\n" <<
+        merged_pos->second << "\nnot:\n" << expected_pos->second << "\n, as expected." << std::endl;
     }
   }
 
