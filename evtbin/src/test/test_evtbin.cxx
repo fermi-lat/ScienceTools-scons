@@ -121,7 +121,7 @@ class EvtBinTest : public st_app::StApp {
     bool m_failed;
 };
 
-EvtBinTest::EvtBinTest(): m_os("EvtBinTest", "EvtBinTest", 2), m_t_start(2.167442034386540E+06), m_t_stop(2.185939683959529E+06),
+EvtBinTest::EvtBinTest(): m_os("EvtBinTest", "EvtBinTest", 2), m_t_start(223850000.0), m_t_stop(223950000.0),
   m_e_min(30.), m_e_max(6000.), m_gbm_t_start(-4.193924833089113E-03), m_gbm_t_stop(1.368369758129120E-01), m_failed(false) {
   setName("test_evtbin");
   setVersion(s_cvs_id);
@@ -489,7 +489,7 @@ void EvtBinTest::testLightCurve() {
   Gti gti(m_ft1_file);
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
     LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   // Fill the light curve.
@@ -523,7 +523,7 @@ void EvtBinTest::testSingleSpectrum() {
   Gti gti(m_ft1_file);
 
   // Create spectrum object.
-  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "Ext1", energy_binner, energy_binner, gti);
+  SingleSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA", energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
   spectrum.binInput();
@@ -594,7 +594,7 @@ void EvtBinTest::testMultiSpectra() {
   Gti gti(m_ft1_file);
 
   // Create spectrum object.
-  MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+  MultiSpec spectrum(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
     LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .1, "TIME"), energy_binner, energy_binner, gti);
 
   // Fill the spectrum.
@@ -633,7 +633,7 @@ void EvtBinTest::testCountMap() {
   Gti gti(m_ft1_file);
 
   // Create count map object.
-  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, "Ext1", 8.3633225E+01, 2.2014458E+01, "AIT", 100, 100, .1, 0., false,
+  CountMap count_map(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA", 83.4, 22.0, "AIT", 100, 100, .1, 0., false,
     "RA", "DEC", gti);
 
   // Fill the count map.
@@ -967,36 +967,40 @@ void EvtBinTest::testGti() {
   Gti gti(m_ft1_file);
 
   // Create light curve object.
-  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "Ext1",
+  LightCurve lc(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
     LinearBinner(m_t_start, m_t_stop, (m_t_stop - m_t_start) * .01, "TIME"), gti);
 
   // Get absolute O/S dependent limit on precision.
-  const double epsilon = std::numeric_limits<double>::epsilon();
+  //  const double epsilon = std::numeric_limits<double>::epsilon();
+  const double epsilon = 1.0e-10;
 
   const Gti & lc_gti = lc.getGti();
-  if (2 != lc_gti.getNumIntervals()) {
-    std::cerr << "testGti: ERROR: read GTI from test ft1 file with " << lc_gti.getNumIntervals() << ", not 2 GTI" << std::endl;
+  const int n_gti = 13;
+  if (n_gti != lc_gti.getNumIntervals()) {
+    std::cerr << "testGti: ERROR: read GTI from test ft1 file with " << lc_gti.getNumIntervals() << ", not " << n_gti << " GTI" << std::endl;
     m_failed = true;
   } else {
     // The first interval should agree exactly with the start interval read from the file.
-    if (m_t_start != lc_gti.begin()->first || epsilon < fabs((m_t_start + 5.e3 - lc_gti.begin()->second) / (m_t_start + 5.e3))) {
+    const double gti1_duration = 4399.12953472137;
+    if (m_t_start != lc_gti.begin()->first || epsilon < fabs((m_t_start + gti1_duration - lc_gti.begin()->second) / (m_t_start + gti1_duration))) {
       std::cerr << "testGti: ERROR: read GTI from test ft1 file with values [" << lc_gti.begin()->first << ", " <<
-        lc_gti.begin()->second << ", not [" << m_t_start << ", " << m_t_start + 5.e3 << "], as expected." << std::endl;
+        lc_gti.begin()->second << ", not [" << m_t_start << ", " << m_t_start + gti1_duration << "], as expected." << std::endl;
       m_failed = true;
     }
 
     Gti::ConstIterator last = lc_gti.end();
     --last;
     // The last interval should agree less exactly with the stop interval read from the file, because the gti was recut.
-    if (m_t_stop != last->second || 10. * epsilon < fabs((m_t_stop - 1.e4 - last->first) / (m_t_stop - 1.e4))) {
+    const double gti2_duration = 1.692876845e+3;
+    if (m_t_stop != last->second || 10. * epsilon < fabs((m_t_stop - gti2_duration - last->first) / (m_t_stop - gti2_duration))) {
       std::cerr << "testGti: ERROR: read GTI from test ft1 file with values [" << last->first << ", " << last->second <<
-        ", not [" << m_t_stop - 1.e4 << ", " << m_t_stop << "], as expected." << std::endl;
+        ", not [" << m_t_stop - gti2_duration << ", " << m_t_stop << "], as expected." << std::endl;
       m_failed = true;
     }
   }
 
   // Check ONTIME computation from light curve.
-  expected_on_time = 1.5e4;
+  expected_on_time = 84307.6959530115;
   on_time = lc_gti.computeOntime();
   // Error in ontime is compounded by the large number of bins used in the light curve.
   if (1000. * epsilon < fabs((expected_on_time - on_time) / expected_on_time)) {
@@ -1008,14 +1012,14 @@ void EvtBinTest::testGti() {
 
   Gti::ConstIterator gti_pos = spec_gti.begin();
 
-  double gti_start = 2.167442034386540E+06;
-  double gti_stop = 2.172442034386540E+06;
+  const double gti_start = 223850000.0;
+  const double gti_stop = 223854399.129535;
 
   std::cerr.precision(24);
 
   // Interval == GTI.
   double fract = spec_gti.getFraction(gti_start, gti_stop, gti_pos);
-  if (fract != 1.) {
+  if (fabs(fract - 1.0) > epsilon) {
     std::cerr << "Unexpected: testGti: Interval == GTI, getFraction returned " << fract << ", not 1" << std::endl;
     m_failed = true;
 //  if (gti_pos !=spec_gti.end())
@@ -1036,12 +1040,19 @@ void EvtBinTest::testGti() {
 
   // Interval > GTI.
   gti_pos = spec_gti.begin();
+  Gti::ConstIterator gti_pos2 = gti_pos;
+  gti_pos2++;
   fract = spec_gti.getFraction(gti_stop + .0001, gti_stop + 1.e3, gti_pos);
   if (fract != 0.) {
     std::cerr << "Unexpected: testGti: Interval > GTI, getFraction returned " << fract << ", not 0" << std::endl;
     m_failed = true;
   }
-  if (++gti_pos != spec_gti.end()) {
+
+
+
+  //for (int i = 0; i < (n_gti - 1); i++) { ++gti_pos; }
+  //  if (++gti_pos != spec_gti.end()) {
+  if (gti_pos != gti_pos2) {
     std::cerr << "Unexpected: testGti: Interval > GTI, iterator was not incremented" << std::endl;
     m_failed = true;
   }
@@ -1059,14 +1070,22 @@ void EvtBinTest::testGti() {
     m_failed = true;
   }
 
-  // Interval starts halfway through GTI, goes past end.
+  // Interval starts ~10%-way through GTI, goes past end.
   gti_pos = spec_gti.begin();
-  fract = spec_gti.getFraction(gti_start + gti_width * .1, gti_stop + gti_width * .1, gti_pos);
-  if (epsilon < fabs((fract - .9) / .9)) {
-    std::cerr << "Unexpected: testGti: GTI starts before interval, getFraction returned " << fract << ", not .9" << std::endl;
+  const double fw = 0.1;
+  const double omfw = 1.0 - fw;
+  fract = spec_gti.getFraction(gti_start + gti_width * fw,
+			       gti_stop + gti_width * fw, gti_pos);
+  if (epsilon < fabs((fract - omfw) / omfw)) {
+    std::cerr << "Unexpected: testGti: GTI starts before interval, "
+      "getFraction returned " << fract << ", not " << omfw << std::endl;
     m_failed = true;
   }
-  if (++gti_pos != spec_gti.end()) {
+
+
+
+
+  if (gti_pos != gti_pos2) {
     std::cerr << "Unexpected: testGti: GTI starts before interval, iterator was not incremented" << std::endl;
     m_failed = true;
   }
@@ -1090,7 +1109,7 @@ void EvtBinTest::testGti() {
     std::cerr << "Unexpected: testGti: GTI contained within interval, getFraction returned " << fract << ", not .625" << std::endl;
     m_failed = true;
   }
-  if (++gti_pos != spec_gti.end()) {
+  if (gti_pos != gti_pos2) {
     std::cerr << "Unexpected: testGti: GTI contained within interval, iterator was not incremented" << std::endl;
     m_failed = true;
   }
@@ -1392,8 +1411,8 @@ void EvtBinTest::testMultipleFiles() {
   m_os.setMethod("testMultipleFiles()");
 
   // Names of unsplit files containing events and sc data.
-  std::string ev_file = Env::appendFileName(m_data_dir, "ft1small.fits");
-  std::string sc_file = Env::appendFileName(m_data_dir, "ft2small.fits");
+  std::string ev_file = m_ft1_file;
+  std::string sc_file = m_ft2_file;
 
   // Get Gti from unsplit file.
   Gti separate_gti(ev_file);
@@ -1402,7 +1421,7 @@ void EvtBinTest::testMultipleFiles() {
   LogBinner energy_binner(30., 200000., 100, "ENERGY");
 
   // Create spectrum from unsplit files.
-  SingleSpec separate(ev_file, "EVENTS", sc_file, "Ext1", energy_binner, energy_binner, separate_gti);
+  SingleSpec separate(ev_file, "EVENTS", sc_file, "SC_DATA", energy_binner, energy_binner, separate_gti);
 
   // Fill the spectrum.
   separate.binInput();
@@ -1434,20 +1453,46 @@ void EvtBinTest::testMultipleFiles() {
 
   // Get the good time intervals from event file list.
   Gti merged_gti(ev_list_file);
+  Gti::ConstIterator merged_pos = merged_gti.begin();
 
   // Confirm the gtis were merged correctly.
   Gti expected_gti;
-  expected_gti.insertInterval(1000., 5000.);
-  expected_gti.insertInterval(10000., 20000.);
+  const int n_gti = 13;
+  const double gti_start[n_gti] = {223850000.0, 223856049.158012, 223862084.197088,
+			      223868030.092777, 223873894.124928,
+			      223879825.027392, 223885778.155413,
+			      223891726.103164, 223897231.049686,
+			      223930038.17317, 223936206.009276,
+			      223942287.099427, 223948307.123155};
+  const double gti_stop[n_gti] = {223854399.129535, 223860305.006878,
+			     223866272.158332, 223872392.133007,
+			     223878540.140182, 223884651.061104,
+			     223890762.015572, 223896970.086514,
+			     223929670.094502, 223934706.009866,
+			     223940596.057341,223946500.116608,
+			     223950000.0};
+  for (int i = 0; i < n_gti; i++) {
+    expected_gti.insertInterval(gti_start[i], gti_stop[i]);
+  }
+  Gti::ConstIterator expected_pos = expected_gti.begin();
 
-  if (merged_gti != expected_gti) {
-    m_failed = true;
-    std::cerr << "Unexpected: testMultipleFiles: Gti computed from merged list of event files was:\n" << merged_gti <<
-      "\nnot:\n" << expected_gti << "\n, as expected." << std::endl;
+  //  if (merged_gti != expected_gti) {
+  const double epsilon = 1.0e-10;
+  for (; merged_pos != merged_gti.end(); ++merged_pos, ++expected_pos) {
+    if (fabs((merged_pos->first - expected_pos->first) / expected_pos->first) > epsilon) {
+      m_failed = true;
+      std::cerr << "Unexpected: testMultipleFiles: Gti first computed from merged list of event files was:\n" << merged_pos->first <<
+	"\nnot:\n" << expected_pos->first << "\n, as expected." << std::endl;
+    }
+    if (fabs((merged_pos->second - expected_pos->second) / expected_pos->second) > epsilon) {
+      m_failed = true;
+      std::cerr << "Unexpected: testMultipleFiles: Gti second computed from merged list of event files was:\n" << merged_pos->second <<
+	"\nnot:\n" << expected_pos->second << "\n, as expected." << std::endl;
+    }
   }
 
   // Bin up the input to make a spectrum, and require the total number of binned counts to agree with the inputs.
-  SingleSpec merged(ev_list_file, "EVENTS", sc_list_file, "Ext1", energy_binner, energy_binner, merged_gti);
+  SingleSpec merged(ev_list_file, "EVENTS", sc_list_file, "SC_DATA", energy_binner, energy_binner, merged_gti);
 
   // Fill the spectrum.
   merged.binInput();
