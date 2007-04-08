@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r8p1 08-Apr-07   JC   treat as absolute convergence criterion if
+                            denominator of relative change is zero
     v2r8   23-Feb-07   JC   allow clients to specify type of initial
                             step size to use in Amoeba constructor
     v2r7p8 29-Jan-07   JC   fix floating point error bug and erroneous 

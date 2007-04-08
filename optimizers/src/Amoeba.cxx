@@ -74,12 +74,8 @@ void amoeba(std::vector< std::vector<double> > & p,
       double num(2.0*std::fabs(y.at(ihi) - y.at(ilo)));
       double denom(std::fabs(y.at(ihi)) + std::fabs(y.at(ilo)));
       double rtol;
-      if (denom == 0) {  /// @bug denom can be zero sometimes
-         if (num == 0) {
-            rtol = 0;
-         } else {
-            rtol = ftol; // set to value to ensure it keeps going
-         }
+      if (denom == 0) {  /// treat the tolerance as absolute
+         rtol = num;
       } else {
          rtol = num/denom;
       }
