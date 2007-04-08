@@ -129,8 +129,10 @@ void MakeFt1::run() {
    std::string defaultFilter = m_pars["TCuts"];
 
    std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
+
    if (defaultFilter == "DEFAULT") {
-      defaultFilter = st_facilities::Env::appendFileName(dataDir, "std_cuts");
+      defaultFilter = st_facilities::Env::appendFileName(dataDir,
+                                                         "pass4_cuts");
    }
    std::string filter;
    if (!st_facilities::Util::fileExists(defaultFilter)) {

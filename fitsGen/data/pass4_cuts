@@ -1,0 +1,8 @@
+#
+# Standard Pass 4 cuts.
+#
+# See http://confluence.slac.stanford.edu/display/DC2/Trigger+and+Filter+settings+and+Event+classes
+#
+# $Header$
+#
+(GltWord&10) > 0 && GltWord != 35  && FilterStatus_HI == 0 
