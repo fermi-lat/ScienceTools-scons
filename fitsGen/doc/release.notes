@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r2p2 08-Apr-07   JC   corrections for Pass4_Classifier.py; use
+                            pass4_cuts as default
     v3r2p1 18-Mar-07   JC   set Pass4_Classifier.py to use single standard
                             Pass4 class (for front and back)
     v3r2   11-Dec-06   JC   use embed_python and the EventClassifier class
