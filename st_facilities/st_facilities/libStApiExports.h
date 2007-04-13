@@ -29,10 +29,10 @@
 #if (defined(_WIN32) && defined(_MSC_VER))
 # ifdef ST_DLL_EXPORTS
 #  undef  SCIENCETOOLS_API
-#  define SCIENCETOOLS_API __declspec(dllexport)
+#  define SCIENCETOOLS_API //__declspec(dllexport)
 # else
 #  undef  SCIENCETOOLS_API
-#  define SCIENCETOOLS_API __declspec(dllimport)
+#  define SCIENCETOOLS_API //__declspec(dllimport)
 # endif
 #else
 // The gcc compiler (i.e. the Linux/Unix compiler) exports the Universe

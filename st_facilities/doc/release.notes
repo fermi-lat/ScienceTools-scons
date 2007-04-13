@@ -5,6 +5,8 @@
   @verbatim
   $Id$
 
+  12-Apr-07 v0r10p2 JC   comment out declspec(...) in libStApiExports.h 
+                         and see what happens to Windows builds
   15-Mar-07 v0r10p1 JC   Windows fixes for GaussianQuadrature.h
   15-Mar-07 v0r10  JC    add C++ version of dgaus8 to GaussianQuadrature class
   13-Feb-07 v0r9   JC    change names of Dgaus8 files since Windoze filenames
