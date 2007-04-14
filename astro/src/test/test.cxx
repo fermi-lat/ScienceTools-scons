@@ -293,6 +293,8 @@ bool test_GPS_readFitsData() {
     checkdir(gps->zAxisDir(), SkyDir(11.064399719238281, -6.5129880905151367));
     checkdir(gps->zenithDir(), SkyDir(11.605173110961914, 28.483125686645508));
 
+    gps->time( -1); // should generate exception
+
     return true;
 }
 

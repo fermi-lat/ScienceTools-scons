@@ -351,5 +351,15 @@ int GPS::test()
             << endl;
     }
 
+    // check exception
+    try{
+        cout << "\n trying time that is not in the range...\n";
+        gps.time(1e6);
+    }catch(const PointingHistory::TimeRangeError& x){
+        cout << " caught expected exception " << x.what() << std::endl;
+        return rc;
+    }
+    // should not get here
+    throw std::runtime_error("GPS test failed to throw exception");
     return rc;
 }

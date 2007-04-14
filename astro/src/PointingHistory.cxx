@@ -13,7 +13,6 @@ using namespace astro;
 
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
 
 PointingHistory::PointingHistory(const std::string& filename, double offset)
 : m_selected(-1)
@@ -71,9 +70,10 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const{
        std::ostringstream message;
        message << "PointingHistory: Time out of Range!:\n"
                << "Time (" << time 
-               << ") out of range of times in the pointing database. "
+               << ") out of range of times in the pointing database: ("
+               << m_startTime <<", "<< m_endTime <<")"
                << std::endl;
-       throw std::runtime_error(message.str());
+       throw TimeRangeError(message.str());
     }
     const PointingInfo & h2 = iter->second;
     double time2( iter->first);
