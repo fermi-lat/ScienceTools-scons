@@ -9,6 +9,8 @@ $Header$
 
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
+#include <stdexcept>
+
 
 namespace astro {
 
@@ -36,6 +38,14 @@ namespace astro {
         SolarSystem(Body body=SUN);
         ~SolarSystem();
 
+        /** @class BadDate
+            @brief exception class inheriting from invalid_argumetn if Julian date is invalid
+
+        */
+        class BadDate: public std::invalid_argument{
+        public:
+            BadDate( const std::string&msg): std::invalid_argument(msg){}
+        };
         /**
         * @brief return the SkyDir at date, with respect to position (in km) from center of Earth 
         */
@@ -44,27 +54,27 @@ namespace astro {
         /**
         * @brief return the SkyDir at date
         */
-        SkyDir direction(JulianDate jd)const ;
+        SkyDir direction(JulianDate jd)const throw( SolarSystem::BadDate);
 
 		/**
         * @brief return the distance of the body from Earth at date in lightseconds
         */
-        double distance(JulianDate jd)const;
+        double distance(JulianDate jd)const throw( SolarSystem::BadDate);
 
         /**
         * @brief return the distance vector to solar system barycenter at date in lightseconds
         */
-        CLHEP::Hep3Vector getBarycenter(JulianDate jd)const;
+        CLHEP::Hep3Vector getBarycenter(JulianDate jd)const throw( SolarSystem::BadDate);
 
         /**
         * @brief return a distance vector to the sun at date in lightseconds
         */
-        CLHEP::Hep3Vector getSolarVector(JulianDate jd)const;
+        CLHEP::Hep3Vector getSolarVector(JulianDate jd)const throw( SolarSystem::BadDate);
 
         /*
         * @brief returns the distance vector between two bodies: target and center at date in lightseconds
         */
-        static CLHEP::Hep3Vector vector(Body targ, Body cent, JulianDate jd);
+        static CLHEP::Hep3Vector vector(Body targ, Body cent, JulianDate jd) throw( SolarSystem::BadDate);
 
 
     private:

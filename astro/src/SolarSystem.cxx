@@ -6,7 +6,7 @@
 */
 #include "astro/SolarSystem.h"
 #include "jplephem/bary.h" //local interface to the JPL ephemeris
-#include <stdexcept>
+#include <sstream>
 
 namespace astro {
 
@@ -15,7 +15,7 @@ SolarSystem::SolarSystem(Body body)
 {
 }
 
-SkyDir SolarSystem::direction(JulianDate jd)const
+SkyDir SolarSystem::direction(JulianDate jd)const throw( SolarSystem::BadDate)
 {
     return SkyDir(vector(EARTH, m_body,jd));
 }
@@ -30,12 +30,12 @@ SkyDir SolarSystem::direction(JulianDate jd, const CLHEP::Hep3Vector& position)c
 }
 
 
-double SolarSystem::distance(JulianDate jd)const
+double SolarSystem::distance(JulianDate jd)const throw( SolarSystem::BadDate)
 {
    return vector(m_body,EARTH,jd).mag();
 }
 
-double * SolarSystem::jplSetup(JulianDate jd)
+double * SolarSystem::jplSetup(JulianDate jd) throw( SolarSystem::BadDate)
 {
     static bool ephemInit=false;
     if(!ephemInit) {
@@ -44,7 +44,7 @@ double * SolarSystem::jplSetup(JulianDate jd)
       double c, radsol, msol;
       int j= initephem (ephnum, &denum, &c, &radsol, &msol);
       if ( j !=0 ) {
-          throw std::runtime_error("SolarSytem::getBarycenter: could not initilze JPL ephemeris");
+          throw BadDate("SolarSytem::getBarycenter: could not initilze JPL ephemeris");
        }
       ephemInit = true;
    }
@@ -67,9 +67,14 @@ double * SolarSystem::jplSetup(JulianDate jd)
 }
 
 // Returns an Hep3Vector with light seconds as distance units
-CLHEP::Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const
+CLHEP::Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const throw( SolarSystem::BadDate)
 {
     const double *eposn =  dpleph(jplSetup(jd), m_body, SUN);
+    if( eposn==0) {
+        std::stringstream msg;
+        msg << "SolarSystem::getBarycenter called with bad Julian date " << jd;
+        throw BadDate(msg.str());
+    }
 
    // Position of barycenter
    double x = -eposn[0];
@@ -79,14 +84,20 @@ CLHEP::Hep3Vector SolarSystem::getBarycenter(JulianDate jd)const
 
 }
 
-CLHEP::Hep3Vector SolarSystem::getSolarVector(JulianDate jd)const
+CLHEP::Hep3Vector SolarSystem::getSolarVector(JulianDate jd)const throw( SolarSystem::BadDate)
 {
 	return vector(EARTH,SUN,jd);
 }
 
-CLHEP::Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) {
+CLHEP::Hep3Vector SolarSystem::vector(Body targ, Body cent, JulianDate jd) throw( SolarSystem::BadDate) 
+{
    const double *eposn = dpleph(jplSetup(jd), targ, cent);
-   
+     if( eposn==0) {
+        std::stringstream msg;
+        msg << "SolarSystem::getBarycenter called with bad Julian date " << jd;
+        throw BadDate(msg.str());
+    }
+  
    // Position of targ with respect to the cent
    double x = -eposn[0] + eposn[6];
    double y = -eposn[1] + eposn[7];
