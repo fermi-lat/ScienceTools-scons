@@ -16,6 +16,7 @@ $Header$
 #include "CLHEP/Vector/Rotation.h"
 
 #include <string>
+#include <stdexcept>
 namespace astro {
 
     // forward declarations
@@ -111,6 +112,17 @@ public:
        
     */
     void setPointingHistoryFile(std::string fileName, double offset=0, bool x_east=false);
+
+    /** @class NoHistory
+        @brief exception class to be thrown if no history has been loaded
+    */
+    class NoHistoryError : public std::runtime_error{
+    public: 
+        NoHistoryError(const std::string& msg): std::runtime_error(msg){}
+    };
+
+    /// access to a const reference for the history. Error if does not exist.
+    const astro::PointingHistory& history()const throw(NoHistoryError);
 
     // notification support, managed by facilities/Observer
     void notifyObservers() { m_notification.notify();}

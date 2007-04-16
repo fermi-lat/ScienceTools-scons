@@ -13,7 +13,7 @@ $Id$
 
 #include <iomanip>
 #include <sstream>
-#include <stdexcept>
+
 
 using namespace astro;
 using namespace CLHEP;
@@ -36,6 +36,12 @@ GPS::GPS()
 GPS::~GPS ()
 { delete m_history;
 }//delete m_orbit; }
+
+
+const astro::PointingHistory& GPS::history()const throw(GPS::NoHistoryError)
+{   if( m_history==0) throw GPS::NoHistoryError("GPS:: no history has been loaded");
+    return *m_history;
+}
 
 
 void GPS::synch ()
@@ -334,6 +340,7 @@ int GPS::test()
     std::string history(std::string(package_root)+"/src/test/history_test.txt");
     std::cout << "Reading history file " << history << std::endl;
     gps.setPointingHistoryFile(history);
+    const astro::PointingHistory& h = gps.history(); // get the history object
 
     double start(gps.endTime()-100), stop(start+61), step(5);  // will interpolate two intervals
     cout << "\nRead history file test\ntime\tlat\tlon\traz\tdecz\trax\tdecz\trazen\tdeczen" << endl;
