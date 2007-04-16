@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v2r7     15-Apr-07 THB  Change interface for SolarSystem by raising exception when bad data!
+  v2r7p1   15-Apr-07 THB  Change interface for SolarSystem by raising exception when bad data!
   v2r6p1   14-Apr-07 THB  Change interface to setting time by modifying the exception error message.
   v2r5     18-Mar-07 THB  GPS capability to rotate xaxis to East, overriding history
   v2r4p2   15-Mar-07 THB  compiler error fix (subtle)

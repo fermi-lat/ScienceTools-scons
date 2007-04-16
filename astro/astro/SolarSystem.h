@@ -79,7 +79,7 @@ namespace astro {
 
     private:
         //! setup the jpl ephemeris database if needed, return jd in correct form
-        static double * jplSetup(JulianDate jd);
+        static double * jplSetup(JulianDate jd) ;
         Body m_body;       ///< target body
     };
 

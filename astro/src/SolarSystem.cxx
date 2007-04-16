@@ -35,7 +35,7 @@ double SolarSystem::distance(JulianDate jd)const throw( SolarSystem::BadDate)
    return vector(m_body,EARTH,jd).mag();
 }
 
-double * SolarSystem::jplSetup(JulianDate jd) throw( SolarSystem::BadDate)
+double * SolarSystem::jplSetup(JulianDate jd) 
 {
     static bool ephemInit=false;
     if(!ephemInit) {
