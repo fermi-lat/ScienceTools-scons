@@ -27,6 +27,11 @@ namespace xmlBase {
     void doSchema(bool doit);
     ~XmlParser();
 
+    /** In case we want to force use of a certain schema
+     Set @a ns to 'false' to set NoNamespaceSchemaLocation
+    */
+    void setSchemaLocation(const std::string& loc, bool ns=true);
+
     /// Parse an xml file, returning document node if successful
     DOMDocument* parse(const char* const filename, 
                        const std::string& docType=std::string(""));

@@ -98,6 +98,12 @@ namespace xmlBase {
     m_parser->setValidationSchemaFullChecking(doit);
   }
 
+  void XmlParser::setSchemaLocation(const std::string& loc, bool ns) {
+    if (ns) m_parser->setExternalSchemaLocation(loc.c_str());
+    else m_parser->setExternalNoNamespaceSchemaLocation(loc.c_str());
+    return;
+  }
+
   XmlParser::~XmlParser() {
     delete m_errorHandler;
     delete m_resolver;
