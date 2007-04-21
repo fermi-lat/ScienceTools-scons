@@ -26,7 +26,7 @@
 // SCIENCETOOLS_API will expand to __declspec(dllimport) so that
 // symbols decorated with SCIENCETOOLS_API are imported from the DLL.
 
-#if (defined(_WIN32) && defined(_MSC_VER))
+#if (defined(_WIN32) && defined(_MSC_VER) && _MSC_VER<1400 )
 # ifdef ST_DLL_EXPORTS
 #  undef  SCIENCETOOLS_API
 #  define SCIENCETOOLS_API //__declspec(dllexport)
