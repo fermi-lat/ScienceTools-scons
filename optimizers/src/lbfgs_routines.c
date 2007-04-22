@@ -4414,9 +4414,13 @@ gn, */
 /*     The first element of the array tarray specifies user time */
   //    temp = etime_(tarray);
   //    *ttime = (doublereal) tarray[0];
-#include <time.h>
+    // since this routine was modified to return 0, the following include is not needed, and
+    // in fact causes problems with vcc 8.0 
+    // Thus I have commented it out, in keeping with the decision to emasculate this function
+    // -- THB
+//#include <time.h>
   //  *ttime = clock() / (doublereal) CLOCKS_PER_SEC;
-  *ttime = (doublereal) clock();
+//  *ttime = (doublereal) clock();
   return 0;
 } /* timer_ */
 
