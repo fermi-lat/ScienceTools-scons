@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r2p4 23-Apr-07   JC   include all relevant cuts in pass4_cuts
     v3r2p3 23-Apr-07   JC   set Pass4_Classifier as default event_classifier
                             in makeFT1.par
     v3r2p2 08-Apr-07   JC   corrections for Pass4_Classifier.py; use
