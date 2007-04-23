@@ -3,7 +3,7 @@
 #
 rootFile,fr,a,"",,,merit filename
 fitsFile,f,a,"",,,FT1 filename
-event_classifier,s,a,DC2_Classifier,,,Event classifier script
+event_classifier,s,a,Pass4_Classifier,,,Event classifier script
 TCuts,s,h,DEFAULT,,,TCut to apply
 dict_file,s,h,DEFAULT,,,merit-to-FT1 dictionary file
 file_version,s,h,1,,,Version of FT1 file
