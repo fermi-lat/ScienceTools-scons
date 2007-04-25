@@ -8,6 +8,7 @@
  * $Header$
  */
 
+#include <iomanip>
 #include <iostream>
 #include <memory>
 
@@ -136,9 +137,13 @@ void MakeTime::createGti() {
    std::string filter = m_pars["filter"];
 
    std::ostringstream event_time_range;
+   event_time_range << std::setprecision(20);
    event_time_range << " && (START >= " << m_tmin
                     << ") && (STOP <= " << m_tmax << ")";
    filter += event_time_range.str();
+
+   st_stream::StreamFormatter formatter("MakeTime", "createGti", 3);
+   formatter.info() << "Applying GTI filter:\n" << filter << std::endl;
 
    for (size_t i = 0; i < scfiles.size(); i++) {
       std::auto_ptr<const tip::Table> 
@@ -245,17 +250,13 @@ void MakeTime::copyTable() const {
 // Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);
 
-   bool overwrite = m_pars["overwrite"];
-   if (overwrite) {
-      st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
-                                             m_gti.maxValue(), true);
-      tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
-      st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
-                                             m_gti.maxValue(), false);
-      delete phdu;
-   }
+   st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
+                                          m_gti.maxValue(), true);
+   tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
+   st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
+                                          m_gti.maxValue(), false);
+   delete phdu;
    delete outputTable;
 
    m_gti.writeExtension(m_outfile);
-
 }

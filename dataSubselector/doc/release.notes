@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v4r6p5  25-Apr-07   JC   construct GTI filter string using sufficient
+                             precision to represent our large MET values
     v4r6p4  14-Mar-07   JC   speed up gtmaketime by using filter string
                              to read in just the relevant parts of the
                              FT2 files
