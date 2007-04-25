@@ -47,6 +47,7 @@ const astro::PointingHistory& GPS::history()const throw(GPS::NoHistoryError)
 void GPS::synch ()
 {
     static bool first=true;
+    if( m_lastQueriedTime <0 ) first =true; // make sure that notification will occur
     bool changed=  false;
     static double  last_time = time();
 
@@ -64,7 +65,6 @@ void GPS::synch ()
     // notify observers if changed (or first time thru)
     if( changed || first) notifyObservers();
     first=false;
-
 }
 
 // access functions that retrive parameters from current state
@@ -111,8 +111,9 @@ void GPS::time ( double t )
         return;
     }
 
-    m_time = t;
-    update(t);
+    m_time = t; // set the new time
+    update(t);  // update orientation, etc.
+    synch();    // may notify observers if enough time elapsed 
 }
 
 GPS*	GPS::instance() 
@@ -138,6 +139,8 @@ void GPS::setPointingDirection( const astro::SkyDir& dir){
 void GPS::setPointingHistoryFile(std::string fileName, double  offset, bool x_east){
     m_rockType = x_east? HISTORY_X_EAST : HISTORY;
     m_history = new PointingHistory(fileName, offset);
+    m_lastQueriedTime=-1; // make sure recalculate stuff
+
 }
 
 double GPS::rockingDegrees(double rockDegrees){
