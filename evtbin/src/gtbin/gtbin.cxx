@@ -190,9 +190,12 @@ class CountCubeApp : public EvtBinAppBase {
       // Get binner for energy from energy application object.
       std::auto_ptr<Binner> energy_binner(m_bin_config->createEnergyBinner(pars));
 
+      // Get a binner for energy bounds.
+      std::auto_ptr<Binner> ebounds(m_bin_config->createEbounds(pars));
+
       return new evtbin::CountCube(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],
         pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
-        use_lb, pars["rafield"], pars["decfield"], *energy_binner, *gti);
+        use_lb, pars["rafield"], pars["decfield"], *energy_binner, *ebounds, *gti);
     }
 };
 
@@ -293,7 +296,7 @@ class SimpleSpectrumApp : public EvtBinAppBase {
       // Call base class prompter for standard universal parameters.
       EvtBinAppBase::parPrompt(pars);
 
-      // Call time binner to prompt for time binning related parameters.
+      // Call energy binner to prompt for energy binning related parameters.
       m_bin_config->energyParPrompt(pars);
     }
 

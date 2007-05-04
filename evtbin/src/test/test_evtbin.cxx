@@ -19,6 +19,8 @@
 #include "evtbin/BinConfig.h"
 // Class encapsulating a count map.
 #include "evtbin/CountMap.h"
+// Class encapsulating a count cube.
+#include "evtbin/CountCube.h"
 // Glass encapsulating GTIs
 #include "evtbin/Gti.h"
 // Class encapsulating a 1 dimensional histogram.
@@ -96,6 +98,8 @@ class EvtBinTest : public st_app::StApp {
 
     void testCountMap();
 
+    void testCountCube();
+
     void testBinConfig();
 
     void testGti();
@@ -157,6 +161,8 @@ void EvtBinTest::run() {
   testMultiSpectra();
   // Test count map (using Tip):
   testCountMap();
+  // Test count cube (using Tip):
+  testCountCube();
   // Test high level bin configuration object.
   testGti();
   // Test const s/n binner:
@@ -641,6 +647,28 @@ void EvtBinTest::testCountMap() {
 
   // Write the count map to an output file.
   count_map.writeOutput("test_evtbin", "CM2.fits");
+}
+
+void EvtBinTest::testCountCube() {
+
+  // Test creating spectrum from LAT data.
+  // Create binner used both for energy bins and for ebounds definition.
+  LogBinner energy_binner(m_e_min, m_e_max, 100, "ENERGY");
+
+  // Good time interval from event file.
+  Gti gti(m_ft1_file);
+
+  // Create the count cube object.
+  CountCube count_cube(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
+		       83.4, 22.0, "AIT", 100, 100, .1, 0., false,
+		       "RA", "DEC", energy_binner, energy_binner, gti);
+
+  // Fill the count cube.
+  count_cube.binInput();
+
+  // Write the count cube to an output file.
+  count_cube.writeOutput("test_evtbin", "test.ccube");
+
 }
 
 void EvtBinTest::testBinConfig() {

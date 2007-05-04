@@ -31,14 +31,14 @@ namespace evtbin {
   CountCube::CountCube(const std::string & event_file, const std::string & event_table, const std::string & sc_file,
     const std::string & sc_table, double ref_ra, double ref_dec, const std::string & proj,
     unsigned long num_x_pix, unsigned long num_y_pix, double pix_scale, double axis_rot, bool use_lb,
-    const std::string & ra_field, const std::string & dec_field, const Binner & energy_binner, const Gti & gti):
+    const std::string & ra_field, const std::string & dec_field, const Binner & energy_binner, const Binner & ebounds, const Gti & gti):
     DataProduct(event_file, event_table, gti), m_hist(
       //LinearBinner(- (long)(num_x_pix) / 2., num_x_pix / 2., 1., ra_field),
       //LinearBinner(- (long)(num_y_pix) / 2., num_y_pix / 2., 1., dec_field)
       LinearBinner(0.5, num_x_pix + 0.5, 1., ra_field),
       LinearBinner(0.5, num_y_pix + 0.5, 1., dec_field),
       energy_binner
-    ), m_proj_name(proj), m_crpix(), m_crval(), m_cdelt(), m_axis_rot(axis_rot), m_proj(0), m_use_lb(use_lb) {
+    ), m_proj_name(proj), m_crpix(), m_crval(), m_cdelt(), m_axis_rot(axis_rot), m_proj(0), m_use_lb(use_lb), m_ebounds(ebounds.clone()) {
     m_hist_ptr = &m_hist;
 
     m_crpix[0] = (num_x_pix + 1.) / 2.;
@@ -65,7 +65,7 @@ namespace evtbin {
     adjustTimeKeywords(sc_file, sc_table);
   }
 
-  CountCube::~CountCube() throw() { delete m_proj; }
+  CountCube::~CountCube() throw() { delete m_proj; delete m_ebounds; }
 
   void CountCube::binInput() {
     DataProduct::binInput();
@@ -177,6 +177,9 @@ namespace evtbin {
 
     // Write the output image in one fell swoop instead of iterating over each dimension separately.
     output_image->set(vec);
+
+    // Write the EBOUNDS extension.
+    writeEbounds(out_file, m_ebounds);
 
     // Write the GTI extension.
     writeGti(out_file);
