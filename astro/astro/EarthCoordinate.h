@@ -7,7 +7,7 @@
 #include "astro/JulianDate.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
-
+#include <vector>
 namespace astro {
 /** \class EarthCoordinate
 
@@ -39,8 +39,8 @@ Some work on defining a realistic SAA boundary for the LAT is described at
 http://www.slac.stanford.edu/~rac/SAA/
 A contour plot of the SAA, showing a 12-segment polygon fit for the section of the SAA north of -30 degrees latitude is at http://www.slac.stanford.edu/~rac/SAA/saacode/saaplot.png
 
-The (latitude,longitude) vertices for the SAA polygon are (in degrees):
-latv=(-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30,-30);
+The default (latitude,longitude) vertices for the SAA polygon are (in degrees):
+latv=(-30,-26,-20,-17,-10, 1,  2, -3, -8,-12,-19,-30,-30);
 lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
 
     */
@@ -61,6 +61,9 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
     double geolat()const;///< geomagnetic latitude (deg)
     double geolon()const;///< geomagnetic longitude (deg)
 
+    /// set the boundary from external list
+    static void setSAAboundary(const std::vector<std::pair<double,double> >& boundary);
+
 private:
 
     //! internal representation: latitude and longitude in radians, altitude in km
@@ -75,6 +78,9 @@ private:
 
     static double  GetGMST(JulianDate J_D);
     static double s_EarthRadius;
+
+    /// the SAA boundary
+    static std::vector<std::pair<double,double> > s_SAA_boundary;
 };
 
 

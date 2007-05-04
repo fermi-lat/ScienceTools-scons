@@ -5,7 +5,7 @@
 
 */
 #include <cmath>
-#include <vector>
+
 
 #include "astro/EarthCoordinate.h"
 #include "Geomag.h"
@@ -16,11 +16,24 @@ namespace {
     double J2000= astro::JulianDate(2000,1,1,12); // 2451545.0;
  
     inline double sqr(double x){return x*x;}
+
+    // default polygon
+    /* These points are assumed to be in counter-clockwise order,
+       starting in the southeast */
+    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
+                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
+
+    // boundaries 
+    static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
+
 }
 
 // static constants 
 namespace astro {
 double EarthCoordinate::s_EarthRadius = 6378145.; //m
+
+std::vector<std::pair<double,double> > EarthCoordinate::s_SAA_boundary;
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,33 +103,39 @@ double  EarthCoordinate::GetGMST(JulianDate jd)
     return Tempo_Siderale_Ora*15.;  
 }  
 
+void EarthCoordinate::setSAAboundary(const std::vector<std::pair<double,double> >& boundary)
+{
+    s_SAA_boundary = boundary;
+    lon_min = 1e10;
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Determine whether we are inside the SAA (South Atlantic Anomaly)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool EarthCoordinate::insideSAA() const
 {
-    /* These points are assumed to be in counter-clockwise order,
-       starting in the southeast */
-    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
-                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
-
+ 
     typedef std::pair<double, double> coords;
-    static std::vector<coords> corners;  // (latitude, longitude)
-    static bool initialized = false;
-    static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
     double my_lon = longitude(), my_lat =latitude();
     
-    if (!initialized)
+    if (s_SAA_boundary.size()==0)
     {
+        // fill in from default
         for (size_t i = 0; i < sizeof(latv)/sizeof(double); ++i)
         {
-            corners.push_back(coords(latv[i], lonv[i]));
-            if (latv[i] < lat_min) lat_min = latv[i];
-            if (latv[i] > lat_max) lat_max = latv[i];
-            if (lonv[i] < lon_min) lon_min = lonv[i];
-            if (lonv[i] > lon_max) lon_max = lonv[i];
+            s_SAA_boundary.push_back(coords(latv[i], lonv[i]));
         }
-        initialized = true;
+    }
+    if (lon_min==1e10) {
+        for( std::vector<coords>::const_iterator it =s_SAA_boundary.begin();
+            it!= s_SAA_boundary.end(); ++it)
+        {
+            double latv( it->first), lonv(it->second);
+            if (latv < lat_min) lat_min = latv;
+            if (latv > lat_max) lat_max = latv;
+            if (lonv < lon_min) lon_min = lonv;
+            if (lonv > lon_max) lon_max = lonv;
+        }
     }
     
     // If outside rectangular boundary
@@ -125,11 +144,11 @@ bool EarthCoordinate::insideSAA() const
         
     /* Find nearest 2 boundary points to the east whose
         latitude straddles my_lat */
-    std::vector<coords>::const_iterator it = corners.begin();
+    std::vector<coords>::const_iterator it = s_SAA_boundary.begin();
     std::vector<coords>::const_iterator prev = it;
-    for ( ; it->first < my_lat && it != corners.end(); prev = it, ++it) {}
+    for ( ; it->first < my_lat && it != s_SAA_boundary.end(); prev = it, ++it) {}
     
-    if (it == corners.end()) return false;
+    if (it == s_SAA_boundary.end()) return false;
     
     // If my_lon is east of both boundary points
     if (it->second < my_lon && prev->second < my_lon)
@@ -152,9 +171,9 @@ bool EarthCoordinate::insideSAA() const
     
     /* So far so good.  Now find nearest 2 boundary points to the west whose
         latitude straddles my_lat */
-    for ( ; it->first > my_lat && it != corners.end(); prev = it, ++it) {}
+    for ( ; it->first > my_lat && it != s_SAA_boundary.end(); prev = it, ++it) {}
     
-    if (it == corners.end()) return false;
+    if (it == s_SAA_boundary.end()) return false;
     
     // If my_lon is west of both boundary points
     if (it->second > my_lon && prev->second > my_lon)
