@@ -69,6 +69,9 @@
 29-jan-2007    v1r0p1 JP  Correct documentation.
 03-apr-2007    v1r0p2 JP  Regenerated test code and test output data based on
                           DC2 data.
+04-may-2007    v1r0p3 EW  Added EBOUNDS to ccube files, and test code.
+                          proj now non-hidden parameter.
+                          Added NDSKEYS keyword all product templates.
 --------------------------------------------------------------------------------
 \endverbatim
 
