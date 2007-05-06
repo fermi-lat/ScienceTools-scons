@@ -29,6 +29,7 @@ $Header$
 
 #include <sstream>
 #include <iterator> // for ostream_iterator
+#include <algorithm>
 
 
 #include <stdexcept>
@@ -192,18 +193,25 @@ public:
 
             std::vector<std::string> irfnames;
             IrfsFactory::instance()->getIrfsNames(irfnames);
-            std::cerr << "\nResponse function \""<< rspfunc<< "\" Not recognized: Valid list is: ";
+            if( std::find(irfnames.begin(), irfnames.end(), rspfunc) == irfnames.end() ){
+            std::cerr << "\nResponse function \""<< rspfunc<< "\" Not recognized: Valid list of individual irfs: \n\t";
             std::copy(irfnames.begin(), irfnames.end(), 
-                std::ostream_iterator<std::string>(std::cerr, ", "));
+                std::ostream_iterator<std::string>(std::cerr, "\n\t "));
             std::cerr <<std::endl;
+
+            std::cerr<< "Names for exclusive groups of irfs:\n\t";
+            std::copy(irfLoader::Loader::irfsNames().begin(), irfLoader::Loader::irfsNames().end(),
+                std::ostream_iterator<std::string>(std::cerr, "\n\t"));
 
             throw std::invalid_argument(
                 std::string("Response function not recognized: "+rspfunc));
+            }
+            irf_list.push_back(rspfunc);
         }
 
         std::stringstream buf;
-        m_f.info() << "\nResponse function(s) used: ";
-        std::copy(irf_list.begin(), irf_list.end(), std::ostream_iterator<std::string>(buf, ", "));
+        m_f.info() << "\nCombining exposure from the response function(s), specified by \""<< rspfunc<< "\": \n\t";
+        std::copy(irf_list.begin(), irf_list.end(), std::ostream_iterator<std::string>(buf, "\n\t"));
         m_f.info() << buf.str()<< std::endl;
     
         return new AeffSum(irf_list );
