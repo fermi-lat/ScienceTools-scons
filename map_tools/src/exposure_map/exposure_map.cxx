@@ -199,9 +199,14 @@ public:
                 std::ostream_iterator<std::string>(std::cerr, "\n\t "));
             std::cerr <<std::endl;
 
-            std::cerr<< "Names for exclusive groups of irfs:\n\t";
-            std::copy(irfLoader::Loader::irfsNames().begin(), irfLoader::Loader::irfsNames().end(),
-                std::ostream_iterator<std::string>(std::cerr, "\n\t"));
+            std::cerr<< "Names for groups of irfs:\n \t";
+            for( std::map<std::string, std::vector<std::string> >::const_iterator it = irfLoader::Loader::respIds().begin();
+                it != irfLoader::Loader::respIds().end() ; ++it)
+            {
+                std::cerr << "\n\t" << it->first << "\t ";
+                std::copy(it->second.begin(), it->second.end(), std::ostream_iterator<std::string>(std::cerr, " "));
+            }
+            std::cerr << std::endl;
 
             throw std::invalid_argument(
                 std::string("Response function not recognized: "+rspfunc));
