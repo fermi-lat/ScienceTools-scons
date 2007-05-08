@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r9     08-May-07 THB  Allow to set the SAA boundary in EarthCoordinate  
   v2r8p1   24-Apr-07 THB  Make GPS client notification more robust
   v2r8     16-Apr-07 THB  Add access to pointing history object in GPS.
   v2r7p1   15-Apr-07 THB  Change interface for SolarSystem by raising exception when bad data!
