@@ -547,6 +547,7 @@ int FluxSource::eventNumber()const
 
 std::string FluxSource::title () const
 {
+    if( m_spectrum==0 ) return "";
     return m_spectrum->title() + ", "
         +  m_launch_pt->title() +", "
         +  m_launch_dir->title();
