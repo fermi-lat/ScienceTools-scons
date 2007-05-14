@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r4p2 13-May-07   JC   use new flux interface
     v6r4p1 22-Feb-07   JC   apply a more graceful workaround for the 
                             astro::GPS class' lack of introspection regarding 
                             the pointing history start and stop times
