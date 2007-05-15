@@ -1,6 +1,6 @@
 package healpix
 
-version v0
+version v0r1
 
 #$Id$
 
@@ -23,6 +23,10 @@ library healpix -no_share \
 
 # suppress warning about openmp pragma
 macro_append healpix_cppflags "" WIN32 " /wd4068"
+
 private
+
+# suppress warning C4812: obsolete declaration style:
+macro_append healpix_cppflags "" vcc-8.0 " /wd4812"
 
 application test_healpix -s=test *.cxx *.h
