@@ -21,6 +21,8 @@ library healpix -no_share \
  -s=../src $(source) \
  -s=base $(source) *.cc *.c
 
+# suppress warning about openmp pragma
+macro_append healpix_cppflags "" WIN32 " /wd4068"
 private
 
 application test_healpix -s=test *.cxx *.h
