@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r3   16-May-07   JC   add GEOMAG_LAT to FT2 files, delete DEADTIME; see
+                            JIRA DATAPROD-1 and DATAPROD-2
     v3r2p4 23-Apr-07   JC   include all relevant cuts in pass4_cuts
     v3r2p3 23-Apr-07   JC   set Pass4_Classifier as default event_classifier
                             in makeFT1.par
