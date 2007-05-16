@@ -58,7 +58,7 @@ public:
    /// Flag to indicate if the spacecraft is in the SAA.
    bool inSaa() const {return m_inSaa;}
 
-   /// The spacecraft position in geocentric coordinates (km).
+   /// The spacecraft position in geocentric coordinates (m).
    const std::vector<double> & position() const {return m_position;}
 
    double raZenith() const {return m_raZenith;}
