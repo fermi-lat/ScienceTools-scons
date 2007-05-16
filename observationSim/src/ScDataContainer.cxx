@@ -116,7 +116,6 @@ void ScDataContainer::writeScData() {
          ft2["in_saa"].set(sc->inSaa());
          if (sc->inSaa()) {
             ft2["livetime"].set(0);
-            ft2["deadtime"].set(interval);
          }
       }
       ft2.setPhduKeyword("FILENAME", ft2File);

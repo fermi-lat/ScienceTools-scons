@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v6r4p5 16-May-07   JC   missed an instance of accessing DEADTIME column
+                            in ScDataContainer
     v6r4p4 16-May-07   JC   accomodate change in fitsGen/data/ft2.tpl:
                             delete DEADTIME; fill GEOMAG_LAT columns
     v6r4p3 14-May-07   JC   check for astro::PointingHistory::TimeRangeErrors 
