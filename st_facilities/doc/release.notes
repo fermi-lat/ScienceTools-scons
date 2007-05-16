@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  16-May-07 v0r11   JC   implement GaussianQuadrature::dgaus8Exception
   12-Apr-07 v0r10p2 JC   comment out declspec(...) in libStApiExports.h 
                          and see what happens to Windows builds
   15-Mar-07 v0r10p1 JC   Windows fixes for GaussianQuadrature.h

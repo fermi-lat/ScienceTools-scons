@@ -29,6 +29,18 @@ public:
    static double integrate(D_fp func, double xmin, double xmax, 
                            double error, long & ier);
 
+   class dgaus8Exception : public std::runtime_error {
+   public:
+      dgaus8Exception(const std::string & message, int ierr) 
+         : std::runtime_error(message), m_ierr(ierr) {}
+      virtual ~dgaus8Exception() throw() {}
+      int errCode() const {
+         return m_ierr;
+      }
+   private:
+      int m_ierr;
+   };
+
 /**
  * @brief This version of dgaus8 has been translated from the Fortran
  * version to Java and thence to C++. 
@@ -116,11 +128,17 @@ public:
                   // 130
                   ierr = -1;
 
-                  throw std::runtime_error("dgaus8 --- a and b are too "
-                                           "nearly equal to allow normal "
-                                           "integration. "
-                                           "ans is set to 0 and ierr "
-                                           "is set to -1.");
+//                   throw std::runtime_error("dgaus8 --- a and b are too "
+//                                            "nearly equal to allow normal "
+//                                            "integration. "
+//                                            "ans is set to 0 and ierr "
+//                                            "is set to -1.");
+                  std::string message("dgaus8 --- a and b are too "
+                                      "nearly equal to allow normal "
+                                      "integration. "
+                                      "ans is set to 0 and ierr "
+                                      "is set to -1.");
+                  throw dgaus8Exception(message, ierr);
                   if (err < 0.0) err = ce;
                   return ans;
                }
@@ -231,8 +249,11 @@ public:
                         ans = vr;
                         if ((mxl != 0) && (fabs(ce) > 2.0*tol*area)) {
                            ierr = 2;
-                           throw std::runtime_error("ans is probably "
-                                                    "insufficiently accurate");
+//                            throw std::runtime_error("ans is probably "
+//                                                     "insufficiently accurate");
+                           std::string message("ans is probably "
+                                               "insufficiently accurate");
+                           throw dgaus8Exception(message, ierr);
                         }
 // 140,1:
                         if (err < 0.0) err = ce;
@@ -280,8 +301,11 @@ public:
                      ans = vr;
                      if ((mxl != 0) && (fabs(ce) > 2.0*tol*area)) {
                         ierr = 2;
-                        throw std::runtime_error("ans is probably"
-                                                 "insufficiently accurate.");
+//                         throw std::runtime_error("ans is probably "
+//                                                  "insufficiently accurate.");
+                        std::string message("ans is probably "
+                                            "insufficiently accurate");
+                        throw dgaus8Exception(message, ierr);
                      }
 // 140,2:
                      if (err < 0.0) err = ce;
