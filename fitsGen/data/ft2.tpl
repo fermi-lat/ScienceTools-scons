@@ -138,9 +138,4 @@ TFORM17      = 'D'                         / data format of field: 8-byte DOUBLE
 TUNIT17      = 's'                         / physical unit of field
 TLMIN17      = 0.0                         / minimum value
 TLMAX17      = 1.0D+10                     / maximum value
-TTYPE18      = 'DEADTIME'                  / deadtime accumulated since start of mission
-TFORM18      = 'D'                         / data format of field: 8-byte DOUBLE
-TUNIT18      = 's'                         / physical unit of field
-TLMIN18      = 0.0                         / minimum value
-TLMAX18      = 1.0D+10                     / maximum value
 END
