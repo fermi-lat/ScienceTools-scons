@@ -10,24 +10,24 @@
 
 using namespace healpix;
 
-template<typename T> Map<T>::Map<T>(const std::string &file, int level):m_factor(2.35) {
+template<typename T> Map<T>::Map(const std::string &file, int level):m_factor(2.35) {
 	const nside_dummy dummy;
 	m_hm = Healpix_Map<T>(pow(2.0,1.0*level),::RING,dummy);
 	fitshandle inp(file,2);
 	read_Healpix_map_from_fits(inp,m_hm);
 }
 
-template Map<float>::Map<float>(const std::string &file, int level);
-template Map<double>::Map<double>(const std::string &file, int level);
+template Map<float>::Map(const std::string &file, int level);
+template Map<double>::Map(const std::string &file, int level);
 
 
-template<typename T> Map<T>::Map<T>(int level):m_factor(2.35) {
+template<typename T> Map<T>::Map(int level):m_factor(2.35) {
 	const nside_dummy dummy;
 	m_hm = Healpix_Map<T>(pow(2.0,1.0*level),::RING,dummy);
 }
 
-template Map<float>::Map<float>(int level);
-template Map<double>::Map<double>(int level);
+template Map<float>::Map(int level);
+template Map<double>::Map(int level);
 
 
 template<typename T> Healpix_Map<T>* Map<T>::map() {
