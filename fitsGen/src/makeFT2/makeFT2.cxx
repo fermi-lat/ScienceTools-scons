@@ -17,6 +17,8 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "astro/EarthCoordinate.h"
+
 #include "fitsGen/Ft2File.h"
 #include "fitsGen/MeritFile.h"
 
@@ -49,6 +51,7 @@ public:
 private:
    st_app::AppParGroup & m_pars;
    static std::string s_cvs_id;
+   double geomag_lat(const std::vector<float> & sc_pos, double met) const;
 };
 
 std::string MakeFt2::s_cvs_id("$Name$");
@@ -85,6 +88,8 @@ void MakeFt2::run() {
       ft2["dec_zenith"].set(pointing["dec_zenith"]);
       ft2["b_mcilwain"].set(pointing["B_McIlwain"]);
       ft2["l_mcilwain"].set(pointing["L_McIlwain"]);
+      double met((pointing["start"] + pointing["stop"])/2.);
+      ft2["geomag_lat"].set(geomag_lat(scPosition, met));
       ft2["in_saa"].set(static_cast<bool>(pointing["in_saa"]));
       ft2["ra_scz"].set(pointing["ra_scz"]);
       ft2["dec_scz"].set(pointing["dec_scz"]);
@@ -106,4 +111,11 @@ void MakeFt2::run() {
    ft2.setPhduKeyword("VERSION", version);
    std::string filename(facilities::Util::basename(fitsFile));
    ft2.setPhduKeyword("FILENAME", filename);
+}
+
+double MakeFt2::geomag_lat(const std::vector<float> & sc_pos,
+                           double met) const {
+   CLHEP::Hep3Vector pos(sc_pos.at(0)/1e3, sc_pos.at(1)/1e3, sc_pos.at(2)/1e3);
+   astro::EarthCoordinate coord(pos, met);
+   return coord.geolat();
 }

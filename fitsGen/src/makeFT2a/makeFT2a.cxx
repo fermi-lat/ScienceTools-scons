@@ -60,6 +60,12 @@ double startDate(const std::string & start_date) {
    return offset;
 }
 
+double geomag_lat(const std::vector<float> & sc_pos, double met) {
+   CLHEP::Hep3Vector pos(sc_pos.at(0)/1e3, sc_pos.at(1)/1e3, sc_pos.at(2)/1e3);
+   astro::EarthCoordinate coord(pos, met);
+   return coord.geolat();
+}
+
 } // unnamed namespace
 
 int main(int iargc, char * argv[]) {
@@ -84,10 +90,10 @@ int main(int iargc, char * argv[]) {
       std::ifstream d2(pointingFile.c_str());
       std::string line;
       std::vector<std::string> dataFields;
+      std::vector<float> scPosition(3);
       while (std::getline(d2, line, '\n')) {
          facilities::Util::stringTokenize(line, "\t ", dataFields);
          ft2["start"].set(std::atof(dataFields[0].c_str()) + time_offset);
-         std::vector<float> scPosition(3);
 // Convert the spacecraft position from km to meters.
          scPosition[0] = std::atof(dataFields[1].c_str())*1e3;
          scPosition[1] = std::atof(dataFields[2].c_str())*1e3;
@@ -115,35 +121,40 @@ int main(int iargc, char * argv[]) {
       }
 
 // Get stop times. Table::Iterator does not have random access.
+// Also fill the GEOMAG_LAT column.
       ft2.itor() = ft2.begin();
       ft2.next();
-      double start_time;
+      double stop_time;
       for ( ; ft2.itor() != ft2.end(); ft2.next()) {
-         start_time = ft2["start"].get();
+         stop_time = ft2["start"].get();
          ft2.prev();
-         ft2["stop"].set(start_time);
+         ft2["stop"].set(stop_time);
+         double met = (ft2["start"].get() + stop_time)/2.;
+         ft2["sc_position"].get(scPosition);
+         ft2["geomag_lat"].set(geomag_lat(scPosition, met));
          ft2.next();
       }
       ft2.itor() = ft2.end();
       ft2.prev();
       ft2.prev();
-      double time_step = start_time - ft2["start"].get();
+      double time_step = stop_time - ft2["start"].get();
       ft2.next();
-      double stop_time = start_time + time_step;
+      stop_time += time_step;
       ft2["stop"].set(stop_time);
+      double met = (ft2["start"].get() + stop_time)/2.;
+      ft2["sc_position"].get(scPosition);
+      ft2["geomag_lat"].set(::geomag_lat(scPosition, met));
 
-// Fill livetime and deadtimes.
+// Fill livetime.
       ft2.itor() = ft2.begin();
       for ( ; ft2.itor() != ft2.end(); ft2.next()) {
          double full_interval(ft2["stop"].get() - ft2["start"].get());
          double fraction(0.90);
          ft2["livetime"].set(fraction*full_interval);
-         ft2["deadtime"].set(full_interval*(1. - fraction));
          bool in_saa;
          ft2["in_saa"].get(in_saa);
          if (true == in_saa) {
             ft2["livetime"].set(0);
-            ft2["deadtime"].set(full_interval);
          }
       }
 
