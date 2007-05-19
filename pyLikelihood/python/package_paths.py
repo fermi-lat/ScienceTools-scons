@@ -20,12 +20,10 @@ else:
 
 from swig_setup import packageroot
 
-extra_paths = [('HANDOFF_RESPONSEROOT',
+extra_paths = [('CALDB',
                 os.path.join(inst_dir, 'irfs',
-                             '%s' %packageroot('handoff_response'))),
-               ('CALDB',
-                os.path.join(inst_dir, 'irfs',
-                             '%s' % packageroot('caldb'), 'CALDB')), 
+                             '%s' % packageroot('caldb'), 'CALDB',
+                             'data', 'glast', 'lat')), 
                ('CALDBCONFIG',
                 os.path.join(caldb, 'software', 'tools', 'caldb.config')),
                ('CALDBALIAS',
