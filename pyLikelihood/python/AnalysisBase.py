@@ -127,7 +127,8 @@ class AnalysisBase(object):
         freeNpred = 0
         totalNpred = 0
         for src in srcNames:
-            npred = self[src].Npred()
+#            npred = self[src].Npred()
+            npred = self.logLike.NpredValue(src)
             totalNpred += npred
             if self._normPar(src).isFree() and self._isDiffuseOrNearby(src):
                 freeNpred += npred

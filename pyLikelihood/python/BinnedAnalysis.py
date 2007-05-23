@@ -136,10 +136,6 @@ class BinnedAnalysis(AnalysisBase):
     def __setitem__(self, name, value):
         self.model[name] = value
         self.logLike.syncParams()
-    def Ts(self, srcName, reoptimize=False, approx=False, tol=1e-5):
-        # one cannot use the renormalization approximation for binned analysis
-        return AnalysisBase.Ts(self, srcName, reoptimize=reoptimize,
-                               approx=False, tol=tol)
 
 def binnedAnalysis(mode='ql', rspfunc=None, fit_tolerance=None):
     """Return a BinnedAnalysis object using the data in a gtlikelihood.par
