@@ -52,6 +52,9 @@ namespace map_tools {
         /// add a photon to the map with the given energy and direction
         void addPhoton(const astro::Photon& gamma);
 
+        /// add a healpixel to the map with an associated count
+        void addPixel(const astro::HealPixel & px, int count);
+
         /// @return density for a given direction, in photons/area of the base pixel.
         double density (const astro::SkyDir & sd) const;
 

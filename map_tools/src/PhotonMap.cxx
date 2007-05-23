@@ -87,6 +87,14 @@ void PhotonMap::addPhoton(const astro::Photon& gamma)
     ++m_photons;
 }
 
+void PhotonMap::addPixel(const astro::HealPixel & px, int count)
+{
+    this->insert( value_type(px, count) );
+    m_pixels ++;
+    m_photons += count;
+}
+
+
 HealPixel PhotonMap::pixel(const astro::Photon& gamma)
 {
     int i( static_cast<int>(log(gamma.energy()/m_emin)/m_logeratio) );
