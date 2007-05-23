@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 23-may-07 v6r10p1THB  add addPixel method to PhotonMap class
  07-may-07 v6r10  THB  Allow the exposure_map application to accept name of individual IRF
                        Add interface to diffuse map
  13-mar-07 v6r9p1 THB  Add application to generate layered images from exposure cubes
