@@ -441,3 +441,11 @@ int FluxMgr::setIdOffset(int id)
     EventSource::s_id_offset = id;
     return last;
 }
+
+void FluxMgr::setFilterCone(double ra, double dec, double radius)
+{
+    EventSource::s_cone = std::vector<double>();
+    EventSource::s_cone.push_back(ra);
+    EventSource::s_cone.push_back(dec);
+    EventSource::s_cone.push_back(radius);
+}

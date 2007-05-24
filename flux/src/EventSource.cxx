@@ -15,9 +15,13 @@ double  EventSource::s_total_area = 6.; // area in m^2
 double  EventSource::s_backoff = 2000.; // in mm
 int EventSource::s_id_offset=0;     // offset for assigning ids in CompositeSource
 
-
 bool EventSource::s_applyAlign(false);
 CLHEP::HepRotation EventSource::s_alignMatrix;
+
+
+
+std::vector<double> EventSource::s_cone; 
+
 
 EventSource::EventSource (double aFlux, unsigned acode)
 :  m_enabled(true), m_flux(aFlux),  m_code(acode)

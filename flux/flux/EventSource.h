@@ -22,6 +22,7 @@ This the abstract base class for source, (FluxSource) or a list of sources (Comp
 
 
 #include <string>
+#include <vector>
 
 class EventSource
 {
@@ -105,6 +106,8 @@ public:
     static double s_backoff; // expose backoff distance, in mm
 
     static int s_id_offset;  // allow to set an offset for the automatically-generated source id
+    static std::vector<double> s_cone; ///< parameters (ra,dec,radius) of selection cone.
+
 private:
     double m_time;    // elapsed time, really only needed for EventSource
     
@@ -115,6 +118,7 @@ private:
     static unsigned int  s_id;    // id for new EventSources...
     static double s_total_area;   // total area for flux generation (in square meters)
     double m_solid_angle;
+   
 
 protected:
     bool m_enabled;           // set false to kill the source

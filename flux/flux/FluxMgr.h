@@ -16,7 +16,7 @@
 * setting the position variables. It is instantiated with
 * the names of the xml files to be used as input to the xml parser.
 * 
-* $Header $
+* 
 */
 
 #include "astro/GPS.h"
@@ -99,6 +99,12 @@ public:
 
     /// set an offset for generating source id numbers, return previous value
     int setIdOffset(int id);
+
+    /** set a cone to filter incoming (galactic) data
+    @param ra,dec center of cone, equatorial coords in degrees
+    @param radius radius of cone, degrees
+    */
+    void setFilterCone(double ra, double dec, double radius);
 
 private:
     

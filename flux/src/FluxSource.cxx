@@ -568,9 +568,16 @@ bool FluxSource::occulted(){
     //LaunchDirection classes.
 
     //this should probably be open-ended, not wired in!
-    double minCosTheta= -0.4;
+    static double minCosTheta= -0.4;
 
-    return (m_occultable) && (m_zenithCosTheta < minCosTheta);
+    if( !m_occultable) return false;
+
+    if(  m_zenithCosTheta < minCosTheta) return true;
+    if( EventSource::s_cone.size()<3)    return false;
+
+    // a cone was specified: check to see if inside it.
+
+    return false;
 
 }
 
