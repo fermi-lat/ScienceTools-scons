@@ -5,6 +5,7 @@
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
     
+   v8r34   24-may-2007 thb Implement cone filter
    v8r33p7 11-apr-2007 thb protect title function from trying to display disabled sources
    v8r33p6 27-mar-2007 thb protect event loop from a source modifying the GPS time.
    v8r33p5 05-mar-2007 thb final (!) fix for Sun rotation; finding minimum time when long separation
