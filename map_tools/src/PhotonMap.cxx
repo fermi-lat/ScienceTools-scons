@@ -37,13 +37,24 @@ PhotonMap::PhotonMap(const std::string & inputFile, const std::string & tablenam
     const tip::Header& hdr = table.getHeader();
     double eratio;
     int stored_photons(0), stored_pixels(0);
-    hdr["EMIN"].get(m_emin);
-    hdr["ERATIO"].get(eratio);
-    m_logeratio = log(eratio);
-    hdr["LEVELS"].get(m_levels);
-    hdr["MINLEVEL"].get(m_minlevel);
-    hdr["PHOTONS"].get(stored_photons);
-    hdr["PIXELS"].get(stored_pixels);
+
+	// Guard against headers not being found in fits file.  Set to default on error
+
+	try	{hdr["EMIN"].get(m_emin);} catch (const std::exception& e) {m_emin = 100.;}
+	try
+	{
+		hdr["ERATIO"].get(eratio);
+		m_logeratio = log(eratio);
+	}
+	catch (const std::exception& e) {m_logeratio = log(2.35);}
+    try	{hdr["LEVELS"].get(m_levels);} catch (const std::exception& e) {m_levels = 8;}
+    try	{hdr["MINLEVEL"].get(m_minlevel);} catch (const std::exception& e) {m_minlevel = 6;}
+	try
+	{
+		hdr["PHOTONS"].get(stored_photons);
+		hdr["PIXELS"].get(stored_pixels);
+	}
+	catch (const std::exception& e) {}
 
     tip::Table::ConstIterator itor = table.begin();
     std::cout << "Creating PhotonMap from file " << inputFile << ", tabel " << tablename << std::endl;
