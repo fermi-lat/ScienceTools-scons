@@ -8,7 +8,7 @@ $Header$
 
 #include "healpix/Map.h"
 #include "src/base/message_error.h"
-#include "healpix/Healpixel.h"
+#include "healpix/HealPixel.h"
 #include "TestHealpix.h"
 #include "TestHealpixArray.h"
 #include <iostream>
