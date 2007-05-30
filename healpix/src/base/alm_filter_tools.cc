@@ -227,8 +227,7 @@ template void map2alm_iterdil (const Healpix_Map<double> &map,
   const arr<double> &weight, double R);
 
 template<typename T> Healpix_Map<T> lhood(int level) {
-	const nside_dummy dummy;
-	Healpix_Map<T> hm(pow(2.0,1.0*level),::RING,dummy);
+	Healpix_Map<T> hm(level,::RING);
 	arr<T> map(hm.Npix());
 	double gamma = 2.5;
 	int startpix, ringpix;
