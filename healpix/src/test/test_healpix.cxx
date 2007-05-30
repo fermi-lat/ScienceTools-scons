@@ -1,5 +1,13 @@
+/** @file test_healpix.cxx
+@brief Test program for various healpix routines
+
+@author M. Roth, T. Burnett
+
+$Header$
+*/
+
 #include "healpix/Map.h"
-#include "../base/message_error.h"
+#include "src/base/message_error.h"
 #include "healpix/Healpixel.h"
 #include "TestHealpix.h"
 #include "TestHealpixArray.h"

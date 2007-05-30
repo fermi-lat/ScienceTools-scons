@@ -1,3 +1,11 @@
+/** @file Map.cxx
+@brief Wrapper for the JPL healpix class of a sky map, including Optimal Filters for the sphere
+
+@author M. Roth 
+
+$Header$
+*/
+
 #include "healpix/Map.h"
 #include "healpix/AlmOp.h"
 #include "base/healpix_map.h"
@@ -37,8 +45,7 @@ template Healpix_Map<double>* Map<double>::map();
 template<typename T> void Map<T>::mfcn(const std::string &psf, int lmax) {
 	AlmOp<xcomplex<T> > skylm(lmax,lmax);  //original map harmonics
 	AlmOp<xcomplex<T> > psflm(lmax,lmax);  //point spread funtion harmonics
-	const nside_dummy dummy;
-	Healpix_Map<T> psfmap(m_hm.Npix(),::RING,dummy);
+	Healpix_Map<T> psfmap(m_hm.Order(),::RING);
 	fitshandle inp(psf,0,2);
 	read_Healpix_map_from_fits(inp,psfmap); //point spread fits file    LHOOD.fits or SMHW.fits for likelihood or mexican hat wavelets
 	map2alm_iter(m_hm,*skylm.Alms(),0);
@@ -100,3 +107,4 @@ template<typename T> void Map<T>::writemap(std::string &out) {
 
 template void Map<float>::writemap(std::string &out);
 template void Map<double>::writemap(std::string &out);
+
