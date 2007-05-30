@@ -1,9 +1,9 @@
 /** @file cube_display.cxx
-@brief Classes specific to the cube_display application
+@brief Classes specific to the gtdispcube application
 
 @author Toby Burnett
 
-See the <a href="cube_display_guide.html"> user's guide </a>.
+See the <a href="gtdispcube_guide.html"> user's guide </a>.
 
 $Header$
 */
@@ -81,7 +81,7 @@ public:
     CubeDisplayApp()
         : st_app::StApp()
         , m_f("CubeDisplayApp", "", 2)
-        , m_pars(st_app::StApp::getParGroup("cube_display")) 
+        , m_pars(st_app::StApp::getParGroup("gtdispcube")) 
     {
     }
         ~CubeDisplayApp() throw() {} // required by StApp with gcc
@@ -149,9 +149,9 @@ private:
     st_app::AppParGroup& m_pars;
 };
 // Factory which can create an instance of the class above.
-st_app::StAppFactory<CubeDisplayApp> g_factory("cube_display");
+st_app::StAppFactory<CubeDisplayApp> g_factory("gtdispcube");
 
-/** @page cube_display_guide cube_display users's Guide
+/** @page gtdispcube_guide gtdispcube users's Guide
 
  - Input: an exposure cube FITS file and an effective area function.
  - Output: an image FITS file with with multiple layers for each bin in the angular distribution from that point

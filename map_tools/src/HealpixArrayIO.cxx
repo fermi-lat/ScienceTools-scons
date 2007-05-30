@@ -85,6 +85,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const astro::HealpixArray<Cosine
     #endif
     hdr["PIXTYPE"].set("HEALPIX"); 
     hdr["ORDERING"].set("NESTED"); 
+    hdr["COORDTYPE"].set( ha.healpix().galactic()? "GAL" : "EQU");
     hdr["NSIDE"].set(ha.healpix().nside()); 
     hdr["FIRSTPIX"].set(0); 
     hdr["LASTPIX"].set(ha.size()-1); 
