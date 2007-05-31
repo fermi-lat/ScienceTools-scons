@@ -17,7 +17,8 @@ path_append PYTHONPATH $(embed_python_root)/python
 # have to add this since python does not. (think those Linux guys are needed?)
 macro python_linkopts "" \
    Linux " -L$(python_DIR)/lib/python2.4/config -lpython2.4 -lpthread -lm -ldl -lutil -rdynamic "\
-   WIN32 "$(python_DIR)\libs\$(python_LIB) "
+   WIN32 "$(python_DIR)\libs\$(python_LIB) "\
+   Darwin " -L$(python_DIR)/lib/python2.4/config -lpython2.4 -lpthread -lm -ldl -lutil -rdynamic "
 
 private
 
