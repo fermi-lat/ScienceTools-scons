@@ -392,10 +392,14 @@ class wigner_d
           for (int i=1;i<j; ++i)
             dd[0][i] = xj*sqt[j]*(q*sqt[j-i]*d[0][i] - p*sqt[i]*d[0][i-1]);
           dd[0][j] = -p*d[0][j-1];
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
           int k;
+#ifdef _OPENMP
 #pragma omp for schedule(static)
+#endif
           for (k=1; k<=n; ++k)
             {
             double t1 = xj*sqt[j-k]*q, t2 = xj*sqt[j-k]*p;
@@ -442,8 +446,9 @@ template<typename T> void rotate_alm (Alm<xcomplex<T> > &alm,
 
     for (int m=0; m<=l; ++m)
       almtmp[m] = alm(l,0)*d[l][l+m];
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     int lo,hi;
     openmp_calc_share(0,l+1,lo,hi);
@@ -507,8 +512,9 @@ template<typename T> void rotate_alm (Alm<xcomplex<T> > &almT,
       almtmpG[m] = almG(l,0)*d[l][m+l];
       almtmpC[m] = almC(l,0)*d[l][m+l];
       }
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     int lo,hi;
     openmp_calc_share(0,l+1,lo,hi);
