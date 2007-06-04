@@ -182,14 +182,17 @@ template<typename T> void map2alm (const Healpix_Map<T> &map,
   for (int chunk=0; chunk<nchunks; ++chunk)
     {
     int llim=chunk*chunksize, ulim=min(llim+chunksize,2*nside);
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
 
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int istart_north, istart_south, nph;
@@ -204,14 +207,17 @@ template<typename T> void map2alm (const Healpix_Map<T> &map,
         phas_s[ith-llim], shiftarr, work);
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<xcomplex<double> > alm_tmp(lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       for (int l=m; l<=lmax; ++l) alm_tmp[l].Set(0.,0.);
@@ -358,14 +364,17 @@ template<typename T> void map2alm_pol
   for (int chunk=0; chunk<nchunks; ++chunk)
     {
     int llim=chunk*chunksize, ulim=min(llim+chunksize,2*nside);
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
 
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int istart_north, istart_south, nph;
@@ -386,15 +395,18 @@ template<typename T> void map2alm_pol
         phas_sU[ith-llim], shiftarr, work);
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<double> lam_fact(lmax+1);
     arr<xcomplex<double>[3] > alm_tmp(lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       init_lam_fact_1d (m,lam_fact);
@@ -591,14 +603,17 @@ template<typename T> void alm2map (const Alm<xcomplex<T> > &alm,
       map.get_ring_info (ith+1,istart_north,nph, cth[ith-llim],sth[ith-llim],
                          shifted);
       }
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<xcomplex<double> > alm_tmp(lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       for (int l=m; l<=lmax; ++l)
@@ -626,13 +641,16 @@ end:      b_north[ith][m] = p1+p2; b_south[ith][m] = p1-p2;
         }
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int istart_north, istart_south, nph;
@@ -706,15 +724,18 @@ template<typename T> void alm2map_pol
       mapT.get_ring_info (ith+1,istart_north,nph, cth[ith-llim],sth[ith-llim],
                           shifted);
       }
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<double> lam_fact (lmax+1);
     arr<xcomplex<double>[3]> alm_tmp(lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       int m2 = m*m;
@@ -758,13 +779,16 @@ end:      b_north_T[ith][m] = bT1+bT2; b_south_T[ith][m] = bT1-bT2;
         }
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int nph, istart_north, istart_south;
@@ -847,14 +871,17 @@ template<typename T> void alm2map_der1
       map.get_ring_info (ith+1,istart_north,nph, cth[ith-llim],sth[ith-llim],
                          shifted);
       }
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<double> lam_fact (lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       const xcomplex<T> *alm_tmp=alm.mstart(m);
@@ -890,13 +917,16 @@ end:      b_north[ith][m] = b1+b2; b_south[ith][m] = b1-b2;
         }
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int nph, istart_north, istart_south;

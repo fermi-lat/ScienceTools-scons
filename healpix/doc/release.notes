@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+   v0r1p6 MR  06-04-07  fixed warnings about #pragma
    v0r1p5 MR  05-30-07  fixed initialization error
    v0r1p4 MR  05-30-07  fixed capitalization
    v0r1p3 MR  05-30-07  fixed eof, initialization errors
