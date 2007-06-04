@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+   v0r1p7 MR  06-04-07  fixed pragma and constructor warnings
    v0r1p6 MR  06-04-07  fixed warnings about #pragma
    v0r1p5 MR  05-30-07  fixed initialization error
    v0r1p4 MR  05-30-07  fixed capitalization

@@ -99,10 +99,14 @@ template<typename T> class Healpix_Map: public Healpix_Base
         {
         swapfunc swapper = (scheme_ == NEST) ?
           &Healpix_Base::ring2nest : &Healpix_Base::nest2ring;
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
         int m;
+#ifdef _OPENMP
 #pragma omp for schedule (dynamic,5000)
+#endif
         for (m=0; m<npix_; ++m) map[(this->*swapper)(m)] = orig.map[m];
 }
         }
@@ -121,11 +125,14 @@ template<typename T> class Healpix_Map: public Healpix_Base
         &Healpix_Map::ring2xyf : &Healpix_Map::nest2xyf;
       xyf2pix from_xyf = (scheme_==RING) ?
         &Healpix_Map::xyf2ring : &Healpix_Map::xyf2nest;
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
       int m;
+#ifdef _OPENMP
 #pragma omp for schedule (dynamic,5000)
+#endif
       for (m=0; m<orig.npix_; ++m)
         {
         int x,y,f;

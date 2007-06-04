@@ -137,14 +137,17 @@ template<typename T> void map2almdil (const Healpix_Map<T> &map,
   for (int chunk=0; chunk<nchunks; ++chunk)
     {
     int llim=chunk*chunksize, ulim=min(llim+chunksize,2*nside);
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     arr<xcomplex<double> > shiftarr(mmax+1), work(4*nside);
     rfft plan;
 
     int ith;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (ith=llim; ith<ulim; ++ith)
       {
       int istart_north, istart_south, nph;
@@ -159,14 +162,17 @@ template<typename T> void map2almdil (const Healpix_Map<T> &map,
         phas_s[ith-llim], shiftarr, work);
       }
 } // end of parallel region
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 {
     Ylmgen generator(lmax,mmax,1e-30);
     arr<double> Ylm;
     arr<xcomplex<double> > alm_tmp(lmax+1);
     int m;
+#ifdef _OPENMP
 #pragma omp for schedule(dynamic,1)
+#endif
     for (m=0; m<=mmax; ++m)
       {
       for (int l=m; l<=lmax; ++l) alm_tmp[l].Set(0.,0.);
