@@ -138,9 +138,9 @@ class BinnedAnalysis(AnalysisBase):
         self.logLike.syncParams()
 
 def binnedAnalysis(mode='ql', rspfunc=None, fit_tolerance=None):
-    """Return a BinnedAnalysis object using the data in a gtlikelihood.par
+    """Return a BinnedAnalysis object using the data in a gtlike.par
 file."""
-    pars = pyLike.StApp_parGroup('gtlikelihood')
+    pars = pyLike.StApp_parGroup('gtlike')
     if mode == 'ql':
         pars.Prompt('counts_map_file')
         pars.Prompt('binned_exposure_map')

@@ -180,9 +180,9 @@ class UnbinnedAnalysis(AnalysisBase):
             output.close()
 
 def unbinnedAnalysis(mode="ql", rspfunc=None, fit_tolerance=None):
-    """Return an UnbinnedAnalysis object using the data in a gtlikelihood.par
+    """Return an UnbinnedAnalysis object using the data in a gtlike.par
 file."""
-    pars = pyLike.StApp_parGroup('gtlikelihood')
+    pars = pyLike.StApp_parGroup('gtlike')
     if mode == 'ql':
         pars.Prompt('scfile')
         pars.Prompt('evfile')
