@@ -23,7 +23,7 @@ class ViewCuts : public st_app::StApp {
 public:
 
    ViewCuts() : st_app::StApp(),
-                m_pars(st_app::StApp::getParGroup("gtviewcuts")) {
+                m_pars(st_app::StApp::getParGroup("gtvcut")) {
       try {
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
@@ -57,7 +57,7 @@ private:
 
 std::string ViewCuts::s_cvs_id("$Name$");
 
-st_app::StAppFactory<ViewCuts> myAppFactory("gtviewcuts");
+st_app::StAppFactory<ViewCuts> myAppFactory("gtvcut");
 
 void ViewCuts::banner() const {
    int verbosity = m_pars["chatter"];

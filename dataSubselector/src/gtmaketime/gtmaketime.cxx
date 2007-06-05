@@ -36,7 +36,7 @@
 class MakeTime : public st_app::StApp {
 public:
    MakeTime() : st_app::StApp(),
-                m_pars(st_app::StApp::getParGroup("gtmaketime")) {
+                m_pars(st_app::StApp::getParGroup("gtmktime")) {
       try {
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
@@ -82,7 +82,7 @@ private:
 
 std::string MakeTime::s_cvs_id("$Name$");
 
-st_app::StAppFactory<MakeTime> myAppFactory("gtmaketime");
+st_app::StAppFactory<MakeTime> myAppFactory("gtmktime");
 
 void MakeTime::banner() const {
    int verbosity = m_pars["chatter"];

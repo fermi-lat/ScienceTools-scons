@@ -16,8 +16,8 @@ apply_pattern ST_library option=" -no_share "
 apply_pattern ST_pfiles
 
 apply_pattern ST_app_withDir name=gtselect dir=dataSubselector
-apply_pattern ST_app name=gtmaketime
-apply_pattern ST_app_withDir name=gtviewcuts dir=viewCuts
+apply_pattern ST_app name=gtmktime
+apply_pattern ST_app_withDir name=gtvcut dir=viewCuts
 
 private
 
