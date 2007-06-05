@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r0p2  05-Jun-07   JC   give subdirectory explicitly for gtmktime
+                             in req file
     v5r0p1  05-Jun-07   JC   check in application name changes
     v5      05-Jun-07   JC   change application names, but forgot to check in
     v4r6p6  28-May-07   JC   change prompt for event class for HANDOFF irfs

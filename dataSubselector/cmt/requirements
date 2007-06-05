@@ -1,5 +1,5 @@
 package dataSubselector
-version v4r6p6
+version v5r0p2
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -16,7 +16,7 @@ apply_pattern ST_library option=" -no_share "
 apply_pattern ST_pfiles
 
 apply_pattern ST_app_withDir name=gtselect dir=dataSubselector
-apply_pattern ST_app name=gtmktime
+apply_pattern ST_app_withDir name=gtmktime dir=gtmaketime
 apply_pattern ST_app_withDir name=gtvcut dir=viewCuts
 
 private
