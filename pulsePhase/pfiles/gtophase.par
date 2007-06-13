@@ -1,14 +1,14 @@
 #-------------------------------------------------------------------------------
 evfile,        f, a, , , , "Event data file name"
-psrname,       s, a, "ANY", , ,"Pulsar name"
-psrdbfile,     f, h, DEFAULT, , , "Name of input pulsar ephemerides database file (DEFAULT - use standard eph db)"
+psrname,       s, a, "ANY", , , "Pulsar name"
+psrdbfile,     f, h, DEFAULT, , , "Pulsar ephemerides database file name (DEFAULT - use standard eph db)"
 evtable,       s, h, "EVENTS", , , "Table containing event data"
-timefield,     s, h, "TIME", , , "Name of time field in event data file"
+timefield,     s, h, "TIME", , , "Name of time field in event file"
 ophasefield,   s, h, "ORBITAL_PHASE", , , "Name of orbital phase field in event data file"
 ophaseoffset,  r, h, 0., , , "Arbitrary user-defined offset applied to all phases"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
 debug,         b, h, no, , , "Debugging mode activated"
 gui,           b, h, no, , , "GUI mode activated"
-mode,          s, h, "ql", , ,"Mode of automatic parameters"
+mode,          s, h, "ql", , , "Mode of automatic parameters"
 #-------------------------------------------------------------------------------
