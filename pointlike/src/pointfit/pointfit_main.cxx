@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 
         std::cout << std::left << std::setw(15) <<"name" << "     TS   error    fit direction\n";
 
-        for( int n=0; n< names.size(); ++n){
+        for( size_t n=0; n< names.size(); ++n){
             astro::SkyDir dir(ras[n], decs[n]);
             std::string name(names[n]);
 
