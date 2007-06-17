@@ -80,12 +80,43 @@ Module::Module(const std::string& path, const std::string& module,
    
     if( verbose() ) std::cout << "Read python module "
         << PyString_AsString(attribute("__file__"))<<std::endl;
-#if 0
-    if( !path.empty() ){
-        _chdir(oldcwd);
-    }
-#endif
+
 }
+Module::Module(const std::string & python_dir,
+        const std::string& module, 
+        int argc, char** argv)
+: m_moduleName(module)
+, m_verbose(false)
+{
+
+    if( ! initialized ){
+        initialized = true;
+        Py_Initialize();
+    }
+
+    m_module = PyImport_ImportModule("sys");
+    check_error("Module: error parsing module sys");
+    PyObject * sys_dict_setitem(attribute("__dict__.__setitem__"));
+    PyObject * mylist(PyList_New(0)); 
+    for( int i(0); i<argc; ++i){
+        PyList_Append(mylist, Py_BuildValue("s", argv[i]));
+    }
+    PyObject * args(Py_BuildValue("(sO)", "argv", mylist));
+    call(sys_dict_setitem, args);
+    Py_DECREF(sys_dict_setitem);
+    Py_DECREF(args);
+    Py_DECREF(mylist); 
+    Py_DECREF(m_module);
+
+    if (!python_dir.empty()) {
+       insert_path(python_dir);
+    }
+    insert_path(".");
+
+    m_module = PyImport_ImportModule(const_cast<char*>(module.c_str()));
+    check_error("Module: error parsing module "+module);   
+}
+
 
 void Module::insert_path(const std::string & dir) {
    m_module = PyImport_ImportModule("sys");
@@ -267,7 +298,7 @@ int Module::test(int argc, char* argv[], const std::string& modulename)
       //  Py_SetProgramName(const_cast<char*>((std::string(mypath)+"/python").c_str()));
 
         std::cout << "Test of Module, loading module " << modulename<< std::endl;
-        Module setup("", modulename, "", true);
+        Module setup("", modulename, argc, argv);
 
         std::cout <<"python path: " << Py_GetPath() << std::endl;
         double x;

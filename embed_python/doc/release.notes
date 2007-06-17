@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r2     16-jun-07  THB Allow command-line args to set sys.argv; new more logical ctor
   v1r1p1   03-Feb-07  JC  insert "." into sys.path so that cwd is used on linux
   v1r1     23-dec-06  THB new getValue overrides for ints, via Leon 
   v1r0     06-dec-06  THB add J.Chiang constructor change

@@ -23,4 +23,7 @@ class A(object):
     
 print 'directory ', dir()
 print
+# check that the argv array was passed
+import sys
+print 'sys.argv %s' % sys.argv
     
