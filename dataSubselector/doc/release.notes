@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r1    18-Jun-07   JC   gtmktime speed up
     v5r0p2  05-Jun-07   JC   give subdirectory explicitly for gtmktime
                              in req file
     v5r0p1  05-Jun-07   JC   check in application name changes

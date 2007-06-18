@@ -155,20 +155,39 @@ void MakeTime::createGti() {
 
       double start_time;
       double stop_time;
+      std::vector<double> tstart;
+      std::vector<double> tstop;
+// Initialize arrays with the first interval that ends after the first
+// event time, m_tmin
       for (; input != in_table->end(); ++input) {
          in["START"].get(start_time);
          in["STOP"].get(stop_time);
-         dataSubselector::Gti gti;
-         gti.insertInterval(start_time, stop_time);
-         m_gti = m_gti | gti;
+         if (stop_time > m_tmin) {
+            tstart.push_back(start_time);
+            tstop.push_back(stop_time);
+            break;
+         }
+      }
+      ++input;
+// Gather remaining intervals, consolidating adjacent ones.
+      for (; input != in_table->end(); ++input) {
+         in["START"].get(start_time);
+         in["STOP"].get(stop_time);
          if (start_time > m_tmax) { // break out if past end of evfile
             break;
          }
-         if (stop_time > m_tmin) { // include only if within evfile range
-            dataSubselector::Gti gti;
-            gti.insertInterval(start_time, stop_time);
-            m_gti = m_gti | gti;
+         if (start_time == tstop.back()) {
+            tstop.back() = stop_time;
+         } else {
+            tstart.push_back(start_time);
+            tstop.push_back(stop_time);
          }
+      }
+// Insert each contiguous interval in the Gti object
+      for (size_t i(0); i < tstart.size(); i++) {
+         dataSubselector::Gti gti;
+         gti.insertInterval(tstart.at(i), tstop.at(i));
+         m_gti = m_gti | gti;
       }
    }
 }
@@ -260,3 +279,23 @@ void MakeTime::copyTable() const {
 
    m_gti.writeExtension(m_outfile);
 }
+
+/*
+Timing before optimization:
+
+ki-rh2[jchiang] time ../../rhel4_gcc34/gtmktime.exe 
+Spacecraft data file [test_scData.fits] : 
+Filter expression [IN_SAA!=T] : 
+Event data file [test_events_0000.fits] : 
+Output event file name [filtered.fits] : 
+229.168u 0.182s 3:57.25 96.6%   0+0k 0+0io 0pf+0w
+
+After optimization to createGti():
+ki-rh2[jchiang] time ../../rhel4_gcc34/gtmktime.exe
+Spacecraft data file [test_scData.fits] : 
+Filter expression [IN_SAA!=T] : 
+Event data file [test_events_0000.fits] : 
+Output event file name [filtered.fits] : filtered_new.fits
+4.693u 0.173s 0:10.87 44.7%     0+0k 0+0io 0pf+0w
+
+ */
