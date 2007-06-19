@@ -19,11 +19,14 @@
 #include "st_facilities/FitsUtil.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 
+#include "dataSubselector/Gti.h"
 #include "CutController.h"
 
 using dataSubselector::CutController;
+using dataSubselector::Gti;
 
 /**
  * @class DataFilter
@@ -67,11 +70,10 @@ private:
    std::vector<std::string> m_inputFiles;
    std::string m_outputFile;
 
-   void checkDssKeywords() {
-   }
-
    void copyTable(const std::string & extension,
                   CutController * cutController=0) const;
+
+   void copyGtis() const;
 
    static std::string s_cvs_id;
 
@@ -96,8 +98,6 @@ void DataFilter::run() {
    std::string inputFile = m_pars["infile"];
    st_facilities::Util::resolve_fits_files(inputFile, m_inputFiles);
 
-   checkDssKeywords();
-
    std::string outputFile = m_pars["outfile"];
    m_outputFile = outputFile;
    facilities::Util::expandEnvVar(&m_outputFile);
@@ -114,12 +114,24 @@ void DataFilter::run() {
    tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
 
    CutController * cuts = 
-      CutController::instance(m_pars, m_inputFiles.front(), evtable);
+      CutController::instance(m_pars, m_inputFiles, evtable);
    copyTable(evtable, cuts);
-   copyTable("gti");
+   copyGtis();
    cuts->updateGti(m_outputFile);
    formatter.info() << "Done." << std::endl;
    CutController::delete_instance();
+
+   Gti gti(m_outputFile);
+   tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outputFile, ""));
+   st_facilities::Util::writeDateKeywords(phdu, gti.minValue(),
+                                          gti.maxValue());
+   delete phdu;
+
+   tip::Table * table
+      = tip::IFileSvc::instance().editTable(m_outputFile, evtable);
+   st_facilities::Util::writeDateKeywords(table, gti.minValue(),
+                                          gti.maxValue());
+   delete table;
 
    st_facilities::FitsUtil::writeChecksums(m_outputFile);
 }
@@ -176,4 +188,13 @@ void DataFilter::copyTable(const std::string & extension,
    outputTable->getHeader().addHistory("Filter string: " + filterString);
 
    delete outputTable;
+}
+
+void DataFilter::copyGtis() const {
+   Gti gti(m_inputFiles.front());
+   for (size_t i(1); i < m_inputFiles.size(); i++) {
+      Gti my_gti(m_inputFiles.at(i));
+      gti |= my_gti;
+   }
+   gti.writeExtension(m_outputFile);
 }

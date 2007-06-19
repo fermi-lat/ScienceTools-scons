@@ -39,6 +39,10 @@ public:
                                    const std::string & eventFile,
                                    const std::string & evtable);
 
+   static CutController * instance(st_app::AppParGroup & pars,
+                                   const std::vector<std::string> & eventFiles,
+                                   const std::string & evtable);
+
    static void delete_instance();
 
    bool accept(tip::ConstTableRecord & row) const;
@@ -55,6 +59,10 @@ protected:
 
    CutController::CutController(st_app::AppParGroup & pars,
                                 const std::string & eventFile,
+                                const std::string & evtable);
+
+   CutController::CutController(st_app::AppParGroup & pars,
+                                const std::vector<std::string> & eventFiles,
                                 const std::string & evtable);
 
 private:
