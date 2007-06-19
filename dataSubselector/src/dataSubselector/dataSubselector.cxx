@@ -133,6 +133,11 @@ void DataFilter::run() {
                                           gti.maxValue());
    delete table;
 
+   table = tip::IFileSvc::instance().editTable(m_outputFile, "GTI");
+   st_facilities::Util::writeDateKeywords(table, gti.minValue(),
+                                          gti.maxValue());
+   delete table;
+
    st_facilities::FitsUtil::writeChecksums(m_outputFile);
 }
 

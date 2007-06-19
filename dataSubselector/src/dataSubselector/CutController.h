@@ -36,10 +36,6 @@ class CutController {
 public:
 
    static CutController * instance(st_app::AppParGroup & pars,
-                                   const std::string & eventFile,
-                                   const std::string & evtable);
-
-   static CutController * instance(st_app::AppParGroup & pars,
                                    const std::vector<std::string> & eventFiles,
                                    const std::string & evtable);
 
@@ -56,10 +52,6 @@ public:
    std::string filterString() const;
 
 protected:
-
-   CutController::CutController(st_app::AppParGroup & pars,
-                                const std::string & eventFile,
-                                const std::string & evtable);
 
    CutController::CutController(st_app::AppParGroup & pars,
                                 const std::vector<std::string> & eventFiles,
