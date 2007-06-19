@@ -26,7 +26,8 @@ class AnalysisBase(object):
                  "Gaussian": "Prefactor",
                  "FileFunction": "Normalization",
                  "LogParabola": "norm",
-                 "PLSuperExpCutoff" : "Prefactor" }
+                 "PLSuperExpCutoff" : "Prefactor",
+                 "ExpCutoff" : "Prefactor"}
     def __init__(self):
         self.maxdist = 20
         self.tol = 1e-5
