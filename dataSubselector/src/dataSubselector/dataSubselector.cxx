@@ -64,8 +64,11 @@ private:
 
    st_app::AppParGroup & m_pars;
 
-   std::string m_inputFile;
+   std::vector<std::string> m_inputFiles;
    std::string m_outputFile;
+
+   void checkDssKeywords() {
+   }
 
    void copyTable(const std::string & extension,
                   CutController * cutController=0) const;
@@ -89,10 +92,11 @@ void DataFilter::run() {
    m_pars.Prompt();
    m_pars.Save();
    std::string evtable = m_pars["evtable"];
+
    std::string inputFile = m_pars["infile"];
-   m_inputFile = inputFile;
-   facilities::Util::expandEnvVar(&m_inputFile);
-   st_facilities::Util::file_ok(m_inputFile);
+   st_facilities::Util::resolve_fits_files(inputFile, m_inputFiles);
+
+   checkDssKeywords();
 
    std::string outputFile = m_pars["outfile"];
    m_outputFile = outputFile;
@@ -107,10 +111,10 @@ void DataFilter::run() {
       std::exit(1);
    } 
 
-   tip::IFileSvc::instance().createFile(m_outputFile, m_inputFile);
+   tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
 
    CutController * cuts = 
-      CutController::instance(m_pars, m_inputFile, evtable);
+      CutController::instance(m_pars, m_inputFiles.front(), evtable);
    copyTable(evtable, cuts);
    copyTable("gti");
    cuts->updateGti(m_outputFile);
@@ -129,28 +133,39 @@ void DataFilter::copyTable(const std::string & extension,
       formatter.info() << "Applying filter string: " 
                        << filterString << std::endl;
    }
-   const tip::Table * inputTable 
-      = tip::IFileSvc::instance().readTable(m_inputFile, extension,
-                                            filterString);
-   
+
+   std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
+   long nrows(0);
+   for ( ; infile != m_inputFiles.end(); ++infile) {
+      const tip::Table * inputTable 
+         = tip::IFileSvc::instance().readTable(*infile, extension,
+                                               filterString);
+      nrows += inputTable->getNumRecords();
+      delete inputTable;
+   }
+
    tip::Table * outputTable 
       = tip::IFileSvc::instance().editTable(m_outputFile, extension);
+   outputTable->setNumRecords(nrows);
 
-   outputTable->setNumRecords(inputTable->getNumRecords());
-
-   tip::Table::ConstIterator inputIt = inputTable->begin();
    tip::Table::Iterator outputIt = outputTable->begin();
-
-   tip::ConstTableRecord & input = *inputIt;
    tip::Table::Record & output = *outputIt;
 
    long npts(0);
-
-   for (; inputIt != inputTable->end(); ++inputIt) {
-      output = input;
-      ++outputIt;
-      npts++;
+   for (infile=m_inputFiles.begin(); infile != m_inputFiles.end(); ++infile) {
+      const tip::Table * inputTable 
+         = tip::IFileSvc::instance().readTable(*infile, extension, 
+                                               filterString);
+      tip::Table::ConstIterator inputIt = inputTable->begin();
+      tip::ConstTableRecord & input = *inputIt;
+      for (; inputIt != inputTable->end(); ++inputIt) {
+         output = input;
+         ++outputIt;
+         npts++;
+      }
+      delete inputTable;
    }
+
 // Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);
 
@@ -160,6 +175,5 @@ void DataFilter::copyTable(const std::string & extension,
 
    outputTable->getHeader().addHistory("Filter string: " + filterString);
 
-   delete inputTable;
    delete outputTable;
 }
