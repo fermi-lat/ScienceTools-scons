@@ -269,19 +269,33 @@ void MakeTime::copyTable() const {
 // Resize output table to account for filtered rows.
    outputTable->setNumRecords(npts);
 
-   st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
-                                          m_gti.maxValue(), true);
-   tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
-   st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
-                                          m_gti.maxValue(), false);
-   delete phdu;
-   delete outputTable;
-
    m_gti.writeExtension(m_outfile);
+
+//    bool notPhdu;
+//    st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
+//                                           m_gti.maxValue(), 
+//                                           notPhdu=true);
+
+//    tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
+//    st_facilities::Util::writeDateKeywords(phdu, m_gti.minValue(),
+//                                           m_gti.maxValue(), 
+//                                           notPhdu=false);
+//    delete phdu;
+
+//    tip::Table * gtiTable 
+//       = tip::IFileSvc::instance().editTable(m_outfile, "GTI");
+//    st_facilities::Util::writeDateKeywords(gtiTable, m_gti.minValue(),
+//                                           m_gti.maxValue(), 
+//                                           notPhdu=true);
+//    delete gtiTable;
+
+   delete outputTable;
 }
 
-/*
-Timing before optimization:
+/** 
+ * June 18, 2007:  optimization of GTI accumulation in run() method.
+
+Timing before optimization: 
 
 ki-rh2[jchiang] time ../../rhel4_gcc34/gtmktime.exe 
 Spacecraft data file [test_scData.fits] : 

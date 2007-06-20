@@ -75,6 +75,8 @@ private:
 
    void copyGtis() const;
 
+   void writeDateKeywords() const;
+
    static std::string s_cvs_id;
 
 };
@@ -116,29 +118,39 @@ void DataFilter::run() {
    CutController * cuts = 
       CutController::instance(m_pars, m_inputFiles, evtable);
    copyTable(evtable, cuts);
-   copyGtis();
    cuts->updateGti(m_outputFile);
-   formatter.info() << "Done." << std::endl;
    CutController::delete_instance();
 
-   Gti gti(m_outputFile);
+   copyGtis();
+
+   writeDateKeywords();
+
+   st_facilities::FitsUtil::writeChecksums(m_outputFile);
+
+   formatter.info() << "Done." << std::endl;
+}
+
+void DataFilter::writeDateKeywords() const {
+//    Gti gti(m_outputFile);
+//    double tstart(gti.minValue());
+//    double tstop(gti.maxValue());
+
+   double tstart = m_pars["tmin"];
+   double tstop = m_pars["tmax"];
+
    tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outputFile, ""));
-   st_facilities::Util::writeDateKeywords(phdu, gti.minValue(),
-                                          gti.maxValue());
+   st_facilities::Util::writeDateKeywords(phdu, tstart, tstop, false);
    delete phdu;
 
+   std::string evtable = m_pars["evtable"];
    tip::Table * table
       = tip::IFileSvc::instance().editTable(m_outputFile, evtable);
-   st_facilities::Util::writeDateKeywords(table, gti.minValue(),
-                                          gti.maxValue());
+   st_facilities::Util::writeDateKeywords(table, tstart, tstop);
    delete table;
 
    table = tip::IFileSvc::instance().editTable(m_outputFile, "GTI");
-   st_facilities::Util::writeDateKeywords(table, gti.minValue(),
-                                          gti.maxValue());
+   st_facilities::Util::writeDateKeywords(table, tstart, tstop);
    delete table;
-
-   st_facilities::FitsUtil::writeChecksums(m_outputFile);
 }
 
 void DataFilter::copyTable(const std::string & extension,

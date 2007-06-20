@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r3    20-Jun-07   JC   ensure that TSTART, TSTOP keywords are
+                             consistent in all headers; comment out
+                             parts that sync up with GTI boundaries
     v5r2    18-Jun-07   JC   enable multiple input FT1 files
     v5r1    18-Jun-07   JC   gtmktime speed up
     v5r0p2  05-Jun-07   JC   give subdirectory explicitly for gtmktime
