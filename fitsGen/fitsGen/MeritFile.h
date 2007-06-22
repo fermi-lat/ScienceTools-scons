@@ -73,6 +73,8 @@ private:
    tip::ConstTableRecord & m_row;
    long m_nrows;
 
+   bool m_haveTime;
+
    dataSubselector::Gti * m_gti;
 
    dataSubselector::Cuts * m_goodEvent1;

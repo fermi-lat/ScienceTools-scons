@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "facilities/Util.h"
@@ -72,6 +73,10 @@ void MakeFt2::run() {
    std::string fitsFile = m_pars["fitsFile"];
 
    fitsGen::MeritFile pointing(rootFile, "pointing_history");
+   if (pointing.nrows() == 0) {
+      throw std::runtime_error("There are zero rows in the pointing_history "
+                               "tree of the input root file.");
+   }
    fitsGen::Ft2File ft2(fitsFile, pointing.nrows());
 
    ft2.header().addHistory("Input merit file: " + rootFile);
