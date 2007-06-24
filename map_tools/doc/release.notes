@@ -6,6 +6,7 @@ $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
 
+ 23-jun-07 v6r11p1THB  Missed gtdispcube names for par file
  25-may-07 v6r11  THB  rename applications
  23-may-07 v6r10p1THB  add addPixel method to PhotonMap class
  07-may-07 v6r10  THB  Allow the exposure_map application to accept name of individual IRF
