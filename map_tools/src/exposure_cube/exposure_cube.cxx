@@ -88,7 +88,7 @@ public:
         m_f.setMethod("run()");
 
         // create the differential exposure object
-		int pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
+	double pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
         Exposure ex( pixelsize, binsize );
         Exposure::GTIvector gti; 
 		

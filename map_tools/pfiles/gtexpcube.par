@@ -2,10 +2,10 @@
 #---------------------------------------------------------------------------------------
 # General parameters.
 #infile,        f, a, "f:/glast/data/DC2/expCube_full.fits", , ,"Exposure cube input file name"
-infile,        f, a, "d:/users/ylei/slac-backup/store/expCube_sub_1day.fits", , ,"Exposure cube input file name"
+infile,        f, a, "", , ,"Exposure cube input file name"
 cmfile,        f, a, "NONE", , ,"Count map input file name (NONE for manual input of map geometry)"
-outfile,       f, a, "../output/exp_map_1day_DC2Front.fits", , ,"Exposure map output file name"
-resptype,      s, a, "DC2::FrontA", , , "Response function to use, e.g. HANDOFF, DC1F/DC1B, G25F/G25B, TestF/TestB"
+outfile,       f, a, "", , ,"Exposure map output file name"
+resptype,      s, a, "standard/front", , , "Response function to use, e.g. HANDOFF, DC1F/DC1B, G25F/G25B, TestF/TestB"
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
