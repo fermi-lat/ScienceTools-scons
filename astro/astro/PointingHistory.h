@@ -26,7 +26,7 @@ namespace astro{
         /// @param offset perhaps needed for ascii files that have times from 
         PointingHistory(const std::string& filename, double offset=0);
         ~PointingHistory(){}
-
+#ifndef SWIG
         /** @class PointingHistory::TimeRangeError
             @brief inherit from std::runtime_error for backward compatibility
 
@@ -36,13 +36,17 @@ namespace astro{
             TimeRangeError(const std::string msg): std::runtime_error(msg){}
         };
 
-        
+#endif       
         /** @brief select configuration at the given time
             Note that if the time is not in the range between the start and end, it 
             will throw the TimeRangeError exception
 
         */
-        const astro::PointingInfo& operator()(double time)const throw(TimeRangeError) ;
+        const astro::PointingInfo& operator()(double time)const 
+#ifndef SWIG
+            throw(TimeRangeError)          
+#endif
+        ;
 
         double startTime()const{return m_startTime;}
         double endTime()const{return m_endTime;}
