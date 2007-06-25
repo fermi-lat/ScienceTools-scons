@@ -1,6 +1,6 @@
 package pointlike
 
-version v1r1
+version v1r2
 
 # $Header$
 
@@ -8,6 +8,7 @@ use STpolicy *
 use map_tools *
 use embed_python *
 
+apply_pattern package_include
 private
 apply_pattern ST_library option=-no_share
 

@@ -14,7 +14,7 @@ using namespace astro;
 using namespace pointlike;
 
 //#define DEBUG_PRINT
-double SimpleLikelihood::s_defaultUmax = 25;
+double SimpleLikelihood::s_defaultUmax =50;
 
 namespace {
 

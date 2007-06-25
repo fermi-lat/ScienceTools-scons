@@ -33,13 +33,12 @@ int main(int argc, char** argv)
             python_path = argv[1];
         }
 
-        Module setup("", "pointfit_setup", python_path );
-        // default parmeters (todo: override from command line?)
+        Module setup(python_path , "pointfit_setup",  argc, argv);
 
         double radius(7.0)
             , TSmin (5)
             ; // 
-        int event_type(0)  // 0: select front only; -1 no selection
+        int   event_type(0)  // 0: select front only; -1 no selection
             , source_id(-1)  // -1: all sources 
             , minlevel(8)    // minimum level to use for fits (>-6)  
             , maxlevel(13)   // maximum level for fits  (<=13)
@@ -61,7 +60,10 @@ int main(int argc, char** argv)
         setup.getValue("verbose", verbose, 0);
     
         std::vector<std::string> filelist;
+        std::string ft2file;
         setup.getList("files", filelist);
+        setup.getValue("FT2file",  ft2file, "");
+
         // separate lists of names, ra's, and dec's
         std::vector<std::string> names;
         std::vector<double> ras, decs;
@@ -70,7 +72,7 @@ int main(int argc, char** argv)
         setup.getList("dec", decs);
 
         // use the  Data class to create the PhotonData object
-        Data healpixdata(filelist,  event_type, source_id);
+        Data healpixdata(filelist,  event_type, source_id, ft2file);
 
         std::cout << std::left << std::setw(15) <<"name" << "     TS   error    fit direction\n";
 
@@ -91,10 +93,11 @@ int main(int argc, char** argv)
 
             // add entry to table with name, total TS, localizatino sigma, fit direction
             std::cout << std::left << std::setw(15) << name 
-                << std::setprecision(1) << std::setw(8) << std::fixed << std::right
+                << std::setprecision(2) << std::setw(8) << std::fixed << std::right
                 << like.TS() 
-                << std::setprecision(2) << std::setw(8) << sigma
-                << " (" <<  like.dir().ra() << ", " << like.dir().dec() <<") " 
+                << std::setprecision(3) << std::setw(8) << sigma
+                << " (" << std::setw(7) << like.dir().ra() 
+                << ", " << std::setw(7) << like.dir().dec() <<") " 
                 << std::endl;
         }
 
