@@ -22,7 +22,7 @@ emin,r,h,30,,,"Minimum event energy (MeV)"
 emax,r,h,200000,,,"Maximum event energy (MeV)"
 apply_edisp,b,h,yes,,,"Apply energy dispersion?"
 
-rspfunc,s,a,"DC2",DC2|DC1A|G25|HANDOFF,,"Response functions"
+rspfunc,s,a,"Pass4_v1",,,"Response functions"
 
 max_numrows,i,h,200000,,,"Maximum number of rows in FITS files"
 random_seed,i,a,293049,,,"Random number seed"
