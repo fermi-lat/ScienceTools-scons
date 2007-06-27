@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r4p2 27-Jun-07   JC   set CREATOR keyword from makeFT2a
     v3r4p1 27-Jun-07   JC   remove spurious TNULL keyword that are added
                             by tip::Table::appendField
     v3r4   22-Jun-07   JC   test for zero entries in pointing_history tuple

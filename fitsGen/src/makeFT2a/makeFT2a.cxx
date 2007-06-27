@@ -164,6 +164,8 @@ int main(int iargc, char * argv[]) {
       ft2.prev();
       double stop(ft2["stop"].get());
       ft2.setObsTimes(start, stop);
+
+      ft2.setPhduKeyword("CREATOR", "makeFT2a");
    } catch (std::exception & eObj) {
       std::cout << eObj.what() << std::endl;
       std::exit(1);
