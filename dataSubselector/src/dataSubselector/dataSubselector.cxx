@@ -118,10 +118,9 @@ void DataFilter::run() {
    CutController * cuts = 
       CutController::instance(m_pars, m_inputFiles, evtable);
    copyTable(evtable, cuts);
+   copyGtis();
    cuts->updateGti(m_outputFile);
    CutController::delete_instance();
-
-   copyGtis();
 
    writeDateKeywords();
 
