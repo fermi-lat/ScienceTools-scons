@@ -241,8 +241,13 @@ void ObsSim::createResponseFuncs() {
          m_respPtrs.push_back(irf);
       }
    } else {
-      throw std::invalid_argument("Invalid response function choice: "
-                                  + responseFuncs);
+      std::ostringstream message;
+      message << "Invalid response function choice: " << responseFuncs << "\n"
+              << "Valid choices are \n";
+      for (it = responseIds.begin(); it != responseIds.end(); ++it) {
+         message << "   " << it->first << "\n";
+      }
+      throw std::invalid_argument(message.str());
    }
 }   
 
