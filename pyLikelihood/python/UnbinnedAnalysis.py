@@ -179,30 +179,28 @@ class UnbinnedAnalysis(AnalysisBase):
         if close:
             output.close()
 
-def unbinnedAnalysis(mode="ql", rspfunc=None, fit_tolerance=None):
+def unbinnedAnalysis(mode="ql", irfs=None, ftol=None):
     """Return an UnbinnedAnalysis object using the data in a gtlike.par
 file."""
     pars = pyLike.StApp_parGroup('gtlike')
     if mode == 'ql':
         pars.Prompt('scfile')
         pars.Prompt('evfile')
-        pars.Prompt('exposure_map_file')
-        pars.Prompt('exposure_cube_file')
-        pars.Prompt('source_model_file')
+        pars.Prompt('expmap')
+        pars.Prompt('expcube')
+        pars.Prompt('srcmdl')
         pars.Prompt('optimizer')
         pars.Save()
     evfiles = pyLike.Util_resolveFitsFiles(pars['evfile'])
     scfiles = pyLike.Util_resolveFitsFiles(pars['scfile'])
-    irfs = pars['rspfunc']
-    if rspfunc is not None:
-        irfs = rspfunc
+    irfs = pars['irfs']
     obs = UnbinnedObs(evfiles, scfiles,
-                      expMap=_null_file(pars['exposure_map_file']),
-                      expCube=_null_file(pars['exposure_cube_file']),
+                      expMap=_null_file(pars['expmap']),
+                      expCube=_null_file(pars['expcube']),
                       irfs=irfs)
-    like = UnbinnedAnalysis(obs, pars['source_model_file'], pars['optimizer'])
+    like = UnbinnedAnalysis(obs, pars['srcmdl'], pars['optimizer'])
     if fit_tolerance is not None:
         like.tol = fit_tolerance
     else:
-        like.tol = pars.getDouble('fit_tolerance')
+        like.tol = pars.getDouble('ftol')
     return like
