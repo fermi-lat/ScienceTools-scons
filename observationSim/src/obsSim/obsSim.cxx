@@ -125,28 +125,28 @@ void ObsSim::run() {
 }
 
 void ObsSim::promptForParameters() {
-   m_pars.Prompt("xml_source_file");
-   m_pars.Prompt("source_list");
+   m_pars.Prompt("infilefile");
+   m_pars.Prompt("srclist");
    m_pars.Prompt("scfile");
-   m_pars.Prompt("outfile_prefix");
-   m_pars.Prompt("simulation_time");
-   m_pars.Prompt("start_date");
-   m_pars.Prompt("use_acceptance_cone");
-   if (m_pars["use_acceptance_cone"]) {
+   m_pars.Prompt("evroot");
+   m_pars.Prompt("simtime");
+   m_pars.Prompt("startdate");
+   m_pars.Prompt("use_ac");
+   if (m_pars["use_ac"]) {
       m_pars.Prompt("ra");
       m_pars.Prompt("dec");
       m_pars.Prompt("radius");
    }
-   m_pars.Prompt("rspfunc");
-   m_pars.Prompt("random_seed");
+   m_pars.Prompt("irfs");
+   m_pars.Prompt("seed");
    m_pars.Save();
-   m_count = m_pars["simulation_time"];
+   m_count = m_pars["simtime"];
 }
 
 void ObsSim::checkOutputFiles() {
    bool clobber = m_pars["clobber"];
    if (!clobber) {
-      std::string prefix = m_pars["outfile_prefix"];
+      std::string prefix = m_pars["evroot"];
       std::string file = prefix + "_events_0000.fits";
       if (st_facilities::Util::fileExists(file)) {
          m_formatter->err() << "Output file " << file  << " already exists,\n"
@@ -170,7 +170,7 @@ void ObsSim::setRandomSeed() {
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
-   HepRandom hepRandom(m_pars["random_seed"]);
+   HepRandom hepRandom(m_pars["seed"]);
 }
 
 void ObsSim::createFactories() {
@@ -185,7 +185,7 @@ void ObsSim::setXmlFiles() {
 
 // Fetch any user-specified xml file of flux-style source definitions,
 // replacing the default list.
-   std::string xmlFiles = m_pars["xml_source_file"];
+   std::string xmlFiles = m_pars["infile"];
    if (xmlFiles == "none" || xmlFiles == "") { // use the default
       xmlFiles = "$(OBSERVATIONSIMROOT)/xml/xmlFiles.dat";
    }
@@ -212,7 +212,7 @@ void ObsSim::setXmlFiles() {
 }
 
 void ObsSim::readSrcNames() {
-   std::string srcListFile = m_pars["source_list"];
+   std::string srcListFile = m_pars["srclist"];
    if (Util::fileExists(srcListFile)) { 
       Util::readLines(srcListFile, m_srcNames, "#", true);
       if (m_srcNames.size() == 0) {
@@ -229,7 +229,7 @@ void ObsSim::createResponseFuncs() {
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
 
-   std::string responseFuncs = m_pars["rspfunc"];
+   std::string responseFuncs = m_pars["irfs"];
 
    typedef std::map< std::string, std::vector<std::string> > respMap;
    const respMap & responseIds = irfLoader::Loader::respIds();
@@ -248,11 +248,11 @@ void ObsSim::createResponseFuncs() {
 
 void ObsSim::createSimulator() {
    double totalArea(::maxEffArea(m_respPtrs)/1e4);
-   double startTime = m_pars["start_time"];
+   double startTime = m_pars["tstart"];
    std::string pointingHistory = m_pars["scfile"];
    std::string sc_table = m_pars["sctable"];
 //   astro::GPS::instance()->setScTableName(sc_table);
-   std::string startDate = m_pars["start_date"];
+   std::string startDate = m_pars["startdate"];
    facilities::Timestamp start(startDate);
    double offset((astro::JulianDate(start.getJulian()) 
                   - astro::JulianDate::missionStart())
@@ -261,7 +261,7 @@ void ObsSim::createSimulator() {
    Spectrum::setStartTime(offset);
    double maxSimTime = 3.155e8;
    try {
-      maxSimTime = m_pars["max_simulation_time"];
+      maxSimTime = m_pars["maxtime"];
    } catch (std::exception &) {
    }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
@@ -269,28 +269,28 @@ void ObsSim::createSimulator() {
                                                pointingHistory, maxSimTime,
                                                offset);
 
-   int id_offset = m_pars["srcid_offset"];
+   int id_offset = m_pars["offset"];
    m_simulator->setIdOffset(id_offset);
 }
 
 void ObsSim::generateData() {
-   long nMaxRows = m_pars["max_numrows"];
-   std::string prefix = m_pars["outfile_prefix"];
+   long nMaxRows = m_pars["maxrows"];
+   std::string prefix = m_pars["evroot"];
    std::string ev_table = m_pars["evtable"];
    dataSubselector::Cuts * cuts = new dataSubselector::Cuts;
    cuts->addRangeCut("ENERGY", "MeV", m_pars["emin"], m_pars["emax"]);
-   if (m_pars["use_acceptance_cone"]) {
+   if (m_pars["use_ac"]) {
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
    }
-   double start_time(m_pars["start_time"]);
+   double start_time(m_pars["tstart"]);
    double stop_time;
-   if (m_pars["use_as_numevents"]) {
+   if (m_pars["nevents"]) {
       stop_time = start_time;
    } else {
-      double sim_time(m_pars["simulation_time"]);  // yes, this is BS.
+      double sim_time(m_pars["simtime"]);  // yes, this is BS.
       stop_time = start_time + sim_time;
    }
-   bool applyEdisp = m_pars["apply_edisp"];
+   bool applyEdisp = m_pars["edisp"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
                                          cuts, nMaxRows,
                                          start_time, stop_time, applyEdisp);
@@ -306,9 +306,9 @@ void ObsSim::generateData() {
    scData.setAppName("gtobssim");
    scData.setVersion(getVersion());
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
-   double frac = m_pars["livetime_frac"];
+   double frac = m_pars["ltfrac"];
    spacecraft->setLivetimeFrac(frac);
-   if (m_pars["use_as_numevents"]) {
+   if (m_pars["nevents"]) {
       m_formatter->info() << "Generating " << m_count 
                           << " events...." << std::endl;
       m_simulator->generateEvents(static_cast<long>(m_count), events, 
@@ -350,7 +350,7 @@ saveEventIds(const observationSim::EventContainer & events) const {
       accepteds.at(idnum) = eventId->second.acceptedNum;
    }
    
-   std::string event_id_file = m_pars["outfile_prefix"];
+   std::string event_id_file = m_pars["evroot"];
    event_id_file += "_srcIds.txt";
    std::ofstream outputFile(event_id_file.c_str());
    for (unsigned int i = 0; i < nsrcs; i++) {

@@ -88,24 +88,24 @@ void OrbSim::run() {
 }
 
 void OrbSim::promptForParameters() {
-   m_pars.Prompt("outfile_prefix");
-   m_pars.Prompt("pointing_strategy");
-   std::string pointing_strategy = m_pars["pointing_strategy"];
+   m_pars.Prompt("scroot");
+   m_pars.Prompt("obsmode");
+   std::string pointing_strategy = m_pars["obsmode"];
    if (pointing_strategy != "POINT") {
       m_pars.Prompt("rocking_angle");
    } else {
       m_pars.Prompt("ra");
       m_pars.Prompt("dec");
    }
-   m_pars.Prompt("simulation_time");
+   m_pars.Prompt("simtime");
    m_pars.Save();
-   m_count = m_pars["simulation_time"];
+   m_count = m_pars["simtime"];
 }
 
 void OrbSim::checkOutputFiles() {
    bool clobber = m_pars["clobber"];
    if (!clobber) {
-      std::string prefix = m_pars["outfile_prefix"];
+      std::string prefix = m_pars["scroot"];
       std::string file = prefix + "_scData_0000.fits";
       if (st_facilities::Util::fileExists(file)) {
          m_formatter->err() << "Output file " << file << " already exists,\n"
@@ -127,7 +127,7 @@ void OrbSim::defineRockTypes() {
 }
 
 void OrbSim::createSimulator() {
-   double startTime = m_pars["start_time"];
+   double startTime = m_pars["tstart"];
    std::string pointingHistory = "none";
    std::vector<std::string> srcNames;
    srcNames.push_back("null_source");
@@ -138,9 +138,9 @@ void OrbSim::createSimulator() {
                                                totalArea, startTime, 
                                                pointingHistory);
 // Set pointing strategy.
-   std::string pointing_strategy = m_pars["pointing_strategy"];
+   std::string pointing_strategy = m_pars["obsmode"];
    int rockType = m_rockTypes[pointing_strategy];
-   double rockingAngle = m_pars["rocking_angle"];
+   double rockingAngle = m_pars["rangle"];
    m_simulator->setRocking(rockType, rockingAngle);
    if (pointing_strategy == "POINT") {
       double ra = m_pars["ra"];
@@ -167,8 +167,8 @@ void OrbSim::createSimulator() {
 }
 
 void OrbSim::generateData() {
-   long nMaxRows = m_pars["max_numrows"];
-   std::string prefix = m_pars["outfile_prefix"];
+   long nMaxRows = m_pars["maxrows"];
+   std::string prefix = m_pars["scroot"];
    std::string ev_table("EVENTS");
    std::string sc_table = m_pars["sctable"];
    observationSim::EventContainer events(prefix + "_events", ev_table,
@@ -180,7 +180,7 @@ void OrbSim::generateData() {
    scData.setAppName("gtorbsim");
    scData.setVersion(getVersion());
    observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
-   double frac = m_pars["livetime_frac"];
+   double frac = m_pars["ltfrac"];
    spacecraft->setLivetimeFrac(frac);
    m_formatter->info() << "Generating pointing history for a "
                        << "simulation time of "
