@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v7     03-Jul-07   JC   implement parameter name changes
     v6r5p1 25-Jun-07   JC   remove enumeration from rspfunc parameter
     v6r5   12-Jun-07   THB  Reimplement POINT mode following GPS interface
                             change
