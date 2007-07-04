@@ -125,7 +125,7 @@ void ObsSim::run() {
 }
 
 void ObsSim::promptForParameters() {
-   m_pars.Prompt("infilefile");
+   m_pars.Prompt("infile");
    m_pars.Prompt("srclist");
    m_pars.Prompt("scfile");
    m_pars.Prompt("evroot");

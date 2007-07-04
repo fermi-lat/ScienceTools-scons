@@ -92,7 +92,7 @@ void OrbSim::promptForParameters() {
    m_pars.Prompt("obsmode");
    std::string pointing_strategy = m_pars["obsmode"];
    if (pointing_strategy != "POINT") {
-      m_pars.Prompt("rocking_angle");
+      m_pars.Prompt("rangle");
    } else {
       m_pars.Prompt("ra");
       m_pars.Prompt("dec");

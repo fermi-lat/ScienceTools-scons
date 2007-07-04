@@ -154,8 +154,8 @@ file."""
     irfs = pars['irfs']
     obs = BinnedObs(srcmaps, expcube, expmap, irfs)
     like = BinnedAnalysis(obs, pars['srcmdl'], pars['optimizer'])
-    if fit_tolerance is not None:
-        like.tol = fit_tolerance
+    if ftol is not None:
+        like.tol = ftol
     else:
         like.tol = pars.getDouble('ftol')
     return like
