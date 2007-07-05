@@ -5,11 +5,12 @@ author T.Burnett <tburnett@u.washington.edu>
 use GlastPolicy
 
 
-apply_pattern package_include
-apply_pattern package_linkopts
-apply_pattern package_headers
+apply_pattern shared_library
 
 private
+
+apply_pattern package_headers
+
 
 library  facilities -no_share *.cxx \
 			${facilities_headers}
