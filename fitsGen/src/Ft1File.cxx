@@ -31,7 +31,7 @@ Ft1File::~Ft1File() {
 }
 
 void Ft1File::close() {
-   verifyObsTimes();
+//    verifyObsTimes();
 
    if (m_table) {
       st_facilities::Util::writeDateKeywords(m_table, m_startTime, m_stopTime,

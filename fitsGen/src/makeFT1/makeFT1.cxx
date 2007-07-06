@@ -128,6 +128,9 @@ void MakeFt1::run() {
    std::string eventClassifier = m_pars["event_classifier"];
    std::string defaultFilter = m_pars["TCuts"];
 
+   double tstart = m_pars["tstart"];
+   double tstop = m_pars["tstop"];
+
    std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
 
    if (defaultFilter == "DEFAULT") {
@@ -154,32 +157,56 @@ void MakeFt1::run() {
    ::getFT1Dict(dictFile, ft1Dict);
 
    dataSubselector::Cuts my_cuts;
-   fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
-   fitsGen::Ft1File ft1(fitsFile, merit.nrows());
-   
-   ::addNeededFields(ft1, ft1Dict);
-   
-   ft1.header().addHistory("Input merit file: " + rootFile);
-   ft1.header().addHistory("Filter string: " + filter);
+   fitsGen::Ft1File ft1(fitsFile, 0);
+   try {
+      fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
+      merit.setStartStop(tstart, tstop);
 
-   EventClassifier eventClass(eventClassifier);
+      ft1.setNumRows(merit.nrows());
+
+      ::addNeededFields(ft1, ft1Dict);
    
-   int ncount(0);
-   for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
-      for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
-           variable != ft1Dict.end(); ++variable) {
-         ft1[variable->first].set(merit[variable->second]);
+      ft1.header().addHistory("Input merit file: " + rootFile);
+      ft1.header().addHistory("Filter string: " + filter);
+
+      EventClassifier eventClass(eventClassifier);
+   
+      int ncount(0);
+      for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
+         if (merit.gti().accept(merit["EvtElapsedTime"])) {
+            for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
+                 variable != ft1Dict.end(); ++variable) {
+               ft1[variable->first].set(merit[variable->second]);
+            }
+            ft1["event_class"].set(eventClass(merit.row()));
+            ft1["conversion_type"].set(merit.conversionType());
+            ncount++;
+         }
       }
-//      ft1["event_class"].set(merit.eventType());
-      ft1["event_class"].set(eventClass(merit.row()));
-      ft1["conversion_type"].set(merit.conversionType());
-      ncount++;
+      formatter.info() << "number of rows processed: " << ncount << std::endl;
+      
+      ft1.setNumRows(ncount);
+      my_cuts.addGtiCut(merit.gti());
+      my_cuts.writeDssKeywords(ft1.header());
+   } catch (tip::TipException & eObj) {
+// If there are no events in the merit file passing the cut,
+// create an empty FT1 file.
+      if (st_facilities::Util::expectedException(eObj, "yielded no events")) {
+         formatter.info() << "zero rows passed the TCuts." << std::endl;
+         ::addNeededFields(ft1, ft1Dict);
+         
+         ft1.header().addHistory("Input merit file: " + rootFile);
+         ft1.header().addHistory("Filter string: " + filter);
+
+         dataSubselector::Gti gti;
+         gti.insertInterval(tstart, tstop);
+
+         my_cuts.addGtiCut(gti);
+         my_cuts.writeDssKeywords(ft1.header());
+      } else {
+         throw;
+      }
    }
-   formatter.info() << "number of rows processed: " << ncount << std::endl;
-   
-   ft1.setNumRows(ncount);
-   my_cuts.addGtiCut(merit.gti());
-   my_cuts.writeDssKeywords(ft1.header());
    std::ostringstream creator;
    creator << "makeFT1 " << getVersion();
    ft1.setPhduKeyword("CREATOR", creator.str());
@@ -187,9 +214,10 @@ void MakeFt1::run() {
    ft1.setPhduKeyword("VERSION", version);
    std::string filename(facilities::Util::basename(fitsFile));
    ft1.setPhduKeyword("FILENAME", filename);
-
+   
    my_cuts.writeGtiExtension(fitsFile);
    st_facilities::FitsUtil::writeChecksums(fitsFile);
+
    if (st_facilities::Util::fileExists("dummy.root")) {
       std::remove("dummy.root");
    }
