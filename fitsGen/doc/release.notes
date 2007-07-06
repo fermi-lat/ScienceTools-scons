@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r5   06-Jul-07   JC   user will set tstart and tstep from command line    
+                            for makeFT1; allow zero entry FT1 files to be 
+                            generated.
     v3r4p2 27-Jun-07   JC   set CREATOR keyword from makeFT2a
     v3r4p1 27-Jun-07   JC   remove spurious TNULL keyword that are added
                             by tip::Table::appendField
