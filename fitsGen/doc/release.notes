@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r6   09-Jul-07   JC   allow data type to specified in FT1variables
+                            for added fields, e.g., MC_SRC_ID
     v3r5   06-Jul-07   JC   user will set tstart and tstep from command line    
                             for makeFT1; allow zero entry FT1 files to be 
                             generated.

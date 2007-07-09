@@ -39,22 +39,53 @@
 using namespace fitsGen;
 
 namespace {
+   class Ft1Entry {
+   public:
+      Ft1Entry() : m_ft1Name(""), m_meritName(""), m_ft1Type("") {}
+      Ft1Entry(const std::string & line) {
+         std::vector<std::string> tokens;
+         facilities::Util::stringTokenize(line, " \t", tokens);
+         m_ft1Name = tokens.at(0);
+         m_meritName = tokens.at(1);
+         if (tokens.size() == 2) {
+            m_ft1Type = "E";
+         } else {
+            m_ft1Type = tokens.at(2);
+         }
+      }
+      const std::string & ft1Name() const {
+         return m_ft1Name;
+      }
+      const std::string & meritName() const {
+         return m_meritName;
+      }
+      const std::string & ft1Type() const {
+         return m_ft1Type;
+      }
+   private:
+      std::string m_ft1Name;
+      std::string m_meritName;
+      std::string m_ft1Type;
+   };
+
+   typedef std::map<std::string, Ft1Entry> Ft1Map_t;
+
    void toLower(std::string & name) {
       for (std::string::iterator it = name.begin(); it != name.end(); ++it) {
          *it = std::tolower(*it);
       }
    }
-   void getFT1Dict(const std::string & inputFile,
-                   std::map<std::string, std::string> & ft1Dict) {
+
+   void getFT1Dict(const std::string & inputFile, Ft1Map_t & ft1Dict) {
       ft1Dict.clear();
       std::vector<std::string> lines;
       st_facilities::Util::readLines(inputFile, lines, "#", true);
-      for (size_t i = 0; i < lines.size(); i++) {
-         std::vector<std::string> tokens;
-         facilities::Util::stringTokenize(lines.at(i), " \t", tokens);
-         ft1Dict[tokens.at(0)] = tokens.at(1);
+      for (size_t i(0); i < lines.size(); i++) {
+         Ft1Entry entry(lines.at(i));
+         ft1Dict[entry.ft1Name()] = entry;
       }
    }
+
    std::string filterString(const std::string & filterFile) {
       std::ostringstream filter;
       std::vector<std::string> lines;
@@ -64,17 +95,17 @@ namespace {
       }
       return filter.str();
    }
-   void addNeededFields(Ft1File & ft1,
-                        const std::map<std::string, std::string> & ft1Dict) {
+
+   void addNeededFields(Ft1File & ft1, const Ft1Map_t & ft1Dict) {
       const std::vector<std::string> & validFields(ft1.getFieldNames());
-      std::map<std::string, std::string>::const_iterator ft1_entry;
+      Ft1Map_t::const_iterator ft1_entry;
       for (ft1_entry = ft1Dict.begin(); ft1_entry != ft1Dict.end();
            ++ft1_entry) {
          std::string candidate(ft1_entry->first);
          toLower(candidate);
          if (std::find(validFields.begin(), validFields.end(), 
                        candidate) == validFields.end()) {
-            ft1.appendField(ft1_entry->first, "E");
+            ft1.appendField(ft1_entry->first, ft1_entry->second.ft1Type());
          }
       }
    }
@@ -152,8 +183,7 @@ void MakeFt1::run() {
       dictFile = st_facilities::Env::appendFileName(dataDir,"FT1variables");
    }
 
-   typedef std::map<std::string, std::string> Ft1Map_t;
-   Ft1Map_t ft1Dict;
+   ::Ft1Map_t ft1Dict;
    ::getFT1Dict(dictFile, ft1Dict);
 
    dataSubselector::Cuts my_cuts;
@@ -174,9 +204,9 @@ void MakeFt1::run() {
       int ncount(0);
       for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
          if (merit.gti().accept(merit["EvtElapsedTime"])) {
-            for (Ft1Map_t::const_iterator variable = ft1Dict.begin();
+            for (::Ft1Map_t::const_iterator variable = ft1Dict.begin();
                  variable != ft1Dict.end(); ++variable) {
-               ft1[variable->first].set(merit[variable->second]);
+               ft1[variable->first].set(merit[variable->second.meritName()]);
             }
             ft1["event_class"].set(eventClass(merit.row()));
             ft1["conversion_type"].set(merit.conversionType());

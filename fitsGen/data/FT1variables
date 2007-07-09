@@ -3,7 +3,7 @@
 #
 # $Header$
 #
-# FT1 name              MeritTuple name
+# FT1 name              MeritTuple name       FT1 data type
 #
 #ENERGY                  CTBBestEnergy
 ENERGY			FT1Energy
@@ -23,3 +23,9 @@ RUN_ID                  EvtRun
 #EVENT_CLASS            set using MeritFile::eventType()
 #CONVERSION_TYPE        set using MeritFile::conversionType()
 LIVETIME                EvtLiveTime
+#
+# Other fields from the MeritTuple can be added to the FT1 output here.
+# If the FT1 data type is not provided, then "E" (32 bit float) will be 
+# used by default.
+#
+#MC_SRC_ID               McSourceId                  J
