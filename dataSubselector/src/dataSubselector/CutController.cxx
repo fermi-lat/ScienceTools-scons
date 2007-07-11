@@ -76,10 +76,10 @@ void CutController::addRangeCut(const std::string & colname,
       /// don't apply any range cut
       return;
    }
-   if (minVal >= maxVal) {
+   if (minVal > maxVal) {
       std::ostringstream message;
       message << "minimum requested value, " << minVal 
-              << ", is greater than or equal to the maximum requested, "
+              << ", is greater than the maximum requested, "
               << maxVal << ", for field " << colname << "\n";
       throw std::runtime_error(message.str());
    }
