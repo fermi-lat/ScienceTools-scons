@@ -19,8 +19,8 @@
 namespace dataSubselector {
 
 RangeCut::RangeCut(const std::string & colname, const std::string & unit,
-                         double minVal, double maxVal, IntervalType type,
-                         unsigned int indx)
+                   double minVal, double maxVal, IntervalType type,
+                   unsigned int indx)
    : CutBase("range"), m_colname(colname), m_unit(unit),
      m_min(minVal), m_max(maxVal), m_intervalType(type), m_index(indx),
      m_fullName(colname) {

@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r4    11-Jul-07   JC   ensure gtselect writes only closed range cut 
+                             intervals
     v5r3p1  27-Jun-07   JC   gtselect bug fix: update the gti to include
                              the user selection after merging the gtis
                              from the input file list.
