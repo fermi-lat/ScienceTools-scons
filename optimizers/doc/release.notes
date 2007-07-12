@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r9   12-Jul-07   JC   added Function::rescale member function
     v2r8p2 12-May-07   THB  Comment out unused timer include that breaks VS2005
     v2r8p1 08-Apr-07   JC   treat as absolute convergence criterion if
                             denominator of relative change is zero
