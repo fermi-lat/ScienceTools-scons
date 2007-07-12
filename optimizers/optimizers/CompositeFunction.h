@@ -72,6 +72,10 @@ public:
    /// Parameter access including Function name specification
    virtual const Parameter & getParam(const std::string &paramName, 
                                       const std::string &funcName) const;
+
+   virtual bool rescale(double factor) {
+      return m_a->rescale(factor) && m_b->rescale(factor);
+   }
    
 protected:
 

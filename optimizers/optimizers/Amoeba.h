@@ -39,7 +39,7 @@ public:
 
    /// @return The estimate of the minimum value of the functor.
    /// @param params The parameter values at the minimum estimate.
-   /// @param tol The absolute tolerance for convergence.
+   /// @param tol The fractional tolerance for convergence.
    double findMin(std::vector<double> & params, double tol=1e-15);
 
 private:

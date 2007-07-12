@@ -227,4 +227,17 @@ Parameter & Function::parameter(const std::string & name) {
    throw ParameterNotFound(name, getName(), "getParam(std::string &)");
 }
 
+bool Function::rescale(double factor) {
+   if (m_normParName == "") {
+      return false;
+   }
+   Parameter & prefactor(parameter(m_normParName));
+   if (!prefactor.isFree()) {
+      return false;
+   }
+   double new_value(prefactor.getValue()*factor);
+   prefactor.setValue(new_value);
+   return true;
+}
+
 } // namespace optimizers

@@ -37,6 +37,7 @@ public:
       m_argType = "";
 
       m_genericName = "ConstantValue";
+      m_normParName = "Value";
    }
 
    virtual ~ConstantValue() {}

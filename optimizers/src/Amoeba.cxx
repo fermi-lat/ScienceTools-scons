@@ -15,6 +15,17 @@
 
 namespace {
 
+void print_p(const std::vector< std::vector<double> > & p, 
+             const std::vector<double> & yvals) {
+   for (size_t i(0); i < p.size(); i++) {
+      for (size_t j(0); j < p.at(i).size(); j++) {
+         std::cout << p.at(i).at(j) << "  ";
+         }
+      std::cout << yvals.at(i) << ";  ";
+   }
+   std::cout << std::endl;
+}
+
 double amotry(std::vector< std::vector<double> > & p,
               std::vector<double> & y,
               std::vector<double> & psum,
@@ -33,6 +44,7 @@ double amotry(std::vector< std::vector<double> > & p,
          p.at(ihi).at(j) = ptry.at(j);
       }
    }
+   print_p(p, y);
    return ytry;
 }
 
@@ -74,11 +86,14 @@ void amoeba(std::vector< std::vector<double> > & p,
       double num(2.0*std::fabs(y.at(ihi) - y.at(ilo)));
       double denom(std::fabs(y.at(ihi)) + std::fabs(y.at(ilo)));
       double rtol;
+      std::cout << "num = " << num << "  "
+                << "denom = " << denom << "  ";
       if (denom == 0) {  /// treat the tolerance as absolute
          rtol = num;
       } else {
          rtol = num/denom;
       }
+      std::cout << "rtol = " << rtol << std::endl;
       if (rtol < ftol) {
          swap(y.at(0), y.at(ilo));
          for (int i = 0; i < ndim; i++) {
@@ -106,6 +121,7 @@ void amoeba(std::vector< std::vector<double> > & p,
                   y.at(i) = func(psum);
                }
             }
+            print_p(p, y);
             nfunc += ndim;
             for (int j = 0; j < ndim; j++) {
                double sum(0);

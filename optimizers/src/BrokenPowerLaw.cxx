@@ -38,6 +38,7 @@ void BrokenPowerLaw::init(double Prefactor, double Index1, double Index2,
    m_argType = "dArg";
 
    m_genericName = "BrokenPowerLaw";
+   m_normParName = "Prefactor";
 }
 
 double BrokenPowerLaw::value(Arg &xarg) const {

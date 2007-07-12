@@ -35,6 +35,8 @@ void Gaussian::init(double Prefactor, double Mean, double Sigma) {
    m_argType = "dArg";
 
    m_genericName = "Gaussian";
+
+   m_normParName = "Prefactor";
 }
 
 double Gaussian::integral(Arg &xargmin, Arg &xargmax) const {

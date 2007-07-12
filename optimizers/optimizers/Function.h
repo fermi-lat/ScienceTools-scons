@@ -47,7 +47,7 @@ class Function {
 
 public:
 
-   Function() {}
+   Function() : m_normParName("") {}
 
    virtual ~Function() {}
 
@@ -180,6 +180,13 @@ public:
       return m_genericName;
    }
 
+   /// @brief Rescale the overall normalization of the model (by adjusting
+   /// the appropriate parameter). 
+   /// @return Boolean value: true if rescaling was accomplished, false if
+   /// the parameter controlling the normalization is fixed.
+   /// @param factor Rescaling factor. 
+   virtual bool rescale(double factor);
+
 #ifndef SWIG
    /// Append Parameter DOMElements to a DOMNode.
    void appendParamDomElements(DOMDocument * doc, DOMNode * node);
@@ -207,6 +214,8 @@ protected:
 
    std::vector<Parameter> m_parameter;
 
+   std::string m_normParName;
+
    void setMaxNumParams(int nParams) {
       m_maxNumParams = nParams;
    }
@@ -222,7 +231,6 @@ protected:
 
    virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
                             bool getFree) const;
-
 };
 
 } // namespace optimizers

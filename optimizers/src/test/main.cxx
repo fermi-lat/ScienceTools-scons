@@ -41,6 +41,8 @@
 #endif
 
 #include "MyFun.h"
+#include "BrokenPowerLaw.h"
+#include "ConstantValue.h"
 #include "PowerLaw.h"
 #include "Gaussian.h"
 #include "Rosen.h"
@@ -64,6 +66,7 @@ void test_Optimizers();
 void test_Mcmc();
 void test_ChiSq();
 void test_Amoeba();
+void test_rescaling();
 
 std::string test_path;
 
@@ -80,6 +83,7 @@ int main() {
    test_Mcmc();
    test_ChiSq();
    test_Amoeba();
+   test_rescaling();
    return 0;
 }
 
@@ -867,4 +871,19 @@ void test_Amoeba() {
    my_amoeba.findMin(pars);
    assert(std::fabs(pars.at(0) - 1.) < 1e-7);
    assert(std::fabs(pars.at(1) - 2.) < 1e-7);
+}
+
+void test_rescaling() {
+   std::vector<Function *> my_functions;
+   my_functions.push_back(new BrokenPowerLaw());
+   my_functions.push_back(new ConstantValue());
+   my_functions.push_back(new Gaussian());
+   my_functions.push_back(new PowerLaw());
+   dArg xx(100);
+   double factor(2);
+   for (size_t i(0); i < my_functions.size(); i++) {
+      double value(my_functions.at(i)->operator()(xx));
+      my_functions.at(i)->rescale(factor);
+      assert(std::fabs(value/my_functions.at(i)->operator()(xx) - 0.5) < 1e-7);
+   }
 }

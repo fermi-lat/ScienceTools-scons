@@ -35,6 +35,7 @@ void PowerLaw::init(double Prefactor, double Index, double Scale) {
    m_argType = "dArg";
 
    m_genericName = "PowerLaw";
+   m_normParName = "Prefactor";
 }
 
 double PowerLaw::value(Arg &xarg) const {
