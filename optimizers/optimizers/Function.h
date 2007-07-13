@@ -74,6 +74,9 @@ public:
 
    /// Unsafe version.
    Parameter & parameter(const std::string & name);
+
+   /// @return The parameter controlling the overall normalization.
+   Parameter & normPar();
    
    /// Return the total number of Parameters.
    unsigned int getNumParams() const {

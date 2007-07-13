@@ -227,11 +227,18 @@ Parameter & Function::parameter(const std::string & name) {
    throw ParameterNotFound(name, getName(), "getParam(std::string &)");
 }
 
+Parameter & Function::normPar() {
+   if (m_normParName == "") {
+      throw ParameterNotFound("Normalization", getName(), "normPar()");
+   }
+   return parameter(m_normParName);
+}
+
 bool Function::rescale(double factor) {
    if (m_normParName == "") {
       return false;
    }
-   Parameter & prefactor(parameter(m_normParName));
+   Parameter & prefactor(normPar());
    if (!prefactor.isFree()) {
       return false;
    }
