@@ -9,7 +9,10 @@ Standard plotting interface for XY plots with pyROOT backend
 
 import sys
 from array import array
-import numarray as num
+try:
+    import numarray as num
+except:
+    import numpy as num
 from ROOT import TCanvas, TGraphErrors, TH2F
 
 _ncanvas = -1

@@ -7,7 +7,10 @@ Standard plotting interface for XY plots with hippoplotter backend.
 # $Header$
 #
 
-import numarray as num
+try:
+    import numarray as num
+except ImportError:
+    import numpy as num
 
 _symbols = {'line' : ('Line', 'Solid', 'filled_square', 1),
             'dashed' : ('Line', 'Dash', 'filled_square', 1),
