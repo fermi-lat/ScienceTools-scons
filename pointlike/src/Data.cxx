@@ -27,7 +27,7 @@ using namespace astro;
 using namespace pointlike;
 using namespace CLHEP;
 
-double Data::s_scale[4]={1.8, 1.0, 1.0, 1.0}; // wired in for back, front !!
+double Data::s_scale[4]={1.86, 1.0, 1.0, 1.0}; // wired in for back, front !!
 
 
 namespace {

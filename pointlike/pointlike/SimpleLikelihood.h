@@ -89,6 +89,9 @@ public:
     /// set/retrieve the umax parameter
     double umax()const {return m_umax;}
 
+    /// check average u
+    double average_u()const{ return m_avu;}
+
     static double s_defaultUmax;
 
 private:
@@ -120,6 +123,7 @@ private:
     double m_background;  ///< expected background (negative: no estimate)
 
     double m_umax; ///< maximum value of u, for selection of data, fits
+    double m_avu;
     
 };
 }
