@@ -18,6 +18,7 @@ double SimpleLikelihood::s_defaultUmax =50;
 
 namespace {
 
+    bool debug(false);
     inline double sqr(float x){return x*x;}
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,9 +34,9 @@ namespace {
             , m_sum(0), m_count(0)
         {
             m_fbar = f.integral(umax)/umax; //Integral(f, umax)/umax;
-#ifdef DEBUG_PRINT
-            std::cout << "     u        f(u)      count    q" << std:: endl;
-#endif
+            if(debug){
+                std::cout << "     u        f(u)      count    q" << std:: endl;
+            }
         }
 
         void operator()(const std::pair<HealPixel, int>& x){
@@ -49,9 +50,10 @@ namespace {
             m_sum+=x.second*t;
             m_count += x.second;
             double q( 1./(t/m_fbar-1));
-#ifdef DEBUG_PRINT
-            std::cout << std::left<< std::setw(10) << u << std::setw(12) << t << std::setw(5)<<  x.second << std::setw(10)<< q<<std::endl;
-#endif
+            if(debug){
+                std::cout << std::left<< std::setw(10) << u << std::setw(12) << t << std::setw(5)<<  x.second << std::setw(10)<< q<<std::endl;
+            }
+    
             // todo: combine elements with vanishing t
             m_vec2.push_back(std::make_pair(q, x.second) );
         }
