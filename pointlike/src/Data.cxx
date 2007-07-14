@@ -26,8 +26,11 @@ $Header$
 using namespace astro;
 using namespace pointlike;
 using namespace CLHEP;
-
+#if 0
 double Data::s_scale[4]={1.86, 1.0, 1.0, 1.0}; // wired in for back, front !!
+#else
+double Data::s_scale[4]={1.0, 1.86, 1.0, 1.0}; // wired in for front, back !!
+#endif
 
 
 namespace {
