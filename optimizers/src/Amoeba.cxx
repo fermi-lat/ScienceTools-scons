@@ -19,11 +19,11 @@ void print_p(const std::vector< std::vector<double> > & p,
              const std::vector<double> & yvals) {
    for (size_t i(0); i < p.size(); i++) {
       for (size_t j(0); j < p.at(i).size(); j++) {
-         std::cout << p.at(i).at(j) << "  ";
+//         std::cout << p.at(i).at(j) << "  ";
          }
-      std::cout << yvals.at(i) << ";  ";
+//      std::cout << yvals.at(i) << ";  ";
    }
-   std::cout << std::endl;
+//   std::cout << std::endl;
 }
 
 double amotry(std::vector< std::vector<double> > & p,
@@ -86,14 +86,14 @@ void amoeba(std::vector< std::vector<double> > & p,
       double num(2.0*std::fabs(y.at(ihi) - y.at(ilo)));
       double denom(std::fabs(y.at(ihi)) + std::fabs(y.at(ilo)));
       double rtol;
-      std::cout << "num = " << num << "  "
-                << "denom = " << denom << "  ";
+//       std::cout << "num = " << num << "  "
+//                 << "denom = " << denom << "  ";
       if (denom == 0) {  /// treat the tolerance as absolute
          rtol = num;
       } else {
          rtol = num/denom;
       }
-      std::cout << "rtol = " << rtol << std::endl;
+//      std::cout << "rtol = " << rtol << std::endl;
       if (rtol < ftol) {
          swap(y.at(0), y.at(ilo));
          for (int i = 0; i < ndim; i++) {
