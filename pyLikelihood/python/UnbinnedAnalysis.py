@@ -178,11 +178,12 @@ class UnbinnedAnalysis(AnalysisBase):
         if close:
             output.close()
 
-def unbinnedAnalysis(mode="ql", irfs=None, ftol=None):
+def unbinnedAnalysis(mode="ql", ftol=None):
     """Return an UnbinnedAnalysis object using the data in a gtlike.par
 file."""
     pars = pyLike.StApp_parGroup('gtlike')
     if mode == 'ql':
+        pars.Prompt('irfs')
         pars.Prompt('scfile')
         pars.Prompt('evfile')
         pars.Prompt('expmap')
@@ -192,7 +193,6 @@ file."""
         pars.Save()
     evfiles = pyLike.Util_resolveFitsFiles(pars['evfile'])
     scfiles = pyLike.Util_resolveFitsFiles(pars['scfile'])
-    irfs = pars['irfs']
     obs = UnbinnedObs(evfiles, scfiles,
                       expMap=_null_file(pars['expmap']),
                       expCube=_null_file(pars['expcube']),

@@ -136,11 +136,12 @@ class BinnedAnalysis(AnalysisBase):
         self.model[name] = value
         self.logLike.syncParams()
 
-def binnedAnalysis(mode='ql', irfs=None, ftol=None):
+def binnedAnalysis(mode='ql', ftol=None):
     """Return a BinnedAnalysis object using the data in a gtlike.par
 file."""
     pars = pyLike.StApp_parGroup('gtlike')
     if mode == 'ql':
+        pars.Prompt('irfs')
         pars.Prompt('cmap')
         pars.Prompt('bexpmap')
         pars.Prompt('expcube')
@@ -150,7 +151,6 @@ file."""
     srcmaps = pars['cmap']
     expcube = _null_file(pars['expcube'])
     expmap = _null_file(pars['bexpmap'])
-    irfs = pars['irfs']
     obs = BinnedObs(srcmaps, expcube, expmap, irfs)
     like = BinnedAnalysis(obs, pars['srcmdl'], pars['optimizer'])
     if ftol is not None:
