@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r5    16-Jul-07   JC   do not write TIME range cuts in DSS keywords
+                             since it is incorporated in GTIs
     v5r4p1  11-Jul-07   JC   have to allow for minVal=maxVal for EVENT_CLASS
                              cuts
     v5r4    11-Jul-07   JC   ensure gtselect writes only closed range cut 

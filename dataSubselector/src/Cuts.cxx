@@ -84,7 +84,7 @@ Cuts::Cuts(const std::vector<std::string> & eventFiles,
            const std::string & extname, bool check_columns,
            bool skipTimeRangeCuts, bool skipEventClassCuts) {
    std::vector<Cuts> my_cuts;
-   for (unsigned int i = 0; i < eventFiles.size(); i++) {
+   for (size_t i = 0; i < eventFiles.size(); i++) {
       my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns,
                              skipTimeRangeCuts, skipEventClassCuts));
       if (i > 0) {
@@ -105,7 +105,7 @@ Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
 // Gather non-Gti cuts.
    dataSubselector::Cuts my_cuts;
    const dataSubselector::Cuts & firstCuts(cuts_vector.front());
-   for (unsigned int i = 0; i < firstCuts.size(); i++) {
+   for (size_t i = 0; i < firstCuts.size(); i++) {
       if (firstCuts[i].type() != "GTI") {
          my_cuts.addCut(firstCuts[i]);
       }
@@ -114,9 +114,9 @@ Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
 // Merge all of the GTIs into one, taking the union of the intervals.
    dataSubselector::Gti merged_gti;
    std::vector<const dataSubselector::GtiCut *> gtiCuts;
-   for (unsigned int i = 0; i < cuts_vector.size(); i++) {
+   for (size_t i = 0; i < cuts_vector.size(); i++) {
       cuts_vector.at(i).getGtiCuts(gtiCuts);
-      for (unsigned int j = 0; j < gtiCuts.size(); j++) {
+      for (size_t j = 0; j < gtiCuts.size(); j++) {
          if (i == 0 && j == 0) {
             merged_gti = gtiCuts.at(j)->gti();
          } else {
@@ -133,7 +133,7 @@ Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
 
 void Cuts::getGtiCuts(std::vector<const GtiCut *> & gtiCuts) {
    gtiCuts.clear();
-   for (unsigned int i = 0; i < m_cuts.size(); i++) {
+   for (size_t i = 0; i < m_cuts.size(); i++) {
       if (m_cuts.at(i)->type() == "GTI") {
          gtiCuts.push_back(dynamic_cast<GtiCut *>(m_cuts.at(i)));
       }
@@ -159,7 +159,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
          = dynamic_cast<tip::Table *>(const_cast<tip::Extension *>(ext));
       colnames = table->getValidFields();
 // FITS column names are in CAPS, not lowercase, so undo what tip has wrought
-      for (unsigned int i = 0; i < colnames.size(); i++) {
+      for (size_t i = 0; i < colnames.size(); i++) {
          ::toUpper(colnames[i]);
       }
    }
@@ -379,11 +379,14 @@ unsigned int Cuts::removeRangeCuts(const std::string & colname,
 
 void Cuts::writeDssKeywords(tip::Header & header) const {
    removeDssKeywords(header);
-   int ndskeys = m_cuts.size();
-   header["NDSKEYS"].set(ndskeys);
-   for (unsigned int i = 0; i < m_cuts.size(); i++) {
-      m_cuts[i]->writeDssKeywords(header, i + 1);
+   int ndskeys(0);
+   for (size_t i = 0; i < m_cuts.size(); i++) {
+      if (!isTimeCut(*m_cuts.at(i)) || m_cuts.at(i)->type() == "GTI") {
+         m_cuts[i]->writeDssKeywords(header, i + 1);
+         ndskeys++;
+      }
    }
+   header["NDSKEYS"].set(ndskeys);
 }
 
 void Cuts::writeDssTimeKeywords(tip::Header & header) const {
