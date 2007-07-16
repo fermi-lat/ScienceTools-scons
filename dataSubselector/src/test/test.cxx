@@ -405,7 +405,8 @@ void DssTests::test_DssFormatting() {
    tip::IFileSvc::instance().createFile(testfile2, m_infile);
 
    dataSubselector::Cuts cuts1;
-   cuts1.addRangeCut("TIME", "s", -1.5046090110e7, 505910.);
+//   cuts1.addRangeCut("TIME", "s", -1.5046090110e7, 505910.);
+   cuts1.addRangeCut("ENERGY", "MeV", 30, 20000);
    tip::Table * table1 =
       tip::IFileSvc::instance().editTable(testfile1, "EVENTS");
    cuts1.writeDssKeywords(table1->getHeader());
@@ -430,7 +431,7 @@ void DssTests::test_DssFormatting() {
    delete table1;
    delete table2;
 
-   CPPUNIT_ASSERT(dataSubselector::Cuts::isTimeCut(cuts1[0]));
+   CPPUNIT_ASSERT(!dataSubselector::Cuts::isTimeCut(cuts1[0]));
 }
 
 void DssTests::test_removeRangeCuts() {

@@ -382,8 +382,8 @@ void Cuts::writeDssKeywords(tip::Header & header) const {
    int ndskeys(0);
    for (size_t i = 0; i < m_cuts.size(); i++) {
       if (!isTimeCut(*m_cuts.at(i)) || m_cuts.at(i)->type() == "GTI") {
-         m_cuts[i]->writeDssKeywords(header, i + 1);
          ndskeys++;
+         m_cuts[i]->writeDssKeywords(header, ndskeys);
       }
    }
    header["NDSKEYS"].set(ndskeys);
@@ -424,7 +424,7 @@ void Cuts::removeDssKeywords(tip::Header & header) const {
       for (int i = 0; i < ndskeys; i++) {
          for (int j = 0; j < 4; j++) {
             std::ostringstream keyname;
-            keyname << dskeys[j] << i;
+            keyname << dskeys[j] << i+1;
             tip::Header::Iterator keyword = header.find(keyname.str());
             if (keyword != header.end()) {
                header.erase(keyword);
