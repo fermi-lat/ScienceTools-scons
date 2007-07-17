@@ -191,6 +191,7 @@ file."""
         pars.Prompt('srcmdl')
         pars.Prompt('optimizer')
         pars.Save()
+    irfs = pars['irfs']
     evfiles = pyLike.Util_resolveFitsFiles(pars['evfile'])
     scfiles = pyLike.Util_resolveFitsFiles(pars['scfile'])
     obs = UnbinnedObs(evfiles, scfiles,

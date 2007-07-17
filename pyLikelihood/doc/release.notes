@@ -6,6 +6,7 @@
 
    @verbatim
 
+   v1r1p1 17-Jul-07   JC    set irfs variable in unbinnedAnalysis
    v1r1   16-Jul-07   JC    prompt for irfs in parfile input mode
    v1r0p1 13-Jul-07   JC    import numpy if numarray is not available;
                             use Function::normPar in AnalysisBase.py
