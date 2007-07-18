@@ -72,6 +72,8 @@
 04-may-2007    v1r0p3 EW  Added EBOUNDS to ccube files, and test code.
                           proj now non-hidden parameter.
                           Added NDSKEYS keyword all product templates.
+18-jul-2007        v2 JP  Rationalized parameter names according to scheme
+                          described in Confluence pages.
 --------------------------------------------------------------------------------
 \endverbatim
 
