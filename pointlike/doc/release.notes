@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 18-jul-07 v1r4    MR  Added scale factor manip to SimpLhood, updated test program
  18-jul-07 v1r3p1  THB Linux fix
  14-jul-07 v1r3    THB Tune default PSF parameters using handoff data; access to average u
  04-jul-07 v1r2p1  THB slight format change; new fileoutput parameter

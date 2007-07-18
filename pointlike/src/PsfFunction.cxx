@@ -15,7 +15,7 @@ double PsfFunction::operator () (const astro::SkyDir & r, const astro::SkyDir & 
 }
 double PsfFunction::operator ()(double u)const
 {
-    return m_norm*(u<100? pow(1+u/m_gamma, -m_gamma) : 0);
+    return m_norm*(u<1000? pow(1+u/m_gamma, -m_gamma) : 0);
 
 }
 
