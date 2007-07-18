@@ -685,15 +685,15 @@ void EvtBinTest::testBinConfig() {
     par_group["evtable"] = "EVENTS";
 
     // Set name of time field to be something strange.
-    par_group["timefield"] = "WackyTime";
+    par_group["tfield"] = "WackyTime";
 
     // First test the simple case.
-    par_group["timebinalg"] = "LIN";
+    par_group["tbinalg"] = "LIN";
 
     // Use unlikely values for the other binning parameters.
     par_group["tstart"] = -177.;
     par_group["tstop"] = -100.;
-    par_group["deltatime"] = 7.;
+    par_group["dtime"] = 7.;
 
     // Save these parameters.
     par_group.Save();
@@ -718,15 +718,15 @@ void EvtBinTest::testBinConfig() {
     config->timeParPrompt(par_group);
 
     // Make sure the value set above DID take.
-    if (0 != par_group["timefield"].Value().compare("WackyTime")) {
+    if (0 != par_group["tfield"].Value().compare("WackyTime")) {
       m_failed = true;
-      std::cerr << "BinConfig::timeParPrompt got name " << par_group["timefield"].Value() << ", not WackyTime" << std::endl;
+      std::cerr << "BinConfig::timeParPrompt got name " << par_group["tfield"].Value() << ", not WackyTime" << std::endl;
     }
 
     // Test creating the time binner.
     binner = config->createTimeBinner(par_group);
 
-    // Name of binner should be the value from the timefield parameter.
+    // Name of binner should be the value from the tfield parameter.
     if (0 != binner->getName().compare("WackyTime")) {
       m_failed = true;
       std::cerr << "BinConfig::createTimeBinner created a binner named " << binner->getName() << ", not WackyTime" << std::endl;
@@ -759,10 +759,10 @@ void EvtBinTest::testBinConfig() {
 
     // Now test the logarithmic case with energy bins.
     // Set name of energy field to be something strange.
-    par_group["energyfield"] = "WackyEnergy";
+    par_group["efield"] = "WackyEnergy";
 
     // First test the simple case.
-    par_group["energybinalg"] = "LOG";
+    par_group["ebinalg"] = "LOG";
 
     // Use unlikely values for the other binning parameters.
     par_group["emin"] = 1.e-7;
@@ -778,7 +778,7 @@ void EvtBinTest::testBinConfig() {
     // Test creating the energy binner.
     binner = config->createEnergyBinner(par_group);
 
-    // Name of binner should be the value from the energyfield parameter.
+    // Name of binner should be the value from the efield parameter.
     if (0 != binner->getName().compare("WackyEnergy")) {
       m_failed = true;
       std::cerr << "BinConfig::createEnergyBinner created a binner named " << binner->getName() << ", not WackyEnergy" << std::endl;
@@ -821,8 +821,8 @@ void EvtBinTest::testBinConfig() {
     delete binner; binner = 0;
 
     // Now test the bin file case with energy bins.
-    par_group["energybinalg"] = "FILE";
-    par_group["energybinfile"] = st_facilities::Env::appendFileName(m_data_dir, "energybins.fits");
+    par_group["ebinalg"] = "FILE";
+    par_group["ebinfile"] = st_facilities::Env::appendFileName(m_data_dir, "energybins.fits");
 
     // Save these parameters.
     par_group.Save();

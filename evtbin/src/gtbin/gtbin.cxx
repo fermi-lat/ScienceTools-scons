@@ -160,7 +160,7 @@ class CountCubeApp : public EvtBinAppBase {
       // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
       try {
         // The conversion will work even if the exception is thrown.
-        pars["numxpix"].To(num_x_pix);
+        pars["nxpix"].To(num_x_pix);
       } catch (const hoops::Hexception & x) {
         // Ignore just the "signedness" error.
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
@@ -169,7 +169,7 @@ class CountCubeApp : public EvtBinAppBase {
       // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
       try {
         // The conversion will work even if the exception is thrown.
-        pars["numypix"].To(num_y_pix);
+        pars["nypix"].To(num_y_pix);
       } catch (const hoops::Hexception & x) {
         // Ignore just the "signedness" error.
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
@@ -194,7 +194,7 @@ class CountCubeApp : public EvtBinAppBase {
       std::auto_ptr<Binner> ebounds(m_bin_config->createEbounds(pars));
 
       return new evtbin::CountCube(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],
-        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
+        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["binsz"], pars["axisrot"],
         use_lb, pars["rafield"], pars["decfield"], *energy_binner, *ebounds, *gti);
     }
 };
@@ -223,7 +223,7 @@ class CountMapApp : public EvtBinAppBase {
       // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
       try {
         // The conversion will work even if the exception is thrown.
-        pars["numxpix"].To(num_x_pix);
+        pars["nxpix"].To(num_x_pix);
       } catch (const hoops::Hexception & x) {
         // Ignore just the "signedness" error.
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
@@ -232,7 +232,7 @@ class CountMapApp : public EvtBinAppBase {
       // Hoops throws an exception if one tries to convert a signed to an unsigned parameter value.
       try {
         // The conversion will work even if the exception is thrown.
-        pars["numypix"].To(num_y_pix);
+        pars["nypix"].To(num_y_pix);
       } catch (const hoops::Hexception & x) {
         // Ignore just the "signedness" error.
         if (hoops::P_SIGNEDNESS != x.Code()) throw;
@@ -251,7 +251,7 @@ class CountMapApp : public EvtBinAppBase {
         "CountMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
 
       return new evtbin::CountMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],
-        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["pixscale"], pars["axisrot"],
+        pars["xref"], pars["yref"], pars["proj"], num_x_pix, num_y_pix, pars["binsz"], pars["axisrot"],
         use_lb, pars["rafield"], pars["decfield"], *gti);
     }
 };
@@ -375,9 +375,9 @@ class GtBinApp : public st_app::StApp {
       // Set up logic for prompts/GUI layout.
 #if 0
       pars.setSwitch("algorithm");
-      pars.setCase("algorithm", "CMAP", "numxpix");
-      pars.setCase("algorithm", "CMAP", "numypix");
-      pars.setCase("algorithm", "CMAP", "pixscale");
+      pars.setCase("algorithm", "CMAP", "nxpix");
+      pars.setCase("algorithm", "CMAP", "nypix");
+      pars.setCase("algorithm", "CMAP", "binsz");
       pars.setCase("algorithm", "CMAP", "coordsys");
       pars.setCase("algorithm", "CMAP", "xref");
       pars.setCase("algorithm", "CMAP", "yref");
@@ -386,37 +386,37 @@ class GtBinApp : public st_app::StApp {
       pars.setCase("algorithm", "CMAP", "decfield");
       pars.setCase("algorithm", "CMAP", "proj");
 
-      pars.setCase("algorithm", "LC", "timebinalg");
-      pars.setCase("algorithm", "PHA2", "timebinalg");
+      pars.setCase("algorithm", "LC", "tbinalg");
+      pars.setCase("algorithm", "PHA2", "tbinalg");
 #endif
 
-      pars.setSwitch("timebinalg");
-      pars.setCase("timebinalg", "FILE", "timebinfile");
-      pars.setCase("timebinalg", "LIN", "tstart");
-      pars.setCase("timebinalg", "LIN", "tstop");
-      pars.setCase("timebinalg", "LIN", "deltatime");
-      pars.setCase("timebinalg", "SNR", "snratio");
-      pars.setCase("timebinalg", "SNR", "lcemin");
-      pars.setCase("timebinalg", "SNR", "lcemax");
+      pars.setSwitch("tbinalg");
+      pars.setCase("tbinalg", "FILE", "tbinfile");
+      pars.setCase("tbinalg", "LIN", "tstart");
+      pars.setCase("tbinalg", "LIN", "tstop");
+      pars.setCase("tbinalg", "LIN", "dtime");
+      pars.setCase("tbinalg", "SNR", "snratio");
+      pars.setCase("tbinalg", "SNR", "lcemin");
+      pars.setCase("tbinalg", "SNR", "lcemax");
 #if 0
-      pars.setCase("algorithm", "LC", "timefield");
+      pars.setCase("algorithm", "LC", "tfield");
 
-      pars.setCase("algorithm", "PHA1", "energybinalg");
-      pars.setCase("algorithm", "PHA2", "energybinalg");
+      pars.setCase("algorithm", "PHA1", "ebinalg");
+      pars.setCase("algorithm", "PHA2", "ebinalg");
 #endif
 
-      pars.setSwitch("energybinalg");
-      pars.setCase("energybinalg", "FILE", "energybinfile");
-      pars.setCase("energybinalg", "LIN", "emin");
-      pars.setCase("energybinalg", "LIN", "emax");
-      pars.setCase("energybinalg", "LIN", "deltaenergy");
-      pars.setCase("energybinalg", "LOG", "emin");
-      pars.setCase("energybinalg", "LOG", "emax");
-      pars.setCase("energybinalg", "LOG", "enumbins");
+      pars.setSwitch("ebinalg");
+      pars.setCase("ebinalg", "FILE", "ebinfile");
+      pars.setCase("ebinalg", "LIN", "emin");
+      pars.setCase("ebinalg", "LIN", "emax");
+      pars.setCase("ebinalg", "LIN", "denergy");
+      pars.setCase("ebinalg", "LOG", "emin");
+      pars.setCase("ebinalg", "LOG", "emax");
+      pars.setCase("ebinalg", "LOG", "enumbins");
 
 #if 0
-      pars.setCase("algorithm", "PHA1", "energyfield");
-      pars.setCase("algorithm", "PHA2", "energyfield");
+      pars.setCase("algorithm", "PHA1", "efield");
+      pars.setCase("algorithm", "PHA2", "efield");
 #endif
 
     }

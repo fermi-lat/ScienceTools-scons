@@ -93,13 +93,13 @@ namespace evtbin {
   }
 
   void BinConfig::energyParPrompt(st_app::AppParGroup & par_group) const {
-    parPrompt(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile");
+    parPrompt(par_group, "ebinalg", "efield", "emin", "emax", "denergy", "enumbins", "ebinfile");
   }
 
   void BinConfig::spatialParPrompt(st_app::AppParGroup & par_group) const {
-    par_group.Prompt("numxpix");
-    par_group.Prompt("numypix");
-    par_group.Prompt("pixscale");
+    par_group.Prompt("nxpix");
+    par_group.Prompt("nypix");
+    par_group.Prompt("binsz");
     par_group.Prompt("coordsys");
     par_group.Prompt("xref");
     par_group.Prompt("yref");
@@ -110,22 +110,22 @@ namespace evtbin {
   }
 
   void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) const {
-    parPrompt(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile", "snratio",
+    parPrompt(par_group, "tbinalg", "tfield", "tstart", "tstop", "dtime", "ntimebins", "tbinfile", "snratio",
       "lcemin", "lcemax");
   }
 
   Binner * BinConfig::createEnergyBinner(const st_app::AppParGroup & par_group) const {
-    return createBinner(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile",
+    return createBinner(par_group, "ebinalg", "efield", "emin", "emax", "denergy", "enumbins", "ebinfile",
       "ENERGYBINS", "E_MIN", "E_MAX");
   }
 
   Binner * BinConfig::createTimeBinner(const st_app::AppParGroup & par_group) const {
-    return createBinner(par_group, "timebinalg", "timefield", "tstart", "tstop", "deltatime", "ntimebins", "timebinfile",
+    return createBinner(par_group, "tbinalg", "tfield", "tstart", "tstop", "dtime", "ntimebins", "tbinfile",
       "TIMEBINS", "START", "STOP", "snratio", "lcemin", "lcemax");
   }
 
   Binner * BinConfig::createEbounds(const st_app::AppParGroup & par_group) const {
-    return createBinner(par_group, "energybinalg", "energyfield", "emin", "emax", "deltaenergy", "enumbins", "energybinfile",
+    return createBinner(par_group, "ebinalg", "efield", "emin", "emax", "denergy", "enumbins", "ebinfile",
       "ENERGYBINS", "E_MIN", "E_MAX");
   }
 

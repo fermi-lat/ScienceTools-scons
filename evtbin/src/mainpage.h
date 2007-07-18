@@ -82,52 +82,52 @@ scfile [file]
 
     \subsection timebins Time Binning Parameters
 \verbatim
-timebinalg = LIN [string]
+tbinalg = LIN [string]
     Indicates how the time bins will be specified. Legal values
     are FILE (bins will be read from a bin definition file), LIN
     (linearly uniform bins), and LOG (logarithmically uniform bins).
     This is only used if time binning is required by the output
     type selected by the algorithm parameter.
 
-(timefield = TIME) [string]
+(tfield = TIME) [string]
     This is the name of the field containing the time values for
     time binning. The default value is consistent with the FT1
     format.
 
 tstart [double]
     The start time of the first interval for linearly or
-    logarithmically uniform bins. Only used if timebinalg
+    logarithmically uniform bins. Only used if tbinalg
     is LIN or LOG.
 
 tstop [double]
     The stop time of the last interval for linearly or
-    logarithmically uniform bins. Only used if timebinalg
+    logarithmically uniform bins. Only used if tbinalg
     is LIN or LOG.
 
 tnumbins [integer]
     The number of bins for logarithmically uniform bins. Only
-    used if timebinalg is LOG.
+    used if tbinalg is LOG.
 
-deltatime [double]
-    The width of linearly uniform bins. Only used if timebinalg
+dtime [double]
+    The width of linearly uniform bins. Only used if tbinalg
     is LIN.
 
-timebinfile [file]
+tbinfile [file]
     The name of the time bin definition file. Only used if
-    timebinalg is FILE.
+    tbinalg is FILE.
 \endverbatim
 
     \subsection image Image Parameters
 \verbatim
-numxpix [integer]
+nxpix [integer]
     The number of pixels in the horizontal dimension in output
     image (maps only).
 
-numypix [integer]
+nypix [integer]
     The number of pixels in the vertical dimension in output
     image (maps only).
 
-pixscale [double]
+binsz [double]
     The number of degrees per pixel at the center of the image
     (maps only).
 
@@ -162,39 +162,39 @@ uselb = yes [bool]
 
     \subsection energybins Energy Binning Parameters
 \verbatim
-energybinalg = LOG [string]
+ebinalg = LOG [string]
     Indicates how the energy bins will be specified. Legal values
     are FILE (bins will be read from a bin definition file), LIN
     (linearly uniform bins), and LOG (logarithmically uniform bins).
     This is only used if energy binning is required by the output
     type selected by the algorithm parameter.
 
-(energyfield = ENERGY) [string]
+(efield = ENERGY) [string]
     This is the name of the field containing the energy values for
     energy binning. The default value is consistent with the FT1
     format.
 
 emin [double]
     The lowest energy of the first interval for linearly or
-    logarithmically uniform bins. Only used if energybinalg
+    logarithmically uniform bins. Only used if ebinalg
     is LIN or LOG.
 
 emax [double]
     The highest energy of the last interval for linearly or
-    logarithmically uniform bins. Only used if energybinalg
+    logarithmically uniform bins. Only used if ebinalg
     is LIN or LOG.
 
 enumbins [integer]
     The number of bins for logarithmically uniform bins. Only
-    used if energybinalg is LOG.
+    used if ebinalg is LOG.
 
-deltaenergy [double]
-    The width of linearly uniform bins. Only used if energybinalg
+denergy [double]
+    The width of linearly uniform bins. Only used if ebinalg
     is LIN.
 
-energybinfile [file]
+ebinfile [file]
     The name of the energy bin definition file. Only used if
-    energybinalg is FILE.
+    ebinalg is FILE.
 \endverbatim
 
     <a name="gtbindef_parameters"></a>
