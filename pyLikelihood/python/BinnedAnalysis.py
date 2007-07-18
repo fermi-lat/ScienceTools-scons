@@ -151,6 +151,7 @@ file."""
     srcmaps = pars['cmap']
     expcube = _null_file(pars['expcube'])
     expmap = _null_file(pars['bexpmap'])
+    irfs = pars['irfs']
     obs = BinnedObs(srcmaps, expcube, expmap, irfs)
     like = BinnedAnalysis(obs, pars['srcmdl'], pars['optimizer'])
     if ftol is not None:
