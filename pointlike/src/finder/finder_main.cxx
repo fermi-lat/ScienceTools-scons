@@ -55,7 +55,7 @@ int main(int argc, char** argv)
             ;
 
         pointlike::SourceFinder::RegionSelector region =
-            pointlike::SourceFinder::RegionSelector::ALL;
+            pointlike::SourceFinder::ALL;
 
         bool includeChildren (true), 
              weighted( true),

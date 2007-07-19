@@ -31,7 +31,7 @@ double goldensearch(std::vector<astro::SkyDir> directions, pointlike::Data healp
     double x3 = cx;
     double x1,x2;
     double xmin,fmin;
-    if (abs(cx-bx) > abs(bx-ax)) {
+    if (fabs(cx-bx) > fabs(bx-ax)) {
         x1 = bx;
         x2 = bx + C*(cx-bx);
     }else {
