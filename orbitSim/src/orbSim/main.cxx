@@ -51,7 +51,7 @@ void MyApp::run() {
   initf.debug = 0;
 
 
-  st_app::AppParGroup & pars(getParGroup("orbitSim/v0/pfiles/gttakosim"));
+  st_app::AppParGroup & pars(getParGroup("gttakosim"));
 
 
   pars.Prompt("typeinput");
