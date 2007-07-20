@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v2r9p2   20-jul-07 THB  Kluge out quaternion interpolation until understand problem
+  v2r9p3   20-jul-07 THB  Kluge out quaternion interpolation until understand problem
   v2r9p1   25-jun-07 THB  SWIG fix for PointingHistory  
   v2r9     08-May-07 THB  Allow to set the SAA boundary in EarthCoordinate  
   v2r8p1   24-Apr-07 THB  Make GPS client notification more robust

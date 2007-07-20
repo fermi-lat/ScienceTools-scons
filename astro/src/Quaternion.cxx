@@ -134,7 +134,7 @@ Quaternion Quaternion::interpolate(const Quaternion& q1, double t)const
 
     Hep3Vector va(this->vector()), vb(q1.vector());
     Hep3Vector c( (1-t)*va + t*vb ); // linear interpolation of the rotation axis
-    return Quaternion(c, 1. - sqrt(c.mag2()) );
+    return Quaternion(c, sqrt(1. - c.mag2()) );
 
 #endif
 }
