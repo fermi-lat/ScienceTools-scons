@@ -128,7 +128,15 @@ bool Quaternion::isNear(const Quaternion& other)const
 Quaternion Quaternion::interpolate(const Quaternion& q1, double t)const
 {
     if( t==0) return *this;
+#if 0  // this SLERP fails sometimes
     return (q1*(this->conjugate())).power(t) * (*this);
+#else // so replace with kluge
+
+    Hep3Vector va(this->vector()), vb(q1.vector());
+    Hep3Vector c( (1-t)*va + t*vb ); // linear interpolation of the rotation axis
+    return Quaternion(c, 1. - sqrt(c.mag2()) );
+
+#endif
 }
 
 
