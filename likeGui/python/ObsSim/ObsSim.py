@@ -112,8 +112,8 @@ class RootWindow(Tk.Tk):
         self.sourceList.writeSourceNames(sourceNames)
         pfile = 'gtobssim.par'
         pars = Pil(pfile)
-        pars['xml_source_file'] = xmlList
-        pars['source_list'] = sourceNames
+        pars['infile'] = xmlList
+        pars['srclist'] = sourceNames
         pars.write(os.path.join(pfilesPath(), pfile))
         dialog = ParamDialog(self, pfile)
         if dialog.paramString:
