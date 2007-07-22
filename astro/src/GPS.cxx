@@ -218,15 +218,22 @@ void GPS::update(double inputTime){
     if(m_rockType == HISTORY ||  m_rockType == HISTORY_X_EAST ){
         m_currentPoint = (*m_history)(inputTime);
         if( m_rockType == HISTORY_X_EAST) {
-            
-            // recreate the pointing guy but with same orientation of x axis as
+           // recreate the pointing guy but with same orientation of x axis as
             // is done for the explicit pointing, in East direction
             astro::EarthCoordinate earth (m_currentPoint.earthCoord());
+#if 0  // revise meaning of 'East'          
             CLHEP::Hep3Vector pos (m_currentPoint.position() )
                 ,north(0,0,1)
                 ,zAxis(m_currentPoint.zAxis()())
                 ,east(north.cross(zAxis).unit());
              m_currentPoint =  PointingInfo(pos, Quaternion(zAxis, east), earth);
+#else  // we meant horizontal, with respect to local coords !
+            CLHEP::Hep3Vector pos (m_currentPoint.position() )
+                ,vertical(pos.unit())
+                ,zAxis(m_currentPoint.zAxis()())
+                ,horizontal(vertical.cross(zAxis).unit());
+             m_currentPoint =  PointingInfo(pos, Quaternion(zAxis, horizontal), earth);
+#endif
 
         }
         return;

@@ -106,12 +106,12 @@ public:
         @param fileName 
         @param offset mission elapsed time for "launch", 
               number to be added to time increments
-       @param x_east if true, force x axis to be East
+       @param x_horizontal if true, force x axis to be horizontal, y down
 
        The file can be either FT1 or an ascii format
        
     */
-    void setPointingHistoryFile(std::string fileName, double offset=0, bool x_east=false);
+    void setPointingHistoryFile(std::string fileName, double offset=0, bool x_horizontal=false);
 
     /** @class NoHistory
         @brief exception class to be thrown if no history has been loaded
