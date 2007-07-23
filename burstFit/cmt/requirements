@@ -1,6 +1,6 @@
 package burstFit
 
-author James Peachey <peachey@milkyway.gsfc.nasa.gov>
+author James Peachey <James.Peachey-1@nasa.gov>
 # $Id$
 
 use CLHEP * IExternal

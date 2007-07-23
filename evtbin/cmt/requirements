@@ -2,7 +2,7 @@ package evtbin
 
 version v0
 
-author James Peachey <peachey@milkyway.gsfc.nasa.gov>
+author James Peachey <James.Peachey-1@nasa.gov>
 # $Id$
 
 use STpolicy *

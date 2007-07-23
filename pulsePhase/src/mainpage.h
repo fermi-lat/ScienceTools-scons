@@ -2,7 +2,7 @@
     \mainpage pulsePhase package
 
     \author  Masaharu Hirayama hirayama@jca.umbc.edu
-             James Peachey peachey@milkyway.gsfc.nasa.gov
+             James Peachey James.Peachey-1@nasa.gov
 
     \section synopsis Synopsis
 This package contains a library and two applications,
