@@ -53,6 +53,7 @@ bool Flux::generate()
         m_flux = m_event->event(current_time);
         double delta_time = m_event->interval(current_time);
         setTime( current_time + delta_time);
+        s_mgr->synch();  // notify observers
     }while(m_event->occulted() && m_flux->enabled());
     return m_flux->enabled();
 }
