@@ -113,7 +113,9 @@ void GPS::time ( double t )
 
     m_time = t; // set the new time
     update(t);  // update orientation, etc.
+#if 0 // do not do this automatically since other clients are changing things
     synch();    // may notify observers if enough time elapsed 
+#endif
 }
 
 GPS*	GPS::instance() 

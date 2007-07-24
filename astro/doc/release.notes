@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v2r10p1  22-jul-07 THB  Patch to protect against GPS initialization.
+  v2r10p2  22-jul-07 THB  Patch to protect against GPS initialization.
   v2r10    22-jul-07 THB  Change Earth-based alignment to be horizontal
   v2r9p4   20-jul-07 THB  Fix quaternion interpolation
   v2r9p1   25-jun-07 THB  SWIG fix for PointingHistory  
