@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
  
+  v2r14p1 24-Jul-2007 jrb   Really make a shareable (no -no_share)
   v2r14   5-Jul-2007  jrb   Build shareable rather than static library
   v2r13   29-Jun-2007 hmk   Add XGetopt to provide getopt routine on windows
   v2r12p5  4-Dec-2006 jrb   Add more blank-trimming routines (for David Decotigny)
