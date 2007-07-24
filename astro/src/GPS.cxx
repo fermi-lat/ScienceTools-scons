@@ -181,6 +181,7 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
             trans= m_currentPoint.rotation().inverse();
 
             // now form a matrix that transforms from zenith to celestial
+            // this wires it to be looking South
             Hep3Vector 
                 zenith( zenithDir()() ), 
                 north(0,0,1),
@@ -219,22 +220,13 @@ void GPS::update(double inputTime){
         m_currentPoint = (*m_history)(inputTime);
         if( m_rockType == HISTORY_X_EAST) {
            // recreate the pointing guy but with same orientation of x axis as
-            // is done for the explicit pointing, in East direction
+            // is done for the explicit pointing, in horizontal direction
             astro::EarthCoordinate earth (m_currentPoint.earthCoord());
-#if 0  // revise meaning of 'East'          
-            CLHEP::Hep3Vector pos (m_currentPoint.position() )
-                ,north(0,0,1)
-                ,zAxis(m_currentPoint.zAxis()())
-                ,east(north.cross(zAxis).unit());
-             m_currentPoint =  PointingInfo(pos, Quaternion(zAxis, east), earth);
-#else  // we meant horizontal, with respect to local coords !
             CLHEP::Hep3Vector pos (m_currentPoint.position() )
                 ,vertical(pos.unit())
                 ,zAxis(m_currentPoint.zAxis()())
                 ,horizontal(vertical.cross(zAxis).unit());
              m_currentPoint =  PointingInfo(pos, Quaternion(zAxis, horizontal), earth);
-#endif
-
         }
         return;
     }
