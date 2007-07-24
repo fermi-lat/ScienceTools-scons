@@ -57,7 +57,7 @@ void GPS::synch ()
     }
 
     // If elapsed time exceeds interval then update
-    if ((time() - last_time) > m_sampleintvl) {
+    if ((time() - last_time) > m_sampleintvl  || time()< last_time) {
         last_time = time();
         changed = true;    
     }
