@@ -12,7 +12,7 @@ private
 apply_pattern package_headers
 
 
-library  facilities -no_share *.cxx \
+library  facilities  *.cxx \
 			${facilities_headers}
 
 application test_Util test/testUtil.cxx Util.cxx
