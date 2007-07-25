@@ -1,5 +1,5 @@
 package optimizers
-version v2r9p1
+version v2r10
 
 author James Chiang <jchiang@slac.stanford.edu>
 author Pat Nolan <pln@razzle.stanford.edu>
@@ -18,9 +18,9 @@ macro_append ROOT_libs "" Linux " -lMinuit2 -lHist -lGraf " \
                           Darwin " -lMinuit2 -lHist -lGraf "
 
 macro_prepend includes "" WIN32 "/I $(OPTIMIZERSROOT)\src /I.. "
-macro_append cppflags "" Linux " -I../src -DTRAP_FPE -DHAVE_NEW_MINUIT" \
-                         WIN32 " /DHAVE_NEW_MINUIT " \
-                         Darwin " -I../src -DHAVE_NEW_MINUIT "
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE " \
+                         WIN32 "" \
+                         Darwin " -I../src "
 macro_prepend cflags "" Linux " -g -O "
 
 macro source *.cxx WIN32 "*.h *.cxx"

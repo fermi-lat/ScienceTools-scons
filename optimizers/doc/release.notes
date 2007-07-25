@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r10  25-Jul-07   JC   remove HAVE_NEW_MINUIT ifdefs
     v2r9p1 15-Jul-07   JC   comment out debug print statements
     v2r9   12-Jul-07   JC   added Function::rescale & normPar member functions
     v2r8p2 12-May-07   THB  Comment out unused timer include that breaks VS2005

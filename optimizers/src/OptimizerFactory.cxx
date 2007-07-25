@@ -43,10 +43,8 @@ Optimizer * OptimizerFactory::create(const std::string & optimizerName,
      return new Drmnfb(stat);
    } else if (optimizerName == "Powell" || optimizerName == "POWELL") {
      return new Powell(stat);
-#ifdef HAVE_NEW_MINUIT
    } else if (optimizerName == "NewMinuit" || optimizerName == "NEWMINUIT") {
       return new NewMinuit(stat);
-#endif // HAVE_NEW_MINUIT
    } else {
       throw std::runtime_error("Invalid optimizer choice: " + optimizerName);
    }

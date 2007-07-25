@@ -36,9 +36,7 @@
 #include "optimizers/ProductFunction.h"
 #include "optimizers/SumFunction.h"
 
-#ifdef HAVE_NEW_MINUIT
 #include "optimizers/NewMinuit.h"
-#endif
 
 #include "MyFun.h"
 #include "BrokenPowerLaw.h"
@@ -289,11 +287,7 @@ void test_Optimizers() {
    OptimizerFactory & optFactory(OptimizerFactory::instance());
 
    int verbose = 1;
-#ifdef HAVE_NEW_MINUIT
    for (size_t i = 0; i < 6; i++) {
-#else
-   for (size_t i = 1; i < 6; i++) {
-#endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 2-D Rosenbrock function...\n";
       Optimizer * my_opt(optFactory.create(optimizers[i], my_rosen));
@@ -311,11 +305,7 @@ void test_Optimizers() {
    }
    rosenND.setParams(params);
 
-#ifdef HAVE_NEW_MINUIT
    for (size_t i = 0; i < 6; i++) {
-#else
-   for (size_t i = 1; i < 6; i++) {
-#endif
       std::cout << "Testing " << optimizers[i] 
                 << " using 5-D Rosenbrock function..." 
                 << std::endl;
