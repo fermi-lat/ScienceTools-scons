@@ -1,11 +1,15 @@
 package facilities
-version v2r14p1
+version v2r15
 
 author T.Burnett <tburnett@u.washington.edu>
 use GlastPolicy
 
 
 apply_pattern shared_library
+
+pattern use_facilities_symbols \
+  macro_append facilities_linkopts " "\
+     WIN32 " ${facilities_root}/${BINDIR}/facilities/XGetopt.obj "
 
 private
 

@@ -24,7 +24,10 @@
 extern int optind, opterr;
 extern TCHAR *optarg;
 
-int getopt(int argc, TCHAR *argv[], TCHAR *optstring);
+namespace facilities {
+    int getopt(int argc, TCHAR *argv[], TCHAR *optstring);
+
+} // end namespace
 
 #endif
 

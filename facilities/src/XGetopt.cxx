@@ -29,6 +29,9 @@
 // Glast is not using precomiled headers
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef XGetopt_cxx
+#define XGetopt_cxx
+
 #ifdef WIN32
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -153,9 +156,10 @@
 //       }
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 TCHAR	*optarg;		// global argument pointer
 int		optind = 0; 	// global argv index
+
+namespace facilities {
 
 int getopt(int argc, TCHAR *argv[], TCHAR *optstring)
 {
@@ -219,5 +223,9 @@ int getopt(int argc, TCHAR *argv[], TCHAR *optstring)
 
 	return c;
 }
+
+} // end namespace
+
+#endif
 
 #endif
