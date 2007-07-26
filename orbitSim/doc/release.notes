@@ -4,6 +4,8 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+26-jul-2007    v0r0p2 JP  Bug fix from Giuseppe Romeo: problem using more
+                          complicated time line.
 19-jul-2007    v0r0p1 JP  Add parameter file and fix some build/environment
                           issues.
 19-jul-2007        v0 JP  Initial import of Tako-based orbit simulator.
