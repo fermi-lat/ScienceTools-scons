@@ -777,6 +777,7 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
     DoSlew(start, mjds, pra, pdec, ra, dec, res, ephem, OAtt, TS);
   }
 
+  //  printf ("2) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n", OAtt->mjd[45], OAtt->mjd[46]);
   if(mode == 1) {
     if(flgS == 0){
       double RaDec[2];// = NULL;
@@ -813,6 +814,7 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
     lpos[1] = dec;
   }
 
+  //  printf ("3) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n\n", OAtt->mjd[45], OAtt->mjd[46]);
   osf.info(4) << "Leaving MakeAtt\n";
   return;
 }
@@ -920,19 +922,22 @@ void MakeSurvey(double start, double end, double res, double offset,
   inum = (int) ((end-start+res/2.)/res);
   inum++;
 
+/*
   if(mode != 2){
     int l = 0;
-    for(l=0; l<inum; l++){
+    for(l=0; l<inum-2; l++){
       OAtt->mjd[l] = 0.0;
     }
   }
-
+*/
 
   offset = -offset*DEG2RAD;
 
   j = 0;
   
   mjd = ephem->MJD[j];
+
+  //  printf ("4) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n", OAtt->mjd[45], OAtt->mjd[46]);
 
   if(fabs (mjd- start) > 1.0E-6  ) {
     while((mjd < start) && (j < ephem->ent)){
@@ -1373,7 +1378,9 @@ void MakeSurvey(double start, double end, double res, double offset,
 
       while( OAtt->mjd[i] <= 0.1){
 	i--;
-	//	printf("%s:%d, %5d) mjd=%f\n", __FILE__, __LINE__, i, OAtt->mjd[i]);
+// 	if(i > 0 && i < 100){
+// 	  printf("%s:%d, %5d) mjd=%f\n", __FILE__, __LINE__, i, OAtt->mjd[i]);
+// 	}
       }
 
 	
@@ -2162,12 +2169,15 @@ int getEndPoint (double mjdi, double *mjds, double ira, double idec,
 
   int j;
 
+  osf.setMethod("getEndPoint");
+
   while (ntr < 20){
 
     angularSep(ira*DEG2RAD, idec*DEG2RAD, fra*DEG2RAD, fdec*DEG2RAD, &theta);
 
     theta = theta*RAD2DEG;
 
+    
     if(theta == ptheta){
       break;
     } else {
@@ -2180,6 +2190,7 @@ int getEndPoint (double mjdi, double *mjds, double ira, double idec,
 
     j =(int) (((*mjds-start)+res/2.0)/res);
 
+    osf.info(4) << "idx="<<idx<<", mjds="<<*mjds<<", start="<<start<<", res="<<res<<", j="<<j<<"\n";
 
     fra = LAtt->Zra[j];
     fdec = LAtt->Zdec[j];
@@ -2204,8 +2215,11 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   osf.setMethod("MakeProfiled");
 
+  osf.info(4) << "epoch = "<<epoch<<"\n";
+  
   if(epoch <= start){
     int np = (int)((start-epoch)/period);
+    osf.info(4) << "epoch = "<<epoch<<", np = "<<np<<"\n";
     startT = epoch+period*(double)np;
   }else {
     osf.warn() << "####################################################################################################\n\n";
@@ -2236,7 +2250,9 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   int idx = (int) (((start-startT)+res/2.0)/res);
   int ned = (int) (((end-startT)+res/2.0)/res);
 
-  int jj =  getEndPoint (start, &mjds, ira, idec, TAtt, idx, begin, res);
+  osf.info(4) << "Calling getEndPoint  with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
+  int jj =  getEndPoint (start, &mjds, ira, idec, TAtt, idx, startT, res);
+  osf.info(4) << "obtained jj=" << jj << ", mjds=" << mjds << "\n";
 
   double ra  = TAtt->Zra[jj];
   double dec = TAtt->Zdec[jj];
@@ -2258,6 +2274,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   }
 
   if(start < mjds) {
+    osf.info(4) << "calling DoSlew with start="<<start<<", mjds="<<mjds<<"\n";
     DoSlew(start, mjds, ira, idec, ra, dec, res, ephem, OAtt, begin);
   }
 
@@ -2265,7 +2282,10 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   int j=0;
   for(j=0; j<inum; j++){
-    if(fabs(TAtt->mjd[j]-mjds) < 1.0E-7){
+    //    if(fabs(TAtt->mjd[j]-mjds) < res/2.0){
+    //    if((TAtt->mjd[j]-mjds) > res/2.0){
+    if((TAtt->mjd[j]-mjds) >= 0.0){
+      osf.info(4) <<"at j="<<j<<", mjd="<<TAtt->mjd[j]<<", while mjds="<<mjds<<"\n";
       idx = j;
       break;
     }
@@ -2274,6 +2294,20 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
 
   int ii = idx;
+
+  if(fabs(OAtt->mjd[k-1]-TAtt->mjd[idx-1]) > res/2.0){
+    osf.warn() << "####################################################################################################\n\n";
+    osf.warn() << "                                      WARNING\n";
+    osf.warn() << "In MakeProfiled, while calculating attitude for observation starting at "<<start<<"\n";
+    osf.warn() << "when merging the calculated attitude for this segment with the overall attitude\n";
+    osf.warn() << "it was found that at the meging point:\n";
+    osf.warn() << "the overall attitude would start at "<<OAtt->mjd[k-1]<<"\n";
+    osf.warn() << "while the newly part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
+    osf.warn() << "This has the potential to create problem because of gaps.\n";
+    osf.warn() << "####################################################################################################\n\n";
+  }
+
+
 
   for(ii=idx; ii<=ned; ii++){
 
@@ -2312,18 +2346,18 @@ void doProfiled(double start, double end, double res, double *tms,
 
   int ncycles = (int)((end-start)*60.0/(tms[sz-1]*res))+1;
   double epoch1, epoch2;
-  const double leps = 1.0E-8;
+  //  const double leps = 1.0E-8;
 
 
   inum = (int) ((end-start+res/2.)/res);
   inum++;    // and include the end point
 
 
+  osf.setMethod("doProfiled");
   osf.info(2) << "The profile contains ncycles=" << ncycles << "\n";
 
   int nts = 0;
 
-  osf.setMethod("doProfiled");
 
   for(jc=0; jc<=ncycles; jc++){
 
@@ -2385,6 +2419,7 @@ void doProfiled(double start, double end, double res, double *tms,
   }
 
 
+  osf.info(4) << "Leaving doProfiled\n";
   return;
 
 }

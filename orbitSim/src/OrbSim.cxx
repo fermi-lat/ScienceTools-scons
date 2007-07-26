@@ -735,16 +735,24 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
       if(flg == 0){
 
+
 	if(mode == 1 || mode == 2){
 	  double lpos[2];
 	  //	  printf("Calling MakeAtt with: mjdt=%f mjde=%f mjds=%f\npra=%f, pdec=%f offset=%f, ra=%f dec=%f mode=%d\n", mjdt, mjde, mjds, pra, pdec, offset, ra, dec, mode);
+
+	  
+	  losf.info(3) << "Calling MakeAtt with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<", pra="<<pra<<", pdec="<<pdec<<", offset="<<offset<<", ra="<<ra<<", dec="<<dec<<", mode="<<mode<<"\n";
 	  MakeAtt(mjdt, mjde, mjds, pra, pdec, offset, ra, dec, 
 		  mode, ini->Resolution, ephem, lpos, OAtt, ini->start_MJD);
 
 
 	  pra = lpos[0];
 	  pdec = lpos[1];
-	  //	  printf("Called MakeAtt with: mjdt=%f mjde=%f mjds=%f\npra=%f, pdec=%f offset=%f, ra=%f dec=%f mode=%d\n\n\n", mjdt, mjde, mjds, pra, pdec, offset, ra, dec, mode);
+
+	  //	  printf("Called MakeAtt with: mjdt=%f mjde=%f mjds=%f\npra=%f, pdec=%f offset=%f, ra=%f dec=%f mode=%d\n", mjdt, mjde, mjds, pra, pdec, offset, ra, dec, mode);
+	  //	  printf ("1) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n", OAtt->mjd[45], OAtt->mjd[46]);
+
+  
 
 	  if(pra == 0.0 && pdec == 0.0){
 	    exit(1);
@@ -753,6 +761,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	} else if (mode == 3){
 
 	  //	  printf("Calling MakeProfiled, mjdt=%f mjde=%f pra=%f pdec=%f\n", mjdt, mjde, pra, pdec);
+	  losf.info(3) << "Calling MakeProfiled with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<"\n";
 	  MakeProfiled(mjdt, mjde, ini->Resolution, pra, pdec, profile.epoch, 
 		       profile.times, profile.ofsts, ephem, OAtt, ini->start_MJD);
 
