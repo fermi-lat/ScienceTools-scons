@@ -64,8 +64,11 @@ public:
    /// @param line The string to be cleaned.
    static void cleanLine(std::string & line);
 
-   /// @brief Determine if a file is a FITS file by looking for the "SIMPLE"
-   ///        keyword as the first six characters of the file.  If it is
+   /// @brief Test if infile is a FITS file by opening it with cfitsio
+   /// @param infile Input file name
+   static bool isFitsFile(const std::string & infile);
+
+   /// @brief Determine if filename is a FITS file using isFitsFile.  If it is
    ///        not a FITS file, then it is assumed to be a list if FITS files.
    /// @param filename The name of the candidate file; enviroment 
    ///        variables are expanded.

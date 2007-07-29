@@ -14,6 +14,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "fitsio.h"
+
 #include "facilities/Util.h"
 
 #include "tip/Header.h"
@@ -106,6 +108,22 @@ namespace st_facilities {
          facilities::Util::stringTokenize(line, CR, tokens);
          line = tokens.front();
       }
+   }
+
+   bool Util::isFitsFile(const std::string & infile) {
+      fitsfile * fp(0);
+      int status(0);
+      fits_open_file(&fp, const_cast<char *>(infile.c_str()), 
+                     READONLY, &status);
+      if (0 != status) {
+         return false;
+      }
+      fits_close_file(fp, &status);
+      if (status != 0) {
+         throw std::runtime_error("Util::isFitsFile: Error closing file "
+                                  + infile);
+      }
+      return true;
    }
 
    void Util::resolve_fits_files(std::string filename, 

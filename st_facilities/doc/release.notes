@@ -5,6 +5,8 @@
   @verbatim
   $Id$
 
+  28-Jul-07 v0r12   JC   add Util::isFitFile test using cfitsio to
+                         try to read in the file
   16-May-07 v0r11   JC   implement GaussianQuadrature::dgaus8Exception
   12-Apr-07 v0r10p2 JC   comment out declspec(...) in libStApiExports.h 
                          and see what happens to Windows builds
