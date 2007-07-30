@@ -10,6 +10,7 @@
 #include "pulsarDb/OrbitalEph.h"
 #include "pulsarDb/PulsarDb.h"
 #include "pulsarDb/PulsarEph.h"
+#include "pulsarDb/PulsarToolApp.h"
 #include "pulsarDb/TimingModel.h"
 
 #include "timeSystem/AbsoluteTime.h"
@@ -30,13 +31,13 @@ using namespace timeSystem;
 
 const std::string s_cvs_id("$Name$");
 
-class PulsePhaseApp : public st_app::StApp {
+class PulsePhaseApp : public pulsarDb::PulsarToolApp {
   public:
     PulsePhaseApp();
     virtual void run();
 };
 
-PulsePhaseApp::PulsePhaseApp(): st_app::StApp() {
+PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp() {
   setName("gtophase");
   setVersion(s_cvs_id);
 }
@@ -55,75 +56,42 @@ void PulsePhaseApp::run() {
 
   par_group.Save();
 
-  // Open the event file.
-  tip::Table * events = tip::IFileSvc::instance().editTable(par_group["evfile"], par_group["evtable"]);
+  // Open the event file(s).
+  openEventFile(par_group);
 
+  // Setup time correction mode.
+//  defineTimeCorrectionMode("DEFAULT", REQUIRED, REQUIRED, SUPPRESSED);
+  // TODO: Uncomment the above and remove the below to fix the bug reported as JIRA PULS-38.
+  defineTimeCorrectionMode("DEFAULT", REQUIRED, SUPPRESSED, SUPPRESSED);
+  selectTimeCorrectionMode("DEFAULT");
+
+  // Set up EphComputer for arrival time corrections.
+  pulsarDb::TimingModel model;
+  pulsarDb::StrictEphChooser chooser;
+  initEphComputer(par_group, model, chooser, "DB");
+
+  // Reserve output column for creation if not existing in the event file(s).
+  std::string phase_field = par_group["ophasefield"];
+  reserveOutputField(phase_field, "1D");
+
+  // Get EphComputer for orbital phase computation.
+  EphComputer & computer(getEphComputer());
+
+  // Read global phase offset.
   double phase_offset = par_group["ophaseoffset"];
 
-  std::string telescope;
-  std::string time_sys;
-
-  const tip::Header & header(events->getHeader());
-
-  header["TELESCOP"].get(telescope);
-  header["TIMESYS"].get(time_sys);
-
-  if (telescope != "GLAST") throw std::runtime_error("Only GLAST supported for now");
-
-  MjdRefDatabase db;
-  MetRep time_rep(time_sys, db(header), 0.);
-
-  // Find the pulsar database.
-  std::string psrdb_file = par_group["psrdbfile"];
-  std::string psrdb_file_uc = psrdb_file;
-  for (std::string::iterator itor = psrdb_file_uc.begin(); itor != psrdb_file_uc.end(); ++itor) *itor = toupper(*itor);
-  if ("DEFAULT" == psrdb_file_uc) {
-    using namespace st_facilities;
-    psrdb_file = Env::appendFileName(Env::getDataDir("pulsePhase"), "master_pulsardb.fits");
-  }
-  std::string psr_name = par_group["psrname"];
-  
-  EphComputer computer;
-
-  // Open the database.
-  PulsarDb database(psrdb_file);
-
-  // Select only ephemerides for this pulsar.
-  database.filterName(psr_name);
-
-  // Load the selected ephemerides.
-  computer.load(database);
-
-  std::string time_field = par_group["timefield"];
-
-  // Add orbital phase field if missing.
-  bool add_col = true;
-  std::string phase_field = par_group["ophasefield"];
-  try {
-    events->getFieldIndex(phase_field);
-    add_col = false;
-  } catch (const tip::TipException &) {
-  }
-  if (add_col)
-    events->appendField(phase_field, "1D");
-
   // Iterate over events.
-  for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
-    // Get value from the table.
-    double evt_time = (*itor)[time_field].get();
-
-    time_rep.setValue(evt_time);
-    AbsoluteTime abs_evt_time(time_rep);
+  for (setFirstEvent(); !isEndOfEventList(); setNextEvent()) {
+    // Get event time as AbsoluteTime.
+    AbsoluteTime abs_evt_time(getEventTime());
 
     double int_part; // Ignored. Needed for modf.
     double phase = modf(computer.calcOrbitalPhase(abs_evt_time) + phase_offset, &int_part);
 
     // Write phase into output column.
-    (*itor)[phase_field].set(phase);
+    setFieldValue(phase_field, phase);
   }
 
-  // Clean up.
-  delete events;
 }
 
 st_app::StAppFactory<PulsePhaseApp> g_factory("gtophase");
