@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r6p2 31-Jul-07   JC   fix logic error in parsing tstart tstop values;
+                            include filtering on EvtElapsedTime
     v3r6p1 31-Jul-07   JC   allow option to have tstart and tstop in
                             makeFT1 be determined from the merit data
     v3r6   09-Jul-07   JC   allow data type to specified in FT1variables
