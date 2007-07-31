@@ -34,6 +34,8 @@ double EarthCoordinate::s_EarthRadius = 6378145.; //m
 
 std::vector<std::pair<double,double> > EarthCoordinate::s_SAA_boundary;
 
+double EarthCoordinate::earthRadius(){return s_EarthRadius;}
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
