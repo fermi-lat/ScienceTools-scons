@@ -57,7 +57,7 @@ void PulsePhaseApp::run() {
   par_group.Save();
 
   // Open the event file(s).
-  openEventFile(par_group);
+  openEventFile(par_group, false);
 
   // Setup time correction mode.
 //  defineTimeCorrectionMode("DEFAULT", REQUIRED, REQUIRED, SUPPRESSED);
