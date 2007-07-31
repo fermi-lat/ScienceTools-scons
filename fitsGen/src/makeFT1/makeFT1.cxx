@@ -190,7 +190,13 @@ void MakeFt1::run() {
    fitsGen::Ft1File ft1(fitsFile, 0);
    try {
       fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
-      merit.setStartStop(tstart, tstop);
+      if (tstart != 0 && tstop != 0) {
+         merit.setStartStop(tstart, tstop);
+         ft1.setObsTimes(tstart, tstop);
+      } else {
+         const dataSubselector::Gti & gti = merit.gti();
+         ft1.setObsTimes(gti.minValue(), gti.maxValue());
+      }
 
       ft1.setNumRows(merit.nrows());
 
