@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r6p1 31-Jul-07   JC   allow option to have tstart and tstop in
+                            makeFT1 be determined from the merit data
     v3r6   09-Jul-07   JC   allow data type to specified in FT1variables
                             for added fields, e.g., MC_SRC_ID
     v3r5   06-Jul-07   JC   user will set tstart and tstep from command line    
