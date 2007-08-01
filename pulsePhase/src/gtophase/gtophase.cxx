@@ -60,15 +60,17 @@ void PulsePhaseApp::run() {
   openEventFile(par_group, false);
 
   // Setup time correction mode.
-//  defineTimeCorrectionMode("DEFAULT", REQUIRED, REQUIRED, SUPPRESSED);
-  // TODO: Uncomment the above and remove the below to fix the bug reported as JIRA PULS-38.
-  defineTimeCorrectionMode("DEFAULT", REQUIRED, SUPPRESSED, SUPPRESSED);
+  defineTimeCorrectionMode("DEFAULT", REQUIRED, REQUIRED, SUPPRESSED);
   selectTimeCorrectionMode("DEFAULT");
 
   // Set up EphComputer for arrival time corrections.
   pulsarDb::TimingModel model;
   pulsarDb::StrictEphChooser chooser;
   initEphComputer(par_group, model, chooser, "DB");
+
+  // Use user input (parameters) together with computer to determine corrections to apply.
+  bool guess_pdot = false;
+  initTimeCorrection(par_group, guess_pdot, "START");
 
   // Reserve output column for creation if not existing in the event file(s).
   std::string phase_field = par_group["ophasefield"];
