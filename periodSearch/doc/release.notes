@@ -5,6 +5,10 @@
 $Id$
 
 \verbatim
+08-aug-2007        v7 JP  Derive application classes from pulsarDb::PulsarToolApp base class.
+                          Change parameters of gtpspec to fix bug reported as JIRA issue PULS-35.
+                          Addressed problem with corrections to TSTART described in JIRA issue PULS-37.
+                          Use One-NASA email address.
 04-jun-2007    v6r1p1 JP  Move implementation of FourierAnalysis out of periodSearch scope.
                           This is to match the declaration of FourierAnalysis.
 16-apr-2007      v6r1 JP  Add optional FITS output of search results, controlled by
