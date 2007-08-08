@@ -32,5 +32,8 @@
                               completely decouple time format from time system.
     v5r0p1  20-sep-06   JP    Update mainpage.h.
     v5r0p2  29-mar-07   JP    Clean up some unneeded code.
+      v5r1  08-aug-07   JP    Refactor gtophase and gtpphase applications to derive from
+                              pulsarDb::PulsarToolApp. Address bug from JIRA issue PULS-38.
+                              Use One-NASA email address.
     @endverbatim
 */
