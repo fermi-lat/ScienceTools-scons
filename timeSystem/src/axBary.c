@@ -226,8 +226,8 @@ int axBary (char *inFile, char *orbitFile, char *outFile,
   }
   else if ( !strcmp(missionk, "GLAST") ) {
     mission = GLAST ;
-    mjdrefi = 58300 ;
-    mjdreff = 0. ;
+    mjdrefi = 51910 ;
+    mjdreff = 0.0007428703703703703 ;
     strcpy (timesys, "TT") ;
   }
   fits_read_key   (fits_file, TDOUBLE, "TIERRELA",&tierrela, comment, &error) ;
