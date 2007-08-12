@@ -90,7 +90,8 @@ namespace map_tools {
         @param include_all [false] True: return all possible select_level pixels within radius.  False: return only pixels found in current PhotonMap.
         @return the total number of photons (sum of count)
         */
-        int extract(const astro::SkyDir& dir, double radius,
+
+        int extract_level(const astro::SkyDir& dir, double radius,
             std::vector<std::pair<astro::HealPixel, int> >& vec,
             int select_level = -1, bool include_all = false) const;
 
@@ -108,9 +109,9 @@ namespace map_tools {
         @param outputFile Fully qualified fits output file name
         @param tablename Fits secondary extension name
         @param clobber Whether to delete an existing file first 
-        @return an auto pointer to the TIP table used to generate the fits outFile
         */
-        std::auto_ptr<tip::Table> PhotonMap::write(const std::string & outputFile,
+        void
+            PhotonMap::write(const std::string & outputFile,
             const std::string & tablename="PHOTONMAP",
             bool clobber = true) const;
 
