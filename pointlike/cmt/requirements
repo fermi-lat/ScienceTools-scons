@@ -19,4 +19,4 @@ application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
 
 
 #souce-finding application
-application finder -s=finder $(source) -s=../python finder_setup.py
+application pointfind -s=pointfind $(source) -s=../python pointfind_setup.py
