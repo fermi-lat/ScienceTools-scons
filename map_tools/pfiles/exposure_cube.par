@@ -3,22 +3,24 @@
 clobber,  b, a, "YES", , , "Overwrite existing output file?: "
 chatter,  i, h,   2,0,4 , , "Chattiness of output"
 debug,    b, h, no,,,Debugging mode activated
-#mode,     s, a,  "h",   , ,""
+mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-mode,     s, a,  "ql",   , ,""
+#mode,     s, a,  "ql",   , ,""
 
 #---------------------------------------------------------------------------------------
 #
 infile,   f, a, "", , , "Name of the exposure file:" 
-table,    s, h, "Exposure",,,"name of the extension or ROOT tree"
-outfile,  f, a, "exposure_cube.fits", , , "Name of the output file:"
+#infile,   f,a,  "f:\\glast\\data\\SC2\\orbit_files\\FT2_orbit3.fits",,,"Name of the exposure file:"
+table,    s, h, "SC_DATA",,,"name of the extension or ROOT tree"
+outfile,  f, a, "", , , "Name of the output file:"
+outtable, s, h, "Exposure", , , "name of the output table"
 filter,   s, h, "", , , "filter expression:"
 #---------------------------------------------------------------------------------------
 # Exposure generation parameters
 binsize,  r, h, 0.025, , , binsize for the function of theta
 pixelsize, r, h, 1.0, , , "Image size [degrees/pixel]"
-zmin,     r, h, -1, -1.0, 1.0, "cos(thetazenith) minimum allowed"
- 
-tstart,   r, a,   0 ,   , , "start time"
-tstop,    r, a,  86400,  , , "end time"  
-avoid_saa, b,a, "NO", "NO|YES",,avoid the SAA
+zmin,     r, h, -0.4, -1.0, 1.0, "cos(thetazenith) minimum allowed"
+
+tstart,   r, a,   252373500 ,   , , "start time"
+tstop,    r, a,   257125500,  , , "end time"  
+avoid_saa, b,h, "NO", "NO|YES",,avoid the SAA
