@@ -31,8 +31,9 @@ inline int side_from_degrees(double pixelsize){
     return n; 
 } 
 
-Exposure::Exposure(double pixelsize, double cosbinsize)
+Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
 : SkyExposure(SkyBinner(side_from_degrees(pixelsize)))
+, m_zcut(zcut), m_lost(0)
 {
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
     if( cosbins != CosineBinner::s_nbins ) {
@@ -49,7 +50,8 @@ Exposure::Exposure(double pixelsize, double cosbinsize)
 
 void Exposure::create_cache()
 {
-    m_dir_cache.resize(data().size());
+    size_t datasize(data().size());
+    m_dir_cache.reserve(datasize);
 
     SkyBinner::iterator is = data().begin();
     for( ; is != data().end(); ++is){ // loop over all pixels
@@ -73,31 +75,44 @@ public:
         , m_zenith(zenith())
         , m_deltat(deltat)
         , m_zcut(zcut)
+        , m_total(0), m_lost(0)
     {}
-    void operator()( std::pair<CosineBinner*, Simple3Vector> &x)
+    void operator()( const std::pair<CosineBinner*, Simple3Vector> & x)
     {
         // check if we are making a horizon cut:
-        if( m_zcut==-1 || x.second.dot(m_zenith)< m_zcut)
-
+        bool ok( m_zcut==-1);
+        if( ! ok) {
+            double z(x.second.dot(m_zenith));
+            ok = z > m_zcut;
+        }
+        if( ok) {
             // if ok, add to the angle histogram
             x.first->fill(x.second.dot(m_dir), m_deltat);
+            m_total += m_deltat;
+        }else{
+            m_lost += m_deltat;
+        }
     }
+    double total()const{return m_total;}
+    double lost()const{return m_lost;}
 private:
     Simple3Vector m_dir, m_zenith;
-    double m_deltat, m_zcut;
+    double m_deltat, m_zcut, m_total, m_lost;
 };
 
 void Exposure::fill(const astro::SkyDir& dirz, double deltat)
 {
-    for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz));
+    Filler sum = for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz));
     addtotal(deltat);
 }
 
 
-void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, double deltat, double zcut)
+void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, double deltat)
 {
-    for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, zenith, zcut));
-    addtotal(deltat);
+    Filler sum = for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, zenith, m_zcut));
+    double total(sum.total());
+    addtotal(total);
+    m_lost += sum.lost();
 }
 
 
@@ -110,14 +125,13 @@ void Exposure::load(const tip::Table * scData,
                     const GTIvector& gti, 
                     bool verbose) {
    
-
    tip::Table::ConstIterator it = scData->begin();
    const tip::ConstTableRecord & row = *it;
    long nrows = scData->getNumRecords();
 
    for (long irow = 0; it != scData->end(); ++it, ++irow) {
       if (verbose && (irow % (nrows/20)) == 0 ) std::cerr << ".";
-      if( processEntry( row, gti)) break;
+      if( processEntry( row, gti) )break;
    }
    if (verbose) std::cerr << "!" << std::endl;
 }

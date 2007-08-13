@@ -89,15 +89,25 @@ public:
 
         // create the differential exposure object
 	double pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
-        Exposure ex( pixelsize, binsize );
-        Exposure::GTIvector gti; 
 		
-        double tstart(m_pars["tstart"]), tstop(m_pars["tstop"]);
+        double tstart(m_pars["tstart"]),
+               tstop(m_pars["tstop"]),
+               zmin ( m_pars["zmin"] );
+
+        Exposure ex( pixelsize, binsize, zmin );
+        Exposure::GTIvector gti; 
+
         gti.push_back(std::make_pair(tstart,tstop));
         std::string infile(m_pars["infile"].Value()),
             outfile(m_pars["outfile"].Value()),
-            table(m_pars["table"].Value());
+            table(m_pars["table"].Value()),
+            outtable(m_pars["outtable"].Value());
         m_f.info() << "Creating an exposure object from a pointing history file ..." << infile << std::endl;
+        m_f.info() << "\ttstart: " << tstart << "\n\t tstop: "<< tstop << std::endl;
+        if( zmin>-1.){
+            m_f.info() << "\t  zmin: "<< zmin << ", cut above horizon " << std::endl;
+        }
+
 
         bool isText = infile.find(".txt") != std::string::npos;
 
@@ -114,8 +124,11 @@ public:
         // create the fits output file from the Exposure file
         m_f.info() 
             << "writing out the differential exposure file to "
-            << outfile << std::endl;
-        map_tools::HealpixArrayIO::instance().write(ex.data(), outfile, table);
+            << outfile << ": added " << ex.total() << " seconds" << std::endl;
+        if( zmin>-1){
+            m_f.info() << " lost " << ex.lost() << " seconds from zcut" << std::endl;
+        }
+        map_tools::HealpixArrayIO::instance().write(ex.data(), outfile, outtable);
 
  
     }

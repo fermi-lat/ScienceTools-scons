@@ -33,7 +33,7 @@ public:
     virtual ~BasicExposure(){}
 
     virtual void fill(const astro::SkyDir& dirz, double deltat)=0;
-    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat, double zcut)=0;
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat)=0;
 
     template<class F>
         double operator()(const astro::SkyDir& dir, const F& fun)const
@@ -71,7 +71,7 @@ public:
     //! create object with specified binning
     //! @param pixelsize (deg) Approximate pixel size, in degrees
     //! @param cosbinsize bin size in the cos(theta) binner
-    Exposure(double pixelsize=1., double cosbinsize=1./CosineBinner::s_nbins);
+    Exposure(double pixelsize=1., double cosbinsize=1./CosineBinner::s_nbins, double zcut=-1.0);
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);
@@ -80,9 +80,8 @@ public:
         @param dirz direction of z-axis of instrument
         @param dirzenith direction of local zenith
         @param deltat time interval
-        @param zcut (default acos(-0.4) = 113.6 degrees)
     */
-    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat, double zcut=-0.4);
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirzenith, double deltat);
 
     //! create object from the data file (FITS for now)
     Exposure(const std::string& inputfile, const std::string& tablename="Exposure");
@@ -97,6 +96,7 @@ public:
         const GTIvector & gti= GTIvector(), 
                     bool verbose=true);
 
+    double lost()const{return m_lost;}
 private:
     bool processEntry(const tip::ConstTableRecord & row, const GTIvector& gti);
 
@@ -118,6 +118,9 @@ private:
     };
     std::vector< std::pair<CosineBinner* ,  Simple3Vector> > m_dir_cache;
     class Filler ; ///< class used to fill a CosineBinner object with a value
+
+    double m_zcut; ///< value for zenith angle cut
+    double m_lost; ///< keep track of lost
 };
 
 
