@@ -22,7 +22,8 @@ extern "C" {
 
   //#include <stdio.h>
 #include <math.h>
-#include <regex.h>
+
+  //#include <regex.h>
 
 /// Minutes in a day
 #define minInDay 1440.0
@@ -359,7 +360,110 @@ void precessionRM(double mjd, AtRotMat Rm);
    * @author Giuseppe Romeo
    * @date Created:  Nov 15, 2005
    */
-int match(const char *string, char *pattern);
+  //int match(const char *string, char *pattern);
+
+
+
+
+
+
+  /**
+   * @brief Function that checks if a specified string
+   * matches a specified string pattern. The match can take
+   * place anywhere in the passed string; however, if the first
+   * character in the string pattern is "^", the match MUST 
+   * take place at the beginning, while if the last character
+   * is "$", only the terminal part of the two strings must match.
+   * The function returns zero if the match is not satisfied.
+   * 
+   * @param string - input string 
+   * @param pattern - input regular expression pattern 
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+
+  int match_str(const char *string, const char *pattern);
+
+
+
+  /**
+   * @brief Function that converts the passed string
+   * to capital case. This function is called by match_str
+   * in order to make a case insensitive match.
+   * 
+   * @param string - input string 
+   * @param len - string length
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+
+  char * capitalize_str(const char *str, const int len);
+
+
+
+
+  /**
+   * @brief Function that verifies is two passed pattern strings
+   * separated by empty spaces (>= 0) are present in the passed string.
+   * The function behavior is similar to match_str.
+   * 
+   * @param string - input string 
+   * @param pattern1 - pattern string 1
+   * @param pattern2 - pattern string 2
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+  int match2str(const char *string, const char *pattern1, const char *pattern2);
+
+
+
+  /**
+   * @brief This function is a replacement for:
+   * (match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*[A-Za-z]+[ ]*[|][ ]*Maneuver[ ]*[|]") == 1)
+   * since regular expressions are not available in Win32
+   *
+   * @param string - input string 
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+  int checkManeuver (const char *str);
+
+
+
+
+  /**
+   * @brief This function is a replacement for:
+   * match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*Maneuver[ ]*[|][ ]*Zenith[ ]*Point[ ]*[|]")
+   * since regular expressions are not available in Win32
+   *
+   * @param string - input string 
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+
+  int checkManZenith(const char *str);
+
+
+
+  /**
+   * @brief This function verifies that the passed string does match
+   * "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}", which
+   * is the format for a date string in UTC. The function is called by
+   * both checkManZenith and checkManeuver
+   *
+   * @param string - input string 
+   *
+   * @author Giuseppe Romeo
+   * @date Created:  July 31, 2007
+   */
+
+  int checkDate (char *str);
+
 
 
 

@@ -10,6 +10,7 @@
 
 #include "orbitSim/functions.h"
 #include "orbitSim/atFunctions.h"
+#include "orbitSim/OrbSim.h"
 
 #include <stdexcept>
 #include <string>
@@ -247,19 +248,362 @@ double getMJD(char *ln){
  * return 1 for match, 0 for no match
  */
 
+/*
 int match(const char *string, char *pattern) {
   int status;
   regex_t re;
   if (regcomp(&re, pattern, REG_EXTENDED|REG_NOSUB| REG_ICASE) != 0) {
-    return(0);      /* report error */
+    return(0);      // report error
   }
   status = regexec(&re, string, (size_t) 0, NULL, 0);
   regfree(&re);
   if (status != 0) {
-    return(0);      /* report error */
+    return(0);      // report error
   }
   return(1);
 }
+*/
+
+
+/*
+ * Match string against the extended regular expression in
+ * pattern, treating errors as no match.
+ *
+ * return 1 for match, 0 for no match
+ */
+
+
+
+
+int match_str(const char *string, const char *pattern) {
+
+  const int len = strlen(pattern);
+  const int slen = strlen(string);
+
+  char *UpStr = capitalize_str(string, slen);
+
+  char *PAT = capitalize_str(pattern, len);
+
+  int match = 0;
+
+  fosf.info(4) << "string="<< UpStr <<" ===> pattern="<< PAT <<"\n";
+
+  int i, j;
+  char c;
+  char *STR;
+
+  char s[0];
+
+
+  char NPAT[len-1];
+
+  sprintf(s,"%c", PAT[len-1]);
+
+  STR = (char *) malloc((len+1) * sizeof(char));
+
+  if(strncmp(PAT, "^", 1) == 0 && strcmp(s, "$") == 0){
+    int nlen = len - 1;
+
+    c = UpStr[0];
+    sprintf(STR, "%c", c);
+    sprintf(NPAT, "%c", PAT[1]);
+
+    for(j=1; j<nlen-1; j++){
+      c=UpStr[j];
+      sprintf(STR, "%s%c", STR, c);
+
+      if(j<len-1)
+	sprintf(NPAT, "%s%c", NPAT, PAT[j+1]);
+    }
+
+    if(strcmp(STR, NPAT) == 0 && slen == len-2){
+      fosf.info(4) << "EXACT match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      match = 1;
+    }
+
+  
+  }else if(strncmp(PAT, "^", 1) == 0 && strcmp(s, "$") != 0){
+    c = UpStr[0];
+    sprintf(STR, "%c", c);
+    sprintf(NPAT, "%c", PAT[1]);
+
+    for(j=1; j<len-1; j++){
+      c=UpStr[j];
+      sprintf(STR, "%s%c", STR, c);
+
+      if(j<len-1)
+	sprintf(NPAT, "%s%c", NPAT, PAT[j+1]);
+    }
+
+    if(strcmp(STR, NPAT) == 0){
+      fosf.info(4) << "BEGIN match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      match = 1;
+    }
+
+
+  } else if (strcmp(s, "$") == 0 && strncmp(PAT, "^", 1) != 0){
+    int nlen = len - 1;
+    c = UpStr[slen-nlen];
+    sprintf(STR, "%c", c);
+    sprintf(NPAT, "%c", PAT[0]);
+
+    for(j=slen-nlen+1; j<slen; j++){
+      c=UpStr[j];
+      sprintf(STR, "%s%c", STR, c);
+
+      sprintf(NPAT, "%s%c", NPAT, PAT[j-slen+nlen]);
+    }
+
+    if(strcmp(STR, NPAT) == 0){
+      fosf.info(4) << "END match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      match = 1;
+    }
+
+      
+  } else {
+
+    for(i=0; i<slen-len+1; i++){
+      c = UpStr[i];
+      sprintf(STR, "%c", c);
+
+      for(j=i+1; j<len+i; j++){
+	c=UpStr[j];
+	sprintf(STR, "%s%c", STR, c);
+      }
+
+      if(strcmp(STR, PAT) == 0){
+	match = 1;
+	fosf.info(4) << "ANY match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+	break;
+      }
+    }
+
+  }
+
+  fosf.info(4) << "Returning with match="<<match<<"\n";
+  return match;
+}
+
+
+
+
+char * capitalize_str(const char *str, const int len) {
+
+  int i=1;
+  char c;
+  char *STR;
+  STR = (char *) malloc((len+1) * sizeof(char));
+  c = str[0];
+  sprintf(STR, "%c", toupper(c));
+  while (str[i]){
+   
+    c=str[i];
+    sprintf(STR, "%s%c", STR, toupper(c));
+    i++;
+  }
+
+  return STR;
+}
+
+
+int match2str(const char *string, const char *pattern1, const char *pattern2) {
+
+  const int len = strlen(string);
+
+  const int patlen1 = strlen(pattern1);
+
+  const int patlen2 = strlen(pattern2);
+
+  if(len < (patlen1+patlen2)){
+    return 0;
+  }
+
+  char *ln;
+  ln = (char *) malloc((len+1) * sizeof(char));
+
+  strcpy(ln, string);
+
+  if(match_str(ln, pattern1) != 1){
+    return 0;
+  }
+
+
+    int i = 0;
+  if(pattern1[0] != '^'){
+    
+    char pat1[patlen1+1];
+
+    strcpy(pat1, "^");
+    strcat(pat1, pattern1);
+
+    while(match_str(ln, pat1) != 1){
+      ++ln;
+    }
+
+    for(i=0; i<patlen1+1; i++){
+      ++ln;
+    }
+
+  } else {
+
+    while(match_str(ln, pattern1) != 1){
+      ++ln;
+    }
+
+    for(i=0; i<patlen1; i++){
+      ++ln;
+    }
+
+  }
+
+  
+  while(ln[0] == ' '){
+    ++ln;
+  }
+
+  if(match_str(ln, pattern2) != 1){
+    return 0;
+  }
+
+
+  return 1;
+}
+
+
+
+//  This function is a replacement for:
+//(match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*[A-Za-z]+[ ]*[|][ ]*Maneuver[ ]*[|]") == 1)
+//since regular expressions cannot be used in Win32
+
+
+int checkManeuver(const char *str){
+
+  const int len = strlen(str);
+
+  char ln[len];
+
+  strcpy(ln, str);
+
+  if(checkDate(ln) != 1){
+    return 0;
+  }
+
+  char *str1 = processline(ln, '|');
+  char *str2 = processline(str1, '|');
+
+  
+  while(str2[0] == ' '){
+    ++str2;
+  }
+
+  if(match_str(str2, "^Maneuver") != 1){
+    return 0;
+  }
+
+  return 1;
+}
+
+
+//match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*Maneuver[ ]*[|][ ]*Zenith[ ]*Point[ ]*[|]")
+
+int checkManZenith(const char *str){
+
+  const int len = strlen(str);
+
+  char ln[len];
+
+  strcpy(ln, str);
+
+  if(checkDate(ln) != 1){
+    return 0;
+  }
+
+  char *str1 = processline(ln, '|');
+
+  while(str1[0] == ' '){
+    ++str1;
+  }
+
+  if(match_str(str1, "^Maneuver") != 1){
+    return 0;
+  }
+  
+  char *str2 = processline(ln, '|');
+
+  while(str2[0] == ' '){
+    ++str2;
+  }
+
+  if(match_str(str2, "^Zenith") != 1){
+    return 0;
+  }
+
+  int i = 0;
+  for(i=0; i<6; i++){
+    ++str2;
+  }
+
+  while(str2[0] == ' '){
+    ++str2;
+  }
+
+  if(match_str(str2, "^Point") != 1){
+    return 0;
+  }
+
+
+  return 1;
+}
+
+
+int checkDate(char *ln){
+
+
+  int datelen = 27;
+
+  int lenstr = strlen(ln);
+
+  if(datelen > lenstr){
+    return 0;
+  } 
+
+  
+  int i = 0;
+  char s[0];
+
+  // 2 0 0 7 - 1 9 3 - 0  0  :  0  0  :  0  0  :  0  0  .  0  0  0  0  0  0
+  // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+  for(i=0; i<datelen; i++){
+    sprintf(s, "%c", ln[i]);
+
+    if(i<4 || (i>4 && i<8) || (i>8 && i<11) || 
+       (i>11 && i<14) || (i>14 && i<17) || (i>17 && i<20) || i>20) {
+       if (isdigit(ln[i]) == 0){
+	 return 0;
+       }
+
+    } else if(i==4 || i==8){
+      if(strcmp(s, "-") != 0){
+	return 0;
+      }
+    } else if(i==11 || i==14 || i==17){
+      if(strcmp(s, ":") != 0){
+	return 0;
+      }
+
+    } else if(i==20){
+      if(strcmp(s, ".") != 0){
+	return 0;
+      }
+
+    }
+
+  }
+
+  return 1;
+}
+
+
 
 int chkStr (char *str) {
 

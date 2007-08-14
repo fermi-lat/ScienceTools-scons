@@ -51,13 +51,14 @@ void MyApp::run() {
   initf.debug = 0;
 
 
-  st_app::AppParGroup & pars(getParGroup("gttakosim"));
+  st_app::AppParGroup & pars(getParGroup("orbitSim/v0/pfiles/gttakosim"));
 
 
   pars.Prompt("typeinput");
   std::string Input = pars["typeinput"];
   osf.info() << "Input Type is: " << Input.c_str() << std::endl;
-  if(match((const char*) Input.c_str(), "file") == 1){
+  //  if(match((const char*) Input.c_str(), "file") == 1){
+  if(match_str((const char*) Input.c_str(), "FILE") == 1){
     pars.Prompt("initFile");
 
     std::string initFile = pars["initFile"];
@@ -67,7 +68,8 @@ void MyApp::run() {
     st_stream::SetMaximumChatter(initf.chat);
     st_stream::SetDebugMode(initf.debug);
 
-  } else if (match((const char*) Input.c_str(), "console") == 1){
+    //  } else if (match((const char*) Input.c_str(), "console") == 1){
+  } else if (match_str((const char*) Input.c_str(), "CONSOLE") == 1){
     pars.Prompt("start_MJD");
     initf.start_MJD = pars["start_MJD"];
 
@@ -80,12 +82,14 @@ void MyApp::run() {
 
 
 
-    if((match((const char*) Tlt.c_str(), "^TAKO$") == 1) || (match((const char*) Tlt.c_str(), "^ASFLOWN$") == 1)){
+    //    if((match((const char*) Tlt.c_str(), "^TAKO$") == 1) || (match((const char*) Tlt.c_str(), "^ASFLOWN$") == 1)){
+    if((match_str((const char*) Tlt.c_str(), "TAKO") == 1) || (match_str((const char*) Tlt.c_str(), "ASFLOWN") == 1)){
       pars.Prompt("Timeline");
       std::string Tml = pars["Timeline"];
       initf.TLname = Tml;
 
-    } else if (match((const char*) Tlt.c_str(), "SINGLE") == 1){
+      //  } else if (match((const char*) Tlt.c_str(), "SINGLE") == 1){
+    } else if (match_str((const char*) Tlt.c_str(), "SINGLE") == 1){
       pars.Prompt("TimelnCmd");
       std::string Tml = pars["TimelnCmd"];
       initf.TLname = Tml;
@@ -100,12 +104,14 @@ void MyApp::run() {
 
 
 
-    //  } else if(match((const char*) initf.EPHfunc,"^tlederive$") == 1){
     pars.Prompt("EphemFunc");
     std::string EpF = pars["EphemFunc"];
-    if(!((match((const char*) EpF.c_str(), "^xyzll_eph$")==1) ||
-	 (match((const char*) EpF.c_str(), "^yyyy_eph$")==1) ||
-	 (match((const char*) EpF.c_str(), "^tlederive$")==1))){
+//     if(!((match((const char*) EpF.c_str(), "^xyzll_eph$")==1) ||
+// 	 (match((const char*) EpF.c_str(), "^yyyy_eph$")==1) ||
+//    	 (match((const char*) EpF.c_str(), "^tlederive$")==1))){
+    if(!((match_str((const char*) EpF.c_str(), "XYZLL_EPH")==1) ||
+	 (match_str((const char*) EpF.c_str(), "YYYY_EPH")==1) ||
+	 (match_str((const char*) EpF.c_str(), "TLEDERIVE")==1))){
       throw std::runtime_error("\nERROR: UNKNOWN Ephemeredis Function {either xyzll_eph, or yyyy_eph or tlederive}\n\n");
       
     } else {
@@ -231,7 +237,7 @@ void MyApp::run() {
   EphemData * ephemeris = NULL;
 
   osf.info(2) << "Populating Ephemeris structure by calling " << initf.EPHfunc << "function.\n";
-
+/*
   if(match( initf.EPHfunc.c_str(),"^yyyy_eph$") == 1){
     ephemeris = yyyy_eph(ephF, initf.start_MJD, initf.stop_MJD, \
 			 initf.Units, initf.Resolution);
@@ -242,6 +248,21 @@ void MyApp::run() {
     ephemeris = tlederive(ephF, initf.start_MJD, initf.stop_MJD, \
 			  initf.Units, initf.Resolution);
   }
+*/
+
+
+
+  if(match_str( initf.EPHfunc.c_str(),"YYYY_EPH") == 1){
+    ephemeris = yyyy_eph(ephF, initf.start_MJD, initf.stop_MJD, \
+			 initf.Units, initf.Resolution);
+  } else if(match_str( initf.EPHfunc.c_str(),"XYZLL_EPH") == 1){
+    ephemeris = xyzll_eph(ephF, initf.start_MJD, initf.stop_MJD, \
+			  initf.Units, initf.Resolution);
+  } else if(match_str( initf.EPHfunc.c_str(),"TLEDERIVE") == 1){
+    ephemeris = tlederive(ephF, initf.start_MJD, initf.stop_MJD, \
+			  initf.Units, initf.Resolution);
+  }
+
 
 
   fclose(ephF);
@@ -256,13 +277,24 @@ void MyApp::run() {
 
   Attitude *Oat = NULL;
 
-  if(match( initf.TLtype.c_str(), "^TAKO$") == 1){
+//   if(match( initf.TLtype.c_str(), "^TAKO$") == 1){
+//     Oat = makeAttTako(&initf, ephemeris);
+//   } else if (match( initf.TLtype.c_str(), "^ASFLOWN$") == 1){
+//     Oat = makeAttAsFl(&initf, ephemeris);
+//   } else if (match( initf.TLtype.c_str(), "^SINGLE$") == 1){
+//     Oat = doCmd(&initf, ephemeris);
+//   }
+
+
+
+  if(match_str( initf.TLtype.c_str(), "TAKO") == 1){
     Oat = makeAttTako(&initf, ephemeris);
-  } else if (match( initf.TLtype.c_str(), "^ASFLOWN$") == 1){
+  } else if (match_str( initf.TLtype.c_str(), "ASFLOWN") == 1){
     Oat = makeAttAsFl(&initf, ephemeris);
-  } else if (match( initf.TLtype.c_str(), "^SINGLE$") == 1){
+  } else if (match_str( initf.TLtype.c_str(), "SINGLE") == 1){
     Oat = doCmd(&initf, ephemeris);
   }
+
 
   if(Oat == NULL){
     throw std::runtime_error("\nPossibly something went wrong while calculating the spacecraft attitude.\nThe Attitude structure is still \"NULL\"\n\n");

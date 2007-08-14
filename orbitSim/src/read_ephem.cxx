@@ -65,7 +65,8 @@ EphemData * deallocateEphem(EphemData *eph) {
   eph->Alt.clear();
   eph->VelRA.clear();
   eph->VelDEC.clear();
-  //  delete [] eph;
+
+  delete eph;
   return eph;
 
 }
@@ -94,7 +95,10 @@ Attitude * deallocateAttitude (Attitude *att) {
   att->Hei.clear();
   att->in_saa.clear();
   att->in_occ.clear();
-  //  delete [] att;
+
+
+
+  delete att;
   return att;
 
 }
@@ -417,7 +421,9 @@ EphemData * xyzll_eph(FILE *ifp, double StartTime, double EndTime,
     /* round seconds */
     isec = (int) (tsec + 0.5);
 
-    mjd = do_utcj2mjd(tyear,tdoy,thour,tmin, isec); 
+    mjd = do_utcj2mjd(tyear,tdoy,thour,tmin, isec);
+
+ 
     if (mjd1 == 0) mjd1 = mjd;
 
     /* Check if StartTime is prior to ephemeris data */
@@ -656,9 +662,12 @@ EphemData * tlederive(FILE *ifp, double StartTime,
     Tle.xno    = Tle.xno*temp*_xmnpda;    
 
     it = 0;
-    correctTm(&tz);
-    atMJulian(&tz,&mjd);
 
+    //    correctTm(&tz);
+    //    atMJulian(&tz,&mjd);
+
+
+    mjd = StartTime;
 
     while (it < inum) { 
       tsince = tdif+(double)it * resol;
@@ -732,24 +741,123 @@ EphemData * tlederive(FILE *ifp, double StartTime,
 
 
 
-
-
-
-
-
 void MakeAtt(double start, double mjde, double mjds, double pra, 
 	     double pdec, double offset, double ra, double dec, int mode, 
 	     double res, EphemData *ephem, double *lpos, Attitude *OAtt, double TS ) {
 
 
-/*
-  if the mode is 1, i.e. survey mode, then the final point for
-  slewing must be calculated
-*/
+
+//  if the mode is 1, i.e. survey mode, then the final point for
+//  slewing must be calculated
+
 
   double Timespan = mjde - start;
   int inum = (int)((Timespan+res/2.0)/res);
-  inum++;   /* Delta plus 1 to get the end point */
+  inum++;   // Delta plus 1 to get the end point 
+
+
+  int oas = (int)(((mjde-TS)+res/2.0)/res);
+  int flgS = 0;
+  Attitude *TOAtt = allocateAttitude(oas);
+
+
+  double tim = start;
+
+  osf.setMethod("makeAtt");
+
+
+
+  if (mode == 1 && start < mjds){
+    oas += 2;
+    TOAtt = reallocateAttitude(oas, TOAtt);
+    double RaDec[2];
+    TOAtt->ent = oas;
+    osf.info(3) <<"Calling MakeSurvey("<<start-res<<", "<<mjde+res<<", "<<res<<", "<<offset<<"\n";
+    MakeSurvey(tim, mjde+res, res, offset, ephem, TOAtt, RaDec, 1, TS);
+
+    int es = (int)(((mjds-TS)+res/2.0)/res);
+    ra  = TOAtt->Zra[es];
+    dec = TOAtt->Zdec[es];
+
+    osf.info(3) <<"ra="<<ra<<", dec="<<dec<<"\n";
+
+    flgS = 1;
+
+  }
+
+
+  if(start < mjds) {
+    DoSlew(start, mjds, pra, pdec, ra, dec, res, ephem, OAtt, TS);
+  }
+
+  //  printf ("2) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n", OAtt->mjd[45], OAtt->mjd[46]);
+  if(mode == 1) {
+    if(flgS == 0){
+      double RaDec[2];// = NULL;
+      MakeSurvey(mjds, mjde, res, offset, ephem, OAtt, RaDec, 1, TS);
+
+      int k = (int) (((mjde-TS)+res/2.0)/res);
+      lpos[0] = OAtt->Zra[k];
+      lpos[1] = OAtt->Zdec[k];
+    } else {
+
+      int k = (int) (((mjde-TS)+res/2.0)/res);
+      int j = (int) (((mjds-TS)+res/2.0)/res);
+
+      int ii;
+      for(ii=j; ii<k; ii++){
+
+	OAtt->mjd[ii]    = TOAtt->mjd[ii];
+	OAtt->SatRA[ii]  = TOAtt->SatRA[ii];
+	OAtt->SatDEC[ii] = TOAtt->SatDEC[ii];
+	OAtt->Xra[ii]    = TOAtt->Xra[ii];
+	OAtt->Xdec[ii]   = TOAtt->Xdec[ii];
+	OAtt->Yra[ii]    = TOAtt->Yra[ii];
+	OAtt->Ydec[ii]   = TOAtt->Ydec[ii];
+	OAtt->Zra[ii]    = TOAtt->Zra[ii];
+	OAtt->Zdec[ii]   = TOAtt->Zdec[ii];
+
+
+	osf.info(6) <<"ii="<<ii<<", Zra="<<TOAtt->Zra[ii]<<", Zdec="<<TOAtt->Zdec[ii]<<"\n";	
+      }
+      lpos[0] = TOAtt->Zra[k-1];
+      lpos[1] = TOAtt->Zdec[k-1];
+    }
+  } else {
+    MakePointed(mjds, mjde, res, ra, dec, ephem, OAtt, TS);
+    lpos[0] = ra;
+    lpos[1] = dec;
+  }
+  TOAtt = deallocateAttitude(TOAtt);
+
+  osf.info(3) << "\nLeaving MakeAtt with lpos[0]="<<lpos[0]<<", lpos[1]="<<lpos[1]<<"\n\n\n";
+
+//   if(mjds > 54433.2) {
+//     exit(0);
+//   }
+  
+
+  return;
+}
+
+
+
+
+
+/*
+void MakeAtt(double start, double mjde, double mjds, double pra, 
+	     double pdec, double offset, double ra, double dec, int mode, 
+	     double res, EphemData *ephem, double *lpos, Attitude *OAtt, double TS ) {
+
+
+
+//  if the mode is 1, i.e. survey mode, then the final point for
+//  slewing must be calculated
+
+
+  double Timespan = mjde - start;
+  int inum = (int)((Timespan+res/2.0)/res);
+  inum++;   // Delta plus 1 to get the end point 
 
 
   int oas = (int)(((mjde-TS)+res/2.0)/res);
@@ -804,6 +912,7 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
 	OAtt->Zra[ii]    = TOAtt->Zra[ii];
 	OAtt->Zdec[ii]   = TOAtt->Zdec[ii];
 
+	osf.info(3) <<"ii="<<ii<<", Zra="<<TOAtt->Zra[ii]<<", Zdec="<<TOAtt->Zdec[ii]<<"\n";
       }
       lpos[0] = TOAtt->Zra[k-1];
       lpos[1] = TOAtt->Zdec[k-1];
@@ -813,11 +922,17 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
     lpos[0] = ra;
     lpos[1] = dec;
   }
+  TOAtt = deallocateAttitude(TOAtt);
 
-  //  printf ("3) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n\n", OAtt->mjd[45], OAtt->mjd[46]);
-  osf.info(4) << "Leaving MakeAtt\n";
+  osf.info(3) << "\nLeaving MakeAtt with lpos[0]="<<lpos[0]<<", lpos[1]="<<lpos[1]<<"\n\n\n";
+
+
   return;
 }
+*/
+
+
+
 
 
 void MakeAtt2(double start, double mjde, double pra, double pdec, 
@@ -1389,7 +1504,7 @@ void MakeSurvey(double start, double end, double res, double offset,
 
   }
 
-
+  osf.info(3) << "Leaving MakeSurvey\n";
   return;
 }
 
@@ -2238,7 +2353,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   Attitude *TAtt = allocateAttitude(inum);
   double nend = end+res;
-  osf.info(4) << "Calling  doProfiled with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
+  osf.info(3) << "\nCalling  doProfiled with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
 
   doProfiled(startT, nend, res, tms, ofst, ephem, TAtt);
 
@@ -2250,9 +2365,9 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   int idx = (int) (((start-startT)+res/2.0)/res);
   int ned = (int) (((end-startT)+res/2.0)/res);
 
-  osf.info(4) << "Calling getEndPoint  with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
+  osf.info(3) << "Calling getEndPoint  with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
   int jj =  getEndPoint (start, &mjds, ira, idec, TAtt, idx, startT, res);
-  osf.info(4) << "obtained jj=" << jj << ", mjds=" << mjds << "\n";
+  osf.info(3) << "obtained jj=" << jj << ", mjds=" << mjds << "\n";
 
   double ra  = TAtt->Zra[jj];
   double dec = TAtt->Zdec[jj];
@@ -2274,7 +2389,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   }
 
   if(start < mjds) {
-    osf.info(4) << "calling DoSlew with start="<<start<<", mjds="<<mjds<<"\n";
+    osf.info(3) << "calling DoSlew with start="<<start<<", mjds="<<mjds<<"\n";
     DoSlew(start, mjds, ira, idec, ra, dec, res, ephem, OAtt, begin);
   }
 
@@ -2282,29 +2397,34 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   int j=0;
   for(j=0; j<inum; j++){
-    //    if(fabs(TAtt->mjd[j]-mjds) < res/2.0){
+    if(fabs(TAtt->mjd[j]-mjds) < res/3.0){
     //    if((TAtt->mjd[j]-mjds) > res/2.0){
-    if((TAtt->mjd[j]-mjds) >= 0.0){
+    //    if((TAtt->mjd[j]-mjds) >= 0.0 && (TAtt->mjd[j]-mjds) < res/2.0){
+      osf.info(4) <<"at j-1="<<j-1<<", mjd="<<TAtt->mjd[j-1]<<", while mjds="<<mjds<<"\n";
       osf.info(4) <<"at j="<<j<<", mjd="<<TAtt->mjd[j]<<", while mjds="<<mjds<<"\n";
       idx = j;
       break;
     }
   }
-  //  idx--;
+  //    idx--;
+
+
+  double tdif = fabs(OAtt->mjd[k-1]-TAtt->mjd[idx-1]);
+
 
 
   int ii = idx;
 
-  if(fabs(OAtt->mjd[k-1]-TAtt->mjd[idx-1]) > res/2.0){
-    osf.warn() << "####################################################################################################\n\n";
-    osf.warn() << "                                      WARNING\n";
-    osf.warn() << "In MakeProfiled, while calculating attitude for observation starting at "<<start<<"\n";
-    osf.warn() << "when merging the calculated attitude for this segment with the overall attitude\n";
-    osf.warn() << "it was found that at the meging point:\n";
-    osf.warn() << "the overall attitude would start at "<<OAtt->mjd[k-1]<<"\n";
-    osf.warn() << "while the newly part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
-    osf.warn() << "This has the potential to create problem because of gaps.\n";
-    osf.warn() << "####################################################################################################\n\n";
+  if(tdif > 0.0){
+    osf.err() << "####################################################################################################\n\n";
+    osf.err() << "                                      ERROR\n";
+    osf.err() << "In MakeProfiled, while calculating attitude for observation starting at "<<start<<"\n";
+    osf.err() << "when merging the calculated attitude for this segment with the overall attitude\n";
+    osf.err() << "it was found that at the merging point:\n";
+    osf.err() << "the overall attitude would start at "<<OAtt->mjd[k-1]<<"\n";
+    osf.err() << "while the newly part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
+    osf.err() << "This has the potential to create problem because of gaps.\n";
+    osf.err() << "####################################################################################################\n\n";
   }
 
 
@@ -2324,6 +2444,9 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     k++;
   }
 
+//   if(mjds >54450.9){
+//     exit(0);
+//   }
 
   TAtt = deallocateAttitude(TAtt);
 

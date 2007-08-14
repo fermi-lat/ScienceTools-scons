@@ -50,11 +50,19 @@ int parseInit( const char *fname, InitI *inA) {
     while(fgets(ln, bufsz,inf)) {
       //      printf("Found line: %s\n", ln);
       ln[strlen(ln) -1] = '\0';
+      
+      while (match_str((const char*)ln, "^ ") == 1) {
+	char *tln = processline(ln, ' ');
+	strcpy(ln, tln);
 
-      if(match((const char*)ln, "^#") == 1) {
+      }
+
+      //      if(match((const char*)ln, "^#") == 1) {
+      if(match_str((const char*)ln, "^#") == 1) {
 	//	printf("Ignored line: %s\n", ln);
 	continue;
-      } else if(match((const char*)ln, "^[ ]*start_MJD[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*start_MJD[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^start_MJD") == 1) {
 	double t = -1.0;;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -64,7 +72,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    it++;
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*stop_MJD[ ]*") == 1) {
+//       } else if(match((const char*)ln, "^[ ]*stop_MJD[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^stop_MJD") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -75,7 +84,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      } else if(match((const char*)ln, "^[ ]*Initial_RA[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*Initial_RA[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Initial_RA") == 1) {
 	double t = 99999.0;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -86,7 +96,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      }else if(match((const char*)ln, "^[ ]*Initial_DEC[ ]*") == 1) {
+	//      }else if(match((const char*)ln, "^[ ]*Initial_DEC[ ]*") == 1) {
+      }else if(match_str((const char*)ln, "^Initial_DEC") == 1) {
 	double t = 99999.0;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -97,7 +108,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      }else if(match((const char*)ln, "^[ ]*Earth_Avoid[ ]*") == 1) {
+	//      }else if(match((const char*)ln, "^[ ]*Earth_Avoid[ ]*") == 1) {
+      }else if(match_str((const char*)ln, "^Earth_Avoid") == 1) {
 	int flgocc = 1;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -110,7 +122,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      } else if(match((const char*)ln, "^[ ]*Timeline[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*Timeline[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Timeline") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -137,7 +150,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    }
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*TLType[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*TLType[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^TLType") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -159,7 +173,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->TLtype.assign("Not Specified");
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*EphemName[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*EphemName[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^EphemName") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -179,7 +194,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->EPHname.assign("Not Specified");
 	  }
 	}
-      }  else if(match((const char*)ln, "^[ ]*EphemFunc[ ]*") == 1) {
+	//      }  else if(match((const char*)ln, "^[ ]*EphemFunc[ ]*") == 1) {
+      }  else if(match_str((const char*)ln, "^EphemFunc") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -199,7 +215,8 @@ int parseInit( const char *fname, InitI *inA) {
 	      inA->EPHfunc.assign("Not Specified");
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*OutPutFile[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*OutPutFile[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^OutPutFile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -220,7 +237,8 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*OptFile[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*OptFile[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^OptFile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -237,7 +255,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    }
 	  } 
 	}
-      } else if(match((const char*)ln, "^[ ]*saafile[ ]*") == 1) {
+	//      } else if(match((const char*)ln, "^[ ]*saafile[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^saafile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -258,7 +277,8 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-      }  else if(match((const char*)ln, "^[ ]*saafunc[ ]*") == 1) {
+	//      }  else if(match((const char*)ln, "^[ ]*saafunc[ ]*") == 1) {
+      }  else if(match_str((const char*)ln, "^saafunc") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
 
@@ -279,7 +299,8 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*Units[ ]*") == 1) {
+//       } else if(match((const char*)ln, "^[ ]*Units[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Units") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -290,7 +311,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      } else if(match((const char*)ln, "^[ ]*Resolution[ ]*") == 1) {
+//       } else if(match((const char*)ln, "^[ ]*Resolution[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Resolution") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -301,7 +323,8 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-      } else if(match((const char*)ln, "^[ ]*Chatter[ ]*") == 1) {
+//       } else if(match((const char*)ln, "^[ ]*Chatter[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Chatter") == 1) {
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
 	  int t = -1;
@@ -310,7 +333,8 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->chat = t;
 	  }
 	}
-      } else if(match((const char*)ln, "^[ ]*Debug[ ]*") == 1) {
+//       } else if(match((const char*)ln, "^[ ]*Debug[ ]*") == 1) {
+      } else if(match_str((const char*)ln, "^Debug") == 1) {
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
 	  int t = -1;
@@ -329,22 +353,21 @@ int parseInit( const char *fname, InitI *inA) {
   // Some checks
 
 
-  if(!((match( inA->TLtype.c_str(), "^TAKO$") == 1) ||
-       (match( inA->TLtype.c_str(), "^ASFLOWN$") == 1) ||
-       (match( inA->TLtype.c_str(), "^SINGLE$") == 1))){
+  if(!((match_str( inA->TLtype.c_str(), "^TAKO$") == 1) ||
+       (match_str( inA->TLtype.c_str(), "^ASFLOWN$") == 1) ||
+       (match_str( inA->TLtype.c_str(), "^SINGLE$") == 1))){
     it--;
   }
 
-  if(!((match( inA->EPHfunc.c_str(), "^yyyy_eph$") == 1) ||
-       (match( inA->EPHfunc.c_str(), "^xyzll_eph$") == 1) || 
-       //       (match( inA->EPHfunc, "^xyzvvv_eph$") == 1) ||
-       (match( inA->EPHfunc.c_str(), "^tlederive$") == 1))){
+  if(!((match_str( inA->EPHfunc.c_str(), "^yyyy_eph$") == 1) ||
+       (match_str( inA->EPHfunc.c_str(), "^xyzll_eph$") == 1) || 
+       (match_str( inA->EPHfunc.c_str(), "^tlederive$") == 1))){
     it--;
   }
 
 
-  if(!((match( inA->saafunc.c_str(), "^saa$") == 1) ||
-       (match( inA->saafunc.c_str(), "^latsaa$") == 1))){
+  if(!((match_str( inA->saafunc.c_str(), "^saa$") == 1) ||
+       (match_str( inA->saafunc.c_str(), "^latsaa$") == 1))){
     it--;
   }
 
@@ -461,8 +484,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
       if(strlen(ln) == 1){
 	continue;
       }
-      if((match((const char*) ln, " Survey ") == 1) &&
-	 (match((const char*) ln, " Begin ") == 1)){
+      if((match_str((const char*) ln, " Survey ") == 1) &&
+	 (match_str((const char*) ln, " Begin ") == 1)){
 
 
 	mode = 1;
@@ -472,17 +495,17 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	while(fgets(ln, bufsz, ITL)) {
 	  if (strncmp(ln, "// ------------------------", 27) == 0){
 	    break;
-	  }else if ((match((const char*) ln, " offset ") == 1)){
+	  }else if ((match_str((const char*) ln, " offset ") == 1)){
 	    char *jnk = processline(ln, '=');
 	    if (jnk != NULL) {
 	      sscanf(jnk, "%lf", &offset);
 	    }
-	  } else if((match((const char*) ln, " Slew ") == 1) && 
-		    (match((const char*) ln, " End ") == 1)) {
+	  } else if((match_str((const char*) ln, " Slew ") == 1) && 
+		    (match_str((const char*) ln, " End ") == 1)) {
 	    mjds =getMJD(ln);
 
-	  } else if ((match((const char*) ln, " Survey ") == 1) &&
-		     (match((const char*) ln, " End ") == 1)) {
+	  } else if ((match_str((const char*) ln, " Survey ") == 1) &&
+		     (match_str((const char*) ln, " End ") == 1)) {
 	    mjde =getMJD(ln);
 
 	  }
@@ -515,8 +538,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	  flg = 3;
 	}
 
-      } else if((match((const char*) ln, " Obs ") == 1) &&
-	       (match((const char*) ln, " Begin ") == 1)){
+      } else if((match_str((const char*) ln, " Obs ") == 1) &&
+	       (match_str((const char*) ln, " Begin ") == 1)){
 
 	mode = 2;
 	mjdt = getMJD(ln);
@@ -525,22 +548,22 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	  if (strncmp(ln, "// ------------------------", 27) == 0){
 	    break;
-	  }else if ((match((const char*) ln, " RA ") == 1)){
+	  }else if ((match_str((const char*) ln, " RA ") == 1)){
 	    char *jnk = processline(ln, '=');
 	    if (jnk != NULL) {
 	      sscanf(jnk, "%lf", &ra);
 	    }
-	  }else if ((match((const char*) ln, " dec ") == 1)){
+	  }else if ((match_str((const char*) ln, " dec ") == 1)){
 	    char *jnk = processline(ln, '=');
 	    if (jnk != NULL) {
 	      sscanf(jnk, "%lf", &dec);
 	    }
-	  } else if((match((const char*) ln, " Slew ") == 1) && 
-		    (match((const char*) ln, " End ") == 1)) {
+	  } else if((match_str((const char*) ln, " Slew ") == 1) && 
+		    (match_str((const char*) ln, " End ") == 1)) {
 	    mjds =getMJD(ln);
 
-	  } else if ((match((const char*) ln, " Obs ") == 1) &&
-		     (match((const char*) ln, " End ") == 1)) {
+	  } else if ((match_str((const char*) ln, " Obs ") == 1) &&
+		     (match_str((const char*) ln, " End ") == 1)) {
 	    mjde =getMJD(ln);
 
 	  }
@@ -576,8 +599,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	  flg = 3;
 	}
 
-      } else if((match((const char*) ln, " Profile ") == 1) &&
-	       (match((const char*) ln, " Begin ") == 1)){
+      } else if((match_str((const char*) ln, " Profile ") == 1) &&
+	       (match_str((const char*) ln, " Begin ") == 1)){
 	mode = 3;
 	mjdt = getMJD(ln);
 
@@ -585,18 +608,18 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	  if (strncmp(ln, "// ------------------------", 27) == 0){
 	    break;
-	  } else if((match((const char*) ln, " Slew ") == 1) && 
-		    (match((const char*) ln, " End ") == 1)) {
+	  } else if((match_str((const char*) ln, " Slew ") == 1) && 
+		    (match_str((const char*) ln, " End ") == 1)) {
 	    mjds =getMJD(ln);
 
-	  } else if ((match((const char*) ln, " Profile ") == 1) &&
-		     (match((const char*) ln, " End ") == 1)) {
+	  } else if ((match_str((const char*) ln, " Profile ") == 1) &&
+		     (match_str((const char*) ln, " End ") == 1)) {
 	    mjde =getMJD(ln);
 
-	  }else if((match((const char*) ln, " Rocking ") == 1) && 
-		    (match((const char*) ln, " Profile:") == 1)) {
+	  }else if((match_str((const char*) ln, " Rocking ") == 1) && 
+		    (match_str((const char*) ln, " Profile:") == 1)) {
 	    if((fgets(ln, bufsz, ITL)) != NULL){
-	      if(match((const char*) ln, " ROCKSTART ") == 1){
+	      if(match_str((const char*) ln, " ROCKSTART ") == 1){
 		char *jnk = processline(ln, '=');
 		if (jnk != NULL) {
 		  char date[17];
@@ -611,7 +634,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	    }
 
 	    if((fgets(ln, bufsz, ITL)) != NULL){
-	      if(match((const char*) ln, " ROCKDEFAULT ") == 1){
+	      if(match_str((const char*) ln, " ROCKDEFAULT ") == 1){
 		char *jnk = processline(ln, '=');
 		double to;
 		if (jnk != NULL) {
@@ -627,8 +650,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 
 	    if((fgets(ln, bufsz, ITL)) != NULL){
-	      if((match((const char*) ln, " ROCKTIME ") == 1) &&
-		 (match((const char*) ln, " ROCKANGLE") == 1)){
+	      if((match_str((const char*) ln, " ROCKTIME ") == 1) &&
+		 (match_str((const char*) ln, " ROCKANGLE") == 1)){
 		int i = 0;
 		for(i=0; i<17; i++){
 		  if((fgets(ln, bufsz, ITL)) != NULL){
@@ -669,13 +692,13 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	ephem = deallocateEphem(ephem);
 	FILE *ephF = fopen(ini->EPHname.c_str(),"r");
 
-	if(match( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
+	if(match_str( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
 	  ephem = yyyy_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			   ini->Units, ini->Resolution);
-	}else if(match( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
+	}else if(match_str( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
 	  ephem = xyzll_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			    ini->Units, ini->Resolution);
-	}else if(match( ini->EPHfunc.c_str(), "^tlederive$") == 1){
+	}else if(match_str( ini->EPHfunc.c_str(), "^tlederive$") == 1){
 	  ephem = tlederive(ephF, ini->start_MJD, ini->stop_MJD, \
 			    ini->Units, ini->Resolution);
 	}
@@ -701,13 +724,13 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	FILE *ephF = fopen(ini->EPHname.c_str(),"r");
 
 
-	if(match( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
+	if(match_str( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
 	  ephem = yyyy_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			   ini->Units, ini->Resolution);
-	}else if(match( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
+	}else if(match_str( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
 	  ephem = xyzll_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			    ini->Units, ini->Resolution);
-	}else if(match( ini->EPHfunc.c_str(), "^tlederive$") == 1){
+	}else if(match_str( ini->EPHfunc.c_str(), "^tlederive$") == 1){
 	  ephem = tlederive(ephF, ini->start_MJD, ini->stop_MJD, \
 			    ini->Units, ini->Resolution);
 	}
@@ -769,7 +792,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	  idx--;
 	  pra = OAtt->Zra[idx];
 	  pdec = OAtt->Zdec[idx];
-	  //	  printf("Called MakeProfiled, mjdt=%f mjde=%18.10f startMJD=%18.10f Resol=%15.10f pra=%f pdec=%f idx=%d\n\n\n",  mjdt, mjde, ini->start_MJD, ini->Resolution, pra, pdec, idx);
+	  //printf("Called MakeProfiled, mjdt=%f mjde=%18.10f startMJD=%18.10f Resol=%15.10f pra=%f pdec=%f idx=%d\n\n\n",  mjdt, mjde, ini->start_MJD, ini->Resolution, pra, pdec, idx);
 	}
 
       }else if(flg == 100){
@@ -786,7 +809,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 
 
-
+      losf.info(3) << "Looping with start mjd = "<<mjdt<<"\n";
       flg = 0;
       mode = -1;
       mjdt = 0.0;
@@ -816,9 +839,9 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 
 
-  if(match( ini->saafunc.c_str(), "^saa$") == 1){
+  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match( ini->saafunc.c_str(), "^latsaa$") == 1){
+  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
   } else {
     losf.warn() << "\n################################################################################\n\n";
@@ -962,13 +985,13 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
 
   FILE *OephF = fopen(ini->EPHname.c_str(),"r");
 
-  if(match( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
+  if(match_str( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
     Oephem = yyyy_eph(OephF, ini->start_MJD, ini->stop_MJD, \
 		     ini->Units, ini->Resolution);
-  }else if(match( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
+  }else if(match_str( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
     Oephem = xyzll_eph(OephF, ini->start_MJD, ini->stop_MJD, \
 		      ini->Units, ini->Resolution);
-  }else if(match( ini->EPHfunc.c_str(), "^tlederive$") == 1){
+  }else if(match_str( ini->EPHfunc.c_str(), "^tlederive$") == 1){
     Oephem = tlederive(OephF, ini->start_MJD, ini->stop_MJD, \
 		      ini->Units, ini->Resolution);
   }
@@ -1008,15 +1031,17 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
     while(fgets(ln, bufsz, ITL)){
       int flgT = 1;
 
-      if(match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*[A-Za-z]+[ ]*[|][ ]*Maneuver[ ]*[|]") == 1) {
+//       if(match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*[A-Za-z]+[ ]*[|][ ]*Maneuver[ ]*[|]") == 1) {
+      if(checkManeuver((const char*) ln) == 1) {
 	mjde = parseAsFline(ln, &mode, &val1, &val2);
 	//	printf("%s ===> Starting obs with mjde=%f, RA=%f, DEC=%f\n", ln, mjde, val1, val2);
-      } else if(match((const char*) ln, "SS Param") == 1) {
+      } else if(match_str((const char*) ln, "SS Param") == 1) {
 	parseProfile(ln, &profile);
 	flgprof = 1;
       } 
 
-      if((match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*Maneuver[ ]*[|][ ]*Zenith[ ]*Point[ ]*[|]") == 1) && (flgprof == 0)){
+//       if((match((const char*) ln, "^[0-9]{4}-[0-9]{3}-[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}[ ]*[|][ ]*Maneuver[ ]*[|][ ]*Zenith[ ]*Point[ ]*[|]") == 1) && (flgprof == 0)){
+      if((checkManZenith((const char*) ln) == 1) && (flgprof == 0)){
 	losf.warn() << "\n##########################################################\n\n";
 	losf.warn() << "\t\tWARNING\n\tNO SURVEY PROFILE DEFINED!\n   Could not calculate attitude between:\n       " << mjds << " and " << mjde << "\n" << "\n##########################################################\n\n";
 	  flgT = -1;
@@ -1043,13 +1068,13 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
 	  FILE *ephF = fopen(ini->EPHname.c_str(),"r");
 
 
-	  if(match( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
+	  if(match_str( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
 	    ephem = yyyy_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			      ini->Units, ini->Resolution);
-	  }else if(match( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
+	  }else if(match_str( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
 	    ephem = xyzll_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			       ini->Units, ini->Resolution);
-	  }else if(match( ini->EPHfunc.c_str(), "^tlederive$") == 1){
+	  }else if(match_str( ini->EPHfunc.c_str(), "^tlederive$") == 1){
 	    ephem = tlederive(ephF, ini->start_MJD, ini->stop_MJD, \
 			       ini->Units, ini->Resolution);
 	  }
@@ -1080,13 +1105,13 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
 	  FILE *ephF = fopen(ini->EPHname.c_str(),"r");
 
 
-	  if(match( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
+	  if(match_str( ini->EPHfunc.c_str(), "^yyyy_eph$") == 1){
 	    ephem = yyyy_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			      ini->Units, ini->Resolution);
-	  }else if(match( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
+	  }else if(match_str( ini->EPHfunc.c_str(), "^xyzll_eph$") == 1){
 	    ephem = xyzll_eph(ephF, ini->start_MJD, ini->stop_MJD, \
 			       ini->Units, ini->Resolution);
-	  }else if(match( ini->EPHfunc.c_str(), "^tlederive$") == 1){
+	  }else if(match_str( ini->EPHfunc.c_str(), "^tlederive$") == 1){
 	    ephem = tlederive(ephF, ini->start_MJD, ini->stop_MJD, \
 			       ini->Units, ini->Resolution);
 	  }
@@ -1159,9 +1184,9 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
   }
 
 
-  if(match( ini->saafunc.c_str(), "^saa$") == 1){
+  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match( ini->saafunc.c_str(), "^latsaa$") == 1){
+  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
   } else {
     losf.warn() << "\n################################################################################\n\n" <<"   WARNING:\n               the saa specified function is unknown,\n               possible values are saa or latsaa\n               Using default values for the polygon\n\n";
@@ -1294,10 +1319,10 @@ double parseAsFline(char *ln, int *mode, double *val1, double *val2){
   TL = strtok(NULL, "|");
   TL = strtok(NULL, "|");
 
-  if((match((const char*) ln, "Inertial[ ]*Point") == 1) ||
-     (match((const char*) ln, "AutoRepoint") == 1)){
+  if((match2str((const char*) ln, "Inertial", "Point") == 1) ||
+     (match_str((const char*) ln, "AutoRepoint") == 1)){
     *mode = 2;
-  } else if (match((const char*) ln, "Zenith[ ]*Point") == 1) {
+  } else if (match2str((const char*) ln, "Zenith", "Point") == 1) {
     *mode = 1;
   }
 
@@ -1348,7 +1373,7 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
 
 
 
-  if(match((const char*)  ini->TLname.c_str(), "SURVEY") == 1){
+  if(match_str((const char*)  ini->TLname.c_str(), "SURVEY") == 1){
     std::string jnk = ini->TLname;
     char *TL = strtok((char *)jnk.c_str(), "|");
     TL = strtok(NULL, "|");
@@ -1378,7 +1403,7 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
       doSurvey(ini->start_MJD, ini->stop_MJD, ini->Resolution,
 	       ini->Ira, ini->Idec, offset, ephem, OAtt);
     }
-  }else if(match( ini->TLname.c_str(), "PROFILED") == 1){
+  }else if(match_str( ini->TLname.c_str(), "PROFILED") == 1){
     std::string jnk = ini->TLname;
     char *TL = strtok((char *)jnk.c_str(), "|");
     TL = strtok(NULL, "|");
@@ -1452,7 +1477,7 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
     MakeProfiled(ini->start_MJD, ini->stop_MJD, ini->Resolution, 
 		 ini->Ira, ini->Idec, epoch, tms, ofst, ephem, OAtt, ini->start_MJD);
 
-  } else if (match( ini->TLname.c_str(), "POINTED") == 1){
+  } else if (match_str( ini->TLname.c_str(), "POINTED") == 1){
 
     std::string jnk = ini->TLname;
     char *TL = strtok((char *)jnk.c_str(), "|");
@@ -1510,9 +1535,9 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
 
 
 
-  if(match( ini->saafunc.c_str(), "saa") == 1){
+  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match( ini->saafunc.c_str(), "latsaa") == 1){
+  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
     saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
   } else {
 
