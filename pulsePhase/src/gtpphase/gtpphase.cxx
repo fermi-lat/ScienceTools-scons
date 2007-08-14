@@ -44,6 +44,9 @@ PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp() {
 }
 
 void PulsePhaseApp::run() {
+  // Clean up from any previous runs.
+  resetApp();
+
   st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
 
 #if 0
