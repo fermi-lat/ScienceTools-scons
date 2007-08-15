@@ -429,9 +429,14 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
 }
 
 
-void FluxMgr::setAlignmentRotation(const CLHEP::HepRotation& align)
+void FluxMgr::setAlignmentRotation(double qx, double qy, double qz, bool misalign)
 {
-    EventSource::setAlignmentRotation(align);
+    HepRotation R(HepRotationX(qx*M_PI/180)* HepRotationY(qy*M_PI/180) * HepRotationZ(qz*M_PI/180));
+    if( misalign){
+        EventSource::setAlignmentRotation(R);
+    }else{
+        GPS::instance()->setAlignmentRotation(R);
+    }
 
 }
 

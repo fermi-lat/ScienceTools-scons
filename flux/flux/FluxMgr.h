@@ -94,8 +94,11 @@ public:
     ///this sets the rocking mode in GPS.
     std::vector<double> setRockType(astro::GPS::RockType rockType, double rockAngle);
     
-    /// Set an alignment rotation to be applied to the instrument coordinates of any incoming particle
-    void setAlignmentRotation(const CLHEP::HepRotation& align);
+    /// Set an alignment rotation:
+    /// @param qx,qy, qz rotation angles (degrees) about coordinate axes -- assume small, < 1 deg
+    /// @param misalign if true, apply to incoming; if false, apply as correction to coordinate transformation
+    ///
+    void setAlignmentRotation(double qx, double qy, double qz, bool misalign);
 
     /// set an offset for generating source id numbers, return previous value
     int setIdOffset(int id);
