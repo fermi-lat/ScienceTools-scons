@@ -196,6 +196,7 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 
             //SkyDir to SC is inverse of SC to SkyDir
             trans= m_currentPoint.rotation().inverse();
+            trans *= m_alignment;
             break;
 
         default:

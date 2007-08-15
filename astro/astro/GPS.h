@@ -144,6 +144,8 @@ public:
 
     static int test();
 
+    void setAlignmentRotation(CLHEP::HepRotation r){m_alignment=r;}
+
 protected:
     // singleton - protect ctor/dtor
     GPS();
@@ -169,6 +171,8 @@ private:
 
 
     astro::SkyDir m_point; ///< set for pointing 
+
+    CLHEP::HepRotation m_alignment; ///< set to apply alignment
 
     ///! update position, orientaion
     void update(double inputTime);
