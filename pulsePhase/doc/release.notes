@@ -35,5 +35,7 @@
       v5r1  08-aug-07   JP    Refactor gtophase and gtpphase applications to derive from
                               pulsarDb::PulsarToolApp. Address bug from JIRA issue PULS-38.
                               Use One-NASA email address.
+    v5r1p1  16-aug-07   JP    Call resetApp at beginning of run() method to clean up from any
+                              previous calls to run().
     @endverbatim
 */
