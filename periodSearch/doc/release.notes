@@ -5,6 +5,8 @@
 $Id$
 
 \verbatim
+16-aug-2007    v7r0p1 JP  Call resetApp at beginning of run() method to clean up from any
+                          previous calls to run().
 08-aug-2007        v7 JP  Derive application classes from pulsarDb::PulsarToolApp base class.
                           Change parameters of gtpspec to fix bug reported as JIRA issue PULS-35.
                           Addressed problem with corrections to TSTART described in JIRA issue PULS-37.
