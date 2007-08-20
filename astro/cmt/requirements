@@ -30,7 +30,8 @@ library astro -no_share \
  -s=../src $(source) \
  -s=healpix $(source) *.cc \
  -s=wcslib  $(source) *.c\
- -s=jplephem $(source) 
+ -s=jplephem $(source) \
+ -s=igrf_sub $(source) *.cc 
 
 
 # simple program to test basic functionality
