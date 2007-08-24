@@ -8,12 +8,12 @@
 #ifndef pointlike_Data_h
 #define pointlike_Data_h
 
-namespace map_tools {
-class PhotonMap;
-}
+namespace map_tools {class PhotonMap;}
+namespace astro { class SkyDir; }
 #include <string>
 #include <vector>
 #include "embed_python/Module.h"
+
 
 namespace pointlike {
 /***
@@ -57,6 +57,15 @@ public:
     //! same as above, for python use
     const map_tools::PhotonMap& map()const{return *m_data;}
 
+    
+    //! create FITS image file using the data
+    //! @param dir center
+    //! @param dir file to write
+    //! @param pixel
+    //! @param fov
+
+    void draw_region(const astro::SkyDir& dir, std::string outputFile, double pixel, double fov);
+    void draw_sky(std::string outputfile, double pixel);
     ~Data();
 
     static double s_scale[4]; // scale factors
