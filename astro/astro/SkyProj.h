@@ -168,7 +168,7 @@ namespace astro {
         std::pair<double,double> range(double x1, bool xvar);
         
         /** @brief returns 0 if point (x1,x2) is in range */
-        int SkyProj::testpix2sph(double x1, double x2)const;
+        int testpix2sph(double x1, double x2)const;
 
         /** @brief set appropriate keywords in the FITS header
 
