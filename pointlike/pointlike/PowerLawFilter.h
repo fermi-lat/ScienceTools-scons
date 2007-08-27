@@ -11,7 +11,7 @@ $Header$
 #include <cmath>
 
 
-namespace tools {
+namespace pointlike {
 
     /**
     @class DataPoint
@@ -81,6 +81,6 @@ namespace tools {
 
 
 
-} // namespace tools
+} // namespace pointlike
 
 #endif
