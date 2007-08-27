@@ -1,26 +1,29 @@
 # $Header$
 #---------------------------------------------------------------------------------------
-clobber,  b, a, "YES", , , "Overwrite existing output file?: "
-chatter,  i, h,   2,0,4 , , "Chattiness of output"
-debug,    b, h, no,,,Debugging mode activated
-mode,     s, a,  "h",   , ,""
-# uncomment the following for interactive/replacement mode
-#mode,     s, a,  "ql",   , ,""
 
 #---------------------------------------------------------------------------------------
+# General parameters
 #
 infile,   f, a, "", , , "Name of the exposure file:" 
-#infile,   f,a,  "f:\\glast\\data\\SC2\\orbit_files\\FT2_orbit3.fits",,,"Name of the exposure file:"
-table,    s, h, "SC_DATA",,,"name of the extension or ROOT tree"
-outfile,  f, a, "", , , "Name of the output file:"
-outtable, s, h, "Exposure", , , "name of the output table"
-filter,   s, h, "", , , "filter expression:"
+outfile,  f, a, "exposure_cube.fits", , , "Name of the output file:"
 #---------------------------------------------------------------------------------------
-# Exposure generation parameters
-binsize,  r, h, 0.025, , , binsize for the function of theta
-pixelsize, r, h, 1.0, , , "Image size [degrees/pixel]"
-zmin,     r, h, -0.4, -1.0, 1.0, "cos(thetazenith) minimum allowed"
 
-tstart,   r, a,   252373500 ,   , , "start time"
-tstop,    r, a,   257125500,  , , "end time"  
-avoid_saa, b,h, "NO", "NO|YES",,avoid the SAA
+#---------------------------------------------------------------------------------------
+zmin,     r, a, -1, -1.0, 1.0, "cos(thetazenith) minimum allowed" 
+tstart,   r, a,  ,   , , "start time"
+tstop,    r, a,  ,   , , "end time"  
+
+#---------------------------------------------------------------------------------------
+# Hidden parameters.
+filter,        s, h, , , ,"Filter expression"
+binsize,       r, h, 0.025, , , binsize for the function of theta
+pixelsize,     r, h, 1.0, , , "Image size [degrees/pixel]"
+avoid_saa,     b, h, "NO", "NO|YES",,avoid the SAA
+table,         s, h, "SC_DATA",,,"FT2 extension"
+outtable,      s, h, "Exposure",,,"Exposure cube extension"
+chatter,       i, h, 2, 0, 4, "Chattiness of output"
+clobber,       b, h, "yes", , , "Overwrite existing output files with new output files"
+debug,         b, h, "no", , , "Debugging mode activated"
+gui,           b, h, "no", , , "Gui mode activated"
+mode,          s, h, "gl", , ,"Mode of automatic parameters: h for batch, ql for interactive"
+#---------------------------------------------------------------------------------------
