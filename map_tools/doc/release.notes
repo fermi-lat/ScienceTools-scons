@@ -6,6 +6,7 @@ $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
 
+ 27-aug-07 v6r11p3THB  Fix exposure_cube to be interactive
  12-aug-07 v6r11p2THB  Changed a name in PhotonMap to avoid SWIG problem 
  23-jun-07 v6r11p1THB  Missed gtdispcube names for par file
  25-may-07 v6r11  THB  rename applications
