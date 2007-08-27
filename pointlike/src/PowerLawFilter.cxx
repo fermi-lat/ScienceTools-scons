@@ -4,7 +4,7 @@
 $Header$
 */
 
-#include "PowerLawFilter.h"
+#include "pointlike/PowerLawFilter.h"
 
 #include <vector>
 #include <cmath>
