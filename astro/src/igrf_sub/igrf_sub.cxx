@@ -1,13 +1,17 @@
-#include "f2c.h"
 #include <cmath>
-#include <stdio.h>
 
 #include "igrf_sub.h"
 
-#define abs(x) fabs(x)
+#define abs(x) ((x) >= 0 ? (x) : -(x))
+#define dabs(x) (doublereal)abs(x)
+#define TRUE_ (1)
+#define FALSE_ (0)
 
 
 namespace IGRFf2c {
+
+typedef double doublereal;
+
 
 /* igrf_sub.f -- translated by f2c (version 20031025).
    You must link the resulting object file with libf2c:
@@ -181,14 +185,14 @@ union {
     static real bab1;
     static integer ibbb;
     static real babs, dimo, lati, alog2;
-    extern /* Subroutine */ int feldg_(real *, real *, real *, real *, real *,
+    int feldg_(real *, real *, real *, real *, real *,
 	     real *, real *);
     static real beast, longi, bdown;
-    extern /* Subroutine */ int shellg_(real *, real *, real *, real *, real *
+    int shellg_(real *, real *, real *, real *, real *
 	    , integer *, real *);
     static real bnorth;
     static integer istart;
-    extern /* Subroutine */ int feldcof_(real *, real *), initize_();
+    int feldcof_(real *, real *), initize_();
 
 /* ---------------------------------------------------------------- */
 /*   INPUT: */
@@ -243,9 +247,9 @@ union {
     static real p[32]	/* was [8][4] */, r1, r2, r3, zz, bq1, bq2, bq3, bold,
 	     bmin, rold, step;
     static integer irun;
-    extern doublereal signc_(real *, real *);
+    doublereal signc_(real *, real *);
     static real step12;
-    extern /* Subroutine */ int stoer_(real *, real *, real *);
+    int stoer_(real *, real *, real *);
     static real bdelta;
 
 /* -------------------------------------------------------------------- */
@@ -390,9 +394,9 @@ L8888:
 	    zz, bq1, bq2, bq3, r3h, hli, stp, arg1, arg2, bequ, rlat;
     static integer iequ;
     static real term, rlon, step2, radik;
-    extern doublereal signc_(real *, real *);
+    doublereal signc_(real *, real *);
     static real step12, oterm;
-    extern /* Subroutine */ int stoer_(real *, real *, real *);
+    int stoer_(real *, real *, real *);
     static real dimob0, oradik;
 
 /* -------------------------------------------------------------------- */
@@ -733,7 +737,7 @@ L30:
     /* Local variables */
     static real q, dr, dx, dy, dz, rq, xm, ym, zm, wr, fli, dsq, dxm, dym, 
 	    dzm;
-    extern /* Subroutine */ int feldi_();
+    int feldi_();
 
 /* ******************************************************************* */
 /* * SUBROUTINE USED FOR FIELD LINE TRACING IN SHELLG                * */
@@ -1015,7 +1019,7 @@ L7:
     integer i__1, i__2;
 
     /* Local variables */
-    extern /* Subroutine */ int intershc_(real *, real *, integer *, real *, 
+    int intershc_(real *, real *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *), extrashc_(real *, 
 	    real *, integer *, real *, integer *, real *, integer *, real *);
     static doublereal f;
@@ -1028,7 +1032,7 @@ L7:
     static integer iyea, nmax1, nmax2;
     static real sqrt2;
     static integer numye;
-    extern /* Subroutine */ int getshc_(real *, integer *, real *, real *, 
+    int getshc_(real *, integer *, real *, real *, 
 	    integer *);
 
 /* ------------------------------------------------------------------------ */
