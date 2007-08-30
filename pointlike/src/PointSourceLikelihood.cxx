@@ -60,7 +60,7 @@ PointSourceLikelihood::PointSourceLikelihood(const map_tools::PhotonMap& data,
     for( int level=begin; level<end; ++level){
 
         // create and fill the vector of data for this level 
-        data.extract(  dir, radius, m_data_vec[level], base_level, level);
+        data.extract(  dir, radius, m_data_vec[level], -1, level);
 
         // get PSF parameters from fits
         double gamma( gamma_level[level] ),

@@ -145,7 +145,7 @@ void SourceFinder::examineRegion(const astro::SkyDir& dir,
     }
     std::cout << std::endl;
 
-    m_pmap.extract(dir, radius, v, pix_level, true);
+    m_pmap.extract_level(dir, radius, v, pix_level, true);
     std::cout << v.size() << " pixels will be examined.\n";
     Candidates can;
     can.clear();
