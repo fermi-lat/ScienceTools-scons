@@ -3,7 +3,8 @@
 
     $Header$
 */
-
+#ifndef POINTLIKE_SIGMAOPTIMIZATION_H
+#define POINTLIKE_SIGMAOPTIMIZATION_H
 #include "pointlike/PointSourceLikelihood.h"
 #include "map_tools/PhotonMap.h"
 #include <iostream>
@@ -34,3 +35,4 @@ private:
 };
 
 }
+#endif

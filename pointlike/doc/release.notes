@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 30-aug-07 v2r0p1  THB fix Linux issues
  30-aug-07 v2r0    MR  fixed data class and power law version issues
                        added: unbinned lhood, sigma optimization, and alignment data input; 
                        fixed: finder output efficiency 
