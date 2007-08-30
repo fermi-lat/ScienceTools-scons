@@ -113,10 +113,10 @@ namespace {
             }
         }
         map_tools::PhotonMap& m_map;
+        const HepRotation m_rot; 
         int m_select;
         int m_source;
         const std::vector<astro::SkyDir> m_sources;
-        const HepRotation m_rot; 
     };
     /**
     @class EventList
@@ -260,7 +260,7 @@ void CalData::add(const std::string& inputFile, int event_type, int source_id)
     HepRotation hr(0,0,0);
     AddPhoton adder(*m_data, hr, m_sources, event_type, source_id);
     EventList::Iterator it = photons.begin();
-    int starttime = (*(photons.begin())).time();
+    double starttime = (*(photons.begin())).time();
     for(EventList::Iterator it = photons.begin();it!=photons.end()&&((((*it).time()-starttime<=m_stop)&&((*it).time()-starttime>=m_start))||m_start==-1);++it) {
         adder(*it);
     }

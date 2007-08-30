@@ -18,9 +18,9 @@ using astro::SkyDir;
 
 Draw::Draw(const map_tools::PhotonMap& map)
 : m_map(map)
-, m_countType(WEIGHTED)
 , m_galactic(true)
 , m_proj("")
+, m_countType(WEIGHTED)
 {}
 
 void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel, double fov )
