@@ -54,10 +54,6 @@ public:
     //! behave like a PhotonMap object
     operator const map_tools::PhotonMap&() const {return *m_data;}
 
-    //fits image output
-    void draw_sky(std::string outputfile, double pixel);
-    void draw_region(const astro::SkyDir& dir, std::string outputFile, double pixel, double fov);
-
     //! same as above, for python use
     const map_tools::PhotonMap& map()const{return *m_data;}
 
