@@ -10,7 +10,14 @@
 
 namespace IGRFf2c {
 
-typedef double doublereal;
+ typedef double doublereal;
+ doublereal signc_(real *, real *);
+ int stoer_(real *, real *, real *);
+ int extrashc_(real *, real *, integer *, real *, integer *, real *, integer *, real *);
+ int getshc_(real *, integer *, real *, real *, integer *);
+ int intershc_(real *, real *, integer *, real *, 
+    real *, integer *, real *, integer *, real *), extrashc_(real *, 
+    real *, integer *, real *, integer *, real *, integer *, real *);
 
 
 /* igrf_sub.f -- translated by f2c (version 20031025).
