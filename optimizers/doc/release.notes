@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r11  31-Aug-07   JC   mangle parameter names in NewMinuit.cxx
+                            because of collisions between different sources.
     v2r10  25-Jul-07   JC   remove HAVE_NEW_MINUIT ifdefs
     v2r9p1 15-Jul-07   JC   comment out debug print statements
     v2r9   12-Jul-07   JC   added Function::rescale & normPar member functions

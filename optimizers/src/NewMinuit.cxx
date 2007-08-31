@@ -30,8 +30,11 @@ namespace optimizers {
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
     ROOT::Minuit2::MnUserParameters upar;
-    for (pptr p = params.begin(); p != params.end(); p++) {
-      upar.Add(p->getName().c_str(), p->getValue(), 1.0, 
+    size_t ii(0);
+    for (pptr p = params.begin(); p != params.end(); p++, ii++) {
+       std::ostringstream mangledName;
+       mangledName << ii << "_" << p->getName();
+       upar.Add(mangledName.str().c_str(), p->getValue(), 1.0, 
 	       p->getBounds().first, p->getBounds().second); 
       //  Q:  Is 1.0 the best choice for that parameter?
     }
