@@ -44,6 +44,9 @@ namespace {
 std::vector<double> PointSourceLikelihood::gamma_level(fit_gamma, fit_gamma+sizeof(fit_gamma)/sizeof(double)); 
 std::vector<double> PointSourceLikelihood::sigma_level(fit_sigma, fit_sigma+sizeof(fit_gamma)/sizeof(double)); 
 
+// pointer to a diffuse function. (May be flux only.)
+pointlike::DiffuseFunction* s_diffuse(0);
+
 PointSourceLikelihood::PointSourceLikelihood(const map_tools::PhotonMap& data,
                                              std::string name,
                                              const astro::SkyDir& dir, 

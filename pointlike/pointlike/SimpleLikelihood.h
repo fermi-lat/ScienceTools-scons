@@ -17,6 +17,8 @@ $Header$
 #include <utility>
 
 namespace pointlike {
+class DiffuseFunction;
+
 /** @class SimpleLikelihood
 @brief Simple SimpleLikelihood analysis
 
@@ -54,7 +56,7 @@ public:
     /// @brief First derivitive: gradient of function just evaluated  
     Hep3Vector gradient() const;
 
-    /// @return Second derivitive along arbitrary direction.
+    /// @return Second derivative along arbitrary direction.
     double curvature() const;
 
     /// @return value of likelihood determined by gradient calculation
@@ -96,6 +98,8 @@ public:
     double feval(double k);
 
     double kcurvature(double k);
+
+    static DiffuseFunction* s_diffuse;
 private:
 
     //! @brief a quick estimate of the signal fraction

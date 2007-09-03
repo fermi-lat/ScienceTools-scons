@@ -43,6 +43,11 @@ public:
     //! @param tablename ["PHOTONMAP"] the fits table name
     Data(const std::string & inputFile, const std::string & tablename="PHOTONMAP");
 
+
+    //! constructor configure from a python "data" file
+    //! @param inputFile the fits file name
+    //! Must define either "pixelfile", or "files", latter a list of root or fits files
+    //! if "files" is specified, then "event_class" or "source_id" may be specified to select
     Data(embed_python::Module& setup);
 
     //! add  data from the file to current set
