@@ -40,8 +40,6 @@ int main() {
   // Next test: read event file.
   std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(st_facilities::Env::appendFileName(data_dir, "D1.fits"), "EVENTS"));
  
-  const tip::Header & header(events->getHeader());
-
   MetRep glast_tdb("TDB", 51910, 0., 0.);
   glast_tdb.setValue(123.456789);
   AbsoluteTime abs_epoch(glast_tdb);
