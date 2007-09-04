@@ -45,7 +45,7 @@ int main() {
   MetRep glast_tdb("TDB", 51910, 0., 0.);
   glast_tdb.setValue(123.456789);
   AbsoluteTime abs_epoch(glast_tdb);
-  FrequencyEph eph("TDB", abs_epoch, abs_epoch, abs_epoch, .11, 1.125e-2, -2.25e-4, 6.75e-6);
+  FrequencyEph eph("TDB", abs_epoch, abs_epoch, abs_epoch, 0., 0., .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
   bool add_col = true;
