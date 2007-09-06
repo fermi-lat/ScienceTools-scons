@@ -258,6 +258,42 @@
        </spectrum>
      </source>
 
+
+    <source name="vdg_twoTowers">
+         <spectrum escale="GeV">
+             <SpectrumClass name="VdgGamma" />
+                 <solid_angle mincos="0" maxcos="1" />
+                 <patch xmin="-225.4" xmax="-175.6" ymin="175.6" ymax="225.4" zmin="638" zmax="640" />
+         </spectrum>
+     </source>
+
+    <source name="vdg_oneTower">
+         <spectrum escale="GeV">
+             <SpectrumClass name="VdgGamma" />
+                 <solid_angle mincos="0" maxcos="1" />
+                 <patch xmin="-225.4" xmax="-175.6" ymin="175.6" ymax="225.4" zmin="638" zmax="640" />
+         </spectrum>
+     </source>
+
+
+
+    <source name="vdg_lattwoTowers">
+         <spectrum escale="GeV">
+             <SpectrumClass name="VdgGamma" />
+                 <solid_angle mincos="0" maxcos="1" />
+                 <patch xmin="-625.4" xmax="-574.6" ymin="-625.4" ymax="-574.6" zmin="638" zmax="640" />
+         </spectrum>
+     </source>
+
+    <source name="vdg_latoneTower">
+         <spectrum escale="GeV">
+             <SpectrumClass name="VdgGamma" />
+                 <solid_angle mincos="0" maxcos="1" />
+                 <patch xmin="-565.4" xmax="-514.6" ymin="-565.4" ymax="-514.6" zmin="652" zmax="654" />
+         </spectrum>
+     </source>
+
+
     <source name="gamma_patch_for_G4">
        <spectrum escale="GeV">
          <particle name="gamma"><energy e="10"/> </particle>
