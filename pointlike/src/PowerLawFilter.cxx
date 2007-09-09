@@ -32,6 +32,14 @@ PowerLawFilter::PowerLawFilter(const std::vector<std::pair<double, double> > & v
         log_values.push_back(std::make_pair(ln_x, ln_y));
     }
 
+    // Now remove entries from the back end of the vector with log values that are very small, coresponding to "near zero" input values.
+    while (log_values.size() > 1 && log_values.back().second < -299.0)
+    {
+	    log_values.pop_back();
+    }
+
+    if (log_values.size() < 2) return;  // No pattern if less than two points.
+
     double sum_x_sqrd(0), sum_y_sqrd(0), sum_xy(0), x_ave(0), y_ave(0);
 
     // reference http://mathworld.wolfram.com/LeastSquaresFitting.html

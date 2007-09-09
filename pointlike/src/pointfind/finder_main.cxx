@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         }
 
         // create the SourceFinder
-        pointlike::SourceFinder finder(healpixdata);
+        pointlike::SourceFinder finder(healpixdata, setup);
 
 
         // parameters for the source finding examineRegion call
@@ -114,8 +114,7 @@ int main(int argc, char** argv)
         if( TSmin>0){
             eq_TS_min = mid_TS_min=polar_TS_min = TSmin;
         }
-        finder.examineRegion( dir, radius, 
-            eq_TS_min, mid_TS_min, polar_TS_min, 
+        finder.examineRegion( 
             pix_level, 
             count_threshold, true, true, 
             background_filter, 
