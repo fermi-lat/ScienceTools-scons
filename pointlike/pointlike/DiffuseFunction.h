@@ -58,6 +58,9 @@ public:
     ///@return integral for the energy limits, in the given direction
     double integral(const astro::SkyDir& dir, double a, double b)const;
 
+    ///! average, for the given energy, about the direction and cone angle
+    double average(const astro::SkyDir& dir, double angle)const;
+
 #if 0 // not implemented yet
     ///@return integral for the energy limits, over the function, in the given direction
     double integral(const astro::SkyDir& dir, const Aeff& f, double a, double b)const;

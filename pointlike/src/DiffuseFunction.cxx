@@ -4,6 +4,8 @@ $Header$
 */
 
 #include "pointlike/DiffuseFunction.h"
+#include "CLHEP/Vector/ThreeVector.h"
+#include "CLHEP/Vector/Rotation.h"
 #include <cmath>
 
 using namespace pointlike;
@@ -86,3 +88,22 @@ std::vector<double> DiffuseFunction::integral(const astro::SkyDir& dir, const st
     }
     return result;
 }
+
+double DiffuseFunction::average(const astro::SkyDir& dir, double angle)const
+{
+    using astro::SkyDir;
+    using CLHEP::HepRotation;
+    // get orthogonal directions
+    CLHEP::Hep3Vector 
+        d (dir()),
+        perp1( d.orthogonal() ), 
+        perp2(d.cross(perp1) );
+    //  pattern of 4 
+    double av(0);
+    av += (*this)( SkyDir(HepRotation(perp1, angle/2) * d));
+    av += (*this)( SkyDir(HepRotation(perp1, -angle/2) * d));
+    av += (*this)( SkyDir(HepRotation(perp2, angle/2) * d));
+    av += (*this)( SkyDir(HepRotation(perp2, -angle/2) * d));
+    return av/4.;
+}
+    
