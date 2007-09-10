@@ -148,7 +148,7 @@ Module::~Module()
     Py_Finalize();
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-PyObject* Module::attribute(const std::string& name, bool check)
+PyObject* Module::attribute(const std::string& name, bool check)const
 {
     unsigned int c (name.find_first_of("."));
     if( c != std::string::npos) {
@@ -163,7 +163,7 @@ PyObject* Module::attribute(const std::string& name, bool check)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-double Module::operator[](const std::string& key)
+double Module::operator[](const std::string& key)const
 { 
     PyObject* obj = attribute(key);
     double dval (PyFloat_AsDouble(obj));
@@ -171,14 +171,14 @@ double Module::operator[](const std::string& key)
     return dval;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, int& value)
+void Module::getValue(const std::string& key, int& value)const
 { 
     value = PyFloat_AsDouble(attribute(key));
     check_error("Module::getValue -- "+key+" not an integer type");
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, int& value, int default_value)
+void Module::getValue(const std::string& key, int& value, int default_value)const
 { 
     PyObject* o = attribute(key, false); 
     if( o==0){ 
@@ -191,14 +191,14 @@ void Module::getValue(const std::string& key, int& value, int default_value)
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, double& value)
+void Module::getValue(const std::string& key, double& value)const
 { 
     value = PyFloat_AsDouble(attribute(key));
     check_error("Module::getValue -- "+key+" not a numeric type");
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, double& value, double default_value)
+void Module::getValue(const std::string& key, double& value, double default_value)const
 { 
     PyObject* o = attribute(key, false); 
     if( o==0){ 
@@ -211,7 +211,7 @@ void Module::getValue(const std::string& key, double& value, double default_valu
     return;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, std::string& value)
+void Module::getValue(const std::string& key, std::string& value)const
 { 
     char * str = PyString_AsString(attribute(key));
     check_error("Module::getValue-- "+key+" not a string type");
@@ -220,7 +220,7 @@ void Module::getValue(const std::string& key, std::string& value)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getValue(const std::string& key, std::string& value, std::string default_value)
+void Module::getValue(const std::string& key, std::string& value, std::string default_value)const
 { 
     PyObject* o = attribute(key, false); 
     if( o==0){ 
@@ -235,7 +235,7 @@ void Module::getValue(const std::string& key, std::string& value, std::string de
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getList(const std::string& listname, std::vector<std::string>& names)
+void Module::getList(const std::string& listname, std::vector<std::string>& names)const
 {
     PyObject* plist( attribute(listname) )
         , *iterator( PyObject_GetIter(plist) )
@@ -258,7 +258,7 @@ void Module::getList(const std::string& listname, std::vector<std::string>& name
     
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void Module::getList(const std::string& listname, std::vector<double>& values)
+void Module::getList(const std::string& listname, std::vector<double>& values)const
 {
     PyObject* plist( attribute(listname) )
         , *iterator( PyObject_GetIter(plist) )

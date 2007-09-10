@@ -49,29 +49,29 @@ public:
     ~Module();
 
     /// return a numeric type
-    double operator[](const std::string& key);
+    double operator[](const std::string& key)const;
 
 
     /// set an int value
-    void getValue(const std::string& attribute, int & value);
+    void getValue(const std::string& attribute, int & value)const;
     /// set an int value with default
-    void getValue(const std::string& attribute, int & value, int default_value);
+    void getValue(const std::string& attribute, int & value, int default_value)const;
 
     /// set a double value
-    void getValue(const std::string& attribute, double & value);
+    void getValue(const std::string& attribute, double & value)const;
     /// set a double value with default
-    void getValue(const std::string& attribute, double & value, double default_value);
+    void getValue(const std::string& attribute, double & value, double default_value)const;
 
     /// set a string value
-    void getValue(const std::string& attribute, std::string& value);
+    void getValue(const std::string& attribute, std::string& value)const;
     /// set a string value with default
-    void getValue(const std::string& attribute, std::string& value, std::string default_value);
+    void getValue(const std::string& attribute, std::string& value, std::string default_value)const;
 
     /// set a list of strings
-    void getList(const std::string& listname, std::vector<std::string>& names);
+    void getList(const std::string& listname, std::vector<std::string>& names)const;
 
     /// set a list of values
-    void getList(const std::string& listname, std::vector<double>& values);
+    void getList(const std::string& listname, std::vector<double>& values)const;
 
     /// examine type of a PyObject
     std::string type(const PyObject* obj)const;
@@ -82,7 +82,7 @@ public:
     /// return the attribute -- exception if does not exist
     /// @param name the attribute name, perhaps compound
     /// @param check if false, do not check for success, return null
-    PyObject * attribute(const std::string& name, bool check=true);
+    PyObject * attribute(const std::string& name, bool check=true)const;
 
     /// access root, if path was defined
     std::string root()const{return m_root;}
