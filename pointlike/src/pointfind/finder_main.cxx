@@ -88,6 +88,9 @@ int main(int argc, char** argv)
         // look for sources
         finder.examineRegion();
         
+        // prune by power law fit
+        finder.prune_power_law();
+        
         // prune the result
         finder.prune_neighbors();
 
