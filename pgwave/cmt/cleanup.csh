@@ -6,6 +6,6 @@ set tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
 if $status != 0 then
   set tempfile=/tmp/cmt.$$
 endif
-${CMTROOT}/mgr/cmt -quiet cleanup -csh -pack=pgwave -version=v0r0p0 -path=/afs/slac.stanford.edu/u/gl/tosti $* >${tempfile}; source ${tempfile}
+${CMTROOT}/mgr/cmt -quiet cleanup -csh -pack=pgwave -version=v0r0p0 -path=/afs/slac.stanford.edu/u/gl/tosti/mywork $* >${tempfile}; source ${tempfile}
 /bin/rm -f ${tempfile}
 

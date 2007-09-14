@@ -4,6 +4,6 @@ fi
 . ${CMTROOT}/mgr/setup.sh
 tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
 if test ! $? = 0 ; then tempfile=/tmp/cmt.$$; fi
-${CMTROOT}/mgr/cmt -quiet cleanup -sh -pack=pgwave -version=v0r0p0 -path=/afs/slac.stanford.edu/u/gl/tosti $* >${tempfile}; . ${tempfile}
+${CMTROOT}/mgr/cmt -quiet cleanup -sh -pack=pgwave -version=v0r0p0 -path=/afs/slac.stanford.edu/u/gl/tosti/mywork $* >${tempfile}; . ${tempfile}
 /bin/rm -f ${tempfile}
 
