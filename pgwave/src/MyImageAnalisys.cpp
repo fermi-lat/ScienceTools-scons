@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <functional>
 #include <iomanip>
-#include "MyMatrix.h"
-#include "MyImageAnalisys.h"
+#include "pgwave/MyMatrix.h"
+#include "pgwave/MyImageAnalisys.h"
 
 int sign1(float);
 float amin1(float,float);

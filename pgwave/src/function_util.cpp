@@ -3,13 +3,13 @@
 *  function_util.cpp
 *  Wave2D_7Feb
 *
-*  Created by Gabriele Discepoli on 7/02/06.
+*  Created by Gabriele Discepoli & Gino Tosti on 7/02/06.
 *  Copyright 2006 __Physics dept. University of Perugia__. All rights reserved.
 *
 ************************************************************/
-#include "function_util.h"
+#include "pgwave/function_util.h"
 #include <iostream>
-#include "filtri.h"
+#include "pgwave/filtri.h"
 #include <cmath>
 #include <pil.h>
 #include <pil_error.h>

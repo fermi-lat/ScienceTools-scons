@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "MyImage.h"
+#include "pgwave/MyImage.h"
 
 #include <fstream>
 #define FNAN 1e-40F

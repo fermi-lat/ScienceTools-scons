@@ -6,7 +6,7 @@
  *  Copyright 2005 __MyCompanyName__. All rights reserved.
  *
  */
-#include "filtri.h"
+#include "pgwave/filtri.h"
 #include <iostream>
 #include <cmath>
 #include <cassert>

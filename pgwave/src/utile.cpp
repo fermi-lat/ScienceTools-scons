@@ -7,8 +7,8 @@
  *
  */
 
-#include "utile.h"
-#include "filtri.h"
+#include "pgwave/utile.h"
+#include "pgwave/filtri.h"
 //#include <fftw/fftw3.h>
 //#include "astro/SkyFunction.h"
 //#include "astro/SkyProj.h"
