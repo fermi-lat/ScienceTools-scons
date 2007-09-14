@@ -10,7 +10,7 @@
 #define __FILTRI_H
 
 #include "function_util.h"
-#include "fftw3.h"
+#include "fftw/fftw3.h"
 
 
 #ifndef M_PI
