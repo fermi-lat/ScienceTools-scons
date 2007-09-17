@@ -11,6 +11,8 @@
 #include "pulsarDb/TimingModel.h"
 
 #include "timeSystem/AbsoluteTime.h"
+#include "timeSystem/EventTimeHandler.h"
+#include "timeSystem/GlastTimeHandler.h"
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
@@ -142,5 +144,8 @@ void PulsePhaseApp::run() {
   }
 
 }
+
+// List supported mission(s).
+timeSystem::EventTimeHandlerFactory<timeSystem::GlastTimeHandler> glast_handler;
 
 st_app::StAppFactory<PulsePhaseApp> g_factory("gtpphase");
