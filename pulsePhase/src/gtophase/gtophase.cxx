@@ -45,8 +45,12 @@ void PulsePhaseApp::run() {
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
+  par_group.Prompt("scfile");
+  par_group.Prompt("sctable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
+  par_group.Prompt("ra");
+  par_group.Prompt("dec");
   par_group.Prompt("timefield");
   par_group.Prompt("ophasefield");
   par_group.Prompt("ophaseoffset");
@@ -63,7 +67,7 @@ void PulsePhaseApp::run() {
   // Set up EphComputer for arrival time corrections.
   pulsarDb::TimingModel model;
   pulsarDb::StrictEphChooser chooser;
-  initEphComputer(par_group, model, chooser, "DB");
+  initEphComputer(par_group, model, chooser, "NONE");
 
   // Use user input (parameters) together with computer to determine corrections to apply.
   bool guess_pdot = false;
