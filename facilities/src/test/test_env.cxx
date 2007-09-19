@@ -1,13 +1,17 @@
-#include "commonUtilities/commonUtilities.h"
+#include "facilities/commonUtilities.h"
 #include <iostream>
 using namespace std;
+using namespace facilities;
 
 int main(){
   int errors = 0;
-  string dataPath = commonUtilities::getDataPath("commonUtilities");
+  string dataPath = commonUtilities::getDataPath("facilities");
   if(dataPath == ""){
     cerr<<"Unable to get data path"<<endl;
     errors++;
+  }
+  else {
+    cout << "facilities data path is: " << dataPath << endl;
   }
   string home = commonUtilities::getEnvironment("HOME");
   cout<<"$HOME is set to "<<home<<endl;
