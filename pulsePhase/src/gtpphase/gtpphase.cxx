@@ -62,6 +62,8 @@ void PulsePhaseApp::run() {
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
+  par_group.Prompt("scfile");
+  par_group.Prompt("sctable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
   par_group.Prompt("ephstyle");
@@ -79,6 +81,8 @@ void PulsePhaseApp::run() {
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
     par_group.Prompt("leapsecfile");
+    par_group.Prompt("ra");
+    par_group.Prompt("dec");
     par_group.Prompt("phi0");
     par_group.Prompt("f0");
     par_group.Prompt("f1");
@@ -88,6 +92,8 @@ void PulsePhaseApp::run() {
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
     par_group.Prompt("leapsecfile");
+    par_group.Prompt("ra");
+    par_group.Prompt("dec");
     par_group.Prompt("phi0");
     par_group.Prompt("p0");
     par_group.Prompt("p1");
