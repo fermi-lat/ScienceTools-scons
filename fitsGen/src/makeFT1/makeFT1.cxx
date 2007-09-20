@@ -166,7 +166,7 @@ void MakeFt1::run() {
 
    if (defaultFilter == "DEFAULT") {
       defaultFilter = st_facilities::Env::appendFileName(dataDir,
-                                                         "pass4_cuts");
+                                                         "pass5_cuts");
    }
    std::string filter;
    if (!st_facilities::Util::fileExists(defaultFilter)) {
