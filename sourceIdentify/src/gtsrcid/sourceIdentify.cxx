@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2006/03/02 02:01:54  jurgen
+Set hidden parameters to meaningful values
+
 Revision 1.8  2006/02/07 16:05:05  jurgen
 Use ObjectInfo structure to hold catalogue object information
 
@@ -30,19 +33,16 @@ Replace header information with CVS typeset information.
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
-#include <time.h>    // for "clock_t" type
+#include <time.h>            // for "clock_t" type
 #include "sourceIdentify.h"
 #include "Parameters.h"
 #include "Log.h"
 #include "Catalogue.h"
 
-
 /* Namespace usage __________________________________________________________ */
 using namespace sourceIdentify;
 
-
 /* Globals __________________________________________________________________ */
-
 
 
 /* Constants ________________________________________________________________ */
@@ -55,103 +55,101 @@ using namespace sourceIdentify;
 
 
 /*----------------------------------------------------------------------------*/
-/*                                application                                 */
+/*                                  gtsrcid                                   */
 /* -------------------------------------------------------------------------- */
-/* Task: Main application class.                                              */
+/* Task: Base class for gtsrcid application.                                  */
 /*----------------------------------------------------------------------------*/
-class application : public st_app::StApp {
+class gtsrcid : public st_app::StApp {
 public:
 
-    // Constructor
-    application(): m_f("application", "", 2) {}
+    // Construct gtsrcid application and specify name and version
+    gtsrcid(): st_app::StApp() {
+      setName(TOOL_NAME);
+      setVersion(TOOL_VERSION);
+    }
 
-    // Action
+    // Destructor
+    virtual ~gtsrcid() throw() { }
+
+    // Standard main for gtsrcid application
     virtual void run() {
 
-    // Declare (and initialise) variables
-    Status      status = STATUS_OK;
-    clock_t     t_start;
-    clock_t     t_stop;
-    float       t_elapse;
-    Parameters  par;
-    Catalogue   cat;
+      // Declare (and initialise) variables
+      Status     status = STATUS_OK;
+      clock_t    t_start;
+      Parameters par;
+      Catalogue  cat;
 
-    // Main do-loop to fall through in case of an error
-    do {
+      // Main do-loop to fall through in case of an error
+      do {
 
-      // Save the execution start time
-      t_start = clock();
+        // Save the execution start time
+        t_start = clock();
       
-      // Initialise log file
-      status = LogInit(TOOL_LOGFILE, TOOL_VERSION, status);
-      if (status != STATUS_OK)
-        continue;
+        // Initialise log file
+        status = LogInit(TOOL_LOGFILE, TOOL_VERSION, status);
+        if (status != STATUS_OK)
+          continue;
 
-      // Dump header
-      Log(Log_1, 
-         "************************************************************");
-      Log(Log_1, 
-         "*                sourceIdentify (gtsrcid)                  *");
-      Log(Log_1, 
-         "* -------------------------------------------------------- *");
-      Log(Log_1, 
-         "* Revision : v1r0p4                                        *");
-      Log(Log_1, 
-         "* Date     : 1 March 2006                                  *");
-      Log(Log_1, 
-         "* Author   : Jurgen Knodlseder (CESR)                      *");
-      Log(Log_1, 
-         "************************************************************");
+        // Dump header into log file
+        Log(Log_1, HD_BORDER);
+        Log(Log_1, HD_NAME);
+        Log(Log_1, HD_SEP);
+        Log(Log_1, HD_VERSION);
+        Log(Log_1, HD_DATE);
+        Log(Log_1, HD_AUTHOR);
+        Log(Log_1, HD_BORDER);
 
-      // ...
-      st_app::AppParGroup &pars(getParGroup(TOOL_NAME));
+        // Get parameter file object
+        st_app::AppParGroup &pars(getParGroup(TOOL_NAME));
 
-      // Load task parameters
-      status = par.load(pars, status);
-      if (status != STATUS_OK) {
-        if (par.logTerse())
-          Log(Error_3, "%d : Error while loading task parameters.", status);      
-        continue;
-      }
+        // Load task parameters
+        status = par.load(pars, status);
+        if (status != STATUS_OK) {
+          if (par.logTerse())
+            Log(Error_3, "%d : Error while loading task parameters.", status);      
+          continue;
+        }
 
-      // Dump task parameters
-      status = par.dump(status);
-      if (status != STATUS_OK) {
-        if (par.logTerse())
-          Log(Error_3, "%d : Error while dumping task parameters.", status);      
-        continue;
-      }
+        // Dump task parameters
+        status = par.dump(status);
+        if (status != STATUS_OK) {
+          if (par.logTerse())
+            Log(Error_3, "%d : Error while dumping task parameters.", status);      
+          continue;
+        }
        
-      // Build counterpart catalogue
-      status = cat.build(&par, status);
-      if (status != STATUS_OK) {
-        if (par.logTerse())
-          Log(Error_3, "%d : Error while building counterpart candidate"
-                       " catalogue.", status);      
-        continue;
-      }
+        // Build counterpart catalogue
+        status = cat.build(&par, status);
+        if (status != STATUS_OK) {
+          if (par.logTerse())
+            Log(Error_3, "%d : Error while building counterpart candidate"
+                         " catalogue.", status);      
+          continue;
+        }
 
-    } while (0); // End of main do-loop
+      } while (0); // End of main do-loop
  
-    // Save the execution stop time and calculate elapsed time
-    t_stop = clock();
-    t_elapse = (float)(t_stop - t_start) / (float)CLOCKS_PER_SEC;
+      // Save the execution stop time and calculate elapsed time
+      clock_t t_stop   = clock();
+      double  t_elapse = (double)(t_stop - t_start) / (double)CLOCKS_PER_SEC;
 
-    // Dump termination message
-    Log(Log_1, "Task terminated using %.3f sec CPU time.", t_elapse);
+      // Dump termination message
+      Log(Log_1, "Task terminated using %.3f sec CPU time.", t_elapse);
    
-    // Finish log file
-    status = LogClose(status);
+      // Finish log file
+      status = LogClose(status);
     
-    // Return from task
+      // Return from task
 //    return 0;
-}
+    }
+
 private:
-    st_stream::StreamFormatter m_f;
+    std::string m_app_name;
 };
 
-// Create instance of tool
-st_app::StAppFactory<application> g_factory(TOOL_NAME);
+// Create factory object which can create the application
+st_app::StAppFactory<gtsrcid> g_app_factory("gtsrcid");
 
 /**
  * @file   sourceIdentify.cxx
