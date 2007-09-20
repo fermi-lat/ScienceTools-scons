@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.2  2006/02/07 16:05:04  jurgen
+Use ObjectInfo structure to hold catalogue object information
+
 Revision 1.1  2006/02/03 12:11:37  jurgen
 New file that contains routines that have formerly been found in
 Catalogue.cxx. The routines have also been renamed and preceeded
@@ -59,7 +62,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
       if (par->logExplicit()) {
         Log(Log_2, "");
         if (src->pos_valid) {
-          Log(Log_2, " Source %5d .....................: %12s"
+          Log(Log_2, " Source %5d .....................: %18s"
               "  R.A.=%.3f  Dec.=%.3f"
               "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
               iSrc+1, src->name.c_str(), 
@@ -67,7 +70,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
               src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
         }
         else {
-          Log(Log_2, " Source %5d .....................: %12s"
+          Log(Log_2, " Source %5d .....................: %18s"
               " No position information found.",
               iSrc+1, src->name.c_str());
         }
@@ -601,6 +604,7 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
     double      cpt_dec_sin;
     double      cpt_dec_cos;
     double      arg;
+    double      error;
     ObjectInfo *src;
     ObjectInfo *cpt;
 
@@ -662,9 +666,12 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         // Calculate counterpart probability from angular separation
         switch (par->m_posProbType) {
         case Exponential:
-          m_cc[iCC].prob_angsep = 
-            exp(-m_cc[iCC].angsep / sqrt(cpt->pos_err_maj * cpt->pos_err_maj + 
-                                         src->pos_err_maj * src->pos_err_maj));
+          error = sqrt(cpt->pos_err_maj * cpt->pos_err_maj +
+                       src->pos_err_maj * src->pos_err_maj);
+          if (error > 0.0)
+            m_cc[iCC].prob_angsep = exp(-m_cc[iCC].angsep / error);
+          else
+            m_cc[iCC].prob_angsep = 0.0;
           break;
         case Gaussian:
           m_cc[iCC].prob_angsep = 1.0;
@@ -710,7 +717,8 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
 /*----------------------------------------------------------------------------*/
 /*                             Catalogue::cid_sort                            */
 /* -------------------------------------------------------------------------- */
-/* Private method: sort counterpart candidates by increasing probability      */
+/* Private method: sort counterpart candidates by increasing probability and  */
+/* in case of equal probability) by decreasing angular separation.            */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::cid_sort(Parameters *par, Status status) {
 
@@ -718,7 +726,8 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
     long      iCC;
     long      jCC;
     long      imax;
-    double    max;
+    double    max_prob;
+    double    min_sep;
     CCElement swap;
 
     // Debug mode: Entry
@@ -739,13 +748,25 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
       // Sort counterpart candidats (dirty brute force method, to be replaced
       // by more efficient method if needed ...)
       for (iCC = 0; iCC < m_numCC; iCC++) {
-        max  = 0.0;
-        imax = iCC;
+        max_prob =   0.0;
+        min_sep  = 180.0;
+        imax     = iCC;
         for (jCC = iCC; jCC < m_numCC; jCC++) {
-          if (m_cc[jCC].prob > max) {
-            imax = jCC;
-            max  = m_cc[jCC].prob;
+
+          // Check if we found a better candidate
+          if (m_cc[jCC].prob > max_prob) {        // Increasing probability
+            imax     = jCC;
+            max_prob = m_cc[jCC].prob;
+            min_sep  = m_cc[jCC].angsep;
           }
+          else if (m_cc[jCC].prob == max_prob) {  // Equal probability &
+            if (m_cc[jCC].angsep < min_sep) {     // decreasing separation
+              imax     = jCC;
+              max_prob = m_cc[jCC].prob;
+              min_sep  = m_cc[jCC].angsep;
+            }
+          }
+
         }
         if (iCC != imax) {
           swap       = m_cc[iCC];
@@ -809,55 +830,40 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
 
         // Dump counterpart candidate information
         if (!par->logVerbose()) {
-          Log(Log_2, "  Counterpart candidate %5d .....: %12s"
-              "  Prob=%7.3f %%",
-              iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
+          Log(Log_2, "  Cpt %5d (P=%7.3f%% S=%7.2f'): %18s",
+              iCC+1, 
+              m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
+              cpt->name.c_str());
         }
         else {
-          if (num_add < 1) {
-            if (cpt->pos_valid) {
-              Log(Log_2, "  Counterpart candidate %5d .....: %12s"
-                  "  Prob=%7.3f %%  Sep=%.4f deg"
-                  "  R.A.=%.3f  Dec.=%.3f"
-                  "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
-                  iCC+1, cpt->name.c_str(), 
-                  m_cc[iCC].prob*100.0, m_cc[iCC].angsep,
-                  cpt->pos_eq_ra, cpt->pos_eq_dec, 
-                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
-            }
-            else {
-              Log(Log_2, "  Counterpart candidate %5d .....: %12s"
-                  "  Prob=%7.3f %%"
-                  " No position information found",
-                  iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
+          if (cpt->pos_valid) {
+            Log(Log_2, "  Cpt %5d (P=%7.3f%% S=%7.2f'): %18s"
+                "  R.A.=%.3f  Dec.=%.3f"
+                "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+                iCC+1, 
+                m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
+                cpt->name.c_str(), 
+                cpt->pos_eq_ra, cpt->pos_eq_dec, 
+                cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            if (num_add > 0) {
+              Log(Log_2, "   Angular separation probability .: %7.3f %%",
+                  m_cc[iCC].prob_angsep*100.0);
+              for (i_add = 0; i_add < num_add; i_add++) {
+                Log(Log_2, 
+                    "   Additional probability .........: %7.3f %%"
+                    "  (Quantity='%s')",
+                    m_cc[iCC].prob_add[i_add]*100.0,
+                    par->m_probColNames[i_add].c_str());
+              }
             }
           }
           else {
-            Log(Log_2, "  Counterpart candidate %5d .....: %12s"
-                "  Prob=%7.3f %%",
-                iCC+1, cpt->name.c_str(), m_cc[iCC].prob*100.0);
-            if (cpt->pos_valid) {            
-              Log(Log_2, 
-                  "   Angular separation probability .: %7.3f %%"
-                  "  Sep=%.4f deg"
-                  "  R.A.=%.3f  Dec.=%.3f"
-                  "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
-                  m_cc[iCC].prob_angsep*100.0,
-                  m_cc[iCC].angsep,
-                  cpt->pos_eq_ra, cpt->pos_eq_dec, 
-                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
-            }
-            else {
-              Log(Log_2, "  No position information found");
-            }
-            for (i_add = 0; i_add < num_add; i_add++) {
-              Log(Log_2, 
-                  "   Additional probability .........: %7.3f %%"
-                  "  (Quantity='%s')",
-                  m_cc[iCC].prob_add[i_add]*100.0,
-                  par->m_probColNames[i_add].c_str());
-            }
-          } // endelse: there were additional quantities
+            Log(Log_2, "  Cpt %5d (P=%7.3f%% S=  ---   ): %18s"
+                " No position information found",
+                iCC+1, 
+                m_cc[iCC].prob*100.0,
+                cpt->name.c_str());
+          }
         } // endelse: high verbosity requested
 
       } // endfor: looped over counterpart candidats

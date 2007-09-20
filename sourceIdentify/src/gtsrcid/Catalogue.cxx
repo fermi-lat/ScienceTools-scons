@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2006/02/09 13:06:18  jurgen
+Put maximum number of source to load at once in a constant and change
+value to a large value (since the loading logic has not yet been
+implemented).
+
 Revision 1.11  2006/02/07 16:05:04  jurgen
 Use ObjectInfo structure to hold catalogue object information
 
@@ -267,6 +272,8 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
     int          caterr;
     long         i;
     double       err;
+    double       e_RA;
+    double       e_DE;
     std::string  obj_name;
     ObjectInfo  *ptr;
     
@@ -327,37 +334,89 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       obj_name = in->cat.getNameObjName();
       for (i = 0; i < in->numLoad; i++, ptr++) {
       
-        // Get object name
-        in->cat.getSValue(obj_name, i, &(ptr->name));
+        // Get object name using firt catalogAccess, then "NAME" and then "ID"
+        if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
+          if (in->cat.getSValue("NAME", i, &(ptr->name)) != IS_OK) {
+            if (in->cat.getSValue("ID", i, &(ptr->name)) != IS_OK) {
+            }
+          }
+        }
 
-        // Get location. If no location is available then set validity flag
-        // to 0. Put Right Ascension in interval [0,2pi[
-        if ((in->cat.ra_deg(i,  &(ptr->pos_eq_ra))  != IS_OK) ||
-            (in->cat.dec_deg(i, &(ptr->pos_eq_dec)) != IS_OK)) {
-          ptr->pos_valid  = 0;
-          ptr->pos_eq_ra  = 0.0;
-          ptr->pos_eq_dec = 0.0;
+        // Check if string is empty
+        std::string empty = ptr->name;
+        std::remove(empty.begin(), empty.end(), ' ');
+        if (empty == " ") {
+          std::ostringstream number;
+          number << (i+1);
+          ptr->name = "CAT_ROW_" + number.str();
         }
-        else {
-          ptr->pos_valid  = 1;
-          ptr->pos_eq_ra  = ptr->pos_eq_ra - 
-                            double(long(ptr->pos_eq_ra / 360.0) * 360.0);
-          if (ptr->pos_eq_ra < 0.0) 
-            ptr->pos_eq_ra += 360.0;
+
+        // Initalise position, error and validity flag
+        ptr->pos_valid   = 0;        // Invalid position
+        ptr->pos_eq_ra   = 0.0;
+        ptr->pos_eq_dec  = 0.0;
+        ptr->pos_err_maj = posErr;  // Task parameter error as default
+        ptr->pos_err_min = posErr;  // Task parameter error as default
+        ptr->pos_err_ang = 0.0;
+
+        // Get Right Ascension. Go to next object if no Right Ascension was
+        // found
+        if (in->cat.ra_deg(i,  &(ptr->pos_eq_ra)) != IS_OK) {
+          if (in->cat.getNValue("RAJ2000", i, &(ptr->pos_eq_ra)) != IS_OK) {
+            if (in->cat.getNValue("_RAJ2000", i, &(ptr->pos_eq_ra)) != IS_OK) {
+              continue;
+            }
+          }
         }
-        
-        // Get position error. If no position error is specified then use
-        // the task parameter ...
-        if (in->cat.posError_deg(i, &err)  != IS_OK) {
-          ptr->pos_err_maj = posErr;
-          ptr->pos_err_min = posErr;
-          ptr->pos_err_ang = 0.0;
+
+        // Get Declination. Go to next object if no Right Ascension was
+        // found
+        if (in->cat.dec_deg(i,  &(ptr->pos_eq_dec))  != IS_OK) {
+          if (in->cat.getNValue("DEJ2000", i, &(ptr->pos_eq_dec)) != IS_OK) {
+            if (in->cat.getNValue("_DEJ2000", i, &(ptr->pos_eq_dec)) != IS_OK) {
+              continue;
+            }
+          }
         }
-        else {
+
+        // Signal that we have a valid position
+        ptr->pos_valid = 1;
+
+        // Put Right Ascension in interval [0,2pi[
+        ptr->pos_eq_ra = ptr->pos_eq_ra - 
+                         double(long(ptr->pos_eq_ra / 360.0) * 360.0);
+        if (ptr->pos_eq_ra < 0.0) 
+          ptr->pos_eq_ra += 360.0;
+
+        // Try getting position error using catalogAccess
+        if (in->cat.posError_deg(i, &err) == IS_OK) {
           ptr->pos_err_maj = err;
           ptr->pos_err_min = err;
           ptr->pos_err_ang = 0.0;
-        }       
+        }
+
+        // Try getting position error using standard keywords
+        else if ((in->cat.getNValue("e_RAJ2000", i, &e_RA) == IS_OK) &&
+                 (in->cat.getNValue("e_DEJ2000", i, &e_DE) == IS_OK)) {
+          // Correct Right Ascension error by declination
+          e_RA *= cos(ptr->pos_eq_dec*deg2rad);
+          if (e_RA > e_DE) {           // Error ellipse along RA axis
+            ptr->pos_err_maj = e_RA;
+            ptr->pos_err_min = e_DE;
+            ptr->pos_err_ang = 0.0;
+          }
+          else {                       // Error ellipse along DE axis
+            ptr->pos_err_maj = e_DE;
+            ptr->pos_err_min = e_RA;
+            ptr->pos_err_ang = 90.0;
+          }
+        }
+
+        // Use task parameter error in case that a position error is 0.0
+        if ((ptr->pos_err_maj <= 0.0) || (ptr->pos_err_min <= 0.0)) {
+          ptr->pos_err_maj = posErr;
+          ptr->pos_err_min = posErr;
+        }
         
       } // endfor: looped over all objects
 
