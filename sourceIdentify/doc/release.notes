@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+20-Sep-2007  v1v1p0  JK  Improve st_app handling (dumps version)
 1-Mar-2006   v1r0p4  JK  Set hidden parameters to meaningful values
 14-Feb-2006  v1r0p3  JK  Remove unused variables 'pos' and attach 'L' to long integer
 9-Feb-2006   v1r0p2  JK  Use ObjectInfo structure to hold catalogue object information
