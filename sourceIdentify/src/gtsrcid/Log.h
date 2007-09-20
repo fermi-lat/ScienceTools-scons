@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.2  2006/02/01 13:33:36  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 #ifndef LOG_H
 #define LOG_H
@@ -18,8 +23,8 @@ namespace sourceIdentify {
 
 
 /* Defintions _______________________________________________________________ */
-#define DEFAULT_LOG_FILENAME  "gtsrcid.log"
-#define DEFAULT_TASK_NAME     "gtsrcid"
+#define DEFAULT_LOG_FILENAME  TOOL_LOGFILE
+#define DEFAULT_TASK_NAME     TOOL_NAME
 
 
 /* Type defintions __________________________________________________________ */
