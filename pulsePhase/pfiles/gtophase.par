@@ -1,10 +1,10 @@
 #-------------------------------------------------------------------------------
 evfile,        f, a, , , , "Event data file name"
 scfile,        f, a, , , , "Spacecraft data file name"
+psrdbfile,     f, a, DEFAULT, , , "Pulsar ephemerides database file name (DEFAULT - use standard eph db)"
 psrname,       s, a, "ANY", , , "Pulsar name"
 ra,            r, a, 0., , , "Right Ascension to be used for barycenter corrections"
 dec,           r, a, 0., , , "Declination to be used for barycenter corrections"
-psrdbfile,     f, h, DEFAULT, , , "Pulsar ephemerides database file name (DEFAULT - use standard eph db)"
 evtable,       s, h, "EVENTS", , , "Table containing event data"
 sctable,       s, h, "SC_DATA", , , "Table containing spacecraft data"
 timefield,     s, h, "TIME", , , "Name of time field in event file"
