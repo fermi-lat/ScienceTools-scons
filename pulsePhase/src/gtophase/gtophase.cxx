@@ -45,15 +45,21 @@ void PulsePhaseApp::run() {
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
+  par_group.Prompt("timefield");
   par_group.Prompt("scfile");
   par_group.Prompt("sctable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
   par_group.Prompt("ra");
   par_group.Prompt("dec");
-  par_group.Prompt("timefield");
   par_group.Prompt("ophasefield");
   par_group.Prompt("ophaseoffset");
+
+  par_group.Prompt("chatter");
+  par_group.Prompt("clobber");
+  par_group.Prompt("debug");
+  par_group.Prompt("gui");
+  par_group.Prompt("mode");
 
   par_group.Save();
 
