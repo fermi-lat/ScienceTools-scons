@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.4  2007/09/21 12:49:10  jurgen
 Enhance log-file output and chatter level
 
@@ -422,7 +425,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
       // If we need additional probability information then calculate it now
       if (num_add > 0) {
 
-       // Initialise probability boundary violation counters
+        // Initialise probability boundary violation counters
         prob_too_small.clear();
         prob_too_large.clear();
         for (i_add = 0; i_add < num_add; i_add++) {
@@ -430,7 +433,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
           prob_too_large.push_back(0);
         }
 
-       // Clear in memory catalogue
+        // Clear in memory catalogue
         status = cfits_clear(m_memFile, par, status);
         if (status != STATUS_OK) {
           if (par->logTerse())

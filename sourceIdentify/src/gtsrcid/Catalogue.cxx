@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.15  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.14  2007/09/21 12:49:10  jurgen
 Enhance log-file output and chatter level
 
@@ -825,8 +828,8 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Dump counterpart results
-     if (par->logTerse()) {
-       status = dump_results(par, status);
+      if (par->logTerse()) {
+        status = dump_results(par, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to dump counterpart results.",

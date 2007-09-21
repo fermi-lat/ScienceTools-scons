@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.2  2007/09/21 12:49:10  jurgen
 Enhance log-file output and chatter level
 
@@ -1295,6 +1298,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
     std::vector<std::string> col_id;
     std::vector<std::string> col_name;
     std::vector<double>      col_prob;
+//    char                     src_row[256];
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1347,13 +1351,8 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
         // Get source number. Note that we have to subtract 1 since the
         // sources index starts with 1
-        char src_row[256];
-        col_id[i].copy(src_row, 5, 3);
-        int iSrc = atoi(src_row) - 1;
-
-        // Get counterpart number
-//        strncpy(buffer, &((col_id[i].c_str())[9]), 5);
-//        int iCpt = atoi(buffer);
+	std::string src_row = col_id[i].substr(5,3);
+	int         iSrc    = atoi(src_row.c_str()) - 1;
 
         // Fall through if index is invalid
         if (iSrc < 0 || iSrc >= m_src.numLoad)
