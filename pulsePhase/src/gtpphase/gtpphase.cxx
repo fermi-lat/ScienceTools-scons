@@ -32,8 +32,30 @@ class PulsePhaseApp : public pulsarDb::PulsarToolApp {
 };
 
 PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp() {
+  st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
+
   setName("gtpphase");
   setVersion(s_cvs_id);
+
+  par_group.setSwitch("ephstyle");
+  par_group.setCase("ephstyle", "FREQ", "ephepoch");
+  par_group.setCase("ephstyle", "FREQ", "timeformat");
+  par_group.setCase("ephstyle", "FREQ", "timesys");
+  par_group.setCase("ephstyle", "FREQ", "ra");
+  par_group.setCase("ephstyle", "FREQ", "dec");
+  par_group.setCase("ephstyle", "FREQ", "phi0");
+  par_group.setCase("ephstyle", "FREQ", "f0");
+  par_group.setCase("ephstyle", "FREQ", "f1");
+  par_group.setCase("ephstyle", "FREQ", "f2");
+  par_group.setCase("ephstyle", "PER", "ephepoch");
+  par_group.setCase("ephstyle", "PER", "timeformat");
+  par_group.setCase("ephstyle", "PER", "timesys");
+  par_group.setCase("ephstyle", "PER", "ra");
+  par_group.setCase("ephstyle", "PER", "dec");
+  par_group.setCase("ephstyle", "PER", "phi0");
+  par_group.setCase("ephstyle", "PER", "p0");
+  par_group.setCase("ephstyle", "PER", "p1");
+  par_group.setCase("ephstyle", "PER", "p2");
 }
 
 void PulsePhaseApp::run() {
@@ -41,23 +63,6 @@ void PulsePhaseApp::run() {
   resetApp();
 
   st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
-
-#if 0
-  par_group.setSwitch("ephstyle");
-
-  par_group.setCase("ephstyle", "DB", "ephepoch");
-  par_group.setCase("ephstyle", "DB", "phi0");
-
-  par_group.setCase("ephstyle", "FREQ", "f0");
-  par_group.setCase("ephstyle", "FREQ", "f1");
-  par_group.setCase("ephstyle", "FREQ", "f2");
-
-  par_group.setCase("ephstyle", "PER", "p0");
-  par_group.setCase("ephstyle", "PER", "p1");
-  par_group.setCase("ephstyle", "PER", "p2");
-
-  par_group.Prompt();
-#endif
 
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
