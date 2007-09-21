@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r16p3 21-Sep-2007 ng   Added fix so commonUtilities compiles on windows
   v2r16p2 18-Sep-2007 ng   Adding bug fixes by Joanne
   v2r16p1 18-Sep-2007 ng   Add missing test cxx file
   v2r16   18-Sep-2007 ng   Insert first version of commonUtilities to allow
