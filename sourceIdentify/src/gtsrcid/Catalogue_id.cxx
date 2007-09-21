@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2007/09/21 12:49:10  jurgen
+Enhance log-file output and chatter level
+
 Revision 1.3  2007/09/20 16:28:21  jurgen
 Enhance catalogue interface for column recognition
 
@@ -57,7 +60,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Get pointer to source object
       src = &(m_src.object[iSrc]);
 
@@ -65,8 +68,8 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
       if (par->logNormal()) {
         if (src->pos_valid) {
           Log(Log_2, " Source %5d .....................: %18s"SRC_FORMAT,
-              iSrc+1, src->name.c_str(), 
-              src->pos_eq_ra, src->pos_eq_dec, 
+              iSrc+1, src->name.c_str(),
+              src->pos_eq_ra, src->pos_eq_dec,
               src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
         }
         else {
@@ -75,11 +78,11 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
               iSrc+1, src->name.c_str());
         }
       }
-      
+
       // Fall through if no position information has been found
       if (!src->pos_valid)
         continue;
-        
+
       // Filter step: Get counterparts near the source position
       status = cid_filter(par, iSrc, status);
       if (status != STATUS_OK) {
@@ -120,7 +123,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_get (status=%d)", 
           status);
-    
+
     // Return status
     return status;
 
@@ -184,7 +187,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       // Calculate sin and cos of source latitude
       src_dec_sin = sin(src->pos_eq_dec * deg2rad);
       src_dec_cos = cos(src->pos_eq_dec * deg2rad);
-      
+
       // Define bounding box around source position. The declination
       // range of the bounding box is constrained to [-90,90] deg, the
       // Right Ascension boundaries are put into the interval [0,360[ deg.
@@ -205,12 +208,12 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       if (cpt_ra_min < 0.0) cpt_ra_min += 360.0;
       cpt_ra_max = cpt_ra_max - double(long(cpt_ra_max / 360.0) * 360.0);
       if (cpt_ra_max < 0.0) cpt_ra_max += 360.0;
-    
+
       // If the counterpart catalogue is big then load only sources from a
       // region around the specified position ...
       if (m_cpt.numTotal > m_maxCptLoad) {
       }
-      
+
       // ... otherwise load the entire counterpart catalogue
       else {
 
@@ -244,7 +247,11 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
               Log(Log_2, " Counterpart catalogue contains %d sources.", 
                   m_cpt.numLoad);
           }
-          
+
+          // Free memory if it has already been allocated
+          if (m_cc != NULL) delete [] m_cc;
+          m_cc = NULL;
+
           // Allocate memory for counterpart candidate search
           m_cc = new CCElement[m_cpt.numLoad];
           if (m_cc == NULL) {
@@ -254,13 +261,9 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
             continue;
           }
 
-          // Initialise memory for counterpart search
-          for (int i = 0; i < m_cpt.numLoad; ++i)
-            m_src_cpts[i] = 0;
-           
           // Bookkeep catalogue loading
           m_fCptLoaded = 1;
-          
+
         } // endif: catalogue was not yet loaded
       } // endelse: entire catalogue requested
 
@@ -273,7 +276,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       t_start_loop = clock();
       #endif
       for (iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
-      
+
         // Filter counterparts that have no positional information
         if (!cpt->pos_valid) {
           numNoPos++;
@@ -302,7 +305,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
             continue;
           }
         }
-        
+
         // If we are still alive then we keep the counterpart as candidat
         cpt_ptr->id          = "NULL";
         cpt_ptr->pos_eq_ra   = 0.0;
@@ -316,7 +319,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         cpt_ptr->prob_angsep = 0.0;
         cpt_ptr++;
         m_numCC++;
-        
+
       } // endfor: looped over all counterpart candidates
 
       // Optionally dump counterpart filter statistics
@@ -349,7 +352,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_filter (status=%d)", 
           status);
-    
+
     // Return status
     return status;
 
@@ -386,11 +389,11 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
@@ -412,22 +415,22 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
               (Status)status, iSrc+1);
         continue;
       }
-      
+
       // Determine number of additional probabilites
-      num_add = par->m_probColNames.size();      
-      
+      num_add = par->m_probColNames.size();
+
       // If we need additional probability information then calculate it now
       if (num_add > 0) {
 
-        // Initialise probability boundary violation counters
+       // Initialise probability boundary violation counters
         prob_too_small.clear();
         prob_too_large.clear();
         for (i_add = 0; i_add < num_add; i_add++) {
           prob_too_small.push_back(0);
           prob_too_large.push_back(0);
         }
-      
-        // Clear in memory catalogue        
+
+       // Clear in memory catalogue
         status = cfits_clear(m_memFile, par, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
@@ -435,7 +438,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
             (Status)status);
           continue;
         }
-      
+
         // Add quantities to in memory catalogue
         status = cfits_add(m_memFile, iSrc, par, status);
         if (status != STATUS_OK) {
@@ -444,9 +447,9 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
                 " in-memory FITS catalogue.", (Status)status);
           continue;
         }
-        
-        // Evaluate in memory catalogue quantities
-        status = cfits_eval(m_memFile, par, status);
+
+        // Evaluate in memory catalogue quantities (no verbosity)
+        status = cfits_eval(m_memFile, par, 0, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to evaluate new quantities for in-memory"
@@ -456,7 +459,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
         // Loop over the additional probability columns
         for (i_add = 0; i_add < num_add; i_add++) {
-        
+
           // Extract probability information from column
           status = cfits_colval(m_memFile, 
                                 (char*)par->m_probColNames[i_add].c_str(),
@@ -468,11 +471,11 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
                   (Status)status, par->m_probColNames[i_add].c_str());
             break;
           }
-          
+
           // Push probabilities in vector and cumulate additional probabilities.
           // Make sure that the probabilities are composed between 0 and 1 ...
           for (iCC = 0; iCC < m_numCC; iCC++) {
-          
+
             // Set probability in the range [0,1]
             prob = prob_val[iCC];
             if (prob < 0.0) {
@@ -486,21 +489,21 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
             // Cumulate additional probabilities
             prob_add[iCC] *= prob;
-            
+
             // Save probability for each counterpart candidate (for logging)
             m_cc[iCC].prob_add.push_back(prob);
-            
+
           } // endfor: looped over all counterpart candidates
-        
+
         } // endfor: looped over the additional probability columns
         if (status != STATUS_OK)
           continue;
-        
+
       } // endif: calculated additional quantities for probability estimation
-            
+
       // Assign the counterpart probabilities
       for (iCC = 0; iCC < m_numCC; iCC++)
-        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC];              
+        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC];
 
       // Sort counterpart candidates by decreasing probability
       status = cid_sort(par, status);
@@ -534,12 +537,12 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
           for (i_add = 0; i_add < num_add; i_add++) {
             if (prob_too_small[i_add] > 1)
               Log(Warning_2, 
-                  "  Probabilities < 0.0 .............: %5d (Quantity='%s')", 
+                  "  Probabilities < 0.0 .............: %5d (Quantity='%s')",
                   prob_too_small[i_add],
                   par->m_probColNames[i_add].c_str());
             if (prob_too_large[i_add] > 1)
               Log(Warning_2, 
-                  "  Probabilities > 1.0 .............: %5d (Quantity='%s')", 
+                  "  Probabilities > 1.0 .............: %5d (Quantity='%s')",
                   prob_too_large[i_add],
                   par->m_probColNames[i_add].c_str());
           }
@@ -560,24 +563,24 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         for (i_add = 0; i_add < num_add; i_add++) {
           if (prob_too_small[i_add] > 1)
             Log(Warning_2, 
-                "  Probabilities < 0.0 .............: %5d (Quantity='%s')", 
+                "  Probabilities < 0.0 .............: %5d (Quantity='%s')",
                 prob_too_small[i_add],
                 par->m_probColNames[i_add].c_str());
           if (prob_too_large[i_add] > 1)
             Log(Warning_2, 
-                "  Probabilities > 1.0 .............: %5d (Quantity='%s')", 
+                "  Probabilities > 1.0 .............: %5d (Quantity='%s')",
                 prob_too_large[i_add],
                 par->m_probColNames[i_add].c_str());
         }
       }
-    
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cid_refine (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cid_refine (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -617,31 +620,31 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_angsep (%d candidates)", 
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_angsep (%d candidates)",
           m_numCC);
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
 
       // Get pointer to source object
       src = &(m_src.object[iSrc]);
-      
+
       // Fall through if no source position is available
       if (!src->pos_valid)
         continue;
-        
+
       // Calculate sin and cos of source declination
       src_dec_sin = sin(src->pos_eq_dec * deg2rad);
       src_dec_cos = cos(src->pos_eq_dec * deg2rad);
-    
+
       // Loop over counterpart candidates
       for (iCC = 0; iCC < m_numCC; iCC++) {
 
@@ -650,18 +653,18 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
 
         // Get pointer to counterpart object
         cpt = &(m_cpt.object[iCpt]);
-        
+
         // Fall through if no counterpart position is available
         if (!cpt->pos_valid)
           continue;
-        
+
         // Calculate angular separation between source and counterpart in
-        // degrees. Make sure that the separation is always comprised between 
+        // degrees. Make sure that the separation is always comprised between
         // [0,180] (out of range arguments lead to a floating exception)
         cpt_dec_sin = sin(cpt->pos_eq_dec * deg2rad);
         cpt_dec_cos = cos(cpt->pos_eq_dec * deg2rad);
         arg         = src_dec_sin * cpt_dec_sin +
-                      src_dec_cos * cpt_dec_cos * 
+                      src_dec_cos * cpt_dec_cos *
                       cos((src->pos_eq_ra - cpt->pos_eq_ra)*deg2rad);
         if (arg <= -1.0)
           m_cc[iCC].angsep = 180.0;
@@ -705,16 +708,16 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
           m_cc[iCC].pos_err_min = src->pos_err_min;
           m_cc[iCC].pos_err_ang = src->pos_err_ang;
         }
-              
+
       } // endfor: looped over counterpart candidates
 
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cid_prob_angsep (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob_angsep (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -743,15 +746,15 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
-    
+
       // Sort counterpart candidats (dirty brute force method, to be replaced
       // by more efficient method if needed ...)
       for (iCC = 0; iCC < m_numCC; iCC++) {
@@ -779,15 +782,15 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
           swap       = m_cc[iCC];
           m_cc[iCC]  = m_cc[imax];
           m_cc[imax] = swap;
-        } 
+        }
       }
-    
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_sort (status=%d)", status);
-    
+
     // Return status
     return status;
 
@@ -814,26 +817,26 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
 
       // Loop over counterpart candidates
       for (iCC = 0; iCC < m_numCC; iCC++) {
-      
+
         // Get index of candidate in counterpart catalogue
         iCpt = m_cc[iCC].index;
 
         // Get pointer to counterpart object
         cpt = &(m_cpt.object[iCpt]);
-        
+
         // Determine number of additional probabilites
-        num_add = m_cc[iCC].prob_add.size();      
+        num_add = m_cc[iCC].prob_add.size();
 
         // Normal log level
         if (par->logNormal()) {
@@ -841,8 +844,8 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
             Log(Log_2, "  Cpart %5d P=%7.3f%% S=%7.2f': %18s"SRC_FORMAT,
                 iCC+1, 
                 m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
-                cpt->name.c_str(), 
-                cpt->pos_eq_ra, cpt->pos_eq_dec, 
+                cpt->name.c_str(),
+                cpt->pos_eq_ra, cpt->pos_eq_dec,
                 cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
           }
           else {
@@ -872,13 +875,13 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         }
 
       } // endfor: looped over counterpart candidats
-    
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_dump (status=%d)", status);
-    
+
     // Return status
     return status;
 
@@ -903,7 +906,7 @@ std::string Catalogue::cid_assign_src_name(std::string name, int row) {
 
     // Return name
     return name;
-    
+
 }
 
 

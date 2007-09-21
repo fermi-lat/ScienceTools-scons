@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.14  2007/09/21 12:49:10  jurgen
+Enhance log-file output and chatter level
+
 Revision 1.13  2007/09/20 16:28:21  jurgen
 Enhance catalogue interface for column recognition
 
@@ -88,7 +91,7 @@ void Catalogue::init_memory(void) {
 
     // Single loop for common exit point
     do {
-    
+
       // Initialise source catalogue private members
       m_src.numLoad  = 0;
       m_src.numTotal = 0;
@@ -111,16 +114,15 @@ void Catalogue::init_memory(void) {
       m_cc            = NULL;
 
       // Initialise counterpart statistics
-//      m_src_cpts      = NULL;
       m_cpt_stat      = NULL;
       m_num_Sel       = 0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
       m_num_cpt_Qty   = 0;
-      
+
     } while (0); // End of main do-loop
-    
+
     // Return
     return;
 
@@ -143,14 +145,13 @@ void Catalogue::free_memory(void) {
       if (m_src.object != NULL) delete [] m_src.object;
       if (m_cpt.object != NULL) delete [] m_cpt.object;
       if (m_cc         != NULL) delete [] m_cc;
-//      if (m_src_cpts   != NULL) delete [] m_src_cpts;
       if (m_cpt_stat   != NULL) delete [] m_cpt_stat;
 
       // Initialise memory
       init_memory();
 
     } while (0); // End of main do-loop
-    
+
     // Return
     return;
 
@@ -178,7 +179,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 
       // Set catalogAccess verbosity
       catalogAccess::verbosity = g_u9_verbosity;
-    
+
       // Determine the number of objects in the catalogue. First we try to
       // access the catalogue on disk, then on the Web ...
       caterr = in->cat.getMaxNumRows(&in->numTotal, catName);
@@ -195,7 +196,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
           continue;
         }
       }
-          
+
       // Import the catalogue descriptor. First we try to access the catalogue 
       // on disk, then on the Web ...
       caterr = in->cat.importDescription(catName);
@@ -222,7 +223,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
           Log(Log_2, " Loaded catalogue '%s' descriptor from file.", 
               catName.c_str());
       }
-      
+
       // Store input name
       in->inName = catName;
 
@@ -234,7 +235,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
       titles.push_back(" ");
       titles.push_back(" ");
       titles.push_back(" ");
-      
+
       // Extract titles from catalogue
       in->cat.getCatalogTitles(&titles);
 
@@ -248,7 +249,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 
       // Determine the number of loaded objects in catalogue (should be 0)
       in->cat.getNumRows(&in->numLoad);
-           
+
       // Dump catalogue descriptor (optionally)
       if (par->logVerbose()) {
         status = dump_descriptor(in, status);
@@ -256,14 +257,14 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
           continue;
         Log(Log_2, " ");
       }
-    
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::get_input_descriptor (status=%d)", 
           status);
-    
+
     // Return status
     return status;
 
@@ -289,7 +290,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
     double       e_RA;
     double       e_DE;
     ObjectInfo  *ptr;
-    
+
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::get_input_catalogue");
@@ -325,7 +326,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
         if (par->logVerbose())
           Log(Log_2, " Loaded catalogue '%s' from file.", in->inName.c_str());
       }
-      
+
       // Determine the number of loaded objects in catalogue. Fall throgh if
       // there are no objects loaded
       in->cat.getNumRows(&in->numLoad);
@@ -341,12 +342,12 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
-          
+
       // Extract object information
       ptr      = in->object;
       obj_name = in->cat.getNameObjName();
       for (i = 0; i < in->numLoad; i++, ptr++) {
-      
+
         // Get object name using firt catalogAccess, then "NAME" and then "ID"
         if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
           obj_name = "NAME";
@@ -436,7 +437,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
           ptr->pos_err_maj = posErr;
           ptr->pos_err_min = posErr;
         }
-        
+
       } // endfor: looped over all objects
 
     } while (0); // End of main do-loop
@@ -445,7 +446,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::get_input_catalogue (status=%d)", 
           status);
-    
+
     // Return status
     return status;
 
@@ -476,14 +477,14 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
 
     // Single loop for common exit point
     do {
-          
+
       // Extract information from catalogue
       numQty = in->cat.getQuantityNames(&qtyNames);
       numQty = in->cat.getQuantityUnits(&qtyUnits);
       numQty = in->cat.getQuantityUCDs(&qtyUCDs);
       numQty = in->cat.getQuantityDescription(&qtyDesc);
       numQty = in->cat.getQuantityTypes(&qtyTypes);
-      
+
       // Get string lengths
       maxLenNames = 0;
       maxLenUnits = 0;
@@ -501,30 +502,30 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
       }
 
       // Dump catalogue information
-      Log(Log_2, " Catalogue input name .............: %s", 
+      Log(Log_2, " Catalogue input name .............: %s",
           in->inName.c_str());
-      Log(Log_2, " Catalogue code ...................: %s", 
+      Log(Log_2, " Catalogue code ...................: %s",
           in->catCode.c_str());
-      Log(Log_2, " Catalogue URL ....................: %s", 
+      Log(Log_2, " Catalogue URL ....................: %s",
           in->catURL.c_str());
-      Log(Log_2, " Catalogue name ...................: %s", 
+      Log(Log_2, " Catalogue name ...................: %s",
           in->catName.c_str());
-      Log(Log_2, " Catalogue reference ..............: %s", 
+      Log(Log_2, " Catalogue reference ..............: %s",
           in->catRef.c_str());
-      Log(Log_2, " Catalogue table name .............: %s", 
+      Log(Log_2, " Catalogue table name .............: %s",
           in->tableName.c_str());
-      Log(Log_2, " Catalogue table reference ........: %s", 
+      Log(Log_2, " Catalogue table reference ........: %s",
           in->tableRef.c_str());
-      Log(Log_2, " Number of objects in catalogue ...: %d", 
+      Log(Log_2, " Number of objects in catalogue ...: %d",
           in->numTotal);
-      Log(Log_2, " Number of loaded objects .........: %d", 
+      Log(Log_2, " Number of loaded objects .........: %d",
           in->numLoad);
-      Log(Log_2, " Number of quantities (columns) ...: %d", 
+      Log(Log_2, " Number of quantities (columns) ...: %d",
           numQty);
 
       // Dump information about catalogue quantitites
       for (iQty = 0; iQty < numQty; iQty++) {
-      
+
         // Set quantity type
         switch (qtyTypes[iQty]) {
         case 0:
@@ -540,11 +541,11 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
           qtyType = "unknown";
           break;
         }
-        
+
         // Dump quantity
-        Log(Log_2, 
-            "  Quantity %3d ....................: %*s [%*s] (%*s) <%*s> (%s)", 
-            iQty+1, 
+        Log(Log_2,
+            "  Quantity %3d ....................: %*s [%*s] (%*s) <%*s> (%s)",
+            iQty+1,
             maxLenNames, qtyNames[iQty].c_str(),
             maxLenUnits, qtyUnits[iQty].c_str(),
             maxLenForms, qtyDesc[iQty].m_format.c_str(),
@@ -552,9 +553,9 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
             qtyType.c_str());
 
       } // endfor: looped over quantities
-    
+
     } while (0); // End of main do-loop
-    
+
     // Return status
     return status;
 
@@ -586,7 +587,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       Log(Log_2, "");
       Log(Log_2, "Counterpart identification results:");
       Log(Log_2, "===================================");
-      
+
       // Build header
       char add[256];
       char select[256] = "";
@@ -597,7 +598,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 
       // Dump header
       Log(Log_2, "                                      #Cpts%s", select);
- 
+
       // Loop over all sources
       for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
 
@@ -622,7 +623,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::dump_results (status=%d)", status);
-    
+
     // Return status
     return status;
 
@@ -684,7 +685,7 @@ Status Catalogue::build(Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::build");
-        
+
     // Single loop for common exit point
     do {
 
@@ -698,7 +699,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         Log(Log_2, "Prepare catalogues:");
         Log(Log_2, "===================");
       }
-      
+
       // Get input catalogue descriptors
       status = get_input_descriptor(par, par->m_srcCatName, &m_src, status);
       if (status != STATUS_OK) {
@@ -723,13 +724,13 @@ Status Catalogue::build(Parameters *par, Status status) {
               " 'mem://gtsrcid'.", (Status)status);
         continue;
       }
-    
+
       // Create FITS output catalogue on disk
-      status = cfits_create(&m_outFile, (char*)par->m_outCatName.c_str(), par, 
+      status = cfits_create(&m_outFile, (char*)par->m_outCatName.c_str(), par,
                             status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to create FITS output catalogue '%s'.", 
+          Log(Error_2, "%d : Unable to create FITS output catalogue '%s'.",
               (Status)status, par->m_outCatName.c_str());
         continue;
       }
@@ -740,7 +741,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         Log(Log_2, "Build counterpart candidate catalogue:");
         Log(Log_2, "======================================");
       }
-      
+
       // Load source catalogue
       status = get_input_catalogue(par, &m_src, par->m_srcPosError, m_src_name,
                                    status);
@@ -754,7 +755,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         if (par->logVerbose())
           Log(Log_2, " Source catalogue loaded.");
       }
-      
+
       // Stop of the source catalogue is empty
       if (m_src.numLoad < 1) {
         status = STATUS_CAT_EMPTY;
@@ -770,10 +771,10 @@ Status Catalogue::build(Parameters *par, Status status) {
       // Set vectors dimensions
       m_src_cpts  = std::vector<int>(m_src.numLoad);
       m_cpt_names = std::vector<std::string>(m_src.numLoad);
-      
+
       // Loop over all sources
       for (iSrc = 0; iSrc < m_src.numLoad; iSrc++) {
-      
+
         // Get counterpart candidates for the source
         status = cid_get(par, iSrc, status);
         if (status != STATUS_OK)
@@ -781,7 +782,7 @@ Status Catalogue::build(Parameters *par, Status status) {
 
         // Collect counterpart statistics (before selection!)
         m_src_cpts[iSrc] = m_numCC;
-     
+
       } // endfor: looped over all sources
       if (status != STATUS_OK)
         continue;
@@ -797,7 +798,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Evaluate output catalogue quantities
-      status = cfits_eval(m_outFile, par, status);
+      status = cfits_eval(m_outFile, par, par->logNormal(), status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to evaluate output catalogue quantities .",
@@ -839,7 +840,7 @@ Status Catalogue::build(Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::build (status=%d)", status);
-    
+
     // Return status
     return status;
 

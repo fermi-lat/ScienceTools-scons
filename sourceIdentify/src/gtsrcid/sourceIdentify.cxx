@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2007/09/21 12:49:10  jurgen
+Enhance log-file output and chatter level
+
 Revision 1.10  2007/09/20 14:16:18  jurgen
 Improve st_app handling (dump version)
 
@@ -88,7 +91,7 @@ public:
 
         // Save the execution start time
         t_start = clock();
-      
+
         // Initialise log file
         status = LogInit(TOOL_LOGFILE, TOOL_VERSION, status);
         if (status != STATUS_OK)
@@ -121,11 +124,11 @@ public:
           status = par.dump(status);
           if (status != STATUS_OK) {
             if (par.logTerse())
-              Log(Error_3, "%d : Error while dumping task parameters.", status);      
+              Log(Error_3, "%d : Error while dumping task parameters.", status);
             continue;
           }
         }
-    
+
         // Build counterpart catalogue
         status = cat.build(&par, status);
         if (status != STATUS_OK) {
@@ -136,7 +139,7 @@ public:
         }
 
       } while (0); // End of main do-loop
- 
+
       // Save the execution stop time and calculate elapsed time
       clock_t t_stop   = clock();
       double  t_elapse = (double)(t_stop - t_start) / (double)CLOCKS_PER_SEC;
@@ -144,10 +147,10 @@ public:
       // Dump termination message
       if (par.logTerse())
         Log(Log_1, "Task terminated using %.3f sec CPU time.", t_elapse);
-   
+
       // Finish log file
       status = LogClose(status);
-    
+
       // Return from task
 //    return 0;
     }

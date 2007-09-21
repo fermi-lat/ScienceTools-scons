@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.2  2007/09/21 12:49:10  jurgen
+Enhance log-file output and chatter level
+
 Revision 1.1  2006/02/03 12:09:53  jurgen
 New file that contains routines that formerly existed in the file
 Catalogue.cxx. The routines have also been renamed and preceeded
@@ -86,7 +89,7 @@ int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
       }
 
     } while (0); // End of main do-loop
-    
+
     // Return
     return STATUS_OK;
 
@@ -98,7 +101,7 @@ int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
 /* -------------------------------------------------------------------------- */
 /* Private function: set FITS column format from catalogue description        */
 /*----------------------------------------------------------------------------*/
-int fits_tform_binary(int typecode, long repeat, long width, 
+int fits_tform_binary(int typecode, long repeat, long width,
                       std::string *format) {
 
     // Declare local variables
@@ -160,7 +163,7 @@ int fits_tform_binary(int typecode, long repeat, long width,
       }
 
     } while (0); // End of main do-loop
-    
+
     // Return
     return STATUS_OK;
 
@@ -176,7 +179,7 @@ int fits_tform_binary(int typecode, long repeat, long width,
 /* -------------------------------------------------------------------------- */
 /* Private method: create an empty FITS catalogue                             */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
+Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
                                Status status) {
 
     // Declare local variables
@@ -218,11 +221,11 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if we have no filename
       if (filename == NULL)
         continue;
@@ -238,12 +241,12 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       // If clobber=1 we make sure that the output catalogue does not yet exist
       if (par->m_clobber)
         remove(filename);
-        
+
       // Create empty FITS file.
       fstatus = fits_create_file(fptr, filename, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to create FITS catalogue '%s'.", 
+          Log(Error_2, "%d : Unable to create FITS catalogue '%s'.",
               fstatus, filename);
         continue;
       }
@@ -268,7 +271,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
 
           // Set quantity FITS column format
           set_fits_col_format(&qtyDesc[iQty], &form);
-        
+
           // Add quantity information to source quantity string
           m_src_Qty_ttype.push_back(qtyNames[iQty]);
           m_src_Qty_tform.push_back(form);
@@ -292,7 +295,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
 
           // Set quantity FITS column format
           set_fits_col_format(&qtyDesc[iQty], &form);
-        
+
           // Add quantity information to source quantity string
           m_cpt_Qty_ttype.push_back(qtyNames[iQty]);
           m_cpt_Qty_tform.push_back(form);
@@ -403,7 +406,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
         sprintf(tbucd[col], m_cpt_Qty_tbucd[iQty].c_str());
         col++;
       }
-      
+
       // Dump catalogue information (optionally)
       if (par->logExplicit()) {
         maxLenType = 0;
@@ -423,7 +426,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
         Log(Log_2, " Number of catalogue columns ......: %d", num_col);
         for (col = 0; col < num_col; col++) {
           Log(Log_2, 
-              "  Column %4d .....................: %*s [%*s] (%*s) <%*s>", 
+              "  Column %4d .....................: %*s [%*s] (%*s) <%*s>",
               col+1, 
               maxLenType, ttype[col], 
               maxLenUnit, tunit[col], 
@@ -433,21 +436,21 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       }
 
       // Create empty binary table
-      fstatus = fits_create_tbl(*fptr, BINARY_TBL, 0, num_col, 
+      fstatus = fits_create_tbl(*fptr, BINARY_TBL, 0, num_col,
                                 ttype, tform, tunit,
                                 OUTCAT_EXT_NAME, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to create catalogue '%s'.", 
+          Log(Error_2, "%d : Unable to create catalogue '%s'.",
               fstatus, filename);
         continue;
       }
-      
+
       // Write UCD keywords
       for (col = 0; col < num_col; col++) {
         sprintf(keyname, "TBUCD%d", col+1);
         sprintf(comment, "UCD for field %3d", col+1);
-        fstatus = fits_write_key(*fptr, TSTRING, keyname, tbucd[col], 
+        fstatus = fits_write_key(*fptr, TSTRING, keyname, tbucd[col],
                                  comment, &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())
@@ -458,7 +461,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       }
       if (fstatus != 0)
         continue;
-         
+
     } while (0); // End of main do-loop
 
     // Free temporary memory
@@ -493,9 +496,9 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_create (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_create (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -519,14 +522,14 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
 
     // Initialise FITSIO status
     fstatus = (int)status;
-    
+
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Determine number of rows in table
       fstatus = fits_get_num_rows(fptr, &nactrows, &fstatus);
       if (fstatus != 0) {
@@ -540,7 +543,7 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
       fstatus = fits_delete_rows(fptr, 1, nactrows, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to delete %d rows of catalogue.", 
+          Log(Error_2, "%d : Unable to delete %d rows of catalogue.",
               fstatus, nactrows);
         continue;
       }
@@ -553,9 +556,9 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_clear (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_clear (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -567,7 +570,7 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
 /* -------------------------------------------------------------------------- */
 /* Private method: add counterpart candidates to FITS file                    */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par, 
+Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
                             Status status) {
 
     // Declare local variables
@@ -598,14 +601,14 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
     // Initialise FITSIO status
     fstatus = (int)status;
-    
+
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
@@ -628,7 +631,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       fstatus = fits_insert_rows(fptr, firstrow, nrows, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to add %d rows to catalogue.", 
+          Log(Error_2, "%d : Unable to add %d rows to catalogue.",
               fstatus, nrows);
         continue;
       }
@@ -831,7 +834,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       }
       if (fstatus != 0)
         continue;
-   
+
     } while (0); // End of main do-loop
 
     // Delete temporary memory
@@ -851,7 +854,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_add (status=%d)", 
           status);
-    
+
     // Return status
     return status;
 
@@ -863,7 +866,8 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 /* -------------------------------------------------------------------------- */
 /* Private method: evaluate catalogue quantities                              */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
+Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
+                             Status status) {
 
     // Declare local variables
     int                    fstatus;
@@ -883,7 +887,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
@@ -895,7 +899,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
         continue;
 
       // Dump header (optionally)
-      if (par->logNormal()) {
+      if (verbose) {
         Log(Log_2, "");
         Log(Log_2, "Add new output catalogue quantities:");
         Log(Log_2, "====================================");
@@ -943,7 +947,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
         }
 
         // Dump new output catalogue quantities information (optionally)
-        if (par->logNormal()) {
+        if (verbose) {
           Log(Log_2, " New quantity .....................: %s = %s"
               " (format='%s')",
               par->m_outCatQtyName[iQty].c_str(),
@@ -965,7 +969,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_eval"
           " (status=%d)", status);
-    
+
     // Return status
     return status;
 
@@ -977,7 +981,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
 /* -------------------------------------------------------------------------- */
 /* Private method: returns the values of a table column                       */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
+Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
                                std::vector<double> *val, Status status) {
 
     // Declare local variables
@@ -1007,14 +1011,14 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
 
     // Single loop for common exit point
     do {
-    
+
       // Initialise probability vector
       val->clear();
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
-        
+
       // Fall through if we have no column name
       if (colname == NULL)
         continue;
@@ -1027,11 +1031,11 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
               fstatus);
         continue;
       }
-      
+
       // Fall through if table is empty
       if (nactrows < 1)
         continue;
-        
+
       // Determine the column number
       fstatus = fits_get_colnum(fptr, CASEINSEN, colname, &colnum, &fstatus);
       if (fstatus == COL_NOT_UNIQUE) {
@@ -1053,7 +1057,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
               " column '%s'.", fstatus, colname);
         continue;
       }
-      
+
       // Determine the type of the probability column
       fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
                                  &fstatus);
@@ -1063,7 +1067,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
               " '%s'.", fstatus, colname);
         continue;
       }
-      
+
       // Abort if column type is not one of the valid types
       if (typecode == TSTRING) {
         status = STATUS_CAT_BAD_PROB_COL;
@@ -1086,10 +1090,10 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
               " not allowed.", (Status)status, colname);
         continue;
       }
-      
+
       // Set the number of elements to be read
       nelements = repeat * nactrows;
-      
+
       // Allocate temporary memory to hold the column data
       tmp_val = new double[nelements];
       if (tmp_val == NULL) {
@@ -1098,7 +1102,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
-      
+
       // Read column data
       fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, nelements,
                               NULL, tmp_val, &anynul, &fstatus);
@@ -1108,7 +1112,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
               fstatus, colnum);
         continue;
       }
-      
+
       // Setup vector (multiply over vector column if it exists)
       ptr = tmp_val;
       for (irow = 0; irow < nactrows; irow++) {
@@ -1117,7 +1121,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
           prob *= *ptr++;
         val->push_back(prob);
       }
-      
+
     } while (0); // End of main do-loop
 
     // Set FITSIO status
@@ -1131,7 +1135,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_colval"
           " (status=%d)", status);
-    
+
     // Return status
     return status;
 
@@ -1159,7 +1163,7 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
@@ -1251,9 +1255,9 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 
         // Dump selection information
         if (par->logNormal()) {
-          Log(Log_2, " Selection ........................: %s", 
+          Log(Log_2, " Selection ........................: %s",
               par->m_select[iSel].c_str());
-          Log(Log_2, "   Number of deleted counterparts .: %d (%d => %d)", 
+          Log(Log_2, "   Number of deleted counterparts .: %d (%d => %d)",
               numBefore-numAfter, numBefore, numAfter);
         }
 
@@ -1269,9 +1273,9 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_select (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_select (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -1284,7 +1288,7 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 /* Private method: collect counterpart identification statistics from FITS    */
 /*                 table                                                      */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par, 
+Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
                                 std::vector<int> &stat, Status status) {
 
     // Declare local variables
@@ -1374,16 +1378,16 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
           sprintf(buffer, " (%.1f%%)", col_prob[i]*100.0);
           m_cpt_names[iSrc] += buffer;
         }
- 
+
       } // endfor: looped over all counterparts
 
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_collect (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_collect (status=%d)",
           status);
-    
+
    // Return status
     return status;
 
@@ -1395,7 +1399,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 /* -------------------------------------------------------------------------- */
 /* Private method: get real column from FITS table                            */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par, 
+Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
                                 std::string colname,
                                 std::vector<double> &col,
                                 Status status) {
@@ -1416,7 +1420,7 @@ Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
@@ -1455,7 +1459,7 @@ Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
-      
+
       // Read column data
       fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, numRows,
                               0, tmp, &anynul, &fstatus);
@@ -1481,9 +1485,9 @@ Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col (double) (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col (double) (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -1519,7 +1523,7 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
@@ -1581,7 +1585,7 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
         continue;
       }
-      
+
       // Read column data
       fstatus = fits_read_col_str(fptr, colnum, 1, 1, numRows,
                                   NULL, tmp_id, &anynul, &fstatus);
@@ -1612,9 +1616,9 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col_str (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col_str (status=%d)",
           status);
-    
+
     // Return status
     return status;
 
@@ -1634,10 +1638,10 @@ Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cfits_save");
-        
+
     // Initialise FITSIO status
     fstatus = (int)status;
-        
+
     // Single loop for common exit point
     do {
 
@@ -1659,9 +1663,9 @@ Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, Status status) {
           Log(Error_2, "%d : Unable to close catalogue.", fstatus);
         continue;
       }
-    
+
     } while (0); // End of main do-loop
-    
+
     // Set FITSIO status
     if (status == STATUS_OK)
       status = (Status)fstatus;
@@ -1669,7 +1673,7 @@ Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_save (status=%d)", status);
-    
+
     // Return status
     return status;
 

@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2006/02/01 13:33:36  jurgen
+Tried to fix Win32 compilation bugs.
+Change revision number to 1.3.2.
+Replace header information with CVS typeset information.
+
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -42,10 +47,10 @@ Status LogInit(const char *logName, const char *taskName, Status status) {
 
     // Main do-loop to fall through in case of an error
     do {
-    
+
       // Clean log task name
       sprintf(gLogTaskName, "%s", "");
-    
+
       // If there is already a log file opened then close it first
       if (gLogFilePtr != NULL) {
         status = LogClose(status);
@@ -54,7 +59,7 @@ Status LogInit(const char *logName, const char *taskName, Status status) {
         else
           gLogFilePtr = NULL;
       }
-    
+
       // Open log file
       if (gLogFilePtr == NULL)
         gLogFilePtr = fopen(logName, "w");
@@ -62,7 +67,7 @@ Status LogInit(const char *logName, const char *taskName, Status status) {
         status = STATUS_LOG_OPEN_FAILED;
         continue;
       }
-      
+
       // If log file is not opened then signal an error
       if (gLogFilePtr == NULL) {
         status = STATUS_LOG_OPEN_FAILED;
@@ -91,7 +96,7 @@ Status LogClose(Status status) {
 
     // Main do-loop to fall through in case of an error
     do {
-    
+
       // Close log file
       if (gLogFilePtr != NULL)
         fclose(gLogFilePtr);
@@ -124,7 +129,7 @@ Status Log(MessageType msgType, const char *msgFormat, ...) {
 
     // Main do-loop to fall through in case of an error
     do {
-    
+
       // If no log file has been opened then open one now
       if (gLogFilePtr == NULL) {
         status = LogInit(DEFAULT_LOG_FILENAME, DEFAULT_TASK_NAME, status);
@@ -186,17 +191,17 @@ Status Log(MessageType msgType, const char *msgFormat, ...) {
         sprintf(type, "Unknown");
         break;
       }
-      
+
       // Get time
       now = time(NULL);
       #ifdef HAVE_GMTIME_R   
         gmtime_r(&now, &timeStruct);
       #else
-        memcpy(&timeStruct, gmtime(&now), sizeof(struct tm));      
+        memcpy(&timeStruct, gmtime(&now), sizeof(struct tm));
       #endif
-    
+
       // Write message type, time and task name to log file
-      if (fprintf(gLogFilePtr, "%s %04d-%02d-%02dT%02d:%02d:%02d %s: ", 
+      if (fprintf(gLogFilePtr, "%s %04d-%02d-%02dT%02d:%02d:%02d %s: ",
                   type, 
                   timeStruct.tm_year + 1900,
                   timeStruct.tm_mon + 1,
@@ -216,7 +221,7 @@ Status Log(MessageType msgType, const char *msgFormat, ...) {
         continue;
       }
       va_end(vl);
-      
+
       // Write <CR> to log file
       if (fprintf(gLogFilePtr, "\n") != 1) {
         status = STATUS_LOG_WRITE_FAILED;

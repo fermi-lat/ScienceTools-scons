@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2007/09/20 14:16:18  jurgen
+Improve st_app handling (dump version)
+
 Revision 1.9  2006/03/02 02:01:54  jurgen
 Set hidden parameters to meaningful values
 
@@ -36,9 +39,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r1p0"
+#define TOOL_VERSION  "v1r2p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "20-Sep-2007"
+#define TOOL_DATE     "21-Sep-2007"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
@@ -52,8 +55,6 @@ Replace header information with CVS typeset information.
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
-//#include "st_stream/StreamFormatter.h"
-//#include "st_stream/st_stream.h"
 
 /* Architecture specific definitions ________________________________________ */
 #ifndef EXPSYM

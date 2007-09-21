@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2007/09/21 12:49:10  jurgen
+Enhance log-file output and chatter level
+
 Revision 1.8  2006/02/09 22:49:52  jurgen
 Add 'L' to integer long constant
 
@@ -154,7 +157,7 @@ public:
 
   // Public methods
   Status build(Parameters *par, Status status);
-              
+
   // Private methods
 private:
   void   init_memory(void);
@@ -182,7 +185,7 @@ private:
                       Status status);
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_add(fitsfile *fptr, long iSrc, Parameters *par, Status status);
-  Status cfits_eval(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_eval(fitsfile *fptr, Parameters *par, int verbose, Status status);
   Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
                       std::vector<double> *val, Status status);
   Status cfits_select(fitsfile *fptr, Parameters *par, Status status);
