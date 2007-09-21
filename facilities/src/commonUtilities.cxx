@@ -43,7 +43,7 @@ namespace facilities {
   void commonUtilities::setEnvironment(const std::string &name, const std::string &value, bool overwrite){
     if(getenv(name.c_str())==NULL || overwrite){
 #ifdef WIN32
-      putenv((name+"="+value).c_str())
+      putenv((name+"="+value).c_str());
 #else
       setenv(name.c_str(), value.c_str(),1);
 #endif
