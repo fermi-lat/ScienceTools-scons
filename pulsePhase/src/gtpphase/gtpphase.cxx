@@ -62,25 +62,19 @@ void PulsePhaseApp::run() {
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
   par_group.Prompt("evtable");
+  par_group.Prompt("timefield");
   par_group.Prompt("scfile");
   par_group.Prompt("sctable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
   par_group.Prompt("ephstyle");
-  par_group.Prompt("demodbin");
-  par_group.Prompt("timefield");
-  par_group.Prompt("pphasefield");
-  par_group.Prompt("pphaseoffset");
+
   std::string eph_style = par_group["ephstyle"];
-  par_group.Save();
-
   for (std::string::iterator itor = eph_style.begin(); itor != eph_style.end(); ++itor) *itor = toupper(*itor);
-
   if (eph_style == "FREQ") {
     par_group.Prompt("ephepoch");
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
-    par_group.Prompt("leapsecfile");
     par_group.Prompt("ra");
     par_group.Prompt("dec");
     par_group.Prompt("phi0");
@@ -91,7 +85,6 @@ void PulsePhaseApp::run() {
     par_group.Prompt("ephepoch");
     par_group.Prompt("timeformat");
     par_group.Prompt("timesys");
-    par_group.Prompt("leapsecfile");
     par_group.Prompt("ra");
     par_group.Prompt("dec");
     par_group.Prompt("phi0");
@@ -104,7 +97,18 @@ void PulsePhaseApp::run() {
     throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
   }
 
-  par_group.Save(); // Save the values of the parameters.
+  par_group.Prompt("tcorrect");
+  par_group.Prompt("pphasefield");
+  par_group.Prompt("pphaseoffset");
+  par_group.Prompt("leapsecfile");
+  par_group.Prompt("chatter");
+  par_group.Prompt("clobber");
+  par_group.Prompt("debug");
+  par_group.Prompt("gui");
+  par_group.Prompt("mode");
+
+  // Save the values of the parameters.
+  par_group.Save();
 
   // Open the event file(s).
   openEventFile(par_group, false);
