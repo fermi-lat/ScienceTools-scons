@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   v1r0p4                                                  #
+#  Version:   v1r2p0                                                  #
 #  Component: A2                                                      #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
@@ -62,7 +62,7 @@ select09,s,h,"",,,"Selection criterium 9"
 #
 # Standard parameters
 #====================
-chatter,i,h,4,0,4,"Chattiness of output"
+chatter,i,h,1,0,4,"Chattiness of output"
 clobber,b,h,yes,,,"Overwrite existing output catalogue ?"
 debug,b,h,no,,,"Debugging mode activated"
 mode,s,h,"ql",,,"Mode of automatic parameters"

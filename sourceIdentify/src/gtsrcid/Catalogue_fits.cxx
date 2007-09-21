@@ -5,6 +5,12 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.1  2006/02/03 12:09:53  jurgen
+New file that contains routines that formerly existed in the file
+Catalogue.cxx. The routines have also been renamed and preceeded
+by "cfits_". These routines are handling the output catalogue
+creation and allow in memory catalogues and FITS disk catalogues.
+
 ------------------------------------------------------------------------------*/
 
 /* Includes _________________________________________________________________ */
@@ -171,7 +177,7 @@ int fits_tform_binary(int typecode, long repeat, long width,
 /* Private method: create an empty FITS catalogue                             */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
-                               int verbose, Status status) {
+                               Status status) {
 
     // Declare local variables
     int                                    fstatus;
@@ -222,7 +228,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
         continue;
 
       // Dump header (optionally)
-      if (verbose) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Create new FITS catalogue:");
         Log(Log_2, "==========================");
@@ -399,7 +405,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       }
       
       // Dump catalogue information (optionally)
-      if (verbose) {
+      if (par->logExplicit()) {
         maxLenType = 0;
         maxLenUnit = 0;
         maxLenForm = 0;
@@ -857,8 +863,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 /* -------------------------------------------------------------------------- */
 /* Private method: evaluate catalogue quantities                              */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
-                             Status status) {
+Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables
     int                    fstatus;
@@ -890,7 +895,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
         continue;
 
       // Dump header (optionally)
-      if (verbose) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Add new output catalogue quantities:");
         Log(Log_2, "====================================");
@@ -938,7 +943,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
         }
 
         // Dump new output catalogue quantities information (optionally)
-        if (verbose) {
+        if (par->logNormal()) {
           Log(Log_2, " New quantity .....................: %s = %s"
               " (format='%s')",
               par->m_outCatQtyName[iQty].c_str(),
@@ -1138,15 +1143,12 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
 /* -------------------------------------------------------------------------- */
 /* Private method: select catalogue entries                                   */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, int verbose, 
-                               Status status) {
+Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables
-    int                    fstatus;
-    long                   numBefore;
-    long                   numAfter;
-    std::string::size_type iSel;
-    std::string::size_type numSel;
+    int  fstatus;
+    long numBefore;
+    long numAfter;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1164,19 +1166,37 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, int verbose,
 
       // Determine number of output catalogue selection strings. Fall through
       // if there are no such strings
-      numSel = par->m_select.size();
-      if (numSel < 1)
+      m_num_Sel = par->m_select.size();
+      if (m_num_Sel < 1)
         continue;
 
       // Dump header
-      if (verbose) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Select catalogue counterparts:");
         Log(Log_2, "==============================");
       }
 
+      // Clear counterpart names
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
+        m_cpt_names[iSrc].clear();
+
+      // Allocate and initialise selection statistics. This is a table of size
+      // [m_src.numLoad][numSel]
+      m_cpt_stat = new int[m_src.numLoad*m_num_Sel];
+      if (m_cpt_stat == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+         continue;
+      }
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
+        for (int iSel = 0; iSel < m_num_Sel; ++iSel)
+          m_cpt_stat[iSrc*(int)m_num_Sel + (int)iSel] = 0;
+      }
+
       // Select catalogue entries
-      for (iSel = 0; iSel < numSel; iSel++) {
+      for (int iSel = 0; iSel < m_num_Sel; ++iSel) {
 
         // Determine number of rows in table before selection
         fstatus = fits_get_num_rows(fptr, &numBefore, &fstatus);
@@ -1210,15 +1230,34 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, int verbose,
           break;
         }
 
+        // Determine number of counterparts for each source after selection
+        if (numAfter > 0) {
+
+          // Collect statistics
+          std::vector<int> stat;
+          status = cfits_collect(fptr, par, stat, status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to collect statistics from catalogue.",
+                           (Status)status);
+             continue;
+          }
+
+          // Save statistics
+          for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
+            m_cpt_stat[iSrc*m_num_Sel + iSel] = stat[iSrc];
+
+        } // endif: there were rows in catalogue
+
         // Dump selection information
-        if (verbose) {
+        if (par->logNormal()) {
           Log(Log_2, " Selection ........................: %s", 
               par->m_select[iSel].c_str());
           Log(Log_2, "   Number of deleted counterparts .: %d (%d => %d)", 
               numBefore-numAfter, numBefore, numAfter);
         }
 
-      }
+      } // endfor: looped over selection
       if (fstatus != 0)
         continue;
 
@@ -1240,12 +1279,354 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, int verbose,
 
 
 /*----------------------------------------------------------------------------*/
+/*                          Catalogue::cfits_collect                          */
+/* -------------------------------------------------------------------------- */
+/* Private method: collect counterpart identification statistics from FITS    */
+/*                 table                                                      */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par, 
+                                std::vector<int> &stat, Status status) {
+
+    // Declare local variables
+    std::vector<std::string> col_id;
+    std::vector<std::string> col_name;
+    std::vector<double>      col_prob;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_collect");
+
+    // Single loop for common exit point
+    do {
+    
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no sources
+      if (m_src.numLoad < 1)
+        continue;
+
+      // Allocate and initialise results
+      stat = std::vector<int>(m_src.numLoad);
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
+        m_cpt_names[iSrc].clear();
+        stat[iSrc] = 0;
+      }
+
+      // Read ID column
+      status = cfits_get_col_str(fptr, par, OUTCAT_COL_ID_NAME, col_id, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read ID column from catalogue.",
+                       (Status)status);
+         continue;
+      }
+
+      // Read counterpart name column. Don't stop on error
+      std::string cpt_name;
+      if (m_cpt_name[0] == '@')
+        cpt_name = m_cpt_name;
+      else
+        cpt_name = par->m_cptCatPrefix + m_cpt_name;
+      status = cfits_get_col_str(fptr, par, cpt_name, col_name, status);
+      if (status != STATUS_OK)
+        status = STATUS_OK;
+
+      // Read probability column. Don't stop on error
+      status = cfits_get_col(fptr, par, OUTCAT_COL_PROB_NAME, col_prob, status);
+      if (status != STATUS_OK)
+        status = STATUS_OK;
+
+      // Determine number of counterparts for each source
+      for (int i = 0; i < (int)col_id.size(); ++i) {
+
+        // Get source number. Note that we have to subtract 1 since the
+        // sources index starts with 1
+        char src_row[256];
+        col_id[i].copy(src_row, 5, 3);
+        int iSrc = atoi(src_row) - 1;
+
+        // Get counterpart number
+//        strncpy(buffer, &((col_id[i].c_str())[9]), 5);
+//        int iCpt = atoi(buffer);
+
+        // Fall through if index is invalid
+        if (iSrc < 0 || iSrc >= m_src.numLoad)
+          continue;
+
+        // Increment statistics vector
+        stat[iSrc]++;
+
+        // If there were already names then add a seperator
+        if (m_cpt_names[iSrc].length() > 0)
+          m_cpt_names[iSrc] += ", ";
+
+        // If we have a name then add it now
+        if (col_name.size() == col_id.size())
+          m_cpt_names[iSrc] += cid_assign_src_name(col_name[i], iSrc);
+        else
+          m_cpt_names[iSrc] += "no-name";
+
+        // If we have a probability than attach it now
+        if (col_prob.size() == col_id.size()) {
+          char buffer[256];
+          sprintf(buffer, " (%.1f%%)", col_prob[i]*100.0);
+          m_cpt_names[iSrc] += buffer;
+        }
+ 
+      } // endfor: looped over all counterparts
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_collect (status=%d)", 
+          status);
+    
+   // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                        Catalogue::cfits_get_col                            */
+/* -------------------------------------------------------------------------- */
+/* Private method: get real column from FITS table                            */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par, 
+                                std::string colname,
+                                std::vector<double> &col,
+                                Status status) {
+
+    // Declare local variables
+    int     colnum;
+    int     anynul;
+    long    numRows;
+    int     fstatus;
+    double* tmp = NULL;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_get_col (double)");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+    
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Determine number of rows in table
+      fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Fall through if there are no rows
+      if (numRows < 1)
+        continue;
+
+      // Allocate result vector
+      col = std::vector<double>(numRows);
+
+      // Determine number of requested column
+      fstatus = fits_get_colnum(fptr, CASESEN, (char*)colname.c_str(), 
+                                &colnum, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to find column %s in catalogue.",
+              fstatus, colname.c_str());
+        continue;
+      }
+
+      // Allocate temporary memory to hold the data
+      tmp = new double[numRows];
+      if (tmp == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+      
+      // Read column data
+      fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, numRows,
+                              0, tmp, &anynul, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read data from column %s in catalogue.",
+              fstatus, colname.c_str());
+        continue;
+      }
+
+      // Copy information into result vector
+      for (int i = 0; i < numRows; ++i)
+        col[i] = tmp[i];
+
+    } while (0); // End of main do-loop
+
+    // Free temporary memory
+    if (tmp != NULL) delete [] tmp;
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col (double) (status=%d)", 
+          status);
+    
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                       Catalogue::cfits_get_col_str                         */
+/* -------------------------------------------------------------------------- */
+/* Private method: get string column from FITS table                          */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par, 
+                                    std::string colname,
+                                    std::vector<std::string> &col,
+                                    Status status) {
+
+    // Declare local variables
+    int    colnum;
+    int    typecode;
+    int    anynul;
+    long   repeat;
+    long   width;
+    long   numRows;
+    int    fstatus;
+    char** tmp_id = NULL;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_get_col_str");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+    
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Determine number of rows in table
+      fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Fall through if there are no rows
+      if (numRows < 1)
+        continue;
+
+      // Allocate result vector
+      col = std::vector<std::string>(numRows);
+
+      // Determine number of requested column
+      fstatus = fits_get_colnum(fptr, CASESEN, (char*)colname.c_str(), 
+                                &colnum, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to find column %s in catalogue.",
+              fstatus, colname.c_str());
+        continue;
+      }
+
+      // Determine size of requested column
+      fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
+                                 &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine width of column %s in catalogue.",
+             fstatus, colname.c_str());
+        continue;
+      }
+
+      // Allocate temporary memory to hold the ID column
+      tmp_id = new (char*[numRows]);
+      if (tmp_id == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+      for (int i = 0; i < numRows; ++i) {
+        tmp_id[i] = NULL;
+        tmp_id[i] = new char[width+1];
+        if (tmp_id[i] == NULL) {
+          status = STATUS_MEM_ALLOC;
+          continue;
+        }
+      }
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+      
+      // Read column data
+      fstatus = fits_read_col_str(fptr, colnum, 1, 1, numRows,
+                                  NULL, tmp_id, &anynul, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read data from column %s in catalogue.",
+              fstatus, colname.c_str());
+        continue;
+      }
+
+      // Copy information into result vector
+      for (int i = 0; i < numRows; ++i)
+        col[i].assign(tmp_id[i]);
+
+    } while (0); // End of main do-loop
+
+    // Free temporary memory
+    if (tmp_id != NULL) {
+      for (int i = 0; i < numRows; ++i) {
+        if (tmp_id[i] != NULL) delete [] tmp_id[i];
+      }
+      delete [] tmp_id;
+    }
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_get_col_str (status=%d)", 
+          status);
+    
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
 /*                              Catalogue::cfits_save                         */
 /* -------------------------------------------------------------------------- */
 /* Private method: Save catalogue.                                            */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, int verbose, 
-                             Status status) {
+Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables
     int fstatus;
@@ -1265,7 +1646,7 @@ Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, int verbose,
         continue;
 
       // Dump header
-      if (verbose) {
+      if (par->logNormal()) {
         Log(Log_2, "");
         Log(Log_2, "Save counterpart candidate catalogue:");
         Log(Log_2, "=====================================");

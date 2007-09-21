@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.13  2007/09/20 16:28:21  jurgen
+Enhance catalogue interface for column recognition
+
 Revision 1.12  2006/02/09 13:06:18  jurgen
 Put maximum number of source to load at once in a constant and change
 value to a large value (since the loading logic has not yet been
@@ -107,6 +110,11 @@ void Catalogue::init_memory(void) {
       m_numCC         = 0;
       m_cc            = NULL;
 
+      // Initialise counterpart statistics
+//      m_src_cpts      = NULL;
+      m_cpt_stat      = NULL;
+      m_num_Sel       = 0;
+
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
       m_num_cpt_Qty   = 0;
@@ -135,6 +143,8 @@ void Catalogue::free_memory(void) {
       if (m_src.object != NULL) delete [] m_src.object;
       if (m_cpt.object != NULL) delete [] m_cpt.object;
       if (m_cc         != NULL) delete [] m_cc;
+//      if (m_src_cpts   != NULL) delete [] m_src_cpts;
+      if (m_cpt_stat   != NULL) delete [] m_cpt_stat;
 
       // Initialise memory
       init_memory();
@@ -266,15 +276,18 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 /* Private method: get data for input catalogue                               */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
-                                      double posErr, Status status) {
+                                      double posErr, std::string &obj_name,
+                                      Status status) {
 
     // Declare local variables
     int          caterr;
     long         i;
     double       err;
+    double       err_max;
+    double       err_min;
+    double       err_ang;
     double       e_RA;
     double       e_DE;
-    std::string  obj_name;
     ObjectInfo  *ptr;
     
     // Debug mode: Entry
@@ -336,20 +349,17 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       
         // Get object name using firt catalogAccess, then "NAME" and then "ID"
         if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
-          if (in->cat.getSValue("NAME", i, &(ptr->name)) != IS_OK) {
-            if (in->cat.getSValue("ID", i, &(ptr->name)) != IS_OK) {
+          obj_name = "NAME";
+          if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
+            obj_name = "ID";
+            if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
+              obj_name = "no-name";
             }
           }
         }
 
-        // Check if string is empty
-        std::string empty = ptr->name;
-        std::remove(empty.begin(), empty.end(), ' ');
-        if (empty == " ") {
-          std::ostringstream number;
-          number << (i+1);
-          ptr->name = "CAT_ROW_" + number.str();
-        }
+        // Assign source name
+        ptr->name = cid_assign_src_name(ptr->name, i);
 
         // Initalise position, error and validity flag
         ptr->pos_valid   = 0;        // Invalid position
@@ -393,6 +403,15 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
           ptr->pos_err_maj = err;
           ptr->pos_err_min = err;
           ptr->pos_err_ang = 0.0;
+        }
+
+        // Try getting position error using POS_ERR keywords
+        else if ((in->cat.getNValue("POS_ERR_MAX", i, &err_max) == IS_OK) &&
+                 (in->cat.getNValue("POS_ERR_MIN", i, &err_min) == IS_OK) &&
+                 (in->cat.getNValue("POS_ERR_ANG", i, &err_ang) == IS_OK)) {
+          ptr->pos_err_maj = err_max;
+          ptr->pos_err_min = err_min;
+          ptr->pos_err_ang = err_ang;
         }
 
         // Try getting position error using standard keywords
@@ -543,6 +562,74 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
 
 
 /*----------------------------------------------------------------------------*/
+/*                            Catalogue::dump_results                          */
+/* -------------------------------------------------------------------------- */
+/* Private method: dump counterpart identification results                    */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::dump_results(Parameters *par, Status status) {
+
+    // Declare local variables
+    ObjectInfo *src;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::dump_results");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Dump header
+      Log(Log_2, "");
+      Log(Log_2, "Counterpart identification results:");
+      Log(Log_2, "===================================");
+      
+      // Build header
+      char add[256];
+      char select[256] = "";
+      for (int iSel = 0; iSel < m_num_Sel; ++iSel) {
+        sprintf(add, " Sel%2.2d", iSel+1);
+        strcat(select, add);
+      }
+
+      // Dump header
+      Log(Log_2, "                                      #Cpts%s", select);
+ 
+      // Loop over all sources
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
+
+        // Get pointer to source object
+        src = &(m_src.object[iSrc]);
+
+        // Build selection string
+        sprintf(select, " %5d", m_src_cpts[iSrc]);
+        for (int iSel = 0; iSel < m_num_Sel; ++iSel) {
+          sprintf(add, " %5d", m_cpt_stat[iSrc*m_num_Sel + iSel]);
+          strcat(select, add);
+        }
+
+        // Dump information
+        Log(Log_2, " Source %5d %18s ..: %s %s",
+            iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
+
+      } // endfor: looped over all sources
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::dump_results (status=%d)", status);
+    
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
 /*                              Catalogue::build                              */
 /* -------------------------------------------------------------------------- */
 /* Build counterpart catalogue.                                               */
@@ -553,29 +640,41 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
 /*   |                                                                        */
 /*   +-- get_input_descriptor (get counterpart catalogue input descriptior)   */
 /*   |                                                                        */
-/*   +-- create_output_catalogue (create output catalogue)                    */
+/*   +-- cfits_create (create output catalogue)                               */
 /*   |                                                                        */
 /*   +-- get_input_catalogue (get source catalogue)                           */
 /*   |                                                                        */
-/*   N-- get_counterpart_candidates (get counterpart candidates for each src) */
+/*   N-- cid_get (get counterpart candidates for each source)                 */
 /*   |   |                                                                    */
-/*   |   +-- get_counterparts (filter step)                                   */
+/*   |   +-- cid_filter (filter step)                                         */
 /*   |   |   |                                                                */
 /*   |   |   +-- get_input_catalogue (get counterpart catalogue)              */
 /*   |   |                                                                    */
-/*   |   +-- get_probability (refine step)                                    */
+/*   |   +-- cid_refine (refine step)                                         */
 /*   |   |   |                                                                */
-/*   |   |   +-- get_probability_angsep (get probability from angular sep.)   */
+/*   |   |   +-- cid_prob_angsep (get probability from angular separation)    */
 /*   |   |   |                                                                */
-/*   |   |   +-- cc_sort (sort counterpart candidates by decreasing prob.)    */
+/*   |   |   +-- cfits_clear (clear in-memory catalogue)                      */
+/*   |   |   |                                                                */
+/*   |   |   +-- cfits_add (add quantities to in-memory catalogue)            */
+/*   |   |   |                                                                */
+/*   |   |   +-- cfits_eval (evaluate quantities in in-memory catalogue)      */
+/*   |   |   |                                                                */
+/*   |   |   +-- cfits_colval (extract probability info from in-memory cat.)  */
+/*   |   |   |                                                                */
+/*   |   |   +-- cid_sort (sort counterpart candidates)                       */
 /*   |   |                                                                    */
-/*   |   +-- add_counterpart_candidates (add candidates to output catalogue)  */
-/*   |   |                                                                    */
-/*   |   +-- dump_counterpart_candidates (dump candidates to output catalogue)*/
+/*   |   +-- cfits_add (add candidates to output catalogue)                   */
 /*   |                                                                        */
-/*   +-- eval_output_catalogue_quantities (evaluate output catalogue qties)   */
+/*   +-- cfits_collect (collect counterpart results)                          */
 /*   |                                                                        */
-/*   +-- select_output_catalogue (select output catalogue entries)            */
+/*   +-- cfits_eval (evaluate output catalogue quantities)                    */
+/*   |                                                                        */
+/*   +-- cfits_select (select output catalogue entries)                       */
+/*   |                                                                        */
+/*   +-- cfits_save (save output catalogue)                                   */
+/*   |                                                                        */
+/*   +-- dump_results (dump results)                                          */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::build(Parameters *par, Status status) {
 
@@ -617,8 +716,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Create FITS catalogue in memory
-      status = cfits_create(&m_memFile, "mem://gtsrcid", par, par->logNormal(),
-                            status);
+      status = cfits_create(&m_memFile, "mem://gtsrcid", par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to create FITS memory catalogue"
@@ -628,7 +726,7 @@ Status Catalogue::build(Parameters *par, Status status) {
     
       // Create FITS output catalogue on disk
       status = cfits_create(&m_outFile, (char*)par->m_outCatName.c_str(), par, 
-                            par->logNormal(), status);
+                            status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to create FITS output catalogue '%s'.", 
@@ -644,7 +742,8 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
       
       // Load source catalogue
-      status = get_input_catalogue(par, &m_src, par->m_srcPosError, status);
+      status = get_input_catalogue(par, &m_src, par->m_srcPosError, m_src_name,
+                                   status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to load source catalogue '%s' data.",
@@ -667,6 +766,10 @@ Status Catalogue::build(Parameters *par, Status status) {
         if (par->logVerbose())
           Log(Log_2, " Source catalogue contains %d sources.", m_src.numLoad);
       }
+
+      // Set vectors dimensions
+      m_src_cpts  = std::vector<int>(m_src.numLoad);
+      m_cpt_names = std::vector<std::string>(m_src.numLoad);
       
       // Loop over all sources
       for (iSrc = 0; iSrc < m_src.numLoad; iSrc++) {
@@ -675,13 +778,26 @@ Status Catalogue::build(Parameters *par, Status status) {
         status = cid_get(par, iSrc, status);
         if (status != STATUS_OK)
           break;
-      
+
+        // Collect counterpart statistics (before selection!)
+        m_src_cpts[iSrc] = m_numCC;
+     
       } // endfor: looped over all sources
       if (status != STATUS_OK)
         continue;
 
+      // Collect statistics (used to build counterpart names)
+      std::vector<int> stat;
+      status = cfits_collect(m_outFile, par, stat, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to collect statistics from catalogue.",
+                        (Status)status);
+        continue;
+      }
+
       // Evaluate output catalogue quantities
-      status = cfits_eval(m_outFile, par, par->logNormal(), status);
+      status = cfits_eval(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to evaluate output catalogue quantities .",
@@ -690,7 +806,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Select output catalogue counterparts
-      status = cfits_select(m_outFile, par, par->logNormal(), status);
+      status = cfits_select(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to select output catalogue counterparts.",
@@ -699,14 +815,25 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Save output catalogue counterparts
-      status = cfits_save(m_outFile, par, par->logNormal(), status);
+      status = cfits_save(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to save output catalogue.",
               (Status)status);
         continue;
       }
-      
+
+      // Dump counterpart results
+     if (par->logTerse()) {
+       status = dump_results(par, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to dump counterpart results.",
+                (Status)status);
+          continue;
+        }
+      }
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.8  2006/02/09 22:49:52  jurgen
+Add 'L' to integer long constant
+
 Revision 1.7  2006/02/09 13:06:18  jurgen
 Put maximum number of source to load at once in a constant and change
 value to a large value (since the loading logic has not yet been
@@ -65,8 +68,7 @@ namespace sourceIdentify {
 #define OUTCAT_COL_DEC_UCD         "POS_EQ_DEC_MAIN"
 //
 #define OUTCAT_COL_MAJERR_COLNUM   4
-//#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAX"
-#define OUTCAT_COL_MAJERR_NAME     "PosErr"
+#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAX"
 #define OUTCAT_COL_MAJERR_FORM     "1E"
 #define OUTCAT_COL_MAJERR_UNIT     "deg"
 #define OUTCAT_COL_MAJERR_UCD      "ERROR"
@@ -88,6 +90,8 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_FORM       "1E"
 #define OUTCAT_COL_PROB_UNIT       "probability"
 #define OUTCAT_COL_PROB_UCD        ""
+//
+#define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
 /* Class constants __________________________________________________________ */
 const long   c_maxCptLoad    = 10000000000L; // Maximum # of sources to load at once
@@ -158,37 +162,44 @@ private:
   Status get_input_descriptor(Parameters *par, std::string catName, 
                               InCatalogue *in,  Status status);
   Status get_input_catalogue(Parameters *par, InCatalogue *in, double posErr,
-                             Status status);
+                             std::string &obj_name, Status status);
   Status dump_descriptor(InCatalogue *in, Status status);
+  Status dump_results(Parameters *par, Status status);
   //
   // Low-level source identification methods
   // ---------------------------------------
-  Status cid_get(Parameters *par, long iSrc, Status status);
-  Status cid_filter(Parameters *par, long iSrc, Status status);
-  Status cid_refine(Parameters *par, long iSrc, Status status);
-  Status cid_prob_angsep(Parameters *par, long iSrc, Status status);
-  Status cid_sort(Parameters *par, Status status);
-  Status cid_dump(Parameters *par, Status status);
+  Status      cid_get(Parameters *par, long iSrc, Status status);
+  Status      cid_filter(Parameters *par, long iSrc, Status status);
+  Status      cid_refine(Parameters *par, long iSrc, Status status);
+  Status      cid_prob_angsep(Parameters *par, long iSrc, Status status);
+  Status      cid_sort(Parameters *par, Status status);
+  Status      cid_dump(Parameters *par, Status status);
+  std::string cid_assign_src_name(std::string name, int row);
   //
   // Low-level FITS catalogue handling methods
   // -----------------------------------------
   Status cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
-                      int verbose, Status status);
+                      Status status);
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_add(fitsfile *fptr, long iSrc, Parameters *par, Status status);
-  Status cfits_eval(fitsfile *fptr, Parameters *par, int verbose, 
-                    Status status);
+  Status cfits_eval(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
                       std::vector<double> *val, Status status);
-  Status cfits_select(fitsfile *fptr, Parameters *par, int verbose, 
-                      Status status);
-  Status cfits_save(fitsfile *fptr, Parameters *par, int verbose, 
-                    Status status);
+  Status cfits_select(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
+                       Status status);
+  Status cfits_get_col(fitsfile *fptr, Parameters *par, std::string colname,
+                       std::vector<double> &col, Status status);
+  Status cfits_get_col_str(fitsfile *fptr, Parameters *par, std::string colname,
+                           std::vector<std::string> &col, Status status);
+  Status cfits_save(fitsfile *fptr, Parameters *par, Status status);
 private:
   //
   // Input catalogues
   InCatalogue              m_src;           // Source catalogue
   InCatalogue              m_cpt;           // Counterpart catalogue
+  std::string              m_src_name;      // Source names
+  std::string              m_cpt_name;      // Counterpart names
   //
   // Catalogue building parameters
   long                     m_maxCptLoad;    // Maximum number of counterparts to be loaded
@@ -200,6 +211,12 @@ private:
   // Counterpart candidate (CC) working arrays
   long                     m_numCC;         // Number of CCs
   CCElement               *m_cc;            // CCs
+  //
+  // Counterpart statistics
+  int                      m_num_Sel;       // Number of quantity selection criteria
+  int                     *m_cpt_stat;      // Counterpart statistics for each source
+  std::vector<int>         m_src_cpts;      // Number of initial counterparts
+  std::vector<std::string> m_cpt_names;     // Counterpart names for each source
   //
   // Output cataloge: source catalogue quantities
   long                     m_num_src_Qty;

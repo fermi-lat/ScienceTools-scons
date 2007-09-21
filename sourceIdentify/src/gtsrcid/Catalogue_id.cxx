@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.3  2007/09/20 16:28:21  jurgen
+Enhance catalogue interface for column recognition
+
 Revision 1.2  2006/02/07 16:05:04  jurgen
 Use ObjectInfo structure to hold catalogue object information
 
@@ -59,12 +62,9 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
       src = &(m_src.object[iSrc]);
 
       // Dump source information (optionally)
-      if (par->logExplicit()) {
-        Log(Log_2, "");
+      if (par->logNormal()) {
         if (src->pos_valid) {
-          Log(Log_2, " Source %5d .....................: %18s"
-              "  R.A.=%.3f  Dec.=%.3f"
-              "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+          Log(Log_2, " Source %5d .....................: %18s"SRC_FORMAT,
               iSrc+1, src->name.c_str(), 
               src->pos_eq_ra, src->pos_eq_dec, 
               src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
@@ -109,10 +109,12 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
       }
 
       // Optionally dump counterpart candidats
-      if (par->logExplicit())
+      if (par->logNormal()) {
         cid_dump(par, status);
+        Log(Log_2, "");
+      }
 
-    } while (0); // End of main do-loop
+     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -216,7 +218,8 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         if (!m_fCptLoaded) {
 
           // Load counterpart catalogue
-          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, status);
+          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, 
+                                       m_cpt_name, status);
           if (status != STATUS_OK) {
             if (par->logTerse())
               Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
@@ -250,6 +253,10 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
               Log(Error_2, "%d : Memory allocation failure.", (Status)status);
             continue;
           }
+
+          // Initialise memory for counterpart search
+          for (int i = 0; i < m_cpt.numLoad; ++i)
+            m_src_cpts[i] = 0;
            
           // Bookkeep catalogue loading
           m_fCptLoaded = 1;
@@ -314,15 +321,15 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
 
       // Optionally dump counterpart filter statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Filter step candidates ..........: %d", m_numCC);
+        Log(Log_2, "  Filter step candidates ..........: %5d", m_numCC);
         if (par->logVerbose()) {
-          Log(Log_2, "    Outside declination range .....: %d [%.3f - %.3f]", 
+          Log(Log_2, "    Outside declination range .....: %5d [%7.3f - %7.3f]", 
               numDec, cpt_dec_min, cpt_dec_max);
-          Log(Log_2, "    Outside Right Ascension range .: %d [%.3f - %.3f[", 
+          Log(Log_2, "    Outside Right Ascension range .: %5d [%7.3f - %7.3f[", 
               numRA, cpt_ra_min, cpt_ra_max);
         }
         if (numNoPos > 0)
-          Log(Warning_2, "    No positions ..................: %d", numNoPos);
+          Log(Warning_2, "    No positions ..................: %5d", numNoPos);
       }
       #if CATALOGUE_TIMING
       t_elapse_loop += (float)(clock() - t_start_loop) / (float)CLOCKS_PER_SEC;
@@ -439,7 +446,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         }
         
         // Evaluate in memory catalogue quantities
-        status = cfits_eval(m_memFile, par, 0, status);
+        status = cfits_eval(m_memFile, par, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to evaluate new quantities for in-memory"
@@ -527,12 +534,12 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
           for (i_add = 0; i_add < num_add; i_add++) {
             if (prob_too_small[i_add] > 1)
               Log(Warning_2, 
-                  "  Probabilities < 0.0 .............: %d (Quantity='%s')", 
+                  "  Probabilities < 0.0 .............: %5d (Quantity='%s')", 
                   prob_too_small[i_add],
                   par->m_probColNames[i_add].c_str());
             if (prob_too_large[i_add] > 1)
               Log(Warning_2, 
-                  "  Probabilities > 1.0 .............: %d (Quantity='%s')", 
+                  "  Probabilities > 1.0 .............: %5d (Quantity='%s')", 
                   prob_too_large[i_add],
                   par->m_probColNames[i_add].c_str());
           }
@@ -549,16 +556,16 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Refine step candidates ..........: %d", m_numCC);
+        Log(Log_2, "  Refine step candidates ..........: %5d", m_numCC);
         for (i_add = 0; i_add < num_add; i_add++) {
           if (prob_too_small[i_add] > 1)
             Log(Warning_2, 
-                "  Probabilities < 0.0 .............: %d (Quantity='%s')", 
+                "  Probabilities < 0.0 .............: %5d (Quantity='%s')", 
                 prob_too_small[i_add],
                 par->m_probColNames[i_add].c_str());
           if (prob_too_large[i_add] > 1)
             Log(Warning_2, 
-                "  Probabilities > 1.0 .............: %d (Quantity='%s')", 
+                "  Probabilities > 1.0 .............: %5d (Quantity='%s')", 
                 prob_too_large[i_add],
                 par->m_probColNames[i_add].c_str());
         }
@@ -828,23 +835,28 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         // Determine number of additional probabilites
         num_add = m_cc[iCC].prob_add.size();      
 
-        // Dump counterpart candidate information
-        if (!par->logVerbose()) {
-          Log(Log_2, "  Cpt %5d (P=%7.3f%% S=%7.2f'): %18s",
-              iCC+1, 
-              m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
-              cpt->name.c_str());
-        }
-        else {
+        // Normal log level
+        if (par->logNormal()) {
           if (cpt->pos_valid) {
-            Log(Log_2, "  Cpt %5d (P=%7.3f%% S=%7.2f'): %18s"
-                "  R.A.=%.3f  Dec.=%.3f"
-                "  err_maj=%.4f  err_min=%.4f  err_ang=%.4f",
+            Log(Log_2, "  Cpart %5d P=%7.3f%% S=%7.2f': %18s"SRC_FORMAT,
                 iCC+1, 
                 m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
                 cpt->name.c_str(), 
                 cpt->pos_eq_ra, cpt->pos_eq_dec, 
                 cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+          }
+          else {
+            Log(Log_2, "  Cpart %5d P=%7.3f%% S=.......': %18s"
+                " No position information found",
+                iCC+1, 
+                m_cc[iCC].prob*100.0,
+                cpt->name.c_str());
+          }
+        }
+
+        // Explicit log level
+        if (par->logVerbose()) {
+          if (cpt->pos_valid) {
             if (num_add > 0) {
               Log(Log_2, "   Angular separation probability .: %7.3f %%",
                   m_cc[iCC].prob_angsep*100.0);
@@ -857,14 +869,7 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
               }
             }
           }
-          else {
-            Log(Log_2, "  Cpt %5d (P=%7.3f%% S=  ---   ): %18s"
-                " No position information found",
-                iCC+1, 
-                m_cc[iCC].prob*100.0,
-                cpt->name.c_str());
-          }
-        } // endelse: high verbosity requested
+        }
 
       } // endfor: looped over counterpart candidats
     
@@ -878,6 +883,29 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
     return status;
 
 }
+
+
+/*----------------------------------------------------------------------------*/
+/*                      Catalogue::cid_assign_src_name                        */
+/* -------------------------------------------------------------------------- */
+/* Private method: assign source name if string                               */
+/*----------------------------------------------------------------------------*/
+std::string Catalogue::cid_assign_src_name(std::string name, int row) {
+
+    // If string is empty then assign a default name
+    std::string empty = name;
+    std::remove(empty.begin(), empty.end(), ' ');
+    if (empty == " ") {
+      std::ostringstream number;
+      number << (row+1);
+      name = "CAT_ROW_" + number.str();
+    }
+
+    // Return name
+    return name;
+    
+}
+
 
 /* Namespace ends ___________________________________________________________ */
 }
