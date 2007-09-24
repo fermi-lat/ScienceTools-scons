@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 evfile,        f, a, , , , "Event data file name"
 scfile,        f, a, , , , "Spacecraft data file name"
-psrdbfile,     f, a, DEFAULT, , , "Pulsar ephemerides database file name (DEFAULT - use standard eph db)"
+psrdbfile,     f, a, , , , "Pulsar ephemerides database file name"
 psrname,       s, a, "ANY", , , "Pulsar name"
 ra,            r, a, 0., , , "Right Ascension to be used for barycenter corrections"
 dec,           r, a, 0., , , "Declination to be used for barycenter corrections"
