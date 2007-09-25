@@ -178,7 +178,7 @@ psrname = ANY [string]
 
 \endverbatim
 
-    \section todo Open Issues
+    \section open_issues Open Issues
 \verbatim
 None.
 \endverbatim
