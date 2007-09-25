@@ -122,7 +122,6 @@ void PulsePhaseApp::run() {
   defineTimeCorrectionMode("NONE", SUPPRESSED, SUPPRESSED, SUPPRESSED);
   defineTimeCorrectionMode("AUTO", ALLOWED,    ALLOWED,    SUPPRESSED);
   defineTimeCorrectionMode("BARY", REQUIRED,   SUPPRESSED, SUPPRESSED);
-  // TODO: Do we need both BIN and ALL for this tool?
   defineTimeCorrectionMode("BIN",  REQUIRED,   REQUIRED,   SUPPRESSED);
   defineTimeCorrectionMode("ALL",  REQUIRED,   REQUIRED,   SUPPRESSED);
   selectTimeCorrectionMode(par_group);
