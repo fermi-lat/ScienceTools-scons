@@ -2,14 +2,41 @@
 #define _COMMON_UTILITIES_H_
 
 #include <string>
+/** @file commonUtilities.h
+    @author N. Golpayegani
+
+    This file declares the class commonUtilities for basic access to environment variables
+*/
+
 namespace facilities {
+  /// Class used to obtain various file paths and set environment variables
   class commonUtilities{
   public:
+    /** Function to return the data location of a given package 
+	@param pacakge String representing a package
+    */
     static std::string getDataPath(const std::string &package);
+    /** Function to return the xml location of a given package
+	@param package String representing the name of a package
+    */
     static std::string getXmlPath(const std::string &package);
+    /** Function to return the pfiles location of a package
+	@param package String represnting the name of a package
+    */
     static std::string getPfilesPath(const std::string &package);
+    /** Function to get the top level path of a package
+	@param package String representing the name of a package
+    */
     static std::string getPackagePath(const std::string &package);
+    /** Function to set an environment variable
+	@param name String representing the name of the environment variable
+	@param value String representing the value to assign to the environment variable
+	@param overwrite Boolean if set to true will overwrite an existing environment variable
+    */
     static void setEnvironment(const std::string &name, const std::string &value, bool overwrite=false);
+    /** Function that returns the value of an environment variable
+	@param name String representing the name of an environment variable to be retrieved
+    */
     static std::string getEnvironment(const std::string &name);
   private:
     static std::string getPackageRoot(const std::string &package);
