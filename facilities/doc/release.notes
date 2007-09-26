@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v1r16p7 26-Sep-2007 ng   New function for appending paths together
   v1r16p6 24-Sep-2007 ng   Added doxygen documentation
   v1r16p5 24-Sep-2007 ng   Use _putenv() instead of putenv() in windows.
   v1r16p4 21-Sep-2007 ng   Stupid typo fixed.

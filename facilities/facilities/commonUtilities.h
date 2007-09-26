@@ -38,6 +38,7 @@ namespace facilities {
 	@param name String representing the name of an environment variable to be retrieved
     */
     static std::string getEnvironment(const std::string &name);
+    static std::string joinPath(const std::string &first, const std::string &second);
   private:
     static std::string getPackageRoot(const std::string &package);
   };

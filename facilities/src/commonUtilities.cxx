@@ -79,4 +79,14 @@ namespace facilities {
     }
     return packageRoot;
   }
+
+  std::string commonUtilities::joinPath(const std::string &first, const std::string &second){
+#ifdef WIN32
+    return first+"\\"+second;
+#else
+    return first+"//"+second;
+#endif
+  }
+
 }
+
