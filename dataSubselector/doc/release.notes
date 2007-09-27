@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r6    27-Sep-07   JC   use facilities::commonUtilities::getDataPath
+                             in test program; rename Data subdir to data
     v5r5p1  16-Jul-07   JC   bug fix in DSS keyword counter
     v5r5    16-Jul-07   JC   do not write TIME range cuts in DSS keywords
                              since it is incorporated in GTIs
