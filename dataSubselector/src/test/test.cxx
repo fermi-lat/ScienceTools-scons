@@ -21,6 +21,8 @@
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -83,13 +85,13 @@ private:
 #define ASSERT_EQUALS(X, Y) CPPUNIT_ASSERT(std::fabs( (X - Y)/Y ) < 1e-4)
 
 void DssTests::setUp() {
-   char * root_path = ::getenv("DATASUBSELECTORROOT");
+   std::string root_path = facilities::commonUtilities::getDataPath("dataSubselector");
    m_infile = "input_events.fits";
    m_evtable = "EVENTS";
-   if (root_path) {
-      m_infile = std::string(root_path) + "/Data/" + m_infile;
+   if (root_path != "") {
+      m_infile = facilities::commonUtilities::joinPath(root_path, m_infile);
    } else {
-      throw std::runtime_error("DATASUBSELECTORROOT not set");
+      throw std::runtime_error("Unable to determine dataSubselector's data path");
    }
    m_outfile = "filtered_events.fits";
    m_outfile2 = "filtered_events_2.fits";
