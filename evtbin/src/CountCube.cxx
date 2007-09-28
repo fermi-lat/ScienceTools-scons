@@ -19,6 +19,8 @@
 
 #include "st_facilities/Env.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Table.h"
@@ -97,7 +99,7 @@ namespace evtbin {
 
   void CountCube::writeOutput(const std::string & creator, const std::string & out_file) const {
     // Standard file creation from base class.
-    createFile(creator, out_file, st_facilities::Env::appendFileName(m_data_dir, "LatCountCubeTemplate"));
+    createFile(creator, out_file, facilities::commonUtilities::joinPath(m_data_dir, "LatCountCubeTemplate"));
 
     // Open Count map extension of output PHA1 file. Use an auto_ptr so that the table object
     // will for sure be deleted, even if an exception is thrown.

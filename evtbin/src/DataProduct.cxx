@@ -27,6 +27,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/KeyRecord.h"
 #include "tip/Table.h"
+#include "facilities/commonUtilities.h"
 
 namespace {
 
@@ -94,7 +95,7 @@ namespace evtbin {
     using namespace st_facilities;
 
     // Find the directory containing templates.
-    m_data_dir = st_facilities::Env::getDataDir("evtbin");
+    m_data_dir = facilities::commonUtilities::getDataPath("evtbin");
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).

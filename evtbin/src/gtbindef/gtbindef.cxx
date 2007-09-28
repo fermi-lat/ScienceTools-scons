@@ -9,6 +9,8 @@
 
 #include "st_facilities/Env.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -30,7 +32,7 @@ void BinMakerApp::run() {
   std::string energy_units = pars["energyunits"];
   std::string out_file = pars["outfile"];
 
-  std::string data_dir = st_facilities::Env::getDataDir("evtbin");
+  std::string data_dir = facilities::commonUtilities::getDataPath("evtbin");
 
   // Determine whether writing time or energy bins.
   std::string start_field;
@@ -42,7 +44,7 @@ void BinMakerApp::run() {
     start_field = "E_MIN";
     stop_field = "E_MAX";
     table_name = "ENERGYBINS";
-    template_file = st_facilities::Env::appendFileName(data_dir, "LatEnergyBinDef.tpl");
+    template_file = facilities::commonUtilities::joinPath(data_dir, "LatEnergyBinDef.tpl");
 
     // Determine multiplier for output energy units.
     if (energy_units == "GeV") unit_multiplier = 1.e6;
@@ -54,7 +56,7 @@ void BinMakerApp::run() {
     start_field = "START";
     stop_field = "STOP";
     table_name = "TIMEBINS";
-    template_file = st_facilities::Env::appendFileName(data_dir, "LatTimeBinDef.tpl");
+    template_file = facilities::commonUtilities::joinPath(data_dir, "LatTimeBinDef.tpl");
   }
 
   std::ifstream fs(in_file.c_str());

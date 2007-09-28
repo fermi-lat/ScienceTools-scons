@@ -63,6 +63,7 @@
 // Tip type definitions
 #include "tip/tip_types.h"
 
+#include "facilities/commonUtilities.h"
 using namespace evtbin;
 
 const std::string s_cvs_id("$Name$");
@@ -129,10 +130,10 @@ EvtBinTest::EvtBinTest(): m_os("EvtBinTest", "EvtBinTest", 2), m_t_start(2238500
   m_e_min(30.), m_e_max(6000.), m_gbm_t_start(-4.193924833089113E-03), m_gbm_t_stop(1.368369758129120E-01), m_failed(false) {
   setName("test_evtbin");
   setVersion(s_cvs_id);
-  m_data_dir = st_facilities::Env::getDataDir("evtbin");
-  m_ft1_file = st_facilities::Env::appendFileName(m_data_dir, "ft1tiny.fits");
-  m_ft2_file = st_facilities::Env::appendFileName(m_data_dir, "ft2tiny.fits");
-  m_gbm_file = st_facilities::Env::appendFileName(m_data_dir, "gbmtiny.fits");
+  m_data_dir = facilities::commonUtilities::getDataPath("evtbin");
+  m_ft1_file = facilities::commonUtilities::joinPath(m_data_dir, "ft1tiny.fits");
+  m_ft2_file = facilities::commonUtilities::joinPath(m_data_dir, "ft2tiny.fits");
+  m_gbm_file = facilities::commonUtilities::joinPath(m_data_dir, "gbmtiny.fits");
 }
 
 void EvtBinTest::run() {
@@ -822,7 +823,7 @@ void EvtBinTest::testBinConfig() {
 
     // Now test the bin file case with energy bins.
     par_group["ebinalg"] = "FILE";
-    par_group["ebinfile"] = st_facilities::Env::appendFileName(m_data_dir, "energybins.fits");
+    par_group["ebinfile"] = facilities::commonUtilities::joinPath(m_data_dir, "energybins.fits");
 
     // Save these parameters.
     par_group.Save();
@@ -1458,8 +1459,8 @@ void EvtBinTest::testMultipleFiles() {
   separate.writeOutput("test_evtbin", "separate_spectrum.pha");
 
   // Names of files containing lists of equivalent split files containing events and sc data.
-  std::string ev_list_file = "@" + Env::appendFileName(m_data_dir, "ft1filelist");
-  std::string sc_list_file = "@" + Env::appendFileName(m_data_dir, "ft2filelist");
+  std::string ev_list_file = "@" + facilities::commonUtilities::joinPath(m_data_dir, "ft1filelist");
+  std::string sc_list_file = "@" + facilities::commonUtilities::joinPath(m_data_dir, "ft2filelist");
 
   // Expand the contents of the list file.
   FileSys::FileNameCont tmp_input_file = FileSys::expandFileList(ev_list_file);
