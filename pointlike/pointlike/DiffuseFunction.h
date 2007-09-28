@@ -59,7 +59,7 @@ public:
     double integral(const astro::SkyDir& dir, double a, double b)const;
 
     ///! average, for the given energy, about the direction and cone angle (in radians).  level is healpix level for pixelization.
-    double average(const astro::SkyDir& dir, double angle, int level = 9)const;
+    double average(const astro::SkyDir& dir, double angle, double tolerance = 1e-3)const;
 
 #if 0 // not implemented yet
     ///@return integral for the energy limits, over the function, in the given direction
