@@ -16,7 +16,6 @@
 #include <algorithm>
 #include <iterator>
 
-#include "facilities/commonUtilites.h"
 
 #ifdef WIN32
  #include <direct.h> // for chdir
@@ -294,10 +293,6 @@ int Module::test(int argc, char* argv[], const std::string& modulename)
 {
     int ret(0);
     try{
-
-       const char * mypath = facilities::commonUtilities::getPackagePath("embed_python").c_str();
-
-      //  Py_SetProgramName(const_cast<char*>((std::string(mypath)+"/python").c_str()));
 
         std::cout << "Test of Module, loading module " << modulename<< std::endl;
         Module setup("", modulename, argc, argv);
