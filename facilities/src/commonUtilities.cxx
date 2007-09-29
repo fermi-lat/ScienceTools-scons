@@ -84,7 +84,7 @@ namespace facilities {
 #ifdef WIN32
     return first+"\\"+second;
 #else
-    return first+"//"+second;
+    return first+"/"+second;
 #endif
   }
 
