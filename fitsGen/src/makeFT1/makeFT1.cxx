@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -177,6 +178,7 @@ void MakeFt1::run() {
 
    if (tstart != 0 || tstop != 0) {
       std::ostringstream time_cut;
+      time_cut << std::setprecision(10);
       time_cut << " && (EvtElapsedTime >= " << tstart << ") "
                << " && (EvtElapsedTime <= " << tstop << ")";
       filter += time_cut.str();
