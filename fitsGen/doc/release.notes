@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r7p1 29-Sep-07   JC   Set precision to 10 sig fig for prefilter cut on
+                            EvtElapsedTime in makeFT1
     v3r7   20-Sep-07   JC   Pass 5 classifications (ad hoc)
     v3r6p2 31-Jul-07   JC   fix logic error in parsing tstart tstop values;
                             include filtering on EvtElapsedTime
