@@ -38,6 +38,8 @@
 
 #include "optimizers/NewMinuit.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "MyFun.h"
 #include "BrokenPowerLaw.h"
 #include "ConstantValue.h"
@@ -91,11 +93,11 @@ void test_FunctionFactory() {
    std::cout << "*** testing FunctionFactory ***" << std::endl;
 
    std::string xmlFile;
-   const char *root = ::getenv("OPTIMIZERSROOT");
-   if (!root) {
+   std::string root = facilities::commonUtilities::getXmlPath("optimizers");
+   if (root=="") {
       xmlFile = "../xml/FunctionModels.xml";
    } else {
-      xmlFile = std::string(root) + "/xml/FunctionModels.xml";
+     xmlFile = facilities::commonUtilities::joinPath(root, "FunctionModels.xml");
    }
 
 // Create the factory object and list the standard prototypes.
@@ -140,10 +142,10 @@ void test_FunctionFactory() {
 
    std::cout << "\n*** Test for failure of readXml() method. ***\n" 
              << std::endl;
-   if (!root) {
+   if (root == "") {
       xmlFile = "../xml/BadModel.xml";
    } else {
-      xmlFile = std::string(root) + "/xml/BadModel.xml";
+     xmlFile = facilities::commonUtilities::joinPath(root, "BadModel.xml");
    }
 
    try {
