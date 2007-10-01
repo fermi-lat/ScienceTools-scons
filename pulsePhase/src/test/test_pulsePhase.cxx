@@ -9,6 +9,8 @@
 
 #include "st_facilities/Env.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "timeSystem/AbsoluteTime.h"
 #include "timeSystem/TimeRep.h"
 
@@ -28,7 +30,7 @@ int main() {
   // Set the data directory.
   std::string data_dir;
   try {
-    data_dir = st_facilities::Env::getDataDir("pulsePhase");
+    data_dir = facilities::commonUtilities::getDataPath("pulsePhase");
   } catch (const std::exception & x) {
     std::cerr << x.what() << std::endl;
     return 1;
@@ -38,7 +40,7 @@ int main() {
   TimingModel model;
 
   // Next test: read event file.
-  std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(st_facilities::Env::appendFileName(data_dir, "D1.fits"), "EVENTS"));
+  std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "D1.fits"), "EVENTS"));
  
   MetRep glast_tdb("TDB", 51910, 0., 0.);
   glast_tdb.setValue(123.456789);
