@@ -23,6 +23,8 @@
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
 
+#include "facilities/commonUtilities.h"
+
 void help();
 
 void load_sources();
@@ -35,13 +37,13 @@ int main(int iargc, char * argv[]) {
    try {
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
-   std::string xml_list("$(OBSERVATIONSIMROOT)/xml/obsSim_source_library.xml");
+   std::string xml_list(facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "obsSim_source_library.xml"));
    fileList.push_back(xml_list);
-   xml_list = "$(OBSERVATIONSIMROOT)/xml/3EG_catalog_20-1e6MeV.xml";
+   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "3EG_catalog_20-1e6MeV.xml");
    fileList.push_back(xml_list);
-   xml_list = "$(GRBROOT)/xml/GRB_user_library.xml";
+   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("GRB"), "GRB_user_library.xml");
    fileList.push_back(xml_list);
-   xml_list = "$(OBSERVATIONSIMROOT)/xml/time_source.xml";
+   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "time_source.xml");
    fileList.push_back(xml_list);
 
    load_sources();
