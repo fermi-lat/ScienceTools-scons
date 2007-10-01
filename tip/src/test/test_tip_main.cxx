@@ -24,6 +24,7 @@
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+#include "facilities/commonUtilities.h"
 
 // Thorough test of IExtensionData and its subclasses.
 int TestExtensionData(const std::string & data_dir, int currentStatus);
@@ -37,21 +38,10 @@ int main() {
 
   try {
     // Figure out runtime environment.
-    std::string tiproot;
     std::string data_dir;
 
     // Read TIPROOT environment variable.
-    const char * tiproot_cp = getenv("TIPROOT");
-
-    // Use it to set name of data directory:
-    if (0 != tiproot_cp) {
-      tiproot = tiproot_cp;
-#ifdef WIN32
-      data_dir = tiproot + "\\data\\";
-#else
-      data_dir = tiproot + "/data/";
-#endif
-    }
+    data_dir = facilities::commonUtilities::getDataPath("tip");
 
     // Perform startup initialization.
     IFileSvc::globalInit();
@@ -73,7 +63,7 @@ int main() {
 
     try {
       // Opening an existent file which is neither FITS nor Root should throw an exception.
-      my_table = IFileSvc::instance().editTable(data_dir + "ft1.tpl", "");
+      my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "ft1.tpl"), "");
 
       // If we got here, it didn't throw!
       std::cerr << "Unexpected: opening ft1.tpl didn't throw a TipException." << std::endl;
@@ -103,7 +93,7 @@ int main() {
 
     try {
       // Opening an existent FITS file but asking for a non-existent extension should throw an exception.
-      my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "NON_EXIS");
+      my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "NON_EXIS");
 
       // If we got here, it didn't throw!
       std::cerr << "Unexpected: opening extension NON_EXIS in a1.pha didn't throw a TipException." << std::endl;
@@ -118,7 +108,7 @@ int main() {
 
     try {
       // Opening an existent Root file but asking for a non-existent extension should throw an exception.
-      my_table = IFileSvc::instance().editTable(data_dir + "merit.root", "NON_EXIS");
+      my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "merit.root"), "NON_EXIS");
 
       // If we got here, it didn't throw!
       std::cerr << "Unexpected: opening extension NON_EXIS in merit.root didn't throw a TipException." << std::endl;
@@ -133,7 +123,7 @@ int main() {
 
     // Test opening some extensions in a1.pha, both with and without write access.
     try {
-      const Extension * ext = IFileSvc::instance().readExtension(data_dir + "a1.pha", "");
+      const Extension * ext = IFileSvc::instance().readExtension(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "");
       delete ext;
       std::cerr << "Expected: reading primary extension in a1.pha did not throw an exception." << std::endl;
     } catch (const TipException & x) {
@@ -142,7 +132,7 @@ int main() {
     }
 
     try {
-      const Extension * ext = IFileSvc::instance().readTable(data_dir + "a1.pha", "SPECTRUM");
+      const Extension * ext = IFileSvc::instance().readTable(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "SPECTRUM");
       delete ext;
       std::cerr << "Expected: reading SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
     } catch (const TipException & x) {
@@ -151,7 +141,7 @@ int main() {
     }
 
     try {
-      Extension * ext = IFileSvc::instance().editExtension(data_dir + "a1.pha", "");
+      Extension * ext = IFileSvc::instance().editExtension(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "");
       delete ext;
       std::cerr << "Expected: editing primary extension in a1.pha did not throw an exception." << std::endl;
     } catch (const TipException & x) {
@@ -160,7 +150,7 @@ int main() {
     }
 
     try {
-      Extension * ext = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM");
+      Extension * ext = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "SPECTRUM");
       delete ext;
       std::cerr << "Expected: editing SPECTRUM extension in a1.pha did not throw an exception." << std::endl;
     } catch (const TipException & x) {
@@ -169,7 +159,7 @@ int main() {
     }
 
     // The following test file should be present.
-    my_table = IFileSvc::instance().editTable(data_dir + "a1.pha", "SPECTRUM", "#row<100");
+    my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "a1.pha"), "SPECTRUM", "#row<100");
 
     // Populate a test array with one of the fields from the table.
     std::vector<double> counts_vec(my_table->getNumRecords());
@@ -487,7 +477,7 @@ int main() {
     delete my_table; my_table = 0;
 
     // Now test Root file access.
-    my_table = IFileSvc::instance().editTable(data_dir + "merit.root", "1", "McEnergy < 2000. && McEnergy > 50.");
+    my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "merit.root"), "1", "McEnergy < 2000. && McEnergy > 50.");
 
     // This should work:
     Header & header = my_table->getHeader();
@@ -532,7 +522,7 @@ int main() {
 
     try {
       // Test creating a new (FITS) file using ft1.tpl:
-      IFileSvc::instance().createFile("new_ft1.fits", data_dir + "ft1.tpl");
+      IFileSvc::instance().createFile("new_ft1.fits", facilities::commonUtilities::joinPath(data_dir, "ft1.tpl"));
 
       delete my_table; my_table = 0;
 
@@ -597,10 +587,10 @@ int main() {
     // Test reading and writing string valued columns.
     try {
       // Create an output file using a file for the template which has some string-valued columns.
-      IFileSvc::instance().createFile("new_groD4-dc2v1.fits", data_dir + "groD4-dc2v1.fits");
+      IFileSvc::instance().createFile("new_groD4-dc2v1.fits", facilities::commonUtilities::joinPath(data_dir, "groD4-dc2v1.fits"));
 
       // Open the input file for reading.
-      const Table * in_table = IFileSvc::instance().readTable(data_dir + "groD4-dc2v1.fits", "SPIN_PARAMETERS");
+      const Table * in_table = IFileSvc::instance().readTable(facilities::commonUtilities::joinPath(data_dir, "groD4-dc2v1.fits"), "SPIN_PARAMETERS");
 
       // Open the output file for writing.
       Table * out_table = IFileSvc::instance().editTable("new_groD4-dc2v1.fits", "SPIN_PARAMETERS");

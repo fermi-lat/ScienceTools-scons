@@ -7,6 +7,8 @@
 #include <string>
 #include <typeinfo>
 
+#include "facilities/commonUtilities.h"
+
 #include "TestHarness.h"
 
 namespace tip {
@@ -48,9 +50,9 @@ namespace tip {
 
   const std::string & TestHarness::getDataDir() const {
     if (m_data_dir.empty()) {
-      const char * tiproot = getenv("TIPROOT");
-      if (0 != tiproot && 0 != *tiproot) m_data_dir = std::string(tiproot) + "/data/";
-      else ReportWarning("TIPROOT environment variable not set");
+      m_data_dir = facilities::commonUtilities::getDataPath("tip");
+      if(m_data_dir == "")
+	ReportWarning("Unable to determine data path for tip package");
     }
     return m_data_dir;
   }
