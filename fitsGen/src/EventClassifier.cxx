@@ -17,6 +17,8 @@
 
 #include "fitsGen/EventClassifier.h"
 
+#include "facilities/commonUtilities.h"
+
 namespace fitsGen {
 
 EventClassifier::EventClassifier(const std::string & classifierScript) 
@@ -59,11 +61,11 @@ long EventClassifier::value() const {
 }
 
 std::string EventClassifier::pythonPath() const {
-   char * root_path(::getenv("FITSGENROOT"));
-   if (!root_path) {
-      throw std::runtime_error("FITSGENROOT env var not set.");
+   std::string root_path = facilities::commonUtilities::getPackagePath("fitsGen");
+   if (root_path == "") {
+      throw std::runtime_error("Unable to determine path to fitsGen");
    }
-   return std::string(root_path) + "/python";
+   return facilities::commonUtilities::joinPath(root_path, "python");
 }
 
 EventClassifier::MeritDict::MeritDict(embed_python::Module * module) 

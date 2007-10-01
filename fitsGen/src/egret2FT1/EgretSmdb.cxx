@@ -19,6 +19,7 @@
 #include "st_facilities/Env.h"
 #include "st_facilities/Util.h"
 
+#include "facilities/commonUtilities.h"
 #include "dataSubselector/Gti.h"
 
 #include "EgretSmdb.h"
@@ -123,8 +124,8 @@ void EgretSmdb::readEgretGtis(dataSubselector::Gti & gti) {
 //    }
 //    std::string infile(fitsGenroot);
 //    infile += "/data/egret_gtis_tjd.dat";
-   std::string infile(st_facilities::Env::getDataDir("fitsGen") 
-                      + "egret_gtis_tjd.dat");
+   std::string infile = facilities::commonUtilities::joinPath(
+     facilities::commonUtilities::getDataPath("fitsGen"), "egret_gtis_tjd.dat");
    std::vector<std::string> lines;
    st_facilities::Util::file_ok(infile);
    st_facilities::Util::readLines(infile, lines);

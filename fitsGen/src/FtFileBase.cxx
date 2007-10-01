@@ -16,6 +16,8 @@
 #include "st_facilities/Env.h"
 #include "st_facilities/Util.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "fitsGen/FtFileBase.h"
 
 namespace fitsGen {
@@ -35,8 +37,8 @@ void FtFileBase::init(const std::string & templateFile,
                       const std::string & extname) {
    std::string ft_template(templateFile);
    if (templateFile == "ft1.tpl" || templateFile == "ft2.tpl") {
-      ft_template = st_facilities::Env::appendFileName(
-         st_facilities::Env::getDataDir("fitsGen"), templateFile);
+      ft_template = facilities::commonUtilities::joinPath(
+         facilities::commonUtilities::getDataPath("fitsGen"), templateFile);
    } 
    tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
    if (ft_template != "") {

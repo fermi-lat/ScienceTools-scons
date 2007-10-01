@@ -27,6 +27,8 @@
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
+#include "facilities/commonUtilities.h"
+
 #include "st_stream/StreamFormatter.h"
 
 #include "st_app/AppParGroup.h"
@@ -163,11 +165,11 @@ void MakeFt1::run() {
    double tstart = m_pars["tstart"];
    double tstop = m_pars["tstop"];
 
-   std::string dataDir(st_facilities::Env::getDataDir("fitsGen"));
+   std::string dataDir(facilities::commonUtilities::getDataPath("fitsGen"));
 
    if (defaultFilter == "DEFAULT") {
-      defaultFilter = st_facilities::Env::appendFileName(dataDir,
-                                                         "pass5_cuts");
+      defaultFilter = facilities::commonUtilities::joinPath(dataDir,
+							    "pass5_cuts");
    }
    std::string filter;
    if (!st_facilities::Util::fileExists(defaultFilter)) {
@@ -189,7 +191,7 @@ void MakeFt1::run() {
 
    std::string dictFile = m_pars["dict_file"];
    if (dictFile == "DEFAULT") {
-      dictFile = st_facilities::Env::appendFileName(dataDir,"FT1variables");
+      dictFile = facilities::commonUtilities::joinPath(dataDir,"FT1variables");
    }
 
    ::Ft1Map_t ft1Dict;
