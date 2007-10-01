@@ -2,6 +2,7 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 #include "st_facilities/Env.h"
+#include "facilities/commonUtilities.h"
 
 #include "orbitSim/OrbSim.h"
 
@@ -302,11 +303,11 @@ void MyApp::run() {
 
 
 
-  std::string orbitsimroot = st_facilities::Env::getDataDir("orbitSim");
+  std::string orbitsimroot = facilities::commonUtilities::getDataPath("orbitSim");
 
   std::string ifname("ft2.fits");
 
-  std::string sfname = st_facilities::Env::appendFileName(orbitsimroot, ifname);
+  std::string sfname = facilities::commonUtilities::joinPath(orbitsimroot, ifname);
 
   osf.info(1) <<"OutPut File template is "<<sfname.c_str()<<"\n";
 
