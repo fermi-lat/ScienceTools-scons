@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.9  2007/09/21 12:49:10  jurgen
 Enhance log-file output and chatter level
 
@@ -51,7 +54,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         80
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         7
+#define OUTCAT_NUM_GENERIC         10
 //
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
@@ -93,6 +96,24 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_FORM       "1E"
 #define OUTCAT_COL_PROB_UNIT       "probability"
 #define OUTCAT_COL_PROB_UCD        ""
+//
+#define OUTCAT_COL_PROB1_COLNUM    8
+#define OUTCAT_COL_PROB1_NAME      "PROB_ANGSEP"
+#define OUTCAT_COL_PROB1_FORM      "1E"
+#define OUTCAT_COL_PROB1_UNIT      "probability"
+#define OUTCAT_COL_PROB1_UCD       ""
+//
+#define OUTCAT_COL_PROB2_COLNUM    9
+#define OUTCAT_COL_PROB2_NAME      "PROB_ADD"
+#define OUTCAT_COL_PROB2_FORM      "1E"
+#define OUTCAT_COL_PROB2_UNIT      "probability"
+#define OUTCAT_COL_PROB2_UCD       ""
+//
+#define OUTCAT_COL_ANGSEP_COLNUM   10
+#define OUTCAT_COL_ANGSEP_NAME     "ANGSEP"
+#define OUTCAT_COL_ANGSEP_FORM     "1E"
+#define OUTCAT_COL_ANGSEP_UNIT     "deg"
+#define OUTCAT_COL_ANGSEP_UCD      ""
 //
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
