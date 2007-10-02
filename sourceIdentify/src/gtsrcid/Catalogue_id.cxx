@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.6  2007/09/21 20:27:14  jurgen
+Correct cfits_collect bug (unstable row selection)
+
 Revision 1.5  2007/09/21 14:29:03  jurgen
 Correct memory bug and updated test script
 
@@ -528,8 +531,8 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
       }
 
       // Apply the maximum number of counterpart threshold
-      if (numUseCC > par->m_maxNumCtp)
-        numUseCC = par->m_maxNumCtp;
+      if (numUseCC > par->m_maxNumCpt)
+        numUseCC = par->m_maxNumCpt;
 
       // Eliminate counterpart candidates below threshold. Fall through if no 
       // counterparts are left

@@ -7,8 +7,7 @@
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   v1r2p0                                                  #
-#  Component: A2                                                      #
+#  Version:   v1r3p0                                                  #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
 #             knodlseder@cesr.fr                                      #
@@ -49,7 +48,7 @@ outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 #================
 probMethod,s,a,"POSITION",,,"Probability method"
 probThres,r,a,0.10,,,"Probability threshold"
-maxNumCtp,i,a,100,,,"Maximum number of counterpart candidates"
+maxNumCpt,i,a,100,,,"Maximum number of counterpart candidates"
 select01,s,h,"",,,"Selection criterium 1"
 select02,s,h,"",,,"Selection criterium 2"
 select03,s,h,"",,,"Selection criterium 3"

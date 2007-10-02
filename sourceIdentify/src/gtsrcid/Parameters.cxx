@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.7  2006/02/09 15:51:42  jurgen
+Remove unreferenced local variable 'pos'
+
 Revision 1.6  2006/02/07 11:10:51  jurgen
 Suppress catalogAccess verbosity
 
@@ -107,7 +110,7 @@ void Parameters::init_memory(void) {
       m_probThres   = 0.0;
       m_srcPosError = 0.0;
       m_cptPosError = 0.0;
-      m_maxNumCtp   = 0;
+      m_maxNumCpt   = 0;
       m_chatter     = 0;
       m_clobber     = 0;
       m_debug       = 0;
@@ -194,7 +197,7 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       m_probThres                = pars["probThres"];
       m_srcPosError              = pars["srcPosError"];
       m_cptPosError              = pars["cptPosError"];
-      m_maxNumCtp                = pars["maxNumCtp"];
+      m_maxNumCpt                = pars["maxNumCpt"];
       m_chatter                  = pars["chatter"];
       m_clobber                  = pars["clobber"];
       m_debug                    = pars["debug"];
@@ -389,7 +392,7 @@ Status Parameters::dump(Status status) {
             m_probColNames[i_add].c_str());
       }
       Log(Log_1, " Probability threshold ............: %e", m_probThres);
-      Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCtp);
+      Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
       if ((n = m_select.size()) > 0) {
         for (i = 0; i < n; i++) {
           Log(Log_1, " Output catalogue selection %2d ....: %s", 
