@@ -74,6 +74,7 @@
                           Added NDSKEYS keyword all product templates.
 18-jul-2007        v2 JP  Rationalized parameter names according to scheme
                           described in Confluence pages.
+02-oct-2007    v2r0p1 JP  Use commonUtilities for path-related utilities.
 --------------------------------------------------------------------------------
 \endverbatim
 
