@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2007/10/02 21:48:45  jurgen
+Add PROB_ANGSEP, PROB_ADD and ANGSEP generic columns to FITS output file
+
 Revision 1.10  2007/09/21 14:29:03  jurgen
 Correct memory bug and updated test script
 
@@ -54,7 +57,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         80
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         10
+#define OUTCAT_NUM_GENERIC         11
 //
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
@@ -97,19 +100,25 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_UNIT       "probability"
 #define OUTCAT_COL_PROB_UCD        ""
 //
-#define OUTCAT_COL_PROB1_COLNUM    8
-#define OUTCAT_COL_PROB1_NAME      "PROB_ANGSEP"
-#define OUTCAT_COL_PROB1_FORM      "1E"
-#define OUTCAT_COL_PROB1_UNIT      "probability"
-#define OUTCAT_COL_PROB1_UCD       ""
+#define OUTCAT_COL_PROB_P_COLNUM   8
+#define OUTCAT_COL_PROB_P_NAME     "PROB_ANGSEP"
+#define OUTCAT_COL_PROB_P_FORM     "1E"
+#define OUTCAT_COL_PROB_P_UNIT     "probability"
+#define OUTCAT_COL_PROB_P_UCD      ""
 //
-#define OUTCAT_COL_PROB2_COLNUM    9
-#define OUTCAT_COL_PROB2_NAME      "PROB_ADD"
-#define OUTCAT_COL_PROB2_FORM      "1E"
-#define OUTCAT_COL_PROB2_UNIT      "probability"
-#define OUTCAT_COL_PROB2_UCD       ""
+#define OUTCAT_COL_PROB_A_COLNUM   9
+#define OUTCAT_COL_PROB_A_NAME     "PROB_ADD"
+#define OUTCAT_COL_PROB_A_FORM     "1E"
+#define OUTCAT_COL_PROB_A_UNIT     "probability"
+#define OUTCAT_COL_PROB_A_UCD      ""
 //
-#define OUTCAT_COL_ANGSEP_COLNUM   10
+#define OUTCAT_COL_PROB_C_COLNUM   10
+#define OUTCAT_COL_PROB_C_NAME     "PROB_CHANCE"
+#define OUTCAT_COL_PROB_C_FORM     "1E"
+#define OUTCAT_COL_PROB_C_UNIT     "probability"
+#define OUTCAT_COL_PROB_C_UCD      ""
+//
+#define OUTCAT_COL_ANGSEP_COLNUM   11
 #define OUTCAT_COL_ANGSEP_NAME     "ANGSEP"
 #define OUTCAT_COL_ANGSEP_FORM     "1E"
 #define OUTCAT_COL_ANGSEP_UNIT     "deg"
@@ -143,6 +152,7 @@ typedef struct {                      // Counterpart candidate
   double                  angsep;       // Angular separation of CCs from source
   double                  prob_angsep;  // Probability from angular separation
   std::vector<double>     prob_add;     // Additional probabilities
+  double                  prob_chance;  // Chance coincidence probability
 } CCElement;
 
 typedef struct {                      // Catalogue object information

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.7  2007/10/02 22:01:16  jurgen
+Change parameter name maxNumCtp to maxNumCpt
+
 Revision 1.6  2007/09/21 20:27:14  jurgen
 Correct cfits_collect bug (unstable row selection)
 
@@ -323,6 +326,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         cpt_ptr->index       = iCpt;
         cpt_ptr->angsep      = 0.0;
         cpt_ptr->prob_angsep = 0.0;
+        cpt_ptr->prob_chance = 0.0;
         cpt_ptr++;
         m_numCC++;
 
@@ -509,7 +513,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
       // Assign the counterpart probabilities
       for (iCC = 0; iCC < m_numCC; iCC++)
-        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC];
+        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC] * (1.0 - m_cc[iCC].prob_chance);
 
       // Sort counterpart candidates by decreasing probability
       status = cid_sort(par, status);

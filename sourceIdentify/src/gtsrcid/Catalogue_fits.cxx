@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2007/10/02 21:48:45  jurgen
+Add PROB_ANGSEP, PROB_ADD and ANGSEP generic columns to FITS output file
+
 Revision 1.4  2007/09/21 20:27:14  jurgen
 Correct cfits_collect bug (unstable row selection)
 
@@ -381,16 +384,21 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_PROB_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_PROB_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_UCD);
-      col = OUTCAT_COL_PROB1_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_PROB1_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_PROB1_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_PROB1_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB1_UCD);
-      col = OUTCAT_COL_PROB2_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_PROB2_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_PROB2_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_PROB2_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB2_UCD);
+      col = OUTCAT_COL_PROB_P_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_P_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_P_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_P_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_P_UCD);
+      col = OUTCAT_COL_PROB_A_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_A_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_A_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_A_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_A_UCD);
+      col = OUTCAT_COL_PROB_C_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_C_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_C_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_C_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_C_UCD);
       col = OUTCAT_COL_ANGSEP_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_ANGSEP_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_ANGSEP_FORM);
@@ -767,7 +775,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       // Add angular separation probability
       for (row = 0; row < nrows; row++)
         dptr[row] = m_cc[row].prob_angsep;
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB1_COLNUM,
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_P_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
@@ -777,9 +785,13 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       }
 
       // Add additional probability
-      for (row = 0; row < nrows; row++)
-        dptr[row] = (m_cc[row].prob_angsep > 0.0) ? m_cc[row].prob / m_cc[row].prob_angsep : 0.0;
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB2_COLNUM,
+      for (row = 0; row < nrows; row++) {
+        double p = 1.0;
+        for (unsigned int i = 0; i < m_cc[row].prob_add.size(); ++i)
+          p *= m_cc[row].prob_add[i];
+        dptr[row] = p;
+      }
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_A_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
@@ -788,7 +800,20 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         continue;
       }
 
-     // Add angular separation
+      // Add chance coincidence probability
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].prob_chance;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_C_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write chance coincidence probability to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
+
+      // Add angular separation
       for (row = 0; row < nrows; row++)
         dptr[row] = m_cc[row].angsep;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_ANGSEP_COLNUM,
