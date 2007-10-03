@@ -468,6 +468,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
     double mjde = 0.0;
     SurProf profile;
 
+    double lastend = 0.0;
+
     // Removing initial part which is not used
 
 
@@ -559,11 +561,13 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	      sscanf(jnk, "%lf", &dec);
 	    }
 	  } else if((match_str((const char*) ln, " Slew ") == 1) && 
-		    (match_str((const char*) ln, " End ") == 1)) {
+		    (match_str((const char*) ln, " End ") == 1) &&
+		    (mode != -1)) {
 	    mjds =getMJD(ln);
 
 	  } else if ((match_str((const char*) ln, " Obs ") == 1) &&
-		     (match_str((const char*) ln, " End ") == 1)) {
+		     (match_str((const char*) ln, " End ") == 1)&&
+		    (mode != -1)) {
 	    mjde =getMJD(ln);
 
 	  }
@@ -675,6 +679,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 	}
       }
       
+      losf.info(3) << "mode="<<mode<<", mjdt="<<mjdt<<", mjds="<<mjds<<", mjde="<<mjde<<"\n";
+
 
       if(flg > 0){
 	continue;
@@ -758,6 +764,13 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
       if(flg == 0){
 
+	if(lastend > 0.0){
+	  if(lastend < mjdt){
+	    mjdt = lastend;
+	  }
+	}
+
+	lastend = mjde;
 
 	if(mode == 1 || mode == 2){
 	  double lpos[2];
@@ -769,6 +782,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 		  mode, ini->Resolution, ephem, lpos, OAtt, ini->start_MJD);
 
 
+
 	  pra = lpos[0];
 	  pdec = lpos[1];
 
@@ -777,14 +791,14 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
   
 
-	  if(pra == 0.0 && pdec == 0.0){
-	    exit(1);
-	  }
+// 	  if(pra == 0.0 && pdec == 0.0){
+// 	    exit(1);
+// 	  }
 
 	} else if (mode == 3){
 
 	  //	  printf("Calling MakeProfiled, mjdt=%f mjde=%f pra=%f pdec=%f\n", mjdt, mjde, pra, pdec);
-	  losf.info(3) << "Calling MakeProfiled with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<"\n";
+	  losf.info(3) << "Calling MakeProfiled with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<", pra="<<pra<<", pdec="<<pdec<<"\n";
 	  MakeProfiled(mjdt, mjde, ini->Resolution, pra, pdec, profile.epoch, 
 		       profile.times, profile.ofsts, ephem, OAtt, ini->start_MJD);
 

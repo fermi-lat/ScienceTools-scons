@@ -2375,8 +2375,18 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
 
 
+  //  printf("start=%f, slew=%f, emd=%f\n", start, mjds, end);
+
 
   if(mjds > end){
+
+    osf.err() << "\n####################################################################################################\n\n";
+    osf.err() << "                                           ERROR\n";
+    osf.err() << "\tEnd of slew time (" << mjds << ") is greater than the end of this snapshot (" << end << ")\n";
+    osf.err() << "\tThis might cause a seg fault. Please check. Exiting for now...........\n\n";
+    osf.err() << "####################################################################################################\n\n";
+
+/*
     std::ostringstream eBufT;
     eBufT << "\n####################################################################################################\n\n";
     eBufT << "                                            ERROR\n";
@@ -2385,6 +2395,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     eBufT << "####################################################################################################\n\n" <<std::ends;
 
     throw std::runtime_error(eBufT.str());
+*/
 
   }
 
@@ -2423,7 +2434,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     osf.err() << "it was found that at the merging point:\n";
     osf.err() << "the overall attitude would start at "<<OAtt->mjd[k-1]<<"\n";
     osf.err() << "while the newly part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
-    osf.err() << "This has the potential to create problem because of gaps.\n";
+    osf.err() << "This has the potential to create problems because of gaps.\n";
     osf.err() << "####################################################################################################\n\n";
   }
 
