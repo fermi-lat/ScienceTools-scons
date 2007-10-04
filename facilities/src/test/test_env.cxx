@@ -33,5 +33,16 @@ int main(){
     cerr<<"$COMMONUTILITIES incorrectly not overwritten"<<endl;
     errors++;
   }
+  testSet = commonUtilities::getEnvironment("FACILITIESXMLPATH");
+  if(testSet != ""){
+    cerr<<"FACILITIESXMLPATH incorrectly set"<<endl;
+    errors++;
+  }
+  commonUtilities::setupEnvironment();
+  testSet = commonUtilities::getEnvironment("FACILITIESXMLPATH");
+  if(testSet != commonUtilities::getXmlPath("facilities")){
+    cerr<<"FACILITIESXMLPATH incorrectly not set to right value"<<endl;
+    errors++;
+  }
   return errors;
 }

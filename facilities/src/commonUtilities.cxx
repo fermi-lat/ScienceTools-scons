@@ -88,5 +88,19 @@ namespace facilities {
 #endif
   }
 
+  void commonUtilities::setupEnvironment(){
+    if(environ!=NULL){
+      int counter=0;
+      while(environ[counter]!=NULL){
+	std::string env = environ[counter];
+	env = env.substr(0, env.find_first_of('='));
+	env = env.substr(0, env.find_last_of('ROOT'));
+	setEnvironment(env+"XMLPATH", getXmlPath(env));
+	setEnvironment(env+"DATAPATH", getDataPath(env));
+	setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+	counter++;
+      }
+    }
+  }
 }
 
