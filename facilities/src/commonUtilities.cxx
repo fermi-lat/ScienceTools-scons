@@ -1,6 +1,7 @@
 #include "facilities/commonUtilities.h"
 #include <iostream>
 #include <algorithm>
+#include <unistd.h>
 
 namespace facilities {
   std::string commonUtilities::getPackagePath(const std::string &package){
