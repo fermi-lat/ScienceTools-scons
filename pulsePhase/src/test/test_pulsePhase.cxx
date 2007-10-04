@@ -4,12 +4,10 @@
 #include <limits>
 #include <memory>
 
+#include "facilities/commonUtilities.h"
+
 #include "pulsarDb/PulsarEph.h"
 #include "pulsarDb/TimingModel.h"
-
-#include "st_facilities/Env.h"
-
-#include "facilities/commonUtilities.h"
 
 #include "timeSystem/AbsoluteTime.h"
 #include "timeSystem/TimeRep.h"
@@ -40,7 +38,8 @@ int main() {
   TimingModel model;
 
   // Next test: read event file.
-  std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "D1.fits"), "EVENTS"));
+  std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "D1.fits"),
+    "EVENTS"));
  
   MetRep glast_tdb("TDB", 51910, 0., 0.);
   glast_tdb.setValue(123.456789);

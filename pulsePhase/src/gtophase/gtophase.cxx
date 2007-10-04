@@ -18,8 +18,6 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
-#include "st_facilities/Env.h"
-
 using namespace pulsarDb;
 using namespace timeSystem;
 
