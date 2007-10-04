@@ -11,9 +11,6 @@ from EventClassifier import EventClassifier
 
 meritVariables = """
 EvtRun    EvtEnergyCorr 
-McEnergy  McXDir  McYDir  McZDir   
-McXDirErr   McYDirErr  McZDirErr   
-McTkr1DirErr  McDirErr  
 GltWord   FilterStatus_HI 
 Tkr1FirstLayer  
 CTBBestEnergyProb CTBCORE CTBBestEnergy CTBBestEnergyRatio CTBClassLevel
