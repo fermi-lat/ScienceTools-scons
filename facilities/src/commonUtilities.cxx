@@ -1,7 +1,9 @@
 #include "facilities/commonUtilities.h"
 #include <iostream>
 #include <algorithm>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 namespace facilities {
   std::string commonUtilities::getPackagePath(const std::string &package){
