@@ -63,26 +63,34 @@ void PointingHistory::readTextData(std::string filename, double offset)
 const astro::PointingInfo& PointingHistory::operator()(double time)const throw(TimeRangeError){
 
     if( time!=m_selected){
-    std::map<double,astro::PointingInfo>::const_iterator iter=m_data.upper_bound(time);
-    bool tooEarly( time< (*(m_data.begin())).first );
-    bool tooLate( iter==m_data.end() );
-    if ( tooEarly || tooLate) {
-       std::ostringstream message;
-       message << "PointingHistory: Time out of Range!:\n"
-               << "Time (" << time 
-               << ") out of range of times in the pointing database: ("
-               << m_startTime <<", "<< m_endTime <<")"
-               << std::endl;
-       throw TimeRangeError(message.str());
-    }
-    const PointingInfo & h2 = iter->second;
-    double time2( iter->first);
-    --iter;
-    double time1(iter->first);
-    const PointingInfo & h1 =iter->second;
-    double prop( (time-time1)/(time2-time1) );
 
-    m_currentPoint = h1.interpolate(h2, prop);
+        std::map<double,astro::PointingInfo>::const_iterator iter=m_data.upper_bound(time);
+        bool tooEarly( time< (*(m_data.begin())).first );
+        bool tooLate( iter==m_data.end() && time > m_endTime);
+
+        if(tooEarly && time==0) {
+            // special case: just return starting value
+            time = (*(m_data.begin())).first;
+            tooEarly = false;
+        }
+
+        if ( tooEarly || tooLate) {
+            std::ostringstream message;
+            message << "PointingHistory: Time out of Range!:\n"
+                << "Time (" << time 
+                << ") out of range of times in the pointing database: ("
+                << m_startTime <<", "<< m_endTime <<")"
+                << std::endl;
+            throw TimeRangeError(message.str());
+        }
+        const PointingInfo & h2 = iter->second;
+        double time2( iter->first);
+        --iter;
+        double time1(iter->first);
+        const PointingInfo & h1 =iter->second;
+        double prop( (time-time1)/(time2-time1) );
+
+        m_currentPoint = h1.interpolate(h2, prop);
 
     }
     return m_currentPoint;
@@ -129,4 +137,6 @@ void PointingHistory::readFitsData(std::string filename) {
         if( m_startTime<0) m_startTime = start_time;
     }
     m_endTime = stop_time;
+    // an extra entry to allow query for the last interval
+    m_data[stop_time] = m_data[start_time];
 }
