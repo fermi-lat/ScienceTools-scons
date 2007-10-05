@@ -52,8 +52,9 @@ int main(int iargc, char * argv[]) {
       }
       std::cout << "applying TCut: " << filter.str() << std::endl;
    }
-   std::string irfTupleNameFile(facilities::commonUtilities::joinPath(
-      facilities::commonUtilities::getDataPath("fitsGen"), "irfTupleNames");
+   std::string irfTupleNameFile = 
+      facilities::commonUtilities::joinPath(
+         facilities::commonUtilities::getDataPath("fitsGen"), "irfTupleNames");
    if (iargc == 5) {
       irfTupleNameFile = argv[4];
    }
