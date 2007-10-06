@@ -104,6 +104,7 @@ public:
 
     void setEnergy(double e){m_energy = e;}
     static DiffuseFunction* s_diffuse;
+    static double s_tolerance; // for integral
 private:
 
     //! @brief a quick estimate of the signal fraction

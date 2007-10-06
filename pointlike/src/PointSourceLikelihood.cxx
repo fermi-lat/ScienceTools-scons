@@ -79,6 +79,8 @@ void PointSourceLikelihood::setParameters(embed_python::Module& par)
 
     par.getValue("verbose",  s_verbose, s_verbose);
 
+    par.getValue("tolerance",  SimpleLikelihood::s_tolerance, SimpleLikelihood::s_tolerance);
+
     // needed by SimpleLikelihood
     par.getValue("umax", SimpleLikelihood::s_defaultUmax, SimpleLikelihood::s_defaultUmax);
     std::string diffusefile;

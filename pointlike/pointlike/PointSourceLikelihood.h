@@ -121,7 +121,7 @@ namespace pointlike {
         std::map<int, std::vector<std::pair<astro::HealPixel,int> > >m_data_vec;
 
         static DiffuseFunction * s_diffuse;
-        static double s_radius, s_minalpha, s_TSmin;
+        static double s_radius, s_minalpha, s_TSmin, s_tolerance;
         static int s_minlevel, s_maxlevel, s_skip1, s_skip2, s_itermax, s_verbose;
     };
 
