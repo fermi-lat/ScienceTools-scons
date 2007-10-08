@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.8  2007/10/02 22:01:16  jurgen
+Change parameter name maxNumCtp to maxNumCpt
+
 Revision 1.7  2006/02/09 15:51:42  jurgen
 Remove unreferenced local variable 'pos'
 
@@ -63,23 +66,23 @@ std::string trim(std::string str) {
 
     // Declare variables
     std::string::size_type notwhite;
-    
+
     // Trim leading whitespace
     notwhite = str.find_first_not_of(delims);
     str.erase(0,notwhite);
-    
+
     // Trim trailing whitespace
     notwhite = str.find_last_not_of(delims);
     str.erase(notwhite+1);
 
     // Return string
     return str;
-    
+
 }
-    
+
 
 /*============================================================================*/
-/*                   Low-level FITS catalogue handling methods                */
+/*                          Low-level parameter methods                       */
 /*============================================================================*/
 
 /*----------------------------------------------------------------------------*/
@@ -117,7 +120,7 @@ void Parameters::init_memory(void) {
       m_mode.clear();
 
     } while (0); // End of main do-loop
-    
+
     // Return
     return;
 
@@ -135,12 +138,12 @@ void Parameters::free_memory(void) {
 
     // Single loop for common exit point
     do {
-      
+
       // Initialise memory
       init_memory();
 
     } while (0); // End of main do-loop
-    
+
     // Return
     return;
 
@@ -166,7 +169,7 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
     std::string::size_type start_formula;
     std::string::size_type len_formula;
     std::string::size_type start_name;
-        
+
     // Single loop for common exit point
     do {
 
@@ -202,13 +205,13 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       m_clobber                  = pars["clobber"];
       m_debug                    = pars["debug"];
       m_mode                     = s_mode;
-      
+
       // Set U9 verbosity
       if (m_debug)
         g_u9_verbosity = 3;
       else
         g_u9_verbosity = 0;
-      
+
       // Retrieve new output quantities and decompose them into quantity name 
       // and evaluation string
       for (i = MIN_OUTCAT_QTY; i <= MAX_OUTCAT_QTY; i++) {
@@ -216,19 +219,19 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
         // Extract parameter name
         sprintf(parname, "outCatQty%2.2ld", i);
         std::string outCatQty = pars[parname];
-        
+
         // Fall through if parameter is empty
         outCatQty = trim(outCatQty);
         len       = outCatQty.length();
         if (len < 1)
           continue;
-        
+
         // Decompose string in part before and after "=" symbol
         pos           = outCatQty.find("=",0);
         len_name      = pos;
         start_formula = pos + 1;
         len_formula   = len - start_formula;
-        
+
         // Catch invalid parameters
         if (pos == std::string::npos) {
           status = STATUS_PAR_BAD_PARAMETER;
@@ -251,12 +254,12 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
               (Status)status, parname, outCatQty.c_str());
           break;
         }
-          
+
         // Set name and formula (remove whitespace)
         m_outCatQtyName.push_back(trim(outCatQty.substr(0, len_name)));
         m_outCatQtyFormula.push_back(trim((outCatQty.substr(start_formula,
                                                             len_formula))));
-          
+
       } // endfor: looped over quantities
       if (status != STATUS_OK)
         continue;
@@ -273,22 +276,22 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       }
       if (status != STATUS_OK)
         continue;
-        
+
       // Retrieve additional probability column names from probability method
       len   = probMethod.length();
       blank = 0;
       found = 0;
       for (pos = 0; pos < len; pos++) {
-      
+
         // Reset found flag
         found = 0;
-      
+
         // Search first non blank and non '*'
         if (!blank && probMethod[pos] != ' ' && probMethod[pos] != '*') {
           start_name = pos;
           blank      = 1;
         }
-          
+
         // Search first blank or "*"
         else if (blank && (probMethod[pos] == ' ' || 
                            probMethod[pos] == '*')) {
@@ -296,31 +299,33 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
           blank    = 0;
           found    = 1;
         }
-        
+
         // Signal if the end of the string is reached
         if (pos == len-1) {
           len_name = pos - start_name + 1;
           blank    = 0;
           found    = 1;
         }
-        
+
         // Extract name if found
         if (found) {
           prob_name = probMethod.substr(start_name, len_name);
           if (prob_name == "POSITION")
-            m_posProbType = Exponential;
+            m_posProbType = Parabolid;
           else if (prob_name == "POS-EXP")
             m_posProbType = Exponential;
+          else if (prob_name == "POS-PAR")
+            m_posProbType = Parabolid;
           else if (prob_name == "POS-GAUSS")
             m_posProbType = Gaussian;
           else
             m_probColNames.push_back(prob_name);
         }
-      
-      } // endfor: looped over method string     
+
+      } // endfor: looped over method string
 
     } while (0); // End of main do-loop
-    
+
     // Return status
     return status;
 
@@ -339,29 +344,29 @@ Status Parameters::dump(Status status) {
     std::string::size_type         n;
     std::vector<double>::size_type i_add;
     std::vector<double>::size_type num_add;
-        
+
     // Single loop for common exit point
     do {
 
       // Determine number of additional probabilites
-      num_add = m_probColNames.size();      
+      num_add = m_probColNames.size();
 
       // Dump task parameters
       Log(Log_1, "Task Parameters:");
       Log(Log_1, "================");
-      Log(Log_1, " Source catalogue filename ........: %s", 
+      Log(Log_1, " Source catalogue filename ........: %s",
           m_srcCatName.c_str());
-      Log(Log_1, " Counterpart catalogue name .......: %s", 
+      Log(Log_1, " Counterpart catalogue name .......: %s",
           m_cptCatName.c_str());
-      Log(Log_1, " Output catalogue name ............: %s", 
+      Log(Log_1, " Output catalogue name ............: %s",
           m_outCatName.c_str());
-      Log(Log_1, " Source catalogue prefix ..........: %s", 
+      Log(Log_1, " Source catalogue prefix ..........: %s",
           m_srcCatPrefix.c_str());
-      Log(Log_1, " Counterpart catalogue prefix .....: %s", 
+      Log(Log_1, " Counterpart catalogue prefix .....: %s",
           m_cptCatPrefix.c_str());
-      Log(Log_1, " Source catalogue quantities ......: %s", 
+      Log(Log_1, " Source catalogue quantities ......: %s",
           m_srcCatQty.c_str());
-      Log(Log_1, " Counterpart catalogue quantities .: %s", 
+      Log(Log_1, " Counterpart catalogue quantities .: %s",
           m_cptCatQty.c_str());
       Log(Log_1, " Source catalogue uncertainty .....: %f arcmin",
           m_srcPosError*60.0);
@@ -369,7 +374,7 @@ Status Parameters::dump(Status status) {
           m_cptPosError*60.0);
       if ((n = m_outCatQtyName.size()) > 0) {
         for (i = 0; i < n; i++) {
-          Log(Log_1, " New output catalogue quantity %2d .: %s = %s", 
+          Log(Log_1, " New output catalogue quantity %2d .: %s = %s",
               i+1, m_outCatQtyName[i].c_str(), m_outCatQtyFormula[i].c_str());
         }
       }
@@ -379,6 +384,9 @@ Status Parameters::dump(Status status) {
         break;
       case Exponential:
         Log(Log_1, " Position probability method ......: Exponential");
+        break;
+      case Parabolid:
+        Log(Log_1, " Position probability method ......: Parabolid");
         break;
       case Gaussian:
         Log(Log_1, " Position probability method ......: Gaussian");
@@ -395,7 +403,7 @@ Status Parameters::dump(Status status) {
       Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
       if ((n = m_select.size()) > 0) {
         for (i = 0; i < n; i++) {
-          Log(Log_1, " Output catalogue selection %2d ....: %s", 
+          Log(Log_1, " Output catalogue selection %2d ....: %s",
               i+1, m_select[i].c_str());
         }
       }
@@ -404,9 +412,9 @@ Status Parameters::dump(Status status) {
       Log(Log_1, " Clobber ..........................: %d", m_clobber);
       Log(Log_1, " Debugging mode activated .........: %d", m_debug);
       Log(Log_1, " Mode of automatic parameters .....: %s", m_mode.c_str());
-    
+
     } while (0); // End of main do-loop
-    
+
     // Return status
     return status;
 

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.10  2007/09/20 14:16:18  jurgen
 Improve st_app handling (dump version)
 
@@ -39,9 +42,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r2p0"
+#define TOOL_VERSION  "v1r3p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "21-Sep-2007"
+#define TOOL_DATE     " 7-Oct-2007"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
@@ -80,7 +83,10 @@ typedef enum  {                                  // Function status code
   STATUS_PAR_BAD_PARAMETER = -100200,             // Bad task parameter
   STATUS_CAT_NOT_FOUND     = -100300,             // Catalogue not found
   STATUS_CAT_EMPTY         = -100301,             // Catalogue empty
-  STATUS_CAT_BAD_PROB_COL  = -100302              // Bad probability coltype
+  STATUS_CAT_BAD_PROB_COL  = -100302,             // Bad probability coltype
+  STATUS_CAT_NO_ID         = -100400,             // No ID column
+  STATUS_CAT_NO_POS        = -100401,             // No position columns
+  STATUS_CAT_NO_POS_ERROR  = -100402              // No position error columns
 } Status;
 
 /* Prototypes _______________________________________________________________ */

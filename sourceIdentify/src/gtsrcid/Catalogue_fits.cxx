@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.6  2007/10/03 09:06:08  jurgen
+Add chance coincidence probability PROB_CHANCE
+
 Revision 1.5  2007/10/02 21:48:45  jurgen
 Add PROB_ANGSEP, PROB_ADD and ANGSEP generic columns to FITS output file
 
@@ -1377,7 +1380,6 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
     std::vector<std::string> col_id;
     std::vector<std::string> col_name;
     std::vector<double>      col_prob;
-//    char                     src_row[256];
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1385,7 +1387,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
     // Single loop for common exit point
     do {
-    
+
       // Fall through in case of an error
       if (status != STATUS_OK)
         continue;
@@ -1412,10 +1414,10 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
       // Read counterpart name column. Don't stop on error
       std::string cpt_name;
-      if (m_cpt_name[0] == '@')
-        cpt_name = m_cpt_name;
+      if (m_cpt.col_id[0] == '@')
+        cpt_name = m_cpt.col_id;
       else
-        cpt_name = par->m_cptCatPrefix + m_cpt_name;
+        cpt_name = par->m_cptCatPrefix + m_cpt.col_id;
       status = cfits_get_col_str(fptr, par, cpt_name, col_name, status);
       if (status != STATUS_OK)
         status = STATUS_OK;
@@ -1430,8 +1432,8 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
         // Get source number. Note that we have to subtract 1 since the
         // sources index starts with 1
-	std::string src_row = col_id[i].substr(5,3);
-	int         iSrc    = atoi(src_row.c_str()) - 1;
+        std::string src_row = col_id[i].substr(5,3);
+        int         iSrc    = atoi(src_row.c_str()) - 1;
 
         // Fall through if index is invalid
         if (iSrc < 0 || iSrc >= m_src.numLoad)

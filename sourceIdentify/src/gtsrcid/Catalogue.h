@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2007/10/03 09:06:08  jurgen
+Add chance coincidence probability PROB_CHANCE
+
 Revision 1.11  2007/10/02 21:48:45  jurgen
 Add PROB_ANGSEP, PROB_ADD and ANGSEP generic columns to FITS output file
 
@@ -138,7 +141,33 @@ const double twosqrt2ln2 = 2.3548200450309493270140138;
 const double deg2rad     = 0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 
+/* Probability constants ____________________________________________________ */
+const double e_norm_1s = 1.0 / sqrt(1.1478742);  // 1 sigma = 68.269%, 2 dof
+const double e_norm_2s = 1.0 / sqrt(3.0900358);  // 2 sigma = 95.450%, 2 dof
+const double e_norm_3s = 1.0 / sqrt(5.9145778);  // 3 sigma = 99.730%, 2 dof
+const double e_norm_68 = 1.0 / sqrt(1.1394375);  // 68.000%, 2 dof
+const double e_norm_95 = 1.0 / sqrt(2.9957230);  // 95.000%, 2 dof
+const double e_norm_99 = 1.0 / sqrt(4.6051713);  // 99.000%, 2 dof
+
+/* Search strings (need "stop" as last string !!!) __________________________ */
+const std::string search_id[] = {"NAME", "ID", "stop"};
+
 /* Type defintions __________________________________________________________ */
+typedef enum {                        // Position error type
+  NoError = 1,                          // No error
+  Ellipse,                              // Error ellipse
+  RaDec                                 // Errors on RA and Dec
+} PosErrorType;
+
+typedef enum {                        // Position error probability
+  Sigma_1 = 1,                          // 1 sigma standard deviations
+  Sigma_2,                              // 2 sigma standard deviations
+  Sigma_3,                              // 3 sigma standard deviations
+  Prob_68,                              // 68% probability ellipse
+  Prob_95,                              // 95% probability ellipse
+  Prob_99                               // 99% probability ellipse
+} PosErrorProb;
+
 typedef struct {                      // Counterpart candidate
   std::string             id;           // Unique identifier
   double                  pos_eq_ra;    // Right Ascension (deg)
@@ -176,6 +205,16 @@ typedef struct {                      // Input catalogue
   catalogAccess::Catalog  cat;          // Catalogue
   long                    numLoad;      // Number of loaded objects in catalogue
   long                    numTotal;     // Total number of objects in catalogue
+  std::string             col_id;       // Source ID column name
+  std::string             col_ra;       // Right Ascension column name
+  std::string             col_dec;      // Declination column name
+  std::string             col_e_ra;     // Right Ascension error column name
+  std::string             col_e_dec;    // Declination error column name
+  std::string             col_e_maj;    // Semi-major axis
+  std::string             col_e_min;    // Semi-minor axis
+  std::string             col_e_posang; // Position angle
+  PosErrorType            col_e_type;   // Position error type
+  PosErrorProb            col_e_prob;   // Position error probability
   ObjectInfo             *object;       // Object information
 } InCatalogue;
 
@@ -196,8 +235,8 @@ private:
   Status get_input_descriptor(Parameters *par, std::string catName, 
                               InCatalogue *in,  Status status);
   Status get_input_catalogue(Parameters *par, InCatalogue *in, double posErr,
-                             std::string &obj_name, Status status);
-  Status dump_descriptor(InCatalogue *in, Status status);
+                             Status status);
+  Status dump_descriptor(Parameters *par, InCatalogue *in, Status status);
   Status dump_results(Parameters *par, Status status);
   //
   // Low-level source identification methods
@@ -232,8 +271,6 @@ private:
   // Input catalogues
   InCatalogue              m_src;           // Source catalogue
   InCatalogue              m_cpt;           // Counterpart catalogue
-  std::string              m_src_name;      // Source names
-  std::string              m_cpt_name;      // Counterpart names
   //
   // Catalogue building parameters
   long                     m_maxCptLoad;    // Maximum number of counterparts to be loaded
@@ -276,7 +313,6 @@ inline Catalogue::~Catalogue(void) { free_memory(); }
 
 
 /* Globals __________________________________________________________________ */
-
 
 /* Namespace ends ___________________________________________________________ */
 }

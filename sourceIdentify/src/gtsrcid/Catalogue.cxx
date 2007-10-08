@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.16  2007/09/21 20:27:14  jurgen
+Correct cfits_collect bug (unstable row selection)
+
 Revision 1.15  2007/09/21 14:29:03  jurgen
 Correct memory bug and updated test script
 
@@ -81,7 +84,479 @@ using namespace catalogAccess;
 
 
 /* Private Prototypes _______________________________________________________ */
+std::string upper(std::string arg);
+std::string find(std::vector <std::string> &arg, std::string match);
+Status      get_info(Parameters *par, InCatalogue *in, Status status);
+Status      get_id_info(Parameters *par, InCatalogue *in, 
+                        std::vector <std::string> &qtyNames,
+                        std::vector <std::string> &qtyUCDs,
+                        Status status);
+Status      get_pos_info(Parameters *par, InCatalogue *in,
+                         std::vector <std::string> &qtyNames,
+                         std::vector <std::string> &qtyUCDs,
+                         Status status);
+Status      get_pos_error_info(Parameters *par, InCatalogue *in,
+                               std::vector <std::string> &qtyNames,
+                               std::vector <std::string> &qtyUCDs,
+                               Status status);
+void        set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
+                     double &posErr);
 
+
+/*============================================================================*/
+/*                              Private functions                             */
+/*============================================================================*/
+
+/*----------------------------------------------------------------------------*/
+/*                                    upper                                   */
+/* -------------------------------------------------------------------------- */
+/* Private method: convert string to upper case                               */
+/*----------------------------------------------------------------------------*/
+std::string upper(std::string arg) {
+
+  // Copy argument
+  std::string result = arg;
+
+  // Convert to upper case
+  std::transform(result.begin(), result.end(), result.begin(),
+                 (int(*)(int)) std::toupper);
+
+  // Return result
+  return result;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                   find                                     */
+/* -------------------------------------------------------------------------- */
+/* Private method: returns the shortest string that matches 'match'           */
+/*----------------------------------------------------------------------------*/
+std::string find(std::vector <std::string> &arg, std::string match) {
+
+  // Initialise result
+  std::string result;
+  int         length = 0;
+
+  // Convert match to upper case
+  match = upper(match);
+
+  // Loop over all vector elements
+  for (int i = 0; i < (int)arg.size(); ++i) {
+    if (upper(arg[i]).find(match, 0) != std::string::npos) {
+      int this_length = arg[i].length();
+      if (length == 0) {
+        length = this_length;
+        result = arg[i];
+      }
+      else if (this_length < length) {
+        length = this_length;
+        result = arg[i];
+      }
+    }
+  }
+
+  // Make sure that result string is empty if we found nothing
+  if (length == 0)
+    result.clear();
+
+  // Return result
+  return result;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                   get_info                                 */
+/* -------------------------------------------------------------------------- */
+/* Private method: get column information                                     */
+/*----------------------------------------------------------------------------*/
+Status get_info(Parameters *par, InCatalogue *in, Status status) {
+
+    // Declare local variables
+    int                       numKeys;
+    int                       numUCDs;
+    std::vector <std::string> qtyNames;
+    std::vector <std::string> qtyUCDs;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: get_info");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Extract keys and UCDs from catalogue. Stop if their number does not
+      // correspond
+      numKeys = in->cat.getQuantityNames(&qtyNames);
+      numUCDs = in->cat.getQuantityUCDs(&qtyUCDs);
+      if (numKeys != numUCDs) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Mismatch between number of keys (%d) and UCDs (%d)",
+              status, numKeys, numUCDs);
+        continue;
+      }
+
+      // Get source ID column
+      status = get_id_info(par, in, qtyNames, qtyUCDs, status);
+      if (status == STATUS_CAT_NO_ID) {
+        status = STATUS_OK;
+        in->col_id.clear();
+      }
+
+      // Get position columns
+      status = get_pos_info(par, in, qtyNames, qtyUCDs, status);
+      if (status == STATUS_CAT_NO_POS) {
+        status = STATUS_OK;
+        in->col_ra.clear();
+        in->col_dec.clear();
+      }
+
+      // Get position error columns
+      status = get_pos_error_info(par, in, qtyNames, qtyUCDs, status);
+      if (status == STATUS_CAT_NO_POS_ERROR) {
+        status         = STATUS_OK;
+        in->col_e_type = NoError;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: get_info (status=%d)", 
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                 get_id_info                                */
+/* -------------------------------------------------------------------------- */
+/* Private method: get source identification information                      */
+/*----------------------------------------------------------------------------*/
+Status get_id_info(Parameters *par, InCatalogue *in,
+                   std::vector <std::string> &qtyNames,
+                   std::vector <std::string> &qtyUCDs,
+                   Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: get_id_info");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Initialise status to 'not found'
+      status = STATUS_CAT_NO_ID;
+
+      // Search for first ID in UCDs
+      for (int i = 0; i < qtyUCDs.size(); ++i) {
+        if (qtyUCDs[i].find("ID_MAIN", 0) != std::string::npos) {
+          in->col_id = qtyNames[i];
+          status     = STATUS_OK;
+          break;
+        }
+      }
+      if (status == STATUS_OK)
+        continue;
+
+      // Search for ID in keys
+      for (int k = 0; search_id[k] != "stop"; ++k) {
+        std::string match  = find(qtyNames, upper(search_id[k]));
+        if (match.length() > 0) {
+          in->col_id = match;
+          status     = STATUS_OK;
+          break;
+        }
+      }
+      if (status == STATUS_OK)
+        continue;
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: get_id_info (status=%d)", 
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                 get_pos_info                               */
+/* -------------------------------------------------------------------------- */
+/* Private method: get position information                                   */
+/*----------------------------------------------------------------------------*/
+Status get_pos_info(Parameters *par, InCatalogue *in,
+                    std::vector <std::string> &qtyNames,
+                    std::vector <std::string> &qtyUCDs,
+                    Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: get_pos_info");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Initialise status to 'not found'
+      status = STATUS_CAT_NO_POS;
+      in->col_ra.clear();
+      in->col_dec.clear();
+
+      // Search for first RA/Dec position in UCDs
+      for (int i = 0; i < qtyUCDs.size(); ++i) {
+        if (qtyUCDs[i].find("POS_EQ_RA_MAIN", 0) != std::string::npos) {
+          in->col_ra = qtyNames[i];
+          break;
+        }
+      }
+      for (int i = 0; i < qtyUCDs.size(); ++i) {
+        if (qtyUCDs[i].find("POS_EQ_DEC_MAIN", 0) != std::string::npos) {
+          in->col_dec = qtyNames[i];
+          break;
+        }
+      }
+      if ((in->col_ra.length() > 0) && (in->col_dec.length() > 0)) {
+        status = STATUS_OK;
+        continue;
+      }
+
+      // Search for RAJ2000/DEJ2000 columns
+      if ((find(qtyNames, "RAJ2000").length() > 0) &&
+          (find(qtyNames, "DEJ2000").length() > 0)) {
+        in->col_ra  = "RAJ2000";
+        in->col_dec = "DEJ2000";
+        status      = STATUS_OK;
+        continue;
+      }
+
+      // Search for RAJ2000/DEJ2000 columns
+      if ((find(qtyNames, "_RAJ2000").length() > 0) &&
+          (find(qtyNames, "_DEJ2000").length() > 0)) {
+        in->col_ra  = "_RAJ2000";
+        in->col_dec = "_DEJ2000";
+        status      = STATUS_OK;
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: get_pos_info (status=%d)", 
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                              get_pos_error_info                            */
+/* -------------------------------------------------------------------------- */
+/* Private method: get position error information                             */
+/*----------------------------------------------------------------------------*/
+Status get_pos_error_info(Parameters *par, InCatalogue *in,
+                          std::vector <std::string> &qtyNames,
+                          std::vector <std::string> &qtyUCDs,
+                          Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: get_pos_error_info");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Initialise status to 'not found'
+      status = STATUS_CAT_NO_POS_ERROR;
+
+      // Initialise error type to 'no error'
+      in->col_e_type = NoError;
+
+      // Search for LAT catalogue names (95%)
+      if ((find(qtyNames, "Conf_95_SemiMajor").length() > 0) &&
+          (find(qtyNames, "Conf_95_SemiMinor").length() > 0) &&
+          (find(qtyNames, "Conf_95_PosAng").length() > 0)) {
+        in->col_e_maj    = "Conf_95_SemiMajor";
+        in->col_e_min    = "Conf_95_SemiMinor";
+        in->col_e_posang = "Conf_95_PosAng";
+        in->col_e_type   = Ellipse;
+        in->col_e_prob   = Prob_95;
+        status           = STATUS_OK;
+        continue;
+      }
+
+      // Search for LAT catalogue names (68%)
+      if ((find(qtyNames, "Conf_68_SemiMajor").length() > 0) &&
+          (find(qtyNames, "Conf_68_SemiMinor").length() > 0) &&
+          (find(qtyNames, "Conf_68_PosAng").length() > 0)) {
+        in->col_e_maj    = "Conf_68_SemiMajor";
+        in->col_e_min    = "Conf_68_SemiMinor";
+        in->col_e_posang = "Conf_68_PosAng";
+        in->col_e_type   = Ellipse;
+        in->col_e_prob   = Prob_68;
+        status           = STATUS_OK;
+        continue;
+      }
+
+      // Search for output catalogue columns
+      if ((find(qtyNames, OUTCAT_COL_MAJERR_NAME).length() > 0) &&
+          (find(qtyNames, OUTCAT_COL_MINERR_NAME).length() > 0) &&
+          (find(qtyNames, OUTCAT_COL_POSANGLE_NAME).length() > 0)) {
+        in->col_e_maj    = OUTCAT_COL_MAJERR_NAME;
+        in->col_e_min    = OUTCAT_COL_MINERR_NAME;
+        in->col_e_posang = OUTCAT_COL_POSANGLE_NAME;
+        in->col_e_type   = Ellipse;
+        in->col_e_prob   = Prob_95;   // TBD TBD TBD !!!
+        status           = STATUS_OK;
+        continue;
+      }
+
+      // Search for e_RAJ2000/e_DEJ2000 columns
+      if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
+          (find(qtyNames, "e_DEJ2000").length() > 0)) {
+        in->col_e_ra   = "e_RAJ2000";
+        in->col_e_dec  = "e_DEJ2000";
+        in->col_e_type = RaDec;
+        in->col_e_prob = Sigma_1;
+        status         = STATUS_OK;
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: get_pos_error_info (status=%d)", 
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                   set_info                                 */
+/* -------------------------------------------------------------------------- */
+/* Private method: set source information                                     */
+/*----------------------------------------------------------------------------*/
+void set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
+              double &posErr) {
+
+   // Declare local variables
+    double err_maj;
+    double err_min;
+    double err_ang;
+    double e_RA;
+    double e_DE;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: set_info");
+
+    // Single loop for common exit point
+    do {
+
+      // Initialise source information
+      ptr->pos_valid   = 0;        // Invalid position
+      ptr->name.clear();
+      ptr->pos_eq_ra   = 0.0;
+      ptr->pos_eq_dec  = 0.0;
+      ptr->pos_err_maj = posErr;
+      ptr->pos_err_min = posErr;
+      ptr->pos_err_ang = 0.0;
+
+      // Set source name
+      if (in->cat.getSValue(in->col_id, i, &(ptr->name)) != IS_OK)
+        ptr->name = "no-name";
+
+      // Set source position
+      if ((in->cat.getNValue(in->col_ra,  i, &(ptr->pos_eq_ra))  == IS_OK) &&
+          (in->cat.getNValue(in->col_dec, i, &(ptr->pos_eq_dec)) == IS_OK)) {
+
+        // Set position validity flag
+        ptr->pos_valid = 1;
+
+        // Put Right Ascension in interval [0,2pi[
+        ptr->pos_eq_ra = ptr->pos_eq_ra - 
+                         double(long(ptr->pos_eq_ra / 360.0) * 360.0);
+        if (ptr->pos_eq_ra < 0.0) 
+          ptr->pos_eq_ra += 360.0;
+
+      } // endif: source position found
+
+      // Set source position error (type dependent)
+      switch (in->col_e_type) {
+      case NoError:
+        break;
+      case Ellipse:
+        if ((in->cat.getNValue(in->col_e_maj,    i, &err_maj) == IS_OK) &&
+            (in->cat.getNValue(in->col_e_min,    i, &err_min) == IS_OK) &&
+            (in->cat.getNValue(in->col_e_posang, i, &err_ang) == IS_OK)) {
+          ptr->pos_err_maj = err_maj;
+          ptr->pos_err_min = err_min;
+          ptr->pos_err_ang = err_ang;
+        }
+        break;
+      case RaDec:
+        if ((in->cat.getNValue(in->col_e_ra, i, &e_RA) == IS_OK) &&
+            (in->cat.getNValue(in->col_e_dec, i, &e_DE) == IS_OK)) {
+          e_RA *= cos(ptr->pos_eq_dec*deg2rad);
+          if (e_RA > e_DE) {           // Error ellipse along RA axis
+            ptr->pos_err_maj = e_RA;
+            ptr->pos_err_min = e_DE;
+            ptr->pos_err_ang = 0.0;
+          }
+          else {                       // Error ellipse along DE axis
+            ptr->pos_err_maj = e_DE;
+            ptr->pos_err_min = e_RA;
+            ptr->pos_err_ang = 90.0;
+          }
+        }
+        break;
+      }
+
+     } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: set_info");
+
+    // Return
+    return;
+
+}
+
+
+/*============================================================================*/
+/*                          Low-level catalogue methods                       */
+/*============================================================================*/
 
 /*----------------------------------------------------------------------------*/
 /*                            Catalogue::init_memory                          */
@@ -96,14 +571,44 @@ void Catalogue::init_memory(void) {
     do {
 
       // Initialise source catalogue private members
-      m_src.numLoad  = 0;
-      m_src.numTotal = 0;
-      m_src.object   = NULL;
+      m_src.numLoad    = 0;
+      m_src.numTotal   = 0;
+      m_src.object     = NULL;
+      m_src.col_e_type = NoError;
+      m_src.inName.clear();
+      m_src.catCode.clear();
+      m_src.catURL.clear();
+      m_src.catName.clear();
+      m_src.catRef.clear();
+      m_src.tableName.clear();
+      m_src.tableRef.clear();
+      m_src.col_id.clear();
+      m_src.col_ra.clear();
+      m_src.col_dec.clear();
+      m_src.col_e_ra.clear();
+      m_src.col_e_dec.clear();
+      m_src.col_e_maj.clear();
+      m_src.col_e_min.clear();
 
       // Initialise counterpart catalogue private members
-      m_cpt.numLoad  = 0;
-      m_cpt.numTotal = 0;
-      m_cpt.object   = NULL;
+      m_cpt.numLoad    = 0;
+      m_cpt.numTotal   = 0;
+      m_cpt.object     = NULL;
+      m_cpt.col_e_type = NoError;
+      m_cpt.inName.clear();
+      m_cpt.catCode.clear();
+      m_cpt.catURL.clear();
+      m_cpt.catName.clear();
+      m_cpt.catRef.clear();
+      m_cpt.tableName.clear();
+      m_cpt.tableRef.clear();
+      m_cpt.col_id.clear();
+      m_cpt.col_ra.clear();
+      m_cpt.col_dec.clear();
+      m_cpt.col_e_ra.clear();
+      m_cpt.col_e_dec.clear();
+      m_cpt.col_e_maj.clear();
+      m_cpt.col_e_min.clear();
 
       // Intialise catalogue building parameters
       m_maxCptLoad    = c_maxCptLoad;
@@ -160,6 +665,10 @@ void Catalogue::free_memory(void) {
 
 }
 
+
+/*============================================================================*/
+/*                         High-level catalogue methods                       */
+/*============================================================================*/
 
 /*----------------------------------------------------------------------------*/
 /*                       Catalogue::get_input_descriptor                      */
@@ -253,12 +762,16 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
       // Determine the number of loaded objects in catalogue (should be 0)
       in->cat.getNumRows(&in->numLoad);
 
+      // Get ID information
+      status = get_info(par, in, status);
+      if (status != STATUS_OK)
+        continue;
+
       // Dump catalogue descriptor (optionally)
-      if (par->logVerbose()) {
-        status = dump_descriptor(in, status);
+      if (par->logTerse()) {
+        status = dump_descriptor(par, in, status);
         if (status != STATUS_OK)
           continue;
-        Log(Log_2, " ");
       }
 
     } while (0); // End of main do-loop
@@ -280,18 +793,11 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 /* Private method: get data for input catalogue                               */
 /*----------------------------------------------------------------------------*/
 Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
-                                      double posErr, std::string &obj_name,
-                                      Status status) {
+                                      double posErr, Status status) {
 
     // Declare local variables
     int          caterr;
     long         i;
-    double       err;
-    double       err_max;
-    double       err_min;
-    double       err_ang;
-    double       e_RA;
-    double       e_DE;
     ObjectInfo  *ptr;
 
     // Debug mode: Entry
@@ -347,99 +853,14 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       }
 
       // Extract object information
-      ptr      = in->object;
-      obj_name = in->cat.getNameObjName();
+      ptr = in->object;
       for (i = 0; i < in->numLoad; i++, ptr++) {
 
-        // Get object name using firt catalogAccess, then "NAME" and then "ID"
-        if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
-          obj_name = "NAME";
-          if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
-            obj_name = "ID";
-            if (in->cat.getSValue(obj_name, i, &(ptr->name)) != IS_OK) {
-              obj_name = "no-name";
-            }
-          }
-        }
+        // Set source information
+        set_info(par, in, i, ptr, posErr);
 
         // Assign source name
         ptr->name = cid_assign_src_name(ptr->name, i);
-
-        // Initalise position, error and validity flag
-        ptr->pos_valid   = 0;        // Invalid position
-        ptr->pos_eq_ra   = 0.0;
-        ptr->pos_eq_dec  = 0.0;
-        ptr->pos_err_maj = posErr;  // Task parameter error as default
-        ptr->pos_err_min = posErr;  // Task parameter error as default
-        ptr->pos_err_ang = 0.0;
-
-        // Get Right Ascension. Go to next object if no Right Ascension was
-        // found
-        if (in->cat.ra_deg(i,  &(ptr->pos_eq_ra)) != IS_OK) {
-          if (in->cat.getNValue("RAJ2000", i, &(ptr->pos_eq_ra)) != IS_OK) {
-            if (in->cat.getNValue("_RAJ2000", i, &(ptr->pos_eq_ra)) != IS_OK) {
-              continue;
-            }
-          }
-        }
-
-        // Get Declination. Go to next object if no Right Ascension was
-        // found
-        if (in->cat.dec_deg(i,  &(ptr->pos_eq_dec))  != IS_OK) {
-          if (in->cat.getNValue("DEJ2000", i, &(ptr->pos_eq_dec)) != IS_OK) {
-            if (in->cat.getNValue("_DEJ2000", i, &(ptr->pos_eq_dec)) != IS_OK) {
-              continue;
-            }
-          }
-        }
-
-        // Signal that we have a valid position
-        ptr->pos_valid = 1;
-
-        // Put Right Ascension in interval [0,2pi[
-        ptr->pos_eq_ra = ptr->pos_eq_ra - 
-                         double(long(ptr->pos_eq_ra / 360.0) * 360.0);
-        if (ptr->pos_eq_ra < 0.0) 
-          ptr->pos_eq_ra += 360.0;
-
-        // Try getting position error using catalogAccess
-        if (in->cat.posError_deg(i, &err) == IS_OK) {
-          ptr->pos_err_maj = err;
-          ptr->pos_err_min = err;
-          ptr->pos_err_ang = 0.0;
-        }
-
-        // Try getting position error using POS_ERR keywords
-        else if ((in->cat.getNValue("POS_ERR_MAX", i, &err_max) == IS_OK) &&
-                 (in->cat.getNValue("POS_ERR_MIN", i, &err_min) == IS_OK) &&
-                 (in->cat.getNValue("POS_ERR_ANG", i, &err_ang) == IS_OK)) {
-          ptr->pos_err_maj = err_max;
-          ptr->pos_err_min = err_min;
-          ptr->pos_err_ang = err_ang;
-        }
-
-        // Try getting position error using standard keywords
-        else if ((in->cat.getNValue("e_RAJ2000", i, &e_RA) == IS_OK) &&
-                 (in->cat.getNValue("e_DEJ2000", i, &e_DE) == IS_OK)) {
-          // Correct Right Ascension error by declination
-          e_RA *= cos(ptr->pos_eq_dec*deg2rad);
-          if (e_RA > e_DE) {           // Error ellipse along RA axis
-            ptr->pos_err_maj = e_RA;
-            ptr->pos_err_min = e_DE;
-            ptr->pos_err_ang = 0.0;
-          }
-          else {                       // Error ellipse along DE axis
-            ptr->pos_err_maj = e_DE;
-            ptr->pos_err_min = e_RA;
-            ptr->pos_err_ang = 90.0;
-          }
-        }
-
-        // Use task parameter error in case that a position error is 0.0
-        if ((ptr->pos_err_maj <= 0.0) || (ptr->pos_err_min <= 0.0)) {
-          ptr->pos_err_maj = posErr;
-          ptr->pos_err_min = posErr;
-        }
 
       } // endfor: looped over all objects
 
@@ -461,7 +882,8 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
 /* -------------------------------------------------------------------------- */
 /* Private method: dump catalogue descriptor                                  */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
+Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in, 
+                                  Status status) {
 
     // Declare local variables
     long                                               iQty;
@@ -504,6 +926,11 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
           maxLenUCDs = len;
       }
 
+      // Dump header
+      Log(Log_2, "");
+      Log(Log_2, "Catalogue descriptor:");
+      Log(Log_2, "=====================");
+
       // Dump catalogue information
       Log(Log_2, " Catalogue input name .............: %s",
           in->inName.c_str());
@@ -525,37 +952,77 @@ Status Catalogue::dump_descriptor(InCatalogue *in, Status status) {
           in->numLoad);
       Log(Log_2, " Number of quantities (columns) ...: %d",
           numQty);
+      Log(Log_2, " Source ID column key .............: <%s>",
+          in->col_id.c_str());
+      Log(Log_2, " Position column keys .............: <%s> <%s>",
+          in->col_ra.c_str(), in->col_dec.c_str());
+      switch (in->col_e_type) {
+      case NoError:
+        Log(Log_2, " Position error column keys .......: no error information found");
+        break;
+       break;
+      case Ellipse:
+        Log(Log_2, " Position error column keys .......: <%s> <%s> <%s>",
+            in->col_e_maj.c_str(), in->col_e_min.c_str(), in->col_e_posang.c_str());
+        break;
+      case RaDec:
+        Log(Log_2, " Position error column keys .......: <%s> <%s>",
+            in->col_e_ra.c_str(), in->col_e_dec.c_str());
+        break;
+      }
+      switch (in->col_e_prob) {
+      case Sigma_1:
+        Log(Log_2, " Position error unit ..............: 1 sigma (68.269%%)");
+        break;
+      case Sigma_2:
+        Log(Log_2, " Position error unit ..............: 2 sigma (95.450%%)");
+        break;
+      case Sigma_3:
+        Log(Log_2, " Position error unit ..............: 3 sigma (99.730%%)");
+        break;
+      case Prob_68:
+        Log(Log_2, " Position error unit ..............: 68%%");
+        break;
+      case Prob_95:
+        Log(Log_2, " Position error unit ..............: 95%%");
+        break;
+      case Prob_99:
+        Log(Log_2, " Position error unit ..............: 99%%");
+        break;
+      }
 
       // Dump information about catalogue quantitites
-      for (iQty = 0; iQty < numQty; iQty++) {
+      if (par->logVerbose()) {
+        for (iQty = 0; iQty < numQty; iQty++) {
 
-        // Set quantity type
-        switch (qtyTypes[iQty]) {
-        case 0:
-          qtyType = "vector";
-          break;
-        case 1:
-          qtyType = "numerical";
-          break;
-        case 2:
-          qtyType = "string";
-          break;
-        default:
-          qtyType = "unknown";
-          break;
-        }
+          // Set quantity type
+          switch (qtyTypes[iQty]) {
+          case 0:
+            qtyType = "vector";
+            break;
+          case 1:
+            qtyType = "numerical";
+            break;
+          case 2:
+            qtyType = "string";
+            break;
+          default:
+            qtyType = "unknown";
+            break;
+          }
 
-        // Dump quantity
-        Log(Log_2,
-            "  Quantity %3d ....................: %*s [%*s] (%*s) <%*s> (%s)",
-            iQty+1,
-            maxLenNames, qtyNames[iQty].c_str(),
-            maxLenUnits, qtyUnits[iQty].c_str(),
-            maxLenForms, qtyDesc[iQty].m_format.c_str(),
-            maxLenUCDs,  qtyUCDs[iQty].c_str(),
-            qtyType.c_str());
+          // Dump quantity
+          Log(Log_2,
+              "  Quantity %3d ....................: %*s [%*s] (%*s) <%*s> (%s)",
+              iQty+1,
+              maxLenNames, qtyNames[iQty].c_str(),
+              maxLenUnits, qtyUnits[iQty].c_str(),
+              maxLenForms, qtyDesc[iQty].m_format.c_str(),
+              maxLenUCDs,  qtyUCDs[iQty].c_str(),
+              qtyType.c_str());
 
-      } // endfor: looped over quantities
+        } // endfor: looped over quantities
+      } // endif: verbose level
 
     } while (0); // End of main do-loop
 
@@ -746,8 +1213,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Load source catalogue
-      status = get_input_catalogue(par, &m_src, par->m_srcPosError, m_src_name,
-                                   status);
+      status = get_input_catalogue(par, &m_src, par->m_srcPosError, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to load source catalogue '%s' data.",

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.8  2007/10/03 09:06:08  jurgen
+Add chance coincidence probability PROB_CHANCE
+
 Revision 1.7  2007/10/02 22:01:16  jurgen
 Change parameter name maxNumCtp to maxNumCpt
 
@@ -230,8 +233,7 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         if (!m_fCptLoaded) {
 
           // Load counterpart catalogue
-          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, 
-                                       m_cpt_name, status);
+          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, status);
           if (status != STATUS_OK) {
             if (par->logTerse())
               Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
@@ -513,7 +515,8 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
       // Assign the counterpart probabilities
       for (iCC = 0; iCC < m_numCC; iCC++)
-        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC] * (1.0 - m_cc[iCC].prob_chance);
+        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC] * 
+                         (1.0 - m_cc[iCC].prob_chance);
 
       // Sort counterpart candidates by decreasing probability
       status = cid_sort(par, status);
@@ -690,6 +693,17 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
                        src->pos_err_maj * src->pos_err_maj);
           if (error > 0.0)
             m_cc[iCC].prob_angsep = exp(-m_cc[iCC].angsep / error);
+          else
+            m_cc[iCC].prob_angsep = 0.0;
+          break;
+        case Parabolid:
+          error = cpt->pos_err_maj * cpt->pos_err_maj +
+                  src->pos_err_maj * src->pos_err_maj;
+          if (error > 0.0) {
+            arg   = -3.0 * (m_cc[iCC].prob_angsep * m_cc[iCC].prob_angsep) /
+                           (error);
+            m_cc[iCC].prob_angsep = exp(arg);
+          }
           else
             m_cc[iCC].prob_angsep = 0.0;
           break;
