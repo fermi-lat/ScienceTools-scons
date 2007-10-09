@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2007/10/09 08:17:40  jurgen
+Correctly interpret positional errors and correctly evaluate PROB_POS
+as likelihood
+
 Revision 1.9  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -698,7 +702,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
         double b         = (src->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
                            (src->pos_err_min*src->pos_err_min) : 0.0;
         arg              = a + b;
-        double error = (arg > 0.0) ? 1.0/sqrt(arg) : 0.0;
+        double error     = (arg > 0.0) ? 1.0/sqrt(arg) : 0.0;
 
         // Calculate counterpart probability from angular separation
         switch (par->m_posProbType) {

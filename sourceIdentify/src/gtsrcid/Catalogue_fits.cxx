@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.8  2007/10/09 08:17:40  jurgen
+Correctly interpret positional errors and correctly evaluate PROB_POS
+as likelihood
+
 Revision 1.7  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -416,6 +420,11 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_POSANG_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_POSANG_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_POSANG_UCD);
+      col = OUTCAT_COL_REF_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_REF_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_REF_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_REF_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_REF_UCD);
 
       // Initialise column counter for additional columns
       col = OUTCAT_NUM_GENERIC;
@@ -629,6 +638,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
     std::string   form;
     std::string   name;
     double       *dptr;
+    long         *lptr;
     char        **cptr;
 
     // Debug mode: Entry
@@ -637,8 +647,9 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
     // Initialise temporary memory pointers
     dptr  = NULL;
-    cptr  = NULL;   
-    nrows = 0; 
+    lptr  = NULL;
+    cptr  = NULL;
+    nrows = 0;
 
     // Initialise FITSIO status
     fstatus = (int)status;
@@ -665,7 +676,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
       // Define the rows that should be inserted
       firstrow = (long)nactrows;
-      frow     = firstrow + 1;   
+      frow     = firstrow + 1;
       nrows    = (long)m_numCC;
 
       // Insert rows for the new counterpart candidates
@@ -679,9 +690,9 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
       // Allocate memory to hold quantities
       dptr = new double[nrows];
+      lptr = new long[nrows];
       cptr = new char*[nrows];
-      if (dptr == NULL ||
-          cptr == NULL) {
+      if (dptr == NULL || lptr == NULL || cptr == NULL) {
         status = STATUS_MEM_ALLOC;
         if (par->logTerse())
           Log(Error_2, "%d : Memory allocation failure.", (Status)status);
@@ -698,7 +709,6 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       }
       if (status != STATUS_OK)
         continue;
-
 
       // Add unique counterpart identifier
       for (row = 0; row < nrows; row++)
@@ -849,6 +859,18 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         continue;
       }
 
+      // Add reference
+      for (row = 0; row < nrows; row++)
+        lptr[row] = m_cc[row].index;
+      fstatus = fits_write_col(fptr, TLONG, OUTCAT_COL_REF_COLNUM,
+                               frow, 1, nrows, lptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write reference to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
       // Add source catalogue columns
       for (iQty = 0; iQty < m_num_src_Qty; iQty++) {
 
@@ -945,6 +967,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
     // Delete temporary memory
     if (dptr != NULL) delete [] dptr;
+    if (lptr != NULL) delete [] lptr;
     if (cptr != NULL) {
       for (row = 0; row < nrows; row++) {
         if (cptr[row] != NULL) delete [] cptr[row];
@@ -958,7 +981,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_add (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::cfits_add (status=%d)",
           status);
 
     // Return status
@@ -1719,6 +1742,72 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_get_col_str (status=%d)",
           status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                           Catalogue::cfits_set_pars                        */
+/* -------------------------------------------------------------------------- */
+/* Private method: Save run parameters as FITS keywords.                      */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_set_pars(fitsfile *fptr, Parameters *par, Status status) {
+
+    // Declare local variables
+    int fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_set_pars");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Dump header
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Save run parameters as FITS keywords:");
+        Log(Log_2, "=====================================");
+      }
+
+      // Write parameters
+      fstatus = fits_update_key_dbl(fptr, "P_THRES", par->m_probThres,
+                                    4, "Probability threshold", &fstatus);
+      fstatus = fits_update_key_lng(fptr, "MAX_CPT", par->m_maxNumCpt,
+                                    "Maximum number of counterparts", &fstatus);
+      fstatus = fits_update_key_dbl(fptr, "SRC_ERR", par->m_srcPosError,
+                                    4, "Default source position error", &fstatus);
+      fstatus = fits_update_key_dbl(fptr, "CPT_ERR", par->m_cptPosError,
+                                    4, "Default counterpart position error", &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Warning_2, "%d : Unable to write parameters keywords to"
+              " catalogue.", fstatus);
+        fstatus = 0;
+        continue;
+      }
+      if (fstatus != 0)
+        continue;
+
+    } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_set_pars (status=%d)", status);
 
     // Return status
     return status;

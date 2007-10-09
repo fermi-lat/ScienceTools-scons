@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.14  2007/10/09 08:17:40  jurgen
+Correctly interpret positional errors and correctly evaluate PROB_POS
+as likelihood
+
 Revision 1.13  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -64,7 +68,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         80
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         12
+#define OUTCAT_NUM_GENERIC         13
 //
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
@@ -136,6 +140,12 @@ namespace sourceIdentify {
 #define OUTCAT_COL_POSANG_FORM     "1E"
 #define OUTCAT_COL_POSANG_UNIT     "deg"
 #define OUTCAT_COL_POSANG_UCD      ""
+//
+#define OUTCAT_COL_REF_COLNUM      13
+#define OUTCAT_COL_REF_NAME        "REF"
+#define OUTCAT_COL_REF_FORM        "1J"
+#define OUTCAT_COL_REF_UNIT        ""
+#define OUTCAT_COL_REF_UCD         ""
 //
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
@@ -277,6 +287,7 @@ private:
                        std::vector<double> &col, Status status);
   Status cfits_get_col_str(fitsfile *fptr, Parameters *par, std::string colname,
                            std::vector<std::string> &col, Status status);
+  Status cfits_set_pars(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_save(fitsfile *fptr, Parameters *par, Status status);
 private:
   //

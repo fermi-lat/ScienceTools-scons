@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.18  2007/10/09 08:17:40  jurgen
+Correctly interpret positional errors and correctly evaluate PROB_POS
+as likelihood
+
 Revision 1.17  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -666,8 +670,8 @@ void Catalogue::init_memory(void) {
       m_cc            = NULL;
 
       // Initialise counterpart statistics
-      m_cpt_stat      = NULL;
       m_num_Sel       = 0;
+      m_cpt_stat      = NULL;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -1192,6 +1196,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 /*   |                                                                        */
 /*   +-- cfits_select (select output catalogue entries)                       */
 /*   |                                                                        */
+/*   +-- cfits_set_pars (set run parameter keywords)                          */
+/*   |                                                                        */
 /*   +-- cfits_save (save output catalogue)                                   */
 /*   |                                                                        */
 /*   +-- dump_results (dump results)                                          */
@@ -1329,6 +1335,15 @@ Status Catalogue::build(Parameters *par, Status status) {
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to select output catalogue counterparts.",
+              (Status)status);
+        continue;
+      }
+
+      // Write parameters as keywords to catalogue
+      status = cfits_set_pars(m_outFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write parameters to output catalogue.",
               (Status)status);
         continue;
       }
