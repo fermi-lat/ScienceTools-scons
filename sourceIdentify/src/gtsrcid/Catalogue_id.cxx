@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.8  2007/10/03 09:06:08  jurgen
 Add chance coincidence probability PROB_CHANCE
 
@@ -79,13 +83,13 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
       // Dump source information (optionally)
       if (par->logNormal()) {
         if (src->pos_valid) {
-          Log(Log_2, " Source %5d .....................: %18s"SRC_FORMAT,
+          Log(Log_2, " Source %5d .....................: %20s"SRC_FORMAT,
               iSrc+1, src->name.c_str(),
               src->pos_eq_ra, src->pos_eq_dec,
               src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
         }
         else {
-          Log(Log_2, " Source %5d .....................: %18s"
+          Log(Log_2, " Source %5d .....................: %20s"
               " No position information found.",
               iSrc+1, src->name.c_str());
         }
@@ -327,7 +331,8 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         cpt_ptr->prob        = 0.0;
         cpt_ptr->index       = iCpt;
         cpt_ptr->angsep      = 0.0;
-        cpt_ptr->prob_angsep = 0.0;
+        cpt_ptr->posang      = 0.0;
+        cpt_ptr->prob_pos    = 0.0;
         cpt_ptr->prob_chance = 0.0;
         cpt_ptr++;
         m_numCC++;
@@ -418,12 +423,12 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         m_cc[iCC].prob_add.clear();
       }
 
-      // Determine counterpart probabilities based on angular separation
-      status = cid_prob_angsep(par, iSrc, status);
+      // Determine counterpart probabilities based on position
+      status = cid_prob_pos(par, iSrc, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to determine counterpart probabilities"
-              " for source %d based on angular separation.", 
+              " for source %d based on position.", 
               (Status)status, iSrc+1);
         continue;
       }
@@ -515,7 +520,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
       // Assign the counterpart probabilities
       for (iCC = 0; iCC < m_numCC; iCC++)
-        m_cc[iCC].prob = m_cc[iCC].prob_angsep * prob_add[iCC] * 
+        m_cc[iCC].prob = m_cc[iCC].prob_pos * prob_add[iCC] * 
                          (1.0 - m_cc[iCC].prob_chance);
 
       // Sort counterpart candidates by decreasing probability
@@ -601,10 +606,9 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
 
 /*----------------------------------------------------------------------------*/
-/*                          Catalogue::cid_prob_angsep                        */
+/*                          Catalogue::cid_prob_pos                           */
 /* -------------------------------------------------------------------------- */
-/* Private method: calculate the counterpart probability based on angular     */
-/*                 separation for all candidates                              */
+/* Private method: calculate the counterpart probability based on position    */
 /* -------------------------------------------------------------------------- */
 /* TBW                                                                        */
 /* -------------------------------------------------------------------------- */
@@ -615,25 +619,14 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 /* pos_err_min  Uncertainty ellipse minor axis (deg)                          */
 /* pos_err_ang  Uncertainty ellipse positron angle (deg)                      */
 /* angsep       Angular separation of counterpart candidate from source       */
-/* prob_angsep  Probability of counterpart candidate based on position        */
+/* posang       Position angle of counterpart candidate w/r to source         */
+/* prob_pos     Probability of counterpart candidate based on position        */
 /*----------------------------------------------------------------------------*/
-Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
-
-    // Declare local variables
-    long        iCC;
-    long        iCpt;
-    double      src_dec_sin;
-    double      src_dec_cos;
-    double      cpt_dec_sin;
-    double      cpt_dec_cos;
-    double      arg;
-    double      error;
-    ObjectInfo *src;
-    ObjectInfo *cpt;
+Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_angsep (%d candidates)",
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_pos (%d candidates)",
           m_numCC);
 
     // Single loop for common exit point
@@ -648,37 +641,43 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         continue;
 
       // Get pointer to source object
-      src = &(m_src.object[iSrc]);
+      ObjectInfo *src = &(m_src.object[iSrc]);
 
       // Fall through if no source position is available
       if (!src->pos_valid)
         continue;
 
       // Calculate sin and cos of source declination
-      src_dec_sin = sin(src->pos_eq_dec * deg2rad);
-      src_dec_cos = cos(src->pos_eq_dec * deg2rad);
+      double dec         = src->pos_eq_dec * deg2rad;
+      double src_dec_sin = sin(dec);
+      double src_dec_cos = cos(dec);
 
       // Loop over counterpart candidates
-      for (iCC = 0; iCC < m_numCC; iCC++) {
+      for (int iCC = 0; iCC < m_numCC; iCC++) {
 
         // Get index of candidate in counterpart catalogue
-        iCpt = m_cc[iCC].index;
+        int iCpt = m_cc[iCC].index;
 
         // Get pointer to counterpart object
-        cpt = &(m_cpt.object[iCpt]);
+        ObjectInfo *cpt = &(m_cpt.object[iCpt]);
 
         // Fall through if no counterpart position is available
         if (!cpt->pos_valid)
           continue;
 
+        // Perform trigonometric operations to prepare angular separation
+        // and position angle calculations
+        double ra_diff     = (cpt->pos_eq_ra - src->pos_eq_ra) * deg2rad;
+        double dec         = cpt->pos_eq_dec * deg2rad;
+        double cpt_dec_sin = sin(dec);
+        double cpt_dec_cos = cos(dec);
+        double cpt_dec_tan = tan(dec);
+        double arg         = src_dec_sin * cpt_dec_sin +
+                             src_dec_cos * cpt_dec_cos * cos(ra_diff);
+
         // Calculate angular separation between source and counterpart in
         // degrees. Make sure that the separation is always comprised between
-        // [0,180] (out of range arguments lead to a floating exception)
-        cpt_dec_sin = sin(cpt->pos_eq_dec * deg2rad);
-        cpt_dec_cos = cos(cpt->pos_eq_dec * deg2rad);
-        arg         = src_dec_sin * cpt_dec_sin +
-                      src_dec_cos * cpt_dec_cos *
-                      cos((src->pos_eq_ra - cpt->pos_eq_ra)*deg2rad);
+        // [0,180] (out of range arguments lead to a floating exception).
         if (arg <= -1.0)
           m_cc[iCC].angsep = 180.0;
         else if (arg >= 1.0)
@@ -686,32 +685,39 @@ Status Catalogue::cid_prob_angsep(Parameters *par, long iSrc, Status status) {
         else
           m_cc[iCC].angsep = acos(arg) * rad2deg;
 
+        // Calculate position angle, counterclockwise from celestial north
+        m_cc[iCC].posang = atan2(sin(ra_diff), src_dec_cos*cpt_dec_tan -
+                                 src_dec_sin*cos(ra_diff)) * rad2deg;
+
+        // Calculate 95% source error ellipse
+        double angle     = (m_cc[iCC].posang - src->pos_err_ang) * deg2rad;
+        double cos_angle = cos(angle);
+        double sin_angle = sin(angle);
+        double a         = (src->pos_err_maj > 0.0) ? (cos_angle*cos_angle) /
+                           (src->pos_err_maj*src->pos_err_maj) : 0.0;
+        double b         = (src->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
+                           (src->pos_err_min*src->pos_err_min) : 0.0;
+        arg              = a + b;
+        double error = (arg > 0.0) ? 1.0/sqrt(arg) : 0.0;
+
         // Calculate counterpart probability from angular separation
         switch (par->m_posProbType) {
-        case Exponential:
-          error = sqrt(cpt->pos_err_maj * cpt->pos_err_maj +
-                       src->pos_err_maj * src->pos_err_maj);
+        case Exponential:         // Initial formula (obsolete)
           if (error > 0.0)
-            m_cc[iCC].prob_angsep = exp(-m_cc[iCC].angsep / error);
+            m_cc[iCC].prob_pos = exp(-m_cc[iCC].angsep / error);
           else
-            m_cc[iCC].prob_angsep = 0.0;
+            m_cc[iCC].prob_pos = 0.0;
           break;
-        case Parabolid:
-          error = cpt->pos_err_maj * cpt->pos_err_maj +
-                  src->pos_err_maj * src->pos_err_maj;
+
+        case Gaussian:            // Parabolic log-likelihood function
+        default:
           if (error > 0.0) {
-            arg   = -3.0 * (m_cc[iCC].prob_angsep * m_cc[iCC].prob_angsep) /
-                           (error);
-            m_cc[iCC].prob_angsep = exp(arg);
+            arg                = (m_cc[iCC].angsep * m_cc[iCC].angsep) / 
+                                 (error * error);
+            m_cc[iCC].prob_pos = exp(-2.9957230 * arg);
           }
           else
-            m_cc[iCC].prob_angsep = 0.0;
-          break;
-        case Gaussian:
-          m_cc[iCC].prob_angsep = 1.0;
-          break;
-        default:
-          m_cc[iCC].prob_angsep = 1.0;
+            m_cc[iCC].prob_pos = 0.0;
           break;
         }
 
@@ -865,15 +871,15 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         // Normal log level
         if (par->logNormal()) {
           if (cpt->pos_valid) {
-            Log(Log_2, "  Cpart %5d P=%7.3f%% S=%7.2f': %18s"SRC_FORMAT,
+            Log(Log_2, "  Cpt%5d P=%3.0f%% S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
                 iCC+1, 
-                m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0,
+                m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0, m_cc[iCC].posang,
                 cpt->name.c_str(),
                 cpt->pos_eq_ra, cpt->pos_eq_dec,
                 cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
           }
           else {
-            Log(Log_2, "  Cpart %5d P=%7.3f%% S=.......': %18s"
+            Log(Log_2, "  Cpt%5d P=%3.0f%% .................: %20s"
                 " No position information found",
                 iCC+1, 
                 m_cc[iCC].prob*100.0,
@@ -886,7 +892,7 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
           if (cpt->pos_valid) {
             if (num_add > 0) {
               Log(Log_2, "   Angular separation probability .: %7.3f %%",
-                  m_cc[iCC].prob_angsep*100.0);
+                  m_cc[iCC].prob_pos*100.0);
               for (i_add = 0; i_add < num_add; i_add++) {
                 Log(Log_2, 
                     "   Additional probability .........: %7.3f %%"
@@ -894,6 +900,8 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
                     m_cc[iCC].prob_add[i_add]*100.0,
                     par->m_probColNames[i_add].c_str());
               }
+              Log(Log_2, "   Chance coincidence probability .: %7.3f %%",
+                  m_cc[iCC].prob_chance*100.0);
             }
           }
         }

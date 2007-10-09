@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.17  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.16  2007/09/21 20:27:14  jurgen
 Correct cfits_collect bug (unstable row selection)
 
@@ -99,7 +103,7 @@ Status      get_pos_error_info(Parameters *par, InCatalogue *in,
                                std::vector <std::string> &qtyNames,
                                std::vector <std::string> &qtyUCDs,
                                Status status);
-void        set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
+void        set_info(Parameters *par, InCatalogue *in, int &i, ObjectInfo *ptr,
                      double &posErr);
 
 
@@ -261,7 +265,7 @@ Status get_id_info(Parameters *par, InCatalogue *in,
       status = STATUS_CAT_NO_ID;
 
       // Search for first ID in UCDs
-      for (int i = 0; i < qtyUCDs.size(); ++i) {
+      for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
         if (qtyUCDs[i].find("ID_MAIN", 0) != std::string::npos) {
           in->col_id = qtyNames[i];
           status     = STATUS_OK;
@@ -323,13 +327,13 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
       in->col_dec.clear();
 
       // Search for first RA/Dec position in UCDs
-      for (int i = 0; i < qtyUCDs.size(); ++i) {
+      for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
         if (qtyUCDs[i].find("POS_EQ_RA_MAIN", 0) != std::string::npos) {
           in->col_ra = qtyNames[i];
           break;
         }
       }
-      for (int i = 0; i < qtyUCDs.size(); ++i) {
+      for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
         if (qtyUCDs[i].find("POS_EQ_DEC_MAIN", 0) != std::string::npos) {
           in->col_dec = qtyNames[i];
           break;
@@ -395,57 +399,91 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
       // Initialise status to 'not found'
       status = STATUS_CAT_NO_POS_ERROR;
 
-      // Initialise error type to 'no error'
-      in->col_e_type = NoError;
+      // Initialise error type to 'no error' and error scaling to unity
+      in->col_e_type  = NoError;
+      in->e_pos_scale = 1.0;
 
-      // Search for LAT catalogue names (95%)
-      if ((find(qtyNames, "Conf_95_SemiMajor").length() > 0) &&
-          (find(qtyNames, "Conf_95_SemiMinor").length() > 0) &&
-          (find(qtyNames, "Conf_95_PosAng").length() > 0)) {
-        in->col_e_maj    = "Conf_95_SemiMajor";
-        in->col_e_min    = "Conf_95_SemiMinor";
-        in->col_e_posang = "Conf_95_PosAng";
-        in->col_e_type   = Ellipse;
-        in->col_e_prob   = Prob_95;
-        status           = STATUS_OK;
-        continue;
-      }
+      // Search loop
+      do {
 
-      // Search for LAT catalogue names (68%)
-      if ((find(qtyNames, "Conf_68_SemiMajor").length() > 0) &&
-          (find(qtyNames, "Conf_68_SemiMinor").length() > 0) &&
-          (find(qtyNames, "Conf_68_PosAng").length() > 0)) {
-        in->col_e_maj    = "Conf_68_SemiMajor";
-        in->col_e_min    = "Conf_68_SemiMinor";
-        in->col_e_posang = "Conf_68_PosAng";
-        in->col_e_type   = Ellipse;
-        in->col_e_prob   = Prob_68;
-        status           = STATUS_OK;
-        continue;
-      }
+        // Search for LAT catalogue names (95%)
+        if ((find(qtyNames, "Conf_95_SemiMajor").length() > 0) &&
+            (find(qtyNames, "Conf_95_SemiMinor").length() > 0) &&
+            (find(qtyNames, "Conf_95_PosAng").length() > 0)) {
+          in->col_e_maj    = "Conf_95_SemiMajor";
+          in->col_e_min    = "Conf_95_SemiMinor";
+          in->col_e_posang = "Conf_95_PosAng";
+          in->col_e_type   = Ellipse;
+          in->col_e_prob   = Prob_95;
+          status           = STATUS_OK;
+          continue;
+        }
 
-      // Search for output catalogue columns
-      if ((find(qtyNames, OUTCAT_COL_MAJERR_NAME).length() > 0) &&
-          (find(qtyNames, OUTCAT_COL_MINERR_NAME).length() > 0) &&
-          (find(qtyNames, OUTCAT_COL_POSANGLE_NAME).length() > 0)) {
-        in->col_e_maj    = OUTCAT_COL_MAJERR_NAME;
-        in->col_e_min    = OUTCAT_COL_MINERR_NAME;
-        in->col_e_posang = OUTCAT_COL_POSANGLE_NAME;
-        in->col_e_type   = Ellipse;
-        in->col_e_prob   = Prob_95;   // TBD TBD TBD !!!
-        status           = STATUS_OK;
-        continue;
-      }
+        // Search for LAT catalogue names (68%)
+        if ((find(qtyNames, "Conf_68_SemiMajor").length() > 0) &&
+            (find(qtyNames, "Conf_68_SemiMinor").length() > 0) &&
+            (find(qtyNames, "Conf_68_PosAng").length() > 0)) {
+          in->col_e_maj    = "Conf_68_SemiMajor";
+          in->col_e_min    = "Conf_68_SemiMinor";
+          in->col_e_posang = "Conf_68_PosAng";
+          in->col_e_type   = Ellipse;
+          in->col_e_prob   = Prob_68;
+          status           = STATUS_OK;
+          continue;
+        }
 
-      // Search for e_RAJ2000/e_DEJ2000 columns
-      if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
-          (find(qtyNames, "e_DEJ2000").length() > 0)) {
-        in->col_e_ra   = "e_RAJ2000";
-        in->col_e_dec  = "e_DEJ2000";
-        in->col_e_type = RaDec;
-        in->col_e_prob = Sigma_1;
-        status         = STATUS_OK;
-        continue;
+        // Search for output catalogue columns
+        if ((find(qtyNames, OUTCAT_COL_MAJERR_NAME).length() > 0) &&
+            (find(qtyNames, OUTCAT_COL_MINERR_NAME).length() > 0) &&
+            (find(qtyNames, OUTCAT_COL_POSANGLE_NAME).length() > 0)) {
+          in->col_e_maj    = OUTCAT_COL_MAJERR_NAME;
+          in->col_e_min    = OUTCAT_COL_MINERR_NAME;
+          in->col_e_posang = OUTCAT_COL_POSANGLE_NAME;
+          in->col_e_type   = Ellipse;
+          in->col_e_prob   = Prob_95;
+          status           = STATUS_OK;
+          continue;
+        }
+
+        // Search for e_RAJ2000/e_DEJ2000 columns
+        if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
+            (find(qtyNames, "e_DEJ2000").length() > 0)) {
+          in->col_e_ra   = "e_RAJ2000";
+          in->col_e_dec  = "e_DEJ2000";
+          in->col_e_type = RaDec;
+          in->col_e_prob = Sigma_1;
+          status         = STATUS_OK;
+          continue;
+        }
+
+      } while (0); // End of search loop
+
+      // Get error scaling (returned errors are 95% confidence errors)
+      if (in->col_e_type != NoError) {
+        switch (in->col_e_prob) {
+        case Sigma_1:
+          in->e_pos_scale = e_norm_1s;
+          break;
+        case Sigma_2:
+          in->e_pos_scale = e_norm_2s;
+          break;
+        case Sigma_3:
+          in->e_pos_scale = e_norm_3s;
+          break;
+        case Prob_68:
+          in->e_pos_scale = e_norm_68;
+          break;
+        case Prob_95:
+          in->e_pos_scale = e_norm_95;
+          break;
+        case Prob_99:
+          in->e_pos_scale = e_norm_99;
+          break;
+        default:
+          in->e_pos_scale = e_norm_95;
+          break;
+        }
+        in->e_pos_scale /= e_norm_95;
       }
 
     } while (0); // End of main do-loop
@@ -466,10 +504,10 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
 /* -------------------------------------------------------------------------- */
 /* Private method: set source information                                     */
 /*----------------------------------------------------------------------------*/
-void set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
+void set_info(Parameters *par, InCatalogue *in, int &i, ObjectInfo *ptr,
               double &posErr) {
 
-   // Declare local variables
+    // Declare local variables
     double err_maj;
     double err_min;
     double err_ang;
@@ -514,13 +552,16 @@ void set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
       // Set source position error (type dependent)
       switch (in->col_e_type) {
       case NoError:
+        ptr->pos_err_maj = posErr;
+        ptr->pos_err_min = posErr;
+        ptr->pos_err_ang = 0.0;
         break;
       case Ellipse:
         if ((in->cat.getNValue(in->col_e_maj,    i, &err_maj) == IS_OK) &&
             (in->cat.getNValue(in->col_e_min,    i, &err_min) == IS_OK) &&
             (in->cat.getNValue(in->col_e_posang, i, &err_ang) == IS_OK)) {
-          ptr->pos_err_maj = err_maj;
-          ptr->pos_err_min = err_min;
+          ptr->pos_err_maj = err_maj * in->e_pos_scale;
+          ptr->pos_err_min = err_min * in->e_pos_scale;
           ptr->pos_err_ang = err_ang;
         }
         break;
@@ -529,18 +570,19 @@ void set_info(Parameters *par, InCatalogue *in, long &i, ObjectInfo *ptr,
             (in->cat.getNValue(in->col_e_dec, i, &e_DE) == IS_OK)) {
           e_RA *= cos(ptr->pos_eq_dec*deg2rad);
           if (e_RA > e_DE) {           // Error ellipse along RA axis
-            ptr->pos_err_maj = e_RA;
-            ptr->pos_err_min = e_DE;
-            ptr->pos_err_ang = 0.0;
+            ptr->pos_err_maj = e_RA * in->e_pos_scale;
+            ptr->pos_err_min = e_DE * in->e_pos_scale;
+            ptr->pos_err_ang = 90.0;   // P.A. = 90.0 deg
           }
           else {                       // Error ellipse along DE axis
-            ptr->pos_err_maj = e_DE;
-            ptr->pos_err_min = e_RA;
-            ptr->pos_err_ang = 90.0;
+            ptr->pos_err_maj = e_DE * in->e_pos_scale;
+            ptr->pos_err_min = e_RA * in->e_pos_scale;
+            ptr->pos_err_ang = 0.0;    // P.A. = 0.0 deg
           }
         }
         break;
       }
+
 
      } while (0); // End of main do-loop
 
@@ -571,10 +613,11 @@ void Catalogue::init_memory(void) {
     do {
 
       // Initialise source catalogue private members
-      m_src.numLoad    = 0;
-      m_src.numTotal   = 0;
-      m_src.object     = NULL;
-      m_src.col_e_type = NoError;
+      m_src.numLoad     = 0;
+      m_src.numTotal    = 0;
+      m_src.object      = NULL;
+      m_src.col_e_type  = NoError;
+      m_src.e_pos_scale = 1.0;
       m_src.inName.clear();
       m_src.catCode.clear();
       m_src.catURL.clear();
@@ -591,10 +634,11 @@ void Catalogue::init_memory(void) {
       m_src.col_e_min.clear();
 
       // Initialise counterpart catalogue private members
-      m_cpt.numLoad    = 0;
-      m_cpt.numTotal   = 0;
-      m_cpt.object     = NULL;
-      m_cpt.col_e_type = NoError;
+      m_cpt.numLoad     = 0;
+      m_cpt.numTotal    = 0;
+      m_cpt.object      = NULL;
+      m_cpt.col_e_type  = NoError;
+      m_cpt.e_pos_scale = 1.0;
       m_cpt.inName.clear();
       m_cpt.catCode.clear();
       m_cpt.catURL.clear();
@@ -762,7 +806,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
       // Determine the number of loaded objects in catalogue (should be 0)
       in->cat.getNumRows(&in->numLoad);
 
-      // Get ID information
+      // Get information
       status = get_info(par, in, status);
       if (status != STATUS_OK)
         continue;
@@ -795,11 +839,6 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
 Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
                                       double posErr, Status status) {
 
-    // Declare local variables
-    int          caterr;
-    long         i;
-    ObjectInfo  *ptr;
-
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::get_input_catalogue");
@@ -813,7 +852,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       // First interpret the input string as filename and load the catalogue
       // from the file. If this fails then interpret input string as
       // catalogue name and load from WEB.
-      caterr = in->cat.import(in->inName);
+      int caterr = in->cat.import(in->inName);
       if (caterr < 0) {
         if (par->logVerbose())
           Log(Warning_2, "%d : Unable to load catalogue '%s' from file.",
@@ -853,8 +892,8 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
       }
 
       // Extract object information
-      ptr = in->object;
-      for (i = 0; i < in->numLoad; i++, ptr++) {
+      ObjectInfo *ptr = in->object;
+      for (int i = 0; i < in->numLoad; i++, ptr++) {
 
         // Set source information
         set_info(par, in, i, ptr, posErr);
@@ -957,10 +996,6 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
       Log(Log_2, " Position column keys .............: <%s> <%s>",
           in->col_ra.c_str(), in->col_dec.c_str());
       switch (in->col_e_type) {
-      case NoError:
-        Log(Log_2, " Position error column keys .......: no error information found");
-        break;
-       break;
       case Ellipse:
         Log(Log_2, " Position error column keys .......: <%s> <%s> <%s>",
             in->col_e_maj.c_str(), in->col_e_min.c_str(), in->col_e_posang.c_str());
@@ -969,25 +1004,39 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
         Log(Log_2, " Position error column keys .......: <%s> <%s>",
             in->col_e_ra.c_str(), in->col_e_dec.c_str());
         break;
+      case NoError:
+      default:
+        Log(Log_2, " Position error column keys .......: no error information found");
+        break;
       }
       switch (in->col_e_prob) {
       case Sigma_1:
-        Log(Log_2, " Position error unit ..............: 1 sigma (68.269%%)");
+        Log(Log_2, " Position error unit ..............: 1 sigma (68.269%%) (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       case Sigma_2:
-        Log(Log_2, " Position error unit ..............: 2 sigma (95.450%%)");
+        Log(Log_2, " Position error unit ..............: 2 sigma (95.450%%) (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       case Sigma_3:
-        Log(Log_2, " Position error unit ..............: 3 sigma (99.730%%)");
+        Log(Log_2, " Position error unit ..............: 3 sigma (99.730%%) (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       case Prob_68:
-        Log(Log_2, " Position error unit ..............: 68%%");
+        Log(Log_2, " Position error unit ..............: 68%% (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       case Prob_95:
-        Log(Log_2, " Position error unit ..............: 95%%");
+        Log(Log_2, " Position error unit ..............: 95%% (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       case Prob_99:
-        Log(Log_2, " Position error unit ..............: 99%%");
+        Log(Log_2, " Position error unit ..............: 99%% (scale=%7.5f)",
+            in->e_pos_scale);
+        break;
+      default:
+        Log(Log_2, " Position error unit (default) ....: 95%% (scale=%7.5f)",
+            in->e_pos_scale);
         break;
       }
 

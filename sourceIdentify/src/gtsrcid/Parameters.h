@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.7  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.6  2007/10/02 22:01:16  jurgen
 Change parameter name maxNumCtp to maxNumCpt
 
@@ -45,7 +49,6 @@ namespace sourceIdentify {
 typedef enum {
   NotUsed = 1,
   Exponential,
-  Parabolid,
   Gaussian
 } PosProbType;
 

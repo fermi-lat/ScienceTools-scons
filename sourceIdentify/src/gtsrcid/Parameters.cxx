@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.8  2007/10/02 22:01:16  jurgen
 Change parameter name maxNumCtp to maxNumCpt
 
@@ -33,7 +37,7 @@ Replace header information with CVS typeset information.
 #include <stdio.h>                       // for "sprintf" function
 #include "sourceIdentify.h"
 #include "Parameters.h"
-#include "Log.h"	                     // for parameter dumping/errors
+#include "Log.h"                         // for parameter dumping/errors
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -311,11 +315,9 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
         if (found) {
           prob_name = probMethod.substr(start_name, len_name);
           if (prob_name == "POSITION")
-            m_posProbType = Parabolid;
+            m_posProbType = Gaussian;
           else if (prob_name == "POS-EXP")
             m_posProbType = Exponential;
-          else if (prob_name == "POS-PAR")
-            m_posProbType = Parabolid;
           else if (prob_name == "POS-GAUSS")
             m_posProbType = Gaussian;
           else
@@ -384,9 +386,6 @@ Status Parameters::dump(Status status) {
         break;
       case Exponential:
         Log(Log_1, " Position probability method ......: Exponential");
-        break;
-      case Parabolid:
-        Log(Log_1, " Position probability method ......: Parabolid");
         break;
       case Gaussian:
         Log(Log_1, " Position probability method ......: Gaussian");

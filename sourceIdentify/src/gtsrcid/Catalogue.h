@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.13  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.12  2007/10/03 09:06:08  jurgen
 Add chance coincidence probability PROB_CHANCE
 
@@ -60,7 +64,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         80
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         11
+#define OUTCAT_NUM_GENERIC         12
 //
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
@@ -80,7 +84,7 @@ namespace sourceIdentify {
 #define OUTCAT_COL_DEC_UCD         "POS_EQ_DEC_MAIN"
 //
 #define OUTCAT_COL_MAJERR_COLNUM   4
-#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAX"
+#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAJ"
 #define OUTCAT_COL_MAJERR_FORM     "1E"
 #define OUTCAT_COL_MAJERR_UNIT     "deg"
 #define OUTCAT_COL_MAJERR_UCD      "ERROR"
@@ -104,7 +108,7 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_UCD        ""
 //
 #define OUTCAT_COL_PROB_P_COLNUM   8
-#define OUTCAT_COL_PROB_P_NAME     "PROB_ANGSEP"
+#define OUTCAT_COL_PROB_P_NAME     "PROB_POS"
 #define OUTCAT_COL_PROB_P_FORM     "1E"
 #define OUTCAT_COL_PROB_P_UNIT     "probability"
 #define OUTCAT_COL_PROB_P_UCD      ""
@@ -127,6 +131,12 @@ namespace sourceIdentify {
 #define OUTCAT_COL_ANGSEP_UNIT     "deg"
 #define OUTCAT_COL_ANGSEP_UCD      ""
 //
+#define OUTCAT_COL_POSANG_COLNUM   12
+#define OUTCAT_COL_POSANG_NAME     "POSANG"
+#define OUTCAT_COL_POSANG_FORM     "1E"
+#define OUTCAT_COL_POSANG_UNIT     "deg"
+#define OUTCAT_COL_POSANG_UCD      ""
+//
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
 /* Class constants __________________________________________________________ */
@@ -141,7 +151,7 @@ const double twosqrt2ln2 = 2.3548200450309493270140138;
 const double deg2rad     = 0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 
-/* Probability constants ____________________________________________________ */
+/* Probability scaling constants ____________________________________________ */
 const double e_norm_1s = 1.0 / sqrt(1.1478742);  // 1 sigma = 68.269%, 2 dof
 const double e_norm_2s = 1.0 / sqrt(3.0900358);  // 2 sigma = 95.450%, 2 dof
 const double e_norm_3s = 1.0 / sqrt(5.9145778);  // 3 sigma = 99.730%, 2 dof
@@ -178,8 +188,9 @@ typedef struct {                      // Counterpart candidate
   double                  prob;         // Counterpart probability
   //
   long                    index;        // Index of CCs in CPT catalogue
-  double                  angsep;       // Angular separation of CCs from source
-  double                  prob_angsep;  // Probability from angular separation
+  double                  angsep;       // Angular separation of CPT from source
+  double                  posang;       // Position angle of CPT w/r to source
+  double                  prob_pos;     // Probability from position (likelihood)
   std::vector<double>     prob_add;     // Additional probabilities
   double                  prob_chance;  // Chance coincidence probability
 } CCElement;
@@ -215,6 +226,7 @@ typedef struct {                      // Input catalogue
   std::string             col_e_posang; // Position angle
   PosErrorType            col_e_type;   // Position error type
   PosErrorProb            col_e_prob;   // Position error probability
+  double                  e_pos_scale;  // Position error scaling
   ObjectInfo             *object;       // Object information
 } InCatalogue;
 
@@ -244,7 +256,7 @@ private:
   Status      cid_get(Parameters *par, long iSrc, Status status);
   Status      cid_filter(Parameters *par, long iSrc, Status status);
   Status      cid_refine(Parameters *par, long iSrc, Status status);
-  Status      cid_prob_angsep(Parameters *par, long iSrc, Status status);
+  Status      cid_prob_pos(Parameters *par, long iSrc, Status status);
   Status      cid_sort(Parameters *par, Status status);
   Status      cid_dump(Parameters *par, Status status);
   std::string cid_assign_src_name(std::string name, int row);

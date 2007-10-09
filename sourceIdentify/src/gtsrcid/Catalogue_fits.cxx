@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.7  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.6  2007/10/03 09:06:08  jurgen
 Add chance coincidence probability PROB_CHANCE
 
@@ -407,6 +411,11 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_ANGSEP_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_ANGSEP_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_ANGSEP_UCD);
+      col = OUTCAT_COL_POSANG_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_POSANG_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_POSANG_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_POSANG_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_POSANG_UCD);
 
       // Initialise column counter for additional columns
       col = OUTCAT_NUM_GENERIC;
@@ -777,12 +786,12 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
       // Add angular separation probability
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob_angsep;
+        dptr[row] = m_cc[row].prob_pos;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_P_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to write angular separation probability to"
+          Log(Error_2, "%d : Unable to write position probability to"
               " catalogue.", fstatus);
         continue;
       }
@@ -824,6 +833,18 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       if (fstatus != 0) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to write angular separation to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
+      // Add position angle
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].posang;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_POSANG_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write position angle to"
               " catalogue.", fstatus);
         continue;
       }
