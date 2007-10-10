@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2007/10/08 11:02:25  jurgen
+Implement search for catalogue table information and handle different
+position error types
+
 Revision 1.11  2007/09/21 14:29:03  jurgen
 Correct memory bug and updated test script
 
@@ -84,9 +88,13 @@ typedef enum  {                                  // Function status code
   STATUS_CAT_NOT_FOUND     = -100300,             // Catalogue not found
   STATUS_CAT_EMPTY         = -100301,             // Catalogue empty
   STATUS_CAT_BAD_PROB_COL  = -100302,             // Bad probability coltype
+  STATUS_CAT_INCOMPATIBLE  = -100303,             // Incompatible dimensions
   STATUS_CAT_NO_ID         = -100400,             // No ID column
   STATUS_CAT_NO_POS        = -100401,             // No position columns
-  STATUS_CAT_NO_POS_ERROR  = -100402              // No position error columns
+  STATUS_CAT_NO_POS_ERROR  = -100402,             // No position error columns
+  STATUS_FCT_NOT_FOUND     = -100500,             // Function not found
+  STATUS_FCT_INVALID       = -100502,             // Invalid function
+  STATUS_FCT_NO_CLOSING    = -100502              // No closing parenthesis
 } Status;
 
 /* Prototypes _______________________________________________________________ */

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2007/10/09 16:46:23  jurgen
+Write counterpart catalogue reference (row) to output catalogue
+
 Revision 1.8  2007/10/09 08:17:40  jurgen
 Correctly interpret positional errors and correctly evaluate PROB_POS
 as likelihood
@@ -52,12 +55,121 @@ using namespace catalogAccess;
 
 
 /* Type defintions __________________________________________________________ */
+typedef struct {                          // Special functions
+  std::vector <std::string> fct;            // Function names
+  std::vector <std::string> arg;            // Function arguments
+  std::vector <std::string> colname_res;    // Result column names
+  std::vector <std::string> colname_arg;    // Argument column names
+} SpecialFcts;
 
+
+/* Globals __________________________________________________________________ */
+int g_col_special = 1;
+
+
+/* Special function prototypes ______________________________________________ */
+std::vector<double> funct_gammln(std::vector<double> arg);
+std::vector<double> funct_erf(std::vector<double> arg);
+std::vector<double> funct_erfc(std::vector<double> arg);
 
 /* Private Prototypes _______________________________________________________ */
 int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format);
 int fits_tform_binary(int typecode, long repeat, long width, 
                       std::string *format);
+Status extract_next_special_function(std::string formula,
+                                     std::string &new_formula,
+                                     SpecialFcts &fcts);
+
+
+/*============================================================================*/
+/*                              Special functions                             */
+/*============================================================================*/
+
+/*----------------------------------------------------------------------------*/
+/*                                funct_gammln                                */
+/* -------------------------------------------------------------------------- */
+/* Private method: logarithm of gamma function                                */
+/* -------------------------------------------------------------------------- */
+/* Implemented from Numerical Recipes, V2.08                                  */
+/*----------------------------------------------------------------------------*/
+std::vector<double> funct_gammln(std::vector<double> arg) {
+
+    // Get vector dimension
+    int n = (int)arg.size();
+
+    // Allocate result vector
+    std::vector<double> res(n);
+
+    // Evaluate function
+    for (int i = 0; i < n; ++i) {
+      double x   = arg[i];
+      double y   = x;
+      double tmp = x + 5.5;
+      tmp -= (x+0.5)*log(tmp);
+      double ser = 1.000000000190015;
+      ser += 76.18009172947146      / (++y);
+      ser -= 86.50532032941677      / (++y);
+      ser += 24.01409824083091      / (++y);
+      ser -=  1.231739572450155     / (++y);
+      ser +=  0.1208650973866179e-2 / (++y);
+      ser -=  0.5395239384953e-5    / (++y);
+      res[i] = -tmp+log(2.5066282746310005*ser/x);
+    }
+
+    // Return result
+    return res;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                funct_erf                                   */
+/* -------------------------------------------------------------------------- */
+/* Private method: error function                                             */
+/*----------------------------------------------------------------------------*/
+std::vector<double> funct_erf(std::vector<double> arg) {
+
+    // Get vector dimension
+    int n = (int)arg.size();
+
+    // Allocate result vector
+    std::vector<double> res(n);
+
+    // Evaluate error function
+    for (int i = 0; i < n; ++i) {
+      res[i] = (arg[i] < 0.0) ? -nr_gammp(0.5, arg[i]*arg[i]) 
+                              :  nr_gammp(0.5, arg[i]*arg[i]);
+    }
+
+    // Return result
+    return res;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                                funct_erfc                                  */
+/* -------------------------------------------------------------------------- */
+/* Private method: error function                                             */
+/*----------------------------------------------------------------------------*/
+std::vector<double> funct_erfc(std::vector<double> arg) {
+
+    // Get vector dimension
+    int n = (int)arg.size();
+
+    // Allocate result vector
+    std::vector<double> res(n);
+
+    // Evaluate error function
+    for (int i = 0; i < n; ++i) {
+      res[i] = (arg[i] < 0.0) ? 1.0 + nr_gammp(0.5, arg[i]*arg[i])
+                              : nr_gammq(0.5, arg[i]*arg[i]);
+    }
+
+    // Return result
+    return res;
+
+}
 
 
 /*============================================================================*/
@@ -186,6 +298,106 @@ int fits_tform_binary(int typecode, long repeat, long width,
 
     // Return
     return STATUS_OK;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                         extract_next_special_function                      */
+/* -------------------------------------------------------------------------- */
+/* Private method: extract next special function from formula                 */
+/*----------------------------------------------------------------------------*/
+Status extract_next_special_function(std::string formula,
+                                     std::string &new_formula,
+                                     SpecialFcts &fcts) {
+
+    // Initialise return status
+    Status status = STATUS_OK;
+
+    // Single loop for common exit point
+    do {
+
+      // Initialise function name
+      std::string fct = "";
+
+      // Initialise function location
+      std::string::size_type loc_min = std::string::npos;
+
+      // Convert formula for search to upper case
+      std::string u_formula = upper(formula);
+
+      // Search for the first special function in formula
+      for (int i = 0; fct_names[i] != "stop"; ++i) {
+        std::string::size_type loc = u_formula.find(upper(fct_names[i])+"(", 0);
+        if (loc < loc_min) {
+          loc_min  = loc;
+          fct      = fct_names[i];
+        }
+      }
+
+      // Stop if no special function was found
+      if (loc_min == std::string::npos) {
+        status = STATUS_FCT_NOT_FOUND;
+        continue;
+      }
+
+      // Search for closing parenthesis. We have to walk through the string
+      // to find also additional opening parentheses
+      std::string::size_type start = loc_min + fct.length() + 1;
+      std::string::size_type stop  = start;
+      int                    level = 1;
+      while (level > 0 && stop < formula.length()) {
+
+        // If character is an opening parenthesis then increase level
+        if (formula[stop] == '(')
+          level++;
+
+        // If character is a closing parenthesis then decrease level
+        if (formula[stop] == ')')
+          level--;
+
+        // If level is >0 then step to next character
+        if (level > 0)
+          stop++;
+
+      }
+
+      // Signal an error if no closing parentheses were found
+      if (level > 0) {
+        status = STATUS_FCT_NO_CLOSING;
+        continue;
+      }
+
+      // Extract function argument
+      std::string::size_type length = stop - start;
+      std::string            arg    = formula.substr(start, length);
+
+      // Build column name that will hold the result and the argument of the
+      // special function and increment column counter
+      char buffer[20];
+      sprintf(buffer, "_fct_%d_res", g_col_special);
+      std::string colname_res = buffer;
+      sprintf(buffer, "_fct_%d_arg", g_col_special);
+      std::string colname_arg = buffer;
+      g_col_special++;
+
+      // Substituing the special function in formula with the name of the 
+      // result column
+      new_formula = formula;
+      length      = stop - loc_min + 1;
+      new_formula.erase(loc_min, length);
+      new_formula.insert(loc_min, colname_res);
+
+      // Append function to function list
+      fcts.fct.push_back(fct);
+      fcts.arg.push_back(arg);
+      fcts.colname_res.push_back(colname_res);
+      fcts.colname_arg.push_back(colname_arg);
+
+    } while (0); // End of main do-loop
+
+    // Return status
+    return status;
 
 }
 
@@ -998,21 +1210,9 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
                              Status status) {
 
-    // Declare local variables
-    int                    fstatus;
-    int                    datatype;
-    int                    naxis;
-    long                   nelements;
-    unsigned long          iQty;
-    std::string::size_type numQty;
-    std::string            tform;
-
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval");
-
-    // Initialise FITSIO status
-    fstatus = (int)status;
 
     // Single loop for common exit point
     do {
@@ -1023,7 +1223,7 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
 
       // Determine number of new output catalogue quantities. Fall through if
       // there are no new output catalogue quantities
-      numQty = par->m_outCatQtyName.size();
+      int numQty = (int)par->m_outCatQtyName.size();
       if (numQty < 1)
         continue;
 
@@ -1035,58 +1235,183 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
       }
 
       // Add all new output catalogue quantities
-      for (iQty = 0; iQty < numQty; iQty++) {
+      for (int iQty = 0; iQty < numQty; ++iQty) {
 
-        // Test expression to determine the format of the new column
-        fstatus = fits_test_expr(fptr,
-                                 (char*)par->m_outCatQtyFormula[iQty].c_str(),
-                                 0, &datatype, &nelements, &naxis, NULL,
-                                 &fstatus);
-        if (fstatus != 0) {
+        // Get column and formula
+        std::string column  = par->m_outCatQtyName[iQty];
+        std::string formula = par->m_outCatQtyFormula[iQty];
+
+        // Evaluate special expressions in formula
+        status = cfits_eval_special_expression(fptr, par, column, formula, status);
+        if (status != STATUS_OK) {
           if (par->logTerse())
-            Log(Warning_2, " Unable to evaluate expression <%s='%s'> for"
-                " creating new output catalogue quantity (status=%d).",
-                par->m_outCatQtyName[iQty].c_str(), 
-                par->m_outCatQtyFormula[iQty].c_str(),
-                fstatus);
-          fstatus = 0;
-          continue;
+            Log(Error_2, "%d : Unable to evaluate special expression <%s='%s'> in"
+                " formula.",
+                (Status)status, column.c_str(), formula.c_str());
+          break;
         }
 
-        // Set column format
-        if (nelements < 1) 
-          nelements = 1;
-        fits_tform_binary(datatype, nelements, 0, &tform);
-
-        // Create new FITS column
-        fstatus = fits_calculator(fptr, 
-                                  (char*)par->m_outCatQtyFormula[iQty].c_str(),
-                                  fptr,
-                                  (char*)par->m_outCatQtyName[iQty].c_str(),
-                                  (char*)tform.c_str(), 
-                                  &fstatus);
-        if (fstatus != 0) {
+        // Evaluate regular expression in formula
+        status = cfits_eval_regular_expression(fptr, par, column, formula, status);
+        if (status != STATUS_OK) {
           if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate quantity <%s='%s'> in output"
-                " catalogue.", 
-                fstatus, 
-                par->m_outCatQtyName[iQty].c_str(), 
-                par->m_outCatQtyFormula[iQty].c_str());
+            Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
+                " formula.",
+                (Status)status, column.c_str(), formula.c_str());
+          break;
+        }
+
+        // Remove special function columns
+        status = cfits_eval_clear(fptr, par, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to remove special function columns.",
+                (Status)status);
           break;
         }
 
         // Dump new output catalogue quantities information (optionally)
         if (verbose) {
-          Log(Log_2, " New quantity .....................: %s = %s"
-              " (format='%s')",
-              par->m_outCatQtyName[iQty].c_str(),
-              par->m_outCatQtyFormula[iQty].c_str(),
-              tform.c_str());
+          Log(Log_2, " New quantity .....................: %s = %s",
+              column.c_str(), formula.c_str());
         }
 
-      }
-      if (fstatus != 0)
+      } // endfor: loop over all new output cataloge quantities
+      if (status != STATUS_OK)
         continue;
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                         cfits_eval_special_expression                      */
+/* -------------------------------------------------------------------------- */
+/* Private method: evaluate special expressions in formula                    */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
+                                                std::string column,
+                                                std::string &formula,
+                                                Status status) {
+
+    // Declare local variables
+    int         fstatus;
+    int         n_args_before;
+    int         n_args;
+    SpecialFcts fcts;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_special_expression");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Keep old formula for information
+      std::string old_formula = formula;
+
+      // Find all special functions in formula
+      while (status == STATUS_OK)
+        status = extract_next_special_function(formula, formula, fcts);
+      if (status == STATUS_FCT_NOT_FOUND)
+        status = STATUS_OK;
+      if (status != STATUS_OK)
+        continue;
+
+      // Find all special functions in arguments
+      do {
+
+        // Determine number of arguments before search
+        n_args_before = (int)fcts.arg.size();
+
+        // Search for remaining special functions in arguments
+        for (int i = 0; i < n_args_before; ++i) {
+          status = extract_next_special_function(fcts.arg[i], fcts.arg[i], fcts);
+          if (status != STATUS_OK && status != STATUS_FCT_NOT_FOUND)
+            break;
+        }
+        if (status == STATUS_FCT_NOT_FOUND)
+          status = STATUS_OK;
+        if (status != STATUS_OK)
+          break;
+
+        // Determine number of arguments after search
+        n_args = (int)fcts.arg.size();
+
+      } while (n_args > n_args_before);
+      if (status != STATUS_OK)
+        continue;
+
+      // Stop now if there are no special functions
+      if ((int)fcts.arg.size() < 1)
+        continue;
+
+      // Optionally dump special functions
+      if (par->logNormal()) {
+        Log(Log_2, " Special function(s) in formula ...: %s = %s",
+            column.c_str(),
+            old_formula.c_str());
+        Log(Log_2, "   Formula replaced by ............: %s = %s",
+            column.c_str(),
+            formula.c_str());
+        for (int i = 0; i < (int)fcts.arg.size(); ++i) {
+          Log(Log_2, "   Special function ...............: %s = %s(%s=%s)",
+              fcts.colname_res[i].c_str(),
+              fcts.fct[i].c_str(),
+              fcts.colname_arg[i].c_str(),
+              fcts.arg[i].c_str());
+        }
+      }
+
+      // Evaluate all special functions (from latest to first)
+      std::string column;
+      std::string formula;
+      for (int i = (int)fcts.arg.size()-1; i >= 0; --i) {
+
+        // Evaluate argument
+        std::string column  = fcts.colname_arg[i];
+        std::string formula = fcts.arg[i];
+        status = cfits_eval_regular_expression(fptr, par, column, formula, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
+                " formula.",
+                (Status)status, column.c_str(), formula.c_str());
+          break;
+        }
+
+        // Evaluate function
+        std::string fct        = fcts.fct[i];
+        std::string column_res = fcts.colname_res[i];
+        std::string column_arg = fcts.colname_arg[i];
+        status = cfits_eval_special_function(fptr, par, fct, column_res, column_arg,
+                                             status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to evaluate special function <%s=%s('%s')> in"
+                " formula.",
+                (Status)status, column_res.c_str(), fcts.fct[i].c_str(),
+                column_arg.c_str());
+          break;
+        }
+
+      } // endfor: looped over special function evaluations
 
     } while (0); // End of main do-loop
 
@@ -1096,7 +1421,242 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_eval"
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval_special_expression"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                        cfits_eval_special_function                         */
+/* -------------------------------------------------------------------------- */
+/* Private method: evaluate special function                                  */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_eval_special_function(fitsfile *fptr, Parameters *par,
+                                              std::string fct,
+                                              std::string column_res,
+                                              std::string column_arg,
+                                              Status status) {
+
+    // Declare local variables
+    std::vector<double> arg;
+    std::vector<double> res;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_special_function");
+
+    // Single loop for common exit point
+    do {
+
+      // Read argument column
+      status = cfits_get_col(fptr, par, column_arg, arg, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read data from column <%s>.",
+              (Status)status, column_arg.c_str());
+        continue;
+      }
+
+      // Convert function name to upper case
+      fct = upper(fct);
+
+      // Evaluate special functions
+      if (fct == "GAMMLN")              // gammln(arg)
+        res = funct_gammln(arg);
+
+      else if (fct == "ERF")            // erf(arg)
+        res = funct_erf(arg);
+
+      else if (fct == "ERFC")           // erfc(arg)
+        res = funct_erfc(arg);
+
+      else {                            // Invalid function
+        status = STATUS_FCT_INVALID;
+        if (par->logTerse())
+          Log(Error_2, "%d : Unknown special function <%s>.",
+              (Status)status, fct.c_str());
+        continue;
+      }
+
+      // Write result column
+      status = cfits_set_col(fptr, par, column_res, res, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write data to column <%s>.",
+              (Status)status, column_res.c_str());
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval_special_function"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                        cfits_eval_regular_expression                       */
+/* -------------------------------------------------------------------------- */
+/* Private method: evaluate regular expression using cfitsio interface        */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_eval_regular_expression(fitsfile *fptr, Parameters *par,
+                                                std::string column,
+                                                std::string formula,
+                                                Status status) {
+
+    // Declare local variables
+    int         fstatus;
+    int         datatype;
+    int         naxis;
+    long        nelements;
+    std::string tform;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_regular_expression");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Test expression to determine the format of the new column
+      fstatus = fits_test_expr(fptr,
+                               (char*)formula.c_str(),
+                               0, &datatype, &nelements, &naxis, NULL,
+                               &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Warning_2, " Unable to evaluate expression <%s='%s'> for"
+              " creating new output catalogue quantity (status=%d).",
+              column.c_str(), formula.c_str(), fstatus);
+        fstatus = 0;
+        continue;
+      }
+
+      // Set column format
+      if (nelements < 1) 
+        nelements = 1;
+      fits_tform_binary(datatype, nelements, 0, &tform);
+
+      // Create new FITS column
+      fstatus = fits_calculator(fptr,
+                                (char*)formula.c_str(),
+                                fptr,
+                                (char*)column.c_str(),
+                                (char*)tform.c_str(),
+                                &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate expression <%s='%s'> in"
+              " output catalogue.",
+              fstatus, column.c_str(), formula.c_str());
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval_regular_expression"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                             cfits_eval_clear                               */
+/* -------------------------------------------------------------------------- */
+/* Private method: remove all columns that have been used for special         */
+/*                 function evaluations                                       */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par, 
+                                   Status status) {
+
+    // Declare local variables
+    int               fstatus;
+    int               colnum;
+    std::vector <int> cols;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_clear");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Search for all function columns that should be removed
+      do {
+
+        // Search for next match
+        fstatus = fits_get_colnum(fptr, CASEINSEN, "_fct_#_*", &colnum, 
+                                  &fstatus);
+        if (fstatus == COL_NOT_FOUND) {
+          fstatus = 0;
+          break;
+        }
+        if (fstatus != 0 && fstatus != COL_NOT_UNIQUE) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to determine column names.", fstatus);
+          break;
+        }
+
+        // Put column on stack
+        cols.push_back(colnum);
+
+      } while (fstatus != 0);
+
+      // Stop if no columns have been found
+      int ncols = (int)cols.size();
+      if (ncols < 1)
+        continue;
+
+      // Remove columns from last to first
+      for (int i = ncols-1; i >= 0; --i) {
+
+        // Remove column
+        fstatus = fits_delete_col(fptr, cols[i], &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to remove column %d.", fstatus, cols[i]);
+          break;
+        }
+
+      }
+
+      // Reset column counter
+      g_col_special = 1;
+
+    } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval_clear"
           " (status=%d)", status);
 
     // Return status
@@ -1741,6 +2301,133 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_get_col_str (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/*----------------------------------------------------------------------------*/
+/*                        Catalogue::cfits_set_col                            */
+/* -------------------------------------------------------------------------- */
+/* Private method: write real column into FITS table                          */
+/*----------------------------------------------------------------------------*/
+Status Catalogue::cfits_set_col(fitsfile *fptr, Parameters *par,
+                                std::string colname,
+                                std::vector<double> &col,
+                                Status status) {
+
+    // Declare local variables
+    int     fstatus;
+    int     colnum;
+    long    numRows;
+    double* tmp = NULL;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_set_col (double)");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Determine number of rows in table
+      fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Fall through if there are no rows
+      if (numRows < 1)
+        continue;
+
+      // Check if number of rows is compatible with vector dimension
+      if (numRows != (long)col.size()) {
+        status = STATUS_CAT_INCOMPATIBLE;
+        if (par->logTerse())
+          Log(Error_2, "%d : Catalogue table incompatible with vector dimension.",
+              (Status)status);
+        continue;
+      }
+
+      // Check if column exists. If not than append column
+      fstatus = fits_get_colnum(fptr, CASESEN, (char*)colname.c_str(),
+                                &colnum, &fstatus);
+      if (fstatus != 0) {
+
+        // Reset error flag
+        fstatus = 0;
+
+        // Determine number of existing columns
+        fstatus = fits_get_num_cols(fptr, &colnum, &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to determine number of columns in catalogue.",
+                fstatus);
+          continue;
+        }
+
+        // Set requested column number to beyond last column
+        colnum++;
+
+        // Append <double> column for result
+        fstatus = fits_insert_col(fptr, colnum, (char*)colname.c_str(), "1D", 
+                                  &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to append column <%s> to catalogue.",
+                fstatus, colname.c_str());
+          continue;
+        }
+
+      } // endif: column did not exist
+
+      // Allocate temporary memory to hold the data
+      tmp = new double[numRows];
+      if (tmp == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+
+      // Setup data array
+      for (int row = 0; row < numRows; ++row)
+        tmp[row] = col[row];
+
+      // Write data into column
+      fstatus = fits_write_col(fptr, TDOUBLE, colnum,
+                               1, 1, numRows, tmp, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write data into column <%s> of catalogue.",
+              fstatus, colname.c_str());
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Free temporary memory
+    if (tmp != NULL) delete [] tmp;
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_set_col (double) (status=%d)",
           status);
 
     // Return status

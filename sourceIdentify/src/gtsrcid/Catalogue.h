@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.15  2007/10/09 16:46:23  jurgen
+Write counterpart catalogue reference (row) to output catalogue
+
 Revision 1.14  2007/10/09 08:17:40  jurgen
 Correctly interpret positional errors and correctly evaluate PROB_POS
 as likelihood
@@ -172,6 +175,9 @@ const double e_norm_99 = 1.0 / sqrt(4.6051713);  // 99.000%, 2 dof
 /* Search strings (need "stop" as last string !!!) __________________________ */
 const std::string search_id[] = {"NAME", "ID", "stop"};
 
+/* Special function strings (need "stop" as last string !!!) ________________ */
+const std::string fct_names[] = {"gammln", "erf", "erfc", "stop"};
+
 /* Type defintions __________________________________________________________ */
 typedef enum {                        // Position error type
   NoError = 1,                          // No error
@@ -278,6 +284,17 @@ private:
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_add(fitsfile *fptr, long iSrc, Parameters *par, Status status);
   Status cfits_eval(fitsfile *fptr, Parameters *par, int verbose, Status status);
+  Status cfits_eval_regular_expression(fitsfile *fptr, Parameters *par,
+                                       std::string column, std::string formula,
+                                       Status status);
+  Status cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
+                                       std::string column, std::string &formula,
+                                       Status status);
+  Status cfits_eval_special_function(fitsfile *fptr, Parameters *par,
+                                     std::string fct,
+                                     std::string column_res, std::string column_arg,
+                                     Status status);
+  Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
                       std::vector<double> *val, Status status);
   Status cfits_select(fitsfile *fptr, Parameters *par, Status status);
@@ -287,6 +304,8 @@ private:
                        std::vector<double> &col, Status status);
   Status cfits_get_col_str(fitsfile *fptr, Parameters *par, std::string colname,
                            std::vector<std::string> &col, Status status);
+  Status cfits_set_col(fitsfile *fptr, Parameters *par, std::string colname,
+                       std::vector<double> &col, Status status);
   Status cfits_set_pars(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_save(fitsfile *fptr, Parameters *par, Status status);
 private:
@@ -333,7 +352,12 @@ inline Catalogue::~Catalogue(void) { free_memory(); }
 
 
 /* Prototypes _______________________________________________________________ */
-
+std::string upper(std::string arg);
+double      nr_gammln(double arg);
+double      nr_gammp(double a, double x);
+double      nr_gammq(double a, double x);
+void        nr_gser(double *gamser, double a, double x, double *gln);
+void        nr_gcf(double *gammcf, double a, double x, double *gln);
 
 /* Globals __________________________________________________________________ */
 

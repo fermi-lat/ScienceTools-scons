@@ -6,6 +6,7 @@
 9-Oct-2007   v1r3p0  JK  Enhance catalogue access
                          Introduce position angle in probability calculation
                          Positional probability is likelihood of Mattox et al. (1997)
+                         Add generic columns to output catalogue
 2-Oct-2007   v1r2p0  JK  Add counterpart summary to log file
                          Enhance catalogue access (no UCD required anymore)
 20-Sep-2007  v1r1p0  JK  Improve st_app handling (dumps version)

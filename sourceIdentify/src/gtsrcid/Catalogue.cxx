@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.19  2007/10/09 16:46:23  jurgen
+Write counterpart catalogue reference (row) to output catalogue
+
 Revision 1.18  2007/10/09 08:17:40  jurgen
 Correctly interpret positional errors and correctly evaluate PROB_POS
 as likelihood
@@ -92,7 +95,6 @@ using namespace catalogAccess;
 
 
 /* Private Prototypes _______________________________________________________ */
-std::string upper(std::string arg);
 std::string find(std::vector <std::string> &arg, std::string match);
 Status      get_info(Parameters *par, InCatalogue *in, Status status);
 Status      get_id_info(Parameters *par, InCatalogue *in, 
