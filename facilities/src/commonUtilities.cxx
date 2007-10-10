@@ -96,11 +96,17 @@ namespace facilities {
       int counter=0;
       while(environ[counter]!=NULL){
 	std::string env = environ[counter];
-	env = env.substr(0, env.find_first_of('='));
-	env = env.substr(0, env.find_last_of('ROOT'));
-	setEnvironment(env+"XMLPATH", getXmlPath(env));
-	setEnvironment(env+"DATAPATH", getDataPath(env));
-	setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+	std::string::size_type pos = env.find_first_of('=');
+	if(pos != std::string::npos){
+	  env = env.substr(0, pos);
+	  pos = env.rfind("ROOT");
+	  if(pos != std::string::npos){
+	    env = env.substr(0, pos);
+	    setEnvironment(env+"XMLPATH", getXmlPath(env));
+	    setEnvironment(env+"DATAPATH", getDataPath(env));
+	    setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+	  }
+	}
 	counter++;
       }
     }
