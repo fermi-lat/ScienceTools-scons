@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.13  2007/10/10 15:39:12  jurgen
+Introduce handling of special functions 'gammln', 'erf', and 'erfc'
+
 Revision 1.12  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -48,7 +51,7 @@ Replace header information with CVS typeset information.
 #define TOOL_NAME     "gtsrcid"
 #define TOOL_VERSION  "v1r3p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     " 7-Oct-2007"
+#define TOOL_DATE     "11-Oct-2007"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
