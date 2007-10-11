@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.16  2007/10/10 15:39:12  jurgen
+Introduce handling of special functions 'gammln', 'erf', and 'erfc'
+
 Revision 1.15  2007/10/09 16:46:23  jurgen
 Write counterpart catalogue reference (row) to output catalogue
 
@@ -68,7 +71,7 @@ namespace sourceIdentify {
 
 /* Definitions ______________________________________________________________ */
 #define OUTCAT_MAX_STRING_LEN      256
-#define OUTCAT_MAX_KEY_LEN         80
+#define OUTCAT_MAX_KEY_LEN         256
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
 #define OUTCAT_NUM_GENERIC         13

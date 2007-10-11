@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2007/10/10 15:39:12  jurgen
+Introduce handling of special functions 'gammln', 'erf', and 'erfc'
+
 Revision 1.9  2007/10/09 16:46:23  jurgen
 Write counterpart catalogue reference (row) to output catalogue
 
@@ -374,7 +377,7 @@ Status extract_next_special_function(std::string formula,
 
       // Build column name that will hold the result and the argument of the
       // special function and increment column counter
-      char buffer[20];
+      char buffer[256];
       sprintf(buffer, "_fct_%d_res", g_col_special);
       std::string colname_res = buffer;
       sprintf(buffer, "_fct_%d_arg", g_col_special);
@@ -801,6 +804,10 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
         continue;
       }
 
+      // Stop if table is empty
+      if (nactrows < 1)
+        continue;
+
       // Delete rows in table
       fstatus = fits_delete_rows(fptr, 1, nactrows, &fstatus);
       if (fstatus != 0) {
@@ -924,7 +931,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 
       // Add unique counterpart identifier
       for (row = 0; row < nrows; row++)
-        strcpy(cptr[row], m_cc[row].id.c_str());
+        sprintf(cptr[row], "%s", m_cc[row].id.c_str());
       fstatus = fits_write_col_str(fptr, OUTCAT_COL_ID_COLNUM, 
                                    frow, 1, nrows, cptr, &fstatus);
       if (fstatus != 0) {
@@ -1021,7 +1028,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       // Add additional probability
       for (row = 0; row < nrows; row++) {
         double p = 1.0;
-        for (unsigned int i = 0; i < m_cc[row].prob_add.size(); ++i)
+        for (int i = 0; i < (int)m_cc[row].prob_add.size(); ++i)
           p *= m_cc[row].prob_add[i];
         dptr[row] = p;
       }
@@ -1045,7 +1052,6 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
               " catalogue.", fstatus);
         continue;
       }
-
 
       // Add angular separation
       for (row = 0; row < nrows; row++)
@@ -1096,7 +1102,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
           m_src.cat.getNValue(name, iSrc, &NValue);
           for (row = 0; row < nrows; row++)
             dptr[row] = NValue;
-          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows, 
+          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows,
                                    dptr, &fstatus);
           if (fstatus != 0) {
             if (par->logTerse())
@@ -1111,8 +1117,8 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         if (form.find("A", 0) != std::string::npos) {
           m_src.cat.getSValue(name, iSrc, &SValue);
           for (row = 0; row < nrows; row++)
-            strcpy(cptr[row], SValue.c_str());
-          fstatus = fits_write_col_str(fptr, colnum, frow, 1, nrows, cptr, 
+            sprintf(cptr[row], "%s", SValue.c_str());
+          fstatus = fits_write_col_str(fptr, colnum, frow, 1, nrows, cptr,
                                        &fstatus);
           if (fstatus != 0) {
             if (par->logTerse())
@@ -1142,7 +1148,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
             m_cpt.cat.getNValue(name, iCpt, &NValue);
             dptr[row] = NValue;
           }
-          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows, 
+          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows,
                                    dptr, &fstatus);
           if (fstatus != 0) {
             if (par->logTerse())
@@ -1158,9 +1164,9 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
           for (row = 0; row < nrows; row++) {
             iCpt = m_cc[row].index;
             m_cpt.cat.getSValue(name, iCpt, &SValue);
-            strcpy(cptr[row], SValue.c_str());
+            sprintf(cptr[row], "%s", SValue.c_str());
           }
-          fstatus = fits_write_col_str(fptr, colnum, frow, 1, nrows, cptr, 
+          fstatus = fits_write_col_str(fptr, colnum, frow, 1, nrows, cptr,
                                        &fstatus);
           if (fstatus != 0) {
             if (par->logTerse())
@@ -1234,6 +1240,9 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
         Log(Log_2, "====================================");
       }
 
+      // Reset column counter
+//      g_col_special = 1;
+
       // Add all new output catalogue quantities
       for (int iQty = 0; iQty < numQty; ++iQty) {
 
@@ -1261,15 +1270,6 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
           break;
         }
 
-        // Remove special function columns
-        status = cfits_eval_clear(fptr, par, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to remove special function columns.",
-                (Status)status);
-          break;
-        }
-
         // Dump new output catalogue quantities information (optionally)
         if (verbose) {
           Log(Log_2, " New quantity .....................: %s = %s",
@@ -1279,6 +1279,15 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
       } // endfor: loop over all new output cataloge quantities
       if (status != STATUS_OK)
         continue;
+
+      // Remove special function columns
+      status = cfits_eval_clear(fptr, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to remove special function columns.",
+              (Status)status);
+        continue;
+      }
 
     } while (0); // End of main do-loop
 
@@ -1606,44 +1615,32 @@ Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par,
     // Single loop for common exit point
     do {
 
-      // Search for all function columns that should be removed
+      // Remove all function columns
       do {
 
         // Search for next match
         fstatus = fits_get_colnum(fptr, CASEINSEN, "_fct_#_*", &colnum, 
                                   &fstatus);
         if (fstatus == COL_NOT_FOUND) {
-          fstatus = 0;
-          break;
+         fstatus = 0;
+         break;
         }
         if (fstatus != 0 && fstatus != COL_NOT_UNIQUE) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to determine column names.", fstatus);
           break;
         }
-
-        // Put column on stack
-        cols.push_back(colnum);
-
-      } while (fstatus != 0);
-
-      // Stop if no columns have been found
-      int ncols = (int)cols.size();
-      if (ncols < 1)
-        continue;
-
-      // Remove columns from last to first
-      for (int i = ncols-1; i >= 0; --i) {
+        fstatus = 0;
 
         // Remove column
-        fstatus = fits_delete_col(fptr, cols[i], &fstatus);
+        fstatus = fits_delete_col(fptr, colnum, &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())
-            Log(Error_2, "%d : Unable to remove column %d.", fstatus, cols[i]);
+            Log(Error_2, "%d : Unable to remove column %d.", fstatus, colnum);
           break;
         }
 
-      }
+      } while (fstatus != 0);
 
       // Reset column counter
       g_col_special = 1;
@@ -2361,7 +2358,7 @@ Status Catalogue::cfits_set_col(fitsfile *fptr, Parameters *par,
         continue;
       }
 
-      // Check if column exists. If not than append column
+      // Check if column exists. If not then append column
       fstatus = fits_get_colnum(fptr, CASESEN, (char*)colname.c_str(),
                                 &colnum, &fstatus);
       if (fstatus != 0) {
@@ -2382,7 +2379,7 @@ Status Catalogue::cfits_set_col(fitsfile *fptr, Parameters *par,
         colnum++;
 
         // Append <double> column for result
-        fstatus = fits_insert_col(fptr, colnum, (char*)colname.c_str(), "1D", 
+        fstatus = fits_insert_col(fptr, colnum, (char*)colname.c_str(), "1D",
                                   &fstatus);
         if (fstatus != 0) {
           if (par->logTerse())

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.20  2007/10/10 15:39:12  jurgen
+Introduce handling of special functions 'gammln', 'erf', and 'erfc'
+
 Revision 1.19  2007/10/09 16:46:23  jurgen
 Write counterpart catalogue reference (row) to output catalogue
 
@@ -1312,6 +1315,15 @@ Status Catalogue::build(Parameters *par, Status status) {
       } // endfor: looped over all sources
       if (status != STATUS_OK)
         continue;
+
+      // Close in-memory catalogue
+      status = cfits_save(m_memFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to close in-memory catalogue.",
+              (Status)status);
+        continue;
+      }
 
       // Collect statistics (used to build counterpart names)
       std::vector<int> stat;
