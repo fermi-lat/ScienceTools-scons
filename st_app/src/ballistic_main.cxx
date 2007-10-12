@@ -15,6 +15,8 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "facilities/commonUtilities.h"
+
 int main(int argc, char ** argv) {
   int status = 0;
   st_app::StApp * this_st_app = 0;
@@ -27,6 +29,8 @@ int main(int argc, char ** argv) {
     // Add floating point exception traps.
     feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
 #endif
+    //Set up the necessary environment variables to be used by applications
+    facilities::commonUtilities::setupEnvironment();
 
     // Process command line arguments. This will throw if the real application code
     // cannot/should not start.
