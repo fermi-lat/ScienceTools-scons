@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r8   12-Oct-07   JC   remove FT1ZenithTheta and CTBBestZDir cuts and
+                            make tstart and tstop hidden parameters
     v3r7p3 04-Oct-07   JC   fix missing closing parens
     v3r7p2 04-Oct-07   JC   remove Mc* variables from python/Pass5_classifier.py
     v3r7p1 29-Sep-07   JC   Set precision to 10 sig fig for prefilter cut on
