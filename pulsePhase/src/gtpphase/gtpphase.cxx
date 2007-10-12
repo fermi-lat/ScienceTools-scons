@@ -101,6 +101,9 @@ void PulsePhaseApp::run() {
   }
 
   par_group.Prompt("tcorrect");
+  par_group.Prompt("solareph");
+  par_group.Prompt("matchsolareph");
+  par_group.Prompt("angtol");
   par_group.Prompt("pphasefield");
   par_group.Prompt("pphaseoffset");
   par_group.Prompt("leapsecfile");

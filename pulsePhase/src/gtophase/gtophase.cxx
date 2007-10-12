@@ -50,6 +50,9 @@ void PulsePhaseApp::run() {
   par_group.Prompt("psrname");
   par_group.Prompt("ra");
   par_group.Prompt("dec");
+  par_group.Prompt("solareph");
+  par_group.Prompt("matchsolareph");
+  par_group.Prompt("angtol");
   par_group.Prompt("ophasefield");
   par_group.Prompt("ophaseoffset");
 
