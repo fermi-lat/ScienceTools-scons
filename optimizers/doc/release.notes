@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r11p1 15-Oct-07  JC   use facilities::commonUtilities
     v2r11  31-Aug-07   JC   mangle parameter names in NewMinuit.cxx
                             because of collisions between different sources.
     v2r10  25-Jul-07   JC   remove HAVE_NEW_MINUIT ifdefs
