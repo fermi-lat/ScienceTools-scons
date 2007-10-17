@@ -39,25 +39,31 @@ infile [file]
 \endverbatim
 
     \subsection gtpphase_general gtpphase General Parameters
-
 \verbatim
 evfile [file name]
     Name of input event file, FT1 format or equivalent.
 
+scfile [file name]
+    Name of input spacecraft data file, FT2 format or equivalent.
+
+psrdbfile [file name]
+    Name of pulsar ephemerides database file, in GLAST D4
+    FITS format.
+
 psrname = ANY [string]
-    The name of the pulsar, used to select only ephemerides
-    valid for a particular pulsar.
+    Name of the pulsar, used to select only ephemerides valid for a
+    particular pulsar.
 
 ephstyle = DB [string]
-    Specifies how the ephemerides will be supplied. If ephstyle
-    is DB, a pulsar database file (GLAST D4 FITS format) will
+    Method to specify how the ephemerides will be supplied. If
+    ephstyle is DB, a pulsar database file (GLAST D4 FITS format) will
     be used. If ephstyle is FREQ (PER), the user will supply values
-    for the frequency (period) and its derivatives at the time
-    given by the ephepoch parameter.
+    for the frequency (period) and its derivatives at the time given
+    by the epoch parameter.
 
 ephepoch = 0. [string]
-    The epoch, or time origin, for a user-supplied ephemeris. This
-    parameter only has effect if ephstyle is FREQ or PER.
+    Reference epoch of the ephemeris that will be manually specified.
+    This parameter only has effect if ephstyle is FREQ or PER.
 
 timeformat = FILE [string]
     String describing the representation used for the ephepoch.
@@ -71,35 +77,72 @@ timesys = FILE [string]
     the time system specified in the input event file header (TIMESYS
     keyword) will be used.
 
+ra [double]
+    RA of point source for which to perform the barycentric
+    correction.  This parameter only has effect if ephstyle is FREQ or
+    PER.
+
+dec [double]
+    DEC of point source for which to perform the barycentric
+    correction.  This parameter only has effect if ephstyle is FREQ or
+    PER.
+
 phi0 = 0. [double]
-    The phase offset at this ephepoch for a user-supplied ephemeris.
-    This parameter only has effect if ephstyle is FREQ or PER.
+    Phase offset at this ephepoch for a user-supplied ephemeris.  This
+    parameter only has effect if ephstyle is FREQ or PER.
 
-(psrdbfile = DEFAULT) [file name]
-    Name of pulsar ephemerides database file, in GLAST D4
-    FITS format. If psrdbfile is DEFAULT, the canonical pulsar
-    database file (master_pulsardb.fits), which is distributed
-    with the pulsar tools, will be used.
+(tcorrect = AUTO) [enumerated string (NONE|AUTO|BARY|BIN|ALL)]
+    Set of arrival time corrections to apply. If tcorrect is NONE, no
+    corrections will be applied. If tcorrect is BARY, only the
+    barycentric correction will be applied. If tcorrect is BIN or ALL,
+    an appropriate orbital ephemeris is searched for in the pulsar
+    database, and if found, binary demodulation will be applied after
+    the barycentric correction, and if not, an error will be
+    generated. If tcorrect is AUTO, the barycentric correction will be
+    applied, then the binary demodulation will be applied only when an
+    orbital ephemeris is available in the pulsar database.
 
-(demodbin = AUTO) [string]
-    A three-way switch. If demodbin is AUTO, binary demodulation
-    will be applied only to pulsars for which orbital parameters
-    exist in the pulsar database. If demodbin is YES, the computation
-    is the same as for AUTO, but orbital parameters are required
-    to be present and an error will be thrown if none are found.
-    If demodbin is NO, binary demodulation will not be performed
-    regardless of whether orbital ephemerides exist in the database.
+(solareph = JPL DE405) [enumerated string (JPL DE200|JPL DE405)]
+    Solar system ephemeris for the barycentric correction.
+
+(matchsolareph = ALL) [enumerated string (NONE|EVENT|PSRDB|ALL)]
+    String that controls whether to use the name of the solar system
+    ephemeris given by the solareph parameter to check the input event
+    data file and to select ephemerides in the pulsar database.  If
+    matchsolareph is EVENT, all the input event files are required to
+    use the same solar system ephemeris for the barycentric correction
+    as the one given by the solareph parameter, and an error will be
+    generated if otherwise. Such an error may occur when an input
+    event data file has already been applied the barycentric
+    correction with a different solar system ephemeris. If
+    matchsolareph is PSRDB, the string given by the solareph parameter
+    is used to select the ephemerides.  If matchsolareph is ALL, both
+    actions for the EVENT option and the PSRDB option will be taken.
+    If matchsolareph is NONE, no selection will be performed.
+
+(angtol = 1.e-8) [double]
+    Angular tolerance in degrees in comparison of two source
+    positions, one for which the barycentric correction is performed,
+    and another given by RA_NOM and DEC_NOM header keyword of an event
+    file to which the barycentric correction has already been applied.
+    This parameter only has effect if the barycentric correction has
+    been applied to an input event data file.  If the two source
+    positions are separate from each other by this amount or less,
+    then they will be considered to be the same position.  Otherwise
+    an error will be generated.
 
 (evtable = EVENTS) [string]
-    The name of the file containing the event data.
+    Name of the FITS table containing the event data.
 
 (timefield = TIME) [string]
-    This is the name of the field containing the time values
-    for time binning. The default value is consistent with
-    the GLAST FT1 event file format.
+    Name of the field containing the time values for temporal
+    analysis.
+
+(sctable = SC_DATA) [string]
+    Name of the FITS table containing the spacecraft data.
 
 (pphasefield = PULSE_PHASE) [string]
-    The name of the output column to contain the assigned pulse phase.
+    Name of the output column to contain the assigned pulse phase.
 
 (pphaseoffset = 0.) [double]
     Global offset applied to all assigned pulse phases. This may be
@@ -108,42 +151,46 @@ phi0 = 0. [double]
     phi0 is used only when ephstyle is FREQ or PER.
 
 (leapsecfile = DEFAULT) [file name]
-    The file containing the name of the leap second table, in
-    OGIP-compliant leap second table format. If leapsecfile is
-    the string DEFAULT, the default leapsec file (leapsec.fits),
-    which is distributed with the extFiles package, will be used.
-
+    Name of the file containing the name of the leap second table, in
+    OGIP-compliant leap second table format. If leapsecfile is the
+    string DEFAULT, the default leap-second file (leapsec.fits), which
+    is distributed with the extFiles package, will be used.
 \endverbatim
 
     \subsection frequency_pars Frequency Ephemeris Parameters
 
 \verbatim
 f0 = 1. [double]
-    The value of the frequency at the ephepoch. Only used if
-    ephstyle is FREQ.
+    Value of the frequency at the time given by the epoch parameter.
+    This parameter only has effect if ephstyle is FREQ.
 
 f1 = 0. [double]
-    The value of the first time derivative of the frequency at the
-    ephepoch. Only used if ephstyle is FREQ.
+    Value of the first time derivative of the frequency at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is FREQ.
 
 f2 = 0. [double]
-    The value of the second time derivative of the frequency at the
-    ephepoch. Only used if ephstyle is FREQ.
+    Value of the second time derivative of the frequency at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is FREQ.
 \endverbatim
 
     \subsection period_pars Period Ephemeris Parameters
+
 \verbatim
 p0 = 1. [double]
-    The value of the period at the ephepoch. Only used if
-    ephstyle is PER.
+    Value of the period at the time given by the epoch parameter.
+    This parameter only has effect if ephstyle is PER.
 
 p1 = 0. [double]
-    The value of the first time derivative of the period at the
-    ephepoch. Only used if ephstyle is PER.
+    Value of the first time derivative of the period at the time given
+    by the epoch parameter.  This parameter only has effect if
+    ephstyle is PER.
 
 p2 = 0. [double]
-    The value of the second time derivative of the period at the
-    ephepoch. Only used if ephstyle is PER.
+    Value of the second time derivative of the period at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is PER.
 \endverbatim
 
     \subsection gtophase_parameters gtophase Parameters
@@ -152,26 +199,66 @@ p2 = 0. [double]
 evfile [file name]
     Name of input event file, FT1 format or equivalent.
 
-psrname = ANY [string]
-    The name of the pulsar, used to select only ephemerides
-    valid for a particular pulsar.
+scfile [file name]
+    Name of input spacecraft data file, FT2 format or equivalent.
 
-(psrdbfile = DEFAULT) [file name]
+psrdbfile [file name]
     Name of pulsar ephemerides database file, in GLAST D4
-    FITS format. If psrdbfile is DEFAULT, the canonical pulsar
-    database file (master_pulsardb.fits), which is distributed
-    with the pulsar tools, will be used.
+    FITS format.
+
+psrname = ANY [string]
+    Name of the pulsar, used to select only ephemerides valid for a
+    particular pulsar.
+
+ra [double]
+    RA of point source for which to perform the barycentric
+    correction.
+
+dec [double]
+    DEC of point source for which to perform the barycentric
+    correction.
+
+(solareph = JPL DE405) [enumerated string (JPL DE200|JPL DE405)]
+    Solar system ephemeris for the barycentric correction.
+
+(matchsolareph = ALL) [enumerated string (NONE|EVENT|PSRDB|ALL)]
+    String that controls whether to use the name of the solar system
+    ephemeris given by the solareph parameter to check the input event
+    data file and to select ephemerides in the pulsar database.  If
+    matchsolareph is EVENT, all the input event files are required to
+    use the same solar system ephemeris for the barycentric correction
+    as the one given by the solareph parameter, and an error will be
+    generated if otherwise. Such an error may occur when an input
+    event data file has already been applied the barycentric
+    correction with a different solar system ephemeris. If
+    matchsolareph is PSRDB, the string given by the solareph parameter
+    is used to select the ephemerides.  If matchsolareph is ALL, both
+    actions for the EVENT option and the PSRDB option will be taken. 
+   If matchsolareph is NONE, no selection will be performed.
+
+(angtol = 1.e-8) [double]
+    Angular tolerance in degrees in comparison of two source
+    positions, one for which the barycentric correction is performed,
+    and another given by RA_NOM and DEC_NOM header keyword of an event
+    file to which the barycentric correction has already been applied.
+    This parameter only has effect if the barycentric correction has
+    been applied to an input event data file.  If the two source
+    positions are separate from each other by this amount or less,
+    then they will be considered to be the same position.  Otherwise
+    an error will be generated.
 
 (evtable = EVENTS) [string]
-    The name of the file containing the event data.
+    Name of the FITS table containing the event data.
 
 (timefield = TIME) [string]
-    This is the name of the field containing the time values
-    for time binning. The default value is consistent with
-    the GLAST FT1 event file format.
+    Name of the field containing the time values for temporal
+    analysis.
+
+(sctable = SC_DATA) [string]
+    Name of the FITS table containing the spacecraft data.
 
 (ophasefield = ORBITAL_PHASE) [string]
-    The name of the output column to contain the assigned orbital phase.
+    Name of the output column to contain the assigned orbital phase.
 
 (ophaseoffset = 0.) [double]
     Global offset applied to all assigned orbital phases.
