@@ -136,18 +136,19 @@ class BinnedAnalysis(AnalysisBase):
         self.model[name] = value
         self.logLike.syncParams()
 
-def binnedAnalysis(mode='ql', ftol=None):
-    """Return a BinnedAnalysis object using the data in a gtlike.par
-file."""
-    pars = pyLike.StApp_parGroup('gtlike')
-    if mode == 'ql':
-        pars.Prompt('irfs')
-        pars.Prompt('cmap')
-        pars.Prompt('bexpmap')
-        pars.Prompt('expcube')
-        pars.Prompt('srcmdl')
-        pars.Prompt('optimizer')
-        pars.Save()
+def binnedAnalysis(mode='ql', ftol=None, **pars):
+    """Return a BinnedAnalysis object using the data in gtlike.par."""
+    parnames = ('irfs', 'cmap', 'bexpmap', 'expcube', 'srcmdl', 'optimizer')
+    pargroup = pyLike.StApp_parGroup('gtlike')
+    for item in parnames:
+        if not pars.has_key(item):
+            if mode == 'ql':
+                pargroup.Prompt(item)
+            try:
+                pars[item] = float(pargroup[item])
+            except ValueError:
+                pars[item] = pargroup[item]
+    pargroup.Save()
     srcmaps = pars['cmap']
     expcube = _null_file(pars['expcube'])
     expmap = _null_file(pars['bexpmap'])
@@ -157,5 +158,5 @@ file."""
     if ftol is not None:
         like.tol = ftol
     else:
-        like.tol = pars.getDouble('ftol')
+        like.tol = pargroup.getDouble('ftol')
     return like
