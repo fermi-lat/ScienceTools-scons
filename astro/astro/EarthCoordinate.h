@@ -55,11 +55,13 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
 
     //!  McIlwain L
     double L()const;
-    //! magnetic field in gauss
+    //! McIlwain B in gauss
     double B()const;
 
     double geolat()const;///< geomagnetic latitude (deg)
-    double geolon()const;///< geomagnetic longitude (deg)
+    double geolon()const;///< geomagnetic longitude (deg) (deprecated)
+
+    CLHEP::Hep3Vector magnetic_field()const; ///< return magnetic field in zenith system
 
     /// set the boundary from external list
     static void setSAAboundary(const std::vector<std::pair<double,double> >& boundary);
@@ -69,6 +71,9 @@ private:
     //! internal representation: latitude and longitude in radians, altitude in km
     double m_lat, m_lon;
     double m_altitude;
+    double m_L, m_B; ///< McIllwain parameters
+    double m_geolat; ///< geomagnetic latitude, or invariant latitude
+    CLHEP::Hep3Vector m_field;
 
    /**
      * GetGMST returns the Greenwich sideral time in degrees, 

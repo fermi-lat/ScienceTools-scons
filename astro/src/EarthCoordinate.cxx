@@ -9,6 +9,7 @@
 
 #include "astro/EarthCoordinate.h"
 #include "Geomag.h"
+#include "astro/IGRField.h"
 
 namespace {
     
@@ -41,7 +42,7 @@ double EarthCoordinate::earthRadius(){return s_EarthRadius;}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate jd)
 {
-
+    using namespace astro;
     m_lat = M_PI/2- pos.theta();
     // convert from MET to JD
     JulianDate jd(JulianDate::missionStart() + met/JulianDate::secondsPerDay);
@@ -59,21 +60,31 @@ EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate
     m_altitude=sqrt(sqr(pos.x())+sqr(pos.y()))/cos(m_lat)
         -s_EarthRadius / (1000.*sqrt(1.-sqr(0.00669454*sin(m_lat))));
 
+    // pointer to the singleton IGRField object for local use
+    IGRField& field(IGRField::Model());
+    // initialize it, and get what we will need. (can't use the object since it is a singleton
+    double year( 2001 + met/3.15e7); // year does not need to be very precise
+    field.compute(latitude(), longitude(), m_altitude, year);
+    m_field = CLHEP::Hep3Vector(field.bEast(), field.bNorth(), -field.bDown());
+    m_L = field.L();
+    m_B = field.B();
+    m_geolat = field.invariantLatitude();
 }
    
 double EarthCoordinate::L()const
 {
-    return Geomag::L(latitude(), longitude());
+    return m_L; //Geomag::L(latitude(), longitude());
 
 }
    
 double EarthCoordinate::B()const
 {
-    return Geomag::B(latitude(), longitude());
+    return m_B; // Geomag::B(latitude(), longitude());
 }
 double EarthCoordinate::geolat()const
 {
-    return Geomag::geolat(latitude(), longitude());
+    double old =Geomag::geolat(latitude(), longitude()); // for comparison
+    return m_geolat*180/M_PI; // convert to degrees  
 }
 
 double EarthCoordinate::geolon()const
