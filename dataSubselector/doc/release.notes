@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r6p1  19-Oct-07   JC   apply fits_copy_file optimization in gtselect
+                             for single input files
     v5r6    27-Sep-07   JC   use facilities::commonUtilities::getDataPath
                              in test program; rename Data subdir to data
     v5r5p1  16-Jul-07   JC   bug fix in DSS keyword counter
