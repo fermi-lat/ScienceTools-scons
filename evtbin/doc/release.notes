@@ -77,6 +77,8 @@
 02-oct-2007    v2r0p1 JP  Use commonUtilities for path-related utilities.
 19-oct-2007    v2r0p2 JP  Prevent taking log(0) when 0 counts are in a bin in
                           BayesianBinner::computeLogProb(...) (JIRA GRB #24).
+19-oct-2007    v2r0p3 JP  Add check for non-positive width interval to
+                          BayesianBinner::computeBlocks.
 --------------------------------------------------------------------------------
 \endverbatim
 
