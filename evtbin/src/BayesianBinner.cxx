@@ -140,8 +140,12 @@ namespace evtbin {
     //
     //    logprob = logprob - ncp_prior
     for (deque_t::size_type index = 0; index != num_cells; ++index) {
-      //log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * log(rev_csize[index]) - m_ncp_prior;
-      log_prob[index] = rev_cpop[index] * (log(rev_cpop[index]) - log(rev_csize[index]) - 1.);
+      //log_prob[index] = HepStat::gammln(rev_cpop[index] + 1.) - (rev_cpop[index] + 1.) * std::log(rev_csize[index]) - m_ncp_prior;
+      //log_prob[index] = rev_cpop[index] * (std::log(rev_cpop[index]) - std::log(rev_csize[index]) - 1.);
+      if (.0001 < rev_cpop[index])
+        log_prob[index] = rev_cpop[index] * (std::log(rev_cpop[index]) - std::log(rev_csize[index]) - 1.);
+      else
+        log_prob[index] = 0.;
       log_prob[index] -= m_ncp_prior + 6.7;
     }
   }
