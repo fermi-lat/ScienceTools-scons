@@ -7,6 +7,8 @@
 #include <cmath>
 #include <limits>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 
 //#include "CLHEP/Random/Stat.h"
@@ -25,6 +27,15 @@ namespace evtbin {
   Binner * BayesianBinner::clone() const { return new BayesianBinner(*this); }
 
   void BayesianBinner::computeBlocks(const IntervalCont_t & intervals) {
+    // Check inputs for validity.
+    for (IntervalCont_t::size_type index = 0; index != intervals.size(); ++index) {
+      if (0. >= intervals[index].width()) {
+        std::ostringstream os;
+        os << "Cannot compute Bayesian Blocks: input interval " << index << " has invalid width" << std::endl;
+        throw std::runtime_error(os.str());
+      }
+    }
+
     // Number of cells, obtained here once for convenience.
     vec_t::size_type num_cells = m_cell_pop.size();
 
