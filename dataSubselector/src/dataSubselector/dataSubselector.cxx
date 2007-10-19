@@ -6,6 +6,8 @@
  *  $Header$
  */
 
+#include <stdexcept>
+
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"
@@ -27,6 +29,16 @@
 
 using dataSubselector::CutController;
 using dataSubselector::Gti;
+
+#include "fitsio.h"
+
+namespace {
+   void fitsReportError(int status) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("gtselect::apply_fits_copy_file: "
+                               "cfitsio error.");
+   }
+}
 
 /**
  * @class DataFilter
@@ -77,6 +89,8 @@ private:
 
    void writeDateKeywords() const;
 
+   void apply_fits_copy_file(const std::string & filterString) const;
+
    static std::string s_cvs_id;
 
 };
@@ -113,7 +127,9 @@ void DataFilter::run() {
       std::exit(1);
    } 
 
-   tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
+   if (m_inputFiles.size() > 1) {
+      tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
+   }
 
    CutController * cuts = 
       CutController::instance(m_pars, m_inputFiles, evtable);
@@ -162,40 +178,50 @@ void DataFilter::copyTable(const std::string & extension,
                        << filterString << std::endl;
    }
 
-   std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
-   long nrows(0);
-   for ( ; infile != m_inputFiles.end(); ++infile) {
-      const tip::Table * inputTable 
-         = tip::IFileSvc::instance().readTable(*infile, extension,
-                                               filterString);
-      nrows += inputTable->getNumRecords();
-      delete inputTable;
-   }
-
-   tip::Table * outputTable 
-      = tip::IFileSvc::instance().editTable(m_outputFile, extension);
-   outputTable->setNumRecords(nrows);
-
-   tip::Table::Iterator outputIt = outputTable->begin();
-   tip::Table::Record & output = *outputIt;
-
-   long npts(0);
-   for (infile=m_inputFiles.begin(); infile != m_inputFiles.end(); ++infile) {
-      const tip::Table * inputTable 
-         = tip::IFileSvc::instance().readTable(*infile, extension, 
-                                               filterString);
-      tip::Table::ConstIterator inputIt = inputTable->begin();
-      tip::ConstTableRecord & input = *inputIt;
-      for (; inputIt != inputTable->end(); ++inputIt) {
-         output = input;
-         ++outputIt;
-         npts++;
+   if (m_inputFiles.size() == 1) { // use cfitsio directly
+      apply_fits_copy_file(filterString);
+   } else { // handle multiple input files using tip
+      std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
+      long nrows(0);
+      for ( ; infile != m_inputFiles.end(); ++infile) {
+         const tip::Table * inputTable 
+            = tip::IFileSvc::instance().readTable(*infile, extension,
+                                                  filterString);
+         nrows += inputTable->getNumRecords();
+         delete inputTable;
       }
-      delete inputTable;
-   }
+
+      tip::Table * outputTable 
+         = tip::IFileSvc::instance().editTable(m_outputFile, extension);
+      outputTable->setNumRecords(nrows);
+
+      tip::Table::Iterator outputIt = outputTable->begin();
+      tip::Table::Record & output = *outputIt;
+
+      long npts(0);
+      for (infile=m_inputFiles.begin(); infile != m_inputFiles.end();
+           ++infile) {
+         const tip::Table * inputTable 
+            = tip::IFileSvc::instance().readTable(*infile, extension, 
+                                                  filterString);
+         tip::Table::ConstIterator inputIt = inputTable->begin();
+         tip::ConstTableRecord & input = *inputIt;
+         for (; inputIt != inputTable->end(); ++inputIt) {
+            output = input;
+            ++outputIt;
+            npts++;
+         }
+         delete inputTable;
+      }
 
 // Resize output table to account for filtered rows.
-   outputTable->setNumRecords(npts);
+      outputTable->setNumRecords(npts);
+      delete outputTable;
+   }
+
+// (Re)open outputTable and write keywords
+   tip::Table * outputTable 
+      = tip::IFileSvc::instance().editTable(m_outputFile, extension);
 
    if (cuts) {
       cuts->writeDssKeywords(outputTable->getHeader());
@@ -213,4 +239,43 @@ void DataFilter::copyGtis() const {
       gti |= my_gti;
    }
    gti.writeExtension(m_outputFile);
+}
+
+void DataFilter::apply_fits_copy_file(const std::string & filterString) const {
+   fitsfile * outfile(0);
+   int status(0);
+
+   std::string outfilename(m_outputFile);
+   if (m_pars["clobber"]) {
+      outfilename = "!" + m_outputFile;
+   }
+
+   fits_create_file(&outfile, const_cast<char *>(outfilename.c_str()), &status);
+   if (status != 0) {
+      ::fitsReportError(status);
+   }
+   
+   fitsfile * infile(0);
+   std::string infilename(m_inputFiles.at(0) + "[" + filterString + "]");
+   fits_open_file(&infile, const_cast<char *>(infilename.c_str()),
+                  READONLY, &status);
+   if (status != 0) {
+      ::fitsReportError(status);
+   }
+
+// Copy all HDUs to the output file.
+   fits_copy_file(infile, outfile, 1, 1, 1, &status);
+   if (status != 0) {
+      ::fitsReportError(status);
+   }
+
+   fits_close_file(infile, &status);
+   if (status != 0) {
+      ::fitsReportError(status);
+   }
+
+   fits_close_file(outfile, &status);
+   if (status != 0) {
+      ::fitsReportError(status);
+   }
 }
