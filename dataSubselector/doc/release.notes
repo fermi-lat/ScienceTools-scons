@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r6p2  20-Oct-07   JC   use st_facilities::FitsUtil::fcopy in
+                             gtselect and gtmktime; use angsep(...) in 
+                             SkyConeCut
     v5r6p1  19-Oct-07   JC   apply fits_copy_file optimization in gtselect
                              for single input files
     v5r6    27-Sep-07   JC   use facilities::commonUtilities::getDataPath

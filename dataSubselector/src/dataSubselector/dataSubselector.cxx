@@ -10,35 +10,24 @@
 
 #include "facilities/Util.h"
 
-#include "st_facilities/Util.h"
-
 #include "st_stream/StreamFormatter.h"
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
-#include "st_facilities/FitsUtil.h"
-
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Table.h"
+
+#include "st_facilities/FitsUtil.h"
+#include "st_facilities/Util.h"
 
 #include "dataSubselector/Gti.h"
 #include "CutController.h"
 
 using dataSubselector::CutController;
 using dataSubselector::Gti;
-
-#include "fitsio.h"
-
-namespace {
-   void fitsReportError(int status) {
-      fits_report_error(stderr, status);
-      throw std::runtime_error("gtselect::apply_fits_copy_file: "
-                               "cfitsio error.");
-   }
-}
 
 /**
  * @class DataFilter
@@ -89,10 +78,7 @@ private:
 
    void writeDateKeywords() const;
 
-   void apply_fits_copy_file(const std::string & filterString) const;
-
    static std::string s_cvs_id;
-
 };
 
 std::string DataFilter::s_cvs_id("$Name$");
@@ -146,10 +132,6 @@ void DataFilter::run() {
 }
 
 void DataFilter::writeDateKeywords() const {
-//    Gti gti(m_outputFile);
-//    double tstart(gti.minValue());
-//    double tstop(gti.maxValue());
-
    double tstart = m_pars["tmin"];
    double tstop = m_pars["tmax"];
 
@@ -179,7 +161,9 @@ void DataFilter::copyTable(const std::string & extension,
    }
 
    if (m_inputFiles.size() == 1) { // use cfitsio directly
-      apply_fits_copy_file(filterString);
+      st_facilities::FitsUtil::fcopy(m_inputFiles.at(0), m_outputFile,
+                                     extension, filterString, 
+                                     m_pars["clobber"]);
    } else { // handle multiple input files using tip
       std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
       long nrows(0);
@@ -239,43 +223,4 @@ void DataFilter::copyGtis() const {
       gti |= my_gti;
    }
    gti.writeExtension(m_outputFile);
-}
-
-void DataFilter::apply_fits_copy_file(const std::string & filterString) const {
-   fitsfile * outfile(0);
-   int status(0);
-
-   std::string outfilename(m_outputFile);
-   if (m_pars["clobber"]) {
-      outfilename = "!" + m_outputFile;
-   }
-
-   fits_create_file(&outfile, const_cast<char *>(outfilename.c_str()), &status);
-   if (status != 0) {
-      ::fitsReportError(status);
-   }
-   
-   fitsfile * infile(0);
-   std::string infilename(m_inputFiles.at(0) + "[" + filterString + "]");
-   fits_open_file(&infile, const_cast<char *>(infilename.c_str()),
-                  READONLY, &status);
-   if (status != 0) {
-      ::fitsReportError(status);
-   }
-
-// Copy all HDUs to the output file.
-   fits_copy_file(infile, outfile, 1, 1, 1, &status);
-   if (status != 0) {
-      ::fitsReportError(status);
-   }
-
-   fits_close_file(infile, &status);
-   if (status != 0) {
-      ::fitsReportError(status);
-   }
-
-   fits_close_file(outfile, &status);
-   if (status != 0) {
-      ::fitsReportError(status);
-   }
 }

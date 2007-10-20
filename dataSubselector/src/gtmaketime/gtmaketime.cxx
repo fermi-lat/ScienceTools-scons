@@ -21,6 +21,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
 #include "dataSubselector/Cuts.h"
@@ -75,6 +76,7 @@ private:
    void createGti();
    void mergeGtis();
    void makeUserGti(std::vector<const dataSubselector::GtiCut*>&gtiCuts) const;
+   void writeGtiFile(const std::string & gtifile) const;
    void copyTable() const;
 
    static std::string s_cvs_id;
@@ -233,63 +235,25 @@ makeUserGti(std::vector<const dataSubselector::GtiCut *> & gtiCuts) const {
    gtiCuts.push_back(new dataSubselector::GtiCut(myGti));
 }
 
+void MakeTime::writeGtiFile(const std::string & gtifile) const {
+   bool clobber;
+   tip::IFileSvc::instance().createFile(gtifile, m_evfile, clobber=true);
+   m_gti.writeExtension(gtifile);
+}
+
 void MakeTime::copyTable() const {
-   tip::IFileSvc::instance().createFile(m_outfile, m_evfile);
+   std::string gtifile("temp_gti.fits");
+   writeGtiFile(gtifile);
 
    std::string extension = m_pars["evtable"];
-   const tip::Table * inputTable 
-      = tip::IFileSvc::instance().readTable(m_evfile, extension);
-   
-   tip::Table * outputTable 
-      = tip::IFileSvc::instance().editTable(m_outfile, extension);
+   std::string filterString("gtifilter(\"" + gtifile + "\")");
 
-   outputTable->setNumRecords(inputTable->getNumRecords());
-
-   tip::Table::ConstIterator inputIt = inputTable->begin();
-   tip::Table::Iterator outputIt = outputTable->begin();
-
-   tip::ConstTableRecord & input = *inputIt;
-   tip::Table::Record & output = *outputIt;
-
-   long npts(0);
-
-   dataSubselector::Cuts my_cuts;
-   my_cuts.addGtiCut(m_gti);
-
-   bool applyFilter = m_pars["apply_filter"];
-   for (; inputIt != inputTable->end(); ++inputIt) {
-      if (!applyFilter || my_cuts.accept(input)) {
-         output = input;
-         ++outputIt;
-         npts++;
-      }
-   }
-   delete inputTable;
-
-// Resize output table to account for filtered rows.
-   outputTable->setNumRecords(npts);
-
+   st_facilities::FitsUtil::fcopy(m_evfile, m_outfile, extension,
+                                  filterString, m_pars["clobber"]);
    m_gti.writeExtension(m_outfile);
 
-//    bool notPhdu;
-//    st_facilities::Util::writeDateKeywords(outputTable, m_gti.minValue(),
-//                                           m_gti.maxValue(), 
-//                                           notPhdu=true);
-
-//    tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
-//    st_facilities::Util::writeDateKeywords(phdu, m_gti.minValue(),
-//                                           m_gti.maxValue(), 
-//                                           notPhdu=false);
-//    delete phdu;
-
-//    tip::Table * gtiTable 
-//       = tip::IFileSvc::instance().editTable(m_outfile, "GTI");
-//    st_facilities::Util::writeDateKeywords(gtiTable, m_gti.minValue(),
-//                                           m_gti.maxValue(), 
-//                                           notPhdu=true);
-//    delete gtiTable;
-
-   delete outputTable;
+   st_facilities::FitsUtil::writeChecksums(m_outfile);
+   std::remove(gtifile.c_str());
 }
 
 /** 
