@@ -20,6 +20,7 @@
 #include "tip/Table.h"
 
 #include "st_facilities/FitsUtil.h"
+#include "st_facilities/Util.h"
 
 namespace st_facilities {
 
@@ -136,5 +137,55 @@ void FitsUtil::writeChecksums(const std::string & filename) {
       throw std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
    }
 }   
+
+void FitsUtil::fcopy(std::string infilename, 
+                     std::string outfilename,
+                     const std::string & extname, 
+                     const std::string & filterString,
+                     bool clobber) {
+   int status(0);
+
+   if (clobber) {
+      outfilename = "!" + outfilename;
+   }
+
+   fitsfile * outfile(0);
+   fits_create_file(&outfile, const_cast<char *>(outfilename.c_str()),&status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::fcopy:\n cfitsio error.");
+   }
+   
+   fitsfile * infile(0);
+   infilename = infilename + "[" + extname + "]";
+   if (filterString != "") {
+      infilename = infilename + "[" + filterString + "]";
+   }
+   fits_open_file(&infile, const_cast<char *>(infilename.c_str()),
+                  READONLY, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::fcopy:\n cfitsio error.");
+   }
+   
+// Copy all HDUs to the output file.
+   fits_copy_file(infile, outfile, 1, 1, 1, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::fcopy:\n cfitsio error.");
+   }
+   
+   fits_close_file(infile, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::fcopy:\n cfitsio error.");
+   }
+
+   fits_close_file(outfile, &status);
+   if (status != 0) {
+      fits_report_error(stderr, status);
+      throw std::runtime_error("FitsUtil::fcopy:\n cfitsio error.");
+   }
+}
 
 } // namespace st_facilities
