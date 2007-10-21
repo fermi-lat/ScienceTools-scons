@@ -18,6 +18,7 @@
   - astro::Healpix manage transformation to/from Healpix pixels, as an STL container
   - astro::HealPixel Special class to support multiple pixel sizes 
   - astro::Quaternion Quaternion objects, used to represent rotations
+  - astro::IGRField interface to the fortran code for the magnetic field. Used by EarthCoordinate
 
     <hr>
   \section notes release notes
