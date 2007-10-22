@@ -30,12 +30,12 @@ public:
     //! constructor loads data from a fits FT1 or root file (MeritTuple) to make a PhotonMap
     //! @param event_type 0 for class A front, etc, -1 for all
     //! @param source_id select given source
-    Data(const std::string& file, int event_type, int source_id=-1)
+    Data(const std::string& file, int event_type, double tstart, double tstop, int source_id=-1)
         ;
     //! constructor loads data from a list of fits or root files to make a PhotonMap
     //! @param event_type 0 for class A front, etc, -1 for all
     //! @param source_id select given source
-    Data(std::vector<std::string> files, int event_type, int source_id=-1, 
+    Data(std::vector<std::string> files, int event_type, double tstart, double tstop,int source_id=-1, 
         std::string ft2file=""
         );
     //! constructor loads a PhotonMap that was saved in a fits file
@@ -71,6 +71,7 @@ public:
 private:
     map_tools::PhotonMap * m_data;
     std::string m_ft2file;
+    double m_start, m_stop;
 };
 
 }

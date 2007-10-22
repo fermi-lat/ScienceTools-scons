@@ -94,8 +94,10 @@ namespace pointlike {
 
         SourceFinder(const pointlike::CalData& data, embed_python::Module & Mod);
 
-        typedef std::map<astro::HealPixel, CanInfo> Candidates; 
+       typedef std::map<astro::HealPixel, CanInfo> Candidates;
+       typedef std::multimap<int, CanInfo> Prelim; // Preliminary candidates
 
+ 
         //! Region selection
         typedef enum  
         {
