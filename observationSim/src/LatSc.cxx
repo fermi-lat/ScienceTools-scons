@@ -46,6 +46,9 @@ HepRotation LatSc::InstrumentToCelestial(double time) {
 }
 
 bool LatSc::inSaa(double time) {
+   if (::getenv("DISABLE_SAA")) {
+      return false;
+   }
    astro::EarthCoordinate earthCoord( EarthLat(time), EarthLon(time) );
    return earthCoord.insideSAA();
 }
