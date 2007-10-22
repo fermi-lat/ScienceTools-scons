@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r7p1   22-Oct-07    JC    random_seed -> seed in ParamDialog for
+                               gtobssim par name change
    v7r7     21-Jul-07    JC    accommodate gtobssim par name change in
                                ObsSim
    v7r6p6   07-Nov-06    JC    bug fix in readXml.py
