@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r8p1 23-Oct-07   JC   astro interface change to EarthCoordinate
     v3r8   12-Oct-07   JC   remove FT1ZenithTheta and CTBBestZDir cuts and
                             make tstart and tstop hidden parameters
     v3r7p3 04-Oct-07   JC   fix missing closing parens
