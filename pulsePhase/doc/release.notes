@@ -37,5 +37,8 @@
                               Use One-NASA email address.
     v5r1p1  16-aug-07   JP    Call resetApp at beginning of run() method to clean up from any
                               previous calls to run().
+        v6  23-oct-07   JP    Add support for barycentering on the fly, including new parameters
+                              solareph and matchsolareph, for controlling which solar system ephemeris
+                              is used for the barycentering.
     @endverbatim
 */
