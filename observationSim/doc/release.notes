@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v7r0p3 23-Oct-07   JC   astro::EarthCoordinate interface change
     v7r0p2 22-Oct-07   JC   allow SAA to be disabled via env var DISABLE_SAA
     v7r0p1 15-Oct-07   JC   using facilities commonUtilites for env vars
     v7     03-Jul-07   JC   implement parameter name changes
