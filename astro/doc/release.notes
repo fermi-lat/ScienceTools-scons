@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r14p1  23-oct-07 THB Remove redundant constructor from EarthCoordinate
   v2r14    18-oct-07 THB convert to use IGRField for magnetic stuff
   v2r13p4  04-oct-07 THB fix bug to allow history access to last interval
   v2r13p3  14-sep-07 MA patched igrf_sub to solve windows build problem

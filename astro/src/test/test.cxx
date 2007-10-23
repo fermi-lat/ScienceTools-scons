@@ -183,8 +183,8 @@ void test_insideSAA() {
 
     // Test for success
     for (unsigned int i = 0; i < sizeof(lat_inSAA)/sizeof(double); ++i) {
-        astro::EarthCoordinate earthCoord(lat_inSAA[i], lon_inSAA[i]);
-        if (!earthCoord.insideSAA())
+        astro::EarthCoordinate earthCoord; //(lat_inSAA[i], lon_inSAA[i]);
+        if (!earthCoord.insideSAA(lat_inSAA[i], lon_inSAA[i]))
         {
             std::cout << std::endl << "Error: Lat/Lon " << lat_inSAA[i] << ", " << lon_inSAA[i];
             std::cout << " should return true.  Returned false.";
@@ -194,10 +194,10 @@ void test_insideSAA() {
 
     // Test for failure
     for (unsigned int i = 0; i < sizeof(lat_notInSAA)/sizeof(double); ++i) {
-        astro::EarthCoordinate earthCoord(lat_notInSAA[i], lon_notInSAA[i]);
-        if (earthCoord.insideSAA())
+        astro::EarthCoordinate earthCoord; //(lat_notInSAA[i], lon_notInSAA[i]);
+        if (earthCoord.insideSAA(lat_notInSAA[i], lon_notInSAA[i]))
         {
-            std::cout << std::endl << "Error: Lat/Lon " << lat_inSAA[i] << ", " << lon_inSAA[i];
+            std::cout << std::endl << "Error: Lat/Lon " << lat_notInSAA[i] << ", " << lon_notInSAA[i];
             std::cout << " should return false.  Returned true.";
             error_found = true;
         }
@@ -359,6 +359,7 @@ int main(){
         std::cout << std::setprecision(6) << "\tlatitude at t0 = " << xyza.latitude()
             << " , longitude at t0 = " << xyza.longitude() << std::endl;
 
+#if 0 // this test no longer makes sense.
         double lat=25, lon=45;
         std::cout << "EarthCoordinate("<<lat<<","<<lon<<")\n";
         EarthCoordinate ec(lat, lon);
@@ -370,7 +371,7 @@ int main(){
             << "\n\tgeolat=\t"<< ec.geolat() 
             << "\n\tgeolon=\t"<< ec.geolon() 
             << std::endl;
-
+#endif
         // test the SkyDir difference function
         SkyDir sd2(ra+1,dec);
         double 
@@ -434,7 +435,6 @@ int main(){
             cout << "Mission start" << start << endl;  
             cout << "SkyDir("<<ra<<","<<dec<<") " << sd.ra() << ", " << sd.dec()   << endl;
             cout << "SkyDir3("<<l<<","<<b<<") " << sd3.l() << ", " << sd3.b()   << endl;
-            cout << "EarthCoordinate("<<lat<<","<<lon<<") " << ec.latitude() << ", " << ec.longitude() << endl;
 
             // run the sun and moon
             rc= 1;

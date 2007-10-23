@@ -47,10 +47,10 @@ void PointingHistory::readTextData(std::string filename, double offset)
 
             double razenith, deczenith;
             buf >> razenith >> deczenith; // ignore since redundant with position
-
             double lat, lon, alt;
-            buf >> lon >> lat >> alt;
-            EarthCoordinate earth(lat, lon, alt);
+            buf >> lon >> lat >> alt;     // these are ignored, too.
+
+            EarthCoordinate earth(position, start);
 
             m_endTime = start + offset;
             m_data[m_endTime] = PointingInfo(position, orientation, earth);

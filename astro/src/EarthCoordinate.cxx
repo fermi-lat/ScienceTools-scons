@@ -93,14 +93,6 @@ double EarthCoordinate::geolon()const
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-EarthCoordinate::EarthCoordinate(double latDeg, double lonDeg, double alt)
-: m_lat(latDeg*M_PI/180), m_lon(lonDeg*M_PI/180), m_altitude(alt)
-{
-    // the altitude might be radius (in km) 
-    static double radius(s_EarthRadius/1000.);
-    if( alt>radius ) m_altitude -= radius;
-}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double  EarthCoordinate::GetGMST(JulianDate jd)
@@ -122,14 +114,19 @@ void EarthCoordinate::setSAAboundary(const std::vector<std::pair<double,double> 
     lon_min = 1e10;
 }
 
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Determine whether we are inside the SAA (South Atlantic Anomaly)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool EarthCoordinate::insideSAA() const
 {
+    return insideSAA(longitude(), latitude());
+}
+bool EarthCoordinate::insideSAA(double lat, double lon) const
+{
  
     typedef std::pair<double, double> coords;
-    double my_lon = longitude(), my_lat =latitude();
+    double my_lon(lon), my_lat(lat);
     
     if (s_SAA_boundary.size()==0)
     {
