@@ -66,6 +66,12 @@ double geomag_lat(const std::vector<float> & sc_pos, double met) {
    return coord.geolat();
 }
 
+bool inside_saa(const std::vector<float> & sc_pos, double met) {
+   CLHEP::Hep3Vector pos(sc_pos.at(0)/1e3, sc_pos.at(1)/1e3, sc_pos.at(2)/1e3);
+   astro::EarthCoordinate coord(pos, met);
+   return coord.insideSAA();
+}
+
 } // unnamed namespace
 
 int main(int iargc, char * argv[]) {
@@ -111,17 +117,11 @@ int main(int iargc, char * argv[]) {
          ft2["lon_geo"].set(lonGeo);
          ft2["lat_geo"].set(latGeo);
          ft2["rad_geo"].set(radGeo);
-         astro::EarthCoordinate earthCoord(latGeo, lonGeo, radGeo);
-         if (earthCoord.insideSAA()) {
-            ft2["in_saa"].set(true);
-         } else {
-            ft2["in_saa"].set(false);
-         }
          ft2.next();
       }
 
 // Get stop times. Table::Iterator does not have random access.
-// Also fill the GEOMAG_LAT column.
+// Also fill the GEOMAG_LAT and IN_SAA columns.
       ft2.itor() = ft2.begin();
       ft2.next();
       double stop_time;
@@ -131,7 +131,8 @@ int main(int iargc, char * argv[]) {
          ft2["stop"].set(stop_time);
          double met = (ft2["start"].get() + stop_time)/2.;
          ft2["sc_position"].get(scPosition);
-         ft2["geomag_lat"].set(geomag_lat(scPosition, met));
+         ft2["geomag_lat"].set(::geomag_lat(scPosition, met));
+         ft2["in_saa"].set(::inside_saa(scPosition, met));
          ft2.next();
       }
       ft2.itor() = ft2.end();
@@ -144,6 +145,7 @@ int main(int iargc, char * argv[]) {
       double met = (ft2["start"].get() + stop_time)/2.;
       ft2["sc_position"].get(scPosition);
       ft2["geomag_lat"].set(::geomag_lat(scPosition, met));
+      ft2["in_saa"].set(::inside_saa(scPosition, met));
 
 // Fill livetime.
       ft2.itor() = ft2.begin();
