@@ -8,6 +8,7 @@
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 #include "astro/PointingTransform.h"
+#include "astro/PointingHistory.h"
 #include "astro/HTM.h"
 #include "astro/SkyProj.h"
 #include "astro/Quaternion.h"
@@ -270,7 +271,7 @@ bool testHTM()
 }
 
 void checkdir(const astro::SkyDir& dir1, const astro::SkyDir& dir2) {
-        assert(dir1.difference(dir2) < 1e-5);
+        assert(dir1.difference(dir2) < 1e-5); //readback should correspond to contents of FITS
 }
 void checkdir(double ra1, double dec1, double ra2, double dec2) {
     checkdir( astro::SkyDir(ra1, dec1), astro::SkyDir(ra2, dec2) );
@@ -283,17 +284,17 @@ bool test_GPS_readFitsData() {
     std::string filename("../src/test/test_FT2.fits");
     gps->setPointingHistoryFile(filename);
 
-    double time(30);
+    double time(gps->history().startTime());
     gps->time(time);
 
-    ASSERT_EQUALS(gps->lat(), 28.675092697143555);
-    ASSERT_EQUALS(gps->lon(), -75.576118469238281);
+    double lat(gps->lat()), lon(gps->lon());
 
-    checkdir(gps->xAxisDir(), SkyDir( 281.15841674804688, 0.82335680723190308));
-    checkdir(gps->zAxisDir(), SkyDir(11.064399719238281, -6.5129880905151367));
-    checkdir(gps->zenithDir(), SkyDir(11.605173110961914, 28.483125686645508));
-
-    gps->time( -1); // should generate exception
+    // these numbers extracted from a previous run, or the data itself. 
+    ASSERT_EQUALS(gps->lat(), 28.69208); 
+    ASSERT_EQUALS(gps->lon(), -91.25456);
+    checkdir(gps->xAxisDir(), SkyDir( 99.46017, 0));
+    checkdir(gps->zAxisDir(), SkyDir(9.460165, 63.5));
+    checkdir(gps->zenithDir(), SkyDir(9.460165, 28.5));
 
     return true;
 }
