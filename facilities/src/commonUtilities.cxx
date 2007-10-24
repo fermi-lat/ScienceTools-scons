@@ -102,9 +102,11 @@ namespace facilities {
 	  pos = env.rfind("ROOT");
 	  if(pos != std::string::npos){
 	    env = env.substr(0, pos);
-	    setEnvironment(env+"XMLPATH", getXmlPath(env));
-	    setEnvironment(env+"DATAPATH", getDataPath(env));
-	    setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+	    if(env != ""){
+	      setEnvironment(env+"XMLPATH", getXmlPath(env));
+	      setEnvironment(env+"DATAPATH", getDataPath(env));
+	      setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+	    }
 	  }
 	}
 	counter++;
