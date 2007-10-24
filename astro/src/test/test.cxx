@@ -280,7 +280,7 @@ bool test_GPS_readFitsData() {
     using astro::SkyDir;
     astro::GPS * gps = astro::GPS::instance();
 
-    std::string filename("test_FT2.fits");
+    std::string filename("../src/test/test_FT2.fits");
     gps->setPointingHistoryFile(filename);
 
     double time(30);
@@ -330,7 +330,7 @@ int main(){
         }
 
         // One needs the test data to run this.
-        //        if (!test_GPS_readFitsData()) return 1;
+        if (!test_GPS_readFitsData()) return 1;
 
         JulianDate start = JulianDate::missionStart(); 
 

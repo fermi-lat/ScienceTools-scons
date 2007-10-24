@@ -116,6 +116,7 @@ void PointingHistory::readFitsData(std::string filename) {
     std::vector<double> sc_pos(3);
     tip::Table::ConstIterator it = scData->begin();
     tip::ConstTableRecord & interval = *it;
+    double maxlatdiff(0);
     for ( ; it != scData->end(); ++it) {
 
         interval["ra_scz"   ].get(raz);
@@ -131,9 +132,21 @@ void PointingHistory::readFitsData(std::string filename) {
         astro::SkyDir xaxis(rax, decx);
         CLHEP::Hep3Vector position(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
         Quaternion orientation(zaxis(), xaxis());
+        EarthCoordinate earthpos(position, start_time);
+        // check consistency of latitude, longitude: EarthCoordinate computes from the MET and position
+        double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
+        if( check_lat>maxlatdiff) maxlatdiff = check_lat;
+
+        if( fabs(check_lat)>0.20 || fabs(check_lon)>0.01 && abs(lon)<179 ){
+            std::stringstream error; 
+            error << "PointingHistory::readFitsData: apparent inconsistency for Earth position, time=" 
+                << start_time
+                << ", lat, lon diff: " << check_lat << ", " << check_lon;
+            throw std::runtime_error(error.str());
+        }
 
         m_data[start_time] = 
-            PointingInfo( position, orientation, EarthCoordinate(lat, lon) );
+            PointingInfo( position, orientation, earthpos);
         if( m_startTime<0) m_startTime = start_time;
     }
     m_endTime = stop_time;
