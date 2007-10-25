@@ -23,7 +23,7 @@ namespace astro {
     class HealPixel{
     public:
         ///@brief construct a pixel from the index and level (nside = 2**level).
-        HealPixel(long index, int level);
+        HealPixel(long index=0, int level=5);
 
         ///@brief create a HealPixel from a direction, and a level (nside=2**level)
         HealPixel(const astro::SkyDir& dir, int level);

@@ -200,5 +200,9 @@ bool EarthCoordinate::insideSAA(double lat, double lon) const
     
     return true;
 }
+const CLHEP::Hep3Vector& EarthCoordinate::magnetic_field()const
+{
+    return m_field; 
+}
 
 } // namespace astro

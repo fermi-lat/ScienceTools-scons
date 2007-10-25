@@ -63,7 +63,7 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
     double geolat()const;///< geomagnetic latitude (deg)
     double geolon()const;///< geomagnetic longitude (deg) (deprecated)
 
-    CLHEP::Hep3Vector magnetic_field()const; ///< return magnetic field in zenith system
+    const CLHEP::Hep3Vector& magnetic_field()const; ///< return magnetic field in zenith system
 
     /// set the boundary from external list
     static void setSAAboundary(const std::vector<std::pair<double,double> >& boundary);
