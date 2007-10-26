@@ -95,8 +95,8 @@ void PulsePhaseApp::run() {
     // Get event time as AbsoluteTime.
     AbsoluteTime abs_evt_time(getEventTime());
 
-    double int_part; // Ignored. Needed for modf.
-    double phase = modf(computer.calcOrbitalPhase(abs_evt_time) + phase_offset, &int_part);
+    // Compute phase.
+    double phase = computer.calcOrbitalPhase(abs_evt_time, phase_offset);
 
     // Write phase into output column.
     setFieldValue(phase_field, phase);
