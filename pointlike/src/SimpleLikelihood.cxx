@@ -25,7 +25,7 @@ namespace {
 
     bool debug(false);
     double tolerance(0.05); // integral tolerance
-    inline double sqr(float x){return x*x;}
+    inline double sqr(double x){return x*x;}
     std::ostream * psf_data = &std::cout;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -365,4 +365,16 @@ double SimpleLikelihood::kcurvature(double k) {
     }
     if(d2Ldk2<0) return -1;
     return pow(d2Ldk2,-0.5);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double SimpleLikelihood::operator()(const astro::SkyDir& dir)const
+{
+    double diff =dir.difference(m_dir); 
+    double  u = sqr(diff/m_sigma)/2.;
+    if( u>m_umax) return 0;
+    // just to see what is there
+    // astro::SkyDir r(x.first()); double ra(r.ra()), dec(r.dec());
+   
+    return signal()*m_psf(u)/ m_fint/(2*M_PI*sqr(m_sigma));
 }

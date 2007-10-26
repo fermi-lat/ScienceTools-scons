@@ -25,7 +25,7 @@ namespace pointlike {
 
 
     */
-    class PointSourceLikelihood : public  std::map<int, SimpleLikelihood*> {
+    class PointSourceLikelihood : public  std::map<int, SimpleLikelihood*>, public astro::SkyFunction{
     public:
 
 
@@ -88,6 +88,10 @@ namespace pointlike {
 
         bool verbose()const{return m_verbose;}
 
+        ///! implement the SkyFunction interface
+        double operator ()(const astro::SkyDir&dir)const;
+        void setEnergy(double energy){m_energy=energy;}
+
         static void PointSourceLikelihood::setParameters(embed_python::Module& par);
 
         /// @brief set radius for individual fits
@@ -115,6 +119,7 @@ namespace pointlike {
 
         bool m_verbose;
         std::ostream * m_out;
+        double m_energy; ///< used to select appropriate SimpleLikelihood object for this
         std::ostream& out()const{return *m_out;}
 
         // the data to feed each guy, extracted from the database
