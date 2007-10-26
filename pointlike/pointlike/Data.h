@@ -68,6 +68,7 @@ public:
     static double s_scale[4]; // scale factors
     static double set_scale(int i, double s){double t(s_scale[i]);  s_scale[i]=s; return t;}
 
+    static int s_class_level; // set to 1,2,3 for transient, source, diffuse
 private:
     map_tools::PhotonMap * m_data;
     std::string m_ft2file;
