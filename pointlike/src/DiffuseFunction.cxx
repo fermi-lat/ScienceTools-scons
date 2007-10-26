@@ -101,10 +101,10 @@ double DiffuseFunction::average(const astro::SkyDir& dir, double angle, double t
     static bool map_built(false);
 
     int level, min_level = 6, max_level = 13;
-    double result(0.0), previous(1e20);
+    double result(0.0);
 
     // Get value for one point at center
-    previous = (*this) (dir);
+    double previous = (*this) (dir);
     if (tolerance >= 0.5)  // If tolerance is higher than this, just return value at center.
         return previous;
 
