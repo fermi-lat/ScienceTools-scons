@@ -28,7 +28,8 @@ class LatSc : public Spacecraft {
 
 public:
 
-   LatSc() {}
+   LatSc() : Spacecraft() {}
+   LatSc(const std::string & ft2file);
 
    virtual ~LatSc() {}
 
@@ -45,6 +46,14 @@ public:
    virtual void getScPosition(double time, std::vector<double> & scPosition);
 
    virtual void getZenith(double time, double & ra, double & dec);
+
+   virtual double livetimeFrac(double time) const;
+
+private:
+
+   double m_dt;
+   std::vector<double> m_start;
+   std::vector<double> m_livetimefrac;
 
 };
 

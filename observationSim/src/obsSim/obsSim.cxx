@@ -312,7 +312,12 @@ void ObsSim::generateData() {
                                           nMaxRows, writeScData);
    scData.setAppName("gtobssim");
    scData.setVersion(getVersion());
-   observationSim::Spacecraft * spacecraft = new observationSim::LatSc();
+   observationSim::Spacecraft * spacecraft(0);
+   if (writeScData) {
+      spacecraft = new observationSim::LatSc();
+   } else {
+      spacecraft = new observationSim::LatSc(pointingHistory);
+   }
    double frac = m_pars["ltfrac"];
    spacecraft->setLivetimeFrac(frac);
    if (m_pars["nevents"]) {
