@@ -100,13 +100,13 @@ DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
 
 // Add the appropriate attributes.
    xmlBase::Dom::addAttribute(paramElt, "name", m_name.c_str());
-   xmlBase::Dom::addAttribute(paramElt, std::string("value"), m_value);
-   xmlBase::Dom::addAttribute(paramElt, std::string("min"), m_minValue);
-   xmlBase::Dom::addAttribute(paramElt, std::string("max"), m_maxValue);
+   xmlBase::Dom::addAttribute(paramElt, std::string("value"), m_value, 10);
+   xmlBase::Dom::addAttribute(paramElt, std::string("min"), m_minValue, 10);
+   xmlBase::Dom::addAttribute(paramElt, std::string("max"), m_maxValue, 10);
    xmlBase::Dom::addAttribute(paramElt, std::string("free"), m_free);
-   xmlBase::Dom::addAttribute(paramElt, std::string("scale"), m_scale);
+   xmlBase::Dom::addAttribute(paramElt, std::string("scale"), m_scale, 10);
    if (m_error > 0) {
-      xmlBase::Dom::addAttribute(paramElt, std::string("error"), m_error);
+      xmlBase::Dom::addAttribute(paramElt, std::string("error"), m_error, 10);
    }
 
    return paramElt;
