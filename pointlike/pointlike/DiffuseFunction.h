@@ -82,8 +82,11 @@ public:
         const std::vector<double>&energies)const;
 
     /// @return number of layers
-    /// @todo: get number from file
-    int layers()const { return 17;}
+    int layers()const { return m_data.layers();}
+
+    /// @brief access to the contained SkyImage
+    const map_tools::SkyImage& image()const { return m_data;}
+
 
 
 private:

@@ -44,7 +44,6 @@ void DiffuseFunction::setEnergy(double e)const
         m_fract=0;
     }else {
         m_fract = step - m_layer;
-        m_fract = sqrt(m_fract); // interpolate according to e**-2?.
     }
 }
 
@@ -57,7 +56,7 @@ double DiffuseFunction::operator()(const astro::SkyDir& dir)const {
         double a ( m_data.pixelValue(dir, m_layer) );
         if( m_fract==0) return a;
         double b(m_data.pixelValue(dir, m_layer+1) );
-        return b*m_fract + a*(1-m_fract) 
+        return b* m_fract + a*(1-m_fract) 
             + extraGal(m_energy);
     }
 
