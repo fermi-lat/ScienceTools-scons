@@ -28,7 +28,7 @@
 #include <sstream>
 
 
-
+#include <iomanip>
 #include <string>
 #include <cstring>
 #include <cassert>
@@ -395,18 +395,14 @@ namespace xmlBase {
   }
 
   void  Dom::addAttribute(DOMElement* elt, std::string name, 
-                          double value) {
+                          double value, unsigned int precision) {
     if (elt == 0) {
       throw NullNode("from xmlBase::Dom::addAttribute.  null argument");
     }
 
-    //#ifdef DEFECT_NO_STRINGSTREAM
-    //    std::strstream s;
-    //    s << value << '\0';
-    //#else
     std::ostringstream s;
+    s << std::setprecision(precision);
     s << value;
-    //#endif
 
     std::string str = s.str();
     XMLCh* xmlchValue = XMLString::transcode(str.c_str());

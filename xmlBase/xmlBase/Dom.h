@@ -220,7 +220,7 @@ namespace xmlBase {
 
     //! Add attribute of type double to a DOM element, std::string att name
     static void         addAttribute(DOMElement* elt, std::string name, 
-                                     double value);
+                                     double value, unsigned int precision=6);
 
     //! Add attribute of type \c int to a DOM element 
     static void         addAttribute(DOMElement* elt, std::string name, 
