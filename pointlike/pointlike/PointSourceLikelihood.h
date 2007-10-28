@@ -107,7 +107,7 @@ namespace pointlike {
             double t = sigma_level[level]; sigma_level[level]=v; return t;}
 
         ///! Set diffuse function
-        static set_diffuse(pointlike::DiffuseFunction* diffuse){SimpleLikelihood::s_diffuse = diffuse;}
+        static void set_diffuse(pointlike::DiffuseFunction* diffuse){SimpleLikelihood::s_diffuse = diffuse;}
 
     private:
         void setup(const map_tools::PhotonMap& data,double radius, int minlevel, int maxlevel);
