@@ -40,5 +40,7 @@
         v6  23-oct-07   JP    Add support for barycentering on the fly, including new parameters
                               solareph and matchsolareph, for controlling which solar system ephemeris
                               is used for the barycentering.
+    v6r0p1  30-oct-07   JP    Address JIRA issue PULS 42. Use calcPulsePhase and calcOrbitalPhase
+                              methods to compute phase rationally rather than doing it by hand.
     @endverbatim
 */
