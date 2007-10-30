@@ -54,7 +54,7 @@ psrname = ANY [string]
     Name of the pulsar, used to select only ephemerides valid for a
     particular pulsar.
 
-ephstyle = DB [string]
+ephstyle = DB [enumerated string (DB|FREQ|PER)]
     Method to specify how the ephemerides will be supplied. If
     ephstyle is DB, a pulsar database file (GLAST D4 FITS format) will
     be used. If ephstyle is FREQ (PER), the user will supply values
@@ -65,27 +65,27 @@ ephepoch = 0. [string]
     Reference epoch of the ephemeris that will be manually specified.
     This parameter only has effect if ephstyle is FREQ or PER.
 
-timeformat = FILE [string]
+timeformat = FILE [enumerated string (FILE|MJD|GLAST)]
     String describing the representation used for the ephepoch.
     Valid choices are FILE, MJD and GLAST (MET). If FILE is chosen,
     the time format specified in the input event file header will be
     used.
 
-timesys = FILE [string]
+timesys = FILE [enumerated string (FILE|TAI|TDB|TT|UTC)]
     String describing the time system used for the ephepoch.
     Valid choices are FILE, TAI, TDB, TT and UTC. If FILE is chosen,
     the time system specified in the input event file header (TIMESYS
     keyword) will be used.
 
 ra [double]
-    RA of point source for which to perform the barycentric
-    correction.  This parameter only has effect if ephstyle is FREQ or
-    PER.
+    Right Ascension of point source in degrees for which to perform
+    the barycentric correction.  This parameter only has effect if
+    ephstyle is FREQ or PER.
 
 dec [double]
-    DEC of point source for which to perform the barycentric
-    correction.  This parameter only has effect if ephstyle is FREQ or
-    PER.
+    Declination of point source in degrees for which to perform the
+    barycentric correction.  This parameter only has effect if
+    ephstyle is FREQ or PER.
 
 phi0 = 0. [double]
     Phase offset at this ephepoch for a user-supplied ephemeris.  This
@@ -211,12 +211,12 @@ psrname = ANY [string]
     particular pulsar.
 
 ra [double]
-    RA of point source for which to perform the barycentric
-    correction.
+    Right Ascension of point source in degrees for which to perform
+    the barycentric correction.
 
 dec [double]
-    DEC of point source for which to perform the barycentric
-    correction.
+    Declination of point source in degrees for which to perform the
+    barycentric correction.
 
 (solareph = JPL DE405) [enumerated string (JPL DE200|JPL DE405)]
     Solar system ephemeris for the barycentric correction.
