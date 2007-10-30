@@ -1,8 +1,9 @@
 #include "facilities/commonUtilities.h"
 #include <iostream>
 #include <algorithm>
+
 #ifndef WIN32
-#include <unistd.h>
+extern char **environ;
 #endif
 
 namespace facilities {
