@@ -1,5 +1,7 @@
 package facilities
-version v2r16p14
+version v2r16p15
+
+use SwigPolicy *
 
 author T.Burnett <tburnett@u.washington.edu>
 author Navid Golpayegani <Navid.Golpayegani-1@nasa.gov>
@@ -27,3 +29,11 @@ application test_time test/test_time.cxx Timestamp.cxx
 
 application test_env test/test_env.cxx
 
+path_remove PYTHONPATH facilities
+path_prepend PYTHONPATH $(FACILITIESROOT)/$(BINDIR)
+path_remove PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
+                          WIN32 "${facilities_cmtpath}\lib"
+path_append PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
+                          WIN32 "${facilities_cmtpath}\lib"
+
+apply_pattern swig_module name="py_facilities"
