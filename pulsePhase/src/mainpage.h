@@ -38,7 +38,7 @@ infile [file]
     default value is yes (true).
 \endverbatim
 
-    \subsection gtpphase_general gtpphase General Parameters
+    \subsection gtpphase_general gtpphase Parameters
 \verbatim
 evfile [file name]
     Name of input event file, FT1 format or equivalent.
@@ -90,6 +90,34 @@ dec [double]
 phi0 = 0. [double]
     Phase offset at this ephepoch for a user-supplied ephemeris.  This
     parameter only has effect if ephstyle is FREQ or PER.
+
+f0 = 1. [double]
+    Value of the frequency at the time given by the epoch parameter.
+    This parameter only has effect if ephstyle is FREQ.
+
+f1 = 0. [double]
+    Value of the first time derivative of the frequency at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is FREQ.
+
+f2 = 0. [double]
+    Value of the second time derivative of the frequency at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is FREQ.
+
+p0 = 1. [double]
+    Value of the period at the time given by the epoch parameter.
+    This parameter only has effect if ephstyle is PER.
+
+p1 = 0. [double]
+    Value of the first time derivative of the period at the time given
+    by the epoch parameter.  This parameter only has effect if
+    ephstyle is PER.
+
+p2 = 0. [double]
+    Value of the second time derivative of the period at the time
+    given by the epoch parameter.  This parameter only has effect if
+    ephstyle is PER.
 
 (tcorrect = AUTO) [enumerated string (NONE|AUTO|BARY|BIN|ALL)]
     Set of arrival time corrections to apply. If tcorrect is NONE, no
@@ -155,42 +183,6 @@ phi0 = 0. [double]
     OGIP-compliant leap second table format. If leapsecfile is the
     string DEFAULT, the default leap-second file (leapsec.fits), which
     is distributed with the extFiles package, will be used.
-\endverbatim
-
-    \subsection frequency_pars Frequency Ephemeris Parameters
-
-\verbatim
-f0 = 1. [double]
-    Value of the frequency at the time given by the epoch parameter.
-    This parameter only has effect if ephstyle is FREQ.
-
-f1 = 0. [double]
-    Value of the first time derivative of the frequency at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is FREQ.
-
-f2 = 0. [double]
-    Value of the second time derivative of the frequency at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is FREQ.
-\endverbatim
-
-    \subsection period_pars Period Ephemeris Parameters
-
-\verbatim
-p0 = 1. [double]
-    Value of the period at the time given by the epoch parameter.
-    This parameter only has effect if ephstyle is PER.
-
-p1 = 0. [double]
-    Value of the first time derivative of the period at the time given
-    by the epoch parameter.  This parameter only has effect if
-    ephstyle is PER.
-
-p2 = 0. [double]
-    Value of the second time derivative of the period at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is PER.
 \endverbatim
 
     \subsection gtophase_parameters gtophase Parameters
