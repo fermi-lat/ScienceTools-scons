@@ -9,7 +9,6 @@ $Header$
 
 //#include "tools/PowerLawFilter.h"
 #include "pointlike/Data.h"
-#include "pointlike/CalData.h"
 
 #include "map_tools/PhotonMap.h"
 
@@ -91,9 +90,9 @@ namespace pointlike {
     public:
 
         SourceFinder(const pointlike::Data& data,  embed_python::Module & Mod);
-
+#if 0
         SourceFinder(const pointlike::CalData& data, embed_python::Module & Mod);
-
+#endif
        typedef std::map<astro::HealPixel, CanInfo> Candidates;
        typedef std::multimap<int, CanInfo> Prelim; // Preliminary candidates
 

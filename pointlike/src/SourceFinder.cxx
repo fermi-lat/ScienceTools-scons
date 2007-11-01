@@ -58,12 +58,6 @@ SourceFinder::SourceFinder(const pointlike::Data& map, Module & Mod)
 , m_module(Mod)
 {}
 
-SourceFinder::SourceFinder(const pointlike::CalData& map,Module & Mod)
-: m_pmap(map)
-, m_counts(0)
-, m_module(Mod)
-{}
-
 
 /** @brief
 Analyze range of likelihood significance values for all pixels at a particular level  
