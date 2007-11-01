@@ -18,7 +18,7 @@ $Header$
 #include <utility>
 
 namespace pointlike {
-class DiffuseFunction;
+class SkySpectrum;
 
 /** @class SimpleLikelihood
 @brief Simple SimpleLikelihood analysis
@@ -109,7 +109,7 @@ public:
     /// @return the events/pixel corresponding to the solution
     double operator()(const astro::SkyDir& dir)const;
 
-    static DiffuseFunction* s_diffuse;
+    static SkySpectrum* s_diffuse;
     static double s_tolerance; // for integral
 private:
 

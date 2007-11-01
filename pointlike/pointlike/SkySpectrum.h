@@ -47,7 +47,7 @@ public:
     /// functor that returns an integral over the energies as well
     double operator()(const astro::SkyDir& dir, double emin, double emax)const;
 
-
+    ///! average, for the given energy, about the direction and cone angle(radians)
     double average(const astro::SkyDir& dir, double angle, double tolerance)const;
 
 

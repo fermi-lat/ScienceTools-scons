@@ -5,7 +5,7 @@ $Header$
 */
 
 #include "pointlike/SimpleLikelihood.h"
-#include "pointlike/DiffuseFunction.h"
+#include "pointlike/SkySpectrum.h"
 #include <algorithm>
 #include <cmath>
 #include <numeric>
@@ -18,7 +18,7 @@ using namespace pointlike;
 //#define DEBUG_PRINT
 double SimpleLikelihood::s_defaultUmax =50;
 
-pointlike::DiffuseFunction* SimpleLikelihood::s_diffuse(0);
+pointlike::SkySpectrum* SimpleLikelihood::s_diffuse(0);
 double  SimpleLikelihood::s_tolerance(0.05);
 
 namespace {
