@@ -283,6 +283,7 @@ double PointSourceLikelihood::localize(int skip)
                 <<std::endl;
         }
         double oldTs( maximize(skip)); // initial (partial) TS
+        SkyDir last_dir(dir()); // save current direction
 
         for( ; iter<maxiter; ++iter){
             Hep3Vector grad( gradient(skip) );
@@ -334,6 +335,7 @@ double PointSourceLikelihood::localize(int skip)
         }// iter loop
         if( iter==maxiter){
             if( verbose() ) out() << "   >>>did not converge" << std::endl;
+            setDir(last_dir()); // restore position
             return 99.;
         }
         if( iter<5 ){
