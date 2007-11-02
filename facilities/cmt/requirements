@@ -1,5 +1,5 @@
 package facilities
-version v2r16p16
+version v2r16p17
 
 use SwigPolicy *
 
@@ -35,5 +35,7 @@ path_remove PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
                           WIN32 "${facilities_cmtpath}\lib"
 path_append PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
                           WIN32 "${facilities_cmtpath}\lib"
+path_append PYTHONPATH "" Linux "$(FACILITIESROOT)/python" \
+                          WIN32 "$(FACILITIESROOT)\python"
 
 apply_pattern swig_module name="py_facilities"
