@@ -17,6 +17,7 @@ from FileDialog import LoadFileDialog, SaveFileDialog
 
 import celgal
 from xmlSrcLib import *
+from readXml import Source
 
 _3EG_catalog = os.path.join(os.environ['OBSERVATIONSIMROOT'],
                             'xml', '3EG_catalog_20-1e6MeV.xml')
@@ -26,6 +27,7 @@ class LikeSource(object):
         self.src = src
         self.dir = self._getDir(src)
         self.flux = self._getFlux(src)
+        self.name = src.getAttribute("name").encode()
     def _getFlux(self, src):
         spectrum = src.getElementsByTagName('spectrum')[0]
         pars = spectrum.getElementsByTagName('parameter')
@@ -74,6 +76,11 @@ class LikeSourceList(object):
                 src.writexml(output)
         output.write('</source_library>\n')
         output.close()
+    def write_region_file(self, outfile):
+        regfile = ds9_region_file(outfile, fk5=1)
+        for src in self.srcs:
+            regfile.addSource(src.name, Source(src.src))
+        regfile.write()
 
 class SourceList(object):
     def __init__(self, inputFile=_3EG_catalog):
