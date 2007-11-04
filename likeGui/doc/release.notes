@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r8     04-Nov-07    JC    remove likeGui; add method to write
+                               ds9 region file to extractSources.LikeSourceList
    v7r7p1   22-Oct-07    JC    random_seed -> seed in ParamDialog for
                                gtobssim par name change
    v7r7     21-Jul-07    JC    accommodate gtobssim par name change in

@@ -1,5 +1,5 @@
 package likeGui
-version v7r7p1
+version v7r8
 
 #$Id$
 
@@ -7,7 +7,6 @@ author J. Chiang <jchiang@slac.stanford.edu>
 
 use sane v* 
 
-#application likeGui likeGui.cxx
 application ObsSim ObsSim.cxx
 application ModelEditor ModelEditor.cxx
 
