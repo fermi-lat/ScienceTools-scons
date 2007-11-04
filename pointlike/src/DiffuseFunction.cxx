@@ -19,6 +19,7 @@ using namespace pointlike;
 
 DiffuseFunction::DiffuseFunction(std::string diffuse_cube_file, double energy)
 : SkySpectrum(energy)
+, m_name(diffuse_cube_file)
 , m_data(diffuse_cube_file)
 {
     // expect to find a table with the energies to correspond with the layers

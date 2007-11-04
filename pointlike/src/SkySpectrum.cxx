@@ -94,7 +94,7 @@ double SkySpectrum::average(const astro::SkyDir& dir, double angle, double toler
     result = level_ave(dir, angle, level);
 
     // Iterate until result changes less than tolerance
-    for(level += 1 ; fabs(result - previous) > tolerance && level < max_level; ++ level)
+    for(level += 1 ; fabs(result/previous -1.) > tolerance && level < max_level; ++ level)
     {
         previous = result;
         result = level_ave(dir, angle, level);

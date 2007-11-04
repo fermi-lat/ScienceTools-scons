@@ -44,6 +44,7 @@ public:
     ///@brief integral for the energy limits, in the given direction
     virtual double integral(const astro::SkyDir& dir, double a, double b)const;
 
+    virtual std::string name()const{return m_name;}
 
 
     //-------------------------------------------------------
@@ -70,14 +71,9 @@ private:
 
     double energy_bin(int k) const;
     map_tools::SkyImage m_data;
-#if 0
-    static double h(double r, double alpha);
-    mutable double m_energy;
-    mutable int m_layer;
-    mutable double m_fract; ///< current fractional
-    mutable double m_emin, m_emax; ///< range for integral
-    mutable bool m_use_range; ///< true: evaluate specified energy range; false: value at energy
-#endif
+    std::string m_name;
+    double m_emin, m_emax;
+
 };
 } // namespace pointlike
 #endif

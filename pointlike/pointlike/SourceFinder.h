@@ -134,13 +134,11 @@ namespace pointlike {
         */
         Candidates & getCandidates() {return m_can;}
 
-        /** @brief
-        Analyze range of likelihood significance values for all pixels at a particular level  
+        /** @brief Analyze range of likelihood significance values for all pixels at a particular level  
         */
         void examineRegion(void) ;
 
-        /** @brief
-        Analyze likelihood significance for a particular direction  
+        /** @brief Analyze likelihood significance for a particular direction  
         */
 
         void checkDir(astro::SkyDir & sd,
