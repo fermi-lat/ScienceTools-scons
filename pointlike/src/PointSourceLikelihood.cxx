@@ -399,16 +399,20 @@ double PointSourceLikelihood::integral(const astro::SkyDir& dir, double emin, do
 {
     // implement by just finding the right bin
     return value(dir, sqrt(emin*emax) );
+}
 
 void PointSourceLikelihood::recalc(int level) {
     // get PSF parameters from fits
         double gamma( gamma_level[level] ),
             sigma ( scale_factor(level)* sigma_level[level]);
 
+        double emin( m_energies[level-m_minlevel]), emax( m_energies[level-m_minlevel+1]);
         // and create the simple likelihood object
         SimpleLikelihood* sl = new SimpleLikelihood(m_data_vec[level], m_dir, 
             gamma, sigma,
-            -1, // background level?
-            SimpleLikelihood::s_defaultUmax, energy_level(level));
+            -1, // background (not used now)
+            SimpleLikelihood::s_defaultUmax, 
+            emin, emax
+            );
         (*this)[level] = sl;
 }

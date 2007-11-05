@@ -6,7 +6,7 @@
 */
 #include "pointlike/PointSourceLikelihood.h"
 #include "pointlike/Data.h"
-#include "pointlike/SigmaOptimization.h"
+#include "pointlike/ParamOptimization.h"
 #include "pointlike/DiffuseFunction.h"
 
 #include "embed_python/Module.h"
@@ -92,8 +92,8 @@ int main(int argc, char** argv)
         }
         if( check_sigma){
             int minlevel(6), maxlevel(13);
-            SigmaOptimization so(healpixdata,directions,out,minlevel,maxlevel);
-            so.compute_s();
+            ParamOptimization so(healpixdata,directions,out,minlevel,maxlevel);
+            so.compute();
         }
         if( !outfile.empty()){
             delete out;
