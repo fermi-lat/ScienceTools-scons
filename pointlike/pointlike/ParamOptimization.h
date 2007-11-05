@@ -40,9 +40,9 @@ public:
 
 private:
     // Numerical Recipes algorithm for finding the minimum
-    double goldensearch(const std::vector<astro::SkyDir>& directions, int num2look, int level, bool sigma);
+    double goldensearch(int num2look, int level, bool sigma);
     std::vector<double> m_alphas;                 //signal fractions for each energy bin
-    std::vector<astro::SkyDir> m_directions;      //point source positions, localize?
+    std::vector<pointlike::PointSourceLikelihood*> m_likes; 
     std::ostream * m_out;                         //where to send output
     const map_tools::PhotonMap m_data;            //points to skymap
     int m_minlevel;                               //minimum healpix level

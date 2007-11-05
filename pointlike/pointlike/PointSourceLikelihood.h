@@ -112,6 +112,9 @@ namespace pointlike {
         ///! Set diffuse function
         static void set_diffuse(const pointlike::SkySpectrum* diffuse){SimpleLikelihood::s_diffuse = diffuse;}
 
+        //recalculate likelihoods using any static changes made to parameters
+        void recalc(int level);
+
     private:
         void setup(const map_tools::PhotonMap& data,double radius, int minlevel, int maxlevel);
         std::vector<double> m_energies; ///< array of left edge energies, indexed by level-m_minlevel

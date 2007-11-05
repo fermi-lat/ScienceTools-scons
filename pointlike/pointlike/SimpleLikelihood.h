@@ -103,8 +103,12 @@ public:
     static double s_defaultUmax;
 
     double feval(double k);
-
     double kcurvature(double k);
+
+    double geval(double k);
+    double gcurvature(double k);
+
+    void changepsf();
 
     /// @brief implement the SkyFunction interface
     /// @return the events/pixel corresponding to the solution

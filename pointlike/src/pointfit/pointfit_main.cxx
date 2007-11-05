@@ -93,6 +93,7 @@ int main(int argc, char** argv)
         if( check_sigma){
             int minlevel(6), maxlevel(13);
             SigmaOptimization so(healpixdata,directions,out,minlevel,maxlevel);
+            so.compute_s();
         }
         if( !outfile.empty()){
             delete out;
