@@ -1,12 +1,10 @@
 package facilities
-version v2r16p17
-
-use SwigPolicy *
+version v2r16p18
 
 author T.Burnett <tburnett@u.washington.edu>
 author Navid Golpayegani <Navid.Golpayegani-1@nasa.gov>
 use GlastPolicy
-
+use swig * IExternal
 
 apply_pattern shared_library
 
@@ -15,6 +13,8 @@ pattern use_facilities_symbols \
      WIN32 " ${facilities_root}/${BINDIR}/facilities/XGetopt.obj "
 
 private
+
+use SwigPolicy *
 
 apply_pattern package_headers
 
