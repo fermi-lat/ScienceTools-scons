@@ -16,8 +16,8 @@
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include "hoops/hoops.h"
+#include "hoops/hoops_ape_factory.h"
 #include "hoops/hoops_group.h"
-#include "hoops/hoops_pil_factory.h"
 #include "hoops/hoops_prompt_group.h"
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -44,11 +44,11 @@ namespace hoops {
     mPrompter(0) {
     // Use comp_name if one was supplied to find the parameter file, otherwise
     // use argv[0].
-    if (comp_name.empty()) mFile = PILParFileFactory().NewIParFile(argv[0]);
-    else mFile = PILParFileFactory().NewIParFile(comp_name);
+    if (comp_name.empty()) mFile = HoopsApeFileFactory().NewIParFile(argv[0]);
+    else mFile = HoopsApeFileFactory().NewIParFile(comp_name);
 
     // Create a new prompter object:
-    mPrompter = PILParPromptFactory().NewIParPrompt(argc, argv, comp_name);
+    mPrompter = HoopsApePromptFactory().NewIParPrompt(argc, argv, comp_name);
 
     // Get a reference to the prompter's group:
     mGroup = &mPrompter->Group();
@@ -92,21 +92,21 @@ namespace hoops {
 
   IParGroup & ParPromptGroup::Add(IPar * p) {
     throw Hexception(PAR_UNSUPPORTED,
-      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+      "Editing Ape-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Add(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(IPar * p) {
     throw Hexception(PAR_UNSUPPORTED,
-      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+      "Editing Ape-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(p);
     return *this;
   }
 
   IParGroup & ParPromptGroup::Remove(const std::string & pname) {
     throw Hexception(PAR_UNSUPPORTED,
-      "Editing PIL-based prompt group not supported", __FILE__, __LINE__);
+      "Editing Ape-based prompt group not supported", __FILE__, __LINE__);
     mGroup->Remove(pname);
     return *this;
   }
@@ -164,6 +164,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.6  2007/02/15 21:46:21  peachey
+ * Changes to use Ape implementation instead of PIL.
+ *
  * Revision 1.5  2004/09/21 16:48:06  peachey
  * Shorten line lengths to conform to package convention.
  *

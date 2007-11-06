@@ -3,10 +3,11 @@
 #include <iostream>
 #include <string>
 #include "hoops/hoops.h"
+#include "hoops/hoops_ape_factory.h"
 #include "hoops/hoops_par.h"
-#include "hoops/hoops_pil_factory.h"
 #include "hoops/hoops_prompt_group.h"
-#include "pil.h"
+
+#include "ape/ape_par.h"
 
 static int sLine;
 static int sStatus = hoops::P_OK;
@@ -345,7 +346,7 @@ int main(int argc, char * argv[]) {
       SetGlobalStatus(P_UNEXPECTED);
     }
 
-    IParFile * file = PILParFileFactory().NewIParFile("hoops_par_test");
+    IParFile * file = HoopsApeFileFactory().NewIParFile("hoops_par_test");
 
     file->Load();
 
@@ -355,10 +356,10 @@ int main(int argc, char * argv[]) {
       std::cout << ':' << *(*it) << ':' << std::endl;
     }
 
-    IParPrompt * prompt = PILParPromptFactory().NewIParPrompt(argc - 1, argv + 1, "hoops_par_test");
+    IParPrompt * prompt = HoopsApePromptFactory().NewIParPrompt(argc - 1, argv + 1, "hoops_par_test");
 
     prompt->Prompt("prompt");
-    if (!(bool) prompt->Group()["prompt"]) PILOverrideQueryMode(PIL_QUERY_OVERRIDE);
+    if (!(bool) prompt->Group()["prompt"]) ape_par_set_default_prompt_style(eNoPrompt);
 
     prompt->Prompt();
 
@@ -383,8 +384,8 @@ int main(int argc, char * argv[]) {
     delete file;
 
     char test_bool_arg[] = "test_bool=no";
-    char *new_argv[] = { argv[0], test_bool_arg, 0 };
-    ParPromptGroup par_prompt_group(2, new_argv, "hoops_par_test");
+    char *new_argv[] = { test_bool_arg, 0 };
+    ParPromptGroup par_prompt_group(1, new_argv, "hoops_par_test");
     bool test_bool = par_prompt_group["test_bool"];
     if (test_bool) {
       std::cerr << "ERROR: ParPromptGroup did not accept the command line " <<

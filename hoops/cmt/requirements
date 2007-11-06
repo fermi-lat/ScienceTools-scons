@@ -8,7 +8,7 @@ author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 branches hoops cmt src doc
 
 use STpolicy *
-use pil * IExternal
+use ape * IExternal
 
 apply_pattern ST_library option=-no_share
  
