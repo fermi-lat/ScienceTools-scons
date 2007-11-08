@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.14  2007/10/11 15:39:27  jurgen
+Update release date
+
 Revision 1.13  2007/10/10 15:39:12  jurgen
 Introduce handling of special functions 'gammln', 'erf', and 'erfc'
 
@@ -49,9 +52,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r3p0"
+#define TOOL_VERSION  "v1r3p2"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "11-Oct-2007"
+#define TOOL_DATE     " 8-Nov-2007"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

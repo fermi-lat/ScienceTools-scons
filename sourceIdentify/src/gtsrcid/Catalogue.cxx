@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.21  2007/10/11 13:20:54  jurgen
+Correctly remove FITS special function columns
+
 Revision 1.20  2007/10/10 15:39:12  jurgen
 Introduce handling of special functions 'gammln', 'erf', and 'erfc'
 
@@ -465,6 +468,15 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
           continue;
         }
 
+        // Search for theta95 column (3EG catalogue)
+        if (find(qtyNames, "theta95").length() > 0) {
+          in->col_e_maj  = "theta95";
+          in->col_e_type = Radius;
+          in->col_e_prob = Prob_95;
+          status         = STATUS_OK;
+          continue;
+        }
+
       } while (0); // End of search loop
 
       // Get error scaling (returned errors are 95% confidence errors)
@@ -564,6 +576,13 @@ void set_info(Parameters *par, InCatalogue *in, int &i, ObjectInfo *ptr,
         ptr->pos_err_maj = posErr;
         ptr->pos_err_min = posErr;
         ptr->pos_err_ang = 0.0;
+        break;
+      case Radius:
+        if (in->cat.getNValue(in->col_e_maj, i, &err_maj) == IS_OK) {
+          ptr->pos_err_maj = err_maj * in->e_pos_scale;
+          ptr->pos_err_min = err_maj * in->e_pos_scale;
+          ptr->pos_err_ang = 0.0;
+        }
         break;
       case Ellipse:
         if ((in->cat.getNValue(in->col_e_maj,    i, &err_maj) == IS_OK) &&
@@ -1005,6 +1024,10 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
       Log(Log_2, " Position column keys .............: <%s> <%s>",
           in->col_ra.c_str(), in->col_dec.c_str());
       switch (in->col_e_type) {
+      case Radius:
+        Log(Log_2, " Position error column keys .......: <%s>",
+            in->col_e_maj.c_str());
+        break;
       case Ellipse:
         Log(Log_2, " Position error column keys .......: <%s> <%s> <%s>",
             in->col_e_maj.c_str(), in->col_e_min.c_str(), in->col_e_posang.c_str());

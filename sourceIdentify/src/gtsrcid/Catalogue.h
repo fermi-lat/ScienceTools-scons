@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.17  2007/10/11 13:20:54  jurgen
+Correctly remove FITS special function columns
+
 Revision 1.16  2007/10/10 15:39:12  jurgen
 Introduce handling of special functions 'gammln', 'erf', and 'erfc'
 
@@ -184,6 +187,7 @@ const std::string fct_names[] = {"gammln", "erf", "erfc", "stop"};
 /* Type defintions __________________________________________________________ */
 typedef enum {                        // Position error type
   NoError = 1,                          // No error
+  Radius,                               // Error radius
   Ellipse,                              // Error ellipse
   RaDec                                 // Errors on RA and Dec
 } PosErrorType;
@@ -240,9 +244,9 @@ typedef struct {                      // Input catalogue
   std::string             col_dec;      // Declination column name
   std::string             col_e_ra;     // Right Ascension error column name
   std::string             col_e_dec;    // Declination error column name
-  std::string             col_e_maj;    // Semi-major axis
-  std::string             col_e_min;    // Semi-minor axis
-  std::string             col_e_posang; // Position angle
+  std::string             col_e_maj;    // Error ellipse Semi-major axis or Error radius
+  std::string             col_e_min;    // Error ellipse Semi-minor axis
+  std::string             col_e_posang; // Error ellipse Position angle
   PosErrorType            col_e_type;   // Position error type
   PosErrorProb            col_e_prob;   // Position error probability
   double                  e_pos_scale;  // Position error scaling
