@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2007/10/11 13:20:54  jurgen
+Correctly remove FITS special function columns
+
 Revision 1.10  2007/10/10 15:39:12  jurgen
 Introduce handling of special functions 'gammln', 'erf', and 'erfc'
 
@@ -2222,9 +2225,6 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
       if (numRows < 1)
         continue;
 
-      // Allocate result vector
-      col = std::vector<std::string>(numRows);
-
       // Determine number of requested column
       fstatus = fits_get_colnum(fptr, CASESEN, (char*)colname.c_str(), 
                                 &colnum, &fstatus);
@@ -2235,7 +2235,7 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
         continue;
       }
 
-      // Determine size of requested column
+      // Determine type and size of requested column
       fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
                                  &fstatus);
       if (fstatus != 0) {
@@ -2244,6 +2244,10 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
              fstatus, colname.c_str());
         continue;
       }
+
+      // Fall through if this is not an ASCII column
+      if (typecode != TSTRING)
+        continue;
 
       // Allocate temporary memory to hold the ID column
       tmp_id = new (char*[numRows]);
@@ -2258,7 +2262,7 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
         tmp_id[i] = new char[width+1];
         if (tmp_id[i] == NULL) {
           status = STATUS_MEM_ALLOC;
-          continue;
+          break;
         }
       }
       if (status != STATUS_OK) {
@@ -2276,6 +2280,9 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
               fstatus, colname.c_str());
         continue;
       }
+
+      // Allocate result vector
+      col = std::vector<std::string>(numRows);
 
       // Copy information into result vector
       for (int i = 0; i < numRows; ++i)

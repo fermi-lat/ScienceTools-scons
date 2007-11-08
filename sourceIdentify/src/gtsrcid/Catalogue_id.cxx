@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2007/10/11 13:20:54  jurgen
+Correctly remove FITS special function columns
+
 Revision 1.11  2007/10/09 16:46:23  jurgen
 Write counterpart catalogue reference (row) to output catalogue
 
@@ -716,9 +719,9 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
 
         case Gaussian:            // Parabolic log-likelihood function
         default:
-          if (error > 0.0) {
-            arg                = (m_cc[iCC].angsep * m_cc[iCC].angsep) / 
-                                 (error * error);
+          double error2 = error * error;
+          if (error2 > 0.0) {
+            arg                = m_cc[iCC].angsep * m_cc[iCC].angsep / error2;
             m_cc[iCC].prob_pos = exp(-2.9957230 * arg);
           }
           else
