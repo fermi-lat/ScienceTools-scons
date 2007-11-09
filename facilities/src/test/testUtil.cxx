@@ -280,6 +280,13 @@ int main(int, char**) {
 	      << string3 << "*EOS" << std::endl;
   }
 
+  // sleep
+  std::cout << "About to sleep .5 seconds..zzz" << std::endl;
+  facilities::Util::gsleep(500);
+  std::cout << "my, that was refreshing.  Now for 10.5 seconds...zzz"
+            << std::endl;
+  facilities::Util::gsleep(10500);
+  std::cout << " Ah! " << std::endl;
 
   return 0;
 }
