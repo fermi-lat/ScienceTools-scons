@@ -10,9 +10,14 @@ $Header$
 
 using namespace pointlike;
 
-void CompositeSkySpectrum::add(const pointlike::SkySpectrum* diffuse, double norm)
+CompositeSkySpectrum::CompositeSkySpectrum(const pointlike::SkySpectrum* component, double norm)
 {
-    push_back(std::make_pair(norm, diffuse));
+    if( component!=0 ) add(component, norm);
+}
+
+void CompositeSkySpectrum::add(const pointlike::SkySpectrum* component, double norm)
+{
+    push_back(std::make_pair(norm, component));
 }
 
 
@@ -43,11 +48,12 @@ double CompositeSkySpectrum::integral(const astro::SkyDir& dir, double emin, dou
 }
 
 std::string CompositeSkySpectrum::name()const {
-    std::string ret;
-
-    std::vector< std::pair<double, const pointlike::SkySpectrum*> >::const_iterator it = begin();
-    for( ; it!=end(); ++it){
-        ret+= ", " + (it->second)->name();
+    std::string ret(m_name);
+    if( ret.empty()){
+        std::vector< std::pair<double, const pointlike::SkySpectrum*> >::const_iterator it = begin();
+        for( ; it!=end(); ++it){
+            ret+= ", " + (it->second)->name();
+        }
     }
     return ret;
 }

@@ -205,11 +205,12 @@ void SourceFinder::examineRegion(void)
             // add to the final list, indexed according to level 13 location
             HealPixel px(ps.dir(), 13); 
             m_can[px] = CanInfo(ts, error, ps.dir());
-            for(int id = 6;id<14;++id)
+            for(int id = ps.minlevel();id<=ps.maxlevel();++id)
             {
-                m_can[px].setValue(id,ps.levelTS(id));
-                m_can[px].setPhotons(id,ps[id]->photons()*ps[id]->alpha());
-                m_can[px].setSigalph(id,ps[id]->sigma_alpha());
+                
+                m_can[px].setValue(id,   ps.levelTS(id));
+                m_can[px].setPhotons(id, ps[id]->photons()*ps[id]->alpha());
+                m_can[px].setSigalph(id, ps[id]->sigma_alpha());
             }
 	    
             // Calculate and store power law fit values.  New as of 6/5/07
