@@ -180,6 +180,12 @@ namespace facilities {
        line feed and form feed.  Return # of characters trimmed.
     */
     static unsigned trim(std::string* toTrim);
+
+    /**
+       Wrapper handles different system sleep interfaces for Windows,
+       unix/Linux
+     */
+    static void gsleep(unsigned milli);
   };
 }
 

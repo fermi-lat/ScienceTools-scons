@@ -2,14 +2,17 @@
 
 #include "facilities/Util.h"
 
-//#ifdef DEFECT_NO_STRINGSTREAM
-//#include <strstream>
-//#else
 #include <sstream>
-//#endif
 
 #include <iostream>
 #include <cstdio>
+
+#ifdef WIN32
+#include <WinBase.h>
+#else
+#include <unistd.h>
+#endif
+
 
 /** @file Util.cxx 
 @author J. Bogart
@@ -242,6 +245,17 @@ namespace facilities {
            + Util::trimLeading(toTrim);
   }
 
+  void Util::gsleep(unsigned milli) {
+    // System routines available vary with OS
+#ifdef WIN32 
+    Sleep(milli);
+#else
+    unsigned sec = milli/((unsigned) 1000);
+    unsigned micro = 1000 * (milli - 1000*sec);
+    if (sec) sleep(sec);
+    usleep(micro);
+#endif
+  }
 
 }
 
