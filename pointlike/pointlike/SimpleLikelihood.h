@@ -117,7 +117,7 @@ public:
     /// @brief access to the effective sigma (radians)  used for the fits
     double sigma()const{ return m_sigma;}
 
-    static const SkySpectrum* s_diffuse;
+    static SkySpectrum* s_diffuse;
     static double s_tolerance; // for integral
 private:
 
