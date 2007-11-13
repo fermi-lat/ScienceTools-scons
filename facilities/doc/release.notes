@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r16p20 12-Nov-2007 jrb Patch for Windows compile. 
   v2r16p19 8-Nov-2007 jrb  New gsleep function (argument in milliseconds)
   v1r16p7 26-Sep-2007 ng   New function for appending paths together
   v1r16p6 24-Sep-2007 ng   Added doxygen documentation
