@@ -42,5 +42,6 @@
                               is used for the barycentering.
     v6r0p1  30-oct-07   JP    Address JIRA issue PULS 42. Use calcPulsePhase and calcOrbitalPhase
                               methods to compute phase rationally rather than doing it by hand.
+    v6r0p2  13-nov-07   MH    Improve mainpage.h and prompts in gtpphase.par and gtophase.par.
     @endverbatim
 */
