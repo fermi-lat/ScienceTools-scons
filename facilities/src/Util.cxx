@@ -8,7 +8,10 @@
 #include <cstdio>
 
 #ifdef WIN32
-#include <WinBase.h>
+// For Sleep( ).   Not happy about this, but can't find anything else 
+// that works.  All that's needed is WinBase.h, but compile fails 
+// when that's all that is included.
+#include <Windows.h>
 #else
 #include <unistd.h>
 #endif
