@@ -26,6 +26,8 @@ namespace {
 
     // boundaries 
     static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
+    // JRB add static keyword; moved from namespace astro to anonymous
+    static std::vector<std::pair<double,double> > s_SAA_boundary;
 
 }
 
@@ -33,7 +35,6 @@ namespace {
 namespace astro {
 double EarthCoordinate::s_EarthRadius = 6378145.; //m
 
-std::vector<std::pair<double,double> > EarthCoordinate::s_SAA_boundary;
 
 double EarthCoordinate::earthRadius(){return s_EarthRadius;}
 
