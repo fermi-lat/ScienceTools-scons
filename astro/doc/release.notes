@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r14p4  14-nov-07 JRB Fix for double free problem on RHEL4
   v2r14p3  25-oct-07 THB another fix -- mag field access; default ctor
   v2r14p2  24-oct-07 THB Complete the job, with test code
   v2r14p1  23-oct-07 THB Remove redundant constructor from EarthCoordinate
