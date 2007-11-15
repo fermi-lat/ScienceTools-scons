@@ -31,6 +31,7 @@ public:
     EarthCoordinate( CLHEP::Hep3Vector position, double met); //JulianDate jd);
 
     EarthCoordinate(){} // default ctor
+
     /** @brief true if inside the SAA
 
 Some work on defining a realistic SAA boundary for the LAT is described at
@@ -87,7 +88,7 @@ private:
     static double s_EarthRadius;
 
     /// the SAA boundary
-    static std::vector<std::pair<double,double> > s_SAA_boundary;
+    static std::vector<std::pair<double,double> >*  s_SAA_boundary;
 };
 
 

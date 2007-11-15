@@ -26,8 +26,7 @@ namespace {
 
     // boundaries 
     static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
-    // JRB add static keyword; moved from namespace astro to anonymous
-    static std::vector<std::pair<double,double> > s_SAA_boundary;
+
 
 }
 
@@ -38,12 +37,17 @@ double EarthCoordinate::s_EarthRadius = 6378145.; //m
 
 double EarthCoordinate::earthRadius(){return s_EarthRadius;}
 
+  std::vector<std::pair<double,double> >*  EarthCoordinate::s_SAA_boundary = 0;
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate jd)
 {
     using namespace astro;
+
+    if (s_SAA_boundary == 0 ) {
+      s_SAA_boundary = new std::vector<std::pair<double, double> >;
+    }
     m_lat = M_PI/2- pos.theta();
     // convert from MET to JD
     JulianDate jd(JulianDate::missionStart() + met/JulianDate::secondsPerDay);
@@ -111,7 +115,11 @@ double  EarthCoordinate::GetGMST(JulianDate jd)
 
 void EarthCoordinate::setSAAboundary(const std::vector<std::pair<double,double> >& boundary)
 {
-    s_SAA_boundary = boundary;
+    if (s_SAA_boundary == 0 ) {
+      s_SAA_boundary = new std::vector<std::pair<double, double> >;
+    }
+
+    *s_SAA_boundary = boundary;
     lon_min = 1e10;
 }
 
@@ -129,17 +137,21 @@ bool EarthCoordinate::insideSAA(double lat, double lon) const
     typedef std::pair<double, double> coords;
     double my_lon(lon), my_lat(lat);
     
-    if (s_SAA_boundary.size()==0)
+    if (s_SAA_boundary == 0 ) {
+      s_SAA_boundary = new std::vector<std::pair<double, double> >;
+    }
+
+    if (s_SAA_boundary->size()==0)
     {
         // fill in from default
         for (size_t i = 0; i < sizeof(latv)/sizeof(double); ++i)
         {
-            s_SAA_boundary.push_back(coords(latv[i], lonv[i]));
+            s_SAA_boundary->push_back(coords(latv[i], lonv[i]));
         }
     }
     if (lon_min==1e10) {
-        for( std::vector<coords>::const_iterator it =s_SAA_boundary.begin();
-            it!= s_SAA_boundary.end(); ++it)
+        for( std::vector<coords>::const_iterator it =s_SAA_boundary->begin();
+            it!= s_SAA_boundary->end(); ++it)
         {
             double latv( it->first), lonv(it->second);
             if (latv < lat_min) lat_min = latv;
@@ -155,11 +167,11 @@ bool EarthCoordinate::insideSAA(double lat, double lon) const
         
     /* Find nearest 2 boundary points to the east whose
         latitude straddles my_lat */
-    std::vector<coords>::const_iterator it = s_SAA_boundary.begin();
+    std::vector<coords>::const_iterator it = s_SAA_boundary->begin();
     std::vector<coords>::const_iterator prev = it;
-    for ( ; it->first < my_lat && it != s_SAA_boundary.end(); prev = it, ++it) {}
+    for ( ; it->first < my_lat && it != s_SAA_boundary->end(); prev = it, ++it) {}
     
-    if (it == s_SAA_boundary.end()) return false;
+    if (it == s_SAA_boundary->end()) return false;
     
     // If my_lon is east of both boundary points
     if (it->second < my_lon && prev->second < my_lon)
@@ -182,9 +194,9 @@ bool EarthCoordinate::insideSAA(double lat, double lon) const
     
     /* So far so good.  Now find nearest 2 boundary points to the west whose
         latitude straddles my_lat */
-    for ( ; it->first > my_lat && it != s_SAA_boundary.end(); prev = it, ++it) {}
+    for ( ; it->first > my_lat && it != s_SAA_boundary->end(); prev = it, ++it) {}
     
-    if (it == s_SAA_boundary.end()) return false;
+    if (it == s_SAA_boundary->end()) return false;
     
     // If my_lon is west of both boundary points
     if (it->second > my_lon && prev->second > my_lon)
