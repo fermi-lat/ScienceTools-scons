@@ -17,10 +17,10 @@ $Header$
 using namespace pointlike;
 
 
-DiffuseFunction::DiffuseFunction(std::string diffuse_cube_file, double energy)
+DiffuseFunction::DiffuseFunction(std::string diffuse_cube_file, double energy, bool interpolate)
 : SkySpectrum(energy)
 , m_name(diffuse_cube_file)
-, m_data(diffuse_cube_file)
+, m_data(diffuse_cube_file, "", interpolate)
 {
     // expect to find a table with the energies to correspond with the layers
     try {

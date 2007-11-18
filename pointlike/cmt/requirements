@@ -1,11 +1,12 @@
 package pointlike
 
-version v2r2p2
+version v3r0
 
 # $Header$
 
 use STpolicy *
-use map_tools *
+use astro *
+#use map_tools *
 use embed_python *
 
 apply_pattern package_include

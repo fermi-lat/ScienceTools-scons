@@ -47,7 +47,6 @@ namespace {
 
 } // anon namespace
 
-using namespace map_tools;
 using namespace astro;
 using namespace pointlike;
 using namespace embed_python;
