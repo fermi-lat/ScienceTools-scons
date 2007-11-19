@@ -7,7 +7,8 @@ $Header$
 */
 #include <string>
 #include <vector>
-#include "../src/base/healpix_map.h"
+#include "src/base/healpix_map.h"
+
 
 namespace healpix {
 
@@ -43,6 +44,8 @@ namespace healpix {
         /**@brief returns a reference to the Healpix map
         */
         Healpix_Map< T>* map();
+
+        Healpix_Map< T> cmap() const { return m_hm;}
 
         /**@brief applies a matched filter . The filter kernel is derived from a 
         fits file "LHOOD.fits"
