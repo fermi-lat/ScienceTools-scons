@@ -13,7 +13,7 @@ $Header$
 #include "pointlike/PhotonMap.h"
 
 #include "astro/SkyDir.h"
-#include "astro/HealPixel.h"
+#include "healpix/HealPixel.h"
 #include "embed_python/Module.h"
 
 #include <vector>
@@ -90,7 +90,7 @@ namespace pointlike {
     public:
 
         SourceFinder(const pointlike::Data& data,  embed_python::Module & Mod);
-       typedef std::map<astro::HealPixel, CanInfo> Candidates;
+       typedef std::map<healpix::HealPixel, CanInfo> Candidates;
        typedef std::multimap<int, CanInfo> Prelim; // Preliminary candidates
 
  

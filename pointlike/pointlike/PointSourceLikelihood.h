@@ -9,6 +9,7 @@ $Header$
 #include "pointlike/SkySpectrum.h"
 #include "pointlike/SimpleLikelihood.h"
 #include "astro/SkyDir.h"
+#include "healpix/HealPixel.h"
 
 #include <iostream>
 #include <map>
@@ -147,7 +148,7 @@ private:
     std::ostream& out()const{return *m_out;}
 
     // the data to feed each guy, extracted from the database
-    std::map<int, std::vector<std::pair<astro::HealPixel,int> > >m_data_vec;
+    std::map<int, std::vector<std::pair<healpix::HealPixel,int> > >m_data_vec;
 
     //static SkySpectrum * s_diffuse;
     static double s_radius, s_minalpha, s_TSmin, s_tolerance;

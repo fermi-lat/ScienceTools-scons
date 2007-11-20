@@ -30,9 +30,8 @@ $Header$
 #include <cassert>
 
 
-using namespace astro;
+using astro::SkyDir;
 using namespace pointlike;
-using namespace CLHEP;
 double Data::s_scale[4]={1.0, 1.86, 1.0, 1.0}; // wired in for front, back !!
 
 int Data::s_class_level=2; 

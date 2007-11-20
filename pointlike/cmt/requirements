@@ -6,7 +6,7 @@ version v3r0
 
 use STpolicy *
 use astro *
-#use map_tools *
+use healpix *
 use embed_python *
 use SwigPolicy v*
 

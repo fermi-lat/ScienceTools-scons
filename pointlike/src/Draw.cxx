@@ -51,7 +51,7 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
           double operator()(const astro::SkyDir & sd) const {
               bool includeChildren = (m_counts == CHILDREN || m_counts == WEIGHTED),
                   weighted        = (m_counts == WEIGHTED);
-              double  value = m_data.photonCount(astro::HealPixel(sd, m_level), includeChildren, weighted); 
+              double  value = m_data.photonCount(healpix::HealPixel(sd, m_level), includeChildren, weighted); 
               return value;    
           }
     private:
@@ -63,7 +63,7 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
     // Where HealPixel width for level > display pixel width, use fill().
     int layer = 1, level = m_map.minLevel(), minLevel=level;
     for (; level < minLevel + m_map.levels()
-        && (sqrt(astro::HealPixel(SkyDir(0,0), level).area())) * (180/M_PI) >= 1.15 * pixel;
+        && (sqrt(healpix::HealPixel(SkyDir(0,0), level).area())) * (180/M_PI) >= 1.15 * pixel;
         ++level, ++ layer)
     {
         std::cout << "Filling image layer "<<layer<< " with  counts on level "<<level << std::endl;
