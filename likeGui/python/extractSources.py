@@ -18,8 +18,11 @@ from FileDialog import LoadFileDialog, SaveFileDialog
 import celgal
 from xmlSrcLib import *
 from readXml import Source
+from facilities import py_facilities
 
-_3EG_catalog = os.path.join(os.environ['OBSERVATIONSIMROOT'],
+os_environ = py_facilities.commonUtilities_getEnvironment
+#_3EG_catalog = os.path.join(os.environ['OBSERVATIONSIMROOT'],
+_3EG_catalog = os.path.join(os_environ('OBSERVATIONSIMROOT'),
                             'xml', '3EG_catalog_20-1e6MeV.xml')
 
 class LikeSource(object):
