@@ -318,16 +318,16 @@ void Data::add(const std::string& inputFile, int event_type, int source_id)
 }
 Data::Data(const std::string& inputFile, int event_type, double tstart, double tstop, int source_id)
 : m_data(new pointlike::PhotonMap())
-, m_start(tstart), m_stop(tstop)
 , m_ft2file("")
+, m_start(tstart), m_stop(tstop)
 {
     add(inputFile, event_type, source_id);
 }
 
 Data::Data(std::vector<std::string> inputFiles, int event_type, double tstart, double tstop, int source_id, std::string ft2file)
 : m_data(new pointlike::PhotonMap())
-, m_start(tstart), m_stop(tstop)
 , m_ft2file(ft2file)
+, m_start(tstart), m_stop(tstop)
 {
 
     for( std::vector<std::string>::const_iterator it = inputFiles.begin(); 
