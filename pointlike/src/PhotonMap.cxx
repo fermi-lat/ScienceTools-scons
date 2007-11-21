@@ -49,7 +49,7 @@ double PhotonMap::integral(const SkyDir& dir, double a, double b)const
     return value(dir, sqrt(a*b));
 }
 
-#if 1
+
 PhotonMap::PhotonMap(double emin, double eratio, int nlevels, int minlevel)
 : m_emin(emin)
 , m_logeratio(log(eratio))
@@ -161,7 +161,7 @@ int PhotonMap::extract(const SkyDir& dir, double radius,
                        std::vector<std::pair<HealPixel, int> >& vec,
                        int summary_level, int select_level) const
 {
-    bool allsky(radius>=180); // maybe use to simplify below, but seems fast
+    //unused bool allsky(radius>=180); // maybe use to simplify below, but seems fast
     radius *= (M_PI / 180); // convert to radians
     if (summary_level == -1)
         summary_level = m_minlevel; // default level to test
@@ -340,4 +340,3 @@ void PhotonMap::write(const std::string & outputFile,
     delete &table;
 }
 
-#endif
