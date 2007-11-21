@@ -73,8 +73,8 @@ namespace healpix {
     private:
         double m_factor;              //binning factors: E = s_minenergy*m_factor**(level-s_minlevel)
 		Healpix_Map< T> m_hm; //wrapped HEALpix package map object
-        const static int s_minlevel = 6;
-        const static int s_minenergy = 100;
+        static const int s_minlevel = 6;
+        static const int s_minenergy = 100;
     };
 
 } //namespace
