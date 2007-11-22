@@ -11,7 +11,7 @@ $Header$
 #include <cmath>
 #include <utility>
 #include <stdexcept>
-//#include <errno.h>
+#include <errno.h>
 
 using healpix::HealPixel;
 using healpix::Healpix;
