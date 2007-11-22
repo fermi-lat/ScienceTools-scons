@@ -24,3 +24,4 @@ void RotationInfo::acc(const Hep3Vector& tru, const Hep3Vector& meas, double sig
         *il -= u;
     }
 }
+

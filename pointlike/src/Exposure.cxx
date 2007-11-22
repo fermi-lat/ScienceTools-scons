@@ -18,13 +18,13 @@ Exposure::~Exposure()
 {}
 
 
-double Exposure::value(const astro::SkyDir& dir, double e)const
+double Exposure::value(const astro::SkyDir& dir, double)const
 {
     return 0;
 }
 
 ///@brief integral for the energy limits, in the given direction
-double Exposure::integral(const astro::SkyDir& dir, double a, double b)const
+double Exposure::integral(const astro::SkyDir& dir, double , double )const
 {
     return 0;
 }

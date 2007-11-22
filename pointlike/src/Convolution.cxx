@@ -10,6 +10,8 @@ $Header$
 #include "healpix/HealPixel.h"
 #include "src/base/alm_filter_tools.h"
 #include "pointlike/PointSourceLikelihood.h"
+#include <map>
+
 #include <iostream>
 
 using namespace healpix;

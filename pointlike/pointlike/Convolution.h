@@ -5,6 +5,8 @@
 
 $Header$
 */
+#ifndef pointlike_Convolution_h
+#define pointlike_Convolution_h
 
 #include "pointlike/SkySpectrum.h"
 #include "healpix/Map.h"
@@ -59,3 +61,4 @@ namespace pointlike {
 
 
 }
+#endif
