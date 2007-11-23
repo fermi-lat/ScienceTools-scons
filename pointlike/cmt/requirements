@@ -12,7 +12,7 @@ use SwigPolicy v*
  
 path_remove PYTHONPATH pointlike
 path_prepend PYTHONPATH $(POINTLIKEROOT)/python;$(POINTLIKEROOT)/$(BINDIR)
-
+macro_append winsource "*.h *.cxx *.py"
 apply_pattern swig_module name="pointlike"
 path_append PATH "$(SWIG_dir)/bin"
 

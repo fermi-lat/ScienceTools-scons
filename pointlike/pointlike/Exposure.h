@@ -8,6 +8,9 @@ $Header$
 #define pointlike_Exposure_h
 
 #include "pointlike/SkySpectrum.h"
+#include <string>
+#include "healpix/HealpixArrayIO.h"
+#include "healpix/CosineBinner.h"
 
 
 namespace pointlike {
@@ -22,7 +25,7 @@ namespace pointlike {
 
 class Exposure : public pointlike::SkySpectrum {
 public:
-    Exposure();
+    Exposure(const std::string & fits_file, const std::string& tablename="Exposure");
     ~Exposure();
 
     ///@brief a single energy 
@@ -36,6 +39,9 @@ public:
 
 
 private:
+    std::string m_filename;
+    healpix::HealpixArray<healpix::CosineBinner> m_exposure;
+    
 };
 
 
