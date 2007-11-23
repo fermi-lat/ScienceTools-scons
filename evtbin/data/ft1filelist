@@ -1,3 +1,3 @@
-$EVTBINROOT/data/ft1tiny0.fits
-$EVTBINROOT/data/ft1tiny1.fits
-$EVTBINROOT/data/ft1tiny2.fits
+$EVTBINDATAPATH/ft1tiny0.fits
+$EVTBINDATAPATH/ft1tiny1.fits
+$EVTBINDATAPATH/ft1tiny2.fits
