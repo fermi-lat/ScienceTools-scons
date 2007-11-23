@@ -149,7 +149,7 @@
    <source name="Crab_Pulsar">
       <spectrum escale="MeV">
          <SpectrumClass name="Pulsar"
-          params="0.154,2.19,0.0333,4.24e-13,0,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat,0,20,2e5"/>
+          params="0.154,2.19,0.0333,4.24e-13,0,$(OBSERVATIONSIMDATAPATH)/CrabTemplate.dat,0,20,2e5"/>
          <celestial_dir ra="83.57" dec="22.01"/>
       </spectrum>
    </source>
@@ -157,7 +157,7 @@
    <source name="Geminga_Pulsar">
       <spectrum escale="MeV">
          <SpectrumClass name="Pulsar"
-          params="0.102,1.66,0.2371,1.098e-14,0,$(OBSERVATIONSIMROOT)/data/GemingaTemplate.dat,0,20,2e5"/>
+          params="0.102,1.66,0.2371,1.098e-14,0,$(OBSERVATIONSIMDATAPATH)/GemingaTemplate.dat,0,20,2e5"/>
          <celestial_dir ra="98.49" dec="17.86"/>
       </spectrum>
    </source>
@@ -181,7 +181,7 @@
    <source name="_3C279_June1991_flare">
       <spectrum escale="MeV">
          <SpectrumClass name="TransientTemplate"
-        params="0.425,1.89,0.,1.07e6,$(OBSERVATIONSIMROOT)/data/3c279Template.dat"/>
+        params="0.425,1.89,0.,1.07e6,$(OBSERVATIONSIMDATAPATH)/3c279Template.dat"/>
          <celestial_dir ra="193.98" dec="-5.82"/>
       </spectrum>
    </source>
@@ -189,7 +189,7 @@
    <source name="PKS1622m297_flare">
       <spectrum escale="MeV">
          <SpectrumClass name="TransientTemplate"
-        params="0.118,1.9,0.,3.95e6,$(OBSERVATIONSIMROOT)/data/pks1622-297_Template.dat"/>
+        params="0.118,1.9,0.,3.95e6,$(OBSERVATIONSIMDATAPATH)/pks1622-297_Template.dat"/>
          <celestial_dir ra="246.36" dec="-29.92"/>
       </spectrum>
    </source>
@@ -224,7 +224,7 @@
    <source name="transient_template">
       <spectrum escale="MeV">
          <SpectrumClass name="TransientTemplate"
-        params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMROOT)/data/CrabTemplate.dat"/>
+        params="100.,2,1e3,1.1e3,$(OBSERVATIONSIMDATAPATH)/CrabTemplate.dat"/>
          <celestial_dir ra="80" dec="20"/>
       </spectrum>
    </source>
