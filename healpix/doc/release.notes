@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-   v0r2   THB 11-22-07  Add CosineBinner and HealpixArrayIO, copied from map_tools
+   v0r2p1 THB 11-22-07  Add CosineBinner and HealpixArrayIO, copied from map_tools
    v0r1p10THB 11-20-07  SWIG wanted default HealPixel ctor
    v0r1p9 MR  11-19-07  added const reference to Map
    v0r1p8 MR  06-04-07  fixed pragma warnings

@@ -38,13 +38,13 @@ public:
 
     //! return the direction associated with an iterator
     astro::SkyDir dir(typename std::vector<C>::const_iterator it)const{
-        astro::Healpix::Pixel px(it-this->begin(), m_hp);
+        healpix::Healpix::Pixel px(it-this->begin(), m_hp);
         return px();
     }
 
     //! return the dot product of the direction with respect fixed direction
     double dot(typename std::vector<C>::const_iterator it, const astro::SkyDir& extdir)const{
-        astro::Healpix::Pixel px(it-this->begin(), m_hp);
+        healpix::Healpix::Pixel px(it-this->begin(), m_hp);
         return px().dir().dot(extdir());
     }
 
