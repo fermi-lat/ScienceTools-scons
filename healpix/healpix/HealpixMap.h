@@ -21,10 +21,10 @@ namespace healpix{
         Note that since it is a map of float, one can set and acess pixels with the [] operator.
         */
 
-    class HealpixMap :public astro::SkyFunction , std::map<int, float> {
+    class HealpixMap :public astro::SkyFunction , public std::map<int, float> {
     public:
         HealpixMap(int level = 8);
-        ~HealpixMap(){}
+        ~HealpixMap();
 
         //! @brief  coordinates of a point in the sky
         //! @return value at that point

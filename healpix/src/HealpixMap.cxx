@@ -8,6 +8,12 @@ $Header$
 #include <fstream>
 using namespace healpix;
 
+HealpixMap::HealpixMap(int level)
+: m_level(level)
+{}
+
+HealpixMap::~HealpixMap()
+{}
 
 void HealpixMap::save(std::string filename)
 {
