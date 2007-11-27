@@ -6,8 +6,8 @@ $Header$
 #include "pointlike/DiffuseFunction.h"
 #include "CLHEP/Vector/ThreeVector.h"
 #include "CLHEP/Vector/Rotation.h"
-#include "astro/Healpix.h"
-#include "astro/HealPixel.h"
+#include "healpix/Healpix.h"
+#include "healpix/HealPixel.h"
 #include "tip/Table.h"
 #include "tip/IFileSvc.h"
 #include <cmath>

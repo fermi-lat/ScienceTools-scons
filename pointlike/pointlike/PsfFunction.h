@@ -8,7 +8,7 @@ $Header$
 #define wavelet_PsfFunction_h
 
 #include "astro/SkyDir.h"
-#include "astro/HealPixel.h"
+#include "healpix/HealPixel.h"
 #include "CLHEP/Vector/ThreeVector.h"
 
 namespace pointlike{
