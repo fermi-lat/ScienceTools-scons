@@ -83,9 +83,12 @@ int main(int argc, char** argv)
 #if 0 // make these independent?
         // prune by power law fit
         finder.prune_power_law();
-#endif
         // prune the result
         finder.prune_neighbors();
+#endif
+       // group nearby candidates with strongest neighbor
+        finder.group_neighbors();
+
 
         // and write out the table
         finder.createTable(outfile);

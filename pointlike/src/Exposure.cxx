@@ -12,6 +12,8 @@ namespace{  // anonymous namespace for helper classes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class IrfAeff
 @brief function class implements effective area, as adapter to irfInterface::IAeff
+
+(currently linear only, no area.)
 */
 class IrfAeff {
 public:
@@ -38,13 +40,10 @@ using namespace pointlike;
 Exposure::Exposure(const std::string& fits_file, const std::string& tablename)
 : m_filename(fits_file)
 , m_exposure( healpix::HealpixArrayIO::instance().read(fits_file, tablename) )
-{
-    
-}
+{}
 
 Exposure::~Exposure()
 {}
-
 
 double Exposure::value(const astro::SkyDir& dir, double)const
 {

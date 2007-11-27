@@ -9,7 +9,7 @@ $Header$
 
 #include "pointlike/SkySpectrum.h"
 #include <string>
-#include "healpix/HealpixArrayIO.h"
+#include "healpix/HealpixArray.h"
 #include "healpix/CosineBinner.h"
 
 
@@ -17,14 +17,22 @@ namespace pointlike {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class Exposure
-    @brief a SkyFunction that represents the exposure over the sky
+    @brief a SkySpectrum that represents the exposure over the sky
 
 
-    (dummy for now)
+  
 */
 
 class Exposure : public pointlike::SkySpectrum {
 public:
+
+    /** @brief ctor
+    @param fits_file create from a FITS exposure cube
+    @param tablename [Exposure]
+    
+    (need to connect to a discription of the effective area function or functions)
+
+    */
     Exposure(const std::string & fits_file, const std::string& tablename="Exposure");
     ~Exposure();
 
@@ -33,6 +41,8 @@ public:
     virtual double value(const astro::SkyDir& dir, double e)const;
 
     ///@brief integral for the energy limits, in the given direction
+    ///@param a lower limit
+    ///@param b upper limit
     virtual double integral(const astro::SkyDir& dir, double a, double b)const;
 
     virtual std::string name()const;

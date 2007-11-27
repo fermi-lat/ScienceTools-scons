@@ -59,7 +59,7 @@ std::vector<double> PointSourceLikelihood::sigma_level(fit_sigma, fit_sigma+size
 double PointSourceLikelihood::s_radius(7.0);
 int    PointSourceLikelihood::s_minlevel(6);
 int    PointSourceLikelihood::s_maxlevel(13);
-double PointSourceLikelihood::s_minalpha(0.15);
+double PointSourceLikelihood::s_minalpha(0.05);
 int    PointSourceLikelihood::s_skip1(1);
 int    PointSourceLikelihood::s_skip2(2);
 int    PointSourceLikelihood::s_itermax(2);
