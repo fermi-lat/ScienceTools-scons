@@ -9,7 +9,7 @@ $Header$
 using namespace healpix;
 
 HealpixMap::HealpixMap(int level)
-: m_level(level)
+:  m_level(level)
 {}
 
 HealpixMap::~HealpixMap()
