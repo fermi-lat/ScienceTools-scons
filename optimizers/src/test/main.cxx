@@ -74,6 +74,7 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
+   facilities::commonUtilities::setupEnvironment();
    test_FunctionFactory();
    test_Parameter_class();
    test_Function_class();

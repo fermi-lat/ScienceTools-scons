@@ -171,7 +171,7 @@ void FunctionFactory::writeXml(const std::string &xmlFile) {
    std::ofstream outFile(xmlFile.c_str());
    outFile << "<?xml version='1.0' standalone='no'?>\n"
            << "<!DOCTYPE function_library SYSTEM "
-           << "\"$(OPTIMIZERSROOT)/xml/FunctionModels.dtd\" >\n";
+           << "\"$(OPTIMIZERSXMLPATH)/FunctionModels.dtd\" >\n";
    xmlBase::Dom::prettyPrintElement(funcLib, outFile, "");
    doc->release();
 }
