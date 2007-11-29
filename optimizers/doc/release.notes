@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r11p3 29-Nov-07  JC   tag Navid's xml env var changes
     v2r11p2 28-Oct-07  JC   use new option in xmlBase::Dom::addAttribute
                             to specify precision in output xml
     v2r11p1 15-Oct-07  JC   use facilities::commonUtilities
