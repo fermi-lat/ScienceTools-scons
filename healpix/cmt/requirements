@@ -1,30 +1,49 @@
 package healpix
 
-version v0r3p1
+version v1r0
 
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
 
 use astro *
- 
-apply_pattern package_include
-apply_pattern package_linkopts
-apply_pattern package_stamps
+use SwigPolicy v*
 
+apply_pattern package_include
+apply_pattern shared_library
+
+
+path_remove PYTHONPATH healpix
+path_prepend PYTHONPATH $(HEALPIXROOT)/python;$(HEALPIXROOT)/$(BINDIR)
+
+path_append PATH "$(SWIG_dir)/bin"
+
+
+ macro python_exe "" Linux "${python_DIR}/bin/python" \
+                     WIN32 "${python_DIR}\python.exe" \
+                     Darwin "${python_DIR}/bin/python" 
+ macro swig_exe "" Linux "$(swig_DIR)/bin/swig" \
+                   WIN32 "$(swig_DIR)\bin\swig.exe" \
+                   Darwin "$(swig_DIR)/bin/swig" 
+ macro swig_flags " -w401 -w402 -w503 -w362 -w389 -w509 -python -c++ "
+ macro swig_begin "" 
+ macro swig_end ""
 
 private
 
+ macro_append healpix_shlibflags "" WIN32 "${python_DIR}\libs\${python_LIB}" 
+ macro_append healpix_cppflags "" vsnet ' /wd4101 /wd4800 /DSWIG_NO_CRT_SECURE_NO_DEPRECATE ' 
+ macro swig_module healpix
+
+
 macro source *.cxx WIN32 "*.h *.cxx"
-library healpix -no_share \
+library healpix \
  -s=../healpix $(source) \
  -s=../src $(source) \
  -s=base $(source) *.cc *.c
 
 # suppress warning about openmp pragma
 macro_append healpix_cppflags "" WIN32 " /wd4068"
-
-private
 
 # suppress warning C4812: obsolete declaration style:
 macro_append healpix_cppflags "" vcc-8.0 " /wd4812"

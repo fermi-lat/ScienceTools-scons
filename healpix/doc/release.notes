@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+   v1r0   THB 11-28-07  Make it a swigified module
    v0r3p1 THB 11-26-07  Add HealpixMap class
    v0r2p1 THB 11-22-07  Add CosineBinner and HealpixArrayIO, copied from map_tools
    v0r1p10THB 11-20-07  SWIG wanted default HealPixel ctor
