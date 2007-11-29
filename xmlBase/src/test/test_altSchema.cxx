@@ -15,7 +15,7 @@
 
 
 int main() {
-    
+  facilities::commonUtilities::setupEnvironment();
   // File is well-formed, no reference to dtd or schema
   std::string instanceDoc = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("xmlBase"), "aDocument.xml");
   std::string theSchema = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("xmlBase"), "theSchema.xsd");

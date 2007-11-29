@@ -15,7 +15,7 @@
 unsigned stripAndWrite(const std::string& fname, bool standalone=false);
 
 int main() {
-    
+  facilities::commonUtilities::setupEnvironment();
   // File is well-formed, no reference to dtd or schema
   std::string WFfile = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("xmlBase"), "test.xml");
   stripAndWrite(WFfile);
