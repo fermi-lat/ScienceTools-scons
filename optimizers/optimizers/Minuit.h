@@ -72,6 +72,9 @@ namespace optimizers {
     // that this function is a likelihood
     virtual const std::vector<double> & getUncertainty(bool useBase=false);
 
+     /// Access to the covariance matrix
+     virtual std::vector< std::vector<double> > covarianceMatrix() const;
+
     virtual std::ostream& put (std::ostream& s) const;
 
     //! Symbolic form of the return codes for readability 

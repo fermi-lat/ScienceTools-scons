@@ -179,6 +179,22 @@ namespace optimizers {
     }
   }    
 
+   std::vector< std::vector<double> > Minuit::covarianceMatrix() const {
+      int npar(m_stat->getNumFreeParams());
+      std::vector<double> entries(npar*npar);
+      mnemat_(&entries[0], &npar);
+      size_t indx(0);
+      std::vector< std::vector<double> > matrix;
+      for (int i(0); i < npar; i++) {
+         std::vector<double> row;
+         for (int j(0); j < npar; j++, indx++) {
+            row.push_back(entries.at(indx));
+         }
+         matrix.push_back(row);
+      }
+      return matrix;
+   }
+
   std::ostream& Minuit::put (std::ostream& s) const {
     s << "MINUIT returned a value of " << m_val << std::endl;
     s << "and an estimated distance of " << m_distance << std::endl;
