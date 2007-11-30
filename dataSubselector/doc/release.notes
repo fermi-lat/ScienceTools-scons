@@ -2,6 +2,9 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r6p3  30-Nov-07   JC   bug fix for tmin,tmax=0,0 kluge in gtselect
+                             parameter interface and header keyword setting;
+                             throw exception if zero rows are returned
     v5r6p2  20-Oct-07   JC   use st_facilities::FitsUtil::fcopy in
                              gtselect and gtmktime; use angsep(...) in 
                              SkyConeCut
