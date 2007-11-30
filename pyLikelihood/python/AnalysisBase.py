@@ -58,6 +58,8 @@ class AnalysisBase(object):
         errors = myOpt.getUncertainty(useBase)
         if covar:
             self.covariance = myOpt.covarianceMatrix()
+        else:
+            self.covariance = None
         j = 0
         for i in range(len(self.model.params)):
             if self.model[i].isFree():
