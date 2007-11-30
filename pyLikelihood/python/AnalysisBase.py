@@ -24,6 +24,7 @@ class AnalysisBase(object):
     def __init__(self):
         self.maxdist = 20
         self.tol = 1e-5
+        self.covariance = None
     def _srcDialog(self):
         paramDict = map()
         paramDict['Source Model File'] = Param('file', '*.xml')
@@ -38,13 +39,14 @@ class AnalysisBase(object):
         _plotter_package = plotter
     def __call__(self):
         return -self.logLike.value()
-    def fit(self, verbosity=3, tol=None, optimizer=None):
+    def fit(self, verbosity=3, tol=None, optimizer=None,
+            covar=False):
         if tol is None:
             tol = self.tol
-        errors = self._errors(optimizer, verbosity, tol)
+        errors = self._errors(optimizer, verbosity, tol, covar=covar)
         return -self.logLike.value()
     def _errors(self, optimizer=None, verbosity=0, tol=None,
-                useBase=False):
+                useBase=False, covar=False):
         self.logLike.syncParams()
         if optimizer is None:
             optimizer = self.optimizer
@@ -54,6 +56,8 @@ class AnalysisBase(object):
         myOpt = optFactory.create(optimizer, self.logLike)
         myOpt.find_min(verbosity, tol)
         errors = myOpt.getUncertainty(useBase)
+        if covar:
+            self.covariance = myOpt.covarianceMatrix()
         j = 0
         for i in range(len(self.model.params)):
             if self.model[i].isFree():
