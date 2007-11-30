@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.22  2007/11/08 14:42:11  jurgen
+Handle error circles (e.g. 3EG catalogue)
+
 Revision 1.21  2007/10/11 13:20:54  jurgen
 Correctly remove FITS special function columns
 
@@ -356,6 +359,15 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
         continue;
       }
 
+      // Search for RAdeg/DEdeg columns
+      if ((find(qtyNames, "RAdeg").length() > 0) &&
+          (find(qtyNames, "DEdeg").length() > 0)) {
+        in->col_ra  = "RAdeg";
+        in->col_dec = "DEdeg";
+        status      = STATUS_OK;
+        continue;
+      }
+
       // Search for RAJ2000/DEJ2000 columns
       if ((find(qtyNames, "RAJ2000").length() > 0) &&
           (find(qtyNames, "DEJ2000").length() > 0)) {
@@ -454,6 +466,17 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
           in->col_e_type   = Ellipse;
           in->col_e_prob   = Prob_95;
           status           = STATUS_OK;
+          continue;
+        }
+
+        // Search for e_RAdeg/e_DEdeg columns
+        if ((find(qtyNames, "e_RAdeg").length() > 0) &&
+            (find(qtyNames, "e_DEdeg").length() > 0)) {
+          in->col_e_ra   = "e_RAdeg";
+          in->col_e_dec  = "e_DEdeg";
+          in->col_e_type = RaDec;
+          in->col_e_prob = Sigma_1;
+          status         = STATUS_OK;
           continue;
         }
 

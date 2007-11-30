@@ -3,6 +3,8 @@
     @author J. Knodlseder
 
 @verbatim
+30-Nov-2007  v1r3p4  JK  Correct version number in par file
+                         Add RAdeg/DEdeg generic names
  8-Nov-2007  v1r3p2  JK  Handle error circles (e.g. 3EG catalogue)
  8-Nov-2007  v1r3p1  JK  Correctly handle missing name column
 11-Oct-2007  v1r3p0  JK  Enhance catalogue access
