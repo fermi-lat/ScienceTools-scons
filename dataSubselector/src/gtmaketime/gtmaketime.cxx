@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 
 #include "st_stream/StreamFormatter.h"
 
@@ -151,7 +152,14 @@ void MakeTime::createGti() {
       std::auto_ptr<const tip::Table> 
          in_table(tip::IFileSvc::instance().readTable(scfiles.at(i), 
                                                       sctable, filter));
-   
+
+      if (in_table->getNumRecords() == 0) {
+         std::ostringstream message;
+         message << "Zero rows returned from FT2 file for this filter:\n"
+                 << filter;
+         throw std::runtime_error(message.str());
+      }
+
       tip::Table::ConstIterator input = in_table->begin();
       tip::ConstTableRecord & in = *input;
 
@@ -170,19 +178,20 @@ void MakeTime::createGti() {
             break;
          }
       }
-      ++input;
+      if (input != in_table->end()) {
 // Gather remaining intervals, consolidating adjacent ones.
-      for (; input != in_table->end(); ++input) {
-         in["START"].get(start_time);
-         in["STOP"].get(stop_time);
-         if (start_time > m_tmax) { // break out if past end of evfile
-            break;
-         }
-         if (start_time == tstop.back()) {
-            tstop.back() = stop_time;
-         } else {
-            tstart.push_back(start_time);
-            tstop.push_back(stop_time);
+         for (; input != in_table->end(); ++input) {
+            in["START"].get(start_time);
+            in["STOP"].get(stop_time);
+            if (start_time > m_tmax) { // break out if past end of evfile
+               break;
+            }
+            if (start_time == tstop.back()) {
+               tstop.back() = stop_time;
+            } else {
+               tstart.push_back(start_time);
+               tstop.push_back(stop_time);
+            }
          }
       }
 // Insert each contiguous interval in the Gti object

@@ -124,7 +124,12 @@ void DataFilter::run() {
    cuts->updateGti(m_outputFile);
    CutController::delete_instance();
 
-   writeDateKeywords();
+   double tmin, tmax;
+   tmin = m_pars["tmin"];
+   tmax = m_pars["tmax"];
+   if (tmin != 0 || tmax != 0) {
+      writeDateKeywords();
+   }
 
    st_facilities::FitsUtil::writeChecksums(m_outputFile);
 
