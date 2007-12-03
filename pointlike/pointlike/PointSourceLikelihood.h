@@ -134,6 +134,14 @@ public:
     static int maxlevel(){return s_maxlevel;}
     static void set_levels(int minlevel, int maxlevel=13){ s_minlevel= minlevel; s_maxlevel = maxlevel;}
 
+    /// @brief set the integration tolerance for the background, return present value
+    static double set_tolerance(double tol){
+        double old(SimpleLikelihood::s_tolerance);
+        SimpleLikelihood::s_tolerance= tol;
+        return old;
+    }
+
+
 private:
     void setup(const pointlike::PhotonMap& data,double radius, int minlevel, int maxlevel);
     std::vector<double> m_energies; ///< array of left edge energies, indexed by level-m_minlevel
