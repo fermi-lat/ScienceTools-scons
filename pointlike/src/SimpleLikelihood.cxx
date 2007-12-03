@@ -20,7 +20,7 @@ using namespace pointlike;
 double SimpleLikelihood::s_defaultUmax =50;
 
 pointlike::SkySpectrum* SimpleLikelihood::s_diffuse(0);
-double  SimpleLikelihood::s_tolerance(1.0); // default: no background precision
+double  SimpleLikelihood::s_tolerance(0.05); // default:
 
 namespace {
 
