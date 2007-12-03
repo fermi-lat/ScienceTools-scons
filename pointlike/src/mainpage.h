@@ -57,7 +57,7 @@ Class hierarchy:
 - pointlike::PointSourceLikelihood - represent a fit
 - pointlike::Convolution - convolution of a SkySpectrum object with another SkySpectrum, perhaps a PSF.
 - pointlike::CompositeSkySpectrum - linear combination of SkySpectrum objects. Used to combine the galactic diffuse with nearby (< 1deg) strong sources
-- pointlike::Exposure - [planned]
+- pointlike::Exposure - Integrate an expouse cube over the acceptance to define the exposure at any point.
 
 
 \section notes release notes
