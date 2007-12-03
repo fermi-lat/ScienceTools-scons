@@ -11,6 +11,8 @@ $Header$
 
 #include "astro/SkyDir.h"
 #include <map>
+#include <vector>
+
 namespace pointlike {
     class PhotonMap;
 }
@@ -21,8 +23,7 @@ namespace pointlike {
 /** @class SimpleTSmap
     @brief a SkySpectrum that represents the TS calculated at the center of each pixel
 
-
-  
+ 
 */
 
 class SimpleTSmap : public pointlike::SkySpectrum {
@@ -71,7 +72,7 @@ public:
 private:
     const pointlike::PhotonMap& m_pmap;
     const pointlike::SkySpectrum& m_background;
-    std::map<int, float> m_tsmap; ///< the data: a sparse map
+    std::map<int, std::vector<float> > m_tsmap; ///< the data: a sparse map of a vector of floats
     int m_level;
     
 };
