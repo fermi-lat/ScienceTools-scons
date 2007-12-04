@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v2r14p6  03-dec-07 THB fix bugs affecting SAA and lat/lon interpolation
   v2r14p5  14-nov-07 JRB Another stab at double free problem on RHEL4
   v2r14p4  14-nov-07 JRB Fix for double free problem on RHEL4
   v2r14p3  25-oct-07 THB another fix -- mag field access; default ctor

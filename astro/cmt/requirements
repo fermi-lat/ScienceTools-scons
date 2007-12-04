@@ -1,6 +1,6 @@
 package astro
 
-version v2r14p5
+version v2r14p6
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -28,7 +28,6 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library astro -no_share \
  -s=../astro $(source) \
  -s=../src $(source) \
- -s=healpix $(source) *.cc \
  -s=wcslib  $(source) *.c\
  -s=jplephem $(source) \
  -s=igrf_sub $(source) *.cc 
