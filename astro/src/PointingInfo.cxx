@@ -33,7 +33,7 @@ astro::SkyDir PointingInfo::zenith()const
 
 namespace {
     template<typename T>
-    inline T interp(T a, T b, double f){
+    inline T linear_interp(T a, T b, double f){
         return (1-f)*a + f*b;
     }
 }
@@ -44,10 +44,10 @@ astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, d
     // linear interpolation of earth location
     double lat1( earthCoord().latitude() )
          , lat2(next.earthCoord().latitude())
-         , lat( interp(lat1, lat2, f) );
+         , lat( linear_interp(lat1, lat2, f) );
     double lon1( earthCoord().longitude() )
          , lon2(next.earthCoord().longitude())
-         , lon( interp(lon1,lon2, f) );
+         , lon( linear_interp(lon1,lon2, f) );
 
     //this piece of code should just handle the "wraparound" cases:
     if(fabs(lon1-lon2) >= 330.){
@@ -62,8 +62,8 @@ astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, d
     Hep3Vector pos1( position()), pos2(next.position());
     double alt1( pos1.mag() )
          , alt2( pos2.mag() )
-         , alt( interp(alt1,alt2,f) );
-    Hep3Vector position (interp(pos1,pos2,f).unit() * alt );
+         , alt( linear_interp(alt1,alt2,f) );
+    Hep3Vector position (linear_interp(pos1,pos2,f).unit() * alt );
 
     // note using the quaternion interpolation (SLERP)
     return PointingInfo(position, m_q.interpolate(next.m_q, f), earthCoord());
