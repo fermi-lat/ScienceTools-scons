@@ -129,7 +129,7 @@ void EarthCoordinate::setSAAboundary(const std::vector<std::pair<double,double> 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool EarthCoordinate::insideSAA() const
 {
-    return insideSAA(longitude(), latitude());
+    return insideSAA( latitude(), longitude());
 }
 bool EarthCoordinate::insideSAA(double lat, double lon) const
 {
