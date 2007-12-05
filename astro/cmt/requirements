@@ -1,6 +1,6 @@
 package astro
 
-version v2r14p6
+version v2r14p7
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -30,6 +30,7 @@ library astro -no_share \
  -s=../src $(source) \
  -s=wcslib  $(source) *.c\
  -s=jplephem $(source) \
+ -s=healpix $(source) *.cc \
  -s=igrf_sub $(source) *.cc 
 
 
