@@ -8,11 +8,13 @@ $Header$
 #include <string>
 #include <vector>
 #include "src/base/healpix_map.h"
+#include "astro/SkyFunction.h"
+#include "healpix/HealPixel.h"
 
 
 namespace healpix {
 
-    template<typename T> class Map {
+    template<typename T> class Map : public astro::SkyFunction {
         /**
         @class Map<T>
         @brief Encapsulates the healpix C++ class Healpix_Map, a map data array
@@ -70,9 +72,11 @@ namespace healpix {
         */
         void writemap(std::string &out);
 
+        double operator()(const astro::SkyDir & sd) const{ return m_hm[m_hm.nest2ring(healpix::HealPixel(sd,m_hm.Order()).index())];}
+
     private:
         double m_factor;              //binning factors: E = s_minenergy*m_factor**(level-s_minlevel)
-		Healpix_Map< T> m_hm; //wrapped HEALpix package map object
+	Healpix_Map< T> m_hm; //wrapped HEALpix package map object
         static const int s_minlevel = 6;
         static const int s_minenergy = 100;
     };
