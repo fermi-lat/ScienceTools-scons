@@ -84,6 +84,10 @@ public:
     /// return a rotation matrix for the requested transformation
     CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
 
+    // create stellar aberration with given magnitude
+    // mag in radians
+    CLHEP::Hep3Vector aberrate(CLHEP::Hep3Vector &pvec, double seconds, double mag);
+
     /// expansion of the current orbit
     double      expansion () const; 
     /// sample interval for random orbit distribution
