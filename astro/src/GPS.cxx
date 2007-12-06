@@ -7,7 +7,7 @@ $Id$
 
 #include "astro/PointingHistory.h"
 #include "astro/EarthOrbit.h"
-
+#include "astro/SolarSystem.h"
 
 #include "astro/Quaternion.h"
 
@@ -206,6 +206,15 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
     return trans;
 }
 
+Hep3Vector GPS::aberrate(Hep3Vector& pvec, double seconds, double mag) {
+    SolarSystem s;
+    JulianDate jd = m_earthOrbit->dateFromSeconds(seconds);
+    Hep3Vector sov = s.getSolarVector(jd);
+    //ecliptic north pole
+    Hep3Vector env = SkyDir(270,66.55)();
+    Hep3Vector evv = sov.cross(env)/sov.mag()/env.mag();
+    return -mag*(evv)*(pvec.cross(evv)).mag()+pvec;
+}
 
 void GPS::update(double inputTime){
     //this function calculates all the relevant position and orientation info
