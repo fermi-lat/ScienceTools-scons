@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+ 6-Dec-2007  v1r3p5  JK  Add RA/DEC and PosErr generic names
 30-Nov-2007  v1r3p4  JK  Correct version number in par file
                          Add RAdeg/DEdeg generic names
  8-Nov-2007  v1r3p2  JK  Handle error circles (e.g. 3EG catalogue)

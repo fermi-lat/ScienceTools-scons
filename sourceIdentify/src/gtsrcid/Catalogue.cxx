@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.23  2007/11/30 16:19:26  jurgen
+Correct version number and add RAdeg/DEdeg columns
+
 Revision 1.22  2007/11/08 14:42:11  jurgen
 Handle error circles (e.g. 3EG catalogue)
 
@@ -377,11 +380,20 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
         continue;
       }
 
-      // Search for RAJ2000/DEJ2000 columns
+      // Search for _RAJ2000/_DEJ2000 columns
       if ((find(qtyNames, "_RAJ2000").length() > 0) &&
           (find(qtyNames, "_DEJ2000").length() > 0)) {
         in->col_ra  = "_RAJ2000";
         in->col_dec = "_DEJ2000";
+        status      = STATUS_OK;
+        continue;
+      }
+
+      // Search for RA/DEC columns
+      if ((find(qtyNames, "RA").length() > 0) &&
+          (find(qtyNames, "DEC").length() > 0)) {
+        in->col_ra  = "RA";
+        in->col_dec = "DEC";
         status      = STATUS_OK;
         continue;
       }
@@ -496,6 +508,15 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
           in->col_e_maj  = "theta95";
           in->col_e_type = Radius;
           in->col_e_prob = Prob_95;
+          status         = STATUS_OK;
+          continue;
+        }
+
+        // Search for PosErr column
+        if (find(qtyNames, "PosErr").length() > 0) {
+          in->col_e_maj  = "PosErr";
+          in->col_e_type = Radius;
+          in->col_e_prob = Sigma_1;
           status         = STATUS_OK;
           continue;
         }

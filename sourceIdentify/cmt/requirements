@@ -1,5 +1,5 @@
 package sourceIdentify
-version v1r3p4
+version v1r3p5
 
 author Jurgen Knodlseder <knodlseder@cesr.fr>
 
@@ -10,6 +10,6 @@ use st_app *
 use catalogAccess *
 
 apply_pattern ST_pfiles
-apply_pattern ST_app name=gtsrcid
+apply_pattern ST_app_withDir name=gtsrcid dir=gtsrcid
 
-application gtsrcid gtsrcid/*.cxx
+#application gtsrcid gtsrcid/*.cxx

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.16  2007/11/30 16:19:26  jurgen
+Correct version number and add RAdeg/DEdeg columns
+
 Revision 1.15  2007/11/08 14:42:11  jurgen
 Handle error circles (e.g. 3EG catalogue)
 
@@ -55,9 +58,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r3p4"
+#define TOOL_VERSION  "v1r3p5"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "30-Nov-2007"
+#define TOOL_DATE     " 6-Dec-2007"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
