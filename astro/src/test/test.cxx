@@ -14,17 +14,14 @@
 #include "astro/Quaternion.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
-#include "astro/HealPixel.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 
-// local test classes
-#include "TestHealpix.h"
-#include "TestHealpixArray.h"
 
 #include <stdexcept>
+#include <iomanip>
 
 using namespace astro;
 bool testSkyDir(){
@@ -300,17 +297,6 @@ bool test_GPS_readFitsData() {
     return true;
 }
 
-void testAbberation()
-{
-    SkyDir npole(0,90);
-    static double aber(1e-4);
-    astro::GPS * gps = astro::GPS::instance();
-    CLHEP::Hep3Vector t(gps->aberration(npole(), 0) );
-    double test( t.mag() - aber);
-
-    assert( fabs(test)<2e-6) ;// expect within 1% of the total
-
-}
 
 int main(){
 
@@ -329,19 +315,6 @@ int main(){
             rc=1;
         }else{         std::cerr << "GPS tests OK" << std::endl; }
 
-        // HealPixel test
-        {
-            if( ! HealPixel::test() ) {
-                ++rc; std::cerr << "Fail HealPixel test";
-            }
-            HealPixel h33=HealPixel(0,3);
-            std::vector<HealPixel> neighbors = h33.neighbors();
-            std::cout << "Neighbors of HealPixel(0,3): ";
-            for( std::vector<HealPixel>::const_iterator it = neighbors.begin(); it!=neighbors.end(); ++it){
-                std::cout << it->index() << ", ";
-            }
-            std::cout << endl;
-        }
 
         // One needs the test data to run this.
         if (!test_GPS_readFitsData()) return 1;
@@ -463,11 +436,6 @@ int main(){
 
         if(! testSkyProj() ) rc= 1;
 
-        TestHealpix();
-        TestHealpixArray();
-
-
-        testAbberation();
 
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
