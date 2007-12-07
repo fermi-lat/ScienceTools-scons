@@ -208,10 +208,10 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 
 CLHEP::Hep3Vector GPS::aberration(const SkyDir& pvec, double met) {
     static double cob(20.49552/3600 * M_PI/180); // constant of aberration in radians
-    static SkyDir enp(270,66.55);  // ecliptic northpole 
+    static SkyDir enp(270,66.55);  // ecliptic northpole (need a reference)
     JulianDate jd = m_earthOrbit->dateFromSeconds(met);
     Hep3Vector sov = SolarSystem().getSolarVector(jd); //direction of Sun
-    Hep3Vector evv = sov.cross(enp())/sov.mag();   // direction of Earth
+    Hep3Vector evv = sov.cross(enp())/sov.mag();   // direction of Earth orbital velocity
     return -cob*(evv)*(pvec().cross(evv)).mag() ;  // magnitude: is the sign right?
 }
 

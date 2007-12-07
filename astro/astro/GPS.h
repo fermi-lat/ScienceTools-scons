@@ -85,9 +85,11 @@ public:
     CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
 
     /** @brief stellar aberration: apparent difference in position
-       @param sdir actual skydir of objec
+       @param sdir actual skydir of object
        @met   MET (seconds)
-       @return the vector difference
+       @return the vector difference, to be added or subtracted to the SkyDir unit vector
+
+       See http://en.wikipedia.org/wiki/Aberration_of_light for a discussion.
     */
     CLHEP::Hep3Vector aberration(const astro::SkyDir &sdir,double met);
 
