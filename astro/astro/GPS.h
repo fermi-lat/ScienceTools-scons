@@ -84,9 +84,12 @@ public:
     /// return a rotation matrix for the requested transformation
     CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
 
-    // create stellar aberration with given magnitude
-    // mag in radians
-    CLHEP::Hep3Vector aberrate(CLHEP::Hep3Vector &pvec, double seconds, double mag);
+    /** @brief stellar aberration: apparent difference in position
+       @param sdir actual skydir of objec
+       @met   MET (seconds)
+       @return the vector difference
+    */
+    CLHEP::Hep3Vector aberration(const astro::SkyDir &sdir,double met);
 
     /// expansion of the current orbit
     double      expansion () const; 

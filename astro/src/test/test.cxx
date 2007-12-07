@@ -26,6 +26,7 @@
 
 #include <stdexcept>
 
+using namespace astro;
 bool testSkyDir(){
     using namespace astro;
     bool ok = true;
@@ -299,6 +300,18 @@ bool test_GPS_readFitsData() {
     return true;
 }
 
+void testAbberation()
+{
+    SkyDir npole(0,90);
+    static double aber(1e-4);
+    astro::GPS * gps = astro::GPS::instance();
+    CLHEP::Hep3Vector t(gps->aberration(npole(), 0) );
+    double test( t.mag() - aber);
+
+    assert( fabs(test)<2e-6) ;// expect within 1% of the total
+
+}
+
 int main(){
 
     using namespace astro;
@@ -454,6 +467,7 @@ int main(){
         TestHealpixArray();
 
 
+        testAbberation();
 
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
