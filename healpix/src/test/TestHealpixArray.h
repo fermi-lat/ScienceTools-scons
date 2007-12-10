@@ -6,8 +6,8 @@ $Header$
 
 
 */
-#include "astro/HealpixArray.h"
-#include "astro/Healpix.h"
+#include "healpix/HealpixArray.h"
+#include "healpix/Healpix.h"
 #include <iostream>
 #include <numeric> 
 #include <iostream>
@@ -26,8 +26,8 @@ public:
     TestHealpixArray(std::ostream& out= std::cout){
 
         using astro::SkyDir;
-        using astro::Healpix;
-        using astro::HealpixArray;
+        using healpix::Healpix;
+        using healpix::HealpixArray;
         // test Healpix array
         int nside = 64;
         out << "\ntesting HealpixArray<int> with nside="<< nside << std::endl;

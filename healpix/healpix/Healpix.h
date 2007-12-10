@@ -59,7 +59,7 @@ public:
 
     */
     Healpix(long nside=2, Ordering ord = NESTED, 
-        astro::SkyDir::CoordSystem coordsys = astro::SkyDir::EQUATORIAL);
+        astro::SkyDir::CoordSystem coordsys = astro::SkyDir::GALACTIC);
 
     ///@brief the number of sides 
     long nside()const;

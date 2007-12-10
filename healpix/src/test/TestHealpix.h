@@ -5,11 +5,12 @@ $Header$
 
 */
 
-#include "astro/Healpix.h"
+#include "healpix/Healpix.h"
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
 #include <fstream>
+
 
 
 // simple insertion operator to print a vector<int> object
@@ -27,8 +28,8 @@ std::ostream& operator<<(std::ostream& out, const std::vector<int> v)
 class TestHealpix {
 public:
     TestHealpix(){
-        using astro::Healpix;
-        test(256, astro::Healpix::NESTED, astro::SkyDir::GALACTIC);
+        using healpix::Healpix;
+        test(256, healpix::Healpix::NESTED, astro::SkyDir::GALACTIC);
 //        test(256, Healpix::NESTED, astro::SkyDir::EQUATORIAL);
 //        test(256, Healpix::RING, astro::SkyDir::GALACTIC);
 //        test(256, Healpix::RING, astro::SkyDir::EQUATORIAL);
@@ -36,9 +37,9 @@ public:
         Healpix hp(8);
         TestNeighbors(hp);
     }
-    void test(long nside, astro::Healpix::Ordering ord, astro::SkyDir::CoordSystem coord)
+    void test(long nside, healpix::Healpix::Ordering ord, astro::SkyDir::CoordSystem coord)
     {
-        using astro::Healpix;
+        using healpix::Healpix;
 
         // create basic Healpix object to define the pixelization level nside
         Healpix hp(nside, ord, coord);
@@ -78,17 +79,17 @@ public:
 
     class TestPixel {
     public:
-        TestPixel(const astro::Healpix& hp):m_hp(hp){}
+        TestPixel(const healpix::Healpix& hp):m_hp(hp){}
 
-        void operator()(const astro::Healpix::Pixel& pix)
+        void operator()(const healpix::Healpix::Pixel& pix)
         {
             astro::SkyDir dir=pix; // behaves like a SkyDir
-            astro::Healpix::Pixel p2(dir,m_hp);
+            healpix::Healpix::Pixel p2(dir,m_hp);
             if( p2.index() != pix.index() ){
                 throw std::runtime_error("index mismatch");
             }
         }
-        const astro::Healpix& m_hp;
+        const healpix::Healpix& m_hp;
     };
 
     /// functor to try powers of cos(theta)
@@ -103,21 +104,21 @@ public:
         int m_n;
     };
 
-    void TestNeighbors(const astro::Healpix & hp)
+    void TestNeighbors(const healpix::Healpix & hp)
     {
         typedef std::map<long, long> SORTMAP;
         std::cout << "\nTesting neighbors logic...";
         std::ifstream f("../src/test/Healpix Neighbors Nside=8.txt"); // File provided by Healpix developers
            
-        for (astro::Healpix::Iterator it = hp.begin(); it < hp.end(); ++it)
+        for (healpix::Healpix::Iterator it = hp.begin(); it < hp.end(); ++it)
         {
             // std::cout << "Checking neighbors for pixel " << (*it).index() << std::endl;
-            std::vector<astro::Healpix::Pixel> pv;
+            std::vector<healpix::Healpix::Pixel> pv;
             (*it).neighbors(pv);  // Get neighbors as vector of pixels
             
             // Convert to vector of integers
             std::vector<int> calculated;
-            for(std::vector<astro::Healpix::Pixel>::iterator it2 = pv.begin();
+            for(std::vector<healpix::Healpix::Pixel>::iterator it2 = pv.begin();
                 it2 != pv.end(); ++it2)
             {
                 calculated.push_back(it2->index());
