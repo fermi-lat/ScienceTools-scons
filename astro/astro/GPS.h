@@ -92,6 +92,10 @@ public:
     /// @return the direction in LAT coordinates
     CLHEP::Hep3Vector LATdirection(CoordSystem index,const CLHEP::Hep3Vector& dir, double met=-1);
 
+    /// @brief transform a direction from the LAT system to a SkyDir
+    /// @param latdir particle direction to transform 
+    /// @param met mission elapsed time: default (-1) means use current time
+    /// @return a Sky position, including the sign reversal
     astro::SkyDir toSky(const CLHEP::Hep3Vector& latdir, double met=-1);
 
     /** @brief stellar aberration: apparent difference in position
