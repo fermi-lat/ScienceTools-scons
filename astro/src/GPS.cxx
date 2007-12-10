@@ -28,6 +28,7 @@ GPS::GPS()
 , m_expansion(1.)    // default expansion:regular orbit for now
 , m_sampleintvl(1.) // notification interval for clients
 , m_rockDegrees(0), m_rockType(NONE) 
+, m_enableAberration(false)
 {   
     update(0);
 }
@@ -206,13 +207,68 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
     return trans;
 }
 
-CLHEP::Hep3Vector GPS::aberration(const SkyDir& pvec, double met) {
+CLHEP::Hep3Vector GPS::aberration(const CLHEP::Hep3Vector& pvec, double met) {
     static double cob(20.49552/3600 * M_PI/180); // constant of aberration in radians
     static SkyDir enp(270,66.55);  // ecliptic northpole (need a reference)
+    if( met ==-1) { // use current time
+        met = time();
+    }
     JulianDate jd = m_earthOrbit->dateFromSeconds(met);
     Hep3Vector sov = SolarSystem().getSolarVector(jd); //direction of Sun
     Hep3Vector evv = sov.cross(enp())/sov.mag();   // direction of Earth orbital velocity
-    return -cob*(evv)*(pvec().cross(evv)).mag() ;  // magnitude: is the sign right?
+    return -cob*(evv)*(pvec.cross(evv)).mag() ;  // magnitude: ?
+}
+
+CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& dir, double met)
+{
+    CLHEP::Hep3Vector result(dir);
+    if( met != -1)update( met);
+    switch( index){
+        case LAT: 
+            //do nothing - we are already in the GLAST frame.
+            break;
+        case ZENITH: 
+            { 
+                // earth-zenith to GLAST - just the rocking rotation.
+                // first form rotation from local zenith to celestial
+                // start with matrix that transforms from celestial to GLAST
+                HepRotation trans( m_currentPoint.rotation().inverse() );
+
+                // now form a matrix that transforms from zenith to celestial
+                // this wires it to be looking South
+                Hep3Vector 
+                    zenith( zenithDir()() ), 
+                    north(0,0,1),
+                    east( north.cross(zenith).unit() );
+                HepRotation zenith_to_cel(east, zenith.cross(east), zenith);
+
+                // return the product, zenith->celestial->GLAST
+                result = trans* zenith_to_cel * result;
+            }
+            break;
+        case CELESTIAL:
+            {
+                // for this case we need to consider both misalignment and aberration
+                // since both are small, we don't worry about second-order
+                if( m_enableAberration)  result += aberration(dir, met);
+                result = m_currentPoint.rotation().inverse() *  m_alignment * result;
+            }
+            break; 
+
+        default:
+            throw std::invalid_argument("unexpected index for GPS::LATdirection");
+
+    };
+    return result;
+}
+
+astro::SkyDir GPS::toSky(const CLHEP::Hep3Vector& latdir, double met)
+{
+    if( met != -1)update( met);
+
+    CLHEP::Hep3Vector tdir( m_currentPoint.rotation() * latdir);
+    if( m_enableAberration) tdir -= aberration(tdir, met);
+    return astro::SkyDir(tdir);
 }
 
 void GPS::update(double inputTime){
@@ -367,6 +423,13 @@ int GPS::test()
             << gps.zenithDir().dec()   << "\t"
             << endl;
     }
+    // test aberration
+    SkyDir npole(0,90);
+    CLHEP::Hep3Vector t(gps.aberration(npole(), 0) );
+    double test( t.mag() - 1e-4);
+
+    if( fabs(test)<2e-6)++rc ;// expect within 1% of the total
+
 
     // check exception
     try{

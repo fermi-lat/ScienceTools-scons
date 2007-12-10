@@ -41,6 +41,7 @@ public:
 
     enum CoordSystem { 
         GLAST=0,  //! 0: The original direction is in the GLAST frame already
+        LAT = 0,  //! 0; LAT is not really GLAST anymore 
         ZENITH=1, //! 1: rotate from the earth-zenith frame to GLAST
         CELESTIAL=2 //! 2: rotate from the cartesian celestial coordinate system (like a SkyDir)
     };
@@ -84,14 +85,23 @@ public:
     /// return a rotation matrix for the requested transformation
     CLHEP::HepRotation transformToGlast(double seconds,CoordSystem index);
 
+    /// @brief transform a direction from the given coordinate system to GLAST/LAT coordinates
+    /// @param index coordinate system: LAT, ZENITH, or CELESTIAL
+    /// @param dir direction to transform
+    /// @param met mission elapsed time: default (-1) means use current time
+    /// @return the direction in LAT coordinates
+    CLHEP::Hep3Vector LATdirection(CoordSystem index,const CLHEP::Hep3Vector& dir, double met=-1);
+
+    astro::SkyDir toSky(const CLHEP::Hep3Vector& latdir, double met=-1);
+
     /** @brief stellar aberration: apparent difference in position
-       @param sdir actual skydir of object
+       @param sdir actual equatorial direction of object (from a SkyDir, presumably)
        @met   MET (seconds)
-       @return the vector difference, to be added or subtracted to the SkyDir unit vector
+       @return the vector difference, to be added or subtracted to the unit vector
 
        See http://en.wikipedia.org/wiki/Aberration_of_light for a discussion.
     */
-    CLHEP::Hep3Vector aberration(const astro::SkyDir &sdir,double met);
+    CLHEP::Hep3Vector aberration(const CLHEP::Hep3Vector &sdir,double met=-1);
 
     /// expansion of the current orbit
     double      expansion () const; 
@@ -155,6 +165,8 @@ public:
 
     void setAlignmentRotation(CLHEP::HepRotation r){m_alignment=r;}
 
+    void enableAberration(){m_enableAberration=true;}
+
 protected:
     // singleton - protect ctor/dtor
     GPS();
@@ -185,6 +197,8 @@ private:
 
     ///! update position, orientaion
     void update(double inputTime);
+
+    bool m_enableAberration;
 
 };
 } // namespace
