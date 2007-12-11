@@ -12,26 +12,24 @@ use CLHEP v3* IExternal
 use extFiles * IExternal -no_auto_imports # for jphephem data
 use tip *
 
-apply_pattern package_include
-apply_pattern package_linkopts
-apply_pattern package_stamps
+apply_pattern shared_library
 
 private
 
 #the following prepend makes the includes and src folders available locally
-macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
+#macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
 
 #kill "truncation from double to float"
 macro_append astro_cppflags "" WIN32 " /wd4305"
 
 macro source *.cxx WIN32 "*.h *.cxx"
-library astro -no_share \
+library astro \
  -s=../astro $(source) \
  -s=../src $(source) \
  -s=wcslib  $(source) *.c\
  -s=jplephem $(source) \
- -s=healpix $(source) *.cc \
  -s=igrf_sub $(source) *.cc 
+
 
 
 # simple program to test basic functionality
@@ -43,10 +41,5 @@ pattern astro_package_test \
  public
 
 apply_pattern astro_package_test
-
-# this is the test program from G. Tosti
-# application orbit test/orbit/Orbit.cxx 
-
-#application testHTM test/htm/*.cxx
 
 
