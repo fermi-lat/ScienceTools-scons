@@ -60,3 +60,10 @@ std::string CosineBinner::thetaBinning(){
     }
 }
 
+void CosineBinner::setBinning(double cosmin, size_t nbins, bool sqrt_weight)
+{
+        s_cosmin=cosmin, s_nbins=nbins, s_sqrt_weight=sqrt_weight;
+}
+
+double CosineBinner::cosmin() { return s_cosmin;}
+size_t CosineBinner::nbins() {return s_nbins;}

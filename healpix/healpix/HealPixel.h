@@ -56,14 +56,13 @@ namespace healpix {
         std::vector<HealPixel> neighbors() const;
 
         /// set the coordinate system for all pixels
-        static void setCoordinateSystem(astro::SkyDir::CoordSystem sys){
-            s_coordsys=sys;
-        }
+        static void setCoordinateSystem(astro::SkyDir::CoordSystem sys);
+
+    private:
 
         /// use the same coordinate system for all these objects
        static astro::SkyDir::CoordSystem s_coordsys;
 
-    private:
         long m_index; ///< the Healpix nested index
         int m_level;  ///< nesting level: nside is 2**level
     };

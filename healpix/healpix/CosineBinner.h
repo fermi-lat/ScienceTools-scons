@@ -46,10 +46,13 @@ public:
     }
 
     /// define the binning scheme with class (static) variables
-    static void setBinning(double cosmin=0., size_t nbins=40, bool sqrt_weight=true){
-        s_cosmin=cosmin, s_nbins=nbins, s_sqrt_weight=sqrt_weight;}
+    static void setBinning(double cosmin=0., size_t nbins=40, bool sqrt_weight=true);
 
     static std::string thetaBinning();
+    static double cosmin();
+    static size_t nbins();
+
+private:
 
     static double s_cosmin; ///< minimum value of cos(theta)
     static size_t s_nbins;  ///< number of bins

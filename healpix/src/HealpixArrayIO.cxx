@@ -57,7 +57,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     #endif
     
     std::stringstream ss;
-    ss << ha[0].s_nbins << "E";
+    ss << ha[0].nbins() << "E";
     std::string nbrbins = ss.str();
     table.appendField("COSBINS", ss.str());
     table.setNumRecords(ha.size());
@@ -80,7 +80,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     #ifdef TIP_ONECOLUMNBUG
         hdr["NAXIS1"].set((sizeof(float) * ha[0].s_nbins) + sizeof(float));
     #else
-        hdr["NAXIS1"].set(sizeof(float) * ha[0].s_nbins);
+        hdr["NAXIS1"].set(sizeof(float) * ha[0].nbins());
     #endif
     hdr["PIXTYPE"].set("HEALPIX"); 
     hdr["ORDERING"].set("NESTED"); 
@@ -89,8 +89,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     hdr["FIRSTPIX"].set(0); 
     hdr["LASTPIX"].set(ha.size()-1); 
     hdr["THETABIN"].set(CosineBinner::thetaBinning());
-    hdr["NBRBINS"].set(CosineBinner::s_nbins);
-    hdr["COSMIN"].set(CosineBinner::s_cosmin);
+    hdr["NBRBINS"].set(CosineBinner::nbins());
+    hdr["COSMIN"].set(CosineBinner::cosmin());
 
     // need to do this to ensure file is closed when pointer goes out of scope
     return std::auto_ptr<tip::Table>(&table); 

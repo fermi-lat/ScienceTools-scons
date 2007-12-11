@@ -11,7 +11,7 @@ $Header$
 using namespace healpix;
 
 
-astro::SkyDir::CoordSystem HealPixel::s_coordsys = astro::SkyDir::GALACTIC;
+astro::SkyDir::CoordSystem healpix::HealPixel::s_coordsys = astro::SkyDir::GALACTIC;
 
 HealPixel::HealPixel(long index, int level)
 : m_index(index)
@@ -103,6 +103,10 @@ std::vector<HealPixel> HealPixel::neighbors() const
     return p;
 }
 
+void HealPixel::setCoordinateSystem(astro::SkyDir::CoordSystem sys)
+{
+            s_coordsys=sys;
+}
 
 bool HealPixel::test()
 { 
