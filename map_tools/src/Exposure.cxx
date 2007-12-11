@@ -4,7 +4,7 @@
    $Header$
 */
 #include "map_tools/Exposure.h"
-#include "map_tools/HealpixArrayIO.h"
+#include "healpix/HealpixArrayIO.h"
 #include "tip/Table.h"
 #include "astro/EarthCoordinate.h"
 
@@ -12,12 +12,14 @@
 #include <algorithm>
 
 using namespace map_tools;
+using healpix::HealpixArrayIO;
+using healpix::CosineBinner;
 
 
 Exposure::Exposure(const std::string& inputfile, const std::string& tablename)
 : SkyExposure(SkyBinner(2))
 {
-   setData( map_tools::HealpixArrayIO::instance().read(inputfile, tablename));
+   setData( HealpixArrayIO::instance().read(inputfile, tablename));
 }
 
 /// return the closest power of 2 for the side parameter
@@ -36,7 +38,7 @@ Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
 , m_zcut(zcut), m_lost(0)
 {
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
-    if( cosbins != CosineBinner::s_nbins ) {
+    if( cosbins != CosineBinner::nbins() ) {
         SkyBinner::iterator is = data().begin();
         for( ; is != data().end(); ++is){ // loop over all pixels
             CosineBinner & pixeldata= *is; // get the contents of this pixel
@@ -118,7 +120,7 @@ void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, doub
 
 void Exposure::write(const std::string& outputfile, const std::string& tablename)const
 {
-    map_tools::HealpixArrayIO::instance().write(data(), outputfile, tablename);
+    healpix::HealpixArrayIO::instance().write(data(), outputfile, tablename);
 }
 
 void Exposure::load(const tip::Table * scData, 

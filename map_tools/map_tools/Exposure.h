@@ -9,8 +9,8 @@
 
 
 #include "astro/SkyDir.h"
-#include "astro/HealpixArray.h"
-#include "map_tools/CosineBinner.h"
+#include "healpix/HealpixArray.h"
+#include "healpix/CosineBinner.h"
 namespace tip { class Table; class ConstTableRecord;}
 
 #include <utility> // for std::pair
@@ -53,8 +53,8 @@ private:
 };
 
 // define Exposure as specific instantiation of the above
-typedef astro::HealpixArray<map_tools::CosineBinner> SkyBinner;
-typedef BasicExposure<SkyBinner, map_tools::CosineBinner> SkyExposure;
+typedef healpix::HealpixArray<healpix::CosineBinner> SkyBinner;
+typedef BasicExposure<SkyBinner, healpix::CosineBinner> SkyExposure;
 
 namespace map_tools {
 
@@ -71,7 +71,7 @@ public:
     //! create object with specified binning
     //! @param pixelsize (deg) Approximate pixel size, in degrees
     //! @param cosbinsize bin size in the cos(theta) binner
-    Exposure(double pixelsize=1., double cosbinsize=1./CosineBinner::s_nbins, double zcut=-1.0);
+    Exposure(double pixelsize=1., double cosbinsize=1./healpix::CosineBinner::nbins(), double zcut=-1.0);
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);
@@ -116,7 +116,7 @@ private:
         double dot(const Simple3Vector& u)const{return x*u.x+y*u.y+z*u.z;}
         double x,y,z;
     };
-    std::vector< std::pair<CosineBinner* ,  Simple3Vector> > m_dir_cache;
+    std::vector< std::pair<healpix::CosineBinner* ,  Simple3Vector> > m_dir_cache;
     class Filler ; ///< class used to fill a CosineBinner object with a value
 
     double m_zcut; ///< value for zenith angle cut

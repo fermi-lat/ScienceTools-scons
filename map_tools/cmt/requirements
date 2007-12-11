@@ -1,12 +1,13 @@
 package map_tools
 
-version v6r11p3
+version v7r0
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
 
 use STpolicy * -no_auto_imports
 use astro v*
+use healpix *
 use hoops * 
 use tip  *
 use st_app *

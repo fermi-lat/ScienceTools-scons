@@ -10,7 +10,7 @@ $Header$
 
 #include "map_tools/SkyImage.h"
 #include "map_tools/Exposure.h"
-#include "map_tools/CosineBinner.h"
+#include "healpix/CosineBinner.h"
 
 #include "astro/SkyDir.h"
 
@@ -34,7 +34,7 @@ namespace {
 }
 
 using namespace map_tools;
-
+using healpix::CosineBinner;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /** @class RequestExposure 

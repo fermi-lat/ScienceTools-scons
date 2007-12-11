@@ -7,7 +7,7 @@ $Header$
 
 #include "hoops/hoops_prompt_group.h"
 #include "map_tools/Exposure.h"
-#include "map_tools/HealpixArrayIO.h"
+#include "healpix/HealpixArrayIO.h"
 
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
@@ -25,7 +25,7 @@ $Header$
 #include <iostream>
 #include <stdexcept>
 using namespace map_tools;
-
+using healpix::HealpixArrayIO;
 
 
 class ExposureCubeApp : public st_app::StApp {
@@ -131,7 +131,7 @@ public:
         if( zmin>-1){
             m_f.info() << " lost " << ex.lost() << " seconds from zcut" << std::endl;
         }
-        map_tools::HealpixArrayIO::instance().write(ex.data(), outfile, outtable);
+       HealpixArrayIO::instance().write(ex.data(), outfile, outtable);
 
  
     }
