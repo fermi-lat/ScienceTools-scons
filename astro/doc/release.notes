@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r0     10-dec-07 THB convert to sharable and factor healpix to new healpix package
   v2r14p7  04-dec-07 THB fix bugs affecting SAA and lat/lon interpolation
   v2r14p5  14-nov-07 JRB Another stab at double free problem on RHEL4
   v2r14p4  14-nov-07 JRB Fix for double free problem on RHEL4
