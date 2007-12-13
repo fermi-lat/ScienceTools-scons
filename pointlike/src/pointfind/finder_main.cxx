@@ -89,6 +89,7 @@ int main(int argc, char** argv)
        // group nearby candidates with strongest neighbor
         finder.group_neighbors();
 
+        finder.reExamine();
 
         // and write out the table
         finder.createTable(outfile);

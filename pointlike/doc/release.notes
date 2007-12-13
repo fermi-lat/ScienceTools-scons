@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 12-dec-07 v4r1    THB New pointfind feature, and hoping that RM will not choke
  02-dec-07 v4r0p1  THB A few fixes, especially change tolerance default
  28-nov-07 v4r0    THB Swigify! Now a shareable that is compatible with Python
  26-nov-07 v3r1    THB New class SimpleTSmap for faster seed-finding
