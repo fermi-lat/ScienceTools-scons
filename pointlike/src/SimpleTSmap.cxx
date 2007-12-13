@@ -13,6 +13,7 @@ $Header$
 #include <fstream>
 #include <stdexcept>
 #include <sstream>
+#include <iterator>
 #include <time.h>
 
 

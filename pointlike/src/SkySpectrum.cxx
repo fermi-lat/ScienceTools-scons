@@ -124,4 +124,5 @@ double SkySpectrum::level_ave(const astro::SkyDir& dir, double angle, int level)
 
     return av/v.size();
 }
+
     
