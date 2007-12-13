@@ -172,7 +172,7 @@ int PhotonMap::extract(const SkyDir& dir, double radius,
 
     // Get pixels in summary level that are within radius
     std::vector<int> v;
-    healpix::Healpix hpx(nside, Healpix::NESTED, HealPixel::s_coordsys);
+    healpix::Healpix hpx(nside, Healpix::NESTED);
     hpx.query_disc(dir, radius, v);  
     int max_level = m_minlevel + m_levels - 1;
 
@@ -209,7 +209,8 @@ int PhotonMap::extract_level(const SkyDir& dir, double radius,
 
     // Get pixels in select level that are within radius
     std::vector<int> v;
-    Healpix hpx(nside, Healpix::NESTED, HealPixel::s_coordsys);
+    healpix::Healpix hpx(nside, Healpix::NESTED);
+
     hpx.query_disc(dir, radius, v);  
 
     // Add select level pixels to return vector
