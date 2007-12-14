@@ -149,7 +149,7 @@ void Optimizer::computeHessian(std::valarray<double> & hess, double eps) {
 }
 #endif
 
-void Optimizer::choleskyDecompose(std::valarray<double> &array) {
+void Optimizer::choleskyDecompose(std::valarray<double> & array) {
 // This implementation is based on NR's choldc().
 
    int npts = static_cast<int>(sqrt(double(array.size()))+0.1);
@@ -167,7 +167,8 @@ void Optimizer::choleskyDecompose(std::valarray<double> &array) {
             if (sum <= 0) {
                std::ostringstream errorMessage;
                errorMessage << "Optimizer::choleskyDecompose:\n"
-                            << "Imaginary diagonal element.";
+                            << "Imaginary diagonal element.\n"
+                            << "Element value squared = " << sum << "\n";
                throw Exception(errorMessage.str());
             }
             p[i] = sqrt(sum);
