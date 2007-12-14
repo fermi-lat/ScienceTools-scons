@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r12p1 14-Dec-07  JC   more careful numerical derivative calculation
+                            in Optimizer::computeHessian when parameters
+                            are on bounds.
     v2r12   30-Nov-07  JC   provide access to Minuit covariance matrix 
     v2r11p3 29-Nov-07  JC   tag Navid's xml env var changes
     v2r11p2 28-Oct-07  JC   use new option in xmlBase::Dom::addAttribute
