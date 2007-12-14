@@ -109,8 +109,8 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
 
 // Check if param + delta is outside the bounds. If so, flip sign of delta.
       std::pair<double, double> bounds = parameters[irow].getBounds();
-      if ((delta > 0 && params[irow] == bounds.second) ||
-          (delta < 0 && params[irow] == bounds.first)) {
+      if (params[irow] + delta < bounds.first ||
+          params[irow] + delta > bounds.second) {
          delta *= -1;
       }
 
