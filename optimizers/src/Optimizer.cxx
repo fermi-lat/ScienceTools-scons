@@ -87,6 +87,10 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
    std::vector<double> params;
    m_stat->getFreeParamValues(params);
 
+// get a copy of the parameters for inspecting bounds
+   std::vector<Parameter> parameters;
+   m_stat->getFreeParams(parameters);
+
    std::vector<double> firstDerivs;
    m_stat->getFreeDerivs(firstDerivs);
 
@@ -102,6 +106,14 @@ void Optimizer::computeHessian(std::valarray<double> &hess, double eps) {
       } else {
          delta = params[irow]*eps;
       }
+
+// Check if param + delta is outside the bounds. If so, flip sign of delta.
+      std::pair<double, double> bounds = parameters[irow].getBounds();
+      if ((delta > 0 && params[irow] == bounds.second) ||
+          (delta < 0 && params[irow] == bounds.first)) {
+         delta *= -1;
+      }
+
       new_params[irow] = params[irow] + delta;
       m_stat->setFreeParamValues(new_params);
       std::vector<double> derivs;
