@@ -109,10 +109,11 @@ class UnbinnedObs(object):
         tmin = self._roiCuts.minTime()
         tmax = self._roiCuts.maxTime()
         scFiles = self._fileList(scFile)
-        self._scData.readData(scFiles[0], tmin, tmax, True, self.sctable)
-        for file in scFiles[1:]:
-            self._scData.readData(file, tmin, tmax)
-        self.scFiles = scFiles
+        self._scData.readData(scFiles, tmin, tmax, self.sctable)
+#        self._scData.readData(scFiles[0], tmin, tmax, True, self.sctable)
+#        for file in scFiles[1:]:
+#            self._scData.readData(file, tmin, tmax)
+#        self.scFiles = scFiles
     def __getattr__(self, attrname):
         return getattr(self.observation, attrname)
     def __repr__(self):
