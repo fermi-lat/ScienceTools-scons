@@ -13,6 +13,7 @@ $Id$
 
 #include <iomanip>
 #include <sstream>
+#include <cassert>
 
 
 using namespace astro;
@@ -209,14 +210,20 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 
 CLHEP::Hep3Vector GPS::aberration(const CLHEP::Hep3Vector& pvec, double met) {
     static double cob(20.49552/3600 * M_PI/180); // constant of aberration in radians
-    static SkyDir enp(270,66.55);  // ecliptic northpole (need a reference)
+    Hep3Vector enp(SkyDir(270,90-23.439281)());  // ecliptic northpole 
     if( met ==-1) { // use current time
         met = time();
     }
     JulianDate jd = m_earthOrbit->dateFromSeconds(met);
-    Hep3Vector sov = SolarSystem().getSolarVector(jd); //direction of Sun
-    Hep3Vector evv = sov.cross(enp())/sov.mag();   // direction of Earth orbital velocity
-    return -cob*(evv)*(pvec.cross(evv)).mag() ;  // magnitude: ?
+    Hep3Vector sol = SolarSystem().getSolarVector(jd).unit(); //direction to Sun
+    double check( sol * enp ); // direction to sun should be perpendicular
+    assert( fabs(check)<1e-4); // verify that current sun direction is perpendicular
+
+    Hep3Vector v( cob* sol.cross(enp).unit() ); //vector in direction of orbit, with v/c magnitude
+    Hep3Vector axis( v.cross(pvec) );  // axis of rotation
+    HepRotation rot(axis, axis.mag() ); // rotation matrix
+    Hep3Vector result( rot*pvec - pvec); // will return difference
+    return result;  
 }
 
 CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& dir, double met)
@@ -433,6 +440,8 @@ int GPS::test()
 
     if( fabs(test)>2e-6)++rc ;// expect within 1% of the total
 
+    CLHEP::Hep3Vector t2(gps.aberration(SkyDir(270,66.55)(), 0) );
+    test = ( t2.mag() - 1e-4);
 
     // test transformation without, then with the aberration
     {
