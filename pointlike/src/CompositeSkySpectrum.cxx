@@ -41,6 +41,11 @@ double CompositeSkySpectrum::integral(const astro::SkyDir& dir, double emin, dou
     std::vector< std::pair<double, const pointlike::SkySpectrum*> >::const_iterator it = begin();
 
     for( ; it!=end(); ++it){
+        if( it->second==0) {
+       //     std::cerr << "Warning: trying to integrate " << emin << " to " << emax << ", no data?" << std::endl;
+
+            continue;
+        }
         ret+= it->first * (it->second)->integral(dir, emin, emax);
     }
     return ret;
