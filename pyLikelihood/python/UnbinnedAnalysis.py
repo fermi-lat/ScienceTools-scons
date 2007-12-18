@@ -113,7 +113,7 @@ class UnbinnedObs(object):
 #        self._scData.readData(scFiles[0], tmin, tmax, True, self.sctable)
 #        for file in scFiles[1:]:
 #            self._scData.readData(file, tmin, tmax)
-#        self.scFiles = scFiles
+        self.scFiles = scFiles
     def __getattr__(self, attrname):
         return getattr(self.observation, attrname)
     def __repr__(self):
