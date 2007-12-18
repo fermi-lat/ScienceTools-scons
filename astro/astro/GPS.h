@@ -173,7 +173,10 @@ public:
 
     void setAlignmentRotation(CLHEP::HepRotation r){m_alignment=r;}
 
-    void enableAberration(){m_enableAberration=true;}
+    /// @brief enable the application of the aberration
+    /// @flag [true] value to set
+    /// @return the current value
+    bool enableAberration(bool flag=true){bool t=m_enableAberration; m_enableAberration=flag; return t;}
 
 protected:
     // singleton - protect ctor/dtor
