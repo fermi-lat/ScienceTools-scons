@@ -121,6 +121,9 @@ bool EventContainer::addEvent(EventSource *event,
    double arg = launchDir.z();
    double flux_theta = ::my_acos(arg);
    double flux_phi = atan2(launchDir.y(), launchDir.x());
+   if (flux_phi < 0) {
+      flux_phi += 2.*M_PI;
+   }
 
    HepRotation rotMatrix = spacecraft->InstrumentToCelestial(time);
    astro::SkyDir sourceDir(rotMatrix(-launchDir), astro::SkyDir::EQUATORIAL);
@@ -206,8 +209,12 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
    astro::SkyDir zen_x = astro::SkyDir(-tmp());
    astro::SkyDir zen_y = zen_x;
    zen_y().rotate(zen_z(), M_PI/2.);
-   double azimuth = std::atan2(zen_y().dot(appDir()), zen_x().dot(appDir()));
-   return azimuth*180./M_PI;
+   double azimuth = (std::atan2(zen_y().dot(appDir()), zen_x().dot(appDir()))
+                     *180./M_PI);
+   if (azimuth < 0) {
+      azimuth += 360.;
+   }
+   return azimuth;
 }
 
 void EventContainer::writeEvents(double obsStopTime) {

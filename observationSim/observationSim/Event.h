@@ -67,8 +67,11 @@ public:
    double phi() const {
       Hep3Vector yAxis = zAxis().dir().cross(xAxis().dir());
       double my_phi = atan2(appDir().dir().dot(yAxis),
-                            appDir().dir().dot(xAxis().dir()));
-      return my_phi*180./M_PI;
+                            appDir().dir().dot(xAxis().dir()))*180./M_PI;
+      if (my_phi < 0) {
+         my_phi += 360.;
+      }
+      return my_phi;
    }
 
    /// Apparent azimuthal angle wrt spacecraft x-axis (degrees)
