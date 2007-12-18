@@ -5,6 +5,9 @@
 $Id$
 
 \verbatim
+18-dec-2007        v9 JP  Add gtptest application. Refactor code for plotting and
+                          writing test results. Refactor PeriodSearch subclasses to
+                          make a cleaner data encapsulation to support the new application.
 13-nov-2007    v8r0p1 MH  Improve mainpage.h and prompts in gtpsearch.par and gtpspec.par.
 23-oct-2007        v8 JP  Add support for barycentering on the fly, including new solareph
                           and matchsolareph parameters for controlling which solar system
