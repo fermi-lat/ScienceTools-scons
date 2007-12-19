@@ -80,20 +80,17 @@ int main(int argc, char** argv)
         // look for sources
         finder.examineRegion();
 
-#if 0 // make these independent?
-        // prune by power law fit
-        finder.prune_power_law();
-        // prune the result
-        finder.prune_neighbors();
-#endif
        // group nearby candidates with strongest neighbor
         finder.group_neighbors();
 
         finder.reExamine();
 
+        // prune the result
+        finder.prune_neighbors();
+
         // and write out the table
         finder.createTable(outfile);
-        
+
         if( !outfile.empty()){
             delete out;
         }
@@ -104,6 +101,7 @@ int main(int argc, char** argv)
         help();
         rc=1;
     }
+
      return rc;
 }
 
