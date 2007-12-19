@@ -1,6 +1,6 @@
 package pointlike
 
-version v4r1p1
+version v4r2
 
 # $Header$
 
@@ -12,6 +12,15 @@ use embed_python *
 apply_pattern shared_library
 
 private
+
+########### for SWIG ###########
+#use SwigPolicy v*
+path_remove PYTHONPATH pointlike
+path_prepend PYTHONPATH $(POINTLIKEROOT)/python;$(POINTLIKEROOT)/$(BINDIR)
+#macro swig_module pointlike
+# macro swig_begin "" 
+# macro swig_end ""
+
 
 macro source "*.cxx" WIN32 "*.cxx *.h *.py"
 
