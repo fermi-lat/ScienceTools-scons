@@ -159,7 +159,8 @@ private:
     std::map<int, std::vector<std::pair<healpix::HealPixel,int> > >m_data_vec;
 
     //static SkySpectrum * s_diffuse;
-    static double s_radius, s_minalpha, s_TSmin, s_tolerance;
+    static double s_radius, s_minalpha, s_TSmin, s_tolerance, 
+        s_maxstep; //
     static int s_minlevel, s_maxlevel, s_skip1, s_skip2, s_itermax, s_verbose;
 };
 
