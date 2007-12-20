@@ -68,6 +68,9 @@ namespace pointlike {
 
         void setDelete () {m_2bdeleted = true;}
         void setSource (bool value = true) {m_isSource = value;}
+        void set_total_value (double value = 0.0) {m_value = value;}
+        void set_sigma (double value = 0.0) {m_sigma = value;}
+        void set_dir (astro::SkyDir value = astro::SkyDir(0,0)) {m_dir = value;}
         void setValue(int level, double val) {m_values[level] = val;}
         void setPhotons(int level, double photons) {m_photons[level] = photons;}
         void setSigalph(int level, double sigalph) {m_sigalph[level] = sigalph;}
