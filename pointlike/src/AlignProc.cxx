@@ -201,7 +201,7 @@ int AlignProc::add(pointlike::AlignProc::Photona& p){
             p1 = 0.0013;
         }  
         double sigmasq = (p0*p0*pow(p.energy()/100,-1.6))+p1*p1;
-        double utest = diff*diff/sigmasq/pointlike::PointSourceLikelihood::sigma_level[level]/pointlike::PointSourceLikelihood::sigma_level[level]/2;
+        double utest = diff*diff/sigmasq/pointlike::PointSourceLikelihood::sigma_level(level)/pointlike::PointSourceLikelihood::sigma_level(level)/2;
         //if scaled deviation is within the cone
         if(utest<s_umax) {
             added=1;

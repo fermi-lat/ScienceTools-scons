@@ -82,9 +82,9 @@ int main(int argc, char** argv)
 
        // group nearby candidates with strongest neighbor
         finder.group_neighbors();
-
+#if 0
         finder.reExamine();
-
+#endif
         // prune the result
         finder.prune_neighbors();
 

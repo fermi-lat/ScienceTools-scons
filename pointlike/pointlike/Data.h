@@ -65,11 +65,14 @@ public:
     
     ~Data();
 
-    static double s_scale[4]; // scale factors
-    static double set_scale(int i, double s){double t(s_scale[i]);  s_scale[i]=s; return t;}
+    static double scale(int i);
+    static double set_scale(int i, double s);
+    static double class_level();
 
-    static int s_class_level; // set to 1,2,3 for transient, source, diffuse
 private:
+    static double s_scale[4]; // scale factors
+    static int s_class_level; // set to 1,2,3 for transient, source, diffuse
+
     pointlike::PhotonMap * m_data;
     std::string m_ft2file;
     double m_start, m_stop;

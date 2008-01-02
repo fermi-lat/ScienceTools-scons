@@ -1,6 +1,6 @@
 package pointlike
 
-version v4r2p1
+version v4r3
 
 # $Header$
 
@@ -10,6 +10,9 @@ use embed_python *
 
 
 apply_pattern shared_library
+
+path_remove PYTHONPATH pointlike
+path_prepend PYTHONPATH $(POINTLIKEROOT)/python;$(POINTLIKEROOT)/$(BINDIR)
 
 private
 
