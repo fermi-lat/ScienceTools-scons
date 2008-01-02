@@ -449,7 +449,7 @@ int GPS::test()
     CLHEP::Hep3Vector latdir( gps.LATdirection(GPS::CELESTIAL, npole()));
     astro::SkyDir back( gps.toSky(latdir) ); 
     double check( npole.difference(back));
-    if( check> 1e-12) ++rc;
+    if( check> 1e-9) ++rc;
     }
     gps.enableAberration();
     {
@@ -457,7 +457,7 @@ int GPS::test()
     CLHEP::Hep3Vector latdir( gps.LATdirection(GPS::CELESTIAL, npole()));
     astro::SkyDir back( gps.toSky(latdir) ); 
     double check( npole.difference(back));
-    if( check> 1e-12) ++rc;
+    if( check> 1e-9) ++rc;
 
     }
     // check exception
@@ -469,6 +469,6 @@ int GPS::test()
         return rc;
     }
     // should not get here
-    throw std::runtime_error("GPS test failed to throw exception");
+    ++rc;
     return rc;
 }
