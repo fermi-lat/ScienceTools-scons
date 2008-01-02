@@ -114,7 +114,9 @@ public:
 
 
     /// pass a specific amount of time
+#ifndef SWIG // avoid warning message
     void    pass ( double );
+#endif
     /// set the expansion factor for the orbit (-1) = random
     void    expansion ( double );
     /// synchronize w. scheduler
@@ -146,7 +148,7 @@ public:
 #endif
     /// access to a const reference for the history. Error if does not exist.
     const astro::PointingHistory& history()const 
-#ifndef SWIG
+#ifndef SWIG // not recognized by swig
         throw(NoHistoryError)
 #endif
         ;
