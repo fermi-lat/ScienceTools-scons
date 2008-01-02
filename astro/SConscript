@@ -10,7 +10,7 @@ Import('listFiles')
 libEnv = baseEnv.Clone()
 progEnv = baseEnv.Clone()
 
-astroLib = libEnv.DynamicLibrary('astro', listFiles(
+astroLib = libEnv.SharedLibrary('astro', listFiles(
 ['src/*.cxx', 
  'src/healpix/*.cxx', 
  'src/healpix/*.cc', 
