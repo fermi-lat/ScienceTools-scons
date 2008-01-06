@@ -67,6 +67,9 @@ EventSource* CompositeSource::event (double time)
             if( !candidate->enabled() ) continue; // skip this guy, no longer active
             m_eventList[i] = candidate; // to initialize particles, so that the real interval for the particle is gotten.
             intrval=m_sourceList[i]->interval(time);
+            if( intrval <=0 ){
+                throw("CompositeSource::event: zero or negative interval");
+            }
             m_unusedSource[i]=1;
             m_sourceTime[i]=time + intrval;
         }

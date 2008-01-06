@@ -460,6 +460,9 @@ EventSource* FluxSource::event(double time)
     }
     using astro::GPS;
     m_interval = calculateInterval(time);
+    if( m_interval<=0 ) {
+        throw std::runtime_error("EventSource::event: negative or zero interval");
+    }
     if( time+m_interval < GPS::instance()->endTime()){
         // do this only if in valid interval: assume will never get used otherwise
         computeLaunch(time + m_interval);
