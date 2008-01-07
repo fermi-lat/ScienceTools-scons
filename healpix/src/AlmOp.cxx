@@ -27,23 +27,23 @@ template AlmOp<xcomplex<double> >::AlmOp<xcomplex<double> >(int lmax, int mmax);
 
 
 template<typename T> Alm<T>* AlmOp<T>::Alms() {
-	return &m_alm;
+    return &m_alm;
 }
 template Alm<xcomplex<float> >* AlmOp<xcomplex<float> >::Alms();
 template Alm<xcomplex<double> >* AlmOp<xcomplex<double> >::Alms();
 
 
 template<typename T> AlmOp<T> AlmOp<T>::operator*(AlmOp<T> x) {
-	planck_assert(m_alm.conformable(*x.Alms()),"Can't multiply different sized Alms!");
-	AlmOp<T> product(m_alm.Lmax(),m_alm.Mmax());
-	for(int l=0;l<=m_alm.Lmax();l++) {
-		for(int m=0;m<=m_alm.Mmax();m++) {
-			T *it = product.Alms()->mstart(m);
-			it[l].re=x.Alms()->mstart(m)[l].re*m_alm.mstart(m)[l].re;
-			it[l].im=x.Alms()->mstart(m)[l].im*m_alm.mstart(m)[l].im;
-		}
-	}
-	return product;
+    planck_assert(m_alm.conformable(*x.Alms()),"Can't multiply different sized Alms!");
+    AlmOp<T> product(m_alm.Lmax(),m_alm.Mmax());
+    for(int l=0;l<=m_alm.Lmax();l++) {
+        for(int m=0;m<=m_alm.Mmax();m++) {
+            T *it = product.Alms()->mstart(m);
+            it[l].re=x.Alms()->mstart(m)[l].re*m_alm.mstart(m)[l].re;
+            it[l].im=x.Alms()->mstart(m)[l].im*m_alm.mstart(m)[l].im;
+        }
+    }
+    return product;
 }
 
 template AlmOp<xcomplex<float> > AlmOp<xcomplex<float> >::operator*(AlmOp<xcomplex<float> >);
@@ -51,16 +51,16 @@ template AlmOp<xcomplex<double> > AlmOp<xcomplex<double> >::operator*(AlmOp<xcom
 
 
 template<typename T> AlmOp<T> AlmOp<T>::operator+(AlmOp<T> x) {
-	planck_assert(m_alm.conformable(*x.Alms()),"Can't add different sized Alms!");
-	AlmOp<T> sum(m_alm.Lmax(),m_alm.Mmax());
-	for(int l=0;l<=m_alm.Lmax();l++) {
-		for(int m=0;m<=m_alm.Mmax();m++) {
-			T *it = sum.Alms()->mstart(m);
-			it[l].re=x.Alms()->mstart(m)[l].re+m_alm.mstart(m)[l].re;
-			it[l].im=x.Alms()->mstart(m)[l].im+m_alm.mstart(m)[l].im;
-		}
-	}
-	return sum;
+    planck_assert(m_alm.conformable(*x.Alms()),"Can't add different sized Alms!");
+    AlmOp<T> sum(m_alm.Lmax(),m_alm.Mmax());
+    for(int l=0;l<=m_alm.Lmax();l++) {
+        for(int m=0;m<=m_alm.Mmax();m++) {
+            T *it = sum.Alms()->mstart(m);
+            it[l].re=x.Alms()->mstart(m)[l].re+m_alm.mstart(m)[l].re;
+            it[l].im=x.Alms()->mstart(m)[l].im+m_alm.mstart(m)[l].im;
+        }
+    }
+    return sum;
 }
 
 template AlmOp<xcomplex<float> > AlmOp<xcomplex<float> >::operator+(AlmOp<xcomplex<float> >);
@@ -68,15 +68,15 @@ template AlmOp<xcomplex<double> > AlmOp<xcomplex<double> >::operator+(AlmOp<xcom
 
 
 template<typename T> AlmOp<T> AlmOp<T>::conjugate() {
-	AlmOp<T> cj(m_alm.Lmax(),m_alm.Mmax());	
-	for(int l=0;l<=m_alm.Lmax();l++) {
-		for(int m=0;m<=m_alm.Mmax();m++) {
-			T *it = cj.Alms()->mstart(m);
-			it[l].re=m_alm.mstart(m)[l].re;
-			it[l].im=-(m_alm.mstart(m)[l].im);
-		}
-	}
-	return cj;
+    AlmOp<T> cj(m_alm.Lmax(),m_alm.Mmax());	
+    for(int l=0;l<=m_alm.Lmax();l++) {
+        for(int m=0;m<=m_alm.Mmax();m++) {
+            T *it = cj.Alms()->mstart(m);
+            it[l].re=m_alm.mstart(m)[l].re;
+            it[l].im=-(m_alm.mstart(m)[l].im);
+        }
+    }
+    return cj;
 }
 
 template AlmOp<xcomplex<float> > AlmOp<xcomplex<float> >::conjugate();

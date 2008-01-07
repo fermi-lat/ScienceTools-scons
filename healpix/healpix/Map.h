@@ -8,8 +8,9 @@ $Header$
 #include <string>
 #include <vector>
 #include "src/base/healpix_map.h"
+#include "src/base/powspec.h"
 #include "astro/SkyFunction.h"
-#include "healpix/HealPixel.h"
+
 
 
 namespace healpix {
@@ -43,11 +44,29 @@ namespace healpix {
         */
         Map<T>(int level);
 
+        Map<T>(const astro::SkyFunction& sf, int level);
+
         /**@brief returns a reference to the Healpix map
         */
         Healpix_Map< T>* map();
 
         Healpix_Map< T> cmap() const { return m_hm;}
+
+        /**@brief returns an array where a[i] is the ith moment up to lmax
+        */
+        std::vector<T> powspec(int lmax);
+
+        /**@brief scales every element in the map by factor
+        */
+        void scale(T factor);
+
+        /**@brief if element is less than zero, sets to zero
+        */
+        void zeromap();
+
+        /**@brief addition operator: map will have nside = max(this.nside,other.nside), ie the higher resolution
+        */
+        Map<T> operator+(Map<T> &other);
 
         /**@brief applies a matched filter . The filter kernel is derived from a 
         fits file "LHOOD.fits"
@@ -73,6 +92,7 @@ namespace healpix {
         void writemap(std::string &out);
 
         double operator()(const astro::SkyDir & sd) const{ return m_hm[m_hm.nest2ring(healpix::HealPixel(sd,m_hm.Order()).index())];}
+
 
     private:
         double m_factor;              //binning factors: E = s_minenergy*m_factor**(level-s_minlevel)
