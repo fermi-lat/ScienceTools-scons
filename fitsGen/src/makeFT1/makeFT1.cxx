@@ -247,6 +247,7 @@ void MakeFt1::run() {
 
          dataSubselector::Gti gti;
          gti.insertInterval(tstart, tstop);
+         ft1.setObsTimes(tstart, tstop);
 
          my_cuts.addGtiCut(gti);
          my_cuts.writeDssKeywords(ft1.header());
