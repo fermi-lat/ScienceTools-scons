@@ -44,6 +44,19 @@ double EventSource::flux (double time) const
     return m_flux;  // default if not overridden
 }
 
+double EventSource::interval()const
+{
+    return m_interval;
+}
+
+double EventSource::setInterval (double time)
+{
+    return (m_interval = time);
+    if( time<=0 ){
+        std::cout << "interval set <=0: " << time << std::endl;
+    }
+}
+
 
 double  EventSource::rate (double time )const
 {

@@ -85,7 +85,7 @@ private:
     typedef std::multimap<double, std::pair<EventSource*,EventSource*> >SourceMap;
     SourceMap m_source_map;
 
-    void map_insert( double, EventSource* member, EventSource* source);
+    void map_insert( double, EventSource* member, EventSource*actual=0);
 
     /// used to define source identification
     std::map<EventSource*, unsigned int> m_ident;

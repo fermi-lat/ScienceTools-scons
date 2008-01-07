@@ -32,12 +32,17 @@ public:
     virtual ~EventSource();
     
     ///    a randomized interval to the next event - default is 1/rate()
-    double interval()const{return m_interval;}
+    double interval()const;//{return m_interval;}
     double interval(double){return interval();} ///< this for compatibility
 
     /// set the relative time to the next event
-    double setInterval (double time){return (m_interval = time);}
+    double setInterval (double time);//{return (m_interval = time);}
     
+    /// access time of this event
+    double time()const{return m_time;}
+    double setTime(double t){m_time=t;}
+
+
     ///    calculate the rate for a given flux/solid angle integral (NOTE: integral of solid angle)
     // virtual double  rate ( double solid_angle, double flux );	
     virtual double  rate (double time)const;
@@ -109,7 +114,8 @@ public:
     static std::vector<double> s_cone; ///< parameters (ra,dec,radius) of selection cone.
 
 private:
-    double m_interval;
+    double m_interval;  ///< time interval to the next for this event
+    double m_time;      ///< actual MET of this event
     
     double m_flux;		// representative flux for this event source...
     std::string m_name;       // name of the event source (UI)
