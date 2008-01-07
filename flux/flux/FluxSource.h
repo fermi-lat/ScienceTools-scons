@@ -58,7 +58,7 @@ public:
 
     ISpectrum* spectrum() const{ return m_spectrum; }
 
-    double interval()const{return m_interval;}
+    
 
     //! Denotes what Energy Units the energy
     //! of incoming particles are in
@@ -98,7 +98,6 @@ private:
     ISpectrum*         m_spectrum;	    // spectrum to generate
 
     double m_energy;
-    double m_interval;
     // associated with a specific launch
 
     /// result of strategy

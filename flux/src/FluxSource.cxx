@@ -459,19 +459,21 @@ EventSource* FluxSource::event(double time)
         throw std::runtime_error("FluxSource::event called when disabled");
     }
     using astro::GPS;
-    m_interval = calculateInterval(time);
-    if( m_interval<=0 ) {
+    setInterval(calculateInterval(time));
+    if( interval()<=0 ) {
         throw std::runtime_error("EventSource::event: negative or zero interval");
     }
-    if( time+m_interval < GPS::instance()->endTime()){
+    if( time+interval() < GPS::instance()->endTime()){
         // do this only if in valid interval: assume will never get used otherwise
-        computeLaunch(time + m_interval);
+        computeLaunch(time + interval());
     }else{
         // flag to end use of this source
        disable();
     }
+#if 0
     //now set the actual interval to be what FluxMgr will get, unless beyond the endtime
     EventSource::setTime(time + m_interval);
+#endif
     return this;
 }
 
