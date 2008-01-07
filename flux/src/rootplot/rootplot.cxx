@@ -257,7 +257,7 @@ void rootplot::init(std::vector<std::string> argv)
         {
             EventSource *f = e->event(time);
             //increment the time
-            double timeadd = e->interval(time);
+            double timeadd = e->interval();
             time2 += timeadd;
 
             if(!stationary)

@@ -32,7 +32,7 @@ public:
     virtual ~EventSource();
     
     ///    a randomized interval to the next event - default is 1/rate()
-    virtual double interval (double) = 0;
+    virtual double interval ()const = 0;
     
     ///    calculate the rate for a given flux/solid angle integral (NOTE: integral of solid angle)
     // virtual double  rate ( double solid_angle, double flux );	

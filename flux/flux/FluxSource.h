@@ -58,7 +58,7 @@ public:
 
     ISpectrum* spectrum() const{ return m_spectrum; }
 
-    double interval(double ){return m_interval;}
+    double interval()const{return m_interval;}
 
     //! Denotes what Energy Units the energy
     //! of incoming particles are in

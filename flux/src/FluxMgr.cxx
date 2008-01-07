@@ -287,7 +287,7 @@ void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
             std::cout << "Source turned off at time " << time << std::endl;
             break;
         }
-        double interval=e->interval(time);
+        double interval=e->interval();
 
         //here we increment the "elapsed" time and the "orbital" time,
         //just as is done in flux.  NOTE: this is important for the operation 
