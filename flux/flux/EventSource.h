@@ -40,7 +40,7 @@ public:
     
     /// access time of this event
     double time()const{return m_time;}
-    double setTime(double t){m_time=t;}
+    double setTime(double t){return (m_time=t);}
 
 
     ///    calculate the rate for a given flux/solid angle integral (NOTE: integral of solid angle)

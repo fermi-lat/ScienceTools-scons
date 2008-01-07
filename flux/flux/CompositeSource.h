@@ -72,10 +72,8 @@ public:
 
     /// just set the flag in base class
     void disable(){m_enabled=false;}
-private:
 
-    // index of current source in input list
-    int m_numofiters;
+private:
 
     // sources contained in this composite
     std::vector< EventSource* > m_sourceList;
@@ -85,7 +83,8 @@ private:
     typedef std::multimap<double, std::pair<EventSource*,EventSource*> >SourceMap;
     SourceMap m_source_map;
 
-    void map_insert( double, EventSource* member, EventSource*actual=0);
+    // process an entry in the source map
+    EventSource* process(SourceMap::iterator, double);
 
     /// used to define source identification
     std::map<EventSource*, unsigned int> m_ident;
