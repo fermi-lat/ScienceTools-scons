@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v7r2   07-Jan-08   JC   disable gtorbsim build; accomodate behavior changes
+                            in flux/EventSource
     v7r1p2 18-Dec-07   JC   ensure PHI and EARTH_AZIMUTH_ANGLE are in (0, 360)
                             in accord with FT1 definition
     v7r1p1 27-Nov-07   JC   tag xml env var changes from Navid
