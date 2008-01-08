@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v7r2p1 08-Jan-08   JC   make scfile a string in gtobssim.par; undo
+                            extraneous insertion of first interval into FT2 file
     v7r2   07-Jan-08   JC   disable gtorbsim build; accomodate behavior changes
                             in flux/EventSource
     v7r1p2 18-Dec-07   JC   ensure PHI and EARTH_AZIMUTH_ANGLE are in (0, 360)
