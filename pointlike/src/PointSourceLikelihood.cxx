@@ -478,7 +478,9 @@ void PointSourceLikelihood::clearBackgroundPointSource()
     if( backgnd==0){
         throw std::invalid_argument("PointSourceLikelihood::setBackgroundFit: no diffuse to add to");
     }
-    if( backgnd->size()>0) {backgnd->resize(1);}
+    while( backgnd->size()>1) {
+        backgnd->pop_back();
+    }
 }
 
 /// @brief set radius for individual fits

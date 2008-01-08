@@ -48,7 +48,7 @@ public:
     /// @param skip levels to skip
     double  maximize(int skip=0);
 
-    //! change the current direction
+    //! change the current direction -- resets data and refits
     void setDir(const astro::SkyDir& dir);
 
     /// @return the gradient, summed over all levels, skiping skip
