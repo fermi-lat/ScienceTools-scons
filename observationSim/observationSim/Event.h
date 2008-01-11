@@ -60,6 +60,20 @@ public:
    /// Event type (for ascertaining which set of IRFs to use).
    int eventType() const {return m_eventType;}
 
+   /// Event class (0, 1, 2,...)
+   /// Computed from m_eventType assuming IRFs are ordered front, back, 
+   /// front, back,....
+   int eventClass() const {
+      return m_eventType/2;
+   }
+
+   /// Conversion type (0=front, 1=back), 
+   /// Computed from m_eventType assuming IRF event types are ordered 
+   /// front, back, front, back,....
+   int conversionType() const {
+      return m_eventType % 2;
+   }
+
    /// True photon energy in MeV.
    double trueEnergy() const {return m_trueEnergy;}
 
