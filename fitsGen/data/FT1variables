@@ -20,7 +20,7 @@ EVENT_ID                EvtEventId
 RUN_ID                  EvtRun
 #RECON_VERSION
 #CALIB_VERSION
-#EVENT_CLASS            set using MeritFile::eventType()
+#EVENT_CLASS            set using EventClassifier class and python script
 #CONVERSION_TYPE        set using MeritFile::conversionType()
 LIVETIME                EvtLiveTime
 #

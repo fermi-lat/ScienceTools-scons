@@ -28,7 +28,6 @@ namespace fitsGen {
  * embed_python and a Python class to do the TCut parsing and event
  * partitioning and event class number assignment.
  *
- * @author J. Chiang
  */
 
 class EventClassifier {

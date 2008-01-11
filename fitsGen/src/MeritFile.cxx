@@ -26,8 +26,6 @@ MeritFile::MeritFile(const std::string & meritfile,
      m_nrows(m_table->getNumRecords()),
      m_haveTime(true),
      m_gti(new dataSubselector::Gti()) {
-//      m_goodEvent1(new dataSubselector::Cuts()),
-//      m_goodEvent3(new dataSubselector::Cuts()) {
    const std::vector<std::string> & validFields(m_table->getValidFields());
    if (std::find(validFields.begin(), validFields.end(), "EvtElapsedTime") 
        == validFields.end()) {
@@ -39,26 +37,10 @@ MeritFile::MeritFile(const std::string & meritfile,
       double stop(m_row["EvtElapsedTime"].get());
       m_gti->insertInterval(start, stop);
       m_it = begin();
-      
-//       // CTBCORE > 0.1
-//       m_goodEvent1->addRangeCut("CTBCORE", "N/A", 0.1, 1.1);
-//       // CTBBestEnergyProb > 0.3
-//       m_goodEvent1->addRangeCut("CTBBestEnergyProb", "N/A", 0.3, 1.1);
-//       // CTBGAM > 0.35
-//       m_goodEvent1->addRangeCut("CTBGAM", "N/A", 0.35, 1.1);
-
-//       // CTBCORE > 0.35
-//       m_goodEvent3->addRangeCut("CTBCORE", "N/A", 0.35, 1.1);
-//       // CTBBestEnergyProb > 0.35
-//       m_goodEvent3->addRangeCut("CTBBestEnergyProb", "N/A", 0.35, 1.1);
-//       // CTBGAM > 0.50
-//       m_goodEvent3->addRangeCut("CTBGAM", "N/A", 0.50, 1.1);
    }
 }
 
 MeritFile::~MeritFile() {
-//    delete m_goodEvent1;
-//    delete m_goodEvent3;
    delete m_gti;
    delete m_table;
 }
@@ -99,17 +81,6 @@ void MeritFile::setStartStop(double tstart, double tstop) {
    m_gti = new dataSubselector::Gti();
    m_gti->insertInterval(tstart, tstop);
 }
-
-// short int MeritFile::eventType() const {
-//    if (m_goodEvent1->accept(m_row)) {
-//       if (m_goodEvent3->accept(m_row)) { // Class A event
-//          return conversionType();
-//       } else {                           // Class B
-//          return conversionType() + 2;
-//       }
-//    }
-//    return -1;
-// }
 
 short int MeritFile::conversionType() const {
    if (17 - m_row["Tkr1FirstLayer"].get() < 11.5) { // Front converting
