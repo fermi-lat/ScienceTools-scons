@@ -64,8 +64,11 @@ public:
     /// a randomized interval to the next event - default is 1/rate()
     virtual double interval (double time);
   
-  
+      /// return the identifier, if the Spectrum object implements one
+    virtual int identifier(){ return m_ident;}
 
+
+    virtual void setIdentifier(int id){m_ident = id;}
     /*! 
     @param energy energy returned by previous call to energy
     \return dir direction is either in the format (cos theta, phi)
@@ -96,6 +99,7 @@ protected:
     double m_flux;
     std::string m_particle_name;
     bool m_inGeV;
+    int m_ident;
 private:
     static double s_startTime;
 };

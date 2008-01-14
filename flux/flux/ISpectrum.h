@@ -90,6 +90,11 @@ public:
     */
     virtual std::pair<double,double> dir(double energy)=0;
     
+    /// if implemented, return a positive identifier to use with the current source. 
+    /// allows it to change
+    virtual int identifier()=0;
+    virtual void setIdentifier(int i)=0;
+
     /** dummy set methods that are actually defaulted in Spectrum class.
      * These are needed to parse info from the XML (see FluxSource class)
      */
