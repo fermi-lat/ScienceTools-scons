@@ -1,6 +1,6 @@
 infile,f,a,"none",,,"File of flux-style source definitions"
 srclist,fr,a,"source_names.txt",,,"File containing list of source names"
-scfile,s,a,"none",,,"Pointing history file"
+scfile,f,a,"none",,,"Pointing history file"
 sctable,s,h,"SC_DATA",,,"Spacecraft data extension"
 evroot,s,a,"test",,,"Prefix for output files"
 evtable,s,h,"EVENTS",,,"Event data extension"
