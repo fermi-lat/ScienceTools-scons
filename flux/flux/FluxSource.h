@@ -54,11 +54,10 @@ public:
     void  printOn ( std::ostream&  ) {}
 
     /// set spectrum, with optional parameter to set the maximum energy?
-    void spectrum(ISpectrum* s, double emax=-1);
+    virtual void spectrum(ISpectrum* s, double emax=-1);
 
     ISpectrum* spectrum() const{ return m_spectrum; }
 
-    
 
     //! Denotes what Energy Units the energy
     //! of incoming particles are in
@@ -81,6 +80,8 @@ public:
     bool occulted();
 
     virtual void disable();
+
+    virtual int identifier();
 
 private:
 
