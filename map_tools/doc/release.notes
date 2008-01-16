@@ -6,6 +6,7 @@ $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
 
+ 16-jan-08 v7r0p1 THB  Force use of equatorial coordinates in exposure map
  10-dec-07 v7r0   THB  refactor healpix stuff to healpix package
  27-aug-07 v6r11p3THB  Fix exposure_cube to be interactive
  12-aug-07 v6r11p2THB  Changed a name in PhotonMap to avoid SWIG problem 
