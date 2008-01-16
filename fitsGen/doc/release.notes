@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r8p3 16-Jan-08   JC   switch order of adding columns and setting the
+                            number of rows in makeFT1 for much greater 
+                            efficiency.                            
     v3r8p2 07-Jan-08   JC   set obs times if no events pass cuts
     v3r8p1 23-Oct-07   JC   astro interface change to EarthCoordinate
     v3r8   12-Oct-07   JC   remove FT1ZenithTheta and CTBBestZDir cuts and
