@@ -209,10 +209,10 @@ void MakeFt1::run() {
          ft1.setObsTimes(gti.minValue(), gti.maxValue());
       }
 
-      ft1.setNumRows(merit.nrows());
-
       ::addNeededFields(ft1, ft1Dict);
    
+      ft1.setNumRows(merit.nrows());
+
       ft1.header().addHistory("Input merit file: " + rootFile);
       ft1.header().addHistory("Filter string: " + filter);
 
