@@ -67,7 +67,7 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
         ++level, ++ layer)
     {
         std::cout << "Filling image layer "<<layer<< " with  counts on level "<<level << std::endl;
-        image.fill(SkyCount(m_map, level), layer);  
+        image.fill(SkyCount(m_map, level, m_countType), layer);  
     }
     // Where HealPixel width for level <= display pixel width, use addPoint().
 
