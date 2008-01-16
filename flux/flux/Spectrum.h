@@ -79,7 +79,9 @@ public:
     void setParticleName(const std::string& value){m_particle_name=value;}
     void setInGeV(const bool value){m_inGeV=value;}
     void setFlux(double value){m_flux=value;}
-    
+   
+    // default implementation: empty string.
+    virtual std::string name()const{return "";}
     
     /// set a reference time that clients may use
     static void setStartTime(double t){ s_startTime=t;}

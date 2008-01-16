@@ -83,6 +83,8 @@ public:
 
     virtual int identifier();
 
+    virtual std::string name() const;
+
 private:
 
 // forward declaration of nested classes that handle the lauch direction

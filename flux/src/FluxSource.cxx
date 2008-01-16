@@ -611,3 +611,12 @@ int FluxSource::identifier()
 {
     return spectrum()->identifier();
 }
+
+std::string FluxSource::name()const
+{
+    std::string t(spectrum()->name());
+    if( t.empty() ){
+        return EventSource::name();
+    }
+    return t;
+}
