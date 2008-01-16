@@ -14,6 +14,7 @@
 using namespace map_tools;
 using healpix::HealpixArrayIO;
 using healpix::CosineBinner;
+using healpix::Healpix;
 
 
 Exposure::Exposure(const std::string& inputfile, const std::string& tablename)
@@ -34,7 +35,12 @@ inline int side_from_degrees(double pixelsize){
 } 
 
 Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
-: SkyExposure(SkyBinner(side_from_degrees(pixelsize)))
+: SkyExposure(
+    SkyBinner(Healpix(
+      side_from_degrees(pixelsize),  // nside
+      Healpix::NESTED, 
+      astro::SkyDir::EQUATORIAL) )
+  )
 , m_zcut(zcut), m_lost(0)
 {
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
