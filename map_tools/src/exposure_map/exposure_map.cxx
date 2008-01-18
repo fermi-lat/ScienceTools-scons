@@ -240,7 +240,7 @@ public:
         double total_elaspsed = ex.total();
         m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
 #endif
-        irfInterface::IAeff* aeff = findAeff(m_pars["resptype"]);
+        irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
 
         // create the image object, fill it from the exposure, write out
         std::clog << "Creating an Image, will write to file " << m_pars["outfile"].Value() << std::endl;
@@ -263,13 +263,13 @@ public:
         m_pars.Prompt("infile");
         m_pars.Prompt("cmfile");
         m_pars.Prompt("outfile");
-        m_pars.Prompt("resptype");
+        m_pars.Prompt("irfs");
     
         std::string uc_cm_file = m_pars["cmfile"];
         for ( std::string::iterator itor = uc_cm_file.begin(); itor != uc_cm_file.end(); ++itor) *itor = std::toupper(*itor);
         if ("NONE" == uc_cm_file) {
-            m_pars.Prompt("numxpix");
-            m_pars.Prompt("numypix");
+            m_pars.Prompt("nxpix");
+            m_pars.Prompt("nypix");
             m_pars.Prompt("pixscale");
             m_pars.Prompt("coordsys");
             m_pars.Prompt("xref");
@@ -282,7 +282,6 @@ public:
         }
     
         m_pars.Prompt("bincalc");
-        m_pars.Prompt("filter");
         m_pars.Prompt("table");
         m_pars.Prompt("chatter");
         m_pars.Prompt("clobber");
@@ -346,10 +345,10 @@ General Parameters
   resptype = "DC2" [string]
      Response function. Default DC2 means the sum of classA and class B   
     
-  numxpix = 1 [int] 
+  nxpix = 1 [int] 
     Size of the X axis in pixels. Default (1) for full sky
     
-  numypix = 1 [int] 
+  nypix = 1 [int] 
     Size of the Y axis in pixels. Default (1) to copy numxpix, or full sky
     
   pixscale = 1.0 [float]  
@@ -382,10 +381,6 @@ General Parameters
     
   (bincalc = "CENTER") [string] 
      How are energy layers computed from count map ebounds?  Options are CENTER and EDGE
-
-    
-  (filter  = no default) [string] 
-    Filter expression (FTOOLS style).  
     
   (table = "Exposure")  
     Exposure cube extension. 

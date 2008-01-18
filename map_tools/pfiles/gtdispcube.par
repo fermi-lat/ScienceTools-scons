@@ -11,15 +11,15 @@ filter,	    s, h, ,,,"filter expression:"
 
 #mode,     s, a,  "h",   , ,""
 # uncomment the following for interactive/replacement mode
-mode,     s, a,  "ql",   , ,""
+mode,     s, a,  "ql",   , ,"Mode of automatic parameters: h for batch, ql for interactive"
 
 
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
 # Spatial binning parameters.
-numxpix,    i, a, 1, 1, , "Size of the X axis in pixels (leave at 1 for auto full sky"
-numypix,    i, a, 1, 1, , "Size of the Y axis in pixels (leave at 1 to copy numxpix or auto full sky)"
+nxpix,    i, a, 1, 1, , "Size of the X axis in pixels (leave at 1 for auto full sky"
+nypix,    i, a, 1, 1, , "Size of the Y axis in pixels (leave at 1 to copy nxpix or auto full sky)"
 pixscale,   r, a, 0.5, 1., , "Image scale (in degrees/pixel)"
 coordsys,   s, a, CEL, CEL|GAL, ,"Coordinate system (CEL - equatorial or fk5, GAL -galactic)"
 xref,       r, a, 0., , , "First coordinate of image center in degrees (RA or galactic l)"

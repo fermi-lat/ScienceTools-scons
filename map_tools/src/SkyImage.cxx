@@ -143,8 +143,8 @@ SkyImage::SkyImage(const hoops::IParGroup& pars)
         //
         // the input is a livetime cube: get display from par file parameters
         //
-        m_naxis1 = pars["numxpix"];
-        m_naxis2 = pars["numypix"];
+        m_naxis1 = pars["nxpix"];
+        m_naxis2 = pars["nypix"];
         int enumbins = pars["enumbins"];
         std::string ptype = pars["proj"];
         double pixelsize = pars["pixscale"];
