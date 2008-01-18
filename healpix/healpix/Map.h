@@ -11,7 +11,7 @@ $Header$
 #include "src/base/powspec.h"
 #include "astro/SkyFunction.h"
 
-
+#include "healpix/HealPixel.h"
 
 namespace healpix {
 
