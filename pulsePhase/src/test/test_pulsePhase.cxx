@@ -7,7 +7,6 @@
 #include "facilities/commonUtilities.h"
 
 #include "pulsarDb/PulsarEph.h"
-#include "pulsarDb/TimingModel.h"
 
 #include "timeSystem/AbsoluteTime.h"
 #include "timeSystem/TimeRep.h"
@@ -34,9 +33,6 @@ int main() {
     return 1;
   }
 
-  // Simple test of timing model computation.
-  TimingModel model;
-
   // Next test: read event file.
   std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "D1.fits"),
     "EVENTS"));
@@ -61,7 +57,7 @@ int main() {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
     glast_tdb.setValue(rec["TIME"].get());
-    double phase = model.calcPulsePhase(eph, AbsoluteTime(glast_tdb));
+    double phase = eph.calcPulsePhase(AbsoluteTime(glast_tdb));
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);

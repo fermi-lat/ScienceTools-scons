@@ -8,7 +8,6 @@
 #include "pulsarDb/EphChooser.h"
 #include "pulsarDb/EphComputer.h"
 #include "pulsarDb/PulsarToolApp.h"
-#include "pulsarDb/TimingModel.h"
 
 #include "timeSystem/AbsoluteTime.h"
 #include "timeSystem/EventTimeHandler.h"
@@ -72,9 +71,8 @@ void PulsePhaseApp::run() {
   selectTimeCorrectionMode("DEFAULT");
 
   // Set up EphComputer for arrival time corrections.
-  pulsarDb::TimingModel model;
   pulsarDb::StrictEphChooser chooser;
-  initEphComputer(par_group, model, chooser, "NONE");
+  initEphComputer(par_group, chooser, "NONE");
 
   // Use user input (parameters) together with computer to determine corrections to apply.
   bool guess_pdot = false;
