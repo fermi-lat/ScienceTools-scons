@@ -116,6 +116,10 @@ namespace facilities {
     /// of proper form, throws facilities::WrongType
     static unsigned int stringToUnsigned(const std::string& InStr);
 
+    /// converts a std::string to an unsigned long long.  If string contents are
+    /// not of the proper form, throws facilities::WrongType
+    static unsigned long long stringToUll(const std::string& InStr);
+
 
     /** This routine breaks down a string into tokens, based on the
         characters appearing in the string @a delimiters.
