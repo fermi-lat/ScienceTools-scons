@@ -11,9 +11,9 @@ $Header$
 #include "src/base/powspec.h"
 #include "astro/SkyFunction.h"
 
-#include "healpix/HealPixel.h"
 
 namespace healpix {
+
 
     template<typename T> class Map : public astro::SkyFunction {
         /**
@@ -50,9 +50,11 @@ namespace healpix {
         */
         Healpix_Map< T>* map();
 
+        /**@brief returns a constant reference to the Healpix map (time-intensive)
+        */
         Healpix_Map< T> cmap() const { return m_hm;}
 
-        /**@brief returns an array where a[i] is the ith moment up to lmax
+        /**@brief returns an array where a[i] is the ith moment of the angular power spectrum up to lmax
         */
         std::vector<T> powspec(int lmax);
 
@@ -75,27 +77,31 @@ namespace healpix {
         */
         void mfcn(const std::string &psffile,int lmax);
 
-        /**@brief applies a matched filter with assumed shape of photon likelihood
+        /**@brief applies a matched filter with simple point spread function of energy E
         @param lmax  maximum multipole moment
+        @param energy  determines width of point spread function
         */
-        void mfcn(int lmax);
+        void mfcn(int lmax, double energy);
 
         /**@brief applies a matched filter with a varied background
         @param noise  file of noise
         @param lmax  maximum multipole moment
         */
-        void mfvn(const std::string &noise, int lmax);
+        void mfvn(Map<T> &nhm, int lmax, double energy);
 
         /**@brief writes a FITS file out in the HEALpix convention
         @param out  FITS file location   "X:\\folder\\folder\\file.fits"
         */
         void writemap(std::string &out);
 
+        /**@brife returns map value in a particular direction by closest HealPixel
+        @param sd  direction to look 
+        */
         double operator()(const astro::SkyDir & sd) const{ return m_hm[m_hm.nest2ring(healpix::HealPixel(sd,m_hm.Order()).index())];}
 
 
     private:
-        double m_factor;              //binning factors: E = s_minenergy*m_factor**(level-s_minlevel)
+        double m_factor;      //binning factors: E = s_minenergy*m_factor**(level-s_minlevel)
 	Healpix_Map< T> m_hm; //wrapped HEALpix package map object
         static const int s_minlevel = 6;
         static const int s_minenergy = 100;

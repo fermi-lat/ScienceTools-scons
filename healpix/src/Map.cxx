@@ -35,9 +35,17 @@ template Map<float>::Map(int level);
 template Map<double>::Map(int level);
 
 template<typename T> Map<T>::Map(const astro::SkyFunction& f,int level):m_factor(2.35),m_hm(level,::RING) {
-    for(int i(0);i< m_hm.Npix();++i) {
-        m_hm[i]=f(healpix::HealPixel(m_hm.ring2nest(i),level));
+#ifdef _OPENMP
+#pragma omp parallel
+    {
+#pragma omp for schedule(dynamic,1) 
+#endif
+        for(int i=0;i< m_hm.Npix();++i) {
+            m_hm[i]=f(healpix::HealPixel(m_hm.ring2nest(i),level));
+        }
+#ifdef _OPENMP
     }
+#endif
 }
 
 template Map<float>::Map(const astro::SkyFunction& f, int level);
@@ -66,10 +74,17 @@ template std::vector<float> Map<float>::powspec(int lmax);
 template std::vector<double> Map<double>::powspec(int lmax);
 
 template<typename T> void Map<T>::scale(T factor) {
-    
-    for(int i(0);i<m_hm.Npix();++i) {
-        m_hm[i]*=factor;
+#ifdef _OPENMP
+#pragma omp parallel
+    {
+#pragma omp for schedule(dynamic,1) 
+#endif
+        for(int i=0;i<m_hm.Npix();++i) {
+            m_hm[i]*=factor;
+        }
+#ifdef _OPENMP
     }
+#endif
 }
 
 template void Map<float>::scale(float factor);
@@ -77,9 +92,17 @@ template void Map<double>::scale(double factor);
 
 template<typename T> void Map<T>::zeromap() {
     //zero negative elements
-    for(int i(0);i<m_hm.Npix();++i) {
-        if(m_hm[i]<0) m_hm[i]=0;
+#ifdef _OPENMP
+#pragma omp parallel
+    {
+#pragma omp for schedule(dynamic,1) 
+#endif
+        for(int i=0;i<m_hm.Npix();++i) {
+            if(m_hm[i]<0) m_hm[i]=0;
+        }
+#ifdef _OPENMP
     }
+#endif
 }
 
 template void Map<float>::zeromap();
@@ -128,43 +151,43 @@ template<typename T> void Map<T>::mfcn(const std::string &psf, int lmax) {
 template void Map<float>::mfcn(const std::string &psf,int lmax);
 template void Map<double>::mfcn(const std::string &psf,int lmax);
 
-template<typename T> void Map<T>::mfcn(int lmax) {
+template<typename T> void Map<T>::mfcn(int lmax, double energy) {
     AlmOp<xcomplex<T> > skylm(lmax,lmax);  //original map harmonics
     AlmOp<xcomplex<T> > psflm(lmax,lmax);  //point spread funtion harmonics
     Healpix_Map<T> psfmap = lhood<T>(m_hm.Order()); //calculates likelihood shape from function
     map2alm_iter(m_hm,*skylm.Alms(),0);
-    double energy = s_minenergy*pow(m_factor,log(1.0*m_hm.Nside())/log(2.0)-s_minlevel)*sqrt(m_factor); //energy of bin computed by geometric mean
-    double angle = 5.59*pow(1/energy+1/50000,0.8);//angular scale determined by likelihood analysis
+     //energy of bin computed by geometric mean
+    double p0 = 0.058; 
+    double p1 = 0.000377;
+    double angle = sqrt(((p0*p0*pow(energy/100,-1.6))+p1*p1))*M_PI/180;//angular scale determined by likelihood analysis
     double R = tan(angle/2)/tan(45.0); //dilation operators defined by McEwen
     map2alm_iterdil(psfmap,*psflm.Alms(),0,R);
     mf_constantnoise(*skylm.Alms(),*psflm.Alms());// filter described by McEwen
     alm2map(*skylm.Alms(),m_hm);
 }
 
-template void Map<float>::mfcn(int lmax);
-template void Map<double>::mfcn(int lmax);
+template void Map<float>::mfcn(int lmax, double energy);
+template void Map<double>::mfcn(int lmax, double energy);
 
 
-template<typename T> void Map<T>::mfvn(const std::string &noise, int lmax) {
+template<typename T> void Map<T>::mfvn(Map<T> &noise, int lmax, double energy) {
     AlmOp<xcomplex<T> > skylm(lmax,lmax);  //original map harmonics
     AlmOp<xcomplex<T> > psflm(lmax,lmax);  //point spread funtion harmonics
-    AlmOp<xcomplex<T> > noiselm(lmax,lmax); //noise harmonics
-    Healpix_Map<T> noisemap(m_hm.Order(),::RING);
-    fitshandle inp(noise,2,2);
-    read_Healpix_map_from_fits(inp,noisemap);
+    AlmOp<xcomplex<T> > nhm(lmax,lmax); //noise harmonics
     Healpix_Map<T> psfmap = lhood<T>(m_hm.Order()); //calculates likelihood shape from function
+    map2alm_iter(*noise.map(),*nhm.Alms(),0);
     map2alm_iter(m_hm,*skylm.Alms(),0);
-    map2alm_iter(noisemap,*noiselm.Alms(),0);
-    double energy = s_minenergy*pow(m_factor,log(1.0*m_hm.Nside())/log(2.0)-s_minlevel)*sqrt(m_factor); //energy of bin computed by geometric mean
-    double angle = 5.59*pow(1/energy+1/50000,0.8);//angular scale determined by likelihood analysis
+    double p0 = 0.058; 
+    double p1 = 0.000377;
+    double angle = sqrt(((p0*p0*pow(energy/200,-1.6))+p1*p1));//angular scale determined by likelihood analysis
     double R = tan(angle/2)/tan(45.0); //dilation operators defined by McEwen
     map2alm_iterdil(psfmap,*psflm.Alms(),0,R);
-    mf_noise(*skylm.Alms(),*psflm.Alms(),*noiselm.Alms());// filter described by McEwen
+    mf_noise(*skylm.Alms(),*psflm.Alms(),*nhm.Alms());// filter described by McEwen
     alm2map(*skylm.Alms(),m_hm);
 }
 
-template void Map<float>::mfvn(const std::string &noise, int lmax);
-template void Map<double>::mfvn(const std::string &noise, int lmax);
+template void Map<float>::mfvn(Map<float> &noise, int lmax, double energy);
+template void Map<double>::mfvn(Map<double> &noise, int lmax, double energy);
 
 
 template<typename T> void Map<T>::writemap(std::string &out) {

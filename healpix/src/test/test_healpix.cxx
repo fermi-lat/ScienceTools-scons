@@ -33,7 +33,7 @@ int main() {
             Map<double> mp(string("../src/test/srctest.fits"),i);
             cout << "done!" << endl;
             cout << "Filtering map...";
-            mp.mfcn(155*(2*(i-5)));
+            mp.mfcn(155*(2*(i-5)),100*pow(2.35,(i-6)*1.));
             cout << "done!" << endl;
             //cout << "Writing output fits file...";
             //if the output file already exists, then the program will throw an error
