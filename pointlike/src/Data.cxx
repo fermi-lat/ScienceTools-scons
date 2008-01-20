@@ -28,6 +28,7 @@ $Header$
 #include <algorithm>
 #include <numeric>
 #include <cassert>
+#include <sstream>
 
 
 using astro::SkyDir;
@@ -36,7 +37,23 @@ double Data::s_scale[4]={1.0, 1.86, 1.0, 1.0}; // wired in for front, back !!
 
 int Data::s_class_level=2; 
 
+#ifdef WIN32
+#include <float.h> // used to check for NaN
+#else
+#include <cmath>
+#endif
+
 namespace {
+
+    bool isFinite(double val) {
+        using namespace std; // should allow either std::isfinite or ::isfinite
+#ifdef WIN32 
+        return (_finite(val)!=0);  // Win32 call available in float.h
+#else
+        return (isfinite(val)!=0); // gcc call available in math.h 
+#endif
+    }
+
 
     /** @class Photon
         @brief derive from astro::Photon to allow transformation
@@ -226,6 +243,12 @@ namespace {
             (*m_it)[*names++].get(source);
         }
  
+        if( !isFinite(energy) || !isFinite(dec) || !isFinite(ra) ){
+            std::stringstream s;
+            s << "Bad data: time = " << std::setprecision(10)<< time;
+            s << "\n\tenergy, ra, dec: " << energy <<", " << ra<<", " << dec;
+            throw std::runtime_error(s.str());
+        }
         if(! m_fits){
             // A root file: apply standard cuts
             if( energy==0) event_class=99; // reject if not well measured
