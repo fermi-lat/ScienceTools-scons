@@ -143,13 +143,6 @@ std::pair<double,double> SkyDir::project(const SkyProj& projection) const
 double SkyDir::difference(const SkyDir& other)const
 {
 	double x = 0.5*(m_dir-other.dir()).mag();
-
-	if(fabs(x) < 0.1)
-	{
-		// Approximation good to 4e-4 radians or 0.02 degrees
-		return 2. * x;
-	}
-	else
         return 2.*asin(x);
 }
 
