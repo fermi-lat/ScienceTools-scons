@@ -25,6 +25,7 @@ using namespace astro;
 #include <stdexcept>
 #include <cmath>
 #include <cassert>
+#include <iostream>
 
 namespace{
 /** @class SkyProjException
@@ -131,7 +132,7 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
    int fstatus = 0, // cfitsio error status 
        numkeys, // number of keys (cards) in header
        nummore; // number of keys that can be added to header
-   char *header; // string containing header
+   char *header(0); // string containing header
 
    fits_open_file(&fptr,fitsFile.c_str(),mode,&fstatus);
    fits_report_error(stderr, fstatus);
@@ -154,15 +155,17 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
    wcspih(header,numkeys,relax,ctrl,&nreject,&m_nwcs,&m_wcs);
    m_wcspih_used = true;
 
-   // Manually set naxis to 2.
-   m_wcs->naxis = 2;
+   // Manually set naxis to 2. (three places?)
+   m_wcs->naxis = m_wcs->lin.m_naxis = m_wcs->m_naxis = 2;
 
-    int status = wcsset2(m_wcs);
-    if (status !=0) {
-        throw SkyProjException(status );
-    }
+   int status = wcsset2(m_wcs);
+   if (status !=0) {
+       throw SkyProjException(status );
+   }
+   // and again, in case 
+   m_wcs->naxis = m_wcs->lin.m_naxis = m_wcs->m_naxis = 2;
 
-    //  wcsprt(&m_wcs[0]); 
+  // wcsprt(&m_wcs[0]); 
 }
 
 SkyProj::~SkyProj()
@@ -319,7 +322,13 @@ int SkyProj::testpix2sph(double x1, double x2) const{
 
     double pixcrd[] = {x1,x2};;
 
+    try{
+        m_wcs->lin.naxis=2; // don't know why this is needed
     return wcsp2s(m_wcs, ncoords, nelem, pixcrd, imgcrd, phi, theta, worldcrd, stat);
+    }catch(...){
+        std::cout << "testpix2ph: unexpected failure for " << x1 <<", "<< x2 << std::endl; 
+        return 1;
+    }
 }
 
 void SkyProj::init(const std::string &projName, 
@@ -370,9 +379,16 @@ void SkyProj::init(const std::string &projName,
     if (status !=0) {
         throw SkyProjException(status );
     }
-    
+
+    // enable this to see a nice formatted dump
+    //wcsprt(m_wcs);
+
     //determine bounding box
-    findBound(crpix);
+    try {
+        findBound(crpix);
+    }catch(...){
+        std::cerr << "warning: could not find bounding box" << std::endl;
+    }
 
     // a simple test
     double tlon = crval[0], tlat = crval[1];
@@ -381,8 +397,6 @@ void SkyProj::init(const std::string &projName,
     std::pair<double, double> s = pix2sph(t.first, t.second);
     check = fabs(s.first-crval[0]-s.second-crval[1]);
 
-    // enable this to see a nice formatted dump
-    //wcsprt(m_wcs);
 }
 
 SkyProj::SkyProj(const SkyProj & other)

@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r0p4   21-jan-08 THB Kluge fix for odd wcslib behavior reading a FITS cube
   v3r0p3   02-jan-08 THB relax GPS test tolerance; fix SConscript file
   v3r0p1   01-jan-08 THB add SWIG interface 
   v3r0     10-dec-07 THB convert to sharable and factor healpix to new healpix package
