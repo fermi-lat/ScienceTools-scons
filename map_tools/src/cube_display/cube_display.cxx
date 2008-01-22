@@ -125,8 +125,8 @@ public:
                pixscale(m_pars["pixscale"]); 
         std::string coordsys(m_pars["coordsys"].Value()), proj(m_pars["proj"].Value());
         bool galactic (coordsys=="GAL");
-        int numxpix(m_pars["numxpix"]), 
-            numypix(m_pars["numypix"]);
+        int numxpix(m_pars["nxpix"]), 
+            numypix(m_pars["nypix"]);
         double fov = numxpix==1? 180. : numxpix*pixscale;
 
         astro::SkyDir center(xref, yref, galactic?  astro::SkyDir::GALACTIC : astro::SkyDir::EQUATORIAL);

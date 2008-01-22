@@ -279,6 +279,8 @@ public:
             m_pars.Prompt("emin");
             m_pars.Prompt("emax");
             m_pars.Prompt("enumbins");
+        }else{
+            std::clog << "Image properties copied from file " << m_pars["cmfile"].Value() << std::endl;
         }
     
         m_pars.Prompt("bincalc");

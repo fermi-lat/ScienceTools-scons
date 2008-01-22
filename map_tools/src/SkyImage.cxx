@@ -302,25 +302,21 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
     m_min=1e10;m_max=-1e10;
     int offset = m_naxis1* m_naxis2 * layer;
     for( size_t k = 0; k< (unsigned int)(m_naxis1)*(m_naxis2); ++k){
-        // 2/7/2006 JP commented out the following line to silence compiler warning.
-        // size_t kk = k%(unsigned int)(m_naxis1* m_naxis2);
         // determine the bin center (pixel coords start at (1,1) in center of lower left
         double 
             x = static_cast<int>(k%m_naxis1)+1.0, 
-            y = static_cast<int>(k/m_naxis1)+1.0;
+            y = static_cast<int>(k/m_naxis1)+1.0,
+            t = dnan;  // default value: nan
         if( m_wcs->testpix2sph(x,y)==0) {
             astro::SkyDir dir(x,y, *m_wcs);
-            double t= req(dir);
-            m_imageData[k+offset] = t;
+            t= req(dir);
             m_total += t;
             ++m_count;
             m_sumsq += t*t;
             m_min = t<m_min? t:m_min;
             m_max = t>m_max? t:m_max;
-        }else{
-            // not valid (off the edge, perhaps)
-            m_imageData[k+offset]=dnan; 
         }
+        m_imageData[k+offset] = t;
     }
     return;
 }
@@ -377,8 +373,8 @@ void SkyImage::getNeighbors(const astro::SkyDir& pos, std::vector<double>&neighb
     if( p.first<0) p.first += m_naxis1;
     if(p.second<0) p.second += m_naxis2;
     unsigned int 
-        i = static_cast<unsigned int>(p.first),
-        j = static_cast<unsigned int>(p.second),
+        i = static_cast<unsigned int>(p.first-0.5),
+        j = static_cast<unsigned int>(p.second-0.5),
         k = i+m_naxis1*(j + layer*m_naxis2);
     if(i+1<(unsigned int)m_naxis1)neighbors.push_back(m_imageData[k+1]); 
     if(i>0) neighbors.push_back(m_imageData[k-1]);
@@ -398,14 +394,10 @@ unsigned int SkyImage::pixel_index(const astro::SkyDir& pos, int layer) const
     if( p.first<0) p.first += m_naxis1;
     if(p.second<0) p.second += m_naxis2;
     unsigned int 
-        i = static_cast<unsigned int>(p.first),
-        j = static_cast<unsigned int>(p.second),
+        i = static_cast<unsigned int>(p.first-0.5),
+        j = static_cast<unsigned int>(p.second-0.5),
         k = i+m_naxis1*(j + layer*m_naxis2);
-#if 0
-    if( k >= m_pixelCount ) {
-#else // not sure how this seemed to be needed
      if( k > m_pixelCount+1 ) {
-#endif
         throw std::range_error("SkyImage::pixel_index -- outside image hyper cube");
     }
     return k;
