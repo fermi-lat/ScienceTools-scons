@@ -5,6 +5,9 @@
    $Id$
 
    @verbatim
+   v1r3p2 23-Jan-08   JC    restore scFiles attribute in UnbinnedAnalysis.py;
+                            fix CALDBCONFIG and CALDBALIAS bugs in 
+                            package_paths.py
    v1r3p1 14-Dec-07   JC    use new Likelihood::ScData::readData method 
                             to read in FT2 data and check for zero number of
                             intervals (LK-39)

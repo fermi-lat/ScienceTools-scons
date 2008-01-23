@@ -20,11 +20,12 @@ else:
 
 from swig_setup import packageroot
 
+caldbroot = os.path.join(inst_dir, 'irfs',
+                         '%s' % packageroot('caldb'), 'CALDB')
+
 extra_paths = [('CALDB',
-                os.path.join(inst_dir, 'irfs',
-                             '%s' % packageroot('caldb'), 'CALDB',
-                             'data', 'glast', 'lat')), 
-               ('CALDBCONFIG',
-                os.path.join(caldb, 'software', 'tools', 'caldb.config')),
-               ('CALDBALIAS',
-                os.path.join(caldb, 'software', 'tools', 'alias_caldb.fits'))]
+                os.path.join(caldbroot, 'data', 'glast', 'lat')), 
+               ('CALDBCONFIG', os.path.join(caldbroot, 'software', 'tools', 
+                                            'caldb.config')),
+               ('CALDBALIAS', os.path.join(caldbroot, 'software', 'tools', 
+                                           'alias_caldb.fits'))]
