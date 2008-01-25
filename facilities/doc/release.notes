@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+  v2r17p2  25-Jan-2008 panetta Fix stringToUll and stringToUnsigned to allow hex input
   v2r17    18-Jan-2008 hmk add stringToUll
   v2r16p20 12-Nov-2007 jrb Patch for Windows compile. 
   v2r16p19 8-Nov-2007 jrb  New gsleep function (argument in milliseconds)
