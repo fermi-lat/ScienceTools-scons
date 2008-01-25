@@ -78,9 +78,9 @@ namespace facilities {
         packageRoot = env;
       }
     */
-    if(packageRoot == ""){
-      std::cerr<<"Unable to determine data path for "<<package<<std::endl;
-    }
+    //if(packageRoot == ""){
+    //  std::cerr<<"Unable to determine data path for "<<package<<std::endl;
+    //}
     return packageRoot;
   }
 
