@@ -210,6 +210,9 @@ namespace pointlike {
         void write(const std::string & outputFile,
             const std::string & tablename="SOURCEFINDER", bool clobber= true) const;
 
+        //! run the current set of steps
+        void run();
+
     private:
         const pointlike::PhotonMap& m_pmap;
         Candidates m_can;
