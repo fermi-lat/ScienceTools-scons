@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 24-jan-08 v4r3p1  THB Test tag including new SourceFinder capability, mainly for Navid to have a tag
  02-jan-08 v4r3    THB remove static variables from inline code, make all private
  16-dec-07 v4r2p1  THB Fix output parameters of refits
  16-dec-07 v4r2    THB refactored pointfind with refit
