@@ -5,7 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
- 26-jan-08 v5r0p1  THB Move SkySpectrum classes to new package skymaps
+ 27-jan-08 v5r0p2  THB Move SkySpectrum classes to new package skymaps
  25-jan-08 v4r5p2  THB Test tag including new SourceFinder capability, mainly for Navid to have a tag
  02-jan-08 v4r3    THB remove static variables from inline code, make all private
  16-dec-07 v4r2p1  THB Fix output parameters of refits

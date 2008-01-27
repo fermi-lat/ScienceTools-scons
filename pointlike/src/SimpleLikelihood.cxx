@@ -5,7 +5,7 @@ $Header$
 */
 
 #include "pointlike/SimpleLikelihood.h"
-#include "skymaps/DIffuseFunction.h"
+#include "skymaps/DiffuseFunction.h"
 #include "astro/SkyDir.h"
 #include <algorithm>
 #include <cmath>
