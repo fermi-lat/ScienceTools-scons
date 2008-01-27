@@ -86,9 +86,9 @@ AlignProc::AlignProc(std::vector<astro::SkyDir>& sources,std::vector<std::string
 m_photons(0),
 m_start(start),
 m_stop(stop),
-m_skydir(sources),
 m_arcsec(arcsecs),
-m_roti(arcsecs*M_PI/648000,offx*M_PI/648000,offy*M_PI/648000,offz*M_PI/648000)
+m_roti(arcsecs*M_PI/648000,offx*M_PI/648000,offy*M_PI/648000,offz*M_PI/648000),
+m_skydir(sources)
 {
     for(std::vector<std::string>::const_iterator it = files.begin();it!=files.end();++it) {
         //either load through ROOT or cfitsio

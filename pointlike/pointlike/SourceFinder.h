@@ -36,8 +36,8 @@ namespace pointlike {
             m_sigma(sigma), 
             m_dir(dir), 
             m_2bdeleted(false),
-            m_weighted_count(0),
             m_isSource(false),
+            m_weighted_count(0),
             m_hasStrongNeighbor(false),
             m_strongNeighbor(healpix::HealPixel(0,0))
         {
