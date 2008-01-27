@@ -31,6 +31,7 @@ $Header$
 #include <numeric>
 #include <cassert>
 #include <sstream>
+#include <stdexcept>
 
 
 using astro::SkyDir;
