@@ -17,6 +17,7 @@ $Header$
 #include <cmath>
 #include <cassert>
 #include <errno.h>
+#include <stdexcept>
 
 namespace {
 

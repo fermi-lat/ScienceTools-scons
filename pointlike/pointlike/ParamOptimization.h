@@ -6,7 +6,7 @@
 #ifndef POINTLIKE_PARAMOPTIMIZATION_H
 #define POINTLIKE_PARAMOPTIMIZATION_H
 #include "pointlike/PointSourceLikelihood.h"
-#include "pointlike/PhotonMap.h"
+#include "skymaps/PhotonMap.h"
 #include <iostream>
 #include <iomanip>
 
@@ -28,7 +28,7 @@ public:
         @param directions is an array of reference directions to calculate sigma values
         @param radius is the radius cone in degrees
     */
-    ParamOptimization(const pointlike::PhotonMap &data, const std::vector<astro::SkyDir>& directions, std::ostream* out=&std::cout, int minlevel=6, int maxlevel=13);
+    ParamOptimization(const skymaps::PhotonMap &data, const std::vector<astro::SkyDir>& directions, std::ostream* out=&std::cout, int minlevel=6, int maxlevel=13);
     
     //returns signal fraction for each energy bin
     std::vector<double> get_alphas() {return m_alphas;}
@@ -44,7 +44,7 @@ private:
     std::vector<double> m_alphas;                 //signal fractions for each energy bin
     std::vector<pointlike::PointSourceLikelihood*> m_likes; 
     std::ostream * m_out;                         //where to send output
-    const pointlike::PhotonMap m_data;            //points to skymap
+    const skymaps::PhotonMap m_data;            //points to skymap
     int m_minlevel;                               //minimum healpix level
     int m_maxlevel;                               //maximum healpix level
 };

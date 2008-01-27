@@ -15,7 +15,7 @@ using namespace pointlike;
 std::ofstream goldout("bracket_output.xls");
 #endif
 
-ParamOptimization::ParamOptimization(const pointlike::PhotonMap &data, const std::vector<astro::SkyDir>& directions, std::ostream *out,int minlevel,int maxlevel) : 
+ParamOptimization::ParamOptimization(const skymaps::PhotonMap &data, const std::vector<astro::SkyDir>& directions, std::ostream *out,int minlevel,int maxlevel) : 
 m_data(data)
 , m_minlevel(minlevel)
 , m_maxlevel(maxlevel)

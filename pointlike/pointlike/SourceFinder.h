@@ -9,7 +9,7 @@ $Header$
 
 //#include "tools/PowerLawFilter.h"
 #include "pointlike/Data.h"
-#include "pointlike/PhotonMap.h"
+#include "skymaps/PhotonMap.h"
 #include "pointlike/PointSourceLikelihood.h"
 
 #include "astro/SkyDir.h"
@@ -200,7 +200,7 @@ namespace pointlike {
         void createTable(const std::string& filename, bool get_background = false, int skip_TS = 0);
 
         //! allow access to map
-        const pointlike::PhotonMap& getMap() {return(m_pmap);}
+        const skymaps::PhotonMap& getMap() {return(m_pmap);}
 
         //! return vector of candidates, copy of current list
 
@@ -214,7 +214,7 @@ namespace pointlike {
         void run();
 
     private:
-        const pointlike::PhotonMap& m_pmap;
+        const skymaps::PhotonMap& m_pmap;
         Candidates m_can;
         DiffuseCounts* m_counts;
         const embed_python::Module & m_module;

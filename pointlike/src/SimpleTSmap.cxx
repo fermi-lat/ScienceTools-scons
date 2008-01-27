@@ -5,7 +5,7 @@ $Header$
 
 #include "pointlike/SimpleTSmap.h"
 #include "pointlike/PointSourceLikelihood.h"
-#include "pointlike/PhotonMap.h"
+#include "skymaps/PhotonMap.h"
 
 #include "healpix/HealPixel.h"
 
@@ -35,8 +35,8 @@ using namespace pointlike;
 using astro::SkyDir;
 using healpix::HealPixel;
 
-SimpleTSmap::SimpleTSmap(const pointlike::PhotonMap& pmap, 
-                         const pointlike::SkySpectrum& background)
+SimpleTSmap::SimpleTSmap(const skymaps::PhotonMap& pmap, 
+                         const skymaps::SkySpectrum& background)
 : m_pmap(pmap)
 , m_background(background)
 , m_level(8)
@@ -67,7 +67,7 @@ void SimpleTSmap::run( astro::SkyDir& center, double radius, int level, bool ver
         PointSourceLikelihood ps(m_pmap, "test", sd);
         //ps.set_verbose(true);
         // todo: fix this need for a cast
-        ps.set_diffuse(const_cast<pointlike::SkySpectrum*>(&m_background));
+        ps.set_diffuse(const_cast<skymaps::SkySpectrum*>(&m_background));
         double ts(ps.maximize());
         //ps.printSpectrum();
         if( ts>5 ){

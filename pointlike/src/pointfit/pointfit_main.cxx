@@ -7,7 +7,6 @@
 #include "pointlike/PointSourceLikelihood.h"
 #include "pointlike/Data.h"
 #include "pointlike/ParamOptimization.h"
-#include "pointlike/DiffuseFunction.h"
 
 #include "embed_python/Module.h"
 
