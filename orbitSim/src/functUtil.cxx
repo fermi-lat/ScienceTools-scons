@@ -292,16 +292,17 @@ int match_str(const char *string, const char *pattern) {
   char c;
   char *STR;
 
-  char s[0];
+  char s;
 
 
-  char NPAT[len-1];
+  char *NPAT;
+  NPAT = (char *) malloc((len-1) * sizeof(char));
 
-  sprintf(s,"%c", PAT[len-1]);
+  s = PAT[len-1];
 
   STR = (char *) malloc((len+1) * sizeof(char));
 
-  if(strncmp(PAT, "^", 1) == 0 && strcmp(s, "$") == 0){
+  if(strncmp(PAT, "^", 1) == 0 && s == '$'){
     int nlen = len - 1;
 
     c = UpStr[0];
@@ -322,7 +323,8 @@ int match_str(const char *string, const char *pattern) {
     }
 
   
-  }else if(strncmp(PAT, "^", 1) == 0 && strcmp(s, "$") != 0){
+    //  }else if(strncmp(PAT, "^", 1) == 0 && strcmp(s, "$") != 0){
+  }else if(strncmp(PAT, "^", 1) == 0 && s != '$'){
     c = UpStr[0];
     sprintf(STR, "%c", c);
     sprintf(NPAT, "%c", PAT[1]);
@@ -341,7 +343,7 @@ int match_str(const char *string, const char *pattern) {
     }
 
 
-  } else if (strcmp(s, "$") == 0 && strncmp(PAT, "^", 1) != 0){
+  } else if (s == '$' && strncmp(PAT, "^", 1) != 0){
     int nlen = len - 1;
     c = UpStr[slen-nlen];
     sprintf(STR, "%c", c);
@@ -379,6 +381,10 @@ int match_str(const char *string, const char *pattern) {
     }
 
   }
+
+
+  free(NPAT);
+  free(STR);
 
   fosf.info(4) << "Returning with match="<<match<<"\n";
   return match;
@@ -428,10 +434,12 @@ int match2str(const char *string, const char *pattern1, const char *pattern2) {
   }
 
 
-    int i = 0;
+  int i = 0;
   if(pattern1[0] != '^'){
     
-    char pat1[patlen1+1];
+    //    char pat1[patlen1+1];
+    char *pat1;
+    pat1 = (char *) malloc((patlen1+1) * sizeof(char));
 
     strcpy(pat1, "^");
     strcat(pat1, pattern1);
@@ -444,6 +452,7 @@ int match2str(const char *string, const char *pattern1, const char *pattern2) {
       ++ln;
     }
 
+    free(pat1);
   } else {
 
     while(match_str(ln, pattern1) != 1){
@@ -462,10 +471,11 @@ int match2str(const char *string, const char *pattern1, const char *pattern2) {
   }
 
   if(match_str(ln, pattern2) != 1){
+    free(ln);
     return 0;
   }
 
-
+  free(ln);
   return 1;
 }
 
@@ -480,9 +490,12 @@ int checkManeuver(const char *str){
 
   const int len = strlen(str);
 
-  char ln[len];
+  char *ln;
+  ln = (char *) malloc((len+1) * sizeof(char));
 
   strcpy(ln, str);
+  strcat(ln, "\0");
+
 
   if(checkDate(ln) != 1){
     return 0;
@@ -497,9 +510,11 @@ int checkManeuver(const char *str){
   }
 
   if(match_str(str2, "^Maneuver") != 1){
+    free(ln);
     return 0;
   }
 
+  free(ln);
   return 1;
 }
 
@@ -508,13 +523,17 @@ int checkManeuver(const char *str){
 
 int checkManZenith(const char *str){
 
+
   const int len = strlen(str);
 
-  char ln[len];
+  char *ln;
+  ln = (char *) malloc((len+1) * sizeof(char));
 
   strcpy(ln, str);
+  strcat(ln, "\0");
 
   if(checkDate(ln) != 1){
+    free(ln);
     return 0;
   }
 
@@ -535,6 +554,7 @@ int checkManZenith(const char *str){
   }
 
   if(match_str(str2, "^Zenith") != 1){
+    free(ln);
     return 0;
   }
 
@@ -548,10 +568,12 @@ int checkManZenith(const char *str){
   }
 
   if(match_str(str2, "^Point") != 1){
+    free(ln);
     return 0;
   }
 
 
+  free(ln);
   return 1;
 }
 
@@ -569,12 +591,12 @@ int checkDate(char *ln){
 
   
   int i = 0;
-  char s[0];
+  char s;
 
   // 2 0 0 7 - 1 9 3 - 0  0  :  0  0  :  0  0  :  0  0  .  0  0  0  0  0  0
   // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
   for(i=0; i<datelen; i++){
-    sprintf(s, "%c", ln[i]);
+    s = ln[i];
 
     if(i<4 || (i>4 && i<8) || (i>8 && i<11) || 
        (i>11 && i<14) || (i>14 && i<17) || (i>17 && i<20) || i>20) {
@@ -583,16 +605,16 @@ int checkDate(char *ln){
        }
 
     } else if(i==4 || i==8){
-      if(strcmp(s, "-") != 0){
+      if(s != '-'){
 	return 0;
       }
     } else if(i==11 || i==14 || i==17){
-      if(strcmp(s, ":") != 0){
+      if(s != ':'){
 	return 0;
       }
 
     } else if(i==20){
-      if(strcmp(s, ".") != 0){
+      if(s != '.'){
 	return 0;
       }
 
@@ -1491,6 +1513,7 @@ int calculate_slopes(double *lon, double *lat, int num_saa, double *slopes,
     return -1; /* error */ 
   }
 
+
   for (i=1;i<num_saa;++i) {
     if(lat[i+1] != lat[i]) {
        slopes[i] = ( lon[i+1] - lon[i])/(lat[i+1] - lat[i]);
@@ -1502,7 +1525,6 @@ int calculate_slopes(double *lon, double *lat, int num_saa, double *slopes,
   }
 
  
-
   return 0;
 }
 

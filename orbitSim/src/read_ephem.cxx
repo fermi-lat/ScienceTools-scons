@@ -1504,7 +1504,7 @@ void MakeSurvey(double start, double end, double res, double offset,
 
   }
 
-  osf.info(3) << "Leaving MakeSurvey\n";
+  osf.info(5) << "Leaving MakeSurvey\n";
   return;
 }
 
@@ -1882,8 +1882,38 @@ void saa( EphemData *EphemPtr, const char *filename, double StartTime,
       osf.err() << "saa constraint: could not open file " << filename  << ".\n";
     else {
 
+      
+      /* Read file. Ignore comment lines (#), truncate if more than 50 pairs */
+      while ((fgets(line,lnsz,fptr) != NULL) && (num_lat < 50) && (num_lon < 50) ) {
+
+	if (line[0] != '#') {
+	  if(strncmp(line, "SAAPOLYLAT", 10) == 0){
+	    num_lat++;
+	    sscanf (line, "%13c%lf", jnk,&lattable[num_lat]); 
+	  }else if(strncmp(line, "SAAPOLYLONG", 11) == 0){
+	    num_lon++;
+	    sscanf (line, "%14c%lf", jnk,&lontable[num_lon]);
+	    if (lontable[num_lon] >= 180.0) lontable[num_lon]-=360.0;
+	  } else {
+	    sscanf (line, "%lf %lf", &lontable[num_saa], &lattable[num_saa]);
+	    if (lontable[num_saa] >= 180.0) lontable[num_saa]-=360.0;
+	    num_saa++;
+	    num_lat++;
+	    num_lon++;
+
+	  }
+
+
+	}
+
+      }
+
+
+
+
+/*
 	if(flg == 1){
-	  /* Read file. Ignore comment lines (#), truncate if more than 50 pairs */
+	  // Read file. Ignore comment lines (#), truncate if more than 50 pairs 
 	  while ((fgets(line,lnsz,fptr) != NULL) && (num_saa < 50)) {
 
 	    if (line[0] != '#') {
@@ -1896,43 +1926,50 @@ void saa( EphemData *EphemPtr, const char *filename, double StartTime,
 	  }
 	} else if(flg == 2){
 
-	  /* Read file. Ignore comment lines (#), truncate if more than 50 pairs */
+	  // Read file. Ignore comment lines (#), truncate if more than 50 pairs 
 	  while ((fgets(line,lnsz,fptr) != NULL) && (num_lat < 50) && (num_lon < 50) ) {
 
 	    if (line[0] != '#') {
-	      if(strncmp(line, "SAAPOLYLAT***", 10) == 0){
+	      if(strncmp(line, "SAAPOLYLAT", 10) == 0){
 		num_lat++;
 		sscanf (line, "%13c%lf", jnk,&lattable[num_lat]); 
 	      }
 
 
-	      if(strncmp(line, "SAAPOLYLONG***", 11) == 0){
+	      if(strncmp(line, "SAAPOLYLONG", 11) == 0){
 		num_lon++;
 		sscanf (line, "%14c%lf", jnk,&lontable[num_lon]);
 		if (lontable[num_lon] >= 180.0) lontable[num_lon]-=360.0;
 	      }
 	    }
 
-	    if(num_lat != num_lon){
-	      
-
-	      std::ostringstream eBufT;
-	      eBufT << "\n" << __FILE__ << ":" << __LINE__ << "\n";
-	      eBufT << "ERROR: while reading SAA LAT and LONG, from file:\n";
-	      eBufT << "           " << filename << "\n";
-	      eBufT << "           it appears that the number of lat is " << num_lat << "\n";
-	      eBufT << "           while the number of long is " << num_lon << "\n";
-	      eBufT << "Please, correct this problem. Exiting for now.....\n\n"  <<std::ends;
-	      throw std::runtime_error(eBufT.str());
-
-	    } else {
-	      num_saa = num_lat;
-	    }
 
 	  }
 	}
-      
+*/  
+
+    
       fclose(fptr);
+
+
+      if(num_lat != num_lon){
+	      
+
+	std::ostringstream eBufT;
+	eBufT << "\n" << __FILE__ << ":" << __LINE__ << "\n";
+	eBufT << "ERROR: while reading SAA LAT and LONG, from file:\n";
+	eBufT << "           " << filename << "\n";
+	eBufT << "           it appears that the number of lat is " << num_lat << "\n";
+	eBufT << "           while the number of long is " << num_lon << "\n";
+	eBufT << "Please, correct this problem. Exiting for now.....\n\n"  <<std::ends;
+	throw std::runtime_error(eBufT.str());
+
+      } else {
+	num_saa = num_lat;
+      }
+
+
+
 
      /*  For the following algorithm to work, the last pair must be the same as the 1st. If the
          file doesn't do this (likely), then add the last pair.                                  */
@@ -1948,7 +1985,7 @@ void saa( EphemData *EphemPtr, const char *filename, double StartTime,
     }
   }
 
-  if (num_saa < 4)
+  if (num_saa < 4 || flg == 0)
   {  
     /* An saa file was not passed in, or it was not valid (not enough points),
      use these defaults for Swift */
@@ -2488,12 +2525,13 @@ void doProfiled(double start, double end, double res, double *tms,
 
 
   osf.setMethod("doProfiled");
+  osf.info(2) << "Supposed to calculate Profiled Survey from "<<start<<" to "<<end<<"\n";
   osf.info(2) << "The profile contains ncycles=" << ncycles << "\n";
 
   int nts = 0;
 
 
-  for(jc=0; jc<=ncycles; jc++){
+  for(jc=0; jc<=ncycles+1; jc++){
 
     osf.info(4) << "Now doing cycle=" << jc << "\n";
     for(ic=0; ic<=sz-1; ic++){
@@ -2506,7 +2544,7 @@ void doProfiled(double start, double end, double res, double *tms,
       epoch1 = epoch+((double)jc*tms[sz-1]+tms[ic])/secInDay;
       epoch2 = epoch+((double)jc1*tms[sz-1]+tms[ic1])/secInDay;
 
-      osf.info(4) << "jc="<<jc<<", jc1="<<jc1<<", ic="<<ic<<", ic1="<<ic1<<", epoch1=" << epoch1 << ", epoch2="<< epoch2 << "\n";
+      osf.info(5) << "jc="<<jc<<", jc1="<<jc1<<", ic="<<ic<<", ic1="<<ic1<<", epoch1=" << epoch1 << ", epoch2="<< epoch2 << "\n";
 
       angsep = ofst[ic1] - ofst[ic];
       if(fabs(epoch2-epoch1) <= res){
@@ -2530,6 +2568,7 @@ void doProfiled(double start, double end, double res, double *tms,
 	//int k =(int) (((mjd-start)+res/2.0)/res);
 
 	osf.info(5) << "jc=" << jc <<", ic="<<ic<<", i="<<i<<", ino="<< ino<<", calling MakeSurvey with offset="<<offset<<"\n";
+
 	MakeSurvey(mjd, mjd, res, offset, ephem, OAtt, RaDec, 2, start);
 	nts++;
 
@@ -2667,8 +2706,11 @@ void doLimbTrace(EphemData *EphemPtr, double StartTime, double EndTime, double R
   inum++; //GR increased number of data points by one;
 
   const int sz = inum/4;
-  int staocc[sz];
-  int endocc[sz];
+
+//   int staocc[sz];
+//   int endocc[sz];
+  std::vector <int> staocc(sz);
+  std::vector <int> endocc(sz);
 
   osf.setMethod("doLimbTrace");
 
@@ -2744,6 +2786,8 @@ void doLimbTrace(EphemData *EphemPtr, double StartTime, double EndTime, double R
    
 
   }
+
+  return;
 
 }
 
