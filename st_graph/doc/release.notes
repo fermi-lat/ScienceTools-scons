@@ -42,5 +42,6 @@ $Id$
 26-jun-2006      v1r6 JP  Add logarithmic scaling, line styles (solid, dashed, dotted, none) and
                           curve type (curve = smooth curve, line = lines connecting points.)
 14-aug-2006      v1r7 JP  Improve color handling scheme. Allow client to set colors of IPlots.
+30-jan-2008    v1r7p1 JP  Add SCons files.
 \endverbatim
 */
