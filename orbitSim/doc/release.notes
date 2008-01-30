@@ -4,6 +4,8 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+30-jan-2008    v0r1p2 JP  From Giuseppe Romeo: changes to eliminate build
+                          warnings and errors from the release manager.
 30-jan-2008    v0r1p2 JP  Add SCons files.
 03-oct-2007    v0r1p1 JP  From Giuseppe Romeo: remove final usage of regexp
                           and fix bug in handling gaps in the TAKO timeline.
