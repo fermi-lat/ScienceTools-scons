@@ -4,8 +4,8 @@
 
 #include "hoops/hoops_limits.h"
 #include "hoops/hoops.h"
-#include "hoops/hoops_pil_factory.h"
-#include "hoops/hoops_pil.h"
+#include "hoops/hoops_ape_factory.h"
+#include "hoops/hoops_ape.h"
 
 int main(int iargc, char* argv[]) {
    std::string filename("file.par");
@@ -15,12 +15,12 @@ int main(int iargc, char* argv[]) {
    argv[0] = strdup(filename.c_str());
 
    hoops::IParFile * pf 
-      = hoops::PILParFileFactory().NewIParFile(argv[0]);
+      = hoops::ApeParFileFactory().NewIParFile(argv[0]);
 
    pf->Load();
 
    hoops::IParPrompt * prompter 
-      = hoops::PILParPromptFactory().NewIParPrompt(iargc, argv);
+      = hoops::ApeParPromptFactory().NewIParPrompt(iargc, argv);
 
    prompter->Prompt();
 
