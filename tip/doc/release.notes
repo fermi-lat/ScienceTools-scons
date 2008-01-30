@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+30-jan-2008 v2r12p1   JP Add SCons files. Use facilities for performing path operations.
 25-sep-2006   v2r12   JP Add isNull method, for determining if a cell contains an
                          INDEF (null) value.
 06-sep-2006   v2r11   JP Add IFileSvc::openFile method, for opening a file as a
