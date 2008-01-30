@@ -79,6 +79,8 @@
                           BayesianBinner::computeLogProb(...) (JIRA GRB #24).
 19-oct-2007    v2r0p3 JP  Add check for non-positive width interval to
                           BayesianBinner::computeBlocks.
+30-jan-2008    v2r0p4 JP  Add SCons files. Change test input files to use
+                          EVTBINDATAPATH environment variable.
 --------------------------------------------------------------------------------
 \endverbatim
 
