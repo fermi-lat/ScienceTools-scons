@@ -4,6 +4,7 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+30-jan-2008 v0r5p1    JP  Add SCons files.
 16-jan-2007   v0r5    JP  Direct StreamFormatter::info() stream to stout (cout)
                           instead of stlog (clog).
 23-aug-2005   v0r4    JP  Do not automatically write prefix after endls.
