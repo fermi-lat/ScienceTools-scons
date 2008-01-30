@@ -81,6 +81,7 @@
                           BayesianBinner::computeBlocks.
 30-jan-2008    v2r0p4 JP  Add SCons files. Change test input files to use
                           EVTBINDATAPATH environment variable.
+30-jan-2008    v2r0p5 JP  Fix typo in SConscript for unit test application.
 --------------------------------------------------------------------------------
 \endverbatim
 
