@@ -16,6 +16,7 @@ astroLib = libEnv.SharedLibrary('astro', listFiles(
  'src/healpix/*.cc', 
  'src/wcslib/*.cxx', 
  'src/wcslib/*.c', 
- 'src/jplephem/*.cxx']))
+ 'src/jplephem/*.cxx',
+ 'src/igrf_sub/*.cxx']))
 
 progEnv.Tool('registerObjects', package = 'astro', libraries = [astroLib], includes = listFiles(['astro/*.h']))
