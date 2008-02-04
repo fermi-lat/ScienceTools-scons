@@ -66,6 +66,10 @@ public:
    /// @return The EVENTS or SC_DATA extension FITS header.
    tip::Header & header();
 
+   int fieldIndex(const std::string & colname) const {
+      return m_table->getFieldIndex(colname) + 1;
+   }
+
    template<class Type>
    void setPhduKeyword(const std::string & keyword,
                        const Type & value) const {

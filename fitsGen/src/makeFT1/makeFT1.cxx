@@ -65,6 +65,25 @@ namespace {
       const std::string & ft1Type() const {
          return m_ft1Type;
       }
+      void write_TLMIN_TLMAX(Ft1File & ft1) const {
+         int fieldIndex(ft1.fieldIndex(m_ft1Name));
+         std::ostringstream tlmin, tlmax;
+         tlmin << "TLMIN" << fieldIndex;
+         tlmax << "TLMAX" << fieldIndex;
+         if (m_ft1Type == "I") {
+            ft1.header()[tlmin.str()].set("-32768");
+            ft1.header()[tlmax.str()].set("32767");
+         } else if (m_ft1Type == "J") {
+            ft1.header()[tlmin.str()].set("-2147483648");
+            ft1.header()[tlmax.str()].set("2147483647");
+         } else if (m_ft1Type == "E") {
+            ft1.header()[tlmin.str()].set("-1.0E+10");
+            ft1.header()[tlmax.str()].set("1.0E+10");
+         } else if (m_ft1Type == "D") {
+            ft1.header()[tlmin.str()].set("-1.0D+10");
+            ft1.header()[tlmax.str()].set("1.0D+10");
+         }
+      }
    private:
       std::string m_ft1Name;
       std::string m_meritName;
@@ -109,6 +128,7 @@ namespace {
          if (std::find(validFields.begin(), validFields.end(), 
                        candidate) == validFields.end()) {
             ft1.appendField(ft1_entry->first, ft1_entry->second.ft1Type());
+            ft1_entry->second.write_TLMIN_TLMAX(ft1);
          }
       }
    }

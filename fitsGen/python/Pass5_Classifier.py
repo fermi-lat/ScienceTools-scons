@@ -31,5 +31,6 @@ commonCuts = '&&'.join(('1',))
 #
 eventClassCuts = ['&&'.join((commonCuts, '(Tkr1FirstLayer>5.5)')),
                   '&&'.join((commonCuts, '(Tkr1FirstLayer<5.5)'))]
+#eventClassCuts = ['&&'.join(('1',))]
 
 eventClassifier = EventClassifier(eventClassCuts)
