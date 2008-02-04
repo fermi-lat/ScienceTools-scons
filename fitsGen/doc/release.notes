@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r8p4 04-Feb-08   JC   add TLMIN# TLMAX# for appended fields in makeFT1
     v3r8p3 16-Jan-08   JC   switch order of adding columns and setting the
                             number of rows in makeFT1 for much greater 
                             efficiency.                            
