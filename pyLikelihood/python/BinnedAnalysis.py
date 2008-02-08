@@ -94,9 +94,6 @@ class BinnedAnalysis(AnalysisBase):
         AnalysisBase.__init__(self)
         if srcModel is None:
             srcModel, optimizer = self._srcDialog()
-        self._inputs = '\n'.join((str(binnedData),
-                                  'Source model file: ' + str(srcModel),
-                                  'Optimizer: ' + str(optimizer)))
         self.binnedData = binnedData
         self.srcModel = srcModel
         self.optimizer = optimizer
@@ -110,6 +107,10 @@ class BinnedAnalysis(AnalysisBase):
         self.energies = num.array(self.logLike.energies())
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self.logLike.countsSpectrum();
+    def _inputs(self):
+        return '\n'.join((str(self.binnedData),
+                          'Source model file: ' + str(self.srcModel),
+                          'Optimizer: ' + str(self.optimizer)))
     def _srcCnts(self, srcName):
         srcMap = self.logLike.sourceMap(srcName)
         npreds = srcMap.npreds()

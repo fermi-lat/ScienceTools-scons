@@ -138,9 +138,6 @@ class UnbinnedAnalysis(AnalysisBase):
         AnalysisBase.__init__(self)
         if srcModel is None:
             srcModel, optimizer = self._srcDialog()
-        self._inputs = '\n'.join((str(observation),
-                                  'Source model file: ' + str(srcModel),
-                                  'Optimizer: ' + str(optimizer)))
         self.observation = observation
         self.srcModel = srcModel
         self.optimizer = optimizer
@@ -157,6 +154,10 @@ class UnbinnedAnalysis(AnalysisBase):
         self.nobs = self._Nobs()
         self.disp = None
         self.resids = None
+    def _inputs(self):
+        return '\n'.join((str(self.observation),
+                          'Source model file: ' + str(self.srcModel),
+                          'Optimizer: ' + str(self.optimizer)))
     def _Nobs(self):
         return num.array(self.observation.eventCont().nobs(self.energies))
     def _srcCnts(self, srcName):

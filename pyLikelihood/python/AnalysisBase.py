@@ -214,7 +214,7 @@ class AnalysisBase(object):
                                              color=color, symbol='line')
         return model_counts
     def __repr__(self):
-        return self._inputs
+        return self._inputs()
     def __getitem__(self, name):
         return self.model[name]
     def __setitem__(self, name, value):
