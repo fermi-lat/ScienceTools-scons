@@ -51,7 +51,7 @@ public:
     double  maximize(int skip=0);
 
     //! change the current direction -- resets data and refits
-    void setDir(const astro::SkyDir& dir);
+    void setDir(const astro::SkyDir& dir,bool subset=false);
 
     /// @return the gradient, summed over all levels, skiping skip
     Hep3Vector gradient(int skip=0) const;
