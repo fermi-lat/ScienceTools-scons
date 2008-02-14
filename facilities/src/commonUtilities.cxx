@@ -8,10 +8,19 @@ extern char **environ;
 
 namespace facilities {
   std::string commonUtilities::getPackagePath(const std::string &package){
+#ifdef SCons
+    return joinPath(commonUtilities::getPackageRoot(package), package);
+#else
     return commonUtilities::getPackageRoot(package);
+#endif
   }
 
   std::string commonUtilities::getDataPath(const std::string &package){
+#ifdef SCons
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string dataPath = joinPath(packageRoot, "data");
+    return joinPath(dataPath, package);
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
@@ -20,9 +29,15 @@ namespace facilities {
 #else
     return packageRoot+"/data";
 #endif
+#endif
   }
 
   std::string commonUtilities::getXmlPath(const std::string &package){
+#ifdef SCons
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string xmlLocation = joinPath(packageRoot, "xml");
+    return joinPath(xmlLocation, package);
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
@@ -31,9 +46,15 @@ namespace facilities {
 #else
     return packageRoot+"/xml";
 #endif
+#endif
   }
 
   std::string commonUtilities::getPfilesPath(const std::string &package){
+#ifdef SCons
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string pfilesLocation = joinPath(packageRoot, "pfiles");
+    return joinPath(pfilesLocation, package);
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
@@ -41,6 +62,7 @@ namespace facilities {
     return packageRoot+"\\pfiles";
 #else
     return packageRoot+"/pfiles";
+#endif
 #endif
   }
 
@@ -63,13 +85,19 @@ namespace facilities {
   }
 
   std::string commonUtilities::getPackageRoot(const std::string &package){
+    std::string packageRoot;
+#ifdef SCons
+    const char *env = getenv("INST_DIR");
+    if(env != NULL)
+      packageRoot = env;
+#else
     std::string upperCase=package;
     transform(upperCase.begin(),upperCase.end(),upperCase.begin(),(int(*)(int)) toupper);
     upperCase=upperCase+"ROOT";
     const char *env = getenv(upperCase.c_str());
-    std::string packageRoot;
     if(env!=NULL)
       packageRoot = env;
+#endif
     //  For now insist there be a translation for package root
     /*
       if(packageRoot == ""){
