@@ -23,6 +23,9 @@ $Header$
 #include "st_app/AppParGroup.h"
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/st_stream.h"
+#include "st_facilities/Util.h"
+
+#include "dataSubselector/Cuts.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
@@ -81,7 +84,7 @@ public:
             return costh<m_cutoff? 0 : (costh-m_cutoff)/(1.-m_cutoff);
         }
 
-        return m_aeff->value(m_energy, acos(costh)*180/M_PI, 0);
+        return costh<m_cutoff? 0 : m_aeff->value(m_energy, acos(costh)*180/M_PI, 0);
     }
     const irfInterface::IAeff* m_aeff;
     double m_energy;
@@ -228,7 +231,7 @@ public:
         m_f.setMethod("run()");
 
         prompt();
-
+				
         // create the exposure, read it in from the FITS input file
         m_f.info() << "Creating an Exposure object from file " << m_pars["infile"].Value() << std::endl;
 
@@ -242,6 +245,35 @@ public:
 #endif
         irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
 
+				//Read in theta cuts from the event file
+				std::string event_file = m_pars["evfile"];
+				//Initialize the cut to have the whole range
+				dataSubselector::RangeCut thetaCut("THETA", "deg", ":90", 0);
+				if (event_file != "") {
+					std::string evtable = m_pars["evtable"];
+					std::vector<std::string> eventFiles;
+					st_facilities::Util::resolve_fits_files(event_file, eventFiles);
+					//Read the cuts, skipping time and event cuts
+					dataSubselector::Cuts * cuts = new dataSubselector::Cuts(eventFiles, evtable, false, true, true);
+					//Loop over the cuts, finding cuts in Theta
+					for (unsigned int i = 0; i < cuts->size(); ++i) {
+						dataSubselector::CutBase & cut = const_cast<dataSubselector::CutBase &>(cuts->operator[](i));
+						if (cut.type() == "range") {
+							dataSubselector::RangeCut & rangeCut = dynamic_cast<dataSubselector::RangeCut &>(cut);
+							if (rangeCut.colname() == "THETA") {
+								if (rangeCut.maxVal() < thetaCut.maxVal()) {
+									thetaCut = rangeCut;
+								}
+							}
+						}
+					}
+					delete cuts;
+				}
+				double cutoff = cos(thetaCut.maxVal()*M_PI/180);
+
+				m_f.info() << "Cutoff used: " << cutoff << std::endl;
+
+
         // create the image object, fill it from the exposure, write out
         std::clog << "Creating an Image, will write to file " << m_pars["outfile"].Value() << std::endl;
         SkyImage image(m_pars); 
@@ -253,7 +285,7 @@ public:
                 << " at energy " << energy[layer] << " MeV " 
                 << " Aeff(0): " << norm << " cm^2"<< std::endl;
 
-            RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy[layer]), 1.); 
+            RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy[layer],cutoff), 1.); 
             image.fill(req, layer);
         }
         ::writeEnergies(m_pars["outfile"], energy);
@@ -261,6 +293,7 @@ public:
 
     void prompt() {
         m_pars.Prompt("infile");
+				m_pars.Prompt("evfile");
         m_pars.Prompt("cmfile");
         m_pars.Prompt("outfile");
         m_pars.Prompt("irfs");
@@ -285,6 +318,7 @@ public:
     
         m_pars.Prompt("bincalc");
         m_pars.Prompt("table");
+				m_pars.Prompt("evtable");
         m_pars.Prompt("chatter");
         m_pars.Prompt("clobber");
         m_pars.Prompt("debug");

@@ -14,6 +14,7 @@ use st_app *
 use st_stream *
 use irfLoader * irfs
 use cfitsio * IExternal 
+use dataSubselector *
 
 
 apply_pattern ST_library option=-no_share
