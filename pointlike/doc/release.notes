@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 19-feb-08 v5r1    THB Improve convergence; move PSF configuration parameters to python setup
  13-feb-08 v5r0p3  MR  Fixed alignment procedure, optimizer errors, and code to keep data set constant
  27-jan-08 v5r0p2  THB Move SkySpectrum classes to new package skymaps
  25-jan-08 v4r5p2  THB Test tag including new SourceFinder capability, mainly for Navid to have a tag
