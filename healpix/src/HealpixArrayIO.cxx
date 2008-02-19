@@ -8,7 +8,6 @@ $Header$
 
 #include "healpix/HealpixArrayIO.h"
 #include "tip/IFileSvc.h"
-//#define TIP_ONECOLUMNBUG // remove this when tip is fixed to allow a single column
 
 #include <cmath>
 #include <errno.h>
@@ -19,11 +18,29 @@ $Header$
 
 using namespace healpix;
 
+namespace {
+
+    // set header fields for the array.
+    template<class T>
+    void setHealpixHeaderFields( const HealpixArray<T> & ha, int columns, tip::Header& hdr)
+    {
+        const Healpix& hp = ha.healpix();
+        hdr["ORDERING"].set(hp.ord() == Healpix::NEST? "NESTED": "RING"); 
+        hdr["COORDTYPE"].set(hp.galactic()? "GAL" : "EQU");
+        hdr["NSIDE"].set(hp.nside()); 
+        hdr["FIRSTPIX"].set(0); 
+        hdr["LASTPIX"].set(ha.size()-1); 
+        hdr["NAXIS1"].set( columns* sizeof(float) );
+    }
+
+
+}// anon namespace
+
 // Get the instance of the singleton class.
 HealpixArrayIO & HealpixArrayIO::instance()
 {
     static bool first_time = true;
-    
+
     // Perform any initialization only once
     if (first_time)
     {
@@ -37,8 +54,8 @@ HealpixArrayIO & HealpixArrayIO::instance()
 }
 
 std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner> & ha,
-                             const std::string & outputFile,
-                             const std::string & tablename, bool clobber)
+                                                const std::string & outputFile,
+                                                const std::string & tablename, bool clobber)
 {
     if (clobber)
     {
@@ -52,10 +69,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     tip::Table & table = *tip::IFileSvc::instance().editTable( outputFile, tablename);
 
     // this is a work-around for a bug in tip v2r1p1
-    #ifdef TIP_ONECOLUMNBUG
-        table.appendField("DUMMY", "1E");
-    #endif
-    
+
     std::stringstream ss;
     ss << ha[0].nbins() << "E";
     std::string nbrbins = ss.str();
@@ -69,25 +83,13 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     // now just copy
     for( ; haitor != ha.end(); ++haitor, ++itor)
     {
-        #ifdef TIP_ONECOLUMNBUG
-                (*itor)["DUMMY"].set(0.);
-        #endif
         (*itor)["COSBINS"].set(*haitor);
     }
-    
+
     // set the headers (TODO: do the comments, too)
     tip::Header& hdr = table.getHeader();
-    #ifdef TIP_ONECOLUMNBUG
-        hdr["NAXIS1"].set((sizeof(float) * ha[0].s_nbins) + sizeof(float));
-    #else
-        hdr["NAXIS1"].set(sizeof(float) * ha[0].nbins());
-    #endif
-    hdr["PIXTYPE"].set("HEALPIX"); 
-    hdr["ORDERING"].set("NESTED"); 
-    hdr["COORDTYPE"].set( ha.healpix().galactic()? "GAL" : "EQU");
-    hdr["NSIDE"].set(ha.healpix().nside()); 
-    hdr["FIRSTPIX"].set(0); 
-    hdr["LASTPIX"].set(ha.size()-1); 
+    setHealpixHeaderFields(ha, ha[0].nbins(), hdr);
+
     hdr["THETABIN"].set(CosineBinner::thetaBinning());
     hdr["NBRBINS"].set(CosineBinner::nbins());
     hdr["COSMIN"].set(CosineBinner::cosmin());
@@ -97,10 +99,10 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
 }
 
 std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<float> & ha,
-                             const std::string & outputFile,
-                             const std::string & tablename,
-                             const std::string & fieldname,
-                             bool clobber)
+                                                const std::string & outputFile,
+                                                const std::string & tablename,
+                                                const std::string & fieldname,
+                                                bool clobber)
 {
     if (clobber)
     {
@@ -114,10 +116,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<float> & ha,
     tip::Table & table = *tip::IFileSvc::instance().editTable( outputFile, tablename);
 
     // this is a work-around for a bug in tip v2r1p1
-    #ifdef TIP_ONECOLUMNBUG
-        table.appendField("DUMMY", "1E");
-    #endif
-    
+
     table.appendField(fieldname, "1E");
     table.setNumRecords(ha.size());
 
@@ -128,35 +127,26 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<float> & ha,
     // now just copy
     for( ; haitor != ha.end(); ++haitor, ++itor)
     {
-        #ifdef TIP_ONECOLUMNBUG
-                (*itor)["DUMMY"].set(0.);
-        #endif
         (*itor)[fieldname].set(*haitor);
     }
-    
+
     // set the headers (TODO: do the comments, too)
     tip::Header& hdr = table.getHeader();
-    #ifdef TIP_ONECOLUMNBUG
-        hdr["NAXIS1"].set(2 * sizeof(float));
-    #else
-        hdr["NAXIS1"].set(sizeof(float));
-    #endif
-    hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == Healpix::NEST)? "NESTED": "RING";
-    hdr["ORDERING"].set(ordering); 
-    hdr["NSIDE"].set(ha.healpix().nside()); 
-    hdr["FIRSTPIX"].set(0); 
-    hdr["LASTPIX"].set(ha.size()-1); 
+#if 0 // is this really 1 column?
+    hdr["NAXIS1"].set(sizeof(float));
+#endif
+    setHealpixHeaderFields(ha, 1, hdr);
 
     // need to do this to ensure file is closed when pointer goes out of scope
     return std::auto_ptr<tip::Table>(&table); 
 }
 
+
 std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<float> > & ha,
-                             const std::string & outputFile,
-                             const std::string & tablename,
-                             const std::vector<std::string> & fieldname,
-                             bool clobber)
+                                                const std::string & outputFile,
+                                                const std::string & tablename,
+                                                const std::vector<std::string> & fieldname,
+                                                bool clobber)
 {
     if (clobber)
     {
@@ -170,14 +160,10 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     tip::Table & table = *tip::IFileSvc::instance().editTable( outputFile, tablename);
 
     // this is a work-around for a bug in tip v2r1p1
-    #ifdef TIP_ONECOLUMNBUG
-        if (fieldname.size() < 2)
-            table.appendField("DUMMY", "1E");
-    #endif
-    
+
     // Add all field names
     for (std::vector<std::string>::const_iterator sit = fieldname.begin();
-         sit != fieldname.end(); ++ sit)
+        sit != fieldname.end(); ++ sit)
     {
         table.appendField(*sit, "1E");
     }
@@ -190,11 +176,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     // now just copy
     for( ; haitor != ha.end(); ++haitor, ++itor)
     {
-        #ifdef TIP_ONECOLUMNBUG
-            if (fieldname.size() < 2)
-                (*itor)["DUMMY"].set(0.);
-        #endif
-        
+
         std::vector<float>::const_iterator flit = (*haitor).begin();
         for (std::vector<std::string>::const_iterator sit = fieldname.begin();
             sit != fieldname.end(); ++ sit, ++flit)
@@ -204,23 +186,11 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
             (*itor)[*sit].set(*flit);
         }
     }
-    
+
     // set the headers (TODO: do the comments, too)
     tip::Header& hdr = table.getHeader();
-    #ifdef TIP_ONECOLUMNBUG
-        if (fieldname.size() < 2)
-            hdr["NAXIS1"].set((fieldname.size() + 1) * sizeof(float));
-        else
-            hdr["NAXIS1"].set(fieldname.size() * sizeof(float));
-    #else
-        hdr["NAXIS1"].set(fieldname.size() * sizeof(float));
-    #endif
-    hdr["PIXTYPE"].set("HEALPIX");
-    std::string ordering = (ha.healpix().ord() == Healpix::NEST)? "NESTED": "RING";
-    hdr["ORDERING"].set(ordering); 
-    hdr["NSIDE"].set(ha.healpix().nside()); 
-    hdr["FIRSTPIX"].set(0); 
-    hdr["LASTPIX"].set(ha.size()-1); 
+
+    setHealpixHeaderFields(ha, fieldname.size(), hdr);
 
     // need to do this to ensure file is closed when pointer goes out of scope
     return std::auto_ptr<tip::Table>(&table); 
@@ -228,15 +198,15 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
 
 
 
- HealpixArray<CosineBinner> HealpixArrayIO::read(const std::string & inputFile,
-                                       const std::string & tablename)
+HealpixArray<CosineBinner> HealpixArrayIO::read(const std::string & inputFile,
+                                                const std::string & tablename)
 {
     /* If the caller passes a reference to a HealpixArray instead of having this routine
-       return a HealpixArray, how does the caller know what to set for nside, s_nbins, etc.?
-       Could provide a GetAddtibutes function for this purpose.  If a reference is
-       passed, this routine should throw an exception if the attributes of the
-       HealpixArray passed don't match those of the file being read.  */
-       
+    return a HealpixArray, how does the caller know what to set for nside, s_nbins, etc.?
+    Could provide a GetAddtibutes function for this purpose.  If a reference is
+    passed, this routine should throw an exception if the attributes of the
+    HealpixArray passed don't match those of the file being read.  */
+
     const tip::Table & table=*tip::IFileSvc::instance().readTable(inputFile, tablename);
     const tip::Header& hdr = table.getHeader();
     int nside=0;
@@ -252,13 +222,19 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     hdr["NBRBINS"].get(nbrbins);
     double cosmin;
     hdr["COSMIN"].get(cosmin);
-   
+
+    // Code for setting CoordSystem added 1/17/2008
+    std::string check;
+    hdr["COORDTYPE"].get(check);
+    astro::SkyDir::CoordSystem coordsys = (check == "GAL")?
+        astro::SkyDir::GALACTIC: astro::SkyDir::EQUATORIAL;
+
     CosineBinner::setBinning(cosmin, nbrbins, thetabin);
-    HealpixArray<healpix::CosineBinner> ha(Healpix(nside, ord));
-    
+    HealpixArray<healpix::CosineBinner> ha(Healpix(nside, ord, coordsys));
+
     tip::Table::ConstIterator itor = table.begin();
     HealpixArray<CosineBinner>::iterator haitor = ha.begin();
-    
+
     for( ; itor != table.end(); ++haitor, ++itor)
     {
         (*itor)["COSBINS"].get(*haitor);
@@ -267,16 +243,16 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     return ha;
 }
 
- HealpixArray<float> HealpixArrayIO::read(const std::string & inputFile,
-                                       const std::string & tablename,
-                                       const std::string & fieldname)
+HealpixArray<float> HealpixArrayIO::read(const std::string & inputFile,
+                                         const std::string & tablename,
+                                         const std::string & fieldname)
 {
     /* If the caller passes a reference to a HealpixArray instead of having this routine
-       return a HealpixArray, how does the caller know what to set for nside, s_nbins, etc.?
-       Could provide a GetAddtibutes function for this purpose.  If a reference is
-       passed, this routine should throw an exception if the attributes of the
-       HealpixArray passed don't match those of the file being read.  */
-       
+    return a HealpixArray, how does the caller know what to set for nside, s_nbins, etc.?
+    Could provide a GetAddtibutes function for this purpose.  If a reference is
+    passed, this routine should throw an exception if the attributes of the
+    HealpixArray passed don't match those of the file being read.  */
+
     const tip::Table & table=*tip::IFileSvc::instance().readTable(inputFile, tablename);
     const tip::Header& hdr = table.getHeader();
     int nside=0;
@@ -285,12 +261,18 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     hdr["ORDERING"].get(ordering);
     Healpix::Ordering ord = (ordering == "NESTED")?
         Healpix::NEST: Healpix::RING;
-   
-    HealpixArray<float> ha(Healpix(nside, ord));
-    
+
+    // Code for setting CoordSystem added 1/17/2008
+    std::string check;
+    hdr["COORDTYPE"].get(check);
+    astro::SkyDir::CoordSystem coordsys = (check == "GAL")?
+        astro::SkyDir::GALACTIC: astro::SkyDir::EQUATORIAL;
+
+    HealpixArray<float> ha(Healpix(nside, ord, coordsys));
+
     tip::Table::ConstIterator itor = table.begin();
     HealpixArray<float>::iterator haitor = ha.begin();
-    
+
     for( ; itor != table.end(); ++haitor, ++itor)
     {
         (*itor)[fieldname].get(*haitor);
@@ -299,9 +281,9 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     return ha;
 }
 
- HealpixArray<std::vector<float> > HealpixArrayIO::read(const std::string & inputFile,
-                                       const std::string & tablename,
-                                       const std::vector<std::string> & fieldname)
+HealpixArray<std::vector<float> > HealpixArrayIO::read(const std::string & inputFile,
+                                                       const std::string & tablename,
+                                                       const std::vector<std::string> & fieldname)
 {      
     const tip::Table & table=*tip::IFileSvc::instance().readTable(inputFile, tablename);
     const tip::Header& hdr = table.getHeader();
@@ -311,17 +293,23 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<std::vector<f
     hdr["ORDERING"].get(ordering);
     Healpix::Ordering ord = (ordering == "NESTED")?
         Healpix::NEST: Healpix::RING;
-   
-    HealpixArray<std::vector<float> > ha(Healpix(nside, ord));
-    
+
+    // Code for setting CoordSystem added 1/17/2008
+    std::string check;
+    hdr["COORDTYPE"].get(check);
+    astro::SkyDir::CoordSystem coordsys = (check == "GAL")?
+        astro::SkyDir::GALACTIC: astro::SkyDir::EQUATORIAL;
+
+    HealpixArray<std::vector<float> > ha(Healpix(nside, ord, coordsys));
+
     tip::Table::ConstIterator itor = table.begin();
     HealpixArray<std::vector<float> >::iterator haitor = ha.begin();
-    
+
     for( ; itor != table.end(); ++haitor, ++itor)
     {
         (*haitor).clear();
         for (std::vector<std::string>::const_iterator sit = fieldname.begin();
-             sit != fieldname.end(); ++sit)
+            sit != fieldname.end(); ++sit)
         {
             float work;
             (*itor)[*sit].get(work);
