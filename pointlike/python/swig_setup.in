@@ -24,6 +24,7 @@
 #include "skymaps/Exposure.h"
 #include "skymaps/SkyImage.h"
 
+#include "embed_python/Module.h"
 
 #include "pointlike/PointSourceLikelihood.h"
 #include "pointlike/SimpleLikelihood.h"
@@ -141,6 +142,7 @@ public:
 // fails now
 //%include $(HEALPIXROOT)/healpix/HealPixel.h
 
+%include $(EMBED_PYTHONROOT)/embed_python/Module.h
     
 %include $(POINTLIKEROOT)/pointlike/SimpleLikelihood.h
 %include $(POINTLIKEROOT)/pointlike/PointSourceLikelihood.h
