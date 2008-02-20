@@ -10,7 +10,7 @@ $Header$
 #include "src/base/healpix_map.h"
 #include "src/base/powspec.h"
 #include "astro/SkyFunction.h"
-
+#include "healpix/HealPixel.h"
 
 namespace healpix {
 
