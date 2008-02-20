@@ -11,10 +11,12 @@ if libEnv['PLATFORM'] == "win32":
 		libEnv.AppendUnique(CPPFLAGS = "/wd4812")
 
 healpixSharedLib = libEnv.SharedLibrary('healpix', listFiles(['src/*.cxx', 'src/base/*.cc', 'src/base/*.c']))
-healpixStaticLib = libEnv.StaticLibrary('healpix', listFiles(['src/*.cxx', 'src/base/*.cc', 'src/base/*.c']))
-
+# note that this only builds a shared library -- no need to also build a static library
 progEnv.Tool('healpixLib')
 test_healpix = progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'healpix', libraries = [healpixSharedLib, healpixStaticLib], includes = listFiles(['healpix/*.h']))
+progEnv.Tool('registerObjects', 
+              package = 'healpix', 
+              libraries = [healpixSharedLib], 
+	      includes = listFiles(['healpix/*.h']))
 
