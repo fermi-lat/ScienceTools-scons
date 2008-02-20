@@ -1,5 +1,4 @@
 #$Id$
-import glob,os
 
 Import('baseEnv')
 Import('listFiles')
