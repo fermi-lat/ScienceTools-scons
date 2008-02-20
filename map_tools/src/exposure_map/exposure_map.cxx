@@ -245,33 +245,33 @@ public:
 #endif
         irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
 
-				//Read in theta cuts from the event file
-				std::string event_file = m_pars["evfile"];
-				//Initialize the cut to have the whole range
-				dataSubselector::RangeCut thetaCut("THETA", "deg", ":90", 0);
-				if (event_file != "") {
-					std::string evtable = m_pars["evtable"];
-					std::vector<std::string> eventFiles;
-					st_facilities::Util::resolve_fits_files(event_file, eventFiles);
-					//Read the cuts, skipping time and event cuts
-					dataSubselector::Cuts * cuts = new dataSubselector::Cuts(eventFiles, evtable, false, true, true);
-					//Loop over the cuts, finding cuts in Theta
-					for (unsigned int i = 0; i < cuts->size(); ++i) {
-						dataSubselector::CutBase & cut = const_cast<dataSubselector::CutBase &>(cuts->operator[](i));
-						if (cut.type() == "range") {
-							dataSubselector::RangeCut & rangeCut = dynamic_cast<dataSubselector::RangeCut &>(cut);
-							if (rangeCut.colname() == "THETA") {
-								if (rangeCut.maxVal() < thetaCut.maxVal()) {
-									thetaCut = rangeCut;
-								}
-							}
-						}
-					}
-					delete cuts;
-				}
-				double cutoff = cos(thetaCut.maxVal()*M_PI/180);
+        //Read in theta cuts from the event file
+        std::string event_file = m_pars["evfile"];
+        //Initialize the cut to have the whole range
+        dataSubselector::RangeCut thetaCut("THETA", "deg", ":90", 0);
+        if (event_file != "") {
+            std::string evtable = m_pars["evtable"];
+            std::vector<std::string> eventFiles;
+            st_facilities::Util::resolve_fits_files(event_file, eventFiles);
+            //Read the cuts, skipping time and event cuts
+            dataSubselector::Cuts * cuts = new dataSubselector::Cuts(eventFiles, evtable, false, true, true);
+            //Loop over the cuts, finding cuts in Theta
+            for (unsigned int i = 0; i < cuts->size(); ++i) {
+                dataSubselector::CutBase & cut = const_cast<dataSubselector::CutBase &>(cuts->operator[](i));
+                if (cut.type() == "range") {
+                    dataSubselector::RangeCut & rangeCut = dynamic_cast<dataSubselector::RangeCut &>(cut);
+                    if (rangeCut.colname() == "THETA") {
+                        if (rangeCut.maxVal() < thetaCut.maxVal()) {
+                            thetaCut = rangeCut;
+                        }
+                    }
+                }
+            }
+            delete cuts;
+        }
+        double cutoff = cos(thetaCut.maxVal()*M_PI/180);
 
-				m_f.info() << "Cutoff used: " << cutoff << std::endl;
+        m_f.info() << "Cutoff used: " << cutoff << std::endl;
 
 
         // create the image object, fill it from the exposure, write out
