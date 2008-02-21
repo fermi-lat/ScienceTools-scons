@@ -10,6 +10,11 @@ Import('listFiles')
 libEnv = baseEnv.Clone()
 progEnv = baseEnv.Clone()
 
+if libEnv['PLATFORM'] == "win32":
+  libEnv.AppendUnique(CCFLAGS = "/D_USE_MATH_DEFINES")
+  libEnv.AppendUnique(CCFLAGS = "/EHsc")
+  libEnv.AppendUnique(CCFLAGS = "/D_CRT_SECURE_NO_DEPRECATE")
+
 astroLib = libEnv.SharedLibrary('astro', listFiles(
 ['src/*.cxx', 
  'src/healpix/*.cxx', 
@@ -20,3 +25,5 @@ astroLib = libEnv.SharedLibrary('astro', listFiles(
  'src/igrf_sub/*.cxx']))
 
 progEnv.Tool('registerObjects', package = 'astro', libraries = [astroLib], includes = listFiles(['astro/*.h']))
+
+
