@@ -2,8 +2,6 @@
 #
 # $Id$
 
-import glob, os, platform
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
