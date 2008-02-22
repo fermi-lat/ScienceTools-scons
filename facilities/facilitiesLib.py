@@ -1,3 +1,4 @@
+#$Id$
 def generate(env, **kw):
 	env.Tool('addLibrary', library = ['facilities'], package = 'facilities')
 
