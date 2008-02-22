@@ -1,3 +1,4 @@
+#$Id$
 def generate(env, **kw):
     env.Tool('addLibrary', library = ['dataSubselector'], package = 'dataSubselector')
     env.Tool('tipLib')

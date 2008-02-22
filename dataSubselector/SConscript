@@ -1,15 +1,12 @@
 # -*- python -*-
 #
 # $Id$
-
-import glob, os, platform
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if platform.system() == 'Windows':
+if baseEnv['PLATFORM'] == 'win32':
     progEnv.Append(CPPFLAGS = '/wd4290')
 
 dataSubselectorLib = libEnv.StaticLibrary('dataSubselector', 
@@ -17,7 +14,9 @@ dataSubselectorLib = libEnv.StaticLibrary('dataSubselector',
 
 progEnv.Tool('dataSubselectorLib')
 
-test_dataSubselectorBin = progEnv.Program('test_dataSubselector', 
+testEnv = progEnv.Clone()
+testEnv.Tool('addLibrary', library = baseEnv['cppunitLibs'])
+test_dataSubselectorBin = testEnv.Program('test_dataSubselector', 
                                           listFiles(['src/test/*.cxx']))
 
 gtselectBin = progEnv.Program('gtselect', 
