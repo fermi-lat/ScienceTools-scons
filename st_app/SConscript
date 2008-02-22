@@ -5,7 +5,7 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if platform.system() == 'Linux':
+if baseEnv['PLATFORM'] != "win32":
         progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 st_appLib = libEnv.StaticLibrary('st_app', listFiles(['src/*.cxx']))

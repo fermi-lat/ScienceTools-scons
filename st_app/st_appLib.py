@@ -3,6 +3,7 @@ def generate(env, **kw):
 	env.Tool('hoopsLib')
 	env.Tool('st_graphLib')
 	env.Tool('st_streamLib')
+	env.Tool('facilitiesLib')
 
 def exists(env):
 	return 1
