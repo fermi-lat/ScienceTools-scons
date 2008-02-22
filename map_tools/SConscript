@@ -8,8 +8,10 @@ libEnv = baseEnv.Clone()
 map_toolsLib = libEnv.StaticLibrary('map_tools', listFiles(['src/*.cxx']))
 
 progEnv.Tool('map_toolsLib')
-exposure_cubeBin = progEnv.Program('exposure_cube', listFiles(['src/exposure_cube/*.cxx']))
-exposure_mapBin = progEnv.Program('exposure_map', listFiles(['src/exposure_map/*.cxx']))
+gtexpcube = progEnv.Program('gtexpcube', listFiles(['src/exposure_map/*.cxx']))
+gtdispcube = progEnv.Program('gtdispcube', listFiles(['src/cube_display/*.cxx']))
+exposure_cube = progEnv.Program('exposure_cube', listFiles(['src/exposure_cube/*.cxx']))
+test_map_tools = progEnv.Program('test_map_tools', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'map_tools', libraries = [map_toolsLib], binaries = [exposure_cubeBin, exposure_mapBin], includes = listFiles(['map_tools/*.h']),
-             pfiles = listFiles(['pfiles/*.par']))
+progEnv.Tool('registerObjects', package = 'map_tools', libraries = [map_toolsLib], binaries = [gtexpcube, gtdispcube, exposure_cube], includes = listFiles(['map_tools/*.h']),
+             testApps = [test_map_tools], pfiles = listFiles(['pfiles/*.par']))
