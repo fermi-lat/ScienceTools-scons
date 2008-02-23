@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.18  2007/11/08 14:42:11  jurgen
+Handle error circles (e.g. 3EG catalogue)
+
 Revision 1.17  2007/10/11 13:20:54  jurgen
 Correctly remove FITS special function columns
 
@@ -65,8 +68,8 @@ Replace header information with CVS typeset information.
 /* Includes _________________________________________________________________ */
 #include "sourceIdentify.h"
 #include "Parameters.h"
-#include "src/catalog.h"
-#include "src/quantity.h"
+#include "catalogAccess/catalog.h"
+#include "catalogAccess/quantity.h"
 #include "fitsio.h"
 
 /* Namespace definition _____________________________________________________ */
