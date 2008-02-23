@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.24  2007/12/06 16:42:15  jurgen
+Add RA/DEC and PosErr generic names
+
 Revision 1.23  2007/11/30 16:19:26  jurgen
 Correct version number and add RAdeg/DEdeg columns
 
@@ -85,7 +88,7 @@ Replace header information with CVS typeset information.
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
-#include "src/quantity.h"
+//#include "src/quantity.h"
 
 
 /* Definitions ______________________________________________________________ */

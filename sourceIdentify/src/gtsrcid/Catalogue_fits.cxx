@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2007/11/08 11:18:31  jurgen
+Correctly handle missing name column
+
 Revision 1.11  2007/10/11 13:20:54  jurgen
 Correctly remove FITS special function columns
 
@@ -49,7 +52,7 @@ creation and allow in memory catalogues and FITS disk catalogues.
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
-#include "src/quantity.h"
+//#include "src/quantity.h"
 
 
 /* Definitions ______________________________________________________________ */
