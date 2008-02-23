@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.17  2007/12/06 16:42:15  jurgen
+Add RA/DEC and PosErr generic names
+
 Revision 1.16  2007/11/30 16:19:26  jurgen
 Correct version number and add RAdeg/DEdeg columns
 
@@ -58,9 +61,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r3p5"
+#define TOOL_VERSION  "v1r3p7"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     " 6-Dec-2007"
+#define TOOL_DATE     "23-Feb-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
