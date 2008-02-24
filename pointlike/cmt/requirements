@@ -1,6 +1,6 @@
 package pointlike
 
-version v5r1
+version v5r1p1
 
 # $Header$
 
@@ -8,6 +8,7 @@ use astro *
 use healpix *
 use skymaps *
 use embed_python *
+
 
 
 apply_pattern shared_library
