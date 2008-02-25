@@ -10,6 +10,8 @@ Import('listFiles')
 libEnv = baseEnv.Clone()
 progEnv = baseEnv.Clone()
 
+if baseEnv['PLATFORM'] == "win32":
+    libEnv.Append(CCFLAGS = "/wd4554") #  warning C4554: '<<' : check operator precedence
 
 astroLib = libEnv.SharedLibrary('astro', listFiles(
 ['src/*.cxx', 
