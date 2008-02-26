@@ -1,5 +1,7 @@
+#$Id$
 def generate(env, **kw):
-	env.Tool('addLibrary', library = ['st_graph'], package = 'st_graph')
+	if not kw.get('depsOnly',0):
+		env.Tool('addLibrary', library = ['st_graph'])
 	env.Tool('st_streamLib')
 	env.Tool('hoopsLib')
 	env.Tool('addLibrary', library = env['rootLibs'])

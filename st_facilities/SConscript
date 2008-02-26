@@ -1,13 +1,13 @@
-import glob,os,platform
-
+#$Id$
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if platform.system() == 'Linux':
-        progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] != "win32":
+        progEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
+libEnv.Tool('st_facilitiesLib', depsOnly = 1)
 st_facilitiesLib = libEnv.StaticLibrary('st_facilities', listFiles(['src/*.cxx', 'src/*.c']))
 
 progEnv.Tool('st_facilitiesLib')

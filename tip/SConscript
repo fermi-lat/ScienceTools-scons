@@ -1,10 +1,10 @@
 #$Id$
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool('tipLib', depsOnly = 1)
 tipLib = libEnv.StaticLibrary('tip', listFiles(['src/*.cxx']))
 
 progEnv.Tool('tipLib')
