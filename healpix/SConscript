@@ -8,7 +8,7 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('healpixlib', depsOnly = 1)
+libEnv.Tool('healpixLib', depsOnly = 1)
 progEnv.Tool('registerObjects', 
       package = 'healpix', 
       includes = listFiles(['healpix/*.h']),
