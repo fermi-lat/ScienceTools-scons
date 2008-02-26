@@ -6,9 +6,7 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if baseEnv['PLATFORM'] == 'win32':
-    progEnv.Append(CPPFLAGS = '/wd4290')
-
+libEnv.Tool('dataSubselectorLib', depsOnly = 1)
 dataSubselectorLib = libEnv.StaticLibrary('dataSubselector', 
                                           listFiles(['src/*.cxx']))
 

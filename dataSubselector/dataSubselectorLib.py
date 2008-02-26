@@ -1,6 +1,7 @@
 #$Id$
 def generate(env, **kw):
-    env.Tool('addLibrary', library = ['dataSubselector'], package = 'dataSubselector')
+    if not kw.get('depsOnly',0):
+        env.Tool('addLibrary', library = ['dataSubselector'])
     env.Tool('tipLib')
     env.Tool('astroLib')
     env.Tool('st_facilitiesLib')

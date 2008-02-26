@@ -1,10 +1,10 @@
-import glob,os
-
+#$Id$
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool('embed_pythonLib', depsOnly = 1)
 embed_pythonLib = libEnv.StaticLibrary('embed_python', listFiles(['src/*.cxx']))
 
 progEnv.Tool('embed_pythonLib')

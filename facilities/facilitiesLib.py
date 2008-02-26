@@ -1,6 +1,7 @@
 #$Id$
 def generate(env, **kw):
-	env.Tool('addLibrary', library = ['facilities'], package = 'facilities')
+	if not kw.get('depsOnly',0):
+		env.Tool('addLibrary', library = ['facilities'])
 
 def exists(env):
 	return 1;

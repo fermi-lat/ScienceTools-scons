@@ -1,5 +1,6 @@
 def generate(env, **kw):
-	env.Tool('addLibrary', library=['astro'], package = 'astro')
+	if not kw.get('depsOnly',0):
+		env.Tool('addLibrary', library=['astro'], package = 'astro')
 	env.Tool('facilitiesLib')
 	env.Tool('tipLib')
 	env.Tool('addLibrary', library=env['clhepLibs'])

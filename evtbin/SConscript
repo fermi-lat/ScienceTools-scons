@@ -1,10 +1,10 @@
-import glob,os,platform
-
+#$Id$
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool('evtbinLib', depsOnly = 1)
 evtbinLib = libEnv.StaticLibrary('evtbin', listFiles(['src/*.cxx']))
 
 progEnv.Tool('evtbinLib')

@@ -1,5 +1,7 @@
+#$Id$
 def generate(env, **kw):
-    env.Tool('addLibrary', library = ['evtbin'], package = 'evtbin')
+    if not kw.get('depsOnly',0):
+        env.Tool('addLibrary', library = ['evtbin'])
     env.Tool('astroLib')
     env.Tool('st_appLib')
     env.Tool('st_facilitiesLib')
