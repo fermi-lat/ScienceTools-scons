@@ -1,6 +1,7 @@
 #$Id$
 def generate(env, **kw):
-    env.Tool('addLibrary', library = ['map_tools'], package = 'map_tools')
+    if not kw.get('depsOnly',0):
+        env.Tool('addLibrary', library = ['map_tools'])
     env.Tool('healpixLib')
     env.Tool('astroLib')
     env.Tool('hoopsLib')

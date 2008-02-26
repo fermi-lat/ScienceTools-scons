@@ -1,6 +1,7 @@
 #$Id$
 def generate(env, **kw):
-	env.Tool('addLibrary', library = ['orbitSim'], package = 'orbitSim')
+	if not kw.get('depsOnly',0):
+		env.Tool('addLibrary', library = ['orbitSim'])
 	env.Tool('st_appLib')
 	env.Tool('st_facilitiesLib')
 	env.Tool('tipLib')

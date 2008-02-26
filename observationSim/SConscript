@@ -1,14 +1,12 @@
 # -*- python -*-
 #
 # $Id$
-
-import glob, os, platform
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool('observationSimLib', depsOnly = 1)
 observationSimLib = libEnv.StaticLibrary('observationSim', 
                                          listFiles(['src/*.cxx']))
 

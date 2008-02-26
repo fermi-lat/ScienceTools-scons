@@ -1,5 +1,7 @@
+#$Id$
 def generate(env, **kw):
-    env.Tool('addLibrary', library='pyExposure', package = 'pyExposure')
+    if not kw.get('depsOnly',0):
+        env.Tool('addLibrary', library='pyExposure')
     env.Tool('astroLib')
     env.Tool('irfLoaderLib')
     env.Tool('LikelihoodLib')

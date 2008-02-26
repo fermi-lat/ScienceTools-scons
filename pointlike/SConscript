@@ -13,6 +13,7 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool(package+'Lib', depsOnly = 1)
 progEnv.Tool(package+'Lib')
 progEnv.Tool('registerObjects', 
     package  = package, 

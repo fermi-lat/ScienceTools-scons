@@ -1,17 +1,15 @@
 # -*- python -*-
 #
 # $Header$
-
-import glob, os, platform
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if platform.system() == 'Linux':
-    progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] != "win32":
+    progEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
+libEnv.Tool('optimizersLib', depsOnly = 1)
 optimizersLib = libEnv.SharedLibrary('optimizers',
                                      listFiles(['src/*.cxx', 'src/*.c']))
 

@@ -1,15 +1,12 @@
 # -*- python -*-
 #
 # $Header$
-
-import os, glob
-
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-
+libEnv.Tool('pyExposureLib', depsOnly = 1)
 lib_pyExposureStaticLib = libEnv.StaticLibrary('lib_pyExposure', 
                                                'src/pyExposure.i')
 lib_pyExposureSharedLib = libEnv.SharedLibrary('lib_pyExposure', 
