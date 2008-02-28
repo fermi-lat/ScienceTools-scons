@@ -32,7 +32,7 @@ extern "C" {
    * @date Last Modified:  Feb 08, 2006
    */
 
-typedef struct EphemData {
+struct EphemData {
 
   ///Default Constructor
   EphemData(): MJD(1), X(1), Y(1), Z(1), Lat(1), Long(1), Alt(1), VelRA(1), VelDEC(1) {};
@@ -81,7 +81,7 @@ typedef struct EphemData {
    */
 
 
-typedef struct Attitude {
+struct Attitude {
 
   /// Default Constructor
   Attitude(): mjd(1), X(1), Y(1), Z(1), SatRA(1), SatDEC(1), Xra(1), Xdec(1), Zra(1), Zdec(1), Lat(1), Lon(1), Hei(1), in_saa(1), in_occ(1){};

@@ -663,6 +663,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 		    double tm, an;
 		    char jnk[24];
 		    sscanf(ln, "%s%02d %lf %lf", jnk, &idx, &tm, &an);
+		    losf.info(6) << "While Reading line: "<<ln<<"\n"<<i<<") Got Angle: "<<an<<"Time: "<<tm<<"\n";
 		    profile.ofsts[i] = an;
 		    profile.times[i] = tm;
 		  } else {
@@ -797,7 +798,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	} else if (mode == 3){
 
-	  //	  printf("Calling MakeProfiled, mjdt=%f mjde=%f pra=%f pdec=%f\n", mjdt, mjde, pra, pdec);
+	  printf("Calling MakeProfiled, mjdt=%f mjde=%f pra=%f pdec=%f\n", mjdt, mjde, pra, pdec);
 	  losf.info(3) << "Calling MakeProfiled with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<", pra="<<pra<<", pdec="<<pdec<<"\n";
 	  MakeProfiled(mjdt, mjde, ini->Resolution, pra, pdec, profile.epoch, 
 		       profile.times, profile.ofsts, ephem, OAtt, ini->start_MJD);
@@ -1664,7 +1665,9 @@ void parseProfile(char *ln, SurProf *profile){
   TL = strtok(NULL, "|");
   TL = strtok(NULL, "|");
   const int len = strlen(TL);
-  char jnk2[len];
+  char *jnk2 = NULL;
+  jnk2 = (char *) malloc((len) * sizeof(char));
+
   strcpy(jnk2, TL);
   char *Pf = strtok(jnk2, ",");
 
@@ -1689,7 +1692,7 @@ void parseProfile(char *ln, SurProf *profile){
     Pf = strtok(NULL, ",");
   }
 
-
+  free (jnk2);
 
   return;
 }
