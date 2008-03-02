@@ -68,6 +68,10 @@ public:
     //! @param source_id select given source
     void add(const std::string& file, int event_type=-1, int source_id=-1);
 
+    //! add  gti info from the file to current set
+    //! @param file Either FT1 or  MeritTuple ROOT file
+    void addgti(const std::string& file);
+
     //! behave like a PhotonMap object
     operator const skymaps::PhotonMap&() const {return *m_data;}
 

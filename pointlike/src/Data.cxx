@@ -19,6 +19,8 @@ $Header$
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include "skymaps/Gti.h"
+
 // --ROOT --
 #include "TROOT.h"
 #include "TTree.h"
@@ -361,6 +363,7 @@ Data::Data(const embed_python::Module& setup)
     {
         const std::string& inputFile(*it);
         add(inputFile, event_class, source_id);
+        addgti(inputFile);
     }
     if( !output_pixelfile.empty() ) {
         std::cout << "writing output pixel file :" << output_pixelfile << std::endl;
@@ -393,6 +396,22 @@ void Data::add(const std::string& inputFile, int event_type, int source_id)
         << std::endl;
 
 }
+
+void Data::addgti(const std::string& inputFile)
+{
+    try
+    {
+        std::cout << "Loading gti info from file " << inputFile << "...";
+        m_data->gti() |= skymaps::Gti(inputFile); 
+        std::cout << "done." << std::endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "\nCaught exception " << typeid(e).name() 
+            << " \"" << e.what() << "\"" << std::endl;
+        std::cerr << "Unable to access gti info from file " << inputFile << std::endl;
+    }
+}
 Data::Data(const std::string& inputFile, int event_type, double tstart, double tstop, int source_id)
 : m_data(new PhotonMap())
 , m_ft2file("")
@@ -400,6 +419,7 @@ Data::Data(const std::string& inputFile, int event_type, double tstart, double t
 , m_history(0)
 {
     add(inputFile, event_type, source_id);
+    addgti(inputFile);
 }
 
 Data::Data(std::vector<std::string> inputFiles, int event_type, double tstart, double tstop, int source_id, std::string ft2file)
@@ -414,6 +434,7 @@ Data::Data(std::vector<std::string> inputFiles, int event_type, double tstart, d
     {
         const std::string& inputFile(*it);
         add(inputFile, event_type, source_id);
+        addgti(inputFile);
     }
 }
 
@@ -421,6 +442,7 @@ Data::Data(const std::string & inputFile, const std::string & tablename)
 : m_data(new PhotonMap(inputFile, tablename))
 , m_history(0)
 {
+    addgti(inputFile);
 }
 
 Data::~Data()
