@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r3p4 03-Mar-08   JC    check that new parameter value lies within bounds
+                            in AnalysisBase._renorm()
    v1r3p3 08-Feb-08   JC    ensure [Unb,B]innedAnalysis.__repr__() returns the
                             current optimizer and srcModel values
    v1r3p2 23-Jan-08   JC    restore scFiles attribute in UnbinnedAnalysis.py;
