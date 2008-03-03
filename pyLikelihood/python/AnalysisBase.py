@@ -121,7 +121,11 @@ class AnalysisBase(object):
             parameter = self._normPar(src)
             if parameter.isFree() and self._isDiffuseOrNearby(src):
                 oldValue = parameter.getValue()
-                parameter.setValue(oldValue*self.renormFactor)
+                newValue = oldValue*self.renormFactor
+                # ensure new value is within parameter bounds
+                xmin, xmax = parameter.getBounds()
+                if xmin <= newValue and newValue <= xmax:
+                    parameter.setValue(newValue)
     def _npredValues(self):
         srcNames = self.sourceNames()
         freeNpred = 0

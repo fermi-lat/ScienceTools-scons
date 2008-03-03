@@ -14,7 +14,8 @@ from SrcModel import SourceModel
 from AnalysisBase import AnalysisBase, _quotefn, _null_file, num
 try:
     from SimpleDialog import SimpleDialog, map, Param
-except ImportError:
+except ImportError, message:
+    print "Caught ImportError: ", message
     pass
 
 _funcFactory = pyLike.SourceFactory_funcFactory()
