@@ -11,6 +11,7 @@
 namespace astro {
 class SkyDir;
 class PointingHistory;
+class PointingInfo;
 }
 
 namespace skymaps {
@@ -94,6 +95,8 @@ public:
     static CLHEP::HepRotation set_rot(double arcsecx, double arcsecy, double arcsecz);
     static void set_rot(std::vector<double> align);
     static const CLHEP::HepRotation& get_rot();
+    static const std::string historyfile();
+    static const astro::PointingInfo& get_pointing(double time);
 
 private:
     void lroot(const std::string& infile);
@@ -102,9 +105,9 @@ private:
 
     skymaps::PhotonMap * m_data;
     static CLHEP::HepRotation s_rot;
-    std::string m_ft2file;
+    static std::string s_ft2file;
     double m_start, m_stop;  ///< overall time
-    astro::PointingHistory* m_history; ///< pointer to optional FT2 info.
+    static astro::PointingHistory* s_history; ///< pointer to optional FT2 info.
     std::vector<std::pair<double,double> > m_gti; ///< time intervals (Good Time Interval)
 };
 
