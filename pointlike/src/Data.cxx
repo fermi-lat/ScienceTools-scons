@@ -274,6 +274,13 @@ namespace {
             }
         }else{
             ///@todo: process FT2 to extact pointing information as above.
+			if(!Data::historyfile().empty()) {
+                astro::PointingInfo pi = Data::get_pointing(time);
+                raz = pi.zAxis().ra();
+                decz = pi.zAxis().dec();
+                rax = pi.xAxis().ra();
+                decx = pi.xAxis().dec();
+            }
         }
 
         return Photon(astro::SkyDir(ra, dec), energy, time, event_class , source, 
@@ -452,7 +459,6 @@ Data::Data(const std::string & inputFile, const std::string & tablename)
 Data::~Data()
 {
     delete m_data;
-    delete s_history;
 }
 
 
