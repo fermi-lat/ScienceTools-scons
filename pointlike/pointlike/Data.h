@@ -97,6 +97,7 @@ public:
     static const CLHEP::HepRotation& get_rot();
     static const std::string historyfile();
     static const astro::PointingInfo& get_pointing(double time);
+    static bool inTimeRange(double time);
 
 private:
     void lroot(const std::string& infile);
