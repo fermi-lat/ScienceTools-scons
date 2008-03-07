@@ -5,6 +5,7 @@
 set    RUN_ID = "test1"
 setenv PFILES ../../pfiles
 setenv PATH   .:$PATH
+
 #
 # Find 3EG counterparts in North 20 cm survey catalogue of White et al. 1992
 # and create some fake flux probability ratio.
@@ -36,7 +37,7 @@ gtsrcid \
   outCatQty09="" \
   probMethod="POSITION * PROB-Ratio" \
   probThres="0.05" \
-  maxNumCtp="4" \
+  maxNumCpt="4" \
   select01='' \
   select02='' \
   select03='' \
