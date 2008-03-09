@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 08-mar-08 v5r4    
  05-mar-08 v5r3p1  MR  Added FT2 support to Data and Alignment classes
  03-mar-08 v5r3    THB Use Gti
  24-feb-08 v5r1p1  THB Provide sensible PSF default parameters

@@ -106,7 +106,7 @@ def show_image( fun,sdir, level=9, scale=0.5, step=0.01):
     pylab.colorbar()
     emin, emax = energy_range(level)
     pylab.title('level %d (%d-%d)' %(level, emin, emax), size=10)
-    pylab.gca().format_coord = lambda x, y: 'f(%6.3f,%6.3f)='%(x,y, fun(x,y))
+    pylab.gca().format_coord = lambda x, y: 'f(%6.3f,%6.3f)='%(x,y)
 
 
 #---------------------------------------------------------------------------
@@ -168,7 +168,7 @@ class AIT(object):
         self.title(title)
 
         # for interactive formatting of the coordinates when hovering
-        pylab.gca().format_coord = self.format_coord # replace the function on the fly!
+        ##pylab.gca().format_coord = self.format_coord # replace the function on the fly!
 
 
     def axes(self, color='black',  **kwargs):
