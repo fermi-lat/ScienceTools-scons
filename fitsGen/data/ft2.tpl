@@ -143,4 +143,12 @@ TFORM18      = 'D'                         / data format of field: 8-byte DOUBLE
 TUNIT18      = 's'                         / physical unit of field
 TLMIN18      = 0.0                         / minimum value
 TLMAX18      = 1.0D+10                     / maximum value
+TTYPE19      = 'QSJ_1'                     / First component of SC attitude quaternion
+TFORM19      = 'D'                         / 8-byte DOUBLE
+TTYPE20      = 'QSJ_2'                     / Second component of SC attitude quaternion
+TFORM20      = 'D'                         / 8-byte DOUBLE
+TTYPE21      = 'QSJ_3'                     / Third component of SC attitude quaternion
+TFORM21      = 'D'                         / 8-byte DOUBLE
+TTYPE22      = 'QSJ_4'                     / Fourth component of SC attitude quaternion
+TFORM22      = 'D'                         / 8-byte DOUBLE
 END
