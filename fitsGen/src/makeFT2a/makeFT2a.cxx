@@ -105,10 +105,11 @@ int main(int iargc, char * argv[]) {
          scPosition[1] = std::atof(dataFields[2].c_str())*1e3;
          scPosition[2] = std::atof(dataFields[3].c_str())*1e3;
          ft2["sc_position"].set(scPosition);
-         ft2["ra_scz"].set(std::atof(dataFields[4].c_str()));
-         ft2["dec_scz"].set(std::atof(dataFields[5].c_str()));
-         ft2["ra_scx"].set(std::atof(dataFields[6].c_str()));
-         ft2["dec_scx"].set(std::atof(dataFields[7].c_str()));
+         double ra_scz(std::atof(dataFields[4].c_str()));
+         double dec_scz(std::atof(dataFields[5].c_str()));
+         double ra_scx(std::atof(dataFields[6].c_str()));
+         double dec_scx(std::atof(dataFields[7].c_str()));
+         ft2.setScAxes(ra_scz, dec_scz, ra_scx, dec_scx);
          ft2["ra_zenith"].set(std::atof(dataFields[8].c_str()));
          ft2["dec_zenith"].set(std::atof(dataFields[9].c_str()));
          double lonGeo = std::atof(dataFields[10].c_str());

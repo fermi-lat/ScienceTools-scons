@@ -96,10 +96,8 @@ void MakeFt2::run() {
       double met((pointing["start"] + pointing["stop"])/2.);
       ft2["geomag_lat"].set(geomag_lat(scPosition, met));
       ft2["in_saa"].set(static_cast<bool>(pointing["in_saa"]));
-      ft2["ra_scz"].set(pointing["ra_scz"]);
-      ft2["dec_scz"].set(pointing["dec_scz"]);
-      ft2["ra_scx"].set(pointing["ra_scx"]);
-      ft2["dec_scx"].set(pointing["dec_scx"]);
+      ft2.setScAxes(pointing["ra_scz"], pointing["dec_scz"], 
+                    pointing["ra_scx"], pointing["dec_scx"]);
       ft2["livetime"].set(pointing["livetime"]);
    }
    ft2.itor() = ft2.begin();

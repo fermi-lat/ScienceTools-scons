@@ -33,6 +33,11 @@ public:
       init(templateFile, extname);
    }
 
+   /// Fill the RA_SCZ, DEC_SCZ, RA_SCX, DEC_SCX values and the
+   /// quaternions, QSJ_1, QSJ_2, QSJ_3, QSJ_4
+   void setScAxes(double ra_scz, double dec_scz,
+                  double ra_scx, double dec_scx);
+
 };
 
 } // namespace fitsGen
