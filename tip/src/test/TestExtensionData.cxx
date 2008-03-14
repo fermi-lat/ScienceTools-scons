@@ -745,6 +745,10 @@ namespace tip {
       ReportUnexpected(msg + " failed", x);
     }
 
+    if (0 == m_writable_extension) {
+      ReportUnexpected("writable extension pointer is NULL; skipping read/write test.");
+      return;
+    }
     msg = "attempt to confirm vector field is not considered a scalar";
     try {
       if (m_writable_extension->getColumn(1)->isScalar())
@@ -847,6 +851,10 @@ namespace tip {
   }
 
   void TestExtensionData::testKeywordItor() {
+    if (0 == m_read_only_extension || 0 == m_writable_extension) {
+      ReportUnexpected("testKeywordItor was called with null table pointers; skipping tests.");
+      return;
+    }
     const Header & header(m_read_only_extension->getHeader());
 
     bool discrepancy = false;

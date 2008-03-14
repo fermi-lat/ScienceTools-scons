@@ -218,6 +218,10 @@ namespace tip {
       ReportUnexpected("reading McEnergy field from Root table failed", x);
     }
 
+    if (0 == m_root_table) {
+      ReportUnexpected("pointer to root table is null, skipping some tests.");
+      return;
+    }
     // Test type conversions, just the first value of each loop.
     try {
       for (Table::Iterator itor = m_root_table->begin(); itor != m_root_table->end(); ++itor) {
