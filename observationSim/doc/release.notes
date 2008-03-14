@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v8r0p1 13-Mar-08   JC   test program bug-fix for interface change
     v8     13-Mar-08   JC   add feature to run with out IRFs; clean up
                             Simulator, EventContainer interfaces
     v7r2p1 08-Jan-08   JC   make scfile a string in gtobssim.par; undo

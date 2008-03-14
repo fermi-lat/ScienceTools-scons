@@ -91,7 +91,7 @@ int main(int iargc, char * argv[]) {
    }
 
 // Create the Simulator object
-   observationSim::Simulator my_simulator(sourceNames, fileList);
+   observationSim::Simulator my_simulator(sourceNames, fileList, 1.21);
 
 // Allow for multiple IRFs.
    irfLoader::Loader::go();
