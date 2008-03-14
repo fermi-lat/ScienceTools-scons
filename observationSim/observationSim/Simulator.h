@@ -57,16 +57,15 @@ public:
    /// @param sourceName The name of the source as it appears in the xml file.
    /// @param fileList A vector of xml file names using the source.dtd.
    /// @param totalArea The cross-sectional area of the sphere enclosing
-   ///        the instrument in square meters.  The default value is
-   ///        maximum effective area appearing in the GLAST25 tables.
+   ///        the instrument in square meters.
    /// @param startTime Absolute starting time of the simulation in seconds.
    Simulator(const std::string & sourceName, 
              const std::vector<std::string> & fileList,
-             double totalArea = 1.21,
-             double startTime = 0.,
-             const std::string & pointingHistory = "",
-             double maxSimTime = 3.155e8,
-             double pointingHistoryOffset = 0)
+             double totalArea,
+             double startTime=0.,
+             const std::string & pointingHistory="",
+             double maxSimTime=3.155e8,
+             double pointingHistoryOffset=0)
       : m_formatter(new st_stream::StreamFormatter("Simulator", "", 2)),
         m_fluxMgr(0), m_source(0), m_newEvent(0) {
       init(sourceName, fileList, totalArea, startTime, pointingHistory,
@@ -75,12 +74,12 @@ public:
 
    /// @param sourceNames A vector of source names as they appear in 
    ///        the xml file.
-   Simulator(const std::vector<std::string> &sourceNames,
-             const std::vector<std::string> &fileList,
-             double totalArea = 1.21,
-             double startTime = 0.,
-             const std::string &pointingHistory = "",
-             double maxSimTime = 3.155e8,
+   Simulator(const std::vector<std::string> & sourceNames,
+             const std::vector<std::string> & fileList,
+             double totalArea,
+             double startTime=0.,
+             const std::string & pointingHistory="",
+             double maxSimTime=3.155e8,
              double pointingHistoryOffset=0)
       : m_formatter(new st_stream::StreamFormatter("Simulator", "", 2)),
         m_fluxMgr(0), m_source(0), m_newEvent(0) {
@@ -118,33 +117,10 @@ public:
    void generateEvents(double simulationTime, 
                        EventContainer &events,
                        ScDataContainer &scData, 
-                       irfInterface::Irfs &response,
-                       Spacecraft * spacecraft, 
-                       EventContainer * allEvents=0) {
-      m_simTime = simulationTime;
-      makeEvents(events, scData, response, spacecraft, true, allEvents);
-   }
-
-   /// Generate a specified number of events.
-   void generateEvents(long numberOfEvents, 
-                       EventContainer &events,
-                       ScDataContainer &scData, 
-                       irfInterface::Irfs &response,
-                       Spacecraft *spacecraft,
-                       EventContainer *allEvents=0) {
-      m_maxNumEvents = numberOfEvents;
-      makeEvents(events, scData, response, spacecraft, false, allEvents);
-   }
-
-   /// Generate photon events for a given elapsed simulation time.
-   void generateEvents(double simulationTime, 
-                       EventContainer &events,
-                       ScDataContainer &scData, 
                        std::vector<irfInterface::Irfs*> &respPtrs,
-                       Spacecraft *spacecraft, 
-                       EventContainer *allEvents=0) {
+                       Spacecraft *spacecraft) {
       m_simTime = simulationTime;
-      makeEvents(events, scData, respPtrs, spacecraft, true, allEvents);
+      makeEvents(events, scData, respPtrs, spacecraft, true);
    }
 
    /// Generate a specified number of events.
@@ -152,10 +128,9 @@ public:
                        EventContainer &events,
                        ScDataContainer &scData, 
                        std::vector<irfInterface::Irfs*> &respPtrs,
-                       Spacecraft *spacecraft,
-                       EventContainer *allEvents=0) {
+                       Spacecraft *spacecraft) {
       m_maxNumEvents = numberOfEvents;
-      makeEvents(events, scData, respPtrs, spacecraft, false, allEvents);
+      makeEvents(events, scData, respPtrs, spacecraft, false);
    }
 
    void setIdOffset(int id) {
@@ -191,24 +166,20 @@ private:
 
    bool m_usePointingHistory;
 
-   void init(const std::string &sourceName, 
-             const std::vector<std::string> &fileList,
+   void init(const std::string & sourceName, 
+             const std::vector<std::string> & fileList,
              double totalArea, double startTime, 
              const std::string &, double, double);
 
-   void init(const std::vector<std::string> &sourceNames, 
-             const std::vector<std::string> &fileList,
+   void init(const std::vector<std::string> & sourceNames, 
+             const std::vector<std::string> & fileList,
              double totalArea, double startTime,
              std::string, double, double);
 
    void makeEvents(EventContainer &, ScDataContainer &, 
-                   irfInterface::Irfs &, Spacecraft *spacecraft,
-                   bool useSimTime, EventContainer *allEvents);
-
-   void makeEvents(EventContainer &, ScDataContainer &, 
                    std::vector<irfInterface::Irfs *> &, 
-                   Spacecraft *spacecraft,
-                   bool useSimTime, EventContainer *allEvents);
+                   Spacecraft * spacecraft,
+                   bool useSimTime);
 
    bool done();
 

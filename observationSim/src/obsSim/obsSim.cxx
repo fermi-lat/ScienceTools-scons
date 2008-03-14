@@ -1,6 +1,6 @@
 /**
  * @file obsSim.cxx
- * @brief A prototype O2 application.
+ * @brief Observation simulator using instrument response functions.
  * @author J. Chiang
  *
  * $Header$
@@ -46,16 +46,6 @@
 
 #include "LatSc.h"
 
-namespace {
-   double maxEffArea(const std::vector<irfInterface::Irfs *> & irfs) {
-      double total(0);
-      for (size_t i=0; i < irfs.size(); i++) {
-         total += irfs.at(i)->aeff()->upperLimit();
-      }
-      return total;
-   }
-}
-
 using st_facilities::Util;
 
 class ObsSim : public st_app::StApp {
@@ -98,6 +88,7 @@ private:
    void createSimulator();
    void generateData();
    void saveEventIds(const observationSim::EventContainer & events) const;
+   double maxEffArea() const;
 
    static std::string s_cvs_id;
 };
@@ -233,6 +224,11 @@ void ObsSim::createResponseFuncs() {
 
    std::string responseFuncs = m_pars["irfs"];
 
+   if (responseFuncs == "none") {
+      m_respPtrs.clear();
+      return;
+   }
+
    typedef std::map< std::string, std::vector<std::string> > respMap;
    const respMap & responseIds = irfLoader::Loader::respIds();
    respMap::const_iterator it;
@@ -254,11 +250,10 @@ void ObsSim::createResponseFuncs() {
 }   
 
 void ObsSim::createSimulator() {
-   double totalArea(::maxEffArea(m_respPtrs)/1e4);
+   double totalArea(maxEffArea());
    double startTime = m_pars["tstart"];
    std::string pointingHistory = m_pars["scfile"];
    std::string sc_table = m_pars["sctable"];
-//   astro::GPS::instance()->setScTableName(sc_table);
    std::string startDate = m_pars["startdate"];
    facilities::Timestamp start(startDate);
    double offset((astro::JulianDate(start.getJulian()) 
@@ -372,4 +367,16 @@ saveEventIds(const observationSim::EventContainer & events) const {
                  << accepteds.at(i) << "\n";
    }
    outputFile.close();
+}
+
+double ObsSim::maxEffArea() const {
+   if (m_respPtrs.empty()) {
+      double effArea = m_pars["area"];
+      return effArea;
+   }
+   double total(0);
+   for (size_t i=0; i < m_respPtrs.size(); i++) {
+      total += m_respPtrs.at(i)->aeff()->upperLimit();
+   }
+   return total/1e4;
 }

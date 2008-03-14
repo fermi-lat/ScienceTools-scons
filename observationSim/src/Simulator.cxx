@@ -180,29 +180,13 @@ void Simulator::listSpectra() const {
    }
 }
 
-void Simulator::makeEvents(EventContainer &events, ScDataContainer &scData, 
-                           irfInterface::Irfs &response,
-                           Spacecraft *spacecraft,
-                           bool useSimTime, EventContainer *allEvents) {
-   std::vector<irfInterface::Irfs *> respPtrs;
-   respPtrs.push_back(&response);
-   makeEvents(events, scData, respPtrs, spacecraft, useSimTime, 
-              allEvents);
-}
-
 void Simulator::makeEvents(EventContainer &events, 
                            ScDataContainer &scData, 
                            std::vector<irfInterface::Irfs *> &respPtrs, 
                            Spacecraft *spacecraft,
-                           bool useSimTime, 
-                           EventContainer *allEvents) {
+                           bool useSimTime) {
    m_useSimTime = useSimTime;
    m_elapsedTime = 0.;
-
-//    if (!m_usePointingHistory) {
-// // Insert the very first entry in the scData file.
-//       scData.addScData(m_absTime, spacecraft);
-//    }
 
 // Loop over event generation steps until done.
    while (!done()) {
@@ -244,10 +228,6 @@ void Simulator::makeEvents(EventContainer &events,
                scData.addScData(m_newEvent, spacecraft);
             }
          } else {
-            if (allEvents != 0) {
-               allEvents->addEvent(m_newEvent, respPtrs, spacecraft, 
-                                   false, true);
-            }
             if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
                m_numEvents++;
             }

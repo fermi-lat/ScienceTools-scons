@@ -108,11 +108,10 @@ void EventContainer::init() {
    m_events.clear();
 }
 
-bool EventContainer::addEvent(EventSource *event, 
-                              std::vector<irfInterface::Irfs *> &respPtrs, 
-                              Spacecraft *spacecraft,
-                              bool flush, bool alwaysAccept) {
-   
+bool EventContainer::addEvent(EventSource * event, 
+                              std::vector<irfInterface::Irfs *> & respPtrs, 
+                              Spacecraft * spacecraft,
+                              bool flush) {
    std::string particleType = event->particleName();
    double time = event->time();
    double energy = event->energy();
@@ -135,7 +134,7 @@ bool EventContainer::addEvent(EventSource *event,
    setEventId(srcName, event->code());
 
    m_srcSummaries[srcName].incidentNum += 1;
-   if (alwaysAccept) {
+   if (respPtrs.empty()) {
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
                                 ScZenith(time), 0, energy, flux_theta,
@@ -169,11 +168,11 @@ bool EventContainer::addEvent(EventSource *event,
       evtParams["RA"] = appDir.ra();
       evtParams["DEC"] = appDir.dec();
       if (m_cuts == 0 || m_cuts->accept(evtParams)) {
-//          if (m_events.size() > 0 && m_events.back().time() == time) {
-//             throw std::runtime_error("EventContainer::observationSim:\n"
-//                                      "identical event times.");
-//          }
          m_srcSummaries[srcName].acceptedNum += 1;
+         if (m_events.size() > 0 && m_events.back().time() == time) {
+            throw std::runtime_error("EventContainer::addEvent:\n"
+                                     "zero time interval encountered.");
+         }
          m_events.push_back( Event(time, appEnergy, 
                                    appDir, sourceDir, zAxis, xAxis,
                                    ScZenith(time), respPtr->irfID(), 
@@ -246,8 +245,8 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["zenith_angle"].set(evt->zenAngle());
       ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
 //       ft1["event_class"].set(evt->eventType());
-//       ft1["conversion_type"].set(evt->eventType());
-      ft1["event_class"].set(evt->eventClass());
+//       ft1["conversion_type"].set(evt->conversionType());
+      ft1["event_class"].set(evt->conversionType());
       ft1["conversion_type"].set(evt->conversionType());
       ft1["mc_src_id"].set(evt->eventId());
       ft1["mcenergy"].set(evt->trueEnergy());
