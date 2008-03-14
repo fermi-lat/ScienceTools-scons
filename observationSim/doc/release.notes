@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v8     13-Mar-08   JC   add feature to run with out IRFs; clean up
+                            Simulator, EventContainer interfaces
     v7r2p1 08-Jan-08   JC   make scfile a string in gtobssim.par; undo
                             extraneous insertion of first interval into FT2 file
     v7r2   07-Jan-08   JC   disable gtorbsim build; accomodate behavior changes
