@@ -24,6 +24,14 @@
 
 #define MAKE_COMPILATION_FAIL (0)
 
+namespace {
+#ifdef WIN32
+  const char s_delim[] = "\\";
+#else
+  const char s_delim[] = "/";
+#endif
+}
+
 void ReportBehavior(const std::string & context, const int &, const tip::TipException & x = tip::TipException("")) {
 #if 1
   std::cerr << "Expected behavior: " << context;
@@ -359,7 +367,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
   std::string msg;
 
   // Test error cases for FitsTable constructors:
-  TestConstructorErrors<FitsTable>("FitsTable", data_dir + "a1.pha", status);
+  TestConstructorErrors<FitsTable>("FitsTable", data_dir + s_delim + "a1.pha", status);
 
   // BEGIN Test success cases for FitsTable, FitsImage constructors.
   // This test object will be used in further tests below so create it at this scope:
@@ -367,7 +375,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    image = new FitsImage(data_dir + "a1.pha", "", "", false);
+    image = new FitsImage(data_dir + s_delim + "a1.pha", "", "", false);
     ReportBehavior("success creating FitsImage with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating FitsImage with valid file name and valid extension name", status, x);
@@ -378,7 +386,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    table = new FitsTable(data_dir + "a1.pha", "SPECTRUM", "#row>0", false);
+    table = new FitsTable(data_dir + s_delim + "a1.pha", "SPECTRUM", "#row>0", false);
     ReportBehavior("success creating FitsTable with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating FitsTable with valid file name and valid extension name", status, x);
@@ -562,7 +570,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
   // Test error cases for RootTable constructors:
-  TestConstructorErrors<RootTable>("RootTable", data_dir + "merit.root", status);
+  TestConstructorErrors<RootTable>("RootTable", data_dir + s_delim + "merit.root", status);
 
   // BEGIN Test success cases for RootTable constructors.
   // This test object will be used in further tests below so create it at this scope:
@@ -570,7 +578,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
   try {
     // Valid file name, valid extension name:
-    table = new RootTable(data_dir + "merit.root", "1");
+    table = new RootTable(data_dir + s_delim + "merit.root", "1");
     ReportBehavior("success creating RootTable with valid file name and valid extension name", status);
   } catch(const TipException & x) {
     ReportError("failure creating RootTable with valid file name and valid extension name", status, x);

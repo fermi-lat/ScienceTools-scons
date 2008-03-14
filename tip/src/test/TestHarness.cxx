@@ -53,6 +53,12 @@ namespace tip {
       m_data_dir = facilities::commonUtilities::getDataPath("tip");
       if(m_data_dir == "")
 	ReportWarning("Unable to determine data path for tip package");
+      else
+#ifdef WIN32
+        m_data_dir += "\\";
+#else
+        m_data_dir += "/";
+#endif
     }
     return m_data_dir;
   }
