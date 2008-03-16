@@ -93,9 +93,5 @@ private:
 
 
 
-inline double EarthCoordinate::latitude()const{ return m_lat*180/M_PI;}
-inline double EarthCoordinate::longitude()const{ return m_lon*180/M_PI;}
-inline double EarthCoordinate::altitude()const{ return m_altitude;}
-
 }
 #endif

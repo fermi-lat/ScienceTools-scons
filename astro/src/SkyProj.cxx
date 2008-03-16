@@ -13,7 +13,7 @@ $Header$
 #include "wcslib/wcs.h"
 #include "wcslib/wcshdr.h"
 
-#include "longnam.h"
+//#include "longnam.h"
 #ifndef WCSLIB_GETWCSTAB
 #define WCSLIB_GETWCSTAB
 #endif

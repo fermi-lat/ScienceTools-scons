@@ -218,4 +218,9 @@ const CLHEP::Hep3Vector& EarthCoordinate::magnetic_field()const
     return m_field; 
 }
 
+double EarthCoordinate::latitude()const{ return m_lat*180/M_PI;}
+double EarthCoordinate::longitude()const{ return m_lon*180/M_PI;}
+double EarthCoordinate::altitude()const{ return m_altitude;}
+
+
 } // namespace astro
