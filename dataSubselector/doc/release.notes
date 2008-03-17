@@ -2,6 +2,7 @@
     @brief package dataSubselector
 
     @verbatim
+    v5r7    17-Mar-08   JC   add PULSE_PHASE cut (and DSS keywords)
     v5r6p3  30-Nov-07   JC   bug fix for tmin,tmax=0,0 kluge in gtselect
                              parameter interface and header keyword setting;
                              throw exception if zero rows are returned
