@@ -28,7 +28,6 @@ namespace dataSubselector {
  * @brief Controller interface between application and CutBase hierarchy.
  * @author J. Chiang
  *
- * $Header$
  */
 
 class CutController {
@@ -67,6 +66,8 @@ private:
    void addRangeCut(const std::string & colname, const std::string & unit,
                     double minVal, double maxVal, unsigned int indx=0,
                     bool force=false);
+
+   bool CutController::withinCoordLimits(double ra, double dec) const;
 
 };
 
