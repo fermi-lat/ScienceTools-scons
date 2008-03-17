@@ -42,9 +42,6 @@ namespace astro {
         */
         explicit Quaternion(const CLHEP::HepRotation& R);
 
-        /** ctor from an open stream, presume a single line
-        */
-        Quaternion(std::istream& in); 
         ~Quaternion(){};
 
         /// is it approximately identical?

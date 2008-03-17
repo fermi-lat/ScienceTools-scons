@@ -37,7 +37,7 @@ namespace astro {
         */
         SolarSystem(Body body=SUN);
         ~SolarSystem();
-
+#ifndef SWIG
         /** @class BadDate
             @brief exception class inheriting from invalid_argumetn if Julian date is invalid
 
@@ -46,6 +46,7 @@ namespace astro {
         public:
             BadDate( const std::string&msg): std::invalid_argument(msg){}
         };
+#endif
         /**
         * @brief return the SkyDir at date, with respect to position (in km) from center of Earth 
         */
