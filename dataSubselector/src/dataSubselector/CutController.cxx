@@ -46,16 +46,15 @@ CutController::CutController(st_app::AppParGroup & pars,
    }
    addRangeCut("TIME", "s", pars["tmin"], pars["tmax"]);
    addRangeCut("ENERGY", "MeV", pars["emin"], pars["emax"]);
-   addRangeCut("PHI", "deg", pars["phimin"], pars["phimax"]);
-   addRangeCut("THETA", "deg", pars["thetamin"], pars["thetamax"]);
-   addRangeCut("ZENITH_ANGLE", "deg", pars["zmin"], pars["zmax"]);
-   int eventClass = pars["eventClass"];
-   if (eventClass >= 0 && eventClass < 4) {
-      addRangeCut("EVENT_CLASS", "dimensionless", eventClass, eventClass,
-                  0, true);
+   int evclsmin = pars["evclsmin"];
+   int evclsmax = pars["evclsmax"];
+   if (evclsmin !=0 || evclsmax != 10) {
+      addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
    }
-   if (eventClass == 4) { // Class A events only
-      addRangeCut("EVENT_CLASS", "dimensionless", 0, 1, 0, true);
+   addRangeCut("ZENITH_ANGLE", "deg", 0, pars["zmax"]);
+   int convtype = pars["convtype"];
+   if (convtype >= 0) {
+      addRangeCut("CONVERSION_TYPE", "dimensionless", convtype, convtype);
    }
    double phasemin = pars["phasemin"];
    double phasemax = pars["phasemax"];
@@ -66,10 +65,7 @@ CutController::CutController(st_app::AppParGroup & pars,
 }
 
 bool CutController::accept(tip::ConstTableRecord & row) const {
-   double ra, dec;
-   row["RA"].get(ra);
-   row["DEC"].get(dec);
-   return m_cuts.accept(row) && withinCoordLimits(ra, dec);
+   return m_cuts.accept(row);
 }
 
 void CutController::addRangeCut(const std::string & colname,
@@ -91,20 +87,6 @@ void CutController::addRangeCut(const std::string & colname,
    std::vector<std::string> tokens;
    facilities::Util::stringTokenize(colname, "[]", tokens);
    m_cuts.addRangeCut(tokens.at(0), unit, minVal, maxVal, type, indx);
-}
-
-bool CutController::withinCoordLimits(double ra, double dec) const {
-   double lonMin = m_pars["lonMin"], lonMax = m_pars["lonMax"],
-      latMin = m_pars["latMin"], latMax = m_pars["latMax"];
-   if (m_pars["coordSys"] == "GAL") {
-      astro::SkyDir dir(ra, dec);
-      return (lonMin <= dir.l() && dir.l() <= lonMax && 
-              latMin <= dir.b() && dir.b() <= latMax);
-   } else {
-      return (lonMin <= ra && ra <= lonMax && 
-              latMin <= dec && dec <= latMax);
-   }
-   return false;
 }
 
 void CutController::updateGti(const std::string & eventFile) const {

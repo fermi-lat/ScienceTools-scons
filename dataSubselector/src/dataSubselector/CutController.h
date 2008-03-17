@@ -67,8 +67,6 @@ private:
                     double minVal, double maxVal, unsigned int indx=0,
                     bool force=false);
 
-   bool CutController::withinCoordLimits(double ra, double dec) const;
-
 };
 
 } // namespace dataSubselector
