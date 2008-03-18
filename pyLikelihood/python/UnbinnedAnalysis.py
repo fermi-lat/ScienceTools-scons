@@ -15,7 +15,6 @@ from AnalysisBase import AnalysisBase, _quotefn, _null_file, num
 try:
     from SimpleDialog import SimpleDialog, map, Param
 except ImportError, message:
-    print "Caught ImportError: ", message
     pass
 
 _funcFactory = pyLike.SourceFactory_funcFactory()
@@ -135,7 +134,7 @@ class UnbinnedObs(object):
             output.close()
 
 class UnbinnedAnalysis(AnalysisBase):
-    def __init__(self, observation, srcModel=None,  optimizer='Drmngb'):
+    def __init__(self, observation, srcModel=None, optimizer='Drmngb'):
         AnalysisBase.__init__(self)
         if srcModel is None:
             srcModel, optimizer = self._srcDialog()
@@ -146,7 +145,7 @@ class UnbinnedAnalysis(AnalysisBase):
         self.logLike.initOutputStreams()
         self.logLike.readXml(srcModel, _funcFactory)
         self.logLike.computeEventResponses()
-        self.model = SourceModel(self.logLike)
+        self.model = SourceModel(self.logLike, srcModel)
         eMin, eMax = self.observation.roiCuts().getEnergyCuts()
         nee = 21
         estep = num.log(eMax/eMin)/(nee-1)

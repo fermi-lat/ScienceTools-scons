@@ -16,6 +16,7 @@ from SrcModel import SourceModel
 try:
     from SimpleDialog import SimpleDialog, map, Param
 except ImportError:
+    print "Caught ImportError: ", message
     pass
 
 _plotter_package = 'root'
@@ -240,6 +241,7 @@ class AnalysisBase(object):
         if xmlFile is None:
             xmlFile = self.srcModel
         self.logLike.writeXml(xmlFile)
+        self.srcModel = xmlFile
 
 def _quotefn(filename):
     if filename is None:

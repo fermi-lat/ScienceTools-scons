@@ -103,7 +103,7 @@ class BinnedAnalysis(AnalysisBase):
                                                True)
         self.logLike.initOutputStreams()
         self.logLike.readXml(srcModel, _funcFactory, False)
-        self.model = SourceModel(self.logLike)
+        self.model = SourceModel(self.logLike, srcModel)
         self.energies = num.array(self.logLike.energies())
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self.logLike.countsSpectrum();
