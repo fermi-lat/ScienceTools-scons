@@ -23,4 +23,5 @@ progEnv.Tool('registerObjects', package = 'observationSim',
              binaries = [gtobssimBin, gtorbsimBin], 
              testApps = [test_observationSimBin],
              includes = listFiles(['observationSim/*.h']), 
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']),
+             data = listFiles(['data/*'], recursive = True))

@@ -29,4 +29,5 @@ progEnv.Tool('registerObjects', package = 'dataSubselector',
              binaries = [gtselectBin, gtmktimeBin, gtvcutBin], 
              testApps = [test_dataSubselectorBin],
              includes = listFiles(['dataSubselector/*.h']),
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']),
+             data = listFiles(['data/*'], recursive = True))

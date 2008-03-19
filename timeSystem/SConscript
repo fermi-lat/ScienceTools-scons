@@ -12,4 +12,4 @@ gtbaryBin = progEnv.Program('gtbary', listFiles(['src/gtbary/*.cxx']))
 test_timeSystemBin = progEnv.Program('test_timeSystem', listFiles(['src/test/*.cxx'])) 
 
 progEnv.Tool('registerObjects', package = 'timeSystem', libraries = [timeSystemLib], includes = listFiles(['timeSystem/*.h']), binaries = [gtbaryBin],
-             testApps = [test_timeSystemBin], pfiles = listFiles(['pfiles/*.par']))
+             testApps = [test_timeSystemBin], pfiles = listFiles(['pfiles/*.par']), data = listFiles(['data/*'], recursive = True))

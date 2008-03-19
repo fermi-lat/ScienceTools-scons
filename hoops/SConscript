@@ -11,4 +11,4 @@ progEnv.Tool('hoopsLib')
 test_sourceBin = progEnv.Program('test_source', 'src/test/hoops_lim_test.cxx')
 test_hoops = progEnv.Program('test_hoops', 'src/test/hoops_lim_test.cxx')
 progEnv.Tool('registerObjects', package = 'hoops', libraries = [hoopsLib], testApps = [test_sourceBin, test_hoops], includes = listFiles(['hoops/*.h']),
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']), data = listFiles(['data/*'], recursive = True))

@@ -30,4 +30,5 @@ progEnv.Tool('registerObjects', package = 'fitsGen',
                          convertFT1Bin, partitionBin, irfTupleBin,
                          test_classifierBin],
              includes = listFiles(['fitsGen/*.h']), 
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']),
+             data = listFiles(['data/*'], recursive = True))
