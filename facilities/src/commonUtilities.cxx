@@ -121,6 +121,13 @@ namespace facilities {
   }
 
   void commonUtilities::setupEnvironment(){
+#ifdef SCons
+#ifdef ScienceTools
+    setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
+    setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
+    setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "alias_config.fits"));
+#endif
+#else
     if(environ!=NULL){
       int counter=0;
       while(environ[counter]!=NULL){
@@ -141,6 +148,7 @@ namespace facilities {
 	counter++;
       }
     }
+#endif
   }
 }
 
