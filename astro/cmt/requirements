@@ -1,6 +1,6 @@
 package astro
 
-version v3r1p2
+version v3r1p3
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -15,6 +15,9 @@ use tip *
 apply_pattern shared_library
 
 private
+
+use SwigModule *
+apply_pattern python_module
 
 #kill "truncation from double to float"
 macro_append astro_cppflags "" WIN32 " /wd4305 /wd4554 /wd4013"
