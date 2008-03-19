@@ -1,6 +1,6 @@
 package astro
 
-version v3r1p1
+version v3r1p2
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -13,9 +13,6 @@ use extFiles * IExternal -no_auto_imports # for jphephem data
 use tip *
 
 apply_pattern shared_library
-
-use SwigPolicy *
-apply_pattern python_module
 
 private
 

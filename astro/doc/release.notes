@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r1p2   19-Mar-08 THB Undo python module interface in build, since it is not allowed to use SwigPolicy
   v3r1p1   15-Mar-08 THB Implement python module interface in build
   v3r0p4   21-jan-08 THB Kluge fix for odd wcslib behavior reading a FITS cube
   v3r0p3   02-jan-08 THB relax GPS test tolerance; fix SConscript file
