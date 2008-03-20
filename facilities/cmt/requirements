@@ -1,5 +1,5 @@
 package facilities
-version v2r17p4
+version v2r17p5
 
 author T.Burnett <tburnett@u.washington.edu>
 author Navid Golpayegani <Navid.Golpayegani-1@nasa.gov>
@@ -15,9 +15,9 @@ pattern use_facilities_symbols \
 path_remove PYTHONPATH facilities
 path_prepend PYTHONPATH $(FACILITIESROOT)/$(BINDIR)
 path_remove PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
-                          WIN32 "${facilities_cmtpath}\lib"
+                          WIN32 "${FACILITIESROOT}\${CMTCONFIG}"
 path_append PYTHONPATH "" Linux "${facilities_cmtpath}/lib" \
-                          WIN32 "${facilities_cmtpath}\lib"
+                          WIN32 "${FACILITIESROOT}\${CMTCONFIG}"
 path_append PYTHONPATH "" Linux "$(FACILITIESROOT)/python" \
                           WIN32 "$(FACILITIESROOT)\python"
 
