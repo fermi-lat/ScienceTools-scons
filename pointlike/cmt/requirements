@@ -13,18 +13,21 @@ use python * IExternal
 
 apply_pattern shared_library
 
-apply_pattern python_module
-
 # this should cause the IExternal/python setup to avoid modifying PYTHONPATH or PATH
 apply_tag have_python
 
 private
 
+use SwigModule *
+apply_pattern python_module
+
+
 macro source "*.cxx" WIN32 "*.cxx *.h *.py"
 
 library pointlike \
  -s=../pointlike $(source) \
- -s=../src $(source) 
+ -s=../src $(source) \
+ -s=../python $(source)
 
 # fitting application, 
 application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
