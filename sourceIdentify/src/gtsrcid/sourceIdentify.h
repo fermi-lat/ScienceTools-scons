@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.19  2008/03/20 11:03:17  jurgen
+Update version number
+
 Revision 1.18  2008/02/23 10:52:16  jurgen
 update tag
 
@@ -64,13 +67,13 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r3p9"
+#define TOOL_VERSION  "v1r3p10"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define TOOL_DATE     "20-Mar-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
-#define HD_VERSION    "* Revision : "TOOL_VERSION"                                        *"
+#define HD_VERSION    "* Revision : "TOOL_VERSION"                                       *"
 #define HD_DATE       "* Date     : "TOOL_DATE"                                   *"
 #define HD_AUTHOR     "* Author   : Jurgen Knodlseder (CESR)                      *"
 #define USE_ST_APP 1
