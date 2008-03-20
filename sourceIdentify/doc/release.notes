@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+20-Mar-2008  v1r3p10 JK  Update revision number
 20-Mar-2008  v1r3p9  JK  Correctly dump source IDs for >999 sources
  7-Mar-2008  v1r3p8  JK  Update unit test
 23-Feb-2008  v1r3p7  JK  Remove redundant catalogAccess header inclusions
