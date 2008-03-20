@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.13  2008/02/23 10:36:57  jurgen
+remove redundant catalogAccess header inclusion
+
 Revision 1.12  2007/11/08 11:18:31  jurgen
 Correctly handle missing name column
 
@@ -2039,7 +2042,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
         // Get source number. Note that we have to subtract 1 since the
         // sources index starts with 1
-        std::string src_row = col_id[i].substr(5,3);
+        std::string src_row = col_id[i].substr(3,5);
         int         iSrc    = atoi(src_row.c_str()) - 1;
 
         // Fall through if index is invalid
@@ -2059,7 +2062,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
         else
           m_cpt_names[iSrc] += "no-name";
 
-        // If we have a probability than attach it now
+        // If we have a probability then attach it now
         if (col_prob.size() == col_id.size()) {
           char buffer[256];
           sprintf(buffer, " (%.1f%%)", col_prob[i]*100.0);
