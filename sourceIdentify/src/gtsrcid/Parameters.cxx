@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2007/10/09 08:17:40  jurgen
+Correctly interpret positional errors and correctly evaluate PROB_POS
+as likelihood
+
 Revision 1.9  2007/10/08 11:02:25  jurgen
 Implement search for catalogue table information and handle different
 position error types
@@ -58,11 +62,11 @@ std::string trim(std::string str);
 /*                              Private functions                             */
 /*============================================================================*/
 
-/*----------------------------------------------------------------------------*/
-/*                                     trim                                   */
-/* -------------------------------------------------------------------------- */
-/* Private function: remove leading and trailing whitespace from string       */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Remove leading and trailing whitespace from string
+ *
+ * @param[in] str String from which whitespace is to be removed.
+ ******************************************************************************/
 std::string trim(std::string str) {
 
     // Declare variables
@@ -89,11 +93,9 @@ std::string trim(std::string str) {
 /*                          Low-level parameter methods                       */
 /*============================================================================*/
 
-/*----------------------------------------------------------------------------*/
-/*                           Parameters::init_memory                          */
-/* -------------------------------------------------------------------------- */
-/* Private method: init memory                                                */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Initialise class memory
+ ******************************************************************************/
 void Parameters::init_memory(void) {
 
     // Declare local variables
@@ -113,14 +115,15 @@ void Parameters::init_memory(void) {
       m_outCatQtyFormula.clear();
       m_select.clear();
       m_probColNames.clear();
-      m_posProbType = NotUsed;
-      m_probThres   = 0.0;
-      m_srcPosError = 0.0;
-      m_cptPosError = 0.0;
-      m_maxNumCpt   = 0;
-      m_chatter     = 0;
-      m_clobber     = 0;
-      m_debug       = 0;
+      m_posProbType    = NoPos;
+      m_chanceProbType = NoChance;
+      m_probThres      = 0.0;
+      m_srcPosError    = 0.0;
+      m_cptPosError    = 0.0;
+      m_maxNumCpt      = 0;
+      m_chatter        = 0;
+      m_clobber        = 0;
+      m_debug          = 0;
       m_mode.clear();
 
     } while (0); // End of main do-loop
@@ -131,11 +134,9 @@ void Parameters::init_memory(void) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                            Parameters::free_memory                         */
-/* -------------------------------------------------------------------------- */
-/* Private member: free memory                                                */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Free class memory
+ ******************************************************************************/
 void Parameters::free_memory(void) {
 
     // Declare local variables
@@ -154,11 +155,20 @@ void Parameters::free_memory(void) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                              Parameters::load                              */
-/* -------------------------------------------------------------------------- */
-/* Load parameters from task parameter file.                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Load parameters from task parameter file
+ *
+ * @param[in] pars Task parameters.
+ * @param[in] status Error status.
+ *
+ * The probability method string is split into its elements (separated by '*').
+ * The following probability names are detected:
+ * 'POSITION':  Probability based on position, using Gaussian errors.
+ * 'POS-GAUSS': Same as 'POSITION'.
+ * 'POS-EXP':   Probability based on position, using exponential errors.
+ * 'CHANCE':    Inclusion of local chance coincidence probability.
+ * All other names correspond to columns in the catalogues.
+ ******************************************************************************/
 Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 
     // Declare local variables
@@ -320,6 +330,8 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
             m_posProbType = Exponential;
           else if (prob_name == "POS-GAUSS")
             m_posProbType = Gaussian;
+          else if (prob_name == "CHANCE")
+            m_chanceProbType = Local;
           else
             m_probColNames.push_back(prob_name);
         }
@@ -334,11 +346,11 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                              Parameters::dump                              */
-/* -------------------------------------------------------------------------- */
-/* Dump task parameters into log file.                                        */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Dump task parameters into log file
+ *
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Parameters::dump(Status status) {
 
     // Declare local variables
@@ -381,7 +393,7 @@ Status Parameters::dump(Status status) {
         }
       }
       switch (m_posProbType) {
-      case NotUsed:
+      case NoPos:
         Log(Log_1, " Position probability method ......: not used");
         break;
       case Exponential:
@@ -391,12 +403,23 @@ Status Parameters::dump(Status status) {
         Log(Log_1, " Position probability method ......: Gaussian");
         break;
       default:
-        Log(Log_1, " Position probability method ......: undefined");
+        Log(Log_1, " Position probability method ......: *** undefined ***");
         break;
       }
       for (i_add = 0; i_add < num_add; i_add++) {
         Log(Log_1, " Additional probability column ....: %s", 
             m_probColNames[i_add].c_str());
+      }
+      switch (m_chanceProbType) {
+      case NoChance:
+        Log(Log_1, " Chance coincidence probability ...: not used");
+        break;
+      case Local:
+        Log(Log_1, " Chance coincidence probability ...: Local");
+        break;
+      default:
+        Log(Log_1, " Chance coincidence probability ...: *** undefined ***");
+        break;
       }
       Log(Log_1, " Probability threshold ............: %e", m_probThres);
       Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);

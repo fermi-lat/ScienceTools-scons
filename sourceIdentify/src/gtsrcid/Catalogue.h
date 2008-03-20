@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.19  2008/02/23 08:14:23  jurgen
+correct catalogAccess header file path after catalogAccess modifications
+
 Revision 1.18  2007/11/08 14:42:11  jurgen
 Handle error circles (e.g. 3EG catalogue)
 
@@ -80,7 +83,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         256
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         13
+#define OUTCAT_NUM_GENERIC         15
 //
 #define OUTCAT_COL_ID_COLNUM       1
 #define OUTCAT_COL_ID_NAME         "ID"
@@ -153,11 +156,29 @@ namespace sourceIdentify {
 #define OUTCAT_COL_POSANG_UNIT     "deg"
 #define OUTCAT_COL_POSANG_UCD      ""
 //
-#define OUTCAT_COL_REF_COLNUM      13
+#define OUTCAT_COL_RHO_COLNUM      13
+#define OUTCAT_COL_RHO_NAME        "RHO"
+#define OUTCAT_COL_RHO_FORM        "1E"
+#define OUTCAT_COL_RHO_UNIT        "src/deg^2"
+#define OUTCAT_COL_RHO_UCD         ""
+//
+#define OUTCAT_COL_LAMBDA_COLNUM   14
+#define OUTCAT_COL_LAMBDA_NAME     "LAMBDA"
+#define OUTCAT_COL_LAMBDA_FORM     "1E"
+#define OUTCAT_COL_LAMBDA_UNIT     "src"
+#define OUTCAT_COL_LAMBDA_UCD      ""
+//
+#define OUTCAT_COL_REF_COLNUM      15
 #define OUTCAT_COL_REF_NAME        "REF"
 #define OUTCAT_COL_REF_FORM        "1J"
 #define OUTCAT_COL_REF_UNIT        ""
 #define OUTCAT_COL_REF_UCD         ""
+//
+#define OUTCAT_COL_FLTRAD_COLNUM   16
+#define OUTCAT_COL_FLTRAD_NAME     "FILTER_RAD"
+#define OUTCAT_COL_FLTRAD_FORM     "1E"
+#define OUTCAT_COL_FLTRAD_UNIT     ""
+#define OUTCAT_COL_FLTRAD_UCD      ""
 //
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
@@ -189,71 +210,77 @@ const std::string fct_names[] = {"gammln", "erf", "erfc", "stop"};
 
 /* Type defintions __________________________________________________________ */
 typedef enum {                        // Position error type
-  NoError = 1,                          // No error
-  Radius,                               // Error radius
-  Ellipse,                              // Error ellipse
-  RaDec                                 // Errors on RA and Dec
+  NoError = 1,                          //!< No error
+  Radius,                               //!< Error radius
+  Ellipse,                              //!< Error ellipse
+  RaDec                                 //!< Errors on RA and Dec
 } PosErrorType;
 
 typedef enum {                        // Position error probability
-  Sigma_1 = 1,                          // 1 sigma standard deviations
-  Sigma_2,                              // 2 sigma standard deviations
-  Sigma_3,                              // 3 sigma standard deviations
-  Prob_68,                              // 68% probability ellipse
-  Prob_95,                              // 95% probability ellipse
-  Prob_99                               // 99% probability ellipse
+  Sigma_1 = 1,                          //!< 1 sigma standard deviations
+  Sigma_2,                              //!< 2 sigma standard deviations
+  Sigma_3,                              //!< 3 sigma standard deviations
+  Prob_68,                              //!< 68% probability ellipse
+  Prob_95,                              //!< 95% probability ellipse
+  Prob_99                               //!< 99% probability ellipse
 } PosErrorProb;
 
 typedef struct {                      // Counterpart candidate
-  std::string             id;           // Unique identifier
-  double                  pos_eq_ra;    // Right Ascension (deg)
-  double                  pos_eq_dec;   // Declination (deg)
-  double                  pos_err_maj;  // Uncertainty ellipse major axis (deg)
-  double                  pos_err_min;  // Uncertainty ellipse minor axis (deg)
-  double                  pos_err_ang;  // Uncertainty ellipse positron angle (deg)
-  double                  prob;         // Counterpart probability
+  std::string             id;           //!< Unique identifier
+  double                  pos_eq_ra;    //!< Right Ascension (deg)
+  double                  pos_eq_dec;   //!< Declination (deg)
+  double                  pos_err_maj;  //!< Uncertainty ellipse major axis (deg)
+  double                  pos_err_min;  //!< Uncertainty ellipse minor axis (deg)
+  double                  pos_err_ang;  //!< Uncertainty ellipse PA (deg)
+  double                  prob;         //!< Counterpart probability
   //
-  long                    index;        // Index of CCs in CPT catalogue
-  double                  angsep;       // Angular separation of CPT from source
-  double                  posang;       // Position angle of CPT w/r to source
-  double                  prob_pos;     // Probability from position (likelihood)
-  std::vector<double>     prob_add;     // Additional probabilities
-  double                  prob_chance;  // Chance coincidence probability
+  long                    index;        //!< Index of CCs in CPT catalogue
+  double                  angsep;       //!< Angular separation of CPT from source
+  double                  posang;       //!< Position angle of CPT w/r to source
+  double                  filter_rad;   //!< Filter step radius (deg)
+  double                  rho_rad_min;  //!< Min. radius for density (deg)
+  double                  rho_rad_max;  //!< Max. radius for density (deg)
+  double                  rho_omega;    //!< Density solid angle (deg2)
+  double                  rho;          //!< Local counterpart density (src/deg2)
+  double                  lambda;       //!< Expected number of counterparts
+  double                  prob_pos;     //!< Probability from position (likelihood)
+  std::vector<double>     prob_add;     //!< Additional probabilities
+  double                  prob_chance;  //!< Chance coincidence probability
 } CCElement;
 
 typedef struct {                      // Catalogue object information
-  std::string             name;         // Object name
-  int                     pos_valid;    // Position validity (1=valid)
-  double                  pos_eq_ra;    // Right Ascension (deg)
-  double                  pos_eq_dec;   // Declination (deg)
-  double                  pos_err_maj;  // Position error major axis
-  double                  pos_err_min;  // Position error minor axis
-  double                  pos_err_ang;  // Position error angle
+  std::string             name;         //!< Object name
+  int                     pos_valid;    //!< Position validity (1=valid)
+  double                  pos_eq_ra;    //!< Right Ascension (deg)
+  double                  pos_eq_dec;   //!< Declination (deg)
+  double                  pos_err_maj;  //!< Position error major axis
+  double                  pos_err_min;  //!< Position error minor axis
+  double                  pos_err_ang;  //!< Position error angle
 } ObjectInfo;
 
 typedef struct {                      // Input catalogue
-  std::string             inName;       // Input name
-  std::string             catCode;      // Catalogue code
-  std::string             catURL;       // Catalogue URL
-  std::string             catName;      // Catalogue name
-  std::string             catRef;       // Catalogue Reference
-  std::string             tableName;    // Table name
-  std::string             tableRef;     // Table reference
-  catalogAccess::Catalog  cat;          // Catalogue
-  long                    numLoad;      // Number of loaded objects in catalogue
-  long                    numTotal;     // Total number of objects in catalogue
-  std::string             col_id;       // Source ID column name
-  std::string             col_ra;       // Right Ascension column name
-  std::string             col_dec;      // Declination column name
-  std::string             col_e_ra;     // Right Ascension error column name
-  std::string             col_e_dec;    // Declination error column name
-  std::string             col_e_maj;    // Error ellipse Semi-major axis or Error radius
-  std::string             col_e_min;    // Error ellipse Semi-minor axis
-  std::string             col_e_posang; // Error ellipse Position angle
-  PosErrorType            col_e_type;   // Position error type
-  PosErrorProb            col_e_prob;   // Position error probability
-  double                  e_pos_scale;  // Position error scaling
-  ObjectInfo             *object;       // Object information
+  std::string             inName;       //!< Input name
+  std::string             catCode;      //!< Catalogue code
+  std::string             catURL;       //!< Catalogue URL
+  std::string             catName;      //!< Catalogue name
+  std::string             catRef;       //!< Catalogue Reference
+  std::string             tableName;    //!< Table name
+  std::string             tableRef;     //!< Table reference
+  catalogAccess::Catalog  cat;          //!< Catalogue
+  long                    numLoad;      //!< Number of loaded objects in catalogue
+  long                    numTotal;     //!< Total number of objects in catalogue
+  std::string             col_id;       //!< Source ID column name
+  std::string             col_ra;       //!< Right Ascension column name
+  std::string             col_dec;      //!< Declination column name
+  std::string             col_e_ra;     //!< Right Ascension error column name
+  std::string             col_e_dec;    //!< Declination error column name
+  std::string             col_e_maj;    //!< Error ellipse Semimajor axis or radius
+  std::string             col_e_min;    //!< Error ellipse Semi-minor axis
+  std::string             col_e_posang; //!< Error ellipse Position angle
+  PosErrorType            col_e_type;   //!< Position error type
+  PosErrorProb            col_e_prob;   //!< Position error probability
+  double                  e_pos_scale;  //!< Position error scaling
+  ObjectInfo             *object;       //!< Object information
 } InCatalogue;
 
 class Catalogue {
@@ -282,7 +309,9 @@ private:
   Status      cid_get(Parameters *par, long iSrc, Status status);
   Status      cid_filter(Parameters *par, long iSrc, Status status);
   Status      cid_refine(Parameters *par, long iSrc, Status status);
+  Status      cid_select(Parameters *par, long iSrc, Status status);
   Status      cid_prob_pos(Parameters *par, long iSrc, Status status);
+  Status      cid_prob_chance(Parameters *par, long iSrc, Status status);
   Status      cid_sort(Parameters *par, Status status);
   Status      cid_dump(Parameters *par, Status status);
   std::string cid_assign_src_name(std::string name, int row);
@@ -302,12 +331,13 @@ private:
                                        Status status);
   Status cfits_eval_special_function(fitsfile *fptr, Parameters *par,
                                      std::string fct,
-                                     std::string column_res, std::string column_arg,
+                                     std::string column_res, 
+                                     std::string column_arg,
                                      Status status);
   Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
                       std::vector<double> *val, Status status);
-  Status cfits_select(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_select(fitsfile *fptr, long iSrc, Parameters *par, Status status);
   Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
                        Status status);
   Status cfits_get_col(fitsfile *fptr, Parameters *par, std::string colname,
@@ -321,25 +351,24 @@ private:
 private:
   //
   // Input catalogues
-  InCatalogue              m_src;           // Source catalogue
-  InCatalogue              m_cpt;           // Counterpart catalogue
+  InCatalogue              m_src;           //!< Source catalogue
+  InCatalogue              m_cpt;           //!< Counterpart catalogue
   //
   // Catalogue building parameters
-  long                     m_maxCptLoad;    // Maximum number of counterparts to be loaded
-  long                     m_fCptLoaded;    // Loaded counterparts fully
-  double                   m_filter_maxsep; // Maximum counterpart separation (in deg)
-  fitsfile                *m_memFile;       // Memory catalogue FITS file pointer
-  fitsfile                *m_outFile;       // Output catalogue FITS file pointer
+  long                     m_maxCptLoad;    //!< Maximum # of cpts to be loaded
+  long                     m_fCptLoaded;    //!< Loaded counterparts fully
+  fitsfile                *m_memFile;       //!< Memory catalogue FITS file pointer
+  fitsfile                *m_outFile;       //!< Output catalogue FITS file pointer
   //
   // Counterpart candidate (CC) working arrays
-  long                     m_numCC;         // Number of CCs
-  CCElement               *m_cc;            // CCs
+  long                     m_numCC;         //!< Number of CCs
+  CCElement               *m_cc;            //!< CCs
   //
   // Counterpart statistics
-  int                      m_num_Sel;       // Number of quantity selection criteria
-  int                     *m_cpt_stat;      // Counterpart statistics for each source
-  std::vector<int>         m_src_cpts;      // Number of initial counterparts
-  std::vector<std::string> m_cpt_names;     // Counterpart names for each source
+  int                      m_num_Sel;       //!< Number of selection criteria
+  int                     *m_cpt_stat;      //!< Counterpart statistics
+  std::vector<int>         m_src_cpts;      //!< Number of initial counterparts
+  std::vector<std::string> m_cpt_names;     //!< Counterpart names for each source
   //
   // Output cataloge: source catalogue quantities
   long                     m_num_src_Qty;

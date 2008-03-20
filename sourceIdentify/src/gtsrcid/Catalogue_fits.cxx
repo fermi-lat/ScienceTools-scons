@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.14  2008/03/20 11:00:21  jurgen
+Correctly extract source number of indices above 999
+
 Revision 1.13  2008/02/23 10:36:57  jurgen
 remove redundant catalogAccess header inclusion
 
@@ -644,6 +647,16 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_POSANG_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_POSANG_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_POSANG_UCD);
+      col = OUTCAT_COL_RHO_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_RHO_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_RHO_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_RHO_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_RHO_UCD);
+      col = OUTCAT_COL_LAMBDA_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_LAMBDA_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_LAMBDA_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_LAMBDA_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_LAMBDA_UCD);
       col = OUTCAT_COL_REF_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_REF_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_REF_FORM);
@@ -1086,6 +1099,30 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         continue;
       }
 
+      // Add local counterpart density
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].rho;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_RHO_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write local counterpart density to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
+      // Add expected number of chance coincidences
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].lambda;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_LAMBDA_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write expected chance coincidences to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
       // Add reference
       for (row = 0; row < nrows; row++)
         lptr[row] = m_cc[row].index;
@@ -1248,9 +1285,6 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
         Log(Log_2, "Add new output catalogue quantities:");
         Log(Log_2, "====================================");
       }
-
-      // Reset column counter
-//      g_col_special = 1;
 
       // Add all new output catalogue quantities
       for (int iQty = 0; iQty < numQty; ++iQty) {
@@ -1418,12 +1452,13 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
         std::string fct        = fcts.fct[i];
         std::string column_res = fcts.colname_res[i];
         std::string column_arg = fcts.colname_arg[i];
-        status = cfits_eval_special_function(fptr, par, fct, column_res, column_arg,
+        status = cfits_eval_special_function(fptr, par, fct, column_res,
+                                             column_arg,
                                              status);
         if (status != STATUS_OK) {
           if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate special function <%s=%s('%s')> in"
-                " formula.",
+            Log(Error_2, "%d : Unable to evaluate special function <%s=%s('%s')>"
+                " in formula.",
                 (Status)status, column_res.c_str(), fcts.fct[i].c_str(),
                 column_arg.c_str());
           break;
@@ -1837,15 +1872,23 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                           Catalogue::cfits_select                          */
-/* -------------------------------------------------------------------------- */
-/* Private method: select catalogue entries                                   */
-/*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
+/**************************************************************************//**
+ * @brief Select catalogue entries
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] iSrc Index of source for which selection is applied.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Performs table row selection for one specific catalogue source. The result
+ * of the selection process is stored in the m_cpt_stat table.
+ ******************************************************************************/
+Status Catalogue::cfits_select(fitsfile *fptr, long iSrc, Parameters *par,
+                               Status status) {
 
     // Declare local variables
     int  fstatus;
+    int  num_sel;
     long numBefore;
     long numAfter;
 
@@ -1865,37 +1908,12 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 
       // Determine number of output catalogue selection strings. Fall through
       // if there are no such strings
-      m_num_Sel = par->m_select.size();
-      if (m_num_Sel < 1)
+      num_sel = par->m_select.size();
+      if (num_sel < 1)
         continue;
 
-      // Dump header
-      if (par->logNormal()) {
-        Log(Log_2, "");
-        Log(Log_2, "Select catalogue counterparts:");
-        Log(Log_2, "==============================");
-      }
-
-      // Clear counterpart names
-      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
-        m_cpt_names[iSrc].clear();
-
-      // Allocate and initialise selection statistics. This is a table of size
-      // [m_src.numLoad][numSel]
-      m_cpt_stat = new int[m_src.numLoad*m_num_Sel];
-      if (m_cpt_stat == NULL) {
-        status = STATUS_MEM_ALLOC;
-        if (par->logTerse())
-          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
-         continue;
-      }
-      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
-        for (int iSel = 0; iSel < m_num_Sel; ++iSel)
-          m_cpt_stat[iSrc*(int)m_num_Sel + (int)iSel] = 0;
-      }
-
       // Select catalogue entries
-      for (int iSel = 0; iSel < m_num_Sel; ++iSel) {
+      for (int iSel = 0; iSel < num_sel; ++iSel) {
 
         // Determine number of rows in table before selection
         fstatus = fits_get_num_rows(fptr, &numBefore, &fstatus);
@@ -1905,6 +1923,10 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
                 " catalogue.", fstatus);
           break;
         }
+
+        // Stop looping if no more counterparts are in table
+        if (numBefore < 1)
+          break;
 
         // Perform selection
         fstatus = fits_select_rows(fptr, fptr,
@@ -1929,30 +1951,14 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
           break;
         }
 
-        // Determine number of counterparts for each source after selection
-        if (numAfter > 0) {
-
-          // Collect statistics
-          std::vector<int> stat;
-          status = cfits_collect(fptr, par, stat, status);
-          if (status != STATUS_OK) {
-            if (par->logTerse())
-              Log(Error_2, "%d : Unable to collect statistics from catalogue.",
-                           (Status)status);
-             continue;
-          }
-
-          // Save statistics
-          for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
-            m_cpt_stat[iSrc*m_num_Sel + iSel] = stat[iSrc];
-
-        } // endif: there were rows in catalogue
+        // Store number of counterparts after selection
+        m_cpt_stat[iSrc*(m_num_Sel+1) + iSel+1] = numAfter;
 
         // Dump selection information
-        if (par->logNormal()) {
-          Log(Log_2, " Selection ........................: %s",
+        if (par->logExplicit()) {
+          Log(Log_2, "    Selection .....................: %s",
               par->m_select[iSel].c_str());
-          Log(Log_2, "   Number of deleted counterparts .: %d (%d => %d)",
+          Log(Log_2, "      Deleted counterparts ........: %d (%d => %d)",
               numBefore-numAfter, numBefore, numAfter);
         }
 
@@ -1977,12 +1983,19 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                          Catalogue::cfits_collect                          */
-/* -------------------------------------------------------------------------- */
-/* Private method: collect counterpart identification statistics from FITS    */
-/*                 table                                                      */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Collect counterpart identification statistics from FITS table
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] stat Selection statistics result vector for all sources.
+ * @param[in] status Error status.
+ *
+ * Examines the source name column of a FITS table to build-up a string of
+ * concatenated counterpart candidate names (stored in m_cpt_names) and a 
+ * vector that contains the number of counterparts for each source of the
+ * input catalogue.
+ ******************************************************************************/
 Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
                                 std::vector<int> &stat, Status status) {
 
@@ -2184,11 +2197,15 @@ Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                       Catalogue::cfits_get_col_str                         */
-/* -------------------------------------------------------------------------- */
-/* Private method: get string column from FITS table                          */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Get string column from FITS table
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] colname Column name.
+ * @param[in] col String vector column.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par, 
                                     std::string colname,
                                     std::vector<std::string> &col,
@@ -2485,7 +2502,8 @@ Status Catalogue::cfits_set_pars(fitsfile *fptr, Parameters *par, Status status)
       fstatus = fits_update_key_dbl(fptr, "SRC_ERR", par->m_srcPosError,
                                     4, "Default source position error", &fstatus);
       fstatus = fits_update_key_dbl(fptr, "CPT_ERR", par->m_cptPosError,
-                                    4, "Default counterpart position error", &fstatus);
+                                    4, "Default counterpart position error",
+                                    &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
           Log(Warning_2, "%d : Unable to write parameters keywords to"

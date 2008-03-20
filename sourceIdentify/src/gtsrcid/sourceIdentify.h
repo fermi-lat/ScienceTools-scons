@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.20  2008/03/20 12:17:44  jurgen
+Invert _RA/_DE and RA/DE column name search
+
 Revision 1.19  2008/03/20 11:03:17  jurgen
 Update version number
 
@@ -67,13 +70,13 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r3p10"
+#define TOOL_VERSION  "v1r4p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
 #define TOOL_DATE     "20-Mar-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
-#define HD_VERSION    "* Revision : "TOOL_VERSION"                                       *"
+#define HD_VERSION    "* Revision : "TOOL_VERSION"                                        *"
 #define HD_DATE       "* Date     : "TOOL_DATE"                                   *"
 #define HD_AUTHOR     "* Author   : Jurgen Knodlseder (CESR)                      *"
 #define USE_ST_APP 1
@@ -113,6 +116,7 @@ typedef enum  {                                  // Function status code
   STATUS_CAT_NO_ID         = -100400,             // No ID column
   STATUS_CAT_NO_POS        = -100401,             // No position columns
   STATUS_CAT_NO_POS_ERROR  = -100402,             // No position error columns
+  STATUS_CAT_SEL_FAILED    = -100403,             // Selection failed
   STATUS_FCT_NOT_FOUND     = -100500,             // Function not found
   STATUS_FCT_INVALID       = -100502,             // Invalid function
   STATUS_FCT_NO_CLOSING    = -100502              // No closing parenthesis
