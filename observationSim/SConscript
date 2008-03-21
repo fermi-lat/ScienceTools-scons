@@ -24,4 +24,5 @@ progEnv.Tool('registerObjects', package = 'observationSim',
              testApps = [test_observationSimBin],
              includes = listFiles(['observationSim/*.h']), 
              pfiles = listFiles(['pfiles/*.par']),
-             data = listFiles(['data/*'], recursive = True))
+             data = listFiles(['data/*'], recursive = True),
+             xml = listFiles(['xml/*'], recursive = True))
