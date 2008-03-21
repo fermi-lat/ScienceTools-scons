@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.28  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.27  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -791,10 +794,20 @@ void Catalogue::init_memory(void) {
       // Initialise counterpart candidate working arrays
       m_numCC         = 0;
       m_cc            = NULL;
+      m_filter_rad    = 0.0;
+      m_ring_rad_min  = 0.0;
+      m_ring_rad_max  = 0.0;
+      m_omega         = 0.0;
+      m_rho           = 0.0;
+      m_lambda        = 0.0;
 
       // Initialise counterpart statistics
       m_num_Sel       = 0;
       m_cpt_stat      = NULL;
+      m_num_ellipse   = 0;
+      m_tot_lambda    = 0.0;
+      m_num_ellipse   = 0;
+      m_num_assoc     = 0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -1255,8 +1268,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 
       // Dump header
       Log(Log_2, "");
-      Log(Log_2, "Counterpart identification results:");
-      Log(Log_2, "===================================");
+      Log(Log_2, "Counterpart association results:");
+      Log(Log_2, "================================");
 
       // Build header
       char add[256];
@@ -1272,6 +1285,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       Log(Log_2, "                                      Filter%s", select);
 
       // Loop over all sources
+      int n_src_assoc = 0;
       for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
 
         // Get pointer to source object
@@ -1290,7 +1304,35 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         Log(Log_2, " Source %5d %18s ..: %s %s",
             iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
 
+        // Collect number of associated sources
+        if (m_src_cpts[iSrc] > 0)
+          n_src_assoc++;
+
       } // endfor: looped over all sources
+
+      // Compute false association fraction
+      double f_false = (m_num_ellipse > 0) ? m_tot_lambda/double(m_num_ellipse) 
+                                           : 0.0;
+
+      // Estimate number of false associations
+      int n_false = int(f_false*n_src_assoc+0.5);
+      if (n_false < 0)
+        n_false = 0;
+      else if (n_false > m_num_assoc)
+        n_false = m_num_assoc;
+
+      // Dump summary
+      Log(Log_2, "");
+      Log(Log_2, "Counterpart association summary:");
+      Log(Log_2, "================================");
+      Log(Log_2, " Number of sources ................: %10d", m_src.numLoad);
+      Log(Log_2, " Number of associated sources .....: %10d", n_src_assoc);
+      Log(Log_2, " Number of associations ...........: %10d", m_num_assoc);
+      Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
+      //Log(Log_2, " Counterparts within 95%% ellipses .: %10d", m_num_ellipse);
+      //Log(Log_2, "   Expected chance counterparts ...: %10.3f"
+      //           " (%.2f%% of all counterparts within 95%% ellipses)",
+      //           m_tot_lambda, f_false*100.0);
 
     } while (0); // End of main do-loop
 
@@ -1483,6 +1525,12 @@ Status Catalogue::build(Parameters *par, Status status) {
         // Store the number of counterpart candidates
         m_src_cpts[iSrc] = m_numCC;
 
+        // Sum the total number of associations
+        m_num_assoc += m_numCC;
+
+        // Sum  the expected number of chance coincidences
+        m_tot_lambda += m_lambda;
+
       } // endfor: looped over all sources
       if (status != STATUS_OK)
         continue;
@@ -1507,7 +1555,6 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Evaluate output catalogue quantities
-/*
       status = cfits_eval(m_outFile, par, par->logNormal(), status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -1516,6 +1563,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
       }
 
+/*
       // Select output catalogue counterparts
       status = cfits_select(m_outFile, par, status);
       if (status != STATUS_OK) {

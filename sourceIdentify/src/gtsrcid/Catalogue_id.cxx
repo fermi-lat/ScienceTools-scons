@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.16  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.15  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -198,9 +201,17 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
  * The filter step gets all counterpart candidates from the catalogue for a
  * given source that are sufficiently close to the source.
  * This is done by defining a rectangular bounding box around the source
- * that extends from -filter_rad to +filter_rad in Declination
- * and from -filter_rad/cos(dec) to +filter_rad/cos(dec) in Right
+ * that extends from -m_filter_rad to +m_filter_rad in Declination
+ * and from -m_filter_rad/cos(dec) to +m_filter_rad/cos(dec) in Right
  * Ascension.
+ *
+ * The method sets the following members of the Catalogue class:
+ * m_filter_rad: Filter radius in degrees
+ * m_ring_rad_min: Local counterpart density ring inner radius (deg)
+ * m_ring_rad_max: Local counterpart density ring outer radius (deg)
+ * m_omega: Solid angle of error ellipse (deg^2)
+ * m_numCC: Number of counterpart candidates
+ * m_cc: List of counterpart candidates
  ******************************************************************************/
 Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
 
@@ -241,6 +252,14 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       numRA    = 0;
       numDec   = 0;
 
+      // Initialise some members
+      m_filter_rad   = 0.0;
+      m_ring_rad_min = 0.0;
+      m_ring_rad_max = 0.0;
+      m_omega        = 0.0;
+      m_rho          = 0.0;
+      m_lambda       = 0.0;
+
       // Get pointer to source object
       src = &(m_src.object[iSrc]);
 
@@ -248,18 +267,26 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       src_dec_sin = sin(src->pos_eq_dec * deg2rad);
       src_dec_cos = cos(src->pos_eq_dec * deg2rad);
 
-      // Calculate the size of the bounding box
-      double filter_rad = c_filter_maxsep;
+      // Set bounding box enclosing radius
+      double radius = src->pos_err_maj * 5.0 / 2.0; // 5 sigma radius
+      m_filter_rad  = (radius > c_filter_maxsep) ? radius : c_filter_maxsep;
+
+      // Set local counterpart density ring radii
+      m_ring_rad_min = 0.0;
+      m_ring_rad_max = m_filter_rad;
+
+      // Compute solid angle of error ellipse
+      m_omega = pi * src->pos_err_maj * src->pos_err_min;
 
       // Define bounding box around source position. The declination
       // range of the bounding box is constrained to [-90,90] deg, the
       // Right Ascension boundaries are put into the interval [0,360[ deg.
-      cpt_dec_min = src->pos_eq_dec - filter_rad;
-      cpt_dec_max = src->pos_eq_dec + filter_rad;
+      cpt_dec_min = src->pos_eq_dec - m_filter_rad;
+      cpt_dec_max = src->pos_eq_dec + m_filter_rad;
       if (cpt_dec_min < -90.0) cpt_dec_min = -90.0;
       if (cpt_dec_max >  90.0) cpt_dec_max =  90.0;
       if (src_dec_cos > 0.0) {
-        filter_maxsep = filter_rad / src_dec_cos;
+        filter_maxsep = m_filter_rad / src_dec_cos;
         if (filter_maxsep > 180.0)
           filter_maxsep = 180.0;
       }
@@ -379,14 +406,6 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         cpt_ptr->index       = iCpt;
         cpt_ptr->angsep      = 0.0;
         cpt_ptr->posang      = 0.0;
-        cpt_ptr->filter_rad  = filter_rad;
-        cpt_ptr->rho_rad_min = 0.0;
-        cpt_ptr->rho_rad_max = filter_rad;
-        cpt_ptr->rho_omega   = twopi *
-                               (cos(cpt_ptr->rho_rad_min * deg2rad) -
-                                cos(cpt_ptr->rho_rad_max * deg2rad)) *
-                               rad2deg * rad2deg;
-        cpt_ptr->rho         = 0.0;
         cpt_ptr->lambda      = 0.0;
         cpt_ptr->prob_pos    = 0.0;
         cpt_ptr->prob_chance = 0.0;
@@ -400,7 +419,9 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         Log(Log_2, "  Filter step candidates ..........: %5d", m_numCC);
         if (par->logVerbose()) {
           Log(Log_2, "    Filter bounding box radius ....: %7.3f deg",
-              filter_rad);
+              m_filter_rad);
+          Log(Log_2, "    Error ellipse solid angle .....: %7.3f deg^2",
+              m_omega);
           Log(Log_2, "    Outside declination range .....: %5d [%7.3f - %7.3f]",
               numDec, cpt_dec_min, cpt_dec_max);
           Log(Log_2, "    Outside Right Ascension range .: %5d [%7.3f - %7.3f[",
@@ -603,7 +624,17 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         }
       }
 
-      // Determine local chance coincidence probability
+      // Determine local counterpart density
+      status = cid_local_density(par, iSrc, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine local counterpart density"
+              " for source %d.",
+              (Status)status, iSrc+1);
+        continue;
+      }
+
+      // Determine chance coincidence probability
       status = cid_prob_chance(par, iSrc, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -686,7 +717,13 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
                 prob_too_large[i_add],
                 par->m_probColNames[i_add].c_str());
         }
-     }
+        Log(Log_2, "    Local counterpart density .....: %10.5f src/deg^2",
+            m_rho);
+        Log(Log_2, "    Expected chance coincidences ..: %10.5f sources",
+            m_lambda);
+        Log(Log_2, "    Local density ring ............: %7.3f - %7.3f deg",
+            m_ring_rad_min, m_ring_rad_max);
+    }
 
     } while (0); // End of main do-loop
 
@@ -890,6 +927,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
                            (src->pos_err_min*src->pos_err_min) : 0.0;
         arg              = a + b;
         double error     = (arg > 0.0) ? 1.0/sqrt(arg) : 0.0;
+        double error2    = error * error;
 
         // Calculate counterpart probability from angular separation
         switch (par->m_posProbType) {
@@ -902,8 +940,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
 
         case Gaussian:            // Parabolic log-likelihood function
         default:
-          double error2 = error * error;
-          if (error2 > 0.0) {
+           if (error2 > 0.0) {
             arg                = m_cc[iCC].angsep * m_cc[iCC].angsep / error2;
             m_cc[iCC].prob_pos = exp(-2.9957230 * arg);
           }
@@ -930,6 +967,10 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
           m_cc[iCC].pos_err_ang = src->pos_err_ang;
         }
 
+        // Collect all sources within the error ellipse
+        if (m_cc[iCC].angsep <= error)
+          m_num_ellipse++;
+
       } // endfor: looped over counterpart candidates
 
     } while (0); // End of main do-loop
@@ -951,6 +992,13 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
+ *
+ * Set class member
+ * m_lambda (expected number of chance coincidences on base of the error
+ *  ellipse solid angle)
+ * and the counterpart candidate members
+ * m_cc[iCC].lambda (expected number of chance coincidences) and
+ * m_cc[iCC].prob_chance (chance coincidence probability).
  ******************************************************************************/
 Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
 
@@ -966,6 +1014,10 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
       if (status != STATUS_OK)
         continue;
 
+      // Compute expected number of chance coincidences on base of the error
+      // ellipse solid angle
+      m_lambda = m_omega * m_rho;
+
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
@@ -976,6 +1028,85 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
       // Fall through if no source position is available
       if (!src->pos_valid)
         continue;
+
+      // Compute chance coincidence probabilities for all sources
+      for (int iCC = 0; iCC < m_numCC; iCC++) {
+
+        // Get index of candidate in counterpart catalogue
+        int iCpt = m_cc[iCC].index;
+
+        // Get pointer to counterpart object
+        ObjectInfo *cpt = &(m_cpt.object[iCpt]);
+
+        // Fall through if no counterpart position is available
+        if (!cpt->pos_valid)
+          continue;
+
+        // Compute the expected number of sources within the area given
+        // by the angular separation between source and counterpart
+//        m_cc[iCC].lambda = pi * m_cc[iCC].angsep * m_cc[iCC].angsep *
+//                           m_rho;
+        m_cc[iCC].lambda = m_lambda;
+
+        // Compute chance coincidence probability
+        if (par->m_chanceProbType == Local)
+          m_cc[iCC].prob_chance = 1.0 - exp(-m_cc[iCC].lambda);
+
+      } // endfor: looped over all counterpart candidates
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob_chance (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute local counterpart density at the position of a given source
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] status Error status.
+ *
+ * Sets m_rho method of Catalogue class.
+ ******************************************************************************/
+Status Catalogue::cid_local_density(Parameters *par, long iSrc, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_density_local (%d candidates)",
+          m_numCC);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Initialise local counterpart density
+      m_rho = 0.0;
+
+      // Fall through if there are no counterpart candidates
+      if (m_numCC < 1)
+        continue;
+
+      // Get pointer to source object
+      ObjectInfo *src = &(m_src.object[iSrc]);
+
+      // Fall through if no source position is available
+      if (!src->pos_valid)
+        continue;
+
+      // Compute solid angle of ring
+      double omega = twopi * (cos(m_ring_rad_min * deg2rad) -
+                              cos(m_ring_rad_max * deg2rad)) * rad2deg * rad2deg;
 
       // Compute number of counterparts within acceptance ring
       int num = 0;
@@ -991,45 +1122,20 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
         if (!cpt->pos_valid)
           continue;
 
-        // Collect all sources in circular region
-        if (m_cc[iCC].angsep >= m_cc[iCC].rho_rad_min &&
-            m_cc[iCC].angsep <= m_cc[iCC].rho_rad_max)
+        // Collect all sources in ring
+        if (m_cc[iCC].angsep >= m_ring_rad_min && m_cc[iCC].angsep <= m_ring_rad_max)
           num++;
 
       } // endfor: looped over all counterpart candidates
 
-      // Compute chance coincidence probabilities for all sources
-      for (int iCC = 0; iCC < m_numCC; iCC++) {
-
-        // Get index of candidate in counterpart catalogue
-        int iCpt = m_cc[iCC].index;
-
-        // Get pointer to counterpart object
-        ObjectInfo *cpt = &(m_cpt.object[iCpt]);
-
-        // Fall through if no counterpart position is available
-        if (!cpt->pos_valid)
-          continue;
-
-        // Compute local counterpart density (counterparts / deg2)
-        m_cc[iCC].rho = double(num) / m_cc[iCC].rho_omega;
-
-        // Compute the expected number of sources within the area given
-        // by the angular separation between source and counterpart
-        m_cc[iCC].lambda = pi * m_cc[iCC].angsep * m_cc[iCC].angsep *
-                           m_cc[iCC].rho;
-
-        // Compute chance coincidence probability
-        if (par->m_chanceProbType == Local)
-          m_cc[iCC].prob_chance = 1.0 - exp(-m_cc[iCC].lambda);
-
-      } // endfor: looped over all counterpart candidates
+      // Compute local counterpart density
+      m_rho = (omega > 0.0) ? double(num) / omega : 0.0;
 
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cid_prob_chance (status=%d)",
+      Log(Log_0, " <== EXIT: Catalogue::cid_density_local (status=%d)",
           status);
 
     // Return status
@@ -1188,17 +1294,11 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
                     m_cc[iCC].prob_add[i_add]*100.0,
                     par->m_probColNames[i_add].c_str());
               }
-              Log(Log_2, "   Chance coincidence probability .: %7.3f %%",
-                  m_cc[iCC].prob_chance*100.0);
             }
+            Log(Log_2, "    Chance coincidence probability : %7.3f %%"
+                " (lambda=%.5f)",
+                m_cc[iCC].prob_chance*100.0, m_cc[iCC].lambda);
           }
-          Log(Log_2, "    Local counterpart density .....: %10.5f src/deg^2",
-              m_cc[iCC].rho);
-          Log(Log_2, "    Expected number of chance coinc: %10.5f src",
-              m_cc[iCC].lambda);
-          Log(Log_2, "    Local density ring ............: %7.3f - %7.3f deg"
-              " (%7.3f deg^2)",
-              m_cc[iCC].rho_rad_min, m_cc[iCC].rho_rad_max, m_cc[iCC].rho_omega);
         }
 
       } // endfor: looped over counterpart candidats

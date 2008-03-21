@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.21  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.20  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -232,20 +235,16 @@ typedef struct {                      // Counterpart candidate
   std::string             id;           //!< Unique identifier
   double                  pos_eq_ra;    //!< Right Ascension (deg)
   double                  pos_eq_dec;   //!< Declination (deg)
-  double                  pos_err_maj;  //!< Uncertainty ellipse major axis (deg)
-  double                  pos_err_min;  //!< Uncertainty ellipse minor axis (deg)
-  double                  pos_err_ang;  //!< Uncertainty ellipse PA (deg)
+  double                  pos_err_maj;  //!< 95% uncertainty ellipse major axis (deg)
+  double                  pos_err_min;  //!< 95% uncertainty ellipse minor axis (deg)
+  double                  pos_err_ang;  //!< 95% uncertainty ellipse PA (deg)
   double                  prob;         //!< Counterpart probability
   //
   long                    index;        //!< Index of CCs in CPT catalogue
   double                  angsep;       //!< Angular separation of CPT from source
   double                  posang;       //!< Position angle of CPT w/r to source
-  double                  filter_rad;   //!< Filter step radius (deg)
-  double                  rho_rad_min;  //!< Min. radius for density (deg)
-  double                  rho_rad_max;  //!< Max. radius for density (deg)
-  double                  rho_omega;    //!< Density solid angle (deg2)
-  double                  rho;          //!< Local counterpart density (src/deg2)
-  double                  lambda;       //!< Expected number of counterparts
+  //double                  omega;        //!< Solid angle of error ellipse
+  double                  lambda;       //!< Expected number of false counterparts
   double                  prob_pos;     //!< Probability from position (likelihood)
   std::vector<double>     prob_add;     //!< Additional probabilities
   double                  prob_chance;  //!< Chance coincidence probability
@@ -315,6 +314,7 @@ private:
   Status      cid_select(Parameters *par, long iSrc, Status status);
   Status      cid_prob_pos(Parameters *par, long iSrc, Status status);
   Status      cid_prob_chance(Parameters *par, long iSrc, Status status);
+  Status      cid_local_density(Parameters *par, long iSrc, Status status);
   Status      cid_sort(Parameters *par, Status status);
   Status      cid_dump(Parameters *par, Status status);
   std::string cid_assign_src_name(std::string name, int row);
@@ -366,12 +366,21 @@ private:
   // Counterpart candidate (CC) working arrays
   long                     m_numCC;          //!< Number of counterpart candidates
   CCElement               *m_cc;             //!< List of counterpart candidates
+  double                   m_filter_rad;     //!< Filter step radius
+  double                   m_ring_rad_min;   //!< Density ring minimum
+  double                   m_ring_rad_max;   //!< Density ring maximum
+  double                   m_omega;          //!< Solid angle of error ellipse
+  double                   m_rho;            //!< Local counterpart density
+  double                   m_lambda;         //!< Expected number of false in ellipse
   //
   // Counterpart statistics
   int                      m_num_Sel;        //!< Number of selection criteria
   int                     *m_cpt_stat;       //!< Counterpart statistics
   std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
+  double                   m_tot_lambda;     //!< Number of expected chance ass.
+  int                      m_num_ellipse;    //!< Number of counterparts in ellipse
+  int                      m_num_assoc;      //!< Number of associations
   //
   // Output cataloge: source catalogue quantities
   long                     m_num_src_Qty;    //!< Number of src. cat. quantities
