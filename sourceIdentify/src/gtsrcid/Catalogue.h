@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.20  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.19  2008/02/23 08:14:23  jurgen
 correct catalogAccess header file path after catalogAccess modifications
 
@@ -65,6 +68,12 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Catalogue.h
+ * @brief Catalogue class interface definition.
+ * @author J. Knodlseder
+ */
+
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
 
@@ -174,17 +183,11 @@ namespace sourceIdentify {
 #define OUTCAT_COL_REF_UNIT        ""
 #define OUTCAT_COL_REF_UCD         ""
 //
-#define OUTCAT_COL_FLTRAD_COLNUM   16
-#define OUTCAT_COL_FLTRAD_NAME     "FILTER_RAD"
-#define OUTCAT_COL_FLTRAD_FORM     "1E"
-#define OUTCAT_COL_FLTRAD_UNIT     ""
-#define OUTCAT_COL_FLTRAD_UCD      ""
-//
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
 /* Class constants __________________________________________________________ */
-const long   c_maxCptLoad    = 10000000000L; // Maximum # of sources to load at once
-const double c_filter_maxsep = 4.0;          // Filter all sources more distant than 2 deg
+const long   c_maxCptLoad    = 10000000000L; //!< Max. # of sources to load at once
+const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          = 3.1415926535897931159979635;
@@ -195,12 +198,12 @@ const double deg2rad     = 0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 
 /* Probability scaling constants ____________________________________________ */
-const double e_norm_1s = 1.0 / sqrt(1.1478742);  // 1 sigma = 68.269%, 2 dof
-const double e_norm_2s = 1.0 / sqrt(3.0900358);  // 2 sigma = 95.450%, 2 dof
-const double e_norm_3s = 1.0 / sqrt(5.9145778);  // 3 sigma = 99.730%, 2 dof
-const double e_norm_68 = 1.0 / sqrt(1.1394375);  // 68.000%, 2 dof
-const double e_norm_95 = 1.0 / sqrt(2.9957230);  // 95.000%, 2 dof
-const double e_norm_99 = 1.0 / sqrt(4.6051713);  // 99.000%, 2 dof
+const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
+const double e_norm_2s = 1.0 / sqrt(3.0900358);  //!< 2 sigma = 95.450%, 2 dof
+const double e_norm_3s = 1.0 / sqrt(5.9145778);  //!< 3 sigma = 99.730%, 2 dof
+const double e_norm_68 = 1.0 / sqrt(1.1394375);  //!< 68.000%, 2 dof
+const double e_norm_95 = 1.0 / sqrt(2.9957230);  //!< 95.000%, 2 dof
+const double e_norm_99 = 1.0 / sqrt(4.6051713);  //!< 99.000%, 2 dof
 
 /* Search strings (need "stop" as last string !!!) __________________________ */
 const std::string search_id[] = {"NAME", "ID", "stop"};
@@ -351,40 +354,40 @@ private:
 private:
   //
   // Input catalogues
-  InCatalogue              m_src;           //!< Source catalogue
-  InCatalogue              m_cpt;           //!< Counterpart catalogue
+  InCatalogue              m_src;            //!< Source catalogue
+  InCatalogue              m_cpt;            //!< Counterpart catalogue
   //
   // Catalogue building parameters
-  long                     m_maxCptLoad;    //!< Maximum # of cpts to be loaded
-  long                     m_fCptLoaded;    //!< Loaded counterparts fully
-  fitsfile                *m_memFile;       //!< Memory catalogue FITS file pointer
-  fitsfile                *m_outFile;       //!< Output catalogue FITS file pointer
+  long                     m_maxCptLoad;     //!< Maximum # of cpts to be loaded
+  long                     m_fCptLoaded;     //!< Loaded counterparts fully
+  fitsfile                *m_memFile;        //!< Memory catalogue FITS file pointer
+  fitsfile                *m_outFile;        //!< Output catalogue FITS file pointer
   //
   // Counterpart candidate (CC) working arrays
-  long                     m_numCC;         //!< Number of CCs
-  CCElement               *m_cc;            //!< CCs
+  long                     m_numCC;          //!< Number of counterpart candidates
+  CCElement               *m_cc;             //!< List of counterpart candidates
   //
   // Counterpart statistics
-  int                      m_num_Sel;       //!< Number of selection criteria
-  int                     *m_cpt_stat;      //!< Counterpart statistics
-  std::vector<int>         m_src_cpts;      //!< Number of initial counterparts
-  std::vector<std::string> m_cpt_names;     //!< Counterpart names for each source
+  int                      m_num_Sel;        //!< Number of selection criteria
+  int                     *m_cpt_stat;       //!< Counterpart statistics
+  std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
+  std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
   //
   // Output cataloge: source catalogue quantities
-  long                     m_num_src_Qty;
-  std::vector<int>         m_src_Qty_colnum;
-  std::vector<std::string> m_src_Qty_ttype;
-  std::vector<std::string> m_src_Qty_tform;
-  std::vector<std::string> m_src_Qty_tunit;
-  std::vector<std::string> m_src_Qty_tbucd;
+  long                     m_num_src_Qty;    //!< Number of src. cat. quantities
+  std::vector<int>         m_src_Qty_colnum; //!< Vector of column numbers
+  std::vector<std::string> m_src_Qty_ttype;  //!< Vector of column types
+  std::vector<std::string> m_src_Qty_tform;  //!< Vector of column formats
+  std::vector<std::string> m_src_Qty_tunit;  //!< Vector of column units
+  std::vector<std::string> m_src_Qty_tbucd;  //!< Vector of column UCDs
   //
   // Output cataloge: counterpart catalogue quantities
-  long                     m_num_cpt_Qty;
-  std::vector<int>         m_cpt_Qty_colnum;
-  std::vector<std::string> m_cpt_Qty_ttype;
-  std::vector<std::string> m_cpt_Qty_tform;
-  std::vector<std::string> m_cpt_Qty_tunit;
-  std::vector<std::string> m_cpt_Qty_tbucd;
+  long                     m_num_cpt_Qty;    //!< Number of cpt. cat. quantities
+  std::vector<int>         m_cpt_Qty_colnum; //!< Vector of column numbers
+  std::vector<std::string> m_cpt_Qty_ttype;  //!< Vector of column types
+  std::vector<std::string> m_cpt_Qty_tform;  //!< Vector of column formats
+  std::vector<std::string> m_cpt_Qty_tunit;  //!< Vector of column units
+  std::vector<std::string> m_cpt_Qty_tbucd;  //!< Vector of column UCDs
 };
 inline Catalogue::Catalogue(void) { init_memory(); }
 inline Catalogue::~Catalogue(void) { free_memory(); }

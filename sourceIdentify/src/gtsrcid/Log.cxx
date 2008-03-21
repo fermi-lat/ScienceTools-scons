@@ -5,12 +5,20 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.3  2006/02/01 13:33:36  jurgen
 Tried to fix Win32 compilation bugs.
 Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Log.cxx
+ * @brief Logging interface implementation.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include <stdio.h>      // for "FILE" type
@@ -36,11 +44,13 @@ FILE *gLogFilePtr = NULL;
 /* Prototypes _______________________________________________________________ */
 
 
-/*----------------------------------------------------------------------------*/
-/*                                  LogInit                                   */
-/* -------------------------------------------------------------------------- */
-/* Task: Initialise task logging.                                             */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Initialise task logging
+ *
+ * @param[in] logName Name of log file.
+ * @param[in] taskName Name of task.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status LogInit(const char *logName, const char *taskName, Status status) {
 
     // Declare (and initialise) variables
@@ -85,11 +95,11 @@ Status LogInit(const char *logName, const char *taskName, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                 LogClose                                   */
-/* -------------------------------------------------------------------------- */
-/* Task: Finish task logging.                                                 */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Finish task logging
+ *
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status LogClose(Status status) {
 
     // Declare (and initialise) variables
@@ -113,11 +123,12 @@ Status LogClose(Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                    Log                                     */
-/* -------------------------------------------------------------------------- */
-/* Task: Log message.                                                         */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Log message
+ *
+ * @param[in] msgType Message type.
+ * @param[in] msgFormat Pointer to message format.
+ ******************************************************************************/
 Status Log(MessageType msgType, const char *msgFormat, ...) {
 
     // Declare (and initialise) variables
@@ -237,10 +248,3 @@ Status Log(MessageType msgType, const char *msgFormat, ...) {
 
 /* Namespace ends ___________________________________________________________ */
 }
-/**
- * @file   Log.cxx
- * @brief  Task logging routines.
- * @author J. Knodlseder
- *
- * $Header$
- */

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.11  2007/09/21 12:49:10  jurgen
 Enhance log-file output and chatter level
 
@@ -37,6 +40,11 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file sourceIdentify.cxx
+ * @brief sourceIdentify executable implementation.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include <time.h>            // for "clock_t" type
@@ -60,11 +68,9 @@ using namespace sourceIdentify;
 /* Prototypes _______________________________________________________________ */
 
 
-/*----------------------------------------------------------------------------*/
-/*                                  gtsrcid                                   */
-/* -------------------------------------------------------------------------- */
-/* Task: Base class for gtsrcid application.                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Base class for gtsrcid application
+ ******************************************************************************/
 class gtsrcid : public st_app::StApp {
 public:
 
@@ -104,7 +110,7 @@ public:
         status = par.load(pars, status);
         if (status != STATUS_OK) {
           if (par.logTerse())
-            Log(Error_3, "%d : Error while loading task parameters.", status);      
+            Log(Error_3, "%d : Error while loading task parameters.", status);
           continue;
         }
 
@@ -134,7 +140,7 @@ public:
         if (status != STATUS_OK) {
           if (par.logTerse())
             Log(Error_3, "%d : Error while building counterpart candidate"
-                         " catalogue.", status);      
+                         " catalogue.", status);
           continue;
         }
 
@@ -162,10 +168,3 @@ private:
 // Create factory object which can create the application
 st_app::StAppFactory<gtsrcid> g_app_factory("gtsrcid");
 
-/**
- * @file   sourceIdentify.cxx
- * @brief  Source identification main program.
- * @author J. Knodlseder
- *
- * $Header$
- */

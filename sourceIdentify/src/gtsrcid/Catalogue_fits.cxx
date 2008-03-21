@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.15  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.14  2008/03/20 11:00:21  jurgen
 Correctly extract source number of indices above 999
 
@@ -53,12 +56,16 @@ by "cfits_". These routines are handling the output catalogue
 creation and allow in memory catalogues and FITS disk catalogues.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Catalogue_fits.cxx
+ * @brief Implements FITS access methods of Catalogue class.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
-//#include "src/quantity.h"
 
 
 /* Definitions ______________________________________________________________ */
@@ -100,13 +107,13 @@ Status extract_next_special_function(std::string formula,
 /*                              Special functions                             */
 /*============================================================================*/
 
-/*----------------------------------------------------------------------------*/
-/*                                funct_gammln                                */
-/* -------------------------------------------------------------------------- */
-/* Private method: logarithm of gamma function                                */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Logarithm of gamma function
+ *
+ * @param[in] arg Vector of arguments
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 std::vector<double> funct_gammln(std::vector<double> arg) {
 
     // Get vector dimension
@@ -137,11 +144,13 @@ std::vector<double> funct_gammln(std::vector<double> arg) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                funct_erf                                   */
-/* -------------------------------------------------------------------------- */
-/* Private method: error function                                             */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Error function
+ *
+ * @param[in] arg Vector of arguments
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 std::vector<double> funct_erf(std::vector<double> arg) {
 
     // Get vector dimension
@@ -162,11 +171,13 @@ std::vector<double> funct_erf(std::vector<double> arg) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                funct_erfc                                  */
-/* -------------------------------------------------------------------------- */
-/* Private method: error function                                             */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Error function
+ *
+ * @param[in] arg Vector of arguments
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 std::vector<double> funct_erfc(std::vector<double> arg) {
 
     // Get vector dimension
@@ -191,11 +202,12 @@ std::vector<double> funct_erfc(std::vector<double> arg) {
 /*                              Private functions                             */
 /*============================================================================*/
 
-/*----------------------------------------------------------------------------*/
-/*                             set_fits_col_format                            */
-/* -------------------------------------------------------------------------- */
-/* Private function: set FITS column format from catalogue description        */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Set FITS column format from catalogue description
+ *
+ * @param[in] desc Pointer to catalogue descriptor.
+ * @param[out] format Pointer to result format string.
+ ******************************************************************************/
 int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
 
     // Declare local variables
@@ -243,11 +255,14 @@ int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                               fits_tform_binary                            */
-/* -------------------------------------------------------------------------- */
-/* Private function: set FITS column format from catalogue description        */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Set FITS column format from catalogue description
+ *
+ * @param[in] typecode Column typecode (TBIT, TBYTE, etc.).
+ * @param[in] repeat Repeat value.
+ * @param[in] width Column width.
+ * @param[out] format Pointer to result format string.
+ ******************************************************************************/
 int fits_tform_binary(int typecode, long repeat, long width,
                       std::string *format) {
 
@@ -317,11 +332,13 @@ int fits_tform_binary(int typecode, long repeat, long width,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                         extract_next_special_function                      */
-/* -------------------------------------------------------------------------- */
-/* Private method: extract next special function from formula                 */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Extract next special function from formula
+ *
+ * @param[in] formula Input formula.
+ * @param[out] new_formula Formula after function extraction.
+ * @param[out] fcts List of special functions.
+ ******************************************************************************/
 Status extract_next_special_function(std::string formula,
                                      std::string &new_formula,
                                      SpecialFcts &fcts) {
@@ -396,7 +413,7 @@ Status extract_next_special_function(std::string formula,
       std::string colname_arg = buffer;
       g_col_special++;
 
-      // Substituing the special function in formula with the name of the 
+      // Substituing the special function in formula with the name of the
       // result column
       new_formula = formula;
       length      = stop - loc_min + 1;
@@ -421,11 +438,14 @@ Status extract_next_special_function(std::string formula,
 /*                   Low-level FITS catalogue handling methods                */
 /*============================================================================*/
 
-/*----------------------------------------------------------------------------*/
-/*                           Catalogue::cfits_create                          */
-/* -------------------------------------------------------------------------- */
-/* Private method: create an empty FITS catalogue                             */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Create an empty FITS catalogue
+ *
+ * @param[out] fptr Pointer to FITS file pointer.
+ * @param[in] filename Name of FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
                                Status status) {
 
@@ -715,9 +735,9 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
           Log(Log_2, 
               "  Column %4d .....................: %*s [%*s] (%*s) <%*s>",
               col+1, 
-              maxLenType, ttype[col], 
-              maxLenUnit, tunit[col], 
-              maxLenForm, tform[col], 
+              maxLenType, ttype[col],
+              maxLenUnit, tunit[col],
+              maxLenForm, tform[col],
               maxLenUcd,  tbucd[col]);
         }
       }
@@ -792,11 +812,16 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                           Catalogue::cfits_clear                           */
-/* -------------------------------------------------------------------------- */
-/* Private method: clear FITS table                                           */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Clear FITS catalogue table
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Deletes all rows from a FITS table. This method is mainly used to reset the
+ * in-memory FITS catalogue.
+ ******************************************************************************/
 Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables
@@ -856,11 +881,14 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                            Catalogue::cfits_add                            */
-/* -------------------------------------------------------------------------- */
-/* Private method: add counterpart candidates to FITS file                    */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Add counterpart candidates to FITS file
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] iSrc Number of source for which counterparts are added (0,1,...).
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
                             Status status) {
 
@@ -1254,11 +1282,14 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                           Catalogue::cfits_eval                            */
-/* -------------------------------------------------------------------------- */
-/* Private method: evaluate catalogue quantities                              */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Evaluate catalogue quantities
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] verbose Verbose flag (0=silent, 1=verbose).
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
                              Status status) {
 
@@ -1345,11 +1376,15 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                         cfits_eval_special_expression                      */
-/* -------------------------------------------------------------------------- */
-/* Private method: evaluate special expressions in formula                    */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Evaluate special expressions in formula
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] column Column name.
+ * @param[in,out] formula Formula.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
                                                 std::string column,
                                                 std::string &formula,
@@ -1483,11 +1518,16 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                        cfits_eval_special_function                         */
-/* -------------------------------------------------------------------------- */
-/* Private method: evaluate special function                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Evaluate special function
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] fct Function name.
+ * @param[in] column_res Column name for function result.
+ * @param[in] column_arg Column name for function argument.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_eval_special_function(fitsfile *fptr, Parameters *par,
                                               std::string fct,
                                               std::string column_res,
@@ -1557,11 +1597,19 @@ Status Catalogue::cfits_eval_special_function(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                        cfits_eval_regular_expression                       */
-/* -------------------------------------------------------------------------- */
-/* Private method: evaluate regular expression using cfitsio interface        */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Evaluate regular expression using cfitsio interface
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] column Column name.
+ * @param[in] formula Formula.
+ * @param[in] status Error status.
+ *
+ * Evaluates the formula that is specified in 'formula' using the CFITSIO
+ * formula calculator. The result is stored in the table column specified by
+ * 'column'.
+ ******************************************************************************/
 Status Catalogue::cfits_eval_regular_expression(fitsfile *fptr, Parameters *par,
                                                 std::string column,
                                                 std::string formula,
@@ -1635,12 +1683,13 @@ Status Catalogue::cfits_eval_regular_expression(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                             cfits_eval_clear                               */
-/* -------------------------------------------------------------------------- */
-/* Private method: remove all columns that have been used for special         */
-/*                 function evaluations                                       */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Remove all columns that have been used for special function evaluations
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par, 
                                    Status status) {
 
@@ -1698,172 +1747,6 @@ Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par,
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_eval_clear"
-          " (status=%d)", status);
-
-    // Return status
-    return status;
-
-}
-
-
-/*----------------------------------------------------------------------------*/
-/*                          Catalogue::cfits_colval                           */
-/* -------------------------------------------------------------------------- */
-/* Private method: returns the values of a table column                       */
-/*----------------------------------------------------------------------------*/
-Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
-                               std::vector<double> *val, Status status) {
-
-    // Declare local variables
-    int     fstatus;
-    int     colnum;
-    int     typecode;
-    int     anynul;
-    long    irow;
-    long    icol;
-    long    repeat;
-    long    width;
-    long    nactrows;
-    long    nelements;
-    double  prob;
-    double *ptr;
-    double *tmp_val;
-
-    // Debug mode: Entry
-    if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cfits_colval");
-
-    // Initialise temporary memory pointers
-    tmp_val = NULL;
-
-    // Initialise FITSIO status
-    fstatus = (int)status;
-
-    // Single loop for common exit point
-    do {
-
-      // Initialise probability vector
-      val->clear();
-
-      // Fall through in case of an error
-      if (status != STATUS_OK)
-        continue;
-
-      // Fall through if we have no column name
-      if (colname == NULL)
-        continue;
-
-      // Determine number of rows in table
-      fstatus = fits_get_num_rows(fptr, &nactrows, &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
-              fstatus);
-        continue;
-      }
-
-      // Fall through if table is empty
-      if (nactrows < 1)
-        continue;
-
-      // Determine the column number
-      fstatus = fits_get_colnum(fptr, CASEINSEN, colname, &colnum, &fstatus);
-      if (fstatus == COL_NOT_UNIQUE) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' is not unique. Please"
-              " specify unique column name.",
-              fstatus, colname);
-        continue;
-      }
-      else if (fstatus == COL_NOT_FOUND) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' not found in catalogue.",
-              fstatus, colname);
-        continue;
-      }
-      else if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine column number of probability"
-              " column '%s'.", fstatus, colname);
-        continue;
-      }
-
-      // Determine the type of the probability column
-      fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
-                                 &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine type of probability column"
-              " '%s'.", fstatus, colname);
-        continue;
-      }
-
-      // Abort if column type is not one of the valid types
-      if (typecode == TSTRING) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'STRING' is not"
-              " allowed.", (Status)status, colname);
-        continue;
-      }
-      else if (typecode == TCOMPLEX) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'COMPLEX' is not"
-              " allowed.", (Status)status, colname);
-        continue;
-      }
-      else if (typecode == TDBLCOMPLEX) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'DBLCOMPLEX' is"
-              " not allowed.", (Status)status, colname);
-        continue;
-      }
-
-      // Set the number of elements to be read
-      nelements = repeat * nactrows;
-
-      // Allocate temporary memory to hold the column data
-      tmp_val = new double[nelements];
-      if (tmp_val == NULL) {
-        status = STATUS_MEM_ALLOC;
-        if (par->logTerse())
-          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
-        continue;
-      }
-
-      // Read column data
-      fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, nelements,
-                              NULL, tmp_val, &anynul, &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to read data from column %d.",
-              fstatus, colnum);
-        continue;
-      }
-
-      // Setup vector (multiply over vector column if it exists)
-      ptr = tmp_val;
-      for (irow = 0; irow < nactrows; irow++) {
-        prob = 1.0;
-        for (icol = 0; icol < repeat; icol++)
-          prob *= *ptr++;
-        val->push_back(prob);
-      }
-
-    } while (0); // End of main do-loop
-
-    // Set FITSIO status
-    if (status == STATUS_OK)
-      status = (Status)fstatus;
-
-    // Free temporary memory pointers
-    if (tmp_val != NULL) delete [] tmp_val;
-
-    // Debug mode: Entry
-    if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_colval"
           " (status=%d)", status);
 
     // Return status
@@ -2097,11 +1980,185 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                        Catalogue::cfits_get_col                            */
-/* -------------------------------------------------------------------------- */
-/* Private method: get real column from FITS table                            */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Returns table column as double precision vector (method 1)
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] colname Column name.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[out] val Vector of values.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
+                               std::vector<double> *val, Status status) {
+
+    // Declare local variables
+    int     fstatus;
+    int     colnum;
+    int     typecode;
+    int     anynul;
+    long    irow;
+    long    icol;
+    long    repeat;
+    long    width;
+    long    nactrows;
+    long    nelements;
+    double  prob;
+    double *ptr;
+    double *tmp_val;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_colval");
+
+    // Initialise temporary memory pointers
+    tmp_val = NULL;
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Initialise probability vector
+      val->clear();
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if we have no column name
+      if (colname == NULL)
+        continue;
+
+      // Determine number of rows in table
+      fstatus = fits_get_num_rows(fptr, &nactrows, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Fall through if table is empty
+      if (nactrows < 1)
+        continue;
+
+      // Determine the column number
+      fstatus = fits_get_colnum(fptr, CASEINSEN, colname, &colnum, &fstatus);
+      if (fstatus == COL_NOT_UNIQUE) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Probability column '%s' is not unique. Please"
+              " specify unique column name.",
+              fstatus, colname);
+        continue;
+      }
+      else if (fstatus == COL_NOT_FOUND) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Probability column '%s' not found in catalogue.",
+              fstatus, colname);
+        continue;
+      }
+      else if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine column number of probability"
+              " column '%s'.", fstatus, colname);
+        continue;
+      }
+
+      // Determine the type of the probability column
+      fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
+                                 &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine type of probability column"
+              " '%s'.", fstatus, colname);
+        continue;
+      }
+
+      // Abort if column type is not one of the valid types
+      if (typecode == TSTRING) {
+        status = STATUS_CAT_BAD_PROB_COL;
+        if (par->logTerse())
+          Log(Error_2, "%d : Probability column '%s' of type 'STRING' is not"
+              " allowed.", (Status)status, colname);
+        continue;
+      }
+      else if (typecode == TCOMPLEX) {
+        status = STATUS_CAT_BAD_PROB_COL;
+        if (par->logTerse())
+          Log(Error_2, "%d : Probability column '%s' of type 'COMPLEX' is not"
+              " allowed.", (Status)status, colname);
+        continue;
+      }
+      else if (typecode == TDBLCOMPLEX) {
+        status = STATUS_CAT_BAD_PROB_COL;
+        if (par->logTerse())
+          Log(Error_2, "%d : Probability column '%s' of type 'DBLCOMPLEX' is"
+              " not allowed.", (Status)status, colname);
+        continue;
+      }
+
+      // Set the number of elements to be read
+      nelements = repeat * nactrows;
+
+      // Allocate temporary memory to hold the column data
+      tmp_val = new double[nelements];
+      if (tmp_val == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+
+      // Read column data
+      fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, nelements,
+                              NULL, tmp_val, &anynul, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read data from column %d.",
+              fstatus, colnum);
+        continue;
+      }
+
+      // Setup vector (multiply over vector column if it exists)
+      ptr = tmp_val;
+      for (irow = 0; irow < nactrows; irow++) {
+        prob = 1.0;
+        for (icol = 0; icol < repeat; icol++)
+          prob *= *ptr++;
+        val->push_back(prob);
+      }
+
+    } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Free temporary memory pointers
+    if (tmp_val != NULL) delete [] tmp_val;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_colval"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Returns table column as double precision vector (method 2)
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] colname Column name.
+ * @param[out] col Vector of values.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_get_col(fitsfile *fptr, Parameters *par,
                                 std::string colname,
                                 std::vector<double> &col,
@@ -2336,11 +2393,15 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                        Catalogue::cfits_set_col                            */
-/* -------------------------------------------------------------------------- */
-/* Private method: write real column into FITS table                          */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Set table column from double precision vector
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] colname Column name.
+ * @param[in] col Vector of values.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_set_col(fitsfile *fptr, Parameters *par,
                                 std::string colname,
                                 std::vector<double> &col,
@@ -2463,11 +2524,13 @@ Status Catalogue::cfits_set_col(fitsfile *fptr, Parameters *par,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                           Catalogue::cfits_set_pars                        */
-/* -------------------------------------------------------------------------- */
-/* Private method: Save run parameters as FITS keywords.                      */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Save run parameters as FITS keywords
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_set_pars(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables
@@ -2530,11 +2593,13 @@ Status Catalogue::cfits_set_pars(fitsfile *fptr, Parameters *par, Status status)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                              Catalogue::cfits_save                         */
-/* -------------------------------------------------------------------------- */
-/* Private method: Save catalogue.                                            */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Save catalogue
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cfits_save(fitsfile *fptr, Parameters *par, Status status) {
 
     // Declare local variables

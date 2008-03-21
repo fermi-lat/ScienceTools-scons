@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.10  2007/10/09 08:17:40  jurgen
 Correctly interpret positional errors and correctly evaluate PROB_POS
 as likelihood
@@ -36,6 +39,11 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Parameters.h
+ * @brief Parameters class implementation.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include <stdio.h>                       // for "sprintf" function

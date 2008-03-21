@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.27  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.26  2008/03/20 12:17:44  jurgen
 Invert _RA/_DE and RA/DE column name search
 
@@ -89,6 +92,11 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Catalogue.cxx
+ * @brief Implements methods of Catalogue class.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include "sourceIdentify.h"

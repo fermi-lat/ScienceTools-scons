@@ -5,7 +5,15 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.1  2007/10/10 15:39:12  jurgen
+Introduce handling of special functions 'gammln', 'erf', and 'erfc'
+
 ------------------------------------------------------------------------------*/
+/**
+ * @file Catalogue_nr.cxx
+ * @brief Implements numerical methods of Catalogue class.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include "Catalogue.h"
@@ -27,13 +35,13 @@ namespace sourceIdentify {
 /* Private Prototypes _______________________________________________________ */
 
 
-/*----------------------------------------------------------------------------*/
-/*                                 nr_gammln                                  */
-/* -------------------------------------------------------------------------- */
-/* Private method: ln(gamma)                                                  */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief ln(gamma)
+ *
+ * @param[in] arg Gamma value.
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 double nr_gammln(double arg) {
 
     // Initialise
@@ -62,13 +70,14 @@ double nr_gammln(double arg) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                 nr_gammp                                   */
-/* -------------------------------------------------------------------------- */
-/* Private method: returns incomplete gamma function P(a,x)                   */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Returns incomplete gamma function P(a,x)
+ *
+ * @param[in] a Argument.
+ * @param[in] x Argument.
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 double nr_gammp(double a, double x) {
 
     // Check arguments
@@ -94,13 +103,14 @@ double nr_gammp(double a, double x) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                 nr_gammq                                   */
-/* -------------------------------------------------------------------------- */
-/* Private method: returns incomplete gamma function Q(a,x) = 1 - P(a,x)      */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Returns incomplete gamma function Q(a,x) = 1 - P(a,x)
+ *
+ * @param[in] a Argument.
+ * @param[in] x Argument.
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 double nr_gammq(double a, double x) {
 
     // Check arguments
@@ -126,13 +136,16 @@ double nr_gammq(double a, double x) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                  nr_gser                                   */
-/* -------------------------------------------------------------------------- */
-/* Private method: nr_gser                                                    */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief nr_gser
+ *
+ * @param[out] gamser Pointer to result.
+ * @param[in] a Argument.
+ * @param[in] x Argument.
+ * @param[out] gln Pointer to result.
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 void nr_gser(double *gamser, double a, double x, double *gln) {
 
     // Set constants
@@ -168,13 +181,17 @@ void nr_gser(double *gamser, double a, double x, double *gln) {
 
 }
 
-/*----------------------------------------------------------------------------*/
-/*                                   nr_gcf                                   */
-/* -------------------------------------------------------------------------- */
-/* Private method: nr_gser                                                    */
-/* -------------------------------------------------------------------------- */
-/* Implemented from Numerical Recipes, V2.08                                  */
-/*----------------------------------------------------------------------------*/
+
+/**************************************************************************//**
+ * @brief nr_gcf
+ *
+ * @param[out] gammcf Pointer to result.
+ * @param[in] a Argument.
+ * @param[in] x Argument.
+ * @param[out] gln Pointer to result.
+ *
+ * Implemented from Numerical Recipes, V2.08
+ ******************************************************************************/
 void nr_gcf(double *gammcf, double a, double x, double *gln) {
 
     // Set constants

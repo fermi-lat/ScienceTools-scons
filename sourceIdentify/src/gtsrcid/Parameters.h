@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.9  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.8  2007/10/09 08:17:40  jurgen
 Correctly interpret positional errors and correctly evaluate PROB_POS
 as likelihood
@@ -30,6 +33,12 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Parameters.h
+ * @brief Parameters class interface definition.
+ * @author J. Knodlseder
+ */
+
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
@@ -70,17 +79,17 @@ public:
   friend class Catalogue;
 
   // Constructor & destructor
-  Parameters(void);                         // Inline
- ~Parameters(void);                         // Inline
+  Parameters(void);                            // Inline
+ ~Parameters(void);                            // Inline
 
   // Public methods
   Status load(st_app::AppParGroup &pars, Status status);
   Status dump(Status status);
-  int    logTerse(void);                    // Inline
-  int    logNormal(void);                   // Inline
-  int    logExplicit(void);                 // Inline
-  int    logVerbose(void);                  // Inline
-  int    logDebug(void);                    // Inline
+  int    logTerse(void);                       // Inline
+  int    logNormal(void);                      // Inline
+  int    logExplicit(void);                    // Inline
+  int    logVerbose(void);                     // Inline
+  int    logDebug(void);                       // Inline
 
   // Private methods
 private:
@@ -88,27 +97,27 @@ private:
   void   free_memory(void);
 
 private:
-  std::string              m_srcCatName;          // Source catalogue name
-  std::string              m_cptCatName;          // Counterpart catalogue name
-  std::string              m_outCatName;          // Output catalogue name
-  std::string              m_srcCatPrefix;        // Source catalogue prefix
-  std::string              m_cptCatPrefix;        // Counterpart catalogue prefix
-  std::string              m_srcCatQty;           // Source catalogue quantities
-  std::string              m_cptCatQty;           // Counterpart catalogue quantities
-  std::vector<std::string> m_outCatQtyName;       // New output catalogue quantities
-  std::vector<std::string> m_outCatQtyFormula;    // New output catalogue quantities
-  std::vector<std::string> m_select;              // Selections
-  PosProbType              m_posProbType;         // Position probability type
-  ChanceProbType           m_chanceProbType;      // Chance coincidence prob. type
-  std::vector<std::string> m_probColNames;        // Probability column names
-  double                   m_probThres;           // Probability threshold
-  double                   m_srcPosError;         // Default source pos. error
-  double                   m_cptPosError;         // Default counterpart pos. error
-  long                     m_maxNumCpt;           // Maximum # of counterparts
-  int                      m_chatter;             // Chatter level
-  int                      m_clobber;             // Clobber flag
-  int                      m_debug;               // Debugging mode activated
-  std::string              m_mode;                // Automatic parameter mode
+  std::string              m_srcCatName;       //!< Source catalogue name
+  std::string              m_cptCatName;       //!< Counterpart catalogue name
+  std::string              m_outCatName;       //!< Output catalogue name
+  std::string              m_srcCatPrefix;     //!< Source catalogue prefix
+  std::string              m_cptCatPrefix;     //!< Counterpart catalogue prefix
+  std::string              m_srcCatQty;        //!< Source catalogue quantities
+  std::string              m_cptCatQty;        //!< Counterpart catalogue quantities
+  std::vector<std::string> m_outCatQtyName;    //!< New output catalogue quantities
+  std::vector<std::string> m_outCatQtyFormula; //!< New output catalogue quantities
+  std::vector<std::string> m_select;           //!< Selections
+  PosProbType              m_posProbType;      //!< Position probability type
+  ChanceProbType           m_chanceProbType;   //!< Chance coincidence prob. type
+  std::vector<std::string> m_probColNames;     //!< Probability column names
+  double                   m_probThres;        //!< Probability threshold
+  double                   m_srcPosError;      //!< Default source pos. error
+  double                   m_cptPosError;      //!< Default counterpart pos. error
+  long                     m_maxNumCpt;        //!< Maximum # of counterparts
+  int                      m_chatter;          //!< Chatter level
+  int                      m_clobber;          //!< Clobber flag
+  int                      m_debug;            //!< Debugging mode activated
+  std::string              m_mode;             //!< Automatic parameter mode
 };
 inline Parameters::Parameters(void) { init_memory(); }
 inline Parameters::~Parameters(void) { free_memory(); }

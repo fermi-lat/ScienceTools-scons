@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.21  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.20  2008/03/20 12:17:44  jurgen
 Invert _RA/_DE and RA/DE column name search
 
@@ -65,14 +68,20 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file sourceIdentify.h
+ * @brief sourceIdentify executable definition.
+ * @author J. Knodlseder
+ */
+
 #ifndef SOURCEIDENTIFY_H
 #define SOURCEIDENTIFY_H
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v1r4p0"
+#define TOOL_VERSION  "v2r0p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "20-Mar-2008"
+#define TOOL_DATE     "21-Mar-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

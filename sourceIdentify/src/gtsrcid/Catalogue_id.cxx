@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.15  2008/03/20 21:56:26  jurgen
+implement local counterpart density
+
 Revision 1.14  2008/02/23 10:36:57  jurgen
 remove redundant catalogAccess header inclusion
 
@@ -53,12 +56,16 @@ by "cid_". The routines handle source identification at the low
 level.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Catalogue_id.cxx
+ * @brief Implements source identification methods of Catalogue class.
+ * @author J. Knodlseder
+ */
 
 /* Includes _________________________________________________________________ */
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
-//#include "src/quantity.h"
 
 
 /* Definitions ______________________________________________________________ */
@@ -1031,12 +1038,15 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                             Catalogue::cid_sort                            */
-/* -------------------------------------------------------------------------- */
-/* Private method: sort counterpart candidates by increasing probability and  */
-/* in case of equal probability) by decreasing angular separation.            */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Sort counterpart candidates
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Sort by increasing probability and in case of equal probability) by 
+ * decreasing angular separation
+ ******************************************************************************/
 Status Catalogue::cid_sort(Parameters *par, Status status) {
 
     // Declare local variables
@@ -1104,11 +1114,12 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                            Catalogue::cid_dump                             */
-/* -------------------------------------------------------------------------- */
-/* Private method: dump counterpart candidates that are actually in buffer    */
-/*----------------------------------------------------------------------------*/
+/**************************************************************************//**
+ * @brief Dump counterpart candidates that are actually in buffer
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
 Status Catalogue::cid_dump(Parameters *par, Status status) {
 
     // Declare local variables
@@ -1203,6 +1214,18 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
 
 }
 
+
+/**************************************************************************//**
+ * @brief Assign source name
+ *
+ * @param[in] name Source name.
+ * @param[in] row Catalogue row (starting from 0).
+ *
+ * Assigns source name for output catalogue. Leading and trailing whitespace
+ * are stripped from the source name provided on input. If the source name
+ * string is empty, a dummy name will be constructed from the catalogue row
+ * number (CAT_ROW_xxx, where xxx is the row number starting from 1).
+ ******************************************************************************/
 
 /*----------------------------------------------------------------------------*/
 /*                      Catalogue::cid_assign_src_name                        */

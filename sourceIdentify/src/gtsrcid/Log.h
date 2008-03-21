@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.4  2007/09/21 14:29:03  jurgen
+Correct memory bug and updated test script
+
 Revision 1.3  2007/09/20 14:22:06  jurgen
 Use application name from sourceIdentify.h file
 
@@ -14,6 +17,12 @@ Change revision number to 1.3.2.
 Replace header information with CVS typeset information.
 
 ------------------------------------------------------------------------------*/
+/**
+ * @file Log.h
+ * @brief Logging interface definition.
+ * @author J. Knodlseder
+ */
+
 #ifndef LOG_H
 #define LOG_H
 
@@ -58,7 +67,6 @@ typedef enum {
 Status LogInit(const char *logName, const char *taskName, Status status);
 Status LogClose(Status status);
 Status Log(MessageType msgType, const char *msgFormat, ...);
-//           __attribute__ ((format (printf, 3, 4)));
 
 
 /* Namespace ends ___________________________________________________________ */
