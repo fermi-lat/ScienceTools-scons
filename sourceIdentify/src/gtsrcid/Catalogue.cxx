@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.29  2008/03/21 15:27:03  jurgen
+Estimate number of false associations
+
 Revision 1.28  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -1328,6 +1331,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       Log(Log_2, " Number of sources ................: %10d", m_src.numLoad);
       Log(Log_2, " Number of associated sources .....: %10d", n_src_assoc);
       Log(Log_2, " Number of associations ...........: %10d", m_num_assoc);
+      Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
       Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
       //Log(Log_2, " Counterparts within 95%% ellipses .: %10d", m_num_ellipse);
       //Log(Log_2, "   Expected chance counterparts ...: %10.3f"

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.17  2008/03/21 15:27:03  jurgen
+Estimate number of false associations
+
 Revision 1.16  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -993,12 +996,17 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
  *
- * Set class member
- * m_lambda (expected number of chance coincidences on base of the error
- *  ellipse solid angle)
- * and the counterpart candidate members
- * m_cc[iCC].lambda (expected number of chance coincidences) and
- * m_cc[iCC].prob_chance (chance coincidence probability).
+ * Computes the chance coincidence probability of finding at least one source
+ * within the 95% error ellipse around the source.
+ *
+ * The expected number of chance coincidence is stored in the class member
+ * Catalogue::m_lambda.
+ * It is also attributed to the counterpart candidate member CCElement::lambda.
+ *
+ * The chance coincidence probability is defined as
+ * P = 1 - exp(-lambda)
+ *
+ * It is stored in the counterpart candidate member CCElement::prob_chance.
  ******************************************************************************/
 Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
 
@@ -1042,11 +1050,13 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
         if (!cpt->pos_valid)
           continue;
 
+        // Compute the expected number of sources within the error ellipse
+        m_cc[iCC].lambda = m_lambda;
+
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
 //        m_cc[iCC].lambda = pi * m_cc[iCC].angsep * m_cc[iCC].angsep *
 //                           m_rho;
-        m_cc[iCC].lambda = m_lambda;
 
         // Compute chance coincidence probability
         if (par->m_chanceProbType == Local)
@@ -1074,7 +1084,14 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
  *
- * Sets m_rho method of Catalogue class.
+ * Computes the local counterpart density at the position of a given source
+ * by collecting the number of counterparts within a ring around the source
+ * position. The ring is defined by a minimum and maximum radius, stored in
+ * the class members Catalogue::m_ring_rad_min and Catalogue::m_ring_rad_max.
+ *
+ * The density is calculated by dividing the number of counterpart sources in
+ * the ring by the solid angle of the ring. The density is stored in the class
+ * member Catalogue::m_rho.
  ******************************************************************************/
 Status Catalogue::cid_local_density(Parameters *par, long iSrc, Status status) {
 

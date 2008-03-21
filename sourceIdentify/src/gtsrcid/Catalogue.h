@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.22  2008/03/21 15:27:03  jurgen
+Estimate number of false associations
+
 Revision 1.21  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -243,7 +246,6 @@ typedef struct {                      // Counterpart candidate
   long                    index;        //!< Index of CCs in CPT catalogue
   double                  angsep;       //!< Angular separation of CPT from source
   double                  posang;       //!< Position angle of CPT w/r to source
-  //double                  omega;        //!< Solid angle of error ellipse
   double                  lambda;       //!< Expected number of false counterparts
   double                  prob_pos;     //!< Probability from position (likelihood)
   std::vector<double>     prob_add;     //!< Additional probabilities
