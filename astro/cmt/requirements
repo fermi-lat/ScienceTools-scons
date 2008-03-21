@@ -1,6 +1,6 @@
 package astro
 
-version v3r1p3
+version v3r1p4
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -11,6 +11,7 @@ use cfitsio * IExternal
 use CLHEP v3* IExternal
 use extFiles * IExternal -no_auto_imports # for jphephem data
 use tip *
+use python * IExternal -no_auto_imports   # needed for windows in RM
 
 apply_pattern shared_library
 

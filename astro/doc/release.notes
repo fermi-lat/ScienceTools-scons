@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r1p4   21-Mar-08 THB Needed to make python runtime library available for clients.
   v3r1p3   19-Mar-08 THB Use new SwigModule instead!
   v3r1p2   19-Mar-08 THB Undo python module interface in build, since it is not allowed to use SwigPolicy
   v3r1p1   15-Mar-08 THB Implement python module interface in build
