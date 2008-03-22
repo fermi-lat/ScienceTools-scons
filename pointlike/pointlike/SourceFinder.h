@@ -207,8 +207,12 @@ namespace pointlike {
         std::vector<CanInfo> candidateList()const;
 
         //! write contents of CanInfo to fits file
-        void write(const std::string & outputFile,
-            const std::string & tablename="SOURCEFINDER", bool clobber= true) const;
+        void createFitsFile(const std::string & outputFile,
+            const std::string & tablename="PNTFIND", bool clobber= true) const;
+
+        //! write a reg file
+        void createRegFile(std::string filename, std::string color="white")const;
+
 
         //! run the current set of steps
         void run();
