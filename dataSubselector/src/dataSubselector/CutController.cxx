@@ -54,7 +54,8 @@ CutController::CutController(st_app::AppParGroup & pars,
    addRangeCut("ZENITH_ANGLE", "deg", 0, pars["zmax"]);
    int convtype = pars["convtype"];
    if (convtype >= 0) {
-      addRangeCut("CONVERSION_TYPE", "dimensionless", convtype, convtype);
+      addRangeCut("CONVERSION_TYPE", "dimensionless", convtype, convtype, 
+                  0, true);
    }
    double phasemin = pars["phasemin"];
    double phasemax = pars["phasemax"];
