@@ -1,6 +1,10 @@
 #include "facilities/commonUtilities.h"
 #include <iostream>
 #include <algorithm>
+#ifdef SCons
+#include <sstream>
+#include "config.h"
+#endif
 
 #ifndef WIN32
 extern char **environ;
@@ -122,6 +126,15 @@ namespace facilities {
 
   void commonUtilities::setupEnvironment(){
 #ifdef SCons
+    std::stringstream packages;
+    packages << PACKAGES;
+    while(!packages.eof()){
+      std::string package, packageUpper;
+      packages>>std::ws>>package>>std::ws;
+      packageUpper = package;
+      transform(packageUpper.begin(), packageUpper.end(), packageUpper.begin(), (int(*)(int)) toupper);
+      setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
+    }
 #ifdef ScienceTools
     setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
     setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
