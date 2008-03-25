@@ -127,21 +127,21 @@ void GtExposure::run() {
 }
 
 void GtExposure::promptForParameters() {
-   m_pars.Prompt("lcfile");
+   m_pars.Prompt("infile");
    m_pars.Prompt("scfile");
-   m_pars.Prompt("rspfunc");
-   m_pars.Prompt("source_model_file");
-   std::string xmlFile = m_pars["source_model_file"];
+   m_pars.Prompt("irfs");
+   m_pars.Prompt("srcmdl");
+   std::string xmlFile = m_pars["srcmdl"];
    if (xmlFile == "none") {
-      m_pars.Prompt("spectral_index");
+      m_pars.Prompt("specin");
    } else {
-      m_pars.Prompt("target_source");
+      m_pars.Prompt("target");
    }
    m_pars.Save();
 }
 
 void GtExposure::parseDssKeywords() {
-   std::string lc_file = m_pars["lcfile"];
+   std::string lc_file = m_pars["infile"];
    dataSubselector::Cuts cuts(lc_file, "RATE", false);
    m_ra = m_pars["ra"];
    m_dec = m_pars["dec"];
@@ -169,7 +169,7 @@ void GtExposure::parseDssKeywords() {
 
 void GtExposure::setExposure() {
    std::vector<double> energies;
-   int nee = m_pars["number_of_energies"];
+   int nee = m_pars["enumbins"];
    double estep(std::log(m_emax/m_emin)/(nee-1));
    for (int k(0); k < nee; k++) {
       energies.push_back(m_emin*std::exp(estep*k));
@@ -177,7 +177,7 @@ void GtExposure::setExposure() {
    std::vector<double> tlims;
    getLcTimes(tlims);
    std::string ft2file = m_pars["scfile"];
-   std::string irfs = m_pars["rspfunc"];
+   std::string irfs = m_pars["irfs"];
    if (irfs == "DSS") {
       irfs = "DC2";
    }
@@ -186,7 +186,7 @@ void GtExposure::setExposure() {
 }
 
 void GtExposure::getLcTimes(std::vector<double> & tlims) const {
-   std::string lc_file = m_pars["lcfile"];
+   std::string lc_file = m_pars["infile"];
    const tip::Table * table = 
       tip::IFileSvc::instance().readTable(lc_file, "RATE");
 
@@ -207,9 +207,9 @@ void GtExposure::getLcTimes(std::vector<double> & tlims) const {
 }
 
 void GtExposure::prepareModel() {
-   std::string xmlFile = m_pars["source_model_file"];
-   std::string srcName = m_pars["target_source"];
-   double gamma = m_pars["spectral_index"];
+   std::string xmlFile = m_pars["srcmdl"];
+   std::string srcName = m_pars["target"];
+   double gamma = m_pars["specin"];
    
    if (xmlFile == "none") {
       m_function = m_funcFactory->create("PowerLaw2");
@@ -271,7 +271,7 @@ void GtExposure::performSpectralWeighting() {
 }
 
 void GtExposure::writeExposure() {
-   std::string lc_file = m_pars["lcfile"];
+   std::string lc_file = m_pars["infile"];
    tip::Table * table =
       tip::IFileSvc::instance().editTable(lc_file, "RATE");
 
