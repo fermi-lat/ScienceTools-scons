@@ -244,10 +244,10 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["phi"].set(evt->phi());
       ft1["zenith_angle"].set(evt->zenAngle());
       ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
-//       ft1["event_class"].set(evt->eventType());
-//       ft1["conversion_type"].set(evt->conversionType());
-      ft1["event_class"].set(evt->conversionType());
+      ft1["event_class"].set(evt->eventClass());
       ft1["conversion_type"].set(evt->conversionType());
+//       ft1["event_class"].set(evt->conversionType());
+//       ft1["conversion_type"].set(evt->conversionType());
       ft1["mc_src_id"].set(evt->eventId());
       ft1["mcenergy"].set(evt->trueEnergy());
    }
