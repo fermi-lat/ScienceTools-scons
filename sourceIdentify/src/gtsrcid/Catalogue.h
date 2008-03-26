@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.25  2008/03/26 13:37:53  jurgen
+Remove unused members
+
 Revision 1.24  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -363,6 +366,7 @@ private:
   Status      cid_prob_post(Parameters *par, Status status);
   Status      cid_prob(Parameters *par, Status status);
   Status      cid_local_density(Parameters *par, int iSrc, Status status);
+  Status      cid_global_density(Parameters *par, Status status);
   Status      cid_sort(Parameters *par, Status status);
   Status      cid_dump(Parameters *par, Status status);
   std::string cid_assign_src_name(std::string name, int row);

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.19  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.18  2008/03/21 16:42:56  jurgen
 Update documentation
 
@@ -568,11 +571,12 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
         continue;
       }
 
-      // Determine local counterpart density
+      // Determine counterpart density
       status = cid_local_density(par, iSrc, status);
+      //status = cid_global_density(par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine local counterpart density"
+          Log(Error_2, "%d : Unable to determine counterpart density"
               " for source %d.",
               (Status)status, iSrc+1);
         continue;
@@ -1432,6 +1436,43 @@ Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_density_local (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute global counterpart density
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::cid_global_density(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_global_density (%d candidates)",
+          m_numCC);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Compute global density
+      m_rho = double(m_cpt.numLoad) / 41252.961;
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_global_density (status=%d)",
           status);
 
     // Return status
