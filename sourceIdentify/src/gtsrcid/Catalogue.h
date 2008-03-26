@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.24  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.23  2008/03/21 16:42:56  jurgen
 Update documentation
 
@@ -422,8 +425,6 @@ private:
   int                     *m_cpt_stat;       //!< Counterpart statistics
   std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
-  //double                   m_tot_lambda;     //!< Number of expected chance ass.
-  //int                      m_num_ellipse;    //!< Number of counterparts in ellipse
   int                      m_num_assoc;      //!< Number of associations
   //
   // Output cataloge: source catalogue quantities
