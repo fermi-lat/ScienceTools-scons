@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.32  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.31  2008/03/21 16:46:14  jurgen
 Remove double log
 
@@ -1526,9 +1529,6 @@ Status Catalogue::build(Parameters *par, Status status) {
 
         // Sum the total number of associations
         m_num_assoc += m_numCC;
-
-        // Sum  the expected number of chance coincidences
-//        m_tot_lambda += m_lambda;
 
       } // endfor: looped over all sources
       if (status != STATUS_OK)

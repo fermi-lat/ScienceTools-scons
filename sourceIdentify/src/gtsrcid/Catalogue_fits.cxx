@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.18  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.17  2008/03/21 15:27:03  jurgen
 Estimate number of false associations
 
@@ -2698,6 +2701,10 @@ Status Catalogue::cfits_set_pars(fitsfile *fptr, Parameters *par, Status status)
       }
 
       // Write parameters
+      fstatus = fits_update_key_str(fptr, "P_METHOD", par->m_probMethod.c_str(),
+                                    "Probability method", &fstatus);
+      fstatus = fits_update_key_str(fptr, "P_PRIOR", par->m_probPrior.c_str(),
+                                    "Prior probability", &fstatus);
       fstatus = fits_update_key_dbl(fptr, "P_THRES", par->m_probThres,
                                     4, "Probability threshold", &fstatus);
       fstatus = fits_update_key_lng(fptr, "MAX_CPT", par->m_maxNumCpt,
