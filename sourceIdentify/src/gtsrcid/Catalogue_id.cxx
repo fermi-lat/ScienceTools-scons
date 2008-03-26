@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.18  2008/03/21 16:42:56  jurgen
+Update documentation
+
 Revision 1.17  2008/03/21 15:27:03  jurgen
 Estimate number of false associations
 
@@ -97,8 +100,8 @@ using namespace catalogAccess;
  * @param[in] status Error status.
  *
  * This is the main counterpart association driving routine. Counterpart
- * association is done in a two step process:
- * (1) a filter step, and
+ * association is done in a two step process:\n
+ * (1) a filter step, and \n
  * (2) a refine step.
  *
  * The filter step gathers all counterparts within a rectangular bounding box
@@ -111,7 +114,7 @@ using namespace catalogAccess;
  *
  * Finally, all candidates are added to the output catalogue.
  ******************************************************************************/
-Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_get(Parameters *par, int iSrc, Status status) {
 
     // Declare local variables
     ObjectInfo *src;
@@ -163,6 +166,12 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
         continue;
       }
 
+      // Optionally dump counterpart candidats
+      if (par->logNormal()) {
+        cid_dump(par, status);
+        Log(Log_2, "");
+      }
+
       // Add all counterpart candidates to output catalogue
       status = cfits_add(m_outFile, iSrc, par, status);
       if (status != STATUS_OK) {
@@ -171,12 +180,6 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
               " %d to FITS output catalogue '%s'.", 
               (Status)status, iSrc+1, par->m_outCatName.c_str());
         continue;
-      }
-
-      // Optionally dump counterpart candidats
-      if (par->logNormal()) {
-        cid_dump(par, status);
-        Log(Log_2, "");
       }
 
      } while (0); // End of main do-loop
@@ -200,6 +203,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
  * @param[in] status Error status.
  *
  * @todo Load counterpart catalogue only partially if number of objects is large.
+ * @todo Proper prior assignment
  *
  * The filter step gets all counterpart candidates from the catalogue for a
  * given source that are sufficiently close to the source.
@@ -216,7 +220,7 @@ Status Catalogue::cid_get(Parameters *par, long iSrc, Status status) {
  * m_numCC: Number of counterpart candidates
  * m_cc: List of counterpart candidates
  ******************************************************************************/
-Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
 
     // Declare local variables
     long        iCpt;
@@ -261,7 +265,6 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
       m_ring_rad_max = 0.0;
       m_omega        = 0.0;
       m_rho          = 0.0;
-      m_lambda       = 0.0;
 
       // Get pointer to source object
       src = &(m_src.object[iSrc]);
@@ -408,10 +411,16 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
         cpt_ptr->prob        = 0.0;
         cpt_ptr->index       = iCpt;
         cpt_ptr->angsep      = 0.0;
+        cpt_ptr->psi         = 0.0;
         cpt_ptr->posang      = 0.0;
         cpt_ptr->lambda      = 0.0;
         cpt_ptr->prob_pos    = 0.0;
         cpt_ptr->prob_chance = 0.0;
+        cpt_ptr->prob_prior  = 0.0;
+        cpt_ptr->prob_post   = 0.0;
+        cpt_ptr->pdf_pos     = 0.0;
+        cpt_ptr->pdf_chance  = 0.0;
+        cpt_ptr->likrat      = 0.0;
         cpt_ptr++;
         m_numCC++;
 
@@ -465,24 +474,15 @@ Status Catalogue::cid_filter(Parameters *par, long iSrc, Status status) {
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
  *
+ * @todo Develop other than local counterpart density methods.
+ *
  * Calculates the counterpart probability, sorts all counterpart candidates
  * by decreasing probability and eliminates all candidtates with a too low
  * probability.
  ******************************************************************************/
-Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
 
     // Declare local variables
-    long                           iCC;
-    long                           numUseCC;
-    double                         prob;
-    char                           cid[OUTCAT_MAX_STRING_LEN];
-    std::vector<double>            prob_add;
-    std::vector<double>            prob_val;
-    std::vector<long>              prob_too_small;
-    std::vector<long>              prob_too_large;
-    std::vector<double>::size_type i_add;
-    std::vector<double>::size_type num_add;
-    int                            num_sel;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -503,128 +503,69 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
       if (m_numCC < 1)
         continue;
 
-      // Initialise cumulative additional probabilities,
-      // set unique counterpart candidate identifier and
-      // clear counterpart vectors
-      prob_add.clear();
-      for (iCC = 0; iCC < m_numCC; iCC++) {
-        prob_add.push_back(1.0);
-        sprintf(cid, "CC_%5.5ld_%5.5ld", iSrc+1, iCC+1);
+      // Set unique counterpart candidate identifier for in-memory catalogue
+      char cid[OUTCAT_MAX_STRING_LEN];
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+        sprintf(cid, "CC_%5.5d_%5.5d", iSrc+1, iCC+1);
         m_cc[iCC].id = cid;
-        m_cc[iCC].prob_add.clear();
       }
 
-      // Determine counterpart probabilities based on position
+      // Compute PROB_POS and PDF_POS. We have to do this before setting up
+      // the in-memory catalogue in order to make sure that the in-memory
+      // catalogue contains the required information
       status = cid_prob_pos(par, iSrc, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine counterpart probabilities"
-              " for source %d based on position.", 
-              (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to compute PROB_POS for source %d.",
+                       (Status)status, iSrc+1);
         continue;
       }
 
-      // Determine number of additional probabilites
-      num_add = par->m_probColNames.size();
+      // Clear in-memory catalogue
+      status = cfits_clear(m_memFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to clear in-memory FITS catalogue.",
+                       (Status)status);
+        continue;
+      }
 
-      // Determine number of output catalogue selection strings
-      num_sel = par->m_select.size();
+      // Setup in-memory catalogue
+      status = cfits_add(m_memFile, iSrc, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to add counterpart candidates to"
+                       " in-memory FITS catalogue.", (Status)status);
+        continue;
+      }
 
-      // If additional probabilities are requested or a selection should
-      // be performed then we setup an in-memory catalogue
-      if (num_add > 0 || num_sel > 0) {
+      // Evaluate in-memory catalogue quantities
+      status = cfits_eval(m_memFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate new quantities in in-memory"
+                       " FITS catalogue.", (Status)status);
+        continue;
+      }
 
-        // Clear in memory catalogue
-        status = cfits_clear(m_memFile, par, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to clear in-memory FITS catalogue.", 
-            (Status)status);
-          continue;
-        }
+      // Compute PROB_PRIOR
+      status = cid_prob_prior(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to compute PROB_PRIOR for source %d.",
+                       (Status)status, iSrc+1);
+        continue;
+      }
 
-        // Add quantities to in memory catalogue
-        status = cfits_add(m_memFile, iSrc, par, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to add counterpart candidates to"
-                " in-memory FITS catalogue.", (Status)status);
-          continue;
-        }
-
-      } // endif: in-memory catalogue has been requested
-
-      // If we need additional probability information then calculate it now
-      if (num_add > 0) {
-
-        // Initialise probability boundary violation counters
-        prob_too_small.clear();
-        prob_too_large.clear();
-        for (i_add = 0; i_add < num_add; i_add++) {
-          prob_too_small.push_back(0);
-          prob_too_large.push_back(0);
-        }
-
-        // Evaluate in memory catalogue quantities (no verbosity)
-        status = cfits_eval(m_memFile, par, 0, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate new quantities for in-memory"
-                " FITS catalogue.", (Status)status);
-          continue;
-        }
-
-        // Loop over the additional probability columns
-        for (i_add = 0; i_add < num_add; i_add++) {
-          // Extract probability information from column
-          status = cfits_colval(m_memFile, 
-                                (char*)par->m_probColNames[i_add].c_str(),
-                                par, &prob_val, status);
-          if (status != STATUS_OK) {
-            if (par->logTerse())
-              Log(Error_2, "%d : Unable to determine probability from column"
-                  " '%s' of in-memory FITS catalogue.",
-                  (Status)status, par->m_probColNames[i_add].c_str());
-            break;
-          }
-
-          // Push probabilities in vector and cumulate additional probabilities.
-          // Make sure that the probabilities are composed between 0 and 1 ...
-          for (iCC = 0; iCC < m_numCC; iCC++) {
-
-            // Set probability in the range [0,1]
-            prob = prob_val[iCC];
-            if (prob < 0.0) {
-              prob = 0.0;
-              prob_too_small[i_add]++;
-            }
-            else if (prob > 1.0) {
-              prob = 1.0;
-              prob_too_large[i_add]++;
-            }
-
-            // Cumulate additional probabilities
-            prob_add[iCC] *= prob;
-
-            // Save probability for each counterpart candidate (for logging)
-            m_cc[iCC].prob_add.push_back(prob);
-          } // endfor: looped over all counterpart candidates
-
-        } // endfor: looped over the additional probability columns
-        if (status != STATUS_OK)
-          continue;
-
-      } // endif: calculated additional quantities for probability estimation
-
-      // Select counterparts if requested
-      if (num_sel > 0) {
-        status = cid_select(par, iSrc, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to select counterparts for source %d.",
-                (Status)status, iSrc+1);
-          continue;
-        }
+      // Select counterparts on basis of the selection string. All catalogue
+      // quantities may be used here except of PROB_CHANCE, PDF_CHANCE,
+      // PROB_POST and PROB (these are calculated later!)
+      status = cid_select(par, iSrc, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to select counterparts for source %d.",
+                       (Status)status, iSrc+1);
+        continue;
       }
 
       // Determine local counterpart density
@@ -637,7 +578,7 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         continue;
       }
 
-      // Determine chance coincidence probability
+      // Compute PROB_CHANCE and PDF_CHANCE
       status = cid_prob_chance(par, iSrc, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -647,11 +588,24 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
         continue;
       }
 
-      // Assign the counterpart probabilities
-      for (iCC = 0; iCC < m_numCC; iCC++) {
-        m_cc[iCC].prob = m_cc[iCC].prob_pos *
-                         prob_add[iCC] *
-                         (1.0 - m_cc[iCC].prob_chance);
+      // Compute PROB_POST
+      status = cid_prob_post(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine posterior probability"
+              " for source %d.",
+              (Status)status, iSrc+1);
+        continue;
+      }
+
+      // Compute PROB
+      status = cid_prob(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to determine association probability"
+              " for source %d.",
+              (Status)status, iSrc+1);
+        continue;
       }
 
       // Sort counterpart candidates by decreasing probability
@@ -665,8 +619,8 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
 
       // Determine the number of counterpart candidates above the probability
       // threshold
-      numUseCC = 0;
-      for (iCC = 0; iCC < m_numCC; iCC++) {
+      int numUseCC = 0;
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
         if (m_cc[iCC].prob >= par->m_probThres)
           numUseCC++;
         else
@@ -681,50 +635,22 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
       // counterparts are left
       m_numCC = numUseCC;
       if (m_numCC < 1) {
-        if (par->logExplicit()) {
+        if (par->logExplicit())
           Log(Log_2, "  Refine step candidates ..........: no");
-          for (i_add = 0; i_add < num_add; i_add++) {
-            if (prob_too_small[i_add] > 1)
-              Log(Warning_2, 
-                  "  Probabilities < 0.0 .............: %5d (Quantity='%s')",
-                  prob_too_small[i_add],
-                  par->m_probColNames[i_add].c_str());
-            if (prob_too_large[i_add] > 1)
-              Log(Warning_2, 
-                  "  Probabilities > 1.0 .............: %5d (Quantity='%s')",
-                  prob_too_large[i_add],
-                  par->m_probColNames[i_add].c_str());
-          }
-        }
         continue;
       }
 
       // Set unique counterpart candidate identifier (overwrite former ID)
-      for (iCC = 0; iCC < m_numCC; iCC++) {
-        sprintf(cid, "CC_%5.5ld_%5.5ld", iSrc+1, iCC+1);
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+        sprintf(cid, "CC_%5.5d_%5.5d", iSrc+1, iCC+1);
         m_cc[iCC].id = cid;
       }
 
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
         Log(Log_2, "  Refine step candidates ..........: %5d", m_numCC);
-        for (i_add = 0; i_add < num_add; i_add++) {
-          if (prob_too_small[i_add] > 1)
-            Log(Warning_2, 
-                "  Probabilities < 0.0 .............: %5d (Quantity='%s')",
-                prob_too_small[i_add],
-                par->m_probColNames[i_add].c_str());
-          if (prob_too_large[i_add] > 1)
-            Log(Warning_2, 
-                "  Probabilities > 1.0 .............: %5d (Quantity='%s')",
-                prob_too_large[i_add],
-                par->m_probColNames[i_add].c_str());
-        }
-        Log(Log_2, "    Local counterpart density .....: %10.5f src/deg^2",
-            m_rho);
-        Log(Log_2, "    Expected chance coincidences ..: %10.5f sources",
-            m_lambda);
-        Log(Log_2, "    Local density ring ............: %7.3f - %7.3f deg",
+        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", m_rho);
+        Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
             m_ring_rad_min, m_ring_rad_max);
     }
 
@@ -749,10 +675,12 @@ Status Catalogue::cid_refine(Parameters *par, long iSrc, Status status) {
  * @param[in] status Error status.
  *
  * Only the counterparts are retained that satisfy the specified selection
- * criteria. Selection is performed using the CFITSIO  row selection
+ * criteria. Selection is performed using the CFITSIO row selection
  * function.
+ *
+ * Requires catalogue information in FITS memory file.
  ******************************************************************************/
-Status Catalogue::cid_select(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
 
     // Declare local variables
     std::vector<std::string> col_id;
@@ -843,17 +771,43 @@ Status Catalogue::cid_select(Parameters *par, long iSrc, Status status) {
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
  *
- * The following members of the counterpart candidates are set:
- * pos_eq_ra    Right Ascension of counterpart candidate (deg)
- * pos_eq_dec   Declination of counterpart candidate (deg)
- * pos_err_maj  Uncertainty ellipse major axis (deg)
- * pos_err_min  Uncertainty ellipse minor axis (deg)
- * pos_err_ang  Uncertainty ellipse positron angle (deg)
- * angsep       Angular separation of counterpart candidate from source
- * posang       Position angle of counterpart candidate w/r to source
- * prob_pos     Probability of counterpart candidate based on position 
+ * Computes the probability \b PROB_POS that the true source position is
+ * located at an angular distance greater than \f$ r \f$ from the position
+ * measured by LAT.
+ * The computation is done using
+ * \f[ {\tt PROB\_POS} = \exp(-5.991 r^2 / \Psi^2) \f]
+ * where \f$ \Psi \f$ is the effective 95% error radius of the LAT source.
+ * \f$ \Psi \f$ is computed using
+ * \f[ \Psi = \left[ \frac{\cos^2(\theta-\phi)}{a^2} + 
+ *                   \frac{\sin^2(\theta-\phi)}{b^2}\right]^{-1/2} \f]
+ * where
+ * \f$ a \f$ and \f$ b \f$ are the semimajor and semiminor axes of the
+ * LAT error ellipse,
+ * \f$ \phi \f$ is the position angle of the LAT error ellipse (measured
+ * eastwards from north in celestial coordinates) and
+ * \f$ \theta \f$ is the position angle of the counterpart source with respect
+ * to the LAT source.
+ *
+ * Further computes \b PDF_POS, which is the probability density of
+ * 1-PROB_POS.
+ * The probability density is computed using
+ * \f[ {\tt PDF\_POS} = 5.991 \frac{r}{\Psi^2} exp(-2.996 r^2 / \Psi^2) \f]
+ *
+ * @todo Define more intelligent scheme to attribute counterpart position errors.
+ *
+ * This method updates the following fields \n
+ * CCElement::angsep (angular separation of counterpart candidate from source) \n
+ * CCElement::posang (position angle of counterpart candidate w/r to source) \n
+ * CCElement::psi (effective 95% error ellipse radius) \n
+ * CCElement::prob_pos (position association probability) \n
+ * CCElement::pdf_pos (position association probability density) \n
+ * CCElement::pos_eq_ra (Right Ascension of counterpart candidate) \n
+ * CCElement::pos_eq_dec (Declination of counterpart candidate) \n
+ * CCElement::pos_err_maj (uncertainty ellipse major axis) \n
+ * CCElement::pos_err_min (uncertainty ellipse minor axis) \n
+ * CCElement::pos_err_ang (uncertainty ellipse positron angle) \n
  ******************************************************************************/
-Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -884,7 +838,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
       double src_dec_cos = cos(dec);
 
       // Loop over counterpart candidates
-      for (int iCC = 0; iCC < m_numCC; iCC++) {
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
 
         // Get index of candidate in counterpart catalogue
         int iCpt = m_cc[iCC].index;
@@ -929,27 +883,21 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
         double b         = (src->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
                            (src->pos_err_min*src->pos_err_min) : 0.0;
         arg              = a + b;
-        double error     = (arg > 0.0) ? 1.0/sqrt(arg) : 0.0;
-        double error2    = error * error;
+        double error2    = (arg > 0.0) ? 1.0/arg : 0.0;
 
         // Calculate counterpart probability from angular separation
-        switch (par->m_posProbType) {
-        case Exponential:         // Initial formula (obsolete)
-          if (error > 0.0)
-            m_cc[iCC].prob_pos = exp(-m_cc[iCC].angsep / error);
-          else
-            m_cc[iCC].prob_pos = 0.0;
-          break;
-
-        case Gaussian:            // Parabolic log-likelihood function
-        default:
-           if (error2 > 0.0) {
-            arg                = m_cc[iCC].angsep * m_cc[iCC].angsep / error2;
-            m_cc[iCC].prob_pos = exp(-2.9957230 * arg);
-          }
-          else
-            m_cc[iCC].prob_pos = 0.0;
-          break;
+        if (error2 > 0.0) {
+          double arg1        = m_cc[iCC].angsep / error2;
+          double arg2        = m_cc[iCC].angsep * arg1;
+          double expval      = exp(-dnorm * arg2);
+          m_cc[iCC].psi      = sqrt(error2);
+          m_cc[iCC].pdf_pos  = twodnorm * arg1 * expval;
+          m_cc[iCC].prob_pos = expval;
+        }
+        else {
+          m_cc[iCC].psi      = 0.0;
+          m_cc[iCC].pdf_pos  = 0.0;
+          m_cc[iCC].prob_pos = 0.0;
         }
 
         // Assign position and error ellipse
@@ -970,10 +918,6 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
           m_cc[iCC].pos_err_ang = src->pos_err_ang;
         }
 
-        // Collect all sources within the error ellipse
-        if (m_cc[iCC].angsep <= error)
-          m_num_ellipse++;
-
       } // endfor: looped over counterpart candidates
 
     } while (0); // End of main do-loop
@@ -990,25 +934,30 @@ Status Catalogue::cid_prob_pos(Parameters *par, long iSrc, Status status) {
 
 
 /**************************************************************************//**
- * @brief Compute chance coincidence probability
+ * @brief Computes chance coincidence probability and probability density
  *
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] iSrc Index of source in catalogue (starting from 0).
  * @param[in] status Error status.
  *
- * Computes the chance coincidence probability of finding at least one source
- * within the 95% error ellipse around the source.
+ * Computes the chance coincidence probability \b PROB_CHANCE and the
+ * chance coincidence probability density \b PDF_CHANCE for a given LAT
+ * source.
+ * The chance coincidence probability is computed using
+ * \f[ {\tt PROB\_CHANCE} = 1 - \exp(-r^2 / r_0^2) \f]
+ * where \f$ r_0 \f$ is the characteristic angle between confusing sources
+ * and \f$ r \f$ is the angular separation between the LAT source and the
+ * counterpart candidate.
+ * The chance coincidence probability density is computed using
+ * \f[ {\tt PDF\_CHANCE} = 2 \frac{r}{r_0^2} \exp(-r^2 / r_0^2) \f]
  *
- * The expected number of chance coincidence is stored in the class member
- * Catalogue::m_lambda.
- * It is also attributed to the counterpart candidate member CCElement::lambda.
- *
- * The chance coincidence probability is defined as
- * P = 1 - exp(-lambda)
- *
- * It is stored in the counterpart candidate member CCElement::prob_chance.
+ * This method updates the following fields \n
+ * CCElement::lambda (expected number of confusing sources)\n
+ * CCElement::prob_chance (chance coincidence probability)\n
+ * CCElement::pdf_chance (chance coincidence probability density)\n
+ * The method also updates the corresponding columns in the in-memory FITS file.
  ******************************************************************************/
-Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1022,10 +971,6 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
       if (status != STATUS_OK)
         continue;
 
-      // Compute expected number of chance coincidences on base of the error
-      // ellipse solid angle
-      m_lambda = m_omega * m_rho;
-
       // Fall through if there are no counterpart candidates
       if (m_numCC < 1)
         continue;
@@ -1036,6 +981,11 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
       // Fall through if no source position is available
       if (!src->pos_valid)
         continue;
+
+      // Allocate vector columns for in-memory FITS file update
+      std::vector<double> col_lambda;
+      std::vector<double> col_prob_chance;
+      std::vector<double> col_pdf_chance;
 
       // Compute chance coincidence probabilities for all sources
       for (int iCC = 0; iCC < m_numCC; iCC++) {
@@ -1050,25 +1000,344 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
         if (!cpt->pos_valid)
           continue;
 
-        // Compute the expected number of sources within the error ellipse
-        m_cc[iCC].lambda = m_lambda;
-
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
-//        m_cc[iCC].lambda = pi * m_cc[iCC].angsep * m_cc[iCC].angsep *
-//                           m_rho;
+        double r_div_r02 = m_cc[iCC].angsep * pi * m_rho;
+        m_cc[iCC].lambda = r_div_r02 * m_cc[iCC].angsep;
 
         // Compute chance coincidence probability
-        if (par->m_chanceProbType == Local)
-          m_cc[iCC].prob_chance = 1.0 - exp(-m_cc[iCC].lambda);
+        double exp_lambda     = exp(-m_cc[iCC].lambda);
+        m_cc[iCC].prob_chance = 1.0 - exp_lambda;
+        m_cc[iCC].pdf_chance  = 2.0 * r_div_r02 * exp_lambda;
+
+        // Add result to column vectors
+        col_lambda.push_back(m_cc[iCC].lambda);
+        col_prob_chance.push_back(m_cc[iCC].prob_chance);
+        col_pdf_chance.push_back(m_cc[iCC].pdf_chance);
 
       } // endfor: looped over all counterpart candidates
+
+      // Update in-memory columns
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_LAMBDA_NAME,
+                             col_lambda, status);
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_CHANCE_NAME,
+                             col_prob_chance, status);
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PDF_CHANCE_NAME,
+                             col_pdf_chance, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to update columns of in-memory FITS file.",
+                       (Status)status);
+        continue;
+      }
 
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob_chance (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute prior probabilities for all counterpart candidates
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Computes \n
+ * CCElement::prob_prior (prior association probability)
+ *
+ * The method updates the corresponding column in the in-memory FITS file.
+ *
+ * The prior probability is constrained to the interval [0,1].
+ *
+ * Requires catalogue information in FITS memory file.
+ ******************************************************************************/
+Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_prior (%d candidates)",
+          m_numCC);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (m_numCC < 1)
+        continue;
+
+      // Get column and formula
+      std::string column  = "PROB_PRIOR";
+
+      // Evaluate PROB_PRIOR column
+      status = cfits_eval_column(m_memFile, par, column, par->m_probPrior, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate expression <%s='%s'> in"
+                       " formula.",
+                       (Status)status, column.c_str(), par->m_probPrior.c_str());
+        continue;
+      }
+
+      // Extract PROB_PRIOR vector
+      std::vector<double> prob_prior;
+      status = cfits_get_col(m_memFile, par, column, prob_prior, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to extract column <%s> from"
+                       "in-memory FITS catalogue.",
+                       (Status)status, column.c_str());
+        continue;
+      }
+
+      // Allocate vector column for in-memory FITS file update
+      std::vector<double> col_prob_prior;
+
+      // Set PROB_PRIOR information
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+
+        // Get probability in the range [0,1]
+        double p = prob_prior[iCC];
+        if (p < 0.0)      p = 0.0;
+        else if (p > 1.0) p = 1.0;
+
+        // Save probability for each counterpart candidate
+        m_cc[iCC].prob_prior = p;
+
+        // Add result to column vector
+        col_prob_prior.push_back(m_cc[iCC].prob_prior);
+
+      } // endfor: looped over all counterpart candidates
+
+      // Update in-memory column
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_PRIOR_NAME,
+                             col_prob_prior, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to update column of in-memory FITS file.",
+                       (Status)status);
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob_prior (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute posterior probabilities
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * @todo Improve zero counterpart density handling.
+ *
+ * Requires \n
+ * CCElement::prob_prior (prior probabilities) \n
+ * CCElement::psi (effective radius of 95% error ellipse) \n
+ * Catalogue::m_r0 (average confusing source distance)
+ *
+ * Computes \n
+ * CCElement::likrat (likelihood ratio) \n
+ * CCElement::prob_post (posterior probabilities)
+ *
+ * The method updates the corresponding column in the in-memory FITS file.
+ ******************************************************************************/
+Status Catalogue::cid_prob_post(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_post (%d candidates)",
+          m_numCC);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (m_numCC < 1)
+        continue;
+
+      // Allocate vector columns for in-memory FITS file update
+      std::vector<double> col_likrat;
+      std::vector<double> col_prob_post;
+
+      // Compute r0^2
+      double r02 = (m_rho > 0.0) ? 1.0 / (pi * m_rho) : m_ring_rad_max;
+
+      // Loop over all counterpart candidates
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+
+        // Initialise results
+        m_cc[iCC].likrat    = 0.0;
+        m_cc[iCC].prob_post = 0.0;
+
+        // Compute likelihood ratio. If Psi^2 > 2.996 r0^2 then the likelihood
+        // ratio diverges. In this case we set LR = 0.
+        double psi2 = m_cc[iCC].psi * m_cc[iCC].psi;
+        if (psi2 > 0.0 && r02 > 0.0) {
+          double scale = 2.996 / psi2 - 1.0 / r02;
+          if (scale >= 0.0) {
+            double arg       = scale * m_cc[iCC].angsep * m_cc[iCC].angsep;
+            m_cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
+          }
+        }
+
+        // Compute posterior probability. There are some special cases:
+        // PROB_PRIOR >= 1 => PROB_POST = 1
+        // PROB_PRIOR <= 0 => PROB_POST = 0
+        // LR = 0          => PROB_POST = 0
+        if (m_cc[iCC].prob_prior >= 1.0)
+          m_cc[iCC].prob_post = 1.0;
+        else if (m_cc[iCC].prob_prior <= 0.0)
+          m_cc[iCC].prob_post = 0.0;
+        else {
+          if (m_cc[iCC].likrat > 0.0) {
+            double xi  = m_cc[iCC].prob_prior / (1.0 - m_cc[iCC].prob_prior);
+            double arg = xi * m_cc[iCC].likrat;
+            m_cc[iCC].prob_post = (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) : 0.0;
+          }
+          else
+            m_cc[iCC].prob_post = 0.0;
+        }
+
+        // Add results to column vectors
+        col_likrat.push_back(m_cc[iCC].likrat);
+        col_prob_post.push_back(m_cc[iCC].prob_post);
+
+      } // endfor: looped over all counterpart candidates
+
+      // Update in-memory columns
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_LR_NAME,
+                             col_likrat, status);
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_POST_NAME,
+                             col_prob_post, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to update columns of in-memory FITS file.",
+                       (Status)status);
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob_post (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute association probability
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Requires catalogue information in FITS memory file.
+ ******************************************************************************/
+Status Catalogue::cid_prob(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob (%d candidates)",
+          m_numCC);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (m_numCC < 1)
+        continue;
+
+      // Get column and formula
+      std::string column  = "PROB";
+
+      // Evaluate PROB column
+      status = cfits_eval_column(m_memFile, par, column, par->m_probMethod, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate expression <%s='%s'> in"
+                       " formula.",
+                       (Status)status, column.c_str(), par->m_probMethod.c_str());
+        continue;
+      }
+
+      // Extract PROB vector
+      std::vector<double> prob;
+      status = cfits_get_col(m_memFile, par, column, prob, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to extract column <%s> from"
+                       "in-memory FITS catalogue.",
+                       (Status)status, column.c_str());
+        continue;
+      }
+
+      // Allocate vector column for in-memory FITS file update
+      std::vector<double> col_prob;
+
+      // Set PROB information
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+
+        // Get probability in the range [0,1]
+        double p = prob[iCC];
+        if (p < 0.0)      p = 0.0;
+        else if (p > 1.0) p = 1.0;
+
+        // Save probability for each counterpart candidate
+        m_cc[iCC].prob = p;
+
+        // Add results to column vectors
+        col_prob.push_back(m_cc[iCC].prob);
+
+      } // endfor: looped over all counterpart candidates
+
+      // Update in-memory column
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_NAME,
+                             col_prob, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to update column of in-memory FITS file.",
+                       (Status)status);
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob (status=%d)",
           status);
 
     // Return status
@@ -1092,8 +1361,12 @@ Status Catalogue::cid_prob_chance(Parameters *par, long iSrc, Status status) {
  * The density is calculated by dividing the number of counterpart sources in
  * the ring by the solid angle of the ring. The density is stored in the class
  * member Catalogue::m_rho.
+ *
+ * If no counterpart was found in the ring the number of counterparts is set to
+ * one. In this case the local counterpart density is to be considered as an
+ * upper limit to the true counterpart density.
  ******************************************************************************/
-Status Catalogue::cid_local_density(Parameters *par, long iSrc, Status status) {
+Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1140,10 +1413,16 @@ Status Catalogue::cid_local_density(Parameters *par, long iSrc, Status status) {
           continue;
 
         // Collect all sources in ring
-        if (m_cc[iCC].angsep >= m_ring_rad_min && m_cc[iCC].angsep <= m_ring_rad_max)
+        if (m_cc[iCC].angsep >= m_ring_rad_min &&
+            m_cc[iCC].angsep <= m_ring_rad_max)
           num++;
 
       } // endfor: looped over all counterpart candidates
+
+      // Make sure that we have at least one source. This provides an upper limit
+      // for the counterpart density in case that we have found no source in the
+      // acceptance ring
+      if (num < 1) num = 1;
 
       // Compute local counterpart density
       m_rho = (omega > 0.0) ? double(num) / omega : 0.0;
@@ -1246,11 +1525,6 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
 Status Catalogue::cid_dump(Parameters *par, Status status) {
 
     // Declare local variables
-    long                            iCC;
-    long                            iCpt;
-    std::vector<double>::size_type  i_add;
-    std::vector<double>::size_type  num_add;
-    ObjectInfo                     *cpt;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1268,16 +1542,13 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         continue;
 
       // Loop over counterpart candidates
-      for (iCC = 0; iCC < m_numCC; iCC++) {
+      for (int iCC = 0; iCC < m_numCC; ++iCC) {
 
         // Get index of candidate in counterpart catalogue
-        iCpt = m_cc[iCC].index;
+        int iCpt = m_cc[iCC].index;
 
         // Get pointer to counterpart object
-        cpt = &(m_cpt.object[iCpt]);
-
-        // Determine number of additional probabilites
-        num_add = m_cc[iCC].prob_add.size();
+        ObjectInfo *cpt = &(m_cpt.object[iCpt]);
 
         // Normal log level
         if (par->logNormal()) {
@@ -1301,20 +1572,23 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         // Explicit log level
         if (par->logVerbose()) {
           if (cpt->pos_valid) {
-            if (num_add > 0) {
-              Log(Log_2, "   Angular separation probability .: %7.3f %%",
-                  m_cc[iCC].prob_pos*100.0);
-              for (i_add = 0; i_add < num_add; i_add++) {
-                Log(Log_2, 
-                    "   Additional probability .........: %7.3f %%"
-                    "  (Quantity='%s')",
-                    m_cc[iCC].prob_add[i_add]*100.0,
-                    par->m_probColNames[i_add].c_str());
-              }
-            }
+            Log(Log_2, "    Angular separation ............: %7.3f arcmin",
+                m_cc[iCC].angsep*60.0);
+            Log(Log_2, "    Effective 95%% error radius ....: %7.3f arcmin",
+                m_cc[iCC].psi*60.0);
+            Log(Log_2, "    Angular separation probability : %7.3f %%"
+                " (dP/dr=%11.4e)",
+                m_cc[iCC].prob_pos*100.0, m_cc[iCC].pdf_pos);
             Log(Log_2, "    Chance coincidence probability : %7.3f %%"
-                " (lambda=%.5f)",
-                m_cc[iCC].prob_chance*100.0, m_cc[iCC].lambda);
+                " (dP/dr=%11.4e, lambda=%.3f)",
+                m_cc[iCC].prob_chance*100.0, m_cc[iCC].pdf_chance,
+                m_cc[iCC].lambda);
+            Log(Log_2, "    Prior association probability .: %7.3f %%",
+                m_cc[iCC].prob_prior*100.0);
+            Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
+                m_cc[iCC].prob_post*100.0);
+            Log(Log_2, "    Likelihood ratio ..............: %.3f",
+                m_cc[iCC].likrat);
           }
         }
 

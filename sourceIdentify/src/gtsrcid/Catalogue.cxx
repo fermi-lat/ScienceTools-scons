@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.31  2008/03/21 16:46:14  jurgen
+Remove double log
+
 Revision 1.30  2008/03/21 16:42:56  jurgen
 Update documentation
 
@@ -805,15 +808,11 @@ void Catalogue::init_memory(void) {
       m_ring_rad_max  = 0.0;
       m_omega         = 0.0;
       m_rho           = 0.0;
-      m_lambda        = 0.0;
 
       // Initialise counterpart statistics
-      m_num_Sel       = 0;
-      m_cpt_stat      = NULL;
-      m_num_ellipse   = 0;
-      m_tot_lambda    = 0.0;
-      m_num_ellipse   = 0;
-      m_num_assoc     = 0;
+      m_num_Sel   = 0;
+      m_cpt_stat  = NULL;
+      m_num_assoc = 0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -1316,16 +1315,6 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 
       } // endfor: looped over all sources
 
-      // Compute false association fraction
-      double f_false = (m_num_ellipse > 0) ? m_tot_lambda/double(m_num_ellipse) 
-                                           : 0.0;
-
-      // Estimate number of false associations
-      int n_false = int(f_false*n_src_assoc+0.5);
-      if (n_false < 0)
-        n_false = 0;
-      else if (n_false > m_num_assoc)
-        n_false = m_num_assoc;
 
       // Dump summary
       Log(Log_2, "");
@@ -1334,7 +1323,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       Log(Log_2, " Number of sources ................: %10d", m_src.numLoad);
       Log(Log_2, " Number of associated sources .....: %10d", n_src_assoc);
       Log(Log_2, " Number of associations ...........: %10d", m_num_assoc);
-      Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
+      //Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
       //Log(Log_2, " Counterparts within 95%% ellipses .: %10d", m_num_ellipse);
       //Log(Log_2, "   Expected chance counterparts ...: %10.3f"
       //           " (%.2f%% of all counterparts within 95%% ellipses)",
@@ -1360,6 +1349,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *
  * Main driver method that performs counterpart associations.
  *
+ * \verbatim
  * build
  *   |
  *   +-- get_input_descriptor (get source catalogue input descriptior)
@@ -1378,21 +1368,25 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *   |   |
  *   |   +-- cid_refine (refine step)
  *   |   |   |
- *   |   |   +-- cid_prob_pos (get probability from position)
- *   |   |   |
  *   |   |   +-- cfits_clear (clear in-memory catalogue)
  *   |   |   |
  *   |   |   +-- cfits_add (add quantities to in-memory catalogue)
  *   |   |   |
  *   |   |   +-- cfits_eval (evaluate quantities in in-memory catalogue)
  *   |   |   |
- *   |   |   +-- cfits_colval (extract probability info from in-memory catalogue)
+ *   |   |   +-- cid_prob_pos (compute PROB_POS & PDF_POS)
+ *   |   |   |
+ *   |   |   +-- cid_prob_prior (compute PROB_PRIOR)
  *   |   |   |
  *   |   |   +-- cid_select (select counterparts)
  *   |   |   |   |
- *   |   |   |   +-- cfits_select_mem (select output catalogue entries)
+ *   |   |   |   +-- cfits_select (select output catalogue entries)
  *   |   |   |
- *   |   |   +-- cid_prob_chance (compute chance coincidence probability)
+ *   |   |   +-- cid_prob_chance (compute PROB_CHANCE & PDF_CHANCE)
+ *   |   |   |
+ *   |   |   +-- cid_prob_post (compute PROB_POST)
+ *   |   |   |
+ *   |   |   +-- cid_prob (compute PROB)
  *   |   |   |
  *   |   |   +-- cid_sort (sort counterpart candidates)
  *   |   |
@@ -1400,15 +1394,14 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *   |
  *   +-- cfits_collect (collect counterpart results)
  *   |
- *   +-- #cfits_eval (evaluate output catalogue quantities)
- *   |
- *   +-- #cfits_select (select output catalogue entries)
+ *   +-- cfits_eval (evaluate output catalogue quantities)
  *   |
  *   +-- cfits_set_pars (set run parameter keywords)
  *   |
  *   +-- cfits_save (save output catalogue)
  *   |
  *   +-- dump_results (dump results)
+ * \endverbatim
  ******************************************************************************/
 Status Catalogue::build(Parameters *par, Status status) {
 
@@ -1535,7 +1528,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         m_num_assoc += m_numCC;
 
         // Sum  the expected number of chance coincidences
-        m_tot_lambda += m_lambda;
+//        m_tot_lambda += m_lambda;
 
       } // endfor: looped over all sources
       if (status != STATUS_OK)
@@ -1561,7 +1554,7 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Evaluate output catalogue quantities
-      status = cfits_eval(m_outFile, par, par->logNormal(), status);
+      status = cfits_eval(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to evaluate output catalogue quantities .",
@@ -1569,16 +1562,6 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
       }
 
-/*
-      // Select output catalogue counterparts
-      status = cfits_select(m_outFile, par, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to select output catalogue counterparts.",
-              (Status)status);
-        continue;
-      }
-*/
       // Write parameters as keywords to catalogue
       status = cfits_set_pars(m_outFile, par, status);
       if (status != STATUS_OK) {

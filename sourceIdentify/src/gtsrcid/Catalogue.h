@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.23  2008/03/21 16:42:56  jurgen
+Update documentation
+
 Revision 1.22  2008/03/21 15:27:03  jurgen
 Estimate number of false associations
 
@@ -98,96 +101,126 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN         256
 #define OUTCAT_EXT_NAME            "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC         15
+#define OUTCAT_NUM_GENERIC            20
 //
-#define OUTCAT_COL_ID_COLNUM       1
-#define OUTCAT_COL_ID_NAME         "ID"
-#define OUTCAT_COL_ID_FORM         "20A"
-#define OUTCAT_COL_ID_UCD          "ID_MAIN"
+#define OUTCAT_COL_ID_COLNUM          1
+#define OUTCAT_COL_ID_NAME            "ID"
+#define OUTCAT_COL_ID_FORM            "20A"
+#define OUTCAT_COL_ID_UCD             "ID_MAIN"
 //
-#define OUTCAT_COL_RA_COLNUM       2
-#define OUTCAT_COL_RA_NAME         "RA_J2000"
-#define OUTCAT_COL_RA_FORM         "1E"
-#define OUTCAT_COL_RA_UNIT         "deg"
-#define OUTCAT_COL_RA_UCD          "POS_EQ_RA_MAIN"
+#define OUTCAT_COL_RA_COLNUM          2
+#define OUTCAT_COL_RA_NAME            "RAJ2000"
+#define OUTCAT_COL_RA_FORM            "1E"
+#define OUTCAT_COL_RA_UNIT            "deg"
+#define OUTCAT_COL_RA_UCD             "POS_EQ_RA_MAIN"
 //
-#define OUTCAT_COL_DEC_COLNUM      3
-#define OUTCAT_COL_DEC_NAME        "DEC_J2000"
-#define OUTCAT_COL_DEC_FORM        "1E"
-#define OUTCAT_COL_DEC_UNIT        "deg"
-#define OUTCAT_COL_DEC_UCD         "POS_EQ_DEC_MAIN"
+#define OUTCAT_COL_DEC_COLNUM         3
+#define OUTCAT_COL_DEC_NAME           "DEJ2000"
+#define OUTCAT_COL_DEC_FORM           "1E"
+#define OUTCAT_COL_DEC_UNIT           "deg"
+#define OUTCAT_COL_DEC_UCD            "POS_EQ_DEC_MAIN"
 //
-#define OUTCAT_COL_MAJERR_COLNUM   4
-#define OUTCAT_COL_MAJERR_NAME     "POS_ERR_MAJ"
-#define OUTCAT_COL_MAJERR_FORM     "1E"
-#define OUTCAT_COL_MAJERR_UNIT     "deg"
-#define OUTCAT_COL_MAJERR_UCD      "ERROR"
+#define OUTCAT_COL_MAJERR_COLNUM      4
+#define OUTCAT_COL_MAJERR_NAME        "POS_ERR_MAJ"
+#define OUTCAT_COL_MAJERR_FORM        "1E"
+#define OUTCAT_COL_MAJERR_UNIT        "deg"
+#define OUTCAT_COL_MAJERR_UCD         "ERROR"
 //
-#define OUTCAT_COL_MINERR_COLNUM   5
-#define OUTCAT_COL_MINERR_NAME     "POS_ERR_MIN"
-#define OUTCAT_COL_MINERR_FORM     "1E"
-#define OUTCAT_COL_MINERR_UNIT     "deg"
-#define OUTCAT_COL_MINERR_UCD      "ERROR"
+#define OUTCAT_COL_MINERR_COLNUM      5
+#define OUTCAT_COL_MINERR_NAME        "POS_ERR_MIN"
+#define OUTCAT_COL_MINERR_FORM        "1E"
+#define OUTCAT_COL_MINERR_UNIT        "deg"
+#define OUTCAT_COL_MINERR_UCD         "ERROR"
 //
-#define OUTCAT_COL_POSANGLE_COLNUM 6
-#define OUTCAT_COL_POSANGLE_NAME   "POS_ERR_ANG"
-#define OUTCAT_COL_POSANGLE_FORM   "1E"
-#define OUTCAT_COL_POSANGLE_UNIT   "deg"
-#define OUTCAT_COL_POSANGLE_UCD    "ERROR"
+#define OUTCAT_COL_POSANGLE_COLNUM    6
+#define OUTCAT_COL_POSANGLE_NAME      "POS_ERR_ANG"
+#define OUTCAT_COL_POSANGLE_FORM      "1E"
+#define OUTCAT_COL_POSANGLE_UNIT      "deg"
+#define OUTCAT_COL_POSANGLE_UCD       "ERROR"
 //
-#define OUTCAT_COL_PROB_COLNUM     7
-#define OUTCAT_COL_PROB_NAME       "PROB"
-#define OUTCAT_COL_PROB_FORM       "1E"
-#define OUTCAT_COL_PROB_UNIT       "probability"
-#define OUTCAT_COL_PROB_UCD        ""
+#define OUTCAT_COL_PROB_COLNUM        7
+#define OUTCAT_COL_PROB_NAME          "PROB"
+#define OUTCAT_COL_PROB_FORM          "1D"
+#define OUTCAT_COL_PROB_UNIT          "probability"
+#define OUTCAT_COL_PROB_UCD           ""
 //
-#define OUTCAT_COL_PROB_P_COLNUM   8
-#define OUTCAT_COL_PROB_P_NAME     "PROB_POS"
-#define OUTCAT_COL_PROB_P_FORM     "1E"
-#define OUTCAT_COL_PROB_P_UNIT     "probability"
-#define OUTCAT_COL_PROB_P_UCD      ""
+#define OUTCAT_COL_PROB_POS_COLNUM    8
+#define OUTCAT_COL_PROB_POS_NAME      "PROB_POS"
+#define OUTCAT_COL_PROB_POS_FORM      "1D"
+#define OUTCAT_COL_PROB_POS_UNIT      "probability"
+#define OUTCAT_COL_PROB_POS_UCD       ""
 //
-#define OUTCAT_COL_PROB_A_COLNUM   9
-#define OUTCAT_COL_PROB_A_NAME     "PROB_ADD"
-#define OUTCAT_COL_PROB_A_FORM     "1E"
-#define OUTCAT_COL_PROB_A_UNIT     "probability"
-#define OUTCAT_COL_PROB_A_UCD      ""
+#define OUTCAT_COL_PDF_POS_COLNUM     9
+#define OUTCAT_COL_PDF_POS_NAME       "PDF_POS"
+#define OUTCAT_COL_PDF_POS_FORM       "1D"
+#define OUTCAT_COL_PDF_POS_UNIT       "dp/dr"
+#define OUTCAT_COL_PDF_POS_UCD        ""
 //
-#define OUTCAT_COL_PROB_C_COLNUM   10
-#define OUTCAT_COL_PROB_C_NAME     "PROB_CHANCE"
-#define OUTCAT_COL_PROB_C_FORM     "1E"
-#define OUTCAT_COL_PROB_C_UNIT     "probability"
-#define OUTCAT_COL_PROB_C_UCD      ""
+#define OUTCAT_COL_PROB_CHANCE_COLNUM 10
+#define OUTCAT_COL_PROB_CHANCE_NAME   "PROB_CHANCE"
+#define OUTCAT_COL_PROB_CHANCE_FORM   "1D"
+#define OUTCAT_COL_PROB_CHANCE_UNIT   "probability"
+#define OUTCAT_COL_PROB_CHANCE_UCD    ""
 //
-#define OUTCAT_COL_ANGSEP_COLNUM   11
-#define OUTCAT_COL_ANGSEP_NAME     "ANGSEP"
-#define OUTCAT_COL_ANGSEP_FORM     "1E"
-#define OUTCAT_COL_ANGSEP_UNIT     "deg"
-#define OUTCAT_COL_ANGSEP_UCD      ""
+#define OUTCAT_COL_PDF_CHANCE_COLNUM  11
+#define OUTCAT_COL_PDF_CHANCE_NAME    "PDF_CHANCE"
+#define OUTCAT_COL_PDF_CHANCE_FORM    "1D"
+#define OUTCAT_COL_PDF_CHANCE_UNIT    "dp/dr"
+#define OUTCAT_COL_PDF_CHANCE_UCD     ""
 //
-#define OUTCAT_COL_POSANG_COLNUM   12
-#define OUTCAT_COL_POSANG_NAME     "POSANG"
-#define OUTCAT_COL_POSANG_FORM     "1E"
-#define OUTCAT_COL_POSANG_UNIT     "deg"
-#define OUTCAT_COL_POSANG_UCD      ""
+#define OUTCAT_COL_PROB_PRIOR_COLNUM  12
+#define OUTCAT_COL_PROB_PRIOR_NAME    "PROB_PRIOR"
+#define OUTCAT_COL_PROB_PRIOR_FORM    "1D"
+#define OUTCAT_COL_PROB_PRIOR_UNIT    "probability"
+#define OUTCAT_COL_PROB_PRIOR_UCD     ""
 //
-#define OUTCAT_COL_RHO_COLNUM      13
-#define OUTCAT_COL_RHO_NAME        "RHO"
-#define OUTCAT_COL_RHO_FORM        "1E"
-#define OUTCAT_COL_RHO_UNIT        "src/deg^2"
-#define OUTCAT_COL_RHO_UCD         ""
+#define OUTCAT_COL_PROB_POST_COLNUM   13
+#define OUTCAT_COL_PROB_POST_NAME     "PROB_POST"
+#define OUTCAT_COL_PROB_POST_FORM     "1D"
+#define OUTCAT_COL_PROB_POST_UNIT     "probability"
+#define OUTCAT_COL_PROB_POST_UCD      ""
 //
-#define OUTCAT_COL_LAMBDA_COLNUM   14
-#define OUTCAT_COL_LAMBDA_NAME     "LAMBDA"
-#define OUTCAT_COL_LAMBDA_FORM     "1E"
-#define OUTCAT_COL_LAMBDA_UNIT     "src"
-#define OUTCAT_COL_LAMBDA_UCD      ""
+#define OUTCAT_COL_LR_COLNUM          14
+#define OUTCAT_COL_LR_NAME            "LIKRAT"
+#define OUTCAT_COL_LR_FORM            "1D"
+#define OUTCAT_COL_LR_UNIT            ""
+#define OUTCAT_COL_LR_UCD             ""
 //
-#define OUTCAT_COL_REF_COLNUM      15
-#define OUTCAT_COL_REF_NAME        "REF"
-#define OUTCAT_COL_REF_FORM        "1J"
-#define OUTCAT_COL_REF_UNIT        ""
-#define OUTCAT_COL_REF_UCD         ""
+#define OUTCAT_COL_ANGSEP_COLNUM      15
+#define OUTCAT_COL_ANGSEP_NAME        "ANGSEP"
+#define OUTCAT_COL_ANGSEP_FORM        "1E"
+#define OUTCAT_COL_ANGSEP_UNIT        "deg"
+#define OUTCAT_COL_ANGSEP_UCD         ""
+//
+#define OUTCAT_COL_PSI_COLNUM         16
+#define OUTCAT_COL_PSI_NAME           "PSI"
+#define OUTCAT_COL_PSI_FORM           "1E"
+#define OUTCAT_COL_PSI_UNIT           "deg"
+#define OUTCAT_COL_PSI_UCD            "ERROR"
+//
+#define OUTCAT_COL_POSANG_COLNUM      17
+#define OUTCAT_COL_POSANG_NAME        "POSANG"
+#define OUTCAT_COL_POSANG_FORM        "1E"
+#define OUTCAT_COL_POSANG_UNIT        "deg"
+#define OUTCAT_COL_POSANG_UCD         ""
+//
+#define OUTCAT_COL_RHO_COLNUM         18
+#define OUTCAT_COL_RHO_NAME           "RHO"
+#define OUTCAT_COL_RHO_FORM           "1E"
+#define OUTCAT_COL_RHO_UNIT           "src/deg^2"
+#define OUTCAT_COL_RHO_UCD            ""
+//
+#define OUTCAT_COL_LAMBDA_COLNUM      19
+#define OUTCAT_COL_LAMBDA_NAME        "LAMBDA"
+#define OUTCAT_COL_LAMBDA_FORM        "1E"
+#define OUTCAT_COL_LAMBDA_UNIT        "src"
+#define OUTCAT_COL_LAMBDA_UCD         ""
+//
+#define OUTCAT_COL_REF_COLNUM         20
+#define OUTCAT_COL_REF_NAME           "REF"
+#define OUTCAT_COL_REF_FORM           "1J"
+#define OUTCAT_COL_REF_UNIT           ""
+#define OUTCAT_COL_REF_UCD            ""
 //
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
@@ -196,12 +229,14 @@ const long   c_maxCptLoad    = 10000000000L; //!< Max. # of sources to load at o
 const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
 
 /* Mathematical constants ___________________________________________________ */
-const double pi          = 3.1415926535897931159979635;
-const double twopi       = 6.2831853071795862319959269;
-const double sqrt2pi     = 2.5066282746310002416123552;
-const double twosqrt2ln2 = 2.3548200450309493270140138;
-const double deg2rad     = 0.0174532925199432954743717;
+const double pi          =  3.1415926535897931159979635;
+const double twopi       =  6.2831853071795862319959269;
+const double sqrt2pi     =  2.5066282746310002416123552;
+const double twosqrt2ln2 =  2.3548200450309493270140138;
+const double deg2rad     =  0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
+const double dnorm       =  2.9957230;
+const double twodnorm    =  2.0 * dnorm;
 
 /* Probability scaling constants ____________________________________________ */
 const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
@@ -245,11 +280,16 @@ typedef struct {                      // Counterpart candidate
   //
   long                    index;        //!< Index of CCs in CPT catalogue
   double                  angsep;       //!< Angular separation of CPT from source
+  double                  psi;          //!< Eff. radius of 95% error ellipse (deg)
   double                  posang;       //!< Position angle of CPT w/r to source
   double                  lambda;       //!< Expected number of false counterparts
-  double                  prob_pos;     //!< Probability from position (likelihood)
-  std::vector<double>     prob_add;     //!< Additional probabilities
+  double                  prob_pos;     //!< Counterpart probability
   double                  prob_chance;  //!< Chance coincidence probability
+  double                  prob_prior;   //!< Counterpart prior probability
+  double                  prob_post;    //!< Counterpart posterior probability
+  double                  pdf_pos;      //!< Counterpart PDF
+  double                  pdf_chance;   //!< Chance coincidence PDF
+  double                  likrat;       //!< Likelihood ratio
 } CCElement;
 
 typedef struct {                      // Catalogue object information
@@ -310,13 +350,16 @@ private:
   //
   // Low-level source identification methods
   // ---------------------------------------
-  Status      cid_get(Parameters *par, long iSrc, Status status);
-  Status      cid_filter(Parameters *par, long iSrc, Status status);
-  Status      cid_refine(Parameters *par, long iSrc, Status status);
-  Status      cid_select(Parameters *par, long iSrc, Status status);
-  Status      cid_prob_pos(Parameters *par, long iSrc, Status status);
-  Status      cid_prob_chance(Parameters *par, long iSrc, Status status);
-  Status      cid_local_density(Parameters *par, long iSrc, Status status);
+  Status      cid_get(Parameters *par, int iSrc, Status status);
+  Status      cid_filter(Parameters *par, int iSrc, Status status);
+  Status      cid_refine(Parameters *par, int iSrc, Status status);
+  Status      cid_select(Parameters *par, int iSrc, Status status);
+  Status      cid_prob_pos(Parameters *par, int iSrc, Status status);
+  Status      cid_prob_chance(Parameters *par, int iSrc, Status status);
+  Status      cid_prob_prior(Parameters *par, Status status);
+  Status      cid_prob_post(Parameters *par, Status status);
+  Status      cid_prob(Parameters *par, Status status);
+  Status      cid_local_density(Parameters *par, int iSrc, Status status);
   Status      cid_sort(Parameters *par, Status status);
   Status      cid_dump(Parameters *par, Status status);
   std::string cid_assign_src_name(std::string name, int row);
@@ -326,8 +369,10 @@ private:
   Status cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
                       Status status);
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
-  Status cfits_add(fitsfile *fptr, long iSrc, Parameters *par, Status status);
-  Status cfits_eval(fitsfile *fptr, Parameters *par, int verbose, Status status);
+  Status cfits_add(fitsfile *fptr, int iSrc, Parameters *par, Status status);
+  Status cfits_eval(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_eval_column(fitsfile *fptr, Parameters *par, std::string column,
+                           std::string formula, Status status);
   Status cfits_eval_regular_expression(fitsfile *fptr, Parameters *par,
                                        std::string column, std::string formula,
                                        Status status);
@@ -340,9 +385,7 @@ private:
                                      std::string column_arg,
                                      Status status);
   Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
-  Status cfits_colval(fitsfile *fptr, char *colname, Parameters *par, 
-                      std::vector<double> *val, Status status);
-  Status cfits_select(fitsfile *fptr, long iSrc, Parameters *par, Status status);
+  Status cfits_select(fitsfile *fptr, int iSrc, Parameters *par, Status status);
   Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
                        Status status);
   Status cfits_get_col(fitsfile *fptr, Parameters *par, std::string colname,
@@ -360,32 +403,31 @@ private:
   InCatalogue              m_cpt;            //!< Counterpart catalogue
   //
   // Catalogue building parameters
-  long                     m_maxCptLoad;     //!< Maximum # of cpts to be loaded
-  long                     m_fCptLoaded;     //!< Loaded counterparts fully
+  int                      m_maxCptLoad;     //!< Maximum # of cpts to be loaded
+  int                      m_fCptLoaded;     //!< Loaded counterparts fully
   fitsfile                *m_memFile;        //!< Memory catalogue FITS file pointer
   fitsfile                *m_outFile;        //!< Output catalogue FITS file pointer
   //
   // Counterpart candidate (CC) working arrays
-  long                     m_numCC;          //!< Number of counterpart candidates
+  int                      m_numCC;          //!< Number of counterpart candidates
   CCElement               *m_cc;             //!< List of counterpart candidates
   double                   m_filter_rad;     //!< Filter step radius
   double                   m_ring_rad_min;   //!< Density ring minimum
   double                   m_ring_rad_max;   //!< Density ring maximum
   double                   m_omega;          //!< Solid angle of error ellipse
   double                   m_rho;            //!< Local counterpart density
-  double                   m_lambda;         //!< Expected number of false in ellipse
   //
   // Counterpart statistics
   int                      m_num_Sel;        //!< Number of selection criteria
   int                     *m_cpt_stat;       //!< Counterpart statistics
   std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
-  double                   m_tot_lambda;     //!< Number of expected chance ass.
-  int                      m_num_ellipse;    //!< Number of counterparts in ellipse
+  //double                   m_tot_lambda;     //!< Number of expected chance ass.
+  //int                      m_num_ellipse;    //!< Number of counterparts in ellipse
   int                      m_num_assoc;      //!< Number of associations
   //
   // Output cataloge: source catalogue quantities
-  long                     m_num_src_Qty;    //!< Number of src. cat. quantities
+  int                      m_num_src_Qty;    //!< Number of src. cat. quantities
   std::vector<int>         m_src_Qty_colnum; //!< Vector of column numbers
   std::vector<std::string> m_src_Qty_ttype;  //!< Vector of column types
   std::vector<std::string> m_src_Qty_tform;  //!< Vector of column formats
@@ -393,7 +435,7 @@ private:
   std::vector<std::string> m_src_Qty_tbucd;  //!< Vector of column UCDs
   //
   // Output cataloge: counterpart catalogue quantities
-  long                     m_num_cpt_Qty;    //!< Number of cpt. cat. quantities
+  int                      m_num_cpt_Qty;    //!< Number of cpt. cat. quantities
   std::vector<int>         m_cpt_Qty_colnum; //!< Vector of column numbers
   std::vector<std::string> m_cpt_Qty_ttype;  //!< Vector of column types
   std::vector<std::string> m_cpt_Qty_tform;  //!< Vector of column formats

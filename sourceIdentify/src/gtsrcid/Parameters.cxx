@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.11  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -113,25 +116,25 @@ void Parameters::init_memory(void) {
 
       // Intialise private members
       m_srcCatName.clear();
-      m_cptCatName.clear();
-      m_outCatName.clear();
-      m_srcCatQty.clear();
-      m_cptCatQty.clear();
       m_srcCatPrefix.clear();
+      m_srcCatQty.clear();
+      m_cptCatName.clear();
       m_cptCatPrefix.clear();
+      m_cptCatQty.clear();
+      m_cptDensFile.clear();
+      m_outCatName.clear();
       m_outCatQtyName.clear();
       m_outCatQtyFormula.clear();
+      m_probMethod.clear();
+      m_probPrior.clear();
       m_select.clear();
-      m_probColNames.clear();
-      m_posProbType    = NoPos;
-      m_chanceProbType = NoChance;
-      m_probThres      = 0.0;
-      m_srcPosError    = 0.0;
-      m_cptPosError    = 0.0;
-      m_maxNumCpt      = 0;
-      m_chatter        = 0;
-      m_clobber        = 0;
-      m_debug          = 0;
+      m_probThres   = 0.0;
+      m_srcPosError = 0.0;
+      m_cptPosError = 0.0;
+      m_maxNumCpt   = 0;
+      m_chatter     = 0;
+      m_clobber     = 0;
+      m_debug       = 0;
       m_mode.clear();
 
     } while (0); // End of main do-loop
@@ -180,17 +183,12 @@ void Parameters::free_memory(void) {
 Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 
     // Declare local variables
-    int                    blank;
-    int                    found;
-    long                   i;
     char                   parname[MAX_CHAR];
-    std::string            prob_name;
     std::string::size_type len;
     std::string::size_type pos;
     std::string::size_type len_name;
     std::string::size_type start_formula;
     std::string::size_type len_formula;
-    std::string::size_type start_name;
 
     // Single loop for common exit point
     do {
@@ -204,24 +202,29 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 
       // Recover task parameters
       std::string s_srcCatName   = pars["srcCatName"];
-      std::string s_cptCatName   = pars["cptCatName"];
-      std::string s_outCatName   = pars["outCatName"];
       std::string s_srcCatPrefix = pars["srcCatPrefix"];
-      std::string s_cptCatPrefix = pars["cptCatPrefix"];
       std::string s_srcCatQty    = pars["srcCatQty"];
+      std::string s_cptCatName   = pars["cptCatName"];
+      std::string s_cptCatPrefix = pars["cptCatPrefix"];
       std::string s_cptCatQty    = pars["cptCatQty"];
-      std::string probMethod     = pars["probMethod"];
+      std::string s_cptDensFile  = pars["cptDensFile"];
+      std::string s_outCatName   = pars["outCatName"];
+      std::string s_probMethod   = pars["probMethod"];
+      std::string s_probPrior    = pars["probPrior"];
       std::string s_mode         = pars["mode"];
       m_srcCatName               = s_srcCatName;
-      m_cptCatName               = s_cptCatName;
-      m_outCatName               = s_outCatName;
       m_srcCatPrefix             = "@" + s_srcCatPrefix + "_";
-      m_cptCatPrefix             = "@" + s_cptCatPrefix + "_";
       m_srcCatQty                = s_srcCatQty;
-      m_cptCatQty                = s_cptCatQty;
-      m_probThres                = pars["probThres"];
       m_srcPosError              = pars["srcPosError"];
+      m_cptCatName               = s_cptCatName;
+      m_cptCatPrefix             = "@" + s_cptCatPrefix + "_";
+      m_cptCatQty                = s_cptCatQty;
       m_cptPosError              = pars["cptPosError"];
+      m_cptDensFile              = s_cptDensFile;
+      m_outCatName               = s_outCatName;
+      m_probMethod               = s_probMethod;
+      m_probPrior                = s_probPrior;
+      m_probThres                = pars["probThres"];
       m_maxNumCpt                = pars["maxNumCpt"];
       m_chatter                  = pars["chatter"];
       m_clobber                  = pars["clobber"];
@@ -234,12 +237,12 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       else
         g_u9_verbosity = 0;
 
-      // Retrieve new output quantities and decompose them into quantity name 
+      // Retrieve new output quantities and decompose them into quantity name
       // and evaluation string
-      for (i = MIN_OUTCAT_QTY; i <= MAX_OUTCAT_QTY; i++) {
+      for (int i = MIN_OUTCAT_QTY; i <= MAX_OUTCAT_QTY; ++i) {
 
         // Extract parameter name
-        sprintf(parname, "outCatQty%2.2ld", i);
+        sprintf(parname, "outCatQty%2.2d", i);
         std::string outCatQty = pars[parname];
 
         // Fall through if parameter is empty
@@ -287,8 +290,8 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
         continue;
 
       // Retrieve selection strings
-      for (i = MIN_OUTCAT_SEL; i <= MAX_OUTCAT_SEL; i++) {
-        sprintf(parname, "select%2.2ld", i);
+      for (int i = MIN_OUTCAT_SEL; i <= MAX_OUTCAT_SEL; ++i) {
+        sprintf(parname, "select%2.2d", i);
         std::string select = pars[parname];
         select             = trim(select);
         len                = select.length();
@@ -298,53 +301,6 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       }
       if (status != STATUS_OK)
         continue;
-
-      // Retrieve additional probability column names from probability method
-      len   = probMethod.length();
-      blank = 0;
-      found = 0;
-      for (pos = 0; pos < len; pos++) {
-
-        // Reset found flag
-        found = 0;
-
-        // Search first non blank and non '*'
-        if (!blank && probMethod[pos] != ' ' && probMethod[pos] != '*') {
-          start_name = pos;
-          blank      = 1;
-        }
-
-        // Search first blank or "*"
-        else if (blank && (probMethod[pos] == ' ' || 
-                           probMethod[pos] == '*')) {
-          len_name = pos - start_name;
-          blank    = 0;
-          found    = 1;
-        }
-
-        // Signal if the end of the string is reached
-        if (pos == len-1) {
-          len_name = pos - start_name + 1;
-          blank    = 0;
-          found    = 1;
-        }
-
-        // Extract name if found
-        if (found) {
-          prob_name = probMethod.substr(start_name, len_name);
-          if (prob_name == "POSITION")
-            m_posProbType = Gaussian;
-          else if (prob_name == "POS-EXP")
-            m_posProbType = Exponential;
-          else if (prob_name == "POS-GAUSS")
-            m_posProbType = Gaussian;
-          else if (prob_name == "CHANCE")
-            m_chanceProbType = Local;
-          else
-            m_probColNames.push_back(prob_name);
-        }
-
-      } // endfor: looped over method string
 
     } while (0); // End of main do-loop
 
@@ -362,75 +318,39 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
 Status Parameters::dump(Status status) {
 
     // Declare local variables
-    std::string::size_type         i;
-    std::string::size_type         n;
-    std::vector<double>::size_type i_add;
-    std::vector<double>::size_type num_add;
+    std::string::size_type i;
+    std::string::size_type n;
 
     // Single loop for common exit point
     do {
 
-      // Determine number of additional probabilites
-      num_add = m_probColNames.size();
-
       // Dump task parameters
       Log(Log_1, "Task Parameters:");
       Log(Log_1, "================");
-      Log(Log_1, " Source catalogue filename ........: %s",
-          m_srcCatName.c_str());
-      Log(Log_1, " Counterpart catalogue name .......: %s",
-          m_cptCatName.c_str());
-      Log(Log_1, " Output catalogue name ............: %s",
-          m_outCatName.c_str());
-      Log(Log_1, " Source catalogue prefix ..........: %s",
-          m_srcCatPrefix.c_str());
-      Log(Log_1, " Counterpart catalogue prefix .....: %s",
-          m_cptCatPrefix.c_str());
-      Log(Log_1, " Source catalogue quantities ......: %s",
-          m_srcCatQty.c_str());
-      Log(Log_1, " Counterpart catalogue quantities .: %s",
-          m_cptCatQty.c_str());
-      Log(Log_1, " Source catalogue uncertainty .....: %f arcmin",
+      Log(Log_1, " Source catalogue filename ........: %s", m_srcCatName.c_str());
+      Log(Log_1, " Source catalogue prefix ..........: %s", m_srcCatPrefix.c_str());
+      Log(Log_1, " Source catalogue quantities ......: %s", m_srcCatQty.c_str());
+      Log(Log_1, " Source catalogue uncertainty .....: %.3f arcmin",
           m_srcPosError*60.0);
-      Log(Log_1, " Counterpart catalogue uncertainty : %f arcmin",
+      Log(Log_1, " Counterpart catalogue name .......: %s", m_cptCatName.c_str());
+      Log(Log_1, " Counterpart catalogue prefix .....: %s", m_cptCatPrefix.c_str());
+      Log(Log_1, " Counterpart catalogue quantities .: %s", m_cptCatQty.c_str());
+      Log(Log_1, " Counterpart catalogue uncertainty : %.3f arcmin",
           m_cptPosError*60.0);
+      Log(Log_1, " Counterpart catalogue density file: %s", m_cptDensFile.c_str());
+      Log(Log_1, " Output catalogue name ............: %s", m_outCatName.c_str());
+      Log(Log_1, " Association probability ..........: PROB = %s",
+          m_probMethod.c_str());
+      Log(Log_1, " Counterpart association prior ....: PROB_PRIOR = %s",
+          m_probPrior.c_str());
+      Log(Log_1, " Probability threshold ............: %.3e", m_probThres);
+      Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
       if ((n = m_outCatQtyName.size()) > 0) {
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < n; ++i) {
           Log(Log_1, " New output catalogue quantity %2d .: %s = %s",
               i+1, m_outCatQtyName[i].c_str(), m_outCatQtyFormula[i].c_str());
         }
       }
-      switch (m_posProbType) {
-      case NoPos:
-        Log(Log_1, " Position probability method ......: not used");
-        break;
-      case Exponential:
-        Log(Log_1, " Position probability method ......: Exponential");
-        break;
-      case Gaussian:
-        Log(Log_1, " Position probability method ......: Gaussian");
-        break;
-      default:
-        Log(Log_1, " Position probability method ......: *** undefined ***");
-        break;
-      }
-      for (i_add = 0; i_add < num_add; i_add++) {
-        Log(Log_1, " Additional probability column ....: %s", 
-            m_probColNames[i_add].c_str());
-      }
-      switch (m_chanceProbType) {
-      case NoChance:
-        Log(Log_1, " Chance coincidence probability ...: not used");
-        break;
-      case Local:
-        Log(Log_1, " Chance coincidence probability ...: Local");
-        break;
-      default:
-        Log(Log_1, " Chance coincidence probability ...: *** undefined ***");
-        break;
-      }
-      Log(Log_1, " Probability threshold ............: %e", m_probThres);
-      Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
       if ((n = m_select.size()) > 0) {
         for (i = 0; i < n; i++) {
           Log(Log_1, " Output catalogue selection %2d ....: %s",

@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   v1r4p0                                                  #
+#  Version:   v2r0p0                                                  #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
 #             knodlseder@cesr.fr                                      #
@@ -30,6 +30,7 @@ cptCatName,s,a,"radio_white1.4GHz.tsv",,,"Counterpart catalogue name"
 cptCatPrefix,s,a,"WB14",,,"Counterpart catalogue column prefix"
 cptCatQty,s,h,"*",,,"Counterpart catalogue quantities to be written"
 cptPosError,r,h,0.0,,,"Counterpart position uncertainty (deg)"
+cptDensFile,s,h,"",,,"Counterpart catalogue density file"
 #
 # Output Catalogue information
 #=============================
@@ -46,7 +47,8 @@ outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 #
 # Task parameters
 #================
-probMethod,s,a,"POSITION",,,"Probability method"
+probMethod,s,a,"PROB_POST",,,"Probability method"
+probPrior,s,a,"0.01",,,"Prior association probability"
 probThres,r,a,0.10,,,"Probability threshold"
 maxNumCpt,i,a,100,,,"Maximum number of counterpart candidates"
 select01,s,h,"",,,"Selection criterium 1"

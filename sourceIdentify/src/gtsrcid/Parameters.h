@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.10  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.9  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -59,16 +62,6 @@ namespace sourceIdentify {
 
 
 /* Type defintions __________________________________________________________ */
-typedef enum {
-  NoPos = 1,
-  Exponential,
-  Gaussian
-} PosProbType;
-
-typedef enum {
-  NoChance = 1,
-  Local
-} ChanceProbType;
 
 
 /* Classes __________________________________________________________________ */
@@ -98,22 +91,22 @@ private:
 
 private:
   std::string              m_srcCatName;       //!< Source catalogue name
-  std::string              m_cptCatName;       //!< Counterpart catalogue name
-  std::string              m_outCatName;       //!< Output catalogue name
   std::string              m_srcCatPrefix;     //!< Source catalogue prefix
-  std::string              m_cptCatPrefix;     //!< Counterpart catalogue prefix
   std::string              m_srcCatQty;        //!< Source catalogue quantities
+  double                   m_srcPosError;      //!< Source catalogue default error
+  std::string              m_cptCatName;       //!< Counterpart catalogue name
+  std::string              m_cptCatPrefix;     //!< Counterpart catalogue prefix
   std::string              m_cptCatQty;        //!< Counterpart catalogue quantities
-  std::vector<std::string> m_outCatQtyName;    //!< New output catalogue quantities
-  std::vector<std::string> m_outCatQtyFormula; //!< New output catalogue quantities
-  std::vector<std::string> m_select;           //!< Selections
-  PosProbType              m_posProbType;      //!< Position probability type
-  ChanceProbType           m_chanceProbType;   //!< Chance coincidence prob. type
-  std::vector<std::string> m_probColNames;     //!< Probability column names
+  double                   m_cptPosError;      //!< Counterpart catalogue def. error
+  std::string              m_cptDensFile;      //!< Counterpart catalogue density file
+  std::string              m_outCatName;       //!< Output catalogue name
+  std::string              m_probMethod;       //!< Association probability formula
+  std::string              m_probPrior;        //!< Prior probability formula
   double                   m_probThres;        //!< Probability threshold
-  double                   m_srcPosError;      //!< Default source pos. error
-  double                   m_cptPosError;      //!< Default counterpart pos. error
   long                     m_maxNumCpt;        //!< Maximum # of counterparts
+  std::vector<std::string> m_outCatQtyName;    //!< New output catalogue quantities
+  std::vector<std::string> m_outCatQtyFormula; //!< New output catalogue formulae
+  std::vector<std::string> m_select;           //!< Selections
   int                      m_chatter;          //!< Chatter level
   int                      m_clobber;          //!< Clobber flag
   int                      m_debug;            //!< Debugging mode activated

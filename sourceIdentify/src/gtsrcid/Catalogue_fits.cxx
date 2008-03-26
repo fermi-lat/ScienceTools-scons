@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.17  2008/03/21 15:27:03  jurgen
+Estimate number of false associations
+
 Revision 1.16  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -640,31 +643,60 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_POSANGLE_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_POSANGLE_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_POSANGLE_UCD);
+
+      // Add generic probability columns
       col = OUTCAT_COL_PROB_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_PROB_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_PROB_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_PROB_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_UCD);
-      col = OUTCAT_COL_PROB_P_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_P_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_PROB_P_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_P_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_P_UCD);
-      col = OUTCAT_COL_PROB_A_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_A_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_PROB_A_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_A_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_A_UCD);
-      col = OUTCAT_COL_PROB_C_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_C_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_PROB_C_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_C_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_C_UCD);
+      col = OUTCAT_COL_PROB_POS_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_POS_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_POS_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_POS_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_POS_UCD);
+      col = OUTCAT_COL_PDF_POS_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PDF_POS_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PDF_POS_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PDF_POS_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PDF_POS_UCD);
+      col = OUTCAT_COL_PROB_CHANCE_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_CHANCE_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_CHANCE_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_CHANCE_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_CHANCE_UCD);
+      col = OUTCAT_COL_PDF_CHANCE_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PDF_CHANCE_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PDF_CHANCE_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PDF_CHANCE_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PDF_CHANCE_UCD);
+      col = OUTCAT_COL_PROB_PRIOR_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_PRIOR_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_PRIOR_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_PRIOR_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_PRIOR_UCD);
+      col = OUTCAT_COL_PROB_POST_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_POST_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_POST_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_POST_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_POST_UCD);
+      col = OUTCAT_COL_LR_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_LR_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_LR_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_LR_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_LR_UCD);
+
+      // Add further generic columns
       col = OUTCAT_COL_ANGSEP_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_ANGSEP_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_ANGSEP_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_ANGSEP_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_ANGSEP_UCD);
+      col = OUTCAT_COL_PSI_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PSI_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PSI_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PSI_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PSI_UCD);
       col = OUTCAT_COL_POSANG_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_POSANG_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_POSANG_FORM);
@@ -892,7 +924,7 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
+Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
                             Status status) {
 
     // Declare local variables
@@ -1054,7 +1086,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         continue;
       }
 
-      // Add Counterpart Probability
+      // Add PROB
       for (row = 0; row < nrows; row++)
         dptr[row] = m_cc[row].prob;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_COLNUM,
@@ -1066,42 +1098,87 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
         continue;
       }
 
-      // Add angular separation probability
+      // Add PROB_POS
       for (row = 0; row < nrows; row++)
         dptr[row] = m_cc[row].prob_pos;
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_P_COLNUM,
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POS_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to write position probability to"
-              " catalogue.", fstatus);
+          Log(Error_2, "%d : Unable to write PROB_POS column to catalogue.",
+              fstatus);
         continue;
       }
 
-      // Add additional probability
-      for (row = 0; row < nrows; row++) {
-        double p = 1.0;
-        for (int i = 0; i < (int)m_cc[row].prob_add.size(); ++i)
-          p *= m_cc[row].prob_add[i];
-        dptr[row] = p;
-      }
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_A_COLNUM,
+      // Add PDF_POS
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].pdf_pos;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PDF_POS_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to write additional probability to"
-              " catalogue.", fstatus);
+          Log(Error_2, "%d : Unable to write PDF_POS column to catalogue.",
+              fstatus);
         continue;
       }
 
-      // Add chance coincidence probability
+      // Add PROB_CHANCE
       for (row = 0; row < nrows; row++)
         dptr[row] = m_cc[row].prob_chance;
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_C_COLNUM,
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_CHANCE_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to write chance coincidence probability to"
+          Log(Error_2, "%d : Unable to write PROB_CHANCE column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Add PDF_CHANCE
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].pdf_chance;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PDF_CHANCE_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write PDF_CHANCE column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+
+      // Add PROB_PRIOR
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].prob_prior;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_PRIOR_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write PROB_PRIOR column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Add PROB_POST
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].prob_post;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POST_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write PROB_POST column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Add likelihood ratio
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].likrat;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_LR_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write likelihood ratio to"
               " catalogue.", fstatus);
         continue;
       }
@@ -1114,6 +1191,18 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
       if (fstatus != 0) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to write angular separation to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
+      // Add effective error ellipse radius
+      for (row = 0; row < nrows; row++)
+        dptr[row] = m_cc[row].psi;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PSI_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write effective ellipse radius to"
               " catalogue.", fstatus);
         continue;
       }
@@ -1290,11 +1379,9 @@ Status Catalogue::cfits_add(fitsfile *fptr, long iSrc, Parameters *par,
  *
  * @param[in] fptr Pointer to FITS file.
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] verbose Verbose flag (0=silent, 1=verbose).
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
-                             Status status) {
+Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1313,13 +1400,6 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
       if (numQty < 1)
         continue;
 
-      // Dump header (optionally)
-      if (verbose) {
-        Log(Log_2, "");
-        Log(Log_2, "Add new output catalogue quantities:");
-        Log(Log_2, "====================================");
-      }
-
       // Add all new output catalogue quantities
       for (int iQty = 0; iQty < numQty; ++iQty) {
 
@@ -1327,30 +1407,14 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
         std::string column  = par->m_outCatQtyName[iQty];
         std::string formula = par->m_outCatQtyFormula[iQty];
 
-        // Evaluate special expressions in formula
-        status = cfits_eval_special_expression(fptr, par, column, formula, status);
+        // Evaluate column
+        status = cfits_eval_column(fptr, par,column, formula, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate special expression <%s='%s'> in"
+            Log(Error_2, "%d : Unable to evaluate expression <%s='%s'> in"
                 " formula.",
                 (Status)status, column.c_str(), formula.c_str());
           break;
-        }
-
-        // Evaluate regular expression in formula
-        status = cfits_eval_regular_expression(fptr, par, column, formula, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
-                " formula.",
-                (Status)status, column.c_str(), formula.c_str());
-          break;
-        }
-
-        // Dump new output catalogue quantities information (optionally)
-        if (verbose) {
-          Log(Log_2, " New quantity .....................: %s = %s",
-              column.c_str(), formula.c_str());
         }
 
       } // endfor: loop over all new output cataloge quantities
@@ -1371,6 +1435,78 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, int verbose,
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_eval"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Evaluate catalogue column quantity
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] column Name of the result column.
+ * @param[in] formula Formula to be evaluated.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::cfits_eval_column(fitsfile *fptr, Parameters *par,
+                                    std::string column,std::string formula,
+                                    Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_column");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Evaluate special expressions in formula
+      status = cfits_eval_special_expression(fptr, par, column, formula, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate special expression <%s='%s'> in"
+                       " formula.",
+                       (Status)status, column.c_str(), formula.c_str());
+        continue;
+      }
+
+      // Evaluate regular expression in formula
+      status = cfits_eval_regular_expression(fptr, par, column, formula, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
+                       " formula.",
+          (Status)status, column.c_str(), formula.c_str());
+        continue;
+      }
+
+      // Optionally dump evaluated catalogue quantity information
+      if (par->logExplicit()) {
+        Log(Log_2, "  New quantity ....................: %s = %s",
+            column.c_str(), formula.c_str());
+      }
+
+      // Remove special function columns
+      status = cfits_eval_clear(fptr, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to remove special function columns.",
+              (Status)status);
+        continue;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_eval_column"
           " (status=%d)", status);
 
     // Return status
@@ -1769,7 +1905,7 @@ Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par,
  * Performs table row selection for one specific catalogue source. The result
  * of the selection process is stored in the m_cpt_stat table.
  ******************************************************************************/
-Status Catalogue::cfits_select(fitsfile *fptr, long iSrc, Parameters *par,
+Status Catalogue::cfits_select(fitsfile *fptr, int iSrc, Parameters *par,
                                Status status) {
 
     // Declare local variables
@@ -1992,6 +2128,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
  * @param[out] val Vector of values.
  * @param[in] status Error status.
  ******************************************************************************/
+/*
 Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
                                std::vector<double> *val, Status status) {
 
@@ -2151,7 +2288,7 @@ Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
     return status;
 
 }
-
+*/
 
 /**************************************************************************//**
  * @brief Returns table column as double precision vector (method 2)
