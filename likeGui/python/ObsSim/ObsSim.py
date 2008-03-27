@@ -13,6 +13,10 @@ import tkFileDialog
 from tkMessageBox import showwarning
 from FileDialog import LoadFileDialog, SaveFileDialog
 
+from facilities import py_facilities
+py_facilities.commonUtilities_setupEnvironment()
+os_environ = py_facilities.commonUtilities_getEnvironment
+
 sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
 
 from SourceLibrary import SourceLibrary
@@ -418,7 +422,10 @@ def expandEnvVar(filename):
     if filename.find('$(') != -1:
         envVar = filename.split('$(')[1].split(')')[0]
         remainder = filename.split('$(')[1].split(')')[1]
-        return os.environ[envVar] + remainder
+        try:
+            return os.environ[envVar] + remainder
+        except KeyError:
+            return os_environ(envVar) + remainder
     else:
         return filename
 
