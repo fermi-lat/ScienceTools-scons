@@ -44,7 +44,9 @@ class UnbinnedObs(object):
                                   'Exposure cube: ' + str(expCube),
                                   'IRFs: ' + str(irfs)))
         self._respFuncs = pyLike.ResponseFunctions()
-        self._respFuncs.load(irfs)
+        evfiles = self._fileList(eventFile)
+        evt_types = pyLike.AppHelpers_getSelectedEvtTypes(evfiles[0],"UNBINNED")
+        self._respFuncs.load(irfs, "", evt_types)
         self._expMap = pyLike.ExposureMap()
         if expMap is not None and expMap != "":
             self._expMap.readExposureFile(expMap)
