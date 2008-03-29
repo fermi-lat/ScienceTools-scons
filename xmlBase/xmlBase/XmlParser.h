@@ -53,7 +53,7 @@ namespace xmlBase {
     bool             m_throwErrors;
     bool             m_errorsOccurred;
     bool             m_doSchema;
-    static int didInit;
+    //    static int       s_didInit;
   };
 }
 #endif
