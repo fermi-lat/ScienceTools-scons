@@ -5,6 +5,7 @@
    $Id$
 
    @verbatim
+   v1r5   31-Mar-08   JC    new event class handling
    v1r4   18-Mar-08   JC    read xml attributes from source tag and add as
                             Python attributes to Source objects (JBB request)
    v1r3p4 03-Mar-08   JC    check that new parameter value lies within bounds
