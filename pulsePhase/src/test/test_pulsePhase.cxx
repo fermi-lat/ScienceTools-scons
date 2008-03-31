@@ -6,6 +6,7 @@
 
 #include "facilities/commonUtilities.h"
 
+#include "pulsarDb/FrequencyEph.h"
 #include "pulsarDb/PulsarEph.h"
 
 #include "timeSystem/AbsoluteTime.h"
