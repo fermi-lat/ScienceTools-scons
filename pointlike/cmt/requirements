@@ -19,15 +19,19 @@ apply_tag have_python
 private
 
 use SwigModule *
-apply_pattern python_module
+#apply_pattern python_module
+# sets the path to local python folder
+apply_pattern set_pythonpath
 
 
 macro source "*.cxx" WIN32 "*.cxx *.h *.py"
+macro swig_source "swig_wrap.cxx" 
 
 library pointlike \
  -s=../pointlike $(source) \
  -s=../src $(source) \
- -s=../python $(source)
+ -s=../python $(source)\
+ -s=swig $(swig_source)
 
 # fitting application, 
 application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
