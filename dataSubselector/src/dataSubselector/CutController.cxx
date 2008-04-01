@@ -51,7 +51,10 @@ CutController::CutController(st_app::AppParGroup & pars,
    if (evclsmin !=0 || evclsmax != 10) {
       addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
    }
-   addRangeCut("ZENITH_ANGLE", "deg", 0, pars["zmax"]);
+   double zmax = pars["zmax"];
+   if (zmax < 180.) {
+      addRangeCut("ZENITH_ANGLE", "deg", 0, pars["zmax"]);
+   }
    int convtype = pars["convtype"];
    if (convtype >= 0) {
       addRangeCut("CONVERSION_TYPE", "dimensionless", convtype, convtype, 
