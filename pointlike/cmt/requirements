@@ -1,6 +1,6 @@
 package pointlike
 
-version v5r4p4
+version v5r4p5
 
 # $Header$
 
@@ -27,7 +27,7 @@ macro source "*.cxx" WIN32 "*.cxx *.h *.py"
 library pointlike \
  -s=../pointlike $(source) \
  -s=../src $(source) \
- -s=../python $(source)\
+ -s=../python $(source)
 
 # fitting application, 
 application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
