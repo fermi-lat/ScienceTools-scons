@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v6r0p1  02-Apr-08   JC   use greater precision in GtiCut::writeCut 
+                             in printing GTI start and stop times
     v6      01-Apr-08   JC   new gtselect cuts (add evcls*, convtype; remove
                              phi[min,max], theta[min,max], etc.)
     v5r7    17-Mar-08   JC   add PULSE_PHASE cut (and DSS keywords)
