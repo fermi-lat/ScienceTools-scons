@@ -6,6 +6,8 @@
  * $Header$
  */
 
+#include <iomanip>
+
 #include "dataSubselector/GtiCut.h"
 
 namespace dataSubselector {
@@ -49,6 +51,7 @@ void GtiCut::writeCut(std::ostream & stream, unsigned int keynum) const {
    CutBase::writeCut(stream, keynum);
    evtbin::Gti::ConstIterator dt;
    stream << "GTIs:\n";
+   stream << std::setprecision(12);
    for (dt = m_gti.begin(); dt != m_gti.end(); ++dt) {
       stream << dt->first << "  " << dt->second << "\n";
    }
