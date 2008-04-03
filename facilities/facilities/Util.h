@@ -83,6 +83,18 @@ namespace facilities {
      */
     static int expandEnvVarOS(std::string* toExpand);
 
+    /** Given an input vector of strings, each of which may contain an
+        env variable, we construct a new vector of strings, where each
+        env variable has been expanded.
+        @param toExample
+        @param result will be modified by this method
+        @param delimiters is a string which defaults to ",".  This is the list
+        of delimiters to use when tokenizing one of the strings in the vector
+    */
+    static int expandEnvVarList(std::vector<std::string> toExpand,
+                                std::vector<std::string> &result,
+                                const std::string &delimiters=",");
+
     /** Given an input integer @a val to convert and an output string @a outStr
       converts val into a std::string.
       This method duplicates the stdlib.h method itoa, except that it returns
@@ -93,6 +105,7 @@ namespace facilities {
       @return  const char* based on the contents of outStr.c_str()
     */
     static const char* itoa(int val, std::string &outStr);
+
     /**
       Given unsigned, convert to output string. If optional  @arg base
       is 16, format as 8 hex digits; else output decimal.

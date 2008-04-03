@@ -48,6 +48,26 @@ int main(int, char**) {
               << err.what() << std::endl;
   }
 
+  std::cout << std::endl << "Test expandEnvVarList" << std::endl;
+  std::vector<std::string> fileCol;
+  fileCol.push_back("$(GLAST_EXT),$(SRC)");
+  fileCol.push_back("$(SRC)");
+  std::vector<std::string> expandedCol;
+  try {
+      facilities::Util::expandEnvVarList(fileCol, expandedCol);
+      std::cout << "After expanding env variables, the resulting vector has "
+                << expandedCol.size() << " entries" << std::endl;
+      std::vector<std::string>::const_iterator it;
+      for (it = expandedCol.begin(); it != expandedCol.end(); it++) 
+          std::cout << *it << std::endl;
+
+  } catch(std::exception& err) {
+      std::cout << "Caught standard exception;  what() returns "
+                << err.what() << std::endl;
+  } catch(...) {
+      std::cout << "Caught undefined exception" << std::endl;
+  }
+
   std::cout << std::endl << "Test itoa " << std::endl;
   // Test the new itoa routine
   std::string intStr;
