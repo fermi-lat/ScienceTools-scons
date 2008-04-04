@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.26  2008/03/26 16:57:30  jurgen
+implement global counterpart density evaluation
+
 Revision 1.25  2008/03/26 13:37:53  jurgen
 Remove unused members
 
@@ -275,7 +278,7 @@ typedef enum {                        // Position error probability
   Prob_99                               //!< 99% probability ellipse
 } PosErrorProb;
 
-typedef struct {                      // Counterpart candidate
+typedef struct {                      // Counterpart candidate object information
   std::string             id;           //!< Unique identifier
   double                  pos_eq_ra;    //!< Right Ascension (deg)
   double                  pos_eq_dec;   //!< Declination (deg)
@@ -307,6 +310,22 @@ typedef struct {                      // Catalogue object information
   double                  pos_err_min;  //!< Position error minor axis
   double                  pos_err_ang;  //!< Position error angle
 } ObjectInfo;
+
+typedef struct {                      // Source information
+  int                     iSrc;         //!< Source index
+  ObjectInfo             *info;         //!< Source information
+  int                     numCC;        //!< Number of counterpart candidates
+  CCElement              *cc;           //!< List of counterpart candidates
+  double                  filter_rad;   //!< Filter step radius
+  double                  ring_rad_min; //!< Density ring minimum
+  double                  ring_rad_max; //!< Density ring maximum
+  double                  omega;        //!< Solid angle of error ellipse
+  double                  rho;          //!< Local counterpart density
+  double                  cc_pid;       //!< Partial sum of P(ID|r) before thres.
+  double                  cc_pc;        //!< Partial sum of P(C|r) before thres.
+  double                  cc_pid_thr;   //!< partial sum of P(ID|r) after thres.
+  double                  cc_pc_thr;    //!< partial sum of P(C|r) after thres.
+} SourceInfo;
 
 typedef struct {                      // Input catalogue
   std::string             inName;       //!< Input name
@@ -356,19 +375,19 @@ private:
   //
   // Low-level source identification methods
   // ---------------------------------------
-  Status      cid_get(Parameters *par, int iSrc, Status status);
-  Status      cid_filter(Parameters *par, int iSrc, Status status);
-  Status      cid_refine(Parameters *par, int iSrc, Status status);
-  Status      cid_select(Parameters *par, int iSrc, Status status);
-  Status      cid_prob_pos(Parameters *par, int iSrc, Status status);
-  Status      cid_prob_chance(Parameters *par, int iSrc, Status status);
-  Status      cid_prob_prior(Parameters *par, Status status);
-  Status      cid_prob_post(Parameters *par, Status status);
-  Status      cid_prob(Parameters *par, Status status);
-  Status      cid_local_density(Parameters *par, int iSrc, Status status);
-  Status      cid_global_density(Parameters *par, Status status);
-  Status      cid_sort(Parameters *par, Status status);
-  Status      cid_dump(Parameters *par, Status status);
+  Status      cid_get(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_filter(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_select(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob_pos(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob_chance(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob_prior(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob_post(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_local_density(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_global_density(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_sort(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_dump(Parameters *par, SourceInfo *src, Status status);
   std::string cid_assign_src_name(std::string name, int row);
   //
   // Low-level FITS catalogue handling methods
@@ -376,7 +395,7 @@ private:
   Status cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
                       Status status);
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
-  Status cfits_add(fitsfile *fptr, int iSrc, Parameters *par, Status status);
+  Status cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src, Status status);
   Status cfits_eval(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_eval_column(fitsfile *fptr, Parameters *par, std::string column,
                            std::string formula, Status status);
@@ -392,7 +411,8 @@ private:
                                      std::string column_arg,
                                      Status status);
   Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
-  Status cfits_select(fitsfile *fptr, int iSrc, Parameters *par, Status status);
+  Status cfits_select(fitsfile *fptr, Parameters *par, SourceInfo *src,
+                      Status status);
   Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
                        Status status);
   Status cfits_get_col(fitsfile *fptr, Parameters *par, std::string colname,
@@ -415,14 +435,8 @@ private:
   fitsfile                *m_memFile;        //!< Memory catalogue FITS file pointer
   fitsfile                *m_outFile;        //!< Output catalogue FITS file pointer
   //
-  // Counterpart candidate (CC) working arrays
-  int                      m_numCC;          //!< Number of counterpart candidates
-  CCElement               *m_cc;             //!< List of counterpart candidates
-  double                   m_filter_rad;     //!< Filter step radius
-  double                   m_ring_rad_min;   //!< Density ring minimum
-  double                   m_ring_rad_max;   //!< Density ring maximum
-  double                   m_omega;          //!< Solid angle of error ellipse
-  double                   m_rho;            //!< Local counterpart density
+  // Information for all sources
+  SourceInfo              *m_info;           //!< Source information
   //
   // Counterpart statistics
   int                      m_num_Sel;        //!< Number of selection criteria
@@ -430,6 +444,10 @@ private:
   std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
   int                      m_num_assoc;      //!< Number of associations
+  double                   m_sum_pid;        //!< Sum of P(ID|r) before thresholding
+  double                   m_sum_pid_thr;    //!< Sum of P(ID|r) after thresholding
+  double                   m_sum_pc;         //!< Sum of P(C|r) before thresholding
+  double                   m_sum_pc_thr;     //!< Sum of P(C|r) after thresholding
   //
   // Output cataloge: source catalogue quantities
   int                      m_num_src_Qty;    //!< Number of src. cat. quantities

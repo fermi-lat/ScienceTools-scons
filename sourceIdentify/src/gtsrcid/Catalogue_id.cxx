@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.20  2008/03/26 16:57:30  jurgen
+implement global counterpart density evaluation
+
 Revision 1.19  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -99,7 +102,7 @@ using namespace catalogAccess;
  * @brief Get counterpart candidates for a source
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * This is the main counterpart association driving routine. Counterpart
@@ -117,10 +120,7 @@ using namespace catalogAccess;
  *
  * Finally, all candidates are added to the output catalogue.
  ******************************************************************************/
-Status Catalogue::cid_get(Parameters *par, int iSrc, Status status) {
-
-    // Declare local variables
-    ObjectInfo *src;
+Status Catalogue::cid_get(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -129,59 +129,57 @@ Status Catalogue::cid_get(Parameters *par, int iSrc, Status status) {
     // Single loop for common exit point
     do {
 
-      // Get pointer to source object
-      src = &(m_src.object[iSrc]);
-
       // Dump source information (optionally)
       if (par->logNormal()) {
-        if (src->pos_valid) {
+        if (src->info->pos_valid) {
           Log(Log_2, " Source %5d .....................: %20s"SRC_FORMAT,
-              iSrc+1, src->name.c_str(),
-              src->pos_eq_ra, src->pos_eq_dec,
-              src->pos_err_maj, src->pos_err_min, src->pos_err_ang);
+              src->iSrc+1, src->info->name.c_str(),
+              src->info->pos_eq_ra, src->info->pos_eq_dec,
+              src->info->pos_err_maj, src->info->pos_err_min,
+              src->info->pos_err_ang);
         }
         else {
           Log(Log_2, " Source %5d .....................: %20s"
               " No position information found.",
-              iSrc+1, src->name.c_str());
+              src->iSrc+1, src->info->name.c_str());
         }
       }
 
       // Fall through if no position information has been found
-      if (!src->pos_valid)
+      if (!src->info->pos_valid)
         continue;
 
       // Filter step: Get counterparts near the source position
-      status = cid_filter(par, iSrc, status);
+      status = cid_filter(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to perform filter step for source %d.",
-              (Status)status, iSrc+1);
+              (Status)status, src->iSrc+1);
         continue;
       }
 
       // Refine step: Assign probability for each counterpart
-      status = cid_refine(par, iSrc, status);
+      status = cid_refine(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to perform refine step for source %d.",
-              (Status)status, iSrc+1);
+              (Status)status, src->iSrc+1);
         continue;
       }
 
       // Optionally dump counterpart candidats
       if (par->logNormal()) {
-        cid_dump(par, status);
+        cid_dump(par, src, status);
         Log(Log_2, "");
       }
 
       // Add all counterpart candidates to output catalogue
-      status = cfits_add(m_outFile, iSrc, par, status);
+      status = cfits_add(m_outFile, par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to add counterpart candidates for source"
               " %d to FITS output catalogue '%s'.", 
-              (Status)status, iSrc+1, par->m_outCatName.c_str());
+              (Status)status, src->iSrc+1, par->m_outCatName.c_str());
         continue;
       }
 
@@ -202,7 +200,7 @@ Status Catalogue::cid_get(Parameters *par, int iSrc, Status status) {
  * @brief Filter step of counterpart identification
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * @todo Load counterpart catalogue only partially if number of objects is large.
@@ -214,19 +212,10 @@ Status Catalogue::cid_get(Parameters *par, int iSrc, Status status) {
  * that extends from -m_filter_rad to +m_filter_rad in Declination
  * and from -m_filter_rad/cos(dec) to +m_filter_rad/cos(dec) in Right
  * Ascension.
- *
- * The method sets the following members of the Catalogue class:
- * m_filter_rad: Filter radius in degrees
- * m_ring_rad_min: Local counterpart density ring inner radius (deg)
- * m_ring_rad_max: Local counterpart density ring outer radius (deg)
- * m_omega: Solid angle of error ellipse (deg^2)
- * m_numCC: Number of counterpart candidates
- * m_cc: List of counterpart candidates
  ******************************************************************************/
-Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
 
     // Declare local variables
-    long        iCpt;
     long        numNoPos;
     long        numRA;
     long        numDec;
@@ -237,7 +226,6 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
     double      cpt_ra_min;
     double      cpt_ra_max;
     double      filter_maxsep;
-    ObjectInfo *src;
     ObjectInfo *cpt;
     CCElement  *cpt_ptr;
 
@@ -257,52 +245,41 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
     do {
 
       // Reset statistics
-      m_numCC  = 0;
       numNoPos = 0;
       numRA    = 0;
       numDec   = 0;
 
-      // Initialise some members
-      m_filter_rad   = 0.0;
-      m_ring_rad_min = 0.0;
-      m_ring_rad_max = 0.0;
-      m_omega        = 0.0;
-      m_rho          = 0.0;
-
-      // Get pointer to source object
-      src = &(m_src.object[iSrc]);
-
       // Calculate sin and cos of source latitude
-      src_dec_sin = sin(src->pos_eq_dec * deg2rad);
-      src_dec_cos = cos(src->pos_eq_dec * deg2rad);
+      src_dec_sin = sin(src->info->pos_eq_dec * deg2rad);
+      src_dec_cos = cos(src->info->pos_eq_dec * deg2rad);
 
       // Set bounding box enclosing radius
-      double radius = src->pos_err_maj * 5.0 / 2.0; // 5 sigma radius
-      m_filter_rad  = (radius > c_filter_maxsep) ? radius : c_filter_maxsep;
+      double radius   = src->info->pos_err_maj * 5.0 / 2.0; // 5 sigma radius
+      src->filter_rad = (radius > c_filter_maxsep) ? radius : c_filter_maxsep;
 
       // Set local counterpart density ring radii
-      m_ring_rad_min = 0.0;
-      m_ring_rad_max = m_filter_rad;
+      src->ring_rad_min = 0.0;
+      src->ring_rad_max = src->filter_rad;
 
       // Compute solid angle of error ellipse
-      m_omega = pi * src->pos_err_maj * src->pos_err_min;
+      src->omega = pi * src->info->pos_err_maj * src->info->pos_err_min;
 
       // Define bounding box around source position. The declination
       // range of the bounding box is constrained to [-90,90] deg, the
       // Right Ascension boundaries are put into the interval [0,360[ deg.
-      cpt_dec_min = src->pos_eq_dec - m_filter_rad;
-      cpt_dec_max = src->pos_eq_dec + m_filter_rad;
+      cpt_dec_min = src->info->pos_eq_dec - src->filter_rad;
+      cpt_dec_max = src->info->pos_eq_dec + src->filter_rad;
       if (cpt_dec_min < -90.0) cpt_dec_min = -90.0;
       if (cpt_dec_max >  90.0) cpt_dec_max =  90.0;
       if (src_dec_cos > 0.0) {
-        filter_maxsep = m_filter_rad / src_dec_cos;
+        filter_maxsep = src->filter_rad / src_dec_cos;
         if (filter_maxsep > 180.0)
           filter_maxsep = 180.0;
       }
       else
         filter_maxsep = 180.0;
-      cpt_ra_min  = src->pos_eq_ra - filter_maxsep;
-      cpt_ra_max  = src->pos_eq_ra + filter_maxsep;
+      cpt_ra_min  = src->info->pos_eq_ra - filter_maxsep;
+      cpt_ra_max  = src->info->pos_eq_ra + filter_maxsep;
       cpt_ra_min = cpt_ra_min - double(long(cpt_ra_min / 360.0) * 360.0);
       if (cpt_ra_min < 0.0) cpt_ra_min += 360.0;
       cpt_ra_max = cpt_ra_max - double(long(cpt_ra_max / 360.0) * 360.0);
@@ -346,34 +323,21 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
                   m_cpt.numLoad);
           }
 
-          // Free memory if it has already been allocated
-          if (m_cc != NULL) delete [] m_cc;
-          m_cc = NULL;
-
-          // Allocate memory for counterpart candidate search
-          m_cc = new CCElement[m_cpt.numLoad];
-          if (m_cc == NULL) {
-            status = STATUS_MEM_ALLOC;
-            if (par->logTerse())
-              Log(Error_2, "%d : Memory allocation failure.", (Status)status);
-            continue;
-          }
-
           // Bookkeep catalogue loading
           m_fCptLoaded = 1;
 
         } // endif: catalogue was not yet loaded
       } // endelse: entire catalogue requested
 
-      // Initialise counterpart pointers
-      cpt     = m_cpt.object;
-      cpt_ptr = m_cc;
-
-      // Loop over counterparts
+      // Start timing
       #if CATALOGUE_TIMING
       t_start_loop = clock();
       #endif
-      for (iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
+
+      // Determine number of counterpart candidates that fall in the
+      // bounding box and that have a valid position
+      cpt = m_cpt.object;
+      for (int iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
 
         // Filter counterparts that have no positional information
         if (!cpt->pos_valid) {
@@ -382,7 +346,7 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
         }
 
         // Filter counterpart if it falls outside the declination range.
-        if (cpt->pos_eq_dec < cpt_dec_min || 
+        if (cpt->pos_eq_dec < cpt_dec_min ||
             cpt->pos_eq_dec > cpt_dec_max) {
           numDec++;
           continue;
@@ -404,39 +368,91 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
           }
         }
 
-        // If we are still alive then we keep the counterpart as candidat
-        cpt_ptr->id          = "NULL";
-        cpt_ptr->pos_eq_ra   = 0.0;
-        cpt_ptr->pos_eq_dec  = 0.0;
-        cpt_ptr->pos_err_maj = 0.0;
-        cpt_ptr->pos_err_min = 0.0;
-        cpt_ptr->pos_err_ang = 0.0;
-        cpt_ptr->prob        = 0.0;
-        cpt_ptr->index       = iCpt;
-        cpt_ptr->angsep      = 0.0;
-        cpt_ptr->psi         = 0.0;
-        cpt_ptr->posang      = 0.0;
-        cpt_ptr->lambda      = 0.0;
-        cpt_ptr->prob_pos    = 0.0;
-        cpt_ptr->prob_chance = 0.0;
-        cpt_ptr->prob_prior  = 0.0;
-        cpt_ptr->prob_post   = 0.0;
-        cpt_ptr->pdf_pos     = 0.0;
-        cpt_ptr->pdf_chance  = 0.0;
-        cpt_ptr->likrat      = 0.0;
-        cpt_ptr++;
-        m_numCC++;
+        // If we are still alive then we count this counterpart
+        src->numCC++;
 
       } // endfor: looped over all counterpart candidates
 
+      // Collect all counterpart candidates
+      if (src->numCC > 0) {
+
+        // Allocate memory for counterpart candidates
+        src->cc = new CCElement[src->numCC];
+        if (src->cc == NULL) {
+          status = STATUS_MEM_ALLOC;
+          if (par->logTerse())
+            Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+          continue;
+        }
+
+
+        // Collect all counterpart candidates
+        cpt     = m_cpt.object;
+        cpt_ptr = src->cc;
+        for (int iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
+
+          // Filter counterparts that have no positional information
+          if (!cpt->pos_valid) {
+            numNoPos++;
+            continue;
+          }
+
+          // Filter counterpart if it falls outside the declination range.
+          if (cpt->pos_eq_dec < cpt_dec_min ||
+              cpt->pos_eq_dec > cpt_dec_max) {
+            numDec++;
+            continue;
+          }
+
+          // Filter source if it falls outside the Right Ascension range. The
+          // first case handles no R.A. wrap around ...
+          if (cpt_ra_min < cpt_ra_max) {
+            if (cpt->pos_eq_ra < cpt_ra_min || cpt->pos_eq_ra > cpt_ra_max) {
+              numRA++;
+              continue;
+            }
+          }
+          // ... and this one R.A wrap around
+          else {
+            if (cpt->pos_eq_ra < cpt_ra_min && cpt->pos_eq_ra > cpt_ra_max) {
+              numRA++;
+              continue;
+            }
+          }
+
+          // If we are still alive then we keep this counterpart
+          cpt_ptr->id          = "NULL";
+          cpt_ptr->pos_eq_ra   = 0.0;
+          cpt_ptr->pos_eq_dec  = 0.0;
+          cpt_ptr->pos_err_maj = 0.0;
+          cpt_ptr->pos_err_min = 0.0;
+          cpt_ptr->pos_err_ang = 0.0;
+          cpt_ptr->prob        = 0.0;
+          cpt_ptr->index       = iCpt;
+          cpt_ptr->angsep      = 0.0;
+          cpt_ptr->psi         = 0.0;
+          cpt_ptr->posang      = 0.0;
+          cpt_ptr->lambda      = 0.0;
+          cpt_ptr->prob_pos    = 0.0;
+          cpt_ptr->prob_chance = 0.0;
+          cpt_ptr->prob_prior  = 0.0;
+          cpt_ptr->prob_post   = 0.0;
+          cpt_ptr->pdf_pos     = 0.0;
+          cpt_ptr->pdf_chance  = 0.0;
+          cpt_ptr->likrat      = 0.0;
+          cpt_ptr++;
+
+        } // endfor: looped over all counterpart candidates
+      } // endif: there were counterpart candidates
+
       // Optionally dump counterpart filter statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Filter step candidates ..........: %5d", m_numCC);
+        Log(Log_2, "  Filter step candidates ..........: %5d", src->numCC);
         if (par->logVerbose()) {
           Log(Log_2, "    Filter bounding box radius ....: %7.3f deg",
-              m_filter_rad);
+              src->filter_rad);
           Log(Log_2, "    Error ellipse solid angle .....: %7.3f deg^2",
-              m_omega);
+              src->omega);
           Log(Log_2, "    Outside declination range .....: %5d [%7.3f - %7.3f]",
               numDec, cpt_dec_min, cpt_dec_max);
           Log(Log_2, "    Outside Right Ascension range .: %5d [%7.3f - %7.3f[",
@@ -474,7 +490,7 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
  * @brief Refine step of counterpart identification
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * @todo Develop other than local counterpart density methods.
@@ -483,14 +499,14 @@ Status Catalogue::cid_filter(Parameters *par, int iSrc, Status status) {
  * by decreasing probability and eliminates all candidtates with a too low
  * probability.
  ******************************************************************************/
-Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
 
     // Declare local variables
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_refine (%d candidates)", 
-          m_numCC);
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_refine (%d candidates)",
+          src->numCC);
 
     // Single loop for common exit point
     do {
@@ -500,27 +516,26 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
         continue;
 
       // Store number of counterpart candidates before selection
-      m_cpt_stat[iSrc*(m_num_Sel+1)] = m_numCC;
+      m_cpt_stat[src->iSrc*(m_num_Sel+1)] = src->numCC;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Set unique counterpart candidate identifier for in-memory catalogue
       char cid[OUTCAT_MAX_STRING_LEN];
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
-        sprintf(cid, "CC_%5.5d_%5.5d", iSrc+1, iCC+1);
-        m_cc[iCC].id = cid;
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
+        sprintf(cid, "CC_%5.5d_%5.5d", src->iSrc+1, iCC+1);
+        src->cc[iCC].id = cid;
       }
 
       // Compute PROB_POS and PDF_POS. We have to do this before setting up
       // the in-memory catalogue in order to make sure that the in-memory
       // catalogue contains the required information
-      status = cid_prob_pos(par, iSrc, status);
+      status = cid_prob_pos(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to compute PROB_POS for source %d.",
-                       (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to compute PROB_POS.", (Status)status);
         continue;
       }
 
@@ -534,7 +549,7 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
       }
 
       // Setup in-memory catalogue
-      status = cfits_add(m_memFile, iSrc, par, status);
+      status = cfits_add(m_memFile, par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to add counterpart candidates to"
@@ -552,68 +567,62 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
       }
 
       // Compute PROB_PRIOR
-      status = cid_prob_prior(par, status);
+      status = cid_prob_prior(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to compute PROB_PRIOR for source %d.",
-                       (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to compute PROB_PRIOR.", (Status)status);
         continue;
       }
 
       // Select counterparts on basis of the selection string. All catalogue
       // quantities may be used here except of PROB_CHANCE, PDF_CHANCE,
       // PROB_POST and PROB (these are calculated later!)
-      status = cid_select(par, iSrc, status);
+      status = cid_select(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to select counterparts for source %d.",
-                       (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to select counterparts.", (Status)status);
         continue;
       }
 
       // Determine counterpart density
-      status = cid_local_density(par, iSrc, status);
-      //status = cid_global_density(par, status);
+      status = cid_local_density(par, src, status);
+//      status = cid_global_density(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine counterpart density"
-              " for source %d.",
-              (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to determine counterpart density.",
+              (Status)status);
         continue;
       }
 
       // Compute PROB_CHANCE and PDF_CHANCE
-      status = cid_prob_chance(par, iSrc, status);
+      status = cid_prob_chance(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine chance coincidence probability"
-              " for source %d.",
-              (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to determine chance coincidence probability.",
+              (Status)status);
         continue;
       }
 
       // Compute PROB_POST
-      status = cid_prob_post(par, status);
+      status = cid_prob_post(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine posterior probability"
-              " for source %d.",
-              (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to determine posterior probability.",
+              (Status)status);
         continue;
       }
 
       // Compute PROB
-      status = cid_prob(par, status);
+      status = cid_prob(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine association probability"
-              " for source %d.",
-              (Status)status, iSrc+1);
+          Log(Error_2, "%d : Unable to determine association probability.",
+              (Status)status);
         continue;
       }
 
       // Sort counterpart candidates by decreasing probability
-      status = cid_sort(par, status);
+      status = cid_sort(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to sort counterpart candidates.",
@@ -621,11 +630,21 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
         continue;
       }
 
+      // Sum up probabilities (before thresholding)
+      src->cc_pid = 0.0;
+      src->cc_pc  = 0.0;
+      int n_sum = (src->numCC > 0) ? 1 : 0;
+//      int n_sum = (src->numCC > 0) ? src->numCC : 0;
+      for (int iCC = 0; iCC < n_sum; ++iCC) {
+        src->cc_pid += src->cc[iCC].prob;
+        src->cc_pc  += 1.0 - src->cc[iCC].prob;
+      }
+
       // Determine the number of counterpart candidates above the probability
       // threshold
       int numUseCC = 0;
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
-        if (m_cc[iCC].prob >= par->m_probThres)
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
+        if (src->cc[iCC].prob >= par->m_probThres)
           numUseCC++;
         else
           break;
@@ -635,27 +654,39 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
       if (numUseCC > par->m_maxNumCpt)
         numUseCC = par->m_maxNumCpt;
 
-      // Eliminate counterpart candidates below threshold. Fall through if no
-      // counterparts are left
-      m_numCC = numUseCC;
-      if (m_numCC < 1) {
+      // Eliminate counterpart candidates below threshold.
+      src->numCC = numUseCC;
+
+      // Fall through if no counterparts are left
+      if (src->numCC < 1) {
         if (par->logExplicit())
           Log(Log_2, "  Refine step candidates ..........: no");
         continue;
       }
 
+      // Sum up probabilities (after thresholding)
+      src->cc_pid_thr = 0.0;
+      src->cc_pc_thr  = 0.0;
+      n_sum = (src->numCC > 0) ? 1 : 0;
+//      n_sum = (src->numCC > 0) ? src->numCC : 0;
+      for (int iCC = 0; iCC < n_sum; ++iCC) {
+        src->cc_pid_thr += src->cc[iCC].prob;
+        src->cc_pc_thr  += 1.0 - src->cc[iCC].prob;
+      }
+
       // Set unique counterpart candidate identifier (overwrite former ID)
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
-        sprintf(cid, "CC_%5.5d_%5.5d", iSrc+1, iCC+1);
-        m_cc[iCC].id = cid;
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
+        sprintf(cid, "CC_%5.5d_%5.5d", src->iSrc+1, iCC+1);
+        src->cc[iCC].id = cid;
       }
 
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Refine step candidates ..........: %5d", m_numCC);
-        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", m_rho);
+        Log(Log_2, "  Refine step candidates ..........: %5d", src->numCC);
+        Log(Log_2, "    Expected real associations ....: %.1f", src->cc_pid);
+        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", src->rho);
         Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
-            m_ring_rad_min, m_ring_rad_max);
+            src->ring_rad_min, src->ring_rad_max);
     }
 
     } while (0); // End of main do-loop
@@ -675,7 +706,7 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
  * @brief Select counterparts
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer of source information.
  * @param[in] status Error status.
  *
  * Only the counterparts are retained that satisfy the specified selection
@@ -684,15 +715,14 @@ Status Catalogue::cid_refine(Parameters *par, int iSrc, Status status) {
  *
  * Requires catalogue information in FITS memory file.
  ******************************************************************************/
-Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_select(Parameters *par, SourceInfo *src, Status status) {
 
     // Declare local variables
     std::vector<std::string> col_id;
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_select (%d candidates)", 
-          m_numCC);
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_select (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -707,7 +737,7 @@ Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
         continue;
 
       // Select counterparts in memory
-      status = cfits_select(m_memFile, iSrc, par, status);
+      status = cfits_select(m_memFile, par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to select catalogue counterparts.",
@@ -728,16 +758,16 @@ Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
       // If list is empty then stop now
       int nSelected = (int)col_id.size();
       if (nSelected < 1) {
-        m_numCC = 0;
+        src->numCC = 0;
         continue;
       }
 
       // Collect all counterparts that survived
       int inx = 0;
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
         for (int i = 0; i < nSelected; ++i) {
-          if (m_cc[iCC].id == col_id[i]) {
-            m_cc[inx] = m_cc[iCC];
+          if (src->cc[iCC].id == col_id[i]) {
+            src->cc[inx] = src->cc[iCC];
             inx++;
           }
         }
@@ -753,7 +783,7 @@ Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
       }
 
       // Set number of remaining counterparts
-      m_numCC = nSelected;
+      src->numCC = nSelected;
 
     } while (0); // End of main do-loop
 
@@ -772,7 +802,7 @@ Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
  * @brief Calculate the counterpart probability based on position
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer of source information.
  * @param[in] status Error status.
  *
  * Computes the probability \b PROB_POS that the true source position is
@@ -811,12 +841,11 @@ Status Catalogue::cid_select(Parameters *par, int iSrc, Status status) {
  * CCElement::pos_err_min (uncertainty ellipse minor axis) \n
  * CCElement::pos_err_ang (uncertainty ellipse positron angle) \n
  ******************************************************************************/
-Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_pos (%d candidates)",
-          m_numCC);
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_pos (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -826,26 +855,23 @@ Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
-      // Get pointer to source object
-      ObjectInfo *src = &(m_src.object[iSrc]);
-
       // Fall through if no source position is available
-      if (!src->pos_valid)
+      if (!src->info->pos_valid)
         continue;
 
       // Calculate sin and cos of source declination
-      double dec         = src->pos_eq_dec * deg2rad;
+      double dec         = src->info->pos_eq_dec * deg2rad;
       double src_dec_sin = sin(dec);
       double src_dec_cos = cos(dec);
 
       // Loop over counterpart candidates
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Get index of candidate in counterpart catalogue
-        int iCpt = m_cc[iCC].index;
+        int iCpt = src->cc[iCC].index;
 
         // Get pointer to counterpart object
         ObjectInfo *cpt = &(m_cpt.object[iCpt]);
@@ -856,7 +882,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
 
         // Perform trigonometric operations to prepare angular separation
         // and position angle calculations
-        double ra_diff     = (cpt->pos_eq_ra - src->pos_eq_ra) * deg2rad;
+        double ra_diff     = (cpt->pos_eq_ra - src->info->pos_eq_ra) * deg2rad;
         double dec         = cpt->pos_eq_dec * deg2rad;
         double cpt_dec_sin = sin(dec);
         double cpt_dec_cos = cos(dec);
@@ -868,58 +894,58 @@ Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
         // degrees. Make sure that the separation is always comprised between
         // [0,180] (out of range arguments lead to a floating exception).
         if (arg <= -1.0)
-          m_cc[iCC].angsep = 180.0;
+          src->cc[iCC].angsep = 180.0;
         else if (arg >= 1.0)
-          m_cc[iCC].angsep = 0.0;
+          src->cc[iCC].angsep = 0.0;
         else
-          m_cc[iCC].angsep = acos(arg) * rad2deg;
+          src->cc[iCC].angsep = acos(arg) * rad2deg;
 
         // Calculate position angle, counterclockwise from celestial north
-        m_cc[iCC].posang = atan2(sin(ra_diff), src_dec_cos*cpt_dec_tan -
-                                 src_dec_sin*cos(ra_diff)) * rad2deg;
+        src->cc[iCC].posang = atan2(sin(ra_diff), src_dec_cos*cpt_dec_tan -
+                                    src_dec_sin*cos(ra_diff)) * rad2deg;
 
         // Calculate 95% source error ellipse
-        double angle     = (m_cc[iCC].posang - src->pos_err_ang) * deg2rad;
+        double angle     = (src->cc[iCC].posang - src->info->pos_err_ang) * deg2rad;
         double cos_angle = cos(angle);
         double sin_angle = sin(angle);
-        double a         = (src->pos_err_maj > 0.0) ? (cos_angle*cos_angle) /
-                           (src->pos_err_maj*src->pos_err_maj) : 0.0;
-        double b         = (src->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
-                           (src->pos_err_min*src->pos_err_min) : 0.0;
+        double a         = (src->info->pos_err_maj > 0.0) ? (cos_angle*cos_angle) /
+                           (src->info->pos_err_maj*src->info->pos_err_maj) : 0.0;
+        double b         = (src->info->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
+                           (src->info->pos_err_min*src->info->pos_err_min) : 0.0;
         arg              = a + b;
         double error2    = (arg > 0.0) ? 1.0/arg : 0.0;
 
         // Calculate counterpart probability from angular separation
         if (error2 > 0.0) {
-          double arg1        = m_cc[iCC].angsep / error2;
-          double arg2        = m_cc[iCC].angsep * arg1;
-          double expval      = exp(-dnorm * arg2);
-          m_cc[iCC].psi      = sqrt(error2);
-          m_cc[iCC].pdf_pos  = twodnorm * arg1 * expval;
-          m_cc[iCC].prob_pos = expval;
+          double arg1           = src->cc[iCC].angsep / error2;
+          double arg2           = src->cc[iCC].angsep * arg1;
+          double expval         = exp(-dnorm * arg2);
+          src->cc[iCC].psi      = sqrt(error2);
+          src->cc[iCC].pdf_pos  = twodnorm * arg1 * expval;
+          src->cc[iCC].prob_pos = expval;
         }
         else {
-          m_cc[iCC].psi      = 0.0;
-          m_cc[iCC].pdf_pos  = 0.0;
-          m_cc[iCC].prob_pos = 0.0;
+          src->cc[iCC].psi      = 0.0;
+          src->cc[iCC].pdf_pos  = 0.0;
+          src->cc[iCC].prob_pos = 0.0;
         }
 
         // Assign position and error ellipse
         // DUMMY: we assign the position and error ellipse of the partner
         //        that has the smaller positional uncertainty
-        if (cpt->pos_err_maj < src->pos_err_maj) {
-          m_cc[iCC].pos_eq_ra   = cpt->pos_eq_ra;
-          m_cc[iCC].pos_eq_dec  = cpt->pos_eq_dec;
-          m_cc[iCC].pos_err_maj = cpt->pos_err_maj;
-          m_cc[iCC].pos_err_min = cpt->pos_err_min;
-          m_cc[iCC].pos_err_ang = cpt->pos_err_ang;
+        if (cpt->pos_err_maj < src->info->pos_err_maj) {
+          src->cc[iCC].pos_eq_ra   = cpt->pos_eq_ra;
+          src->cc[iCC].pos_eq_dec  = cpt->pos_eq_dec;
+          src->cc[iCC].pos_err_maj = cpt->pos_err_maj;
+          src->cc[iCC].pos_err_min = cpt->pos_err_min;
+          src->cc[iCC].pos_err_ang = cpt->pos_err_ang;
         }
         else {
-          m_cc[iCC].pos_eq_ra   = src->pos_eq_ra;
-          m_cc[iCC].pos_eq_dec  = src->pos_eq_dec;
-          m_cc[iCC].pos_err_maj = src->pos_err_maj;
-          m_cc[iCC].pos_err_min = src->pos_err_min;
-          m_cc[iCC].pos_err_ang = src->pos_err_ang;
+          src->cc[iCC].pos_eq_ra   = src->info->pos_eq_ra;
+          src->cc[iCC].pos_eq_dec  = src->info->pos_eq_dec;
+          src->cc[iCC].pos_err_maj = src->info->pos_err_maj;
+          src->cc[iCC].pos_err_min = src->info->pos_err_min;
+          src->cc[iCC].pos_err_ang = src->info->pos_err_ang;
         }
 
       } // endfor: looped over counterpart candidates
@@ -941,7 +967,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
  * @brief Computes chance coincidence probability and probability density
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * Computes the chance coincidence probability \b PROB_CHANCE and the
@@ -961,12 +987,12 @@ Status Catalogue::cid_prob_pos(Parameters *par, int iSrc, Status status) {
  * CCElement::pdf_chance (chance coincidence probability density)\n
  * The method also updates the corresponding columns in the in-memory FITS file.
  ******************************************************************************/
-Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_chance (%d candidates)",
-          m_numCC);
+          src->numCC);
 
     // Single loop for common exit point
     do {
@@ -976,14 +1002,11 @@ Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
-      // Get pointer to source object
-      ObjectInfo *src = &(m_src.object[iSrc]);
-
       // Fall through if no source position is available
-      if (!src->pos_valid)
+      if (!src->info->pos_valid)
         continue;
 
       // Allocate vector columns for in-memory FITS file update
@@ -992,10 +1015,10 @@ Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
       std::vector<double> col_pdf_chance;
 
       // Compute chance coincidence probabilities for all sources
-      for (int iCC = 0; iCC < m_numCC; iCC++) {
+      for (int iCC = 0; iCC < src->numCC; iCC++) {
 
         // Get index of candidate in counterpart catalogue
-        int iCpt = m_cc[iCC].index;
+        int iCpt = src->cc[iCC].index;
 
         // Get pointer to counterpart object
         ObjectInfo *cpt = &(m_cpt.object[iCpt]);
@@ -1006,18 +1029,18 @@ Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
 
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
-        double r_div_r02 = m_cc[iCC].angsep * pi * m_rho;
-        m_cc[iCC].lambda = r_div_r02 * m_cc[iCC].angsep;
+        double r_div_r02    = src->cc[iCC].angsep * pi * src->rho;
+        src->cc[iCC].lambda = r_div_r02 * src->cc[iCC].angsep;
 
         // Compute chance coincidence probability
-        double exp_lambda     = exp(-m_cc[iCC].lambda);
-        m_cc[iCC].prob_chance = 1.0 - exp_lambda;
-        m_cc[iCC].pdf_chance  = 2.0 * r_div_r02 * exp_lambda;
+        double exp_lambda        = exp(-src->cc[iCC].lambda);
+        src->cc[iCC].prob_chance = 1.0 - exp_lambda;
+        src->cc[iCC].pdf_chance  = 2.0 * r_div_r02 * exp_lambda;
 
         // Add result to column vectors
-        col_lambda.push_back(m_cc[iCC].lambda);
-        col_prob_chance.push_back(m_cc[iCC].prob_chance);
-        col_pdf_chance.push_back(m_cc[iCC].pdf_chance);
+        col_lambda.push_back(src->cc[iCC].lambda);
+        col_prob_chance.push_back(src->cc[iCC].prob_chance);
+        col_pdf_chance.push_back(src->cc[iCC].pdf_chance);
 
       } // endfor: looped over all counterpart candidates
 
@@ -1052,6 +1075,7 @@ Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
  * @brief Compute prior probabilities for all counterpart candidates
  *
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * Computes \n
@@ -1063,12 +1087,11 @@ Status Catalogue::cid_prob_chance(Parameters *par, int iSrc, Status status) {
  *
  * Requires catalogue information in FITS memory file.
  ******************************************************************************/
-Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
+Status Catalogue::cid_prob_prior(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_prior (%d candidates)",
-          m_numCC);
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_prior (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1078,7 +1101,7 @@ Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Get column and formula
@@ -1109,7 +1132,7 @@ Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
       std::vector<double> col_prob_prior;
 
       // Set PROB_PRIOR information
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Get probability in the range [0,1]
         double p = prob_prior[iCC];
@@ -1117,10 +1140,10 @@ Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
         else if (p > 1.0) p = 1.0;
 
         // Save probability for each counterpart candidate
-        m_cc[iCC].prob_prior = p;
+        src->cc[iCC].prob_prior = p;
 
         // Add result to column vector
-        col_prob_prior.push_back(m_cc[iCC].prob_prior);
+        col_prob_prior.push_back(src->cc[iCC].prob_prior);
 
       } // endfor: looped over all counterpart candidates
 
@@ -1151,6 +1174,7 @@ Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
  * @brief Compute posterior probabilities
  *
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * @todo Improve zero counterpart density handling.
@@ -1166,12 +1190,12 @@ Status Catalogue::cid_prob_prior(Parameters *par, Status status) {
  *
  * The method updates the corresponding column in the in-memory FITS file.
  ******************************************************************************/
-Status Catalogue::cid_prob_post(Parameters *par, Status status) {
+Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_post (%d candidates)",
-          m_numCC);
+          src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1181,7 +1205,7 @@ Status Catalogue::cid_prob_post(Parameters *par, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Allocate vector columns for in-memory FITS file update
@@ -1189,23 +1213,23 @@ Status Catalogue::cid_prob_post(Parameters *par, Status status) {
       std::vector<double> col_prob_post;
 
       // Compute r0^2
-      double r02 = (m_rho > 0.0) ? 1.0 / (pi * m_rho) : m_ring_rad_max;
+      double r02 = (src->rho > 0.0) ? 1.0 / (pi * src->rho) : src->ring_rad_max;
 
       // Loop over all counterpart candidates
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Initialise results
-        m_cc[iCC].likrat    = 0.0;
-        m_cc[iCC].prob_post = 0.0;
+        src->cc[iCC].likrat    = 0.0;
+        src->cc[iCC].prob_post = 0.0;
 
         // Compute likelihood ratio. If Psi^2 > 2.996 r0^2 then the likelihood
         // ratio diverges. In this case we set LR = 0.
-        double psi2 = m_cc[iCC].psi * m_cc[iCC].psi;
+        double psi2 = src->cc[iCC].psi * src->cc[iCC].psi;
         if (psi2 > 0.0 && r02 > 0.0) {
           double scale = 2.996 / psi2 - 1.0 / r02;
           if (scale >= 0.0) {
-            double arg       = scale * m_cc[iCC].angsep * m_cc[iCC].angsep;
-            m_cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
+            double arg          = scale * src->cc[iCC].angsep * src->cc[iCC].angsep;
+            src->cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
           }
         }
 
@@ -1213,23 +1237,23 @@ Status Catalogue::cid_prob_post(Parameters *par, Status status) {
         // PROB_PRIOR >= 1 => PROB_POST = 1
         // PROB_PRIOR <= 0 => PROB_POST = 0
         // LR = 0          => PROB_POST = 0
-        if (m_cc[iCC].prob_prior >= 1.0)
-          m_cc[iCC].prob_post = 1.0;
-        else if (m_cc[iCC].prob_prior <= 0.0)
-          m_cc[iCC].prob_post = 0.0;
+        if (src->cc[iCC].prob_prior >= 1.0)
+          src->cc[iCC].prob_post = 1.0;
+        else if (src->cc[iCC].prob_prior <= 0.0)
+          src->cc[iCC].prob_post = 0.0;
         else {
-          if (m_cc[iCC].likrat > 0.0) {
-            double xi  = m_cc[iCC].prob_prior / (1.0 - m_cc[iCC].prob_prior);
-            double arg = xi * m_cc[iCC].likrat;
-            m_cc[iCC].prob_post = (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) : 0.0;
+          if (src->cc[iCC].likrat > 0.0) {
+            double eta = src->cc[iCC].prob_prior / (1.0 - src->cc[iCC].prob_prior);
+            double arg = eta * src->cc[iCC].likrat;
+            src->cc[iCC].prob_post = (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) : 0.0;
           }
           else
-            m_cc[iCC].prob_post = 0.0;
+            src->cc[iCC].prob_post = 0.0;
         }
 
         // Add results to column vectors
-        col_likrat.push_back(m_cc[iCC].likrat);
-        col_prob_post.push_back(m_cc[iCC].prob_post);
+        col_likrat.push_back(src->cc[iCC].likrat);
+        col_prob_post.push_back(src->cc[iCC].prob_post);
 
       } // endfor: looped over all counterpart candidates
 
@@ -1262,16 +1286,16 @@ Status Catalogue::cid_prob_post(Parameters *par, Status status) {
  * @brief Compute association probability
  *
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * Requires catalogue information in FITS memory file.
  ******************************************************************************/
-Status Catalogue::cid_prob(Parameters *par, Status status) {
+Status Catalogue::cid_prob(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob (%d candidates)",
-          m_numCC);
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1281,7 +1305,7 @@ Status Catalogue::cid_prob(Parameters *par, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Get column and formula
@@ -1312,7 +1336,7 @@ Status Catalogue::cid_prob(Parameters *par, Status status) {
       std::vector<double> col_prob;
 
       // Set PROB information
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Get probability in the range [0,1]
         double p = prob[iCC];
@@ -1320,10 +1344,10 @@ Status Catalogue::cid_prob(Parameters *par, Status status) {
         else if (p > 1.0) p = 1.0;
 
         // Save probability for each counterpart candidate
-        m_cc[iCC].prob = p;
+        src->cc[iCC].prob = p;
 
         // Add results to column vectors
-        col_prob.push_back(m_cc[iCC].prob);
+        col_prob.push_back(src->cc[iCC].prob);
 
       } // endfor: looped over all counterpart candidates
 
@@ -1354,7 +1378,7 @@ Status Catalogue::cid_prob(Parameters *par, Status status) {
  * @brief Compute local counterpart density at the position of a given source
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * Computes the local counterpart density at the position of a given source
@@ -1370,12 +1394,13 @@ Status Catalogue::cid_prob(Parameters *par, Status status) {
  * one. In this case the local counterpart density is to be considered as an
  * upper limit to the true counterpart density.
  ******************************************************************************/
-Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
+Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
+                                    Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_density_local (%d candidates)",
-          m_numCC);
+          src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1385,29 +1410,26 @@ Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
         continue;
 
       // Initialise local counterpart density
-      m_rho = 0.0;
+      src->rho = 0.0;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
-      // Get pointer to source object
-      ObjectInfo *src = &(m_src.object[iSrc]);
-
       // Fall through if no source position is available
-      if (!src->pos_valid)
+      if (!src->info->pos_valid)
         continue;
 
       // Compute solid angle of ring
-      double omega = twopi * (cos(m_ring_rad_min * deg2rad) -
-                              cos(m_ring_rad_max * deg2rad)) * rad2deg * rad2deg;
+      double omega = twopi * (cos(src->ring_rad_min * deg2rad) -
+                              cos(src->ring_rad_max * deg2rad)) * rad2deg * rad2deg;
 
       // Compute number of counterparts within acceptance ring
       int num = 0;
-      for (int iCC = 0; iCC < m_numCC; iCC++) {
+      for (int iCC = 0; iCC < src->numCC; iCC++) {
 
         // Get index of candidate in counterpart catalogue
-        int iCpt = m_cc[iCC].index;
+        int iCpt = src->cc[iCC].index;
 
         // Get pointer to counterpart object
         ObjectInfo *cpt = &(m_cpt.object[iCpt]);
@@ -1417,8 +1439,8 @@ Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
           continue;
 
         // Collect all sources in ring
-        if (m_cc[iCC].angsep >= m_ring_rad_min &&
-            m_cc[iCC].angsep <= m_ring_rad_max)
+        if (src->cc[iCC].angsep >= src->ring_rad_min &&
+            src->cc[iCC].angsep <= src->ring_rad_max)
           num++;
 
       } // endfor: looped over all counterpart candidates
@@ -1429,7 +1451,7 @@ Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
       if (num < 1) num = 1;
 
       // Compute local counterpart density
-      m_rho = (omega > 0.0) ? double(num) / omega : 0.0;
+      src->rho = (omega > 0.0) ? double(num) / omega : 0.0;
 
     } while (0); // End of main do-loop
 
@@ -1448,15 +1470,16 @@ Status Catalogue::cid_local_density(Parameters *par, int iSrc, Status status) {
  * @brief Compute global counterpart density
  *
  * @param[in] par Pointer to gtsrcid parameters.
- * @param[in] iSrc Index of source in catalogue (starting from 0).
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::cid_global_density(Parameters *par, Status status) {
+Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
+                                     Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_global_density (%d candidates)",
-          m_numCC);
+          src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1466,7 +1489,7 @@ Status Catalogue::cid_global_density(Parameters *par, Status status) {
         continue;
 
       // Compute global density
-      m_rho = double(m_cpt.numLoad) / 41252.961;
+      src->rho = double(m_cpt.numLoad) / 41252.961;
 
     } while (0); // End of main do-loop
 
@@ -1485,24 +1508,17 @@ Status Catalogue::cid_global_density(Parameters *par, Status status) {
  * @brief Sort counterpart candidates
  *
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
  * Sort by increasing probability and in case of equal probability) by 
  * decreasing angular separation
  ******************************************************************************/
-Status Catalogue::cid_sort(Parameters *par, Status status) {
-
-    // Declare local variables
-    long      iCC;
-    long      jCC;
-    long      imax;
-    double    max_prob;
-    double    min_sep;
-    CCElement swap;
+Status Catalogue::cid_sort(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_sort");
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_sort (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1512,36 +1528,36 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Sort counterpart candidats (dirty brute force method, to be replaced
       // by more efficient method if needed ...)
-      for (iCC = 0; iCC < m_numCC; iCC++) {
-        max_prob =   0.0;
-        min_sep  = 180.0;
-        imax     = iCC;
-        for (jCC = iCC; jCC < m_numCC; jCC++) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
+        double max_prob =   0.0;
+        double min_sep  = 180.0;
+        int    imax     = iCC;
+        for (int jCC = iCC; jCC < src->numCC; ++jCC) {
 
           // Check if we found a better candidate
-          if (m_cc[jCC].prob > max_prob) {        // Increasing probability
+          if (src->cc[jCC].prob > max_prob) {        // Increasing probability
             imax     = jCC;
-            max_prob = m_cc[jCC].prob;
-            min_sep  = m_cc[jCC].angsep;
+            max_prob = src->cc[jCC].prob;
+            min_sep  = src->cc[jCC].angsep;
           }
-          else if (m_cc[jCC].prob == max_prob) {  // Equal probability &
-            if (m_cc[jCC].angsep < min_sep) {     // decreasing separation
+          else if (src->cc[jCC].prob == max_prob) {  // Equal probability &
+            if (src->cc[jCC].angsep < min_sep) {     // decreasing separation
               imax     = jCC;
-              max_prob = m_cc[jCC].prob;
-              min_sep  = m_cc[jCC].angsep;
+              max_prob = src->cc[jCC].prob;
+              min_sep  = src->cc[jCC].angsep;
             }
           }
 
         }
         if (iCC != imax) {
-          swap       = m_cc[iCC];
-          m_cc[iCC]  = m_cc[imax];
-          m_cc[imax] = swap;
+          CCElement swap = src->cc[iCC];
+          src->cc[iCC]   = src->cc[imax];
+          src->cc[imax]  = swap;
         }
       }
 
@@ -1558,18 +1574,19 @@ Status Catalogue::cid_sort(Parameters *par, Status status) {
 
 
 /**************************************************************************//**
- * @brief Dump counterpart candidates that are actually in buffer
+ * @brief Dump counterpart candidates for source
  *
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::cid_dump(Parameters *par, Status status) {
+Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
 
     // Declare local variables
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_dump");
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_dump (%d candidates)", src->numCC);
 
     // Single loop for common exit point
     do {
@@ -1579,14 +1596,14 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Loop over counterpart candidates
-      for (int iCC = 0; iCC < m_numCC; ++iCC) {
+      for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Get index of candidate in counterpart catalogue
-        int iCpt = m_cc[iCC].index;
+        int iCpt = src->cc[iCC].index;
 
         // Get pointer to counterpart object
         ObjectInfo *cpt = &(m_cpt.object[iCpt]);
@@ -1595,8 +1612,10 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         if (par->logNormal()) {
           if (cpt->pos_valid) {
             Log(Log_2, "  Cpt%5d P=%3.0f%% S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
-                iCC+1, 
-                m_cc[iCC].prob*100.0, m_cc[iCC].angsep*60.0, m_cc[iCC].posang,
+                iCC+1,
+                src->cc[iCC].prob*100.0,
+                src->cc[iCC].angsep*60.0,
+                src->cc[iCC].posang,
                 cpt->name.c_str(),
                 cpt->pos_eq_ra, cpt->pos_eq_dec,
                 cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
@@ -1604,8 +1623,8 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
           else {
             Log(Log_2, "  Cpt%5d P=%3.0f%% .................: %20s"
                 " No position information found",
-                iCC+1, 
-                m_cc[iCC].prob*100.0,
+                iCC+1,
+                src->cc[iCC].prob*100.0,
                 cpt->name.c_str());
           }
         }
@@ -1614,22 +1633,22 @@ Status Catalogue::cid_dump(Parameters *par, Status status) {
         if (par->logVerbose()) {
           if (cpt->pos_valid) {
             Log(Log_2, "    Angular separation ............: %7.3f arcmin",
-                m_cc[iCC].angsep*60.0);
+                src->cc[iCC].angsep*60.0);
             Log(Log_2, "    Effective 95%% error radius ....: %7.3f arcmin",
-                m_cc[iCC].psi*60.0);
+                src->cc[iCC].psi*60.0);
             Log(Log_2, "    Angular separation probability : %7.3f %%"
                 " (dP/dr=%11.4e)",
-                m_cc[iCC].prob_pos*100.0, m_cc[iCC].pdf_pos);
+                src->cc[iCC].prob_pos*100.0, src->cc[iCC].pdf_pos);
             Log(Log_2, "    Chance coincidence probability : %7.3f %%"
                 " (dP/dr=%11.4e, lambda=%.3f)",
-                m_cc[iCC].prob_chance*100.0, m_cc[iCC].pdf_chance,
-                m_cc[iCC].lambda);
+                src->cc[iCC].prob_chance*100.0, src->cc[iCC].pdf_chance,
+                src->cc[iCC].lambda);
             Log(Log_2, "    Prior association probability .: %7.3f %%",
-                m_cc[iCC].prob_prior*100.0);
+                src->cc[iCC].prob_prior*100.0);
             Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
-                m_cc[iCC].prob_post*100.0);
+                src->cc[iCC].prob_post*100.0);
             Log(Log_2, "    Likelihood ratio ..............: %.3f",
-                m_cc[iCC].likrat);
+                src->cc[iCC].likrat);
           }
         }
 

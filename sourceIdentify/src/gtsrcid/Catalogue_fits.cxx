@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.19  2008/03/26 16:46:58  jurgen
+add more information to FITS file header
+
 Revision 1.18  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -923,11 +926,11 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
  * @brief Add counterpart candidates to FITS file
  *
  * @param[in] fptr Pointer to FITS file.
- * @param[in] iSrc Number of source for which counterparts are added (0,1,...).
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
+Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
                             Status status) {
 
     // Declare local variables
@@ -969,7 +972,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (m_numCC < 1)
+      if (src->numCC < 1)
         continue;
 
       // Determine number of rows in actual table
@@ -984,7 +987,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
       // Define the rows that should be inserted
       firstrow = (long)nactrows;
       frow     = firstrow + 1;
-      nrows    = (long)m_numCC;
+      nrows    = (long)src->numCC;
 
       // Insert rows for the new counterpart candidates
       fstatus = fits_insert_rows(fptr, firstrow, nrows, &fstatus);
@@ -1019,7 +1022,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add unique counterpart identifier
       for (row = 0; row < nrows; row++)
-        sprintf(cptr[row], "%s", m_cc[row].id.c_str());
+        sprintf(cptr[row], "%s", src->cc[row].id.c_str());
       fstatus = fits_write_col_str(fptr, OUTCAT_COL_ID_COLNUM, 
                                    frow, 1, nrows, cptr, &fstatus);
       if (fstatus != 0) {
@@ -1031,7 +1034,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add Counterpart Right Ascention
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pos_eq_ra;
+        dptr[row] = src->cc[row].pos_eq_ra;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_RA_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1043,7 +1046,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add Counterpart Declination
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pos_eq_dec;
+        dptr[row] = src->cc[row].pos_eq_dec;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_DEC_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1055,7 +1058,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add Counterpart Error Ellipse Major Axis
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pos_err_maj;
+        dptr[row] = src->cc[row].pos_err_maj;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_MAJERR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1067,7 +1070,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add Counterpart Error Ellipse Minor Axis
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pos_err_min;
+        dptr[row] = src->cc[row].pos_err_min;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_MINERR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1079,7 +1082,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add Counterpart Error Ellipse Position Angle
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pos_err_ang;
+        dptr[row] = src->cc[row].pos_err_ang;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_POSANGLE_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1091,7 +1094,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PROB
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob;
+        dptr[row] = src->cc[row].prob;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1103,7 +1106,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PROB_POS
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob_pos;
+        dptr[row] = src->cc[row].prob_pos;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POS_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1115,7 +1118,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PDF_POS
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pdf_pos;
+        dptr[row] = src->cc[row].pdf_pos;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PDF_POS_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1127,7 +1130,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PROB_CHANCE
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob_chance;
+        dptr[row] = src->cc[row].prob_chance;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_CHANCE_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1139,7 +1142,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PDF_CHANCE
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].pdf_chance;
+        dptr[row] = src->cc[row].pdf_chance;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PDF_CHANCE_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1152,7 +1155,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PROB_PRIOR
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob_prior;
+        dptr[row] = src->cc[row].prob_prior;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_PRIOR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1164,7 +1167,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add PROB_POST
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].prob_post;
+        dptr[row] = src->cc[row].prob_post;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POST_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1176,7 +1179,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add likelihood ratio
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].likrat;
+        dptr[row] = src->cc[row].likrat;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_LR_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1188,7 +1191,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add angular separation
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].angsep;
+        dptr[row] = src->cc[row].angsep;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_ANGSEP_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1200,7 +1203,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add effective error ellipse radius
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].psi;
+        dptr[row] = src->cc[row].psi;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PSI_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1212,7 +1215,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add position angle
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].posang;
+        dptr[row] = src->cc[row].posang;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_POSANG_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1224,7 +1227,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add local counterpart density
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_rho;
+        dptr[row] = src->rho;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_RHO_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1236,7 +1239,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add expected number of chance coincidences
       for (row = 0; row < nrows; row++)
-        dptr[row] = m_cc[row].lambda;
+        dptr[row] = src->cc[row].lambda;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_LAMBDA_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1248,7 +1251,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
       // Add reference
       for (row = 0; row < nrows; row++)
-        lptr[row] = m_cc[row].index;
+        lptr[row] = src->cc[row].index;
       fstatus = fits_write_col(fptr, TLONG, OUTCAT_COL_REF_COLNUM,
                                frow, 1, nrows, lptr, &fstatus);
       if (fstatus != 0) {
@@ -1268,7 +1271,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
         // Add numerical quantities
         if (form.find("E", 0) != std::string::npos) {
-          m_src.cat.getNValue(name, iSrc, &NValue);
+          m_src.cat.getNValue(name, src->iSrc, &NValue);
           for (row = 0; row < nrows; row++)
             dptr[row] = NValue;
           fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows,
@@ -1284,7 +1287,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
 
         // Add string quantities
         if (form.find("A", 0) != std::string::npos) {
-          m_src.cat.getSValue(name, iSrc, &SValue);
+          m_src.cat.getSValue(name, src->iSrc, &SValue);
           for (row = 0; row < nrows; row++)
             sprintf(cptr[row], "%s", SValue.c_str());
           fstatus = fits_write_col_str(fptr, colnum, frow, 1, nrows, cptr,
@@ -1313,7 +1316,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
         // Add numerical quantities
         if (form.find("E", 0) != std::string::npos) {
           for (row = 0; row < nrows; row++) {
-            iCpt = m_cc[row].index;
+            iCpt = src->cc[row].index;
             m_cpt.cat.getNValue(name, iCpt, &NValue);
             dptr[row] = NValue;
           }
@@ -1331,7 +1334,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, int iSrc, Parameters *par,
         // Add string quantities
         if (form.find("A", 0) != std::string::npos) {
           for (row = 0; row < nrows; row++) {
-            iCpt = m_cc[row].index;
+            iCpt = src->cc[row].index;
             m_cpt.cat.getSValue(name, iCpt, &SValue);
             sprintf(cptr[row], "%s", SValue.c_str());
           }
@@ -1901,14 +1904,14 @@ Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par,
  * @brief Select catalogue entries
  *
  * @param[in] fptr Pointer to FITS file.
- * @param[in] iSrc Index of source for which selection is applied.
  * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer of source information.
  * @param[in] status Error status.
  *
  * Performs table row selection for one specific catalogue source. The result
  * of the selection process is stored in the m_cpt_stat table.
  ******************************************************************************/
-Status Catalogue::cfits_select(fitsfile *fptr, int iSrc, Parameters *par,
+Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, SourceInfo *src,
                                Status status) {
 
     // Declare local variables
@@ -1977,7 +1980,7 @@ Status Catalogue::cfits_select(fitsfile *fptr, int iSrc, Parameters *par,
         }
 
         // Store number of counterparts after selection
-        m_cpt_stat[iSrc*(m_num_Sel+1) + iSel+1] = numAfter;
+        m_cpt_stat[src->iSrc*(m_num_Sel+1) + iSel+1] = numAfter;
 
         // Dump selection information
         if (par->logExplicit()) {

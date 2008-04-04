@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.33  2008/03/26 16:46:58  jurgen
+add more information to FITS file header
+
 Revision 1.32  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -803,19 +806,18 @@ void Catalogue::init_memory(void) {
       m_memFile       = NULL;
       m_outFile       = NULL;
 
-      // Initialise counterpart candidate working arrays
-      m_numCC         = 0;
-      m_cc            = NULL;
-      m_filter_rad    = 0.0;
-      m_ring_rad_min  = 0.0;
-      m_ring_rad_max  = 0.0;
-      m_omega         = 0.0;
-      m_rho           = 0.0;
+      // Initialise source information
+      m_info          = NULL;
 
       // Initialise counterpart statistics
-      m_num_Sel   = 0;
-      m_cpt_stat  = NULL;
-      m_num_assoc = 0;
+      m_num_Sel      = 0;
+      m_cpt_stat     = NULL;
+      m_num_assoc    = 0;
+//      m_num_id       = 0.0;
+      m_sum_pid      = 0.0;
+      m_sum_pid_thr  = 0.0;
+      m_sum_pc       = 0.0;
+      m_sum_pc_thr   = 0.0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -839,10 +841,17 @@ void Catalogue::free_memory(void) {
     // Single loop for common exit point
     do {
 
+      // Free source information
+      if (m_info != NULL) {
+        for (int i = 0; i < m_src.numLoad; ++i) {
+          if (m_info[i].cc != NULL) delete [] m_info[i].cc;
+        }
+        delete [] m_info;
+      }
+
       // Free temporary memory
       if (m_src.object != NULL) delete [] m_src.object;
       if (m_cpt.object != NULL) delete [] m_cpt.object;
-      if (m_cc         != NULL) delete [] m_cc;
       if (m_cpt_stat   != NULL) delete [] m_cpt_stat;
 
       // Initialise memory
@@ -1286,7 +1295,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         sprintf(add, " Sel%2.2d", iSel+1);
         strcat(select, add);
       }
-      sprintf(add, " Refine", iSel+1);
+      sprintf(add, " Refine");
       strcat(select, add);
 
       // Dump header
@@ -1318,19 +1327,32 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 
       } // endfor: looped over all sources
 
+      // Compute reliability and completeness
+      double n_id       = m_sum_pid;
+      double n_true     = m_sum_pid_thr;
+      double n_missed   = n_id - n_true;
+      double n_spurious = m_sum_pc_thr;
+      double n_claimed  = double(n_src_assoc);
+      double r          = (n_claimed > 0.0) ? 1.0 - n_spurious / n_claimed : 0.0;
+      double c          = (n_id > 0.0) ? n_true/n_id : 0.0;
 
       // Dump summary
       Log(Log_2, "");
       Log(Log_2, "Counterpart association summary:");
       Log(Log_2, "================================");
       Log(Log_2, " Number of sources ................: %10d", m_src.numLoad);
-      Log(Log_2, " Number of associated sources .....: %10d", n_src_assoc);
       Log(Log_2, " Number of associations ...........: %10d", m_num_assoc);
-      //Log(Log_2, " Estimated number false assoc's ...: %10d", n_false);
-      //Log(Log_2, " Counterparts within 95%% ellipses .: %10d", m_num_ellipse);
-      //Log(Log_2, "   Expected chance counterparts ...: %10.3f"
-      //           " (%.2f%% of all counterparts within 95%% ellipses)",
-      //           m_tot_lambda, f_false*100.0);
+      Log(Log_2, " Number of claimed associations ...: %10d", int(n_claimed));
+      Log(Log_2, " Expected number of associations ..: %10.1f", n_id);
+      Log(Log_2, " Expected number of true ass. .....: %10.1f", n_true);
+      Log(Log_2, " Expected number of spurious ass. .: %10.1f", n_spurious);
+      Log(Log_2, " Expected number of missed ass. ...: %10.1f", n_missed);
+      Log(Log_2, " Reliability of identifications ...: %10.3f %%", r*100.0);
+      Log(Log_2, " Completeness of identifications ..: %10.3f %%", c*100.0);
+      //Log(Log_2, " m_sum_pid ........................: %10.3f", m_sum_pid);
+      //Log(Log_2, " m_sum_pid_thr ....................: %10.3f", m_sum_pid_thr);
+      //Log(Log_2, " m_sum_pc .........................: %10.3f", m_sum_pc);
+      //Log(Log_2, " m_sum_pc_thr .....................: %10.3f", m_sum_pc_thr);
 
     } while (0); // End of main do-loop
 
@@ -1407,9 +1429,6 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  * \endverbatim
  ******************************************************************************/
 Status Catalogue::build(Parameters *par, Status status) {
-
-    // Declare local variables
-    long iSrc;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1496,6 +1515,32 @@ Status Catalogue::build(Parameters *par, Status status) {
           Log(Log_2, " Source catalogue contains %d sources.", m_src.numLoad);
       }
 
+      // Allocate source information
+      m_info = new SourceInfo[m_src.numLoad];
+      if (m_info == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+
+      // Initialise source information
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
+        m_info[iSrc].iSrc         = iSrc;
+        m_info[iSrc].info         = &(m_src.object[iSrc]);
+        m_info[iSrc].numCC        = 0;
+        m_info[iSrc].cc           = NULL;
+        m_info[iSrc].filter_rad   = 0.0;
+        m_info[iSrc].ring_rad_min = 0.0;
+        m_info[iSrc].ring_rad_max = 0.0;
+        m_info[iSrc].omega        = 0.0;
+        m_info[iSrc].rho          = 0.0;
+        m_info[iSrc].cc_pid       = 0.0;
+        m_info[iSrc].cc_pc        = 0.0;
+        m_info[iSrc].cc_pid_thr   = 0.0;
+        m_info[iSrc].cc_pc_thr    = 0.0;
+      }
+
       // Determine number of quantity selection criteria
       m_num_Sel = par->m_select.size();
 
@@ -1517,18 +1562,24 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Loop over all sources
-      for (iSrc = 0; iSrc < m_src.numLoad; iSrc++) {
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
 
         // Get counterpart candidates for the source
-        status = cid_get(par, iSrc, status);
+        status = cid_get(par, &(m_info[iSrc]), status);
         if (status != STATUS_OK)
           break;
 
+        // Sum partial probability sums
+        m_sum_pid     += m_info[iSrc].cc_pid;
+        m_sum_pid_thr += m_info[iSrc].cc_pid_thr;
+        m_sum_pc      += m_info[iSrc].cc_pc;
+        m_sum_pc_thr  += m_info[iSrc].cc_pc_thr;
+
         // Store the number of counterpart candidates
-        m_src_cpts[iSrc] = m_numCC;
+        m_src_cpts[iSrc] = m_info[iSrc].numCC;
 
         // Sum the total number of associations
-        m_num_assoc += m_numCC;
+        m_num_assoc += m_info[iSrc].numCC;
 
       } // endfor: looped over all sources
       if (status != STATUS_OK)
