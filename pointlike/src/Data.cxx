@@ -583,7 +583,7 @@ void Data::setHistoryFile(const std::string& history)
     s_history = new astro::PointingHistory(history);
 }
 
-const std::string Data::historyfile() {
+const std::string& Data::historyfile() {
     return s_ft2file;
 }
 

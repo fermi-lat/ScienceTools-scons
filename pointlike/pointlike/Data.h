@@ -95,7 +95,7 @@ public:
     static CLHEP::HepRotation set_rot(double arcsecx, double arcsecy, double arcsecz);
     static void set_rot(std::vector<double> align);
     static const CLHEP::HepRotation& get_rot();
-    static const std::string historyfile();
+    static const std::string& historyfile();
     static const astro::PointingInfo& get_pointing(double time);
     static bool inTimeRange(double time);
 
