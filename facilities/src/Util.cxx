@@ -68,13 +68,13 @@ namespace facilities {
   int Util::expandEnvVarList(std::vector<std::string> toExpand,
                              std::vector<std::string> &result,
                              const std::string &delimiters) {
-
+   int num=0;
    try {
        std::vector<std::string>::const_iterator listIt, listIt2;
        // iterate over the elements in the vector of strings
        for (listIt = toExpand.begin(); listIt != toExpand.end(); listIt++) {
            std::string tempStr = *listIt;
-           int num = expandEnvVar(&tempStr);
+           num = expandEnvVar(&tempStr);
            std::vector<std::string> tempList;
            // find all the individual strings
            stringTokenize(tempStr, delimiters, tempList);
@@ -87,6 +87,7 @@ namespace facilities {
    } catch(...) {
        throw;
    }
+   return num;
    }
 
   const char* Util::itoa(int val, std::string &outStr) {

@@ -6,7 +6,7 @@
             **EOH**
 
   v2r18    02-Apr-2008 hmk add method to expand env variables in a vector of 
-           strings
+           strings facilties::Util::expandEnvVarList
   v2r17p2  25-Jan-2008 panetta Fix stringToUll and stringToUnsigned to allow hex input
   v2r17    18-Jan-2008 hmk add stringToUll
   v2r16p20 12-Nov-2007 jrb Patch for Windows compile. 
