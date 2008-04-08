@@ -44,5 +44,6 @@
                               methods to compute phase rationally rather than doing it by hand.
     v6r0p2  13-nov-07   MH    Improve mainpage.h and prompts in gtpphase.par and gtophase.par.
     v6r0p3  29-jan-08   JP    Add pfiles installation to SConscript.
+      v6r1  08-apr-08   JP    Internal change (removed pulsarDb::TimingModel).
     @endverbatim
 */
