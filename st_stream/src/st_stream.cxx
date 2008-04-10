@@ -5,16 +5,29 @@
 #include <limits>
 #include "st_stream/st_stream.h"
 
+namespace {
+
+  bool & GetNonConstDebugMode() {
+    // Global debug mode flag.
+    static bool s_debug_mode = false;
+    return s_debug_mode;
+  }
+
+  std::string & GetNonConstExecName() {
+    // Name of the current executable.
+    static std::string s_exec_name;
+    return s_exec_name;
+  }
+
+  unsigned int & GetNonConstMaxChat() {
+    // Global chatter maximum.
+    static unsigned int s_global_max_chat = std::numeric_limits<unsigned int>::max();
+    return s_global_max_chat;
+  }
+
+}
+
 namespace st_stream {
-
-  // Global debug mode flag.
-  static bool s_debug_mode = false;
-
-  // Name of the current executable.
-  static std::string s_exec_name;
-
-  // Global chatter maximum.
-  static unsigned int s_global_max_chat = std::numeric_limits<unsigned int>::max();
 
   void InitStdStreams(const std::string & exec_name, unsigned int max_chat, bool debug_mode) {
     // Perform initialization only once.
@@ -25,35 +38,35 @@ namespace st_stream {
       OStream::initStdStreams();
 
       // Set global parameters affecting stream output.
-      s_debug_mode = debug_mode;
-      s_exec_name = exec_name;
-      s_global_max_chat = max_chat;
+      GetNonConstDebugMode() = debug_mode;
+      GetNonConstExecName() = exec_name;
+      GetNonConstMaxChat() = max_chat;
       s_init_done = true;
     }
   }
 
   bool GetDebugMode() {
-    return s_debug_mode;
+    return GetNonConstDebugMode();
   }
 
   const std::string & GetExecName() {
-    return s_exec_name;
+    return GetNonConstExecName();
   }
 
   unsigned int GetMaximumChatter() {
-    return s_global_max_chat;
+    return GetNonConstMaxChat();
   }
 
   void SetDebugMode(bool debug_mode) {
-    s_debug_mode = debug_mode;
+    GetNonConstDebugMode() = debug_mode;
   }
 
   void SetExecName(const std::string & exec_name) {
-    s_exec_name = exec_name;
+    GetNonConstExecName() = exec_name;
   }
 
   void SetMaximumChatter(unsigned int max_chat) {
-    s_global_max_chat = max_chat;
+    GetNonConstMaxChat() = max_chat;
   }
 
 }
