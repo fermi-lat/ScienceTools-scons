@@ -120,7 +120,7 @@ namespace tip {
     void * value = 0;
     int bool_value = FitsPrimProps<char>::undefined();
     switch (type_code) {
-      case TSTRING: value = &FitsPrimProps<char *>::undefined(); break;
+      case TSTRING: value = FitsPrimProps<char *>::undefined(); break;
       case TLOGICAL: type_code = TBYTE; value = &bool_value; break; // Fitsio expects a 4 byte int, but value needs to be correct for bool undef.
       case TBYTE: value = &FitsPrimProps<char>::undefined(); break;
       case TSHORT: value = &FitsPrimProps<short>::undefined(); break;

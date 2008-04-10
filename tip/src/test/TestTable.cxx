@@ -692,6 +692,15 @@ namespace tip {
         ReportUnexpected(msg + " failed", x);
       }
 
+      msg = "appending string field to FITS table";
+      try {
+        m_fits_table->appendField("new_str", "A16");
+        ReportExpected(msg + " succeeded");
+      } catch (const TipException & x) {
+        ReportUnexpected(msg + " failed", x);
+      }
+      
+
       // Error case:
       msg = "appending field which already exists to FITS table";
       try {
