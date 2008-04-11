@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v3r9p1 10-Apr-08   JC   correct data/pass5_cuts: OBFGamStatus->ObfGamStatus
     v3r9   13-Mar-08   JC   add columns for quaternions (for Andrea's ft2Util); 
                             add Ft2File::setScAxes(...) to set the quaternion
                             values as well as scz and scx values; updated 
