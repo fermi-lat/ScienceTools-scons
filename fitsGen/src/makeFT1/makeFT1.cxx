@@ -128,7 +128,7 @@ namespace {
          if (std::find(validFields.begin(), validFields.end(), 
                        candidate) == validFields.end()) {
             ft1.appendField(ft1_entry->first, ft1_entry->second.ft1Type());
-            ft1_entry->second.write_TLMIN_TLMAX(ft1);
+//            ft1_entry->second.write_TLMIN_TLMAX(ft1);
          }
       }
    }
