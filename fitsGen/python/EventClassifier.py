@@ -14,8 +14,8 @@ class.
 
 class EventClassifier(object):
     def __init__(self, eventClassCuts):
-        self.event_classes = [cut.replace('&&', 'and') for cut
-                              in eventClassCuts]
+        self.event_classes = [cut.replace('&&', 'and').replace('||', 'or')
+                              for cut in eventClassCuts]
     def __call__(self, row):
         for key in row:
             exec("%s = row['%s']" % (key, key))

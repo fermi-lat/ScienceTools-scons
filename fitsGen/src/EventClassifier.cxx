@@ -61,7 +61,7 @@ long EventClassifier::value() const {
 }
 
 std::string EventClassifier::pythonPath() const {
-   std::string root_path = facilities::commonUtilities::getPackagePath("fitsGen");
+   std::string root_path(facilities::commonUtilities::getPackagePath("fitsGen"));
    if (root_path == "") {
       throw std::runtime_error("Unable to determine path to fitsGen");
    }

@@ -187,10 +187,12 @@ void MakeFt1::run() {
 
    std::string dataDir(facilities::commonUtilities::getDataPath("fitsGen"));
 
-   if (defaultFilter == "DEFAULT") {
-      defaultFilter = facilities::commonUtilities::joinPath(dataDir,
-							    "pass5_cuts");
-   }
+// Disable the default, forcing user to supply a set of cuts [s]he is 
+// responsible for understanding.
+//    if (defaultFilter == "DEFAULT") {
+//       defaultFilter = facilities::commonUtilities::joinPath(dataDir,
+// 							    "pass5_cuts");
+//    }
    std::string filter;
    if (!st_facilities::Util::fileExists(defaultFilter)) {
       filter = defaultFilter;
