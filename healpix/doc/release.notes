@@ -6,7 +6,8 @@
 $Id$
 
 @verbatim
-   v1r3   THB switch FITS coordinate system keyword to COORDSYS
+   v1r4   THB 14-apr-08 enhance HealPixel to encode an energy band identifier
+   v1r3   THB           switch FITS coordinate system keyword to COORDSYS
    v1r2p1 THB 19-feb-08 manage header info properly
    v1r1p2  JC 18-jan-08 added include for linux build in Map.h
    v1r1p1 THB 16-jan-08 Switch default coord system to equatorial
