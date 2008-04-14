@@ -117,7 +117,9 @@ namespace {
 
             // todo: combine elements with vanishing t
             m_vec2.push_back(std::make_pair(q, x.second) );
+#ifdef    UMAXCUT
             if(m_first) m_vec4.push_back(x.first.index());
+#endif
         }
         double average_f()const {return m_count>0? m_sum/m_count : -1.;}
         double average_u()const {return m_count>0? m_sumu/m_count : -1;}
