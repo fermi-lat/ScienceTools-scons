@@ -13,15 +13,40 @@ using namespace healpix;
 
 astro::SkyDir::CoordSystem healpix::HealPixel::s_coordsys = astro::SkyDir::GALACTIC;
 
-HealPixel::HealPixel(long index, int level)
+HealPixel::HealPixel(unsigned long index, unsigned int lev)
 : m_index(index)
-, m_level(level)
+, m_data( (lev<<8) )
 {
+    if( level()<1 || level() >13 ){
+        throw std::invalid_argument("HealPixel::setup -- illegal HEALpix level");
+    }
+}
+HealPixel::HealPixel(unsigned long index, unsigned int lev, unsigned int band)
+: m_index(index)
+, m_data( (lev<<8) | (band&255) )
+{
+    if( level()<1 || level() >13 ){
+        throw std::invalid_argument("HealPixel::setup -- illegal HEALpix level");
+    }
 }
 
-HealPixel::HealPixel(const astro::SkyDir& dir, int level)
-:m_level(level)
+HealPixel::HealPixel(const astro::SkyDir& dir, unsigned int level)
+:m_data(level<<8)
 {
+    setup(dir);
+}
+
+HealPixel::HealPixel(const astro::SkyDir& dir, unsigned int level, unsigned int band)
+:m_data(level<<8 | (band&255) )
+{
+    setup(dir);
+}
+
+void HealPixel::setup(const astro::SkyDir& dir)
+{
+    if( level()<1 || level() >13 ){
+        throw std::invalid_argument("HealPixel::setup -- illegal HEALpix level");
+    }
     healpix::Healpix hp( nside(), healpix::Healpix::NESTED, s_coordsys);
 
     // get theta, phi (radians) in appropriate coordinate system
@@ -53,17 +78,17 @@ HealPixel::operator astro::SkyDir()const
 long HealPixel::lastChildIndex(int childLevel) const
 {
     int leveldiff = childLevel - level();
-    
+
     if (leveldiff < 0)
         throw std::runtime_error("Level for children cannot be less than my level.");
-        
+
     return ((index() + 1) << (leveldiff * 2)) - 1;
 }
 
 
 bool HealPixel::operator<(const HealPixel& other)const
 {
-    int leveldiff = level()-other.level();
+    int leveldiff = data()-other.data();
     if( leveldiff==0 ) return index() < other.index();
     if( leveldiff<0 ) {
         // my level is less: I follow if equal
@@ -76,12 +101,12 @@ bool HealPixel::operator<(const HealPixel& other)const
 
 bool HealPixel::operator==(const HealPixel& other)const
 {
-    return level() == other.level() && index() == other.index();
+    return data() == other.data() && index() == other.index();
 }
 
 bool HealPixel::operator!=(const HealPixel& other)const
 {
-    return level() != other.level() || index() != other.index();
+    return data() != other.data() || index() != other.index();
 }
 
 bool HealPixel::operator<=(const HealPixel& other)const
@@ -98,14 +123,14 @@ std::vector<HealPixel> HealPixel::neighbors() const
     for (std::vector<long>::const_iterator i = neighbors.begin();
         i !=neighbors.end(); ++i)
     {
-        p.push_back( HealPixel(*i, level()));
+        p.push_back( HealPixel(*i, data()));
     }
     return p;
 }
 
 void HealPixel::setCoordinateSystem(astro::SkyDir::CoordSystem sys)
 {
-            s_coordsys=sys;
+    s_coordsys=sys;
 }
 
 bool HealPixel::test()
