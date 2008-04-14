@@ -161,7 +161,6 @@ private:
     const std::vector<std::pair<healpix::HealPixel,int> >& m_vec;
     //! simplified set with function or distances from m_dir 
     std::vector<std::pair<double, int> > m_vec2;  //stores <log-like,nphotons>
-    std::vector<double> m_vec3; //storage of u values for fast Likelihood recalculation
     std::vector<int> m_vec4; //stores subset healpix indices
     double m_averageF;
     skymaps::PsfFunction m_psf;

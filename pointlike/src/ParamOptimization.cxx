@@ -80,14 +80,15 @@ void ParamOptimization::compute(ParamOptimization::Param p) {
         for(std::vector<PointSourceLikelihood*>::iterator it = m_likes.begin();it!=m_likes.end();++it) {
             PointSourceLikelihood::iterator ite = (*it)->find(iter);
             if(ite->second->photons()>0) {
-                double curv = sigma?ite->second->kcurvature(maxfactor)/2:ite->second->gcurvature(maxfactor)/2;
+                double t_sa=ite->second->sigma_alpha();
+                t_curvature+=1/(t_sa*t_sa);
                 t_photons += ite->second->photons();
-                t_alpha += ite->second->alpha()*ite->second->photons();
+                t_alpha += ite->second->alpha()/(t_sa*t_sa);
             }
         }
         *m_out << std::left << std::setw(10) << 
             iter << std::setw(15) << (maxfactor>0?osigma*maxfactor:-1) << 
-            std::setw(15) << curvature(sigma,iter,osigma*maxfactor) << std::setw(10) << maxfactor << std::setw(15) << t_alpha/t_photons <<
+            std::setw(15) << (t_photons>0?curvature(sigma,iter,osigma*maxfactor):-1) << std::setw(10) << maxfactor << std::setw(15) << (t_photons>0?t_alpha/t_curvature:-1) <<
             std::setw(10) << t_photons << std::endl;
 #if 0
 
@@ -210,5 +211,6 @@ double ParamOptimization::curvature(bool sigma,int level,double val)
     Cv = Cv.Invert(err);
     TMatrixD Cf(3,1);
     Cf = Cv*At*b;
-    return 1/sqrt(Cf[0][0]);
+    double curv = Cf[0][0];
+    return 1/sqrt(curv);
 }
