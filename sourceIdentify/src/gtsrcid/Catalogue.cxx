@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.34  2008/04/04 14:55:52  jurgen
+Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
+
 Revision 1.33  2008/03/26 16:46:58  jurgen
 add more information to FITS file header
 
@@ -800,14 +803,12 @@ void Catalogue::init_memory(void) {
       m_cpt.col_e_maj.clear();
       m_cpt.col_e_min.clear();
 
-      // Intialise catalogue building parameters
-      m_maxCptLoad    = c_maxCptLoad;
-      m_fCptLoaded    = 0;
-      m_memFile       = NULL;
-      m_outFile       = NULL;
+      // Intialise catalogue FITS files
+      m_memFile = NULL;
+      m_outFile = NULL;
 
       // Initialise source information
-      m_info          = NULL;
+      m_info = NULL;
 
       // Initialise counterpart statistics
       m_num_Sel      = 0;
@@ -1250,6 +1251,378 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
 
 
 /**************************************************************************//**
+ * @brief Compute catalogue association posterior probability.
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * To perform fast computation a sparse matrix is setup that hold the 
+ * probabilities Pik'(H1|D). The rows of the matrix correspond to the NLAT
+ * sources k. The columns of the matrix correspond to the Ncpt counterparts i.
+ * The sparse matrix is stored in compressed sparse column format. The
+ * following arrays are temporarily allocated to hold the sparse matrix
+ * information:
+ * tmp_prob   : holds all elements that are < 1, in column order
+ * tmp_istart : holds the index of the first element of each column
+ * tmp_k      : holds the row indices for each element.
+ * Products over k (the LAT source indices) are quickly done by multiplication
+ * over a column.
+ ******************************************************************************/
+Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
+
+    // Temporary memory pointer
+    double* tmp_prob   = NULL;  // Sparse matrix elements
+    double* tmp_sum    = NULL;  // Normalization sum
+    int*    tmp_k      = NULL;  // LAT source index k for each element
+    int*    tmp_istart = NULL;  // First element index in each column
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::compute_prob_post_cat");
+
+    // Single loop for common exit point
+    do {
+
+      // Dump header
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Compute catalogue association probabilities:");
+        Log(Log_2, "============================================");
+      }
+
+      // Allocate temporary memory for sparse matrix column start and 
+      // normalization sum
+      tmp_istart = new int[m_cpt.numLoad+1];
+      tmp_sum    = new double[m_cpt.numLoad];
+      if (tmp_istart == NULL || tmp_sum == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+
+      // Initialise sparse matrix column start array
+      for (int index = 0; index <= m_cpt.numLoad; ++index)
+        tmp_istart[index] = 0;
+
+      // Initialise normalization sums Si
+      for (int index = 0; index < m_cpt.numLoad; ++index)
+        tmp_sum[index] = 0.0;
+
+      // Setup sparse matrix column start array. For this purpose we first
+      // determine how often a specific index occurs. The result is stored
+      // into the columns start array at position index+1. Then we build the
+      // cumulative distribution by adding up successively the column start
+      // values that appear before index. At the end the last elements
+      // tmp_istart[m_cpt.numLoad] will contain the total number of counterparts
+      // that occured.
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+          int index = m_info[k].cc[i].index + 1;
+          tmp_istart[index] += 1;
+        }
+      }
+      for (int index = 1; index <= m_cpt.numLoad; ++index)
+        tmp_istart[index] += tmp_istart[index-1];
+
+      // Determine the number of sparse matrix elements
+      int num_elements = tmp_istart[m_cpt.numLoad];
+
+      // Fall through if there are no counterparts
+      if (num_elements < 1)
+        continue;
+
+      // Allocate memory for sparse matrix element values and indices
+      tmp_prob   = new double[num_elements];
+      tmp_k      = new int[num_elements];
+      if (tmp_prob == NULL || tmp_k == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
+      }
+
+      // Initialise element values (1.0) and indices (-1).
+      // Indices of -1 signal that the value has not yet been set.
+      for (int element = 0; element < num_elements; ++element) {
+        tmp_prob[element] = 1.0;
+        tmp_k[element]    = -1;
+      }
+
+      // Fill sparse matrix elements. For a given column we now search
+      // for the first row that has an index of -1. This is then the next
+      // free element. For security we check if all free elements are
+      // exhausted. This should in principle never occur! If it occurs,
+      // there is a logical error in this code.
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+
+          // Get sparse matrix column
+          int col = m_info[k].cc[i].index;
+
+          // Get start and stop element indices in sparse matrix
+          int start = tmp_istart[col];
+          int stop  = tmp_istart[col+1];
+
+          // Set next free element
+          int element = start;
+          for ( ; element < stop; ++element) {
+            if (tmp_k[element] == -1) {
+              tmp_prob[element] = 1.0 - m_info[k].cc[i].prob_post_single;
+              tmp_k[element]    = k;
+              break;
+            }
+          }
+          if (element >= stop) {
+            status = STATUS_CAT_BAD_SPARSE;
+            if (par->logTerse())
+              Log(Error_2, "%d : No free element is sparse matrix.",
+                  (Status)status);
+            break;
+          }
+
+        }
+        if (status != STATUS_OK)
+          break;
+      }
+      if (status != STATUS_OK)
+        continue;
+
+      // Compute probability products. This is now done quickly by multiplying
+      // down a column
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+
+          // Get sparse matrix column
+          int col = m_info[k].cc[i].index;
+
+          // Get start and stop element indices in sparse matrix
+          int start = tmp_istart[col];
+          int stop  = tmp_istart[col+1];
+
+          // Compute products
+          m_info[k].cc[i].prob_prod1 = 1.0; // all k'
+          m_info[k].cc[i].prob_prod2 = 1.0; // all k' except of k
+          for (int element = start; element < stop; ++element) {
+            m_info[k].cc[i].prob_prod1   *= tmp_prob[element];
+            if (k != tmp_k[element])
+              m_info[k].cc[i].prob_prod2 *= tmp_prob[element];
+          }
+
+        }
+      }
+
+      // Initialise normalization sums with Pi(H-|D)
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+          int index      = m_info[k].cc[i].index;
+          tmp_sum[index] = m_info[k].cc[i].prob_prod1;
+        }
+      }
+
+      // Compute catalogue posterior probabilities and update normalization sum
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+
+          // Compute posterior probability
+          m_info[k].cc[i].prob_post_cat = m_info[k].cc[i].prob_post_single *
+                                          m_info[k].cc[i].prob_prod2;
+
+          // Update normalization sum
+          int index       = m_info[k].cc[i].index;
+          tmp_sum[index] += m_info[k].cc[i].prob_post_cat;
+
+        }
+      }
+
+      // Copy normalization sum into counterpart candidate field
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+          int index                 = m_info[k].cc[i].index;
+          m_info[k].cc[i].prob_norm = tmp_sum[index];
+        }
+      }
+
+      // Normalize catalogue posterior probabilities
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+          if (m_info[k].cc[i].prob_norm > 0.0)
+            m_info[k].cc[i].prob_post_cat /= m_info[k].cc[i].prob_norm;
+          else
+            m_info[k].cc[i].prob_post_cat = 0.0;
+        }
+      }
+
+      // Dump catalogue association probabilities
+      if (par->logNormal()) {
+        Log(Log_2,
+            "  Source index   Counterpart index     P(H0|D) =>  P(Hk|D) "
+            "    Pi_k' P  Pi_k'\\k P     S  ");
+        Log(Log_2,
+            "  ------------  ------------------   --------- => ---------"
+            "  ---------  ---------   -----");
+        for (int k = 0; k < m_src.numLoad; ++k) {
+          for (int i = 0; i < m_info[k].numCC; ++i) {
+            Log(Log_2,
+                "  Source %5d: Counterpart %6d : %8.4f%% => %8.4f%%"
+                " (%8.4f%%, %8.4f%%, %6.3f)",
+                k+1, m_info[k].cc[i].index + 1,
+                m_info[k].cc[i].prob_post_single*100.0,
+                m_info[k].cc[i].prob_post_cat*100.0,
+                m_info[k].cc[i].prob_prod1*100.0,
+                m_info[k].cc[i].prob_prod2*100.0,
+                m_info[k].cc[i].prob_norm);
+          }
+        }
+      }
+
+    } while (0); // End of main do-loop
+
+    // Delete temporary memory
+    if (tmp_prob   != NULL) delete [] tmp_prob;
+    if (tmp_k      != NULL) delete [] tmp_k;
+    if (tmp_istart != NULL) delete [] tmp_istart;
+    if (tmp_sum    != NULL) delete [] tmp_sum;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::compute_prob_post_cat (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute unique catalogue association posterior probability.
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::compute_prob_post(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::compute_prob_post");
+
+    // Single loop for common exit point
+    do {
+
+      // Dump header
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Compute unique catalogue association probabilities:");
+        Log(Log_2, "===================================================");
+      }
+
+      // Initialise probability products for all counterpart candidates
+      for (int k = 0; k < m_src.numLoad; ++k) {
+        for (int i = 0; i < m_info[k].numCC; ++i) {
+
+          // Copy
+          m_info[k].cc[i].prob_post = m_info[k].cc[i].prob_post_cat;
+
+        } // endfor: looped over all counterpart candidates
+      } // endfor: looped over all sources
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::compute_prob_post (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute association probability.
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::compute_prob(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::compute_prob");
+
+    // Single loop for common exit point
+    do {
+
+      // Dump header
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Compute association probabilities:");
+        Log(Log_2, "==================================");
+      }
+
+      // Loop over all sources
+      for (int k = 0; k < m_src.numLoad; ++k) {
+
+        // Compute PROB
+        status = cid_prob(par, &(m_info[k]), status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to determine association probability.",
+                (Status)status);
+          break;
+        }
+
+        // Sort counterpart candidates by decreasing probability
+        status = cid_sort(par, &(m_info[k]), status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to sort counterpart candidates.",
+                (Status)status);
+          break;
+        }
+
+        // Determine the number of counterpart candidates above the probability
+        // threshold
+        int numUseCC = 0;
+        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+          if (m_info[k].cc[iCC].prob >= par->m_probThres)
+            numUseCC++;
+          else
+            break;
+        }
+
+        // Apply the maximum number of counterpart threshold
+        if (numUseCC > par->m_maxNumCpt)
+          numUseCC = par->m_maxNumCpt;
+
+        // Eliminate counterpart candidates below threshold.
+        m_info[k].numCC = numUseCC;
+
+        // Set unique counterpart candidate identifier (overwrite former ID)
+        char cid[OUTCAT_MAX_STRING_LEN];
+        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+          sprintf(cid, "CC_%5.5d_%5.5d", k+1, iCC+1);
+          m_info[k].cc[iCC].id = cid;
+        }
+
+      } // endfor: looped over all sources
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::compute_prob (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
  * @brief Dump counterpart identification results
  *
  * @param[in] par Pointer to gtsrcid parameters.
@@ -1385,7 +1758,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *   |
  *   +-- get_input_catalogue (get source catalogue)
  *   |
- *   N-- cid_get (get counterpart candidates for each source)
+ *   N-- cid_single (perform single source association)
  *   |   |
  *   |   +-- cid_filter (filter step)
  *   |   |   |
@@ -1409,21 +1782,23 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *   |   |   |
  *   |   |   +-- cid_prob_chance (compute PROB_CHANCE & PDF_CHANCE)
  *   |   |   |
- *   |   |   +-- cid_prob_post (compute PROB_POST)
- *   |   |   |
- *   |   |   +-- cid_prob (compute PROB)
- *   |   |   |
- *   |   |   +-- cid_sort (sort counterpart candidates)
- *   |   |
- *   |   +-- cfits_add (add candidates to output catalogue)
+ *   |   |   +-- cid_prob_post_single (compute PROB_POST)
+ *   |
+ *   +-- compute_prob_post_cat (compute catalogue association probabilities)
+ *   |
+ *   +-- compute_prob_post (compute unique catalogue association probabilities)
+ *   |
+ *   +-- compute_prob (compute association probability)
+ *   |
+ *   N-- cfits_add (add counterpart candidates to output catalogue)
+ *   |
+ *   +-- cfits_save (save output catalogue)
  *   |
  *   +-- cfits_collect (collect counterpart results)
  *   |
  *   +-- cfits_eval (evaluate output catalogue quantities)
  *   |
  *   +-- cfits_set_pars (set run parameter keywords)
- *   |
- *   +-- cfits_save (save output catalogue)
  *   |
  *   +-- dump_results (dump results)
  * \endverbatim
@@ -1515,6 +1890,31 @@ Status Catalogue::build(Parameters *par, Status status) {
           Log(Log_2, " Source catalogue contains %d sources.", m_src.numLoad);
       }
 
+      // Load counterpart catalogue
+      status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to load counterpart catalogue '%s' data.",
+              (Status)status, par->m_cptCatName.c_str());
+        continue;
+      }
+      else {
+        if (par->logVerbose())
+          Log(Log_2, " Counterpart catalogue loaded.");
+      }
+
+      // Stop if the counterpart catalogue is empty
+      if (m_cpt.numLoad < 1) {
+        status = STATUS_CAT_EMPTY;
+        if (par->logTerse())
+          Log(Error_2, "%d : Counterpart catalogue is empty. Stop.", (Status)status);
+        continue;
+      }
+      else {
+        if (par->logVerbose())
+          Log(Log_2, " Counterpart catalogue contains %d sources.", m_cpt.numLoad);
+      }
+
       // Allocate source information
       m_info = new SourceInfo[m_src.numLoad];
       if (m_info == NULL) {
@@ -1561,11 +1961,11 @@ Status Catalogue::build(Parameters *par, Status status) {
           m_cpt_stat[iSrc*(m_num_Sel+1) + iSel] = 0;
       }
 
-      // Loop over all sources
+      // Compute PROB_POST_SINGLE for all sources
       for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
 
         // Get counterpart candidates for the source
-        status = cid_get(par, &(m_info[iSrc]), status);
+        status = cid_source(par, &(m_info[iSrc]), status);
         if (status != STATUS_OK)
           break;
 
@@ -1582,6 +1982,47 @@ Status Catalogue::build(Parameters *par, Status status) {
         m_num_assoc += m_info[iSrc].numCC;
 
       } // endfor: looped over all sources
+      if (status != STATUS_OK)
+        continue;
+
+      // Compute probabilities for source catalogue association
+      status = compute_prob_post_cat(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to compute catalogue association"
+              " probabilities.", (Status)status);
+        continue;
+      }
+
+      // Compute probabilities for unique source catalogue association
+      status = compute_prob_post(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to compute unique catalogue association"
+              " probabilities.", (Status)status);
+        continue;
+      }
+
+      // Compute association probabilities
+      status = compute_prob(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to compute association probabilities.",
+              (Status)status);
+        continue;
+      }
+
+      // Save counterpart candidates for all sources
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
+        status = cfits_add(m_outFile, par, &(m_info[iSrc]), status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to add counterpart candidates for source"
+                " %d to FITS output catalogue '%s'.", 
+                (Status)status, iSrc+1, par->m_outCatName.c_str());
+          break;
+        }
+      }
       if (status != STATUS_OK)
         continue;
 

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.27  2008/04/04 14:55:52  jurgen
+Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
+
 Revision 1.26  2008/03/26 16:57:30  jurgen
 implement global counterpart density evaluation
 
@@ -106,11 +109,11 @@ Replace header information with CVS typeset information.
 namespace sourceIdentify {
 
 /* Definitions ______________________________________________________________ */
-#define OUTCAT_MAX_STRING_LEN      256
-#define OUTCAT_MAX_KEY_LEN         256
-#define OUTCAT_EXT_NAME            "GLAST_CAT"
+#define OUTCAT_MAX_STRING_LEN         256
+#define OUTCAT_MAX_KEY_LEN            256
+#define OUTCAT_EXT_NAME               "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC            20
+#define OUTCAT_NUM_GENERIC            22
 //
 #define OUTCAT_COL_ID_COLNUM          1
 #define OUTCAT_COL_ID_NAME            "ID"
@@ -189,43 +192,55 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_POST_UNIT     "probability"
 #define OUTCAT_COL_PROB_POST_UCD      ""
 //
-#define OUTCAT_COL_LR_COLNUM          14
+#define OUTCAT_COL_PROB_POST_S_COLNUM 14
+#define OUTCAT_COL_PROB_POST_S_NAME   "PROB_POST_SINGLE"
+#define OUTCAT_COL_PROB_POST_S_FORM   "1D"
+#define OUTCAT_COL_PROB_POST_S_UNIT   "probability"
+#define OUTCAT_COL_PROB_POST_S_UCD    ""
+//
+#define OUTCAT_COL_PROB_POST_C_COLNUM 15
+#define OUTCAT_COL_PROB_POST_C_NAME   "PROB_POST_CAT"
+#define OUTCAT_COL_PROB_POST_C_FORM   "1D"
+#define OUTCAT_COL_PROB_POST_C_UNIT   "probability"
+#define OUTCAT_COL_PROB_POST_C_UCD    ""
+//
+#define OUTCAT_COL_LR_COLNUM          16
 #define OUTCAT_COL_LR_NAME            "LIKRAT"
 #define OUTCAT_COL_LR_FORM            "1D"
 #define OUTCAT_COL_LR_UNIT            ""
 #define OUTCAT_COL_LR_UCD             ""
 //
-#define OUTCAT_COL_ANGSEP_COLNUM      15
+#define OUTCAT_COL_ANGSEP_COLNUM      17
 #define OUTCAT_COL_ANGSEP_NAME        "ANGSEP"
 #define OUTCAT_COL_ANGSEP_FORM        "1E"
 #define OUTCAT_COL_ANGSEP_UNIT        "deg"
 #define OUTCAT_COL_ANGSEP_UCD         ""
 //
-#define OUTCAT_COL_PSI_COLNUM         16
+#define OUTCAT_COL_PSI_COLNUM         18
 #define OUTCAT_COL_PSI_NAME           "PSI"
 #define OUTCAT_COL_PSI_FORM           "1E"
 #define OUTCAT_COL_PSI_UNIT           "deg"
 #define OUTCAT_COL_PSI_UCD            "ERROR"
 //
-#define OUTCAT_COL_POSANG_COLNUM      17
+#define OUTCAT_COL_POSANG_COLNUM      19
 #define OUTCAT_COL_POSANG_NAME        "POSANG"
 #define OUTCAT_COL_POSANG_FORM        "1E"
 #define OUTCAT_COL_POSANG_UNIT        "deg"
 #define OUTCAT_COL_POSANG_UCD         ""
 //
-#define OUTCAT_COL_RHO_COLNUM         18
+#define OUTCAT_COL_RHO_COLNUM         20
 #define OUTCAT_COL_RHO_NAME           "RHO"
 #define OUTCAT_COL_RHO_FORM           "1E"
 #define OUTCAT_COL_RHO_UNIT           "src/deg^2"
 #define OUTCAT_COL_RHO_UCD            ""
 //
-#define OUTCAT_COL_LAMBDA_COLNUM      19
+#define OUTCAT_COL_LAMBDA_COLNUM      21
 #define OUTCAT_COL_LAMBDA_NAME        "LAMBDA"
 #define OUTCAT_COL_LAMBDA_FORM        "1E"
 #define OUTCAT_COL_LAMBDA_UNIT        "src"
 #define OUTCAT_COL_LAMBDA_UCD         ""
 //
-#define OUTCAT_COL_REF_COLNUM         20
+#define OUTCAT_COL_REF_COLNUM         22
 #define OUTCAT_COL_REF_NAME           "REF"
 #define OUTCAT_COL_REF_FORM           "1J"
 #define OUTCAT_COL_REF_UNIT           ""
@@ -234,7 +249,6 @@ namespace sourceIdentify {
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
 /* Class constants __________________________________________________________ */
-const long   c_maxCptLoad    = 10000000000L; //!< Max. # of sources to load at once
 const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
 
 /* Mathematical constants ___________________________________________________ */
@@ -262,43 +276,48 @@ const std::string search_id[] = {"NAME", "ID", "stop"};
 const std::string fct_names[] = {"gammln", "erf", "erfc", "stop"};
 
 /* Type defintions __________________________________________________________ */
-typedef enum {                        // Position error type
-  NoError = 1,                          //!< No error
-  Radius,                               //!< Error radius
-  Ellipse,                              //!< Error ellipse
-  RaDec                                 //!< Errors on RA and Dec
+typedef enum {                  // Position error type
+  NoError = 1,                  //!< No error
+  Radius,                       //!< Error radius
+  Ellipse,                      //!< Error ellipse
+  RaDec                         //!< Errors on RA and Dec
 } PosErrorType;
 
-typedef enum {                        // Position error probability
-  Sigma_1 = 1,                          //!< 1 sigma standard deviations
-  Sigma_2,                              //!< 2 sigma standard deviations
-  Sigma_3,                              //!< 3 sigma standard deviations
-  Prob_68,                              //!< 68% probability ellipse
-  Prob_95,                              //!< 95% probability ellipse
-  Prob_99                               //!< 99% probability ellipse
+typedef enum {                  // Position error probability
+  Sigma_1 = 1,                  //!< 1 sigma standard deviations
+  Sigma_2,                      //!< 2 sigma standard deviations
+  Sigma_3,                      //!< 3 sigma standard deviations
+  Prob_68,                      //!< 68% probability ellipse
+  Prob_95,                      //!< 95% probability ellipse
+  Prob_99                       //!< 99% probability ellipse
 } PosErrorProb;
 
-typedef struct {                      // Counterpart candidate object information
-  std::string             id;           //!< Unique identifier
-  double                  pos_eq_ra;    //!< Right Ascension (deg)
-  double                  pos_eq_dec;   //!< Declination (deg)
-  double                  pos_err_maj;  //!< 95% uncertainty ellipse major axis (deg)
-  double                  pos_err_min;  //!< 95% uncertainty ellipse minor axis (deg)
-  double                  pos_err_ang;  //!< 95% uncertainty ellipse PA (deg)
-  double                  prob;         //!< Counterpart probability
+typedef struct {                // Counterpart candidate object information
+  std::string id;               //!< Unique identifier
+  double      pos_eq_ra;        //!< Right Ascension (deg)
+  double      pos_eq_dec;       //!< Declination (deg)
+  double      pos_err_maj;      //!< 95% uncertainty ellipse major axis (deg)
+  double      pos_err_min;      //!< 95% uncertainty ellipse minor axis (deg)
+  double      pos_err_ang;      //!< 95% uncertainty ellipse PA (deg)
+  double      prob;             //!< Counterpart probability
   //
-  long                    index;        //!< Index of CCs in CPT catalogue
-  double                  angsep;       //!< Angular separation of CPT from source
-  double                  psi;          //!< Eff. radius of 95% error ellipse (deg)
-  double                  posang;       //!< Position angle of CPT w/r to source
-  double                  lambda;       //!< Expected number of false counterparts
-  double                  prob_pos;     //!< Counterpart probability
-  double                  prob_chance;  //!< Chance coincidence probability
-  double                  prob_prior;   //!< Counterpart prior probability
-  double                  prob_post;    //!< Counterpart posterior probability
-  double                  pdf_pos;      //!< Counterpart PDF
-  double                  pdf_chance;   //!< Chance coincidence PDF
-  double                  likrat;       //!< Likelihood ratio
+  long        index;            //!< Index of CCs in CPT catalogue
+  double      angsep;           //!< Angular separation of CPT from source
+  double      psi;              //!< Eff. radius of 95% error ellipse (deg)
+  double      posang;           //!< Position angle of CPT w/r to source
+  double      lambda;           //!< Expected number of false counterparts
+  double      prob_pos;         //!< Counterpart probability
+  double      prob_chance;      //!< Chance coincidence probability
+  double      prob_prior;       //!< Counterpart prior probability
+  double      prob_post;        //!< Unique catalogue Counterpart posterior prob.
+  double      prob_post_single; //!< Single counterpart posterior probability
+  double      prob_post_cat;    //!< Catalogue counterpart posterior probability
+  double      pdf_pos;          //!< Counterpart PDF
+  double      pdf_chance;       //!< Chance coincidence PDF
+  double      likrat;           //!< Likelihood ratio
+  double      prob_prod1;       //!< Probability product 1 (working variable)
+  double      prob_prod2;       //!< Probability product 2 (working variable)
+  double      prob_norm;        //!< Probability normalization (working variable)
 } CCElement;
 
 typedef struct {                      // Catalogue object information
@@ -366,23 +385,29 @@ public:
 private:
   void   init_memory(void);
   void   free_memory(void);
+  //
+  // High-level source identification methods
+  // ----------------------------------------
   Status get_input_descriptor(Parameters *par, std::string catName, 
                               InCatalogue *in,  Status status);
   Status get_input_catalogue(Parameters *par, InCatalogue *in, double posErr,
                              Status status);
   Status dump_descriptor(Parameters *par, InCatalogue *in, Status status);
+  Status compute_prob_post_cat(Parameters *par, Status status);
+  Status compute_prob_post(Parameters *par, Status status);
+  Status compute_prob(Parameters *par, Status status);
   Status dump_results(Parameters *par, Status status);
   //
   // Low-level source identification methods
   // ---------------------------------------
-  Status      cid_get(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_source(Parameters *par, SourceInfo *src, Status status);
   Status      cid_filter(Parameters *par, SourceInfo *src, Status status);
   Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
   Status      cid_select(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_pos(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_chance(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_prior(Parameters *par, SourceInfo *src, Status status);
-  Status      cid_prob_post(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_prob_post_single(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob(Parameters *par, SourceInfo *src, Status status);
   Status      cid_local_density(Parameters *par, SourceInfo *src, Status status);
   Status      cid_global_density(Parameters *par, SourceInfo *src, Status status);
@@ -430,8 +455,6 @@ private:
   InCatalogue              m_cpt;            //!< Counterpart catalogue
   //
   // Catalogue building parameters
-  int                      m_maxCptLoad;     //!< Maximum # of cpts to be loaded
-  int                      m_fCptLoaded;     //!< Loaded counterparts fully
   fitsfile                *m_memFile;        //!< Memory catalogue FITS file pointer
   fitsfile                *m_outFile;        //!< Output catalogue FITS file pointer
   //

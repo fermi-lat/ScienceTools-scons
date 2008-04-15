@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.22  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.21  2008/03/20 21:56:26  jurgen
 implement local counterpart density
 
@@ -81,7 +84,7 @@ Replace header information with CVS typeset information.
 #define TOOL_NAME     "gtsrcid"
 #define TOOL_VERSION  "v2r0p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "21-Mar-2008"
+#define TOOL_DATE     "15-Apr-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
@@ -122,13 +125,14 @@ typedef enum  {                                  // Function status code
   STATUS_CAT_EMPTY         = -100301,             // Catalogue empty
   STATUS_CAT_BAD_PROB_COL  = -100302,             // Bad probability coltype
   STATUS_CAT_INCOMPATIBLE  = -100303,             // Incompatible dimensions
+  STATUS_CAT_BAD_SPARSE    = -100304,             // Sparse matrix error
   STATUS_CAT_NO_ID         = -100400,             // No ID column
   STATUS_CAT_NO_POS        = -100401,             // No position columns
   STATUS_CAT_NO_POS_ERROR  = -100402,             // No position error columns
   STATUS_CAT_SEL_FAILED    = -100403,             // Selection failed
   STATUS_FCT_NOT_FOUND     = -100500,             // Function not found
   STATUS_FCT_INVALID       = -100502,             // Invalid function
-  STATUS_FCT_NO_CLOSING    = -100502              // No closing parenthesis
+  STATUS_FCT_NO_CLOSING    = -100503              // No closing parenthesis
 } Status;
 
 /* Prototypes _______________________________________________________________ */

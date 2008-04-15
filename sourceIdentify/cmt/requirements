@@ -12,4 +12,7 @@ use catalogAccess *
 apply_pattern ST_pfiles
 apply_pattern ST_app_withDir name=gtsrcid dir=gtsrcid
 
-#application gtsrcid gtsrcid/*.cxx
+macro_append cppflags ""-pg""
+macro_append cpplinkflags ""-pg""
+
+#application gtsrcid gtsrcid/*.cxx option=-pg

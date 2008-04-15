@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.21  2008/04/04 14:55:52  jurgen
+Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
+
 Revision 1.20  2008/03/26 16:57:30  jurgen
 implement global counterpart density evaluation
 
@@ -99,7 +102,7 @@ using namespace catalogAccess;
 
 
 /**************************************************************************//**
- * @brief Get counterpart candidates for a source
+ * @brief Perform single source association
  *
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] src Pointer to source information.
@@ -120,11 +123,11 @@ using namespace catalogAccess;
  *
  * Finally, all candidates are added to the output catalogue.
  ******************************************************************************/
-Status Catalogue::cid_get(Parameters *par, SourceInfo *src, Status status) {
+Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_get");
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_source");
 
     // Single loop for common exit point
     do {
@@ -173,21 +176,11 @@ Status Catalogue::cid_get(Parameters *par, SourceInfo *src, Status status) {
         Log(Log_2, "");
       }
 
-      // Add all counterpart candidates to output catalogue
-      status = cfits_add(m_outFile, par, src, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to add counterpart candidates for source"
-              " %d to FITS output catalogue '%s'.", 
-              (Status)status, src->iSrc+1, par->m_outCatName.c_str());
-        continue;
-      }
-
      } while (0); // End of main do-loop
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cid_get (status=%d)",
+      Log(Log_0, " <== EXIT: Catalogue::cid_source (status=%d)",
           status);
 
     // Return status
@@ -285,50 +278,6 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
       cpt_ra_max = cpt_ra_max - double(long(cpt_ra_max / 360.0) * 360.0);
       if (cpt_ra_max < 0.0) cpt_ra_max += 360.0;
 
-      // If the counterpart catalogue is big then load only sources from a
-      // region around the specified position ...
-      if (m_cpt.numTotal > m_maxCptLoad) {
-      }
-
-      // ... otherwise load the entire counterpart catalogue
-      else {
-
-        // Load only if noy yet done ...
-        if (!m_fCptLoaded) {
-
-          // Load counterpart catalogue
-          status = get_input_catalogue(par, &m_cpt, par->m_cptPosError, status);
-          if (status != STATUS_OK) {
-            if (par->logTerse())
-              Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
-                  " data.", (Status)status, par->m_cptCatName.c_str());
-            continue;
-          }
-          else {
-            if (par->logVerbose())
-              Log(Log_2, " Counterpart catalogue loaded.");
-          }
-
-          // Stop if the counterpart catalogue is empty
-          if (m_cpt.numLoad < 1) {
-            status = STATUS_CAT_EMPTY;
-            if (par->logTerse())
-              Log(Error_2, "%d : Counterpart catalogue is empty. Stop.", 
-                  (Status)status);
-            continue;
-          }
-          else {
-            if (par->logVerbose())
-              Log(Log_2, " Counterpart catalogue contains %d sources.", 
-                  m_cpt.numLoad);
-          }
-
-          // Bookkeep catalogue loading
-          m_fCptLoaded = 1;
-
-        } // endif: catalogue was not yet loaded
-      } // endelse: entire catalogue requested
-
       // Start timing
       #if CATALOGUE_TIMING
       t_start_loop = clock();
@@ -421,25 +370,27 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           }
 
           // If we are still alive then we keep this counterpart
-          cpt_ptr->id          = "NULL";
-          cpt_ptr->pos_eq_ra   = 0.0;
-          cpt_ptr->pos_eq_dec  = 0.0;
-          cpt_ptr->pos_err_maj = 0.0;
-          cpt_ptr->pos_err_min = 0.0;
-          cpt_ptr->pos_err_ang = 0.0;
-          cpt_ptr->prob        = 0.0;
-          cpt_ptr->index       = iCpt;
-          cpt_ptr->angsep      = 0.0;
-          cpt_ptr->psi         = 0.0;
-          cpt_ptr->posang      = 0.0;
-          cpt_ptr->lambda      = 0.0;
-          cpt_ptr->prob_pos    = 0.0;
-          cpt_ptr->prob_chance = 0.0;
-          cpt_ptr->prob_prior  = 0.0;
-          cpt_ptr->prob_post   = 0.0;
-          cpt_ptr->pdf_pos     = 0.0;
-          cpt_ptr->pdf_chance  = 0.0;
-          cpt_ptr->likrat      = 0.0;
+          cpt_ptr->id               = "NULL";
+          cpt_ptr->pos_eq_ra        = 0.0;
+          cpt_ptr->pos_eq_dec       = 0.0;
+          cpt_ptr->pos_err_maj      = 0.0;
+          cpt_ptr->pos_err_min      = 0.0;
+          cpt_ptr->pos_err_ang      = 0.0;
+          cpt_ptr->prob             = 0.0;
+          cpt_ptr->index            = iCpt;
+          cpt_ptr->angsep           = 0.0;
+          cpt_ptr->psi              = 0.0;
+          cpt_ptr->posang           = 0.0;
+          cpt_ptr->lambda           = 0.0;
+          cpt_ptr->prob_pos         = 0.0;
+          cpt_ptr->prob_chance      = 0.0;
+          cpt_ptr->prob_prior       = 0.0;
+          cpt_ptr->prob_post        = 0.0;
+          cpt_ptr->prob_post_single = 0.0;
+          cpt_ptr->prob_post_cat    = 0.0;
+          cpt_ptr->pdf_pos          = 0.0;
+          cpt_ptr->pdf_chance       = 0.0;
+          cpt_ptr->likrat           = 0.0;
           cpt_ptr++;
 
         } // endfor: looped over all counterpart candidates
@@ -603,8 +554,8 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         continue;
       }
 
-      // Compute PROB_POST
-      status = cid_prob_post(par, src, status);
+      // Compute PROB_POST_SINGLE
+      status = cid_prob_post_single(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to determine posterior probability.",
@@ -613,6 +564,7 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       }
 
       // Compute PROB
+/*
       status = cid_prob(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -622,6 +574,7 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       }
 
       // Sort counterpart candidates by decreasing probability
+
       status = cid_sort(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -629,7 +582,7 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
               (Status)status);
         continue;
       }
-
+*/
       // Sum up probabilities (before thresholding)
       src->cc_pid = 0.0;
       src->cc_pc  = 0.0;
@@ -642,6 +595,7 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
 
       // Determine the number of counterpart candidates above the probability
       // threshold
+/*
       int numUseCC = 0;
       for (int iCC = 0; iCC < src->numCC; ++iCC) {
         if (src->cc[iCC].prob >= par->m_probThres)
@@ -649,13 +603,15 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         else
           break;
       }
-
+*/
       // Apply the maximum number of counterpart threshold
+/*
       if (numUseCC > par->m_maxNumCpt)
         numUseCC = par->m_maxNumCpt;
 
       // Eliminate counterpart candidates below threshold.
       src->numCC = numUseCC;
+*/
 
       // Fall through if no counterparts are left
       if (src->numCC < 1) {
@@ -675,11 +631,12 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       }
 
       // Set unique counterpart candidate identifier (overwrite former ID)
+/*
       for (int iCC = 0; iCC < src->numCC; ++iCC) {
         sprintf(cid, "CC_%5.5d_%5.5d", src->iSrc+1, iCC+1);
         src->cc[iCC].id = cid;
       }
-
+*/
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
         Log(Log_2, "  Refine step candidates ..........: %5d", src->numCC);
@@ -1186,15 +1143,16 @@ Status Catalogue::cid_prob_prior(Parameters *par, SourceInfo *src, Status status
  *
  * Computes \n
  * CCElement::likrat (likelihood ratio) \n
- * CCElement::prob_post (posterior probabilities)
+ * CCElement::prob_post_single (single source posterior probabilities)
  *
  * The method updates the corresponding column in the in-memory FITS file.
  ******************************************************************************/
-Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status) {
+Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src, 
+                                       Status status) {
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_post (%d candidates)",
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_post_single (%d candidates)",
           src->numCC);
 
     // Single loop for common exit point
@@ -1210,7 +1168,7 @@ Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status)
 
       // Allocate vector columns for in-memory FITS file update
       std::vector<double> col_likrat;
-      std::vector<double> col_prob_post;
+      std::vector<double> col_prob_post_single;
 
       // Compute r0^2
       double r02 = (src->rho > 0.0) ? 1.0 / (pi * src->rho) : src->ring_rad_max;
@@ -1219,8 +1177,8 @@ Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status)
       for (int iCC = 0; iCC < src->numCC; ++iCC) {
 
         // Initialise results
-        src->cc[iCC].likrat    = 0.0;
-        src->cc[iCC].prob_post = 0.0;
+        src->cc[iCC].likrat           = 0.0;
+        src->cc[iCC].prob_post_single = 0.0;
 
         // Compute likelihood ratio. If Psi^2 > 2.996 r0^2 then the likelihood
         // ratio diverges. In this case we set LR = 0.
@@ -1238,30 +1196,31 @@ Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status)
         // PROB_PRIOR <= 0 => PROB_POST = 0
         // LR = 0          => PROB_POST = 0
         if (src->cc[iCC].prob_prior >= 1.0)
-          src->cc[iCC].prob_post = 1.0;
+          src->cc[iCC].prob_post_single = 1.0;
         else if (src->cc[iCC].prob_prior <= 0.0)
-          src->cc[iCC].prob_post = 0.0;
+          src->cc[iCC].prob_post_single = 0.0;
         else {
           if (src->cc[iCC].likrat > 0.0) {
             double eta = src->cc[iCC].prob_prior / (1.0 - src->cc[iCC].prob_prior);
             double arg = eta * src->cc[iCC].likrat;
-            src->cc[iCC].prob_post = (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) : 0.0;
+            src->cc[iCC].prob_post_single =
+                   (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) : 0.0;
           }
           else
-            src->cc[iCC].prob_post = 0.0;
+            src->cc[iCC].prob_post_single = 0.0;
         }
 
         // Add results to column vectors
         col_likrat.push_back(src->cc[iCC].likrat);
-        col_prob_post.push_back(src->cc[iCC].prob_post);
+        col_prob_post_single.push_back(src->cc[iCC].prob_post_single);
 
       } // endfor: looped over all counterpart candidates
 
       // Update in-memory columns
       status = cfits_set_col(m_memFile, par, OUTCAT_COL_LR_NAME,
                              col_likrat, status);
-      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_POST_NAME,
-                             col_prob_post, status);
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_POST_S_NAME,
+                             col_prob_post_single, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to update columns of in-memory FITS file.",
@@ -1273,7 +1232,7 @@ Status Catalogue::cid_prob_post(Parameters *par, SourceInfo *src, Status status)
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cid_prob_post (status=%d)",
+      Log(Log_0, " <== EXIT: Catalogue::cid_prob_post_single (status=%d)",
           status);
 
     // Return status
@@ -1310,6 +1269,24 @@ Status Catalogue::cid_prob(Parameters *par, SourceInfo *src, Status status) {
 
       // Get column and formula
       std::string column  = "PROB";
+
+      // Clear in-memory catalogue
+      status = cfits_clear(m_memFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to clear in-memory FITS catalogue.",
+                       (Status)status);
+        continue;
+      }
+
+      // Setup in-memory catalogue
+      status = cfits_add(m_memFile, par, src, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to add counterpart candidates to"
+                       " in-memory FITS catalogue.", (Status)status);
+        continue;
+      }
 
       // Evaluate PROB column
       status = cfits_eval_column(m_memFile, par, column, par->m_probMethod, status);
@@ -1646,7 +1623,7 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
             Log(Log_2, "    Prior association probability .: %7.3f %%",
                 src->cc[iCC].prob_prior*100.0);
             Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
-                src->cc[iCC].prob_post*100.0);
+                src->cc[iCC].prob_post_single*100.0);
             Log(Log_2, "    Likelihood ratio ..............: %.3f",
                 src->cc[iCC].likrat);
           }

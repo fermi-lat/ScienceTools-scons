@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.20  2008/04/04 14:55:52  jurgen
+Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
+
 Revision 1.19  2008/03/26 16:46:58  jurgen
 add more information to FITS file header
 
@@ -686,6 +689,16 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_PROB_POST_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_PROB_POST_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_POST_UCD);
+      col = OUTCAT_COL_PROB_POST_S_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_POST_S_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_POST_S_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_POST_S_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_POST_S_UCD);
+      col = OUTCAT_COL_PROB_POST_C_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_PROB_POST_C_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_PROB_POST_C_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_PROB_POST_C_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_PROB_POST_C_UCD);
       col = OUTCAT_COL_LR_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_LR_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_LR_FORM);
@@ -1173,6 +1186,30 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
       if (fstatus != 0) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to write PROB_POST column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Add PROB_POST_SINGLE
+      for (row = 0; row < nrows; row++)
+        dptr[row] = src->cc[row].prob_post_single;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POST_S_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write PROB_POST_SINGLE column to catalogue.",
+              fstatus);
+        continue;
+      }
+
+      // Add PROB_POST_CAT
+      for (row = 0; row < nrows; row++)
+        dptr[row] = src->cc[row].prob_post_cat;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_PROB_POST_C_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write PROB_POST_CAT column to catalogue.",
               fstatus);
         continue;
       }
