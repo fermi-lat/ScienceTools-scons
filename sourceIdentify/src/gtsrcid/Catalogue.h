@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.28  2008/04/15 21:24:12  jurgen
+Introduce sparse matrix for source catalogue probability computation.
+
 Revision 1.27  2008/04/04 14:55:52  jurgen
 Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
 
@@ -250,6 +253,7 @@ namespace sourceIdentify {
 
 /* Class constants __________________________________________________________ */
 const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
+const double c_prob_min      = 1.0e-20;      //!< Minimum probability threshold
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -334,16 +338,14 @@ typedef struct {                      // Source information
   int                     iSrc;         //!< Source index
   ObjectInfo             *info;         //!< Source information
   int                     numCC;        //!< Number of counterpart candidates
+  int                     numFilter;    //!< Number of filter step candidates
+  int                     numRefine;    //!< Number of refine step candidates
   CCElement              *cc;           //!< List of counterpart candidates
   double                  filter_rad;   //!< Filter step radius
   double                  ring_rad_min; //!< Density ring minimum
   double                  ring_rad_max; //!< Density ring maximum
   double                  omega;        //!< Solid angle of error ellipse
   double                  rho;          //!< Local counterpart density
-  double                  cc_pid;       //!< Partial sum of P(ID|r) before thres.
-  double                  cc_pc;        //!< Partial sum of P(C|r) before thres.
-  double                  cc_pid_thr;   //!< partial sum of P(ID|r) after thres.
-  double                  cc_pc_thr;    //!< partial sum of P(C|r) after thres.
 } SourceInfo;
 
 typedef struct {                      // Input catalogue
@@ -461,10 +463,12 @@ private:
   // Information for all sources
   SourceInfo              *m_info;           //!< Source information
   //
+  // Counterpart working vector
+  int                     *m_cpt_sel;        //!< List of selected counterparts
+  //
   // Counterpart statistics
   int                      m_num_Sel;        //!< Number of selection criteria
   int                     *m_cpt_stat;       //!< Counterpart statistics
-  std::vector<int>         m_src_cpts;       //!< Number of initial counterparts
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
   int                      m_num_assoc;      //!< Number of associations
   double                   m_sum_pid;        //!< Sum of P(ID|r) before thresholding

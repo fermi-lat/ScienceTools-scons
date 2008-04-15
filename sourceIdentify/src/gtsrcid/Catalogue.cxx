@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.35  2008/04/15 21:24:12  jurgen
+Introduce sparse matrix for source catalogue probability computation.
+
 Revision 1.34  2008/04/04 14:55:52  jurgen
 Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
 
@@ -810,6 +813,9 @@ void Catalogue::init_memory(void) {
       // Initialise source information
       m_info = NULL;
 
+      // Initialise list of selected counterparts
+      m_cpt_sel = NULL;
+
       // Initialise counterpart statistics
       m_num_Sel      = 0;
       m_cpt_stat     = NULL;
@@ -854,6 +860,7 @@ void Catalogue::free_memory(void) {
       if (m_src.object != NULL) delete [] m_src.object;
       if (m_cpt.object != NULL) delete [] m_cpt.object;
       if (m_cpt_stat   != NULL) delete [] m_cpt_stat;
+      if (m_cpt_sel    != NULL) delete [] m_cpt_sel;
 
       // Initialise memory
       init_memory();
@@ -1562,6 +1569,12 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         Log(Log_2, "==================================");
       }
 
+      // Initialise probability sums
+      m_sum_pid     = 0.0;
+      m_sum_pc      = 0.0;
+      m_sum_pid_thr = 0.0;
+      m_sum_pc_thr  = 0.0;
+
       // Loop over all sources
       for (int k = 0; k < m_src.numLoad; ++k) {
 
@@ -1581,6 +1594,12 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
             Log(Error_2, "%d : Unable to sort counterpart candidates.",
                 (Status)status);
           break;
+        }
+
+        // Sum up probabilities before thresholding
+        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+          m_sum_pid += m_info[k].cc[iCC].prob;
+          m_sum_pc  += 1.0 - m_info[k].cc[iCC].prob;
         }
 
         // Determine the number of counterpart candidates above the probability
@@ -1605,6 +1624,12 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
           sprintf(cid, "CC_%5.5d_%5.5d", k+1, iCC+1);
           m_info[k].cc[iCC].id = cid;
+        }
+
+        // Sum up probabilities after thresholding
+        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+          m_sum_pid_thr += m_info[k].cc[iCC].prob;
+          m_sum_pc_thr  += 1.0 - m_info[k].cc[iCC].prob;
         }
 
       } // endfor: looped over all sources
@@ -1670,6 +1695,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       }
       sprintf(add, " Refine");
       strcat(select, add);
+      sprintf(add, " >=Pthr");
+      strcat(select, add);
 
       // Dump header
       Log(Log_2, "                                      Filter%s", select);
@@ -1687,7 +1714,9 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
           sprintf(add, " %5d", m_cpt_stat[iSrc*(m_num_Sel+1) + iSel+1]);
           strcat(select, add);
         }
-        sprintf(add, " %6d", m_src_cpts[iSrc]);
+        sprintf(add, " %6d", m_info[iSrc].numRefine);
+        strcat(select, add);
+        sprintf(add, " %6d", m_info[iSrc].numCC);
         strcat(select, add);
 
         // Dump information
@@ -1695,7 +1724,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
             iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
 
         // Collect number of associated sources
-        if (m_src_cpts[iSrc] > 0)
+        if (m_info[iSrc].numCC > 0)
           n_src_assoc++;
 
       } // endfor: looped over all sources
@@ -1929,23 +1958,29 @@ Status Catalogue::build(Parameters *par, Status status) {
         m_info[iSrc].iSrc         = iSrc;
         m_info[iSrc].info         = &(m_src.object[iSrc]);
         m_info[iSrc].numCC        = 0;
+        m_info[iSrc].numFilter    = 0;
+        m_info[iSrc].numRefine    = 0;
         m_info[iSrc].cc           = NULL;
         m_info[iSrc].filter_rad   = 0.0;
         m_info[iSrc].ring_rad_min = 0.0;
         m_info[iSrc].ring_rad_max = 0.0;
         m_info[iSrc].omega        = 0.0;
         m_info[iSrc].rho          = 0.0;
-        m_info[iSrc].cc_pid       = 0.0;
-        m_info[iSrc].cc_pc        = 0.0;
-        m_info[iSrc].cc_pid_thr   = 0.0;
-        m_info[iSrc].cc_pc_thr    = 0.0;
+      }
+
+      // Allocate list of selected counterparts
+      m_cpt_sel = new int[m_cpt.numLoad];
+      if (m_cpt_sel == NULL) {
+        status = STATUS_MEM_ALLOC;
+        if (par->logTerse())
+          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
+        continue;
       }
 
       // Determine number of quantity selection criteria
       m_num_Sel = par->m_select.size();
 
       // Set vectors dimensions
-      m_src_cpts  = std::vector<int>(m_src.numLoad);
       m_cpt_names = std::vector<std::string>(m_src.numLoad);
 
       // Allocate selection statistics
@@ -1968,15 +2003,6 @@ Status Catalogue::build(Parameters *par, Status status) {
         status = cid_source(par, &(m_info[iSrc]), status);
         if (status != STATUS_OK)
           break;
-
-        // Sum partial probability sums
-        m_sum_pid     += m_info[iSrc].cc_pid;
-        m_sum_pid_thr += m_info[iSrc].cc_pid_thr;
-        m_sum_pc      += m_info[iSrc].cc_pc;
-        m_sum_pc_thr  += m_info[iSrc].cc_pc_thr;
-
-        // Store the number of counterpart candidates
-        m_src_cpts[iSrc] = m_info[iSrc].numCC;
 
         // Sum the total number of associations
         m_num_assoc += m_info[iSrc].numCC;

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.22  2008/04/15 21:24:12  jurgen
+Introduce sparse matrix for source catalogue probability computation.
+
 Revision 1.21  2008/04/04 14:55:52  jurgen
 Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
 
@@ -220,7 +223,6 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
     double      cpt_ra_max;
     double      filter_maxsep;
     ObjectInfo *cpt;
-    CCElement  *cpt_ptr;
 
     // Timing measurements
     #if CATALOGUE_TIMING
@@ -285,7 +287,8 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
 
       // Determine number of counterpart candidates that fall in the
       // bounding box and that have a valid position
-      cpt = m_cpt.object;
+      src->numCC = 0;
+      cpt        = m_cpt.object;
       for (int iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
 
         // Filter counterparts that have no positional information
@@ -317,7 +320,10 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           }
         }
 
-        // If we are still alive then we count this counterpart
+        // If we are still alive then keep this counterpart
+        m_cpt_sel[src->numCC] = iCpt;
+
+        // Increment number of counterparts
         src->numCC++;
 
       } // endfor: looped over all counterpart candidates
@@ -334,71 +340,42 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           continue;
         }
 
-
-        // Collect all counterpart candidates
-        cpt     = m_cpt.object;
-        cpt_ptr = src->cc;
-        for (int iCpt = 0; iCpt < m_cpt.numLoad; iCpt++, cpt++) {
-
-          // Filter counterparts that have no positional information
-          if (!cpt->pos_valid) {
-            numNoPos++;
-            continue;
-          }
-
-          // Filter counterpart if it falls outside the declination range.
-          if (cpt->pos_eq_dec < cpt_dec_min ||
-              cpt->pos_eq_dec > cpt_dec_max) {
-            numDec++;
-            continue;
-          }
-
-          // Filter source if it falls outside the Right Ascension range. The
-          // first case handles no R.A. wrap around ...
-          if (cpt_ra_min < cpt_ra_max) {
-            if (cpt->pos_eq_ra < cpt_ra_min || cpt->pos_eq_ra > cpt_ra_max) {
-              numRA++;
-              continue;
-            }
-          }
-          // ... and this one R.A wrap around
-          else {
-            if (cpt->pos_eq_ra < cpt_ra_min && cpt->pos_eq_ra > cpt_ra_max) {
-              numRA++;
-              continue;
-            }
-          }
-
-          // If we are still alive then we keep this counterpart
-          cpt_ptr->id               = "NULL";
-          cpt_ptr->pos_eq_ra        = 0.0;
-          cpt_ptr->pos_eq_dec       = 0.0;
-          cpt_ptr->pos_err_maj      = 0.0;
-          cpt_ptr->pos_err_min      = 0.0;
-          cpt_ptr->pos_err_ang      = 0.0;
-          cpt_ptr->prob             = 0.0;
-          cpt_ptr->index            = iCpt;
-          cpt_ptr->angsep           = 0.0;
-          cpt_ptr->psi              = 0.0;
-          cpt_ptr->posang           = 0.0;
-          cpt_ptr->lambda           = 0.0;
-          cpt_ptr->prob_pos         = 0.0;
-          cpt_ptr->prob_chance      = 0.0;
-          cpt_ptr->prob_prior       = 0.0;
-          cpt_ptr->prob_post        = 0.0;
-          cpt_ptr->prob_post_single = 0.0;
-          cpt_ptr->prob_post_cat    = 0.0;
-          cpt_ptr->pdf_pos          = 0.0;
-          cpt_ptr->pdf_chance       = 0.0;
-          cpt_ptr->likrat           = 0.0;
-          cpt_ptr++;
+        // Initialise all counterpart candidates
+        for (int i = 0; i < src->numCC; ++i) {
+          src->cc[i].id               = "NULL";
+          src->cc[i].pos_eq_ra        = 0.0;
+          src->cc[i].pos_eq_dec       = 0.0;
+          src->cc[i].pos_err_maj      = 0.0;
+          src->cc[i].pos_err_min      = 0.0;
+          src->cc[i].pos_err_ang      = 0.0;
+          src->cc[i].prob             = 0.0;
+          src->cc[i].index            = m_cpt_sel[i];
+          src->cc[i].angsep           = 0.0;
+          src->cc[i].psi              = 0.0;
+          src->cc[i].posang           = 0.0;
+          src->cc[i].lambda           = 0.0;
+          src->cc[i].prob_pos         = 0.0;
+          src->cc[i].prob_chance      = 0.0;
+          src->cc[i].prob_prior       = 0.0;
+          src->cc[i].prob_post        = 0.0;
+          src->cc[i].prob_post_single = 0.0;
+          src->cc[i].prob_post_cat    = 0.0;
+          src->cc[i].pdf_pos          = 0.0;
+          src->cc[i].pdf_chance       = 0.0;
+          src->cc[i].likrat           = 0.0;
+          src->cc[i].prob_prod1       = 0.0;
+          src->cc[i].prob_prod2       = 0.0;
+          src->cc[i].prob_norm        = 0.0;
 
         } // endfor: looped over all counterpart candidates
       } // endif: there were counterpart candidates
 
+      // Save number of filter step candidates
+      src->numFilter = src->numCC;
+
       // Optionally dump counterpart filter statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Filter step candidates ..........: %5d", src->numCC);
+        Log(Log_2, "  Filter step candidates ..........: %5d", src->numFilter);
         if (par->logVerbose()) {
           Log(Log_2, "    Filter bounding box radius ....: %7.3f deg",
               src->filter_rad);
@@ -563,55 +540,18 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         continue;
       }
 
-      // Compute PROB
-/*
-      status = cid_prob(par, src, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine association probability.",
-              (Status)status);
-        continue;
-      }
-
-      // Sort counterpart candidates by decreasing probability
-
-      status = cid_sort(par, src, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to sort counterpart candidates.",
-              (Status)status);
-        continue;
-      }
-*/
-      // Sum up probabilities (before thresholding)
-      src->cc_pid = 0.0;
-      src->cc_pc  = 0.0;
-      int n_sum = (src->numCC > 0) ? 1 : 0;
-//      int n_sum = (src->numCC > 0) ? src->numCC : 0;
-      for (int iCC = 0; iCC < n_sum; ++iCC) {
-        src->cc_pid += src->cc[iCC].prob;
-        src->cc_pc  += 1.0 - src->cc[iCC].prob;
-      }
-
-      // Determine the number of counterpart candidates above the probability
-      // threshold
-/*
-      int numUseCC = 0;
+      // Remove counterparts with too small probabilities
+      int dst = 0;
       for (int iCC = 0; iCC < src->numCC; ++iCC) {
-        if (src->cc[iCC].prob >= par->m_probThres)
-          numUseCC++;
-        else
-          break;
+        if (src->cc[iCC].prob_post_single > c_prob_min) {
+          src->cc[dst] = src->cc[iCC];
+          dst++;
+        }
       }
-*/
-      // Apply the maximum number of counterpart threshold
-/*
-      if (numUseCC > par->m_maxNumCpt)
-        numUseCC = par->m_maxNumCpt;
+      src->numCC = dst;
 
-      // Eliminate counterpart candidates below threshold.
-      src->numCC = numUseCC;
-*/
+      // Save number of refine step candidates
+      src->numRefine = src->numCC;
 
       // Fall through if no counterparts are left
       if (src->numCC < 1) {
@@ -620,27 +560,9 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         continue;
       }
 
-      // Sum up probabilities (after thresholding)
-      src->cc_pid_thr = 0.0;
-      src->cc_pc_thr  = 0.0;
-      n_sum = (src->numCC > 0) ? 1 : 0;
-//      n_sum = (src->numCC > 0) ? src->numCC : 0;
-      for (int iCC = 0; iCC < n_sum; ++iCC) {
-        src->cc_pid_thr += src->cc[iCC].prob;
-        src->cc_pc_thr  += 1.0 - src->cc[iCC].prob;
-      }
-
-      // Set unique counterpart candidate identifier (overwrite former ID)
-/*
-      for (int iCC = 0; iCC < src->numCC; ++iCC) {
-        sprintf(cid, "CC_%5.5d_%5.5d", src->iSrc+1, iCC+1);
-        src->cc[iCC].id = cid;
-      }
-*/
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
-        Log(Log_2, "  Refine step candidates ..........: %5d", src->numCC);
-        Log(Log_2, "    Expected real associations ....: %.1f", src->cc_pid);
+        Log(Log_2, "  Refine step candidates ..........: %5d", src->numRefine);
         Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", src->rho);
         Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
             src->ring_rad_min, src->ring_rad_max);
