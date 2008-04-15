@@ -123,7 +123,7 @@ std::vector<HealPixel> HealPixel::neighbors() const
     for (std::vector<long>::const_iterator i = neighbors.begin();
         i !=neighbors.end(); ++i)
     {
-        p.push_back( HealPixel(*i, data()));
+        p.push_back( HealPixel(*i, level(), band()));
     }
     return p;
 }

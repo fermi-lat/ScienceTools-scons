@@ -34,7 +34,9 @@ SERVICES PROVIDED HEREUNDER."
 #ifndef _FITSIO_H
 #define _FITSIO_H
 
-#define CFITSIO_VERSION 3.006
+// --GLAST-- had to modify this line.
+//#define CFITSIO_VERSION 3.006
+#define CFITSIO_VERSION 3.060
 
 #include <stdio.h>
 
