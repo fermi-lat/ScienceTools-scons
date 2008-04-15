@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r5p1 15-Apr-08   JC    enable Ts calculation for diffuse sources;
+                            UpperLimits modifications.
    v1r5   31-Mar-08   JC    new event class handling
    v1r4   18-Mar-08   JC    read xml attributes from source tag and add as
                             Python attributes to Source objects (JBB request)
