@@ -26,6 +26,7 @@
 #include "skymaps/SkyImage.h"
 #include "skymaps/Gti.h"
 #include "skymaps/IsotropicPowerLaw.h"
+#include "skymaps/Background.h"
 
 #include "embed_python/Module.h"
 
@@ -162,6 +163,7 @@ public:
 %include $(SKYMAPSROOT)/skymaps/Exposure.h
 %include $(SKYMAPSROOT)/skymaps/Gti.h
 %include $(SKYMAPSROOT)/skymaps/IsotropicPowerLaw.h
+%include $(SKYMAPSROOT)/skymaps/Background.h
 
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 

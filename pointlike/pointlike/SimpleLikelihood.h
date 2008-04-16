@@ -174,6 +174,7 @@ private:
     double m_umax; ///< maximum value of u, for selection of data, fits
     double m_avu, m_avb;
     double m_emin, m_emax; ///< energy range for this object
+    double m_F;       ///< integral of PSF over u
     class NormalizedBackground; // forward declaration of helper class
     NormalizedBackground* m_back; ///< instance of private helper class set when direction is
     

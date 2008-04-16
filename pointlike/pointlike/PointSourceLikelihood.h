@@ -139,6 +139,8 @@ public:
     static double gamma_level(int i);
     static double sigma_level(int i);
 
+    static void setDisplayMode(int newmode);
+
 
 private:
     void setup(const skymaps::PhotonMap& data, int minlevel, int maxlevel);
