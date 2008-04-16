@@ -212,9 +212,10 @@ void MakeFt1::run() {
    formatter.info() << "applying TCut: " << filter << std::endl;
 
    std::string dictFile = m_pars["dict_file"];
-   if (dictFile == "DEFAULT") {
-      dictFile = facilities::commonUtilities::joinPath(dataDir,"FT1variables");
-   }
+// Disable the default, force users to specify
+//    if (dictFile == "DEFAULT") {
+//       dictFile = facilities::commonUtilities::joinPath(dataDir,"FT1variables");
+//    }
 
    ::Ft1Map_t ft1Dict;
    ::getFT1Dict(dictFile, ft1Dict);

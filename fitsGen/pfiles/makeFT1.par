@@ -3,11 +3,11 @@
 #
 rootFile,fr,a,"",,,merit filename
 fitsFile,f,a,"",,,FT1 filename
-event_classifier,s,a,Pass5_Classifier,,,Event classifier script
+event_classifier,s,a,,,,Event classifier module
 tstart,r,h,0,,,,"start time (MET s)"
 tstop,r,h,0,,,,"stop time (MET s)"
-TCuts,s,a,DEFAULT,,,TCut to apply
-dict_file,s,h,DEFAULT,,,merit-to-FT1 dictionary file
+TCuts,s,a,,,,TCut to apply
+dict_file,fr,a,,,,merit-to-FT1 dictionary file
 file_version,s,h,1,,,Version of FT1 file
 
 chatter,i,h,2,0,4,Output verbosity
