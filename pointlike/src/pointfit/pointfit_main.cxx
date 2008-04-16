@@ -102,6 +102,7 @@ int main(int argc, char** argv)
         if( check_sigma){
             int minlevel(6), maxlevel(13);
             ParamOptimization so(healpixdata,directions,out,minlevel,maxlevel);
+            //so.compute(so.GAMMA);
             so.compute();
         }
         if( !outfile.empty()){

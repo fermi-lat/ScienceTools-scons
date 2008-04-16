@@ -212,5 +212,5 @@ double ParamOptimization::curvature(bool sigma,int level,double val)
     TMatrixD Cf(3,1);
     Cf = Cv*At*b;
     double curv = Cf[0][0];
-    return 1/sqrt(curv);
+    return(curv>0?1/sqrt(curv):-1.0);
 }
