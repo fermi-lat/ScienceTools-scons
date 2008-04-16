@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.29  2008/04/15 22:30:54  jurgen
+Cleanup counterpart statistics
+
 Revision 1.28  2008/04/15 21:24:12  jurgen
 Introduce sparse matrix for source catalogue probability computation.
 
@@ -470,11 +473,16 @@ private:
   int                      m_num_Sel;        //!< Number of selection criteria
   int                     *m_cpt_stat;       //!< Counterpart statistics
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
-  int                      m_num_assoc;      //!< Number of associations
-  double                   m_sum_pid;        //!< Sum of P(ID|r) before thresholding
-  double                   m_sum_pid_thr;    //!< Sum of P(ID|r) after thresholding
-  double                   m_sum_pc;         //!< Sum of P(C|r) before thresholding
-  double                   m_sum_pc_thr;     //!< Sum of P(C|r) after thresholding
+  //
+  // Association results
+  double        m_num_claimed;      //!< Number of claimed identifications
+  double        m_sum_pid;          //!< Sum of P(ID|D) before thresholding
+  double        m_sum_pid_thr;      //!< Sum of P(ID|D) after thresholding
+  double        m_sum_pc;           //!< Sum of P(C|D) before thresholding
+  double        m_sum_pc_thr;       //!< Sum of P(C|D) after thresholding
+  double        m_reliability;      //!< Reliability
+  double        m_completeness;     //!< Completeness
+  double        m_fract_not_unique; //!< Fraction of non-unique sources
   //
   // Output cataloge: source catalogue quantities
   int                      m_num_src_Qty;    //!< Number of src. cat. quantities

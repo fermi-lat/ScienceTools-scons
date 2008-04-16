@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.23  2008/04/15 22:30:54  jurgen
+Cleanup counterpart statistics
+
 Revision 1.22  2008/04/15 21:24:12  jurgen
 Introduce sparse matrix for source catalogue probability computation.
 
@@ -90,8 +93,8 @@ level.
 
 
 /* Definitions ______________________________________________________________ */
-#define CATALOGUE_TIMING   0                     // Enables timing measurements
-
+#define CATALOGUE_TIMING     0               // Enables timing measurements
+#define ALLOW_LR_DIVERGENCE  0               // Allows for divergent LR values
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -1102,15 +1105,21 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
         src->cc[iCC].likrat           = 0.0;
         src->cc[iCC].prob_post_single = 0.0;
 
-        // Compute likelihood ratio. If Psi^2 > 2.996 r0^2 then the likelihood
-        // ratio diverges. In this case we set LR = 0.
+        // Compute likelihood ratio. 
+        // If Psi^2 > 2.996 r0^2 then the likelihood ratio diverges. 
+        // Depending on the compile option we either calculate the divergent
+        // likelihood ratio or we set LR = 0.
         double psi2 = src->cc[iCC].psi * src->cc[iCC].psi;
         if (psi2 > 0.0 && r02 > 0.0) {
           double scale = 2.996 / psi2 - 1.0 / r02;
+          #if !ALLOW_LR_DIVERGENCE
           if (scale >= 0.0) {
+          #endif
             double arg          = scale * src->cc[iCC].angsep * src->cc[iCC].angsep;
             src->cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
+          #if !ALLOW_LR_DIVERGENCE
           }
+          #endif
         }
 
         // Compute posterior probability. There are some special cases:

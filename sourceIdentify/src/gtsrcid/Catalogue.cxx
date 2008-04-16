@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.36  2008/04/15 22:30:54  jurgen
+Cleanup counterpart statistics
+
 Revision 1.35  2008/04/15 21:24:12  jurgen
 Introduce sparse matrix for source catalogue probability computation.
 
@@ -817,14 +820,18 @@ void Catalogue::init_memory(void) {
       m_cpt_sel = NULL;
 
       // Initialise counterpart statistics
-      m_num_Sel      = 0;
-      m_cpt_stat     = NULL;
-      m_num_assoc    = 0;
-//      m_num_id       = 0.0;
-      m_sum_pid      = 0.0;
-      m_sum_pid_thr  = 0.0;
-      m_sum_pc       = 0.0;
-      m_sum_pc_thr   = 0.0;
+      m_num_Sel          = 0;
+      m_cpt_stat         = NULL;
+
+      // Initialise association results
+      m_num_claimed      = 0.0;
+      m_sum_pid          = 0.0;
+      m_sum_pid_thr      = 0.0;
+      m_sum_pc           = 0.0;
+      m_sum_pc_thr       = 0.0;
+      m_reliability      = 0.0;
+      m_completeness     = 0.0;
+      m_fract_not_unique = 0.0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -936,13 +943,13 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
         }
         else {
           if (par->logVerbose())
-            Log(Log_2, " Loaded catalogue '%s' descriptor from web.", 
+            Log(Log_2, " Loaded catalogue '%s' descriptor from web.",
                 catName.c_str());
         }
       }
       else {
         if (par->logVerbose())
-          Log(Log_2, " Loaded catalogue '%s' descriptor from file.", 
+          Log(Log_2, " Loaded catalogue '%s' descriptor from file.",
               catName.c_str());
       }
 
@@ -1076,7 +1083,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
 
     // Debug mode: Entry
     if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::get_input_catalogue (status=%d)", 
+      Log(Log_0, " <== EXIT: Catalogue::get_input_catalogue (status=%d)",
           status);
 
     // Return status
@@ -1092,7 +1099,7 @@ Status Catalogue::get_input_catalogue(Parameters *par, InCatalogue *in,
  * @param[in] in Pointer to input catalogue.
  * @param[in] status Error status.
  ******************************************************************************/
-Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in, 
+Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
                                   Status status) {
 
     // Declare local variables
@@ -1297,7 +1304,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
         Log(Log_2, "============================================");
       }
 
-      // Allocate temporary memory for sparse matrix column start and 
+      // Allocate temporary memory for sparse matrix column start and
       // normalization sum
       tmp_istart = new int[m_cpt.numLoad+1];
       tmp_sum    = new double[m_cpt.numLoad];
@@ -1464,7 +1471,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
       if (par->logNormal()) {
         Log(Log_2,
             "  Source index   Counterpart index     P(H0|D) =>  P(Hk|D) "
-            "    Pi_k' P  Pi_k'\\k P     S  ");
+            "    Pi_k' P  Pi_k'\\k P     Si");
         Log(Log_2,
             "  ------------  ------------------   --------- => ---------"
             "  ---------  ---------   -----");
@@ -1524,15 +1531,86 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
         Log(Log_2, "===================================================");
       }
 
+      // Initialise fraction of non unique sources
+      m_fract_not_unique = 0.0;
+      double num         = 0.0;
+
       // Initialise probability products for all counterpart candidates
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
 
-          // Copy
-          m_info[k].cc[i].prob_post = m_info[k].cc[i].prob_post_cat;
+        // Perform computations only if there are counterparts for this source
+        if (m_info[k].numCC > 0) {
 
-        } // endfor: looped over all counterpart candidates
+          // Compute products
+          for (int i = 0; i < m_info[k].numCC; ++i) {
+            m_info[k].cc[i].prob_prod1 = 1.0; // all i'
+            m_info[k].cc[i].prob_prod2 = 1.0; // all i' except of i
+            for (int ip = 0; ip < m_info[k].numCC; ++ip) {
+              if (i == ip)
+                m_info[k].cc[i].prob_prod1  = (1.0 - m_info[k].cc[ip].prob_post_cat);
+              else
+                m_info[k].cc[i].prob_prod2 *= (1.0 - m_info[k].cc[ip].prob_post_cat);
+            }
+            m_info[k].cc[i].prob_prod1 *= m_info[k].cc[i].prob_prod2;
+          }
+
+          // Compute non-normalized posterior probabilities and normalization
+          // factor
+          double norm = m_info[k].cc[0].prob_prod1;
+          for (int i = 0; i < m_info[k].numCC; ++i) {
+            m_info[k].cc[i].prob_post = m_info[k].cc[i].prob_post_cat *
+                                        m_info[k].cc[i].prob_prod2;
+            norm += m_info[k].cc[i].prob_post ;
+          }
+
+          // Compute unique association probabilities
+          if (norm > 0.0) {
+            for (int i = 0; i < m_info[k].numCC; ++i) {
+              m_info[k].cc[i].prob_post /= norm;
+              m_info[k].cc[i].prob_norm  = norm;
+            }
+          }
+          else {
+            for (int i = 0; i < m_info[k].numCC; ++i) {
+              m_info[k].cc[i].prob_post = 0.0;
+              m_info[k].cc[i].prob_norm = norm;
+            }
+          }
+
+          // Update fraction of non unique sources
+          m_fract_not_unique += (1.0 - norm);
+          num                += 1.0;
+
+        } // endif: there were counterparts
+
       } // endfor: looped over all sources
+
+      // Compute fraction of non unique sources
+      if (num > 0.0)
+        m_fract_not_unique /= num;
+
+      // Dump catalogue association probabilities
+      if (par->logNormal()) {
+        Log(Log_2,
+            "  Source index   Counterpart index     P(Hk|D) =>  P(Hi|D) "
+            "    Pi_i' P  Pi_i'\\i P     Sk");
+        Log(Log_2,
+            "  ------------  ------------------   --------- => ---------"
+            "  ---------  ---------   -----");
+        for (int k = 0; k < m_src.numLoad; ++k) {
+          for (int i = 0; i < m_info[k].numCC; ++i) {
+            Log(Log_2,
+                "  Source %5d: Counterpart %6d : %8.4f%% => %8.4f%%"
+                " (%8.4f%%, %8.4f%%, %6.3f)",
+                k+1, m_info[k].cc[i].index + 1,
+                m_info[k].cc[i].prob_post_cat*100.0,
+                m_info[k].cc[i].prob_post*100.0,
+                m_info[k].cc[i].prob_prod1*100.0,
+                m_info[k].cc[i].prob_prod2*100.0,
+                m_info[k].cc[i].prob_norm);
+          }
+        }
+      }
 
     } while (0); // End of main do-loop
 
@@ -1574,6 +1652,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
       m_sum_pc      = 0.0;
       m_sum_pid_thr = 0.0;
       m_sum_pc_thr  = 0.0;
+      m_num_claimed = 0.0;
 
       // Loop over all sources
       for (int k = 0; k < m_src.numLoad; ++k) {
@@ -1632,7 +1711,18 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
           m_sum_pc_thr  += 1.0 - m_info[k].cc[iCC].prob;
         }
 
+        // Sum the total number of claimed associations
+        m_num_claimed += double(m_info[k].numCC);
+
       } // endfor: looped over all sources
+
+      // Compute reliability and completeness
+      double n_id       = m_sum_pid;
+      double n_true     = m_sum_pid_thr;
+      double n_spurious = m_sum_pc_thr;
+      m_reliability     = (m_num_claimed > 0.0) ? 1.0 - n_spurious/m_num_claimed :
+                          0.0;
+      m_completeness    = (n_id > 0.0) ? n_true/n_id : 0.0;
 
     } while (0); // End of main do-loop
 
@@ -1729,32 +1819,34 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
 
       } // endfor: looped over all sources
 
-      // Compute reliability and completeness
-      double n_id       = m_sum_pid;
-      double n_true     = m_sum_pid_thr;
-      double n_missed   = n_id - n_true;
-      double n_spurious = m_sum_pc_thr;
-      double n_claimed  = double(n_src_assoc);
-      double r          = (n_claimed > 0.0) ? 1.0 - n_spurious / n_claimed : 0.0;
-      double c          = (n_id > 0.0) ? n_true/n_id : 0.0;
+      // Compute some results
+      double f_assoc  = (m_src.numLoad > 0) ? double(n_src_assoc) /
+                                              double(m_src.numLoad) : 0.0;
 
       // Dump summary
       Log(Log_2, "");
       Log(Log_2, "Counterpart association summary:");
       Log(Log_2, "================================");
-      Log(Log_2, " Number of sources ................: %10d", m_src.numLoad);
-      Log(Log_2, " Number of associations ...........: %10d", m_num_assoc);
-      Log(Log_2, " Number of claimed associations ...: %10d", int(n_claimed));
-      Log(Log_2, " Expected number of associations ..: %10.1f", n_id);
-      Log(Log_2, " Expected number of true ass. .....: %10.1f", n_true);
-      Log(Log_2, " Expected number of spurious ass. .: %10.1f", n_spurious);
-      Log(Log_2, " Expected number of missed ass. ...: %10.1f", n_missed);
-      Log(Log_2, " Reliability of identifications ...: %10.3f %%", r*100.0);
-      Log(Log_2, " Completeness of identifications ..: %10.3f %%", c*100.0);
-      //Log(Log_2, " m_sum_pid ........................: %10.3f", m_sum_pid);
-      //Log(Log_2, " m_sum_pid_thr ....................: %10.3f", m_sum_pid_thr);
-      //Log(Log_2, " m_sum_pc .........................: %10.3f", m_sum_pc);
-      //Log(Log_2, " m_sum_pc_thr .....................: %10.3f", m_sum_pc_thr);
+      Log(Log_2, " Number of sources .............................: %10d",
+          m_src.numLoad);
+      Log(Log_2, " Number of sources with at least one counterpart: %10d (%.3f%%)",
+          n_src_assoc, f_assoc*100.0);
+      Log(Log_2, " Number of claimed identifications .............: %10d",
+          int(m_num_claimed));
+      Log(Log_2, " Expected number of true associations ..........: %10.1f",
+          m_sum_pid);
+      Log(Log_2, " Expected number of correct identifications ....: %10.1f",
+          m_sum_pid_thr);
+      Log(Log_2, " Expected number of spurious identifications ...: %10.1f",
+          m_sum_pc_thr);
+      Log(Log_2, " Expected number of missed identifications .....: %10.1f",
+          m_sum_pid-m_sum_pid_thr);
+      Log(Log_2, " Expected number of non-unique counterparts ....: %10.1f (%.3f%%)",
+          m_fract_not_unique*m_num_claimed, m_fract_not_unique*100.0);
+      Log(Log_2, " Reliability of identifications ................: %10.3f%%",
+          m_reliability*100.0);
+      Log(Log_2, " Completeness of identifications ...............: %10.3f%%",
+          m_completeness*100.0);
 
     } while (0); // End of main do-loop
 
@@ -2003,9 +2095,6 @@ Status Catalogue::build(Parameters *par, Status status) {
         status = cid_source(par, &(m_info[iSrc]), status);
         if (status != STATUS_OK)
           break;
-
-        // Sum the total number of associations
-        m_num_assoc += m_info[iSrc].numCC;
 
       } // endfor: looped over all sources
       if (status != STATUS_OK)
