@@ -1,8 +1,11 @@
 /** @file release.notes
     @brief package fitsGen
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
+    $Id$
 
     @verbatim
+    v4     16-Apr-08   JC   disable defaults in makeFT1, forcing users to
+                            give cuts and event class defs explicitly
     v3r9p1 10-Apr-08   JC   correct data/pass5_cuts: OBFGamStatus->ObfGamStatus
     v3r9   13-Mar-08   JC   add columns for quaternions (for Andrea's ft2Util); 
                             add Ft2File::setScAxes(...) to set the quaternion
