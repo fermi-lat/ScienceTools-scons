@@ -13,6 +13,10 @@ $Header$
 using namespace astro;
 using namespace CLHEP;
 
+Quaternion::Quaternion(const CLHEP::Hep3Vector& v, double s)
+:m_v(v), m_s(s)
+{}
+
 Quaternion::Quaternion(const CLHEP::HepRotation& R)
 : m_v(Hep3Vector(0,0,0))
 , m_s(1)

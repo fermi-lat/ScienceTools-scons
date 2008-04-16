@@ -25,12 +25,11 @@ namespace astro {
         */
         Quaternion():m_v(0,0,0),m_s(1){}
 
-        /** ctor from vector and scalar
+        /** @brief ctor from vector and scalar
+        note that the normalization is not checked!
 
         */
-        Quaternion(const CLHEP::Hep3Vector& v, double s=0)
-            :m_v(v), m_s(s)
-        {}
+        Quaternion(const CLHEP::Hep3Vector& v, double s);
 
         /** ctor from x and z directions of rotated object
 
