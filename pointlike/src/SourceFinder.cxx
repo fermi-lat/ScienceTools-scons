@@ -783,7 +783,6 @@ void SourceFinder::createFitsFile(const std::string & outputFile,
     // now add a table to the file
     tip::IFileSvc::instance().appendTable(outputFile, tablename);
     tip::Table & table = *tip::IFileSvc::instance().editTable( outputFile, tablename);
-
     table.appendField("NAME", "24A");
     table.appendField("TYPE", "30A");
     table.appendField("RA", "1E");
