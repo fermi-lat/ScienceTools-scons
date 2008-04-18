@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.30  2008/04/16 22:00:34  jurgen
+Compute unique posterior probabilities
+
 Revision 1.29  2008/04/15 22:30:54  jurgen
 Cleanup counterpart statistics
 
@@ -110,6 +113,7 @@ Replace header information with CVS typeset information.
 #include "catalogAccess/catalog.h"
 #include "catalogAccess/quantity.h"
 #include "fitsio.h"
+#include <cfloat>
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -257,6 +261,8 @@ namespace sourceIdentify {
 /* Class constants __________________________________________________________ */
 const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
 const double c_prob_min      = 1.0e-20;      //!< Minimum probability threshold
+//const double c_filter_maxsep = 180.0;        //!< Minimum filter radius
+//const double c_prob_min      = 0.0;          //!< Minimum probability threshold
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -267,6 +273,7 @@ const double deg2rad     =  0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 const double dnorm       =  2.9957230;
 const double twodnorm    =  2.0 * dnorm;
+const double max_exparg  = double(int(log(DBL_MAX-1.0)));
 
 /* Probability scaling constants ____________________________________________ */
 const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
@@ -325,6 +332,7 @@ typedef struct {                // Counterpart candidate object information
   double      prob_prod1;       //!< Probability product 1 (working variable)
   double      prob_prod2;       //!< Probability product 2 (working variable)
   double      prob_norm;        //!< Probability normalization (working variable)
+  int         likrat_div;       //!< Signals LR divergence
 } CCElement;
 
 typedef struct {                      // Catalogue object information
@@ -476,6 +484,7 @@ private:
   //
   // Association results
   double        m_num_claimed;      //!< Number of claimed identifications
+  double        m_num_lr_div;       //!< Number of divergent LR
   double        m_sum_pid;          //!< Sum of P(ID|D) before thresholding
   double        m_sum_pid_thr;      //!< Sum of P(ID|D) after thresholding
   double        m_sum_pc;           //!< Sum of P(C|D) before thresholding

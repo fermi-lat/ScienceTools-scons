@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.37  2008/04/16 22:00:34  jurgen
+Compute unique posterior probabilities
+
 Revision 1.36  2008/04/15 22:30:54  jurgen
 Cleanup counterpart statistics
 
@@ -832,6 +835,7 @@ void Catalogue::init_memory(void) {
       m_reliability      = 0.0;
       m_completeness     = 0.0;
       m_fract_not_unique = 0.0;
+      m_num_lr_div       = 0.0;
 
       // Initialise output catalogue quantities
       m_num_src_Qty   = 0;
@@ -1709,6 +1713,8 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
           m_sum_pid_thr += m_info[k].cc[iCC].prob;
           m_sum_pc_thr  += 1.0 - m_info[k].cc[iCC].prob;
+          if (m_info[k].cc[iCC].likrat_div)
+            m_num_lr_div += 1.0;
         }
 
         // Sum the total number of claimed associations
@@ -1717,12 +1723,8 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
       } // endfor: looped over all sources
 
       // Compute reliability and completeness
-      double n_id       = m_sum_pid;
-      double n_true     = m_sum_pid_thr;
-      double n_spurious = m_sum_pc_thr;
-      m_reliability     = (m_num_claimed > 0.0) ? 1.0 - n_spurious/m_num_claimed :
-                          0.0;
-      m_completeness    = (n_id > 0.0) ? n_true/n_id : 0.0;
+      m_reliability  = (m_num_claimed > 0.0) ? m_sum_pid_thr/m_num_claimed : 0.0;
+      m_completeness = (m_sum_pid     > 0.0) ? m_sum_pid_thr/m_sum_pid     : 0.0;
 
     } while (0); // End of main do-loop
 
@@ -1847,6 +1849,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
           m_reliability*100.0);
       Log(Log_2, " Completeness of identifications ...............: %10.3f%%",
           m_completeness*100.0);
+      Log(Log_2, " Number of associations with divergent LR ......: %10d",
+          m_num_lr_div);
 
     } while (0); // End of main do-loop
 

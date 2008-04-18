@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.24  2008/04/16 22:00:34  jurgen
+Compute unique posterior probabilities
+
 Revision 1.23  2008/04/15 22:30:54  jurgen
 Cleanup counterpart statistics
 
@@ -87,14 +90,15 @@ level.
  */
 
 /* Includes _________________________________________________________________ */
+#include <iostream>
+#include <stdexcept>
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
 
-
 /* Definitions ______________________________________________________________ */
 #define CATALOGUE_TIMING     0               // Enables timing measurements
-#define ALLOW_LR_DIVERGENCE  0               // Allows for divergent LR values
+#define ALLOW_LR_DIVERGENCE  1               // Allows for divergent LR values
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -179,7 +183,7 @@ Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
       // Optionally dump counterpart candidats
       if (par->logNormal()) {
         cid_dump(par, src, status);
-        Log(Log_2, "");
+        //Log(Log_2, "");
       }
 
      } while (0); // End of main do-loop
@@ -369,6 +373,7 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           src->cc[i].prob_prod1       = 0.0;
           src->cc[i].prob_prod2       = 0.0;
           src->cc[i].prob_norm        = 0.0;
+          src->cc[i].likrat_div       = 0;
 
         } // endfor: looped over all counterpart candidates
       } // endif: there were counterpart candidates
@@ -1103,22 +1108,26 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
 
         // Initialise results
         src->cc[iCC].likrat           = 0.0;
+        src->cc[iCC].likrat_div       = 0;
         src->cc[iCC].prob_post_single = 0.0;
 
-        // Compute likelihood ratio. 
-        // If Psi^2 > 2.996 r0^2 then the likelihood ratio diverges. 
+        // Compute likelihood ratio.
+        // If Psi^2 > 2.996 r0^2 then the likelihood ratio diverges.
         // Depending on the compile option we either calculate the divergent
         // likelihood ratio or we set LR = 0.
         double psi2 = src->cc[iCC].psi * src->cc[iCC].psi;
         if (psi2 > 0.0 && r02 > 0.0) {
           double scale = 2.996 / psi2 - 1.0 / r02;
-          #if !ALLOW_LR_DIVERGENCE
-          if (scale >= 0.0) {
-          #endif
-            double arg          = scale * src->cc[iCC].angsep * src->cc[iCC].angsep;
+          double arg   = scale * src->cc[iCC].angsep * src->cc[iCC].angsep;
+          if (arg < -max_exparg) // Avoids floating point exception for divergent LR
+            arg = -max_exparg;
+          #if ALLOW_LR_DIVERGENCE
+          if (scale < 0.0)
+            src->cc[iCC].likrat_div = 1;
+          src->cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
+          #else
+          if (scale >= 0.0)
             src->cc[iCC].likrat = 2.996 * r02 / psi2 * exp(-arg);
-          #if !ALLOW_LR_DIVERGENCE
-          }
           #endif
         }
 
@@ -1519,14 +1528,26 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
         // Normal log level
         if (par->logNormal()) {
           if (cpt->pos_valid) {
-            Log(Log_2, "  Cpt%5d P=%3.0f%% S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
-                iCC+1,
-                src->cc[iCC].prob*100.0,
-                src->cc[iCC].angsep*60.0,
-                src->cc[iCC].posang,
-                cpt->name.c_str(),
-                cpt->pos_eq_ra, cpt->pos_eq_dec,
-                cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            if (src->cc[iCC].likrat_div) {
+              Log(Log_2, "  Cpt%5d[P=%3.0f%%]S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
+                  iCC+1,
+                  src->cc[iCC].prob_post_single*100.0,
+                  src->cc[iCC].angsep*60.0,
+                  src->cc[iCC].posang,
+                  cpt->name.c_str(),
+                  cpt->pos_eq_ra, cpt->pos_eq_dec,
+                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            }
+            else {
+              Log(Log_2, "  Cpt%5d P=%3.0f%% S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
+                  iCC+1,
+                  src->cc[iCC].prob_post_single*100.0,
+                  src->cc[iCC].angsep*60.0,
+                  src->cc[iCC].posang,
+                  cpt->name.c_str(),
+                  cpt->pos_eq_ra, cpt->pos_eq_dec,
+                  cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
+            }
           }
           else {
             Log(Log_2, "  Cpt%5d P=%3.0f%% .................: %20s"
@@ -1537,7 +1558,7 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
           }
         }
 
-        // Explicit log level
+        // Verbose log level
         if (par->logVerbose()) {
           if (cpt->pos_valid) {
             Log(Log_2, "    Angular separation ............: %7.3f arcmin",
@@ -1555,8 +1576,14 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
                 src->cc[iCC].prob_prior*100.0);
             Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
                 src->cc[iCC].prob_post_single*100.0);
-            Log(Log_2, "    Likelihood ratio ..............: %.3f",
-                src->cc[iCC].likrat);
+            if (src->cc[iCC].likrat_div) {
+              Log(Log_2, "    Likelihood ratio ..............: %.3e (diverged)",
+                  src->cc[iCC].likrat);
+            }
+            else {
+              Log(Log_2, "    Likelihood ratio ..............: %.3f",
+                  src->cc[iCC].likrat);
+            }
           }
         }
 
