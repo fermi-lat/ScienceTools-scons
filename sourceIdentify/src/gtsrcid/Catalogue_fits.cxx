@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.21  2008/04/15 21:24:12  jurgen
+Introduce sparse matrix for source catalogue probability computation.
+
 Revision 1.20  2008/04/04 14:55:52  jurgen
 Remove counterpart candidate working memory and introduce permanent counterpart candidate memory
 
@@ -726,11 +729,11 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_RHO_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_RHO_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_RHO_UCD);
-      col = OUTCAT_COL_LAMBDA_COLNUM - 1;
-      sprintf(ttype[col], "%s", OUTCAT_COL_LAMBDA_NAME);
-      sprintf(tform[col], "%s", OUTCAT_COL_LAMBDA_FORM);
-      sprintf(tunit[col], "%s", OUTCAT_COL_LAMBDA_UNIT);
-      sprintf(tbucd[col], "%s", OUTCAT_COL_LAMBDA_UCD);
+      col = OUTCAT_COL_MU_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_MU_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_MU_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_MU_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_MU_UCD);
       col = OUTCAT_COL_REF_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_REF_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_REF_FORM);
@@ -1276,8 +1279,8 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
 
       // Add expected number of chance coincidences
       for (row = 0; row < nrows; row++)
-        dptr[row] = src->cc[row].lambda;
-      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_LAMBDA_COLNUM,
+        dptr[row] = src->cc[row].mu;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_MU_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
         if (par->logTerse())

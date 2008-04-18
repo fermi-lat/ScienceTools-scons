@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.38  2008/04/18 10:43:20  jurgen
+Allow for divergent LRs (flag them)
+
 Revision 1.37  2008/04/16 22:00:34  jurgen
 Compute unique posterior probabilities
 
@@ -829,9 +832,11 @@ void Catalogue::init_memory(void) {
       // Initialise association results
       m_num_claimed      = 0.0;
       m_sum_pid          = 0.0;
-      m_sum_pid_thr      = 0.0;
       m_sum_pc           = 0.0;
+      m_sum_lr           = 0.0;
+      m_sum_pid_thr      = 0.0;
       m_sum_pc_thr       = 0.0;
+      m_sum_lr_thr       = 0.0;
       m_reliability      = 0.0;
       m_completeness     = 0.0;
       m_fract_not_unique = 0.0;
@@ -1651,11 +1656,13 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         Log(Log_2, "==================================");
       }
 
-      // Initialise probability sums
+      // Initialise statistics
       m_sum_pid     = 0.0;
       m_sum_pc      = 0.0;
+      m_sum_lr      = 0.0;
       m_sum_pid_thr = 0.0;
       m_sum_pc_thr  = 0.0;
+      m_sum_lr_thr  = 0.0;
       m_num_claimed = 0.0;
 
       // Loop over all sources
@@ -1683,6 +1690,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
           m_sum_pid += m_info[k].cc[iCC].prob;
           m_sum_pc  += 1.0 - m_info[k].cc[iCC].prob;
+          m_sum_lr  += m_info[k].cc[iCC].likrat;
         }
 
         // Determine the number of counterpart candidates above the probability
@@ -1713,6 +1721,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
           m_sum_pid_thr += m_info[k].cc[iCC].prob;
           m_sum_pc_thr  += 1.0 - m_info[k].cc[iCC].prob;
+          m_sum_lr_thr  += m_info[k].cc[iCC].likrat;
           if (m_info[k].cc[iCC].likrat_div)
             m_num_lr_div += 1.0;
         }
@@ -1849,6 +1858,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
           m_reliability*100.0);
       Log(Log_2, " Completeness of identifications ...............: %10.3f%%",
           m_completeness*100.0);
+      Log(Log_2, " Total LR ......................................: %10.1f"
+                 " (before threshold: %.1f)", m_sum_lr_thr, m_sum_lr);
       Log(Log_2, " Number of associations with divergent LR ......: %10d",
           m_num_lr_div);
 

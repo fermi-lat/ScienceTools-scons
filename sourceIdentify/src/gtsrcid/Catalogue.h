@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.31  2008/04/18 10:43:20  jurgen
+Allow for divergent LRs (flag them)
+
 Revision 1.30  2008/04/16 22:00:34  jurgen
 Compute unique posterior probabilities
 
@@ -244,11 +247,11 @@ namespace sourceIdentify {
 #define OUTCAT_COL_RHO_UNIT           "src/deg^2"
 #define OUTCAT_COL_RHO_UCD            ""
 //
-#define OUTCAT_COL_LAMBDA_COLNUM      21
-#define OUTCAT_COL_LAMBDA_NAME        "LAMBDA"
-#define OUTCAT_COL_LAMBDA_FORM        "1E"
-#define OUTCAT_COL_LAMBDA_UNIT        "src"
-#define OUTCAT_COL_LAMBDA_UCD         ""
+#define OUTCAT_COL_MU_COLNUM          21
+#define OUTCAT_COL_MU_NAME            "MU"
+#define OUTCAT_COL_MU_FORM            "1E"
+#define OUTCAT_COL_MU_UNIT            "src"
+#define OUTCAT_COL_MU_UCD             ""
 //
 #define OUTCAT_COL_REF_COLNUM         22
 #define OUTCAT_COL_REF_NAME           "REF"
@@ -319,7 +322,7 @@ typedef struct {                // Counterpart candidate object information
   double      angsep;           //!< Angular separation of CPT from source
   double      psi;              //!< Eff. radius of 95% error ellipse (deg)
   double      posang;           //!< Position angle of CPT w/r to source
-  double      lambda;           //!< Expected number of false counterparts
+  double      mu;               //!< Expected number of false counterparts
   double      prob_pos;         //!< Counterpart probability
   double      prob_chance;      //!< Chance coincidence probability
   double      prob_prior;       //!< Counterpart prior probability
@@ -486,9 +489,11 @@ private:
   double        m_num_claimed;      //!< Number of claimed identifications
   double        m_num_lr_div;       //!< Number of divergent LR
   double        m_sum_pid;          //!< Sum of P(ID|D) before thresholding
-  double        m_sum_pid_thr;      //!< Sum of P(ID|D) after thresholding
   double        m_sum_pc;           //!< Sum of P(C|D) before thresholding
+  double        m_sum_lr;           //!< Sum of LR before thresholding
+  double        m_sum_pid_thr;      //!< Sum of P(ID|D) after thresholding
   double        m_sum_pc_thr;       //!< Sum of P(C|D) after thresholding
+  double        m_sum_lr_thr;       //!< Sum of LR after thresholding
   double        m_reliability;      //!< Reliability
   double        m_completeness;     //!< Completeness
   double        m_fract_not_unique; //!< Fraction of non-unique sources

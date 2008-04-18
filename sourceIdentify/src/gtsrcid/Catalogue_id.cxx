@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.25  2008/04/18 10:43:20  jurgen
+Allow for divergent LRs (flag them)
+
 Revision 1.24  2008/04/16 22:00:34  jurgen
 Compute unique posterior probabilities
 
@@ -183,7 +186,6 @@ Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
       // Optionally dump counterpart candidats
       if (par->logNormal()) {
         cid_dump(par, src, status);
-        //Log(Log_2, "");
       }
 
      } while (0); // End of main do-loop
@@ -360,7 +362,7 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           src->cc[i].angsep           = 0.0;
           src->cc[i].psi              = 0.0;
           src->cc[i].posang           = 0.0;
-          src->cc[i].lambda           = 0.0;
+          src->cc[i].mu               = 0.0;
           src->cc[i].prob_pos         = 0.0;
           src->cc[i].prob_chance      = 0.0;
           src->cc[i].prob_prior       = 0.0;
@@ -869,7 +871,7 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
  * \f[ {\tt PDF\_CHANCE} = 2 \frac{r}{r_0^2} \exp(-r^2 / r_0^2) \f]
  *
  * This method updates the following fields \n
- * CCElement::lambda (expected number of confusing sources)\n
+ * CCElement::mu (expected number of confusing sources)\n
  * CCElement::prob_chance (chance coincidence probability)\n
  * CCElement::pdf_chance (chance coincidence probability density)\n
  * The method also updates the corresponding columns in the in-memory FITS file.
@@ -897,7 +899,7 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
         continue;
 
       // Allocate vector columns for in-memory FITS file update
-      std::vector<double> col_lambda;
+      std::vector<double> col_mu;
       std::vector<double> col_prob_chance;
       std::vector<double> col_pdf_chance;
 
@@ -916,24 +918,24 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
 
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
-        double r_div_r02    = src->cc[iCC].angsep * pi * src->rho;
-        src->cc[iCC].lambda = r_div_r02 * src->cc[iCC].angsep;
+        double r_div_lambda2 = src->cc[iCC].angsep * pi * src->rho;
+        src->cc[iCC].mu      = r_div_lambda2 * src->cc[iCC].angsep;
 
         // Compute chance coincidence probability
-        double exp_lambda        = exp(-src->cc[iCC].lambda);
-        src->cc[iCC].prob_chance = 1.0 - exp_lambda;
-        src->cc[iCC].pdf_chance  = 2.0 * r_div_r02 * exp_lambda;
+        double exp_mu            = exp(-src->cc[iCC].mu);
+        src->cc[iCC].prob_chance = 1.0 - exp_mu;
+        src->cc[iCC].pdf_chance  = 2.0 * r_div_lambda2 * exp_mu;
 
         // Add result to column vectors
-        col_lambda.push_back(src->cc[iCC].lambda);
+        col_mu.push_back(src->cc[iCC].mu);
         col_prob_chance.push_back(src->cc[iCC].prob_chance);
         col_pdf_chance.push_back(src->cc[iCC].pdf_chance);
 
       } // endfor: looped over all counterpart candidates
 
       // Update in-memory columns
-      status = cfits_set_col(m_memFile, par, OUTCAT_COL_LAMBDA_NAME,
-                             col_lambda, status);
+      status = cfits_set_col(m_memFile, par, OUTCAT_COL_MU_NAME,
+                             col_mu, status);
       status = cfits_set_col(m_memFile, par, OUTCAT_COL_PROB_CHANCE_NAME,
                              col_prob_chance, status);
       status = cfits_set_col(m_memFile, par, OUTCAT_COL_PDF_CHANCE_NAME,
@@ -1569,9 +1571,9 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
                 " (dP/dr=%11.4e)",
                 src->cc[iCC].prob_pos*100.0, src->cc[iCC].pdf_pos);
             Log(Log_2, "    Chance coincidence probability : %7.3f %%"
-                " (dP/dr=%11.4e, lambda=%.3f)",
+                " (dP/dr=%11.4e, mu=%.3f)",
                 src->cc[iCC].prob_chance*100.0, src->cc[iCC].pdf_chance,
-                src->cc[iCC].lambda);
+                src->cc[iCC].mu);
             Log(Log_2, "    Prior association probability .: %7.3f %%",
                 src->cc[iCC].prob_prior*100.0);
             Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
