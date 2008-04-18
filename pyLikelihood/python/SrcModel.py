@@ -48,7 +48,11 @@ class SourceModel(object):
             name = item.getAttribute('name').encode()
             for key in item.attributes.keys():
                 value = item.getAttribute(key)
-                self.srcs[name].__dict__[key] = self._convertType(value)
+                try:
+                    eval('self.srcs[name].src.%s' % key)
+                except AttributeError:
+                    print "adding attribute ", key
+                    self.srcs[name].__dict__[key] = self._convertType(value)
     def _convertType(self, value):
         try:
             return int(value)
