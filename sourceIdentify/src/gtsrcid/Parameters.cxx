@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.13  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.12  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -132,6 +135,7 @@ void Parameters::init_memory(void) {
       m_srcPosError = 0.0;
       m_cptPosError = 0.0;
       m_maxNumCpt   = 0;
+      m_catch22     = 0;
       m_chatter     = 0;
       m_clobber     = 0;
       m_debug       = 0;
@@ -302,6 +306,11 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       if (status != STATUS_OK)
         continue;
 
+      // Check for catch-22
+      if ((s_probPrior.find("catch-22",0) != std::string::npos) ||
+          (s_probPrior.find("catch22",0)  != std::string::npos))
+        m_catch22 = 1;
+
     } while (0); // End of main do-loop
 
     // Return status
@@ -341,8 +350,11 @@ Status Parameters::dump(Status status) {
       Log(Log_1, " Output catalogue name ............: %s", m_outCatName.c_str());
       Log(Log_1, " Association probability ..........: PROB = %s",
           m_probMethod.c_str());
-      Log(Log_1, " Counterpart association prior ....: PROB_PRIOR = %s",
-          m_probPrior.c_str());
+      if (m_catch22)
+        Log(Log_1, " Counterpart association prior ....: CATCH-22");
+      else
+        Log(Log_1, " Counterpart association prior ....: PROB_PRIOR = %s",
+            m_probPrior.c_str());
       Log(Log_1, " Probability threshold ............: %.3e", m_probThres);
       Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
       if ((n = m_outCatQtyName.size()) > 0) {

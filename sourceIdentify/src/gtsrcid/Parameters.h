@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.11  2008/03/26 13:37:10  jurgen
+Generalize probability calculation and implement Bayesian method
+
 Revision 1.10  2008/03/21 09:10:12  jurgen
 Enhance code documentation.
 
@@ -104,6 +107,7 @@ private:
   std::string              m_probPrior;        //!< Prior probability formula
   double                   m_probThres;        //!< Probability threshold
   long                     m_maxNumCpt;        //!< Maximum # of counterparts
+  int                      m_catch22;          //!< Perform catch-22 iterations
   std::vector<std::string> m_outCatQtyName;    //!< New output catalogue quantities
   std::vector<std::string> m_outCatQtyFormula; //!< New output catalogue formulae
   std::vector<std::string> m_select;           //!< Selections

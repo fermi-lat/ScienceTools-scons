@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.32  2008/04/18 16:14:16  jurgen
+Add LR statistics to log file
+
 Revision 1.31  2008/04/18 10:43:20  jurgen
 Allow for divergent LRs (flag them)
 
@@ -218,7 +221,7 @@ namespace sourceIdentify {
 #define OUTCAT_COL_PROB_POST_C_UCD    ""
 //
 #define OUTCAT_COL_LR_COLNUM          16
-#define OUTCAT_COL_LR_NAME            "LIKRAT"
+#define OUTCAT_COL_LR_NAME            "LOGLR"
 #define OUTCAT_COL_LR_FORM            "1D"
 #define OUTCAT_COL_LR_UNIT            ""
 #define OUTCAT_COL_LR_UCD             ""
@@ -262,10 +265,14 @@ namespace sourceIdentify {
 #define SRC_FORMAT "  RA=%8.4f  DE=%8.4f  e_maj=%7.4f  e_min=%7.4f  e_ang=%6.2f"
 
 /* Class constants __________________________________________________________ */
-const double c_filter_maxsep = 4.0;          //!< Minimum filter radius
-const double c_prob_min      = 1.0e-20;      //!< Minimum probability threshold
-//const double c_filter_maxsep = 180.0;        //!< Minimum filter radius
-//const double c_prob_min      = 0.0;          //!< Minimum probability threshold
+const double c_filter_maxsep  = 4.0;     //!< Minimum filter radius
+const double c_prob_min       = 1.0e-20; //!< Minimum probability threshold
+//const double c_filter_maxsep  = 180.0;   //!< Minimum filter radius
+//const double c_prob_min       = 0.0;     //!< Minimum probability threshold
+const int    c_iter_max       = 10;      //!< Maximum number of catch-22 iterations
+const double c_prob_prior     = 0.1;     //!< Initial catch-22 prior
+const double c_prob_prior_min = 0.0001;  //!< Minimum catch-22 prior
+const double c_prob_prior_max = 0.95;    //!< Maximum catch-22 prior
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -276,7 +283,6 @@ const double deg2rad     =  0.0174532925199432954743717;
 const double rad2deg     = 57.295779513082322864647722;
 const double dnorm       =  2.9957230;
 const double twodnorm    =  2.0 * dnorm;
-const double max_exparg  = double(int(log(DBL_MAX-1.0)));
 
 /* Probability scaling constants ____________________________________________ */
 const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
@@ -351,9 +357,10 @@ typedef struct {                      // Catalogue object information
 typedef struct {                      // Source information
   int                     iSrc;         //!< Source index
   ObjectInfo             *info;         //!< Source information
-  int                     numCC;        //!< Number of counterpart candidates
   int                     numFilter;    //!< Number of filter step candidates
+  int                     numSelect;    //!< Number of selection step candidates
   int                     numRefine;    //!< Number of refine step candidates
+  int                     numClaimed;   //!< Number of claimed candidates
   CCElement              *cc;           //!< List of counterpart candidates
   double                  filter_rad;   //!< Filter step radius
   double                  ring_rad_min; //!< Density ring minimum
@@ -409,17 +416,18 @@ private:
   Status get_input_catalogue(Parameters *par, InCatalogue *in, double posErr,
                              Status status);
   Status dump_descriptor(Parameters *par, InCatalogue *in, Status status);
-  Status compute_prob_post_cat(Parameters *par, Status status);
-  Status compute_prob_post(Parameters *par, Status status);
+  Status compute_prob_post_cat(Parameters *par, Status status, int quiet = 0);
+  Status compute_prob_post(Parameters *par, Status status, int quiet = 0);
   Status compute_prob(Parameters *par, Status status);
+  Status catch22(Parameters *par, Status status);
   Status dump_results(Parameters *par, Status status);
   //
   // Low-level source identification methods
   // ---------------------------------------
   Status      cid_source(Parameters *par, SourceInfo *src, Status status);
   Status      cid_filter(Parameters *par, SourceInfo *src, Status status);
-  Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
   Status      cid_select(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_pos(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_chance(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_prior(Parameters *par, SourceInfo *src, Status status);
@@ -427,7 +435,7 @@ private:
   Status      cid_prob(Parameters *par, SourceInfo *src, Status status);
   Status      cid_local_density(Parameters *par, SourceInfo *src, Status status);
   Status      cid_global_density(Parameters *par, SourceInfo *src, Status status);
-  Status      cid_sort(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_sort(Parameters *par, SourceInfo *src, int num, Status status);
   Status      cid_dump(Parameters *par, SourceInfo *src, Status status);
   std::string cid_assign_src_name(std::string name, int row);
   //
@@ -436,7 +444,8 @@ private:
   Status cfits_create(fitsfile **fptr, char *filename, Parameters *par, 
                       Status status);
   Status cfits_clear(fitsfile *fptr, Parameters *par, Status status);
-  Status cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src, Status status);
+  Status cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src, int num,
+                   Status status);
   Status cfits_eval(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_eval_column(fitsfile *fptr, Parameters *par, std::string column,
                            std::string formula, Status status);
@@ -452,6 +461,8 @@ private:
                                      std::string column_arg,
                                      Status status);
   Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
+  Status cfits_update(fitsfile *fptr, Parameters *par, SourceInfo *src, int num,
+                      Status status);
   Status cfits_select(fitsfile *fptr, Parameters *par, SourceInfo *src,
                       Status status);
   Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
@@ -484,6 +495,12 @@ private:
   int                      m_num_Sel;        //!< Number of selection criteria
   int                     *m_cpt_stat;       //!< Counterpart statistics
   std::vector<std::string> m_cpt_names;      //!< Counterpart names for each source
+  //
+  // Catch-22
+  double        m_prior;            //!< Catch-22 prior probability
+  double        m_prior_min;        //!< Minimum prior probability
+  double        m_prior_max;        //!< Maximum prior probability
+  int           m_iter;             //!< Number of catch-22 iterations
   //
   // Association results
   double        m_num_claimed;      //!< Number of claimed identifications

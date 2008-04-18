@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.22  2008/04/18 16:14:16  jurgen
+Add LR statistics to log file
+
 Revision 1.21  2008/04/15 21:24:12  jurgen
 Introduce sparse matrix for source catalogue probability computation.
 
@@ -947,7 +950,7 @@ Status Catalogue::cfits_clear(fitsfile *fptr, Parameters *par, Status status) {
  * @param[in] status Error status.
  ******************************************************************************/
 Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
-                            Status status) {
+                            int num, Status status) {
 
     // Declare local variables
     int           fstatus;
@@ -988,7 +991,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
         continue;
 
       // Fall through if there are no counterpart candidates
-      if (src->numCC < 1)
+      if (num < 1)
         continue;
 
       // Determine number of rows in actual table
@@ -1003,7 +1006,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
       // Define the rows that should be inserted
       firstrow = (long)nactrows;
       frow     = firstrow + 1;
-      nrows    = (long)src->numCC;
+      nrows    = (long)num;
 
       // Insert rows for the new counterpart candidates
       fstatus = fits_insert_rows(fptr, firstrow, nrows, &fstatus);
@@ -1534,7 +1537,7 @@ Status Catalogue::cfits_eval_column(fitsfile *fptr, Parameters *par,
       }
 
       // Optionally dump evaluated catalogue quantity information
-      if (par->logExplicit()) {
+      if (par->logVerbose()) {
         Log(Log_2, "  New quantity ....................: %s = %s",
             column.c_str(), formula.c_str());
       }
@@ -1932,6 +1935,73 @@ Status Catalogue::cfits_eval_clear(fitsfile *fptr, Parameters *par,
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cfits_eval_clear"
+          " (status=%d)", status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Update counterpart candidates in FITS file
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
+ * @param[in] num Number of sources to update.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::cfits_update(fitsfile *fptr, Parameters *par, SourceInfo *src,
+                               int num, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_update");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (num < 1)
+        continue;
+
+      // Clear in-memory catalogue
+      status = cfits_clear(m_memFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to clear in-memory FITS catalogue.",
+                       (Status)status);
+        continue;
+      }
+
+      // Setup in-memory catalogue
+      status = cfits_add(m_memFile, par, src, num, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to add counterpart candidates to"
+                       " in-memory FITS catalogue.", (Status)status);
+        continue;
+      }
+
+        // Evaluate in-memory catalogue quantities
+        status = cfits_eval(m_memFile, par, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to evaluate new quantities in in-memory"
+                         " FITS catalogue.", (Status)status);
+          continue;
+        }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_update"
           " (status=%d)", status);
 
     // Return status

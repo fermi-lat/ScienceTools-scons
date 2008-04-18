@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.39  2008/04/18 16:14:16  jurgen
+Add LR statistics to log file
+
 Revision 1.38  2008/04/18 10:43:20  jurgen
 Allow for divergent LRs (flag them)
 
@@ -829,6 +832,12 @@ void Catalogue::init_memory(void) {
       m_num_Sel          = 0;
       m_cpt_stat         = NULL;
 
+      // Catch-22
+      m_prior     = c_prob_prior;
+      m_prior_min = c_prob_prior_min;
+      m_prior_max = c_prob_prior_max;
+      m_iter      = 0;
+
       // Initialise association results
       m_num_claimed      = 0.0;
       m_sum_pid          = 0.0;
@@ -1278,6 +1287,7 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
  *
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] status Error status.
+ * @param[in] quiet No information logging.
  *
  * To perform fast computation a sparse matrix is setup that hold the 
  * probabilities Pik'(H1|D). The rows of the matrix correspond to the NLAT
@@ -1291,7 +1301,8 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
  * Products over k (the LAT source indices) are quickly done by multiplication
  * over a column.
  ******************************************************************************/
-Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
+Status Catalogue::compute_prob_post_cat(Parameters *par, Status status,
+                                        int quiet) {
 
     // Temporary memory pointer
     double* tmp_prob   = NULL;  // Sparse matrix elements
@@ -1307,7 +1318,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
     do {
 
       // Dump header
-      if (par->logNormal()) {
+      if (par->logNormal() && !quiet) {
         Log(Log_2, "");
         Log(Log_2, "Compute catalogue association probabilities:");
         Log(Log_2, "============================================");
@@ -1340,7 +1351,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
       // tmp_istart[m_cpt.numLoad] will contain the total number of counterparts
       // that occured.
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
           int index = m_info[k].cc[i].index + 1;
           tmp_istart[index] += 1;
         }
@@ -1378,7 +1389,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
       // exhausted. This should in principle never occur! If it occurs,
       // there is a logical error in this code.
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
 
           // Get sparse matrix column
           int col = m_info[k].cc[i].index;
@@ -1414,7 +1425,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
       // Compute probability products. This is now done quickly by multiplying
       // down a column
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
 
           // Get sparse matrix column
           int col = m_info[k].cc[i].index;
@@ -1437,7 +1448,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
 
       // Initialise normalization sums with Pi(H-|D)
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
           int index      = m_info[k].cc[i].index;
           tmp_sum[index] = m_info[k].cc[i].prob_prod1;
         }
@@ -1445,7 +1456,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
 
       // Compute catalogue posterior probabilities and update normalization sum
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
 
           // Compute posterior probability
           m_info[k].cc[i].prob_post_cat = m_info[k].cc[i].prob_post_single *
@@ -1460,7 +1471,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
 
       // Copy normalization sum into counterpart candidate field
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
           int index                 = m_info[k].cc[i].index;
           m_info[k].cc[i].prob_norm = tmp_sum[index];
         }
@@ -1468,7 +1479,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
 
       // Normalize catalogue posterior probabilities
       for (int k = 0; k < m_src.numLoad; ++k) {
-        for (int i = 0; i < m_info[k].numCC; ++i) {
+        for (int i = 0; i < m_info[k].numRefine; ++i) {
           if (m_info[k].cc[i].prob_norm > 0.0)
             m_info[k].cc[i].prob_post_cat /= m_info[k].cc[i].prob_norm;
           else
@@ -1477,7 +1488,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
       }
 
       // Dump catalogue association probabilities
-      if (par->logNormal()) {
+      if (par->logExplicit() && !quiet) {
         Log(Log_2,
             "  Source index   Counterpart index     P(H0|D) =>  P(Hk|D) "
             "    Pi_k' P  Pi_k'\\k P     Si");
@@ -1485,7 +1496,7 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
             "  ------------  ------------------   --------- => ---------"
             "  ---------  ---------   -----");
         for (int k = 0; k < m_src.numLoad; ++k) {
-          for (int i = 0; i < m_info[k].numCC; ++i) {
+          for (int i = 0; i < m_info[k].numRefine; ++i) {
             Log(Log_2,
                 "  Source %5d: Counterpart %6d : %8.4f%% => %8.4f%%"
                 " (%8.4f%%, %8.4f%%, %6.3f)",
@@ -1523,8 +1534,9 @@ Status Catalogue::compute_prob_post_cat(Parameters *par, Status status) {
  *
  * @param[in] par Pointer to gtsrcid parameters.
  * @param[in] status Error status.
+ * @param[in] quiet No information logging.
  ******************************************************************************/
-Status Catalogue::compute_prob_post(Parameters *par, Status status) {
+Status Catalogue::compute_prob_post(Parameters *par, Status status, int quiet) {
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1534,7 +1546,7 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
     do {
 
       // Dump header
-      if (par->logNormal()) {
+      if (par->logNormal() && !quiet) {
         Log(Log_2, "");
         Log(Log_2, "Compute unique catalogue association probabilities:");
         Log(Log_2, "===================================================");
@@ -1548,13 +1560,13 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
       for (int k = 0; k < m_src.numLoad; ++k) {
 
         // Perform computations only if there are counterparts for this source
-        if (m_info[k].numCC > 0) {
+        if (m_info[k].numRefine > 0) {
 
           // Compute products
-          for (int i = 0; i < m_info[k].numCC; ++i) {
+          for (int i = 0; i < m_info[k].numRefine; ++i) {
             m_info[k].cc[i].prob_prod1 = 1.0; // all i'
             m_info[k].cc[i].prob_prod2 = 1.0; // all i' except of i
-            for (int ip = 0; ip < m_info[k].numCC; ++ip) {
+            for (int ip = 0; ip < m_info[k].numRefine; ++ip) {
               if (i == ip)
                 m_info[k].cc[i].prob_prod1  = (1.0 - m_info[k].cc[ip].prob_post_cat);
               else
@@ -1566,7 +1578,7 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
           // Compute non-normalized posterior probabilities and normalization
           // factor
           double norm = m_info[k].cc[0].prob_prod1;
-          for (int i = 0; i < m_info[k].numCC; ++i) {
+          for (int i = 0; i < m_info[k].numRefine; ++i) {
             m_info[k].cc[i].prob_post = m_info[k].cc[i].prob_post_cat *
                                         m_info[k].cc[i].prob_prod2;
             norm += m_info[k].cc[i].prob_post ;
@@ -1574,13 +1586,13 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
 
           // Compute unique association probabilities
           if (norm > 0.0) {
-            for (int i = 0; i < m_info[k].numCC; ++i) {
+            for (int i = 0; i < m_info[k].numRefine; ++i) {
               m_info[k].cc[i].prob_post /= norm;
               m_info[k].cc[i].prob_norm  = norm;
             }
           }
           else {
-            for (int i = 0; i < m_info[k].numCC; ++i) {
+            for (int i = 0; i < m_info[k].numRefine; ++i) {
               m_info[k].cc[i].prob_post = 0.0;
               m_info[k].cc[i].prob_norm = norm;
             }
@@ -1599,7 +1611,7 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
         m_fract_not_unique /= num;
 
       // Dump catalogue association probabilities
-      if (par->logNormal()) {
+      if (par->logExplicit() && !quiet) {
         Log(Log_2,
             "  Source index   Counterpart index     P(Hk|D) =>  P(Hi|D) "
             "    Pi_i' P  Pi_i'\\i P     Sk");
@@ -1607,7 +1619,7 @@ Status Catalogue::compute_prob_post(Parameters *par, Status status) {
             "  ------------  ------------------   --------- => ---------"
             "  ---------  ---------   -----");
         for (int k = 0; k < m_src.numLoad; ++k) {
-          for (int i = 0; i < m_info[k].numCC; ++i) {
+          for (int i = 0; i < m_info[k].numRefine; ++i) {
             Log(Log_2,
                 "  Source %5d: Counterpart %6d : %8.4f%% => %8.4f%%"
                 " (%8.4f%%, %8.4f%%, %6.3f)",
@@ -1678,7 +1690,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         }
 
         // Sort counterpart candidates by decreasing probability
-        status = cid_sort(par, &(m_info[k]), status);
+        status = cid_sort(par, &(m_info[k]), m_info[k].numRefine, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to sort counterpart candidates.",
@@ -1686,8 +1698,8 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
           break;
         }
 
-        // Sum up probabilities before thresholding
-        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+        // Sum up probabilities before thresholding.
+        for (int iCC = 0; iCC < m_info[k].numRefine; ++iCC) {
           m_sum_pid += m_info[k].cc[iCC].prob;
           m_sum_pc  += 1.0 - m_info[k].cc[iCC].prob;
           m_sum_lr  += m_info[k].cc[iCC].likrat;
@@ -1696,7 +1708,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         // Determine the number of counterpart candidates above the probability
         // threshold
         int numUseCC = 0;
-        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+        for (int iCC = 0; iCC < m_info[k].numRefine; ++iCC) {
           if (m_info[k].cc[iCC].prob >= par->m_probThres)
             numUseCC++;
           else
@@ -1708,17 +1720,17 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
           numUseCC = par->m_maxNumCpt;
 
         // Eliminate counterpart candidates below threshold.
-        m_info[k].numCC = numUseCC;
+        m_info[k].numClaimed = numUseCC;
 
         // Set unique counterpart candidate identifier (overwrite former ID)
         char cid[OUTCAT_MAX_STRING_LEN];
-        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+        for (int iCC = 0; iCC < m_info[k].numClaimed; ++iCC) {
           sprintf(cid, "CC_%5.5d_%5.5d", k+1, iCC+1);
           m_info[k].cc[iCC].id = cid;
         }
 
         // Sum up probabilities after thresholding
-        for (int iCC = 0; iCC < m_info[k].numCC; ++iCC) {
+        for (int iCC = 0; iCC < m_info[k].numClaimed; ++iCC) {
           m_sum_pid_thr += m_info[k].cc[iCC].prob;
           m_sum_pc_thr  += 1.0 - m_info[k].cc[iCC].prob;
           m_sum_lr_thr  += m_info[k].cc[iCC].likrat;
@@ -1727,7 +1739,7 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
         }
 
         // Sum the total number of claimed associations
-        m_num_claimed += double(m_info[k].numCC);
+        m_num_claimed += double(m_info[k].numClaimed);
 
       } // endfor: looped over all sources
 
@@ -1740,6 +1752,212 @@ Status Catalogue::compute_prob(Parameters *par, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::compute_prob (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Perform catch-22 iterations
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ ******************************************************************************/
+Status Catalogue::catch22(Parameters *par, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::catch22");
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through if  catch-22 is not requested
+      if (!par->m_catch22)
+        continue;
+
+      // Dump header
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Catch-22 computation of prior:");
+        Log(Log_2, "==============================");
+      }
+
+      // Initialise convergence control
+      double delta        = 0.0;
+      double eps          = 0.0;
+      double lambda       = 0.0;
+      int    hit_boundary = 0;
+
+      // Perform posterior probability iterations for catch-22 scheme
+      for (m_iter = 0; m_iter < c_iter_max; ++m_iter) {
+
+        // Break if prior run out of range
+        if (hit_boundary)
+          break;
+
+        // Make next guess for prior
+        double new_prior = 0.0;
+        for (int k = 0; k < m_src.numLoad; ++k) {
+          for (int i = 0; i < m_info[k].numRefine; ++i)
+            new_prior += m_info[k].cc[i].prob_post;
+        }
+        new_prior /= double(m_cpt.numLoad);
+
+        // Keep prior in range
+        if (new_prior < m_prior_min) {
+          new_prior    = m_prior_min;
+          hit_boundary = 1;
+        }
+        if (new_prior > m_prior_max) {
+          new_prior    = m_prior_max;
+          hit_boundary = 1;
+        }
+
+        // Break if converged
+        delta  = fabs(new_prior-m_prior);
+        eps    = (m_prior > 0.0) ? delta/m_prior : 0.0;
+        lambda = (m_prior > 0.0) ? new_prior/m_prior : 0.0;
+        if (eps < 0.01 || delta < 1.0e-30) {
+          if (par->logNormal()) {
+            Log(Log_2, " Catch-22 converged prior prob. ...: %10.6f%%",
+                m_prior*100.0);
+            if (par->logExplicit()) {
+              Log(Log_2, "  Prior change (Lambda) ...........: %10.3f", lambda);
+              Log(Log_2, "  Relative convergence precision ..: %10.4f%%",
+                  eps*100.0);
+              Log(Log_2, "  Absolute convergence precision ..: %10.4f%%",
+                  delta*100.0);
+            }
+          }
+          break;
+        }
+
+        // Assign new prior
+        m_prior = new_prior;
+
+        // Dump new prior guess
+        if (par->logNormal()) {
+          if (par->logExplicit()) {
+            Log(Log_2, " Iteration %4d ...................:", m_iter+1);
+            Log(Log_2, "  New prior probability guess .....: %10.6f%%",
+                m_prior*100.0);
+            Log(Log_2, "  Prior change (Lambda) ...........: %10.3f", lambda);
+          }
+          else {
+            Log(Log_2, " Iteration %4d ...................: %10.6f%%",
+                m_iter+1, m_prior*100.0);
+          }
+        }
+
+        // Re-compute PROB_POST_SINGLE for all sources
+        for (int k = 0; k < m_src.numLoad; ++k) {
+
+          // Update in-memory catalogue
+          status = cfits_update(m_memFile, par, &(m_info[k]), m_info[k].numSelect,
+                             status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to update counterpart candidates"
+                           " in-memory FITS catalogue.", (Status)status);
+            break;
+          }
+
+          // Compute PROB_PRIOR
+          status = cid_prob_prior(par, &(m_info[k]), status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to re-compute PROB_PRIOR.",
+                  (Status)status);
+            break;
+          }
+
+          // Compute PROB_POST_SINGLE
+          status = cid_prob_post_single(par, &(m_info[k]), status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to re-compute PROB_POST_SINGLE.",
+                  (Status)status);
+            break;
+          }
+
+          // Copy over probabilities
+          for (int i = 0; i < m_info[k].numSelect; ++i)
+            m_info[k].cc[i].prob = m_info[k].cc[i].prob_post_single;
+
+          // Sort probabilities
+          status = cid_sort(par, &(m_info[k]), m_info[k].numSelect, status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to sort probabilities.",
+                  (Status)status);
+            break;
+          }
+
+          // Select only relevant counterparts
+          m_info[k].numRefine = 0;
+          for (int i = 0; i < m_info[k].numSelect; ++i) {
+            if (m_info[k].cc[i].prob_post_single <= c_prob_min)
+              break;
+            m_info[k].numRefine++;
+          }
+
+        } // endfor: looped over all sources
+        if (status != STATUS_OK)
+          break;
+
+        // Compute probabilities for source catalogue association
+        status = compute_prob_post_cat(par, status, 1);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to compute catalogue association"
+                " probabilities.", (Status)status);
+          break;
+        }
+
+        // Compute probabilities for unique source catalogue association
+        status = compute_prob_post(par, status, 1);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to compute unique catalogue association"
+                " probabilities.", (Status)status);
+          break;
+        }
+
+      } // endfor: looped over posterior probability iterations
+
+      // Signal if boundary was hit
+      if (hit_boundary) {
+        if (par->logNormal()) {
+          Log(Warning_2, " Prior hit probability boundary ...: %10.6f%%"
+              " [%10.6f%%, %10.6f%%]",
+              m_prior*100.0, m_prior_min*100.0, m_prior_max*100.0);
+        }
+      }
+
+      // Detect convergence problem
+      if (m_iter >= c_iter_max) {
+        if (par->logNormal()) {
+          Log(Warning_2, " Catch-22 NON-CONVERGED prior .....: %10.6f%%",
+              m_prior*100.0);
+          if (par->logExplicit()) {
+            Log(Warning_2, "  Prior change (Lambda) ...........: %10.3f", lambda);
+            Log(Warning_2, "  Relative convergence precision ..: %10.4f%%",
+                eps*100.0);
+            Log(Warning_2, "  Absolute convergence precision ..: %10.4f%%",
+                delta*100.0);
+          }
+        }
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::catch22 (status=%d)",
           status);
 
     // Return status
@@ -1794,9 +2012,11 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         sprintf(add, " Sel%2.2d", iSel+1);
         strcat(select, add);
       }
+      sprintf(add, " Select");
+      strcat(select, add);
       sprintf(add, " Refine");
       strcat(select, add);
-      sprintf(add, " >=Pthr");
+      sprintf(add, "  Claim");
       strcat(select, add);
 
       // Dump header
@@ -1810,14 +2030,16 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         src = &(m_src.object[iSrc]);
 
         // Build selection string
-        sprintf(select, " %6d", m_cpt_stat[iSrc*(m_num_Sel+1)]);
+        sprintf(select, " %6d", m_info[iSrc].numFilter);
         for (int iSel = 0; iSel < m_num_Sel; ++iSel) {
           sprintf(add, " %5d", m_cpt_stat[iSrc*(m_num_Sel+1) + iSel+1]);
           strcat(select, add);
         }
+        sprintf(add, " %6d", m_info[iSrc].numSelect);
+        strcat(select, add);
         sprintf(add, " %6d", m_info[iSrc].numRefine);
         strcat(select, add);
-        sprintf(add, " %6d", m_info[iSrc].numCC);
+        sprintf(add, " %6d", m_info[iSrc].numClaimed);
         strcat(select, add);
 
         // Dump information
@@ -1825,7 +2047,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
             iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
 
         // Collect number of associated sources
-        if (m_info[iSrc].numCC > 0)
+        if (m_info[iSrc].numClaimed > 0)
           n_src_assoc++;
 
       } // endfor: looped over all sources
@@ -1858,10 +2080,16 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
           m_reliability*100.0);
       Log(Log_2, " Completeness of identifications ...............: %10.3f%%",
           m_completeness*100.0);
-      Log(Log_2, " Total LR ......................................: %10.1f"
-                 " (before threshold: %.1f)", m_sum_lr_thr, m_sum_lr);
+      Log(Log_2, " Total log likelihood-ratio ....................: %10.3f"
+                 " (before threshold: %.3f)", m_sum_lr_thr, m_sum_lr);
       Log(Log_2, " Number of associations with divergent LR ......: %10d",
           m_num_lr_div);
+      if (par->m_catch22) {
+        Log(Log_2, " Catch-22 converged prior probability ..........: %10.6f%%",
+            m_prior*100.0);
+        Log(Log_2, " Number of Catch-22 iterations .................: %10.d",
+            m_iter);
+      }
 
     } while (0); // End of main do-loop
 
@@ -2064,9 +2292,10 @@ Status Catalogue::build(Parameters *par, Status status) {
       for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
         m_info[iSrc].iSrc         = iSrc;
         m_info[iSrc].info         = &(m_src.object[iSrc]);
-        m_info[iSrc].numCC        = 0;
         m_info[iSrc].numFilter    = 0;
+        m_info[iSrc].numSelect    = 0;
         m_info[iSrc].numRefine    = 0;
+        m_info[iSrc].numClaimed   = 0;
         m_info[iSrc].cc           = NULL;
         m_info[iSrc].filter_rad   = 0.0;
         m_info[iSrc].ring_rad_min = 0.0;
@@ -2103,15 +2332,10 @@ Status Catalogue::build(Parameters *par, Status status) {
           m_cpt_stat[iSrc*(m_num_Sel+1) + iSel] = 0;
       }
 
-      // Compute PROB_POST_SINGLE for all sources
-      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
-
-        // Get counterpart candidates for the source
+      // Get plausible counterpart candidates and compute PROB_POST_SINGLE
+      // for them
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
         status = cid_source(par, &(m_info[iSrc]), status);
-        if (status != STATUS_OK)
-          break;
-
-      } // endfor: looped over all sources
       if (status != STATUS_OK)
         continue;
 
@@ -2133,6 +2357,15 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
       }
 
+      // Perform catch-22 iterations
+      status = catch22(par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to perform catch-22 iterations.",
+              (Status)status);
+        continue;
+      }
+
       // Compute association probabilities
       status = compute_prob(par, status);
       if (status != STATUS_OK) {
@@ -2142,13 +2375,14 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
       }
 
-      // Save counterpart candidates for all sources
+      // Save claimed counterpart candidates for all sources
       for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc) {
-        status = cfits_add(m_outFile, par, &(m_info[iSrc]), status);
+        status = cfits_add(m_outFile, par, &(m_info[iSrc]), 
+                           m_info[iSrc].numClaimed, status);
         if (status != STATUS_OK) {
           if (par->logTerse())
             Log(Error_2, "%d : Unable to add counterpart candidates for source"
-                " %d to FITS output catalogue '%s'.", 
+                " %d to FITS output catalogue '%s'.",
                 (Status)status, iSrc+1, par->m_outCatName.c_str());
           break;
         }
