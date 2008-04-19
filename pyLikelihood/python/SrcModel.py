@@ -28,6 +28,7 @@ class SourceModel(object):
         return src
     def add(self, source):
         try:
+            print "adding ", source.getName()
             self.logLike.addSource(source)
             self._loadSources()
         except:
@@ -50,7 +51,6 @@ class SourceModel(object):
                 try:
                     eval('self.srcs[name].src.%s' % key)
                 except AttributeError:
-                    print "adding attribute ", key
                     self.srcs[name].__dict__[key] = self._convertType(value)
     def _convertType(self, value):
         try:
