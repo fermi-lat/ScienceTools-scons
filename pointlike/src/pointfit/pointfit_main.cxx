@@ -80,6 +80,8 @@ int main(int argc, char** argv)
             // fit the point: create the fitting object
             likelihoods.push_back(new PointSourceLikelihood(healpixdata, name, dir));
             PointSourceLikelihood& like =* likelihoods.back() ;
+
+
             // initial fit to all levels at current point
             like.maximize(); 
             // now localize it, return error circle radius
@@ -96,8 +98,8 @@ int main(int argc, char** argv)
                 << std::endl;
 
             directions.push_back(like.dir());
-            if( n==0 && first_is_center!=0){
-                PointSourceLikelihood::addBackgroundPointSource(&like);
+            if( n>0 && first_is_center!=0){
+                like.addBackgroundPointSource(likelihoods[0]);
             }
         }
         if( check_sigma){
