@@ -192,6 +192,8 @@ public:
 
     ///@brief integral for the energy limits, in the given direction
     virtual double integral(const astro::SkyDir& dir, double a, double b)const;
+
+    std::string name()const;
 private:
     const PointSourceLikelihood& m_psl;
     int m_mode;
