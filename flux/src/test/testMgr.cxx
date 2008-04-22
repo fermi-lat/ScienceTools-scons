@@ -6,6 +6,7 @@
 #include "flux/SpectrumFactoryTable.h"
 #include "flux/FluxMgr.h"
 #include "astro/GPS.h"
+#include "facilities/commonUtilities.h"
 
 #include <iostream>
 #include <fstream>
@@ -55,6 +56,7 @@ void flux_load() {
 
 
 int main(int argn, char * argc[]) {
+    facilities::commonUtilities::setupEnvironment();
     using std::cout;
     using std::endl;
     flux_load();
@@ -64,7 +66,7 @@ int main(int argn, char * argc[]) {
 
     //TESTING MULTIPLE XML INPUT
     std::vector<std::string> fileList;
-    fileList.push_back("$(FLUX_XML)/source_library.xml");
+    fileList.push_back(facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("flux"),"source_library.xml"));
     FluxMgr fm(fileList);
 
     //FluxMgr fm;

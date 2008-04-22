@@ -13,6 +13,7 @@ $Header$
 
 #include "xmlBase/Dom.h"
 #include "facilities/Util.h"     // for expandEnvVar
+#include "facilities/commonUtilities.h"
 
 #include "astro/PointingTransform.h"
 
@@ -27,7 +28,7 @@ $Header$
 using astro::GPS;
 
 FluxMgr::FluxMgr(const std::vector<std::string>& fileList, std::string dtdname)
-: m_dtd(dtdname.empty()? "$(FLUX_XML)/source.dtd" : dtdname )
+: m_dtd(dtdname.empty()? facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("flux"),"source.dtd") : dtdname )
 {
     if( fileList.empty() ){
         defaultFile();
@@ -42,7 +43,7 @@ void FluxMgr::defaultFile(){
 
     // must find the source_library.xml file.
     // set up the xml document to use for initialization parameters
-    input.push_back("$(FLUX_XML)/source_library.xml");	
+    input.push_back(facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("flux"),"source_library.xml"));
     init(input);
 }
 
