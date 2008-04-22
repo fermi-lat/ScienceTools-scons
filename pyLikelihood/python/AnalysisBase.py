@@ -15,7 +15,7 @@ import pyLikelihood as pyLike
 from SrcModel import SourceModel
 try:
     from SimpleDialog import SimpleDialog, map, Param
-except ImportError:
+except ImportError, message:
     print "Caught ImportError: ", message
     pass
 
