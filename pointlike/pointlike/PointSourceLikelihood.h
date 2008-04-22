@@ -17,7 +17,7 @@ $Header$
 #include <map>
 
 namespace embed_python { class Module; }
-namespace skymaps { class PhotonMap; class CompositeSkySpectrum;}
+namespace skymaps { class PhotonMap; class CompositeSkySpectrum; class EnergyBinner;}
 
 namespace pointlike {
 
@@ -158,6 +158,8 @@ private:
     astro::SkyDir m_dir; ///< common direction
     double m_dir_sigma;  ///< error circle from fit (radians)
     double m_TS;         ///< total TS value
+
+    skymaps::EnergyBinner* m_eb;
 
     bool m_verbose;
     std::ostream * m_out;
