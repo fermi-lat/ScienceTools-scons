@@ -10,6 +10,8 @@
 #include <iostream>
 #include <iomanip>
 
+namespace skymaps{class EnergyBinner;}
+
 namespace pointlike {
 /**
     @class ParamOptimization
@@ -45,6 +47,7 @@ private:
     const skymaps::PhotonMap m_data;            //points to skymap
     int m_minlevel;                               //minimum healpix level
     int m_maxlevel;                               //maximum healpix level
+    skymaps::EnergyBinner* m_eb;
 };
 
 }

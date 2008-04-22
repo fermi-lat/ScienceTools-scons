@@ -6,6 +6,7 @@ $Header$
 */
 
 #include "pointlike/ParamOptimization.h"
+#include "skymaps/EnergyBinner.h"
 #include "TMatrixD.h"
 #include <fstream>
 //#define PRINT_DEBUG
@@ -18,11 +19,8 @@ std::ofstream goldout("bracket_output.xls");
 
 ParamOptimization::ParamOptimization(const skymaps::PhotonMap &data, const std::vector<astro::SkyDir>& directions, std::ostream *out,int minlevel,int maxlevel) : 
 m_data(data)
-, m_minlevel(minlevel)
-, m_maxlevel(maxlevel)
 , m_out(out){
-    m_minlevel<data.minLevel()?m_minlevel=data.minLevel():m_minlevel;
-    m_maxlevel>data.minLevel()+data.levels()-1?m_maxlevel=data.minLevel()+data.levels()-1:m_maxlevel;
+    m_eb = skymaps::EnergyBinner::Instance(true);
     for(std::vector<astro::SkyDir>::const_iterator it = directions.begin();it!=directions.end();++it) {
         PointSourceLikelihood *pl = new pointlike::PointSourceLikelihood(data,"",*it);
         pl->maximize();
@@ -45,7 +43,7 @@ void ParamOptimization::compute(ParamOptimization::Param p) {
     int timeout = 30;
     double tol = 1e-3;
     //for each level, optimize
-    for(int iter=m_minlevel;iter<=m_maxlevel;++iter) {
+    for(int iter=0;iter<m_likes.front()->size();++iter) {
         int whileit =0;
         double maxfactor = 0;
         double osigma=0;
@@ -59,11 +57,11 @@ void ParamOptimization::compute(ParamOptimization::Param p) {
             // param = param*maxfactor if maxfactor is an appropriate value
             if(maxfactor>0) {
                 if(sigma) {
-                    osigma = PointSourceLikelihood::sigma_level(iter);
-                    PointSourceLikelihood::set_sigma_level(iter,osigma*pow(maxfactor,-0.5));
+                    osigma = PointSourceLikelihood::sigma_level(m_eb->level(iter/2,iter%2));
+                    PointSourceLikelihood::set_sigma_level(m_eb->level(iter/2,iter%2),osigma*pow(maxfactor,-0.5));
                 }else {
-                    osigma = PointSourceLikelihood::gamma_level(iter);
-                    PointSourceLikelihood::set_gamma_level(iter,osigma*maxfactor);
+                    osigma = PointSourceLikelihood::gamma_level(m_eb->level(iter/2,iter%2));
+                    PointSourceLikelihood::set_gamma_level(m_eb->level(iter/2,iter%2),osigma*maxfactor);
                 }
             }
             int i(0);

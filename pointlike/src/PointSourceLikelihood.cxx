@@ -19,7 +19,7 @@ $Header$
 #include <iomanip>
 #include <stdexcept>
 
-#define LEVELS
+//#define LEVELS
 
 using namespace astro;
 using namespace pointlike;
@@ -502,8 +502,8 @@ double PointSourceLikelihood::integral(const astro::SkyDir& dir, double emin, do
 
 void PointSourceLikelihood::recalc(int level) {
     // get PSF parameters from fits
-    double gamma( gamma_level(level) ),
-        sigma ( scale_factor(level)* sigma_level(level));
+    double gamma( gamma_level(m_eb->level(level/2,level%2)) ),
+        sigma ( scale_factor(m_eb->level(level/2,level%2))* sigma_level(m_eb->level(level/2,level%2)));
     find(level)->second->setgamma(gamma);
     find(level)->second->setsigma(sigma);
     find(level)->second->recalc();
