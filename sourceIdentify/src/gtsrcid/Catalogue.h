@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.33  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.32  2008/04/18 16:14:16  jurgen
 Add LR statistics to log file
 
@@ -271,8 +274,8 @@ const double c_prob_min       = 1.0e-20; //!< Minimum probability threshold
 //const double c_prob_min       = 0.0;     //!< Minimum probability threshold
 const int    c_iter_max       = 10;      //!< Maximum number of catch-22 iterations
 const double c_prob_prior     = 0.1;     //!< Initial catch-22 prior
-const double c_prob_prior_min = 0.0001;  //!< Minimum catch-22 prior
-const double c_prob_prior_max = 0.95;    //!< Maximum catch-22 prior
+const double c_prob_prior_min = 1.0e-20; //!< Minimum catch-22 prior
+const double c_prob_prior_max = 1.00;    //!< Maximum catch-22 prior
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -296,7 +299,10 @@ const double e_norm_99 = 1.0 / sqrt(4.6051713);  //!< 99.000%, 2 dof
 const std::string search_id[] = {"NAME", "ID", "stop"};
 
 /* Special function strings (need "stop" as last string !!!) ________________ */
-const std::string fct_names[] = {"gammln", "erf", "erfc", "stop"};
+const std::string fct_names[] = {"gammln", "erf",  "erfc",
+                                 "nsrc",   "nlat", "ncpt", "stop"};
+const int         fct_nargs[] = {1,        1,       1,
+                                 0,        0,       0};
 
 /* Type defintions __________________________________________________________ */
 typedef enum {                  // Position error type
@@ -457,8 +463,8 @@ private:
                                        Status status);
   Status cfits_eval_special_function(fitsfile *fptr, Parameters *par,
                                      std::string fct,
-                                     std::string column_res, 
-                                     std::string column_arg,
+                                     std::string column_res,
+                                     std::string column_arg, int nargs,
                                      Status status);
   Status cfits_eval_clear(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_update(fitsfile *fptr, Parameters *par, SourceInfo *src, int num,

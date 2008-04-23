@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.23  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.22  2008/04/18 16:14:16  jurgen
 Add LR statistics to log file
 
@@ -103,6 +106,7 @@ typedef struct {                          // Special functions
   std::vector <std::string> arg;            // Function arguments
   std::vector <std::string> colname_res;    // Result column names
   std::vector <std::string> colname_arg;    // Argument column names
+  std::vector <int>         nargs;          // Number of function arguments
 } SpecialFcts;
 
 
@@ -114,6 +118,7 @@ int g_col_special = 1;
 std::vector<double> funct_gammln(std::vector<double> arg);
 std::vector<double> funct_erf(std::vector<double> arg);
 std::vector<double> funct_erfc(std::vector<double> arg);
+std::vector<double> funct_set(int num, double value);
 
 /* Private Prototypes _______________________________________________________ */
 int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format);
@@ -212,6 +217,26 @@ std::vector<double> funct_erfc(std::vector<double> arg) {
       res[i] = (arg[i] < 0.0) ? 1.0 + nr_gammp(0.5, arg[i]*arg[i])
                               : nr_gammq(0.5, arg[i]*arg[i]);
     }
+
+    // Return result
+    return res;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Set function to a given value
+ *
+ * @param[in] num Vector dimension of result
+ ******************************************************************************/
+std::vector<double> funct_set(int num, double value) {
+
+    // Allocate result vector
+    std::vector<double> res(num);
+
+    // Set number of counterpart candidates
+    for (int i = 0; i < num; ++i)
+      res[i] = value;
 
     // Return result
     return res;
@@ -365,7 +390,8 @@ Status extract_next_special_function(std::string formula,
                                      SpecialFcts &fcts) {
 
     // Initialise return status
-    Status status = STATUS_OK;
+    int    fct_inx = -1;
+    Status status  = STATUS_OK;
 
     // Single loop for common exit point
     do {
@@ -385,6 +411,8 @@ Status extract_next_special_function(std::string formula,
         if (loc < loc_min) {
           loc_min  = loc;
           fct      = fct_names[i];
+          fct_inx  = i;
+          break;
         }
       }
 
@@ -425,13 +453,29 @@ Status extract_next_special_function(std::string formula,
       std::string::size_type length = stop - start;
       std::string            arg    = formula.substr(start, length);
 
-      // Build column name that will hold the result and the argument of the
-      // special function and increment column counter
+      // Build column name that will hold the result
       char buffer[256];
       sprintf(buffer, "_fct_%d_res", g_col_special);
       std::string colname_res = buffer;
-      sprintf(buffer, "_fct_%d_arg", g_col_special);
+
+      // Build column name that will hold the argument
+      // (only if argument is not empty
+      int nargs = 0;
+      if (arg.find_first_not_of(" ") != std::string::npos) {
+        sprintf(buffer, "_fct_%d_arg", g_col_special);
+        nargs = 1;
+      }
+      else
+        sprintf(buffer, " ");
       std::string colname_arg = buffer;
+
+      // Signal an error if the bad number of arguments was found
+      if (fct_inx != -1 && fct_nargs[fct_inx] != nargs) {
+        status = STATUS_FCT_BAD_NUM_ARG;
+        continue;
+      }
+
+      // Increment column counter
       g_col_special++;
 
       // Substituing the special function in formula with the name of the
@@ -446,6 +490,7 @@ Status extract_next_special_function(std::string formula,
       fcts.arg.push_back(arg);
       fcts.colname_res.push_back(colname_res);
       fcts.colname_arg.push_back(colname_arg);
+      fcts.nargs.push_back(nargs);
 
     } while (0); // End of main do-loop
 
@@ -1638,7 +1683,7 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
         continue;
 
       // Optionally dump special functions
-      if (par->logNormal()) {
+      if (par->logVerbose()) {
         Log(Log_2, " Special function(s) in formula ...: %s = %s",
             column.c_str(),
             old_formula.c_str());
@@ -1646,11 +1691,18 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
             column.c_str(),
             formula.c_str());
         for (int i = 0; i < (int)fcts.arg.size(); ++i) {
-          Log(Log_2, "   Special function ...............: %s = %s(%s=%s)",
-              fcts.colname_res[i].c_str(),
-              fcts.fct[i].c_str(),
-              fcts.colname_arg[i].c_str(),
-              fcts.arg[i].c_str());
+          if (fcts.nargs[i] == 0) {
+            Log(Log_2, "   Special function ...............: %s = %s()",
+                fcts.colname_res[i].c_str(),
+                fcts.fct[i].c_str());
+          }
+          else {
+            Log(Log_2, "   Special function ...............: %s = %s(%s=%s)",
+                fcts.colname_res[i].c_str(),
+                fcts.fct[i].c_str(),
+                fcts.colname_arg[i].c_str(),
+                fcts.arg[i].c_str());
+          }
         }
       }
 
@@ -1659,16 +1711,18 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
       std::string formula;
       for (int i = (int)fcts.arg.size()-1; i >= 0; --i) {
 
-        // Evaluate argument
-        std::string column  = fcts.colname_arg[i];
-        std::string formula = fcts.arg[i];
-        status = cfits_eval_regular_expression(fptr, par, column, formula, status);
-        if (status != STATUS_OK) {
-          if (par->logTerse())
-            Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
-                " formula.",
-                (Status)status, column.c_str(), formula.c_str());
-          break;
+        // Evaluate argument (if it exists)
+        if (fcts.nargs[i] > 0) {
+          std::string column  = fcts.colname_arg[i];
+          std::string formula = fcts.arg[i];
+          status = cfits_eval_regular_expression(fptr, par, column, formula, status);
+          if (status != STATUS_OK) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to evaluate regular expression <%s='%s'> in"
+                  " formula.",
+                  (Status)status, column.c_str(), formula.c_str());
+            break;
+          }
         }
 
         // Evaluate function
@@ -1676,7 +1730,7 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
         std::string column_res = fcts.colname_res[i];
         std::string column_arg = fcts.colname_arg[i];
         status = cfits_eval_special_function(fptr, par, fct, column_res,
-                                             column_arg,
+                                             column_arg, fcts.nargs[i],
                                              status);
         if (status != STATUS_OK) {
           if (par->logTerse())
@@ -1714,48 +1768,72 @@ Status Catalogue::cfits_eval_special_expression(fitsfile *fptr, Parameters *par,
  * @param[in] fct Function name.
  * @param[in] column_res Column name for function result.
  * @param[in] column_arg Column name for function argument.
+ * @param[in] nargs Number of function arguments
  * @param[in] status Error status.
  ******************************************************************************/
 Status Catalogue::cfits_eval_special_function(fitsfile *fptr, Parameters *par,
                                               std::string fct,
                                               std::string column_res,
                                               std::string column_arg,
+                                              int nargs,
                                               Status status) {
 
     // Declare local variables
     std::vector<double> arg;
     std::vector<double> res;
+    int                 fstatus;
 
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cfits_eval_special_function");
 
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
     // Single loop for common exit point
     do {
 
-      // Read argument column
-      status = cfits_get_col(fptr, par, column_arg, arg, status);
-      if (status != STATUS_OK) {
+      // Determine number of rows in table
+      long numRows;
+      fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
+      if (fstatus != 0) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to read data from column <%s>.",
-              (Status)status, column_arg.c_str());
+          Log(Error_2, "%d : Unable to determine number of rows in"
+              " catalogue.", fstatus);
         continue;
+      }
+
+      // Read argument column (if column name is specified)
+      if (nargs > 0) {
+        status = cfits_get_col(fptr, par, column_arg, arg, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to read data from column <%s>.",
+                (Status)status, column_arg.c_str());
+          continue;
+        }
       }
 
       // Convert function name to upper case
       fct = upper(fct);
 
       // Evaluate special functions
-      if (fct == "GAMMLN")              // gammln(arg)
+      if (fct == "GAMMLN")                      // gammln(arg)
         res = funct_gammln(arg);
 
-      else if (fct == "ERF")            // erf(arg)
+      else if (fct == "ERF")                    // erf(arg)
         res = funct_erf(arg);
 
-      else if (fct == "ERFC")           // erfc(arg)
+      else if (fct == "ERFC")                   // erfc(arg)
         res = funct_erfc(arg);
 
-      else {                            // Invalid function
+      else if (fct == "NSRC" || fct == "NLAT")  // nsrc() or nlat()
+        res = funct_set(numRows, double(m_src.numTotal));
+
+      else if (fct == "NCPT")                   // ncpt()
+        res = funct_set(numRows, double(m_cpt.numTotal));
+
+      else {                                    // Invalid function
         status = STATUS_FCT_INVALID;
         if (par->logTerse())
           Log(Error_2, "%d : Unknown special function <%s>.",
@@ -1773,6 +1851,10 @@ Status Catalogue::cfits_eval_special_function(fitsfile *fptr, Parameters *par,
       }
 
     } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
 
     // Debug mode: Entry
     if (par->logDebug())
