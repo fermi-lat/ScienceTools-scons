@@ -134,6 +134,7 @@ namespace facilities {
       packageUpper = package;
       transform(packageUpper.begin(), packageUpper.end(), packageUpper.begin(), (int(*)(int)) toupper);
       setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
+      setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
     }
 #ifdef ScienceTools
     setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
