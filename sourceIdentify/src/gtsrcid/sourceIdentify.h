@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.24  2008/04/23 14:12:03  jurgen
+Implement zero-argument special functions nsrc(), nlat() and ncpt()
+
 Revision 1.23  2008/04/15 21:24:12  jurgen
 Introduce sparse matrix for source catalogue probability computation.
 
@@ -87,7 +90,7 @@ Replace header information with CVS typeset information.
 #define TOOL_NAME     "gtsrcid"
 #define TOOL_VERSION  "v2r0p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "15-Apr-2008"
+#define TOOL_DATE     "23-Apr-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

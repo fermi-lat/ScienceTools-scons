@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.14  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.13  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -56,6 +59,7 @@ Replace header information with CVS typeset information.
 #include "sourceIdentify.h"
 #include "Parameters.h"
 #include "Log.h"                         // for parameter dumping/errors
+#include "Catalogue.h"
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -307,8 +311,9 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
         continue;
 
       // Check for catch-22
-      if ((s_probPrior.find("catch-22",0) != std::string::npos) ||
-          (s_probPrior.find("catch22",0)  != std::string::npos))
+      std::string u_probPrior = upper(s_probPrior);
+      if ((u_probPrior.find("CATCH-22",0) != std::string::npos) ||
+          (u_probPrior.find("CATCH22",0)  != std::string::npos))
         m_catch22 = 1;
 
     } while (0); // End of main do-loop
