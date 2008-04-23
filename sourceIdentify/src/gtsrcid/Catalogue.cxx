@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.40  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.39  2008/04/18 16:14:16  jurgen
 Add LR statistics to log file
 
@@ -2390,15 +2393,6 @@ Status Catalogue::build(Parameters *par, Status status) {
       if (status != STATUS_OK)
         continue;
 
-      // Close in-memory catalogue
-      status = cfits_save(m_memFile, par, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to close in-memory catalogue.",
-              (Status)status);
-        continue;
-      }
-
       // Collect statistics (used to build counterpart names)
       std::vector<int> stat;
       status = cfits_collect(m_outFile, par, stat, status);
@@ -2410,6 +2404,11 @@ Status Catalogue::build(Parameters *par, Status status) {
       }
 
       // Evaluate output catalogue quantities
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Evaluate new output catalogue quantities:");
+        Log(Log_2, "=========================================");
+      }
       status = cfits_eval(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())

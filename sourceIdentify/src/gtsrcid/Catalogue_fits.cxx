@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.24  2008/04/23 14:12:03  jurgen
+Implement zero-argument special functions nsrc(), nlat() and ncpt()
+
 Revision 1.23  2008/04/18 20:50:33  jurgen
 Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
 
@@ -1492,6 +1495,13 @@ Status Catalogue::cfits_eval(fitsfile *fptr, Parameters *par, Status status) {
       // there are no new output catalogue quantities
       int numQty = (int)par->m_outCatQtyName.size();
       if (numQty < 1)
+        continue;
+
+      // Fall through if there are no rows in the catalogue
+      long numRows = 0;
+      int  fstatus = 0;
+      fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
+      if (numRows < 1)
         continue;
 
       // Add all new output catalogue quantities
