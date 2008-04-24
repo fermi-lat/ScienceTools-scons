@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.15  2008/04/23 15:09:21  jurgen
+Check for catch-22 in upper case
+
 Revision 1.14  2008/04/18 20:50:33  jurgen
 Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
 
@@ -219,19 +222,21 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       std::string s_outCatName   = pars["outCatName"];
       std::string s_probMethod   = pars["probMethod"];
       std::string s_probPrior    = pars["probPrior"];
+      std::string s_FoM          = pars["fom"];
       std::string s_mode         = pars["mode"];
-      m_srcCatName               = s_srcCatName;
+      m_srcCatName               = trim(s_srcCatName);
       m_srcCatPrefix             = "@" + s_srcCatPrefix + "_";
       m_srcCatQty                = s_srcCatQty;
       m_srcPosError              = pars["srcPosError"];
-      m_cptCatName               = s_cptCatName;
+      m_cptCatName               = trim(s_cptCatName);
       m_cptCatPrefix             = "@" + s_cptCatPrefix + "_";
       m_cptCatQty                = s_cptCatQty;
       m_cptPosError              = pars["cptPosError"];
-      m_cptDensFile              = s_cptDensFile;
-      m_outCatName               = s_outCatName;
-      m_probMethod               = s_probMethod;
-      m_probPrior                = s_probPrior;
+      m_cptDensFile              = trim(s_cptDensFile);
+      m_outCatName               = trim(s_outCatName);
+      m_probMethod               = trim(s_probMethod);
+      m_probPrior                = trim(s_probPrior);
+      m_FoM                      = trim(s_FoM);
       m_probThres                = pars["probThres"];
       m_maxNumCpt                = pars["maxNumCpt"];
       m_chatter                  = pars["chatter"];
@@ -351,7 +356,10 @@ Status Parameters::dump(Status status) {
       Log(Log_1, " Counterpart catalogue quantities .: %s", m_cptCatQty.c_str());
       Log(Log_1, " Counterpart catalogue uncertainty : %.3f arcmin",
           m_cptPosError*60.0);
-      Log(Log_1, " Counterpart catalogue density file: %s", m_cptDensFile.c_str());
+      if (m_cptDensFile.length() > 0)
+        Log(Log_1, " Counterpart catalogue density file: %s", m_cptDensFile.c_str());
+      else
+        Log(Warning_1, " Counterpart catalogue density file: not used");
       Log(Log_1, " Output catalogue name ............: %s", m_outCatName.c_str());
       Log(Log_1, " Association probability ..........: PROB = %s",
           m_probMethod.c_str());
@@ -361,7 +369,11 @@ Status Parameters::dump(Status status) {
         Log(Log_1, " Counterpart association prior ....: PROB_PRIOR = %s",
             m_probPrior.c_str());
       Log(Log_1, " Probability threshold ............: %.3e", m_probThres);
-      Log(Log_1, " Maximum number of counterparts  ..: %d", m_maxNumCpt);
+      Log(Log_1, " Max. number of cpts per source ...: %d", m_maxNumCpt);
+      if (m_FoM.length() > 0)
+        Log(Log_1, " Figure of merit ..................: FoM = %s", m_FoM.c_str());
+      else
+        Log(Warning_1, " Figure of merit ..................: not used");
       if ((n = m_outCatQtyName.size()) > 0) {
         for (i = 0; i < n; ++i) {
           Log(Log_1, " New output catalogue quantity %2d .: %s = %s",

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.25  2008/04/23 15:42:06  jurgen
+Don't close in-memory catalogue (error if catalogue is empty)
+
 Revision 1.24  2008/04/23 14:12:03  jurgen
 Implement zero-argument special functions nsrc(), nlat() and ncpt()
 
@@ -785,6 +788,11 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       sprintf(tform[col], "%s", OUTCAT_COL_MU_FORM);
       sprintf(tunit[col], "%s", OUTCAT_COL_MU_UNIT);
       sprintf(tbucd[col], "%s", OUTCAT_COL_MU_UCD);
+      col = OUTCAT_COL_FOM_COLNUM - 1;
+      sprintf(ttype[col], "%s", OUTCAT_COL_FOM_NAME);
+      sprintf(tform[col], "%s", OUTCAT_COL_FOM_FORM);
+      sprintf(tunit[col], "%s", OUTCAT_COL_FOM_UNIT);
+      sprintf(tbucd[col], "%s", OUTCAT_COL_FOM_UCD);
       col = OUTCAT_COL_REF_COLNUM - 1;
       sprintf(ttype[col], "%s", OUTCAT_COL_REF_NAME);
       sprintf(tform[col], "%s", OUTCAT_COL_REF_FORM);
@@ -1318,7 +1326,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
 
       // Add local counterpart density
       for (row = 0; row < nrows; row++)
-        dptr[row] = src->rho;
+        dptr[row] = src->cc[row].rho;
       fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_RHO_COLNUM,
                                frow, 1, nrows, dptr, &fstatus);
       if (fstatus != 0) {
@@ -1336,6 +1344,18 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
       if (fstatus != 0) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to write expected chance coincidences to"
+              " catalogue.", fstatus);
+        continue;
+      }
+
+      // Add figure of merit
+      for (row = 0; row < nrows; row++)
+        dptr[row] = src->cc[row].fom;
+      fstatus = fits_write_col(fptr, TDOUBLE, OUTCAT_COL_FOM_COLNUM,
+                               frow, 1, nrows, dptr, &fstatus);
+      if (fstatus != 0) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to write figures of merit to"
               " catalogue.", fstatus);
         continue;
       }

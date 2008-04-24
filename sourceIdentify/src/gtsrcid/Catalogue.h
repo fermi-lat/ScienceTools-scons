@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.34  2008/04/23 14:12:03  jurgen
+Implement zero-argument special functions nsrc(), nlat() and ncpt()
+
 Revision 1.33  2008/04/18 20:50:33  jurgen
 Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
 
@@ -132,7 +135,7 @@ namespace sourceIdentify {
 #define OUTCAT_MAX_KEY_LEN            256
 #define OUTCAT_EXT_NAME               "GLAST_CAT"
 //
-#define OUTCAT_NUM_GENERIC            22
+#define OUTCAT_NUM_GENERIC            23
 //
 #define OUTCAT_COL_ID_COLNUM          1
 #define OUTCAT_COL_ID_NAME            "ID"
@@ -259,7 +262,13 @@ namespace sourceIdentify {
 #define OUTCAT_COL_MU_UNIT            "src"
 #define OUTCAT_COL_MU_UCD             ""
 //
-#define OUTCAT_COL_REF_COLNUM         22
+#define OUTCAT_COL_FOM_COLNUM         22
+#define OUTCAT_COL_FOM_NAME           "FOM"
+#define OUTCAT_COL_FOM_FORM           "1E"
+#define OUTCAT_COL_FOM_UNIT           ""
+#define OUTCAT_COL_FOM_UCD            ""
+//
+#define OUTCAT_COL_REF_COLNUM         23
 #define OUTCAT_COL_REF_NAME           "REF"
 #define OUTCAT_COL_REF_FORM           "1J"
 #define OUTCAT_COL_REF_UNIT           ""
@@ -344,6 +353,8 @@ typedef struct {                // Counterpart candidate object information
   double      pdf_pos;          //!< Counterpart PDF
   double      pdf_chance;       //!< Chance coincidence PDF
   double      likrat;           //!< Likelihood ratio
+  double      rho;              //!< Local counterpart density
+  double      fom;              //!< Figure of merit
   double      prob_prod1;       //!< Probability product 1 (working variable)
   double      prob_prod2;       //!< Probability product 2 (working variable)
   double      prob_norm;        //!< Probability normalization (working variable)
@@ -372,7 +383,6 @@ typedef struct {                      // Source information
   double                  ring_rad_min; //!< Density ring minimum
   double                  ring_rad_max; //!< Density ring maximum
   double                  omega;        //!< Solid angle of error ellipse
-  double                  rho;          //!< Local counterpart density
 } SourceInfo;
 
 typedef struct {                      // Input catalogue
@@ -434,6 +444,7 @@ private:
   Status      cid_filter(Parameters *par, SourceInfo *src, Status status);
   Status      cid_select(Parameters *par, SourceInfo *src, Status status);
   Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_fom(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_pos(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_chance(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_prior(Parameters *par, SourceInfo *src, Status status);

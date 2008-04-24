@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.12  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.11  2008/03/26 13:37:10  jurgen
 Generalize probability calculation and implement Bayesian method
 
@@ -107,6 +110,7 @@ private:
   std::string              m_probPrior;        //!< Prior probability formula
   double                   m_probThres;        //!< Probability threshold
   long                     m_maxNumCpt;        //!< Maximum # of counterparts
+  std::string              m_FoM;              //!< Figure of merit
   int                      m_catch22;          //!< Perform catch-22 iterations
   std::vector<std::string> m_outCatQtyName;    //!< New output catalogue quantities
   std::vector<std::string> m_outCatQtyFormula; //!< New output catalogue formulae

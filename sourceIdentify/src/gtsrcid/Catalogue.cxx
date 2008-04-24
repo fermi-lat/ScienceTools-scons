@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.41  2008/04/23 15:42:06  jurgen
+Don't close in-memory catalogue (error if catalogue is empty)
+
 Revision 1.40  2008/04/18 20:50:33  jurgen
 Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
 
@@ -2304,7 +2307,6 @@ Status Catalogue::build(Parameters *par, Status status) {
         m_info[iSrc].ring_rad_min = 0.0;
         m_info[iSrc].ring_rad_max = 0.0;
         m_info[iSrc].omega        = 0.0;
-        m_info[iSrc].rho          = 0.0;
       }
 
       // Allocate list of selected counterparts

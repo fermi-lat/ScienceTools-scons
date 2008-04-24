@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.27  2008/04/18 20:50:33  jurgen
+Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
+
 Revision 1.26  2008/04/18 16:14:16  jurgen
 Add LR statistics to log file
 
@@ -385,6 +388,8 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
           src->cc[i].pdf_pos          = 0.0;
           src->cc[i].pdf_chance       = 0.0;
           src->cc[i].likrat           = 0.0;
+          src->cc[i].rho              = 0.0;
+          src->cc[i].fom              = 0.0;
           src->cc[i].prob_prod1       = 0.0;
           src->cc[i].prob_prod2       = 0.0;
           src->cc[i].prob_norm        = 0.0;
@@ -596,6 +601,14 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       if (src->numSelect < 1)
         continue;
 
+      // Compute figures of merit
+      status = cid_fom(par, src, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to compute FOM.", (Status)status);
+        continue;
+      }
+
       // Compute PROB_POS and PDF_POS.
       status = cid_prob_pos(par, src, status);
       if (status != STATUS_OK) {
@@ -672,7 +685,7 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
         Log(Log_2, "  Refine step candidates ..........: %5d", src->numRefine);
-        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", src->rho);
+//        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", src->rho);
         Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
             src->ring_rad_min, src->ring_rad_max);
       }
@@ -682,6 +695,87 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
     // Debug mode: Entry
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_refine (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute FoM for all counterpart candidates
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
+ * @param[in] status Error status.
+ *
+ * Requires catalogue information in FITS memory file.
+ *
+ * This method expects src->numSelect counterparts.
+ ******************************************************************************/
+Status Catalogue::cid_fom(Parameters *par, SourceInfo *src, Status status) {
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_fom (%d candidates)",
+          src->numSelect);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (src->numSelect < 1)
+        continue;
+
+      // Compute FoM only if a formula has been provided
+      if (par->m_FoM.length() > 0) {
+
+        // Set column name and allocate FoM vector
+        std::string         column  = "FOM";
+        std::vector<double> fom;
+
+        // Evaluate FoM column
+        status = cfits_eval_column(m_memFile, par, column, par->m_FoM, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to evaluate expression <%s='%s'> in"
+                         " formula.",
+                         (Status)status, column.c_str(), par->m_FoM.c_str());
+          continue;
+        }
+
+        // Extract FoM vector
+        status = cfits_get_col(m_memFile, par, column, fom, status);
+        if (status != STATUS_OK) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to extract column <%s> from"
+                         "in-memory FITS catalogue.",
+                         (Status)status, column.c_str());
+          continue;
+        }
+
+        // Get FoM
+        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+          src->cc[iCC].fom = fom[iCC];
+
+      }
+
+      // ... otherwise reset FoM to zero
+      else {
+        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+          src->cc[iCC].fom = 0.0;
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_fom (status=%d)",
           status);
 
     // Return status
@@ -926,7 +1020,7 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
 
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
-        double r_div_lambda2 = src->cc[iCC].angsep * pi * src->rho;
+        double r_div_lambda2 = src->cc[iCC].angsep * pi * src->cc[iCC].rho;
         src->cc[iCC].mu      = r_div_lambda2 * src->cc[iCC].angsep;
 
         // Compute chance coincidence probability
@@ -1126,9 +1220,6 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
       std::vector<double> col_likrat;
       std::vector<double> col_prob_post_single;
 
-      // Compute lambda^2
-      double lambda2 = (src->rho > 0.0) ? 1.0 / (pi * src->rho) : src->ring_rad_max;
-
       // Loop over all counterpart candidates
       for (int iCC = 0; iCC < src->numSelect; ++iCC) {
 
@@ -1141,7 +1232,9 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
         // If Psi^2 > 2.996 lambda2^2 then the likelihood ratio diverges.
         // Depending on the compile option we either calculate the divergent
         // likelihood ratio or we set LR = 0.
-        double psi2 = src->cc[iCC].psi * src->cc[iCC].psi;
+        double psi2    = src->cc[iCC].psi * src->cc[iCC].psi;
+        double lambda2 = (src->cc[iCC].rho > 0.0) ? 1.0 / (pi * src->cc[iCC].rho) :
+                         src->ring_rad_max;
         if (psi2 > 0.0 && lambda2 > 0.0) {
           double beta  = 2.996 * lambda2 / psi2;
           double scale = 2.996 / psi2 - 1.0 / lambda2;
@@ -1351,9 +1444,6 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
       if (status != STATUS_OK)
         continue;
 
-      // Initialise local counterpart density
-      src->rho = 0.0;
-
       // Fall through if there are no counterpart candidates
       if (src->numSelect < 1)
         continue;
@@ -1366,34 +1456,72 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
       double omega = twopi * (cos(src->ring_rad_min * deg2rad) -
                               cos(src->ring_rad_max * deg2rad)) * rad2deg * rad2deg;
 
-      // Compute number of counterparts within acceptance ring
-      int num = 0;
-      for (int iCC = 0; iCC < src->numSelect; iCC++) {
+      // Case A: We consider FoMs
+      if (par->m_FoM.length() > 0) {
 
-        // Get index of candidate in counterpart catalogue
-        int iCpt = src->cc[iCC].index;
+        // Initialise number of counterparts in acceptance ring
+        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+          src->cc[iCC].rho = 0.0;
 
-        // Get pointer to counterpart object
-        ObjectInfo *cpt = &(m_cpt.object[iCpt]);
+        // Collect all counterparts that are within ring
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+          if (src->cc[iCC].angsep >= src->ring_rad_min &&
+              src->cc[iCC].angsep <= src->ring_rad_max) {
 
-        // Fall through if no counterpart position is available
-        if (!cpt->pos_valid)
-          continue;
+            // Get FoM for actual counterpart
+            double fom0 = src->cc[iCC].fom;
 
-        // Collect all sources in ring
-        if (src->cc[iCC].angsep >= src->ring_rad_min &&
-            src->cc[iCC].angsep <= src->ring_rad_max)
-          num++;
+            // Increment numbers for all counterpart candidates that have smaller
+            // FoM, i.e. FoM <= FoM_0. For all these counterparts the present
+            // candidate has a larger FoM.
+            for (int i = 0; i < src->numSelect; ++i) {
+              if (src->cc[i].fom <= fom0)
+                src->cc[i].rho += 1.0;
+            }
 
-      } // endfor: looped over all counterpart candidates
+          } // endif: counterpart candidate was in ring
+        } // endfor: collected all counterparts
 
-      // Make sure that we have at least one source. This provides an upper limit
-      // for the counterpart density in case that we have found no source in the
-      // acceptance ring
-      if (num < 1) num = 1;
+        // Assign local counterpart densities. Make sure that we have at least
+        // one source. This provides an upper limit for the counterpart density
+        // in case that we have found no source in the acceptance ring.
+        if (omega > 0.0) {
+          for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+            if (src->cc[iCC].rho < 1.0) src->cc[iCC].rho = 1.0;
+            src->cc[iCC].rho /= omega;
+          }
+        }
+        else {
+          for (int iCC = 0; iCC < src->numSelect; ++iCC)
+            src->cc[iCC].rho = 0.0;
+        }
 
-      // Compute local counterpart density
-      src->rho = (omega > 0.0) ? double(num) / omega : 0.0;
+      } // endif: Case A
+
+      // Case B: We do not consider FoMs
+      else {
+
+        // Compute number of counterparts within acceptance ring
+        int num = 0;
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+          if (src->cc[iCC].angsep >= src->ring_rad_min &&
+              src->cc[iCC].angsep <= src->ring_rad_max)
+            num++;
+        }
+
+        // Make sure that we have at least one source. This provides an upper limit
+        // for the counterpart density in case that we have found no source in the
+        // acceptance ring
+        if (num < 1) num = 1;
+
+        // Compute local counterpart density
+        double rho = (omega > 0.0) ? double(num) / omega : 0.0;
+
+        // Assign local counterpart densities
+        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+          src->cc[iCC].rho = rho;
+
+      } // endelse: Case B
 
     } while (0); // End of main do-loop
 
@@ -1432,8 +1560,12 @@ Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
       if (status != STATUS_OK)
         continue;
 
-      // Compute global density
-      src->rho = double(m_cpt.numLoad) / 41252.961;
+      // Compute global allsky density
+      double rho = double(m_cpt.numTotal) / 41252.961;
+
+      // Assign density
+      for (int iCC = 0; iCC < src->numSelect; ++iCC)
+        src->cc[iCC].rho = rho;
 
     } while (0); // End of main do-loop
 

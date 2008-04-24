@@ -45,21 +45,25 @@ outCatQty07,s,h,"",,,"New output catalogue quantity 7"
 outCatQty08,s,h,"",,,"New output catalogue quantity 8"
 outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 #
-# Task parameters
-#================
+# Probability evaluation parameters
+#==================================
 probMethod,s,a,"PROB_POST",,,"Probability method"
 probPrior,s,a,"0.01",,,"Prior association probability"
 probThres,r,a,0.10,,,"Probability threshold"
-maxNumCpt,i,a,100,,,"Maximum number of counterpart candidates"
-select01,s,h,"",,,"Selection criterium 1"
-select02,s,h,"",,,"Selection criterium 2"
-select03,s,h,"",,,"Selection criterium 3"
-select04,s,h,"",,,"Selection criterium 4"
-select05,s,h,"",,,"Selection criterium 5"
-select06,s,h,"",,,"Selection criterium 6"
-select07,s,h,"",,,"Selection criterium 7"
-select08,s,h,"",,,"Selection criterium 8"
-select09,s,h,"",,,"Selection criterium 9"
+maxNumCpt,i,a,100,,,"Maximum number of counterpart candidates per source"
+fom,s,a,"",,,"Figure of merit"
+#
+# Selection criteria
+#===================
+select01,s,h,"",,,"Selection criterion 1"
+select02,s,h,"",,,"Selection criterion 2"
+select03,s,h,"",,,"Selection criterion 3"
+select04,s,h,"",,,"Selection criterion 4"
+select05,s,h,"",,,"Selection criterion 5"
+select06,s,h,"",,,"Selection criterion 6"
+select07,s,h,"",,,"Selection criterion 7"
+select08,s,h,"",,,"Selection criterion 8"
+select09,s,h,"",,,"Selection criterion 9"
 #
 # Standard parameters
 #====================
