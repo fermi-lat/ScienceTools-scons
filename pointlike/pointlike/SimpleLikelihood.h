@@ -45,20 +45,10 @@ public:
     @param diffuse
 
     */
-#ifdef OLD
-    SimpleLikelihood(const std::vector<std::pair<healpix::HealPixel,int> >& data,
-        const astro::SkyDir& dir, 
-        double gamma, double sigma, 
-        double background, 
-        double umax, 
-        double emin, double emax
-        ,const skymaps::SkySpectrum* diffuse);
-#else
     SimpleLikelihood(const skymaps::Band& data,
         const astro::SkyDir& dir, 
         double umax 
         ,const skymaps::SkySpectrum* diffuse);
-#endif
 
     ~SimpleLikelihood();
 
@@ -173,14 +163,9 @@ private:
 
 
     mutable double m_w;      // likelihood from gradient
-#ifdef OLD
-    //! vector of healpixels and the number of photons in each
-    const std::vector<std::pair<healpix::HealPixel,int> >& m_vec;
-#else
     const skymaps::Band& m_band;
     typedef std::vector<std::pair<astro::SkyDir, int> > PixelList;
     PixelList m_vec;
-#endif
     
     //! simplified set with function or distances from m_dir 
     std::vector<std::pair<double, int> > m_vec2;  //stores <log-like,nphotons>
