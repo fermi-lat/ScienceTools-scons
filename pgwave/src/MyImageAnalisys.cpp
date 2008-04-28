@@ -1716,10 +1716,8 @@ int MyImageAnalisys::StarCenter(center& cen, double side_box)
 {
 	int ix=0,iy=0;
 	//side_box=5;
-	int xmin=int(cen.xpeak-side_box+0.50000);
-	int xmax=int(cen.xpeak+side_box+0.50000);
-	int ymin=int(cen.ypeak-side_box+0.50000);
-	int ymax=int(cen.ypeak+side_box+0.50000);
+	static int ns=1;
+
 //bkg box
 	int xmin1=int(cen.xpeak-2.*side_box+0.50000);
 	int xmax1=int(cen.xpeak+2.*side_box+0.50000);
@@ -1735,6 +1733,16 @@ int MyImageAnalisys::StarCenter(center& cen, double side_box)
 	if(ymax1>=m_nrow)
 		ymax1=m_nrow-1;
 //
+
+	side_box=amin1((xmax1-xmin1),(ymax1-ymin1))/4.;
+	int xmin=int(cen.xpeak-side_box+0.50000);
+	int xmax=int(cen.xpeak+side_box+0.50000);
+	int ymin=int(cen.ypeak-side_box+0.50000);
+	int ymax=int(cen.ypeak+side_box+0.50000);
+	xmin1=amax1(int(cen.xpeak-2.*side_box+0.50000),0);
+	xmax1=amin1(int(cen.xpeak+2.*side_box+0.50000),m_ncol-1);
+	ymin1=amax1(int(cen.ypeak-2.*side_box+0.50000),0);
+	ymax1=amin1(int(cen.ypeak+2.*side_box+0.50000),m_nrow-1);
 	cen.xmax=xmax;
 	cen.xmin=xmin;
 	cen.ymax=ymax;
@@ -1752,12 +1760,17 @@ int MyImageAnalisys::StarCenter(center& cen, double side_box)
 	double d=xmax-xmin;
 	double b=xmax1-xmin1;
 	double tt=0,bb=0,cc=0,qq=0,sb2=0,ss2=0,sq2=0,sc2=0,snr=0,ss;
-	double alpha=0.7,beta=0.9;
+	double alpha=1,beta=1;
+	double bbb=0;
 	for(iy=ymin1;iy<=ymax1;iy++){
 		for(ix=xmin1;ix<=xmax1;ix++){
-			tt+=GetPix(ix,iy);//-cen.bkg;//cen.bkg;
+			bbb+=1.;
+			val=GetPix(ix,iy);
+			if(val>0)
+				tt+=val;//-cen.bkg;//cen.bkg;
 		}
 	}
+	//cout<<"tttt--> "<<tt<<" "<<xmin1<<" "<<endl;
 	int area=0;
 	if(xmin<0)
 		xmin=0;
@@ -1772,54 +1785,68 @@ int MyImageAnalisys::StarCenter(center& cen, double side_box)
 			val=GetPix(ix,iy);//-cen.bkg;//cen.bkg;
 			x=ix-xmin;
 			y=iy-ymin;
-			//if(val>=0){//cen.bkgsig
+			area++;
+			if(val>=0.){//cen.bkgsig
 			//cout<<val<<" ";
-				area++;
+				
 				sumI+=(double)val;
 				sumIX+=x*val;
 				sumIY+=y*val;
 				sumIXY+=(double)val*x*y;
 				sumIX2+=(double)val*x*x;
 				sumIY2+=(double)val*y*y;
-			//}
+			}
 
 		}
 	}
 	cc=sumI;
 //	
+	b=bbb;
+	d=area;
+	
 	double den=((alpha*b*b)/(d*d)-beta);
 	double pd=(alpha-beta);
 	double bd=(b*b-d*d)/(d*d);
 	qq=tt-cc;
 	double sc=1.+sqrt(cc+0.75);
 	double sq=1.+sqrt(qq+0.75);
-	bb=(pd*cc+alpha*qq)/den;
-	ss=(cc*bd-qq)/den;
+	bb=qq/(b*b-d*d)*(d*d);//bb=(pd*cc+alpha*qq)/den;
+	//im->centro[k].bkg=bb
+	ss=cc-bb;//ss=(cc*bd-qq)/den;
+	
 	if(bb>0.&& ss>0.){
-		double sc=1.+sqrt(cc+0.75);
-		double sq=1.+sqrt(qq+0.75);
-		sb2=(pd*pd*sc*sc+alpha*sq*sq)/(den*den);
-		ss2=(sc*sc*bd*bd+sq*sq)/(den*den);
+		double sc=1.+sqrt(ss+0.75);//sc=1.+sqrt(cc+0.75);
+		double sq=1.+sqrt(bb+0.75);//sq=1.+sqrt(qq+0.75);
+		//sb2=(pd*pd*sc*sc+alpha*sq*sq)/(den*den);
+		ss2=(sc*sc+sq*sq);//ss2=(sc*sc*bd*bd+sq*sq)/(den*den);
 		snr=ss/sqrt(ss2);
-		x=xmin+sumIX/cc;
-		y=ymin+sumIY/cc;
-		sx=0,sy=0,sxy=0;
-		for(iy=ymin;iy<=ymax;iy++){
+	}else
+		snr=0;
+	x=xmin+sumIX/cc;
+	y=ymin+sumIY/cc;
+	sx=0,sy=0,sxy=0;
+		/*for(iy=ymin;iy<=ymax;iy++){
 			for(ix=xmin;ix<=xmax;ix++){
 				sx+=(ix-x)*(ix-x);
 				sy+=(iy-y)*(iy-y);
 				sxy+=(ix-x)*(iy-y);
 			}
-		}
-		sx=sqrt(sx/(cc-1));
-		sy=sqrt(sy/(cc-1));
-		sxy=sqrt(sxy/(cc-1));
-		//cout<<"SX--> "<<sx/sqrt(cc)<<" SY-> "<<sy/sqrt(cc)<<" XC-> "<<x<<" YC-> "<<y<<endl;
-		cen.x=x;
-		cen.y=y;
+		}*/
+		//cout<<"tttt--> "<<x<<" "<<y<<" "<<sxy<<endl;
+	sx=(sumIX2/(cc))-(sumIX/cc)*(sumIX/cc);
+	sy=(sumIY2/(cc))-(sumIY/cc)*(sumIY/cc);
+	sxy=(sumIXY/(cc))- sumIX*sumIY/(cc*cc);
+		//cout<<"SX "<<sx<<" SY "<<sy<<" sxy"<<sxy<<endl;
+	cen.A= sqrt((sx+sy+sqrt(pow(sx+sy,2.)+4.*(sx*sy-sxy*sxy)))/2.);
+	cen.B= sqrt((sx+sy+sqrt(pow(sx+sy,2.)-4.*(sx*sy-sxy*sxy)))/2.);
+	//cout<<ns<<") SX-->"<<sqrt(sx/cc)<<"SY->"<<sqrt(sy/cc)<<"SXY->"<<sxy<<" A->"<<cen.A<<" B->"<<cen.B<<endl;
+	cen.x=x;
+	cen.y=y;
+	ns++;
 		//cen.xpeak=x;
 		//cen.ypeak=y;
-	}else{
+	/*}else{
+		//cout<<"gggggg-<< "<<qq<<" "<<bb<<" "<<ss<<" "<<b<<" "<<d<<endl;
 		bb=0;
 		ss=0;
 		sb2=0;
@@ -1838,23 +1865,25 @@ int MyImageAnalisys::StarCenter(center& cen, double side_box)
 				sxy+=(ix-x)*(iy-y);
 			}
 		}
-		sx=sqrt(sx/(cc-1));
-		sy=sqrt(sy/(cc-1));
-		sxy=sqrt(sxy/(cc-1));
+		sx=sumIX; (sx/(cc-1));
+		sy=(sy/(cc-1));
+		sxy=(sxy/(cc-1));
+		cen.A= sqrt( (sx+sy+ sqrt(pow(sx+sy,2.)+4.*(sx*sy-sxy*sxy)) )/2.);
+		cen.B= sqrt( (sx+sy+sqrt(pow(sx+sy,2.)-4.*(sx*sy-sxy*sxy)) )/2.);
+		cout<<ns<<") SX-->"<<sqrt(sx/cc)<<"SY->"<<sqrt(sy/cc)<<"SXY->"<<sxy<<" A->"<<cen.A<<" B->"<<cen.B<<endl;
+
 		//cout<<cc<<" "<<sumIX<<"SX--> "<<sx/sqrt(cc)<<" SY-> "<<sy/sqrt(cc)<<" XC->"<<x<<" YC-> "<<cen.xpeak<<endl;
 		//cen.x=x;
 		//cen.y=y;
 		cen.x=cen.xpeak;
 		cen.y=cen.ypeak;
-		
-		//cout<<"SX--> "<<sx<<" SY-> "<<sy<<" XC-> "<<x<<" YC-> "<<y<<endl;
 
-	}
+	}*/
 	//cout<<"SX--> "<<sx/sqrt(cc)<<" SY-> "<<sy/sqrt(cc)<<" XC-> "<<x<<" YC-> "<<cen.xpeak<<endl;
 	cen.mag=ss;
 	cen.bkg=bb;
-	cen.bkgsig=sqrt(sb2);
-	cen.magerr=sqrt(ss2);
+	cen.bkgsig=sq;//sqrt(sq);//(sb2);
+	cen.magerr=sc;//sqrt(ss2);
 	cen.theta=snr;
 	cen.dx=cen.xmax-cen.xmin;
 	cen.dy=cen.ymax-cen.ymin;

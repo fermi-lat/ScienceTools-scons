@@ -5,7 +5,7 @@ use STpolicy *
 use cfitsio * IExternal
 use pil * IExternal
 use fftw * IExternal
-
+use astro v*
 apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern package_stamps

@@ -3,7 +3,7 @@
 *  function_util.cpp
 *  Wave2D_7Feb
 *
-*  Created by Gabriele Discepoli & Gino Tosti on 7/02/06.
+*  Created by Gabriele Discepoli on 7/02/06.
 *  Copyright 2006 __Physics dept. University of Perugia__. All rights reserved.
 *
 ************************************************************/
@@ -271,8 +271,8 @@ void find_stat(char *nome_file, MyImageAnalisys *im, fitsfile *fptr_in, int prin
 		r2=8;
 	}
 	else{
-		side_box = (2./fabs(pix_bin));
-		r1=5./fabs(pix_bin);
+		side_box = (2.0/fabs(pix_bin));
+		r1=4./fabs(pix_bin);
 		r2=7./fabs(pix_bin);
 	}
 	a->CloseFITSFile();
@@ -280,7 +280,7 @@ void find_stat(char *nome_file, MyImageAnalisys *im, fitsfile *fptr_in, int prin
 	if(print){cout << "\t [id] \t(X,Y)  \t\t[SNR]   \t[bkg]    \t[signal]\n" << endl;}
 	for(int k= 0; k < int(im->GetNumStarFound()); k++){
 		//cout <<im->centro[k].xpeak << " " << im->centro[k].ypeak <<" "<<
-		im->LocalBackground(im->centro[k],r1,r2);
+		//im->LocalBackground(im->centro[k],r1,r2);
 		im->StarCenter(im->centro[k], side_box);
 		if(print){
 			cout << im->centro[k].id << " \t" << im->centro[k].x << " " << im->centro[k].y << "  \t"
@@ -317,7 +317,7 @@ void erase_source(detect_sources *ogg, array2d<double>& input, double dist, long
 {
 	int i, j, count;
 	double xtest, ytest, dtest, wttest, magtest, bkgtest, SNRtest,signi;
-	double magterr, bkgterr,sumx,sumy;
+	double magterr, bkgterr,sumx,sumy,a,b,theta;
 	detect_sources *good=new detect_sources;
 	for (i=0; i<(ogg->xdimension()-1); i++) {
 			count=0;//sumx=0;sumy=0;
@@ -331,6 +331,9 @@ void erase_source(detect_sources *ogg, array2d<double>& input, double dist, long
 			bkgterr=ogg->getbkgerr(i);
 			SNRtest = ogg->getSNR(i);
 			signi=ogg->getSignif(i);
+			a=ogg->getA(i);
+			b=ogg->getB(i);
+			theta=ogg->getTHETA(i);
 			for(j=(i+1); j<ogg->xdimension(); j++) {
 					if ((pow(ogg->getx(i) - ogg->getx(j), 2) + pow(ogg->gety(i) - ogg->gety(j), 2)) < dist*dist) {
 						count++;
@@ -349,13 +352,18 @@ void erase_source(detect_sources *ogg, array2d<double>& input, double dist, long
 							signi=ogg->getSignif(j);
 							magterr=ogg->getmagerr(j);
 							bkgterr=ogg->getbkgerr(j);
+							a=ogg->getA(j);
+							b=ogg->getB(j);
+							theta=ogg->getTHETA(j);
 
 						}
 					}
 			}
 			if (count!=0){
 				//xtest=sumx/count; ytest=sumy/count;
-				good->fill_coor(xtest, ytest, dtest, wttest, magtest, bkgtest, SNRtest,signi,magterr, bkgterr);
+				good->fill_coor(xtest, ytest, dtest, wttest,
+				magtest, bkgtest, SNRtest,signi,magterr,
+				bkgterr,a,b,theta);
 			}
 		}
 	remove_twin(good, dist);
@@ -370,7 +378,7 @@ void erase_source(detect_sources *ogg, double dist)
 {
 	int i, j;
 	double xtest, ytest, dtest, wttest, magtest, bkgtest, SNRtest,signi;
-	double magterr, bkgterr;
+	double magterr, bkgterr,a,b,theta;
 	detect_sources *good=new detect_sources;
 	for (i=0; i<ogg->xdimension(); i++) {
 		xtest=ogg->getx(i);
@@ -383,6 +391,9 @@ void erase_source(detect_sources *ogg, double dist)
 		signi=ogg->getSignif(i);
 		magterr=ogg->getmagerr(i);
 		bkgterr=ogg->getbkgerr(i);
+		a=ogg->getA(i);
+		b=ogg->getB(i);
+		theta=ogg->getTHETA(i);
 		for(j=(i+1); j<ogg->xdimension(); j++) {
 			if ((pow(ogg->getx(i) - ogg->getx(j), 2) + pow(ogg->gety(i) - ogg->gety(j), 2)) < dist*dist) {
 				if ((ogg->getd(j))< (dtest)) { //getd
@@ -399,16 +410,22 @@ void erase_source(detect_sources *ogg, double dist)
 					signi=ogg->getSignif(j);
 					magterr=ogg->getmagerr(j);
 					bkgterr=ogg->getbkgerr(j);
+					a=ogg->getA(j);
+					b=ogg->getB(j);
+					theta=ogg->getTHETA(i);
 				}
 			}
 		}
-		good->fill_coor(xtest, ytest, dtest, wttest, magtest, bkgtest, SNRtest,signi,magterr, bkgterr);
+		good->fill_coor(xtest, ytest, dtest, wttest, magtest, bkgtest,
+		SNRtest,signi,magterr, bkgterr,a,b,theta);
 	}
 	remove_twin(good, dist);
 	ogg->set_clear();
 	for (i=0; i<good->xdimension(); i++){
 		ogg->fill_coor(good->getx(i), good->gety(i), good->getd(i), good->getwt(i),
-					   good->getmag(i), good->getbkg(i), good->getSNR(i),good->getSignif(i),good->getmagerr(i), good->getbkgerr(i));
+					   good->getmag(i), good->getbkg(i),
+good->getSNR(i),good->getSignif(i),good->getmagerr(i),
+good->getbkgerr(i),good->getA(i),good->getB(i),0.);
 	}
 	
 	delete good;
@@ -586,13 +603,16 @@ void SNR_cut(MyImageAnalisys *im, detect_sources *ogg, double SNR, double scale,
 {
 	double signif=0;
 	for (int ii = 0; ii < int(im->GetNumStarFound()); ii++) {
-		if(im->centro[ii].theta >=SNR){
+		if((im->centro[ii].theta >=SNR) && (im->centro[ii].mag>=(im->centro[ii].magerr))){
 		
 signif=signi(static_cast<int>(im->centro[ii].xpeak),static_cast<int>(im->centro[ii].ypeak));
 			ogg->fill_coor(im->centro[ii].xpeak,im->centro[ii].ypeak, scale, im->centro[ii].peak,
-				im->centro[ii].mag, im->centro[ii].bkg, im->centro[ii].theta,signif,im->centro[ii].magerr,im->centro[ii].bkgsig);
+				im->centro[ii].mag,
+im->centro[ii].bkg,im->centro[ii].theta,signif,im->centro[ii].magerr,im->centro[ii].bkgsig,im->centro[ii].A,im->centro[ii].B,0.);
 			//cout<<"signi--->"<<signi(static_cast<int>(im->centro[ii].xpeak),static_cast<int>(im->centro[ii].ypeak))<<endl;
 		}
+		else
+			cout<<"deleted"<<endl;
 	}
 	erase_source(ogg, min_pix);
 }
@@ -635,7 +655,10 @@ void select(detect_sources *list, detect_sources *flag, double min_pix, int prin
 		{
 			for (ii = 0; ii < list[step].xdimension(); ii++) {
 				flag->fill_coor(list[step].getx(ii), list[step].gety(ii), list[step].getd(ii), list[step].getwt(ii),
-								list[step].getmag(ii), list[step].getbkg(ii), list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii), list[step].getbkgerr(ii));
+							
+list[step].getmag(ii), list[step].getbkg(ii),
+list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii),
+list[step].getbkgerr(ii),list[step].getA(ii),list[step].getB(ii),0.);
 			}
 		}
 		if ((step > 0) && (list[step].xdimension() != 0)) {
@@ -644,13 +667,15 @@ void select(detect_sources *list, detect_sources *flag, double min_pix, int prin
 					for (jj = 0; jj < list[step-1].xdimension(); jj++){
 						if ((pow(list[step].getx(ii) - list[step-1].getx(jj), 2) + pow(list[step].gety(ii) - list[step-1].gety(jj), 2)) <= (min_pix*min_pix)){
 							flag->fill_coor(list[step].getx(ii), list[step].gety(ii), list[step].getd(ii), list[step].getwt(ii),
-											list[step].getmag(ii), list[step].getbkg(ii), list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii), list[step].getbkgerr(ii));
+							list[step].getmag(ii), list[step].getbkg(ii),list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii),list[step].getbkgerr(ii),list[step].getA(ii),list[step].getB(ii),0.);
 						}
 					}
 				}
 				else {
 					flag->fill_coor(list[step].getx(ii), list[step].gety(ii), list[step].getd(ii), list[step].getwt(ii),
-									list[step].getmag(ii), list[step].getbkg(ii), list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii), list[step].getbkgerr(ii));
+							
+list[step].getmag(ii),
+list[step].getbkg(ii),list[step].getSNR(ii),list[step].getSignif(ii),list[step].getmagerr(ii),list[step].getbkgerr(ii),list[step].getA(ii),list[step].getB(ii),0.);
 				}
 			}
 		}
