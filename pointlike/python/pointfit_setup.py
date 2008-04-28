@@ -10,11 +10,11 @@ def test():
   return os.path.join(path, 'src', 'test', 'pointlike_test.fits')
 
 # data selection: either "pixelfile", or "files", the latter a list of FT1 files
-pixelfile = test()
-pixelfile = r'F:\glast\data\SC2\obssim\allsky_noGRBs.fits'
+#pixelfile = test()
+#pixelfile = r'F:\glast\data\SC2\obssim\allsky_noGRBs.fits'
 
 # if this is non-zero, lots of output
-PointSourceLikelihood.verbose=0
+PointSourceLikelihood.verbose=1
 
 # if this is non-zero, use the first of the list as a background for the remainder
 first_is_center=0
@@ -28,7 +28,11 @@ dec  = [-17.861,   -18.294,  -18.71  ,-17.88, -18.12]
 PointSourceLikelihood.verbose=1
 name= ['vela']
 ra = [128.8359]; dec=[-45.1763]
-Data.pixelfile = r'F:\glast\data\SC2\obssim\allsky_noGRBs.fits'
+#Data.pixelfile = r'F:\glast\data\SC2\obssim\allsky_noGRBs.fits'
+import glob
+Data.files = glob.glob(r'F:\glast\data\SC2\obssim\LAT_allsky_*_V01.fits')[:3]
+Data.event_class=1
+
 
 dir =(128.836673, -45.188701)
 ra=[dir[0]]; dec=[dir[1]]

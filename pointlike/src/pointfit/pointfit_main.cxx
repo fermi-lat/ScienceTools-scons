@@ -63,6 +63,9 @@ int main(int argc, char** argv)
         // use the  Data class to create the PhotonData object
         Data healpixdata(setup);
 
+        // print out summary of the the data used?
+        healpixdata.info(); 
+
         // define all parameters used by PointSourceLikelihood
         PointSourceLikelihood::setParameters(setup);
 
@@ -104,13 +107,18 @@ int main(int argc, char** argv)
         }
         if( check_sigma){
             int minlevel(6), maxlevel(13);
+#ifdef OLD
             ParamOptimization so(healpixdata,directions,out,minlevel,maxlevel);
+
 #if 0
             so.compute(ParamOptimization::SIGMA);
             so.compute(ParamOptimization::GAMMA);
 #else
             so.compute();
 #endif
+            
+#endif
+
         }
         if( !outfile.empty()){
             delete out;
