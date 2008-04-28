@@ -9,8 +9,8 @@
 #ifndef __UTILE_H
 #define __UTILE_H
 
-#include "MyImage.h"
-#include "MyImageAnalisys.h"
+#include "pgwave/MyImage.h"
+#include "pgwave/MyImageAnalisys.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -127,7 +127,9 @@ class detect_sources
 {
 public:
 	void fill_coor(double xvalue, double yvalue, double dvalue, double wtvalue,
-				   double magvalue, double bkgvalue, double SNRvalue,double Sigvar=0,double merr=0,double bkerr=0);
+				   double magvalue, double bkgvalue, double
+				   SNRvalue,double Sigvar=0,double merr=0,double
+				   bkerr=0,double a=0,double b=0, double theta=0);
 	double getx(int i){return x[i];};
 	double gety(int i){return y[i];};
 	double getd(int i){return d[i];};
@@ -138,6 +140,9 @@ public:
 	double getbkgerr(int i){return bkgerr[i];};
 	double getSNR(int i){return SNR[i];};
 	double getSignif(int i){return signif[i];};
+	double getA(int i){return A[i];};
+	double getB(int i){return B[i];};
+	double getTHETA(int i){return THETA[i];};
 	int xdimension(){return int(x.size());};
 	int ydimension(){return int(y.size());};
 	int ddimension(){return int(d.size());};
@@ -148,6 +153,9 @@ public:
 	int bkgerrdimension(){return int(bkgerr.size());};
 	int SNRdimension(){return int(SNR.size());};
 	int signdimension(){return int(signif.size());};
+	int Adimension(){return int(A.size());};
+	int Bdimension(){return int(B.size());};
+	int THETAdimension(){return int(THETA.size());};
 	void remove(int i);
 	void set_clear();
 	void print_scale(int step);
@@ -163,6 +171,10 @@ private:
 	vector<double> signif;
 	vector<double> magerr;
 	vector<double> bkgerr;
+	vector<double> A;
+	vector<double> B;
+	vector<double> THETA;
+
 };
 
 #endif
