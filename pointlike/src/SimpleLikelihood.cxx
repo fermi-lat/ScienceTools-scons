@@ -7,9 +7,6 @@ $Header$
 #include "pointlike/SimpleLikelihood.h"
 #include "skymaps/DiffuseFunction.h"
 #include "astro/SkyDir.h"
-#ifdef OLD
-#include "healpix/Healpix.h"
-#endif
 #include <algorithm>
 #include <cmath>
 #include <map>
