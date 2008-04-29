@@ -5,6 +5,7 @@
 @verbatim
  * Coordinators: T.Burnett, S. Robinson
     
+   v8r39   29-apr-2008 thb rootplots update; FLUX_XML changes by Navid
    v8r38p1 15-feb-2008 thb fix bug in id implementation; add name capability to ISpectrum objects
    v8r38   15-jan-2008 thb fix bug in id implementation; add name capability to ISpectrum objects
    v8r37   14-jan-2008 thb Implement possibilty for a source to define its own id, overriding algorithm
