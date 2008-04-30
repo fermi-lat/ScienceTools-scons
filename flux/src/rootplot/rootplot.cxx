@@ -222,7 +222,7 @@ void rootplot::init(std::vector<std::string> argv)
         std::string sourcename(sources[i])
                   , sourcedisplayname(sources[i]);
         size_t colon (sourcename.find(":"));
-        if(colon!= std::string.npos){
+        if(colon!= std::string::npos){
             std::string check1 = sourcename.substr(0, colon);
             std::string check2 = sourcename.substr(colon+1);
             sourcedisplayname= check2;
