@@ -1,9 +1,9 @@
 if test "${CMTROOT}" = ""; then
-  CMTROOT=/afs/slac.stanford.edu/g/glast/applications/CMT/v1r16p20040701; export CMTROOT
+  CMTROOT=/afs/slac/g/glast/applications/CMT/v1r18p20061003; export CMTROOT
 fi
 . ${CMTROOT}/mgr/setup.sh
-tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
+tempfile=`${CMTROOT}/mgr/cmt -quiet build temporary_name`
 if test ! $? = 0 ; then tempfile=/tmp/cmt.$$; fi
-${CMTROOT}/mgr/cmt -quiet cleanup -sh -pack=pgwave -version=v0r0p0 -path=/afs/slac.stanford.edu/u/gl/tosti/mywork $* >${tempfile}; . ${tempfile}
+${CMTROOT}/mgr/cmt cleanup -sh -pack=pgwave -version=v1 -path=/a/sulky36/g.glast.u33/tosti/myPgwave $* >${tempfile}; . ${tempfile}
 /bin/rm -f ${tempfile}
 

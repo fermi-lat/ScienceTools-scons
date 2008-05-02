@@ -1,11 +1,13 @@
 package pgwave
-version v0p0r0
+version v1r1
 
 use STpolicy *
 use cfitsio * IExternal
-use pil * IExternal
+#use pil * IExternal
 use fftw * IExternal
 use astro v*
+use st_app v*
+use hoops v*
 apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern package_stamps
