@@ -11,15 +11,15 @@
 #include <iostream>
 #include "pgwave/filtri.h"
 #include <cmath>
-#include <pil.h>
-#include <pil_error.h>
+//#include <pil.h>
+//#include <pil_error.h>
 //#include "PGWave2D/MyImage.h"
 //#include "PGWave2D/MyImageAnalisys.h"
 
 
 using namespace std;
 
-bool readParam_string( const char name[], char* result )
+/*bool readParam_string( const char name[], char* result )
 {
 	int pilerr = PILGetString(name,result);
 	if ( pilerr < 0 ) {
@@ -58,7 +58,7 @@ bool readParam_double_vector( const char name[], int len, double* result )
 	}
 	return true;
 }
-
+*/
 void printerror( int status)
 {
     /*****************************************************/

@@ -28,11 +28,11 @@
 using namespace std;
 
 /* These functions ask PIL to read parameters and return false, printing error message, if it failed. */
-bool readParam_string( const char name[], char* result );
+/*bool readParam_string( const char name[], char* result );
 bool readParam_int( const char name[], int* result );
 bool readParam_double( const char name[], double* result );
 bool readParam_double_vector( const char name[], int len, double* result );
-
+*/
 void fitsio_all_in_one(fitsfile *fptr, char *filename, char *filename_header, array2d<double>& image, long *nax, int print);
 void fitsio_all_in_one(fitsfile *fptr, char *filename, array2d<double>& image, long *nax, int print);
 void fitsio_all_in_one(fitsfile *fptr, char *filename, char *filename_header, array3d<double>& image, long *nax, int print);
