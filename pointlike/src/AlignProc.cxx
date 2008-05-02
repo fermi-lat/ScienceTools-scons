@@ -278,7 +278,11 @@ int AlignProc::add(pointlike::AlignProc::Photona& p){
             p1 = 0.0013;
         }  
         double sigmasq = (p0*p0*pow(p.energy()/100,-1.6))+p1*p1;*/
+#ifdef OLD /// @TODO: need to extract sigma from the data object?
         double sigmasq = 2.5*pow(2.0,6-level)*M_PI/180.*pointlike::PointSourceLikelihood::sigma_level(level);
+#else
+        double sigmasq(1.0);
+#endif
         sigmasq *= sigmasq;
         double utest = diff*diff/sigmasq/2;
         //if scaled deviation is within the cone and enough signal photons

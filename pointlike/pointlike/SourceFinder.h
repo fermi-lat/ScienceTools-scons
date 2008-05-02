@@ -13,9 +13,7 @@ $Header$
 #include "pointlike/PointSourceLikelihood.h"
 
 #include "astro/SkyDir.h"
-#ifdef OLD
-#include "healpix/HealPixel.h"
-#endif
+
 #include "embed_python/Module.h"
 
 #include <vector>
