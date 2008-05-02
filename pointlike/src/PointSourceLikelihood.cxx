@@ -246,6 +246,24 @@ void PointSourceLikelihood::printSpectrum()
     }
     out() << setw(14) << m_TS << std::endl;
 }
+
+std::vector<double> PointSourceLikelihood::energyList()const
+{
+    
+    std::vector<double> energies;
+    if( size()>0) {
+        const_iterator it (begin());
+        for( ; it!= end(); ++it){
+            double emin((*it)->band().emin());
+            if( energies.size()==0 || energies.back()!= emin){
+                energies.push_back(emin);
+            }
+        }
+        energies.push_back( back()->band().emax() );
+    }
+    return energies;
+
+}
 double PointSourceLikelihood::localize(int skip1, int skip2)
 {
     double t(100);
