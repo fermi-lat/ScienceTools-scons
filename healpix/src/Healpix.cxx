@@ -72,9 +72,10 @@ void Healpix::Pixel::neighbors(std::vector<Healpix::Pixel> & p) const
     fix_arr<int,8> result;
     
     p.clear();
+#if 0 // now only slower?
     if (!(this->m_healpix->nested()))
         throw std::runtime_error("Nested ordering required to determine neighbors.");
-    
+#endif
     const Healpix &hpx = *this->m_healpix;
     Healpix_Base hpb(hpx.nside(),static_cast<Healpix_Ordering_Scheme>(hpx.ord()),SET_NSIDE); 
     hpb.neighbors(m_index, result);
@@ -94,12 +95,13 @@ double Healpix::integrate(const astro::SkyFunction& f)const
     return std::accumulate(begin(), end(), 0., Integrand(f));
 }
 
-void Healpix::findNeighbors(long index, std::vector<long> &p)
+void Healpix::findNeighbors(long index, std::vector<int> &p) const
 {
    
+#if 0  // now only slower?
     if (!(nested()))
         throw std::invalid_argument("Healpix::findNeighbors -- Nested ordering required to determine neighbors.");
-
+#endif
     p.clear();
 
     fix_arr<int,8> result;// local copy of the list
@@ -119,7 +121,7 @@ void Healpix::findNeighbors(long index, std::vector<long> &p)
         }
     }
     // now insert this list into the output vector
-    std::copy(n,n+nit, std::back_insert_iterator<std::vector<long> >(p));
+    std::copy(n,n+nit, std::back_insert_iterator<std::vector<int> >(p));
 }
 
  ///@brief the number of sides 

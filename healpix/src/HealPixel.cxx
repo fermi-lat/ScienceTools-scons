@@ -118,9 +118,9 @@ std::vector<HealPixel> HealPixel::neighbors() const
 {
     std::vector<HealPixel> p;
     Healpix hp( nside(), healpix::Healpix::NESTED, s_coordsys);
-    std::vector<long> neighbors;
+    std::vector<int> neighbors;
     hp.findNeighbors(index(), neighbors);
-    for (std::vector<long>::const_iterator i = neighbors.begin();
+    for (std::vector<int>::const_iterator i = neighbors.begin();
         i !=neighbors.end(); ++i)
     {
         p.push_back( HealPixel(*i, level(), band()));

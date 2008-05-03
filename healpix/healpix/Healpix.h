@@ -77,8 +77,8 @@ public:
     astro::SkyDir::CoordSystem coordsys()const{return m_coordsys;}
     bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
-    void findNeighbors(long index, std::vector<long> &neighbors);
-	void query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const;
+    void findNeighbors(long index, std::vector<int> &neighbors)const;
+    void query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const;
 
 //#define SWIG //Added to help
 #ifndef SWIG // can't export these nested classes, and therefore the integration, to python
