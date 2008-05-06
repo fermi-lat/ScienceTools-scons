@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.35  2008/04/24 14:55:17  jurgen
+Implement simple FoM scheme
+
 Revision 1.34  2008/04/23 14:12:03  jurgen
 Implement zero-argument special functions nsrc(), nlat() and ncpt()
 
@@ -288,7 +291,8 @@ const double c_prob_prior_max = 1.00;    //!< Maximum catch-22 prior
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
-const double twopi       =  6.2831853071795862319959269;
+const double twopi       =  2.0 * pi;
+const double fourpi      =  4.0 * pi;
 const double sqrt2pi     =  2.5066282746310002416123552;
 const double twosqrt2ln2 =  2.3548200450309493270140138;
 const double deg2rad     =  0.0174532925199432954743717;
@@ -301,6 +305,7 @@ const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
 const double e_norm_2s = 1.0 / sqrt(3.0900358);  //!< 2 sigma = 95.450%, 2 dof
 const double e_norm_3s = 1.0 / sqrt(5.9145778);  //!< 3 sigma = 99.730%, 2 dof
 const double e_norm_68 = 1.0 / sqrt(1.1394375);  //!< 68.000%, 2 dof
+const double e_norm_90 = 1.0 / sqrt(2.2926342 );  //!< 90.000%, 2 dof
 const double e_norm_95 = 1.0 / sqrt(2.9957230);  //!< 95.000%, 2 dof
 const double e_norm_99 = 1.0 / sqrt(4.6051713);  //!< 99.000%, 2 dof
 
@@ -314,6 +319,12 @@ const int         fct_nargs[] = {1,        1,       1,
                                  0,        0,       0};
 
 /* Type defintions __________________________________________________________ */
+typedef enum {                  // Position type
+  NoPosition = 1,               //!< No position
+  Equatorial,                   //!< RA/Dec
+  Galactic                      //!< GLON/GLAT
+} PosType;
+
 typedef enum {                  // Position error type
   NoError = 1,                  //!< No error
   Radius,                       //!< Error radius
@@ -326,6 +337,7 @@ typedef enum {                  // Position error probability
   Sigma_2,                      //!< 2 sigma standard deviations
   Sigma_3,                      //!< 3 sigma standard deviations
   Prob_68,                      //!< 68% probability ellipse
+  Prob_90,                      //!< 90% probability ellipse
   Prob_95,                      //!< 95% probability ellipse
   Prob_99                       //!< 99% probability ellipse
 } PosErrorProb;
@@ -399,11 +411,14 @@ typedef struct {                      // Input catalogue
   std::string             col_id;       //!< Source ID column name
   std::string             col_ra;       //!< Right Ascension column name
   std::string             col_dec;      //!< Declination column name
+  std::string             col_glon;     //!< Longitude column name
+  std::string             col_glat;     //!< Latitude column name
   std::string             col_e_ra;     //!< Right Ascension error column name
   std::string             col_e_dec;    //!< Declination error column name
   std::string             col_e_maj;    //!< Error ellipse Semimajor axis or radius
   std::string             col_e_min;    //!< Error ellipse Semi-minor axis
   std::string             col_e_posang; //!< Error ellipse Position angle
+  PosType                 pos_type;     //!< Position type
   PosErrorType            col_e_type;   //!< Position error type
   PosErrorProb            col_e_prob;   //!< Position error probability
   double                  e_pos_scale;  //!< Position error scaling

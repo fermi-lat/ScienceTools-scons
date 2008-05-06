@@ -8,9 +8,13 @@ use hoops *
 use st_facilities *
 use st_app *
 use catalogAccess *
+use sane *
 
 apply_pattern ST_pfiles
 apply_pattern ST_app_withDir name=gtsrcid dir=gtsrcid
+
+path_remove PYTHONPATH sourceIdentify
+path_append PYTHONPATH $(SOURCEIDENTIFYROOT)/python
 
 #macro_append cppflags ""-pg""
 #macro_append cpplinkflags ""-pg""

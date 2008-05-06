@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.42  2008/04/24 14:55:17  jurgen
+Implement simple FoM scheme
+
 Revision 1.41  2008/04/23 15:42:06  jurgen
 Don't close in-memory catalogue (error if catalogue is empty)
 
@@ -166,6 +169,9 @@ using namespace catalogAccess;
 
 /* Private Prototypes _______________________________________________________ */
 std::string find(std::vector <std::string> &arg, std::string match);
+double      modulo(double v1, double v2);
+void        euler(const int& type, const double& xin, const double &yin, 
+                  double* xout, double *yout);
 Status      get_info(Parameters *par, InCatalogue *in, Status status);
 Status      get_id_info(Parameters *par, InCatalogue *in, 
                         std::vector <std::string> &qtyNames,
@@ -247,6 +253,63 @@ std::string find(std::vector <std::string> &arg, std::string match) {
   // Return result
   return result;
 
+}
+
+
+/***********************************************************************//**
+ * @brief Returns the remainder of the division \a v1/v2.
+ *
+ * @param[in] v1 Argument 1.
+ * @param[in] v2 Argument 2.
+ *
+ * Returns the remainder of the division \a v1/v2.
+ * The result is non-negative.
+ * \a v1 can be positive or negative; \a v2 must be positive.
+ ***************************************************************************/
+double modulo(double v1, double v2)
+{
+    // Return
+    return (v1 >= 0) ? ((v1 < v2) ? v1 : fmod(v1,v2)) : (fmod(v1,v2)+v2);
+}
+
+
+/***********************************************************************//**
+ * @brief General coordinate transformation routine for J2000
+ *
+ * @param[in] type Conversion type (0=equ2gal, 1=gal2equ)
+ * @param[in] xin Input longitude (RA or GLON) in radians.
+ * @param[in] yin Input latitude (Dec or GLAT) in radians.
+ * @param[out] xout Output longitude in radians.
+ * @param[out] yout Output latitude in radians.
+ ***************************************************************************/
+void euler(const int& type, const double& xin, const double &yin, 
+           double* xout, double *yout)
+{
+    // Set transformation constants
+    const double psi[]    = {0.57477043300,  4.9368292465};
+    const double stheta[] = {0.88998808748, -0.88998808748};
+    const double ctheta[] = {0.45598377618,  0.45598377618};
+    const double phi[]    = {4.9368292465,   0.57477043300};
+
+    // Perform transformation
+    double a    = xin - phi[type];
+    double b    = yin;
+    double sb   = sin(b);
+    double cb   = cos(b);
+    double cbsa = cb * sin(a);
+
+    //
+    a = atan2(ctheta[type] * cbsa + stheta[type] * sb, cb * cos(a));
+    b = -stheta[type] * cbsa + ctheta[type] * sb;
+    if (b > 1.0)
+        b = 1.0;
+
+    //
+    *yout = asin(b);
+    *xout = modulo((a+psi[type] + fourpi), twopi);
+
+    // Return
+    return;
 }
 
 
@@ -421,61 +484,118 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
         continue;
 
       // Initialise status to 'not found'
-      status = STATUS_CAT_NO_POS;
+      status       = STATUS_CAT_NO_POS;
+      in->pos_type = NoPosition;
       in->col_ra.clear();
       in->col_dec.clear();
+      in->col_glon.clear();
+      in->col_glat.clear();
 
       // Search for first RA/Dec position in UCDs
       for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
         if (qtyUCDs[i].find("POS_EQ_RA_MAIN", 0) != std::string::npos) {
-          in->col_ra = qtyNames[i];
+          in->col_ra   = qtyNames[i];
           break;
         }
       }
       for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
         if (qtyUCDs[i].find("POS_EQ_DEC_MAIN", 0) != std::string::npos) {
-          in->col_dec = qtyNames[i];
+          in->col_dec  = qtyNames[i];
           break;
         }
       }
       if ((in->col_ra.length() > 0) && (in->col_dec.length() > 0)) {
-        status = STATUS_OK;
+        status       = STATUS_OK;
+        in->pos_type = Equatorial;
         continue;
       }
 
       // Search for RAdeg/DEdeg columns
       if ((find(qtyNames, "RAdeg").length() > 0) &&
           (find(qtyNames, "DEdeg").length() > 0)) {
-        in->col_ra  = "RAdeg";
-        in->col_dec = "DEdeg";
-        status      = STATUS_OK;
+        in->col_ra   = "RAdeg";
+        in->col_dec  = "DEdeg";
+        in->pos_type = Equatorial;
+        status       = STATUS_OK;
         continue;
       }
 
       // Search for _RAJ2000/_DEJ2000 columns
       if ((find(qtyNames, "_RAJ2000").length() > 0) &&
           (find(qtyNames, "_DEJ2000").length() > 0)) {
-        in->col_ra  = "_RAJ2000";
-        in->col_dec = "_DEJ2000";
-        status      = STATUS_OK;
+        in->col_ra   = "_RAJ2000";
+        in->col_dec  = "_DEJ2000";
+        in->pos_type = Equatorial;
+        status       = STATUS_OK;
         continue;
       }
 
       // Search for RAJ2000/DEJ2000 columns
       if ((find(qtyNames, "RAJ2000").length() > 0) &&
           (find(qtyNames, "DEJ2000").length() > 0)) {
-        in->col_ra  = "RAJ2000";
-        in->col_dec = "DEJ2000";
-        status      = STATUS_OK;
+        in->col_ra   = "RAJ2000";
+        in->col_dec  = "DEJ2000";
+        in->pos_type = Equatorial;
+        status       = STATUS_OK;
         continue;
       }
 
       // Search for RA/DEC columns
       if ((find(qtyNames, "RA").length() > 0) &&
           (find(qtyNames, "DEC").length() > 0)) {
-        in->col_ra  = "RA";
-        in->col_dec = "DEC";
-        status      = STATUS_OK;
+        in->col_ra   = "RA";
+        in->col_dec  = "DEC";
+        in->pos_type = Equatorial;
+        status       = STATUS_OK;
+        continue;
+      }
+
+      // Search for GLON/GLAT position in UCDs
+      for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
+        if (qtyUCDs[i].find("POS_GAL_LON", 0) != std::string::npos) {
+          in->col_glon = qtyNames[i];
+          break;
+        }
+      }
+      for (int i = 0; i < (int)qtyUCDs.size(); ++i) {
+        if (qtyUCDs[i].find("POS_GAL_LAT", 0) != std::string::npos) {
+          in->col_glat = qtyNames[i];
+          break;
+        }
+      }
+      if ((in->col_glon.length() > 0) && (in->col_glat.length() > 0)) {
+        status       = STATUS_OK;
+        in->pos_type = Galactic;
+        continue;
+      }
+
+      // Search for _GLON/_GLAT columns
+      if ((find(qtyNames, "_GLON").length() > 0) &&
+          (find(qtyNames, "_GLAT").length() > 0)) {
+        in->col_glon = "_GLON";
+        in->col_glat = "_GLAT";
+        in->pos_type = Galactic;
+        status       = STATUS_OK;
+        continue;
+      }
+
+      // Search for GLON/GLAT columns
+      if ((find(qtyNames, "GLON").length() > 0) &&
+          (find(qtyNames, "GLAT").length() > 0)) {
+        in->col_glon = "GLON";
+        in->col_glat = "GLAT";
+        in->pos_type = Galactic;
+        status       = STATUS_OK;
+        continue;
+      }
+
+      // Search for L/B columns
+      if ((find(qtyNames, "L").length() > 0) &&
+          (find(qtyNames, "B").length() > 0)) {
+        in->col_glon = "L";
+        in->col_glat = "B";
+        in->pos_type = Galactic;
+        status       = STATUS_OK;
         continue;
       }
 
@@ -576,25 +696,29 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for e_RAdeg/e_DEdeg columns
-        if ((find(qtyNames, "e_RAdeg").length() > 0) &&
-            (find(qtyNames, "e_DEdeg").length() > 0)) {
-          in->col_e_ra   = "e_RAdeg";
-          in->col_e_dec  = "e_DEdeg";
-          in->col_e_type = RaDec;
-          in->col_e_prob = Sigma_1;
-          status         = STATUS_OK;
-          continue;
+        if (in->pos_type == Equatorial) {
+          if ((find(qtyNames, "e_RAdeg").length() > 0) &&
+              (find(qtyNames, "e_DEdeg").length() > 0)) {
+            in->col_e_ra   = "e_RAdeg";
+            in->col_e_dec  = "e_DEdeg";
+            in->col_e_type = RaDec;
+            in->col_e_prob = Sigma_1;
+            status         = STATUS_OK;
+            continue;
+          }
         }
 
         // Search for e_RAJ2000/e_DEJ2000 columns
-        if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
-            (find(qtyNames, "e_DEJ2000").length() > 0)) {
-          in->col_e_ra   = "e_RAJ2000";
-          in->col_e_dec  = "e_DEJ2000";
-          in->col_e_type = RaDec;
-          in->col_e_prob = Sigma_1;
-          status         = STATUS_OK;
-          continue;
+        if (in->pos_type == Equatorial) {
+          if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
+              (find(qtyNames, "e_DEJ2000").length() > 0)) {
+            in->col_e_ra   = "e_RAJ2000";
+            in->col_e_dec  = "e_DEJ2000";
+            in->col_e_type = RaDec;
+            in->col_e_prob = Sigma_1;
+            status         = STATUS_OK;
+            continue;
+          }
         }
 
         // Search for theta95 column (3EG catalogue)
@@ -602,6 +726,42 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
           in->col_e_maj  = "theta95";
           in->col_e_type = Radius;
           in->col_e_prob = Prob_95;
+          status         = STATUS_OK;
+          continue;
+        }
+
+        // Search for PosErr68 column
+        if (find(qtyNames, "PosErr68").length() > 0) {
+          in->col_e_maj  = "PosErr68";
+          in->col_e_type = Radius;
+          in->col_e_prob = Prob_68;
+          status         = STATUS_OK;
+          continue;
+        }
+
+        // Search for PosErr90 column
+        if (find(qtyNames, "PosErr90").length() > 0) {
+          in->col_e_maj  = "PosErr90";
+          in->col_e_type = Radius;
+          in->col_e_prob = Prob_90;
+          status         = STATUS_OK;
+          continue;
+        }
+
+        // Search for PosErr95 column
+        if (find(qtyNames, "PosErr95").length() > 0) {
+          in->col_e_maj  = "PosErr95";
+          in->col_e_type = Radius;
+          in->col_e_prob = Prob_95;
+          status         = STATUS_OK;
+          continue;
+        }
+
+        // Search for PosErr99 column
+        if (find(qtyNames, "PosErr99").length() > 0) {
+          in->col_e_maj  = "PosErr99";
+          in->col_e_type = Radius;
+          in->col_e_prob = Prob_99;
           status         = STATUS_OK;
           continue;
         }
@@ -631,6 +791,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
           break;
         case Prob_68:
           in->e_pos_scale = e_norm_68;
+          break;
+        case Prob_90:
+          in->e_pos_scale = e_norm_90;
           break;
         case Prob_95:
           in->e_pos_scale = e_norm_95;
@@ -697,19 +860,45 @@ void set_info(Parameters *par, InCatalogue *in, int &i, ObjectInfo *ptr,
         ptr->name = "no-name";
 
       // Set source position
-      if ((in->cat.getNValue(in->col_ra,  i, &(ptr->pos_eq_ra))  == IS_OK) &&
-          (in->cat.getNValue(in->col_dec, i, &(ptr->pos_eq_dec)) == IS_OK)) {
+      if (in->pos_type == Equatorial) {
+        if ((in->cat.getNValue(in->col_ra,  i, &(ptr->pos_eq_ra))  == IS_OK) &&
+            (in->cat.getNValue(in->col_dec, i, &(ptr->pos_eq_dec)) == IS_OK)) {
 
-        // Set position validity flag
-        ptr->pos_valid = 1;
+          // Set position validity flag
+          ptr->pos_valid = 1;
 
-        // Put Right Ascension in interval [0,2pi[
-        ptr->pos_eq_ra = ptr->pos_eq_ra -
-                         double(long(ptr->pos_eq_ra / 360.0) * 360.0);
-        if (ptr->pos_eq_ra < 0.0)
-          ptr->pos_eq_ra += 360.0;
+          // Put Right Ascension in interval [0,2pi[
+          ptr->pos_eq_ra = ptr->pos_eq_ra -
+                           double(long(ptr->pos_eq_ra / 360.0) * 360.0);
+          if (ptr->pos_eq_ra < 0.0)
+            ptr->pos_eq_ra += 360.0;
 
-      } // endif: source position found
+        } // endif: equatorial source position found
+      }
+      else if (in->pos_type == Galactic) {
+        double glon;
+        double glat;
+        if ((in->cat.getNValue(in->col_glon, i, &glon)  == IS_OK) &&
+            (in->cat.getNValue(in->col_glat, i, &glat) == IS_OK)) {
+
+          // Convert galactic to equatorial coordinates
+          glon *= deg2rad;
+          glat *= deg2rad;
+          euler(1, glon, glat, &ptr->pos_eq_ra, &ptr->pos_eq_dec);
+          ptr->pos_eq_ra  *= rad2deg;
+          ptr->pos_eq_dec *= rad2deg;
+
+          // Set position validity flag
+          ptr->pos_valid = 1;
+
+          // Put Right Ascension in interval [0,2pi[
+          ptr->pos_eq_ra = ptr->pos_eq_ra -
+                           double(long(ptr->pos_eq_ra / 360.0) * 360.0);
+          if (ptr->pos_eq_ra < 0.0)
+            ptr->pos_eq_ra += 360.0;
+
+        } // endif: galactic source position found
+      }
 
       // Set source position error (type dependent)
       switch (in->col_e_type) {
@@ -1195,8 +1384,20 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
           numQty);
       Log(Log_2, " Source ID column key .............: <%s>",
           in->col_id.c_str());
-      Log(Log_2, " Position column keys .............: <%s> <%s>",
-          in->col_ra.c_str(), in->col_dec.c_str());
+      switch (in->pos_type) {
+      case Equatorial:
+        Log(Log_2, " Position column keys (equatorial) : <%s> <%s>",
+            in->col_ra.c_str(), in->col_dec.c_str());
+        break;
+      case Galactic:
+        Log(Log_2, " Position column keys (galactic) ..: <%s> <%s>",
+            in->col_glon.c_str(), in->col_glat.c_str());
+        break;
+      default:
+        Log(Log_2, " Position column keys .............: "
+                   "no position information found");
+        break;
+      }
       switch (in->col_e_type) {
       case Radius:
         Log(Log_2, " Position error column keys .......: <%s>",
@@ -1231,6 +1432,10 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
         break;
       case Prob_68:
         Log(Log_2, " Position error unit ..............: 68%% (scale=%7.5f)",
+            in->e_pos_scale);
+        break;
+      case Prob_90:
+        Log(Log_2, " Position error unit ..............: 90%% (scale=%7.5f)",
             in->e_pos_scale);
         break;
       case Prob_95:
