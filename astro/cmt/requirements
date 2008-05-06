@@ -16,9 +16,9 @@ use python * IExternal -no_auto_imports   # needed for windows in RM
 apply_pattern shared_library
 
 private
-
-use SwigModule *
-apply_pattern python_module
+# enable this for Windows
+#use SwigModule *
+#apply_pattern python_module
 
 #kill "truncation from double to float"
 macro_append astro_cppflags "" WIN32 " /wd4305 /wd4554 /wd4013"
