@@ -8,7 +8,7 @@ use hoops *
 use st_facilities *
 use st_app *
 use catalogAccess *
-#use sane *
+use sane * -no_auto_imports
 #use extFiles * IExternal
 
 apply_pattern ST_pfiles
