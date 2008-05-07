@@ -100,6 +100,7 @@ def set_pars(module, chatter=False):
 	if hasattr(module, 'prob_prior'):         par['probPrior']    = module.prob_prior
 	if hasattr(module, 'prob_thres'):         par['probThres']    = module.prob_thres
 	if hasattr(module, 'max_counterparts'):   par['maxNumCpt']    = module.max_counterparts
+	if hasattr(module, 'figure_of_merit'):    par['fom']          = module.figure_of_merit
 	if hasattr(module, 'chatter'):            par['chatter']      = module.chatter
 	if hasattr(module, 'debug'):              par['debug']        = module.debug
 	if hasattr(module, 'new_quantity'):
@@ -151,7 +152,7 @@ def get_fits_cat(file, catname='GLAST_CAT'):
 				return hdu
 		except KeyError:
 			pass
-		
+	
 	# Return second extension
 	return hdulist[1]
 
@@ -169,11 +170,11 @@ def get_name_key(pars, hdu):
 	Returns:
 	 Counterpart name key
 	 If no name was found returns 'None'
-	 
+	
 	The counterpart name key is first searched using the UCD descriptors
-	'ID_MAIN' or 'ID_IDENTIFIER'. 
+	'ID_MAIN' or 'ID_IDENTIFIER'.
 	If no such descriptors were found the following name keys are searched
-	for: 'HESS','NAME','ID'. 
+	for: 'HESS','NAME','ID'.
 	"""
 	
 	# Get HDU cards
@@ -391,7 +392,7 @@ def expand_column_names(pars):
 	Arguments:
 	 pars  Parameter dictronary
 	"""
-	 
+	
 	# Set column names list to empty list
 	names = []
 	
@@ -427,7 +428,6 @@ def run_gtsrcid(pars):
 	"""
 	
 	# Create gtsrcid application
-	#srcid = GtApp('gtsrcid', preserveQuotes=True)
 	srcid = GtApp('gtsrcid', preserveQuotes=False)
 	
 	# Expand column names in parameter strings
@@ -442,7 +442,6 @@ def run_gtsrcid(pars):
 	
 	# Run the application
 	srcid.run(print_command=False)
-	#srcid.run(print_command=True)
 	
 	# Rename result file
 	os.rename('gtsrcid.log', pars['cptCatPrefix'].lower() + '.log')
@@ -458,7 +457,7 @@ if __name__ == '__main__':
 	Usage: srcid.py <LATCatalogue> [OPTIONS]
 	     -h              Display usage message
 	     -C classdir     Specify alternative classes directory
-	     
+	
 	The script runs gtsrid for all source classes that are defined in the
 	specified 'classdir'. If no 'classdir' option is given the 'classes'
 	directory that is shipped with the distribution is used.
@@ -483,7 +482,7 @@ if __name__ == '__main__':
 	lat_filename = sys.argv[1]
 	
 	# If -C option is specified then extract class directory. Otherwise use classes that
-	# shup with this script
+	# ship with this script
 	if len(sys.argv) == 4:
 		path_classes = sys.argv[3]
 		dir_classes  = os.path.basename(path_classes)
@@ -501,14 +500,17 @@ if __name__ == '__main__':
 		pass
 	
 	# Create __init__.py file
-	filename = path_classes + '/__init__.py'
-	names    = [os.path.basename(s).rstrip('.py') for s in class_list]
-	file     = open(filename, 'w')
-	string   = '__all__ = ' + str(names) + '\n'
-	file.write('# This file is required so that the current directory is '\
+	try:
+		filename = path_classes + '/__init__.py'
+		names    = [os.path.basename(s).rstrip('.py') for s in class_list]
+		file     = open(filename, 'w')
+		string   = '__all__ = ' + str(names) + '\n'
+		file.write('# This file is required so that the current directory is '\
 	           'treated as containing packages\n')
-	file.write(string)
-	file.close()
+		file.write(string)
+		file.close()
+	except:
+		print 'WARNING: Unable to create __init__.py module'
 	
 	# Import source classes now
 	class_import_string = 'from ' + dir_classes + ' import *'
