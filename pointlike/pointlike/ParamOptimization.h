@@ -45,8 +45,8 @@ public:
 
 private:
     // Numerical Recipes algorithm for finding the minimum
-    double goldensearch(int num2look, int level, bool sigma);
-    double curvature(bool sigma, int level, double val);
+    double goldensearch(int num2look, int band, bool sigma);
+    double curvature(bool sigma, int band, double val);
     std::vector<pointlike::PointSourceLikelihood*> m_likes; 
     std::ostream * m_out;                         //where to send output
 #ifdef OLD

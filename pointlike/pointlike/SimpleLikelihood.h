@@ -126,6 +126,7 @@ public:
     /// @brief access to the effective sigma (radians)  used for the fits
     double sigma()const{ return m_sigma;}
     void setsigma(double sigma) {m_sigma=sigma;}
+    double gamma()const{ return m_psf.gamma();}
 
     void recalc(bool subset=true);
 
