@@ -10,6 +10,8 @@
 #include "astro/EarthCoordinate.h"
 #include "Geomag.h"
 #include "astro/IGRField.h"
+#include <sstream>
+#include <stdexcept>
 
 namespace {
     
@@ -41,9 +43,14 @@ double EarthCoordinate::earthRadius(){return s_EarthRadius;}
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate jd)
+EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met) 
 {
     using namespace astro;
+    // check pos, modify to km if in m.
+    if( pos.mag() >  s_EarthRadius) {
+        pos /= 1e3;  // scale up to be presumably in km
+
+    }
 
     if (s_SAA_boundary == 0 ) {
       s_SAA_boundary = new std::vector<std::pair<double, double> >;
@@ -65,6 +72,11 @@ EarthCoordinate::EarthCoordinate(CLHEP::Hep3Vector pos, double met) //JulianDate
     m_altitude=sqrt(sqr(pos.x())+sqr(pos.y()))/cos(m_lat)
         -s_EarthRadius / (1000.*sqrt(1.-sqr(0.00669454*sin(m_lat))));
 
+    if( fabs(m_altitude-550.) > 50){
+        std::stringstream msg;
+        msg <<"astro::EarthCoordinate: invalid altitude, expect near 550 km, got: " << m_altitude;
+        throw std::invalid_argument(msg.str());
+    }
     // pointer to the singleton IGRField object for local use
     IGRField& field(IGRField::Model());
     // initialize it, and get what we will need. (can't use the object since it is a singleton
