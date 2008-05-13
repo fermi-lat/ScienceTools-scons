@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v8r1p1 13-May-08   JC   back off on using new event class defs
     v8r1   06-May-08   JC   remove gtorbsim code
     v8r0p1 13-Mar-08   JC   test program bug-fix for interface change
     v8     13-Mar-08   JC   add feature to run with out IRFs; clean up
