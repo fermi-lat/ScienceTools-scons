@@ -77,7 +77,7 @@ public:
     astro::SkyDir::CoordSystem coordsys()const{return m_coordsys;}
     bool galactic()const{return m_coordsys==astro::SkyDir::GALACTIC; }
 
-    void findNeighbors(long index, std::vector<int> &neighbors)const;
+    void findNeighbors(int index, std::vector<int> &neighbors)const;
     void query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const;
 
 //#define SWIG //Added to help

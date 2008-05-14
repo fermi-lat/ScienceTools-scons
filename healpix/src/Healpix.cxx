@@ -95,7 +95,7 @@ double Healpix::integrate(const astro::SkyFunction& f)const
     return std::accumulate(begin(), end(), 0., Integrand(f));
 }
 
-void Healpix::findNeighbors(long index, std::vector<int> &p) const
+void Healpix::findNeighbors(int index, std::vector<int> &p) const
 {
    
 #if 0  // now only slower?
