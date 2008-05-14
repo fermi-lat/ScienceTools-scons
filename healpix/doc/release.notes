@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+   v2r1p1 THB 13-may-08 Fix types
    v2r1   THB 03-may-08 Remove neighbor restriction to NESTED; use int instead of long for returned array
    v2r0p1 THB 15-apr-08 Remove explicit fitsio.h downloaded from WMAP
    v1r4   THB 14-apr-08 enhance HealPixel to encode an energy band identifier
