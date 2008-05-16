@@ -1,8 +1,11 @@
 /** @file release.notes
     @brief package observationSim
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
+    $Id$
 
     @verbatim
+    v8r1p2 16-May-08   JC   implement 26 microsec deadtime in EventContainer.cxx
+                            to avoid duplicate event time problem
     v8r1p1 13-May-08   JC   back off on using new event class defs
     v8r1   06-May-08   JC   remove gtorbsim code
     v8r0p1 13-Mar-08   JC   test program bug-fix for interface change
