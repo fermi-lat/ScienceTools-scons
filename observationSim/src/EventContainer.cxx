@@ -23,6 +23,8 @@ using CLHEP::RandFlat;
 using CLHEP::Hep3Vector;
 using CLHEP::HepRotation;
 
+#include "st_stream/StreamFormatter.h"
+
 #include "astro/SkyDir.h"
 #include "astro/GPS.h"
 
@@ -131,7 +133,9 @@ bool EventContainer::addEvent(EventSource * event,
    astro::SkyDir xAxis = spacecraft->xAxis(time);
 
    std::string srcName(event->name());
-   setEventId(srcName, event->code());
+   int eventId(event->code());
+
+   setEventId(srcName, eventId);
 
    m_srcSummaries[srcName].incidentNum += 1;
    if (respPtrs.empty()) {
@@ -168,17 +172,26 @@ bool EventContainer::addEvent(EventSource * event,
       evtParams["RA"] = appDir.ra();
       evtParams["DEC"] = appDir.dec();
       if (m_cuts == 0 || m_cuts->accept(evtParams)) {
-         m_srcSummaries[srcName].acceptedNum += 1;
-         if (m_events.size() > 0 && m_events.back().time() == time) {
-            throw std::runtime_error("EventContainer::addEvent:\n"
-                                     "zero time interval encountered.");
+         double lat_deadtime(2.6e-5);
+         if (m_events.size() > 0 &&
+             (time - m_events.back().time()) < lat_deadtime) {
+            st_stream::StreamFormatter formatter("gtobssim", "", 2);
+            formatter.info() << "Interval between consecutive events is "
+                             << "less than the nominal LAT deadtime "
+                             << "(26 microseconds).\n"
+                             << "Removing this event from source "
+                             << srcName << " and MC_SRC_ID " 
+                             << eventId << std::endl;
+            accepted = false;
+         } else {
+            m_srcSummaries[srcName].acceptedNum += 1;
+            m_events.push_back( Event(time, appEnergy, 
+                                      appDir, sourceDir, zAxis, xAxis,
+                                      ScZenith(time), respPtr->irfID(), 
+                                      energy, flux_theta, flux_phi,
+                                      m_srcSummaries[srcName].id) );
+            accepted = true;
          }
-         m_events.push_back( Event(time, appEnergy, 
-                                   appDir, sourceDir, zAxis, xAxis,
-                                   ScZenith(time), respPtr->irfID(), 
-                                   energy, flux_theta, flux_phi,
-                                   m_srcSummaries[srcName].id) );
-         accepted = true;
       }
       if (flush || m_events.size() >= m_maxNumEntries) {
          writeEvents();
