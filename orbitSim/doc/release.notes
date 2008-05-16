@@ -4,6 +4,7 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+16-may-2008    v0r1p4 JP  Add ft2 file needed as a template.
 28-feb-2008    v0r1p3 JP  From Giuseppe Romeo: changes to eliminate build
                           warnings and errors on Windows.
 30-jan-2008    v0r1p2 JP  From Giuseppe Romeo: changes to eliminate build
