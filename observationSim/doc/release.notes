@@ -4,6 +4,8 @@
     $Id$
 
     @verbatim
+    v8r1p3 21-May-08   JC   increase chatter level for events removed within
+                            deadtime
     v8r1p2 16-May-08   JC   implement 26 microsec deadtime in EventContainer.cxx
                             to avoid duplicate event time problem
     v8r1p1 13-May-08   JC   back off on using new event class defs
