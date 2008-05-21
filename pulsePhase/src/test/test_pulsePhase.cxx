@@ -10,7 +10,7 @@
 #include "pulsarDb/PulsarEph.h"
 
 #include "timeSystem/AbsoluteTime.h"
-#include "timeSystem/TimeRep.h"
+#include "timeSystem/ElapsedTime.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -38,9 +38,8 @@ int main() {
   std::auto_ptr<tip::Table> events(tip::IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "D1.fits"),
     "EVENTS"));
  
-  MetRep glast_tdb("TDB", 51910, 0., 0.);
-  glast_tdb.setValue(123.456789);
-  AbsoluteTime abs_epoch(glast_tdb);
+  AbsoluteTime glast_origin("TDB", 51910, 0.);
+  AbsoluteTime abs_epoch = glast_origin + ElapsedTime("TDB", Duration(0, 123.456789));
   FrequencyEph eph("TDB", abs_epoch, abs_epoch, abs_epoch, 0., 0., .11, 1.125e-2, -2.25e-4, 6.75e-6);
 
   // Add PULSE_PHASE field if missing.
@@ -57,8 +56,8 @@ int main() {
   for (tip::Table::Iterator itor = events->begin(); itor != events->end(); ++itor) {
     tip::Table::Record & rec = *itor;
     // Calculate phase.
-    glast_tdb.setValue(rec["TIME"].get());
-    double phase = eph.calcPulsePhase(AbsoluteTime(glast_tdb));
+    AbsoluteTime event_time = glast_origin + ElapsedTime("TDB", Duration(0, rec["TIME"].get()));
+    double phase = eph.calcPulsePhase(event_time);
 
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
