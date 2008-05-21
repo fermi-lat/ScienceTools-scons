@@ -175,7 +175,7 @@ bool EventContainer::addEvent(EventSource * event,
          double lat_deadtime(2.6e-5);
          if (m_events.size() > 0 &&
              (time - m_events.back().time()) < lat_deadtime) {
-            st_stream::StreamFormatter formatter("gtobssim", "", 2);
+            st_stream::StreamFormatter formatter("gtobssim", "", 3);
             formatter.info() << "Interval between consecutive events is "
                              << "less than the nominal LAT deadtime "
                              << "(26 microseconds).\n"
