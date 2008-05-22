@@ -6812,6 +6812,9 @@ char *yytext = 0;
 #line 87 "wcsulex.l"
 #include <math.h>
 #include <stdio.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 #include "wcsmath.h"
 #include "wcsunits.h"

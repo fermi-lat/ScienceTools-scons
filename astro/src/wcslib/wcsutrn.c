@@ -3940,6 +3940,9 @@ char *yytext;
 #line 51 "wcsutrn.l"
 #include <stdio.h>
 #include <string.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 #include "wcsunits.h"
 
