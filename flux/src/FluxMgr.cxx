@@ -307,7 +307,7 @@ void FluxMgr::test(std::ostream& cout, std::string source_name, int count)
             << ", Flux="     << f->flux(time) 
             << ", Interval=" << interval ;
         if(sourceNumber!=-1) cout <<", SourceID: "<< sourceNumber ;
-        cout << "\nElapsed time= " << totalinterval 
+        cout << "\tElapsed time= " << totalinterval 
             << std::endl;
     }
     cout << "------------------------------------------------------" << std::endl;
