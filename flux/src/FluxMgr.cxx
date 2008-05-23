@@ -99,7 +99,6 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
 
     }
     // these are the locally defined spectra that we want to make available
-    DECLARE_SPECTRUM( FILESpectrum);
     DECLARE_SPECTRUM( TimeCandle);
     DECLARE_SPECTRUM( FileSource);
 
