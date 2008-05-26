@@ -112,8 +112,7 @@ namespace pointlike {
         SourceFinder(const pointlike::Data& data,  const embed_python::Module & Mod);
         typedef std::map<int, CanInfo> Candidates;
         typedef std::map<int, pointlike::PointSourceLikelihood > LikelihoodMap;
-        typedef std::multimap<int, CanInfo> Prelim; // Preliminary candidates
-
+        typedef std::map<double, CanInfo> Prelim; // Preliminary candidates
 
         //! Region selection
         typedef enum  
