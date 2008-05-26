@@ -40,7 +40,7 @@ public:
         :m_skydir(true)
         , m_radius(radius*M_PI/180)
     {
-        m_dir = -sky.dir();
+        m_dir = sky.dir(); // note that this is a SkyDir, to be used as arg to LATdirection below
     }
     /** @brief choose a direction
     @param KE kinetic energy
