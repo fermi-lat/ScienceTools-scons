@@ -39,12 +39,14 @@ int main(int argc, char** argv)
   
         // create healpix database using parameters in the setup file
         Data healpixdata(setup);
+        healpixdata.info();
 
         // define all parameters used by PointSourceLikelihood
         PointSourceLikelihood::setParameters(setup);
+        SourceFinder::setParameters(setup);
 
         // create and run the SourceFinder
-        pointlike::SourceFinder finder(healpixdata, setup);
+        pointlike::SourceFinder finder(healpixdata);
 
         finder.run();
 

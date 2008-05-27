@@ -124,6 +124,10 @@ public:
 
     /// @brief set the integration tolerance for the background, return present value
     static double set_tolerance(double tol);
+
+    /// @brief set the range of energy to fit
+    static void set_energy_range(double emin, double emax=1e6);
+
     /// @brief special display function
     /// @param dir direction
     /// @param energy selects energy band
@@ -148,7 +152,7 @@ private:
 
     skymaps::CompositeSkySpectrum * m_background;  ///< background spectrum to use
     
-    static double s_emin, s_minalpha, s_TSmin, s_tolerance, 
+    static double s_emin, s_emax, s_minalpha, s_TSmin, s_tolerance, 
         s_maxstep; //
     static int s_skip1, s_skip2, s_itermax, s_verbose;
 

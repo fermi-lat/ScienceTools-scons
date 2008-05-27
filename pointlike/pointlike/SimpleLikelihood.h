@@ -126,9 +126,10 @@ public:
     /// @brief access to the effective sigma (radians)  used for the fits
     double sigma()const{ return m_sigma;}
     void setsigma(double sigma) {m_sigma=sigma;}
-    double gamma()const{ return m_psf.gamma();}
+    double gamma()const{ return m_psf.gamma();} 
 
     void recalc(bool subset=true);
+    void reload(bool subset=true);
 
     /// @brief access to the diffuse background component 
     const skymaps::SkySpectrum* diffuse() const;
@@ -148,6 +149,7 @@ private:
     static double s_defaultUmax;
     static double s_tolerance; // for integral
 
+    
     //! @brief a quick estimate of the signal fraction
     //! @return the value of of the signal fraction
     double estimate() const;
