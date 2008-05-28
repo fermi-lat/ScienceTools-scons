@@ -11,6 +11,7 @@ $Header$
 #include "pointlike/Data.h"
 #include "skymaps/BinnedPhotonData.h"
 #include "pointlike/PointSourceLikelihood.h"
+#include "pointlike/Draw.h"
 
 #include "astro/SkyDir.h"
 
@@ -143,11 +144,11 @@ namespace pointlike {
         /** @brief Analyze range of likelihood significance values for all pixels at a particular level  
         */
         void examineRegion(void) ;
-
+#if 0
         /** @brief Analyze likelihood again for candidates that had a strong neighbor.  Strong neighbor is added to background.  
         */
         void reExamine(void) ;
-
+#endif
         /** @brief Analyze likelihood significance for a particular direction  
         */
 
@@ -163,9 +164,11 @@ namespace pointlike {
 
         //! Eliminate neighbors within cone
         void prune_neighbors(void);
+#if 0
 
         //! Eliminate weaker adjacent neighbors
         void prune_adjacent_neighbors();
+#endif
 
         //! summarize results in a ds9 region file
         void createReg(const std::string& filename, double radius = -1.,
