@@ -6,7 +6,6 @@ $Header$
 */
 
 #include "pointlike/ParamOptimization.h"
-#include "skymaps/EnergyBinner.h"
 #include "TMatrixD.h"
 #include <fstream>
 //#define PRINT_DEBUG
