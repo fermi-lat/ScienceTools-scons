@@ -94,24 +94,6 @@ def sourcelist(filename):
            
     f = open(filename)
     return [Source(line) for line in f]
-#----------------------------------------------------------------------------------------
-        
-class Background(object):
-    """ manage the background
-    """
-    def __init__(self, diffusefilename, exposure=3e10):
-        self.background=None
-        if diffusefilename is None: return
-        
-        print 'setting up background from file %s, exposure=%.2g' % (diffusefilename, exposure)
-        if 'GLAST_EXT' in os.environ and diffusefilename=='galdiffuse':
-            diffusefilename = os.path.join(os.environ['GLAST_EXT'],'extFiles','v0r7','galdiffuse', 'GP_gamma.fits')
-
-        if diffusefilename !='':
-            self._df = DiffuseFunction(diffusefilename) # need to keep this reference open!
-            self.background = CompositeSkySpectrum(self._df, exposure)
-    def __call__(self):
-        return self.background
 
 #----------------------------------------------------------------------------------------
 
