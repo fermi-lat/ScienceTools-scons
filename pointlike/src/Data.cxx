@@ -338,13 +338,18 @@ namespace {
 
 Data::Data(const embed_python::Module& setup)
 {
-    std::string pixelfile(""), tablename("PHOTONMAP"), output_pixelfile("");
+    std::string pixelfile("")
+        , output_pixelfile("");
 
     static std::string prefix("Data.");
     setup.getValue(prefix+"pixelfile", pixelfile, "");
 
     if(!pixelfile.empty()){
-        m_data = new BinnedPhotonData(pixelfile, tablename);
+        try {
+            m_data = new BinnedPhotonData(pixelfile, "PHOTONMAP" );
+        } catch( const std::exception& ){
+            m_data = new BinnedPhotonData(pixelfile, "BANDS" );
+        }
         return;
     }
 
