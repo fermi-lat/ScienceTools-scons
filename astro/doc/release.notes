@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r1p8   17-jun-08 THB Relax tolerance when checking FT2 files for consistency of lat,lon
   v3r1p7   05-may-08 THB Allow EarthCoordinate to be initialized with km or m; protect field.compute
   v3r1p6   05-may-08 THB Disable SwigModule since it does not work on Linux
   v3r1p5   15-Apr-08 THB Mod to Quaternion interface to protect against unnormalized intialization

@@ -137,12 +137,17 @@ void PointingHistory::readFitsData(std::string filename) {
         double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
         if( check_lat>maxlatdiff) maxlatdiff = check_lat;
 
-        if( fabs(check_lat)>0.20 || fabs(check_lon)>0.01 && abs(lon)<179 ){
+        static double lat_tol(0.5), lon_tol(0.5); // was 0.2, 0.01
+
+        if( fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && abs(lon)<179 ){
             std::stringstream error; 
             error << "PointingHistory::readFitsData: apparent inconsistency for Earth position, time=" 
                 << start_time
                 << ", lat, lon diff: " << check_lat << ", " << check_lon;
+            std::cerr << error.str() << std::endl;
+#if 0 // disable for now
             throw std::runtime_error(error.str());
+#endif
         }
 
         m_data[start_time] = 
