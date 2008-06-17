@@ -45,7 +45,7 @@ application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
 application pointfind -s=pointfind $(source) -s=../python pointfind_setup.py
 
 # alignment -- not currently working
-#application alignment -s=alignment $(source) -s=../python alignment_setup.py
+application alignment -s=alignment $(source) -s=../python alignment_setup.py
 
 application test_pointlike -s=test $(source)
 

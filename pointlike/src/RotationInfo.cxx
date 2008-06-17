@@ -8,18 +8,16 @@ $Header$
 
 using namespace pointlike;
 
-void RotationInfo::acc(const Hep3Vector& tru, const Hep3Vector& meas, double sigmasq, double alpha, int level) {
-#ifdef NEW
+void RotationInfo::acc(const Hep3Vector& tru, const Hep3Vector& meas, double sigmasq, double alpha) {
     std::vector<double>::iterator il = m_likelihood.begin();
     for(std::vector<HepRotation>::iterator im = m_matrices.begin();il!=m_likelihood.end()&&im!=m_matrices.end();++il,++im) {
         //From psf(u) = (1-1/gamma)*(1+u/gamma)**-gamma
         double u = (tru - (*im).inverse()*meas).mag2();
-        u/=pointlike::PointSourceLikelihood::sigma_level(level)*pointlike::PointSourceLikelihood::sigma_level(level)*sigmasq*2;
+        u/=sigmasq*2;
         double Fint = m_psf.integral(AlignProc::umax());
         double fpsf = m_psf(u);
         double like = alpha*fpsf/Fint+(1-alpha)/AlignProc::umax();
         *il += log(like);
     }
-#endif
 }
 

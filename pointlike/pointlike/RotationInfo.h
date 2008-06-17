@@ -42,7 +42,7 @@ namespace pointlike {
         //! @param tru source direction
         //! @param meas measured direction
         //! @param sigmasq sigma-squared (angular resolution)
-        void acc(const Hep3Vector& tru, const Hep3Vector& meas, double sigmasq, double alpha, int level);
+        void acc(const Hep3Vector& tru, const Hep3Vector& meas, double sigmasq, double alpha);
 
         static int points() {return s_points;}
     private:
