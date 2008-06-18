@@ -136,6 +136,9 @@ public:
     double display(const astro::SkyDir& dir, double energy, int mode)const;
 
 
+    static void set_merge(bool merge);
+    static bool merge();
+
 private:
     void setup(const skymaps::BinnedPhotonData& data);
     std::string m_name;
@@ -154,6 +157,7 @@ private:
     static double s_emin, s_emax, s_minalpha, s_TSmin, s_tolerance, 
         s_maxstep; //
     static int s_skip1, s_skip2, s_itermax, s_verbose;
+    static int s_merge;
 
  
 };
