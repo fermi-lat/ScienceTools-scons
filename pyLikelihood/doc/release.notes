@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r5p5 18-Jun-08   JC    patch for undefined import error message in 
+                            AnalysisBase.py
    v1r5p4 19-Apr-08   JC    deleted incorrect line
    v1r5p3 19-Apr-08   JC    remove debug print statement
    v1r5p2 18-Apr-08   JC    bug-fix: avoid adding attributes from source
