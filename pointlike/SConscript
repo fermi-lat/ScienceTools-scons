@@ -2,6 +2,10 @@
 # @brief scons build specifications
 #
 # $Header$
+# $Id$
+# Authors: Toby Burnett <tburnett@u.washington.edu>
+# Version: pointlike-XX-YY-ZZ
+
 
 #specify package name, applications
 package= 'pointlike'
