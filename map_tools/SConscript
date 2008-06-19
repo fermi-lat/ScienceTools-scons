@@ -1,4 +1,7 @@
-#$Id$
+# -*- python -*-
+# $Id$
+# Authors: T. Burnett <tburnett@u.washington.edu>
+# Version: map_tools-07-01-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()

@@ -1,6 +1,7 @@
 # -*- python -*-
-#$Id$
-
+# $Id$
+# Authors: J. Chiang <jchiang@slac.stanford.edu>
+# Version: likeGui-07-08-02
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
