@@ -1,4 +1,7 @@
-#$Id$
+# -*- python -*-
+# $Id$
+# Authors: James Peachey <James.Peachey-1@nasa.gov>
+# Version: pulsarDb-06-00-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()

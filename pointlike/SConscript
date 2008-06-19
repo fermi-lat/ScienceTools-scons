@@ -1,11 +1,10 @@
+# -*- python -*-
 # @file SConscript
 # @brief scons build specifications
 #
 # $Header$
-# $Id$
 # Authors: Toby Burnett <tburnett@u.washington.edu>
-# Version: pointlike-XX-YY-ZZ
-
+# Version: pointlike-06-00-00
 
 #specify package name, applications
 package= 'pointlike'
