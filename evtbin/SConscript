@@ -1,4 +1,8 @@
-#$Id$
+# -*- python -*-
+# $Id$
+# Authors: James Peachey <James.Peachey-1@nasa.gov>
+# Version: evtbin-02-00-05
+
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()

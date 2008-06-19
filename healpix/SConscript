@@ -1,7 +1,10 @@
+# -*- python -*-
 # @file SConscript
 # @brief build info for package healpix
 #
-#$Header$
+# $Header$
+# Authors: T. Burnett <tburnett@u.washington.edu>
+# Version: healpix-02-01-01
 
 Import('baseEnv')
 Import('listFiles')

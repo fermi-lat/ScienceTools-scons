@@ -1,4 +1,8 @@
-#$Id$
+# -*- python -*-
+# $Id$
+# Authors: T. Burnett <tburnett@u.washington.edu>
+# Version: embed_python-01-03-01
+
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()

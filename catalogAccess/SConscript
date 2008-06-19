@@ -1,4 +1,6 @@
-#$Id$
+# $Id$
+# Authors: Aymeric Sauvageon <asauvageon@cea.fr>
+# Version: catalogAccess-00-04-01
 
 Import('baseEnv')
 Import('listFiles')

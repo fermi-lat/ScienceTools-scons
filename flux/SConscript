@@ -1,4 +1,7 @@
-#$Id$
+# -*- python -*-
+# $Id$
+# Authors: Toby Burnett <tburnett@u.washington.edu>
+# Version: flux-08-40-02
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
