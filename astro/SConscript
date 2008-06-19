@@ -1,7 +1,10 @@
+# -*- python -*-
 # @file SConscript
 # @brief build info
 #
-# $Header$
+# $Id$
+# Authors: T. Burnett <tburnett@u.washington.edu>
+# Version: astro-03-01-08
 
 Import('baseEnv')
 Import('listFiles')
