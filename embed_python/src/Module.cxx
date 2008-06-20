@@ -13,6 +13,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <iterator>
 
@@ -282,6 +283,30 @@ void Module::getList(const std::string& listname, std::vector<double>& values)co
     
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getDict(const std::string& dictname, std::map<std::string,double>& valuemap)const
+{
+    PyObject* pdict( attribute(dictname) )
+        , *iterator( PyObject_GetIter(pdict) );
+
+    if( iterator==NULL) {
+        throw std::invalid_argument("Module: "+ dictname +" is not a dictionary");
+    }
+    PyObject *key, *value;
+    Py_ssize_t pos = 0;
+
+    while (PyDict_Next(pdict, &pos, &key, &value)) {
+        double dvalue = PyFloat_AsDouble(value);
+        std::string skey = PyString_AsString(key);
+        valuemap[skey]=dvalue;
+    }
+
+    Py_DECREF(iterator);
+
+    check_error("Module: failure parsing"+ dictname);
+
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::check_error(const std::string& text)const
 {    if (PyErr_Occurred()) {
         PyErr_Print();
@@ -338,6 +363,14 @@ int Module::test(int argc, char* argv[], const std::string& modulename)
         // finally, a local class definition with a few attributes (class variables)
         std::cout << "Local class: A.a= " << setup["A.a"] << std::endl;
 
+        // and, much later, test a dictionary of doubles
+
+        std::map<std::string, double> mymap;
+        setup.getDict("mymap", mymap);
+        std::cout << "mymap contents:\n";
+        for( std::map<std::string, double>::const_iterator mip(mymap.begin()); mip!=mymap.end(); ++mip){
+            std::cout << std::left<< std::setw(20) << mip->first << std::setw(20) << mip->second << std::endl;
+        }
     }catch( const std::exception & e){
         std::cerr<< "Module::test -- caught exception " << e.what() << std::endl;
         ret=1;

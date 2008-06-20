@@ -20,6 +20,9 @@ class A(object):
     b = -99
     c ='a name'
     
+# test creating a dictionary
+
+mymap = {'a':1, 'b':2.0}
     
 print 'directory ', dir()
 print
