@@ -599,3 +599,26 @@ void Data::setEnergyBins(const std::vector<double>& bins)
     delete binner;
     binner = new skymaps::PhotonBinner(bins);
 }
+
+void Data::combine_bands()
+{
+    using skymaps::BinnedPhotonData;
+    using skymaps::Band;
+    int nside(0);
+    double sigma(0);
+    Band* prev (0);
+    for( BinnedPhotonData::iterator it(m_data->begin()); it!=m_data->end(); ++it){
+        Band& current = *it;
+        if( current.nside() == nside && current.sigma() == sigma){
+            // combine with previous and remove it
+            current.add(*prev);
+            m_data->remove(*prev);
+            nside=0;
+        }else {
+            prev = &current;
+            nside = current.nside();
+            sigma = current.sigma();
+        }
+    }
+
+}

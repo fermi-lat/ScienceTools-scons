@@ -91,6 +91,9 @@ public:
     /// @brief summary printout of the BinnedPhotonData object
     void info(std::ostream& out = std::cout);
 
+    /// @brief combine similar bands after read in
+    void combine_bands(); 
+
     ///@brief access to static that defines class level cut for ROOT
     static int class_level();
 
