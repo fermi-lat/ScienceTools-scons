@@ -11,9 +11,6 @@ $Header$
 #include "skymaps/SkySpectrum.h"
 
 #include "astro/SkyDir.h"
-#ifdef OLD
-#include "healpix/HealPixel.h"
-#endif
 #include <iostream>
 #include <vector>
 
@@ -127,6 +124,7 @@ public:
 
     /// @brief set the range of energy to fit
     static void set_energy_range(double emin, double emax=1e6);
+    static void get_energy_range(double& emin, double& emax);
 
     /// @brief special display function
     /// @param dir direction

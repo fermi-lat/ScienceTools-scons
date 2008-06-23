@@ -43,6 +43,10 @@ double PointSourceLikelihood::s_emax(1e6);
 void PointSourceLikelihood::set_energy_range(double emin, double emax){
     s_emin = emin; s_emax=emax;
 }
+void PointSourceLikelihood::get_energy_range(double& emin, double& emax){
+    emin = s_emin; emax=s_emax;
+}
+
 
 double PointSourceLikelihood::s_minalpha(0.05);
 int    PointSourceLikelihood::s_skip1(1);
