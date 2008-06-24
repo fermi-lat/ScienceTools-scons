@@ -63,7 +63,7 @@ class SourceLikelihood: #parameters for the likelihood calculation
 class SourceFinder:  # parameters for the SourceFinder.
 
     pass1_nside=256      # HEALpix binning for initial points.
-    TSmin = 8.0          # overall minimum TS
+    TSmin = 5.0          # overall minimum TS
     pixel_fraction = 1.0 # fraction of pixels to sample, sorted according to TS
     prune_radius =0.25   # pruning radius in degrees (also needs to be tuned)
     group_radius = 4.0   # maximum radius for nearby sources.
