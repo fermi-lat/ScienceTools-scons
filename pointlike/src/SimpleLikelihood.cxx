@@ -223,7 +223,7 @@ SimpleLikelihood::SimpleLikelihood(const skymaps::Band& band,
     m_fint2 = m_psf.integralSquare(m_umax);
 
     m_dir = dir;
-   //setDir(dir);
+    setDir(dir);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SimpleLikelihood::addBand(const skymaps::Band& moredata)
