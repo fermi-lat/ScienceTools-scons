@@ -481,7 +481,7 @@ skymaps::SkySpectrum* PointSourceLikelihood::set_diffuse(const skymaps::SkySpect
     // save current to return
     skymaps::SkySpectrum* ret =   s_diffuse;
 
-    s_diffuse = new Background(*diffuse, exposure);
+    s_diffuse = diffuse==0? 0 : new Background(*diffuse, exposure);
     
     return ret;
 }
