@@ -11,4 +11,4 @@ ModelEditorBin = progEnv.Program('ModelEditor', 'src/ModelEditor.cxx')
 
 progEnv.Tool('registerObjects', package = 'likeGui', 
              binaries = [ObsSimBin, ModelEditorBin],
-             python = listFiles(['python/*.py'])
+             python = listFiles(['python/*.py']))
