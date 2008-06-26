@@ -117,22 +117,40 @@ void PointingHistory::readFitsData(std::string filename) {
     tip::Table::ConstIterator it = scData->begin();
     tip::ConstTableRecord & interval = *it;
     double maxlatdiff(0);
+    bool have_quaternion(false);
+    double qsj_1, qsj_2, qsj_3, qsj_4;
+    try{
+        interval["QSJ_1"].get(qsj_1);
+        have_quaternion= true;
+    }catch(const std::exception&){
+    }
     for ( ; it != scData->end(); ++it) {
 
-        interval["ra_scz"   ].get(raz);
-        interval["dec_scz"  ].get(decz);      
-        interval["ra_scx"   ].get(rax);
-        interval["dec_scx"  ].get(decx);      
+        Quaternion orientation;
+        if( have_quaternion ) {
+            interval["QSJ_1"].get(qsj_1);
+            interval["QSJ_2"].get(qsj_2);
+            interval["QSJ_3"].get(qsj_3);
+            interval["QSJ_4"].get(qsj_4);
+            orientation = Quaternion(Hep3Vector(qsj_1,qsj_2,qsj_3), qsj_4);
+
+        }else{
+            interval["ra_scz"   ].get(raz);
+            interval["dec_scz"  ].get(decz);      
+            interval["ra_scx"   ].get(rax);
+            interval["dec_scx"  ].get(decx);  
+            astro::SkyDir zaxis(raz, decz);
+            astro::SkyDir xaxis(rax, decx);
+            orientation = Quaternion(zaxis(), xaxis());
+        }
         interval["lat_geo"  ].get(lat);
         interval["lon_geo"  ].get(lon);
         interval["start"    ].get(start_time);
         interval["stop"     ].get(stop_time);
         interval["sc_position"].get(sc_pos);
-        astro::SkyDir zaxis(raz, decz);
-        astro::SkyDir xaxis(rax, decx);
         CLHEP::Hep3Vector position(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
-        Quaternion orientation(zaxis(), xaxis());
         EarthCoordinate earthpos(position, start_time);
+    
         // check consistency of latitude, longitude: EarthCoordinate computes from the MET and position
         double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
         if( check_lat>maxlatdiff) maxlatdiff = check_lat;
