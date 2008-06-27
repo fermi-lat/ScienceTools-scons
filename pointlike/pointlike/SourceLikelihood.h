@@ -79,7 +79,6 @@ namespace pointlike {
     /// @brief perform localization fit, maximizing joint likelihood
     /// @param skip [0] number of bands to skip
     /// @return error circle radius (deg) or large number corresponding to error condition
-    double localize(int skip);
     double localizeMinuit(int skip);
     double localizeMinpack(int skip);
 
