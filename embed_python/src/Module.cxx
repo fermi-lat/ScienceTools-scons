@@ -305,6 +305,42 @@ void Module::getDict(const std::string& dictname, std::map<std::string,double>& 
     check_error("Module: failure parsing"+ dictname);
 
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void Module::getDict(const std::string& dictname, std::map<std::string,std::vector<double> >& valuemap)const
+{
+    PyObject* pdict( attribute(dictname) )
+        , *dict_iterator( PyObject_GetIter(pdict) );
+
+    if( dict_iterator==NULL) {
+        throw std::invalid_argument("Module: "+ dictname +" is not a dictionary");
+    }
+    PyObject *key, *values;
+    Py_ssize_t pos = 0;
+
+    while (PyDict_Next(pdict, &pos, &key, &values)) {
+        std::string skey = PyString_AsString(key);
+        PyObject *list_iterator( PyObject_GetIter(values) );
+        if( list_iterator==NULL) {
+            throw std::invalid_argument("Module: dictionary value for "+ skey +" is not a list");
+        }
+        std::vector<double> v;
+        while (PyObject* item = PyIter_Next(list_iterator)) {
+            double value( PyFloat_AsDouble(item) );
+            check_error("Module::getDict: dictionary" + dictname+"["+ skey +"] contains non-numeric item");
+            if( verbose()) std::cout << "\t" << value << std::endl;
+            v.push_back(value);
+            Py_DECREF(item);
+        }
+        valuemap[skey] = v;
+
+        Py_DECREF(list_iterator);
+    }
+
+    Py_DECREF(dict_iterator);
+
+    check_error("Module: failure parsing"+ dictname);
+
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::check_error(const std::string& text)const

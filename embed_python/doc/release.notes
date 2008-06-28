@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r5     28-jun-08  THB Add dictionary of vectors of doubles  support
   v1r4     19-jun-08  THB Add dictionary (doubles only) support
   v1r3p1   28-jan-08  THB Only to generate a new-style tag
   v1r3     10-oct-07  THB Make all access functions const. (An interface change?)
