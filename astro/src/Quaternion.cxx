@@ -15,7 +15,13 @@ using namespace CLHEP;
 
 Quaternion::Quaternion(const CLHEP::Hep3Vector& v, double s)
 :m_v(v), m_s(s)
-{}
+{
+    // force identity
+    if( fabs(m_s)>1.){
+        m_s=1.; 
+        m_v=Hep3Vector(0,0,0);
+    }
+}
 
 Quaternion::Quaternion(const CLHEP::HepRotation& R)
 : m_v(Hep3Vector(0,0,0))
@@ -120,7 +126,7 @@ CLHEP::Hep3Vector Quaternion::rotate(const CLHEP::Hep3Vector& t) const
 
 astro::Quaternion Quaternion::power(double t)const{
     if( t==0) return Quaternion();
-    double a( acos(m_s) );
+    double a( m_s>1? 0 : acos(m_s) );
     return Quaternion( m_v.unit()*sin(a*t), cos(a*t) );
 }
 

@@ -119,11 +119,13 @@ void PointingHistory::readFitsData(std::string filename) {
     double maxlatdiff(0);
     bool have_quaternion(false);
     double qsj_1, qsj_2, qsj_3, qsj_4;
+#if 0 // back this out
     try{
         interval["QSJ_1"].get(qsj_1);
         have_quaternion= true;
     }catch(const std::exception&){
     }
+#endif
     for ( ; it != scData->end(); ++it) {
 
         Quaternion orientation;
