@@ -486,7 +486,9 @@ void Data::addgti(const std::string& inputFile)
                                   m_stop<stop&&m_stop>0? m_stop:stop);
             m_data->addgti(tnew);
             std::cout << " found interval " 
-                << int(tnew.minValue())<<"-"<< int(tnew.maxValue())<<  std::endl;
+                << int(tnew.minValue())<<"-"<< int(tnew.maxValue())
+                << ", total: " << m_data->gti().computeOntime()<< " s." 
+                <<  std::endl;
         }
 
  

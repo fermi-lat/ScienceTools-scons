@@ -61,7 +61,6 @@ int main(int argc, char** argv)
         setup.getDict("sources", sources);
         SourceList sl(sources);
         sl.sort_TS();
-        sl.dump(*out);
         sl.refit(); 
         sl.dump(*out); 
 
