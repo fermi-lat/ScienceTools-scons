@@ -3,8 +3,8 @@
 $Header$
 */
 
-#ifndef tools_PointSourceLikelihood_h
-#define tools_PointSourceLikelihood_h
+#ifndef pointlike_PointSourceLikelihood_h
+#define pointlike_PointSourceLikelihood_h
 
 #include "pointlike/SimpleLikelihood.h"
 
