@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 25-jun-08 v6r2p2  THB 
  24-jun-08 v6r2p0  THB fix linux swig: still beta
  20-jun-08 v6r1    THB beta version; better finding, flexible PSF parameters
  06-jun-08 v6r0p0  THB First tentative tag with new Band organization
