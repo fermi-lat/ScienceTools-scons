@@ -108,6 +108,9 @@ public:
     ///@brief change default binning: must be done before loading data files
     static void setEnergyBins(const std::vector<double>& bins);
 
+    ///@ brief return  value of the cut
+    static double zenith_angle_cut();
+
 private:
     void lroot(const std::string& infile);
     static double s_scale[4]; // scale factors
@@ -118,6 +121,7 @@ private:
     static std::string s_ft2file;
     double m_start, m_stop;  ///< overall time
     static astro::PointingHistory* s_history; ///< pointer to optional FT2 info.
+    static double s_zenith_angle_cut;     ///< static value for cut on earth photons
     std::vector<std::pair<double,double> > m_gti; ///< time intervals (Good Time Interval)
 };
 
