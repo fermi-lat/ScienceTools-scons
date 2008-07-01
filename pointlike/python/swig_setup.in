@@ -30,6 +30,7 @@
 #include "skymaps/BinnedPhotonData.h"
 #include "skymaps/PhotonBinner.h"
 #include "skymaps/Band.h"
+#include "skymaps/IParams.h"
 
 #include "embed_python/Module.h"
 
@@ -189,6 +190,10 @@ public:
 %include $(SKYMAPSROOT)/skymaps/Background.h
 %include $(SKYMAPSROOT)/skymaps/BinnedPhotonData.h
 %include $(SKYMAPSROOT)/skymaps/Band.h
+%template(SkySpectrumVector) std::vector<skymaps::SkySpectrum*>; 
+%include $(SKYMAPSROOT)/skymaps/IParams.h
+
+
 
 %include $(POINTLIKEROOT)/pointlike/SimpleLikelihood.h
 %include $(POINTLIKEROOT)/pointlike/PointSourceLikelihood.h
