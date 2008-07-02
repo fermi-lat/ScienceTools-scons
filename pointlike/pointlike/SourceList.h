@@ -32,6 +32,7 @@ namespace pointlike{
         */
         Source(const std::string& name, const astro::SkyDir& seed_dir, double TS=0);
 
+        Source():m_name("default"){}; ///< default ctor
         ~Source();
 
         double localize();
@@ -85,6 +86,8 @@ namespace pointlike{
         The optional TS field is for initial sorting.
         */
         SourceList(const std::string& filename);
+
+        SourceList(){}; ///< default ctor
 
         void sort_TS();
 

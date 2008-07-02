@@ -44,7 +44,7 @@ Source::Source(const std::string& name, const astro::SkyDir& seed_dir, double TS
         m_fit = new PointSourceLikelihood(*SourceList::data(), name, m_dir);
     }
     // inital maximize unless TS already set.
-    if( TS=0 )  m_TS = m_fit->maximize();
+    if( TS==0 )  m_TS = m_fit->maximize();
 }
 
 double Source::localize(){
