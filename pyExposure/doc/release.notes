@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  04-Jul-08 v2      JC    use standard par file names
   27-Mar-07 v1r0p2  JC    ifdef switch for TRAP_FPE only on Linux
   27-Mar-07 v1r0p1  JC    read in FT2 data for time interval of interest only
   17-Jan-07 v1      JC    added gtexposure application
