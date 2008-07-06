@@ -384,19 +384,19 @@ void SourceFinder::createReg(const std::string& fileName, double radius, const s
     reg.open(fileName.c_str());
     reg << "global color="
         << color.c_str()
-        << " font=\"helvetica 10 normal\" select=1 edit=1 move=1 delete=1 include=1 fixed=0 width=2;";
+        << " font=\"helvetica 10 normal\" select=1 edit=1 move=1 delete=1 include=1 fixed=0 width=2;fk5;";
     for (Candidates::const_iterator it = m_can.begin(); it != m_can.end(); ++it)
     {
         int value = static_cast<int>(it->second.value() + 0.5);
         if (radius < -1.0) // Use a cross instead of a circle
         {
-            reg << "fk5; cross point("
+            reg << "point("
                 << it->second.dir().ra() << ", "
                 << it->second.dir().dec();
         }
         else
         {
-            reg << "fk5; circle("
+            reg << "circle("
                 << it->second.dir().ra() << ", "
                 << it->second.dir().dec() << ", ";
             if (radius > 0.0)
@@ -404,7 +404,8 @@ void SourceFinder::createReg(const std::string& fileName, double radius, const s
             else
                 reg << it->second.sigma() * 100.0;
         }
-        reg << ") " << "# text = {" << value << "};";
+        reg << ") # point=cross " 
+            << " text = {" << value << "};";
     }
     reg.close();
 }

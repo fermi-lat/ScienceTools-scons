@@ -55,15 +55,21 @@ int main(int argc, char** argv)
         if( !outfile.empty() ) {
             out = new std::ofstream(outfile.c_str());
         }
-
         SourceList::set_data(& healpixdata.map());
-        std::map<std::string, std::vector<double> > sources;
-        setup.getDict("sources", sources);
-        SourceList sl(sources);
-        sl.sort_TS();
-        sl.refit(); 
-        sl.dump(*out); 
 
+        SourceList* sl(0);
+        std::map<std::string, std::vector<double> > sourcedict;
+        try{
+            setup.getDict("sources", sourcedict);
+            sl = new SourceList(sourcedict);
+        }catch( const std::exception&) {
+            std::string sourcelistfile;
+            setup.getValue("sourcelistfile", sourcelistfile);
+            sl = new SourceList(sourcelistfile);
+        }        
+
+        sl->refit(); 
+        sl->dump(*out); 
 
         if( !outfile.empty()){
             delete out;

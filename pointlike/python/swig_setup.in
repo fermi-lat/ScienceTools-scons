@@ -40,7 +40,7 @@
 #include "pointlike/Data.h"
 #include "pointlike/Draw.h"
 #include "pointlike/SourceList.h"
-#include "pointlike/ParamOptimization.h"
+//fails #include "pointlike/ParamOptimization.h"
 #include "pointlike/SimpleTSmap.h"
 
 
@@ -201,7 +201,7 @@ public:
 %include $(POINTLIKEROOT)/pointlike/Draw.h
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 %include $(POINTLIKEROOT)/pointlike/SourceList.h
-%include $(POINTLIKEROOT)/pointlike/ParamOptimization.h
+//fails %include $(POINTLIKEROOT)/pointlike/ParamOptimization.h
 
 %template(CanInfoVector) std::vector<pointlike::CanInfo>;
 %template(SourceVector)  std::vector<pointlike::Source>;

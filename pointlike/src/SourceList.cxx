@@ -79,7 +79,7 @@ void Source::info(std::ostream& out)const{
             << std::setw(10) << moved()
                 ;
         if( neighbor()!=0){
-            out << std::setw(20)<< std::left << (neighbor()->name());
+            out << "  " << std::setw(20)<< std::left << (neighbor()->name());
         }
         out << std::endl;
 }
@@ -185,14 +185,16 @@ void SourceList::refit()
 void SourceList::createRegFile(std::string filename, std::string color, double tsmin)const
 {
     std::ofstream out(filename.c_str());
+    static int size(30); // 11 is default: make them stand out
     out << "global color="<< color 
-        << " font=\"helvetica 10 normal\" select=1 edit=1 move=0 delete=1 include=1 fixed=0 width=2;fk5;"
+        << " font=\"helvetica 10 normal\" select=1 edit=1 move=0 delete=1 include=1 fixed=1 width=2;fk5;"
         << std::fixed << std::setprecision(4) << std::endl;
     int n(0);
     for( const_iterator it = begin(); it != end();  ++it)  {
         const Source& cand( * it);
         if(cand.TS()< tsmin) continue;
-        out << "cross point("<< cand.dir().ra()<< ","<<cand.dir().dec() <<") # text={TS=" 
+        out << "cross point("<< cand.dir().ra()<< ","<<cand.dir().dec() <<") "
+            << size << " # text={TS=" 
             << int(cand.TS()+0.5) << "};\n";
         ++n;
     }
