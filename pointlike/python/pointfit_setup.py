@@ -2,28 +2,40 @@
 # $Header$
 from  pointlike_defaults import *
 
-suffix='05'
+# specific for this analysis
+analysis_path =r'D:/common/first_light/'
+datapath=r'f:/glast/downloads/'
+suffix='06'
 
 Data.LATalignment=[-1.9*60,-2.6*60, -8.6*60]  # from Marshall
 Data.history=r'd:\common\first_light\ft2\merged_'+suffix+'.fits'
 print 'Using alignment: %s' % Data.LATalignment
 
-sourcelistfile = r'D:/common/first_light/sourcelist.txt'
+sourcelistfile = analysis_path+'sourcelist.txt'
 
 PointSourceLikelihood.merge=1
 verbose=0
 
 # specify pixelfile (BinnedPhotonData) if exists, use it: otherwise generate
-pixelfile = r'D:\common\first_light\binned_source_'+suffix+'.fits'
+pixelfile = analysis_path+'binned_source_'+suffix+'.fits'
 
 import os
 if os.path.exists(pixelfile):
   Data.pixelfile = pixelfile
 else:
   from runfiles import RunFiles
-  datapath=r'f:/glast/downloads/'
-  runlist = r'D:/common/first_light/leo_runs.txt'
+  runlist = analysis_path+'leo_runs.txt'
   Data.files= RunFiles(datapath, runlist)('ph')
   Data.output_pixelfile = pixelfile
   
-outfile = r'D:/common/first_light/pointfit_'+suffix+'.txt'
+outfile = analysis_path+'pointfit_'+suffix+'.txt'
+
+# this function, if it exists, will be called at the end of the job
+def finish():
+  print 'Finishing output'
+  if not os.path.exists(outfile):
+    print 'job failed? no output'
+    return
+  from confluence import Table # module in the path
+  t=Table(analysis_path, suffix) 
+  print 'wrote confluence-style table to %s' % t.outfilename

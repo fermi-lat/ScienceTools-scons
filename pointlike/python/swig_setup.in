@@ -201,6 +201,14 @@ public:
 %include $(POINTLIKEROOT)/pointlike/Draw.h
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 %include $(POINTLIKEROOT)/pointlike/SourceList.h
+%extend pointlike::SourceList{
+   pointlike::Source & __getitem__(size_t i){ 
+      if( i == (*self).size() ) throw std::range_error("StopIteration");
+      if( i<0 || i > self->size() ) throw std::range_error("IndexError");
+      return (*self)[i]; 
+   }
+   size_t __len__() {      return self->size();       }
+}
 //fails %include $(POINTLIKEROOT)/pointlike/ParamOptimization.h
 
 %template(CanInfoVector) std::vector<pointlike::CanInfo>;
