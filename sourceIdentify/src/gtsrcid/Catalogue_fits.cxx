@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.27  2008/07/08 18:43:15  jurgen
+Remove GtApp, parametrize prefix symbol and update unit test1
+
 Revision 1.26  2008/04/24 14:55:17  jurgen
 Implement simple FoM scheme
 
@@ -2237,6 +2240,112 @@ Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, SourceInfo *src,
 
 
 /**************************************************************************//**
+ * @brief Select catalogue entries
+ *
+ * @param[in] fptr Pointer to FITS file.
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] status Error status.
+ *
+ * Performs table row selection for complete catalogue source. This is useful
+ * at the end to filter also on derived quantities.
+ ******************************************************************************/
+Status Catalogue::cfits_select(fitsfile *fptr, Parameters *par, Status status) {
+
+    // Declare local variables
+    int  fstatus;
+    int  num_sel;
+    long numBefore;
+    long numAfter;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cfits_select");
+
+    // Initialise FITSIO status
+    fstatus = (int)status;
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Determine number of output catalogue selection strings. Fall through
+      // if there are no such strings
+      num_sel = par->m_select.size();
+      if (num_sel < 1)
+        continue;
+
+      // Select catalogue entries
+      for (int iSel = 0; iSel < num_sel; ++iSel) {
+
+        // Determine number of rows in table before selection
+        fstatus = fits_get_num_rows(fptr, &numBefore, &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to determine number of rows in"
+                " catalogue.", fstatus);
+          break;
+        }
+
+        // Stop looping if no more counterparts are in table
+        if (numBefore < 1)
+          break;
+
+        // Perform selection
+        fstatus = fits_select_rows(fptr, fptr,
+                                   (char*)par->m_select[iSel].c_str(),
+                                   &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Warning_2, " Unable to perform selection <%s> on the"
+                " catalogue (status=%d).",
+                par->m_select[iSel].c_str(), 
+                fstatus);
+          fstatus = 0;
+          continue;
+        }
+
+        // Determine number of rows in table after selection
+        fstatus = fits_get_num_rows(fptr, &numAfter, &fstatus);
+        if (fstatus != 0) {
+          if (par->logTerse())
+            Log(Error_2, "%d : Unable to determine number of rows in"
+                " catalogue.", fstatus);
+          break;
+        }
+
+         // Dump selection information
+        if (par->logExplicit()) {
+          Log(Log_2, " Selection ........................: %s",
+              par->m_select[iSel].c_str());
+          Log(Log_2, "   Deleted counterparts ...........: %d (%d => %d)",
+              numBefore-numAfter, numBefore, numAfter);
+        }
+
+      } // endfor: looped over selection
+      if (fstatus != 0)
+        continue;
+
+    } while (0); // End of main do-loop
+
+    // Set FITSIO status
+    if (status == STATUS_OK)
+      status = (Status)fstatus;
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cfits_select (status=%d)",
+          status);
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
  * @brief Collect counterpart identification statistics from FITS table
  *
  * @param[in] fptr Pointer to FITS file.
@@ -2349,177 +2458,6 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
 }
 
-
-/**************************************************************************//**
- * @brief Returns table column as double precision vector (method 1)
- *
- * @param[in] fptr Pointer to FITS file.
- * @param[in] colname Column name.
- * @param[in] par Pointer to gtsrcid parameters.
- * @param[out] val Vector of values.
- * @param[in] status Error status.
- ******************************************************************************/
-/*
-Status Catalogue::cfits_colval(fitsfile *fptr, char *colname, Parameters *par,
-                               std::vector<double> *val, Status status) {
-
-    // Declare local variables
-    int     fstatus;
-    int     colnum;
-    int     typecode;
-    int     anynul;
-    long    irow;
-    long    icol;
-    long    repeat;
-    long    width;
-    long    nactrows;
-    long    nelements;
-    double  prob;
-    double *ptr;
-    double *tmp_val;
-
-    // Debug mode: Entry
-    if (par->logDebug())
-      Log(Log_0, " ==> ENTRY: Catalogue::cfits_colval");
-
-    // Initialise temporary memory pointers
-    tmp_val = NULL;
-
-    // Initialise FITSIO status
-    fstatus = (int)status;
-
-    // Single loop for common exit point
-    do {
-
-      // Initialise probability vector
-      val->clear();
-
-      // Fall through in case of an error
-      if (status != STATUS_OK)
-        continue;
-
-      // Fall through if we have no column name
-      if (colname == NULL)
-        continue;
-
-      // Determine number of rows in table
-      fstatus = fits_get_num_rows(fptr, &nactrows, &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine number of rows in catalogue.",
-              fstatus);
-        continue;
-      }
-
-      // Fall through if table is empty
-      if (nactrows < 1)
-        continue;
-
-      // Determine the column number
-      fstatus = fits_get_colnum(fptr, CASEINSEN, colname, &colnum, &fstatus);
-      if (fstatus == COL_NOT_UNIQUE) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' is not unique. Please"
-              " specify unique column name.",
-              fstatus, colname);
-        continue;
-      }
-      else if (fstatus == COL_NOT_FOUND) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' not found in catalogue.",
-              fstatus, colname);
-        continue;
-      }
-      else if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine column number of probability"
-              " column '%s'.", fstatus, colname);
-        continue;
-      }
-
-      // Determine the type of the probability column
-      fstatus = fits_get_coltype(fptr, colnum, &typecode, &repeat, &width,
-                                 &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to determine type of probability column"
-              " '%s'.", fstatus, colname);
-        continue;
-      }
-
-      // Abort if column type is not one of the valid types
-      if (typecode == TSTRING) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'STRING' is not"
-              " allowed.", (Status)status, colname);
-        continue;
-      }
-      else if (typecode == TCOMPLEX) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'COMPLEX' is not"
-              " allowed.", (Status)status, colname);
-        continue;
-      }
-      else if (typecode == TDBLCOMPLEX) {
-        status = STATUS_CAT_BAD_PROB_COL;
-        if (par->logTerse())
-          Log(Error_2, "%d : Probability column '%s' of type 'DBLCOMPLEX' is"
-              " not allowed.", (Status)status, colname);
-        continue;
-      }
-
-      // Set the number of elements to be read
-      nelements = repeat * nactrows;
-
-      // Allocate temporary memory to hold the column data
-      tmp_val = new double[nelements];
-      if (tmp_val == NULL) {
-        status = STATUS_MEM_ALLOC;
-        if (par->logTerse())
-          Log(Error_2, "%d : Memory allocation failure.", (Status)status);
-        continue;
-      }
-
-      // Read column data
-      fstatus = fits_read_col(fptr, TDOUBLE, colnum, 1, 1, nelements,
-                              NULL, tmp_val, &anynul, &fstatus);
-      if (fstatus != 0) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to read data from column %d.",
-              fstatus, colnum);
-        continue;
-      }
-
-      // Setup vector (multiply over vector column if it exists)
-      ptr = tmp_val;
-      for (irow = 0; irow < nactrows; irow++) {
-        prob = 1.0;
-        for (icol = 0; icol < repeat; icol++)
-          prob *= *ptr++;
-        val->push_back(prob);
-      }
-
-    } while (0); // End of main do-loop
-
-    // Set FITSIO status
-    if (status == STATUS_OK)
-      status = (Status)fstatus;
-
-    // Free temporary memory pointers
-    if (tmp_val != NULL) delete [] tmp_val;
-
-    // Debug mode: Entry
-    if (par->logDebug())
-      Log(Log_0, " <== EXIT: Catalogue::cfits_colval"
-          " (status=%d)", status);
-
-    // Return status
-    return status;
-
-}
-*/
 
 /**************************************************************************//**
  * @brief Returns table column as double precision vector (method 2)

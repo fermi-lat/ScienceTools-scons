@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.28  2008/04/24 14:55:17  jurgen
+Implement simple FoM scheme
+
 Revision 1.27  2008/04/18 20:50:33  jurgen
 Implement catch-22 scheme for prior probability calculation and compute log likelihood-ratio instead of likelihood ratio (avoid numerical problems)
 
@@ -500,6 +503,15 @@ Status Catalogue::cid_select(Parameters *par, SourceInfo *src, Status status) {
       if (m_num_Sel < 1)
         continue;
 
+      // Evaluate new output quantities
+//      status = cfits_eval(m_memFile, par, status);
+//      if (status != STATUS_OK) {
+//        if (par->logTerse())
+//          Log(Error_2, "%d : Unable to evaluate output catalogue quantities .",
+//              (Status)status);
+//        continue;
+//      }
+
       // Select counterparts in memory
       status = cfits_select(m_memFile, par, src, status);
       if (status != STATUS_OK) {
@@ -668,9 +680,10 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       }
 
       // Neglect counterparts with too low probability
+      double prob_thres = (par->m_probThres < c_prob_min) ? par->m_probThres : c_prob_min;
       src->numRefine = 0;
       for (int iCC = 0; iCC < src->numSelect; ++iCC) {
-        if (src->cc[iCC].prob_post_single <= c_prob_min)
+        if (src->cc[iCC].prob_post_single < prob_thres)
           break;
         src->numRefine++;
       }
@@ -685,7 +698,6 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       // Optionally dump counterpart refine statistics
       if (par->logExplicit()) {
         Log(Log_2, "  Refine step candidates ..........: %5d", src->numRefine);
-//        Log(Log_2, "    Local counterpart density .....: %.5f src/deg^2", src->rho);
         Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
             src->ring_rad_min, src->ring_rad_max);
       }

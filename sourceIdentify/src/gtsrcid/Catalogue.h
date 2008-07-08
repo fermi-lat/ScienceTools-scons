@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.37  2008/07/08 18:43:15  jurgen
+Remove GtApp, parametrize prefix symbol and update unit test1
+
 Revision 1.36  2008/05/06 16:00:04  jurgen
 Import srcid.py script and classes definition into CVS
 
@@ -396,6 +399,7 @@ typedef struct {                      // Source information
   int                     numSelect;    //!< Number of selection step candidates
   int                     numRefine;    //!< Number of refine step candidates
   int                     numClaimed;   //!< Number of claimed candidates
+  int                     numFinalSel;  //!< Number of finally selected candidates
   CCElement              *cc;           //!< List of counterpart candidates
   double                  filter_rad;   //!< Filter step radius
   double                  ring_rad_min; //!< Density ring minimum
@@ -503,6 +507,7 @@ private:
                       Status status);
   Status cfits_select(fitsfile *fptr, Parameters *par, SourceInfo *src,
                       Status status);
+  Status cfits_select(fitsfile *fptr, Parameters *par, Status status);
   Status cfits_collect(fitsfile *fptr, Parameters *par, std::vector<int> &stat,
                        Status status);
   Status cfits_get_col(fitsfile *fptr, Parameters *par, std::string colname,

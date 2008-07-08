@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.43  2008/05/06 16:00:04  jurgen
+Import srcid.py script and classes definition into CVS
+
 Revision 1.42  2008/04/24 14:55:17  jurgen
 Implement simple FoM scheme
 
@@ -2229,6 +2232,8 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       strcat(select, add);
       sprintf(add, "  Claim");
       strcat(select, add);
+      sprintf(add, "  Final");
+      strcat(select, add);
 
       // Dump header
       Log(Log_2, "                                      Filter%s", select);
@@ -2252,13 +2257,15 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         strcat(select, add);
         sprintf(add, " %6d", m_info[iSrc].numClaimed);
         strcat(select, add);
+        sprintf(add, " %6d", m_info[iSrc].numFinalSel);
+        strcat(select, add);
 
         // Dump information
         Log(Log_2, " Source %5d %18s ..: %s %s",
             iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
 
         // Collect number of associated sources
-        if (m_info[iSrc].numClaimed > 0)
+        if (m_info[iSrc].numFinalSel > 0)
           n_src_assoc++;
 
       } // endfor: looped over all sources
@@ -2339,41 +2346,43 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
  *   |   |   |
  *   |   |   +-- get_input_catalogue (get counterpart catalogue)
  *   |   |
+ *   |   +-- cid_select (select counterparts)
+ *   |   |   |
+ *   |   |   +-- cfits_select (select output catalogue entries)
+ *   |   |
  *   |   +-- cid_refine (refine step)
- *   |   |   |
- *   |   |   +-- cfits_clear (clear in-memory catalogue)
- *   |   |   |
- *   |   |   +-- cfits_add (add quantities to in-memory catalogue)
- *   |   |   |
- *   |   |   +-- cfits_eval (evaluate quantities in in-memory catalogue)
- *   |   |   |
- *   |   |   +-- cid_prob_pos (compute PROB_POS & PDF_POS)
- *   |   |   |
- *   |   |   +-- cid_prob_prior (compute PROB_PRIOR)
- *   |   |   |
- *   |   |   +-- cid_select (select counterparts)
- *   |   |   |   |
- *   |   |   |   +-- cfits_select (select output catalogue entries)
- *   |   |   |
- *   |   |   +-- cid_prob_chance (compute PROB_CHANCE & PDF_CHANCE)
- *   |   |   |
- *   |   |   +-- cid_prob_post_single (compute PROB_POST)
+ *   |       |
+ *   |       +-- cfits_clear (clear in-memory catalogue)
+ *   |       |
+ *   |       +-- cfits_add (add quantities to in-memory catalogue)
+ *   |       |
+ *   |       +-- cid_prob_pos (compute PROB_POS & PDF_POS)
+ *   |       |
+ *   |       +-- cid_prob_prior (compute PROB_PRIOR)
+ *   |       |
+ *   |       +-- cid_prob_chance (compute PROB_CHANCE & PDF_CHANCE)
+ *   |       |
+ *   |       +-- cid_prob_post_single (compute PROB_POST)
  *   |
  *   +-- compute_prob_post_cat (compute catalogue association probabilities)
  *   |
  *   +-- compute_prob_post (compute unique catalogue association probabilities)
  *   |
+ *   +-- catch22 (perform Catch22 iterations)
+ *   |
  *   +-- compute_prob (compute association probability)
  *   |
  *   N-- cfits_add (add counterpart candidates to output catalogue)
  *   |
- *   +-- cfits_save (save output catalogue)
+ *   +-- cfits_eval (evaluate output catalogue quantities)
+ *   |
+ *   +-- cfits_select (select output catalogue entries)
  *   |
  *   +-- cfits_collect (collect counterpart results)
  *   |
- *   +-- cfits_eval (evaluate output catalogue quantities)
- *   |
  *   +-- cfits_set_pars (set run parameter keywords)
+ *   |
+ *   +-- cfits_save (save output catalogue)
  *   |
  *   +-- dump_results (dump results)
  * \endverbatim
@@ -2507,6 +2516,7 @@ Status Catalogue::build(Parameters *par, Status status) {
         m_info[iSrc].numSelect    = 0;
         m_info[iSrc].numRefine    = 0;
         m_info[iSrc].numClaimed   = 0;
+        m_info[iSrc].numFinalSel  = 0;
         m_info[iSrc].cc           = NULL;
         m_info[iSrc].filter_rad   = 0.0;
         m_info[iSrc].ring_rad_min = 0.0;
@@ -2601,14 +2611,14 @@ Status Catalogue::build(Parameters *par, Status status) {
         continue;
 
       // Collect statistics (used to build counterpart names)
-      std::vector<int> stat;
-      status = cfits_collect(m_outFile, par, stat, status);
-      if (status != STATUS_OK) {
-        if (par->logTerse())
-          Log(Error_2, "%d : Unable to collect statistics from catalogue.",
-                        (Status)status);
-        continue;
-      }
+//      std::vector<int> stat;
+//      status = cfits_collect(m_outFile, par, stat, status);
+//      if (status != STATUS_OK) {
+//        if (par->logTerse())
+//          Log(Error_2, "%d : Unable to collect statistics from catalogue.",
+//                        (Status)status);
+//        continue;
+//      }
 
       // Evaluate output catalogue quantities
       if (par->logNormal()) {
@@ -2619,10 +2629,38 @@ Status Catalogue::build(Parameters *par, Status status) {
       status = cfits_eval(m_outFile, par, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
-          Log(Error_2, "%d : Unable to evaluate output catalogue quantities .",
+          Log(Error_2, "%d : Unable to evaluate output catalogue quantities.",
               (Status)status);
         continue;
       }
+
+      // Perform final selection
+      if (par->logNormal()) {
+        Log(Log_2, "");
+        Log(Log_2, "Select output catalogue sources:");
+        Log(Log_2, "================================");
+      }
+      status = cfits_select(m_outFile, par, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to select output catalogue sources.",
+              (Status)status);
+        continue;
+      }
+
+      // Collect statistics (used to build counterpart names)
+      std::vector<int> stat;
+      status = cfits_collect(m_outFile, par, stat, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to collect statistics from catalogue.",
+                        (Status)status);
+        continue;
+      }
+
+      // Determine number of finally selected sources
+      for (int iSrc = 0; iSrc < m_src.numLoad; ++iSrc)
+        m_info[iSrc].numFinalSel  = stat[iSrc];
 
       // Write parameters as keywords to catalogue
       status = cfits_set_pars(m_outFile, par, status);
