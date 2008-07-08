@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.44  2008/07/08 20:57:06  jurgen
+Implement final selection (allows to filter on evaluated quantities)
+
 Revision 1.43  2008/05/06 16:00:04  jurgen
 Import srcid.py script and classes definition into CVS
 
@@ -236,7 +239,8 @@ std::string find(std::vector <std::string> &arg, std::string match) {
 
   // Loop over all vector elements
   for (int i = 0; i < (int)arg.size(); ++i) {
-    if (upper(arg[i]).find(match, 0) != std::string::npos) {
+//    if (upper(arg[i]).find(match, 0) != std::string::npos) {
+    if (upper(arg[i]).find(match, 0) == 0) {
       int this_length = arg[i].length();
       if (length == 0) {
         length = this_length;
