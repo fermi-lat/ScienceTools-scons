@@ -9,15 +9,12 @@ use st_facilities *
 use st_app *
 use catalogAccess *
 use sane * -no_auto_imports
-#use extFiles * IExternal
 
 apply_pattern ST_pfiles
 apply_pattern ST_app_withDir name=gtsrcid dir=gtsrcid
 
 path_remove PYTHONPATH sourceIdentify
 path_append PYTHONPATH $(SOURCEIDENTIFYROOT)/python
-
-#set GLAST_CAT "$(extFiles_PATH)/catalogues"
 
 #macro_append cppflags ""-pg""
 #macro_append cpplinkflags ""-pg""

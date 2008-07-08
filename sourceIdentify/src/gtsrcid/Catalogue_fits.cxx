@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.26  2008/04/24 14:55:17  jurgen
+Implement simple FoM scheme
+
 Revision 1.25  2008/04/23 15:42:06  jurgen
 Don't close in-memory catalogue (error if catalogue is empty)
 
@@ -805,7 +808,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       // Add source catalogue quantities
       for (iQty = 0; iQty < m_num_src_Qty; iQty++) {
         m_src_Qty_colnum.push_back(col+1);
-        if ((m_src_Qty_ttype[iQty])[0] == '@')
+        if ((m_src_Qty_ttype[iQty])[0] == OUTCAT_PRE_CHAR)
           sprintf(ttype[col], "%s", m_src_Qty_ttype[iQty].c_str());
         else
           sprintf(ttype[col], "%s%s", par->m_srcCatPrefix.c_str(),
@@ -819,7 +822,7 @@ Status Catalogue::cfits_create(fitsfile **fptr, char *filename, Parameters *par,
       // Add counterpart catalogue quantities
       for (iQty = 0; iQty < m_num_cpt_Qty; iQty++) {
         m_cpt_Qty_colnum.push_back(col+1);
-        if ((m_cpt_Qty_ttype[iQty])[0] == '@')
+        if ((m_cpt_Qty_ttype[iQty])[0] == OUTCAT_PRE_CHAR)
           sprintf(ttype[col], "%s", m_cpt_Qty_ttype[iQty].c_str());
         else
           sprintf(ttype[col], "%s%s", par->m_cptCatPrefix.c_str(),
@@ -2287,7 +2290,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
 
       // Read counterpart name column. Don't stop on error
       std::string cpt_name;
-      if (m_cpt.col_id[0] == '@')
+      if (m_cpt.col_id[0] == OUTCAT_PRE_CHAR)
         cpt_name = m_cpt.col_id;
       else
         cpt_name = par->m_cptCatPrefix + m_cpt.col_id;

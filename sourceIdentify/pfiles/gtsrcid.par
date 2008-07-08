@@ -19,14 +19,14 @@
 #
 # Source Catalogue information
 #=============================
-srcCatName,s,a,"3EG.fits",,,"Source catalogue name"
+srcCatName,s,a,"../../data/3EG.fits",,,"Source catalogue name"
 srcCatPrefix,s,a,"3EG",,,"Source catalogue column prefix"
 srcCatQty,s,h,"*",,,"Source catalogue quantities to be written"
 srcPosError,r,h,0.0,,,"Source position uncertainty (deg)"
 #
 # Counterpart Catalogue information
 #==================================
-cptCatName,s,a,"radio_white1.4GHz.tsv",,,"Counterpart catalogue name"
+cptCatName,s,a,"../../data/radio_white1.4GHz.tsv",,,"Counterpart catalogue name"
 cptCatPrefix,s,a,"WB14",,,"Counterpart catalogue column prefix"
 cptCatQty,s,h,"*",,,"Counterpart catalogue quantities to be written"
 cptPosError,r,h,0.0,,,"Counterpart position uncertainty (deg)"
@@ -34,7 +34,7 @@ cptDensFile,s,h,"",,,"Counterpart catalogue density file"
 #
 # Output Catalogue information
 #=============================
-outCatName,s,a,"result.fits",,,"Output catalogue name"
+outCatName,s,a,"test1.fits",,,"Output catalogue name"
 outCatQty01,s,h,"",,,"New output catalogue quantity 1"
 outCatQty02,s,h,"",,,"New output catalogue quantity 2"
 outCatQty03,s,h,"",,,"New output catalogue quantity 3"
@@ -49,9 +49,9 @@ outCatQty09,s,h,"",,,"New output catalogue quantity 9"
 #==================================
 probMethod,s,a,"PROB_POST",,,"Probability method"
 probPrior,s,a,"0.01",,,"Prior association probability"
-probThres,r,a,0.10,,,"Probability threshold"
-maxNumCpt,i,a,100,,,"Maximum number of counterpart candidates per source"
-fom,s,a,"",,,"Figure of merit"
+probThres,r,a,0.05,,,"Probability threshold"
+maxNumCpt,i,a,4,,,"Maximum number of counterpart candidates per source"
+fom,s,a,,,,"Figure of merit"
 #
 # Selection criteria
 #===================

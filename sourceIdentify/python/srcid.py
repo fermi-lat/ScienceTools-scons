@@ -12,7 +12,47 @@ import os                   # operating system module
 import glob                 # filename access
 import sys                  # system
 import pyfits               # FITS file access
-from GtApp import GtApp     # import ScienceTools applications
+import commands             # command execution
+
+
+#=============#
+# Set globals #
+#=============#
+col_prefix = "@"
+
+
+#=========================#
+# Set gtsrcid job command #
+#=========================#
+def set_command(task, parameters):
+	"""
+	Set job command.
+	"""
+	# Set task name
+	cmd = task
+	
+	# Add parameters
+	for key, value in parameters.iteritems():
+		if str(value) != "_skip":
+			cmd += " " + key + "='" + str(value) + "'"
+	
+	# Return command
+	return cmd
+
+
+#=============#
+# Run gtsrcid #
+#=============#
+def run_command(cmd):
+	"""
+	Run job command.
+	"""
+	# Run job
+	#print cmd
+	error, result = commands.getstatusoutput(cmd)
+	
+	# Return error and result
+	return error, result
 
 
 #=================================================#
@@ -20,19 +60,19 @@ from GtApp import GtApp     # import ScienceTools applications
 #=================================================#
 def get_cat_path():
 	"""
-	Determine counterpart catalogues directory path from 'GLAST_CAT'.
+	Determine counterpart catalogues directory path from 'GLAST_CAT'
+	or 'EXTFILESSYS'.
 	
 	Returns:
 	 Source class catalogue directory path
-	 Returns '/project-data/glast/cat' if no 'GLAST_CAT' environment variable is found
 	"""
 	
 	# Get path from environment variable
 	try:
 		path = os.environ['GLAST_CAT']
-	except:
-		path = '/project-data/glast/cat'
-		
+	except KeyError:
+		path = os.path.join(os.environ['EXTFILESSYS'],'catalogues')
+	
 	# Return directory path
 	return path
 
@@ -50,44 +90,48 @@ def set_pars(module, chatter=False):
 	Returns:
 	 Parameter dictionary
 	"""
-	
-	# Initialise parameter dictionary
-	par = { }
-	
-	# Get catalogue paths
-	cat_path = get_cat_path()
-	
-	# Set default parameters
-	par['srcCatPrefix'] = 'LAT'
-	par['srcCatQty']    = '*'
-	par['srcPosError']  = 0.0
-	par['cptCatName']   = ''
-	par['cptCatPrefix'] = 'CPT'
-	par['cptCatQty']    = '*'
-	par['cptPosError']  = 1.0/3600.0    # 1 arcsec default
-	par['cptDensFile']  = ''
-	par['outCatName']   = 'result.fits'
-	for index in range(1,10):
-		parname      = 'outCatQty0' + str(index)
-		par[parname] = ''
-	for index in range(1,10):
-		parname      = 'select0' + str(index)
-		par[parname] = ''
-	par['probMethod']   = 'PROB_POST'
-	par['probPrior']    = '0.01'
-	par['probThres']    = 0.50
-	par['maxNumCpt']    = 100
-	par['fom']          = ''
-	par['chatter']      = 1
-	par['clobber']      = 'yes'
-	par['debug']        = 'no'
-	par['mode']         = 'ql'
-	
 	# Set v2r0p0 default parameters
+	par = {'srcCatName': "", \
+	       'srcCatPrefix': "LAT", \
+	       'srcCatQty': "*", \
+	       'srcPosError' : 0.0, \
+	       'cptCatName': "", \
+	       'cptCatPrefix': "CPT", \
+	       'cptCatQty': "*", \
+	       'cptPosError' : 1.0/3600.0, \
+	       'cptDensFile': '', \
+	       'outCatName': "result.fits", \
+	       'outCatQty01': "", \
+	       'outCatQty02': "", \
+	       'outCatQty03': "", \
+	       'outCatQty04': "", \
+	       'outCatQty05': "", \
+	       'outCatQty06': "", \
+	       'outCatQty07': "", \
+	       'outCatQty08': "", \
+	       'outCatQty09': "", \
+	       'probMethod': "PROB_POST", \
+	       'probPrior': "0.10", \
+	       'probThres': 0.50, \
+	       'maxNumCpt': 1, \
+	       'fom': "", \
+	       'select01': "", \
+	       'select02': "", \
+	       'select03': "", \
+	       'select04': "", \
+	       'select05': "", \
+	       'select06': "", \
+	       'select07': "", \
+	       'select08': "", \
+	       'select09': "", \
+	       'chatter': 1, \
+	       'clobber': "yes", \
+	       'debug': "no", \
+	       'mode': "ql"}
 	
 	# Extract catalogue name (mandatory parameter)
 	if hasattr(module, 'catname'):
-		par['cptCatName'] = cat_path + '/' + module.catname
+		par['cptCatName'] = get_cat_path() + '/' + module.catname
 	else:
 		print "ERROR: no 'catname' specified."
 	
@@ -181,7 +225,7 @@ def get_name_key(pars, hdu):
 	cards = hdu.header.ascardlist()
 	
 	# Get counterpart prefix
-	prefix = '@' + pars['cptCatPrefix'] + '_'
+	prefix = col_prefix + pars['cptCatPrefix'] + '_'
 	
 	# Search for UCD
 	for card in cards:
@@ -311,7 +355,8 @@ def attach_counterparts(pars, hdu_lat):
 	
 	# Return HDU
 	return hdu_new
-	
+
+
 #========================#
 # Expand names in string #
 #========================#
@@ -398,11 +443,11 @@ def expand_column_names(pars):
 	
 	# Get LAT catalogue names
 	hdu = get_fits_cat(pars['srcCatName'], catname='LAT_POINT_SOURCE_CATALOG')
-	names.extend(['@'+pars['srcCatPrefix']+'_'+s for s in hdu.columns.names])
-
+	names.extend([col_prefix+pars['srcCatPrefix']+'_'+s for s in hdu.columns.names])
+	
 	# Get counterpart catalogue names
 	hdu = get_fits_cat(pars['cptCatName'])
-	names.extend(['@'+pars['cptCatPrefix']+'_'+s for s in hdu.columns.names])
+	names.extend([col_prefix+pars['cptCatPrefix']+'_'+s for s in hdu.columns.names])
 	
 	# Expand column names in quantity parameters
 	for index in range(1,10):
@@ -414,37 +459,6 @@ def expand_column_names(pars):
 	for index in range(1,10):
 		parname       = 'select0' + str(index)
 		pars[parname] = expand_string(pars[parname], names)
-
-
-#============#
-# Run gsrcid #
-#============#
-def run_gtsrcid(pars):
-	"""
-	Run gtsrcid application.
-	
-	Arguments:
-	 pars  Parameter dictronary
-	"""
-	
-	# Create gtsrcid application
-	srcid = GtApp('gtsrcid', preserveQuotes=False)
-	
-	# Expand column names in parameter strings
-	expand_column_names(pars)
-	
-	# Set the parameters
-	for key, value in pars.iteritems():
-		try:
-			srcid[key] = value
-		except KeyError, name:
-			print 'WARNING: Invalid key '+str(name)+' in parameter module.'
-	
-	# Run the application
-	srcid.run(print_command=False)
-	
-	# Rename result file
-	os.rename('gtsrcid.log', pars['cptCatPrefix'].lower() + '.log')
 
 
 #==========================#
@@ -510,7 +524,7 @@ if __name__ == '__main__':
 		file.write(string)
 		file.close()
 	except:
-		print 'WARNING: Unable to create __init__.py module'
+		print 'WARNING: Unable to create '+filename+' module'
 	
 	# Import source classes now
 	class_import_string = 'from ' + dir_classes + ' import *'
@@ -532,8 +546,18 @@ if __name__ == '__main__':
 		# Set LAT catalogue filename
 		pars['srcCatName'] = lat_filename
 		
+		# Expand column names in parameter strings
+		expand_column_names(pars)
+		
+		# Set gtsrcid command
+		cmd = set_command("gtsrcid", pars)
+		
 		# Run gtsrcid
-		run_gtsrcid(pars)
+		error, result = run_command(cmd)
+		#run_gtsrcid(pars)
+		
+		# Rename result file
+		os.rename('gtsrcid.log', pars['cptCatPrefix'].lower() + '.log')
 		
 		# Attach counterparts to LAT catalogue
 		hdu_lat = attach_counterparts(pars, hdu_lat)

@@ -25,8 +25,9 @@ gtsrcid \
   cptCatPrefix="WB14" \
   cptCatQty="WB,_RAJ2000,_DEJ2000,S1.4,S4.85,S.365,Sp+Index,Sp+Index2" \
   cptPosError="0.0138888" \
+  cptDensFile="" \
   outCatName="${RUN_ID}.fits" \
-  outCatQty01='F-Ratio = $@3EG_F$ / $@WB14_S1.4$' \
+  outCatQty01='F-Ratio = $%3EG_F$ / $%WB14_S1.4$' \
   outCatQty02='PROB-Ratio = exp(-0.5*(( $F-Ratio$ + 0.1 )/0.1)^2)' \
   outCatQty03="" \
   outCatQty04="" \
@@ -35,9 +36,11 @@ gtsrcid \
   outCatQty07="" \
   outCatQty08="" \
   outCatQty09="" \
-  probMethod="POSITION * PROB-Ratio" \
+  probMethod="PROB_POST" \
+  probPrior="0.01" \
   probThres="0.05" \
   maxNumCpt="4" \
+  fom="" \
   select01='' \
   select02='' \
   select03='' \
@@ -50,5 +53,5 @@ gtsrcid \
   chatter="2" \
   clobber="yes" \
   debug="no" \
-  mode="q" >& /dev/null
+  mode="q" #>& /dev/null
 mv gtsrcid.log "${RUN_ID}.log"

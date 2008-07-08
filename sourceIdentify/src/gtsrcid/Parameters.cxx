@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.16  2008/04/24 14:55:17  jurgen
+Implement simple FoM scheme
+
 Revision 1.15  2008/04/23 15:09:21  jurgen
 Check for catch-22 in upper case
 
@@ -211,6 +214,9 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       // Prompt for parameters
       pars.Prompt();
 
+      // Save parameters
+      pars.Save();
+
       // Recover task parameters
       std::string s_srcCatName   = pars["srcCatName"];
       std::string s_srcCatPrefix = pars["srcCatPrefix"];
@@ -225,11 +231,11 @@ Status Parameters::load(st_app::AppParGroup &pars, Status status) {
       std::string s_FoM          = pars["fom"];
       std::string s_mode         = pars["mode"];
       m_srcCatName               = trim(s_srcCatName);
-      m_srcCatPrefix             = "@" + s_srcCatPrefix + "_";
+      m_srcCatPrefix             = OUTCAT_PRE_STRING + s_srcCatPrefix + "_";
       m_srcCatQty                = s_srcCatQty;
       m_srcPosError              = pars["srcPosError"];
       m_cptCatName               = trim(s_cptCatName);
-      m_cptCatPrefix             = "@" + s_cptCatPrefix + "_";
+      m_cptCatPrefix             = OUTCAT_PRE_STRING + s_cptCatPrefix + "_";
       m_cptCatQty                = s_cptCatQty;
       m_cptPosError              = pars["cptPosError"];
       m_cptDensFile              = trim(s_cptDensFile);

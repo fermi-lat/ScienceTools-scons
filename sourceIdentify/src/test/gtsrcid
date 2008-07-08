@@ -31,7 +31,7 @@ fi
 GLAST_DIR=`which test_st_facilities|sed 's/test_st_facilities/../'`
 ROOT="v5.16.00-gl1"
 
-export LD_LIBRARY_PATH="${GLAST_EXT}//cppunit/1.10.2/lib:${GLAST_EXT}//ROOT/${ROOT}/root/lib:${GLAST_EXT}//CLHEP/1.9.2.2/lib:${GLAST_EXT}//cfitsio/v3006/lib:${GLAST_DIR}//lib/:"
+export LD_LIBRARY_PATH="${GLAST_EXT}//cppunit/1.10.2/lib:${GLAST_EXT}//ROOT/${ROOT}/root/lib:${GLAST_EXT}//CLHEP/1.9.2.2/lib:${GLAST_EXT}//cfitsio/v3060/lib:${GLAST_DIR}//lib/:"
 export ROOTSYS="${GLAST_EXT}//ROOT/${ROOT}/root"
 
 ST_apps="gtsrcid=${INST_DIR}//../rh9_gcc32/gtsrcid.exe"; export ST_apps
