@@ -5,7 +5,7 @@ from  pointlike_defaults import *
 # specific for this analysis
 analysis_path =r'D:/common/first_light/'
 datapath=r'f:/glast/downloads/'
-suffix='06'
+suffix='v2'
 
 Data.LATalignment=[-1.9*60,-2.6*60, -8.6*60]  # from Marshall
 Data.history=r'd:\common\first_light\ft2\merged_'+suffix+'.fits'

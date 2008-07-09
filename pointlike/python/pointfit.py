@@ -24,13 +24,15 @@ Optional parameters:
         [This is TODO: Is there a function member to sum the GTI intervals?]
         Note that this is only actually needed for overlapped sources in the Galactic
         plane, if spectral information is not required.
-    --galdiffuse: Flag to use the galprop-generated galactic diffuse file
+    --diffuse=:  Define a diffuse file (see the flag --galdiffuse to define it in the context of the science tools)
+    --galdiffuse: Flag to use the galprop-generated galactic diffuse file which is distributed with the science tools)
     --eventtype= [-1] Event selection if datafile is event data. -1 means front and back,
         0/1 for front/back specifically.
     --write=<output>: if set, and the datafile is event data, write a pixelfile for
         subsequent input
     -v or --verbose [0] set verbosity
     --binsperdecade [0] default is 2.35 ratio. otherwise energy binning is set.
+    --emin [500]  minimum energy, used to select bands
 
 
  $Header$
@@ -99,7 +101,7 @@ def main():
 
     options = 'b:w:v'
     long_options= [ 'diffuse=','write=', 'verbose', 'galdiffuse', 
-                    'eventtype=', 'exposure=', 'binsperdecade=']
+                    'eventtype=', 'exposure=', 'binsperdecade=', 'emin=']
 
     try:    
         (opts, args) = getopt(sys.argv[1:], options, long_options )
@@ -112,6 +114,7 @@ def main():
     exposure=3e10 # this is appropriate for 1 year. 
     eventtype=-1  # all events
     binsperdecade=0 # default binning
+    emin = 500
                                     
     for (opt,val) in opts:
         if   opt=='-b' or opt=='--diffuse'  : diffusefilename = val
@@ -119,6 +122,7 @@ def main():
         elif opt=='-v' or opt=='--verbose'  : verbose =1
         elif opt=='--galdiffuse'            : diffusefilename='galdiffuse' #flag
         elif opt=='--eventtype'             : eventtype= int(val)
+        elif opt=='--emin'                  : emin = float(val)
         elif opt=='--binsperdecade'         : binsperdecade=float(val)
         elif opt=='--exposure'              :
             try: exposure= float(val)
@@ -144,7 +148,7 @@ def main():
         diffuse = DiffuseFunction(diffusefilename)
         background = Background(diffuse, exposure)
         PointSourceLikelihood.set_diffuse(background)
-
+    PointSourceLikelihood.set_energy_range(emin)
     SourceList.set_data(data.map())
     sourcelist = SourceList(sourcefilename)
     sourcelist.sort_TS()
