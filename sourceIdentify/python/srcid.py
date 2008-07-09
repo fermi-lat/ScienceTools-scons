@@ -12,6 +12,7 @@ import os                   # operating system module
 import glob                 # filename access
 import sys                  # system
 import pyfits               # FITS file access
+import numpy                # Numerical arrays
 import commands             # command execution
 
 
@@ -306,13 +307,13 @@ def attach_counterparts(pars, hdu_lat):
 		# Build empty arrays
 		array_name = ['' for i in range(nrows_lat)]
 		array_prob = [0 for i in range(nrows_lat)]
-	
+		
 		# Fill arrays
 		for row in hdu_cpt.data:
 			# Get Array indices
 			lat_index = long(row.field('ID')[3:8])-1     # Array index starts with 0
 			cpt_index = long(row.field('ID')[9:14])-1    # index starts with 0
-
+			
 			# Use counterpart only if indices correspond
 			if cpt_index == index:
 				# Get source name
@@ -461,6 +462,143 @@ def expand_column_names(pars):
 		pars[parname] = expand_string(pars[parname], names)
 
 
+#========================================#
+# Create LAT format compatible catalogue #
+#========================================#
+def create_lat_cat(lat_name, srcid_name, out_name):
+	"""
+	Create catalogue that is compatible with the LAT catalogue format.
+	
+	Parameters:
+	 lat_name:   Name of the original LAT catalogue
+	 srcid_name: Name of the original srcid.py catalogue
+	 out_name:   Name of the output catalogue
+	"""
+	# Get LAT source catalogue HDU
+	hdu_lat = get_fits_cat(lat_name, catname='LAT_POINT_SOURCE_CATALOG')
+	nrows   = hdu_lat.data.shape[0]
+	
+	# Get srcid result catalogue
+	hdu_srcid = get_fits_cat(srcid_name, catname='LAT_POINT_SOURCE_CATALOG')
+	
+	# Build empty ID list
+	idlist = [[] for row in range(nrows)]
+	
+	# Build identification list
+	max_cpt = 0
+	for column in hdu_srcid.columns.names:
+		if (column.find('ID_') != -1 and column.find('_NAME_') != -1):
+			
+			# Set column names to read
+			col_name = column
+			col_prob = column.replace('_NAME_', '_PROB_')
+			
+			# Read columns
+			names = hdu_srcid.data.field(col_name)
+			probs = hdu_srcid.data.field(col_prob)
+			
+			# Loop over all rows and extract information
+			for i, name in enumerate(names):
+				if (name != ''):
+					catid = 0
+					entry = {'name': name, 'prob': probs[i], 'cat': catid}
+					idlist[i].append(entry)
+					if len(idlist[i]) > max_cpt:
+						max_cpt = len(idlist[i])
+	
+	# Set column format strings
+	num_cpt  = max_cpt
+	fmt_name = '%d' % (num_cpt*20) + 'A20'
+	fmt_prob = '%d' % num_cpt + 'E'
+	fmt_cat  = '%d' % num_cpt + 'I'
+	
+	# Define new table columns
+	column_number = pyfits.Column(name='ID_Number', format='I')
+	column_name   = pyfits.Column(name='ID_Name', format=fmt_name)
+	column_prob   = pyfits.Column(name='ID_Probability', format=fmt_prob)
+	column_cat    = pyfits.Column(name='ID_Catalog', format=fmt_cat)
+	
+	# Collect columns
+	columns = [column_number, column_name, column_prob, column_cat]
+	
+	# Build new table, append it to LAT catalogue and create new table of combined columns
+	hdu_new = pyfits.new_table(columns)
+	col_new = hdu_lat.columns + hdu_new.columns
+	hdu_new = pyfits.new_table(col_new)
+	
+	# Define catalogue table columns
+	column_cat  = pyfits.Column(name='ID_Catalog', format='I')
+	column_name = pyfits.Column(name='Name', format='A50')
+	column_ref  = pyfits.Column(name='Reference', format='A255')
+	column_url  = pyfits.Column(name='URL', format='A255')
+	
+	# Collect columns
+	columns = [column_cat, column_name, column_ref, column_url]
+	
+	# Build new table
+	hdu_cat = pyfits.new_table(columns)
+	
+	# Fill new columns
+	data_number = hdu_new.data.field('ID_Number')
+	data_name   = hdu_new.data.field('ID_Name')
+	data_prob   = hdu_new.data.field('ID_Probability')
+	data_cat    = hdu_new.data.field('ID_Catalog')
+	for i, row in enumerate(idlist):
+		
+		# Determine the number of counterparts
+		nids           = len(row)
+		data_number[i] = nids
+		
+		# Sort list
+		row.sort(compare_by('prob'), reverse=True)
+		
+		# Loop over all entries
+		names = ''
+		for k, cpt in enumerate(row):
+			name = cpt['name']
+			while (len(name) < 20):
+				name = name + ' '
+			names = names + name
+			data_prob[i][k] = cpt['prob']
+			data_cat[i][k]  = cpt['cat']
+		data_name[i] = names
+	
+	# Copy over LAT catalogue keywords (except basic keywords)
+	basic_keys = ['XTENSION', 'BITPIX', 'NAXIS', 'NAXIS1', 'NAXIS2', 'PCOUNT', \
+	              'GCOUNT', 'TFIELDS']
+	for card in hdu_lat.header.ascardlist():
+		if card.key not in basic_keys:
+			if card.key.count('TBCOL') or card.key.count('TTYPE') or \
+			   card.key.count('TFORM'):
+				pass
+			else:
+				hdu_new.header.update(card.key, card.value, card.comment)
+	
+	# Reformat the 'ID_Name' column
+	cards = hdu_new.header.ascardlist()
+	for card in cards:
+		if card.value == 'ID_Name':
+			key   = card.key.replace('TTYPE','TFORM')
+			value = fmt_name
+			hdu_new.header.update(key, value)
+	
+	# Add keywords to catalogue table
+	hdu_cat.header.update('EXTNAME', 'ID_CAT_REFERENCE')
+	
+	# Save LAT catalogue with attached columns
+	hdulist = pyfits.HDUList([pyfits.PrimaryHDU(), hdu_new, hdu_cat])
+	hdulist.writeto(out_name, clobber=True)
+
+
+#================================#
+# Dictionary comparison function #
+#================================#
+def compare_by(key):
+	def compare2dicts(a,b):
+		return cmp(a[key],b[key])
+	return compare2dicts
+
+
 #==========================#
 # Main routine entry point #
 #==========================#
@@ -564,3 +702,6 @@ if __name__ == '__main__':
 		
 	# Save LAT catalogue with attached columns
 	hdu_lat.writeto('srcid.fits', clobber=True)
+
+	# Create LAT compatible catalogue format
+	create_lat_cat(lat_filename, 'srcid.fits', 'srcid-lat.fits')
