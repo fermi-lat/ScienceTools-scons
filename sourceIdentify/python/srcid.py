@@ -465,7 +465,7 @@ def expand_column_names(pars):
 #========================================#
 # Create LAT format compatible catalogue #
 #========================================#
-def create_lat_cat(lat_name, srcid_name, out_name):
+def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	"""
 	Create catalogue that is compatible with the LAT catalogue format.
 	
@@ -473,6 +473,7 @@ def create_lat_cat(lat_name, srcid_name, out_name):
 	 lat_name:   Name of the original LAT catalogue
 	 srcid_name: Name of the original srcid.py catalogue
 	 out_name:   Name of the output catalogue
+	 cpt_cats:   List of counterpart catalogues
 	"""
 	# Get LAT source catalogue HDU
 	hdu_lat = get_fits_cat(lat_name, catname='LAT_POINT_SOURCE_CATALOG')
@@ -500,7 +501,13 @@ def create_lat_cat(lat_name, srcid_name, out_name):
 			# Loop over all rows and extract information
 			for i, name in enumerate(names):
 				if (name != ''):
+					# Search catalogue number
 					catid = 0
+					for cat in cpt_cats:
+						pattern = '_'+cat['label']+'_'
+						if (col_name.find(pattern) != -1):
+							catid = cat['number']
+					# Build entry
 					entry = {'name': name, 'prob': probs[i], 'cat': catid}
 					idlist[i].append(entry)
 					if len(idlist[i]) > max_cpt:
@@ -527,7 +534,9 @@ def create_lat_cat(lat_name, srcid_name, out_name):
 	hdu_new = pyfits.new_table(col_new)
 	
 	# Define catalogue table columns
-	column_cat  = pyfits.Column(name='ID_Catalog', format='I')
+	ncats       = len(cpt_cats)
+	array       = numpy.zeros(ncats)
+	column_cat  = pyfits.Column(name='ID_Catalog', format='I', array=array)
 	column_name = pyfits.Column(name='Name', format='A50')
 	column_ref  = pyfits.Column(name='Reference', format='A255')
 	column_url  = pyfits.Column(name='URL', format='A255')
@@ -582,6 +591,17 @@ def create_lat_cat(lat_name, srcid_name, out_name):
 			value = fmt_name
 			hdu_new.header.update(key, value)
 	
+	# Fill catalogue table
+	data_cat  = hdu_cat.data.field('ID_Catalog')
+	data_name = hdu_cat.data.field('Name')
+	data_ref  = hdu_cat.data.field('Reference')
+	data_url  = hdu_cat.data.field('URL')
+	for i, cat in enumerate(cpt_cats):
+		data_cat[i]  = cat['number']
+		data_name[i] = cat['name']
+		data_ref[i]  = cat['ref']
+		data_url[i]  = cat['url']
+
 	# Add keywords to catalogue table
 	hdu_cat.header.update('EXTNAME', 'ID_CAT_REFERENCE')
 	
@@ -671,6 +691,10 @@ if __name__ == '__main__':
 	# Get LAT source catalogue HDU
 	hdu_lat = get_fits_cat(lat_filename, catname='LAT_POINT_SOURCE_CATALOG')
 	
+	# Initialise counterpart catalogue dictionary list
+	cpt_cats  = []
+	cpt_index = 1
+	
 	# Loop over all source classes
 	for class_one in class_list:
 		
@@ -687,6 +711,49 @@ if __name__ == '__main__':
 		# Expand column names in parameter strings
 		expand_column_names(pars)
 		
+		# Get counterpart catalogue information
+		try:
+			# Read catalogue
+			cpt_url = pars['cptCatName']
+			hdu_cpt = get_fits_cat(cpt_url)
+			
+			# Initialise information fields
+			cpt_label  = pars['cptCatPrefix']
+			cpt_number = cpt_index
+			cpt_name   = ''
+			cpt_ref    = ''
+			
+			# Gather catalogue name and reference from catalogue
+			cards      = hdu_cpt.header.ascardlist()
+			for card in cards:
+				# Gather catalogue name
+				if card.key == 'CAT-NAME':
+					cpt_name = hdu_cpt.header['CAT-NAME']
+				if card.key == 'EXTNAME' and cpt_name == '':
+					cpt_name = hdu_cpt.header['EXTNAME']
+				if card.key == 'CDS-NAME' and cpt_name == '':
+					cpt_name = hdu_cpt.header['CDS-NAME']
+				
+				# Gather catalogue reference
+				if card.key == 'CAT-REF':
+					cpt_name = hdu_cpt.header['CAT-REF']
+				if card.key == 'AUTHOR' and cpt_ref == '':
+					cpt_ref = hdu_cpt.header['AUTHOR']
+				if card.key == 'CDS-CAT' and cpt_ref == '':
+					cpt_ref = hdu_cpt.header['CDS-CAT']
+			
+			# Set catalogue information
+			info = {'number': cpt_number, 'label': cpt_label, 'name': cpt_name, \
+			        'ref': cpt_ref, 'url': 'file:/' + cpt_url}
+			cpt_cats.append(info)
+			
+		except:
+			print 'WARNING: Catalogue not found ' + cpt_url
+			continue
+		
+		# Dump processing information to screen
+		print 'Process ' + info['name'] + ' (' + info['url'] + ')'
+		
 		# Set gtsrcid command
 		cmd = set_command("gtsrcid", pars)
 		
@@ -700,8 +767,11 @@ if __name__ == '__main__':
 		# Attach counterparts to LAT catalogue
 		hdu_lat = attach_counterparts(pars, hdu_lat)
 		
+		# Increment index
+		cpt_index = cpt_index + 1
+		
 	# Save LAT catalogue with attached columns
 	hdu_lat.writeto('srcid.fits', clobber=True)
 
 	# Create LAT compatible catalogue format
-	create_lat_cat(lat_filename, 'srcid.fits', 'srcid-lat.fits')
+	create_lat_cat(lat_filename, 'srcid.fits', 'srcid-lat.fits', cpt_cats)
