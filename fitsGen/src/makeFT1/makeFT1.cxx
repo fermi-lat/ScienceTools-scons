@@ -187,12 +187,6 @@ void MakeFt1::run() {
 
    std::string dataDir(facilities::commonUtilities::getDataPath("fitsGen"));
 
-// Disable the default, forcing user to supply a set of cuts [s]he is 
-// responsible for understanding.
-//    if (defaultFilter == "DEFAULT") {
-//       defaultFilter = facilities::commonUtilities::joinPath(dataDir,
-// 							    "pass5_cuts");
-//    }
    std::string filter;
    if (!st_facilities::Util::fileExists(defaultFilter)) {
       filter = defaultFilter;
@@ -212,10 +206,6 @@ void MakeFt1::run() {
    formatter.info() << "applying TCut: " << filter << std::endl;
 
    std::string dictFile = m_pars["dict_file"];
-// Disable the default, force users to specify
-//    if (dictFile == "DEFAULT") {
-//       dictFile = facilities::commonUtilities::joinPath(dataDir,"FT1variables");
-//    }
 
    ::Ft1Map_t ft1Dict;
    ::getFT1Dict(dictFile, ft1Dict);
@@ -248,7 +238,13 @@ void MakeFt1::run() {
                  variable != ft1Dict.end(); ++variable) {
                ft1[variable->first].set(merit[variable->second.meritName()]);
             }
-            ft1["event_class"].set(eventClass(merit.row()));
+//             ft1["event_class"].set(eventClass(merit.row()));
+// This change is temporary so that one can select the real source and
+// diffuse classes from the FT1 data (this requires a correct
+// implementation in evtClassDefs/Pass6_Classifier.py.
+// 
+            ft1["ctbclasslevel"].set(eventClass(merit.row()));
+            ft1["event_class"].set(merit.conversionType());
             ft1["conversion_type"].set(merit.conversionType());
             ncount++;
          }

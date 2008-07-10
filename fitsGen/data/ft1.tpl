@@ -138,6 +138,8 @@ TFORM17     = 'D'                                       / data format of field: 
 TUNIT17     = 's'                                       / physical unit of field
 TLMIN17     = 0.0                                       / minimum value
 TLMAX17     = 1.0D+10                                   / maximum value
+TTYPE18     = 'CTBCLASSLEVEL'                           / event class (temporary)
+TFORM18     = 'J'                                       / data format 
 END
 
 XTENSION    = 'BINTABLE'                  / binary table extension
