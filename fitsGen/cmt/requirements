@@ -30,6 +30,7 @@ library fitsGen -no_share $(source)
 apply_pattern ST_pfiles
 
 apply_pattern ST_app name=makeFT1
+apply_pattern ST_app name=makeFT1_kluge
 apply_pattern ST_app name=makeFT2              
 application makeFT2a makeFT2a/makeFT2a.cxx
 
