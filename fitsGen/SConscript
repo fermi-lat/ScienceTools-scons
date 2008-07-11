@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: fitsGen-04-00-00
+# Version: fitsGen-04-01-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
