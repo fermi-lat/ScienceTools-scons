@@ -238,13 +238,7 @@ void MakeFt1::run() {
                  variable != ft1Dict.end(); ++variable) {
                ft1[variable->first].set(merit[variable->second.meritName()]);
             }
-//             ft1["event_class"].set(eventClass(merit.row()));
-// This change is temporary so that one can select the real source and
-// diffuse classes from the FT1 data (this requires a correct
-// implementation in evtClassDefs/Pass6_Classifier.py.
-// 
-            ft1["ctbclasslevel"].set(eventClass(merit.row()) + 1);
-            ft1["event_class"].set(merit.conversionType());
+            ft1["event_class"].set(eventClass(merit.row()));
             ft1["conversion_type"].set(merit.conversionType());
             ncount++;
          }
