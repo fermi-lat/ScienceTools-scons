@@ -4,6 +4,10 @@
     $Id$
 
     @verbatim
+    v4r1   11-Jul-08   JC   add makeFT1_kluge which will put the desired
+                            class definitions (with the CTBCORE and 
+                            CTBBestEnergyProb selections) into the 
+                            CTBCLASSLEVEL column
     v4     16-Apr-08   JC   disable defaults in makeFT1, forcing users to
                             give cuts and event class defs explicitly
     v3r9p1 10-Apr-08   JC   correct data/pass5_cuts: OBFGamStatus->ObfGamStatus
