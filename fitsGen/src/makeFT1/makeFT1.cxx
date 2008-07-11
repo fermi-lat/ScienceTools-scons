@@ -243,7 +243,7 @@ void MakeFt1::run() {
 // diffuse classes from the FT1 data (this requires a correct
 // implementation in evtClassDefs/Pass6_Classifier.py.
 // 
-            ft1["ctbclasslevel"].set(eventClass(merit.row()));
+            ft1["ctbclasslevel"].set(eventClass(merit.row()) + 1);
             ft1["event_class"].set(merit.conversionType());
             ft1["conversion_type"].set(merit.conversionType());
             ncount++;
