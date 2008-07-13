@@ -23,7 +23,7 @@ Tkr1FirstLayer
 #
 # In Pass6_kluge, these event class defs will go into CTBCLASSLEVEL
 #
-eventClassCuts = ["(CTBClassLevel==1) || ((CTBCORE<0.1) || (CTBBestEnergyProb<0.1))",
+eventClassCuts = ["(CTBClassLevel==1) || ((CTBCORE<=0.1) || (CTBBestEnergyProb<=0.1))",
                   "(CTBClassLevel==2) && (CTBCORE>0.1) && (CTBBestEnergyProb>0.1)",
                   "(CTBClassLevel==3) && (CTBCORE>0.1) && (CTBBestEnergyProb>0.1)"]
 
