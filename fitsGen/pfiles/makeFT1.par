@@ -4,8 +4,8 @@
 rootFile,fr,a,"",,,merit filename
 fitsFile,f,a,"",,,FT1 filename
 event_classifier,s,a,,,,Event classifier module
-tstart,r,h,0,,,,"start time (MET s)"
-tstop,r,h,0,,,,"stop time (MET s)"
+tstart,r,h,0,,,"start time (MET s)"
+tstop,r,h,0,,,"stop time (MET s)"
 TCuts,s,a,,,,TCut to apply
 dict_file,fr,a,,,,merit-to-FT1 dictionary file
 file_version,s,h,1,,,Version of FT1 file
