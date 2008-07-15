@@ -2,6 +2,10 @@
     @brief package dataSubselector
 
     @verbatim
+    v6r1    15-Jul-08   JC   update TSTART, TSTOP header keywords in gtselect
+                             for multiple input FT1 files;  these keywords will
+                             be used by gtmktime and so need to be correct for
+                             the merged FT1 file.
     v6r0p1  02-Apr-08   JC   use greater precision in GtiCut::writeCut 
                              in printing GTI start and stop times
     v6      01-Apr-08   JC   new gtselect cuts (add evcls*, convtype; remove
