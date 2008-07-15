@@ -6,6 +6,7 @@
  *  $Header$
  */
 
+#include <algorithm>
 #include <stdexcept>
 
 #include "facilities/Util.h"
@@ -16,6 +17,7 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Table.h"
@@ -39,7 +41,8 @@ using dataSubselector::Gti;
 class DataFilter : public st_app::StApp {
 public:
    DataFilter() : st_app::StApp(), 
-                  m_pars(st_app::StApp::getParGroup("gtselect")) {
+                  m_pars(st_app::StApp::getParGroup("gtselect")),
+                  m_tstart(0), m_tstop(0) {
       try {
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
@@ -70,6 +73,8 @@ private:
 
    std::vector<std::string> m_inputFiles;
    std::string m_outputFile;
+
+   mutable double m_tstart, m_tstop;
 
    void copyTable(const std::string & extension,
                   CutController * cutController=0) const;
@@ -127,7 +132,11 @@ void DataFilter::run() {
    double tmin, tmax;
    tmin = m_pars["tmin"];
    tmax = m_pars["tmax"];
-   if (tmin != 0 || tmax != 0) {
+   if (tmin != 0 || tmax != 0 || m_inputFiles.size() > 1) {
+      if (tmin != 0 || tmax != 0) {
+         m_tstart = std::max(m_tstart, tmin);
+         m_tstop = std::min(m_tstop, tmax);
+      }
       writeDateKeywords();
    }
 
@@ -137,21 +146,18 @@ void DataFilter::run() {
 }
 
 void DataFilter::writeDateKeywords() const {
-   double tstart = m_pars["tmin"];
-   double tstop = m_pars["tmax"];
-
    tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outputFile, ""));
-   st_facilities::Util::writeDateKeywords(phdu, tstart, tstop, false);
+   st_facilities::Util::writeDateKeywords(phdu, m_tstart, m_tstop, false);
    delete phdu;
 
    std::string evtable = m_pars["evtable"];
    tip::Table * table
       = tip::IFileSvc::instance().editTable(m_outputFile, evtable);
-   st_facilities::Util::writeDateKeywords(table, tstart, tstop);
+   st_facilities::Util::writeDateKeywords(table, m_tstart, m_tstop);
    delete table;
 
    table = tip::IFileSvc::instance().editTable(m_outputFile, "GTI");
-   st_facilities::Util::writeDateKeywords(table, tstart, tstop);
+   st_facilities::Util::writeDateKeywords(table, m_tstart, m_tstop);
    delete table;
 }
 
@@ -169,6 +175,14 @@ void DataFilter::copyTable(const std::string & extension,
       st_facilities::FitsUtil::fcopy(m_inputFiles.at(0), m_outputFile,
                                      extension, filterString, 
                                      m_pars["clobber"]);
+// Get tstart, tstop
+      const tip::Table * inputTable 
+         = tip::IFileSvc::instance().readTable(m_inputFiles.front(), 
+                                               extension, filterString);
+      const tip::Header & header(inputTable->getHeader());
+      header["TSTART"].get(m_tstart);
+      header["TSTOP"].get(m_tstop);
+      delete inputTable;
    } else { // handle multiple input files using tip
       std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
       long nrows(0);
@@ -177,6 +191,23 @@ void DataFilter::copyTable(const std::string & extension,
             = tip::IFileSvc::instance().readTable(*infile, extension,
                                                   filterString);
          nrows += inputTable->getNumRecords();
+// Get tstart, tstop for this file, treating the first file as a
+// special case to initialize the values.
+         const tip::Header & header(inputTable->getHeader());
+         double tstart, tstop;
+         header["TSTART"].get(tstart);
+         header["TSTOP"].get(tstop);
+         if (infile == m_inputFiles.begin()) {
+            m_tstart = tstart;
+            m_tstop = tstop;
+         } else {
+            if (tstart < m_tstart) {
+               m_tstart = tstart;
+            }
+            if (tstop > m_tstop) {
+               m_tstop = tstop;
+            }
+         }
          delete inputTable;
       }
 
