@@ -51,6 +51,10 @@ int main(int argc, char** argv)
 
         finder.run();
 
+        // try to call the finish function, if defined
+        PyObject* finish(setup.attribute("finish", false) );
+        if(finish!=0) setup.call(finish);
+
 
     }catch(const std::exception& e){
         std::cerr << "Caught exception " << typeid(e).name() 
