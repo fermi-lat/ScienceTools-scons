@@ -1,6 +1,6 @@
 package pointlike
 
-version v6r3p8
+version v6r3p9
 
 # $Header$
 
@@ -17,13 +17,11 @@ use python * IExternal
 # this should cause the IExternal/python setup to avoid modifying PYTHONPATH or PATH
 apply_tag have_python
 
-apply_pattern package_include 
-
-private
 
 use SwigModule *
 apply_pattern python_module
 
+# note private now
 macro source "*.cxx" WIN32 "*.cxx *.h *.py"
 
 library pointlike \
