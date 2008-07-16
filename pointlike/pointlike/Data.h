@@ -112,7 +112,7 @@ public:
     static double zenith_angle_cut();
 
 private:
-    void lroot(const std::string& infile);
+    void lroot(const std::string& infile,int event_class);
     static double s_scale[4]; // scale factors
     static int s_class_level; // set to 1,2,3 for transient, source, diffuse
 
