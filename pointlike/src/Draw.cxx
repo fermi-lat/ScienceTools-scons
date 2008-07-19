@@ -24,7 +24,8 @@ Draw::Draw(const BinnedPhotonData& map)
 , m_proj("")
 {}
 
-void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel, double fov )
+void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel, 
+                  double fov, bool smooth, int mincount)
 {
 
     std::string proj (fov>90? "AIT":"ZEA");
@@ -35,20 +36,30 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
 
     /// @class SkyDensity
     /// @brief adapt a BinnedPhotonData to give density
-    class SkyDensity : public astro::SkyFunction {
-    public:
-        SkyDensity(const BinnedPhotonData& data):
-          m_data(data){}
+    class SkyDensity : public astro::SkyFunction
+    {
+        public:
+            SkyDensity(const BinnedPhotonData& data, bool smooth, int mincount):
+              m_data(data),
+              m_smooth(smooth),
+              m_mincount(mincount) {}
 
-          double operator()(const astro::SkyDir & sd) const {
-              double  value = m_data.density(sd);
-              return value;    
-          }
-    private:
-        const BinnedPhotonData& m_data;
+              double operator()(const astro::SkyDir & sd) const 
+              {
+                  double  value;
+                  if (m_smooth)
+                    value = m_data.smoothDensity(sd, m_mincount);
+                  else
+                    value = m_data.density(sd);
+                  return value;    
+              }
+        private:
+            const BinnedPhotonData& m_data;
+            bool m_smooth;
+            int m_mincount;
     };
 
-    image.fill(SkyDensity(m_map), 0); // PhotonMap is a SkyFunction of the density 
+    image.fill(SkyDensity(m_map, smooth, mincount), 0); // PhotonMap is a SkyFunction of the density 
     std::cout 
         <<   "\t minimum "<< image.minimum()
         << "\n\t maximum "<< image.maximum()
