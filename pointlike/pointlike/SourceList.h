@@ -31,6 +31,7 @@ namespace pointlike{
         /** @brief ctor
         */
         Source(const std::string& name, const astro::SkyDir& seed_dir, double TS=0);
+        Source(const std::string& name, double ra, double dec, double TS=0);
 
         Source():m_name("default"){}; ///< default ctor
         ~Source();
@@ -64,6 +65,7 @@ namespace pointlike{
         PointSourceLikelihood * m_fit; ///< pointer to the fitter
         double m_sigma;  ///< localization rms error
         const Source * m_neighbor; ///< pointer to strong neighbor (zero if none)
+        void setup();  ///< called by ctors
     };
 
     /** @class SourceList

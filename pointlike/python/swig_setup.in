@@ -208,10 +208,13 @@ public:
       return (*self)[i]; 
    }
    size_t __len__() {      return self->size();       }
+   
+   void append( pointlike::Source& s){
+       self->push_back(s); // note makes a copy
+   }
 }
 //fails %include $(POINTLIKEROOT)/pointlike/ParamOptimization.h
 
-%template(CanInfoVector) std::vector<pointlike::CanInfo>;
 %template(SourceVector)  std::vector<pointlike::Source>;
 %template(StringDoubleMap) std::map<std::string,std::vector<double> >;
 

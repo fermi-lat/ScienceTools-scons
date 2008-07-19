@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 19-jul-08 v6r4    THB new python code for spectral fits
  15-jul-08 v6r3p10 THB SWIG for linux
  08-jul-08 v6r3p7  THB More python elaboration
  07-jul-08 v6r3p6  THB Example of calling embedded python for finishing pointfit run; 

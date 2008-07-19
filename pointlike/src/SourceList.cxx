@@ -37,15 +37,31 @@ Source::Source(const std::string& name, const astro::SkyDir& seed_dir, double TS
 , m_sigma(0)
 , m_neighbor(0)
 {
+    setup();
+}
+void Source::setup()
+{
     if( SourceList::data()==0){
         throw std::invalid_argument("Source::Source: no data set");
     }
     if(m_fit==0){
-        m_fit = new PointSourceLikelihood(*SourceList::data(), name, m_dir);
+        m_fit = new PointSourceLikelihood(*SourceList::data(), m_name, m_dir);
     }
     // inital maximize unless TS already set.
     if( TS==0 )  m_TS = m_fit->maximize();
 }
+Source::Source(const std::string& name, double ra, double dec, double TS)
+: m_name(name)
+, m_dir(SkyDir(ra,dec))
+, m_seed_dir(m_dir)
+, m_fit(0)
+, m_TS(TS)
+, m_sigma(0)
+, m_neighbor(0)
+{
+    setup();
+}
+
 
 double Source::localize(){
     m_fit->maximize();   // may not be needed

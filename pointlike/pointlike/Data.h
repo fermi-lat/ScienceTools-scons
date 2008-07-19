@@ -79,9 +79,6 @@ public:
     //! same as above, for python use
     const skymaps::BinnedPhotonData& map()const{return *m_data;}
 
-    //! @brief define FT2 file to use for rotation
-    //! Needed for FT1 file.
-    void setHistoryFile(const std::string& history);
 
     ~Data();
 
@@ -93,6 +90,10 @@ public:
 
     /// @brief combine similar bands after read in
     void combine_bands(); 
+
+    //! @brief define FT2 file to use for rotation
+    //! Needed for FT1 file, if applying alignment correction
+    static void setHistoryFile(const std::string& history);
 
     ///@brief access to static that defines class level cut for ROOT
     static int class_level();
