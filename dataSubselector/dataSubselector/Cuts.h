@@ -148,8 +148,8 @@ public:
    ///        RangeCuts to be removed.
    /// @param removedCuts Vector of removed RangeCuts.  The calling routine
    ///        is responsible for deleting these cuts.
-   unsigned int Cuts::removeRangeCuts(const std::string & colname,
-                                      std::vector<RangeCut *> & removedCuts);
+   unsigned int removeRangeCuts(const std::string & colname,
+                                std::vector<RangeCut *> & removedCuts);
 
    /// @brief Add the DSS keywords to a write-enabled tip::Header.
    /// @param header The reference returned from the tip::Table::getHeader
@@ -217,8 +217,8 @@ private:
 
    std::vector<CutBase *> m_cuts;
 
-   unsigned int Cuts::parseColname(const std::string & colname,
-                                   std::string & col) const;
+   unsigned int parseColname(const std::string & colname,
+                             std::string & col) const;
 
    bool hasCut(const CutBase * newCut) const;
 

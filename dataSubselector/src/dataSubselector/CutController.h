@@ -52,10 +52,10 @@ public:
 
 protected:
 
-   CutController::CutController(st_app::AppParGroup & pars,
-                                const std::vector<std::string> & eventFiles,
-                                const std::string & evtable);
-
+   CutController(st_app::AppParGroup & pars,
+                 const std::vector<std::string> & eventFiles,
+                 const std::string & evtable);
+   
 private:
 
    st_app::AppParGroup & m_pars;
