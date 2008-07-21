@@ -69,7 +69,7 @@ namespace optimizers {
   }
 
   // Constructor for the function to be minimized
-  myFCN::myFCN(Statistic & stat): m_stat(&stat) {};
+  myFCN::myFCN(Statistic & stat): m_stat(&stat) {}
 
   // This is the function that Minuit minimizes
   double 
