@@ -43,8 +43,8 @@ public:
         );
     //! constructor loads a BinnedPhotonData that was saved in a fits file
     //! @param inputFile the fits file name
-    //! @param tablename ["PHOTONMAP"] the fits table name
-    Data(const std::string & inputFile, const std::string & tablename="PHOTONMAP");
+    //! @param tablename ["BANDS"] the fits table name
+    Data(const std::string & inputFile, const std::string & tablename="BANDS");
 
 
     //! constructor configure from a python "data" file
