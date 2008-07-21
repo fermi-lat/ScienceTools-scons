@@ -2,6 +2,8 @@
     @brief package dataSubselector
 
     @verbatim
+    v6r1p1  21-Jul-08   JC   remove superfluous class qualifications from 
+                             member function declarations
     v6r1    15-Jul-08   JC   update TSTART, TSTOP header keywords in gtselect
                              for multiple input FT1 files;  these keywords will
                              be used by gtmktime and so need to be correct for
