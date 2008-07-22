@@ -281,8 +281,9 @@ namespace {
         }
         try{
             (*m_it)[*names++].get(ctbclasslevel);
-        }catch(const std::exception&){}
-
+        }catch(const std::exception&){
+	   ctbclasslevel=3;
+	}
         if( m_selectid) { // check for source id only if requested
             (*m_it)[*names++].get(source);
         }
