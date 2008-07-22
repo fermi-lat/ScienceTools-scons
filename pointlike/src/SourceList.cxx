@@ -48,7 +48,7 @@ void Source::setup()
         m_fit = new PointSourceLikelihood(*SourceList::data(), m_name, m_dir);
     }
     // inital maximize unless TS already set.
-    if( TS==0 )  m_TS = m_fit->maximize();
+    if( m_TS==0 )  m_TS = m_fit->maximize();
 }
 Source::Source(const std::string& name, double ra, double dec, double TS)
 : m_name(name)

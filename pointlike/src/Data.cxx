@@ -447,7 +447,21 @@ void Data::add(const std::string& inputFile, int event_type, int source_id)
         lroot(inputFile, event_type);
     }else {
         if( s_rot.xx()!=1.0 && s_ft2file.empty()) {
-            throw std::invalid_argument("Data:: attempt to apply alignment correction without history support");
+            // need a FT2 file. Try replacing 'ft1' with 'ft2' in file name, assume in same folder
+            std::string ft2(inputFile);
+            size_t i = ft2.find("_ft1.fit");
+            //std::cout << "look for ft2 file needed by " << ft2 << std::endl;
+            if( i==std::string::npos ){
+                 throw std::invalid_argument("Data::add attempt to apply alignment correction without history support");
+            }
+            ft2.replace(i,10, "_ft2.fit");
+            try{
+                Data::setHistoryFile(ft2);
+            }catch( const std::exception & ){
+                std::cerr << "Could not load automatic ft2 file " 
+                    << std::endl;
+                throw;
+            }
         }
         EventList photons(inputFile, source_id>-1);
         AddPhoton adder(*m_data, event_type, m_start, m_stop, source_id);

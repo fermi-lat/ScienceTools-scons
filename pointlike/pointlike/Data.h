@@ -38,9 +38,12 @@ public:
     //! constructor loads data from a list of fits or root files to make a BinnedPhotonData
     //! @param event_type 0 for class A front, etc, -1 for all
     //! @param source_id select given source
-    Data(std::vector<std::string> files, int event_type, double tstart, double tstop,int source_id=-1, 
+    Data(std::vector<std::string> files, int event_type=-1, double tstart=0, double tstop=0,int source_id=-1, 
         std::string ft2file=""
         );
+
+
+
     //! constructor loads a BinnedPhotonData that was saved in a fits file
     //! @param inputFile the fits file name
     //! @param tablename ["BANDS"] the fits table name
