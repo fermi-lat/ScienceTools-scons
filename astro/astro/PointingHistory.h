@@ -26,6 +26,10 @@ namespace astro{
         /// @param offset perhaps needed for ascii files that have times from 
         PointingHistory(const std::string& filename, double offset=0);
         ~PointingHistory(){}
+
+        /// @param add a FITS file to the history
+        void readFitsData(std::string filename);
+
 #ifndef SWIG
         /** @class PointingHistory::TimeRangeError
             @brief inherit from std::runtime_error for backward compatibility
@@ -62,7 +66,6 @@ namespace astro{
         void readTextData(std::string filename, double offset);
         // for FITS setup
         bool haveFitsFile(std::string filename) const;
-        void readFitsData(std::string filename);
         //?void fitsReportError(FILE *, int) const;
     };
             

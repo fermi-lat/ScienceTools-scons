@@ -294,6 +294,11 @@ bool test_GPS_readFitsData() {
     checkdir(gps->zAxisDir(), SkyDir(9.460165, 63.5));
     checkdir(gps->zenithDir(), SkyDir(9.460165, 28.5));
 
+
+    // this should work--testing capability to merge different FT2 files
+    PointingHistory history(filename);
+    history.readFitsData(filename);
+
     return true;
 }
 
