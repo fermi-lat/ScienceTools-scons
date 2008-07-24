@@ -38,6 +38,9 @@ class AnalysisBase(object):
     def setPlotter(self, plotter='hippo'):
         global _plotter_package
         _plotter_package = plotter
+        if plotter == 'hippo':
+            import hippoplotter as plot
+            return plot
     def __call__(self):
         return -self.logLike.value()
     def fit(self, verbosity=3, tol=None, optimizer=None,
@@ -46,6 +49,15 @@ class AnalysisBase(object):
             tol = self.tol
         errors = self._errors(optimizer, verbosity, tol, covar=covar)
         return -self.logLike.value()
+    def optimize(self, verbosity=3, tol=None, optimizer=None):
+        self.logLike.syncParams()
+        if optimizer is None:
+            optimizer = self.optimizer
+        if tol is None:
+            tol = self.tol
+        optFactory = pyLike.OptimizerFactory_instance()
+        myOpt = optFactory.create(optimizer, self.logLike)
+        myOpt.find_min(verbosity, tol)
     def _errors(self, optimizer=None, verbosity=0, tol=None,
                 useBase=False, covar=False):
         self.logLike.syncParams()
