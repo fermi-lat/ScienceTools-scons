@@ -25,9 +25,10 @@ namespace pyExposure {
 Exposure::Exposure(const std::string & scDataFile,
                    const std::vector<double> & timeBoundaries,
                    const std::vector<double> & energies, 
-                   double ra, double dec, const std::string & irfs) 
+                   double ra, double dec, double radius,
+                   const std::string & irfs) 
    : m_timeBoundaries(timeBoundaries), m_energies(energies),
-     m_srcDir(astro::SkyDir(ra, dec)), m_scData(0) {
+     m_srcDir(astro::SkyDir(ra, dec)), m_radius(radius), m_scData(0) {
    irfLoader::Loader::go();
    const std::vector<std::string> & 
       irfNames(irfLoader::Loader::respIds().find(irfs)->second);
@@ -132,11 +133,18 @@ void Exposure::integrateExposure() {
 double Exposure::effArea(double time, double energy) const {
    astro::SkyDir zAxis = m_scData->zAxis(time);
    astro::SkyDir xAxis = m_scData->xAxis(time);
+   double theta(m_srcDir.difference(zAxis)*180./M_PI);
+   double phi(0);
    
    double my_effArea(0);
    for (size_t i = 0; i < m_irfs.size(); i++) {
       irfInterface::IAeff * aeff = m_irfs.at(i)->aeff();
-      my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis);
+      double aperture(1);
+      if (m_radius < 180.) {
+         irfInterface::IPsf * psf = m_irfs.at(i)->psf();
+         aperture = psf->angularIntegral(energy, theta, phi, m_radius);
+      }
+      my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis)*aperture;
    }
    return my_effArea;
 }

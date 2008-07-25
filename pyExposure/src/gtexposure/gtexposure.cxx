@@ -80,6 +80,7 @@ private:
    double m_emax;
    double m_ra;
    double m_dec;
+   double m_radius;
 
    std::vector<double> m_weightedExps;
 
@@ -105,7 +106,8 @@ GtExposure::GtExposure()
      m_formatter(new st_stream::StreamFormatter("gtexposure", "", 2)),
      m_funcFactory(new optimizers::FunctionFactory()),
      m_exposure(0),
-     m_function(0) {
+     m_function(0),
+     m_radius(180) {
    setVersion(s_cvs_id);
    prepareFunctionFactory();
 }
@@ -142,9 +144,13 @@ void GtExposure::promptForParameters() {
 
 void GtExposure::parseDssKeywords() {
    std::string lc_file = m_pars["infile"];
+   bool aperture_correct = m_pars["apcorr"];
    dataSubselector::Cuts cuts(lc_file, "RATE", false);
    m_ra = m_pars["ra"];
    m_dec = m_pars["dec"];
+   if (aperture_correct){
+      m_radius = m_pars["rad"];
+   }
    m_emin = m_pars["emin"];
    m_emax = m_pars["emax"];
    for (size_t i(0); i < cuts.size(); i++) {
@@ -154,6 +160,9 @@ void GtExposure::parseDssKeywords() {
                const_cast<dataSubselector::CutBase &>(cuts[i]));
          m_ra = my_cut.ra();
          m_dec = my_cut.dec();
+         if (aperture_correct) {
+            m_radius = my_cut.radius();
+         }
       }
       if (cuts[i].type() == "range") {
          const dataSubselector::RangeCut & my_cut =
@@ -182,7 +191,7 @@ void GtExposure::setExposure() {
       irfs = "DC2";
    }
    m_exposure = new pyExposure::Exposure(ft2file, tlims, energies, 
-                                         m_ra, m_dec, irfs);
+                                         m_ra, m_dec, m_radius, irfs);
 }
 
 void GtExposure::getLcTimes(std::vector<double> & tlims) const {

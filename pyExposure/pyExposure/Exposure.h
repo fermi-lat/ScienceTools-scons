@@ -42,7 +42,8 @@ public:
    Exposure(const std::string & scDataFile, 
             const std::vector<double> & timeBoundaries,
             const std::vector<double> & energies, 
-            double ra, double dec, const std::string & irfs="DC2");
+            double ra, double dec, double radius, 
+            const std::string & irfs="DC2");
 
    ~Exposure() throw();
 
@@ -66,6 +67,7 @@ private:
    std::vector<irfInterface::Irfs *> m_irfs;
    std::vector<double> m_energies;
    astro::SkyDir m_srcDir;
+   double m_radius;
    std::vector< std::vector<double> > m_exposureValues;
 
    Likelihood::ScData * m_scData;

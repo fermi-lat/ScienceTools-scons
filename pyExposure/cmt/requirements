@@ -17,8 +17,6 @@ use st_app v*
 use tip v*
 use optimizers v*
 use SwigPolicy v*
-#use pyLikelihood v* -no_auto_imports
-#use sane v* -no_auto_imports
 
 apply_pattern package_include
 apply_pattern package_linkopts
