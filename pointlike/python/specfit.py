@@ -47,10 +47,12 @@ Optional parameters:
  $Header$
 """
 # setup to import pointlike
-#try: import uw.pointlike
-from sys import path
-path.insert(0,'d:/users/kerrm/python/spectrum_dev4')
-import uw.pointlike
+try: #Try block only for UW environment
+   from sys import path
+   path.insert(0,'d:/users/kerrm/python/spectrum_dev4')
+   import uw.pointlike
+except: pass
+
 import pointlike as pl
 
 import os, sys, types
