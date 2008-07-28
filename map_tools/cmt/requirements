@@ -1,6 +1,6 @@
 package map_tools
 
-version v7r1
+version v7r2
 
 author T. Burnett <tburnett@u.washington.edu>
 # $Id$
@@ -50,7 +50,7 @@ apply_pattern ST_app  name=exposure_cube
 #apply_pattern ST_app name=count_map
 #
 #---- makes a copy of an imagewith new projection------
-#apply_pattern ST_app name=read_map
+apply_pattern ST_app name=read_map
 #
 #----- analyze an image for mean and variance ---------
 #apply_pattern ST_app name=map_stats
