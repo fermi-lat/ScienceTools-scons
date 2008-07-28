@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 28-jul-08 v6r5    THB Incorporate alignment constant management
  19-jul-08 v6r4p3  THB new python code for spectral fits
  15-jul-08 v6r3p10 THB SWIG for linux
  08-jul-08 v6r3p7  THB More python elaboration
