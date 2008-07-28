@@ -33,7 +33,7 @@ namespace pointlike {
         void region(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
 
-        void sky(std::string outputfile, double pixelsize);
+        void sky(std::string outputfile, double pixelsize, bool smooth = false, int mincount = 0);
 
         void galactic(){m_galactic = true;}      ///< set galactic
         void equatorial(){m_galactic=false;}     ///< set equatorial

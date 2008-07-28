@@ -114,7 +114,7 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
         << outputFile << "\""<<std::endl;
 
 }
-void Draw::sky(std::string outputfile, double pixel)
+void Draw::sky(std::string outputfile, double pixel, bool smooth, int mincount)
 {
-    region(SkyDir(0,0, SkyDir::GALACTIC), outputfile, pixel, 180.);
+    region(SkyDir(0,0, SkyDir::GALACTIC), outputfile, pixel, 180., smooth, mincount);
 }
