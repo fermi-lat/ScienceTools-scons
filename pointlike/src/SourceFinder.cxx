@@ -80,6 +80,7 @@ namespace {
     std::string imagefile;
     std::string logfile;
     double imageresolution(0.1);
+    int smooth(1);
 
     static std::string prefix("SourceFinder.");
 } // anon namespace
@@ -106,6 +107,7 @@ void SourceFinder::setParameters(const embed_python::Module & module)
     module.getValue(prefix+"fitsfile", fitsfile, "");
     module.getValue(prefix+"imagefile", imagefile, "");
     module.getValue(prefix+"imageresolution", imageresolution, imageresolution);
+    module.getValue(prefix+"smoothed", smooth, smooth);
 
     module.getValue(prefix+"logfile", logfile, "");
     double l,b,ra,dec;
@@ -563,7 +565,7 @@ void SourceFinder::run()
     if( !imagefile.empty()) {
         Draw drawer(m_pmap);
         double fov(examine_radius);
-        drawer.region(examine_dir, imagefile, imageresolution, fov);
+        drawer.region(examine_dir, imagefile, imageresolution, fov, smooth);
     }
     
     // do the work
