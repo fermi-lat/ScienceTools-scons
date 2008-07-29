@@ -22,7 +22,8 @@ int main(int argc, char * argv[]) {
   
        // read in, or prompt for, all necessary parameters
         MapParameters pars(argc, argv);
-        std::string infile(pars["infile"]), outfile(pars["outfile"]), table(pars["table"]);
+        std::string infile(pars["infile"].Value()), 
+            outfile(pars["outfile"].Value()), table(pars["table"].Value());
 
         std::cout << "Reading FITS input file " << infile << std::endl;
         SkyImage image(infile, table); 
@@ -33,7 +34,7 @@ int main(int argc, char * argv[]) {
         double xref(pars["xref"]), 
                yref(pars["yref"]), 
                pixscale(pars["pixscale"]); 
-        std::string coordsys(pars["coordsys"]), proj(pars["proj"]);
+        std::string coordsys(pars["coordsys"].Value()), proj(pars["proj"].Value());
         bool galactic (coordsys=="GAL");
         int numxpix(pars["numxpix"]), 
             numypix(pars["numypix"]);
