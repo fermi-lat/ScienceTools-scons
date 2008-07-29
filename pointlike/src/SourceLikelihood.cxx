@@ -738,7 +738,7 @@ double pointlike::SourceLikelihood::localizeMinuit(int skip)
     gMinuit.mnexcm("SIMPLEX", arglist, nargs, ierflag);
   else
     gMinuit.mnexcm("MIGRAD", arglist, nargs, ierflag);  
-  if (ierflag == 4 or s_simplex==1) {
+  if (ierflag == 4 || s_simplex==1) {
     gMinuit.mnexcm("HESSE", arglist, nargs, ierflag);
   };
   
