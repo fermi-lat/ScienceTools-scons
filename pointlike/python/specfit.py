@@ -35,7 +35,7 @@ Optional parameters:
         subsequent input
     -v or --verbose [0] set verbosity
     --emin - left edge of minimum energy bin (default 100 MeV)
-    --emax - right edge of maximum energy bin (default 2.51e5 MeV)
+    --binsperdecade - just what it says :)
     --enumbins - (default 17)
     --plotpath - if set, generate plots with the spectral energy density and power law
         spectral fit, of form plotpath+name+_sed.png.
@@ -117,7 +117,7 @@ def main():
 
     options = 'b:w:v'
     long_options= [ 'diffuse=','write=', 'verbose', 'galdiffuse', 
-                    'eventtype=', 'exposure=', 'binsperdecade=','emin='
+                    'eventtype=', 'exposure=', 'binsperdecade=','emin=',
                     'enumbins=','plotpath=','fitter=','printspec=','model=']
 
     try:    
