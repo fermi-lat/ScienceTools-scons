@@ -135,6 +135,18 @@ def ConstantValueSpectrum():
     (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
     return Function(func)
 
+def PLSuperExpCutoff():
+    func = """<spectrum type="PLSuperExpCutoff">
+    <parameter free="1" max="1000" min="1e-05" name="Prefactor" scale="1e-07" value="1" />
+    <parameter free="1" max="0" min="-5" name="Index1" scale="1" value="-1.7" />
+    <parameter free="0" max="1000" min="50" name="Scale" scale="1" value="200" />
+    <parameter free="1" max="30000" min="500" name="Cutoff" scale="1" value="3000" />
+    <parameter free="1" max="5" min="0" name="Index2" scale="1" value="1.5" />
+    </spectrum>
+"""
+    (func, ) = minidom.parseString(func).getElementsByTagName('spectrum')
+    return Function(func)
+
 #
 # Spatial Models
 #
@@ -201,6 +213,7 @@ class Spectra(FuncContainer):
         self.funcs['FileFunction'] = FileFunction()
         self.funcs['ExpCutoff'] = ExpCutoff()
         self.funcs['BPLExpCutoff'] = BPLExpCutoff()
+        self.funcs['PLSuperExpCutoff'] = PLSuperExpCutoff()
 
 class SpatialModels(FuncContainer):
     def __init__(self):

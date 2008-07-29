@@ -11,6 +11,11 @@ import os, sys, time
 import Tkinter as Tk
 import tkFileDialog
 from tkMessageBox import showwarning
+from facilities import py_facilities
+
+py_facilities.commonUtilities_setupEnvironment()
+os_environ = py_facilities.commonUtilities_getEnvironment
+
 from FileDialog import LoadFileDialog, SaveFileDialog
 
 from facilities import py_facilities
@@ -26,6 +31,7 @@ from ThreadedClient import runInThread
 from pil import Pil
 from pfilesPath import pfilesPath
 from create_library import makeSrcLib
+
 
 # @todo replace these with GtApp objects
 obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
