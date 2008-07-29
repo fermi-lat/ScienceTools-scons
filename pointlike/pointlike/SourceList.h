@@ -1,4 +1,4 @@
-/** @file PointSourceLikelihood.h
+/** @file SourceList.h
 @brief declaration of classes Source and SourceList
 
 $Header$
@@ -107,6 +107,9 @@ namespace pointlike{
 
         static void set_data(const skymaps::BinnedPhotonData* data);
         static const skymaps::BinnedPhotonData* data();
+
+        /// @brief set the radius used to select nearby sources for inclusion in a fit
+        static double set_group_radius(double value);
 
     private:
         static const skymaps::BinnedPhotonData* s_data;

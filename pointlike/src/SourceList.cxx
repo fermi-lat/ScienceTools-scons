@@ -1,4 +1,4 @@
-/** @file PointSourceLikelihood.h
+/** @file SourceList.h
 @brief declaration of classes Source and SourceList
 
 $Header$
@@ -23,6 +23,12 @@ namespace{
     double group_radius(2.0);
 
 
+}
+double SourceList::set_group_radius(double value)
+{
+    double old(group_radius);
+    group_radius= value;
+    return old;
 }
 const skymaps::BinnedPhotonData * SourceList::s_data(0);
 const skymaps::BinnedPhotonData * SourceList::data(){return s_data;}

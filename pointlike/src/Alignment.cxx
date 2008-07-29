@@ -36,6 +36,7 @@ Alignment::Alignment(const std::string& calibration)
 {
     if(calibration != "default"){
         throw std::invalid_argument("Alignment data file not implemented yet");
+        /// @TODO: implement this to 
     }
 }
   
@@ -53,6 +54,7 @@ CLHEP::Hep3Vector Alignment::rotate(const CLHEP::Hep3Vector& in, double time)con
 }
 void Alignment::set_rot(double arcsecx,double arcsecy,double arcsecz) const
 {
+    //N.B. the signs are reversed.
     static double c(M_PI/648000);
     m_rot = CLHEP::HepRotationX(-arcsecx*c)
            *CLHEP::HepRotationY(-arcsecy*c)
