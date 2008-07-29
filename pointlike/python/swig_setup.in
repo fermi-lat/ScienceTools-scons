@@ -39,6 +39,7 @@
 #include "pointlike/SourceFinder.h"
 #include "pointlike/Data.h"
 #include "pointlike/Draw.h"
+#include "pointlike/DrawTS.h"
 #include "pointlike/SourceList.h"
 //fails #include "pointlike/ParamOptimization.h"
 #include "pointlike/SimpleTSmap.h"
