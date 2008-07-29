@@ -199,6 +199,7 @@ namespace pointlike {
     static double s_emin, s_emax, s_minalpha, s_TSmin, s_tolerance, 
       s_maxstep; //
     static int s_useMinuit;
+    static int s_simplex;
     static int s_minuitLevelSkip;
     static int s_skip1, s_skip2, s_itermax, s_verbose;
     

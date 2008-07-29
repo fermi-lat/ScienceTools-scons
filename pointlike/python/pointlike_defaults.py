@@ -46,7 +46,7 @@ class PointSourceLikelihood: #parameters for the likelihood calculation
     
 class SourceLikelihood: #parameters for the likelihood calculation
 
-    TSmin= 0.01    # minimum TS value to allow during iteration
+    TSmin= -100.   # minimum TS value to allow during iteration
     emin = 500   # minimim energy for bands
     verbose = 0  # set non-zero to get lots of output
     maxstep = 0.2 # max step allowed during localization: abort if larger
