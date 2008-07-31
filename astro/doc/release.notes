@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r2p1   31-jul-08 THB Fix sign for aberration: add function to correct aberration and alignment
   v3r2     22-jul-08 THB Expose capability to append FT2 files
   v3r1p11  29-jun-08 THB Protect roundoff error when extrapolating with identical quaterions; back out loading quaternions
   v3r1p10  26-jun-08 THB Accept explicit quaternion input to PointingHistory

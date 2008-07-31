@@ -209,19 +209,20 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
 }
 
 CLHEP::Hep3Vector GPS::aberration(const CLHEP::Hep3Vector& pvec, double met) {
+    static double seconds_per_day(86400);
     static double cob(20.49552/3600 * M_PI/180); // constant of aberration in radians
     Hep3Vector enp(SkyDir(270,90-23.439281)());  // ecliptic northpole 
     if( met ==-1) { // use current time
         met = time();
     }
-    JulianDate jd = m_earthOrbit->dateFromSeconds(met);
+    JulianDate jd = met/seconds_per_day + JulianDate::missionStart(); //m_earthOrbit->dateFromSeconds(met);
     Hep3Vector sol = SolarSystem().getSolarVector(jd).unit(); //direction to Sun
     double check( sol * enp ); // direction to sun should be perpendicular
     assert( fabs(check)<1e-4); // verify that current sun direction is perpendicular
 
     Hep3Vector v( cob* sol.cross(enp).unit() ); //vector in direction of orbit, with v/c magnitude
     Hep3Vector axis( v.cross(pvec) );  // axis of rotation
-    HepRotation rot(axis, axis.mag() ); // rotation matrix
+    HepRotation rot(axis, axis.mag() ); // rotation matrix from apparent to actual
     Hep3Vector result( rot*pvec - pvec); // will return difference
     return result;  
 }
@@ -258,9 +259,8 @@ CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& d
                 // for this case we need to consider both misalignment and aberration
                 // since both are small, we don't worry about second-order
                 // assume that the direction is toward the source!
-                if( m_enableAberration)  result += aberration(dir, met);
-                // apply alignment correction
-                result = -( m_alignment * m_currentPoint.rotation().inverse() *   result);
+                if( m_enableAberration)  result -= aberration(dir, met);
+                result = -(m_alignment.inverse() *  m_currentPoint.rotation().inverse() *   result);
             }
             break; 
 
@@ -275,11 +275,30 @@ astro::SkyDir GPS::toSky(const CLHEP::Hep3Vector& latdir, double met)
 {
     if( met != -1)update( met);
 
-    // rotate (and reverse direction to get a sky location
-    CLHEP::Hep3Vector tdir( - (m_currentPoint.rotation() * latdir) );
-    if( m_enableAberration) tdir -= aberration(tdir, met);
+    // apply alignment correction, then rotate (and reverse direction) to get a sky location
+    CLHEP::Hep3Vector tdir( - (m_currentPoint.rotation() * m_alignment * latdir) );
+    // if enabled, apply aberratin correction
+    if( m_enableAberration) tdir += aberration(tdir, met);
     return astro::SkyDir(tdir);
 }
+
+astro::SkyDir GPS::correct(const astro::SkyDir& sdir, double met)
+{
+    if( met != -1)update( met);
+    const HepRotation& R(m_currentPoint.rotation()); // rotation
+    Hep3Vector tdir( sdir() )     // initial direction from skydir
+        , latdir( R.inverse()*tdir ) // in LAT coordinates
+        , newdir( R * m_alignment * latdir); // back to sky, after LAT rotation
+    
+    if( m_enableAberration) newdir += aberration(newdir, met);
+    return SkyDir(newdir);
+}
+
+void GPS::setAlignmentRotation(const CLHEP::HepRotation& r)
+{
+    m_alignment=r.inverse(); // note saved as inverse
+}
+
 
 void GPS::update(double inputTime){
     //this function calculates all the relevant position and orientation info
