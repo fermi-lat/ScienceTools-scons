@@ -125,7 +125,7 @@ def main():
     except GetoptError, msg:
         help(msg)
 
-    outputpixelfile= background=plopath=None
+    outputpixelfile= background=plotpath=None
     diffusefilename='galdiffuse' # wire in for now
     verbose=0
     exposure=3e10 # this is appropriate for 1 year. 
@@ -167,7 +167,8 @@ def main():
        bins = emin*10**(N.arange(enumbins+1)/binsperdecade)
        pl.Data.setEnergyBins(bins)
     else:
-      bins=100*2.35**N.arange(11)      
+      bins=100*2.35**N.arange(11)
+      pl.Data.setEnergyBins(bins) #Need to adjust this to use Toby's new default scheme
     bands=EnergyBands(bins[:-1],[bins[-1]])
     
     data = photonmap(eventfilename, pixeloutput=outputpixelfile, eventtype=eventtype)
