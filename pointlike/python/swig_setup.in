@@ -218,6 +218,8 @@ public:
 
 %template(SourceVector)  std::vector<pointlike::Source>;
 %template(StringDoubleMap) std::map<std::string,std::vector<double> >;
+%template(SkyDirIntPairVector) std::vector<std::pair<astro::SkyDir,int> >;
+%template(IntIntPairVector) std::vector<std::pair<int,int> >;
 
 
 
