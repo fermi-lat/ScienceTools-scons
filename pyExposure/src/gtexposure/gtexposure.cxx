@@ -9,6 +9,7 @@
  * $Header$
  */
 
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -24,6 +25,7 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -286,6 +288,10 @@ void GtExposure::writeExposure() {
 
    try {
       table->appendField("EXPOSURE", "E");
+      tip::Header & header(table->getHeader());
+      std::ostringstream unit_label;
+      unit_label << "TUNIT" << table->getFieldIndex("EXPOSURE") + 1;
+      header[unit_label.str()].set("cm**2 s");
    } catch (tip::TipException & eObj) {
       if (!st_facilities::Util::expectedException(eObj, "already exists")) {
          throw;
