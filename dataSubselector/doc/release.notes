@@ -1,5 +1,6 @@
 /** @file release.notes
     @brief package dataSubselector
+    $Id$
 
     @verbatim
     v6r1p1  21-Jul-08   JC   remove superfluous class qualifications from 

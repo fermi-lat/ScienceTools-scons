@@ -170,6 +170,9 @@ std::string MakeTime::roiZenAngleCut() {
          }
       }
    }
+   st_stream::StreamFormatter formatter("MakeTime", "roiZenAngleCut", 2);
+   formatter.info() << "DSS keywords required for ROI-based zenith angle cut"
+                    << "\nare not present in the FT1 file." << std::endl;
    return "";
 }
 
