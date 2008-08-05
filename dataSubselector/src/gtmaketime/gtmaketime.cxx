@@ -28,6 +28,8 @@
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
 #include "dataSubselector/GtiCut.h"
+#include "dataSubselector/RangeCut.h"
+#include "dataSubselector/SkyConeCut.h"
 
 /**
  * @class MakeTime
@@ -74,6 +76,7 @@ private:
 
    void check_outfile();
    void findTimeLims();
+   std::string roiZenAngleCut();
    void createGti();
    void mergeGtis();
    void makeUserGti(std::vector<const dataSubselector::GtiCut*>&gtiCuts) const;
@@ -132,12 +135,52 @@ void MakeTime::findTimeLims() {
    header["TSTOP"].get(m_tmax);
 }
 
+std::string MakeTime::roiZenAngleCut() {
+   bool apply_roi_cut = m_pars["roicut"];
+   if (!apply_roi_cut) {
+      return "";
+   }
+   std::string evfile = m_pars["evfile"];
+   std::string evtable = m_pars["evtable"];
+   bool checkColumns = m_pars["apply_filter"];
+   dataSubselector::Cuts cuts(evfile, evtable, checkColumns);
+
+   double zmax(180);
+   for (size_t i(0); i < cuts.size(); i++) {
+      if (cuts[i].type() == "range") {
+         const dataSubselector::RangeCut & rangeCut
+            = dynamic_cast<dataSubselector::RangeCut &>(const_cast<dataSubselector::CutBase &>(cuts[i]));
+         if (rangeCut.colname() == "ZENITH_ANGLE") {
+            zmax = rangeCut.maxVal();
+         }
+      }
+   }
+
+   if (zmax < 180) {
+      for (size_t i(0); i < cuts.size(); i++) {
+         if (cuts[i].type() == "SkyCone") {
+            const dataSubselector::SkyConeCut & skyConeCut
+               = dynamic_cast<dataSubselector::SkyConeCut &>(const_cast<dataSubselector::CutBase &>(cuts[i]));
+            
+            std::ostringstream filter;
+            filter << " && angsep(RA_ZENITH,DEC_ZENITH," 
+                   << skyConeCut.ra() << "," << skyConeCut.dec()
+                   << ") < " << zmax - skyConeCut.radius();
+            return filter.str();
+         }
+      }
+   }
+   return "";
+}
+
 void MakeTime::createGti() {
    std::string scfile = m_pars["scfile"];
    std::vector<std::string> scfiles;
    st_facilities::Util::resolve_fits_files(scfile, scfiles);
    std::string sctable = m_pars["sctable"];
    std::string filter = m_pars["filter"];
+
+   filter += roiZenAngleCut();
 
    std::ostringstream event_time_range;
    event_time_range << std::setprecision(20);
