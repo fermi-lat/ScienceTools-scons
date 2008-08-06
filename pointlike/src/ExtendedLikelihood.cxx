@@ -264,12 +264,10 @@ ExtendedLikelihood::ExtendedLikelihood(const skymaps::Band& band,
 { 
 
     m_psf.source().set(m_src_param);
+    m_fint = m_psf.integral(m_umax);// integral out to umax
+    m_fint2 = m_psf.integralSquare(m_umax);     // the integral of square, used by the quick estimator
     setDir(dir);
 
-    m_fint = m_psf.integral(m_umax);// integral out to umax
-
-    // the integral of square, used by the quick estimator
-    m_fint2 = m_psf.integralSquare(m_umax);
 }
 
 // legacy constructor
@@ -294,10 +292,10 @@ ExtendedLikelihood::ExtendedLikelihood(const skymaps::Band& band,
         , m_back(0)
 { 
 
-    setDir(dir);
     m_fint = m_psf.integral(m_umax);// integral out to umax
-    // the integral of square, used by the quick estimator
-    m_fint2 = m_psf.integralSquare(m_umax);
+    m_fint2 = m_psf.integralSquare(m_umax);    // the integral of square, used by the quick estimator
+    setDir(dir);
+
 }
 
 ExtendedLikelihood::~ExtendedLikelihood()
