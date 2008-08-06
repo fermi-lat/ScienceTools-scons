@@ -163,11 +163,14 @@ namespace pointlike {
     static void setTolerance(double tol);
     static double defaultUmax();
     static void setDefaultUmax(double umax);
+    static double defaultRoI();
+    static void setDefaultRoI(double roi);
 
 
   private: 
     
     static double s_defaultUmax;
+    static double s_defaultRoI;
     static double s_tolerance; // for integral
         
     //! @brief a quick estimate of the signal fraction
