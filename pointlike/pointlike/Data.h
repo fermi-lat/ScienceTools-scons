@@ -103,8 +103,9 @@ public:
     //! Needed for FT1 file, if applying alignment correction
     static void setHistoryFile(const std::string& history);
 
-    ///@brief access to static that defines class level cut for ROOT
+    ///@brief access to static that defines minimum class level cut
     static int class_level();
+    static void set_class_level(int cut);
 
     //! set corrections to fixed rotation in GLAST frame, default is (0,0,0)
     static void set_rot(double arcsecx, double arcsecy, double arcsecz);
@@ -125,6 +126,8 @@ public:
 
     ///@ brief return  value of the cut
     static double zenith_angle_cut();
+    static void set_zenith_angle_cut(double cut);
+    
 
 private:
     void lroot(const std::string& infile,int event_class);

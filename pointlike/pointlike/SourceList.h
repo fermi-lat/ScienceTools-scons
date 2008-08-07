@@ -50,6 +50,7 @@ namespace pointlike{
         static void header(std::ostream& out=std::cout); ///< header line for info
 
         double TS()const{return m_TS;}
+        double seedTS()const{return m_seedTS;}
         double sigma()const{return m_sigma;}
         PointSourceLikelihood* fit(){return m_fit;}
         const PointSourceLikelihood* fit()const{return m_fit;}
@@ -61,9 +62,10 @@ namespace pointlike{
         std::string m_name;
         astro::SkyDir m_dir; ///< current dir
         astro::SkyDir m_seed_dir; ///< initial seed direction
+        double m_seedTS;     ///< initial seed tS
         PointSourceLikelihood * m_fit; ///< pointer to the fitter
         double m_TS;
-            double m_sigma;  ///< localization rms error
+        double m_sigma;  ///< localization rms error
         const Source * m_neighbor; ///< pointer to strong neighbor (zero if none)
         void setup();  ///< called by ctors
     };
@@ -118,4 +120,5 @@ namespace pointlike{
 }
 
 #endif
+
 

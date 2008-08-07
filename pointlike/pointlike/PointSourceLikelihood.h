@@ -145,6 +145,10 @@ public:
     static void set_merge(bool merge);
     static bool merge();
 
+    
+    static void set_maxROI(double roi); ///< set the maximum ROI
+    static double maxROI();   ///< return the maximum ROI (degrees)
+
 private:
     void setup(const skymaps::BinnedPhotonData& data);
     std::string m_name;
@@ -164,6 +168,7 @@ private:
         s_maxstep; //
     static int s_skip1, s_skip2, s_itermax, s_verbose;
     static int s_merge;
+    static double s_maxROI; ///< the maximum ROI, in degrees: if set, a limit on umax
 
  
 };

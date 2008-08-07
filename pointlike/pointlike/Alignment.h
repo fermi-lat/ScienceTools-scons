@@ -41,6 +41,8 @@ namespace pointlike{
         const CLHEP::HepRotation& rotation(double time)const;
 
         /// @brief apply the saved rotation
+        /// @param in  direction unit vector in instrument coords
+        /// @param out MET time
         CLHEP::Hep3Vector rotate(const CLHEP::Hep3Vector& in, double time)const;
 
         /// @brief if the alignment has been set

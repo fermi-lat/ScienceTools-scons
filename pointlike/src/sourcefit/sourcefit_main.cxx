@@ -172,9 +172,7 @@ int main(int argc, char** argv)
     }
 	
    if(results) results->writeAndClose();
-   if( !outfile.empty()){
-         delete out;
-   }
+
 
   } catch(const std::exception& e){
     std::cerr << "Caught exception " << typeid(e).name() 
