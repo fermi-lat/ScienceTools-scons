@@ -58,8 +58,8 @@ namespace {
             , m_sum(0), m_count(0)
             , m_sumu(0) // average u, useful for calibration
             , m_pixels(0)
-            , m_subset(subset)
             , m_back(background )
+            , m_subset(subset)
             , m_maxu_found(0)
         {
             m_first = m_vec4.size()==0;

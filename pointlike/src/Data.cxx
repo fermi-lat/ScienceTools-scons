@@ -174,7 +174,7 @@ namespace {
             , m_start(start), m_stop(stop), m_source(source)
             , m_found(0), m_kept(0)
         {}
-        void operator()(Photon& gamma)
+        void operator()(const Photon& gamma)
         {
             m_found++;
             int event_class = gamma.eventClass();
