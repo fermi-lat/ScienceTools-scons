@@ -719,7 +719,7 @@ double pointlike::SourceLikelihood::localizeMinuit(int skip)
   gMinuit.mnexcm("SET ERR", arglist, nargs, ierflag);
   
 #ifdef USE_GRADIENT
-  nargs=1; arglist[0] = 0; 
+  nargs=1; arglist[0] = 1; 
   gMinuit.mnexcm("SET GRA", arglist, nargs, ierflag);
   gMinuit.SetPrintLevel(0);
 #endif
