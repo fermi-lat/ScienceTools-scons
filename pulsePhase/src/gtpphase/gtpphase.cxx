@@ -131,8 +131,9 @@ void PulsePhaseApp::run() {
   initEphComputer(par_group, chooser);
 
   // Use user input (parameters) together with computer to determine corrections to apply.
+  bool vary_ra_dec = true;
   bool guess_pdot = false;
-  initTimeCorrection(par_group, guess_pdot, "START");
+  initTimeCorrection(par_group, vary_ra_dec, guess_pdot, "START");
 
   // Reserve output column for creation if not existing in the event file(s).
   std::string phase_field = par_group["pphasefield"];
