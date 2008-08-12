@@ -146,6 +146,22 @@ double SkyDir::difference(const SkyDir& other)const
         return 2.*asin(x);
 }
 
+        
+std::pair<double, double> SkyDir::zenithCoords(const astro::SkyDir& zenithDir)const
+{
+    static Hep3Vector north_pole(0,0,1);
+    Hep3Vector east_dir( north_pole.cross(zenithDir()).unit() ); // east is perp to north_pole and zenith
+    Hep3Vector north_dir( zenithDir().cross(east_dir));
+
+    double theta = difference(zenithDir); 
+    double azimuth=atan2(dir().dot(north_dir),  dir().dot(east_dir)  ); // (y,x), so 0 is East, 90 North.
+    if( azimuth <0) azimuth += 2*M_PI; // to 0-360 deg.
+    // now convert to degrees
+    azimuth *= 180/M_PI;
+    theta *= 180/M_PI;
+    return std::make_pair(azimuth, theta-90); 
+
+}
 
   
 

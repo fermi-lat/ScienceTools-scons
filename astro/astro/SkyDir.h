@@ -101,6 +101,13 @@ namespace astro {
         //! check for validity: m_dir.z is made gt 1 if invalid
         bool isValid()const{ return m_dir.z()<1.0; }
 
+        /** @brief determine coordinates with respect to zenith
+
+        @param zenithDir the direction defining the zenith
+        @return the azimuth and latitude in degrees. Note that the heading is 90-azimuth mod 360
+        */
+        std::pair<double, double> zenithCoords(const astro::SkyDir& zenithDir)const;
+
     private:
         static CLHEP::HepRotation s_equatorialToGalactic;
 
