@@ -14,6 +14,10 @@ using namespace astro;
 #include <fstream>
 #include <sstream>
 
+namespace {
+    static double time_tol(10); // seconds allow beyond the end
+}
+
 PointingHistory::PointingHistory(const std::string& filename, double offset)
 : m_selected(-1)
 , m_startTime(-1)
@@ -174,7 +178,7 @@ void PointingHistory::readFitsData(std::string filename) {
             PointingInfo( position, orientation, earthpos);
         if( m_startTime<0) m_startTime = start_time;
     }
-    m_endTime = stop_time;
-    // an extra entry to allow query for the last interval
-    m_data[stop_time] = m_data[start_time];
+    m_endTime = stop_time+time_tol;
+    // an extra entry to allow query for the last interval +slop
+    m_data[m_endTime] = m_data[start_time];
 }
