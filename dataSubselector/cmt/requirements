@@ -18,6 +18,7 @@ apply_pattern ST_pfiles
 apply_pattern ST_app_withDir name=gtselect dir=dataSubselector
 apply_pattern ST_app_withDir name=gtmktime dir=gtmaketime
 apply_pattern ST_app_withDir name=gtvcut dir=viewCuts
+apply_pattern ST_app name=gtalign
 
 private
 
