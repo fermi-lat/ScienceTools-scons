@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: dataSubselector-06-02-00
+# Version: dataSubselector-06-03-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
