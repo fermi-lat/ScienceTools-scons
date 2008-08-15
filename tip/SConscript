@@ -12,7 +12,7 @@ libEnv.Tool('tipLib', depsOnly = 1)
 tipLib = libEnv.StaticLibrary('tip', listFiles(['src/*.cxx']))
 
 progEnv.Tool('tipLib')
-sampleProg = progEnv.Program('sample', 'src/sample/sample.cxx')
+sampleProg = progEnv.Program('sample',[ 'src/sample/sample.cxx'])
 
 testEnv = progEnv.Clone()
 testEnv.Tool('facilitiesLib')
