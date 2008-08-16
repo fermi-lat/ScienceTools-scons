@@ -12,9 +12,9 @@
 
 namespace gtalign {
 
-DefaultAlignment::DefaultAlignment * DefaultAlignment::s_instance(0);
+DefaultAlignment * DefaultAlignment::s_instance(0);
 
-DefaultAlignment::DefaultAlignment & DefaultAlignment::instance() {
+DefaultAlignment & DefaultAlignment::instance() {
    if (s_instance == 0) {
       s_instance = new DefaultAlignment();
    }

@@ -3,6 +3,7 @@
     $Id$
 
     @verbatim
+    v6r3p1  16-Aug-08   JC   VC8 fixes for gtalign
     v6r3    12-Aug-08   JC   add gtalign
     v6r2    05-Aug-08   JC   add command-line option to perform ROI-based
                              zenith angle cut based on DSS keywords
