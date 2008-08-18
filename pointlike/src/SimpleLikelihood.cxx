@@ -430,9 +430,6 @@ double SimpleLikelihood::geval(double k) {
    if(!m_vec.size()) return -1.0;
     m_vec2.clear();
     PsfFunction ps(k*m_psf.gamma());
-    Convert conv(m_dir, ps, *m_back, sigma(), m_umax, m_vec2, m_vec4, true);
-    Convert result=std::for_each(m_vec.begin(), m_vec.end(), conv);
-    result.consolidate();
     //maximize();
     double F = ps.integral(m_umax);
     double acc = 0;
