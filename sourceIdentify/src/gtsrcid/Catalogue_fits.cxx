@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.28  2008/07/08 20:57:06  jurgen
+Implement final selection (allows to filter on evaluated quantities)
+
 Revision 1.27  2008/07/08 18:43:15  jurgen
 Remove GtApp, parametrize prefix symbol and update unit test1
 
@@ -2639,7 +2642,8 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
         continue;
 
       // Allocate temporary memory to hold the ID column
-      tmp_id = new (char*[numRows]);
+//      tmp_id = new (char*[numRows]);
+      tmp_id = (char  **)calloc(numRows,sizeof(char *));
       if (tmp_id == NULL) {
         status = STATUS_MEM_ALLOC;
         if (par->logTerse())
@@ -2648,7 +2652,8 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
       }
       for (int i = 0; i < numRows; ++i) {
         tmp_id[i] = NULL;
-        tmp_id[i] = new char[width+1];
+//        tmp_id[i] = new char[width+1];
+        tmp_id[i] = (char  *)calloc(width+1,sizeof(char));
         if (tmp_id[i] == NULL) {
           status = STATUS_MEM_ALLOC;
           break;
@@ -2682,9 +2687,11 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
     // Free temporary memory
     if (tmp_id != NULL) {
       for (int i = 0; i < numRows; ++i) {
-        if (tmp_id[i] != NULL) delete [] tmp_id[i];
+//        if (tmp_id[i] != NULL) delete [] tmp_id[i];
+        free(tmp_id[i]);
       }
-      delete [] tmp_id;
+//      delete [] tmp_id;
+      free(tmp_id);
     }
 
     // Set FITSIO status

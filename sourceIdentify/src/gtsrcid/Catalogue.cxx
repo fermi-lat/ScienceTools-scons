@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.45  2008/07/08 21:21:55  jurgen
+Do column name selection only from first letter on
+
 Revision 1.44  2008/07/08 20:57:06  jurgen
 Implement final selection (allows to filter on evaluated quantities)
 
@@ -517,41 +520,51 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
         continue;
       }
 
+      // Declare column string
+      std::string col_ra;
+      std::string col_dec;
+      std::string col_glon;
+      std::string col_glat;
+
       // Search for RAdeg/DEdeg columns
-      if ((find(qtyNames, "RAdeg").length() > 0) &&
-          (find(qtyNames, "DEdeg").length() > 0)) {
-        in->col_ra   = "RAdeg";
-        in->col_dec  = "DEdeg";
+      col_ra  = find(qtyNames, "RAdeg");
+      col_dec = find(qtyNames, "DEdeg");
+      if ((col_ra.length() > 0) && (col_dec.length() > 0)) {
+        in->col_ra   = col_ra;
+        in->col_dec  = col_dec;
         in->pos_type = Equatorial;
         status       = STATUS_OK;
         continue;
       }
 
       // Search for _RAJ2000/_DEJ2000 columns
-      if ((find(qtyNames, "_RAJ2000").length() > 0) &&
-          (find(qtyNames, "_DEJ2000").length() > 0)) {
-        in->col_ra   = "_RAJ2000";
-        in->col_dec  = "_DEJ2000";
+      col_ra  = find(qtyNames, "_RAJ2000");
+      col_dec = find(qtyNames, "_DEJ2000");
+      if ((col_ra.length() > 0) && (col_dec.length() > 0)) {
+        in->col_ra   = col_ra;
+        in->col_dec  = col_dec;
         in->pos_type = Equatorial;
         status       = STATUS_OK;
         continue;
       }
 
       // Search for RAJ2000/DEJ2000 columns
-      if ((find(qtyNames, "RAJ2000").length() > 0) &&
-          (find(qtyNames, "DEJ2000").length() > 0)) {
-        in->col_ra   = "RAJ2000";
-        in->col_dec  = "DEJ2000";
+      col_ra  = find(qtyNames, "RAJ2000");
+      col_dec = find(qtyNames, "DEJ2000");
+      if ((col_ra.length() > 0) && (col_dec.length() > 0)) {
+        in->col_ra   = col_ra;
+        in->col_dec  = col_dec;
         in->pos_type = Equatorial;
         status       = STATUS_OK;
         continue;
       }
 
       // Search for RA/DEC columns
-      if ((find(qtyNames, "RA").length() > 0) &&
-          (find(qtyNames, "DEC").length() > 0)) {
-        in->col_ra   = "RA";
-        in->col_dec  = "DEC";
+      col_ra  = find(qtyNames, "RA");
+      col_dec = find(qtyNames, "DEC");
+      if ((col_ra.length() > 0) && (col_dec.length() > 0)) {
+        in->col_ra   = col_ra;
+        in->col_dec  = col_dec;
         in->pos_type = Equatorial;
         status       = STATUS_OK;
         continue;
@@ -577,30 +590,33 @@ Status get_pos_info(Parameters *par, InCatalogue *in,
       }
 
       // Search for _GLON/_GLAT columns
-      if ((find(qtyNames, "_GLON").length() > 0) &&
-          (find(qtyNames, "_GLAT").length() > 0)) {
-        in->col_glon = "_GLON";
-        in->col_glat = "_GLAT";
+      col_glon = find(qtyNames, "_GLON");
+      col_glat = find(qtyNames, "_GLAT");
+      if ((col_glon.length() > 0) && (col_glat.length() > 0)) {
+        in->col_glon = col_glon;
+        in->col_glat = col_glat;
         in->pos_type = Galactic;
         status       = STATUS_OK;
         continue;
       }
 
       // Search for GLON/GLAT columns
-      if ((find(qtyNames, "GLON").length() > 0) &&
-          (find(qtyNames, "GLAT").length() > 0)) {
-        in->col_glon = "GLON";
-        in->col_glat = "GLAT";
+      col_glon = find(qtyNames, "GLON");
+      col_glat = find(qtyNames, "GLAT");
+      if ((col_glon.length() > 0) && (col_glat.length() > 0)) {
+        in->col_glon = col_glon;
+        in->col_glat = col_glat;
         in->pos_type = Galactic;
         status       = STATUS_OK;
         continue;
       }
 
       // Search for L/B columns
-      if ((find(qtyNames, "L").length() > 0) &&
-          (find(qtyNames, "B").length() > 0)) {
-        in->col_glon = "L";
-        in->col_glat = "B";
+      col_glon = find(qtyNames, "L");
+      col_glat = find(qtyNames, "B");
+      if ((col_glon.length() > 0) && (col_glat.length() > 0)) {
+        in->col_glon = col_glon;
+        in->col_glat = col_glat;
         in->pos_type = Galactic;
         status       = STATUS_OK;
         continue;
@@ -663,13 +679,22 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
       // Search loop
       do {
 
+        // Declare column string
+        std::string col_e_maj;
+        std::string col_e_min;
+        std::string col_e_posang;
+        std::string col_e_ra;
+        std::string col_e_dec;
+
         // Search for LAT catalogue names (95%)
-        if ((find(qtyNames, "Conf_95_SemiMajor").length() > 0) &&
-            (find(qtyNames, "Conf_95_SemiMinor").length() > 0) &&
-            (find(qtyNames, "Conf_95_PosAng").length() > 0)) {
-          in->col_e_maj    = "Conf_95_SemiMajor";
-          in->col_e_min    = "Conf_95_SemiMinor";
-          in->col_e_posang = "Conf_95_PosAng";
+        col_e_maj    = find(qtyNames, "Conf_95_SemiMajor");
+        col_e_min    = find(qtyNames, "Conf_95_SemiMajor");
+        col_e_posang = find(qtyNames, "Conf_95_SemiMajor");
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+            (col_e_posang.length() > 0)) {
+          in->col_e_maj    = col_e_maj;
+          in->col_e_min    = col_e_min;
+          in->col_e_posang = col_e_posang;
           in->col_e_type   = Ellipse;
           in->col_e_prob   = Prob_95;
           status           = STATUS_OK;
@@ -677,12 +702,14 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for LAT catalogue names (68%)
-        if ((find(qtyNames, "Conf_68_SemiMajor").length() > 0) &&
-            (find(qtyNames, "Conf_68_SemiMinor").length() > 0) &&
-            (find(qtyNames, "Conf_68_PosAng").length() > 0)) {
-          in->col_e_maj    = "Conf_68_SemiMajor";
-          in->col_e_min    = "Conf_68_SemiMinor";
-          in->col_e_posang = "Conf_68_PosAng";
+        col_e_maj    = find(qtyNames, "Conf_68_SemiMajor");
+        col_e_min    = find(qtyNames, "Conf_68_SemiMajor");
+        col_e_posang = find(qtyNames, "Conf_68_SemiMajor");
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+            (col_e_posang.length() > 0)) {
+          in->col_e_maj    = col_e_maj;
+          in->col_e_min    = col_e_min;
+          in->col_e_posang = col_e_posang;
           in->col_e_type   = Ellipse;
           in->col_e_prob   = Prob_68;
           status           = STATUS_OK;
@@ -690,12 +717,14 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for output catalogue columns
-        if ((find(qtyNames, OUTCAT_COL_MAJERR_NAME).length() > 0) &&
-            (find(qtyNames, OUTCAT_COL_MINERR_NAME).length() > 0) &&
-            (find(qtyNames, OUTCAT_COL_POSANGLE_NAME).length() > 0)) {
-          in->col_e_maj    = OUTCAT_COL_MAJERR_NAME;
-          in->col_e_min    = OUTCAT_COL_MINERR_NAME;
-          in->col_e_posang = OUTCAT_COL_POSANGLE_NAME;
+        col_e_maj    = find(qtyNames, OUTCAT_COL_MAJERR_NAME);
+        col_e_min    = find(qtyNames, OUTCAT_COL_MINERR_NAME);
+        col_e_posang = find(qtyNames, OUTCAT_COL_POSANGLE_NAME);
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+            (col_e_posang.length() > 0)) {
+          in->col_e_maj    = col_e_maj;
+          in->col_e_min    = col_e_min;
+          in->col_e_posang = col_e_posang;
           in->col_e_type   = Ellipse;
           in->col_e_prob   = Prob_95;
           status           = STATUS_OK;
@@ -704,10 +733,11 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
 
         // Search for e_RAdeg/e_DEdeg columns
         if (in->pos_type == Equatorial) {
-          if ((find(qtyNames, "e_RAdeg").length() > 0) &&
-              (find(qtyNames, "e_DEdeg").length() > 0)) {
-            in->col_e_ra   = "e_RAdeg";
-            in->col_e_dec  = "e_DEdeg";
+          col_e_ra  = find(qtyNames, "e_RAdeg");
+          col_e_dec = find(qtyNames, "e_DEdeg");
+          if ((col_e_ra.length() > 0) && (col_e_dec.length() > 0)) {
+            in->col_e_ra   = col_e_ra;
+            in->col_e_dec  = col_e_dec;
             in->col_e_type = RaDec;
             in->col_e_prob = Sigma_1;
             status         = STATUS_OK;
@@ -717,10 +747,11 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
 
         // Search for e_RAJ2000/e_DEJ2000 columns
         if (in->pos_type == Equatorial) {
-          if ((find(qtyNames, "e_RAJ2000").length() > 0) &&
-              (find(qtyNames, "e_DEJ2000").length() > 0)) {
-            in->col_e_ra   = "e_RAJ2000";
-            in->col_e_dec  = "e_DEJ2000";
+          col_e_ra  = find(qtyNames, "e_RAJ2000");
+          col_e_dec = find(qtyNames, "e_DEJ2000");
+          if ((col_e_ra.length() > 0) && (col_e_dec.length() > 0)) {
+            in->col_e_ra   = col_e_ra;
+            in->col_e_dec  = col_e_dec;
             in->col_e_type = RaDec;
             in->col_e_prob = Sigma_1;
             status         = STATUS_OK;
@@ -729,8 +760,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for theta95 column (3EG catalogue)
-        if (find(qtyNames, "theta95").length() > 0) {
-          in->col_e_maj  = "theta95";
+        col_e_maj = find(qtyNames, "theta95");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Prob_95;
           status         = STATUS_OK;
@@ -738,8 +770,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for PosErr68 column
-        if (find(qtyNames, "PosErr68").length() > 0) {
-          in->col_e_maj  = "PosErr68";
+        col_e_maj = find(qtyNames, "PosErr68");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Prob_68;
           status         = STATUS_OK;
@@ -747,8 +780,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for PosErr90 column
-        if (find(qtyNames, "PosErr90").length() > 0) {
-          in->col_e_maj  = "PosErr90";
+        col_e_maj = find(qtyNames, "PosErr90");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Prob_90;
           status         = STATUS_OK;
@@ -756,8 +790,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for PosErr95 column
-        if (find(qtyNames, "PosErr95").length() > 0) {
-          in->col_e_maj  = "PosErr95";
+        col_e_maj = find(qtyNames, "PosErr95");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Prob_95;
           status         = STATUS_OK;
@@ -765,8 +800,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for PosErr99 column
-        if (find(qtyNames, "PosErr99").length() > 0) {
-          in->col_e_maj  = "PosErr99";
+        col_e_maj = find(qtyNames, "PosErr99");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Prob_99;
           status         = STATUS_OK;
@@ -774,8 +810,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         }
 
         // Search for PosErr column
-        if (find(qtyNames, "PosErr").length() > 0) {
-          in->col_e_maj  = "PosErr";
+        col_e_maj = find(qtyNames, "PosErr");
+        if (col_e_maj.length() > 0) {
+          in->col_e_maj  = col_e_maj;
           in->col_e_type = Radius;
           in->col_e_prob = Sigma_1;
           status         = STATUS_OK;

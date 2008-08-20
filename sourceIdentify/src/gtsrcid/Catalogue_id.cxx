@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.29  2008/07/08 20:57:06  jurgen
+Implement final selection (allows to filter on evaluated quantities)
+
 Revision 1.28  2008/04/24 14:55:17  jurgen
 Implement simple FoM scheme
 
@@ -914,15 +917,20 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
         double b         = (src->info->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
                            (src->info->pos_err_min*src->info->pos_err_min) : 0.0;
         arg              = a + b;
-        double error2    = (arg > 0.0) ? 1.0/arg : 0.0;
+        double psi2      = (arg > 0.0) ? 1.0/arg : 0.0;
 
         // Calculate counterpart probability from angular separation
-        if (error2 > 0.0) {
-          double arg1           = src->cc[iCC].angsep / error2;
-          double arg2           = src->cc[iCC].angsep * arg1;
-          double expval         = exp(-dnorm * arg2);
-          src->cc[iCC].psi      = sqrt(error2);
-          src->cc[iCC].pdf_pos  = twodnorm * arg1 * expval;
+        if (psi2 > 0.0) {
+//          double arg1           = src->cc[iCC].angsep / psi2;
+//          double arg2           = src->cc[iCC].angsep * arg1;
+//          double expval         = exp(-dnorm * arg2);
+//          double prob           = twodnorm * arg1 * expval;
+          double delta          = dnorm * src->cc[iCC].angsep * src->cc[iCC].angsep / psi2;
+          double expval         = exp(-delta);
+          double norm           = pi * src->info->pos_err_maj * src->info->pos_err_min;
+          double prob           = (norm > 0.0) ? dnorm * expval / norm : 0.0;
+          src->cc[iCC].psi      = sqrt(psi2);
+          src->cc[iCC].pdf_pos  = prob;
           src->cc[iCC].prob_pos = expval;
         }
         else {
@@ -1032,13 +1040,13 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
 
         // Compute the expected number of sources within the area given
         // by the angular separation between source and counterpart
-        double r_div_lambda2 = src->cc[iCC].angsep * pi * src->cc[iCC].rho;
-        src->cc[iCC].mu      = r_div_lambda2 * src->cc[iCC].angsep;
+        double r2       = src->cc[iCC].angsep * src->cc[iCC].angsep;
+        src->cc[iCC].mu = pi * r2 * src->cc[iCC].rho;
 
         // Compute chance coincidence probability
         double exp_mu            = exp(-src->cc[iCC].mu);
         src->cc[iCC].prob_chance = 1.0 - exp_mu;
-        src->cc[iCC].pdf_chance  = 2.0 * r_div_lambda2 * exp_mu;
+        src->cc[iCC].pdf_chance  = src->cc[iCC].rho * exp_mu;
 
         // Add result to column vectors
         col_mu.push_back(src->cc[iCC].mu);
@@ -1239,35 +1247,31 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
         src->cc[iCC].likrat           = 0.0;
         src->cc[iCC].likrat_div       = 0;
         src->cc[iCC].prob_post_single = 0.0;
+        int noLR = 0;                         // signals invalid LR (one of PDF is 0)
 
-        // Compute log-likelihood ratio.
-        // If Psi^2 > 2.996 lambda2^2 then the likelihood ratio diverges.
-        // Depending on the compile option we either calculate the divergent
-        // likelihood ratio or we set LR = 0.
-        double psi2    = src->cc[iCC].psi * src->cc[iCC].psi;
-        double lambda2 = (src->cc[iCC].rho > 0.0) ? 1.0 / (pi * src->cc[iCC].rho) :
-                         src->ring_rad_max;
-        if (psi2 > 0.0 && lambda2 > 0.0) {
-          double beta  = 2.996 * lambda2 / psi2;
-          double scale = 2.996 / psi2 - 1.0 / lambda2;
-          double arg   = scale * src->cc[iCC].angsep * src->cc[iCC].angsep;
-          #if ALLOW_LR_DIVERGENCE
-          if (scale < 0.0)
+        // Compute log-likelihood ratio. Signal if computation did not succeed
+        if (src->cc[iCC].pdf_pos > 0.0 && src->cc[iCC].pdf_chance > 0.0)
+          src->cc[iCC].likrat = log(src->cc[iCC].pdf_pos) - log(src->cc[iCC].pdf_chance);
+        else
+          noLR = 1;
+
+        // Signal likelihood ratio divergence
+        if (src->cc[iCC].psi > 0.0) {
+          double psi2 = src->cc[iCC].psi * src->cc[iCC].psi;
+          double beta = dnorm / psi2 - pi * src->cc[iCC].rho;
+          if (beta < 1.0)
             src->cc[iCC].likrat_div = 1;
-          src->cc[iCC].likrat = log(beta) - arg;
-          #else
-          if (scale >= 0.0)
-            src->cc[iCC].likrat = log(beta) - arg;
-          #endif
         }
 
         // Compute posterior probability. Make this computation overflow
         // safe!
-        //There are some special cases:
-        // PROB_PRIOR >= 1 => PROB_POST = 1
-        // PROB_PRIOR <= 0 => PROB_POST = 0
-        // LR = 0          => PROB_POST = 0
-        if (src->cc[iCC].prob_prior >= 1.0)
+        // There are some special cases:
+        //  invalid log LR  => PROB_POST = 0
+        //  PROB_PRIOR >= 1 => PROB_POST = 1
+        //  PROB_PRIOR <= 0 => PROB_POST = 0
+        if (noLR)
+          src->cc[iCC].prob_post_single = 0.0;
+        else if (src->cc[iCC].prob_prior >= 1.0)
           src->cc[iCC].prob_post_single = 1.0;
         else if (src->cc[iCC].prob_prior <= 0.0)
           src->cc[iCC].prob_post_single = 0.0;
@@ -1277,8 +1281,8 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
           double log_arg = src->cc[iCC].likrat + log_eta;
           if (log_arg < 100.0) {
             double arg = exp(log_arg);
-            src->cc[iCC].prob_post_single = (arg > 0.0) ? 1.0 / (1.0 + 1.0 / arg) :
-                                            0.0;
+            src->cc[iCC].prob_post_single = (arg > 0.0) ?
+                         1.0 / (1.0 + 1.0 / arg) : 0.0;
           }
           else
             src->cc[iCC].prob_post_single = 1.0;
@@ -1752,11 +1756,11 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
             Log(Log_2, "    Posterior association prob. ...: %7.3f %%",
                 src->cc[iCC].prob_post_single*100.0);
             if (src->cc[iCC].likrat_div) {
-              Log(Log_2, "    Likelihood ratio ..............: %.3e (diverged)",
+              Log(Log_2, "    Log-likelihood ratio ..........: %.3e (diverged)",
                   src->cc[iCC].likrat);
             }
             else {
-              Log(Log_2, "    Likelihood ratio ..............: %.3f",
+              Log(Log_2, "    Log-likelihood ratio ..........: %.3f",
                   src->cc[iCC].likrat);
             }
           }

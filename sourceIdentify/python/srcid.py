@@ -135,6 +135,7 @@ def set_pars(module, chatter=False):
 		par['cptCatName'] = get_cat_path() + '/' + module.catname
 	else:
 		print "ERROR: no 'catname' specified."
+		sys.exit(0)
 	
 	# Extract further parameters
 	if hasattr(module, 'catid'):              par['cptCatPrefix'] = module.catid
@@ -219,7 +220,7 @@ def get_name_key(pars, hdu):
 	The counterpart name key is first searched using the UCD descriptors
 	'ID_MAIN' or 'ID_IDENTIFIER'.
 	If no such descriptors were found the following name keys are searched
-	for: 'HESS','NAME','ID'.
+	for: 'HESS','NAME','ID','NICKNAME'.
 	"""
 	
 	# Get HDU cards
@@ -240,7 +241,7 @@ def get_name_key(pars, hdu):
 				pass
 	
 	# Build possible name string
-	names = [prefix + s for s in ['HESS','NAME','ID']]
+	names = [prefix + s for s in ['HESS','NAME','ID', 'NICKNAME']]
 	
 	# Search for possible name strings (case insensitive)
 	for card in cards:
@@ -303,10 +304,16 @@ def attach_counterparts(pars, hdu_lat):
 		# Build column name strings
 		key_name = 'ID_' + pars['cptCatPrefix'] + '_NAME_' + str(index+1)
 		key_prob = 'ID_' + pars['cptCatPrefix'] + '_PROB_' + str(index+1)
+		key_ra   = 'ID_' + pars['cptCatPrefix'] + '_RA___' + str(index+1)
+		key_dec  = 'ID_' + pars['cptCatPrefix'] + '_DEC__' + str(index+1)
+		key_sep  = 'ID_' + pars['cptCatPrefix'] + '_ASEP_' + str(index+1)
 		
 		# Build empty arrays
 		array_name = ['' for i in range(nrows_lat)]
 		array_prob = [0 for i in range(nrows_lat)]
+		array_ra   = [0.0 for i in range(nrows_lat)]
+		array_dec  = [0.0 for i in range(nrows_lat)]
+		array_sep  = [0.0 for i in range(nrows_lat)]
 		
 		# Fill arrays
 		for row in hdu_cpt.data:
@@ -324,19 +331,31 @@ def attach_counterparts(pars, hdu_lat):
 				
 				# Get probability
 				prob = row.field('PROB')
+				ra   = row.field('RAJ2000')
+				dec  = row.field('DEJ2000')
+				sep  = row.field('ANGSEP')
 				
 				# Set array entries
 				array_name[lat_index] = name
 				array_prob[lat_index] = prob
+				array_ra[lat_index]   = ra
+				array_dec[lat_index]  = dec
+				array_sep[lat_index]  = sep
 		
 		# Define columns
 		column_name = pyfits.Column(name=key_name, format='A20', array=array_name)
 		column_prob = pyfits.Column(name=key_prob, format='1E',  array=array_prob, \
 		                            unit='probability')
+		column_ra   = pyfits.Column(name=key_ra,   format='1E',  array=array_ra, unit='deg')
+		column_dec  = pyfits.Column(name=key_dec,  format='1E',  array=array_dec, unit='deg')
+		column_sep  = pyfits.Column(name=key_sep,  format='1E',  array=array_sep, unit='deg')
 		
 		# Append columns
 		columns.append(column_name)
 		columns.append(column_prob)
+		columns.append(column_ra)
+		columns.append(column_dec)
+		columns.append(column_sep)
 	
 	# Build new table, append it to LAT catalogue and create new table of combined columns
 	hdu_new = pyfits.new_table(columns)
@@ -493,10 +512,16 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			# Set column names to read
 			col_name = column
 			col_prob = column.replace('_NAME_', '_PROB_')
+			col_ra   = column.replace('_NAME_', '_RA___')
+			col_dec  = column.replace('_NAME_', '_DEC__')
+			col_sep  = column.replace('_NAME_', '_ASEP_')
 			
 			# Read columns
 			names = hdu_srcid.data.field(col_name)
 			probs = hdu_srcid.data.field(col_prob)
+			ra    = hdu_srcid.data.field(col_ra)
+			dec   = hdu_srcid.data.field(col_dec)
+			sep   = hdu_srcid.data.field(col_sep)
 			
 			# Loop over all rows and extract information
 			for i, name in enumerate(names):
@@ -508,7 +533,8 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 						if (col_name.find(pattern) != -1):
 							catid = cat['number']
 					# Build entry
-					entry = {'name': name, 'prob': probs[i], 'cat': catid}
+					entry = {'name': name, 'prob': probs[i], 'ra': ra[i], \
+					         'dec': dec[i], 'angsep': sep[i], 'cat': catid}
 					idlist[i].append(entry)
 					if len(idlist[i]) > max_cpt:
 						max_cpt = len(idlist[i])
@@ -523,10 +549,14 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	column_number = pyfits.Column(name='ID_Number', format='I')
 	column_name   = pyfits.Column(name='ID_Name', format=fmt_name)
 	column_prob   = pyfits.Column(name='ID_Probability', format=fmt_prob)
+	column_ra     = pyfits.Column(name='ID_RA', format=fmt_prob)
+	column_dec    = pyfits.Column(name='ID_DEC', format=fmt_prob)
+	column_sep    = pyfits.Column(name='ID_Angsep', format=fmt_prob)
 	column_cat    = pyfits.Column(name='ID_Catalog', format=fmt_cat)
 	
-	# Collect columns
-	columns = [column_number, column_name, column_prob, column_cat]
+	# Collect all columns
+	columns = [column_number, column_name, column_prob, column_ra, column_dec, \
+	           column_sep, column_cat]
 	
 	# Build new table, append it to LAT catalogue and create new table of combined columns
 	hdu_new = pyfits.new_table(columns)
@@ -551,6 +581,9 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	data_number = hdu_new.data.field('ID_Number')
 	data_name   = hdu_new.data.field('ID_Name')
 	data_prob   = hdu_new.data.field('ID_Probability')
+	data_ra     = hdu_new.data.field('ID_RA')
+	data_dec    = hdu_new.data.field('ID_DEC')
+	data_sep    = hdu_new.data.field('ID_Angsep')
 	data_cat    = hdu_new.data.field('ID_Catalog')
 	for i, row in enumerate(idlist):
 		
@@ -569,6 +602,9 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 				name = name + ' '
 			names = names + name
 			data_prob[i][k] = cpt['prob']
+			data_ra[i][k]   = cpt['ra']
+			data_dec[i][k]  = cpt['dec']
+			data_sep[i][k]  = cpt['angsep']
 			data_cat[i][k]  = cpt['cat']
 		data_name[i] = names
 	
@@ -608,6 +644,121 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	# Save LAT catalogue with attached columns
 	hdulist = pyfits.HDUList([pyfits.PrimaryHDU(), hdu_new, hdu_cat])
 	hdulist.writeto(out_name, clobber=True)
+	
+	# Get Source information column names
+	cards   = hdu_lat.header.ascardlist()
+	colname = 'none'
+	colra   = 'none'
+	coldec  = 'none'
+	colmaj  = 'none'
+	colmin  = 'none'
+	colpos  = 'none'
+	for card in cards:
+		
+		# Search for Name column
+		if card.key[:5] == 'TBUCD' and (card.value == 'ID_MAIN' or \
+		   card.value == 'ID_IDENTIFIER'):
+			key     = 'TTYPE' + card.key[5:7]
+			colname = cards[key].value
+		elif (card.value == 'ID' or card.value == 'NAME' or \
+			card.value == 'NICKNAME'):
+			key     = 'TTYPE' + card.key[5:7]
+			colname = cards[key].value
+		elif (card.value == 'RA'):
+			key   = 'TTYPE' + card.key[5:7]
+			colra = cards[key].value
+		elif (card.value == 'DEC'):
+			key    = 'TTYPE' + card.key[5:7]
+			coldec = cards[key].value
+		elif (card.value == 'PosErr95'):
+			key    = 'TTYPE' + card.key[5:7]
+			colmaj = cards[key].value
+		elif (card.value == 'CONF_95_SEMIMAJOR' or card.value == 'Conf_95_SemiMajor'):
+			key    = 'TTYPE' + card.key[5:7]
+			colmaj = cards[key].value
+		elif (card.value == 'CONF_95_SEMIMINOR' or card.value == 'Conf_95_SemiMinor'):
+			key    = 'TTYPE' + card.key[5:7]
+			colmin = cards[key].value
+		elif (card.value == 'CONF_95_POSANG' or card.value == 'Conf_95_PosAng'):
+			key    = 'TTYPE' + card.key[5:7]
+			colpos = cards[key].value
+	
+	# Create region file
+	regfile = open("srcid.reg", "w")
+	
+	# Write header
+	regfile.write('# Region file format: DS9 version 4.0\n')
+	regfile.write('# Created by srcid.py\n')
+	regfile.write('# Filename: srcid-lat.fits\n')
+	regfile.write('global ')
+	regfile.write('color=blue ')
+	regfile.write('point=diamond ')
+	regfile.write('font="helvetica 9 normal" ')
+	regfile.write('select=1 ')
+	regfile.write('highlite=1 ')
+	regfile.write('edit=1 ')
+	regfile.write('move=0 ')
+	regfile.write('delete=1 ')
+	regfile.write('include=1 ')
+	regfile.write('fixed=0 ')
+	regfile.write('source ')
+	regfile.write('\n')
+	regfile.write('fk5\n')
+	
+	# Write entry for each LAT source
+	for i, row in enumerate(idlist):
+		
+		# Get LAT source information
+		lat_name = 'unknown'
+		if (colname != 'none'):
+			lat_name = hdu_lat.data.field(colname)[i]
+		if (colra != 'none' and coldec != 'none'):
+			ra  = '%8.4f' % hdu_lat.data.field(colra)[i]
+			dec = '%8.4f' % hdu_lat.data.field(coldec)[i]
+			if (colmaj != 'none'):
+				if (colmin != 'none' and colpos != 'none'):
+					smaj = '%8.5f' % hdu_lat.data.field(colmaj)[i]
+					smin = '%8.5f' % hdu_lat.data.field(colmin)[i]
+					pang = '%8.5f' % hdu_lat.data.field(colpos)[i]
+					lat_region = 'ellipse('+ra+','+dec+','+ \
+					              smaj+','+smin+','+pang+')'
+				else:
+					rad = '%8.5f' % hdu_lat.data.field(colmaj)[i]
+					lat_region = 'circle('+ra+','+dec+','+rad+')'
+		
+		# Write LAT source header
+		regfile.write('#\n')
+		regfile.write('# '+lat_name+'\n')
+		
+		# Determine the number of counterparts
+		nids           = len(row)
+		data_number[i] = nids
+		
+		# Sort list
+		row.sort(compare_by('prob'), reverse=True)
+		
+		# Loop over all counterparts
+		for k, cpt in enumerate(row):
+			
+			# Gather counterpart information
+			cpt_name = cpt['name']
+			cpt_ra   = '%8.4f' % cpt['ra']
+			cpt_dec  = '%8.4f' % cpt['dec']
+			
+			# Write entry
+			regfile.write('point('+cpt_ra+','+cpt_dec+') ')
+			regfile.write('# ')
+			regfile.write('text={'+cpt_name+'}\n')
+		
+		# Write LAT entry
+		regfile.write(lat_region)
+		regfile.write(' #')
+		regfile.write(' color=green')
+		regfile.write(' font="helvetica 11 normal"')
+		regfile.write(' text={'+lat_name+'}\n')
+
+	# Close region file
+	regfile.close()
 
 
 #================================#
@@ -689,7 +840,11 @@ if __name__ == '__main__':
 	exec(class_import_string)
 	
 	# Get LAT source catalogue HDU
-	hdu_lat = get_fits_cat(lat_filename, catname='LAT_POINT_SOURCE_CATALOG')
+	try:
+		hdu_lat = get_fits_cat(lat_filename, catname='LAT_POINT_SOURCE_CATALOG')
+	except:
+		print 'ERROR: Catalogue ' + lat_filename + ' not found.'
+		sys.exit(0)
 	
 	# Initialise counterpart catalogue dictionary list
 	cpt_cats  = []
@@ -736,7 +891,7 @@ if __name__ == '__main__':
 				
 				# Gather catalogue reference
 				if card.key == 'CAT-REF':
-					cpt_name = hdu_cpt.header['CAT-REF']
+					cpt_ref = hdu_cpt.header['CAT-REF']
 				if card.key == 'AUTHOR' and cpt_ref == '':
 					cpt_ref = hdu_cpt.header['AUTHOR']
 				if card.key == 'CDS-CAT' and cpt_ref == '':
@@ -748,7 +903,7 @@ if __name__ == '__main__':
 			cpt_cats.append(info)
 			
 		except:
-			print 'WARNING: Catalogue not found ' + cpt_url
+			print 'WARNING: Catalogue ' + cpt_url + 'not found.'
 			continue
 		
 		# Dump processing information to screen
