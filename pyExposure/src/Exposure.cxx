@@ -24,10 +24,11 @@ namespace pyExposure {
 
 Exposure::Exposure(const std::string & scDataFile,
                    const std::vector<double> & timeBoundaries,
+                   const std::vector< std::pair<double, double> > & gtis,
                    const std::vector<double> & energies, 
                    double ra, double dec, double radius,
                    const std::string & irfs) 
-   : m_timeBoundaries(timeBoundaries), m_energies(energies),
+   : m_timeBoundaries(timeBoundaries), m_gtis(gtis), m_energies(energies),
      m_srcDir(astro::SkyDir(ra, dec)), m_radius(radius), m_scData(0) {
    irfLoader::Loader::go();
    const std::vector<std::string> & 
@@ -98,6 +99,8 @@ void Exposure::integrateExposure() {
       std::pair<double, double> wholeInterval;
       wholeInterval.first = m_timeBoundaries[i];
       wholeInterval.second = m_timeBoundaries[i+1];
+      std::vector< std::pair<double, double> > timeCuts;
+      timeCuts.push_back(wholeInterval);
       std::pair<Likelihood::ScData::Iterator, 
          Likelihood::ScData::Iterator> scData;
       Likelihood::ScData::Iterator firstIt = m_scData->vec.begin();
@@ -118,12 +121,16 @@ void Exposure::integrateExposure() {
          std::pair<double, double> thisInterval;
          thisInterval.first = it->time;
          thisInterval.second = (it+1)->time;
-         if (Likelihood::LikeExposure::overlap(wholeInterval, thisInterval)) {
+//         if (Likelihood::LikeExposure::overlaps(wholeInterval, thisInterval)) {
+         double fraction(0);
+         if (Likelihood::LikeExposure::
+             acceptInterval(thisInterval.first, thisInterval.second,
+                            timeCuts, m_gtis, fraction)){
             for (size_t k = 0; k < m_energies.size(); k++) {
                m_exposureValues.at(i).at(k) += 
                   (effArea(thisInterval.first, m_energies.at(k)) 
                    + effArea(thisInterval.second, m_energies.at(k)))/2.
-                  *it->livetime;
+                  *it->livetime*fraction;
             }
          }
       }

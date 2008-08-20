@@ -41,6 +41,7 @@ public:
 
    Exposure(const std::string & scDataFile, 
             const std::vector<double> & timeBoundaries,
+            const std::vector< std::pair<double, double> > & gtis,
             const std::vector<double> & energies, 
             double ra, double dec, double radius, 
             const std::string & irfs="DC2");
@@ -64,6 +65,7 @@ public:
 private:
 
    std::vector<double> m_timeBoundaries;
+   std::vector< std::pair<double, double> > m_gtis;
    std::vector<irfInterface::Irfs *> m_irfs;
    std::vector<double> m_energies;
    astro::SkyDir m_srcDir;
