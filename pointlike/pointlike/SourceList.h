@@ -93,7 +93,8 @@ namespace pointlike{
 
         SourceList(){}; ///< default ctor
 
-        void sort_TS();
+        void sort_TS(); ///< sort the list in decreasing TS order
+        void sort_ra(); ///< sort the list in increasing ra order
 
         /// @brief refit all sources, in TS order, taking nearby sources into account
         void refit(); 
