@@ -59,15 +59,19 @@ int main(int argc, char** argv)
 
         SourceList* sl(0);
         std::map<std::string, std::vector<double> > sourcedict;
-        try{
+        if( setup.attribute("sources", false)!=0 ){
             setup.getDict("sources", sourcedict);
             sl = new SourceList(sourcedict);
-        }catch( const std::exception&) {
+        }else if( setup.attribute("sourcelistfile", false)!=0 ) {
             std::string sourcelistfile;
             setup.getValue("sourcelistfile", sourcelistfile);
             sl = new SourceList(sourcelistfile);
-        }        
+        }else {
+            throw std::invalid_argument(
+                "expected either 'sources' or 'sourcelistfile' to define seeds");
+        }
 
+        sl->sort_TS(); // initial sort by decreasing TS
         sl->refit(); 
         sl->dump(*out); 
 
