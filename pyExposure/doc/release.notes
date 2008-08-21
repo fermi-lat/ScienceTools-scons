@@ -5,7 +5,8 @@
   @verbatim
   $Id$
 
-  04-Aug-08 v1r1p1  JC    add TUNIT keyword for EXPOSURE column
+  21-Aug-08 v2r2    JC    include GTIs in exposure calculation
+  04-Aug-08 v2r1p1  JC    add TUNIT keyword for EXPOSURE column
   25-Jul-08 v2r1    JC    include aperture correction
   04-Jul-08 v2      JC    use standard par file names
   27-Mar-07 v1r0p2  JC    ifdef switch for TRAP_FPE only on Linux
