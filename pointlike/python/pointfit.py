@@ -12,6 +12,7 @@ where:
         Expected fields name, ra, dec. There should be a field (name TBD) with TS
         values allowing a ranking of significance or flux. pointfit will use this
         to sort nearby pairs. If not found, default behavior is to not sort.
+        [Not currently working, will be fixed]
     <outputfile>: Optional parameter specifying file name to write results, in
         format: name, input_ra, input_dec, fit_ra, fit_dec TS, sigma, pull, [name of background source(s)]
         where sigma is the fit error circle radius in degrees: >90 indicates a convergence error
