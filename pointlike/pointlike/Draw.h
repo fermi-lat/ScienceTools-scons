@@ -12,7 +12,7 @@ namespace astro { class SkyDir; }
 #include <string>
 #include <vector>
 #include "embed_python/Module.h"
-namespace skymaps{ class BinnedPhotonData; }
+namespace skymaps{ class BinnedPhotonData; class SkySpectrum;}
 
 namespace pointlike {
 
@@ -39,10 +39,17 @@ namespace pointlike {
         void equatorial(){m_galactic=false;}     ///< set equatorial
         void projection(std::string p){m_proj = p;} ///< set the projection
 
+        void use_exposure(const skymaps::SkySpectrum* exp){m_exposure=exp;}
+
+        ///! will add layers with count map values
+        void set_layers(int n){m_layers=n;}
+
     private:
         const skymaps::BinnedPhotonData& m_map;
         bool m_galactic;    ///< galactic or equatorial
         std::string m_proj; ///< projection (CAR, AIT, etc.)
+        const skymaps::SkySpectrum * m_exposure; ///< exposure to use for normalization, if present. (energy?)
+        bool m_layers;
     };
 
 

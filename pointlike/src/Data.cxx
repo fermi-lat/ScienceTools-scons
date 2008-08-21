@@ -191,17 +191,18 @@ namespace {
             int class_level( gamma.class_level() );
             if( class_level< Data::class_level() ) return; // select class level
             m_kept++;
-#if 0
-            // now make the transformation, which returns a regular photon object
-            astro::Photon ap( gamma.transform( Data::get_rot(gamma.time())) );
-            m_map.addPhoton(ap);
-#else
+
             // using GPS to make the correction, including aberration
             gps->enableAberration();
             gps->setAlignmentRotation(Data::get_rot(gamma.time()).inverse());
             SkyDir fixed(gps->correct(gamma.dir(), gamma.time()));
-            m_map.addPhoton(astro::Photon(fixed, gamma.energy(),gamma.time(),gamma.eventClass()));
+#if 0 // to look at a few values with the debugger
+            double ra(gamma.ra()), dec(gamma.dec());
+            double raf(fixed.ra()), decf(fixed.dec());
+            
 #endif
+
+            m_map.addPhoton(astro::Photon(fixed, gamma.energy(),gamma.time(),gamma.eventClass()));
         }
         int found()const{return m_found;}
         int kept()const{return m_kept;}
