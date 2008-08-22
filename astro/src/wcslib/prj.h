@@ -700,7 +700,7 @@ extern int prj_stat;
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_PROJ */

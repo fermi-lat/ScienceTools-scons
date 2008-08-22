@@ -333,7 +333,7 @@ SPX_PROTO(betavelo)
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_SPEC */

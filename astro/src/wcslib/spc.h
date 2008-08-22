@@ -676,7 +676,7 @@ int spctrn(const char[], double, double, double, double, char[], double *,
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_SPC */
