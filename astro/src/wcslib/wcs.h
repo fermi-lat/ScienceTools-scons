@@ -1255,7 +1255,7 @@ int wcssptr(struct wcsprm *, int *, char [9]);
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_WCS */

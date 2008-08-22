@@ -396,7 +396,7 @@ int wcsvfree(int *, struct wcsprm **);
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_WCSHDR */

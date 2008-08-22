@@ -515,7 +515,7 @@ int tabs2x(struct tabprm *, int, int, const double[], double[], int[]);
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_TAB */
