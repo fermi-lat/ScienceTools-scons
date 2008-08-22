@@ -421,7 +421,7 @@ int matinv(int, const double [], double []);
 
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_LIN */
