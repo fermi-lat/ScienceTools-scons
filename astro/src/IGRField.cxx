@@ -11,7 +11,7 @@ IGRField::IGRField() {
     IGRFf2c::initize_(); 
     setYear(2005.); 
     compute(0.,0.,0.);
-}; 
+}
 
 void IGRField::setYear(const float year){
    if(fabs(year-m_year)<0.001) return;
@@ -19,7 +19,7 @@ void IGRField::setYear(const float year){
    if (m_year>=2010.) m_year=2010.;
    if (m_year<=1990.) m_year=1990.;
    IGRFf2c::feldcof_(&m_year,&m_dipoleMoment);
-};      
+}
       
 int IGRField::compute(const float latitude,const float longitude,const float altitude,const float year){
 
@@ -66,7 +66,7 @@ int IGRField::compute(const float latitude,const float longitude,const float alt
 
    return icode;
 
-};
+}
 
 
-};
+}
