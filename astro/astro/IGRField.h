@@ -96,5 +96,5 @@ class IGRField {
       float lambda() const { return m_lambda;};
 };
 
-};
+}
 #endif
