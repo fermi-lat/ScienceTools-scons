@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: Giuseppe Romeo <Giuseppe.Romeo@gsfc.nasa.gov>
+# Authors: John Vernaleo <John.C.Vernaleo@nasa.gov>
 # Version: orbitSim-00-01-04
 Import('baseEnv')
 Import('listFiles')

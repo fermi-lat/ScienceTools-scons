@@ -2,7 +2,7 @@ package orbitSim
 
 version v0
 
-author Giuseppe Romeo <Giuseppe.Romeo@gsfc.nasa.gov>
+author John Vernaleo <John.C.Vernaleo@nasa.gov>
 # $Id$
 
 use STpolicy *
