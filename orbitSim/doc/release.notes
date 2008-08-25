@@ -4,6 +4,7 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+25-aug-2008    v0r1p5 JP  Replace Romeo with Vernaleo as package author.
 16-may-2008    v0r1p4 JP  Add ft2 file needed as a template.
 28-feb-2008    v0r1p3 JP  From Giuseppe Romeo: changes to eliminate build
                           warnings and errors on Windows.
