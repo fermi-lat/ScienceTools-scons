@@ -29,10 +29,10 @@ class PulsePhaseApp : public pulsarDb::PulsarToolApp {
 };
 
 PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp() {
-  st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
-
   setName("gtpphase");
   setVersion(s_cvs_id);
+
+  st_app::AppParGroup & par_group = getParGroup(); // getParGroup is in base class st_app::StApp
 
   par_group.setSwitch("ephstyle");
   par_group.setCase("ephstyle", "FREQ", "ephepoch");
@@ -59,7 +59,7 @@ void PulsePhaseApp::run() {
   // Clean up from any previous runs.
   resetApp();
 
-  st_app::AppParGroup & par_group = getParGroup("gtpphase"); // getParGroup is in base class st_app::StApp
+  st_app::AppParGroup & par_group = getParGroup(); // getParGroup is in base class st_app::StApp
 
   // Prompt for selected parameters.
   par_group.Prompt("evfile");

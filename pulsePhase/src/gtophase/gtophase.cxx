@@ -37,7 +37,7 @@ void PulsePhaseApp::run() {
   // Clean up from any previous runs.
   resetApp();
 
-  st_app::AppParGroup & par_group = getParGroup("gtophase"); // getParGroup is in base class st_app::StApp
+  st_app::AppParGroup & par_group = getParGroup(); // getParGroup is in base class st_app::StApp
 
   // Prompt for selected parameters.
   par_group.Prompt("evfile");
