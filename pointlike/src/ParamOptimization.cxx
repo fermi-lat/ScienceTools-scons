@@ -9,7 +9,7 @@ $Header$
 #include "skymaps/IParams.h"
 #include "TMatrixD.h"
 #include <fstream>
-#define PRINT_DEBUG
+//#define PRINT_DEBUG
 //#define FIT_DEBUG
 
 using namespace pointlike;
