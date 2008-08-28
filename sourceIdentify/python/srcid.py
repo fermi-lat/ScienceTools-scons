@@ -67,12 +67,49 @@ def get_cat_path():
 	Returns:
 	 Source class catalogue directory path
 	"""
+	# Initialise found flag
+	found = False
 	
-	# Get path from environment variable
+	# First check for GLAST_CAT
 	try:
 		path = os.environ['GLAST_CAT']
-	except KeyError:
-		path = os.path.join(os.environ['EXTFILESSYS'],'catalogues')
+		if os.path.isdir(path):
+			found = True
+			#print 'Found GLAST_CAT: ',path
+	except:
+		pass
+	
+	# Then check for EXTFILESSYS
+	if not found:
+		try:
+			path = os.path.join(os.environ['EXTFILESSYS'],'catalogues')
+			if os.path.isdir(path):
+				found = True
+				#print 'Found EXTFILESSYS: ',path
+		except:
+			pass
+	
+	# Then check of GLAST_EXT
+	if not found:
+		try:
+			pattern = os.environ['GLAST_EXT']+'/extFiles/*'
+			dirs    = glob.glob(pattern)
+			dirs.sort(reverse=True)
+			if len(dirs) > 0:
+				path = dirs[0]+'/counterpartCatalogs'
+				if os.path.isdir(path):
+					found = True
+					#print 'Found GLAST_EXT: ',path
+		except:
+			pass
+	
+	# Signal error in no path has been found
+	if not found:
+		print 'ERROR: Catalogue repository cound not be localized.'
+		print '       Set the environment variable GLAST_CAT to the directory where'
+		print '       all catalogues reside or set GLAST_EXT to the external'
+		print '       ScienceTools libraries.'
+		sys.exit()
 	
 	# Return directory path
 	return path
@@ -873,13 +910,19 @@ if __name__ == '__main__':
 		# Set LAT catalogue filename
 		pars['srcCatName'] = lat_filename
 		
+		# Check if counterpart catalogue exists
+		cpt_url = pars['cptCatName']
+		if not os.path.isfile(cpt_url):
+			print "WARNING: Catalogue '"+cpt_url+"' not found in "+ \
+			      "catalogue repository. Skipped."
+			continue
+		
 		# Expand column names in parameter strings
 		expand_column_names(pars)
 		
 		# Get counterpart catalogue information
 		try:
-			# Read catalogue
-			cpt_url = pars['cptCatName']
+			# Read counterpart catalogue
 			hdu_cpt = get_fits_cat(cpt_url)
 			
 			# Initialise information fields
