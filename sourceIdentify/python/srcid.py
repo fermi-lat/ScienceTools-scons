@@ -601,11 +601,18 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			while (len(name) < 20):
 				name = name + ' '
 			names = names + name
-			data_prob[i][k] = cpt['prob']
-			data_ra[i][k]   = cpt['ra']
-			data_dec[i][k]  = cpt['dec']
-			data_sep[i][k]  = cpt['angsep']
-			data_cat[i][k]  = cpt['cat']
+			if nids > 1:
+				data_prob[i][k] = cpt['prob']
+				data_ra[i][k]   = cpt['ra']
+				data_dec[i][k]  = cpt['dec']
+				data_sep[i][k]  = cpt['angsep']
+				data_cat[i][k]  = cpt['cat']
+			else:
+				data_prob[i] = cpt['prob']
+				data_ra[i]   = cpt['ra']
+				data_dec[i]  = cpt['dec']
+				data_sep[i]  = cpt['angsep']
+				data_cat[i]  = cpt['cat']
 		data_name[i] = names
 	
 	# Copy over LAT catalogue keywords (except basic keywords)
@@ -707,6 +714,9 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	
 	# Write entry for each LAT source
 	for i, row in enumerate(idlist):
+		
+		# Initialise empty region
+		lat_region = ''
 		
 		# Get LAT source information
 		lat_name = 'unknown'
