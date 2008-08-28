@@ -121,3 +121,12 @@ void Draw::sky(std::string outputfile, double pixel, bool smooth, int mincount)
 {
     region(SkyDir(0,0, SkyDir::GALACTIC), outputfile, pixel, 180., smooth, mincount);
 }
+
+void Draw::googleSky(std::string outfile, double pixelsize, bool smooth, int mincount)
+{
+    std::string proj = m_proj;    m_proj = "CAR";
+    bool gal = m_galactic; m_galactic = false;
+    region(SkyDir(180,0), outfile, pixelsize, 180);
+    m_proj = proj;
+    m_galactic = galactic;
+}

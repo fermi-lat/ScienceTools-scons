@@ -33,7 +33,11 @@ namespace pointlike {
         void region(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
 
-        void sky(std::string outputfile, double pixelsize, bool smooth = false, int mincount = 0);
+        //! @brief all sky image, default AIT, galactic
+        void sky(std::string outputfile, double pixelsize=0.1, bool smooth = false, int mincount = 0);
+
+        //! @brief make a CAR projection for use by google sky
+        void googleSky(std::string outfile, double pixelsize=0.1,bool smooth = false, int mincount = 0);
 
         void galactic(){m_galactic = true;}      ///< set galactic
         void equatorial(){m_galactic=false;}     ///< set equatorial
