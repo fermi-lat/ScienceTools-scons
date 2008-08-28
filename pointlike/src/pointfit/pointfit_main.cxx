@@ -74,6 +74,8 @@ int main(int argc, char** argv)
 
         sl->sort_TS(); // initial sort by decreasing TS
         sl->refit(); 
+        sl->filter_TS(10); // filter
+        sl->sort_ra(); // now by ra
         sl->dump(*out); 
 
         if( !outfile.empty()){

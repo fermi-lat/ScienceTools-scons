@@ -50,6 +50,7 @@ namespace pointlike{
         static void header(std::ostream& out=std::cout); ///< header line for info
 
         double TS()const{return m_TS;}
+        double& TS(){return m_TS;} 
         double seedTS()const{return m_seedTS;}
         double sigma()const{return m_sigma;}
         PointSourceLikelihood* fit(){return m_fit;}
@@ -98,6 +99,8 @@ namespace pointlike{
 
         /// @brief refit all sources, in TS order, taking nearby sources into account
         void refit(); 
+
+        void filter_TS(double threshold=0); ///< remove entries with TS < this level
 
         /// @brief formatted dump to an open stream
         /// Format is consistent with text file ctor
