@@ -3,6 +3,10 @@
     @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
 
     @verbatim
+    v1r1     02-sep-08   JP   Accept INDEF, UNDEF, UNDEFINED or NONE for
+                              numeric parameters, meaning value is undefined.
+                              For floating point parameters, also accept
+                              INF, INFINITY or NAN to indicate infinite value.
     v1r0p2   05-feb-08   JP   Replace pil with ape in SCons.
     v1r0p1   30-jan-08   JP   Add SCons files. Clean up some PIL leftovers.
     v1       02-jan-08   JP   Use Ape instead of PIL for parameter access.
