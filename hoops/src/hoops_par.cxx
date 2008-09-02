@@ -36,17 +36,17 @@ namespace hoops {
   // Type definitions.
   //////////////////////////////////////////////////////////////////////////////
   Par::Par(): IPar(), mName(), mType(), mMode(), mValue(0), mMin(), mMax(),
-    mPrompt(), mComment(), mValString() {}
+    mPrompt(), mComment(), mValString(), mStatus(P_OK) {}
 
   Par::Par(const Par & p): IPar(), mName(p.mName),
     mType(p.mType), mMode(p.mMode), mValue(0), mMin(), mMax(),
-    mPrompt(p.mPrompt), mComment(p.mComment), mValString() {
+    mPrompt(p.mPrompt), mComment(p.mComment), mValString(), mStatus(P_OK) {
     if (p.mValue) mValue = p.mValue->Clone();
   }
 
   Par::Par(const IPar & p): IPar(), mName(p.Name()),
     mType(p.Type()), mMode(p.Mode()), mValue(0), mMin(), mMax(),
-    mPrompt(p.Prompt()), mComment(p.Comment()), mValString() {
+    mPrompt(p.Prompt()), mComment(p.Comment()), mValString(), mStatus(P_OK) {
     if (!p.Value().empty()) From(p.Value());
   }
 
@@ -56,7 +56,7 @@ namespace hoops {
     const std::string & prompt, const std::string & comment):
     IPar(), mName(name), mType(type), mMode(mode),
     mValue(0), mMin(min), mMax(max), mPrompt(prompt),
-    mComment(comment), mValString() {
+    mComment(comment), mValString(), mStatus(P_OK) {
     if (!value.empty()) From(value);
   }
   //////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,18 @@ namespace hoops {
     { ConvertFrom<const long double &>(p, mValue, mType); }
 
   void Par::From(const char * p)
-    { ConvertFrom<const std::string &>(p, mValue, mType); }
+    { From(std::string(p)); }
 
-  void Par::From(const std::string & p)
-    { ConvertFrom<const std::string &>(p, mValue, mType); }
+  void Par::From(const std::string & p) {
+    try {
+      ConvertFrom<const std::string &>(p, mValue, mType);
+      mStatus = P_OK;
+    } catch (const Hexception & x) {
+      int status = x.Code();
+      if (P_INFINITE == status || P_UNDEFINED == status) mStatus = status;
+      else throw;
+    }
+  }
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
@@ -214,15 +222,21 @@ namespace hoops {
   void Par::To(long double & p) const
     { ConvertTo<long double>(mValue, p); }
 
-  void Par::To(std::string & p) const
-    { ConvertTo<std::string>(mValue, p); }
+  void Par::To(std::string & p) const {
+    mValString.clear();
+    if (P_INFINITE == mStatus) p = "infinity";
+    else if (P_UNDEFINED == mStatus) p = "undefined";
+    // Call ConvertTo even if p was already assigned so that the proper
+    // exception is thrown.
+    ConvertTo<std::string>(mValue, p);
+  }
   //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
   // Member access.
   //////////////////////////////////////////////////////////////////////////////
   const std::string & Par::Value() const {
-    try { ConvertTo<std::string>(mValue, mValString); }
+    try { To(mValString); }
     catch (const Hexception &) {}
     return mValString;
   }
@@ -291,6 +305,11 @@ static int strcasecmp(const char *s1, const char *s2) {
 }
 
 /******************************************************************************
+ * Revision 1.12  2008/07/29 15:49:30  peachey
+ * Add a status member variable and use it to track
+ * whether the parameter was last assigned from an undefined or
+ * infinite value.
+ *
  * Revision 1.11  2004/03/16 20:50:57  peachey
  * Explicitly invoke constructors for base classes to shut up compiler
  * warnings in the SLAC build.

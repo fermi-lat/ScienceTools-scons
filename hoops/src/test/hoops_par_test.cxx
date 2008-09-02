@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include "hoops/hoops.h"
 #include "hoops/hoops_ape_factory.h"
@@ -25,10 +26,14 @@ int SetGlobalStatus (int status) {
 
 int main(int argc, char * argv[]) {
   using namespace hoops;
-  const char *code[1024];
+  std::string code[1024];
   std::string std_string;
 
-  for (int ii = 0; ii < 1024; ++ii) code[ii] = "";
+  for (int ii = 0; ii < 1024; ++ii) {
+    std::ostringstream os;
+    os << "Code " << ii;
+    code[ii] = os.str();
+  }
   code[P_OK] = "P_OK";
   code[P_ILLEGAL] = "P_ILLEGAL";
   code[P_OVERFLOW] = "P_OVERFLOW";
@@ -39,6 +44,8 @@ int main(int argc, char * argv[]) {
   code[P_STR_OVERFLOW] = "P_STR_OVERFLOW";
   code[P_STR_INVALID] = "P_STR_INVALID";
   code[P_STR_NULL] = "P_STR_NULL";
+  code[P_INFINITE] = "P_INFINITE";
+  code[P_UNDEFINED] = "P_UNDEFINED";
   code[P_UNEXPECTED] = "P_UNEXPECTED";
   code[ERROR_UNDETECTED] = "ERROR_UNDETECTED";
   code[BAD_CONVERTED_VALUE] = "BAD_CONVERTED_VALUE";
@@ -307,6 +314,55 @@ int main(int argc, char * argv[]) {
     // Test assignment methods from primitives. (Not exhaustive).
     par_bool3.From("0");
     try {
+      par_bool3 = 100; sLine = __LINE__;
+      std::cerr << "ERROR: Test par_bool3 = 100 at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_OVERFLOW != x.Code()) {
+        std::cerr << "ERROR: Test par_bool3 = 100 at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_OVERFLOW] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (par_bool3.Value().compare("true")) {
+      std::cerr << "ERROR: Test par_bool3 = 100 at line " << sLine << " produced result \"" << par_bool3.Value() << "\", not \"" << "true" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_int3.From("0");
+    try {
+      par_int3 = 1000000000u; sLine = __LINE__;
+      std::cerr << "ERROR: Test par_int3 = 1000000000u at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_SIGNEDNESS != x.Code()) {
+        std::cerr << "ERROR: Test par_int3 = 1000000000u at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_SIGNEDNESS] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (par_int3.Value().compare("1000000000")) {
+      std::cerr << "ERROR: Test par_int3 = 1000000000u at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "1000000000" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_real3.From("0");
+    try {
+      par_real3 = -2000000000; sLine = __LINE__;
+      std::cerr << "ERROR: Test par_real3 = -2000000000 at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_PRECISION != x.Code()) {
+        std::cerr << "ERROR: Test par_real3 = -2000000000 at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_PRECISION] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (par_real3.Value().compare("-2000000000")) {
+      std::cerr << "ERROR: Test par_real3 = -2000000000 at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "-2000000000" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test more assignment methods from primitives. (Not exhaustive).
+    par_bool3.From("0");
+    try {
       par_bool3 = 1; sLine = __LINE__;
     } catch (const Hexception & x) {
       std::cerr << "ERROR: Test par_bool3 = 1 at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
@@ -317,6 +373,31 @@ int main(int argc, char * argv[]) {
       std::cerr << "ERROR: Test par_bool3 = 1 at line " << sLine << " produced result \"" << par_bool3.Value() << "\", not \"" << "true" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
+    par_int3.From("0");
+    try {
+      par_int3 = -1000000000; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_int3 = -1000000000 at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_int3.Value().compare("-1000000000")) {
+      std::cerr << "ERROR: Test par_int3 = -1000000000 at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "-1000000000" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_real3.From("0");
+    try {
+      par_real3 = -2.e32; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_real3 = -2.e32 at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_real3.Value().compare("-2e+32")) {
+      std::cerr << "ERROR: Test par_real3 = -2.e32 at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "-2e+32" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test still more assignment methods from primitives. (Not exhaustive).
     par_int3.From("0");
     try {
       par_int3 = -1.2345678e3; sLine = __LINE__;
@@ -333,16 +414,334 @@ int main(int argc, char * argv[]) {
       std::cerr << "ERROR: Test par_int3 = -1.2345678e3 at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "-1234" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
-    par_real3.From("0");
+    // Test assignment methods from undefined primitives..
+    par_bool3.From("0");
     try {
-      par_real3 = -2.e32; sLine = __LINE__;
+      par_bool3 = "Indef"; sLine = __LINE__;
     } catch (const Hexception & x) {
-      std::cerr << "ERROR: Test par_real3 = -2.e32 at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << "ERROR: Test par_bool3 = \"Indef\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
       std::cerr << x.what() << std::endl;
       SetGlobalStatus(x.Code());
     }
-    if (par_real3.Value().compare("-2e+32")) {
-      std::cerr << "ERROR: Test par_real3 = -2.e32 at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "-2e+32" << "\"." << std::endl;
+    if (par_bool3.Value().compare("undefined")) {
+      std::cerr << "ERROR: Test par_bool3 = \"Indef\" at line " << sLine << " produced result \"" << par_bool3.Value() << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_char_p3.From("0");
+    try {
+      par_char_p3 = "inDef"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3 = \"inDef\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_char_p3.Value().compare("inDef")) {
+      std::cerr << "ERROR: Test par_char_p3 = \"inDef\" at line " << sLine << " produced result \"" << par_char_p3.Value() << "\", not \"" << "inDef" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_int3.From("0");
+    try {
+      par_int3 = "undefined"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_int3 = \"undefined\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_int3.Value().compare("undefined")) {
+      std::cerr << "ERROR: Test par_int3 = \"undefined\" at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_real3.From("0");
+    try {
+      par_real3 = "undefined"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_real3 = \"undefined\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_real3.Value().compare("undefined")) {
+      std::cerr << "ERROR: Test par_real3 = \"undefined\" at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test "To" methods when value is undefined.
+    std_string = "";
+    try {
+      par_bool3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_UNDEFINED != x.Code()) {
+        std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_UNDEFINED] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("undefined")) {
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_char_p3.To(std_string); sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (std_string.compare("inDef")) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "inDef" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_int3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_UNDEFINED != x.Code()) {
+        std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_UNDEFINED] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("undefined")) {
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_real3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_UNDEFINED != x.Code()) {
+        std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_UNDEFINED] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("undefined")) {
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "undefined" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test assignment methods from "infinite" values..
+    par_bool3.From("0");
+    try {
+      par_bool3 = "infinity"; sLine = __LINE__;
+      std::cerr << "ERROR: Test par_bool3 = \"infinity\" at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_STR_INVALID != x.Code()) {
+        std::cerr << "ERROR: Test par_bool3 = \"infinity\" at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_STR_INVALID] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (par_bool3.Value().compare("false")) {
+      std::cerr << "ERROR: Test par_bool3 = \"infinity\" at line " << sLine << " produced result \"" << par_bool3.Value() << "\", not \"" << "false" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_char_p3.From("0");
+    try {
+      par_char_p3 = "inF"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3 = \"inF\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_char_p3.Value().compare("inF")) {
+      std::cerr << "ERROR: Test par_char_p3 = \"inF\" at line " << sLine << " produced result \"" << par_char_p3.Value() << "\", not \"" << "inF" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_int3.From("0");
+    try {
+      par_int3 = "inF"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_int3 = \"inF\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_int3.Value().compare("infinity")) {
+      std::cerr << "ERROR: Test par_int3 = \"inF\" at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_real3.From("0");
+    try {
+      par_real3 = "Inf"; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_real3 = \"Inf\" at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_real3.Value().compare("infinity")) {
+      std::cerr << "ERROR: Test par_real3 = \"Inf\" at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test "To" methods when value is infinite.
+    std_string = "";
+    try {
+      par_bool3.To(std_string); sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (std_string.compare("false")) {
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "false" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_char_p3.To(std_string); sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (std_string.compare("inF")) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "inF" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_int3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_INFINITE != x.Code()) {
+        std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_INFINITE] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("infinity")) {
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_real3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_INFINITE != x.Code()) {
+        std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_INFINITE] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("infinity")) {
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test assignment methods from "nan" values..
+    par_bool3.From("0");
+    try {
+      par_bool3 = "Nan";; sLine = __LINE__;
+      std::cerr << "ERROR: Test par_bool3 = \"Nan\"; at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_STR_INVALID != x.Code()) {
+        std::cerr << "ERROR: Test par_bool3 = \"Nan\"; at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_STR_INVALID] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (par_bool3.Value().compare("false")) {
+      std::cerr << "ERROR: Test par_bool3 = \"Nan\"; at line " << sLine << " produced result \"" << par_bool3.Value() << "\", not \"" << "false" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_char_p3.From("0");
+    try {
+      par_char_p3 = "nAn";; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3 = \"nAn\"; at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_char_p3.Value().compare("nAn")) {
+      std::cerr << "ERROR: Test par_char_p3 = \"nAn\"; at line " << sLine << " produced result \"" << par_char_p3.Value() << "\", not \"" << "nAn" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_int3.From("0");
+    try {
+      par_int3 = "naN";; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_int3 = \"naN\"; at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_int3.Value().compare("infinity")) {
+      std::cerr << "ERROR: Test par_int3 = \"naN\"; at line " << sLine << " produced result \"" << par_int3.Value() << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    par_real3.From("0");
+    try {
+      par_real3 = "NaN";; sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_real3 = \"NaN\"; at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (par_real3.Value().compare("infinity")) {
+      std::cerr << "ERROR: Test par_real3 = \"NaN\"; at line " << sLine << " produced result \"" << par_real3.Value() << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    // Test "To" methods when value is nan.
+    std_string = "";
+    try {
+      par_bool3.To(std_string); sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (std_string.compare("false")) {
+      std::cerr << "ERROR: Test par_bool3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "false" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_char_p3.To(std_string); sLine = __LINE__;
+    } catch (const Hexception & x) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << "." << std::endl;
+      std::cerr << x.what() << std::endl;
+      SetGlobalStatus(x.Code());
+    }
+    if (std_string.compare("nAn")) {
+      std::cerr << "ERROR: Test par_char_p3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "nAn" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_int3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_INFINITE != x.Code()) {
+        std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_INFINITE] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("infinity")) {
+      std::cerr << "ERROR: Test par_int3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "infinity" << "\"." << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    }
+    std_string = "";
+    try {
+      par_real3.To(std_string); sLine = __LINE__;
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " did not throw an exception." << std::endl;
+      SetGlobalStatus(ERROR_UNDETECTED);
+    } catch (const Hexception & x) {
+      if (P_INFINITE != x.Code()) {
+        std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " threw exception " << code[x.Code()] << ", not " << code[P_INFINITE] << "." << std::endl;
+        std::cerr << x.what() << std::endl;
+        SetGlobalStatus(ERROR_UNDETECTED);
+      }
+    }
+    if (std_string.compare("infinity")) {
+      std::cerr << "ERROR: Test par_real3.To(std_string) at line " << sLine << " produced result \"" << std_string << "\", not \"" << "infinity" << "\"." << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
 

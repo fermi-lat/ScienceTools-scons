@@ -47,7 +47,9 @@ namespace hoops {
     P_STR_INVALID = 8,     // Attempt to convert a string which did not
                            // contain a number.
     P_STR_NULL = 9,        // Attempt to convert from a null string.
-    P_UNEXPECTED = 10      // (Not thrown) An error occurred which does
+    P_INFINITE = 10,       // Converted an infinite string to a numeric value.
+    P_UNDEFINED = 11,      // Converted an "undefined" string to a numeric value.
+    P_UNEXPECTED = 12      // (Not thrown) An error occurred which does
                            // not fit into one of the other categories.
   };
   //////////////////////////////////////////////////////////////////////////////
@@ -95,6 +97,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.8  2008/07/29 15:41:58  peachey
+ * Add codes to cover infinite and undefined values.
+ *
  * Revision 1.7  2004/03/12 15:39:38  peachey
  * Add more flexible formatting, to allow subclasses to
  * change the way the message is constructed. Construct the message during

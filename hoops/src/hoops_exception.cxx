@@ -64,6 +64,12 @@ namespace hoops {
         case P_STR_NULL:
           mMsg += "attempt to convert a null string";
           break;
+        case P_INFINITE:
+          mMsg += "converted a string meaning infinity";
+          break;
+        case P_UNDEFINED:
+          mMsg += "converted a string meaning undefined";
+          break;
         case PAR_INVALID_TYPE:
           mMsg += "parameter type field (f, r, b, etc.) is invalid";
           break;
@@ -108,6 +114,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.3  2008/07/29 15:41:59  peachey
+ * Add codes to cover infinite and undefined values.
+ *
  * Revision 1.2  2004/03/12 15:39:47  peachey
  * Add more flexible formatting, to allow subclasses to
  * change the way the message is constructed. Construct the message during

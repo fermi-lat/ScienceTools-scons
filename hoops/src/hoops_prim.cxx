@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
+#include <cctype>
 #include <cerrno>
 #include <cmath>
 #include <cstdio>
@@ -49,6 +50,29 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   class Conv {
     public:
+      static std::string TrimSpaceUpperCase(const std::string & s) {
+        std::string::const_iterator begin = s.begin();
+        std::string::const_iterator end = s.end();
+        // Trim leading space.
+        for (; begin != end && 0 != std::isspace(*begin); ++begin);
+        // Trim trailing space.
+        for (; begin != end && 0 != std::isspace(*(end-1)); --end);
+        // Copy non-blank portion.
+        std::string new_s(begin, end);
+        // Convert to upper case.
+        for (std::string::iterator itor = new_s.begin();
+          itor != new_s.end(); ++itor) *itor = std::toupper(*itor);
+        return new_s;
+      }
+      static bool IsInfinite(const std::string & s) {
+        if ("INF" == s || "INFINITY" == s || "NAN" == s) return true;
+        return false;
+      }
+      static bool IsUndefined(const std::string & s) {
+        if ("INDEF" == s || "NONE" == s || "UNDEF" == s || "UNDEFINED" == s)
+          return true;
+        return false;
+      }
       static void Convert(const bool & s, bool & d) { d = s; }
       static void Convert(const bool & s, char & d) { d = s; }
       static void Convert(const bool & s, signed char & d) { d = s; }
@@ -809,6 +833,11 @@ namespace hoops {
         { char buf[128]; sprintf(buf, sLongDoubleFormat, s); d = buf; }
 
       static void Convert(const std::string & s, bool & d) {
+        // Check for undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         if (!strcasecmp(s.c_str(), "yes") || !strcasecmp(s.c_str(), "y") ||
           !strcasecmp(s.c_str(), "true") || !strcasecmp(s.c_str(), "t") ||
           !strcasecmp(s.c_str(), "1")) d = true;
@@ -820,6 +849,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, char & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -842,6 +878,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, signed char & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -863,6 +906,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, signed short & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -884,6 +934,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, signed int & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         signed long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -905,6 +962,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, signed long & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         signed long val = strtol(s.c_str(), &r, 0);
@@ -919,6 +983,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, unsigned char & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -940,6 +1011,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, unsigned short & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -961,6 +1039,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, unsigned int & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         unsigned long tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -982,6 +1067,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, unsigned long & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         unsigned long val = strtoul(s.c_str(), &r, 0);
@@ -996,6 +1088,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, float & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         double tmpval; // Prevent spurious Visual Studio 7.0 compiler bug.
@@ -1017,6 +1116,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, double & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         double val = strtod(s.c_str(), &r);
@@ -1031,6 +1137,13 @@ namespace hoops {
         }
       }
       static void Convert(const std::string & s, long double & d) {
+        // Check for infinite or undefined values at the outset.
+        std::string s_uc(TrimSpaceUpperCase(s));
+        if (IsInfinite(s_uc)) {
+          throw Hexception(P_INFINITE, "", __FILE__, __LINE__);
+        } else if (IsUndefined(s_uc)) {
+          throw Hexception(P_UNDEFINED, "", __FILE__, __LINE__);
+        }
         char * r = 0;
         errno = 0;
         double val = strtod(s.c_str(), &r);
@@ -1198,6 +1311,10 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.16  2008/07/29 15:57:57  peachey
+ * Check for infinite and undefined values when converting from strings
+ * and throw exceptions when found.
+ *
  * Revision 1.15  2004/09/24 17:54:34  peachey
  * Correct rules for determining underflows.
  *

@@ -199,8 +199,13 @@ namespace hoops {
       }
 
       template <typename T>
-      static void ConvertTo (IPrim * const src, T & p)
-        { if (src) src->To(p); else p = T(); }
+      void ConvertTo (IPrim * const src, T & p) const {
+        if (P_INFINITE == mStatus)
+          throw Hexception(P_INFINITE, "Attempt to convert infinite parameter to value", __FILE__, __LINE__);
+        else if (P_UNDEFINED == mStatus)
+          throw Hexception(P_UNDEFINED, "Attempt to convert undefined parameter to value", __FILE__, __LINE__);
+        if (src) src->To(p); else p = T();
+      }
 
     private:
       std::string mName;
@@ -212,6 +217,7 @@ namespace hoops {
       std::string mPrompt;
       std::string mComment;
       mutable std::string mValString;
+      int mStatus;
   };
 
   class EXPSYM ParFactory : public IParFactory {
@@ -244,6 +250,11 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.14  2008/07/29 15:49:30  peachey
+ * Add a status member variable and use it to track
+ * whether the parameter was last assigned from an undefined or
+ * infinite value.
+ *
  * Revision 1.13  2004/03/24 16:58:56  peachey
  * Improve messages in thrown exceptions.
  *
