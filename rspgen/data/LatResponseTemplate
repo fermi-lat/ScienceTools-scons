@@ -30,6 +30,7 @@ INSTRUME =                  LAT / Instrument name
 FILTER   =                      / Instrument filter in use
 CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
 DETCHANS =                    0 / Total number of detector channels available
+LO_THRES =                  0.0 / Lower threshold for stored matrix
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Indicating this is a response
 HDUCLAS2 =           RSP_MATRIX / Indicating this is a response matrix
