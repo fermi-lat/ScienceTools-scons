@@ -9,8 +9,8 @@ algorithm,     s, a, "PHA2", CCUBE|CMAP|LC|PHA1|PHA2, , "Type of output file"
 #-------------------------------------------------------------------------------
 # Energy binning parameters.
 ebinalg,       s, a, "LOG", FILE|LIN|LOG, , "Algorithm for defining energy bins"
-emin,          r, a, , , , "Start value for first energy bin in MeV"
-emax,          r, a, , , , "Stop value for last energy bin in MeV"
+emin,          r, a, 30, , , "Start value for first energy bin in MeV"
+emax,          r, a, 200000, , , "Stop value for last energy bin in MeV"
 enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
 denergy,       r, a, , , , "Width of linearly uniform energy bins in MeV"
 ebinfile,      f, a, "NONE", , , "Name of the file containing the energy bin definition"
@@ -39,7 +39,7 @@ yref,          r, a, , , , "Second coordinate of image center in degrees (DEC or
 axisrot,       r, a, 0., , , "Rotation angle of image axis, in degrees"
 rafield,       s, h, "RA", , ,"First coordinate field to bin"
 decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
-proj,          s, a, "AIT", AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN, , "Projection method"
+proj,          s, a, "AIT", , , "Projection method e.g. AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN:"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------

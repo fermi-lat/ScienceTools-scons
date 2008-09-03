@@ -5,7 +5,7 @@
     Some explanations of the classes. The evtbin application behaves like a number of similar tasks.
     For example, it can create light curves as well as single and multiple spectra. Each one of these tasks
     could itself be a separate application, albeit with similar input parameters and algorithms. Therefore, for
-    each specific task behavior of evtbin, there is a specific application class: LightCurveApp, SimpleSpectrumApp,
+    each specific task behavior of evtbin, there is a specific application class: LightCurveApp, SingleSpectrumApp,
     etc. However, these have a great deal in common, so they derive from a common base class EvtBinAppBase,
     to reduce redundancy. (EvtBinAppBase in turn derives from st_app::StApp.) In addition, there is a master
     application class, EvtBin, which derives directly from st_app::StApp, but merely determines which of the other
@@ -134,7 +134,7 @@ class EvtBinAppBase : public st_app::StApp {
 };
 
 /** \class CountCubeApp
-    \brief Light curve specific binning application.
+    \brief Count Cube specific binning application.
 */
 class CountCubeApp : public EvtBinAppBase {
   public:
@@ -200,7 +200,7 @@ class CountCubeApp : public EvtBinAppBase {
 };
 
 /** \class CountMapApp
-    \brief Light curve specific binning application.
+    \brief Count Map specific binning application.
 */
 class CountMapApp : public EvtBinAppBase {
   public:
@@ -285,12 +285,12 @@ class LightCurveApp : public EvtBinAppBase {
     }
 };
 
-/** \class SimpleSpectrumApp
+/** \class SingleSpectrumApp
     \brief Single spectrum-specific binning application.
 */
-class SimpleSpectrumApp : public EvtBinAppBase {
+class SingleSpectrumApp : public EvtBinAppBase {
   public:
-    SimpleSpectrumApp(const std::string & app_name): EvtBinAppBase(app_name) {}
+    SingleSpectrumApp(const std::string & app_name): EvtBinAppBase(app_name) {}
 
     virtual void parPrompt(st_app::AppParGroup & pars) {
       // Call base class prompter for standard universal parameters.
@@ -303,7 +303,7 @@ class SimpleSpectrumApp : public EvtBinAppBase {
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars);
 };
 
-evtbin::DataProduct * SimpleSpectrumApp::createDataProduct(const st_app::AppParGroup & pars) {
+evtbin::DataProduct * SingleSpectrumApp::createDataProduct(const st_app::AppParGroup & pars) {
   using namespace evtbin;
 
   // Create binner.
@@ -446,7 +446,7 @@ class GtBinApp : public st_app::StApp {
       if (0 == algorithm.compare("CCUBE")) app.reset(new CountCubeApp("gtbin"));
       else if (0 == algorithm.compare("CMAP")) app.reset(new CountMapApp("gtbin"));
       else if (0 == algorithm.compare("LC")) app.reset(new LightCurveApp("gtbin"));
-      else if (0 == algorithm.compare("PHA1")) app.reset(new SimpleSpectrumApp("gtbin"));
+      else if (0 == algorithm.compare("PHA1")) app.reset(new SingleSpectrumApp("gtbin"));
       else if (0 == algorithm.compare("PHA2")) app.reset(new MultiSpectraApp("gtbin"));
       else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
 

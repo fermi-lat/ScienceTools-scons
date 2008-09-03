@@ -26,6 +26,12 @@ namespace evtbin {
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
 
+    // Collect any/all needed keywords from the ebounds extension.
+    // But do not fail if ebounds isn't there.  This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "EBOUNDS");
+    } catch (...){}
+
     // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file_cont, m_event_table);
 
@@ -63,17 +69,24 @@ namespace evtbin {
     // Resize counts field: number of elements must be the same as the number of bins in the energy binner.
     (*table_itor)["CHANNEL"].setNumElements(num_energy_bins);
     (*table_itor)["COUNTS"].setNumElements(num_energy_bins);
+    (*table_itor)["STAT_ERR"].setNumElements(num_energy_bins);
     
     // Resize table: number of records in output file must == the number of bins in the time binner.
     output_table->setNumRecords(num_time_bins);
 
     long * channel = new long[num_energy_bins];
+    double * staterr = new double[num_energy_bins];
     for (long index = 0; index != num_energy_bins; ++index) channel[index] = index + 1;
 
     // Iterate over bin number and output table iterator, writing fields in order.
+    double total_counts=0;
+    double total_counts2=0;
     for (long index = 0; index != num_time_bins; ++index, ++table_itor) {
       // Get interval of this time bin.
       const Binner::Interval & time_int = time_binner->getInterval(index);
+
+      // Calculate STAT_ERR for current time bin.
+      for (long index2 = 0; index2 != num_energy_bins; ++index2) staterr[index2] = calcStatErr(m_hist[index][index2]);
 
       // Record time binning information.
       (*table_itor)["TSTART"].set(time_int.begin());
@@ -87,6 +100,14 @@ namespace evtbin {
 
       // Number of counts in each bin, from the histogram.
       (*table_itor)["COUNTS"].set(&(m_hist[index][0]), &(m_hist[index][num_energy_bins]), 0);
+            
+      // Keep a running total of binned counts for current spectrum.
+      for (long index2 = 0; index2 != num_energy_bins; ++index2) total_counts+=m_hist[index][index2];
+      // And the total for all spectrums.
+      total_counts2+=total_counts;
+
+      //Statistical Error
+      (*table_itor)["STAT_ERR"].set(staterr, staterr + num_energy_bins, 0);
 
       // Create a Gti object which contains just the current time interval.
       Gti gti;
@@ -101,12 +122,27 @@ namespace evtbin {
       // Use the single spectrum to compute exposure for the current spectrum, in a manner similar
       // to keywords for a single spectrum.
       (*table_itor)["EXPOSURE"].set(spec.computeExposure(m_sc_file, m_sc_table));
+
+      // Then check for GBM deadtime for each spectrum.
+      KeyValuePairCont_t::iterator found2 = m_key_value_pairs.find("EVT_DEAD");
+      if (m_key_value_pairs.end() != found2 && !found2->second.empty()) {
+	double deadtime;
+	found2->second.getValue(deadtime);
+	double gbm_exposure=(gti.computeOntime())-(total_counts*deadtime);
+	(*table_itor)["EXPOSURE"].set(gbm_exposure);
+      }
+      total_counts=0;
     }
 
     delete [] channel;
+    delete [] staterr;
 
     // Write the EBOUNDS extension.
     writeEbounds(out_file, m_ebounds);
+
+    // Check for and if needed make gbm specific correction for deadtime.
+    // This is for the total exposure in the headers.
+    gbmExposure(total_counts2, out_file);
 
     // Write GTI extension.
     writeGti(out_file);

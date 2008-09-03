@@ -10,16 +10,26 @@
 #include "st_facilities/Env.h"
 
 #include "facilities/commonUtilities.h"
+#include "facilities/Util.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+#include "tip/Header.h"
+
+// Identify cvs version tag.
+const std::string s_cvs_id("$Name$");
 
 class BinMakerApp : public st_app::StApp {
   public:
+    BinMakerApp();
     virtual void run();
-
     virtual void prompt(st_app::AppParGroup & pars);
 };
+
+BinMakerApp::BinMakerApp(){
+  setName("gtbindef");
+  setVersion(s_cvs_id);
+}
 
 void BinMakerApp::run() {
   // Get parameters.
@@ -69,6 +79,22 @@ void BinMakerApp::run() {
 
   file_svc.createFile(out_file, template_file);
 
+  // Update keywords using tip so we have valid fits file.
+  // Put time in FITS Standard, borrowed from tip/header formatTime
+  char string_time[] = "YYYY-MM-DDThh:mm:ss";
+  std::time_t now = std::time(0);
+  struct tm * loc_time = std::localtime(&now);
+  std::strftime(string_time, sizeof(string_time), "%Y-%m-%dT%H:%M:%S", loc_time);
+  Header::KeyValCont_t keywords;
+  keywords.push_back(Header::KeyValPair_t("CREATOR", "gtbindef"));
+  keywords.push_back(Header::KeyValPair_t("FILENAME", facilities::Util::basename(out_file)));
+  keywords.push_back(Header::KeyValPair_t("DATE", string_time));
+  keywords.push_back(Header::KeyValPair_t("DATE-OBS", string_time));
+  keywords.push_back(Header::KeyValPair_t("DATE-END", string_time));
+
+  // Update output header with these keywords.
+  IFileSvc::instance().updateKeywords(out_file, keywords);
+
   // Populate output table.
   std::auto_ptr<Table> out_table(file_svc.editTable(out_file, table_name));
 
@@ -106,4 +132,4 @@ void BinMakerApp::prompt(st_app::AppParGroup & pars) {
   pars.Save();
 }
 
-st_app::StAppFactory<BinMakerApp> g_factory;
+st_app::StAppFactory<BinMakerApp> g_factory("gtbindef");

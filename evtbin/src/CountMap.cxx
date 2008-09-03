@@ -34,6 +34,7 @@ namespace evtbin {
     const std::string & sc_table, double ref_ra, double ref_dec, const std::string & proj,
     unsigned long num_x_pix, unsigned long num_y_pix, double pix_scale, double axis_rot, bool use_lb,
     const std::string & ra_field, const std::string & dec_field, const Gti & gti):
+
     DataProduct(event_file, event_table, gti), m_hist(
       //LinearBinner(- (long)(num_x_pix) / 2., num_x_pix / 2., 1., ra_field),
       //LinearBinner(- (long)(num_y_pix) / 2., num_y_pix / 2., 1., dec_field)
@@ -51,7 +52,16 @@ namespace evtbin {
     m_cdelt[0] = -pix_scale;
     m_cdelt[1] = pix_scale;
 
-    m_proj = new astro::SkyProj(proj, m_crpix, m_crval, m_cdelt, m_axis_rot, m_use_lb);
+    // Make sure Projection name is not longer than 3 characters. Most 
+    // errors are handled by wcslib, but very long names can cause segfailt.
+    if (proj.length() > 3) throw std::runtime_error("Projection names longer than 3 characters are not permitted.");
+    // proj is a const so we need a new string to use.
+    std::string proj2;
+    proj2=proj;
+    // For user convenience make it uppercase to work with wcslib.
+    std::transform(proj2.begin(),proj2.end(),proj2.begin(),::toupper);
+
+    m_proj = new astro::SkyProj(proj2, m_crpix, m_crval, m_cdelt, m_axis_rot, m_use_lb);
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
     //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
     //  ref_dec * pix_scale, -pix_scale, pix_scale, axis_rot * pi / 180., m_use_lb);

@@ -43,6 +43,8 @@ namespace evtbin {
 
       virtual Gti * createGti(const st_app::AppParGroup & par_group) const;
 
+      virtual void timeParDefaults(st_app::AppParGroup & par_group, const std:: string & timevalue) const;
+
       virtual void parPrompt(st_app::AppParGroup & par_group, const std::string & alg, const std::string & in_field,
         const std::string & bin_begin, const std::string & bin_end, const std::string & bin_size, const std::string & num_bins,
         const std::string & bin_file, const std::string & sn_ratio = "", const std::string & lc_emin = "",

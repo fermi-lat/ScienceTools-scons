@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <cmath>
 
 #include "GlastGbmBinConfig.h"
 #include "GlastLatBinConfig.h"
@@ -133,6 +134,21 @@ namespace evtbin {
     return new Gti(par_group["evfile"]);
   }
 
+  void BinConfig::timeParDefaults(st_app::AppParGroup & par_group, const std::string & timevalue) const {
+    // In the case of INDEF, UNDEF, or a null value, get value from the original fits header.
+    double headerTime;
+    std::string timevalUpper;
+    timevalUpper=timevalue;
+    for (std::string::iterator itor = timevalUpper.begin(); itor != timevalUpper.end(); ++itor) *itor = toupper(*itor);
+    try {
+      par_group.Prompt(timevalue);
+    }catch(const hoops::Hexception &){
+      std::auto_ptr<const tip::Extension> table(tip::IFileSvc::instance().readExtension(par_group["evfile"].Value(), "EVENTS"));
+      table->getHeader()[timevalUpper].get(headerTime);
+      par_group[timevalue]=headerTime;
+    }
+  }
+
   void BinConfig::parPrompt(st_app::AppParGroup & par_group, const std::string & alg, const std::string & in_field,
     const std::string & bin_begin, const std::string & bin_end, const std::string & bin_size, const std::string & num_bins,
     const std::string & bin_file, const std::string & sn_ratio, const std::string & lc_emin, const std::string & lc_emax) const {
@@ -148,9 +164,19 @@ namespace evtbin {
 
     if (bin_type == "LIN") {
       // Get remaining parameters needed for linearly uniform interval binner.
-      par_group.Prompt(bin_begin);
-      par_group.Prompt(bin_end);
+      if (bin_begin == "tstart") {
+	timeParDefaults(par_group,bin_begin);
+	timeParDefaults(par_group,bin_end);
+      } else {
+	par_group.Prompt(bin_begin);
+	par_group.Prompt(bin_end);
+      }
       par_group.Prompt(bin_size);
+      double begin = par_group[bin_begin];
+      double end = par_group[bin_end];
+      double size = par_group[bin_size];
+      if(size == 0) throw std::runtime_error("Bins must have non-zero width!");
+      if(ceil((end - begin)/size) > LONG_MAX) throw std::length_error("Number of bins exceeds max possible on this system!");
     } else if (bin_type == "LOG") {
       // Get remaining parameters needed for logarithmically uniform interval binner.
       par_group.Prompt(bin_begin);
@@ -160,8 +186,13 @@ namespace evtbin {
       // Get remaining parameters needed for user defined bins from a bin file.
       par_group.Prompt(bin_file);
     } else if (bin_type == "SNR") {
-      par_group.Prompt(bin_begin);
-      par_group.Prompt(bin_end);
+      if (bin_begin == "tstart") {
+	timeParDefaults(par_group,bin_begin);
+	timeParDefaults(par_group,bin_end);
+      } else {
+	par_group.Prompt(bin_begin);
+	par_group.Prompt(bin_end);
+      }
       par_group.Prompt(sn_ratio);
       par_group.Prompt(lc_emin);
       par_group.Prompt(lc_emax);

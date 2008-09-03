@@ -58,6 +58,7 @@ namespace evtbin {
     tip::Table::Iterator table_itor = output_table->begin();
 
     // Iterate over bin number and output table iterator, writing fields in order.
+    double total_counts=0;
     for (long index = 0; index != binner->getNumBins(); ++index, ++table_itor) {
       // Midpoint time of each bin, from the binner.
       (*table_itor)["TIME"].set(binner->getInterval(index).midpoint());
@@ -67,7 +68,16 @@ namespace evtbin {
 
       // Number of counts in each bin, from the histogram.
       (*table_itor)["COUNTS"].set(m_hist[index]);
+
+      //Keep a running total of binned counts.
+      total_counts+=m_hist[index];
+
+      //Statistical Error
+      (*table_itor)["ERROR"].set(calcStatErr(m_hist[index]));
     }
+
+    //Check for and if needed make gbm specific correction for deadtime.
+    gbmExposure(total_counts, out_file);
 
     // Write GTI extension.
     writeGti(out_file);

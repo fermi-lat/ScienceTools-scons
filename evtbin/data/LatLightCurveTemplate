@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatLightCurveTemplate,v 1.4 2005/04/05 21:06:39 peachey Exp 
 END
 
 ##################################################################################
@@ -21,6 +21,7 @@ NAXIS1   =                    0 / Number of bytes per row
 NAXIS2   =                    0 / Number of rows
 PCOUNT   =                    0 / Normally 0 (no varying arrays)
 GCOUNT   =                    1 / Required value
+ERROR    =                   0.0 / Statistical error
 TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =                 RATE / Extension name
 TELESCOP =                GLAST / Telescope or mission name
@@ -31,20 +32,21 @@ HDUCLAS2 =                TOTAL / Type of data stored
 HDUCLAS3 =                COUNT / Further details of type of data stored
 HDUVERS  =                1.2.0 / Version number of the format (this document describes version 1.2.0)
 EXPOSURE =                      / Total livetime in seconds
-FILTER   =                      / Instrument filter in use (if any)
+FILTER   =                 NONE / Instrument filter in use (if any)
 OBJECT   = ''                   / Observed object
 EQUINOX  =                 2000 / Equinox of RA & DEC specifications
 RADECSYS =                      / Coordinate frame used for EQUINOX
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
-MJDREF   =                      / MJD for reference time
+MJDREFI  =                      / Integer part of MJD
+MJDREFF  =                      / Fractional part of MJD
 TSTART   =                      / Start time of the light curve
 TSTOP    =                      / Stop time of the light curve
 TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / Unit for TSTART, TSTOP and TIMEZERO
 NDSKEYS  =                    0 / Number of data subspace keywords in header
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatLightCurveTemplate,v 1.4 2005/04/05 21:06:39 peachey Exp 
 
 # Column description
 
@@ -60,6 +62,8 @@ TTYPE#  COUNTS                  / Photon counts
 TFORM#  J                       / Data format of this field
 TUNIT#  Counts                  / Unit of this field
 
+TTYPE#  ERROR			/ Statistical error
+TFORM#  E			/ Data format of this field
 
 ################################################################################
 XTENSION =             BINTABLE / Binary table extension
@@ -73,7 +77,8 @@ TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =                  GTI / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
-MJDREF   =                      / MJD for reference time
+MJDREFI  =                      / Integer part of MJD
+MJDREFF  =                      / Fractional part of MJD
 TSTART   =                      / Lower bound of first GTI
 TSTOP    =                      / Upper bound of last GTI
 TIMEZERO =                    0 / Clock correction (if not zero)
@@ -86,7 +91,7 @@ HDUVERS  =                1.2.0 / Version of file format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatLightCurveTemplate,v 1.4 2005/04/05 21:06:39 peachey Exp 
 
 
 # Column description

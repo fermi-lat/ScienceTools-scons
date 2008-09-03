@@ -99,8 +99,9 @@ namespace evtbin {
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).
-    const char * keys[] = { "TELESCOP", "INSTRUME", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREF",
-      "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER" };
+    const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREFI",
+      "MJDREFF", "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER", 
+      "RESPFILE", "DETNAM", "DATATYPE", "RA_OBJ", "DEC_OBJ", "TRIGTIME", "PRIMTYPE", "EVT_DEAD" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
 
     // Get container of file names from the supplied input file.
@@ -141,6 +142,25 @@ namespace evtbin {
 
     // Update newly created file with keywords which were harvested from input data.
     updateKeywords(out_file);
+
+    // Look for and write some GBM specific keywords that we don't want in LAT Files
+    std::auto_ptr<tip::Extension> header(tip::IFileSvc::instance().editExtension(out_file, "Primary"));
+    KeyValuePairCont_t::iterator found;
+    std::vector <std::string> searchKeys;
+    std::vector <std::string>::iterator iter;
+    searchKeys.push_back("DETNAM");
+    searchKeys.push_back("DATATYPE");
+    searchKeys.push_back("RA_OBJ");
+    searchKeys.push_back("DEC_OBJ");
+    searchKeys.push_back("TRIGTIME");
+    searchKeys.push_back("PRIMTYPE");
+    for (iter=searchKeys.begin(); iter!=searchKeys.end(); iter++){
+      found = m_key_value_pairs.find(*iter);
+      if (!((*found).second.empty())) {
+	header->getHeader()[*iter].set((*found).second.getValue());
+	header->getHeader()[*iter].setComment((*found).second.getComment());
+      }
+    }
   }
 
   void DataProduct::writeGti(const std::string & out_file) const {
@@ -321,6 +341,19 @@ namespace evtbin {
 
     // Compute the ONTIME keyword.
     updateKeyValue("ONTIME", m_gti.computeOntime(), "Sum of all Good Time Intervals");
+  }
+
+  void DataProduct::gbmExposure(double total_counts, const std::string & out_file) const {
+    KeyValuePairCont_t::iterator found2 = m_key_value_pairs.find("EVT_DEAD");
+    // Only modify exposure if EVT_DEAD is found.
+    if (m_key_value_pairs.end() != found2 && !found2->second.empty()) {
+      double deadtime;
+      found2->second.getValue(deadtime);
+      double gbm_exposure=(m_gti.computeOntime())-(total_counts*deadtime);
+      updateKeyValue("EXPOSURE", gbm_exposure, "Integration time (in seconds) for the PHA data with GBM deadtime correction.");
+      // And actually write the keyword to the output file.
+      updateKeywords(out_file);
+    }
   }
 
   void DataProduct::updateKeywords(const std::string & file_name) const {
@@ -510,6 +543,23 @@ namespace evtbin {
 
     // Return formatted time string.
     return string_time;
+  }
+
+  double DataProduct::calcStatErr(double counts) const {
+    // Same initial values as the FITS Header template has.
+    double stat_err = 0.0;
+    // Cutoff below which we apply fudge factor.  Sort of arbitrary.
+    double minCount = 10.0;
+    // Gehrels Fudge factor.
+    double fudge = 0.75;
+
+    if (counts <= minCount) {
+      stat_err=std::sqrt(counts+fudge);
+    } else {
+      stat_err=std::sqrt(counts);
+    }
+
+    return stat_err;
   }
 
 }

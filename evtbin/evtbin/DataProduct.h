@@ -131,6 +131,13 @@ namespace evtbin {
       */
       void adjustTimeKeywords(const std::string & sc_file, const std::string & sc_table, const Binner * binner = 0);
 
+      /** \brief Test for gbm specific keyword for deadtime and adjusts exposure accordingly.
+	  \param total_counts total number of counts in the Exposure.
+	  \param out_file The name of the output file.
+      */
+
+      void gbmExposure(double, const std::string & out_file) const;
+
       /** \brief Update keywords in the given file, using this object's current set of key-value pairs. Every extension
                  of the file will be updated.
           \param file_name The name of the file to update.
@@ -149,6 +156,11 @@ namespace evtbin {
           \param time The time to convert.
       */
       std::string formatDateKeyword(const time_t & time) const;
+
+      /** \brief Calculate Statistical error in counts.
+	  \param Counts from m_hist
+      */
+      virtual double calcStatErr(double) const;
 
     protected:
       /** \brief Update a key-value pair, or add a new pair to the container of key-value pairs if it is not already present.

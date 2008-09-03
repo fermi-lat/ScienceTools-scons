@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id$
+HISTORY                     LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp
 END
 
 ##################################################################################
@@ -32,28 +32,29 @@ HDUCLAS3 =                COUNT / Further details of type of data stored
 HDUCLAS4 =               PHA:II / Single PHA dataset
 HDUVERS  =                1.2.0 / Version number of the format
 DETCHANS =                    0 / Total number of detector channels available
-POISSERR =                    T / Whether Poissonian errors are appropriate to the data
+POISSERR =                    F / Whether Poissonian errors are appropriate to the data
 #EXPOSURE =                      / Total livetime in seconds
 BACKFILE =                 NONE / Name of background file (if any)
 CORRFILE =                 NONE / Name of correction file (if any)
-CORRSCAL =                   1. / Correction scaling factor.
+CORRSCAL =                  1.0 / Correction scaling factor.
 RESPFILE =                 NONE / Name of redistribution matrix file (if any)
 ANCRFILE =                 NONE / Name of ancillary response file (if any)
-SYS_ERR  =                   0. / Fractional systematic error
+STAT_ERR  =                 0.0 / Statistical error
+SYS_ERR  =                  0.0 / Fractional systematic error
 QUALITY  =                    0 / Data quality flag
 GROUPING =                    0 / Data grouping flag
-AREASCAL =                   1. / Area scaling factor
-BACKSCAL =                   1. / Scaling factor to be applied to Bkgdfile
+AREASCAL =                  1.0 / Area scaling factor
+BACKSCAL =                  1.0 / Scaling factor to be applied to Bkgdfile
 CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
-FILTER   =                      / Instrument filter in use
+FILTER   =                 NONE / Instrument filter in use
 OBJECT   = ''                   / Observed object
-EQUINOX  =                2000. / Equinox of RA & DEC specifications
+EQUINOX  =               2000.0 / Equinox of RA & DEC specifications
 RADECSYS =                      / Nominal U.T. date when integration of this PHA data started
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 NDSKEYS =                     0 / Number of data subspace keywords in header
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
 
 
 
@@ -72,6 +73,9 @@ TFORM#  I                       / Data format of this field
 TTYPE#  COUNTS                  / Counts in each bin
 TFORM#  J                       / Data format of this field
 TUNIT#  Counts                  / Unit of this field
+
+TTYPE#  STAT_ERR                / Statistical error
+TFORM#  E                       / Data format of this field
 
 #TTYPE#  SYS_ERR                 / Fractional systematic error
 #TFORM#  E                       / Data format of this field
@@ -123,7 +127,7 @@ TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =              EBOUNDS / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
-FILTER   =                      / Instrument filter in use (if any)
+FILTER   =                 NONE / Instrument filter in use (if any)
 CHANTYPE =                   PI / Energy channel type
 DETCHANS =                      / Total number of detector channels available. 
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
@@ -133,7 +137,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
 
 
 TTYPE#  CHANNEL        / Raw channel number
@@ -164,7 +168,8 @@ HDUCLASS =                 OGIP / File format is OGIP standard
 HDUCLAS1 =                  GTI / Contains Good Time Intervals
 HDUVERS  =                1.2.0 / Version of file format
 ONTIME   =                      / Sum of all Good Time Intervals
-MJDREF   =                      / MJD for reference time
+MJDREFI  =                      / Integer part of MJD
+MJDREFF  =                      / Fractional part of MJD
 TSTART   =                      / Lower bound of first GTI
 TSTOP    =                      / Upper bound of last GTI
 EXPOSURE =                      / Total Livetime in seconds
@@ -173,7 +178,7 @@ TIMEUNIT =                    s / All times are in seconds unless specified othe
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$ 
+HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
 
 
 

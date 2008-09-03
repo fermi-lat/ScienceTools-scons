@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id$
+HISTORY                     LatTimeBinDef.tpl,v 1.2 2005/04/05 21:06:39 peachey Exp
 END
 
 
@@ -30,7 +30,6 @@ HDUCLASS =                 OGIP / File format is OGIP standard
 HDUCLAS1 =                  GTI / Contains Good Time Intervals
 HDUVERS  =                1.2.0 / Version of file format
 ONTIME   =                      / Sum of all Good Time Intervals
-MJDREF   =                      / MJD for reference time
 TSTART   =                      / Lower bound of first GTI
 TSTOP    =                      / Upper bound of last GTI
 EXPOSURE =                      / Total Livetime in seconds
@@ -39,7 +38,7 @@ TIMEUNIT =                    s / All times are in seconds unless specified othe
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$
+HISTORY                   LatTimeBinDef.tpl,v 1.2 2005/04/05 21:06:39 peachey Exp
 
 
 

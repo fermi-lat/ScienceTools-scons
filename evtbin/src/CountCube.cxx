@@ -52,6 +52,15 @@ namespace evtbin {
     m_cdelt[0] = -pix_scale;
     m_cdelt[1] = pix_scale;
 
+    // Make sure Projection name is not longer than 3 characters. Most 
+    // errors are handled by wcslib, but very long names can cause segfailt.
+    if (proj.length() > 3) throw std::runtime_error("Projection names longer than 3 characters are not permitted.");
+    // proj is a const so we need a new string to use.
+    std::string proj2;
+    proj2=proj;
+    // For user convenience make it uppercase to work with wcslib.
+    std::transform(proj2.begin(),proj2.end(),proj2.begin(),::toupper);
+
     m_proj = new astro::SkyProj(proj, m_crpix, m_crval, m_cdelt, m_axis_rot, m_use_lb);
     // Set up the projection. The minus sign in the X-scale is because RA is backwards.
     //astro::SkyDir::setProjection(ref_ra * pi / 180., ref_dec * pi / 180., type, ref_ra * pix_scale,
@@ -59,6 +68,12 @@ namespace evtbin {
 
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
+
+    // Collect any/all needed keywords from the ebounds extension.
+    // But do not fail if ebounds isn't there.  This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "EBOUNDS");
+    } catch (...){}
 
     // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file_cont, m_event_table);

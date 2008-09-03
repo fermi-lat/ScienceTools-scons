@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id$
+HISTORY                     LatEnergyBinDef.tpl,v 1.2 2005/04/05 21:06:39 peachey Exp
 END
 
 
@@ -26,7 +26,7 @@ TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =           ENERGYBINS / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
-FILTER   =                      / Instrument filter in use (if any)
+FILTER   =                 NONE / Instrument filter in use (if any)
 CHANTYPE =                   PI / Energy channel type
 DETCHANS =                      / Total number of detector channels available. 
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
@@ -36,7 +36,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                   $Id$
+HISTORY                   LatEnergyBinDef.tpl,v 1.2 2005/04/05 21:06:39 peachey Exp
 
 
 TTYPE#  CHANNEL        / Raw channel number
@@ -49,4 +49,3 @@ TUNIT#  keV            / Unit of this field
 TTYPE#  E_MAX          / Upper boundary of the detector channel
 TFORM#  1E             / Data format of this field
 TUNIT#  keV            / Unit of this field
-END

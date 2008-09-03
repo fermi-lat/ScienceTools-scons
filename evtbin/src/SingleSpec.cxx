@@ -25,6 +25,12 @@ namespace evtbin {
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
 
+    // Collect any/all needed keywords from the ebounds extension.
+    // But do not fail if ebounds isn't there.  This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "EBOUNDS");
+    } catch (...){}
+
     // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file_cont, m_event_table);
 
@@ -58,16 +64,26 @@ namespace evtbin {
     tip::Table::Iterator table_itor = output_table->begin();
 
     // Iterate over bin number and output table iterator, writing fields in order.
+    double total_counts=0;
     for (long index = 0; index != binner->getNumBins(); ++index, ++table_itor) {
       // Channel of each bin.
       (*table_itor)["CHANNEL"].set(index + 1);
 
       // Number of counts in each bin, from the histogram.
       (*table_itor)["COUNTS"].set(m_hist[index]);
+
+      //Keep a running total of binned counts.
+      total_counts+=m_hist[index];
+
+      //Statistical Error
+      (*table_itor)["STAT_ERR"].set(calcStatErr(m_hist[index]));
     }
 
     // Write the EBOUNDS extension.
     writeEbounds(out_file, m_ebounds);
+
+    //Check for and if needed make gbm specific correction for deadtime.
+    gbmExposure(total_counts, out_file);
 
     // Write GTI extension.
     writeGti(out_file);
