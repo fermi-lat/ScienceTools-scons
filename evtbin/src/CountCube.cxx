@@ -2,6 +2,7 @@
     \brief Encapsulation of a count map, with methods to read/write using tip.
     \author James Peachey, HEASARC
 */
+#include <algorithm>
 #include <iomanip>
 #include <memory>
 #include <sstream>
