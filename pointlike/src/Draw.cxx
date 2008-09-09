@@ -7,6 +7,8 @@ $Header$
 
 
 #include "pointlike/Draw.h"
+#include "pointlike/Data.h"
+
 #include "pointlike/PointSourceLikelihood.h"
 
 #include "astro/SkyDir.h"
@@ -41,6 +43,16 @@ Draw::Draw(const BinnedPhotonData& map, const skymaps::SkySpectrum* background, 
 , m_exposure(0) // default: do not apply
 , m_layers(1)
   , m_ts(ts)
+{}
+
+Draw::Draw(const Data& data)
+: m_map(data.map())
+, m_background(0)
+, m_galactic(true)
+, m_proj("")
+, m_exposure(0) // default: do not apply
+, m_layers(1)
+  , m_ts(false)
 {}
 
 void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel, 

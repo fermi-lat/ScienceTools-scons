@@ -16,16 +16,21 @@ namespace skymaps{ class BinnedPhotonData; class SkySpectrum;}
 
 namespace pointlike {
 
+    class Data;  // forward declaration
+
     //! @class Draw
     //! @brief manage creating images to FITS files from a BinnedPhotonData object
     class Draw {
     public:
 
+        //! @brief ctor sets data
       
-      Draw(const skymaps::BinnedPhotonData& map, 
-	   const skymaps::SkySpectrum* background = 0,
-	   bool ts = false);
-      
+        Draw(const skymaps::BinnedPhotonData& map, 
+            const skymaps::SkySpectrum* background = 0,
+            bool ts = false);
+
+        Draw(const Data& data);
+
         //! create FITS image file using the data
         //! @param dir center
         //! @param outputFile file to write
@@ -48,16 +53,16 @@ namespace pointlike {
         void use_exposure(const skymaps::SkySpectrum* exp){m_exposure=exp;}
 
         ///! will add layers with count map values
-        void set_layers(int n){m_layers=n;}
+        int set_layers(int n){int t = m_layers; m_layers=n; return t;}
 
     private:
         const skymaps::BinnedPhotonData& m_map;
-      const skymaps::SkySpectrum* m_background;
+        const skymaps::SkySpectrum* m_background;
         bool m_galactic;    ///< galactic or equatorial
         std::string m_proj; ///< projection (CAR, AIT, etc.)
         const skymaps::SkySpectrum * m_exposure; ///< exposure to use for normalization, if present. (energy?)
-      int m_layers;
-      bool m_ts;
+        int m_layers;
+        bool m_ts;
     };
 
 
