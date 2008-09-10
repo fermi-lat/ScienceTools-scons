@@ -2,11 +2,13 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <string>
 
 #include "pulsarDb/EphChooser.h"
 #include "pulsarDb/EphComputer.h"
+#include "pulsarDb/EphStatus.h"
 #include "pulsarDb/PulsarToolApp.h"
 
 #include "timeSystem/AbsoluteTime.h"
@@ -17,6 +19,9 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "st_stream/Stream.h"
+#include "st_stream/StreamFormatter.h"
+
 using namespace pulsarDb;
 using namespace timeSystem;
 
@@ -26,9 +31,12 @@ class PulsePhaseApp : public pulsarDb::PulsarToolApp {
   public:
     PulsePhaseApp();
     virtual void run();
+
+  private:
+    st_stream::StreamFormatter m_os;
 };
 
-PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp() {
+PulsePhaseApp::PulsePhaseApp(): pulsarDb::PulsarToolApp(), m_os("PulsePhaseApp", "", 2) {
   setName("gtpphase");
   setVersion(s_cvs_id);
 
@@ -134,6 +142,12 @@ void PulsePhaseApp::run() {
   bool vary_ra_dec = true;
   bool guess_pdot = false;
   initTimeCorrection(par_group, vary_ra_dec, guess_pdot, "START");
+
+  // Report ephemeris status.
+  std::set<EphStatusCodeType> code_to_report;
+  code_to_report.insert(Unavailable);
+  code_to_report.insert(Remarked);
+  reportEphStatus(m_os.warn(), code_to_report);
 
   // Reserve output column for creation if not existing in the event file(s).
   std::string phase_field = par_group["pphasefield"];
