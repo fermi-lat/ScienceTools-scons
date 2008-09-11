@@ -139,7 +139,7 @@ public:
 
 //%template(IntPair) std::pair<int,int>;
 //%template(IntPairVector) std::vector<std::pair<int,int> >;
-//%template(WeightedSkyDirVector) std::vector<skymaps::WeightedSkyDir>;
+%template(WeightedSkyDirVector) std::vector<skymaps::WeightedSkyDir>;
 
 %extend pointlike::PointSourceLikelihood{
    pointlike::SimpleLikelihood * __getitem__(size_t i){ 
