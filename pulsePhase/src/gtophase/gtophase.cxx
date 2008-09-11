@@ -62,6 +62,7 @@ void OrbitalPhaseApp::run() {
   par_group.Prompt("angtol");
   par_group.Prompt("ophasefield");
   par_group.Prompt("ophaseoffset");
+  par_group.Prompt("reportephstatus");
 
   par_group.Prompt("chatter");
   par_group.Prompt("clobber");

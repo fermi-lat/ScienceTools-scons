@@ -114,6 +114,7 @@ void PulsePhaseApp::run() {
   par_group.Prompt("pphasefield");
   par_group.Prompt("pphaseoffset");
   par_group.Prompt("leapsecfile");
+  par_group.Prompt("reportephstatus");
   par_group.Prompt("chatter");
   par_group.Prompt("clobber");
   par_group.Prompt("debug");
