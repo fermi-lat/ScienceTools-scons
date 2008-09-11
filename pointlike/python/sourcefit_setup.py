@@ -80,8 +80,8 @@ Diffuse.file='/u/gl/markusa/ki-disk/data/pointlike/uniform_background.fits.gz'
 
 
 SourceLikelihood.UseMinuit=1
-SourceLikelihood.UseSimplex=1
-SourceLikelihood.UseMinos=0
+SourceLikelihood.UseSimplex=0
+SourceLikelihood.UseMinos=1
 SourceLikelihood.UseGradient=1
 
 SourceLikelihood.umax=100.

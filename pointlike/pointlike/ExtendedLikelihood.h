@@ -69,7 +69,6 @@ namespace pointlike {
     //! @return (signal_fraction, error)
     std::pair<double,double> maximize();
     std::pair<double,double> maximizeMinuit();
-    std::pair<double,double> maximize(bool newStyle);
     
     int photons()const { return m_photon_count; } ///< number of photons used
     

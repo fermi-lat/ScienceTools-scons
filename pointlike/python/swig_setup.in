@@ -36,8 +36,12 @@
 
 #include "pointlike/PointSourceLikelihood.h"
 #include "pointlike/SimpleLikelihood.h"
+#include "pointlike/SourceLikelihood.h"
+#include "pointlike/ExtendedLikelihood.h"
+#include "pointlike/ExtendedSourcePDF.h"
 #include "pointlike/SourceFinder.h"
 #include "pointlike/Data.h"
+#include "pointlike/ResultsFile.h"
 #include "pointlike/Draw.h"
 #include "pointlike/DrawTS.h"
 #include "pointlike/SourceList.h"
@@ -206,7 +210,11 @@ public:
 
 %include $(POINTLIKEROOT)/pointlike/SimpleLikelihood.h
 %include $(POINTLIKEROOT)/pointlike/PointSourceLikelihood.h
+%include $(POINTLIKEROOT)/pointlike/ExtendedLikelihood.h
+%include $(POINTLIKEROOT)/pointlike/SourceLikelihood.h
+%include $(POINTLIKEROOT)/pointlike/ExtendedSourcePDF.h
 %include $(POINTLIKEROOT)/pointlike/Data.h
+%include $(POINTLIKEROOT)/pointlike/ResultsFile.h
 %include $(POINTLIKEROOT)/pointlike/SourceFinder.h
 %include $(POINTLIKEROOT)/pointlike/Draw.h
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
