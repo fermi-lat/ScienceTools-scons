@@ -84,6 +84,7 @@
 30-jan-2008    v2r0p5 JP  Fix typo in SConscript for unit test application.
 03-sep-2008      v2r1 JV  Integrate all changes since beta test from GSSC.
 09-sep-2008    v2r1p1 JP  Added #include <algorithm> where needed.
+11-sep-2008    v2r1p2 JV  Fix for gcc32 and MS VC.
 --------------------------------------------------------------------------------
 \endverbatim
 
