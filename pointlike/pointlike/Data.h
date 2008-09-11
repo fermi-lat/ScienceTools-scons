@@ -86,6 +86,7 @@ public:
 
     //! same as above, for python use
     const skymaps::BinnedPhotonData& map()const{return *m_data;}
+    skymaps::BinnedPhotonData& map() {return *m_data;}
 
 
     ~Data();

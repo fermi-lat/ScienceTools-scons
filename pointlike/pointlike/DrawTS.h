@@ -23,7 +23,7 @@ namespace pointlike {
   public:
     
     
-    DrawTS(const skymaps::BinnedPhotonData& map, 	   
+    DrawTS(skymaps::BinnedPhotonData& map, 	   
 	   const skymaps::SkySpectrum& background);
   
     //! create FITS image file using the data
@@ -42,7 +42,7 @@ namespace pointlike {
     void projection(std::string p){m_proj = p;} ///< set the projection
     
   private:
-    const skymaps::BinnedPhotonData& m_map;
+    skymaps::BinnedPhotonData& m_map;
     const skymaps::SkySpectrum& m_background;
     bool m_galactic;    ///< galactic or equatorial
     std::string m_proj; ///< projection (CAR, AIT, etc.)
