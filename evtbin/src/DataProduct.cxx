@@ -156,7 +156,7 @@ namespace evtbin {
     searchKeys.push_back("PRIMTYPE");
     for (iter=searchKeys.begin(); iter!=searchKeys.end(); iter++){
       found = m_key_value_pairs.find(*iter);
-      if (!((*found).second.empty())) {
+      if (m_key_value_pairs.end() != found && !found->second.empty()){
 	header->getHeader()[*iter].set((*found).second.getValue());
 	header->getHeader()[*iter].setComment((*found).second.getComment());
       }
