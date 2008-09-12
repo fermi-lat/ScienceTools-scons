@@ -3,6 +3,8 @@
    @brief package coordinator: J. Chiang <jchiang@slac.stanford.edu>
 
    @verbatim
+   v7r9     12-Sep-08    JC    move readXml.py and cleanXml.py to sane
+                               package; add PLSuperExpCutoff to ModelEditor
    v7r8p1   21-Nov-07    JC    use facilities.py_facilities.commonUtilities
    v7r8     04-Nov-07    JC    remove likeGui; add method to write
                                ds9 region file to extractSources.LikeSourceList
