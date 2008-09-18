@@ -5,6 +5,9 @@
 $Id$
 
 \verbatim
+17-sep-2008        v7 MH  Add support for ephemeris-related warning messages, such ephemeris gaps
+                          and glitches. Rationalize output FITS header and fill appropriate values.
+                          Clean ups and bug fixes, including JIRA PULS-45.
 09-sep-2008    v6r1p2 JP  Add #include <algorithm> to PulsarDb.cxx.
 08-sep-2008    v6r1p1 JP  Add timeformat_glast.tpl file, which was
                           omitted by mistake from the previous version.

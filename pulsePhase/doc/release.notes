@@ -46,5 +46,7 @@
     v6r0p3  29-jan-08   JP    Add pfiles installation to SConscript.
       v6r1  08-apr-08   JP    Internal change (removed pulsarDb::TimingModel).
       v6r2  14-aug-08   MH    Changed to work with timeSystem v4r1.
+        v7  17-sep-08   MH    Add support for ephemeris-related warning messages, such ephemeris gaps
+                              and glitches.
     @endverbatim
 */
