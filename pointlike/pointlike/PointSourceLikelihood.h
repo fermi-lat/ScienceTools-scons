@@ -79,6 +79,8 @@ public:
     /// @brief localate with iteration to refit the levels, using parameters set in ctor
     double localize();
 
+    double fit_localization(double err);
+
     std::string name()const{return m_name;}
 
     const astro::SkyDir& dir()const{return m_dir;}
