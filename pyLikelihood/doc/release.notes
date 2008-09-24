@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r6   24-Sep-08   JC    add flux, fluxError, energyFlux, energyFluxError
+                            methods (using Likelihood v13r18)
    v1r5p6 29-Aug-08   JC    update UpperLimits.py to use quadratic fit and
                             extrapolation for likelihood surface
    v1r5p5 18-Jun-08   JC    patch for undefined import error message in 
