@@ -151,7 +151,7 @@ class UnbinnedAnalysis(AnalysisBase):
         eMin, eMax = self.observation.roiCuts().getEnergyCuts()
         nee = 21
         estep = num.log(eMax/eMin)/(nee-1)
-        self.energies = eMin*num.exp(estep*num.arange(nee, type=num.Float))
+        self.energies = eMin*num.exp(estep*num.arange(nee, dtype=num.float))
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self._Nobs()
         self.disp = None
