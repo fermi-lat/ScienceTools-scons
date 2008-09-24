@@ -15,6 +15,7 @@ $Header$
 
 #include "skymaps/SkyImage.h"
 #include "skymaps/BinnedPhotonData.h"
+#include "skymaps/Band.h"
 #include "skymaps/SkySpectrum.h"
 
 using namespace pointlike;
@@ -64,40 +65,6 @@ void Draw::region(const astro::SkyDir& dir, std::string outputFile, double pixel
                 
     SkyImage image(dir, outputFile, pixel, fov, m_layers, proj,  m_galactic);
 
-    /// @class SkyDensity
-    /// @brief adapt a BinnedPhotonData to give density
-    class SkyDensity : public astro::SkyFunction
-    {
-        public:
-            SkyDensity(const BinnedPhotonData& data, bool smooth, int mincount
-                ,const skymaps::SkySpectrum* exposure):
-              m_data(data),
-              m_smooth(smooth),
-              m_mincount(mincount)
-              ,m_exposure(exposure)
-              {}
-
-              double operator()(const astro::SkyDir & sd) const 
-              {
-                  double  value;
-                  if (m_smooth)
-                    value = m_data.smoothDensity(sd, m_mincount);
-                  else
-                    value = m_data.density(sd);
-
-                  if(m_exposure!=0){
-                      // note we are not using energy dependence here
-                      double exposure( (*m_exposure)(sd) );
-                      if( exposure>0.) value /= exposure;
-                  }
-                  return value;    
-              }
-        private:
-            const BinnedPhotonData& m_data;
-            bool m_smooth;
-            int m_mincount;
-            const skymaps::SkySpectrum* m_exposure;
-    };
 
     image.fill(SkyDensity(m_map, smooth, mincount, m_exposure), 0); // PhotonMap is a SkyFunction of the density 
     std::cout 
@@ -234,4 +201,47 @@ void Draw::googleSky(std::string outfile, double pixelsize, bool smooth, int min
     region(SkyDir(180,0), outfile, pixelsize, 180, smooth, mincount);
     m_proj = proj;
     m_galactic = gal;
+}
+
+
+//-------------------------------------------------------------------
+//             SkyDensity methods
+//-------------------------------------------------------------------
+SkyDensity::SkyDensity(const skymaps::BinnedPhotonData& data, bool smooth, int mincount
+                       ,const skymaps::SkySpectrum* exposure)
+: m_data(&data)
+, m_band(0)
+, m_smooth(smooth)
+, m_mincount(mincount)
+, m_exposure(exposure)
+{}
+
+SkyDensity::SkyDensity(const skymaps::Band& band)
+: m_data(0)
+, m_band(&band)
+, m_smooth(false)
+, m_mincount(0)
+, m_exposure(0)
+{}
+
+double SkyDensity::operator()(const astro::SkyDir & sd) const 
+{
+    double  value;
+
+    if( m_band!=0) {
+        // only selected band
+        return (*m_band)(sd);
+    }
+
+    if (m_smooth)
+        value = m_data->smoothDensity(sd, m_mincount);
+    else
+        value = m_data->density(sd);
+
+    if(m_exposure!=0){
+        // note we are not using energy dependence here
+        double exposure( (*m_exposure)(sd) );
+        if( exposure>0.) value /= exposure;
+    }
+    return value;    
 }

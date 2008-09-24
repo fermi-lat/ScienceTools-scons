@@ -7,12 +7,13 @@ $Header$
 
 #ifndef pointlike_Draw_h
 #define pointlike_Draw_h
+#include "astro/SkyFunction.h"
 
 namespace astro { class SkyDir; }
 #include <string>
 #include <vector>
 #include "embed_python/Module.h"
-namespace skymaps{ class BinnedPhotonData; class SkySpectrum;}
+namespace skymaps{ class BinnedPhotonData; class SkySpectrum; class Band;}
 
 namespace pointlike {
 
@@ -65,6 +66,31 @@ namespace pointlike {
         bool m_ts;
     };
 
+    /** @class SkyDensity
+        @brief adapt a BinnedPhotonData to give density
+     
+      This should go with skymaps,  
+    */
+    class SkyDensity : public astro::SkyFunction
+    {
+    public:
+        SkyDensity(const skymaps::BinnedPhotonData& data, bool smooth=false, int mincount=0
+            ,const skymaps::SkySpectrum* exposure=0);
+
+        //! @brief ctor to display the given band only
+        SkyDensity(const skymaps::Band& band);
+
+
+
+        double operator()(const astro::SkyDir & sd) const ;
+
+    private:
+        const skymaps::BinnedPhotonData* m_data;
+        const skymaps::Band* m_band;
+        bool m_smooth;
+        int m_mincount;
+        const skymaps::SkySpectrum* m_exposure;
+    };
 
 }// namespace pointline
 

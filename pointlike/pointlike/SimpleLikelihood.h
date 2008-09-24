@@ -33,6 +33,7 @@ energy band such that the PSF is constant.
 */
 
 class SimpleLikelihood  : public astro::SkyFunction{
+
 public:
     /** ctor
     @param data   vector of directions, weights
@@ -143,6 +144,9 @@ public:
 
     /// @brief set the diffuse component
     void setDiffuse(skymaps::SkySpectrum* diff);
+
+    /// @ brief return first and second derivative
+    std::pair<double, double> derivatives(double x);
 
     static double tolerance();
     static void setTolerance(double tol);

@@ -57,7 +57,7 @@ namespace pointlike {
 		       const astro::SkyDir& dir, 
 		       double umax, const skymaps::SkySpectrum* diffuse);
     
-    ~ExtendedLikelihood();
+    virtual ~ExtendedLikelihood();
     
     const skymaps::Band& band()const {return m_band;}
     
