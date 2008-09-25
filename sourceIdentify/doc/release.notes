@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+25-Sep-2008  v2r0p0  JK  First official post-launch version
 20-Mar-2008  v1r3p10 JK  Update revision number
 20-Mar-2008  v1r3p9  JK  Correctly dump source IDs for >999 sources
  7-Mar-2008  v1r3p8  JK  Update unit test
