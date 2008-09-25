@@ -22,7 +22,7 @@ extern "C" {
 
   //#include <stdio.h>
 #include <math.h>
-//#include <regex.h>
+  //#include <regex.h>
 
 
 /// Flag to denote that the function has sucessfully completed its job
@@ -418,12 +418,10 @@ int atVectProd (  AtVect x, AtVect y, AtVect z);
 
 
 
-
-
-
-
-
-
+int atMultVect(
+	double f,	/* in: multiplicand for x */
+	AtVect x,	/* in: vector */
+	AtVect z);	/* out: answer*/
 
 
 #ifdef __cplusplus

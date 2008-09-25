@@ -10,13 +10,12 @@
 #include "orbitSim/read_ephem.h"
 #include "orbitSim/functions.h"
 #include "orbitSim/atFunctions.h"
+#include "orbitSim/GLAST_slew_estimate.h"
 
 #include <vector>
 
 #include <stdexcept>
 #include <string>
-
-
 
 #include <iostream>
 #include <iomanip>
@@ -49,10 +48,6 @@ EphemData * allocateEphem(int num ) {
   return eph;
 }
 
-
-
-
-
 EphemData * deallocateEphem(EphemData *eph) {
 
 
@@ -70,10 +65,6 @@ EphemData * deallocateEphem(EphemData *eph) {
   return eph;
 
 }
-
-
-
-
 
 Attitude * deallocateAttitude (Attitude *att) {
 
@@ -490,15 +481,7 @@ EphemData * xyzll_eph(FILE *ifp, double StartTime, double EndTime,
     atEllipsoido(&gSatP,&latt,&height);
     gSatP.lat = latt;
 
-    
-     
-   
-
-    if (tlon < 0) tlon = tlon + 360.0;
- 
-
-
-
+    //if (tlon < 0) tlon = tlon + 360.0;
 
     ephemeris->MJD[it] = tmjd;
     ephemeris->X[it] = vSat[0];
@@ -510,8 +493,6 @@ EphemData * xyzll_eph(FILE *ifp, double StartTime, double EndTime,
     ephemeris->Alt[it] = height;
     ephemeris->VelRA[it] = tvra;
     ephemeris->VelDEC[it] = tvdec;
-
-
 
 
     /* now read the next line of data */
@@ -1046,7 +1027,8 @@ void MakeSurvey(double start, double end, double res, double offset,
   }
 */
 
-  offset = -offset*DEG2RAD;
+//offset = -offset*DEG2RAD;
+  offset =  offset*DEG2RAD;
 
   j = 0;
   
@@ -1530,6 +1512,8 @@ void DoSlew(double start, double mjds, double pra, double pdec, double ra,
   AtVect vNSat, vNbSat, vNaSat, vNVelS;
   double mjd, amjd, bmjd;
   double RaDe[11];
+  AtVect vSun;
+  AtPolarVect gSatP;
 
 
   osf.setMethod("DoSlew");
@@ -1586,6 +1570,23 @@ void DoSlew(double start, double mjds, double pra, double pdec, double ra,
 
 
   tm = (int)(thetad/slewR+0.5);
+
+
+  atSun(mjd, vSun);
+  atVectToPol(vSun,&gSatP);
+  double raS = gSatP.lon;
+  double decS = 90.0*DEG2RAD-gSatP.lat;
+  
+  double duratS =  GLAST_slew_estimate(raS, decS, pra*DEG2RAD,
+				       pdec*DEG2RAD, ra*DEG2RAD, dec*DEG2RAD);
+
+/*
+  printf("mjd=%f, raS=%f, decS=%f\n", mjd, raS*RAD2DEG, decS*RAD2DEG);
+  exit(0);
+*/
+
+  tm = (int)(duratS/(60.0*reso));
+
 
   if(tm < inum){
     tm = inum;
@@ -1699,6 +1700,7 @@ void DoSlew(double start, double mjds, double pra, double pdec, double ra,
     OAtt->Ydec[k]   = RaDe[5];
     OAtt->Zra[k]    = RaDe[2];
     OAtt->Zdec[k]   = RaDe[3];
+    OAtt->in_occ[k] = -99999;
     k++;
   }
 
@@ -2317,6 +2319,9 @@ int getEndPoint (double mjdi, double *mjds, double ira, double idec,
   double fra = LAtt->Zra[idx];
   double fdec = LAtt->Zdec[idx];
   double reso = res*minInDay;
+  AtVect vSun;
+  AtPolarVect gSatP;
+
 
 
   int j;
@@ -2341,6 +2346,27 @@ int getEndPoint (double mjdi, double *mjds, double ira, double idec,
     *mjds = mjdi+slewT;
 
     j =(int) (((*mjds-start)+res/2.0)/res);
+
+
+    atSun(mjdi, vSun);
+    atVectToPol(vSun,&gSatP);
+    double raS = gSatP.lon;
+    double decS = 90.0*DEG2RAD-gSatP.lat;
+  
+    double duratS =  GLAST_slew_estimate(raS, decS, ira*DEG2RAD,
+					 idec*DEG2RAD, fra*DEG2RAD, fdec*DEG2RAD);
+
+
+
+    duratS = (double)((int)(duratS/(86400.0*res)));
+
+    duratS = duratS*res;
+
+
+
+    *mjds = mjdi+duratS;
+    j =(int) (((*mjds-start)+res/2.0)/res);    
+
 
     osf.info(4) << "idx="<<idx<<", mjds="<<*mjds<<", start="<<start<<", res="<<res<<", j="<<j<<"\n";
 
@@ -2384,6 +2410,10 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     startT = epoch - period*(double)np;
   }
 
+  // Rouding up startT to the closest resolution.
+
+  startT = (double)((int)(startT/res+0.5))*res;
+
   double Timespan = (end-startT);
   int inum = (int)((Timespan+res/2.0)/res);
   inum+=3;
@@ -2412,7 +2442,7 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
 
 
-  //  printf("start=%f, slew=%f, emd=%f\n", start, mjds, end);
+  //  printf("start=%f, slew=%f, end=%f\n", start, mjds, end);
 
 
   if(mjds > end){
@@ -2488,13 +2518,12 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     OAtt->Ydec[k]   = TAtt->Ydec[ii];
     OAtt->Zra[k]    = TAtt->Zra[ii];
     OAtt->Zdec[k]   = TAtt->Zdec[ii];
-    //    printf("k=%d, mjd=%f, ned=%d\n", k,  OAtt->mjd[k], ned);
+    //printf("k=%d, mjd=%f, ned=%d\n", k,  OAtt->mjd[k], ned);
     k++;
   }
 
-//   if(mjds >54450.9){
-//     exit(0);
-//   }
+  //  exit(0);
+
 
   TAtt = deallocateAttitude(TAtt);
 
@@ -2515,9 +2544,16 @@ void doProfiled(double start, double end, double res, double *tms,
   double angsep, slewr;
   double epoch = start;
 
+  double InterpProfile(double *tms, double *ofst, double res);
+
+  double difincr = InterpProfile(tms, ofst, res);
+
+  double Ltime = tms[16];
+  double Lincr = difincr;
+
   int ncycles = (int)((end-start)*60.0/(tms[sz-1]*res))+1;
   double epoch1, epoch2;
-  //  const double leps = 1.0E-8;
+  const double leps = 1.0E-10;
 
 
   inum = (int) ((end-start+res/2.)/res);
@@ -2526,21 +2562,35 @@ void doProfiled(double start, double end, double res, double *tms,
 
   osf.setMethod("doProfiled");
 
-//   osf.info(2) << "\n\nProfiled Survey:\n";
-//   for(int i=0; i<sz; i++){
-//     osf.info(2) << i<<") Time: "<<tms[i]<<", Angle: "<<ofst[i]<<"\n";
+  osf.info(2) << "\n\nProfiled Survey:\n";
+  for(int i=0; i<sz; i++){
+    osf.info(2) << i<<") Time: "<<tms[i]<<", Angle: "<<ofst[i]<<"\n";
 
-//   }
-//   osf.info(2) << "\n\nStart="<<start<<"\nend="<<end<<"\nLast Time tms[sz-1]="<<tms[sz-1]<<"\nResolution="<<res<<"\n";
-//   osf.info(2) << "Supposed to calculate Profiled Survey from "<<start<<" to "<<end<<"\n";
-//   osf.info(2) << "The profile contains ncycles=" << ncycles << "\n";
+  }
+  osf.info(2) << "\n\nStart="<<start<<"\nend="<<end<<"\nLast Time tms[sz-1]="<<tms[sz-1]<<"\nResolution="<<res<<"\n";
+  osf.info(2) << "Supposed to calculate Profiled Survey from "<<start<<" to "<<end<<"\n";
+  osf.info(2) << "The profile contains ncycles=" << ncycles << "\n";
 
-//   exit(1);
+  //printf(" Raw ncycles: %f, end=%f, start=%f, period=%f \n", (end-start)*60.0/(tms[sz-1]*res), end, start, tms[sz-1]);
+
+
 
   int nts = 0;
 
 
   for(jc=0; jc<=ncycles+1; jc++){
+    if(jc > 0){
+      Lincr += difincr*(difincr/(fabs(difincr)));
+      if((int)fabs(Lincr) >= (int)(res*secInDay)){
+	tms[16] = Ltime+(Lincr/fabs(Lincr))*(double)((int)(res*secInDay));
+	Lincr -= (Lincr/fabs(Lincr))*(double)((int)(res*secInDay));
+      } else {
+	tms[16] = Ltime;
+      }
+    }
+
+    //  printf("%02d) difincr=%f, Lincr=%f, Ltime=%f ==> tms[16]=%f\n", jc, difincr, Lincr, Ltime, tms[16]);
+
 
     osf.info(4) << "Now doing cycle=" << jc << "\n";
     for(ic=0; ic<=sz-1; ic++){
@@ -2553,20 +2603,21 @@ void doProfiled(double start, double end, double res, double *tms,
       epoch1 = epoch+((double)jc*tms[sz-1]+tms[ic])/secInDay;
       epoch2 = epoch+((double)jc1*tms[sz-1]+tms[ic1])/secInDay;
 
-      osf.info(5) << "jc="<<jc<<", jc1="<<jc1<<", ic="<<ic<<", ic1="<<ic1<<", epoch1=" << epoch1 << ", epoch2="<< epoch2 << "\n";
 
       angsep = ofst[ic1] - ofst[ic];
-      if(fabs(epoch2-epoch1) <= res){
+      if(fabs(epoch2-epoch1)*secInDay <= leps){
 	slewr = 0.0;
       }else {
 	slewr = angsep*res/(epoch2-epoch1);
       }
 
+      osf.info(4) << "jc="<<jc<<", jc1="<<jc1<<", ic="<<ic<<", ic1="<<ic1<<", epoch1=" << epoch1 << ", epoch2="<< epoch2 << ", diff="<<(epoch2-epoch1)*secInDay<< ", angsep= "<< angsep <<", slewr="<<slewr<<"\n";
+
       if(fabs(slewr) > SLEW_RATE){
 	osf.warn() << "\nWARNING: going from offset " << ofst[ic] << " to " << ofst[ic+1] << ",\nwill make the slew rate (" << slewr << ") greater than the nominal maximum value (" << SLEW_RATE << ")\n\n";
       }
 
-      int ino = (int)((epoch2-epoch1)/res);
+      int ino = (int)((epoch2-epoch1)/res +0.5);
      
 
 
@@ -2576,7 +2627,7 @@ void doProfiled(double start, double end, double res, double *tms,
 
 	//int k =(int) (((mjd-start)+res/2.0)/res);
 
-	osf.info(5) << "jc=" << jc <<", ic="<<ic<<", i="<<i<<", ino="<< ino<<", calling MakeSurvey with offset="<<offset<<"\n";
+	osf.info(4) << "mjd="<<mjd<<", end="<<end<<", jc=" << jc <<", ic="<<ic<<", i="<<i<<", ino="<< ino<<", calling MakeSurvey with offset="<<offset<<"\n";
 
 	MakeSurvey(mjd, mjd, res, offset, ephem, OAtt, RaDec, 2, start);
 	nts++;
@@ -2602,13 +2653,95 @@ void doProfiled(double start, double end, double res, double *tms,
 
 
   osf.info(4) << "Leaving doProfiled\n";
+
+
   return;
 
 }
 
 
 
-void occult( EphemData *EphemPtr, double StartTime, double EndTime, double Resolution, Attitude *att){
+double InterpProfile(double *tms, double *ofst, double res){
+
+
+
+  double Ltms[17], Lofst[17];
+
+  int resS = (int)(res*secInDay+0.5);
+
+  double difincr;
+
+  // Assuming tms[0] = 0
+  Ltms[0] = tms[0];
+  Lofst[0] = ofst[0];
+
+  int i = 0;
+  int drem;
+
+  for(i=1; i<16; i++){
+  
+    drem = (int)tms[i]%resS;
+
+
+    if(drem != 0){
+      if((double)drem <= (double)resS/2.0){
+	Ltms[i] = tms[i]-(double)drem;
+      } else {
+	Ltms[i] = tms[i]-(double)drem+(double)resS;
+      }
+
+      if(Ltms[i] == Ltms[i-1]){
+	Ltms[i] += (double)resS;
+      }
+
+      Lofst[i] = (ofst[i-1]-ofst[i])*(Ltms[i]-tms[i])/(tms[i-1]-tms[i])+ofst[i];
+
+    } else {
+      Ltms[i] = tms[i];
+      Lofst[i] = ofst[i];
+    }
+  
+  }
+
+
+  // Last time is rounded off by defect, the reminder is returned
+
+  Lofst[16] = ofst[16];
+  drem = (int)tms[16]%resS;
+
+  if(drem != 0){
+    if((double)drem <= (double)resS/2.0){
+      Ltms[16] = tms[16]-(double)drem;
+      difincr = (double)drem;
+    } else {
+      Ltms[16] = tms[16]-(double)drem+(double)resS;
+      difincr = -(double)drem+(double)resS;
+    }
+
+    if(Ltms[16] == Ltms[15]){
+      Ltms[16] += (double)resS;
+      difincr -= (double)resS;
+    }
+
+  } else {
+    Ltms[16] = tms[16];
+    difincr = 0.0;
+  }
+
+  for(i=0; i<17; i++){
+    tms[i]  = Ltms[i];
+    ofst[i] = Lofst[i];
+  }
+
+
+  return difincr;
+}
+
+
+
+void occult( EphemData *EphemPtr, double StartTime, double EndTime, 
+	     double Resolution, Attitude *att, double EAA,
+	     double start_ELT_OFF, double stop_ELT_OFF){
 
   int i, inum, j, ist;
   // Local variables 
@@ -2623,8 +2756,8 @@ void occult( EphemData *EphemPtr, double StartTime, double EndTime, double Resol
 
 
 
-  elv_limit = 30.0;
-
+  //  elv_limit = 30.0;
+  elv_limit = EAA;
 
   elv_limit *= DEG2RAD; 
 
@@ -2664,8 +2797,10 @@ void occult( EphemData *EphemPtr, double StartTime, double EndTime, double Resol
   j = 0;                 
   for (i=ist;i<inum;++i) {
 
+
     sra  = att->Zra[j]*DEG2RAD;
     sdec = att->Zdec[j]*DEG2RAD;
+
 
     y50P.lon = sra ;
     y50P.lat = sdec ;
@@ -2684,23 +2819,35 @@ void occult( EphemData *EphemPtr, double StartTime, double EndTime, double Resol
     atSun(currentTime, vSun);
     atEarthOccult(vSat, y50, vSun, &eflag, &elvy);   // CKS: changed from atEarthOccult2 
     
+    if(att->in_occ[j] < -999){
+      att->in_occ[j] = 0;     // This must be coming from slew, hence occultation is not  taken into account
+    } else {
+      if (eflag == 0) {
 
-    if (eflag == 0) {
+	if (elvy < elv_limit){
+	  att->in_occ[j] = 1; // occulted 
+	}
+	else
+	  att->in_occ[j] = 0; // not occulted 
 
-      if (elvy < elv_limit){
+      } else {
 	att->in_occ[j] = 1; // occulted 
       }
-      else
-	att->in_occ[j] = 0; // not occulted 
+    }
 
-    } else {
-      att->in_occ[j] = 1; // occulted 
+    // User may want to disable the Limb Tracing for a period
+    // in this case we will assume that the spacecraft is not occulted
+    if(start_ELT_OFF > 0.0 && stop_ELT_OFF > 0.0){
+      if(currentTime >= start_ELT_OFF && currentTime <= stop_ELT_OFF){
+	  att->in_occ[j] = 0; // not occulted 
+      }
     }
 
     j++;
     currentTime = att->mjd[j];
     
   }
+
 
   return;
 
@@ -2746,8 +2893,14 @@ void doLimbTrace(EphemData *EphemPtr, double StartTime, double EndTime, double R
 	endocc[ne] = inum-1;
 	ne++;
   }
+
+
   if(ne == 0){
     osf.warn() << "No target found in occultation\n\n";
+  }else {
+    for(i=0; i<ns; i++){
+      std::cout<<"Target occulted from "<<EphemPtr->MJD[staocc[i]]<<" to "<<EphemPtr->MJD[endocc[i]]<<"\n";
+    }
   }
 
   // Let's find the index difference between Attitude and Ephem
@@ -3010,12 +3163,4 @@ void doLocation(EphemData *EphemPtr, double Resolution, Attitude *att,
   att->Zdec[js]   = RaDe[3];
 
   return;
-
 }
-
-
-
-
-
-
-

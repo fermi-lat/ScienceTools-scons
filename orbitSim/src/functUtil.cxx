@@ -6,16 +6,12 @@
  * 
  * $Header$
  */
-
-
 #include "orbitSim/functions.h"
 #include "orbitSim/atFunctions.h"
 #include "orbitSim/OrbSim.h"
 
 #include <stdexcept>
 #include <string>
-
-
 
 #include <iostream>
 #include <iomanip>
@@ -214,12 +210,17 @@ double do_met2mjd(double met) {
 
   double mjd = met/secInDay + MJDREF;
 
-
-
   return mjd;
 
 }
 
+double do_mjd2met(double mjd) {
+
+  double met = (mjd - MJDREF)*secInDay;
+
+  return met;
+
+}
 
 double getMJD(char *ln){
 
@@ -688,6 +689,33 @@ double InterPVect(double y1, double y2, double x1, double x2, double x0) {
 void GetPos(double mjd, AtVect vSat, AtVect vNVel, double SurvOfs, double *RVal){
 
 /*
+ * Subroutine: GetPos
+ *
+ * Purpose: compute the pointing info
+ *
+ * Parameters:
+ *   i - index into the ephemeris array (used in debug prints)
+ *   mjd - time
+ *   vSat -  spacecraft position vector (X,Y,X)
+ *   vNVel - normalized spacecraft velocity vector 
+ *   SurvOfs - radians, desired offset of boresight from zenith
+ *             negative is toward the north, positive is toward the south (MJM)
+ *   RVal - pointer to array in which to return the pointing info
+ *            RVal[0] = degrees, spacecraft right ascension
+ *            RVal[1] = degrees, spacecraft declination
+ *            RVal[2] = degrees, spacecraft pointing right ascension ;
+ *            RVal[3] = degrees, spacecraft pointing declination
+ *            RVal[4] = degrees, RA where the spacecraft y-axis is pointing
+ *            RVal[5] = degrees, Declination where the spacecraft y-axis is pointing
+ *            RVal[6] = Sun vector, x
+ *            RVal[7] = Sun vector, y
+ *            RVal[8] = Sun vector, z
+ *            RVal[9] = degrees, right ascension of the sun;
+ *            RVal[10] = degrees, declination of the sun
+ *
+ */
+
+/*
   sra, sdec are the spacecraft right Ascension and declination
   pra, pdec is where the spacecraft is pointing
   rra, rdec is where the spacecraft x-axis is pointing
@@ -801,7 +829,9 @@ void GetPos(double mjd, AtVect vSat, AtVect vNVel, double SurvOfs, double *RVal)
   /*
     first rotate clockwise along the x'-axis of SurvOfs
   */
-  //  RotateOnX(-SurvOfs, Eci2Sat, TEci2Body);
+  //Giuseppe fixed this somewhere in read_ephem, but there really should
+  //be a minus sign here.
+  //RotateOnX(-SurvOfs, Eci2Sat, TEci2Body);
   RotateOnX(SurvOfs, Eci2Sat, TEci2Body);
     
   TransposeM(TEci2Body, TBody2Eci);
@@ -1091,16 +1121,25 @@ void getconsts( AtVect pos1,   AtVect pos2, double *consts){
 
   double tmp;
 
-  consts[1] = atan ((pos1[2]*pos2[1] - pos2[2]*pos1[1])/
-		(pos2[2]*pos1[0]-pos1[2]*pos2[0]));
-
+  if((pos2[2]*pos1[0]-pos1[2]*pos2[0]) != 0.0){
+         consts[1] = atan ((pos1[2]*pos2[1] - pos2[2]*pos1[1])/
+ 		      (pos2[2]*pos1[0]-pos1[2]*pos2[0]));
+    //    consts[1] = atan2 ((pos1[2]*pos2[1] - pos2[2]*pos1[1]),
+    //		       (pos2[2]*pos1[0]-pos1[2]*pos2[0]));
+  } else {
+    if((pos1[2]*pos2[1] - pos2[2]*pos1[1]) < 0){
+      consts[1] = RAD2DEG*270.0;
+    }else {
+      consts[1] = RAD2DEG*90.0;
+    }
+  }
 
   tmp = pos1[2]/(pos1[0]*sin(consts[1])+pos1[1]*cos(consts[1]));
   tmp = pos2[2]/(pos2[0]*sin(consts[1])+pos2[1]*cos(consts[1]));
 
 
-
   consts[0] = -sqrt(1.0/(tmp*tmp+1.0));
+
 
   return;
 }
@@ -1110,6 +1149,7 @@ void getXYZ(AtVect r1, AtVect r2, double t1, double t2, double *consts, AtVect x
 
   AtVect a, b, c;
   double delta, numx, numy, numz;
+
 
 
 
@@ -1127,6 +1167,10 @@ void getXYZ(AtVect r1, AtVect r2, double t1, double t2, double *consts, AtVect x
 
   delta = getDet(a, b, c);
 
+  if(delta == 0.0){
+    delta = 0.000001;
+  }
+
   a[0] = t1;
   a[1] = r1[1];
   a[2] = r1[2];
@@ -1142,7 +1186,6 @@ void getXYZ(AtVect r1, AtVect r2, double t1, double t2, double *consts, AtVect x
 
   numx = getDet(a, b, c);
   xyz[0] = numx/delta;
-
 
   a[0] = r1[0];
   a[1] = t1;
@@ -1718,8 +1761,6 @@ int readTLE(const int Nl, char* CheckSatName, char ln[][100],
 
   correctTm(&tle->tm);
 
-
-
   tle->mjd = do_cal2mjd(tle->tm.yr,tle->tm.mo,tle->tm.dy,tle->tm.hr,tle->tm.mn, tle->tm.sc);
 
   if(tle->mjd > sta){
@@ -1756,9 +1797,7 @@ int readTLE(const int Nl, char* CheckSatName, char ln[][100],
   status = 1;
 
   return status;
-
 }
-
 
 
 void correctTm(AtTime *tz){
@@ -2087,5 +2126,3 @@ void precessionRM(double mjd, AtRotMat Rm)
   Rm[1][2] = -sin(zeta)*sin(theta);
   Rm[2][2] =  cos(theta);
 }
-
-

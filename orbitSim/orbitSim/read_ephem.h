@@ -556,7 +556,8 @@ void saa(EphemData *EphemPtr, const char *filename, double StartTime,
    * @date Created:  Nov 15, 2005
    * @date Last Modified:  Feb 08, 2006
    */
-void occult(EphemData *EphemPtr, double StartTime, double EndTime, double Resolution, Attitude *att );
+void occult(EphemData *EphemPtr, double StartTime, double EndTime,
+	    double Resolution, Attitude *att, double EAA, double start_ELT, double stop_ELT);
 
 
 

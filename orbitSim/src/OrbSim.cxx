@@ -7,8 +7,6 @@
  * $Header$
  */
 
-
-
 #include "orbitSim/orbitSimStruct.h"
 #include "orbitSim/OrbSim.h"
 
@@ -16,8 +14,6 @@
 
 #include <stdexcept>
 #include <string>
-
-
 
 #include <iostream>
 #include <iomanip>
@@ -81,6 +77,16 @@ int parseInit( const char *fname, InitI *inA) {
 	  if(t>0.0){
 	    inA->stop_MJD = t;
 	    it++;
+	  }
+	}
+
+      } else if(match_str((const char*)ln, "^EAA") == 1) {
+	double t = 99999.0;
+	char *jnk = processline(ln, '=');
+	if (jnk != NULL) {
+	  sscanf(jnk, "%lf", &t);
+	  if((t>=0.0 && t<=180.0)){
+	    inA->EAA = t;
 	  }
 	}
 
@@ -525,7 +531,7 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	//  Some sanity checks
 
-	if(offset <=-90.0 || offset >= 90.0){
+	if(offset <-180.0 || offset > 180.0){
 	  losf.err()  << "\t\t\tERROR:\nFixed Survey Observation starting at MJD " << mjdt << "\nDOES NOT have a proper offset (" << offset << ")\n\n";
 
 	  flg = 3;
@@ -550,12 +556,14 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	  if (strncmp(ln, "// ------------------------", 27) == 0){
 	    break;
-	  }else if ((match_str((const char*) ln, " RA ") == 1)){
+	  }else if ((match_str((const char*) ln, " RA ") == 1) &&
+		    (match_str((const char*) ln, "^//") == 1)){
 	    char *jnk = processline(ln, '=');
 	    if (jnk != NULL) {
 	      sscanf(jnk, "%lf", &ra);
 	    }
-	  }else if ((match_str((const char*) ln, " dec ") == 1)){
+	  }else if ((match_str((const char*) ln, " dec ") == 1) &&
+		    (match_str((const char*) ln, "^//") == 1)){
 	    char *jnk = processline(ln, '=');
 	    if (jnk != NULL) {
 	      sscanf(jnk, "%lf", &dec);
@@ -784,6 +792,10 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 
 
+// 	  if(mode == 1){
+// 	    exit(0);
+// 	  }
+
 	  pra = lpos[0];
 	  pdec = lpos[1];
 
@@ -798,8 +810,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	} else if (mode == 3){
 
-	  printf("Calling MakeProfiled, mjdt=%f mjde=%f pra=%f pdec=%f\n", mjdt, mjde, pra, pdec);
 	  losf.info(3) << "Calling MakeProfiled with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<", pra="<<pra<<", pdec="<<pdec<<"\n";
+
 	  MakeProfiled(mjdt, mjde, ini->Resolution, pra, pdec, profile.epoch, 
 		       profile.times, profile.ofsts, ephem, OAtt, ini->start_MJD);
 
@@ -841,17 +853,20 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
   if(ini->occflag == 1){
     // Getting the occultation
 
-    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	     OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
+
     doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
   
     int rechk = 0;
 
     if(rechk){
-      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	       OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
+
       doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
     }
   }
-
 
 
   if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
@@ -1212,13 +1227,15 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
   if(ini->occflag == 1){
     // Getting the occultation
 
-    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	     OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
     doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
   
     int rechk = 0;
 
     if(rechk){
-      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	       OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
       doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
     }
   }
@@ -1309,14 +1326,6 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
   return RAtt;
 
 }
-
-
-
-
-
-
-
-
 
 double parseAsFline(char *ln, int *mode, double *val1, double *val2){
 
@@ -1565,13 +1574,15 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
   if(ini->occflag == 1){
     // Getting the occultation
 
-    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+    occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	     OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
     doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
   
     int rechk = 0;
 
     if(rechk){
-      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+      occult ( ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution,
+	       OAtt, ini->EAA, ini->ELT_OFF_START, ini->ELT_OFF_STOP);
       doLimbTrace(ephem, ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
     }
   }
@@ -1696,4 +1707,3 @@ void parseProfile(char *ln, SurProf *profile){
 
   return;
 }
-

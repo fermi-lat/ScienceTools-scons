@@ -327,13 +327,17 @@ void do_mjd2utc(double mjd, int *yyy, int *doy, int *hh, int *mm, int *ss);
    */
 double do_met2mjd(double mjd);
 
-
-
-
-
-
-
-
+  /**
+   * @brief Function that converts MJD time to 
+   * Mission Elapsed Time.
+   * 
+   * @param mjd - mjd time, input value
+   * 
+   * @author J. Vernaleo
+   * @date Created:  Sep 08, 2008
+   * @date Last Modified:  Sep 08, 2008
+   */
+double do_mjd2met(double met);
 
   /**
    * @brief Function that calculates the  Rotation Matrix at the specified time

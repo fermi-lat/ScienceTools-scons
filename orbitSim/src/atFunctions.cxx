@@ -6,8 +6,6 @@
  * 
  * $Header$
  */
-
-
 #include "orbitSim/atFunctions.h"
 
 /*
@@ -235,8 +233,6 @@ int atEllipsoido(
     return 0;
 }
 
-
-
 int atGeodetic(
 	double mjd,	/* input: time in MJD */
 	AtVect x,	/* input: vector in sidereal equatorial coordinate */ 
@@ -250,9 +246,6 @@ int atGeodetic(
     atRotVect(rm, x, y);
     return code1;
 }
-
-
-
 
 /* 
  * calc rotation matrix for converting celestial position (J2000)
@@ -293,9 +286,6 @@ int atSidereal(
     *gsttod = fmod(*gsttod, 360.) * DEG2RAD;
     return 0;
 }
-
-
-
 
 /* 
  * CALC MATRIX FOR Rotation of coordinate with AXIS AND ROLL ANGLE.
@@ -360,7 +350,7 @@ int atNormVect(
   int    k1;
   double nrm = x[0]*x[0]+x[1]*x[1]+x[2]*x[2];
   if( nrm == 0.0 ) { 
-    for (k1=0; k1<3;k1++) { y[k1]=0.0; } 
+    for (k1=0; k1<3;k1++) { y[k1]=0.0; }
     return (NULL_VECTOR);
     } 
   else if (nrm == 1.0) { 
@@ -394,9 +384,6 @@ int atRotVect(
     };
     return (NORMAL_END);
 }
-
-
-
 
 /* calculates ra and dec of sun for mjd, returns as a 3-vect */
 
@@ -464,10 +451,6 @@ atPolToVect(   /*                           ver 1.0  92/07/01  ay            */
   return (NORMAL_END);
 }
 
-
-
-
-
 /*                                                                     */
 /*     Originally coded in fortran (MJULIA) by K.Mitsuda.              */
 /*     Translated in C and revised by A.Yoshida for ASTRO-D.           */
@@ -490,9 +473,6 @@ atMJulian(        /*                            ver 1.0  92/07/02  ay  */
                                 + floor((m-2.0)*30.59) + d ;
   return (NORMAL_END);
 }
-
-
-
 
 /* 
  * convert equatorial coordinate systems correcting for precession (SAISA)
@@ -531,3 +511,18 @@ int atPrecessRM(
 
 
 
+/* 
+ * multiply a vector (z = f*x)
+ *			           		 ver 1.5  93/01/25  n.kawai  
+ */
+
+int atMultVect(
+	double f,	/* in: multiplicand for x */
+	AtVect x,	/* in: vector */
+	AtVect z)	/* out: answer*/
+{
+    z[0] = f*x[0];
+    z[1] = f*x[1];
+    z[2] = f*x[2];
+    return (NORMAL_END);
+}

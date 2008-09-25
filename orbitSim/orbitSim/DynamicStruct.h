@@ -32,6 +32,7 @@ extern "C" {
    * @date Last Modified:  Feb 08, 2006
    */
 
+  //typedef struct EphemData {
 struct EphemData {
 
   ///Default Constructor
@@ -81,6 +82,7 @@ struct EphemData {
    */
 
 
+  //typedef struct Attitude {
 struct Attitude {
 
   /// Default Constructor

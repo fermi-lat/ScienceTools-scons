@@ -7,8 +7,6 @@
  * $Header$
  */
 
-
-
 #ifndef orbitSimStruct_h
 #define orbitSimStruct_h
 
@@ -17,8 +15,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-  
 
   /**
    * @brief Structure that contains all the necessary parameters
@@ -64,6 +60,12 @@ typedef struct {
   std::string saafunc; 
   /// Flag which is used to decide if Earth avoidance should be enabled, default is yes.
   int occflag;
+  /// Earth Avoidance Angle value, default is 30 degrees
+  double EAA;
+  ///Earth LIMB TRACING exclusion start time (MJD)
+  double ELT_OFF_START;
+  ///Earth LIMB TRACING exclusion stop time (MJD)
+  double ELT_OFF_STOP;
   /// Verbosity level
   int chat;
   /// Debug mode
@@ -267,9 +269,6 @@ typedef struct EphemData {
   int ent;
 } EphemData;
 */
-
-
-
 
 
 #ifdef __cplusplus
