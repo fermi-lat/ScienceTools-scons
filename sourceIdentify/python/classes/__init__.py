@@ -1,2 +1,2 @@
 # This file is required so that the current directory is treated as containing packages
-__all__ = ['pwn', 'snr', 'agn', 'bllac', 'blazar', 'eg3', 'tev', 'hmxb', 'microqso', 'pulsar', 'qso', 'seyfert', 'egr', 'cosb', 'bzcat']
+__all__ = ['agn', 'bllac', 'bzcat', 'cosb', 'eg3', 'egr', 'hmxb', 'microqso', 'pulsar', 'pwn', 'qso', 'seyfert', 'cgrabs', 'snr', 'tev']

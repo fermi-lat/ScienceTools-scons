@@ -11,7 +11,7 @@ Blazar Source Class (BZCAT).
 """
 
 # Catalogue identifier
-catid = "BZC"
+catid = "BZCAT"
 
 # Catalogue FITS filename
 catname = "obj-blazar-bzcat.fits"
@@ -30,3 +30,4 @@ new_quantity = [ "" , "" ]
 
 # List of source selection criteria (setup up to 9 criteria in the list)
 selection = [ "" , "" ]
+

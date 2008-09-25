@@ -23,7 +23,7 @@ prob_thres       = 0.40               # Probability threshold
 figure_of_merit  = ""                 # Formula used to calculate FoM
 
 # Maximum number of counterparts per LAT source
-max_counterparts = 1
+max_counterparts = 100
 
 # List of new catalogue quantities (setup up to 9 formulae in the list)
 new_quantity = [ "" , "" ]

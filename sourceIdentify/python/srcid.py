@@ -51,6 +51,8 @@ def run_command(cmd):
 	# Run job
 	#print cmd
 	error, result = commands.getstatusoutput(cmd)
+	#print error
+	#print result
 	
 	# Return error and result
 	return error, result
