@@ -7,10 +7,7 @@ Base clase for Likelihood analysis Python modules.
 # $Header$
 #
 
-try:
-    import numarray as num
-except ImportError:
-    import numpy as num
+import numpy as num
 import pyLikelihood as pyLike
 from SrcModel import SourceModel
 try:

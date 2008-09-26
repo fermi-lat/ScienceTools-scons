@@ -8,10 +8,7 @@ Interface to SWIG-wrapped C++ classes.
 #
 import os
 import glob
-try:
-    import numarray as num
-except ImportError:
-    import numpy as num
+import numpy as num
 import pyLikelihood as pyLike
 from SrcModel import SourceModel
 from SimpleDialog import SimpleDialog, map, Param

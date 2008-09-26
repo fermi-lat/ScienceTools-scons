@@ -5,6 +5,7 @@
    $Id$
 
    @verbatim
+   v1r6p1 26-Sep-08   JC    remove numarray imports
    v1r6   24-Sep-08   JC    add flux, fluxError, energyFlux, energyFluxError
                             methods (using Likelihood v13r18)
    v1r5p6 29-Aug-08   JC    update UpperLimits.py to use quadratic fit and
