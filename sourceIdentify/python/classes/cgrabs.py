@@ -14,7 +14,7 @@ Blazar Source Class (CGRaBS).
 catid = "CGRABS"
 
 # Catalogue FITS filename
-catname = "obj-cgrabs.fits"
+catname = "obj-blazar-cgrabs.fits"
 
 # Probability method and threshold
 prob_method      = "PROB_POST"        # Use posterior probability
