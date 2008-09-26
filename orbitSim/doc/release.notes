@@ -4,6 +4,7 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+26-sep-2008    v1r0p1 JV  Minor variable fix for VC compiler warnings.
 25-sep-2008      v1r0 JV  Multiple changes from Romeo and Vernaleo.
 			  This brings it in sync with FSSC version.
 25-aug-2008    v0r1p5 JP  Replace Romeo with Vernaleo as package author.
