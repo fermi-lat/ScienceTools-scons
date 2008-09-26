@@ -2563,7 +2563,7 @@ void doProfiled(double start, double end, double res, double *tms,
   osf.setMethod("doProfiled");
 
   osf.info(2) << "\n\nProfiled Survey:\n";
-  for(int i=0; i<sz; i++){
+  for(i=0; i<sz; i++){
     osf.info(2) << i<<") Time: "<<tms[i]<<", Angle: "<<ofst[i]<<"\n";
 
   }
