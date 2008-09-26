@@ -109,10 +109,10 @@ public:
    }
 
    /// Return the number of free Parameters.
-   unsigned int getNumFreeParams() const;
+   virtual unsigned int getNumFreeParams() const;
 
    /// Set only the free Parameters using a vector of values.
-   void setFreeParamValues(const std::vector<double> &paramVec);
+   virtual void setFreeParamValues(const std::vector<double> &paramVec);
 
    /// Iterator used for composite Functions and Sources. (Note name
    /// mangling here too.)
@@ -130,7 +130,7 @@ public:
    }
 
    /// Get the vector of free Parameter objects.
-   void getFreeParams(std::vector<Parameter> &) const;
+   virtual void getFreeParams(std::vector<Parameter> &) const;
 
    /// Return the Function value.
    virtual double value(Arg &) const = 0;
