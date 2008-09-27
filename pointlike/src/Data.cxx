@@ -645,8 +645,10 @@ Data::Data(std::vector<std::string> inputfiles, int event_type, double tstart, d
 
 Data::Data(const std::string & inputFile, const std::string & tablename)
 : m_data(new BinnedPhotonData(inputFile, tablename))
+, m_start(0), m_stop(0)
+, m_log(0)
 {
-    addgti(inputFile);
+    //not needed? addgti(inputFile);
 }
 
 Data::~Data()
