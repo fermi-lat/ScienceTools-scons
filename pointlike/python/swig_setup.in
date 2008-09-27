@@ -197,6 +197,8 @@ public:
  //     return (*self)[i]; 
  //  }
    double computeOntime(){return (*self).GtiBase::computeOntime(); } 
+   void insertInterval(double tstart, double tstop){ (*self).GtiBase::insertInterval(tstart, tstop); }
+
     
 }
 %include $(SKYMAPSROOT)/skymaps/IsotropicPowerLaw.h
