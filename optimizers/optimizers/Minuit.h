@@ -81,7 +81,8 @@ namespace optimizers {
     enum MinuitQuality {MINUIT_NOTCALC, MINUIT_DIAG, MINUIT_FORCEDPOS, 
 			MINUIT_NORMAL};
 
-    //@@@ FC 09/29/08
+    /// Set the minimization strategy
+    /// (added by C. Farnier 09/29/08)
     void setStrategy(unsigned int strat = 1) {
       char s_strategy[15];
       sprintf(s_strategy, "SET STRATEGY %i", strat);
