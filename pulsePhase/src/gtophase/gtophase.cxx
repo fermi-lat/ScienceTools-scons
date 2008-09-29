@@ -115,6 +115,8 @@ void OrbitalPhaseApp::run() {
     setFieldValue(phase_field, phase);
   }
 
+  // Write parameter values to the event file(s).
+  writeParameter(par_group);
 }
 
 // List supported event file format(s).
