@@ -3,6 +3,10 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r13   29-Sep-08  JC   make Function::[setFreeParamValues,getFreeParams, 
+                            getNumFreeParams] virtual to allow for 
+                            reimplementation by sub-classes; add setStrategy
+                            member function to Minuit class
     v2r12p3 21-Jul-08  JC   remove superfluous semicolon in NewMinuit.cxx
     v2r12p1 14-Dec-07  JC   more careful numerical derivative calculation
                             in Optimizer::computeHessian when parameters
