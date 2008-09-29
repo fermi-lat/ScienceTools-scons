@@ -5,6 +5,9 @@
    $Id$
 
    @verbatim
+   v1r7   29-Sep-08   JC    expose Minuit and NewMinuit; add hook to provide
+                            Optimizer object in fit function; mods to 
+                            CompositeLikelihood class
    v1r6p1 26-Sep-08   JC    remove numarray imports
    v1r6   24-Sep-08   JC    add flux, fluxError, energyFlux, energyFluxError
                             methods (using Likelihood v13r18)
