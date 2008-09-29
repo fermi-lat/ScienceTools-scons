@@ -81,6 +81,13 @@ namespace optimizers {
     enum MinuitQuality {MINUIT_NOTCALC, MINUIT_DIAG, MINUIT_FORCEDPOS, 
 			MINUIT_NORMAL};
 
+    //@@@ FC 09/29/08
+    void setStrategy(unsigned int strat = 1) {
+      char s_strategy[15];
+      sprintf(s_strategy, "SET STRATEGY %i", strat);
+      doCmd(s_strategy);
+    }
+
   private:
     
     //! Pass a command string to Minuit
@@ -89,6 +96,7 @@ namespace optimizers {
     int m_quality;
     double m_distance;
     double m_val;
+
   };
   
   //! The function which Minuit will minimize
@@ -140,5 +148,3 @@ extern "C" {
 #endif // SWIG
 
 #endif // optimizers_MINUIT_H
-
-
