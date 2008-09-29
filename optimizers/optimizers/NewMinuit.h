@@ -2,7 +2,7 @@
  * @file NewMinuit.h
  * @brief Interface to the new C++ version of Minuit
  * @author P. Nolan
- * $Header: 
+ * $Header$
  */
 
 #ifndef optimizers_NEWMINUIT_H
