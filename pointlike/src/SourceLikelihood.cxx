@@ -526,8 +526,8 @@ double pointlike::SourceLikelihood::localizeMinuit()
   for(int i=2; i<npar; i++){ 
     par[i]      = m_sourceParameters[i-2]*m_sourceParameters[i-2]*(720./M_PI)*(720./M_PI);
     stepSize[i] = 0.01;
-    minVal[i]   = -16.;
-    maxVal[i]   = 16.;
+    minVal[i]   = -400.;
+    maxVal[i]   = 400.; //maximum size 300 arcmin == 400
     std::stringstream nameStream(parName[i]);
     nameStream<<"srcparam("<<i-2<<")"; 
     parName[i]=nameStream.str();
