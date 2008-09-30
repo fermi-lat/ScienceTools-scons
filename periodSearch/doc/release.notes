@@ -5,6 +5,8 @@
 $Id$
 
 \verbatim
+30-sep-2008     v10r2 JP  Write tool parameter values in history keywords. Print ephmeris
+                          evolution details if chatter==4.
 26-sep-2008     v10r1 MH  Remove support for event files that are already barycentered.
 17-sep-2008       v10 MH  Add support for ephemeris-related warning messages, such ephemeris gaps
                           and glitches. Rationalize output FITS header and fill appropriate values.
