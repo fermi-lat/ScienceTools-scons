@@ -1,3 +1,4 @@
+#if 0
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -19,10 +20,12 @@
 
 using namespace pulsarDb;
 using namespace timeSystem;
+#endif
 
 int main() {
   int status = 0;
 
+#if 0
   std::cerr.precision(20);
   std::cout.precision(20);
 
@@ -63,6 +66,6 @@ int main() {
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
   }
-
+#endif
   return status;
 }
