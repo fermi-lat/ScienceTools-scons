@@ -49,5 +49,7 @@
         v7  17-sep-08   MH    Add support for ephemeris-related warning messages, such ephemeris gaps
                               and glitches.
       v7r1  26-sep-08   MH    Remove support for event files that are already barycentered.
+      v7r2  30-sep-08   JP    Write tool parameter values in history keywords. Print ephmeris
+                              evolution details if chatter==4.
     @endverbatim
 */
