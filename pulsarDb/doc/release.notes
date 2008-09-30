@@ -5,6 +5,8 @@
 $Id$
 
 \verbatim
+30-sep-2008      v7r1 JP  Write history keywords that outline the evolution of the output
+                          ephemeris fits file. Print this output as well if chatter == 4.
 17-sep-2008        v7 MH  Add support for ephemeris-related warning messages, such ephemeris gaps
                           and glitches. Rationalize output FITS header and fill appropriate values.
                           Clean ups and bug fixes, including JIRA PULS-45.
