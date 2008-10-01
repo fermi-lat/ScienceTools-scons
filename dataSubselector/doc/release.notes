@@ -3,6 +3,7 @@
     $Id$
 
     @verbatim
+    v6r3p3  30-Sep-08   JC   set FILENAME keyword in gtmktime output
     v6r3p2  24-Aug-08   JC   set default emax=300000; make zmax un-hidden 
                              parameter
     v6r3p1  16-Aug-08   JC   VC8 fixes for gtalign

@@ -4,7 +4,7 @@
 scfile,f,a,"",,,"Spacecraft data file"
 sctable,s,h,"SC_DATA",,,"Spacecraft data extension"
 filter,s,a,"IN_SAA!=T",,,"Filter expression"
-roicut,s,a,yes,,,"Apply ROI-based zenith angle cut"
+roicut,b,a,yes,,,"Apply ROI-based zenith angle cut"
 evfile,f,a,"",,,"Event data file"
 evtable,s,h,"EVENTS",,,"Event data extension"
 outfile,s,a,"",,,"Output event file name"
