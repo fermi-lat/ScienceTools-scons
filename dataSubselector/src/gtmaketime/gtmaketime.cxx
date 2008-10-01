@@ -20,6 +20,7 @@
 #include "st_app/StAppFactory.h"
 
 #include "tip/IFileSvc.h"
+#include "tip/Image.h"
 #include "tip/Table.h"
 
 #include "st_facilities/FitsUtil.h"
@@ -82,6 +83,7 @@ private:
    void makeUserGti(std::vector<const dataSubselector::GtiCut*>&gtiCuts) const;
    void writeGtiFile(const std::string & gtifile) const;
    void copyTable() const;
+   void updateKeywords() const;
 
    static std::string s_cvs_id;
 };
@@ -105,6 +107,7 @@ void MakeTime::run() {
    createGti();
    mergeGtis();
    copyTable();
+   updateKeywords();
 }
 
 void MakeTime::check_outfile() {
@@ -309,6 +312,13 @@ void MakeTime::copyTable() const {
 
    st_facilities::FitsUtil::writeChecksums(m_outfile);
    std::remove(gtifile.c_str());
+}
+
+void MakeTime::updateKeywords() const {
+   tip::Image * my_image(tip::IFileSvc::instance().editImage(m_outfile, ""));
+   std::string filename(facilities::Util::basename(m_outfile));
+   my_image->getHeader().setKeyword("FILENAME", filename);
+   delete my_image;
 }
 
 /** 
