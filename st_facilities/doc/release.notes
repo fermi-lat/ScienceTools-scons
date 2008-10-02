@@ -5,6 +5,9 @@
   @verbatim
   $Id$
 
+  02-Oct-08 v0r13p2 JC   set TELAPSE keyword to TSTOP-TSTART in 
+                         Util::writeDateKeywords
+  25-Jan-08 v0r13p1 JC   tag for SCons build scripts
   20-Oct-07 v0r13   JC   add FitsUtil::fcopy
   28-Jul-07 v0r12   JC   add Util::isFitsFile test using cfitsio to
                          try to read in the file
