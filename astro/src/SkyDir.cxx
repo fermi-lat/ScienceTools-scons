@@ -159,8 +159,7 @@ std::pair<double, double> SkyDir::zenithCoords(const astro::SkyDir& zenithDir)co
     // now convert to degrees
     azimuth *= 180/M_PI;
     theta *= 180/M_PI;
-    return std::make_pair(azimuth, theta-90); 
-
+    return std::make_pair(azimuth, 90-theta); 
 }
 
   
