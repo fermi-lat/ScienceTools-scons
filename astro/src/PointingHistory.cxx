@@ -81,9 +81,9 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
         if ( tooEarly || tooLate) {
             std::ostringstream message;
             message << "PointingHistory: Time out of Range!:\n"
-                << "Time (" << time 
+                << "Time (" << static_cast<int>(time) 
                 << ") out of range of times in the pointing database: ("
-                << m_startTime <<", "<< m_endTime <<")"
+                << static_cast<int>(m_startTime) <<", "<< static_cast<int>(m_endTime) <<")"
                 << std::endl;
             throw TimeRangeError(message.str());
         }
