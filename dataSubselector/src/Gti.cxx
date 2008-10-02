@@ -103,7 +103,6 @@ void Gti::writeExtension(const std::string & filename) const {
          tstop = interval->second;
       }
    }
-   double telapse(tstop - tstart);
    tip::Header & header = gtiTable->getHeader();
    header["ONTIME"].set(computeOntime());
 }
