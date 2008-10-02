@@ -106,7 +106,6 @@ void Gti::writeExtension(const std::string & filename) const {
    double telapse(tstop - tstart);
    tip::Header & header = gtiTable->getHeader();
    header["ONTIME"].set(computeOntime());
-   header["TELAPSE"].set(telapse);
 }
 
 Gti Gti::applyTimeRangeCut(double start, double stop) const {
