@@ -287,7 +287,6 @@ namespace st_facilities {
       } catch (...) {
       }
 // The official mission start time is Jan 1 2001:
-//   astro::JulianDate mission_start(2001, 1, 1, 0);
       astro::JulianDate date_start(mission_start + start_time/secsPerDay);
       astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
       try {
@@ -295,14 +294,15 @@ namespace st_facilities {
          header["DATE-END"].set(date_stop.getGregorianDate());
       } catch (...) {
       }
-//       if (extension) {
-// // Do not write these keywords if this is the primary HDU.
-         try {
-            header["TSTART"].set(start_time);
-            header["TSTOP"].set(stop_time);
-         } catch (...) {
-         }
-//       }
+      try {
+         header["TSTART"].set(start_time);
+         header["TSTOP"].set(stop_time);
+      } catch (...) {
+      }
+// Update TELAPSE keyword if it exists
+      if (table->getHeader().find("TELAPSE") != table->getHeader().end()) {
+         header["TELAPSE"].set(stop_time - start_time);
+      }
    }
 
    astro::JulianDate Util::currentTime() {
