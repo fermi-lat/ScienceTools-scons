@@ -494,7 +494,7 @@ void SkyProj::setKeywords(tip::Header& hdr)
     header = &hdr;
     setKey("TELESCOP", "GLAST");
 
-    setKey("INSTRUME", "LAT SIMULATION");
+    setKey("INSTRUME", "LAT");
 
     setKey("DATE-OBS", "");
     setKey("DATE-END", "");
@@ -517,6 +517,8 @@ void SkyProj::setKeywords(tip::Header& hdr)
 
     // todo: fix these
     setKey("CROTA2",  0, "", "Image rotation (deg)");
+    if( std::string(m_wcs->ctype[0]).substr(5,3)=="CAR") return;
+    // these may be needed by ds9 for non-CAR. I get confused
     setKey("LONPOLE", 180.0, "deg", "longitude of celestial pole");
     setKey("LATPOLE", 0,     "deg", "latitude of celestial pole");
 }
