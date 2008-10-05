@@ -6,6 +6,10 @@
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
+libEnv = baseEnv.Clone()
+
+libEnv.Tool('pulsePhaseLib', depsOnly = 1)
+pulsePhaseLib = libEnv.StaticLibrary('pulsePhase', listFiles(['src/*.cxx']))
 
 progEnv.Tool('pulsarDbLib')
 progEnv.Tool('st_appLib')
@@ -17,5 +21,6 @@ gtophaseBin = progEnv.Program('gtophase', listFiles(['src/gtophase/*.cxx']))
 gtpphaseBin = progEnv.Program('gtpphase', listFiles(['src/gtpphase/*.cxx']))
 test_pulsePhaseBin = progEnv.Program('test_pulsePhase', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'pulsePhase', binaries = [gtophaseBin, gtpphaseBin], testApps = [test_pulsePhaseBin], pfiles = listFiles(['pfiles/*.par']),
+progEnv.Tool('registerObjects', package = 'pulsePhase', libraries = [pulsePhaseLib], binaries = [gtophaseBin, gtpphaseBin],
+             testApps = [test_pulsePhaseBin], includes = listFiles(['pulsePhase/*.h']), pfiles = listFiles(['pfiles/*.par']),
              data = listFiles(['data/*'], recursive = True))
