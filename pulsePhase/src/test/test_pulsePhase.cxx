@@ -1,3 +1,29 @@
+/** \file test_pulsePhase.cxx
+    \brief Test code for pulsePhase package.
+    \authors Masaharu Hirayama, GSSC,
+             James Peachey, HEASARC/GSSC
+*/
+#include <string>
+
+#include "st_app/StApp.h"
+#include "st_app/StAppFactory.h"
+
+static const std::string s_cvs_id("$Name$");
+
+class TestPulsePhaseApp : public st_app::StApp {
+  public:
+    virtual void run();
+};
+
+void TestPulsePhaseApp::run() {
+  // There is nothing to test in this package now.
+}
+
+st_app::StAppFactory<TestPulsePhaseApp> g_factory("test_pulsePhase");
+
+// Intentionally left below is the unit test as of September 30th, 2008. It was removed from the unit test
+// because it really doesn't test anything in this package. It was decided to be left here for reference,
+// until this unit test is revised to test classes and applications in this package.
 #if 0
 #include <cmath>
 #include <cstdlib>
@@ -20,12 +46,10 @@
 
 using namespace pulsarDb;
 using namespace timeSystem;
-#endif
 
 int main() {
   int status = 0;
 
-#if 0
   std::cerr.precision(20);
   std::cout.precision(20);
 
@@ -66,6 +90,7 @@ int main() {
     // Write phase into output column.
     rec["PULSE_PHASE"].set(phase);
   }
-#endif
+
   return status;
 }
+#endif
