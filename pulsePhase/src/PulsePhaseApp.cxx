@@ -125,6 +125,10 @@ void PulsePhaseApp::run() {
   // Open the event file(s).
   openEventFile(par_group, false);
 
+  // Handle leap seconds.
+  std::string leap_sec_file = par_group["leapsecfile"];
+  timeSystem::TimeSystem::setDefaultLeapSecFileName(leap_sec_file);
+
   // Setup time correction mode.
   defineTimeCorrectionMode("NONE", SUPPRESSED, SUPPRESSED, SUPPRESSED);
   defineTimeCorrectionMode("AUTO", ALLOWED,    ALLOWED,    SUPPRESSED);
