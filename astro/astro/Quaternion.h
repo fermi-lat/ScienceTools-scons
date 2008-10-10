@@ -59,9 +59,6 @@ namespace astro {
         /** multiply a vector, Q*v -> Q' */
         Quaternion operator* (const CLHEP::Hep3Vector & r) const;
 
-        /** multiply by a vector v*Q -> Q/ */
-        friend Quaternion operator* (const CLHEP::Hep3Vector & rx, const Quaternion & r);
-
         /** access to vector part
         */
         const CLHEP::Hep3Vector& vector()const{return m_v;}
@@ -103,6 +100,9 @@ namespace astro {
         CLHEP::Hep3Vector m_v;
         double m_s;
     };
+    /** multiply by a vector v*Q -> Q/ */
+    Quaternion operator* (const CLHEP::Hep3Vector & rx, const Quaternion & r);
+
 
 }
 
