@@ -5,6 +5,9 @@
 $Id$
 
 \verbatim
+09-oct-2008   v10r2p1 MH  Separate StApp subclass from gtpsearch.cxx. Add necessary headers
+                          and remove unnecessary headers. Make prompt methods of StApp
+                          subclasses private.
 30-sep-2008     v10r2 JP  Write tool parameter values in history keywords. Print ephmeris
                           evolution details if chatter==4.
 26-sep-2008     v10r1 MH  Remove support for event files that are already barycentered.
