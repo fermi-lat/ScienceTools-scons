@@ -87,7 +87,7 @@ Quaternion Quaternion::operator* (const CLHEP::Hep3Vector & vp) const
     return Quaternion(pv,ps);
 }
 
-Quaternion operator* (const CLHEP::Hep3Vector & v, const Quaternion & q)
+Quaternion astro::operator* (const CLHEP::Hep3Vector & v, const Quaternion & q)
 {
     Hep3Vector pv= v.cross(q.vector())  + v*q.scalar();
     double ps =- v*q.vector();
