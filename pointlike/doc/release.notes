@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 10-oct-08 v6r10   THB Mods from Markus; split off EventList class
  27-sep-08 v6r9p2  THB Improve output from Data: set GTI in output if time range selected
  24-sep-08 v6r9    THB New optimizer for localization; 66 degree theta cut for Data
  10-sep-08 v6r8    THB TSmap support, partly from Stephan
