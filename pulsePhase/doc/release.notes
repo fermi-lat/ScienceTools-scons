@@ -51,5 +51,8 @@
       v7r1  26-sep-08   MH    Remove support for event files that are already barycentered.
       v7r2  30-sep-08   JP    Write tool parameter values in history keywords. Print ephmeris
                               evolution details if chatter==4.
+        v8  09-oct-08   MH    Fix the bug reported as JIRA PULS-46. Add leapsecfile parameter to gtophase
+                              for potential use of UTC system. Separate StApp subclasses from gtpphase.cxx
+                              and gtophase.cxx.
     @endverbatim
 */
