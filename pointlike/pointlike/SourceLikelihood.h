@@ -122,6 +122,8 @@ namespace pointlike {
     static double emin() { return s_emin;};
     static double emax() { return s_emax;};
 
+    static int nParameter() { return s_npar;};
+
     /// @brief set minimum alpha
     static void setMinAlpha(double alpha){ s_minalpha=alpha; };
     static double minAlpha() { return s_minalpha; };
@@ -224,6 +226,7 @@ namespace pointlike {
     static int s_itermax, s_verbose;
     static int s_useMinos;
     static int s_useGradient;
+    static int s_npar;
     static std::vector<double> s_gamma_front; 
     static std::vector<double> s_sigma_front; 
     static std::vector<double> s_gamma_back; 

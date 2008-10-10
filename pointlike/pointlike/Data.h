@@ -16,6 +16,7 @@ class PointingInfo;
 
 namespace skymaps {
 class BinnedPhotonData;
+class PhotonBinner;
 }
 
 
@@ -125,6 +126,8 @@ public:
 
     /// @brief change default binning: must be done before loading data files
     static void setEnergyBins(const std::vector<double>& bins);
+    /// @brief change energy binning class: must be done before loading data files
+    static void setPhotonBinner(skymaps::PhotonBinner* binner);
 
     /// @brief return  value of the cut
     static double zenith_angle_cut();

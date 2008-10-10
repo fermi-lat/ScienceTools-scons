@@ -48,6 +48,7 @@
 //fails #include "pointlike/ParamOptimization.h"
 #include "pointlike/SimpleTSmap.h"
 #include "pointlike/Alignment.h"
+#include "pointlike/FlexibleBinner.h"
 
 
 #include "CLHEP/Vector/Rotation.h"
@@ -221,6 +222,8 @@ public:
 %include $(POINTLIKEROOT)/pointlike/Draw.h
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 %include $(POINTLIKEROOT)/pointlike/SourceList.h
+%include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h
+
 %extend pointlike::SourceList{
    pointlike::Source & __getitem__(size_t i){ 
       if( i == (*self).size() ) throw std::range_error("StopIteration");
