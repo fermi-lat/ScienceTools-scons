@@ -118,7 +118,7 @@ skymaps::Band FlexibleBinner::operator()(const astro::Photon& p)const
        viIter li=m_level.begin();     
        for (;si!=m_sigmaFront.end();si++,li++){
           double nside = 2*180./(3*(*si));
-	  *li = int(log(nside)/log(2))+1+density; 
+	  *li = int(log(nside)/log(2.0))+1+density; 
           *li=std::min(13,*li);
 	  *li=std::max(1,*li);
        };	  	   
