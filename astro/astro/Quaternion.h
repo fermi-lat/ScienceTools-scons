@@ -100,9 +100,10 @@ namespace astro {
         CLHEP::Hep3Vector m_v;
         double m_s;
     };
+#ifndef SWIG // can't handle it?
     /** multiply by a vector v*Q -> Q/ */
     Quaternion operator* (const CLHEP::Hep3Vector & rx, const Quaternion & r);
-
+#endif
 
 }
 
