@@ -42,8 +42,8 @@ Optional parameters:
 import os, sys, types
 from numpy import arange
 
-from pointlike import DiffuseFunction
-from pointlike import SourceList, Source, PointSourceLikelihood, Background, Data
+from skymaps import DiffuseFunction, Background
+from pointlike import SourceList, Source, PointSourceLikelihood, Data
 
 #----------------------------------------------------------------------------------------
 class Fitter(object):
@@ -135,7 +135,7 @@ def main():
     except GetoptError, msg:
         help(msg)
 
-    outputpixelfile= background=regfile=None
+    outputpixelfile= background=regfile=region=None
     diffusefilename='galdiffuse' # wire in for now
     verbose=0
     exposure=3e10 # this is appropriate for 1 year. 

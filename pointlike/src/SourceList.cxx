@@ -260,8 +260,8 @@ void SourceList::createRegFile(std::string filename, std::string color, double t
     for( const_iterator it = begin(); it != end();  ++it)  {
         const Source& cand( * it);
         if(cand.TS()< tsmin) continue;
-        out << "point("<< cand.dir().ra()<< ","<<cand.dir().dec() <<") point=cross "
-            << size << " # text={TS=" 
+        out << "point("<< cand.dir().ra()<< ","<<cand.dir().dec() <<") # point=cross "
+            << size << " text={TS=" 
             << int(cand.TS()+0.5) << "};\n";
         ++n;
     }

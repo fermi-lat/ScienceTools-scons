@@ -100,8 +100,8 @@ EventList::EventList(const std::string infile, bool selectid,
 EventList::~EventList()
 {
     // seems to create crash
-    std::cout << "deleting table" << std::endl;
-    delete m_table;
+    //std::cout << "deleting table" << std::endl;
+    //delete m_table;
 }
 
 Photon EventList::Iterator::operator*()const
