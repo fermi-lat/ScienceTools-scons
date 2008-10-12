@@ -8,10 +8,14 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "timeSystem/PulsarTestApp.h"
+
 static const std::string s_cvs_id("$Name$");
 
-class TestPulsePhaseApp : public st_app::StApp {
+class TestPulsePhaseApp : public timeSystem::PulsarTestApp {
   public:
+    TestPulsePhaseApp(): PulsarTestApp("pulsePhase") {}
+    virtual ~TestPulsePhaseApp() throw() {}
     virtual void run();
 };
 
