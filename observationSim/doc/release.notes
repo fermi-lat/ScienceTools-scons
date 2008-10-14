@@ -4,6 +4,10 @@
     $Id$
 
     @verbatim
+    v8r2   14-Oct-08   JC   account for unannounced behavior change in flux
+                            package handling of FT2 files with gaps; return
+                            zero livetime fraction from LatSc::livetimeFrac
+                            if candidate event arrives during a gap.
     v8r1p3 21-May-08   JC   increase chatter level for events removed within
                             deadtime
     v8r1p2 16-May-08   JC   implement 26 microsec deadtime in EventContainer.cxx
