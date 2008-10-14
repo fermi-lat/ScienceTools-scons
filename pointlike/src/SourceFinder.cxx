@@ -126,8 +126,8 @@ void SourceFinder::setParameters(const embed_python::Module & module)
 
 
 
-SourceFinder::SourceFinder(const pointlike::Data& map)
-: m_pmap(map)
+SourceFinder::SourceFinder(pointlike::Data& map)
+: m_pmap(map.map())
 {
     if( ! logfile.empty() ){
         m_log = new std::ofstream(logfile.c_str());

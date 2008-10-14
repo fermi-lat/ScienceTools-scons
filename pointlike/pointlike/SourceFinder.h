@@ -91,7 +91,7 @@ namespace pointlike {
     class SourceFinder {
     public:
 
-        SourceFinder(const pointlike::Data& data);
+        SourceFinder(pointlike::Data& data);
         ~SourceFinder();
 
         typedef std::map<int, CanInfo> Candidates;
@@ -119,7 +119,7 @@ namespace pointlike {
         void createTable(const std::string& filename);
 
         //! allow access to map
-        const skymaps::BinnedPhotonData& getMap() {return(m_pmap);}
+        skymaps::BinnedPhotonData& getMap() {return(m_pmap);}
 
         //! return vector of candidates, copy of current list
 
@@ -138,7 +138,7 @@ namespace pointlike {
 
         static void setParameters(const embed_python::Module & module);
     private:
-        const skymaps::BinnedPhotonData& m_pmap;
+        skymaps::BinnedPhotonData& m_pmap;
         Candidates m_can;
         std::ostream * m_log;
         std::ostream& out(){return * m_log;}

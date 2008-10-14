@@ -221,6 +221,23 @@ double PointSourceLikelihood::TS(int band) const
     else return TS_band;
 }
 
+double PointSourceLikelihood::alpha(int band) const
+{
+  double alpha_band = 0;
+  bool found = 0;
+  int bandCounter = 0;
+  for(iterator it = begin() ; it!=end(); ++it, ++bandCounter){
+    SimpleLikelihood& like = **it;
+    if (bandCounter == band){
+      found = true;
+      alpha_band = like.alpha();
+    }
+  }
+  
+  if (!found) return -1;
+  else return alpha_band;
+}
+
 double PointSourceLikelihood::maximize()
 {
     m_TS = 0;
@@ -317,7 +334,7 @@ void PointSourceLikelihood::printSpectrum()
         double avb(levellike.average_b());
         out() << setprecision(2) << setw(6)<< a.first<<" +/- "
             << setw(4)<< a.second 
-            << setw(6)<< setprecision(0)<< ts;
+	      << setw(6)<< setprecision(2)<< ts << setprecision(0);
 #if 0 // debug output for average background check
         out() << setprecision(2) << std::scientific << " " <<levellike.average_b()<< std::fixed ;
 #endif

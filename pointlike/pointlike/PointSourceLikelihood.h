@@ -88,6 +88,7 @@ public:
 
     double TS()const { return m_TS; } 
   double TS(int band) const;
+  double alpha(int band) const;
 
     double errorCircle()const{return  sqrt(1./curvature())*180/M_PI;}
 
