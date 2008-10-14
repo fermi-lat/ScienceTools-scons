@@ -53,6 +53,7 @@ private:
 
    double m_dt;
    std::vector<double> m_start;
+   std::vector<double> m_stop;
    std::vector<double> m_livetimefrac;
 
 };

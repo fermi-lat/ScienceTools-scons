@@ -22,7 +22,7 @@ emin,r,h,30,,,"Minimum event energy (MeV)"
 emax,r,h,200000,,,"Maximum event energy (MeV)"
 edisp,b,h,yes,,,"Apply energy dispersion?"
 
-irfs,s,a,"Pass4_v1",,,"Response functions"
+irfs,s,a,"",,,"Response functions"
 area,r,h,1,,,"LAT cross-sectional area"
 
 maxrows,i,h,200000,,,"Maximum number of rows in FITS files"

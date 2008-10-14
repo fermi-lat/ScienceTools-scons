@@ -24,7 +24,8 @@ LatSc::LatSc(const std::string & ft2file) : Spacecraft() {
    tip::ConstTableRecord & row(*it);
    for ( ; it != scData->end(); ++it) {
       m_start.push_back(row["START"].get());
-      double duration(row["STOP"].get() - m_start.back());
+      m_stop.push_back(row["STOP"].get());
+      double duration(m_stop.back() - m_start.back());
       m_livetimefrac.push_back(row["livetime"].get()/duration);
    }
    m_dt = m_start.at(1) - m_start.at(0);
@@ -95,7 +96,11 @@ double LatSc::livetimeFrac(double time) const {
    }
    size_t indx = static_cast<size_t>((time - m_start.front())/m_dt);
    if (m_start.at(indx) <= time && time < m_start.at(indx+1)) {
-      return m_livetimefrac.at(indx);
+      if (time <= m_stop.at(indx)) {
+         return m_livetimefrac.at(indx);
+      } else { // This may occur if there are gaps in the FT2 file.
+         return 0;
+      }
    }
 // Intervals are not uniform, so must do a search.  The offsets from
 // the computed index should be constant and small over large ranges,
@@ -104,13 +109,20 @@ double LatSc::livetimeFrac(double time) const {
       while (m_start.at(indx) > time && indx > 0) {
          indx--;
       }
-      return m_livetimefrac.at(indx);
+      if (time <= m_stop.at(indx)) {
+         return m_livetimefrac.at(indx);
+      } else { // This may occur if there are gaps in the FT2 file.
+         return 0;
+      }
    }
 // This is the only case left, so use it as default.
    while (m_start.at(indx) < time && indx < m_start.size()) {
       ++indx;
    }
-   return m_livetimefrac.at(indx);
+   if (time <= m_stop.at(indx)) {
+      return m_livetimefrac.at(indx);
+   }
+   return 0;
 }
 
 } // namespace observationSim
