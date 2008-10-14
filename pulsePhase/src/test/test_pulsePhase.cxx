@@ -12,18 +12,18 @@
 
 static const std::string s_cvs_id("$Name$");
 
-class TestPulsePhaseApp : public timeSystem::PulsarTestApp {
+class PulsePhaseTestApp : public timeSystem::PulsarTestApp {
   public:
-    TestPulsePhaseApp(): PulsarTestApp("pulsePhase") {}
-    virtual ~TestPulsePhaseApp() throw() {}
+    PulsePhaseTestApp(): PulsarTestApp("pulsePhase") {}
+    virtual ~PulsePhaseTestApp() throw() {}
     virtual void run();
 };
 
-void TestPulsePhaseApp::run() {
+void PulsePhaseTestApp::run() {
   // There is nothing to test in this package now.
 }
 
-st_app::StAppFactory<TestPulsePhaseApp> g_factory("test_pulsePhase");
+st_app::StAppFactory<PulsePhaseTestApp> g_factory("test_pulsePhase");
 
 // Intentionally left below is the unit test as of September 30th, 2008. It was removed from the unit test
 // because it really doesn't test anything in this package. It was decided to be left here for reference,
