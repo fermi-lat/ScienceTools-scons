@@ -52,7 +52,7 @@ namespace healpix {
 
         /**@brief returns a constant reference to the Healpix map (time-intensive)
         */
-        Healpix_Map< T> cmap() const { return m_hm;}
+        const Healpix_Map< T>* cmap() const { return &m_hm;}
 
         /**@brief returns an array where a[i] is the ith moment of the angular power spectrum up to lmax
         */
