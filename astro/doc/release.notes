@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r3p5   18-oct-08 THB Add virtual function to SkyFunction for integrals
   v3r3p4   02-sep-08 THB Fix declaration of friend operator method in Quaternion
   v3r3p1   02-sep-08 THB Add a method to SkyDir to return the zenith coordinates: relax pointing history end tolerance 
   v3r2p1   31-jul-08 THB Fix sign for aberration: add function to correct aberration and alignment
