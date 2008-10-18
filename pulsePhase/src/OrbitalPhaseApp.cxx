@@ -43,6 +43,7 @@ void OrbitalPhaseApp::run() {
   // Clean up from any previous runs.
   resetApp();
 
+  m_os.setMethod("run()");
   st_app::AppParGroup & par_group = getParGroup(); // getParGroup is in base class st_app::StApp
 
   // Prompt for selected parameters.
@@ -119,4 +120,7 @@ void OrbitalPhaseApp::run() {
 
   // Write parameter values to the event file(s).
   writeParameter(par_group);
+
+  // Clean up (close files, reset variables, etc.).
+  resetApp();
 }
