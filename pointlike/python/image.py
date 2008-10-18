@@ -167,17 +167,22 @@ class AIT(object):
         self.proj = self.skyimage.projector()
         self.x = self.y = 100 # initial def
                   
-    def imshow(self,  title=None, scale='linear',  **kwargs):
+    def imshow(self,  title=None, scale='linear', minimum=None, maximum=None, **kwargs):
         'run imshow'
         from numpy import ma
-        import pylab
+        import pylab, copy
         # change defaults
         if 'origin'        not in kwargs: kwargs['origin']='lower'
         if 'interpolation' not in kwargs: kwargs['interpolation']='nearest'
         if 'extent'        not in kwargs: kwargs['extent']=self.extent
+        image = copy.copy(self.masked_image) # local copy for display?
+        if minimum is not None:
+            image[image<minimum]=minimum
+        if maximum is not None:
+            image[image>maximum]=maximum
         
-        if   scale=='linear':  pylab.imshow(self.masked_image,   **kwargs)
-        elif scale=='log':     pylab.imshow(ma.log10(self.masked_image), **kwargs)
+        if   scale=='linear':  pylab.imshow(image,   **kwargs)
+        elif scale=='log':     pylab.imshow(ma.log10(image), **kwargs)
         else: raise Exception('bad scale: %s'%scale)
                                         
         pylab.colorbar(orientation='horizontal', shrink=1.0 if self.size==180 else 0.6)

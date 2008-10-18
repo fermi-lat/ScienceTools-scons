@@ -121,17 +121,6 @@ public:
       return self->inverse();
       }
 }
-%extend skymaps::BinnedPhotonData{
-// provide access to the Band objects as an array
-   skymaps::Band * __getitem__(size_t i){ 
-      if( i == (*self).size() ) throw std::range_error("StopIteration");
-      if( i<0 || i > self->size() ) throw std::range_error("IndexError");
-      skymaps::BinnedPhotonData::iterator it= self->begin();
-      for(int j(0); j!=i; ++j, ++it);
-      return &(*it); // note address of
-   }
-   size_t __len__() {      return self->size();       }
-}
 
 //%template(IntPair) std::pair<int,int>;
 //%template(IntPairVector) std::vector<std::pair<int,int> >;

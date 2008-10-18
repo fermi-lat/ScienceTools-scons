@@ -327,7 +327,7 @@ double pointlike::SourceLikelihood::TS(int band) const
   double TS_band = 0;
   bool found = 0;
   int bandCounter = 0;
-  for(iterator it = begin() ; it!=end(); ++it, ++bandCounter){
+  for(const_iterator it = begin() ; it!=end(); ++it, ++bandCounter){
     ExtendedLikelihood& like = **it;
     if (bandCounter == band){
       found = true;
@@ -344,7 +344,7 @@ double pointlike::SourceLikelihood::alpha(int band) const
   double alpha_band = 0;
   bool found = 0;
   int bandCounter = 0;
-  for(iterator it = begin() ; it!=end(); ++it, ++bandCounter){
+  for(const_iterator it = begin() ; it!=end(); ++it, ++bandCounter){
     ExtendedLikelihood& like = **it;
     if (bandCounter == band){
       found = true;

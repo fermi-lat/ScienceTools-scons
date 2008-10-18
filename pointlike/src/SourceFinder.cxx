@@ -69,7 +69,6 @@ namespace {
     double examine_radius(180.), group_radius(2.0), prune_radius(0.25);
 
     double  ts_min(5.0);
-    double emin(500);
     int nside(256);
     double pixel_fraction(1.0);
     astro::SkyDir examine_dir;
@@ -93,7 +92,6 @@ using astro::SkyDir;
 void SourceFinder::setParameters(const embed_python::Module & module)
 {
     module.getValue(prefix+"TSmin", ts_min, ts_min);
-    module.getValue(prefix+"emin", emin, emin);
     module.getValue(prefix+"pass1_nside", nside, nside);
     module.getValue(prefix+"pixel_fraction", pixel_fraction, pixel_fraction);
 
