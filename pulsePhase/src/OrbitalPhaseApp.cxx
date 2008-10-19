@@ -39,11 +39,8 @@ OrbitalPhaseApp::OrbitalPhaseApp(): pulsarDb::PulsarToolApp(), m_os("OrbitalPhas
   setVersion(s_cvs_id);
 }
 
-void OrbitalPhaseApp::run() {
-  // Clean up from any previous runs.
-  resetApp();
-
-  m_os.setMethod("run()");
+void OrbitalPhaseApp::runApp() {
+  m_os.setMethod("runApp()");
   st_app::AppParGroup & par_group = getParGroup(); // getParGroup is in base class st_app::StApp
 
   // Prompt for selected parameters.
@@ -120,7 +117,4 @@ void OrbitalPhaseApp::run() {
 
   // Write parameter values to the event file(s).
   writeParameter(par_group);
-
-  // Clean up (close files, reset variables, etc.).
-  resetApp();
 }
