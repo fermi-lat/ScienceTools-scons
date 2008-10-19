@@ -29,7 +29,7 @@ class PulsePhaseTestApp : public timeSystem::PulsarTestApp {
   public:
     PulsePhaseTestApp();
     virtual ~PulsePhaseTestApp() throw() {}
-    virtual void run();
+    virtual void runTest();
 
     /// Test PulsePhaseApp class.
     virtual void testPulsePhaseApp();
@@ -46,13 +46,10 @@ PulsePhaseTestApp::PulsePhaseTestApp(): PulsarTestApp("pulsePhase") {
   setVersion(s_cvs_id);
 }
 
-void PulsePhaseTestApp::run() {
+void PulsePhaseTestApp::runTest() {
   // Test applications.
   testPulsePhaseApp();
   testOrbitalPhaseApp();
-
-  // Throw an exception when one or more errors occur.
-  reportStatus();
 }
 
 void PulsePhaseTestApp::testPulsePhaseApp() {
