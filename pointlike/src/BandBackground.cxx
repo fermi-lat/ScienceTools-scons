@@ -4,12 +4,17 @@ $Header$
 
 */
 
-#include "BandBackground.h"
+#include "pointlike/BandBackground.h"
 
 #include "healpix/Healpix.h"
 #include "healpix/HealPixel.h"
 
 using namespace pointlike;
+using astro::SkyDir;
+namespace {
+    bool verbose(false);
+}
+void BandBackground::set_verbose(bool q){verbose=q;} 
 
 BandBackground::BandBackground(const skymaps::CompositeSkySpectrum& background, const skymaps::Band& band)
 : m_background(background)
@@ -19,6 +24,17 @@ BandBackground::BandBackground(const skymaps::CompositeSkySpectrum& background, 
 {
     const skymaps::SkySpectrum* t = background.front().second;
     m_diffuse = dynamic_cast<const skymaps::Background*>(t);
+    if( verbose) {
+        SkyDir dir(128.836064,-45.176432);
+        std::cout << "emin, emax, event_class:" 
+            <<  m_emin << ", " << m_emax << ", " << m_event_class 
+            << " value at Vela: " 
+            << operator()(dir)
+            << " average over 10 deg: " << average(dir,10.0*M_PI/180 ,0.1)
+            << " average over 1 deg: " << average(dir,  1.0*M_PI/180 ,0.1)
+            << std::endl;
+    }
+
 }
 
 

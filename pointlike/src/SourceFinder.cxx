@@ -205,7 +205,7 @@ void SourceFinder::examineRegion(void)
 
     // ------------------- phase 2: examine all pixels with data ---------------------------
     //
-    skymaps::SkySpectrum* saved_diffuse = PointSourceLikelihood::set_diffuse(0); // clear the diffuse for this
+    const skymaps::Background* saved_diffuse = PointSourceLikelihood::set_background(0); // clear the diffuse for this
 
     out() <<  "First pass will examine " << m.size() 
               << " pixels with nside = " << nside << std::endl;
@@ -237,7 +237,7 @@ void SourceFinder::examineRegion(void)
     //
     // --------------------- phase 3: refit the found guys ----------------------------------
     //
-    PointSourceLikelihood::set_diffuse(saved_diffuse);  // need full diffuse for this
+    PointSourceLikelihood::set_background(saved_diffuse);  // need full diffuse for this
 
     size_t fract = static_cast<size_t>(found * pixel_fraction); 
 

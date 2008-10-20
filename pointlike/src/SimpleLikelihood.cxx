@@ -236,7 +236,7 @@ void SimpleLikelihood::addBand(const skymaps::Band& moredata)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SimpleLikelihood::~SimpleLikelihood()
 {
-//    delete m_back;
+    delete m_back;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void SimpleLikelihood::setDir(const astro::SkyDir& dir, bool subset)
