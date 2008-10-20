@@ -36,6 +36,7 @@
 #include "pointlike/SimpleTSmap.h"
 #include "pointlike/Alignment.h"
 #include "pointlike/FlexibleBinner.h"
+#include "pointlike/HealpixDiffuseFunc.h"
 #include "pointlike/BandBackground.h"
 
 
@@ -179,7 +180,8 @@ public:
 %include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 %include $(POINTLIKEROOT)/pointlike/SourceList.h
 %include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h
-%include ../pointlike/BandBackground.h
+%include $(POINTLIKEROOT)/pointlike/HealpixDiffuseFunc.h
+%include $(POINTLIKEROOT)/pointlike/BandBackground.h
 
 %extend pointlike::SourceList{
    pointlike::Source & __getitem__(size_t i){ 

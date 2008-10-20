@@ -41,6 +41,10 @@ namespace pointlike {
 
         void region(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
+        void TS(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
+                    double fov, bool smooth = false, int mincount = 0);
+        void density(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
+                    double fov, bool smooth = false, int mincount = 0);
 
         //! @brief all sky image, default AIT, galactic
         void sky(std::string outputfile, double pixelsize=0.1, bool smooth = false, int mincount = 0);
