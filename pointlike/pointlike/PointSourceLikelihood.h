@@ -128,6 +128,8 @@ namespace pointlike {
         /// @param background a Background object, with diffuse and effective areas
         static  const skymaps::Background* set_background(const skymaps::Background* background); 
 
+        ///! clear global diffuse background.
+        static const skymaps::Background* clear_background(); 
             
             ///! add a point source fit to the background, for this object only, for subsequent fits
         void addBackgroundPointSource(const PointSourceLikelihood* fit);
