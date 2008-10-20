@@ -289,6 +289,14 @@ double SimpleLikelihood::operator()( double a) const
 
     return std::accumulate(m_vec2.begin(), m_vec2.end(),  v, LogLike(a));
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+double SimpleLikelihood::logLikelihood( double count) const
+{
+    double denom( photons() );
+    if( background()>0 ) denom=count+background();
+    return operator()(count/denom);
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double SimpleLikelihood::estimate() const

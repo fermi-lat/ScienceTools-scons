@@ -102,6 +102,12 @@ public:
     /// @brief combine similar bands after read in
     void combine_bands(); 
 
+    /**@brief Write  to a fits file
+    @param outputFile Fully qualified fits output file name
+    @param clobber Whether to delete an existing file first 
+    */
+    void write(const std::string & outputFile, bool clobber = true) const;
+
     //! @brief define FT2 file to use for rotation
     //! Needed for FT1 file, if applying alignment correction
     static void setHistoryFile(const std::string& history);
