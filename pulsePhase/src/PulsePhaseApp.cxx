@@ -100,7 +100,7 @@ void PulsePhaseApp::runApp() {
   } else if (eph_style == "DB") {
     // No action needed.
   } else {
-    throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported.");
+    throw std::runtime_error("Ephemeris style \"" + eph_style + "\" is not supported");
   }
 
   par_group.Prompt("tcorrect");
