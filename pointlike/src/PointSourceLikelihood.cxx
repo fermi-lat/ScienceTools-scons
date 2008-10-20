@@ -5,7 +5,7 @@ $Header$
 */
 
 #include "pointlike/PointSourceLikelihood.h"
-#include "BandBackground.h"
+#include "pointlike/BandBackground.h"
 
 #include "skymaps/DiffuseFunction.h"
 #include "skymaps/CompositeSkySpectrum.h"
