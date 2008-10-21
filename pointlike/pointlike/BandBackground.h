@@ -48,6 +48,7 @@ private:
     const skymaps::CompositeSkySpectrum & m_background;
     const skymaps::Background* m_diffuse; ///< extract pointer to the diffuse cmponent
     
+    const skymaps::Band& m_band;
     double m_emin, m_emax;
     int m_event_class;
 

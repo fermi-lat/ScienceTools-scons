@@ -625,6 +625,21 @@ double PointSourceLikelihood::value(const astro::SkyDir& dir, double energy) con
 
 }
 
+double PointSourceLikelihood::band_value(const astro::SkyDir& dir, const skymaps::Band& band)const
+{
+    double result(0);
+    const_iterator it = begin();
+    for( ; it!=end(); ++it){
+        const Band& lband ( (*it)->band() );
+        if( lband.event_class()==band.event_class() && lband.emin()==band.emin() ){
+            return (**it)(dir);
+        }
+    }
+    throw std::runtime_error("PointSourceLikelihood::band_value: band not found");
+    return result;
+}
+
+
 double PointSourceLikelihood::display(const astro::SkyDir& dir, double energy, int mode) const
 {
     const_iterator it = begin();

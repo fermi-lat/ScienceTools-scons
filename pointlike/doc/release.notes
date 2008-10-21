@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 20-oct-08 v6r12p1 THB extended likelihood enabled; various interface, output improvements
  20-oct-08 v6r12   THB extended likelihood enabled; various interface, output improvements
  18-oct-08 v6r11p1 THB Implement trial version of extended likelihood
  12-oct-08 v6r10p1 THB Minor fixes, python now gets skymaps from that shareable

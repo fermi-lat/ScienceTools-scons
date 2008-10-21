@@ -104,6 +104,12 @@ namespace pointlike {
         ///@param e energy in MeV
         virtual double value(const astro::SkyDir& dir, double e)const;
 
+        ///@brief use a band to select interval. 
+        ///@param dir direction
+        ///@param band use band to select energy range, and event class
+        virtual double band_value(const astro::SkyDir& dir, const skymaps::Band& band)const;
+
+
         ///@brief integral for the energy limits, in the given direction
         virtual double integral(const astro::SkyDir& dir, double a, double b)const;
 
