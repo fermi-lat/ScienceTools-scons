@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 21-oct-08 v6r13   THB Fix standard binning functionality; need new skymaps
  20-oct-08 v6r12p1 THB extended likelihood enabled; various interface, output improvements
  20-oct-08 v6r12   THB extended likelihood enabled; various interface, output improvements
  18-oct-08 v6r11p1 THB Implement trial version of extended likelihood
