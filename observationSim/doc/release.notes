@@ -4,6 +4,8 @@
     $Id$
 
     @verbatim
+    v8r3   21-Oct-08   JC   fix logic errors in selecting FT2 intervals
+                            in LatSc::livetimeFrac
     v8r2   14-Oct-08   JC   account for unannounced behavior change in flux
                             package handling of FT2 files with gaps; return
                             zero livetime fraction from LatSc::livetimeFrac
