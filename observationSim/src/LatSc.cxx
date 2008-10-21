@@ -6,6 +6,10 @@
  * $Header$
  */
 
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -28,7 +32,7 @@ LatSc::LatSc(const std::string & ft2file) : Spacecraft() {
       double duration(m_stop.back() - m_start.back());
       m_livetimefrac.push_back(row["livetime"].get()/duration);
    }
-   m_dt = m_start.at(1) - m_start.at(0);
+   m_dt = (m_stop.back() - m_start.front())/m_start.size();
    delete scData;
 }
 
@@ -91,35 +95,39 @@ void LatSc::getZenith(double time, double & ra, double & dec) {
 }
 
 double LatSc::livetimeFrac(double time) const {
-   if (m_start.size() == 0 || time < m_start.front() || time > m_start.back()) {
+   if (m_start.size() == 0) { // We are not using an FT2 file.
       return Spacecraft::livetimeFrac(time);
    }
-   size_t indx = static_cast<size_t>((time - m_start.front())/m_dt);
-   if (m_start.at(indx) <= time && time < m_start.at(indx+1)) {
-      if (time <= m_stop.at(indx)) {
-         return m_livetimefrac.at(indx);
-      } else { // This may occur if there are gaps in the FT2 file.
-         return 0;
-      }
+   if (time < m_start.front() || time > m_start.back()) {
+      return 0;
+//       std::ostringstream message;
+//       message << "Candidate event time " << std::setprecision(12)
+//               << time << " lies outside the range of the pointing "
+//               << "history file, " << m_start.front() << "--" 
+//               << m_stop.back() << std::endl;
+//       throw std::runtime_error(message.str());
    }
-// Intervals are not uniform, so must do a search.  The offsets from
-// the computed index should be constant and small over large ranges,
-// so a linear search from the computed point is reasonable.
+   size_t indx = static_cast<size_t>((time - m_start.front())/m_dt);
+// Intervals may not be uniform, so must do a search.  The offsets
+// from the computed index should be constant and small over large
+// ranges, so a linear search from the computed point is reasonable.
+   indx = std::min(indx, m_start.size()-1);
    if (m_start.at(indx) > time) {
       while (m_start.at(indx) > time && indx > 0) {
          indx--;
       }
-      if (time <= m_stop.at(indx)) {
+      if (m_start.at(indx) <= time && time <= m_stop.at(indx)) {
          return m_livetimefrac.at(indx);
       } else { // This may occur if there are gaps in the FT2 file.
          return 0;
       }
    }
-// This is the only case left, so use it as default.
+// Ensure we have not fallen short of the desired interval.
    while (m_start.at(indx) < time && indx < m_start.size()) {
       ++indx;
    }
-   if (time <= m_stop.at(indx)) {
+   --indx;
+   if (m_start.at(indx) <= time && time <= m_stop.at(indx)) {
       return m_livetimefrac.at(indx);
    }
    return 0;
