@@ -15,6 +15,7 @@ $Header$
 #include <cmath>
 #include <stdexcept>
 #include <time.h>
+#include <cstring>
 
 using namespace pointlike;
 using astro::SkyDir;

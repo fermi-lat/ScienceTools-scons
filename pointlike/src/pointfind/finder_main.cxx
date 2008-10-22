@@ -11,6 +11,7 @@
 #include "embed_python/Module.h"
 
 #include <iostream>
+#include <typeinfo>
 
 void help(){
     std::cout <<

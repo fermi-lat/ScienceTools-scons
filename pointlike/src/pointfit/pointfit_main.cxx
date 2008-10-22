@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <fstream>
 #include <stdexcept>
+#include <typeinfo>
 
 void help(){
     std::cout << "This program expects a single command-line parameter which is the path to a folder containing a file\n"
