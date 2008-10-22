@@ -134,10 +134,10 @@ namespace st_graph {
   void ParWidget::clicked(IFrame * f) {
     std::string state;
     if (m_open == f && m_open != 0) {
-      if (std::string::npos != m_par->Type().find("r"))
-        state = m_engine.fileDialog(m_frame, m_value_string, "open");
-      else
+      if (std::string::npos != m_par->Type().find("w"))
         state = m_engine.fileDialog(m_frame, m_value_string, "save");
+      else
+        state = m_engine.fileDialog(m_frame, m_value_string, "open");
     } else {
       state = m_value->getState();
     }
