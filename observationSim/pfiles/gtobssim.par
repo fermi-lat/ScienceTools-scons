@@ -1,3 +1,6 @@
+#
+# $Header$
+#
 infile,f,a,"none",,,"File of flux-style source definitions"
 srclist,fr,a,"source_names.txt",,,"File containing list of source names"
 scfile,f,a,"none",,,"Pointing history file"
@@ -19,7 +22,7 @@ dec,r,a,0,-90,90,"Dec of cone center (degrees)"
 radius,r,a,20,0,180,"Acceptance cone radius (degrees)"
 
 emin,r,h,30,,,"Minimum event energy (MeV)"
-emax,r,h,200000,,,"Maximum event energy (MeV)"
+emax,r,h,300000,,,"Maximum event energy (MeV)"
 edisp,b,h,yes,,,"Apply energy dispersion?"
 
 irfs,s,a,"",,,"Response functions"
