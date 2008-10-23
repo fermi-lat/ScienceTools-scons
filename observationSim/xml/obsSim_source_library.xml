@@ -118,7 +118,7 @@
               Total photon flux from the map (#/m^2/s) = 18.58 (10MeV-655GeV)
               Fits file (plate-carree only) = GP_gamma.fits
           -->
-         <SpectrumClass name="MapCube" params="18.58, $(EXTFILESSYS)/galdiffuse/GP_gamma.fits"/>
+         <SpectrumClass name="MapCube" params="127.923, $(GALPROP_MODEL)"/>
          <use_spectrum frame="galaxy"/>
       </spectrum>
    </source>
