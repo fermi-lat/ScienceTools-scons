@@ -25,19 +25,30 @@
 
 static const std::string s_cvs_id("$Name$");
 
+/** \class PulsePhaseTestApp
+    \brief Test pulsePhase package and applications in it.
+*/
 class PulsePhaseTestApp : public timeSystem::PulsarTestApp {
   public:
+    /// \brief Construct a PulsePhaseTestApp object.
     PulsePhaseTestApp();
+
+    /// \brief Destruct this PulsePhaseTestApp object.
     virtual ~PulsePhaseTestApp() throw() {}
+
+    /// \brief Do all tests.
     virtual void runTest();
 
-    /// Test PulsePhaseApp class.
+    /// \brief Test PulsePhaseApp class.
     virtual void testPulsePhaseApp();
 
-    /// Test OrbitalPhaseApp class.
+    /// \brief Test OrbitalPhaseApp class.
     virtual void testOrbitalPhaseApp();
 
   protected:
+    /** \brief Create an application object to be tested.
+        \param app_name Name of application to be tested.
+    */
     virtual st_app::StApp * createApplication(const std::string & app_name) const;
 };
 

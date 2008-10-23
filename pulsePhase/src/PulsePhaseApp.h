@@ -10,10 +10,18 @@
 
 #include "st_stream/StreamFormatter.h"
 
+/** \class PulsePhaseApp
+    \brief Main application class for pulse phase assignment.
+*/
 class PulsePhaseApp : public pulsarDb::PulsarToolApp {
   public:
+    /// \brief Construct a PulsePhaseApp object.
     PulsePhaseApp();
+
+    /// \brief Destruct this PulsePhaseApp object.
     virtual ~PulsePhaseApp() throw();
+
+    /// \brief Run the application.
     virtual void runApp();
 
   private:
