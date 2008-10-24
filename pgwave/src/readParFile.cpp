@@ -20,6 +20,14 @@ int pgwPars::readParFile(int argc, char** argv)
 	pars.Prompt("bgk_choise");        
 	strcpy(bgk_ch,pars["bgk_choise"]);
 	bgk_cho = strcmp(bgk_ch, "y");
+	pars.Prompt("output_file_prefix");
+	strcpy(output_prefix,pars["output_file_prefix"]);
+	if (!strcmp(output_prefix,"None")){
+                std::string fil(nome_file_in);
+                std::string temp=fil.substr(0,fil.find_last_of("."));
+                strcpy(output_prefix,temp.c_str());
+        }
+
 	N_iterations=1;
 	if(!bgk_cho){
 		pars.Prompt("input_bgk_file");

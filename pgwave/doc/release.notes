@@ -3,6 +3,7 @@
     @brief Package coordinators:  G.Tosti  <gino.tosti@pg.infn.it>
 
     @verbatim
+    v1r2     GT   Inserted the possibility to an output file name prefix
     v1r1     GT   Updated version with hoops packege support
     v1       GT   Updated version with astro package support
     v0       GT   Initial import

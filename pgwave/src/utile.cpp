@@ -138,13 +138,13 @@ void detect_sources::print_scale(int step)
 	
 }
 
-void detect_sources::print_to_file(fitsfile *fptr, char *filename)
+void detect_sources::print_to_file(fitsfile *fptr, char *filename, char *prefix)
 {
 	astro::SkyProj* mwcs; 
-	std::string fil(filename);
-	std::string temp=fil.substr(0,fil.find("."));
-	std::string detsource=temp+".reg";
-	std::string detout=temp+".list";
+	std::string fil(prefix);
+	//std::string temp=fil.substr(0,fil.find("."));
+	std::string detsource=fil+".reg";
+	std::string detout=fil+".list";
 	//cout <<detsource.c_str()<<endl;
 	//cout <<detout.c_str()<<endl;
 	//ofstream outfile("detected_sources.reg");
@@ -172,7 +172,7 @@ void detect_sources::print_to_file(fitsfile *fptr, char *filename)
 	char coordtype[10],comment[80],coordsys[10];
 	char list_file[258];
 	
-	mwcs = new astro::SkyProj(fil);
+	mwcs = new astro::SkyProj(filename);
 	if (fits_open_file(&fptr, filename, READONLY, &status))
 		printerror(status);
 	
@@ -208,8 +208,10 @@ void detect_sources::print_to_file(fitsfile *fptr, char *filename)
 			break;
 		}
 	}
+	
 	outfile.close();
 	outlist.close();
+
 	cout << "\n Detected sources DS9 regions written on file: \t" << detsource.c_str() <<endl;
 	cout << "\n Detected sources list written on file: \t" << detout.c_str() <<endl;
 	return;

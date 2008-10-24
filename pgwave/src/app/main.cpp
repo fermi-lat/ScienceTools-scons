@@ -124,14 +124,14 @@ int main ( int argc, char *argv[] )
 	
 	// Files di output finale
 	char nome_file_copyin[] = {"copyinput_map.fits"};
-	char nome_file_out[80];
-	char nome_file_gauss[80];
-	char nome_file_median[80];							
-	char nome_file_threshold[80];
-	char nome_file_OTM[80];
-	char nome_file_WT[80];
-	char nome_file_detected[80];
-	char nome_file_significat[80];
+	char nome_file_out[256];
+	char nome_file_gauss[256];
+	char nome_file_median[256];							
+	char nome_file_threshold[256];
+	char nome_file_OTM[256];
+	char nome_file_WT[256];
+	char nome_file_detected[256];
+	char nome_file_significat[256];
 	primo_pixel = 1;                               /* first pixel to write      */
 	nullval = 0;
 	//external
@@ -242,9 +242,9 @@ int main ( int argc, char *argv[] )
 				}
 			}
 			char nome_file_bkg[128];
-			sprintf(nome_file_OTM, "OTM_scan%i_scale%i.fits", iter+1, step+1);
-			sprintf(nome_file_bkg, "BKG_scan%i_scale%i.fits", iter+1, step+1);
-			sprintf(nome_file_WT, "WT_scan%i_scale%i.fits", iter+1, step+1);
+			sprintf(nome_file_OTM, "%s_OTM_scan%i_scale%i.fits",pars.output_prefix, iter+1, step+1);
+			sprintf(nome_file_bkg, "%s_BKG_scan%i_scale%i.fits",pars.output_prefix, iter+1, step+1);
+			sprintf(nome_file_WT, "%s_WT_scan%i_scale%i.fits", pars.output_prefix,iter+1, step+1);
 			fitsfile *ff = new fitsfile;
 			fitsio_all_in_one(ff, nome_file_WT, pars.nome_file_in,output_image , naxes, 0);
 			fitsio_all_in_one(pt_file_OTM[step], nome_file_OTM,pars.nome_file_in,OTM_image , naxes, 0);
@@ -269,7 +269,7 @@ int main ( int argc, char *argv[] )
 				//m_num=MAX(12,ms_box*(ms_box-1));//m_num_fit(ms_box);
 			}*/
 			
-			sprintf(nome_file_detected, "Detected_scan%i_scale%i", iter+1, step+1);
+			sprintf(nome_file_detected, "%s_Detected_scan%i_scale%i",pars.output_prefix, iter+1, step+1);
 			obj[step].SetDetectedOutfile(nome_file_detected);
 			//ms_box=5;
 			find(nome_file_OTM, &obj[step], m_num, ms_box);
@@ -298,17 +298,17 @@ int main ( int argc, char *argv[] )
 		for (step = 0; step < pars.N_scale; step++)
 			list[step].set_clear();
 		if(pars.bgk_cho!=0){
-			sprintf(nome_file_gauss, "GaussF_scan%i.fits", iter+1);
+			sprintf(nome_file_gauss, "%s_GaussF_scan%i.fits", pars.output_prefix,iter+1);
 			fitsio_all_in_one(pt_file_gauss, nome_file_gauss, gauss_output, nax3, pars.yes);
-			sprintf(nome_file_median, "MF_scan%i_.fits", iter+1);
+			sprintf(nome_file_median, "%s_MF_scan%i_.fits",pars.output_prefix, iter+1);
 			fitsio_all_in_one(pt_file_median, nome_file_median, median_output, nax3, pars.yes);
 		}
 
-		sprintf(nome_file_out, "WTF_scan%i_.fits", iter+1);
+		sprintf(nome_file_out, "%s_WTF_scan%i_.fits",pars.output_prefix, iter+1);
 		fitsio_all_in_one(pt_file_out, nome_file_out, WT_output, nax3, pars.yes);
-		sprintf(nome_file_threshold, "ThresholdMap_scan%i.fits", iter+1);
+		sprintf(nome_file_threshold, "%s_ThresholdMap_scan%i.fits",pars.output_prefix, iter+1);
 		fitsio_all_in_one(pt_file_threshold, nome_file_threshold, threshold_output, nax3, pars.yes);
-		sprintf(nome_file_significat, "SignificatOK_scan%i.fits", iter+1);
+		sprintf(nome_file_significat, "%s_SignificatOK_scan%i.fits",pars.output_prefix, iter+1);
 		fitsio_all_in_one(pt_file_significat, nome_file_significat, significat_output, nax3, pars.yes);
 
 	}
@@ -324,7 +324,7 @@ int main ( int argc, char *argv[] )
 			<< flagged->getbkg(aa) <<"\t\t[SigBkg]: " << flagged->getbkgerr(aa) << endl;
 		cout << "\n****************************************************************************\n";
 	}
-	flagged->print_to_file(pt_file_in, pars.nome_file_in);
+	flagged->print_to_file(pt_file_in, pars.nome_file_in,pars.output_prefix);
 	cout << "\n" << 5+ iter << ". Clean.\n";
 	delete []obj;
 	delete []list;

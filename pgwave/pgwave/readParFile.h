@@ -17,6 +17,7 @@ class pgwPars{
    public:
    	char nome_file_in[maxSize];
 	char nome_file_external_bkg[maxSize];
+        char output_prefix[maxSize];
 	char circ_square[80];
 	int N_iterations, N_scale;
 	double n_sigma;

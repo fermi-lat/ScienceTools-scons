@@ -159,7 +159,7 @@ public:
 	void remove(int i);
 	void set_clear();
 	void print_scale(int step);
-	void print_to_file(fitsfile *fptr, char *filenam);
+	void print_to_file(fitsfile *fptr, char *filenam,char *output_prefix);
 private:
 	vector<double> x;
 	vector<double> y;

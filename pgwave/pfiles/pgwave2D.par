@@ -1,39 +1,21 @@
 input_file,s,ql,"region_100_55_map.fits",,,"Enter the input image file name:"
-
 bgk_choise,s,ql,"n",,,"Do you have a Background map? (y or n)"
-
 input_bgk_file,s,ql,"s",,,"Enter the background image file name:"
-
+output_file_prefix,s,h,"None",,,"Enter the prefix for the output file names:"
 circ_square,s,ql,"s",,,"Is the image Circular or Squared? (c or s)"
-
-N_iterations,i,ql,1,,,"Enter number of scanning iterations:"
-
-SN_ratio,s,ql,"0",,,"Enter the signal-to-noise ratios (separated by an empty space):"
-
+N_iterations,i,h,1,,,"Enter number of scanning iterations:"
+SN_ratio,s,h,"0",,,"Enter the signal-to-noise ratios (separated by an empty space):"
 N_scale,i,ql,1,,,"Enter number of wavelet scales:"
-
 scala,s,ql,"2.2",,,"Enter the MH scales (separated by an empty space):"
-
 otpix,s,ql,"5",,,"Enter the minimum number of connected pixels to identify a source:(separated by an empty space):"
-
 n_sigma,r,ql,7,,,"Enter the multiplying factor for the MH scale equivalent to the sigma of the gaussian filter:"
-
 median_box,r,ql,3,,,"Enter the box coefficient for the median filter:"
-
 r_threshold,r,ql,0.5,,,"Enter the radius for the threshold area:"
-
 kappa,r,ql,2.6,,,"Enter the number of sigmas relative to the statistical confidence:"
-
 min_pix,r,ql,3,,,"Enter the minimum pixel distance between two different sources:"
-
 m_num,i,ql,10,,,"Enter the minimum number of connected pixels to identify a source:"
-
-border_size,i,ql,5,,,"Enter the number of border pixels:"
-
-s_box,i,ql,5,,,"Enter the segmentation paramenter for the symmetry box to compare with sources:"
-
-fitsio_choice,s,ql,"n",,,"Do you want to print all the intermediate fits-files? (y or n)"
-
-recursive_choice,s,ql,"y",,,"Enable the consecutive-scale condition option? (y or n)"
-
-verbose_level,i,ql,0,,,"Enter 1 to print intermediate results:"
+border_size,i,h,5,,,"Enter the number of border pixels:"
+s_box,i,h,5,,,"Enter the segmentation paramenter for the symmetry box to compare with sources:"
+fitsio_choice,s,h,"n",,,"Do you want to print all the intermediate fits-files? (y or n)"
+recursive_choice,s,h,"y",,,"Enable the consecutive-scale condition option? (y or n)"
+verbose_level,i,h,0,,,"Enter 1 to print intermediate results:"
