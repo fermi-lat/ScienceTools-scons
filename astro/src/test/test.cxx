@@ -207,17 +207,22 @@ void test_insideSAA() {
         throw std::runtime_error("InsideSAA test failed."); 
 }
 
-void testJD()
+bool testJD()
 {
+    // test MET conversion
+    double MET(245000000);
+    JulianDate x = JulianDate::missionStart()+MET/86400.;
+    std::cout<< "MET = " << int(MET) << " is " << x.getGregorianDate()<<std::endl;
+
     astro::JulianDate JD2000 = astro::JulianDate(2000,1,1,12.); //2451545
 
     int year, year2, month, month2, day, day2;
     double utc = 12.0, utc2;
     bool passed = true;
 
-    for(year = 2002; year <= 2022; year++) {
+    for(year = 2008; year <= 2010; year++) { // subset
         for(month = 1; month <= 12; month++) {
-            for(day = 1; day < 28; day++)
+            for(day = 1; day < 28; day+=5)
             {
                 for(utc = 0; utc < 24 && passed; utc=utc+1/3600.){
                     JD2000 = astro::JulianDate(year, month, day, utc);
@@ -246,6 +251,7 @@ void testJD()
         std::cout << "JD Conversions passed!" << std::endl;
         std::cout << astro::JulianDate::missionStart().getGregorianDate() << std::endl;
     }
+    return passed;
 }
 bool testHTM()
 {
@@ -440,6 +446,8 @@ int main(){
         if( !testHTM() ) rc= 1;
 
         if(! testSkyProj() ) rc= 1;
+
+        if( ! testJD()) rc=1;
 
 
     }catch( const std::exception& e){
