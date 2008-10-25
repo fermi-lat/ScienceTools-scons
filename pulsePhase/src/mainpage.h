@@ -66,16 +66,17 @@ ephepoch = 0. [string]
     This parameter only has effect if ephstyle is FREQ or PER.
 
 timeformat = FILE [enumerated string (FILE|MJD|GLAST)]
-    String describing the representation used for the ephepoch.
-    Valid choices are FILE, MJD and GLAST (MET). If FILE is chosen,
-    the time format specified in the input event file header will be
-    used.
+    String describing the representation used for ephepoch parameter.
+    If FILE is chosen, the time format specified in the input event
+    file header will be used.
 
 timesys = FILE [enumerated string (FILE|TAI|TDB|TT|UTC)]
-    String describing the time system used for the ephepoch.
-    Valid choices are FILE, TAI, TDB, TT and UTC. If FILE is chosen,
-    the time system specified in the input event file header (TIMESYS
-    keyword) will be used.
+    String describing the time system used for ephepoch parameter and
+    the following ephemeris parameters: phi0, f0, f1, f2, p0, p1, and
+    p2.  In other words, ephemeris computaions with those parameters
+    will be performed in the time system specified by this parameter.
+    If FILE is chosen, the time system specified in the input event
+    file header (TIMESYS keyword) will be used.
 
 ra [double]
     Right Ascension of point source in degrees for which to perform
@@ -89,35 +90,50 @@ dec [double]
 
 phi0 = 0. [double]
     Phase offset at this ephepoch for a user-supplied ephemeris.  This
-    parameter only has effect if ephstyle is FREQ or PER.
+    parameter only has effect if ephstyle is FREQ or PER.  Note that
+    ephemeris computations using this parameter will be performed in
+    the time system specified by timesys parameter.
 
 f0 = 1. [double]
-    Value of the frequency at the time given by the epoch parameter.
-    This parameter only has effect if ephstyle is FREQ.
+    Value of the frequency at the time given by the epoch parameter in
+    the units of s^(-1).  This parameter only has effect if ephstyle
+    is FREQ.  Note that ephemeris computations using this parameter
+    will be performed in the time system specified by timesys
+    parameter.
 
 f1 = 0. [double]
     Value of the first time derivative of the frequency at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is FREQ.
+    given by the epoch parameter in the units of s^(-2).  This
+    parameter only has effect if ephstyle is FREQ.  Note that
+    ephemeris computations using this parameter will be performed in
+    the time system specified by timesys parameter.
 
 f2 = 0. [double]
     Value of the second time derivative of the frequency at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is FREQ.
+    given by the epoch parameter in the units of s^(-3).  This
+    parameter only has effect if ephstyle is FREQ.  Note that
+    ephemeris computations using this parameter will be performed in
+    the time system specified by timesys parameter.
 
 p0 = 1. [double]
-    Value of the period at the time given by the epoch parameter.
-    This parameter only has effect if ephstyle is PER.
+    Value of the period at the time given by the epoch parameter in
+    seconds.  This parameter only has effect if ephstyle is PER.  Note
+    that ephemeris computations using this parameter will be performed
+    in the time system specified by timesys parameter.
 
 p1 = 0. [double]
     Value of the first time derivative of the period at the time given
-    by the epoch parameter.  This parameter only has effect if
-    ephstyle is PER.
+    by the epoch parameter (dimension-less).  This parameter only has
+    effect if ephstyle is PER.  Note that ephemeris computations using
+    this parameter will be performed in the time system specified by
+    timesys parameter.
 
 p2 = 0. [double]
     Value of the second time derivative of the period at the time
-    given by the epoch parameter.  This parameter only has effect if
-    ephstyle is PER.
+    given by the epoch parameter in the units of s^(-1).  This
+    parameter only has effect if ephstyle is PER.  Note that ephemeris
+    computations using this parameter will be performed in the time
+    system specified by timesys parameter.
 
 (tcorrect = AUTO) [enumerated string (NONE|AUTO|BARY|BIN|ALL)]
     Set of arrival time corrections to apply. If tcorrect is NONE, no
@@ -183,6 +199,12 @@ p2 = 0. [double]
     OGIP-compliant leap second table format. If leapsecfile is the
     string DEFAULT, the default leap-second file (leapsec.fits), which
     is distributed with the extFiles package, will be used.
+
+(reportephstatus = yes) [bool]
+    If reportephstatus is yes, the application will examine the input
+    pulsar ephemeris database, and report findings which may affect
+    the requested ephemeris computations. If reportephstatus is no, it
+    will not report any ephemeris status.
 \endverbatim
 
     \subsection gtophase_parameters gtophase Parameters
@@ -255,6 +277,11 @@ dec [double]
 (ophaseoffset = 0.) [double]
     Global offset applied to all assigned orbital phases.
 
+(reportephstatus = yes) [bool]
+    If reportephstatus is yes, the application will examine the input
+    pulsar ephemeris database, and report findings which may affect
+    the requested ephemeris computations. If reportephstatus is no, it
+    will not report any ephemeris status.
 \endverbatim
 
     \section open_issues Open Issues
