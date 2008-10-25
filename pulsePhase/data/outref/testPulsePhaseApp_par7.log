@@ -1,0 +1,6 @@
+gtpphase: INFO: ==========================
+gtpphase: INFO: Pulsar ephemerides are loaded and/or filtered as follows:
+gtpphase: INFO:    Load TEXTDB SPIN_PARAMETERS(FREQ) FILENAME='psrdb_spin1.txt'
+gtpphase: INFO:    Load TEXTDB REMARKS FILENAME='psrdb_remark.txt'
+gtpphase: INFO:    Filter by pulsar name 'PSR J0540-6919'
+gtpphase: INFO: ==========================
