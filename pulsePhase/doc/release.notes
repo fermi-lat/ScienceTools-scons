@@ -54,5 +54,8 @@
         v8  09-oct-08   MH    Fix the bug reported as JIRA PULS-46. Add leapsecfile parameter to gtophase
                               for potential use of UTC system. Separate StApp subclasses from gtpphase.cxx
                               and gtophase.cxx.
+      v8r1  24-oct-08   MH    Add tests of the application class to the unit test.
+                              Fix a bug reported as JIRA PULS-48. Revise mainpage.h.
+                              Improve application output messages and Doxygen comments.
     @endverbatim
 */
