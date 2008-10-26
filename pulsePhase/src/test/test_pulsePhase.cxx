@@ -285,10 +285,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
 
     // Test the application.
     if (check_out_file) {
-      testApplication(app_name, pars, "", out_file);
+      testApplication(app_name, pars, "", "", out_file);
     } else {
       std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "");
+      testApplication(app_name, pars, log_file, "", "");
     }
   }
 }
@@ -422,10 +422,10 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
 
     // Test the application.
     if (check_out_file) {
-      testApplication(app_name, pars, "", out_file);
+      testApplication(app_name, pars, "", "", out_file);
     } else {
       std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "");
+      testApplication(app_name, pars, log_file, "", "");
     }
   }
 }
