@@ -5,6 +5,7 @@
 */
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <string>
 
 #include "facilities/commonUtilities.h"
@@ -92,6 +93,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
     std::string out_file(getMethod() + "_" + test_name + ".fits");
+    std::set<std::string> col_name;
 
     // Set default parameters.
     std::string app_name("gtpphase");
@@ -141,6 +143,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = master_pulsardb;
       pars["matchsolareph"] = "NONE";
+      col_name.insert("PULSE_PHASE");
 
     } else if ("par2" == test_name) {
       // Test standard computation with FREQ option.
@@ -161,6 +164,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f0"] = 19.83401688366839422996;
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
+      col_name.insert("PULSE_PHASE");
 
     } else if ("par3" == test_name) {
       // Test phase computation with orbital modulation with DB option.
@@ -171,6 +175,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = master_pulsardb;
       pars["matchsolareph"] = "NONE";
+      col_name.insert("PULSE_PHASE");
 
     } else if ("par4" == test_name) {
       // Test phase computation with orbital modulation with FREQ option.
@@ -190,6 +195,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
       pars["matchsolareph"] = "NONE";
+      col_name.insert("PULSE_PHASE");
 
     } else if ("par5" == test_name) {
       // Test ephemeris status reporting.
@@ -285,10 +291,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
 
     // Test the application.
     if (check_out_file) {
-      testApplication(app_name, pars, "", "", out_file);
+      testApplication(app_name, pars, "", "", out_file, col_name);
     } else {
       std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "", "");
+      testApplication(app_name, pars, log_file, "", "", col_name);
     }
   }
 }
@@ -316,6 +322,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
     std::string out_file(getMethod() + "_" + test_name + ".fits");
+    std::set<std::string> col_name;
 
     // Set default parameters.
     std::string app_name("gtophase");
@@ -354,6 +361,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
+      col_name.insert("ORBITAL_PHASE");
 
     } else if ("par2" == test_name) {
       // Test ephemeris status reporting.
@@ -422,10 +430,10 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
 
     // Test the application.
     if (check_out_file) {
-      testApplication(app_name, pars, "", "", out_file);
+      testApplication(app_name, pars, "", "", out_file, col_name);
     } else {
       std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "", "");
+      testApplication(app_name, pars, log_file, "", "", col_name);
     }
   }
 }
