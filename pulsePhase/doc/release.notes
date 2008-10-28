@@ -57,5 +57,6 @@
       v8r1  24-oct-08   MH    Add tests of the application class to the unit test.
                               Fix a bug reported as JIRA PULS-48. Revise mainpage.h.
                               Improve application output messages and Doxygen comments.
+      v8r2  27-oct-08   MH    Improve the unit test for robustness. Improve prompts.
     @endverbatim
 */
