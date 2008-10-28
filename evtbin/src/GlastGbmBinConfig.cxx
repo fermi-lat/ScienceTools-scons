@@ -11,6 +11,7 @@ namespace evtbin {
   void GlastGbmBinConfig::load() {
     static GlastGbmBinConfig s_prototype;
     s_config_cont.insert(std::make_pair("GLAST::GBM", &s_prototype));
+    s_config_cont.insert(std::make_pair("FERMI::GBM", &s_prototype));
   }
 
   GlastGbmBinConfig * GlastGbmBinConfig::clone() const {

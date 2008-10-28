@@ -65,6 +65,8 @@ namespace evtbin {
     }
 
     if (!mission.empty() && !instrument.empty()) {
+      // Put mission name in all uppercase to deal with any mixed cases
+      std::transform(mission.begin(),mission.end(),mission.begin(),::toupper);
       // Find a prototype for a bin configuration appropriate for this mission/instrument.
       ConfigCont::iterator found = s_config_cont.find(mission + "::" + instrument);
       if (s_config_cont.end() != found) {
