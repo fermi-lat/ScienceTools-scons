@@ -85,6 +85,7 @@
 03-sep-2008      v2r1 JV  Integrate all changes since beta test from GSSC.
 09-sep-2008    v2r1p1 JP  Added #include <algorithm> where needed.
 11-sep-2008    v2r1p2 JV  Fix for gcc32 and MS VC.
+28-oct-2008      v2r2 JV  Match FERMI in TELESCOP keyword as well as GLAST
 --------------------------------------------------------------------------------
 \endverbatim
 
