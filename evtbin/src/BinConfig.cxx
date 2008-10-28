@@ -2,6 +2,7 @@
     \brief Implementation of helper class which uses standard sets of parameters to configure binners for standard applications.
     \author James Peachey, HEASARC
 */
+#include <algorithm>
 #include <cctype>
 #include <memory>
 #include <stdexcept>
