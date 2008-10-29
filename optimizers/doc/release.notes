@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r14   29-Oct-08  JC   set default strategy=2 for NewMinuit
     v2r13   29-Sep-08  JC   make Function::[setFreeParamValues,getFreeParams, 
                             getNumFreeParams] virtual to allow for 
                             reimplementation by sub-classes; add setStrategy
