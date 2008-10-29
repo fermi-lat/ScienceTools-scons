@@ -10,7 +10,9 @@
 
 #include "FitsFileManager.h"
 #include "FitsTipFile.h"
+#ifndef BUILD_WITHOUT_ROOT
 #include "RootTable.h"
+#endif
 #include "TestFileManager.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
@@ -249,6 +251,7 @@ namespace tip {
       else
         ReportExpected(std::string("FitsFileManager::isValid correctly failed to recognize file ") + file);
 
+#ifndef BUILD_WITHOUT_ROOT
       // Test RootTable's ability to classify a Root file.
       file = data_dir + "merit.root";
       if (RootTable::isValid(file))
@@ -269,6 +272,7 @@ namespace tip {
         ReportUnexpected(std::string("RootTable::isValid incorrectly recognized file ") + file);
       else
         ReportExpected(std::string("RootTable::isValid correctly failed to recognize file ") + file);
+#endif
 
     } catch (const TipException & x) {
       ReportUnexpected("TestFileManager::fileStatusTest caught unexpected exception while testing properties of " + file, x);

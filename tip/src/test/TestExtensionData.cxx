@@ -15,12 +15,15 @@
 
 #include "FitsImage.h"
 #include "FitsTable.h"
-#include "RootTable.h"
 #include "TestExtensionData.h"
 #include "tip/Image.h"
 #include "tip/KeyRecord.h"
 #include "tip/Table.h"
 #include "tip/TipException.h"
+
+#ifndef BUILD_WITHOUT_ROOT
+#include "RootTable.h"
+#endif
 
 #define MAKE_COMPILATION_FAIL (0)
 
@@ -568,7 +571,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
 
 
 
-
+#ifndef BUILD_WITHOUT_ROOT
   // Test error cases for RootTable constructors:
   TestConstructorErrors<RootTable>("RootTable", data_dir + s_delim + "merit.root", status);
 
@@ -584,6 +587,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     ReportError("failure creating RootTable with valid file name and valid extension name", status, x);
   }
   // END Test success cases for RootTable constructors.
+#endif
 
 
 

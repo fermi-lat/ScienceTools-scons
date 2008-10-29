@@ -13,11 +13,14 @@
 
 #include "FitsPrimProps.h"
 #include "FitsTable.h"
-#include "RootTable.h"
 #include "TestTable.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 #include "tip/tip_types.h"
+
+#ifndef BUILD_WITHOUT_ROOT
+#include "RootTable.h"
+#endif
 
 #define MAKE_COMPILATION_FAIL (0)
 
@@ -94,6 +97,7 @@ namespace tip {
       ReportWarning("FITS table tests will be skipped!");
     }
 
+#ifndef BUILD_WITHOUT_ROOT
     // Test constructing a Root table:
     msg = std::string("opening TTree \"1\" extension of ") + data_dir + "merit.root";
     try {
@@ -115,6 +119,7 @@ namespace tip {
       ReportUnexpected(msg + " failed", x);
       ReportWarning("Root FT2 table tests will be skipped!");
     }
+#endif
   }
 
   void TestTable::getValidFieldsTest() {
@@ -163,6 +168,8 @@ namespace tip {
   void TestTable::readWriteFieldTest() {
     // Test FITS field read/write for channel field:
     readWriteFieldTest(m_fits_table, "FITS", "chaNNel");
+
+    if (0 == m_root_table) return;
 
     // Test Root field read only for McEnergy field; note that this doesn't test whether the
     // values were read correctly.

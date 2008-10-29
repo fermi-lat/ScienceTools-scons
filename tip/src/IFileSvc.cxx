@@ -12,13 +12,16 @@
 #include "FitsImage.h"
 #include "FitsTable.h"
 #include "FitsTipFile.h"
-#include "RootTable.h"
 #include "tip/Extension.h"
 #include "tip/FileSummary.h"
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Table.h"
 #include "tip/TipException.h"
+
+#ifndef BUILD_WITHOUT_ROOT
+#include "RootTable.h"
+#endif
 
 namespace tip {
 
@@ -44,7 +47,9 @@ namespace tip {
 
   // Perform global initializations.
   void IFileSvc::globalInit() {
+#ifndef BUILD_WITHOUT_ROOT
     RootTable::resetSigHandlers();
+#endif
   }
 
   // Destructor for a file service.
@@ -156,8 +161,10 @@ namespace tip {
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
       table = new FitsTable(file_name, table_name, filter, false);
+#ifndef BUILD_WITHOUT_ROOT
     else if (file_type == "root")
       table = new RootTable(file_name, table_name, filter, false);
+#endif
     return table;
   }
 
@@ -185,8 +192,10 @@ namespace tip {
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
       image = new FitsTypedImage<double>(file_name, table_name, filter, true);
+#ifndef BUILD_WITHOUT_ROOT
     else if (file_type == "root")
       throw TipException("Root images are not supported.");
+#endif
     return image;
   }
 
@@ -197,8 +206,10 @@ namespace tip {
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
       image = new FitsTypedImage<float>(file_name, table_name, filter, true);
+#ifndef BUILD_WITHOUT_ROOT
     else if (file_type == "root")
       throw TipException("Root images are not supported.");
+#endif
     return image;
   }
 
@@ -209,8 +220,10 @@ namespace tip {
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
       image = new FitsTypedImage<int>(file_name, table_name, filter, true);
+#ifndef BUILD_WITHOUT_ROOT
     else if (file_type == "root")
       throw TipException("Root images are not supported.");
+#endif
     return image;
   }
 
@@ -221,8 +234,10 @@ namespace tip {
     std::string file_type = classifyFile(file_name);
     if (file_type == "fits")
       table = new FitsTable(file_name, table_name, filter, true);
+#ifndef BUILD_WITHOUT_ROOT
     else if (file_type == "root")
       table = new RootTable(file_name, table_name, filter, true);
+#endif
     return table;
   }
 
@@ -252,10 +267,16 @@ namespace tip {
     // has any filtering expression in it. If it does, fileExists() will say it doesn't exist even if it does.
     if (FitsFileManager::isValid(file_name)) {
       file_type = "fits";
+#ifndef BUILD_WITHOUT_ROOT
     } else if (RootTable::isValid(file_name)) {
       file_type = "root";
+#endif
     } else if (fileExists(file_name)) {
+#ifndef BUILD_WITHOUT_ROOT
       throw TipException(std::string("File not in FITS or Root format: ") + file_name);
+#else
+      throw TipException(std::string("File not in FITS format: ") + file_name);
+#endif
     } else {
       throw TipException(std::string("File not found: ") + file_name);
     }
