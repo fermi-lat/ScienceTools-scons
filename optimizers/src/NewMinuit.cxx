@@ -20,8 +20,9 @@ namespace optimizers {
   typedef std::vector<Parameter>::iterator pptr;
 
   // Constructor
-  NewMinuit::NewMinuit(Statistic & stat) : Optimizer(stat), m_maxEval(0), 
-                                           m_fitDone(false), m_FCN(stat) { }
+  NewMinuit::NewMinuit(Statistic & stat) 
+  : Optimizer(stat), m_maxEval(0), m_fitDone(false), m_FCN(stat), 
+    m_strategy(ROOT::Minuit2::MnStrategy(2)) {}
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {

@@ -25,9 +25,6 @@ class Statistic;
  *
  * @brief Abstract base class for objective function optimizers.
  *
- * @author J. Chiang
- *    
- * $Header$
  */
 
 class Optimizer {
