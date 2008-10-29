@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r8   29-Oct-08   JC    enable verbosity levels and output normalization    
+                            parameter value in UpperLimit.compute(...)
    v1r7   29-Sep-08   JC    expose Minuit and NewMinuit; add hook to provide
                             Optimizer object in fit function; mods to 
                             CompositeLikelihood class
