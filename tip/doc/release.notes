@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+29-oct-2008 v2r12p4   JV Added code from JP to allow root-free build option.
 10-apr-2008 v2r12p3   JP Fix bug: null value was not being set correctly when adding string field.
 14-mar-2008 v2r12p2   JP Fix bug in unit test; insert delimiter when concatenating file names.
 30-jan-2008 v2r12p1   JP Add SCons files. Use facilities for performing path operations.
