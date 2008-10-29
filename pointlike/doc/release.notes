@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 29-oct-08 v6r13p2 THB Fix linux compilation error
  22-oct-08 v6r13p1 THB Had wrong Poisson definition: fixed in SimpleLikelihood
  21-oct-08 v6r13   THB Fix standard binning functionality; need new skymaps
  20-oct-08 v6r12p1 THB extended likelihood enabled; various interface, output improvements
