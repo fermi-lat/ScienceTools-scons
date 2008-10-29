@@ -1,7 +1,7 @@
 #include "facilities/commonUtilities.h"
 #include <iostream>
 #include <algorithm>
-#ifdef SCons
+#if defined(SCons) || defined(HEADAS)
 #include <sstream>
 #include "config.h"
 #endif
@@ -15,7 +15,11 @@ namespace facilities {
 #ifdef SCons
     return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
+#ifdef HEADAS
+    return joinPath(comonUtilities::getPackageRoot(package), package);
+#else
     return commonUtilities::getPackageRoot(package);
+#endif
 #endif
   }
 
@@ -25,13 +29,15 @@ namespace facilities {
     std::string dataPath = joinPath(packageRoot, "data");
     return joinPath(dataPath, package);
 #else
+#ifdef HEADAS
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string dataPath = joinPath(packageRoot, "refdata");
+    return joinPath(dataPath, package);
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
-#ifdef WIN32
-    return packageRoot+"\\data";
-#else
-    return packageRoot+"/data";
+    return joinPath(packageRoot, "data");
 #endif
 #endif
   }
@@ -42,13 +48,16 @@ namespace facilities {
     std::string xmlLocation = joinPath(packageRoot, "xml");
     return joinPath(xmlLocation, package);
 #else
+#ifdef HEADAS
+    std::String packageRoot = commonUtilities::getPackageRoot(package);
+    std::string xmlLocation = joinPath(packageRoot, "xml");
+    xmlLocation = joinPath(packageRoot, "fermi");
+    return joinPath(xmlLocation, package);
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
-#ifdef WIN32
-    return packageRoot+"\\xml";
-#else
-    return packageRoot+"/xml";
+    return joinPath(packageRoot, "xml");
 #endif
 #endif
   }
@@ -59,13 +68,15 @@ namespace facilities {
     std::string pfilesLocation = joinPath(packageRoot, "pfiles");
     return joinPath(pfilesLocation, package);
 #else
+#ifdef HEADAS
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
+    return pfilesLocation;
+#else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
-#ifdef WIN32
-    return packageRoot+"\\pfiles";
-#else
-    return packageRoot+"/pfiles";
+    return joinPath(packageRoot, "pfiles");
 #endif
 #endif
   }
@@ -95,12 +106,18 @@ namespace facilities {
     if(env != NULL)
       packageRoot = env;
 #else
+#ifdef HEADAS
+    const char *env = getenv("FERMI_INST_DIR");
+    if(env != NULL)
+      packageRoot = env;
+#else
     std::string upperCase=package;
     transform(upperCase.begin(),upperCase.end(),upperCase.begin(),(int(*)(int)) toupper);
     upperCase=upperCase+"ROOT";
     const char *env = getenv(upperCase.c_str());
     if(env!=NULL)
       packageRoot = env;
+#endif
 #endif
     //  For now insist there be a translation for package root
     /*
@@ -125,7 +142,7 @@ namespace facilities {
   }
 
   void commonUtilities::setupEnvironment(){
-#ifdef SCons
+#if defined(SCons) || defined(HEADAS)
     std::stringstream packages;
     packages << PACKAGES;
     while(!packages.eof()){
