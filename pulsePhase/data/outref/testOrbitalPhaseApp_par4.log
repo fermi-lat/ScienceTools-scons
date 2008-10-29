@@ -5,3 +5,9 @@ gtophase: INFO:    Load TEXTDB ORBITAL_PARAMETERS(DD) FILENAME='psrdb_binary.txt
 gtophase: INFO:    Load TEXTDB REMARKS FILENAME='psrdb_remark.txt'
 gtophase: INFO:    Filter by pulsar name 'PSR J0540-6919'
 gtophase: INFO: ==========================
+gtophase: INFO: --------------------------
+gtophase: INFO: Arrival time corrections are applied as follows:
+gtophase: INFO:    Barycentric correction: Applied if necessary
+gtophase: INFO:    Binary demodulation: Applied
+gtophase: INFO:    Pdot cancellation: Not applied
+gtophase: INFO: --------------------------

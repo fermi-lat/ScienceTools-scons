@@ -142,7 +142,7 @@ void PulsePhaseApp::runApp() {
   // Use user input (parameters) together with computer to determine corrections to apply.
   bool vary_ra_dec = true;
   bool guess_pdot = false;
-  initTimeCorrection(par_group, vary_ra_dec, guess_pdot, "START");
+  initTimeCorrection(par_group, vary_ra_dec, guess_pdot, m_os.info(3), "START");
 
   // Report ephemeris status.
   std::set<EphStatusCodeType> code_to_report;
