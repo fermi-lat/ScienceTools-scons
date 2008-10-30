@@ -4,7 +4,7 @@
 #
 # $Header$
 # Authors: Toby Burnett <tburnett@u.washington.edu>
-# Version: pointlike-06-13-01
+# Version: pointlike-06-13-02
 
 #specify package name, applications
 package= 'pointlike'
