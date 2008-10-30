@@ -9,4 +9,9 @@ gtpphase: INFO: Arrival time corrections are applied as follows:
 gtpphase: INFO:    Barycentric correction: Applied if necessary
 gtpphase: INFO:    Binary demodulation: Not applied
 gtpphase: INFO:    Pdot cancellation: Not applied
+gtpphase: INFO: Following time system(s) are listed for this task:
+gtpphase: INFO:    Spin ephemeri(de)s are defined in: TDB(5)
+gtpphase: INFO:    Orbital ephemeri(de)s are defined in: None
+gtpphase: INFO:    Pdot cancellation will be performed in: None
+gtpphase: INFO:    Time series analysis will be performed in: TDB
 gtpphase: INFO: --------------------------
