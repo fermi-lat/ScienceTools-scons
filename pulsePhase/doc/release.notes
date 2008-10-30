@@ -58,5 +58,6 @@
                               Fix a bug reported as JIRA PULS-48. Revise mainpage.h.
                               Improve application output messages and Doxygen comments.
       v8r2  27-oct-08   MH    Improve the unit test for robustness. Improve prompts.
+      v8r3  29-oct-08   MH    Print time correction modes and time system usage if chatter is 3 or higher.
     @endverbatim
 */
