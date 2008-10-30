@@ -1,6 +1,6 @@
 package embed_python
 
-version v1r5
+version v1r5p1
 author t. burnett <tburnett@u.washington.edu>
 
 #$Id$
@@ -16,9 +16,9 @@ path_append PYTHONPATH $(embed_python_root)/python
 
 # have to add this since python does not. (think those Linux guys are needed?)
 macro python_linkopts "" \
-   Linux " -L$(python_DIR)/lib/python2.5/config -lpython2.5 -lpthread -lm -ldl -lutil -rdynamic "\
-   WIN32 "$(python_DIR)\libs\$(python_LIB) "\
-   Darwin " -L$(python_DIR)/lib/python2.5/config -lpython2.5 -lpthread -lm -ldl -lutil -rdynamic "
+   Linux " -L$(python_PATH)/lib/python2.5/config -lpython2.5 -lpthread -lm -ldl -lutil -rdynamic "\
+   WIN32 "$(python_PATH)\libs\$(python_LIB) "\
+   Darwin " -L$(python_PATH)/lib/python2.5/config -lpython2.5 -lpthread -lm -ldl -lutil -rdynamic "
 
 private
 
