@@ -173,7 +173,9 @@ p2 = 0. [double]
     been applied to an input event data file.  If the two source
     positions are separate from each other by this amount or less,
     then they will be considered to be the same position.  Otherwise
-    an error will be generated.
+    an error will be generated.  The sign of the parameter value is
+    ignored.  For example, setting angtol=-1.0 results in giving
+    angular tolerance of 1 degree.
 
 (evtable = EVENTS) [string]
     Name of the FITS table containing the event data.
@@ -248,7 +250,7 @@ dec [double]
     matchsolareph is PSRDB, the string given by the solareph parameter
     is used to select the ephemerides.  If matchsolareph is ALL, both
     actions for the EVENT option and the PSRDB option will be taken. 
-   If matchsolareph is NONE, no selection will be performed.
+    If matchsolareph is NONE, no selection will be performed.
 
 (angtol = 1.e-8) [double]
     Angular tolerance in degrees in comparison of two source
@@ -259,7 +261,9 @@ dec [double]
     been applied to an input event data file.  If the two source
     positions are separate from each other by this amount or less,
     then they will be considered to be the same position.  Otherwise
-    an error will be generated.
+    an error will be generated.  The sign of the parameter value is
+    ignored.  For example, setting angtol=-1.0 results in giving
+    angular tolerance of 1 degree.
 
 (evtable = EVENTS) [string]
     Name of the FITS table containing the event data.
