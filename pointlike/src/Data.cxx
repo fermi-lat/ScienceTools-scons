@@ -69,7 +69,9 @@ void Data::setHistoryFile(const std::string& history)
         s_history->readFitsData(history);
     }
     // temporary put same file into GPS
+#if 0 // this screws up multiple files: do we need it?
     gps->setPointingHistoryFile(history);
+#endif 
 }
 
 int Data::s_class_level=3; // diffuse selection
