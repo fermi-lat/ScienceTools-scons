@@ -226,6 +226,7 @@ Optional keyword arguments:
         def add_source(self, other):
             """ add another source to the background for this one """
             self.psl.addBackgroundPointSource(other.psl)
+            self.pslw.update()
 
         def fit(self, model='PowerLaw',**kwargs):
             """ model: one of ['PowerLaw', 'BrokenPowerLaw', ...]
