@@ -17,4 +17,5 @@ path_append PYTHONPATH $(PYLIKELIHOODROOT)/python
 path_remove PYTHONPATH ROOT
 path_prepend PYTHONPATH $(ROOTSYS)/lib
 
+apply_pattern package_include
 apply_pattern swig_module name="pyLikelihood"
