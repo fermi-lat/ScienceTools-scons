@@ -32,7 +32,7 @@ public:
         @param band the band to use to select energy range and event class
 
     */
-    BandBackground(const skymaps::CompositeSkySpectrum& background, const skymaps::Band& band);
+    BandBackground(const skymaps::SkySpectrum& background, const skymaps::Band& band);
 
     virtual ~BandBackground(){};
 
@@ -44,10 +44,12 @@ public:
 private:
     // Calculate average for a given level
     double level_ave(const astro::SkyDir& dir, double angle, int level) const;
-
+#if 0
     const skymaps::CompositeSkySpectrum & m_background;
     const skymaps::Background* m_diffuse; ///< extract pointer to the diffuse cmponent
-    
+#else
+    const skymaps::SkySpectrum& m_background;
+#endif
     const skymaps::Band& m_band;
     double m_emin, m_emax;
     int m_event_class;
