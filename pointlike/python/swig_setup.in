@@ -184,11 +184,13 @@ public:
 %include $(POINTLIKEROOT)/pointlike/BandBackground.h
 
 %extend pointlike::SourceList{
+/* does not work for a list
    pointlike::Source & __getitem__(size_t i){ 
       if( i == (*self).size() ) throw std::range_error("StopIteration");
       if( i<0 || i > self->size() ) throw std::range_error("IndexError");
       return (*self)[i]; 
    }
+   */
    size_t __len__() {      return self->size();       }
    
    void append( pointlike::Source& s){
