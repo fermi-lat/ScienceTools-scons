@@ -155,8 +155,11 @@ public:
     /// @brief set the diffuse component
     void setDiffuse(astro::SkyFunction* diff);
 #endif
-    /// @ brief return first and second derivative
+    /// @brief return first and second derivative
     std::pair<double, double> derivatives(double x);
+
+    /// @brief access to background function
+    const skymaps::CompositeSkyFunction& background_function()const{return m_background;}
 
     static double tolerance();
     static void setTolerance(double tol);

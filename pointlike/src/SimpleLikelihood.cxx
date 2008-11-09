@@ -515,18 +515,7 @@ double SimpleLikelihood::display(const astro::SkyDir& dir, int mode) const
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#if 0
-const astro::SkyFunction* SimpleLikelihood::diffuse() const
-{
-    return m_diffuse;
-}
 
-void SimpleLikelihood::setDiffuse(astro::SkyFunction* diff)
-{
-    m_diffuse = diff;
-    setDir(m_dir); // reset data
-}
-#endif
 
 double SimpleLikelihood::tolerance()
 {
