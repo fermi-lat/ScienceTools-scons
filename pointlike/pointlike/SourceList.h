@@ -11,6 +11,7 @@ $Header$
 
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 
 namespace skymaps{
@@ -74,7 +75,7 @@ namespace pointlike{
     /** @class SourceList
     @brief manage a list of Source objects
     */
-    class SourceList: public std::vector<pointlike::Source> {
+    class SourceList: public std::list<pointlike::Source> {
     public:
         /** @brief ctor, initialized with map
 

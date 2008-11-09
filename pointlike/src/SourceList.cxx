@@ -134,7 +134,10 @@ void Source::info(std::ostream& out)const{
                 ;
         if( neighbor()!=0){
             out << "  " << std::setw(20)<< std::left << (neighbor()->name());
+        }else{
+            out << std::setw(10) << " -"; 
         }
+
         out << std::endl;
 }
 
@@ -194,11 +197,11 @@ public:
 
 void SourceList::sort_TS()
 {
-    std::sort( begin(), end(), GreaterTS() );
+    this->sort(  GreaterTS() );
 }
 void SourceList::sort_ra()
 {
-    std::sort( begin(), end(), Less_ra() );
+    this->sort(  Less_ra() );
 }
 
 void SourceList::dump(std::ostream& out)const
@@ -273,16 +276,18 @@ void SourceList::createRegFile(std::string filename, std::string color, double t
 void SourceList::filter_TS(double threshold)
 {
 
-    sort_TS(); // may reorder, but makes it easy.
     iterator it(begin());
-    for(; it!= end(); ++it){
-        double TS((*it).TS());
-        if( TS <= threshold) break;
-    }
     int oldsize(size());
-    resize(it-begin());
+    while( it != end()){
+        iterator next(it); ++next;
+        double TS((*it).TS());
+        if( TS < threshold){
+            this->erase(it); // it not valid
+        }
+        it = next;
+    }
     int newsize(size());
-    std::cout << "reduced from: " << oldsize << " to " << newsize << std::endl;
+    std::cout << "applied TS>"<< threshold<<": reduced from: " << oldsize << " to " << newsize << std::endl;
 }
 
 #if 0 // under development
