@@ -166,7 +166,7 @@ void PointSourceLikelihood::setup( const skymaps::BinnedPhotonData& data )
         const Band& b = *bit;
 
         double emin(floor(b.emin()+0.5) ), emax(floor(b.emax()+0.5));
-        if( emin < s_emin && emax < s_emin ) continue;
+        if( emin < s_emin ) continue;
         if( emax > s_emax ) break;
         // 	std::cout << "XXX Pushing back energy band: " << emin << " " << emax << std::endl;
         bands.push_back(std::make_pair(&b,true));
