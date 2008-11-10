@@ -169,6 +169,8 @@ public:
     
 
 %include $(POINTLIKEROOT)/pointlike/SimpleLikelihood.h
+
+
 %include $(POINTLIKEROOT)/pointlike/PointSourceLikelihood.h
 %include $(POINTLIKEROOT)/pointlike/ExtendedLikelihood.h
 %include $(POINTLIKEROOT)/pointlike/SourceLikelihood.h
@@ -184,13 +186,14 @@ public:
 %include $(POINTLIKEROOT)/pointlike/BandBackground.h
 
 %extend pointlike::SourceList{
-/* does not work for a list
    pointlike::Source & __getitem__(size_t i){ 
       if( i == (*self).size() ) throw std::range_error("StopIteration");
       if( i<0 || i > self->size() ) throw std::range_error("IndexError");
-      return (*self)[i]; 
+      //return (*self)[i]; 
+      pointlike::SourceList::iterator it= self->begin();
+      for(int j(0); j!=i; ++j, ++it);
+      return (*it); // note address of
    }
-   */
    size_t __len__() {      return self->size();       }
    
    void append( pointlike::Source& s){
