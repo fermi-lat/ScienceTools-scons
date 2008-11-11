@@ -124,6 +124,7 @@ public:
 
     double feval(double k);
     double geval(double k);
+    double eval(double ks,double gamma);
 
     void changepsf(){}; // note not implemented
     void setgamma(double gamma) {m_psf=skymaps::PsfFunction(gamma);}
@@ -155,7 +156,7 @@ public:
     /// @brief set the diffuse component
     void setDiffuse(astro::SkyFunction* diff);
 #endif
-    /// @brief return first and second derivative
+       /// @brief return first and second derivative
     std::pair<double, double> derivatives(double x);
 
     /// @brief access to background function

@@ -17,10 +17,9 @@ namespace{
     data[]=
     {
         {0,             0,     0,     0},
-        {236511638,  -161,  -170,  -475}, // first light stuff 
-        {237154733,  -303,  -218,  -740}, // the strange Vela pointing
-        {237343796,  -170,  -173,  -491}, // afterward
-        {242053458,     0,     0,     0}, // correction now made in data
+        {236511638,  -183,  -169,  -497}, // first light stuff 
+                                             // afterward
+        {242053458,    19,    50,    8}, // correction now made in data
         {999999999,     0,     0,     0}  // end of time
     };
 
