@@ -10,6 +10,7 @@ using namespace astro;
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+#include "tip/Extension.h"
 
 #include <fstream>
 #include <sstream>
@@ -91,6 +92,12 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
         double time2( iter->first);
         --iter;
         double time1(iter->first);
+        if( time-time1 > 35 ){
+            std::cerr << "Warning: " 
+                << int(time+0.5) << " is in an invalid interval: it is " 
+                << (time-time1) << " seconds beyond start of FT2 entry" 
+                << std::endl;
+        }
         const PointingInfo & h1 =iter->second;
         double prop( (time-time1)/(time2-time1) );
 
@@ -101,6 +108,19 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
 }
 
 bool PointingHistory::haveFitsFile(std::string filename) const {
+#if 1 // new code from James: should allow detection of gziped fits files
+     // Determine a type of the input file, FITS or TEXT.
+     bool is_fits = true;
+     try {
+       // Try opening a primary extension of a FITS file.
+         std::auto_ptr<const tip::Extension>ext(tip::IFileSvc::instance().readExtension(filename, "0"));
+     } catch (const tip::TipException &) {
+       is_fits = false;
+     }
+     return is_fits;
+
+
+#else // old code, author J. Chiang I think
    std::ifstream file(filename.c_str());
    std::string line;
    std::getline(file, line, '\n');
@@ -109,6 +129,7 @@ bool PointingHistory::haveFitsFile(std::string filename) const {
       return true;
    }
    return false;
+#endif
 }
 
 void PointingHistory::readFitsData(std::string filename) {
@@ -121,6 +142,7 @@ void PointingHistory::readFitsData(std::string filename) {
     tip::Table::ConstIterator it = scData->begin();
     tip::ConstTableRecord & interval = *it;
     double maxlatdiff(0);
+    double last_start(0), last_stop(0);
     bool have_quaternion(false);
     double qsj_1, qsj_2, qsj_3, qsj_4;
 #if 0 // back this out
@@ -173,10 +195,15 @@ void PointingHistory::readFitsData(std::string filename) {
             throw std::runtime_error(error.str());
 #endif
         }
-
+        // add an entry for the end of a run -- make identical (a small kluge)
+       if( last_stop>0 && start_time != last_stop){
+            m_data[last_stop] = m_data[last_start]; 
+       }
         m_data[start_time] = 
             PointingInfo( position, orientation, earthpos);
-        if( m_startTime<0) m_startTime = start_time;
+         if( m_startTime<0) m_startTime = start_time;
+         last_start = start_time;
+         last_stop = stop_time;
     }
     m_endTime = stop_time+time_tol;
     // an extra entry to allow query for the last interval +slop
