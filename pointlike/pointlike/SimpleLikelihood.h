@@ -126,6 +126,10 @@ public:
     double geval(double k);
     double eval(double ks,double gamma);
 
+  // Needed for templating between ExtendedLikelihood and SimpleLikelihood
+  // Not implemented for SimpleLikelihood at the moment
+  double exposure() {return 0;};
+
     void changepsf(){}; // note not implemented
     void setgamma(double gamma) {m_psf=skymaps::PsfFunction(gamma);}
 

@@ -395,6 +395,8 @@ std::pair<double,double> ExtendedLikelihood::maximize()
 	       <<x<<" delta="<<delta<<std::endl;
       x=m_alpha;
     }
+
+//     std::cout << "     extended likelihood: " << m_alpha << std::endl;
     m_alpha = x;
     m_sigma_alpha = 1./sqrt(dw.second);
     return std::make_pair(x, m_sigma_alpha);

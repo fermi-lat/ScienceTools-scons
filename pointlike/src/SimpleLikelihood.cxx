@@ -9,6 +9,7 @@ $Header$
 #include "astro/SkyDir.h"
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 #include <map>
 #include <numeric>
 #include <iomanip>

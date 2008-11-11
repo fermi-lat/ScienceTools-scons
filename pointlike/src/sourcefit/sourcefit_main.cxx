@@ -77,6 +77,9 @@ int main(int argc, char** argv)
     setup.getValue("binningType", binType,"p6_v1/classic");
     setup.getValue("binningDensity", binDensity,0);
 
+    for (int i = 0; i < names.size(); ++i)
+      std::cout << "Name " << i << ": " << names[i] << std::endl;
+
     // flag, to designate first candidate as a central value
     int first_is_center(0);
     setup.getValue("first_is_center", first_is_center, 0);
