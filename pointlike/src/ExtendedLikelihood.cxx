@@ -269,7 +269,7 @@ void ExtendedLikelihood::setDir(const astro::SkyDir& dir, bool subset)
 void ExtendedLikelihood::reload(bool subset)
 {
     if(!subset || m_vec.size()==0) {
-     //   std::cout<<"Resetting ROI and re-calculating background."<<std::endl;
+//        std::cout<<"Resetting ROI and re-calculating background."<<std::endl;
 	double angle(sqrt(2.*m_umax)*sigma());
 	double roi(s_defaultRoI);
 	if(angle<roi) { 

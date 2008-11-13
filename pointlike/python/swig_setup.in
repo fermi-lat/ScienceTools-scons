@@ -137,6 +137,13 @@ public:
    size_t __len__() {      return self->size();       }
 }
 
+%extend pointlike::SourceLikelihood{
+   pointlike::ExtendedLikelihood * __getitem__(size_t i){ 
+      return self->at(i); 
+   }
+   size_t __len__() {      return self->size();       }
+}
+
 %extend pointlike::SimpleTSmap{
    float __getitem__(size_t i)            {return (*self)[i];}
    double __call__(const astro::SkyDir& d){return (*self)(d);}

@@ -14,6 +14,7 @@ namespace astro {class Photon;}
 
 #include <string>
 #include <vector>
+#include <map>
 
 
 #include "skymaps/Band.h"
@@ -69,6 +70,9 @@ namespace pointlike {
         std::vector<double> m_gammaBack;          //the PSF gamma for back bins
         std::vector<double> m_sigmaBack;          //the PSF sigma for back bins
         std::vector<int>    m_level;              //the mapping between energy bins and healpix levels
+        std::map<double,double>    m_gammaMapFront; //gamma map from PSF fits
+        std::map<double,double>    m_gammaMapBack;  //gamma map from PSF fits
+	 
     };
 }
 
