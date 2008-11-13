@@ -201,7 +201,7 @@ namespace pointlike {
     std::vector<int> m_vec4; //stores subset healpix indices
     double m_averageF;
     
-    ExtendedSourcePseudoPSF m_psf;
+    ExtendedSourcePseudoPSF2 m_psf;
     std::vector<double> m_src_param;
     
     double m_sigma;
