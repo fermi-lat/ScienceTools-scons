@@ -16,7 +16,7 @@ namespace facilities {
     return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
 #ifdef HEADAS
-    return joinPath(comonUtilities::getPackageRoot(package), package);
+    return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
     return commonUtilities::getPackageRoot(package);
 #endif
