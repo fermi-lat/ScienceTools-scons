@@ -32,6 +32,7 @@ namespace facilities {
 #ifdef HEADAS
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string dataPath = joinPath(packageRoot, "refdata");
+    dataPath = joinPath(dataPath, "fermi");
     return joinPath(dataPath, package);
 #else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
@@ -49,9 +50,9 @@ namespace facilities {
     return joinPath(xmlLocation, package);
 #else
 #ifdef HEADAS
-    std::String packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string xmlLocation = joinPath(packageRoot, "xml");
-    xmlLocation = joinPath(packageRoot, "fermi");
+    xmlLocation = joinPath(xmlLocation, "fermi");
     return joinPath(xmlLocation, package);
 #else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
