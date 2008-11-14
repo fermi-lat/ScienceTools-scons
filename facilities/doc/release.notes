@@ -4,6 +4,7 @@
   @verbatim
   Coordinator: Toby Burnett
             **EOH**
+  v2r18p3  14-Nov-2008 ng  Fixed bugs that prevented a HEADAS compile
   v2r18p2  31-Oct-2008 ng  Added section to commonUtilities for FSSC distribution.
   v2r18p1  23-Apr-2008 ng  Modified setupEnvironment to set <PACKAGE>DATAPATH
   v2r18    02-Apr-2008 hmk add method to expand env variables in a vector of 
