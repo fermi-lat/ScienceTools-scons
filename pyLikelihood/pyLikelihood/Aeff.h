@@ -52,4 +52,4 @@ private:
 
 } // namespace pyLikelihood 
 
-#endif pyLikelihood_Aeff_h
+#endif // pyLikelihood_Aeff_h
