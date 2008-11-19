@@ -11,12 +11,7 @@ libEnv = baseEnv.Clone()
 libEnv.Tool('pulsePhaseLib', depsOnly = 1)
 pulsePhaseLib = libEnv.StaticLibrary('pulsePhase', listFiles(['src/*.cxx']))
 
-progEnv.Tool('pulsarDbLib')
-progEnv.Tool('st_appLib')
-progEnv.Tool('st_facilitiesLib')
-progEnv.Tool('timeSystemLib')
-progEnv.Tool('tipLib')
-
+progEnv.Tool('pulsePhaseLib')
 gtophaseBin = progEnv.Program('gtophase', listFiles(['src/gtophase/*.cxx']))
 gtpphaseBin = progEnv.Program('gtpphase', listFiles(['src/gtpphase/*.cxx']))
 test_pulsePhaseBin = progEnv.Program('test_pulsePhase', listFiles(['src/test/*.cxx']))
