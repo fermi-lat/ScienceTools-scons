@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r14p1 20-Nov-08  JC   restore default strategy to 1 for NewMinuit as
+                            it has been shown to be unreliable in some cases.
     v2r14   29-Oct-08  JC   set default strategy=2 for NewMinuit
     v2r13   29-Sep-08  JC   make Function::[setFreeParamValues,getFreeParams, 
                             getNumFreeParams] virtual to allow for 
