@@ -57,7 +57,7 @@ namespace optimizers {
     NewMinuit(Statistic &);
     virtual ~NewMinuit() {};
     void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
-    void setStrategy(unsigned int strat = 2) {
+    void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }
     void setMaxEval(unsigned int n) {m_maxEval=n;}
