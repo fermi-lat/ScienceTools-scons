@@ -164,8 +164,8 @@ namespace tip {
     if (0 != status) throw TipException(status, formatWhat("filterRows had an error applying the filtering expression " + filter));
 
     // Read the number of rows present in the table.
-    long nrows = 0;
-    fits_get_num_rows(m_header.getFp(), &nrows, &status);
+    Index_t nrows = 0;
+    fits_get_num_rowsll(m_header.getFp(), &nrows, &status);
 
     // Check for success and if not, do not continue.
     if (0 != status) {
@@ -187,10 +187,10 @@ namespace tip {
 
     int status = 0;
     int column_status = 0;
-    long nrows = 0;
+    Index_t nrows = 0;
 
     // Read the number of rows present in the table.
-    fits_get_num_rows(m_header.getFp(), &nrows, &status);
+    fits_get_num_rowsll(m_header.getFp(), &nrows, &status);
 
     // Check for success and if not, do not continue.
     if (0 != status) {

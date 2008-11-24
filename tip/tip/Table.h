@@ -402,7 +402,7 @@ namespace tip {
   inline void TableCell::get(Index_t src_begin, Index_t src_end, T * dest_begin) const {
     std::vector<T> tmp_dest(src_end);
     m_record.getExtensionData()->getColumn(getFieldIndex())->get(m_record.getIndex(), tmp_dest);
-    for (long ii = 0; ii < src_end - src_begin; ++ii) dest_begin[ii] = tmp_dest[src_begin + ii];
+    for (IndexDiff_t ii = 0; ii < src_end - src_begin; ++ii) dest_begin[ii] = tmp_dest[src_begin + ii];
   }
 
   inline double TableCell::get() const {

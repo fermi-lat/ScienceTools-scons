@@ -237,7 +237,7 @@ namespace tip {
       virtual void get(Index_t record_index, std::vector<bool> & dest) const {
         if (m_scalar) throw TipException("FitsColumn::get(Index_t, std::vector<bool> &) was called but field is not a vector");
         int status = 0;
-        long num_els = getNumElements(record_index);
+        Index_t num_els = getNumElements(record_index);
         char * tmp_dest = new char[num_els];
         int * any_nul = new int[num_els];
         fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
@@ -247,7 +247,7 @@ namespace tip {
           delete [] tmp_dest;
           throw TipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
         }
-        for (long ii = 0; ii != num_els; ++ii)
+        for (Index_t ii = 0; ii != num_els; ++ii)
           if (0 == any_nul[ii]) dest[ii] = (0 != tmp_dest[ii]); else dest[ii] = FitsPrimProps<bool>::undefined();
         delete [] any_nul;
         delete [] tmp_dest;
@@ -266,7 +266,7 @@ namespace tip {
         if (m_scalar)
           throw TipException("FitsColumn::set(Index_t, const std::vector<bool> &) called but field is not a vector");
         int status = 0;
-        long num_els = src.size();
+        Index_t num_els = src.size();
 
         if (!m_var_length && num_els > m_repeat) {
           std::ostringstream os;
@@ -276,7 +276,7 @@ namespace tip {
         }
 
         char * tmp_src = new char[num_els];
-        for (long ii = 0; ii < num_els; ++ii) tmp_src[ii] = src[ii];
+        for (Index_t ii = 0; ii < num_els; ++ii) tmp_src[ii] = src[ii];
         fits_write_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
           tmp_src, &status);
         delete [] tmp_src;
@@ -325,12 +325,12 @@ namespace tip {
       /** \brief Get number of elements in the given cell.
           \param record_index The record number identifying the cell.
       */
-      virtual long getNumElements(Index_t record_index = 0) const {
+      virtual Index_t getNumElements(Index_t record_index = 0) const {
         if (!m_var_length) return m_repeat;
         int status = 0;
-        long num_els = 0;
+        Index_t num_els = 0;
         // Get number of elements in this particular field.
-        fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
+        fits_read_descriptll(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
         if (0 != status) throw TipException(status, "FitsColumn::getNumElements failed to get size of variable length cell");
 
         return num_els;
@@ -381,7 +381,7 @@ namespace tip {
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         if (m_scalar) throw TipException("FitsColumn::getVector was called but field is not a vector");
         int status = 0;
-        long num_els = getNumElements(record_index);
+        Index_t num_els = getNumElements(record_index);
         dest.resize(num_els);
         U * dest_begin = &dest.front();
         int any_null = 0;
@@ -409,7 +409,7 @@ namespace tip {
         if (m_scalar) throw TipException("FitsColumn::setVector called but field is not a vector");
         if (m_ext->readOnly()) throw TipException("FitsColumn::setVector called for a read-only file");
         int status = 0;
-        long num_els = src.size();
+        Index_t num_els = src.size();
 
         if (!m_var_length && num_els > m_repeat) {
           std::ostringstream os;
@@ -426,8 +426,8 @@ namespace tip {
       std::string m_type_string;
       FitsTable * m_ext;
       FieldIndex_t m_field_index;
-      long m_repeat;
-      long m_width;
+      Index_t m_repeat;
+      Index_t m_width;
       int m_type_code;
       int m_display_width;
       bool m_var_length;
@@ -441,7 +441,7 @@ namespace tip {
 
     // Determine characteristics of this column.
     int status = 0;
-    fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
+    fits_get_coltypell(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
     if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get format of field " + id);
 
     // Read the TFORM keyword, which gives the full layout of the column.
