@@ -316,7 +316,7 @@ namespace tip {
 
   void TestFileManager::appendImageTest() {
     try {
-      std::vector<long> dims(3);
+      ImageBase::PixelCoordinate dims(3);
       dims[0] = 512;
       dims[1] = 512;
       dims[2] = 2;

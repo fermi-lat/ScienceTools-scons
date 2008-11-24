@@ -68,7 +68,8 @@ namespace tip {
           \param image_name The name of the new image extension.
           \param dims Set of dimensions of each axis of the image.
       */
-      virtual void appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+      virtual void appendImage(const std::string & file_name, const std::string & image_name,
+        const ImageBase::PixelCoordinate & dims);
 
       /** \brief Append a new table extension in a file. If the file does not exist, it will be created with
                  an empty primary image extension.

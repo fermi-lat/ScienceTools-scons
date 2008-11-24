@@ -12,6 +12,7 @@
 
 #include "fitsio.h"
 #include "tip/FileSummary.h"
+#include "tip/Image.h"
 #include "tip/TipFile.h"
 
 namespace tip {
@@ -41,7 +42,8 @@ namespace tip {
           \param image_name The name of the new table.
           \param dims The set of sizes for each dimension of the image.
       */
-      static void appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+      static void appendImage(const std::string & file_name, const std::string & image_name,
+        const ImageBase::PixelCoordinate & dims);
 
       /** \brief Append a table extension to a file.
           \param file_name The name of the file to which to append.
@@ -61,9 +63,10 @@ namespace tip {
       static bool isValid(const std::string & file_name);
 
     private:
-      static fitsfile * createFile(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims);
+      static fitsfile * createFile(const std::string & file_name, const std::string & image_name,
+        const ImageBase::PixelCoordinate & dims);
       static fitsfile * createImage(fitsfile * fp, const std::string & file_name, const std::string & image_name,
-        const std::vector<long> & dims);
+        const ImageBase::PixelCoordinate & dims);
 
       // Get the extsnsion identifier (name or number).
       static void getExtId(fitsfile * fp, std::string & ext_id);

@@ -193,7 +193,7 @@ namespace tip {
       range[1].second = range[1].first + dims[1] / 2;
 
       // Compute dimensions of slice from the slice specification.
-      long slice_size = 1;
+      PixOrd_t slice_size = 1;
       for (Image::PixelCoordRange::iterator r_itor = range.begin(); r_itor != range.end(); ++r_itor) {
         slice_size *= r_itor->second - r_itor->first;
       }

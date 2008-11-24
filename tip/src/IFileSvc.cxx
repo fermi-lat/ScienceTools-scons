@@ -69,7 +69,8 @@ namespace tip {
     return new FitsTipFile(file_name);
   }
 
-  void IFileSvc::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
+  void IFileSvc::appendImage(const std::string & file_name, const std::string & image_name,
+    const ImageBase::PixelCoordinate & dims) {
     FitsFileManager::appendImage(file_name, image_name, dims);
   }
 
