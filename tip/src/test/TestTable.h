@@ -77,6 +77,9 @@ namespace tip {
       /// \brief Test that Root version of FT2 files are readable.
       void rootFt2Test();
 
+      /// \brief Test the creation of a large file.
+      void largeFileTest();
+
       /** \brief Get a writable table pointer, for the benefit of other tests.
       */
       Table * getTable();

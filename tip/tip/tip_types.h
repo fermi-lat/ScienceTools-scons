@@ -15,11 +15,11 @@ namespace tip {
 
   /** \brief Type used for differences in table row numbers.
   */
-  typedef signed long IndexDiff_t;
+  typedef signed long long IndexDiff_t;
 
   /** \brief Type used for table row numbers.
   */
-  typedef signed long Index_t;
+  typedef signed long long Index_t;
 
   /** \brief Type used to identify pixel ordinates.
   */

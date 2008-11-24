@@ -73,6 +73,9 @@ namespace tip {
     // Test that Root version of FT2 file is read correctly.
     rootFt2Test();
 
+    // Test that large files are handled correctly.
+    largeFileTest();
+
     // Clean up.
     delete m_root_ft2; m_root_ft2 = 0;
     delete m_root_table; m_root_table = 0;
@@ -1167,6 +1170,66 @@ namespace tip {
       ReportUnexpected("Reading sc_position field in FT2.root as a vector<ulong> failed", x);
     }
 
+  }
+
+  void TestTable::largeFileTest() {
+    // Add two to the maximum number expressible as an unsigned long. This is so that
+    // the number of rows and the index of the last row are both not expressible as a unsigned long.
+    Index_t rec_to_add = Index_t(std::numeric_limits<unsigned long>::max()) + 2;
+    try {
+      bool success = true;
+
+      // Create an empty table.
+      IFileSvc::instance().createFile("large_file.fits", getDataDir() + "large_file.tpl");
+
+      // Open the table, and add a number of records that should overflow a signed 32 bit index as well as
+      // exceed 4GB in size.
+      std::auto_ptr<Table> table(IFileSvc::instance().editTable("large_file.fits", "LARGE"));
+      table->setNumRecords(rec_to_add);
+      
+      // Read the number of records
+      Index_t num_records = table->getNumRecords();
+
+      // Confirm correct.
+      if (rec_to_add != num_records) {
+        success = false;
+        std::ostringstream os;
+        os << "TestTable::largeFileTest did not find " << rec_to_add << " records after adding them";
+        ReportUnexpected(os.str());
+      }
+
+      // Try reading and writing the last row.
+      if (success) {
+        IColumn * column = table->getColumn(0);
+
+        char read_value = 0;
+        // Read the last row, probably just a zero.
+        column->get(num_records - 1, read_value);
+
+        // Write something different to the last row. 
+        char written_value = read_value + 65;
+        column->set(num_records - 1, written_value);
+
+        // Read the last row again to make sure this worked.
+        column->get(num_records - 1, read_value);
+        if (read_value == written_value) {
+          success = false;
+          std::ostringstream os;
+          os << "TestTable::largeFileTest read a value of " << read_value << " from the last record, not " <<
+             written_value << ", as expected";
+          ReportUnexpected(os.str());
+        }
+      }
+
+      if (success) {
+        ReportExpected("TestTable::largeFileTest succeeded in creating, reading and writing a large file");
+        remove("large_file.fits");
+      }
+    } catch (const TipException & x) {
+      std::ostringstream os;
+      os << "TestTable::largeFileTest had trouble creating file with " << rec_to_add << " records";
+      ReportUnexpected(os.str(), x);
+    }
   }
 
   Table * TestTable::getTable() {
