@@ -49,18 +49,19 @@ namespace pointlike {
 
         ~PointSourceLikelihood();
 
-        //! fit to signal fractions 
+        //! fit to signal fractions
+        /// @param skip [0] bands to skip
         /// @return total TS
-        double  maximize();
+        double  maximize(int skip=0);
 
         //! change the current direction -- resets data and refits
         void setDir(const astro::SkyDir& dir,bool subset=false);
 
         /// @return the gradient, summed over all bands
-        const CLHEP::Hep3Vector& gradient() const;
+        const CLHEP::Hep3Vector& gradient(int skip) const;
 
         ///@return the curvature, summed over all bamds
-        double curvature() const;
+        double curvature(int skip=0) const;
 
         /// @brief Make a table of the fit spectrum, to the ostream
         /// See set_ostream to direct to a file.
@@ -185,6 +186,8 @@ namespace pointlike {
 
 
     private:
+        iterator begin_skip(int skip);
+        const_iterator begin_skip(int skip)const;
 
         std::string m_name;
         astro::SkyDir m_dir; ///< common direction
