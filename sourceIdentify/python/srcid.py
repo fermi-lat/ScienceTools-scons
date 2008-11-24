@@ -683,13 +683,22 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 		data_name[i] = cat['name']
 		data_ref[i]  = cat['ref']
 		data_url[i]  = cat['url']
-
+	
 	# Add keywords to catalogue table
 	hdu_cat.header.update('EXTNAME', 'ID_CAT_REFERENCE')
 	
+	# Build result catalogue HDU list. If additional HDUs were present in the input
+	# catalogue then add them at the end ...
+	hdu_list = [pyfits.PrimaryHDU(), hdu_new, hdu_cat]
+	latcat   = pyfits.open(lat_name)
+	if len(latcat) > 2:
+		for hdu in latcat[2:]:
+			hdu_list.append(hdu)
+	
 	# Save LAT catalogue with attached columns
-	hdulist = pyfits.HDUList([pyfits.PrimaryHDU(), hdu_new, hdu_cat])
+	hdulist = pyfits.HDUList(hdu_list)
 	hdulist.writeto(out_name, clobber=True)
+	latcat.close()
 	
 	# Get Source information column names
 	cards   = hdu_lat.header.ascardlist()
@@ -706,26 +715,26 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 		   card.value == 'ID_IDENTIFIER'):
 			key     = 'TTYPE' + card.key[5:7]
 			colname = cards[key].value
-		elif (card.value == 'ID' or card.value == 'NAME' or \
-			card.value == 'NICKNAME'):
+		elif (str(card.value).upper() == 'ID' or str(card.value).upper() == 'NAME' or \
+		      str(card.value).upper() == 'NICKNAME'):
 			key     = 'TTYPE' + card.key[5:7]
 			colname = cards[key].value
-		elif (card.value == 'RA'):
+		elif (str(card.value).upper() == 'RA'):
 			key   = 'TTYPE' + card.key[5:7]
 			colra = cards[key].value
-		elif (card.value == 'DEC'):
+		elif (str(card.value).upper() == 'DEC'):
 			key    = 'TTYPE' + card.key[5:7]
 			coldec = cards[key].value
-		elif (card.value == 'PosErr95'):
+		elif (str(card.value).upper() == 'POSERR95'):
 			key    = 'TTYPE' + card.key[5:7]
 			colmaj = cards[key].value
-		elif (card.value == 'CONF_95_SEMIMAJOR' or card.value == 'Conf_95_SemiMajor'):
+		elif (str(card.value).upper() == 'CONF_95_SEMIMAJOR'):
 			key    = 'TTYPE' + card.key[5:7]
 			colmaj = cards[key].value
-		elif (card.value == 'CONF_95_SEMIMINOR' or card.value == 'Conf_95_SemiMinor'):
+		elif (str(card.value).upper() == 'CONF_95_SEMIMINOR'):
 			key    = 'TTYPE' + card.key[5:7]
 			colmin = cards[key].value
-		elif (card.value == 'CONF_95_POSANG' or card.value == 'Conf_95_PosAng'):
+		elif (str(card.value).upper() == 'CONF_95_POSANG'):
 			key    = 'TTYPE' + card.key[5:7]
 			colpos = cards[key].value
 	
