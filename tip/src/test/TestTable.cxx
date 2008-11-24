@@ -1212,7 +1212,7 @@ namespace tip {
 
         // Read the last row again to make sure this worked.
         column->get(num_records - 1, read_value);
-        if (read_value == written_value) {
+        if (read_value != written_value) {
           success = false;
           std::ostringstream os;
           os << "TestTable::largeFileTest read a value of " << read_value << " from the last record, not " <<
@@ -1223,13 +1223,17 @@ namespace tip {
 
       if (success) {
         ReportExpected("TestTable::largeFileTest succeeded in creating, reading and writing a large file");
-        remove("large_file.fits");
       }
     } catch (const TipException & x) {
       std::ostringstream os;
       os << "TestTable::largeFileTest had trouble creating file with " << rec_to_add << " records";
       ReportUnexpected(os.str(), x);
+    } catch (...) {
+      // Make sure clean-up occurs no matter what.
+      remove("large_file.fits");
+      throw;
     }
+    remove("large_file.fits");
   }
 
   Table * TestTable::getTable() {
