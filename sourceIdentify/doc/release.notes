@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+26-Nov-2008  v2r1p0  JK  New calibrated pipeline configuration
 26-Sep-2008  v2r0p2  JK  Correct pointer cast (for Win32)
 25-Sep-2008  v2r0p1  JK  Add CGRaBS (forgotten before v2r0p0 tag)
 25-Sep-2008  v2r0p0  JK  First official post-launch version
