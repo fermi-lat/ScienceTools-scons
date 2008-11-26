@@ -172,10 +172,12 @@ namespace st_stream {
       OStream & operator <<(signed short x) { return write(x); }
       OStream & operator <<(signed int x) { return write(x); }
       OStream & operator <<(signed long x) { return write(x); }
+      OStream & operator <<(signed long long x) { return write(x); }
       OStream & operator <<(unsigned char x) { return write(x); }
       OStream & operator <<(unsigned short x) { return write(x); }
       OStream & operator <<(unsigned int x) { return write(x); }
       OStream & operator <<(unsigned long x) { return write(x); }
+      OStream & operator <<(unsigned long long x) { return write(x); }
       OStream & operator <<(float x) { return write(x); }
       OStream & operator <<(double x) { return write(x); }
       OStream & operator <<(long double x) { return write(x); }
