@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+26-nov-2008   v2r13   JP Add support for large tables using cfitsio native support.
 29-oct-2008 v2r12p4   JV Added code from JP to allow root-free build option.
 10-apr-2008 v2r12p3   JP Fix bug: null value was not being set correctly when adding string field.
 14-mar-2008 v2r12p2   JP Fix bug in unit test; insert delimiter when concatenating file names.
