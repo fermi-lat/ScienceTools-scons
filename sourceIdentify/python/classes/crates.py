@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------------------------------
-# Source class: BL Lac
+# Source class: CRATES radio sources
 #--------------------------------------------------------------------------------------------
 #
 # $Author$
@@ -7,21 +7,21 @@
 # $Date$
 #--------------------------------------------------------------------------------------------
 """
-BL Lac Source Class (Veron's 2006 catalogue).
+CRATES radio sources.
 Isotropic MC sky calibrated.
 """
 
 # Catalogue identifier
-catid = "BLLAC"
+catid = "CRATES"
 
 # Catalogue FITS filename
-catname = "obj-bllac.fits"
+catname = "obj-blazar-crates.fits"
 
 # Probability method and threshold
-prob_method      = "PROB_POST"    # Formula used to calculate probability
-prob_prior       = 0.50           # Formula used to calculate prior
-prob_thres       = 0.50           # Probability threshold
-figure_of_merit  = ""             # Formula used to calculate FoM
+prob_method      = "PROB_POST"        # Use posterior probability
+prob_prior       = 0.022              # Formula used to calculate prior
+prob_thres       = 0.50               # Probability threshold
+figure_of_merit  = ""                 # No FoM used
 
 # Maximum number of counterparts per LAT source
 max_counterparts = 10

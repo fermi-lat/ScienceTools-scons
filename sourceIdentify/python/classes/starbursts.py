@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------------------------------
-# Source class: BL Lac
+# Source class: Starburst galaxies
 #--------------------------------------------------------------------------------------------
 #
 # $Author$
@@ -7,15 +7,14 @@
 # $Date$
 #--------------------------------------------------------------------------------------------
 """
-BL Lac Source Class (Veron's 2006 catalogue).
-Isotropic MC sky calibrated.
+Starburst Galaxies cluster Source Class.
 """
 
 # Catalogue identifier
-catid = "BLLAC"
+catid = "STARBURST"
 
 # Catalogue FITS filename
-catname = "obj-bllac.fits"
+catname = "obj-starbursts.fits"
 
 # Probability method and threshold
 prob_method      = "PROB_POST"    # Formula used to calculate probability
@@ -31,4 +30,3 @@ new_quantity = [ "" , "" ]
 
 # List of source selection criteria (setup up to 9 criteria in the list)
 selection = [ "" , "" ]
-

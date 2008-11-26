@@ -8,6 +8,7 @@
 #--------------------------------------------------------------------------------------------
 """
 Blazar Source Class (CGRaBS).
+Isotropic MC sky calibrated.
 """
 
 # Catalogue identifier
@@ -18,12 +19,12 @@ catname = "obj-blazar-cgrabs.fits"
 
 # Probability method and threshold
 prob_method      = "PROB_POST"        # Use posterior probability
-prob_prior       = "nsrc() / ncpt()"  # Bayesian frequency prior
-prob_thres       = 0.40               # Probability threshold
+prob_prior       = 0.14               # Formula used to calculate prior
+prob_thres       = 0.50               # Probability threshold
 figure_of_merit  = ""                 # No FoM used
 
 # Maximum number of counterparts per LAT source
-max_counterparts = 1
+max_counterparts = 10
 
 # List of new catalogue quantities (setup up to 9 formulae in the list)
 new_quantity = [ "" , "" ]

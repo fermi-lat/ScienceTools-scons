@@ -23,7 +23,7 @@ catname = "gamma-cosb.fits"
 
 # Probability method and threshold
 prob_method      = "PROB_POST"    # Formula used to calculate probability
-prob_prior       = "0.70"         # Formula used to calculate prior
+prob_prior       = 0.70           # Formula used to calculate prior
 prob_thres       = 0.0            # Probability threshold
 figure_of_merit  = ""             # Formula used to calculate FoM
 
