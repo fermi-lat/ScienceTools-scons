@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.26  2008/08/20 11:52:21  jurgen
+Correct probability computation and resolve STGEN-56
+
 Revision 1.25  2008/04/23 15:09:21  jurgen
 Check for catch-22 in upper case
 
@@ -91,9 +94,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r0p0"
+#define TOOL_VERSION  "v2r1p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "20-Aug-2008"
+#define TOOL_DATE     "26-Nov-2008"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
