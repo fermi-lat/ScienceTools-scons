@@ -67,12 +67,12 @@ namespace tip {
 
       /** \brief Get the dimensionality of an image.
       */
-      const std::vector<PixOrd_t> & getImageDimensions() const;
+      const ImageBase::PixelCoordinate & getImageDimensions() const;
 
       /** \brief Set the dimensionality of an image.
           \param dims Array holding the sizes in each dimension.
       */
-      void setImageDimensions(const std::vector<PixOrd_t> & dims);
+      void setImageDimensions(const ImageBase::PixelCoordinate & dims);
 
       /** \brief Get a specific pixel from an image extension.
           \param coord The coordinates of the pixel.
@@ -137,7 +137,7 @@ namespace tip {
       FitsHeader m_header;
       std::string m_file_name;
       std::string m_filter;
-      std::vector<PixOrd_t> m_image_dimensions;
+      ImageBase::PixelCoordinate m_image_dimensions;
   };
 
   typedef FitsTypedImage<float> FitsImage;
@@ -171,15 +171,15 @@ namespace tip {
   inline void FitsTypedImage<T>::setName(const std::string & name) { m_header.setName(name); }
 
   template <typename T>
-  inline const std::vector<PixOrd_t> & FitsTypedImage<T>::getImageDimensions() const {
+  inline const ImageBase::PixelCoordinate & FitsTypedImage<T>::getImageDimensions() const {
     return m_image_dimensions;
   }
 
   template <typename T>
-  inline void FitsTypedImage<T>::setImageDimensions(const std::vector<PixOrd_t> & dims) {
+  inline void FitsTypedImage<T>::setImageDimensions(const ImageBase::PixelCoordinate & dims) {
     // Make C primitive copy of array to pass to Cfitsio.
-    std::vector<PixOrd_t>::size_type naxis = dims.size();
-    std::vector<long> naxes(dims.begin(), dims.end());
+    ImageBase::PixelCoordinate::size_type naxis = dims.size();
+    ImageBase::PixelCoordinate naxes(dims.begin(), dims.end());
 
     int status = 0;
     int bitpix = 0;
@@ -200,7 +200,7 @@ namespace tip {
   T FitsTypedImage<T>::get(const ImageBase::PixelCoordinate & coord) const {
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    std::vector<long> cf_coord(coord.size());
+    ImageBase::PixelCoordinate cf_coord(coord.size());
 
     // Cfitsio starts numbering at 1 not 0.
     for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
@@ -219,7 +219,7 @@ namespace tip {
     if (m_header.readOnly()) throw TipException(formatWhat("set(coordinate, pixel) called for read-only image"));
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    std::vector<long> cf_coord(coord.size());
+    ImageBase::PixelCoordinate cf_coord(coord.size());
 
     // Cfitsio starts numbering at 1 not 0.
     for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
@@ -236,7 +236,7 @@ namespace tip {
   inline void FitsTypedImage<T>::getPixel(const ImageBase::PixelCoordinate & coord, double & pixel) const {
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    std::vector<long> cf_coord(coord.size());
+    ImageBase::PixelCoordinate cf_coord(coord.size());
 
     // Cfitsio starts numbering at 1 not 0.
     for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
@@ -256,7 +256,7 @@ namespace tip {
     if (m_header.readOnly()) throw TipException(formatWhat("setPixel called for read-only image"));
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    std::vector<long> cf_coord(coord.size());
+    ImageBase::PixelCoordinate cf_coord(coord.size());
 
     // Cfitsio starts numbering at 1 not 0.
     for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
@@ -287,7 +287,7 @@ namespace tip {
     m_image_dimensions.clear();
 
     // Get naxes:
-    std::vector<long> naxes(naxis);
+    ImageBase::PixelCoordinate naxes(naxis);
     fits_get_img_size(m_header.getFp(), naxis, &*naxes.begin(), &status);
     if (0 != status) {
       throw TipException(status, formatWhat("Cannot get dimensions of each degree of freedom of image"));
@@ -311,15 +311,15 @@ namespace tip {
     int status = 0;
 
     // Compute overall size of image.
-    unsigned long image_size = 1;
-    for (std::vector<PixOrd_t>::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
+    PixOrd_t image_size = 1;
+    for (ImageBase::PixelCoordinate::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
       image_size *= *itor;
 
     // Make sure image is large enough to accomodate the image.
     image.resize(image_size);
 
     // Starting coordinate is the first pixel in each dimension.
-    std::vector<long> coord(m_image_dimensions.size(), 1);
+    ImageBase::PixelCoordinate coord(m_image_dimensions.size(), 1);
 
     // Get the image itself.
     fits_read_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), &*coord.begin(), image_size, 0, &*image.begin(), 0, &status);
@@ -339,7 +339,7 @@ namespace tip {
     // However, for lpixel there is a second correction because end_pixel is defined as one past the last pixel. So:
     //   lpixel = end_pixel + 1 (offset for indexing) - 1 (end_pixel is one pixel past last pixel) = end_pixel
     // Thus, these corrections offset, and so there is no correction for lpixel.
-    long slice_size = 1;
+    PixOrd_t slice_size = 1;
     for (ImageBase::PixelCoordRange::size_type index = 0; index != range.size(); ++index) {
       fpixel[index] = range[index].first + 1; // Cfitsio indexes image coordinates starting with 1 not 0.
       lpixel[index] = range[index].second; // DO NOT add 1, because range already is 1 past the last pixel.
@@ -363,15 +363,15 @@ namespace tip {
     int status = 0;
 
     // Compute overall size of image.
-    unsigned long image_size = 1;
-    for (std::vector<PixOrd_t>::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
+    PixOrd_t image_size = 1;
+    for (ImageBase::PixelCoordinate::const_iterator itor = m_image_dimensions.begin(); itor != m_image_dimensions.end(); ++itor)
       image_size *= *itor;
 
     // Make sure no more than the image_size elements are written.
-    image_size = (image_size < image.size()) ? image_size : image.size();
+    image_size = (image_size < PixOrd_t(image.size())) ? image_size : image.size();
 
     // Starting coordinate is the first pixel in each dimension.
-    std::vector<long> coord(m_image_dimensions.size(), 1);
+    ImageBase::PixelCoordinate coord(m_image_dimensions.size(), 1);
 
     // Write the image itself.
     fits_write_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), &*coord.begin(), image_size,

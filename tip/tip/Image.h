@@ -30,11 +30,11 @@ namespace tip {
 
       /** \brief Get the dimensionality of an image.
       */
-      virtual const std::vector<PixOrd_t> & getImageDimensions() const = 0;
+      virtual const PixelCoordinate & getImageDimensions() const = 0;
 
       /** \brief Get the dimensionality of an image.
       */
-      virtual void setImageDimensions(const std::vector<PixOrd_t> & dims) = 0;
+      virtual void setImageDimensions(const PixelCoordinate & dims) = 0;
 
       /** \brief Get a specific pixel from an image extension.
           \param x The x ordinate of the pixel.
@@ -121,11 +121,11 @@ namespace tip {
           \param image The array in which to store the image slice.
       */
       void get(const PixOrd_t & index, std::vector<T> & image) const {
-        const std::vector<PixOrd_t> & dims(getImageDimensions());
+        const PixelCoordinate & dims(getImageDimensions());
         PixelCoordRange range(dims.size());
         range[0].first = index;
         range[0].second = index + 1;
-        for (std::vector<PixOrd_t>::size_type ii = 1; ii < dims.size(); ++ii) {
+        for (PixelCoordinate::size_type ii = 1; ii < dims.size(); ++ii) {
           range[ii].first = 0;
           range[ii].second = dims[ii];
         }
@@ -148,11 +148,11 @@ namespace tip {
           \param image The array in which the image slice is stored.
       */
       void set(const PixOrd_t & index, const std::vector<T> & image) {
-        const std::vector<PixOrd_t> & dims(getImageDimensions());
+        const PixelCoordinate & dims(getImageDimensions());
         PixelCoordRange range(dims.size());
         range[0].first = index;
         range[0].second = index + 1;
-        for (std::vector<PixOrd_t>::size_type ii = 1; ii < dims.size(); ++ii) {
+        for (PixelCoordinate::size_type ii = 1; ii < dims.size(); ++ii) {
           range[ii].first = 0;
           range[ii].second = dims[ii];
         }

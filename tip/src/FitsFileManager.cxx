@@ -12,6 +12,7 @@
 #include "FitsTipFile.h"
 #include "fitsio.h"
 #include "tip/FileSummary.h"
+#include "tip/Image.h"
 #include "tip/TipException.h"
 
 namespace tip {
@@ -36,7 +37,7 @@ namespace tip {
       fits_create_file(&fp, const_cast<char *>(full_name.c_str()), &status);
     } else {
       // No template: need to create primary image explicitly.
-      std::vector<long> dims;
+      ImageBase::PixelCoordinate dims;
 
       fp = createFile(full_name, "PRIMARY", dims);
     }
@@ -51,7 +52,8 @@ namespace tip {
     return TipFile(new FitsTipFile("mem://" + file_name, template_name, clobber));
   }
 
-  void FitsFileManager::appendImage(const std::string & file_name, const std::string & image_name, const std::vector<long> & dims) {
+  void FitsFileManager::appendImage(const std::string & file_name, const std::string & image_name,
+    const ImageBase::PixelCoordinate & dims) {
     fitsfile * fp = 0;
     int status = 0;
 
@@ -77,7 +79,7 @@ namespace tip {
     // Open or create the file.
     fits_open_file(&fp, const_cast<char *>(file_name.c_str()), READWRITE, &status);
     if (0 != status) {
-      std::vector<long> dims;
+      ImageBase::PixelCoordinate dims;
       status = 0;
       fp = createFile(file_name.c_str(), "PRIMARY", dims);
       if (0 != status) {
@@ -144,7 +146,7 @@ namespace tip {
   }
 
   fitsfile * FitsFileManager::createFile(const std::string & file_name, const std::string & image_name,
-    const std::vector<long> & dims) {
+    const ImageBase::PixelCoordinate & dims) {
     fitsfile * fp = 0;
     int status = 0;
 
@@ -159,11 +161,11 @@ namespace tip {
   }
 
   fitsfile * FitsFileManager::createImage(fitsfile * fp, const std::string & file_name, const std::string & image_name,
-    const std::vector<long> & dims) {
+    const ImageBase::PixelCoordinate & dims) {
     int status = 0;
 
     // Create new image extension at end of file.
-    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<long *>(&*dims.begin()), &status);
+    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<PixOrd_t *>(&*dims.begin()), &status);
     if (0 != status) {
       closeFile(fp, false, status);
       throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");
