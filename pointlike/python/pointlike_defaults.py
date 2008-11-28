@@ -31,8 +31,8 @@ class Diffuse:
 class PointSourceLikelihood: #parameters for the likelihood calculation
     # HEALpix level range for energy band  fits
 
-    emin = 700;   # only select bands including or above this energy
-    minalpha=0.15# minimum value for signal fraction to use in TS total
+    emin = 200;   # only select bands including or above this energy
+    minalpha=0.   # minimum value for signal fraction to use in TS total
 
     # parameters governing iteration cycle of bands/position
 
@@ -48,9 +48,9 @@ class PointSourceLikelihood: #parameters for the likelihood calculation
 class SourceLikelihood: #parameters for the likelihood calculation
 
     TSmin= -100.   # minimum TS value to allow during iteration
-    emin = 500   # minimim energy for bands
-    verbose = 0  # set non-zero to get lots of output
-    maxstep = 0.2 # max step allowed during localization: abort if larger
+    emin = 200     # minimim energy for bands
+    verbose = 0    # set non-zero to get lots of output
+    maxstep = 0.2  # max step allowed during localization: abort if larger
     umax=50.
     bgROI=0.5
 

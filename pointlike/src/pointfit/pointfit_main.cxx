@@ -73,9 +73,12 @@ int main(int argc, char** argv)
                 "expected either 'sources' or 'sourcelistfile' to define seeds");
         }
 
+        double tsmin(10);
+        setup.getValue("tsmin", tsmin, tsmin);
+
         sl->sort_TS(); // initial sort by decreasing TS
         sl->refit(); 
-        sl->filter_TS(10); // filter
+        if(tsmin>0) sl->filter_TS(tsmin); // filter
         sl->sort_ra(); // now by ra
         sl->dump(*out); 
 
