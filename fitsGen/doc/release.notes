@@ -4,6 +4,8 @@
     $Id$
 
     @verbatim
+    v4r2   28-Nov-08   JC   ft1.tpl mods (new diffuse response column 
+                            conventions); ft2.tpl mods (new columns)
     v4r1p1 13-Jul-08   JC   makeFT1 parfile fix; add makeFT1_kluge.par
     v4r1   11-Jul-08   JC   add makeFT1_kluge which will put the desired
                             class definitions (with the CTBCORE and 
