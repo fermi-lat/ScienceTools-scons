@@ -1181,37 +1181,89 @@ namespace tip {
 
       // Create an empty table.
       IFileSvc::instance().createFile("large_file.fits", getDataDir() + "large_file.tpl");
+      ReportExpected("Created large_file.fits, to test adding a large (>32 bit) number of rows");
 
       // Open the table, and add a number of records that should overflow a signed 32 bit index as well as
       // exceed 4GB in size.
       std::auto_ptr<Table> table(IFileSvc::instance().editTable("large_file.fits", "LARGE"));
-      table->setNumRecords(rec_to_add);
+      ReportExpected("Opened large_file.fits, to test adding a large (>32 bit) number of rows");
+
+      try {
+        table->setNumRecords(rec_to_add);
+        std::ostringstream os;
+        os << "Succeeded in adding to large_file.fits " << rec_to_add << " records";
+        ReportExpected(os.str());
+      } catch (const TipException & x) {
+        success = false;
+        ReportUnexpected("After creating a large_file.fits, setNumRecords failed to add a large number of records: ", x);
+      }
       
       // Read the number of records
-      Index_t num_records = table->getNumRecords();
+      Index_t num_records = 0;
+      if (success) {
+        try {
+          num_records = table->getNumRecords();
+          ReportExpected("Succeeded in getting the number of records in large_file.fits");
+        } catch (const TipException & x) {
+          success = false;
+          ReportUnexpected("After adding a large number of records to large_file.fits, getNumRecords failed: ", x);
+        }
+      }
 
       // Confirm correct.
-      if (rec_to_add != num_records) {
-        success = false;
-        std::ostringstream os;
-        os << "TestTable::largeFileTest did not find " << rec_to_add << " records after adding them";
-        ReportUnexpected(os.str());
+      if (success) {
+        if (rec_to_add != num_records) {
+          success = false;
+          std::ostringstream os;
+          os << "After adding " << rec_to_add << " records to large_file.fits, found " << num_records << " records";
+          ReportUnexpected(os.str());
+        }
       }
 
       // Try reading and writing the last row.
+      IColumn * column = 0;
       if (success) {
-        IColumn * column = table->getColumn(0);
+        try {
+          column = table->getColumn(0);
+        } catch (const TipException & x) {
+          success = false;
+          ReportUnexpected("Unable to get column 0 from large_file.fits after adding a large number of records: ", x);
+        }
+      }
 
-        char read_value = 0;
+      char read_value = 0;
+      if (success) {
         // Read the last row, probably just a zero.
-        column->get(num_records - 1, read_value);
+        try {
+          column->get(num_records - 1, read_value);
+        } catch (const TipException & x) {
+          success = false;
+          ReportUnexpected("Unable to read last record from column 0 from large_file.fits: ", x);
+        }
+      }
 
+      char written_value = read_value + 65;
+      if (success) {
         // Write something different to the last row. 
-        char written_value = read_value + 65;
-        column->set(num_records - 1, written_value);
+        try {
+          column->set(num_records - 1, written_value);
+        } catch (const TipException & x) {
+          success = false;
+          ReportUnexpected("Unable to write last record in column 0 to large_file.fits: ", x);
+        }
+      }
 
+      if (success) {
         // Read the last row again to make sure this worked.
-        column->get(num_records - 1, read_value);
+        try {
+          column->get(num_records - 1, read_value);
+        } catch (const TipException & x) {
+          success = false;
+          ReportUnexpected("Unable to read after writing last record from column 0 from large_file.fits: ", x);
+        }
+      }
+
+      if (success) {
         if (read_value != written_value) {
           success = false;
           std::ostringstream os;
@@ -1226,7 +1278,7 @@ namespace tip {
       }
     } catch (const TipException & x) {
       std::ostringstream os;
-      os << "TestTable::largeFileTest had trouble creating file with " << rec_to_add << " records";
+      os << "TestTable::largeFileTest had trouble creating, reading and/or writing a file with " << rec_to_add << " records";
       ReportUnexpected(os.str(), x);
     } catch (...) {
       // Make sure clean-up occurs no matter what.
