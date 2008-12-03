@@ -185,7 +185,7 @@ void DataFilter::copyTable(const std::string & extension,
       delete inputTable;
    } else { // handle multiple input files using tip
       std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
-      long nrows(0);
+      tip::Index_t nrows(0);
       for ( ; infile != m_inputFiles.end(); ++infile) {
          const tip::Table * inputTable 
             = tip::IFileSvc::instance().readTable(*infile, extension,
@@ -218,7 +218,7 @@ void DataFilter::copyTable(const std::string & extension,
       tip::Table::Iterator outputIt = outputTable->begin();
       tip::Table::Record & output = *outputIt;
 
-      long npts(0);
+      tip::Index_t npts(0);
       for (infile=m_inputFiles.begin(); infile != m_inputFiles.end();
            ++infile) {
          const tip::Table * inputTable 

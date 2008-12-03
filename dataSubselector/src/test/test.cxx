@@ -268,8 +268,8 @@ void DssTests::compareCuts() {
    my_cuts.addRangeCut("CALIB_VERSION", "dimensionless", 1, 1,
                        dataSubselector::RangeCut::CLOSED, 1);
       
-   long npts(0);
-   long npts2(0);
+   tip::Index_t npts(0);
+   tip::Index_t npts2(0);
       
    std::map<std::string, double> params;
 
