@@ -28,7 +28,7 @@ void FtFileBase::setMissionStart(int year, int month, int day, int sec) {
    s_missionStart = astro::JulianDate(year, month, day, sec);
 }
 
-FtFileBase::FtFileBase(const std::string & outfile, long nrows) : 
+FtFileBase::FtFileBase(const std::string & outfile, tip::Index_t nrows) : 
    m_outfile(outfile), m_table(0), m_nrows(nrows),
    m_startTime(-1), m_stopTime(-1) {
 }

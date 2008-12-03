@@ -4,6 +4,8 @@
     $Id$
 
     @verbatim
+    v4r2p1 03-Dec-08   JC   use tip::Index_t instead of long for references to
+                            tip::Table numRecords
     v4r2   28-Nov-08   JC   ft1.tpl mods (new diffuse response column 
                             conventions); ft2.tpl mods (new columns)
     v4r1p1 13-Jul-08   JC   makeFT1 parfile fix; add makeFT1_kluge.par

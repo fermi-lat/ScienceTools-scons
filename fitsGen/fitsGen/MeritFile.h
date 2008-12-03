@@ -46,7 +46,7 @@ public:
       return m_row;
    }
 
-   long nrows() const {
+   tip::Index_t nrows() const {
       return m_nrows;
    }
 
@@ -73,7 +73,7 @@ private:
    const tip::Table * m_table;
    tip::Table::ConstIterator m_it;
    tip::ConstTableRecord & m_row;
-   long m_nrows;
+   tip::Index_t m_nrows;
 
    bool m_haveTime;
 
