@@ -3,6 +3,8 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+04-dec-2008 v2r13p2   JP Increase stability of tip by being more careful with the
+                         Root-specific initializations.
 01-dec-2008 v2r13p1   JP Add more information to unit test to help isolate problems on Windows.
 26-nov-2008   v2r13   JP Add support for large tables using cfitsio native support.
 29-oct-2008 v2r12p4   JV Added code from JP to allow root-free build option.
