@@ -28,7 +28,8 @@ TTree g_tip_windows_dynamic_loader_bug_4_02_00;
 
 namespace tip {
 
-  void RootTable::resetSigHandlers() {
+  bool RootTable::resetSigHandlers() {
+    if (0 == gSystem) return false;
     gSystem->ResetSignal(kSigBus);
     gSystem->ResetSignal(kSigSegmentationViolation);
     gSystem->ResetSignal(kSigSystem);
@@ -44,6 +45,7 @@ namespace tip {
     gSystem->ResetSignal(kSigTermination);
     gSystem->ResetSignal(kSigUser1);
     gSystem->ResetSignal(kSigUser2);
+    return true;
   }
 
   bool RootTable::isValid(const std::string & file_name) {

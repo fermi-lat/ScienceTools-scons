@@ -37,7 +37,7 @@ namespace tip {
       /** \brief Perform initializations which are necessary at startup, mainly to handle tweaks to
           Root's global variables.
       */
-      static void globalInit();
+      static bool globalInit();
 
       /** \brief Destruct an I/O service object.
       */

@@ -36,7 +36,7 @@ namespace tip {
     public:
       /** \brief Reset Root's signale handlers so that Root wont interfere with debugging.
       */
-      static void resetSigHandlers();
+      static bool resetSigHandlers();
 
       /** \brief Determine whether given file is a Root file.
           \param file_name The name of the file.

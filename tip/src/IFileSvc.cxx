@@ -32,11 +32,10 @@ namespace tip {
 
   // Get the instance of thie factory.
   IFileSvc & IFileSvc::instance() {
-    static bool first_time = true;
-    if (first_time) {
+    static bool init_success = false;
+    if (!init_success) {
       // Make sure global initialization has been performed:
-      globalInit();
-      first_time = false;
+      init_success = globalInit();
     }
 
     // Create the singleton factory.
@@ -46,10 +45,12 @@ namespace tip {
   }
 
   // Perform global initializations.
-  void IFileSvc::globalInit() {
+  bool IFileSvc::globalInit() {
+    bool init_success = true;
 #ifndef BUILD_WITHOUT_ROOT
-    RootTable::resetSigHandlers();
+    init_success = RootTable::resetSigHandlers();
 #endif
+    return init_success;
   }
 
   // Destructor for a file service.
