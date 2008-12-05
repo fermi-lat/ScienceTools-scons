@@ -950,8 +950,8 @@ double SLdisplay::integral(const astro::SkyDir& dir, double a, double b)const{
 
 std::string SLdisplay::name()const
 {
-  static std::string type[]={"density", "data", "background", "fit", "residual"};
-    if( m_mode<0 || m_mode>4) return "illegal";
+  static std::string type[]={"density", "data", "background", "fit", "residual", "realResidual"};
+    if( m_mode<0 || m_mode>5) return "illegal";
     return m_psl.name()+"--"+type[m_mode];
     
 }
