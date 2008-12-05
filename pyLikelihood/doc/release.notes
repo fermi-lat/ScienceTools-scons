@@ -5,6 +5,9 @@
    $Id$
 
    @verbatim
+   v1r9p2 05-Dec-08   JC    provide plotSource(srcName, color) method to allow
+                            users to replot the model counts spectrum in a
+                            desired color
    v1r9p1 17-Nov-08   JC    in UpperLimits.py, restore parameter errors as 
                             well as values after computing upper limits;
                             implement Jean's suggestion for finding an initial
