@@ -5,6 +5,8 @@
   @verbatim
   $Id$
 
+  11-Dec-08 v2r3    JC    fix fencepost error in Exposure::integrateExposure();
+                          add PLSuperExpCutoff
   21-Aug-08 v2r2    JC    include GTIs in exposure calculation
   04-Aug-08 v2r1p1  JC    add TUNIT keyword for EXPOSURE column
   25-Jul-08 v2r1    JC    include aperture correction
