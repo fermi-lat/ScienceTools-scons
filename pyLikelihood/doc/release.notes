@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r9p3 12-Dec-08   JC    allow users to specify linestyle and/or omit 
+                            certain sources from model counts plotting
    v1r9p2 05-Dec-08   JC    provide plotSource(srcName, color) method to allow
                             users to replot the model counts spectrum in a
                             desired color
