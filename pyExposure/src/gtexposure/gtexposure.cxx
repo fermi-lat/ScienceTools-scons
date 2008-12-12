@@ -49,6 +49,7 @@
 #include "Likelihood/LogParabola.h"
 #include "Likelihood/MapCubeFunction.h"
 #include "Likelihood/PowerLaw2.h"
+#include "Likelihood/PowerLawSuperExpCutoff.h"
 
 #include "pyExposure/Exposure.h"
 
@@ -335,4 +336,5 @@ void GtExposure::prepareFunctionFactory() {
    m_funcFactory->addFunc("MapCubeFunction", new Likelihood::MapCubeFunction(),
                           false);
    m_funcFactory->addFunc("PowerLaw2", new Likelihood::PowerLaw2(), false);
+   m_funcFactory->addFunc("PLSuperExpCutoff", new Likelihood::PowerLawSuperExpCutoff(), false);
 }

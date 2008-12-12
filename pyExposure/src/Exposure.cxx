@@ -7,6 +7,8 @@
  */
 
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
 #include <stdexcept>
 #include <utility>
 
@@ -76,10 +78,16 @@ void Exposure::readScData(const std::string & scDataFile) {
                                  m_timeBoundaries.end()));
    double tmax(*std::max_element(m_timeBoundaries.begin(), 
                                  m_timeBoundaries.end()));
+//    std::cout << std::setprecision(12)
+//              << "tmin = " << tmin << "\n"
+//              << "tmax = " << tmax << std::endl;
 // Add some padding to ensure the interval covering the end time
 // boundary is included.
    size_t npts(m_timeBoundaries.size());
-   tmax += (m_timeBoundaries.back() - m_timeBoundaries.at(npts-2));
+   tmax += std::max(2*(m_timeBoundaries.back() - m_timeBoundaries.at(npts-2)),
+                    60.);
+//    std::cout << "tmin = " << tmin << "\n"
+//              << "tmax = " << tmax << std::endl;
    std::vector<std::string> scFiles;
    st_facilities::Util::resolve_fits_files(scDataFile, scFiles);
    std::vector<std::string>::const_iterator scIt = scFiles.begin();
@@ -89,6 +97,8 @@ void Exposure::readScData(const std::string & scDataFile) {
       m_scData->readData(*scIt, tmin, tmax, clear);
       clear = false;
    }
+//    std::cout << m_scData->vec.front().time << "  "
+//              << m_scData->vec.back().time << std::endl;
 }
 
 void Exposure::integrateExposure() {
@@ -116,12 +126,15 @@ void Exposure::integrateExposure() {
       } catch (std::out_of_range & eObj) { // use brute force
          scData = std::make_pair(firstIt, lastIt);
       }
+//       std::cout << "number of ScData intervals: " 
+//                 << scData.second - scData.first << std::endl;
       for (Likelihood::ScData::Iterator it = scData.first; 
-           it != (scData.second-1); ++it) {
+           it != scData.second; ++it) {
          std::pair<double, double> thisInterval;
          thisInterval.first = it->time;
-         thisInterval.second = (it+1)->time;
-//         if (Likelihood::LikeExposure::overlaps(wholeInterval, thisInterval)) {
+         thisInterval.second = it->stoptime;
+//          std::cout << thisInterval.first << "  "
+//                    << thisInterval.second << std::endl;
          double fraction(0);
          if (Likelihood::LikeExposure::
              acceptInterval(thisInterval.first, thisInterval.second,
