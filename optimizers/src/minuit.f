@@ -1060,6 +1060,7 @@ C                                   . . . .  loop over words CELMNT
       DO 100 IPOS= NEXTB,LEND
          IBEGIN = IPOS
          IF (CRDBUF(IPOS:IPOS).EQ.' ')  GO TO 100
+         IF (CRDBUF(IPOS:IPOS).EQ.CHAR(10))  GO TO 100
          IF (CRDBUF(IPOS:IPOS).EQ.',')  GO TO 250
          GO TO 150
   100 CONTINUE
@@ -1068,6 +1069,7 @@ C                                   . . . .  loop over words CELMNT
 C               found beginning of word, look for end
          DO 180 IPOS = IBEGIN+1,LEND
          IF (CRDBUF(IPOS:IPOS).EQ.' ')  GO TO 250
+         IF (CRDBUF(IPOS:IPOS).EQ.CHAR(10))  GO TO 250
          IF (CRDBUF(IPOS:IPOS).EQ.',')  GO TO 250
   180    CONTINUE
       IPOS = LEND+1
@@ -1091,6 +1093,7 @@ C               found beginning of word, look for end
 C                     look for comma or beginning of next word
          DO 280 IPOS= IEND+1,LEND
          IF (CRDBUF(IPOS:IPOS) .EQ. ' ') GO TO 280
+         IF (CRDBUF(IPOS:IPOS).EQ.CHAR(10))  GO TO 280
          NEXTB = IPOS
          IF (CRDBUF(IPOS:IPOS) .EQ. ',') NEXTB = IPOS+1
          GO TO 10
@@ -4454,8 +4457,8 @@ C         used by MNPINT to set variables "near" the physical limits
       VLIMHI =  PIBY2 - DISTNN
       VLIMLO = -PIBY2 + DISTNN
       CALL MNCLER
-      WRITE (ISYSWR,'(3A,I3,A,I3,A,E10.2)')  '  MINUIT RELEASE ',CVRSN,
-     +' INITIALIZED.   DIMENSIONS ',MNE,'/',MNI,'  EPSMAC=',EPSMAC
+c$$$      WRITE (ISYSWR,'(3A,I3,A,I3,A,E10.2)')  '  MINUIT RELEASE ',CVRSN,
+c$$$     +' INITIALIZED.   DIMENSIONS ',MNE,'/',MNI,'  EPSMAC=',EPSMAC
       RETURN
       END
 CDECK  ID>, MNINPU. 
@@ -5113,6 +5116,7 @@ C
       EXTERNAL FCN,FUTIL
       DIMENSION GS(MNI), STEP(MNI),  XXS(MNI), FLNU(MNI), VG(MNI)
       LOGICAL LDEBUG
+      integer VLEN
       PARAMETER (TOLER=0.05)
       IF (NPAR .LE. 0)  RETURN
       IF (AMIN .EQ. UNDEFI)  CALL MNAMIN(FCN,FUTIL)
