@@ -566,13 +566,16 @@ std::pair<double,double> ExtendedLikelihood::flux() const {
    return photon_flux;
 };
 
-double ExtendedLikelihood::exposure() const {
+double ExtendedLikelihood::exposure(double E) const {
    double exposure=-1;
-   if(m_exposure.size()>m_band.event_class()){
-     double deltaE = (m_band.emax()-m_band.emin());
-     exposure= 
-        m_exposure[m_band.event_class()]->integral(m_dir,m_band.emin(),m_band.emax())/deltaE;
-   };   
+   if(E<0){
+     if(m_exposure.size()>m_band.event_class()){
+       double deltaE = (m_band.emax()-m_band.emin());
+       exposure= 
+	 m_exposure[m_band.event_class()]->integral(m_dir,m_band.emin(),m_band.emax())/deltaE;
+     };
+   }
+   else{ exposure=m_exposure[m_band.event_class()]->value(m_dir,E); }
    return exposure;
 };
 
