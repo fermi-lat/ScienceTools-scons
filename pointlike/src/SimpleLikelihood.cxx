@@ -296,6 +296,17 @@ double SimpleLikelihood::logLikelihood( double count) const
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+double SimpleLikelihood::extendedLikelihood( double expected) const
+{
+    if( photons() ==0 ) return 0; // no contribution if no data.
+    double back(background()), alpha ( expected / (expected + back) );
+    double pointlike( (*this)(alpha));
+    double poisson( expected + back - photons()*log(expected + back));
+    return pointlike + poisson;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double SimpleLikelihood::estimate() const
 {
     if( m_photon_count==0) return -1;
