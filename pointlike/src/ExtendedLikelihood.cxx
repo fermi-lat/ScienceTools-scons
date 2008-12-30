@@ -575,7 +575,11 @@ double ExtendedLikelihood::exposure(double E) const {
 	 m_exposure[m_band.event_class()]->integral(m_dir,m_band.emin(),m_band.emax())/deltaE;
      };
    }
-   else{ exposure=m_exposure[m_band.event_class()]->value(m_dir,E); }
+   else{ 
+     if(m_exposure.size()>m_band.event_class()){
+	exposure=m_exposure[m_band.event_class()]->value(m_dir,E);
+     } 
+   }
    return exposure;
 };
 
