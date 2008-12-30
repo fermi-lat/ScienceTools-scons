@@ -152,7 +152,7 @@ Module::~Module()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PyObject* Module::attribute(const std::string& name, bool check)const
 {
-    unsigned int c (name.find_first_of("."));
+    unsigned long c (name.find_first_of("."));
     if( c != std::string::npos) {
         PyObject * t = attribute(name.substr(0,c));
         PyObject * ret = PyObject_GetAttrString(t, const_cast<char*>(name.substr(c+1).c_str()));

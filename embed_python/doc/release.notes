@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v1r5p2   30-dec-08  THB Fix 64bit system problem, found by Jon Vernaleo
   v1r5p1   30-oct-08  HMK move to python_PATH from python_DIR to migrate to
            new external directory structure
   v1r5     28-jun-08  THB Add dictionary of vectors of doubles  support
