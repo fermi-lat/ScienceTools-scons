@@ -212,7 +212,8 @@ bool testJD()
     // test MET conversion
     double MET(245000000);
     JulianDate x = JulianDate::missionStart()+MET/86400.;
-    std::cout<< "MET = " << int(MET) << " is " << x.getGregorianDate()<<std::endl;
+    std::cout << "MET = " << int(MET) << " is " << x.getGregorianDate()<<std::endl;
+    std::cout << "Mission start is: "<< astro::JulianDate::missionStart().getGregorianDate() << std::endl;
 
     astro::JulianDate JD2000 = astro::JulianDate(2000,1,1,12.); //2451545
 
@@ -222,13 +223,11 @@ bool testJD()
 
     double leap(0);
     for(year = 2008; year <= 2010; year++) { // subset
-        if( year>2005 ) leap=1.;
-        if( year>2008 ) leap=2.;
 
         for(month = 1; month <= 12; month++) {
             for(day = 1; day < 28; day+=5)
             {
-                for(utc = 0; utc < 24 && passed; utc=utc+1/3600.){
+                for(utc = 1.; utc < 24 && passed; utc+=1/3600.){
                     JD2000 = astro::JulianDate(year, month, day, utc);
                     JD2000.getGregorianDate(year2, month2, day2, utc2);
 
@@ -238,22 +237,31 @@ bool testJD()
                         std::cout << year << "  " << month << "  " << day << "   " << utc << std::endl;
                         std::cout << year2 << "  " << month2 << "  " << day2 << "   " << utc2 << std::endl;
                         passed = false;
-                    } 
-                    if( fabs((utc-utc2)*3600-leap) > 1e-4) // 2 leap seconds
-                    {
-                        std::cout << "Time error!"<< (utc-utc2)*3600  << std::endl;
-                        //passed = false;
                     }
-                    //               std::cout << JD2000.getGregorianDate() << std::endl;
+                    if( 3600.*fabs(utc-utc2) > 50e-6 ) // check to 50 usec
+                    {
+                        std::cout << "Time error!" << 3600*fabs(utc-utc2) << " sec for "
+                            << JD2000.getGregorianDate()  << std::endl;
+                        passed = false;
+                    }
+                    
                 }
             }
         }
     }
+    // quick test of leap second(s) - 2 after 2008
+    astro::JulianDate date(astro::JulianDate(astro::JulianDate::missionStart()+252460802.00003/86400. ));
+    std::string td( date.getGregorianDate() );
+    if( td != "2009-01-01T00:00:00.0000"){
+        std::cout << "Fail leap second test, got" << td <<  std::endl;
+        passed=false;
+    }
+
+
 
     if(passed)
     {
         std::cout << "JD Conversions passed!" << std::endl;
-        std::cout << astro::JulianDate::missionStart().getGregorianDate() << std::endl;
     }
     return passed;
 }

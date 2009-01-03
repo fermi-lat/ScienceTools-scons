@@ -13,6 +13,10 @@ namespace astro{
 
    JulianDate::JulianDate(int An,int Me,int Gio,double utc)
    {
+      double leap(0);
+     // add in leap seconds
+      if( An>2005) leap+= 1./secondsPerDay;
+      if( An>2008) leap+= 1./secondsPerDay;
 
 
       if (Me > 2);
@@ -26,6 +30,7 @@ namespace astro{
       if (An < 0) C = C - 1;
       int D = (int)(30.6001 * (Me + 1));
       m_JD = B + C + D + Gio + 1720994.5+ utc / 24.;
+      m_JD += leap;
    }
 
    // getGregorianDate
@@ -70,6 +75,16 @@ namespace astro{
       Me = mn;   
       Gio = day;  
       utc = hr;
+      // these corrections made necessary by leap seconds
+      if( utc>=24.0*(1-1e-6) ){
+          utc =- 24.;
+          Gio += 1.;
+      }
+          
+      if( utc<-1e-6){
+          utc += 24.;
+          Gio -= 1;
+      }
 
    }
 
