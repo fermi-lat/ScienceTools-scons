@@ -14,6 +14,7 @@ overwrite,b,h,no,,,"Build GTI from scratch (overwrite existing GTI)"
 header_obstimes,b,h,yes,,,"Use FITS header values for TSTART and TSTOP"
 tstart,r,h,0,,,"Observation start time (MET)"
 tstop,r,h,0,,,"Observation stop time (MET)"
+gtifile,s,h,"temp_gti.fits",,,"Name of temporary file for storing GTIs"
 
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"

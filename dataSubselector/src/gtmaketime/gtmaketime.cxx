@@ -300,7 +300,7 @@ void MakeTime::writeGtiFile(const std::string & gtifile) const {
 }
 
 void MakeTime::copyTable() const {
-   std::string gtifile("temp_gti.fits");
+   std::string gtifile = m_pars["gtifile"];
    writeGtiFile(gtifile);
 
    std::string extension = m_pars["evtable"];
