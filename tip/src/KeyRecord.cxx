@@ -36,26 +36,32 @@ namespace tip {
   }
 
   std::string KeyRecord::getValue() const {
-    char value[FLEN_VALUE];
+    char value[FLEN_VALUE] = "";
     int status = 0;
     fits_parse_value(const_cast<char *>(m_record.c_str()), value, 0, &status);
     if (0 != status) throw TipException(status, "KeyRecord::getValue could not parse record");
 
     // See if this is treated as a string, in which case it will have trailing blanks and a quote.
-    char * ptr = value + strlen(value) - 1;
+    char * ptr = value + strlen(value);
 
     // Skip trailing space outside quote.
-    while(isspace(*ptr)) --ptr;
+    while(ptr > value && 0 != std::isspace(*(ptr - 1))) --ptr;
 
-    // Skip the trailing quote.
-    if ('\'' == *ptr) {
+    // Handle the trailing quote if any.
+    if (ptr > value && '\'' == *(ptr - 1)) {
+      // Skip trailing quote.
+      --ptr;
+
       // Skip trailing space inside quote.
-      while(isspace(*(ptr - 1))) --ptr;
-      *ptr = '\0';
+      while(ptr > value && 0 != std::isspace(*(ptr - 1))) --ptr;
     }
 
-    // Handle leading quote, if any.
+    // Make sure string is properly terminated at this point.
+    *ptr = '\0';
+
     ptr = value;
+
+    // Handle leading quote, if any.
     if ('\'' == *ptr) ++ptr;
 
     return ptr;
