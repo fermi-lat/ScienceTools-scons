@@ -5,6 +5,10 @@
    $Id$
 
    @verbatim
+   v1r9p4 15-Jan-09   JC    Save covariance matrix even if not updated in calls
+                            to AnalysisBase.fit(); set/unset covar_is_current 
+                            flag instead.  Preserve flag state in calls to
+                            UpperLimits.compute().
    v1r9p3 12-Dec-08   JC    allow users to specify linestyle and/or omit 
                             certain sources from model counts plotting
    v1r9p2 05-Dec-08   JC    provide plotSource(srcName, color) method to allow
