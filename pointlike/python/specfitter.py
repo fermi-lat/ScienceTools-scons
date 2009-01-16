@@ -81,7 +81,7 @@ class SpectralModelFitter(object):
 
    @staticmethod
    def hessian(m,mf,*args):
-      """Calculate the Hessian; f is the minimizing function, m is the model,args additional arguments for mf."""
+      """Calculate the Hessian; mf is the minimizing function, m is the model,args additional arguments for mf."""
       #p = m.p.copy()
       p = m.get_parameters().copy()
       delt = 0.01
@@ -110,5 +110,5 @@ class SpectralModelFitter(object):
 
       #m.p = p #Restore parameters
       m.set_parameters(p)
-      print hessian
+      #print hessian
       return hessian
