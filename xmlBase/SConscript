@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Joanne Bogart <jrb@slac.stanford.edu>
-# Version: xmlBase-05-05-02
+# Version: xmlBase-05-05-01
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
@@ -19,6 +19,7 @@ test_writeBin = progEnv.Program('test_write',[ 'src/test/test_write.cxx'])
 
 progEnv.Tool('registerObjects', package = 'xmlBase', libraries = [xmlBaseLib], testApps = [entity_test, test_xmlBaseBin, test_memBin, test_IFileBin, test_writeBin],
              includes = listFiles(['xmlBase/*.h', 'xmlBase/docMan/*.h']), xml = listFiles(['xml/*'], recursive = True))
+
 
 
 

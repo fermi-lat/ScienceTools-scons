@@ -4,8 +4,7 @@
 #
 # $Id$
 # Authors: T. Burnett <tburnett@u.washington.edu>
-# Version: astro-03-04-03
-
+# Version: astro-03-03-01
 Import('baseEnv')
 Import('listFiles')
 libEnv = baseEnv.Clone()
@@ -29,6 +28,7 @@ progEnv.Tool('registerObjects',
 	     libraries = [astroLib], 
 	     testApps = [test_astro], 
 	     includes = listFiles(['astro/*.h']))
+
 
 
 
