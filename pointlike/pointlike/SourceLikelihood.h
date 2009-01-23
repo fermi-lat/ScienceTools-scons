@@ -209,7 +209,7 @@ namespace pointlike {
     ///     
     double display(const astro::SkyDir& dir, double energy, int mode, int bandindex=-1)const;
     std::vector<double> energyList() const;
-
+ 
   private:
     void setup(skymaps::BinnedPhotonData& data);
     std::string m_name;
@@ -229,7 +229,7 @@ namespace pointlike {
     
     double m_errorX;
     double m_errorY;
-    
+
     std::ostream * m_out;
     std::ostream& out()const{return *m_out;}
     mutable CLHEP::Hep3Vector m_gradient; ///< current gradient
