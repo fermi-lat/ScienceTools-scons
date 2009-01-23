@@ -34,7 +34,7 @@ namespace optimizers {
     return m_distance;
   }
 
-  void setStrategy(unsigned int strat) {
+  void Minuit::setStrategy(unsigned int strat) {
       std::ostringstream s_strategy;
       s_strategy << "SET STRATEGY " << strat;
       doCmd(s_strategy.str());
