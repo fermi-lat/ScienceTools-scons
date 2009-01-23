@@ -12,12 +12,13 @@
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
 #include "optimizers/OutOfBounds.h"
+#include "optimizers/f2c_types.h"
 
 namespace optimizers {
 
 
   Minuit::Minuit(Statistic& stat) : Optimizer(stat), m_maxEval(200) {
-    const int i5=5, i6=6, i7=7;
+    const integer i5=5, i6=6, i7=7;
     mninit_(&i5, &i6, &i7);
   }
 
@@ -33,6 +34,12 @@ namespace optimizers {
     return m_distance;
   }
 
+  void setStrategy(unsigned int strat) {
+      std::ostringstream s_strategy;
+      s_strategy << "SET STRATEGY " << strat;
+      doCmd(s_strategy.str());
+  }
+
   const std::vector<double> & Minuit::getUncertainty(bool useBase) {
      if (useBase) {
         Optimizer::getUncertainty(useBase);
@@ -46,11 +53,11 @@ namespace optimizers {
 
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
-    int errorFlag;
+    integer errorFlag;
 
     int minuitVerbose = verbose - 1;
     if (minuitVerbose >= 0) {
-      const int i5=5, i6=6, i7=7;
+      const integer i5=5, i6=6, i7=7;
       mintio_(&i5, &i6, &i7);
     }
     std::ostringstream pline;
@@ -64,7 +71,7 @@ namespace optimizers {
       double value = p->getValue();
       double lowerBound = p->getBounds().first;
       double upperBound = p->getBounds().second;
-      int j = p - params.begin() + 1;
+      integer j = p - params.begin() + 1;
       mnparm_(&j, p->getName().c_str(), &value, &scale, 
 	      &lowerBound, &upperBound, &errorFlag, p->getName().size());
     }
@@ -102,8 +109,8 @@ namespace optimizers {
     for (pptr p = params.begin(); p != params.end(); p++) {
       std::vector<char> pname(10);
       double pval, error, bnd1, bnd2;
-      int ivarbl;
-      int j = p - params.begin() + 1;
+      integer ivarbl;
+      integer j = p - params.begin() + 1;
       mnpout_(&j, &pname[0], &pval, &error, &bnd1, &bnd2, &ivarbl, 
 	      pname.size());
       p->setValue(pval);
@@ -121,7 +128,7 @@ namespace optimizers {
     m_stat->setFreeParamValues(paramValues);
 
     // Get information about quality of minimization
-    int nVariable, nparx, minStat;
+    integer nVariable, nparx, minStat;
     double fmin, vertDist, errDef;
     mnstat_(&fmin, &vertDist, &errDef, &nVariable, &nparx, &minStat);
     m_val = fmin;
@@ -137,7 +144,7 @@ namespace optimizers {
       std::cout << "Minuit parameter uncertainties:" << std::endl;
     }
     m_uncertainty.clear();
-    for (int i = 1; i <= nVariable; i++) {
+    for (integer i = 1; i <= nVariable; i++) {
       double ePlus, eMinus, eParab, globCC;
       mnerrs_(&i, &ePlus, &eMinus, &eParab, &globCC);
       m_uncertainty.push_back(eParab);  // Not using MINOS, so this is it.
@@ -150,15 +157,15 @@ namespace optimizers {
 
   int Minuit::doCmd(std::string command) {
     // Pass a command string to Minuit
-    int errorFlag = 0;
+    integer errorFlag = 0;
     void * statistic = static_cast<void *>(m_stat);
     mncomd_(&fcn, command.c_str(), &errorFlag, statistic,
 	    command.length());
     return errorFlag;
   }
 
-  void fcn(int* npar, double* grad, double* fcnval,
-	   double* xval, int* iflag, void* futil) {
+  void fcn(integer* npar, double* grad, double* fcnval,
+	   double* xval, integer* iflag, void* futil) {
     // This is the function that Minuit minimizes
     std::vector<double> parameters(xval, xval+*npar);
 
@@ -180,7 +187,7 @@ namespace optimizers {
   }    
 
    std::vector< std::vector<double> > Minuit::covarianceMatrix() const {
-      int npar(m_stat->getNumFreeParams());
+      integer npar(m_stat->getNumFreeParams());
       std::vector<double> entries(npar*npar);
       mnemat_(&entries[0], &npar);
       size_t indx(0);

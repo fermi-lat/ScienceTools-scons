@@ -83,11 +83,10 @@ namespace optimizers {
 
     /// Set the minimization strategy
     /// (added by C. Farnier 09/29/08)
-    void setStrategy(unsigned int strat = 1) {
-      char s_strategy[15];
-      sprintf(s_strategy, "SET STRATEGY %i", strat);
-      doCmd(s_strategy);
-    }
+    void setStrategy(unsigned int strat = 1); // {
+//      char s_strategy[15];
+//      sprintf(s_strategy, "SET STRATEGY %i", strat);
+//    }
 
   private:
     
@@ -101,48 +100,48 @@ namespace optimizers {
   };
   
   //! The function which Minuit will minimize
-  void fcn(int* npar, double* grad, double* fcnval,
-	   double* xval, int* iflag, void* futil);
+  void fcn(integer * npar, double* grad, double* fcnval,
+	   double* xval, integer * iflag, void* futil);
 } // namespace optimizers
 
 #ifndef SWIG
 // The Fortran subroutines which make up the Minuit API
 extern "C" {
   //! Initialize Minuit with I/O unit numbers for in, out, save
-  void mninit_(const int*, const int*, const int*);
+  void mninit_(const integer*, const integer*, const integer*);
   //! Define a parameter, assigning values and bounds
-  void mnparm_( int *  num , const char * chnam, double * stval, 
+  void mnparm_(integer *  num, const char * chnam, double * stval, 
 	        double * step,  double * bnd1 , 
-	        double * bnd2, int * ierror, ftnlen stringlen);
+	        double * bnd2, integer * ierror, ftnlen stringlen);
   //! Prototype of the function to be minimized.
-  typedef void (mfcn)(int * npar, double * grad, double * fval, 
-		      double * xval, int * iflag, void * futil);
+  typedef void (mfcn)(integer * npar, double * grad, double * fval, 
+		      double * xval, integer * iflag, void * futil);
   //! Execute a Minuit command specified as a character string
-  void mncomd_(mfcn * fcn, const char * chstr, int * ierr, void * futil, 
+  void mncomd_(mfcn * fcn, const char * chstr, integer * ierr, void * futil, 
 	       ftnlen stringlen);
   //! Execute a Minuit command
-  void mnexcm_(mfcn * fcn, char * chcom, double * arglis, int * narg, 
-	       int * ierflg, void * futil, ftnlen strln);
+  void mnexcm_(mfcn * fcn, char * chcom, double * arglis, integer * narg, 
+	       integer * ierflg, void * futil, ftnlen strln);
   //! Set I/O unit numbers
-  void mintio_(const int * iread, const int * iwrite, const int * isave);
+  void mintio_(const integer * iread, const integer * iwrite, const integer * isave);
   //! Get current value of a parameter
-  void mnpout_(int * num, char * chnam, double * val, double * error, 
-	       double * bnd1, double * bnd2, int * ivarbl, ftnlen strln);
+  void mnpout_(integer * num, char * chnam, double * val, double * error, 
+	       double * bnd1, double * bnd2, integer * ivarbl, ftnlen strln);
   //! Get current status of minimization
-  void mnstat_(double * fmin, double * fedm, double * errdef, int * npari, 
-	       int * nparx, int * istat);
+  void mnstat_(double * fmin, double * fedm, double * errdef, integer * npari, 
+	       integer * nparx, integer * istat);
   //! Specify a title for a problem
   void mnseti_(char * ctitle, ftnlen strln);
   //! Define a parameter, assigning values and bounds from variables
-  void mnpars_(char * chstr, int * icondn, ftnlen strln);
+  void mnpars_(char * chstr, integer * icondn, ftnlen strln);
   //! Get current value of covariance matrix
-  void mnemat_(double * emat, int * ndim);
+  void mnemat_(double * emat, integer * ndim);
   //! Access current parameter errors
-  void mnerrs_(int * num, double * eplus, double * eminus, double * eparab, 
+  void mnerrs_(integer * num, double * eplus, double * eminus, double * eparab, 
 	       double * globcc);
   //! Find a function contour with the MNContour method
-  void mncont_(mfcn * fcn, int * num1, int * num2, int * npt, double * xpt, 
-	       double * ypt, int * nfound, void * futil);
+  void mncont_(mfcn * fcn, integer * num1, integer * num2, integer * npt, double * xpt, 
+	       double * ypt, integer * nfound, void * futil);
   //! Utility function used by Minuit: interactive or batch mode
   logical intrac_(double *);
 }

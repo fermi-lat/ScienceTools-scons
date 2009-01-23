@@ -3,6 +3,7 @@
 
 #ifndef F2C_TYPES_H
 #define F2C_TYPES_H
-    typedef long ftnlen;        // length of a Fortran string
+    typedef short ftnlen;        // length of a Fortran string
     typedef long int logical;   // Fortran logical type
+    typedef long int integer;  
 #endif // F2C_TYPES_H
