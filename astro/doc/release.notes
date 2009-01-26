@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r5     26-jan-00 THB Provide access to IGR lambda parameter
   v3r4p3   16-jan-00 THB Tweak to test code for compiler bug
   v3r4p2   02-jan-00 THB Fix JulianDate ctor to take leap-seconds into account when converting from UTC
   v3r4p1   10-nov-08 THB Better treatment of last interval in a run; fix test program

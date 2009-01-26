@@ -86,6 +86,7 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
     m_L = field.L();
     m_B = field.B();
     m_geolat = field.invariantLatitude();
+    m_lambda = field.lambda();
 }
    
 double EarthCoordinate::L()const
@@ -97,6 +98,11 @@ double EarthCoordinate::L()const
 double EarthCoordinate::B()const
 {
     return m_B; // Geomag::B(latitude(), longitude());
+}
+double EarthCoordinate::lambda()const
+{
+    return m_lambda;
+
 }
 double EarthCoordinate::geolat()const
 {

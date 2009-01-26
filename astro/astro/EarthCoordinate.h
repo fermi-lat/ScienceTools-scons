@@ -61,6 +61,9 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
     //! McIlwain B in gauss
     double B()const;
 
+    //! access to the lambda parameter
+    double lambda()const;
+
     double geolat()const;///< geomagnetic latitude (deg)
     double geolon()const;///< geomagnetic longitude (deg) (deprecated)
 
@@ -77,6 +80,7 @@ private:
     double m_L, m_B; ///< McIllwain parameters
     double m_geolat; ///< geomagnetic latitude, or invariant latitude
     CLHEP::Hep3Vector m_field;
+    double m_lambda;
 
    /**
      * GetGMST returns the Greenwich sideral time in degrees, 
