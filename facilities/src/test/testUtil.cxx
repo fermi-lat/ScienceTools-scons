@@ -86,7 +86,6 @@ int main(int, char**) {
   facilities::Util::utoa(u, unsignedStr, 16);
   std::cout << "Result from utoa (base 16 output) for (base 10) " << u
             << " is: " << unsignedStr << std::endl;
-  std::cout.flush();
 
   // basename & stringTokenize
   std::string unixname("/a/path/myUnixFile.txt");
@@ -163,6 +162,7 @@ int main(int, char**) {
   std::cout << std::endl << "Test stringToDouble " << std::endl;
   std::string okDouble("3.14159");
   std::string badDouble("3.garbage56");
+  std::string okDouble2("3.");
 
   double result = -1;
 
@@ -184,6 +184,14 @@ int main(int, char**) {
   catch (std::exception& err) {
     std::cout << "Caught standard exception; what() returns " 
               << err.what() << std::endl;
+  }
+  try{
+    result = facilities::Util::stringToDouble(okDouble2);
+    std::cout << "Converted (string) " << okDouble2 << " to (double) " 
+	      << result << std::endl;
+  }
+  catch (std::exception& err){
+    return 1;
   }
 
   // Test stringToInt and stringToUnsigned routines
@@ -293,11 +301,11 @@ int main(int, char**) {
     
     nTrimmed = facilities::Util::trimTrailing(&string2);
     std::cout << "Trimmed " << nTrimmed << " from string2; has new value : "
-	      << string2 << "*EOS" <<  std::endl;
+	      << string2 << "*EOS*" <<  std::endl;
     
     nTrimmed = facilities::Util::trimTrailing(&string3);
     std::cout << "Trimmed " << nTrimmed << " from string3; has new value : "
-	      << string3 << "*EOS" << std::endl;
+	      << string3 << "*EOS*" << std::endl;
   }
 
   // sleep
@@ -310,5 +318,3 @@ int main(int, char**) {
 
   return 0;
 }
-
-  

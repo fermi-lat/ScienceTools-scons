@@ -148,11 +148,18 @@ namespace facilities {
   }  
 
   double Util::stringToDouble(const std::string& inStr) {
+    // Extra test is because OSX Leopard converts 3. to a double (3)
+    // and a string (.) while everyone else just gives a double (3.)
     double val;
     char  junk[3];
     int nItem = sscanf(inStr.c_str(), "%lg %1s", &val, junk);
-    if (nItem != 1) {
+    if ((nItem != 1) && (nItem != 2)) {
       throw WrongType(inStr, "double");
+    }
+    if (nItem == 2) {
+      if (junk[0]!='.'){
+	throw WrongType(inStr, "double");
+      }
     }
     return val;
   }
