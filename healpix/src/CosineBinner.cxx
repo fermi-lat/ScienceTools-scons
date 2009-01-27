@@ -14,6 +14,9 @@ using namespace healpix;
 double CosineBinner::s_cosmin=0.0;
 size_t CosineBinner::s_nbins=40;
 bool   CosineBinner::s_sqrt_weight=true;
+size_t CosineBinner::s_phibins=0;
+size_t CosineBinner::nphibins(){return s_phibins;}
+void   CosineBinner::setPhiBins(size_t n){s_phibins=n;}
 
 CosineBinner::CosineBinner()
 {
@@ -25,6 +28,12 @@ void CosineBinner::fill(double costheta, double value)
 {
     if( costheta<=s_cosmin ) return;
     (*this)[costheta] += value;
+}
+/// the binning function: add value to the selected bin
+void CosineBinner::fill(double costheta, double phi, double value)
+{
+    if( costheta<=s_cosmin ) return;
+    (*this)[costheta] += value; //todo: calculate the index
 }
 
 float& CosineBinner::operator[](double costheta)
@@ -43,6 +52,21 @@ const float& CosineBinner::operator[](double costheta)const
     if(s_sqrt_weight) f=sqrt(f);
     return at( static_cast<int>(static_cast<int>(f*s_nbins)));
 }
+
+    /// modifiable reference to the contents of the bin containing the cos(theta) value
+float& CosineBinner::operator()(double costheta, double phi)
+{
+
+    return (*this)[costheta]; //TODO
+}
+const float& CosineBinner::operator()(double costheta, double phi)const
+{
+    return (*this)[costheta]; //TODO
+}
+
+
+
+
 /// cos(theta) for the iterator
 double CosineBinner::costheta(std::vector<float>::const_iterator i)const
 {
@@ -62,7 +86,7 @@ std::string CosineBinner::thetaBinning(){
 
 void CosineBinner::setBinning(double cosmin, size_t nbins, bool sqrt_weight)
 {
-        s_cosmin=cosmin, s_nbins=nbins, s_sqrt_weight=sqrt_weight;
+    s_cosmin=cosmin, s_nbins=nbins, s_sqrt_weight=sqrt_weight;
 }
 
 double CosineBinner::cosmin() { return s_cosmin;}
