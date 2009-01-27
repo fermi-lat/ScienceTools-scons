@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r9p6 26-Jan-09   JC    Use AppHelpers::addFunctionPrototypes instead of
+                            adding each class explicitly
    v1r9p5 16-Jan-09   JC    Use mindelta in initial dx estimate for 
                             UpperLimit.compute.
    v1r9p4 15-Jan-09   JC    Save covariance matrix even if not updated in calls
