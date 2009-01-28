@@ -6,6 +6,7 @@ $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
 
+ 28-jan-09 v7r1p2 JCV  Change paths in test code pfile 
  29-jul-08 v7r2p1 THB  Try to fix gcc issue
  27-jul-08 v7r2   THB  Turn on the read_map application, allowing changing projections 
  20-feb-08 v7r1   THB  (Gulli) Implement theta cut for gtexpcube
