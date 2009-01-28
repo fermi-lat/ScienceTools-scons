@@ -10,10 +10,10 @@ mode,     s, a,  "h",   , ,""
 #
 #---------------------------------------------------------------------------------------
 #
-infile,  f, a, "$(TMP)/testCube.fits", , , "Name of the exposure cube input file:"
+infile,  f, a, "testCube.fits", , , "Name of the exposure cube input file:"
 table,   s, a,"",,,"name of tree or extension"
 cmfile,   f,a,"NONE",,,"Name of input count map file whose geometry to match (NONE for no count map)"
-outfile, f, a, "$(TMP)/testCube2.fits", , , "Name of the exposure output file:"
+outfile, f, a, "testCube2.fits", , , "Name of the exposure output file:"
 filter,  s, a, "", , , "filter expression"
 rspfunc,s,a,"DC1A",,,"response function type, for example SIMPLE, DC1A, or more recent version"
 layers,i,a,8,,,"layers"
