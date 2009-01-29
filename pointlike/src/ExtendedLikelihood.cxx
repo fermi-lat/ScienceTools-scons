@@ -583,10 +583,13 @@ double ExtendedLikelihood::exposure(double E) const {
    return exposure;
 };
 
-double ExtendedLikelihood::full_exposure(double E) const {
-  double exposure_0=m_exposure[0]->value(m_dir,E);
-  double exposure_1=m_exposure[1]->value(m_dir,E);
-  return exposure_0+exposure_1;
+double ExtendedLikelihood::full_exposure(double E,int combined) const {
+  double full_exposure=-1.;
+  if(!combined)
+    full_exposure=m_exposure[0]->value(m_dir,E)+m_exposure[1]->value(m_dir,E);
+  else
+    full_exposure=m_exposure[m_band.event_class()]->value(m_dir,E);
+  return full_exposure;
 }
 
 void ExtendedLikelihood::setFlux(double flux) {
