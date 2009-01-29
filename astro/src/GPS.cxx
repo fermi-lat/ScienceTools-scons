@@ -10,7 +10,7 @@ $Id$
 #include "astro/SolarSystem.h"
 
 #include "astro/Quaternion.h"
-
+#include "facilities/commonUtilities.h"
 #include <iomanip>
 #include <sstream>
 #include <cassert>
@@ -432,7 +432,9 @@ int GPS::test()
     }
     // test reading and interpolating an ascii file
     const char * package_root(::getenv("ASTROROOT") );
-    std::string history(std::string(package_root)+"/src/test/history_test.txt");
+   // std::string history(std::string(package_root)+"/src/test/history_test.txt");
+    std::string history(facilities::commonUtilities::joinPath(facilities::commonUtilities::getDataPath("astro"), "history_test.txt"));
+
     std::cout << "Reading history file " << history << std::endl;
     gps.setPointingHistoryFile(history);
     const astro::PointingHistory& h = gps.history(); // get the history object

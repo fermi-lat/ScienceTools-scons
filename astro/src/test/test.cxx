@@ -14,7 +14,7 @@
 #include "astro/Quaternion.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
-
+#include "facilities/commonUtilities.h"
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
@@ -297,7 +297,8 @@ bool test_GPS_readFitsData() {
     using astro::SkyDir;
     astro::GPS * gps = astro::GPS::instance();
 
-    std::string filename("../src/test/test_FT2.fits");
+    //std::string filename("../src/test/test_FT2.fits");
+    std::string filename=facilities::commonUtilities::joinPath(facilities::commonUtilities::getDataPath("astro"), "test_FT2.fits");
     gps->setPointingHistoryFile(filename);
 
     double time(gps->history().startTime());
