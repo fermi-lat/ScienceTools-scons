@@ -11,6 +11,7 @@ $Header$
 #include "healpix/HealPixel.h"
 #include "TestHealpix.h"
 #include "TestHealpixArray.h"
+#include "facilities/commonUtilities.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -30,7 +31,10 @@ int main() {
             oss << i;
             string num(oss.str());
             cout << "Reading fits file "+num+"...";
-            Map<double> mp(string("../src/test/srctest.fits"),i);
+            
+            std::string filename=facilities::commonUtilities::joinPath(facilities::commonUtilities::getDataPath("healpix"), "srctest.fits"); 
+
+            Map<double> mp(filename,i);
             cout << "done!" << endl;
             cout << "Filtering map...";
             mp.mfcn(155*(2*(i-5)),100*pow(2.35,(i-6)*1.));

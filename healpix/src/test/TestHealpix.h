@@ -6,6 +6,8 @@ $Header$
 */
 
 #include "healpix/Healpix.h"
+
+#include "facilities/commonUtilities.h"
 #include <algorithm>
 #include <iomanip>
 #include <stdexcept>
@@ -108,7 +110,9 @@ public:
     {
         typedef std::map<long, long> SORTMAP;
         std::cout << "\nTesting neighbors logic...";
-        std::ifstream f("../src/test/Healpix Neighbors Nside=8.txt"); // File provided by Healpix developers
+        std::string filename=facilities::commonUtilities::joinPath(facilities::commonUtilities::getDataPath("healpix"),
+            "Healpix Neighbors Nside=8.txt");
+        std::ifstream f( filename.c_str() ); // File provided by Healpix developers
            
         for (healpix::Healpix::Iterator it = hp.begin(); it < hp.end(); ++it)
         {
