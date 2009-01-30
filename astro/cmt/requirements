@@ -1,6 +1,6 @@
 package astro
 
-version v3r5p1
+version v3r5p2
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -15,6 +15,7 @@ use python * IExternal -no_auto_imports   # needed for windows in RM
 
 apply_pattern shared_library
 
+set TIMING_DIR $(EXTFILESSYS)/jplephem
 private
 # enable this for Windows
 #use SwigModule *

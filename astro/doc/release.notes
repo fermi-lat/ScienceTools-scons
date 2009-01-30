@@ -6,7 +6,7 @@
 $Id$
 
 @verbatim
-  v3r5p1   29-jan-00 THB Respond to JIRA STGEN-86; modify test program
+  v3r5p2   30-jan-00 THB Respond to JIRA STGEN-86; modify test program
   v3r5     26-jan-00 THB Provide access to IGR lambda parameter
   v3r4p3   16-jan-00 THB Tweak to test code for compiler bug
   v3r4p2   02-jan-00 THB Fix JulianDate ctor to take leap-seconds into account when converting from UTC
