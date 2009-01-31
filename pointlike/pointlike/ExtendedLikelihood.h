@@ -96,7 +96,6 @@ namespace pointlike {
 
     std::pair<double,double> flux() const ;
     double exposure(double E = -1) const ;
-    double full_exposure(double E,int combined) const ;
     void setFlux(double flux);
     
     double sigma_alpha() const { return m_sigma_alpha;}
