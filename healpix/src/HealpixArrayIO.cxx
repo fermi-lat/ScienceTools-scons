@@ -81,7 +81,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     // this is a work-around for a bug in tip v2r1p1
 
     std::stringstream ss;
-    ss << ha[0].nbins() << "E";
+    size_t size = ha[0].size(); // get individual size from first one
+    ss << size << "E";
     std::string nbrbins = ss.str();
     table.appendField("COSBINS", ss.str());
     table.setNumRecords(ha.size());
@@ -93,6 +94,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     // now just copy
     for( ; haitor != ha.end(); ++haitor, ++itor)
     {
+        size_t n= (*haitor).size(); // check individual size?
         (*itor)["COSBINS"].set(*haitor);
     }
 
@@ -103,6 +105,7 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     hdr["THETABIN"].set(CosineBinner::thetaBinning());
     hdr["NBRBINS"].set(CosineBinner::nbins());
     hdr["COSMIN"].set(CosineBinner::cosmin());
+    hdr["PHIBINS"].set(CosineBinner::nphibins());
 
     // need to do this to ensure file is closed when pointer goes out of scope
     return std::auto_ptr<tip::Table>(&table); 
@@ -233,6 +236,12 @@ HealpixArray<CosineBinner> HealpixArrayIO::read(const std::string & inputFile,
     double cosmin;
     hdr["COSMIN"].get(cosmin);
 
+
+    int nphibins(0);
+    try{
+        hdr["PHIBINS"].get(nphibins);
+    }catch(...){}
+
     // Code for setting CoordSystem added 1/17/2008
     std::string check(coordsystem(hdr));
 
@@ -240,6 +249,9 @@ HealpixArray<CosineBinner> HealpixArrayIO::read(const std::string & inputFile,
         astro::SkyDir::GALACTIC: astro::SkyDir::EQUATORIAL;
 
     CosineBinner::setBinning(cosmin, nbrbins, thetabin);
+    if( nphibins>0){
+        CosineBinner::setPhiBins(nphibins);
+    }
     HealpixArray<healpix::CosineBinner> ha(Healpix(nside, ord, coordsys));
 
     tip::Table::ConstIterator itor = table.begin();
