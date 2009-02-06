@@ -11,9 +11,9 @@ libEnv = baseEnv.Clone()
 
 libEnv.Tool('pyLikelihoodLib', depsOnly = 1)
 pyLikelihoodStaticLib = libEnv.StaticLibrary('_pyLikelihood', 
-                                             'src/pyLikelihood.i')
+                                             'src/pyLikelihood.i', LIBPREFIX='')
 pyLikelihoodSharedLib = libEnv.SharedLibrary('_pyLikelihood', 
-                                             'src/pyLikelihood.i')
+                                             'src/pyLikelihood.i', SHLIBPREFIX='')
 
 progEnv.Tool('registerObjects', package = 'pyLikelihood', 
              libraries = [pyLikelihoodStaticLib, pyLikelihoodSharedLib], 
