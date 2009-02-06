@@ -64,6 +64,16 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
     //! access to the lambda parameter
     double lambda()const;
 
+    // other parameters
+    //! Radius in km
+    double R() const;
+    //! north component of bfield (gauss)
+    double bNorth() const;
+    //! east component of bfield (gauss)
+    double bEast()  const;
+    //! downward component of bfield (gauss)
+    double bDown()  const;
+
     double geolat()const;///< geomagnetic latitude (deg)
     double geolon()const;///< geomagnetic longitude (deg) (deprecated)
 
@@ -81,6 +91,7 @@ private:
     double m_geolat; ///< geomagnetic latitude, or invariant latitude
     CLHEP::Hep3Vector m_field;
     double m_lambda;
+    double m_R;
 
    /**
      * GetGMST returns the Greenwich sideral time in degrees, 

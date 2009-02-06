@@ -87,9 +87,23 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
     m_B = field.B();
     m_geolat = field.invariantLatitude();
     m_lambda = field.lambda();
+    m_R      = field.R();
+
+    const double deltaLat = 1.0;
+    field.compute(latitude()+deltaLat, longitude(), m_altitude, year);
+    double newLambda = field.lambda();
+    double deltaLambda = newLambda - m_lambda;
+    if(deltaLat>0&&deltaLambda<0) {
+        m_lambda *= -1.0;
+        m_geolat *= -1.0;
+    }
+
+    // restore things, just in case!
+    field.compute(latitude(), longitude(), m_altitude, year);
 }
    
 double EarthCoordinate::L()const
+
 {
     return m_L; //Geomag::L(latitude(), longitude());
 
@@ -99,22 +113,29 @@ double EarthCoordinate::B()const
 {
     return m_B; // Geomag::B(latitude(), longitude());
 }
+
+double EarthCoordinate::R()const
+{
+    return m_R; // radius;
+}
+
 double EarthCoordinate::lambda()const
 {
     return m_lambda;
 
 }
+
 double EarthCoordinate::geolat()const
 {
     double old =Geomag::geolat(latitude(), longitude()); // for comparison
     return m_geolat*180/M_PI; // convert to degrees  
 }
 
+
 double EarthCoordinate::geolon()const
 {
     return Geomag::geolon(latitude(), longitude());
 }
-
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
