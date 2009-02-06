@@ -17,10 +17,10 @@ pyExposureSharedLib = libEnv.SharedLibrary('pyExposure',
                                            listFiles(['src/*.cxx']))
 
 swigEnv.Tool('pyExposureLib')
-lib_pyExposureStaticLib = swigEnv.StaticLibrary('lib_pyExposure', 
-                                               'src/pyExposure.i')
-lib_pyExposureSharedLib = swigEnv.SharedLibrary('lib_pyExposure', 
-                                               'src/pyExposure.i')
+lib_pyExposureStaticLib = swigEnv.StaticLibrary('_pyExposure', 
+                                               'src/pyExposure.i', LIBPREFIX='')
+lib_pyExposureSharedLib = swigEnv.SharedLibrary('_pyExposure', 
+                                               'src/pyExposure.i', SHLIBPREFIX='')
 
 progEnv.Tool('pyExposureLib')
 
