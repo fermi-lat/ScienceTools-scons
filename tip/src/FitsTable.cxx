@@ -165,7 +165,11 @@ namespace tip {
 
     // Read the number of rows present in the table.
     Index_t nrows = 0;
+#ifdef TIP_USE_LONG_LONG_INDEX
     fits_get_num_rowsll(m_header.getFp(), &nrows, &status);
+#else
+    fits_get_num_rows(m_header.getFp(), &nrows, &status);
+#endif
 
     // Check for success and if not, do not continue.
     if (0 != status) {
@@ -190,7 +194,11 @@ namespace tip {
     Index_t nrows = 0;
 
     // Read the number of rows present in the table.
+#ifdef TIP_USE_LONG_LONG_INDEX
     fits_get_num_rowsll(m_header.getFp(), &nrows, &status);
+#else
+    fits_get_num_rows(m_header.getFp(), &nrows, &status);
+#endif
 
     // Check for success and if not, do not continue.
     if (0 != status) {

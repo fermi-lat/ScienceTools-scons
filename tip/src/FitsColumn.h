@@ -330,7 +330,11 @@ namespace tip {
         int status = 0;
         Index_t num_els = 0;
         // Get number of elements in this particular field.
+#ifdef TIP_USE_LONG_LONG_INDEX
         fits_read_descriptll(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
+#else
+        fits_read_descript(m_ext->getFp(), m_field_index, record_index + 1, &num_els, 0, &status);
+#endif
         if (0 != status) throw TipException(status, "FitsColumn::getNumElements failed to get size of variable length cell");
 
         return num_els;
@@ -441,7 +445,11 @@ namespace tip {
 
     // Determine characteristics of this column.
     int status = 0;
+#ifdef TIP_USE_LONG_LONG_INDEX
     fits_get_coltypell(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
+#else
+    fits_get_coltype(m_ext->getFp(), m_field_index, &m_type_code, &m_repeat, &m_width, &status);
+#endif
     if (0 != status) throw TipException(status, "FitsColumn::FitsColumn failed to get format of field " + id);
 
     // Read the TFORM keyword, which gives the full layout of the column.

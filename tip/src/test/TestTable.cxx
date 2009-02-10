@@ -1175,6 +1175,12 @@ namespace tip {
   void TestTable::largeFileTest() {
     // Add two to the maximum number expressible as an unsigned long. This is so that
     // the number of rows and the index of the last row are both not expressible as a unsigned long.
+#ifdef TIP_USE_LONG_LONG_INDEX
+    ReportWarning("Tip was compiled with \"long long\" indexing; performing large file test");
+#else
+    ReportWarning("Tip was compiled without \"long long\" indexing; skipping large file test");
+    return;
+#endif
     Index_t rec_to_add = Index_t(std::numeric_limits<unsigned long>::max()) + 2;
     try {
       bool success = true;
