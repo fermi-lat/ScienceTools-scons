@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: James Peachey <peachey@lheamail.gsfc.nasa.gov>
-# Version: tip-01-01-01
+# Version: tip-02-14-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
