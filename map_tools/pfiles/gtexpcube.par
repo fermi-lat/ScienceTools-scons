@@ -12,7 +12,7 @@ irfs,s,a,"HANDOFF",,,"Response function to use, e.g. HANDOFF, DC1F/DC1B, G25F/G2
 # Spatial binning parameters.
 nxpix,i,a,1,1,,"Size of the X axis in pixels (leave at 1 for auto full sky"
 nypix,i,a,1,1,,"Size of the Y axis in pixels (leave at 1 to copy nxpix or auto full sky)"
-pixscale,r,a,1,1.,,"Image scale (in degrees/pixel)"
+pixscale,r,a,1,,,"Image scale (in degrees/pixel)"
 coordsys,s,a,"CEL",CEL|GAL,,"Coordinate system (CEL - celestial, GAL -galactic)"
 xref,r,a,0,,,"First coordinate of image center in degrees (RA or galactic l)"
 yref,r,a,0,,,"Second coordinate of image center in degrees (DEC or galactic b)"
