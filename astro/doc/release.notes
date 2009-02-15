@@ -6,6 +6,12 @@
 $Id$
 
 @verbatim
+  v3r7     14-feb-09 LSR Remove extraneous public methods from EarthCoordinate
+                         Fix EarthCoordinates to separate geometric from magnetic calculations
+                             This will speed up gtobssim, since it doesn't use the magnetic stuff
+                         convert lambda from radians to degrees here
+                         Change "large number" -9.999e102 to -9.999e37, so it works on Windows
+Define R2D = 180./M_PI in anonymous namespace
   v3r6p1   09-feb-09 THB fix test program
   v3r6     06-feb-09 LSR access R and bfield; sign maglat and lambda
   v3r5p2   30-jan-00 THB Respond to JIRA STGEN-86; modify test program
