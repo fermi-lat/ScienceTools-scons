@@ -14,9 +14,12 @@
 #include <stdexcept>
 
 namespace {
-    
+
     double EarthFlat= (1/298.25);            /* Earth Flattening Coeff. */
     double J2000= astro::JulianDate(2000,1,1,12); // 2451545.0;
+
+    const double R2D = 180./M_PI;
+    const double D2R = 1./R2D;
  
     inline double sqr(double x){return x*x;}
 
@@ -28,8 +31,6 @@ namespace {
 
     // boundaries 
     static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
-
-
 }
 
 // static constants 
@@ -44,6 +45,7 @@ double EarthCoordinate::earthRadius(){return s_EarthRadius;}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met) 
+   : m_met(met), m_haveMagCoords(false)
 {
     using namespace astro;
     // check pos, modify to km if in m.
@@ -58,7 +60,7 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
     m_lat = M_PI/2- pos.theta();
     // convert from MET to JD
     JulianDate jd(JulianDate::missionStart() + met/JulianDate::secondsPerDay);
-    m_lon = pos.phi() - GetGMST(jd)*M_PI/180;
+    m_lon = pos.phi() - GetGMST(jd)*D2R;
     m_lon = fmod(m_lon, 2*M_PI); 
     if( m_lon<M_PI) m_lon+=2*M_PI; // for -180 to 180?
     if( m_lon>M_PI) m_lon-=2*M_PI;
@@ -77,10 +79,20 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
         msg <<"astro::EarthCoordinate: invalid altitude, expect near 550 km, got: " << m_altitude;
         throw std::invalid_argument(msg.str());
     }
+}
+   
+void EarthCoordinate::computeMagCoords() const {
     // pointer to the singleton IGRField object for local use
     IGRField& field(IGRField::Model());
     // initialize it, and get what we will need. (can't use the object since it is a singleton
-    double year( 2001 + met/3.15e7); // year does not need to be very precise
+    double year( 2001 + m_met/3.15e7); // year does not need to be very precise
+
+    // for getting the sign, until we find a better way...
+    const double deltaLat = 1.0;
+    field.compute(latitude()+deltaLat, longitude(), m_altitude, year);
+    double newLambda = field.lambda();
+
+    // normal computation
     field.compute(latitude(), longitude(), m_altitude, year);
     m_field = CLHEP::Hep3Vector(field.bEast(), field.bNorth(), -field.bDown());
     m_L = field.L();
@@ -89,46 +101,55 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
     m_lambda = field.lambda();
     m_R      = field.R();
 
-    const double deltaLat = 1.0;
-    field.compute(latitude()+deltaLat, longitude(), m_altitude, year);
-    double newLambda = field.lambda();
     double deltaLambda = newLambda - m_lambda;
     if(deltaLat>0&&deltaLambda<0) {
         m_lambda *= -1.0;
         m_geolat *= -1.0;
     }
-
-    // restore things, just in case!
-    field.compute(latitude(), longitude(), m_altitude, year);
+    m_haveMagCoords = true;
 }
-   
-double EarthCoordinate::L()const
 
+double EarthCoordinate::L()const
 {
+   if (!m_haveMagCoords) {
+      computeMagCoords();
+   }
     return m_L; //Geomag::L(latitude(), longitude());
 
 }
    
 double EarthCoordinate::B()const
 {
+   if (!m_haveMagCoords) {
+      computeMagCoords();
+   }
     return m_B; // Geomag::B(latitude(), longitude());
 }
 
 double EarthCoordinate::R()const
 {
+   if (!m_haveMagCoords) {
+      computeMagCoords();
+   }
     return m_R; // radius;
 }
 
 double EarthCoordinate::lambda()const
 {
-    return m_lambda;
+   if (!m_haveMagCoords) {
+      computeMagCoords();
+   }
+    return m_lambda*R2D;
 
 }
 
 double EarthCoordinate::geolat()const
 {
-    double old =Geomag::geolat(latitude(), longitude()); // for comparison
-    return m_geolat*180/M_PI; // convert to degrees  
+   if (!m_haveMagCoords) {
+      computeMagCoords();
+   }
+    //double old =Geomag::geolat(latitude(), longitude()); // for comparison
+    return m_geolat*R2D; // convert to degrees  
 }
 
 
@@ -257,8 +278,8 @@ const CLHEP::Hep3Vector& EarthCoordinate::magnetic_field()const
     return m_field; 
 }
 
-double EarthCoordinate::latitude()const{ return m_lat*180/M_PI;}
-double EarthCoordinate::longitude()const{ return m_lon*180/M_PI;}
+double EarthCoordinate::latitude()const{ return m_lat*R2D;}
+double EarthCoordinate::longitude()const{ return m_lon*R2D;}
 double EarthCoordinate::altitude()const{ return m_altitude;}
 
 

@@ -30,7 +30,7 @@ public:
     //! initialize with orbit position (in km), current MET in sec (was JD)
     EarthCoordinate( CLHEP::Hep3Vector position, double met); //JulianDate jd);
 
-    EarthCoordinate(){} // default ctor
+   EarthCoordinate() : m_haveMagCoords(false) {} // default ctor
 
     /** @brief true if inside the SAA
 
@@ -67,12 +67,6 @@ lonv=( 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87, 45);
     // other parameters
     //! Radius in km
     double R() const;
-    //! north component of bfield (gauss)
-    double bNorth() const;
-    //! east component of bfield (gauss)
-    double bEast()  const;
-    //! downward component of bfield (gauss)
-    double bDown()  const;
 
     double geolat()const;///< geomagnetic latitude (deg)
     double geolon()const;///< geomagnetic longitude (deg) (deprecated)
@@ -87,11 +81,16 @@ private:
     //! internal representation: latitude and longitude in radians, altitude in km
     double m_lat, m_lon;
     double m_altitude;
-    double m_L, m_B; ///< McIllwain parameters
-    double m_geolat; ///< geomagnetic latitude, or invariant latitude
-    CLHEP::Hep3Vector m_field;
-    double m_lambda;
-    double m_R;
+    mutable double m_L, m_B; ///< McIllwain parameters
+    mutable double m_geolat; ///< geomagnetic latitude, or invariant latitude
+    mutable CLHEP::Hep3Vector m_field;
+    mutable double m_lambda;
+    mutable double m_R;
+
+   double m_met;
+   mutable bool m_haveMagCoords;
+
+   void computeMagCoords()const ;
 
    /**
      * GetGMST returns the Greenwich sideral time in degrees, 

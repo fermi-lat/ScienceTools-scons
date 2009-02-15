@@ -1150,7 +1150,7 @@ L7:
     }
     return 0;
 L9998:
-    *dimo = (float)-9.999e102;
+    *dimo = (float)-9.999e37;
     *year = (float)-1.;
     return 0;
 } /* feldcof_ */

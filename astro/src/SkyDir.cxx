@@ -14,6 +14,11 @@ using namespace astro;
 
 using namespace CLHEP;
 
+namespace {
+    const double R2D = 180./M_PI;
+    const double D2R = 1./R2D;
+}
+
 
 /** @brief initialize from (ra, dec), or (l,b)
 @param param1 either ra or l, in degrees
@@ -72,8 +77,8 @@ SkyDir::SkyDir(double param1, double param2, const SkyProj& projection, bool che
     // this can throw an exception
    std::pair<double,double> s = projection.pix2sph(param1, param2);
 
-   double ra_rad = s.first * M_PI/180.;
-   double dec_rad = s.second * M_PI/180.;
+   double ra_rad = s.first * D2R;
+   double dec_rad = s.second * D2R;
 
    Hep3Vector t = Hep3Vector( cos(ra_rad)*cos(dec_rad), sin(ra_rad)*cos(dec_rad) , sin(dec_rad) );        
    if( !projection.isGalactic()){
