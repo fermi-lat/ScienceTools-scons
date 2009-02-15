@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+  v3r7p1   14-feb-09 LSR A bit more cleanup
   v3r7     14-feb-09 LSR Remove extraneous public methods from EarthCoordinate
                          Fix EarthCoordinates to separate geometric from magnetic calculations
                              This will speed up gtobssim, since it doesn't use the magnetic stuff
