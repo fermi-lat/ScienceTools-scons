@@ -15,6 +15,7 @@ $Header$
 #include <string>
 #include <typeinfo>
 #include <stdexcept>
+#include <cassert>
 
 using namespace healpix;
 
@@ -85,7 +86,8 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     ss << size << "E";
     std::string nbrbins = ss.str();
     table.appendField("COSBINS", ss.str());
-    table.setNumRecords(ha.size());
+    tip::Index_t numrecs =  ha.size() ;
+    table.setNumRecords(numrecs);
 
     // get iterators for the Table and the HealpixArray
     tip::Table::Iterator itor = table.begin();
@@ -94,13 +96,13 @@ std::auto_ptr<tip::Table> HealpixArrayIO::write(const HealpixArray<CosineBinner>
     // now just copy
     for( ; haitor != ha.end(); ++haitor, ++itor)
     {
-        size_t n= (*haitor).size(); // check individual size?
+        assert( (*haitor).size() == size); // all must have same size
         (*itor)["COSBINS"].set(*haitor);
     }
 
     // set the headers (TODO: do the comments, too)
     tip::Header& hdr = table.getHeader();
-    setHealpixHeaderFields(ha, ha[0].nbins(), hdr);
+    setHealpixHeaderFields(ha, size, hdr);
 
     hdr["THETABIN"].set(CosineBinner::thetaBinning());
     hdr["NBRBINS"].set(CosineBinner::nbins());
