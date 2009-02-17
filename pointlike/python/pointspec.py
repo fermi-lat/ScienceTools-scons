@@ -211,6 +211,16 @@ Optional keyword arguments:
 
         """
         return SpectralAnalysis.Fitter(self, name, source_dir)
+        
+    def __call__(self, name, source_dir):
+        """
+        return a SpecralAnalysis.Fitter object, by simple call
+
+        name        name to use for output
+        source_dir  SkyDir object specifying where to start
+
+        """
+        return SpectralAnalysis.Fitter(self, name, source_dir)
 
 #--------------------------------------------------------
 
