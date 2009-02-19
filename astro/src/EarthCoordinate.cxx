@@ -26,11 +26,21 @@ namespace {
     // default polygon
     /* These points are assumed to be in counter-clockwise order,
        starting in the southeast */
-    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
-                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
+//  This is the pre-launch polygon:
+//    static double latv[]={-30,-26,-20,-17,-10, 1, 2, -3, -8,-12,-19,-30},
+//                  lonv[]={ 45, 41, 31, 9,-11,-34,-46,-62,-79,-85,-89,-87};
+
+//  Here is the polygon in use on-orbit:
+    static double lonv[] = 
+    { 33.9, 24.5, -18.6, -25.7, -36.0, -42.0,
+    -58.8, -93.1, -97.5, -98.5, -92.1, -86.1}, 
+        latv[] = 
+    {-30.0, -22.6, 2.5, 5.2, 5.2, 4.6,
+    0.7, -8.6, -9.9, -12.5, -21.7, -30.0};
+
 
     // boundaries 
-    static double lon_min = 1e10, lon_max = 1e-10, lat_min = 1e10, lat_max=1e-10;
+    static double lon_min = 1e10, lon_max = -1e10, lat_min = 1e10, lat_max=-1e10;
 }
 
 // static constants 
@@ -62,7 +72,7 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
     JulianDate jd(JulianDate::missionStart() + met/JulianDate::secondsPerDay);
     m_lon = pos.phi() - GetGMST(jd)*D2R;
     m_lon = fmod(m_lon, 2*M_PI); 
-    if( m_lon<M_PI) m_lon+=2*M_PI; // for -180 to 180?
+    if( m_lon<-M_PI) m_lon+=2*M_PI; // to get into (-180,180)
     if( m_lon>M_PI) m_lon-=2*M_PI;
 
     // oblateness correction to obtain geodedic latitude 
