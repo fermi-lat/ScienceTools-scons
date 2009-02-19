@@ -13,11 +13,15 @@ namespace astro { class SkyDir; }
 #include <string>
 #include <vector>
 #include "embed_python/Module.h"
+
+
 namespace skymaps{ class BinnedPhotonData; class SkySpectrum; class Band;}
 
 namespace pointlike {
 
     class Data;  // forward declaration
+    class SourceLikelihood;
+    class PointSourceLikelihood;
 
     //! @class Draw
     //! @brief manage creating images to FITS files from a BinnedPhotonData object
@@ -40,10 +44,18 @@ namespace pointlike {
         //! @param fov  field of view (deg) if 180, use car
 
         void region(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
+                     double fov, bool smooth = false, int mincount = 0);
+        
+	template <class Likelihood>
+	void mapTS(Likelihood* like, std::string outputFile, double pixelsize,
+                    double fov, bool smooth, int mincount);
+        
+	void TS(SourceLikelihood* like, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
-        void TS(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
-                    double fov, bool smooth = false, int mincount = 0);
-        void density(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
+//        void TS(PointSourceLikelihood* like, std::string outputFile, double pixelsize,
+//                    double fov, bool smooth = false, int mincount = 0);
+        
+	void density(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
 
         //! @brief all sky image, default AIT, galactic

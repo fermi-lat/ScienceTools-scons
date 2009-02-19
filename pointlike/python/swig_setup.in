@@ -41,6 +41,7 @@
 #include "pointlike/ExtendedSourcePDF.h"
 #include "pointlike/ResultsFile.h"
 #include "pointlike/DrawTS.h"
+#include "pointlike/ComplexSkySpectrum.h"
 #endif
 
 #include "CLHEP/Vector/Rotation.h"
@@ -201,6 +202,7 @@ public:
 %include $(POINTLIKEROOT)/pointlike/ExtendedSourcePDF.h
 %include $(POINTLIKEROOT)/pointlike/SpectralFitter.h
 %include $(POINTLIKEROOT)/pointlike/ResultsFile.h
+%include $(POINTLIKEROOT)/pointlike/ComplexSkySpectrum.h
 #endif
 
 //%include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h

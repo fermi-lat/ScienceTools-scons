@@ -301,6 +301,7 @@ void ExtendedLikelihood::reload(bool subset)
     m_avu = result.average_u();
     m_avb = result.average_b();
 */
+//    std::cout<<"Re-calculating LLH vector."<<std::endl;
     recalc();
 
     // initialize to estimate.
@@ -651,10 +652,13 @@ void ExtendedLikelihood::display(std::map<std::string,skymaps::SkyImage*>& image
 	     std::pair<double,double> p2=image.projector()->pix2sph(x+0.5,y-0.5);
 	     std::pair<double,double> p3=image.projector()->pix2sph(x-0.5,y+0.5);
 	     std::pair<double,double> p4=image.projector()->pix2sph(x+0.5,y+0.5);
+	     
 	     double dtheta=0.5*fabs(p4.second-p2.second+p3.second-p1.second)*M_PI/180.;
 	     double mtheta=0.25*fabs(p4.second+p2.second+p3.second+p1.second)*M_PI/180.;
 	     double dphi=0.5*fabs(p4.first-p3.first+p2.first-p1.first)*M_PI/180.;
-	     double area=dtheta*dphi/cos(mtheta);
+	     double area=dtheta*dphi*cos(mtheta);
+	     
+	     
 //	     std::cout<<"display: "<<x<<" "<<y<<" dtheta="<<dtheta<<" mtheta="<<mtheta<<" dphi+"<<dphi<<" area="<<area<<std::endl;
 
 // subsample pixels 	     

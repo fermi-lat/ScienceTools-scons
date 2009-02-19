@@ -157,7 +157,8 @@ namespace pointlike {
 
     const std::vector<double>& residual() const{ return m_vloglike; };
     const std::vector< std::vector<double> >& jacobian() const{ return m_vjacobian; };
-
+    
+    void usePSFCaching(bool c) {m_psf.useCache(c);};
 
     /// @brief access to the diffuse component
     const skymaps::SkySpectrum* diffuse() const;
