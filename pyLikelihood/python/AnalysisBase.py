@@ -117,7 +117,8 @@ class AnalysisBase(object):
         return Ts_value
     def flux(self, srcName, emin=100, emax=3e5, energyFlux=False):
         if energyFlux:
-            ptsrc = pyLike.PointSource_cast(self[srcName].src)
+#            ptsrc = pyLike.PointSource_cast(self[srcName].src)
+            ptsrc = self[srcName].src
             return ptsrc.energyFlux(emin, emax)
         else:
             return self[srcName].flux(emin, emax)
@@ -156,7 +157,8 @@ class AnalysisBase(object):
             my_covar.append([covar[ix][par_index_map[ypar]] for ypar in pars])
         my_covar = num.array(my_covar)
 
-        ptsrc = pyLike.PointSource_cast(self[srcName].src)
+#        ptsrc = pyLike.PointSource_cast(self[srcName].src)
+        ptsrc = self[srcName].src
         if energyFlux:
             partials = num.array([ptsrc.energyFluxDeriv(x, emin, emax, npts) 
                                   for x in srcpars])
