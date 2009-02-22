@@ -92,12 +92,16 @@ public:
 
         // create the differential exposure object
 	double pixelsize(m_pars["pixelsize"]), binsize(m_pars["binsize"]);
+        double phibins(m_pars["phibins"]);
 		
         double tstart(m_pars["tstart"]),
                tstop(m_pars["tstop"]),
                zmin ( m_pars["zmin"] );
 
-        Exposure ex( pixelsize, binsize, zmin );
+        // note that the phi binning option is turned on by setting the static parameter
+        if( phibins>0) healpix::CosineBinner::setPhiBins(phibins); 
+
+        Exposure ex( pixelsize, binsize, zmin);
         Exposure::GTIvector gti; 
 
         gti.push_back(std::make_pair(tstart,tstop));
@@ -136,8 +140,8 @@ public:
  
     }
     void prompt() {
-        m_pars.Prompt("infile");
         m_pars.Prompt("outfile");
+        m_pars.Prompt("infile");
         m_pars.Prompt("tstart");
         m_pars.Prompt("tstop");
         m_pars.Prompt("zmin");

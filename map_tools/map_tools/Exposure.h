@@ -105,7 +105,7 @@ private:
     */
     void create_cache();
 
-    /** @class Simple3Vector 
+        /** @class Simple3Vector 
     @brief replacement for Hep3Vector for speed of dot product
 
     */
@@ -113,7 +113,14 @@ private:
     public: 
         Simple3Vector(const CLHEP::Hep3Vector& v=CLHEP::Hep3Vector())
             : x(v.x()),y(v.y()),z(v.z()){};
+        Simple3Vector(double a, double b, double c):x(a),y(b), z(c){}
         double dot(const Simple3Vector& u)const{return x*u.x+y*u.y+z*u.z;}
+        CLHEP::Hep3Vector transform(const CLHEP::HepRotation& R)const{
+            return CLHEP::Hep3Vector(
+                R.xx()*x+R.xy()*y+R.xz()*z,
+                R.yx()*x+R.yy()*y+R.yz()*z,
+                R.zx()*x+R.zy()*y+R.zz()*z);
+        }
         double x,y,z;
     };
     std::vector< std::pair<healpix::CosineBinner* ,  Simple3Vector> > m_dir_cache;

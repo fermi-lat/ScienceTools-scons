@@ -7,6 +7,7 @@
 #include "healpix/HealpixArrayIO.h"
 #include "tip/Table.h"
 #include "astro/EarthCoordinate.h"
+#include "astro/PointingTransform.h"
 
 #include <memory>
 #include <algorithm>
@@ -67,23 +68,36 @@ void Exposure::create_cache()
         m_dir_cache.push_back(std::make_pair(&*is, pixdir));
     }
 }
+
 /** @class Filler
     @brief private helper class used in for_each to fill a CosineBinner object
 */
 class Exposure::Filler {
 public:
+
     /** @brief ctor
         @param deltat time to add
-        @param dir direction to use to determine angle (presumably the spacecraft z-axis)
+        @param dirz direction to use to determine angle (presumably the spacecraft z-axis)
+        @param dirx direction of x-axis
         @param zenith optional zenith direction for potential cut
         @param zcut optional cut: if -1, ignore
     */
-    Filler( double deltat, const astro::SkyDir& dir, astro::SkyDir zenith=astro::SkyDir(), double zcut=-1)
-        : m_dir(dir())
+    Filler( double deltat, const astro::SkyDir& dirz, const astro::SkyDir& dirx, astro::SkyDir zenith=astro::SkyDir(), double zcut=-1)
+        : m_dirz(dirz())
+        , m_rot(astro::PointingTransform(dirz,dirx).localToCelestial().inverse())
         , m_zenith(zenith())
         , m_deltat(deltat)
         , m_zcut(zcut)
         , m_total(0), m_lost(0)
+        , m_use_phi(CosineBinner::nphibins()>0)
+    {}
+    Filler( double deltat, const astro::SkyDir& dirz, astro::SkyDir zenith=astro::SkyDir(), double zcut=-1)
+        : m_dirz(dirz())
+        , m_zenith(zenith())
+        , m_deltat(deltat)
+        , m_zcut(zcut)
+        , m_total(0), m_lost(0)
+        , m_use_phi(false)
     {}
     void operator()( const std::pair<CosineBinner*, Simple3Vector> & x)
     {
@@ -95,7 +109,15 @@ public:
         }
         if( ok) {
             // if ok, add to the angle histogram
-            x.first->fill(x.second.dot(m_dir), m_deltat);
+            const Simple3Vector& pixeldir(x.second);
+            if( m_use_phi) {
+                CLHEP::Hep3Vector instrument_dir( pixeldir.transform(m_rot) );
+                 double costheta(instrument_dir.z()), phi(instrument_dir.phi());
+                x.first->fill( costheta, phi , m_deltat);
+            }else{
+                x.first->fill( pixeldir.dot(m_dirz), m_deltat);
+            }
+
             m_total += m_deltat;
         }else{
             m_lost += m_deltat;
@@ -104,9 +126,14 @@ public:
     double total()const{return m_total;}
     double lost()const{return m_lost;}
 private:
-    Simple3Vector m_dir, m_zenith;
-    double m_deltat, m_zcut, m_total, m_lost;
+    Simple3Vector m_dirz;
+    CLHEP::HepRotation m_rot;
+    Simple3Vector m_zenith;
+    double m_deltat, m_zcut;
+    mutable double m_total, m_lost;
+    bool m_use_phi;
 };
+
 
 void Exposure::fill(const astro::SkyDir& dirz, double deltat)
 {
@@ -147,13 +174,6 @@ void Exposure::load(const tip::Table * scData,
 
 bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& gti)
 {
-#if 0 // enable when use SAA?
-    double latGeo, lonGeo;
-    row["lat_Geo"].get(latGeo);
-    row["lon_Geo"].get(lonGeo);
-    astro::EarthCoordinate earthCoord(latGeo, lonGeo);
-    if( earthCoord.insideSAA() ) return false;
-#endif
 
     double  start, stop, livetime; 
     row["livetime"].get(livetime);
