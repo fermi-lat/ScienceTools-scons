@@ -140,8 +140,8 @@ public:
  
     }
     void prompt() {
-        m_pars.Prompt("outfile");
         m_pars.Prompt("infile");
+        m_pars.Prompt("outfile");
         m_pars.Prompt("tstart");
         m_pars.Prompt("tstop");
         m_pars.Prompt("zmin");
