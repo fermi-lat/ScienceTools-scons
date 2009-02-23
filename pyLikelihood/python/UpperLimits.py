@@ -203,8 +203,7 @@ class UpperLimits(dict):
         dict.__init__(self)
         self.like = like
         for srcName in like.sourceNames():
-            if self.like.logLike.getSource(srcName).getType() == "Point":
-                self[srcName] = UpperLimit(like, srcName)
+            self[srcName] = UpperLimit(like, srcName)
 
 if __name__ == '__main__':
     import hippoplotter as plot

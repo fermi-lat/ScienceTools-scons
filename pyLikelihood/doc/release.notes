@@ -5,6 +5,7 @@
    $Id$
 
    @verbatim
+   v1r10p1 22-Feb-09  JC    remove point source restriction from UpperLimits.py
    v1r10  22-Feb-09   JC    enable flux calculations for diffuse sources
    v1r9p6 26-Jan-09   JC    Use AppHelpers::addFunctionPrototypes instead of
                             adding each class explicitly
