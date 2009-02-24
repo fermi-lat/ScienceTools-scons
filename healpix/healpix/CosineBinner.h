@@ -38,12 +38,13 @@ public:
     /// modifiable reference to the contents of the bin containing the cos(theta) value
     float& operator[](double costheta);
     const float& operator[](double costheta)const;
-#if 0
-    /// modifiable reference to the contents of the bin containing the cos(theta) value
+
+    /// reference to the contents of the bin containing the cos(theta) value
     //! version that has phi as well (operator() allows multiple args)
-    float& operator()(double costheta, double phi=-1);
+    //! @param costheta cos(theta)
+    //! @param phi [-1] phi angle in radians: if negative, ignore and return average
     const float& operator()(double costheta, double phi=-1)const;
-#endif
+
     /// cos(theta) for the iterator
     double costheta(std::vector<float>::const_iterator i)const;
 
