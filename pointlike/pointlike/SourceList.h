@@ -59,6 +59,7 @@ namespace pointlike{
         const Source* neighbor()const{return m_neighbor;}
 
         void set_neighbor(const Source* other){m_neighbor = other;}
+        const std::vector<double>& fit_params()const{return m_fitparams;}
         
     private:
         std::string m_name;
@@ -70,6 +71,7 @@ namespace pointlike{
         double m_sigma;  ///< localization rms error
         const Source * m_neighbor; ///< pointer to strong neighbor (zero if none)
         void setup();  ///< called by ctors
+        std::vector<double> m_fitparams; ///< parameters of lsqfit
     };
 
     /** @class SourceList

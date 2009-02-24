@@ -433,6 +433,7 @@ Hep3Vector SimpleLikelihood::gradient() const
 double SimpleLikelihood::curvature() const
 {
     if( m_curv==-1.) gradient(); // in not initialized. (negative curvature is bad)
+    if( m_curv<0 ) return 0.01;
     return m_curv;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -591,7 +592,7 @@ void SimpleLikelihood::recalc(bool /*subset*/)
 
 double SimpleLikelihood::TSmap(astro::SkyDir sdir)const
 {
-#if 0
+#if 1
     SimpleLikelihood* self = const_cast<SimpleLikelihood*>(this);
     SkyDir old_dir(m_dir);
     m_dir = sdir;
@@ -604,7 +605,7 @@ double SimpleLikelihood::TSmap(astro::SkyDir sdir)const
 #else
     std::vector<std::pair<double, int> > vec2;  //stores <log-like,nphotons>
     double oldbinsize(binsize);
-    binsize =0; // disable the binning, makes jumps
+    //binsize =0; // disable the binning, makes jumps
     // load vec2 from current list of pixels and this direction
     Convert conv(sdir, m_psf, *m_back, sigma(), m_umax, vec2 );
     Convert result=std::for_each(m_vec.begin(), m_vec.end(), conv);
@@ -615,7 +616,7 @@ double SimpleLikelihood::TSmap(astro::SkyDir sdir)const
         std::accumulate(vec2.begin(), vec2.end(),  poissonLikelihood(0), LogLike(0))
         -std::accumulate(vec2.begin(), vec2.end(),  poissonLikelihood(m_alpha), LogLike(m_alpha))
         );
-    binsize = oldbinsize; // restore binning 
+    //binsize = oldbinsize; // restore binning 
     return ret;
 
 #endif

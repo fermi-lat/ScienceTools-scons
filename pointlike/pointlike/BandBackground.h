@@ -40,10 +40,12 @@ public:
 
     double average(const astro::SkyDir& dir, double angle, double tolerance)const;
     static void set_verbose(bool q=true);
-            
-private:
+
     // Calculate average for a given level
     double level_ave(const astro::SkyDir& dir, double angle, int level) const;
+
+
+private:
 #if 0
     const skymaps::CompositeSkySpectrum & m_background;
     const skymaps::Background* m_diffuse; ///< extract pointer to the diffuse cmponent

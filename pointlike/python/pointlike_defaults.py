@@ -46,7 +46,7 @@ class PointSourceLikelihood: #parameters for the likelihood calculation
 
     TSmin= 5     # minimum TS value to allow during iteration
     skip1=1      # inital number of layers to skip in localization fit
-    skip2=4      # don't skip beyond this
+    skip2=9      # don't skip beyond this
     itermax=1    # maximum number of iterations
 
     verbose = 0  # set non-zero to get lots of output

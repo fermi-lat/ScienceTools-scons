@@ -28,7 +28,7 @@ macro pointlike_source  "*.cxx" WIN32 \
 "Alignment.cxx  AlignProc.cxx  BandBackground.cxx  CalData.cxx  Data.cxx Draw.cxx EventList.cxx \
  ParamOptimization.cxx   PointSourceLikelihood.cxx \
  RotationInfo.cxx  SimpleLikelihood.cxx SourceFinder.cxx \
- SourceList.cxx SpectralFunction.cxx"
+ SourceList.cxx SpectralFunction.cxx LeastSquaresFitter.cxx"
 
 library pointlike \
  -s=../pointlike $(source) \
