@@ -35,6 +35,7 @@ size_t CosineBinner::cosine_index(double costheta)
 }
 double CosineBinner::folded_phi(double phi)
 {
+    if( phi<0) phi+= 2*M_PI;
     return  1.- fabs(pi4-fmod(phi, pi2) )/pi4 ;
 }
 size_t CosineBinner::phi_index(double phi)

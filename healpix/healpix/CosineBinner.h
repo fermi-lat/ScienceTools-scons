@@ -65,14 +65,14 @@ public:
         return sum; 
 
     }
-
+                           
     /// integral over the range with functor accepting costheta, phi as args. 
     template<class G>
     double integral(const G& f)const
     {   
         double sum=0;
         for(const_iterator it=end_costh(); it!=end(); ++it){
-            sum += (*it)*f(costheta(it), phi(it) );
+            sum += (*it)*f.integral(costheta(it), phi(it) );
         }
         return sum; 
 
