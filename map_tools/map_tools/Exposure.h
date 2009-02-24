@@ -41,6 +41,13 @@ public:
         const C& binner = m_sky[dir];
         return binner(fun);
     }
+    //! version for fun to be function of costh and phi
+    template<class F>
+        double integral(const astro::SkyDir& dir, const F& fun)const
+    {
+        const C& binner = m_sky[dir];
+        return binner.integral(fun);
+    }
     const S& data()const{return m_sky;}
     S& data(){return m_sky;}
     double total()const{return m_total;}
@@ -99,6 +106,14 @@ public:
     double lost()const{return m_lost;}
 private:
     bool processEntry(const tip::ConstTableRecord & row, const GTIvector& gti);
+
+    /** @brief  allow horizon cut, possible if FOV includes horizon
+        @param dirz direction of z-axis of instrument
+        @param dirx direction of x-axis of instrument
+        @param dirzenith direction of local zenith
+        @param deltat time interval
+    */
+    virtual void fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& dirzenith, double deltat);
 
     /** @brief set up the cache of vectors associated with cosine histograms
 

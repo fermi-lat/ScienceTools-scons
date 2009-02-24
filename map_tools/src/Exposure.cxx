@@ -150,6 +150,14 @@ void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, doub
     m_lost += sum.lost();
 }
 
+void Exposure::fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& zenith, double deltat)
+{
+    Filler sum = for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, dirx, zenith, m_zcut));
+    double total(sum.total());
+    addtotal(total);
+    m_lost += sum.lost();
+}
+
 
 void Exposure::write(const std::string& outputfile, const std::string& tablename)const
 {
@@ -174,12 +182,14 @@ void Exposure::load(const tip::Table * scData,
 
 bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& gti)
 {
+    using astro::SkyDir;
 
     double  start, stop, livetime; 
     row["livetime"].get(livetime);
+    if(livetime==0 ) return false; // assume this takes care of any entries during SAA
     row["start"].get(start);
     row["stop"].get(stop);
-    double deltat = livetime > 0 ? livetime : stop-start;
+    double deltat = livetime; 
 
 
     double fraction(1); 
@@ -216,9 +226,14 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
         double ra, dec, razenith, deczenith;
         row["ra_scz"].get(ra);
         row["dec_scz"].get(dec);
+        SkyDir scz(ra, dec);
+        row["ra_scx"].get(ra);
+        row["dec_scx"].get(dec);
+        SkyDir scx(ra, dec);
 	row["ra_zenith"].get(razenith);
 	row["dec_zenith"].get(deczenith);
-        fill(astro::SkyDir(ra, dec), astro::SkyDir(razenith,deczenith), deltat* fraction);
+        SkyDir zenith(razenith, deczenith);
+        fill_zenith(scz, scx,  zenith, deltat* fraction);
     }
     return done; 
 

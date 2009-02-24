@@ -26,6 +26,7 @@ $Header$
 
 #include <sstream>
 #include <iterator> // for ostream_iterator
+#include <fstream>
 
 
 #include <stdexcept>
@@ -57,6 +58,7 @@ private:
     const F& m_aeff;
     double m_norm;
 };
+//---------- functor that picks an angle -------------------------
 class SelectAngle {
 public:
     SelectAngle(double costh): m_costh(costh){}
@@ -66,6 +68,18 @@ public:
     }
 private:
     double m_costh;
+};
+
+// version for phi dependence.
+class SelectAngles {
+public:
+    SelectAngles(double costh, double phi): m_costh(costh), m_phi(phi){}
+    
+    double integral(double z, double phi)const{
+        return ( fabs(z-m_costh)<0.0001&& fabs(phi-m_phi)<0.1 )? 1 : 0;
+    }
+private:
+    double m_costh, m_phi;
 };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +116,7 @@ public:
         m_f.info() << "Creating an Exposure object from file " << infile << std::endl;
 
         Exposure ex(infile, table);
-#if 1 //! todo: find out how this was broken
+#if 0 //! todo: find out how this was broken
         double total_elaspsed = ex.total();
         m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
 #endif
@@ -111,7 +125,7 @@ public:
         // parameters were set when the Exposure object was read in
         CosineBinner bins;
         std::vector<float> costhbins;
-        for( CosineBinner::iterator it = bins.begin(); it<bins.end(); ++it){
+        for( CosineBinner::iterator it = bins.begin(); it<bins.end_costh(); ++it){
             costhbins.push_back( bins.costheta(it));
         }
         int layers(costhbins.size()); 
@@ -130,17 +144,37 @@ public:
         double fov = numxpix==1? 180. : numxpix*pixscale;
 
         astro::SkyDir center(xref, yref, galactic?  astro::SkyDir::GALACTIC : astro::SkyDir::EQUATORIAL);
+#if 0       
         SkyImage image (center, outfile, pixscale, fov, layers, proj, galactic);
 
-        
         for ( std::vector<double>::size_type layer = 0; layer != layers; ++layer){
             double costh ( costhbins[layer] );
             std::clog << "Generating layer " << layer << ", theta =  " << acos(costh)*180/M_PI << std::endl;
 
+            // set phi negative to flag average
             RequestExposure<SelectAngle> req(ex, SelectAngle(costh) ); 
             image.fill(req, layer);
         }
- 
+
+#else
+        // make a table of costh, phi
+        std::ofstream out("test_table.txt");
+        for ( std::vector<double>::size_type layer = 0; layer != layers; ++layer){
+            double costh ( costhbins[layer] );
+            out <<"\n"<< ex(center, SelectAngle(costh)) ;
+            for ( std::vector<double>::size_type philayer = 0; philayer != CosineBinner::nphibins(); ++philayer){
+                double phi ( 3*philayer*M_PI/180);
+
+                out << "\t " << ex.integral(center, SelectAngles(costh, phi)) ;
+                //std::clog << "Generating layer " << layer << ", theta =  " 
+                //    << acos(costh)*180/M_PI <<", phi = "<< phi*180/M_PI << std::endl;
+                //RequestExposure<SelectAngles> req(ex, SelectAngles(costh,phi) );
+                //image.fill(req, layer);
+            }
+        }
+        out << std::endl;
+       
+#endif
     }
 
 
