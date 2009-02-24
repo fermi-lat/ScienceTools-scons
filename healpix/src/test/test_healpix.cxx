@@ -36,7 +36,7 @@ namespace {
     class PhiFunct{
     public:
         PhiFunct(int power=0): p(power){}
-        double operator()(double z, double phi )const{return p==0?1.: std::pow(1.-z,p);}
+        double integral(double z, double phi )const{return p==0?1.: std::pow(1.-z,p);}
     int p;
     };
 }
