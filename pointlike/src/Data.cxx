@@ -354,7 +354,7 @@ Data::Data(std::vector<std::string> inputfiles, int event_type, double tstart, d
 {
     if( !ft2file.empty() ) setHistoryFile(ft2file); // this is actually a global
 
-    load_filelist(inputfiles);
+    load_filelist(inputfiles,event_type,source_id);
 }
 
 Data::Data(const std::string & inputFile, const std::string & tablename)
