@@ -21,7 +21,7 @@ using namespace astro;
 namespace {
 
     double sqr(double d) {return d*d;}
-
+    int s_points = 10; //grid points
     double file_num(0.);
     int itermax(3);
 }

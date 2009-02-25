@@ -39,7 +39,7 @@ namespace pointlike {
 
         std::vector<double> m_fitparams; //parameterization of TS surface
         PointSourceLikelihood* m_psl; // Pointer to PSL object, can be modified
-        const static int s_points = 10; //grid points: will crash matrix multiplication if larger than 3
+
         double m_err; //statistical error value
 
     };
