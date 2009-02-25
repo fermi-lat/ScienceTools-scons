@@ -135,6 +135,7 @@ private:
     const tip::Table * m_table;
     bool m_fits;
     bool m_selectid;
+    bool m_use_mc_energy;
 };
 
 #endif

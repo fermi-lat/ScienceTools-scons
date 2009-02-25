@@ -101,7 +101,7 @@ EventList::EventList(const std::string infile, bool selectid, bool use_mc_energy
                      std::string table_name)
                      : m_fits(true)
                      , m_selectid(selectid)
-					 , m_use_mc_energy(use_mc_energy)
+                     , m_use_mc_energy(use_mc_energy)
 {
     if( infile.find(".root") != std::string::npos) {
         table_name = "MeritTuple"; 
