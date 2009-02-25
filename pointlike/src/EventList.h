@@ -119,7 +119,7 @@ public:
         bool operator!=(const Iterator& other)const{return other.m_it!=m_it;}
     private:
         tip::Table::ConstIterator m_it;
-        bool m_fits, m_selectid;
+        bool m_fits, m_selectid, m_use_mc_energy;
     };
 
     /// return iterator to access 
