@@ -5,10 +5,10 @@ $Header$
 */
 
 #include "pointlike/PointSourceLikelihood.h"
-#include "pointlike/BandBackground.h"
 #include "pointlike/SpectralFunction.h"
 
 
+#include "skymaps/BandBackground.h"
 #include "skymaps/DiffuseFunction.h"
 #include "skymaps/BinnedPhotonData.h"
 #include "embed_python/Module.h"
@@ -180,6 +180,7 @@ PointSourceLikelihood::PointSourceLikelihood(
 
 void PointSourceLikelihood::setup( const skymaps::BinnedPhotonData& data )
 {
+    using skymaps::BandBackground;
     // select list for inclusion
     std::list<std::pair<const Band*,bool> > bands;
     for( skymaps::BinnedPhotonData::const_iterator bit = data.begin(); bit!=data.end(); ++bit){
@@ -243,7 +244,7 @@ PointSourceLikelihood::~PointSourceLikelihood()
         delete *it;
     }
     delete m_background;
-    for( std::vector<BandBackground*>::iterator i(m_backlist.begin()); i!=m_backlist.end(); ++i){
+    for( std::vector<skymaps::BandBackground*>::iterator i(m_backlist.begin()); i!=m_backlist.end(); ++i){
         delete *i;
     }
 }

@@ -20,11 +20,11 @@ namespace embed_python { class Module; }
 namespace skymaps { 
     class BinnedPhotonData;
     class CompositeSkySpectrum;
+    class BandBackground;
 }
 
 namespace pointlike {
 
-    class BandBackground;
     class SpectralFunction;
 
     /** @class PointSourceLikelihood
@@ -209,7 +209,7 @@ namespace pointlike {
         mutable CLHEP::Hep3Vector m_gradient; ///< current gradient
 
         skymaps::CompositeSkySpectrum * m_background;  ///< background spectrum to use
-        std::vector<BandBackground*> m_backlist; ///< list of wrapped background objects to delete
+        std::vector<skymaps::BandBackground*> m_backlist; ///< list of wrapped background objects to delete
 
         static const skymaps::Background* s_diffuse; ///< global diffuse used by all PSL objects
 
