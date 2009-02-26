@@ -175,7 +175,7 @@ Photon EventList::Iterator::operator*()const
         (*m_it)[*names++].get(source);
     }
 	if( m_use_mc_energy ) { //get MC_ENERGY and replace ENERGY, if using it
-		(*m_it)["MC_ENERGY"].get(mc_energy);
+		(*m_it)["MCENERGY"].get(mc_energy);
 		energy = mc_energy;
 	}
 
