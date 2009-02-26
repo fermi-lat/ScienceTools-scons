@@ -131,7 +131,7 @@ public:
     void close();
     static std::string root_names[];
 
-
+    
 private:
     tip::Table::ConstIterator m_itbegin, m_itend;
     const tip::Table * m_table;

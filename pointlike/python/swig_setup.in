@@ -197,13 +197,13 @@ public:
 // may not compile in Windows
 
 #ifndef WIN32
-//%include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h
-//%include $(POINTLIKEROOT)/pointlike/HealpixDiffuseFunc.h
-//%include $(POINTLIKEROOT)/pointlike/ExtendedLikelihood.h
-//%include $(POINTLIKEROOT)/pointlike/SourceLikelihood.h
-//%include $(POINTLIKEROOT)/pointlike/ExtendedSourcePDF.h
-//%include $(POINTLIKEROOT)/pointlike/SpectralFitter.h
-//%include $(POINTLIKEROOT)/pointlike/ResultsFile.h
+%include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h
+%include $(POINTLIKEROOT)/pointlike/HealpixDiffuseFunc.h
+%include $(POINTLIKEROOT)/pointlike/ExtendedLikelihood.h
+%include $(POINTLIKEROOT)/pointlike/SourceLikelihood.h
+%include $(POINTLIKEROOT)/pointlike/ExtendedSourcePDF.h
+%include $(POINTLIKEROOT)/pointlike/SpectralFitter.h
+%include $(POINTLIKEROOT)/pointlike/ResultsFile.h
 #endif
 
 //%include $(POINTLIKEROOT)/pointlike/FlexibleBinner.h

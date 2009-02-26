@@ -116,6 +116,12 @@ namespace pointlike {
     /// @return background estimte
     double background()const{return m_background*solidAngle();}
     
+    // calculate fraction of background contained within angle
+    double backgroundFraction(double u);
+
+    // number of photons contained within angle
+    int photonsContained(double u);
+
     /// @return the solid angle in sr for the circular aperature used for analysis
     double solidAngle()const;
     
