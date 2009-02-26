@@ -122,6 +122,9 @@ namespace pointlike {
     // number of photons contained within angle
     int photonsContained(double u);
 
+    // fraction of psf contained within angle
+    double psfFraction(double u);
+
     /// @return the solid angle in sr for the circular aperature used for analysis
     double solidAngle()const;
     

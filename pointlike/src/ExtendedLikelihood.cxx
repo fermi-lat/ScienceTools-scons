@@ -635,6 +635,11 @@ int ExtendedLikelihood::photonsContained(double u){
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double ExtendedLikelihood::psfFraction(double u){
+  return m_psf.integral(u);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 double ExtendedLikelihood::operator()(const astro::SkyDir& dir)const
 {
     double diff =dir.difference(m_dir); 
