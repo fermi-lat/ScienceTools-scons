@@ -249,7 +249,7 @@ public:
         std::string event_file = m_pars["evfile"];
         //Initialize the cut to have the whole range
         dataSubselector::RangeCut thetaCut("THETA", "deg", ":90", 0);
-        if (event_file != "") {
+        if (event_file != "" && event_file !="NONE" ) {
             std::string evtable = m_pars["evtable"];
             std::vector<std::string> eventFiles;
             st_facilities::Util::resolve_fits_files(event_file, eventFiles);
@@ -359,11 +359,11 @@ st_app::StAppFactory<ExposureMapApp> g_factory("gtexpcube");
  @verbinclude exposure_map.par
   Print Version 
 exposure_map
-Generates an exposure map, or a set of exposure maps for different energies, from a livetime cube written by gtlivetimecube. 
+Generates an exposure map, or a set of exposure maps for different energies, from a livetime cube written by gtltcube. 
 @verbatim
 Prerequisites
 Input Files: 
-Livetime or Exposure cube FITS file from gtlivetimecube 
+Livetime or Exposure cube FITS file from gtltcube 
 Optionally, a counts map FITS file from gtbin, for which exposure_map should match the coordinate projection and gridding.  The counts map also specifies the effective area response functions for exposure_map to use. 
 Links: 
 
@@ -374,11 +374,14 @@ General Parameters
       
   cmfile [file] 
     Count map input file (NONE to determine map geometry from parameters). 
-      
+
+  evtfile [file]
+    Scan for cuts to apply to theta. Ignore if NONE.
+
   outfile [file] 
     Exposure map output file name (FITS format  image). 
       
-  resptype = "DC2" [string]
+  resptype = "P6_V1_DIFFUSE" [string]
      Response function. Default DC2 means the sum of classA and class B   
     
   nxpix = 1 [int] 

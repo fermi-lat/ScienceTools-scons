@@ -5,7 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
-
+ 03-mar-09 v7r2   THB  Code for phi dependent-IRF
  14-feb-09 v7r1p3  JC  remove lower limit for pixscale in gtexpmap.par 
                        (I. Grenier request)
  28-jan-09 v7r1p2 JCV  Change paths in test code pfile 

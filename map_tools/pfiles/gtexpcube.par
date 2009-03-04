@@ -1,11 +1,11 @@
 # $Header$
 #---------------------------------------------------------------------------------------
 # General parameters.
-infile,f,a,"",,,"Exposure cube input file name"
-evfile,f,a,"",,,"FT1 events input file name"
+infile,f,a,"earth_cube.fits",,,"Exposure cube input file name"
+evfile,f,a,"NONE",,,"FT1 events input file name"
 cmfile,f,a,"NONE",,,"Count map input file name (NONE for manual input of map geometry)"
-outfile,f,a,"",,,"Exposure map output file name"
-irfs,s,a,"HANDOFF",,,"Response function to use, e.g. HANDOFF, DC1F/DC1B, G25F/G25B, TestF/TestB"
+outfile,f,a,"earth_expmap_P6_r0_diffuse.fits",,,"Exposure map output file name"
+irfs,s,a,"P6_V1_DIFFUSE",,,"Response function to use. Run gtirfs for a list"
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
@@ -15,16 +15,16 @@ nypix,i,a,1,1,,"Size of the Y axis in pixels (leave at 1 to copy nxpix or auto f
 pixscale,r,a,1,,,"Image scale (in degrees/pixel)"
 coordsys,s,a,"CEL",CEL|GAL,,"Coordinate system (CEL - celestial, GAL -galactic)"
 xref,r,a,0,,,"First coordinate of image center in degrees (RA or galactic l)"
-yref,r,a,0,,,"Second coordinate of image center in degrees (DEC or galactic b)"
+yref,r,a,-90,,,"Second coordinate of image center in degrees (DEC or galactic b)"
 axisrot,r,a,0,,,"Rotation angle of image axis, in degrees"
-proj,s,a,"AIT",AIT|ARC|CAR|ZEA|GLS|MER|NCP|SIN|STG|TAN,,"Projection method"
+proj,s,a,"ZEA",AIT|ARC|CAR|ZEA|GLS|MER|NCP|SIN|STG|TAN,,"Projection method"
 #-------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
 #Parameters for manual entry of layers.
-emin,r,a,30,,,"Start value for first energy bin"
-emax,r,a,200000,,,"Stop value for last energy bin"
-enumbins,i,a,8,,,"Number of logarithmically uniform energy bins"
+emin,r,a,100,,,"Start value for first energy bin"
+emax,r,a,10000,,,"Stop value for last energy bin"
+enumbins,i,a,4,,,"Number of logarithmically uniform energy bins"
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
@@ -36,5 +36,5 @@ chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, "yes", , , "Overwrite existing output files with new output files"
 debug,         b, h, "no", , , "Debugging mode activated"
 gui,           b, h, "no", , , "Gui mode activated"
-mode,s,ql,"ql",,,"Mode of automatic parameters: h for batch, ql for interactive"
+mode,s,h,"h",,,"Mode of automatic parameters: h for batch, ql for interactive"
 #---------------------------------------------------------------------------------------
