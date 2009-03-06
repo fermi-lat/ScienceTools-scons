@@ -32,8 +32,7 @@ namespace pointlike {
       
       Draw(skymaps::BinnedPhotonData& map, 
 	   const skymaps::SkySpectrum* background = 0,
-	   bool ts = false, double emin = 100, double minalpha = 0.05,
-	   bool sourcelike = false);
+	   bool ts = false, double emin = 100, double minalpha = 0.05);
       
       Draw(Data& data);
 
@@ -45,15 +44,6 @@ namespace pointlike {
 
         void region(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                      double fov, bool smooth = false, int mincount = 0);
-        
-	template <class Likelihood>
-	void mapTS(Likelihood* like, std::string outputFile, double pixelsize,
-                    double fov, bool smooth, int mincount);
-        
-	void TS(SourceLikelihood* like, std::string outputFile, double pixelsize,
-                    double fov, bool smooth = false, int mincount = 0);
-//        void TS(PointSourceLikelihood* like, std::string outputFile, double pixelsize,
-//                    double fov, bool smooth = false, int mincount = 0);
         
 	void density(const astro::SkyDir& dir, std::string outputFile, double pixelsize,
                     double fov, bool smooth = false, int mincount = 0);
@@ -85,7 +75,6 @@ namespace pointlike {
       double m_emin;
       double m_minalpha;
       bool m_ts;
-      bool m_sourcelike;
     };
 
     /** @class SkyDensity

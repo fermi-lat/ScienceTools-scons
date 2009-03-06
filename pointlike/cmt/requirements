@@ -44,8 +44,6 @@ macro_append pointlike_shlibflags " $(skymaps_app_linkopts)" Win32 ""
 macro_append ROOT_libs  " -lMinuit -lMinuit2 -lHist -lGraf "\
                     WIN32 " libMinuit.lib libMinuit2.lib  " 
 
-#application sourcefit -s=sourcefit $(source) -s=../python sourcefit_setup.py
-
 # fit a list of given directions
 application pointfit -s=pointfit $(source) -s=../python pointfit_setup.py
 
