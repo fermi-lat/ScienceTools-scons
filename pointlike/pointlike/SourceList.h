@@ -111,6 +111,8 @@ namespace pointlike{
 
         ///@brief formatted dump to nameed file
         void dump(const std::string& outfilename)const;
+        ///@brief write a VOtable
+        void dump_xml(std::ostream& out, std::string name="pointfit")const;
 
         void createRegFile(std::string filename, std::string color, double tsmin)const;
 
@@ -124,6 +126,7 @@ namespace pointlike{
     private:
         bool m_verbose;
         static const skymaps::BinnedPhotonData* s_data;
+
     };
 
 }
