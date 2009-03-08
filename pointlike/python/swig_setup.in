@@ -129,14 +129,6 @@ public:
    size_t __len__() {      return self->size();       }
 }
 
-<<<<<<< swig_setup.in
-%extend pointlike::SourceLikelihood{
-   pointlike::ExtendedLikelihood * __getitem__(size_t i){ 
-      	return self->at(i); 
-   }
-   size_t __len__() {      return self->size();       }
-}
-
 
 %extend healpix::HealpixMap{
    float __getitem__(size_t i)            {return (*self)[i];}
