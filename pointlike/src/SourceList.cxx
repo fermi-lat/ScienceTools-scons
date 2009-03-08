@@ -220,7 +220,7 @@ void SourceList::dump(std::ostream& out)const
 void SourceList::dump(const std::string& outfilename)const
 {
     std::ofstream out(outfilename.c_str());
-    if( outfilename.find(".xml") != std::string.npos ) {
+    if( outfilename.find(".xml") != std::string::npos ) {
         dump( out );
     }else{
         dump_xml(out, outfilename);
@@ -234,7 +234,7 @@ void SourceList::refit()
             std::cout << ".." << cand.name() << std::endl;
         }
         SkyDir currentpos( cand.dir() );
-        double ra(currentpos.ra()), dec(currentpos.dec()); // debug only
+        //double ra(currentpos.ra()), dec(currentpos.dec()); // debug only
 
         // See if we have already found a candidate near this location
         iterator neighbor;
