@@ -79,7 +79,11 @@ int main(int argc, char** argv)
         sl->refit(); 
         if(tsmin>0) sl->filter_TS(tsmin); // filter
         sl->sort_ra(); // now by ra
-        sl->dump(*out); 
+        if( !outfile.empty() && outfile.find(".xml") != std::string::npos){
+            sl->dump_xml(*out);
+        }else{
+            sl->dump(*out); 
+        }
 
         if( !outfile.empty()){
             delete out;
