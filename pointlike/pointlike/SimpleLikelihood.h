@@ -64,8 +64,8 @@ public:
     
 
     //! @brief return log likelihood
-    //! @param counts Number of counts.
-    //! if extended likelihood, use background estimate. otherwise
+    //! @param counts Number of signal counts.
+    //! if extended likelihood, use background estimate.
     double logLikelihood(double counts)const;
 
 
