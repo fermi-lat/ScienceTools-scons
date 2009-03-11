@@ -4,7 +4,7 @@
 #---------------------------------------------------------------------------------------
 # General parameters
 #
-infile,   f, a, "", , , "Name of the space craft file:" 
+infile,   s, a, "", , , "Name of the space craft file:" 
 outfile,  f, a, "exposure_cube.fits", , , "Name of the output file:"
 #---------------------------------------------------------------------------------------
 
@@ -26,5 +26,5 @@ chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, "yes", , , "Overwrite existing output files with new output files"
 debug,         b, h, "no", , , "Debugging mode activated"
 gui,           b, h, "no", , , "Gui mode activated"
-mode,          s, h, "gl", , ,"Mode of automatic parameters: h for batch, ql for interactive"
+mode,          s, h, "ql", , ,"Mode of automatic parameters: h for batch, ql for interactive"
 #---------------------------------------------------------------------------------------
