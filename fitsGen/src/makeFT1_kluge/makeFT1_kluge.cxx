@@ -196,6 +196,9 @@ void MakeFt1::run() {
 
    if (tstart != 0 || tstop != 0) {
       std::ostringstream time_cut;
+// Round lower bound down, upper bound upwards.
+      tstart = static_cast<double>(static_cast<long>(tstart));
+      tstop = static_cast<double>(static_cast<long>(tstop)) + 1.;
       time_cut << std::setprecision(10);
       time_cut << " && (EvtElapsedTime >= " << tstart << ") "
                << " && (EvtElapsedTime <= " << tstop << ")";
