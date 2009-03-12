@@ -4,6 +4,11 @@
     $Id$
 
     @verbatim
+    EOH
+
+    v4r3   11-Mar-09   JC   round tstart and tstop downwards and upwards, 
+                            respectively in makeFT1[_kluge]. 
+                            See JIRA DATASERV-151
     v4r2p1 03-Dec-08   JC   use tip::Index_t instead of long for references to
                             tip::Table numRecords
     v4r2   28-Nov-08   JC   ft1.tpl mods (new diffuse response column 
