@@ -75,6 +75,9 @@ namespace optimizers {
      /// Access to the covariance matrix
      virtual std::vector< std::vector<double> > covarianceMatrix() const;
 
+     /// Run a MINOS error analysis
+     std::pair<double,double> Minos(unsigned int n);
+
     virtual std::ostream& put (std::ostream& s) const;
 
     //! Symbolic form of the return codes for readability 

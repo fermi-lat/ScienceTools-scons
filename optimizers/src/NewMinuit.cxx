@@ -42,14 +42,14 @@ namespace optimizers {
 
     m_userState = ROOT::Minuit2::MnUserParameterState(upar);
     ROOT::Minuit2::MnMigrad migrad(m_FCN, m_userState, m_strategy);
-    ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, tolerance);
-    if (verbose > 0) std::cout << min;
-    if (!min.IsValid()) {
+    m_min = migrad(m_maxEval, tolerance);
+    if (verbose > 0) std::cout << m_min;
+    if (!m_min.IsValid()) {
       throw Exception("Minuit abnormal termination.  No convergence?");
     }
     m_fitDone = true;
     m_userState = migrad.State();
-    m_distance = min.Edm();
+    m_distance = m_min.Edm();
     std::vector<double> ParamValues;
     unsigned int i = 0;
     for (pptr p = params.begin(); p != params.end(); p++, i++) {
@@ -67,6 +67,12 @@ namespace optimizers {
     if (verbose > 0) std::cout << m_userState;
     if (!m_userState.HasCovariance())
       throw Exception("Minuit HESSE results invalid");
+  }
+
+  // Call MINOS
+  std::pair<double,double> NewMinuit::Minos(unsigned int n) {
+    ROOT::Minuit2::MnMinos mns(m_FCN, m_min);
+    return mns(n);
   }
 
   // Constructor for the function to be minimized
@@ -90,7 +96,7 @@ namespace optimizers {
   }
 
   // Return values of the function gradient in the form
-  // the Minuit wants
+  // that Minuit wants
   std::vector<double> 
   myFCN::Gradient(const std::vector<double> & params) const {
     try {m_stat->setFreeParamValues(params);}

@@ -44,6 +44,13 @@ public:
    /// Returns the covariance matrix
    virtual std::vector<std::vector<double> > covarianceMatrix() const;
 
+   /// MINOS error analysis for parameter #n.  Valid only for the
+   /// two flavors of Minuit.
+   virtual std::pair<double,double> Minos(unsigned int n) {
+     throw Exception("Minos function is not enabled for this optimizer");
+     return std::pair<double,double>(0., 0.);
+   }
+
    Statistic & stat() {
       return *m_stat;
    }

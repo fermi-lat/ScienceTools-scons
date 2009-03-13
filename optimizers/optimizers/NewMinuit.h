@@ -66,6 +66,7 @@ namespace optimizers {
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
+    std::pair<double,double> Minos(unsigned int n);
   private:
     unsigned int m_maxEval;
     bool m_fitDone;
@@ -73,6 +74,7 @@ namespace optimizers {
     double m_distance;
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::MnUserParameterState m_userState;
+    Root::Minuit2::FunctionMinimum m_min;
   };
 
 }

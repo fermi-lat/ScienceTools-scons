@@ -155,6 +155,19 @@ namespace optimizers {
 
   } // End of find_min
 
+  std::pair<double,double> Minuit::Minos(unsigned int n) {
+    std::ostringstream mcmd;
+    mcmd << "MINOS " << m_maxEval << " " << n;
+    doCmd(mcmd.str());
+    double eplus, eminus, eparab, globcc;
+    mnerrs_(&n, &eplus, &eminus, &eparab, &globcc);
+    if (verbose != 0) {
+      std::cout << "Minos limits for parameter #" << n <<": " << eminus
+        << ", " << eplus << std::endl;
+    }
+    return std::pair<double,double>(eminus,eplus);
+  }
+
   int Minuit::doCmd(std::string command) {
     // Pass a command string to Minuit
     integer errorFlag = 0;
