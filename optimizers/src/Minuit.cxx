@@ -161,10 +161,6 @@ namespace optimizers {
     doCmd(mcmd.str());
     double eplus, eminus, eparab, globcc;
     mnerrs_(&n, &eplus, &eminus, &eparab, &globcc);
-    if (verbose != 0) {
-      std::cout << "Minos limits for parameter #" << n <<": " << eminus
-        << ", " << eplus << std::endl;
-    }
     return std::pair<double,double>(eminus,eplus);
   }
 
