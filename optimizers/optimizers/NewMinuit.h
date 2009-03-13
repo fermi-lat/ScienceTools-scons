@@ -14,6 +14,7 @@
 #include "Minuit2/FCNGradientBase.h"
 #include "Minuit2/MnStrategy.h"
 #include "Minuit2/MnUserParameterState.h"
+#include "Minuit2/FunctionMinimum.h"
 
 namespace optimizers {
 
@@ -55,7 +56,7 @@ namespace optimizers {
   class NewMinuit : public Optimizer {
   public:
     NewMinuit(Statistic &);
-    virtual ~NewMinuit() {};
+    virtual ~NewMinuit() {delete m_min;};
     void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
@@ -74,7 +75,7 @@ namespace optimizers {
     double m_distance;
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::MnUserParameterState m_userState;
-    Root::Minuit2::FunctionMinimum m_min;
+    ROOT::Minuit2::FunctionMinimum * m_min;
   };
 
 }

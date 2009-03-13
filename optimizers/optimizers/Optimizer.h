@@ -13,6 +13,7 @@
 #include <vector>
 #include <valarray>
 #include <iostream>
+#include "optimizers/Exception.h"
 
 namespace optimizers {
 
