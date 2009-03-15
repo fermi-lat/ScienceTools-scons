@@ -46,10 +46,17 @@ Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
 {
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
     if( cosbins != CosineBinner::nbins() ) {
+        // bins per pixel: depends on phi or not
+        unsigned int allbins(cosbins);
+        if( CosineBinner::nphibins() > 0 ){
+            // add size for extra phi bins.
+            allbins += cosbins * healpix::CosineBinner::nphibins();
+        }
+        
         SkyBinner::iterator is = data().begin();
         for( ; is != data().end(); ++is){ // loop over all pixels
             CosineBinner & pixeldata= *is; // get the contents of this pixel
-            pixeldata.resize(cosbins);
+            pixeldata.resize(allbins);
             CLHEP::Hep3Vector pixdir = data().dir(is)();
         }
         CosineBinner::setBinning(0, cosbins);

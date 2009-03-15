@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 15-mar-09 v7r3   THB  fix to code for phi dependent-IRF
  03-mar-09 v7r3   THB  Code for phi dependent-IRF
  14-feb-09 v7r1p3  JC  remove lower limit for pixscale in gtexpmap.par 
                        (I. Grenier request)
