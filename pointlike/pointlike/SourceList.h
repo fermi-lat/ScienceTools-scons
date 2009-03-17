@@ -93,7 +93,7 @@ namespace pointlike{
         lines starting with '#' are ignored.
         The optional TS field is for initial sorting.
         */
-        SourceList(const std::string& filename, bool verbose=true);
+        SourceList(const std::string& filename, bool verbose=true, std::ostream* log=&std::cout);
 
         SourceList(){}; ///< default ctor
 
@@ -117,6 +117,8 @@ namespace pointlike{
         void createRegFile(std::string filename, std::string color, double tsmin)const;
 
         bool verbose()const{return m_verbose;}
+        static void set_log(std::ostream* logstream);
+
         static void set_data(const skymaps::BinnedPhotonData* data);
         static const skymaps::BinnedPhotonData* data();
 
