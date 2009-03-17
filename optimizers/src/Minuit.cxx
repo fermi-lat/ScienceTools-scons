@@ -160,7 +160,8 @@ namespace optimizers {
     mcmd << "MINOS " << m_maxEval << " " << n;
     doCmd(mcmd.str());
     double eplus, eminus, eparab, globcc;
-    mnerrs_(&n, &eplus, &eminus, &eparab, &globcc);
+    integer my_n = n;
+    mnerrs_(&my_n, &eplus, &eminus, &eparab, &globcc);
     return std::pair<double,double>(eminus,eplus);
   }
 
