@@ -66,6 +66,10 @@ class UpperLimit(object):
         par = src_spectrum.normPar()
         par.setFree(0)
 
+        # Update the best-fit-so-far vector after having fixed the 
+        # normalization parameter.
+        self.like.logLike.saveCurrentFit()
+
         # For weak sources that use the PowerLaw model where the
         # reference energy is too low or that use the PowerLaw2 model
         # where the lower energy bound is too low, there can be a

@@ -5,6 +5,11 @@
    $Id$
 
    @verbatim
+   v1r11p1 17-Mar-09  JC    in UpperLimits.py, execute LogLike::saveCurrentFit  
+                            after fixing the normalization parameter for
+                            the profile scan.  This will ensure the correct
+                            number of parameters if LogLike::restoreBestFit()
+                            is called during the scan.
    v1r11  09-Mar-09   JC    save user-supplied attributes for sources in
                             AnalysisBase.Ts
    v1r10p1 22-Feb-09  JC    remove point source restriction from UpperLimits.py
