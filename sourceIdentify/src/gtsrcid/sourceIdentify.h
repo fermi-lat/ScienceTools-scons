@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.27  2008/11/26 10:34:35  jurgen
+Prepare to tag v2r1p0
+
 Revision 1.26  2008/08/20 11:52:21  jurgen
 Correct probability computation and resolve STGEN-56
 
@@ -94,9 +97,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r1p0"
+#define TOOL_VERSION  "v2r1p2"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "26-Nov-2008"
+#define TOOL_DATE     "18-Mar-2009"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
