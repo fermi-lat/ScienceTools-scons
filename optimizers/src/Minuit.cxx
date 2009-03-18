@@ -61,7 +61,7 @@ namespace optimizers {
       mintio_(&i5, &i6, &i7);
     }
     std::ostringstream pline;
-    pline << "SET PRINT " << minuitVerbose << std::endl;
+    pline << "SET PRINT " << minuitVerbose;
     doCmd(pline.str()); // Set verbosity of Minuit
     doCmd("SET NOWARN");
 
@@ -156,6 +156,10 @@ namespace optimizers {
   } // End of find_min
 
   std::pair<double,double> Minuit::Minos(unsigned int n) {
+    integer npar(m_stat->getNumFreeParams());
+    if (n < 1 || n > npar) {
+      throw Exception("Parameter number out of range in Minos", n);
+    }
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
     doCmd(mcmd.str());
