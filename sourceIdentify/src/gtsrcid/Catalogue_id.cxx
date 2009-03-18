@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.30  2008/08/20 11:52:21  jurgen
+Correct probability computation and resolve STGEN-56
+
 Revision 1.29  2008/07/08 20:57:06  jurgen
 Implement final selection (allows to filter on evaluated quantities)
 
@@ -114,6 +117,8 @@ level.
 /* Definitions ______________________________________________________________ */
 #define CATALOGUE_TIMING     0               // Enables timing measurements
 #define ALLOW_LR_DIVERGENCE  1               // Allows for divergent LR values
+#define LOW_LEVEL_DEBUG      0               // Enable low-level debugging
+
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -151,6 +156,9 @@ using namespace catalogAccess;
 Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_source\n");
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_source");
 
@@ -214,6 +222,9 @@ Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_source (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_source (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -264,6 +275,9 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
     #endif
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_filter\n");
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_filter");
 
@@ -438,6 +452,9 @@ Status Catalogue::cid_filter(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_filter (status=%d)", 
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_filter (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -464,6 +481,9 @@ Status Catalogue::cid_select(Parameters *par, SourceInfo *src, Status status) {
     std::vector<std::string> col_id;
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_select (%d candidates)\n", src->numFilter);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_select (%d candidates)",
           src->numFilter);
@@ -570,6 +590,9 @@ Status Catalogue::cid_select(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_select (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_select (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -598,6 +621,9 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
     // Declare local variables
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_refine (%d candidates)\n", src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_refine (%d candidates)",
           src->numSelect);
@@ -711,6 +737,9 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_refine (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_refine (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -732,6 +761,9 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
 Status Catalogue::cid_fom(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_fom (%d candidates)\n", src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_fom (%d candidates)",
           src->numSelect);
@@ -792,6 +824,9 @@ Status Catalogue::cid_fom(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_fom (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_fom (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -847,6 +882,10 @@ Status Catalogue::cid_fom(Parameters *par, SourceInfo *src, Status status) {
 Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_prob_pos (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_pos (%d candidates)",
           src->numSelect);
@@ -909,13 +948,13 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
                                     src_dec_sin*cos(ra_diff)) * rad2deg;
 
         // Calculate 95% source error ellipse
-        double angle     = (src->cc[iCC].posang - src->info->pos_err_ang) * deg2rad;
-        double cos_angle = cos(angle);
-        double sin_angle = sin(angle);
-        double a         = (src->info->pos_err_maj > 0.0) ? (cos_angle*cos_angle) /
-                           (src->info->pos_err_maj*src->info->pos_err_maj) : 0.0;
-        double b         = (src->info->pos_err_min > 0.0) ? (sin_angle*sin_angle) /
-                           (src->info->pos_err_min*src->info->pos_err_min) : 0.0;
+        double angle        = (src->cc[iCC].posang - src->info->pos_err_ang) * deg2rad;
+        double cos_angle    = cos(angle);
+        double sin_angle    = sin(angle);
+        double pos_err_maj2 = src->info->pos_err_maj * src->info->pos_err_maj;
+        double pos_err_min2 = src->info->pos_err_min * src->info->pos_err_min;
+        double a         = (pos_err_maj2 > 0.0) ? (cos_angle*cos_angle) / pos_err_maj2 : 0.0;
+        double b         = (pos_err_min2 > 0.0) ? (sin_angle*sin_angle) / pos_err_min2 : 0.0;
         arg              = a + b;
         double psi2      = (arg > 0.0) ? 1.0/arg : 0.0;
 
@@ -965,6 +1004,9 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob_pos (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_prob_pos (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1001,6 +1043,10 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
 Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_prob_chance (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_chance (%d candidates)",
           src->numSelect);
@@ -1075,6 +1121,9 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob_chance (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_prob_chance (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1103,6 +1152,10 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
 Status Catalogue::cid_prob_prior(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_prob_prior (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_prior (%d candidates)",
           src->numSelect);
@@ -1188,6 +1241,9 @@ Status Catalogue::cid_prob_prior(Parameters *par, SourceInfo *src, Status status
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob_prior (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_prob_prior (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1221,6 +1277,10 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
                                        Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_prob_post_single (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob_post_single (%d candidates)",
           src->numSelect);
@@ -1312,6 +1372,9 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob_post_single (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_prob_post_single (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1333,6 +1396,9 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
 Status Catalogue::cid_prob(Parameters *par, SourceInfo *src, Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_prob (%d candidates)\n", src->numRefine);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_prob (%d candidates)",
           src->numRefine);
@@ -1416,6 +1482,9 @@ Status Catalogue::cid_prob(Parameters *par, SourceInfo *src, Status status) {
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_prob (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_prob (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1449,6 +1518,10 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
                                     Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_density_local (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_density_local (%d candidates)",
           src->numSelect);
@@ -1545,6 +1618,9 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_density_local (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_density_local (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;
@@ -1565,6 +1641,10 @@ Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
                                      Status status) {
 
     // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_global_density (%d candidates)\n",
+           src->numSelect);
+    #endif
     if (par->logDebug())
       Log(Log_0, " ==> ENTRY: Catalogue::cid_global_density (%d candidates)",
           src->numSelect);
@@ -1589,6 +1669,9 @@ Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
     if (par->logDebug())
       Log(Log_0, " <== EXIT: Catalogue::cid_global_density (status=%d)",
           status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_global_density (status=%d)\n", status);
+    #endif
 
     // Return status
     return status;

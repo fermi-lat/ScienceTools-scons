@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.46  2008/08/20 11:52:21  jurgen
+Correct probability computation and resolve STGEN-56
+
 Revision 1.45  2008/07/08 21:21:55  jurgen
 Do column name selection only from first letter on
 
@@ -1068,8 +1071,8 @@ void Catalogue::init_memory(void) {
       m_cpt_sel = NULL;
 
       // Initialise counterpart statistics
-      m_num_Sel          = 0;
-      m_cpt_stat         = NULL;
+      m_num_Sel  = 0;
+      m_cpt_stat = NULL;
 
       // Catch-22
       m_prior     = c_prob_prior;
