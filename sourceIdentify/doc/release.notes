@@ -3,6 +3,7 @@
     @author J. Knodlseder
 
 @verbatim
+18-Mar-2009  v2r1p2  JK  Update version number
 18-Mar-2009  v2r1p1  JK  Avoid floating point exceptions for NULL position errors
 26-Nov-2008  v2r1p0  JK  New calibrated pipeline configuration
 26-Sep-2008  v2r0p2  JK  Correct pointer cast (for Win32)
