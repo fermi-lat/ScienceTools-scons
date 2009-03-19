@@ -171,6 +171,7 @@ namespace optimizers {
     double eplus, eminus, eparab, globcc;
     integer my_n = n;
     mnerrs_(&my_n, &eplus, &eminus, &eparab, &globcc);
+    numPars = 0;
     return std::pair<double,double>(eminus,eplus);
   }
 
