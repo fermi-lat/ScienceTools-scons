@@ -14,6 +14,10 @@
 #include "optimizers/OutOfBounds.h"
 #include "optimizers/f2c_types.h"
 
+namespace {
+   int numPars(0);
+}
+
 namespace optimizers {
 
 
@@ -162,6 +166,7 @@ namespace optimizers {
     }
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
+    numPars = m_stat->getNumFreeParams();
     doCmd(mcmd.str());
     double eplus, eminus, eparab, globcc;
     integer my_n = n;
@@ -181,7 +186,13 @@ namespace optimizers {
   void fcn(integer* npar, double* grad, double* fcnval,
 	   double* xval, integer* iflag, void* futil) {
     // This is the function that Minuit minimizes
-    std::vector<double> parameters(xval, xval+*npar);
+
+     if (numPars == 0) {
+        numPars = *npar;
+     }
+
+    std::vector<double> parameters(xval, xval + numPars);
+
 
     // What a hack!  Minuit thinks futil is a function 
     // pointer.  It's been hijacked to be a pointer to
