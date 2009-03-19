@@ -3,7 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
-    v2r14p7 19-Mar-09  JC   Workaround for number of parameter problem in fcn
+    v2r14p8 19-Mar-09  JC   Workaround for number of parameter problem in fcn
                             in MINOS command to old Minuit.
     v2r14p6 16-Mar-09  JC   Pat added access to Minos functionality for
                             Minuit[2] libraries in v2r16p[3-5].  This is a
