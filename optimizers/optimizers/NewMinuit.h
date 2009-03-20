@@ -77,6 +77,8 @@ namespace optimizers {
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::MnUserParameterState m_userState;
     ROOT::Minuit2::FunctionMinimum * m_min;
+
+     void setTolerance(double tol, int tolType);
   };
 
 }
