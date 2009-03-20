@@ -73,6 +73,7 @@ namespace optimizers {
     bool m_fitDone;
     myFCN m_FCN;
     double m_distance;
+    double m_tolerance;
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::MnUserParameterState m_userState;
     ROOT::Minuit2::FunctionMinimum * m_min;

@@ -57,6 +57,7 @@ namespace optimizers {
 
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
+    numPars = params.size();
     integer errorFlag;
 
     int minuitVerbose = verbose - 1;
@@ -166,7 +167,7 @@ namespace optimizers {
     }
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
-    numPars = m_stat->getNumFreeParams();
+    numPars = npar;
     doCmd(mcmd.str());
     double eplus, eminus, eparab, globcc;
     integer my_n = n;
@@ -209,7 +210,6 @@ namespace optimizers {
 	grad[i] = -gradient[i];
       }
     }
-    numPars = 0;
   }    
 
    std::vector< std::vector<double> > Minuit::covarianceMatrix() const {

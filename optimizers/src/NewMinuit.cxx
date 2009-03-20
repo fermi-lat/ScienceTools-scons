@@ -23,12 +23,13 @@ namespace optimizers {
   // Constructor
   NewMinuit::NewMinuit(Statistic & stat) 
   : Optimizer(stat), m_maxEval(0), m_fitDone(false), m_FCN(stat), 
-    m_strategy(ROOT::Minuit2::MnStrategy(1)) {}
+    m_tolerance(1e-3), m_strategy(ROOT::Minuit2::MnStrategy(1)), m_min(0) {}
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {
     double tolerance = 1000. * tol;
     if (TolType == RELATIVE) tolerance *= fabs(m_stat->value());
+    m_tolerance = tolerance;
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
     ROOT::Minuit2::MnUserParameters upar;
@@ -44,7 +45,7 @@ namespace optimizers {
     m_userState = ROOT::Minuit2::MnUserParameterState(upar);
     ROOT::Minuit2::MnMigrad migrad(m_FCN, m_userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, tolerance);
-    m_min = new ROOT::Minuit2::FunctionMinimum(min);
+//    m_min = new ROOT::Minuit2::FunctionMinimum(min);
 //    if (verbose > 0) std::cout << m_min;
     if (!min.IsValid()) {
       throw Exception("Minuit abnormal termination.  No convergence?");
@@ -77,7 +78,10 @@ namespace optimizers {
     if (n < 0 || n >= npar) {
       throw Exception("Parameter number out of range in Minos", n);
     }
-    ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
+//    ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
+    ROOT::Minuit2::MnMigrad migrad(m_FCN, m_userState, m_strategy);
+    ROOT::Minuit2::FunctionMinimum my_min = migrad(m_maxEval, m_tolerance);
+    ROOT::Minuit2::MnMinos mns(m_FCN, my_min, m_strategy);
     return mns(n);
   }
 
