@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r14p10 20-Mar-09 JC   Restore NewMinuit to use m_min data member;
+                            one more bug-fix
     v2r14p9 19-Mar-09  JC   restore line lost in conflicting cvs updates
     v2r14p8 19-Mar-09  JC   Workaround for number of parameter problem in fcn
                             in MINOS command to old Minuit.
