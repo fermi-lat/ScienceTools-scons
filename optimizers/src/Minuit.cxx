@@ -194,7 +194,6 @@ namespace optimizers {
 
     std::vector<double> parameters(xval, xval + numPars);
 
-
     // What a hack!  Minuit thinks futil is a function 
     // pointer.  It's been hijacked to be a pointer to
     // m_stat, so this non-member function can use it.
@@ -210,6 +209,7 @@ namespace optimizers {
 	grad[i] = -gradient[i];
       }
     }
+    numPars = 0;
   }    
 
    std::vector< std::vector<double> > Minuit::covarianceMatrix() const {

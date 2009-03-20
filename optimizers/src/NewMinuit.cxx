@@ -45,7 +45,7 @@ namespace optimizers {
     ROOT::Minuit2::MnMigrad migrad(m_FCN, m_userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, tolerance);
     m_min = new ROOT::Minuit2::FunctionMinimum(min);
-    if (verbose > 0) std::cout << m_min;
+//    if (verbose > 0) std::cout << m_min;
     if (!min.IsValid()) {
       throw Exception("Minuit abnormal termination.  No convergence?");
     }
