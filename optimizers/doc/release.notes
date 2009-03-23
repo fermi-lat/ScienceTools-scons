@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r15   23-Mar-09  JC   set absolute tolerance as default in Amoeba::findMin
     v2r14p10 20-Mar-09 JC   Restore NewMinuit to use m_min data member;
                             one more bug-fix
     v2r14p9 19-Mar-09  JC   restore line lost in conflicting cvs updates
