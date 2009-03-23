@@ -56,7 +56,8 @@ void swap(double & a, double & b) {
 
 void amoeba(std::vector< std::vector<double> > & p,
             std::vector<double> & y, int ndim, double ftol,
-            optimizers::Functor & func, int & nfunc) {
+            optimizers::Functor & func, int & nfunc,
+            bool abstol=true) {
    static int nmax(5000);
    int mpts(ndim + 1);
    std::vector<double> psum(ndim, 0);
@@ -88,7 +89,7 @@ void amoeba(std::vector< std::vector<double> > & p,
       double rtol;
 //       std::cout << "num = " << num << "  "
 //                 << "denom = " << denom << "  ";
-      if (denom == 0) {  /// treat the tolerance as absolute
+      if (abstol || denom == 0) {  /// treat the tolerance as absolute
          rtol = num;
       } else {
          rtol = num/denom;
@@ -141,7 +142,7 @@ void amoeba(std::vector< std::vector<double> > & p,
 
 namespace optimizers {
 
-double Amoeba::findMin(std::vector<double> & params, double tol) {
+double Amoeba::findMin(std::vector<double> & params, double tol, bool abstol) {
    std::vector<double> yvalues;
    yvalues.reserve(m_npars + 1);
    for (size_t i = 0; i < m_npars + 1; i++) {
@@ -149,7 +150,7 @@ double Amoeba::findMin(std::vector<double> & params, double tol) {
       yvalues.push_back(yval);
    }
    int nevals(0);
-   ::amoeba(m_simplex, yvalues, m_npars, tol, m_functor, nevals);
+   ::amoeba(m_simplex, yvalues, m_npars, tol, m_functor, nevals, abstol);
    int imin(0);
    double ymin(yvalues.at(imin));
    for (size_t i = 1; i < m_npars + 1; i++) {
