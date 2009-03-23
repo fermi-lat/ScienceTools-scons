@@ -22,10 +22,10 @@ _plotter_package = 'root'
 class AnalysisBase(object):
     def __init__(self):
         self.maxdist = 20
-        self.tol = 1e-5
+        self.tol = 1e-2
         self.covariance = None
         self.covar_is_current = False
-        self.tolType = pyLike.RELATIVE
+        self.tolType = pyLike.ABSOLUTE
     def _srcDialog(self):
         paramDict = map()
         paramDict['Source Model File'] = Param('file', '*.xml')
