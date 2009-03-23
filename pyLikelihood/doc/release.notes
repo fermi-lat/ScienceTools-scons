@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r12   23-Mar-09  JC    switch to absolute fit tolerance; 
+                            add UnbinnedAnalysis.reset_ebounds
    v1r11p1 17-Mar-09  JC    in UpperLimits.py, execute LogLike::saveCurrentFit  
                             after fixing the normalization parameter for
                             the profile scan.  This will ensure the correct
