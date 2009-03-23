@@ -181,6 +181,17 @@ class UnbinnedAnalysis(AnalysisBase):
                      % (_quotefn(self.srcModel), self.optimizer))
         if close:
             output.close()
+    def reset_ebounds(self, new_energies):
+        eMin, eMax = self.observation.roiCuts().getEnergyCuts()
+        if eMin != min(new_energies) or eMax != max(new_energies):
+            raise RuntimeError("Range of selected energies must match "
+                               + "the data selection: "
+                               + ("(%f, %f)" % (eMin, eMax)))
+        elist = [x for x in new_energies]
+        elist.sort()
+        self.energies = num.array(elist)
+        self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
+        self.nobs = self._Nobs()
 
 def unbinnedAnalysis(mode="ql", ftol=None, **pars):
     """Return an UnbinnedAnalysis object using the data in gtlike.par"""
