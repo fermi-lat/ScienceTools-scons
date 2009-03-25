@@ -56,9 +56,8 @@ class SpectralModelFitter(object):
       def logLikelihood(parameters,*args):
          """Routine for use in minimum Poisson likelihood."""
          model = args[0]
-         #model.p = parameters
          model.set_parameters(parameters)
-         return sum( (sl.logLikelihood(sl.expected(model)) for sl in pslw.sl_wrappers) ) #for speed
+         return sum( (sl.logLikelihood(sl.expected(model)) for sl in pslw.sl_wrappers) )
       
       from scipy.optimize import fmin
       #fit = fmin(logLikelihood,model.p,args=(model,),full_output=1,disp=0,maxiter=1000,maxfun=2000)
@@ -108,7 +107,26 @@ class SpectralModelFitter(object):
             hessian[i][j]=hessian[j][i]=(mf(xhyh,m,*args)-mf(xhyl,m,*args)-mf(xlyh,m,*args)+mf(xlyl,m,*args))/\
                                           (p[i]*p[j]*4*delt**2)
 
-      #m.p = p #Restore parameters
-      m.set_parameters(p)
-      #print hessian
+      mf(p,m,*args) #call likelihood with original values; this resets model and any other values that might be used later
       return hessian
+
+   @staticmethod
+   def gradient(m,mf,*args):
+      """Calculate the gradient; mf is the minimizing function, m is the model, args additional arguments for mf."""
+      p = m.get_parameters().copy()
+      delt = 0.01
+      gradient = N.zeros([len(p)])
+      for i in xrange(len(p)):
+         xh,xl = p.copy(),p.copy()
+         xdelt = delt if p[i] > 0 else -delt
+
+         xh[i]*=(1+xdelt)
+         xl[i]*=(1-xdelt)
+
+         gradient[i] = (mf(xh,m,*args)-mf(xl,m,*args))/(p[i]*2*delt)
+
+      m.set_parameters(p)
+      return gradient
+
+def hessian(*args):
+   return SpectralModelFitter.hessian(*args)
