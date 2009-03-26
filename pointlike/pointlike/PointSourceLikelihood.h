@@ -195,6 +195,8 @@ namespace pointlike {
 
         void setup(const skymaps::BinnedPhotonData& data);
 
+        std::ostream& out()const{return *m_out;}
+
 
     private:
         iterator begin_skip(int skip);
@@ -205,7 +207,6 @@ namespace pointlike {
         double m_dir_sigma;  ///< error circle from fit (radians)
         double m_TS;         ///< total TS value
         std::ostream * m_out;
-        std::ostream& out()const{return *m_out;}
         mutable CLHEP::Hep3Vector m_gradient; ///< current gradient
 
         skymaps::CompositeSkySpectrum * m_background;  ///< background spectrum to use
