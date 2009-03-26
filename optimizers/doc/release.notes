@@ -3,6 +3,8 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r15p1 25-Mar-09  JC   Restore prior test conditions for Amoeba in 
+                            test code
     v2r15   23-Mar-09  JC   set absolute tolerance as default in Amoeba::findMin
     v2r14p10 20-Mar-09 JC   Restore NewMinuit to use m_min data member;
                             one more bug-fix
