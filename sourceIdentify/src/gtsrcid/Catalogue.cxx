@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.47  2009/03/18 10:01:59  jurgen
+Avoid floating point exception in case of NULL position errors
+
 Revision 1.46  2008/08/20 11:52:21  jurgen
 Correct probability computation and resolve STGEN-56
 
@@ -988,6 +991,12 @@ void set_info(Parameters *par, InCatalogue *in, int &i, ObjectInfo *ptr,
         break;
       }
 
+      // Avoid source positions errors smaller than the absolute position error
+      if (ptr->pos_err_maj < in->erposabs && ptr->pos_err_min < in->erposabs) {
+        ptr->pos_err_maj = in->erposabs;
+        ptr->pos_err_min = in->erposabs;
+        ptr->pos_err_ang = 0.0;
+      }
 
      } while (0); // End of main do-loop
 
@@ -1158,6 +1167,10 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
     // Declare local variables
     int                      caterr;
     std::vector<std::string> titles;
+    int                      fstatus;
+    char                     comment[80];
+    fitsfile                *fptr;
+
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -1202,15 +1215,35 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
           continue;
         }
         else {
+          // Acknowledge loading
           if (par->logVerbose())
             Log(Log_2, " Loaded catalogue '%s' descriptor from web.",
                 catName.c_str());
+
+          // Set ERPOSABS keyword in 2D 95% units
+          in->erposabs = c_erposabs * 2.4860;
         }
       }
       else {
+        // Acknowledge loading
         if (par->logVerbose())
           Log(Log_2, " Loaded catalogue '%s' descriptor from file.",
               catName.c_str());
+
+        // Try reading ERPOSABS keyword and convert in 2D 95% units
+        fstatus = 0;
+        fstatus = fits_open_file(&fptr, catName.c_str(), 0, &fstatus);
+        fstatus = fits_read_key_dbl(fptr, "ERPOSABS", &in->erposabs, NULL, &fstatus);
+        fstatus = fits_close_file(fptr, &fstatus);
+        if (fstatus != 0) {
+          in->erposabs = c_erposabs;
+          if (par->logTerse()) {
+            Log(Warning_2, " No ERPOSABS keyword found in catalogue %s (status=%d).",
+                catName.c_str(), fstatus);
+            Log(Warning_2, " Assume ERPOSABS value of %f.", in->erposabs);
+          }
+        }
+        in->erposabs *= 2.4860;
       }
 
       // Store input name
@@ -1245,11 +1278,11 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
         continue;
 
       // Dump catalogue descriptor (optionally)
-      if (par->logTerse()) {
-        status = dump_descriptor(par, in, status);
-        if (status != STATUS_OK)
-          continue;
-      }
+//      if (par->logTerse()) {
+//        status = dump_descriptor(par, in, status);
+//        if (status != STATUS_OK)
+//          continue;
+//      }
 
     } while (0); // End of main do-loop
 
@@ -1498,6 +1531,7 @@ Status Catalogue::dump_descriptor(Parameters *par, InCatalogue *in,
             in->e_pos_scale);
         break;
       }
+      Log(Log_2, " 2D absolute 95%% position error ...: %7.5f deg", in->erposabs);
 
       // Dump information about catalogue quantitites
       if (par->logVerbose()) {
@@ -2465,6 +2499,16 @@ Status Catalogue::build(Parameters *par, Status status) {
           Log(Error_2, "%d : Unable to load counterpart catalogue '%s'"
               " descriptor.", (Status)status, par->m_cptCatName.c_str());
         continue;
+      }
+      if (par->logTerse()) {
+        status = dump_descriptor(par, &m_src, status);
+        if (status != STATUS_OK)
+          continue;
+      }
+      if (par->logTerse()) {
+        status = dump_descriptor(par, &m_cpt, status);
+        if (status != STATUS_OK)
+          continue;
       }
 
       // Create FITS catalogue in memory

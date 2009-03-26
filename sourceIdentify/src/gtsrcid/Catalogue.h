@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.39  2008/08/20 11:52:21  jurgen
+Correct probability computation and resolve STGEN-56
+
 Revision 1.38  2008/07/08 20:57:06  jurgen
 Implement final selection (allows to filter on evaluated quantities)
 
@@ -300,6 +303,7 @@ const int    c_iter_max       = 10;      //!< Maximum number of catch-22 iterati
 const double c_prob_prior     = 0.1;     //!< Initial catch-22 prior
 const double c_prob_prior_min = 1.0e-20; //!< Minimum catch-22 prior
 const double c_prob_prior_max = 1.00;    //!< Maximum catch-22 prior
+const double c_erposabs       = 0.005;   //!< Default absolute position error
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -317,7 +321,7 @@ const double e_norm_1s = 1.0 / sqrt(1.1478742);  //!< 1 sigma = 68.269%, 2 dof
 const double e_norm_2s = 1.0 / sqrt(3.0900358);  //!< 2 sigma = 95.450%, 2 dof
 const double e_norm_3s = 1.0 / sqrt(5.9145778);  //!< 3 sigma = 99.730%, 2 dof
 const double e_norm_68 = 1.0 / sqrt(1.1394375);  //!< 68.000%, 2 dof
-const double e_norm_90 = 1.0 / sqrt(2.2926342 );  //!< 90.000%, 2 dof
+const double e_norm_90 = 1.0 / sqrt(2.2926342);  //!< 90.000%, 2 dof
 const double e_norm_95 = 1.0 / sqrt(2.9957230);  //!< 95.000%, 2 dof
 const double e_norm_99 = 1.0 / sqrt(4.6051713);  //!< 99.000%, 2 dof
 
@@ -435,6 +439,7 @@ typedef struct {                      // Input catalogue
   PosErrorType            col_e_type;   //!< Position error type
   PosErrorProb            col_e_prob;   //!< Position error probability
   double                  e_pos_scale;  //!< Position error scaling
+  double                  erposabs;     //!< Absolute position error
   ObjectInfo             *object;       //!< Object information
 } InCatalogue;
 

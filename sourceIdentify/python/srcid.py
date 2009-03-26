@@ -780,8 +780,14 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			dec = '%8.4f' % hdu_lat.data.field(coldec)[i]
 			if (colmaj != 'none'):
 				if (colmin != 'none' and colpos != 'none'):
-					smaj = '%8.5f' % hdu_lat.data.field(colmaj)[i]
-					smin = '%8.5f' % hdu_lat.data.field(colmin)[i]
+					vmaj = hdu_lat.data.field(colmaj)[i]
+					vmin = hdu_lat.data.field(colmin)[i]
+					if abs(vmaj) == float("inf"):
+						vmaj = 1.0 / 60.0
+					if abs(vmin) == float("inf"):
+						vmin = 1.0 / 60.0
+					smaj = '%8.5f' % vmaj
+					smin = '%8.5f' % vmin
 					pang = '%8.5f' % hdu_lat.data.field(colpos)[i]
 					lat_region = 'ellipse('+ra+','+dec+','+ \
 					              smaj+','+smin+','+pang+')'
