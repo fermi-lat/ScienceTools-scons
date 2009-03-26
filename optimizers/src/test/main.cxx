@@ -861,7 +861,8 @@ void test_Amoeba() {
    pars.at(1) = 1.;
 
    Amoeba my_amoeba(func, pars);
-   my_amoeba.findMin(pars);
+   double tol;
+   my_amoeba.findMin(pars, tol=1e-15);
    assert(std::fabs(pars.at(0) - 1.) < 1e-7);
    assert(std::fabs(pars.at(1) - 2.) < 1e-7);
 }
