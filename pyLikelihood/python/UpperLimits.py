@@ -157,7 +157,7 @@ class UpperLimit(object):
             #print "_find_dx:", dx, par.getValue(), dlogLike
             if dlogLike > mindelta:
                 break
-            dx = min(abs(x0), factor*dx)
+            dx = max(abs(x0), factor*dx)
         return dx
     def _resyncPars(self):
         srcNames = self.like.sourceNames()
