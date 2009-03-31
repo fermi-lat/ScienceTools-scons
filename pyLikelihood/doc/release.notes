@@ -5,6 +5,7 @@
    $Id$
 
    @verbatim
+   v1r12p1 31-Mar-09  JC    ensure tolType is set in each call to find_min
    v1r12   23-Mar-09  JC    switch to absolute fit tolerance; 
                             add UnbinnedAnalysis.reset_ebounds
    v1r11p1 17-Mar-09  JC    in UpperLimits.py, execute LogLike::saveCurrentFit  
