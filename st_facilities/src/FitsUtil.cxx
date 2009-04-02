@@ -136,7 +136,17 @@ void FitsUtil::writeChecksums(const std::string & filename) {
       fits_report_error(stderr, status);
       throw std::runtime_error("FitsUtil::writeChecksums: cfitsio error.");
    }
-}   
+
+   writeFilename(filename);
+}
+
+void FitsUtil::writeFilename(const std::string & filename) {
+// Write FILENAME keyword to primary HDU
+   tip::Extension * phdu 
+      = tip::IFileSvc::instance().editExtension(filename, "");
+   phdu->getHeader().setKeyword("FILENAME", facilities::Util::basename(filename));
+   delete phdu;
+}
 
 void FitsUtil::fcopy(std::string infilename, 
                      std::string outfilename,

@@ -48,6 +48,9 @@ public:
    /// Write checksum and datasum information for all HDUs in a FITS file.
    static void writeChecksums(const std::string & filename);
 
+   /// Write FILENAME keyword to primary header
+   static void writeFilename(const std::string & filename);
+
    /// Interface to fits_copy_file.
    static void fcopy(std::string infilename,
                      std::string outfilename,
