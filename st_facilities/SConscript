@@ -8,9 +8,6 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if baseEnv['PLATFORM'] != "win32":
-        progEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
-
 libEnv.Tool('st_facilitiesLib', depsOnly = 1)
 st_facilitiesLib = libEnv.StaticLibrary('st_facilities', listFiles(['src/*.cxx', 'src/*.c']))
 
