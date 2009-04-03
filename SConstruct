@@ -123,9 +123,11 @@ if baseEnv['PLATFORM'] == "win32":
 
 else:
     baseEnv.AppendUnique(CXXFLAGS = "-fpermissive")
+
 if baseEnv['PLATFORM'] == "posix":
     if platform.machine() == "x86_64":
         baseEnv.AppendUnique(CCFLAGS = "-fPIC")
+    baseEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
 #########################
 #  Project Environment  #
