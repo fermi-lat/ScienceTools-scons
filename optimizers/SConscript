@@ -8,9 +8,6 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if baseEnv['PLATFORM'] != "win32":
-    progEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
-
 libEnv.Tool('optimizersLib', depsOnly = 1)
 optimizersLib = libEnv.SharedLibrary('optimizers',
                                      listFiles(['src/*.cxx', 'src/*.c']))
