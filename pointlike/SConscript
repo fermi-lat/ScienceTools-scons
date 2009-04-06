@@ -15,11 +15,12 @@ Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
-swigEnv = baseEnv.Clone()
 
 progEnv.Tool(package+'Lib')
 libEnv.Tool(package+'Lib', depsOnly = 1)
 lib = libEnv.SharedLibrary(package, listFiles(['src/*.cxx']))
+
+swigEnv = progEnv.Clone()
 
 swigEnv.Replace(SHLIBPREFIX = '_')
 #swigEnv.Replace(SHLIBSUFFIX = '.pyd')
