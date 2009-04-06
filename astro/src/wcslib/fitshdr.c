@@ -238,7 +238,7 @@ static char yy_hold_char;
 static int yy_n_chars;		/* number of characters read into yy_ch_buf */
 
 
-int yyleng;
+int yyleng = 0;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -9989,7 +9989,7 @@ static int yy_more_len = 0;
 #define yymore() (yy_more_flag = 1)
 #define YY_MORE_ADJ yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
-char *yytext;
+char *yytext = NULL;
 #line 1 "fitshdr.l"
 #define INITIAL 0
 /*============================================================================
@@ -10076,8 +10076,8 @@ char *yytext;
 #endif
 
 /* These global variables are required by YY_INPUT. */
-const char *fitshdr_hdr;
-int  fitshdr_ncards;
+const char *fitshdr_hdr = NULL;
+int  fitshdr_ncards = 0;
 
 /* Map status return value to message. */
 const char *fitshdr_errmsg[] = {

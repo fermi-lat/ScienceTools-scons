@@ -238,7 +238,7 @@ static char yy_hold_char;
 static int yy_n_chars;		/* number of characters read into yy_ch_buf */
 
 
-int yyleng;
+int yyleng = 0;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -3888,7 +3888,7 @@ static yyconst yy_state_type yy_NUL_trans[203] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-char *yytext;
+char *yytext = NULL;
 #line 1 "wcsutrn.l"
 #define INITIAL 0
 /*============================================================================
