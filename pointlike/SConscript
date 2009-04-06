@@ -22,10 +22,8 @@ lib = libEnv.SharedLibrary(package, listFiles(['src/*.cxx']))
 
 swigEnv = progEnv.Clone()
 
-swigEnv.Replace(SHLIBPREFIX = '_')
-#swigEnv.Replace(SHLIBSUFFIX = '.pyd')
 swigEnv.Append(RPATH = swigEnv['LIBDIR'])
-pyLib = swigEnv.SharedLibrary(package,'python/swig_setup.i')
+pyLib = swigEnv.SharedLibrary('_pointlike','python/swig_setup.i', SHLIBPREFIX = '')
 
 progEnv.Tool('registerObjects', 
     package  = package, 
