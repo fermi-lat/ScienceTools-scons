@@ -6,7 +6,8 @@
 $Id$
 
 @verbatim
-  v3r8p2   05-apr-09 THB Minor tweak to wcslib code by Navid to satisfy Mac compiler
+  v3r8p3   07-apr-09 THB Increase tolerance for pointing interpolation warning message to 65 s.
+  v3r8p2   06-apr-09 THB Minor tweak to wcslib code by Navid to satisfy Mac compiler
   v3r8p1   20-feb-09 LSR Adjust the test program for the new SAA polygon
   v3r8     19-feb-09 LSR Put in the current SAA boundary polygon
                            Fix up the boundary tests

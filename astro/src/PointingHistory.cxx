@@ -17,6 +17,8 @@ using namespace astro;
 
 namespace {
     static double time_tol(10); // seconds allow beyond the end
+    static double max_interval(65); // more than this triggers warning message
+    int max_warning_message_count(100); // suppress messages if more than this  
 }
 
 PointingHistory::PointingHistory(const std::string& filename, double offset)
@@ -92,10 +94,11 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
         double time2( iter->first);
         --iter;
         double time1(iter->first);
-        if( time-time1 > 35 ){
+        if( time-time1 > max_interval && max_warning_message_count>0 ){ 
+            --max_warning_message_count;
             std::cerr << "Warning: " 
-                << int(time+0.5) << " is in an invalid interval: it is " 
-                << (time-time1) << " seconds beyond start of FT2 entry" 
+                << int(time+0.5) << " seems to be in an invalid interval: it is " 
+                << (time-time1) << " seconds beyond the start of the current FT2 entry" 
                 << std::endl;
         }
         const PointingInfo & h1 =iter->second;
@@ -108,7 +111,7 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
 }
 
 bool PointingHistory::haveFitsFile(std::string filename) const {
-#if 1 // new code from James: should allow detection of gziped fits files
+
      // Determine a type of the input file, FITS or TEXT.
      bool is_fits = true;
      try {
@@ -118,18 +121,6 @@ bool PointingHistory::haveFitsFile(std::string filename) const {
        is_fits = false;
      }
      return is_fits;
-
-
-#else // old code, author J. Chiang I think
-   std::ifstream file(filename.c_str());
-   std::string line;
-   std::getline(file, line, '\n');
-   file.close();
-   if (line.find("SIMPLE") == 0) {
-      return true;
-   }
-   return false;
-#endif
 }
 
 void PointingHistory::readFitsData(std::string filename) {
