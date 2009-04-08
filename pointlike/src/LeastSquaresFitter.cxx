@@ -9,7 +9,7 @@ $Header$
 #include "pointlike/LeastSquaresFitter.h"
 #include "TMatrixD.h"
 
-#define SHAPE_DEBUG
+//#define SHAPE_DEBUG
 
 #ifdef SHAPE_DEBUG
 #include <fstream>
@@ -244,6 +244,7 @@ double LeastSquaresFitter::fit(std::vector<double> values, double err)
     double r_sq = 1-chisq/(ts_sq-ts_ave*ts_ave/9);
 
     if(r_sq<0) {
+#ifdef SHAPE_DEBUG
         if(bad_flag) {
             bad << m_psl->name() << "\t" << m_psl->dir().ra() << "\t" << m_psl->dir().dec() << "\t\t";
             for(int i(0); i<m_fitparams.size();++i)
@@ -260,6 +261,7 @@ double LeastSquaresFitter::fit(std::vector<double> values, double err)
             bad << std::endl;
             bad_flag = false;
         }
+#endif
         return 99;
     }
 
