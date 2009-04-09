@@ -90,7 +90,7 @@ void amoeba(std::vector< std::vector<double> > & p,
 //       std::cout << "num = " << num << "  "
 //                 << "denom = " << denom << "  ";
       if (abstol || denom == 0) {  /// treat the tolerance as absolute
-         rtol = num;
+         rtol = num/2.;
       } else {
          rtol = num/denom;
       }
