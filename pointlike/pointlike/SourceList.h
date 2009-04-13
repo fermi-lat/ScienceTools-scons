@@ -60,6 +60,9 @@ namespace pointlike{
 
         void set_neighbor(const Source* other){m_neighbor = other;}
         const std::vector<double>& fit_params()const{return m_fitparams;}
+
+        /// @brief return an array of delta TS values, nominally a circle at 3 sigma
+        std::vector<double> TScircle(double radius=3.)const;
         
     private:
         std::string m_name;
