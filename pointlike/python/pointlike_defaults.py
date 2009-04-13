@@ -40,7 +40,9 @@ class PointSourceLikelihood: #parameters for the likelihood calculation
     # HEALpix level range for energy band  fits
 
     emin = 200;   # only select bands including or above this energy
-    minalpha=0.   # minimum value for signal fraction to use in TS total
+    minalpha=0.01 # minimum value for signal fraction to use in TS total
+    minROI  = 0 # minimum size for ROI (deg)
+    maxROI = 20   # prevent from bing too large
 
     # parameters governing iteration cycle of bands/position
 
@@ -53,15 +55,6 @@ class PointSourceLikelihood: #parameters for the likelihood calculation
     maxstep = 0.2 # max step allowed during localization: abort if larger
     merge=1     # set to zero to not attempt to merge bands with identical parameters
     
-class SourceLikelihood: #parameters for the likelihood calculation
-
-    TSmin= -100.   # minimum TS value to allow during iteration
-    emin = 200     # minimim energy for bands
-    verbose = 0    # set non-zero to get lots of output
-    maxstep = 0.2  # max step allowed during localization: abort if larger
-    umax=50.
-    bgROI=0.5
-
 
 class SourceFinder:  # parameters for the SourceFinder.
 
