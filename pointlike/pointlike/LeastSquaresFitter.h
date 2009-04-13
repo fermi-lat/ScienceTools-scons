@@ -29,10 +29,23 @@ namespace pointlike {
         ///@brief return fit parameters, a[i]
         std::vector<double> params() {return m_fitparams;}        
 
+        /** @brief return ellipse parameters:
+        semi-major axis
+        semi-minor axis
+        rotation angle
+        relative ra center
+        relative dec center
+        chi-squared fit to surface
+
+         */
+        std::vector<double> ellipse() {return m_ellipse;}        
+
+
         //@brief returns quadratic function evaluated at x and y coordinates
         double func(std::vector<double> params,double x, double y);
 
-        
+        ///@header for ellipse parameters.
+        static std::string header();
 
     private:
 
