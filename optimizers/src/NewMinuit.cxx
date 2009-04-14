@@ -73,7 +73,7 @@ namespace optimizers {
   // Call MINOS
   std::pair<double,double> NewMinuit::Minos(unsigned int n) {
     int npar = m_userState.Params().size();
-    if (n < 0 || n >= npar) {
+    if (n >= npar) {
       throw Exception("Parameter number out of range in Minos", n);
     }
     ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);

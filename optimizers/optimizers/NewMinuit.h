@@ -28,7 +28,7 @@ namespace optimizers {
    Q:  Would it be better to do this as a hidden class within NewMinuit?
   */
 
-  class myFCN : public ROOT::Minuit2::FCNGradientBase {
+  class myFCN : public ROOT::Minuit2::FCNBase {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
