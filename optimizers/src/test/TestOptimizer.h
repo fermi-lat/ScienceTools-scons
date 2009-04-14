@@ -38,6 +38,7 @@ public:
          printResults();
       } catch (std::exception & eObj) {
          std::cout << "\n" << eObj.what() << "\n" << std::endl;
+         throw;
       }
    }
    void fit(int verbose=0, double tol=1e-5) {
