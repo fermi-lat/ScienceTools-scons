@@ -6,6 +6,7 @@ $Header$
 #ifndef pointlike__LeastSquaresFitter_h
 #define pointlike__LeastSquaresFitter_h
 #include "pointlike/PointSourceLikelihood.h"
+#include "astro/SkyFunction.h"
 #include <vector>
 using namespace pointlike;
 
@@ -15,7 +16,7 @@ namespace pointlike {
     //! Tries to find the maximum TS of a PointSourceLikelihood with a least squares fit
     //! to a quadratic function
     //! eg: TS(x,y) = a[0]*x**2 + a[1]*x + a[2]*y**2 + a[3]*y + a[4]*x*y + a[5]
-    class LeastSquaresFitter {
+    class LeastSquaresFitter : public astro::SkyFunction {
 
     public:
         //! constructor 
@@ -42,10 +43,16 @@ namespace pointlike {
 
 
         //@brief returns quadratic function evaluated at x and y coordinates
-        double func(std::vector<double> params,double x, double y);
+        double func(std::vector<double> params,double x, double y) const;
 
         ///@header for ellipse parameters.
         static std::string header();
+
+	//SkyFunction operator - returns function in given direction
+        double operator() (const astro::SkyDir& dir) const;
+
+        //Test functionality
+        int test();
 
     private:
 
