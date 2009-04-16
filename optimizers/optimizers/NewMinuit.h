@@ -28,7 +28,7 @@ namespace optimizers {
    Q:  Would it be better to do this as a hidden class within NewMinuit?
   */
 
-  class myFCN : public ROOT::Minuit2::FCNBase {
+  class myFCN : public ROOT::Minuit2::FCNGradientBase {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
@@ -46,7 +46,7 @@ namespace optimizers {
    This class implements an Optimizer by using Minuit, a well-known
    package from CERN.  It uses only a few of Minuit's features.
    It uses only the Migrad and Hesse algorithms.  All variables are
-   treates as bounded.  No user interaction is allowed.  The new
+   treated as bounded.  No user interaction is allowed.  The new
    C++ implementation of Minuit is used, which has no limits on the
    number of free parameters.  The older Fortran version of Minuit is
    well known in the HEP community.  It was developed at CERN over a
@@ -70,12 +70,10 @@ namespace optimizers {
     std::pair<double,double> Minos(unsigned int n);
   private:
     unsigned int m_maxEval;
-    bool m_fitDone;
     myFCN m_FCN;
     double m_distance;
     double m_tolerance;
     ROOT::Minuit2::MnStrategy m_strategy;
-    ROOT::Minuit2::MnUserParameterState m_userState;
     ROOT::Minuit2::FunctionMinimum * m_min;
 
      void setTolerance(double tol, int tolType);

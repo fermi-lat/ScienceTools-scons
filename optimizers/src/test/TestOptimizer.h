@@ -42,7 +42,7 @@ public:
       }
    }
    void fit(int verbose=0, double tol=1e-5) {
-      m_opt.find_min(verbose, tol);
+      m_opt.find_min(verbose, tol, ABSOLUTE);
    }
    void printResults() {
       std::vector<Parameter> params;
