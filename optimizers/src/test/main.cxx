@@ -279,9 +279,9 @@ void test_Optimizers() {
    std::vector<Parameter> params;
    my_rosen.getParams(params);
    params[0].setValue(2.);
-   params[0].setBounds(-5., 10);
+   params[0].setBounds(-10., 10);
    params[1].setValue(2.);
-   params[1].setBounds(-4, 10);
+   params[1].setBounds(-10., 10);
    my_rosen.setParams(params);
 
    char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb", "Drmnfb",
