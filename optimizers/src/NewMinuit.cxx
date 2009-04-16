@@ -100,7 +100,6 @@ namespace optimizers {
       std::cerr << e.what() << std::endl;
       throw;
     }
-  std::cout << "myFCN params: " << params[0] << " " << params[1] << ", value: " << -m_stat->value() << std::endl;
     return -m_stat->value();
   }
 
@@ -124,7 +123,6 @@ namespace optimizers {
     for (unsigned int i = 0; i < grad.size(); i++) {
       grad[i] = -grad[i];
     }
-    std::cout << " gradient: " << grad[0] << " " << grad[1] << std::endl;
     return grad;
   }
 
