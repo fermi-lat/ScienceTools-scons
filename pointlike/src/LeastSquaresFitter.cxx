@@ -27,8 +27,6 @@ namespace {
     int s_points = 10; //grid points
     double file_num(0.);
     int itermax(3);
-    bool flip(true);
-    bool major(true);
     int npts=1;
 
 #ifdef SHAPE_DEBUG
@@ -196,11 +194,11 @@ double LeastSquaresFitter::fit(std::vector<double> values, double err)
     double d0 = sqrt(x0*x0+y0*y0);
     if (x0<0) d0=-d0;
     double angle = x0==0?M_PI/4:atan(y0/x0)/2;
-    if(flip) angle = M_PI/2-angle;
+    angle = M_PI/2-angle;
     double alpha(fabs(z0-d0)/2),beta(fabs(z0+d0)/2);
     double a = 1/sqrt(alpha);
     double b = 1/sqrt(beta);
-    if(major&& b>a) 
+    if( b>a) 
     {
         double temp = a;
         a=b;
@@ -209,11 +207,9 @@ double LeastSquaresFitter::fit(std::vector<double> values, double err)
     }
     double si = sin(angle);
     double co = cos(angle);
-    if(flip) {
         double temp = si;
         si=co;
         co=temp;
-    }
 
     double ko = xc*xc*((co/a)*(co/a)+(si/b)*(si/b)) +
         yc*yc*((co/b)*(co/b)+(si/a)*(si/a)) - 
