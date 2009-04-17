@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 17-apr-09 v7r3p4 THB  fix gtexpcube par file
  16-mar-09 v7r3p3  JC  make Exposure::fill_zenith accessible to subclasses
  15-mar-09 v7r3   THB  fix to code for phi dependent-IRF
  03-mar-09 v7r3   THB  Code for phi dependent-IRF
