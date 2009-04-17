@@ -1,7 +1,7 @@
 # $Header$
 #---------------------------------------------------------------------------------------
 # General parameters.
-infile,f,a,"earth_cube.fits",,,"Exposure cube input file name"
+infile,f,a,"",,,"Exposure cube input file name"
 evfile,f,a,"NONE",,,"FT1 events input file name"
 cmfile,f,a,"NONE",,,"Count map input file name (NONE for manual input of map geometry)"
 outfile,f,a,"earth_expmap_P6_r0_diffuse.fits",,,"Exposure map output file name"
@@ -36,5 +36,5 @@ chatter,       i, h, 2, 0, 4, "Chattiness of output"
 clobber,       b, h, "yes", , , "Overwrite existing output files with new output files"
 debug,         b, h, "no", , , "Debugging mode activated"
 gui,           b, h, "no", , , "Gui mode activated"
-mode,s,h,"h",,,"Mode of automatic parameters: h for batch, ql for interactive"
+mode,          s, h, "ql", , , "Mode of automatic parameters: h for batch, ql for interactive"
 #---------------------------------------------------------------------------------------
