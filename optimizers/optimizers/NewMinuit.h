@@ -57,6 +57,8 @@ namespace optimizers {
   public:
     NewMinuit(Statistic &);
     virtual ~NewMinuit() {delete m_min;};
+    NewMinuit & operator=(const NewMinuit & rhs);
+    NewMinuit(const NewMinuit & x);
     void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
@@ -75,8 +77,7 @@ namespace optimizers {
     double m_tolerance;
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::FunctionMinimum * m_min;
-
-     void setTolerance(double tol, int tolType);
+    void setTolerance(double tol, int tolType);
   };
 
 }

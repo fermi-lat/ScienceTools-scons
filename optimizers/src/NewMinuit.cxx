@@ -26,6 +26,28 @@ namespace optimizers {
   : Optimizer(stat), m_maxEval(0),  m_FCN(stat), 
     m_tolerance(1e-3), m_strategy(ROOT::Minuit2::MnStrategy(1)), m_min(0) {}
 
+  //  =
+  NewMinuit::NewMinuit & NewMinuit::operator=(const NewMinuit & rhs) {
+      if (this == &rhs) return *this;
+      Optimizer::operator=(rhs);
+      m_maxEval = rhs.m_maxEval;
+      m_FCN = rhs.m_FCN;
+      m_distance = rhs.m_distance;
+      m_tolerance = rhs.m_tolerance;
+      m_strategy = rhs.m_strategy;
+      delete m_min;
+      m_min = new ROOT::Minuit2::FunctionMinimum(*(rhs.m_min));
+      return *this;
+  };
+
+  //Copy constructor
+  NewMinuit::NewMinuit(const NewMinuit::NewMinuit & x) : Optimizer(x), m_maxEval(x.m_maxEval),
+        m_FCN(x.m_FCN), m_distance(x.m_distance), m_tolerance(x.m_tolerance),
+        m_strategy(x.m_strategy)
+  {
+      m_min = new ROOT::Minuit2::FunctionMinimum(*(x.m_min));
+  };
+
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {
     setTolerance(tol, TolType);
