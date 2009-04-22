@@ -94,7 +94,7 @@ namespace optimizers {
 	}
 	funcVal = -m_stat->value();
 	m_val = funcVal;
-	if (tolType == ABSOLUTE && iv[0] == 2 && iv[28] == 3 && 
+	if (tolType == ABSOLUTE && iv[0] == 1 && iv[28] == 4 && 
 	    fabs(funcVal-oldVal) < tol) {
 	  // check after a successful line search
 	  m_retCode = 6;
