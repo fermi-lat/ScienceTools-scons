@@ -76,11 +76,11 @@ namespace optimizers {
     static const std::string strt("START");
     std::copy(strt.begin(), strt.end(), task.begin()); // Initialize
 
-    double factr = 1./dpmeps_();
+    double factr = dpmeps_();
     if (tolType == RELATIVE) factr *= tol;
 
     // Call LBFGS in an infinite loop.  Break out when it's done.
-    double oldVal = 1.e+30;
+    double oldVal = 0.;
     for (;;) {
       int iprint = verbose - 2;  
       const std::vector<int> nbd(nparams, 2); // All params bounded for now
@@ -123,7 +123,7 @@ namespace optimizers {
 	  m_errorString = "Exceeded Specified Number of Iterations";
 	  break;
 	}
-	if (tolType == ABSOLUTE && fabs(funcVal-oldVal) < tol) {
+	if (tolType == ABSOLUTE && oldVal != 0. && fabs(funcVal-oldVal) < tol) {
 	  m_retCode = LBFGS_NORMAL;
 	  m_errorString = "Absolute Convergence";
 	  break;
