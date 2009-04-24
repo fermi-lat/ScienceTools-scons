@@ -73,8 +73,10 @@ if baseEnv['PLATFORM'] != 'win32':
         baseEnv.Replace(CXX = baseEnv.GetOption('cxx'))
     if baseEnv.GetOption('bits') == '32':
         baseEnv.AppendUnique(CCFLAGS = ['-m32'])
+        baseEnv.AppnedUnique(LINKFLAGS = ['-m32'])
     if baseEnv.GetOption('bits') == '64':
         baseEnv.AppendUnique(CCFLAGS = ['-m64'])
+        baseEnv.AppendUnique(LINKFLAGS = ['-m64'])
 else:
     if baseEnv.GetOption('vc'):
         baseEnv['MSVS'] = {'VERSION' : baseEnv.GetOption('vc')}
