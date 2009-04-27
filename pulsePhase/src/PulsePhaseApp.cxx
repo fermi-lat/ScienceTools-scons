@@ -173,5 +173,8 @@ void PulsePhaseApp::runApp() {
   }
 
   // Write parameter values to the event file(s).
-  writeParameter(par_group);
+  std::string creator_name = getName() + " " + getVersion();
+  std::string file_modification_time(createUtcTimeString());
+  std::string header_line("File modified by " + creator_name + " on " + file_modification_time);
+  writeParameter(par_group, header_line);
 }
