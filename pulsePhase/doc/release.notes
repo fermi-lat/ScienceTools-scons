@@ -59,5 +59,6 @@
                               Improve application output messages and Doxygen comments.
       v8r2  27-oct-08   MH    Improve the unit test for robustness. Improve prompts.
       v8r3  29-oct-08   MH    Print time correction modes and time system usage if chatter is 3 or higher.
+      v8r4  28-apr-09   MH    Report file creation time in UT (JIRA PULS-52). Improve Doxygen documents.
     @endverbatim
 */
