@@ -165,6 +165,11 @@ namespace facilities {
     setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
     setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
     setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "alias_config.fits"));
+#ifdef HEADAS
+    setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
+#else
+    setEnvironment("TIMING_DIR", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+#endif
 #endif
 #else
     if(environ!=NULL){
