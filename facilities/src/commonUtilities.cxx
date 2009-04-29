@@ -168,7 +168,7 @@ namespace facilities {
 #ifdef HEADAS
     setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
 #else
-    setEnvironment("TIMING_DIR", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+    setEnvironment("TIMING_DIR", joinPath(joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles), "jplephem"));
 #endif
 #endif
 #else
