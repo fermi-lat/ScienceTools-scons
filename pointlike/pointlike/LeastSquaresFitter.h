@@ -72,7 +72,7 @@ namespace pointlike {
         std::vector<double> m_fitparams; //parameterization of TS surface
         PointSourceLikelihood* m_psl; // Pointer to PSL object, can be modified
 
-        std::vector<double> m_ellipse; //0-7 [a,b,ecc,phi,x0,y0,err,chisq,R**2]
+        std::vector<double> m_ellipse; //0-7 [a,b,phi,x0,y0,chisq,R**2]
 
         double m_err; //statistical error value
 

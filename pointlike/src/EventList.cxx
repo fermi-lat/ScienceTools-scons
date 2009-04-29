@@ -108,7 +108,7 @@ EventList::EventList(const std::string infile, bool selectid, bool use_mc_energy
         m_fits=false;
     }
     // connect to input data
-    const tip::Table * m_table = tip::IFileSvc::instance().readTable(infile, table_name, "");
+    m_table = tip::IFileSvc::instance().readTable(infile, table_name, "");
 
     // save the iterators
     m_itbegin= m_table->begin();
@@ -122,8 +122,8 @@ EventList::EventList()
 EventList::~EventList()
 {
     // seems to create crash
-    //std::cout << "deleting table" << std::endl;
-    //delete m_table;
+    std::cout << "deleting table" << std::endl;
+    delete m_table;
 }
 
 Photon EventList::Iterator::operator*()const

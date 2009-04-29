@@ -61,6 +61,7 @@ m_err(sigma)
         std::vector<double> values = ring(iDir,sigma);
 
         m_err=fit(values,sigma);
+        if(m_err>96) m_err=fit(values,sigma/4);
 
         if(m_err>96) {
             m_psl->setDir(iDir);
@@ -321,12 +322,12 @@ astro::SkyDir LeastSquaresFitter::maxDir(astro::SkyDir& sd) {
 double LeastSquaresFitter::operator() (const astro::SkyDir& dir) const {
     astro::SkyDir curDir = m_psl->dir();
     Hep3Vector rv = (curDir()-dir()).unit();
-    double r = dir.difference(curDir);
+    double r = dir.difference(curDir)*180/M_PI;
     Hep3Vector rand_x = curDir().orthogonal();
     rand_x=rand_x.unit();
     Hep3Vector rand_y = (curDir().cross(rand_x)).unit();
-    double x = rand_x.dot(rv)*r;
-    double y = rand_y.dot(rv)*r;
+    double x = -rand_x.dot(rv)*r;
+    double y = -rand_y.dot(rv)*r;
     return func(m_fitparams,x,y);
 }
 
