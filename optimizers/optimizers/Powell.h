@@ -29,7 +29,8 @@ namespace optimizers {
   public:
     Powell(Statistic &stat) : Optimizer(stat) {}
     virtual ~Powell() {}
-    void find_min(int verbose=0, double tol=1e-8, int tolType=RELATIVE);
+    void find_min(int verbose=0, double tol=1e-8, int tolType=ABSOLUTE);
+    void find_min_only(int verbose=0, double tol=1e-8, int tolType=ABSOLUTE);
     double f1dim(double x);    
     void set_pcom(const std::vector<double> &pc) {m_pcom = pc;}
     void set_xicom(const std::vector<double> &xi) {m_xicom = xi;}

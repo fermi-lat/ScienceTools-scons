@@ -35,6 +35,11 @@ namespace optimizers {
     m_NeedCovariance = b;
   }
   
+  void Drmnfb::find_min_only(int verbose, double tol, int tolType) {
+    setNeedCovariance(false);
+    find_min(verbose, tol, tolType);
+  }
+
   void Drmnfb::find_min(int verbose, double tol, int tolType) {
 
     /// Unpack model parameters into the arrays needed by Drmnfb

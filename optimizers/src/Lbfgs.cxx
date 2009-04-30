@@ -32,6 +32,10 @@ namespace optimizers {
   std::string Lbfgs::getErrorString(void) const
   {return m_errorString;}
 
+  void Lbfgs::find_min_only(int verbose, double tol, int tolType) {
+    find_min(verbose, tol, tolType);
+  }
+
   void Lbfgs::find_min(int verbose, double tol, int tolType) {
 
     m_numEvals = 0;

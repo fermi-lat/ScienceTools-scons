@@ -57,7 +57,9 @@ namespace optimizers {
     
     virtual ~Minuit() {}
     
-    void find_min(int verbose = 0, double tol = 1e-3, int tolType = RELATIVE);
+    void find_min(int verbose = 0, double tol = 1e-3, int tolType = ABSOLUTE);
+    void find_min_only(int verbose = 0, double tol = 1e-3, int tolType = ABSOLUTE);
+    void minimize(int verbose, double tol, int tolType, bool doHesse);
 
     //! Override the default maximum number of function evaluations
     void setMaxEval(int);
@@ -85,11 +87,7 @@ namespace optimizers {
 			MINUIT_NORMAL};
 
     /// Set the minimization strategy
-    /// (added by C. Farnier 09/29/08)
-    void setStrategy(unsigned int strat = 1); // {
-//      char s_strategy[15];
-//      sprintf(s_strategy, "SET STRATEGY %i", strat);
-//    }
+    void setStrategy(unsigned int strat = 1); 
 
   private:
     

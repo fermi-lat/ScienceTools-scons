@@ -37,7 +37,8 @@ public:
 
    virtual ~Optimizer() {}
 
-   virtual void find_min(int verbose, double tol, int tolType = RELATIVE) = 0;
+   virtual void find_min(int verbose, double tol, int tolType = ABSOLUTE) = 0;
+   virtual void find_min_only(int verbose, double tol, int tolType = ABSOLUTE) = 0;
 
    /// Returns the one-sigma confidence regions based on the Hessian,
    /// assuming that the statistic is a log-likelihood.

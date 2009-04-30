@@ -28,7 +28,8 @@ namespace optimizers {
    Q:  Would it be better to do this as a hidden class within NewMinuit?
   */
 
-  class myFCN : public ROOT::Minuit2::FCNGradientBase {
+//  class myFCN : public ROOT::Minuit2::FCNGradientBase {
+  class myFCN : public ROOT::Minuit2::FCNBase {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
@@ -60,6 +61,7 @@ namespace optimizers {
     NewMinuit & operator=(const NewMinuit & rhs);
     NewMinuit(const NewMinuit & x);
     void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
+    void find_min_only(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }

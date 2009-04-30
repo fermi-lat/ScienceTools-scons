@@ -46,6 +46,10 @@ namespace optimizers {
   }
 
   // The minimizer.  It's just a wrapper for the function powell.
+  void Powell::find_min_only(int verbose, double tol, int tolType) {
+    find_min(verbose, tol, tolType);
+  }
+
   void Powell::find_min(int verbose, double tol, int tolType) {
     (void) (verbose);
     std::vector<double> p;

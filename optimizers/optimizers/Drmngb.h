@@ -53,7 +53,9 @@ namespace optimizers {
     virtual ~Drmngb() {}
     
     void find_min(int verbose = 0, double tol = 1e-8, 
-		  int tolType = RELATIVE);
+		  int tolType = ABSOLUTE);
+    void find_min_only(int verbose = 0, double tol = 1e-8, 
+		  int tolType = ABSOLUTE);
 
     //! One-sigma confidence regions based on Hessian, assuming 
     // that this function is a likelihood

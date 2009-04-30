@@ -52,6 +52,14 @@ namespace optimizers {
   }
 
   void Minuit::find_min(int verbose, double tol, int tolType) {
+    minimize(verbose, tol, tolType, true);
+  }
+
+  void Minuit::find_min_only(int verbose, double tol, int tolType) {
+    minimize(verbose, tol, tolType, false);
+  }
+
+  void Minuit::minimize(int verbose, double tol, int tolType, bool doHesse) {
 
     typedef std::vector<Parameter>::iterator pptr;
 
@@ -105,7 +113,7 @@ namespace optimizers {
     // Normal termination.
 
     // Improve the quality of the Hessian matrix.
-    doCmd("HESSE");
+    if (doHesse) doCmd("HESSE");
 
     // Extract fitted parameters
     if (verbose != 0) {
@@ -158,7 +166,7 @@ namespace optimizers {
       }
     }
 
-  } // End of find_min
+  } // End of minimize 
 
   std::pair<double,double> Minuit::Minos(unsigned int n) {
     integer npar(m_stat->getNumFreeParams());

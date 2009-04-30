@@ -9,6 +9,7 @@
 #include "optimizers/Parameter.h"
 #include "Minuit2/MnUserParameters.h"
 #include "Minuit2/MnMigrad.h"
+#include "Minuit2/MnMinimize.h"
 #include "Minuit2/MnMinos.h"
 #include "Minuit2/FunctionMinimum.h"
 #include "Minuit2/MnHesse.h"
@@ -50,6 +51,11 @@ namespace optimizers {
 
   // Call Minuit's MIGRAD to find the minimum of the function
   void NewMinuit::find_min(int verbose, double tol, int TolType) {
+    find_min_only(verbose, tol, TolType);
+    hesse(verbose);
+  }
+
+  void NewMinuit::find_min_only(int verbose, double tol, int TolType) {
     setTolerance(tol, TolType);
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
@@ -64,7 +70,8 @@ namespace optimizers {
     }
 
     ROOT::Minuit2::MnUserParameterState userState(upar);
-    ROOT::Minuit2::MnMigrad migrad(m_FCN, userState, m_strategy);
+//    ROOT::Minuit2::MnMigrad migrad(m_FCN, userState, m_strategy);
+    ROOT::Minuit2::MnMinimize migrad(m_FCN, userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, m_tolerance);
     m_min = new ROOT::Minuit2::FunctionMinimum(min);
     if (verbose > 0) std::cout << *m_min;

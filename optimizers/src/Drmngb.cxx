@@ -156,6 +156,11 @@ namespace optimizers {
 
   } // End of find_min
 
+  void Drmngb::find_min_only(int verbose, double tol, int tolType) {
+    setNeedCovariance(false);
+    find_min(verbose, tol, tolType);
+  }
+
   std::ostream& Drmngb::put (std::ostream& s) const {
     s << "DRMNGB performed " << m_evals << " function evaluations" << std::endl;
     s << "and " << m_grads << " gradient evaluations, ending with" << std::endl;

@@ -70,7 +70,8 @@ namespace optimizers {
     int getRetCode(void) const;
     std::string getErrorString(void) const;
     
-    void find_min(int verbose = 0, double tol = 1.e-5, int tolType = RELATIVE);
+    void find_min(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
+    void find_min_only(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
 
     virtual std::ostream& put (std::ostream& s) const;
     
