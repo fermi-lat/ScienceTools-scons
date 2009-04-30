@@ -28,8 +28,8 @@
 #include "pointlike/Draw.h"
 #include "pointlike/SourceList.h"
 #include "pointlike/Alignment.h"
-#include "pointlike/SpectralFunction.h"
 #include "pointlike/LeastSquaresFitter.h"
+#include "pointlike/ConfidenceLevel.h"
 
 #include "CLHEP/Vector/Rotation.h"
 #include "CLHEP/Vector/EulerAngles.h"
@@ -165,7 +165,6 @@ public:
 //%include $(POINTLIKEROOT)/pointlike/SimpleTSmap.h
 %include pointlike/SourceList.h
 
-%include pointlike/SpectralFunction.h
 %include pointlike/LeastSquaresFitter.h
 
 
@@ -191,6 +190,8 @@ public:
 %template(StringDoubleMap) std::map<std::string,std::vector<double> >;
 // these attempts fail
 //%template(SkyDirIntPairVector) std::vector<std::pair<astro::SkyDir,int> >;
+
+%include pointlike/ConfidenceLevel.h
 
 
 
