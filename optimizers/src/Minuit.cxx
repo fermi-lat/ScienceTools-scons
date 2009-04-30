@@ -99,7 +99,7 @@ namespace optimizers {
       tolerance = 2000. * tol * fabs(m_stat->value());
     }
     std::ostringstream mline;
-    mline << "MIGRAD " << m_maxEval << " " << tolerance << std::endl;
+    mline << "MINIMIZE " << m_maxEval << " " << tolerance << std::endl;
     int retCode = doCmd(mline.str());  // Minimize fcn
     if (retCode == 4) {
       // Abnormal termination
