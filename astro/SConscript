@@ -26,7 +26,8 @@ test_astro = progEnv.Program('test_astro', listFiles(['src/test/*.cxx']))
 progEnv.Tool('registerObjects', 
              package = 'astro', 
 	     libraries = [astroLib], 
-	     testApps = [test_astro], 
+	     testApps = [test_astro],
+             data = listFiles(['data/*']),
 	     includes = listFiles(['astro/*.h']))
 
 
