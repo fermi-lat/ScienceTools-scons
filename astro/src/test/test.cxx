@@ -343,6 +343,8 @@ int main(){
     using namespace std;
     int rc = 0;
 
+    facilities::commonUtilities::setupEnvironment();
+
     try {
         if( Quaternion::test()!=0) {
             std::cerr << "Failed quaternion test" << std::endl;
