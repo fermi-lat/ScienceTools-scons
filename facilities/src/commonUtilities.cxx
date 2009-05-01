@@ -161,6 +161,7 @@ namespace facilities {
       setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
       setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
     }
+    setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
 #ifdef ScienceTools
     setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
     setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
