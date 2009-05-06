@@ -32,7 +32,7 @@ const std::string s_cvs_id("$Name$");
 
 class orbitSimApp : public st_app::StApp {
   public:
-  orbitSimApp(): osf("orbitSimApp", "", 0) {
+  orbitSimApp(): osf("orbitSimApp", "", 1) {
       osf.setMethod("orbitSimApp");
       setName("gtorbsim");
       setVersion(s_cvs_id);
@@ -54,13 +54,17 @@ void orbitSimApp::run() {
   osf.setMethod("run");
 
   initf.occflag = 1;
-  initf.chat = 0;
-  initf.debug = 0;
   initf.EAA = 20.0;
   initf.ELT_OFF_START = -99999.0;
   initf.ELT_OFF_STOP  = -99999.0;
 
   st_app::AppParGroup & pars(getParGroup("gtorbsim"));
+
+  int chat = pars["chatter"];
+  st_stream::SetMaximumChatter(chat);
+
+  bool debug_mode = pars["debug"];
+  st_stream::SetDebugMode(debug_mode);
 
   double tEAA = pars["EAA"];
   if(tEAA >= 0.0 && tEAA <=180.0){
@@ -103,14 +107,14 @@ void orbitSimApp::run() {
   } 
 
   if((initf.ELT_OFF_STOP != -99999.0 && initf.ELT_OFF_START != -99999.0)){
-    osf.info()<<"EARTH Limb Tracing is disabled from "<<initf.ELT_OFF_START<<" to "<<initf.ELT_OFF_STOP<<"\n";
+    osf.info(1)<<"EARTH Limb Tracing is disabled from "<<initf.ELT_OFF_START<<" to "<<initf.ELT_OFF_STOP<<"\n";
   }
 
   //  exit(1);
 
   pars.Prompt("typeinput");
   std::string Input = pars["typeinput"];
-  osf.info() << "Input Type is: " << Input.c_str() << std::endl;
+  osf.info(1) << "Input Type is: " << Input.c_str() << std::endl;
   //  if(match((const char*) Input.c_str(), "file") == 1){
   if(match_str((const char*) Input.c_str(), "FILE") == 1){
     pars.Prompt("initFile");
@@ -118,9 +122,6 @@ void orbitSimApp::run() {
     std::string initFile = pars["initFile"];
     const char *fname = initFile.c_str();
     stat = parseInit(fname, &initf);
-
-    st_stream::SetMaximumChatter(initf.chat);
-    st_stream::SetDebugMode(initf.debug);
 
     //  } else if (match((const char*) Input.c_str(), "console") == 1){
   } else if (match_str((const char*) Input.c_str(), "CONSOLE") == 1){
@@ -133,7 +134,6 @@ void orbitSimApp::run() {
     pars.Prompt("TLType");
     std::string Tlt = pars["TLType"];
     initf.TLtype = Tlt;
-
 
 
     //    if((match((const char*) Tlt.c_str(), "^TAKO$") == 1) || (match((const char*) Tlt.c_str(), "^ASFLOWN$") == 1)){
@@ -189,26 +189,20 @@ void orbitSimApp::run() {
     std::string saaF = pars["saafile"];
     initf.saafile = saaF;
 
-    pars.Prompt("saafunc");
-    std::string saaFu = pars["saafunc"];
-    initf.saafunc = saaFu;
     stat = 1;
 
   } else {
-
-
+    
     throw std::runtime_error("\nERROR: UNKNOWN Input type {either file or console}\n\n");
   }
 
 
   pars.Save();
-
-  std::cout<<"Earth Avoidance Angle: "<<initf.EAA<<" degrees\n";
-
-//   initf.debug = 1;
-//   initf.chat = 4;
-//   st_stream::SetMaximumChatter(initf.chat);
-//   st_stream::SetDebugMode(initf.debug);
+  // Add a little buffer to the end time so we calculate enough ephem
+  // and attitude point to get positions up to the end of the desired time.
+  double stop_buffer = 0.1;
+  initf.stop_MJD=initf.stop_MJD+stop_buffer;
+  osf.info(1)<<"Earth Avoidance Angle: "<<initf.EAA<<" degrees"<<std::endl;
 
   // stat = 0;
 
@@ -227,7 +221,6 @@ void orbitSimApp::run() {
     oBuf << "Initial RA             " << initf.Ira << std::endl;
     oBuf << "Initial DEC            " << initf.Idec << std::endl;
     oBuf << "SAA file               " << initf.saafile << std::endl;
-    oBuf << "SAA function           " << initf.saafunc << ", (saa, latsaa)" << std::endl;
     oBuf << "Output file            " << initf.OutFile << std::endl;
     oBuf << "\nPlease, correct the problem\n\nExiting........\n\n############################################################\n\n";
     throw std::runtime_error(oBuf.str());
@@ -239,39 +232,35 @@ void orbitSimApp::run() {
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Fixing the start time according to the resolution
-
-
   double stmjd = initf.start_MJD;
   double fday = (stmjd - (double)((int)stmjd))*1440.0;
   fday = (double)((int)(fday/initf.Resolution)-1)*initf.Resolution;
   stmjd = (double)((int)stmjd)+fday/1440.0;
 
-
-
   if((initf.start_MJD - stmjd)- initf.Resolution > 1.0E-6){
+    osf.info(2) <<"Initial start time=" << initf.start_MJD << ", corrected time=" << stmjd  << std::endl;
     initf.start_MJD = stmjd; 
-    osf.info(3) <<"Initial start time=" << initf.start_MJD << ", corrected time=" << stmjd  << std::endl;
   }
 
-
-
+  // Also fix the stop time based on resolution.
   double enmjd = initf.stop_MJD;
   fday = (enmjd - (double)((int)enmjd))*1440.0;
   fday = (double)((int)(fday/initf.Resolution)+1)*initf.Resolution;
   enmjd = (double)((int)enmjd)+fday/1440.0;
 
   if((initf.stop_MJD - enmjd)- initf.Resolution > 1.0E-6){
+    osf.info(2) <<"Initial stop time=" << initf.stop_MJD << ", corrected time=" << enmjd  << std::endl;
     initf.stop_MJD = enmjd;
-    osf.info(3) <<"Initial stop time=" << initf.stop_MJD << ", corrected time=" << enmjd  << std::endl;
   }
-  osf.info(1) <<"Optional File: ";
+
+  osf.info(2) <<"Optional File: ";
   
   if( initf.OptFile.empty()){
-    osf.info(1) << "(NULL)";
+    osf.info(2) << "(NULL)";
   } else {
-    osf.info(1) << initf.OptFile;
+    osf.info(2) << initf.OptFile;
   }
-  osf.info(1) << std::endl;
+  osf.info(2) << std::endl;
 
 
 
@@ -344,23 +333,20 @@ void orbitSimApp::run() {
   } else if (match_str( initf.TLtype.c_str(), "SINGLE") == 1){
     Oat = doCmd(&initf, ephemeris);
   }
-
+  
+  // Restore stop_MJD to its correct, but smaller value
+  initf.stop_MJD=initf.stop_MJD-stop_buffer;
 
   if(Oat == NULL){
     throw std::runtime_error("\nPossibly something went wrong while calculating the spacecraft attitude.\nThe Attitude structure is still \"NULL\"\n\n");
   }
 
-
-
-  //std::string orbitsimroot = st_facilities::Env::getDataDir("orbitSim");
+  // Get template file using facilities
   std::string orbitsimroot = facilities::commonUtilities::getDataPath("orbitSim");
-
-  std::string ifname("ft2.fits");
-
-  //std::string sfname = st_facilities::Env::appendFileName(orbitsimroot, ifname);
+  std::string ifname("ft2.tpl");
   std::string sfname = facilities::commonUtilities::joinPath(orbitsimroot, ifname);
   
-  osf.info(1) <<"OutPut File template is "<<sfname.c_str()<<"\n";
+  osf.info(2) <<"OutPut File template is "<<sfname.c_str()<<"\n";
 
   IFileSvc::instance().createFile(initf.OutFile, sfname.c_str());
 
@@ -389,13 +375,9 @@ void orbitSimApp::run() {
 
   do_mjd2cal(initf.stop_MJD, &yy, &MM, &dd, &hh, &mm, &ss);
   sprintf(endTm, "%4d-%02d-%02dT%02d:%02d:%02d", yy, MM, dd, hh, mm, ss);
-/*
-  printf("%s:%d - start MJD=%f, startTM=%s\n", __FILE__, __LINE__, initf.start_MJD, startTm);
 
-  printf("%s:%d - stop MJD=%f, endTM=%s\n", __FILE__, __LINE__, initf.stop_MJD, endTm);
-
-  exit(1);
-*/
+  osf.info(2) << __FILE__<<":"<<__LINE__<<" - start MJD="<< initf.start_MJD<<" startTm="<<startTm<<std::endl;
+  osf.info(2) << __FILE__<<":"<<__LINE__<<" - stop MJD="<< initf.stop_MJD<<" endTm="<<endTm<<std::endl;
 
   metstart=do_mjd2met(initf.start_MJD);
   metstop=do_mjd2met(initf.stop_MJD);
@@ -414,8 +396,10 @@ void orbitSimApp::run() {
 
 
   Table * table = IFileSvc::instance().editTable(initf.OutFile, "SC_DATA");
-
-  table->setNumRecords(Oat->ent-1);
+  // Only make the table big enough for the points we want, not the 
+  // extra buffer we have.
+  Oat->ent=(Oat->ent)-int(stop_buffer/initf.Resolution)+2;
+  table->setNumRecords(Oat->ent);
   int k = 0;
   Header & header = table->getHeader();
   header["DATE"].set(ts);
@@ -425,13 +409,13 @@ void orbitSimApp::run() {
   header["TSTOP"].set(metstop);
 
   std::vector<double> posit(3);
-  osf.info(1) <<"\nUTC Current Time is " << ts << "\nTable should contain " << Oat->ent <<" elements\n\n";
+  osf.info(2) <<"\nUTC Current Time is " << ts << "\nTable should contain " << Oat->ent <<" elements\n\n";
   osf.info(2) <<"Starting loop to write output file\n";
 
-
+  // previous start and stop values
   long int pStart= 0;
   long int pStop = 0;
-
+  // This is the loop that writes each line in the fits data table
   for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor) {
 
 
@@ -473,19 +457,20 @@ void orbitSimApp::run() {
     (*itor)["RA_SCX"].set(Oat->Xra[k]);
     (*itor)["DEC_SCX"].set(Oat->Xdec[k]);
 
-
+    // 5 is zenithpoint/survey so we'll stick with that.
+    (*itor)["LAT_MODE"].set(5);
+    // 1 means nomSciOps so that seems reasonable
+    (*itor)["LAT_CONFIG"].set(1);
+    // Simulated data so it is kind of good by definition
+    (*itor)["DATA_QUAL"].set(1);
 
     if(Oat->in_saa[k] == 1){
       (*itor)["IN_SAA"].set(true);
       (*itor)["LIVETIME"].set(0.0);
-      (*itor)["DEADTIME"].set(initf.Resolution*86400.0);
     } else {
       (*itor)["IN_SAA"].set(false);
       (*itor)["LIVETIME"].set(initf.Resolution*86400.0*0.93);
-      (*itor)["DEADTIME"].set(initf.Resolution*86400.0*0.07);
     }
-
-
     
     do_mjd2cal(Oat->mjd[k], &yy, &MM, &dd, &hh, &mm, &ss);
     sprintf(endTm, "%4d:%02d:%02dT%02d:%02d:%02d", yy, MM, dd, hh, mm, ss);
@@ -500,13 +485,13 @@ void orbitSimApp::run() {
 
     if(pStart != 0){
       if((Start - pStart) != (long int)(initf.Resolution*86400.0)){
-	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Start time) is "<< (Start-pStart)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
+	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Start time "<<Start<<") is "<< (Start-pStart)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
       }
     }
 
     if(pStop != 0){
       if((Stop - pStop) != (long int)(initf.Resolution*86400.0)){
-	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Stop time) is "<< (Stop-pStop)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
+	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Stop time " <<Stop<<") is "<< (Stop-pStop)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
       }
     }
     

@@ -24,7 +24,7 @@ extern "C" {
    * 
    * @author Giuseppe Romeo
    * @date Created:  Nov 15, 2005
-   * @date Last Modified:  Feb 08, 2006
+   * @date Last Modified:  May 04, 2009
    */
 
 typedef struct {
@@ -56,8 +56,6 @@ typedef struct {
   std::string OptFile;  
   /// SAA file definition    
   std::string saafile;      
-  /// Function to be called to calculate entry/exit saa events
-  std::string saafunc; 
   /// Flag which is used to decide if Earth avoidance should be enabled, default is yes.
   int occflag;
   /// Earth Avoidance Angle value, default is 30 degrees

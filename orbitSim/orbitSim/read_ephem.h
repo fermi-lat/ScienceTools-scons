@@ -514,7 +514,6 @@ void MakePointed(double mjds, double mjde, double res, double ra,
    * 
    * This routine determines if each ephemeris point is in or out of the SAA polygon.
    * A filename should be passed which defines SAA polygon (longitude/latitude pairs).
-   * If a filnname is not passed in, a default hardcoded table of pairs will be used.  
    * In addition to an ephemeris point being in the SAA polynomial, the ephem point 
    * prior will also be included as in the SAA polynomial,because somewhere between the 
    * two points is when the actual SAA is entered (we're rounding by one resolution).  
@@ -528,14 +527,13 @@ void MakePointed(double mjds, double mjde, double res, double ra,
    * @param EndTime - End time of the interval of interest in mjd format
    * @param Resolution - Time resolution for the Ephem and Attitude structures
    * @param att - attitude structure
-   * @param flg - flag to specify if the file is written in LAT SAA format or not
    * 
    * @author Giuseppe Romeo
    * @date Created:  Nov 15, 2005
-   * @date Last Modified:  Feb 08, 2006
+   * @date Last Modified:  May 04, 2009
    */
 void saa(EphemData *EphemPtr, const char *filename, double StartTime, 
-	 double EndTime, double Resolution, Attitude *att, int flg );
+	 double EndTime, double Resolution, Attitude *att);
 
 
 

@@ -540,7 +540,8 @@ EphemData * tlederive(FILE *ifp, double StartTime,
   vector pos, vel;
 
   double temp;
-  char *SatN = "GLAST";  // TLE satellite name is 6 characters
+  char *SatN  = "GLAST";  // TLE satellite name is 5 characters
+  char *SatN2 = "FGRST";  // This is the name used in NORAD file
 
   int it, nit;
   double mjd;
@@ -583,7 +584,7 @@ EphemData * tlederive(FILE *ifp, double StartTime,
 
   while (fgets(tec,bufsiz,ifp)) {
 
-    if(strncmp(SatN, tec, slen) ==0) {
+    if(strncmp(SatN, tec, slen) ==0){
       strcpy(ln[il++],tec);
       fgets(tec,bufsiz,ifp);
       strcpy(ln[il++],tec);
@@ -591,12 +592,23 @@ EphemData * tlederive(FILE *ifp, double StartTime,
       strcpy(ln[il++],tec);
       flgNam = 1;
       break;
-      
     }
+    if(strncmp(SatN2, tec, slen) ==0){
+      strcpy(ln[il++],tec);
+      fgets(tec,bufsiz,ifp);
+      strcpy(ln[il++],tec);
+      fgets(tec,bufsiz,ifp);
+      strcpy(ln[il++],tec);
+      flgNam = 1;
+      // Make sure SatN contains the name we found.
+      SatN=SatN2;
+      break;
+    }
+
   }
 
   if(flgNam == 0){
-    osf.err() << "Error: Satellite " << SatN << " is NOT present in the TLE file\nPlease, check it and try again\n\n";
+    osf.err() << "Error: Satellite " << SatN << " or " << SatN2 << " is NOT present in the TLE file\nPlease, check it and try again\n\n";
     return(EPHNO);
   }
 
@@ -1855,7 +1867,7 @@ void MakePointed(double start, double end, double res, double ra,
    is accounted for.  (Don't use index 0!)
 */
 void saa( EphemData *EphemPtr, const char *filename, double StartTime, 
-	  double EndTime, double Resolution, Attitude *att, int flg ) {
+	  double EndTime, double Resolution, Attitude *att) {
 
   double lontable[52],lattable[52], lat, lon, pt, nextpt;
   int i, inum, num_saa, num_lat, num_lon, isaa;
@@ -1909,47 +1921,6 @@ void saa( EphemData *EphemPtr, const char *filename, double StartTime,
 	}
 
       }
-
-
-
-
-/*
-	if(flg == 1){
-	  // Read file. Ignore comment lines (#), truncate if more than 50 pairs 
-	  while ((fgets(line,lnsz,fptr) != NULL) && (num_saa < 50)) {
-
-	    if (line[0] != '#') {
-	      num_saa++;
-	      sscanf (line, "%lf %lf", &lontable[num_saa], &lattable[num_saa]);
-	      if (lontable[num_saa] >= 180.0) lontable[num_saa]-=360.0;
-
-	    }
-
-	  }
-	} else if(flg == 2){
-
-	  // Read file. Ignore comment lines (#), truncate if more than 50 pairs 
-	  while ((fgets(line,lnsz,fptr) != NULL) && (num_lat < 50) && (num_lon < 50) ) {
-
-	    if (line[0] != '#') {
-	      if(strncmp(line, "SAAPOLYLAT", 10) == 0){
-		num_lat++;
-		sscanf (line, "%13c%lf", jnk,&lattable[num_lat]); 
-	      }
-
-
-	      if(strncmp(line, "SAAPOLYLONG", 11) == 0){
-		num_lon++;
-		sscanf (line, "%14c%lf", jnk,&lontable[num_lon]);
-		if (lontable[num_lon] >= 180.0) lontable[num_lon]-=360.0;
-	      }
-	    }
-
-
-	  }
-	}
-*/  
-
     
       fclose(fptr);
 
@@ -1986,33 +1957,6 @@ void saa( EphemData *EphemPtr, const char *filename, double StartTime,
 
     }
   }
-
-  if (num_saa < 4 || flg == 0)
-  {  
-    /* An saa file was not passed in, or it was not valid (not enough points),
-     use these defaults for Swift */
-    osf.warn() << "saa constraint using default coded values for longitude/latitude table. \n";
-
-    /* don't use the 0 index for the tables */
-    /* CKS: These pairs are the defaults for Swift */
-    lontable[ 1] = -40.0; lattable[ 1]= -15.0;
-    lontable[ 2] = -55.0; lattable[ 2]= -20.0;
-    lontable[ 3] = -65.0; lattable[ 3]= -25.0;
-    lontable[ 4] = -70.0; lattable[ 4]= -30.0;
-    lontable[ 5] = -65.0; lattable[ 5]= -45.0;
-    lontable[ 6] = -55.0; lattable[ 6]= -50.0;
-    lontable[ 7] = -40.0; lattable[ 7]= -50.0;
-    lontable[ 8] = -30.0; lattable[ 8]= -45.0;
-    lontable[ 9] = -15.0; lattable[ 9]= -40.0;
-    lontable[10] =   0.0; lattable[10]= -30.0;
-    lontable[11] = -15.0; lattable[11]= -15.0;
-    lontable[12] = -30.0; lattable[12]= -15.0;
-    lontable[13] = -40.0; lattable[13]= -15.0;  /* last pair must be same as first pair */
- 
-     num_saa = 13;
- 
-  }
-
  
   if(find_minmax(&lontable[0],&lattable[0],num_saa, &minLon,&maxLon,&minLat,&maxLat) !=0){
     std::ostringstream eBufT;

@@ -287,7 +287,9 @@ int match_str(const char *string, const char *pattern) {
 
   int match = 0;
 
-  fosf.info(4) << "string="<< UpStr <<" ===> pattern="<< PAT <<"\n";
+  fosf.setMethod("match_str");
+
+  fosf.info(3) << "string="<< UpStr <<" ===> pattern="<< PAT <<"\n";
 
   int i, j;
   char c;
@@ -319,7 +321,7 @@ int match_str(const char *string, const char *pattern) {
     }
 
     if(strcmp(STR, NPAT) == 0 && slen == len-2){
-      fosf.info(4) << "EXACT match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      fosf.info(4) << "EXACT match: STR="<<STR<<" ===> NPAT="<<NPAT<<", MATCH FOUND\n";
       match = 1;
     }
 
@@ -339,7 +341,7 @@ int match_str(const char *string, const char *pattern) {
     }
 
     if(strcmp(STR, NPAT) == 0){
-      fosf.info(4) << "BEGIN match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      fosf.info(4) << "BEGIN match: STR="<<STR<<" ===> NPAT="<<NPAT<<", MATCH FOUND\n";
       match = 1;
     }
 
@@ -358,7 +360,7 @@ int match_str(const char *string, const char *pattern) {
     }
 
     if(strcmp(STR, NPAT) == 0){
-      fosf.info(4) << "END match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+      fosf.info(4) << "END match: STR="<<STR<<" ===> NPAT="<<NPAT<<", MATCH FOUND\n";
       match = 1;
     }
 
@@ -376,7 +378,7 @@ int match_str(const char *string, const char *pattern) {
 
       if(strcmp(STR, PAT) == 0){
 	match = 1;
-	fosf.info(4) << "ANY match: STR="<<STR<<" ===> NPAT="<<NPAT<<" MATCH FOUND\n";
+	fosf.info(4) << "ANY match: STR="<<STR<<" ===> PAT="<<PAT<<", MATCH FOUND\n";
 	break;
       }
     }
@@ -387,7 +389,7 @@ int match_str(const char *string, const char *pattern) {
   free(NPAT);
   free(STR);
 
-  fosf.info(4) << "Returning with match="<<match<<"\n";
+  fosf.info(3) << "Returning with match="<<match<<"\n";
   return match;
 }
 

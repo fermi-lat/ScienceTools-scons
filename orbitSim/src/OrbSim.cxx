@@ -31,7 +31,7 @@ int parseInit( const char *fname, InitI *inA) {
 
   FILE *inf;
   char ln[bufsz];
-  const int itm = 13;
+  const int itm = 12;
   int it = 0;
   
   losf.setMethod("parseInit");
@@ -283,28 +283,6 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-	//      }  else if(match((const char*)ln, "^[ ]*saafunc[ ]*") == 1) {
-      }  else if(match_str((const char*)ln, "^saafunc") == 1) {
-	char *jnk = processline(ln, '=');
-	if(jnk != NULL) {
-
-	  // Removing initial space in any
-	  while(jnk[0] == ' '){
-	    ++jnk;
-	  }
-	  int lenj = strlen(jnk);
-	  if(lenj > 0 && jnk[0] != '#') {
-	    char *TL = strtok(jnk, " #");
-	    int len = strlen(TL);
-	    if(len > 0){
-	      inA->saafunc.assign(TL);
-	      it++;
-	    }
-	  } else {
-	    inA->saafunc.assign("Not Specified");
-
-	  }
-	}
 //       } else if(match((const char*)ln, "^[ ]*Units[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Units") == 1) {
 	double t = -1.0;
@@ -371,11 +349,6 @@ int parseInit( const char *fname, InitI *inA) {
     it--;
   }
 
-
-  if(!((match_str( inA->saafunc.c_str(), "^saa$") == 1) ||
-       (match_str( inA->saafunc.c_str(), "^latsaa$") == 1))){
-    it--;
-  }
 
   if(it != itm){
     rv = 0;
@@ -868,17 +841,8 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
     }
   }
 
-
-  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
-  } else {
-    losf.warn() << "\n################################################################################\n\n";
-    losf.warn() <<"   WARNING:\n               the saa specified function is unknown,\n               possible values are saa or latsaa\n               Using default values for the polygon\n\n" ;
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 0);
-  }
-
+  saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
+  
   OAtt->ent = inum;
 
   if(!ini->OptFile.empty() ){
@@ -1213,16 +1177,7 @@ Attitude * makeAttAsFl(InitI *ini, EphemData *ephem) {
 
   }
 
-
-  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
-  } else {
-    losf.warn() << "\n################################################################################\n\n" <<"   WARNING:\n               the saa specified function is unknown,\n               possible values are saa or latsaa\n               Using default values for the polygon\n\n";
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 0);
-  }
-
+  saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
 
   if(ini->occflag == 1){
     // Getting the occultation
@@ -1557,19 +1512,7 @@ Attitude * doCmd(InitI *ini, EphemData *ephem) {
 
   }
 
-
-
-  if(match_str( ini->saafunc.c_str(), "^saa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 1);
-  } else if(match_str( ini->saafunc.c_str(), "^latsaa$") == 1){
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 2);
-  } else {
-
-    losf.warn() << "\n################################################################################\n\n" <<"   WARNING:\n               the saa specified function is unknown,\n               possible values are saa or latsaa\n               Using default values for the polygon\n\n";
-
-    saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt , 0);
-  }
-
+  saa( ephem, ini->saafile.c_str(), ini->start_MJD, ini->stop_MJD, ini->Resolution, OAtt);
 
   if(ini->occflag == 1){
     // Getting the occultation
