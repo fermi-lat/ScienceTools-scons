@@ -4,6 +4,10 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+06-may-2009      v2r0 JV  Multiple changes from FSSC version of code. This
+                          includes support for new version of ft2
+			  file, cleanup of the saa stuff, and fixes to
+			  handling of the chatter parameter.
 26-sep-2008    v1r0p1 JV  Minor variable fix for VC compiler warnings.
 25-sep-2008      v1r0 JV  Multiple changes from Romeo and Vernaleo.
 			  This brings it in sync with FSSC version.
