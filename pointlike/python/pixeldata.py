@@ -137,6 +137,7 @@ Optional keyword arguments:
         if not self.quiet: print 'setting PSF parameters (use_mc=%d)'%self.use_mc_psf
         if self.verbose: print '  energy class  gamma sigma(deg)'
         for band in data.map():
+             if band.emax()<= 10: continue  # apparently necessary?
              e = (band.emin()*band.emax())**0.5
              cl = band.event_class()
              gamma = self.psf.gamma(e,cl)
