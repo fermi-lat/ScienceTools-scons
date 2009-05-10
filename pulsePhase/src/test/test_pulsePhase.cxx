@@ -8,8 +8,6 @@
 #include <set>
 #include <string>
 
-#include "facilities/commonUtilities.h"
-
 #include "OrbitalPhaseApp.h"
 #include "PulsePhaseApp.h"
 
@@ -25,6 +23,52 @@
 #include "tip/TipFile.h"
 
 static const std::string s_cvs_id("$Name$");
+
+/** \class PulsePhaseAppTester
+    \brief Test PulsePhaseApp application (gtpphase).
+*/
+class PulsePhaseAppTester: public timeSystem::PulsarApplicationTester {
+  public:
+  /** \brief Construct a PulsePhaseAppTester object.
+      \param test_app Unit test appliction of pulsar tool package, under which this application tester is to run.
+  */
+  PulsePhaseAppTester(timeSystem::PulsarTestApp & test_app);
+
+  /// \brief Destruct this PulsePhaseAppTester object.
+  virtual ~PulsePhaseAppTester() throw() {}
+
+  /// \brief Returns an application object to be tested.
+  virtual st_app::StApp * createApplication() const;
+};
+
+PulsePhaseAppTester::PulsePhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtpphase", test_app) {}
+
+st_app::StApp * PulsePhaseAppTester::createApplication() const {
+  return new PulsePhaseApp();
+}
+
+/** \class OrbitalPhaseAppTester
+    \brief Test OrbitalPhaseApp application (gtophase).
+*/
+class OrbitalPhaseAppTester: public timeSystem::PulsarApplicationTester {
+  public:
+  /** \brief Construct a OrbitalPhaseAppTester object.
+      \param test_app Unit test appliction of pulsar tool package, under which this application tester is to run.
+  */
+  OrbitalPhaseAppTester(timeSystem::PulsarTestApp & test_app);
+
+  /// \brief Destruct this OrbitalPhaseAppTester object.
+  virtual ~OrbitalPhaseAppTester() throw() {}
+
+  /// \brief Returns an application object to be tested.
+  virtual st_app::StApp * createApplication() const;
+};
+
+OrbitalPhaseAppTester::OrbitalPhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtophase", test_app) {}
+
+st_app::StApp * OrbitalPhaseAppTester::createApplication() const {
+  return new OrbitalPhaseApp();
+}
 
 /** \class PulsePhaseTestApp
     \brief Test pulsePhase package and applications in it.
@@ -45,12 +89,6 @@ class PulsePhaseTestApp : public timeSystem::PulsarTestApp {
 
     /// \brief Test OrbitalPhaseApp class.
     virtual void testOrbitalPhaseApp();
-
-  protected:
-    /** \brief Create an application object to be tested.
-        \param app_name Name of application to be tested.
-    */
-    virtual st_app::StApp * createApplication(const std::string & app_name) const;
 };
 
 PulsePhaseTestApp::PulsePhaseTestApp(): PulsarTestApp("pulsePhase") {
@@ -66,6 +104,9 @@ void PulsePhaseTestApp::runTest() {
 
 void PulsePhaseTestApp::testPulsePhaseApp() {
   setMethod("testPulsePhaseApp");
+
+  // Create an application tester object.
+  PulsePhaseAppTester app_tester(*this);
 
   // List supported event file format(s).
   timeSystem::EventTimeHandlerFactory<timeSystem::GlastScTimeHandler> glast_sctime_handler;
@@ -84,20 +125,22 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   test_name_cont.push_back("par10");
 
   // Prepare files to be used in the tests.
-  std::string ev_file = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_events_v3.fits");
-  std::string sc_file = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_spacecraft_data_v3r1.fits");
-  std::string master_pulsardb = facilities::commonUtilities::joinPath(getDataPath(), "master_pulsardb_v2.fits");
-  std::string ev_file_2gti = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_events_2gti.fits");
+  std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
+  std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
+  std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
+  std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
 
   // Loop over parameter sets.
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
+    std::string log_file(getMethod() + "_" + test_name + ".log");
+    std::string log_file_ref(prependOutrefPath(log_file));
     std::string out_file(getMethod() + "_" + test_name + ".fits");
+    std::string out_file_ref(prependOutrefPath(out_file));
     std::set<std::string> col_name;
 
     // Set default parameters.
-    std::string app_name("gtpphase");
-    st_app::AppParGroup pars(app_name);
+    st_app::AppParGroup pars(app_tester.getName());
     pars["evfile"] = "";
     pars["scfile"] = "";
     pars["psrdbfile"] = "";
@@ -133,7 +176,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     pars["mode"] = "ql";
 
     // Set test-specific parameters.
-    bool check_out_file = true;
     if ("par1" == test_name) {
       // Test standard computation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
@@ -143,6 +185,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = master_pulsardb;
       pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
       col_name.insert("PULSE_PHASE");
 
     } else if ("par2" == test_name) {
@@ -164,6 +208,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f0"] = 19.83401688366839422996;
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
+      log_file.erase();
+      log_file_ref.erase();
       col_name.insert("PULSE_PHASE");
 
     } else if ("par3" == test_name) {
@@ -175,6 +221,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = master_pulsardb;
       pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
       col_name.insert("PULSE_PHASE");
 
     } else if ("par4" == test_name) {
@@ -195,6 +243,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
       pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
       col_name.insert("PULSE_PHASE");
 
     } else if ("par5" == test_name) {
@@ -203,8 +253,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -212,7 +262,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = "@" + summary_file;
       pars["matchsolareph"] = "NONE";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par6" == test_name) {
       // Test no reporting of ephemeris status with reportephstatus=no.
@@ -220,8 +271,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -230,7 +281,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["psrdbfile"] = "@" + summary_file;
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par7" == test_name) {
       // Test reporting of database creation history.
@@ -238,8 +290,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -249,7 +301,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
       pars["chatter"] = 4;
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par8" == test_name) {
       // Test reporting of an ephemeris gap which overlaps with the first GTI in the event file.
@@ -258,9 +311,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J0540-6919";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin2.txt");
+      pars["psrdbfile"] = prependDataPath("psrdb_spin2.txt");
       pars["matchsolareph"] = "NONE";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par9" == test_name) {
       // Test reporting of an ephemeris gap which overlaps with the second GTI in the event file.
@@ -269,9 +323,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J0540-6919";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin3.txt");
+      pars["psrdbfile"] = prependDataPath("psrdb_spin3.txt");
       pars["matchsolareph"] = "NONE";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par10" == test_name) {
       // Test reporting of an ephemeris gap which overlaps with the both GTI's in the event file.
@@ -280,9 +335,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J0540-6919";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin4.txt");
+      pars["psrdbfile"] = prependDataPath("psrdb_spin4.txt");
       pars["matchsolareph"] = "NONE";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else {
       // Skip this iteration.
@@ -290,17 +346,15 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     }
 
     // Test the application.
-    if (check_out_file) {
-      testApplication(app_name, pars, "", "", out_file, col_name);
-    } else {
-      std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "", "", col_name);
-    }
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, col_name);
   }
 }
 
 void PulsePhaseTestApp::testOrbitalPhaseApp() {
   setMethod("testOrbitalPhaseApp");
+
+  // Create an application tester object.
+  OrbitalPhaseAppTester app_tester(*this);
 
   // List supported event file format(s).
   timeSystem::EventTimeHandlerFactory<timeSystem::GlastScTimeHandler> glast_sctime_handler;
@@ -313,20 +367,22 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   test_name_cont.push_back("par4");
 
   // Prepare files to be used in the tests.
-  std::string ev_file = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_events_v3.fits");
-  std::string sc_file = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_spacecraft_data_v3r1.fits");
-  std::string master_pulsardb = facilities::commonUtilities::joinPath(getDataPath(), "master_pulsardb_v2.fits");
-  std::string ev_file_2gti = facilities::commonUtilities::joinPath(getDataPath(), "my_pulsar_events_2gti.fits");
+  std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
+  std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
+  std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
+  std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
 
   // Loop over parameter sets.
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
+    std::string log_file(getMethod() + "_" + test_name + ".log");
+    std::string log_file_ref(prependOutrefPath(log_file));
     std::string out_file(getMethod() + "_" + test_name + ".fits");
+    std::string out_file_ref(prependOutrefPath(out_file));
     std::set<std::string> col_name;
 
     // Set default parameters.
-    std::string app_name("gtophase");
-    st_app::AppParGroup pars(app_name);
+    st_app::AppParGroup pars(app_tester.getName());
     pars["evfile"] = "";
     pars["scfile"] = "";
     pars["psrdbfile"] = "";
@@ -350,7 +406,6 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     pars["mode"] = "ql";
 
     // Set test-specific parameters.
-    bool check_out_file = true;
     if ("par1" == test_name) {
       // Test standard computation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
@@ -362,6 +417,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
       col_name.insert("ORBITAL_PHASE");
+      log_file.erase();
+      log_file_ref.erase();
 
     } else if ("par2" == test_name) {
       // Test ephemeris status reporting.
@@ -369,9 +426,9 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_binary.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_binary.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -380,7 +437,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par3" == test_name) {
       // Test no reporting of ephemeris status with reportephstatus=no.
@@ -388,9 +446,9 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_binary.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_binary.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -400,7 +458,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else if ("par4" == test_name) {
       // Test reporting of database creation history.
@@ -408,9 +467,9 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       std::string summary_file("psrdb_summary.txt");
       remove(summary_file.c_str());
       std::ofstream ofs_summary(summary_file.c_str());
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_spin1.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_binary.txt") << std::endl;
-      ofs_summary << facilities::commonUtilities::joinPath(getDataPath(), "psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_binary.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -421,7 +480,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
       pars["chatter"] = 4;
-      check_out_file = false;
+      out_file.erase();
+      out_file_ref.erase();
 
     } else {
       // Skip this iteration.
@@ -429,22 +489,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     }
 
     // Test the application.
-    if (check_out_file) {
-      testApplication(app_name, pars, "", "", out_file, col_name);
-    } else {
-      std::string log_file(getMethod() + "_" + test_name + ".log");
-      testApplication(app_name, pars, log_file, "", "", col_name);
-    }
-  }
-}
-
-st_app::StApp * PulsePhaseTestApp::createApplication(const std::string & app_name) const {
-  if ("gtpphase" == app_name) {
-    return new PulsePhaseApp();
-  } else if ("gtophase" == app_name) {
-    return new OrbitalPhaseApp();
-  } else {
-    return 0;
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, col_name);
   }
 }
 
