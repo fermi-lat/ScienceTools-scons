@@ -12,7 +12,6 @@
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
 #include "optimizers/OutOfBounds.h"
-#include "optimizers/f2c_types.h"
 
 namespace {
    int numPars(0);
