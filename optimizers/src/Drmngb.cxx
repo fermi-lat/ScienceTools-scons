@@ -70,7 +70,7 @@ namespace optimizers {
     if (tolType == RELATIVE) {
       v[31] = tol;
     } else if (tolType == ABSOLUTE) {
-      v[31] = 3.e-16;
+      v[31] = 3e-16;
     }
 
     /// Call the optimizing function in an infinite loop.
@@ -97,6 +97,14 @@ namespace optimizers {
 	funcVal = -m_stat->value();
 	m_evals++;
 	m_val = funcVal;
+	if (tolType == ABSOLUTE && iv[28] == 4 && fabs(funcVal-oldVal) < tol) {
+	  // check after a successful line search
+	  m_retCode = 6;
+	  if (verbose != 0)
+	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE x****" 
+		      << std::endl;
+	  break;
+	}
       }
       else if (rcode == 2) { /// request for the gradient
 	m_stat->setFreeParamValues(paramVals);
@@ -105,14 +113,6 @@ namespace optimizers {
 	  *p = -*p;
 	}
 	m_grads++;
-	if (tolType == ABSOLUTE && iv[28] == 3 && fabs(funcVal-oldVal) < tol) {
-	  // check after a successful line search
-	  m_retCode = 6;
-	  if (verbose != 0)
-	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE *****" 
-		      << std::endl;
-	  break;
-	}
 	oldVal = funcVal;
       }
       else {  /// Finished.  Exit loop.
