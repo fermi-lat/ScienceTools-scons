@@ -39,12 +39,32 @@ class PulsePhaseAppTester: public timeSystem::PulsarApplicationTester {
 
   /// \brief Returns an application object to be tested.
   virtual st_app::StApp * createApplication() const;
+
+  /** \brief Return a logical true if the given table cells are considered equivalent to each other.
+      \param keyword_name Name of the header keyword being compared.
+      \param out_cell Table cell taken from the output file being compared.
+      \param ref_cell Table cell taken from the reference file to be checked against.
+  */
+  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell) const;
 };
 
 PulsePhaseAppTester::PulsePhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtpphase", test_app) {}
 
 st_app::StApp * PulsePhaseAppTester::createApplication() const {
   return new PulsePhaseApp();
+}
+
+bool PulsePhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
+  const tip::TableCell & ref_cell) const {
+  if ("PULSE_PHASE" == column_name) {
+    std::string out_value;
+    std::string ref_value;
+    out_cell.get(out_value);
+    ref_cell.get(ref_value);
+    return !compareNumericString(out_value, ref_value);
+  } else {
+    return true;
+  }
 }
 
 /** \class OrbitalPhaseAppTester
@@ -62,12 +82,32 @@ class OrbitalPhaseAppTester: public timeSystem::PulsarApplicationTester {
 
   /// \brief Returns an application object to be tested.
   virtual st_app::StApp * createApplication() const;
+
+  /** \brief Return a logical true if the given table cells are considered equivalent to each other.
+      \param keyword_name Name of the header keyword being compared.
+      \param out_cell Table cell taken from the output file being compared.
+      \param ref_cell Table cell taken from the reference file to be checked against.
+  */
+  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell) const;
 };
 
 OrbitalPhaseAppTester::OrbitalPhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtophase", test_app) {}
 
 st_app::StApp * OrbitalPhaseAppTester::createApplication() const {
   return new OrbitalPhaseApp();
+}
+
+bool OrbitalPhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
+  const tip::TableCell & ref_cell) const {
+  if ("ORBITAL_PHASE" == column_name) {
+    std::string out_value;
+    std::string ref_value;
+    out_cell.get(out_value);
+    ref_cell.get(ref_value);
+    return !compareNumericString(out_value, ref_value);
+  } else {
+    return true;
+  }
 }
 
 /** \class PulsePhaseTestApp
@@ -137,7 +177,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     std::string log_file_ref(prependOutrefPath(log_file));
     std::string out_file(getMethod() + "_" + test_name + ".fits");
     std::string out_file_ref(prependOutrefPath(out_file));
-    std::set<std::string> col_name;
 
     // Set default parameters.
     st_app::AppParGroup pars(app_tester.getName());
@@ -187,7 +226,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
-      col_name.insert("PULSE_PHASE");
 
     } else if ("par2" == test_name) {
       // Test standard computation with FREQ option.
@@ -210,7 +248,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f2"] = 0.;
       log_file.erase();
       log_file_ref.erase();
-      col_name.insert("PULSE_PHASE");
 
     } else if ("par3" == test_name) {
       // Test phase computation with orbital modulation with DB option.
@@ -223,7 +260,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
-      col_name.insert("PULSE_PHASE");
 
     } else if ("par4" == test_name) {
       // Test phase computation with orbital modulation with FREQ option.
@@ -245,7 +281,6 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
-      col_name.insert("PULSE_PHASE");
 
     } else if ("par5" == test_name) {
       // Test ephemeris status reporting.
@@ -346,7 +381,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     }
 
     // Test the application.
-    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, col_name);
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref);
   }
 }
 
@@ -379,7 +414,6 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     std::string log_file_ref(prependOutrefPath(log_file));
     std::string out_file(getMethod() + "_" + test_name + ".fits");
     std::string out_file_ref(prependOutrefPath(out_file));
-    std::set<std::string> col_name;
 
     // Set default parameters.
     st_app::AppParGroup pars(app_tester.getName());
@@ -416,7 +450,6 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
-      col_name.insert("ORBITAL_PHASE");
       log_file.erase();
       log_file_ref.erase();
 
@@ -489,7 +522,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     }
 
     // Test the application.
-    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, col_name);
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref);
   }
 }
 
