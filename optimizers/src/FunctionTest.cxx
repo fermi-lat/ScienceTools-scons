@@ -6,6 +6,9 @@
  */
 
 #include <cassert>
+#include <iostream>
+
+#include "optimizers/dArg.h"
 #include "optimizers/FunctionTest.h"
 #include "optimizers/Exception.h"
 
@@ -161,22 +164,40 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
 
 // Check the derivatives wrt all Parameters against numerical estimates 
       std::vector<double> derivs;
-      m_func->getDerivs(*my_arg, derivs);
+      m_func->getFreeDerivs(*my_arg, derivs);
       std::vector<double> params;
-      m_func->getParamValues(params);
+      m_func->getFreeParamValues(params);
+//       for (size_t i(0); i < params.size(); i++) {
+//          std::cout << i << "  "
+//                    << params[i] << std::endl;
+//       }
+
       double f0 = m_func->value(*my_arg);
+      std::cout << dynamic_cast<optimizers::dArg *>(my_arg)->getValue() << "  " 
+                << f0 << std::endl;
       for (unsigned int i = 0; i < params.size(); i++) {
          std::vector<double> new_params = params;
          double delta = new_params[i]*eps;
          new_params[i] += delta;
-         m_func->setParamValues(new_params);
+         m_func->setFreeParamValues(new_params);
          double f1 = m_func->value(*my_arg);
          double my_deriv = (f1 - f0)/delta;
-         assert(fabs(my_deriv/derivs[i] - 1.) < eps*10.);
+
+         std::cout << i << "  "
+                   << params[i] << "  "
+                   << f1 << std::endl;
+
+         if (derivs[i] != 0) {
+            double value = fabs(my_deriv/derivs[i] - 1.);
+            std::cout << value << std::endl;
+            assert(value < eps*10.);
+         } else {
+            assert(fabs(my_deriv) < eps*10.);
+         }
       }
 
 // Check that the free derivatives are being accessed correctly.
-      m_func->setParamValues(params);     // restore the Parameter values
+      m_func->setFreeParamValues(params);     // restore the Parameter values
       std::vector<Parameter> parameters;  // get all Parameter info
       m_func->getParams(parameters);
       std::vector<double> freeDerivs;     // and the free derivatives
