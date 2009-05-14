@@ -173,8 +173,8 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
 //       }
 
       double f0 = m_func->value(*my_arg);
-      std::cout << dynamic_cast<optimizers::dArg *>(my_arg)->getValue() << "  " 
-                << f0 << std::endl;
+//       std::cout << dynamic_cast<optimizers::dArg *>(my_arg)->getValue() << "  " 
+//                 << f0 << std::endl;
       for (unsigned int i = 0; i < params.size(); i++) {
          std::vector<double> new_params = params;
          double delta = new_params[i]*eps;
@@ -183,13 +183,13 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
          double f1 = m_func->value(*my_arg);
          double my_deriv = (f1 - f0)/delta;
 
-         std::cout << i << "  "
-                   << params[i] << "  "
-                   << f1 << std::endl;
+//          std::cout << i << "  "
+//                    << params[i] << "  "
+//                    << f1 << std::endl;
 
          if (derivs[i] != 0) {
             double value = fabs(my_deriv/derivs[i] - 1.);
-            std::cout << value << std::endl;
+//             std::cout << value << std::endl;
             assert(value < eps*10.);
          } else {
             assert(fabs(my_deriv) < eps*10.);
