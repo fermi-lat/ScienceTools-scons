@@ -44,8 +44,10 @@ class PulsePhaseAppTester: public timeSystem::PulsarApplicationTester {
       \param keyword_name Name of the header keyword being compared.
       \param out_cell Table cell taken from the output file being compared.
       \param ref_cell Table cell taken from the reference file to be checked against.
+      \param error_stream Output stream for this method to put error messages.
   */
-  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell) const;
+  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
+    std::ostream & error_stream) const;
 };
 
 PulsePhaseAppTester::PulsePhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtpphase", test_app) {}
@@ -55,14 +57,24 @@ st_app::StApp * PulsePhaseAppTester::createApplication() const {
 }
 
 bool PulsePhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
-  const tip::TableCell & ref_cell) const {
+  const tip::TableCell & ref_cell, std::ostream & error_stream) const {
   if ("PULSE_PHASE" == column_name) {
+    // Extract cell values.
     std::string out_value;
     std::string ref_value;
     out_cell.get(out_value);
     ref_cell.get(ref_value);
-    return !compareNumericString(out_value, ref_value);
+
+    // Compare values and produce error message if any.
+    if (compareNumericString(out_value, ref_value)) {
+      error_stream << "Value \"" << out_value << "\" not equivalent to reference value \"" << ref_value << "\"";
+      return false;
+    } else {
+      return true;
+    }
+
   } else {
+    // Ignore other columns.
     return true;
   }
 }
@@ -87,8 +99,10 @@ class OrbitalPhaseAppTester: public timeSystem::PulsarApplicationTester {
       \param keyword_name Name of the header keyword being compared.
       \param out_cell Table cell taken from the output file being compared.
       \param ref_cell Table cell taken from the reference file to be checked against.
+      \param error_stream Output stream for this method to put error messages.
   */
-  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell) const;
+  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
+    std::ostream & error_stream) const;
 };
 
 OrbitalPhaseAppTester::OrbitalPhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtophase", test_app) {}
@@ -98,14 +112,24 @@ st_app::StApp * OrbitalPhaseAppTester::createApplication() const {
 }
 
 bool OrbitalPhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
-  const tip::TableCell & ref_cell) const {
+  const tip::TableCell & ref_cell, std::ostream & error_stream) const {
   if ("ORBITAL_PHASE" == column_name) {
+    // Extract cell values.
     std::string out_value;
     std::string ref_value;
     out_cell.get(out_value);
     ref_cell.get(ref_value);
-    return !compareNumericString(out_value, ref_value);
+
+    // Compare values and produce error message if any.
+    if (compareNumericString(out_value, ref_value)) {
+      error_stream << "Value \"" << out_value << "\" not equivalent to reference value \"" << ref_value << "\"";
+      return false;
+    } else {
+      return true;
+    }
+
   } else {
+    // Ignore other columns.
     return true;
   }
 }
