@@ -65,7 +65,7 @@ class AnalysisBase(object):
             tol = self.tol
         optFactory = pyLike.OptimizerFactory_instance()
         myOpt = optFactory.create(optimizer, self.logLike)
-        myOpt.find_min(verbosity, tol, self.tolType)
+        myOpt.find_min_only(verbosity, tol, self.tolType)
     def _errors(self, optimizer=None, verbosity=0, tol=None,
                 useBase=False, covar=False, optObject=None):
         self.logLike.syncParams()
@@ -114,7 +114,7 @@ class AnalysisBase(object):
         if reoptimize:
             optFactory = pyLike.OptimizerFactory_instance()
             myOpt = optFactory.create(self.optimizer, self.logLike)
-            myOpt.find_min(0, tol, self.tolType)
+            myOpt.find_min_only(0, tol, self.tolType)
         else:
             if approx:
                 try:

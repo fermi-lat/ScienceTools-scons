@@ -168,10 +168,10 @@ class UpperLimit(object):
             self._renorm()
             return
         try:
-            self.like.fit(verbosity)
+            self.like.optimize(verbosity)
         except RuntimeError:
             try:
-                self.like.fit(verbosity)
+                self.like.optimize(verbosity)
             except RuntimeError:
                 self.like.logLike.restoreBestFit()
                 pass
