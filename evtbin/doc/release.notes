@@ -87,8 +87,10 @@
 11-sep-2008    v2r1p2 JV  Fix for gcc32 and MS VC.
 28-oct-2008      v2r2 JV  Match FERMI in TELESCOP keyword as well as GLAST
 28-oct-2008    v2r2p1 JV  Added #include <algorithm> for MSWindows.
-210jan-2009    v2r2p2 JV  Updated outref files to match current version
+21-jan-2009    v2r2p2 JV  Updated outref files to match current version
                           of the code.
+18-may-2009    v2r2p3 JV  Update fits templates for gtbindef so its
+			  output files are valid with no warnings.
 --------------------------------------------------------------------------------
 \endverbatim
 
