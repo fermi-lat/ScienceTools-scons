@@ -28,7 +28,6 @@ TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
 FILTER   =                 NONE / Instrument filter in use (if any)
 CHANTYPE =                   PI / Energy channel type
-DETCHANS =                      / Total number of detector channels available. 
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Extension contains response data
 HDUCLAS2 =              EBOUNDS / Extension contains response matrix

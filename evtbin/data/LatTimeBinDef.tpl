@@ -29,10 +29,6 @@ INSTRUME =                  LAT / Instrument name
 HDUCLASS =                 OGIP / File format is OGIP standard
 HDUCLAS1 =                  GTI / Contains Good Time Intervals
 HDUVERS  =                1.2.0 / Version of file format
-ONTIME   =                      / Sum of all Good Time Intervals
-TSTART   =                      / Lower bound of first GTI
-TSTOP    =                      / Upper bound of last GTI
-EXPOSURE =                      / Total Livetime in seconds
 TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / All times are in seconds unless specified otherwise
 DATE-OBS                        / Start Date and Time of the observation (UTC)
