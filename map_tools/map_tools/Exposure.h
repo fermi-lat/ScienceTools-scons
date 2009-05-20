@@ -78,7 +78,11 @@ public:
     //! create object with specified binning
     //! @param pixelsize (deg) Approximate pixel size, in degrees
     //! @param cosbinsize bin size in the cos(theta) binner
-    Exposure(double pixelsize=1., double cosbinsize=1./healpix::CosineBinner::nbins(), double zcut=-1.0);
+    //! @param weighted [false] set true to make a weighted table
+    Exposure(double pixelsize=1., double cosbinsize=1./healpix::CosineBinner::nbins(), 
+        double zcut=-1.0,
+        bool   weighted=false
+        );
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, double deltat);
@@ -105,14 +109,17 @@ public:
 
     double lost()const{return m_lost;}
 
+
 protected:
     /** @brief  allow horizon cut, possible if FOV includes horizon
         @param dirz direction of z-axis of instrument
         @param dirx direction of x-axis of instrument
         @param dirzenith direction of local zenith
         @param deltat time interval
+        @param fraction livetime fractio
     */
-    virtual void fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& dirzenith, double deltat);
+    virtual void fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, 
+        const astro::SkyDir& dirzenith, double deltat);
 
 private:
     bool processEntry(const tip::ConstTableRecord & row, const GTIvector& gti);
@@ -145,6 +152,7 @@ private:
 
     double m_zcut; ///< value for zenith angle cut
     double m_lost; ///< keep track of lost
+    bool   m_weighted; ///< true if accumulating weighted livetime
 };
 
 

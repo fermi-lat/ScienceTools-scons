@@ -102,13 +102,16 @@ public:
         if( phibins>0) healpix::CosineBinner::setPhiBins(phibins); 
 
         Exposure ex( pixelsize, binsize, zmin);
+        Exposure ex2(pixelsize, binsize, zmin, true); // second map with weighted bins
         Exposure::GTIvector gti; 
 
         gti.push_back(std::make_pair(tstart,tstop));
         std::string infile(m_pars["infile"].Value()),
             outfile(m_pars["outfile"].Value()),
             table(m_pars["table"].Value()),
-            outtable(m_pars["outtable"].Value());
+            outtable(m_pars["outtable"].Value()),
+            outtable2(m_pars["outtable2"].Value());
+
         m_f.info() << "Creating an exposure object from a pointing history file ..." << infile << std::endl;
         m_f.info() << "\ttstart: " << tstart << "\n\t tstop: "<< tstop << std::endl;
         if( zmin>-1.){
@@ -126,6 +129,7 @@ public:
         }else{
             tip::Table * scData = tip::IFileSvc::instance().editTable(infile, table);
             ex.load(scData, gti);
+            ex2.load(scData, gti);
         }
 
         // create the fits output file from the Exposure file
@@ -136,6 +140,7 @@ public:
             m_f.info() << " lost " << ex.lost() << " seconds from zcut" << std::endl;
         }
        HealpixArrayIO::instance().write(ex.data(), outfile, outtable);
+       HealpixArrayIO::instance().write(ex2.data(), outfile, outtable2);
 
  
     }

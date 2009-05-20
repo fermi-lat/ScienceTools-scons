@@ -35,7 +35,7 @@ inline int side_from_degrees(double pixelsize){
     return n; 
 } 
 
-Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
+Exposure::Exposure(double pixelsize, double cosbinsize, double zcut, bool weighted)
 : SkyExposure(
     SkyBinner(Healpix(
       side_from_degrees(pixelsize),  // nside
@@ -43,6 +43,7 @@ Exposure::Exposure(double pixelsize, double cosbinsize, double zcut)
       astro::SkyDir::EQUATORIAL) )
   )
 , m_zcut(zcut), m_lost(0)
+, m_weighted(weighted)
 {
     unsigned int cosbins = static_cast<unsigned int>(1./cosbinsize);
     if( cosbins != CosineBinner::nbins() ) {
@@ -157,9 +158,12 @@ void Exposure::fill(const astro::SkyDir& dirz, const astro::SkyDir& zenith, doub
     m_lost += sum.lost();
 }
 
-void Exposure::fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& zenith, double deltat)
+void Exposure::fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, 
+                           const astro::SkyDir& zenith, 
+                           double deltat)
 {
-    Filler sum = for_each(m_dir_cache.begin(), m_dir_cache.end(), Filler(deltat, dirz, dirx, zenith, m_zcut));
+    Filler sum = for_each(m_dir_cache.begin(), m_dir_cache.end(), 
+        Filler(deltat, dirz, dirx, zenith, m_zcut));
     double total(sum.total());
     addtotal(total);
     m_lost += sum.lost();
@@ -230,6 +234,7 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
         done = fraction==0 && start > gti.back().second; 
     }
     if( fraction>0. ) {
+        deltat *= fraction; // reduce if a boundary
         double ra, dec, razenith, deczenith;
         row["ra_scz"].get(ra);
         row["dec_scz"].get(dec);
@@ -240,7 +245,11 @@ bool Exposure::processEntry(const tip::ConstTableRecord & row, const GTIvector& 
 	row["ra_zenith"].get(razenith);
 	row["dec_zenith"].get(deczenith);
         SkyDir zenith(razenith, deczenith);
-        fill_zenith(scz, scx,  zenith, deltat* fraction);
+        if( m_weighted ){
+            // adjust time by multiplying by livetime fraction
+            deltat *= livetime/(stop-start);
+        }
+        fill_zenith(scz, scx,  zenith, deltat);
     }
     return done; 
 
