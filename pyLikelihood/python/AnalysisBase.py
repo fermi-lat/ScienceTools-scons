@@ -183,12 +183,23 @@ class AnalysisBase(object):
 
         return num.sqrt(num.dot(partials, num.dot(my_covar, partials)))
     def deleteSource(self, srcName):
+        source_attributes = self.getExtraSourceAttributes()
         src = self.logLike.deleteSource(srcName)
         self.model = SourceModel(self.logLike)
+        #
+        # reset the remaining extra source attributes
+        #
+        for item in source_attributes:
+            if self.model[item] is not None:
+                self.model[item].__dict__.update(source_attributes[item])
         return src
     def addSource(self, src):
+        source_attributes = self.getExtraSourceAttributes()
         self.logLike.addSource(src)
         self.model = SourceModel(self.logLike)
+        for item in source_attributes:
+            if self.model[item] is not None:
+                self.model[item].__dict__.update(source_attributes[item])
     def writeCountsSpectra(self, outfile='counts_spectra.fits'):
         counts = pyLike.CountsSpectra(self.logLike)
         try:
