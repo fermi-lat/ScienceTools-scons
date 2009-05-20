@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 19-may-09 v7r4   THB  Changes to support generating table with weighted livetime
  17-apr-09 v7r3p4 THB  fix gtexpcube par file
  16-mar-09 v7r3p3  JC  make Exposure::fill_zenith accessible to subclasses
  15-mar-09 v7r3   THB  fix to code for phi dependent-IRF
