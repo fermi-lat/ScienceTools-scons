@@ -3,8 +3,10 @@
     \authors Masaharu Hirayama, GSSC,
              James Peachey, HEASARC/GSSC
 */
+#include <cmath>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <set>
 #include <string>
 
@@ -40,14 +42,30 @@ class PulsePhaseAppTester: public timeSystem::PulsarApplicationTester {
   /// \brief Returns an application object to be tested.
   virtual st_app::StApp * createApplication() const;
 
-  /** \brief Return a logical true if the given table cells are considered equivalent to each other.
-      \param keyword_name Name of the header keyword being compared.
-      \param out_cell Table cell taken from the output file being compared.
-      \param ref_cell Table cell taken from the reference file to be checked against.
-      \param error_stream Output stream for this method to put error messages.
+  /** \brief Return a logical true if the given header keyword is determined correct, and a logical false otherwise.
+      \param keyword_name Name of the header keyword to be verified.
+      \param out_keyword Header keyword taken from the output file to be verified.
+      \param ref_keyword Header keyword taken from the reference file which out_keyword is checked against.
+      \param error_stream Output stream for this method to put an error messages when verification fails.
   */
-  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
+  virtual bool verify(const std::string & keyword_name, const tip::KeyRecord & out_keyword,
+    const tip::KeyRecord & ref_keyword, std::ostream & error_stream) const;
+
+  /** \brief Return a logical true if the given table cell is considered correct, and a logical false otherwise.
+      \param column_name Name of the FITS column that the given table cell belongs to.
+      \param out_cell Table cell taken from the output file to be verified.
+      \param ref_cell Table cell taken from the reference file which out_cell is checked against.
+      \param error_stream Output stream for this method to put an error message when verification fails.
+  */
+  virtual bool verify(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
     std::ostream & error_stream) const;
+
+  /** \brief Return a logical true if the given character string is considered correct, and a logical false otherwise.
+      \param out_string Character string taken from the output file to be verified.
+      \param ref_string Character string taken from the reference file which out_string is checked against.
+      \param error_stream Output stream for this method to put an error message when verification fails.
+  */
+  virtual bool verify(const std::string & out_string, const std::string & ref_string, std::ostream & error_stream) const;
 };
 
 PulsePhaseAppTester::PulsePhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtpphase", test_app) {}
@@ -56,27 +74,72 @@ st_app::StApp * PulsePhaseAppTester::createApplication() const {
   return new PulsePhaseApp();
 }
 
-bool PulsePhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
+bool PulsePhaseAppTester::verify(const std::string & /* keyword_name */, const tip::KeyRecord & out_keyword,
+  const tip::KeyRecord & ref_keyword, std::ostream & error_stream) const {
+  // Extract keyword values as character strings.
+  std::string out_value = out_keyword.getValue();
+  std::string ref_value = ref_keyword.getValue();
+
+  // Require an exact match.
+  bool verified = (out_value == ref_value);
+  if (!verified) error_stream << "Value \"" << out_value << "\" not identical to reference \"" << ref_value << "\".";
+
+  // Return the result.
+  return verified;
+}
+
+bool PulsePhaseAppTester::verify(const std::string & column_name, const tip::TableCell & out_cell,
   const tip::TableCell & ref_cell, std::ostream & error_stream) const {
+  // Initialize return value.
+  bool verified = false;
+
   if ("PULSE_PHASE" == column_name) {
-    // Extract cell values.
-    std::string out_value;
-    std::string ref_value;
+    // Extract cell values as floating-point numbers.
+    double out_value;
+    double ref_value;
     out_cell.get(out_value);
     ref_cell.get(ref_value);
+    error_stream.precision(std::numeric_limits<double>::digits10);
 
-    // Compare values and produce error message if any.
-    if (compareNumericString(out_value, ref_value)) {
-      error_stream << "Value \"" << out_value << "\" not equivalent to reference value \"" << ref_value << "\"";
-      return false;
-    } else {
-      return true;
+    // Require a match down to the 3rd decimal point.
+    verified = (std::fabs(out_value - ref_value) <= 1.e-3);
+    if (!verified) {
+      error_stream << "Pulse phase " << out_value << " not equivalent to reference " << ref_value <<
+        " with absolute tolerance of 1e-3.";
     }
 
   } else {
     // Ignore other columns.
-    return true;
+    verified = true;
   }
+
+  // Return the result.
+  return verified;
+}
+
+bool PulsePhaseAppTester::verify(const std::string & out_string, const std::string & ref_string, std::ostream & error_stream) const {
+  // Initialize return value.
+  bool verified = false;
+
+  if (ref_string.find("MJD") != std::string::npos) {
+    // Require a match down to the 10th decimal point, which is approx. 10 microseconds.
+    verified = equivalent(out_string, ref_string, 1.e-10, 0.);
+    if (!verified) {
+      error_stream << "MJD number not equivalent to reference with absolute tolerance of 1e-10 days (8.64 microseconds)." <<
+        std::endl << "[OUT] " << out_string << std::endl << "[REF] " << ref_string;
+    }
+
+  } else {
+    // Require an exact match.
+    verified = (out_string == ref_string);
+    if (!verified) {
+      error_stream << "Line not identical to reference." <<
+        std::endl << "[OUT] " << out_string << std::endl << "[REF] " << ref_string;
+    }
+  }
+
+  // Return the result.
+  return verified;
 }
 
 /** \class OrbitalPhaseAppTester
@@ -95,14 +158,30 @@ class OrbitalPhaseAppTester: public timeSystem::PulsarApplicationTester {
   /// \brief Returns an application object to be tested.
   virtual st_app::StApp * createApplication() const;
 
-  /** \brief Return a logical true if the given table cells are considered equivalent to each other.
-      \param keyword_name Name of the header keyword being compared.
-      \param out_cell Table cell taken from the output file being compared.
-      \param ref_cell Table cell taken from the reference file to be checked against.
-      \param error_stream Output stream for this method to put error messages.
+  /** \brief Return a logical true if the given header keyword is determined correct, and a logical false otherwise.
+      \param keyword_name Name of the header keyword to be verified.
+      \param out_keyword Header keyword taken from the output file to be verified.
+      \param ref_keyword Header keyword taken from the reference file which out_keyword is checked against.
+      \param error_stream Output stream for this method to put an error messages when verification fails.
   */
-  virtual bool testEquivalence(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
+  virtual bool verify(const std::string & keyword_name, const tip::KeyRecord & out_keyword,
+    const tip::KeyRecord & ref_keyword, std::ostream & error_stream) const;
+
+  /** \brief Return a logical true if the given table cell is considered correct, and a logical false otherwise.
+      \param column_name Name of the FITS column that the given table cell belongs to.
+      \param out_cell Table cell taken from the output file to be verified.
+      \param ref_cell Table cell taken from the reference file which out_cell is checked against.
+      \param error_stream Output stream for this method to put an error message when verification fails.
+  */
+  virtual bool verify(const std::string & column_name, const tip::TableCell & out_cell, const tip::TableCell & ref_cell,
     std::ostream & error_stream) const;
+
+  /** \brief Return a logical true if the given character string is considered correct, and a logical false otherwise.
+      \param out_string Character string taken from the output file to be verified.
+      \param ref_string Character string taken from the reference file which out_string is checked against.
+      \param error_stream Output stream for this method to put an error message when verification fails.
+  */
+  virtual bool verify(const std::string & out_string, const std::string & ref_string, std::ostream & error_stream) const;
 };
 
 OrbitalPhaseAppTester::OrbitalPhaseAppTester(timeSystem::PulsarTestApp & test_app): PulsarApplicationTester("gtophase", test_app) {}
@@ -111,27 +190,73 @@ st_app::StApp * OrbitalPhaseAppTester::createApplication() const {
   return new OrbitalPhaseApp();
 }
 
-bool OrbitalPhaseAppTester::testEquivalence(const std::string & column_name, const tip::TableCell & out_cell,
+bool OrbitalPhaseAppTester::verify(const std::string & /* keyword_name */, const tip::KeyRecord & out_keyword,
+  const tip::KeyRecord & ref_keyword, std::ostream & error_stream) const {
+  // Extract keyword values as character strings.
+  std::string out_value = out_keyword.getValue();
+  std::string ref_value = ref_keyword.getValue();
+
+  // Require an exact match.
+  bool verified = (out_value == ref_value);
+  if (!verified) error_stream << "Value \"" << out_value << "\" not identical to reference \"" << ref_value << "\".";
+
+  // Return the result.
+  return verified;
+}
+
+bool OrbitalPhaseAppTester::verify(const std::string & column_name, const tip::TableCell & out_cell,
   const tip::TableCell & ref_cell, std::ostream & error_stream) const {
+  // Initialize return value.
+  bool verified = false;
+
   if ("ORBITAL_PHASE" == column_name) {
-    // Extract cell values.
-    std::string out_value;
-    std::string ref_value;
+    // Extract cell values as floating-point numbers.
+    double out_value;
+    double ref_value;
     out_cell.get(out_value);
     ref_cell.get(ref_value);
+    error_stream.precision(std::numeric_limits<double>::digits10);
 
-    // Compare values and produce error message if any.
-    if (compareNumericString(out_value, ref_value)) {
-      error_stream << "Value \"" << out_value << "\" not equivalent to reference value \"" << ref_value << "\"";
-      return false;
-    } else {
-      return true;
+    // Require them be close enough as floating-point numbers of type double whose value is of the order of unity.
+    double abs_tol = std::numeric_limits<double>::epsilon() * 1000.;
+    verified = (std::fabs(out_value - ref_value) <= abs_tol);
+    if (!verified) {
+      error_stream << "Orbital phase " << out_value << " not equivalent to reference " << ref_value <<
+        " with absolute tolerance of " << abs_tol << ".";
     }
 
   } else {
     // Ignore other columns.
-    return true;
+    verified = true;
   }
+
+  // Return the result.
+  return verified;
+}
+
+bool OrbitalPhaseAppTester::verify(const std::string & out_string, const std::string & ref_string, std::ostream & error_stream) const {
+  // Initialize return value.
+  bool verified = false;
+
+  if (ref_string.find("MJD") != std::string::npos) {
+    // Require a match down to the 10th decimal point, which is approx. 10 microseconds.
+    verified = equivalent(out_string, ref_string, 1.e-10, 0.);
+    if (!verified) {
+      error_stream << "MJD number not equivalent to reference with absolute tolerance of 1e-10 days (8.64 microseconds)." <<
+        std::endl << "[OUT] " << out_string << std::endl << "[REF] " << ref_string;
+    }
+
+  } else {
+    // Require an exact match.
+    verified = (out_string == ref_string);
+    if (!verified) {
+      error_stream << "Line not identical to reference." <<
+        std::endl << "[OUT] " << out_string << std::endl << "[REF] " << ref_string;
+    }
+  }
+
+  // Return the result.
+  return verified;
 }
 
 /** \class PulsePhaseTestApp
