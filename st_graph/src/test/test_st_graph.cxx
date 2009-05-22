@@ -104,8 +104,8 @@ void StGraphTestApp::run() {
   try {
     engine = &(Engine::instance());
   } catch (const std::exception & x) {
-    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
-    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    std::cerr << "Exception while creating/getting engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: run(): Test Aborted!" << std::endl;
     return;
   }
 
@@ -205,8 +205,8 @@ void StGraphTestApp::testPlots() {
   try {
     engine_p = &(Engine::instance());
   } catch (const std::exception & x) {
-    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
-    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    std::cerr << "Exception while creating/getting engine: " << x.what() << std::endl;
+    std::cerr << "WARNING: testPlots(): Test Aborted!" << std::endl;
     return;
   }
 
@@ -354,8 +354,8 @@ void StGraphTestApp::testGuis() {
     MyStGui gui(argv);
     gui.run();
   } catch (const std::exception & x) {
-    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
-    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    std::cerr << "Exception while creating/running MyStGui: " << x.what() << std::endl;
+    std::cerr << "WARNING: testGuis: Test Aborted!" << std::endl;
     return;
   }
 
@@ -485,8 +485,8 @@ void StGraphTestApp::testGuis() {
 
     gui.run();
   } catch (const std::exception & x) {
-    std::cerr << "Exception while creating engine: " << x.what() << std::endl;
-    std::cerr << "WARNING: Test Aborted!" << std::endl;
+    std::cerr << "Exception while creating/running MyGui: " << x.what() << std::endl;
+    std::cerr << "WARNING: MyGui(): Test Aborted!" << std::endl;
     return;
   }
 }
