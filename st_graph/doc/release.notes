@@ -44,5 +44,6 @@ $Id$
 14-aug-2006      v1r7 JP  Improve color handling scheme. Allow client to set colors of IPlots.
 30-jan-2008    v1r7p1 JP  Add SCons files.
 30-oct-2008    v1r7p2 JV  Added code from Peachey for Root free option and bugifx in StGui.cxx
+22-may-2009    v1r7p3 JP  Build library shared.
 \endverbatim
 */
