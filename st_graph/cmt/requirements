@@ -24,11 +24,13 @@ macro st_graph_libs  "-L$(ROOT_PATH)/lib -lCore -lCint -lHist -lGraf -lGraf3d -l
 
 macro_append st_graph_linkopts ${st_graph_libs}
 
+apply_pattern shared_library
+
 private
 macro_append st_graph_cppflags "" Linux "-DTRAP_FPE "
 apply_pattern package_include
 apply_pattern package_linkopts
 macro source *.cxx WIN32 "*.h *.cxx"
-library st_graph -no_share $(source)
+library st_graph $(source)
 application test_st_graph test/*.cxx
 
