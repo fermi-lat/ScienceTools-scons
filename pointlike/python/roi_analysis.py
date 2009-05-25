@@ -103,7 +103,7 @@ class ROIAnalysis(object):
       """Calculate log likelihood as a function of position of central point source."""
       
       ro = ROIOverlap()
-      rd = self.psm.ROI_dir()
+      rd = self.sa.roi_dir
       ll = 0
 
       from skymaps import PsfSkyFunction

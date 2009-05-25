@@ -83,7 +83,6 @@ Optional keyword arguments:
         for key,value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
-      	
         from numpy import arange,log10
         self.my_bins = 10**arange(log10(self.emin),log10(self.emax),1./self.binsperdecade)
         
@@ -129,11 +128,10 @@ Optional keyword arguments:
     def PSF_setup(self,bpd):
 
         # modify the psf parameters in the band objects, which SimpleLikelihood will then use
-        if self.CALDB is not None: skymaps.IParams.set_CALDB(self.CALDB)
-        else: skymaps.IParams.set_CALDB(os.environ['CALDB'])
+        skymaps.IParams.set_CALDB(self.CALDB or os.environ['CALDB'])
         skymaps.IParams.init('_'.join(self.psf_irf.split('_')[:-1]),self.psf_irf.split('_')[-1])
-        bpd.updateIrfs()  
-    
+        bpd.updateIrfs()
+
     def get_data(self):
         
         #if no binned object present, create; apply cuts
