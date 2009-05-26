@@ -257,7 +257,7 @@ Optional keyword arguments:
         """
         return SpectralAnalysis.Fitter(self, name, source_dir)
 
-    def roi(self, point_sources = None, backgrounds = None):
+    def roi(self, point_sources = None, backgrounds = None, **kwargs):
         """
         return an ROIAnalysis object with default settings.
 
@@ -267,7 +267,22 @@ Optional keyword arguments:
         backgrounds      a list of ROIBackgroundModels with which to replace the default
                          isotropic and Galactic backgrounds (optional)
         """
-        pass
+        from psmanager    import CatalogManager
+        from roi_modules  import ROIPointSourceManager,ROIBackgroundManager
+        from roi_analysis import ROIAnalysis
+        
+        cm = CatalogManager(r'f:/glast/data/kerr/gll_psc6month_v2.fit')
+        source_list = cm.merge_lists(self.roi_dir,self.maxROI+5,point_sources)
+
+        ps_manager = ROIPointSourceManager(source_list,self.roi_dir)
+        bg_manager = ROIBackgroundManager(self)
+
+        if point_sources is None: #make closest catalog source one to fit
+            for i in xrange(len(ps_manager.models[0].free)):
+               ps_manager.models[0].free[i] = True
+        roi = ROIAnalysis(ps_manager,bg_manager,self,**kwargs)
+
+        return roi
 
 #--------------------------------------------------------
 
