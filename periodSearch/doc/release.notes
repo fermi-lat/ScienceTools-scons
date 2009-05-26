@@ -5,6 +5,7 @@
 $Id$
 
 \verbatim
+25-may-2009   v10r6p2 MH  Fine-tune tolerances in the unit test for application classes.
 21-may-2009   v10r6p1 MH  Improve the unit test for application classes.
 28-apr-2009     v10r6 MH  Remove text output of plot data (JIRA PULS-51).  Report file creation time
                           in UT (JIRA PULS-52). Improve Doxygen documents.
