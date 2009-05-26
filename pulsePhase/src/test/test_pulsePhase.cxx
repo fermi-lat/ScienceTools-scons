@@ -102,10 +102,11 @@ bool PulsePhaseAppTester::verify(const std::string & column_name, const tip::Tab
     error_stream.precision(std::numeric_limits<double>::digits10);
 
     // Require a match down to the 3rd decimal point.
-    verified = (std::fabs(out_value - ref_value) <= 1.e-3);
+    double abs_tol = 1.e-3;
+    verified = (std::fabs(out_value - ref_value) <= abs_tol);
     if (!verified) {
       error_stream << "Pulse phase " << out_value << " not equivalent to reference " << ref_value <<
-        " with absolute tolerance of 1e-3.";
+        " with absolute tolerance of " << abs_tol << ".";
     }
 
   } else {
@@ -218,7 +219,7 @@ bool OrbitalPhaseAppTester::verify(const std::string & column_name, const tip::T
     error_stream.precision(std::numeric_limits<double>::digits10);
 
     // Require them be close enough as floating-point numbers of type double whose value is of the order of unity.
-    double abs_tol = std::numeric_limits<double>::epsilon() * 1000.;
+    double abs_tol = 1.e-9;
     verified = (std::fabs(out_value - ref_value) <= abs_tol);
     if (!verified) {
       error_stream << "Orbital phase " << out_value << " not equivalent to reference " << ref_value <<
