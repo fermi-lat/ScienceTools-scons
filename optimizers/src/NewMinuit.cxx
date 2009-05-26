@@ -28,7 +28,7 @@ namespace optimizers {
     m_tolerance(1e-3), m_strategy(ROOT::Minuit2::MnStrategy(1)), m_min(0) {}
 
   //  =
-  NewMinuit::NewMinuit & NewMinuit::operator=(const NewMinuit & rhs) {
+  NewMinuit & NewMinuit::operator=(const NewMinuit & rhs) {
       if (this == &rhs) return *this;
       Optimizer::operator=(rhs);
       m_maxEval = rhs.m_maxEval;
@@ -42,7 +42,7 @@ namespace optimizers {
   };
 
   //Copy constructor
-  NewMinuit::NewMinuit(const NewMinuit::NewMinuit & x) : Optimizer(x), m_maxEval(x.m_maxEval),
+  NewMinuit::NewMinuit(const NewMinuit & x) : Optimizer(x), m_maxEval(x.m_maxEval),
         m_FCN(x.m_FCN), m_distance(x.m_distance), m_tolerance(x.m_tolerance),
         m_strategy(x.m_strategy)
   {
