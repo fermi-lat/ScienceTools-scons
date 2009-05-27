@@ -137,6 +137,9 @@ if baseEnv['PLATFORM'] == "posix":
         baseEnv.AppendUnique(CCFLAGS = "-fPIC")
     baseEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
+if baseEnv['PLATFORM'] == "darwin":
+    baseEnv.AppendUnique(SHLINKFLAGS = ["-Wl,-install_name", "-Wl,${TARGET.file}"])
+        
 #########################
 #  Project Environment  #
 #########################
