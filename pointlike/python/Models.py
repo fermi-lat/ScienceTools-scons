@@ -115,7 +115,8 @@ Optional keyword arguments:
 
    def set_parameters(self,new_vals):
       """Set FREE parameters; new_vals should have length equal to number of free parameters."""
-      self.p[self.free] = new_vals
+      assert(len(new_vals)==(self.free).sum())
+      self.p[self.free] = new_vals.astype('f') # downcast to float needed?
 
    def freeze(self,parameter,freeze=True):
       """Freeze one of the spectral parameters from fitting.
