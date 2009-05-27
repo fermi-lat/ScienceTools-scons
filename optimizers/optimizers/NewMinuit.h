@@ -65,7 +65,6 @@ namespace optimizers {
     void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }
-    void setMaxEval(unsigned int n) {m_maxEval=n;}
     double getDistance(void) const {return m_distance;};
     void hesse(int verbose = 0);
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
@@ -73,7 +72,6 @@ namespace optimizers {
     virtual std::ostream& put (std::ostream& s) const;
     std::pair<double,double> Minos(unsigned int n);
   private:
-    unsigned int m_maxEval;
     myFCN m_FCN;
     double m_distance;
     double m_tolerance;

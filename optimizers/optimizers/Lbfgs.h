@@ -59,13 +59,12 @@ namespace optimizers {
     
       Lbfgs(Statistic &stat) 
          : Optimizer(stat), m_maxVarMetCorr(5),
-           m_maxIterations(100), m_pgtol(0), m_retCode(0) {}
+            m_pgtol(0), m_retCode(0) {}
     
     virtual ~Lbfgs() {}
     
     void setMaxVarMetCorr(const int m);
     void setPgtol(const double pgtol);
-    void setMaxIterations(const int iterations);
     
     int getRetCode(void) const;
     std::string getErrorString(void) const;
@@ -83,14 +82,12 @@ namespace optimizers {
     //! Number of variable metric corrections to save
     int m_maxVarMetCorr; 
 
-    //! Stop after this many function evaluations
-    int m_maxIterations; 
-
     //! One of the stopping criteria
     double m_pgtol; 
     int m_retCode;
 
     int m_numEvals;
+    int m_maxEval;
     double m_val;
     std::string m_errorString;
   };

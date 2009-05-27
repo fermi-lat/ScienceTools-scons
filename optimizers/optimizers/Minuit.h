@@ -93,7 +93,6 @@ namespace optimizers {
     
     //! Pass a command string to Minuit
     int doCmd(std::string command);
-    int m_maxEval;
     int m_quality;
     double m_distance;
     double m_val;

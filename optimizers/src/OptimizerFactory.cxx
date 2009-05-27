@@ -11,6 +11,7 @@
 
 #include "optimizers/Drmngb.h"
 #include "optimizers/Drmnfb.h"
+#include "optimizers/ModNewton.h"
 #include "optimizers/Lbfgs.h"
 #include "optimizers/Minuit.h"
 #include "optimizers/NewMinuit.h"
@@ -38,9 +39,11 @@ Optimizer * OptimizerFactory::create(const std::string & optimizerName,
    } else if (optimizerName == "Lbfgs" || optimizerName == "LBFGS") {
       return new Lbfgs(stat);
    } else if (optimizerName == "Drmngb" || optimizerName == "DRMNGB") {
-      return new Drmngb(stat);
+//      return new Drmngb(stat);
+      return new ModNewton(stat, true);
    } else if (optimizerName == "Drmnfb" || optimizerName == "DRMNFB") {
-      return new Drmnfb(stat);
+//      return new Drmnfb(stat);
+      return new ModNewton(stat, false);
    } else if (optimizerName == "Powell" || optimizerName == "POWELL") {
       return new Powell(stat);
    } else if (optimizerName == "NewMinuit" || optimizerName == "NEWMINUIT") {

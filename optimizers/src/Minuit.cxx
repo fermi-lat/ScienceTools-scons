@@ -20,13 +20,9 @@ namespace {
 namespace optimizers {
 
 
-  Minuit::Minuit(Statistic& stat) : Optimizer(stat), m_maxEval(200) {
+  Minuit::Minuit(Statistic& stat) : Optimizer(stat) {
     const integer i5=5, i6=6, i7=7;
     mninit_(&i5, &i6, &i7);
-  }
-
-  void Minuit::setMaxEval(int n) {
-    m_maxEval = n;
   }
 
   int Minuit::getQuality(void) const {

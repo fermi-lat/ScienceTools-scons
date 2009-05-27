@@ -15,12 +15,13 @@
 #include <iostream>
 
 #include "optimizers/Exception.h"
+#include "optimizers/Statistic.h"
 
 namespace optimizers {
 
 enum TOLTYPE {RELATIVE, ABSOLUTE};
 
-class Statistic;
+// class Statistic;
 
 /** 
  * @class Optimizer
@@ -33,7 +34,7 @@ class Optimizer {
     
 public:
     
-   Optimizer(Statistic & stat) : m_stat(&stat) {}
+   Optimizer(Statistic & stat) : m_stat(&stat), m_maxEval(100*m_stat->getNumParams()) {}
 
    virtual ~Optimizer() {}
 
@@ -62,11 +63,16 @@ public:
       return *m_stat;
    }
 
+   void setMaxEval(const int maxEval) {m_maxEval = maxEval;}
+   int  getMaxEval() const {return m_maxEval;}
+
    virtual std::ostream& put (std::ostream& s) const = 0;
 
 protected:
 
    Statistic * m_stat;
+
+   int m_maxEval;
 
    /// A vector to contain the estimated uncertainties of the free 
    /// parameters.

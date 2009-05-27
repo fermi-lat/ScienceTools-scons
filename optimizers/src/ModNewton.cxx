@@ -1,11 +1,11 @@
 /** 
- * @file Drmnfb.cxx
- * @brief Drmnfb class implementation
+ * @file ModNewton.cxx
+ * @brief ModNewton class implementation
  * @author P. Nolan
  *
  */
 
-#include "optimizers/Drmnfb.h"
+#include "optimizers/ModNewton.h"
 #include "optimizers/Parameter.h"
 #include "optimizers/Exception.h"
 #include "optimizers/dArg.h"
@@ -19,7 +19,7 @@ namespace optimizers {
   typedef std::vector<double>::iterator dptr;
   typedef std::vector<Parameter>::iterator pptr;
 
-  std::vector<double> & Drmnfb::getUncertainty(bool useBase) {
+  std::vector<double> & ModNewton::getUncertainty(bool useBase) {
 //      if (useBase) {
 //         Optimizer::getUncertainty(useBase);
 //      }
@@ -27,22 +27,17 @@ namespace optimizers {
      return m_uncertainty;
   }
 
-  int Drmnfb::getRetCode(void) const {
+  int ModNewton::getRetCode(void) const {
     return m_retCode;
   }
 
-  void Drmnfb::setNeedCovariance(bool b) {
+  void ModNewton::setNeedCovariance(bool b) {
     m_NeedCovariance = b;
   }
-  
-  void Drmnfb::find_min_only(int verbose, double tol, int tolType) {
-    setNeedCovariance(false);
-    find_min(verbose, tol, tolType);
-  }
 
-  void Drmnfb::find_min(int verbose, double tol, int tolType) {
+  void ModNewton::find_min(int verbose, double tol, int tolType) {
 
-    /// Unpack model parameters into the arrays needed by Drmnfb
+    /// Unpack model parameters into the arrays needed by the solvers
     
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
@@ -56,15 +51,15 @@ namespace optimizers {
       paramBounds.push_back(p->getBounds().second);
     }
     
-    /// Create the variables and arrays used by DRMNFB.
-    /// These serve as storage between calls to drmnfb_
+    /// Create the variables and arrays used by the solver.
+    /// These serve as storage between calls 
     /// so they must be declared outside the loop.
     /// Most of them don't need to be initialized.
 
     double funcVal;
     const int liv = 59 + nparams;
     const int lv = 77 + nparams*(nparams+23)/2;
-    std::vector<double> scale(nparams, 1.);
+    std::vector<double> gradient(nparams), scale(nparams, 1.);
     std::vector<int> iv(liv);
     std::vector<double> v(lv);
 
@@ -75,21 +70,28 @@ namespace optimizers {
     if (tolType == RELATIVE) {
       v[31] = tol;
     } else if (tolType == ABSOLUTE) {
-      v[31] = 3.e-16;
+      v[31] = 3e-16;
     }
     iv[16] = m_maxEval;
 
     /// Call the optimizing function in an infinite loop.
     double oldVal = 1.e+30;
+    m_evals = 0;
+    m_grads = 0;
     for (;;) {
-      drmnfb_(&paramBounds[0], &scale[0], &funcVal, &iv[0], 
-	      &liv, &lv, &nparams, &v[0], &paramVals[0]);
+      if (m_useGrad) {
+        drmngb_(&paramBounds[0], &scale[0], &funcVal, &gradient[0], &iv[0], 
+	      &liv,&lv, &nparams, &v[0], &paramVals[0]);
+      } else {
+        drmnfb_(&paramBounds[0], &scale[0], &funcVal, &iv[0], 
+	      &liv,&lv, &nparams, &v[0], &paramVals[0]);
+      }
       int rcode = iv[0];
-      if (rcode == 1 || rcode == 2) { /// request for a function value
+      if (rcode == 1 || rcode == 2) { /// request for a function or derivative
 	try {m_stat->setFreeParamValues(paramVals);}
 	catch (OutOfBounds e) {
 	  iv[1] = 1;  // Tell it to try a shorter step
-	  std::cerr << "Drmnfb::find_min error" << std::endl;
+	  std::cerr << "ModNewton::find_min error" << std::endl;
 	  std::cerr << e.what() << std::endl;
 	  std::cerr << "Value " << e.value() << " is not between "
 		    << e.minValue() << " and " << e.maxValue() << std::endl;
@@ -98,24 +100,40 @@ namespace optimizers {
 	catch (Exception e) {
 	  std::cerr << e.what() << std::endl;
 	}
-	funcVal = -m_stat->value();
-	m_val = funcVal;
-	if (tolType == ABSOLUTE && iv[0] == 1 && iv[28] == 4 && 
-	    fabs(funcVal-oldVal) < tol) {
-	  // check after a successful line search
-	  m_retCode = 6;
-	  if (verbose != 0)
-	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE *****" 
+        if (rcode == 1) {
+          funcVal = -m_stat->value();
+          m_evals++;
+          m_val = funcVal;
+          if (tolType == ABSOLUTE && iv[28] == 4 && fabs(funcVal-oldVal) < tol) {
+            // check after a successful line search
+            m_retCode = 6;
+            if (verbose != 0)
+              std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE x****" 
 		      << std::endl;
-	  break;
-	}
-	oldVal = funcVal;
+             break;
+	  }
+          oldVal = funcVal;
+        } else if (rcode == 2) {
+          if (m_useGrad) {
+	    m_stat->getFreeDerivs(gradient);
+            for (dptr p = gradient.begin(); p != gradient.end(); p++) 
+              {*p = -*p;}
+          } else {
+            funcVal = -m_stat->value();
+            m_val = funcVal;
+          }
+          m_grads++;
+        }
+      } else if (rcode == 9) {
+        m_retCode = rcode;
+        if (verbose != 0) 
+          std::cout << "***** TERMINATED FOR TOO MANY FUNCTION EVALUATIONS ****"
+             << std::endl;
+        break;
       }
       else {  /// Finished.  Exit loop.
-	m_evals = iv[6];
-	m_grads = iv[30];
 	m_retCode = rcode;
-	if (rcode > 6) {throw Exception("DRMNFB error", rcode);}
+	if (rcode > 6) {throw Exception("ModNewton error", rcode);}
 	break;
       }
     }
@@ -131,8 +149,8 @@ namespace optimizers {
       
       /// Invert the Hessian to produce the covariance matrix.  The result 
       /// is also stored as a compact triangular matrix.
-      /// Dpptri and drmnfb have opposite definitions of "lower" and
-      /// "upper" triangular matrices.  Drmnfb says it produces a lower
+      /// Dpptri and drmngb/drmnfb have opposite definitions of "lower" and
+      /// "upper" triangular matrices.  Drmn(f|g)b says it produces a lower
       /// matrix.  If we tell dpptri that it's upper, all is OK.
 
       int info;
@@ -154,8 +172,13 @@ namespace optimizers {
 
   } // End of find_min
 
-  std::ostream& Drmnfb::put (std::ostream& s) const {
-    s << "DRMNFB performed " << m_evals << " function evaluations" << std::endl;
+  void ModNewton::find_min_only(int verbose, double tol, int tolType) {
+    setNeedCovariance(false);
+    find_min(verbose, tol, tolType);
+  }
+
+  std::ostream& ModNewton::put (std::ostream& s) const {
+    s << "ModNewton performed " << m_evals << " function evaluations" << std::endl;
     s << "and " << m_grads << " gradient evaluations, ending with" << std::endl;
     s << "a function value of " << m_val << std::endl;
     return s;

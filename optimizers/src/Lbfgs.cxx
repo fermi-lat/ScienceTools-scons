@@ -23,9 +23,6 @@ namespace optimizers {
   void Lbfgs::setPgtol(const double pgtol)
   {m_pgtol = pgtol;}
 
-  void Lbfgs::setMaxIterations(const int mx)
-  {m_maxIterations = mx;}
-
   int Lbfgs::getRetCode(void) const
   {return m_retCode;}
 
@@ -122,7 +119,7 @@ namespace optimizers {
       }  // Don't break.  Call setulb_ again
       else if (taskString.substr(0, 5) == "NEW_X") {
 	// Ready to move to a new set of parameter values
-	if (isave[33] > m_maxIterations) {
+	if (isave[33] > m_maxEval) {
 	  m_retCode = LBFGS_TOOMANY;
 	  m_errorString = "Exceeded Specified Number of Iterations";
 	  break;

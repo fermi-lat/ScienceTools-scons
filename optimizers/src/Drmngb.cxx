@@ -72,6 +72,7 @@ namespace optimizers {
     } else if (tolType == ABSOLUTE) {
       v[31] = 3e-16;
     }
+    iv[16] = m_maxEval;
 
     /// Call the optimizing function in an infinite loop.
     double oldVal = 1.e+30;
