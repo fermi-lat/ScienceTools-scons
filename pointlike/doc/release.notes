@@ -5,6 +5,7 @@
 $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
+ 27-may-09 v6r20   THB Many python updates to implement generalized roi analysis (mostly MK)
  15-may-09 v6r19p0 THB preliminary version that uses psf threshold to choose bands for fits
  17-apr-09 v6r18p1 THB gcc fix
  13-apr-09 v6r18   THB Various improvements to poinfit
