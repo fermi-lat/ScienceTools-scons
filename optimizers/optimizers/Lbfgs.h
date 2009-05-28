@@ -87,7 +87,6 @@ namespace optimizers {
     int m_retCode;
 
     int m_numEvals;
-    int m_maxEval;
     double m_val;
     std::string m_errorString;
   };
