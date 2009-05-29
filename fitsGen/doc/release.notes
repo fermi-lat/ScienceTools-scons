@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+    v4r4   29-May-09   JC   remove CTBCLASSLEVEL
     v4r3p1 11-Apr-09   JC   add missing close single quote for TIMEREF 
                             keyword in PHDU in ft1.tpl (OBS-15@JIRA)
     v4r3   11-Mar-09   JC   round tstart and tstop downwards and upwards, 
