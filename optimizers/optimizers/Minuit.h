@@ -61,8 +61,8 @@ namespace optimizers {
     void find_min_only(int verbose = 0, double tol = 1e-3, int tolType = ABSOLUTE);
     void minimize(int verbose, double tol, int tolType, bool doHesse);
 
-    //! Override the default maximum number of function evaluations
-    void setMaxEval(int);
+//     //! Override the default maximum number of function evaluations
+//     void setMaxEval(int);
 
     //! Minuit return status.   3=OK, 2=forced positive def., 1= not accurate
     int getQuality(void) const;
