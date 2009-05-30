@@ -3,6 +3,7 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r15p11 30-May-09  JC  comment out unimplemented Minuit::setMaxEval
     v2r15p9 14-May-09  JC   update FunctionTest for Functions with fixed 
                             parameters
     v2r15p1 25-Mar-09  JC   Restore prior test conditions for Amoeba in 
