@@ -8,6 +8,46 @@
 #include <stdio.h>
 #include <cmath>
 
+namespace {
+  // getGregorianDate
+   // Adapted from DAYCNV in the astronomy IDL library
+   // http://idlastro.gsfc.nasa.gov/ftp/pro/astro/daycnv.pro
+   //
+   // Appears to give better than .00004 second consistency with JulianDate() over time 
+   // interval 2002 to 2020.
+
+    void gregDate(double JD, int &An, int &Me, int &Gio, double &utc)
+   {
+      double jd;
+      double frac, hr;
+      int yr, mn, day, l, n;
+
+      jd = int(JD);       // Truncate to integral day
+      frac = JD - jd + 0.5;    // Fractional part of calendar day
+
+      if(frac >= 1.0)      // Is it really the next calendar day?
+      {
+         frac = frac - 1.0;
+         jd = jd + 1.0;
+      }
+
+      hr = frac*24.0;
+      l = int(jd + 68569);
+      n = 4*l / 146097l;
+      l = l - (146097*n + 3l) / 4;
+      yr = 4000*(l+1) / 1461001;
+      l = l - 1461*yr / 4 + 31;        // 1461 = 365.25 * 4
+      mn = 80*l / 2447;
+      day = l - 2447*mn / 80;
+      l = mn/11;
+      mn = mn + 2 - 12*l;
+      yr = 100*(n-49) + yr + l;
+      An = yr;   
+      Me = mn;   
+      Gio = day;  
+      utc = hr;
+   }
+}
 
 namespace astro{
 
@@ -33,61 +73,19 @@ namespace astro{
       m_JD += leap;
    }
 
-   // getGregorianDate
-   // Adapted from DAYCNV in the astronomy IDL library
-   // http://idlastro.gsfc.nasa.gov/ftp/pro/astro/daycnv.pro
-   //
-   // Appears to give better than .00004 second consistency with JulianDate() over time 
-   // interval 2002 to 2020.
    void JulianDate::getGregorianDate(int &An, int &Me, int &Gio, double &utc) const
    {
-      double jd;
-      double frac, hr;
-      int yr, mn, day, l, n;
+       int yr, mn, day; double ut;
+       double JD(m_JD);
 
-      jd = int(m_JD);       // Truncate to integral day
-      frac = m_JD - jd + 0.5;    // Fractional part of calendar day
+       // convert to get year
+       gregDate(JD,yr, mn, day, ut);
 
-      if(frac >= 1.0)      // Is it really the next calendar day?
-      {
-         frac = frac - 1.0;
-         jd = jd + 1.0;
-      }
-
-      hr = frac*24.0;
-      l = int(jd + 68569);
-      n = 4*l / 146097l;
-      l = l - (146097*n + 3l) / 4;
-      yr = 4000*(l+1) / 1461001;
-      l = l - 1461*yr / 4 + 31;        // 1461 = 365.25 * 4
-      mn = 80*l / 2447;
-      day = l - 2447*mn / 80;
-      l = mn/11;
-      mn = mn + 2 - 12*l;
-      yr = 100*(n-49) + yr + l;
-
-      // account for leap seconds here
-      if( yr>2005) hr-=1./3600.;
-      if( yr>2008) hr-=1./3600.;
-
-
-      An = yr;   
-      Me = mn;   
-      Gio = day;  
-      utc = hr;
-      // these corrections made necessary by leap seconds which messes up logic above
-      if( utc>=24.0*(1-1e-6) ){
-          utc =- 24.;
-          Gio += 1.;
-      }
-          
-      while( utc<-1e-9){
-          utc += 24.;
-          Gio -= 1;
-      }
-      if( Gio ==0) { // fix day
-          Gio = 1; Me--;
-      }
+       // correct for leap seconds here
+       if( yr>2005) JD-=1./secondsPerDay;
+       if( yr>2008) JD-=1./secondsPerDay;
+       // again wih corrected date
+       gregDate(JD, An, Me, Gio,utc);
 
    }
 

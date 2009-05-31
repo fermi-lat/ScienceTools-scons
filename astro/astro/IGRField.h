@@ -92,12 +92,8 @@ class IGRField {
       float invariantLatitude() const { return m_invariantLat;};
 // Get R
       float R() const  { return m_R;};
-// Get lambda
-#ifndef SWIG // lamdba name invalid 
+// Get lambda (causes SWIG warning--not sure how to fix
       float lambda() const { return m_lambda;};
-#else
-      float _lambda() const{ return m_lambda;}
-#endif
 };
 
 }

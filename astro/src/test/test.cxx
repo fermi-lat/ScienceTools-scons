@@ -365,7 +365,8 @@ int main(){
             std::cout << "JIRA OBS-14\n";
             double secsperday(86400.); 
             astro::JulianDate mission_start(2001, 1, 1, 0); 
-
+ 
+            //double t0(252460741.00005 ); //version to check insertion of leap
             double t0(255139200.00005); // slight change to round off seconds
 
             for (double i=t0-5; i < t0+5; i++) { 
