@@ -5,6 +5,8 @@
    $Id$
 
    @verbatim
+   v1r13   31-May-09  JC    use new version of Ts provided by David L.; move
+                            previous version to Ts_old
    v1r12p5 30-May-09  JC    pre-declare WcsMap in pyLikelihood.in
    v1r12p4 20-May-09  JC    ensure the extra attributes are restored after
                             rebuilding the SourceModel object in AnalysisBase.py
