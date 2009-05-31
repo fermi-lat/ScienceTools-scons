@@ -5,6 +5,7 @@
    $Id$
 
    @verbatim
+   v1r12p5 30-May-09  JC    pre-declare WcsMap in pyLikelihood.in
    v1r12p4 20-May-09  JC    ensure the extra attributes are restored after
                             rebuilding the SourceModel object in AnalysisBase.py
    v1r12p3 15-May-09  JC    fix typo in SConscript file for pyLikeihood/*.h 
