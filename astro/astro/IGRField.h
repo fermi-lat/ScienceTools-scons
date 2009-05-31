@@ -93,7 +93,11 @@ class IGRField {
 // Get R
       float R() const  { return m_R;};
 // Get lambda
+#ifndef SWIG // lamdba name invalid 
       float lambda() const { return m_lambda;};
+#else
+      float _lambda() const{ return m_lambda;}
+#endif
 };
 
 }

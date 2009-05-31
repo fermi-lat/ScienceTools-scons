@@ -361,8 +361,19 @@ int main(){
         if (!test_GPS_readFitsData()) return 1;
 
         JulianDate start = JulianDate::missionStart(); 
+        { // code associated with JIRA
+            std::cout << "JIRA OBS-14\n";
+            double secsperday(86400.); 
+            astro::JulianDate mission_start(2001, 1, 1, 0); 
 
-        //   testJD();
+            double t0(255139200.00005); // slight change to round off seconds
+
+            for (double i=t0-5; i < t0+5; i++) { 
+                astro::JulianDate now(mission_start + i/secsperday); 
+                std::cout << static_cast<int>(i+0.5) << " " << now.getGregorianDate() << std::endl; 
+            } 
+        }
+        testJD();
 
         double test=0;
 
