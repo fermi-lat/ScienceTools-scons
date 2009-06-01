@@ -5,6 +5,8 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
+ 01-jun-09 v7r4p1  JC  add outtable2 to exposure_cube.par; bug-fix for writing
+                       weighted livetime extension
  19-may-09 v7r4   THB  Changes to support generating table with weighted livetime
  17-apr-09 v7r3p4 THB  fix gtexpcube par file
  16-mar-09 v7r3p3  JC  make Exposure::fill_zenith accessible to subclasses
