@@ -140,7 +140,7 @@ public:
             m_f.info() << " lost " << ex.lost() << " seconds from zcut" << std::endl;
         }
        HealpixArrayIO::instance().write(ex.data(), outfile, outtable);
-       HealpixArrayIO::instance().write(ex2.data(), outfile, outtable2);
+       HealpixArrayIO::instance().write(ex2.data(), outfile, outtable2, false);
 
  
     }

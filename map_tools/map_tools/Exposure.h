@@ -109,8 +109,6 @@ public:
 
     double lost()const{return m_lost;}
 
-
-protected:
     /** @brief  allow horizon cut, possible if FOV includes horizon
         @param dirz direction of z-axis of instrument
         @param dirx direction of x-axis of instrument
