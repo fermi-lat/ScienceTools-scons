@@ -422,7 +422,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["ephepoch"] = 212380785.922;
-      pars["timeformat"] = "GLAST";
+      pars["timeformat"] = "FERMI";
       pars["timesys"] = "TDB";
       pars["phi0"] = 0.;
       pars["f0"] = 19.83401688366839422996;
