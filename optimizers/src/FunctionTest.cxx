@@ -205,6 +205,11 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
       int j = 0;
       for (unsigned int i = 0; i < parameters.size(); i++) {
          if (parameters[i].isFree()) {
+            // The following two lines are needed to ensure that these
+            // variables are accessed properly in the assert for
+            // rhel4_gcc34opt builds.
+            m_func->derivByParam(*my_arg, parameters[i].getName());
+            freeDerivs[j];
             assert(m_func->derivByParam(*my_arg, parameters[i].getName())
                    == freeDerivs[j]);
             j++;
