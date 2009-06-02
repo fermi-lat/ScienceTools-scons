@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: James Peachey <James.Peachey-1@nasa.gov>
-# Version: periodSearch-10-06-02
+# Version: periodSearch-10-07-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
