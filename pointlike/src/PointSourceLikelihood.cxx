@@ -362,6 +362,7 @@ double PointSourceLikelihood::curvature() const{
         double curv((*it)->curvature());
         if( curv>0 )  t+= curv;
     }
+    if( t==0){ t=1e-6;} // protect for no data!
     return t;
 }
 

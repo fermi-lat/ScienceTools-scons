@@ -128,9 +128,14 @@ namespace pointlike{
         /// @brief set the radius used to select nearby sources for inclusion in a fit
         static double set_group_radius(double value);
 
+        /// @brief enable least-squares fit to likelihook surface
+        static bool   set_uselsq(bool q);
+        static bool   uselsq(); 
+
     private:
         bool m_verbose;
         static const skymaps::BinnedPhotonData* s_data;
+        static bool  s_uselsq; ///< set true to apply least-squares fit to likelihood surface
 
     };
 

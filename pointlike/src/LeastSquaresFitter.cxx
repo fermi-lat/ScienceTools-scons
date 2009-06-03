@@ -35,7 +35,7 @@ namespace {
 }
 std::string LeastSquaresFitter::header()
 {
-    return "      sigma_a           sigma_b          sigma_phi       x0          y0         chisq ";
+    return "      a          b       phi       x0          y0         quality";
 }
 
 LeastSquaresFitter::LeastSquaresFitter(PointSourceLikelihood& psl, double sigma):
