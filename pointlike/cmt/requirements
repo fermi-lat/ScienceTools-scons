@@ -1,6 +1,6 @@
 package pointlike
 
-version v6r20
+version v6r20p1
 
 # $Header$
 
@@ -46,3 +46,5 @@ application test_pointlike -s=test $(source)
 # convenient setup alias using DOSKEY for Windows version
 setup_script alias
 
+# specific to glast-ts
+#set CALDB 'F:\glast\CALDB\v1r1\CALDB\data\glast\lat
