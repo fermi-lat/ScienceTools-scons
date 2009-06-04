@@ -97,6 +97,7 @@ void Exposure::readScData(const std::string & scDataFile) {
 void Exposure::integrateExposure() {
    m_exposureValues.resize(m_timeBoundaries.size()-1);
    for (size_t j(0); j < m_exposureValues.size(); j++) {
+      m_exposureValues.at(j).resize(m_energies.size(), 0);
       std::vector< std::pair<double, double> > timeCuts;
       timeCuts.push_back(std::make_pair(m_timeBoundaries.at(j),
                                         m_timeBoundaries.at(j+1)));
