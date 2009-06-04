@@ -36,6 +36,7 @@ namespace optimizers {
     virtual double Up() const {return 0.5;}
     virtual double operator() (const std::vector<double> &) const;
     virtual std::vector<double> Gradient(const std::vector<double> &) const;
+    virtual bool CheckGradient() const {return false;}
   private:
     Statistic * m_stat;
   };
