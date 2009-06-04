@@ -5,6 +5,7 @@
   @verbatim
   $Id$
 
+  04-Jun-09 v2r4    JC    use new ScData interface; add efficiency corrections
   11-Dec-08 v2r3    JC    fix fencepost error in Exposure::integrateExposure();
                           add PLSuperExpCutoff
   21-Aug-08 v2r2    JC    include GTIs in exposure calculation
