@@ -209,9 +209,10 @@ void Source::info(std::ostream& out)const{
                     out << std::setw(12) << (*it);
                 }
             }else{
-                for(int i(0); i<7; ++i){
+                for(int i(0); i<5; ++i){ // length wired in :-(
                     out << std::setw(12) << "0";
                 }
+                out << std::setw(12) << "100"; //last is quality 
             }
         }
         out << std::endl;
