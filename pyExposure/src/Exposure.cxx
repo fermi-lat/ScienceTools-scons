@@ -128,8 +128,11 @@ void Exposure::integrateExposure() {
 }
 
 double Exposure::effArea(double time, double energy) const {
-   astro::SkyDir zAxis = m_scData->zAxis(time);
-   astro::SkyDir xAxis = m_scData->xAxis(time);
+   size_t indx = m_scData->time_index(time);
+   astro::SkyDir zAxis = m_scData->zAxis(indx);
+   astro::SkyDir xAxis = m_scData->xAxis(indx);
+   double livetimefrac = (m_scData->livetime(indx)
+                          /(m_scData->stop(indx) - m_scData->start(indx)));
    double theta(m_srcDir.difference(zAxis)*180./M_PI);
    double phi(0);
    
@@ -141,7 +144,9 @@ double Exposure::effArea(double time, double energy) const {
          irfInterface::IPsf * psf = m_irfs.at(i)->psf();
          aperture = psf->angularIntegral(energy, theta, phi, m_radius);
       }
-      my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis)*aperture;
+      double efficiency(m_efficiencyFactor.value(energy, livetimefrac));
+      my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis)*aperture
+         *efficiency;
    }
    return my_effArea;
 }
