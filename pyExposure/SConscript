@@ -2,7 +2,7 @@
 #
 # $Header$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: pyExposure-02-03-00
+# Version: pyExposure-02-04-00
 
 Import('baseEnv')
 Import('listFiles')
