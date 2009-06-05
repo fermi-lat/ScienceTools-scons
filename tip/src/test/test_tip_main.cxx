@@ -5,11 +5,18 @@
     \author James Peachey, HEASARC
 */
 #include <iostream>
+#include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <cerrno>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#ifndef WIN32
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
 
 #include "TestColumn.h"
 #include "TestExtensionData.h"
@@ -24,10 +31,41 @@
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
 #include "facilities/commonUtilities.h"
 
 // Thorough test of IExtensionData and its subclasses.
 int TestExtensionData(const std::string & data_dir, int currentStatus);
+
+namespace {
+
+  int s_makeDirectory(const std::string & dir) {
+#ifdef WIN32
+    return 1;
+#else
+    errno = 0;
+    int status = mkdir(dir.c_str(), 0777);
+    if (0 != status) {
+      // Ignore and hope for the best if the directory exists.
+      if (EEXIST == errno) status = 0;
+    }
+    return status;
+#endif
+  }
+
+  bool s_fileExists(const std::string & file_name) {
+    bool exists = false;
+#ifndef WIN32
+    struct stat file_stat;
+    int status = stat(file_name.c_str(), &file_stat);
+    if (0 == status && (S_ISREG(file_stat.st_mode))) {
+      exists = true;
+    }
+#endif
+    return exists;
+  }
+
+}
 
 int main() {
   int status = 0;
@@ -476,8 +514,36 @@ int main() {
 
     delete my_table; my_table = 0;
 
+    // Set up test environment to create a test directory to hold the dummy root file.
+    bool use_tmp_file = false;
+    std::string tmp_dir("TIPTMPDIR");
+    std::string tmp_file = facilities::commonUtilities::joinPath(tmp_dir, "tip_dummy.root");
+#ifdef WIN32
+    // TODO Rewrite the functions for Windows.
+    std::cerr << "Skipping tests for setting temporary directory on Windows." << std::endl;
+#else
+    if (0 == s_makeDirectory(tmp_dir)) {
+      std::remove(tmp_file.c_str());
+      // Test calling get and set methods for temporary file name.
+      IFileSvc::setTmpFileName(tmp_file);
+      tmp_file = IFileSvc::getTmpFileName();
+      use_tmp_file = true;
+    } else {
+      status = 1;
+      std::cerr << "Unexpected: cannot test IFileSvc::setTmpFileName because cannot create directory " << tmp_dir << std::endl;
+    }
+#endif
+    
     // Now test Root file access.
     my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "merit.root"), "1", "McEnergy < 2000. && McEnergy > 50.");
+
+    // Confirm that the temporary file exists.
+    if (use_tmp_file) {
+      if (!s_fileExists(tmp_file)) {
+        status = 1;
+        std::cerr << "Unexpected: editing merit.root with a filter did not create file " << tmp_file << std::endl;
+      }
+    }
 
     // This should work:
     Header & header = my_table->getHeader();
@@ -520,11 +586,19 @@ int main() {
       status = 1;
     }
 
+    delete my_table; my_table = 0;
+
+    // Confirm that the temporary file was deleted when the table was deleted.
+    if (use_tmp_file) {
+      if (s_fileExists(tmp_file)) {
+        status = 1;
+        std::cerr << "Unexpected: deleting Root table did not remove file " << tmp_file << std::endl;
+      }
+    }
+
     try {
       // Test creating a new (FITS) file using ft1.tpl:
       IFileSvc::instance().createFile("new_ft1.fits", facilities::commonUtilities::joinPath(data_dir, "ft1.tpl"));
-
-      delete my_table; my_table = 0;
 
       // Open the newly created table:
       my_table = IFileSvc::instance().editTable("new_ft1.fits", "EVENTS");
