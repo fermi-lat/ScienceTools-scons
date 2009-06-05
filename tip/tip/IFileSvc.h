@@ -39,6 +39,19 @@ namespace tip {
       */
       static bool globalInit();
 
+      /// \brief Get the name of a temporary file to use when opening a large filtered file.
+      static std::string getTmpFileName();
+
+      /** \brief Set the name of a temporary file to use when opening a large filtered file.
+                 It is recommended that an absolute path is used so that tip can find the temporary
+                 file and delete it regardless of the current working directory.
+
+                 Note: this currently has effect only for Root files. When keeping open multiple
+                 Root tables at a time, this must be called with a distinct name before each table is opened.
+          \param tmp_file_name The name of the temporary file.
+      */
+      static void setTmpFileName(const std::string & tmp_file_name);
+
       /** \brief Destruct an I/O service object.
       */
       virtual ~IFileSvc();

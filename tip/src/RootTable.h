@@ -151,6 +151,7 @@ namespace tip {
       std::string m_file_name;
       std::string m_ext_name;
       std::string m_filter;
+      std::string m_tmp_file_name;
       mutable std::map<std::string, FieldIndex_t> m_branch_lookup;
       mutable std::vector<IColumn *> m_leaves;
       Table::FieldCont m_fields;

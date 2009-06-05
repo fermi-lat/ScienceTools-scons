@@ -4,6 +4,7 @@
 
     \author James Peachey, HEASARC
 */
+#include <cstdio>
 #include <utility>
 
 #include "TBranch.h"
@@ -15,6 +16,8 @@
 #include "TString.h"
 #include "TSystem.h"
 #include "TTree.h"
+
+#include "tip/IFileSvc.h"
 
 #ifdef WIN32
 // Prevent problems with Root's dynamic loader in 4.0x.yy by instantiating a tree.
@@ -70,7 +73,7 @@ namespace tip {
   // Construct without opening the file.
   RootTable::RootTable(const std::string & file_name, const std::string & ext_name,
     const std::string & filter, bool): m_file_name(file_name), m_ext_name(ext_name), m_filter(filter),
-    m_branch_lookup(), m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
+    m_tmp_file_name(), m_branch_lookup(), m_leaves(), m_fields(), m_num_records(0), m_fp(0), m_tree(0) { open(); }
 
   // Close file automatically while destructing.
   RootTable::~RootTable() { close(); }
@@ -145,7 +148,11 @@ namespace tip {
 //        std::cout << "\t  filter \""<< filter << "\" ..." << std::endl;
 //    }
     if( ! m_filter.empty() ){ // apply filter expression
-        TFile * dummy = new TFile("dummy.root", "recreate");
+        // Get path to temporary file.
+        m_tmp_file_name = IFileSvc::getTmpFileName();
+        if (m_tmp_file_name.empty()) m_tmp_file_name = "dummy.root";
+
+        TFile * dummy = new TFile(m_tmp_file_name.c_str(), "recreate");
         // JP added this check:
         if (!dummy->IsOpen()) {
           delete dummy;
@@ -181,7 +188,12 @@ namespace tip {
       delete *it;
     m_fields.clear();
     m_leaves.clear();
+
     delete m_fp;
+
+    // Clean up after the temporary file used by filter.
+    if (!m_tmp_file_name.empty()) std::remove(m_tmp_file_name.c_str());
+    m_tmp_file_name.clear();
   }
 
   Index_t RootTable::getNumRecords() const { return m_num_records; }

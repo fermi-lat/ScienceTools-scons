@@ -23,6 +23,15 @@
 #include "RootTable.h"
 #endif
 
+namespace {
+
+  std::string & s_getTmpFileName() {
+    static std::string s_tmp_file_name;
+    return s_tmp_file_name;
+  }
+
+}
+
 namespace tip {
 
   // Deprecated.
@@ -51,6 +60,14 @@ namespace tip {
     init_success = RootTable::resetSigHandlers();
 #endif
     return init_success;
+  }
+
+  std::string IFileSvc::getTmpFileName() {
+    return s_getTmpFileName();
+  }
+
+  void IFileSvc::setTmpFileName(const std::string & tmp_file_name) {
+    s_getTmpFileName() = tmp_file_name;
   }
 
   // Destructor for a file service.
