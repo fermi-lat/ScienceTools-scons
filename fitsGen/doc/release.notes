@@ -6,6 +6,9 @@
     @verbatim
     EOH
 
+    v4r5   05-Jun-09   JC   enable users to set filename of temporary ROOT
+                            file used for processing merit files with tip.
+                            Requires tip v2r15 or later.
     v4r4   29-May-09   JC   remove CTBCLASSLEVEL
     v4r3p1 11-Apr-09   JC   add missing close single quote for TIMEREF 
                             keyword in PHDU in ft1.tpl (OBS-15@JIRA)
