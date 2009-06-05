@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+05-jun-2009 v2r15     JP Added get/set temporary file name methods to IFileSvc.
 10-feb-2009 v2r14     JP Backed out use of long long index for row numbers, but
                          this can be reenabled by compiling with TIP_USE_LONG_LONG_INDEX
                          defined.
