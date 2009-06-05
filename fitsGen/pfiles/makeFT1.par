@@ -2,6 +2,7 @@
 # $Header$
 #
 rootFile,fr,a,"",,,merit filename
+tempRootFile,s,h,"dummy.root",,,Temporary ROOT file
 fitsFile,f,a,"",,,FT1 filename
 event_classifier,s,a,,,,Event classifier module
 tstart,r,h,0,,,"start time (MET s)"

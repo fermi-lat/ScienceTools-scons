@@ -35,6 +35,8 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "tip/IFileSvc.h"
+
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
 #include "fitsGen/EventClassifier.h"
@@ -178,6 +180,7 @@ void MakeFt1::run() {
    m_pars.Prompt();
    m_pars.Save();
    std::string rootFile = m_pars["rootFile"];
+   std::string tempRootFile = m_pars["tempRootFile"];
    std::string fitsFile = m_pars["fitsFile"];
    std::string eventClassifier = m_pars["event_classifier"];
    std::string defaultFilter = m_pars["TCuts"];
@@ -216,6 +219,7 @@ void MakeFt1::run() {
    dataSubselector::Cuts my_cuts;
    fitsGen::Ft1File ft1(fitsFile, 0);
    try {
+      tip::IFileSvc::instance().setTmpFileName(tempRootFile);
       fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
       if (tstart != 0 || tstop != 0) {
          merit.setStartStop(tstart, tstop);
