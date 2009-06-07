@@ -377,6 +377,18 @@ class AnalysisBase(object):
     def __setitem__(self, name, value):
         self.model[name] = value
         self.logLike.syncSrcParams(self.model[name].srcName)
+    def normPar(self, srcName):
+        return self[srcName].funcs['Spectrum'].normPar()
+    def freePars(self, srcName):
+        pars = pyLike.ParameterVector()
+        self[srcName].funcs['Spectrum'].getFreeParams(pars)
+        return pars
+    def setFreeFlag(self, srcName, pars, value):
+        src_spectrum = self[srcName].funcs['Spectrum']
+        for item in pars:
+            src_spectrum.parameter(item.getName()).setFree(value)
+    def params(self):
+        return self.model.params
     def thaw(self, i):
         try:
             for ii in i:
