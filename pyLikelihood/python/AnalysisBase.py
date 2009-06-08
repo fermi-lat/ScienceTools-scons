@@ -310,12 +310,6 @@ class AnalysisBase(object):
         srcNames = pyLike.StringVector()
         self.logLike.getSrcNames(srcNames)
         return tuple(srcNames)
-    def syncSrcParams(self, src=None):
-        if src is not None:
-            self.logLike.syncSrcParams(src)
-        else:
-            for src in self.sourceNames():
-                self.logLike.syncSrcParams(src)
     def oplot(self, color=None):
         self.plot(oplot=1, color=color)
     def _importPlotter(self):

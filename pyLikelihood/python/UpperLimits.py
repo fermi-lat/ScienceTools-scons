@@ -84,7 +84,6 @@ class UpperLimit(object):
         logLike0 = self.like()
         x0 = par.getValue()
         dx = self._find_dx(par, nsigmax, renorm, logLike0, mindelta=mindelta)
-        print dx
 
         xvals, dlogLike, fluxes = [], [], []
         if verbosity > 1:
