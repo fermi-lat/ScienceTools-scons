@@ -58,14 +58,10 @@ class UpperLimit(object):
         # Store the value of the covariance flag
         covar_is_current = self.like.covar_is_current
         source = self.source
-#        saved_pars = [par.value() for par in self.like.model.params]
-#        saved_errors = [par.error() for par in self.like.model.params]
         saved_pars = [par.value() for par in self.like.params()]
         saved_errors = [par.error() for par in self.like.params()]
 
         # Fix the normalization parameter for the scan.
-        src_spectrum = self.like[source].funcs['Spectrum']
-#        par = src_spectrum.normPar()
         par = self.like.normPar(source)
         par.setFree(0)
 
@@ -82,10 +78,6 @@ class UpperLimit(object):
         # practice, one should reset the reference energy or lower
         # energy bound.
         if fix_src_pars:
-#            freePars = pyLike.ParameterVector()
-#            src_spectrum.getFreeParams(freePars)
-#            for item in freePars:
-#                src_spectrum.parameter(item.getName()).setFree(0)
             freePars = self.like.freePars(source)
             self.like.setFreeFlag(source, freePars, 0)
 
@@ -126,11 +118,7 @@ class UpperLimit(object):
                 print i, x, dlogLike[-1], fluxes[-1]
         par.setFree(1)
         if fix_src_pars:
-#            for item in freePars:
-#                src_spectrum.parameter(item.getName()).setFree(1)
             self.like.setFreeFlag(source, freePars, 1)
-#        for value, error, param in zip(saved_pars, saved_errors, 
-#                                       self.like.model.params):
         for value, error, param in zip(saved_pars, saved_errors, 
                                        self.like.params()):
             param.setValue(value)
