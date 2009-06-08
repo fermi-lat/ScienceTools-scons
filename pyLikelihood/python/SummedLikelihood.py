@@ -102,8 +102,6 @@ class SummedLikelihood(object):
         return sum([x.logLike.NpredValue(src) for x in self.components])
     def total_nobs(self):
         return sum([sum(x.nobs) for x in self.components])
-#    def __getattr__(self, attrname):
-#        return getattr(self.components[0], attrname)
     def __repr__(self):
         return str(self.components[0].model)
     def _syncParams(self):
