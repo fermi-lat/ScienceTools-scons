@@ -3,6 +3,10 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r16    07-Jun-09 JC   use rtag to get correct version of Minuit.h
+    v2r15p12 07-Jun-09  PLN  disabled gradient check by Minuit2 in NewMinuit;
+                             mis-tagged version of Minuit.h with unimplemented
+                             setMaxEval
     v2r15p11 30-May-09  JC  comment out unimplemented Minuit::setMaxEval
     v2r15p9 14-May-09  JC   update FunctionTest for Functions with fixed 
                             parameters
