@@ -38,8 +38,8 @@ public:
 
    virtual ~Optimizer() {}
 
-   virtual void find_min(int verbose, double tol, int tolType = ABSOLUTE) = 0;
-   virtual void find_min_only(int verbose, double tol, int tolType = ABSOLUTE) = 0;
+   virtual int find_min(int verbose, double tol, int tolType = ABSOLUTE) = 0;
+   virtual int find_min_only(int verbose, double tol, int tolType = ABSOLUTE) = 0;
 
    /// Returns the one-sigma confidence regions based on the Hessian,
    /// assuming that the statistic is a log-likelihood.
@@ -65,6 +65,7 @@ public:
 
    void setMaxEval(const int maxEval) {m_maxEval = maxEval;}
    int  getMaxEval() const {return m_maxEval;}
+   int getRetCode() const {return m_retCode;}
 
    virtual std::ostream& put (std::ostream& s) const = 0;
 
@@ -73,6 +74,7 @@ protected:
    Statistic * m_stat;
 
    int m_maxEval;
+   void setRetCode(const int & code) {m_retCode = code;}
 
    /// A vector to contain the estimated uncertainties of the free 
    /// parameters.
@@ -91,6 +93,10 @@ protected:
    ///        On return, this matrix is replaced by the Cholesky 
    ///        decomposition and made fully symmetric.
    void choleskyDecompose(std::valarray<double> &hess);
+
+private:
+
+   int m_retCode;
    
 };
 

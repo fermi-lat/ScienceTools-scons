@@ -52,9 +52,9 @@ namespace optimizers {
     
     virtual ~Drmngb() {}
     
-    void find_min(int verbose = 0, double tol = 1e-8, 
+    int find_min(int verbose = 0, double tol = 1e-8, 
 		  int tolType = ABSOLUTE);
-    void find_min_only(int verbose = 0, double tol = 1e-8, 
+    int find_min_only(int verbose = 0, double tol = 1e-8, 
 		  int tolType = ABSOLUTE);
 
     //! One-sigma confidence regions based on Hessian, assuming 
@@ -64,8 +64,6 @@ namespace optimizers {
     //! Switch on the covariance matrix calculation. 
     // Save time by not doing this, if covariance is not needed.
     void setNeedCovariance(bool);
-
-    int getRetCode(void) const;
 
     virtual std::ostream& put (std::ostream& s) const;
 
@@ -78,7 +76,6 @@ namespace optimizers {
 
   private:
     
-    int m_retCode;
     bool m_NeedCovariance;
     int m_evals, m_grads;
     double m_val;

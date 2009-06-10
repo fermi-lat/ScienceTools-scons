@@ -27,15 +27,11 @@ namespace optimizers {
      return m_uncertainty;
   }
 
-  int ModNewton::getRetCode(void) const {
-    return m_retCode;
-  }
-
   void ModNewton::setNeedCovariance(bool b) {
     m_NeedCovariance = b;
   }
 
-  void ModNewton::find_min(int verbose, double tol, int tolType) {
+  int ModNewton::find_min(int verbose, double tol, int tolType) {
 
     /// Unpack model parameters into the arrays needed by the solvers
     
@@ -106,7 +102,7 @@ namespace optimizers {
           m_val = funcVal;
           if (tolType == ABSOLUTE && iv[28] == 4 && fabs(funcVal-oldVal) < tol) {
             // check after a successful line search
-            m_retCode = 6;
+            setRetCode(0);
             if (verbose != 0)
               std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE x****" 
 		      << std::endl;
@@ -123,17 +119,15 @@ namespace optimizers {
             m_val = funcVal;
           }
           m_grads++;
+        }   // end of rcode == 1 or 2
+      } else {  /// Finished.  Exit loop.
+        if (rcode == 9) {
+          setRetCode(1);
+        } else if (rcode >=3 && rcode <=6) {
+          setRetCode(0);
+        } else {
+          setRetCode(100 + rcode);
         }
-      } else if (rcode == 9) {
-        m_retCode = rcode;
-        if (verbose != 0) 
-          std::cout << "***** TERMINATED FOR TOO MANY FUNCTION EVALUATIONS ****"
-             << std::endl;
-        break;
-      }
-      else {  /// Finished.  Exit loop.
-	m_retCode = rcode;
-	if (rcode > 6) {throw Exception("ModNewton error", rcode);}
 	break;
       }
     }
@@ -169,12 +163,12 @@ namespace optimizers {
 	m_uncertainty.push_back(sqrt(hess[i*(i+3)/2]));
       }
     }
-
+    return getRetCode();
   } // End of find_min
 
-  void ModNewton::find_min_only(int verbose, double tol, int tolType) {
+  int ModNewton::find_min_only(int verbose, double tol, int tolType) {
     setNeedCovariance(false);
-    find_min(verbose, tol, tolType);
+    return find_min(verbose, tol, tolType);
   }
 
   std::ostream& ModNewton::put (std::ostream& s) const {

@@ -61,8 +61,8 @@ namespace optimizers {
     virtual ~NewMinuit() {delete m_min;};
     NewMinuit & operator=(const NewMinuit & rhs);
     NewMinuit(const NewMinuit & x);
-    void find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
-    void find_min_only(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
+    virtual int find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
+    virtual int find_min_only(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 1) {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }
@@ -72,6 +72,7 @@ namespace optimizers {
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
     std::pair<double,double> Minos(unsigned int n);
+    int checkResults();
   private:
     myFCN m_FCN;
     double m_distance;

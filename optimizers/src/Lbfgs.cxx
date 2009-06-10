@@ -23,17 +23,14 @@ namespace optimizers {
   void Lbfgs::setPgtol(const double pgtol)
   {m_pgtol = pgtol;}
 
-  int Lbfgs::getRetCode(void) const
-  {return m_retCode;}
-
   std::string Lbfgs::getErrorString(void) const
   {return m_errorString;}
 
-  void Lbfgs::find_min_only(int verbose, double tol, int tolType) {
-    find_min(verbose, tol, tolType);
+  int Lbfgs::find_min_only(int verbose, double tol, int tolType) {
+    return find_min(verbose, tol, tolType);
   }
 
-  void Lbfgs::find_min(int verbose, double tol, int tolType) {
+  int Lbfgs::find_min(int verbose, double tol, int tolType) {
 
     m_numEvals = 0;
     m_errorString.erase();
@@ -120,12 +117,12 @@ namespace optimizers {
       else if (taskString.substr(0, 5) == "NEW_X") {
 	// Ready to move to a new set of parameter values
 	if (isave[33] > m_maxEval) {
-	  m_retCode = LBFGS_TOOMANY;
+	  setRetCode(LBFGS_TOOMANY);
 	  m_errorString = "Exceeded Specified Number of Iterations";
 	  break;
 	}
 	if (tolType == ABSOLUTE && oldVal != 0. && fabs(funcVal-oldVal) < tol) {
-	  m_retCode = LBFGS_NORMAL;
+	  setRetCode(LBFGS_NORMAL);
 	  m_errorString = "Absolute Convergence";
 	  break;
 	}
@@ -133,25 +130,25 @@ namespace optimizers {
       }  // Otherwise don't break.  Call setulb_ again.
       else if (taskString.substr(0, 4) == "CONV") {
 	// Normal convergence
-	m_retCode = LBFGS_NORMAL;
+	setRetCode(LBFGS_NORMAL);
 	m_errorString = taskString;
 	break;
       }
       else if (taskString.substr(0, 4) == "ABNO") {
 	// Abnormal termination in line search
-	m_retCode = LBFGS_ABNO;
+	setRetCode(LBFGS_ABNO);
 	m_errorString = taskString;
 	throw Exception(taskString, LBFGS_ABNO);
       }
       else if (taskString.substr(0, 5) == "ERROR") {
 	// Error in input parameters
-	m_retCode = LBFGS_ERROR;
+	setRetCode(LBFGS_ERROR);
 	m_errorString = taskString;
 	throw Exception(taskString, LBFGS_ERROR);
       }
       else {
 	// Something else
-	m_retCode = LBFGS_UNKNOWN;
+	setRetCode(LBFGS_UNKNOWN);
 	m_errorString = "LBFGS unknown condition";
 	throw Exception(taskString, LBFGS_UNKNOWN);
       }
@@ -165,6 +162,7 @@ namespace optimizers {
     }
     // Put parameter values back into the objective Function
     m_stat->setFreeParamValues(paramVals);
+    return getRetCode();
   } // End of find_min
 
   std::ostream& Lbfgs::put (std::ostream& s) const {

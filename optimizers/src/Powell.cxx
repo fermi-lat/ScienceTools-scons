@@ -46,11 +46,11 @@ namespace optimizers {
   }
 
   // The minimizer.  It's just a wrapper for the function powell.
-  void Powell::find_min_only(int verbose, double tol, int tolType) {
-    find_min(verbose, tol, tolType);
+  int Powell::find_min_only(int verbose, double tol, int tolType) {
+    return find_min(verbose, tol, tolType);
   }
 
-  void Powell::find_min(int verbose, double tol, int tolType) {
+  int Powell::find_min(int verbose, double tol, int tolType) {
     (void) (verbose);
     std::vector<double> p;
     m_stat->getFreeParamValues(p);
@@ -60,7 +60,9 @@ namespace optimizers {
       xi.push_back(std::vector<double>(npar,0.));
       xi[j][j] = 1.;
     }
-    powell(p, xi, tol, tolType, m_iter, m_fret, *this);
+    int code = powell(p, xi, tol, tolType, m_iter, m_maxEval, m_fret, *this);
+    setRetCode(code);
+    return code;
   }
 
   // Printed summary
@@ -216,11 +218,10 @@ namespace optimizers {
 
   // Powell's direction-set method, discarding the direction of
   // largest increase.  See Numerical Recipes.
-  void powell(std::vector<double> &p, std::vector<std::vector<double> > &xi, 
-	      const double ftol, int tolType, int &iter, double &fret, 
+  int powell(std::vector<double> &p, std::vector<std::vector<double> > &xi, 
+	      const double ftol, int tolType, int &iter, int itmax, double &fret, 
 	      Powell &func)
   {
-    const int ITMAX=200;
     const double TINY=1.0e-25;
     int i,j,ibig;
     double del,fp,fptt,t;
@@ -245,10 +246,12 @@ namespace optimizers {
       }
       double fcheck = 0.5 * (fabs(fp)+fabs(fret));
       if (tolType == ABSOLUTE) fcheck = 1.;
-      if (fp-fret <= ftol*fcheck+TINY) {
-	return;
+      if (fabs(fp-fret) <= ftol*fcheck+TINY) {
+	return 0;
       }
-      if (iter == ITMAX) throw Exception("powell exceeding maximum iterations.");
+      if (iter == itmax) {
+        return 1;
+      }
       for (j=0;j<n;j++) {
 	ptt[j]=2.0*p[j]-pt[j];
 	xit[j]=p[j]-pt[j];

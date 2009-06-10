@@ -77,7 +77,11 @@ void OptPP::statInit(int ndim, ColumnVector &x) {
       x(i+1) = paramValues[i];
 }
 
-void OptPP::find_min(int verbose, double tol, int) {
+int OptPP::find_min_only(int verbose, double tol, int foo) {
+   return find_min(verbose, tol, foo);
+}
+
+int OptPP::find_min(int verbose, double tol, int) {
 
    s_verbose = verbose;
 
@@ -122,11 +126,19 @@ void OptPP::find_min(int verbose, double tol, int) {
 // do the business....
 
    myObjFunc.optimize();
+   setRetCode(0);
+   return 0;
 }
 #else
 
-  void OptPP::find_min(int, double, int) {
+  int OptPP::find_min(int, double, int) {
     // do nothing
+    return 0;
+  }
+    
+  int OptPP::find_min_only(int, double, int) {
+    // do nothing
+    return 0;
   }
     
   std::ostream& OptPP::put (std::ostream& s) const {

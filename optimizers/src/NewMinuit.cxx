@@ -49,12 +49,13 @@ namespace optimizers {
   };
 
   // Call Minuit's MIGRAD to find the minimum of the function
-  void NewMinuit::find_min(int verbose, double tol, int TolType) {
+  int NewMinuit::find_min(int verbose, double tol, int TolType) {
     find_min_only(verbose, tol, TolType);
     hesse(verbose);
+    return getRetCode();
   }
 
-  void NewMinuit::find_min_only(int verbose, double tol, int TolType) {
+  int NewMinuit::find_min_only(int verbose, double tol, int TolType) {
     setTolerance(tol, TolType);
     std::vector<Parameter> params;
     m_stat->getFreeParams(params);
@@ -69,7 +70,6 @@ namespace optimizers {
     }
 
     ROOT::Minuit2::MnUserParameterState userState(upar);
-//    ROOT::Minuit2::MnMigrad migrad(m_FCN, userState, m_strategy);
     ROOT::Minuit2::MnMinimize migrad(m_FCN, userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, m_tolerance);
     m_min = new ROOT::Minuit2::FunctionMinimum(min);
@@ -84,6 +84,8 @@ namespace optimizers {
       ParamValues.push_back(m_min->UserParameters().Value(i));
     }
     m_stat->setFreeParamValues(ParamValues);
+    setRetCode(checkResults());
+    return getRetCode();
   }
 
   // Call Minuit's HESSE to get a robust estimate of the covariance matrix
@@ -199,6 +201,34 @@ namespace optimizers {
       if (tolType == RELATIVE) {
          m_tolerance *= fabs(m_stat->value());
       }
+   }
+ 
+   int NewMinuit::checkResults() {
+      if (m_min->HasReachedCallLimit()) return 1;
+
+      // Set a bit for each good condition.
+      unsigned int code = 0;
+      if (m_min->IsValid()) code |= 1;
+      code <<= 1;
+      if (m_min->HasValidParameters()) code |= 1;
+      code <<= 1;
+      if (m_min->HasValidCovariance()) code |= 1;
+      code <<= 1;
+      if (m_min->HasAccurateCovar()) code |= 1;
+      code <<= 1;
+      if (m_min->HasPosDefCovar()) code |= 1;
+      code <<= 1;
+      if (! m_min->HasMadePosDefCovar()) code |= 1;
+      code <<= 1;
+      if (! m_min->HesseFailed()) code |= 1;
+      code <<= 1;
+      if (m_min->HasCovariance()) code |= 1;
+      code <<= 1;
+      if (! m_min->IsAboveMaxEdm()) code |= 1;
+    
+      if (code == 0x1FF) return 0;  // All good!
+      code = 0x1FF & ~ code;  // Return a bitmap of the bad conditions.
+      return code+100;
    }
 
 } // namespace optimizers

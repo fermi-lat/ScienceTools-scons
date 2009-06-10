@@ -27,15 +27,11 @@ namespace optimizers {
      return m_uncertainty;
   }
 
-  int Drmngb::getRetCode(void) const {
-    return m_retCode;
-  }
-
   void Drmngb::setNeedCovariance(bool b) {
     m_NeedCovariance = b;
   }
   
-  void Drmngb::find_min(int verbose, double tol, int tolType) {
+  int Drmngb::find_min(int verbose, double tol, int tolType) {
 
     /// Unpack model parameters into the arrays needed by Drmngb
     
@@ -100,7 +96,7 @@ namespace optimizers {
 	m_val = funcVal;
 	if (tolType == ABSOLUTE && iv[28] == 4 && fabs(funcVal-oldVal) < tol) {
 	  // check after a successful line search
-	  m_retCode = 6;
+	  setRetCode(6);
 	  if (verbose != 0)
 	    std::cout << "***** ABSOLUTE FUNCTION CONVERGENCE x****" 
 		      << std::endl;
@@ -117,7 +113,7 @@ namespace optimizers {
 	oldVal = funcVal;
       }
       else {  /// Finished.  Exit loop.
-	m_retCode = rcode;
+	setRetCode(rcode);
 	if (rcode > 6) {throw Exception("DRMNGB error", rcode);}
 	break;
       }
@@ -154,12 +150,12 @@ namespace optimizers {
 	m_uncertainty.push_back(sqrt(hess[i*(i+3)/2]));
       }
     }
-
+    return getRetCode();
   } // End of find_min
 
-  void Drmngb::find_min_only(int verbose, double tol, int tolType) {
+  int Drmngb::find_min_only(int verbose, double tol, int tolType) {
     setNeedCovariance(false);
-    find_min(verbose, tol, tolType);
+    return find_min(verbose, tol, tolType);
   }
 
   std::ostream& Drmngb::put (std::ostream& s) const {

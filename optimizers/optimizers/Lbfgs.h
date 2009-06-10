@@ -59,18 +59,17 @@ namespace optimizers {
     
       Lbfgs(Statistic &stat) 
          : Optimizer(stat), m_maxVarMetCorr(5),
-            m_pgtol(0), m_retCode(0) {}
+            m_pgtol(0) {}
     
     virtual ~Lbfgs() {}
     
     void setMaxVarMetCorr(const int m);
     void setPgtol(const double pgtol);
     
-    int getRetCode(void) const;
     std::string getErrorString(void) const;
     
-    void find_min(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
-    void find_min_only(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
+    int find_min(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
+    int find_min_only(int verbose = 0, double tol = 1.e-5, int tolType = ABSOLUTE);
 
     virtual std::ostream& put (std::ostream& s) const;
     
@@ -84,7 +83,6 @@ namespace optimizers {
 
     //! One of the stopping criteria
     double m_pgtol; 
-    int m_retCode;
 
     int m_numEvals;
     double m_val;

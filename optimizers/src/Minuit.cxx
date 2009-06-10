@@ -46,15 +46,15 @@ namespace optimizers {
      return m_uncertainty;
   }
 
-  void Minuit::find_min(int verbose, double tol, int tolType) {
-    minimize(verbose, tol, tolType, true);
+  int Minuit::find_min(int verbose, double tol, int tolType) {
+    return minimize(verbose, tol, tolType, true);
   }
 
-  void Minuit::find_min_only(int verbose, double tol, int tolType) {
-    minimize(verbose, tol, tolType, false);
+  int Minuit::find_min_only(int verbose, double tol, int tolType) {
+    return minimize(verbose, tol, tolType, false);
   }
 
-  void Minuit::minimize(int verbose, double tol, int tolType, bool doHesse) {
+  int Minuit::minimize(int verbose, double tol, int tolType, bool doHesse) {
 
     typedef std::vector<Parameter>::iterator pptr;
 
@@ -96,16 +96,6 @@ namespace optimizers {
     std::ostringstream mline;
     mline << "MINIMIZE " << m_maxEval << " " << tolerance << std::endl;
     int retCode = doCmd(mline.str());  // Minimize fcn
-    if (retCode == 4) {
-      // Abnormal termination
-      throw Exception
-	("Minuit abnormal termination. (No convergence?)");
-    }
-    else if (retCode > 0) {
-      // Faulty command line
-      throw Exception("Minuit bad command line");
-    }
-    // Normal termination.
 
     // Improve the quality of the Hessian matrix.
     if (doHesse) doCmd("HESSE");
@@ -161,6 +151,18 @@ namespace optimizers {
       }
     }
 
+    if (retCode == 0 && minStat == 3) {
+      setRetCode(0);    // OK!
+    } else if (retCode == 4) {
+      setRetCode(1);  // Abnormal termination.  Assume it's too many iterations.
+    } else {
+      if (retCode == 0) {
+        setRetCode(100+minStat);  // Bad covariance.
+      } else {
+        setRetCode(110);   // Some sort of bad command.
+      }
+    }
+    return getRetCode();
   } // End of minimize 
 
   std::pair<double,double> Minuit::Minos(unsigned int n) {
