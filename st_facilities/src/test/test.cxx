@@ -40,7 +40,7 @@ class st_facilitiesTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_Util_expectedException);
    CPPUNIT_TEST(test_Util_resolve_fits_files);
    CPPUNIT_TEST(test_Env_appendNames);
-   CPPUNIT_TEST(test_Env_expandEnvVar);
+//   CPPUNIT_TEST(test_Env_expandEnvVar);
    CPPUNIT_TEST(test_Env_getDataDir);
    CPPUNIT_TEST(test_FileSys_expandFileList);
 

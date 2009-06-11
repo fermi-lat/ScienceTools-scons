@@ -1,5 +1,5 @@
 package st_facilities
-version v0r14
+version v0r14p1
 
 author James Chiang <jchiang@slac.stanford.edu>
 
@@ -22,4 +22,4 @@ macro source *.cxx WIN32 "*.h *.cxx"
 library st_facilities -no_share $(source) *.c
 application test_st_facilities test/*.cxx
 
-set STTEST "sttest"
+#set STTEST "sttest"

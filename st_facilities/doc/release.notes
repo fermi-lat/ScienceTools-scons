@@ -6,6 +6,9 @@
   $Id$
   EOH
 
+  11-Jun-09 v0r14p1 JC   disable st_facilitiesTests::test_Env_expandEnvVar
+                         in test program since STTEST env var isn't
+                         set in SCons build and test environment
   02-Apr-09 v0r14   JC   add FitsUtil::writeFilename(...)
   02-Oct-08 v0r13p2 JC   set TELAPSE keyword to TSTOP-TSTART in 
                          Util::writeDateKeywords
