@@ -100,33 +100,9 @@ double LatSc::livetimeFrac(double time) const {
    }
    if (time < m_start.front() || time > m_start.back()) {
       return 0;
-//       std::ostringstream message;
-//       message << "Candidate event time " << std::setprecision(12)
-//               << time << " lies outside the range of the pointing "
-//               << "history file, " << m_start.front() << "--" 
-//               << m_stop.back() << std::endl;
-//       throw std::runtime_error(message.str());
    }
-   size_t indx = static_cast<size_t>((time - m_start.front())/m_dt);
-// Intervals may not be uniform, so must do a search.  The offsets
-// from the computed index should be constant and small over large
-// ranges, so a linear search from the computed point is reasonable.
-   indx = std::min(indx, m_start.size()-1);
-   if (m_start.at(indx) > time) {
-      while (m_start.at(indx) > time && indx > 0) {
-         indx--;
-      }
-      if (m_start.at(indx) <= time && time <= m_stop.at(indx)) {
-         return m_livetimefrac.at(indx);
-      } else { // This may occur if there are gaps in the FT2 file.
-         return 0;
-      }
-   }
-// Ensure we have not fallen short of the desired interval.
-   while (m_start.at(indx) < time && indx < m_start.size()) {
-      ++indx;
-   }
-   --indx;
+   size_t indx = (std::upper_bound(m_start.begin(), m_start.end(), time)
+                  - m_start.begin() - 1);
    if (m_start.at(indx) <= time && time <= m_stop.at(indx)) {
       return m_livetimefrac.at(indx);
    }
