@@ -251,6 +251,7 @@ void ObsSim::createResponseFuncs() {
 
 void ObsSim::createSimulator() {
    double totalArea(maxEffArea());
+//   std::cout << "total area: " << totalArea << std::endl;
    double startTime = m_pars["tstart"];
    std::string pointingHistory = m_pars["scfile"];
    std::string sc_table = m_pars["sctable"];
