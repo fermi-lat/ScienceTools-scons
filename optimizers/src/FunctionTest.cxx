@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 #include "optimizers/dArg.h"
 #include "optimizers/FunctionTest.h"
@@ -205,11 +206,14 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
       int j = 0;
       for (unsigned int i = 0; i < parameters.size(); i++) {
          if (parameters[i].isFree()) {
-            // The following two lines are needed to ensure that these
-            // variables are accessed properly in the assert for
-            // rhel4_gcc34opt builds.
-            m_func->derivByParam(*my_arg, parameters[i].getName());
-            freeDerivs[j];
+            // The var1, var2 and the fpe test are needed to ensure
+            // that these variables are accessed properly in the
+            // assert for rh9_gcc32opt and rhel4_gcc34opt builds.
+            double var1(m_func->derivByParam(*my_arg, parameters[i].getName()));
+            double var2(var1*freeDerivs[j]);
+            if (var2 != var2) {
+               throw std::runtime_error("FPE in FunctionTest::derivatives");
+            }
             assert(m_func->derivByParam(*my_arg, parameters[i].getName())
                    == freeDerivs[j]);
             j++;

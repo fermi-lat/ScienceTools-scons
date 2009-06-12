@@ -3,10 +3,14 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r16p2  11-Jun-09 JC   bypass compiler optimization on rh*opt systems
+                            that were causing erroneous failure in 
+                            FunctionTest::derivatives
+    v2r16p1  10-Jun-09 PLN  enable return code for find_min[_only]
     v2r16    07-Jun-09 JC   use rtag to get correct version of Minuit.h
-    v2r15p12 07-Jun-09  PLN  disabled gradient check by Minuit2 in NewMinuit;
-                             mis-tagged version of Minuit.h with unimplemented
-                             setMaxEval
+    v2r15p12 07-Jun-09 PLN  disabled gradient check by Minuit2 in NewMinuit;
+                            mis-tagged version of Minuit.h with unimplemented
+                            setMaxEval
     v2r15p11 30-May-09  JC  comment out unimplemented Minuit::setMaxEval
     v2r15p9 14-May-09  JC   update FunctionTest for Functions with fixed 
                             parameters
