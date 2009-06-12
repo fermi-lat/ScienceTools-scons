@@ -226,7 +226,9 @@ if baseEnv.GetOption('userRelease'):
 #########################
 #  External Libraries   #
 #########################
-SConscript('externals.scons')
+allExternals = SConscript('allExternals.scons')
+usedExternals = SConscript('externals.scons', exports = 'allExternals')
+SConscript('processExternals.scons', exports = 'allExternals usedExternals')
 
 ############################
 # Package Specific Options #
