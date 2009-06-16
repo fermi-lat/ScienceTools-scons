@@ -19,7 +19,7 @@ baseEnv['ARCHNAME'] = "Unknown"
 if baseEnv['PLATFORM'] == "posix":
     variant = platform.dist()[0]+platform.dist()[1]+"-"+platform.machine()+"-"+platform.architecture()[0]
     baseEnv['OSNAME'] = platform.dist()[0]+platform.dist()[1]
-    baseEnv['MACHINENAME'] = patform.machine()
+    baseEnv['MACHINENAME'] = platform.machine()
     baseEnv['ARCHNAME'] = platform.architecture()[0]
 
 if baseEnv['PLATFORM'] == "darwin":
