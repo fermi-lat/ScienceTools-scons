@@ -18,7 +18,7 @@ baseEnv['MACHINENAME'] = "Unknown"
 baseEnv['ARCHNAME'] = "Unknown"
 if baseEnv['PLATFORM'] == "posix":
     variant = platform.dist()[0]+platform.dist()[1]+"-"+platform.machine()+"-"+platform.architecture()[0]
-    baseEnv['OSNAME'] = platform.dist()[0]+platform.dist()[1]
+    baseEnv['OSNAME'] = platform.dist()[0]+re.sub('\.\d+', '', platform.dist()[1])
     baseEnv['MACHINENAME'] = platform.machine()
     baseEnv['ARCHNAME'] = platform.architecture()[0]
 
