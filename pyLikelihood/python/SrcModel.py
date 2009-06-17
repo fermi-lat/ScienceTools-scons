@@ -79,13 +79,14 @@ class SourceModel(object):
             return self.params[srcName]
         except:
             try:
-                return self.srcs[self._findSrc(srcName)]
+                #return self.srcs[self._findSrc(srcName)]
+                return self.srcs[srcName]
             except:
                 pass
-    def _findSrc(self, name):
-        for item in self.srcNames:
-            if item.find(name) != -1:
-                return item
+#    def _findSrc(self, name):
+#        for item in self.srcNames:
+#            if item.find(name) != -1:
+#                return item
     def __repr__(self):
         lines = []
         for src in self.srcNames:
