@@ -3,6 +3,10 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r17    19-Jun-09 JC   add m_par_ref data member to Parameter class
+                            and dispatch actions from accessor functions.
+                            This will enable use Function subclasses that
+                            use composition of other Function subclasses.
     v2r16p2  11-Jun-09 JC   bypass compiler optimization on rh*opt systems
                             that were causing erroneous failure in 
                             FunctionTest::derivatives

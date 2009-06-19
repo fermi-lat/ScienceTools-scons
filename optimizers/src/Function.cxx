@@ -203,20 +203,6 @@ void Function::appendParamDomElements(DOMDocument * doc, DOMNode * node) {
    }
 }
 
-// void Function::setParams(const DOMElement * elt) {
-//    std::vector<DOMElement *> parElts;
-//    xmlBase::Dom::getChildrenByTagName(elt, "parameter", parElts);
-//    for (unsigned int i = 0; i < parElts.size(); i++) {
-//       std::string name = xmlBase::Dom::getAttribute(parElts[i], "name");
-//       for (unsigned int j = 0; j < m_parameter.size(); j++) {
-//          if (m_parameter[j].getName() == name) {
-//             m_parameter[j].extractDomData(parElts[i]);
-//             break;
-//          }
-//       }
-//    }
-// }
-
 void Function::setParams(const DOMElement * elt) {
    std::vector<DOMElement *> parElts;
    xmlBase::Dom::getChildrenByTagName(elt, "parameter", parElts);
