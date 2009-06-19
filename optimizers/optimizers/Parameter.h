@@ -46,7 +46,8 @@ class Parameter {
 public:
 
    Parameter() : m_name(""), m_value(0), m_minValue(-HUGE), m_maxValue(HUGE),
-                 m_free(true), m_scale(1.), m_error(0), m_alwaysFixed(false) {}
+                 m_free(true), m_scale(1.), m_error(0), m_alwaysFixed(false),
+                 m_par_ref(0) {}
 
    /// @param name The name of the Parameter
    /// @param value The (scaled) value of the Parameter
@@ -58,24 +59,30 @@ public:
              double maxValue, bool isFree=true, double error=0) 
       : m_name(name), m_value(value), m_minValue(minValue), 
         m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error),
-        m_alwaysFixed(false) {}
+        m_alwaysFixed(false), m_par_ref(0) {}
 
    Parameter(const std::string & name, double value, bool isFree=true)
       : m_name(name), m_value(value), m_minValue(-HUGE), m_maxValue(HUGE),
-        m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false) {}
+        m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false),
+        m_par_ref(0) {}
 
-   ~Parameter() {}
+   ~Parameter() throw() {}
 
    /// name access
    void setName(const std::string & paramName) {
       m_name = paramName;
+      if (m_par_ref) {
+         m_par_ref->setName(paramName);
+      }
    }
+
    const std::string & getName() const {
       return m_name;
    }
    
    /// value access
    void setValue(double value);
+
    double getValue() const {
       return m_value;
    }
@@ -83,6 +90,9 @@ public:
    /// scale access
    void setScale(double scale) {
       m_scale = scale;
+      if (m_par_ref) {
+         m_par_ref->setScale(scale);
+      }
    }
    double getScale() const {
       return m_scale;
@@ -108,11 +118,20 @@ public:
       } else {
          m_free = free;
       }
+      if (m_par_ref) {
+         m_par_ref->setFree(free);
+      }
    }
    bool isFree() const {
       return m_free;
    }
 
+   void setAlwaysFixed(bool flag) {
+      m_alwaysFixed = flag;
+      if (m_par_ref) {
+         m_par_ref->setAlwaysFixed(flag);
+      }
+   }
    bool alwaysFixed() const {
       return m_alwaysFixed;
    }
@@ -120,6 +139,9 @@ public:
    /// error access
    void setError(double error) {
       m_error = error;
+      if (m_par_ref) {
+         m_par_ref->setError(error);
+      }
    }
    double error() const {
       return m_error;
@@ -134,6 +156,18 @@ public:
    /// member values.
    DOMElement * createDomElement(DOMDocument * doc) const;
 #endif // SWIG
+
+   void setParRef(Parameter * par) {
+      m_par_ref = par;
+      m_name = par->m_name;
+      m_value = par->m_value;
+      m_minValue = par->m_minValue;
+      m_maxValue = par->m_maxValue;
+      m_free = par->m_free;
+      m_scale = par->m_scale;
+      m_error = par->m_error;
+      m_alwaysFixed = par->m_alwaysFixed;
+   }
 
 private:
 
@@ -152,6 +186,10 @@ private:
 
    /// If true, then m_free is always false and cannot be changed.
    bool m_alwaysFixed;
+
+   /// pointer to underlying Parameter object for use by composite Function
+   /// classes. This should not be deleted by this class.
+   Parameter * m_par_ref;
 
 };
 

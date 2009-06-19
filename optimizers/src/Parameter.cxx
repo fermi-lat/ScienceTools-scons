@@ -43,11 +43,17 @@ void Parameter::setValue(double value) {
          value, m_minValue, m_maxValue, 
          static_cast<int>(OutOfBounds::VALUE_ERROR));
    }
+   if (m_par_ref) {
+      m_par_ref->setValue(value);
+   }
 }
 
 void Parameter::setTrueValue(double trueValue) {
    double value = trueValue/m_scale;
    setValue(value);
+   if (m_par_ref) {
+      m_par_ref->setValue(value);
+   }
 }
 
 void Parameter::setBounds(double minValue, double maxValue) {
@@ -59,6 +65,9 @@ void Parameter::setBounds(double minValue, double maxValue) {
          "Attempt to set bounds that exclude the existing value.", 
          m_value, minValue, maxValue, 
          static_cast<int>(OutOfBounds::BOUNDS_ERROR));
+   }
+   if (m_par_ref) {
+      m_par_ref->setBounds(minValue, maxValue);
    }
 }
 
@@ -91,6 +100,9 @@ void Parameter::extractDomData(const DOMElement * elt) {
       m_error = std::atof(xmlBase::Dom::getAttribute(elt, "error").c_str());
    } else {
       m_error = 0;
+   }
+   if (m_par_ref) {
+      m_par_ref->extractDomData(elt);
    }
 }
 

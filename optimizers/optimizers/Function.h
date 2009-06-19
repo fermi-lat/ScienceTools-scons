@@ -73,10 +73,10 @@ public:
    virtual const Parameter & getParam(const std::string &paramName) const;
 
    /// Unsafe version.
-   Parameter & parameter(const std::string & name);
+   virtual Parameter & parameter(const std::string & name);
 
    /// @return The parameter controlling the overall normalization.
-   Parameter & normPar();
+   virtual Parameter & normPar();
    
    /// Return the total number of Parameters.
    unsigned int getNumParams() const {
