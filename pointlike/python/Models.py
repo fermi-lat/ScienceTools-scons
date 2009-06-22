@@ -17,7 +17,7 @@ class DefaultModelValues(object):
 
    simple_models = {
       'PowerLaw'         : {'p':[1e-11, 2.0],          'param_names':['Norm','Index'],'index_offset':0},
-      'PowerLawFlux'     : {'p':[1e-7 , 2.0],          'param_names':['Int_Flux','Index'],'emin':100,'emax':N.inf},
+      'PowerLawFlux'     : {'p':[1e-7 , 2.0],          'param_names':['Int_Flux','Index'],'emin':100,'emax':1e6},
       'BrokenPowerLaw'   : {'p':[1e-11, 2.0, 2.0 ,1e3],'param_names':['Norm','Index_1','Index_2', 'E_break']},
       'BrokenPowerLawF'  : {'p':[1e-11, 2.0,2.0],      'param_names':['Norm','Index_1','Index_2'],'e_break':1000},
       'BrokenPowerLawCutoff': {'p':[1e-11,2,2,1e3,3e3],'param_names':['Norm','Index_1','Index_2','E_break','Cutoff']},
