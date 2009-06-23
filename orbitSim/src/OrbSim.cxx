@@ -53,11 +53,9 @@ int parseInit( const char *fname, InitI *inA) {
 
       }
 
-      //      if(match((const char*)ln, "^#") == 1) {
       if(match_str((const char*)ln, "^#") == 1) {
 	//	printf("Ignored line: %s\n", ln);
 	continue;
-	//      } else if(match((const char*)ln, "^[ ]*start_MJD[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^start_MJD") == 1) {
 	double t = -1.0;;
 	char *jnk = processline(ln, '=');
@@ -68,7 +66,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    it++;
 	  }
 	}
-//       } else if(match((const char*)ln, "^[ ]*stop_MJD[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^stop_MJD") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
@@ -90,7 +87,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-	//      } else if(match((const char*)ln, "^[ ]*Initial_RA[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Initial_RA") == 1) {
 	double t = 99999.0;
 	char *jnk = processline(ln, '=');
@@ -102,7 +98,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-	//      }else if(match((const char*)ln, "^[ ]*Initial_DEC[ ]*") == 1) {
       }else if(match_str((const char*)ln, "^Initial_DEC") == 1) {
 	double t = 99999.0;
 	char *jnk = processline(ln, '=');
@@ -114,7 +109,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-	//      }else if(match((const char*)ln, "^[ ]*Earth_Avoid[ ]*") == 1) {
       }else if(match_str((const char*)ln, "^Earth_Avoid") == 1) {
 	int flgocc = 1;
 	char *jnk = processline(ln, '=');
@@ -128,7 +122,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-	//      } else if(match((const char*)ln, "^[ ]*Timeline[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Timeline") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -156,7 +149,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    }
 	  }
 	}
-	//      } else if(match((const char*)ln, "^[ ]*TLType[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^TLType") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -179,7 +171,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->TLtype.assign("Not Specified");
 	  }
 	}
-	//      } else if(match((const char*)ln, "^[ ]*EphemName[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^EphemName") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -200,7 +191,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->EPHname.assign("Not Specified");
 	  }
 	}
-	//      }  else if(match((const char*)ln, "^[ ]*EphemFunc[ ]*") == 1) {
       }  else if(match_str((const char*)ln, "^EphemFunc") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -221,7 +211,6 @@ int parseInit( const char *fname, InitI *inA) {
 	      inA->EPHfunc.assign("Not Specified");
 	  }
 	}
-	//      } else if(match((const char*)ln, "^[ ]*OutPutFile[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^OutPutFile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -243,7 +232,6 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-	//      } else if(match((const char*)ln, "^[ ]*OptFile[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^OptFile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -261,7 +249,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    }
 	  } 
 	}
-	//      } else if(match((const char*)ln, "^[ ]*saafile[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^saafile") == 1) {
 	char *jnk = processline(ln, '=');
 	if(jnk != NULL) {
@@ -283,7 +270,6 @@ int parseInit( const char *fname, InitI *inA) {
 
 	  }
 	}
-//       } else if(match((const char*)ln, "^[ ]*Units[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Units") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
@@ -295,7 +281,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-//       } else if(match((const char*)ln, "^[ ]*Resolution[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Resolution") == 1) {
 	double t = -1.0;
 	char *jnk = processline(ln, '=');
@@ -307,7 +292,6 @@ int parseInit( const char *fname, InitI *inA) {
 	  }
 	}
 
-//       } else if(match((const char*)ln, "^[ ]*Chatter[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Chatter") == 1) {
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -317,7 +301,6 @@ int parseInit( const char *fname, InitI *inA) {
 	    inA->chat = t;
 	  }
 	}
-//       } else if(match((const char*)ln, "^[ ]*Debug[ ]*") == 1) {
       } else if(match_str((const char*)ln, "^Debug") == 1) {
 	char *jnk = processline(ln, '=');
 	if (jnk != NULL) {
@@ -756,13 +739,10 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
 	if(mode == 1 || mode == 2){
 	  double lpos[2];
-	  //	  printf("Calling MakeAtt with: mjdt=%f mjde=%f mjds=%f\npra=%f, pdec=%f offset=%f, ra=%f dec=%f mode=%d\n", mjdt, mjde, mjds, pra, pdec, offset, ra, dec, mode);
-
 	  
 	  losf.info(3) << "Calling MakeAtt with: mjdt="<<mjdt<<", mjde="<<mjde<<", mjds="<<mjds<<", pra="<<pra<<", pdec="<<pdec<<", offset="<<offset<<", ra="<<ra<<", dec="<<dec<<", mode="<<mode<<"\n";
 	  MakeAtt(mjdt, mjde, mjds, pra, pdec, offset, ra, dec, 
 		  mode, ini->Resolution, ephem, lpos, OAtt, ini->start_MJD);
-
 
 
 // 	  if(mode == 1){

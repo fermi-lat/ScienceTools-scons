@@ -240,32 +240,6 @@ double getMJD(char *ln){
 
 }
 
-
-
-/*
- * Match string against the extended regular expression in
- * pattern, treating errors as no match.
- *
- * return 1 for match, 0 for no match
- */
-
-/*
-int match(const char *string, char *pattern) {
-  int status;
-  regex_t re;
-  if (regcomp(&re, pattern, REG_EXTENDED|REG_NOSUB| REG_ICASE) != 0) {
-    return(0);      // report error
-  }
-  status = regexec(&re, string, (size_t) 0, NULL, 0);
-  regfree(&re);
-  if (status != 0) {
-    return(0);      // report error
-  }
-  return(1);
-}
-*/
-
-
 /*
  * Match string against the extended regular expression in
  * pattern, treating errors as no match.

@@ -678,10 +678,7 @@ EphemData * tlederive(FILE *ifp, double StartTime,
 	printf("%4d %02d %02d %02d %02d %05d %f %f %f %f\n",tz.yr, tz.mo, tz.dy, tz.hr, tz.mn, tz.sc, pos.v[0]* xkmper, pos.v[1]* xkmper, pos.v[2]* xkmper, Units);
 */
 
-
-
       //  break;
-      /**/
       
       vSat[0] = pos.v[0] * Units * xkmper;
       vSat[1] = pos.v[1] * Units * xkmper;
@@ -1855,8 +1852,6 @@ void MakePointed(double start, double end, double res, double ra,
    chosen for Swift, I renamed it.
    This routine determines if each ephemeris point is in or out of the SAA polynomial.
    A filename should be passed in which defines SAA polynomial (longitude/latitude pairs).
-   If a filnname is not passed in, a default hardcoded table of pairs
-   will be used.  
    In addition to an ephemeris point being in the SAA polynomial, the ephem point 
    prior will also be included as in the SAA polynomial,because somewhere between the 
    two points is when the actual SAA is entered (we're rounding by one resolution).  

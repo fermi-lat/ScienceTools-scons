@@ -355,24 +355,6 @@ void precessionRM(double mjd, AtRotMat Rm);
 
   /**
    * @brief Function that checks if a specified string
-   * matches a specified regular expression pattern. The function
-   * returns zero if the match is not satisfied
-   * 
-   * @param string - input string 
-   * @param pattern - input regular expression pattern 
-   *
-   * @author Giuseppe Romeo
-   * @date Created:  Nov 15, 2005
-   */
-  //int match(const char *string, char *pattern);
-
-
-
-
-
-
-  /**
-   * @brief Function that checks if a specified string
    * matches a specified string pattern. The match can take
    * place anywhere in the passed string; however, if the first
    * character in the string pattern is "^", the match MUST 

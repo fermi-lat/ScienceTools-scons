@@ -276,20 +276,6 @@ void orbitSimApp::run() {
   EphemData * ephemeris = NULL;
 
   osf.info(2) << "Populating Ephemeris structure by calling " << initf.EPHfunc << " function.\n";
-/*
-  if(match( initf.EPHfunc.c_str(),"^yyyy_eph$") == 1){
-    ephemeris = yyyy_eph(ephF, initf.start_MJD, initf.stop_MJD, \
-			 initf.Units, initf.Resolution);
-  } else if(match( initf.EPHfunc.c_str(),"^xyzll_eph$") == 1){
-    ephemeris = xyzll_eph(ephF, initf.start_MJD, initf.stop_MJD, \
-			  initf.Units, initf.Resolution);
-  } else if(match( initf.EPHfunc.c_str(),"^tlederive$") == 1){
-    ephemeris = tlederive(ephF, initf.start_MJD, initf.stop_MJD, \
-			  initf.Units, initf.Resolution);
-  }
-*/
-
-
 
   if(match_str( initf.EPHfunc.c_str(),"YYYY_EPH") == 1){
     ephemeris = yyyy_eph(ephF, initf.start_MJD, initf.stop_MJD, \
@@ -315,15 +301,6 @@ void orbitSimApp::run() {
 
   //Make an empty Attitude structure Oat.
   Attitude *Oat = NULL;
-
-//   if(match( initf.TLtype.c_str(), "^TAKO$") == 1){
-//     Oat = makeAttTako(&initf, ephemeris);
-//   } else if (match( initf.TLtype.c_str(), "^ASFLOWN$") == 1){
-//     Oat = makeAttAsFl(&initf, ephemeris);
-//   } else if (match( initf.TLtype.c_str(), "^SINGLE$") == 1){
-//     Oat = doCmd(&initf, ephemeris);
-//   }
-
 
   //Basically all calculations are done by whatever this calls.
   if(match_str( initf.TLtype.c_str(), "TAKO") == 1){
@@ -429,21 +406,6 @@ void orbitSimApp::run() {
     posit[1] = Oat->Y[k]*1.0;
     posit[2] = Oat->Z[k]*1.0;
 
-*/
-
-/*
-    printf("%4d) ok, mjd=%f\n", k, Oat->mjd[k]);
-    printf("SC_POSITION= %f %f %f\n", posit[0], posit[1], posit[2]);
-    printf("LAT_GEO=%f\n", Oat->Lat[k]);
-    printf("LON_GEO=%f\n", Oat->Lon[k]);
-    printf("RAD_GEO=%f\n", Oat->Hei[k]*1000.0);
-    printf("RA_ZENITH=%f\n", Oat->SatRA[k]);
-    printf("DEC_ZENITH=%f\n", Oat->SatDEC[k]);
-    printf("RA_SCZ=%f\n", Oat->Zra[k]);
-    printf("DEC_SCZ=%f\n", Oat->Zdec[k]);
-    printf("RA_SCX=%f\n", Oat->Xra[k]);
-    printf("DEC_SCX=%f\n", Oat->Xdec[k]);
-    printf("setting LIVETIME\n\n");
 */
 
     (*itor)["SC_POSITION"].set(posit );
