@@ -316,6 +316,8 @@ if not baseEnv.GetOption('help'):
     if baseEnv.GetOption('clean'):
         baseEnv.Default('test')
 
+baseEnv.SConscript('setupTarget.scons')
+
 def print_build_failures():
     from SCons.Script import GetBuildFailures
     print "scons: printing failed nodes"
