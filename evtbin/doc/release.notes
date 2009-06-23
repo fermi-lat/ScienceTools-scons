@@ -91,6 +91,9 @@
                           of the code.
 18-may-2009    v2r2p3 JV  Update fits templates for gtbindef so its
 			  output files are valid with no warnings.
+23-jun-2009    v2r3   JV  Updated GBM deadtime calc for Single and
+		          MultiSpec PHA files.  LightCurve and unit
+			  tests still need to be updated.
 --------------------------------------------------------------------------------
 \endverbatim
 
