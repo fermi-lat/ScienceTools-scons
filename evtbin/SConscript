@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: James Peachey <James.Peachey-1@nasa.gov>
-# Version: evtbin-02-02-03
+# Version: evtbin-02-03-00
 
 Import('baseEnv')
 Import('listFiles')
