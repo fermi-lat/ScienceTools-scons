@@ -65,6 +65,7 @@ namespace evtbin {
 
     // Iterate over bin number and output table iterator, writing fields in order.
     double total_counts=0;
+    double total_error_channel=0;
     for (long index = 0; index != binner->getNumBins(); ++index, ++table_itor) {
       // Channel of each bin.
       (*table_itor)["CHANNEL"].set(index + 1);
@@ -73,7 +74,11 @@ namespace evtbin {
       (*table_itor)["COUNTS"].set(m_hist[index]);
 
       //Keep a running total of binned counts.
-      total_counts+=m_hist[index];
+      if (index <= 126){
+	total_counts+=m_hist[index];
+      }else{
+	total_error_channel+=m_hist[index];
+      }
 
       //Statistical Error
       (*table_itor)["STAT_ERR"].set(calcStatErr(m_hist[index]));
@@ -83,7 +88,7 @@ namespace evtbin {
     writeEbounds(out_file, m_ebounds);
 
     //Check for and if needed make gbm specific correction for deadtime.
-    gbmExposure(total_counts, out_file);
+    gbmExposure(total_counts, total_error_channel, out_file);
 
     // Write GTI extension.
     writeGti(out_file);

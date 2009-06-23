@@ -101,7 +101,8 @@ namespace evtbin {
     // and used to update the output file(s).
     const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREFI",
       "MJDREFF", "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER", 
-      "RESPFILE", "DETNAM", "DATATYPE", "RA_OBJ", "DEC_OBJ", "TRIGTIME", "PRIMTYPE", "EVT_DEAD" };
+			    "RESPFILE", "DETNAM", "DATATYPE", "RA_OBJ", "DEC_OBJ", "TRIGTIME", "PRIMTYPE", 
+			    "EVT_DEAD", "EVTDEDHI" };
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
 
     // Get container of file names from the supplied input file.
@@ -343,13 +344,23 @@ namespace evtbin {
     updateKeyValue("ONTIME", m_gti.computeOntime(), "Sum of all Good Time Intervals");
   }
 
-  void DataProduct::gbmExposure(double total_counts, const std::string & out_file) const {
+  void DataProduct::gbmExposure(double total_counts, double total_error_channel, const std::string & out_file) const {
     KeyValuePairCont_t::iterator found2 = m_key_value_pairs.find("EVT_DEAD");
+    KeyValuePairCont_t::iterator found3 = m_key_value_pairs.find("EVTDEDHI");
     // Only modify exposure if EVT_DEAD is found.
     if (m_key_value_pairs.end() != found2 && !found2->second.empty()) {
       double deadtime;
       found2->second.getValue(deadtime);
-      double gbm_exposure=(m_gti.computeOntime())-(total_counts*deadtime);
+      double evtdedhi;
+      found3->second.getValue(evtdedhi);
+      double gbm_exposure=(m_gti.computeOntime())-(total_counts*deadtime)-(total_error_channel*evtdedhi);
+      double rate=total_counts/m_gti.computeOntime();
+      double max_rate=375000;
+      if (rate >= max_rate){
+	m_os.warn().prefix()<< "Event rate of "<<rate/1000<<" kHz excedes "
+		 <<max_rate/1000
+		 <<" kHz.  Exposure calculation may not be accurate.\n";
+      }
       updateKeyValue("EXPOSURE", gbm_exposure, "Integration time (in seconds) for the PHA data with GBM deadtime correction.");
       // And actually write the keyword to the output file.
       updateKeywords(out_file);

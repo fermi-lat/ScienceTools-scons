@@ -81,6 +81,8 @@ namespace evtbin {
     // Iterate over bin number and output table iterator, writing fields in order.
     double total_counts=0;
     double total_counts2=0;
+    double total_error_channel=0;
+    double total_error_channel2=0;
     for (long index = 0; index != num_time_bins; ++index, ++table_itor) {
       // Get interval of this time bin.
       const Binner::Interval & time_int = time_binner->getInterval(index);
@@ -102,9 +104,16 @@ namespace evtbin {
       (*table_itor)["COUNTS"].set(&(m_hist[index][0]), &(m_hist[index][num_energy_bins]), 0);
             
       // Keep a running total of binned counts for current spectrum.
-      for (long index2 = 0; index2 != num_energy_bins; ++index2) total_counts+=m_hist[index][index2];
+      for (long index2 = 0; index2 != num_energy_bins; ++index2) {
+	if (index2 <=126){
+	  total_counts+=m_hist[index][index2];
+	}else{
+	  total_error_channel+=m_hist[index][index2];
+	}
+      }
       // And the total for all spectrums.
       total_counts2+=total_counts;
+      total_error_channel2+=total_error_channel;
 
       //Statistical Error
       (*table_itor)["STAT_ERR"].set(staterr, staterr + num_energy_bins, 0);
@@ -124,14 +133,20 @@ namespace evtbin {
       (*table_itor)["EXPOSURE"].set(spec.computeExposure(m_sc_file, m_sc_table));
 
       // Then check for GBM deadtime for each spectrum.
+      // We do this here rather than using the gbmExposure method since it writes to a table and not
+      // to a header keyword.
       KeyValuePairCont_t::iterator found2 = m_key_value_pairs.find("EVT_DEAD");
+      KeyValuePairCont_t::iterator found3 = m_key_value_pairs.find("EVTDEDHI");
       if (m_key_value_pairs.end() != found2 && !found2->second.empty()) {
 	double deadtime;
 	found2->second.getValue(deadtime);
-	double gbm_exposure=(gti.computeOntime())-(total_counts*deadtime);
+	double evtdedhi;
+	found3->second.getValue(evtdedhi);
+	double gbm_exposure=(gti.computeOntime())-(total_counts*deadtime)-(total_error_channel*evtdedhi);
 	(*table_itor)["EXPOSURE"].set(gbm_exposure);
       }
       total_counts=0;
+      total_error_channel=0;
     }
 
     delete [] channel;
@@ -142,7 +157,7 @@ namespace evtbin {
 
     // Check for and if needed make gbm specific correction for deadtime.
     // This is for the total exposure in the headers.
-    gbmExposure(total_counts2, out_file);
+    gbmExposure(total_counts2, total_error_channel2, out_file);
 
     // Write GTI extension.
     writeGti(out_file);

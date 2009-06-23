@@ -132,11 +132,12 @@ namespace evtbin {
       void adjustTimeKeywords(const std::string & sc_file, const std::string & sc_table, const Binner * binner = 0);
 
       /** \brief Test for gbm specific keyword for deadtime and adjusts exposure accordingly.
-	  \param total_counts total number of counts in the Exposure.
+	  \param total_counts total number of counts (channels o-126) in the Exposure.
+	  \param total_error_channel total counts in channel 127	  
 	  \param out_file The name of the output file.
       */
 
-      void gbmExposure(double, const std::string & out_file) const;
+      void gbmExposure(double, double, const std::string & out_file) const;
 
       /** \brief Update keywords in the given file, using this object's current set of key-value pairs. Every extension
                  of the file will be updated.

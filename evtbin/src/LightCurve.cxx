@@ -59,6 +59,7 @@ namespace evtbin {
 
     // Iterate over bin number and output table iterator, writing fields in order.
     double total_counts=0;
+    double total_error_channel=0;
     for (long index = 0; index != binner->getNumBins(); ++index, ++table_itor) {
       // Midpoint time of each bin, from the binner.
       (*table_itor)["TIME"].set(binner->getInterval(index).midpoint());
@@ -77,7 +78,7 @@ namespace evtbin {
     }
 
     //Check for and if needed make gbm specific correction for deadtime.
-    gbmExposure(total_counts, out_file);
+    gbmExposure(total_counts, total_error_channel, out_file);
 
     // Write GTI extension.
     writeGti(out_file);
