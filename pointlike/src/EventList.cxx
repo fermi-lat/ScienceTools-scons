@@ -171,13 +171,17 @@ Photon EventList::Iterator::operator*()const
     }catch(const std::exception&){
         ctbclasslevel=3;
     }
-    if( m_selectid) { // check for source id only if requested
-        (*m_it)[*names++].get(source);
+    //if( m_selectid) { // check for source id only if requested
+    //    (*m_it)[*names++].get(source);
+    //}
+    try{
+      (*m_it)[*names++].get(source); // source id for monte carlo testing
+    }catch(std::exception){}
+
+    if( m_use_mc_energy ) { //get MC_ENERGY and replace ENERGY, if using it
+      (*m_it)["MCENERGY"].get(mc_energy);
+      energy = mc_energy;
     }
-	if( m_use_mc_energy ) { //get MC_ENERGY and replace ENERGY, if using it
-		(*m_it)["MCENERGY"].get(mc_energy);
-		energy = mc_energy;
-	}
 
     if( !isFinite(energy) || !isFinite(dec) || !isFinite(ra) ){
         std::stringstream s;
