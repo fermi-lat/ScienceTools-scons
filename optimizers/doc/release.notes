@@ -3,6 +3,9 @@
     @brief Package coordinators: J. Chiang, P. L. Nolan
 
     @verbatim
+    v2r17p1  29-Jun-09 JC   reimplement Minuit::Minos so that it starts
+                            numbering the free parameters with zero rather
+                            than one (now agrees with NewMinuit::Minos)
     v2r17    19-Jun-09 JC   add m_par_ref data member to Parameter class
                             and dispatch actions from accessor functions.
                             This will enable use Function subclasses that

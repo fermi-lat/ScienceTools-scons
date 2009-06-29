@@ -167,9 +167,17 @@ namespace optimizers {
 
   std::pair<double,double> Minuit::Minos(unsigned int n) {
     integer npar(m_stat->getNumFreeParams());
-    if (n < 1 || n > npar) {
+//     if (n < 1 || n > npar) {
+//       throw Exception("Parameter number out of range in Minos", n);
+//     }
+    /// For the public interface, assume the parameter numbering
+    /// starts with zero (as with the Minuit2 MnMinos interface).  So
+    /// we test the range of n accordingly and add one before calling
+    /// the Fortran-based code.
+    if (n >= static_cast<unsigned int>(npar)) {
       throw Exception("Parameter number out of range in Minos", n);
     }
+    n += 1;
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
     numPars = npar;
