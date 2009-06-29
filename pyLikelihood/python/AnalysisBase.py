@@ -128,9 +128,16 @@ class AnalysisBase(object):
         if par_index not in free_indices.keys():
             raise RuntimeError("Cannot evaluate minos errors for a frozen "
                                + "parameter.")
-        errors = self.optObject.Minos(free_indices[par_index])
-        self.logLike.setFreeParamValues(freeParams)
-        return errors
+        try:
+            errors = self.optObject.Minos(free_indices[par_index])
+            self.logLike.setFreeParamValues(freeParams)
+            return errors
+        except RuntimeError, message:
+            print "Minos error encountered for parameter %i." % par_index
+            print "Attempting to reset free parameters."
+            self.thaw(par_index)
+            self.logLike.setFreeParamValues(freeParams)
+            raise RuntimeError(message)
     def getExtraSourceAttributes(self):
         source_attributes = {}
         for src in self.model.srcNames:
