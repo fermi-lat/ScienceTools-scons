@@ -35,7 +35,8 @@ test_Util = progEnv.Program('test_Util',[ 'src/test/testUtil.cxx'])
 progEnv.Tool('registerObjects', package = 'facilities',
              libraries = [facilitiesLib, lib_pyFacilities],
              testApps = [test_time, test_env, test_Util],
-             includes = listFiles(['facilities/*.h']))
+             includes = listFiles(['facilities/*.h']),
+             python = ['python/facilities.py'])
 
 
 
