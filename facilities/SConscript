@@ -36,7 +36,7 @@ progEnv.Tool('registerObjects', package = 'facilities',
              libraries = [facilitiesLib, lib_pyFacilities],
              testApps = [test_time, test_env, test_Util],
              includes = listFiles(['facilities/*.h']),
-             python = ['python/facilities.py'])
+             python = ['python/facilities.py', 'src/py_facilities.py'])
 
 
 
