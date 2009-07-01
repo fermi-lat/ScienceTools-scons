@@ -3,6 +3,8 @@
     $Id$
 
     @verbatim
+    * EOH *
+
     v6r4p1  23-Feb-09   JC   build filename of temporary GTI file by appending
                              "_tempgti" to output file name (JB suggestion)
     v6r4    13-Jan-09   JC   add gtifile parameter for temporary GTI file 

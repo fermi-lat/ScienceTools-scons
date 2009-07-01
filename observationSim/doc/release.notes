@@ -4,6 +4,7 @@
     $Id$
 
     @verbatim
+    EOH
     v8r4   21-Oct-08   JC   use binary search for finding FT2 intervals
                             in LatSc::livetimefrac (this is much faster than
                             computed index + linear search when operating on

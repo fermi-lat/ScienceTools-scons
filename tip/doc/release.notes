@@ -3,6 +3,7 @@
     @author James Peachey, HEASARC/GSSC
 
 @verbatim
+ * EOH *
 23-jun-2009 v2r15p1   JP Trap and report errors in RootColumn.h if TTree::GetEntry
                          returns a non-positive value.
 05-jun-2009 v2r15     JP Added get/set temporary file name methods to IFileSvc.

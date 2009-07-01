@@ -4,6 +4,7 @@
 
 \verbatim
 --------------------------------------------------------------------------------
+* EOH *
 26-nov-2008   v0r6    JP  Add support for long long, both signed and unsigned.
 10-apr-2008 v0r5p2    JP  Change definition point of static variables to
                           improve stability.
