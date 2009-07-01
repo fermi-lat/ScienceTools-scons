@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: James Peachey <peachey@lheamail.gsfc.nasa.gov>
-# Version: rspgen-03-00-01
+# Version: rspgen-03-00-02
 
 Import('baseEnv')
 Import('listFiles')
