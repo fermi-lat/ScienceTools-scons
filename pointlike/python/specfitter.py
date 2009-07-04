@@ -57,7 +57,10 @@ class SpectralModelFitter(object):
          """Routine for use in minimum Poisson likelihood."""
          model = args[0]
          model.set_parameters(parameters)
-         return sum( (sl.logLikelihood(sl.expected(model)) for sl in pslw.sl_wrappers) )
+         ret = sum( (sl.logLikelihood(sl.expected(model)) for sl in pslw.sl_wrappers) )
+         #print 'parameters, value:' , parameters, ret
+         #print 'expected: ', [sl.expected(model) for sl in pslw.sl_wrappers]
+         return ret
       
       from scipy.optimize import fmin
       #fit = fmin(logLikelihood,model.p,args=(model,),full_output=1,disp=0,maxiter=1000,maxfun=2000)

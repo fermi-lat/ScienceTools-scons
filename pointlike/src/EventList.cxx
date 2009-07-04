@@ -121,8 +121,6 @@ EventList::EventList()
 }
 EventList::~EventList()
 {
-    // seems to create crash
-    std::cout << "deleting table" << std::endl;
     delete m_table;
 }
 
