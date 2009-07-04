@@ -6,7 +6,7 @@ $Id$
 @verbatim
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
- 04-jul-09 v6r21   THB Kerr mods mainly
+ 04-jul-09 v6r21p1 THB Kerr mods mainly
  04-jun-09 v6r20p2 THB Fixes for pointfit, better integration of lsq option
  27-may-09 v6r20   THB Many python updates to implement generalized roi analysis (mostly MK)
  15-may-09 v6r19p0 THB preliminary version that uses psf threshold to choose bands for fits

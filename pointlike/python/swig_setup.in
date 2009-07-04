@@ -30,7 +30,6 @@
 #include "pointlike/Alignment.h"
 #include "pointlike/LeastSquaresFitter.h"
 #include "pointlike/ConfidenceLevel.h"
-#include "pointlike/FeldmanCousins.h"
 
 #include "CLHEP/Vector/Rotation.h"
 #include "CLHEP/Vector/EulerAngles.h"
@@ -193,7 +192,5 @@ public:
 //%template(SkyDirIntPairVector) std::vector<std::pair<astro::SkyDir,int> >;
 
 %include ../pointlike/ConfidenceLevel.h
-%include ../pointlike/FeldmanCousins.h
-
 
 
