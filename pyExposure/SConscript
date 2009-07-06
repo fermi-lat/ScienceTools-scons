@@ -17,10 +17,8 @@ pyExposureSharedLib = libEnv.SharedLibrary('pyExposure',
                                            listFiles(['src/*.cxx']))
 
 swigEnv.Tool('pyExposureLib')
-lib_pyExposureStaticLib = swigEnv.StaticLibrary('_pyExposure', 
-                                               'src/pyExposure.i', LIBPREFIX='')
-lib_pyExposureSharedLib = swigEnv.SharedLibrary('_pyExposure', 
-                                               'src/pyExposure.i', SHLIBPREFIX='')
+lib_pyExposureSharedLib = swigEnv.LoadableModule('_pyExposure', 
+                                                 'src/pyExposure.i')
 
 progEnv.Tool('pyExposureLib')
 
@@ -29,7 +27,8 @@ gtexposureBin = progEnv.Program('gtexposure',
 
 progEnv.Tool('registerObjects', package = 'pyExposure',
              libraries = [pyExposureLib, pyExposureSharedLib,
-                          lib_pyExposureStaticLib, lib_pyExposureSharedLib],
+                          lib_pyExposureSharedLib],
              binaries = [gtexposureBin],
              includes = listFiles(['pyExposure/*.h']), 
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']),
+             python = ['src/pyExposure.py'])
