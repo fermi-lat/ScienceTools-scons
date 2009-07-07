@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.30  2008/09/26 07:59:39  jurgen
+Correctly cast pointer (for Win32 compile)
+
 Revision 1.29  2008/08/20 11:52:21  jurgen
 Correct probability computation and resolve STGEN-56
 
@@ -282,13 +285,19 @@ int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
     // Single loop for common exit point
     do {
 
+      // Extract column format
+      col_format = desc->m_format;
+
       // Set quantity format
       switch (desc->m_type) {
       case Quantity::VECTOR:
-        *format = "1E";
+        *format = "1D";
         break;
       case Quantity::NUM:
-        *format = "1E";
+        if (col_format.find("D",0) != std::string::npos)
+	  *format = "1D";
+	else
+	  *format = "1E";
         break;
       case Quantity::STRING:
         col_format = desc->m_format;
@@ -307,7 +316,7 @@ int set_fits_col_format(catalogAccess::Quantity *desc, std::string *format) {
           *format = "10A";
         break;
       default:
-        *format = "1E";
+        *format = "1D";
         break;
       }
 

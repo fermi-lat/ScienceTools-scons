@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.29  2009/03/26 14:15:05  jurgen
+Properly handle NULL error radii (by assuming an minimum 1D 1sigma error of 0.005 deg)
+
 Revision 1.28  2009/03/18 10:06:58  jurgen
 Update version number
 
@@ -100,9 +103,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r2p0"
+#define TOOL_VERSION  "v2r2p1"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "24-Mar-2009"
+#define TOOL_DATE     "07-Jul-2009"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
