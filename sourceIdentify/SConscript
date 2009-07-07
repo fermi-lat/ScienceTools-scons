@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Jurgen Knodlseder <knodlseder@cesr.fr>
-# Version: sourceIdentify-02-02-00
+# Version: sourceIdentify-02-02-01
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
