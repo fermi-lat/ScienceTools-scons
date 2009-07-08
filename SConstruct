@@ -10,6 +10,7 @@ import os,platform,SCons,glob,re,atexit,sys,traceback,commands
 EnsureSConsVersion(1, 2, 0)
 baseEnv=Environment()
 baseEnv.Tool('generateScript')
+baseEnv.Tool('doxygen')
 baseEnv.Alias('NoTarget')
 baseEnv.SourceCode(".", None)
 variant = "Unknown"
@@ -58,6 +59,7 @@ AddOption('--supersede', dest='supersede', action='store', nargs=1, type='string
 AddOption('--exclude', dest='exclude', action='append', nargs=1, type='string', metavar='DIR', help='Directory containing a SConscript file that should be ignored.')
 AddOption('--user-release', dest='userRelease', nargs=1, type='string', action='store', metavar='FILE', help='Creates a compressed user release and stores it in FILE')
 AddOption('--source-release', dest='sourceRelease', nargs=1, type='string', action='store', metavar='FILE', help='Creates a compressed source release and stores it in FILE')
+AddOption('--doxygen', dest='doxygenOutput', nargs=1, type='string', default='${HTML-OUTPUT}', action='store', metavar='DIRECTORY', help='Sets up Doxygen configuration to write html in DIRECTORY')
 
 if baseEnv['PLATFORM'] != 'win32':
     AddOption('--with-cc', dest='cc', action='store', nargs=1, type='string', metavar='COMPILER', help='Compiler to use for compiling C files')
@@ -198,6 +200,8 @@ baseEnv.Append(TOOLDIR       = Dir(override).Dir('sconsTools'))
 baseEnv.Append(TESTDIR       = baseEnv['BINDIR'])
 baseEnv.Append(TESTSCRIPTDIR = baseEnv['SCRIPTDIR'])
 baseEnv.Append(PYTHONDIR     = Dir(override).Dir('python'))
+baseEnv.Append(DOCDIR        = Dir(override).Dir('Doxygen'))
+baseEnv.Append(DOXYGENOUTPUT = baseEnv.GetOption('doxygenOutput'))
 baseEnv['CONFIGURELOG']      = str(Dir(override).File("config.log"))
 baseEnv['CONFIGUREDIR']      = str(Dir(override).Dir(".sconf_temp"))
 baseEnv.Append(CPPPATH = ['.'])
