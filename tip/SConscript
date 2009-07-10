@@ -32,7 +32,11 @@ if baseEnv['PLATFORM'] != 'win32':
 else:
     test_tipBin = testEnv.Program('test_tip', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'tip', libraries = [tipLib], binaries = [sampleProg], testApps = [test_tipBin], includes = listFiles(['tip/*.h']),
+progEnv.Tool('registerTargets', package = 'tip',
+             rootcintSharedCxts = [[tipLib, libEnv]],
+             binaryCxts = [[sampleProg, progEnv]],
+             testAppCxts = [[test_tipBin, progEnv]],
+             includes = listFiles(['tip/*.h']),
              data = listFiles(['data/*'], recursive = True))
 
 
