@@ -13,11 +13,23 @@ libEnv = baseEnv.Clone()
 
 progEnv.Tool('healpixLib')
 libEnv.Tool('healpixLib', depsOnly = 1)
-progEnv.Tool('registerObjects', 
+#progEnv.Tool('registerObjects', 
+#      package = 'healpix', 
+#      includes = listFiles(['healpix/*.h','src/base/*.h']),
+#      libraries = [libEnv.SharedLibrary('healpix', 
+#                    listFiles(['src/*.cxx', 'src/base/*.cc', 'src/base/*.c']))],
+#      testApps = [progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))],
+#      )
+
+healpixLib = libEnv.SharedLibrary('healpix', 
+                                  listFiles(['src/*.cxx', 'src/base/*.cc',
+                                             'src/base/*.c']))
+test_healpix = progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))
+
+progEnv.Tool('registerTargets', 
       package = 'healpix', 
       includes = listFiles(['healpix/*.h','src/base/*.h']),
-      libraries = [libEnv.SharedLibrary('healpix', 
-                    listFiles(['src/*.cxx', 'src/base/*.cc', 'src/base/*.c']))],
-      testApps = [progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))],
+      libraryCxts = [[healpixLib, libEnv]],
+      testAppCxts = [[test_healpix, progEnv]]
       )
-	      
+
