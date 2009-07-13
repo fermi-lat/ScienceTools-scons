@@ -7,6 +7,8 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-15-02 13-Jul-2009 jchiang one more bug-fix for UpperLimits 
+                                           class
  pyLikelihood-01-15-01 10-Jul-2009 jchiang bug-fix for UpperLimits class
    v1r15   29-Jun-09  JC    interface to Minos errors
    v1r14p2 17-Jun-09  JC    disable sub-string search for source name
