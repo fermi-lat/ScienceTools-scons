@@ -91,6 +91,8 @@ class UpperLimit(object):
         #
         # Fit a quadratic to a handful of points
         #
+        if delta < dlogLike_est:
+            npts = max(npts, 2.*nsigmax*dx/delta)
         for i, x in enumerate(num.arange(x0, x0+nsigmax*dx, nsigmax*dx/npts)):
             xvals.append(x)
             par.setValue(x)
