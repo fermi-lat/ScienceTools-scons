@@ -9,7 +9,8 @@
 int
 main(int argc, char *argv[])
 {
-    return embed_python::Module::test(argc, argv, "Test");
+  //    return embed_python::Module::test(argc, argv, "Test");
+    return embed_python::Module::test(argc, argv, "embed_python_Test");
 }
 
 /** test with the following python code:

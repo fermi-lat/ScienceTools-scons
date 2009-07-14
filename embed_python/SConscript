@@ -14,4 +14,9 @@ embed_pythonLib = libEnv.StaticLibrary('embed_python', listFiles(['src/*.cxx']))
 progEnv.Tool('embed_pythonLib')
 test_embed_pythonBin = progEnv.Program('test_embed_python', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'embed_python', libraries = [embed_pythonLib], testApps = [test_embed_pythonBin], includes = listFiles(['embed_python/*.h']))
+
+progEnv.Tool('registerTargets', package = 'embed_python',
+             staticLibraryCxts = [[embed_pythonLib, libEnv]],
+             testAppCxts = [[test_embed_pythonBin, progEnv]],
+             includes = listFiles(['embed_python/*.h']),
+             python = ['python/embed_python_Test.py'])
