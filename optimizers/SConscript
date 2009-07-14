@@ -16,8 +16,8 @@ progEnv.Tool('optimizersLib')
 
 test_optimizersBin = progEnv.Program('test_optimizers', 'src/test/main.cxx')
 
-progEnv.Tool('registerObjects', package='optimizers', 
-             libraries=[optimizersLib],
-             testApps=[test_optimizersBin],
+progEnv.Tool('registerTargets', package='optimizers', 
+             libraryCxts=[[optimizersLib, libEnv]],
+             testAppCxts=[[test_optimizersBin, progEnv]],
              includes=listFiles(['optimizers/*.h']),
              xml=listFiles(['xml/*'], recursive = True))
