@@ -26,10 +26,17 @@ gtmktimeBin = progEnv.Program('gtmktime', listFiles(['src/gtmaketime/*.cxx']))
 
 gtvcutBin = progEnv.Program('gtvcut', listFiles(['src/viewCuts/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'dataSubselector', 
-             libraries = [dataSubselectorLib],
-             binaries = [gtselectBin, gtmktimeBin, gtvcutBin], 
-             testApps = [test_dataSubselectorBin],
+#progEnv.Tool('registerObjects', package = 'dataSubselector', 
+#             libraries = [dataSubselectorLib],
+#             binaries = [gtselectBin, gtmktimeBin, gtvcutBin], 
+#             testApps = [test_dataSubselectorBin],
+#             includes = listFiles(['dataSubselector/*.h']),
+#             pfiles = listFiles(['pfiles/*.par']),
+#             data = listFiles(['data/*'], recursive = True))
+progEnv.Tool('registerTargets', package = 'dataSubselector', 
+             staticLibraryCxts = [dataSubselectorLib],
+             binaryCxts = [gtselectBin, gtmktimeBin, gtvcutBin], 
+             testAppCxts = [test_dataSubselectorBin],
              includes = listFiles(['dataSubselector/*.h']),
              pfiles = listFiles(['pfiles/*.par']),
              data = listFiles(['data/*'], recursive = True))

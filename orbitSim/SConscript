@@ -13,5 +13,8 @@ orbitSimLib = libEnv.StaticLibrary('orbitSim', listFiles(['src/*.cxx']))
 progEnv.Tool('orbitSimLib')
 gtorbsim = progEnv.Program('gtorbsim', listFiles(['src/orbSim/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'orbitSim', libraries = [orbitSimLib], includes = listFiles(['orbitSim/*.h']), binaries = [gtorbsim],
+progEnv.Tool('registerTargets', package = 'orbitSim',
+             staticLibraryCxts = [[orbitSimLib, libEnv]],
+             includes = listFiles(['orbitSim/*.h']),
+             binaryCxts = [[gtorbsim, progEnv]],
              pfiles = listFiles(['pfiles/*.par']))

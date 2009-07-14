@@ -14,7 +14,14 @@ progEnv.Tool('fluxLib')
 test_fluxBin = progEnv.Program('test_flux',[ 'src/test/testMgr.cxx'])
 rootplotsBin = progEnv.Program('rootplots',[ 'src/rootplot/test/roottest.cxx'])
 
-progEnv.Tool('registerObjects', package = 'flux', libraries = [fluxLib], binaries = [rootplotsBin], testApps = [test_fluxBin], includes = listFiles(['flux/*.h']),
+#progEnv.Tool('registerObjects', package = 'flux', libraries = [fluxLib], binaries = [rootplotsBin], testApps = [test_fluxBin], includes = listFiles(['flux/*.h']),
+#             xml = listFiles(['xml/*'], recursive = True))
+
+progEnv.Tool('registerTargets', package = 'flux',
+             staticLibraryCxts = [[fluxLib,libEnv]],
+             binaryCxts = [[rootplotsBin, progEnv]],
+             testAppCxts = [[test_fluxBin, progEnv]],
+             includes = listFiles(['flux/*.h']),
              xml = listFiles(['xml/*'], recursive = True))
 
 
