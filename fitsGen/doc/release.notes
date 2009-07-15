@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+   v4r5p1   15-Jul-09  jrb  Update SConscript
     v4r5   05-Jun-09   JC   enable users to set filename of temporary ROOT
                             file used for processing merit files with tip.
                             Requires tip v2r15 or later.
