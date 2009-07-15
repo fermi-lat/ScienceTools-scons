@@ -1,6 +1,6 @@
 package orbitSim
 
-version v0
+version v2r0p2
 
 author John Vernaleo <John.C.Vernaleo@nasa.gov>
 # $Id$
