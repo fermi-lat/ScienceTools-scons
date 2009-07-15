@@ -17,5 +17,8 @@ gtdispcube = progEnv.Program('gtdispcube', listFiles(['src/cube_display/*.cxx'])
 exposure_cube = progEnv.Program('exposure_cube', listFiles(['src/exposure_cube/*.cxx']))
 test_map_tools = progEnv.Program('test_map_tools', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'map_tools', libraries = [map_toolsLib], binaries = [gtexpcube, gtdispcube, exposure_cube], includes = listFiles(['map_tools/*.h']),
-             testApps = [test_map_tools], pfiles = listFiles(['pfiles/*.par']))
+progEnv.Tool('registerTargets', package = 'map_tools',
+             staticLibraryCxts = [[map_toolsLib, libEnv]],
+             binaryCxts = [[gtexpcube,progEnv], [gtdispcube,progEnv], [exposure_cube,progEnv]],
+             includes = listFiles(['map_tools/*.h']),
+             testAppCxts = [[test_map_tools,progEnv]], pfiles = listFiles(['pfiles/*.par']))
