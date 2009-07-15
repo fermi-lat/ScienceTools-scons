@@ -16,4 +16,4 @@ pyLikelihoodSharedLib = libEnv.LoadableModule('_pyLikelihood',
 progEnv.Tool('registerObjects', package = 'pyLikelihood', 
              libraries = [pyLikelihoodSharedLib], 
              includes = listFiles(['pyLikelihood/*.h']),
-             python = listFiles(['python/*.py', 'src/pyLikelihood.py']))
+             python = listFiles(['python/*.py']) + ['src/pyLikelihood.py'])
