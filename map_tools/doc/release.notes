@@ -5,7 +5,9 @@
 $Id$
 @verbatim
  --------- -----  --- -----------------------------------------------------------------------
-* EOH *
+        * EOH *
+
+   v7r4p2   15-Jul-2009  jrb Update SConscript
  01-jun-09 v7r4p1  JC  add outtable2 to exposure_cube.par; bug-fix for writing
                        weighted livetime extension
  19-may-09 v7r4   THB  Changes to support generating table with weighted livetime
