@@ -5,7 +5,8 @@
 \verbatim
 --------------------------------------------------------------------------------
 EOH 
-23-jun-2009    v2r0p1 JV  Some code and comment cleanup.
+
+15-Jul-2009    v2r0p2 jrb Update SConscript
 06-may-2009      v2r0 JV  Multiple changes from FSSC version of code. This
                           includes support for new version of ft2
 			  file, cleanup of the saa stuff, and fixes to
