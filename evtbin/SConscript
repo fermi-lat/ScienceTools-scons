@@ -16,5 +16,7 @@ gtbinBin = progEnv.Program('gtbin', listFiles(['src/gtbin/*.cxx']))
 gtbindefBin = progEnv.Program('gtbindef', listFiles(['src/gtbindef/*.cxx']))
 test_evtbinBin = progEnv.Program('test_evtbin', listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'evtbin', libraries = [evtbinLib], binaries = [gtbinBin, gtbindefBin], testApps = [test_evtbinBin], includes = listFiles(['evtbin/*.h']),
+progEnv.Tool('registerTargets', package = 'evtbin', staticLibraryCxts = [[evtbinLib, libEnv]],
+             binaryCxts = [[gtbinBin, progEnv], [gtbindefBin, progEnv]],
+             testAppCxts = [[test_evtbinBin, progEnv]], includes = listFiles(['evtbin/*.h']),
              pfiles = listFiles(['pfiles/*.par']), data = listFiles(['data/*'], recursive = True))
