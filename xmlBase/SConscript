@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Joanne Bogart <jrb@slac.stanford.edu>
-# Version: xmlBase-05-05-01
+# Version: xmlBase-05-05-03
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
