@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.31  2009/07/07 21:32:52  jurgen
+Correctly read binary double columns
+
 Revision 1.30  2008/09/26 07:59:39  jurgen
 Correctly cast pointer (for Win32 compile)
 
@@ -1401,7 +1404,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
         form   = m_src_Qty_tform[iQty];
         name   = m_src_Qty_ttype[iQty];
 
-        // Add numerical quantities
+        // Add single precision numerical quantities
         if (form.find("E", 0) != std::string::npos) {
           m_src.cat.getNValue(name, src->iSrc, &NValue);
           for (row = 0; row < nrows; row++)
@@ -1417,8 +1420,24 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
           }
         } // endif: added numerical quantities
 
+        // Add double precision numerical quantities
+        else if (form.find("D", 0) != std::string::npos) {
+          m_src.cat.getNValue(name, src->iSrc, &NValue);
+          for (row = 0; row < nrows; row++)
+            dptr[row] = NValue;
+          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows,
+                                   dptr, &fstatus);
+          if (fstatus != 0) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to write source catalogue data <%s>"
+                  " (column %d) to catalogue.", 
+                  fstatus, name.c_str(), colnum);
+            break;
+          }
+        } // endif: added numerical quantities
+
         // Add string quantities
-        if (form.find("A", 0) != std::string::npos) {
+        else if (form.find("A", 0) != std::string::npos) {
           m_src.cat.getSValue(name, src->iSrc, &SValue);
           for (row = 0; row < nrows; row++)
             sprintf(cptr[row], "%s", SValue.c_str());
@@ -1445,7 +1464,7 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
         form   = m_cpt_Qty_tform[iQty];
         name   = m_cpt_Qty_ttype[iQty];
 
-        // Add numerical quantities
+        // Add single precision numerical quantities
         if (form.find("E", 0) != std::string::npos) {
           for (row = 0; row < nrows; row++) {
             iCpt = src->cc[row].index;
@@ -1463,8 +1482,26 @@ Status Catalogue::cfits_add(fitsfile *fptr, Parameters *par, SourceInfo *src,
           }
         } // endif: added numerical quantities
 
+        // Add double precision numerical quantities
+        else if (form.find("D", 0) != std::string::npos) {
+          for (row = 0; row < nrows; row++) {
+            iCpt = src->cc[row].index;
+            m_cpt.cat.getNValue(name, iCpt, &NValue);
+            dptr[row] = NValue;
+          }
+          fstatus = fits_write_col(fptr, TDOUBLE, colnum, frow, 1, nrows,
+                                   dptr, &fstatus);
+          if (fstatus != 0) {
+            if (par->logTerse())
+              Log(Error_2, "%d : Unable to write counterpart catalogue data"
+                  " <%s> (column %d) to catalogue.", 
+                  fstatus, name.c_str(), colnum);
+            break;
+          }
+        } // endif: added numerical quantities
+
         // Add string quantities
-        if (form.find("A", 0) != std::string::npos) {
+        else if (form.find("A", 0) != std::string::npos) {
           for (row = 0; row < nrows; row++) {
             iCpt = src->cc[row].index;
             m_cpt.cat.getSValue(name, iCpt, &SValue);
@@ -2654,7 +2691,6 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
         continue;
 
       // Allocate temporary memory to hold the ID column
-//      tmp_id = new (char*[numRows]);
       tmp_id = (char  **)calloc(numRows,sizeof(char *));
       if (tmp_id == NULL) {
         status = STATUS_MEM_ALLOC;
@@ -2664,7 +2700,6 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
       }
       for (int i = 0; i < numRows; ++i) {
         tmp_id[i] = NULL;
-//        tmp_id[i] = new char[width+1];
         tmp_id[i] = (char  *)calloc(width+1,sizeof(char));
         if (tmp_id[i] == NULL) {
           status = STATUS_MEM_ALLOC;
@@ -2699,10 +2734,8 @@ Status Catalogue::cfits_get_col_str(fitsfile *fptr, Parameters *par,
     // Free temporary memory
     if (tmp_id != NULL) {
       for (int i = 0; i < numRows; ++i) {
-//        if (tmp_id[i] != NULL) delete [] tmp_id[i];
         free(tmp_id[i]);
       }
-//      delete [] tmp_id;
       free(tmp_id);
     }
 
