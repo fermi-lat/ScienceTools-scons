@@ -5,7 +5,8 @@ $Id$
 
 \verbatim
 * EOH *
-30-jan-2008    v2r0p2 JP  Add SCons files.
+
+15-Jul-2009    v2r0p3 jrb Update SConscript
 23-oct-2007    v2r0p1 JP  Call facilities::commonUtilities::setupEnvironment()
                           in ballistic_main.cxx
 30-jan-2006        v2 JP  Add possibility to switch between two GUIs, both of which
