@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Aymeric Sauvageon <asauvageon@cea.fr>
-# Version: catalogAccess-00-04-01
+# Version: catalogAccess-00-04-02
 
 Import('baseEnv')
 Import('listFiles')
