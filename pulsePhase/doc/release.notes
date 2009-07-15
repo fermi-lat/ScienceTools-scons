@@ -6,7 +6,8 @@
 
     @verbatim
     * EOH *
-    v0r1p1  09-oct-04   JP    Use st_facilities::Env to locate data files.
+
+    v8r5p1  15-Jul-09  jrb    Update SConscript
     v0r1p2  10-oct-04   JP    Fix bug in requirements file. Add empty source file so that library builds.
     v0r1p3  13-oct-04   JP    Add documentation about application parameters.
     v0r2p0  26-nov-04   JP    Add TimingModel::calcFreq to compute frequency at given time. Conform parameters
