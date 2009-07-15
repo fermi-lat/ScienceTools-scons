@@ -23,11 +23,13 @@ irfTupleBin = progEnv.Program('irfTuple', listFiles(['src/irfTuple/*.cxx']))
 test_classifierBin = progEnv.Program('test_classifier', 
                                      listFiles(['src/test/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'fitsGen', 
-             libraries = [fitsGenLib], 
-             binaries = [makeFT1Bin, makeFT2Bin, makeFT2aBin, egret2FT1Bin, 
-                         convertFT1Bin, partitionBin, irfTupleBin,
-                         test_classifierBin],
+progEnv.Tool('registerTargets', package = 'fitsGen', 
+             staticLibraryCxts = [[fitsGenLib, libEnv]], 
+             binaryCxts = [[makeFT1Bin,progEnv], [makeFT2Bin,progEnv],
+                           [makeFT2aBin,progEnv], [egret2FT1Bin, progEnv],
+                           [convertFT1Bin,progEnv], [partitionBin,progEnv],
+                           [irfTupleBin,progEnv], [test_classifierBin,progEnv]],
              includes = listFiles(['fitsGen/*.h']), 
              pfiles = listFiles(['pfiles/*.par']),
              data = listFiles(['data/*'], recursive = True))
+
