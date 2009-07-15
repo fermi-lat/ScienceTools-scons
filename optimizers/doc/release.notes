@@ -4,7 +4,8 @@
 
     @verbatim
     EOH
-    v2r17p1  29-Jun-09 JC   reimplement Minuit::Minos so that it starts
+
+   v2r17p2   15-Jul-09 jrb  Update SConscript
                             numbering the free parameters with zero rather
                             than one (now agrees with NewMinuit::Minos)
     v2r17    19-Jun-09 JC   add m_par_ref data member to Parameter class
