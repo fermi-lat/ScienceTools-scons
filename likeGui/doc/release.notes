@@ -5,6 +5,7 @@
    @verbatim
    * EOH *
 
+   v7r9p1   15-Jul-09   jrb    Update SConscript
    v7r9     12-Sep-08    JC    move readXml.py and cleanXml.py to sane
                                package; add PLSuperExpCutoff to ModelEditor
    v7r8p1   21-Nov-07    JC    use facilities.py_facilities.commonUtilities
