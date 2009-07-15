@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+  15-Jul-09 v0r14p3 jrb  Update SConscript
   26-Jun-09 v0r14p2 JC   disable test_Env_getDataDir,
                          test_FileSys_expandFileList to silence unit tests
                          on SCons RM
