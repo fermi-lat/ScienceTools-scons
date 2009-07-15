@@ -19,10 +19,10 @@ test_observationSimBin = progEnv.Program('test_observationSim',
 
 gtobssimBin = progEnv.Program('gtobssim', listFiles(['src/obsSim/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'observationSim', 
-             libraries = [observationSimLib], 
-             binaries = [gtobssimBin], 
-             testApps = [test_observationSimBin],
+progEnv.Tool('registerTargets', package = 'observationSim', 
+             staticLibraryCxts = [[observationSimLib,libEnv]], 
+             binaryCxts = [[gtobssimBin,progEnv]], 
+             testAppCxts = [[test_observationSimBin,progEnv]],
              includes = listFiles(['observationSim/*.h']), 
              pfiles = listFiles(['pfiles/*.par']),
              data = listFiles(['data/*'], recursive = True),
