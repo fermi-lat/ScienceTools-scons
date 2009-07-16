@@ -25,10 +25,11 @@ progEnv.Tool('pyExposureLib')
 gtexposureBin = progEnv.Program('gtexposure', 
                                 listFiles(['src/gtexposure/*.cxx']))
 
-progEnv.Tool('registerObjects', package = 'pyExposure',
-             libraries = [pyExposureLib, pyExposureSharedLib,
-                          lib_pyExposureSharedLib],
-             binaries = [gtexposureBin],
+progEnv.Tool('registerTargets', package = 'pyExposure',
+             staticLibraryCxts=[[pyExposureLib, libEnv]],
+             libraryCxts=[[pyExposureSharedLib, libEnv]],
+             swigLibraryCxts=[[lib_pyExposureSharedLib, swigEnv]],
+             binaryCxts = [[gtexposureBin, progEnv]],
              includes = listFiles(['pyExposure/*.h']), 
              pfiles = listFiles(['pfiles/*.par']),
              python = ['src/pyExposure.py'])
