@@ -583,6 +583,12 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 					if len(idlist[i]) > max_cpt:
 						max_cpt = len(idlist[i])
 	
+	# Stop if there were no counterparts
+	if max_cpt == 0:
+		print 'WARNING: No counterparts found, no LAT format compatible catalogue built.'
+		return
+
+	
 	# Set column format strings
 	num_cpt  = max_cpt
 	fmt_name = '%d' % (num_cpt*20) + 'A20'
