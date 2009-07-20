@@ -21,6 +21,7 @@ $Header$
 #include <cassert>
 #include <errno.h>
 #include <stdexcept>
+#include <cstring>
 
 namespace {
 
