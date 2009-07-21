@@ -95,6 +95,8 @@
 		          MultiSpec PHA files.  LightCurve and unit
 			  tests still need to be updated.
 15-jul-2009    v2r3p1 jrb Update SConscript
+21-jul-2009    v2r3p2 JV  Added some error checking to give clearer
+			  errors if tstart is greater than tstop.
 --------------------------------------------------------------------------------
 \endverbatim
 
