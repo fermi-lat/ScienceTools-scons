@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-15-03 21-Jul-2009 peachey Fix bug in unit test that caused false failures when run in directories with long paths.
 15-Jul-2009 v2r15p2  jrb Update SConscript 
             v2r15p1?  ??    returns a non-positive value.
 05-jun-2009 v2r15     JP Added get/set temporary file name methods to IFileSvc.
