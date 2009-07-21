@@ -269,6 +269,13 @@ class LightCurveApp : public EvtBinAppBase {
 
       // Call time binner to prompt for time binning related parameters.
       m_bin_config->timeParPrompt(pars);
+
+      // Make sure TSTOP<TSTART
+      double start_test=pars["tstart"];
+      double stop_test=pars["tstop"];
+      if(stop_test<=start_test){
+      	throw std::runtime_error("TSTART must be before than TSTOP!\n");
+      }
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
@@ -335,6 +342,13 @@ class MultiSpectraApp : public EvtBinAppBase {
 
       // Use configuration object to prompt for time binning related parameters.
       m_bin_config->timeParPrompt(pars);
+
+      // Make sure TSTOP<TSTART
+      double start_test=pars["tstart"];
+      double stop_test=pars["tstop"];
+      if(stop_test<=start_test){
+      	throw std::runtime_error("TSTART must be before than TSTOP!\n");
+      }
     }
 
     virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
