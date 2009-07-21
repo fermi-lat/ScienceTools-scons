@@ -938,14 +938,25 @@ namespace tip {
       ReportUnexpected("TestExtensionData::testKeywordItor after appending keyword using iterator there is not one more keyword");
     }
 
-    // Erase the keyword again, this time using name of the keyword. There are five history keywords, and all should be erased.
+    // Count history keywords. They should all be erased below.
+    Header::KeySeq_t::size_type num_history = 0u;
+    for (Header::ConstIterator itor = write_header.begin(); itor != write_header.end(); ++itor) {
+      std::string key_name = itor->getName();
+      if ("HISTORY" == key_name) ++num_history;
+    }
+
+    // Erase the keyword again, this time using name of the keyword to get and erase all HISTORY keywords.
     write_header.erase(key_name);
 
     // Confirm fewer keywords in header now.
-    if (num_keywords == 5 + write_header.getNumKeywords()) {
-      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using key name there are five fewer keywords");
+    Header::KeySeq_t::size_type new_num_keywords = write_header.getNumKeywords();
+    if (new_num_keywords == (num_keywords - num_history)) {
+      ReportExpected("TestExtensionData::testKeywordItor after erasing keyword using key name, found expected number of keywords");
     } else {
-      ReportUnexpected("TestExtensionData::testKeywordItor after erasing keyword using key name there are not five fewer keywords");
+      std::ostringstream os;
+      os << "TestExtensionData::testKeywordItor after erasing keyword using key name there are " << new_num_keywords <<
+        " keywords, not " << num_keywords - num_history << " as expected";
+      ReportUnexpected(os.str());
     }
 
     // Make sure the last keyword is not the same.
