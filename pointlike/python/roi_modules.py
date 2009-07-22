@@ -108,11 +108,12 @@ class ROIModelManager(object):
 class ROIPointSourceManager(ROIModelManager):
    """Manage all point sources."""
    
-   def __init__(self,point_sources,roi_dir):
+   def __init__(self,point_sources,roi_dir, quiet=False):
       self.roi_dir = roi_dir
       self.point_sources = point_sources
       self.models = N.asarray([point_source.model for point_source in point_sources])
       self.mask   = N.asarray([True]*len(self.models))
+      self.quiet = quiet
 
    def __len__(self): return len(self.point_sources)
 
@@ -127,7 +128,7 @@ class ROIPointSourceManager(ROIModelManager):
 
    def setup_initial_counts(self,bands):
 
-      print 'Setting up point sources...'
+      if not self.quiet: print 'Setting up point sources...'
 
       roi_dir = self.roi_dir
       overlap = ROIOverlap()
@@ -138,7 +139,10 @@ class ROIPointSourceManager(ROIModelManager):
          sigma,gamma,en,exp,pa = band.s,band.g,band.e,band.exp.value,band.b.pixelArea()
 
          #make a first-order correction for exposure variation
-         exposure_ratios       = N.asarray([exp(ps.skydir,en)/exp(roi_dir,en) for ps in self.point_sources])
+         denom = exp(roi_dir,en)
+         if denom==0:
+            raise Exception('ROIPointSourceManager: exposure is zero for  energy %f'%en)
+         exposure_ratios       = N.asarray([exp(ps.skydir,en)/denom for ps in self.point_sources])
 
          #unnormalized PSF evaluated at each pixel, for each point source
          band.ps_pix_counts    = N.empty([len(band.wsdl),len(self.point_sources)])

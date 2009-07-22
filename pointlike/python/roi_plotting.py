@@ -8,6 +8,7 @@ author: Matthew Kerr
 
 import numpy as N
 from skymaps import PySkyFunction
+import colormaps
 from image import ZEA
 
 def band_spectra(r,source=0):
@@ -491,7 +492,6 @@ class ROIDisplay(object):
       import pylab as P
       from matplotlib import mpl,pyplot,ticker
       try:
-         from kerrtools import colormaps
          self.cmap_sls = colormaps.sls
          self.cmap_b   = colormaps.b
       except:

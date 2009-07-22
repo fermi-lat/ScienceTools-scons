@@ -287,7 +287,6 @@ Optional keyword arguments:
            source_list = point_sources
 
         ps_manager = ROIPointSourceManager(source_list,self.roi_dir)
-        bg_manager = ROIBackgroundManager(self, models = backgrounds)
 
         if point_sources is None: #make closest catalog source one to fit
             for i in xrange(len(ps_manager.models[0].free)):
