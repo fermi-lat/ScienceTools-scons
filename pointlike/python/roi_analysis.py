@@ -22,6 +22,7 @@ class ROIAnalysis(object):
       self.fit_emin = [100,100] #independent energy ranges for front and back
       self.fit_emax = [5e5,5e5] #0th position for event class 0
       self.threading = False
+      self.quiet = False
 
       self.catalog_aperture = -1
   
