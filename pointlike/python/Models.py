@@ -217,9 +217,9 @@ Optional keyword arguments:
          
          if error:
             args = (emin,emax,e_weight,cgs,False)
-            d   = self.__flux_derivs__(*args)
+            d   = self.__flux_derivs__(*args)[self.free]
             dt  = d.reshape( (d.shape[0],1) ) #transpose
-            err = (d * self.cov_matrix * dt).sum()**0.5
+            err = (d * self.cov_matrix[self.free].transpose()[self.free] * dt).sum()**0.5
             if not two_sided:
                return (flux,err)
             else: #use log transform to estimate two-sided errors
