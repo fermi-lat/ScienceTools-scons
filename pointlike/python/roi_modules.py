@@ -11,7 +11,7 @@ from pointspec import SpectralAnalysis
 from skymaps import SkyDir,WeightedSkyDirList,SkyIntegrator
 from Models import *
 from psf import PSF
-from threading import Thread
+#from threading import Thread
 
 class ROIOverlap(object):
    """Routines to calculate how much of the emission of a point source falls onto an ROI."""
