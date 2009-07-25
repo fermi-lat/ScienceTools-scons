@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.31  2009/03/18 10:01:59  jurgen
+Avoid floating point exception in case of NULL position errors
+
 Revision 1.30  2008/08/20 11:52:21  jurgen
 Correct probability computation and resolve STGEN-56
 
@@ -116,7 +119,7 @@ level.
 
 /* Definitions ______________________________________________________________ */
 #define CATALOGUE_TIMING     0               // Enables timing measurements
-#define ALLOW_LR_DIVERGENCE  1               // Allows for divergent LR values
+#define JEAN_BALLET_FORMULA  1               // Uses Jean Ballet's formula
 #define LOW_LEVEL_DEBUG      0               // Enable low-level debugging
 
 
@@ -1092,7 +1095,11 @@ Status Catalogue::cid_prob_chance(Parameters *par, SourceInfo *src, Status statu
         // Compute chance coincidence probability
         double exp_mu            = exp(-src->cc[iCC].mu);
         src->cc[iCC].prob_chance = 1.0 - exp_mu;
+        #if JEAN_BALLET_FORMULA
+        src->cc[iCC].pdf_chance  = src->cc[iCC].rho;
+        #else
         src->cc[iCC].pdf_chance  = src->cc[iCC].rho * exp_mu;
+        #endif
 
         // Add result to column vectors
         col_mu.push_back(src->cc[iCC].mu);
