@@ -473,12 +473,13 @@ class ROIBackgroundManager(ROIModelManager):
 
 class ROILocalizer(object):
 
-   def __init__(self,roi):
+   def __init__(self,roi,which=0):
       self.roi = roi
-      self.rd  = roi.psm.point_sources[0].skydir #note -- not necessarily ROI center!
+      self.rd  = roi.psm.point_sources[which].skydir #note -- not necessarily ROI center!
+      self.which = which
             
    def TSmap(self,skydir):
-      return (-2)*self.roi.spatialLikelihood(skydir)
+      return (-2)*self.roi.spatialLikelihood(skydir,which=self.which)
 
    def dir(self):
       return self.rd
