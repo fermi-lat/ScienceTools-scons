@@ -34,9 +34,10 @@ gtvcutBin = progEnv.Program('gtvcut', listFiles(['src/viewCuts/*.cxx']))
 #             pfiles = listFiles(['pfiles/*.par']),
 #             data = listFiles(['data/*'], recursive = True))
 progEnv.Tool('registerTargets', package = 'dataSubselector', 
-             staticLibraryCxts = [dataSubselectorLib],
-             binaryCxts = [gtselectBin, gtmktimeBin, gtvcutBin], 
-             testAppCxts = [test_dataSubselectorBin],
+             staticLibraryCxts = [[dataSubselectorLib, libEnv]],
+             binaryCxts = [[gtselectBin, progEnv], [gtmktimeBin, progEnv],
+                           [gtvcutBin, progEnv]], 
+             testAppCxts = [[test_dataSubselectorBin, testEnv]],
              includes = listFiles(['dataSubselector/*.h']),
              pfiles = listFiles(['pfiles/*.par']),
              data = listFiles(['data/*'], recursive = True))
