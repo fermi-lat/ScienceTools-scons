@@ -16,22 +16,22 @@ use st_stream v*
 use st_app v*
 use tip v*
 use optimizers v*
-use SwigPolicy v*
+#use SwigPolicy v*
 
 apply_pattern package_include
 apply_pattern package_linkopts
 apply_pattern shared_library
 apply_pattern ST_pfiles
 
-path_remove PYTHONPATH pyExposure
-path_append PYTHONPATH $(PYEXPOSUREROOT)/$(BINDIR)
-path_append PYTHONPATH $(PYEXPOSUREROOT)/python
+#path_remove PYTHONPATH pyExposure
+#path_append PYTHONPATH $(PYEXPOSUREROOT)/$(BINDIR)
+#path_append PYTHONPATH $(PYEXPOSUREROOT)/python
 
 macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
 macro source *.cxx WIN32 "*.h *.cxx"
 
 library pyExposure $(source)
 
-apply_pattern swig_module name="pyExposure"
+#apply_pattern swig_module name="pyExposure"
 
 apply_pattern ST_app name=gtexposure
