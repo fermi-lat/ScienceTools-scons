@@ -172,7 +172,9 @@ double  EarthCoordinate::GetGMST(JulianDate jd)
     double J_D=jd;
     double M, Ora_Un_Dec=modf(J_D-0.5,&M)*24;  J_D-=Ora_Un_Dec/24;
     double T = (J_D - J2000) / 36525.;
-    double T1 = (24110.54841 + 8640184.812866 * T + 0.0093103 * T * T)/86400.0;
+    //wrong double T1 = (24110.54841 + 8640184.812866 * T + 0.0093103 * T * T)/86400.0;
+    double T1 = (24110.54841 + 8640184.812866*T + 0.093104*T*T - 0.0000062*T*T*T)/86400.0;
+
     double Tempo_Siderale_0 = modf(T1,&M) * 24.;
     double Tempo_Siderale_Ora = Tempo_Siderale_0 + Ora_Un_Dec * 1.00273790935;
     if (Tempo_Siderale_Ora < 0.) Tempo_Siderale_Ora = Tempo_Siderale_Ora + 24.;
