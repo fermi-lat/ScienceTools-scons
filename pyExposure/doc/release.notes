@@ -6,6 +6,7 @@
   $Id$
   * EOH *
 
+ pyExposure-02-05-00 29-Jul-2009 jchiang disable swig build
   16-Jul-09 v2r4p1  jrb   update SConscript
   04-Jun-09 v2r4    JC    use new ScData interface; add efficiency corrections
   11-Dec-08 v2r3    JC    fix fencepost error in Exposure::integrateExposure();
