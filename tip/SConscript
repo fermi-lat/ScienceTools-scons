@@ -9,6 +9,7 @@ libEnv = baseEnv.Clone()
 test2Env = baseEnv.Clone()
 
 libEnv.Tool('tipLib', depsOnly = 1)
+
 tipLib = libEnv.StaticLibrary('tip', listFiles(['src/*.cxx']))
 
 progEnv.Tool('tipLib')
@@ -33,7 +34,7 @@ else:
     test_tipBin = testEnv.Program('test_tip', listFiles(['src/test/*.cxx']))
 
 progEnv.Tool('registerTargets', package = 'tip',
-             rootcintSharedCxts = [[tipLib, libEnv]],
+             staticLibraryCxts = [[tipLib, libEnv]],
              binaryCxts = [[sampleProg, progEnv]],
              testAppCxts = [[test_tipBin, progEnv]],
              includes = listFiles(['tip/*.h']),
