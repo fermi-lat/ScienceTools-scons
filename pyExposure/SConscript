@@ -32,5 +32,5 @@ progEnv.Tool('registerTargets', package = 'pyExposure',
              #swigLibraryCxts=[[lib_pyExposureSharedLib, swigEnv]],
              binaryCxts = [[gtexposureBin, progEnv]],
              includes = listFiles(['pyExposure/*.h']), 
-             pfiles = listFiles(['pfiles/*.par']),
-             python = ['src/pyExposure.py'])
+             pfiles = listFiles(['pfiles/*.par']))
+             #python = ['src/pyExposure.py'])
