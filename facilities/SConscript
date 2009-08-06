@@ -21,7 +21,7 @@ configfile.write('"\n')
 configfile.close()
 
 libEnv.Tool('facilitiesLib', depsOnly = 1)
-facilitiesLib = libEnv.SwigLibrary('facilities', listFiles(['src/*.cxx']))
+facilitiesLib = libEnv.SharedLibrary('facilities', listFiles(['src/*.cxx']))
 
 swigEnv.Tool('facilitiesLib')
 swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
