@@ -25,7 +25,7 @@ facilitiesLib = libEnv.SwigLibrary('facilities', listFiles(['src/*.cxx']))
 
 swigEnv.Tool('facilitiesLib')
 swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
-lib_pyFacilities = swigEnv.LoadableModule('_py_facilities', 'src/py_facilities.i')
+lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 'src/py_facilities.i')
 
 progEnv.Tool('facilitiesLib')
 test_time = progEnv.Program('test_time', ['src/test/test_time.cxx'])
