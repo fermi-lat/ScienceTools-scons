@@ -328,7 +328,7 @@ class ROIAnalysis(object):
       iso,gal,src,obs = counts(self)[1:5]
       outstring = 'Spectra of sources in ROI about %s at ra = %f, dec = %f\n'\
                     %(self.psm.point_sources[0].name, self.sa.roi_dir.ra(), self.sa.roi_dir.dec())\
-                +[' '*10+'Signal']*len(sources)
+                +''.join([' '*10+'Signal']*len(sources))
       outstring += ' '*54+'  '.join(['%18s'%s.name for s in sources])+'\n'
       outstring += '  '.join(fields)+'\n'
       for i,band in enumerate(zip(self.bands[::2],self.bands[1::2])):
