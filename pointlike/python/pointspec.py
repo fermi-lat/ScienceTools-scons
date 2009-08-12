@@ -30,7 +30,7 @@ class AnalysisEnvironment(object):
 
 class ConsistentBackground(object):
 
-   def __init__(self,analysis_environment,background='ems_ring'):
+   def __init__(self,analysis_environment,background='ems_ring',**kwargs):
 
       from wrappers import Singleton
       from skymaps import DiffuseFunction,IsotropicSpectrum
@@ -243,7 +243,7 @@ Optional keyword arguments:
             # create PointSourceLikelihood object and do fits
             PointSourceLikelihood.set_energy_range(spectralanalysis.emin) #kluge
             self.src_dir = src_dir
-            self.psl = PointSourceLikelihood(spectralanalysis.pixeldata.dmap, name, self.src_dir)
+            self.psl =  PointSourceLikelihood(spectralanalysis.pixeldata.dmap, name, self.src_dir)
             self.pslw = PointSourceLikelihoodWrapper(self.psl,spectralanalysis.exposure,**kwargs.update(spectralanalysis.__dict__))
             print 'TS= %6.1f' % self.pslw.TS() #TS consistent with energy selection for spectral analysis
             self.models = []
@@ -351,7 +351,7 @@ Optional keyword arguments:
         """
         return SpectralAnalysis.Fitter(self, name, source_dir)
 
-    def roi(self, point_sources = None, backgrounds = None, **kwargs):
+    def roi(self, point_sources = None, backgrounds = None, previous_fit = None, **kwargs):
         """
         return an ROIAnalysis object with default settings.
 
@@ -379,6 +379,12 @@ Optional keyword arguments:
             source_list = point_sources
         else:
             source_list = cb.cm.merge_lists(self.roi_dir,self.maxROI+5,point_sources)
+
+        if previous_fit is not None:
+            from roi_analysis import read_fit
+            source_list,bg = read_fit(previous_fit)
+            for i in xrange(len(bg)):
+                backgrounds[i].smodel = bg[i]
 
         ps_manager = ROIPointSourceManager(source_list,self.roi_dir)
         bg_manager = ROIBackgroundManager(self, models = backgrounds)

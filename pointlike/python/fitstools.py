@@ -205,7 +205,7 @@ def get_fields(files, fields, cuts = None):
       f.close()
 
    for field in fields + cut_fields:
-      data[field] = N.empty(counts.sum(),dtype=N.float32)
+      data[field] = N.empty(counts.sum(),dtype=float)
    
    #Get fields
    counter = 0
@@ -238,7 +238,7 @@ def get_fields(files, fields, cuts = None):
 
    #Remove "helper" data for cuts
    for cut in cut_fields:
-      if cut_fields not in fields: data.pop(cut)
+      if cut not in fields: data.pop(cut)
 
    return data
 
@@ -284,7 +284,7 @@ def __FITS_parse__(files):
    except:
       pass
    if files[0] == '@':
-      return [line.strip() for line in file(ft1files[1:]) if len(line)>0 and line[0]!='#']
+      return [line.strip() for line in file(files[1:]) if len(line)>0 and line[0]!='#']
    from glob import glob
    return glob(files)        
 
