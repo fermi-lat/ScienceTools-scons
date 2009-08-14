@@ -474,13 +474,13 @@ namespace tip {
           switch (m_type_code) {
             case TINT:
             case TLONG:
-              if ((unsigned long)(1<<31) == tzero) {
+              if (1u<<31u == tzero) {
                 std::string::size_type index = m_type_string.find("J");
                 if (std::string::npos != index) m_type_string[index] = 'V';
               }
               break;
             case TSHORT:
-              if ((unsigned long)(1<<15) == tzero) {
+              if (1u<<15u == tzero) {
                 std::string::size_type index = m_type_string.find("I");
                 if (std::string::npos != index) m_type_string[index] = 'U';
               }
