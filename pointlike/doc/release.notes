@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-06-23-00 19-Aug-2009 burnett major capability improvements in roi python code
  28-Jul-09 v6r22   THB Big pointspec interface changes
  15-Jul-09 v6r21p2 jrb Update SConscript
  04-jun-09 v6r20p2 THB Fixes for pointfit, better integration of lsq option
