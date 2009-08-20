@@ -244,7 +244,8 @@ Optional keyword arguments:
             PointSourceLikelihood.set_energy_range(spectralanalysis.emin) #kluge
             self.src_dir = src_dir
             self.psl =  PointSourceLikelihood(spectralanalysis.pixeldata.dmap, name, self.src_dir)
-            self.pslw = PointSourceLikelihoodWrapper(self.psl,spectralanalysis.exposure,**kwargs.update(spectralanalysis.__dict__))
+            spectralanalysis.__dict__.update(**kwargs)
+            self.pslw = PointSourceLikelihoodWrapper(self.psl,spectralanalysis.exposure,**spectralanalysis.__dict__)
             print 'TS= %6.1f' % self.pslw.TS() #TS consistent with energy selection for spectral analysis
             self.models = []
             
