@@ -371,7 +371,7 @@ class ROIAnalysis(object):
 
       fields = ['  Emin',' f_ROI',' b_ROI' ,' Events','Galactic','Isotropic']\
                 +[' '*15+'Signal']*len(sources)
-      outstring = 'Spectra of sources in ROI about %s at ra = %f, dec = %f\n'\
+      outstring = 'Spectra of sources in ROI about %s at ra = %.2f, dec = %.2f\n'\
                     %(self.psm.point_sources[0].name, self.sa.roi_dir.ra(), self.sa.roi_dir.dec())
       outstring += ' '*54+'  '.join(['%21s'%s.name for s in sources])+'\n'
       outstring += '  '.join(fields)+'\n'
