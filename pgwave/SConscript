@@ -18,4 +18,5 @@ progEnv.Tool('registerTargets', package = 'pgwave',
              staticLibraryCxts = [[pgwaveLib, libEnv]],
              testAppCxts = [[pgwave2D, progEnv]],
              includes = listFiles(['pgwave/*.h']),
-             data = listFiles(['data/*'], recursive = True))
+             data = listFiles(['data/*'], recursive = True),
+             pfiles = ['pfiles/pgwave2D.par'])
