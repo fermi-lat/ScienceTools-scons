@@ -139,6 +139,7 @@ if baseEnv.GetOption('variant'):
     variant = baseEnv.GetOption('variant')
 override = baseEnv.GetOption('supersede')
 SConsignFile(os.path.join(override,'.sconsign.dblite'))
+baseEnv['VARIANT'] = variant
 
 Export('baseEnv')
 
@@ -361,7 +362,10 @@ if not baseEnv.GetOption('help'):
     if baseEnv.GetOption('clean'):
         baseEnv.Default('test')
 
-baseEnv.SConscript('setupTarget.scons')
+setupScript = baseEnv.GenerateSetupScript()
+baseEnv.Default(setupScript)
+baseEnv.Alias('all', setupScript)
+baseEnv.Alias('setup', setupScript)
 
 def print_build_failures():
     from SCons.Script import GetBuildFailures
