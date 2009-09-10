@@ -22,14 +22,15 @@ int main() {
 
   // Test out creating a new document
   DOMElement* myDoc = Dom::makeDocument("myDoc");
-  DOMElement* emptyNode = Dom::makeChildNode(myDoc, "emptyElement");
+  /* DOMElement* emptyNode =*/ //commented to avoid 'unused variable' warning
+  Dom::makeChildNode(myDoc, "emptyElement");
   DOMElement* secondChild = Dom::makeChildNode(myDoc, "secondChild");
-  DOMElement* grandChild = 
-    Dom::makeChildNodeWithContent(secondChild, "grandChild", "yoo-hoo");
-  DOMElement* intChild = 
-    Dom::makeChildNodeWithContent(secondChild, "intChild", 2);
-  DOMElement* hexChild = 
-    Dom::makeChildNodeWithHexContent(secondChild, "hexChild", 1023);
+  /* DOMElement* grandChild = */ //commented to avoid 'unused variable' warning
+  Dom::makeChildNodeWithContent(secondChild, "grandChild", "yoo-hoo");
+  /* DOMElement* intChild =  */
+  Dom::makeChildNodeWithContent(secondChild, "intChild", 2);
+  /* DOMElement* hexChild =  */
+  Dom::makeChildNodeWithHexContent(secondChild, "hexChild", 1023);
 
   if (Dom::writeIt(myDoc, "myDoc.xml")) {
     std::cout << "Successfully wrote myDoc.xml" << std::endl;
@@ -92,7 +93,8 @@ unsigned stripAndWrite(const std::string& fname, bool standalone) {
     return 1;
   }
 
-  DOMElement* docElt = doc->getDocumentElement();
+  /* DOMElement* docElt = */
+  doc->getDocumentElement();
   //  Dom::stripComments(docElt);
   Dom::stripComments(doc);
 
