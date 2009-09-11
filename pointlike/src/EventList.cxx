@@ -168,10 +168,15 @@ Photon EventList::Iterator::operator*()const
         (*m_it)[*names++].get(ctbclasslevel);
     }catch(const std::exception&){
       try {
-        (*m_it)["EVENT_CLASS"].get(ctbclasslevel);
-        (*m_it)["CONVERSION_TYPE"].get(event_class);
-      }catch(const std::exception&){
+        (*m_it)["MCENERGY"].get(mc_energy);
         ctbclasslevel=3;
+      } catch(const std::exception&){
+        try {
+          (*m_it)["EVENT_CLASS"].get(ctbclasslevel);
+          (*m_it)["CONVERSION_TYPE"].get(event_class);
+        }catch(const std::exception&){
+          ctbclasslevel=3;
+        }
       }
     }
     //if( m_selectid) { // check for source id only if requested
