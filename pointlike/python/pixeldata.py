@@ -88,9 +88,9 @@ Optional keyword arguments:
         # note there is a small discrepancy since the PSF average does not
         # currently know about the theta cut
         ip = skymaps.IParams
-        if self.ltcube is not None and self.roi_dir is not None:
-           ip.set_livetimefile(self.ltcube)
-           ip.set_skydir(self.roi_dir)
+        #if self.ltcube is not None and self.roi_dir is not None:
+           #ip.set_livetimefile(self.ltcube)
+           #ip.set_skydir(self.roi_dir)
         ip.set_CALDB(self.CALDB)
         ip.init('_'.join(self.irf.split('_')[:-1]),self.irf.split('_')[-1])
 
