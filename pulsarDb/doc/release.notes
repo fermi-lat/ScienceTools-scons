@@ -8,6 +8,7 @@ $Id$
 * EOH *
 
 15-Jul-2009    v8r4p1 jrb Update SConscript
+02-jun-2009      v8r4 MH  Adopt to the mission name change (GLAST -> FERMI).
 21-may-2009    v8r3p1 MH  Improve the unit test for application classes.
 28-apr-2009      v8r3 MH  Report file creation time in UT (JIRA PULS-52). Improve comments
                           and clean up source codes.
