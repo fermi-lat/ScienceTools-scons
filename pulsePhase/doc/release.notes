@@ -8,62 +8,63 @@
     * EOH *
 
     v8r5p1  15-Jul-09  jrb    Update SConscript
-    v0r1p2  10-oct-04   JP    Fix bug in requirements file. Add empty source file so that library builds.
-    v0r1p3  13-oct-04   JP    Add documentation about application parameters.
-    v0r2p0  26-nov-04   JP    Add TimingModel::calcFreq to compute frequency at given time. Conform parameters
-                              to standards.
-    v0r3p0  07-mar-05   JP    Use utility classes from pulsarDb for handling
-                              absolute times, and for database access.
-    v0r3p1  07-mar-05   JP    Requirements file was out-of-sync.
-        v1  23-aug-05   JP    Add binary correction, and gtophase tool. Rename
-                              pulsePhase tool gtpphase.
-    v1r0p1  25-aug-05   JP    Re-order parameters to improve look of GUI. Improve docs.
-    v1r0p2  25-aug-05   JP    Add documentation for gtophase.
-      v1r1  27-dec-05   JP    Create phase columns if they do not exist.
-        v2  27-jan-06   JP    Use timesystem, timeformat parameters to generalize interpretation of epoch.
-      v2r1  01-feb-06   JP    Improve checks for consistency between time systems.
-    v2r1p1  15-mar-06   JP    Add default value of 0. to phi0 parameter.
-        v3  29-mar-06   JP    Add ophaseoffset parameter for user offset and change interpretation of phi0
-                              parameter, to make user interface more clear. Do not open pulsar database in
-                              cases where it is not needed.
-        v4  26-jul-06   JP    Changed to work with timeSystem v1.
-      v4r1  14-aug-06   JP    Major but internal refactoring to use latest timeSystem.
-      v4r2  06-sep-06   JP    Add support for common time systems. Supported systems now
-                              include TAI, TDB, TT, and UTC.
-        v5  13-sep-06   JP    Use latest version of timeSystem; read time system from event file, and
-                              completely decouple time format from time system.
-    v5r0p1  20-sep-06   JP    Update mainpage.h.
-    v5r0p2  29-mar-07   JP    Clean up some unneeded code.
-      v5r1  08-aug-07   JP    Refactor gtophase and gtpphase applications to derive from
-                              pulsarDb::PulsarToolApp. Address bug from JIRA issue PULS-38.
-                              Use One-NASA email address.
-    v5r1p1  16-aug-07   JP    Call resetApp at beginning of run() method to clean up from any
-                              previous calls to run().
-        v6  23-oct-07   JP    Add support for barycentering on the fly, including new parameters
-                              solareph and matchsolareph, for controlling which solar system ephemeris
-                              is used for the barycentering.
-    v6r0p1  30-oct-07   JP    Address JIRA issue PULS 42. Use calcPulsePhase and calcOrbitalPhase
-                              methods to compute phase rationally rather than doing it by hand.
-    v6r0p2  13-nov-07   MH    Improve mainpage.h and prompts in gtpphase.par and gtophase.par.
-    v6r0p3  29-jan-08   JP    Add pfiles installation to SConscript.
-      v6r1  08-apr-08   JP    Internal change (removed pulsarDb::TimingModel).
-      v6r2  14-aug-08   MH    Changed to work with timeSystem v4r1.
-        v7  17-sep-08   MH    Add support for ephemeris-related warning messages, such ephemeris gaps
-                              and glitches.
-      v7r1  26-sep-08   MH    Remove support for event files that are already barycentered.
-      v7r2  30-sep-08   JP    Write tool parameter values in history keywords. Print ephmeris
-                              evolution details if chatter==4.
-        v8  09-oct-08   MH    Fix the bug reported as JIRA PULS-46. Add leapsecfile parameter to gtophase
-                              for potential use of UTC system. Separate StApp subclasses from gtpphase.cxx
-                              and gtophase.cxx.
+      v8r5  02-jun-09   MH    Adopt to the mission name change (GLAST -> FERMI).
+    v8r4p2  25-may-09   MH    Fine-tune tolerances in the unit test for application classes.
+    v8r4p1  21-may-09   MH    Improve the unit test for application classes.
+      v8r4  28-apr-09   MH    Report file creation time in UT (JIRA PULS-52). Improve Doxygen documents.
+      v8r3  29-oct-08   MH    Print time correction modes and time system usage if chatter is 3 or higher.
+      v8r2  27-oct-08   MH    Improve the unit test for robustness. Improve prompts.
       v8r1  24-oct-08   MH    Add tests of the application class to the unit test.
                               Fix a bug reported as JIRA PULS-48. Revise mainpage.h.
                               Improve application output messages and Doxygen comments.
-      v8r2  27-oct-08   MH    Improve the unit test for robustness. Improve prompts.
-      v8r3  29-oct-08   MH    Print time correction modes and time system usage if chatter is 3 or higher.
-      v8r4  28-apr-09   MH    Report file creation time in UT (JIRA PULS-52). Improve Doxygen documents.
-    v8r4p1  21-may-09   MH    Improve the unit test for application classes.
-    v8r4p2  25-may-09   MH    Fine-tune tolerances in the unit test for application classes.
-      v8r5  02-jun-09   MH    Adopt to the mission name change (GLAST -> FERMI).
+        v8  09-oct-08   MH    Fix the bug reported as JIRA PULS-46. Add leapsecfile parameter to gtophase
+                              for potential use of UTC system. Separate StApp subclasses from gtpphase.cxx
+                              and gtophase.cxx.
+      v7r2  30-sep-08   JP    Write tool parameter values in history keywords. Print ephmeris
+                              evolution details if chatter==4.
+      v7r1  26-sep-08   MH    Remove support for event files that are already barycentered.
+        v7  17-sep-08   MH    Add support for ephemeris-related warning messages, such ephemeris gaps
+                              and glitches.
+      v6r2  14-aug-08   MH    Changed to work with timeSystem v4r1.
+      v6r1  08-apr-08   JP    Internal change (removed pulsarDb::TimingModel).
+    v6r0p3  29-jan-08   JP    Add pfiles installation to SConscript.
+    v6r0p2  13-nov-07   MH    Improve mainpage.h and prompts in gtpphase.par and gtophase.par.
+    v6r0p1  30-oct-07   JP    Address JIRA issue PULS 42. Use calcPulsePhase and calcOrbitalPhase
+                              methods to compute phase rationally rather than doing it by hand.
+        v6  23-oct-07   JP    Add support for barycentering on the fly, including new parameters
+                              solareph and matchsolareph, for controlling which solar system ephemeris
+                              is used for the barycentering.
+    v5r1p1  16-aug-07   JP    Call resetApp at beginning of run() method to clean up from any
+                              previous calls to run().
+      v5r1  08-aug-07   JP    Refactor gtophase and gtpphase applications to derive from
+                              pulsarDb::PulsarToolApp. Address bug from JIRA issue PULS-38.
+                              Use One-NASA email address.
+    v5r0p2  29-mar-07   JP    Clean up some unneeded code.
+    v5r0p1  20-sep-06   JP    Update mainpage.h.
+        v5  13-sep-06   JP    Use latest version of timeSystem; read time system from event file, and
+                              completely decouple time format from time system.
+      v4r2  06-sep-06   JP    Add support for common time systems. Supported systems now
+                              include TAI, TDB, TT, and UTC.
+      v4r1  14-aug-06   JP    Major but internal refactoring to use latest timeSystem.
+        v4  26-jul-06   JP    Changed to work with timeSystem v1.
+        v3  29-mar-06   JP    Add ophaseoffset parameter for user offset and change interpretation of phi0
+                              parameter, to make user interface more clear. Do not open pulsar database in
+                              cases where it is not needed.
+    v2r1p1  15-mar-06   JP    Add default value of 0. to phi0 parameter.
+      v2r1  01-feb-06   JP    Improve checks for consistency between time systems.
+        v2  27-jan-06   JP    Use timesystem, timeformat parameters to generalize interpretation of epoch.
+      v1r1  27-dec-05   JP    Create phase columns if they do not exist.
+    v1r0p2  25-aug-05   JP    Add documentation for gtophase.
+    v1r0p1  25-aug-05   JP    Re-order parameters to improve look of GUI. Improve docs.
+        v1  23-aug-05   JP    Add binary correction, and gtophase tool. Rename
+                              pulsePhase tool gtpphase.
+    v0r3p1  07-mar-05   JP    Requirements file was out-of-sync.
+    v0r3p0  07-mar-05   JP    Use utility classes from pulsarDb for handling
+                              absolute times, and for database access.
+    v0r2p0  26-nov-04   JP    Add TimingModel::calcFreq to compute frequency at given time. Conform parameters
+                              to standards.
+    v0r1p3  13-oct-04   JP    Add documentation about application parameters.
+    v0r1p2  10-oct-04   JP    Fix bug in requirements file. Add empty source file so that library builds.
+    v0r1p1  09-oct-04   JP    Use st_facilities::Env to locate data files.
     @endverbatim
 */
