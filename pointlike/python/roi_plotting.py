@@ -52,7 +52,7 @@ def band_spectra(r,source=0):
          print 'multi = %.2f'%(eta)
       """
       #define a joint likelihood for the energy band
-      f = lambda scale: sum( [r.bandLikelihood(scale,band,source) for band in gi] )
+      f = lambda scale: sum( [band.bandLikelihood(scale,source) for band in gi] )
       result = fmin(f,[1.],disp=0,full_output=1)
       if result[4] != 1 and result[4] != 2:
          scales[i] = result[0]

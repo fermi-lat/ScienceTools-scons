@@ -7,6 +7,7 @@ def generate(env, **kw):
         env.Tool('addLibrary', library = ['pointlike'])
     depends = 'astro healpix skymaps embed_python'.split()
     for pack in depends: env.Tool(pack+'Lib')
+    env.Tool('addLibrary', library=env['clhepLibs'])
     env.Tool('addLibrary', library=env['minuitLibs'])
     
 def exists(env):

@@ -201,7 +201,7 @@ class ROIEnergyBand(object):
 
       else:
    
-         hessian = SpectralModelFitter.hessian(self.m,self.bandLikelihood,which) #does Hessian for free parameters
+         hessian = SpectralModelFitter.hessian(self.m,self.bandLikelihood,which)[0] #does Hessian for free parameters
          self.m.set_cov_matrix(inv(hessian))
 
          e = self.m.statistical(absolute=True,two_sided=True)

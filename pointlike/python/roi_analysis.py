@@ -11,6 +11,7 @@ import numpy as N
 from roi_managers import *
 from roi_bands import *
 from roi_plotting import *
+from pointspec_helpers import PointSource
 from pypsf import PsfOverlap
 
 
@@ -117,7 +118,7 @@ class ROIAnalysis(object):
                     ***if localizing non-central, ensure ROI is large enough!***
       """
       
-      ro = ROIOverlap()
+      ro = PsfOverlap()
       rd = self.sa.roi_dir
       ll = 0
       pf = self.phase_factor
@@ -137,7 +138,7 @@ class ROIAnalysis(object):
 
          if band.has_pixels:
 
-            ps_pix_counts = band.psf(N.asarray([skydir.difference(x) for x in wsdl]),density=True)*pa*exposure_ratio
+            ps_pix_counts = band.psf(N.asarray([skydir.difference(x) for x in band.wsdl]),density=True)*pa*exposure_ratio
             #ps_pix_counts = N.asarray(psf.wsdl_vector_value(band.wsdl))*((pa/(2*N.pi*sigma**2))*exposure_ratio)
 
             pix_term = (band.pix_counts * N.log

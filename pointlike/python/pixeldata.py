@@ -30,7 +30,7 @@ Optional keyword arguments:
         self.__dict__.update(spectral_analysis.__dict__)
 
         from numpy import arange,log10
-        self.my_bins = 10**arange(log10(self.emin),log10(self.emax*1.01),1./self.binsperdecade)
+        self.my_bins = 10**arange(log10(self.emin),log10(self.emax*1.01),1./self.binsperdec)
         self.binner_set = False
         
         # check explicit files
@@ -129,10 +129,10 @@ Optional keyword arguments:
                 self.exp_radius = 180
 
             lt = skymaps.LivetimeCube(
-                cone_angle =self.exp_radius,\
-                dir        =self.roi_dir,\
-                zcut       =math.cos(math.radians(self.zenithcut)),\
-                pixelsize  =pixelsize,\
+                cone_angle =self.exp_radius,
+                dir        =self.roi_dir,
+                zcut       =math.cos(math.radians(self.zenithcut)),
+                pixelsize  =pixelsize,
                 quiet      =self.quiet )
 
             gti = skymaps.Gti(self.ft1files[0])
@@ -143,7 +143,7 @@ Optional keyword arguments:
                 lt_gti = skymaps.Gti(hf,'SC_data')
                 if not ((lt_gti.maxValue() < gti.minValue()) or (lt_gti.minValue() > gti.maxValue())):
                    lt.load(hf,gti)
-               
+
             # write out ltcube if requested
             if self.ltcube is not None: lt.write(self.ltcube)
         else:
@@ -165,6 +165,6 @@ def setup(bins=8):
     return PixelData( event_files, history_files,  
         livetimefile='../data/aug-oct_livetime.fits', 
         datafile='../data/aug-oct2008_%d.fits'%bins, 
-        binsperdecade=bins)
+        binsperdec=bins)
 if __name__=='__main__':
     pass
