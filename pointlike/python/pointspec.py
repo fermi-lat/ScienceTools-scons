@@ -191,7 +191,7 @@ Optional keyword arguments:
 
 
 
-    def roi(self, point_sources = None, bgmodels = None, previous_fit = None, **kwargs):
+    def roi(self, point_sources = None, bgmodels = None, previous_fit = None, no_roi = False, **kwargs):
         """
         return an ROIAnalysis object with default settings.
 
@@ -204,6 +204,10 @@ Optional keyword arguments:
         previous_fit     [None] a file containing the results of an earlier spectral fit;
                          if not None, set spectral values to this fit
                          ***WARNING*** not tested!
+
+        no_roi           [False] if True, return a tuple with an instance of PSManager and
+                         of BGManager; can be used to instantiate an ROIAnalysis (or child)
+                         object later
 
         Optional Keyword Arguments:
             nocat        [False] if True, do not add additional sources from a catalog 
@@ -244,6 +248,8 @@ Optional keyword arguments:
             
         # n.b. weighting PSF for the central point source
         self.psf.set_weights(self.ltcube,point_sources[0].skydir)
+
+        if no_roi: return ps_manager,bg_manager
 
         return ROIAnalysis(ps_manager,bg_manager,self,**kwargs)
 
