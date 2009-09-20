@@ -61,8 +61,8 @@ class ExposureManager(object):
 class ConsistentBackground(object):
    """Manage the construction of a consistent background model.
 
-      Notes
-      -----
+      *Notes*
+      
       A background model comprises diffuse and point sources.  While
       some parameters may be refit in a spectral analysis, the default
       background model should give a good representation.
