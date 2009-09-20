@@ -13,7 +13,7 @@ import pointlike
 
 
 class PixelData(object):
-        """
+    """
 Create a new PixelData instance, managing data and livetime.  
 
     analysis_environment: an instance of AnalysisEnvironment correctly configured with

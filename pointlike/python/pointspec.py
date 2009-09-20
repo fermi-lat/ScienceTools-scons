@@ -144,8 +144,6 @@ Optional keyword arguments:
  
     """
 
-    """
-    
     def __init__(self, analysis_environment, **kwargs):
         """
 
@@ -268,6 +266,7 @@ Optional keyword arguments:
             glat         [None]  the Galactic latitude of the source; sets default free parameters in diffuse
             fit_emin     [100,100] minimum energies (separate for front and back) to use in spectral fitting.
             fit_emax     [1e5,1e5] maximum energies (separate for front and back) to use in spectral fitting.
+            no_roi       [False] If set, return a ps_manager, roi_manager instead (for separate generation of an ROIAnalysis)
             ==========   =============
       """
         
