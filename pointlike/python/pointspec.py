@@ -283,9 +283,10 @@ Optional keyword arguments:
         if 'nocat'       in kwargs.keys(): nocat  = kwargs.pop('nocat')
 
         # setup backgrounds and point sources
+        skydir        = self.roi_dir if point_sources is None else point_sources[0].skydir
         cb            = ConsistentBackground(self.ae,self.background)
         bgmodels      = cb.get_bgmodels(models=bg_smodels,lat=glat) if bgmodels is None else bgmodels
-        point_sources = point_sources if nocat else cb.cm.merge_lists(self.roi_dir,self.maxROI+5,point_sources)
+        point_sources = point_sources if nocat else cb.cm.merge_lists(skydir,self.maxROI+5,point_sources)
 
         # try to read in a previous fit
         if previous_fit is not None:
@@ -295,7 +296,7 @@ Optional keyword arguments:
                 backgrounds[i].smodel = bg[i]
 
         ps_manager = ROIPointSourceManager(point_sources,point_sources[0].skydir,quiet=self.quiet)
-        bg_manager = ROIBackgroundManager(self, bgmodels, ps_manager.roi_dir)
+        bg_manager = ROIBackgroundManager(self, bgmodels, ps_manager.roi_dir,quiet=self.quiet)
 
         # if didn't specify a source, pick closest one and make it free -- maybe remove this?
         if point_sources is None and (not N.any([N.any(m.free) for m in ps_manager.models])):
