@@ -30,7 +30,7 @@ class ROIBand(object):
 
       self.catalog_aperture = -1
 
-   def __init__(self,band,spectral_analysis,**kwargs):
+   def __init__(self,band,spectral_analysis,skydir,**kwargs):
 
       self.init()
       self.__dict__.update(**kwargs)
@@ -38,7 +38,7 @@ class ROIBand(object):
       self.emin, self.emax = band.emin(),band.emax()
       self.e   = (self.emin*self.emax)**0.5
       self.sa  = spectral_analysis
-      self.sd  = self.sa.roi_dir
+      self.sd  = skydir
       self.ec  = self.ct = band.event_class()          # note change 
       self.exp = self.sa.exposure.exposure[self.ct]
       self.psf = self.sa.psf.band_psf(self)

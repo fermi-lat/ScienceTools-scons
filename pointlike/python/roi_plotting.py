@@ -12,7 +12,7 @@ author: Matthew Kerr
 """
 
 import numpy as N
-from skymaps import PySkyFunction,Background,Band,SkyDir,Hep3VectorSkyIntegrator
+from skymaps import PySkyFunction,Background,Band,SkyDir,Hep3Vector,SkyIntegrator
 from roi_bands import ROIEnergyBand
 from pypsf import OldPsf
 from fitstools import get_fields

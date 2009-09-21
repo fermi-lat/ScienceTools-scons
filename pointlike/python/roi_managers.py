@@ -264,7 +264,7 @@ class ROIBackgroundManager(ROIModelManager):
       #self.iso_model = PowerLaw(p=[1,1],free=[True,False],index_offset=1)
       self.quiet     = False
 
-   def __init__(self,spectral_analysis,models,**kwargs):
+   def __init__(self,spectral_analysis,models,skydir,**kwargs):
       """."""
       self.init()
       self.__dict__.update(**kwargs)
@@ -276,7 +276,7 @@ class ROIBackgroundManager(ROIModelManager):
       for model in self.models:
          model.background = True
 
-      self.roi_dir  = sa.roi_dir
+      self.roi_dir  = skydir
       
    def __str__(self): return '\n\n'.join([model.__str__() for model in self.bgmodels])
 
