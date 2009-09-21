@@ -22,7 +22,7 @@ _plotter_package = 'root'
 class AnalysisBase(object):
     def __init__(self):
         self.maxdist = 20
-        self.tol = 1e-2
+        self.tol = 1e-3
         self.covariance = None
         self.covar_is_current = False
         self.tolType = pyLike.ABSOLUTE
