@@ -173,6 +173,15 @@ class UpperLimit(object):
         par = self.like.normPar(source)
         par.setFree(0)
 
+        #
+        # Set the lower bound to zero
+        #
+        current_bounds = par.getBounds()
+        if current_bounds[0] != 0:
+            print ("Setting lower bound on normalization parameter " +
+                   "to zero temporarily for upper limit calculation.")
+        par.setBounds(0, current_bounds[1])
+
         # Update the best-fit-so-far vector after having fixed the 
         # normalization parameter.
         self.like.saveCurrentFit()
