@@ -31,6 +31,9 @@ class ROILocalizer(object):
       if bandfits:
          if 'energy_bands' not in roi.__dict__.keys(): roi.setup_energy_bands()
          for eb in roi.energy_bands: eb.bandFit(which=which,saveto='bandfits')
+         if N.all(N.asarray([b.bandfits for b in roi.bands]) < 0):
+            if not self.quiet: print 'Warning! No good band fits.  Reverting to broadband fit...'
+            self.bandfits = False
       self.tsref=0
       self.tsref = self.TSmap(self.rd)
 
@@ -127,6 +130,7 @@ class ROILocalizer(object):
          psnc                  = band.bandfits if bf else band.ps_counts[wh]
          psoc                  = band.ps_counts[wh]
 
+         if psnc < 0: continue # skip potentially bad band fits, or bands without appreciable flux
 
          tot_term              = (band.bg_all_counts + band.ps_all_counts + psnc * nover - psoc * oover ) * pf
 
