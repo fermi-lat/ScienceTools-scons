@@ -313,6 +313,9 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   test_name_cont.push_back("par8");
   test_name_cont.push_back("par9");
   test_name_cont.push_back("par10");
+  test_name_cont.push_back("par11");
+  test_name_cont.push_back("par12");
+  test_name_cont.push_back("par13");
 
   // Prepare files to be used in the tests.
   std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
@@ -324,9 +327,10 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
     std::string log_file(getMethod() + "_" + test_name + ".log");
-    std::string log_file_ref(prependOutrefPath(log_file));
+    std::string log_file_ref(getMethod() + "_" + test_name + ".ref");
     std::string out_file(getMethod() + "_" + test_name + ".fits");
     std::string out_file_ref(prependOutrefPath(out_file));
+    bool ignore_exception(false);
 
     // Set default parameters.
     st_app::AppParGroup pars(app_tester.getName());
@@ -447,6 +451,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = "@" + summary_file;
       pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -466,6 +471,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["psrdbfile"] = "@" + summary_file;
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -486,6 +492,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
       pars["chatter"] = 4;
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -498,6 +505,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = prependDataPath("psrdb_spin2.txt");
       pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -510,6 +518,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = prependDataPath("psrdb_spin3.txt");
       pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -522,8 +531,70 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["ephstyle"] = "DB";
       pars["psrdbfile"] = prependDataPath("psrdb_spin4.txt");
       pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
+
+    } else if ("par11" == test_name) {
+      // Test detection of empty ephemeris database.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J0540-6919";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = "NONE";
+      pars["matchsolareph"] = "NONE";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No spin ephemeris is in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
+
+    } else if ("par12" == test_name) {
+      // Test detection of unknown pulsar name.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "No Such Pulsar";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = master_pulsardb;
+      pars["matchsolareph"] = "NONE";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No spin ephemeris is available for pulsar \"No Such Pulsar\" in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
+
+    } else if ("par13" == test_name) {
+      // Test reporting no spin ephemeris available for a given solar system ephemeris.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR B0540-69";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = master_pulsardb;
+      pars["solareph"] = "JPL DE405";
+      pars["matchsolareph"] = "ALL";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No spin ephemeris is available for solar system ephemeris \"JPL DE405\" for pulsar \"PSR B0540-69\" in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
 
     } else {
       // Skip this iteration.
@@ -531,7 +602,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     }
 
     // Test the application.
-    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref);
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, ignore_exception);
   }
 }
 
@@ -550,6 +621,9 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   test_name_cont.push_back("par2");
   test_name_cont.push_back("par3");
   test_name_cont.push_back("par4");
+  test_name_cont.push_back("par5");
+  test_name_cont.push_back("par6");
+  test_name_cont.push_back("par7");
 
   // Prepare files to be used in the tests.
   std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
@@ -561,9 +635,10 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
     const std::string & test_name = *test_itor;
     std::string log_file(getMethod() + "_" + test_name + ".log");
-    std::string log_file_ref(prependOutrefPath(log_file));
+    std::string log_file_ref(getMethod() + "_" + test_name + ".ref");
     std::string out_file(getMethod() + "_" + test_name + ".fits");
     std::string out_file_ref(prependOutrefPath(out_file));
+    bool ignore_exception(false);
 
     // Set default parameters.
     st_app::AppParGroup pars(app_tester.getName());
@@ -597,7 +672,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1834-0010";
       pars["psrdbfile"] = master_pulsardb;
-      pars["ra"] = 85.0482;
+      pars["ra"] = 85.0482; // Note: Need to use those wrong RA & Dec to match the reference output.
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
@@ -615,11 +690,12 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
-      pars["psrname"] = "PSR J0540-6919";
+      pars["psrname"] = "PSR J1834-0010";
       pars["psrdbfile"] = "@" + summary_file;
-      pars["ra"] = 85.0482;
-      pars["dec"] = -69.3319;
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
       pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -635,12 +711,13 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
-      pars["psrname"] = "PSR J0540-6919";
+      pars["psrname"] = "PSR J1834-0010";
       pars["psrdbfile"] = "@" + summary_file;
-      pars["ra"] = 85.0482;
-      pars["dec"] = -69.3319;
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
 
@@ -656,15 +733,80 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
-      pars["psrname"] = "PSR J0540-6919";
+      pars["psrname"] = "PSR J1834-0010";
       pars["psrdbfile"] = "@" + summary_file;
-      pars["ra"] = 85.0482;
-      pars["dec"] = -69.3319;
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
       pars["matchsolareph"] = "NONE";
       pars["reportephstatus"] = "no";
       pars["chatter"] = 4;
+      log_file_ref = prependOutrefPath(log_file);
       out_file.erase();
       out_file_ref.erase();
+
+    } else if ("par5" == test_name) {
+      // Test detection of empty ephemeris database.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1834-0010";
+      pars["psrdbfile"] = "NONE";
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
+      pars["matchsolareph"] = "NONE";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No orbital ephemeris is in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
+
+    } else if ("par6" == test_name) {
+      // Test detection of unknown pulsar name.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "No Such Pulsar";
+      pars["psrdbfile"] = master_pulsardb;
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
+      pars["matchsolareph"] = "NONE";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No orbital ephemeris is available for pulsar \"No Such Pulsar\" in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
+
+    } else if ("par7" == test_name) {
+      // Test reporting no spin ephemeris available for a given solar system ephemeris.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1834-0010";
+      pars["psrdbfile"] = master_pulsardb;
+      pars["ra"] = 278.571942;
+      pars["dec"] = -0.180347;
+      pars["solareph"] = "JPL DE405";
+      pars["matchsolareph"] = "ALL";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("No orbital ephemeris is available for solar system ephemeris \"JPL DE405\" for pulsar \"PSR J1834-0010\" in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
 
     } else {
       // Skip this iteration.
@@ -672,7 +814,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     }
 
     // Test the application.
-    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref);
+    app_tester.test(pars, log_file, log_file_ref, out_file, out_file_ref, ignore_exception);
   }
 }
 

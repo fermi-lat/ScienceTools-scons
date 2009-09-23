@@ -4,6 +4,18 @@ gtpphase: INFO:    Load TEXTDB SPIN_PARAMETERS(FREQ) FILENAME='psrdb_spin1.txt'
 gtpphase: INFO:    Load TEXTDB REMARKS FILENAME='psrdb_remark.txt'
 gtpphase: INFO:    Filter by pulsar name 'PSR J0540-6919'
 gtpphase: INFO: ==========================
+gtpphase: INFO: Spin ephemerides in the database are summarized as follows:
+gtpphase: INFO:    10 spin ephemeri(de)s in total
+gtpphase: INFO:    5 spin ephemeri(de)s for pulsar "PSR J0540-6919"
+gtpphase: INFO:    (Sub-selection by solar system ephemeris not requested)
+gtpphase: INFO:    5 spin ephemeri(de)s loaded into memory
+gtpphase: INFO: ==========================
+gtpphase: INFO: Orbital ephemerides in the database are summarized as follows:
+gtpphase: INFO:    0 orbital ephemeri(de)s in total
+gtpphase: INFO:    0 orbital ephemeri(de)s for pulsar "PSR J0540-6919"
+gtpphase: INFO:    (Sub-selection by solar system ephemeris not requested)
+gtpphase: INFO:    0 orbital ephemeri(de)s loaded into memory
+gtpphase: INFO: ==========================
 gtpphase: INFO: --------------------------
 gtpphase: INFO: Arrival time corrections are applied as follows:
 gtpphase: INFO:    Barycentric correction: Applied if necessary

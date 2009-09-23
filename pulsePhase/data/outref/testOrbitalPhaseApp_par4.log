@@ -3,7 +3,13 @@ gtophase: INFO: Pulsar ephemerides are loaded and/or filtered as follows:
 gtophase: INFO:    Load TEXTDB SPIN_PARAMETERS(FREQ) FILENAME='psrdb_spin1.txt'
 gtophase: INFO:    Load TEXTDB ORBITAL_PARAMETERS(DD) FILENAME='psrdb_binary.txt'
 gtophase: INFO:    Load TEXTDB REMARKS FILENAME='psrdb_remark.txt'
-gtophase: INFO:    Filter by pulsar name 'PSR J0540-6919'
+gtophase: INFO:    Filter by pulsar name 'PSR J1834-0010'
+gtophase: INFO: ==========================
+gtophase: INFO: Orbital ephemerides in the database are summarized as follows:
+gtophase: INFO:    1 orbital ephemeri(de)s in total
+gtophase: INFO:    1 orbital ephemeri(de)s for pulsar "PSR J1834-0010"
+gtophase: INFO:    (Sub-selection by solar system ephemeris not requested)
+gtophase: INFO:    1 orbital ephemeri(de)s loaded into memory
 gtophase: INFO: ==========================
 gtophase: INFO: --------------------------
 gtophase: INFO: Arrival time corrections are applied as follows:
