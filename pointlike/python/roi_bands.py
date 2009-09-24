@@ -219,3 +219,11 @@ class ROIEnergyBand(object):
 
       if saveto is not None:
          for b in self.bands: b.__dict__[saveto] = (b.expected(self.m) if not bad_fit else -1)
+
+      if bad_fit:
+         self.ts = 0
+      else:
+         null_ll = sum( (b.bandLikelihood([0],which) for b in self.bands) )
+         alt_ll  = sum( (b.bandLikelihood([b.expected(self.m)],which) for b in self.bands) )
+         self.ts = 2*(null_ll - alt_ll)
+         
