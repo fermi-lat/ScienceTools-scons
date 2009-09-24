@@ -149,6 +149,8 @@ Optional keyword arguments:
             gti = skymaps.Gti(self.ft1files[0])
             for ef in self.ft1files[1:]:
                 gti.combine(skymaps.Gti(ef))
+            if self.tstart == 0: self.tstart = gti.minValue()
+            if self.tstop == 0: self.tstop = gti.maxValue()
             gti = gti.applyTimeRangeCut(self.tstart,max(gti.maxValue(),self.tstop))
             for hf in self.ft2files:
                 lt_gti = skymaps.Gti(hf,'SC_data')
