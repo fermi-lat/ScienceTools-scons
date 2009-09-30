@@ -23,7 +23,7 @@ libEnv.Tool(package+'Lib', depsOnly = 1)
 lib = libEnv.SharedLibrary(package, listFiles(['src/*.cxx']))
 
 swigEnv = progEnv.Clone()
-pyLib = swigEnv.SwigModule('_pointlike','python/swig_setup.i')
+pyLib = swigEnv.SwigLibrary('_pointlike','python/swig_setup.i')
 
 progEnv.Tool('registerTargets', 
              package   = package, 
