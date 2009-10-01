@@ -21,7 +21,7 @@ test_healpix = progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))
 
 progEnv.Tool('registerTargets', 
       package = 'healpix', 
-      includes = listFiles(['healpix/*.h','src/base/*.h']),
+      includes = listFiles(['healpix/*.h','healpix/base/*.h']),
       libraryCxts = [[healpixLib, libEnv]],
       testAppCxts = [[test_healpix, progEnv]]
       )

@@ -7,8 +7,8 @@ $Header$
 */
 #include <string>
 #include <vector>
-#include "src/base/healpix_map.h"
-#include "src/base/powspec.h"
+#include "healpix/base/healpix_map.h"
+#include "healpix/base/powspec.h"
 #include "astro/SkyFunction.h"
 #include "healpix/HealPixel.h"
 

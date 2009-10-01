@@ -6,7 +6,7 @@
 $Header$
 */
 
-#include "../src/base/alm.h"
+#include "healpix/base/alm.h"
 
 namespace healpix {
 

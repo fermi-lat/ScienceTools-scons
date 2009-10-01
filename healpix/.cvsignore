@@ -6,4 +6,5 @@ rh72*
 VC*
 VS2005
 cmt*
-
+*.pyc
+build
