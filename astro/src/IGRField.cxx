@@ -60,7 +60,8 @@ int IGRField::compute(const float latitude,const float longitude,const float alt
 // rigidity_const * cos(m_lambda)^4 / m_R^2
 
 // needs an approximation to the solution rl(b) of the equation b^2*rl^6+3*rl-4==0 in the range b=1..10
-   double rl= pow((double)m_B,-0.215108)*(1.-0.020551*((double)m_B-1.)+0.0008148*((double)m_B-1.));
+   double Bdoub = (double)m_B;
+   double rl= pow(Bdoub,-0.215108)*(1.-0.020551*(Bdoub-1.)+0.0008148*(Bdoub-1.)*(Bdoub-1.));
    m_R= rl*m_L;
    m_lambda= (rl<=1) ? acos(sqrt(rl)) : 0.;
 
