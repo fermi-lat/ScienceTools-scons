@@ -4,6 +4,7 @@
 */
 #include <algorithm>
 #include <cctype>
+#include <climits>
 #include <memory>
 #include <stdexcept>
 #include <string>

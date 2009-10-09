@@ -1,3 +1,4 @@
+#include <memory>
 #include "GlastGbmBinConfig.h"
 
 #include "evtbin/Gti.h"
