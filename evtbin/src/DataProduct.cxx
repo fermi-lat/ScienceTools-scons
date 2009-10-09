@@ -99,10 +99,15 @@ namespace evtbin {
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).
-    const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", "MJDREFI",
-      "MJDREFF", "EQUNINOX", "RADECSYS", "EXPOSURE", "ONTIME", "TSTART", "TSTOP", "OBSERVER", 
-			    "RESPFILE", "DETNAM", "DATATYPE", "RA_OBJ", "DEC_OBJ", "TRIGTIME", "PRIMTYPE", 
-			    "EVT_DEAD", "EVTDEDHI" };
+    const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", 
+			    "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", 
+			    "MJDREFI", "MJDREFF", "EQUNINOX", "RADECSYS", 
+			    "EXPOSURE", "ONTIME", "TSTART", "TSTOP", 
+			    "OBSERVER", "RESPFILE", "DETNAM", "DATATYPE", 
+			    "RA_OBJ", "DEC_OBJ", "TRIGTIME", "PRIMTYPE", 
+			    "EVT_DEAD", "EVTDEDHI", "TIMEUNIT", "TIMEZERO",
+			    "TIMEREF", "CLOCKAPP", "GPS_OUT"};
+
     m_known_keys.insert(m_known_keys.end(), keys, keys + sizeof(keys) / sizeof(const char *));
 
     // Get container of file names from the supplied input file.

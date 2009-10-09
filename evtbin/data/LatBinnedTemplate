@@ -8,6 +8,12 @@ TELESCOP =                GLAST / Name of telescope generating data
 INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+TIMEUNIT =                   s  / units for the time related keywords
+TIMEZERO =                   0. / clock correction
+TIMESYS  =                  MJD / Time system used to define time
+TIMEREF  =                LOCAL / reference frame used for times
+CLOCKAPP=                    F  / was a clock drift correction applied
+GPS_OUT =                    F  / whether GPS time was unavailable at any time
 OBSERVER = 'Michelson'          / PI name
 CREATOR  =                      / Software and version creating file
 HISTORY                     LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp
@@ -52,6 +58,12 @@ EQUINOX  =               2000.0 / Equinox of RA & DEC specifications
 RADECSYS =                      / Nominal U.T. date when integration of this PHA data started
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+TIMEUNIT =                   s  / units for the time related keywords
+TIMEZERO =                   0. / clock correction
+TIMESYS  =                  MJD / Time system used to define time
+TIMEREF  =                LOCAL / reference frame used for times
+CLOCKAPP=                    F  / was a clock drift correction applied
+GPS_OUT =                    F / whether GPS time was unavailable at any time
 NDSKEYS =                     0 / Number of data subspace keywords in header
 CREATOR  =                      / Software and version creating file
 HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
@@ -136,6 +148,12 @@ HDUCLAS2 =              EBOUNDS / Extension contains response matrix
 HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+TIMEUNIT =                   s  / units for the time related keywords
+TIMEZERO =                   0. / clock correction
+TIMESYS  =                  MJD / Time system used to define time
+TIMEREF  =                LOCAL / reference frame used for times
+CLOCKAPP=                    F  / was a clock drift correction applied
+GPS_OUT =                    F / whether GPS time was unavailable at any time
 CREATOR  =                      / Software and version creating file
 HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
 
@@ -177,6 +195,12 @@ TIMESYS  =                  MJD / Time system used to define time
 TIMEUNIT =                    s / All times are in seconds unless specified otherwise
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
+TIMEUNIT =                   s  / units for the time related keywords
+TIMEZERO =                   0. / clock correction
+TIMESYS  =                  MJD / Time system used to define time
+TIMEREF  =                LOCAL / reference frame used for times
+CLOCKAPP=                    F  / was a clock drift correction applied
+GPS_OUT =                    F / whether GPS time was unavailable at any time
 CREATOR  =                      / Software and version creating file
 HISTORY                   LatBinnedTemplate,v 1.7 2005/08/02 14:14:06 peachey Exp 
 
