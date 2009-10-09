@@ -97,6 +97,9 @@
 15-jul-2009    v2r3p1 jrb Update SConscript
 21-jul-2009    v2r3p2 JV  Added some error checking to give clearer
 			  errors if tstart is greater than tstop.
+09-oct-2009    v2r3p3 JV  Some minor format fixes to get keywords from
+			  the newer (pass6) format files and extra
+			  headers to build with gcc4.3.3.
 --------------------------------------------------------------------------------
 \endverbatim
 
