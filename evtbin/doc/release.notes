@@ -100,6 +100,8 @@
 09-oct-2009    v2r3p3 JV  Some minor format fixes to get keywords from
 			  the newer (pass6) format files and extra
 			  headers to build with gcc4.3.3.
+13-oct-2009    v2r3p4 JV  Fixed two repeated keywords in the pha2
+			  files from the previous tag.
 --------------------------------------------------------------------------------
 \endverbatim
 
