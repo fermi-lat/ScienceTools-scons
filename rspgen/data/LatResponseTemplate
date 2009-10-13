@@ -8,7 +8,7 @@ TELESCOP =                GLAST / Name of telescope generating data
 INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
-DRM_NUM  =                      / Number of DRMs stored in this file
+DRM_NUM  =                    1 / Number of DRMs stored in this file
 CREATOR  =                      / Software and version creating file
 HISTORY                     $Id$
 END
@@ -35,7 +35,6 @@ HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Indicating this is a response
 HDUCLAS2 =           RSP_MATRIX / Indicating this is a response matrix
 HDUVERS  =                1.2.0 / Version number of the format
-TLMIN4   =                      / First channel in the response
 NDSKEYS  =                    0 / Number of data subspace keywords in header
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
