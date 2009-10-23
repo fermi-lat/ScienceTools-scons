@@ -7,6 +7,7 @@ $Id$
 \verbatim
 * EOH *
 
+ pulsarDb-08-05-00 23-Oct-2009 hirayama Improve errors and warnings in ephemeris sub-selection. Introduce psrdbfile=NONE.
  pulsarDb-08-04-02 18-Sep-2009 hirayama Use static_cast instead of old-style cast. Use human-friendly Duration class constructor.
 15-Jul-2009    v8r4p1 jrb Update SConscript
 02-jun-2009      v8r4 MH  Adopt to the mission name change (GLAST -> FERMI).
