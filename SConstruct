@@ -293,7 +293,13 @@ SConscript('processExternals.scons', exports = 'allExternals usedExternals')
 ############################
 # Package Specific Options #
 ############################
-SConscript('package.scons')
+pkgScons = os.path.join(override, 'package.scons')
+if os.path.exists(pkgScons):
+    SConscript(os.path.join(override, 'package.scons'))
+else:
+    if override != '.':
+        SConscript('package.scons')
+
 
 def listFiles(files, **kw):
     allFiles = []
