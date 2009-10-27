@@ -7,6 +7,7 @@
     @verbatim
     * EOH *
 
+ pulsePhase-08-06-01 27-Oct-2009 hirayama Add an explanation of psrdbfile=NONE to mainpage.h.
  pulsePhase-08-06-00 23-Oct-2009 hirayama Improve errors and warnings in ephemeris sub-selection. Introduce psrdbfile=NONE. Change the order of doc/release.notes entries to macth the other pulsar tools packages.
     v8r5p1  15-Jul-09  jrb    Update SConscript
       v8r5  02-jun-09   MH    Adopt to the mission name change (GLAST -> FERMI).
