@@ -48,7 +48,10 @@ scfile [file name]
 
 psrdbfile [file name]
     Name of pulsar ephemerides database file, in Fermi (formerly
-    GLAST) D4 FITS format.
+    GLAST) D4 FITS format. Multiple files may be combined by listing
+    them in a text file, one per line, and supplying the list file
+    name preceded by an @ sign. If psrdbfile is NONE
+    (case-insensitive), no ephemeris is loaded from a file.
 
 psrname = ANY [string]
     Name of the pulsar, used to select only ephemerides valid for a
@@ -220,7 +223,10 @@ scfile [file name]
 
 psrdbfile [file name]
     Name of pulsar ephemerides database file, in Fermi (formerly
-    GLAST) D4 FITS format.
+    GLAST) D4 FITS format. Multiple files may be combined by listing
+    them in a text file, one per line, and supplying the list file
+    name preceded by an @ sign. If psrdbfile is NONE
+    (case-insensitive), no ephemeris is loaded from a file.
 
 psrname = ANY [string]
     Name of the pulsar, used to select only ephemerides valid for a
