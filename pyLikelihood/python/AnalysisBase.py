@@ -365,7 +365,7 @@ class AnalysisBase(object):
         elif _plotter_package == 'hippo':
             from HippoPlot import HippoPlot
             self.plotter = HippoPlot
-    def plot(self, oplot=0, color=None, omit=()):
+    def plot(self, oplot=0, color=None, omit=(), symbol='line'):
         try:
             self._importPlotter()
         except ImportError:
@@ -389,7 +389,7 @@ class AnalysisBase(object):
                 total_counts += self._plotSource(src, color=color, 
                                                  show=(src not in omit))
         self.spectralPlot.overlay(self.e_vals, total_counts, color=color,
-                                  symbol='line' )
+                                  symbol=symbol)
         self._plotResiduals(total_counts, oplot=oplot, color=color)
     def _plotResiduals(self, model, oplot=0, color='black'):
         resid = (self.nobs - model)/model
