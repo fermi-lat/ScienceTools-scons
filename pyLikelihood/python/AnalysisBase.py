@@ -1,5 +1,5 @@
 """
-Base clase for Likelihood analysis Python modules.
+Base class for Likelihood analysis Python modules.
 
 @author J. Chiang <jchiang@slac.stanford.edu>
 """
