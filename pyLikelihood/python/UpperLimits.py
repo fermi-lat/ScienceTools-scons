@@ -166,7 +166,7 @@ class UpperLimit(object):
         self.like.syncSrcParams(self.source)
         self.fit(0, renorm=renorm)
         return self.like()
-    def _errorEst(self, renorm):
+    def _errorEst(self, renorm, verbosity=0):
         saved_state = LikelihoodState(self.like)
         logLike0 = saved_state.negLogLike
 
@@ -182,7 +182,7 @@ class UpperLimit(object):
 
         # Set the lower bound to zero
         current_bounds = par.getBounds()
-        if current_bounds[0] != 0:
+        if current_bounds[0] != 0 and verbosity > 0:
             print ("Setting lower bound on normalization parameter " +
                    "to zero temporarily for upper limit calculation.")
         par.setBounds(0, current_bounds[1])
@@ -198,7 +198,8 @@ class UpperLimit(object):
 
         return sigest
     def bayesianUL(self, cl=0.95, nsig=10, renorm=False, 
-                   emin=100, emax=3e5, npts=50):
+                   emin=100, emax=3e5, npts=50,
+                   verbosity=1):
         saved_state = LikelihoodState(self.like)
 
         logLike0 = saved_state.negLogLike
@@ -217,7 +218,7 @@ class UpperLimit(object):
 
         # Set the lower bound to zero
         current_bounds = par.getBounds()
-        if current_bounds[0] != 0:
+        if current_bounds[0] != 0 and verbosity > 0:
             print ("Setting lower bound on normalization parameter " +
                    "to zero temporarily for upper limit calculation.")
         par.setBounds(0, current_bounds[1])
