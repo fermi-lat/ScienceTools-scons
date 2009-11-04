@@ -162,6 +162,7 @@ if baseEnv['PLATFORM'] == "win32":
     baseEnv.AppendUnique(CCFLAGS = "/GR")
     baseEnv.AppendUnique(LINKFLAGS = "/SUBSYSTEM:CONSOLE")
     baseEnv.AppendUnique(LINKFLAGS = "/NODEFAULTLIB:LIBCMT")
+    baseEnv.AppendUnique(LINKFLAGS = "/NODEFAULTLIB:LIBC")
 
     if baseEnv.GetOption('debug'):
         baseEnv.AppendUnique(CCFLAGS = "/MDd")
