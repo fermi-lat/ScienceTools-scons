@@ -107,6 +107,11 @@ if baseEnv['PLATFORM'] == "win32":
     num,suite = msvs.msvs_parse_version(baseEnv['MSVS_VERSION'])
     compiler = 'vc'+''.join(str(num).split('.')[0:2])
     # visual_variant will be used as working directory in VS project files
+    baseEnv.Tool('mssdk')
+    baseEnv.Tool('mslib')
+    baseEnv.Tool('msvs')
+    baseEnv.Tool('msvc')
+    baseEnv.Tool('mslink')
     visual_variant = "Visual-" + compiler
 else:
     compiler = 'gcc'+''.join(baseEnv['CXXVERSION'].split('.')[0:2])
