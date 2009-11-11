@@ -160,7 +160,11 @@ class ROIPointSourceManager(ROIModelManager):
             if not band.has_pixels:
                band.frozen_pix_counts = 0
                continue
-            band.frozen_pix_counts   = (band.ps_pix_counts.transpose()[nm].transpose()*band.ps_counts[nm]).sum(axis=1)
+            if s > 1:
+               band.frozen_pix_counts = (band.ps_pix_counts.transpose()[nm].transpose()*band.ps_counts[nm]).sum(axis=1)
+            else:
+               band.frozen_pix_counts =  band.ps_pix_counts.transpose()[nm].transpose()*band.ps_counts[nm]
+
          else:
             band.frozen_total_counts = 0
             band.frozen_pix_counts   = 0

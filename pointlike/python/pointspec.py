@@ -284,7 +284,7 @@ Optional keyword arguments:
         # process kwargs
         glat,bg_smodels,nocat,free_radius,prune_radius = None,None,False,2,0.1
         if 'glat'        in kwargs.keys(): glat   = kwargs.pop('glat')
-        if 'bg_smodels'  in kwargs.keys(): models = kwargs.pop('bg_smodels')
+        if 'bg_smodels'  in kwargs.keys(): bg_smodels = kwargs.pop('bg_smodels')
         if 'nocat'       in kwargs.keys(): nocat  = kwargs.pop('nocat')
         if 'free_radius' in kwargs.keys(): free_radius = kwargs.pop('free_radius')
         if 'prune_radius'in kwargs.keys(): prune_radius= kwargs.pop('prune_radius')

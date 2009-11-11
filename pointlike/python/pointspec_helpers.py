@@ -118,8 +118,8 @@ class ConsistentBackground(object):
 
       gal_index = True if (lat is not None and abs(lat) < 20) else False
       self.smodels[0].free[1] = gal_index # need to be careful about this
-
-      return map(ROIBackgroundModel,self.dmodels,self.smodels,self.names)
+      smodels = self.smodels if models is None else models
+      return map(ROIBackgroundModel,self.dmodels,smodels,self.names)
 
 
 ###====================================================================================================###
