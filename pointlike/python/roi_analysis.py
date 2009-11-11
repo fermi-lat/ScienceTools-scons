@@ -339,6 +339,6 @@ class ROIAnalysis(object):
    def modify_loc(self,skydir,which):
       """Move point source given by which to new location given by skydir."""
       rl = ROILocalizer(self,which=which,update=True)
-      rl.spatialLikelihood()
+      rl.spatialLikelihood(skydir)
       self.psm.point_sources[which].skydir = skydir
 
