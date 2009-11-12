@@ -293,18 +293,18 @@ if baseEnv.GetOption('develRelease'):
 #  External Libraries   #
 #########################
 allExternals = SConscript('allExternals.scons')
-usedExternals = SConscript('externals.scons', exports = 'allExternals')
+usedExternals = SConscript(os.path.join('containerSettings', 'externals.scons'), exports = 'allExternals')
 SConscript('processExternals.scons', exports = 'allExternals usedExternals')
 
 ############################
 # Package Specific Options #
 ############################
-pkgScons = os.path.join(override, 'package.scons')
+pkgScons = os.path.join(override, 'containerSettings', 'package.scons')
 if os.path.exists(pkgScons):
-    SConscript(os.path.join(override, 'package.scons'))
+    SConscript(pkgScons)
 else:
     if override != '.':
-        SConscript('package.scons')
+        SConscript(os.path.join('containerSettings', 'package.scons'))
 
 
 def listFiles(files, **kw):
@@ -349,7 +349,7 @@ if not baseEnv.GetOption('help'):
         # Check if they contain SConscript and tools
         for name in pruned:
             package = re.compile('-.*$').sub('',name)
-            if not name in ['build', 'CVS', 'src', 'cmt', 'mgr', 'data', 'xml', 'pfiles', 'doc', 'bin', 'lib']:
+            if not name in ['build', 'CVS', 'src', 'cmt', 'mgr', 'data', 'xml', 'pfiles', 'doc', 'bin', 'lib', 'containerSettings']:
                 fullpath = os.path.join(directory,name)
                 if os.path.isdir(fullpath):
                     directories.append(fullpath)
