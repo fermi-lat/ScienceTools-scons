@@ -18,7 +18,6 @@
 #include "st_graph/IFrame.h"
 #include "st_graph/ITabFolder.h"
 #include "st_graph/Placer.h"
-#include "st_graph/RootFrame.h"
 #include "st_graph/StGui.h"
 
 #include "st_stream/StreamFormatter.h"
