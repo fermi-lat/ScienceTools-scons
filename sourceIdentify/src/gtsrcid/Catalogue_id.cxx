@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.32  2009/07/25 12:48:57  jurgen
+Implement Jean Ballet's chance PDF
+
 Revision 1.31  2009/03/18 10:01:59  jurgen
 Avoid floating point exception in case of NULL position errors
 
@@ -1354,6 +1357,10 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
           else
             src->cc[iCC].prob_post_single = 1.0;
         }
+
+        // Optionally multiply by FOM
+        if (par->m_FoM.length() > 0)
+          src->cc[iCC].prob_post_single *= src->cc[iCC].fom;
 
         // Add results to column vectors
         col_likrat.push_back(src->cc[iCC].likrat);
