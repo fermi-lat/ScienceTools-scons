@@ -513,6 +513,11 @@ def expand_column_names(pars):
 	hdu = get_fits_cat(pars['cptCatName'])
 	names.extend([col_prefix+pars['cptCatPrefix']+'_'+s for s in hdu.columns.names])
 	
+	# Expand column names in method, Prior, and FOM
+	pars['probMethod'] = expand_string(str(pars['probMethod']), names)
+	pars['probPrior']  = expand_string(str(pars['probPrior']), names)
+	pars['fom']        = expand_string(str(pars['fom']), names)
+	
 	# Expand column names in quantity parameters
 	for index in range(1,10):
 		parname       = 'outCatQty0' + str(index)
