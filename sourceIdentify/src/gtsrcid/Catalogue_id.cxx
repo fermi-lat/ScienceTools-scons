@@ -5,6 +5,10 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.33  2009/11/15 13:28:52  jurgen
+
+Optionally multiply PROB_POST_SINGLE by FOM
+
 Revision 1.32  2009/07/25 12:48:57  jurgen
 Implement Jean Ballet's chance PDF
 
@@ -1574,11 +1578,10 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
             // Get FoM for actual counterpart
             double fom0 = src->cc[iCC].fom;
 
-            // Increment numbers for all counterpart candidates that have smaller
-            // FoM, i.e. FoM <= FoM_0. For all these counterparts the present
-            // candidate has a larger FoM.
+            // Increment numbers for all counterpart candidates that have equal or
+            // larger FoM, i.e. FoM >= FoM_0
             for (int i = 0; i < src->numSelect; ++i) {
-              if (src->cc[i].fom <= fom0)
+              if (src->cc[i].fom >= fom0)
                 src->cc[i].rho += 1.0;
             }
 
