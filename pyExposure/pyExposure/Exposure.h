@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "astro/SkyDir.h"
-#include "irfInterface/EfficiencyFactor.h"
 
 namespace irfInterface {
    class Irfs;
@@ -74,8 +73,6 @@ private:
    std::vector< std::vector<double> > m_exposureValues;
 
    Likelihood::ScData * m_scData;
-
-   irfInterface::EfficiencyFactor m_efficiencyFactor;
 
    void readScData(const std::string & filename);
    void integrateExposure();
