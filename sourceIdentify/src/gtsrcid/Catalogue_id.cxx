@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.34  2009/11/16 17:04:41  jurgen
+Properly compute counterpart density for FoM (count all sources with FoM >= FoM0 instead of FoM <= FoM0)
+
 Revision 1.33  2009/11/15 13:28:52  jurgen
 
 Optionally multiply PROB_POST_SINGLE by FOM
@@ -1355,7 +1358,7 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
           double log_arg = src->cc[iCC].likrat + log_eta;
           if (log_arg < 100.0) {
             double arg = exp(log_arg);
-            src->cc[iCC].prob_post_single = (arg > 0.0) ?
+            src->cc[iCC].prob_post_single = (arg > 1.0e-100) ? // avoids floating point exception
                          1.0 / (1.0 + 1.0 / arg) : 0.0;
           }
           else
@@ -1563,48 +1566,45 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
       double omega = twopi * (cos(src->ring_rad_min * deg2rad) -
                               cos(src->ring_rad_max * deg2rad)) * rad2deg * rad2deg;
 
-      // Case A: We consider FoMs
+      // Case A: We consider FoMs, so each counterpart needs its own counterpart
+      //         density which is based on the FoM of the counterparts
       if (par->m_FoM.length() > 0) {
 
-        // Initialise number of counterparts in acceptance ring
-        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+        // Compute density of counterparts with FoM >= FoM0, where FoM0 is
+        // the FoM for a specific counterpart
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+
+          // Initialise number of counterparts
           src->cc[iCC].rho = 0.0;
 
-        // Collect all counterparts that are within ring
-        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
-          if (src->cc[iCC].angsep >= src->ring_rad_min &&
-              src->cc[iCC].angsep <= src->ring_rad_max) {
+          // Get FoM for actual counterpart
+          double fom0 = src->cc[iCC].fom;
 
-            // Get FoM for actual counterpart
-            double fom0 = src->cc[iCC].fom;
-
-            // Increment numbers for all counterpart candidates that have equal or
-            // larger FoM, i.e. FoM >= FoM_0
-            for (int i = 0; i < src->numSelect; ++i) {
-              if (src->cc[i].fom >= fom0)
-                src->cc[i].rho += 1.0;
-            }
-
-          } // endif: counterpart candidate was in ring
-        } // endfor: collected all counterparts
-
-        // Assign local counterpart densities. Make sure that we have at least
-        // one source. This provides an upper limit for the counterpart density
-        // in case that we have found no source in the acceptance ring.
-        if (omega > 0.0) {
-          for (int iCC = 0; iCC < src->numSelect; ++iCC) {
-            if (src->cc[iCC].rho < 1.0) src->cc[iCC].rho = 1.0;
-            src->cc[iCC].rho /= omega;
+          // Collect all counterparts in the ring with FoM >= FoM0
+          for (int i = 0; i < src->numSelect; ++i) {
+            if (src->cc[i].angsep >= src->ring_rad_min &&
+                src->cc[i].angsep <= src->ring_rad_max &&
+                src->cc[i].fom    >= fom0)
+              src->cc[iCC].rho += 1.0;
           }
-        }
-        else {
-          for (int iCC = 0; iCC < src->numSelect; ++iCC)
+
+          // Make sure that we have at least one source. This provides an upper
+          // limit for the counterpart density in case that we have found no 
+          // source in the acceptance ring.
+          if (src->cc[iCC].rho < 1.0) src->cc[iCC].rho = 1.0;
+
+          // Assign local counterpart density by deviding by ring solid angle
+          if (omega > 0.0)
+            src->cc[iCC].rho /= omega;
+          else
             src->cc[iCC].rho = 0.0;
-        }
+
+        } // endfor: looped over all counterparts
 
       } // endif: Case A
 
-      // Case B: We do not consider FoMs
+      // Case B: We do not consider FoMs. Then all counterparts have the same
+      //         counterpart density
       else {
 
         // Compute number of counterparts within acceptance ring
