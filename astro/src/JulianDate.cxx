@@ -47,17 +47,17 @@ namespace {
       Gio = day;  
       utc = hr;
    }
+
+   // leap seconds applied after these JD times
+   astro::JulianDate leaptime[]={
+       astro::JulianDate(2006,1,1,1./3600.), 
+       astro::JulianDate(2009,1,1,1./3600.)};
 }
 
 namespace astro{
 
    JulianDate::JulianDate(int An,int Me,int Gio,double utc)
    {
-      double leap(0);
-     // add in leap seconds
-      if( An>2005) leap+= 1./secondsPerDay;
-      if( An>2008) leap+= 1./secondsPerDay;
-
 
       if (Me > 2);
       else {
@@ -70,23 +70,23 @@ namespace astro{
       if (An < 0) C = C - 1;
       int D = (int)(30.6001 * (Me + 1));
       m_JD = B + C + D + Gio + 1720994.5+ utc / 24.;
-      m_JD += leap;
+        
+      double leap(0);
+      // add in leap seconds
+      if (m_JD>leaptime[0]) leap+= 1./secondsPerDay; 
+      if (m_JD>leaptime[1]) leap+= 1./secondsPerDay; 
+       m_JD += leap;
    }
 
    void JulianDate::getGregorianDate(int &An, int &Me, int &Gio, double &utc) const
    {
-       int yr, mn, day; double ut;
        double JD(m_JD);
 
-       // convert to get year
-       gregDate(JD,yr, mn, day, ut);
-
        // correct for leap seconds here
-       if( yr>2005) JD-=1./secondsPerDay;
-       if( yr>2008) JD-=1./secondsPerDay;
-       // again wih corrected date
-       gregDate(JD, An, Me, Gio,utc);
+       if( m_JD>leaptime[0])  JD-=1./secondsPerDay;
+       if( m_JD>leaptime[1])  JD-=1./secondsPerDay;
 
+       gregDate(JD, An, Me, Gio,utc);
    }
 
    std::string JulianDate::getGregorianDate(void) const

@@ -224,6 +224,33 @@ void test_insideSAA() {
 
 bool testJD()
 {
+    bool passed = true;
+
+    {  // test last-second of the day bug, JIRA 
+        //expect
+        //252460800 2008-12-31T23:59:59.0000 <---
+        //252460801 2008-12-31T23:59:59.0000 <---
+        //252460802 2009-01-01T00:00:00.0000 
+
+        //double met(252460801); 
+        //std::string ut("2008-12-31T23:59:59.0000"); 
+        double met(276134401.6); 
+        std::string ut("2009-10-01T23:59:59.6000");
+
+        //double met(279849601.900 );
+        //std::string UT("2009-11-13T23:59:59.9000");
+         
+        astro::JulianDate JD2000 = astro::JulianDate(astro::JulianDate::missionStart()+met/86400. );
+        std::string td= JD2000.getGregorianDate() ;
+        if( td != ut){
+            std::cout << "Fail MET-UT test for "<< met
+                <<"\n\t got      " << td
+                <<"\n\t expected " << std::fixed << ut <<  std::endl;
+            passed=false;
+        }
+
+    }
+
     // test MET conversion
     double MET(245000000);
     JulianDate x = JulianDate::missionStart()+MET/86400.;
@@ -234,8 +261,6 @@ bool testJD()
 
     int year, year2, month, month2, day, day2;
     double utc = 12.0, utc2;
-    bool passed = true;
-
     double leap(0);
     for(year = 2008; year <= 2010; year++) { // subset
 
@@ -271,9 +296,7 @@ bool testJD()
         std::cout << "Fail leap second test, got" << td <<  std::endl;
         passed=false;
     }
-
-
-
+ 
     if(passed)
     {
         std::cout << "JD Conversions passed!" << std::endl;
@@ -367,14 +390,14 @@ int main(){
             astro::JulianDate mission_start(2001, 1, 1, 0); 
  
             //double t0(252460741.00005 ); //version to check insertion of leap
-            double t0(255139200.00005); // slight change to round off seconds
+            //double t0(255139200.00005); // slight change to round off seconds
+            double t0(252460801.00005); // display 2008 leap second
 
             for (double i=t0-5; i < t0+5; i++) { 
                 astro::JulianDate now(mission_start + i/secsperday); 
                 std::cout << static_cast<int>(i+0.5) << " " << now.getGregorianDate() << std::endl; 
             } 
         }
-        testJD();
 
         double test=0;
 
