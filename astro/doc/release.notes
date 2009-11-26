@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-08-09 26-Nov-2009 burnett final fix for JIRA OBS-14
  astro-03-08-08 01-Oct-2009  lsrea Fixed bug in the calculation of Lambda
  astro-03-08-07 29-Jul-2009 burnett fix to EarthCoordinate
   v3r8p7   29-jul-09 THB Fix to EarthCoordinate, bug found by Johan Bregeon [johan.bregeon@pi.infn.it]
