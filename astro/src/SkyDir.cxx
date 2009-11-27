@@ -168,6 +168,17 @@ std::pair<double, double> SkyDir::zenithCoords(const astro::SkyDir& zenithDir)co
 }
 
   
+astro::SkyDir SkyDir::cross(const astro::SkyDir & other) const
+{ 
+         return astro::SkyDir(dir().cross(other.dir())); 
+} 
+
+double SkyDir::dot(const astro::SkyDir & other) const
+{ 
+         return dir().dot(other.dir()); 
+} 
+    
+
 
 
 

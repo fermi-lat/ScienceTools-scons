@@ -108,6 +108,14 @@ namespace astro {
         */
         std::pair<double, double> zenithCoords(const astro::SkyDir& zenithDir)const;
 
+      
+        astro::SkyDir cross(const astro::SkyDir & other) const;
+        //! return cross product (as a SkyDir) with respect to another direction
+
+        double dot(const astro::SkyDir & other) const;
+        //! return dot product with respect to other directin
+ 
+
     private:
         static CLHEP::HepRotation s_equatorialToGalactic;
 
