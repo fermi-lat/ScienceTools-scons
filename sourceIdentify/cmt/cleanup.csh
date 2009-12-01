@@ -6,6 +6,6 @@ set tempfile=`${CMTROOT}/mgr/cmt build temporary_name -quiet`
 if $status != 0 then
   set tempfile=/tmp/cmt.$$
 endif
-${CMTROOT}/mgr/cmt -quiet cleanup -csh -pack=sourceIdentify -version=v2r2p1 -path=/home2/glast/dev $* >${tempfile}; source ${tempfile}
+${CMTROOT}/mgr/cmt -quiet cleanup -csh -pack=sourceIdentify -version=v2r2p3 -path=/home/glast/dev $* >${tempfile}; source ${tempfile}
 /bin/rm -f ${tempfile}
 

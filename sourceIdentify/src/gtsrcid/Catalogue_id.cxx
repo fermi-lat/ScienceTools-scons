@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.35  2009/11/24 16:35:03  jurgen
+Correct floating point exception on 64Bit machines
+
 Revision 1.34  2009/11/16 17:04:41  jurgen
 Properly compute counterpart density for FoM (count all sources with FoM >= FoM0 instead of FoM <= FoM0)
 
@@ -973,10 +976,6 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
 
         // Calculate counterpart probability from angular separation
         if (psi2 > 0.0) {
-//          double arg1           = src->cc[iCC].angsep / psi2;
-//          double arg2           = src->cc[iCC].angsep * arg1;
-//          double expval         = exp(-dnorm * arg2);
-//          double prob           = twodnorm * arg1 * expval;
           double delta          = dnorm * src->cc[iCC].angsep * src->cc[iCC].angsep / psi2;
           double expval         = exp(-delta);
           double norm           = pi * src->info->pos_err_maj * src->info->pos_err_min;
@@ -1326,9 +1325,15 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
         src->cc[iCC].prob_post_single = 0.0;
         int noLR = 0;                         // signals invalid LR (one of PDF is 0)
 
+        // Copute nominator of likelihood ratio
+        double lr_nom = src->cc[iCC].pdf_pos;
+        if (par->m_FoM.length() > 0) {
+          lr_nom *= (src->cc[iCC].fom > 0.0) ? src->cc[iCC].fom : 0.0;
+        }
+
         // Compute log-likelihood ratio. Signal if computation did not succeed
-        if (src->cc[iCC].pdf_pos > 0.0 && src->cc[iCC].pdf_chance > 0.0)
-          src->cc[iCC].likrat = log(src->cc[iCC].pdf_pos) - log(src->cc[iCC].pdf_chance);
+        if (lr_nom > 0.0 && src->cc[iCC].pdf_chance > 0.0)
+          src->cc[iCC].likrat = log(lr_nom) - log(src->cc[iCC].pdf_chance);
         else
           noLR = 1;
 
@@ -1366,8 +1371,8 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
         }
 
         // Optionally multiply by FOM
-        if (par->m_FoM.length() > 0)
-          src->cc[iCC].prob_post_single *= src->cc[iCC].fom;
+//        if (par->m_FoM.length() > 0)
+//          src->cc[iCC].prob_post_single *= src->cc[iCC].fom;
 
         // Add results to column vectors
         col_likrat.push_back(src->cc[iCC].likrat);
