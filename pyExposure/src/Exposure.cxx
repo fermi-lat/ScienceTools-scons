@@ -140,7 +140,8 @@ double Exposure::effArea(double time, double energy) const {
    double my_effArea(0);
    for (size_t i = 0; i < m_irfs.size(); i++) {
       irfInterface::IAeff * aeff = m_irfs.at(i)->aeff();
-      irfInterface::IEfficiencyFactor * eff(m_irfs.at(i)->efficiencyFactor());
+      const irfInterface::IEfficiencyFactor * eff = 
+         m_irfs.at(i)->efficiencyFactor();
       double aperture(1);
       if (m_radius < 180.) {
          irfInterface::IPsf * psf = m_irfs.at(i)->psf();
