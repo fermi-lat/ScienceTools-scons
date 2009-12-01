@@ -5,7 +5,8 @@
 @verbatim
  * EOH *
 
-24-Nov-2009  v2r2p3  JK  Correct floating point exception on 64Bit machines
+ 1-Dec-2009  v2r2p3  JK  Correct floating point exception on 64Bit machines
+                         Correctly implement FoM for 1FGL
 15-Jul-2009  v2r2p2  jrb Update Sconscript
  7-Jul-2009  v2r2p1  JK  Correctly read binary double column
 18-Mar-2009  v2r1p2  JK  Update version number
