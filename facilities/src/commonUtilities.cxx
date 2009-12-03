@@ -3,6 +3,7 @@
 #include <algorithm>
 #if defined(SCons) || defined(HEADAS)
 #include <sstream>
+#include <fstream>
 #include "config.h"
 #endif
 
@@ -19,50 +20,57 @@ extern char **environ;
 
 namespace facilities {
   std::string commonUtilities::getPackagePath(const std::string &package){
+    std::string packageName = pkgName(package);
 #ifdef SCons
     return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
 #ifdef HEADAS
-    return joinPath(commonUtilities::getPackageRoot(package), package);
+    return joinPath(commonUtilities::getPackageRoot(packageName), packageName);
 #else
-    return commonUtilities::getPackageRoot(package);
+    return commonUtilities::getPackageRoot(packageName);
 #endif
 #endif
   }
 
   std::string commonUtilities::getDataPath(const std::string &package){
+
+    // Trim off preceding path components, if any
+    std::string packageName = pkgName(package);
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string dataPath = joinPath(packageRoot, "data");
-    return joinPath(dataPath, package);
+    return joinPath(dataPath, packageName);
 #else
 #ifdef HEADAS
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
     std::string dataPath = joinPath(packageRoot, "refdata");
     dataPath = joinPath(dataPath, "fermi");
-    return joinPath(dataPath, package);
+    return joinPath(dataPath, packageName);
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
     if(packageRoot=="")
       return packageRoot;
-    return joinPath(packageRoot, "data");
+    return joinPath(packageRootName, "data");
 #endif
 #endif
   }
 
   std::string commonUtilities::getXmlPath(const std::string &package){
+    // Trim off preceding path components, if any
+    std::string packageName = pkgName(package);
+
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string xmlLocation = joinPath(packageRoot, "xml");
-    return joinPath(xmlLocation, package);
+    return joinPath(xmlLocation, packageName);
 #else
 #ifdef HEADAS
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
     std::string xmlLocation = joinPath(packageRoot, "xml");
     xmlLocation = joinPath(xmlLocation, "fermi");
-    return joinPath(xmlLocation, package);
+    return joinPath(xmlLocation, packageName);
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
     if(packageRoot=="")
       return packageRoot;
     return joinPath(packageRoot, "xml");
@@ -71,17 +79,20 @@ namespace facilities {
   }
 
   std::string commonUtilities::getPfilesPath(const std::string &package){
+    // Trim off preceding path components, if any
+    std::string packageName = pkgName(package);
+
 #ifdef SCons
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
-    std::string pfilesLocation = joinPath(packageRoot, "pfiles");
-    return joinPath(pfilesLocation, package);
-#else
-#ifdef HEADAS
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
     return pfilesLocation;
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+#ifdef HEADAS
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
+    return pfilesLocation;
+#else
+    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
     if(packageRoot=="")
       return packageRoot;
     return joinPath(packageRoot, "pfiles");
@@ -111,8 +122,18 @@ namespace facilities {
     std::string packageRoot;
 #ifdef SCons
     const char *env = getenv("INST_DIR");
-    if(env != NULL)
-      packageRoot = env;
+    if (env != NULL) {
+      packageRoot = env; // ok if SConscript is open or is openable
+      if (!packageFound(joinPath(packageRoot, package))) { // try base dir
+        packageRoot = "";
+        env = getenv("BASE_DIR");
+        if (env != NULL) {
+          packageRoot = env;
+          if (!packageFound(joinPath(packageRoot, package))) packageRoot = "";
+        }
+      }
+    }      
+
 #else
 #ifdef HEADAS
     const char *env = getenv("FERMI_INST_DIR");
@@ -148,7 +169,32 @@ namespace facilities {
     return first+"/"+second;
 #endif
   }
+  std::string commonUtilities::pkgName(const std::string& pkgPath) {
+#ifdef WIN32
+    unsigned slashIx = pkgPath.rfind("\\");
+#else
+    unsigned slashIx = pkgPath.rfind("/");
+#endif
+    if (slashIx < pkgPath.size()) {
+      return std::string(pkgPath, slashIx + 1);
+    }
+    else return pkgPath;
+  }
 
+#ifdef SCons
+  bool commonUtilities::packageFound(const std::string& path) {
+    // Check to see if package really exists by looking for its SConscript
+    // and trying to open for read
+    std::string sconscript = joinPath(path, "SConscript");
+    std::fstream filestr;
+    filestr.open(sconscript.c_str(), std::ios_base::in);
+    if (filestr.is_open()) {  // all is well, just close the file
+      filestr.close();
+      return true;
+    }
+    return false;
+  }
+#endif
   void commonUtilities::setupEnvironment(){
 #if defined(SCons) || defined(HEADAS)
     std::stringstream packages;
@@ -163,9 +209,13 @@ namespace facilities {
     }
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
 #ifdef ScienceTools
-    setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
-    setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
-    setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "alias_config.fits"));
+    //setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
+    //setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
+    //setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "alias_config.fits"));
+    std::string pkgPath = joinPath("irfs", "caldb");
+    setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath(pkgPath), "data"), "glast"), "lat"));
+    setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath(pkgPath), "software"), "tools"), "caldb.config"));
+    setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath(pkgPath), "software"), "tools"), "alias_config.fits"));
 #ifdef HEADAS
     setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
 #else

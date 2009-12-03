@@ -39,9 +39,14 @@ namespace facilities {
     */
     static std::string getEnvironment(const std::string &name);
     static std::string joinPath(const std::string &first, const std::string &second);
+#ifdef SCons
+    static bool packageFound(const std::string &path);
+#endif
     static void setupEnvironment();
   private:
     static std::string getPackageRoot(const std::string &package);
+    // Given relative path, return just the last component
+    static std::string pkgName(const std::string &pkgPath);
   };
 }
 
