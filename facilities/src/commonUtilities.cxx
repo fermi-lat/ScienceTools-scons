@@ -20,57 +20,72 @@ extern char **environ;
 
 namespace facilities {
   std::string commonUtilities::getPackagePath(const std::string &package){
-    std::string packageName = pkgName(package);
 #ifdef SCons
     return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
 #ifdef HEADAS
-    return joinPath(commonUtilities::getPackageRoot(packageName), packageName);
+    return joinPath(commonUtilities::getPackageRoot(package), package);
 #else
-    return commonUtilities::getPackageRoot(packageName);
+    return commonUtilities::getPackageRoot(package);
 #endif
 #endif
   }
 
   std::string commonUtilities::getDataPath(const std::string &package){
 
-    // Trim off preceding path components, if any
-    std::string packageName = pkgName(package);
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
-    std::string dataPath = joinPath(packageRoot, "data");
-    return joinPath(dataPath, packageName);
+    std::string dataPath = joinPath(joinPath(packageRoot, "data"), package);
+
+    if (pathFound(dataPath)) return dataPath;
+
+    // Otherwise, might have supersede and our package could be in base
+    const char *env = getenv("BASE_DIR");
+    if (env == NULL) return "";
+    packageRoot = std::string(env);
+
+    dataPath = joinPath(joinPath(packageRoot, "data"), package);
+
+    return (pathFound(dataPath)) ?  dataPath : "";
 #else
 #ifdef HEADAS
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string dataPath = joinPath(packageRoot, "refdata");
     dataPath = joinPath(dataPath, "fermi");
-    return joinPath(dataPath, packageName);
+    return joinPath(dataPath, package);
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
-    return joinPath(packageRootName, "data");
+    return joinPath(packageRoot, "data");
 #endif
 #endif
   }
 
   std::string commonUtilities::getXmlPath(const std::string &package){
-    // Trim off preceding path components, if any
-    std::string packageName = pkgName(package);
-
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
-    std::string xmlLocation = joinPath(packageRoot, "xml");
-    return joinPath(xmlLocation, packageName);
+    std::string xmlPath = joinPath(joinPath(packageRoot, "xml"), package);
+
+    if (pathFound(xmlPath)) return xmlPath;
+
+    // Otherwise, might have supersede and our package could be in base
+    const char *env = getenv("BASE_DIR");
+    if (env == NULL) return "";
+    packageRoot = std::string(env);
+
+    xmlPath = joinPath(joinPath(packageRoot, "xml"), package);
+
+    return (pathFound(xmlPath)) ?  xmlPath : "";
+
 #else
 #ifdef HEADAS
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string xmlLocation = joinPath(packageRoot, "xml");
     xmlLocation = joinPath(xmlLocation, "fermi");
-    return joinPath(xmlLocation, packageName);
+    return joinPath(xmlLocation, package);
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
     return joinPath(packageRoot, "xml");
@@ -79,20 +94,17 @@ namespace facilities {
   }
 
   std::string commonUtilities::getPfilesPath(const std::string &package){
-    // Trim off preceding path components, if any
-    std::string packageName = pkgName(package);
-
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
     return pfilesLocation;
 #else
 #ifdef HEADAS
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
     return pfilesLocation;
 #else
-    std::string packageRoot = commonUtilities::getPackageRoot(packageName);
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
       return packageRoot;
     return joinPath(packageRoot, "pfiles");
@@ -124,14 +136,6 @@ namespace facilities {
     const char *env = getenv("INST_DIR");
     if (env != NULL) {
       packageRoot = env; // ok if SConscript is open or is openable
-      if (!packageFound(joinPath(packageRoot, package))) { // try base dir
-        packageRoot = "";
-        env = getenv("BASE_DIR");
-        if (env != NULL) {
-          packageRoot = env;
-          if (!packageFound(joinPath(packageRoot, package))) packageRoot = "";
-        }
-      }
     }      
 
 #else
@@ -169,25 +173,13 @@ namespace facilities {
     return first+"/"+second;
 #endif
   }
-  std::string commonUtilities::pkgName(const std::string& pkgPath) {
-#ifdef WIN32
-    unsigned slashIx = pkgPath.rfind("\\");
-#else
-    unsigned slashIx = pkgPath.rfind("/");
-#endif
-    if (slashIx < pkgPath.size()) {
-      return std::string(pkgPath, slashIx + 1);
-    }
-    else return pkgPath;
-  }
-
 #ifdef SCons
-  bool commonUtilities::packageFound(const std::string& path) {
-    // Check to see if package really exists by looking for its SConscript
-    // and trying to open for read
-    std::string sconscript = joinPath(path, "SConscript");
+  bool commonUtilities::pathFound(const std::string& path) {
+    // Check to see if rel path exists first for INST_DIR
+    // if that fails, try BASE_DIR
+
     std::fstream filestr;
-    filestr.open(sconscript.c_str(), std::ios_base::in);
+    filestr.open(path.c_str(), std::ios_base::in);
     if (filestr.is_open()) {  // all is well, just close the file
       filestr.close();
       return true;
@@ -195,6 +187,7 @@ namespace facilities {
     return false;
   }
 #endif
+
   void commonUtilities::setupEnvironment(){
 #if defined(SCons) || defined(HEADAS)
     std::stringstream packages;
@@ -209,13 +202,15 @@ namespace facilities {
     }
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
 #ifdef ScienceTools
-    //setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath("caldb"), "data"), "glast"), "lat"));
-    //setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "caldb.config"));
-    //setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath("caldb"), "software"), "tools"), "alias_config.fits"));
-    std::string pkgPath = joinPath("irfs", "caldb");
-    setEnvironment("CALDB", joinPath(joinPath(joinPath(getDataPath(pkgPath), "data"), "glast"), "lat"));
-    setEnvironment("CALDBCONFIG", joinPath(joinPath(joinPath(getDataPath(pkgPath), "software"), "tools"), "caldb.config"));
-    setEnvironment("CALDBALIAS", joinPath(joinPath(joinPath(getDataPath(pkgPath), "software"), "tools"), "alias_config.fits"));
+    std::string calDbData = getDataPath("caldb");
+    setEnvironment("CALDB", joinPath(joinPath(joinPath(calDbData, "data"), 
+                                              "glast"), "lat"));
+    setEnvironment("CALDBCONFIG", 
+                   joinPath(joinPath(joinPath(calDbData, "software"), 
+                                     "tools"), "caldb.config"));
+    setEnvironment("CALDBALIAS", 
+                   joinPath(joinPath(joinPath(calDbData, "software"), 
+                                     "tools"), "alias_config.fits"));
 #ifdef HEADAS
     setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
 #else
