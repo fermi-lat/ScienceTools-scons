@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-18-12 03-Dec-2009    jrb Mods to commonUtilities for SCons only to take account of supersede directory when there is one
  facilities-02-18-11 10-Sep-2009    jrb Get rid of compiler warning
  facilities-02-18-10 07-Aug-2009    jrb Fix SConscript for Windows
    v2r18p8  8-Jul-2009 jrb Modify SConscript to use registerTargets
