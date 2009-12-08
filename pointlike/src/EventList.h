@@ -110,18 +110,19 @@ public:
     // make it a container by implementing a forward iterator
     class Iterator {
     public:
-        Iterator(tip::Table::ConstIterator it, bool fits, bool selectid=false, bool use_mc_energy=false)
+        Iterator(tip::Table::ConstIterator it, bool fits, bool selectid=false, bool use_mc_energy=false, bool pass7=false)
             : m_it(it)
             , m_fits(fits)
             , m_selectid(selectid)
             , m_use_mc_energy(use_mc_energy)
+            , m_pass7(pass7)
         {}
         Photon operator*()const;             ///< dereference
         tip::Table::ConstIterator operator++(){return ++m_it;} ///< increment operator
         bool operator!=(const Iterator& other)const{return other.m_it!=m_it;}
     private:
         tip::Table::ConstIterator m_it;
-        bool m_fits, m_selectid, m_use_mc_energy;
+        bool m_fits, m_selectid, m_use_mc_energy, m_pass7;
     };
 
     /// return iterator to access 
@@ -138,6 +139,7 @@ private:
     bool m_fits;
     bool m_selectid;
     bool m_use_mc_energy;
+    bool m_pass7;
 };
 
 #endif
