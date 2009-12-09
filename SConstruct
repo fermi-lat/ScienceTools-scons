@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Header$
 # Authors: Navid Golpayegani <golpa@slac.stanford.edu>, Joanne Bogart <jrb@slac.stanford.edu
-# Version: SConsFiles-00-02-01
+# Version: SConsFiles-00-03-00
 
 import os,platform,SCons,glob,re,atexit,sys,traceback,commands,subprocess
 #########################
