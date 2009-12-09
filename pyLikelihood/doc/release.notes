@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-18-03 08-Dec-2009    jrb Fix SConscript for Windows build
  pyLikelihood-01-18-02 17-Nov-2009 jchiang re-implement SummedLikelihood.restoreBestFit and saveCurrentFit using LikelihoodState
  pyLikelihood-01-18-01 13-Nov-2009 jchiang complete SummedLikelihood.Parameter interface for use with LikelihoodState and UpperLimit classes
  pyLikelihood-01-18-00 31-Oct-2009 jchiang new version of UpperLimit.bayesianUL that can be run independently of UpperLimit.compute
