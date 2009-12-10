@@ -5,7 +5,7 @@
 
     @verbatim
     EOH
-
+ observationSim-08-04-03 10-Dec-2009 vernaleo Minor change to test code for the FSSC's rootfree builds.
  observationSim-08-04-02 23-Oct-2009 jchiang trap exceptions from flux package when reading in xml model and emit user-friendly error message
    v8r4p1  15-Jul-2009 jrb  update SConscript 
     v8r4   21-Oct-08   JC   use binary search for finding FT2 intervals
