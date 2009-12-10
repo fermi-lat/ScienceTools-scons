@@ -41,8 +41,10 @@ int main(int iargc, char * argv[]) {
    fileList.push_back(xml_list);
    xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "3EG_catalog_20-1e6MeV.xml");
    fileList.push_back(xml_list);
+#ifndef BUILD_WITHOUT_ROOT
    xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("GRB"), "GRB_user_library.xml");
    fileList.push_back(xml_list);
+#endif
    xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "time_source.xml");
    fileList.push_back(xml_list);
 
