@@ -534,6 +534,7 @@ int main() {
     }
 #endif
     
+#ifndef BUILD_WITHOUT_ROOT
     // Now test Root file access.
     my_table = IFileSvc::instance().editTable(facilities::commonUtilities::joinPath(data_dir, "merit.root"), "1", "McEnergy < 2000. && McEnergy > 50.");
 
@@ -595,6 +596,7 @@ int main() {
         std::cerr << "Unexpected: deleting Root table did not remove file " << tmp_file << std::endl;
       }
     }
+#endif
 
     try {
       // Test creating a new (FITS) file using ft1.tpl:

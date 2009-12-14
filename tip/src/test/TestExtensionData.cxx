@@ -587,7 +587,6 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     ReportError("failure creating RootTable with valid file name and valid extension name", status, x);
   }
   // END Test success cases for RootTable constructors.
-#endif
 
 
 
@@ -617,6 +616,7 @@ int TestExtensionData(const std::string & data_dir, int currentStatus) {
     TestReadField(const_ext, "McEnergy", "table", status);
   }
   // END Test const RootTable methods for a table extension.
+#endif
 
 
 
