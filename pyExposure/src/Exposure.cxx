@@ -147,7 +147,10 @@ double Exposure::effArea(double time, double energy) const {
          irfInterface::IPsf * psf = m_irfs.at(i)->psf();
          aperture = psf->angularIntegral(energy, theta, phi, m_radius);
       }
-      double efficiency(eff->value(energy, livetimefrac));
+      double efficiency(1);
+      if (eff) {
+         efficiency = eff->value(energy, livetimefrac);
+      }
       my_effArea += aeff->value(energy, m_srcDir, zAxis, xAxis)*aperture
          *efficiency;
    }
