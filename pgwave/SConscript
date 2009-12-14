@@ -16,7 +16,7 @@ pgwave2D = progEnv.Program('pgwave2D', listFiles(['src/app/*.cpp']))
 
 progEnv.Tool('registerTargets', package = 'pgwave',
              staticLibraryCxts = [[pgwaveLib, libEnv]],
-             testAppCxts = [[pgwave2D, progEnv]],
+             binaryCxts = [[pgwave2D, progEnv]],
              includes = listFiles(['pgwave/*.h']),
              data = listFiles(['data/*'], recursive = True),
              pfiles = ['pfiles/pgwave2D.par'])
