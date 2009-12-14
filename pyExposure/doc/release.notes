@@ -6,6 +6,7 @@
   $Id$
   * EOH *
 
+ pyExposure-02-05-04 14-Dec-2009 jchiang handle case where efficiency corrections are not available from irfs
  pyExposure-02-05-03 01-Dec-2009 jchiang add const to declaration in Exposure::effArea for windows build
  pyExposure-02-05-02 19-Nov-2009 jchiang use irfInterface::IEfficiencyFactor
  pyExposure-02-05-01 30-Jul-2009    jrb Fix bug in SConscript, attempting to register 
