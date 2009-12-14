@@ -5,6 +5,8 @@
 @verbatim
  * EOH *
 
+ tip-02-15-05 14-Dec-2009 peachey Use unsigned int for bit-shifting. Tweak test code to run cleanly in
+CERN Root-free version
  tip-02-16-00 14-Aug-2009 peachey Use unsigned integers for bit shifts. Fixes unit test on 64 bit platforms.
  tip-02-16-00 14-Aug-2009 peachey Use unsigned integers for bit shifts. Fixes unit test on 64 bit platforms.
  tip-02-16-00 14-Aug-2009 peachey Use unsigned integers for bit shifts. Fixes unit test on 64 bit platforms.
