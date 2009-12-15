@@ -6,6 +6,8 @@
 --------------------------------------------------------------------------------
 EOH 
 
+15-Dec-2009    orbitSim-02-00-03 vernaleo Modified output so unused
+					  columns are filled with NULLs.
 15-Jul-2009    v2r0p2 jrb Update SConscript
 23-jun-2009    v2r0p1 JV  Some code and comment cleanup.
 06-may-2009      v2r0 JV  Multiple changes from FSSC version of code. This
