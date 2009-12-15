@@ -414,10 +414,18 @@ void orbitSimApp::run() {
     (*itor)["RAD_GEO"].set(Oat->Hei[k]*1000.0);
     (*itor)["RA_ZENITH"].set(Oat->SatRA[k]);
     (*itor)["DEC_ZENITH"].set(Oat->SatDEC[k]);
+    
+    (*itor)["B_MCILWAIN"].set("NaN");
+    (*itor)["L_MCILWAIN"].set("NaN");
+    (*itor)["GEOMAG_LAT"].set("NaN");
+
     (*itor)["RA_SCZ"].set(Oat->Zra[k]);
     (*itor)["DEC_SCZ"].set(Oat->Zdec[k]);
     (*itor)["RA_SCX"].set(Oat->Xra[k]);
     (*itor)["DEC_SCX"].set(Oat->Xdec[k]);
+
+    (*itor)["RA_NPOLE"].set("NaN");
+    (*itor)["DEC_NPOLE"].set("NaN");
 
     // 5 is zenithpoint/survey so we'll stick with that.
     (*itor)["LAT_MODE"].set(5);
@@ -434,6 +442,11 @@ void orbitSimApp::run() {
       (*itor)["LIVETIME"].set(initf.Resolution*86400.0*0.93);
     }
     
+    (*itor)["QSJ_1"].set("NaN");
+    (*itor)["QSJ_2"].set("NaN");
+    (*itor)["QSJ_3"].set("NaN");
+    (*itor)["QSJ_4"].set("NaN");
+
     do_mjd2cal(Oat->mjd[k], &yy, &MM, &dd, &hh, &mm, &ss);
     sprintf(endTm, "%4d:%02d:%02dT%02d:%02d:%02d", yy, MM, dd, hh, mm, ss);
 
