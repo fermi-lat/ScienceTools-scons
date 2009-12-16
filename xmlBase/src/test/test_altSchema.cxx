@@ -4,7 +4,7 @@
 #include "xmlBase/Dom.h"
 #include "xmlBase/XmlParser.h"
 
-#include "facilitiles/commonUtilities.h"
+#include "facilities/commonUtilities.h"
 
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
