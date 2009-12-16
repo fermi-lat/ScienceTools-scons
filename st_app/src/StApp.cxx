@@ -80,7 +80,7 @@ namespace st_app {
 
   void StApp::banner() const {
     st_stream::StreamFormatter sf("StApp", "banner", 2);
-    sf.info(0) << "This is " << m_name << " version " << m_version << std::endl;
+    sf.info(1) << "This is " << m_name << " version " << m_version << std::endl;
   }
 
   const std::string & StApp::getName() const { return m_name; }
