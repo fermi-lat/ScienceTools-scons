@@ -10,6 +10,7 @@
 #include "orbitSim/orbitSimStruct.h"
 #include "orbitSim/OrbSim.h"
 
+#include <cstdlib>
 #include <stdio.h>
 
 #include <stdexcept>

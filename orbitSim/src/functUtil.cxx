@@ -10,6 +10,7 @@
 #include "orbitSim/atFunctions.h"
 #include "orbitSim/OrbSim.h"
 
+#include <cstdlib>
 #include <stdexcept>
 #include <string>
 
