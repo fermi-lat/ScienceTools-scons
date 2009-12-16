@@ -20,7 +20,7 @@ mode,     s, a,  "ql",   , ,"Mode of automatic parameters: h for batch, ql for i
 # Spatial binning parameters.
 nxpix,    i, a, 1, 1, , "Size of the X axis in pixels (leave at 1 for auto full sky"
 nypix,    i, a, 1, 1, , "Size of the Y axis in pixels (leave at 1 to copy nxpix or auto full sky)"
-pixscale,   r, a, 0.5, 1., , "Image scale (in degrees/pixel)"
+pixscale,   r, a, 0.5, , , "Image scale (in degrees/pixel)"
 coordsys,   s, a, CEL, CEL|GAL, ,"Coordinate system (CEL - equatorial or fk5, GAL -galactic)"
 xref,       r, a, 0., , , "First coordinate of image center in degrees (RA or galactic l)"
 yref,       r, a, 0., , , "Second coordinate of image center in degrees (DEC or galactic b)"
@@ -29,7 +29,7 @@ proj,       s, h, "AIT", AIT|ARC|CAR|ZEA|GLS|MER|NCP|SIN|STG|TAN, , "Projection 
 
 #---------------------------------------------------------------------------------------
 clobber,    b, a, yes,,,Overwrite existing output file?:
-chatter,    i, h, 2,0,4 , , "Chattiness of output"
+chatter,    i, h, 2, 0, 4, "Chattiness of output"
 debug,	    b, h, no,,,Debugging mode activated
 
  
