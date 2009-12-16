@@ -5,6 +5,7 @@
 */
 #include "flux/Spectrum.h"
 #include <cmath>
+#include <cstdlib>
 #include <stdexcept>
 
 // CLHEP
