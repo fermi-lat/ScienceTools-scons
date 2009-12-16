@@ -6,6 +6,7 @@ $Header$
 
 // Include files
 
+#include <cstring>
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 #include "tip/Header.h"
@@ -240,7 +241,7 @@ std::pair<double,double> SkyProj::pix2pix(double x1, double x2, const SkyProj& o
 bool SkyProj::isGalactic()const
 {
     return ( std::string( m_wcs->ctype[0] ).substr(0,4)=="GLON");
-};
+}
 
 /*@brief determine the x or y range for a given x or y coordinate
    @param xvar varies x if true, varies y if false
