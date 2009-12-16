@@ -200,7 +200,9 @@ namespace facilities {
       setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
       setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
     }
+#ifndef HEADAS
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+#endif
 #ifdef ScienceTools
     std::string calDbData = getDataPath("caldb");
     setEnvironment("CALDB", joinPath(joinPath(joinPath(calDbData, "data"), 
