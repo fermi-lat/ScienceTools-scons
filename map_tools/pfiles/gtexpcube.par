@@ -4,8 +4,8 @@
 infile,f,a,"",,,"Exposure cube input file name"
 evfile,f,a,"NONE",,,"FT1 events input file name"
 cmfile,f,a,"NONE",,,"Count map input file name (NONE for manual input of map geometry)"
-outfile,f,a,"earth_expmap_P6_r0_diffuse.fits",,,"Exposure map output file name"
-irfs,s,a,"P6_V1_DIFFUSE",,,"Response function to use. Run gtirfs for a list"
+outfile,f,a,"expmap.fits",,,"Exposure map output file name"
+irfs,s,a,"P6_V3_DIFFUSE",,,"Response function to use. Run gtirfs for a list"
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
