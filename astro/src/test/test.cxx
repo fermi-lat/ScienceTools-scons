@@ -22,6 +22,7 @@
 
 #include <stdexcept>
 #include <iomanip>
+#include <typeinfo>
 
 using namespace astro;
 bool testSkyDir(){
