@@ -8,6 +8,7 @@
 #include <ctime>
 #include <limits>
 #include <list>
+#include <memory>
 #include <stdexcept>
 
 #include "facilities/commonUtilities.h"
