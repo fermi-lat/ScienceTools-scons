@@ -14,6 +14,7 @@ $Header$
 
 #include <cctype>
 #include <cmath>
+#include <memory>
 #include <stdexcept>
 #include <sstream>
 #include <errno.h> // to test result of std::remove()
