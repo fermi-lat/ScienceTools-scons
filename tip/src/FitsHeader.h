@@ -2,6 +2,7 @@
 #define tip_FitsHeader_h
 
 #include <string>
+#include <cstring>
 
 #include "fitsio.h"
 
@@ -251,7 +252,7 @@ namespace tip {
     static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
     int status = 0;
     char tmp[FLEN_KEYWORD];
-    strncpy(tmp, value.c_str(), FLEN_KEYWORD - 1);
+    std::strncpy(tmp, value.c_str(), FLEN_KEYWORD - 1);
     fits_update_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
     if (0 != status) throw TipException(status, formatWhat(std::string("Cannot write keyword \"") + name + '"'));
   }
