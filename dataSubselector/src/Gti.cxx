@@ -8,6 +8,7 @@
  */
 
 #include <algorithm>
+#include <memory>
 
 #include "fitsio.h"
 
