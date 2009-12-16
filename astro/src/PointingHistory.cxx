@@ -14,6 +14,8 @@ using namespace astro;
 
 #include <fstream>
 #include <sstream>
+#include <memory>
+#include <cmath>
 
 namespace {
     static double time_tol(10); // seconds allow beyond the end
@@ -176,7 +178,7 @@ void PointingHistory::readFitsData(std::string filename) {
 
         static double lat_tol(0.5), lon_tol(0.5); // was 0.2, 0.01
 
-        if( fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && abs(lon)<179 ){
+        if( fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && std::abs(lon)<179 ){
             std::stringstream error; 
             error << "PointingHistory::readFitsData: apparent inconsistency for Earth position, time=" 
                 << start_time
