@@ -16,7 +16,9 @@
 #include "Minuit2/MnPrint.h"
 #include "optimizers/Exception.h"
 #include "optimizers/OutOfBounds.h"
+#ifndef BUILD_WITHOUT_ROOT
 #include "RVersion.h"
+#endif
 
 namespace optimizers {
 
@@ -38,7 +40,7 @@ namespace optimizers {
       delete m_min;
       m_min = new ROOT::Minuit2::FunctionMinimum(*(rhs.m_min));
       return *this;
-  };
+  }
 
   //Copy constructor
   NewMinuit::NewMinuit(const NewMinuit & x) : Optimizer(x), 
@@ -46,7 +48,7 @@ namespace optimizers {
         m_strategy(x.m_strategy)
   {
       m_min = new ROOT::Minuit2::FunctionMinimum(*(x.m_min));
-  };
+  }
 
   // Call Minuit's MIGRAD to find the minimum of the function
   int NewMinuit::find_min(int verbose, double tol, int TolType) {
@@ -93,10 +95,14 @@ namespace optimizers {
     if (!m_min) 
       throw Exception("Minuit: find_min must be executed before hesse");
     ROOT::Minuit2::MnHesse hesse(m_strategy);
+#ifndef BUILD_WITHOUT_ROOT
 #if ROOT_SVN_REVISION > 23900
     hesse(m_FCN, *m_min, m_maxEval);
 #else
     m_min->UserState() = hesse(m_FCN, m_min->UserParameters(), m_maxEval);
+#endif
+#else
+    hesse(m_FCN, *m_min, m_maxEval);
 #endif
     if (verbose > 0) std::cout << m_min->UserState();
     if (!m_min->HasValidCovariance())
