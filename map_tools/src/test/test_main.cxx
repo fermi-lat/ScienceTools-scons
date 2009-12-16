@@ -17,6 +17,7 @@ $Header$
 #include <cstdio>
 #include <cassert>
 #include <stdexcept>
+#include <typeinfo>
 using namespace map_tools;
 
 class TestAeff { 
