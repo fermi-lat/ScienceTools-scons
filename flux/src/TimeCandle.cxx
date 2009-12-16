@@ -8,6 +8,7 @@
 #include "TimeCandle.h"
 
 #include "flux/FluxException.h" // for FATAL_MACRO
+#include <cstdlib>
 #include <utility>
 #include <sstream>
 #include <cmath>

@@ -13,6 +13,7 @@
 #include "xmlBase/Dom.h"
 #include "facilities/Util.h"
 
+#include <cstdlib>
 #include <utility>
 #include <sstream>
 #include <cmath>
