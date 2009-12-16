@@ -214,8 +214,17 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
             if (var2 != var2) {
                throw std::runtime_error("FPE in FunctionTest::derivatives");
             }
-            assert(m_func->derivByParam(*my_arg, parameters[i].getName())
-                   == freeDerivs[j]);
+            double x1 = m_func->derivByParam(*my_arg, parameters[i].getName());
+	    double x2 = freeDerivs[j];
+	    if (x1 != 0) {
+	      double dx = fabs((x1 - x2) / x1);
+	      assert(dx <= 1e-6);
+	    } else if (x2 != 0) {
+	      double dx = fabs((x1 - x2) / x2);
+	      assert(dx <= 1e-6);
+	    } else {
+	      // x1 == x2 == 0
+	    }
             j++;
          }
       }
