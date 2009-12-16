@@ -2,10 +2,12 @@
 
 #include "facilities/Util.h"
 
+#include <cstdlib>
 #include <sstream>
 
 #include <iostream>
 #include <cstdio>
+#include <string.h>
 
 #ifdef WIN32
 // For Sleep( ).   Not happy about this, but can't find anything else 
