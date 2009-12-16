@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
