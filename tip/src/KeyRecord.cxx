@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <cstdlib>
 #include <sstream>
+#include <cstring>
 
 #include "fitsio.h"
 #include "tip/KeyRecord.h"
