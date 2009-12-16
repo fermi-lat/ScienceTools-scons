@@ -14,7 +14,7 @@ $Id$
 #include <iomanip>
 #include <sstream>
 #include <cassert>
-
+#include <stdlib.h>
 
 using namespace astro;
 using namespace CLHEP;
