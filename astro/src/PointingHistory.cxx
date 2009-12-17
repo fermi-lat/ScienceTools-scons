@@ -177,8 +177,9 @@ void PointingHistory::readFitsData(std::string filename) {
         if( check_lat>maxlatdiff) maxlatdiff = check_lat;
 
         static double lat_tol(0.5), lon_tol(0.5); // was 0.2, 0.01
+        static int error_count(50); // allow this many
 
-        if( fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && std::abs(lon)<179 ){
+        if( (fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && abs(lon)<179) && error_count>0 ){
             std::stringstream error; 
             error << "PointingHistory::readFitsData: apparent inconsistency for Earth position, time=" 
                 << start_time
@@ -186,6 +187,11 @@ void PointingHistory::readFitsData(std::string filename) {
             std::cerr << error.str() << std::endl;
 #if 0 // disable for now
             throw std::runtime_error(error.str());
+#else // allow, but limit number of messages
+            error_count--;
+            if (error_count==0){
+                std::cerr << "\tSuppressing error messages: beware that LAT/LON columns are unreliable" << std::endl;
+            }
 #endif
         }
         // add an entry for the end of a run -- make identical (a small kluge)
