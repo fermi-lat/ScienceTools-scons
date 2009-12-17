@@ -6,6 +6,7 @@
  * Coordinators: T.Burnett, S. Robinson
  * EOH *
     
+ flux-08-40-04 17-Dec-2009    jrb patches for gcc4 
    v8r40p3 15-Jul-2009 jrb Update SConscript
    v8r40p2 26-may-2008 thb Fix point source directions
    v8r40p1 22-may-2008 thb Remove FILEspectrum

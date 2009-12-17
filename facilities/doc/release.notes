@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-18-14 17-Dec-2009    jrb patches for gcc4, make HEADAS friendly 
  facilities-02-18-13 04-Dec-2009    jrb Better solution for env variables with or without supersede directory
  facilities-02-18-12 03-Dec-2009    jrb Mods to commonUtilities for SCons only to take account of supersede directory when there is one
  facilities-02-18-11 10-Sep-2009    jrb Get rid of compiler warning
