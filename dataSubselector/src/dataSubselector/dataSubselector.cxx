@@ -119,10 +119,10 @@ void DataFilter::promptForParameters() {
 }
 
 void DataFilter::run() {
-//    m_pars.Prompt();
-//    m_pars.Save();
+   m_pars.Prompt();
+   m_pars.Save();
 
-   promptForParameters();
+//    promptForParameters();
 
    std::string evtable = m_pars["evtable"];
 
