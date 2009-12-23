@@ -6,6 +6,7 @@
     * EOH *
 
     v1r1p2   15-Jul-09  jrb   Update SConscript
+    v1r1p1   21-nov-08   JP   Improve error reporting.
     v1r1     02-sep-08   JP   Accept INDEF, UNDEF, UNDEFINED or NONE for
                               numeric parameters, meaning value is undefined.
                               For floating point parameters, also accept
