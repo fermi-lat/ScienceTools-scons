@@ -13,7 +13,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
-#include <sstream>
 #include "hoops/hoops.h"
 #include "hoops/hoops_group.h"
 #include "hoops/hoops_par.h"
@@ -27,7 +26,11 @@
 #include "ape/ape_par.h"
 #include "ape/ape_trad.h"
 
+#include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace hoops {
@@ -437,6 +440,43 @@ namespace hoops {
     return Prompt(plist);
   }
 
+static int ape2hoops(int status) {
+  // Convert ape error codes into hoops error codes in the cases where
+  // there is a correspondence.
+  switch (status) {
+    case eOK:
+      status = P_OK; break;
+    // Don't know corresponding ape code for this:
+    //  status = P_ILLEGAL; break;
+    case eOverflow:
+      status = P_OVERFLOW; break;
+    case eUnderflow:
+      status = P_UNDERFLOW; break;
+    // Don't know corresponding ape code for this:
+    //  status = P_BADSIZE; break;
+    case eTypeMismatch:
+      status = P_PRECISION; break;
+    // Don't know corresponding ape code for this:
+    //  status = P_SIGNEDNESS; break;
+    case eStringRemainder:
+      status = P_STR_OVERFLOW; break;
+    case eConversionError:
+      status = P_STR_INVALID; break;
+    // Don't know corresponding ape code for this:
+    // May be a null pointer?
+    //  status = P_STR_NULL; break;
+    case eNan:
+      status = P_INFINITE; break;
+    case eUndefinedValue:
+      status = P_UNDEFINED; break;
+    // DO NOT CONVERT ANYTHING TO P_UNEXPECTED, which is used just by test code.
+    //  status = P_UNEXPECTED; break;
+    default:
+      status = P_CODE_ERROR; break;
+  }
+  return status;
+}
+
   HoopsApePrompt & HoopsApePrompt::Prompt(const std::vector<std::string> & pnames) {
     int status = eOK;
 
@@ -459,8 +499,8 @@ namespace hoops {
         std::ostringstream err_stream;
         if (std::string::npos != type.find("b")) {
           char r = 0;
-          status = ape_trad_query_bool(it->c_str(), &r);
-          if (eOK != status) {
+          status = ape2hoops(ape_trad_query_bool(it->c_str(), &r));
+          if (P_OK != status) {
             err_stream << "Cannot get boolean parameter " << *it <<
               " for component " << mFile->Component();
             throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
@@ -468,8 +508,8 @@ namespace hoops {
           par = 0 != r;
         } else if (std::string::npos != type.find("f")) {
           char * r = 0;
-          status = ape_trad_query_file_name(it->c_str(), &r);
-          if (eOK != status) {
+          status = ape2hoops(ape_trad_query_file_name(it->c_str(), &r));
+          if (P_OK != status) {
             free(r); r = 0;
             err_stream << "Cannot get file name parameter " << *it <<
               " for component " << mFile->Component();
@@ -479,8 +519,8 @@ namespace hoops {
           free(r); r = 0;
         } else if (std::string::npos != type.find("i")) {
           long r = 0;
-          status = ape_trad_query_long(it->c_str(), &r);
-          if (eOK != status) {
+          status = ape2hoops(ape_trad_query_long(it->c_str(), &r));
+          if (P_OK != status) {
             err_stream << "Cannot get int parameter " << *it <<
               " for component " << mFile->Component();
             throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
@@ -488,8 +528,8 @@ namespace hoops {
           par = r;
         } else if (std::string::npos != type.find("r")) {
           double r = 0.;
-          status = ape_trad_query_double(it->c_str(), &r);
-          if (eOK != status) {
+          status = ape2hoops(ape_trad_query_double(it->c_str(), &r));
+          if (P_OK != status) {
             err_stream << "Cannot get real parameter " << *it <<
               " for component " << mFile->Component();
             throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
@@ -497,8 +537,8 @@ namespace hoops {
           par = r;
         } else if (std::string::npos != type.find("s")) {
           char * r = 0;
-          status = ape_trad_query_string(it->c_str(), &r);
-          if (eOK != status) {
+          status = ape2hoops(ape_trad_query_string(it->c_str(), &r));
+          if (P_OK != status) {
             free(r); r = 0;
             err_stream << "Cannot get string parameter " << *it <<
               " for component " << mFile->Component();
@@ -606,6 +646,15 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.4  2009/12/23 20:31:32  peachey
+ * Convert ape error codes into proper hoops error codes.
+ *
+ * Revision 1.3  2009/12/03 18:21:30  elwinter
+ * Fixed code to compile under Ubuntu 9.10.
+ *
+ * Revision 1.2  2008/11/21 22:03:05  peachey
+ * Use base class implementation of error message facility.
+ *
  * Revision 1.1  2007/02/15 21:33:58  peachey
  * Initial version of Ape-based implementation.
  *

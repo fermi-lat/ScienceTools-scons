@@ -49,8 +49,10 @@ namespace hoops {
     P_STR_NULL = 9,        // Attempt to convert from a null string.
     P_INFINITE = 10,       // Converted an infinite string to a numeric value.
     P_UNDEFINED = 11,      // Converted an "undefined" string to a numeric value.
-    P_UNEXPECTED = 12      // (Not thrown) An error occurred which does
+    P_UNEXPECTED = 12,     // (Not thrown) An error occurred which does
                            // not fit into one of the other categories.
+    P_CODE_ERROR = 13      // Internal code/logic/runtime error, such as a bad
+                           // pointer, dynamic allocation failed, etc.
   };
   //////////////////////////////////////////////////////////////////////////////
 
@@ -97,6 +99,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.9  2009/12/23 20:28:27  peachey
+ * Add code P_CODE_ERROR, for converting unknown errors from ape etc. into hoops errors.
+ *
  * Revision 1.8  2008/07/29 15:41:58  peachey
  * Add codes to cover infinite and undefined values.
  *

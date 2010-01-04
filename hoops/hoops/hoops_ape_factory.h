@@ -14,8 +14,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
-#include <string>
 #include "hoops/hoops.h"
+#include <string>
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -67,6 +67,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.2  2009/12/23 20:27:19  peachey
+ * Add some needed missing header files.
+ *
  * Revision 1.1  2007/02/15 21:33:58  peachey
  * Initial version of Ape-based implementation.
  *

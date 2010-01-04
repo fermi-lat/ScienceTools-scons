@@ -14,6 +14,8 @@
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include "hoops/hoops_group.h"
+#include <string>
+#include <vector>
 ////////////////////////////////////////////////////////////////////////////////
 namespace hoops {
 
@@ -115,6 +117,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.11  2009/12/23 20:26:10  peachey
+ * Add some needed missing header files.
+ *
  * Revision 1.10  2004/09/21 16:47:03  peachey
  * Add name of group field to class, and use it in error messages.
  *

@@ -14,6 +14,7 @@
 // Header files.
 ////////////////////////////////////////////////////////////////////////////////
 #include <sstream>
+#include <string>
 
 #include "hoops/hoops.h"
 #include "hoops/hoops_exception.h"
@@ -114,6 +115,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.4  2009/12/23 20:26:10  peachey
+ * Add some needed missing header files.
+ *
  * Revision 1.3  2008/07/29 15:41:59  peachey
  * Add codes to cover infinite and undefined values.
  *

@@ -15,12 +15,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
-#include <iosfwd>
-#include <string>
-#include <vector>
 #include "hoops/hoops_exception.h"
 #include "hoops/hoops_itor.h"
 #include "hoops/hoops_prim.h"
+#include <iosfwd>
+#include <string>
+#include <vector>
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -296,6 +296,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.16  2009/12/23 20:27:18  peachey
+ * Add some needed missing header files.
+ *
  * Revision 1.15  2004/11/09 18:28:17  peachey
  * Remove SetArgc/SetArgv from IParPrompt interface.
  *

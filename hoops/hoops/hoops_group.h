@@ -14,9 +14,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // C++ header files.
 ////////////////////////////////////////////////////////////////////////////////
+#include "hoops/hoops.h"
 #include <string>
 #include <vector>
-#include "hoops/hoops.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXPSYM
@@ -92,6 +92,9 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.8  2009/12/23 20:27:19  peachey
+ * Add some needed missing header files.
+ *
  * Revision 1.7  2004/09/21 16:47:04  peachey
  * Add name of group field to class, and use it in error messages.
  *

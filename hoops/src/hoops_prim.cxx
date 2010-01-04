@@ -17,6 +17,7 @@
 #include <cerrno>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -1311,6 +1312,9 @@ namespace hoops {
 }
 
 /******************************************************************************
+ * Revision 1.17  2009/12/03 18:21:30  elwinter
+ * Fixed code to compile under Ubuntu 9.10.
+ *
  * Revision 1.16  2008/07/29 15:57:57  peachey
  * Check for infinite and undefined values when converting from strings
  * and throw exceptions when found.

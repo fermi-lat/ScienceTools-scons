@@ -783,14 +783,43 @@ int main(int argc, char * argv[]) {
     delete file;
 
     char test_bool_arg[] = "test_bool=no";
-    char *new_argv[] = { test_bool_arg, 0 };
-    ParPromptGroup par_prompt_group(1, new_argv, "hoops_par_test");
+    char test_indef_arg[] = "test_real=INDEF";
+    char *new_argv[] = { test_bool_arg, test_indef_arg, 0 };
+    ParPromptGroup par_prompt_group(2, new_argv, "hoops_par_test");
     bool test_bool = par_prompt_group["test_bool"];
     if (test_bool) {
       std::cerr << "ERROR: ParPromptGroup did not accept the command line " <<
         "value for parameter test_bool" << std::endl;
       SetGlobalStatus(P_UNEXPECTED);
     }
+    try {
+      par_prompt_group.Prompt("test_real");
+      std::cerr << "ERROR: ParPromptGroup did not throw an exception after " <<
+        "being given INDEF at a prompt" << std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    } catch (Hexception & x) {
+      if (P_UNDEFINED != x.Code()) {
+        std::cerr << "ERROR: ParPromptGroup threw an exception with code " <<
+          x.Code() << ", not " << P_UNDEFINED <<
+          " after being given INDEF at a prompt" << std::endl;
+        SetGlobalStatus(P_UNEXPECTED);
+      }
+    }
+    try {
+      float test_real = par_prompt_group["test_real"]; // Call operator float
+      std::cerr << "ERROR: ParPromptGroup did not throw an exception when " <<
+        "converting INDEF to a float, returned value " << test_real <<
+        std::endl;
+      SetGlobalStatus(P_UNEXPECTED);
+    } catch (Hexception & x) {
+      if (P_UNDEFINED != x.Code()) {
+        std::cerr << "ERROR: ParPromptGroup threw an exception with code " <<
+          x.Code() << ", not " << P_UNDEFINED <<
+          " while converting INDEF to a float" << std::endl;
+        SetGlobalStatus(P_UNEXPECTED);
+      }
+    }
+        
 
   } catch (const Hexception &x) {
     SetGlobalStatus(ERROR_UNDETECTED);
