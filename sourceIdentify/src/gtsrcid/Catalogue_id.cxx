@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.36  2009/12/01 13:25:24  jurgen
+Correct FoM implementation
+
 Revision 1.35  2009/11/24 16:35:03  jurgen
 Correct floating point exception on 64Bit machines
 
@@ -133,6 +136,7 @@ level.
 /* Definitions ______________________________________________________________ */
 #define CATALOGUE_TIMING     0               // Enables timing measurements
 #define JEAN_BALLET_FORMULA  1               // Uses Jean Ballet's formula
+#define ADAPTIVE_DENSITY     1               // Uses adaptive local density
 #define LOW_LEVEL_DEBUG      0               // Enable low-level debugging
 
 
@@ -1370,10 +1374,6 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
             src->cc[iCC].prob_post_single = 1.0;
         }
 
-        // Optionally multiply by FOM
-//        if (par->m_FoM.length() > 0)
-//          src->cc[iCC].prob_post_single *= src->cc[iCC].fom;
-
         // Add results to column vectors
         col_likrat.push_back(src->cc[iCC].likrat);
         col_prob_post_single.push_back(src->cc[iCC].prob_post_single);
@@ -1594,7 +1594,7 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
           }
 
           // Make sure that we have at least one source. This provides an upper
-          // limit for the counterpart density in case that we have found no 
+          // limit for the counterpart density in case that we have found no
           // source in the acceptance ring.
           if (src->cc[iCC].rho < 1.0) src->cc[iCC].rho = 1.0;
 

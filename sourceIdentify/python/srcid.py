@@ -656,7 +656,8 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			while (len(name) < 20):
 				name = name + ' '
 			names = names + name
-			if nids > 1:
+#			if nids > 1:
+			if num_cpt > 1:
 				data_prob[i][k] = cpt['prob']
 				data_ra[i][k]   = cpt['ra']
 				data_dec[i][k]  = cpt['dec']

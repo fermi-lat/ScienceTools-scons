@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.31  2009/12/01 13:25:24  jurgen
+Correct FoM implementation
+
 Revision 1.30  2009/07/07 21:32:52  jurgen
 Correctly read binary double columns
 
@@ -106,9 +109,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r2p3"
+#define TOOL_VERSION  "v2r2p4"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "01-Dec-2009"
+#define TOOL_DATE     "22-Dec-2009"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
