@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+12-Jan-2010  v2r2p4  JK  Correctly assign counterpart position
  1-Dec-2009  v2r2p3  JK  Correct floating point exception on 64Bit machines
                          Correctly implement FoM for 1FGL
 15-Jul-2009  v2r2p2  jrb Update Sconscript
