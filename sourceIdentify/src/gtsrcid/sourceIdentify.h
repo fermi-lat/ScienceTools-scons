@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.32  2010/01/12 08:57:23  jurgen
+Correct NULL entries for N_ID=1
+
 Revision 1.31  2009/12/01 13:25:24  jurgen
 Correct FoM implementation
 
@@ -111,7 +114,7 @@ Replace header information with CVS typeset information.
 #define TOOL_NAME     "gtsrcid"
 #define TOOL_VERSION  "v2r2p4"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "22-Dec-2009"
+#define TOOL_DATE     "12-Jan-2009"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

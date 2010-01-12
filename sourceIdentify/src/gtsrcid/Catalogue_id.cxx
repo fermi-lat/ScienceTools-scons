@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.37  2010/01/12 08:57:23  jurgen
+Correct NULL entries for N_ID=1
+
 Revision 1.36  2009/12/01 13:25:24  jurgen
 Correct FoM implementation
 
@@ -995,22 +998,20 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
         }
 
         // Assign position and error ellipse
-        // DUMMY: we assign the position and error ellipse of the partner
-        //        that has the smaller positional uncertainty
-        if (cpt->pos_err_maj < src->info->pos_err_maj) {
+//        if (cpt->pos_err_maj < src->info->pos_err_maj) {
           src->cc[iCC].pos_eq_ra   = cpt->pos_eq_ra;
           src->cc[iCC].pos_eq_dec  = cpt->pos_eq_dec;
           src->cc[iCC].pos_err_maj = cpt->pos_err_maj;
           src->cc[iCC].pos_err_min = cpt->pos_err_min;
           src->cc[iCC].pos_err_ang = cpt->pos_err_ang;
-        }
-        else {
-          src->cc[iCC].pos_eq_ra   = src->info->pos_eq_ra;
-          src->cc[iCC].pos_eq_dec  = src->info->pos_eq_dec;
-          src->cc[iCC].pos_err_maj = src->info->pos_err_maj;
-          src->cc[iCC].pos_err_min = src->info->pos_err_min;
-          src->cc[iCC].pos_err_ang = src->info->pos_err_ang;
-        }
+//        }
+//        else {
+//          src->cc[iCC].pos_eq_ra   = src->info->pos_eq_ra;
+//          src->cc[iCC].pos_eq_dec  = src->info->pos_eq_dec;
+//          src->cc[iCC].pos_err_maj = src->info->pos_err_maj;
+//          src->cc[iCC].pos_err_min = src->info->pos_err_min;
+//          src->cc[iCC].pos_err_ang = src->info->pos_err_ang;
+//        }
 
       } // endfor: looped over counterpart candidates
 
