@@ -138,8 +138,9 @@ Optional keyword arguments:
         for ef in self.ft1files[1:]:
             gti.combine(skymaps.Gti(ef))
         tmax = self.tstop if self.tstop > 0 else gti.maxValue()
+
         gti = self.gti = gti.applyTimeRangeCut(self.tstart,tmax) #save gti for later use
-        
+
         if self.ltcube is None or not os.path.exists(self.ltcube):
             if self.roi_dir is None:
                 # no roi specified: use full sky
@@ -156,7 +157,7 @@ Optional keyword arguments:
             for hf in self.ft2files:
                 lt_gti = skymaps.Gti(hf,'SC_data')
                 if not ((lt_gti.maxValue() < self.gti.minValue()) or 
-                            (lt_gti.minValue() > self.gti.maxValue())):
+                        (lt_gti.minValue() > self.gti.maxValue())):
                    lt.load(hf,gti)
 
             # write out ltcube if requested
